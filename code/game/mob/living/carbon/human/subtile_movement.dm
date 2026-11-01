@@ -117,7 +117,7 @@
 	var/saved_z = 0
 	var/encoded_origin_checked = FALSE
 	var/encoded_present_slots_checked = FALSE
-	var/encoded_geometry_checked = FALSE
+	var/encoded_anchor_checked = FALSE
 	var/reciprocal_links_checked = FALSE
 	var/encoded_links_checked = FALSE
 	proc/acknowledge(mob/living/human/H, datum/human_subtile_transaction/T)
@@ -129,7 +129,9 @@
 		if(T && !human_subtile_same(T.expected, current)) return FALSE
 		// The entire handoff is synchronous; no hook, native move or wait here.
 		origin = start
-		position = current
+		// Freeze the actual tile in the same nonyielding observation as loc.
+		// Fractional movement is transient; never export it into the save.
+		position = list("x" = start.x, "y" = start.y, "z" = start.z, "sx" = 0, "sy" = 0)
 		captured = TRUE
 		return TRUE
 	proc/release()
@@ -545,6 +547,11 @@
 /mob/living/human/persistence_runtime_var(key)
 	if (key == "human_subtile_pull_enabled")
 		return TRUE
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// Tile-only persistence treats native sub-tile movement as transient.
+	// Pixel offsets are unrelated artwork and continue through normal saving.
+	if (key == "step_x" || key == "step_y") return TRUE
+#endif
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
 	if ((key == "step_x" || key == "step_y") && (human_subtile_import_owned || human_subtile_position))
@@ -561,7 +568,27 @@
 		human_subtile_offset_owned = FALSE
 
 /mob/living/human/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
-	if (!frame || !frame.human_spatial_request)
+	if (!frame)
+		return ..()
+	if (!frame.human_spatial_request)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if (frame.human_legacy_aligned)
+			var/datum/persistence_world_operation/operation = persistence_active_operation
+			var/list/record = exporter.human_save_roots[save_entry_identity(src)]
+			if (human_subtile_save_hook_frame || frame.source != src || frame.exporter != exporter || !operation || !operation.current(exporter, "save") || !record || record["atom"] != src || record["mode"] != "legacy")
+				throw EXCEPTION("Human legacy save hook lacks its frame owner")
+			human_subtile_save_hook_frame = frame
+			try
+				. = ..()
+			catch (var/exception/legacy_save_hook_error)
+				human_subtile_save_hook_frame = null
+				throw legacy_save_hook_error
+			if (human_subtile_save_hook_frame != frame)
+				human_subtile_save_hook_frame = null
+				throw EXCEPTION("Human legacy save hook frame changed")
+			human_subtile_save_hook_frame = null
+			return .
+#endif
 		return ..()
 	var/datum/human_subtile_save_request/request = frame.human_spatial_request
 	if (human_subtile_save_hook_frame || frame.source != src || frame.exporter != exporter || request.actor != src || human_subtile_save_request != request || !request.captured || !request.operation || !request.operation.current(exporter, "save"))
@@ -583,6 +610,14 @@
 	if (human_subtile_save_hook_frame)
 		var/datum/save_export_frame/frame = human_subtile_save_hook_frame
 		var/datum/human_subtile_save_request/request = frame.human_spatial_request
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if (frame.human_legacy_aligned)
+			var/datum/persistence_world_operation/operation = persistence_active_operation
+			var/list/record = frame.exporter ? frame.exporter.human_save_roots[save_entry_identity(src)] : null
+			if (!frame.active || frame.source != src || !operation || !operation.current(frame.exporter, "save") || !record || record["atom"] != src || record["mode"] != "legacy")
+				throw EXCEPTION("Human legacy save hook owner changed")
+			return .
+#endif
 		if (!frame.active || frame.source != src || !request || request.actor != src || human_subtile_save_request != request || !request.captured || !request.operation || !request.operation.current(frame.exporter, "save"))
 			throw EXCEPTION("Human save hook owner changed")
 		return .
@@ -609,40 +644,54 @@
 	return TRUE
 
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-/datum/human_restore_geometry_budget
-	should_save = FALSE
-	var/observed = 0
-
-// New-schema restore only. This read and the following assignment must not
-// yield or invoke collision callbacks. Turf contents include overhangers;
-// do not filter them to atoms whose anchor is this turf.
-/mob/living/human/proc/human_subtile_restore_hard_clear(list/S, datum/human_restore_geometry_budget/budget)
-	if(!budget) return FALSE
-	var/left = (S["x"] - 1) * 32 + S["sx"]
-	var/bottom = (S["y"] - 1) * 32 + S["sy"]
-	for(var/tx = S["x"], tx <= S["x"] + (S["sx"] > 0), tx++)
-		for(var/ty = S["y"], ty <= S["y"] + (S["sy"] > 0), ty++)
-			var/turf/T = locate(tx, ty, S["z"])
-			if(!T || T.density || T.vehicle_transforming) return FALSE
-			for(var/atom/movable/A in T)
-				if(++budget.observed > 128000) return FALSE
-				if(A == src || ismob(A)) continue
-				if(!isturf(A.loc) || !isnum(A.density) || !isnum(A.bound_x) || !isnum(A.bound_y) || !isnum(A.bound_width) || !isnum(A.bound_height) || !isnum(A.step_x) || !isnum(A.step_y) || A.bound_width < 0 || A.bound_height < 0) return FALSE
-				for(var/key in list("density", "bound_x", "bound_y", "bound_width", "bound_height", "step_x", "step_y"))
-					if(isnan(A.vars[key]) || isinf(A.vars[key])) return FALSE
-				if(!A.bound_width || !A.bound_height) continue
-				var/a_left = (A.x - 1) * 32 + A.step_x + A.bound_x
-				var/a_bottom = (A.y - 1) * 32 + A.step_y + A.bound_y
-				var/a_right = a_left + A.bound_width
-				var/a_top = a_bottom + A.bound_height
-				if(isnan(a_left) || isinf(a_left) || isnan(a_bottom) || isinf(a_bottom) || isnan(a_right) || isinf(a_right) || isnan(a_top) || isinf(a_top)) return FALSE
-				if(left >= a_right || a_left >= left + 32 || bottom >= a_top || a_bottom >= bottom + 32) continue
-				if(A.density || !human_spatial_generic_object(A.type)) return FALSE
+// Run after the level's restored atoms have all received after_load().  The
+// engine's bounds query includes overhangs from objects on neighbouring turfs.
+// This is a local obstruction check, not a simultaneous-world snapshot.
+/mob/living/human/proc/human_saved_tile_final_clear()
+	if(!isturf(loc) || !human_subtile_unlinked() || pulling) return TRUE
+	if(!human_subtile_shape()) return FALSE
+	var/turf/T = loc
+	if(T.density || T.vehicle_transforming) return FALSE
+	var/list/nearby = obounds(src, 0)
+	if(!islist(nearby) || nearby.len > 1024) return FALSE
+	for(var/atom/A in nearby)
+		if(!A || QDELETED(A) || A.gcDestroyed) continue
+		if(isturf(A))
+			var/turf/other_turf = A
+			if(other_turf.density || other_turf.vehicle_transforming) return FALSE
+		else if(isobj(A) && isturf(A.loc) && A.density)
+			return FALSE
 	return TRUE
 #endif
 
 /mob/living/human/after_load()
 	. = ..()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// Legacy capsules remain readable, but movement fractions are deliberately
+	// not restored. Preserve the constructor's saved parent/relationship.
+	if(human_subtile_restore_schema && (!isnum(human_subtile_restore_schema) || human_subtile_restore_schema != 1 || !human_subtile_import_owned))
+		throw EXCEPTION("Unsupported human sub-tile restore schema")
+	var/had_position = human_subtile_import_owned
+	if(had_position)
+		var/list/legacy_position = human_subtile_position
+		if(!islist(legacy_position) || legacy_position.len != 5) throw EXCEPTION("Malformed sub-tile position capsule")
+		for(var/key in list("x", "y", "z", "sx", "sy"))
+			if(!(key in legacy_position) || !isnum(legacy_position[key]) || legacy_position[key] != round(legacy_position[key])) throw EXCEPTION("Malformed sub-tile position field")
+		if(!human_subtile_shape() || !human_subtile_unlinked() || x != legacy_position["x"] || y != legacy_position["y"] || z != legacy_position["z"] || legacy_position["sx"] < 0 || legacy_position["sx"] >= 32 || legacy_position["sy"] < 0 || legacy_position["sy"] >= 32)
+			throw EXCEPTION("Sub-tile anchor or destination rejected")
+	if(human_subtile_transaction || human_subtile_pulse) throw EXCEPTION("Restored human has active movement ownership")
+	step_x = 0
+	step_y = 0
+	human_subtile_position = null
+	human_subtile_restore_schema = 0
+	human_direct_preflight_position = null
+	human_subtile_offset_owned = FALSE
+	human_subtile_import_owned = FALSE
+	if(had_position)
+		living_movement_completed()
+		human_movement_completed()
+	return .
+#else
 	if(human_subtile_restore_schema && (!isnum(human_subtile_restore_schema) || human_subtile_restore_schema != 1 || !human_subtile_import_owned))
 		throw EXCEPTION("Unsupported human sub-tile restore schema")
 	if (!human_subtile_import_owned)
@@ -656,20 +705,7 @@
 	if (!human_subtile_shape() || !human_subtile_unlinked() || x != S["x"] || y != S["y"] || z != S["z"] || S["sx"] < 0 || S["sx"] >= 32 || S["sy"] < 0 || S["sy"] >= 32)
 		throw EXCEPTION("Sub-tile anchor or destination rejected")
 	if(human_subtile_restore_schema == 1)
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		var/datum/persistence_world_operation/operation = persistence_active_operation
-		var/datum/human_restore_geometry_budget/budget = new
-		if(!operation || !operation.current(map_storage, "load") || !operation.mutation_started || !operation.human_direct_preflight_generation || !human_subtile_same(S, human_direct_preflight_position) || !persistence_save_in_progress || operation.human_direct_restores.len >= 8192 || !human_subtile_restore_hard_clear(S, budget))
-			throw EXCEPTION("Human direct restore lacks an owned clear destination")
-		step_x = S["sx"]
-		step_y = S["sy"]
-		if(!human_subtile_same(S, human_subtile_snapshot())) throw EXCEPTION("Human direct restore did not retain its exact position")
-		operation.human_direct_restores += list(list("actor" = src, "position" = S.Copy()))
-		human_subtile_restore_schema = 0
-		human_direct_preflight_position = null
-#else
 		throw EXCEPTION("Human direct restore is unavailable")
-#endif
 	else
 		if(!human_subtile_destination_clear(S)) throw EXCEPTION("Sub-tile anchor or destination rejected")
 		var/datum/human_subtile_pulse/P = new
@@ -693,3 +729,4 @@
 	human_subtile_import_owned = FALSE
 	living_movement_completed()
 	human_movement_completed()
+#endif

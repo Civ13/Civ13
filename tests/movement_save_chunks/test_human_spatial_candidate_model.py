@@ -74,15 +74,15 @@ class CandidateTests(unittest.TestCase):
         self.assertIn("/obj/item/tape/CanPass(", tape)
         self.assertNotIn("/obj/item/tape", {item["type"] for cell in candidate()["cells"].values() for item in cell.get("occupants", []) if "type" in item})
 
-    def test_production_special_roots_match_model(self):
+    def test_historical_footprint_model_is_not_the_tile_only_production_gate(self):
         root = Path(__file__).resolve().parents[2]
         saving = (root / 'code/modules/persistence/saving.dm').read_text()
-        body = saving.split('/proc/human_spatial_generic_object(path)', 1)[1].split('\n/proc/', 1)[0]
-        roots = set(re.findall(r'/obj/[A-Za-z0-9_/]+', body))
-        self.assertEqual(roots, SPECIAL)
+        self.assertNotIn('/proc/human_spatial_generic_object(path)', saving)
+        self.assertIn('/map_storage/proc/inspect_human_saved_tile_and_links(', saving)
+        # This historical model remains an arithmetic negative control only;
+        # it is not evidence of tile-only production collision behavior.
         self.assertTrue(generic_object('/obj/item/weapon/flint/sharpened'))
         self.assertFalse(generic_object('/obj/item/tape'))
-        self.assertFalse(generic_object('/obj/structure/window'))
 
     def test_audited_item_chains_have_no_explicit_special_pass_or_load_hook(self):
         root = Path(__file__).resolve().parents[2]

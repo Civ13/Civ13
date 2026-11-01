@@ -33,10 +33,10 @@ class StageChecks(unittest.TestCase):
                          'human_spatial_fixture_pulses_after > 0', 'map_storage.Load_World()',
                          'persistence_restored_bodies["syntheticfixture"]',
                          'H.type == /mob/living/human', 'fixture_nested_item_or_slot',
-                         'fixture_exact_frozen_capsule', 'fixture_restart_owner',
+                         'fixture_frozen_tile_and_zero_offset', 'fixture_restart_owner',
                          'fixture_audited_floor_and_tool', 'fixture_second_body_position',
                          'fixture_restore_callbacks', 'fixture_legacy_parent_and_link',
-                         'fixture_late_exact_capsule', 'fixture_late_walk_did_not_continue',
+                         'fixture_late_frozen_tile', 'fixture_late_walk_did_not_continue',
                          'fixture_seated_did_not_move', 'fixture_seated_reference_first'):
             self.assertIn(evidence, probe)
 
@@ -94,9 +94,9 @@ class StageChecks(unittest.TestCase):
         self.assertIn('actor == human_spatial_fixture_late_actor && human_spatial_fixture_late_capsule && persistence_save_in_progress', staged)
         self.assertIn('actor.persistence_owner_ckey == "syntheticfixture"', staged)
         self.assertIn('human_spatial_fixture_wait_late_pulse()', staged)
-        self.assertIn('human_spatial_fixture_restore_living == 2', probe)
-        self.assertIn('human_spatial_fixture_restore_human == 2', probe)
-        self.assertIn('geometry_metrics', probe)
+        self.assertIn('!human_spatial_fixture_restore_living', probe)
+        self.assertIn('!human_spatial_fixture_restore_human', probe)
+        self.assertNotIn('geometry_metrics', probe)
         self.assertIn('human_spatial_fixture_move_saved_seated(A)', staged)
 
     def test_legacy_parent_diagnostic_preserves_refusal_and_has_bounded_identity(self):
@@ -124,22 +124,17 @@ class StageChecks(unittest.TestCase):
     def test_negative_cases_establish_owned_offsets_and_keep_exact_oracles(self):
         probe = (HERE / 'human_spatial_probe.dm').read_text()
         body = probe.split('else if(world.params["phase"] == "negative")', 1)[1].split('\n\t\telse\n\t\t\tthrow EXCEPTION("fixture_phase_unknown")', 1)[0]
-        self.assertLess(body.index('H.after_load()'), body.index('switch(human_spatial_fixture_case)'))
-        for required in ('human_subtile_import_owned = TRUE', 'fixture_negative_owned_offset',
-                         'fixture_negative_spatial_precondition', 'fixture_negative_contained_partial',
-                         'fixture_negative_buckle_partial', 'fixture_negative_pulling_partial',
-                         'C.buckled_mob == H', 'P.pulledby == H'):
+        self.assertLess(body.index('H.step_x = 4'), body.index('switch(human_spatial_fixture_case)'))
+        for required in ('H.human_subtile_offset_owned = TRUE', 'fixture_negative_owned_offset',
+                         'fixture_negative_spatial_precondition'):
             self.assertIn(required, body)
         cases = {
-            'wall': 'Human saved turf type is not audited',
-            'dense': 'Human saved footprint has a hard or unaudited occupant',
-            'contained': 'Human legacy save needs an aligned idle position',
-            'buckle': 'Human legacy save needs an aligned idle position',
+            'wall': 'Human saved tile is dense',
+            'dense': 'Human saved tile has a dense object',
             'roster': 'Human roster proof has no stable owner',
-            'pulling': 'Human legacy save needs an aligned idle position',
             'duplicate': 'Human slot candidate has duplicate saved parents',
             'missing_roster': 'Human roster proof changed before completion',
-            'unsafe_default': 'Human saved size is unsupported',
+            'invalid_density': 'Human saved tile is dense',
         }
         for name, expected in cases.items():
             block = body.split('if("' + name + '")', 1)[1].split('\n\t\t\t\tif("', 1)[0]
@@ -149,7 +144,7 @@ class StageChecks(unittest.TestCase):
         mutation = probe.split('/proc/human_spatial_fixture_mutate_candidate(', 1)[1].split('\n/world/', 1)[0]
         for required in ('operation.human_spatial_requests.len == 1', 'request.captured',
                          'request.serialized', 'request.spatial_attached', 'request.saved_ref',
-                         'request.position["sx"] == 4', 'request.position["sy"] == 4'):
+                         '!request.position["sx"]', '!request.position["sy"]'):
             self.assertIn(required, mutation)
 
 

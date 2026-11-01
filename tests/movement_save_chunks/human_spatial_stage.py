@@ -116,18 +116,21 @@ def stage(output):
         '\t\tif (actor == human_spatial_fixture_drag_actor) human_spatial_fixture_human_completions++',
         'drag completion instrumentation')
     data = replace_once(data,
-        '\t\tstep_x = S["sx"]\n\t\tstep_y = S["sy"]',
+        '\tstep_x = 0\n\tstep_y = 0\n\thuman_subtile_position = null',
+        '\tif(persistence_owner_ckey == "syntheticfixture")\n'
         '\t\thuman_spatial_fixture_direct_actor = src\n'
         '\t\thuman_spatial_fixture_direct_active = TRUE\n'
-        '\t\tstep_x = S["sx"]\n\t\tstep_y = S["sy"]\n'
-        '\t\thuman_spatial_fixture_direct_active = FALSE',
-        'direct assignment callback instrumentation')
+        '\tstep_x = 0\n\tstep_y = 0\n'
+        '\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_direct_active = FALSE\n'
+        '\thuman_subtile_position = null',
+        'zero-offset assignment callback instrumentation')
     data = replace_once(data,
-        '\tliving_movement_completed()\n\thuman_movement_completed()\n',
-        '\tliving_movement_completed()\n'
-        '\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_restore_living++\n'
-        '\thuman_movement_completed()\n'
-        '\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_restore_human++\n',
+        '\t\tliving_movement_completed()\n\t\thuman_movement_completed()\n\treturn .',
+        '\t\tliving_movement_completed()\n'
+        '\t\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_restore_living++\n'
+        '\t\thuman_movement_completed()\n'
+        '\t\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_restore_human++\n'
+        '\treturn .',
         'restore completion instrumentation')
     path.write_text(data, encoding='utf-8', newline='\n')
 
@@ -160,13 +163,12 @@ def stage(output):
         '\trecord["mode"] = "spatial"\n'
         '\tif(H == human_spatial_fixture_late_actor) human_spatial_fixture_wait_late_pulse()\n'
         '\treturn record', 'late walker continuation witness')
-    data = replace_once(data, '\tcapture_human_save_roster_positions(operation)',
-        '\tcapture_human_save_roster_positions(operation)\n'
+    data = replace_once(data, '\tprepare_human_save_roster(operation)',
+        '\tprepare_human_save_roster(operation)\n'
         '\tif(world.params["phase"] == "writer") human_spatial_fixture_start_late_walker()\n'
         '\tif(human_spatial_fixture_case == "roster") operation.human_roster_changed = TRUE',
         'roster invalidation control')
     data = replace_once(data, '\tinspect_human_saved_origins(operation)',
-        '\thuman_spatial_fixture_geometry_metrics = list("turfs" = operation.human_geometry_turf_records, "objects" = operation.human_geometry_object_records, "added_fields" = operation.human_geometry_added_fields)\n'
         '\thuman_spatial_fixture_mutate_candidate(operation)\n'
         '\tinspect_human_saved_origins(operation)', 'candidate negative controls')
     data = replace_once(data, '\t\tcompleted_request.serialized = TRUE\n#endif\n\treturn ref',

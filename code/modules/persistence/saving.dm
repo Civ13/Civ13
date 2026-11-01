@@ -36,6 +36,8 @@
 	var/list/world_state = capture_durable_world()
 	var/prefix = world_state ? "round-v2" : "round-v1"
 	generation = "[prefix]:[generation_nonce]"
+	operation.diagnostic_save_id = "save-[generation_nonce]"
+	operation.diagnostic_generation = generation
 	if(zone_export_state && !world_state) throw EXCEPTION("Admitted zone capture lost its metadata profile")
 	var/list/round_state = capture_round_state(generation)
 	if(world_state)
@@ -45,7 +47,6 @@
 	prepare_moving_save_roster()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	prepare_human_save_roster(operation)
-	capture_human_save_roster_positions(operation)
 #endif
 	// ***** MAP SECTION *****
 	var/backup_dir = "map_backups/"
@@ -130,7 +131,7 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	inspect_human_saved_origins(operation)
 	inspect_human_present_saved_slots(operation)
-	inspect_human_saved_geometry(operation)
+	inspect_human_saved_tile_and_links(operation)
 	inspect_human_saved_owners(operation, generation)
 	operation.seal_human_containment_proof()
 #endif
@@ -247,6 +248,11 @@
 				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
 				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))
+					try
+						record_save_child_failure(parent, content, child_ref)
+					catch
+						// Diagnostics must not replace the original refusal.
+						last_save_reference_failure = null
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
@@ -256,50 +262,38 @@
 				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
 				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))
+					try
+						record_save_child_failure(parent, content, child_ref)
+					catch
+						// Diagnostics must not replace the original refusal.
+						last_save_reference_failure = null
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
 				require_export_frame(frame)
 		var/list/changing_vars = A.get_saved_vars()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		// Explicitly encode the audited defaults; do not infer constructor state
-		// from an absent savefile field or change a live relationship.
-		// Freeze a legacy frame's admitted alignment even if the actor starts
-		// walking while the remaining fields are serialized.
+		// Keep actual parent and durable references; movement offsets are transient.
 		if(frame.human_legacy_aligned)
 			changing_vars -= list("step_x", "step_y", "human_subtile_position", "human_subtile_restore_schema")
+			// Validate captured inventory slots for linked/contained bodies too.
+			changing_vars |= human_spatial_slot_fields()
 		if(frame.human_spatial_position)
 			changing_vars |= human_spatial_link_fields()
 			changing_vars |= human_spatial_slot_fields()
-			changing_vars |= list("bound_x", "bound_y", "bound_width", "bound_height")
 		if(isturf(A))
-			var/turf/candidate_turf = A
-			var/datum/persistence_world_operation/human_save_operation = persistence_active_operation
-			if(!human_save_operation || !human_save_operation.current(src, "save")) throw EXCEPTION("Human footprint serialization lost its save owner")
-			// Later enrollment may refer to a turf already serialized. Save the
-			// candidate's own geometry for every turf, not a later live value.
-			var/prior_turf_fields = changing_vars.len
+			// A later-enrolled human can refer to a previously saved tile.
+			// Record its saved density, not a later live observation.
 			changing_vars |= list("density")
-			human_save_operation.human_geometry_turf_records++
-			human_save_operation.human_geometry_added_fields += changing_vars.len - prior_turf_fields
-			// The transformation pointer is temporary runtime state. Retain only
-			// a scalar observation for admission; never serialize its live object.
-			var/geometry_shard = round((ref - 1) / 512)
-			savefile["/human_geometry/[geometry_shard]/[ref]/transforming"] << !!candidate_turf.vehicle_transforming
-		if(istype(A, /obj))
-			var/datum/persistence_world_operation/human_object_operation = persistence_active_operation
-			if(!human_object_operation || !human_object_operation.current(src, "save")) throw EXCEPTION("Human obstruction serialization lost its save owner")
-			// Objects may overhang a turf whose actor is enrolled later.
-			var/prior_object_fields = changing_vars.len
-			changing_vars |= list("density", "bound_x", "bound_y", "bound_width", "bound_height", "step_x", "step_y")
-			human_object_operation.human_geometry_object_records++
-			human_object_operation.human_geometry_added_fields += changing_vars.len - prior_object_fields
+		if(isobj(A))
+			// A dense object directly on that tile may obstruct a centered body.
+			changing_vars |= list("density")
 #endif
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 		if(frame.human_spatial_position)
-			changing_vars -= list("step_x", "step_y", "glide_size", "human_subtile_position")
-			if(frame.human_spatial_position["sx"] || frame.human_spatial_position["sy"])
-				changing_vars |= list("human_subtile_position", "human_subtile_restore_schema")
+			// Frozen origin determines the saved turf edge. Do not persist
+			// movement fractions or the prior exact-offset restore schema.
+			changing_vars -= list("step_x", "step_y", "glide_size", "human_subtile_position", "human_subtile_restore_schema")
 #endif
 		if(istype(A, /atom/movable))
 			var/atom/movable/AM = A
@@ -315,20 +309,10 @@
 			if(A.vars.Find(v))
 				frame.current_field = v
 				var/value
-				var/human_spatial_override = FALSE
-#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
-				if(frame.human_spatial_position && v == "human_subtile_position")
-					value = encode_saved_value(savefile, frame.human_spatial_position)
-					human_spatial_override = TRUE
-				if(frame.human_spatial_position && v == "human_subtile_restore_schema")
-					value = encode_saved_value(savefile, 1)
-					human_spatial_override = TRUE
-#endif
-				if(!human_spatial_override)
-					if(level_link_target(A, v, A.vars[v]))
-						value = encode_level_link(A.vars[v])
-					else
-						value = encode_saved_value(savefile, A.vars[v])
+				if(level_link_target(A, v, A.vars[v]))
+					value = encode_level_link(A.vars[v])
+				else
+					value = encode_saved_value(savefile, A.vars[v])
 				frame.current_field = null
 				require_export_frame(frame)
 				savefile.cd = entry_path(savefile, ref)
@@ -549,7 +533,7 @@
 	if(!frame || !request || !request.captured || !request.actor || request.actor.human_subtile_save_request != request || frame.source != request.actor || frame.exporter != src || !request.operation || !request.operation.current(src, "save") || !request.origin || !islist(request.position))
 		throw EXCEPTION("Human spatial frame does not own a captured request")
 	var/list/position = request.position.Copy()
-	if(position.len != 5 || position["x"] != request.origin.x || position["y"] != request.origin.y || position["z"] != request.origin.z || !human_subtile_same(position, position) || position["sx"] < 0 || position["sx"] >= 32 || position["sy"] < 0 || position["sy"] >= 32)
+	if(position.len != 5 || position["x"] != request.origin.x || position["y"] != request.origin.y || position["z"] != request.origin.z || !human_subtile_same(position, position) || position["sx"] != 0 || position["sy"] != 0)
 		throw EXCEPTION("Human spatial frame has an invalid frozen origin")
 	frame.human_spatial_request = request
 	frame.human_spatial_position = position
@@ -804,16 +788,6 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 // This opt-in source prototype has no production enablement. Its pre-marker
 // gate deliberately refuses until encoded link and geometry checks exist.
-/proc/human_spatial_generic_object(path)
-	// Nondense generic objects inherit the human passability profile. Special
-	// roots remain refused until their saved-state projection has been audited.
-	if(!ispath(path, /obj)) return FALSE
-	if(ispath(path, /obj/item/tape) || ispath(path, /obj/item/weapon/gun/projectile/automatic/stationary) || ispath(path, /obj/effect/effect/smoke/bad) || ispath(path, /obj/covers)) return FALSE
-	var/static/list/special_structure_roots = list(/obj/structure/TV, /obj/structure/barricade, /obj/structure/closet, /obj/structure/simple_door, /obj/structure/grille, /obj/structure/iv_drip, /obj/structure/optable, /obj/structure/plant_pot, /obj/structure/railing, /obj/structure/bed, /obj/structure/table, /obj/structure/window, /obj/structure/barbwire, /obj/structure/vehicleparts/frame, /obj/structure/lamp, /obj/structure/props, /obj/structure/basketball_hoop, /obj/structure/multiz)
-	for(var/special in special_structure_roots)
-		if(ispath(path, special)) return FALSE
-	return TRUE
-
 /proc/human_spatial_link_fields()
 	return list("buckled", "riding", "riding_mob", "using_drone", "control_object", "incorporeal_move", "pulledby", "using_object", "using_cannon", "football", "pulling", "driver", "driver_vehicle")
 
@@ -887,21 +861,6 @@
 	if(!(key in fields)) throw EXCEPTION("Human candidate required field is missing")
 	return human_candidate_scalar(F[key])
 
-/map_storage/proc/human_candidate_turf_transforming(savefile/F, ref)
-	if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Human turf geometry identity is invalid")
-	var/shard = round((ref - 1) / 512)
-	F.cd = "/"
-	if(!("human_geometry" in F.dir)) throw EXCEPTION("Human turf geometry metadata is missing")
-	F.cd = "/human_geometry"
-	if(!("[shard]" in F.dir)) throw EXCEPTION("Human turf geometry shard is missing")
-	F.cd = "/human_geometry/[shard]"
-	if(!("[ref]" in F.dir)) throw EXCEPTION("Human turf geometry entry is missing")
-	F.cd = "/human_geometry/[shard]/[ref]"
-	if(!("transforming" in F.dir)) throw EXCEPTION("Human turf transform observation is missing")
-	var/value = F["transforming"]
-	if(!isnum(value) || !(value in list(0, 1))) throw EXCEPTION("Human turf transform observation is invalid")
-	return value
-
 /map_storage/proc/human_candidate_map_ref(savefile/F, z, y, x)
 	F.cd = "/"
 	if(!("map" in F.dir)) throw EXCEPTION("Human candidate map is missing")
@@ -913,6 +872,7 @@
 	if(!("[x]" in F.dir)) throw EXCEPTION("Human candidate cell is missing")
 	return F["[x]"]
 
+// Read historical exact-offset capsules for format validation only.
 /map_storage/proc/human_candidate_read_position(savefile/F, ref)
 	var/list/fields = human_saved_entry_fields(F, ref)
 	if(!("human_subtile_position" in fields)) return null
@@ -938,154 +898,46 @@
 	if(position.len != 5) throw EXCEPTION("Human saved position is incomplete")
 	return position
 
-/map_storage/proc/human_candidate_position_matches(savefile/F, ref, list/expected)
-	var/list/position = human_candidate_read_position(F, ref)
-	if(!expected["sx"] && !expected["sy"]) return isnull(position)
-	return human_subtile_same(position, expected)
-
-/map_storage/proc/build_human_obstruction_index(savefile/F, z, list/positions, datum/persistence_world_operation/operation, owner_kind, deadline)
-	if(!operation || !operation.current(src, owner_kind) || !islist(positions)) throw EXCEPTION("Human obstruction index lacks its owner")
-	var/list/targets = list()
-	for(var/list/position in positions)
-		if(!islist(position) || position["z"] != z) throw EXCEPTION("Human obstruction index position is invalid")
-		for(var/dx = 0, dx <= !!position["sx"], dx++)
-			for(var/dy = 0, dy <= !!position["sy"], dy++)
-				var/x = position["x"] + dx
-				var/y = position["y"] + dy
-				if(x < 1 || x > world.maxx || y < 1 || y > world.maxy) throw EXCEPTION("Human obstruction index footprint is outside the world")
-				targets["[x]:[y]"] = TRUE
-	var/list/index = list()
-	var/list/seen = list()
-	var/cell_work = 0
-	var/edge_work = 0
-	for(var/y = 1, y <= world.maxy, y++)
-		for(var/x = 1, x <= world.maxx, x++)
-			if(++cell_work % 256 == 0)
-				TICK_CHECK
-				if(world.time >= deadline || !operation.current(src, owner_kind)) throw EXCEPTION("Human obstruction index exceeded its budget")
-			var/turf_ref = human_candidate_map_ref(F, z, y, x)
-			var/list/turf_fields = human_saved_entry_fields(F, turf_ref)
-			if(!("type" in turf_fields) || !ispath(F["type"], /turf) || !("content" in turf_fields)) throw EXCEPTION("Human obstruction index turf is invalid")
-			var/list/raw = F["content"]
-			if(!islist(raw) || raw.len > 256) throw EXCEPTION("Human obstruction index content exceeds its budget")
-			var/list/contents = saved_content_refs(raw, 3)
-			for(var/child in contents)
-				if(++edge_work > 1000000) throw EXCEPTION("Human obstruction index edge budget exceeded")
-				if(edge_work % 256 == 0)
-					TICK_CHECK
-					if(world.time >= deadline || !operation.current(src, owner_kind)) throw EXCEPTION("Human obstruction index exceeded its budget")
-				var/ref = text2num("[child]")
-				if(!isnum(ref) || ref < 1 || ref != round(ref) || "[ref]" != "[child]") throw EXCEPTION("Human obstruction index identity is invalid")
-				var/list/fields = human_saved_entry_fields(F, ref)
-				if(!("type" in fields)) throw EXCEPTION("Human obstruction index type is missing")
-				var/path = F["type"]
-				if(ispath(path, /mob)) continue
-				if(!ispath(path, /obj)) throw EXCEPTION("Human obstruction index movable type is unsupported")
-				if(seen["[ref]"]) throw EXCEPTION("Human obstruction index object has duplicate parents")
-				seen["[ref]"] = TRUE
-				var/saved_density = human_candidate_scalar_field(F, ref, "density")
-				if(!isnum(saved_density)) throw EXCEPTION("Human obstruction index density is invalid")
-				if(!saved_density && human_spatial_generic_object(path)) continue
-				var/list/shape = list()
-				for(var/key in list("density", "bound_x", "bound_y", "bound_width", "bound_height", "step_x", "step_y"))
-					var/value = human_candidate_scalar_field(F, ref, key)
-					if(!isnum(value) || isnan(value) || isinf(value) || value != round(value)) throw EXCEPTION("Human obstruction index field is invalid")
-					shape[key] = value
-				if(shape["bound_width"] < 0 || shape["bound_height"] < 0) throw EXCEPTION("Human obstruction index bounds are invalid")
-				if(!shape["bound_width"] || !shape["bound_height"]) continue
-				var/left = (x - 1) * 32 + shape["step_x"] + shape["bound_x"]
-				var/bottom = (y - 1) * 32 + shape["step_y"] + shape["bound_y"]
-				var/right = left + shape["bound_width"]
-				var/top = bottom + shape["bound_height"]
-				if(isnan(left) || isinf(left) || isnan(bottom) || isinf(bottom) || isnan(right) || isinf(right) || isnan(top) || isinf(top)) throw EXCEPTION("Human obstruction index bounds are not finite")
-				var/min_x = max(1, floor(left / 32) + 1)
-				var/max_x = min(world.maxx, floor((right - 1) / 32) + 1)
-				var/min_y = max(1, floor(bottom / 32) + 1)
-				var/max_y = min(world.maxy, floor((top - 1) / 32) + 1)
-				if(min_x > max_x || min_y > max_y) continue
-				if((max_x - min_x + 1) * (max_y - min_y + 1) > 4096) throw EXCEPTION("Human obstruction index object spans too many tiles")
-				var/list/record = list("ref" = ref, "type" = path, "density" = shape["density"], "left" = left, "bottom" = bottom, "right" = right, "top" = top)
-				for(var/ox = min_x, ox <= max_x, ox++)
-					for(var/oy = min_y, oy <= max_y, oy++)
-						if(++edge_work > 1000000) throw EXCEPTION("Human obstruction index tile budget exceeded")
-						if(edge_work % 256 == 0)
-							TICK_CHECK
-							if(world.time >= deadline || !operation.current(src, owner_kind)) throw EXCEPTION("Human obstruction index exceeded its budget")
-						var/key = "[ox]:[oy]"
-						if(!targets[key]) continue
-						var/list/bucket = index[key]
-						if(!bucket)
-							bucket = list()
-							index[key] = bucket
-						bucket += list(record)
-	return index
-
-/map_storage/proc/validate_human_saved_geometry(savefile/F, ref, list/position, list/obstructions, datum/persistence_world_operation/operation, owner_kind, deadline)
-	if(!operation || !operation.current(src, owner_kind) || !islist(position) || position.len != 5 || !islist(obstructions)) throw EXCEPTION("Human geometry lacks its operation or position")
-	for(var/key in list("x", "y", "z", "sx", "sy"))
-		if(!(key in position) || !isnum(position[key]) || position[key] != round(position[key])) throw EXCEPTION("Human geometry position is invalid")
-	if(position["x"] < 1 || position["x"] > world.maxx || position["y"] < 1 || position["y"] > world.maxy || position["z"] < 1 || position["z"] > save_validation_maxz() || position["sx"] < 0 || position["sx"] >= 32 || position["sy"] < 0 || position["sy"] >= 32) throw EXCEPTION("Human geometry position is outside the world")
-	var/z = position["z"]
-	var/list/human_fields = human_saved_entry_fields(F, ref)
-	if(!("type" in human_fields) || F["type"] != /mob/living/human || !human_candidate_position_matches(F, ref, position)) throw EXCEPTION("Human saved type or position is unsupported")
-	for(var/key in human_spatial_link_fields())
-		var/link = human_candidate_scalar_field(F, ref, key)
-		if(!isnull(link) && (!isnum(link) || link != 0)) throw EXCEPTION("Human saved physical link is unsupported")
-	for(var/key in list("bound_x", "bound_y"))
-		var/offset = human_candidate_scalar_field(F, ref, key)
-		if(!isnum(offset) || offset != 0) throw EXCEPTION("Human saved bounds are unsupported")
-	for(var/key in list("bound_width", "bound_height"))
-		var/size = human_candidate_scalar_field(F, ref, key)
-		if(!isnum(size) || size != 32) throw EXCEPTION("Human saved size is unsupported")
-	var/left = (position["x"] - 1) * 32 + position["sx"]
-	var/bottom = (position["y"] - 1) * 32 + position["sy"]
-	for(var/dx = 0, dx <= !!position["sx"], dx++)
-		for(var/dy = 0, dy <= !!position["sy"], dy++)
-			var/x = position["x"] + dx
-			var/y = position["y"] + dy
-			if(x < 1 || x > world.maxx || y < 1 || y > world.maxy) throw EXCEPTION("Human saved footprint is outside the map")
-			var/turf_ref = human_candidate_map_ref(F, z, y, x)
-			var/list/turf_fields = human_saved_entry_fields(F, turf_ref)
-			if(!("type" in turf_fields) || !ispath(F["type"], /turf/floor) || !("content" in turf_fields)) throw EXCEPTION("Human saved turf type is not audited")
-			var/turf_density = human_candidate_scalar_field(F, turf_ref, "density")
-			var/transforming = human_candidate_turf_transforming(F, turf_ref)
-			if(!isnum(turf_density) || turf_density != 0 || (!isnull(transforming) && (!isnum(transforming) || transforming != 0))) throw EXCEPTION("Human saved turf is blocked or transforming")
-			var/list/occupants = obstructions["[x]:[y]"]
-			if(islist(occupants))
-				for(var/list/occupant in occupants)
-					if(left >= occupant["right"] || occupant["left"] >= left + 32 || bottom >= occupant["top"] || occupant["bottom"] >= bottom + 32) continue
-					if(occupant["density"] || !human_spatial_generic_object(occupant["type"])) throw EXCEPTION("Human saved footprint has a hard or unaudited occupant")
-			if(world.time >= deadline || !operation.current(src, owner_kind)) throw EXCEPTION("Human geometry inspection exceeded its budget")
-	return TRUE
-
-/map_storage/proc/inspect_human_saved_geometry(datum/persistence_world_operation/operation)
-	if(!operation || !operation.current(src, "save")) throw EXCEPTION("Human geometry inspection lost its operation")
+// Validate the captured tile and the saved unlinked state. Inventory and
+// reciprocal-parent checks remain separate; no fractional footprint is saved.
+/map_storage/proc/inspect_human_saved_tile_and_links(datum/persistence_world_operation/operation)
+	if(!operation || !operation.current(src, "save")) throw EXCEPTION("Human tile inspection lost its operation")
 	var/list/files = list()
-	var/list/positions_by_level = list()
-	var/list/indexes = list()
 	var/deadline = world.time + 1200
 	for(var/datum/human_subtile_save_request/request in operation.human_spatial_requests)
-		if(!request || !islist(request.position)) throw EXCEPTION("Human geometry position is missing")
-		var/z_key = "[request.saved_z]"
-		var/list/positions = positions_by_level[z_key]
-		if(!positions)
-			positions = list()
-			positions_by_level[z_key] = positions
-		positions += list(request.position)
-	for(var/datum/human_subtile_save_request/request in operation.human_spatial_requests)
-		if(world.time >= deadline || !request || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !operation.current(src, "save")) throw EXCEPTION("Human geometry inspection lacks its prerequisites")
-		var/z = request.saved_z
+		if(world.time >= deadline || !request || !request.encoded_origin_checked || !request.reciprocal_links_checked || !request.serialized || !operation.current(src, "save")) throw EXCEPTION("Human tile inspection lacks its saved origin or links")
 		var/list/position = request.position
+		var/z = request.saved_z
 		var/savefile/F = files["[z]"]
 		if(!F)
-			if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Human geometry level is missing")
+			if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Human tile level is missing")
 			F = new("map_saves/[z].sav")
 			files["[z]"] = F
-			indexes["[z]"] = build_human_obstruction_index(F, z, positions_by_level["[z]"], operation, "save", deadline)
-		validate_human_saved_geometry(F, request.saved_ref, position, indexes["[z]"], operation, "save", deadline)
-		request.encoded_geometry_checked = TRUE
+		var/list/fields = human_saved_entry_fields(F, request.saved_ref)
+		if(!("type" in fields) || F["type"] != /mob/living/human || ("human_subtile_position" in fields) || ("human_subtile_restore_schema" in fields)) throw EXCEPTION("Human tile candidate contains movement state")
+		for(var/key in human_spatial_link_fields())
+			var/link = human_candidate_scalar_field(F, request.saved_ref, key)
+			if(!isnull(link) && (!isnum(link) || link != 0)) throw EXCEPTION("Human saved physical link is unsupported")
+		var/turf_ref = human_candidate_map_ref(F, z, position["y"], position["x"])
+		var/list/turf_fields = human_saved_entry_fields(F, turf_ref)
+		if(!("type" in turf_fields) || !ispath(F["type"], /turf) || !("content" in turf_fields)) throw EXCEPTION("Human saved tile is invalid")
+		var/list/occupants = saved_content_refs(F["content"], 3)
+		if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human tile inspection lost its owner")
+		var/density = human_candidate_scalar_field(F, turf_ref, "density")
+		if(!isnum(density) || density != 0) throw EXCEPTION("Human saved tile is dense")
+		for(var/occupant_ref in occupants)
+			var/list/occupant_fields = human_saved_entry_fields(F, text2num("[occupant_ref]"))
+			if(!("type" in occupant_fields)) throw EXCEPTION("Human saved tile occupant is invalid")
+			if(ispath(F["type"], /obj))
+				var/occupant_density = human_candidate_scalar_field(F, text2num("[occupant_ref]"), "density")
+				if(!isnum(occupant_density) || occupant_density != 0) throw EXCEPTION("Human saved tile has a dense object")
+			if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human tile inspection exceeded its budget")
+			save_work_check()
+		request.encoded_anchor_checked = TRUE
 		request.encoded_links_checked = TRUE
-	files = list()
+		save_work_check()
+	if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human tile inspection exceeded its budget")
+	return TRUE
 
 // The admission-time account scan predates late enrollment. Check the actual
 // encoded accounts across all captured modes and levels before publication.
@@ -1162,7 +1014,7 @@
 	return TRUE
 
 /map_storage/proc/human_save_spatial_supported(mob/living/human/H)
-	return H && !isDeleted(H) && H.type == /mob/living/human && H.should_save && H.human_subtile_shape() && H.human_subtile_unlinked() && !H.pulling && !subtile_pull_ownership.owners[H] && ((!H.step_x && !H.step_y) || H.human_subtile_offset_owned)
+	return H && !isDeleted(H) && H.type == /mob/living/human && H.should_save && H.human_subtile_shape() && H.human_subtile_unlinked() && !H.pulling && !subtile_pull_ownership.owners[H]
 
 /map_storage/proc/classify_human_save_entry(mob/living/human/H, datum/persistence_world_operation/operation)
 	if(!H || isDeleted(H) || !operation || !operation.current(src, "save") || !islist(operation.human_roster_records)) throw EXCEPTION("Human save entry lacks its operation")
@@ -1181,7 +1033,7 @@
 	record["saveable"] = !!H.should_save
 	record["z"] = current_turf.z
 	if(!human_save_spatial_supported(H))
-		if(H.human_subtile_pulse || H.human_subtile_transaction || H.step_x || H.step_y) throw EXCEPTION("Human legacy save needs an aligned idle position")
+		if(H.human_subtile_pulse || H.human_subtile_transaction) throw EXCEPTION("Human legacy save needs an idle movement boundary")
 		var/atom/legacy_parent = H.loc
 		if(!istype(legacy_parent) || human_save_containment_turf(legacy_parent) != current_turf) throw EXCEPTION("Human legacy save has no valid parent")
 		record["origin"] = legacy_parent
@@ -1199,49 +1051,6 @@
 	record["request"] = request
 	record["mode"] = "spatial"
 	return record
-
-// The saver waits, never the player. Once all currently admitted actors are
-// between native pulses, take one bounded synchronous read of their spatial
-// state. No hooks, movement, save_work_check or sleep occur during that read.
-/map_storage/proc/capture_human_save_roster_positions(datum/persistence_world_operation/operation)
-	if(!operation || !operation.current(src, "save") || !islist(operation.human_roster_records)) throw EXCEPTION("Human spatial pass lacks its save owner")
-	var/deadline = world.time + 100
-	while(TRUE)
-		if(!operation.current(src, "save") || operation.human_roster_changed) throw EXCEPTION("Human roster changed before spatial pass")
-		var/ready = TRUE
-		for(var/identity in human_save_roots)
-			var/list/record = human_save_roots[identity]
-			if(!record["saveable"]) continue
-			var/mob/living/human/H = record["atom"]
-			if(!H || isDeleted(H) || !H.should_save || !human_save_spatial_supported(H)) continue
-			if(save_entry_identity(H) != identity || H.z != record["z"]) throw EXCEPTION("Human spatial pass member changed")
-			var/datum/human_subtile_transaction/T = H.human_subtile_transaction
-			if(H.human_subtile_pulse || H.human_subtile_save_request || (T && (T.actor != H || T.cancelled || !human_subtile_same(T.expected, H.human_subtile_snapshot()))))
-				ready = FALSE
-				break
-		if(ready) break
-		if(world.time >= deadline) throw EXCEPTION("Human spatial pass did not reach a stable boundary")
-		sleep(world.tick_lag)
-	for(var/identity in human_save_roots)
-		var/list/record = human_save_roots[identity]
-		if(!record["saveable"]) continue
-		var/mob/living/human/H = record["atom"]
-		if(!H || isDeleted(H) || !H.should_save || !human_save_spatial_supported(H)) continue
-		var/datum/human_subtile_transaction/T = H.human_subtile_transaction
-		var/datum/human_subtile_save_request/request = H.request_human_subtile_save_position(operation)
-		if(!request || (!request.captured && !request.acknowledge(H, T)) || !request.origin || request.origin.z != record["z"])
-			throw EXCEPTION("Human spatial pass capture failed")
-		record["origin"] = request.origin
-		record["request"] = request
-		record["mode"] = "spatial"
-		var/list/position = request.position
-		for(var/dx = 0, dx <= !!position["sx"], dx++)
-			for(var/dy = 0, dy <= !!position["sy"], dy++)
-				var/x = position["x"] + dx
-				var/y = position["y"] + dy
-				if(x < 1 || x > world.maxx || y < 1 || y > world.maxy) throw EXCEPTION("Human spatial footprint is outside the world")
-				operation.human_spatial_footprints["[position["z"]]:[x]:[y]"] = TRUE
-	return TRUE
 
 /map_storage/proc/capture_human_save_root(savefile/F, list/record)
 	var/mob/living/human/H = record["atom"]
@@ -1293,6 +1102,7 @@
 				legacy_chunks += list2params(list(legacy_key))
 				F[legacy_path] << legacy_chunks
 				saving_content_owners[legacy_key] = legacy_parent_ref
+			record["saved_parent_ref"] = legacy_parent_ref
 			record["parent_attached"] = TRUE
 			save_work_check()
 			continue
@@ -1392,9 +1202,18 @@
 			targets = list()
 			targets_by_level[z_key] = targets
 		targets["[target.saved_ref]"] = TRUE
-	for(var/datum/human_subtile_save_request/request in operation.human_spatial_requests)
-		if(world.time >= deadline || !request || !request.encoded_origin_checked || !operation.current(src, "save")) throw EXCEPTION("Human slot inspection lacks a verified origin or exceeded its budget")
-		var/z_key = "[request.saved_z]"
+	for(var/identity in operation.human_roster_records)
+		var/list/human_record = operation.human_roster_records[identity]
+		if(!human_record["ref"]) continue
+		var/datum/human_subtile_save_request/request = human_record["request"]
+		if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human slot inspection lost its owner or exceeded its budget")
+		if(human_record["mode"] == "spatial")
+			if(!request || !request.encoded_origin_checked || request.saved_ref != human_record["ref"]) throw EXCEPTION("Human slot inspection lacks a verified origin")
+		else if(human_record["mode"] != "legacy" || !human_record["parent_attached"])
+			throw EXCEPTION("Human slot inspection lacks its captured parent")
+		var/human_ref = human_record["ref"]
+		var/z_key = "[human_record["z"]]"
+		var/list/level_targets = targets_by_level[z_key]
 		var/savefile/F = files[z_key]
 		var/list/parents = parents_by_level[z_key]
 		if(!F)
@@ -1429,32 +1248,37 @@
 							var/key = "[child]"
 							if(parents[key]) throw EXCEPTION("Human slot candidate has duplicate saved parents")
 							parents[key] = "[ref]"
-					if(ispath(entry_type, /atom/movable))
+					if(ispath(entry_type, /atom/movable) && level_targets && level_targets.len)
 						var/list/fields_to_check = physical_fields
 						if(ispath(entry_type, /obj/item/football)) fields_to_check = physical_fields + list("owner")
 						for(var/key in fields_to_check)
 							if(!(key in entry_fields)) continue
 							F.cd = entry_path(F, number)
 							var/datum/human_candidate_reference_budget/budget = new
-							if(human_candidate_mentions(F, F[key], targets_by_level[z_key], budget)) throw EXCEPTION("Human saved reciprocal physical link is unsupported")
+							if(human_candidate_mentions(F, F[key], level_targets, budget)) throw EXCEPTION("Human saved reciprocal physical link is unsupported")
 					if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human slot inspection lost ownership or exceeded its budget")
 					save_work_check()
 			files[z_key] = F
 			parents_by_level[z_key] = parents
-		F.cd = entry_path(F, request.saved_ref)
+		if(human_record["mode"] == "legacy" && (!human_record["saved_parent_ref"] || parents["[human_ref]"] != "[human_record["saved_parent_ref"]]"))
+			throw EXCEPTION("Legacy human saved parent does not match captured parent")
+		F.cd = entry_path(F, human_ref)
 		var/list/fields = F.dir.Copy()
 		for(var/key in slot_names)
 			if(!(key in fields)) throw EXCEPTION("Human saved slot field is missing")
-			F.cd = entry_path(F, request.saved_ref)
+			F.cd = entry_path(F, human_ref)
 			var/list/value = F[key]
 			if(!islist(value)) throw EXCEPTION("Human saved slot encoding is invalid")
 			if(value["kind"] == "value" && isnull(value["value"])) continue
 			if(value["kind"] != "entry" || !isnum(value["ref"]) || value["ref"] < 0 || value["ref"] != round(value["ref"]))
 				throw EXCEPTION("Human saved slot reference is invalid")
-			if(value["ref"] && parents["[value["ref"]]"] != "[request.saved_ref]")
+			if(value["ref"] && parents["[value["ref"]]"] != "[human_ref]")
 				throw EXCEPTION("Human saved slot does not match direct containment")
 		if(!operation.current(src, "save")) throw EXCEPTION("Human slot inspection lost ownership")
-		request.encoded_present_slots_checked = TRUE
-		request.reciprocal_links_checked = TRUE
+		if(request)
+			request.encoded_present_slots_checked = TRUE
+			request.reciprocal_links_checked = TRUE
+		else
+			human_record["slots_checked"] = TRUE
 	files = list()
 #endif

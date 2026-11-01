@@ -10,22 +10,19 @@ def capture(actor):
     p = deepcopy(actor["position"])
     if actor["transaction_expected"] is not None and actor["transaction_expected"] != p:
         raise ValueError("transaction identity or position changed")
-    return {"origin": (p["x"], p["y"], p["z"]),
-            "capsule": p if p["sx"] or p["sy"] else None}
+    return {"origin": (p["x"], p["y"], p["z"]), "capsule": None}
 
 
 def encode(frame, live):
     # Only the per-frame override is authoritative; never touch live position.
     result = {k: v for k, v in live.items()
               if k not in ("step_x", "step_y", "glide_size", "human_subtile_position")}
-    if frame["capsule"] is not None:
-        result["human_subtile_position"] = deepcopy(frame["capsule"])
     return result
 
 
 def restore_accepts(frame, *, unlinked, clear):
-    # Projection of the existing nonzero-capsule after_load boundary only.
-    return frame["capsule"] is None or (unlinked and clear)
+    # Projection of the candidate's saved tile and supported link checks.
+    return unlinked and clear
 
 
 def actor(sx=2, sy=0):
@@ -62,11 +59,11 @@ class RollingMembership:
             return record['mode']
         if direct and not linked:
             record['mode'] = 'spatial'
-        elif not offset and not pulse:
+        elif not pulse:
             record['mode'] = 'legacy'
             record['origin'] = parent
         else:
-            raise ValueError('legacy requires alignment and no pulse')
+            raise ValueError('legacy requires no pulse')
         return record['mode']
 
     def attach(self, identity, parent):
@@ -209,22 +206,25 @@ class SpatialSnapshotModelTests(unittest.TestCase):
         self.assertIsNone(membership.attach('body', 'new_floor'))
         self.assertEqual(membership.attach('body', 'crate'), 'crate')
 
-    def test_late_walker_is_admitted_and_unsupported_partial_link_refuses(self):
+    def test_late_walker_and_contained_partial_keep_their_own_parent(self):
         membership = RollingMembership()
         self.assertEqual(membership.encounter('late', direct=True, linked=False, offset=6), 'spatial')
-        with self.assertRaisesRegex(ValueError, 'alignment'):
-            membership.encounter('partial_in_crate', direct=False, linked=False, offset=6)
+        self.assertEqual(membership.encounter('partial_in_crate', direct=False, linked=False, offset=6, parent='crate'), 'legacy')
+        self.assertEqual(membership.attach('partial_in_crate', 'crate'), 'crate')
+        with self.assertRaisesRegex(ValueError, 'pulse'):
+            membership.encounter('active_in_crate', direct=False, linked=False, offset=6, pulse=True)
 
     def test_move_during_legacy_serialization_does_not_rewrite_frozen_anchor(self):
         a = actor()
         f = capture(a)
         a["position"].update(x=3, sx=6)
         fields = encode(f, {"step_x": 6, "step_y": 0, "glide_size": 4,
-                            "human_subtile_position": {"stale": True}})
+                            "pixel_x": 7, "human_subtile_position": {"stale": True}})
         self.assertEqual(f["origin"], (1, 2, 1))
-        self.assertEqual(fields["human_subtile_position"]["sx"], 2)
+        self.assertNotIn("human_subtile_position", fields)
         self.assertNotIn("step_x", fields)
         self.assertNotIn("glide_size", fields)
+        self.assertEqual(fields["pixel_x"], 7)
 
     def test_aligned_snapshot_omits_stale_live_capsule(self):
         f = capture(actor(0, 0))
@@ -241,7 +241,7 @@ class SpatialSnapshotModelTests(unittest.TestCase):
             with self.assertRaises(ValueError): capture(a)
             self.assertEqual(a, prior)
 
-    def test_later_solid_or_buckle_can_make_offset_restore_fail(self):
+    def test_saved_tile_or_unlinked_state_can_refuse_candidate(self):
         f = capture(actor())
         self.assertTrue(restore_accepts(f, unlinked=True, clear=True))
         self.assertFalse(restore_accepts(f, unlinked=True, clear=False))
@@ -260,7 +260,8 @@ class SpatialSnapshotModelTests(unittest.TestCase):
         self.assertFalse(request.acknowledge(a, object()))
         self.assertTrue(request.acknowledge(a, op))
         a["position"]["sx"] = 6
-        self.assertEqual(request.snapshot["capsule"]["sx"], 4)
+        self.assertEqual(request.snapshot["origin"], (1, 2, 1))
+        self.assertIsNone(request.snapshot["capsule"])
         self.assertFalse(request.acknowledge(a, op))
 
 
@@ -283,7 +284,7 @@ class SourceConstraints(unittest.TestCase):
         acknowledge = request.split("\tproc/acknowledge(", 1)[1].split("\n\tproc/release()", 1)[0]
         for required in ("operation.current(operation.storage, \"save\")", "H.human_subtile_pulse",
                          "H.human_subtile_transaction != T", "human_subtile_same(T.expected, current)",
-                         "origin = start", "position = current", "captured = TRUE"):
+                         "origin = start", 'position = list("x" = start.x, "y" = start.y, "z" = start.z, "sx" = 0, "sy" = 0)', "captured = TRUE"):
             self.assertIn(required, acknowledge)
         for forbidden in ("sleep(", "finish(", "wait_paid_interval(", "cancelled =", "human_subtile_pulse ="):
             self.assertNotIn(forbidden, acknowledge)
@@ -310,15 +311,11 @@ class SourceConstraints(unittest.TestCase):
         self.assertIn('var/datum/human_subtile_save_request/request = record["request"]', capture)
         self.assertIn('request.origin != record["origin"]', capture)
         self.assertIn("BuildVarDirectory(F, H, 1, FALSE, request)", capture)
-        group = saving.split('/map_storage/proc/capture_human_save_roster_positions(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        self.assertIn('var/deadline = world.time + 100', group)
-        self.assertIn('sleep(world.tick_lag)', group)
-        frozen = group.split('if(ready) break', 1)[1].split('return TRUE', 1)[0]
-        final_pass = frozen.split('for(var/identity in human_save_roots)', 1)[1]
-        for forbidden in ('sleep(', 'save_work_check(', 'before_save(', '.Move('):
-            self.assertNotIn(forbidden, final_pass)
-        self.assertIn('request.acknowledge(H, T)', final_pass)
-        self.assertIn('record["origin"] = request.origin', final_pass)
+        classify = saving.split('/map_storage/proc/classify_human_save_entry(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('var/deadline = world.time + 100', classify)
+        self.assertIn('sleep(world.tick_lag)', classify)
+        self.assertIn('record["origin"] = request.origin', classify)
+        self.assertNotIn('capture_human_save_roster_positions', saving)
         drain = saving.split("/map_storage/proc/drain_human_save_roster(", 1)[1].split("\n#endif", 1)[0]
         self.assertIn('human_candidate_map_ref(F, saving_z, position["y"], position["x"])', drain)
         self.assertIn("Human save root has conflicting spatial owners", drain)
@@ -333,12 +330,12 @@ class SourceConstraints(unittest.TestCase):
         self.assertIn("var/encoded_links_checked = FALSE", human)
         self.assertIn("request.encoded_links_checked = TRUE", saving)
         self.assertIn("!request.reciprocal_links_checked", saving)
-        self.assertIn("var/encoded_geometry_checked = FALSE", human)
-        self.assertIn("request.encoded_geometry_checked = TRUE", saving)
+        self.assertIn("var/encoded_anchor_checked = FALSE", human)
+        self.assertIn("request.encoded_anchor_checked = TRUE", saving)
         self.assertIn("var/human_containment_coverage_complete = FALSE", functions)
         seal = functions.split("\tproc/seal_human_containment_proof()", 1)[1].split("\n#endif", 1)[0]
         for check in ("encoded_origin_checked", "encoded_present_slots_checked", "reciprocal_links_checked",
-                      "encoded_geometry_checked", "encoded_links_checked", "human_roster_changed",
+                      "encoded_anchor_checked", "encoded_links_checked", "human_roster_changed",
                       "matched != human_spatial_requests.len"):
             self.assertLess(seal.index(check), seal.index("human_containment_coverage_complete = TRUE"))
 
@@ -389,19 +386,20 @@ class SourceConstraints(unittest.TestCase):
         self.assertIn('save_entry_identity(legacy_parent) != human_root["origin_identity"]', attach)
         self.assertIn('if(owner && owner != frame.entry)', attach)
         self.assertIn('human_root["parent_attached"] = TRUE', attach)
+        self.assertIn('human_root["saved_parent_ref"] = frame.entry', attach)
         drain = saving.split('/map_storage/proc/drain_human_save_roster(', 1)[1].split('\n/map_storage/proc/', 1)[0]
         self.assertIn('var/atom/parent = record["origin"]', drain)
         self.assertIn('save_entry_identity(parent) != record["origin_identity"]', drain)
+        self.assertIn('record["saved_parent_ref"] = legacy_parent_ref', drain)
         self.assertNotIn('var/atom/parent = H.loc', drain)
 
-    def test_late_turf_geometry_is_sidecar_not_a_live_object_reference(self):
+    def test_saved_tile_density_remains_but_fractional_geometry_sidecar_is_removed(self):
         saving = (self.root / 'code/modules/persistence/saving.dm').read_text()
         body = saving.split('/map_storage/proc/BuildVarDirectory(', 1)[1].split('\n/datum/', 1)[0]
-        self.assertIn('savefile["/human_geometry/[geometry_shard]/[ref]/transforming"] << !!candidate_turf.vehicle_transforming', body)
-        self.assertNotIn('changing_vars |= list("density", "vehicle_transforming")', body)
-        self.assertIn('if(istype(A, /obj))', body)
-        self.assertNotIn('human_object_operation.human_spatial_footprints.len', body)
-        self.assertIn('human_geometry_added_fields', body)
+        self.assertIn('changing_vars |= list("density")', body)
+        self.assertNotIn('/human_geometry/', body)
+        self.assertNotIn('human_geometry_added_fields', body)
+        self.assertNotIn('changing_vars |= list("density", "bound_x",', body)
 
     def test_late_saved_accounts_are_checked_across_levels_before_marker(self):
         saving = (self.root / 'code/modules/persistence/saving.dm').read_text()
@@ -413,21 +411,22 @@ class SourceConstraints(unittest.TestCase):
         save = saving.split('/map_storage/proc/save_world_contents(', 1)[1].split('\n/map_storage/proc/', 1)[0]
         self.assertLess(save.index('inspect_human_saved_owners(operation, generation)'), save.index('text2file(generation,"map_saves/save_complete.txt")'))
 
-    def test_frame_override_freezes_capsule_without_rewriting_live_position(self):
-        saving = (self.root / "code/modules/persistence/saving.dm").read_text()
-        for required in ('changing_vars -= list("step_x", "step_y", "glide_size", "human_subtile_position")',
-                         'changing_vars |= list("human_subtile_position", "human_subtile_restore_schema")',
-                         'encode_saved_value(savefile, frame.human_spatial_position)',
-                         'var/list/position = request.position.Copy()'):
-            self.assertIn(required, saving)
+    def test_frame_omits_movement_offsets_without_rewriting_live_position(self):
+        saving = (self.root / 'code/modules/persistence/saving.dm').read_text()
+        self.assertIn('changing_vars -= list("step_x", "step_y", "glide_size", "human_subtile_position", "human_subtile_restore_schema")', saving)
+        self.assertNotIn('encode_saved_value(savefile, frame.human_spatial_position)', saving)
+        self.assertIn('var/list/position = request.position.Copy()', saving)
+        self.assertIn('position["sx"] != 0 || position["sy"] != 0', saving)
         self.assertIn('if(human_request) throw EXCEPTION("Human spatial request reached an existing saved entry")', saving)
-        human = (self.root / "code/game/mob/living/carbon/human/subtile_movement.dm").read_text()
-        hook = human.split("/mob/living/human/before_save_context(", 1)[1].split("\n/mob/", 1)[0]
-        self.assertIn(". = ..()", hook)
-        self.assertIn("human_subtile_save_hook_frame = null", hook)
-        self.assertNotIn("human_subtile_position =", hook)
-        functions = (self.root / "code/modules/persistence/functions.dm").read_text()
-        self.assertIn("frame.human_spatial_request.operation.current(src, \"save\")", functions)
+        human = (self.root / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
+        hook = human.split('/mob/living/human/before_save_context(', 1)[1].split('\n/mob/', 1)[0]
+        self.assertIn('. = ..()', hook)
+        self.assertIn('human_subtile_save_hook_frame = null', hook)
+        self.assertNotIn('human_subtile_position =', hook)
+        self.assertIn('frame.human_legacy_aligned', hook)
+        self.assertIn('record["mode"] != "legacy"', hook)
+        functions = (self.root / 'code/modules/persistence/functions.dm').read_text()
+        self.assertIn('frame.human_spatial_request.operation.current(src, "save")', functions)
 
     def test_operation_owns_and_releases_request_on_both_exit_paths(self):
         functions = (self.root / "code/modules/persistence/functions.dm").read_text()
@@ -445,7 +444,7 @@ class SourceConstraints(unittest.TestCase):
     def test_marker_gate_rejects_unproved_capsules_and_incomplete_edges(self):
         functions = (self.root / "code/modules/persistence/functions.dm").read_text()
         validator = functions.split("\tproc/validate_human_spatial_candidates()", 1)[1].split("\n\t\treturn TRUE\n#endif", 1)[0]
-        for field in ("request.serialized", "request.spatial_attached", "request.encoded_origin_checked", "request.encoded_present_slots_checked", "request.reciprocal_links_checked", "request.encoded_geometry_checked", "request.encoded_links_checked"):
+        for field in ("request.serialized", "request.spatial_attached", "request.encoded_origin_checked", "request.encoded_present_slots_checked", "request.reciprocal_links_checked", "request.encoded_anchor_checked", "request.encoded_links_checked"):
             self.assertIn(field, validator)
         self.assertNotIn("round(", validator)
         saving = (self.root / "code/modules/persistence/saving.dm").read_text()
@@ -473,30 +472,22 @@ class SourceConstraints(unittest.TestCase):
                          'value["kind"] != "entry"', 'request.encoded_present_slots_checked = TRUE'):
             self.assertIn(required, body)
         self.assertNotIn("encoded_links_checked = TRUE", body)
-        self.assertNotIn("encoded_geometry_checked = TRUE", body)
+        self.assertNotIn("encoded_anchor_checked = TRUE", body)
+        self.assertIn('Legacy human saved parent does not match captured parent', body)
+        self.assertIn('human_record["slots_checked"] = TRUE', body)
 
-    def test_production_geometry_checks_encoded_footprint_without_constructors(self):
-        saving = (self.root / "code/modules/persistence/saving.dm").read_text()
-        body = saving.split("/map_storage/proc/validate_human_saved_geometry(", 1)[1].split("\n/map_storage/proc/", 1)[0]
-        for required in ("human_candidate_position_matches", 'human_candidate_scalar_field(F, turf_ref, "density")',
-                         'human_candidate_turf_transforming(F, turf_ref)',
-                         'ispath(F["type"], /turf/floor)',
-                         'human_spatial_generic_object(occupant["type"])',
-                         'Human saved footprint has a hard or unaudited occupant'):
+    def test_candidate_checks_saved_tile_and_links_without_fractional_index(self):
+        saving = (self.root / 'code/modules/persistence/saving.dm').read_text()
+        body = saving.split('/map_storage/proc/inspect_human_saved_tile_and_links(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        for required in ('human_candidate_map_ref(F, z, position["y"], position["x"])',
+                         'human_candidate_scalar_field(F, turf_ref, "density")',
+                         'human_spatial_link_fields()', 'Human saved physical link is unsupported',
+                         'request.encoded_anchor_checked = TRUE', 'request.encoded_links_checked = TRUE'):
             self.assertIn(required, body)
-        wrapper = saving.split("/map_storage/proc/inspect_human_saved_geometry(", 1)[1].split("\n/map_storage/proc/", 1)[0]
-        self.assertIn('validate_human_saved_geometry(', wrapper)
-        self.assertIn('request.encoded_geometry_checked = TRUE', wrapper)
-        self.assertNotIn("new type(", body)
-        self.assertNotIn(".CanPass(", body)
-        index = saving.split('/map_storage/proc/build_human_obstruction_index(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        for required in ('human_candidate_map_ref(F, z, y, x)', 'human_candidate_scalar_field(F, ref, key)',
-                         '"bound_x", "bound_y", "bound_width", "bound_height", "step_x", "step_y"',
-                         'Human obstruction index object has duplicate parents'):
-            self.assertIn(required, index)
-        self.assertIn('changing_vars |= list("density")', saving)
-        self.assertIn('savefile["/human_geometry/[geometry_shard]/[ref]/transforming"] << !!candidate_turf.vehicle_transforming', saving)
-        self.assertIn('changing_vars |= list("density", "bound_x", "bound_y", "bound_width", "bound_height", "step_x", "step_y")', saving)
+        self.assertNotIn('.CanPass(', body)
+        self.assertNotIn('new type(', body)
+        self.assertNotIn('/map_storage/proc/build_human_obstruction_index(', saving)
+        self.assertNotIn('/human_geometry/', saving)
 
     def test_experimental_save_motion_keeps_recovery_holds_and_pull_fallback(self):
         human = (self.root / "code/game/mob/living/carbon/human/subtile_movement.dm").read_text()

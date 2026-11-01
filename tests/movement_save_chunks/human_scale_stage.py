@@ -71,10 +71,7 @@ def instrument_saver(data):
                         '\tinspect_human_saved_origins(operation)\n', 'human checks start')
     return replace_once(data, '\toperation.seal_human_containment_proof()\n',
                         '\toperation.seal_human_containment_proof()\n'
-                        '\thuman_scale_human_checks_end = world.realtime\n'
-                        '\thuman_scale_geometry_metrics = list("turfs" = operation.human_geometry_turf_records, '
-                        '"objects" = operation.human_geometry_object_records, '
-                        '"added_fields" = operation.human_geometry_added_fields)\n', 'human checks end')
+                        '\thuman_scale_human_checks_end = world.realtime\n', 'human checks end')
 
 
 def prepare(output, reviewed_head, reviewed_scope):

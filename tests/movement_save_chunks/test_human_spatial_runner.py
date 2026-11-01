@@ -15,18 +15,22 @@ spec.loader.exec_module(runner)
 
 
 class RunnerTests(unittest.TestCase):
-    def test_exact_capsule_and_generation_across_fresh_reader(self):
+    def test_frozen_tile_zero_offsets_and_generation_across_fresh_reader(self):
         head = 'a' * 40
-        capsule = dict(x=1, y=1, z=1, sx=4, sy=6)
-        late = dict(x=7, y=9, z=1, sx=4, sy=0)
+        capsule = dict(x=1, y=1, z=1, sx=0, sy=0)
+        late = dict(x=7, y=9, z=1, sx=0, sy=0)
         writer = dict(phase='writer', head=head, byond_version=516, byond_build=1688,
                       port=0, error=None, mode='restart', handoffs=1,
                       pulses_after_handoff=2, seated_moved=1, capsule=capsule, late_capsule=late, late_pulses=2,
-                      geometry_metrics=dict(turfs=252, objects=5, added_fields=250), generation='round-v1:' + 'a' * 32)
+                      generation='round-v1:' + 'a' * 32)
         expected = runner.writer_receipt(writer, head, 'restart')
         reader = dict(phase='reader', head=head, byond_version=516, byond_build=1688,
-                      port=0, error=None, generation=expected['generation'], position=capsule.copy(), late_position=late.copy())
+                      port=0, error=None, generation=expected['generation'], position=capsule.copy(), late_position=late.copy(), local_clearance_controls=1)
         runner.reader_receipt(reader, head, expected)
+        reader['local_clearance_controls'] = 0
+        with self.assertRaisesRegex(RuntimeError, 'local clearance'):
+            runner.reader_receipt(reader, head, expected)
+        reader['local_clearance_controls'] = 1
         reader['late_position']['sx'] += 1
         with self.assertRaisesRegex(RuntimeError, 'capsule or generation'):
             runner.reader_receipt(reader, head, expected)
@@ -40,7 +44,7 @@ class RunnerTests(unittest.TestCase):
             runner.reader_receipt(reader, head, expected)
 
     def test_named_controls_and_finite_output_budget(self):
-        self.assertEqual(set(runner.NEGATIVES), {'wall', 'dense', 'contained', 'buckle', 'roster', 'pulling', 'duplicate', 'missing_roster', 'unsafe_default'})
+        self.assertEqual(set(runner.NEGATIVES), {'wall', 'dense', 'roster', 'duplicate', 'missing_roster', 'invalid_density'})
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / 'a').write_bytes(b'1234')

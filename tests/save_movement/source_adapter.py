@@ -90,7 +90,7 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
           'clear_saved_zones', 'clear_zone_export', 'clear_saved_roof_areas', 'clear_bookkeeping', 'release_durable_world',
-          'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until',
+          'last_save_reference_failure', 'report_save_child_capture_failure', 'movement_location', 'stopped', 'stopped_until',
           'z', 'clear_throw_launch', 'throw_flight_token', 'throw_launch_source',
           'throw_launch_dx', 'throw_launch_dy', 'throw_launch_x', 'throw_launch_y')
 

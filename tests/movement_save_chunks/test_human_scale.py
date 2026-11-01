@@ -29,8 +29,7 @@ def row(phase, variant):
                      serialization_and_flush_deciseconds=1, geometry_metrics=None,
                      saved_turf_slot_check='positive_integer_refs_not_unique_or_type_verified')
         if variant == 'enabled':
-            value.update(human_candidate_checks_deciseconds=1,
-                         geometry_metrics={'turfs':350000, 'objects':5064, 'added_fields':100})
+            value.update(human_candidate_checks_deciseconds=1)
     else:
         value.update(load_deciseconds=2, restored_humans=32, restored_ground=5000)
     return value
@@ -298,9 +297,9 @@ class ScaleContracts(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'object count'):
                 runner.load_receipt(path, HEAD, 'reader', 'enabled')
             enabled = row('writer', 'enabled')
-            enabled['geometry_metrics']['turfs'] = 349999
+            enabled['geometry_metrics'] = {'turfs': 350000}
             path.write_text(json.dumps(enabled))
-            with self.assertRaisesRegex(RuntimeError, 'geometry metrics'):
+            with self.assertRaisesRegex(RuntimeError, 'obsolete fractional geometry metrics'):
                 runner.load_receipt(path, HEAD, 'writer', 'enabled')
 
     def exercise_injected_run(self, fail_at=None):

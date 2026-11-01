@@ -391,6 +391,16 @@ map_storage
 			snapshot["turf_z"] = T.z
 	return snapshot
 
+// Capture fixed structural context only after an existing child check fails.
+// Never retain live refs, names, keys, arbitrary variables or inventory data.
+/map_storage/proc/record_save_child_failure(atom/parent, atom/movable/child, child_entry)
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(!operation || !operation.current(src, "save")) return FALSE
+	var/list/source = list("type" = parent ? "[parent.type]" : "unavailable", "field" = "contents", "native_z" = parent ? parent.z : null)
+	var/list/target = list("type" = child ? "[child.type]" : "unavailable", "native_z" = child ? child.z : null)
+	last_save_reference_failure = list("schema_version" = 1, "kind" = "child_moved_or_disappeared", "operation_id" = operation.diagnostic_save_id, "generation" = operation.diagnostic_generation, "stage" = "capture_children", "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = child_entry, "child_state" = child ? "reference_available" : "reference_unavailable", "source" = source, "target" = target)
+	return TRUE
+
 // Capture only bounded schema context, never values, names or client data. Keep
 // this record through failed-operation cleanup so one admin VV field is enough.
 /map_storage/proc/record_save_reference_failure(kind, datum/target, current_entry = 0, first_z = 0, first_entry = 0)
@@ -585,6 +595,8 @@ var/global/datum/persistence_admission_identity
 	var/restoring_players = FALSE
 	// Observational only; never used for admission or recovery decisions.
 	var/diagnostic_phase = "admitted"
+	var/diagnostic_save_id
+	var/diagnostic_generation
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
 	var/restore_reserved = FALSE
@@ -594,17 +606,10 @@ var/global/datum/persistence_admission_identity
 	var/human_roster_changed = FALSE
 	var/list/human_initial_roster
 	var/list/human_roster_records
-	var/list/human_spatial_footprints = list()
-	// Counts additional requested fields and sidecar records; not byte or time measurements.
-	var/human_geometry_turf_records = 0
-	var/human_geometry_object_records = 0
-	var/human_geometry_added_fields = 0
+	// Binds legacy capsule validation to the generation being imported.
+	var/human_direct_preflight_generation
 	// Proof concerns saved candidate ownership, not transient live history.
 	var/human_containment_coverage_complete = FALSE
-	// Only successful load preflight can bind direct capsules to a generation.
-	var/human_direct_preflight_generation
-	var/list/human_direct_preflight_records = list()
-	var/list/human_direct_restores = list()
 #endif
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	var/list/human_spatial_requests = list()
@@ -618,7 +623,6 @@ var/global/datum/persistence_admission_identity
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		human_initial_roster = null
 		human_roster_records = null
-		human_spatial_footprints = list()
 #endif
 		for(var/datum/human_subtile_save_request/request in owned)
 			if(request && request.operation == src)
@@ -627,24 +631,13 @@ var/global/datum/persistence_admission_identity
 				catch(var/exception/release_error)
 					world.log << "Human save request cleanup failed: [release_error]"
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-	// Run after all restore callbacks, under the same operation. No yield is
-	// allowed between checking the restored static geometry and releasing it.
-	proc/validate_human_direct_restores()
-		if(!current(storage, "load") || !human_direct_preflight_generation || human_direct_restores.len > 8192) throw EXCEPTION("Human final geometry lacks its load owner")
-		var/datum/human_restore_geometry_budget/budget = new
-		for(var/list/record in human_direct_restores)
-			var/mob/living/human/H = record["actor"]
-			var/list/position = record["position"]
-			if(!H || isDeleted(H) || !islist(position) || !H.human_subtile_restore_hard_clear(position, budget)) throw EXCEPTION("Human final restored geometry is blocked")
-		return TRUE
-
 	// The proof concerns completed candidate entries, not later live state.
 	proc/seal_human_containment_proof()
 		human_containment_coverage_complete = FALSE
 		if(!current(storage, "save") || human_roster_changed || !islist(human_roster_records)) throw EXCEPTION("Human roster proof has no stable owner")
 		var/list/owned = list()
 		for(var/datum/human_subtile_save_request/request in human_spatial_requests)
-			if(!request || request.operation != src || !request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
+			if(!request || request.operation != src || !request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_anchor_checked || !request.encoded_links_checked)
 				throw EXCEPTION("Human roster proof lacks an encoded check")
 			var/key = "\ref[request]"
 			if(owned[key]) throw EXCEPTION("Human roster request is duplicated")
@@ -656,7 +649,7 @@ var/global/datum/persistence_admission_identity
 			if(!record["mode"])
 				if(record["initial"] && H && !isDeleted(H) && H.should_save) throw EXCEPTION("Initial human was not represented in the candidate")
 			else if(record["mode"] == "legacy")
-				if(!record["ref"] || !record["parent_attached"]) throw EXCEPTION("Legacy human candidate lacks a saved parent")
+				if(!record["ref"] || !record["parent_attached"] || !record["slots_checked"]) throw EXCEPTION("Legacy human candidate lacks a saved parent or checked slots")
 			else if(record["mode"] == "spatial")
 				var/datum/human_subtile_save_request/request = record["request"]
 				if(!request || owned["\ref[request]"] != request || request.saved_ref != record["ref"] || !record["ref"]) throw EXCEPTION("Human spatial candidate lacks its request")
@@ -678,7 +671,7 @@ var/global/datum/persistence_admission_identity
 		for(var/datum/human_subtile_save_request/request in human_spatial_requests)
 			if(!request || request.operation != src || !request.captured || !islist(request.position) || !human_subtile_same(request.position, request.position))
 				throw EXCEPTION("Human spatial request was not captured")
-			if(!request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
+			if(!request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_anchor_checked || !request.encoded_links_checked)
 				throw EXCEPTION("Human spatial candidate validation is incomplete")
 		return TRUE
 #endif
@@ -767,20 +760,30 @@ var/global/datum/persistence_admission_identity
 	try
 		if(kind == "save") success = save_world_contents(operation)
 		else success = load_world_contents(operation)
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		if(owns_operation && kind == "load" && success && operation.human_direct_restores.len) operation.validate_human_direct_restores()
-#endif
 	catch(var/exception/e)
 		if(kind == "save") record_save_outcome(FALSE)
 		if(owns_operation)
 			cleanup_world_operation()
-			operation.finish(FALSE)
+			if(operation.finish(FALSE) && kind == "save")
+				report_save_child_capture_failure(operation)
 		throw e
 	if(kind == "save") record_save_outcome(success)
 	if(owns_operation)
 		if(!success) cleanup_world_operation()
 		operation.finish(success)
 	return success
+
+// Notify only the owner of this failed capture, after it has released admission.
+// The retained record contains scalars only; a stale or unrelated record is silent.
+/map_storage/proc/report_save_child_capture_failure(datum/persistence_world_operation/operation)
+	try
+		var/list/failure = last_save_reference_failure
+		if(!operation || !istext(operation.diagnostic_save_id) || !islist(failure)) return
+		if(failure["kind"] != "child_moved_or_disappeared" || failure["operation_id"] != operation.diagnostic_save_id) return
+		message_admins("Save capture diagnostic: operation=[failure["operation_id"]] generation=[failure["generation"]] stage=[failure["stage"]] saved_z=[failure["saved_z"]] state=[failure["child_state"]]. Inspect map_storage.last_save_reference_failure for structural details.")
+	catch
+		// Notification failure must never replace the original export exception.
+		world.log << "Save capture diagnostic delivery unavailable."
 
 // Count only admitted backend attempts, including direct Save_World calls.
 // Keep notifications bounded and use the existing log/admin destinations.
@@ -883,6 +886,12 @@ var/global/datum/persistence_admission_identity
 		operation.finish(FALSE)
 		world.log << "World-save export failed: [map_storage.last_error]"
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
+		try
+			var/list/failure = map_storage.last_save_reference_failure
+			if(islist(failure) && failure["kind"] == "child_moved_or_disappeared")
+				message_admins("Save capture diagnostic: operation=[failure["operation_id"]] generation=[failure["generation"]] stage=[failure["stage"]] saved_z=[failure["saved_z"]] state=[failure["child_state"]]. Inspect map_storage.last_save_reference_failure for structural details.")
+		catch
+			world.log << "Save capture diagnostic delivery unavailable."
 		return 0
 	operation.finish(TRUE)
 	last_persistence_save_time = world.time
@@ -982,18 +991,12 @@ var/global/datum/persistence_admission_identity
 			release_attempted = TRUE
 			if(attempt.release_transients() != TRUE)
 				throw EXCEPTION("Restore transient release rejected")
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		if(operation.human_direct_restores.len) operation.validate_human_direct_restores()
-#endif
 		if(!transaction)
 			phase = "players"
 			operation.diagnostic_phase = "players"
 			operation.restoring_players = TRUE
 			if(!storage.finish_player_restoration())
 				throw EXCEPTION("Player restoration readiness was not confirmed")
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		if(operation.human_direct_restores.len) operation.validate_human_direct_restores()
-#endif
 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
 		var/primary_failure = "[e] on [e.file]:[e.line]"
@@ -1233,6 +1236,7 @@ var/global/datum/persistence_admission_identity
 		if(!legacy_parent || isDeleted(legacy_parent) || save_entry_identity(legacy_parent) != human_root["origin_identity"] || !parent_turf || parent_turf.z != human_root["z"]) throw EXCEPTION("Legacy human captured parent changed")
 		if(frame.source != legacy_parent) return // Drain attaches the captured parent.
 		if(!human_save_parent_captured(legacy_parent, human_root["z"], frame.entry)) throw EXCEPTION("Legacy human parent was not captured")
+		human_root["saved_parent_ref"] = frame.entry
 #endif
 	var/list/moving_root = child ? moving_save_roots["\ref[child]"] : null
 	if(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
@@ -1243,7 +1247,7 @@ var/global/datum/persistence_admission_identity
 	var/owner = saving_content_owners[key]
 	if(owner && owner != frame.entry)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		if(human_root && human_root["mode"] == "legacy") human_root["parent_attached"] = TRUE
+		if(human_root && human_root["mode"] == "legacy") throw EXCEPTION("Legacy human has conflicting saved parents")
 #endif
 		return
 	saving_content_owners[key] = frame.entry

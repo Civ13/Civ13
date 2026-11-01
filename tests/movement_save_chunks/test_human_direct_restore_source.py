@@ -1,65 +1,73 @@
-"""Source contracts and arithmetic examples only; does not execute DM."""
+"""Tile-only restore contracts; source-level only, not BYOND execution."""
 from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 
-
-def overlaps(a, b):
-    return not (a[0] >= b[2] or b[0] >= a[2] or a[1] >= b[3] or b[1] >= a[3])
-
-
-class DirectRestoreSourceTests(unittest.TestCase):
-    def test_half_open_example_detects_overhang_but_not_edge_contact(self):
-        human = (4, 4, 36, 36)
-        self.assertTrue(overlaps(human, (32, 32, 64, 64)))
-        self.assertFalse(overlaps(human, (36, 4, 68, 36)))
-        self.assertFalse(overlaps(human, (4, 36, 36, 68)))
-
-    def test_schema_is_new_and_historical_branch_keeps_native_move(self):
+class TileOnlyRestoreSourceTests(unittest.TestCase):
+    def test_new_candidates_omit_movement_but_preserve_art_offsets(self):
         saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
         human = (ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
-        self.assertIn('changing_vars |= list("human_subtile_position", "human_subtile_restore_schema")', saving)
-        self.assertIn('value = encode_saved_value(savefile, 1)', saving)
-        prepare = human.split('/mob/living/human/proc/human_subtile_prepare_import(', 1)[1].split('\n/mob/', 1)[0]
-        self.assertIn('human_subtile_restore_schema = 0', prepare)
-        after = human.split('/mob/living/human/after_load()', 1)[1]
-        direct = after.split('if(human_subtile_restore_schema == 1)', 1)[1].split('\n\telse\n', 1)[0]
-        legacy = after.split('\n\telse\n', 1)[1]
-        for forbidden in ('sleep(', '.CanPass(', 'Move('): self.assertNotIn(forbidden, direct)
-        self.assertLess(direct.index('human_subtile_restore_hard_clear'), direct.index('step_x = S["sx"]'))
-        self.assertIn('human_subtile_same(S, human_subtile_snapshot())', direct)
-        self.assertIn('human_subtile_destination_clear(S)', legacy)
-        self.assertIn('Move(loc, dir)', legacy)
-        self.assertEqual(after.count('living_movement_completed()'), 1)
-        self.assertEqual(after.count('human_movement_completed()'), 1)
+        self.assertIn('changing_vars -= list("step_x", "step_y", "glide_size", "human_subtile_position", "human_subtile_restore_schema")', saving)
+        self.assertNotIn('encode_saved_value(savefile, frame.human_spatial_position)', saving)
+        runtime = human.split('/mob/living/human/persistence_runtime_var(',1)[1].split('\n/mob/',1)[0]
+        self.assertIn('key == "step_x" || key == "step_y"', runtime)
+        self.assertNotIn('key == "pixel_x"', runtime)
+        self.assertNotIn('key == "pixel_y"', runtime)
 
-    def test_preflight_and_final_check_are_owned_and_generation_bound(self):
+    def test_tile_restore_zeroes_offsets_without_mutating_parent_or_active_owner(self):
+        human = (ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
+        after = human.split('/mob/living/human/after_load()',1)[1]
+        tile = after.split('#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL',1)[1].split('#else',1)[0]
+        for required in ('human_subtile_transaction || human_subtile_pulse', 'step_x = 0', 'step_y = 0',
+                         'human_subtile_position = null', 'human_subtile_import_owned = FALSE',
+                         'living_movement_completed()', 'human_movement_completed()'):
+            self.assertIn(required,tile)
+        self.assertLess(tile.index('human_subtile_transaction || human_subtile_pulse'),tile.index('step_x = 0'))
+        for forbidden in ('loc =', 'forceMove(', 'Move(', 'pixel_x =', 'pixel_y =', 'sleep('):
+            self.assertNotIn(forbidden,tile)
+        self.assertIn('Move(loc, dir)', after.split('#else',1)[1])
+
+    def test_historical_capsules_still_have_generation_parent_and_shape_checks(self):
         functions = (ROOT / 'code/modules/persistence/functions.dm').read_text()
         load = (ROOT / 'code/modules/persistence/loading.dm').read_text()
-        backend = functions.split('/map_storage/proc/run_world_operation(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        self.assertLess(backend.index('validate_world_save()'), backend.index('operation.enter_backend'))
-        self.assertIn('human_direct_preflight_generation = round_state["generation"]', load)
-        self.assertIn('human_direct_preflight_records["[z]:[human_ref]"]', load)
-        self.assertIn('human_direct_preflight_records["[loading_z]:[ind]"]', load)
         human = (ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
-        self.assertIn('human_subtile_same(S, human_direct_preflight_position)', human)
-        self.assertIn('human_direct_parent_counts[human_ref] != 1', load)
-        self.assertIn('build_human_obstruction_index(', load)
-        self.assertIn('operation.validate_human_direct_restores()', functions)
+        backend = functions.split('/map_storage/proc/run_world_operation(',1)[1].split('\n/map_storage/proc/',1)[0]
+        self.assertLess(backend.index('validate_world_save()'),backend.index('operation.enter_backend'))
+        for required in ('human_direct_preflight_generation = round_state["generation"]',
+                         'human_direct_parent_counts[human_ref] != 1', '!turf_refs[parent_ref]',
+                         'human_candidate_read_position(F, text2num(human_ref))',
+                         'human_candidate_map_ref(F, z, position["y"], position["x"])'):
+            self.assertIn(required,load)
+        self.assertIn('Malformed sub-tile position capsule',human)
+        self.assertNotIn('build_human_obstruction_index(',load)
+        self.assertNotIn('human_direct_preflight_records',load)
 
-    def test_saved_index_scans_anchor_tiles_and_computes_pixel_bounds(self):
-        saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
-        index = saving.split('/map_storage/proc/build_human_obstruction_index(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        self.assertIn('for(var/y = 1, y <= world.maxy, y++)', index)
-        self.assertIn('for(var/x = 1, x <= world.maxx, x++)', index)
-        self.assertIn('shape["step_x"] + shape["bound_x"]', index)
-        self.assertIn('shape["step_y"] + shape["bound_y"]', index)
-        self.assertIn('if(ispath(path, /mob)) continue', index)
-        self.assertIn('Human obstruction index object has duplicate parents', index)
-        self.assertIn('Human obstruction index bounds are not finite', index)
-        self.assertGreaterEqual(index.count('edge_work % 256 == 0'), 2)
+    def test_saved_tile_checks_do_not_claim_object_clearance(self):
+        saving=(ROOT/'code/modules/persistence/saving.dm').read_text()
+        body=saving.split('/map_storage/proc/inspect_human_saved_tile_and_links(',1)[1].split('\n/map_storage/proc/',1)[0]
+        self.assertIn('Human saved tile is dense',body)
+        self.assertIn('Human saved physical link is unsupported',body)
+        self.assertNotIn('CanPass(',body)
+        self.assertNotIn('build_human_obstruction_index',saving)
 
+    def test_final_local_clearance_runs_after_level_callbacks(self):
+        human=(ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
+        load=(ROOT/'code/modules/persistence/loading.dm').read_text()
+        check=human.split('/mob/living/human/proc/human_saved_tile_final_clear()',1)[1].split('#endif',1)[0]
+        self.assertIn('!isturf(loc) || !human_subtile_unlinked() || pulling',check)
+        self.assertIn('obounds(src, 0)',check)
+        self.assertIn('nearby.len > 1024',check)
+        self.assertIn('isobj(A) && isturf(A.loc) && A.density',check)
+        self.assertIn('other_turf.density || other_turf.vehicle_transforming',check)
+        self.assertNotIn('CanPass(',check)
+        self.assertNotIn('Move(',check)
+        self.assertNotIn('ismob(',check)
+        self.assertLess(load.index('ob.after_load()'),load.index('H.human_saved_tile_final_clear()'))
+        self.assertLess(load.index('H.human_saved_tile_final_clear()'),load.index('surface_inventory.feed_loaded_level'))
+        self.assertIn('throw EXCEPTION("Restored human tile is obstructed")',load)
+        self.assertIn('all_loaded != final_placement_entries || loading_z != B',load)
+        placement=load.split('var/list/final_placement_entries = all_loaded',1)[1].split('#endif',1)[0]
+        self.assertIn('TICK_CHECK\n\t\t\tif(!operation.current',placement)
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__': unittest.main()

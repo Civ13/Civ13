@@ -16,7 +16,6 @@ var/global/human_spatial_fixture_restore_human = 0
 var/global/mob/living/human/human_spatial_fixture_late_actor = null
 var/global/list/human_spatial_fixture_late_capsule = null
 var/global/human_spatial_fixture_late_pulses = 0
-var/global/list/human_spatial_fixture_geometry_metrics = null
 var/global/human_spatial_fixture_seated_moved = 0
 // Private to this synthetic fixture; no player identities or live data.
 var/global/list/human_spatial_fixture_roles = list()
@@ -121,10 +120,10 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 // Called only from the staged test build before candidate inspection. These
 // controls corrupt a synthetic candidate, never a completed seed generation.
 /proc/human_spatial_fixture_mutate_candidate(datum/persistence_world_operation/operation)
-	if(!(human_spatial_fixture_case in list("duplicate", "missing_roster", "unsafe_default"))) return
+	if(!(human_spatial_fixture_case in list("duplicate", "missing_roster", "invalid_density"))) return
 	human_spatial_fixture_assert(operation && operation.human_spatial_requests.len == 1, "fixture_mutation_request")
 	var/datum/human_subtile_save_request/request = operation.human_spatial_requests[1]
-	human_spatial_fixture_assert(request && request.operation == operation && request.actor && request.captured && request.serialized && request.spatial_attached && request.saved_ref && request.saved_z == 1 && islist(request.position) && request.position["sx"] == 4 && request.position["sy"] == 4, "fixture_mutation_captured_request")
+	human_spatial_fixture_assert(request && request.operation == operation && request.actor && request.captured && request.serialized && request.spatial_attached && request.saved_ref && request.saved_z == 1 && islist(request.position) && !request.position["sx"] && !request.position["sy"], "fixture_mutation_captured_request")
 	if(human_spatial_fixture_case == "missing_roster")
 		operation.human_roster_records = list()
 		return
@@ -137,7 +136,8 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 		chunks += list2params(list("[request.saved_ref]"))
 		F[path] << chunks
 	else
-		F["[map_storage.entry_path(F, request.saved_ref)]/bound_width"] << list("kind" = "value", "value" = null)
+		var/turf_ref = F["/map/[request.saved_z]/[request.position["y"]]/[request.position["x"]]"]
+		F["[map_storage.entry_path(F, turf_ref)]/density"] << list("kind" = "value", "value" = null)
 	F.Flush()
 
 /world/New()
@@ -162,12 +162,18 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			human_spatial_fixture_register_actor(seated, "seated")
 			seated.persistence_owner_ckey = "syntheticseated"
 			human_spatial_fixture_assert(seat.buckle_mob(seated), "fixture_seated_setup")
+			seated.step_x = 4
+			seated.step_y = 5
 			var/obj/structure/closet/crate/box = new(locate(8, 6, 1))
 			var/mob/living/human/contained = new(box)
 			human_spatial_fixture_register_actor(contained, "contained")
 			contained.persistence_owner_ckey = "syntheticcontained"
+			contained.step_x = 6
+			contained.step_y = 7
 			H.canmove = TRUE
 			H.stat = CONSCIOUS
+			H.pixel_x = 7
+			H.pixel_y = -3
 			human_spatial_fixture_assert(H.set_human_subtile(TRUE), "fixture_enable_movement")
 			var/obj/item/weapon/storage/backpack/B = new(H)
 			H.back = B
@@ -182,6 +188,7 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			var/deadline = world.time + 20
 			while((!H.human_subtile_transaction || !H.step_x || !H.step_y) && world.time < deadline) sleep(world.tick_lag)
 			human_spatial_fixture_assert(H.human_subtile_transaction && H.step_x && H.step_y, "fixture_transaction_not_started")
+			human_spatial_fixture_assert(H.pixel_x == 7 && H.pixel_y == -3, "fixture_art_offsets_before_save")
 			if(world.params["mode"] == "restart")
 				persistence_restart.busy = TRUE
 				var/datum/persistence_world_operation/op = begin_persistence_operation(map_storage, "save", persistence_restart)
@@ -210,7 +217,6 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			observed["capsule"] = human_spatial_fixture_capsule
 			observed["late_capsule"] = human_spatial_fixture_late_capsule
 			observed["late_pulses"] = human_spatial_fixture_late_pulses
-			observed["geometry_metrics"] = human_spatial_fixture_geometry_metrics
 			observed["seated_moved"] = human_spatial_fixture_seated_moved
 			observed["mode"] = world.params["mode"]
 		else if(world.params["phase"] == "reader")
@@ -222,6 +228,7 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			human_spatial_fixture_assert(islist(bodies) && bodies.len == 1, "fixture_body_missing")
 			var/mob/living/human/H = bodies[1]
 			human_spatial_fixture_assert(H && H.type == /mob/living/human && istype(H.back, /obj/item/weapon/storage/backpack), "fixture_owner_or_slot")
+			human_spatial_fixture_assert(H.pixel_x == 7 && H.pixel_y == -3, "fixture_art_offsets_retained")
 			var/list/other_bodies = persistence_restored_bodies["syntheticsecond"]
 			human_spatial_fixture_assert(islist(other_bodies) && other_bodies.len == 1, "fixture_second_body_missing")
 			var/mob/living/human/H2 = other_bodies[1]
@@ -233,15 +240,35 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			var/mob/living/human/restored_seated = seated_bodies[1]
 			var/mob/living/human/restored_contained = contained_bodies[1]
 			var/mob/living/human/restored_late = late_bodies[1]
-			human_spatial_fixture_assert(istype(restored_seated.buckled, /obj/structure/bed/chair) && restored_seated.buckled:buckled_mob == restored_seated && restored_seated.loc == restored_seated.buckled:loc && restored_seated.x == 6 && restored_seated.y == 6 && istype(restored_contained.loc, /obj/structure/closet/crate), "fixture_legacy_parent_and_link")
-			human_spatial_fixture_assert(human_subtile_same(restored_late.human_subtile_snapshot(), expected["late_capsule"]), "fixture_late_exact_capsule")
+			human_spatial_fixture_assert(istype(restored_seated.buckled, /obj/structure/bed/chair) && restored_seated.buckled:buckled_mob == restored_seated && restored_seated.loc == restored_seated.buckled:loc && restored_seated.x == 6 && restored_seated.y == 6 && !restored_seated.step_x && !restored_seated.step_y && istype(restored_contained.loc, /obj/structure/closet/crate) && !restored_contained.step_x && !restored_contained.step_y, "fixture_legacy_parent_and_link")
+			human_spatial_fixture_assert(human_subtile_same(restored_late.human_subtile_snapshot(), expected["late_capsule"]), "fixture_late_frozen_tile")
 			var/obj/item/weapon/pen/P = locate(/obj/item/weapon/pen) in H.back
 			human_spatial_fixture_assert(P && P.loc == H.back && H.back.loc == H && P.name == "synthetic nested pen", "fixture_nested_item_or_slot")
 			var/turf/restored_floor = locate(2, 2, 1)
 			var/obj/item/weapon/flint/restored_flint = locate(/obj/item/weapon/flint) in restored_floor
 			human_spatial_fixture_assert(restored_floor.type == /turf/floor/winter/grass/human_spatial_probe && restored_flint && restored_flint.loc == restored_floor, "fixture_audited_floor_and_tool")
-			human_spatial_fixture_assert(human_subtile_same(H.human_subtile_snapshot(), expected["capsule"]), "fixture_exact_frozen_capsule")
-			human_spatial_fixture_assert(human_spatial_fixture_direct_actor && !human_spatial_fixture_direct_active && !human_spatial_fixture_direct_callbacks && human_spatial_fixture_restore_living == 2 && human_spatial_fixture_restore_human == 2, "fixture_restore_callbacks")
+			human_spatial_fixture_assert(human_subtile_same(H.human_subtile_snapshot(), expected["capsule"]), "fixture_frozen_tile_and_zero_offset")
+			human_spatial_fixture_assert(human_spatial_fixture_direct_actor && !human_spatial_fixture_direct_active && !human_spatial_fixture_direct_callbacks && !human_spatial_fixture_restore_living && !human_spatial_fixture_restore_human, "fixture_restore_callbacks")
+			// Exercise the actual engine bounds query after restoration. An object
+			// whose west-neighbour bounds merely touch the body is permitted;
+			// expanding those bounds into the body's tile must be refused.
+			human_spatial_fixture_assert(H.x > 1 && H.human_saved_tile_final_clear(), "fixture_clear_before_obstacle")
+			var/obj/edge_obstacle = new(locate(H.x - 1, H.y, H.z))
+			edge_obstacle.density = TRUE
+			edge_obstacle.bound_width = 32
+			human_spatial_fixture_assert(H.human_saved_tile_final_clear(), "fixture_edge_touch_rejected")
+			edge_obstacle.bound_width = 64
+			human_spatial_fixture_assert(!H.human_saved_tile_final_clear(), "fixture_overhang_not_rejected")
+			edge_obstacle.density = FALSE
+			human_spatial_fixture_assert(H.human_saved_tile_final_clear(), "fixture_nondense_overhang_rejected")
+			edge_obstacle.loc = H.loc
+			edge_obstacle.density = TRUE
+			human_spatial_fixture_assert(!H.human_saved_tile_final_clear(), "fixture_same_tile_solid_not_rejected")
+			edge_obstacle.density = FALSE
+			H2.forceMove(H.loc)
+			human_spatial_fixture_assert(H2.loc == H.loc && H.human_saved_tile_final_clear(), "fixture_other_mob_rejected")
+			human_spatial_fixture_assert(restored_seated.human_saved_tile_final_clear() && restored_contained.human_saved_tile_final_clear(), "fixture_linked_parent_rejected")
+			observed["local_clearance_controls"] = TRUE
 			observed["position"] = H.human_subtile_snapshot()
 			observed["late_position"] = restored_late.human_subtile_snapshot()
 			observed["generation"] = trim(file2text("map_saves/save_complete.txt"))
@@ -289,55 +316,32 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			H.canmove = TRUE
 			H.stat = CONSCIOUS
 			human_spatial_fixture_assert(H.set_human_subtile(TRUE), "fixture_negative_enable")
-			// Use the existing legacy restore path to establish a real owned
-			// partial offset before introducing any negative condition.
-			H.human_subtile_position = list("x" = H.x, "y" = H.y, "z" = H.z, "sx" = 4, "sy" = 4)
-			H.human_subtile_import_owned = TRUE
-			H.after_load()
+			// Establish a synthetic live partial movement offset. Saves must
+			// capture the tile without persisting this transient state.
+			H.step_x = 4
+			H.step_y = 4
+			H.human_subtile_offset_owned = TRUE
 			human_spatial_fixture_assert(H.human_subtile_offset_owned && H.step_x == 4 && H.step_y == 4 && !H.human_subtile_pulse && !H.human_subtile_transaction, "fixture_negative_owned_offset")
 			var/expected = null
 			switch(human_spatial_fixture_case)
 				if("wall")
-					var/turf/T = locate(2, 2, 1)
+					var/turf/T = locate(1, 1, 1)
 					T.ChangeTurf(/turf/wall, FALSE, FALSE)
-					expected = "Human saved turf type is not audited"
+					expected = "Human saved tile is dense"
 				if("dense")
-					var/obj/structure/closet/crate/overhang = new(locate(3, 2, 1))
-					overhang.bound_x = -32
-					expected = "Human saved footprint has a hard or unaudited occupant"
-				if("contained")
-					var/obj/structure/closet/crate/C = new(locate(3, 3, 1))
-					H.forceMove(C)
-					// Explicitly construct the unsupported contained partial
-					// state even if the native containment move resets offsets.
-					H.step_x = 4
-					H.step_y = 4
-					human_spatial_fixture_assert(H.loc == C && H.step_x == 4 && H.step_y == 4, "fixture_negative_contained_partial")
-					expected = "Human legacy save needs an aligned idle position"
-				if("buckle")
-					var/obj/structure/bed/chair/C = new(locate(1, 1, 1))
-					human_spatial_fixture_assert(C.buckle_mob(H), "fixture_negative_buckle_setup")
-					H.step_x = 4
-					H.step_y = 4
-					human_spatial_fixture_assert(H.buckled == C && C.buckled_mob == H && H.loc == C.loc && H.step_x == 4 && H.step_y == 4, "fixture_negative_buckle_partial")
-					expected = "Human legacy save needs an aligned idle position"
+					new /obj/structure/closet/crate(locate(1, 1, 1))
+					expected = "Human saved tile has a dense object"
 				if("roster")
 					expected = "Human roster proof has no stable owner"
-				if("pulling")
-					var/obj/item/weapon/pen/P = new(locate(2, 2, 1))
-					H.pulling = P
-					P.pulledby = H
-					human_spatial_fixture_assert(H.pulling == P && P.pulledby == H && H.step_x == 4 && H.step_y == 4, "fixture_negative_pulling_partial")
-					expected = "Human legacy save needs an aligned idle position"
 				if("duplicate")
 					expected = "Human slot candidate has duplicate saved parents"
 				if("missing_roster")
 					expected = "Human roster proof changed before completion"
-				if("unsafe_default")
-					expected = "Human saved size is unsupported"
+				if("invalid_density")
+					expected = "Human saved tile is dense"
 				else
 					throw EXCEPTION("fixture_negative_case_unknown")
-			if(human_spatial_fixture_case in list("wall", "dense", "roster", "duplicate", "missing_roster", "unsafe_default"))
+			if(human_spatial_fixture_case in list("wall", "dense", "roster", "duplicate", "missing_roster", "invalid_density"))
 				human_spatial_fixture_assert(H.x == 1 && H.y == 1 && H.z == 1 && H.step_x == 4 && H.step_y == 4 && H.human_subtile_offset_owned && H.human_subtile_shape() && H.human_subtile_unlinked() && !H.pulling, "fixture_negative_spatial_precondition")
 			var/rejection = null
 			try

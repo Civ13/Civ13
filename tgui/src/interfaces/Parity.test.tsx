@@ -85,6 +85,8 @@ describe('standard screen parity', () => {
   it('registers all merged reader routes', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
       'appearance_changer.tmpl',
+      'character_flavor.tmpl',
+      'character_notes.tmpl',
       'chem_disp.tmpl',
       'crafting_atlas.tmpl',
       'crew_log.tmpl',
@@ -92,6 +94,7 @@ describe('standard screen parity', () => {
       'faction_list.tmpl',
       'faction_symbol.tmpl',
       'known_languages.tmpl',
+      'photo_viewer.tmpl',
       'religion_list.tmpl',
       'research_bench.tmpl',
       'ship_stocks.tmpl',

@@ -224,7 +224,9 @@ class DiscoveryTests(unittest.TestCase):
         self.assertIn('if(istype(value, /datum))', encoder)
         show = body(MIND, '/datum/mind/proc/show_memory(mob/recipient)')
         self.assertIn('recipient.mind != src', show)
-        self.assertIn('output += discoveries_html()', show)
+        self.assertIn('var/discovery_snapshot = discoveries_html()', show)
+        self.assertIn('output += discovery_snapshot', show)
+        self.assertEqual(show.count('discoveries_html()'), 1)
         self.assertIn('if (memory)', show)
 
     def test_smell_algorithm_is_byte_identical_to_audited_master(self):

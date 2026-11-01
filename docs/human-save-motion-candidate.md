@@ -1,54 +1,60 @@
-# Human movement during world saves: candidate boundaries
+# Tile-only human save candidate
 
-The human spatial capture candidate remains disabled in ordinary builds. The
-test adapter explicitly defines `CIV13_HUMAN_SPATIAL_EXPERIMENTAL`; its
-headless authority seam is not a connected player. When enabled, an admitted
-unlinked human's origin and owned subtile offsets are captured at an idle or
-between-pulses boundary without holding that human for the world save.
-Ordinary and restart-owned saves share the path: a busy restart must own the
-save operation. Load, startup and dimension recovery holds remain in force.
+Status: unpublished source candidate, default off. No native validation or live
+rollout has been performed for this revision. Historical exact-offset fixture and
+benchmark evidence is retained separately; it does not establish this contract.
 
-Each discovered saveable human is recorded for the operation. At its first
-serialization, a supported unlinked human on a turf uses a spatial request;
-an aligned idle linked or contained human can use the existing legacy frame
-with its immediate saved parent frozen. A serialized legacy frame is not
-upgraded later. Pending roster entries are reconsidered before completion;
-unresolved required entries, missing parents, duplicate ownership or invalid
-references reject the candidate. This is a rolling save, not an atomic snapshot
-of inventory, actors or the whole world.
+A save captures a supported, directly located moving human's actual turf at a
+between-pulses acknowledgement. The owner, turf identity and coordinates are
+read synchronously; the saver may wait for that boundary, while the movement
+transaction continues and keeps its normal completion and cost semantics. The
+frozen turf receives the human's unique saved parent edge. Fractional `step_x`
+and `step_y`, movement transactions and active pulses are transient; new saved
+human entries omit them and restore their movement offsets to zero. Independent
+artwork offsets such as `pixel_x` and `pixel_y` remain ordinary saved fields.
 
-The spatial candidate checks encoded ownership, slots and physical links as
-well as the frozen footprint. It accepts floor descendants with reviewed
-nondense, nontransforming state and generic audited nondense objects where the
-saved collision bounds do not establish an obstruction. It rejects dense or
-unaudited intersecting objects, dense or transforming/non-floor turfs, invalid
-shape or bounds, out-of-world footprints and unsupported saved physical links.
-Mobs are treated as dynamic occupants rather than blanket static obstacles;
-the proof does not claim a globally simultaneous world. Special object roots
-and collision overrides require review rather than an implicit generic pass.
-Unsupported partial linked/contained states, unsettled movement, broken
-ownership, exhausted budgets and other unproved inputs can reject the entire
-candidate before a new completion marker; they are not silently repaired.
+Contained, buckled or otherwise linked humans retain the immediate parent that
+was captured for their record; the implementation must not flatten them onto
+the containing turf. Their containing level is resolved through a bounded,
+cycle-checked chain. All captured human inventory slots are checked against the
+saved containment graph, and the captured parent, reference closure, generation
+and owner identity must remain valid before the completion marker is written.
+The ordinary unlinked candidate additionally checks the saved turf and saved
+physical links. Unknown or inconsistent ownership is refused, retaining the
+previous completed generation. A still-active linked movement transaction is
+not yet supported and refuses the candidate.
 
-For the new direct human restore schema, the loader verifies the generation,
-saved parent, identity, links and hard geometry, then performs a local
-nonyielding exact-offset assignment and preserves the existing living and human
-movement-completion callbacks once, in order. Historical capsules retain the
-legacy path. Existing world-load interleaving is not a new global pause. A
-generation containing the new schema is rejected by a build without the
-experimental reader: binary rollback alone is not a safe recovery plan.
+Historical position capsules are still parsed and checked as the old format,
+but in the experimental build their fractional offsets are deliberately not
+restored. This does not claim that older binaries understand any newer schema.
+The disabled build retains its existing historical behavior. Existing save data
+formats and inventory encodings are not removed.
 
-At reviewed head `ed55db411e5cd75b0e1ee558e3766d385b764524`, the isolated
-synthetic writer/fresh-reader fixture passed ordinary and restart-owned saves,
-headless drag, and nine named refusal/preservation controls on a small map.
-It is evidence for those cases only, not connected-client movement, a
-populated world, full-map resource cost or live recovery. The earlier count of
-26,312 original and 66,285 proposed exact-whitelist floor cells in a 350,000
-cell Gaia template described a superseded design; it is historical, not the
-coverage or runtime cost of the current candidate.
+The prior exact-offset machinery indexed geometry across the world, emitted
+per-turf transform sidecars and object bounds, and validated a 1–4-turf
+fractional footprint. The tile-only candidate removes those paths. It still
+encodes a saved density for turfs and objects so a saved tile and objects
+anchored directly on it can be checked; this has not been benchmarked. The
+remaining validation scans saved ownership/slot references, so this is not a
+claim that all world-wide work has disappeared.
 
-Before production enablement, review the enabled final tree, realistic refusal
-availability, representative synthetic scale and a tested recovery plan that
-retains a verified pre-enable generation and matching build. Connected-player
-input and actual operational behavior remain separate evidence. No live save,
-rollout, recovery or server action follows from this document or its fixture.
+## Review and validation gates
+
+- After all level callbacks, a local engine bounds query checks unlinked human
+  placements against dense turfs and dense objects, including neighbouring
+  overhangs. It excludes mobs and preserves linked and contained parents. The
+  query is rejected if it returns over 1,024 entries, but that limit is checked
+  after the engine creates the list; it is not a hard allocation bound. Native
+  tests must establish the engine's overlap and edge-contact semantics and
+  exercise callback-created obstructions before this check can be relied on.
+- Restore retains the saved turf or parent rather than searching for another
+  location. It does not guarantee escape from a closed room or simultaneous
+  global snapshot semantics.
+- The updated synthetic source aims to check ordinary and restart-owned saves,
+  movement continuing after handoff, zero restored offsets, retained art
+  offsets, nested inventory, contained and seated parents, negative controls and
+  retained previous generation. It has not yet run and has no connected-client
+  or Gaia-world evidence.
+- Source/model checks are not a DM compiler, BYOND execution, full-map benchmark
+  or proof of production safety. Current master reconciliation, independent
+  review and an exact-head native writer/fresh-reader run remain required.

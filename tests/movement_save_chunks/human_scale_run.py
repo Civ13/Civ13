@@ -315,12 +315,9 @@ def load_receipt(path, head, phase, variant):
         require(type(row.get('serialization_and_flush_deciseconds')) is int and row['serialization_and_flush_deciseconds'] >= 0,
                 'serialization boundary timing missing')
         if variant == 'enabled':
-            metrics = row.get('geometry_metrics')
             require(type(row.get('human_candidate_checks_deciseconds')) is int and row['human_candidate_checks_deciseconds'] >= 0,
                     'human candidate-check timing missing')
-            require(type(metrics) is dict and set(metrics) == {'turfs', 'objects', 'added_fields'} and
-                    all(type(value) is int and value >= 0 for value in metrics.values()) and metrics['turfs'] == 350000,
-                    'human geometry metrics missing')
+            require(row.get('geometry_metrics') is None, 'obsolete fractional geometry metrics present')
         else:
             require(row.get('human_candidate_checks_deciseconds') is None and row.get('geometry_metrics') is None,
                     'disabled variant unexpectedly ran candidate checks')

@@ -33,15 +33,12 @@ MAX_LOG = 8 * 1024 * 1024
 MAX_FILES = 4096
 MAX_DEPTH = 16
 NEGATIVES = {
-    'wall': 'Human saved turf type is not audited',
-    'dense': 'Human saved footprint has a hard or unaudited occupant',
-    'contained': 'Human legacy save needs an aligned idle position',
-    'buckle': 'Human legacy save needs an aligned idle position',
+    'wall': 'Human saved tile is dense',
+    'dense': 'Human saved tile has a dense object',
     'roster': 'Human roster proof has no stable owner',
-    'pulling': 'Human legacy save needs an aligned idle position',
     'duplicate': 'Human slot candidate has duplicate saved parents',
     'missing_roster': 'Human roster proof changed before completion',
-    'unsafe_default': 'Human saved size is unsupported',
+    'invalid_density': 'Human saved tile is dense',
 }
 
 
@@ -105,17 +102,17 @@ def writer_receipt(row, head, mode):
     capsule = row.get('capsule')
     require(row.get('mode') == mode and row.get('handoffs') == 1 and row.get('pulses_after_handoff', 0) > 0 and row.get('seated_moved') == 1, 'handoff/continuation missing')
     require(isinstance(capsule, dict) and set(capsule) == {'x', 'y', 'z', 'sx', 'sy'} and all(type(v) is int for v in capsule.values()), 'invalid captured capsule')
-    require(0 < capsule['sx'] < 32 and 0 < capsule['sy'] < 32 and isinstance(row.get('generation'), str) and re.fullmatch(r'round-v[12]:[0-9a-f]{32}', row['generation']), 'invalid saved generation or offset')
+    require(capsule['sx'] == 0 and capsule['sy'] == 0 and isinstance(row.get('generation'), str) and re.fullmatch(r'round-v[12]:[0-9a-f]{32}', row['generation']), 'invalid saved generation or tile offset')
     late = row.get('late_capsule')
-    require(isinstance(late, dict) and set(late) == {'x', 'y', 'z', 'sx', 'sy'} and all(type(v) is int for v in late.values()) and 0 < late['sx'] < 32 and late['sy'] == 0 and row.get('late_pulses', 0) > 0, 'invalid late walker capsule')
-    metrics = row.get('geometry_metrics')
-    require(isinstance(metrics, dict) and set(metrics) == {'turfs', 'objects', 'added_fields'} and all(type(v) is int and v >= 0 for v in metrics.values()) and metrics['turfs'] > 0 and metrics['objects'] > 0, 'invalid geometry metrics')
+    require(isinstance(late, dict) and set(late) == {'x', 'y', 'z', 'sx', 'sy'} and all(type(v) is int for v in late.values()) and late['sx'] == 0 and late['sy'] == 0 and row.get('late_pulses', 0) > 0, 'invalid late walker tile')
     return {'capsule': capsule, 'late_capsule': late, 'generation': row['generation']}
 
 
 def reader_receipt(row, head, expected):
     receipt(row, 'reader', head)
     require(row.get('generation') == expected['generation'] and row.get('position') == expected['capsule'] and row.get('late_position') == expected['late_capsule'], 'reader capsule or generation mismatch')
+    clearance = row.get('local_clearance_controls')
+    require(clearance is True or (type(clearance) is int and clearance == 1), 'reader local clearance controls missing')
 
 
 def negative_publication(current, backup, seed):

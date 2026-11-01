@@ -65,7 +65,12 @@ var/global/list/human_scale_geometry_metrics = null
 		var/list/bodies = persistence_restored_bodies[human_scale_owner(i)]
 		human_scale_assert(islist(bodies) && bodies.len == 1, "scale_owner_count")
 		var/mob/living/human/H = bodies[1]
-		human_scale_assert(H && H.type == /mob/living/human && human_subtile_same(H.human_subtile_snapshot(), human_scale_expected_position(i)), "scale_actor_position")
+		var/list/expected_position = human_scale_expected_position(i)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		expected_position["sx"] = 0
+		expected_position["sy"] = 0
+#endif
+		human_scale_assert(H && H.type == /mob/living/human && human_subtile_same(H.human_subtile_snapshot(), expected_position), "scale_actor_position")
 		human_scale_assert(istype(H.back, /obj/item/weapon/storage/backpack) && H.back.loc == H, "scale_actor_bag")
 		var/obj/item/weapon/pen/P = locate(/obj/item/weapon/pen) in H.back
 		human_scale_assert(P && P.loc == H.back && P.name == "scale nested pen [i]", "scale_nested_pen")
@@ -120,9 +125,10 @@ var/global/list/human_scale_geometry_metrics = null
 				H.canmove = TRUE
 				H.stat = CONSCIOUS
 				human_scale_assert(H.set_human_subtile(TRUE), "scale_human_enable")
-				H.human_subtile_position = position.Copy()
-				H.human_subtile_import_owned = TRUE
-				H.after_load()
+				// Test-only partial input; the enabled reader must normalize it.
+				H.step_x = position["sx"]
+				H.step_y = position["sy"]
+				H.human_subtile_offset_owned = TRUE
 				human_scale_assert(H.human_subtile_offset_owned && human_subtile_same(H.human_subtile_snapshot(), position), "scale_initial_position")
 				var/obj/item/weapon/storage/backpack/B = new(H)
 				H.back = B

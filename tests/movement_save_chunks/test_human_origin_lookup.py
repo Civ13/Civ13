@@ -41,7 +41,7 @@ class OriginLookupContract(unittest.TestCase):
                                          proposed(grid, parent, count, pos, 1, 2, 2))
             self.assertFalse(proposed(grid, 1, 1, None, 1, 2, 2))
 
-    def test_source_retains_grid_uniqueness_and_parent_geometry_admission(self):
+    def test_source_retains_legacy_grid_and_parent_admission_without_fractional_index(self):
         source = SOURCE.read_text(encoding='utf-8')
         proc = source.split('/map_storage/proc/validate_world_save()', 1)[1].split('\n/map_storage/', 1)[0]
         self.assertNotIn('human_direct_turfs', proc)
@@ -51,11 +51,11 @@ class OriginLookupContract(unittest.TestCase):
                          'position["z"] != z', 'position["x"] < 1', 'position["x"] > world.maxx',
                          'position["y"] < 1', 'position["y"] > world.maxy',
                          '(!position["sx"] && !position["sy"])',
-                         'human_candidate_map_ref(F, z, position["y"], position["x"])',
-                         'validate_human_saved_geometry(F, text2num(human_ref)'):
+                         'human_candidate_map_ref(F, z, position["y"], position["x"])'):
             self.assertIn(required, proc)
         self.assertLess(proc.index('Missing or duplicate turf'), proc.index('!turf_refs[parent_ref]'))
-        self.assertLess(proc.index('human_candidate_map_ref(F, z,'), proc.index('validate_human_saved_geometry(F,'))
+        self.assertNotIn('validate_human_saved_geometry(', proc)
+        self.assertNotIn('build_human_obstruction_index(', proc)
 
 
 if __name__ == '__main__':

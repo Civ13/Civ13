@@ -263,13 +263,6 @@
 			restored_human.persistence_restored = TRUE
 			savefile.cd = entry_path(savefile, ind)
 			restored_human.human_subtile_prepare_import(savefile)
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-			if("human_subtile_restore_schema" in savefile.dir)
-				var/datum/persistence_world_operation/direct_owner = persistence_active_operation
-				var/list/proven_position = direct_owner ? direct_owner.human_direct_preflight_records["[loading_z]:[ind]"] : null
-				if(!direct_owner || !direct_owner.current(src, "load") || !islist(proven_position)) throw EXCEPTION("Human direct import lacks preflight proof")
-				restored_human.human_direct_preflight_position = proven_position.Copy()
-#endif
 		if (istype(object, /mob/living/simple_animal))
 			var/mob/living/simple_animal/restored_npc = object
 			savefile.cd = entry_path(savefile, ind)
@@ -483,6 +476,16 @@
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			// Check the actual local placement after all level callbacks, including
+			// neighbouring objects whose physical bounds overhang the tile.
+			var/list/final_placement_entries = all_loaded
+			for(var/mob/living/human/H in final_placement_entries)
+				if(!operation.current(src, "load") || all_loaded != final_placement_entries || loading_z != B) throw EXCEPTION("Load ownership changed during human placement validation")
+				if(!QDELETED(H) && !H.gcDestroyed && !H.human_saved_tile_final_clear()) throw EXCEPTION("Restored human tile is obstructed")
+				TICK_CHECK
+			if(!operation.current(src, "load") || all_loaded != final_placement_entries || loading_z != B) throw EXCEPTION("Load ownership changed during human placement validation")
+#endif
 			if (surface_inventory && !surface_inventory.feed_loaded_level(B, all_loaded)) throw EXCEPTION("Surface world identity inventory requires recovery")
 			// Constructors see defaults before saved fields/contents are restored.
 			// Rebuild obstruction caches before queuing any final source updates.
@@ -539,7 +542,6 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 		persistence_active_operation.human_direct_preflight_generation = null
-		persistence_active_operation.human_direct_preflight_records = list()
 #endif
 	try
 		if(candidate && (!persistence_active_operation || !persistence_active_operation.current(src, "save") || candidate["generation"] != zone_export_generation)) throw EXCEPTION("Unowned candidate validation")
@@ -657,24 +659,13 @@
 							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
 								throw EXCEPTION("Missing legacy list entry on z=[z]")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-			var/list/human_direct_positions = list()
-			var/list/human_direct_positions_by_ref = list()
+			// Historical schema-1 capsules remain readable. Validate their old
+			// parent/tile identity, but never restore their fractional offsets.
 			for(var/human_ref in human_direct_entries)
 				var/parent_ref = human_direct_parents[human_ref]
 				var/list/position = human_candidate_read_position(F, text2num(human_ref))
-				// The validated grid already proves each turf reference is unique. Resolve
-				// just this capsule's cell rather than retaining an inverse map of every turf.
-				if(human_direct_parent_counts[human_ref] != 1 || !turf_refs[parent_ref] || !islist(position) || position["z"] != z || position["x"] < 1 || position["x"] > world.maxx || position["y"] < 1 || position["y"] > world.maxy || (!position["sx"] && !position["sy"])) throw EXCEPTION("Human direct saved origin is invalid")
-				if("[human_candidate_map_ref(F, z, position["y"], position["x"])]" != "[parent_ref]") throw EXCEPTION("Human direct saved origin is invalid")
-				human_direct_positions += list(position)
-				human_direct_positions_by_ref[human_ref] = position
-			if(human_direct_entries.len)
-				var/owner_kind = candidate ? "save" : "load"
-				var/deadline = world.time + 1200
-				var/list/obstructions = build_human_obstruction_index(F, z, human_direct_positions, persistence_active_operation, owner_kind, deadline)
-				for(var/human_ref in human_direct_entries)
-					validate_human_saved_geometry(F, text2num(human_ref), human_direct_positions_by_ref[human_ref], obstructions, persistence_active_operation, owner_kind, deadline)
-					if(!candidate) persistence_active_operation.human_direct_preflight_records["[z]:[human_ref]"] = human_direct_positions_by_ref[human_ref]
+				if(human_direct_parent_counts[human_ref] != 1 || !turf_refs[parent_ref] || !islist(position) || position["z"] != z || position["x"] < 1 || position["x"] > world.maxx || position["y"] < 1 || position["y"] > world.maxy || position["sx"] < 0 || position["sx"] >= 32 || position["sy"] < 0 || position["sy"] >= 32 || (!position["sx"] && !position["sy"])) throw EXCEPTION("Historical human saved origin is invalid")
+				if("[human_candidate_map_ref(F, z, position["y"], position["x"])]" != "[parent_ref]") throw EXCEPTION("Historical human saved origin is invalid")
 #endif
 		if(level_links) validate_level_link_targets(level_links, round_state["generation"])
 		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
@@ -689,7 +680,6 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 			persistence_active_operation.human_direct_preflight_generation = null
-			persistence_active_operation.human_direct_preflight_records = list()
 #endif
 		validated_level_links = null
 		clear_saved_roof_areas()

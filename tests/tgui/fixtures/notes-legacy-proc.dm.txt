@@ -1,0 +1,42 @@
+/datum/mind/proc/show_memory(mob/recipient)
+	if (!recipient || recipient.mind != src)
+		return
+	var/client/C = recipient.client
+	if(!C)
+		return
+	var/output = "<b>You are <span style = 'font-size: 1.25em; color: #E1E1FF'>[current.real_name]</span></b><hr>"
+	for (var/title in notes)
+		output += "<br><br>"
+		output += "<b><span style = 'font-size: 1.1em; color: #E1E1FF'>[title]</span></b>"
+		output += "<br><br>"
+		var/list/notelist = notes[title]
+		for (var/v in 1 to notelist.len)
+			output += "<i>[notelist[v]]</i>"
+			if (v != notelist.len)
+				output += "<br>"
+		output += "<br>"
+
+	output += "<br><br>"
+	output += "<b><span style = 'font-size: 1.1em; color: #E1E1FF'>Memories</span></b>"
+	output += "<br><br>"
+	if (memory)
+		output += "<i>[memory]</i>"
+	else
+		output += "<i>No memories stored.</i>"
+
+	output += discoveries_html()
+
+	var/memory_stylized = {"
+	<br>
+	<html>
+	<head>
+	[common_browser_style]
+	</head>
+	<body><center>
+	<big>PLACEHOLDER</big>
+	<br><br><br>
+	<i>Use the 'Notes' verb in the 'IC' tab to re-open this window.</i>
+	</body></html>
+	"}
+
+	recipient << browse(replacetext(memory_stylized, "PLACEHOLDER", output),"window=memory;size=625x650")
