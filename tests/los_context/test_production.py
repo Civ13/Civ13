@@ -341,7 +341,7 @@ class BlockingTreeSurface(unittest.TestCase):
         method('surface_edge_visible','face, edge_low, edge_high, axis, direction, tile_x, tile_y, target, candidates',[])
         method('add_surface_cell','target, B',['surface_cells'])
         method('owned_surface_cells','target',['surface_cells','blockers','add_surface_cell'])
-        method('tree_surface_visible','target, tx, ty, tile_x, tile_y',['owned_surface_cells','surface_blockers','surface_edge_visible'])
+        method('tree_surface_visible','target, tx, ty, tile_x, tile_y',['owned_surface_cells','surface_blockers','surface_edge_visible','radius_x','radius_y'])
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
         body=N(type='/mob/living/human',see_invisible=25)
         context=N(body=body,revision=1,policy_key=lambda:'fresh')
@@ -414,6 +414,19 @@ class BlockingTreeSurface(unittest.TestCase):
         self.assertEqual(m.decision(tree),2)
         # The scalar last owner cannot stand in for complete ownership.
         m.S.surface_cells=None;m.S.clear_footprints.clear();front.surface_owners=None
+        self.assertEqual(m.decision(tree),0)
+
+    def test_root_outside_view_needs_a_captured_owned_blocker_inside_view(self):
+        m=self.model();tree=m.target(0,-16,kind='/obj/structure/wild/jungle')
+        m.S.blockers=[m.cell(0,-16,tree),m.cell(0,-15,tree)]
+        self.assertEqual(m.decision(tree),2)
+        self.assertEqual(m.decision(tree,'hover'),0)
+        self.assertEqual(m.decision(m.target(0,-16,False,'/turf/floor'),'visual'),0)
+        m=self.model();tree=m.target(0,-17,kind='/obj/structure/wild/jungle')
+        m.S.blockers=[m.cell(0,-17,tree),m.cell(0,-16,tree)]
+        self.assertEqual(m.decision(tree),0)
+        m=self.model();tree=m.target(2,1);m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]
+        tree.x=100  # A stale owner record cannot admit the moved root.
         self.assertEqual(m.decision(tree),0)
 
     def test_cache_and_surface_admission_omission_controls(self):

@@ -298,7 +298,16 @@ var/global/list/los_active_contexts
 
 /datum/los_snapshot/proc/tree_surface_visible(atom/target, tx, ty, tile_x, tile_y)
 	var/list/cells = owned_surface_cells(target)
+	var/has_root = FALSE
+	for (var/datum/los_cell/root_cell in cells)
+		if (root_cell.cell_x == tx && root_cell.cell_y == ty && root_cell.tile_x == tile_x && root_cell.tile_y == tile_y)
+			has_root = TRUE
+			break
+	if (!has_root)
+		return FALSE
 	for (var/datum/los_cell/owned in cells)
+		if (abs(owned.cell_x) > radius_x + 0.5 || abs(owned.cell_y) > radius_y + 0.5)
+			continue
 		tx = owned.cell_x
 		ty = owned.cell_y
 		tile_x = owned.tile_x
@@ -526,7 +535,9 @@ var/global/list/los_active_contexts
 		var/atom/movable/moving_target = target
 		tx += moving_target.step_x / 32
 		ty += moving_target.step_y / 32
-	if (abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5)
+	var/tree_presentation = S.presentation && operation == "visual_tree" && target.opacity
+	var/outside_view = abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5
+	if (outside_view && !tree_presentation)
 		return LOS_DENY
 	// Preserve the existing directional human concealment policy, when active.
 	if (istype(target, /mob/living/human) && config && !config.disable_fov && body.HUDtech && !body.resting && !body.lying && !body.prone && get_dist(body, target) > 1 && body.pulling != target)
@@ -537,13 +548,12 @@ var/global/list/los_active_contexts
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
-	var/tree_presentation = S.presentation && operation == "visual_tree" && target.opacity
 	if (tree_presentation)
 		footprint_key += "|tree-surface-\ref[target]"
 	var/cached = S.clear_footprints[footprint_key]
 	if (!isnull(cached))
 		return cached
-	if (S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
+	if (outside_view || S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
 		// Only tree presentation may admit an exposed blocker edge. Terrain,
 		// entities and fresh hover/examine retain their existing decisions.
 		if (tree_presentation && S.tree_surface_visible(target, tx, ty, target_tile_x, target_tile_y))

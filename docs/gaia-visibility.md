@@ -45,6 +45,8 @@ another blocker hides the root center. Jungle trees occupy two native tiles.
 Captured cell ownership is exact, including multiple co-located owners; an
 owner-to-cell index is built once, lazily, for presentation only. Information
 captures keep their previous scalar owner path and allocate no owner lists.
+A root just outside the viewport needs a captured owned blocker cell inside
+the viewport; a matching captured root cell also guards against stale ownership.
 This applies only to tree-family presentation, including the native composition
 fallback. It does not change terrain/entity masks, hover/examine decisions, or
 action checks. A rendered edge can therefore still have stricter information
