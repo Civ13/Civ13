@@ -1,6 +1,6 @@
 # Compiled recipe validation
 
-Run from the repository root with BYOND 516.1681:
+Run from the repository root with the pinned BYOND 516.1688 (`tools/byond/version.json`):
 
     python3 scripts/check-recipes.py --report recipe-checks.txt
 
@@ -18,6 +18,17 @@ A missing completion report, compiler warning/error or runtime error fails CI.
 The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
+
+`stone_molds.dm` exercises all eight resource-costing sandstone mold recipes, tools
+retained through waits, XP after resource consumption, nested/broken/moved tools, wrong/moved/spent stock, research
+revocation, cancellation and crossed persistence admission. It checks full/empty
+icon states and that the real oven preserves the exact filled stone object while
+ejecting it onto the oven turf. Metal and empty states are assigned directly;
+these assertions do not test actual pouring or anvil casting. The
+normal fixture supplies inert character setup; no client, visual rendering or
+save round trip is implied. See `docs/sandstone-molds.md`. A compile-only run does
+not execute these assertions; use `tests/stone_molds/test_source.py` for offline
+source projections and their causal omission controls.
 
 `canopy.dm` adds both original paid canopy routes, real roof/area creation and
 retirement, competing unfold/fold actions, late destination occupancy, protected
@@ -153,7 +164,7 @@ fixture. It requires a nonce plus a local admin client, refuses remote requests
 and multiple clients, and supplies only isolated test inputs/progression.
 
 1. From a clean checkout run tests/crafting/start-gameplay.ps1 -ByondBin
-   <trusted-516.1681-bin>. It prints session.json and an unused localhost port.
+   <trusted-516.1688-bin>. It prints session.json and an unused localhost port.
    The full game runs with temporary config/SQL/UI, hub advertising disabled,
    and webhook, ToRban and shell execution adapters disabled.
 2. Connect a fresh Dream Seeker to the printed localhost URL. Use

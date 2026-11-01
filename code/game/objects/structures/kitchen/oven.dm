@@ -222,6 +222,8 @@
 			qdel(I)
 		else if (istype(I, /obj/item/weapon/clay))
 			var/obj/item/weapon/clay/CL = I
+			if (stone_mold_type(CL.type))
+				continue // Carved stone is already usable; never replace it with clay.
 			contents += new CL.result(src)
 			if (CL.result == /obj/item/weapon/clay/claybricks/fired)
 				contents += new CL.result(src)

@@ -1,4 +1,12 @@
 [
+  "/obj/item/weapon/clay/mold/fired/sandstone",
+  "/obj/item/weapon/clay/mold/axehead/fired/sandstone",
+  "/obj/item/weapon/clay/mold/sword/fired/sandstone",
+  "/obj/item/weapon/clay/mold/knife/fired/sandstone",
+  "/obj/item/weapon/clay/mold/spearhead/fired/sandstone",
+  "/obj/item/weapon/clay/mold/pickaxe/fired/sandstone",
+  "/obj/item/weapon/clay/mold/shovel/fired/sandstone",
+  "/obj/item/weapon/clay/mold/arrowhead/fired/sandstone",
   "/obj/structure/extraction_mall_fixture/register",
   "/obj/item/weapon/key/extraction_container/industrial_tool_cage",
   "/obj/item/weapon/key/extraction_container/industrial_dispatch",

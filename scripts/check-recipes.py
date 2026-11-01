@@ -46,6 +46,9 @@ def main():
                    "tests/crafting/sofa_materials.dm", "code/game/objects/structures/stool_bed_chair_nest/chairs.dm",
                    "code/game/objects/structures/stool_bed_chair_nest/stools.dm", "tests/crafting/canopy.dm",
                    "code/game/objects/roof_stuff.dm"]
+        sources += ["code/game/objects/structures/blacksmithing/molds.dm",
+                    "code/game/objects/structures/kitchen/oven.dm",
+                    "code/modules/research_tree/research_node.dm", "tests/crafting/stone_molds.dm"]
         metadata = {"head_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                     "control": "hands-only" if args.handle_hands_negative_control else None,
                     "source_sha256": {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in sources},
@@ -96,6 +99,7 @@ def main():
         dme += f'\n#include "{root.as_posix()}/tests/crafting/document_drawers.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/sofa_materials.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/canopy.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/stone_molds.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)

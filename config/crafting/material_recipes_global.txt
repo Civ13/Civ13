@@ -2484,6 +2484,14 @@ RECIPE: /material/iron/,fire lance,/obj/item/weapon/gun/projectile/ancient/firel
 //*******************************************************
 
 RECIPE: /material/sandstone/,smooth sandstone road,/obj/covers/roads/sandstone,1,0,1,1,roads,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone ingot mold,/obj/item/weapon/clay/mold/fired/sandstone,3,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone axehead mold,/obj/item/weapon/clay/mold/axehead/fired/sandstone,3,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone sword mold,/obj/item/weapon/clay/mold/sword/fired/sandstone,10,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone knife mold,/obj/item/weapon/clay/mold/knife/fired/sandstone,2,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone spearhead mold,/obj/item/weapon/clay/mold/spearhead/fired/sandstone,3,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone pickaxe mold,/obj/item/weapon/clay/mold/pickaxe/fired/sandstone,6,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone shovel mold,/obj/item/weapon/clay/mold/shovel/fired/sandstone,6,120,0,1,molds,0,0,0,8,null
+RECIPE: /material/sandstone/,sandstone arrowhead mold,/obj/item/weapon/clay/mold/arrowhead/fired/sandstone,2,120,0,1,molds,0,0,0,8,null
 RECIPE: /material/sandstone/,stone bricks,/obj/item/stack/material/stonebrick,3,50,0,1,none,35,0,0,8,null
 
 //*********************| SANDSTONE CONSTRUCTIONS |**************************
