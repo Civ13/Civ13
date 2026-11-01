@@ -96,7 +96,12 @@ def make_row(kind, policy, phase, mode, tick):
                                  arrived=1,tx_finished=0,tx_actor_present=1),
                            event('tx_finished', begin+2, x=pos+1, tx=tx, tx_dir=4, remaining_x=0, remaining_y=0,
                                  arrived=1,tx_finished=1,tx_actor_present=0,tx_target_present=0,tx_combat_present=0,
-                                 tx_following_present=0,tx_intent_present=1)]
+                                 tx_following_present=0,tx_intent_present=0 if mode=='candidate' else 1,
+                                 detail=({'hooked':1,'waiter_matches':1,'owner_matches':1,
+                                          'generation_matches':1,'revision_matches':1,'worker_active':0}
+                                         if mode=='candidate' else
+                                         {'hooked':0,'waiter_matches':0,'owner_matches':0,
+                                          'generation_matches':0,'revision_matches':0,'worker_active':0}))]
             else:
                 events += [event('move_enter', begin, x=pos, detail=4), event('move_exit', begin, x=pos+1, detail=1)]
     events.append(event('phase_end', 28, x=37,owner=None))
@@ -125,6 +130,17 @@ def receipt(mode='candidate', tick=.5):
 
 
 class ContractTests(unittest.TestCase):
+    def test_handoff_receipt_requires_terminal_cleanup_and_bound_waiter(self):
+        for field, value in (('tx_intent_present', 1), ('detail', None)):
+            r=receipt(); finished=next(e for row in r['random_rows'] for e in row['events'] if e['event']=='tx_finished')
+            finished[field]=value
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError,'transaction finished state'):
+                contract.validate(r,'a'*40,'candidate',.5)
+        r=receipt(); finished=next(e for row in r['random_rows'] for e in row['events'] if e['event']=='tx_finished')
+        finished['detail']['waiter_matches']=0
+        with self.assertRaisesRegex(ValueError,'transaction finished state'):
+            contract.validate(r,'a'*40,'candidate',.5)
+
     def test_setup_diagnostics_are_required_and_input_specific(self):
         for mode in contract.MODES:
             for tick in contract.TICKS:
@@ -242,6 +258,8 @@ class ContractTests(unittest.TestCase):
         self.assertIn('persist-credentials: false',text)
         self.assertIn('test "$EXPECTED_HEAD" = "$GITHUB_SHA"',text)
         self.assertIn('--suite "$WILDLIFE_SUITE"',text)
+        self.assertIn("-s tests/human_subtile -p 'test_wild_handoff.py'",text)
+        self.assertIn("-s tests/persistence_pointers -p 'test_contract.py'",text)
         shim=(HERE/'random_cadence_registration.yml').read_text(encoding='utf-8')
         self.assertIn('workflow_dispatch:',shim)
         self.assertNotIn('pull_request:',shim)
@@ -376,9 +394,11 @@ class ContractTests(unittest.TestCase):
         emitted=['move_enter','mosquito_move_before','mosquito_move_after','move_exit']*16
         self.assertEqual(len([x for x in emitted if x not in filtered]),32)
         movement=(stage/'code/game/mob/living/simple_animal/subtile_movement.dm').read_text(encoding='utf-8')
-        finish=movement.split('/datum/npc_subtile_transaction/proc/finish()',1)[1].split('/mob/living/simple_animal/proc/npc_subtile_take_pulse',1)[0]
+        finish=movement.split('/datum/npc_subtile_transaction/proc/finish(',1)[1].split('/mob/living/simple_animal/proc/npc_subtile_take_pulse',1)[0]
         self.assertLess(finish.index('tx_actor_released'),finish.index('actor = null'))
         self.assertLess(finish.index('finished = TRUE'),finish.index('tx_finished'))
+        self.assertLess(finish.index('intent_owner = null'),finish.index('tx_finished'))
+        self.assertLess(finish.index('tx_finished'),finish.index('W.transaction_finished('))
 
     def test_observer_does_not_schedule_move_or_take_ownership(self):
         text = (HERE/'random_cadence_fixture.dm').read_text(encoding='utf-8')
@@ -407,8 +427,15 @@ class ContractTests(unittest.TestCase):
         probe.write_text(probe.read_text(encoding='utf-8').replace('\t\t\thuman_subtile_fixture_headless()',
                          '\t\t\tnpc_subtile_fixture()'),encoding='utf-8',newline='\n')
         (stage/'human_subtile.dme').write_text('// fixture\n', encoding='utf-8')
-        candidates={p:(stage/p).read_bytes() for p in contract.SPECIES}
-        parents={p:data.replace(contract.RANDOM_OVERRIDE,b'') for p,data in candidates.items()}
+        candidates={p:(stage/p).read_bytes() for p in (*contract.SPECIES,contract.MOVEMENT)}
+        parents={p:candidates[p] for p in contract.SPECIES}
+        parents[contract.MOVEMENT]=(ROOT/contract.PARENT_FIXTURE).read_bytes()
+        def git_blob(raw):
+            return hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+        self.assertEqual(git_blob(parents[contract.MOVEMENT]),contract.PARENT_MOVEMENT_BLOB)
+        self.assertEqual(git_blob(candidates[contract.MOVEMENT]),contract.CANDIDATE_MOVEMENT_BLOB)
+        for path in contract.SPECIES:
+            self.assertEqual(git_blob(candidates[path]),contract.CANDIDATE_BLOBS[path])
         class Current:
             @staticmethod
             def adapt(out, manifest, relative, old, new):
@@ -418,19 +445,27 @@ class ContractTests(unittest.TestCase):
         manifest={'dme':'stage/human_subtile.dme','stage_files':{}}
         with self.assertRaises(ValueError):
             contract.prepare_pair(out, manifest, Current(), {**parents, contract.SPECIES[0]:b'bad'}, candidates)
+        with self.assertRaises(ValueError):
+            contract.prepare_pair(out, manifest, Current(), {**parents, contract.MOVEMENT:candidates[contract.MOVEMENT]}, candidates)
+        with self.assertRaises(ValueError):
+            contract.movement_fixture_bytes(parents[contract.MOVEMENT], 'candidate')
         parent, parent_manifest=contract.prepare_pair(out, manifest, Current(), parents, candidates)
         for rel in contract.SPECIES:
             p=(parent/'stage'/rel).read_bytes();c=(stage/rel).read_bytes()
-            self.assertEqual(c.replace(contract.RANDOM_OVERRIDE,b''),p)
+            self.assertEqual(c,p)
             self.assertEqual(p,contract.species_fixture_bytes(rel,parents[rel]))
             self.assertEqual(c,contract.species_fixture_bytes(rel,candidates[rel]))
             self.assertFalse((parent/'stage'/rel).samefile(stage/rel))
+        self.assertEqual((parent/'stage'/contract.MOVEMENT).read_bytes(),contract.movement_fixture_bytes(parents[contract.MOVEMENT],'parent'))
+        self.assertEqual((stage/contract.MOVEMENT).read_bytes(),contract.movement_fixture_bytes(candidates[contract.MOVEMENT],'candidate'))
+        self.assertFalse((parent/'stage'/contract.MOVEMENT).samefile(stage/contract.MOVEMENT))
         self.assertEqual(parent_manifest['random_scope'], contract.SCOPE)
 
     def test_independent_host_verifier_rejects_tampered_evidence(self):
-        head='a'*40;parent=contract.PUBLISHED_PARENT
-        candidates={p:(ROOT/p).read_bytes() for p in contract.SPECIES}
-        parents={p:data.replace(contract.RANDOM_OVERRIDE,b'') for p,data in candidates.items()}
+        head='a'*40;parent=contract.HANDOFF_BASE
+        candidates={p:(ROOT/p).read_bytes() for p in (*contract.SPECIES,contract.MOVEMENT)}
+        parents={p:candidates[p] for p in contract.SPECIES}
+        parents[contract.MOVEMENT]=(ROOT/contract.PARENT_FIXTURE).read_bytes()
         blobs={parent:parents,head:candidates}
         resource={'bytes':100,'sha256':'f'*64,'mode':0o600}
         states={mode:{'before':resource,'after':resource,'changed':False,'integrity_verified':True} for mode in contract.MODES}
@@ -450,11 +485,14 @@ class ContractTests(unittest.TestCase):
         entries={'harness-status.json':json.dumps(status).encode(),'smoke-summary.json':json.dumps(summary).encode()}
         for label,folder,version in (('parent','npc-parent',parent),('candidate','npc-smoke',head)):
             src=blobs[version]
-            stages={p:{'bytes':len(contract.species_fixture_bytes(p,v)),
-                       'sha256':hashlib.sha256(contract.species_fixture_bytes(p,v)).hexdigest()} for p,v in src.items()}
+            stages={}
+            for p,v in src.items():
+                adapted=(contract.movement_fixture_bytes(v,label) if p==contract.MOVEMENT else contract.species_fixture_bytes(p,v))
+                stages[p]={'bytes':len(adapted),'sha256':hashlib.sha256(adapted).hexdigest()}
             stages['shared']={'bytes':1,'sha256':'e'*64}
             m={'head':head,'random_source_variant':label,'random_scope':contract.SCOPE,'parent_commit':parent,
                'candidate_local_commit':contract.LOCAL_CANDIDATE,'candidate_blobs':contract.CANDIDATE_BLOBS,
+               'movement_blobs':{'parent':contract.PARENT_MOVEMENT_BLOB,'candidate':contract.CANDIDATE_MOVEMENT_BLOB},
                'paired_preimages':{p:hashlib.sha256(v).hexdigest() for p,v in src.items()},
                'stage_files':stages}
             entries[folder+'/cloud-manifest.json']=json.dumps(m).encode()
@@ -471,11 +509,14 @@ class ContractTests(unittest.TestCase):
         def git_output(args,**kwargs):
             if args[-2]=='rev-parse':
                 if args[-1].endswith('^{tree}'):
-                    return (contract.PARENT_TREE+'\n').encode()
-                _,path=args[-1].split(':',1)
-                return ((contract.CANDIDATE_BLOBS | {contract.CANDIDATE_TEST:contract.CANDIDATE_TEST_BLOB})[path]+'\n').encode()
+                    return (contract.HANDOFF_BASE_TREE+'\n').encode()
+                version,path=args[-1].split(':',1)
+                identities=contract.CANDIDATE_BLOBS | {contract.CANDIDATE_TEST:contract.CANDIDATE_TEST_BLOB,
+                    contract.PARENT_FIXTURE:contract.PARENT_MOVEMENT_BLOB,
+                    contract.MOVEMENT:contract.PARENT_MOVEMENT_BLOB if version==parent else contract.CANDIDATE_MOVEMENT_BLOB}
+                return (identities[path]+'\n').encode()
             if 'diff' in args:
-                return ('\n'.join(sorted(contract.FIXTURE_FILES|set(contract.SPECIES)|{contract.CANDIDATE_TEST}))+'\n').encode()
+                return ('\n'.join(sorted(contract.HANDOFF_FILES))+'\n').encode()
             version,path=args[-1].split(':',1)
             return blobs[version][path]
         def archive_bytes(data):
@@ -493,6 +534,16 @@ class ContractTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 controller.validate_random_evidence(archive_bytes(bad),head,'random05',['git'],{})
             bad=dict(entries);bad['npc-parent/runtime/port-closed.txt']=b'open\n'
+            with self.assertRaises(RuntimeError):
+                controller.validate_random_evidence(archive_bytes(bad),head,'random05',['git'],{})
+            altered=json.loads(entries['npc-parent/cloud-manifest.json'])
+            altered['stage_files'][contract.MOVEMENT]['sha256']='0'*64
+            bad=dict(entries);bad['npc-parent/cloud-manifest.json']=json.dumps(altered).encode()
+            with self.assertRaises(RuntimeError):
+                controller.validate_random_evidence(archive_bytes(bad),head,'random05',['git'],{})
+            altered=json.loads(entries['npc-parent/cloud-manifest.json'])
+            altered['stage_files'][contract.SPECIES[0]]['sha256']='0'*64
+            bad=dict(entries);bad['npc-parent/cloud-manifest.json']=json.dumps(altered).encode()
             with self.assertRaises(RuntimeError):
                 controller.validate_random_evidence(archive_bytes(bad),head,'random05',['git'],{})
 

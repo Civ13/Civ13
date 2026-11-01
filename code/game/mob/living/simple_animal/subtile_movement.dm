@@ -119,6 +119,14 @@
 	// Capture this admission before Move callbacks can change actor ownership.
 	if (!isnull(receipt))
 		receipt["transaction"] = T
+	// Only the continuous wildlife walker opts into terminal continuation.
+	// Capture the exact transaction before its first potentially reentrant Move.
+	if (receipt && receipt["wild_continuation"] && istype(intent_owner, /datum/npc_subtile_wild_walk))
+		var/datum/npc_subtile_wild_walk/W = intent_owner
+		if (!W.bind_transaction(T))
+			T.finish()
+			return FALSE
+		receipt["wild_bound"] = TRUE
 	npc_subtile_previous_glide = glide_size
 	npc_subtile_glide_owned = TRUE
 	glide_size = max(T.remaining_x, T.remaining_y) * world.tick_lag / interval
@@ -129,7 +137,7 @@
 	try
 		continue_pulses = T.advance()
 	catch (var/exception/npc_initial_error)
-		T.finish()
+		T.finish(npc_initial_error)
 		throw npc_initial_error
 	if (!T.distance)
 		T.finish()
@@ -427,6 +435,7 @@
 	W.cancelled = TRUE
 	npc_subtile_wild_walk = null
 	npc_subtile_release_generation(W.generation, TRUE)
+	W.detach_transaction()
 
 /datum/npc_subtile_wild_walk
 	should_save = FALSE
@@ -448,6 +457,64 @@
 	var/atom/expected_path_target
 	var/atom/expected_following
 	var/cancelled = FALSE
+	// One executing walker, one bound transaction, one terminal signal.
+	var/worker_active = FALSE
+	var/worker_scheduled = FALSE
+	var/datum/npc_subtile_transaction/waiting_transaction
+	var/waiting_revision
+	var/waiting_started
+	var/waiting_period
+	var/terminal_ready = FALSE
+	var/terminal_failed = FALSE
+
+/datum/npc_subtile_wild_walk/proc/bind_transaction(datum/npc_subtile_transaction/T)
+	if (!worker_active || waiting_transaction || !valid() || !T || T.intent_owner != src || T.generation != generation)
+		return FALSE
+	waiting_transaction = T
+	waiting_revision = revision
+	T.wild_continuation = src
+	T.wild_revision = revision
+	return TRUE
+
+/datum/npc_subtile_wild_walk/proc/detach_transaction()
+	var/datum/npc_subtile_transaction/T = waiting_transaction
+	waiting_transaction = null
+	waiting_revision = null
+	terminal_ready = FALSE
+	terminal_failed = FALSE
+	if (T && T.wild_continuation == src)
+		T.wild_continuation = null
+		T.wild_revision = null
+
+/datum/npc_subtile_wild_walk/proc/transaction_finished(datum/npc_subtile_transaction/T, admitted_revision, had_error)
+	if (!T || !T.finished || waiting_transaction != T || waiting_revision != admitted_revision || terminal_ready)
+		return
+	terminal_ready = TRUE
+	terminal_failed = !!had_error
+	if (!worker_active)
+		resume_transaction()
+
+/datum/npc_subtile_wild_walk/proc/resume_transaction()
+	if (worker_active || !terminal_ready || !waiting_transaction || !waiting_transaction.finished)
+		return
+	var/completed_revision = waiting_revision
+	var/failed = terminal_failed
+	waiting_transaction = null
+	waiting_revision = null
+	terminal_ready = FALSE
+	terminal_failed = FALSE
+	if (failed || !valid())
+		finish()
+		return
+	if (revision == completed_revision)
+		due = max(waiting_started + waiting_period, world.time)
+	// A replacement command retains its own due/revision; never replay the
+	// completed command. Exactly one continuation may be scheduled.
+	if (!worker_scheduled)
+		worker_scheduled = TRUE
+		spawn(0)
+			worker_scheduled = FALSE
+			perform()
 
 /datum/npc_subtile_wild_walk/proc/semantic_valid()
 	if (cancelled || !actor || isDeleted(actor) || actor.npc_subtile_wild_walk != src || !actor.npc_subtile_species_enabled || !actor.npc_subtile_enabled || !actor.npc_subtile_intent_valid(src) || actor.move_gen != generation || actor.stance != expected_stance || actor.behaviour != expected_behaviour || actor.target_mob != expected_combat_target || actor.target_obj != expected_path_target || actor.following_mob != expected_following)
@@ -461,18 +528,29 @@
 	return semantic_valid() && actor.npc_subtile_ready()
 
 /datum/npc_subtile_wild_walk/proc/perform()
+	if (worker_active || waiting_transaction)
+		return
+	worker_active = TRUE
+	var/suspended = FALSE
 	try
-		perform_loop()
+		suspended = perform_loop()
 	catch (var/exception/wild_error)
+		worker_active = FALSE
 		finish()
 		throw wild_error
-	finish()
+	worker_active = FALSE
+	if (suspended)
+		if (terminal_ready)
+			resume_transaction()
+	else
+		finish()
 
 /datum/npc_subtile_wild_walk/proc/finish()
 	if (actor && !isDeleted(actor) && actor.npc_subtile_wild_walk == src)
 		if (semantic_valid() && !actor.npc_subtile_ready() && actor.npc_subtile_can_defer() && !actor.npc_subtile_pending_intent)
 			actor.npc_subtile_defer_intent("wild", target, mode, distance_limit, interval, direction)
 		actor.npc_subtile_stop_wild_walk(FALSE)
+	detach_transaction()
 	actor = null
 	target = null
 	expected_combat_target = null
@@ -524,7 +602,12 @@
 			if ("direction")
 				next = get_step(actor, direction)
 		if (next && valid())
-			actor.ai_step_wait(next, interval, src)
+			waiting_started = started
+			waiting_period = period
+			var/list/receipt = list("wild_continuation" = TRUE)
+			actor.ai_step(next, interval, TRUE, receipt, src)
+			if (receipt["wild_bound"])
+				return TRUE
 		if (valid() && revision == current_revision)
 			due = max(started + period, world.time)
 
@@ -1047,6 +1130,8 @@
 	var/failed_pulse = FALSE
 	var/finished = FALSE
 	var/arrived = FALSE
+	var/datum/npc_subtile_wild_walk/wild_continuation
+	var/wild_revision
 
 /datum/npc_subtile_transaction/proc/wait_for_completion()
 	while (!finished)
@@ -1141,15 +1226,15 @@
 		if (valid() && end_time > world.time)
 			sleep(end_time - world.time)
 	catch (var/exception/npc_worker_error)
-		finish()
+		finish(npc_worker_error)
 		throw npc_worker_error
 	finish()
 
-/datum/npc_subtile_transaction/proc/finish()
+/datum/npc_subtile_transaction/proc/finish(var/exception/worker_error = null)
 	if (finished)
 		return
 	var/reached = !failed_pulse && !remaining_x && !remaining_y && valid()
-	var/exception/finish_error
+	var/exception/finish_error = worker_error
 	try
 		if (!completed && actor && !isDeleted(actor) && actor.npc_subtile_transaction == src)
 			completed = TRUE
@@ -1160,7 +1245,8 @@
 			if (attempted)
 				actor.living_movement_completed()
 	catch (var/exception/npc_finish_error)
-		finish_error = npc_finish_error
+		if (!finish_error)
+			finish_error = npc_finish_error
 	if (reached && !finish_error && actor && !isDeleted(actor) && !actor.npc_subtile_transaction && actor.npc_subtile_enabled && actor.npc_subtile_ready() && actor.npc_subtile_intent_valid(intent_owner) && !persistence_save_in_progress && actor.move_gen == generation && actor.target_obj == target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && human_subtile_same(expected, actor.npc_subtile_snapshot()))
 		arrived = TRUE
 	actor = null
@@ -1168,6 +1254,13 @@
 	combat_target = null
 	following = null
 	finished = TRUE
+	var/datum/npc_subtile_wild_walk/W = wild_continuation
+	var/completed_revision = wild_revision
+	wild_continuation = null
+	wild_revision = null
+	intent_owner = null
+	if (W)
+		W.transaction_finished(src, completed_revision, finish_error)
 	if (finish_error)
 		throw finish_error
 

@@ -35,6 +35,17 @@ SPECIES = ('code/game/mob/living/simple_animal/hostile/mosquitoes.dm',
            'code/game/mob/living/simple_animal/hostile/vampirebat.dm')
 PUBLISHED_PARENT = '24ab3da9255ad42a4b084c8de18ea43583e529d9'
 PARENT_TREE = '0bb798277bfc6bf4db10292e1773cd23660be9df'
+HANDOFF_BASE = 'cb2cd5ec16830a9528c2b7f6ac249b7ce055cf76'
+HANDOFF_BASE_TREE = 'f41bf05a4fa0f0a96b472e3e4dbcbca437fc9060'
+MOVEMENT = 'code/game/mob/living/simple_animal/subtile_movement.dm'
+PARENT_MOVEMENT_BLOB = '2b29606bbd3d7bca805e495f5c463c449bc4fe6b'
+CANDIDATE_MOVEMENT_BLOB = '2fc2143df9925df0231bb52dda97526a24cd59fd'
+PARENT_FIXTURE = 'tests/human_subtile/handoff_parent_subtile.dm.txt'
+HANDOFF_FILES = {MOVEMENT, 'tests/human_subtile/cloud_npc_controller.py',
+                 'tests/human_subtile/cloud_npc_smoke.py', 'tests/human_subtile/random_cadence_contract.py',
+                 'tests/human_subtile/test_random_cadence_contract.py', 'tests/human_subtile/test_wild_handoff.py',
+                 'tests/persistence_pointers/test_contract.py', PARENT_FIXTURE,
+                 '.github/workflows/wildlife-random-cadence.yml'}
 LOCAL_CANDIDATE = '34b5b5cb0fba9063b5d87d81fd82b6516144533b'
 CANDIDATE_BLOBS = dict(zip(SPECIES, ('bdb0e42fb6a3e78a01d11dd46a107577457e1595',
                                      'd1be76d011b2825228c03b604f6ce1993a1f172e')))
@@ -85,7 +96,7 @@ def budget():
 
 
 def prepare_pair(candidate_out, manifest, current, parent_blobs, candidate_blobs):
-    """Clone one bounded source stage and prove the two exact species preimages.
+    """Clone one bounded source stage and isolate the handoff movement change.
 
     Caller obtains the blobs from immutable verified commits, and must check the
     production diff between those commits separately. Hardlinks share only the
@@ -94,12 +105,14 @@ def prepare_pair(candidate_out, manifest, current, parent_blobs, candidate_blobs
     candidate_out = Path(candidate_out)
     candidate = candidate_out / 'stage'
     parent_out = candidate_out.parent / 'npc-parent'
-    require(not parent_out.exists() and set(parent_blobs) == set(candidate_blobs) == set(SPECIES),
+    require(not parent_out.exists() and set(parent_blobs) == set(candidate_blobs) == set(SPECIES)|{MOVEMENT},
             'paired source setup')
     for path in SPECIES:
         raw = (candidate / path).read_bytes()
-        require(raw == candidate_blobs[path] and raw.count(RANDOM_OVERRIDE) == 1 and
-                raw.replace(RANDOM_OVERRIDE, b'') == parent_blobs[path], 'species source mismatch: ' + path)
+        require(raw == candidate_blobs[path] == parent_blobs[path] and raw.count(RANDOM_OVERRIDE) == 1,
+                'shared species source mismatch: ' + path)
+    require((candidate/MOVEMENT).read_bytes()==candidate_blobs[MOVEMENT] and
+            parent_blobs[MOVEMENT]!=candidate_blobs[MOVEMENT], 'movement source mismatch')
     parent_out.mkdir()
     shutil.copytree(candidate, parent_out / 'stage', copy_function=os.link)
     parent = parent_out / 'stage'
@@ -120,8 +133,8 @@ def prepare_pair(candidate_out, manifest, current, parent_blobs, candidate_blobs
     parent_manifest = json.loads(json.dumps(manifest))
     parent_manifest['paired_preimages'] = {k: hashlib.sha256(v).hexdigest() for k, v in parent_blobs.items()}
     manifest['paired_preimages'] = {k: hashlib.sha256(v).hexdigest() for k, v in candidate_blobs.items()}
-    adapt(parent_out, parent_manifest, current)
-    adapt(candidate_out, manifest, current)
+    adapt(parent_out, parent_manifest, current, 'parent')
+    adapt(candidate_out, manifest, current, 'candidate')
     return parent_out, parent_manifest
 
 
@@ -150,7 +163,39 @@ def species_fixture_bytes(path, raw):
     return text.encode('utf-8')
 
 
-def adapt(out, manifest, current):
+def movement_replacements(variant):
+    require(variant in ('parent','candidate'), 'movement variant')
+    common=[('\tnpc_subtile_transaction = T\n\t// Capture this admission',
+             '\tnpc_subtile_transaction = T\n\tfixture_random_observe("tx_admitted", src, null, T)\n\t// Capture this admission'),
+            ('\tremaining_y -= min(remaining_y, abs(actual_y))\n\tif (P.armed',
+             '\tremaining_y -= min(remaining_y, abs(actual_y))\n\tif (!remaining_x && !remaining_y)\n\t\tfixture_random_observe("final_pulse", actor, null, src)\n\tif (P.armed')]
+    old='\tactor = null\n\ttarget = null\n\tcombat_target = null\n\tfollowing = null\n\tfinished = TRUE'
+    released=('\tfixture_random_observe("tx_actor_released", actor, null, src)\n'
+              '\tvar/mob/living/simple_animal/fixture_random_saved_actor = actor\n'+old+'\n')
+    if variant=='parent':
+        detail='list("hooked" = FALSE, "waiter_matches" = FALSE, "owner_matches" = FALSE, "generation_matches" = FALSE, "revision_matches" = FALSE, "worker_active" = FALSE)'
+        common.append((old,released+'\tfixture_random_observe("tx_finished", fixture_random_saved_actor, '+detail+', src)'))
+    else:
+        common.append((old,released+'\t// Terminal observation follows the full owner-reference cleanup.'))
+        old_call='\tintent_owner = null\n\tif (W)\n\t\tW.transaction_finished(src, completed_revision, finish_error)'
+        detail=('list("hooked" = !!W, "waiter_matches" = W ? (W.waiting_transaction == src) : FALSE, '
+                '"owner_matches" = (W && fixture_random_saved_actor) ? (fixture_random_saved_actor.npc_subtile_wild_walk == W) : FALSE, '
+                '"generation_matches" = (W && fixture_random_saved_actor) ? (fixture_random_saved_actor.move_gen == W.generation) : FALSE, '
+                '"revision_matches" = W ? (W.revision == completed_revision) : FALSE, "worker_active" = W ? !!W.worker_active : FALSE)')
+        common.append((old_call,'\tintent_owner = null\n\tfixture_random_observe("tx_finished", fixture_random_saved_actor, '+detail+', src)\n'
+                               '\tif (W)\n\t\tW.transaction_finished(src, completed_revision, finish_error)'))
+    return common
+
+
+def movement_fixture_bytes(raw, variant):
+    text=raw.decode('utf-8')
+    for old,new in movement_replacements(variant):
+        require(text.count(old)==1, 'movement adaptation anchor')
+        text=text.replace(old,new)
+    return text.encode('utf-8')
+
+
+def adapt(out, manifest, current, variant='candidate'):
     """Make identical fixture-only substitutions on each already-frozen source."""
     out = Path(out)
     stage = out / 'stage'
@@ -188,20 +233,12 @@ def adapt(out, manifest, current):
          '\tif (fixture_scheduler_events.len >= 4096)'),
         (core, 'tape = fixture_scheduler_scenario == "chase" ? list(TRUE) : list(TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE)',
          'tape = fixture_scheduler_scenario == "random" ? list(FALSE) : (fixture_scheduler_scenario == "chase" ? list(TRUE) : list(TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE))'),
-        (movement, '\tnpc_subtile_transaction = T\n\t// Capture this admission',
-         '\tnpc_subtile_transaction = T\n\tfixture_random_observe("tx_admitted", src, null, T)\n\t// Capture this admission'),
-        (movement, '\tremaining_y -= min(remaining_y, abs(actual_y))\n\tif (P.armed',
-         '\tremaining_y -= min(remaining_y, abs(actual_y))\n\tif (!remaining_x && !remaining_y)\n\t\tfixture_random_observe("final_pulse", actor, null, src)\n\tif (P.armed'),
-        (movement, '\tactor = null\n\ttarget = null\n\tcombat_target = null\n\tfollowing = null\n\tfinished = TRUE',
-         '\tfixture_random_observe("tx_actor_released", actor, null, src)\n'
-         '\tvar/mob/living/simple_animal/fixture_random_saved_actor = actor\n'
-         '\tactor = null\n\ttarget = null\n\tcombat_target = null\n\tfollowing = null\n\tfinished = TRUE\n'
-         '\tfixture_random_observe("tx_finished", fixture_random_saved_actor, null, src)'),
         (source, '\tmaxx = 18\n\tmaxy = 14', '\tmaxx = 65\n\tmaxy = 65'),
         (source, '\t\t\tnpc_subtile_fixture()', '\t\t\tfixture_random_main()'),
         (source, '"scope" = "actual human/codec; headless authority adapter"',
          '"scope" = "' + SCOPE + '", "random_setup" = fixture_random_setup, "random_rows" = fixture_random_rows, "random_partial" = fixture_random_events, "random_case" = fixture_random_case, "random_count" = fixture_random_count, "random_phase_count" = fixture_random_phase_count, "random_overflow" = fixture_random_overflow'),
     ]
+    replacements += [(movement, old, new) for old,new in movement_replacements(variant)]
     for path in ('code/game/mob/living/simple_animal/hostile/mosquitoes.dm',
                  'code/game/mob/living/simple_animal/hostile/vampirebat.dm'):
         replacements += [(path, 'TG.adjustBruteLoss(1,2)', 'fixture_scheduler_bite(TG, src)')]
@@ -337,15 +374,22 @@ def inspect_events(events, mode, kind):
             admitted['arrived']=e['arrived']
         elif label == 'tx_finished':
             tx=e.get('tx')
+            detail=e.get('detail')
             require(tx in active and active[tx].get('released') and e.get('arrived')==active[tx]['arrived'] and
                     not e['transaction'] and e.get('active_tx') is None and e.get('tx_finished')==1 and
                     all(e.get(k)==0 for k in ('tx_actor_present','tx_target_present','tx_combat_present',
-                                               'tx_following_present')) and e.get('tx_intent_present') in (0,1),
+                                               'tx_following_present')) and
+                    (e.get('tx_intent_present') == 0 if mode == 'candidate' else e.get('tx_intent_present') in (0,1)) and
+                    isinstance(detail,dict) and set(detail)=={'hooked','waiter_matches','owner_matches',
+                        'generation_matches','revision_matches','worker_active'} and
+                    all(detail[k] in (0,1) for k in detail) and
+                    (not detail['hooked'] or detail['waiter_matches']) and
+                    (mode != 'parent' or not detail['hooked']),
                     'transaction finished state')
             admitted=active.pop(tx)
             completions.append({'admitted': admitted['at'], 'actor_released':admitted['released_at'],
                                 'finished':e['at'], 'arrived':e['arrived'],
-                                'intent_reference_retained':e['tx_intent_present']})
+                                'intent_reference_retained':e['tx_intent_present'],'handoff':detail})
             final.discard(tx)
 
         if label == 'command_before':

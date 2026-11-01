@@ -406,17 +406,21 @@ def validate_random_evidence(data,head,suite,git,git_env):
     spec=importlib.util.spec_from_file_location('random_receipts',Path(__file__).with_name('random_cadence_contract.py'))
     contract=importlib.util.module_from_spec(spec);spec.loader.exec_module(contract)
     tick=contract.selection(suite)
-    require(subprocess.check_output(git+['rev-parse',contract.PUBLISHED_PARENT+'^{tree}'],env=git_env,timeout=10).decode().strip()
-            ==contract.PARENT_TREE,'Published parent tree mismatch')
-    require(subprocess.run(git+['merge-base','--is-ancestor',contract.PUBLISHED_PARENT,head],env=git_env,
-                           capture_output=True,timeout=10).returncode==0,'Published parent is not an ancestor')
-    changed=set(subprocess.check_output(git+['diff','--name-only',contract.PUBLISHED_PARENT,head],
+    require(subprocess.check_output(git+['rev-parse',contract.HANDOFF_BASE+'^{tree}'],env=git_env,timeout=10).decode().strip()
+            ==contract.HANDOFF_BASE_TREE,'Handoff baseline tree mismatch')
+    require(subprocess.run(git+['merge-base','--is-ancestor',contract.HANDOFF_BASE,head],env=git_env,
+                           capture_output=True,timeout=10).returncode==0,'Handoff baseline is not an ancestor')
+    changed=set(subprocess.check_output(git+['diff','--name-only',contract.HANDOFF_BASE,head],
                                         env=git_env,timeout=30).decode().splitlines())
-    require(changed==contract.FIXTURE_FILES|set(contract.SPECIES)|{contract.CANDIDATE_TEST},
+    require(changed==contract.HANDOFF_FILES,
             'Unexpected reviewed comparison source diff')
-    for path,blob in {**contract.CANDIDATE_BLOBS,contract.CANDIDATE_TEST:contract.CANDIDATE_TEST_BLOB}.items():
-        require(subprocess.check_output(git+['rev-parse',head+':'+path],env=git_env,timeout=10).decode().strip()==blob,
-                'Candidate blob mismatch: '+path)
+    for revision,items in ((contract.HANDOFF_BASE,{**contract.CANDIDATE_BLOBS,contract.MOVEMENT:contract.PARENT_MOVEMENT_BLOB}),
+                           (head,{**contract.CANDIDATE_BLOBS,contract.CANDIDATE_TEST:contract.CANDIDATE_TEST_BLOB,
+                                  contract.MOVEMENT:contract.CANDIDATE_MOVEMENT_BLOB,
+                                  contract.PARENT_FIXTURE:contract.PARENT_MOVEMENT_BLOB})):
+        for path,blob in items.items():
+            require(subprocess.check_output(git+['rev-parse',revision+':'+path],env=git_env,timeout=10).decode().strip()==blob,
+                    'Variant blob mismatch: '+path)
     with tarfile.open(fileobj=io.BytesIO(data),mode='r:') as archive:
         members=archive.getmembers();names=[item.name for item in members]
         require(len(names)==len(set(names)) and sum(item.size for item in members)<=16*1024**2 and
@@ -453,16 +457,19 @@ def validate_random_evidence(data,head,suite,git,git_env):
         for label,folder in (('parent','npc-parent'),('candidate','npc-smoke')):
             m=json.loads(read(folder+'/cloud-manifest.json'));manifests[label]=m
             require(m.get('head')==head and m.get('random_source_variant')==label and m.get('random_scope')==contract.SCOPE and
-                    m.get('parent_commit')==contract.PUBLISHED_PARENT and
+                    m.get('parent_commit')==contract.HANDOFF_BASE and
                     m.get('candidate_local_commit')==contract.LOCAL_CANDIDATE and
-                    m.get('candidate_blobs')==contract.CANDIDATE_BLOBS, 'Random source manifest')
-            revision=contract.PUBLISHED_PARENT if label=='parent' else head
+                    m.get('candidate_blobs')==contract.CANDIDATE_BLOBS and
+                    m.get('movement_blobs')=={'parent':contract.PARENT_MOVEMENT_BLOB,'candidate':contract.CANDIDATE_MOVEMENT_BLOB},
+                    'Random source manifest')
+            revision=contract.HANDOFF_BASE if label=='parent' else head
             source_blobs[label]={p:subprocess.check_output(git+['show',revision+':'+p],env=git_env,timeout=10)
-                                 for p in contract.SPECIES}
+                                 for p in (*contract.SPECIES,contract.MOVEMENT)}
             expected={p:hashlib.sha256(raw).hexdigest() for p,raw in source_blobs[label].items()}
             require(m.get('paired_preimages')==expected,'Source preimages do not match Git objects')
             for path,raw in source_blobs[label].items():
-                adapted=contract.species_fixture_bytes(path,raw)
+                adapted=(contract.movement_fixture_bytes(raw,label) if path==contract.MOVEMENT
+                         else contract.species_fixture_bytes(path,raw))
                 require(m.get('stage_files',{}).get(path)=={'bytes':len(adapted),'sha256':hashlib.sha256(adapted).hexdigest()},
                         'Adapted species differs from verified Git source')
             phase=summary.get('compiles',{}).get(label,{})
@@ -472,11 +479,11 @@ def validate_random_evidence(data,head,suite,git,git_env):
             log=(read(folder+'/stage/compile-stdout.log')+read(folder+'/stage/compile-stderr.log')).decode(errors='replace')
             npc.current.legacy.validate_compile(log,'human_subtile.dmb')
         a=manifests['parent']['stage_files'];b=manifests['candidate']['stage_files']
-        require(set(a)==set(b) and {k for k in a if a[k]!=b[k]}==set(contract.SPECIES),
-                'Paired adapted sources differ outside reviewed species')
-        require(all(source_blobs['candidate'][p].count(contract.RANDOM_OVERRIDE)==1 and
-                    source_blobs['candidate'][p].replace(contract.RANDOM_OVERRIDE,b'')==source_blobs['parent'][p]
-                    for p in contract.SPECIES),'Candidate is not the reviewed species-only override')
+        require(set(a)==set(b) and {k for k in a if a[k]!=b[k]}=={contract.MOVEMENT},
+                'Paired adapted sources differ outside reviewed movement handoff')
+        require(all(source_blobs['candidate'][p]==source_blobs['parent'][p] and
+                    source_blobs['candidate'][p].count(contract.RANDOM_OVERRIDE)==1 for p in contract.SPECIES),
+                'Species period policy differs between variants')
         receipts={}
         for mode,prefix in (('legacy','npc-parent/runtime/'),('parent','npc-parent/runtime-wildlife/'),
                             ('candidate','npc-smoke/runtime/')):

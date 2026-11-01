@@ -610,23 +610,32 @@ def run_random_cadence(args,scratch,binary,archive,group,envelope,identity,abi,b
     def check_setup():
         return contract.setup_used(time.monotonic()-random_began,child_elapsed)
     tick=contract.selection(args.suite)
-    parent=contract.PUBLISHED_PARENT
+    parent=contract.HANDOFF_BASE
     git=['git','-C',str(ROOT)]
-    require(subprocess.check_output(git+['rev-parse',parent+'^{tree}'],timeout=10).decode().strip()==contract.PARENT_TREE,
-            'Published compile parent tree mismatch')
+    require(subprocess.check_output(git+['rev-parse',parent+'^{tree}'],timeout=10).decode().strip()==contract.HANDOFF_BASE_TREE,
+            'Handoff baseline tree mismatch')
     require(subprocess.run(git+['merge-base','--is-ancestor',parent,args.head],capture_output=True,timeout=10).returncode==0,
             'Fixture head must descend from the published compile parent')
     changed=set(subprocess.check_output(git+['diff','--name-only',parent,args.head],timeout=30).decode().splitlines())
-    require(changed==contract.FIXTURE_FILES|set(contract.SPECIES)|{contract.CANDIDATE_TEST},
+    require(changed==contract.HANDOFF_FILES,
             'Unexpected changes in comparison head')
     require(subprocess.check_output(git+['rev-parse',args.head+':'+contract.CANDIDATE_TEST],timeout=10).decode().strip()
             ==contract.CANDIDATE_TEST_BLOB,'Candidate regression test blob differs')
     originals={};candidate_blobs={}
     for rel in contract.SPECIES:
+        require(subprocess.check_output(git+['rev-parse',parent+':'+rel],timeout=10).decode().strip()
+                ==contract.CANDIDATE_BLOBS[rel],'Baseline species blob differs')
         originals[rel]=subprocess.check_output(git+['show',parent+':'+rel],timeout=10)
         require(subprocess.check_output(git+['rev-parse',args.head+':'+rel],timeout=10).decode().strip()
                 ==contract.CANDIDATE_BLOBS[rel],'Candidate species blob differs')
         candidate_blobs[rel]=subprocess.check_output(git+['show',args.head+':'+rel],timeout=10)
+    for revision, blob, outmap in ((parent,contract.PARENT_MOVEMENT_BLOB,originals),
+                                   (args.head,contract.CANDIDATE_MOVEMENT_BLOB,candidate_blobs)):
+        require(subprocess.check_output(git+['rev-parse',revision+':'+contract.MOVEMENT],timeout=10).decode().strip()==blob,
+                'Handoff movement blob differs')
+        outmap[contract.MOVEMENT]=subprocess.check_output(git+['show',revision+':'+contract.MOVEMENT],timeout=10)
+    require(subprocess.check_output(git+['rev-parse',args.head+':'+contract.PARENT_FIXTURE],timeout=10).decode().strip()
+            ==contract.PARENT_MOVEMENT_BLOB,'Stored parent fixture blob differs')
     checkpoint('random-staging',suite=args.suite)
     out=scratch/'npc-smoke';manifest=npc.prepare(out)
     require(manifest['head']==args.head,'Staged head differs')
@@ -634,6 +643,7 @@ def run_random_cadence(args,scratch,binary,archive,group,envelope,identity,abi,b
     for label,folder,m in (('parent',parent_out,parent_manifest),('candidate',out,manifest)):
         m['random_source_variant']=label;m['parent_commit']=parent;m['candidate_local_commit']=contract.LOCAL_CANDIDATE
         m['candidate_blobs']=contract.CANDIDATE_BLOBS
+        m['movement_blobs']={'parent':contract.PARENT_MOVEMENT_BLOB,'candidate':contract.CANDIDATE_MOVEMENT_BLOB}
         (folder/'cloud-manifest.json').write_text(json.dumps(m,indent=2)+'\n')
     check_setup()
     def check_inputs(folder,m):

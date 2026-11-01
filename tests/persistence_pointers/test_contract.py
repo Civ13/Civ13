@@ -149,6 +149,28 @@ class PointerContracts(unittest.TestCase):
                       'var/datum/npc_subtile_transaction/transaction',
                       'var/datum/intent_owner', 'var/list/start'):
             self.assertIn(field, frame)
+        # The declaration scanner intentionally covers atom references, not
+        # datum-to-datum pointers. Classify both continuation links explicitly.
+        unscanned = (
+            ('wild_walk', 'var/datum/npc_subtile_transaction/waiting_transaction',
+             'unsaved_graph', 'Process-local waiter identity, cleared on stop or terminal handoff.'),
+            ('transaction', 'var/datum/npc_subtile_wild_walk/wild_continuation',
+             'unsaved_graph', 'One-shot process-local continuation, cleared before notification.'),
+        )
+        def require_unscanned(text, owner, declaration):
+            block=text.split('/datum/npc_subtile_'+owner+'\n',1)[1].split('\n/datum/',1)[0]
+            self.assertIn('should_save = FALSE', block)
+            self.assertEqual(block.count(declaration), 1)
+        for owner, declaration, policy, reason in unscanned:
+            with self.subTest(owner=owner, declaration=declaration):
+                require_unscanned(source, owner, declaration)
+                self.assertEqual(policy, 'unsaved_graph')
+                self.assertGreater(len(reason), 15)
+                with self.assertRaises(AssertionError):
+                    require_unscanned(source.replace(declaration, '', 1), owner, declaration)
+                header='/datum/npc_subtile_'+owner+'\n\tshould_save = FALSE'
+                with self.assertRaises(AssertionError):
+                    require_unscanned(source.replace(header,header.replace('FALSE','TRUE'),1), owner, declaration)
         self.assertIn('var/tmp/list/npc_subtile_flee_ticket', source)
         for owner in ('pending_intent', 'flee'):
             block = source.split('/datum/npc_subtile_' + owner + '\n', 1)[1].split('\n/datum/', 1)[0]

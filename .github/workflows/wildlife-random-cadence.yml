@@ -43,6 +43,8 @@ jobs:
         run: |
           /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cloud_npc_controller.py' -v
           /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_random_cadence_contract.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_wild_handoff.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/persistence_pointers -p 'test_contract.py' -v
       - name: Bounded isolated observations, no parity claim
         env:
           EXPECTED_HEAD: ${{ inputs.expected_head }}
