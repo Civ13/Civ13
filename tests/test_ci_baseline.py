@@ -68,6 +68,24 @@ class BaselinePolicyTests(unittest.TestCase):
                 prior_selection = self.selected([shared])
             self.assertEqual(self.selected([shared]), prior_selection | {'mount_native_preparation'})
 
+    def test_paper_mutation_contracts_are_registered_offline(self):
+        suite = ci.SUITES['paper_documents']
+        self.assertEqual(suite['files'], ('tests/paper_documents/test_documents.py',
+            'tests/paper_documents/test_views.py', 'tests/paper_documents/test_mutations.py'))
+        self.assertEqual(self.selected(['tests/paper_documents/test_mutations.py']),
+            {'policy', 'bootstrap', 'progress', 'paper_documents'})
+
+    def test_stone_molds_registration_is_offline_and_preserves_shared_fallback(self):
+        suite=ci.SUITES['stone_molds']
+        self.assertEqual(suite['files'],('tests/stone_molds/test_source.py',))
+        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress','stone_molds'})
+        self.assertIn('stone_molds',self.selected(['tests/save_movement/source_adapter.py']))
+        for path in ('code/game/objects/structures/blacksmithing/molds.dm',
+                     'scripts/build-crafting-atlas.py', 'scripts/player_help_bridge.py'):
+            decision=ci.impact([path])
+            self.assertTrue(all(row['selected'] for row in decision['suites'].values()))
+            self.assertIn('Unmapped impact: '+path,decision['fallback_reasons'])
+
     def test_rider_deletion_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['rider_deletion']
         self.assertEqual(suite['files'], ('tests/rider_deletion/test_destroy.py',))

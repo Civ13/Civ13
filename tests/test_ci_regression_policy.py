@@ -22,6 +22,54 @@ ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    STONE_CASTING_STEP = 'Verify actual stone pouring casting and engine sprites'
+    STONE_CASTING_GUARD = "github.event_name == 'workflow_dispatch' && inputs.stone_mold_casting_regressions == true"
+
+    def assert_stone_casting_guard(self, block, workflow):
+        import re
+        self.assertEqual(re.findall(r'^        if: (.+)$', block, re.M), [self.STONE_CASTING_GUARD])
+        self.assertEqual(re.findall(r'^        id: (.+)$', block, re.M), ['stone_casting'])
+        self.assertEqual(re.findall(r'^        timeout-minutes: (.+)$', block, re.M), ['6'])
+        self.assertEqual(block.count('scripts/check-recipes.py --stone-casting-only '), 1)
+        self.assertIn('timeout -k 5 30 python3 -B tests/stone_molds/check_render.py ', block)
+        self.assertNotIn('continue-on-error:', block)
+        self.assertNotIn('--compile-only', block)
+        admission = workflow.split('      - name: Admit exact focused stone casting dispatch\n')[1].split('      - name:')[0]
+        self.assertEqual(re.findall(r'^        if: (.+)$', admission, re.M), [self.STONE_CASTING_GUARD])
+        for required in (
+            'STONE_EXPECTED_HEAD: ${{ inputs.stone_mold_expected_head }}',
+            'STONE_ACTUAL_HEAD: ${{ github.sha }}',
+            "assert re.fullmatch(r'[0-9a-f]{40}', expected)",
+            "assert expected == os.environ['STONE_ACTUAL_HEAD']",
+            "assert json.loads(os.environ['STONE_SELECTED_TESTS']) == []",
+            "assert os.environ['STONE_EXTENSIVE'] == 'false'",
+            "allowed = {'comparison_base', 'stone_mold_casting_regressions', 'stone_mold_expected_head'}",
+            "assert all(value in (False, 'false', '', None) for key, value in inputs.items() if key not in allowed)",
+        ):
+            self.assertIn(required, admission)
+        self.assertLess(workflow.index('      - name: Admit exact focused stone casting dispatch\n'), workflow.index('      - name: Compile selected exact-head game\n'))
+        self.assertRegex(workflow, r'stone_mold_casting_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
+
+    def test_stone_casting_manual_guard_rejects_scope_and_head_omissions(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        block = workflow.split('      - name: ' + self.STONE_CASTING_STEP + '\n')[1].split('      - name:')[0]
+        self.assert_stone_casting_guard(block, workflow)
+        for guard in ("inputs.stone_mold_casting_regressions == true", "github.event_name == 'workflow_dispatch'", self.STONE_CASTING_GUARD + ' || true'):
+            with self.subTest(guard=guard), self.assertRaises(AssertionError):
+                self.assert_stone_casting_guard(block.replace(self.STONE_CASTING_GUARD, guard), workflow)
+        for required in (
+            "assert expected == os.environ['STONE_ACTUAL_HEAD']",
+            "assert json.loads(os.environ['STONE_SELECTED_TESTS']) == []",
+            "assert os.environ['STONE_EXTENSIVE'] == 'false'",
+            "allowed = {'comparison_base', 'stone_mold_casting_regressions', 'stone_mold_expected_head'}",
+            "assert all(value in (False, 'false', '', None) for key, value in inputs.items() if key not in allowed)",
+        ):
+            with self.subTest(omitted=required), self.assertRaises(AssertionError):
+                self.assert_stone_casting_guard(block, workflow.replace(required, 'pass'))
+        for original, changed in (('timeout-minutes: 6', 'timeout-minutes: 60'), ('--stone-casting-only', '--compile-only')):
+            with self.subTest(changed=changed), self.assertRaises(AssertionError):
+                self.assert_stone_casting_guard(block.replace(original, changed), workflow)
+
     MALL_STEP = 'Verify native mall interactions and omission controls'
     MALL_GATES = (
         '!cancelled()', "needs.changes.result == 'success'",
@@ -270,8 +318,13 @@ class RegressionPolicyTests(unittest.TestCase):
         diagnostics = []
         admission_steps = 0
         mall_steps = 0
+        stone_casting_steps = 0
         for block in re.split(r'(?=      - name:)', workflow):
             name = re.search(r'^      - name: (.+)$', block, re.MULTILINE)
+            if name and name.group(1) == self.STONE_CASTING_STEP:
+                stone_casting_steps += 1
+                self.assert_stone_casting_guard(block, workflow)
+                continue
             if name and name.group(1) == self.MALL_STEP:
                 mall_steps += 1
                 self.assert_mall_guard(block)
@@ -326,6 +379,7 @@ class RegressionPolicyTests(unittest.TestCase):
         self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
         self.assertEqual(admission_steps, 1)
         self.assertEqual(mall_steps, 1)
+        self.assertEqual(stone_casting_steps, 1)
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
         self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
 

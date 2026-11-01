@@ -30,6 +30,15 @@ on:
         description: 'Opt in only to native mall interactions and seven omission controls'
         type: boolean
         default: false
+      stone_mold_casting_regressions:
+        description: 'Opt in only to actual stone-mold pouring/casting and headless engine sprite checks'
+        type: boolean
+        default: false
+      stone_mold_expected_head:
+        description: 'Exact reviewed 40-character source SHA required for focused stone casting'
+        type: string
+        required: false
+        default: ''
       dagger_map_compile:
         description: 'Opt in to native compilation of the inactive Dagger map and missing-type control'
         type: boolean
@@ -428,6 +437,26 @@ jobs:
           case "$EXTENSIVE_SELECTION" in true|false) ;; *) exit 1 ;; esac
           case "$GATING_SELECTION" in 0|1) ;; *) exit 1 ;; esac
           python3 -c 'import json,os; v=json.loads(os.environ["NEW_TEST_SELECTION"]); assert isinstance(v,list) and all(isinstance(x,str) and x for x in v)'
+      - name: Admit exact focused stone casting dispatch
+        if: github.event_name == 'workflow_dispatch' && inputs.stone_mold_casting_regressions == true
+        env:
+          STONE_EXPECTED_HEAD: ${{ inputs.stone_mold_expected_head }}
+          STONE_ACTUAL_HEAD: ${{ github.sha }}
+          STONE_DISPATCH_INPUTS: ${{ toJSON(inputs) }}
+          STONE_SELECTED_TESTS: ${{ needs.changes.outputs.new_tests }}
+          STONE_EXTENSIVE: ${{ needs.changes.outputs.extensive }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          expected = os.environ['STONE_EXPECTED_HEAD']
+          assert re.fullmatch(r'[0-9a-f]{40}', expected)
+          assert expected == os.environ['STONE_ACTUAL_HEAD']
+          assert json.loads(os.environ['STONE_SELECTED_TESTS']) == []
+          assert os.environ['STONE_EXTENSIVE'] == 'false'
+          inputs = json.loads(os.environ['STONE_DISPATCH_INPUTS'])
+          allowed = {'comparison_base', 'stone_mold_casting_regressions', 'stone_mold_expected_head'}
+          assert all(value in (False, 'false', '', None) for key, value in inputs.items() if key not in allowed)
+          PY
       - name: Explain compilation skip
         if: needs.changes.outputs.game != 'true'
         run: echo 'Game compilation skipped by change and build-prefix selection.'
@@ -1524,6 +1553,34 @@ jobs:
         with:
           name: building-levels-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/building-levels/
+          retention-days: 7
+      - name: Prepare focused stone casting image inspection
+        if: github.event_name == 'workflow_dispatch' && inputs.stone_mold_casting_regressions == true
+        timeout-minutes: 3
+        shell: bash
+        run: timeout -k 5 120 python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Verify actual stone pouring casting and engine sprites
+        id: stone_casting
+        if: github.event_name == 'workflow_dispatch' && inputs.stone_mold_casting_regressions == true
+        timeout-minutes: 6
+        shell: bash
+        env:
+          STONE_CASTING_HEAD: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$STONE_CASTING_HEAD"
+          git diff --exit-code HEAD
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          python3 -B scripts/check-recipes.py --stone-casting-only --report "$RUNNER_TEMP/stone-casting-report.txt" --evidence-dir "$RUNNER_TEMP/stone-casting"
+          timeout -k 5 30 python3 -B tests/stone_molds/check_render.py "$RUNNER_TEMP/stone-casting" --report "$RUNNER_TEMP/stone-casting/render-verification.json"
+      - name: Retain focused stone casting evidence including failure
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.stone_mold_casting_regressions == true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: stone-casting-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/stone-casting/
+            ${{ runner.temp }}/stone-casting-report.txt
+          if-no-files-found: error
           retention-days: 7
       - name: Validate compiled crafting recipes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/crafting')

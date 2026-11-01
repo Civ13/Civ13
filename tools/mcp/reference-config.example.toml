@@ -1,0 +1,5 @@
+# Optional reference-only stdio entry. This example does not install/register it.
+# Acquire the exact pinned artifacts explicitly first; see REFERENCE.md.
+[mcp_servers.civ13-reference]
+command = 'C:\Program Files\nodejs\node.exe'
+args = ['D:\GitHub\Civ13\tools\mcp\reference-server.mjs']

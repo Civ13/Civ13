@@ -45,11 +45,16 @@ SUITES = {
             'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
             '.github/workflows/mount-lifecycle-native.yml',
             'tests/save_movement/source_adapter.py')},
+    # Stdlib-only source contracts and causal omission controls; no native world.
+    # Shared game/Atlas/Help sources retain the existing conservative fallback.
+    'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
+        'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.
     'paper_documents': {'files': ('tests/paper_documents/test_documents.py',
-                                  'tests/paper_documents/test_views.py'),
+                                  'tests/paper_documents/test_views.py',
+                                  'tests/paper_documents/test_mutations.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),

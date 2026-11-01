@@ -14,6 +14,12 @@ def replace_once(source, old, new):
         raise RuntimeError(f"Isolation include changed: {old}")
     return source.replace(old, new)
 
+def stone_casting_input_adapter(source):
+    """Replace only the client numeric prompt; keep production pouring intact."""
+    prompt = 'var/input = input(user, "Transfer", "How much of the [ML.current_material] do you want to transfer? Free capacity: [amt_to_transfer]", amt_to_transfer) as num'
+    return replace_once(source, prompt, 'var/input = stone_casting_ci_amount(user, amt_to_transfer)')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--report", type=Path)
@@ -24,7 +30,10 @@ def main():
     parser.add_argument("--handle-hands-negative-control", action="store_true")
     parser.add_argument("--evidence-dir", type=Path)
     parser.add_argument("--compile-only", action="store_true", help="Compile the isolated fixture without launching a world")
+    parser.add_argument("--stone-casting-only", action="store_true", help="Run only actual ore/pour/anvil and engine sprite checks")
     args = parser.parse_args()
+    if args.stone_casting_only and (args.food_bootstrap_negative_control or args.camera_prototype_negative_control or args.handle_hands_negative_control):
+        parser.error("The focused casting fixture cannot be combined with other native cases")
     if sum((args.food_bootstrap_negative_control, args.camera_prototype_negative_control, args.handle_hands_negative_control)) > 1:
         parser.error("Run one negative control at a time")
     if args.compile_only and (args.food_bootstrap_negative_control or args.camera_prototype_negative_control or args.handle_hands_negative_control):
@@ -46,19 +55,32 @@ def main():
                    "tests/crafting/sofa_materials.dm", "code/game/objects/structures/stool_bed_chair_nest/chairs.dm",
                    "code/game/objects/structures/stool_bed_chair_nest/stools.dm", "tests/crafting/canopy.dm",
                    "code/game/objects/roof_stuff.dm"]
+        sources += ["code/game/objects/structures/blacksmithing/molds.dm",
+                    "code/game/objects/structures/kitchen/oven.dm",
+                    "code/modules/research_tree/research_node.dm", "tests/crafting/stone_molds.dm"]
+        if args.stone_casting_only:
+            sources += ["code/game/objects/structures/blacksmithing/blacksmithing.dm",
+                        "code/game/objects/structures/blacksmithing/refining.dm", "code/_helpers/icons.dm",
+                        "code/game/objects/items/weapons/material/material_weapons.dm",
+                        "tests/stone_molds/casting.dm"]
         metadata = {"head_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                     "control": "hands-only" if args.handle_hands_negative_control else None,
                     "source_sha256": {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in sources},
                     "runtime_status": "not_run" if args.compile_only else "pending",
                     "scope": "Compile only; no world launched" if args.compile_only else "Production crafting, wait, debit and slot cleanup; character startup, skills and HUD are adapters"}
         (args.evidence_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+        if args.stone_casting_only:
+            metadata["mode"] = "stone-casting-only"
+            metadata["scope"] = "Actual ore loading, kiln process, pouring and anvil paths; numeric client prompt, actor startup/skills/HUD are adapters. Engine getFlatIcon export; no connected client or fuel cycle."
+            (args.evidence_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
     with tempfile.TemporaryDirectory(prefix=".recipe-ci-", dir=root) as build, tempfile.TemporaryDirectory(prefix="civ13-recipes-") as run:
         build, run = Path(build), Path(run)
         source = (root / "code/world.dm").read_text(encoding="utf-8")
+        entrypoint = "run_stone_casting_checks" if args.stone_casting_only else "run_recipe_checks"
         for marker, replacement in [
             ("/datum/global_init/New()\n", "\treturn\n"),
-            ("/world/New()\n", '\tOpenPort("none")\n\tspawn(1)\n\t\trun_recipe_checks()\n\treturn\n'),
+            ("/world/New()\n", f'\tOpenPort("none")\n\tspawn(1)\n\t\t{entrypoint}()\n\treturn\n'),
         ]:
             if source.count(marker) != 1:
                 raise RuntimeError(f"Startup isolation marker changed: {marker!r}")
@@ -73,6 +95,14 @@ def main():
         dme = replace_once(dme, '#include "code\\controllers\\mc\\globals.dm"', f'#include "{build.as_posix()}/globals.dm"')
         dme = re.sub(r'^#include ".*\.dmf"\s*$', '', dme, flags=re.M)
         dme = replace_once(dme, '#include "code\\world.dm"', f'#include "{build.as_posix()}/world.dm"')
+        if args.stone_casting_only:
+            molds = (root / "code/game/objects/structures/blacksmithing/molds.dm").read_text(encoding="utf-8")
+            adapted_molds = stone_casting_input_adapter(molds)
+            (build / "molds.dm").write_text(adapted_molds, encoding="utf-8")
+            dme = replace_once(dme, r'#include "code\game\objects\structures\blacksmithing\molds.dm"', f'#include "{build.as_posix()}/molds.dm"')
+            if args.evidence_dir:
+                (args.evidence_dir / "molds-original.dm").write_text(molds, encoding="utf-8")
+                (args.evidence_dir / "molds-input-adapter.dm").write_text(adapted_molds, encoding="utf-8")
         dme, maps = re.subn(r'^#include ".*\.dmm"\s*$', '', dme, flags=re.M)
         if not maps:
             raise RuntimeError("Expected to remove game maps")
@@ -96,6 +126,9 @@ def main():
         dme += f'\n#include "{root.as_posix()}/tests/crafting/document_drawers.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/sofa_materials.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/canopy.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/stone_molds.dm"\n'
+        if args.stone_casting_only:
+            dme += f'\n#include "{root.as_posix()}/tests/stone_molds/casting.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
@@ -123,9 +156,12 @@ def main():
             finally:
                 log.flush()
                 if args.evidence_dir:
-                    for name in ("runtime.log", "recipe-checks.txt", "handle-checks.json", "errors.txt"):
+                    for name in ("runtime.log", "recipe-checks.txt", "handle-checks.json", "stone-casting-checks.json", "errors.txt"):
                         if (run / name).exists():
                             shutil.copy2(run / name, args.evidence_dir / name)
+                    if args.stone_casting_only:
+                        for picture in run.glob("stone-casting-*.png"):
+                            shutil.copy2(picture, args.evidence_dir / picture.name)
         runtime_log = (run / "runtime.log").read_text(encoding="utf-8", errors="replace")
         print(runtime_log)
         report = run / "recipe-checks.txt"

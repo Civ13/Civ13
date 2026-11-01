@@ -213,7 +213,7 @@ class Documents(unittest.TestCase):
    self.assertTrue(service.initialize(actor,pen));r=paper.document_record
    self.assertTrue(service.append(actor,pen,r['document_id'],r['revision'],EN,'body','日本語 🚢'))
    self.assertEqual(paper.document_record['sections'][0]['text'],'日本語 🚢')
- def test_runtime_service_never_persists_and_old_writer_is_unmodified(self):
+ def test_runtime_service_never_persists_and_typed_authoring_stays_unwired(self):
   self.assertIn('should_save = FALSE',SOURCE.split('/datum/paper_document_service',1)[1])
   self.assertIn('return (key in list("paper", "controller", "control_client")) || ..()',SOURCE)
   self.assertIn('var/list/document_record = null',SOURCE)

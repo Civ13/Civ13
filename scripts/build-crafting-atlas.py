@@ -27,6 +27,9 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.startswith('/obj/item/weapon/clay/mold/') and s.endswith('/fired/sandstone'):
+        shape=s.removeprefix('/obj/item/weapon/clay/mold/').split('/')[0]
+        return 'sandstone '+('ingot' if shape=='fired' else shape)+' mold'
     if s.rstrip('/') == '/obj/structure/grinder/constructed':
         return 'wood grinder'
     if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
@@ -99,6 +102,8 @@ for p,s in files.items():
             ingredients=[(a,c)]
             joint=joinery.get(n)
             tool_notes=''
+            if b.endswith('/fired/sandstone') and b.startswith('/obj/item/weapon/clay/mold/'):
+                tool_notes+=' Chisel + hammer/mallet equipped/at feet; reused/rechecked. Ready without firing. From fired clay blacksmith pot/jug to anvil.'
             if b == '/obj/structure/grinder/constructed':
                 tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
             if n.startswith('joinery: '):

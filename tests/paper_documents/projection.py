@@ -64,10 +64,11 @@ def expression(value):
  value=re.sub(r'(?<![\w"\'])/(?:[a-zA-Z_]\w*/)*[a-zA-Z_]\w*',lambda m:repr(m[0]),value)
  value=re.sub(r'\b(\w+)\.len\b',r'len(\1)',value)
  value=value.replace('types[language_id]','types.get(language_id)')
+ value=value.replace('P.document_record != current','P.document_record is not current').replace('paper.document_record != current','paper.document_record is not current')
  value=value.replace('istype(actor)','is_actor(actor)').replace('istype(pen)','is_pen(pen)').replace('istype(L)','is_living(L)')
  return value
 
-ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_mint_id','paper_written_language_types','paper_written_language','paper_knows_written_language'}
+ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_prepare_edit','paper_document_commit_edit','paper_document_mint_id','paper_written_language_types','paper_written_language','paper_knows_written_language'}
 METHODS={'get','append','can_speak','get_active_hand','restrained','Adjacent','get_signature','has_access','can_mutate'}
 def project(source,signature,args,env,method=False):
  lines=['def projected('+args+'):']
@@ -100,7 +101,7 @@ def project(source,signature,args,env,method=False):
    elif '=' in code:
     match=re.fullmatch(r'(.+?) ([-+]?=) (.*)',code);assert match,code
     code=expression(match[1])+' '+match[2]+' '+expression(match[3])
-   elif re.fullmatch(r'[\w_]+\(.*\)',code):code=expression(code)
+   elif re.fullmatch(r'[\w_]+(?:\.[\w_]+)*\(.*\)',code):code=expression(code)
    else:raise AssertionError('Unsupported statement '+code)
   if method:
    pieces=re.split(r'("(?:[^"\\]|\\.)*")',code)
@@ -171,6 +172,8 @@ def environment(bytes_mode=False):
  env['paper_written_language_choices']=project(LANG,'/proc/paper_written_language_choices','actor',env)
  env['paper_written_default_language']=project(LANG,'/proc/paper_written_default_language','actor',env)
  for name,args in [('copy','value,budget,depth=0'),('legacy_snapshot','P'),('keys','value,keys'),('ink','value'),('section_valid','section'),('record_valid','record')]:
+  env['paper_document_'+name]=project(SOURCE,'/proc/paper_document_'+name,args,env)
+ for name,args in [('prepare_edit','P'),('commit_edit','P,edit')]:
   env['paper_document_'+name]=project(SOURCE,'/proc/paper_document_'+name,args,env)
  class Service:
   def __init__(self,paper,actor):self.paper=paper;self.controller=actor;self.control_client=actor.client

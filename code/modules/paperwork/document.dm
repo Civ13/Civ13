@@ -1,5 +1,5 @@
 // Civ13 original implementation. No upstream code, dependency or asset copied.
-// Foundation API only: no Topic/TGUI/legacy-authoring endpoint invokes it yet.
+// Typed authoring stays unwired; physical erasure shares its data transaction.
 /obj/item/weapon/paper
 	// Ordinary item persistence enumerates changed vars; this scalar/list record
 	// is durable. Existing paper fields remain authoritative and unchanged.
@@ -128,6 +128,57 @@ var/global/paper_document_sequence = 0
 	// Identity only, never author authenticity or invented historical provenance.
 	return md5("\ref[P]:[world.realtime]:[paper_document_sequence]")
 
+// Internal transaction data only, never a UI/copy payload or persisted field.
+// Callers retain their own actor/tool or trusted physical-event admission.
+/proc/paper_document_prepare_edit(obj/item/weapon/paper/P)
+	if (!P || P.gc_destroyed || !paper_document_record_valid(P.document_record))
+		return null
+	var/list/current = P.document_record
+	var/list/legacy = paper_document_legacy_snapshot(P)
+	if (!legacy || json_encode(legacy) != json_encode(current["legacy"]))
+		return null
+	var/datum/paper_document_budget/budget = new /datum/paper_document_budget/record()
+	var/list/next = paper_document_copy(current, budget)
+	if (!budget.valid)
+		return null
+	return list("original" = current, "revision" = current["revision"], "document_id" = current["document_id"], "legacy_json" = json_encode(legacy), "canonical_json" = json_encode(current), "record" = next)
+
+/proc/paper_document_commit_edit(obj/item/weapon/paper/P, list/edit)
+	if (!P || P.gc_destroyed || !paper_document_keys(edit, list("original", "revision", "document_id", "legacy_json", "canonical_json", "record")))
+		return FALSE
+	var/list/current = edit["original"]
+	var/list/next = edit["record"]
+	if (P.document_record != current || !paper_document_record_valid(current) || !paper_document_record_valid(next))
+		return FALSE
+	if (current["revision"] != edit["revision"] || current["document_id"] != edit["document_id"] || json_encode(current) != edit["canonical_json"])
+		return FALSE
+	if (next["revision"] != edit["revision"] + 1 || next["document_id"] != edit["document_id"] || next["next_section"] < current["next_section"])
+		return FALSE
+	var/list/legacy = paper_document_legacy_snapshot(P)
+	if (!legacy || json_encode(legacy) != edit["legacy_json"])
+		return FALSE
+	// Canonical state must not alias the caller's candidate or physical lists.
+	var/datum/paper_document_budget/budget = new /datum/paper_document_budget/record()
+	var/list/committed = paper_document_copy(next, budget)
+	if (!budget.valid)
+		return FALSE
+	budget = new()
+	var/list/physical = paper_document_copy(committed["legacy"], budget)
+	if (!budget.valid)
+		return FALSE
+	// No yield, callback, prompt, projection or effect between guard and commit.
+	P.name = physical["name"]
+	P.info = physical["info"]
+	P.stamps = physical["stamps"]
+	P.fields = physical["fields"]
+	P.free_space = physical["free_space"]
+	P.stamped = physical["stamped"]
+	P.ico = physical["ico"]
+	P.offset_x = physical["offset_x"]
+	P.offset_y = physical["offset_y"]
+	P.document_record = committed
+	return TRUE
+
 /datum/paper_document_service
 	should_save = FALSE
 	var/obj/item/weapon/paper/paper
@@ -191,10 +242,10 @@ var/global/paper_document_sequence = 0
 		value = pen.get_signature(actor)
 	if (!istext(value) || !length(value) || !isnum(paper.free_space) || length(value) > paper.free_space)
 		return FALSE
-	var/datum/paper_document_budget/budget = new /datum/paper_document_budget/record()
-	var/list/next = paper_document_copy(current, budget)
-	if (!budget.valid)
+	var/list/edit = paper_document_prepare_edit(paper)
+	if (!edit)
 		return FALSE
+	var/list/next = edit["record"]
 	var/list/sections = next["sections"]
 	var/list/section = list("id" = "section-[next["next_section"]]", "lineage" = paper_document_mint_id(paper), "version" = 1, "kind" = kind, "language_id" = language_id, "text" = value, "ink" = pen.colour, "tool" = istype(pen, /obj/item/weapon/pen/crayon) ? "crayon" : "pen")
 	sections += list(section)
@@ -206,10 +257,7 @@ var/global/paper_document_sequence = 0
 		return FALSE
 	if (json_encode(paper_document_legacy_snapshot(paper)) != json_encode(legacy))
 		return FALSE
-	// No yield, prompt, effect or language-learning operation between guard/commit.
-	paper.free_space = next_legacy["free_space"]
-	paper.document_record = next
-	return TRUE
+	return paper_document_commit_edit(paper, edit)
 
 // Sole future UI data boundary. Never send the canonical record or copy payload.
 // Every text-bearing kind, including title/labels/answers/signature, is projected
