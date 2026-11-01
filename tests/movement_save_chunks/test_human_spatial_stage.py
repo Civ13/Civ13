@@ -40,6 +40,43 @@ class StageChecks(unittest.TestCase):
                          'fixture_seated_did_not_move', 'fixture_seated_reference_first'):
             self.assertIn(evidence, probe)
 
+    def test_writer_and_reader_share_nonempty_map_identity_without_weakening_preflight(self):
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        self.assertIn('/obj/map_metadata/subtile_fixture\n\tID = "human-spatial-fixture"', probe)
+        initialization = probe.index('human_subtile_fixture_initialize()')
+        identity = probe.index('map && map.ID == "human-spatial-fixture"')
+        branch = probe.index('if(world.params["phase"] == "writer")', initialization)
+        self.assertLess(initialization, identity)
+        self.assertLess(identity, branch)
+        loading = (stage.ROOT / 'code/modules/persistence/loading.dm').read_text()
+        self.assertIn('if(meta.len < 9 || meta[1] != map.ID)', loading)
+
+    def test_round_identity_and_coupled_metadata_use_production_gates(self):
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        initialization = probe.index('human_subtile_fixture_initialize()')
+        round_identity = probe.index('global.game_id = "human-spatial-fixture-round"')
+        branch = probe.index('if(world.params["phase"] == "writer")', initialization)
+        self.assertLess(initialization, round_identity)
+        self.assertLess(round_identity, branch)
+        self.assertEqual(probe.count('\t\t\thuman_spatial_fixture_assert_saved_round()'), 2)
+        helper = probe.split('/proc/human_spatial_fixture_assert_saved_round()', 1)[1].split('\n/proc/', 1)[0]
+        for required in ('round_mode_metadata(meta)', 'map_storage.read_round_state()',
+                         'fixture_saved_map_identity', 'fixture_saved_modes',
+                         'fixture_saved_mode_value', 'fixture_saved_round_binding',
+                         'fixture_saved_round_identity', 'fixture_saved_round_dimensions',
+                         'fixture_saved_round_clock'):
+            self.assertIn(required, helper)
+        functions = (stage.ROOT / 'code/modules/persistence/functions.dm').read_text()
+        reader = functions.split('/map_storage/proc/read_round_state()', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        for required in ('state.len !=', 'state["generation"] != marker',
+                         'md5(file2text("map_saves/map.txt"))', 'state["map"] != map.ID',
+                         'state["maxx"] != world.maxx', 'state["maxy"] != world.maxy',
+                         'state["maxz"] != save_validation_maxz()', 'elevation_profile_from_snapshot',
+                         'validate_level_link_rows', '!istext(state["game_id"])',
+                         'length(state["game_id"]) > 128', 'GAME_STATE_PREGAME',
+                         'state["elapsed"] || state["roundstart_time"]'):
+            self.assertIn(required, reader)
+
     def test_drag_authority_seam_is_scoped_to_fixture_actor(self):
         living = (stage.ROOT / 'code/game/mob/living/living.dm').read_text()
         proc = living.split('/mob/living/Move(a, b, flag)\n', 1)[1].split('\n/mob/living/', 1)[0]

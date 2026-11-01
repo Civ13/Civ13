@@ -22,6 +22,11 @@ var/global/human_spatial_fixture_seated_moved = 0
 var/global/list/human_spatial_fixture_roles = list()
 var/global/list/human_spatial_fixture_legacy_diagnostic = null
 
+// Both fresh processes use the same nonempty synthetic identity. Production
+// preflight must still compare the saved map ID to the active map.
+/obj/map_metadata/subtile_fixture
+	ID = "human-spatial-fixture"
+
 /proc/human_spatial_fixture_register_actor(mob/living/human/H, role)
 	human_spatial_fixture_roles["\ref[H]"] = role
 
@@ -65,6 +70,23 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 
 /proc/human_spatial_fixture_assert(ok, label)
 	if(!ok) throw EXCEPTION(label)
+
+// Reuse the production round reader so marker, metadata hash, map, dimensions,
+// schema, optional snapshots, identity, phase and clocks retain their real gates.
+/proc/human_spatial_fixture_assert_saved_round()
+	var/marker = trim(file2text("map_saves/save_complete.txt"))
+	var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
+	human_spatial_fixture_assert(meta.len >= 9 && meta[1] == map.ID, "fixture_saved_map_identity")
+	var/list/modes = map_storage.round_mode_metadata(meta)
+	human_spatial_fixture_assert(islist(modes) && modes.len == 4, "fixture_saved_modes")
+	for(var/key in list("persistence", "research_active", "resourceresearch", "perschadplus"))
+		human_spatial_fixture_assert(modes[key] == 0, "fixture_saved_mode_value")
+	var/list/round = map_storage.read_round_state()
+	human_spatial_fixture_assert(islist(round) && round["generation"] == marker && round["map"] == map.ID, "fixture_saved_round_binding")
+	human_spatial_fixture_assert(round["game_id"] == "human-spatial-fixture-round", "fixture_saved_round_identity")
+	human_spatial_fixture_assert(round["maxx"] == world.maxx && round["maxy"] == world.maxy && round["maxz"] == world.maxz, "fixture_saved_round_dimensions")
+	human_spatial_fixture_assert(round["state"] == GAME_STATE_PREGAME && !round["elapsed"] && !round["roundstart_time"], "fixture_saved_round_clock")
+	return TRUE
 
 // Staged writer only: created after the initial spatial group was captured.
 /proc/human_spatial_fixture_start_late_walker()
@@ -125,6 +147,8 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 	try
 		human_spatial_fixture_assert(!port && byond_version == 516 && byond_build == 1688, "fixture_engine_or_port")
 		human_subtile_fixture_initialize()
+		global.game_id = "human-spatial-fixture-round"
+		human_spatial_fixture_assert(map && map.ID == "human-spatial-fixture", "fixture_map_identity")
 		if(world.params["phase"] == "writer")
 			var/mob/living/human/H = new(locate(1, 1, 1))
 			human_spatial_fixture_register_actor(H, "moving")
@@ -177,6 +201,7 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			human_spatial_fixture_assert(human_spatial_fixture_seated_moved == 1, "fixture_seated_did_not_move")
 			var/marker = trim(file2text("map_saves/save_complete.txt"))
 			human_spatial_fixture_assert(length(marker) > 0, "fixture_marker_missing")
+			human_spatial_fixture_assert_saved_round()
 			observed["generation"] = marker
 			observed["transaction_observed"] = TRUE
 			observed["handoffs"] = human_spatial_fixture_handoffs
@@ -190,6 +215,7 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 		else if(world.params["phase"] == "reader")
 			var/list/expected = json_decode(file2text("human-spatial-expected.json"))
 			human_spatial_fixture_assert(islist(expected) && islist(expected["capsule"]) && expected["generation"] == trim(file2text("map_saves/save_complete.txt")), "fixture_expected_generation")
+			human_spatial_fixture_assert_saved_round()
 			human_spatial_fixture_assert(map_storage.Load_World(), "fixture_load_failed")
 			var/list/bodies = persistence_restored_bodies["syntheticfixture"]
 			human_spatial_fixture_assert(islist(bodies) && bodies.len == 1, "fixture_body_missing")
