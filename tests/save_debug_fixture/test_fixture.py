@@ -80,6 +80,10 @@ class ControllerContracts(unittest.TestCase):
         args = evidence()
         controller.validate_writer(args[0], args[2], args[3], args[4], args[0]['seed_generation'])
         self.assertTrue(controller.validate_evidence(*args))
+        numeric = list(evidence())
+        for key in ('retained_box', 'retained_item', 'retained_control_item', 'omitted_animal', 'reference_null'):
+            numeric[1][key] = 1
+        self.assertTrue(controller.validate_evidence(*numeric))
         cases = []
         a = list(evidence()); a[3]['1.sav'] = 'changed'; cases.append(a)
         a = list(evidence()); a[4] = a[0]['seed_generation']; cases.append(a)
@@ -90,6 +94,9 @@ class ControllerContracts(unittest.TestCase):
         a = list(evidence()); a[1]['retained_item'] = False; cases.append(a)
         a = list(evidence()); a[1]['retained_control_item'] = False; cases.append(a)
         a = list(evidence()); a[1]['reference_null'] = False; cases.append(a)
+        a = list(evidence()); a[1]['reference_null'] = 1.0; cases.append(a)
+        a = list(evidence()); a[1]['reference_null'] = '1'; cases.append(a)
+        a = list(evidence()); del a[1]['reference_null']; cases.append(a)
         a = list(evidence()); a[0]['audit']['omissions'][0]['target_ref'] = 'wrong'; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)
         a = list(evidence()); a[0]['audit']['omissions'][0]['source_ref'] = 'wrong'; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)
         a = list(evidence()); a[0]['audit']['attempt_history'][0]['outcome'] = 'success'; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)

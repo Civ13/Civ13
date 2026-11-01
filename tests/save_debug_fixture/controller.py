@@ -177,7 +177,11 @@ def validate_evidence(writer, reader, seed, backup, current):
     require(history[0].get('outcome') == 'failed_retryable' and history[0].get('attempt') == 1, 'missing failed attempt')
     require(all(type(row) is dict and row.get('target_ref') == incident.get('child_ref') and row.get('target_type') == incident.get('child_type') and row.get('replacement') in {'null_reference', 'omitted_content', 'roster_not_admitted'} for row in omissions), 'unaccounted omission')
     require(any(row.get('source_type') == '/obj/structure/debug_save_fixture' and row.get('source_ref') == incident.get('parent_ref') and row.get('field') == 'fixture_reference' and row.get('replacement') == 'null_reference' for row in omissions), 'fixture reference omission not audited')
-    require(all(reader.get(key) is True for key in ('retained_box', 'retained_item', 'retained_control_item', 'omitted_animal', 'reference_null')), 'fresh reader graph')
+    # BYOND serializes TRUE as the JSON integer 1. Accept only that integer or
+    # a literal JSON true; do not accept floats, strings, or missing values.
+    def reader_true(value):
+        return value is True or (type(value) is int and value == 1)
+    require(all(reader_true(reader.get(key)) for key in ('retained_box', 'retained_item', 'retained_control_item', 'omitted_animal', 'reference_null')), 'fresh reader graph')
     return True
 
 
