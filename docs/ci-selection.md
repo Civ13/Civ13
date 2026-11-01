@@ -144,6 +144,7 @@ discovery admits future test files automatically.
 | policy | Four named `test_ci_*.py` files; temporary Git repos, mocked outcomes, source reads | Always |
 | bootstrap | `test_byond_bootstrap.py` and `test_byond_toolchain.py`; Bash syntax, stub commands, strict pin validation and injected archive/receipt controls only | Always |
 | progress | `world_save/test_progress_sources.py`; AST dispatch, source preparation and temporary files | Always |
+| destroyed_grab_preflight | `test_destroyed_grab_preflight.py`; source and state-model checks only | Grab preflight test or shared human movement source edits |
 | research | `research_scheduler/test_resume.py`; restricted source traces and one immutable `git show` | Research source/shared scheduler or suite/helper edits |
 | ping | `ping_scheduler/test_resume.py`; restricted source traces and one immutable `git show` | Ping/shared process source or suite/helper edits |
 | year | `persistence_year/test_floor.py`; source projections, save-schema/fixture text only | Persistence/setup source or persistence-year/world-save helper edits |
