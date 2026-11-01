@@ -1,0 +1,60 @@
+name: Bounded cardinal wildlife cadence observations
+on:
+  workflow_dispatch:
+    inputs:
+      expected_head:
+        description: Full reviewed fixture commit SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: civ13-wildlife-random-cadence-exclusive
+  cancel-in-progress: false
+jobs:
+  cardinal-cadence:
+    if: ${{ github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        suite: [cardinal05, cardinal10]
+    steps:
+      - name: Validate manual source and exclusive rate selection
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_head }}
+          WILDLIFE_SUITE: ${{ matrix.suite }}
+        run: |
+          set -euo pipefail
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test "$RUNNER_OS" = Linux
+          test "$RUNNER_ARCH" = X64
+          [[ "$EXPECTED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          test "$EXPECTED_HEAD" = "$GITHUB_SHA"
+          [[ "$WILDLIFE_SUITE" == cardinal05 || "$WILDLIFE_SUITE" == cardinal10 ]]
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Offline selector, observer and receipt contracts
+        run: |
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cloud_npc_controller.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_random_cadence_contract.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cardinal_contract.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cardinal_stage.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cardinal_evidence.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cardinal_worker.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_wild_handoff.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/persistence_pointers -p 'test_contract.py' -v
+      - name: Bounded isolated observations, no parity claim
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_head }}
+          WILDLIFE_SUITE: ${{ matrix.suite }}
+          CIV13_REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I -B tests/human_subtile/cloud_npc_job.py --execute --head "$EXPECTED_HEAD" --suite "$WILDLIFE_SUITE" \
+            --output "$RUNNER_TEMP/cardinal-setup" --controller-output "$RUNNER_TEMP/cardinal-controller"

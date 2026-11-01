@@ -58,6 +58,35 @@ def tar_bytes(entries):
 
 
 class ControllerContracts(unittest.TestCase):
+    def test_cardinal_exact_package_and_rejected_extras(self):
+        names = {'harness-status.json','smoke-summary.json','npc-smoke/cloud-manifest.json',
+                 'npc-smoke/stage/compile-stdout.log','npc-smoke/stage/compile-stderr.log'}
+        names.update(f'npc-smoke/{runtime}/{name}' for runtime in ('runtime','runtime-wildlife') for name in
+                     ('receipt.json','result.txt','port-closed.txt','runtime.log','daemon-stdout.log','daemon-stderr.log'))
+        names.update(f'abi/abi-{i}-{part}.log' for i in range(6) for part in ('stdout','stderr'))
+        self.assertEqual(len(names),29)
+        self.assertTrue(names <= set(smoke.EVIDENCE_PATHS))
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            for name in names:
+                target=root/name; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes((name+'\n').encode())
+            out=io.StringIO()
+            with patch.object(smoke,'RUN_STATE',{'suite':'cardinal05'}), contextlib.redirect_stdout(out):
+                smoke.emit_package(root,'passed',{'samples':1})
+            log=out.getvalue().encode(); marker=json.loads(log.splitlines()[-1].split(b' ',1)[1])
+            data=controller.package_from_logs(log,marker,'cardinal05')
+            self.assertTrue(marker['package']['complete'])
+            with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                self.assertEqual(set(archive.getnames()),names)
+        base=[(name,b'x',tarfile.REGTYPE) for name in sorted(names)]
+        for extra in (('npc-smoke/runtime/unknown.txt',b'x',tarfile.REGTYPE),
+                      ('../escape',b'x',tarfile.REGTYPE),
+                      ('npc-smoke/runtime/receipt.json',b'x',tarfile.REGTYPE),
+                      ('npc-smoke/runtime/symlink',b'',tarfile.SYMTYPE)):
+            bad=tar_bytes(base+[extra]); expected={'bytes':len(bad),'sha256':hashlib.sha256(bad).hexdigest()}
+            with self.subTest(extra=extra[0]), self.assertRaises(RuntimeError):
+                controller.validate_package(bad,expected,'cardinal05')
+
     def test_random_worker_complete_package_and_narrow_archive_policy(self):
         # Exercise the actual worker's selection and transport, including both
         # parents and all three runtime outputs, not a hand-built happy path.
@@ -242,6 +271,19 @@ class ControllerContracts(unittest.TestCase):
         self.assertNotIn('host',args)
         self.assertNotIn('exec',args)
         self.assertEqual(args.count('--mount'),3)
+
+    def test_cardinal_suite_inherits_deadline_and_restrictions(self):
+        for suite in ('cardinal05','cardinal10'):
+            with self.assertRaises(RuntimeError):
+                controller.create_args(NAME,OWNER,HEAD,Path('/reviewed'),Path('/bin-by'),Path('/by.zip'),'1001:1001',suite)
+            args=controller.create_args(NAME,OWNER,HEAD,Path('/reviewed'),Path('/bin-by'),Path('/by.zip'),
+                                        '1001:1001',suite,123.0)
+            self.assertEqual(args[args.index('--suite')+1],suite)
+            self.assertEqual(args[args.index('--work-deadline')+1],'123.0')
+            for flag,value in (('--network','none'),('--pids-limit','64'),('--memory','3g'),('--cpus','2')):
+                self.assertEqual(args[args.index(flag)+1],value)
+            self.assertEqual(args.count('--mount'),3)
+            self.assertNotIn('--privileged',args)
 
     def test_watchdog_reconciles_fresh_name_and_removes_owned_container(self):
         fake=FakeDocker()
