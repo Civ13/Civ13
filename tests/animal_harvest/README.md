@@ -1,5 +1,43 @@
 # Animal harvest regression
 
+Busy-action admission is checked offline with:
+
+```powershell
+& '<verified-python-executable>' -B tests/animal_harvest/test_action_admission.py
+```
+
+This checks the production early-return expressions before messages, claims or
+cooldown changes across tall/floor grass, branch clearing, stick sharpening,
+ants, axe binding, flint gathering and the flint/bench repair handlers. Each
+omitted guard and a guard moved after the grass announcement are negative
+controls. It does not execute DM, waits, UI or native callbacks.
+
+The prepared `action_admission_probe.dm` additionally holds the real stick
+sharpening wait while clicking both tall-grass variants, another stick, axe
+parts and repair targets. It asserts no second grass wait/start/cooldown, no
+resource/durability changes, the original wait remains owned and completes,
+and idle grass cutting still announces and yields normally. The existing
+tall-grass matrix also checks busy entry. These added native assertions
+were compiled at `011931e0a`, where runtime preflight rejected the copied-name
+file count. At `8cc5ddd1d` the input correction passed preflight, both compiles
+passed, and one daemon ran, but startup runtime errors caused the runner to
+reject the attempt. Later tanning PASS markers are partial progress only.
+See [startup diagnosis and local proposal](startup-isolation.md).
+
+Normal CI registers this exact offline file as the bounded baseline's
+`action_admission` suite. Its stdlib-only imports never launch a native runner;
+shared game and fixture inputs preserve the existing all-suite fallback.
+
+CI selection proposal: an ordinary PR against master introducing the new probe
+and offline test also selects the registered `tests/animal_harvest` native suite
+in CI, including its existing pinned 516.1688 limited fixture runner after
+compilation. Leave `extensive_regressions` off. The new competing-click fixture
+is included and invoked by that runner; it is not a separate manual case.
+If publication
+of a new native test is not yet admitted, retain this branch locally. No workflow
+dispatch is needed or authorized by preparing the source. Connected-client
+message delivery, smooth movement and live Gaia behavior remain separate.
+
 Run only under the admitted native plan, with a verified Python interpreter and
 explicit BYOND 516.1688 bin path:
 
@@ -9,7 +47,12 @@ explicit BYOND 516.1688 bin path:
 
 The runner compiles the production DME without its map or normal world startup,
 then launches a small offline world in unique temporary storage under ignored
-`data/animal-harvest-tests`. It copies only name configuration. Unique owned
+`data/animal-harvest-tests`. The prepared correction stages the exact 146 pinned
+eager name inputs and the existing minimal config under `runtime/`, with separate
+input/output accounting. See [input-accounting.md](input-accounting.md) for the
+source proof, old/new bounds, zero-launch controls and native review proposal.
+The baseline registers `test_input_accounting.py` as the offline `harvest_inputs`
+suite. Unique owned
 generated files, prelaunch input snapshots and runtime logs are retained on
 success, failure, timeout and interruption. No runner path deletes them.
 Linux CI uses the downloaded pinned BYOND bin directory and `/usr/bin/python3`.
@@ -82,12 +125,13 @@ inject movement, stun and hand switching during a real wait. The substantive
 cases and adapters live in `tall_grass_probe.dm`, included and called by the
 existing fixture; its new executable path selects this registered suite on PRs
 without changing the CI workflow. Client, inventory setup and wait adapters
-remain fixture-only; these added cases have not been compiled or executed yet.
+remain fixture-only. They were included in the compiled `8cc5ddd1d` fixture,
+whose daemon attempt failed its runtime guard; there is no clean native pass.
 
-The baseline global controller can emit BYOND `BUG: Bad ref ... globals.dm:16`
-diagnostics at startup before this fixture starts; normal DM exceptions are
-separately recorded and fail the runner. This is not a clean full-game startup
-claim. The bounded output assertion measures item count, not heap usage.
+Startup diagnostics and DM exceptions remain failures, recorded by the runner;
+the local startup proposal does not change that guard or establish a clean
+full-game startup. The bounded output assertion measures item count, not heap
+usage.
 
 With Pillow, `preview.py --output <file.png>` validates each new item's effective
 existing DMI state (including rotten variants), rejects blank/missing sprites and
