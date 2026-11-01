@@ -33,8 +33,10 @@ class DiagonalContracts(unittest.TestCase):
         source = MODULE.read_text()
         self.assertIn('distance * world.tick_lag / max(duration, world.tick_lag)', source)
         self.assertIn('!(appearance_flags & LONG_GLIDE)', source)
-        self.assertIn('owner.fps = max(owner.human_subtile_previous_fps, world.fps + 1, 60)', source)
-        self.assertIn('fps = human_subtile_previous_fps', source)
+        # Movement owns interpolation only; account FPS survives start/release.
+        self.assertNotIn('owner.fps =', source)
+        self.assertNotIn('human_subtile_previous_fps', source)
+        self.assertNotIn('human_subtile_applied_fps', source)
         self.assertIn('glide_size = human_subtile_previous_glide', source)
         self.assertNotIn('world.fps =', source)
         self.assertNotIn('pixel_x =', source)
