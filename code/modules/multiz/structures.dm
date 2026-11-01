@@ -83,7 +83,10 @@
 	ladder_list += src
 
 /obj/structure/multiz/ladder/Destroy()
+	if (target && istop)
+		qdel(target)
 	ladder_list -= src
+	// Preserve the old registry-cleanup layer's ignored parent return value.
 	..()
 
 /obj/structure/multiz/ladder/find_target()
@@ -93,11 +96,6 @@
 /obj/structure/multiz/ladder/up
 	icon_state = "ladderup"
 	istop = FALSE
-
-/obj/structure/multiz/ladder/Destroy()
-	if (target && istop)
-		qdel(target)
-	return ..()
 
 /obj/structure/multiz/ladder/attack_hand(var/mob/M)
 

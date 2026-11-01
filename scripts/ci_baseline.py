@@ -25,6 +25,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only complete destruction-layer projection; frozen source is data.
+    'ladder_cleanup': {'files': ('tests/ladder_cleanup/test_destroy.py',),
+        'paths': ('tests/ladder_cleanup/',), 'shared_paths': (
+            'code/modules/multiz/structures.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib + reviewed source projection only; frozen DM is offline data.
     # No native runner, engine process, socket or network boundary is imported.
     'vehicle_hud': {'files': ('tests/vehicle_hud/test_driver_axis.py',),

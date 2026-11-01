@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_ladder_cleanup_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['ladder_cleanup']
+        self.assertEqual(suite['files'], ('tests/ladder_cleanup/test_destroy.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'ladder_cleanup'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/ladder_cleanup/fixtures/destroy_before.txt']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'ladder_cleanup'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'ladder_cleanup'})
+
     def test_vehicle_hud_registration_is_bounded_and_preserves_shared_fallback(self):
         suite = ci.SUITES['vehicle_hud']
         self.assertEqual(suite['files'], ('tests/vehicle_hud/test_driver_axis.py',))
