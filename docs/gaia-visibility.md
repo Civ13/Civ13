@@ -37,6 +37,51 @@ entering a denied tile. Omission controls demonstrate offset recapture and stale
 neighbor presentation when their respective guards are removed. These checks
 do not establish engine scheduling, native mouse priority, or client pixels.
 
+## Exposed blocking-tree surfaces
+
+Tree presentation can admit a captured opaque tree when an eye-facing edge of
+one of its physical cells is exposed, even if a nearer cell of the same tree or
+another blocker hides the root center. Jungle trees occupy two native tiles.
+Presentation captures freeze each opaque tree's actual root, step and bound
+rectangle. Native turf overlap lists do not define full owned surface cells:
+a 32px tree shifted 2px still has only 32px of width. The physical rectangle is
+clipped to the viewport and lazily split into cells at most one tile wide/high.
+The edge test uses each cell's actual half extents, including partial cells.
+Foreign co-owners remain blockers; only exclusive tree contributions are skipped.
+Information captures allocate no physical-bound records. A root outside the
+viewport needs physical bounds inside it. Changed root/step/bounds reject stale
+surface records.
+This applies only to tree-family presentation, including the native composition
+fallback. It does not change terrain/entity masks, hover/examine decisions, or
+action checks. A rendered edge can therefore still have stricter information
+read authorization. Surface results use a separate snapshot-local cache key.
+
+The edge test projects nearer unit-cell shadows onto at most two eye-facing
+edges per owned cell. Each shadow spans at least the edge's length (at most one),
+so their union
+needs only prefix/suffix bounds. Rational comparisons preserve closed contact;
+the existing bins bound candidate discovery. This is linear candidate work per
+edge, not a new viewport scan or pixel ray caster. No native timing claim follows.
+
+Opaque root-tree images no longer force `TILE_BOUND`, which would cull an
+oversized/offset canopy solely by its root location. The geometric gate and
+native pixel visibility still apply. Nonopaque tree images retain their previous
+flag. Native composition fallback uses a per-client allowed tree appearance with
+`TILE_BOUND` cleared, retaining the real atom, native plane and lighting. Denial,
+viewport exit, opacity changes and compositor handoff remove that copy. Blocker
+or viewer/context invalidation synchronously withdraws all allowed fallback tree
+copies; an unaffected fallback canopy may briefly disappear until refresh.
+Ordinary terrain/entity masks retain their region filter.
+Root-source RGB, committed-light checks, mouse identity and tile-movement
+cadence are preserved. Fully occluded trees remain withdrawn; no terrain or
+entities behind an admitted canopy are unmasked. Weather coverage is unchanged.
+
+Offline checks exercise exposed/fully covered surfaces, offset blockers,
+ownership, binned/flat parity against a rational ray oracle, cache separation,
+and flag/visibility omissions. These do not establish native canopy culling,
+mouse hits, pixels or dense-scene cost. The reported screenshot cause remains
+unconfirmed until the exact candidate receives authorized native validation.
+
 ## Scope and current evidence
 
 The October 30 request is to make LOS and oversized-tree lighting enabled by
