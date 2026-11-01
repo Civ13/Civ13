@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
-FILES = ['code/predefines.dm', 'tests/world_save/stubs.dm',
+FILES = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'tests/movement_save_chunks/debug_lossy_adapter.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
          'code/modules/persistence/loading.dm', 'tests/movement_save_chunks/list_identity.dm',

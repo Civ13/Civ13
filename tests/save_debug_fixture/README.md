@@ -41,6 +41,8 @@ core files are disabled. Logs are sampled at 8 MiB each and the runtime tree at
 256 MiB, 4096 entries and depth 16. These are sampled aggregate limits, not a
 filesystem quota. The separately staged source/build tree has the existing
 stager's 2 GiB/8000-file input bounds, but no hard aggregate output-disk quota.
+Native daemon logs use fixed basenames in the isolated runtime directory;
+DreamDaemon refuses an absolute log path outside its DMB directory.
 No RSS, CPU or total descendant-memory guarantee is claimed. Processes have a
 retained, unreaped Linux group leader during inspection and group cleanup is
 reported; this is not a system-wide process census. Artifact and receipt reads

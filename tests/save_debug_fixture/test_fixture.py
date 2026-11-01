@@ -143,7 +143,9 @@ class ControllerContracts(unittest.TestCase):
                     (out / 'compile.stdout.log').write_text('DM compiler version 516.1688\nhuman_subtile.dmb - 0 errors, 0 warnings\n')
                     (out / 'compile.stderr.log').write_text('')
                 else:
-                    (out / (role + '.native.log')).write_text('')
+                    self.assertEqual(command[-2:], ['-log', role + '.native.log'])
+                    self.assertEqual(command[command.index('-params') + 1], f'phase={role}&tested_commit=' + 'a' * 40 + '&scope=' + 'b' * 64)
+                    (cwd / (role + '.native.log')).write_text('')
                     (cwd / ('debug-fixture-' + role + '.json')).write_text(json.dumps({'phase': role, 'head': 'a' * 40, 'scope': 'b' * 64, 'byond_version': 516, 'byond_build': 1688, 'port': 0, 'error': 'synthetic_failure'}))
                 return {'role': role, 'exit': 0}
             fake_os = SimpleNamespace(name='posix', scandir=controller.os.scandir)

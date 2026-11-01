@@ -238,10 +238,12 @@ def execute(output, head, reviewed_scope, byond, archive):
         original_seed = None
         for phase in ('writer', 'reader'):
             require(time.monotonic() < deadline, 'combined deadline')
-            params = f'phase={phase};tested_commit={head};scope={reviewed_scope}'
-            native_log = output / (phase + '.native.log')
+            params = f'phase={phase}&tested_commit={head}&scope={reviewed_scope}'
+            # DreamDaemon restricts log paths to its own working directory.
+            # Keep the log beside the DMB and pass only a relative basename.
+            native_log = work / (phase + '.native.log')
             runtime.before(phase)
-            records.append(owned([str(daemon), str(work / 'human_subtile.dmb'), '0', '-ip', '127.0.0.1', '-trusted', '-params', params, '-log', str(native_log)], work, phase, output, deadline, work, (native_log,), child_environment(byond, work)))
+            records.append(owned([str(daemon), str(work / 'human_subtile.dmb'), '0', '-ip', '127.0.0.1', '-trusted', '-params', params, '-log', native_log.name], work, phase, output, deadline, work, (native_log,), child_environment(byond, work)))
             require(not DIAGNOSTIC.search(bounded_bytes(native_log, MAX_LOG).decode(errors='replace')), 'unexpected native log diagnostic')
             inventory(work, deadline)
             if phase == 'writer':
