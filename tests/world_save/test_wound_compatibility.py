@@ -71,11 +71,15 @@ class HistoricalWoundCompatibility(unittest.TestCase):
             start = self.loading.index(marker)
             end = self.loading.find('\n/map_storage/proc/', start + len(marker))
             helper = self.loading[start:end if end >= 0 else len(self.loading)]
-            expected = self.functions + '\n' + roof + '\n' + helper
+            link_start = '/map_storage/proc/validate_level_link_rows(list/rows)\n'
+            link_end = '\n/map_storage/proc/is_level_link_value(value)\n'
+            link_helper = self.loading[self.loading.index(link_start):self.loading.index(link_end)]
+            expected = self.functions + '\n' + roof + '\n' + helper + '\n' + link_helper
             self.assertEqual(sources.count(expected.encode()), 1)
             combined = b'\n'.join(sources).decode('utf-8')
             self.assertEqual(combined.count(roof), 1)
             self.assertEqual(combined.count(marker), 1)
+            self.assertEqual(combined.count(link_start), 1)
             for name in re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M):
                 self.assertEqual(len(re.findall(r'^/map_storage/proc/' + name + r'\(', combined, re.M)), 1)
             self.assertEqual(receipt['wound_control_commit'], BASELINE)
@@ -83,6 +87,8 @@ class HistoricalWoundCompatibility(unittest.TestCase):
                              receipt['wound_control_compatibility_helper_sha256'])
             self.assertEqual(hashlib.sha256(roof.encode()).hexdigest(),
                              receipt['wound_control_roof_helpers_sha256'])
+            self.assertEqual(hashlib.sha256(link_helper.encode()).hexdigest(),
+                             receipt['wound_control_link_helper_sha256'])
             self.assertTrue(receipt['prepared_only'])
             self.assertFalse((output / 'compile.log').exists())
             self.assertFalse(list(output.glob('*.dmb')))
@@ -111,6 +117,16 @@ class HistoricalWoundCompatibility(unittest.TestCase):
                           '\n\tvar/list/validated_roof_areas = list()\n'):
             with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility dependencies duplicated'):
                 self.runner.historical_wound_roof_helpers(self.loading, self.functions + duplicate)
+
+    def test_link_extraction_rejects_missing_repeated_or_duplicated_dependency(self):
+        start = '/map_storage/proc/validate_level_link_rows(list/rows)\n'
+        end = '\n/map_storage/proc/is_level_link_value(value)\n'
+        for changed in (self.loading.replace(start, '', 1), self.loading.replace(end, '', 1),
+                        self.loading + start, self.loading + end):
+            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility anchors changed'):
+                self.runner.historical_wound_link_helper(changed, self.functions)
+        with self.assertRaisesRegex(RuntimeError, 'compatibility dependency duplicated'):
+            self.runner.historical_wound_link_helper(self.loading, self.functions + '\n' + start)
 
 
 if __name__ == '__main__':

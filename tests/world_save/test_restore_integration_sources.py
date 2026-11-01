@@ -111,6 +111,31 @@ class RestoreIntegrationSources(unittest.TestCase):
         for required in ('register_restored_player(ob)', 'light_turf.recalc_atom_opacity()', 'light_owner.update_light()', 'surface_inventory.feed_loaded_level', 'surface_inventory.finish_world_inventory'):
             self.assertIn(required, source)
 
+    def test_lighting_refresh_yields_between_callbacks_without_losing_ownership(self):
+        source = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+        refresh = source.split('var/list/lighting_entries = all_loaded', 1)[1].split('log_startup_progress(', 1)[0]
+        opacity, lights = refresh.split('for(var/atom/light_owner in lighting_entries)', 1)
+        self.assertIn('for(var/turf/light_turf in lighting_entries)', opacity)
+        for phase, guard, callback in ((opacity, 'if(!QDELETED(light_turf) && !light_turf.gcDestroyed)', 'light_turf.recalc_atom_opacity()'),
+                                       (lights, 'if(!QDELETED(light_owner) && !light_owner.gcDestroyed)', 'light_owner.update_light()')):
+            self.assertLess(phase.index(guard), phase.index(callback))
+            self.assertLess(phase.index(callback), phase.index('if(TICK_CHECK)'))
+            self.assertIn('!operation.current(src, "load") || all_loaded != lighting_entries || loading_z != B', phase)
+            self.assertIn('throw EXCEPTION("Load ownership changed during lighting restoration")', phase)
+
+    def test_lighting_retirement_check_covers_both_garbage_collectors(self):
+        defines = (ROOT / 'code/__defines/qdel.dm').read_text()
+        self.assertIn('#define QDELING(X) (X.gc_destroyed)', defines)
+        self.assertIn('#define QDELETED(X) (!X || QDELING(X))', defines)
+        for exists, gc_destroyed, gcDestroyed, expected in (
+            (False, False, False, False), (True, False, False, True),
+            (True, True, False, False), (True, False, True, False),
+            (True, True, True, False),
+        ):
+            with self.subTest(exists=exists, gc_destroyed=gc_destroyed, gcDestroyed=gcDestroyed):
+                eligible = exists and not gc_destroyed and not gcDestroyed
+                self.assertEqual(eligible, expected)
+
     def test_combined_native_probe_uses_production_startup(self):
         source = (ROOT / 'tests/world_save/durable_dimension_probe.dm').read_text()
         self.assertIn('persistence_restart.resume_startup()', source)

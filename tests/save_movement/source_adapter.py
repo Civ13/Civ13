@@ -13,7 +13,9 @@ ROOT = Path(__file__).resolve().parents[2]
 # Unknown symbols/directives must not acquire an implicit disabled meaning.
 # The pull-pair kernel is part of every production build.
 DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False, 'CIV13_ROOT_TREE_PRESENTATION': False,
-                   'CIV13_SUBTILE_PULL_PAIRS': True}
+                   'CIV13_SUBTILE_PULL_PAIRS': True,
+                   'CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE': False,
+                   'CIV13_HUMAN_SPATIAL_EXPERIMENTAL': False}
 
 
 def read(path):

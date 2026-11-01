@@ -4,6 +4,18 @@
 #ifndef SPAN_WARNING
 #define SPAN_WARNING(X) (X)
 #endif
+// Minimal fixtures use immediate del(), not the production garbage collector.
+// Expose both retirement markers so the real loader's defensive gate compiles.
+#ifndef QDELING
+#define QDELING(X) (X.gc_destroyed)
+#endif
+#ifndef QDELETED
+#define QDELETED(X) (!X || QDELING(X))
+#endif
+/datum/var/gcDestroyed = 0
+/datum/var/gc_destroyed
+// Empty by default; moving-save fixtures explicitly populate the shared list.
+var/list/mob_list = list()
 /datum/world_save_idle_pull_registry
 	var/list/owners = list()
 	proc/resolve_quiet(reason, datum/persistence_world_operation/operation)
