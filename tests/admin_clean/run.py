@@ -36,7 +36,7 @@ def prepare(output, control):
     elif control == "target":
         command = command.replace("QDELETED(I) || I.gcDestroyed || ", "")
     elif control == "refresh":
-        command = command.replace("M.regenerate_icons()", "M.probe_no_refresh()")
+        command = command.replace("M.regenerate_icons(FALSE)", "M.probe_no_refresh()")
     bodies = command
     bodies += proc("code/game/atoms.dm", "/atom/proc/clean_blood()")
     bodies += proc("code/game/objects/items.dm", "/obj/item/clean_blood()")
@@ -45,7 +45,7 @@ def prepare(output, control):
     rights = rights.replace("var/mob/user = usr", "datum/actor/user")
     rights = rights.replace("var/client/C", "var/datum/actor/C").replace("istype(user, /client)", "istype(user, /datum/actor)")
     bodies += rights
-    renderer = proc("code/game/mob/living/carbon/human/update_icons.dm", "/mob/living/human/regenerate_icons()")
+    renderer = proc("code/game/mob/living/carbon/human/update_icons.dm", "/mob/living/human/regenerate_icons(")
     for call in ("update_inv_shoes(0)", "update_inv_w_uniform(0)", "update_inv_l_hand(0)", "update_inv_r_hand(0)", "update_inv_back(0)"):
         assert call in renderer
     output.mkdir(parents=True)

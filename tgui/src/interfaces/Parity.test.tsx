@@ -82,7 +82,7 @@ describe('research parity', () => {
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { interfaces } from './index';
 describe('standard screen parity', () => {
-  it('registers the existing ten templates, Known Languages and Religion List', () => {
+  it('registers all merged reader routes', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
       'appearance_changer.tmpl',
       'chem_disp.tmpl',
@@ -91,6 +91,7 @@ describe('standard screen parity', () => {
       'known_languages.tmpl',
       'religion_list.tmpl',
       'research_bench.tmpl',
+      'ship_stocks.tmpl',
       'vending_machine.tmpl',
       'vending_machine2.tmpl',
       'vending_machine_gulag.tmpl',

@@ -17,6 +17,7 @@ on:
       - 'code/game/objects/structures/vending/**'
       - 'code/modules/reagents/Chemistry-Machinery.dm'
       - 'code/modules/research_tree/research_bench.dm'
+      - 'code/game/objects/map_metadata/voyage.dm'
       - 'code/game/mob/groups/religions.dm'
       - 'tests/tgui/**'
       - '.github/workflows/tgui.yml'
