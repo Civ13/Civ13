@@ -25,6 +25,14 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only source projection and bounded RGBA8 PNG/DMI inspection.
+    # No harvest preview helper, external package, native runner or network import.
+    # Shared production/art inputs retain conservative all-suite fallback.
+    'tanning_rack_appearance': {'files': ('tests/test_tanning_rack_appearance.py',),
+        'paths': (), 'shared_paths': (
+            'code/game/objects/structures/converters.dm',
+            'code/game/objects/items/stacks/sheets/leather.dm',
+            'icons/obj/structures.dmi', 'icons/obj/materials.dmi')},
     # Full import graph: stdlib source/catalog checks plus the adjacent inert
     # test_foundations specification helper. No native runner or network import.
     # Shared production sources retain their conservative all-suite fallback.

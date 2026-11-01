@@ -5,17 +5,87 @@ wet/dry state machine. Lifecycle checks verify source wiring only. No BYOND,
 savefile round trip, engine overlay export or connected client runs here.
 """
 import ast
-import importlib.util
+from functools import lru_cache
 from pathlib import Path
 import re
+import struct
 from types import SimpleNamespace as NS
 import unittest
-
-from PIL import Image, ImageChops
+import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 RACK = '/obj/structure/converter/tanning'
 MATERIAL = '/obj/item/stack/material/'
+
+
+@lru_cache(maxsize=2)
+def png(path):
+    """Read the existing bounded, noninterlaced RGBA8 DMI files with stdlib only."""
+    data = path.read_bytes()
+    assert data[:8] == b'\x89PNG\r\n\x1a\n'
+    offset, compressed, description = 8, bytearray(), None
+    while offset < len(data):
+        size, kind = struct.unpack('>I4s', data[offset:offset+8])
+        payload = data[offset+8:offset+8+size]
+        crc = struct.unpack('>I', data[offset+8+size:offset+12+size])[0]
+        assert zlib.crc32(kind + payload) & 0xffffffff == crc
+        if kind == b'IHDR':
+            width, height, depth, color, compression, filters, interlace = struct.unpack('>IIBBBBB', payload)
+            assert (depth, color, compression, filters, interlace) == (8, 6, 0, 0, 0)
+            assert 0 < width * height <= 4_000_000
+        elif kind == b'IDAT':
+            compressed.extend(payload)
+        elif kind == b'zTXt' and payload.startswith(b'Description\0\0'):
+            description = zlib.decompress(payload[len(b'Description\0\0'):]).decode()
+        offset += size + 12
+        if kind == b'IEND':
+            break
+    stride = width * 4
+    decoder = zlib.decompressobj()
+    filtered = decoder.decompress(compressed, height * (stride + 1) + 1)
+    assert decoder.eof and len(filtered) == height * (stride + 1) and description
+    pixels, previous = bytearray(), bytearray(stride)
+    for row in range(height):
+        start = row * (stride + 1)
+        mode = filtered[start]
+        scan = bytearray(filtered[start+1:start+1+stride])
+        assert 0 <= mode <= 4
+        if mode:
+            for i in range(stride):
+                left, up, corner = scan[i-4] if i >= 4 else 0, previous[i], previous[i-4] if i >= 4 else 0
+                if mode == 1:
+                    prediction = left
+                elif mode == 2:
+                    prediction = up
+                elif mode == 3:
+                    prediction = (left + up) // 2
+                else:
+                    p = left + up - corner
+                    distances = (abs(p-left), abs(p-up), abs(p-corner))
+                    prediction = (left, up, corner)[distances.index(min(distances))]
+                scan[i] = (scan[i] + prediction) & 255
+        pixels.extend(scan)
+        previous = scan
+    return width, height, description, bytes(pixels)
+
+
+def sprite(path, state):
+    width, _, description, pixels = png(path)
+    cell_width = int(re.search(r'\bwidth = (\d+)', description)[1])
+    cell_height = int(re.search(r'\bheight = (\d+)', description)[1])
+    offset = 0
+    for match in re.finditer(r'state = "([^"]*)"(.*?)(?=\nstate =|\Z)', description, re.S):
+        dirs, frames = (int(m[1]) if (m := re.search(r'\b'+key+r' = (\d+)', match[2])) else 1
+                        for key in ('dirs', 'frames'))
+        if match[1] == state:
+            assert (dirs, frames) == (1, 1)
+            x, y = offset % (width // cell_width) * cell_width, offset // (width // cell_width) * cell_height
+            result = [tuple(pixels[(py*width+px)*4:(py*width+px)*4+4])
+                      for py in range(y, y+cell_height) for px in range(x, x+cell_width)]
+            assert any(p[3] for p in result)
+            return result
+        offset += dirs * frames
+    raise AssertionError('Missing DMI state: ' + state)
 
 
 def block(text, declaration):
@@ -72,6 +142,9 @@ def lifecycle(source):
     assert restore.index('start_hide_drying(hide)') < restore.index('update_icon()')
     exit_body = block(source, RACK + '/Exited')
     assert exit_body.index('. = ..()') < exit_body.index('update_icon()') < exit_body.index('return .')
+    for callback in ('Destroy', 'Del'):
+        body = block(source, RACK + '/' + callback)
+        assert body.index('release_hides()') < body.index('return ..()')
 
 
 class TanningRackAppearance(unittest.TestCase):
@@ -79,9 +152,6 @@ class TanningRackAppearance(unittest.TestCase):
     def setUpClass(cls):
         cls.source = (ROOT/'code/game/objects/structures/converters.dm').read_text()
         cls.leather = (ROOT/'code/game/objects/items/stacks/sheets/leather.dm').read_text()
-        spec = importlib.util.spec_from_file_location('existing_sprite_reader', ROOT/'tests/animal_harvest/preview.py')
-        cls.preview = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(cls.preview)
 
     def hide(self, stage, **changes):
         body = block(self.leather, MATERIAL + stage)
@@ -108,19 +178,23 @@ class TanningRackAppearance(unittest.TestCase):
         self.assertEqual(project(self.source, [unrelated])[1], [])
 
     def test_existing_sprites_are_nonempty_and_colour_changes_only_the_hide(self):
-        frame = self.preview.state(ROOT/'icons/obj/structures.dmi', 'drying_rack_empty')
+        frame = sprite(ROOT/'icons/obj/structures.dmi', 'drying_rack_empty')
         rendered = []
         for stage in ('wethide', 'dryhide'):
             appearance = project(self.source, [self.hide(stage)])[1][0]
-            sprite = self.preview.state(ROOT/appearance['icon'], appearance['icon_state'])
-            tinted = ImageChops.multiply(sprite, Image.new('RGBA', sprite.size, appearance['color']))
-            composite = Image.alpha_composite(frame, tinted)
-            self.assertTrue(sprite.getchannel('A').getbbox())
-            for y in range(frame.height):
-                for x in range(frame.width):
-                    if not sprite.getpixel((x,y))[3]:
-                        self.assertEqual(composite.getpixel((x,y)), frame.getpixel((x,y)))
-            rendered.append(composite.tobytes())
+            hide = sprite(ROOT/appearance['icon'], appearance['icon_state'])
+            tint = tuple(int(appearance['color'][i:i+2], 16) for i in (1,3,5))
+            composite = []
+            for background, foreground in zip(frame, hide):
+                rgb = tuple(channel * scale // 255 for channel, scale in zip(foreground[:3], tint))
+                alpha = foreground[3] / 255
+                output_alpha = alpha + background[3] / 255 * (1-alpha)
+                pixel = tuple(round((rgb[i]*alpha + background[i]*background[3]/255*(1-alpha))/output_alpha)
+                              if output_alpha else background[i] for i in range(3)) + (round(output_alpha*255),)
+                if not foreground[3]:
+                    self.assertEqual(pixel, background)
+                composite.append(pixel)
+            rendered.append(composite)
         self.assertNotEqual(*rendered)
 
     def test_load_completion_release_exit_and_restore_rebuild_display(self):
