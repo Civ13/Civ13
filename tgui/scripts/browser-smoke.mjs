@@ -44,11 +44,38 @@ try {
   assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/assign', payload: { assign: 'stone' } });
   await page.keyboard.press('Escape');
   assert.equal(await page.getByRole('dialog').count(), 0);
+  const atlas = { mode: 'graph', query: 'ore', era: '', processor: '', recipe_count: 1, resource_count: 1,
+    resources: [{ id: '/material/ore', name: 'Indexed ore' }],
+    recipes: [{ id: 'recipe-one', name: 'Fictional transformation', era_label: 'Context dependent' }],
+    detail: { id: 'recipe-one', name: 'Fictional transformation', kind: 'Combine',
+      inputs: [{ id: '/material/ore', name: 'Input ore', quantity: 2 }], outputs: [],
+      conditions: 'Fictional browser data; map and skill requirements still apply.', file: 'code/game/fixture.dm', line: 12 } };
+  await update('crafting_atlas.tmpl', atlas);
+  await page.getByText('Indexed ore', { exact: true }).click();
+  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { atlas_navigate: JSON.stringify({ route: 'resource', resource: '/material/ore' }) } });
+  const search = page.getByRole('searchbox', { name: 'Search', exact: true });
+  await search.fill('draft');
+  const beforeCancel = await page.evaluate(() => window.sent.length);
+  await page.getByRole('button', { name: 'Cancel filter edits', exact: true }).click();
+  assert.equal(await search.inputValue(), 'ore');
+  assert.equal(await page.evaluate(() => window.sent.length), beforeCancel);
+  await search.fill('new query');
+  await page.getByRole('button', { name: 'Filter', exact: true }).click();
+  assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { atlas_navigate: JSON.stringify({ route: 'open', query: 'new query', era: '', processor: '' }) } });
+  await update('crafting_atlas.tmpl', atlas, 1);
+  await page.getByRole('searchbox').waitFor();
+  assert.equal(await search.isDisabled(), true);
+  const beforeDisabled = await page.evaluate(() => window.sent.length);
+  await page.getByText('Indexed ore', { exact: true }).dispatchEvent('click');
+  assert.equal(await page.evaluate(() => window.sent.length), beforeDisabled);
+  await update('crafting_atlas.tmpl', atlas);
+  await page.getByRole('searchbox').waitFor();
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   if (process.env.SCREENSHOT_PATH) await page.screenshot({ path: process.env.SCREENSHOT_PATH, fullPage: true });
   await page.getByText('Classic interface', { exact: true }).click();
   assert.equal(await page.evaluate(() => window.fallback), true);
   assert.deepEqual(errors, []);
-  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas drag/found, research detail/assign/Escape, manual fallback');
+  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas drag/found, research detail/assign/Escape, Atlas navigation/filter/cancel/disabled/no horizontal overflow, manual fallback; browser fixture, no native bridge claim');
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

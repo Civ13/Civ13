@@ -82,11 +82,24 @@ describe('research parity', () => {
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { interfaces } from './index';
 describe('standard screen parity', () => {
-  it('registers all ten migrated templates', () => {
+  it('registers all merged reader routes', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
-      'appearance_changer.tmpl', 'chem_disp.tmpl', 'faction_creation.tmpl', 'faction_symbol.tmpl',
-      'research_bench.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl',
-      'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl',
+      'appearance_changer.tmpl',
+      'chem_disp.tmpl',
+      'crafting_atlas.tmpl',
+      'crew_log.tmpl',
+      'faction_creation.tmpl',
+      'faction_list.tmpl',
+      'faction_symbol.tmpl',
+      'known_languages.tmpl',
+      'religion_list.tmpl',
+      'research_bench.tmpl',
+      'ship_stocks.tmpl',
+      'vending_machine.tmpl',
+      'vending_machine2.tmpl',
+      'vending_machine_gulag.tmpl',
+      'vending_machine_taotd.tmpl',
+      'warehouse_book.tmpl',
     ]);
   });
   it('keeps chemistry command payloads, vessel state, and amount controls', () => {

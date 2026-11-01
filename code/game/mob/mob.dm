@@ -877,7 +877,7 @@
 	//It just makes sense for now. ~Carn
 	if ( update_icon )	//forces a full overlay update
 		update_icon = FALSE
-		regenerate_icons()
+		regenerate_appearance()
 	else if ( lying != lying_prev )
 		update_icons()
 

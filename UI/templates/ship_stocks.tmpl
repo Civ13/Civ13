@@ -1,0 +1,14 @@
+<div class="item_list">
+	<h3>Ship Stocks</h3>
+	<p>Snapshot from the ship inventory book. Use the book again to refresh.</p>
+	{{if data.stocks && data.stocks.length}}
+		<table style="width:100%" aria-label="Ship stocks">
+			<thead><tr><th scope="col" style="text-align:left">Resource</th><th scope="col" style="text-align:right">Quantity</th></tr></thead>
+			<tbody>{{for data.stocks}}
+				<tr><th scope="row" style="text-align:left">{{>value.label}}</th><td style="text-align:right">{{>String(value.amount)}} {{>value.unit}}</td></tr>
+			{{/for}}</tbody>
+		</table>
+	{{else}}
+		<p>No stock snapshot is available.</p>
+	{{/if}}
+</div>

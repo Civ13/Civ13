@@ -25,6 +25,33 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only admin care/appearance source contracts. Shared inputs retain
+    # their existing conservative fallback and other suites' ownership.
+    'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',
+                                   'tests/admin_player_care/test_hud_refresh.py'),
+        'paths': ('tests/admin_player_care/',), 'shared_paths': (
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/verbs/random_verbs.dm',
+            'code/game/mob/update_icons.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/game/mob/living/carbon/human/human_hud.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/game/mob/living/living_hud.dm',
+            'code/game/mob/living/living.dm', 'code/game/mob/mob.dm',
+            'code/game/mob/observer/ghost/ghost.dm',
+            'code/game/objects/items/weapons/defib.dm',
+            'code/modules/client/ui_style.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/visibility/root_tree_presenter.dm', '.github/workflows/test.yml')},
+    # Stdlib-only source projection and bounded RGBA8 PNG/DMI inspection.
+    # No harvest preview helper, external package, native runner or network import.
+    # Shared production/art inputs retain conservative all-suite fallback.
+    'tanning_rack_appearance': {'files': ('tests/test_tanning_rack_appearance.py',),
+        'paths': (), 'shared_paths': (
+            'code/game/objects/structures/converters.dm',
+            'code/game/objects/items/stacks/sheets/leather.dm',
+            'icons/obj/structures.dmi', 'icons/obj/materials.dmi')},
     # Stdlib-only production predicate/worker projections with inert clients.
     # No renderer, native runner, process, clock or network boundary is imported.
     'resource_work_animation': {'files': ('tests/test_resource_work_animation.py',),
@@ -67,7 +94,20 @@ SUITES = {
             'code/game/objects/items/weapons/material/shards.dm',
             'code/predefines.dm', 'code/game/objects/items/clothing/clothing.dm',
             'code/modules/reagents/reagent_containers/food/sandwich.dm',
-            'code/modules/1713/dew_collector.dm')},
+            'code/modules/1713/dew_collector.dm',
+            'code/_onclick/hud/base_screen_objects.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm')},
+    # Injected transport and source-only contracts; no BYOND or network calls.
+    'help_mood_history': {'files': ('tests/player_help/test_bridge.py',
+                                   'tests/player_help/test_question_display_source.py'),
+        'paths': ('tests/player_help/test_bridge.py', 'tests/player_help/test_question_display_source.py'),
+        'shared_paths': ('scripts/player_help_bridge.py', 'code/game/mob/player_help.dm',
+                         'code/_onclick/hud/base_screen_objects.dm',
+                         'code/game/mob/living/carbon/human/human_life.dm',
+                         'code/game/mob/living/carbon/human/human_needs.dm',
+                         'code/game/mob/living/carbon/human/human_stats.dm')},
     # Only stdlib source contracts; the shared DM inputs stay unmapped so their
     # existing all-suite fallback and other owners' coverage remain intact.
     'help_tab_links': {'files': ('tests/player_help/test_help_links.py',),

@@ -196,7 +196,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if (!admin_ghosted)
 		announce_ghost_joinleave(mind, FALSE, "They now occupy their body again.")
 
-	mind.current.regenerate_icons()
+	mind.current.regenerate_appearance()
 
 	// workaround for language bug that happens when you're spawned in
 	var/mob/living/human/H = mind.current

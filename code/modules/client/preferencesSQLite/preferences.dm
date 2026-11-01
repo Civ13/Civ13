@@ -18,6 +18,7 @@ var/list/preferences_datums = list()
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255
 	var/lobby_music_volume = 30
+	var/client_fps = DEFAULT_CLIENT_FPS
 	var/cursor = null
 
 	//character preferences
@@ -212,6 +213,22 @@ var/list/preferences_datums = list()
 		return (preference in prefs.preferences_enabled)
 	else
 		return FALSE
+
+// Keep the supported targets in one place for stored values and the chooser.
+/proc/client_fps_choices()
+	return list(30, 60, 100, 120, 144, 165, 240)
+
+/proc/sanitize_client_fps(value)
+	if (!isnum(value) || !(value in client_fps_choices()))
+		return DEFAULT_CLIENT_FPS
+	return value
+
+/client/proc/apply_client_fps_preference()
+	if (prefs)
+		prefs.client_fps = sanitize_client_fps(prefs.client_fps)
+		fps = prefs.client_fps
+	else
+		fps = DEFAULT_CLIENT_FPS
 
 /client/proc/set_preference(var/preference, var/set_preference)
 	var/datum/client_preference/cp

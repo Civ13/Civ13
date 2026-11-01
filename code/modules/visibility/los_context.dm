@@ -479,11 +479,32 @@ var/global/list/los_active_contexts
 	viewport_cached_dimensions = dimensions
 	return viewport_cached_dimensions
 
+// The camera pans independently of the physical eye. Cover the whole sweep
+// between body-centered and panned view, so animation cannot expose an uncaptured
+// leading edge. Keep the existing 63-cell view admission; do not move the eye
+// or truncate the camera sweep, which could leave native pixels unmasked.
+/datum/los_context/proc/viewport_radii()
+	var/list/dimensions = viewport()
+	if (!dimensions)
+		return null
+	var/pan_x = -round(-abs(owner.pixel_x) / 32)
+	var/pan_y = -round(-abs(owner.pixel_y) / 32)
+	if (world.time <= owner.los_camera_union_until)
+		// Also cover view growth which occurs without another pan preparation.
+		pan_x = max(pan_x, owner.los_camera_pan_x)
+		pan_y = max(pan_y, owner.los_camera_pan_y)
+	var/radius_x = round(dimensions[1] / 2) + pan_x
+	var/radius_y = round(dimensions[2] / 2) + pan_y
+	if (world.time <= owner.los_camera_union_until)
+		radius_x = max(radius_x, owner.los_camera_radius_x)
+		radius_y = max(radius_y, owner.los_camera_radius_y)
+	return list(radius_x, radius_y)
+
 /datum/los_context/proc/policy_key(tile_anchored = FALSE)
 	if (!eligible() || !viewport() || mutations.len || (persistence_active_operation && persistence_active_operation.kind != "save") || body.stat || is_blind(body))
 		return null
 	var/offset_key = tile_anchored ? "" : ",[body.step_x],[body.step_y]"
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/presentation_key()
 	return policy_key(TRUE)
@@ -492,7 +513,7 @@ var/global/list/los_active_contexts
 	var/key = policy_key()
 	if (!key)
 		return null
-	var/list/dimensions = viewport()
+	var/list/radii = viewport_radii()
 	var/datum/los_snapshot/S = new
 	S.presentation = presentation
 	S.revision = revision
@@ -505,8 +526,8 @@ var/global/list/los_active_contexts
 		S.eye_x += body.step_x / 32
 		S.eye_y += body.step_y / 32
 	S.eye_z = body.z
-	S.radius_x = round(dimensions[1] / 2)
-	S.radius_y = round(dimensions[2] / 2)
+	S.radius_x = radii[1]
+	S.radius_y = radii[2]
 	// One extra tile covers fractional blockers and edge geometry. Ordinary
 	// clutter never invalidates the scene; opacity alone owns blocking geometry.
 	for (var/cx = max(1, body.x-S.radius_x-1), cx <= min(world.maxx, body.x+S.radius_x+1), cx++)

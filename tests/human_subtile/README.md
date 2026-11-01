@@ -31,9 +31,12 @@ saved as account preferences. New/revived eligible bodies initialize on input.
 
 Native interpolation uses the actual admitted distance/time to set `glide_size`,
 including Euclidean diagonal scaling unless `LONG_GLIDE` already applies. The
-owning client's frame rate is raised to at least 60 and above server FPS while
-this mode owns its visual settings. Prior client FPS, camera glide and body glide
-are restored only while still owned; intervening preference changes are retained. Settings are restored on opt-out, restricted input, logout, death or body handoff. No
+client frame target is an account preference (default 100; 30/60 available for
+slower machines). Movement never raises, captures or restores it. Legacy pixel
+interpolation requires a client target above the server tick rate; choosing a
+lower target can reduce smoothness. Prior camera glide and body glide are
+restored only while still owned; intervening changes are retained. Glide settings
+are restored on opt-out, restricted input, logout, death or body handoff. No
 `pixel_x/y` offsets, simulated screenshots or global FPS changes are involved.
 The installed official BYOND reference's [gliding documentation](https://www.byond.com/docs/ref/#/{notes}/gliding)
 explains that legacy pixel movement interpolates only when client FPS exceeds

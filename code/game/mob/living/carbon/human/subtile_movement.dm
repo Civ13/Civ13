@@ -22,9 +22,7 @@
 /client
 	var/tmp/mob/living/human/human_subtile_visual_actor
 	var/tmp/human_subtile_visual_owned = FALSE
-	var/tmp/human_subtile_previous_fps
 	var/tmp/human_subtile_previous_glide
-	var/tmp/human_subtile_applied_fps
 	var/tmp/human_subtile_applied_glide
 
 /client/proc/human_subtile_release_visuals()
@@ -36,8 +34,6 @@
 			human_subtile_visual_actor.human_subtile_visual_owner = null
 	human_subtile_visual_actor = null
 	human_subtile_visual_owned = FALSE
-	if (fps == human_subtile_applied_fps)
-		fps = human_subtile_previous_fps
 	if (glide_size == human_subtile_applied_glide)
 		glide_size = human_subtile_previous_glide
 
@@ -57,7 +53,7 @@
 	else if (glide_size != human_subtile_applied_glide)
 		human_subtile_previous_glide = glide_size
 	// Native interpolation follows physical motion, including normalization at
-	// tile edges. Legacy pixel movement needs client FPS above server FPS.
+	// tile edges. Client FPS belongs to the account preference, not movement.
 	glide_size = distance * world.tick_lag / max(duration, world.tick_lag)
 	if ((direction & (direction - 1)) && !(appearance_flags & LONG_GLIDE))
 		glide_size *= ROOT2_FAST
@@ -65,19 +61,14 @@
 	if (owner)
 		if (owner.human_subtile_visual_actor != src)
 			owner.human_subtile_release_visuals()
-			owner.human_subtile_previous_fps = owner.fps
 			owner.human_subtile_previous_glide = owner.glide_size
 			owner.human_subtile_visual_actor = src
 			owner.human_subtile_visual_owned = TRUE
 			human_subtile_visual_owner = owner
 		else
-			if (owner.fps != owner.human_subtile_applied_fps)
-				owner.human_subtile_previous_fps = owner.fps
 			if (owner.glide_size != owner.human_subtile_applied_glide)
 				owner.human_subtile_previous_glide = owner.glide_size
-		owner.fps = max(owner.human_subtile_previous_fps, world.fps + 1, 60)
 		owner.glide_size = glide_size
-		owner.human_subtile_applied_fps = owner.fps
 		owner.human_subtile_applied_glide = owner.glide_size
 
 /datum/human_subtile_pulse

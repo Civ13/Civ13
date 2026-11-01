@@ -1,6 +1,8 @@
 # Admin item Clean
 
-Run with BYOND 516.1681 and an explicit verified Python executable:
+The runner below is a historical BYOND 516.1681 fixture, not current-pin native
+acceptance. It has not been rerun for the cosmetic HUD-refresh change.
+Use an explicit verified Python executable:
 
 ```powershell
 & $PythonPath tests/admin_clean/run.py --byond-bin $ByondBin --output $FreshEvidenceDirectory
@@ -28,6 +30,17 @@ adapter and held/worn are modeled locations, without real equipment slots.
 Source checks verify that the production human regeneration refreshes hands,
 uniform, shoes and back. Item overlays use native appearances and the real
 cleaning bodies, with an instrumented icon callback.
+
+Current offline regressions live in tests/admin_player_care/test_player_care.py.
+They interpret the production human regeneration call/guard sequence with
+injected call effects, check that item Clean requests appearance refresh without
+rebuilding the HUD, and detect both an unconditional HUD refresh and an omitted
+Clean argument. Ordinary regeneration keeps its default HUD check. Clean still
+avoids that needless check; the shared HUD path now also preserves unrelated
+screen members and compositor filters. tests/admin_player_care/test_hud_refresh.py
+projects that separate membership/recovery contract with inert screen adapters.
+Ground/nested items do not take the generic carrier path. These checks do not
+prove connected-client flicker or pixel timing.
 
 Visibility is checked through source registration: the command appears only in
 `admin_verbs_admin`, added for `R_ADMIN`, and removed with that group. These

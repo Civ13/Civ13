@@ -295,6 +295,204 @@ class ProductionGeometry(unittest.TestCase):
         self.assertIn('owner.los_presenter.invalidate()', source)
 
 
+class InventoryHoverName(unittest.TestCase):
+    """Widget/callback source execution; fake client, weakref and view boundaries."""
+    def model(self,source=None):
+        import html,re,weakref
+        from types import SimpleNamespace as N
+        root=CORE.parents[3]
+        source=source or (root/'code/_onclick/hud/hover_name.dm').read_text()
+        spec=importlib.util.spec_from_file_location('inventory_hover_adapter',root/'tests/save_movement/source_adapter.py')
+        A=importlib.util.module_from_spec(spec);spec.loader.exec_module(A)
+        class Node:
+            def __init__(self,**values):vars(self).update(values)
+        class Handle:
+            def __init__(self,item):self.weak=weakref.ref(item)
+            def resolve(self):
+                item=self.weak();return item if item and not item.deleted else None
+        def atom(kind='/obj/item',**values):
+            defaults=dict(type=kind,loc=None,name='item',screen_loc=None,mouse_opacity=1,alpha=255,
+                invisibility=0,x=1,y=1,z=1,deleted=False)
+            defaults.update(values);return Node(**defaults)
+        body=atom('/mob/living/human',see_invisible=25,HUDneed={},HUDinventory=[],slots={})
+        C=Node(mob=body,screen=[],view=7,eye=body)
+        body.client=C;body.get_equipped_item=lambda slot:body.slots.get(slot)
+        W=atom('/obj/screen/hover_name',parentmob=body,hover_target=None,hover_origin=None,
+               hover_inventory=False,hover_screen_loc=None,maptext='')
+        body.HUDneed['hover name']=W;C.screen.append(W)
+        world_visible=set();readable=set();read_calls=[];parents=[]
+        def allowed(user,target,operation):
+            read_calls.append((user,target,operation));return target in readable
+        env=dict(istype=lambda x,t:bool(x and x.type.startswith(t)),ismovable=lambda x:bool(x and not x.type.startswith('/turf/')),
+            typed_iter=lambda xs,t:[x for x in xs if x and x.type.startswith(t)],
+            isturf=lambda x:bool(x and x.type.startswith('/turf/')),ishuman=lambda x:bool(x and x.type.startswith('/mob/living/human')),
+            los_read_allowed=allowed,view=lambda v,e:world_visible,WEAKREF=Handle,
+            resolve=lambda h:h.resolve() if h else None,length=lambda x:len(x) if x else 0,
+            html_encode=html.escape,copytext=lambda text,start,end:text[start-1:end-1],
+            parent_call=lambda:parents.append('parent'),parent_runtime=lambda key:key=='persistence_export_frame',
+            list=lambda *xs:list(xs))
+        def method(text,declaration,args,fields):
+            text=declaration+'('+args+')\n'+A.extract(text,declaration)+'\n'
+            text=text.replace('hover_target?.resolve()','resolve(hover_target)').replace('hover_origin?.resolve()','resolve(hover_origin)')
+            text=re.sub(r'(\w+)\.resolve\((hover_target|hover_origin)\)',r'resolve(\1.\2)',text)
+            text=text.replace('label?.set_target(target)','optional_set(label, target)').replace('label?.clear_target()','optional_clear(label)')
+            text=text.replace('|| ..()', '|| parent_runtime(key)').replace('..()', 'parent_call()')
+            text=text.replace("[html_encode(copytext(label, 1, 129))]",'" + html_encode(copytext(label, 1, 129)) + "')
+            text=text.replace('object ? object.x : 0','(object.x if object else 0)').replace('object ? object.y : 0','(object.y if object else 0)')
+            lines=text.split('\n');head,tail=lines[0],'\n'.join(lines[1:])
+            pieces=re.split(r'("(?:[^"\\]|\\.)*")',tail)
+            for i in range(0,len(pieces),2):
+                pieces[i]=re.sub(r'\bsrc\b','self',pieces[i])
+                for field in fields:pieces[i]=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,pieces[i])
+            text=head+'\n'+''.join(pieces)
+            text=re.sub(r'(?<=, )(/obj/[\w/]+)(?=\))',lambda m:repr(m[1]),text)
+            return A.project(text,declaration,'self'+(', '+args if args else ''),env)
+        fields=['hover_target','hover_origin','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
+                'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process']
+        for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
+                          ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key')]:
+            sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
+            if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
+            f=method(source,sig,args,fields);setattr(W,name,lambda *a,_f=f:_f(W,*a))
+        f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda _f=f:_f(W)
+        for name,args in [('hover_name_widget',''),('update_hover_name','target'),('clear_hover_name','')]:
+            f=method(source,'/client/proc/'+name,args,['mob','hover_name_widget'])
+            setattr(C,name,lambda *a,_f=f:_f(C,*a))
+        env.update(optional_set=lambda w,t:w.set_target(t) if w else None,optional_clear=lambda w:w.clear_target() if w else None)
+        callbacks=(root/'code/modules/client/client_procs.dm').read_text()
+        for name,args in [('MouseEntered','object, location=None, control="map", params=""'),
+                          ('MouseMove','object, location=None, control="map", params=""'),
+                          ('MouseDrag','src_object, over_object, src_location=None, over_location=None, src_control="map", over_control="map", params=""')]:
+            f=method(callbacks,'/client/'+name,args,['mouse_x','mouse_y','update_hover_name','UpdateMouseScreenLoc'])
+            setattr(C,name,lambda *a,_f=f:_f(C,*a))
+        C.UpdateMouseScreenLoc=lambda p:None
+        f=method(source,'/client/MouseExited','object, location=None, control="map", params=""',['hover_name_widget'])
+        C.MouseExited=lambda *a:f(C,*a)
+        def slot(item=None,slot_id=1):
+            S=atom('/obj/screen/inventory',parentmob=body,slot_id=slot_id,screen_loc=f'{slot_id},1')
+            body.HUDinventory.append(S);C.screen.append(S)
+            if item:
+                item.loc=body;item.screen_loc=S.screen_loc;C.screen.append(item);readable.add(item)
+            body.slots[slot_id]=item;return S
+        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,readable=readable,reads=read_calls,source=source)
+
+    def test_displayed_owned_slot_routes_actual_item_and_matching_pointer_exit(self):
+        m=self.model();I=m.atom(name='<rifle & sling>');S=m.slot(I)
+        m.C.MouseEntered(S)
+        self.assertIs(m.W.hover_target.resolve(),I);self.assertIs(m.W.hover_origin.resolve(),S)
+        self.assertIn('&lt;rifle &amp; sling&gt;',m.W.maptext)
+        self.assertTrue(all(t is I for _,t,_ in m.reads))
+        m.C.MouseExited(S);self.assertEqual(m.W.maptext,'')
+        m.C.MouseEntered(I);m.C.MouseEntered(S);m.C.MouseExited(I)
+        self.assertTrue(m.W.maptext)  # Late item exit cannot erase new slot enter.
+        m.C.MouseEntered(I);m.C.MouseExited(S);self.assertTrue(m.W.maptext)
+        m.C.MouseExited(I);self.assertFalse(m.W.hover_target)
+        m.C.MouseMove(S);self.assertTrue(m.W.maptext)
+        m.C.MouseDrag(None,S);self.assertTrue(m.W.maptext)
+        m.C.MouseMove(None);self.assertEqual(m.W.maptext,'')
+
+    def test_inventory_removal_clears_even_if_item_is_now_visible_world_content(self):
+        for via_slot in [False,True]:
+            m=self.model();I=m.atom(name='held rifle');S=m.slot(I)
+            m.C.MouseEntered(S if via_slot else I);self.assertTrue(m.W.maptext)
+            I.loc=m.atom('/turf/floor');I.screen_loc=None;m.C.screen.remove(I);m.visible.add(I)
+            m.W.process();self.assertEqual(m.W.maptext,'')
+            m=self.model();I=m.atom();S=m.slot(I);m.C.MouseEntered(S if via_slot else I)
+            I.screen_loc='9,9';S.screen_loc=I.screen_loc;m.W.process();self.assertEqual(m.W.maptext,'')
+        for mutate in ['removed-slot','replaced-item','item-hidden','item-alpha','item-deleted','ui-rebuild','ui-removed','body-change','client-gone']:
+            m=self.model();I=m.atom();S=m.slot(I);m.C.MouseEntered(S)
+            if mutate=='removed-slot':m.H.HUDinventory.remove(S)
+            if mutate=='replaced-item':m.H.slots[S.slot_id]=m.atom()
+            if mutate=='item-hidden':I.invisibility=99
+            if mutate=='item-alpha':I.alpha=0
+            if mutate=='item-deleted':I.deleted=True
+            if mutate=='ui-rebuild':m.H.HUDneed['hover name']=object()
+            if mutate=='ui-removed':m.C.screen.remove(m.W)
+            if mutate=='body-change':m.C.mob=m.atom('/mob/living/human')
+            if mutate=='client-gone':m.H.client=None
+            m.W.process();self.assertEqual(m.W.maptext,'',mutate)
+
+    def test_foreign_hidden_undisplayed_or_mismatched_slots_do_not_disclose_names(self):
+        for mutate in ['foreign-owner','foreign-item','container-item','not-displayed','no-screen-loc','wrong-location','slot-hidden','slot-alpha','slot-not-displayed','unregistered-slot','empty-slot']:
+            m=self.model();I=m.atom(name='private item');S=m.slot(I)
+            if mutate=='foreign-owner':S.parentmob=m.atom('/mob/living/human')
+            if mutate=='foreign-item':I.loc=m.atom('/mob/living/human')
+            if mutate=='container-item':I.loc=m.atom('/obj/item/storage')
+            if mutate=='not-displayed':m.C.screen.remove(I)
+            if mutate=='no-screen-loc':I.screen_loc=None
+            if mutate=='wrong-location':I.screen_loc='9,9'
+            if mutate=='slot-hidden':S.invisibility=99
+            if mutate=='slot-alpha':S.alpha=0
+            if mutate=='slot-not-displayed':m.C.screen.remove(S)
+            if mutate=='unregistered-slot':m.H.HUDinventory.remove(S)
+            if mutate=='empty-slot':m.H.slots[S.slot_id]=None
+            m.C.MouseEntered(S);self.assertEqual(m.W.maptext,'',mutate)
+        m=self.model();S=m.slot();S.master=m.atom(name='unrelated master')
+        m.C.MouseEntered(S);self.assertEqual(m.W.maptext,'')
+
+    def test_world_los_public_names_runtime_exclusions_and_destroy_are_preserved(self):
+        m=self.model();world=m.atom(name='world item',loc=m.atom('/turf/floor'))
+        m.visible.add(world);m.C.MouseEntered(world);self.assertEqual(m.W.maptext,'')
+        m.readable.add(world);m.C.MouseEntered(world);self.assertTrue(m.W.maptext)
+        m.readable.remove(world);m.W.process();self.assertEqual(m.W.maptext,'')
+        human=m.atom('/mob/living/human',name='Secret identity',loc=m.atom('/turf/floor'),get_visible_name=lambda:'Unknown')
+        m.visible.add(human);m.readable.add(human);m.C.MouseEntered(human)
+        self.assertIn('Unknown',m.W.maptext);self.assertNotIn('Secret',m.W.maptext)
+        for key in ['hover_target','hover_origin','hover_inventory','hover_screen_loc','parentmob','maptext','persistence_export_frame']:
+            self.assertTrue(m.W.persistence_runtime_var(key),key)
+        self.assertFalse(m.W.persistence_runtime_var('durable_example'))
+        m.W.destroy();self.assertEqual(m.W.maptext,'');self.assertIsNone(m.W.parentmob)
+
+    def test_direct_item_hit_and_stationary_refresh_require_current_visible_equipped_slot(self):
+        def mutate(m,I,S,kind):
+            if kind=='slot-hidden':S.invisibility=99
+            if kind=='slot-transparent':S.alpha=0
+            if kind=='slot-inert':S.mouse_opacity=0
+            if kind=='slot-empty-position':S.screen_loc=None
+            if kind=='slot-removed':m.C.screen.remove(S)
+            if kind=='unregistered':m.H.HUDinventory.remove(S)
+            if kind=='foreign-slot':S.parentmob=m.atom('/mob/living/human')
+            if kind=='equipment-replaced':m.H.slots[S.slot_id]=m.atom()
+            if kind=='position-mismatch':S.screen_loc='9,9'
+        kinds=['slot-hidden','slot-transparent','slot-inert','slot-empty-position',
+               'slot-removed','unregistered','foreign-slot','equipment-replaced','position-mismatch']
+        for kind in kinds:
+            for during_hover in [False,True]:
+                with self.subTest(kind=kind,during_hover=during_hover):
+                    m=self.model();I=m.atom(name='pouch contents');S=m.slot(I)
+                    if during_hover:
+                        m.C.MouseEntered(I);self.assertTrue(m.W.maptext)
+                    mutate(m,I,S,kind)
+                    self.assertIs(I.loc,m.H);self.assertIn(I,m.C.screen);self.assertTrue(I.screen_loc)
+                    if during_hover:m.W.process()
+                    else:m.C.MouseEntered(I)
+                    self.assertEqual(m.W.maptext,'')
+        source=self.model().source
+        start=source.index('\t// A stale displayed item')
+        end=source.index('\n/obj/screen/hover_name/proc/inventory_target_current',start)
+        old=source[:start]+'\treturn TRUE\n'+source[end:]
+        m=self.model(old);I=m.atom(name='stale pouch');S=m.slot(I);S.invisibility=99
+        m.C.MouseEntered(I);self.assertTrue(m.W.maptext)
+        m=self.model(old);I=m.atom();S=m.slot(I);m.C.MouseEntered(I)
+        S.invisibility=99;m.W.process();self.assertTrue(m.W.maptext)
+
+    def test_named_omissions_reproduce_slot_routing_and_stale_pointer_regressions(self):
+        source=self.model().source
+        mutant=source.replace('var/atom/target = pointer_target(origin)','var/atom/target = origin',1)
+        m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(S)
+        self.assertEqual(m.W.maptext,'')
+        mutant=source.replace('label.hover_origin?.resolve() == object','label.hover_target?.resolve() == object',1)
+        m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(S);m.C.MouseExited(S)
+        self.assertTrue(m.W.maptext)
+        mutant=source.replace('(hover_inventory && !inventory_target_current(target)) || ','',1)
+        m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(I)
+        I.loc=m.atom('/turf/floor');I.screen_loc=None;m.C.screen.remove(I);m.visible.add(I)
+        m.W.process();self.assertTrue(m.W.maptext)
+        mutant=source.replace('(hover_inventory && !inventory_target_current(target))','(hover_inventory && !inventory_item_visible(target))',1)
+        m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(I)
+        I.screen_loc='9,9';S.screen_loc=I.screen_loc;m.W.process();self.assertTrue(m.W.maptext)
+
+
 class BlockingTreeSurface(unittest.TestCase):
     """Actual DM arithmetic/control flow with Python list/storage adapters only."""
     def model(self, source=None):
@@ -381,9 +579,10 @@ class BlockingTreeSurface(unittest.TestCase):
                        typed_iter=lambda xs,kind:getattr(xs,'contents',xs) if xs is not None else [])
             snapshot.index_blockers=lambda:None
             context.viewport=lambda:Cells([31,31])
+            context.viewport_radii=lambda:Cells([15,15])
             text=fragment(source,'/datum/los_context/proc/capture(')
             head,code=text.split('\n',1)
-            for field in ['body','revision','policy_key','viewport']:
+            for field in ['body','revision','policy_key','viewport','viewport_radii']:
                 code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
             code=code.replace('var/datum/los_snapshot/S = new','var/datum/los_snapshot/S = new_snapshot()')
             code=re.sub(r'(var/datum/los_cell/\w+) = new',r'\1 = new_cell()',code)

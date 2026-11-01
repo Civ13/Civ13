@@ -1,0 +1,18 @@
+{
+  "source_pin": "ff3acd14d57ffaad7bad0fae4d440c9173189664",
+  "description": "Retained production HTML/catalog/filter contracts. Update deliberately alongside both renderers;tests do not access Git history.",
+  "procs": {
+    "load_catalog": "d7d461f0954d03284a89dcb04e0265f6099d4c51a18e8f84fc5427c4df0d52bb",
+    "search_text": "f48fa1389edb8bbc9a17adb74e070d44e30b9acdfb6c2398c8e12419a7c66c1d",
+    "matching_resources": "4211fd06573f49595d8a652776daeed9ebea9f5795464664b4446c73b62f531f",
+    "matching_variants": "ba82855a060e1b44eaa7f245cc9a18e4fbc8eaa9322b84468805c96e455d48d1",
+    "variant_record": "ef5ace2e14e38c932dea53283fc1d7c40bcdf6c9ef3a58af7fd599a215134493",
+    "variant_html": "dffa3abf38babbbbb67e84ecefe7ba452078248a139db47f7986aecf4a209ef6",
+    "source_html": "54b8451669dfd49b63ac7247654f818624567e6a67ec518af7653afe2278fa84",
+    "page_html": "5da89df25442d5737d3e696e59da4f6f7ba6f810fb3151e9b94cb1e515198a8a",
+    "graph_html": "ac53b0177a927ac581282c19f03921124321573fd371cd3751a42480829a181a",
+    "acquisition_html": "e6d95f055043d71c0bf434c32eadc633f4cb95195fa13be7ab9edfc1cf956686",
+    "render_html": "79005ad8c1b033454ce12035585e55f37580896d64b4bd894469c425b6794ece",
+    "resource_exists": "240aba974a053ed40f9f848aebc1f8a7c043e8457aadc6597e729f1a0793660c"
+  }
+}

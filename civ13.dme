@@ -178,6 +178,7 @@
 #include "code\game\mob\logout.dm"
 #include "code\game\mob\mob.dm"
 #include "code\game\mob\crafting_atlas.dm"
+#include "code\game\mob\crafting_atlas_tgui.dm"
 #include "code\game\mob\mob_damage.dm"
 #include "code\game\mob\mob_defines.dm"
 #include "code\game\mob\mob_grab_specials.dm"

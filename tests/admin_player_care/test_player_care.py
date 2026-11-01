@@ -115,5 +115,108 @@ class PlayerCareSourceContracts(unittest.TestCase):
                 self.assertGreater(body.index('\n\tlog_admin('), body.rindex('\n\tH.'))
 
 
+def project_regeneration(source, refresh_hud=None, transforming=False):
+    """Interpret only the real straight-line regeneration call/guard body.
+
+    Call effects are injected counters; this cannot establish native pixels.
+    Unknown syntax fails rather than silently omitting a production operation.
+    """
+    default = re.search(r'regenerate_icons\(refresh_hud = (TRUE|FALSE)\)', source)
+    if default is None:
+        raise AssertionError('Missing explicit default HUD policy')
+    if refresh_hud is None:
+        refresh_hud = default[1] == 'TRUE'
+    enabled = {0: True}
+    calls = []
+    source = re.sub(r'/\*.*?\*/', '', source, flags=re.S)
+    for raw in source.splitlines()[1:]:
+        text = raw.split('//', 1)[0].strip()
+        if not text:
+            continue
+        depth = len(raw) - len(raw.lstrip('\t'))
+        active = enabled[depth - 1]
+        if text.startswith('if ('):
+            condition = re.fullmatch(r'if \((transforming|refresh_hud)\)', text)
+            if condition is None:
+                raise AssertionError(text)
+            enabled[depth] = active and dict(transforming=transforming, refresh_hud=refresh_hud)[condition[1]]
+        elif text == 'return':
+            if active:
+                break
+        else:
+            call = re.fullmatch(r'(\.\.|\w+)\((0)?\)', text)
+            if call is None:
+                raise AssertionError(text)
+            if active:
+                calls.append(call[1])
+    return calls
+
+
+class CleanRendererContracts(unittest.TestCase):
+    def renderer(self):
+        return proc('code/game/mob/living/carbon/human/update_icons.dm',
+                    '/mob/living/human/regenerate_icons(')
+
+    def clean_hud_argument(self, source):
+        call = re.search(r'M\.regenerate_icons\((FALSE|TRUE)?\)', source)
+        self.assertIsNotNone(call)
+        return None if call[1] is None else call[1] == 'TRUE'
+
+    def test_item_clean_keeps_human_appearance_refresh_without_hud_recheck(self):
+        body = command('cmd_admin_clean_item')
+        argument = self.clean_hud_argument(body)
+        self.assertIs(argument, False)
+        self.assertLess(body.index('I.clean_blood()'), body.index('M.regenerate_icons('))
+        calls = project_regeneration(self.renderer(), argument)
+        self.assertNotIn('update_hud', calls)
+        for name in ('update_body', 'update_hair', 'update_mutations', 'update_inv_shoes',
+                     'update_inv_w_uniform', 'update_inv_wear_suit', 'update_inv_l_hand',
+                     'update_inv_r_hand', 'update_inv_back', 'update_fire', 'update_surgery',
+                     'update_bandaging', 'UpdateDamageIcon', 'update_icons'):
+            self.assertIn(name, calls)
+        self.assertEqual(calls[-1], 'update_icons')
+
+    def test_ordinary_regeneration_still_refreshes_hud_and_all_same_appearance_calls(self):
+        renderer = self.renderer()
+        ordinary = project_regeneration(renderer)
+        cosmetic = project_regeneration(renderer, False)
+        self.assertEqual(ordinary.count('update_hud'), 1)
+        self.assertEqual([c for c in ordinary if c != 'update_hud'], cosmetic)
+        base = proc('code/game/mob/update_icons.dm', '/mob/proc/regenerate_icons(')
+        self.assertIn('regenerate_icons(refresh_hud = TRUE)', base)
+        self.assertIn('\n\treturn', base)
+
+    def test_transforming_guard_still_aborts_both_routes(self):
+        for refresh in (None, False, True):
+            self.assertEqual(project_regeneration(self.renderer(), refresh, transforming=True), ['..'])
+
+    def test_regeneration_and_clean_call_omissions_reenable_hud_checks(self):
+        renderer = self.renderer()
+        unconditional = renderer.replace('\tif (refresh_hud)\n\t\tupdate_hud()', '\tupdate_hud()')
+        self.assertIn('update_hud', project_regeneration(unconditional, False))
+        old_command = command('cmd_admin_clean_item').replace('M.regenerate_icons(FALSE)', 'M.regenerate_icons()')
+        self.assertIn('update_hud', project_regeneration(renderer, self.clean_hud_argument(old_command)))
+        show = proc('code/game/mob/living/living_hud.dm', '/mob/living/proc/show_HUD()')
+        # The shared HUD path now preserves unrelated members too. Clean still
+        # avoids the unnecessary check, independently of that second safeguard.
+        self.assertNotIn('client.screen.Cut()', show)
+        self.assertNotIn('root_tree_presenter', show)
+        admission = proc('code/modules/visibility/root_tree_presenter.dm',
+                         '/datum/root_tree_presenter/proc/planes_admitted()')
+        self.assertIn('for(var/obj/screen/P in screens)', admission)
+        self.assertIn('if(!(P in owner.screen))\n\t\t\treturn FALSE', admission)
+
+    def test_clean_authorization_target_checks_and_audits_still_precede_effects(self):
+        body = command('cmd_admin_clean_item')
+        guard = ('\tif (!check_rights(R_ADMIN, TRUE, src))\n\t\treturn\n'
+                 '\tif (!istype(I) || QDELETED(I) || I.gcDestroyed || !I.loc)\n\t\treturn\n')
+        self.assertIn(guard, body)
+        self.assertLess(body.index(guard), body.index('I.clean_blood()'))
+        self.assertNotRegex(body, r'\b(sleep|spawn|WWinput|WWalert|input|do_after)\s*\(')
+        for sink in ('log_admin', 'message_admins'):
+            self.assertEqual(body.count('\n\t' + sink + '('), 1)
+            self.assertGreater(body.index('\n\t' + sink + '('), body.index('M.regenerate_icons(FALSE)'))
+
+
 if __name__ == '__main__':
     unittest.main()

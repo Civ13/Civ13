@@ -492,7 +492,7 @@ default behaviour is:
 	set_stat(CONSCIOUS)
 
 	// make the icons look correct
-	regenerate_icons()
+	regenerate_appearance()
 
 	return
 

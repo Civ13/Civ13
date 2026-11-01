@@ -1,4 +1,5 @@
 /client
+	fps = DEFAULT_CLIENT_FPS
 
 	parent_type = /datum
 		////////////////

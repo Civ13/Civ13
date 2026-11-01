@@ -53,6 +53,83 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_tanning_rack_appearance_registration_is_offline_and_preserves_shared_fallback(self):
+        suite = ci.SUITES['tanning_rack_appearance']
+        self.assertEqual(suite['files'], ('tests/test_tanning_rack_appearance.py',))
+        self.assertEqual(suite['paths'], ())
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', 'tanning_rack_appearance'})
+        self.assertEqual(ci.impact(list(suite['files']))['fallback_reasons'], [])
+        for shared in suite['shared_paths']:
+            self.assertEqual(self.selected([shared]), set(ci.SUITES))
+            self.assertIn('Unmapped impact: ' + shared, ci.impact([shared])['fallback_reasons'])
+        tree = ast.parse((ROOT/suite['files'][0]).read_text())
+        self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
+                          for alias in node.names}, {'ast', 're', 'struct', 'unittest', 'zlib'})
+        self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)},
+                         {'functools', 'pathlib', 'types'})
+
+    def test_tanning_rack_appearance_failure_fails_registered_baseline_and_aggregate(self):
+        suite_name = 'tanning_rack_appearance'
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            suite = ci.SUITES[suite_name]
+            for relative in ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+                             'tools/byond/version.json', *suite['files'], *suite['shared_paths']):
+                destination = root/relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT/relative, destination)
+
+            def git(*args):
+                return subprocess.check_output(['git', '-C', temporary, *args],
+                                               stderr=subprocess.PIPE, timeout=10).decode().strip()
+
+            git('init')
+            git('config', 'user.name', 'Rack appearance offline fixture')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('add', '.')
+            git('commit', '-qm', 'passing offline appearance fixture')
+            real_run = ci.subprocess.run
+
+            def child(command, **kwargs):
+                if 'unit' not in command:
+                    return real_run(command, **kwargs)
+                if command[command.index('--suite')+1] == suite_name:
+                    command = list(command)
+                    command[2] = str(root/'scripts/ci_baseline.py')
+                    return real_run(command, **(kwargs | {'cwd': root}))
+                # Only this suite executes: unrelated mandatory suites are adapters.
+                ci.write_json(command[command.index('--output')+1], dict(
+                    status='passed', tests=1, errors=0, failures=0, skipped=0))
+                return subprocess.CompletedProcess(command, 0)
+
+            for failing in (False, True):
+                if failing:
+                    target = root/'code/game/objects/structures/converters.dm'
+                    target.write_text(target.read_text().replace('hide_overlay.color = hide.color',
+                                                               'hide_overlay.color = "#C9AA84"'))
+                    git('add', '.')
+                    git('commit', '-qm', 'isolated lost wet-hide colour control')
+                plan, _, compiler, jobs = fixtures(suite['files'])
+                plan['head'] = compiler['head'] = git('rev-parse', 'HEAD')
+                compiler['selection_sha256'] = ci.digest(plan)
+                evidence = root/('negative' if failing else 'positive')
+                with patch.object(ci, 'ROOT', root), patch.object(ci.subprocess, 'run', side_effect=child), \
+                        patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '1'}), patch('builtins.print'):
+                    exit_code = ci.execute(plan, evidence)
+                baseline = json.loads((evidence/'baseline.json').read_text())
+                appearance = baseline['suites'][suite_name]
+                self.assertEqual(exit_code, int(failing))
+                self.assertEqual(appearance['counts']['tests'], 5)
+                self.assertEqual(appearance['counts']['skipped'], 0)
+                self.assertTrue(baseline['source_unchanged'])
+                self.assertEqual(appearance['status'], 'failed' if failing else 'passed')
+                errors = ci.aggregate(plan, baseline, compiler, jobs, False)
+                if failing:
+                    self.assertIn('Missing, failed or unexpectedly skipped suite: '+suite_name, errors)
+                else:
+                    self.assertEqual(errors, [])
+
     def test_work_animation_registration_and_source_fallback(self):
         suite = ci.SUITES['resource_work_animation']
         self.assertEqual(suite['files'], ('tests/test_resource_work_animation.py',))
@@ -103,6 +180,20 @@ class BaselinePolicyTests(unittest.TestCase):
                           for alias in node.names}, {'re', 'unittest'})
         self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)},
                          {'pathlib', 'types'})
+    def test_help_mood_history_offline_registration(self):
+        suite = ci.SUITES['help_mood_history']
+        self.assertEqual(suite['files'], ('tests/player_help/test_bridge.py',
+                                          'tests/player_help/test_question_display_source.py'))
+        for path in (*suite['files'], *suite['shared_paths']):
+            with self.subTest(path=path):
+                self.assertTrue(ci.impact([path])['suites']['help_mood_history']['selected'])
+        self.assertFalse(ci.impact(['README.md'])['suites']['help_mood_history']['selected'])
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'mood-history.json'
+            self.assertEqual(ci.run_unit('help_mood_history', output), 0)
+            result = json.loads(output.read_text())
+        self.assertEqual(result, dict(status='passed', tests=30, failures=0, errors=0, skipped=0))
+
     def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
         suite = ci.SUITES['help_wiki_guides']
         self.assertEqual(suite['files'], ('tests/player_help/test_wiki_guides.py',))
@@ -1105,6 +1196,26 @@ class AggregateTests(unittest.TestCase):
         policy = reusable.split('- name: Selection regression tests on every invocation\n')[1].split('- name:', 1)[0]
         self.assertNotIn('if:', policy)
         self.assertIn('--suite policy', policy)
+
+
+class AdminCareSelection(unittest.TestCase):
+    def test_care_source_suite_selects_shared_renderer_without_claiming_it(self):
+        path = 'code/modules/visibility/root_tree_presenter.dm'
+        plan = ci.impact([path])
+        self.assertTrue(plan['suites']['admin_player_care']['selected'])
+        self.assertFalse(plan['fallback_reasons'])
+        self.assertEqual(ci.SUITES['admin_player_care']['files'],
+                         ('tests/admin_player_care/test_player_care.py',
+                          'tests/admin_player_care/test_hud_refresh.py'))
+        self.assertNotIn(path, ci.SUITES['admin_player_care']['paths'])
+        # Removing this owned-elsewhere dependency must lose care coverage:
+        # it cannot be rescued by the conservative unmapped-input fallback.
+        original = ci.SUITES['admin_player_care']
+        try:
+            ci.SUITES['admin_player_care'] = dict(original, shared_paths=())
+            self.assertFalse(ci.impact([path])['suites']['admin_player_care']['selected'])
+        finally:
+            ci.SUITES['admin_player_care'] = original
 
 
 if __name__ == '__main__':
