@@ -87,6 +87,37 @@ class BaselinePolicyTests(unittest.TestCase):
                           for alias in node.names}, {'re', 'unittest'})
         self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)},
                          {'pathlib', 'types'})
+    def test_help_links_offline_registration_and_shared_fallback(self):
+        suite = ci.SUITES['help_tab_links']
+        self.assertEqual(suite['files'], ('tests/player_help/test_help_links.py',))
+        self.assertEqual(suite['paths'], ())
+        self.assertEqual(set(suite['shared_paths']), {
+            'code/modules/client/client_verbs.dm', 'code/game/mob/crafting_atlas.dm'})
+        for path in suite['shared_paths']:
+            with self.subTest(path=path):
+                decision = ci.impact([path])
+                self.assertTrue(decision['suites']['help_tab_links']['selected'])
+                self.assertIn('Unmapped impact: ' + path, decision['fallback_reasons'])
+                self.assertTrue(all(row['selected'] for row in decision['suites'].values()))
+        self.assertTrue(ci.impact(list(suite['files']))['suites']['help_tab_links']['selected'])
+        self.assertFalse(ci.impact(['README.md'])['suites']['help_tab_links']['selected'])
+
+    def test_help_links_baseline_executes_three_checks_and_aggregate_requires_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'help-links.json'
+            self.assertEqual(ci.run_unit('help_tab_links', output), 0)
+            result = json.loads(output.read_text())
+            self.assertEqual(result, dict(status='passed', tests=3, failures=0, errors=0, skipped=0))
+        plan, baseline, compiler, jobs = fixtures(('tests/player_help/test_help_links.py',))
+        self.assertTrue(plan['baseline']['suites']['help_tab_links']['selected'])
+        baseline['suites']['help_tab_links']['counts'] = result
+        self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
+        baseline['suites']['help_tab_links']['counts']['tests'] = 0
+        self.assertIn('Incomplete test execution: help_tab_links',
+                      ci.aggregate(plan, baseline, compiler, jobs, False))
+        del baseline['suites']['help_tab_links']
+        self.assertIn('Missing, failed or unexpectedly skipped suite: help_tab_links',
+                      ci.aggregate(plan, baseline, compiler, jobs, False))
 
     def test_character_traits_registration_and_shared_source_fallback(self):
         suite = ci.SUITES['character_traits']

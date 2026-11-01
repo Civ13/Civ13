@@ -45,6 +45,11 @@ SUITES = {
             'code/game/objects/structures/repairing.dm',
             'tests/animal_harvest/probe.dm',
             'tests/animal_harvest/action_admission_probe.dm')},
+    # Only stdlib source contracts; the shared DM inputs stay unmapped so their
+    # existing all-suite fallback and other owners' coverage remain intact.
+    'help_tab_links': {'files': ('tests/player_help/test_help_links.py',),
+        'paths': (), 'shared_paths': ('code/modules/client/client_verbs.dm',
+                                     'code/game/mob/crafting_atlas.dm')},
     # Full import graph: stdlib source/catalog checks plus the adjacent inert
     # test_foundations specification helper. No native runner or network import.
     # Shared production sources retain their conservative all-suite fallback.
