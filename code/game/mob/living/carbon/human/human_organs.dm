@@ -2,7 +2,7 @@
 	var/obj/item/organ/eyes/eyes = internal_organs_by_name["eyes"]
 	if (eyes)
 		eyes.update_colour()
-		regenerate_icons()
+		regenerate_appearance()
 
 /mob/living/human/var/list/internal_organs = list()
 /mob/living/human/var/list/organs = list()

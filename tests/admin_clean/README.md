@@ -35,11 +35,12 @@ Current offline regressions live in tests/admin_player_care/test_player_care.py.
 They interpret the production human regeneration call/guard sequence with
 injected call effects, check that item Clean requests appearance refresh without
 rebuilding the HUD, and detect both an unconditional HUD refresh and an omitted
-Clean argument. Ordinary regeneration keeps its default HUD refresh. This avoids
-the carried-item path through show_HUD's screen-list clear, which removes private
-world-render screens until LOS detects the missing leases. Ground/nested items
-do not take that generic carrier path. The checks do not prove connected-client
-flicker or pixel timing.
+Clean argument. Ordinary regeneration keeps its default HUD check. Clean still
+avoids that needless check; the shared HUD path now also preserves unrelated
+screen members and compositor filters. tests/admin_player_care/test_hud_refresh.py
+projects that separate membership/recovery contract with inert screen adapters.
+Ground/nested items do not take the generic carrier path. These checks do not
+prove connected-client flicker or pixel timing.
 
 Visibility is checked through source registration: the command appears only in
 `admin_verbs_admin`, added for `R_ADMIN`, and removed with that group. These

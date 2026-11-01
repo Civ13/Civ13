@@ -162,20 +162,12 @@ class CleanRendererContracts(unittest.TestCase):
         self.assertIsNotNone(call)
         return None if call[1] is None else call[1] == 'TRUE'
 
-    def test_item_clean_keeps_human_appearance_refresh_without_hud_reset(self):
+    def test_item_clean_keeps_human_appearance_refresh_without_hud_recheck(self):
         body = command('cmd_admin_clean_item')
         argument = self.clean_hud_argument(body)
         self.assertIs(argument, False)
         self.assertLess(body.index('I.clean_blood()'), body.index('M.regenerate_icons('))
         calls = project_regeneration(self.renderer(), argument)
-        # The injected HUD reset discards the private screens, reproducing the
-        # actual show_HUD screen-list operation without claiming native rendering.
-        screens = [object(), object(), object()]  # root master, relay, lighting
-        before = tuple(screens)
-        for call in calls:
-            if call == 'update_hud':
-                screens.clear()
-        self.assertEqual(tuple(screens), before)
         self.assertNotIn('update_hud', calls)
         for name in ('update_body', 'update_hair', 'update_mutations', 'update_inv_shoes',
                      'update_inv_w_uniform', 'update_inv_wear_suit', 'update_inv_l_hand',
@@ -198,14 +190,16 @@ class CleanRendererContracts(unittest.TestCase):
         for refresh in (None, False, True):
             self.assertEqual(project_regeneration(self.renderer(), refresh, transforming=True), ['..'])
 
-    def test_hud_reset_and_clean_call_omissions_reproduce_screen_withdrawal(self):
+    def test_regeneration_and_clean_call_omissions_reenable_hud_checks(self):
         renderer = self.renderer()
         unconditional = renderer.replace('\tif (refresh_hud)\n\t\tupdate_hud()', '\tupdate_hud()')
         self.assertIn('update_hud', project_regeneration(unconditional, False))
         old_command = command('cmd_admin_clean_item').replace('M.regenerate_icons(FALSE)', 'M.regenerate_icons()')
         self.assertIn('update_hud', project_regeneration(renderer, self.clean_hud_argument(old_command)))
         show = proc('code/game/mob/living/living_hud.dm', '/mob/living/proc/show_HUD()')
-        self.assertIn('client.screen.Cut()', show)
+        # The shared HUD path now preserves unrelated members too. Clean still
+        # avoids the unnecessary check, independently of that second safeguard.
+        self.assertNotIn('client.screen.Cut()', show)
         self.assertNotIn('root_tree_presenter', show)
         admission = proc('code/modules/visibility/root_tree_presenter.dm',
                          '/datum/root_tree_presenter/proc/planes_admitted()')

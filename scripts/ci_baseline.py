@@ -27,14 +27,22 @@ POLICY_FILES = tuple('tests/' + name for name in (
 SUITES = {
     # Stdlib-only admin care/appearance source contracts. Shared inputs retain
     # their existing conservative fallback and other suites' ownership.
-    'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',),
+    'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',
+                                   'tests/admin_player_care/test_hud_refresh.py'),
         'paths': ('tests/admin_player_care/',), 'shared_paths': (
             'code/modules/admin/admin_verbs.dm', 'code/modules/admin/verbs/random_verbs.dm',
             'code/game/mob/update_icons.dm',
             'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/game/mob/living/carbon/human/human_hud.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/human_organs.dm',
             'code/game/mob/living/carbon/human/human_needs.dm',
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/living_hud.dm',
+            'code/game/mob/living/living.dm', 'code/game/mob/mob.dm',
+            'code/game/mob/observer/ghost/ghost.dm',
+            'code/game/objects/items/weapons/defib.dm',
+            'code/modules/client/ui_style.dm', 'code/modules/organs/organ_external.dm',
             'code/modules/visibility/root_tree_presenter.dm', '.github/workflows/test.yml')},
     # Stdlib-only source projection and bounded RGBA8 PNG/DMI inspection.
     # No harvest preview helper, external package, native runner or network import.
