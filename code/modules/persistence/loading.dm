@@ -570,7 +570,6 @@
 			var/list/validated_lists = list()
 			var/list/turf_refs = list()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-			var/list/human_direct_turfs = list()
 			var/list/human_direct_parents = list()
 			var/list/human_direct_parent_counts = list()
 			var/list/human_direct_entries = list()
@@ -591,9 +590,6 @@
 					if(!isnum(ref) || ref < 1 || ref != round(ref) || turf_refs["[ref]"])
 						throw EXCEPTION("Missing or duplicate turf at [x],[y],[z]")
 					turf_refs["[ref]"] = TRUE
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-					human_direct_turfs["[ref]"] = list("x" = x, "y" = y, "z" = z)
-#endif
 					F.cd = entry_path(F, ref)
 					var/type = F["type"]
 					if(!ispath(type, /turf))
@@ -664,9 +660,12 @@
 			var/list/human_direct_positions = list()
 			var/list/human_direct_positions_by_ref = list()
 			for(var/human_ref in human_direct_entries)
-				var/list/origin = human_direct_turfs[human_direct_parents[human_ref]]
+				var/parent_ref = human_direct_parents[human_ref]
 				var/list/position = human_candidate_read_position(F, text2num(human_ref))
-				if(human_direct_parent_counts[human_ref] != 1 || !islist(origin) || !islist(position) || origin["x"] != position["x"] || origin["y"] != position["y"] || origin["z"] != position["z"] || (!position["sx"] && !position["sy"])) throw EXCEPTION("Human direct saved origin is invalid")
+				// The validated grid already proves each turf reference is unique. Resolve
+				// just this capsule's cell rather than retaining an inverse map of every turf.
+				if(human_direct_parent_counts[human_ref] != 1 || !turf_refs[parent_ref] || !islist(position) || position["z"] != z || position["x"] < 1 || position["x"] > world.maxx || position["y"] < 1 || position["y"] > world.maxy || (!position["sx"] && !position["sy"])) throw EXCEPTION("Human direct saved origin is invalid")
+				if("[human_candidate_map_ref(F, z, position["y"], position["x"])]" != "[parent_ref]") throw EXCEPTION("Human direct saved origin is invalid")
 				human_direct_positions += list(position)
 				human_direct_positions_by_ref[human_ref] = position
 			if(human_direct_entries.len)
