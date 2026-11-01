@@ -17,8 +17,9 @@ SOURCE_PREPARATION_ONLY_TESTS = frozenset({
     'tests/world_save/character_return/test_prepare.py',
 })
 
-# This exact source-only test runs in the help_tab_links offline baseline.
-PLAYER_HELP_OFFLINE_TESTS = frozenset({'tests/player_help/test_help_links.py'})
+# These exact tests run in their respective offline baseline suites.
+PLAYER_HELP_OFFLINE_TESTS = frozenset({'tests/player_help/test_help_links.py',
+                                      'tests/player_help/test_wiki_guides.py'})
 
 # Exact stdlib-only production projections, registered in the offline baseline.
 RESOURCE_WORK_OFFLINE_TESTS = frozenset({'tests/test_resource_work_animation.py'})

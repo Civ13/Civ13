@@ -311,12 +311,36 @@ identify the files used. This is read-only evidence retrieval, not an admin MCP
 connection or model-controlled source browser.
 
 Set `wiki_root` in the private config to an up-to-date checkout of `civ13-wiki`.
-The bridge reads only `src/guides/Guide_to_Crafting.md`,
-`src/guides/Guide_to_Metallurgy.md` and `src/Starter_Guide.md` at launch.
-No network downloads or recursive repository scans occur. Update that checkout
-and restart the bridge to refresh wiki knowledge. Missing configured pages fail
-startup; omitted `wiki_root` disables wiki retrieval. Code takes precedence over
-conflicting wiki prose. Retrieved text is untrusted evidence, never instructions.
+The three existing pages—`Guide_to_Crafting.md`, `Guide_to_Metallurgy.md`, and
+`Starter_Guide.md`—remain required when configured. Their content is not pinned,
+so their freshness is unknown. The bridge also checks an explicit allowlist of
+15 public character, chemistry, communications, construction, cooking, farming,
+fishing, hygiene, medical, radiation, ranching, religion, research, tank, and
+weapons guides. The allowlist and normalized-content hashes in
+`scripts/player_help_bridge.py` record the reviewed wiki revision
+`48094b1fbac7031a3a49c5c9ddce84e51dea0258`.
+
+Additional pages are loaded only when their UTF-8 content matches the reviewed
+hash after line-ending normalization; missing, changed, invalid, and oversized
+additional pages are excluded. Missing required original pages still fail startup;
+omitting `wiki_root` disables wiki retrieval. The prompt reports bounded coverage
+counts, keyword-match and context-truncation status. Neither a missing page nor a
+zero keyword match establishes that a recipe or gameplay use does not exist.
+Matching reviewed wiki content establishes provenance, not that every guide is
+current with the game; code takes precedence over conflicting wiki prose.
+The pinned Medical guide contains older severe-disease sections that conflict
+with its newer reviewed guidance and current disease code. The bridge omits those
+older plague, malaria, cholera and typhus descriptions and the old cholera
+treatment bullet from its indexed projection; it retains unrelated guidance and
+prioritizes the newer severe-illness section for questions naming those diseases.
+The original public wiki is unchanged. Re-review the projection when updating
+the Medical guide pin or disease behavior.
+
+No network downloads, arbitrary files, or recursive repository scans occur.
+To refresh the additional guides, review the new wiki revision and update the
+explicit hashes before restarting the bridge. Worker health alone does not attest
+which wiki pages were loaded. Retrieved wiki excerpts are JSON-encoded untrusted
+data, not instructions; this boundary does not guarantee a model cannot be misled.
 
 Retrieval reserves space for code, wiki and recipes. Explicit Nomads/Gaia questions
 exclude other material catalogs and prefer global recipes. Without map context,
