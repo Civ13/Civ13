@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_mount_lifecycle_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['mount_lifecycle']
+        self.assertEqual(suite['files'], ('tests/mount_lifecycle/test_death.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'mount_lifecycle'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/mount_lifecycle/fixtures/death_before.txt']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_lifecycle'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'mount_lifecycle'})
+
     def test_ladder_cleanup_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['ladder_cleanup']
         self.assertEqual(suite['files'], ('tests/ladder_cleanup/test_destroy.py',))
