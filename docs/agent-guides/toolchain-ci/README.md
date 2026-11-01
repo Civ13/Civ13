@@ -15,11 +15,18 @@ Do not turn an evidence limitation into a new approval requirement.
 tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
 bytes; it is embedded directly into source launcher 1.0.8 and consumed by the
 default compiler bootstrap/receipts and WSL setup. This does not establish native
-compatibility or publish the launcher. Compiler minimum/savefile major remain
-516.1681/516. Frozen 1681 fixture helpers, CID offsets and historical evidence stay
-unchanged. Manual component/train workflows explicitly select the legacy 1681
-bootstrap; other strict 1681 runtime harnesses must fail on a mismatched engine,
-not be relabeled. See docs/byond-5161688.md before selecting native coverage.
+compatibility or publish the launcher. Compiler admission is the exact canonical
+pin; savefile major remains 516. Older-engine compatibility is not required after
+a pin advances. Retire obsolete modes and port valuable behavior regressions to
+the current pin; retain old receipts and hashes as labelled historical evidence.
+The canonical bootstrap rejects retired legacy flags. Component/train Linux
+manual profiles use that bootstrap and shared archive/member identity before
+each compiler/daemon launch; workflow_dispatch admission remains unchanged.
+Their source port is not native acceptance. Other strict old-version harnesses
+remain migration/retirement debt; do not relabel old results or silently skip
+failed current-pin validation.
+Windows fixture callers must inject a reviewed current-pin facade; the shared
+runner refuses the old implicit floor-decal binding. See docs/byond-5161688.md.
 Active hosted compilation explicitly selects the user-approved Civ13/Civ13
 repository-release asset pinned in the Linux manifest. Only its exact public URL
 may redirect once to its reviewed release-assets.githubusercontent.com path;
@@ -37,7 +44,7 @@ Never use an em dash; use "-" instead.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
-- **Target BYOND version**: 516.1688 from `tools/byond/version.json`; minimum compiler remains 516.1681. No `.vscode/tasks.json` is tracked at this base.
+- **Target BYOND version**: exactly 516.1688 from `tools/byond/version.json`; compiler admission must match that pin. No `.vscode/tasks.json` is tracked at this base.
 - **CI** (`.github/workflows/test.yml`): the default Ubuntu compiler bootstrap targets the manifest version, runs `DreamMaker -max_errors 0 civ13.dme`, and requires the exact version banner plus zero errors/warnings. Exact-head hosted 516.1688 acceptance is pending. The separate evidence-checker and MCP protocol workflows do not establish gameplay or rendering.
 
 ## Code structure
@@ -61,7 +68,7 @@ Never use an em dash; use "-" instead.
 Available tasks:
 - **`dm civ13.dme`** - build the project (default build task)
 - **`DreamChecker`** - run static analysis
-- **`OpenDream Build`** - compile with DMCompiler (`--version=516.1681`)
+- **`OpenDream Build`** - historical local task; any future equivalent must target the canonical manifest version.
 - **`Build and Check`** - sequential: build then lint
 
 ## OpenDream
@@ -148,7 +155,7 @@ held probes, deployment, release publication, branch-protection changes or mergi
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual
 over HTTPS, with bounded downloads, cancellation and a temporary in-memory cache.
 Returned source hashes identify reference content, not compiler compatibility;
-the live manual can describe features newer than pinned BYOND 516.1681.
+the live manual can describe features newer than the canonical manifest pin.
 
 <!-- 2026-10-11: documentation-only CI selection -->
 Admitted ci-selection.yml runs select compilation conservatively and skip it for documentation-only changes unless requested. Extensive runtime suites require CI workflow_dispatch with extensive_regressions enabled; train tests are workflow_dispatch-only. Skips do not prove gameplay; see docs/ci-selection.md.

@@ -8,8 +8,12 @@ when that area is touched, rather than loading every guide for every task.
 
 ## Build, test and conventions
 
-- DM sources enter through `civ13.dme`. The target BYOND version is in
-  `tools/byond/version.json` (currently 516.1688; minimum compiler 516.1681).
+- DM sources enter through `civ13.dme`. The canonical BYOND pin is in
+  `tools/byond/version.json`; code, dependencies and active tests target that pin.
+- Once the pin advances, older-engine compatibility is not required. Retire
+  obsolete version-specific modes/tests and port valuable behavior regressions
+  to the current pin. Keep old evidence labelled historical; do not use floating
+  latest downloads or silently skip failed current-pin validation.
 - Compile before focused tests: Windows console `dm.exe civ13.dme`; Linux
   `DreamMaker -max_errors 0 civ13.dme`. Use the matching existing test runner
   and its README for the touched area. Report exact commands and results.

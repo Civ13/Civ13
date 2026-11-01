@@ -1,60 +1,50 @@
-# Core boot harness checks
+# Core-boot compile and offline controls
 
-Run the focused offline tests from the repository root:
+The active runner requires the canonical BYOND pin from `tools/byond/version.json`.
+It accepts no historical engine selection or fallback. Older engine results remain
+historical evidence; they are not compatibility requirements after the pin advances.
+
+Run the focused offline controls with an approved Python interpreter:
 
 ```powershell
 py -3 -B -m unittest discover -s tests/core_boot -p test_runner.py -v
 ```
 
-These tests launch no compiler, DreamDaemon, game, port or network connection.
-Fake subprocesses exercise the actual phase runner, including PASS followed by
-nonzero exit, timeout after PASS, missing load output and successful two-phase
-completion. Every phase must exit cleanly within its own deadline before another
-phase starts or any positive/negative-control receipt is accepted.
+These tests use fake processes and synthetic logs. They retain phase exit/timeout,
+runtime exception source/line, diagnostic, lighting quiescence, source-control and
+generated-file cleanup regressions. They do not launch a compiler or DreamDaemon.
+The former legacy-only main runtime entry is retired; version-independent phase
+and assertion helpers remain covered by offline controls.
 
-The generated runtime control throws a unique exception only from the fixture's
-own beaker during its chemistry phase. Its expected failure must agree with the
-exception receipt's phase, generated source filename and exact throw line, and
-every diagnostic must identify that same control. Unrelated errors invalidate
-the control even if the intended marker is also present. The fixture intercepts
-only this expected marker; ordinary errors retain their normal failure handling.
+The CLI only generates and compiles source variants with exact Linux identity:
 
-Lighting quiescence uses the existing typed overlay process's processing flag,
-retained current_list and batch_index as well as the live queues and TOD worker.
-The offline state controls evaluate the actual side-effect-free DM return
-expression through a restricted Boolean/member/comparison syntax adapter. They
-cover the old queue-only false-idle state and exhausted batches, but do not prove
-DM compilation, native scheduling, rendering or heap behavior.
-
-Generate and compile a fixture without starting DreamDaemon:
-
-```powershell
-py -3 -B tests/core_boot/run.py --byond-bin C:/BYOND/bin --compile-only --output C:/evidence/core-boot-default
+```sh
+python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --compile-only --output /tmp/core-boot-current
 ```
 
-Use an empty output directory. Add `--negative-control runtime` or
-`--lighting-load` to compile those generated variants. Compilation requires
-BYOND 516.1681, exit zero and zero errors/warnings, with a 600-second deadline.
-Compile-only returns before runtime staging, config copying or daemon launch;
-it preserves compile logs, source hash and control location, then removes the
-generated source and binaries. It does not verify an expected runtime failure.
-Input hashes and the runtime-control location are written before compilation,
-including when compilation fails or times out. Metadata distinguishes the actual
-checkout commit/tree from the CI event's head SHA; the latter never relabels the
-checkout. Probe, runner, DME, selected lighting/control inputs and generated
-control sources have SHA256 digests.
+Both `--byond-archive` and `--compile-only` are required. The runner verifies the
+reviewed canonical archive and installed compiler/daemon/library members through
+`tests/world_save/current_runtime.py` and `scripts/byond_runtime.py`, then rechecks
+identity immediately before compilation. It requires one exact compiler banner
+and a clean summary naming the generated artifact. Missing identity, an old or
+wrong engine, diagnostics, bad exit, changed files or timeout fail without fallback.
+The manifest loader and source compile gate also require the canonical compiler.
 
-The existing CI build job selects the offline checks and these three compile-only
-variants when a PR introduces executable tests/core_boot files, or when the
-existing extensive regressions option is enabled. Later edits alone do not select
-the suite. The step has a 32-minute cap for three sequential 600-second compiles.
-An upload step runs after an actually started check, including failure, and
-retains its offline log, checkout identity and selected compile metadata/logs
-for seven days. Its explicit file allowlist excludes configs, binaries and runtime
-files. Skipped checks do not request an artifact.
+Use an empty output directory. `--negative-control runtime`, `--lighting-load`
+and `--lighting-restart` compile their generated source variants only. They do not
+run a negative control, save, restore, client or daemon. Compilation has the existing
+600-second deadline. Receipts retain the canonical version, manifest/input/control
+hashes and identity checks; generated source/binaries are cleaned on failure too.
 
-Native core-boot and fresh-process lighting runs still need separate authorized
-BYOND 516.1681 execution and graphical acceptance. The runtime exception's native
-file/line receipt also needs that verification. Native runtime execution of this
-WIP harness is not wired into CI; offline checks and compile-only success do not
-establish a native runtime or gameplay pass.
+The existing CI step still selects three compile-only variants only when a PR
+introduces executable `tests/core_boot` files or the extensive option is enabled.
+This revision introduces no test path or native admission. The step's 32-minute
+limit and seven-day allowlisted evidence retention are unchanged. A skipped step
+does not establish compiler or runtime acceptance.
+
+`ready_for_review` is still outside the workflow subscription and ordinary selector
+actions. That separate event expansion is not included. Do not enable extensive
+or other native fixtures merely to test this source revision.
+
+Current-pin native boot, connected-client and saved-world acceptance remain
+separate work under their existing owners. No old-engine runtime lane is required.

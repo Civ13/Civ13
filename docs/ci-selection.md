@@ -178,6 +178,17 @@ use the same visible bounded fallback. Native smoke remains a proposal until
 its separate admission/resource holds are resolved; compiled core_boot variants
 are not a native smoke pass.
 
+Core-boot's three existing compile-only commands explicitly select the reviewed
+canonical Linux archive/member identity. The runner requires that identity and
+`--compile-only`, with no older-engine selection or fallback. It cannot start
+DreamDaemon. The step's admission condition, compile count and
+deadlines are unchanged; `runtime-identity.json` adds passive identity evidence.
+
+`ready_for_review` remains outside the workflow subscription and ordinary selector
+actions. Adding only the event can reach existing label-based native gates;
+adding it to ordinary actions also admits introduced native suites. Review that
+event and selector change together with those runtime effects before activation.
+
 ## Receipts and required aggregate
 
 `build` and `CI required aggregate` are reserved for the existing full ordinary

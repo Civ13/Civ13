@@ -124,10 +124,12 @@ not queue overlay updates; only light sources and daylight do. Fresh rounds
 apply daylight through the roundstart hook, but restored rounds skip
 `ticker.setup()`, so `restore_round_state()` calls `apply_restored_lighting()`
 for every restored round, including legacy saves without durable metadata.
-`tests/core_boot/run.py --lighting-restart --map maps/nomads/nomads_europe.dmm`
-checks a real save, fresh-process import and sampled overlay luminosity; its
-`restored-lighting` control removes that application. Default Nomads cannot be
-saved (cross-level ladders), so use a single-level persistence map.
+The restart source fixture in `tests/core_boot/lighting_load.dm` checks save,
+fresh-process import and sampled overlay luminosity; its `restored-lighting`
+control removes that application. The active core-boot CLI now only compiles
+these sources using the canonical archive and `--compile-only`; it does not run
+the restoration. Historical native results stay historical. Default Nomads cannot
+be saved (cross-level ladders), so native acceptance needs a single-level map.
 
 Lighting startup must reconcile existing inactive shared corners after adding overlays, as well as activating fresh corners. Native largest-startup fixtures exercise a later overlay pass after standalone corner creation; use bounded overlay-master visits without retaining a corner registry.
 

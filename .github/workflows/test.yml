@@ -635,9 +635,9 @@ jobs:
           git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/core-boot-compile/checkout-commit-tree.txt"
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 -B -m unittest discover -s tests/core_boot -p test_runner.py -v 2>&1 | tee "$RUNNER_TEMP/core-boot-compile/offline-tests.log"
-          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --output "$RUNNER_TEMP/core-boot-compile/default"
-          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --negative-control runtime --output "$RUNNER_TEMP/core-boot-compile/runtime"
-          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --compile-only --lighting-load --output "$RUNNER_TEMP/core-boot-compile/lighting-load"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --compile-only --output "$RUNNER_TEMP/core-boot-compile/default"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --compile-only --negative-control runtime --output "$RUNNER_TEMP/core-boot-compile/runtime"
+          /usr/bin/python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --compile-only --lighting-load --output "$RUNNER_TEMP/core-boot-compile/lighting-load"
 
       - name: Retain core-boot compile-only evidence
         if: always() && needs.changes.result == 'success' && steps.core_boot_compile.outputs.started == 'true'
@@ -652,6 +652,7 @@ jobs:
             ${{ runner.temp }}/core-boot-compile/*/compile.log
             ${{ runner.temp }}/core-boot-compile/*/compile-status.json
             ${{ runner.temp }}/core-boot-compile/*/compile-summary.json
+            ${{ runner.temp }}/core-boot-compile/*/runtime-identity.json
           if-no-files-found: error
           retention-days: 7
 

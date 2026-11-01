@@ -1,18 +1,16 @@
 """Serial Windows fixture supervisor. Import is inert; no launch or approval CLI.
 
-Reuse the versioned floor-decal adapter's detached, suspended, retained-handle
-launch, but never its old terminal acceptance/accounting policy. Each phase owns
+Callers inject reviewed current-pin detached, suspended, retained-handle bindings;
+the old floor-decal binding is not loaded by default. Each phase owns
 a fresh one-process Job and must account for every process ever assigned to it.
 Linux CI retains its existing subprocess timeout path in the fixture callers.
 """
 import ctypes
 from dataclasses import dataclass
-import importlib
 import json
 import os
 from pathlib import Path
 import subprocess
-import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,24 +41,14 @@ def no_port_args():
 
 
 class WindowsBackend:
-    """Native binding occurs only when an explicitly invoked runner creates this."""
+    """Callers supply their explicitly current-pin-bound native facade."""
     def __init__(self, *, adapter=None, windows=None, owned=None):
         if adapter is not None:
             require(windows is not None and owned is not None, 'Inject complete native facade')
             self.windows, self.owned, self.a = windows, owned, adapter
             self.captured = []
             return
-        directory = ROOT/'tests/floor_decal_tracking'
-        sys.path.insert(0, str(directory))
-        try:
-            modules = {name: importlib.import_module(name) for name in ('windows', 'guard_config', 'owned_job')}
-        finally:
-            sys.path.pop(0)
-        for name, module in modules.items():
-            require(Path(module.__file__).resolve() == directory/(name+'.py'), 'Wrong native adapter module')
-        self.windows, self.owned = modules['windows'], modules['owned_job']
-        self.a = self.windows.Adapter()
-        self.captured = []
+        raise RuntimeError('No default Windows fixture binding: inject a reviewed canonical-pin facade')
 
     def open(self, timeout):
         self.a.open()
