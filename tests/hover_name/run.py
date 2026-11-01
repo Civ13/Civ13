@@ -35,9 +35,9 @@ def mutate(old, new):
 if args.negative_control == 'identity':
     mutate('label = H.get_visible_name()', 'label = H.real_name')
 elif args.negative_control == 'exit':
-    mutate('label && label.hover_target?.resolve() == object', 'label')
+    mutate('label && label.hover_origin?.resolve() == object', 'label')
 elif args.negative_control == 'stale':
-    mutate('if (!target_visible(target))\n\t\tclear_target()', 'if (!target)\n\t\tclear_target()')
+    mutate('if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_item_visible(target)) || !target_visible(target))\n\t\tclear_target()', 'if (!target)\n\t\tclear_target()')
 elif args.negative_control == 'parent':
     mutate('|| ..()', '|| FALSE')
 

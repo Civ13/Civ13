@@ -36,6 +36,9 @@
 	var/should_save = TRUE
 /obj
 	var/flags_inv = 0
+/obj/item
+/obj/screen/inventory
+	var/slot_id
 /obj/screen
 	plane = HUD_PLANE
 	var/mob/living/parentmob
@@ -45,6 +48,10 @@
 /mob
 	var/datum/hover_client/hover_client
 	var/list/HUDneed = list()
+	var/list/HUDinventory = list()
+	var/list/test_slots = list()
+/mob/proc/get_equipped_item(slot)
+	return test_slots[slot]
 /mob/living
 /mob/living/human
 	var/real_name
@@ -94,7 +101,7 @@
 	check(L.persistence_runtime_var("persistence_export_frame"), "parent exclusion")
 	var/obj/A = new(locate(9,8,1))
 	A.name = "<b>scope & mount</b>"
-	var/obj/B = new(locate(10,8,1))
+	var/obj/item/B = new(locate(10,8,1))
 	B.name = "rifle"
 	C.MouseEntered(A, null, "map", "")
 	check(C.mouse_x == 9 && C.mouse_y == 8, "existing coordinates")
@@ -139,6 +146,7 @@
 	C.MouseEntered(B, null, "map", "")
 	check(!L.maptext, "screen membership without slot hidden")
 	B.screen_loc = "1,1"
+	B.loc = viewer
 	C.MouseEntered(B, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "inventory item")
 	C.screen -= B

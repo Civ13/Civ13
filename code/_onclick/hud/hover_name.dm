@@ -9,12 +9,16 @@
 	process_flag = TRUE
 	should_save = FALSE
 	var/tmp/datum/weakref/hover_target
+	var/tmp/datum/weakref/hover_origin
+	var/tmp/hover_inventory = FALSE
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_inventory", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
+	hover_origin = null
+	hover_inventory = FALSE
 	maptext = ""
 
 /obj/screen/hover_name/Destroy()
@@ -22,12 +26,38 @@
 	parentmob = null
 	return ..()
 
+/obj/screen/hover_name/proc/inventory_item_visible(atom/target)
+	if(!istype(target, /obj/item) || !parentmob || !parentmob.client)
+		return FALSE
+	var/client/C = parentmob.client
+	var/obj/item/I = target
+	return C.mob == parentmob && I.loc == parentmob && I.screen_loc && (I in C.screen)
+
+// Slot art can receive the mouse hit around a transparent item sprite. Resolve
+// only this body's current, visible slot and its actual displayed owned item.
+// Never use screen.master, a container search, or another body's equipment.
+/obj/screen/hover_name/proc/pointer_target(atom/origin)
+	if(!istype(origin, /obj/screen/inventory))
+		return origin
+	if(!parentmob || !parentmob.client)
+		return null
+	var/client/C = parentmob.client
+	var/obj/screen/inventory/slot = origin
+	if(C.mob != parentmob || slot.parentmob != parentmob || !(slot in parentmob.HUDinventory) || !(slot in C.screen) || !slot.screen_loc || !slot.mouse_opacity || !slot.alpha || slot.invisibility > parentmob.see_invisible)
+		return null
+	var/obj/item/I = parentmob.get_equipped_item(slot.slot_id)
+	if(!inventory_item_visible(I) || I.screen_loc != slot.screen_loc)
+		return null
+	return I
+
 /obj/screen/hover_name/proc/target_visible(atom/target)
 	if (!los_read_allowed(parentmob, target, "hover"))
 		return FALSE
 	if (!target || !parentmob || !parentmob.client || !target.mouse_opacity || !target.alpha || istype(target, /obj/screen))
 		return FALSE
 	var/client/C = parentmob.client
+	if(C.mob != parentmob || parentmob.HUDneed["hover name"] != src || !(src in C.screen))
+		return FALSE
 	if (target.invisibility > parentmob.see_invisible)
 		return FALSE
 	// Inventory items use the client's existing screen membership. Never inspect
@@ -35,19 +65,23 @@
 	if (ismovable(target))
 		var/atom/movable/movable_target = target
 		if (movable_target.screen_loc && (target in C.screen))
-			return TRUE
+			return inventory_item_visible(target)
 	return (isturf(target) || isturf(target.loc)) && (target in view(C.view, C.eye))
 
-/obj/screen/hover_name/proc/set_target(atom/target)
+/obj/screen/hover_name/proc/set_target(atom/origin)
 	clear_target()
+	var/atom/target = pointer_target(origin)
 	if (!target_visible(target))
 		return
 	hover_target = WEAKREF(target)
+	hover_origin = WEAKREF(origin)
+	hover_inventory = inventory_item_visible(target)
 	process()
 
 /obj/screen/hover_name/process()
 	var/atom/target = hover_target?.resolve()
-	if (!target_visible(target))
+	var/atom/origin = hover_origin?.resolve()
+	if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_item_visible(target)) || !target_visible(target))
 		clear_target()
 		return
 	var/label = target.name
@@ -74,6 +108,6 @@
 /client/MouseExited(atom/object, location, control, params)
 	var/obj/screen/hover_name/label = hover_name_widget()
 	// A late exit from the previous object must not erase a newer enter.
-	if (label && label.hover_target?.resolve() == object)
+	if (label && label.hover_origin?.resolve() == object)
 		label.clear_target()
 	..()
