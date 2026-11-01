@@ -416,10 +416,10 @@
     },
     {
       "path": "code/modules/client/client_defines.dm",
-      "sha256_normalized": "9a559a7a3717a10878c109a0b5d1043f7c54ec52a05e2410c3d9b06378598f69",
+      "sha256_normalized": "aa79f9673dfec4c3629c5930baf319da71bc93ea53a1dfbca726665cf0613270",
       "declarations": [
         {
-          "line": 3,
+          "line": 4,
           "declaration": "parent_type = /datum"
         }
       ]
