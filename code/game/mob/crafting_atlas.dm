@@ -1,5 +1,14 @@
 // Read-only recipe graph. Bounded index and explicit legacy pages, no item constructors.
 var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
+// Optional presentation seam: the isolated catalog renderer has no NanoUI dependency.
+// The full game registers the default modern presenter from crafting_atlas_tgui.dm.
+var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
+
+/datum/crafting_atlas_presenter/proc/open(datum/crafting_atlas_reference/reference, mob/viewer, query, page, resource_id, legacy, era, processor, recipe_id)
+	return FALSE
+
+/datum/crafting_atlas_presenter/proc/navigate(datum/crafting_atlas_reference/reference, mob/viewer, payload, state)
+	return FALSE
 
 /client
 	var/atlas_last_request = -100
@@ -128,12 +137,11 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 		return ""
 	return "<p>Catalog source: <a href='https://github.com/Civ13/Civ13/blob/master/[html_encode("[recipe["file"]]")]#L[recipe["line"]]'>[html_encode("[recipe["file"]]")]:[recipe["line"]]</a></p>"
 
-/datum/crafting_atlas_reference/proc/resource_html(mob/viewer, list/resource)
+/datum/crafting_atlas_reference/proc/resource_info(mob/viewer, list/resource)
 	var/id = resource["id"]
-	var/label = html_encode("[resource["name"]]")
-	var/quantity = html_encode("[resource["quantity"]]")
 	var/list/image_data = resources[id]
-	var/image_html = ""
+	var/image_file = ""
+	var/preview_label = ""
 	if (islist(image_data))
 		var/typepath = text2path(image_data["type"])
 		var/source_symbol = !ispath(typepath, /atom)
@@ -145,7 +153,7 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 			var/state = initial(prototype.icon_state)
 			if (image_data["state"])
 				state = image_data["state"]
-			var/preview_label = "Inherited default; material coloring and overlays can differ."
+			preview_label = "Inherited default; material coloring and overlays can differ."
 			if (source_symbol || !icon_file || !(state in icon_states(icon_file)))
 				var/atom/paper_type = /obj/item/weapon/paper
 				icon_file = initial(paper_type.icon)
@@ -155,7 +163,17 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 				var/icon/preview = icon(icon_file, state, initial(prototype.dir), 1)
 				var/filename = "atlas_[md5("[id]")].png"
 				viewer << browse_rsc(preview, filename)
-				image_html = "<img src='[filename]' width='32' height='32' alt='[label]' title='[preview_label]'> "
+				image_file = filename
+	return list("id" = id, "name" = html_encode("[resource["name"]]"), "quantity" = html_encode("[resource["quantity"]]"), "image" = image_file, "preview" = preview_label)
+
+/datum/crafting_atlas_reference/proc/resource_html(mob/viewer, list/resource)
+	var/list/info = resource_info(viewer, resource)
+	var/id = info["id"]
+	var/label = info["name"]
+	var/quantity = info["quantity"]
+	var/image_html = ""
+	if (info["image"])
+		image_html = "<img src='[info["image"]]' width='32' height='32' alt='[label]' title='[info["preview"]]'> "
 	return "[image_html]<a href='?src=\ref[src];atlas_resource=[url_encode(id)]'>[label]</a> ([quantity])"
 
 /datum/crafting_atlas_reference/proc/page_html(mob/viewer, query = "", page = 1, recipe_id = "")
@@ -300,6 +318,8 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	if (!load_catalog())
 		to_chat(viewer, "The crafting reference is unavailable in this build.")
 		return
+	if (crafting_atlas_presenter && crafting_atlas_presenter.open(src, viewer, query, page, resource_id, legacy, era, processor, recipe_id))
+		return
 	viewer << browse(render_html(viewer, query, page, resource_id, legacy, era, processor, recipe_id), "window=crafting_atlas;size=1000x700")
 
 /datum/crafting_atlas_reference/proc/render_html(mob/viewer, query = "", page = 1, resource_id = "", legacy = FALSE, era = "", processor = "", recipe_id = "")
@@ -313,10 +333,14 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 		return FALSE
 	return islist(resources[resource_id])
 
-/datum/crafting_atlas_reference/Topic(href, list/href_list)
+/datum/crafting_atlas_reference/Topic(href, list/href_list, state)
 	if (!usr || !usr.client)
 		return
 	var/mob/viewer = usr
+	if (href_list["atlas_navigate"])
+		if (crafting_atlas_presenter)
+			return crafting_atlas_presenter.navigate(src, viewer, href_list["atlas_navigate"], state)
+		return
 	if (href_list["atlas_resource"])
 		var/resource_id = copytext("[href_list["atlas_resource"]]", 1, 257)
 		if (resource_exists(resource_id))
