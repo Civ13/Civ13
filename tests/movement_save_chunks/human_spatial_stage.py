@@ -59,9 +59,9 @@ def replace_once(data, old, new, label):
 
 def instrument_legacy_parent_refusal(data):
     """Record fixture-only evidence without changing the refusal condition."""
-    original = '\t\tif(!istype(legacy_parent) || legacy_parent.z != H.z) throw EXCEPTION("Human legacy save has no valid parent")'
+    original = '\t\tif(!istype(legacy_parent) || human_save_containment_turf(legacy_parent) != current_turf) throw EXCEPTION("Human legacy save has no valid parent")'
     instrumented = (
-        '\t\tif(!istype(legacy_parent) || legacy_parent.z != H.z)\n'
+        '\t\tif(!istype(legacy_parent) || human_save_containment_turf(legacy_parent) != current_turf)\n'
         '\t\t\ttry\n'
         '\t\t\t\thuman_spatial_fixture_record_legacy_refusal(H, legacy_parent, record["mode"])\n'
         '\t\t\tcatch\n'

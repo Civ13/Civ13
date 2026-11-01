@@ -78,7 +78,123 @@ class RollingMembership:
         return record['parent']
 
 
+class Location:
+    """Offline ownership projection, not a model of BYOND atom execution."""
+    def __init__(self, kind, *, loc=None, level=0, valid=True):
+        self.kind, self.loc, self.level, self.valid = kind, loc, level, valid
+
+
+def resolved_level(node):
+    seen = set()
+    for _ in range(64):
+        if node is None or not node.valid or id(node) in seen:
+            raise ValueError('invalid containment')
+        seen.add(id(node))
+        if node.kind == 'turf':
+            if node.level < 1:
+                raise ValueError('invalid turf')
+            return node.level
+        if node.kind != 'movable':
+            raise ValueError('invalid containment')
+        node = node.loc
+    raise ValueError('invalid containment')
+
+
+def bind_legacy(body, file_level):
+    level = resolved_level(body)
+    if level != file_level or body.loc is None:
+        raise ValueError('wrong file level or parent')
+    return {'parent': body.loc, 'level': level, 'owner': None}
+
+
+def attach_legacy(record, parent, *, captured_parent, captured_level):
+    if record['parent'] is not captured_parent or resolved_level(captured_parent) != record['level']:
+        raise ValueError('stale parent')
+    if parent is not captured_parent:
+        return record['owner']
+    if captured_level != record['level']:
+        raise ValueError('wrong captured level')
+    if record['owner'] is not None and record['owner'] is not parent:
+        raise ValueError('duplicate owner')
+    record['owner'] = parent
+    return parent
+
+
 class SpatialSnapshotModelTests(unittest.TestCase):
+    def test_production_level_binding_and_parent_checks_are_source_bound(self):
+        root = Path(__file__).resolve().parents[2]
+        saving = (root / 'code/modules/persistence/saving.dm').read_text()
+        functions = (root / 'code/modules/persistence/functions.dm').read_text()
+        resolver = saving.split('/proc/human_save_containment_turf(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        for required in ('i <= 64', 'isDeleted(current)', 'seen[key]', 'isturf(current)',
+                         'locate(T.x, T.y, T.z) != T', 'current = current.loc'):
+            self.assertIn(required, resolver)
+        classify = saving.split('/map_storage/proc/classify_human_save_entry(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertLess(classify.index('current_turf.z != saving_z'), classify.index('record["z"] = current_turf.z'))
+        self.assertIn('record["origin"] = legacy_parent', classify)
+        self.assertIn('save_entry_identity(legacy_parent)', classify)
+        self.assertIn('if(record["z"] != saving_z)', classify)
+        parent = saving.split('/map_storage/proc/human_save_parent_captured(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        for required in ('saving_references[save_entry_identity(parent)]', 'saving_reference_pins[parent_ref] != parent',
+                         'saving_world_movables', 'captured["z"] != saved_z', 'captured["ref"] != parent_ref'):
+            self.assertIn(required, parent)
+        self.assertIn('human_save_parent_captured(legacy_parent, human_root["z"], frame.entry)', functions)
+        self.assertIn('human_save_parent_captured(parent, record["z"], legacy_parent_ref)', saving)
+        declared = saving.split('/map_storage/proc/level_link_target(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('source.persistence_level_link_var(field)', declared)
+        self.assertIn('var/turf/T = get_turf(value)', declared)
+        self.assertIn('T.z != saving_z', declared)
+
+    def test_nested_contained_body_binds_resolved_level_and_immediate_parent(self):
+        floor = Location('turf', level=1)
+        outer = Location('movable', loc=floor)
+        inner = Location('movable', loc=outer)
+        body = Location('movable', loc=inner)
+        record = bind_legacy(body, 1)
+        self.assertIs(record['parent'], inner)
+        self.assertEqual(record['level'], 1)
+        self.assertIs(attach_legacy(record, inner, captured_parent=inner, captured_level=1), inner)
+
+    def test_cross_level_reference_missing_cycle_and_deleted_chain_refuse(self):
+        floor = Location('turf', level=2)
+        body = Location('movable', loc=Location('movable', loc=floor))
+        with self.assertRaises(ValueError):
+            bind_legacy(body, 1)
+        with self.assertRaises(ValueError):
+            bind_legacy(Location('movable'), 1)
+        cycle = Location('movable')
+        cycle.loc = cycle
+        with self.assertRaises(ValueError):
+            bind_legacy(Location('movable', loc=cycle), 1)
+        deep = floor
+        for _ in range(64):
+            deep = Location('movable', loc=deep)
+        with self.assertRaises(ValueError):
+            bind_legacy(deep, 2)
+        body.loc.valid = False
+        with self.assertRaises(ValueError):
+            bind_legacy(body, 2)
+
+    def test_captured_parent_identity_and_level_survive_body_exit(self):
+        floor = Location('turf', level=1)
+        parent = Location('movable', loc=floor)
+        body = Location('movable', loc=parent)
+        record = bind_legacy(body, 1)
+        body.loc = floor
+        self.assertIsNone(attach_legacy(record, floor, captured_parent=parent, captured_level=1))
+        self.assertIs(attach_legacy(record, parent, captured_parent=parent, captured_level=1), parent)
+        with self.assertRaises(ValueError):
+            attach_legacy(record, parent, captured_parent=Location('movable', loc=floor), captured_level=1)
+        with self.assertRaises(ValueError):
+            attach_legacy(record, parent, captured_parent=parent, captured_level=2)
+        record['owner'] = Location('movable', loc=floor)
+        with self.assertRaises(ValueError):
+            attach_legacy(record, parent, captured_parent=parent, captured_level=1)
+        record['owner'] = parent
+        parent.loc = Location('turf', level=2)
+        with self.assertRaises(ValueError):
+            attach_legacy(record, parent, captured_parent=parent, captured_level=1)
+
     def test_seated_and_contained_legacy_keep_first_parent_and_mode(self):
         membership = RollingMembership(('seated', 'contained'))
         self.assertEqual(membership.encounter('seated', direct=True, linked=True, offset=0, parent='floor'), 'legacy')
@@ -251,7 +367,7 @@ class SourceConstraints(unittest.TestCase):
         self.assertIn('classify_human_save_entry(A, persistence_active_operation)', body)
         self.assertIn('human_root["mode"] == "spatial"', body)
         classify = saving.split('/map_storage/proc/classify_human_save_entry(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        for required in ('if(!record)', 'if(record["mode"]) return record', 'record["mode"] = "legacy"',
+        for required in ('if(!record)', 'if(record["mode"])', 'if(record["z"] != saving_z)', 'record["mode"] = "legacy"',
                          'record["mode"] = "spatial"', 'H.human_subtile_pulse || H.human_subtile_transaction'):
             self.assertIn(required, classify)
         functions = (self.root / "code/modules/persistence/functions.dm").read_text()

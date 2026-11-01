@@ -65,7 +65,7 @@ class StageChecks(unittest.TestCase):
     def test_legacy_parent_diagnostic_preserves_refusal_and_has_bounded_identity(self):
         saver = (stage.ROOT / 'code/modules/persistence/saving.dm').read_text()
         adapted = stage.instrument_legacy_parent_refusal(saver)
-        condition = 'if(!istype(legacy_parent) || legacy_parent.z != H.z)'
+        condition = 'if(!istype(legacy_parent) || human_save_containment_turf(legacy_parent) != current_turf)'
         error = 'throw EXCEPTION("Human legacy save has no valid parent")'
         self.assertEqual(saver.count(condition), 1)
         self.assertEqual(adapted.count(condition), 1)

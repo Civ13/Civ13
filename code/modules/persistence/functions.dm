@@ -1229,8 +1229,10 @@ var/global/datum/persistence_admission_identity
 		return // The saved origin receives the only spatial edge during drain.
 	if(human_root && human_root["mode"] == "legacy" && human_root["ref"] == ref)
 		var/atom/legacy_parent = human_root["origin"]
-		if(!legacy_parent || isDeleted(legacy_parent) || save_entry_identity(legacy_parent) != human_root["origin_identity"] || legacy_parent.z != human_root["z"]) throw EXCEPTION("Legacy human captured parent changed")
+		var/turf/parent_turf = human_save_containment_turf(legacy_parent)
+		if(!legacy_parent || isDeleted(legacy_parent) || save_entry_identity(legacy_parent) != human_root["origin_identity"] || !parent_turf || parent_turf.z != human_root["z"]) throw EXCEPTION("Legacy human captured parent changed")
 		if(frame.source != legacy_parent) return // Drain attaches the captured parent.
+		if(!human_save_parent_captured(legacy_parent, human_root["z"], frame.entry)) throw EXCEPTION("Legacy human parent was not captured")
 #endif
 	var/list/moving_root = child ? moving_save_roots["\ref[child]"] : null
 	if(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])

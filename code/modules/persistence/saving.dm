@@ -1128,12 +1128,39 @@
 		if(saveable)
 			for(var/ignored in ignore_types)
 				if(istype(H, ignored)) throw EXCEPTION("Saveable human matches an ignored type")
-		human_save_roots[identity] = list("atom" = H, "identity" = identity, "saveable" = saveable, "initial" = TRUE, "z" = H.z, "origin" = null, "request" = null, "ref" = 0, "mode" = null)
+		var/turf/roster_turf = human_save_containment_turf(H)
+		if(saveable && !roster_turf) throw EXCEPTION("Human save roster has no valid containment turf")
+		human_save_roots[identity] = list("atom" = H, "identity" = identity, "saveable" = saveable, "initial" = TRUE, "z" = roster_turf ? roster_turf.z : 0, "origin" = null, "request" = null, "ref" = 0, "mode" = null)
 		save_work_check()
 	operation.human_roster_records = human_save_roots
 
 // Legacy containment, links and non-owned offsets keep the existing serializer.
 // No movement is stopped to enroll a newly discovered spatial actor.
+/proc/human_save_containment_turf(atom/start)
+	// A contained atom has native z=0. Resolve only an intact, bounded chain;
+	// do not run hooks, yield, or guess a level for missing/cyclic containment.
+	var/atom/current = start
+	var/list/seen = list()
+	for(var/i = 1, i <= 64 && current, i++)
+		if(isDeleted(current)) return null
+		var/key = "\ref[current]"
+		if(seen[key]) return null
+		seen[key] = TRUE
+		if(isturf(current))
+			var/turf/T = current
+			if(T.z < 1 || T.z > world.maxz || locate(T.x, T.y, T.z) != T) return null
+			return T
+		if(!istype(current, /atom/movable)) return null
+		current = current.loc
+	return null
+
+/map_storage/proc/human_save_parent_captured(atom/parent, saved_z, parent_ref)
+	if(!parent || !parent_ref || saving_references[save_entry_identity(parent)] != parent_ref || saving_reference_pins[parent_ref] != parent) return FALSE
+	if(istype(parent, /atom/movable))
+		var/list/captured = saving_world_movables["\ref[parent]"]
+		if(!captured || captured["atom"] != parent || captured["z"] != saved_z || captured["ref"] != parent_ref) return FALSE
+	return TRUE
+
 /map_storage/proc/human_save_spatial_supported(mob/living/human/H)
 	return H && !isDeleted(H) && H.type == /mob/living/human && H.should_save && H.human_subtile_shape() && H.human_subtile_unlinked() && !H.pulling && !subtile_pull_ownership.owners[H] && ((!H.step_x && !H.step_y) || H.human_subtile_offset_owned)
 
@@ -1143,16 +1170,20 @@
 	var/list/record = human_save_roots[identity]
 	if(!record)
 		if(human_save_roots.len >= 8192) throw EXCEPTION("Human save membership exceeds its budget")
-		record = list("atom" = H, "identity" = identity, "saveable" = !!H.should_save, "initial" = FALSE, "z" = H.z, "origin" = null, "request" = null, "ref" = 0, "mode" = null)
+		record = list("atom" = H, "identity" = identity, "saveable" = !!H.should_save, "initial" = FALSE, "z" = 0, "origin" = null, "request" = null, "ref" = 0, "mode" = null)
 		human_save_roots[identity] = record
 	if(record["atom"] != H || record["identity"] != identity) throw EXCEPTION("Human save entry identity changed")
-	if(record["mode"]) return record
+	if(record["mode"])
+		if(record["z"] != saving_z) throw EXCEPTION("Human saved entry belongs to another level")
+		return record
+	var/turf/current_turf = human_save_containment_turf(H)
+	if(!current_turf || current_turf.z != saving_z) throw EXCEPTION("Human save entry has no valid same-level containment turf")
 	record["saveable"] = !!H.should_save
-	record["z"] = H.z
+	record["z"] = current_turf.z
 	if(!human_save_spatial_supported(H))
 		if(H.human_subtile_pulse || H.human_subtile_transaction || H.step_x || H.step_y) throw EXCEPTION("Human legacy save needs an aligned idle position")
 		var/atom/legacy_parent = H.loc
-		if(!istype(legacy_parent) || legacy_parent.z != H.z) throw EXCEPTION("Human legacy save has no valid parent")
+		if(!istype(legacy_parent) || human_save_containment_turf(legacy_parent) != current_turf) throw EXCEPTION("Human legacy save has no valid parent")
 		record["origin"] = legacy_parent
 		record["origin_identity"] = save_entry_identity(legacy_parent)
 		record["mode"] = "legacy"
@@ -1241,15 +1272,17 @@
 					record["request"] = null
 					record["mode"] = null
 				continue
-			if(save_entry_identity(H) != identity || H.z != saving_z) throw EXCEPTION("Human save roster changed level before drain")
+			var/turf/current_turf = human_save_containment_turf(H)
+			if(save_entry_identity(H) != identity || !current_turf || current_turf.z != saving_z) throw EXCEPTION("Human save roster changed level before drain")
 			ref = BuildVarDirectory(F, H, 1)
 			if(!ref) throw EXCEPTION("Human save roster entry could not be serialized")
 		if(record["mode"] == "legacy")
 			if(record["parent_attached"]) continue
 			var/atom/parent = record["origin"]
-			if(!parent || isDeleted(parent) || save_entry_identity(parent) != record["origin_identity"] || parent.z != record["z"]) throw EXCEPTION("Legacy human has no captured parent")
+			var/turf/parent_turf = human_save_containment_turf(parent)
+			if(!parent || isDeleted(parent) || save_entry_identity(parent) != record["origin_identity"] || !parent_turf || parent_turf.z != record["z"]) throw EXCEPTION("Legacy human has no captured parent")
 			var/legacy_parent_ref = saving_references[save_entry_identity(parent)]
-			if(!legacy_parent_ref || saving_reference_pins[legacy_parent_ref] != parent) throw EXCEPTION("Legacy human parent was not captured")
+			if(!human_save_parent_captured(parent, record["z"], legacy_parent_ref)) throw EXCEPTION("Legacy human parent was not captured")
 			var/legacy_path = "[entry_path(F, legacy_parent_ref)]/content"
 			var/list/legacy_chunks = F[legacy_path]
 			if(!islist(legacy_chunks)) throw EXCEPTION("Legacy human parent cannot accept its saved body")
