@@ -36,6 +36,8 @@
 	var/list/world_state = capture_durable_world()
 	var/prefix = world_state ? "round-v2" : "round-v1"
 	generation = "[prefix]:[generation_nonce]"
+	operation.diagnostic_save_id = "save-[generation_nonce]"
+	operation.diagnostic_generation = generation
 	if(zone_export_state && !world_state) throw EXCEPTION("Admitted zone capture lost its metadata profile")
 	var/list/round_state = capture_round_state(generation)
 	if(world_state)
@@ -203,6 +205,11 @@
 				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
 				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))
+					try
+						record_save_child_failure(parent, content, child_ref)
+					catch
+						// Diagnostics must not replace the original refusal.
+						last_save_reference_failure = null
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
@@ -212,6 +219,11 @@
 				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
 				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))
+					try
+						record_save_child_failure(parent, content, child_ref)
+					catch
+						// Diagnostics must not replace the original refusal.
+						last_save_reference_failure = null
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
