@@ -137,8 +137,31 @@ var/global/list/los_active_contexts
 	var/tile_x
 	var/tile_y
 	var/atom/surface_owner
-	var/list/surface_owners
 	var/owners = 0
+
+/datum/los_tree_bounds
+	should_save = FALSE
+	var/root_x
+	var/root_y
+	var/root_z
+	var/step_x
+	var/step_y
+	var/bound_x
+	var/bound_y
+	var/bound_width
+	var/bound_height
+	var/left
+	var/right
+	var/bottom
+	var/top
+	var/list/cells
+
+/datum/los_surface_cell
+	should_save = FALSE
+	var/cell_x
+	var/cell_y
+	var/half_x
+	var/half_y
 
 /datum/los_snapshot
 	var/presentation = FALSE
@@ -153,7 +176,7 @@ var/global/list/los_active_contexts
 	var/list/blockers = list()
 	var/list/blocker_bins
 	var/list/clear_footprints = list()
-	var/list/surface_cells
+	var/list/tree_bounds
 
 // The flat list remains authoritative and is retained for sparse scenes and
 // snapshot fixtures. Bins are derived once per fresh capture, never shared.
@@ -242,7 +265,9 @@ var/global/list/los_active_contexts
 	var/visible_high_n = edge_high
 	var/visible_high_d = face
 	for (var/datum/los_cell/B in candidates)
-		if ((B.tile_x == tile_x && B.tile_y == tile_y) || los_cell_has_owner(B, target))
+		// Co-located foreign owners still occlude. Only this tree's own
+		// contributions may be ignored, including conservative overlap cells.
+		if (B.owners == 1 && B.surface_owner == target)
 			continue
 		if (abs(B.cell_x) <= 0.5 && abs(B.cell_y) <= 0.5)
 			return FALSE
@@ -273,56 +298,70 @@ var/global/list/los_active_contexts
 			return FALSE
 	return TRUE
 
-/proc/los_cell_has_owner(datum/los_cell/B, atom/target)
-	return B.surface_owner == target || (B.surface_owners && (target in B.surface_owners))
-
-/datum/los_snapshot/proc/add_surface_cell(atom/target, datum/los_cell/B)
-	if (!target)
+// Freeze the actual physical rectangle once per opaque movable. Native turf
+// contents includes fractional overlaps; shifting a full unit for EVERY such
+// turf would fabricate surfaces beyond the physical tree. Reads skip this path.
+/datum/los_snapshot/proc/capture_tree_bounds(atom/movable/A)
+	if (!tree_bounds)
+		tree_bounds = list()
+	if (tree_bounds[A])
 		return
-	var/list/cells = surface_cells[target]
-	if (!cells)
-		cells = list()
-		surface_cells[target] = cells
-	cells += B
+	var/datum/los_tree_bounds/R = new
+	R.root_x = A.x
+	R.root_y = A.y
+	R.root_z = A.z
+	R.step_x = A.step_x
+	R.step_y = A.step_y
+	R.bound_x = A.bound_x
+	R.bound_y = A.bound_y
+	R.bound_width = A.bound_width
+	R.bound_height = A.bound_height
+	R.left = A.x - eye_x + (A.step_x + A.bound_x) / 32 - 0.5
+	R.bottom = A.y - eye_y + (A.step_y + A.bound_y) / 32 - 0.5
+	R.right = R.left + A.bound_width / 32
+	R.top = R.bottom + A.bound_height / 32
+	tree_bounds[A] = R
 
-// Build once, lazily, only when a tree's root-center decision was denied.
-/datum/los_snapshot/proc/owned_surface_cells(atom/target)
-	if (!surface_cells)
-		surface_cells = list()
-		for (var/datum/los_cell/B in blockers)
-			if (B.surface_owners)
-				for (var/atom/A in B.surface_owners)
-					add_surface_cell(A, B)
-			else
-				add_surface_cell(B.surface_owner, B)
-	return surface_cells[target]
+/datum/los_snapshot/proc/owned_surface_cells(atom/movable/target)
+	if (!tree_bounds)
+		return null
+	var/datum/los_tree_bounds/R = tree_bounds[target]
+	if (!R || R.root_x != target.x || R.root_y != target.y || R.root_z != target.z || R.step_x != target.step_x || R.step_y != target.step_y || R.bound_x != target.bound_x || R.bound_y != target.bound_y || R.bound_width != target.bound_width || R.bound_height != target.bound_height)
+		return null
+	if (R.cells)
+		return R.cells
+	R.cells = list()
+	// Clip to the viewport before subdividing; even custom large bounds cannot
+	// cause unbounded surface allocation. Each real subrectangle is <=1x1.
+	var/left = max(R.left, -radius_x - 0.5)
+	var/right = min(R.right, radius_x + 0.5)
+	var/bottom = max(R.bottom, -radius_y - 0.5)
+	var/top = min(R.top, radius_y + 0.5)
+	for (var/cell_left = left, cell_left < right, cell_left++)
+		for (var/cell_bottom = bottom, cell_bottom < top, cell_bottom++)
+			var/datum/los_surface_cell/C = new
+			C.half_x = min(1, right - cell_left) / 2
+			C.half_y = min(1, top - cell_bottom) / 2
+			C.cell_x = cell_left + C.half_x
+			C.cell_y = cell_bottom + C.half_y
+			R.cells += C
+	return R.cells
 
 /datum/los_snapshot/proc/tree_surface_visible(atom/target, tx, ty, tile_x, tile_y)
 	var/list/cells = owned_surface_cells(target)
-	var/has_root = FALSE
-	for (var/datum/los_cell/root_cell in cells)
-		if (root_cell.cell_x == tx && root_cell.cell_y == ty && root_cell.tile_x == tile_x && root_cell.tile_y == tile_y)
-			has_root = TRUE
-			break
-	if (!has_root)
-		return FALSE
-	for (var/datum/los_cell/owned in cells)
-		if (abs(owned.cell_x) > radius_x + 0.5 || abs(owned.cell_y) > radius_y + 0.5)
-			continue
+	for (var/datum/los_surface_cell/owned in cells)
 		tx = owned.cell_x
 		ty = owned.cell_y
-		tile_x = owned.tile_x
-		tile_y = owned.tile_y
 		var/list/candidates = surface_blockers(tx, ty)
-		if (abs(tx) <= 0.5 && abs(ty) <= 0.5)
+		if (abs(tx) <= owned.half_x && abs(ty) <= owned.half_y)
 			return TRUE
-		if (tx > 0.5 && surface_edge_visible(tx-0.5, ty-0.5, ty+0.5, 0, 1, tile_x, tile_y, target, candidates))
+		if (tx > owned.half_x && surface_edge_visible(tx-owned.half_x, ty-owned.half_y, ty+owned.half_y, 0, 1, tile_x, tile_y, target, candidates))
 			return TRUE
-		if (tx < -0.5 && surface_edge_visible(-tx-0.5, ty-0.5, ty+0.5, 0, -1, tile_x, tile_y, target, candidates))
+		if (tx < -owned.half_x && surface_edge_visible(-tx-owned.half_x, ty-owned.half_y, ty+owned.half_y, 0, -1, tile_x, tile_y, target, candidates))
 			return TRUE
-		if (ty > 0.5 && surface_edge_visible(ty-0.5, tx-0.5, tx+0.5, 1, 1, tile_x, tile_y, target, candidates))
+		if (ty > owned.half_y && surface_edge_visible(ty-owned.half_y, tx-owned.half_x, tx+owned.half_x, 1, 1, tile_x, tile_y, target, candidates))
 			return TRUE
-		if (ty < -0.5 && surface_edge_visible(-ty-0.5, tx-0.5, tx+0.5, 1, -1, tile_x, tile_y, target, candidates))
+		if (ty < -owned.half_y && surface_edge_visible(-ty-owned.half_y, tx-owned.half_x, tx+owned.half_x, 1, -1, tile_x, tile_y, target, candidates))
 			return TRUE
 	return FALSE
 
@@ -477,7 +516,6 @@ var/global/list/los_active_contexts
 				continue
 			var/owner_count = 0
 			var/atom/cell_owner = null
-			var/list/cell_owners = null
 			if (T.opacity)
 				cell_owner = T
 				owner_count++
@@ -485,6 +523,8 @@ var/global/list/los_active_contexts
 				if (A.opacity && A != body)
 					if (ismovable(A))
 						var/atom/movable/AM = A
+						if (presentation && root_tree_family(AM))
+							S.capture_tree_bounds(AM)
 						if (AM.step_x || AM.step_y)
 							var/datum/los_cell/moving_blocker = new
 							moving_blocker.tile_x = cx - S.eye_x
@@ -495,12 +535,6 @@ var/global/list/los_active_contexts
 							moving_blocker.owners = 1
 							S.blockers += moving_blocker
 							continue
-					// Information captures keep the old scalar-only path. Only
-					// ambiguous presentation cells need their complete owner list.
-					if (presentation && owner_count)
-						if (!cell_owners)
-							cell_owners = list(cell_owner)
-						cell_owners += A
 					cell_owner = A
 					owner_count++
 			// Empty ground allocates no los_cell; moving blockers stay separate.
@@ -511,7 +545,6 @@ var/global/list/los_active_contexts
 				B.cell_x = cx - S.eye_x
 				B.cell_y = cy - S.eye_y
 				B.surface_owner = cell_owner
-				B.surface_owners = cell_owners
 				B.owners = owner_count
 				S.blockers += B
 	if (S.revision != revision || S.policy != policy_key())
