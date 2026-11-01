@@ -1,5 +1,5 @@
 // Conservative geometric presentation on top of BYOND's native visibility.
-// It never grants visibility or gameplay authority. A denied root/tree is owned
+// It never grants gameplay authority. A denied root/tree is owned
 // by root_tree_presenter; terrain masking stays below canopies, not on a screen
 // plane that would clip an otherwise visible whole tree.
 /client/var/tmp/datum/los_presenter/los_presenter
@@ -11,6 +11,8 @@
 	var/list/images = list()
 	var/list/owned_images = list()
 	var/list/visible_targets = list()
+	var/list/tree_images = list()
+	var/list/tree_appearances = list()
 	var/retired = FALSE
 	var/dirty = TRUE
 	var/last_policy
@@ -34,6 +36,15 @@
 		return
 	dirty = TRUE
 	owner.los_dirty = TRUE
+	// Allowed fallback canopies can span several physical cells. Withdraw
+	// their copies conservatively before a blocker or viewer/context change;
+	// the ordinary root-footprint filter below cannot cover every owned edge.
+	if(!changed || changed == context.body || possible_opacity || changed.opacity)
+		for(var/atom/A in tree_images.Copy())
+			var/image/tree_mask = hidden_image(A)
+			images[A] = tree_mask
+			owned_images |= tree_mask
+			owner.images |= tree_mask
 	// Before a blocker write/move, withdraw only content potentially behind
 	// that cell. Do not leave previously visible content exposed until the
 	// budgeted refresh, and do not shutter unrelated map regions or the HUD.
@@ -83,6 +94,7 @@
 	return isturf(A) || isturf(A.loc)
 
 /datum/los_presenter/proc/hidden_image(atom/A)
+	withdraw_tree_image(A)
 	var/image/I = images[A]
 	if(I)
 		return I
@@ -101,6 +113,33 @@
 	// its icon and all nested appearances for this viewer only.
 	return I
 
+// Native fallback still needs an allowed per-client copy: /atom inherits
+// TILE_BOUND, which would otherwise clip an admitted overhanging canopy.
+// Keep the real atom, native light/plane and mouse identity; remove only the
+// engine's tile clipping flag. Screen compositor ownership remains separate.
+/datum/los_presenter/proc/native_tree_image(atom/A)
+	var/image/I = tree_images[A]
+	if(I && tree_appearances[A] == A.appearance)
+		return I
+	I = image(A.appearance, A)
+	I.pixel_x = 0
+	I.pixel_y = 0
+	I.appearance_flags &= ~TILE_BOUND
+	I.appearance_flags |= RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	I.override = TRUE
+	I.mouse_opacity = A.mouse_opacity
+	return I
+
+/datum/los_presenter/proc/withdraw_tree_image(atom/A)
+	var/image/I = tree_images[A]
+	if(!I)
+		return
+	if(owner)
+		owner.images -= I
+	owned_images -= I
+	tree_images -= A
+	tree_appearances -= A
+
 /datum/los_presenter/proc/refresh(datum/los_snapshot/S)
 	if(retired || !owner || owner.los_presenter != src || !context || owner.los_context != context)
 		return FALSE
@@ -118,6 +157,8 @@
 	var/list/next = list()
 	var/list/next_owned = list()
 	var/list/next_visible = list()
+	var/list/next_trees = list()
+	var/list/next_appearances = list()
 	// Two extra root tiles cover ordinary non-tree oversized art. Trees have
 	// their own appearance-aware discovery and whole-root ownership.
 	for(var/cx = max(1, context.body.x-S.radius_x-2), cx <= min(world.maxx, context.body.x+S.radius_x+2), cx++)
@@ -132,14 +173,23 @@
 			else
 				next_visible += T
 			for(var/atom/movable/A in T)
+				// Native contents repeats atoms whose bounds overlap turfs.
+				if(A in next_visible || next[A])
+					continue
 				if(!owns_atom(A))
 					continue
-				if(context.decision_snapshot(A, S, "visual") == LOS_DENY)
+				var/visual_operation = root_tree_family(A) && A.opacity ? "visual_tree" : "visual"
+				if(context.decision_snapshot(A, S, visual_operation) == LOS_DENY)
 					var/image/atom_mask = hidden_image(A)
 					next[A] = atom_mask
 					next_owned += atom_mask
 				else
 					next_visible += A
+					if(visual_operation == "visual_tree")
+						var/image/tree_image = native_tree_image(A)
+						next_trees[A] = tree_image
+						next_appearances[A] = A.appearance
+						next_owned |= tree_image
 	if(S.policy != context.policy_key() || S.revision != context.revision)
 		dirty = TRUE
 		return FALSE
@@ -149,6 +199,8 @@
 	owner.images |= next_owned - owned_images
 	visible_targets = next_visible
 	images = next
+	tree_images = next_trees
+	tree_appearances = next_appearances
 	owned_images = next_owned
 	last_policy = S.policy
 	last_refresh = world.time
@@ -159,6 +211,8 @@
 	if(owner)
 		owner.images -= owned_images
 	images.Cut()
+	tree_images.Cut()
+	tree_appearances.Cut()
 	visible_targets.Cut()
 	owned_images.Cut()
 	dirty = TRUE

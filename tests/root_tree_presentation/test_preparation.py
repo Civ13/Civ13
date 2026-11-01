@@ -32,7 +32,7 @@ class Preparation(unittest.TestCase):
                     env=projection.environment();f=projection.compile_proc(text,'/proc/root_tree_set_frame(','I, T, frame',env)
                     t=projection.tree();t.appearance=t;i=N(appearance_flags=0);f(i,t,object())
                     self.assertEqual(i.plane,env['GAME_PLANE'])
-                    self.assertIn('context.decision_snapshot(T, S, "visual")',text)
+                    self.assertIn('context.decision_snapshot(T, S, "visual_tree")',text)
                 else:
                     self.assertIn('if(FALSE)',text)
                     self.assertNotIn('context.decision_snapshot(',text)
