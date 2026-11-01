@@ -2,7 +2,11 @@
 
 This document records the original foundation-only boundary. The subsequent
 [read integration slice](paperwork-readers.md) adds shared classic reader routing
-on master `fe45306a`; the original foundation API bytes remain unchanged.
+on master `fe45306a`. The subsequent capacity correction separates the legacy
+snapshot's 1024-node budget from the complete record's 4096-node budget, so
+all 128 short sections fit together with an admitted legacy snapshot. Both
+copies retain the depth16 and 131072 text-unit limits; section count, total
+authored text and physical free-space guards remain unchanged.
 Authoring, TGUI and study are still separate work. Historical "not routed"
 statements below describe the first foundation candidate, not that reader slice.
 

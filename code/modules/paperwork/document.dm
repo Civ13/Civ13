@@ -11,6 +11,11 @@
 	var/nodes_left = 1024
 	var/units_left = 131072
 
+// Whole records also contain up to 128 section maps. Keep the legacy snapshot
+// limit unchanged while allowing that documented section capacity to fit.
+/datum/paper_document_budget/record
+	nodes_left = 4096
+
 // Bounded deep copy preserves null, paths and list associations. Refuse runtime
 // objects/cycles/oversized input without changing the original legacy paper.
 /proc/paper_document_copy(value, datum/paper_document_budget/budget, depth = 0)
@@ -101,7 +106,7 @@
 	var/list/sections = record["sections"]
 	if (!islist(sections) || sections.len > 128)
 		return FALSE
-	var/datum/paper_document_budget/budget = new()
+	var/datum/paper_document_budget/budget = new /datum/paper_document_budget/record()
 	paper_document_copy(record, budget)
 	if (!budget.valid)
 		return FALSE
@@ -186,7 +191,7 @@ var/global/paper_document_sequence = 0
 		value = pen.get_signature(actor)
 	if (!istext(value) || !length(value) || !isnum(paper.free_space) || length(value) > paper.free_space)
 		return FALSE
-	var/datum/paper_document_budget/budget = new()
+	var/datum/paper_document_budget/budget = new /datum/paper_document_budget/record()
 	var/list/next = paper_document_copy(current, budget)
 	if (!budget.valid)
 		return FALSE
@@ -236,6 +241,6 @@ var/global/paper_document_sequence = 0
 	var/list/legacy = paper_document_legacy_snapshot(paper)
 	if (!legacy || json_encode(legacy) != json_encode(paper.document_record["legacy"]))
 		return null
-	var/datum/paper_document_budget/budget = new()
+	var/datum/paper_document_budget/budget = new /datum/paper_document_budget/record()
 	var/list/result = paper_document_copy(paper.document_record, budget)
 	return budget.valid ? result : null

@@ -67,7 +67,7 @@ def expression(value):
  value=value.replace('istype(actor)','is_actor(actor)').replace('istype(pen)','is_pen(pen)').replace('istype(L)','is_living(L)')
  return value
 
-ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_mint_id','paper_written_language_types','paper_written_language','paper_knows_written_language'}
+ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_mint_id','paper_written_language_types','paper_written_language','paper_knows_written_language'}
 METHODS={'get','append','can_speak','get_active_hand','restrained','Adjacent','get_signature','has_access','can_mutate'}
 def project(source,signature,args,env,method=False):
  lines=['def projected('+args+'):']
@@ -77,6 +77,7 @@ def project(source,signature,args,env,method=False):
   indent=len(raw)-len(raw.lstrip('\t'))
   code=re.sub(r'\bvar/(?:\w+/)*(\w+)\b',r'\1',code)
   if code=='budget = new()':code='budget = new_budget()'
+  elif code=='budget = new /datum/paper_document_budget/record()':code='budget = new_record_budget()'
   elif code=='result = list()':code='result = {} if isinstance(source,dict) else []'
   elif code=='key = source[index]':code='key = copy_keys(source)[index-1]'
   elif code=='result += list(copied_key)':code='copy_append(result,copied_key)'
@@ -147,6 +148,10 @@ def environment(bytes_mode=False):
    self.valid=True
    self.nodes_left=int(re.search(r'var/nodes_left = (\d+)',SOURCE)[1])
    self.units_left=int(re.search(r'var/units_left = (\d+)',SOURCE)[1])
+ class RecordBudget(Budget):
+  def __init__(self):
+   super().__init__()
+   self.nodes_left=int(re.search(r'^/datum/paper_document_budget/record\n\tnodes_left = (\d+)',SOURCE,re.M)[1])
  def copy_append(out,key):
   if isinstance(out,dict):out[key]=None
   else:out.append(key)
@@ -160,6 +165,7 @@ def environment(bytes_mode=False):
  def mint(paper):counter[0]+=1;return hashlib.md5(('fixture-'+str(counter[0])).encode()).hexdigest()
  env=dict(__builtins__={},len=len,range=range,round=math.floor,isinstance=isinstance,dict=dict,length=length,isnull=lambda v:v is None,isnum=lambda v:isinstance(v,(int,float)),ispath=lambda v:isinstance(v,TypePath),istext=lambda v:isinstance(v,str) and not isinstance(v,TypePath),islist=lambda v:isinstance(v,(dict,list)),lowertext=lambda v:v.lower(),copytext=lambda v,a=1,b=None:v[a-1:None if b is None else b-1],text2ascii=lambda v,i=1:ord(v[i-1]),dm_text=lambda v:'' if v is None else str(v),MAX_PAPER_MESSAGE_LEN=MAXIMUM,
   is_actor=lambda v:isinstance(v,Actor),is_pen=lambda v:isinstance(v,Pen),is_living=lambda v:isinstance(v,Actor) and v.kind!='ghost',istype=istype,isturf=lambda v:getattr(v,'kind',None)=='turf',isghost=lambda v:getattr(v,'kind',None)=='ghost',json_encode=lambda v:json.dumps(v,separators=(',',':'),ensure_ascii=False),section_id=lambda v:'section-'+str(v['next_section']),copy_keys=lambda v:list(v) if isinstance(v,dict) else v,copy_value=lambda v,k:v[k] if isinstance(v,dict) else None,copy_append=copy_append,copy_assoc=copy_assoc,new_budget=Budget,stars=lambda v:'*'*len(v or ''),paper_document_mint_id=mint,paper_written_language_types=lambda:dict(IDS),all_languages={v.name:v for v in langs.values()},INNATE=64,SIGNLANG=8,NONVERBAL=4,HIVEMIND=16)
+ env['new_record_budget']=RecordBudget
  env['paper_written_language']=project(LANG,'/proc/paper_written_language','language_id',env)
  env['paper_knows_written_language']=project(LANG,'/proc/paper_knows_written_language','actor,language_id',env)
  env['paper_written_language_choices']=project(LANG,'/proc/paper_written_language_choices','actor',env)

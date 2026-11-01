@@ -148,6 +148,65 @@ class Documents(unittest.TestCase):
   self.assertNotIn('study',canonical);self.assertNotIn('ckey',json.dumps(canonical))
   for _ in range(5):canonical=json.loads(json.dumps(canonical,ensure_ascii=False));self.assertTrue(self.env['paper_document_record_valid'](canonical))
   self.assertEqual(canonical['sections'][0]['lineage'],self.paper.document_record['sections'][0]['lineage'])
+ def test_all_128_sections_append_validate_project_and_copy_then_129_is_atomic(self):
+  for legacy_nodes in (0,990,1005):
+   with self.subTest(legacy_nodes=legacy_nodes):
+    self.setUp();self.check_section_capacity(legacy_nodes)
+ def check_section_capacity(self,legacy_nodes):
+  # Cover ordinary, nearly full and exactly full legacy snapshot budgets.
+  self.paper.ico=[0]*legacy_nodes
+  self.initialize();start_space=self.paper.free_space
+  if legacy_nodes==1005:
+   budget=self.env['new_budget']();self.env['paper_document_copy'](self.paper.document_record['legacy'],budget)
+   self.assertTrue(budget.valid);self.assertEqual(budget.nodes_left,0)
+  for index in range(128):
+   with self.subTest(section=index+1):
+    self.assertTrue(self.append(text='x'))
+    self.assertTrue(self.env['paper_document_record_valid'](self.paper.document_record))
+    visible=self.service.project(self.actor)
+    self.assertEqual(len(visible['sections']),index+1)
+    self.assertEqual(visible['sections'][-1]['text'],'x')
+    canonical=self.service.canonical_copy(self.actor)
+    self.assertEqual(canonical,self.paper.document_record)
+    self.assertIsNot(canonical,self.paper.document_record)
+  self.assertEqual(self.paper.free_space,start_space-128)
+  before=copy.deepcopy(self.paper.document_record);space=self.paper.free_space
+  self.assertFalse(self.append(text='x'))
+  self.assertEqual(self.paper.document_record,before);self.assertEqual(self.paper.free_space,space)
+  self.assertEqual(self.paper.document_record['revision'],129)
+ def test_legacy_budget_stays_1024_and_record_budget_is_separately_bounded(self):
+  self.assertEqual(self.env['new_budget']().nodes_left,1024)
+  self.assertEqual(self.env['new_record_budget']().nodes_left,4096)
+  self.assertEqual(self.env['new_record_budget']().units_left,131072)
+  self.paper.ico=[0]*1024
+  self.assertIsNone(self.env['paper_document_legacy_snapshot'](self.paper))
+  self.assertFalse(self.service.initialize(self.actor,self.pen))
+  self.assertIsNone(self.paper.document_record)
+  for factory,limit in [('new_budget',1024),('new_record_budget',4096)]:
+   budget=self.env[factory]();self.assertIsNone(self.env['paper_document_copy']([0]*limit,budget));self.assertFalse(budget.valid)
+ def test_record_copy_rejects_deep_cyclic_runtime_and_oversized_values(self):
+  deep='leaf'
+  for _ in range(17):deep=[deep]
+  cyclic=[];cyclic.append(cyclic)
+  for invalid in [deep,cyclic,Ref(),'x'*131073]:
+   with self.subTest(kind=type(invalid).__name__):
+    budget=self.env['new_record_budget']()
+    self.assertIsNone(self.env['paper_document_copy'](invalid,budget));self.assertFalse(budget.valid)
+  self.initialize();before=copy.deepcopy(self.paper.document_record)
+  for invalid in [deep,cyclic,Ref(),'x'*131073]:
+   bad=copy.deepcopy(before);bad['legacy']['ico']=invalid;self.paper.document_record=bad
+   self.assertFalse(self.env['paper_document_record_valid'](bad))
+   self.assertEqual(self.service.project(self.actor),dict(error='Unsupported document format'))
+   self.assertIsNone(self.service.canonical_copy(self.actor))
+  self.paper.document_record=before
+ def test_larger_record_budget_keeps_text_and_capacity_guards(self):
+  self.paper.free_space=MAXIMUM
+  self.initialize();self.assertTrue(self.append(text='x'*(MAXIMUM-1)))
+  before=copy.deepcopy(self.paper.document_record);space=self.paper.free_space
+  self.assertFalse(self.append(text='xx'))
+  self.assertEqual(self.paper.document_record,before);self.assertEqual(self.paper.free_space,space)
+  self.assertTrue(self.append(text='x'))
+  self.assertFalse(self.append(text='x'))
  def test_character_and_utf8_length_adapters_do_not_change_stored_unicode(self):
   for bytes_mode in (False,True):
    env,Service,langs=environment(bytes_mode);actor=Actor();actor.languages=[langs[EN]];pen=Pen(actor);paper=Paper(actor,LEGACY);service=Service(paper,actor)

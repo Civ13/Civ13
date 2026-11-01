@@ -12,6 +12,9 @@ controls=[
  ('active_pen','SOURCE',' && actor.get_active_hand() == pen','',1,'test_actor_pen_language_capacity_and_field_mutation_guards'),
  ('runtime_service','SOURCE','/datum/paper_document_service\n\tshould_save = FALSE\n','/datum/paper_document_service\n',1,'test_runtime_service_never_persists_and_old_writer_is_unmodified'),
  ('container_parent','SOURCE',' && container.loc == actor','',1,'test_logout_transfer_deleted_item_and_closed_container_reject'),
+ ('record_validation_budget','SOURCE','budget = new /datum/paper_document_budget/record()\n\tpaper_document_copy(record, budget)','budget = new()\n\tpaper_document_copy(record, budget)',1,'test_all_128_sections_append_validate_project_and_copy_then_129_is_atomic'),
+ ('append_copy_budget','SOURCE','budget = new /datum/paper_document_budget/record()\n\tvar/list/next =','budget = new()\n\tvar/list/next =',1,'test_all_128_sections_append_validate_project_and_copy_then_129_is_atomic'),
+ ('canonical_copy_budget','SOURCE','budget = new /datum/paper_document_budget/record()\n\tvar/list/result =','budget = new()\n\tvar/list/result =',1,'test_all_128_sections_append_validate_project_and_copy_then_129_is_atomic'),
 ]
 rows=[]
 for name,target,before,after,count,method in controls:
