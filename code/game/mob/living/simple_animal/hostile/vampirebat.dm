@@ -35,6 +35,11 @@
 	// ticks. Preserve that full cycle while each pulse transaction takes 1.5 ds.
 	if (mode == "towards" && interval == npc_subtile_native_interval(3))
 		return 2 * interval
+	// The lag-4 random walker was observed at 4 ds between starts only at
+	// 0.5 ds ticks. Keep this calibration separate from the pulse duration;
+	// other tick rates and producers need their own native measurements.
+	if (mode == "random" && world.tick_lag == 0.5 && interval == npc_subtile_native_interval(4))
+		return 4
 	return ..()
 
 /mob/living/simple_animal/vampirebatblack/Life()

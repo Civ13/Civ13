@@ -1,0 +1,25 @@
+# Review template only. A separate authorized PR would install these bytes at
+# .github/workflows/wildlife-random-cadence.yml on the default branch.
+name: Bounded insect random cadence observations
+on:
+  workflow_dispatch:
+    inputs:
+      expected_head:
+        description: Full reviewed fixture commit SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: civ13-wildlife-random-cadence-exclusive
+  cancel-in-progress: false
+  queue: max
+jobs:
+  registration-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    steps:
+      - name: No fixture executes from the registration template
+        run: |
+          echo 'Registration only: select a separately reviewed fixture branch and obtain approval.'
+          exit 1
