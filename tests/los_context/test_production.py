@@ -333,7 +333,7 @@ class InventoryHoverName(unittest.TestCase):
         def method(text,declaration,args,fields):
             text=declaration+'('+args+')\n'+A.extract(text,declaration)+'\n'
             text=text.replace('hover_target?.resolve()','resolve(hover_target)').replace('hover_origin?.resolve()','resolve(hover_origin)')
-            text=text.replace('label.resolve(hover_origin)','resolve(label.hover_origin)')
+            text=re.sub(r'(\w+)\.resolve\((hover_target|hover_origin)\)',r'resolve(\1.\2)',text)
             text=text.replace('label?.set_target(target)','optional_set(label, target)').replace('label?.clear_target()','optional_clear(label)')
             text=text.replace('|| ..()', '|| parent_runtime(key)').replace('..()', 'parent_call()')
             text=text.replace("[html_encode(copytext(label, 1, 129))]",'" + html_encode(copytext(label, 1, 129)) + "')
@@ -353,7 +353,7 @@ class InventoryHoverName(unittest.TestCase):
             sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
             if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
             f=method(source,sig,args,fields);setattr(W,name,lambda *a,_f=f:_f(W,*a))
-        f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda:f(W)
+        f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda _f=f:_f(W)
         for name,args in [('hover_name_widget',''),('update_hover_name','target'),('clear_hover_name','')]:
             f=method(source,'/client/proc/'+name,args,['mob','hover_name_widget'])
             setattr(C,name,lambda *a,_f=f:_f(C,*a))

@@ -20,7 +20,6 @@
 	return
 /mob
 	var/datum/hover_client/hover_client
-	var/list/HUDinventory = list()
 /mob/proc/get_equipped_item(slot)
 	return null
 /mob/living/human
