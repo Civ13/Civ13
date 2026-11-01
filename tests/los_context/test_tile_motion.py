@@ -210,7 +210,7 @@ class DistanceCamera(unittest.TestCase):
         self.assertEqual(renderer.invisibility,100)
         m.body.looking=False;m.run();self.assertEqual(renderer.invisibility,0)
 
-    def camera(self,pan_x=0,pan_y=0,source=CORE):
+    def camera(self,pan_x=0,pan_y=0,source=CORE,lifecycle=LIFE):
         import math
         from collections import defaultdict
         class Cells(P.DMList):
@@ -218,7 +218,7 @@ class DistanceCamera(unittest.TestCase):
             @property
             def len(self):return len(self)
         body=N(type='/mob/living/human',x=100,y=100,z=1,step_x=0,step_y=0,see_invisible=25)
-        owner=N(view=7,pixel_x=pan_x,pixel_y=pan_y,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
+        owner=N(view=7,pixel_x=pan_x,pixel_y=pan_y,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0,los_camera_pan_x=0,los_camera_pan_y=0)
         context=N(body=body,owner=owner,revision=1,policy_key=lambda:f'{owner.pixel_x},{owner.pixel_y}',
                   viewport=lambda:Cells([owner.view*2+1,owner.view*2+1]))
         env=P.projected_geometry(source)
@@ -256,9 +256,9 @@ class DistanceCamera(unittest.TestCase):
         def target(x,y):
             return N(type='/obj/item',x=x,y=y,z=1,step_x=0,step_y=0,opacity=False,alpha=255,invisibility=0,
                      gcDestroyed=False,gc_destroyed=False,loc=N(type='/turf/floor'))
-        text=P.fragment(LIFE,'/client/proc/los_prepare_camera_pan(')
+        text=P.fragment(lifecycle,'/client/proc/los_prepare_camera_pan(')
         head,code=text.split('\n',1)
-        for field in ['view','pixel_x','pixel_y','los_camera_union_until','los_camera_radius_x','los_camera_radius_y','los_dirty']:
+        for field in ['view','pixel_x','pixel_y','los_camera_union_until','los_camera_radius_x','los_camera_radius_y','los_camera_pan_x','los_camera_pan_y','los_dirty']:
             code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
         prepare=A.project(head+'\n'+code,'/client/proc/los_prepare_camera_pan','self, target_x, target_y, animation_time, previous_view',env)
         return N(V=context,C=owner,body=body,capture=capture,decision=decision,target=target,opaque=opaque,visited=visited,
@@ -330,9 +330,9 @@ class DistanceCamera(unittest.TestCase):
         self.assertEqual(m.V.viewport_radii()[1],17)
         # A new orthogonal animation must retain both earlier axes and deadline.
         m.env['world'].time=1;m.prepare(0,96,3);m.C.pixel_x=0;m.C.pixel_y=96
-        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(17,12))
+        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(17,15))
         m.env['world'].time=2;m.prepare(0,0,2);m.C.pixel_y=0
-        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(17,12))
+        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(17,15))
         self.assertEqual(m.C.los_camera_union_until,5)
         m.env['world'].time=5;self.assertEqual(m.V.viewport_radii()[1],17)
         m.env['world'].time=6;self.assertEqual(m.V.viewport_radii()[1],7)
@@ -351,7 +351,7 @@ class DistanceCamera(unittest.TestCase):
             self.assertIn('/client/var/tmp/'+field,LIFE)
             self.assertNotIn(field,P.fragment(CORE,'/datum/los_context/proc/retire('))
         body.step_x=2;self.assertEqual(motion.render_key(body,m.C,True,time=3),active)
-        mutant=CORE.replace('if (world.time <= owner.los_camera_union_until)','if (FALSE)',1)
+        mutant=CORE.replace('if (world.time <= owner.los_camera_union_until)','if (FALSE)')
         broken=self.camera(96,source=mutant);broken.prepare(0,0,2);broken.C.pixel_x=0
         self.assertEqual(broken.V.viewport_radii()[1],7)  # Old endpoint-only gap.
         look=P.fragment(self.HUMAN,'/mob/living/human/proc/look_into_distance(')
@@ -363,6 +363,47 @@ class DistanceCamera(unittest.TestCase):
                 self.assertIn('los_prepare_camera_pan(',previous)
                 duration=re.search(r'time = (\d+)',line)[1]
                 self.assertIn(', '+duration+', old_camera_view)',previous)
+
+    def test_growing_view_combines_previous_pan_and_active_lease_with_new_viewport(self):
+        m=self.camera(96);m.C.view=12;m.prepare(0,96,3,7)
+        m.C.pixel_x=0;m.C.pixel_y=96
+        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(15,15))
+        S=m.capture(True);self.assertEqual(m.decision(m.target(115,100),S),1)
+        m.opaque.add((107,100));self.assertEqual(m.decision(m.target(115,100),m.capture(True)),0)
+        # Rapid exit/re-entry: endpoint vars are zero, but the east pan is active.
+        m=self.camera(96);m.prepare(0,0,2);m.C.pixel_x=0
+        m.env['world'].time=1;m.C.view=12;m.prepare(0,96,3,7);m.C.pixel_y=96
+        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(15,15))
+        # A view update alone must expand the old in-flight pan's leading edge.
+        m=self.camera(96);m.prepare(0,0,2);m.C.pixel_x=0;m.C.view=12
+        self.assertEqual(m.V.viewport_radii()[1],15)
+        m.env['world'].time=4;self.assertEqual(m.V.viewport_radii()[1],12)
+
+    def test_collapsed_endpoint_radius_witness_misses_growing_view_pan(self):
+        # Frozen prior source, not a Git-history dependency or native claim.
+        legacy='''/client/proc/los_prepare_camera_pan(target_x, target_y, animation_time, previous_view)
+\tvar/list/old_dimensions = getviewsize(previous_view)
+\tvar/list/new_dimensions = getviewsize(view)
+\tif(!old_dimensions || old_dimensions.len != 2 || !new_dimensions || new_dimensions.len != 2)
+\t\treturn
+\tvar/old_x = round(old_dimensions[1] / 2) - round(-abs(pixel_x) / 32)
+\tvar/old_y = round(old_dimensions[2] / 2) - round(-abs(pixel_y) / 32)
+\tvar/new_x = round(new_dimensions[1] / 2) - round(-abs(target_x) / 32)
+\tvar/new_y = round(new_dimensions[2] / 2) - round(-abs(target_y) / 32)
+\tif(world.time <= los_camera_union_until)
+\t\told_x = max(old_x, los_camera_radius_x)
+\t\told_y = max(old_y, los_camera_radius_y)
+\tlos_camera_radius_x = max(old_x, new_x)
+\tlos_camera_radius_y = max(old_y, new_y)
+\tlos_camera_union_until = max(los_camera_union_until, world.time + max(0, animation_time) + 1)
+\tlos_dirty = TRUE
+'''
+        m=self.camera(96,lifecycle=legacy);m.C.view=12;m.prepare(0,96,3,7)
+        m.C.pixel_x=0;m.C.pixel_y=96
+        self.assertEqual(m.V.viewport_radii()[1],12)  # Required extent is15.
+        m=self.camera(96,lifecycle=legacy);m.prepare(0,0,2);m.C.pixel_x=0
+        m.env['world'].time=1;m.C.view=12;m.prepare(0,96,3,7);m.C.pixel_y=96
+        self.assertEqual(m.V.viewport_radii()[1],12)
 
 
 if __name__=='__main__':unittest.main()

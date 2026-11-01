@@ -53,7 +53,9 @@ new endpoint and any still-active earlier extrema through the declared animation
 duration plus one decisecond. This also covers exit, view shrink and rapid axis
 changes, despite endpoint vars changing immediately. Lease expiry changes the
 snapshot identity so the scheduler can release extra coverage. HUD/context
-replacement does not discard an active client lease. LOS rays keep
+replacement does not discard an active client lease. View and pan extrema are
+combined independently: growing the viewport also expands the earlier animated
+pan, including growth without a new scope animation. LOS rays keep
 the player's actual eye (tile-centered for presentation, physical for reads);
 the camera cannot see around an intervening blocker. Scope entry/exit refreshes
 presentation synchronously after changing the camera and HUD state.

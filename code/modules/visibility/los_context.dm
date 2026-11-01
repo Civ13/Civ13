@@ -314,6 +314,10 @@ var/global/list/los_active_contexts
 		return null
 	var/pan_x = -round(-abs(owner.pixel_x) / 32)
 	var/pan_y = -round(-abs(owner.pixel_y) / 32)
+	if (world.time <= owner.los_camera_union_until)
+		// Also cover view growth which occurs without another pan preparation.
+		pan_x = max(pan_x, owner.los_camera_pan_x)
+		pan_y = max(pan_y, owner.los_camera_pan_y)
 	var/radius_x = round(dimensions[1] / 2) + pan_x
 	var/radius_y = round(dimensions[2] / 2) + pan_y
 	if (world.time <= owner.los_camera_union_until)

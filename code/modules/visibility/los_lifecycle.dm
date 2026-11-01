@@ -6,6 +6,8 @@
 /client/var/tmp/los_last_error
 /client/var/tmp/los_camera_radius_x = 0
 /client/var/tmp/los_camera_radius_y = 0
+/client/var/tmp/los_camera_pan_x = 0
+/client/var/tmp/los_camera_pan_y = 0
 /client/var/tmp/los_camera_union_until = -1
 
 // animate() changes endpoint vars immediately. Preserve the previous viewport
@@ -16,15 +18,21 @@
 	var/list/new_dimensions = getviewsize(view)
 	if(!old_dimensions || old_dimensions.len != 2 || !new_dimensions || new_dimensions.len != 2)
 		return
-	var/old_x = round(old_dimensions[1] / 2) - round(-abs(pixel_x) / 32)
-	var/old_y = round(old_dimensions[2] / 2) - round(-abs(pixel_y) / 32)
-	var/new_x = round(new_dimensions[1] / 2) - round(-abs(target_x) / 32)
-	var/new_y = round(new_dimensions[2] / 2) - round(-abs(target_y) / 32)
+	var/view_x = max(round(old_dimensions[1] / 2), round(new_dimensions[1] / 2))
+	var/view_y = max(round(old_dimensions[2] / 2), round(new_dimensions[2] / 2))
+	var/pan_x = max(-round(-abs(pixel_x) / 32), -round(-abs(target_x) / 32))
+	var/pan_y = max(-round(-abs(pixel_y) / 32), -round(-abs(target_y) / 32))
 	if(world.time <= los_camera_union_until)
-		old_x = max(old_x, los_camera_radius_x)
-		old_y = max(old_y, los_camera_radius_y)
-	los_camera_radius_x = max(old_x, new_x)
-	los_camera_radius_y = max(old_y, new_y)
+		// Retain view and pan separately: a new larger viewport also applies
+		// to the old pan while interpolation is still crossing that endpoint.
+		view_x = max(view_x, los_camera_radius_x - los_camera_pan_x)
+		view_y = max(view_y, los_camera_radius_y - los_camera_pan_y)
+		pan_x = max(pan_x, los_camera_pan_x)
+		pan_y = max(pan_y, los_camera_pan_y)
+	los_camera_pan_x = pan_x
+	los_camera_pan_y = pan_y
+	los_camera_radius_x = view_x + pan_x
+	los_camera_radius_y = view_y + pan_y
 	// One decisecond margin also covers tick quantization at the endpoint.
 	los_camera_union_until = max(los_camera_union_until, world.time + max(0, animation_time) + 1)
 	los_dirty = TRUE
