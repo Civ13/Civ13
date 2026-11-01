@@ -12,21 +12,91 @@
     check(!D.valid_action(bob, alice.player_help_action_token), "copied action token cannot select another client")
     check(D.valid_action(alice, alice.player_help_action_token), "own action token accepted")
     check(findtext(D.render_answer("Answer", "plain-v1", alice), "Follow up"), "follow-up action after acknowledged answer")
-    var/list/prior_questions = list("Earlier <b>question</b> & one", "Another question")
-    var/rendered_questions = D.render_answer("Answer", "plain-v1", alice, "Current <script> & question", prior_questions)
+    D.remember(alice, "Earlier <b>question</b> & one", "Earlier <script>answer</script> & one")
+    D.remember(alice, "Another question", "Another answer")
+    var/list/prior_pairs = alice.player_help_turns.Copy()
+    var/rendered_questions = D.render_answer("Answer", "plain-v1", alice, "Current <script> & question", prior_pairs)
     check(findtext(rendered_questions, "Current &lt;script&gt; &amp; question"), "current question escaped as text")
     check(findtext(rendered_questions, "Earlier &lt;b&gt;question&lt;/b&gt; &amp; one"), "previous question escaped as text")
-    check(findtext(rendered_questions, "Crafting Atlas</a>") < findtext(rendered_questions, "Previous questions"), "question history below reference links")
-    check(findtext(rendered_questions, "Previous questions") < findtext(rendered_questions, "Another question"), "previous questions kept in order")
+    check(findtext(rendered_questions, "Earlier &lt;script&gt;answer&lt;/script&gt; &amp; one"), "previous answer escaped as text")
+    check(findtext(rendered_questions, "Crafting Atlas</a>") < findtext(rendered_questions, "Previous exchanges"), "exchange history below reference links")
+    check(findtext(rendered_questions, "Previous exchanges") < findtext(rendered_questions, "Another question"), "previous exchanges kept in order")
+    check(findtext(rendered_questions, "action=followup;token=[alice.player_help_action_token];turn=2"), "retained exchange has targeted follow-up")
     check(!findtext(rendered_questions, "How do I stay warm?"), "other client's history not shown")
     var/legacy_rendered = D.render_answer("Legacy reply", "plain-v1", null, "Legacy question", list())
-    check(findtext(legacy_rendered, "Legacy question") && !findtext(legacy_rendered, "Previous questions"), "legacy worker current question shown without prior context")
+    check(findtext(legacy_rendered, "Legacy question") && !findtext(legacy_rendered, "Previous exchanges"), "legacy worker current question shown without prior context")
+    var/list/selected_pair = alice.player_help_turns[1]
+    check(findtext(D.enqueue(md5("conversation alice"), "Wrong owner", alice, bob.player_help_turns[1]), "no longer available"), "other client pair rejected before reservation")
+    check(!D.pending.len, "wrong-owner pair does not reserve queue")
+    check(D.enqueue(md5("conversation alice"), "What fuel does it need?", alice, selected_pair) == TRUE, "targeted follow-up enqueued")
+    var/list/target_request = D.read_json("spool/1.request.json", 16384)
+    var/list/target_contract = target_request["conversation"]
+    var/list/target_turns = target_contract["turns"]
+    check(target_turns.len == 1 && target_turns[1]["question"] == "How do I smelt iron?" && alice.player_help_turns.len == 3, "target sends selected pair and retains other exchanges")
+    D.clear_slot(1)
+    D.accounts = list()
+    D.global_times = list()
+    // Actual serializer pressure: bounded carried names and multibyte history.
+    var/mob/probe_client/pressure = new
+    var/mob/living/human/pressure_body = new
+    pressure.mob = pressure_body
+    pressure_body.probe_client = pressure
+    probe_clients += pressure
+    D.bind_body(pressure, pressure_body)
+    var/long_name = ""
+    for (var/i = 1, i <= 30, i++)
+        long_name += "😀"
+    pressure_body.back = new /obj/item/weapon/storage(pressure_body)
+    pressure_body.back.name = long_name
+    for (var/i = 1, i <= 23, i++)
+        var/obj/item/carried = new(pressure_body.back)
+        carried.name = long_name
+    var/big_question = ""
+    for (var/i = 1, i <= 500, i++)
+        big_question += "q"
+    var/big_answer = ""
+    for (var/i = 1, i <= 750, i++)
+        big_answer += "😀"
+    D.remember(pressure, big_question, big_answer)
+    var/list/big_pair = pressure.player_help_turns[1]
+    var/list/pressure_request = list("id"="fixture-id", "account"=md5("pressure"), "question"=big_question, "game_context"=D.game_context(pressure_body), "render_contract"=list("version"=1, "capabilities"=list("markdown-basic-v1")), "conversation"=list("version"=1, "turns"=list(big_pair)))
+    check(D.request_size(pressure_request) > 16384, "multibyte targeted request exceeds actual serialized budget")
+    var/write_count = D.write_calls
+    var/pressure_result = D.enqueue(md5("pressure"), big_question, pressure, big_pair)
+    check(istext(pressure_result) && findtext(pressure_result, "selected exchange") && findtext(pressure_result, "too large"), "oversize selected exchange fails with specific feedback")
+    check(D.write_calls == write_count && !D.pending.len && !fexists("spool/1.ready") && !fexists("spool/1.request.json"), "oversize target writes no request and releases slot")
+    check(pressure.player_help_turns.len == 1 && pressure.player_help_turns[1] == big_pair, "oversize target leaves retained history intact")
+    D.accounts = list()
+    D.global_times = list()
+    var/small_answer = ""
+    for (var/i = 1, i <= 100, i++)
+        small_answer += "😀"
+    D.remember(pressure, "short earlier", small_answer)
+    var/list/small_pair = pressure.player_help_turns[2]
+    pressure_request["conversation"]["turns"] = list(small_pair)
+    check(D.request_size(pressure_request) > 10000 && D.request_size(pressure_request) < 16000, "bounded selected request approaches but fits budget")
+    check(D.enqueue(md5("pressure"), big_question, pressure, small_pair) == TRUE, "bounded selected exchange is sent")
+    var/list/pressure_sent = D.read_json("spool/1.request.json", 16384)
+    var/list/pressure_turns = pressure_sent["conversation"]["turns"]
+    check(pressure_turns.len == 1 && pressure_turns[1]["question"] == "short earlier", "bounded selected exchange reaches request intact")
+    D.clear_slot(1)
+    D.accounts = list()
+    D.global_times = list()
+    check(D.enqueue(md5("pressure"), big_question, pressure) == TRUE, "ordinary follow-up may trim oldest pair")
+    var/list/ordinary_sent = D.read_json("spool/1.request.json", 16384)
+    var/list/ordinary_turns = ordinary_sent["conversation"]["turns"]
+    check(ordinary_turns.len == 1 && ordinary_turns[1]["question"] == "short earlier" && pressure.player_help_turns.len == 2, "ordinary trimming keeps newest pair and retained session")
+    D.clear_slot(1)
+    D.reset_conversation(pressure)
+    probe_clients -= pressure
+    D.accounts = list()
+    D.global_times = list()
     check(D.enqueue(md5("conversation alice"), "What fuel does it need?", alice) == TRUE, "actual follow-up enqueued")
     var/list/followup = D.read_json("spool/1.request.json", 16384)
     var/list/contract = followup["conversation"]
     var/list/pairs = contract["turns"]
     var/list/first_pair = pairs[1]
-    check(contract["version"] == 1 && pairs.len == 1 && first_pair["question"] == "How do I smelt iron?", "server snapshot contains only asking session turns")
+    check(contract["version"] == 1 && pairs.len == 3 && first_pair["question"] == "How do I smelt iron?", "server snapshot contains only asking session turns")
     check(findtext(D.enqueue(md5("conversation alice"), "Duplicate", alice), "pending"), "one pending follow-up per account")
     var/generation = alice.player_help_generation
     D.reset_conversation(alice)
