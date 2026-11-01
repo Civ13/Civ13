@@ -135,7 +135,8 @@ The guarded native step invokes:
 
 The runner rechecks the dedicated workflow path, event, implementation/source
 SHA, exact clean checkout, private paths and full remaining 900-second window
-after tool acquisition. The job cap is 25 minutes; the native step cap is 16
+after tool acquisition. The job cap is 35 minutes, allowing bounded checkout/preparation/acquisition
+and final artifact upload without shortening the native cleanup allowance; the native step cap is 16
 minutes, while the actual attempt remains 900 seconds. Artifact retention is
 always selected, including partial compiler/supervision/runtime evidence on
 failure. No job, dispatch or native launch has occurred.

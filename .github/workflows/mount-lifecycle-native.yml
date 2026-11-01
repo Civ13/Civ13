@@ -37,7 +37,7 @@ jobs:
   acceptance:
     if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 35
     env:
       SOURCE_SHA: ${{ inputs.source_sha }}
       WORKFLOW_SHA: ${{ github.workflow_sha }}
@@ -117,6 +117,7 @@ jobs:
             --authorized-until "$AUTHORIZED_UNTIL"
       - name: Retain review and all execution evidence including failures
         if: always()
+        timeout-minutes: 3
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: mount-native-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}

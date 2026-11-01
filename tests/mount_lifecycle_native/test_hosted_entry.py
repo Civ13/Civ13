@@ -79,6 +79,8 @@ class HostedEntryTests(unittest.TestCase):
         self.assertNotIn('run-diagonal.py',text)
         self.assertIn('--manifest-sha256 "$MANIFEST_SHA"',text)
         self.assertIn('if: always()',text)
+        self.assertIn('    timeout-minutes: 35',text)
+        self.assertIn('        timeout-minutes: 16',text)
         self.assertIn('compile-*-supervision.json',text)
     def test_workflow_pin_matches_canonical_source_and_inputs_use_env(self):
         text=(ROOT/'.github/workflows/mount-lifecycle-native.yml').read_text()
