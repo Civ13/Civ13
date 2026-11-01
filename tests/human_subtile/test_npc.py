@@ -114,14 +114,19 @@ class NpcContracts(unittest.TestCase):
 
     def test_ai_throttles_and_pathfinding_work_are_not_multiplied(self):
         path = 'code/game/mob/living/simple_animal/simple_ai.dm'
-        source = read(path).replace('ai_step(get_step(src, moving_to), move_to_delay)', 'Move(get_step(src, moving_to))')
-        self.assertEqual(source.rstrip(), baseline(path).rstrip())
+        source = read(path)
+        wander = section(source, '\t\tif ("wander")', '\t\tif ("hunt", "defends", "hostile")')
+        for contract in ('get_valid_move_dirs()', 'pick(valid_dirs)', 'set_dir(moving_to)',
+                         'ai_step(get_step(src, moving_to), move_to_delay)', 'turns_since_move = 0'):
+            self.assertIn(contract, wander)
+        self.assertEqual(wander.count('pick(valid_dirs)'), 1)
+        self.assertEqual(wander.count('ai_step('), 1)
         worker = section(read(MODULE), '/datum/npc_subtile_transaction/proc/perform_rest(', '/datum/npc_subtile_transaction/proc/finish()')
         for forbidden in ('get_path(', 'cirrAstar(', 'FindTarget(', 'do_behaviour(', 'pick(', 'rand(', 'walk('):
             self.assertNotIn(forbidden, worker)
         self.assertIn('i <= 16', worker)
         self.assertIn('start_time + (i - 1) * (end_time - start_time) / 16', worker)
-        admit = section(read(MODULE), '/mob/living/simple_animal/proc/ai_step(', '/datum/npc_subtile_pulse\n')
+        admit = section(read(MODULE), '/mob/living/simple_animal/proc/ai_step(', '/mob/living/simple_animal/proc/ai_step_wait(')
         self.assertIn('npc_subtile_transaction || world.time < npc_subtile_until', admit)
         self.assertEqual(admit.count('spawn(0)'), 1)
         self.assertLess(admit.index('npc_subtile_until = T.end_time'), admit.index('spawn(0)'))
@@ -153,7 +158,7 @@ class NpcContracts(unittest.TestCase):
         finish = section(source, '/datum/npc_subtile_transaction/proc/finish()', '/mob/living/simple_animal/proc/npc_subtile_take_pulse')
         self.assertNotIn('living_movement_completed()', advance)
         self.assertIn('!completed', finish)
-        self.assertIn('if (attempted)\n\t\t\tactor.living_movement_completed()', finish)
+        self.assertIn('if (attempted)\n\t\t\t\tactor.living_movement_completed()', finish)
         self.assertIn('if (!T.distance)', source)
         living = read('code/game/mob/living/living.dm')
         self.assertIn('if (subtile_npc.npc_subtile_pulse)\n\t\t\treturn moved', living)

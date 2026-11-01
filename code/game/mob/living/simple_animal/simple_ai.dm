@@ -6,14 +6,13 @@
 		return
 	if (client || anchored || clients.len <= 0)
 		return
-
 	if (stop_automated_movement || !wander)
 		if (stance == HOSTILE_STANCE_ATTACK || stance == HOSTILE_STANCE_ALERT)
 			ai_tick_delay = 0
 			do_behaviour()
 			return
 		if ((faction == "School" || faction == "Ministry") && stance == HOSTILE_STANCE_IDLE)
-			target_mob = FindTarget()
+			npc_set_combat_target(FindTarget())
 			if (target_mob)
 				behaviour = "hostile"
 				stance = HOSTILE_STANCE_ATTACK
@@ -76,14 +75,22 @@
 	switch(t_behaviour)
 		if ("scared")
 			for (var/mob/living/human/H in range(7, src))
-				walk_away_od(src, H, 7, 2)
-				spawn(50)
-					walk(src, 0)
+				if (npc_subtile_flee_enabled)
+					var/list/flee_receipt = list()
+					if (npc_subtile_start_flee(H, 7, npc_subtile_native_interval(2), flee_receipt))
+						var/list/flee_ticket = flee_receipt["ticket"]
+						var/flee_remaining = max(0, flee_ticket["expires_at"] - world.time)
+						spawn(flee_remaining)
+							npc_subtile_stop_flee_ticket(flee_ticket)
+				else
+					walk_away_od(src, H, 7, 2)
+					spawn(50)
+						walk(src, 0)
 				return "scared"
 
 		if ("wander")
 			if (faction == "School" || faction == "Ministry")
-				target_mob = FindTarget()
+				npc_set_combat_target(FindTarget())
 				if (target_mob)
 					behaviour = "hostile"
 					stance = HOSTILE_STANCE_ATTACK
@@ -117,7 +124,7 @@
 	if (herbivore)
 		if (prob(33))
 			for (var/turf/floor/grass/GT in range(1, src))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				GT.grassamt -= 1
 				if (GT.grassamt <= 0)
 					if (istype(GT, /turf/floor/grass/jungle))
@@ -129,7 +136,7 @@
 				return
 		for (var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2, src))
 			if (prob(30))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				visible_message("\The [src] eats some of the wheat.")
 				finish_eating(550)
 				qdel(WT)
@@ -138,7 +145,7 @@
 	if (granivore)
 		for (var/obj/item/stack/farming/seeds/SD in range(2, src))
 			if (prob(35))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				visible_message("<span class='notice'>\The [src] eats \the [SD]!</span>")
 				finish_eating(500)
 				if (SD.amount >= 2)
@@ -148,7 +155,7 @@
 				return
 		for (var/obj/structure/farming/plant/PL in range(2, src))
 			if (prob(15))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
 				finish_eating(400)
 				qdel(PL)
@@ -157,7 +164,7 @@
 	if (carnivore)
 		for (var/mob/living/ML in range(2, src))
 			if (ML.stat == DEAD && prob(33))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				visible_message("\The [src] bites some meat of \the [ML].")
 				finish_eating(400)
 				if (istype(ML, /mob/living/simple_animal))
@@ -169,7 +176,7 @@
 				return
 		for (var/obj/item/weapon/reagent_containers/food/snacks/meat/M in range(2, src))
 			if (prob(33))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				visible_message("\The [src] bites some of \the [M].")
 				finish_eating(400)
 				qdel(M)
@@ -178,9 +185,9 @@
 	if (predatory_carnivore)
 		for (var/mob/living/ML in range(2, src))
 			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type) && istype(src, /mob/living/simple_animal/hostile))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				var/mob/living/simple_animal/hostile/HS = src
-				HS.target_mob = ML
+				HS.npc_set_combat_target(ML)
 				HS.stance = HOSTILE_STANCE_ATTACK
 				if (ML.stat == DEAD)
 					var/amt = butcher_yield(ML)
@@ -221,7 +228,7 @@
 	if (scavenger)
 		for (var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2, src))
 			if (prob(33) && !istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
-				walk(src, 0)
+				npc_subtile_stop_continuous_walk()
 				visible_message("\The [src] bites some of \the [FD].")
 				finish_eating(400)
 				if (prob(60))

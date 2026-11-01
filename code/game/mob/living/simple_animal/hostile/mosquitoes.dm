@@ -27,6 +27,13 @@
 	density = FALSE
 	layer = 4.1
 
+/mob/living/simple_animal/mosquito/npc_subtile_wild_period(mode, interval)
+	// The measured native lag-3 chase advances one tile every 3 ds at 0.5 ds
+	// ticks. Preserve that full cycle while each pulse transaction takes 1.5 ds.
+	if (mode == "towards" && interval == npc_subtile_native_interval(3))
+		return 2 * interval
+	return ..()
+
 /mob/living/simple_animal/mosquito/Life()
 	..()
 	if (weather == WEATHER_EXTREME || weather == WEATHER_WET)
@@ -40,22 +47,24 @@
 			for (var/mob/living/human/H in range(6, src))
 				if (map && ((map.ID == MAP_NOMADS_AFRICA && H.s_tone > -175) || map.ID != MAP_NOMADS_AFRICA))
 					if (done == FALSE)
-						walk_towards(src, H, 3)
+						npc_subtile_species_walk("towards", H, 3)
 						done = TRUE
 			if (done == FALSE)
-				walk_rand(src,4)
+				npc_subtile_species_walk("random", null, 4)
 		else if (prob(15))
 			var/done = FALSE
 			for (var/obj/structure/sink/S in range(8, src))
 				if (done == FALSE)
-					walk_towards(src, S, 3)
+					npc_subtile_species_walk("towards", S, 3)
 					done = TRUE
 			if (done == FALSE)
-				walk_rand(src,4)
+				npc_subtile_species_walk("random", null, 4)
 		else
-			walk_rand(src,4)
+			npc_subtile_species_walk("random", null, 4)
 		if (prob(10))
 			for (var/mob/living/human/TG in range(1,src))
+				if (!npc_subtile_contact_settled())
+					continue
 				if (map && ((map.ID == MAP_NOMADS_AFRICA && TG.s_tone > -175) || map.ID != MAP_NOMADS_AFRICA))
 					visible_message("<span class = 'danger'>\The [src] bite [TG]!")
 					TG.adjustBruteLoss(1,2)
@@ -70,7 +79,7 @@
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))
-		walk_away_od(src, M, 3, 3)
+		npc_subtile_species_walk("away", M, 3, 0, 3)
 		return
 	if (prob(10))
 		if (origin)
@@ -107,7 +116,6 @@
 
 /obj/structure/curtain/Crossed(var/mob/living/simple_animal/mosquito/M)
 	if (icon_state != "open" && istype(M, /mob/living/simple_animal/mosquito))
-		walk(M,0)
-		walk(M,turn(dir,180),3)
+		M.npc_subtile_species_walk("direction", null, 3, turn(dir,180))
 	else
 		..()

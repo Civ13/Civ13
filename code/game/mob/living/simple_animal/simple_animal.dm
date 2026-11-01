@@ -107,6 +107,19 @@
 	var/mutation_variants = list()
 
 	var/attack_verb = "bites"
+
+// Invalidate deferred work at the mutation, even if the link later returns to
+// its old value between worker checks. Save restoration has no pending worker.
+/mob/living/simple_animal/proc/npc_set_following(atom/new_following)
+	if (src.following_mob != new_following)
+		src.npc_subtile_pending_intent = null
+	src.following_mob = new_following
+
+/mob/living/simple_animal/proc/npc_set_combat_target(atom/new_target)
+	if (src.target_mob != new_target)
+		src.npc_subtile_pending_intent = null
+	src.target_mob = new_target
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -115,6 +128,7 @@
 			melee_damage_lower *= 1.5
 			melee_damage_upper *= 1.5
 /mob/living/simple_animal/Login()
+	npc_subtile_pending_intent = null
 	// Parent login retires the old LOS context before replacing screen ownership.
 	..()
 	// Parent login rebuilds the HUD after saved actions were already granted.
@@ -126,6 +140,8 @@
 
 /mob/living/simple_animal/Life()
 	..()
+	if (npc_subtile_pending_intent && (client || stat))
+		npc_subtile_pending_intent = null
 	if (loc == null)
 		spawn(10)
 			if (loc == null)
@@ -159,6 +175,10 @@
 			adjustBruteLoss(round(max(1,maxHealth/10)))
 			simplehunger = 60
 			updatehealth()
+	if (npc_subtile_recovery_enabled)
+		npc_subtile_prune_pending()
+		npc_subtile_dispatch_pending()
+		npc_subtile_request_recovery()
 
 	if (following_mob)
 		stop_automated_movement = TRUE
@@ -166,10 +186,13 @@
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
 				if (get_dist(src, following_mob) > 1)
-					walk_to(src, following_mob, 1, 6)
+					if (npc_subtile_follow_enabled)
+						npc_subtile_start_follow(following_mob)
+					else
+						walk_to(src, following_mob, 1, 6)
 					turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
-			following_mob = null
+			npc_set_following(null)
 			stop_automated_movement = FALSE
 
 	// AI and Movement logic
@@ -310,9 +333,9 @@
 	if (behaviour == "hunt" || behaviour == "hostile")
 		if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 			if (prob(75))
-				target_mob = M
+				npc_set_combat_target(M)
 		else
-			target_mob = M
+			npc_set_combat_target(M)
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 	else if (behaviour == "scared")
@@ -334,9 +357,9 @@
 			if (behaviour == "defends" && !uses_defensive_retaliation())
 				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 					if (prob(75))
-						target_mob = M
+						npc_set_combat_target(M)
 				else
-					target_mob = M
+					npc_set_combat_target(M)
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
@@ -348,9 +371,9 @@
 			if (behaviour == "defends" && !uses_defensive_retaliation())
 				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 					if (prob(75))
-						target_mob = M
+						npc_set_combat_target(M)
 				else
-					target_mob = M
+					npc_set_combat_target(M)
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 			if (M == src)
@@ -373,9 +396,9 @@
 			if (behaviour == "defends" && !uses_defensive_retaliation())
 				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 					if (prob(75))
-						target_mob = M
+						npc_set_combat_target(M)
 				else
-					target_mob = M
+					npc_set_combat_target(M)
 				stance = HOSTILE_STANCE_ATTACK
 				stance_step = 6
 			adjustBruteLoss(harm_intent_damage*M.getStatCoeff("strength"))
@@ -424,33 +447,49 @@
 	var/mob/flee_target
 	var/flee_message = "HSSSSS"
 
+/mob/living/simple_animal/pet/proc/npc_set_movement_target(atom/new_target)
+	if (src.movement_target != new_target && src.npc_subtile_pending_intent && src.npc_subtile_pending_intent.kind == "pet" && src.npc_subtile_pending_intent.mode == "towards")
+		src.npc_subtile_pending_intent = null
+	src.movement_target = new_target
+
+/mob/living/simple_animal/pet/proc/npc_set_flee_target(atom/new_target)
+	if (src.flee_target != new_target && src.npc_subtile_pending_intent && src.npc_subtile_pending_intent.kind == "pet" && src.npc_subtile_pending_intent.mode == "away")
+		src.npc_subtile_pending_intent = null
+	src.flee_target = new_target
+
 /mob/living/simple_animal/pet/proc/handle_movement_target()
 	if ((movement_target) && !(isturf(movement_target.loc) || ishuman(movement_target.loc)))
-		movement_target = null
+		npc_set_movement_target(null)
 		stop_automated_movement = FALSE
 	if (!movement_target || !(movement_target.loc in oview(src, 4)))
-		movement_target = null
+		npc_set_movement_target(null)
 		stop_automated_movement = FALSE
 		for (var/mob/living/simple_animal/mouse/snack in oview(src))
 			if (isturf(snack.loc) && !snack.stat)
-				movement_target = snack
+				npc_set_movement_target(snack)
 				break
 	if (movement_target)
 		stop_automated_movement = TRUE
-		walk_to(src, movement_target, 0, 3)
+		if (npc_subtile_pet_enabled)
+			npc_subtile_start_pet_walk(movement_target, "towards", 0, npc_subtile_native_interval(3))
+		else
+			walk_to(src, movement_target, 0, 3)
 
 /mob/living/simple_animal/pet/proc/handle_flee_target()
 	if (flee_target && !(flee_target.loc in view(src)))
-		flee_target = null
+		npc_set_flee_target(null)
 		stop_automated_movement = FALSE
 	if (flee_target)
 		if (prob(25)) say(flee_message)
 		stop_automated_movement = TRUE
-		walk_away_od(src, flee_target, 7, 2)
+		if (npc_subtile_pet_enabled)
+			npc_subtile_start_pet_walk(flee_target, "away", 7, npc_subtile_native_interval(2))
+		else
+			walk_away_od(src, flee_target, 7, 2)
 
 /mob/living/simple_animal/pet/proc/set_flee_target(atom/A)
 	if (A)
-		flee_target = A
+		npc_set_flee_target(A)
 		turns_since_scan = 5
 
 /mob/living/simple_animal/pet/attackby(var/obj/item/O, var/mob/user)
@@ -524,7 +563,7 @@
 			return
 		else if (L.onedefined == TRUE && (src in range(3,L.S1)))
 			L.S2 = src
-			L.S2.following_mob = L.S1
+			L.S2.npc_set_following(L.S1)
 			to_chat(user, "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1].")
 			qdel(L)
 			return
@@ -575,9 +614,9 @@
 	if (behaviour == "defends" || behaviour == "hunt" || behaviour == "hostile")
 		if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != user)
 			if (prob(75))
-				target_mob = user
+				npc_set_combat_target(user)
 		else
-			target_mob = user
+			npc_set_combat_target(user)
 		stance = HOSTILE_STANCE_ATTACK
 		stance_step = 6
 	else
@@ -657,10 +696,19 @@
 			origin = null
 
 /mob/living/simple_animal/Destroy()
+	// A native Move may never return to its DM wrapper after src is deleted.
+	// Detach only the frame belonging to this actor; retire it without deleting
+	// the datum while its collision callback could still be on the stack.
+	var/datum/npc_subtile_large_frame/F = npc_subtile_large_frame
+	if (F && F.actor == src)
+		npc_subtile_large_frame = null
+		F.retire()
+	npc_subtile_pending_intent = null
 	unregisterSpawner()
 	..()
 
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
+	npc_subtile_pending_intent = null
 	icon_state = icon_dead
 	density = FALSE
 
@@ -734,14 +782,14 @@
 		to_chat(usr, "This animal is not leashed.")
 		return
 	else if (istype(following_mob, /obj/structure/grille/fence) || istype(following_mob, /obj/structure/barricade/wood_pole))
-		following_mob = null
+		npc_set_following(null)
 		new/obj/item/weapon/leash(src.loc)
 		to_chat(usr, "You free the [src].")
 		stop_automated_movement = FALSE
 
 		return
 	else
-		following_mob = null
+		npc_set_following(null)
 		new/obj/item/weapon/leash(src.loc)
 		to_chat(usr, "You free the [src].")
 		stop_automated_movement = FALSE

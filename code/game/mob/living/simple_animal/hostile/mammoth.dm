@@ -62,5 +62,5 @@
 				if (SA.stance != HOSTILE_STANCE_ATTACK)
 					SA.stance = HOSTILE_STANCE_ATTACK
 					SA.stance_step = 7
-					SA.target_mob = src
+					SA.npc_set_combat_target(src)
 		return L

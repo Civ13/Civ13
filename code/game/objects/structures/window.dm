@@ -178,7 +178,7 @@
 	else
 		return TRUE
 
-/obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf)
+/obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)
 	if (istype(O, /obj/structure/drone))
 		var/obj/structure/drone/D = O
 		if (D.flying)
@@ -187,7 +187,7 @@
 		return TRUE
 	if (istype(O) && O.checkpass(PASSGLASS))
 		return TRUE
-	if (get_dir(O.loc, target) == dir)
+	if ((isnull(exit_direction) ? get_dir(O.loc, target) : exit_direction) == dir)
 		return FALSE
 	return TRUE
 

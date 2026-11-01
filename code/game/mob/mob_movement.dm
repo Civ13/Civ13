@@ -222,7 +222,23 @@
 				return FALSE
 			var/atom/old_location = loc
 			var/old_direction = dir
-			. = ..(newloc, direct, P.sx, P.sy)
+			var/datum/npc_subtile_large_frame/large_frame
+			if (npc.npc_subtile_large_exit_enabled)
+				large_frame = npc.npc_subtile_begin_large_frame(P)
+				if (!large_frame)
+					return FALSE
+				try
+					. = ..(newloc, direct, P.sx, P.sy)
+				catch (var/exception/large_move_error)
+					large_frame.close()
+					throw large_move_error
+				var/large_frame_faulted = large_frame.faulted
+				var/exception/large_frame_fault = large_frame.fault
+				large_frame.close()
+				if (large_frame_faulted)
+					throw large_frame_fault
+			else
+				. = ..(newloc, direct, P.sx, P.sy)
 			P.engine_return = .
 			if (!npc || isDeleted(npc))
 				return .

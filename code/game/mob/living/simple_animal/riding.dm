@@ -34,6 +34,7 @@
 		if (do_after(MM, 40, src))
 			M.plane = GAME_PLANE
 			M.visible_message("<span class='notice'>[M] manages to successfully climb into \the [src]'s back.</span>","<span class='notice'>You manage to successfully climb into \the [src]'s back.</span>")
+			npc_subtile_pending_intent = null
 			ride = TRUE
 			rider = MM
 			MM.forceMove(src.loc)
@@ -53,6 +54,7 @@
 			M.visible_message("<span class='notice'>[M] starts to get off \the [src]...</span>","<span class='notice'>You start to get off \the [src]...</span>")
 			if (do_after(M, 40, src))
 				M.visible_message("<span class='danger'>[M] gets off \the [src].</span>","<span class='danger'>You get off \the [src].</span>")
+				npc_subtile_pending_intent = null
 				M.riding = FALSE
 				M.riding_mob = null
 				ride = FALSE
@@ -66,6 +68,7 @@
 			M.visible_message("<span class='danger'>[M] tries to pull [rider] off from \the [src]!</span>","<span class='danger'>You try to pull [rider] off from \the [src]!</span>")
 			if (do_after(M, 40, src))
 				M.visible_message("<span class='danger'>[M] pulls [rider] off from \the [src]!</span>","<span class='danger'>You pull [rider] off from \the [src]!</span>")
+				npc_subtile_pending_intent = null
 				rider.riding = FALSE
 				rider.riding_mob = null
 				rider.forceMove(locate(x+1,y,z))
@@ -84,6 +87,7 @@
 /mob/living/simple_animal/death()
 	..()
 	if (can_ride && !isnull(rider))
+		npc_subtile_pending_intent = null
 		rider.visible_message("<span class='danger'>[rider] falls off from \the [src]!</span>", "<span class='danger'>You fall off from \the [src]!</span>")
 		rider.riding = FALSE
 		rider.SpinAnimation(5,1)

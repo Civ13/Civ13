@@ -132,6 +132,58 @@ class PointerContracts(unittest.TestCase):
             for name in types:
                 self.assertIn('/datum/' + name + '\n\tshould_save = FALSE', read(path))
 
+    def test_wildlife_runtime_owners_and_unscanned_pointers_are_not_saved(self):
+        source = read(NPC)
+        names = ('flee', 'follow', 'large_frame', 'pending_intent',
+                 'pet_walk', 'recovery', 'wild_walk')
+        def require_unsaved(text):
+            for name in names:
+                self.assertIn('/datum/npc_subtile_' + name + '\n\tshould_save = FALSE', text)
+        require_unsaved(source)
+        for name in names:
+            original = '/datum/npc_subtile_' + name + '\n\tshould_save = FALSE'
+            with self.subTest(owner=name), self.assertRaises(AssertionError):
+                require_unsaved(source.replace(original, original.replace('FALSE', 'TRUE'), 1))
+        frame = source.split('/datum/npc_subtile_large_frame\n', 1)[1].split('\n/datum/', 1)[0]
+        for field in ('var/datum/npc_subtile_pulse/pulse',
+                      'var/datum/npc_subtile_transaction/transaction',
+                      'var/datum/intent_owner', 'var/list/start'):
+            self.assertIn(field, frame)
+        self.assertIn('var/tmp/list/npc_subtile_flee_ticket', source)
+        for owner in ('pending_intent', 'flee'):
+            block = source.split('/datum/npc_subtile_' + owner + '\n', 1)[1].split('\n/datum/', 1)[0]
+            self.assertIn('var/list/flee_ticket', block)
+        runtime = hooks()['/mob/living/simple_animal']
+        for key in ('npc_subtile_pulse', 'npc_subtile_transaction', 'npc_subtile_large_frame',
+                    'npc_subtile_flee_ticket', 'npc_subtile_pending_intent', 'npc_subtile_flee',
+                    'npc_subtile_follow', 'npc_subtile_pet_walk', 'npc_subtile_recovery',
+                    'npc_subtile_wild_walk'):
+            self.assertTrue(runtime(key), key)
+        self.assertFalse(runtime('following_mob'))
+        self.assertIn('return key == "following_mob" || ..()', source)
+        mutated = source.replace('"npc_subtile_flee_ticket", ', '', 1)
+        self.assertNotEqual(source, mutated)
+        self.assertFalse(hooks({NPC: mutated})['/mob/living/simple_animal']('npc_subtile_flee_ticket'))
+        mutated = source.replace(' || key == "npc_subtile_large_frame"', '', 1)
+        self.assertNotEqual(source, mutated)
+        self.assertFalse(hooks({NPC: mutated})['/mob/living/simple_animal']('npc_subtile_large_frame'))
+        saving = extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory')
+        def require_export_guard(body):
+            self.assertRegex(body, r'if\(!A.should_save\)\s+return 0')
+            self.assertLess(body.index('if(!A.should_save)'), body.index('A.get_saved_vars()'))
+        require_export_guard(saving)
+        altered = saving.replace('if(!A.should_save)\n\t\treturn 0', 'if(!A.should_save)\n\t\treturn 1', 1)
+        self.assertNotEqual(saving, altered)
+        with self.assertRaises(AssertionError):
+            require_export_guard(altered)
+        self.assertRegex(saving, r'if\(A.persistence_runtime_var\(v\)\)\s+continue')
+        self.assertLess(saving.index('if(A.persistence_runtime_var(v))'), saving.index('A.vars[v]'))
+        loading = read('code/modules/persistence/loading.dm')
+        fields = loading.split('for(var/v in savefile.dir)', 1)[1]
+        gated = fields.split('if(object.persistence_runtime_var(v))', 1)[1].split('if(v == "type")', 1)[0]
+        self.assertRegex(gated, r'\bcontinue\b')
+        self.assertLess(fields.index('if(object.persistence_runtime_var(v))'), fields.index('decode_saved_value('))
+
     def test_alert_threshold_reset_and_cadence_execute_production_body(self):
         fn = project(read(FUNCTIONS), '/map_storage/proc/save_failure_alert_due', 'src, success', {})
         storage = SimpleNamespace(consecutive_save_failures=0)
