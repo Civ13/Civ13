@@ -1,0 +1,14 @@
+<div class="item_list">
+	<h3>Religion List</h3>
+	<p>Snapshot of founded religions. Use Check Religion List again to refresh.</p>
+	{{if data.religions && data.religions.length}}
+		<table style="width:100%" aria-label="Religion list">
+			<thead><tr><th scope="col" style="text-align:left">Religion</th><th scope="col" style="text-align:right">Points</th></tr></thead>
+			<tbody>{{for data.religions}}
+				<tr><th scope="row" style="text-align:left">{{:value.name}}</th><td style="text-align:right">{{>String(value.points)}}</td></tr>
+			{{/for}}</tbody>
+		</table>
+	{{else}}
+		<p>No religions have been founded.</p>
+	{{/if}}
+</div>
