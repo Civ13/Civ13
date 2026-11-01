@@ -16,9 +16,14 @@ the live animal and an unrelated nested item to remain intact and the old backup
 to remain byte-identical. The fresh reader must import the completed generation,
 observe the retained box and item, find no saved target or dangling fixture field,
 and report an audit exactly matching the writer and completion marker. It also
-tests missing or nonempty child, a nested-list omission refusal, a bound owner
+tests missing or nonempty child, an associated-key omission refusal, a bound owner
 and simulated lost-owner refusal. The named controls exercise specific direct
 policy paths; they are not a complete inventory of all possible failures.
+The expanded fixture also requires nested positional and associated-value
+references to the target to restore as null while a neighboring value, an alias,
+and a self-cycle survive. Its audit names the saved level, list ID, index and
+side for each omitted occurrence. This expanded behavior is not yet natively
+validated; the earlier successful fixture tested the narrower policy.
 
 ## Proposed execution envelope
 
@@ -70,19 +75,21 @@ before publication; the current source work itself launches none of them.
 
 The following are not implemented or validated: a missing/deleted object,
 player-associated entities, animals with contents or clients, other movable
-types, repeated faults beyond two selected handles, nested list entries,
-associative keys, cyclic/aliased lists, durable world graph roots and dangling
+types, repeated faults beyond two selected handles, associated keys with
+non-null values, durable world graph roots and dangling
 cross-level links. The current identity/structural backup check is not a full
 byte or restore validation. The audit member changes the strict round envelope;
 rollback to older binaries needs a separately retained compatible generation.
 The actual Gaia failure does not identify the child and may fall outside this
 slice.
 
-A broader candidate needs a bounded, operation-owned occurrence ledger that
+A broader candidate still needs a bounded, operation-owned occurrence ledger that
 names each encoded owner, field or list ID/index/key/value, candidate-level
-identity, and replacement; a graph pass must prove no surviving entry or
-cross-level/durable link points to an omitted entry. Nested lists require alias,
-cycle, key/value and duplicate-occurrence semantics; contained entities require
+identity, and replacement; this slice adds list-slot locations for its one
+supported target, but a graph pass must prove no surviving entry or
+cross-level/durable link points to an omitted entry. Nested-list alias,
+cycle and value behavior in this slice awaits native validation; omitted
+associated keys with non-null values remain refused. Contained entities require
 an explicit recursive-subtree policy and a complete loss count. All replacements
 must be applied to a new candidate rather than mutating the live world, with
 strict mode retained. Each class needs fresh-writer/reader positive and refusal

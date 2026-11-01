@@ -29,6 +29,8 @@
 	var/list/omissions = list()
 	var/list/attempt_history = list()
 	var/encoding_depth = 0
+	// Each frame names one encoded list slot, never the slot's live value.
+	var/list/encoding_list_context = list()
 
 /datum/save_debug_recovery/New()
 	..()
@@ -45,6 +47,7 @@
 	pending_generation = null
 	pending_fault_id = null
 	omissions = list()
+	encoding_list_context = list()
 	return TRUE
 
 // Called only on the existing changed-child failure branch; never edits world state.
@@ -108,18 +111,48 @@
 	pending_fault_id = null
 	return TRUE
 
+/datum/save_debug_recovery/proc/is_quarantined(value)
+	if(!istype(value, /atom/movable) || !value) return FALSE
+	return quarantine["\ref[value]"] == value
+
+// Keep nested slot context attached to the owned encoding call across yields.
+// The caller owns list identity and association handling; this is not a
+// mutation of the live list or a new authority to select an omitted target.
+/datum/save_debug_recovery/proc/encode_list_member(map_storage/storage, savefile/F, list_id, index, side, value)
+	if(closed || !owner || !owner.current(storage, "save") || !isnum(list_id) || list_id < 1 || list_id != round(list_id) || !isnum(index) || index < 1 || index != round(index) || !(side in list("key", "value")) || encoding_list_context.len >= 64) throw EXCEPTION("Debug list context is invalid")
+	var/datum/save_export_frame/frame = storage.saving_export_stack.len ? storage.saving_export_stack[storage.saving_export_stack.len] : null
+	var/list/context = list("z" = storage.saving_z, "list_id" = list_id, "index" = index, "side" = side, "frame" = frame)
+	encoding_list_context += list(context)
+	try
+		. = storage.encode_saved_value(F, value)
+	catch(var/exception/error)
+		if(encoding_list_context.len && encoding_list_context[encoding_list_context.len] == context) encoding_list_context.Cut(encoding_list_context.len, encoding_list_context.len + 1)
+		throw error
+	var/datum/save_export_frame/current_frame = storage.saving_export_stack.len ? storage.saving_export_stack[storage.saving_export_stack.len] : null
+	if(closed || !owner || !owner.current(storage, "save") || !encoding_list_context.len || encoding_list_context[encoding_list_context.len] != context || storage.saving_z != context["z"] || current_frame != frame) throw EXCEPTION("Debug list context lost ownership")
+	encoding_list_context.Cut(encoding_list_context.len, encoding_list_context.len + 1)
+
 /datum/save_debug_recovery/proc/omits(atom/movable/value, source_field)
 	if(closed || !owner || !owner.current(map_storage, "save") || !value) return FALSE
 	var/ref = "\ref[value]"
 	if(quarantine[ref] != value) return FALSE
 	if(value.gc_destroyed || value.gcDestroyed || value.contents.len || (ismob(value) && value:client)) throw EXCEPTION("Debug omitted animal changed; candidate refused")
-	if(encoding_depth > 1) throw EXCEPTION("Debug omission in nested list is unsupported")
+	if(encoding_depth > 1 && !encoding_list_context.len) throw EXCEPTION("Debug nested omission lacks list context")
 	if(omissions.len >= 256) throw EXCEPTION("Debug omission audit limit exceeded")
 	var/datum/save_export_frame/frame = map_storage.saving_export_stack.len ? map_storage.saving_export_stack[map_storage.saving_export_stack.len] : null
 	var/source_type = frame && frame.source ? "[frame.source.type]" : "unknown"
 	var/field = source_field == "moving_roster" ? "moving_roster" : (frame && istext(frame.current_field) ? copytext(frame.current_field, 1, 81) : "contents")
 	var/replacement = source_field == "moving_roster" ? "roster_not_admitted" : ((encoding_depth || source_field == "level_link") ? "null_reference" : "omitted_content")
-	omissions += list(list("attempt" = attempt, "target_ref" = ref, "target_type" = "[value.type]", "source_type" = source_type, "source_ref" = frame && frame.source ? "\ref[frame.source]" : null, "field" = field, "replacement" = replacement))
+	var/list/row = list("attempt" = attempt, "target_ref" = ref, "target_type" = "[value.type]", "source_type" = source_type, "source_ref" = frame && frame.source ? "\ref[frame.source]" : null, "field" = field, "replacement" = replacement)
+	if(encoding_list_context.len)
+		var/list/location = encoding_list_context[encoding_list_context.len]
+		if(location["z"] != map_storage.saving_z) throw EXCEPTION("Debug list context changed level")
+		// A list member may recursively serialize another object. Only the
+		// member's own frame belongs to this slot; nested object fields retain
+		// their own source/field attribution instead of inheriting this slot.
+		if(location["frame"] == frame)
+			row["list_location"] = list("z" = location["z"], "list_id" = location["list_id"], "index" = location["index"], "side" = location["side"])
+	omissions += list(row)
 	return TRUE
 
 /datum/save_debug_recovery/proc/audit(generation, datum/persistence_world_operation/operation)
@@ -139,6 +172,7 @@
 	pending_destination = null
 	pending_fault_id = null
 	quarantine = list()
+	encoding_list_context = list()
 	if(map_storage && map_storage.debug_recovery_session == src) map_storage.debug_recovery_session = null
 
 // Read-only handoff for a future authorized owner-thread adapter. The opaque

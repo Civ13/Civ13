@@ -7,8 +7,9 @@ named synthetic human receives a headless-only movement authority seam. A
 separate counter records an active-transaction capture on debug attempt two
 and a later movement pulse while that operation remains active. The fresh
 reader checks the writer's captured tile, zero movement offset, art offsets,
-and backpack/nested pen, in addition to the audited leaf-animal omission and
-unchanged item, box, reference and seed backup. This does not test a connected
+and backpack/nested pen, in addition to the audited leaf-animal omission,
+saved nested-list alias and cycle, unchanged live list, item, box, reference
+and seed backup. This does not test a connected
 client, Gaia, every possible omitted type or live game continuity.
 
 The writer's capsule and reader's restored tile are compared by the controller;
@@ -41,11 +42,13 @@ hard aggregate disk quota. No production save or credential is used.
 The current recovery prototype only admits a still-resolvable, moved,
 clientless, empty simple-animal leaf after a matching capture fault, and uses a
 fresh owned attempt. A null or destroyed child, a human or other movable, a
-child with contents, stale handles/changed location, nested-list references,
+child with contents, stale handles/changed location, an omitted associative
+key with a non-null value,
 unverified backup, changed owner or repeated fault is refused. Clientless does
 not prove absence of player association. The recorded live Gaia fault has no
 child identity, so this fixture cannot show that this case is recoverable.
-Broader debug-lossy continuity needs type-aware saved-graph omission/replacement
-including nested lists and incoming references, bounded exact audit and fresh
+The proposed nested-list reference support has not been run natively at this
+head. Broader debug-lossy continuity needs type-aware saved-graph omission/replacement
+including other incoming references, bounded exact audit and fresh
 candidate/reader verification; it must preserve retained entities and old
 generations. That broader mechanism does not yet exist here.

@@ -389,6 +389,8 @@
 		return list("kind" = "area", "x" = T.x, "y" = T.y, "z" = T.z, "type" = AR.type)
 	if(islist(value))
 		var/list/L = value
+		var/datum/persistence_world_operation/list_operation = persistence_active_operation
+		var/datum/save_debug_recovery/policy = list_operation ? list_operation.debug_recovery : null
 		var/id = saving_lists[L]
 		if(!id || saving_list_pins[id] != L)
 			id = saving_list_pins.len + 1
@@ -405,8 +407,16 @@
 				if(!moving_save_chunk)
 					TICK_CHECK
 				var/key = snapshot[i]
-				var/encoded_key = encode_saved_value(F, key)
-				var/encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : snapshot[key])
+				var/encoded_key
+				var/encoded_value
+				if(policy)
+					var/associated_value = (isnum(key) || isnull(key)) ? null : snapshot[key]
+					if(policy.is_quarantined(key) && !isnull(associated_value)) throw EXCEPTION("Debug omission of an associated list key is unsupported")
+					encoded_key = policy.encode_list_member(src, F, id, i, "key", key)
+					encoded_value = policy.encode_list_member(src, F, id, i, "value", associated_value)
+				else
+					encoded_key = encode_saved_value(F, key)
+					encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : snapshot[key])
 				record_save_capture_path(F, "/lists/[id]/[i]/key")
 				F["/lists/[id]/[i]/key"] << encoded_key
 				record_save_capture_path(F, "/lists/[id]/[i]/value")

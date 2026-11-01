@@ -16,6 +16,8 @@ var/global/list/combined_capsule
 /obj/structure/debug_save_fixture
 	name = "synthetic retained box"
 	var/mob/living/simple_animal/fixture_reference
+	var/list/fixture_nested
+	var/list/fixture_alias
 
 /obj/item/debug_save_fixture
 	name = "synthetic retained item"
@@ -70,14 +72,16 @@ var/global/list/combined_capsule
 	debug_fixture_assert(contained.loc == locate(3, 3, 1) && !animal.contents.len, "fixture_control_detach_failed")
 	debug_fixture_assert(policy.observe(box, animal, op), "fixture_supported_fault_not_observed")
 	policy.quarantine["\ref[animal]"] = animal
-	policy.encoding_depth = 2
-	var/nested_refused = FALSE
+	var/savefile/control_file = new("fixture-control.sav")
+	var/list/associated = list()
+	associated[animal] = "must not silently drop this association"
+	var/associated_key_refused = FALSE
 	try
-		policy.omits(animal, null)
-	catch(var/exception/nested_error)
-		nested_refused = nested_error.name == "Debug omission in nested list is unsupported"
-	debug_fixture_assert(nested_refused, "fixture_nested_list_admitted")
-	policy.encoding_depth = 0
+		map_storage.encode_saved_value(control_file, associated)
+	catch(var/exception/key_error)
+		associated_key_refused = key_error.name == "Debug omission of an associated list key is unsupported"
+	control_file = null
+	debug_fixture_assert(associated_key_refused, "fixture_associated_key_admitted")
 	policy.quarantine = list()
 	var/fault = policy.pending_fault_id
 	var/attempt_id = policy.pending_operation_id
@@ -126,6 +130,11 @@ var/global/list/combined_capsule
 	var/obj/item/debug_save_fixture/item = new(box)
 	fixture_subject = new(box)
 	box.fixture_reference = fixture_subject
+	var/list/shared = list(fixture_subject, "preserved-neighbor")
+	shared["linked"] = fixture_subject
+	shared += list(shared)
+	box.fixture_nested = list(shared)
+	box.fixture_alias = shared
 	debug_fixture_assert(fixture_subject.loc == box && item.loc == box, "fixture_initial_containment")
 	debug_fixture_assert(debug_fixture_refusal_controls(box, fixture_subject), "fixture_refusal_controls")
 	debug_fixture_assert(ticker.savemap(null, null), "fixture_seed_save_failed")
@@ -146,6 +155,7 @@ var/global/list/combined_capsule
 	debug_fixture_assert(fixture_moves == 2 && !fixture_armed, "fixture_debug_fault_not_reached")
 	debug_fixture_assert(fixture_subject && fixture_subject.loc == locate(2, 2, 1), "fixture_live_animal_changed")
 	debug_fixture_assert(item && item.loc == box, "fixture_live_item_changed")
+	debug_fixture_assert(box.fixture_alias == shared && islist(box.fixture_nested) && box.fixture_nested.len == 1 && box.fixture_nested[1] == shared && shared.len == 4 && shared[1] == fixture_subject && shared[2] == "preserved-neighbor" && shared["linked"] == fixture_subject && shared[4] == shared, "fixture_live_nested_changed")
 	var/list/round = map_storage.read_round_state()
 	var/list/audit = round["debug_recovery"]
 	var/generation = trim(file2text("map_saves/save_complete.txt"))
@@ -156,10 +166,11 @@ var/global/list/combined_capsule
 	result["seed_generation"] = seed_generation
 	result["audit"] = audit
 	result["fixture_moves"] = fixture_moves
+	result["live_nested_unchanged"] = TRUE
 	result["human_tile"] = list(combined_capsule["x"], combined_capsule["y"], combined_capsule["z"])
 	result["human_handoffs"] = combined_handoffs
 	result["human_pulses_after"] = combined_pulses_after
-	result["controls"] = list("unsupported_contents" = TRUE, "missing_child" = TRUE, "nested_list" = TRUE, "owner_bound" = TRUE, "owner_lost" = TRUE)
+	result["controls"] = list("unsupported_contents" = TRUE, "missing_child" = TRUE, "associated_key" = TRUE, "owner_bound" = TRUE, "owner_lost" = TRUE)
 	return TRUE
 
 /proc/debug_fixture_reader(list/result)
@@ -192,6 +203,9 @@ var/global/list/combined_capsule
 	for(var/mob/living/simple_animal/debug_save_fixture/A in world)
 		if(A) animal_count++
 	debug_fixture_assert(box_count == 1 && item_count == 1 && control_count == 1 && !animal_count && box && item && control_item && item.loc == box && control_item.loc == locate(3, 3, 1) && !box.fixture_reference && box.x == 4 && box.y == 4 && box.z == 1 && item.name == "synthetic retained item", "fixture_reader_retained_graph")
+	var/list/shared = box.fixture_alias
+	debug_fixture_assert(islist(box.fixture_nested) && box.fixture_nested.len == 1 && islist(shared) && box.fixture_nested[1] == shared && shared.len == 4, "fixture_reader_list_alias")
+	debug_fixture_assert(isnull(shared[1]) && shared[2] == "preserved-neighbor" && isnull(shared["linked"]) && shared[4] == shared, "fixture_reader_nested_list")
 	debug_fixture_assert(human_count == 1 && saved_human && isturf(saved_human.loc) && !saved_human.step_x && !saved_human.step_y && saved_human.pixel_x == 7 && saved_human.pixel_y == -3, "combined_reader_human")
 	debug_fixture_assert(istype(saved_human.back, /obj/item/weapon/storage/backpack) && saved_human.back.loc == saved_human, "combined_reader_bag")
 	var/pen_count = 0
@@ -205,6 +219,8 @@ var/global/list/combined_capsule
 	result["retained_control_item"] = TRUE
 	result["omitted_animal"] = TRUE
 	result["reference_null"] = TRUE
+	result["nested_alias_and_cycle"] = TRUE
+	result["nested_losses_and_neighbor"] = TRUE
 	result["human_tile"] = list(saved_human.x, saved_human.y, saved_human.z)
 	result["human_centered"] = TRUE
 	result["human_art_and_inventory"] = TRUE
