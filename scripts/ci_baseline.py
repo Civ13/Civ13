@@ -26,7 +26,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
-    'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',),
+    'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
+                                         'tests/mount_lifecycle_native/test_runner.py'),
         'paths': ('tests/mount_lifecycle_native/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/riding.dm',
             'code/game/mob/living/simple_animal/simple_animal.dm',
@@ -34,7 +35,14 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/human_subtile/run-npc.py', 'tests/human_subtile/run-diagonal.py',
             'tests/human_subtile/run.py', 'tests/human_subtile/probe.dm',
-            'scripts/native_fixture.py', 'tools/byond/version.json')},
+            'scripts/native_fixture.py', 'tools/byond/version.json',
+            'tests/movement_save_chunks/human_spatial_run.py',
+            'tests/movement_save_chunks/benchmark.py',
+            'tests/movement_save_chunks/human_spatial_stage.py',
+            'tests/nomads_lifecycle/run_variable_probe_linux.py',
+            'tests/nomads_lifecycle/run_variable_probe.py',
+            'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+            'tests/save_movement/source_adapter.py')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.

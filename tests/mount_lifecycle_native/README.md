@@ -1,8 +1,9 @@
 # Consolidated mount lifecycle native acceptance proposal
 
 Status: source/preparation for Main review, not native acceptance. No compiler,
-daemon, client, live world or save has been used. There is deliberately no new
-native execution CLI or workflow admission. Existing offline lifecycle behavior
+daemon, client, live world or save has been used. The explicit run_linux.py entry
+is prepared for review, not admitted or invoked; no native workflow is added.
+Existing offline lifecycle behavior
 suites are not duplicated here; test_prepare.py checks only composition, selectors,
 mutation identities and strict receipt rejection using synthetic receipt data.
 Only that explicit preparation test file enters the offline baseline registry.
@@ -26,6 +27,9 @@ Maps are excluded and this last fixture declaration bounds the map to 8x8x1.
 OpenPort/Topic/client rejection are inherited from the existing probe. Normal
 server startup, global-controller initialization, real clients/accounts, webhooks,
 AI processing loops, saves and game input are not enabled.
+After closing, the fixture waits at most five seconds for an external closed-port
+acknowledgement. The Linux supervisor writes it only after a zero-owned-socket
+sample. No case executes before this acknowledgement.
 
 Production qdel, finalize_qdel, both human Destroy layers, the animal/mob/atom/
 datum parent chain, destroyed-event dispatcher and human/horse constructors are
@@ -85,12 +89,17 @@ assertion and makes the whole attempt fail. Host-owned cleanup remains mandatory
 
 Review the final manifest, five generated DME hashes, prepared source adaptations,
 receipt oracle, engine archive/executable identities and selected platform first.
-Execution must use the existing current-pin run-diagonal.py run_phase/Session
-boundaries, not a new Popen bypass. Its compiler oracle requires one 516.1688
+The concrete run_linux.py orchestrator calls the existing human_subtile/run.py
+run_process with retain_leader=True, monitor and on_event. It reuses the existing
+current_runtime.py archive/install verifier, human_spatial_run.py memory/output
+monitor and nomads Linux identity/process/owned-socket census functions. It does
+not call run-diagonal main or that lane's unrelated fixture/oracle. Its compiler
+oracle requires one 516.1688
 banner and exactly zero errors/warnings. Use one fresh runtime directory per
 variant with only its recorded DMB/RSC and tracked config; retain artifact hashes.
-Parameters must be `tested_commit=SHA;fixture_variant=VARIANT`. Use -trusted and
-the existing no_port_args/closed-entry witness/log policy. Read every runtime log,
+Parameters are `tested_commit=SHA;fixture_variant=VARIANT`. It uses fixed loopback
+port 59474, -trusted, -close, -nowebclient and the closed-entry witness/log policy.
+Read every runtime log,
 including unexpected exceptions swallowed by the observer's own catch path.
 The receipt validator alone does not prove containment, exit or diagnostic absence.
 
@@ -102,10 +111,28 @@ Windows containment or continuous OS network isolation. Neither -close nor the
 DM port check proves socket prevention. No host firewall/security changes,
 privileged namespaces, credentials, paid services or dependency installation.
 
+The proposed executable command on the reviewed hosted Linux job is:
+
+```
+/usr/bin/python3 tests/mount_lifecycle_native/run_linux.py --prepared PREPARED --output NEW_RUNNER_TEMP_DIRECTORY --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --archive "$GITHUB_WORKSPACE/BYOND/pinned.zip" --expected-head FULL_SHA --manifest-sha256 MANIFEST_SHA256 --authorized-until 2026-11-01T23:46:26Z
+```
+
+The code requires an isolated Civ13 GitHub Linux pull_request
+job, exact clean checkout, a reviewed manifest hash, private RUNNER_TEMP paths and
+the existing pinned CI engine paths. These flags bind identity, not permission;
+Main must approve this source, selected event/profile and exact command first.
+No job, dispatch or native launch has occurred. The normal workflow is unchanged.
+It refuses other active native engines, foreign/extra session members, changed
+birth identities, UDP/connected/external sockets, occupied port and all sockets
+after closure. Final socket observation occurs while the leader is retained;
+after reap it requires empty owned group and native-engine census, without
+querying a reused PID for sockets. Sampling is detection, not an egress sandbox
+or a guarantee that a short-lived escaped descendant could never exist.
+
 Run serially: positive first, then the four controls; stop on an unexpected
 failure, diagnose, preserve it and obtain review of any correction before rerun.
-Cap compile at 120 seconds/variant, post-entry runtime at 30 seconds/variant,
-owned cleanup at 15 seconds/variant and the complete five-variant attempt at
+Cap compile at 120 seconds/variant, the entire daemon phase at 30 seconds/variant,
+reserve 15 seconds for each phase's owned cleanup and cap the complete attempt at
 900 seconds. Source preparation has the existing 30-second Git archive and
 2GiB/8000-file bounds, separately from native deadlines. Check memory/disk budgets
 and remaining authorization before launch. The present testing window ends
