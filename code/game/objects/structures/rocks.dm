@@ -23,6 +23,8 @@
 
 /obj/structure/wild/rock/attack_hand(var/mob/living/human/H)
 	if (H.a_intent == I_GRAB)
+		if (!H.may_do_after)
+			return
 		to_chat(H, "You start looking for some flint among the rocks...")
 		if (do_after(H, 50, H.loc) && flint_amount > 0)
 			to_chat(H, "You find some flint.")
@@ -97,6 +99,8 @@
 
 /obj/item/weapon/flint/attackby(obj/item/M as obj, mob/user as mob)
 	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11))
+		if (!user || !user.may_do_after)
+			return
 		visible_message("<span class='notice'>[user] starts to [actiontext] the [M.name]...</span>")
 		playsound(src,noise,40,1)
 		if (do_after(user, delay, src))
