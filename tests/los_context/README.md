@@ -39,6 +39,28 @@ owned by the production presenter integration. No data is serialized as a cache.
 
 ## Offline checks
 
+The hover-entry cleanup keeps `process()` as the visibility authority. Entry
+initializes its weak pointers and inventory metadata synchronously, then calls
+the existing process guard once before reading any label. Every later process
+call still rechecks the current origin, equipped item/slot and fresh raw LOS;
+no positive decision, snapshot or lease is stored as authorization.
+
+`InventoryHoverName` compares 21 entry outcomes/name-read traces against
+`fixtures/hover_entry_before.txt` (frozen at
+`4e26d5794fcf197a13111d1f40b637b7be962d61`), including masked names, denied LOS,
+hidden/foreign slots, replaced body/HUD, deleted targets and empty labels.
+It checks one fresh LOS admission per successful entry and per later refresh.
+Adversarial weakref setup callbacks revoke admission before processing; these
+must clear the widget without reading a name. A control omitting the process
+visibility guard demonstrates a disclosure through otherwise delivered content.
+
+An entry rejected by the final visibility check may now construct weak handles
+before rejection; `process()` immediately clears the widget state. This internal
+allocation tradeoff is explicit, and no FPS or wall-time improvement is claimed.
+The fixture uses inert client/weakref/view boundaries, not native mouse delivery
+or rendering. The old `tests/hover_name/run.py` still targets 516.1681 and is not
+current-pin native acceptance for this change.
+
 ```sh
 LOS_EVENT_BASE=<full-event-base-sha> LOS_EVENT_HEAD=$(git rev-parse HEAD) \
   python3 -B -m unittest discover -s tests/los_context -p 'test_*.py' -v
