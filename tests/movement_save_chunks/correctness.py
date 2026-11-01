@@ -24,6 +24,7 @@ ORIGIN_ANCHOR = '''\tvar/list/moving_root = child ? moving_save_roots["\\ref[chi
 \t\tif(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
 \t\treturn // The frozen origin owns this root; roster drain will attach it.
 '''
+ORIGIN_CHILD_ANCHOR = '\tvar/datum/child = saving_reference_pins[ref]\n#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL\n'
 
 def mutate(packet, control):
     if control == 'roster':
@@ -35,6 +36,10 @@ def mutate(packet, control):
         path = packet / 'code/modules/persistence/functions.dm'
         text = path.read_text()
         if text.count(ORIGIN_ANCHOR) != 1: raise ValueError('origin mutation anchor differs')
+        if text.count(ORIGIN_CHILD_ANCHOR) != 1: raise ValueError('origin child anchor differs')
+        # Only the experimental human guard still needs child after removing
+        # the animal guard. Avoid an unused variable in the normal fixture.
+        text = text.replace(ORIGIN_CHILD_ANCHOR, '#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL\n\tvar/datum/child = saving_reference_pins[ref]\n', 1)
         path.write_text(text.replace(ORIGIN_ANCHOR, '', 1))
     elif control == 'old-keys':
         baseline = load('datum_profile')

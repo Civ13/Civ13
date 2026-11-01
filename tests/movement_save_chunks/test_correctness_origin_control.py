@@ -23,7 +23,8 @@ class OriginControlTests(unittest.TestCase):
             correctness.mutate(packet, 'origin')
             result = target.read_text()
             self.assertNotIn(correctness.ORIGIN_ANCHOR, result)
-            self.assertIn('var/datum/child = saving_reference_pins[ref]', result)
+            self.assertIn('#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL\n\tvar/datum/child = saving_reference_pins[ref]\n\tvar/list/human_root', result)
+            self.assertNotIn(correctness.ORIGIN_CHILD_ANCHOR, result)
             self.assertIn('var/list/human_root = child ? human_save_roots', result)
             self.assertIn('Human save root entered a captured container', result)
             with self.assertRaisesRegex(ValueError, 'origin mutation anchor differs'):
