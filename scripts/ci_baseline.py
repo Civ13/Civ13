@@ -29,6 +29,12 @@ SUITES = {
     'ladder_cleanup': {'files': ('tests/ladder_cleanup/test_destroy.py',),
         'paths': ('tests/ladder_cleanup/',), 'shared_paths': (
             'code/modules/multiz/structures.dm', 'tests/save_movement/source_adapter.py')},
+    # Stdlib + reviewed source projection with inert recipients and event queue.
+    # No native fixture, process, network or live message transport is imported.
+    'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
+        'paths': ('tests/telephone/',), 'shared_paths': (
+            'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
+
     # Stdlib + reviewed source projection only; frozen DM is offline data.
     # No native runner, engine process, socket or network boundary is imported.
     'vehicle_hud': {'files': ('tests/vehicle_hud/test_driver_axis.py',),

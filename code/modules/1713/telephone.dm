@@ -155,10 +155,11 @@ var/list/global/phone_numbers = list()
 
 	var/list/tried_mobs = list()
 
+	// Deduplicate registry entries, not deliveries from different visible phones.
 	for (var/mob/living/human/hearer in human_mob_list)
-		if (tried_mobs.Find(hearer))
+		if (tried_mobs[hearer])
 			continue
-		tried_mobs += hearer
+		tried_mobs[hearer] = TRUE
 		if (hearer.stat == CONSCIOUS)
 			for (var/obj/item/weapon/telephone/phone in view(7, hearer))
 				if (src == phone.origincall || src == phone)
