@@ -31,6 +31,23 @@ assert.ok(!shipClassicMarkup.includes('<script>'));
 assert.ok(!shipClassicMarkup.includes('<img'));
 assert.ok(!shipClassicMarkup.includes('<b>'));
 assert.ok(renderShipClassic({ stocks: [] }, {}, {}).includes('No stock snapshot is available.'));
+// Compile the actual retained template; this is an offline fallback fixture.
+const religionClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', religionClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), religionClassicContext);
+const renderReligionClassic = religionClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/religion_list.tmpl', import.meta.url), 'utf8'));
+const religionClassicMarkup = renderReligionClassic({ religions: [
+  { name: 'First', points: 0 }, { name: 'Second', points: -2 }, { name: 'Third', points: 12.5 },
+  { name: '&lt;script&gt;fictional&lt;/script&gt;', points: '<img src=x>' },
+] }, {}, {});
+assert.ok(religionClassicMarkup.indexOf('First') < religionClassicMarkup.indexOf('Second'));
+assert.ok(religionClassicMarkup.includes('>0</td>'));
+assert.ok(religionClassicMarkup.includes('>-2</td>'));
+assert.ok(religionClassicMarkup.includes('>12.5</td>'));
+assert.ok(religionClassicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;'));
+assert.ok(!religionClassicMarkup.includes('<script>'));
+assert.ok(!religionClassicMarkup.includes('<img'));
+assert.ok(renderReligionClassic({ religions: [] }, {}, {}).includes('No religions have been founded.'));
 const errors = [];
 const console = new VirtualConsole(); console.on('jsdomError', error => errors.push(error.message));
 const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading... <a id="tgui-legacy">Classic</a></p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
@@ -81,7 +98,17 @@ try {
   assert.ok(w.document.body.textContent.includes('12.5 units'));
   assert.ok(w.document.body.textContent.includes('Use the book again to refresh.'));
   assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
+  await update('religion_list.tmpl', { religions: [
+    { name: 'Fictional zero', points: 0 }, { name: 'Fictional fractional', points: 12.5 },
+    { name: '&lt;script&gt;inert&lt;/script&gt;', points: -2 },
+  ] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Religion list"] tbody tr').length, 3);
+  assert.ok(w.document.body.textContent.includes('Fictional zero'));
+  assert.ok(w.document.body.textContent.includes('12.5'));
+  assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: real bootstrap/production bundle, original ten routes, Known Languages and Ship Stocks, both classic fixtures, ready/snapshot/ack, stale generation, action guards, safe text and fallback\\n");
+  process.stdout.write("PASS: production bundle and all 13 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
 } finally { w.close(); }

@@ -5,6 +5,7 @@ import { Faction } from './Faction';
 import { Research } from './Research';
 import { KnownLanguages } from './KnownLanguages';
 import { ShipStocks } from './ShipStocks';
+import { ReligionList } from './ReligionList';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -18,4 +19,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'warehouse_book.tmpl': Warehouse,
   'known_languages.tmpl': KnownLanguages,
   'ship_stocks.tmpl': ShipStocks,
+  'religion_list.tmpl': ReligionList,
 };
