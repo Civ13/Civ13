@@ -36,6 +36,26 @@ SUITES = {
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/living_hud.dm',
             'code/modules/visibility/root_tree_presenter.dm', '.github/workflows/test.yml')},
+    # Inert existing harvest/flax runner imports plus stdlib file/transport
+    # adapters only. Tests replace every process boundary; no native execution.
+    'harvest_inputs': {'files': ('tests/animal_harvest/test_input_accounting.py',),
+        'paths': ('tests/animal_harvest/test_input_accounting.py',), 'shared_paths': (
+            'tests/animal_harvest/run.py', 'tests/animal_harvest/hide_recipe_probe.dm',
+            'tests/flax_processing/run.py', 'tests/flax_processing/required-inputs.json',
+            'code/names.dm', 'config/names/', 'scripts/native_fixture.py',
+            'scripts/byond_runtime.py', 'scripts/byond_toolchain.py',
+            'tools/byond/version.json')},
+    # Stdlib-only admission expressions and fixture wiring; never import a native
+    # runner. Shared game/fixture inputs retain conservative all-suite fallback.
+    'action_admission': {'files': ('tests/animal_harvest/test_action_admission.py',),
+        'paths': ('tests/animal_harvest/test_action_admission.py',), 'shared_paths': (
+            'code/game/objects/structures/wild.dm',
+            'code/game/turfs/floor_attackby.dm',
+            'code/game/objects/items/weapons/material/ooga_booga_weapons.dm',
+            'code/game/objects/structures/rocks.dm',
+            'code/game/objects/structures/repairing.dm',
+            'tests/animal_harvest/probe.dm',
+            'tests/animal_harvest/action_admission_probe.dm')},
     # Offline injected transport and temporary wiki fixtures. Shared production
     # inputs remain shared so they do not suppress other suites' fallback.
     'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py',),
