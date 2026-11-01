@@ -142,7 +142,54 @@ def child_exited_unreaped(pid):
     return os.waitid(os.P_PID, pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
 
 
-def monitor_for(folder, started, global_deadline, compile_mode=False, source_bytes=0):
+def observed_proc_state(pid):
+    # Separate later observation, never an exit or process-identity proof.
+    try:
+        with (Path('/proc') / str(pid) / 'status').open('rb') as status:
+            data = status.read(16384).decode('ascii', errors='replace')
+    except OSError:
+        return None
+    match = re.search(r'^State:\s+([A-Za-z])(?:\s|$)', data, re.M)
+    return match.group(1) if match else None
+
+
+def reconcile_rss(pid, samples, started, phase_deadline, global_deadline):
+    # The owned leader remains unreaped. Do not continue an unmeasured child
+    # unless a fresh valid sample arrives or waitid witnesses its exit.
+    require(samples['count'] > 0, 'RSS was not sampled')
+    require('missing_rss_probes' not in samples, 'repeated RSS sampling unavailable')
+    cutoff = min(time.monotonic() + 0.1, phase_deadline, global_deadline)
+    probes = samples['missing_rss_probes'] = []
+    for _ in range(10):
+        if time.monotonic() >= cutoff:
+            break
+        exited = child_exited_unreaped(pid)
+        memory = {} if exited else benchmark.proc_memory(pid)
+        observation = {'elapsed_seconds': time.monotonic() - started,
+                       'waitid_exit_observed': exited,
+                       'later_proc_state': observed_proc_state(pid),
+                       'rss_bytes': memory.get('rss_bytes')}
+        probes.append(observation)
+        if time.monotonic() >= cutoff:
+            break
+        if exited:
+            samples['rss_exit_race'] = True
+            return
+        if 'rss_bytes' in memory:
+            require(memory['rss_bytes'] <= 1024 * 1024 * 1024, 'sampled RSS exceeded')
+            samples['count'] += 1
+            samples['peak_rss'] = max(samples['peak_rss'], memory['rss_bytes'])
+            samples['rss_recovered'] = True
+            return
+        remaining = cutoff - time.monotonic()
+        if remaining > 0:
+            time.sleep(min(0.01, remaining))
+    raise RuntimeError('RSS sampling unavailable')
+
+
+def monitor_for(folder, started, global_deadline, compile_mode=False, source_bytes=0, phase_deadline=None):
+    if phase_deadline is None:
+        phase_deadline = global_deadline
     samples = {'count': 0, 'peak_rss': 0}
     def monitor(pid, cwd):
         require(time.monotonic() < global_deadline, 'job deadline exceeded')
@@ -152,12 +199,9 @@ def monitor_for(folder, started, global_deadline, compile_mode=False, source_byt
             samples['peak_rss'] = max(samples['peak_rss'], memory['rss_bytes'])
             require(memory['rss_bytes'] <= 1024 * 1024 * 1024, 'sampled RSS exceeded')
         elif time.monotonic() - started > 1:
-            # /proc may lose VmRSS after the loop observed a live process but
-            # before this sample. A live process with no RSS still fails; a
-            # witnessed exit must later pass wait/exit and prior-sample checks.
-            if not child_exited_unreaped(pid):
-                raise RuntimeError('RSS sampling unavailable')
-            samples['rss_exit_race'] = True
+            samples.setdefault('missing_rss_initial', {'elapsed_seconds': time.monotonic() - started,
+                                                       'fields': memory})
+            reconcile_rss(pid, samples, started, phase_deadline, global_deadline)
         if compile_mode:
             inventory(folder, total_limit=source_bytes + MAX_BYTES, max_entries=12000)
             for name in ('compile-stdout.log', 'compile-stderr.log', 'human_subtile.dmb', 'human_subtile.rsc'):
@@ -171,13 +215,14 @@ def monitor_for(folder, started, global_deadline, compile_mode=False, source_byt
 def launch(command, cwd, phase, deadline, job_deadline, byond_bin, source_bytes=0):
     start = time.monotonic()
     require(start < job_deadline, 'job deadline exceeded before launch')
-    monitor, samples = monitor_for(cwd, start, job_deadline, phase == 'compile', source_bytes)
+    phase_limit = min(deadline, job_deadline - start)
+    monitor, samples = monitor_for(cwd, start, job_deadline, phase == 'compile', source_bytes, start + phase_limit)
     environment = {'PATH': '/usr/bin:/bin', 'HOME': str(cwd), 'TMPDIR': str(cwd),
                    'LANG': 'C', 'LC_ALL': 'C', 'LD_LIBRARY_PATH': str(byond_bin)}
     trace = {'events': [], 'status': 'starting', 'memory': samples}
     def event(name, value): trace['events'].append({'event': name, 'value': value})
     try:
-        row = legacy.run_process(command, cwd, phase, min(deadline, job_deadline - start), preexec_fn=bounded_child, monitor=monitor, env=environment, retain_leader=True, on_event=event)
+        row = legacy.run_process(command, cwd, phase, phase_limit, preexec_fn=bounded_child, monitor=monitor, env=environment, retain_leader=True, on_event=event)
         require(samples['count'] > 0, 'RSS was not sampled')
         if phase != 'compile': inventory(cwd)
         row['memory'] = samples

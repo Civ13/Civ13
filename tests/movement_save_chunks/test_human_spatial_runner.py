@@ -138,15 +138,79 @@ class RunnerTests(unittest.TestCase):
 
     def test_missing_rss_is_tolerated_only_after_an_observed_exit(self):
         with tempfile.TemporaryDirectory() as tmp, \
-             mock.patch.object(runner.benchmark, 'proc_memory', side_effect=[{'rss_bytes': 1024}, {}, {}]), \
-             mock.patch.object(runner, 'child_exited_unreaped', side_effect=[True, False]):
+             mock.patch.object(runner.benchmark, 'proc_memory', side_effect=[{'rss_bytes': 1024}, {}]), \
+             mock.patch.object(runner, 'child_exited_unreaped', return_value=True), \
+             mock.patch.object(runner, 'observed_proc_state', return_value='Z'):
             monitor, samples = runner.monitor_for(Path(tmp), time.monotonic() - 2, time.monotonic() + 10)
             monitor(123, Path(tmp))
             monitor(123, Path(tmp))
             self.assertEqual(samples['count'], 1)
             self.assertTrue(samples['rss_exit_race'])
-            with self.assertRaisesRegex(RuntimeError, 'RSS sampling unavailable'):
-                monitor(123, Path(tmp))
+            self.assertEqual(samples['missing_rss_probes'][0]['later_proc_state'], 'Z')
+
+    def test_reconciliation_is_bounded_and_never_accepts_unmeasured_live_child(self):
+        class Clock:
+            now = 100.0
+            def monotonic(self): return self.now
+            def sleep(self, seconds): self.now += seconds
+        for phase_limit, global_limit in [(1.0, 1.0), (0.035, 1.0), (1.0, 0.025)]:
+            with self.subTest(phase_limit=phase_limit, global_limit=global_limit):
+                clock, samples = Clock(), {'count': 1, 'peak_rss': 1024}
+                with mock.patch.object(runner.time, 'monotonic', side_effect=clock.monotonic), \
+                     mock.patch.object(runner.time, 'sleep', side_effect=clock.sleep), \
+                     mock.patch.object(runner, 'child_exited_unreaped', return_value=False) as waitid, \
+                     mock.patch.object(runner, 'observed_proc_state', return_value='Z'), \
+                     mock.patch.object(runner.benchmark, 'proc_memory', return_value={}):
+                    with self.assertRaisesRegex(RuntimeError, 'RSS sampling unavailable'):
+                        runner.reconcile_rss(123, samples, 99.0, 100 + phase_limit, 100 + global_limit)
+                self.assertLessEqual(waitid.call_count, 10)
+                self.assertLessEqual(clock.now, 100 + min(0.1, phase_limit, global_limit) + 1e-9)
+                self.assertTrue(all(not row['waitid_exit_observed'] for row in samples['missing_rss_probes']))
+                self.assertNotIn('rss_exit_race', samples)
+
+    def test_reconciliation_accepts_fresh_bounded_rss_and_rejects_invalid_evidence(self):
+        for memory, prior, exit_seen, accepted in [({'rss_bytes': 2048}, 1, False, True),
+                                                    ({'rss_bytes': 1024**3 + 1}, 1, False, False),
+                                                    ({}, 0, True, False)]:
+            with self.subTest(memory=memory, prior=prior, exit_seen=exit_seen):
+                samples = {'count': prior, 'peak_rss': 1024}
+                with mock.patch.object(runner, 'child_exited_unreaped', return_value=exit_seen), \
+                     mock.patch.object(runner, 'observed_proc_state', return_value=None), \
+                     mock.patch.object(runner.benchmark, 'proc_memory', return_value=memory):
+                    if accepted:
+                        runner.reconcile_rss(123, samples, time.monotonic() - 2, time.monotonic() + 1, time.monotonic() + 1)
+                        self.assertTrue(samples['rss_recovered'])
+                        self.assertEqual(samples['peak_rss'], 2048)
+                        with self.assertRaisesRegex(RuntimeError, 'repeated RSS'):
+                            runner.reconcile_rss(123, samples, time.monotonic() - 2, time.monotonic() + 1, time.monotonic() + 1)
+                    else:
+                        with self.assertRaises(RuntimeError):
+                            runner.reconcile_rss(123, samples, time.monotonic() - 2, time.monotonic() + 1, time.monotonic() + 1)
+
+    def test_waitid_can_confirm_exit_after_an_initial_nonwaitable_poll(self):
+        samples = {'count': 1, 'peak_rss': 1024}
+        with mock.patch.object(runner, 'child_exited_unreaped', side_effect=[False, True]), \
+             mock.patch.object(runner, 'observed_proc_state', return_value='Z'), \
+             mock.patch.object(runner.benchmark, 'proc_memory', return_value={}), \
+             mock.patch.object(runner.time, 'sleep'):
+            runner.reconcile_rss(123, samples, time.monotonic() - 2, time.monotonic() + 1, time.monotonic() + 1)
+        self.assertEqual([p['waitid_exit_observed'] for p in samples['missing_rss_probes']], [False, True])
+        self.assertTrue(samples['rss_exit_race'])
+
+    def test_witnessed_exit_still_requires_zero_owned_child_status(self):
+        child = mock.Mock(pid=123456, returncode=7)
+        child.wait.return_value = 7
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(runner.legacy.subprocess, 'Popen', return_value=child), \
+             mock.patch.object(runner.legacy.os, 'waitid', return_value=object(), create=True), \
+             mock.patch.object(runner.legacy.os, 'P_PID', 1, create=True), \
+             mock.patch.object(runner.legacy.os, 'WEXITED', 4, create=True), \
+             mock.patch.object(runner.legacy.os, 'WNOHANG', 1, create=True), \
+             mock.patch.object(runner.legacy.os, 'WNOWAIT', 0x1000000, create=True), \
+             mock.patch.object(runner.legacy.os, 'killpg', create=True), \
+             mock.patch.object(runner.legacy.signal, 'SIGKILL', 9, create=True):
+            with self.assertRaisesRegex(RuntimeError, 'Native phase failed'):
+                runner.legacy.run_process(['synthetic'], Path(tmp), 'reader', 1, retain_leader=True)
 
     def test_exit_without_any_memory_sample_still_fails(self):
         def fake_process(command, cwd, name, deadline, **kwargs):
