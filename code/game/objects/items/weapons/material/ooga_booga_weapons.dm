@@ -20,6 +20,8 @@
 
 /obj/structure/branch/attack_hand(mob/living/human/H)
 	if (H.a_intent == I_GRAB && leaves)
+		if (!H.may_do_after)
+			return
 		to_chat(H, "You start picking the leaves from the branch...")
 		if (do_after(H, 60, src))
 			if (src && leaves)
@@ -34,6 +36,8 @@
 				return
 		return
 	else if (H.a_intent == I_HARM && !leaves && branched)
+		if (!H.may_do_after)
+			return
 		to_chat(H, "You start removing the small twigs...")
 		if (do_after(H, 60, src))
 			if (src && branched)
@@ -94,6 +98,8 @@
 	return user && user.client
 
 /obj/item/weapon/branch/proc/assemble_flint_axe(mob/user, obj/item/weapon/flint/head)
+	if (!user || !user.may_do_after)
+		return
 	if (assembling_axe || !axe_actor_connected(user))
 		return
 	var/obj/item/stack/binding = axe_binding(user)
@@ -126,6 +132,8 @@
 
 /obj/item/weapon/branch/attack_self(mob/living/human/user as mob)
 	if (ants)
+		if (!user.may_do_after)
+			return
 		to_chat(user, SPAN_NOTICE("You start licking some ants off the stick..."))
 		if (do_after(user, 50, src))
 			if (src && ants)
@@ -145,6 +153,8 @@
 
 /obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.edge && !sharpened)
+		if (!user.may_do_after)
+			return
 		to_chat(user, "You start sharpening the stick...")
 		if (do_after(user, 80, src))
 			if (src && !sharpened)

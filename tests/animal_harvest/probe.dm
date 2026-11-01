@@ -244,6 +244,7 @@ var/global/harvest_duplicate_result = null
 			qdel(H)
 			harvest_clear(site)
 		harvest_tall_grass_regressions(site, U, K)
+		harvest_action_admission_regressions(site, U)
 		harvest_tanning_regressions(site)
 		var/obj/structure/oven/oven = new(site)
 		var/obj/item/weapon/reagent_containers/food/snacks/meat/offal/heart/heart = new(oven)
@@ -300,4 +301,5 @@ var/global/harvest_duplicate_result = null
 	return TRUE
 
 #include "tall_grass_probe.dm"
+#include "action_admission_probe.dm"
 #include "tanning_probe.dm"

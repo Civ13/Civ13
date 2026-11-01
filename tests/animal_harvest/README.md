@@ -1,5 +1,34 @@
 # Animal harvest regression
 
+Busy-action admission is checked offline with:
+
+```powershell
+& '<verified-python-executable>' -B tests/animal_harvest/test_action_admission.py
+```
+
+This checks the production early-return expressions before messages, claims or
+cooldown changes across tall/floor grass, branch clearing, stick sharpening,
+ants, axe binding, flint gathering and the flint/bench repair handlers. Each
+omitted guard and a guard moved after the grass announcement are negative
+controls. It does not execute DM, waits, UI or native callbacks.
+
+The prepared `action_admission_probe.dm` additionally holds the real stick
+sharpening wait while clicking both tall-grass variants, another stick, axe
+parts and repair targets. It asserts no second grass wait/start/cooldown, no
+resource/durability changes, the original wait remains owned and completes,
+and idle grass cutting still announces and yields normally. The existing
+tall-grass matrix also checks busy entry. These added native assertions have
+not been compiled or run; new native runs require their own admitted plan.
+
+CI selection proposal: an ordinary PR against master introducing the new probe
+and offline test selects the registered `tests/animal_harvest` suite in CI,
+including its existing pinned 516.1688 limited fixture runner after compilation.
+Leave `extensive_regressions` off. The offline command above must also be run
+explicitly; the native suite step does not discover Python tests. If publication
+of a new native test is not yet admitted, retain this branch locally. No workflow
+dispatch is needed or authorized by preparing the source. Connected-client
+message delivery, smooth movement and live Gaia behavior remain separate.
+
 Run only under the admitted native plan, with a verified Python interpreter and
 explicit BYOND 516.1688 bin path:
 
