@@ -25,6 +25,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only source contracts and causal omission controls; no native world.
+    # Shared game/Atlas/Help sources retain the existing conservative fallback.
+    'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
+        'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only complete distance branch with inert movement/icon boundaries.
     'mount_distance': {'files': ('tests/mount_distance/test_distance.py',),
         'paths': ('tests/mount_distance/',), 'shared_paths': (

@@ -19,6 +19,15 @@ The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
 
+`stone_molds.dm` exercises all eight paid sandstone mold recipes, tools retained
+through waits, paid XP, nested/broken/moved tools, wrong/moved/spent stock, research
+revocation, cancellation and crossed persistence admission. It checks full/empty
+icon states and that the real oven preserves the exact filled stone object. The
+normal fixture supplies inert character setup; no client, visual rendering or
+save round trip is implied. See `docs/sandstone-molds.md`. A compile-only run does
+not execute these assertions; use `tests/stone_molds/test_source.py` for offline
+source projections and their causal omission controls.
+
 `canopy.dm` adds both original paid canopy routes, real roof/area creation and
 retirement, competing unfold/fold actions, late destination occupancy, protected
 independent roofs, legacy shared cover and neighbor icon states. It expands the

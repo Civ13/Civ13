@@ -27,6 +27,9 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.startswith('/obj/item/weapon/clay/mold/') and s.endswith('/fired/sandstone'):
+        shape=s.removeprefix('/obj/item/weapon/clay/mold/').split('/')[0]
+        return 'sandstone '+('ingot' if shape=='fired' else shape)+' mold'
     if s.rstrip('/') == '/obj/structure/grinder/constructed':
         return 'wood grinder'
     if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
@@ -99,6 +102,8 @@ for p,s in files.items():
             ingredients=[(a,c)]
             joint=joinery.get(n)
             tool_notes=''
+            if b.endswith('/fired/sandstone') and b.startswith('/obj/item/weapon/clay/mold/'):
+                tool_notes+=' Carved sandstone casting mold: chisel and hammer/mallet equipped or at your feet; tools reused and rechecked after carving. Ready without firing. Pour from a fired clay blacksmith pot/jug, then use the filled mold on an anvil. Sandstone availability depends on the map; clay recipes remain available.'
             if b == '/obj/structure/grinder/constructed':
                 tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
             if n.startswith('joinery: '):

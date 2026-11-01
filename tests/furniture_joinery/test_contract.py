@@ -153,8 +153,8 @@ class Contracts(unittest.TestCase):
             self.assertEqual(row[11],'8')
         stock=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
         self.assertIn('quantity != 1 || !joinery.valid()', stock)
-        self.assertLess(stock.index('if (joinery && !joinery.valid())'),stock.index('if (use(required, joinery ? null : H))'))
-        self.assertLess(stock.index('if (use(required, joinery ? null : H))'),stock.index('joinery.consume_component()'))
+        self.assertLess(stock.index('if (joinery && !joinery.valid())'),stock.index('if (use(required, (joinery || carving) ? null : H))'))
+        self.assertLess(stock.index('if (use(required, (joinery || carving) ? null : H))'),stock.index('joinery.consume_component()'))
         self.assertIn('component.use(spec["component_cost"])',TEXT)
         self.assertIn('blade.health -= 0.25',TEXT)
 
@@ -202,11 +202,11 @@ class Contracts(unittest.TestCase):
 
     def test_xp_moves_after_paid_commit_for_joinery_only(self):
         source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
-        self.assertIn('if (H && !joinery)\n\t\t\tH.adaptStat',source)
+        self.assertIn('if (H && !joinery && !carving)\n\t\t\tH.adaptStat',source)
         start=source.index('\tif (joinery && !joinery.valid())')
         end=source.index('\t\tif (needs_crafting_handle)',start)
         body=source[start:end]
-        self.assertLess(body.index('if (use(required, joinery ? null : H))'),body.index('H.adaptStat'))
+        self.assertLess(body.index('if (use(required, (joinery || carving) ? null : H))'),body.index('H.adaptStat'))
         self.assertLess(body.index('joinery.consume_component()'),body.index('H.adaptStat'))
         # Execute this production commit fragment with isolated debit/XP adapters.
         text='def commit():\n'
@@ -214,7 +214,7 @@ class Contracts(unittest.TestCase):
             line=raw.strip()
             if not line or line.startswith('//'):continue
             depth=len(raw)-len(raw.lstrip('\t'))
-            line=line.replace('joinery ? null : H','payer')
+            line=line.replace('(joinery || carving) ? null : H','payer')
             if line.startswith('if ('):line='if '+expr(line[4:-1])+':'
             elif line=='return':line='return'
             else:line=expr(line)
@@ -225,7 +225,7 @@ class Contracts(unittest.TestCase):
             if change=='stock':f.stock.amount=0
             if change=='research':f.researched=False
             if change=='save':f.env['persistence_save_in_progress']=True
-            env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),
+            env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),carving=None,
                      H=NS(adaptStat=lambda *args:xp.append(args)),recipe=NS(time=4,req_amount=4),
                      required=4,payer=None,user=None,to_chat=lambda *args:None,SPAN_WARNING=lambda x:x,
                      use=lambda *args:debits.append('logs') is None and change!='debit failed')

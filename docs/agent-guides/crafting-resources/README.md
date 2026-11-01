@@ -93,6 +93,14 @@ active hand. The custom saver must exclude both reservation pointers.
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-11-01: carved sandstone casting molds -->
+Sandstone casting molds inherit their matching fired clay shape for pouring,
+anvil classes and research-prototype compatibility. Keep their stone flag and
+oven preservation guard together. Carving retains actual sandstone, site, tools,
+research and persistence admission through the wait; charge before XP/output.
+See `docs/sandstone-molds.md` and `tests/stone_molds/test_source.py`. The isolated
+crafting fixture's compile-only mode does not execute the new mold assertions.
+
 <!-- 2026-10-29: portable barrel ingredient accounting -->
 Portable barrels keep their existing ore/manure conversions. Require actual
 open-holder capacity; debit a whole ore unit via stack.use before granting its
