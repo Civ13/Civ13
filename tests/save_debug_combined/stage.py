@@ -17,6 +17,7 @@ OVERLAY = (
 SCOPE = tuple(sorted(OVERLAY + (
     'tests/save_debug_combined/stage.py', 'tests/save_debug_combined/probe.dm',
     'tests/save_debug_combined/controller.py', 'tests/save_debug_combined/test_fixture.py', 'tests/save_debug_combined/README.md', 'tests/human_subtile/run.py',
+    'tests/save_debug_combined/test_workflow.py', '.github/workflows/moving-save-chunks.yml',
     'tests/human_subtile/probe.dm', 'tests/human_subtile/mining.dm',
     'code/game/mob/living/carbon/human/subtile_movement.dm',
     'scripts/byond_runtime.py', 'scripts/byond_toolchain.py',

@@ -25,8 +25,16 @@ native deadline, 1 GiB address-space limit per process, 256 MiB file limit,
 sampled 256 MiB aggregate output, 8 MiB logs, bounded inventory and up to ten
 seconds cleanup per child. The process sees its fixture-only working tree and
 minimal environment; the runner verifies the exact pinned 516.1688 archive,
-executables and libraries before each child. The workflow and hosted
-provisioning for this derivative have not yet been reviewed. Loopback/no-port
+executables and libraries before each child. The proposed hosted binding uses
+`debug_combined_only=true` with the other four manual selectors false, and
+requires the exact reviewed head and fixture-scope digest before provisioning.
+It installs existing i386 dependencies with bounded `sudo apt` commands,
+downloads and verifies the pinned official archive, and performs no bootstrap
+game compile. It then invokes this controller once; the manual job has a
+25-minute outer timeout. A PR changing the shared workflow also selects the
+existing automatic moving-save matrix and normal CI, whose native processes are
+separate from this manual fixture. Conflicting manual selectors fail before
+provisioning. The binding remains subject to review. Loopback/no-port
 checks are not an OS-level egress sandbox, and sampled directory size is not a
 hard aggregate disk quota. No production save or credential is used.
 
