@@ -535,51 +535,62 @@
 /mob/proc/faction_list()
 	set name = "Check Faction List"
 	set category = "Faction"
-	if (map && map.civilizations)
-		map.facl = list()
-		for (var/i=1,i<=map.custom_faction_nr.len,i++)
-			var/nu = 0
-			map.facl += list(map.custom_faction_nr[i] = nu)
-
-		for (var/relf in map.facl)
-			map.facl[relf] = 0
-			for (var/mob/living/human/H in world)
-				if (relf == H.civilization && H.stat != DEAD)
-					map.facl[relf] += 1
-
-		var/body = "<html><head><title>Faction List</title></head>[common_browser_style]<b>FACTION LIST</b><br><br><table cellpadding='4'>"
-		for (var/relf in map.facl)
-			if (map.facl[relf] > 0)
-				// Faction symbol on the left: the custom-drawn icon if one
-				// was ever saved, otherwise the fixed shape tinted with the
-				// faction's main color -- the same look the banner overlay
-				// gives it (white art multiplied by color1).
-				var/icon/symbol = map.get_faction_symbol_icon(relf)
-				if (!symbol)
-					var/list/civ_data = map.custom_civs[relf]
-					if (civ_data && civ_data.len >= 7)
-						symbol = new/icon('icons/obj/banners.dmi', "b_[civ_data[6]]")
-						symbol.Blend(civ_data[7], ICON_MULTIPLY)
-				var/img_cell = ""
-				if (symbol)
-					// browse_rsc BEFORE the browse() below, so the page can
-					// reference the image by name. ckey() makes the faction
-					// name filesystem-safe.
-					usr << browse_rsc(symbol, "flist_[ckey(relf)].png")
-					img_cell = "<img src='flist_[ckey(relf)].png' width='32' height='32'>"
-				// Name with the motto to its right, flavour text below, then
-				// the member count. Motto/flavour are stored html-encoded.
-				var/text_cell = "<b>[relf]</b>"
-				if (map.faction_motto[relf])
-					text_cell += " &mdash; <i>[map.faction_motto[relf]]</i>"
-				if (map.faction_flavour[relf])
-					text_cell += "<br>[map.faction_flavour[relf]]"
-				text_cell += "<br><small>[map.facl[relf]] member\s.</small>"
-				body += "<tr><td valign='top'>[img_cell]</td><td>[text_cell]</td></tr>"
-		body += {"</table><br>
-			</body></html>
-		"}
-
-		usr << browse(body,"window=faction_list_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=420x520")
-	else
+	set src = usr
+	if (usr != src)
 		return
+	show_faction_list()
+
+/mob/proc/show_faction_list()
+	if (!client || !map || !map.civilizations)
+		return
+	// Preserve the existing map.facl tally side effect, only on explicit reopen.
+	map.facl = list()
+	for (var/i=1,i<=map.custom_faction_nr.len,i++)
+		var/nu = 0
+		map.facl += list(map.custom_faction_nr[i] = nu)
+
+	for (var/relf in map.facl)
+		map.facl[relf] = 0
+		for (var/mob/living/human/H in world)
+			if (relf == H.civilization && H.stat != DEAD)
+				map.facl[relf] += 1
+
+	var/list/entries = list()
+	for (var/relf in map.facl)
+		if (map.facl[relf] > 0)
+			var/icon/symbol = map.get_faction_symbol_icon(relf)
+			if (!symbol)
+				var/list/civ_data = map.custom_civs[relf]
+				if (civ_data && civ_data.len >= 7)
+					symbol = new/icon('icons/obj/banners.dmi', "b_[civ_data[6]]")
+					symbol.Blend(civ_data[7], ICON_MULTIPLY)
+			var/symbol_file = ""
+			if (symbol)
+				// Keep the existing resource name and send before either renderer opens.
+				symbol_file = "flist_[ckey(relf)].png"
+				src << browse_rsc(symbol, symbol_file)
+			// Motto/flavour are already HTML-encoded by the existing creation flow.
+			entries += list(list("name" = html_encode("[relf]"), "motto" = map.faction_motto[relf], "flavour" = map.faction_flavour[relf], "members" = map.facl[relf], "symbol" = symbol_file))
+	var/list/data = list("factions" = entries)
+	var/mob/user = src
+	var/ui_key = "faction_list"
+	var/datum/nanoui/ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
+	if (!ui)
+		var/datum/topic_state/faction_list/reader_state = new()
+		ui = new /datum/nanoui/tgui/faction_list(user, src, ui_key, "faction_list.tmpl", "Faction List", 420, 520, _state = reader_state)
+		ui.use_on_close_logic(FALSE)
+		ui.set_initial_data(data)
+		ui.open()
+
+// Manager refreshes validate status without recounting or resending resources.
+/datum/nanoui/tgui/faction_list/update(var/force_open = FALSE)
+	if (!user || src_object != user || !state)
+		close()
+		return
+	push_data(null, TRUE)
+
+// Retain the original public /mob reader, including observer/dead owners.
+/datum/topic_state/faction_list/can_use_topic(var/src_object, var/mob/user)
+	if (!user || src_object != user || !user.client || !map || !map.civilizations)
+		return STATUS_CLOSE
+	return STATUS_UPDATE

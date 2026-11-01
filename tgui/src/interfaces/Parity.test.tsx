@@ -82,9 +82,9 @@ describe('research parity', () => {
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { interfaces } from './index';
 describe('standard screen parity', () => {
-  it('registers all ten migrated templates', () => {
+  it('registers the ten migrated templates and Faction List', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
-      'appearance_changer.tmpl', 'chem_disp.tmpl', 'faction_creation.tmpl', 'faction_symbol.tmpl',
+      'appearance_changer.tmpl', 'chem_disp.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl',
       'research_bench.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl',
       'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl',
     ]);

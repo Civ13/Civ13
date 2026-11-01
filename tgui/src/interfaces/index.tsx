@@ -3,10 +3,12 @@ import type { ScreenProps } from '../types';
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { Faction } from './Faction';
 import { Research } from './Research';
+import { FactionList } from './FactionList';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
   'faction_creation.tmpl': Faction,
+  'faction_list.tmpl': FactionList,
   'faction_symbol.tmpl': Faction,
   'research_bench.tmpl': Research,
   'vending_machine.tmpl': Vending,
