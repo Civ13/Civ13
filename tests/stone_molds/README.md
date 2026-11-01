@@ -10,8 +10,9 @@ carving and seeded-state oven behavior; it did not prove pouring or casting.
 ## Production paths exercised
 
 `casting.dm` starts through the existing isolated crafting runner, with normal
-game/global startup and maps bypassed. It creates a 2x1x1 plating world and an
-existing inert human subclass, with crafting coefficient 2 and Blacksmith job.
+game/global startup and maps bypassed. The included canopy fixture sets the world
+to 4x3x1 plating; the focused actor uses tile (2,1,1). It uses an existing inert
+human subclass, with crafting coefficient 2 and Blacksmith job.
 No metal contents, material, capacity or icon state is assigned by the fixture.
 
 - Actual mold `attackby` loads 20 of 25 copper ore into a fired clay pot, leaving
