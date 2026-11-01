@@ -1,0 +1,14 @@
+// Frozen ladder destruction layers from master fe3882d25ddd8adfc76b48a7be222875ba987129.
+/obj/structure/multiz/ladder/Destroy()
+	ladder_list -= src
+	..()
+
+/obj/structure/multiz/ladder/Destroy()
+	if (target && istop)
+		qdel(target)
+	return ..()
+
+/obj/structure/multiz/ladder/ww2/Destroy()
+	if (target && istop)
+		qdel(target)
+	return ..()

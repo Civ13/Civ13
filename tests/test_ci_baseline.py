@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_ladder_cleanup_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['ladder_cleanup']
+        self.assertEqual(suite['files'], ('tests/ladder_cleanup/test_destroy.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'ladder_cleanup'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/ladder_cleanup/fixtures/destroy_before.txt']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'ladder_cleanup'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'ladder_cleanup'})
+
     def test_telephone_recipients_are_bounded_and_keep_existing_dependency_coverage(self):
         suite = ci.SUITES['telephone_recipients']
         self.assertEqual(suite['files'], ('tests/telephone/test_recipients.py',))
