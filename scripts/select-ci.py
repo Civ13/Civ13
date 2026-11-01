@@ -17,6 +17,9 @@ SOURCE_PREPARATION_ONLY_TESTS = frozenset({
     'tests/world_save/character_return/test_prepare.py',
 })
 
+# This exact source-only test runs in the help_tab_links offline baseline.
+PLAYER_HELP_OFFLINE_TESTS = frozenset({'tests/player_help/test_help_links.py'})
+
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
 ATLAS_TEST_INPUTS = {
@@ -282,7 +285,7 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
-        if path in SOURCE_PREPARATION_ONLY_TESTS:
+        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS:
             continue
         parts = PurePosixPath(path).parts
         suffix = PurePosixPath(path).suffix.lower()
