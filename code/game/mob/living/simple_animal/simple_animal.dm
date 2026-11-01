@@ -657,6 +657,9 @@
 			origin = null
 
 /mob/living/simple_animal/Destroy()
+	if (!QDELETED(rider) && rider.riding_mob == src)
+		rider.riding = FALSE
+		rider.riding_mob = null
 	unregisterSpawner()
 	..()
 
