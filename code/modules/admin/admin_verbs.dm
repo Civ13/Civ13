@@ -136,6 +136,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adjump,
 	/datum/admins/proc/loadmap,
 	/datum/admins/proc/savemap,
+	/datum/admins/proc/save_debug_lossy,
 	/datum/admins/proc/save_restart_resume,
 	/datum/admins/proc/save_update_resume,
 	/datum/admins/proc/resume_pending_recovery

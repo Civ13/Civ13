@@ -26,6 +26,11 @@
 
 /map_storage/proc/save_world_contents(datum/persistence_world_operation/operation)
 	if(!operation || !operation.enter_contents(src, "save")) return FALSE
+	var/datum/save_debug_recovery/debug_policy = operation.debug_recovery
+	// Debug recovery starts only after a failed capture has removed the current
+	// marker. Never let its retry path replace an existing completed backup.
+	if(debug_policy && (fexists("map_saves/save_complete.txt") || !debug_backup_identity_valid() || !operation.current(src, "save"))) throw EXCEPTION("Debug recovery requires an unchanged failed capture and retained backup")
+	if(debug_policy && fexists("map_saves/save_complete.txt")) throw EXCEPTION("Debug recovery refuses a newly completed generation")
 	operation.diagnostic_phase = "capture"
 	if(building_allocating_z || dimension_recovery_required)
 		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
@@ -34,6 +39,7 @@
 	var/generation = "round-v2:[generation_nonce]"
 	if(map.uses_durable_metadata()) begin_zone_export(generation)
 	var/list/world_state = capture_durable_world()
+	if(debug_policy && (!world_state || !zone_export_state)) throw EXCEPTION("Debug lossy save requires durable candidate validation")
 	var/prefix = world_state ? "round-v2" : "round-v1"
 	generation = "[prefix]:[generation_nonce]"
 	operation.diagnostic_save_id = "save-[generation_nonce]"
@@ -49,6 +55,7 @@
 	var/backup_dir = "map_backups/"
 	// Back up the whole previous completed generation before overwriting any
 	// level. A per-level rolling backup mixed old and new levels after failures.
+	if(debug_policy && fexists("map_saves/save_complete.txt")) throw EXCEPTION("Debug recovery refuses to replace a completed backup")
 	if(fexists("map_saves/save_complete.txt"))
 		if(fexists("map_backups/save_complete.txt"))
 			if(!fdel("map_backups/save_complete.txt"))
@@ -117,24 +124,34 @@
 		world_state["nodes"] = durable_export.finish_export()
 		durable_export = null
 		if(zone_export_state)
+			if(debug_policy) round_state["debug_recovery"] = debug_policy.audit(generation, operation)
 			operation.diagnostic_phase = "candidate_validation"
 			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained")
 			clear_saved_zones()
 			release_durable_world()
 			clear_zone_export()
+	if(debug_policy) round_state["debug_recovery"] = debug_policy.audit(generation, operation)
 	operation.diagnostic_phase = "write_marker"
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
 	if(!text2file(json_encode(round_state), "map_saves/round.json"))
 		throw EXCEPTION("Could not write round state")
+	if(debug_policy) debug_policy.audit(generation, operation)
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
+	if(debug_policy)
+		try
+			world.log << "Debug lossy save committed: [json_encode(round_state["debug_recovery"])]"
+		catch
+			// The completion marker is already durable; logging cannot undo it.
+			debug_policy.stop_reason = "commit_log_unavailable"
 	log_startup_progress("Finished saving.")
 	return 1
 
 /map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0, traversal = FALSE)
 	if(!A || istype(A, /client))
 		return 0
+	if(istype(A, /atom/movable) && save_debug_omits(A, null)) return 0
 	if(!A.should_save)
 		return 0
 	if(istype(A, /obj/map_metadata))
@@ -273,14 +290,19 @@
 // Lists are indexed separately so aliases and cycles survive a round trip.
 /map_storage/proc/encode_saved_value(savefile/F, value)
 	var/datum/moving_save_capture/chunk = moving_save_chunk
-	if(!chunk) return encode_saved_value_contents(F, value)
-	if(++chunk.encoding_depth > 64) throw EXCEPTION("Moving save chunk exceeds its nesting bound")
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	var/datum/save_debug_recovery/debug_policy = operation ? operation.debug_recovery : null
+	if(!chunk && !debug_policy) return encode_saved_value_contents(F, value)
+	if(chunk && ++chunk.encoding_depth > 64) throw EXCEPTION("Moving save chunk exceeds its nesting bound")
+	if(debug_policy) debug_policy.encoding_depth++
 	try
 		. = encode_saved_value_contents(F, value)
 	catch(var/exception/error)
-		chunk.encoding_depth--
+		if(chunk) chunk.encoding_depth--
+		if(debug_policy) debug_policy.encoding_depth--
 		throw error
-	chunk.encoding_depth--
+	if(chunk) chunk.encoding_depth--
+	if(debug_policy) debug_policy.encoding_depth--
 
 /map_storage/proc/encode_saved_value_contents(savefile/F, value)
 	if(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * length(value))
@@ -360,6 +382,7 @@
 	return TRUE
 
 /map_storage/proc/encode_level_link(atom/movable/target)
+	if(save_debug_omits(target, "level_link")) return list("kind" = "entry", "ref" = 0)
 	if(!level_link_target_saved(target))
 		return list("kind" = "entry", "ref" = 0)
 	var/identity = "\ref[target]"
@@ -433,6 +456,7 @@
 	if(registry.len > 8192) return // Preserve legacy saving instead of adding a global refusal.
 	var/list/roster = registry.Copy()
 	for(var/mob/living/simple_animal/A in roster)
+		if(save_debug_omits(A, "moving_roster")) continue
 		if(!moving_save_root_supported(A)) continue
 		var/datum/moving_save_preflight/preflight = new
 		preflight.exporter = src

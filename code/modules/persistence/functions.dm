@@ -358,7 +358,7 @@ map_storage
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
-	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE
+	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error", "debug_recovery_hold", "debug_recovery_session")) return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
 #endif
@@ -393,6 +393,7 @@ map_storage
 /map_storage/proc/record_save_child_failure(atom/parent, atom/movable/child, child_entry)
 	var/datum/persistence_world_operation/operation = persistence_active_operation
 	if(!operation || !operation.current(src, "save")) return FALSE
+	if(operation.debug_recovery) operation.debug_recovery.observe(parent, child, operation)
 	var/list/source = list("type" = parent ? "[parent.type]" : "unavailable", "field" = "contents", "native_z" = parent ? parent.z : null)
 	var/list/target = list("type" = child ? "[child.type]" : "unavailable", "native_z" = child ? child.z : null)
 	last_save_reference_failure = list("schema_version" = 1, "kind" = "child_moved_or_disappeared", "operation_id" = operation.diagnostic_save_id, "generation" = operation.diagnostic_generation, "stage" = "capture_children", "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = child_entry, "child_state" = child ? "reference_available" : "reference_unavailable", "source" = source, "target" = target)
@@ -529,6 +530,8 @@ var/global/datum/persistence_admission_identity
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
 	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || world_z_budget.active)
 		return null
+	if(kind == "save" && storage.debug_recovery_hold)
+		return null
 	if(transaction && transaction != persistence_restart) return null
 	var/restart_owner = transaction == persistence_restart && transaction
 	if(kind == "save" && persistence_restart.startup_hold) return null
@@ -576,6 +579,7 @@ var/global/datum/persistence_admission_identity
 	var/diagnostic_phase = "admitted"
 	var/diagnostic_save_id
 	var/diagnostic_generation
+	var/datum/save_debug_recovery/debug_recovery
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
 	var/restore_reserved = FALSE
@@ -752,12 +756,18 @@ var/global/datum/persistence_admission_identity
 	var/area/A = locate(world.area)
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
-/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction)
+/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy)
 	// A lobby/setting-up world has no round to persist; restored rounds are PLAYING.
 	if(current_state < GAME_STATE_PLAYING)
 		return FALSE
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
 	if(!operation) return FALSE
+	if(debug_policy)
+		if(transaction || !debug_policy.bind(operation))
+			operation.withdraw()
+			return FALSE
+		operation.debug_recovery = debug_policy
+		map_storage.last_error = null
 	try
 		var/watch = start_watch()
 		sleep(5)
@@ -765,9 +775,14 @@ var/global/datum/persistence_admission_identity
 			throw EXCEPTION("Save_World did not complete")
 		log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
-		map_storage.cleanup_world_operation()
+		var/cleanup_ok = TRUE
+		if(debug_policy)
+			cleanup_ok = map_storage.debug_cleanup_owned(operation)
+		else
+			map_storage.cleanup_world_operation()
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
-		operation.finish(FALSE)
+		var/released = operation.finish(FALSE)
+		if(debug_policy) debug_policy.finish_failure(operation, e, cleanup_ok, released)
 		world.log << "World-save export failed: [map_storage.last_error]"
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
 		try
@@ -777,12 +792,17 @@ var/global/datum/persistence_admission_identity
 		catch
 			world.log << "Save capture diagnostic delivery unavailable."
 		return 0
-	operation.finish(TRUE)
+	var/released_success = operation.finish(TRUE)
+	if(debug_policy && (!released_success || !debug_policy.finish_success(operation)))
+		debug_policy.stop_reason = "commit_outcome_unknown_owner_lost"
+		return FALSE
 	last_persistence_save_time = world.time
 	return 1
 
 /map_storage
 	var/tmp/datum/persistence_restore_policy/restore_policy
+	var/tmp/debug_recovery_hold = FALSE
+	var/tmp/datum/save_debug_recovery/debug_recovery_session
 	var/tmp/restore_cleanup_error
 
 // Wrapper custody only. No production provider or full restore proof exists.
@@ -933,8 +953,10 @@ var/global/datum/persistence_admission_identity
 	var/list/state = json_decode(file2text("map_saves/round.json"))
 	var/has_elevation = islist(state) && ("elevation" in state)
 	var/has_level_links = islist(state) && ("level_links" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_debug_recovery = islist(state) && ("debug_recovery" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
+	if(has_debug_recovery && !valid_debug_recovery_audit(state["debug_recovery"], marker)) throw EXCEPTION("Invalid debug recovery audit")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(has_level_links) validate_level_link_rows(state["level_links"])

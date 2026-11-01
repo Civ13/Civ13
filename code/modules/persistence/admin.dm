@@ -78,3 +78,19 @@
 		return
 	spawn(0)
 		ticker.savemap()
+
+// Explicit debugging action. This can omit a moved leaf NPC from the saved
+// representation; it does not destroy or edit the live NPC.
+/datum/admins/proc/save_debug_lossy()
+	set category = "Debug"
+	set name = "Save Map (Debug Lossy)"
+	var/mob/requester = usr
+	if(!requester || !requester.client) return
+	var/client/requester_client = requester.client
+	var/datum/admins/requester_holder = requester_client.holder
+	if(requester_holder != src || owner != requester_client || requester_client.mob != requester || !check_rights(R_SERVER, TRUE, requester)) return
+	if(WWinput(requester, "DEBUG ONLY: This may omit a moved unoccupied leaf animal and replace saved references to it with null. The live animal is not deleted. A prior completed backup is retained. Continue?", "Debug lossy save", "No", list("Yes", "No")) != "Yes") return
+	if(!requester || !requester_client || !requester_holder || usr != requester || requester.client != requester_client || requester_client.mob != requester || requester_client.holder != requester_holder || requester_holder != src || owner != requester_client || !check_rights(R_SERVER, TRUE, requester)) return
+	spawn(0)
+		if(!requester || !requester_client || requester.client != requester_client || requester_client.mob != requester || requester_client.holder != requester_holder || owner != requester_client || !check_rights(R_SERVER, TRUE, requester) || !ticker) return
+		ticker.debug_lossy_save()
