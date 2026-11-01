@@ -3,6 +3,18 @@
 	layer = 20
 	process_flag = TRUE
 
+// Read-only shared admission for the axis indicators and direction toggle.
+// Wheel controls have separate human/wheel requirements.
+/obj/screen/vehicle/proc/resolve_driver_axis()
+	if (!parentmob || !parentmob.buckled)
+		return
+	if (!istype(parentmob.buckled, /obj/structure/bed/chair/drivers))
+		return
+	var/obj/structure/bed/chair/drivers/this_chair = parentmob.buckled
+	if (!this_chair.axis || !istype(this_chair.axis, /obj/structure/vehicleparts/axis))
+		return
+	return this_chair.axis
+
 /obj/screen/vehicle/direction
 	name = "direction"
 	icon_state = "forward"
@@ -14,34 +26,30 @@
 
 /obj/screen/vehicle/direction/update_icon()
 	..()
-	if (parentmob && parentmob.buckled)
-		if (istype(parentmob.buckled, /obj/structure/bed/chair/drivers))
-			var/obj/structure/bed/chair/drivers/this_chair = parentmob.buckled
-			if (this_chair.axis && istype(this_chair.axis, /obj/structure/vehicleparts/axis))
-				var/obj/structure/vehicleparts/axis/this_axis = this_chair.axis
-				if (this_axis.reverse)
-					icon_state = "reverse"
-				else
-					icon_state = "forward"
+	var/obj/structure/vehicleparts/axis/this_axis = resolve_driver_axis()
+	if (!this_axis)
+		return
+	if (this_axis.reverse)
+		icon_state = "reverse"
+	else
+		icon_state = "forward"
 
 /obj/screen/vehicle/direction/Click()
-	if (parentmob && parentmob.buckled)
-		if (istype(parentmob.buckled, /obj/structure/bed/chair/drivers))
-			var/obj/structure/bed/chair/drivers/this_chair = parentmob.buckled
-			if (this_chair.axis && istype(this_chair.axis, /obj/structure/vehicleparts/axis))
-				var/obj/structure/vehicleparts/axis/this_axis = this_chair.axis
-				if (!this_axis.reverse)
-					to_chat(parentmob, "You switch into reverse.")
-					playsound(parentmob.loc, 'sound/effects/lever.ogg',65, TRUE)
-					this_axis.reverse = TRUE
-					icon_state = "reverse"
-					update_icon()
-				else
-					to_chat(parentmob, "You switch into forward.")
-					playsound(parentmob.loc, 'sound/effects/lever.ogg',65, TRUE)
-					this_axis.reverse = FALSE
-					icon_state = "forward"
-					update_icon()
+	var/obj/structure/vehicleparts/axis/this_axis = resolve_driver_axis()
+	if (!this_axis)
+		return
+	if (!this_axis.reverse)
+		to_chat(parentmob, "You switch into reverse.")
+		playsound(parentmob.loc, 'sound/effects/lever.ogg',65, TRUE)
+		this_axis.reverse = TRUE
+		icon_state = "reverse"
+		update_icon()
+	else
+		to_chat(parentmob, "You switch into forward.")
+		playsound(parentmob.loc, 'sound/effects/lever.ogg',65, TRUE)
+		this_axis.reverse = FALSE
+		icon_state = "forward"
+		update_icon()
 
 /obj/screen/vehicle/turn_left
 	name = "turn left"
@@ -96,20 +104,18 @@
 
 /obj/screen/vehicle/current_gear/update_icon()
 	..()
-	if (parentmob && parentmob.buckled)
-		if (istype(parentmob.buckled, /obj/structure/bed/chair/drivers))
-			var/obj/structure/bed/chair/drivers/this_chair = parentmob.buckled
-			if (this_chair.axis && istype(this_chair.axis, /obj/structure/vehicleparts/axis))
-				var/obj/structure/vehicleparts/axis/this_axis = this_chair.axis
-				if (this_axis.engine && !this_axis.engine.on)
-					icon_state = "speed_off"
-				else
-					if (this_axis.currentspeed == 0)
-						icon_state = "speed_n"
-					else if (this_axis.reverse)
-						icon_state = "speed_r"
-					else
-						icon_state = "speed_[this_axis.currentspeed]"
+	var/obj/structure/vehicleparts/axis/this_axis = resolve_driver_axis()
+	if (!this_axis)
+		return
+	if (this_axis.engine && !this_axis.engine.on)
+		icon_state = "speed_off"
+	else
+		if (this_axis.currentspeed == 0)
+			icon_state = "speed_n"
+		else if (this_axis.reverse)
+			icon_state = "speed_r"
+		else
+			icon_state = "speed_[this_axis.currentspeed]"
 
 /obj/screen/vehicle/gear_up
 	name = "gear up"
