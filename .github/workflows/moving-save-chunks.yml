@@ -21,6 +21,10 @@ on:
         description: 'Run the separately reviewed human spatial fixture only'
         type: boolean
         default: false
+      human_scale_only:
+        description: 'Run the separately reviewed synthetic human scale comparison only'
+        type: boolean
+        default: false
       reviewed_head:
         description: 'Full independently reviewed commit SHA (required for human fixture)'
         type: string
@@ -33,7 +37,7 @@ permissions:
   contents: read
 jobs:
   isolated-native:
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.human_spatial_only != true }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -86,7 +90,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   human-spatial:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true && inputs.human_scale_only != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -154,6 +158,83 @@ jobs:
             ${{ runner.temp }}/human-spatial-evidence/run/drag/**
             !${{ runner.temp }}/human-spatial-evidence/run/**/*.dmb
             !${{ runner.temp }}/human-spatial-evidence/run/**/*.rsc
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  human-scale:
+    # If both exclusive inputs are true this job fails explicitly before staging.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_scale_only == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify reviewed source, scope, disk and offline controls
+        env:
+          REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+          REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+          EVENT_HEAD: ${{ github.sha }}
+          SPATIAL_ONLY: ${{ inputs.human_spatial_only }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/human-scale-meta"
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/human-scale-meta/preflight.json"' EXIT
+          test "$SPATIAL_ONLY" != true
+          [[ "$REVIEWED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$REVIEWED_SCOPE" =~ ^[0-9a-f]{64}$ ]]
+          test "$REVIEWED_HEAD" = "$EVENT_HEAD"
+          test "$(git rev-parse HEAD)" = "$REVIEWED_HEAD"
+          git diff --quiet HEAD --
+          git diff --cached --quiet
+          python3 -B -c 'import os,shutil,sys; sys.path.insert(0,"tests/movement_save_chunks"); import human_scale_run as r; r.verify_review(os.environ["REVIEWED_HEAD"],os.environ["REVIEWED_SCOPE"]); shutil.disk_usage(os.environ["RUNNER_TEMP"]).free >= 16*1024**3 or sys.exit("insufficient available disk")'
+          python3 -B -m unittest discover -s tests/movement_save_chunks -p 'test_human_scale*.py' -v
+      - name: Install pinned toolchain and compile the full game
+        timeout-minutes: 18
+        env:
+          BYOND_MAJOR: '516'
+          BYOND_MINOR: '1688'
+          BYOND_ARCHIVE_SOURCE: repository-release
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/human-scale-meta"
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/human-scale-meta/bootstrap.json"' EXIT
+          test "$(python3 scripts/byond_toolchain.py field version)" = 516.1688
+          bash scripts/travis_pre_byond.sh
+      - name: Run separately approved synthetic scale comparison
+        timeout-minutes: 68
+        env:
+          REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+          REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/human-scale-meta"
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/human-scale-meta/fixture.json"' EXIT
+          python3 -B tests/movement_save_chunks/human_scale_run.py --run-native \
+            --expected-head "$REVIEWED_HEAD" --expected-scope-sha256 "$REVIEWED_SCOPE" \
+            --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" \
+            --output "$RUNNER_TEMP/human-scale-evidence"
+      - name: Retain bounded scale receipts and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: human-scale-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/human-scale-meta/*.json
+            .ci/compile/
+            ${{ runner.temp }}/human-scale-evidence/*.json
+            ${{ runner.temp }}/human-scale-evidence/source/*.json
+            ${{ runner.temp }}/human-scale-evidence/source/stage/compile-*.log
+            ${{ runner.temp }}/human-scale-evidence/source/stage/compile-*-supervision.json
+            ${{ runner.temp }}/human-scale-evidence/*-writer/*.json
+            ${{ runner.temp }}/human-scale-evidence/*-writer/*.log
+            ${{ runner.temp }}/human-scale-evidence/*-reader/*.json
+            ${{ runner.temp }}/human-scale-evidence/*-reader/*.log
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
