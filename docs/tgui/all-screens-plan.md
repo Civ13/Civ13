@@ -11,6 +11,18 @@ parser or new dependency. Paper/books still need pencode/literacy contracts;
 noticeboard writing depends on item/prompt workflows. Help, HUD, preferences
 and manager owners retain their separate lanes. The historical inventory and
 initial Known Languages checkpoint below are retained as dated source context.
+## Reader checkpoint at master fb0e5c41
+
+Known Languages (#3452), Ship Stocks (#3460), Religion List (#3461), Crew Log
+(#3462), Faction List (#3463) and Crafting Atlas (#3468) are merged. Together
+with the original ten screens these register sixteen routes. Photo Viewer
+(#3470) is a separate published proposal; this Notes candidate does not depend
+on it. Notes now has a local conservative presentation candidate described in
+[character-notes.md](character-notes.md), pending independent source review.
+The historical baseline inventory and original slice notes below are retained;
+their old publication/verification statements describe that earlier checkpoint.
+Paper/books still require separate content/permission contracts. Interactive
+prompts, admin/preferences, HUD and host controls remain separate planned work.
 
 Inventory baseline: `5255b72a3f40b52b6eb92599d29335cb4f4d81a2` (remote master
 verified 2026-11-01). Main reports that baseline deployed; this source task did

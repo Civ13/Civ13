@@ -85,6 +85,18 @@ try {
   await update('character_flavor.tmpl', { name: 'Second subject', text: '' }, 1);
   await page.getByRole('article', { name: 'Character description: Second subject' }).waitFor({ state: 'attached' });
   assert.equal(await page.locator('article').textContent(), '');
+  const note = (text, bold = 0, italic = 0) => ({ text, bold, italic });
+  const beforeNotes = await page.evaluate(() => window.sent.length);
+  await update('character_notes.tmpl', { character: [note('Fictional reader')], sections: [{ title: [note('Role')], entries: [{ runs: [note('Guard', 1), { br: 1 }, note('the gate', 0, 1)] }] }], memory: [note('\u65e5\u672c\u8a9e \ud83d\ude00 &amp;lt;b&amp;gt; &lt;img src=x&gt;')], discoveries: [note('Discoveries', 1), { br: 1 }, note('Public observation')] }, 1);
+  await page.getByText('You are Fictional reader', { exact: true }).waitFor();
+  assert.equal(await page.locator('article button,article a,article input,article img,article script').count(), 0);
+  assert.equal(await page.locator('article strong').count(), 3);
+  assert.equal(await page.locator('article br').count(), 2);
+  assert.ok((await page.locator('article').textContent()).includes('\u65e5\u672c\u8a9e \ud83d\ude00 &lt;b&gt; <img src=x>'));
+  assert.equal(await page.evaluate(() => window.sent.length), beforeNotes);
+  await update('character_notes.tmpl', { character: [note('Reopened reader')], sections: [], memory: [note('No memories stored.')], discoveries: [note('No discoveries recorded.')] }, 1);
+  await page.getByText('You are Reopened reader', { exact: true }).waitFor();
+  assert.equal(await page.getByText('Guard', { exact: true }).count(), 0);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   await update('photo_viewer.tmpl', { name: 'Fictional photo fixture', image: 'tmp_photo_12.png', width: 448, scribble: '&lt;script&gt;inert&lt;/script&gt; &amp; a boat.' }, 1);
   const photo = page.getByRole('img', { name: 'Photograph', exact: true });
@@ -114,7 +126,7 @@ try {
   assert.equal(await invalid.evaluate(() => window.fallback), true);
   assert.ok(!(await invalid.locator('body').textContent()).includes('PARTIAL'));
   await invalid.close();
-  console.log('PASS: production Chromium rendering, real tgui-core actions, canvas/research/Atlas contracts, flavor inert Unicode/literal-LF/read-only/empty replacement, photo image/caption/clear/responsive layout, manual and fresh malformed fallback; fixtures, no native bridge/cache claim');
+  console.log('PASS: production Chromium retained routes/actions, photo, Notes and flavor inert Unicode/read-only/replacement, manual and malformed fallback; fixtures, no native bridge/cache claim');
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

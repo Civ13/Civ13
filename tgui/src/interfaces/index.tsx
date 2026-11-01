@@ -10,6 +10,7 @@ import { CrewLog } from './CrewLog';
 import { FactionList } from './FactionList';
 import { CraftingAtlas } from './CraftingAtlas';
 import { CharacterFlavor } from './CharacterFlavor';
+import { CharacterNotes } from './CharacterNotes';
 import { PhotoViewer } from './PhotoViewer';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
@@ -29,5 +30,6 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'faction_list.tmpl': FactionList,
   'crafting_atlas.tmpl': CraftingAtlas,
   'character_flavor.tmpl': CharacterFlavor,
+  'character_notes.tmpl': CharacterNotes,
   'photo_viewer.tmpl': PhotoViewer,
 };
