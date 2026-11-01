@@ -183,7 +183,7 @@ class DistanceTests(unittest.TestCase):
             self.assertFalse(any(row[0] == 'icons' for row in world.trace))
             self.assertFalse(any(row[:3] == ('write', 'old', 'stop_automated_movement') and row[3] is False for row in world.trace))
 
-    def test_icon_reassignment_retirement_or_partial_claim_does_not_resume_ai(self):
+    def test_icon_reassignment_retirement_or_partial_claim_does_not_clear_stop_flag(self):
         callbacks = (lambda w: attach(w.human, w.old), lambda w: attach(w.other, w.old),
             lambda w: object.__setattr__(w.old, 'gc_destroyed', True),
             lambda w: setattr(w.old, 'ride', True),

@@ -24,6 +24,9 @@ AI cadence, save round trip or general movement/control safety is established.
 
 Production touches only human distance cleanup. Keep the merged death tests and
 wildlife's separate pending-intent invalidations. npc_subtile_pending_intent is
-absent on this base; its owner must reconcile invalidation at this newly reachable
-AI-resume boundary when that unpublished work is integrated. This suite does not
-introduce or duplicate the pending-intent mechanism.
+absent on this base. On integration, clear that old mount's pending intent inside
+the verified ownership transition, before clearing ride/rider and before
+update_icons. Never clear it afterward or on a different owner: callbacks may
+have installed a new intent. This suite does not introduce that mechanism.
+Resetting stop_automated_movement is only one flag change; it does not establish
+that a fully paused or otherwise ineligible animal will start moving.
