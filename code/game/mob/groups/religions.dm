@@ -554,15 +554,40 @@ obj/structure/altar/iron
 /mob/proc/religion_list()
 	set name = "Check Religion List"
 	set category = "Faction"
-	if (map && map.civilizations)
-
-		var/body = "<html><head><title>Religion List</title></head>[common_browser_style]<b>RELIGION LIST</b><br><br>"
-		for (var/rel in map.custom_religions)
-			body += "<b>[rel]</b>: [map.custom_religions[rel][3]] points.</br>"
-		body += {"<br>
-			</body></html>
-		"}
-
-		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
-	else
+	set src = usr
+	if (usr != src)
 		return
+	show_religion_list()
+
+/mob/proc/show_religion_list()
+	if (!client || !map || !map.civilizations)
+		return
+	var/list/entries = list()
+	for (var/rel in map.custom_religions)
+		// Only the existing public name and points enter this reader.
+		entries += list(list("name" = html_encode("[rel]"), "points" = map.custom_religions[rel][3]))
+	var/list/data = list("religions" = entries)
+	var/mob/user = src
+	var/ui_key = "religion_list"
+	var/datum/nanoui/ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
+	if (!ui)
+		var/datum/topic_state/religion_list/reader_state = new()
+		ui = new /datum/nanoui/tgui/religion_list(user, src, ui_key, "religion_list.tmpl", "Religion List", 450, 450, _state = reader_state)
+		ui.use_on_close_logic(FALSE)
+		ui.set_initial_data(data)
+		ui.open()
+
+// Keep the old snapshot semantics: only invoking the verb rebuilds the list.
+// Manager refreshes still validate ownership/status without polling map data.
+/datum/nanoui/tgui/religion_list/update(var/force_open = FALSE)
+	if (!user || src_object != user || !state)
+		close()
+		return
+	push_data(null, TRUE)
+
+// The original /mob reader is also registered for observers on nomad maps.
+// Do not introduce living/conscious/human or religion-membership restrictions.
+/datum/topic_state/religion_list/can_use_topic(var/src_object, var/mob/user)
+	if (!user || src_object != user || !user.client || !map || !map.civilizations)
+		return STATUS_CLOSE
+	return STATUS_UPDATE
