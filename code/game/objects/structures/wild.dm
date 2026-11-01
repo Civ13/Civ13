@@ -846,6 +846,9 @@ var/list/seed_list_jungle
 	return do_after(user, 30, src)
 
 /obj/structure/wild/proc/gather_grass_cuttings(mob/user, obj/item/tool)
+	// Refuse before announcing a start, claiming the plant or changing cooldown.
+	if (!user || !user.may_do_after)
+		return FALSE
 	var/turf/site = loc
 	var/turf/actor_site = get_turf(user)
 	if (cutting_grass || !grass_cutting_valid(user, tool, site))
