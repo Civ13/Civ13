@@ -158,6 +158,7 @@
 	if (!prefs)
 		prefs = new /datum/preferences(src)
 		preferences_datums[ckey] = prefs
+	apply_client_fps_preference()
 
 	//these are gonna be used for banning
 	prefs.last_ip = address

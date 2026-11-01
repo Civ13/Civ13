@@ -8,6 +8,7 @@
 		pref.preferences_enabled = list()
 	if (!istype(pref.preferences_disabled, /list))
 		pref.preferences_disabled = list()
+	pref.client_fps = sanitize_client_fps(pref.client_fps)
 
 	// Arrange preferences that have never been enabled/disabled.
 	var/list/client_preference_keys = list()
@@ -37,6 +38,7 @@
 	. = list()
 	. += "<big><b>Preferences</b></big><br><br>"
 	. += "<table>"
+	. += "<tr><td>Client FPS target: </td><td><b>[pref.client_fps]</b></td><td><a href='?src=\ref[src];client_fps=1'>Change</a></td></tr>"
 	var/mob/pref_mob = preference_mob()
 	for (var/cp in get_client_preferences())
 		var/datum/client_preference/client_pref = cp
@@ -55,6 +57,18 @@
 
 /datum/category_item/player_setup_item/player_global/settings/OnTopic(var/href,var/list/href_list, var/mob/user)
 	var/mob/pref_mob = preference_mob()
+	if (href_list["client_fps"])
+		if (!user || !user.client || user != pref_mob || user.client.prefs != pref || !CanUseTopic(user))
+			return TOPIC_NOACTION
+		var/client/fps_owner = user.client
+		var/target = input(user, "Choose a client FPS target. 30 or 60 may help slower computers.", "Client FPS", pref.client_fps) as null|anything in client_fps_choices()
+		// The chooser yields; do not apply an old session's answer to a new body/client.
+		if (isnull(target) || !user || !user.client || user.client != fps_owner || user != preference_mob() || user.client.prefs != pref || !CanUseTopic(user) || !(target in client_fps_choices()))
+			return TOPIC_NOACTION
+		pref.client_fps = target
+		user.client.apply_client_fps_preference()
+		pref.save_preferences()
+		return TOPIC_REFRESH
 	if (href_list["toggle_on"])
 		. = pref_mob.set_preference(href_list["toggle_on"], TRUE)
 	else if (href_list["toggle_off"])
