@@ -11,14 +11,16 @@
 	var/tmp/datum/weakref/hover_target
 	var/tmp/datum/weakref/hover_origin
 	var/tmp/hover_inventory = FALSE
+	var/tmp/hover_screen_loc
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "hover_origin", "hover_inventory", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_inventory", "hover_screen_loc", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
 	hover_origin = null
 	hover_inventory = FALSE
+	hover_screen_loc = null
 	maptext = ""
 
 /obj/screen/hover_name/Destroy()
@@ -32,6 +34,12 @@
 	var/client/C = parentmob.client
 	var/obj/item/I = target
 	return C.mob == parentmob && I.loc == parentmob && I.screen_loc && (I in C.screen)
+
+/obj/screen/hover_name/proc/inventory_target_current(atom/target)
+	if(!inventory_item_visible(target))
+		return FALSE
+	var/obj/item/I = target
+	return I.screen_loc == hover_screen_loc
 
 // Slot art can receive the mouse hit around a transparent item sprite. Resolve
 // only this body's current, visible slot and its actual displayed owned item.
@@ -76,12 +84,15 @@
 	hover_target = WEAKREF(target)
 	hover_origin = WEAKREF(origin)
 	hover_inventory = inventory_item_visible(target)
+	if(hover_inventory)
+		var/obj/item/I = target
+		hover_screen_loc = I.screen_loc
 	process()
 
 /obj/screen/hover_name/process()
 	var/atom/target = hover_target?.resolve()
 	var/atom/origin = hover_origin?.resolve()
-	if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_item_visible(target)) || !target_visible(target))
+	if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_target_current(target)) || !target_visible(target))
 		clear_target()
 		return
 	var/label = target.name

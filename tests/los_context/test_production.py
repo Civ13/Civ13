@@ -318,7 +318,7 @@ class InventoryHoverName(unittest.TestCase):
         C=Node(mob=body,screen=[],view=7,eye=body)
         body.client=C;body.get_equipped_item=lambda slot:body.slots.get(slot)
         W=atom('/obj/screen/hover_name',parentmob=body,hover_target=None,hover_origin=None,
-               hover_inventory=False,maptext='')
+               hover_inventory=False,hover_screen_loc=None,maptext='')
         body.HUDneed['hover name']=W;C.screen.append(W)
         world_visible=set();readable=set();read_calls=[];parents=[]
         def allowed(user,target,operation):
@@ -346,9 +346,9 @@ class InventoryHoverName(unittest.TestCase):
             text=head+'\n'+''.join(pieces)
             text=re.sub(r'(?<=, )(/obj/[\w/]+)(?=\))',lambda m:repr(m[1]),text)
             return A.project(text,declaration,'self'+(', '+args if args else ''),env)
-        fields=['hover_target','hover_origin','hover_inventory','maptext','parentmob','clear_target',
-                'inventory_item_visible','pointer_target','target_visible','process']
-        for name,args in [('clear_target',''),('inventory_item_visible','target'),('pointer_target','origin'),
+        fields=['hover_target','hover_origin','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
+                'inventory_item_visible','inventory_target_current','pointer_target','target_visible','process']
+        for name,args in [('clear_target',''),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key')]:
             sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
             if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
@@ -396,6 +396,8 @@ class InventoryHoverName(unittest.TestCase):
             m.C.MouseEntered(S if via_slot else I);self.assertTrue(m.W.maptext)
             I.loc=m.atom('/turf/floor');I.screen_loc=None;m.C.screen.remove(I);m.visible.add(I)
             m.W.process();self.assertEqual(m.W.maptext,'')
+            m=self.model();I=m.atom();S=m.slot(I);m.C.MouseEntered(S if via_slot else I)
+            I.screen_loc='9,9';m.W.process();self.assertEqual(m.W.maptext,'')
         for mutate in ['removed-slot','replaced-item','item-hidden','item-alpha','item-deleted','ui-rebuild','ui-removed','body-change','client-gone']:
             m=self.model();I=m.atom();S=m.slot(I);m.C.MouseEntered(S)
             if mutate=='removed-slot':m.H.HUDinventory.remove(S)
@@ -435,7 +437,7 @@ class InventoryHoverName(unittest.TestCase):
         human=m.atom('/mob/living/human',name='Secret identity',loc=m.atom('/turf/floor'),get_visible_name=lambda:'Unknown')
         m.visible.add(human);m.readable.add(human);m.C.MouseEntered(human)
         self.assertIn('Unknown',m.W.maptext);self.assertNotIn('Secret',m.W.maptext)
-        for key in ['hover_target','hover_origin','hover_inventory','parentmob','maptext','persistence_export_frame']:
+        for key in ['hover_target','hover_origin','hover_inventory','hover_screen_loc','parentmob','maptext','persistence_export_frame']:
             self.assertTrue(m.W.persistence_runtime_var(key),key)
         self.assertFalse(m.W.persistence_runtime_var('durable_example'))
         m.W.destroy();self.assertEqual(m.W.maptext,'');self.assertIsNone(m.W.parentmob)
@@ -448,10 +450,13 @@ class InventoryHoverName(unittest.TestCase):
         mutant=source.replace('label.hover_origin?.resolve() == object','label.hover_target?.resolve() == object',1)
         m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(S);m.C.MouseExited(S)
         self.assertTrue(m.W.maptext)
-        mutant=source.replace('(hover_inventory && !inventory_item_visible(target)) || ','',1)
+        mutant=source.replace('(hover_inventory && !inventory_target_current(target)) || ','',1)
         m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(I)
         I.loc=m.atom('/turf/floor');I.screen_loc=None;m.C.screen.remove(I);m.visible.add(I)
         m.W.process();self.assertTrue(m.W.maptext)
+        mutant=source.replace('(hover_inventory && !inventory_target_current(target))','(hover_inventory && !inventory_item_visible(target))',1)
+        m=self.model(mutant);I=m.atom();m.slot(I);m.C.MouseEntered(I)
+        I.screen_loc='9,9';m.W.process();self.assertTrue(m.W.maptext)
 
 
 if __name__ == '__main__':
