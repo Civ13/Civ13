@@ -13,10 +13,15 @@
 	var/mob/living/parentmob
 /obj/screen
 	var/process_flag = FALSE
+/obj/screen/inventory
+	var/slot_id
+	var/mob/living/parentmob
 /obj/screen/proc/process()
 	return
 /mob
 	var/datum/hover_client/hover_client
+/mob/proc/get_equipped_item(slot)
+	return null
 /mob/living/human
 	var/real_name = "unknown"
 	var/obj/wear_mask
