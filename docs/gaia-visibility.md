@@ -37,6 +37,28 @@ entering a denied tile. Omission controls demonstrate offset recapture and stale
 neighbor presentation when their respective guards are removed. These checks
 do not establish engine scheduling, native mouse priority, or client pixels.
 
+## Distance view camera (2026-11-01)
+
+Looking into the distance hides individual HUD controls while leaving plane
+masters and compositor relays visible. This includes the lighting/weather
+masters and the plane that carries the exempt aiming/scope buttons. Repeated
+enter/exit and renderer replacement retain the same distinction. Scope exit
+still restores only objects marked by the scope routine.
+
+Client camera pixel offsets now participate in the presentation/read snapshot
+identity. Capture and neighborhood invalidation cover the body-centered view
+plus the absolute camera pan, rounded outward to whole tiles, in each axis.
+This conservative rectangle includes the complete animated sweep. LOS rays keep
+the player's actual eye (tile-centered for presentation, physical for reads);
+the camera cannot see around an intervening blocker. Scope entry/exit refreshes
+presentation synchronously after changing the camera and HUD state.
+
+This expands capture work while panned and may audit both sides of the player,
+although only one side is displayed. Player step-offset cadence is unchanged.
+The existing 63-cell scalar-view admission remains; larger pre-existing scope
+views still use the established unsupported-view behavior. No native camera
+animation, slate alignment, hit testing or performance result is claimed.
+
 ## Scope and current evidence
 
 The October 30 request is to make LOS and oversized-tree lighting enabled by

@@ -1143,6 +1143,13 @@ var/list/coefflist = list()
 				for (var/obj/item/clothing/accessory/storage/S in U.accessories)
 					S.hold.close_all()
 			for (var/obj/O in H.client.screen)
+				// Scope mode hides controls, not the renderer that draws the world.
+				// Plane masters also route lighting/weather and exempt HUD buttons.
+				if (istype(O, /obj/screen/plane_master) || istype(O, /obj/screen/root_scene_master) || istype(O, /obj/screen/root_scene_relay))
+					if (O.scoped_invisible)
+						O.invisibility = 0
+						O.scoped_invisible = FALSE
+					continue
 				if (O.invisibility)
 					continue
 				if (istype(O, /obj/screen/movable/action_button))
@@ -1158,6 +1165,9 @@ var/list/coefflist = list()
 				if (O.scoped_invisible)
 					O.invisibility = 0
 					O.scoped_invisible = FALSE
+		if (CIV13_GEOMETRIC_LOS_CORE)
+			H.client.los_dirty = TRUE
+			H.client.reconcile_geometric_los()
 
 /mob/living/human/proc/can_look(mob/living/user)//Largely copied from zoom.dm
 	var/mob/living/human/H = user

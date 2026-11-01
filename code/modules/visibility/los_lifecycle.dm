@@ -92,8 +92,8 @@
 		var/client/C = V.owner
 		if(!C || !V.body)
 			continue
-		var/list/dimensions = V.viewport()
-		if(T && changed != V.body && (T.z != V.body.z || !dimensions || abs(T.x-V.body.x) > dimensions[1]/2+6 || abs(T.y-V.body.y) > dimensions[2]/2+6))
+		var/list/radii = V.viewport_radii()
+		if(T && changed != V.body && (T.z != V.body.z || !radii || abs(T.x-V.body.x) > radii[1]+6 || abs(T.y-V.body.y) > radii[2]+6))
 			continue
 		C.los_dirty = TRUE
 		if(C.root_tree_presenter)
@@ -159,10 +159,10 @@
 /proc/los_movement_affects_context(datum/los_context/V, turf/old_turf, turf/new_turf)
 	if(!V || !V.owner || !V.body)
 		return FALSE
-	var/list/dimensions = V.viewport()
-	if(!dimensions)
+	var/list/radii = V.viewport_radii()
+	if(!radii)
 		return FALSE
 	for(var/turf/T in list(old_turf, new_turf))
-		if(T && T.z == V.body.z && abs(T.x-V.body.x) <= dimensions[1]/2+6 && abs(T.y-V.body.y) <= dimensions[2]/2+6)
+		if(T && T.z == V.body.z && abs(T.x-V.body.x) <= radii[1]+6 && abs(T.y-V.body.y) <= radii[2]+6)
 			return TRUE
 	return FALSE
