@@ -88,7 +88,8 @@
 	var/tmp/drying_epoch = 0
 
 /obj/structure/converter/tanning/persistence_runtime_var(key)
-	return (key in list("drying_epoch", "filled")) || ..()
+	// Derived appearance is rebuilt from saved contents, never imported as image data.
+	return (key in list("drying_epoch", "filled", "overlays")) || ..()
 
 /obj/structure/converter/tanning/update_icon()
 	// The full-rack state has a baked-in hide. Use the empty frame and the

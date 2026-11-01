@@ -212,7 +212,9 @@ hide and `filled` is false for a completed dry batch. Skip retiring/empty wet
 children before drawing the new dry output; refresh load, completion, removal
 and `after_load`. [Offline appearance checks](../../../tests/test_tanning_rack_appearance.py)
 project the renderer and inspect existing DMI pixels; they are not engine or
-savefile acceptance. The explicit `tanning_rack_appearance` offline baseline
+savefile acceptance. Exclude derived `overlays` on export and legacy import via
+the existing runtime-variable hook; reconstruct them only from saved contents.
+The explicit `tanning_rack_appearance` offline baseline
 suite runs all five without Pillow or native work; shared source/art changes
 retain all-suite fallback. Keep appearance separate from ownership/timer rules.
 

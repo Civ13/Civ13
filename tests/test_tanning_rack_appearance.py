@@ -132,6 +132,8 @@ def project(source, contents):
 
 
 def lifecycle(source):
+    runtime = block(source, RACK + '/persistence_runtime_var')
+    assert '"overlays"' in runtime and '|| ..()' in runtime
     start = block(source, RACK + '/proc/start_hide_drying')
     finish = block(source, RACK + '/proc/finish_hide_drying')
     release = block(source, RACK + '/proc/release_hides')
@@ -210,6 +212,9 @@ class TanningRackAppearance(unittest.TestCase):
         self.assertNotEqual(project(wrong, [self.hide('wethide')])[1][0]['color'], self.hide('wethide').color)
         wrong = self.source.replace('new /obj/item/stack/material/dryhide(src, count, FALSE)\n\tupdate_icon()', 'new /obj/item/stack/material/dryhide(src, count, FALSE)\n\ticon_state = activesprite')
         with self.assertRaises((AssertionError, ValueError)):
+            lifecycle(wrong)
+        wrong = self.source.replace('"drying_epoch", "filled", "overlays"', '"drying_epoch", "filled"')
+        with self.assertRaises(AssertionError):
             lifecycle(wrong)
 
 
