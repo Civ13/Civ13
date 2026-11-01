@@ -4,6 +4,38 @@
 /client/var/tmp/los_last_policy
 /client/var/tmp/los_next_audit = 0
 /client/var/tmp/los_last_error
+/client/var/tmp/los_camera_radius_x = 0
+/client/var/tmp/los_camera_radius_y = 0
+/client/var/tmp/los_camera_pan_x = 0
+/client/var/tmp/los_camera_pan_y = 0
+/client/var/tmp/los_camera_union_until = -1
+
+// animate() changes endpoint vars immediately. Preserve the previous viewport
+// and every still-active endpoint until the declared animation finishes. This
+// is client-owned so rebuilding the HUD/context cannot drop the in-flight sweep.
+/client/proc/los_prepare_camera_pan(target_x, target_y, animation_time, previous_view)
+	var/list/old_dimensions = getviewsize(previous_view)
+	var/list/new_dimensions = getviewsize(view)
+	if(!old_dimensions || old_dimensions.len != 2 || !new_dimensions || new_dimensions.len != 2)
+		return
+	var/view_x = max(round(old_dimensions[1] / 2), round(new_dimensions[1] / 2))
+	var/view_y = max(round(old_dimensions[2] / 2), round(new_dimensions[2] / 2))
+	var/pan_x = max(-round(-abs(pixel_x) / 32), -round(-abs(target_x) / 32))
+	var/pan_y = max(-round(-abs(pixel_y) / 32), -round(-abs(target_y) / 32))
+	if(world.time <= los_camera_union_until)
+		// Retain view and pan separately: a new larger viewport also applies
+		// to the old pan while interpolation is still crossing that endpoint.
+		view_x = max(view_x, los_camera_radius_x - los_camera_pan_x)
+		view_y = max(view_y, los_camera_radius_y - los_camera_pan_y)
+		pan_x = max(pan_x, los_camera_pan_x)
+		pan_y = max(pan_y, los_camera_pan_y)
+	los_camera_pan_x = pan_x
+	los_camera_pan_y = pan_y
+	los_camera_radius_x = view_x + pan_x
+	los_camera_radius_y = view_y + pan_y
+	// One decisecond margin also covers tick quantization at the endpoint.
+	los_camera_union_until = max(los_camera_union_until, world.time + max(0, animation_time) + 1)
+	los_dirty = TRUE
 
 /client/proc/set_geometric_los(enabled)
 	los_enabled = !!enabled
@@ -92,8 +124,8 @@
 		var/client/C = V.owner
 		if(!C || !V.body)
 			continue
-		var/list/dimensions = V.viewport()
-		if(T && changed != V.body && (T.z != V.body.z || !dimensions || abs(T.x-V.body.x) > dimensions[1]/2+6 || abs(T.y-V.body.y) > dimensions[2]/2+6))
+		var/list/radii = V.viewport_radii()
+		if(T && changed != V.body && (T.z != V.body.z || !radii || abs(T.x-V.body.x) > radii[1]+6 || abs(T.y-V.body.y) > radii[2]+6))
 			continue
 		C.los_dirty = TRUE
 		if(C.root_tree_presenter)
@@ -159,10 +191,10 @@
 /proc/los_movement_affects_context(datum/los_context/V, turf/old_turf, turf/new_turf)
 	if(!V || !V.owner || !V.body)
 		return FALSE
-	var/list/dimensions = V.viewport()
-	if(!dimensions)
+	var/list/radii = V.viewport_radii()
+	if(!radii)
 		return FALSE
 	for(var/turf/T in list(old_turf, new_turf))
-		if(T && T.z == V.body.z && abs(T.x-V.body.x) <= dimensions[1]/2+6 && abs(T.y-V.body.y) <= dimensions[2]/2+6)
+		if(T && T.z == V.body.z && abs(T.x-V.body.x) <= radii[1]+6 && abs(T.y-V.body.y) <= radii[2]+6)
 			return TRUE
 	return FALSE
