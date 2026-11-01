@@ -167,6 +167,38 @@ class PointerContracts(unittest.TestCase):
             self.assertNotIn(private, alert)
         self.assertIn('if(key == "consecutive_save_failures") return TRUE', source)
 
+    def test_moved_child_context_is_failure_only_and_retains_both_refusals(self):
+        source = read('code/modules/persistence/saving.dm')
+        guard = 'if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))'
+        refusal = 'throw EXCEPTION("Child moved or disappeared during capture")'
+        record = 'record_save_child_failure(parent, content, child_ref)'
+        self.assertEqual(source.count(guard), 2)
+        self.assertEqual(source.count(refusal), 2)
+        self.assertEqual(source.count(record), 2)
+        for branch in source.split(guard)[1:]:
+            before_refusal = branch.split(refusal, 1)[0]
+            self.assertIn(record, before_refusal)
+            self.assertIn('catch\n', before_refusal)
+        self.assertNotIn('initial_child_type', source)
+        self.assertNotIn('initial_child_z', source)
+
+    def test_moved_child_context_is_bounded_owned_and_privacy_preserving(self):
+        source = read(FUNCTIONS)
+        record = extract(source, '/map_storage/proc/record_save_child_failure')
+        for field in ('"operation_id"', '"generation"', '"stage"', '"saved_z"', '"child_state"', '"source"', '"target"'):
+            self.assertIn(field, record)
+        self.assertIn('operation.current(src, "save")', record)
+        self.assertIn('child ? "reference_available" : "reference_unavailable"', record)
+        self.assertIn('child ? "[child.type]" : "unavailable"', record)
+        for private in ('lookup_ref', '\\ref[', '.name', '.key', '.ckey', '.client', '.contents', '.vars', 'variable_observability_capture'):
+            self.assertNotIn(private, record)
+        backend = extract(source, '/map_storage/proc/run_world_operation')
+        self.assertLess(backend.index('!operation.enter_backend'), backend.index('last_save_reference_failure = null'))
+        wrapper = extract(source, '/datum/controller/gameticker/proc/savemap')
+        self.assertLess(wrapper.index('operation.finish(FALSE)'), wrapper.index('Save capture diagnostic:'))
+        saving = read('code/modules/persistence/saving.dm')
+        self.assertLess(saving.index('operation.diagnostic_generation = generation'), saving.index('var/ref = BuildVarDirectory(savefile, T, 1)'))
+
     def test_full_game_cross_z_regression_uses_real_save_and_keeps_live_targets(self):
         source = read('tests/world_save/full_game_probe.dm')
         body = extract(source, '/datum/world_save_game_probe/proc/check_runtime_pointers')

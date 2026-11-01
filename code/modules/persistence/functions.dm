@@ -388,6 +388,16 @@ map_storage
 			snapshot["turf_z"] = T.z
 	return snapshot
 
+// Capture fixed structural context only after an existing child check fails.
+// Never retain live refs, names, keys, arbitrary variables or inventory data.
+/map_storage/proc/record_save_child_failure(atom/parent, atom/movable/child, child_entry)
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(!operation || !operation.current(src, "save")) return FALSE
+	var/list/source = list("type" = parent ? "[parent.type]" : "unavailable", "field" = "contents", "native_z" = parent ? parent.z : null)
+	var/list/target = list("type" = child ? "[child.type]" : "unavailable", "native_z" = child ? child.z : null)
+	last_save_reference_failure = list("schema_version" = 1, "kind" = "child_moved_or_disappeared", "operation_id" = operation.diagnostic_save_id, "generation" = operation.diagnostic_generation, "stage" = "capture_children", "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = child_entry, "child_state" = child ? "reference_available" : "reference_unavailable", "source" = source, "target" = target)
+	return TRUE
+
 // Capture only bounded schema context, never values, names or client data. Keep
 // this record through failed-operation cleanup so one admin VV field is enough.
 /map_storage/proc/record_save_reference_failure(kind, datum/target, current_entry = 0, first_z = 0, first_entry = 0)
@@ -564,6 +574,8 @@ var/global/datum/persistence_admission_identity
 	var/restoring_players = FALSE
 	// Observational only; never used for admission or recovery decisions.
 	var/diagnostic_phase = "admitted"
+	var/diagnostic_save_id
+	var/diagnostic_generation
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
 	var/restore_reserved = FALSE
@@ -745,6 +757,12 @@ var/global/datum/persistence_admission_identity
 		operation.finish(FALSE)
 		world.log << "World-save export failed: [map_storage.last_error]"
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
+		try
+			var/list/failure = map_storage.last_save_reference_failure
+			if(islist(failure) && failure["kind"] == "child_moved_or_disappeared")
+				message_admins("Save capture diagnostic: operation=[failure["operation_id"]] generation=[failure["generation"]] stage=[failure["stage"]] saved_z=[failure["saved_z"]] state=[failure["child_state"]]. Inspect map_storage.last_save_reference_failure for structural details.")
+		catch
+			world.log << "Save capture diagnostic delivery unavailable."
 		return 0
 	operation.finish(TRUE)
 	last_persistence_save_time = world.time
