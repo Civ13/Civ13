@@ -67,9 +67,13 @@ def renderer_variant(data,control):
     if control not in RENDERER_CONTROLS:raise Invalid('Unknown renderer control')
     before,after={
         'neighbor':(b'\tI.plane = ROOT_TREE_PLANE\n',b'\tI.plane = GAME_PLANE\n'),
-        'visibility':(b'\t\tif(context.decision_snapshot(T, S, "visual") == LOS_DENY)\n',
+        'visibility':(b'\t\tif(context.decision_snapshot(T, S, "visual_tree") == LOS_DENY)\n',
                       b'\t\tif(FALSE)\n')
     }[control]
+    if control=='visibility':
+        legacy=before.replace(b'"visual_tree"',b'"visual"')
+        if data.count(legacy)+data.count(before)!=1:raise Invalid('Renderer control source anchor changed')
+        if legacy in data:before=legacy
     if data.count(before)!=1:raise Invalid('Renderer control source anchor changed')
     return data.replace(before,after)
 
