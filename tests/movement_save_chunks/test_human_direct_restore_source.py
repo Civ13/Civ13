@@ -1,10 +1,16 @@
 """Tile-only restore contracts; source-level only, not BYOND execution."""
 from pathlib import Path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 
 class TileOnlyRestoreSourceTests(unittest.TestCase):
+    def test_legacy_hook_uses_owning_exporter_identity_method(self):
+        human = (ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
+        self.assertIn('exporter ? exporter.human_save_roots[exporter.save_entry_identity(src)] : null', human)
+        self.assertIn('frame.exporter ? frame.exporter.human_save_roots[frame.exporter.save_entry_identity(src)] : null', human)
+        self.assertIsNone(re.search(r'(?<![.\w])save_entry_identity\(src\)', human))
     def test_new_candidates_omit_movement_but_preserve_art_offsets(self):
         saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
         human = (ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()

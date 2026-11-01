@@ -784,6 +784,10 @@
 			F[path] << chunks
 			saving_content_owners[key] = parent_ref
 		save_work_check()
+		// The work check can yield after attaching the saved edge. Keep the
+		// existing strict roster invariant through that final checkpoint too.
+		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
+			throw EXCEPTION("Moving save roster member changed after drain checkpoint")
 
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 // This opt-in source prototype has no production enablement. Its pre-marker

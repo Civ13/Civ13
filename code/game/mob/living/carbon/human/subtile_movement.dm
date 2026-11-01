@@ -574,7 +574,7 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if (frame.human_legacy_aligned)
 			var/datum/persistence_world_operation/operation = persistence_active_operation
-			var/list/record = exporter.human_save_roots[save_entry_identity(src)]
+			var/list/record = exporter ? exporter.human_save_roots[exporter.save_entry_identity(src)] : null
 			if (human_subtile_save_hook_frame || frame.source != src || frame.exporter != exporter || !operation || !operation.current(exporter, "save") || !record || record["atom"] != src || record["mode"] != "legacy")
 				throw EXCEPTION("Human legacy save hook lacks its frame owner")
 			human_subtile_save_hook_frame = frame
@@ -613,7 +613,7 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if (frame.human_legacy_aligned)
 			var/datum/persistence_world_operation/operation = persistence_active_operation
-			var/list/record = frame.exporter ? frame.exporter.human_save_roots[save_entry_identity(src)] : null
+			var/list/record = frame.exporter ? frame.exporter.human_save_roots[frame.exporter.save_entry_identity(src)] : null
 			if (!frame.active || frame.source != src || !operation || !operation.current(frame.exporter, "save") || !record || record["atom"] != src || record["mode"] != "legacy")
 				throw EXCEPTION("Human legacy save hook owner changed")
 			return .
