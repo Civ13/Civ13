@@ -929,35 +929,51 @@
 /mob/proc/is_language_prefix(var/prefix)
 	return prefix in config.language_prefixes
 
-//TBD
 /mob/verb/check_languages()
 	set name = "Check Known Languages"
 	set category = "IC"
 	set src = usr
 
-	var/dat = "<b><font size = 5>Known Languages</font></b><br/><br/>"
+	show_known_languages()
 
+/mob/proc/known_languages_ui_data()
+	var/datum/language/current_default
+	if (isliving(src))
+		var/mob/living/living_user = src
+		current_default = living_user.default_language
+	var/list/entries = list()
 	for (var/datum/language/L in languages)
-		if (!(L.flags & NONGLOBAL))
-			dat += "<b>[L.name] ([get_language_prefix()][L.key])</b><br/>[L.desc]<br/><br/>"
+		if (L.flags & NONGLOBAL)
+			continue
+		// The same escaped values are safe in classic templates and React text.
+		entries += list(list("name" = html_encode(L.name), "prefix" = html_encode("[get_language_prefix()][L.key]"), "description" = html_encode(L.desc), "is_default" = (L == current_default)))
+	return list("languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "")
 
-	src << browse(dat, "window=checklanguage")
-	return
+/mob/proc/show_known_languages()
+	if (!client)
+		return
+	var/mob/user = src
+	var/ui_key = "known_languages"
+	var/list/data = known_languages_ui_data()
+	var/datum/nanoui/ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
+	if (!ui)
+		ui = new /datum/nanoui/tgui/known_languages(user, src, ui_key, "known_languages.tmpl", "Known Languages", 600, 480, _state = self_read_only_state)
+		// Closing this reader must not unset an unrelated machine interaction.
+		ui.use_on_close_logic(FALSE)
+		ui.set_initial_data(data)
+		ui.open()
 
-/mob/living/check_languages()
-	var/dat = "<b><font size = 5>Known Languages</font></b><br/><br/>"
-
-	if (default_language)
-		dat += "Current default language: [default_language]<br/><br/>"
-
-	for (var/datum/language/L in languages)
-		if (!(L.flags & NONGLOBAL))
-			if (L == default_language)
-				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b> - default<br/>[L.desc]<br/><br/>"
-			else
-				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b><br/>[L.desc]<br/><br/>"
-
-	src << browse(dat, "window=checklanguage")
+// Keep manager-requested refreshes routed to this read-only producer, without
+// adding a mob field, automatic polling or a generic mob.ui_interact override.
+/datum/nanoui/tgui/known_languages/update(var/force_open = FALSE)
+	if (!user || src_object != user || !state)
+		close()
+		return
+	var/list/data = user.known_languages_ui_data()
+	if (force_open)
+		reinitialise(new_initial_data = data)
+	else
+		push_data(data)
 
 /mob/living/Topic(href, href_list)
 	if (href_list["default_lang"])
