@@ -61,6 +61,16 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_helpers.dm',
             'tests/save_movement/source_adapter.py')},
 
+    # Source-projected pouch-slot HUD visibility; no BYOND or browser runner.
+    'pouch_hud': {'files': ('tests/pouch_hud/test_pouch_hud.py',),
+        'paths': ('tests/pouch_hud/',), 'shared_paths': (
+            'code/_onclick/hud/base_screen_objects.dm', 'code/_onclick/hud/hud_civstyle.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/game/mob/living/carbon/human/inventory.dm', 'code/game/mob/inventory.dm',
+            'code/game/mob/living/carbon/human/species/species_hud.dm',
+            'code/game/objects/items.dm', 'code/modules/1713/apparel_imperial.dm',
+            'interface/skin.dmf', 'scripts/select-ci.py', 'tests/save_movement/source_adapter.py')},
+
     # Source-projected storage-session and legacy import contracts; no BYOND run.
     'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
         'paths': ('tests/storage_runtime/',), 'shared_paths': (
