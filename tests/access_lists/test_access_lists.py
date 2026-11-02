@@ -12,6 +12,8 @@ adapter = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(adapter)
 adapter.FIELDS += ("approved_list", "approved_list_ready", "whitelist_list", "whitelist_list_ready")
 SOURCE = (ROOT / "code/_helpers/access_lists.dm").read_text(encoding='utf-8-sig')
+# Lexical DM raw regex literals map to Python raw literals; no statements omitted.
+PROJECTED_SOURCE = SOURCE.replace('regex(@"', 'regex(r"')
 
 class DMList(list):
     @property
@@ -33,10 +35,10 @@ class Harness:
             copytext=lambda s,start:s[start-1:], splittext=lambda s,d:DMList(s.split(d)),
             regex=Regex, ckey=lambda s:re.sub('[^a-z0-9]', '', s.lower()), trim=lambda s:s.strip(),
             isnull=lambda x:x is None, fexists=lambda p:p in self.files, file2text=self.read)
-        self.parse = adapter.project(SOURCE, '/proc/parse_verified_access_text', 'access_text', self.env)
+        self.parse = adapter.project(PROJECTED_SOURCE, '/proc/parse_verified_access_text', 'access_text', self.env)
         self.env['parse_verified_access_text'] = self.parse
-        self.reload = adapter.project(SOURCE, '/proc/reload_verified_access_list', 'src,access_kind', self.env, method=True)
-        self.member = adapter.project(SOURCE, '/proc/verified_access_member', 'src,access_kind,candidate_key', self.env, method=True)
+        self.reload = adapter.project(PROJECTED_SOURCE, '/proc/reload_verified_access_list', 'src,access_kind', self.env, method=True)
+        self.member = adapter.project(PROJECTED_SOURCE, '/proc/verified_access_member', 'src,access_kind,candidate_key', self.env, method=True)
     def read(self,path):
         value=self.files[path]
         if isinstance(value,Exception): raise value
@@ -128,6 +130,11 @@ class AccessLists(unittest.TestCase):
         self.assertIn('if (!verified_access_member("whitelist", client.ckey))',source)
         self.assertNotIn('!isemptylist(approved_list)',source)
         self.assertNotIn('!isemptylist(whitelist_list)',source)
+    def test_regex_literals_are_noninterpolating(self):
+        # Ordinary DM quoted strings interpret square brackets as expressions.
+        self.assertEqual(SOURCE.count('= regex(@"'), 2)
+        self.assertNotIn('= regex("', SOURCE)
+
     def test_include_and_initial_readiness(self):
         self.assertEqual((ROOT/'civ13.dme').read_text(encoding='utf-8-sig').count('#include "code\\_helpers\\access_lists.dm"'),1)
         world=(ROOT/'code/world.dm').read_text(encoding='utf-8-sig')

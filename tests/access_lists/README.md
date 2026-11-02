@@ -3,7 +3,8 @@
 Offline checks: `py -3 -B -m unittest discover -s tests/access_lists -p "test_*.py" -v`.
 The complete three production helper bodies run through the existing audited
 save-movement source projector, imported into a private module; only its global
-field mapping is extended locally. No executable helper lines are omitted.
+field mapping is extended locally. DM raw regex literals are mapped lexically
+to Python raw literals. No executable helper lines are omitted.
 Files, regex, ckey, trim and DM list semantics are fake boundaries. Gate/startup
 wiring checks inspect source and do not execute the full Topic/admin/startup.
 This is not BYOND compilation, native regex/ckey acceptance or live access evidence.
@@ -42,5 +43,9 @@ The initial CI registry check also caught the new registration using `shared`
 instead of the registry's `shared_paths` key (72 passed, one failed). The next registry run passed 72 and failed the preexisting world.dm selection
 expectation; it is extended additively for this new suite. These were offline
 preparation results, not native results.
-Source work stops at review under Main's instruction; no publication, config
-activation, live reload, restart, compile or native run has been performed.
+The first hosted compile at730690f40 failed because ordinary DM string
+literals interpreted regex character classes as embedded expressions. Both
+patterns now use DM raw strings; a focused regression requires noninterpolating
+literals. The original compiler failure is preserved in publication evidence.
+Source PR publication is authorized; no configuration activation, live reload,
+restart or native access fixture has been performed.

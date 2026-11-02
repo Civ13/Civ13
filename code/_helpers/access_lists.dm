@@ -13,8 +13,8 @@
 	var/list/staged_keys = list()
 	var/list/seen_ids = list()
 	var/row_index = 0
-	var/regex/row_format = regex("^[A-Za-z0-9_ \t]+=[ \t]*[1-9][0-9]{16,19}[ \t]*$")
-	var/regex/key_format = regex("^[a-z0-9]{1,256}$")
+	var/regex/row_format = regex(@"^[A-Za-z0-9_ \t]+=[ \t]*[1-9][0-9]{16,19}[ \t]*$")
+	var/regex/key_format = regex(@"^[a-z0-9]{1,256}$")
 	for (var/access_row in access_rows)
 		row_index++
 		if (row_index == access_rows.len && access_row == "")
