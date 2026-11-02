@@ -535,6 +535,55 @@
         const chatContainer = document.getElementById('chat-container');
         const messagesContainer = document.getElementById('messages');
 
+        // Follow new output only while the reader is at the end. Keep this
+        // state across layout changes, which can increase scrollHeight before
+        // a resize or image-load callback has a chance to restore the tail.
+        let followingTail = true;
+        let programmaticScrollTop = null;
+
+        function scrollToTail() {
+            if (!followingTail) return;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            programmaticScrollTop = chatContainer.scrollTop;
+        }
+
+        chatContainer.addEventListener('scroll', function () {
+            if (programmaticScrollTop !== null &&
+                Math.abs(chatContainer.scrollTop - programmaticScrollTop) < 1) {
+                programmaticScrollTop = null;
+                return;
+            }
+            programmaticScrollTop = null;
+            followingTail = chatContainer.scrollHeight - chatContainer.clientHeight - chatContainer.scrollTop <= 2;
+        });
+
+        // Record upward wheel intent before a pending layout callback can run.
+        chatContainer.addEventListener('wheel', function (event) {
+            if (event.deltaY < 0 && chatContainer.scrollTop > 0) {
+                followingTail = false;
+                programmaticScrollTop = null;
+            }
+        });
+
+        // ResizeObserver sees wrapping, late images and font metric changes.
+        // Event fallbacks also cover browsers without ResizeObserver.
+        if (typeof ResizeObserver !== 'undefined') {
+            const tailResizeObserver = new ResizeObserver(scrollToTail);
+            tailResizeObserver.observe(messagesContainer);
+            tailResizeObserver.observe(chatContainer);
+        }
+        messagesContainer.addEventListener('load', scrollToTail, true);
+        messagesContainer.addEventListener('animationend', scrollToTail, true);
+        window.addEventListener('resize', scrollToTail);
+        if (document.fonts) {
+            if (document.fonts.addEventListener) {
+                document.fonts.addEventListener('loadingdone', scrollToTail);
+            }
+            if (document.fonts.ready && document.fonts.ready.then) {
+                document.fonts.ready.then(scrollToTail);
+            }
+        }
+
         /**
          * Receives a message from BYOND.
          * @param {string|object} data - The message text or a JSON object.
@@ -601,13 +650,35 @@
 
                 messagesContainer.appendChild(messageDiv);
 
-                // Auto-scroll
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                // Keep memory usage in check by trimming old messages
+                // Keep memory usage in check by trimming old messages. When
+                // reading above the tail, keep a surviving visible message at
+                // the same screen position while the oldest message is removed.
                 if (messagesContainer.children.length > 250) {
+                    let anchor = null;
+                    let anchorTop = 0;
+                    if (!followingTail) {
+                        const viewportTop = chatContainer.getBoundingClientRect().top;
+                        for (let i = 1; i < messagesContainer.children.length; i++) {
+                            const child = messagesContainer.children[i];
+                            const rect = child.getBoundingClientRect();
+                            if (rect.bottom > viewportTop) {
+                                anchor = child;
+                                anchorTop = rect.top;
+                                break;
+                            }
+                        }
+                    }
                     messagesContainer.removeChild(messagesContainer.firstChild);
+                    if (anchor && anchor.parentNode === messagesContainer) {
+                        const shift = anchor.getBoundingClientRect().top - anchorTop;
+                        if (shift) {
+                            chatContainer.scrollTop += shift;
+                            programmaticScrollTop = chatContainer.scrollTop;
+                        }
+                    }
                 }
+
+                scrollToTail();
             } catch (err) {
                 console.error("Chat Fatal Error:", err);
             }
@@ -618,6 +689,8 @@
          */
         function clearChat() {
             messagesContainer.innerHTML = '';
+            followingTail = true;
+            scrollToTail();
         }
 
         // Expose to global scope for BYOND
