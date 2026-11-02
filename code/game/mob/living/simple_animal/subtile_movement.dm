@@ -67,9 +67,12 @@
 /mob/living/simple_animal/proc/set_npc_subtile(enabled)
 	if (npc_subtile_transaction || npc_subtile_pulse || !npc_subtile_shape() || ((!enabled || !npc_subtile_offset_owned) && (step_x || step_y)))
 		return FALSE
+	if (!enabled && npc_subtile_wild_walk && !npc_subtile_intent_valid(npc_subtile_wild_walk))
+		return FALSE
 	npc_subtile_enabled = !!enabled
 	if (!enabled)
 		npc_subtile_stop_pursuit()
+		npc_subtile_stop_wild_walk()
 		npc_subtile_offset_owned = FALSE
 		npc_subtile_release_glide()
 	return TRUE
@@ -355,9 +358,23 @@
 			return actor.npc_subtile_species_enabled && (mode == "towards" || mode == "away" || mode == "path") && isnum(interval) && interval >= world.tick_lag && interval <= 100 && (!(mode in list("away", "path")) || (isnum(distance_limit) && distance_limit >= 0))
 	return FALSE
 
+// Retire only an obsolete species owner once no paid physical step is active.
+// Other owners and pending intents retain exclusive control.
+/mob/living/simple_animal/proc/npc_subtile_species_legacy_ready()
+	if (npc_subtile_transaction || npc_subtile_pulse || world.time < npc_subtile_until || (npc_subtile_offset_owned && (step_x || step_y)))
+		return FALSE
+	if (!npc_subtile_intent_valid(npc_subtile_wild_walk))
+		return FALSE
+	npc_subtile_stop_wild_walk()
+	if (npc_subtile_pending_intent)
+		return FALSE
+	return npc_subtile_intent_valid(null)
+
 // Species producers retain their native commands until explicitly opted in.
 /mob/living/simple_animal/proc/npc_subtile_species_walk(mode, atom/target = null, lag = 0, direction = 0, distance_limit = 0)
-	if (!npc_subtile_species_enabled)
+	if (!npc_subtile_species_enabled || !npc_subtile_enabled)
+		if (!npc_subtile_species_legacy_ready())
+			return FALSE
 		switch (mode)
 			if ("random")
 				walk_rand(src, lag)

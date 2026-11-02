@@ -18,6 +18,11 @@ class WildlifeCIRegistration(unittest.TestCase):
    self.assertNotIn('*',path)
    self.assertTrue((ROOT/path).is_file(),path)
   self.assertIn('tests/test_wildlife_ci_registration.py',suite['files'])
+  self.assertIn('tests/human_subtile/test_species_fallback_fixture.py',suite['files'])
+  for path in ('tests/human_subtile/species_fallback_fixture.dm',
+               'tests/human_subtile/species_fallback_stage.py',
+               'tests/human_subtile/species_fallback_contract.py'):
+   self.assertTrue(any(ci.matches(path,x) for x in suite['shared_paths']),path)
   self.assertEqual(suite['paths'],())
  def test_changed_source_and_existing_vendor_inputs_select_offline_suite(self):
   for path in ('code/game/mob/living/simple_animal/subtile_movement.dm',
