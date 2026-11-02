@@ -23,6 +23,10 @@
 	var/grid_end = findtext(dmm_text, "\n\"}", grid_start)
 	if (!grid_end)
 		return null
+	// The reader loads every grid block on consecutive z-levels; the verb only
+	// clears and bounds-checks one, so refuse templates with a second grid.
+	if (findtext(dmm_text, " = {\"", grid_end))
+		return null
 	var/list/rows = splittext(copytext(dmm_text, grid_start, grid_end), "\n")
 	var/key_len = length(copytext(dmm_text, 2, findtext(dmm_text, "\"", 2)))
 	if (!rows.len || key_len < 1)

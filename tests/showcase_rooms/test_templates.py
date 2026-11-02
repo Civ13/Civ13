@@ -174,6 +174,8 @@ class ShowcaseTemplates(unittest.TestCase):
         self.assertLess(source.index("var/z = origin.z"), recheck)
         self.assertLess(recheck, source.index("showcase_room_clear_footprint(x1, y1, x2, y2, z, origin)"))
         self.assertIn("if (!check_rights(R_SPAWN))", source)
+        # A second grid block would load onto an unchecked z-level.
+        self.assertIn('if (findtext(dmm_text, " = {\\"", grid_end))', source)
         self.assertIn("suite.read_map(dmm_text, x1, y1, z)", source)
         verbs = (ROOT / "code/modules/admin/admin_verbs.dm").read_text(encoding="utf-8")
         self.assertIn("/client/proc/load_showcase_room", verbs)
