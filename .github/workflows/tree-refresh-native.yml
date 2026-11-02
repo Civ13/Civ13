@@ -1,0 +1,107 @@
+name: Tree refresh native preparation and reviewed execution
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [prepare, execute]
+        default: prepare
+        required: true
+        description: Prepare exact source/toolchain manifest; execute only after independent review
+      source_sha:
+        type: string
+        required: true
+        description: Full reviewed commit, identical to dispatch and workflow SHA
+      reviewed_manifest:
+        type: string
+        default: ''
+        description: Exact manifest SHA256 from prepare; mandatory for reviewed execution
+      authorized_until:
+        type: string
+        default: ''
+        description: Explicit UTC deadline within the current reviewed user window
+      run_index:
+        type: choice
+        options: ['1','2','3']
+        default: '1'
+        description: One reviewed independent run; no retries or automatic repetitions
+permissions:
+  contents: read
+concurrency:
+  group: tree-refresh-native-reviewed
+  cancel-in-progress: false
+jobs:
+  fixture:
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch'
+    runs-on: windows-2022
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      REVIEWED_MANIFEST: ${{ inputs.reviewed_manifest }}
+      AUTHORIZED_UNTIL: ${{ inputs.authorized_until }}
+      RUN_INDEX: ${{ inputs.run_index }}
+      MODE: ${{ inputs.mode }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Bind exact manual source before preparation
+        shell: pwsh
+        run: |
+          if ($env:SOURCE_SHA -notmatch '^[0-9a-f]{40}$' -or $env:SOURCE_SHA -ne $env:GITHUB_SHA -or $env:SOURCE_SHA -ne $env:GITHUB_WORKFLOW_SHA) { throw 'Exact immutable source and workflow identity required' }
+          if ($env:GITHUB_RUN_ATTEMPT -ne '1') { throw 'No automatic retries or reused VM attempts' }
+          "PREPARED=$env:RUNNER_TEMP/tree-native-stage" >> $env:GITHUB_ENV
+          "TOOLCHAIN=$env:RUNNER_TEMP/tree-native-toolchain" >> $env:GITHUB_ENV
+          "EVIDENCE=$env:RUNNER_TEMP/tree-native-evidence" >> $env:GITHUB_ENV
+      - name: Offline harness contracts only
+        timeout-minutes: 2
+        shell: pwsh
+        run: |
+          py -3 -B tests/tree_refresh_native/test_harness.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Acquire exact pinned installer as data without installation
+        timeout-minutes: 5
+        shell: pwsh
+        run: |
+          py -3 -B tests/tree_refresh_native/acquire.py --output "$env:TOOLCHAIN"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Prepare immutable full-source fixture without engine execution
+        timeout-minutes: 3
+        shell: pwsh
+        run: |
+          py -3 -B tests/tree_refresh_native/prepare.py --source-commit "$env:SOURCE_SHA" --output "$env:PREPARED" --toolchain-manifest "$env:TOOLCHAIN/toolchain.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-FileHash -LiteralPath "$env:PREPARED/tree-native-manifest.json" -Algorithm SHA256 | Format-List
+      - name: Execute separately reviewed isolated native harness
+        if: inputs.mode == 'execute'
+        timeout-minutes: 7
+        shell: pwsh
+        run: |
+          $treeFixtureBin = Get-Content -LiteralPath "$env:TOOLCHAIN/bin-path.txt" -Raw
+          py -3 -B tests/tree_refresh_native/runner.py --prepared "$env:PREPARED" --bin "$treeFixtureBin" --reviewed-manifest "$env:REVIEWED_MANIFEST" --authorized-until "$env:AUTHORIZED_UNTIL" --run-index "$env:RUN_INDEX" --output "$env:EVIDENCE"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Preserve source, failures and owned cleanup evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: tree-native-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/tree-native-stage/tree-native-manifest.json
+            ${{ runner.temp }}/tree-native-stage/source-manifest.json
+            ${{ runner.temp }}/tree-native-stage/stage/tests/tree_refresh_native
+            ${{ runner.temp }}/tree-native-toolchain/toolchain.json
+            ${{ runner.temp }}/tree-native-toolchain/extract.log
+            ${{ runner.temp }}/tree-native-stage/stage/tree_refresh.dme
+            ${{ runner.temp }}/tree-native-stage/stage/code/modules/visibility
+            ${{ runner.temp }}/tree-native-stage/stage/code/modules/client/client_procs.dm
+            ${{ runner.temp }}/tree-native-stage/stage/code/datums/observation/moved.dm
+            ${{ runner.temp }}/tree-native-stage/stage/code/game/mob/mob_movement.dm
+            ${{ runner.temp }}/tree-native-stage/stage/code/world.dm
+            ${{ runner.temp }}/tree-native-stage/stage/code/controllers/mc/globals.dm
+            ${{ runner.temp }}/tree-native-evidence
