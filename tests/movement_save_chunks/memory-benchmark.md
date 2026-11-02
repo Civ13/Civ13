@@ -31,7 +31,7 @@ preflight lifetime; the previous string-key preflight did not pin them. This
 prevents recycled-handle false hits but is not a promise of zero memory cost.
 Current optimization results remain unverified until its own native run finishes.
 
-The full matrix is nine baseline/candidate pairs: 64/512/2048 animals ×
+The full matrix is nine baseline/candidate pairs: 64/512/2048 animals Ã—
 1/16/64 KiB payloads. Each process performs three successful saves, three injected
 failures and one final success. Full prior-backup member hashes and capture-state
 cleanup are checked. Record actual admission/fallback: the 64 KiB cohort has
@@ -119,3 +119,23 @@ fresh specific approval window. The old13:23UTC window does not authorize later
 execution. There is no new hosted workflow/dispatch route in this change; the
 exact reviewed source/manifest and supervised hosted invocation must be admitted
 separately. Publishing this branch can still trigger ordinary30-minute nativeCI.
+
+
+Pilot orchestration writes running snapshots only to progress.json. The canonical
+receipt.json stays not_run until atomic final publication. Preparation claims a
+fresh directory; existing or partially executed runs cannot be resumed.
+Unexpected orchestration errors finalize as inconclusive_stopped, mark unlaunched
+cases not_run, record attempted-child outcome/cleanup as unconfirmed when the
+monitor raises, and re-raise the original exception. Completed rows are retained.
+
+Receipt publication uses a unique temporary file plus replacement. A failed final
+write permits one failure-report recovery write and still raises the original
+error. Persistent storage failure leaves the prior non-success canonical receipt;
+terminal failure details go to stderr, and secondary I/O errors remain exception
+notes. Durable publication and bounded I/O cannot be guaranteed. Hosts must treat
+missing/invalid/unfinalized receipts as inconclusive, never acceptance.
+
+The inherited monitor attempts cleanup of its owned direct child only. Escaping
+Popen/setup/kill-wait errors do not prove reaping or descendant containment.
+No process-tree, socket-census or hard I/O guarantee is added. A separately
+reviewed outer host route is still required; no native execution is admitted.
