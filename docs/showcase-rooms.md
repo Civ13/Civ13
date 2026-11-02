@@ -30,13 +30,24 @@ unsmoothed and no lighting or roof is drawn.
 ## Placing a room
 
 Admins with spawn rights use **Debug > Load Showcase Room**. Stand where the
-door should be: the room loads directly north of you. The verb removes
-structures, items, floor/wall covers and roofs already in that footprint,
-moves living mobs there onto your tile, then loads the template. It can add a
-wooden roof over every non-wall tile, which makes the room a roofed indoor
-area. Templates carry no areas, so the room otherwise keeps the area of the
-ground it is placed on. Loading changes the turfs under the footprint and is
-not undone automatically.
+door should be: the room loads directly north of you. After the prompts the
+verb rechecks your position and refuses while a save or load is running or
+awaiting recovery, while level recovery or allocation is pending, or when the
+footprint holds a roof or floor paired with another building level (deleting
+one half would delete its partner on the next z-level and drop what stands
+there). It then moves every mob in the footprint onto your tile, including
+mobs inside closets or other containers, removes structures, items, floor/wall
+covers and roofs there, and places the template. It can add a wooden roof over
+every non-wall tile, which makes the room a roofed indoor area. Templates
+carry no areas, so the room otherwise keeps the area of the ground it is placed
+on. Loading changes the turfs under the footprint and is not undone
+automatically.
+
+The clear, place and roof steps run without yielding: they use the
+`dmm_suite` model parser directly instead of `read_map`, whose `sleep(-1)`
+calls could let a save begin partway through. This is source-reviewed only.
+Native loading, roofs and behaviour on a persistent world have not been
+validated in DreamDaemon, so treat the verb as untested there.
 
 ## Adding a room
 
@@ -52,6 +63,7 @@ python3 -B -m unittest tests/showcase_rooms/test_templates.py -v
 ```
 
 The test checks parsing, declared type paths, the wall/door layout, roof
-support coverage, lighting and the guide note. To have the compiler check type
+support coverage, lighting and the guide note, plus the loader's admission,
+no-yield and evacuation contracts. To have the compiler check type
 paths as well, include the templates in a scratch copy of `civ13.dme` and
 compile it; delete the copy afterwards.

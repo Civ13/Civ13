@@ -176,11 +176,52 @@ class ShowcaseTemplates(unittest.TestCase):
         self.assertIn("if (!check_rights(R_SPAWN))", source)
         # A second grid block would load onto an unchecked z-level.
         self.assertIn('if (findtext(dmm_text, " = {\\"", grid_end))', source)
-        self.assertIn("suite.read_map(dmm_text, x1, y1, z)", source)
+        self.assertNotIn("read_map(", source)
         verbs = (ROOT / "code/modules/admin/admin_verbs.dm").read_text(encoding="utf-8")
         self.assertIn("/client/proc/load_showcase_room", verbs)
         dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
         self.assertIn('#include "code\\modules\\admin\\showcase_rooms.dm"', dme)
+
+
+    def proc_body(self, source, signature):
+        start = source.index(signature)
+        end = source.find("\n/", start + 1)
+        return source[start:end if end != -1 else len(source)]
+
+    def test_mutation_phase_cannot_yield_to_a_save(self):
+        source = VERB.read_text(encoding="utf-8")
+        verb = self.proc_body(source, "/client/proc/load_showcase_room()")
+        admission = verb.index("showcase_room_mutation_blocker(x1, y1, x2, y2, z)")
+        mutation = verb[admission:]
+        # Prompts stay before the final admission check; nothing after it yields.
+        self.assertGreater(admission, verb.rindex("WWinput("))
+        for proc in ("/proc/showcase_room_mutation_blocker(", "/proc/showcase_room_clear_footprint(",
+                     "/proc/showcase_room_place(", "/proc/showcase_room_nested_mobs("):
+            body = self.proc_body(source, proc)
+            for call in ("sleep(", "spawn(", "WWinput(", "input(", "alert(", "CHECK_TICK", "do_after("):
+                with self.subTest(proc=proc, call=call):
+                    self.assertNotIn(call, body)
+        for call in ("sleep(", "WWinput(", "input(", "CHECK_TICK", "do_after("):
+            self.assertNotIn(call, mutation.split("WWalert(usr, blocker", 1)[1])
+        blocker = self.proc_body(source, "/proc/showcase_room_mutation_blocker(")
+        for guard in ("persistence_save_in_progress", "persistence_active_operation",
+                      "persistence_load_recovery_required", "dimension_recovery_required",
+                      "dimension_budget_hold", "world_z_budget.active", "building_allocating_z"):
+            self.assertIn(guard, blocker)
+
+    def test_paired_building_levels_block_the_footprint(self):
+        blocker = self.proc_body(VERB.read_text(encoding="utf-8"), "/proc/showcase_room_mutation_blocker(")
+        self.assertIn("for (var/obj/roof/R in T)\n\t\t\tif (R.building_pair_id)", blocker)
+        self.assertIn("for (var/obj/covers/C in T)\n\t\t\tif (C.building_pair_id)", blocker)
+
+    def test_nested_occupants_leave_before_their_container_is_deleted(self):
+        clear = self.proc_body(VERB.read_text(encoding="utf-8"), "/proc/showcase_room_clear_footprint(")
+        evacuate = clear.index("for (var/mob/M in showcase_room_nested_mobs(O))")
+        self.assertLess(evacuate, clear.index("qdel(O)"))
+        self.assertIn("for (var/mob/M in T)", clear)
+        nested = self.proc_body(VERB.read_text(encoding="utf-8"), "/proc/showcase_room_nested_mobs(")
+        self.assertIn("showcase_room_nested_mobs(AM, found, seen)", nested)
+        self.assertIn("if (ismob(AM))", nested)
 
 
 if __name__ == "__main__":
