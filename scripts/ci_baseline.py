@@ -223,6 +223,9 @@ SUITES = {
     'destroyed_grab_preflight': {'files': ('tests/test_destroyed_grab_preflight.py',),
         'paths': (), 'shared_paths': ('code/game/mob/mob_movement.dm',
                                      'code/game/mob/living/carbon/human/subtile_movement.dm')},
+    # Inert source checks; shared living movement retains all-suite fallback.
+    'ordinary_animal_swap': {'files': ('tests/test_ordinary_animal_swap.py',),
+        'paths': (), 'shared_paths': ('code/game/mob/living/living.dm',)},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
