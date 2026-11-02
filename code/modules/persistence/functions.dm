@@ -1045,7 +1045,10 @@ var/global/datum/persistence_admission_identity
 		world.log << "World-save import failed: [storage.last_error]"
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
 		return FALSE
-	operation.finish(TRUE)
+	if(operation.finish(TRUE) != TRUE)
+		storage.last_error = "World-save operation release was not confirmed."
+		persistence_startup_recovery_status = "unresolved"
+		return FALSE
 	persistence_startup_recovery_status = null
 	// Restart recovery reclaims waiting clients after consuming its intent.
 	return 1
