@@ -30,6 +30,13 @@ SUITES = {
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
             'code/setup.dm', 'tests/save_movement/source_adapter.py')},
+
+    # Stdlib-only access-file framing and complete helper-body projection.
+    'access_lists': {'files': ('tests/access_lists/test_access_lists.py',),
+        'paths': ('tests/access_lists/',),
+        'shared_paths': ('code/_helpers/access_lists.dm', 'code/setup.dm', 'code/world.dm',
+                   'code/modules/admin/admin.dm', 'code/game/mob/new_player/new_player.dm',
+                   'civ13.dme', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',
