@@ -7,6 +7,8 @@ var/global/list/valid_coordinates = list()
 /mob/living/human/var/can_check_distant_coordinates = FALSE
 
 /mob/living/human/proc/make_artillery_officer()
+	verbs += /mob/living/human/proc/Check_Coordinates
+	verbs += /mob/living/human/proc/Reset_Coordinates
 	can_check_distant_coordinates = TRUE
 
 /mob/living/human/proc/make_artillery_scout()
@@ -82,7 +84,7 @@ var/global/list/valid_coordinates = list()
 		announcement_cooldown = world.time+600
 		log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
 	else
-		to_chat(usr, "You can't make an annoucement while you're dead!")
+		to_chat(usr, "You can't make an announcement while you're dead!")
 
 /mob/living/human/proc/Commander_Announcement()
 	set category = "Officer"
@@ -107,15 +109,33 @@ var/global/list/valid_coordinates = list()
 		announcement_cooldown = world.time+1800
 		log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
 	else
-		to_chat(usr, "You can't make an annoucement while you're dead!")
+		to_chat(usr, "You can't make an announcement while you're dead!")
 
 
 
-// the only thing different about these verbs is the category
+// Officers and scouts share the same coordinate tracking; only the verb category differs.
+
+/mob/living/human/proc/Check_Coordinates()
+	set category = "Officer"
+	set name = "Check Coordinates"
+	track_coordinates()
+
+/mob/living/human/proc/Reset_Coordinates()
+	set category = "Officer"
+	set name = "Reset Coordinates"
+	reset_coordinates_tracking()
 
 /mob/living/human/proc/Check_Coordinates_Chump()
 	set category = "Scout"
 	set name = "Check Coordinates"
+	track_coordinates()
+
+/mob/living/human/proc/Reset_Coordinates_Chump()
+	set category = "Scout"
+	set name = "Reset Coordinates"
+	reset_coordinates_tracking()
+
+/mob/living/human/proc/track_coordinates()
 	if (!check_coords_check())
 		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
 		return
@@ -132,9 +152,7 @@ var/global/list/valid_coordinates = list()
 		checking_coords[2] = y
 		to_chat(usr, "<span class = 'notice'>You've started checking coordinates at <b>[x],[y]</b>.</span>")
 
-/mob/living/human/proc/Reset_Coordinates_Chump()
-	set category = "Scout"
-	set name = "Reset Coordinates"
+/mob/living/human/proc/reset_coordinates_tracking()
 	if (!check_coords_check())
 		to_chat(usr, "<span class = 'warning'>You can't use this yet.</span>")
 		return

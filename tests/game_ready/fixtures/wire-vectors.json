@@ -1,0 +1,26 @@
+[
+  {
+    "data": {
+      "schema": "game_ready.v1",
+      "event": "game_ready",
+      "server": "nomads",
+      "boot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "round": "A1b-2_C",
+      "generation_kind": "fresh",
+      "generation": "fresh:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "ack": "6286fd4b5fb59475c3a4a180274d96cb"
+  },
+  {
+    "data": {
+      "schema": "game_ready.v1",
+      "event": "game_ready",
+      "server": "nomads",
+      "boot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "round": "saved-round",
+      "generation_kind": "restored",
+      "generation": "round-v2:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "ack": "e5045f78d66745c51b89edc6701f1f37"
+  }
+]

@@ -41,9 +41,9 @@
 			if (turns_since_move >= move_to_delay)
 				var/turf/destination = get_step(src, pick(4, 8))
 				var/moved = FALSE
-				if (npc_subtile_species_enabled)
+				if (npc_subtile_species_enabled && npc_subtile_enabled)
 					moved = ai_step(destination, move_to_delay, TRUE)
-				else
+				else if (npc_subtile_species_legacy_ready())
 					moved = Move(destination)
 				if (moved)
 					turns_since_move = FALSE
@@ -61,7 +61,7 @@
 
 /mob/living/simple_animal/crab/small/trilobite
 	name = "trilobite"
-	desc = "A hard-shelled artiopodan. it seems to be scavanging for food."
+	desc = "A hard-shelled artiopodan. it seems to be scavenging for food."
 	icon_state = "trilobite_living"
 	icon_living = "trilobite_living"
 	icon_dead = "trilobite_dead"

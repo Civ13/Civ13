@@ -76,7 +76,7 @@ var/no_loop_tantive = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Rebellion</b> has successfuly defended the Vantive IV bridge! The Rebels have halted the Imperial Shocktroopers from Boarding!"
+		var/message = "The <b>Rebellion</b> has successfully defended the Vantive IV bridge! The Rebels have halted the Imperial Shocktroopers from Boarding!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

@@ -173,7 +173,7 @@
 		if (istype(W, /obj/item/weapon/weldingtool)) // Repair normally with a welding tool
 			visible_message("[M] starts repairing the [src]...")
 			if (do_after(M, 200, src))
-				visible_message("[M] sucessfully repairs the [src].")
+				visible_message("[M] successfully repairs the [src].")
 				broken = FALSE
 				for (var/obj/structure/vehicleparts/frame/F in get_turf(src))
 					F.update_icon()
@@ -184,7 +184,7 @@
 			if (MAT.amount >= 10)
 				visible_message("[M] starts repairing the [src]...")
 				if (do_after(M, 300, src))
-					visible_message("[M] sucessfully repairs the [src].")
+					visible_message("[M] successfully repairs the [src].")
 					MAT.amount -= 10
 					broken = FALSE
 					return
@@ -271,7 +271,7 @@
 			visible_message("[M] starts repairing the [src]...")
 			if (!do_after(M, 200, src))
 				return
-			visible_message("[M] sucessfully repairs the [src].")
+			visible_message("[M] successfully repairs the [src].")
 			broken = FALSE
 			return
 		else if (istype(W, /obj/item/stack/material/steel)) // Repair at the cost of 10 steel and slower
@@ -282,7 +282,7 @@
 			visible_message("[M] starts repairing the [src]...")
 			if (!do_after(M, 300, src))
 				return
-			visible_message("[M] sucessfully repairs the [src].")
+			visible_message("[M] successfully repairs the [src].")
 			MAT.amount -= 10
 			broken = FALSE
 			return

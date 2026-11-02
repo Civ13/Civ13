@@ -219,7 +219,7 @@
 		faction2_npcs++
 		messages["injured"] = list("!!I'm hit!","!!Ye dare fight an old man?!")
 		messages["backup"] =list( "!!I need help!","!!To my side!")
-		messages["enemy_sighted"] = list("!!Cripple abuser!","!!Enemy in my sights! Even though I cant see!")
+		messages["enemy_sighted"] = list("!!Cripple abuser!","!!Enemy in my sights! Even though I can't see!")
 		messages["grenade"] = list("!!OOO, A SCARY GRENADE!!!", "!!AHARGH, I EAT GRENADES FOR BREAKFAST!!")
 		icon_state = "pirate_friendly_blind"
 /mob/living/simple_animal/hostile/human/voyage/pirate/friendly/female

@@ -161,6 +161,27 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 			entries += list(list("name" = html_encode("[route["name"]]"), "details" = details, "related" = related, "file" = route["file"], "line" = route["line"], "revision" = route["audit_commit"]))
 	return list("name" = html_encode("[name]"), "heading" = findtext("[resource_id]", "/turf/") == 1 ? "Gathering from" : "How to obtain", "routes" = entries, "more" = islist(routes) && routes.len > 12)
 
+// Family metadata is generated from reviewed public recipe/output identities.
+// Navigation still selects only canonical recipe IDs, never family IDs.
+/datum/crafting_atlas_presenter/tgui/proc/family_variants(list/members, recipe_id)
+	var/list/options = list()
+	for (var/list/member in members)
+		var/list/group = member["group"]
+		var/list/matches = member["matches"]
+		var/list/chosen = matches[1]
+		for (var/list/variant in matches)
+			if (variant["id"] == recipe_id)
+				chosen = variant
+		var/list/products = list()
+		for (var/list/product in group["outputs"])
+			products += "[product["quantity"]] x [product["name"]]"
+		var/list/ingredients = list()
+		for (var/list/ingredient in group["inputs"])
+			ingredients += "[ingredient["quantity"]] x [ingredient["name"]]"
+		var/label = "[jointext(products, ", ")] / needs [jointext(ingredients, ", ")] / [chosen["kind"]] / [group["era_label"]] (line [chosen["line"]])"
+		options += list(list("id" = chosen["id"], "label" = html_encode(label)))
+	return options
+
 /datum/crafting_atlas_presenter/tgui/proc/model(datum/crafting_atlas_reference/reference, mob/viewer, query = "", page = 1, resource_id = "", legacy = FALSE, era = "", processor = "", recipe_id = "")
 	query = copytext("[query]", 1, 65)
 	page = max(1, min(10000, round(page)))
@@ -201,7 +222,11 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/list/selected
 	var/list/selected_group
 	var/list/selected_matches
+	var/selected_family
+	var/list/family_rows = list()
+	var/list/family_members = list()
 	var/matched = 0
+	var/recipe_matches = 0
 	for (var/list/recipe in reference.recipes)
 		var/list/matches = reference.matching_variants(recipe, query)
 		if (!matches.len)
@@ -217,16 +242,35 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 				continue
 		else if (era && (!islist(eras) || !isnum(text2num(era)) || !(text2num(era) in eras)))
 			continue
-		matched++
+		recipe_matches++
 		var/list/choice = reference.variant_record(recipe, matches, recipe_id)
+		var/family = recipe["family_id"] ? recipe["family_id"] : "recipe_[recipe["id"]]"
+		var/list/row = family_rows[family]
+		if (!islist(row))
+			matched++
+			row = list("id" = choice["id"], "family_id" = family, "name" = html_encode("[recipe["name"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "variant_count" = 0)
+			family_rows[family] = row
+			family_members[family] = list()
+			if (matched <= 150)
+				index += list(row)
+		row["variant_count"]++
+		if (row["era_label"] != html_encode("[recipe["era_label"]]"))
+			row["era_label"] = "Multiple unlock eras"
+		var/list/members = family_members[family]
+		members += list(list("group" = recipe, "matches" = matches))
 		if (!selected || choice["id"] == recipe_id)
 			selected = choice
 			selected_group = recipe
 			selected_matches = matches
-		if (matched <= 150)
-			index += list(list("id" = choice["id"], "name" = html_encode("[recipe["name"]]"), "era_label" = html_encode("[recipe["era_label"]]")))
+			selected_family = family
+			row["id"] = choice["id"]
 	data["recipes"] = index
-	data["recipe_count"] = matched
+	data["recipe_count"] = recipe_matches
+	data["family_count"] = matched
 	if (selected)
-		data["detail"] = recipe_data(reference, viewer, selected_group, selected_matches, selected)
+		var/list/detail = recipe_data(reference, viewer, selected_group, selected_matches, selected)
+		var/list/members = family_members[selected_family]
+		if (members.len > 1)
+			detail["family_variants"] = family_variants(members, selected["id"])
+		data["detail"] = detail
 	return data

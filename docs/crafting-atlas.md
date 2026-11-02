@@ -2,7 +2,7 @@
 
 The IC **Crafting Atlas** verb opens a local dependency diagram in the game
 browser. Craft menus link to the same default view. Search and unlock-era or
-processor filters narrow a sorted index of at most 150 matches; refine filters
+processor filters narrow a sorted index of at most 150 recipe families; refine filters
 to reach additional records. Select a recipe to follow inputs, quantities and
 outputs. **Legacy paginated list** deliberately opens the older 12-record pages.
 Requests are limited to once per second.
@@ -21,8 +21,34 @@ the stack while the tile has stock. Snow cover takes priority; map availability
 and uninterrupted actions still matter.
 Resource navigation clears recipe filters; era, processor and website recipe-system
 filters do not hide matching Resource results. Resource results are independently
-limited to 150; recipe results retain the in-game 150 and website 250 limits.
+limited to 150; recipe families retain the in-game 150 and website 250 limits.
 Empty or whitespace-only input browses recipes without listing every resource.
+
+## Recipe families and variants
+
+The website diagram and modern in-game diagram consolidate related recipes in
+the left index. **Recipe variant** on the right selects each recipe's own inputs,
+quantities, outputs, research/era requirements and source. For example, the
+fox-pelt and bison-pelt fur-glove recipes share a family while retaining their
+separate material costs. **Transformation / catalog variant** independently
+selects equivalent definitions from alternative catalogs.
+
+Family metadata is added to the existing generated catalog after semantic
+consolidation; it never merges recipe records or changes canonical IDs. Recipes
+must have the exact same name and one exact canonical output. A same-name recipe
+with a declared ancestor output can also anchor subtype variants. The source
+projection respects literal `parent_type` overrides; unknown, conflicting,
+cyclic or incomplete ancestry proves no relationship. Similar labels, path
+prefixes alone and unrelated multiple-output recipes are not grouping rules.
+This is a conservative source projection, not a replacement for DM compilation.
+
+Search, recipe-system, era and processor filters apply to each recipe and catalog
+variant before family grouping. Requirements remain visible; grouping does not
+assert current availability or hide another map's recipe by itself. Counts retain
+matching recipe entries and additionally report families. Index limits apply to
+families, and the right-side chooser retains every matching member of the
+selected family. Unknown/multiple unlock eras stay explicit. The classic paginated
+renderer retains its original recipe-entry pages and canonical navigation.
 
 Identical material definitions repeated in alternative catalogs share one index
 entry and one dependency node. **Transformation / catalog variant** selects the

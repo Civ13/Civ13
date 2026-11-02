@@ -156,3 +156,25 @@ brute/burn/missing state is an eleven-part allowlist, not evidence of a cause.
 Older wounds, unseen sources and causes absent from the snapshot remain unknown.
 This source change requires separately authorized game/worker updates to affect
 live Help; no deployment, restart or live inference is part of these checks.
+
+`test_toxin_context.py` captures the exact reported poison-damage question,
+aliases and follow-ups with injected transports. It verifies the complete compact
+mechanics record survives generic damage matches and accepted envelope budgets;
+insufficient budgets dispatch nothing. It checks empty-observation uncertainty,
+hidden-field exclusion, qualified negative nutrition/hydration values, and
+source-section hashes, changes, encoding and bounds. These are offline bridge
+contracts, not a current-player diagnosis, model-quality or native gameplay test.
+Run this file alone with `-m unittest discover -s tests/player_help -p test_toxin_context.py -v`.
+
+Answer-context quality (2026-11-02): `test_context_quality.py` captures the real
+prompt through an injected transport. It checks that round-start tips from
+`config/tips.txt` are retrievable, that the asking player's job title (`role`,
+sent by `game_context()` only when a job is assigned) is bounded and steers vague
+questions toward the matching role or game-mode guide without outranking
+question matches, plural folding with stopwords removed before folding,
+per-source diversity so near-duplicate rows cannot crowd out a guide, and that
+the prompt fits the configured `num_ctx` (default 8192) while larger windows
+admit more evidence. Reviewed wiki guides are pinned to civ13-wiki
+`36143d43ada6`; set `CIV13_WIKI_ROOT` to a checkout to verify every pinned hash.
+The native probe asserts the role snapshot is absent without a job and detached
+once captured. No model answer quality is established by these checks.

@@ -376,7 +376,7 @@ var/list/slot_equipment_priority = list( \
 	drop_from_inventory(I,Target)
 	return TRUE
 
-//Attemps to remove an object on a mob.
+//Attempts to remove an object on a mob.
 /mob/proc/remove_from_mob(var/obj/O)
 	u_equip(O)
 	if (client)

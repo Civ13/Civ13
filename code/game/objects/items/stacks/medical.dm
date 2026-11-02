@@ -451,7 +451,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "revival"
 /obj/item/revival_kit/attack(var/mob/living/human/M as mob, var/mob/user as mob)
-	user.visible_message(SPAN_NOTICE("[user] starts trying to revive [M]."), SPAN_NOTICE("You determinately start trying to perfom the work of gods on [M]."))
+	user.visible_message(SPAN_NOTICE("[user] starts trying to revive [M]."), SPAN_NOTICE("You determinately start trying to perform the work of gods on [M]."))
 	if (!do_after(user, 120, src))
 		user.visible_message(SPAN_NOTICE("[user] stops trying to revive [M]."), SPAN_NOTICE("You stop trying to revive [M]."))
 		return

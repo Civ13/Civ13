@@ -950,10 +950,14 @@ var/global/datum/persistence_admission_identity
 		return key == "attempt" || ..()
 
 // Admission and restart ownership enclose optional extraction recovery custody.
-/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)
+/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent, datum/startup_ready)
 	var/map_storage/storage = map_storage
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(storage, "load", transaction)
 	if(!operation) return FALSE
+	var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+	var/datum/ready_ticket = game_ready_hook ? call(game_ready_hook)("claim_load", startup_ready, operation, storage, transaction) : null
+	var/ready_round
+	var/ready_generation
 	operation.restart_transaction = transaction
 	var/datum/persistence_restore_policy/policy = storage.restore_policy
 	operation.restore_policy = policy
@@ -979,6 +983,9 @@ var/global/datum/persistence_admission_identity
 		var/watch = start_watch()
 		log_startup_progress("Starting map load...")
 		var/list/saved_round = storage.read_round_state()
+		if(ready_ticket)
+			ready_round = saved_round["game_id"]
+			ready_generation = saved_round["generation"]
 		if(transaction && saved_round["generation"] != transaction.expected_generation)
 			throw EXCEPTION("Restart generation changed before import")
 		storage.require_durable_world_idle()
@@ -1041,12 +1048,18 @@ var/global/datum/persistence_admission_identity
 		catch(var/exception/reset_error)
 			world.log << "World-save player cleanup failed: [reset_error]"
 		storage.last_error = primary_failure
+		if(game_ready_hook && ready_ticket) call(game_ready_hook)("load_failed", ready_ticket, operation)
 		operation.finish(FALSE)
 		world.log << "World-save import failed: [storage.last_error]"
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
 		return FALSE
-	operation.finish(TRUE)
+	if(operation.finish(TRUE) != TRUE)
+		if(game_ready_hook && ready_ticket) call(game_ready_hook)("load_failed", ready_ticket, operation)
+		storage.last_error = "World-save operation release was not confirmed."
+		persistence_startup_recovery_status = "unresolved"
+		return FALSE
 	persistence_startup_recovery_status = null
+	if(game_ready_hook && ready_ticket) call(game_ready_hook)("loaded", ready_ticket, operation, storage, transaction, ready_round, ready_generation)
 	// Restart recovery reclaims waiting clients after consuming its intent.
 	return 1
 

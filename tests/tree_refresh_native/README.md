@@ -247,3 +247,21 @@ the previous staged adapters, checked offline without Git-history dependency.
 No native attempt, live operation, deployment or production flicker fix is
 authorized by these instructions. A fresh source/toolchain-bound manifest and
 specific reviewed execution approval are required before any new native attempt.
+
+## Data-only dependency audit
+
+The manual workflow's `dependency-audit` mode is a separate five-minute hosted
+Windows job. The native fixture job is excluded for that mode. It acquires only
+the pinned official installer as data, rejects non-HTTPS/off-domain redirects,
+and reuses the existing bounded extraction without running the installer.
+It never launches a BYOND compiler, daemon or client, installs prerequisites,
+reads user credentials/profiles, or changes network/security settings.
+
+The report separates normal imports from delay imports and logical API sets.
+It records exact file/architecture/hash observations in the extracted bin and
+bounded Windows system locations, with at most 128 paths and 256 MiB read.
+Unresolved providers are facts from those locations, not a complete emulation
+of Windows KnownDLL, API-set, WinSxS or runtime LoadLibrary resolution. A file
+inventory cannot identify retrospectively which DLL was absent on another VM.
+Native readiness is always false. Output is capped at 4 MiB and failures are
+retained; no automatic installation or runtime retry follows a missing provider.

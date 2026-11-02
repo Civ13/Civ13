@@ -23,11 +23,63 @@ try {
     [IO.File]::WriteAllText($catalog, $payload, [Text.UTF8Encoding]::new($false))
 
     $help = @(& $exe --help 2>&1) -join "`n"
-    if ($LASTEXITCODE -ne 0 -or !$help.Contains('--registered-instances') -or
+    if ($LASTEXITCODE -ne 0 -or !$help.Contains('--manage-servers') -or !$help.Contains('--registered-instances') -or
         !$help.Contains('inspect the displayed status for freshness') -or
         !$help.Contains('launcher is optional for BYOND gameplay')) {
         throw 'Packaged help omitted the operator view or its status and gameplay limits.'
     }
+    # Exercise the packaged early entrypoint with cancellation and an isolated
+    # application-data sentinel. No real catalog or server is supplied.
+    $isolatedAppData = Join-Path $fixture 'early-local-app-data'
+    New-Item -ItemType Directory -Path $isolatedAppData | Out-Null
+    $start = [Diagnostics.ProcessStartInfo]::new()
+    $start.FileName = $exe
+    $start.ArgumentList.Add('--manage-servers')
+    $start.UseShellExecute = $false
+    $start.RedirectStandardInput = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    $start.Environment['LOCALAPPDATA'] = $isolatedAppData
+    $process = [Diagnostics.Process]::Start($start)
+    if ($null -eq $process) { throw 'Packaged early management process did not start.' }
+    try {
+        $stdout = $process.StandardOutput.ReadToEndAsync()
+        $stderr = $process.StandardError.ReadToEndAsync()
+        $process.StandardInput.WriteLine()
+        $process.StandardInput.Close()
+        if (!$process.WaitForExit(15000)) {
+            throw 'Packaged early management process did not exit after cancellation.'
+        }
+        if (![Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($stdout, $stderr), 3000)) {
+            throw 'Packaged early management output did not finish draining.'
+        }
+        $earlyText = $stdout.GetAwaiter().GetResult() + $stderr.GetAwaiter().GetResult()
+        if ($process.ExitCode -ne 0 -or
+            !$earlyText.Contains('Registered server instances - read-only, one-time view.') -or
+            !$earlyText.Contains('Server management cancelled.') -or
+            $earlyText.Contains('Checking for launcher updates') -or
+            $earlyText.Contains('Required BYOND version was not found') -or
+            $earlyText.Contains('Opening the official BYOND installer') -or
+            @(Get-ChildItem -LiteralPath $isolatedAppData -Force).Count -ne 0) {
+            throw 'Packaged early management cancellation entered normal startup or failed.'
+        }
+    } finally {
+        try {
+            if (!$process.HasExited) {
+                try {
+                    $process.Kill()
+                } catch [InvalidOperationException] {
+                    if (!$process.HasExited) { throw }
+                }
+            }
+            if (!$process.WaitForExit(3000)) {
+                throw 'Packaged early management process did not terminate after cleanup.'
+            }
+        } finally {
+            $process.Dispose()
+        }
+    }
+
     $output = @(& $exe --registered-instances $fixture $catalog 'example-host' 2>&1)
     $code = $LASTEXITCODE
     $text = $output -join "`n"
@@ -48,7 +100,7 @@ try {
         !$text.Contains('Registered instances remain unknown') -or $text.Contains($fixture)) {
         throw 'Packaged invalid catalog did not retain unknown registration state.'
     }
-    Write-Output 'PASS packaged registration view: synthetic catalog parsed; process and ownership remain unknown; malformed input refused.'
+    Write-Output 'PASS packaged management cancellation and registration view: early menu exited; synthetic catalog parsed; process and ownership remain unknown; malformed input refused.'
 } finally {
     # Only the unique directory created by this invocation, inside the checked parent.
     if ($created -and (Test-Path -LiteralPath $fixture)) {

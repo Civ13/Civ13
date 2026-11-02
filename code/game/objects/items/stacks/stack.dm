@@ -316,7 +316,6 @@
 	var/customvar = ""
 	var/customvar2 = ""
 	var/customdesc = ""
-	var/turn_dir = 0
 	var/mob/living/human/H = user
 	var/datum/furniture_joinery_action/joinery
 	var/datum/stone_mold_carving/carving
@@ -324,6 +323,11 @@
 		carving = new(src, H, recipe)
 		if (quantity != 1 || !carving.valid())
 			to_chat(user, SPAN_WARNING("Carving molds needs sandstone, completed research, a chisel and a hammer or mallet equipped or at your feet."))
+			return
+	var/datum/tablet_press_construction/press_construction
+	if (recipe.result_type == /obj/structure/chem_master/tablet_press/constructed)
+		press_construction = new(src, H, recipe, quantity)
+		if (!press_construction.valid())
 			return
 	if (findtext(recipe.title, "joinery: ") == 1)
 		joinery = new(src, H, recipe)
@@ -1855,6 +1859,8 @@
 			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
+		if (press_construction && !press_construction.valid())
+			return
 		if (H && !joinery && !carving)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
@@ -1956,8 +1962,11 @@
 			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
 			return
 
+	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	// Retain and recheck tools, secondary stock, occupied tile and research after
 	// the wait. No debit occurs on an interrupted or invalidated action.
+	if (press_construction && !press_construction.valid())
+		return
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
 		return
@@ -1978,6 +1987,8 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+		if (offer_stone_hatchet)
+			offer_crafted_axe_to_active_hand(user, O)
 
 		if (building_floor_recipe)
 			var/obj/covers/floor = O
@@ -2095,9 +2106,6 @@
 			O.desc = customdesc
 			var/obj/structure/sign/signpost/STR = O
 			STR.update_icon()
-		if (istype(O, /obj/structure/rails/turn))
-			var/obj/structure/rails/turn/RT = O
-			RT.turn_dir = turn_dir
 		O.set_dir(user.dir)
 		if (istype(O, /obj/structure/vehicleparts/frame))
 			O.dir = 1

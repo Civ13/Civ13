@@ -37,3 +37,11 @@ all model transports in these spool checks are injected and offline.
 BYOND 516.1681 rejects the DM string escape `\r`; use `ascii2text(13)` for
 carriage-return normalization. `\n` is supported. JSON-decoded CRLF test data
 must still exercise the actual native renderer, not only a Python equivalent.
+
+<!-- 2026-11-02: wiki guide re-pins -->
+Reviewed wiki guides are pinned by LF-normalized SHA-256 plus
+WIKI_REVIEWED_REVISION in scripts/player_help_bridge.py; a changed page is
+silently dropped from Help. After a civ13-wiki merge that edits a pinned guide,
+run `python3 scripts/agent_preflight.py wiki-pins --wiki-root <wiki checkout> --write`,
+review the changed pages and open a re-pin PR. Deployment also needs the
+worker's wiki_root updated and a worker restart.

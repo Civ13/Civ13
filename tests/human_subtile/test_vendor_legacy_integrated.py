@@ -59,7 +59,7 @@ class VendorAndLegacy(unittest.TestCase):
     def test_disabled_walkers_keep_native_commands(self):
         walk = section(SOURCE, '/mob/living/simple_animal/proc/npc_subtile_species_walk(',
                        '/mob/living/simple_animal/proc/npc_subtile_start_wild_walk(')
-        legacy = walk.split('if (!npc_subtile_species_enabled)', 1)[1].split('\n\t\treturn', 1)[0]
+        legacy = walk.split('if (!npc_subtile_species_enabled || !npc_subtile_enabled)', 1)[1].split('\n\t\treturn', 1)[0]
         for mode, call in (('random', 'walk_rand(src, lag)'), ('towards', 'walk_towards(src, target, lag)'),
                            ('away', 'walk_away_od(src, target, distance_limit, lag)'),
                            ('path', 'walk_to(src, target, distance_limit, lag)'),

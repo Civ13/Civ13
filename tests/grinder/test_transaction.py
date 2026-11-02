@@ -761,9 +761,12 @@ class AcquisitionProjection(Projection):
         timing = stack.split('\n\tif (recipe.time)\n', 1)[1].split(
             '\n\tif (findtext(recipe.title, "coil"))', 1)[0]
         debit = re.search(r'^\tif \(use\(required, \(joinery \|\| carving\) \? null : H\)\)', stack, re.M)[0]
+        # The grinder input is electronics, so the actual stone-hatchet predicate
+        # evaluates false. Include its production declaration before the debit.
+        placement = re.search(r'^\tvar/offer_stone_hatchet = .+$', stack, re.M)[0]
         constructor = stack.split('\n\t\tvar/atom/O\n', 1)[1].split('\n\t\tif (building_floor_recipe)', 1)[0]
         self.source += ('\n/datum/acquisition/proc/build()\n\tif (!can_use(required))\n' + admission +
-                        '\n\tif (recipe.time)\n' + timing + '\n' + debit +
+                        '\n\tif (recipe.time)\n' + timing + '\n' + placement + '\n' + debit +
                         '\n\t\tvar/atom/O\n' + constructor)
         # Only the pre-existing circuit skill predicate is needed here; payment
         # and held secondary iron are separately source-backed below.
@@ -815,7 +818,7 @@ class AcquisitionProjection(Projection):
         recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
                         on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
         self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,
-                 required=recipe.req_amount, produced=1, joinery=None, carving=None)
+                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None)
         return stock
 
 

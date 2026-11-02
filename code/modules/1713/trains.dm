@@ -73,32 +73,26 @@
 /obj/structure/rails/turn/right
 	icon_state = "rails_turn_right"
 	sw_direction = "right"
-	New()
-		..()
-		switch(dir)
-			if (1)
-				turn_dir = 4
-			if (2)
-				turn_dir = 8
-			if (4)
-				turn_dir = 2
-			if (8)
-				turn_dir = 1
 
 /obj/structure/rails/turn
 	icon_state = "rails_turn_left"
 	sw_direction = "left"
-	New()
-		..()
-		switch(dir)
-			if (1)
-				turn_dir = 8
-			if (2)
-				turn_dir = 4
-			if (4)
-				turn_dir = 1
-			if (8)
-				turn_dir = 2
+
+/obj/structure/rails/turn/New()
+	..()
+	update_turn_dir()
+
+// A crafted turn is created facing south and then rotated to the builder's
+// facing, so the exit direction must follow every later dir change.
+/obj/structure/rails/turn/set_dir(new_dir)
+	. = ..()
+	update_turn_dir()
+
+/obj/structure/rails/turn/proc/update_turn_dir()
+	if (!(dir in cardinal))
+		turn_dir = null
+		return
+	turn_dir = turn(dir, sw_direction == "right" ? -90 : 90)
 
 /obj/structure/rails/split/switcher
 	icon_state = "rails_split_f_left"
@@ -715,7 +709,7 @@
 	if (aprfuel >= 0.8)
 		to_chat(user, "The combustion chamber seems full!")
 	else if (aprfuel < 0.8 && aprfuel >= 0.6)
-		to_chat(user, "The combustion chamber seems to be suficiently fueled.")
+		to_chat(user, "The combustion chamber seems to be sufficiently fueled.")
 	else if (aprfuel < 0.6 && aprfuel >= 0.4)
 		to_chat(user, "The combustion chamber seems to be stable.")
 	else if (aprfuel < 0.4 && aprfuel >= 0.2)

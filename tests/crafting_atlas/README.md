@@ -55,3 +55,14 @@ separation, unknown/multiple tiers, actual processor conversions and source
 drift. Existing `test_crafting_atlas.py` retains catalog freshness and procedural
 source controls. CI selects this suite for PRs introducing executable tests;
 existing suites remain opt-in afterward.
+
+The shared presentation-family metadata is verified offline by
+`tests/test_atlas_variants.py`, including exact output/name identity, declared
+ancestry and parent overrides, unknown/conflicting/cyclic parents, preservation
+of every canonical recipe field, and the supplied fur-glove example. The existing
+`variants.test.mjs` additionally executes the production web template through the
+full family/recipe/catalog selection flow, per-variant quantities and source,
+filters, keyboard focus and metadata-search negative controls. Modern frontend
+and server-adapter contracts live in the existing CraftingAtlas React tests and
+`tests/tgui/test_atlas_adapter.py`. These are source/DOM checks, not native game
+or installed-client acceptance. No recipe or crafting action is added.

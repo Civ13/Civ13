@@ -115,4 +115,33 @@ class AtlasAdapterContract(unittest.TestCase):
   self.assertIn("'code/game/mob/crafting_atlas.dm'",workflow)
   self.assertIn("'code/game/mob/crafting_atlas_tgui.dm'",workflow)
 
+class AtlasFamilyContract(unittest.TestCase):
+ def test_family_metadata_is_presentation_only_and_old_catalogs_remain_separate(self):
+  self.assertIn('recipe["family_id"] ? recipe["family_id"] : "recipe_[recipe["id"]]"',MODEL)
+  self.assertNotIn('family_id',NAV)
+  self.assertNotIn('family_id',CORE)
+  self.assertNotRegex(ADAPTER,r'new /obj|new typepath|text2path|parent_type')
+
+ def test_grouping_is_after_each_recipe_filter_and_before_family_bound(self):
+  self.assertLess(MODEL.index('reference.matching_variants(recipe, query)'),MODEL.index('var/family = recipe["family_id"]'))
+  for guard in ('processor && recipe["processor"] != processor','era == "unknown"','era == "multiple"','!(text2num(era) in eras)'):
+   self.assertLess(MODEL.index(guard),MODEL.index('var/family = recipe["family_id"]'))
+  self.assertIn('if (!islist(row))\n\t\t\tmatched++',MODEL)
+  self.assertIn('if (matched <= 150)\n\t\t\t\tindex += list(row)',MODEL)
+  self.assertIn('data["recipe_count"] = recipe_matches',MODEL)
+  self.assertIn('data["family_count"] = matched',MODEL)
+  self.assertIn('members += list(list("group" = recipe, "matches" = matches))',MODEL)
+  self.assertIn('if (!selected || choice["id"] == recipe_id)',MODEL)
+  self.assertIn('row["id"] = choice["id"]',MODEL)
+  self.assertIn('family_members[selected_family]',MODEL)
+  self.assertIn('recipe_data(reference, viewer, selected_group, selected_matches, selected)',MODEL)
+
+ def test_family_selector_retains_canonical_choices_and_selected_detail(self):
+  options=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/family_variants(',1)[1].split('/datum/crafting_atlas_presenter/tgui/proc/model(',1)[0]
+  for marker in ('var/list/matches = member["matches"]','variant["id"] == recipe_id','chosen = variant','group["outputs"]','product["quantity"]','product["name"]','group["inputs"]','ingredient["quantity"]','ingredient["name"]','chosen["kind"]','group["era_label"]','chosen["line"]','"id" = chosen["id"]','html_encode(label)'):
+   self.assertIn(marker,options)
+  self.assertNotIn('family_',NAV)
+  self.assertIn('members.len > 1',MODEL)
+  # Core IDs, classic HTML, search and action admission remain unchanged, covered above.
+
 if __name__=='__main__':unittest.main()
