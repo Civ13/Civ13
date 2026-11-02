@@ -123,6 +123,30 @@ def passive(source):
             raise AssertionError('active UI side effect: ' + forbidden)
 
 
+def required_flow(source):
+    """Fingerprint direct cost references and their indentation-based owners.
+
+    This is a source contract for the current procedure, not DM execution.
+    Other recipe/output statements do not enter this fingerprint.
+    """
+    source = re.sub(r'/\*.*?\*/', '', source, flags=re.S)
+    parents, references = [], []
+    for raw in source.splitlines():
+        code = raw.split('//', 1)[0].rstrip()
+        if not code.strip():
+            continue
+        indent = len(code) - len(code.lstrip('\t'))
+        code = code.strip()
+        while parents and parents[-1][0] >= indent:
+            parents.pop()
+        identifiers = re.sub(r'"(?:\\.|[^"\\])*"', '""', code)
+        if re.search(r'\brequired\b', identifiers):
+            references.append({'ancestors': [owner for _, owner in parents],
+                               'statement': code})
+        parents.append((indent, code))
+    return references
+
+
 def verify_stack_contract(source):
     menu = section(source, '/obj/item/stack/proc/list_recipes', '// Custom qdel')
     ordered(menu, 'if (!recipes)\n\t\treturn',
@@ -133,10 +157,17 @@ def verify_stack_contract(source):
     passive(menu.replace('user.set_using_object(src)', ''))
     produce = section(source, '/obj/item/stack/proc/produce_recipe', '/obj/item/stack/Topic')
     once(produce, 'var/required = quantity*recipe.req_amount')
+    if required_flow(produce) != CONTRACTS['required_flow']:
+        raise AssertionError('required value/reference ownership changed')
+    admission = section(produce, '\tif (!can_use(required))\n',
+                        '\n\tif (recipe.one_per_turf')
+    if admission != CONTRACTS['stack_admission']:
+        raise AssertionError('insufficient-material admission/refusal changed')
+    once(produce, CONTRACTS['stack_debit_entry'])
     once(produce, CONTRACTS['stack_wait'])
     once(produce, CONTRACTS['stack_refund'])
     debit = 'if (use(required, (joinery || carving) ? null : H))'
-    if len(re.findall(r'(?<![.A-Za-z0-9_])use\(', '\n'.join(line.split('//', 1)[0] for line in produce.splitlines()))) != 1:
+    if len(re.findall(r'(?<![.A-Za-z0-9_])(?:src\.)?use\(', '\n'.join(line.split('//', 1)[0] for line in produce.splitlines()))) != 1:
         raise AssertionError('primary debit count changed')
     ordered(produce, 'if (!can_use(required))', CONTRACTS['stack_wait'],
             debit, 'O = new recipe.result_type(user.loc, recipe.use_material)',
@@ -380,6 +411,32 @@ class CraftingMovementContracts(unittest.TestCase):
         with self.subTest(control='double primary debit'), self.assertRaises(AssertionError):
             verify_stack_contract(source.replace(debit, 'use(required, H)\n\t' + debit, 1))
 
+
+    def test_crafting_cost_envelope_rejects_required_reset_and_missing_refusal_return(self):
+        source = read(STACK)
+        debit = '\tif (use(required, (joinery || carving) ? null : H))'
+        admission = section(source, '\tif (!can_use(required))\n',
+                            '\n\tif (recipe.one_per_turf')
+        self.assertEqual(admission.count('\n\t\treturn'), 1)
+        mutants = (
+            ('zero required before debit', source.replace(debit, '\trequired = 0\n' + debit, 1)),
+            ('remove insufficient-material return',
+             source.replace(admission, admission.replace('\n\t\treturn', '', 1), 1)),
+            ('compound required reset', source.replace(debit, '\trequired *= 0\n' + debit, 1)),
+            ('decrement required', source.replace(debit, '\trequired--\n' + debit, 1)),
+            ('reset refund amount', source.replace(
+                '\t\t\tvar/obj/structure/research_bench/RBN = O',
+                '\t\t\tvar/obj/structure/research_bench/RBN = O\n\t\t\trequired = 0', 1)),
+            ('broaden variable-cost owner', source.replace(
+                '\tvar/inpt = 50\n\tif (recipe.result_type == /obj/structure/cannon/modern/tank)',
+                '\tvar/inpt = 50\n\tif (TRUE)', 1)),
+            ('qualified primary debit before wait', source.replace(
+                '\tif (recipe.time)\n', '\tsrc.use(1, H)\n\tif (recipe.time)\n', 1)),
+        )
+        for name, mutated in mutants:
+            with self.subTest(control=name), self.assertRaises(AssertionError):
+                verify_stack_contract(mutated)
+
     def test_wait_contract_rejects_signature_claim_timing_and_cleanup_mutations(self):
         source = read(WAIT)
         for before, after in (
@@ -444,6 +501,9 @@ class CraftingMovementContracts(unittest.TestCase):
     def test_scoped_contracts_allow_unrelated_procedure_and_recipe_content_changes(self):
         stack = read(STACK)
         self.assertEqual(stack.count('Amount Left:'), 1)
+        catalog = 'else if (recipe.result_type == /obj/item/stack/money/silvercoin)\n\t\tproduced = 10'
+        self.assertEqual(stack.count(catalog), 1)
+        stack = stack.replace(catalog, catalog.replace('produced = 10', 'produced = 12'))
         verify_stack_contract(stack.replace('Amount Left:', 'Stock Remaining:') + '\n/obj/item/stack/proc/unrelated_ui_probe()\n\treturn\n')
         verify_wait_contract(read(WAIT) + '\n/proc/unrelated_wait_probe()\n\treturn\n')
         sources = {path: read(path) for path in (ATLAS, BROWSER, SKIN)}

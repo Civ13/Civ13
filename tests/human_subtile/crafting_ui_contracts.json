@@ -10,5 +10,77 @@
   "onclose": "/proc/onclose(mob/user, windowid, var/atom/ref=null)\n\tif (!user || !user.client) return\n\tvar/param = \"null\"\n\tif (ref)\n\t\tparam = \"\\ref[ref]\"\n\n\twinset(user, windowid, \"on-close=\\\".windowclose [param]\\\"\")\n\n\t//to_chat(world, \"OnClose [user]: [windowid] : [\"on-close=\\\".windowclose [param]\\\"\"]\")\n\n\n",
   "windowclose": "/client/verb/windowclose(var/atomref as text)\n\tset hidden = TRUE\t\t\t\t\t\t// hide this verb from the user's panel\n\tset name = \".windowclose\"\t\t\t// no autocomplete on cmd line\n\n\t//to_chat(world, \"windowclose: [atomref]\")\n\tif (atomref!=\"null\")\t\t\t\t// if passed a real atomref\n\t\tvar/hsrc = locate(atomref)\t// find the reffed atom\n\t\tif (hsrc)\n\t\t\t//to_chat(world, \"[src] Topic [href] [hsrc]\")\n\t\t\tusr = mob\n\t\t\tTopic(\"close=1\", list(\"close\"=\"1\"), hsrc)\t// this will direct to the atom's\n\t\t\treturn\t\t\t\t\t\t\t\t\t\t// Topic() proc via client.Topic()\n\n\t// no atomref specified (or not found)\n\t// so just reset the user mob's machine var\n\tif (src && mob)\n\t\t//to_chat(world, \"[src] was [mob.machine], setting to null\")\n\t\tmob.unset_using_object()\n\treturn\n",
   "legacy_wait": "/mob/var/may_do_after = TRUE\n#ifdef CIV13_GAMEPLAY_BRIDGE\n#define CIV13_GAMEPLAY_WAIT_GUARDS\n#endif\n#ifdef CIV13_GAMEPLAY_BRIDGE\n/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null)\n#else\n/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null)\n#endif\n\tif (!user || !user.may_do_after)\n\t\treturn FALSE\n#ifdef CIV13_GAMEPLAY_BRIDGE\n\tif (!isnull(gameplay_context) && !isnull(mining_context))\n\t\treturn FALSE\n\tvar/datum/gameplay_action_lease/gameplay_lease\n\tif (!isnull(gameplay_context))\n\t\tif (!istype(gameplay_context, /datum/gameplay_action_lease))\n\t\t\treturn FALSE\n\t\tgameplay_lease = gameplay_context\n\t\tif (!gameplay_lease.claim_gather_wait(user, target))\n\t\t\treturn FALSE\n#endif\n\tif (!isnull(mining_context) && (!istype(mining_context, /datum/pickaxe_mining_action) || !mining_context.claim(user, target)))\n\t\treturn FALSE\n\tif (mining_context)\n\t\tmining_context.wait_started = TRUE\n\tuser.survival_action_started()\n\n\tif (check_for_repeats)\n\t\tuser.may_do_after = FALSE\n\n\tvar/target_loc = null\n\n\tif (target)\n\t\ttarget_loc = target.loc\n\n\tvar/atom/original_loc = user.loc\n\n\tvar/holding = user.get_active_hand()\n\n\tvar/datum/progressbar/progbar\n\tif (progress)\n\t\tprogbar = new(user, delay, target)\n\t\tif (mining_context)\n\t\t\tmining_context.progressbar = progbar\n\n\tvar/endtime = world.time + delay\n\tvar/starttime = world.time\n\t. = TRUE\n\twhile (world.time < endtime)\n\t\tsleep(0.1)\n#ifdef CIV13_GAMEPLAY_BRIDGE\n\t\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t\t. = FALSE\n\t\t\tbreak\n#endif\n\t\tif (mining_context && !mining_context.valid(user, target))\n\t\t\t. = FALSE\n\t\t\tbreak\n\t\tif (progress)\n\t\t\tprogbar.update(world.time - starttime)\n\n\t\tif (!user || user.incapacitated(incapacitation_flags))\n\t\t\t. = FALSE\n\t\t\tbreak\n\n\t\tif (target_loc && (!target || target_loc != target.loc))\n\t\t\t. = FALSE\n\t\t\tbreak\n\n\t\tif (!can_move)\n\t\t\tif (user.loc != original_loc)\n\t\t\t\t. = FALSE\n\t\t\t\tbreak\n\n\t\tif (needhand)\n\t\t\tif (user.get_active_hand() != holding)\n\t\t\t\t. = FALSE\n\t\t\t\tbreak\n\tif (mining_context && !mining_context.valid(user, target))\n\t\t. = FALSE\n\tif (user)\n\t\tuser.may_do_after = TRUE\n\t\tif (mining_context)\n\t\t\tmining_context.wait_started = FALSE\n\t\tuser.survival_action_finished()\n\n\tif (progbar)\n\t\tqdel(progbar)\n#ifdef CIV13_GAMEPLAY_BRIDGE\n\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t. = FALSE\n#endif\n\tif (mining_context)\n\t\tmining_context.progressbar = null\n\n",
-  "legacy_unlinked": "/mob/living/human/proc/human_subtile_unlinked()\n\treturn !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) && !using_cannon && !football"
+  "legacy_unlinked": "/mob/living/human/proc/human_subtile_unlinked()\n\treturn !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) && !using_cannon && !football",
+  "cost_scope_base": "593ada43aab5a6985c86aab68960f38023b7ca82",
+  "required_flow": [
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)"
+      ],
+      "statement": "var/required = quantity*recipe.req_amount"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)"
+      ],
+      "statement": "if (!can_use(required))"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)",
+        "if (recipe.result_type == /obj/structure/cannon/modern/tank)"
+      ],
+      "statement": "required = 40*(inpt/75)"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)",
+        "else if (recipe.result_type == /obj/item/stack/ammopart/casing/tank)"
+      ],
+      "statement": "required = 2*(inpt/75)"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)",
+        "if (ispath(recipe.result_type, /obj/structure/drill))"
+      ],
+      "statement": "if (!can_use(required) || !drill_steel)"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)",
+        "else if (recipe.result_type == /obj/item/stack/material/electronics)"
+      ],
+      "statement": "if (!can_use(required) || !circuit_iron)"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)"
+      ],
+      "statement": "if (use(required, (joinery || carving) ? null : H))"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)",
+        "if (use(required, (joinery || carving) ? null : H))",
+        "else if (istype(O, /obj/structure/research_bench))",
+        "if (H.civilization && H.civilization != \"none\")",
+        "if (map && map.count_faction_benches(H.civilization) >= map.get_bench_cap(H.civilization))"
+      ],
+      "statement": "if (required > 0)"
+    },
+    {
+      "ancestors": [
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)",
+        "if (use(required, (joinery || carving) ? null : H))",
+        "else if (istype(O, /obj/structure/research_bench))",
+        "if (H.civilization && H.civilization != \"none\")",
+        "if (map && map.count_faction_benches(H.civilization) >= map.get_bench_cap(H.civilization))",
+        "if (required > 0)"
+      ],
+      "statement": "new type(get_turf(H), required)"
+    }
+  ],
+  "stack_admission": "\tif (!can_use(required))\n\t\tif (produced>1)\n\t\t\tto_chat(user, \"<span class='warning'>You haven't got enough [src] to build \\the [produced] [recipe.title]\\s!</span>\")\n\t\telse\n\t\t\tto_chat(user, \"<span class='warning'>You haven't got enough [src] to build \\the [recipe.title]!</span>\")\n\t\treturn\n",
+  "stack_debit_entry": "\tif (joinery && !joinery.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the joinery materials and tools in place until construction completes.\"))\n\t\treturn\n\tif (carving && !carving.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the sandstone and selected carving tools in place until carving completes.\"))\n\t\treturn\n\tif (use(required, (joinery || carving) ? null : H))\n"
 }
