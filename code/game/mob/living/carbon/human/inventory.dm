@@ -385,12 +385,14 @@ This saves us from having to call add_fingerprint() any time something is put in
 		update_inv_legcuffed()
 	else if (W == r_hand)
 		r_hand = null
+		paper_authoring_notify(W, "custody")
 		if (l_hand)
 			l_hand.update_held_icon()
 			update_inv_l_hand()
 		update_inv_r_hand()
 	else if (W == l_hand)
 		l_hand = null
+		paper_authoring_notify(W, "custody")
 		if (r_hand)
 			r_hand.update_held_icon()
 			update_inv_l_hand()

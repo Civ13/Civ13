@@ -443,6 +443,7 @@ nanoui is used to open and update nano browser uis
   * @return nothing
   */
 /datum/nanoui/proc/close()
+	paper_authoring_notify(src, "close")
 	is_auto_updating = FALSE
 	GLOB.nanomanager.ui_closed(src)
 	user << browse(null, "window=[window_id]")

@@ -118,3 +118,14 @@ counts without early exits, **not native timings or a measured gameplay speedup*
 The dimensions parser now caches only an exact `owner.view` scalar and its
 read-only dimensions list; changed/invalid views are revalidated and retirement
 clears the cache. Every decision retains its existing fresh policy guard.
+
+
+## Entered to post-move identity characterization
+
+The test_entered_trace.py fixture invokes the selected production movement body
+through an injected native Move, observation Entered, invalidation and post-move
+callback. It records fallback copy replacement and root frame withdrawal and
+republication, two-viewer ownership, failed/offset-only moves and conservative
+denial/capture failure. Source projection is not native dispatch, pixels or
+performance. See [the bounded measurement plan](../../docs/tree-refresh-measurement.md)
+for the executed procedures, adapter boundaries and future acceptance criteria.

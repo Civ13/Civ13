@@ -18,6 +18,10 @@
 	var/expected_legacy_json
 	var/atom/context_owner
 	var/atom/context_parent
+	var/list/lifecycle_sources
+	var/list/lifecycle_links
+	var/lifecycle_bound = FALSE
+	var/datum/nanoui/authoring_ui
 
 /datum/paper_document_authoring/New(obj/item/weapon/paper/P, mob/new_controller, obj/item/weapon/pen/pen)
 	..(P, new_controller)
@@ -25,7 +29,7 @@
 	projection_reader = new(P, new_controller, "editor", null)
 
 /datum/paper_document_authoring/persistence_runtime_var(key)
-	return (key in list("writing_pen", "projection_reader", "session_lease", "session_closed", "expected_record", "expected_record_json", "expected_legacy_json", "context_owner", "context_parent")) || ..()
+	return (key in list("writing_pen", "projection_reader", "session_lease", "session_closed", "expected_record", "expected_record_json", "expected_legacy_json", "context_owner", "context_parent", "lifecycle_sources", "lifecycle_links", "lifecycle_bound", "authoring_ui")) || ..()
 
 /datum/paper_document_authoring/proc/capture_state()
 	if (!paper || paper.gc_destroyed || !paper.document_capacity_ready || paper.type != /obj/item/weapon/paper)
@@ -70,6 +74,9 @@
 		retire()
 		return FALSE
 	session_lease = paper_document_mint_id(paper)
+	if (!start_lifecycle())
+		retire()
+		return FALSE
 	return TRUE
 
 // Closing a stale view needs no continuing custody, but cannot close another
@@ -93,6 +100,9 @@
 	paper = null
 	controller = null
 	control_client = null
+	var/datum/nanoui/old_ui = stop_lifecycle()
+	if (old_ui)
+		old_ui.close()
 
 /datum/paper_document_authoring/Destroy()
 	retire()
@@ -159,8 +169,9 @@
 		// accepted text and legacy classification are one mutation, never open().
 		paper.free_space = next_legacy["free_space"]
 		paper.document_record = next
+		paper_authoring_notify(paper, "physical", src)
 	else
-		if (!paper_document_commit_edit(paper, edit))
+		if (!paper_document_commit_edit(paper, edit, src))
 			return FALSE
 	// A committed write remains success even if future capture cannot continue.
 	if (!capture_state())

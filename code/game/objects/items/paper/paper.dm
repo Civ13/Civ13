@@ -184,6 +184,7 @@
 		src.icon_state = "paper_plane"
 		src.throw_range = 14
 		src.name = "paper airplane - \"[src.name]\""
+		paper_authoring_notify(src, "physical")
 		done = TRUE
 		add_fingerprint(usr)
 
@@ -217,6 +218,7 @@
 		return
 
 	free_space -= length(strip_html_properly(new_text))
+	paper_authoring_notify(src, "physical")
 
 /obj/item/weapon/paper/proc/document_copy_legacy_valid(list/legacy)
 	if (!paper_document_keys(legacy, list("name", "info", "stamps", "fields", "free_space", "stamped", "ico", "offset_x", "offset_y")))
@@ -257,6 +259,7 @@
 	// We check loc one level up, so we can rename in clipboards and such. See also: /obj/item/weapon/photo/rename()
 	if ((loc == usr || loc.loc && loc.loc == usr) && usr.stat == FALSE && n_name)
 		name = n_name
+		paper_authoring_notify(src, "physical")
 		if (n_name != "paper")
 			desc = "This is a paper titled '" + name + "'."
 
@@ -270,6 +273,7 @@
 			return
 		//crumple dat paper
 		info = stars(info,85)
+		paper_authoring_notify(src, "physical")
 		user.visible_message("\The [user] crumples \the [src] into a ball!")
 		if (map.ordinal_age <= 1)
 			if (info)
@@ -340,6 +344,7 @@
 		var/before = copytext(info, TRUE, textindex)
 		var/after = copytext(info, textindex)
 		info = before + text + after
+		paper_authoring_notify(src, "physical")
 		updateinfolinks()
 
 /obj/item/weapon/paper/proc/updateinfolinks()
@@ -372,6 +377,7 @@
 		stamps = null
 		free_space = MAX_PAPER_MESSAGE_LEN
 		stamped = list()
+		paper_authoring_notify(src, "physical")
 	overlays.Cut()
 	updateinfolinks()
 	update_icon()
@@ -591,6 +597,8 @@
 		B.pages.Add(src)
 		B.pages.Add(P)
 		B.update_icon()
+		paper_authoring_notify(src, "physical")
+		paper_authoring_notify(P, "physical")
 
 	else if (istype(P, /obj/item/weapon/pen))
 		if (icon_state == "scrap")
