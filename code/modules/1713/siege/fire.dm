@@ -49,7 +49,7 @@
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
-		else if (istype(W, /obj/item/stack/material/wood || /obj/item/stack/material/woodplank))
+		else if (istype(W, /obj/item/stack/material/wood) || istype(W, /obj/item/stack/material/woodplank))
 			fuel += (80)*W.amount
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
@@ -99,6 +99,10 @@
 				WW.contents = list(WW.BB)
 				return
 		else if  (istype(W, /obj/item))
+			// Stone braziers must not consume arbitrary containers or valuables.
+			// Their explicit fuel and projectile cases above remain available.
+			if (istype(src, /obj/structure/brazier/stone))
+				return ..()
 			if (W.flammable)
 				if (istype(W, /obj/item/stack))
 					var/obj/item/stack/ST = W
@@ -150,6 +154,36 @@
 	name = "stone brazier"
 	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "s_brazier0"
+
+// Only items produced as food or butchered animal materials are disposable.
+// Keep the list explicit: it must never include mobs or general containers.
+/obj/structure/brazier/stone/proc/is_disposable_organic(obj/item/I)
+	return istype(I, /obj/item/weapon/reagent_containers/food/snacks) || istype(I, /obj/item/weapon/chicken_carcass) || istype(I, /obj/item/weapon/pigleg) || istype(I, /obj/item/stack/sinew) || istype(I, /obj/item/stack/material/bone) || istype(I, /obj/item/stack/material/rawhide) || istype(I, /obj/item/stack/material/pelt)
+
+/obj/structure/brazier/stone/attackby(obj/item/W, mob/user)
+	if (!is_disposable_organic(W))
+		return ..()
+	if (user.a_intent != I_HELP)
+		return
+	if (!on)
+		to_chat(user, SPAN_WARNING("You need to light \the [src] before disposing of food or animal remains."))
+		return
+	// Refuse nested items, live contents, and items the user cannot release.
+	if (QDELETED(W) || W.loc != user || user.get_active_hand() != W || length(W.contents) || !user.canUnEquip(W) || W.nodrop || W.nodrop_special_check())
+		to_chat(user, SPAN_WARNING("You cannot safely dispose of \the [W]."))
+		return
+	var/item_name = "\the [W]"
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/stack = W
+		if (!stack.use(1))
+			return
+	else
+		if (!user.unEquip(W) || QDELETED(W) || W.loc == user)
+			return
+		qdel(W)
+	// Five seconds of fuel per item or stack unit, versus 80 for one wood.
+	fuel += 5
+	user.visible_message(SPAN_NOTICE("[user] disposes of [item_name] in \the [src]."), SPAN_NOTICE("You dispose of [item_name] in \the [src]."))
 
 /obj/structure/brazier/sandstone
 	name = "sandstone brazier"
