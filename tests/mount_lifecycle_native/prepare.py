@@ -26,7 +26,7 @@ BLOCKS = {
         '\tif (!QDELETED(rider) && rider.riding_mob == src)\n\t\trider.riding = FALSE\n\t\trider.riding_mob = null\n'),
     'code/game/mob/living/carbon/human/human.dm': ('MOUNT_OMIT_RIDER_DESTROY',
         '\tvar/mob/living/simple_animal/old_mount = riding_mob\n\triding = FALSE\n\triding_mob = null\n'
-        '\tif (!QDELETED(old_mount) && old_mount.rider == src)\n\t\told_mount.ride = FALSE\n'
+        '\tif (!QDELETED(old_mount) && old_mount.rider == src)\n\t\told_mount.npc_subtile_pending_intent = null\n\t\told_mount.ride = FALSE\n'
         '\t\told_mount.rider = null\n\t\told_mount.stop_automated_movement = FALSE\n\t\told_mount.update_icons()\n'),
 }
 
@@ -110,7 +110,7 @@ def select_separation(text):
         selected.append(line)
     body = ''.join(selected).rstrip() + '\n'
     release = ('\t\t\tif (!QDELETED(old_mount) && old_mount.rider == src && riding_mob != old_mount)\n'
-        '\t\t\t\told_mount.ride = FALSE\n\t\t\t\told_mount.rider = null\n'
+        '\t\t\t\told_mount.npc_subtile_pending_intent = null\n\t\t\t\told_mount.ride = FALSE\n\t\t\t\told_mount.rider = null\n'
         '\t\t\t\told_mount.update_icons()\n'
         '\t\t\t\tif (!QDELETED(old_mount) && !old_mount.ride && isnull(old_mount.rider) && riding_mob != old_mount)\n'
         '\t\t\t\t\told_mount.stop_automated_movement = FALSE\n')

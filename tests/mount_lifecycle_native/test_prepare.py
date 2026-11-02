@@ -204,6 +204,9 @@ class PrepareTests(unittest.TestCase):
         self.assertEqual(selected.count('#ifndef MOUNT_OMIT_SEPARATION'), 1)
         self.assertEqual(selected.count('#endif'), 1)
         self.assertIn('old_mount.update_icons()', selected)
+        self.assertIn('old_mount.npc_subtile_pending_intent = null', selected)
+        with self.assertRaises(ValueError):
+            probe.select_separation(source.replace('old_mount.npc_subtile_pending_intent = null', 'old_mount.npc_subtile_pending_intent = TRUE', 1))
         with self.assertRaises(ValueError):
             probe.select_separation(source + '\tif (riding && riding_mob)\n')
         with self.assertRaises(ValueError):

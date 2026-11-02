@@ -75,7 +75,8 @@ class World:
                  parent_result=True, parent_effect=None, on_move=None):
         self.trace = []
         self.other = N(label='other')
-        self.mount = N(label='mount', can_ride=can_ride, ride=True, x=4, y=5, z=1)
+        self.mount = N(label='mount', can_ride=can_ride, ride=True, x=4, y=5, z=1,
+                       npc_subtile_pending_intent=object())
         self.human = Rider(self)
         self.human.riding = riding
         self.human.riding_mob = {'owned': self.mount, 'other': self.other, 'null': None}[link]
@@ -89,7 +90,7 @@ class World:
                 parent_effect(self)
             return parent_result
 
-        body = qualify(extract(text, DEATH), ('can_ride', 'rider', 'ride', 'overlays', 'x', 'y', 'z'))
+        body = qualify(extract(text, DEATH), ('can_ride', 'rider', 'ride', 'overlays', 'x', 'y', 'z', 'npc_subtile_pending_intent'))
         body = body.replace('..()', 'parent(src)')
         self.invoke = project('/death()\n' + body + '\n', '/death', 'src',
             dict(parent=parent, isnull=lambda value: value is None, locate=lambda *p: p))
@@ -130,7 +131,20 @@ class DeathTests(unittest.TestCase):
 
     def test_frozen_preimage_diff_is_only_the_guarded_clear(self):
         inserted = '\t\tif (rider.riding_mob == src)\n\t\t\trider.riding_mob = null\n'
-        self.assertEqual(extract(self.after, DEATH).replace(inserted, '').rstrip(), extract(self.before, DEATH).rstrip())
+        pending = '\t\tnpc_subtile_pending_intent = null\n'
+        body = extract(self.after, DEATH)
+        self.assertEqual(body.count(inserted), 1)
+        self.assertEqual(body.count(pending), 1)
+        self.assertLess(body.index(pending), body.index('rider.visible_message'))
+        self.assertEqual(body.replace(inserted, '', 1).replace(pending, '', 1).rstrip(), extract(self.before, DEATH).rstrip())
+
+    def test_death_invalidates_pending_only_when_ride_cleanup_runs(self):
+        for can_ride, present in product((False, True), repeat=2):
+            with self.subTest(can_ride=can_ride, present=present):
+                world = World(self.after, can_ride=can_ride, present=present)
+                pending = world.mount.npc_subtile_pending_intent
+                world.run()
+                self.assertIs(world.mount.npc_subtile_pending_intent, None if can_ride and present else pending)
 
     def test_matrix_preserves_effects_and_clears_only_owned_links(self):
         for can_ride, present, link, riding, parent_result in product(

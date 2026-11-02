@@ -295,7 +295,7 @@ var/global/list/npc_appearance_cache = list()
 					charge(lspeaker.get_objective())
 
 				else if (findtext(message, "cover me") || findtext(message, "come here"))
-					following_mob = null
+					npc_set_following(null)
 					if (prob(20))
 						say(pick("!! Sir yes Sir!","!! Roger that!","!! Coming!"), language)
 					do_movement(speaker)
@@ -307,25 +307,25 @@ var/global/list/npc_appearance_cache = list()
 					if (prob(20))
 						say(pick("!! Sir yes Sir!","!! Roger that!","!! Following!"), language)
 					do_movement(speaker)
-					following_mob = speaker
+					npc_set_following(speaker)
 
 				else if (findtext(message, "stop") || findtext(message, "hold"))
 					if (prob(20))
 						say(pick("!! Sir yes Sir!","!! Roger that!","!! Stopping, Sir!"), language)
 					walk(src,0)
 					do_movement(loc)
-					following_mob = null
+					npc_set_following(null)
 
 				else if (findtext(message, "retreat") || findtext(message, "fall back"))
 					if (prob(30))
 						say(pick("!!Falling back!","!!Retreating!"), language)
-					following_mob = null
+					npc_set_following(null)
 					retreat()
 
 				else if (findtext(message, "take cover") || findtext(message, "hide"))
 					if (prob(35))
 						say(pick("!!Taking cover!"), language)
-					following_mob = null
+					npc_set_following(null)
 					take_cover(speaker)
 
 				else if (findtext(message, "cease fire") || findtext(message, "stop firing") || findtext(message, "stop shooting"))
@@ -342,7 +342,7 @@ var/global/list/npc_appearance_cache = list()
 						say(pick("!!Aye!"), language)
 					fire_cannons = TRUE
 				else if (findtext(message, "move north") || findtext(message, "move south") || findtext(message, "move east") || findtext(message, "move west"))
-					following_mob = null
+					npc_set_following(null)
 					if (prob(20))
 						say(pick("!! Sir yes Sir!","!! Roger that!","!! Moving out!"), language)
 					if (prob(15))

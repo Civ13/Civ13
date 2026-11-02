@@ -92,6 +92,8 @@ class Animal:
         self.gc_destroyed = self.gcDestroyed = 0
         self.rider = None
         self.ride = True
+        self.npc_subtile_large_frame = None
+        self.npc_subtile_pending_intent = None
 
     def unregisterSpawner(self):
         self.world.trace.append(('spawner', self.world.human.snapshot()))
@@ -121,8 +123,8 @@ class World:
             return parent_hint
 
         body = extract(text, DECLARATION)
-        for field in ('rider', 'unregisterSpawner'):
-            body = re.sub(r'(?<![\w.])' + field + r'\b', 'src.' + field, body)
+        for field in ('rider', 'unregisterSpawner', 'npc_subtile_large_frame', 'npc_subtile_pending_intent'):
+            body = re.sub(r'(?<![\w./])' + field + r'\b', 'src.' + field, body)
         body = body.replace('..()', 'parent(src)')
         self.cleanup = project('/cleanup()\n' + body + '\n', '/cleanup', 'src', dict(parent=parent, QDELETED=QDELETED))
         self.admit = admission_function()
@@ -162,6 +164,28 @@ class DestroyTests(unittest.TestCase):
                 self.assertEqual([row[0] for row in new.trace if row[0] != 'write'], ['spawner', 'parent'])
                 self.assertTrue(new.mount.ride and new.other_mount.ride)
                 self.assertIs(new.other_mount.rider, new.human if link == 'foreign' else None)
+
+    def test_destroy_retires_only_its_owned_frame_and_clears_pending(self):
+        for owned in (False, True):
+            with self.subTest(owned=owned):
+                world = World(self.after)
+                calls = []
+                frame = N(actor=world.mount if owned else world.other_mount)
+                frame.retire = lambda: calls.append(world.mount.npc_subtile_large_frame)
+                world.mount.npc_subtile_large_frame = frame
+                world.mount.npc_subtile_pending_intent = object()
+                world.qdel_admission_and_destroy()
+                self.assertEqual(calls, [None] if owned else [])
+                self.assertIs(world.mount.npc_subtile_large_frame, None if owned else frame)
+                self.assertIsNone(world.mount.npc_subtile_pending_intent)
+        mutant = self.after.replace('if (F && F.actor == src)', 'if (F)', 1)
+        self.assertNotEqual(mutant, self.after)
+        world = World(mutant)
+        calls = []
+        frame = N(actor=world.other_mount, retire=lambda: calls.append('retired'))
+        world.mount.npc_subtile_large_frame = frame
+        world.qdel_admission_and_destroy()
+        self.assertEqual(calls, ['retired'])
 
     def test_canonical_qdeleted_uses_null_or_modern_marker(self):
         self.assertTrue(QDELETED(None))

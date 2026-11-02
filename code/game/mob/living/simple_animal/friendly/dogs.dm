@@ -29,11 +29,11 @@
 	if ((loc) && isturf(loc))
 		if (!stat && !resting && !buckled)
 			for (var/mob/living/simple_animal/mouse/M in loc)
-				if (!M.stat)
+				if (!M.stat && npc_subtile_contact_settled(M))
 					M.splat()
 					visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
 					M.apply_damage(1, BRUTE)
-					movement_target = null
+					npc_set_movement_target(null)
 					stop_automated_movement = FALSE
 					break
 
@@ -61,6 +61,8 @@
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
+		if (npc_subtile_pet_enabled)
+			npc_subtile_stop_pet_walk()
 		walk(src,0)
 		turns_since_scan = FALSE
 
