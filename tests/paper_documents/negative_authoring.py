@@ -35,18 +35,20 @@ def run():
  ]
  receipts=[]
  real_environment=fixture.environment
- for name,mutate,test in cases:
-  changed=mutate(original)
-  fixture.environment=lambda:real_environment(changed)
-  output=io.StringIO()
-  result=unittest.TextTestRunner(stream=output,verbosity=2).run(fixture.Authoring(test))
-  log=output.getvalue()
-  # Preparation errors are not an observation of the omitted behavior.
-  assert not result.errors,(name,log)
-  assert result.failures,(name,'omission survived',log)
-  assert not any(x in log for x in ('ast.parse','Unsupported statement','Unknown call boundary')),(name,log)
-  receipts.append(dict(control=name,test=test,failures=len(result.failures),errors=len(result.errors),log=log))
- fixture.environment=real_environment
+ try:
+  for name,mutate,test in cases:
+   changed=mutate(original)
+   fixture.environment=lambda changed=changed:real_environment(changed)
+   output=io.StringIO()
+   result=unittest.TextTestRunner(stream=output,verbosity=2).run(fixture.Authoring(test))
+   log=output.getvalue()
+   # Preparation errors are not an observation of the omitted behavior.
+   assert not result.errors,(name,log)
+   assert result.failures,(name,'omission survived',log)
+   assert not any(x in log for x in ('ast.parse','Unsupported statement','Unknown call boundary')),(name,log)
+   receipts.append(dict(control=name,test=test,failures=len(result.failures),errors=len(result.errors),log=log))
+ finally:
+  fixture.environment=real_environment
  return receipts
 
 if __name__=='__main__':

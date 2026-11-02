@@ -235,4 +235,17 @@ class Authoring(unittest.TestCase):
   self.assertLess(constructor.index('update_space(info)'),constructor.index('document_capacity_ready = TRUE'))
   self.assertIn('key == "document_capacity_ready"',vm.body(SOURCE,'/obj/item/weapon/paper/persistence_runtime_var'))
 
+
+ def test_control_fixture_restores_after_rejected_control_receipt(self):
+  from unittest.mock import patch
+  spec=importlib.util.spec_from_file_location('authoring_restore_control',Path(__file__).with_name('negative_authoring.py'))
+  controls=importlib.util.module_from_spec(spec);spec.loader.exec_module(controls)
+  original=controls.fixture.environment
+  rejected=unittest.TestResult()
+  rejected.errors=[('inert control','injected preparation failure')]
+  with patch.object(controls.unittest.TextTestRunner,'run',return_value=rejected):
+   with self.assertRaises(AssertionError):
+    controls.run()
+  self.assertIs(controls.fixture.environment,original)
+
 if __name__=='__main__':unittest.main()
