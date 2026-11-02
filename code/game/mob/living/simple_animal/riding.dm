@@ -31,7 +31,7 @@
 	if (can_ride && isnull(rider) && M == user && !user.lying && !user.prone && (!user.werewolf || user.body_build.name == "Default"))
 		var/mob/living/human/MM = M
 		M.visible_message("<span class='notice'>[M] starts trying to get on \the [src]'s back...</span>","<span class='notice'>You start trying to get on \the [src]'s back...</span>")
-		if (do_after(MM, 40, src))
+		if (do_after(MM, src.animal_mount_delay(), src))
 			M.plane = GAME_PLANE
 			M.visible_message("<span class='notice'>[M] manages to successfully climb into \the [src]'s back.</span>","<span class='notice'>You manage to successfully climb into \the [src]'s back.</span>")
 			npc_subtile_pending_intent = null
@@ -52,7 +52,7 @@
 	if (can_ride && ride == TRUE && !isnull(rider))
 		if (rider == M)
 			M.visible_message("<span class='notice'>[M] starts to get off \the [src]...</span>","<span class='notice'>You start to get off \the [src]...</span>")
-			if (do_after(M, 40, src))
+			if (do_after(M, src.animal_mount_delay(), src))
 				M.visible_message("<span class='danger'>[M] gets off \the [src].</span>","<span class='danger'>You get off \the [src].</span>")
 				npc_subtile_pending_intent = null
 				M.riding = FALSE

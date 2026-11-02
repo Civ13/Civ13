@@ -63,7 +63,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/found = null
-	var/generating = FALSE //so it doesnt run twice
+	var/generating = FALSE //so it doesn't run twice
 /obj/structure/fishing_cage/update_icon()
 	if (istype(loc, /turf/floor/beach/water))
 		icon_state = "[base_icon_state]1"

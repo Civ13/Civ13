@@ -1286,7 +1286,7 @@
 
 /obj/item/ammo_casing/laser
 	name = "laser bolt"
-	desc = "you shouldnt be seeing this"
+	desc = "you shouldn't be seeing this"
 	caliber = "laser"
 	icon_state = "darts"
 	spent_icon = "darts-0"
@@ -1315,7 +1315,7 @@
 
 /obj/item/ammo_casing/laser/repeating
 	name = "laser bolt"
-	desc = "you shouldnt be seeing this"
+	desc = "you shouldn't be seeing this"
 	caliber = "laser"
 	icon_state = "darts"
 	spent_icon = "darts-0"

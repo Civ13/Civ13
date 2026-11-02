@@ -84,7 +84,7 @@ class PetContracts(unittest.TestCase):
         self.assertIn('walk_to(src, movement_target, near_dist, 4)', cat)
         for path in (CAT, DOG):
             body = path.read_text(encoding='utf-8')
-            scan = body.split('if (turns_since_scan > 5)', 1)[1].split('turns_since_scan = FALSE', 1)[0]
+            scan = body.split('if (turns_since_scan > 5 && (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet")))', 1)[1].split('turns_since_scan = FALSE', 1)[0]
             self.assertIn('npc_subtile_stop_pet_walk()', scan)
             self.assertIn('walk(src,0)', scan)
 

@@ -30,7 +30,7 @@
 	var/fat_extra = 0
 	var/fat_penalty = 0
 	var/has_fat = TRUE //Does this animal drops fat?
-	var/stop_automated_movement = FALSE //Use this to temporarely stop random movement or to if you write special movement code for animals.
+	var/stop_automated_movement = FALSE //Use this to temporarily stop random movement or to if you write special movement code for animals.
 	var/wander = TRUE	// Does the mob wander around when idle?
 	var/stop_automated_movement_when_pulled = TRUE //When set to TRUE this stops the animal from moving when someone is pulling it.
 	var/flying = FALSE
@@ -73,7 +73,7 @@
 	var/herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	var/granivore = 0 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
-	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 	var/starves = TRUE
 
@@ -103,7 +103,7 @@
 	var/hostilesounds = list()
 	var/wandersounds = list()
 
-	//Radiation Varients
+	//Radiation Variants
 	var/mutation_variants = list()
 
 	var/attack_verb = "bites"
@@ -186,9 +186,9 @@
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
 				if (get_dist(src, following_mob) > 1)
-					if (npc_subtile_follow_enabled)
+					if (npc_subtile_follow_enabled && npc_subtile_enabled)
 						npc_subtile_start_follow(following_mob)
-					else
+					else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("follow"))
 						walk_to(src, following_mob, 1, 6)
 					turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
@@ -470,9 +470,9 @@
 				break
 	if (movement_target)
 		stop_automated_movement = TRUE
-		if (npc_subtile_pet_enabled)
+		if (npc_subtile_pet_enabled && npc_subtile_enabled)
 			npc_subtile_start_pet_walk(movement_target, "towards", 0, npc_subtile_native_interval(3))
-		else
+		else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet"))
 			walk_to(src, movement_target, 0, 3)
 
 /mob/living/simple_animal/pet/proc/handle_flee_target()
@@ -482,9 +482,9 @@
 	if (flee_target)
 		if (prob(25)) say(flee_message)
 		stop_automated_movement = TRUE
-		if (npc_subtile_pet_enabled)
+		if (npc_subtile_pet_enabled && npc_subtile_enabled)
 			npc_subtile_start_pet_walk(flee_target, "away", 7, npc_subtile_native_interval(2))
-		else
+		else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet"))
 			walk_away_od(src, flee_target, 7, 2)
 
 /mob/living/simple_animal/pet/proc/set_flee_target(atom/A)
@@ -546,6 +546,8 @@
 	return 1
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
+	if (istype(O, /obj/item/animal_tack))
+		return src.fit_animal_tack(O, user)
 	var/attack_result = FALSE
 	var/health_before_attack = health
 	if (ishuman(user))
@@ -649,7 +651,7 @@
 	return FALSE
 
 /mob/living/simple_animal/movement_delay()
-	var/tally = FALSE //Incase I need to add stuff other than "speed" later
+	var/tally = FALSE //In case I need to add stuff other than "speed" later
 
 	tally = speed
 

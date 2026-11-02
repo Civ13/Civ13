@@ -52,8 +52,11 @@ var/list/probe_clients = list()
 /area
     var/location = AREA_OUTSIDE
     var/weather = WEATHER_WET
+/datum/job
 /mob
     var/stat = 0
+    var/datum/job/original_job
+    var/original_job_title = "Sailor"
     var/sleeping = 0
     var/probe_connected = TRUE
     var/probe_prompts = 0
@@ -293,6 +296,10 @@ var/failures = 0
     var/list/condition = snapshot["player"]
     check(condition["health_percent"] == 45 && condition["wetness_percent"] == 50, "asking player condition")
     check(condition["mood_category"] == "Neutral" && !("mood" in condition), "visible mood category without raw mood")
+    check(!("role" in condition), "no role without an assigned job")
+    player.original_job = new /datum/job
+    player.original_job_title = "Colony Medic"
+    check(H.game_context(player)["player"]["role"] == "Colony Medic" && !("role" in condition), "assigned job title snapshot is detached")
     player.mood = 10
     check(H.game_context(player)["player"]["mood_category"] == "Horrible" && condition["mood_category"] == "Neutral", "mood snapshot is detached")
     check(H.mood_category(20) == "Horrible" && H.mood_category(40) == "Bad" && H.mood_category(60) == "Neutral" && H.mood_category(80) == "Good", "mood boundaries match print_mood order")

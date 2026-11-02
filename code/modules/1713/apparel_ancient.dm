@@ -278,7 +278,7 @@
 
 /obj/item/clothing/suit/armor/ancient/scaled
 	name = "scaled armor"
-	desc = "An armor made of serveral scales made of bronze."
+	desc = "An armor made of several scales made of bronze."
 	icon_state = "scaled_armor"
 	item_state = "scaled_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
@@ -602,7 +602,7 @@
 /*Royal & Laurel Headwear*/
 
 /obj/item/clothing/head/pharoah
-	name = "pharoah headdress"
+	name = "pharaoh headdress"
 	desc = "A ornate, golden headdress."
 	icon_state = "pharoah_headdress"
 	item_state = "pharoah_headdress"
@@ -1055,7 +1055,7 @@
 
 /obj/item/clothing/head/helmet/anax/aries //op fantasy helm
 	name = "aries helmet"
-	desc = "A reinforced bronze greek helmet, covering most of the face, with red plummage on top. Worn by dieties and avatars of destruction such as aries."
+	desc = "A reinforced bronze greek helmet, covering most of the face, with red plummage on top. Worn by deities and avatars of destruction such as aries."
 	icon_state = "aries"
 	item_state = "aries"
 	armor = list(melee = 70, arrow = 60, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
@@ -1107,7 +1107,7 @@
 
 /obj/item/clothing/head/atef
 	name = "atef crown"
-	desc = "A white egyptian crown made from cloth adorned with plumes of feathers. The preferred crown of egyptian dieties."
+	desc = "A white egyptian crown made from cloth adorned with plumes of feathers. The preferred crown of egyptian deities."
 	icon_state = "deshret"
 	item_state = "deshret"
 	flags_inv = BLOCKHEADHAIR
@@ -1157,7 +1157,7 @@
 
 /obj/item/clothing/mask/stone
 	name = "stone mask"
-	desc = "A stone mask with a masculine apperance with fangs."
+	desc = "A stone mask with a masculine appearance with fangs."
 	icon_state = "stone_mask"
 	item_state = "stone_mask"
 	flags_inv = HIDEFACE

@@ -147,37 +147,37 @@
 	item_state = "indianshaman"
 
 /obj/item/clothing/accessory/armband/indianr
-	name = "red indian acessories"
+	name = "red indian accessories"
 	desc = "red face paint and indian necklaces."
 	icon_state = "indianr"
 	item_state = "indianr"
 
 /obj/item/clothing/accessory/armband/indiang
-	name = "green indian acessories"
+	name = "green indian accessories"
 	desc = "green face paint and indian necklaces."
 	icon_state = "indiang"
 	item_state = "indiang"
 
 /obj/item/clothing/accessory/armband/indianb
-	name = "blue indian acessories"
+	name = "blue indian accessories"
 	desc = "blue face paint and indian necklaces."
 	icon_state = "indianb"
 	item_state = "indianb"
 
 /obj/item/clothing/accessory/armband/indiany
-	name = "yellow indian acessories"
+	name = "yellow indian accessories"
 	desc = "yellow face paint and indian necklaces."
 	icon_state = "indiany"
 	item_state = "indiany"
 
 /obj/item/clothing/accessory/armband/indianw
-	name = "white indian acessories"
+	name = "white indian accessories"
 	desc = "white face paint and indian necklaces."
 	icon_state = "indianw"
 	item_state = "indianw"
 
 /obj/item/clothing/accessory/armband/indianbl
-	name = "black indian acessories"
+	name = "black indian accessories"
 	desc = "black face paint and indian necklaces."
 	icon_state = "indianbl"
 	item_state = "indianbl"

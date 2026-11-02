@@ -156,7 +156,7 @@
 		..()
 		reagents.add_reagent("sugar", 50)
 
-/obj/item/weapon/reagent_containers/food/condiment/saltpile		//Seperate from above since it's a small shaker rather then
+/obj/item/weapon/reagent_containers/food/condiment/saltpile		//Separate from above since it's a small shaker rather then
 	name = "salt pile"
 	desc = "Salt. From the oceans, presumably."
 	icon = 'icons/obj/food/food.dmi'
@@ -168,7 +168,7 @@
 		..()
 		reagents.add_reagent("sodiumchloride", 10)
 
-/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty		//Seperate from above since it's a small shaker rather then
+/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty		//Separate from above since it's a small shaker rather then
 	name = "salt pile"
 	desc = "Salt. From the oceans, presumably."
 	icon = 'icons/obj/food/food.dmi'
@@ -177,7 +177,7 @@
 	amount_per_transfer_from_this = 10
 	volume = 10
 
-/obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Seperate from above since it's a small shaker rather then
+/obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Separate from above since it's a small shaker rather then
 	name = "Salt Shaker"											//	a large one.
 	desc = "Salt. From the oceans, presumably."
 	icon_state = "saltshakersmall"

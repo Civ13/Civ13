@@ -404,7 +404,7 @@
 /obj/item/clothing/accessory/medal/soviet/ww2/Hero_of_the_Soviet_Union
 	icon_state = "Hero of the Soviet Union"
 	name = "Hero of the Soviet Union Medal"
-	desc = "A medal given to soldiers of the soviet union who have achevied heroic feats in service to the Soviet state and society."
+	desc = "A medal given to soldiers of the soviet union who have achieved heroic feats in service to the Soviet state and society."
 
 /obj/item/clothing/accessory/medal/soviet/ww2/Order_of_the_Red_Star
 	icon_state = "Order of the Red Star"
@@ -434,17 +434,17 @@
 /obj/item/clothing/accessory/medal/italian/ww2/Commanders_Colonial_Order_of_the_Star_of_Italy
 	icon_state = "Commander's Colonial Order of the Star of Italy"
 	name = "Commander's Colonial Order of the Star of Italy Medal"
-	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Commander ."
+	desc = "Given to members of the Italian military who have served in the colonies of the Kingdom of Italy, showing the rank of Commander ."
 
 /obj/item/clothing/accessory/medal/italian/ww2/Commanders_Colonial_Order_of_the_Star_of_Italy
 	icon_state = "Officer's Colonial Order of the Star of Italy"
 	name = "Officer's Colonial Order of the Star of Italy Medal"
-	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Officer ."
+	desc = "Given to members of the Italian military who have served in the colonies of the Kingdom of Italy, showing the rank of Officer ."
 
 /obj/item/clothing/accessory/medal/italian/ww2/Knights_Colonial_Order_of_the_Star_of_Italy
 	icon_state = "Knight's Colonial Order of the Star of Italy"
 	name = "Knight's Colonial Order of the Star of Italy Medal"
-	desc = "Given to members of the Italian millitary who have served in the colonies of the Kingdom of Italy, showing the rank of Knight ."
+	desc = "Given to members of the Italian military who have served in the colonies of the Kingdom of Italy, showing the rank of Knight ."
 
 /obj/item/clothing/accessory/rank/upa_lt
 	icon_state = "upa_lt"

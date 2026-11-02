@@ -4,7 +4,7 @@ catalogue the 'taste strength' of each one
 calculate text size per text.
 */
 /mob/living/human/proc/ingest(var/datum/reagents/from, var/datum/reagents/target, var/amount = TRUE, var/multiplier = TRUE, var/copy = FALSE, var/smoked = FALSE) //we kind of 'sneak' a proc in here for ingesting stuff so we can play with it.
-	var/datum/reagents/temp = new() //temporary holder used to analyse what gets transfered.
+	var/datum/reagents/temp = new() //temporary holder used to analyse what gets transferred.
 	var/list/tastes = list() //descriptor = strength
 	from.trans_to_holder(temp, amount, multiplier, TRUE)
 	var/list/out = list()

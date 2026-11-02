@@ -3,7 +3,8 @@ import argparse
 import os
 import json
 import re
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+import importlib.util
 import subprocess
 
 DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'}
@@ -17,15 +18,28 @@ SOURCE_PREPARATION_ONLY_TESTS = frozenset({
     'tests/world_save/character_return/test_prepare.py',
 })
 
+# Exact source-only suite runs in the reviewed bounded offline baseline.
+AXE_ACTIVE_HAND_OFFLINE_TESTS = frozenset({'tests/axe_active_hand/test_axe_active_hand.py'})
+
 # These exact tests run in their respective offline baseline suites.
 PLAYER_HELP_OFFLINE_TESTS = frozenset({'tests/player_help/test_help_links.py',
-                                      'tests/player_help/test_wiki_guides.py'})
+                                      'tests/player_help/test_wiki_guides.py',
+                                      'tests/player_help/test_toxin_context.py'})
 
 # Exact stdlib-only production projections, registered in the offline baseline.
 RESOURCE_WORK_OFFLINE_TESTS = frozenset({'tests/test_resource_work_animation.py'})
 
 # This exact storage regression is a stdlib-only source projection, not a native fixture.
 STORAGE_RUNTIME_OFFLINE_TESTS = frozenset({'tests/storage_runtime/test_storage_runtime.py'})
+
+# This exact pouch HUD test is an offline source projection.
+POUCH_HUD_OFFLINE_TESTS = frozenset({'tests/pouch_hud/test_pouch_hud.py'})
+
+# Exact source-only suite runs in the reviewed bounded offline baseline.
+STONE_BRAZIER_OFFLINE_TESTS = frozenset({'tests/stone_brazier/test_stone_brazier_disposal.py'})
+
+# Exact source-only suite runs in the reviewed bounded offline baseline.
+WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
@@ -239,16 +253,27 @@ def select(base, head):
 def needs_extensive(event, opted_in):
     return event == 'workflow_dispatch' and opted_in
 
+
+def atlas_comparison(base, head):
+    spec = importlib.util.spec_from_file_location('atlas_checkout_refs', Path(__file__).with_name('ci_checkout_refs.py'))
+    refs = importlib.util.module_from_spec(spec); spec.loader.exec_module(refs)
+    try:
+        return refs.atlas_pr_comparison(base, head)
+    except (ValueError, RuntimeError, subprocess.SubprocessError, OSError, UnicodeError) as error:
+        raise RuntimeError('Atlas test selection could not prove base and head ancestry') from error
+
+
 def changed_atlas_tests(base, head, event):
     """Select only explicitly reviewed Atlas test edits on ordinary PRs."""
     if event != 'pull_request':
         return []
     if not base or not head or set(base) == {'0'}:
         raise RuntimeError('Atlas test selection requires a valid base and head comparison')
+    proof = atlas_comparison(base, head)
     try:
         paths = subprocess.check_output(
-            ['git', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
-             base, head, '--', *ATLAS_TEST_INPUTS],
+            ['git', '--no-replace-objects', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
+             proof['ancestor'], head, '--', *ATLAS_TEST_INPUTS],
             stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
     except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
         raise RuntimeError('Atlas test selection could not compare base and head; check Git and the refs') from exc
@@ -300,8 +325,20 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
-        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS:
+        if path in WELL_SMELL_OFFLINE_TESTS:
             continue
+        if path.startswith('tests/well_smell/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered well-smell executable test requires explicit CI review')
+        if path in STONE_BRAZIER_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/stone_brazier/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered stone-brazier executable test requires explicit CI review')
+        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS or path in POUCH_HUD_OFFLINE_TESTS:
+            continue
+        if path in AXE_ACTIVE_HAND_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/axe_active_hand/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered axe active-hand executable test requires explicit CI review')
         parts = PurePosixPath(path).parts
         suffix = PurePosixPath(path).suffix.lower()
         if len(parts) >= 2 and parts[0] == 'tests' and suffix in {'.py', '.ps1', '.dm', '.sh'}:
@@ -363,19 +400,29 @@ def main():
                 or pr['base'].get('sha') != args.base):
             policy['metadata_valid'] = False
             policy['skip_duplicate'] = False
+    atlas_proof = None
+    if args.event == 'pull_request' and policy['native']['eligible']:
+        pr = payload.get('pull_request', {})
+        if pr.get('base', {}).get('sha') != args.base or pr.get('head', {}).get('sha') != args.head:
+            raise RuntimeError('Atlas test selection requires matching event base and head')
+        atlas_proof = atlas_comparison(args.base, args.head)
     game, extensive, new_tests, reason = selections(
         args.base, args.head, args.event, args.extensive == 'true',
         args.build_prefix == 'true', payload)
     if args.receipt:
         from ci_baseline import selection_receipt, write_json
         receipt = selection_receipt(args.base, args.head, game, extensive,
-                                    new_tests, reason, args.event, policy)
+                                    new_tests, reason, args.event, policy, payload)
+        if atlas_proof is not None:
+            receipt['atlas_comparison'] = atlas_proof
         if not policy['metadata_valid']:
             receipt['status'] = 'failed'
         write_json(args.receipt, receipt)
     if not policy['metadata_valid']:
         parser.error('Missing event scope metadata; refusing to publish informational success')
     with open(args.output, 'a', encoding='utf-8') as output:
+        if atlas_proof is not None:
+            output.write('atlas_ancestor=' + atlas_proof['ancestor'] + '\n')
         output.write('new_tests=' + json.dumps(new_tests, separators=(',', ':')) + '\n')
         output.write(f'game={str(game).lower()}\nextensive={str(extensive).lower()}\n')
         output.write(f'gating={int(policy["gating"]["eligible"])}\n')

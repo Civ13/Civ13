@@ -13,6 +13,7 @@ import prepare as Q
 import supervisor as S
 import runner as R
 import acquire as A
+import dependency_audit as D
 from budget import EvidenceBudget
 
 def witness():
@@ -260,5 +261,88 @@ class Containment(unittest.TestCase):
             root=Path(d);prep=root/'prep';prep.mkdir();(prep/'tree-native-manifest.json').write_text(json.dumps(dict(head='a'*40)))
             with patch.object(R,'OwnedRun') as native,self.assertRaises(ValueError):R.execute(prep,root,'0'*64,'2026-11-02T13:23:00Z',root/'out',1)
             native.assert_not_called();receipt=json.loads((root/'out/execution-receipt.json').read_text());self.assertEqual(receipt['status'],'failed');self.assertFalse(receipt['native_executed'])
+
+
+class DependencyAudit(unittest.TestCase):
+    @staticmethod
+    def pe(normal=None, delay=None, machine=0x14c):
+        import struct
+        raw=bytearray(1024);raw[:2]=b'MZ';struct.pack_into('<I',raw,0x3c,0x80);raw[0x80:0x84]=b'PE\0\0'
+        bits64=machine==0x8664;size=240 if bits64 else 224;opt=0x98
+        struct.pack_into('<HH',raw,0x84,machine,1);struct.pack_into('<H',raw,0x94,size)
+        struct.pack_into('<H',raw,opt,0x20b if bits64 else 0x10b);struct.pack_into('<I',raw,opt+60,512);struct.pack_into('<I',raw,opt+(108 if bits64 else 92),16)
+        struct.pack_into('<Q' if bits64 else '<I',raw,opt+(24 if bits64 else 28),0x400000)
+        struct.pack_into('<IIII',raw,opt+size+8,512,0x1000,512,512);directory=opt+(112 if bits64 else 96)
+        if normal:
+            struct.pack_into('<II',raw,directory+8,0x1000,40);struct.pack_into('<IIIII',raw,512,0,0,0,0x1040,0)
+            raw[576:576+len(normal)+1]=normal.encode()+b'\0'
+        if delay:
+            struct.pack_into('<II',raw,directory+13*8,0x1080,64);struct.pack_into('<IIIIIIII',raw,640,1,0x10c0,0,0,0,0,0,0)
+            raw[704:704+len(delay)+1]=delay.encode()+b'\0'
+        return bytes(raw)
+    @staticmethod
+    def inputs(root, raw):
+        binary=root/'bin';binary.mkdir();(binary/'app.exe').write_bytes(raw)
+        return binary,dict(files={'app.exe':dict(bytes=len(raw),sha256=P.digest(raw))})
+    def test_normal_and_delay_imports_remain_distinct(self):
+        imports=D.pe_imports(self.pe('mfc140u.dll','steam_api.dll'))['imports']
+        self.assertEqual(imports,[dict(kind='normal',name='mfc140u.dll'),dict(kind='delay',name='steam_api.dll')])
+        with self.assertRaises(ValueError):D.pe_imports(self.pe('../escape.dll'))
+        with self.assertRaises(ValueError):D.pe_imports(b'not a PE')
+    def test_missing_provider_is_a_bounded_fact_and_api_set_is_not_a_file(self):
+        import time
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);binary,manifest=self.inputs(root,self.pe('mfc140u.dll','api-ms-win-crt-runtime-l1-1-0.dll'))
+            result=D.collect(binary,manifest,root/'windows',time.monotonic()+5)
+            self.assertEqual(len(result['unresolved_normal_imports']),1)
+            self.assertEqual(result['unresolved_normal_imports'][0]['name'],'mfc140u.dll')
+            self.assertEqual(result['provider_facts'][1]['classification'],'api_set_contract')
+    def test_provider_architecture_and_toolchain_tamper_fail_closed(self):
+        import time
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);binary,manifest=self.inputs(root,self.pe('mfc140u.dll'))
+            system=root/'windows/SysWOW64';system.mkdir(parents=True);provider=system/'mfc140u.dll';provider.write_bytes(self.pe())
+            result=D.collect(binary,manifest,root/'windows',time.monotonic()+5);self.assertFalse(result['unresolved_normal_imports'])
+            provider.write_bytes(self.pe(machine=0x8664));self.assertEqual(len(D.collect(binary,manifest,root/'windows',time.monotonic()+5)['unresolved_normal_imports']),1)
+            (binary/'app.exe').write_bytes(b'tampered')
+            with self.assertRaisesRegex(ValueError,'hash drift'):D.collect(binary,manifest,root/'windows',time.monotonic()+5)
+    def test_source_repository_event_and_attempt_are_bound_before_acquisition(self):
+        env=dict(RUNNER_ENVIRONMENT='github-hosted',RUNNER_OS='Windows',GITHUB_REPOSITORY='Civ13/Civ13',GITHUB_EVENT_NAME='workflow_dispatch',GITHUB_SHA='a'*40,GITHUB_WORKFLOW_SHA='a'*40,GITHUB_RUN_ATTEMPT='1')
+        D.admit_source('a'*40,env,'nt')
+        for key,value in [('GITHUB_SHA','b'*40),('GITHUB_WORKFLOW_SHA','b'*40),('GITHUB_RUN_ATTEMPT','2'),('GITHUB_REPOSITORY','other/repo'),('GITHUB_EVENT_NAME','push')]:
+            with self.subTest(key=key),self.assertRaises(ValueError):D.admit_source('a'*40,dict(env,**{key:value}),'nt')
+
+    def test_official_https_redirects_never_allow_observed_http_endpoint(self):
+        D.https_url('https://www.byond.com/download/build/516/516.1688_byond.exe')
+        for url in ('http://104.21.51.125:80/','http://www.byond.com/','https://www.byond.com:80/','https://byond.com.evil/','https://user:secret@www.byond.com/'):
+            with self.subTest(url=url),self.assertRaises(ValueError):D.https_url(url)
+        with self.assertRaises(ValueError):D.OfficialRedirect().redirect_request(None,None,302,'',{},'http://104.21.51.125:80/')
+    def test_nonhosted_audit_refuses_acquisition_and_emits_failure(self):
+        with tempfile.TemporaryDirectory() as d,patch.dict(D.os.environ,{'RUNNER_ENVIRONMENT':'self-hosted'}),patch.object(D.A,'acquire') as acquire:
+            root=Path(d);self.assertFalse(D.audit('a'*40,root/'data',root/'out'));acquire.assert_not_called()
+            receipt=json.loads((root/'out/audit.json').read_text());self.assertFalse(receipt['native_executed']);self.assertFalse(receipt['native_ready']);self.assertEqual(receipt['status'],'failed')
+    def test_deadline_paths_and_output_bounds(self):
+        import time
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            with self.assertRaisesRegex(ValueError,'deadline'):D.Reader(time.monotonic()-1).read(root/'x')
+            reader=D.Reader(time.monotonic()+5);reader.paths={str(i) for i in range(128)}
+            with self.assertRaisesRegex(ValueError,'path bound'):reader.read(root/'x')
+            with self.assertRaisesRegex(ValueError,'evidence bound'):D.write_report(root,dict(oversize='x'*D.EVIDENCE_CAP))
+    def test_oversize_report_retains_small_explicit_failure(self):
+        with tempfile.TemporaryDirectory() as d:
+            report=D.retain_report(Path(d),dict(source='a'*40,status='completed_file_facts',oversize='x'*D.EVIDENCE_CAP))
+            self.assertEqual(report['status'],'failed');self.assertFalse(report['native_executed'])
+            saved=Path(d)/'audit.json';self.assertLess(saved.stat().st_size,4096)
+            self.assertEqual(json.loads(saved.read_text()),report)
+
+    def test_audit_mode_has_no_native_fixture_entry_or_permission_expansion(self):
+        workflow=(ROOT/'.github/workflows/tree-refresh-native.yml').read_text();job=workflow.split('  dependency-audit:\n',1)[1]
+        self.assertIn("inputs.mode != 'dependency-audit'",workflow.split('  dependency-audit:\n',1)[0])
+        self.assertIn('timeout-minutes: 5',job);self.assertIn('dependency_audit.py',job);self.assertNotIn('runner.py',job);self.assertNotIn('prepare.py',job)
+        self.assertIn('contents: read',workflow);self.assertNotIn('contents: write',workflow)
+        import ast
+        tree=ast.parse((HERE/'dependency_audit.py').read_text());calls=[n.func.attr for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)]
+        for forbidden in ('Popen','LoadLibrary','WinDLL','startfile','system'):self.assertNotIn(forbidden,calls)
 
 if __name__=='__main__':unittest.main()

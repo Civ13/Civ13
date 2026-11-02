@@ -1288,7 +1288,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Operation Forces team tasked with the rescue of the hostages. You will only be successfull if you coordinate with the rest of your team!")
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Operation Forces team tasked with the rescue of the hostages. You will only be successful if you coordinate with the rest of your team!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_VERY_HIGH)

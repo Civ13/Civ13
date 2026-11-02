@@ -130,7 +130,7 @@
 		for (var/mob/living/simple_animal/civilian/CVL in T)
 			if(CVL.stat != DEAD)
 				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador) && CVL.stat != DEAD)
-					to_chat(world, "<font size=4><font color='blue'><b>Blugoslavia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>")
+					to_chat(world, "<font size=4><font color='blue'><b>Blugoslavia</b></font> has successfully evacuated the Greenistani Ambassador!</font></font>")
 				else
 					civilians_evacuated["Blugoslavia"]++
 				qdel(CVL)
@@ -138,7 +138,7 @@
 		for (var/mob/living/simple_animal/civilian/CVL in T)
 			if(CVL.stat != DEAD)
 				if(istype(CVL, /mob/living/simple_animal/civilian/greenistani_ambassador))
-					to_chat(world, "<font size=4><font color='red'><b>Redmenia</b></font> has sucessfully evacuated the Greenistani Ambassador!</font></font>")
+					to_chat(world, "<font size=4><font color='red'><b>Redmenia</b></font> has successfully evacuated the Greenistani Ambassador!</font></font>")
 				else
 					civilians_evacuated["Redmenia"]++
 				qdel(CVL)	

@@ -1,5 +1,26 @@
 # Read-only local management presentation boundary
 
+## Operator menu
+
+Run Civ13.exe --manage-servers to open this read-only menu before normal
+launcher startup, without launcher updates or BYOND setup. An exit code of 0
+means the menu interaction ended; it does not establish catalog freshness,
+process state, ownership, or readiness. Cancelling before all three inputs are
+supplied does not read a catalog.
+
+The main launcher menu also offers the same view. Starting the launcher normally
+still performs its existing startup and may check for updates or set up BYOND.
+
+Choose **M: Server management (read-only)** from the launcher menu to inspect
+one explicitly selected registration catalog. Enter an operator-controlled
+trusted D: root, the catalog path beneath it and the local host ID. Empty input
+at any prompt cancels without reading a catalog. Selecting M performs a new
+one-shot read; there is no background refresh, process discovery or log access.
+The view reports registration declarations and leaves process state, ownership
+and backend readiness unknown. Start, stop, save, update and restart are
+unavailable in this view because lifecycle authority has not been established.
+The separate existing hosting option keeps its own configuration and behavior.
+
 ## Explicit operator view
 
 `Civ13.exe --registered-instances <trusted-D-root> <registration-file> <local-host-id>`

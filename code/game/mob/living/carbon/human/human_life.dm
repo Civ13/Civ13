@@ -112,7 +112,7 @@
 	else
 		layer = MOB_LAYER
 
-	//TODO: seperate this out
+	//TODO: separate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 	if (map && map.nomads)
@@ -504,13 +504,13 @@
 	loc_temp += 273.15
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if ((loc_temp < bodytemperature-20) || (loc_temp < bodytemperature-12 && (ant || lizard))) //Under 17 degrees = unconfortable without clothing
+	if ((loc_temp < bodytemperature-20) || (loc_temp < bodytemperature-12 && (ant || lizard))) //Under 17 degrees = uncomfortable without clothing
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			// One Life call is nominally one second. Body heat loss needs minutes,
 			// not the atmospheric divisor shared with organ fever calculations.
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / 240) * (1 + cold_wetness)
-	else if ((loc_temp > bodytemperature) || (loc_temp > bodytemperature-7 && (ant || lizard))) //Over 37 degrees = unconfortable with too much clothing
+	else if ((loc_temp > bodytemperature) || (loc_temp > bodytemperature-7 && (ant || lizard))) //Over 37 degrees = uncomfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)

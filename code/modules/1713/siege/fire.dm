@@ -151,6 +151,41 @@
 	desc = "Where you keep warm or light arrows and bolts on fire."
 	icon_state = "s_brazier0"
 
+// Only items produced as food or butchered animal materials are disposable.
+// Keep the list explicit: it must never include mobs or general containers.
+/obj/structure/brazier/stone/proc/is_disposable_organic(obj/item/I)
+	return istype(I, /obj/item/weapon/reagent_containers/food/snacks) || istype(I, /obj/item/weapon/chicken_carcass) || istype(I, /obj/item/weapon/pigleg) || istype(I, /obj/item/stack/sinew) || istype(I, /obj/item/stack/material/bone) || istype(I, /obj/item/stack/material/rawhide) || istype(I, /obj/item/stack/material/pelt)
+
+/obj/structure/brazier/stone/attackby(obj/item/W, mob/user)
+	if (!is_disposable_organic(W))
+		return ..()
+	if (user.a_intent != I_HELP)
+		return
+	if (!on)
+		to_chat(user, SPAN_WARNING("You need to light \the [src] before disposing of food or animal remains."))
+		return
+	// Refuse nested items, live contents, and items the user cannot release.
+	if (QDELETED(W) || W.loc != user || user.get_active_hand() != W || length(W.contents) || !user.canUnEquip(W) || W.nodrop || W.nodrop_special_check())
+		to_chat(user, SPAN_WARNING("You cannot safely dispose of \the [W]."))
+		return
+	var/item_name = "\the [W]"
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/stack = W
+		if (!stack.use(1))
+			return
+	else
+		var/turf/drop_site = get_turf(user)
+		var/atom/brazier_loc = loc
+		if (!drop_site || user.loc != drop_site || !user.unEquip(W))
+			return
+		// Drop callbacks may move or fill the item, move an actor, or extinguish the fire.
+		if (QDELETED(src) || !on || loc != brazier_loc || QDELETED(user) || user.loc != drop_site || QDELETED(W) || W.loc != drop_site || length(W.contents))
+			return
+		qdel(W)
+	// Five seconds of fuel per item or stack unit, versus 80 for one wood.
+	fuel += 5
+	user.visible_message(SPAN_NOTICE("[user] disposes of [item_name] in \the [src]."), SPAN_NOTICE("You dispose of [item_name] in \the [src]."))
+
 /obj/structure/brazier/sandstone
 	name = "sandstone brazier"
 	desc = "Where you keep warm or light arrows and bolts on fire."

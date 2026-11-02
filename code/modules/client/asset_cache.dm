@@ -14,10 +14,10 @@ You can set verify to TRUE if you want send() to sleep until the client has the 
 // This is doubled for the first asset, then added per asset after
 #define ASSET_CACHE_SEND_TIMEOUT 7
 
-//When sending mutiple assets, how many before we give the client a quaint little sending resources message
+//When sending multiple assets, how many before we give the client a quaint little sending resources message
 #define ASSET_CACHE_TELL_CLIENT_AMOUNT 8
 
-//When passively preloading assets, how many to send at once? Too high creates noticable lag where as too low can flood the client's cache with "verify" files
+//When passively preloading assets, how many to send at once? Too high creates noticeable lag where as too low can flood the client's cache with "verify" files
 #define ASSET_CACHE_PRELOAD_CONCURRENT 3
 
 /client

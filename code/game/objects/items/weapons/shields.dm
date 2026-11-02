@@ -378,7 +378,7 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 
 /obj/item/weapon/shield/metal_riot
 	name = "riot shield"
-	desc = "A riot sheild designed to be excellent in blocking during prisoner uprisings"
+	desc = "A riot shield designed to be excellent in blocking during prisoner uprisings"
 	icon_state = "metal_riot"
 	item_state = "metal_riot"
 	material = "iron"

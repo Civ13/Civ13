@@ -1,5 +1,8 @@
 """Exact-event shallow preparation and failed-selection regression controls."""
 import ast
+from contextlib import contextmanager, redirect_stdout
+import json
+import io
 import importlib.util
 import os
 from pathlib import Path
@@ -7,6 +10,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -17,6 +21,320 @@ spec.loader.exec_module(refs)
 spec = importlib.util.spec_from_file_location('checkout_baseline', ROOT / 'scripts/ci_baseline.py')
 baseline = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(baseline)
+
+
+@contextmanager
+def branch_fixture(*, introduce_core=False):
+    """Fresh Git objects/source snapshots; no dependency on repository history."""
+    with tempfile.TemporaryDirectory(prefix='ci-new-branch-') as directory:
+        folder = Path(directory)
+        origin, clone = folder / 'origin', folder / 'clone'
+        origin.mkdir()
+        def run(*args, cwd=origin):
+            return subprocess.check_output(['git', *args], cwd=cwd, stderr=subprocess.PIPE,
+                                           text=True, timeout=30).strip()
+        run('init', '-q')
+        run('config', 'user.name', 'CI fixture')
+        run('config', 'user.email', 'fixture@example.invalid')
+        los_path = ROOT / 'tests/los_context/test_offline.py'
+        spec = importlib.util.spec_from_file_location('new_branch_los', los_path)
+        los = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(los)
+        current = {name: (ROOT/name).read_text(encoding='utf-8') for name in los.ADDITIONS}
+        initial = dict(current)
+        if introduce_core:
+            initial = {name: text.replace(los.ADDITIONS[name], '', 1) for name, text in current.items()}
+            initial['code/game/mob/mob.dm'] = initial['code/game/mob/mob.dm'].replace(los.TURN_GUARD, los.TURN_OFF, 1)
+        def write(rows):
+            for name, text in rows.items():
+                target = origin/name; target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(text, encoding='utf-8', newline='\n')
+        write(initial)
+        for name in ('ci_checkout_refs.py','ci_baseline.py','select-ci.py','byond_toolchain.py'):
+            target=origin/'scripts'/name; target.parent.mkdir(exist_ok=True)
+            shutil.copyfile(ROOT/'scripts'/name,target)
+        target=origin/'tools/byond/version.json'; target.parent.mkdir(parents=True)
+        shutil.copyfile(ROOT/'tools/byond/version.json',target)
+        run('add', '.'); run('commit', '-qm', 'baseline')
+        base = run('rev-parse', 'HEAD')
+        if introduce_core:
+            changed = dict(current)
+            changed['code/modules/client/client_procs.dm'] = changed['code/modules/client/client_procs.dm'].replace(
+                '\thuman_subtile_release_visuals()\n', '\thuman_subtile_release_visuals()\n\tunexpected_fixture_change()\n', 1)
+            write(changed)
+        (origin/'early.txt').write_text('first push commit')
+        run('add', '.'); run('commit', '-qm', 'early change')
+        first = run('rev-parse', 'HEAD')
+        (origin/'late.txt').write_text('second push commit')
+        run('add', '.'); run('commit', '-qm', 'late change')
+        head = run('rev-parse', 'HEAD')
+        run('clone', '-q', '--depth=1', origin.as_uri(), str(clone))
+        def payload(ids):
+            return dict(before='0'*40,after=head,created=True,deleted=False,ref='refs/heads/new',
+                        commits=[dict(id=x,message='data') for x in ids],size=len(ids),head_commit=dict(id=head))
+        yield dict(folder=folder,origin=origin,clone=clone,run=run,base=base,first=first,
+                   head=head,payload=payload,los=los)
+
+
+class NewBranchComparisonTests(unittest.TestCase):
+    def test_shallow_multi_commit_range_and_conservative_selection(self):
+        with branch_fixture() as f:
+            payload=f['payload']([f['head'],f['first']])  # Order is not ancestry evidence.
+            proof=refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            self.assertEqual(proof['base'],f['base']);self.assertEqual(proof['kind'],'new-branch-push-range')
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=f['clone']),f['head'])
+            with patch.object(baseline,'ROOT',f['clone']):
+                plan=baseline.selection_receipt('0'*40,f['head'],True,False,[],'unavailable diff','push',payload=payload)
+                self.assertIsNone(plan['base']);self.assertEqual(plan['requested_base'],'0'*40)
+                self.assertEqual(plan['comparison']['status'],'unavailable')
+                self.assertTrue(all(x['selected'] for x in plan['baseline']['suites'].values()))
+                self.assertEqual(plan['source_comparison'],proof)
+                env=baseline.suite_environment('los_context',plan)
+            with patch.dict(os.environ,env),patch.object(f['los'],'ROOT',f['clone']):
+                f['los'].SourceBoundaries().test_disabled_projection_against_event_base()
+
+    def test_ref_only_creation_uses_real_parent_and_strict_comparator(self):
+        with branch_fixture() as f:
+            payload=f['payload']([])
+            proof=refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            self.assertEqual(proof['base'],f['first']);self.assertEqual(proof['kind'],'new-branch-tip-parent')
+            with patch.dict(os.environ,{'LOS_EVENT_BASE':proof['base'],'LOS_EVENT_HEAD':f['head']}),patch.object(f['los'],'ROOT',f['clone']):
+                f['los'].SourceBoundaries().test_disabled_projection_against_event_base()
+
+    def test_early_disabled_path_change_is_not_hidden_by_head_parent(self):
+        with branch_fixture(introduce_core=True) as f:
+            proof=refs.new_branch_comparison(f['head'],f['payload']([f['first'],f['head']]),fetch=True,cwd=f['clone'])
+            read=lambda commit:{name:f['run']('show',commit+':'+name,cwd=f['clone'])+'\n' for name in f['los'].ADDITIONS}
+            current=read(f['head'])
+            self.assertEqual(proof['base'],f['base'])
+            with self.assertRaisesRegex(AssertionError,'differs from event base'):
+                f['los'].verify_adapters(read(proof['base']),current)
+            self.assertTrue(f['los'].verify_adapters(read(f['first']),current))
+
+    def test_normal_push_uses_original_before_without_metadata_fallback(self):
+        with branch_fixture() as f:
+            old=os.getcwd()
+            try:
+                os.chdir(f['clone'])
+                with patch.object(refs,'new_branch_comparison',side_effect=AssertionError('fallback on normal push')):
+                    self.assertIsNone(refs.prepare(f['head'],f['first'],'push',payload={}))
+                    with self.assertRaises(RuntimeError):
+                        refs.prepare(f['head'],'f'*40,'push',payload=f['payload']([]))
+            finally:os.chdir(old)
+            with patch.object(baseline,'ROOT',f['clone']):
+                plan=baseline.selection_receipt(f['first'],f['head'],False,False,[],'normal','push')
+                self.assertNotIn('source_comparison',plan)
+                self.assertEqual(plan['base'],f['first'])
+                self.assertEqual(plan['comparison']['paths'],['late.txt'])
+                self.assertEqual(baseline.suite_environment('los_context',plan)['LOS_EVENT_BASE'],f['first'])
+
+    def test_missing_history_and_failed_fetch_cannot_produce_a_baseline(self):
+        with branch_fixture() as f:
+            payload=f['payload']([f['first'],f['head']])
+            with self.assertRaises(refs.MissingHistory):refs.new_branch_comparison(f['head'],payload,cwd=f['clone'])
+            f['run']('remote','set-url','origin',(f['folder']/'absent-origin').as_uri(),cwd=f['clone'])
+            with self.assertRaisesRegex(RuntimeError,'Git preparation failed'):
+                refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=f['clone']),f['head'])
+
+    def test_invalid_metadata_never_fetches_or_invents_a_baseline(self):
+        with branch_fixture() as f:
+            good=f['payload']([f['first'],f['head']])
+            cases=[]
+            for key,value in [('created',False),('deleted',True),('after',f['first']),
+                              ('before','f'*40),('ref','refs/tags/not-a-branch'),
+                              ('commits',None),('size',3),('size',True),('distinct_size',3),
+                              ('head_commit',dict(id=f['first']))]:
+                changed=json.loads(json.dumps(good));changed[key]=value;cases.append(changed)
+            for ids in ([f['head'],f['head']],['HEAD'],[f['first']],[f['head']]*2048):
+                changed=f['payload'](ids);cases.append(changed)
+            for payload in cases:
+                with self.subTest(payload=payload.get('size')),patch.object(refs,'git',wraps=refs.git) as calls:
+                    with self.assertRaises(ValueError):refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+                    self.assertFalse(any(c.args[0]=='fetch' for c in calls.call_args_list))
+
+    def test_root_and_disconnected_history_remain_rejected(self):
+        with branch_fixture() as f:
+            f['run']('branch','root-only',f['base'])
+            root_clone=f['folder']/'root-clone'
+            f['run']('clone','-q','--depth=1','--branch','root-only',f['origin'].as_uri(),str(root_clone))
+            payload=f['payload']([]);payload.update(after=f['base'],head_commit=dict(id=f['base']))
+            with self.assertRaisesRegex(ValueError,'no real comparison parent'):
+                refs.new_branch_comparison(f['base'],payload,fetch=True,cwd=root_clone)
+            tree=f['run']('rev-parse',f['base']+'^{tree}')
+            unrelated=f['run']('commit-tree',tree,'-m','unrelated root')
+            f['run']('update-ref','refs/heads/unrelated',unrelated)
+            f['run']('fetch','-q','--depth=1','origin','unrelated',cwd=f['clone'])
+            with self.assertRaisesRegex(ValueError,'disconnected'):
+                refs.new_branch_comparison(f['head'],f['payload']([f['head'],f['first'],unrelated]),fetch=True,cwd=f['clone'])
+
+    def test_merge_uses_real_first_parent_boundary_with_side_commits(self):
+        with branch_fixture() as f:
+            f['run']('checkout','-qb','merge-fixture',f['base'])
+            f['run']('merge','--no-ff','-qm','merge introduced side',f['head'])
+            merged=f['run']('rev-parse','HEAD');clone=f['folder']/'merge-clone'
+            f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
+            payload=f['payload']([f['head'],merged,f['first']]);payload.update(after=merged,head_commit=dict(id=merged))
+            proof=refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+            self.assertEqual(proof['base'],f['base'])
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
+
+    def test_merged_new_branch_uses_proven_full_frontier_and_retains_early_change_control(self):
+        for introduce_core in (False,True):
+            with self.subTest(introduce_core=introduce_core),branch_fixture(introduce_core=introduce_core) as f:
+                f['run']('checkout','-qb','advanced-main',f['base'])
+                (f['origin']/'main-only.txt').write_text('outside pushed range')
+                f['run']('add','.');f['run']('commit','-qm','outside main commit')
+                main=f['run']('rev-parse','HEAD')
+                f['run']('merge','--no-ff','-qm','merge side',f['head'])
+                merged=f['run']('rev-parse','HEAD');clone=f['folder']/'merged-clone'
+                f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
+                payload=f['payload']([f['first'],f['head'],merged]);payload.update(after=merged,head_commit=dict(id=merged))
+                proof=refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+                self.assertEqual(proof['base'],f['base'])
+                self.assertEqual(proof['kind'],'new-branch-merge-frontier')
+                self.assertEqual(proof['frontier'],sorted([f['base'],main]))
+                self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
+                read=lambda commit:{name:f['run']('show',commit+':'+name,cwd=clone)+'\n' for name in f['los'].ADDITIONS}
+                if introduce_core:
+                    with self.assertRaisesRegex(AssertionError,'differs from event base'):
+                        f['los'].verify_adapters(read(proof['base']),read(merged))
+                else:self.assertTrue(f['los'].verify_adapters(read(proof['base']),read(merged)))
+                with patch.object(baseline,'ROOT',clone):
+                    plan=baseline.selection_receipt('0'*40,merged,True,False,[],'merge frontier','push',payload=payload)
+                    baseline.validate_source_comparison(plan)
+                    plan['source_comparison']['frontier']=[main]
+                    with self.assertRaisesRegex(ValueError,'immutable ancestry'):baseline.validate_source_comparison(plan)
+                with patch.object(refs,'MAX_MERGE_FRONTIER',1),self.assertRaisesRegex(ValueError,'frontier exceeds bound'):
+                    refs.new_branch_comparison(merged,payload,cwd=clone)
+
+    def test_criss_cross_common_ancestor_ambiguity_still_requires_explicit_base(self):
+        with branch_fixture() as f:
+            tree=f['run']('rev-parse',f['base']+'^{tree}')
+            a=f['run']('commit-tree',tree,'-p',f['base'],'-m','left')
+            b=f['run']('commit-tree',tree,'-p',f['base'],'-m','right')
+            left=f['run']('commit-tree',tree,'-p',a,'-p',b,'-m','left merge')
+            right=f['run']('commit-tree',tree,'-p',b,'-p',a,'-m','right merge')
+            merged=f['run']('commit-tree',tree,'-p',left,'-p',right,'-m','new branch merge')
+            f['run']('checkout','-q','--detach',merged)
+            payload=f['payload']([merged]);payload.update(after=merged,head_commit=dict(id=merged))
+            self.assertEqual(len(f['run']('merge-base','--all','--octopus',left,right).splitlines()),2)
+            with self.assertRaisesRegex(ValueError,'Ambiguous.*comparison_base'):
+                refs.new_branch_comparison(merged,payload,cwd=f['origin'])
+
+    def test_unavailable_frontier_history_does_not_expand_fetch_or_invent_a_base(self):
+        with branch_fixture() as f:
+            f['run']('checkout','-qb','advanced-main',f['base'])
+            (f['origin']/'main-only.txt').write_text('main outside push')
+            f['run']('add','.');f['run']('commit','-qm','outside main')
+            f['run']('merge','--no-ff','-qm','merge side',f['head'])
+            merged=f['run']('rev-parse','HEAD');clone=f['folder']/'history-clone'
+            f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
+            payload=f['payload']([merged]);payload.update(after=merged,head_commit=dict(id=merged))
+            with patch.object(refs,'git',wraps=refs.git) as calls,self.assertRaisesRegex(refs.MissingHistory,'ancestry unavailable'):
+                refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+            fetches=[call for call in calls.call_args_list if call.args[0]=='fetch']
+            self.assertEqual(len(fetches),1);self.assertIn('--depth=2',fetches[0].args)
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
+
+    def test_job_receipts_retain_and_bind_the_immutable_source_baseline(self):
+        with branch_fixture() as f:
+            payload=f['payload']([])
+            refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            spec=importlib.util.spec_from_file_location('comparison_selector',ROOT/'scripts/select-ci.py')
+            selector=importlib.util.module_from_spec(spec);spec.loader.exec_module(selector)
+            with patch.object(baseline,'ROOT',f['clone']), patch.dict(os.environ,{'GITHUB_RUN_ID':'77','GITHUB_RUN_ATTEMPT':'1'}):
+                plan=baseline.selection_receipt('0'*40,f['head'],False,False,[],'receipt component test','push',
+                                                selector.eligibility('push',payload,True),payload)
+                real_run=subprocess.run
+                def unit_dispatch(command,*args,**kwargs):
+                    # Test only receipt plumbing here. The actual strict
+                    # comparator and CLI run in other cases above/below.
+                    if command[0]==sys.executable and 'unit' in command:
+                        counts=Path(command[command.index('--output')+1])
+                        counts.write_text(json.dumps(dict(status='passed',tests=1,errors=0,failures=0,skipped=0)))
+                        return subprocess.CompletedProcess(command,0)
+                    return real_run(command,*args,**kwargs)
+                output=f['folder']/'baseline'
+                with patch.object(baseline.subprocess,'run',side_effect=unit_dispatch), redirect_stdout(io.StringIO()):
+                    self.assertEqual(baseline.execute(plan,output),0)
+                compile_path=f['folder']/'compile/compile.json'
+                self.assertEqual(baseline.compile_receipt(plan,'skipped',compile_path),0)
+                tested=json.loads((output/'baseline.json').read_text())
+                compiled=json.loads(compile_path.read_text())
+                self.assertEqual(tested['source_comparison'],plan['source_comparison'])
+                self.assertEqual(compiled['source_comparison'],plan['source_comparison'])
+                jobs={name:dict(result='success') for name in ('changes','baseline','evidence-checker','build')}
+                jobs['extraction-instances']=dict(result='skipped')
+                self.assertEqual(baseline.aggregate(plan,tested,compiled,jobs,False),[])
+                tested['source_comparison']['base']=f['head']
+                self.assertIn('baseline offline source comparison mismatch',baseline.aggregate(plan,tested,compiled,jobs,False))
+                tested['source_comparison']=json.loads(json.dumps(plan['source_comparison']))
+                compiled.pop('source_comparison')
+                self.assertIn('compile offline source comparison mismatch',baseline.aggregate(plan,tested,compiled,jobs,False))
+
+    def test_zero_base_receipt_event_is_bound_before_optional_proof_validation(self):
+        with branch_fixture() as f:
+            payload=f['payload']([])
+            refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            event=f['folder']/'event.json';event.write_text(json.dumps(payload))
+            env=dict(GITHUB_EVENT_NAME='push',GITHUB_EVENT_PATH=str(event),GITHUB_RUN_ID='77',GITHUB_RUN_ATTEMPT='1')
+            spec=importlib.util.spec_from_file_location('event_bound_selector',ROOT/'scripts/select-ci.py')
+            selector=importlib.util.module_from_spec(spec);spec.loader.exec_module(selector)
+            with patch.object(baseline,'ROOT',f['clone']),patch.dict(os.environ,env):
+                plan=baseline.selection_receipt('0'*40,f['head'],False,False,[],'event identity fixture','push',
+                                                selector.eligibility('push',payload,False),payload)
+                path=f['folder']/'selection.json';baseline.write_json(path,plan)
+                self.assertEqual(baseline.load_selection(path,f['head'],'0'*40),plan)
+                for label in ('workflow_dispatch','pull_request','',None):
+                    for remove_proof in (False,True):
+                        bad=json.loads(json.dumps(plan));bad['event']=label
+                        if remove_proof:bad.pop('source_comparison')
+                        baseline.write_json(path,bad)
+                        with self.subTest(event=label,remove_proof=remove_proof),self.assertRaisesRegex(ValueError,'event mismatch'):
+                            baseline.load_selection(path,f['head'],'0'*40)
+                baseline.write_json(path,plan)
+                for actual in ('workflow_dispatch','pull_request',''):
+                    with patch.dict(os.environ,{'GITHUB_EVENT_NAME':actual}),self.subTest(actual=actual),self.assertRaisesRegex(ValueError,'event mismatch'):
+                        baseline.load_selection(path,f['head'],'0'*40)
+                with patch.dict(os.environ):
+                    os.environ.pop('GITHUB_EVENT_NAME',None)
+                    with self.assertRaisesRegex(ValueError,'event mismatch'):
+                        baseline.load_selection(path,f['head'],'0'*40)
+
+    def test_real_cli_records_baseline_without_changing_selection_or_native_admission(self):
+        with branch_fixture() as f:
+            event=f['folder']/'event.json';event.write_text(json.dumps(f['payload']([])))
+            env=dict(os.environ,GITHUB_EVENT_NAME='push',GITHUB_EVENT_PATH=str(event),GITHUB_RUN_ID='77',GITHUB_RUN_ATTEMPT='1',PYTHONDONTWRITEBYTECODE='1')
+            commands=[
+                [sys.executable,'-B','scripts/ci_checkout_refs.py','--head',f['head'],'--base','0'*40,'--event','push'],
+                [sys.executable,'-B','scripts/select-ci.py','--head',f['head'],'--base','0'*40,'--event','push',
+                 '--build-prefix','true','--output',str(f['folder']/'outputs'),'--receipt',str(f['folder']/'selection.json')]]
+            for command in commands:
+                result=subprocess.run(command,cwd=f['clone'],env=env,capture_output=True,text=True,timeout=30)
+                self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+            plan=json.loads((f['folder']/'selection.json').read_text())
+            self.assertIsNone(plan['base']);self.assertEqual(plan['source_comparison']['base'],f['first'])
+            self.assertTrue(plan['compile']['selected'])
+            self.assertTrue(all(x['selected'] for x in plan['baseline']['suites'].values()))
+            self.assertFalse(plan['eligibility']['native']['eligible']);self.assertFalse(plan['eligibility']['gating']['eligible'])
+            self.assertEqual(plan['new_tests'],[])
+            with patch.object(baseline,'ROOT',f['clone']),patch.dict(os.environ,env):
+                loaded=baseline.load_selection(f['folder']/'selection.json',f['head'],'0'*40)
+                self.assertEqual(loaded['source_comparison'],plan['source_comparison'])
+                for key,value in [('base',f['head']),('base','0'*40),('base','f'*40),
+                                  ('kind','invented'),('head',f['first'])]:
+                    bad=json.loads(json.dumps(plan));bad['source_comparison'][key]=value
+                    baseline.write_json(f['folder']/'bad.json',bad)
+                    with self.subTest(key=key),self.assertRaises(ValueError):
+                        baseline.load_selection(f['folder']/'bad.json',f['head'],'0'*40)
+                bad=dict(plan);bad.pop('source_comparison');baseline.write_json(f['folder']/'bad.json',bad)
+                with self.assertRaisesRegex(ValueError,'Missing/invalid'):
+                    baseline.load_selection(f['folder']/'bad.json',f['head'],'0'*40)
+                changed=f['payload']([]);changed['ref']='refs/heads/different-event'
+                event.write_text(json.dumps(changed))
+                with self.assertRaisesRegex(ValueError,'event metadata'):
+                    baseline.load_selection(f['folder']/'selection.json',f['head'],'0'*40)
 
 
 class CheckoutRefsTests(unittest.TestCase):
@@ -231,7 +549,7 @@ class CheckoutRefsTests(unittest.TestCase):
                     plan = baseline.selection_receipt(base, head, False, False, [], 'docs', 'pull_request')
                 self.assertEqual(plan['comparison']['status'], 'available')
                 self.assertEqual(plan['comparison']['paths'], ['README.md'])
-                refs.prepare(head, '0' * 40, 'push')
+                refs.prepare(head, '0' * 40, 'push', payload=dict(before='0'*40, after=head, created=True, deleted=False, ref='refs/heads/new', commits=[], size=0, head_commit=dict(id=head)))
                 with self.assertRaises(ValueError):
                     refs.prepare(head, '', 'pull_request')
                 with self.assertRaises(ValueError):
@@ -273,7 +591,7 @@ class CheckoutRefsTests(unittest.TestCase):
                     eligibility = {'action': None, 'metadata_valid': True,
                                    **{key: {'eligible': key != 'gating', 'reason': 'manual fixture'}
                                       for key in ('compile', 'native', 'gating')}}
-                    with patch.object(baseline, 'ROOT', clone), patch.dict(os.environ, {'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '2'}):
+                    with patch.object(baseline, 'ROOT', clone), patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'workflow_dispatch', 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '2'}):
                         receipt = baseline.selection_receipt(base, head, False, False, [], 'manual', 'workflow_dispatch', eligibility)
                         import json
                         receipt_path = clone / 'selection.json'
@@ -374,6 +692,172 @@ class CheckoutRefsTests(unittest.TestCase):
         for name in ('evidence-checker', 'build'):
             block = re.split(r'\n  [\w-]+:\n', workflow.split('\n  ' + name + ':\n', 1)[1], 1)[0]
             self.assertIn('fetch-depth: 0', block)
+
+
+
+@contextmanager
+def atlas_graph():
+    """Real local Git DAG, independent of Civ13 history or remote services."""
+    with tempfile.TemporaryDirectory(prefix='ci-atlas-') as directory:
+        root = Path(directory)/'origin'; root.mkdir()
+        def run(*args, cwd=root, input=None):
+            return subprocess.check_output(['git', *args], cwd=cwd, input=input,
+                                           stderr=subprocess.PIPE, text=True, timeout=15).strip()
+        run('init', '-q'); run('config', 'user.name', 'Atlas fixture'); run('config', 'user.email', 'atlas@example.invalid')
+        run('config', 'commit.gpgsign', 'false')
+        paths = ('tests/test_crafting_atlas.py', 'tests/crafting_atlas/probe.dm',
+                 'tests/crafting_atlas/resource-search.test.mjs')
+        def commit(name, content, message='fixture change'):
+            target=root/name; target.parent.mkdir(parents=True,exist_ok=True); target.write_text(content)
+            run('add', '--', name); run('commit', '-qm', message); return run('rev-parse', 'HEAD')
+        for name in paths:
+            target=root/name; target.parent.mkdir(parents=True,exist_ok=True); target.write_text('initial\n')
+        run('add','.');run('commit','-qm','root'); initial=run('rev-parse','HEAD')
+        fork=commit(paths[1],'fork\n')
+        run('branch','pr',fork);run('branch','base',fork)
+        spec=importlib.util.spec_from_file_location('atlas_graph_selection', ROOT/'scripts/select-ci.py')
+        selection=importlib.util.module_from_spec(spec);spec.loader.exec_module(selection)
+        previous=os.getcwd()
+        try:
+            os.chdir(root)
+            yield dict(root=root, run=run, commit=commit, initial=initial, fork=fork, paths=paths, selection=selection, directory=Path(directory))
+        finally:
+            os.chdir(previous)
+
+
+class AtlasPRComparisonTests(unittest.TestCase):
+    def test_upstream_only_test_change_does_not_select_pr_native(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+            g('checkout','-q','pr');head=f['commit']('docs/pr.md','PR prose\n')
+            self.assertEqual(f['selection'].changed_atlas_tests(base,head,'pull_request'),[])
+            self.assertIn(f['paths'][1],g('diff','--name-only','--diff-filter=AM',base,head))
+            proof=refs.atlas_pr_comparison(base,head)
+            self.assertEqual((proof['event_base'],proof['head'],proof['ancestor']),(base,head,f['fork']))
+
+    def test_actual_add_modify_and_deletion_semantics(self):
+        for operation in ('add','modify','delete'):
+            with self.subTest(operation=operation), atlas_graph() as f:
+                g=f['run'];path=f['paths'][1]
+                if operation=='add':
+                    g('rm','--',path);g('commit','-qm','remove baseline file')
+                    fork=g('rev-parse','HEAD');g('branch','-f','pr',fork)
+                else:fork=f['fork']
+                g('checkout','-q','pr')
+                if operation=='delete':
+                    g('rm','--',path);g('commit','-qm','PR deletion');head=g('rev-parse','HEAD')
+                else:head=f['commit'](path,'PR edit\n')
+                expected=[] if operation=='delete' else ['tests/crafting_atlas']
+                self.assertEqual(f['selection'].changed_atlas_tests(fork,head,'pull_request'),expected)
+
+    def test_intentional_revert_before_and_after_merging_base(self):
+        for merged in (False,True):
+            with self.subTest(merged=merged), atlas_graph() as f:
+                g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+                g('checkout','-q','pr');f['commit']('docs/pr.md','PR prose\n')
+                if merged:
+                    g('merge','--no-ff','-qm','merge event base',base);g('revert','--no-edit',base)
+                else:g('revert','--no-edit',f['fork'])
+                head=g('rev-parse','HEAD')
+                self.assertEqual(f['selection'].changed_atlas_tests(base,head,'pull_request'),['tests/crafting_atlas'])
+                self.assertEqual(refs.atlas_pr_comparison(base,head)['ancestor'],base if merged else f['fork'])
+
+    def test_no_net_change_reversal_does_not_select(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+            g('checkout','-q','pr');edit=f['commit'](f['paths'][1],'temporary PR change\n');g('revert','--no-edit',edit)
+            head=g('rev-parse','HEAD')
+            self.assertEqual(f['selection'].changed_atlas_tests(base,head,'pull_request'),[])
+
+    def test_shallow_requires_one_exact_tip_fetch_and_preserves_head(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit']('base.txt','base\n')
+            g('checkout','-q','pr');head=f['commit']('pr.txt','PR\n')
+            clone=f['directory']/'shallow';g('clone','-q','--depth=1','--branch','pr',f['root'].as_uri(),str(clone))
+            with self.assertRaises(refs.MissingHistory):refs.atlas_pr_comparison(base,head,cwd=clone)
+            with patch.object(refs,'git',wraps=refs.git) as commands:
+                proof=refs.atlas_pr_comparison(base,head,fetch=True,cwd=clone)
+            fetches=[c for c in commands.call_args_list if 'fetch' in c.args]
+            self.assertEqual(len(fetches),1)
+            self.assertEqual(fetches[0].args,('--no-replace-objects','fetch','--no-tags','--depth=2049','origin',base,head))
+            self.assertEqual(proof['ancestor'],f['fork']);self.assertEqual(g('rev-parse','HEAD',cwd=clone),head)
+
+    def test_incomplete_bounded_fetch_fails_without_second_attempt(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base')
+            for i in range(4):base=f['commit']('base.txt',str(i))
+            g('checkout','-q','pr')
+            for i in range(4):head=f['commit']('pr.txt',str(i))
+            clone=f['directory']/'shallow';g('clone','-q','--depth=1','--branch','pr',f['root'].as_uri(),str(clone))
+            with patch.object(refs,'MAX_ATLAS_COMMITS',1),patch.object(refs,'git',wraps=refs.git) as commands:
+                with self.assertRaises(refs.MissingHistory):refs.atlas_pr_comparison(base,head,fetch=True,cwd=clone)
+            self.assertEqual(sum('fetch' in c.args for c in commands.call_args_list),1)
+            self.assertEqual(g('rev-parse','HEAD',cwd=clone),head)
+
+    def test_criss_cross_ambiguity_and_unrelated_roots_fail(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');left=f['commit']('left.txt','left')
+            g('checkout','-q','pr');right=f['commit']('right.txt','right')
+            first=g('commit-tree',g('rev-parse',left+'^{tree}'),'-p',left,'-p',right,'-m','cross one')
+            second=g('commit-tree',g('rev-parse',right+'^{tree}'),'-p',right,'-p',left,'-m','cross two')
+            g('reset','--hard',second)
+            with self.assertRaisesRegex(ValueError,'unique'):refs.atlas_pr_comparison(first,second)
+            empty=g('hash-object','-t','tree','--stdin',input='')
+            orphan=g('commit-tree',empty,'-m','unrelated');g('reset','--hard',orphan)
+            with self.assertRaisesRegex(ValueError,'unrelated'):refs.atlas_pr_comparison(first,orphan)
+
+    def test_apparent_unique_base_with_hidden_parent_still_fails_closed(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');left=f['commit']('left.txt','left')
+            g('checkout','-q','pr');right=f['commit']('right.txt','right')
+            tree=g('rev-parse',right+'^{tree}')
+            hidden=g('commit-tree',tree,'-p',right,'-m','hidden right edge')
+            base=g('commit-tree',tree,'-p',left,'-p',right,'-m','base two parents')
+            head=g('commit-tree',tree,'-p',left,'-p',hidden,'-m','PR two parents')
+            g('reset','--hard',head)
+            shallow=f['root']/'.git/shallow';shallow.write_text(hidden+'\n')
+            # Git sees one candidate after the cut hides a second common base.
+            self.assertEqual(g('merge-base','--all',base,head),left)
+            with self.assertRaisesRegex(refs.MissingHistory,'shallow boundary'):
+                refs.atlas_pr_comparison(base,head)
+
+    def test_mismatched_missing_and_invalid_identities_fail(self):
+        with atlas_graph() as f:
+            head=f['commit']('pr.txt','PR')
+            with self.assertRaisesRegex(ValueError,'checked-out'):refs.atlas_pr_comparison(f['fork'],f['initial'])
+            with self.assertRaises(refs.MissingHistory):refs.atlas_pr_comparison('f'*40,head)
+            for base in ('','0'*40,'main'):
+                with self.subTest(base=base),self.assertRaises(ValueError):refs.atlas_pr_comparison(base,head)
+
+    def test_non_pr_admission_and_preparation_are_unchanged(self):
+        with atlas_graph() as f:
+            head=f['commit']('pr.txt','PR')
+            with patch.object(refs,'atlas_pr_comparison',side_effect=AssertionError('Atlas PR only')):
+                for event in ('push','workflow_dispatch'):
+                    self.assertIsNone(refs.prepare(head,f['fork'],event,atlas_ancestry=True))
+                self.assertIsNone(refs.prepare(head,f['fork'],'pull_request'))
+            with patch.object(f['selection'],'atlas_comparison',side_effect=AssertionError('Atlas PR only')):
+                for event in ('push','workflow_dispatch'):
+                    self.assertEqual(f['selection'].changed_atlas_tests(f['fork'],head,event),[])
+
+    def test_actual_selector_records_ancestor_without_replacing_event_base(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+            g('checkout','-q','pr');head=f['commit']('docs/pr.md','PR prose\n')
+            out=f['directory']/'out';receipt=f['directory']/'selection.json'
+            payload=dict(action='opened',pull_request=dict(title='Atlas test',base=dict(ref='master',sha=base),head=dict(sha=head)))
+            argv=['select-ci.py','--base',base,'--head',head,'--event','pull_request','--build-prefix','true','--output',str(out),'--receipt',str(receipt)]
+            with patch.object(sys,'argv',argv),patch.object(f['selection'],'load_event',return_value=payload), \
+                 patch.object(baseline,'ROOT',f['root']),patch.dict(sys.modules,{'ci_baseline':baseline}):
+                f['selection'].main()
+            plan=json.loads(receipt.read_text())
+            self.assertEqual((plan['base'],plan['requested_base'],plan['head']),(base,base,head))
+            self.assertEqual(plan['atlas_comparison']['ancestor'],f['fork']);self.assertEqual(plan['new_tests'],[])
+            self.assertIn('atlas_ancestor='+f['fork'],out.read_text())
+            out.unlink();receipt.unlink();payload['pull_request']['base']['sha']=f['fork']
+            with patch.object(sys,'argv',argv),patch.object(f['selection'],'load_event',return_value=payload):
+                with self.assertRaisesRegex(RuntimeError,'matching event'):f['selection'].main()
+            self.assertFalse(out.exists());self.assertFalse(receipt.exists())
 
 
 if __name__ == '__main__':

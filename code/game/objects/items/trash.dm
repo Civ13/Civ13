@@ -1,4 +1,4 @@
-//Items labled as 'trash' for the trash bag.
+//Items labeled as 'trash' for the trash bag.
 //TODO: Make this an item var or something...
 
 //Added by Jack Rost

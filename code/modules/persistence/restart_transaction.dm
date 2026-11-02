@@ -94,7 +94,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 
 /datum/persistence_restart_transaction/proc/load_generation(list/expected_intent)
 	// Startup ownership is admitted explicitly; never clear another operation.
-	return ticker.loadmap(src, expected_intent)
+	var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+	var/datum/startup_ready = game_ready_hook ? call(game_ready_hook)("restart_ticket", src) : null
+	return ticker.loadmap(src, expected_intent, startup_ready)
 
 /datum/persistence_restart_transaction/proc/request_restart()
 	world.Reboot(0, expected_generation)
@@ -218,9 +220,13 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		diagnostic_phase = "players"
 		players_ready = map_storage.finish_player_restoration()
 		diagnostic_phase = players_ready ? "complete" : "readiness_unconfirmed"
+		var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+		if(game_ready_hook) call(game_ready_hook)("restart_completed", src, players_ready)
 		return TRUE
 	catch(var/exception/e)
 		diagnostic_phase = "failed"
+		var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+		if(game_ready_hook) call(game_ready_hook)("restart_failed", src)
 		persistence_save_in_progress = TRUE
 		report("RECOVERY HOLD: [e]. No fresh round or automatic retry will run. Preserve map_saves; repair the matching files, then use Resume Pending Recovery before import begins, or restart from the original map after an import failure.")
 	busy = FALSE

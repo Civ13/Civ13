@@ -53,6 +53,53 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_game_ready_registration_is_explicit_offline_and_additive(self):
+        suite=ci.SUITES['game_ready']
+        self.assertEqual(suite['files'], ('tests/game_ready/test_release.py',
+            'tests/game_ready/test_ready.py','tests/game_ready/test_hooks.py'))
+        for path in suite['shared_paths'] + ('tests/game_ready/model.py',):
+            self.assertIn('game_ready',self.selected([path]))
+        previous={name:entry for name,entry in ci.SUITES.items() if name!='game_ready'}
+        for path in suite['shared_paths']:
+            with patch.object(ci,'SUITES',previous):prior=self.selected([path])
+            self.assertEqual(self.selected([path]),prior|{'game_ready'})
+        self.assertNotIn('game_ready',self.selected(['README.md']))
+
+    def test_help_toxin_registration_is_bounded_and_preserves_shared_coverage(self):
+        name = 'help_toxin_context'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/player_help/test_toxin_context.py',))
+        self.assertEqual(suite['paths'], ())
+        self.assertEqual(ci.TIMEOUT, 30)
+        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress',name})
+        self.assertNotIn(name,self.selected(['README.md']))
+        self.assertIn('tests/player_help/test_bridge.py',suite['shared_paths'])
+        self.assertIn('scripts/player_help_bridge.py',suite['shared_paths'])
+        prior={key:value for key,value in ci.SUITES.items() if key != name}
+        for path in suite['shared_paths']:
+            with self.subTest(path=path):
+                with patch.object(ci,'SUITES',prior):
+                    old=ci.impact([path])
+                    old_selected=self.selected([path])
+                current=ci.impact([path])
+                self.assertEqual(self.selected([path]),old_selected | {name})
+                self.assertEqual(current['fallback_reasons'],old['fallback_reasons'])
+        self.assertNotIn('tests/player_help/run.py',suite['files'])
+        with patch.object(ci,'SUITES',prior):
+            self.assertNotIn(name,self.selected(list(suite['files'])))
+
+    def test_stone_brazier_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'stone_brazier'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/stone_brazier/test_stone_brazier_disposal.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
+
     def test_crafting_ui_offline_registration_preserves_shared_coverage(self):
         suite = ci.SUITES['crafting_ui_contracts']
         self.assertEqual(suite['files'], ('tests/human_subtile/test_crafting_ui.py',))
@@ -68,6 +115,18 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertEqual(self.selected([path]), prior | {'crafting_ui_contracts'})
         self.assertNotIn('crafting_ui_contracts', self.selected(['README.md']))
         self.assertNotIn('tests/human_subtile/run.py', suite['files'])
+
+    def test_well_smell_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'well_smell'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/well_smell/test_well_smell.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
 
     def test_sleep_resting_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['sleep_resting']
@@ -91,6 +150,18 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertNotIn('  pull_request:',workflow)
         ordinary=(ROOT/'.github/workflows/test.yml').read_text()
         self.assertNotIn('tests/tree_refresh_native',ordinary)
+
+    def test_axe_active_hand_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'axe_active_hand'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/axe_active_hand/test_axe_active_hand.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
 
     def test_anvil_feedback_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['anvil_feedback']
@@ -583,6 +654,128 @@ class BaselinePolicyTests(unittest.TestCase):
                         self.assertIn('Incomplete test execution: character_traits', errors)
                     else:
                         self.assertEqual(errors, [])
+    def test_tablet_shared_inputs_survive_other_ownership_without_changing_fallback(self):
+        inputs = ['code/game/objects/items/stacks/stack.dm',
+                  'code/game/objects/items/stacks/civ_recipes.dm',
+                  'code/modules/research_tree/research_node.dm',
+                  'code/modules/reagents/laboratory.dm']
+        inputs += [path.relative_to(ROOT).as_posix()
+                   for path in (ROOT / 'config/crafting').glob('*.txt')]
+        inputs.append('config/crafting/future_tablet_dependency.txt')
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'tablet_press'}
+        for path in inputs:
+            with self.subTest(path=path):
+                current = ci.impact([path])
+                with patch.object(ci, 'SUITES', previous):
+                    before = ci.impact([path])
+                self.assertEqual(current['fallback_reasons'], before['fallback_reasons'])
+                self.assertTrue(current['suites']['tablet_press']['selected'])
+                owner = dict(files=(), paths=(path,), shared_paths=())
+                owned = {**ci.SUITES, 'isolated_tablet_input_owner': owner}
+                with patch.object(ci, 'SUITES', owned):
+                    selected = ci.impact([path])
+                self.assertFalse(selected['fallback_reasons'])
+                self.assertTrue(selected['suites']['tablet_press']['selected'])
+                # Removing only this dependency declaration recreates the
+                # silent omission when some other suite owns the same input.
+                original = owned['tablet_press']
+                missing = dict(original, shared_paths=tuple(
+                    shared for shared in original['shared_paths'] if not ci.matches(path, shared)))
+                with patch.object(ci, 'SUITES', owned | {'tablet_press': missing}):
+                    negative = ci.impact([path])
+                self.assertFalse(negative['fallback_reasons'])
+                self.assertFalse(negative['suites']['tablet_press']['selected'])
+
+    def test_tablet_registration_and_failure_reach_required_aggregate(self):
+        suite_name = 'tablet_press'
+        suite = ci.SUITES[suite_name]
+        self.assertEqual(suite['files'], ('tests/tablet_press/test_contract.py',))
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', suite_name})
+        self.assertEqual(self.selected(['code/modules/reagents/tablet_press.dm']), set(ci.SUITES))
+        # Real registered child and execute()/aggregate() receipts on isolated
+        # production inputs. Only unrelated mandatory children use inert adapters.
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sources = ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+                       'tools/byond/version.json', *suite['files'],
+                       'code/modules/reagents/tablet_press.dm',
+                       'code/game/objects/items/stacks/stack.dm',
+                       'code/game/objects/items/stacks/civ_recipes.dm',
+                       'code/modules/research_tree/research_node.dm',
+                       'code/modules/reagents/laboratory.dm')
+            for relative in (*sources, *(p.relative_to(ROOT).as_posix()
+                                         for p in (ROOT / 'config/crafting').glob('*.txt'))):
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, destination)
+
+            def git(*args):
+                return subprocess.check_output(['git', '-C', temporary, *args],
+                                               stderr=subprocess.PIPE, timeout=10).decode().strip()
+
+            git('init')
+            git('config', 'user.name', 'Tablet CI fixture')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('add', '.')
+            git('commit', '-qm', 'passing tablet CI fixture')
+            real_run = ci.subprocess.run
+
+            def child(command, **kwargs):
+                if 'unit' not in command:
+                    return real_run(command, **kwargs)
+                if command[command.index('--suite') + 1] == suite_name:
+                    command = list(command)
+                    command[2] = str(root / 'scripts/ci_baseline.py')
+                    return real_run(command, **(kwargs | {'cwd': root}))
+                ci.write_json(command[command.index('--output') + 1], dict(
+                    status='passed', tests=1, errors=0, failures=0, skipped=0))
+                return subprocess.CompletedProcess(command, 0)
+
+            positive_count = None
+            for failing in (False, True):
+                with self.subTest(failing=failing):
+                    if failing:
+                        target = root / 'code/modules/reagents/tablet_press.dm'
+                        original = target.read_text()
+                        self.assertEqual(original.count('year > 1843'), 1)
+                        target.write_text(original.replace('year > 1843', 'year >= 1843'))
+                        git('add', '.')
+                        git('commit', '-qm', 'isolated invalid date boundary control')
+                    plan, _, compiler, jobs = fixtures(suite['files'])
+                    plan['head'] = compiler['head'] = git('rev-parse', 'HEAD')
+                    compiler['selection_sha256'] = ci.digest(plan)
+                    evidence = root / ('negative' if failing else 'positive')
+                    with patch.object(ci, 'ROOT', root), patch.object(ci.subprocess, 'run', side_effect=child), \
+                            patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '1'}), patch('builtins.print'):
+                        exit_code = ci.execute(plan, evidence)
+                    baseline = json.loads((evidence / 'baseline.json').read_text())
+                    selected = baseline['suites'][suite_name]
+                    counts = selected['counts']
+                    self.assertEqual(exit_code, int(failing))
+                    self.assertEqual(baseline['status'], 'failed' if failing else 'passed')
+                    self.assertTrue(baseline['source_unchanged'])
+                    self.assertFalse(baseline['tracked_dirty'])
+                    self.assertFalse(baseline['tracked_dirty_after'])
+                    self.assertEqual(selected['exit_code'], int(failing))
+                    self.assertEqual(selected['files'], list(suite['files']))
+                    self.assertEqual(counts['status'], 'failed' if failing else 'passed')
+                    self.assertEqual(counts['errors'], 0)
+                    self.assertEqual(counts['skipped'], 0)
+                    errors = ci.aggregate(plan, baseline, compiler, jobs, False)
+                    if failing:
+                        self.assertEqual(counts['tests'], positive_count)
+                        self.assertGreater(counts['failures'], 0)
+                        self.assertIn('test_strict_canonical_year_boundary',
+                                      (evidence / 'tablet_press.log').read_text())
+                        self.assertIn('Baseline did not pass', errors)
+                        self.assertIn('Missing, failed or unexpectedly skipped suite: tablet_press', errors)
+                        self.assertIn('Incomplete test execution: tablet_press', errors)
+                    else:
+                        positive_count = counts['tests']
+                        self.assertGreater(positive_count, 0)
+                        self.assertEqual(counts['failures'], 0)
+                        self.assertEqual(errors, [])
 
     def test_grinder_registration_preserves_shared_source_fallback(self):
         suite = ci.SUITES['grinder']
@@ -933,6 +1126,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     expected.add('dictionary')
                     expected.add('character_return_preparation')
                     expected.add('access_lists')
+                    expected.add('game_ready')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 
@@ -1168,6 +1362,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 else:
                     self.assertFalse(result['tracked_dirty_after'])
                     self.assertNotEqual(result['observed_head_after'], head)
+    @patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'pull_request'})
     def test_selection_loader_rejects_disabled_mandatory_tests_and_stale_source(self):
         plan, _, _, _ = fixtures()
         with tempfile.TemporaryDirectory() as temporary:
@@ -1187,6 +1382,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Always-required'):
                     ci.load_selection(path, plan['head'], plan['base'])
 
+    @patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'pull_request'})
     def test_selection_from_an_earlier_attempt_of_the_same_run_is_named_explicitly(self):
         # Re-running failed jobs reuses the successful selection job, so its
         # receipt keeps attempt 1 while the consumer runs in attempt 2.

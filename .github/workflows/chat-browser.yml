@@ -1,0 +1,64 @@
+name: Chat browser layout
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'interface/chat/**'
+      - 'interface/fonts/**'
+      - 'code/js/purify.min.js'
+      - 'code/modules/chat/chat.dm'
+      - 'tests/chat/**'
+      - 'tgui/package.json'
+      - 'tgui/package-lock.json'
+      - '.github/workflows/chat-browser.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'interface/chat/**'
+      - 'interface/fonts/**'
+      - 'code/js/purify.min.js'
+      - 'code/modules/chat/chat.dm'
+      - 'tests/chat/**'
+      - 'tgui/package.json'
+      - 'tgui/package-lock.json'
+      - '.github/workflows/chat-browser.yml'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+          cache: npm
+          cache-dependency-path: tgui/package-lock.json
+      - name: Verify chat delivery and workflow scope
+        run: node tests/chat/workflow-contract.test.js
+      - name: Install integrity-locked browser tooling without lifecycle hooks
+        timeout-minutes: 5
+        run: npm ci --ignore-scripts --prefix tgui
+      - name: Test chat layout and original-page control in runner Chromium
+        timeout-minutes: 2
+        env:
+          CHAT_TEST_TMP: ${{ runner.temp }}/chat-browser
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium)"
+          test -n "$CHROMIUM_PATH"
+          node tests/chat/chat-scroll.browser.test.js
+          CHAT_NO_RESIZE_OBSERVER=1 node tests/chat/chat-scroll.browser.test.js
+          CHAT_NEGATIVE_CONTROL=1 node tests/chat/chat-scroll.browser.test.js
+      - name: Retain browser verdict and cleanup evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: chat-browser-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/chat-browser/chat-scroll-*/browser.*
+          if-no-files-found: warn
+          retention-days: 7

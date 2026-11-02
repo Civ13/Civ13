@@ -1,0 +1,5 @@
+BENCHMARK_PHASE {"phase":"before_save","attempt":7,"clock":442269,"baseline":0,"roster":64,"nodes":6,"edges":0,"logical_bytes":5708,"paths":16,"entry_pins":1152,"list_pins":256,"capture_tick_usage":5.986,"heartbeat_gap_ds":1,"heartbeat_count":101}
+BENCHMARK_PHASE {"phase":"roster_start","attempt":7,"clock":442269,"baseline":0,"roster":64,"nodes":6,"edges":0,"logical_bytes":5708,"paths":16,"entry_pins":1152,"list_pins":256,"capture_tick_usage":5.986,"heartbeat_gap_ds":1,"heartbeat_count":101}
+BENCHMARK_PHASE {"phase":"roster_end","attempt":7,"clock":442270,"baseline":0,"roster":64,"nodes":6,"edges":0,"logical_bytes":5708,"paths":16,"entry_pins":1152,"list_pins":256,"capture_tick_usage":5.986,"heartbeat_gap_ds":1,"heartbeat_count":103}
+BENCHMARK_PHASE {"phase":"after_capture","attempt":7,"clock":442270,"baseline":0,"roster":64,"nodes":6,"edges":0,"logical_bytes":5708,"paths":16,"entry_pins":1152,"list_pins":256,"capture_tick_usage":5.986,"heartbeat_gap_ds":1,"heartbeat_count":103}
+FAIL: Moving save chunk exceeded its capture budget or yielded: work=58 tick_delta=0 usage_delta=10.022 total_usage=69.314 elapsed_ds=0 admission_usage=58.796 start_usage=59.292 (:)

@@ -5,6 +5,24 @@ ERA_NAMES = ['Stone Age', 'Bronze Age', 'Middle Ages', 'Imperial Age',
              'Industrial Age', 'Early Modern Age', 'WW2', 'Cold War', 'Modern Age']
 
 
+def add_tablet_press(files, add, records):
+    path = 'code/modules/reagents/tablet_press.dm'
+    if path not in files:
+        return
+    source = files[path]
+    contract = 'new(src, user, reagents, product.reagents, list("calcium_carbonate" = 1, "aspirin" = 4), product)'
+    if contract not in source or 'year > 1843' not in source:
+        raise ValueError('Tablet press source contract changed; review quantities and date')
+    line = source[:source.index(contract)].count('\n') + 1
+    add('Press aspirin tablet', 'Processor', [('calcium_carbonate', 1), ('aspirin', 4)],
+        [('/obj/item/weapon/reagent_containers/pill', 1)], path, line,
+        'Anchored tablet press; calendar >1843 and Pharmacology. Internal buffer only: '
+        '1 carbonate + 4 aspirin -> one 5-unit tablet. Whole selected stocks; unrelated '
+        'contents retained. No new aspirin supply or medical effect.')
+    records[-1].update(processor='tablet_press', processor_name='Tablet press',
+                      station='/obj/structure/chem_master/tablet_press/constructed')
+
+
 def annotate_eras(records, nodes, splitargs):
     tiers = {}
     for match in re.finditer(r'new /datum/research_node\(', nodes):

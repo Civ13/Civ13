@@ -97,7 +97,7 @@ describe('Crafting Atlas navigation', () => {
   it('preserves resource-only and independent result-bound notices', () => {
     render(<CraftingAtlas {...ui({ recipe_count: 151, resource_count: 151, detail: null })} />);
     expect(screen.getByText('First 150 resource matches shown. Refine your search to find more.')).toBeTruthy();
-    expect(screen.getByText('First 150 recipe matches shown. Refine filters to find more.')).toBeTruthy();
+    expect(screen.getByText('First 150 recipe families shown. Refine filters to find more.')).toBeTruthy();
     expect(screen.getByText(/Select a Resource result/)).toBeTruthy();
   });
   it('keeps rich-looking text inert and rejects nonlocal symbol URLs and unsafe source paths', () => {
@@ -113,5 +113,75 @@ describe('Crafting Atlas navigation', () => {
     expect(props.act).not.toHaveBeenCalled();
     expect((screen.getByRole('searchbox') as HTMLInputElement).disabled).toBe(true);
     expect((screen.getByLabelText('Unlock era') as HTMLSelectElement).disabled).toBe(true);
+  });
+
+  it('shows one family on the left and canonical recipe choices on the right', () => {
+    const family = [{ id: 'r2', label: '4 x planks / Material / camp / Bronze (line 27)' },
+                    { id: 'r9', label: '2 x planks / Material / global / Stone (line 81)' }];
+    const props = ui({ family_count: 1, recipe_count: 2,
+      recipes: [{ id: 'r2', family_id: 'family_explicit', name: 'Plank family', variant_count: 2, era_label: 'Multiple unlock eras' }],
+      detail: { ...recipe, family_variants: family } });
+    const view = render(<CraftingAtlas {...props} />);
+    expect(view.container.querySelectorAll('[data-result-type="recipe"]')).toHaveLength(1);
+    expect(screen.getByText(/1 recipe family \/ 2 matching recipes/)).toBeTruthy();
+    expect(screen.getByText('2 recipe variants / Multiple unlock eras')).toBeTruthy();
+    const select = screen.getByLabelText('Recipe variant') as HTMLSelectElement;
+    expect(select.value).toBe('r2');
+    expect(within(select).getAllByRole('option')).toHaveLength(2);
+    fireEvent.change(select, { target: { value: 'r9' } });
+    expect(sent(props)).toEqual({ route: 'open', query: 'wood', era: 'multiple', processor: 'sawmill', recipe: 'r9' });
+    // Existing per-catalog equivalents remain independently selectable.
+    expect(screen.getByLabelText('Transformation / catalog variant')).toBeTruthy();
+  });
+  it('updates costs, outputs, requirements, sources and exact selected IDs with the server response', () => {
+    const family = [{ id: 'r2', label: 'Brown coat' }, { id: 'r9', label: 'Black coat - higher cost' }];
+    const view = render(<CraftingAtlas {...ui({ family_count: 1, detail: { ...recipe, family_variants: family } })} />);
+    const next = { ...recipe, id: 'r9', kind: 'Material / global', file: 'config/crafting/material_recipes_global.txt', line: 81,
+      conditions: 'Requires locked research and 9 hides', era_label: 'Stone Age', era_basis: 'Explicit node',
+      inputs: [{ id: 'hide', name: 'Hide', quantity: '9', image: '' }],
+      outputs: [{ id: 'coat/black', name: 'Black coat', quantity: '2', image: '' }],
+      variants: [], family_variants: family };
+    view.rerender(<CraftingAtlas {...ui({ family_count: 1, detail: next })} />);
+    expect((screen.getByLabelText('Recipe variant') as HTMLSelectElement).value).toBe('r9');
+    expect(screen.getByText('(9)')).toBeTruthy();
+    expect(screen.getByText('(2)')).toBeTruthy();
+    expect(screen.getByText('Requires locked research and 9 hides')).toBeTruthy();
+    expect(screen.queryByText('(4 nominal)')).toBeNull();
+    expect(screen.queryByText('Map & faction gates')).toBeNull();
+    expect(screen.queryByLabelText('Transformation / catalog variant')).toBeNull();
+    expect(screen.getByRole('link', { name: /Catalog source/ }).getAttribute('href')).toContain('material_recipes_global.txt#L81');
+  });
+  it('does not regroup identical names, hide returned locked variants or infer availability', () => {
+    const props = ui({ family_count: 2, recipe_count: 3,
+      recipes: [{ id: 'r2', family_id: 'family_one', name: 'Shared label', variant_count: 2, era_label: 'Unknown' },
+                { id: 'r8', family_id: 'family_two', name: 'Shared label', variant_count: 1, era_label: 'Stone Age' }],
+      detail: { ...recipe, family_variants: [{ id: 'r2', label: 'Known requirements' }, { id: 'r8', label: 'Unavailable on another map; unknown research' }] } });
+    const view = render(<CraftingAtlas {...props} />);
+    expect(view.container.querySelectorAll('[data-result-type="recipe"]')).toHaveLength(2);
+    expect(screen.getByRole('option', { name: 'Unavailable on another map; unknown research' })).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Recipe variant'), { target: { value: 'r8' } });
+    expect(sent(props).recipe).toBe('r8');
+  });
+  it('clears excluded family options and uses the independent family result bound', () => {
+    const props = ui({ family_count: 2, recipe_count: 500, detail: { ...recipe,
+      family_variants: [{ id: 'r2', label: 'First' }, { id: 'r9', label: 'Filtered out later' }] } });
+    const view = render(<CraftingAtlas {...props} />);
+    expect(screen.queryByText('First 150 recipe families shown. Refine filters to find more.')).toBeNull();
+    view.rerender(<CraftingAtlas {...ui({ family_count: 1, recipe_count: 1, detail: { ...recipe, family_variants: [] } })} />);
+    expect(screen.queryByLabelText('Recipe variant')).toBeNull();
+    expect(screen.queryByRole('option', { name: 'Filtered out later' })).toBeNull();
+    view.rerender(<CraftingAtlas {...ui({ family_count: 151, recipe_count: 700 })} />);
+    expect(screen.getByText('First 150 recipe families shown. Refine filters to find more.')).toBeTruthy();
+  });
+  it('keeps family labels inert and blocks variant changes when interaction is disabled', () => {
+    const props = ui({ family_count: 1, detail: { ...recipe,
+      family_variants: [{ id: 'r2', label: '&lt;img src=x onerror=bad&gt;' }, { id: 'r9', label: 'Other variant' }] } }, false);
+    const view = render(<CraftingAtlas {...props} />);
+    const select = screen.getByLabelText('Recipe variant') as HTMLSelectElement;
+    expect(select.disabled).toBe(true);
+    expect(screen.getByRole('option', { name: '<img src=x onerror=bad>' })).toBeTruthy();
+    expect(view.container.querySelectorAll('img')).toHaveLength(1); // Existing validated local resource symbol only.
+    fireEvent.change(select, { target: { value: 'r9' } });
+    expect(props.act).not.toHaveBeenCalled();
   });
 });

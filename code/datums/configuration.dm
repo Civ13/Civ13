@@ -154,6 +154,9 @@ var/list/gamemode_cache = list()
 	var/webhook_can_fire = TRUE
 	var/webhook_address = null
 	var/webhook_key = null
+	// Startup observation is separately opt-in and uses the existing bridge.
+	var/webhook_game_ready = FALSE
+	var/webhook_game_ready_server = null
 	
 	var/topic_filtering_whitelist = list("127.0.0.1")
 
@@ -473,6 +476,10 @@ var/list/gamemode_cache = list()
 
 				if ("webhook_can_fire")
 					config.webhook_can_fire = TRUE
+				if ("webhook_game_ready")
+					config.webhook_game_ready = text2num(value) == 1
+				if ("webhook_game_ready_server")
+					config.webhook_game_ready_server = value
 				if ("webhook_address")
 					config.webhook_address = value
 				if ("webhook_key")

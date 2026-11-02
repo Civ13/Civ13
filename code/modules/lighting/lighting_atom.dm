@@ -32,7 +32,7 @@
 		else
 			light = new/datum/light_source(src, .)
 
-// Incase any lighting vars are on in the typepath we turn the light on in New().
+// In case any lighting vars are on in the typepath we turn the light on in New().
 /atom/New()
 	. = ..()
 	if (light_power && light_range)
@@ -91,7 +91,7 @@
 /atom/Exited(var/atom/movable/Obj, var/atom/newloc)
 	. = ..()
 
-	if (!newloc && Obj && newloc != src) // Incase the atom is being moved to nullspace, we handle queuing for a lighting update here.
+	if (!newloc && Obj && newloc != src) // In case the atom is being moved to nullspace, we handle queuing for a lighting update here.
 		for (var/A in Obj.light_sources) // Cycle through the light sources on this atom and tell them to update.
 			if (!A)
 				continue

@@ -136,7 +136,7 @@
 /datum/reagent/toxin/typhus
 	name = "Typhus"
 	id = "typhus"
-	description = "A transmissable bacteria."
+	description = "A transmissible bacteria."
 	taste_mult = FALSE
 	reagent_state = LIQUID
 	color = "#CF3600"

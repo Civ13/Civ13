@@ -31,9 +31,9 @@ ABOUT DUPLICATE RECIPES: There is a number of duplicate recipes with the same na
 (they weren't appearing on the in-game crafting menu). These recipes have been disabled for now, but something still needs
 to be done about them, either removing or renaming them, or incorporating duplicates into a single recipe entry.
 
-@Fantastic Fwoosh - Recipies mentioned above by @Masqhir AKA:BlackTea have been fixed but ill leave the note up as a helpful pointer.
-- Its worth mentioning that single recipies with multiple field entries of material are fine, but time jumps or seperate ones need
-(Material) or (Timeperiod) in the recipie name; by recommendation like i've applied if no more appropriate title can be orchestrated.
+@Fantastic Fwoosh - Recipes mentioned above by @Masqhir AKA:BlackTea have been fixed but ill leave the note up as a helpful pointer.
+- Its worth mentioning that single recipes with multiple field entries of material are fine, but time jumps or separate ones need
+(Material) or (Timeperiod) in the recipe name; by recommendation like i've applied if no more appropriate title can be orchestrated.
 
 */
 var/global/list/anvil_recipes = list(
@@ -78,7 +78,7 @@ var/global/list/anvil_recipes = list(
 	"Small Sword" = list("Small Sword","swords",2,3,10,10,0,0,/obj/item/weapon/material/sword/smallsword),
 	"Longquan" = list("Longquan","swords",2,3,12,12,0,0,/obj/item/weapon/material/sword/longquan),
 	"(Steel) Scimitar" = list("(Steel) Scimitar","swords",2,4,12,0,0,0,/obj/item/weapon/material/sword/scimitar), //steel
-	"(Iron) Scimitar" = list("(Iron) Scimitar","swords",2,3,0,12,0,0,/obj/item/weapon/material/sword/scimitar), //iron, aged seperately
+	"(Iron) Scimitar" = list("(Iron) Scimitar","swords",2,3,0,12,0,0,/obj/item/weapon/material/sword/scimitar), //iron, aged separately
 	"Arming Sword " = list("Arming Sword ","swords",2,2,15,15,0,0,/obj/item/weapon/material/sword/armingsword),
 	"Saif" = list("Saif","swords",2,3,15,15,0,0,/obj/item/weapon/material/sword/saif),
 	"Katana" = list("Katana","swords",2,5,15,15,0,0,/obj/item/weapon/material/sword/katana),

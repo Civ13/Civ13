@@ -2,15 +2,15 @@
 	name = "Bear Cave"
 	icon = 'icons/obj/animal_spawner.dmi'
 	icon_state = "cave_den"
-	desc = "Thats a bearcave. You probably want to stay away from it. "
+	desc = "That's a bearcave. You probably want to stay away from it. "
 
 /obj/structure/animalspawner/bearcave/New()
-	src.males = pick(1, 2, 3) //Initialize with some random ammount of bears, from 2 to 6
+	src.males = pick(1, 2, 3) //Initialize with some random amount of bears, from 2 to 6
 	src.females = pick(1, 2, 3)
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	empty = FALSE
 	src.set_cavetype()
-	if(!bearcave_ticking) //Checks if the bearcave tick havent been started yet
+	if(!bearcave_ticking) //Checks if the bearcave tick haven't been started yet
 		bearcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
 		Tick()
 	..()
@@ -37,7 +37,7 @@
 
 /obj/structure/animalspawner/bearcave/proc/reproduction()
 	if(total_population >= 0 && total_population < 10) //Greater than 0 or zero, and less than ten
-		if((females && males) && !procreate_cooldown) //Just one pregnancy at time, doesnt matter the ammount of females
+		if((females && males) && !procreate_cooldown) //Just one pregnancy at time, doesn't matter the amount of females
 			cubs++
 			procreate_cooldown = TRUE
 			spawn(procreate_holder)
@@ -52,7 +52,7 @@
 
 /obj/structure/animalspawner/bearcave/proc/Ticker()
 //################## Description Ticker Settings Output #################
-	src.desc = "Thats a bearcave. You probably want to stay away from it."
+	src.desc = "That's a bearcave. You probably want to stay away from it."
 	var/number_flavor = 0
 	if(src.total_population > 0)
 		if(prob(35))
@@ -192,7 +192,7 @@
 	src.females = 5
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	empty = FALSE
-	if(!bearcave_ticking) //Checks if the bearcave tick havent been started yet
+	if(!bearcave_ticking) //Checks if the bearcave tick haven't been started yet
 		bearcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
 		Tick()
 	..()

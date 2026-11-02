@@ -88,7 +88,7 @@ var/list/global/organ_rel_size = list(
 
 	return ran_zone
 
-// Emulates targetting a specific body part, and miss chances
+// Emulates targeting a specific body part, and miss chances
 // May return null if missed
 // miss_chance_mod may be negative.
 

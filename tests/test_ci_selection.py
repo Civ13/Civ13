@@ -13,6 +13,48 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 class SelectionTests(unittest.TestCase):
+    def test_help_toxin_offline_admission_is_exact_and_preserves_native_gates(self):
+        path = 'tests/player_help/test_toxin_context.py'
+        def introduced(value):
+            with patch.object(selection.subprocess, 'check_output', return_value=(value + '\0').encode()):
+                return selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        self.assertEqual(introduced(path), [])
+        for other in ('tests/player_help/new_native_probe.dm', 'tests/player_help/new_native.py',
+                      'tests/player_help/new_runner.ps1', 'tests/player_help/new_runner.sh',
+                      'tests/player_help/Test_toxin_context.py',
+                      'tests/player_help/nested/test_toxin_context.py'):
+            with self.subTest(path=other):
+                self.assertEqual(introduced(other), ['tests/player_help'])
+        remaining = selection.PLAYER_HELP_OFFLINE_TESTS - {path}
+        with patch.object(selection, 'PLAYER_HELP_OFFLINE_TESTS', remaining):
+            self.assertEqual(introduced(path), ['tests/player_help'])
+        for production in ('scripts/player_help_bridge.py', 'code/game/mob/player_help.dm',
+                           'code/game/mob/living/carbon/human/human_life.dm'):
+            self.assertTrue(selection.needs_game([production]))
+        payload={'action':'synchronize','pull_request':{'title':'Toxin help','base':{'ref':'master'}}}
+        with patch.object(selection, 'select', return_value=(True, 'Production changed')), \
+             patch.object(selection, 'introduced_tests', return_value=['tests/player_help']), \
+             patch.object(selection, 'changed_atlas_tests', return_value=[]):
+            game, extensive, suites, _ = selection.selections('a'*40, 'b'*40, 'pull_request', True, True, payload)
+            _, manual_extensive, _, _ = selection.selections('a'*40, 'b'*40, 'workflow_dispatch', True, True, {})
+        self.assertTrue(game)
+        self.assertFalse(extensive, 'PR admission does not enable manual extensive mode')
+        self.assertEqual(suites, ['tests/player_help'])
+        self.assertTrue(manual_extensive, 'Existing manual opt-in remains available')
+
+    def test_stone_brazier_offline_admission_is_exact(self):
+        path = 'tests/stone_brazier/test_stone_brazier_disposal.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/stone_brazier/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered stone-brazier'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        with patch.object(selection, 'STONE_BRAZIER_OFFLINE_TESTS', frozenset()):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered stone-brazier'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_mcp_changed_files_and_comparison_failure(self):
         for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
                      'tools/mcp/package-lock.json', '.github/workflows/mcp.yml',
@@ -111,6 +153,19 @@ class SelectionTests(unittest.TestCase):
                 output.unlink()
                 base = head
 
+    def test_well_smell_offline_admission_is_exact(self):
+        path = 'tests/well_smell/test_well_smell.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/well_smell/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered well-smell'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        with patch.object(selection, 'WELL_SMELL_OFFLINE_TESTS', frozenset()):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered well-smell'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:
             def git(*args):
@@ -207,6 +262,19 @@ class SelectionTests(unittest.TestCase):
             self.assertIn('must differ', result.stderr)
             self.assertFalse(output.exists())
             self.assertFalse(receipt.exists())
+
+    def test_axe_active_hand_offline_admission_is_exact(self):
+        path = 'tests/axe_active_hand/test_axe_active_hand.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/axe_active_hand/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered axe active-hand'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        with patch.object(selection, 'AXE_ACTIVE_HAND_OFFLINE_TESTS', frozenset()):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered axe active-hand'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_extensive_is_explicit_manual_opt_in(self):
         self.assertTrue(selection.needs_extensive('workflow_dispatch', True))

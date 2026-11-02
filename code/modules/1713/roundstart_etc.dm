@@ -60,7 +60,7 @@ var/GRACE_PERIOD_LENGTH = 7
 			riverturfs += F
 		else if (istype(F, /turf/floor/beach/water) && !istype(F, /turf/floor/beach/water/ice) && !istype(F, /turf/floor/beach/water/swamp) && !istype(F, /turf/floor/beach/water/flooded))
 			riverturfs += F
-	//gets the total number of tiles in the world, to dinamically distribute fauna and flora
+	//gets the total number of tiles in the world, to dynamically distribute fauna and flora
 	spawn(200)
 		for (var/i = 1, i <= riverturfs.len/800, i++)
 			var/turf/areaspawn = safepick(riverturfs)

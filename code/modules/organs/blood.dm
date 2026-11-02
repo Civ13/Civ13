@@ -209,7 +209,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		reagents.add_reagent(C, (text2num(chems[C]) / species.blood_volume) * amount)//adds trace chemicals to owner's blood
 	reagents.update_total()
 
-//Transfers blood from reagents to vessel, respecting blood types compatability.
+//Transfers blood from reagents to vessel, respecting blood types compatibility.
 /mob/living/human/inject_blood(var/datum/reagent/blood/injected, var/amount)
 
 	if (species.flags & NO_BLOOD)

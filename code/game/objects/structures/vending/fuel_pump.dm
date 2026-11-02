@@ -170,7 +170,7 @@
 				unlockedvol -= avvol
 				vol -= avvol
 				GC.reagents.add_reagent(fueltype,avvol)
-				to_chat(user, "You fill the [GC] completely. There are [unlockedvol] units remanining in the pump.")
+				to_chat(user, "You fill the [GC] completely. There are [unlockedvol] units remaining in the pump.")
 				updatedesc()
 				return
 
@@ -187,7 +187,7 @@
 						var/amttransf = maxvol-vol
 						vol += amttransf
 						GC.reagents.remove_reagent(fueltype,amttransf)
-						to_chat(user, "You fill \the [src] completly with \the [W].")
+						to_chat(user, "You fill \the [src] completely with \the [W].")
 						updatedesc()
 						return
 				else
