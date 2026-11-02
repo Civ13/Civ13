@@ -33,6 +33,7 @@
 	lastz = z
 	sleeping = 66
 	inducedSSD = TRUE
+	if(s_active) s_active.close(src)
 	sleep_update()
 	return TRUE
 

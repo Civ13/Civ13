@@ -49,6 +49,8 @@
 		if(client.los_context)
 			client.los_context.retire()
 		client.images = null				//remove the images such as AIs being unable to see runes
+		if (s_active)
+			s_active.close(src)
 		client.screen = null				//remove hud items just in case
 		if (hud_used)	qdel(hud_used)		//remove the hud objects
 		hud_used = new /datum/hud(src)

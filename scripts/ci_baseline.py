@@ -46,6 +46,15 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_helpers.dm',
             'tests/save_movement/source_adapter.py')},
 
+    # Source-projected storage-session and legacy import contracts; no BYOND run.
+    'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
+        'paths': ('tests/storage_runtime/',), 'shared_paths': (
+            'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/mob/login.dm', 'code/game/mob/living/carbon/human/human_helpers.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/functions.dm',
+            'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm',
+            'tests/save_movement/source_adapter.py', 'scripts/select-ci.py')},
+
     # Stdlib-only native fixture preparation/protocol/supervisor contracts.
     # No compiler, daemon, client, workflow dispatch or installer execution.
     'tree_refresh_native_preparation': {'files': ('tests/tree_refresh_native/test_harness.py',),

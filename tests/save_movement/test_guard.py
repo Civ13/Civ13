@@ -29,6 +29,7 @@ class Atom:
         self.gcDestroyed = self.gc_destroyed = False
         self.sleeping = self.stat = 0
         self.inducedSSD = self.buckled = False
+        self.s_active = None
         self.lastx = self.lasty = self.lastz = 0
         self.on_entry = self.on_release = self.on_drop = None
         self.drop_calls = self.sleep_calls = 0

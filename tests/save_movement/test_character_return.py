@@ -47,6 +47,7 @@ class Body:
         self.stat, self.client, self._key = 1, None, None
         self.inducedSSD, self.sleeping = True, 66
         self.buckled = None
+        self.s_active = None
         self.riding = self.driver = self.driver_vehicle = self.riding_mob = None
         self.lastx = self.lasty = self.lastz = 0
         self.inventory = [object(), object()]
