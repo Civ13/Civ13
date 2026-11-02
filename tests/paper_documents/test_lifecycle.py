@@ -218,6 +218,8 @@ class Lifecycle(unittest.TestCase):
   for name in ('lifecycle_sources','lifecycle_links','lifecycle_bound','authoring_ui'):self.assertIn('"'+name+'"',runtime)
   self.assertNotRegex(SOURCE,r'(?i)register_global|spawn\(|hear_say|add_language|partial_languages|world\.time')
   self.assertNotIn('json_encode',vm.body(SOURCE,'/datum/paper_document_authoring/proc/lifecycle_moved'))
+  self.assertIn('var/atom/node = root',vm.body(SOURCE,'/datum/paper_document_authoring/proc/plan_lifecycle'))
+  self.assertIn('var/atom/node = source',vm.body(SOURCE,'/datum/paper_document_authoring/proc/stop_lifecycle'))
   self.assertNotIn('paper_document_record_valid',vm.body(SOURCE,'/datum/paper_document_authoring/proc/lifecycle_physical_current'))
 
 

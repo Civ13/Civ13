@@ -54,7 +54,7 @@ GLOBAL_DATUM_INIT(paper_authoring_event, /decl/observ/paper_authoring, new)
 	var/list/planned = list()
 	var/list/links = list()
 	for (var/datum/root in list(paper, writing_pen, controller, context_owner))
-		var/datum/node = root
+		var/atom/node = root
 		var/list/seen = list()
 		while (node)
 			if (node in seen)
@@ -121,7 +121,7 @@ GLOBAL_DATUM_INIT(paper_authoring_event, /decl/observ/paper_authoring, new)
 		// Normal Entered() may have added forwarding through a new parent.
 		// Prune that current chain too, after releasing captured old edges.
 		for (var/datum/source in sources)
-			var/datum/node = source
+			var/atom/node = source
 			var/list/seen = list()
 			while (istype(node, /atom/movable) && !(node in seen) && !GLOB.moved_event.has_listeners(node) && istype(node.loc, /atom/movable))
 				seen += node
