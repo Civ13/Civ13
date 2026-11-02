@@ -9,6 +9,8 @@ on:
       - 'UI/js/libraries/doT.js'
       - 'UI/images/civ13.png'
       - 'code/modules/nano/**'
+      - 'code/modules/paperwork/**'
+      - 'tests/paper_documents/**'
       - 'code/modules/client/asset_cache.dm'
       - 'civ13.dme'
       - 'code/game/mob/groups/faction_creation.dm'

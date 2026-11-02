@@ -193,27 +193,36 @@
 		done = TRUE
 		add_fingerprint(usr)
 
+// A classified section marks the sheet as written without exposing its text.
+/obj/item/weapon/paper/proc/has_document_writing()
+	if (info)
+		return TRUE
+	if (!islist(document_record))
+		return FALSE
+	var/list/sections = document_record["sections"]
+	return islist(sections) && length(sections)
+
 /obj/item/weapon/paper/update_icon()
 	if (base_icon == "paper")
 		if (map && map.ordinal_age <= 1)
-			if (info)
+			if (has_document_writing())
 				icon_state = "scrollpaper1"
 			else
 				icon_state = "scrollpaper0"
 		else if (map && map.ordinal_age <= 3)
-			if (info)
+			if (has_document_writing())
 				icon_state = "Colonial_Paper"
 			else
 				icon_state = "Colonial_Paper_Empty"
 		else
 			if (icon_state == "paper_talisman")
 				return
-			if (info)
+			if (has_document_writing())
 				icon_state = "paper_words"
 				return
 			icon_state = "paper"
 	else if (base_icon == "official")
-		if (info)
+		if (has_document_writing())
 			icon_state = "Decree"
 		else
 			icon_state = "Decree_empty"
@@ -627,6 +636,8 @@
 		if ( istype(RP) && RP.mode == 2 )
 			RP.RenamePaper(user,src)
 		else*/
+		if (paper_editor_try_entrypoint(src, user, P))
+			return
 		show_document(user, FALSE, "editor")
 		return
 
