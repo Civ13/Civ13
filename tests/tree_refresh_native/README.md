@@ -152,3 +152,37 @@ the remote viewer capture count and unfinished process snapshot. Identity detail
 bounded to the first two roots per client; admission/owned-image and allocation counters
 cover the full discovered scene. This controls evidence size and is not an assertion
 about every canopy pixel.
+
+## Bounded notification and failure evidence
+
+Light notifications use a separate constant-size aggregate. There are at most
+128 calls per batch: one explicit pending notification and at most one committed
+overlay callback for each of 64 roots. The producer-source contract verifies the
+single overlay notification site. Counts, resolved/unresolved totals, sum and
+maximum time, and first/last native endpoints are retained. These calls do not
+consume the 64 ordinary span slots. Overflow still fails closed and has an
+offline negative control; no unchecked timing-cap increase is used.
+
+Every caught native failure saves the active outer event before clearing it,
+including errors during scheduled work or pre-event identity collection. The
+failure includes the cause, last clock and identity-lease count. A 128 KiB
+serialized-row ceiling falls back to an explicitly truncated diagnostic envelope
+with counts, original length and a correlation MD5. The first failure is retained;
+secondary row-write/cleanup errors do not replace its cause.
+
+A live metadata census covers generated files in the staged world, owned output
+and extracted binary directories, including root logself files, nested runtime
+logs and unexpected diagnostic paths. Immutable input sizes are checked. Scans
+run at most twice a second and read metadata only, with an 8,192-entry,
+1,024-generated-file and 16-level depth bound. Each scan's duration/counts and
+rejected state are appended to a separate stream capped at 1 MiB, 400 rows and
+16 KiB per row. This observer overhead is retained and must be considered during
+cost review. The check is sampled, not an instantaneous disk quota.
+
+All generated diagnostic/state bytes share the 16 MiB live cap. Only the exact
+compiled artifacts and owned-profile BYOND resource caches have a separate
+aggregate 1 GiB ceiling. Oversize diagnostics retain bounded prefixes after owned
+cleanup, with original sizes and truncation markers; truncation prevents a pass.
+The source hashes are rechecked after the native world exits. The Windows daemon
+uses the existing -invisible/-close lifecycle flags. None of this has been
+executed as native acceptance yet.

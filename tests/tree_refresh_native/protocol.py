@@ -97,6 +97,12 @@ def validate(receipt, rows, head, binding):
                     require(before[1]['identities']==after[1]['identities'],'Unrelated viewer publication changed synchronously')
                 if kind=='queued_light':
                     require(r.get('pending_committed')==before,'Pending committed light withdrew/mutated image state')
+                notices=r.get('light_notifications')
+                if kind=='queued_light':
+                    require(isinstance(notices,dict) and 64<=notices.get('calls',0)<=128,'Bounded actual notification batch')
+                    require(notices['resolved']+notices['unresolved']==notices['calls'],'Incomplete notification aggregation')
+                    require(notices['sum_ms']>=0 and notices['max_ms']>=0,'Invalid notification aggregate')
+                    if notices['unresolved']:unresolved.append([case['id'],kind,r['iteration'],'light_notifications',notices['unresolved']])
                 require(bool(r.get('timings')) and isinstance(r.get('scheduled'),dict) and bool(r['scheduled'].get('timings')),'Missing synchronous/scheduled native span samples')
                 for sample in r.get('timings',[])+r['scheduled']['timings']:
                     ms=same_tick_ms(sample)

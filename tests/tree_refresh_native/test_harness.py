@@ -13,6 +13,7 @@ import prepare as Q
 import supervisor as S
 import runner as R
 import acquire as A
+from budget import EvidenceBudget
 
 def witness():
     rows=[]
@@ -31,7 +32,8 @@ def witness():
                 timer=dict(name='event',start_tick=1,end_tick=1,start_usage=1,end_usage=2,tick_lag=.5)
                 row=dict(case=case['id'],**{'class':kind},iteration=iteration,viewers=case['viewers'],roots=case['roots'],mode=case['mode'],native_returns=[dict(result=2,sx=2,sy=0)] if kind=='viewer_move' else [],scene_valid=1,safe=1,other_sync_captures=0,before=before,after=after,phases=phases,timings=[dict(timer,name='reconcile',client=1)],event_timer=timer,allowance_ms=12.5,scheduled=dict(timings=[dict(timer,name='reconcile',client=i) for i in range(1,case['viewers']+1)],counters={}))
                 if kind=='viewer_move' and iteration==1:row['capture_failed']=deepcopy(phases[0]['clients'])
-                if kind=='queued_light':row['pending_committed']=deepcopy(before)
+                if kind=='queued_light':
+                    row['pending_committed']=deepcopy(before);row['light_notifications']=dict(calls=128,resolved=128,unresolved=0,sum_ms=2,max_ms=.02)
                 rows.append(row)
     return dict(head='a'*40,binding='run',engine=[516,1688],world=dict(map=[64,64,1],view='15x15',fps=20,tick_lag=.5,icon_size=32,seed=13013),error=None,cleanup=1,events=800,pixels_verified=0),rows
 
@@ -56,6 +58,14 @@ class Protocol(unittest.TestCase):
                 if mutation=='density':root['before'][0]['discovered']=63
                 if mutation=='extra_event':rows.append(rows[0])
                 with self.assertRaises(ValueError):P.validate(receipt,rows,'a'*40,'run')
+    def test_notification_aggregation_overflow_and_unresolved_controls(self):
+        receipt,rows=witness();row=next(r for r in rows if r['class']=='queued_light')
+        self.assertTrue(P.validate(receipt,rows,'a'*40,'run')['native_dispatch_validated'])
+        row['light_notifications']['calls']=129
+        with self.assertRaises(ValueError):P.validate(receipt,rows,'a'*40,'run')
+        row['light_notifications'].update(calls=128,resolved=127,unresolved=1)
+        self.assertFalse(P.validate(receipt,rows,'a'*40,'run')['cost_accepted'])
+
     def test_invalid_native_receipts_never_pass(self):
         for field,value in [('head','b'*40),('binding','other'),('engine',[516,1681]),('cleanup',0),('pixels_verified',1),('error','native failure')]:
             receipt,rows=witness();receipt[field]=value
@@ -108,6 +118,17 @@ class Preparation(unittest.TestCase):
                 with self.assertRaises(ValueError):A.acquire(Path(d)/'new',pin)
                 extraction.assert_not_called()
 
+    def test_notification_source_bound_and_universal_failed_row_retention(self):
+        source=(HERE/'probe.dm').read_text()
+        self.assertIn('notifications["calls"] <= 128',source)
+        self.assertLess(source.index('if(clock["name"] == "light_notify")'),source.index('timings.len < 64'))
+        overlay=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text()
+        _,_,body=Q.proc(overlay,'/atom/movable/lighting_overlay/proc/update_overlay()')
+        self.assertEqual(body.count('root_tree_light_changed('),1)
+        _,_,finish=Q.proc(source,'/proc/tree_native_finish(error)')
+        self.assertLess(finish.index('tree_native_save_failure(error)'),finish.index('tree_native_active_row = null'))
+        self.assertIn('length(encoded) <= 131072',source)
+
     def test_no_model_or_frozen_fixture_in_native_entry(self):
         text=(HERE/'probe.dm').read_text();self.assertIn('H.SelfMove(',text);self.assertIn('begin_change()',text);self.assertIn('C.reconcile_geometric_los()',text)
         self.assertNotIn('IdentityTrace',text);self.assertNotIn('test_production.py',(HERE/'prepare.py').read_text())
@@ -150,6 +171,31 @@ class Containment(unittest.TestCase):
             owned.stream_bytes=4*1024**2;before=path.read_bytes()
             with self.assertRaises(ValueError):owned.record_sample(dict(sample=101))
             self.assertEqual(path.read_bytes(),before)
+
+    def test_live_budget_includes_stage_logself_nested_and_unexpected_logs(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir();(stage/'input.dm').write_bytes(b'ok')
+            budget=EvidenceBudget(stage,out,{'input.dm':dict(bytes=2)});budget.state_cap=4096
+            (stage/'tree_refresh.log').write_bytes(b'x'*2000);nested=stage/'data/logs/runtime';nested.mkdir(parents=True);(nested/'native.txt').write_bytes(b'y'*3000)
+            with self.assertRaises(ValueError):budget.check(force=True)
+            row=json.loads((out/'evidence-budget.jsonl').read_text());self.assertGreaterEqual(row['state_bytes'],5000);self.assertIn('error',row)
+            self.assertIn('stage/tree_refresh.log',budget.generated)
+    def test_live_budget_unknown_paths_and_source_growth_fail_closed(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir();source=stage/'input.dm';source.write_bytes(b'ok')
+            budget=EvidenceBudget(stage,out,{'input.dm':dict(bytes=2)});budget.state_cap=4096
+            rogue=stage/'code';rogue.mkdir();(rogue/'rogue.log').write_bytes(b'x'*5000)
+            with self.assertRaises(ValueError):budget.check(force=True)
+            self.assertIn('stage/code/rogue.log',budget.generated)
+            source.write_bytes(b'grown')
+            with self.assertRaises(ValueError):budget.check(force=True)
+    def test_live_budget_resource_exemption_is_narrow_and_bounded(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir()
+            (stage/'tree_refresh.rsc').write_bytes(b'x'*256)
+            budget=EvidenceBudget(stage,out,{});budget.artifact_cap=128
+            with self.assertRaises(ValueError):budget.check(force=True)
+            self.assertIn('resources',budget.last_row['error'])
 
     def test_expired_or_unreviewed_execution_emits_failure_before_native(self):
         with tempfile.TemporaryDirectory() as d:

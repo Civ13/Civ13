@@ -20,6 +20,7 @@ var/global/list/tree_native_foregrounds = list()
 var/global/list/tree_native_totals = list()
 var/global/list/tree_native_event_leases = list()
 var/global/tree_native_holding = FALSE
+var/global/list/tree_native_active_row
 var/global/list/tree_native_row
 var/global/tree_native_events = 0
 var/global/tree_native_case = 0
@@ -182,12 +183,34 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		return
 	clock["end_tick"] = world.time
 	clock["end_usage"] = TICK_USAGE
+	if(tree_native_active_row)
+		tree_native_active_row["last_clock"] = clock
+	if(clock["start_tick"] == clock["end_tick"] && clock["end_usage"] - clock["start_usage"] >= 100)
+		throw EXCEPTION("whole_tick_native_callback")
+	if(clock["name"] == "light_notify")
+		var/list/notifications = tree_native_row["light_notifications"]
+		if(!islist(notifications))
+			notifications = list("calls"=0,"resolved"=0,"unresolved"=0,"sum_ms"=0,"max_ms"=0)
+			tree_native_row["light_notifications"] = notifications
+		notifications["calls"]++
+		// One explicit notification and at most one committed overlay callback
+		// per root: 2 * 64. Aggregate these, never consume ordinary span slots.
+		tree_native_require(notifications["calls"] <= 128, "notification_call_limit")
+		if(!notifications["first"])
+			notifications["first"] = clock
+		notifications["last"] = clock
+		var/delta = clock["end_usage"] - clock["start_usage"]
+		if(clock["start_tick"] == clock["end_tick"] && delta >= 0)
+			var/ms = TICK_DELTA_TO_MS(delta)
+			notifications["resolved"]++
+			notifications["sum_ms"] += ms
+			notifications["max_ms"] = max(notifications["max_ms"], ms)
+		else
+			notifications["unresolved"]++
+		return
 	var/list/timings = tree_native_row["timings"]
 	tree_native_require(timings.len < 64, "timing_row_limit")
 	timings += list(clock)
-	if(clock["start_tick"] == clock["end_tick"] && clock["end_usage"] - clock["start_usage"] >= 100)
-		text2file(json_encode(tree_native_row), "failed-event.json")
-		throw EXCEPTION("whole_tick_native_callback")
 
 /proc/tree_native_snapshot()
 	var/list/result = list()
@@ -308,8 +331,10 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	var/other_before = (isnum(tree_native_totals["2|captures"]) ? tree_native_totals["2|captures"] : 0)
 	tree_native_event_leases.Cut()
 	tree_native_holding = TRUE
-	var/list/row = list("case"=tree_native_case, "class"=kind, "iteration"=iteration, "recorded"=(iteration > 5), "viewers"=viewers, "roots"=count, "mode"=mode, "phases"=list(), "timings"=list(), "counters"=list(), "native_returns"=list(), "affected"=list(), "before"=tree_native_snapshot())
+	var/list/row = list("case"=tree_native_case, "class"=kind, "iteration"=iteration, "recorded"=(iteration > 5), "viewers"=viewers, "roots"=count, "mode"=mode, "phases"=list(), "timings"=list(), "counters"=list(), "native_returns"=list(), "affected"=list())
+	tree_native_active_row = row
 	tree_native_row = row
+	row["before"] = tree_native_snapshot()
 	var/list/clock = tree_native_begin("event", null)
 	if(kind == "audit")
 		A.los_next_audit = world.time
@@ -369,6 +394,7 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	// Separate actual scheduled pass; never count it as synchronous opaque refresh.
 	var/list/scheduled = list("counters"=list(),"timings"=list(),"phases"=list(),"affected"=list(),"native_returns"=list())
 	var/scheduled_other_before = isnum(tree_native_totals["2|captures"]) ? tree_native_totals["2|captures"] : 0
+	row["scheduled"] = scheduled
 	tree_native_row = scheduled
 	tree_native_process.reset_current_list()
 	tree_native_process.run_time_tick_usage = TICK_USAGE
@@ -385,10 +411,12 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	tree_native_require(scene_valid && safe, "event_visibility_or_admission")
 	if(kind == "opaque_move" && viewers == 2)
 		tree_native_require(row["other_sync_captures"] == 0, "unrelated_sync_refresh")
+	tree_native_active_row = null
 
 /world/New()
 	var/list/binding = json_decode(file2text("binding.json"))
 	if(!islist(binding) || binding["head"] != TREE_NATIVE_HEAD || !istext(binding["binding"]))
+		tree_native_finish("run_binding")
 		return
 	tree_native_binding = binding["binding"]
 	try
@@ -396,6 +424,8 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		rand_seed(13013)
 		human_subtile_fixture_initialize()
 		config.disable_fov = TRUE
+		time_of_day2luminosity["tree_native"] = 0
+		time_of_day = "tree_native"
 		created_lighting_corners_and_overlays = TRUE
 		lighting_startup_in_progress = FALSE
 		tree_native_scheduler = new
@@ -429,11 +459,34 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	catch(var/exception/tree_native_run_error)
 		tree_native_finish(tree_native_run_error.name)
 
+/proc/tree_native_save_failure(error)
+	if(fexists("failed-event.json"))
+		return
+	var/list/failed = tree_native_active_row
+	if(!islist(failed))
+		failed = list("case"=tree_native_case,"events"=tree_native_events,"active_row_missing"=TRUE)
+	failed["failure_reason"] = copytext("[error]", 1, 1025)
+	failed["identity_lease_count"] = tree_native_event_leases.len
+	var/encoded = json_encode(failed)
+	if(length(encoded) > 131072)
+		var/list/timings = failed["timings"]
+		var/list/phases = failed["phases"]
+		failed = list("failure_reason"=copytext("[error]",1,1025),"case"=tree_native_case,"events"=tree_native_events,"truncated"=TRUE,"original_characters"=length(encoded),"original_md5"=md5(encoded),"timing_count"=length(timings),"phase_count"=length(phases),"identity_lease_count"=tree_native_event_leases.len)
+		encoded = json_encode(failed)
+	tree_native_require(length(encoded) <= 131072 && text2file(encoded,"failed-event.json"), "failed_row_retention")
+
 /proc/tree_native_finish(error)
 	tree_native_finishing = TRUE
+	var/retention_error = null
+	if(error)
+		try
+			tree_native_save_failure(error)
+		catch(var/exception/tree_native_retention_exception)
+			retention_error = tree_native_retention_exception.name
 	var/cleaned = FALSE
 	try
 		tree_native_row = null
+		tree_native_active_row = null
 		tree_native_holding = FALSE
 		tree_native_event_leases.Cut()
 		tree_native_clear_scene()
@@ -442,6 +495,6 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	catch(var/exception/tree_native_cleanup_error)
 		if(!error)
 			error = tree_native_cleanup_error.name
-	text2file(json_encode(list("head"=TREE_NATIVE_HEAD,"binding"=tree_native_binding,"engine"=list(world.byond_version,world.byond_build),"world"=list("map"=list(world.maxx,world.maxy,world.maxz),"view"=world.view,"fps"=world.fps,"tick_lag"=world.tick_lag,"icon_size"=world.icon_size,"seed"=13013),"error"=error,"cleanup"=cleaned,"events"=tree_native_events,"pixels_verified"=FALSE)), "receipt.json")
+	text2file(json_encode(list("head"=TREE_NATIVE_HEAD,"binding"=tree_native_binding,"engine"=list(world.byond_version,world.byond_build),"world"=list("map"=list(world.maxx,world.maxy,world.maxz),"view"=world.view,"fps"=world.fps,"tick_lag"=world.tick_lag,"icon_size"=world.icon_size,"seed"=13013),"error"=error,"failure_retention_error"=retention_error,"cleanup"=cleaned,"events"=tree_native_events,"pixels_verified"=FALSE)), "receipt.json")
 	del(world)
 	return

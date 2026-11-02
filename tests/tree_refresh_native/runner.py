@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from protocol import LIMITS,admit,digest,require,validate
 from supervisor import OwnedRun,facade
+from budget import EvidenceBudget
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'scripts'))
 from native_fixture import Session,run_native
@@ -18,11 +19,11 @@ def read(path, maximum):
     with Path(path).open('rb') as f:raw=f.read(maximum+1)
     require(len(raw)<=maximum,'Bounded native output read exceeded '+str(path));return raw
 
-def inputs(prepared, manifest, compiled=False):
+def inputs(prepared, manifest, compiled=False, generated=()):
     stage=prepared/'stage'
     actual={p.relative_to(stage).as_posix() for p in stage.rglob('*') if p.is_file()}
     expected=set(manifest['input_files'])
-    extras={'tree_refresh.dmb','tree_refresh.rsc'} if compiled else set()
+    extras=({'tree_refresh.dmb','tree_refresh.rsc'} if compiled else set()) | set(generated)
     require(expected <= actual and actual <= expected|extras,'Unexpected/missing staged input or output')
     for rel,row in manifest['input_files'].items():
         p=stage/rel;require(p.resolve().is_relative_to(stage.resolve()) and not p.is_symlink(),'Source input path')
@@ -33,7 +34,7 @@ def inputs(prepared, manifest, compiled=False):
 def execute(prepared, bin_path, reviewed, until, output, run_index):
     prepared=Path(prepared).resolve();output=Path(output).resolve();output.mkdir(parents=True,exist_ok=False)
     receipt=dict(host=dict(os=platform.platform(),machine=platform.machine(),cpu=platform.processor(),cpu_count=os.cpu_count()),status='failed',error=None,native_executed=False,pixels_verified=False,cleanup=None,run_index=run_index)
-    runtime=None;cleanup_error=None;started=time.monotonic()
+    runtime=None;budget=None;cleanup_error=None;started=time.monotonic()
     def persist(): (output/'execution-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
     try:
         raw=read(prepared/'tree-native-manifest.json',12*1024**2);manifest=json.loads(raw);head=manifest['head']
@@ -65,9 +66,10 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
         for name in ('receipt.json','ready.json','events.jsonl','binding.json','need-second-client'):
             require(not (stage/name).exists(),'Stale native protocol output')
         (stage/'binding.json').write_text(json.dumps(dict(head=head,binding=binding)))
+        budget=EvidenceBudget(stage,output,manifest['input_files'],binary,manifest['toolchain']['files']);budget.check(force=True)
         runtime=OwnedRun(output,hashes,180);runtime.port=PORT;runtime.open()
         runtime.poll()  # Enforce watcher/free-memory/zero-child preflight before launch.
-        daemon=runtime.launch([str(binaries['dd.exe']),str(dme.with_suffix('.dmb')),str(PORT),'-trusted','-invisible','-ip','127.0.0.1','-nowebclient','-logself'],stage,'daemon')
+        daemon=runtime.launch([str(binaries['dd.exe']),str(dme.with_suffix('.dmb')),str(PORT),'-trusted','-invisible','-close','-ip','127.0.0.1','-nowebclient','-logself'],stage,'daemon')
         receipt.update(head=head,binding=binding,manifest_sha256=reviewed,native_executed=True)
         persist();connected=0
         while True:
@@ -80,9 +82,9 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
                 require(read(stage/'need-second-client',16).strip()==b'2','Unexpected client request');runtime.launch([str(binaries['dreamseeker.exe']),'byond://127.0.0.1:'+str(PORT)],stage,'client2');connected=2
                 receipt['supervision']=runtime.summary();persist()
             runtime.poll()  # One bounded JSONL append, no growing receipt rewrite.
-            logs=[p for p in output.rglob('*') if p.is_file() and p.suffix in ('.log','.json','.jsonl')]
-            require(sum(p.stat().st_size for p in logs)+sum((stage/n).stat().st_size for n in ('events.jsonl','receipt.json') if (stage/n).exists())<=LIMITS['evidence_bytes'],'Generated log/state cap (16 MiB)')
+            budget.check()
             if (stage/'receipt.json').exists():
+                budget.check(force=True)
                 native=json.loads(read(stage/'receipt.json',65536));receipt['native_receipt']=native
                 if not runtime.a.exited(daemon):
                     time.sleep(.1);continue
@@ -93,6 +95,8 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
                 receipt['native_receipt']=native;receipt['analysis']=validate(native,rows,head,binding);receipt['status']='passed' if receipt['analysis']['cost_accepted'] else 'measurement_incomplete';break
             require(not runtime.a.exited(daemon),'Daemon exited without final failure/success receipt')
             time.sleep(.1)
+        budget.check(force=True)
+        inputs(prepared,manifest,compiled=True,generated=[name.removeprefix('stage/') for name in budget.generated if name.startswith('stage/')])
         spec=importlib.util.spec_from_file_location('tree_fixture_diagnostics',ROOT/'tests/human_subtile/run.py')
         diagnostics=importlib.util.module_from_spec(spec);spec.loader.exec_module(diagnostics)
         diagnostics.inspect_logs(stage)
@@ -113,12 +117,18 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
             if 'stage' in locals() and (stage/name).is_file():
                 try:(output/('native-'+name)).write_bytes(read(stage/name,LIMITS['evidence_bytes']))
                 except BaseException as retention:receipt.setdefault('retention_errors',[]).append(str(retention));receipt['status']='failed'
-        if 'stage' in locals():
+        if budget:
+            receipt['live_evidence_budget']=dict(records=budget.records,bytes=budget.stream_bytes,last=budget.last_row)
             try:
-                logs=list(stage.rglob('*.log'))+list((stage/'data/logs/runtime').rglob('*.txt'))
-                require(len(logs)<=128 and sum(p.stat().st_size for p in logs)<=LIMITS['evidence_bytes'],'Native diagnostic retention cap')
-                for p in logs:
-                    target=output/'diagnostics'/p.relative_to(stage);target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(read(p,4*1024**2))
+                candidates=[(key,path) for key,path in budget.generated.items() if not key.startswith('output/') and path.name not in ('events.jsonl','failed-event.json','receipt.json','ready.json','binding.json','need-second-client')]
+                require(len(candidates)<=128,'Diagnostic retention file-count bound')
+                receipt['diagnostics']=[]
+                for key,path in candidates:
+                    target=output/'diagnostics'/key;target.parent.mkdir(parents=True,exist_ok=True)
+                    with path.open('rb') as f:raw=f.read(1024*1024)
+                    target.write_bytes(raw);truncated=path.stat().st_size>len(raw)
+                    receipt['diagnostics'].append(dict(path=key,original_bytes=path.stat().st_size,retained_bytes=len(raw),truncated=truncated))
+                    if truncated:receipt.setdefault('retention_errors',[]).append('Bounded diagnostic prefix retained: '+key);receipt['status']='failed'
             except BaseException as retention:receipt.setdefault('retention_errors',[]).append(str(retention));receipt['status']='failed'
         receipt['elapsed_total']=time.monotonic()-started;persist()
         if cleanup_error:raise cleanup_error
