@@ -13,7 +13,7 @@ spec.loader.exec_module(adapter)
 adapter.FIELDS += ("approved_list", "approved_list_ready", "whitelist_list", "whitelist_list_ready")
 SOURCE = (ROOT / "code/_helpers/access_lists.dm").read_text(encoding='utf-8-sig')
 # Lexical DM raw regex literals map to Python raw literals; no statements omitted.
-PROJECTED_SOURCE = SOURCE.replace('regex(@"', 'regex(r"')
+PROJECTED_SOURCE = SOURCE.replace('regex(@"', 'regex(r"').replace('\tcatch\n', '\tcatch(projected_read_error)\n')
 
 class DMList(list):
     @property

@@ -4,7 +4,8 @@ Offline checks: `py -3 -B -m unittest discover -s tests/access_lists -p "test_*.
 The complete three production helper bodies run through the existing audited
 save-movement source projector, imported into a private module; only its global
 field mapping is extended locally. DM raw regex literals are mapped lexically
-to Python raw literals. No executable helper lines are omitted.
+to Python raw literals; the unbound DM catch maps to a Python exception binding
+which is also ignored. No executable helper lines are omitted.
 Files, regex, ckey, trim and DM list semantics are fake boundaries. Gate/startup
 wiring checks inspect source and do not execute the full Topic/admin/startup.
 This is not BYOND compilation, native regex/ckey acceptance or live access evidence.
@@ -52,3 +53,8 @@ normalization uses the existing ascii2text(13) idiom, with a fake character-code
 boundary in this offline projection.
 Source PR publication is authorized; no configuration activation, live reload,
 restart or native access fixture has been performed.
+
+Corrected98f0d112d compiled with zero errors but one unused catch-variable
+warning; the existing CI gate rejected that warning. Use the established bare
+catch syntax, retaining the same failure-preserves-state behavior. No warning
+policy or compiler gate was changed.

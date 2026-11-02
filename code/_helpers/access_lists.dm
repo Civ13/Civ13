@@ -45,7 +45,7 @@
 	var/list/staged_keys = null
 	try
 		staged_keys = parse_verified_access_text(file2text(access_filename))
-	catch(var/exception/read_error)
+	catch
 		return FALSE
 	if (isnull(staged_keys))
 		return FALSE
