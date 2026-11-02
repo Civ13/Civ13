@@ -108,15 +108,15 @@ def tar_bytes(files):
 
 
 class EvidenceTests(unittest.TestCase):
-    def test_current_workflow_only_selects_ordinary_and_serializes(self):
+    def test_current_workflow_only_selects_group_and_serializes(self):
         text = (ROOT / '.github/workflows/wildlife-cardinal-cadence.yml').read_text(encoding='utf-8')
-        for token in ('on:\n  workflow_dispatch:', 'options: [ordinary_bump]', 'suite: [ordinary05]',
-                      'test "$EXPERIMENT" = ordinary_bump', 'test "$WILDLIFE_SUITE" = ordinary05',
+        for token in ('on:\n  workflow_dispatch:', 'options: [native_group_bump]', 'suite: [group05]',
+                      'test "$EXPERIMENT" = native_group_bump', 'test "$WILDLIFE_SUITE" = group05',
                       'max-parallel: 1', 'cancel-in-progress: false',
                       'test "$EXPECTED_HEAD" = "$GITHUB_SHA"', 'persist-credentials: false'):
             self.assertIn(token, text)
         for forbidden in ('\n  push:', '\n  pull_request:', 'suite: [transition05]',
-                          'options: [transition]', 'options: [bump,'):
+                          'options: [transition]', 'options: [bump,', 'options: [ordinary_bump]', 'suite: [ordinary05]'):
             self.assertNotIn(forbidden, text)
 
     def test_host_recomputes_pair_and_rejects_missing_extra_or_modified_evidence(self):

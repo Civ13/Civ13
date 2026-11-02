@@ -1,0 +1,2 @@
+#define FILE_DIR .
+#include "native-group-probe.dm"
