@@ -93,4 +93,11 @@
 	if(!requester || !requester_client || !requester_holder || usr != requester || requester.client != requester_client || requester_client.mob != requester || requester_client.holder != requester_holder || requester_holder != src || owner != requester_client || !check_rights(R_SERVER, TRUE, requester)) return
 	spawn(0)
 		if(!requester || !requester_client || requester.client != requester_client || requester_client.mob != requester || requester_client.holder != requester_holder || owner != requester_client || !check_rights(R_SERVER, TRUE, requester) || !ticker) return
+		var/requester_ckey = ckey(requester_client.key)
+		if(!requester_ckey) return
+		log_admin("[requester_ckey] requested a debug lossy save.")
+		world.log << "Debug lossy save requested by administrator [requester_ckey]."
+		if(map_storage && map_storage.debug_recovery_session)
+			to_chat(requester, "Debug lossy save refused: another debug recovery session is active.")
+			return
 		ticker.debug_lossy_save()

@@ -98,6 +98,32 @@ class DebugLossySourceContracts(unittest.TestCase):
         self.assertIn('check_rights(R_SERVER, TRUE, requester)', self.admin)
         self.assertIn('Save Map (Debug Lossy)', self.admin)
         self.assertIn('The live animal is not deleted', self.admin)
+    def test_admin_request_audited_after_revalidation_and_busy_reported(self):
+        def check(source):
+            action = body(source, '/datum/admins/proc/save_debug_lossy()')
+            spawn = action.index('spawn(0)')
+            resumed = action[spawn:]
+            ownership = resumed.index('requester_client.holder != requester_holder')
+            rights = resumed.index('check_rights(R_SERVER, TRUE, requester)')
+            identity = resumed.index('var/requester_ckey = ckey(requester_client.key)')
+            log = resumed.index('log_admin("[requester_ckey] requested a debug lossy save.")')
+            world_log = resumed.index('world.log << "Debug lossy save requested by administrator [requester_ckey]."')
+            busy = resumed.index('if(map_storage && map_storage.debug_recovery_session)')
+            message = resumed.index('another debug recovery session is active')
+            call = resumed.index('ticker.debug_lossy_save()')
+            self.assertLess(max(ownership, rights), identity)
+            self.assertLess(identity, min(log, world_log))
+            self.assertLess(max(log, world_log), busy)
+            self.assertLess(busy, message)
+            self.assertLess(message, call)
+            self.assertIn('\n\t\t\treturn\n', resumed[busy:call])
+            self.assertNotIn('if(!ticker.debug_lossy_save())', resumed)
+        check(self.admin)
+        for removed in ('log_admin("[requester_ckey] requested a debug lossy save.")',
+                        'if(map_storage && map_storage.debug_recovery_session)',
+                        'requester_client.holder != requester_holder'):
+            with self.subTest(removed=removed), self.assertRaises((AssertionError, ValueError)):
+                check(self.admin.replace(removed, 'REMOVED_GUARD', 1 if removed != 'requester_client.holder != requester_holder' else 3))
     def test_bound_identity_and_no_arbitrary_mutation(self):
         for required in ('max_attempts = 3', 'pending_expires = world.time + 300',
 	                     'A.loc == pending_destination', '!A.client && !A.contents.len',

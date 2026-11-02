@@ -27,12 +27,12 @@ The expanded fixture also requires nested positional and associated-value
 references to the target to restore as null while a neighboring value, an alias,
 and a self-cycle survive. Its audit names the saved level, list ID, index and
 side for each omitted occurrence. The nested-list fixture passed on historical
-head `1a7364c2`; these new location controls have not yet run natively.
+head `1a7364c2`; the location controls passed in native run 41366495570 on
+head `1e0cca0a`. Those results do not establish native results for later source changes.
 
-## Proposed execution envelope
+## Execution envelope
 
-For this revision, no native action has been performed. After source and envelope review, the
-proposed single Linux hosted run uses one 516.1688 compile and two sequential
+The reviewed Linux hosted run uses one 516.1688 compile and two sequential
 short-lived daemons, each limited to 120 seconds with a 360-second total native
 deadline; each process-group cleanup waits up to ten more seconds. The launcher
 uses an unmodified, SHA-256-verified pinned Linux archive and the matching
@@ -67,8 +67,8 @@ install packages and download the pinned archive and must be separately included
 in execution scope. Toolchain/version identity and staged source must be checked
 against an externally reviewed exact head and scope before execution.
 
-This fixture currently has no CI job. A new test-only branch workflow/explicit
-manual selector needs review before dispatch. A PR containing the candidate's
+The `debug_lossy_only` manual selector runs this fixture with all other manual
+selectors disabled. A PR containing the candidate's
 `saving.dm` or `functions.dm` also matches the existing `moving-save-chunks`
 pull-request path filter, causing its existing correctness/memory native matrix
 and ordinary game compilation. Do not infer that this fixture ran from that
@@ -92,7 +92,7 @@ names each encoded owner, field or list ID/index/key/value, candidate-level
 identity, and replacement; this slice adds list-slot locations for its one
 supported target, but a graph pass must prove no surviving entry or
 cross-level/durable link points to an omitted entry. Nested-list alias,
-cycle and value behavior in this slice awaits native validation; omitted
+cycle and value behavior passed in the synthetic run cited above; omitted
 associated keys with non-null values remain refused. Contained entities require
 an explicit recursive-subtree policy and a complete loss count. All replacements
 must be applied to a new candidate rather than mutating the live world, with
