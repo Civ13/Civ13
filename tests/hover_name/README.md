@@ -37,8 +37,9 @@ export/import exclusions.
 
 The inventory correction is covered by offline source execution in the existing
 `los_context` baseline suite. Native mouse delivery and pixels remain unverified.
-The legacy native runners below still assert516.1681 and were not run for this
-repair; they require current-pin preparation and an adapter for the storage visibility helper before supplying new native evidence:
+The adapted runners use the current version manifest, but have not been compiled or
+executed for this repair. Their injected client and LOS-read boundaries do not
+prove real client mouse delivery or full-game LOS behavior:
 
 ```powershell
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>'
@@ -46,10 +47,13 @@ repair; they require current-pin preparation and an adapter for the storage visi
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control exit
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control stale
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control parent
+& '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control storage-viewer
+& '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control storage-origin
 ```
 
-The isolated native fixture executes production widget methods, weakrefs,
-visible-name code and mouse callback bodies with a fake network-client boundary.
+The isolated native fixture is prepared to execute production widget methods,
+storage admission, weakrefs, visible-name code and mouse callback bodies with
+fake network-client and LOS-read boundaries.
 It uses real native view membership, locations, invisibility and screen atoms.
 Own-body enter/move/drag and exit are covered explicitly, including masked
 identity, transparent/invisible rejection and a remote-camera round trip.

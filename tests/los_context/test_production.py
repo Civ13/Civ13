@@ -475,6 +475,25 @@ class InventoryHoverName(unittest.TestCase):
         T=m.atom('/obj/item/weapon/storage',is_seeing=[m.H],contents=[I]);I.loc=T;m.H.s_active=T
         m.W.process();self.assertTrue(m.W.maptext)
 
+    def test_hover_fixture_adapters_bind_helper_and_preserve_controls(self):
+        import ast,json
+        root=CORE.parents[3];fixture=root/'tests/hover_name'
+        direct=(fixture/'run.py').read_text();save=(fixture/'run-weakref-save.py').read_text()
+        ast.parse(direct);ast.parse(save)
+        version=json.loads((root/'tools/byond/version.json').read_text())['version']
+        self.assertEqual(version,'516.1688')
+        for runner in [direct,save]:
+            self.assertIn('los_storage_hover_visible(',runner)
+            self.assertIn("'tools/byond/version.json'",runner)
+            self.assertIn('0 errors, 0 warnings',runner)
+            self.assertIn("replace('user.client', 'user.hover_client')",runner)
+        for control in ['identity','exit','stale','parent','storage-viewer','storage-origin']:
+            self.assertIn(control,direct)
+        probe=(fixture/'fixture.dm').read_text()
+        for assertion in ['open storage item hover','closed storage view clears hover','storage replacement clears hover']:
+            self.assertIn(assertion,probe)
+        self.assertIn('/proc/los_read_allowed',probe)
+
     def test_storage_los_admission_is_hover_only_and_keeps_context_guards(self):
         source=CORE.read_text();decision=fragment(source,'/datum/los_context/proc/decision(')
         self.assertIn('operation == "hover" && los_storage_hover_visible(user, target)',decision)

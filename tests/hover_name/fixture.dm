@@ -21,6 +21,7 @@
 /datum
 	var/name
 	var/gc_destroyed = FALSE
+	var/gcDestroyed = FALSE
 	var/datum/weakref/weak_reference
 /datum/proc/Destroy()
 	return
@@ -37,6 +38,8 @@
 /obj
 	var/flags_inv = 0
 /obj/item
+/obj/item/weapon/storage
+	var/list/is_seeing = list()
 /obj/screen/inventory
 	var/slot_id
 /obj/screen
@@ -47,6 +50,7 @@
 	return
 /mob
 	var/datum/hover_client/hover_client
+	var/obj/item/weapon/storage/s_active
 	var/list/HUDneed = list()
 	var/list/HUDinventory = list()
 	var/list/test_slots = list()
@@ -73,6 +77,9 @@
 	var/last_mouse_params
 /datum/hover_client/proc/UpdateMouseScreenLoc(params)
 	last_mouse_params = params
+// The native fixture does not execute the full LOS subsystem.
+/proc/los_read_allowed(mob/user, atom/target, operation)
+	return TRUE
 /proc/check(condition, message)
 	if (!condition)
 		throw message
@@ -174,6 +181,28 @@
 	B.loc = locate(1,1,1)
 	L.process()
 	check(!L.maptext, "out of view")
+	// Real storage helper/widget, with a fake network-client and LOS boundary.
+	var/obj/item/weapon/storage/storage = new(viewer)
+	B.loc = storage
+	B.screen_loc = "5,5"
+	viewer.s_active = storage
+	storage.is_seeing += viewer
+	C.screen += B
+	C.MouseEntered(B, null, "map", "")
+	check(findtext(L.maptext, "rifle"), "open storage item hover")
+	storage.is_seeing -= viewer
+	L.process()
+	check(!L.maptext, "closed storage view clears hover")
+	storage.is_seeing += viewer
+	C.MouseEntered(B, null, "map", "")
+	var/obj/item/weapon/storage/other_storage = new(viewer)
+	other_storage.is_seeing += viewer
+	B.loc = other_storage
+	viewer.s_active = other_storage
+	L.process()
+	check(!L.maptext, "storage replacement clears hover")
+	C.screen -= B
+	viewer.s_active = null
 	check_own_hover(C, viewer, L)
 	B.loc = locate(9,8,1)
 	C.MouseEntered(B, null, "map", "")
