@@ -6,8 +6,8 @@ on:
         description: Select the reviewed observation
         required: true
         type: choice
-        default: transition
-        options: [transition]
+        default: handoff
+        options: [handoff]
       expected_tree:
         description: Full independently reviewed Git tree SHA
         required: true
@@ -30,7 +30,7 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        suite: [transition05]
+        suite: [handoff05]
     steps:
       - name: Validate manual source and exclusive rate selection
         env:
@@ -44,8 +44,8 @@ jobs:
           test "$RUNNER_ARCH" = X64
           [[ "$EXPECTED_HEAD" =~ ^[0-9a-f]{40}$ ]]
           test "$EXPECTED_HEAD" = "$GITHUB_SHA"
-          test "$EXPERIMENT" = transition
-          test "$WILDLIFE_SUITE" = transition05
+          test "$EXPERIMENT" = handoff
+          test "$WILDLIFE_SUITE" = handoff05
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.sha }}
@@ -60,10 +60,10 @@ jobs:
           test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
       - name: Offline selector, observer and receipt contracts
         run: |
-          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_transition_draft.py' -v
           /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_transition_stage.py' -v
-          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_transition_contract.py' -v
-          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_transition_controller.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_enabled_handoff.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_enabled_handoff_stage.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_enabled_handoff_controller.py' -v
       - name: Bounded isolated observations, no parity claim
         env:
           EXPECTED_HEAD: ${{ inputs.expected_head }}
