@@ -6,8 +6,8 @@ a saddle costs six leather sheets and a harness costs four. Existing recipe debi
 time, skill and research handling is reused; no new crafting system is introduced.
 
 Use a held saddle on an unoccupied living horse to fit it. Mounting and voluntary
-dismounting then take 20 ticks instead of 40. Bareback riding remains available at
-40 ticks; forced dismount and death penalties are unchanged. The existing leather
+dismounting then take 20 deciseconds instead of 40. Bareback riding remains available at
+40 deciseconds; forced dismount and death penalties are unchanged. The existing leather
 satchel sprite is reused as an item placeholder; no new mounted horse overlay.
 
 Use a harness on an unoccupied, unhitched horse or cow. Attach it to the existing

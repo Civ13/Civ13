@@ -100,6 +100,7 @@
 	if (!choices.len)
 		to_chat(user, "There is no tack to remove.")
 		return
+	choices += "Cancel"
 	var/client/controller = user.client
 	if (!controller || controller.mob != user)
 		return

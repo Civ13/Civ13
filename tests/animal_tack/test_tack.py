@@ -72,7 +72,7 @@ class User:
 class World:
     def __init__(self,source=SOURCE):
         self.source=source;self.site=N(contents=DMList());self.actor=User(self);self.animal=Animal(self)
-        self.messages=[];self.menu_hook=None;self.choice=None;self.frames=[]
+        self.messages=[];self.menu_hook=None;self.choice=None;self.frames=[];self.presented_choices=[]
         self.state=dict(persistence_save_in_progress=False,persistence_active_operation=None,persistence_load_recovery_required=False,persistence_admission_identity=object())
     def refresh(self):
         for env in self.frames:env.update(self.state)
@@ -92,7 +92,12 @@ class World:
         for path,name in TYPES.items():body=body.replace(path,name)
         code=decl+'()\n'+body+'\n'
         def menu(*args):
+            choices=args[4]
+            self.presented_choices.append(list(choices))
             if self.menu_hook:self.menu_hook()
+            # WWinput only maps the literal Cancel to null when it is last
+            # in its supplied choices. The test checks actual construction.
+            if self.choice=='Cancel' and choices[-1]=='Cancel':return None
             return self.choice
         env=dict(self.state,src=self.animal,usr=self.actor,QDELETED=lambda x:x is None or getattr(x,'deleted',False),
             istype=self.istype,ishuman=lambda x:isinstance(x,User),get_turf=lambda x:None if x.deleted else x.loc,
@@ -203,6 +208,22 @@ class TackTests(unittest.TestCase):
                 self.assertIs(s.loc,expected)
         w=World();s=Item(w,'saddle',w.animal);w.animal.stat=2
         self.assertTrue(w.animal.remove_animal_tack(s,w.actor))
+
+    def test_actual_removal_choices_end_with_cancel_and_missing_append_is_caught(self):
+        wrapper=(ROOT/'code/_helpers/WWinput.dm').read_text()
+        self.assertIn('if (. == "Cancel")',wrapper)
+        self.assertIn('toc1[toc1:len] == .',wrapper)
+        def check(source):
+            w=World(source);s=Item(w,'saddle',w.animal);h=Item(w,'harness',w.animal)
+            w.choice='Cancel';w.menu()
+            self.assertEqual(w.presented_choices,[[s,h,'Cancel']])
+            self.assertIs(s.loc,w.animal);self.assertIs(h.loc,w.animal)
+        check(SOURCE)
+        append='\tchoices += "Cancel"\n'
+        self.assertEqual(SOURCE.count(append),1)
+        with self.assertRaises(AssertionError):check(SOURCE.replace(append,''))
+        empty=World();empty.choice='Cancel';empty.menu()
+        self.assertEqual(empty.presented_choices,[])
 
     def test_causal_missing_callback_guard_allows_invalid_fit(self):
         guard='!src.can_handle_animal_tack(user) || src.stat == DEAD || QDELETED(T) || T.loc != site || get_turf(src) != site || !T.fits_animal(src) || src.get_animal_tack(tack_type) || tack_epoch != persistence_admission_identity'
