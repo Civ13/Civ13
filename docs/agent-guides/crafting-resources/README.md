@@ -382,3 +382,10 @@ excluding its runtime clock. Feedstock uses stack.use without a human argument:
 Production religion otherwise discounts consumption and breaks conservation.
 See docs/wood-ash-compost.md and tests/wood_ash_compost/run.py for isolated
 production-path/native-save checks and generated-source mutation controls.
+
+<!-- 2026-11-02: generated crafting files -->
+Recipe, constructor or atlas metadata changes must ship a regenerated
+`UI/crafting-atlas.json` and refreshed counts in
+`docs/crafting-recipe-audit-index.json`; CI fails on either being stale. Run
+`python3 scripts/agent_preflight.py generated --write`. On a merge conflict in
+either file, take one side and regenerate on the merged tree; never hand-merge.

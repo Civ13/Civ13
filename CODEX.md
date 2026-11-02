@@ -38,7 +38,7 @@ historical source a test needs as a checked-in fixture, and prefer focused
 behavior checks over whole-file equality.
 
 Verification order: compile, then the focused tests for the touched area,
-then push. Report the exact commands and results. Say plainly what was not
+then `python3 scripts/agent_preflight.py all --write`, then push. Report the exact commands and results. Say plainly what was not
 verified (native, in-game, save/load) and stop there. Unverified gameplay
 is a note in the report, not a reason to block.
 
@@ -50,6 +50,11 @@ For documentation-only work, mark compilation and gameplay checks not applicable
 run focused documentation checks, and report their exact commands and results.
 Check the CI status and jobs for the pushed head; distinguish pending, failed,
 skipped and passed checks. A pending check is not a pass.
+
+PR comments: one dated comment per pushed head, in plain sentences, ideally
+under 150 words. Give the change, the commands and results, the CI run link
+and what is unverified. Do not repeat unchanged "not run" lists or internal
+review-process narration in every comment.
 
 ## Task stopping rule
 

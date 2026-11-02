@@ -15,8 +15,14 @@ when that area is touched, rather than loading every guide for every task.
   to the current pin. Keep old evidence labelled historical; do not use floating
   latest downloads or silently skip failed current-pin validation.
 - Compile before focused tests: Windows console `dm.exe civ13.dme`; Linux
-  `DreamMaker -max_errors 0 civ13.dme`. Use the matching existing test runner
-  and its README for the touched area. Report exact commands and results.
+  `DreamMaker -max_errors 0 civ13.dme`. Linux and cloud sessions without a
+  compiler install the pin with `bash scripts/cloud_byond_setup.sh`. Use the
+  matching existing test runner and its README for the touched area. Report
+  exact commands and results.
+- Before the first push, follow `.agents/skills/civ13-pr-preflight/SKILL.md`:
+  `python3 scripts/agent_preflight.py all --write` finds byte-pinned tests for
+  touched files, regenerates the crafting atlas and recipe audit index, and runs
+  every offline CI suite.
 - Documentation-only changes need focused documentation checks; compilation
   and gameplay checks are not applicable. CI selection in
   [docs/ci-selection.md](docs/ci-selection.md) also skips docs-only compilation.
