@@ -81,7 +81,7 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
                 receipt['supervision']=runtime.summary();persist()
             runtime.poll()  # One bounded JSONL append, no growing receipt rewrite.
             logs=[p for p in output.rglob('*') if p.is_file() and p.suffix in ('.log','.json','.jsonl')]
-            require(sum(p.stat().st_size for p in logs)+sum((stage/n).stat().st_size for n in ('events.jsonl','receipt.json') if (stage/n).exists())<=LIMITS['evidence_bytes'],'Generated log/state cap16MiB')
+            require(sum(p.stat().st_size for p in logs)+sum((stage/n).stat().st_size for n in ('events.jsonl','receipt.json') if (stage/n).exists())<=LIMITS['evidence_bytes'],'Generated log/state cap (16 MiB)')
             if (stage/'receipt.json').exists():
                 native=json.loads(read(stage/'receipt.json',65536));receipt['native_receipt']=native
                 if not runtime.a.exited(daemon):

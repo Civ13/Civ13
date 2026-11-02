@@ -67,7 +67,7 @@ class OwnedRun:
     def poll(self):
         row=dict(elapsed=self.now()-self.started,resources=[])
         try:
-            require(row['elapsed']<self.wall,'Native wall deadline180seconds')
+            require(row['elapsed']<self.wall,'Native wall deadline (180 seconds)')
             acc=self.a.accounting();membership=self.o.query_members(self.a);known={p.pid for _,p in self.children}
             row.update(total=acc.total,active=acc.active,terminated=acc.terminated,membership=membership)
             unexpected=set(membership['pids'])-known
@@ -86,7 +86,7 @@ class OwnedRun:
                 require(all(socket_ok(x,self.port,name=='daemon') for x in sockets),'Socket outside exact fixture loopback endpoints')
                 require(private<=LIMITS['rss_bytes'],'Private memory ceiling')
             row['rss']=total_rss
-            require(total_rss<=LIMITS['rss_bytes'],'Aggregate owned RSS ceiling1920MiB')
+            require(total_rss<=LIMITS['rss_bytes'],'Aggregate owned RSS ceiling (1,920 MiB)')
         except BaseException as error:
             row['error']=str(error);self.record_sample(row);raise
         self.record_sample(row)
