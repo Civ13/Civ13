@@ -140,7 +140,7 @@
 //extra
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
-	H.add_note("Role", "Your full name is Vyacheslav Grigoriev, but you're commonly known as \"Tatarin\", a ruthless Thief in law. You're considered Nikolay's executioner as your spontaneous and frenzy character gets stuff done, let it be the dirty or the clean way, as long as the price is right. About 2 minutes ago you recieved a call from an insider that a warrant is out for you. You can already hear the police sirens approaching the industrial complex you're supervising. There's no way out, it's time to break the glass.")
+	H.add_note("Role", "Your full name is Vyacheslav Grigoriev, but you're commonly known as \"Tatarin\", a ruthless Thief in law. You're considered Nikolay's executioner as your spontaneous and frenzy character gets stuff done, let it be the dirty or the clean way, as long as the price is right. About 2 minutes ago you received a call from an insider that a warrant is out for you. You can already hear the police sirens approaching the industrial complex you're supervising. There's no way out, it's time to break the glass.")
 	H.setStat("strength", STAT_VERY_VERY_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_VERY_VERY_HIGH)

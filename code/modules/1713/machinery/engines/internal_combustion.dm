@@ -131,7 +131,7 @@
 		for (var/F in fuels)
 			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
-				//add polution to global meter
+				//add pollution to global meter
 				//change_global_pollution(fuelconsumption)
 				done = TRUE
 		if (broken)
@@ -216,7 +216,7 @@
 
 /obj/structure/engine/internal/gasoline/sixstroke
 	name = "six-stroke gasoline engine"
-	desc = "A very efficient, altough costly, gasoline engine. Good fuel efficiency."
+	desc = "A very efficient, although costly, gasoline engine. Good fuel efficiency."
 	icon = 'icons/obj/engines32.dmi'
 	icon_state = "gasoline6_static"
 	engineclass = "gasoline6"

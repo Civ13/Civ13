@@ -18,8 +18,8 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	flee_message = "HSSSSS"
-	minbodytemp = 223		//Below -50 Degrees Celcius
-	maxbodytemp = 323	//Above 50 Degrees Celcius
+	minbodytemp = 223		//Below -50 Degrees Celsius
+	maxbodytemp = 323	//Above 50 Degrees Celsius
 //	holder_type = /obj/item/weapon/holder/cat
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
@@ -32,11 +32,11 @@
 	if ((loc) && isturf(loc))
 		if (!stat && !resting && !buckled)
 			for (var/mob/living/simple_animal/mouse/M in loc)
-				if (!M.stat)
+				if (!M.stat && npc_subtile_contact_settled(M))
 					M.splat()
 					visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
 					M.apply_damage(1, BRUTE)
-					movement_target = null
+					npc_set_movement_target(null)
 					stop_automated_movement = FALSE
 					break
 
@@ -52,10 +52,12 @@
 
 	turns_since_scan++
 	if (turns_since_scan > 5)
+		if (npc_subtile_pet_enabled)
+			npc_subtile_stop_pet_walk()
 		walk(src,0)
 		turns_since_scan = FALSE
 
-		if (flee_target) //fleeing takes precendence
+		if (flee_target) //fleeing takes precedence
 			handle_flee_target()
 		else
 			handle_movement_target()
@@ -101,18 +103,25 @@
 		if (movement_target != friend)
 			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal/mouse) && (friend in oview(src)))
 				//stop existing movement
+				if (npc_subtile_pet_enabled)
+					npc_subtile_stop_pet_walk()
 				walk(src,0)
 				turns_since_scan = FALSE
 
 				//walk to friend
 				stop_automated_movement = TRUE
-				movement_target = friend
-				walk_to(src, movement_target, near_dist, 4)
+				npc_set_movement_target(friend)
+				if (npc_subtile_pet_enabled)
+					npc_subtile_start_pet_walk(movement_target, "towards", near_dist, npc_subtile_native_interval(4))
+				else
+					walk_to(src, movement_target, near_dist, 4)
 
 		//already following and close enough, stop
 		else if (current_dist <= near_dist)
+			if (npc_subtile_pet_enabled)
+				npc_subtile_stop_pet_walk()
 			walk(src,0)
-			movement_target = null
+			npc_set_movement_target(null)
 			stop_automated_movement = FALSE
 			if (prob(10))
 				say("Meow!")

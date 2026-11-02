@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "code/game/atoms.dm",
-      "sha256_normalized": "8a3b3738d6efbbe0bfa564e395a7f239b4cf64d6199f38abcfe2466cc38dabdc",
+      "sha256_normalized": "1f07164ec2c2d311494bdc5f34e0563a3f5e64bd0a589f34b855849eb7f6f9af",
       "declarations": [
         {
           "line": 44,
@@ -12,13 +12,13 @@
         },
         {
           "line": 89,
-          "declaration": "/atom/proc/CheckExit()"
+          "declaration": "/atom/proc/CheckExit(atom/movable/mover, turf/target, exit_direction = null)"
         }
       ]
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "a89b38baae2099f40cae7a86ef84d75a5154feea2506bb0962b00340f874ec48",
+      "sha256_normalized": "2771f7246f9aa099cd669339c77e83f1ebc8f3012c96c84671fa42ff7100072d",
       "declarations": [
         {
           "line": 81,
@@ -208,7 +208,7 @@
     },
     {
       "path": "code/game/objects/structures/railing.dm",
-      "sha256_normalized": "c7b575712656699cf912228eb981bcc2e1dfa8a037563d0f5c71edc6ca0bfa6b",
+      "sha256_normalized": "8dac65e45a464de879c0b71687a1092d90e21ff75f0414b53fb8635fa68369f8",
       "declarations": [
         {
           "line": 44,
@@ -216,7 +216,7 @@
         },
         {
           "line": 167,
-          "declaration": "/obj/structure/railing/CheckExit(atom/movable/O as mob|obj, target as turf)"
+          "declaration": "/obj/structure/railing/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)"
         }
       ]
     },
@@ -232,7 +232,7 @@
     },
     {
       "path": "code/game/objects/structures/table.dm",
-      "sha256_normalized": "bc482c091f77a8ec0ad765c009f421af4843b82e1a8e95c2d7312c3bbb3e3ffc",
+      "sha256_normalized": "16d3418a46243dcbb22642dce325d732e5ffc53d68e57bff623b40f17edb0aab",
       "declarations": [
         {
           "line": 349,
@@ -240,7 +240,7 @@
         },
         {
           "line": 400,
-          "declaration": "/obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)"
+          "declaration": "/obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)"
         }
       ]
     },
@@ -256,7 +256,7 @@
     },
     {
       "path": "code/game/objects/structures/window.dm",
-      "sha256_normalized": "296e7b3441b50bdbce0641b055e6bc26676dc38a57de54dd1d32d67521de342d",
+      "sha256_normalized": "f392db75156a476bb0b98916191726838ba7b77b37837421a2d57a52741c9444",
       "declarations": [
         {
           "line": 171,
@@ -264,7 +264,7 @@
         },
         {
           "line": 181,
-          "declaration": "/obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf)"
+          "declaration": "/obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)"
         }
       ]
     },
@@ -358,11 +358,11 @@
     },
     {
       "path": "code/modules/1713/machinery/modular_vehicles/frame.dm",
-      "sha256_normalized": "e0041a4a36d13c768d415740574437fe28d51b723bb8886fc11050e86668066d",
+      "sha256_normalized": "eb35dabba5bb1975f500633449bd69a41ad70bdaafb6c9905e62f5fb712c05b5",
       "declarations": [
         {
           "line": 138,
-          "declaration": "/obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)"
+          "declaration": "/obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)"
         },
         {
           "line": 199,
@@ -382,7 +382,7 @@
     },
     {
       "path": "code/modules/1713/structures.dm",
-      "sha256_normalized": "4d600d76d93284f3a637461c339cd3532ade5edf1b191a438d7ccffd20ff823b",
+      "sha256_normalized": "d53b8db23b90991f2632fcf4fd59e4aca7909c0df4a7ab5ac71deeecb9192116",
       "declarations": [
         {
           "line": 621,
@@ -500,7 +500,7 @@
     },
     {
       "path": "code/modules/paperwork/authoring.dm",
-      "sha256_normalized": "7d20e67dbe0d998327d9d268a0fc56906cc75c212c327c966ba2924abcbca42f",
+      "sha256_normalized": "c4221d7f8a771ac167cac4f63e63ef64007368bbaedaaab31e4da977456b6b51",
       "declarations": [
         {
           "line": 11,

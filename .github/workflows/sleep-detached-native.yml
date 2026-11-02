@@ -1,0 +1,75 @@
+name: Synthetic detached sleep graph
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Prepare records host binding; execute additionally runs the reviewed synthetic fixture
+        required: true
+        type: choice
+        options: [prepare, execute]
+      reviewed_head:
+        description: Full reviewed commit SHA
+        required: true
+        type: string
+      reviewed_scope_sha256:
+        description: Full reviewed hosted-scope.json SHA-256
+        required: true
+        type: string
+      expected_python_sha256:
+        description: Reviewed host Python SHA-256, required for execute
+        required: false
+        type: string
+      expected_docker_sha256:
+        description: Reviewed Docker CLI SHA-256, required for execute
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  detached-sleep:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Initialize evidence directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sleep-evidence"
+          printf '%s\n' '{"status":"started","native":"not_started"}' > "$RUNNER_TEMP/sleep-evidence/job-started.json"
+      - name: Offline source and controller contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          ulimit -f 2048
+          /usr/bin/python3 -I -B -m unittest discover -s tests/sleep_detached_fixture/tests -p 'test_*.py' > "$RUNNER_TEMP/sleep-evidence/offline.log" 2>&1
+      - name: Bind exact host and prepare or run the reviewed synthetic fixture
+        shell: bash
+        env:
+          SLEEP_MODE: ${{ inputs.mode }}
+          SLEEP_HEAD: ${{ inputs.reviewed_head }}
+          SLEEP_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+          SLEEP_PYTHON: ${{ inputs.expected_python_sha256 }}
+          SLEEP_DOCKER: ${{ inputs.expected_docker_sha256 }}
+        run: |
+          set -euo pipefail
+          work_parent=$(mktemp -d /tmp/civ13-sleep-prepare-XXXXXXXX)
+          chmod 700 "$work_parent"
+          mkdir -p "$RUNNER_TEMP/sleep-evidence"
+          /usr/bin/python3 -I -B tests/sleep_detached_fixture/hosted_job.py \
+            --mode "$SLEEP_MODE" --head "$SLEEP_HEAD" --scope-sha256 "$SLEEP_SCOPE" \
+            --work "$work_parent/runtime" --evidence "$RUNNER_TEMP/sleep-evidence" \
+            --expected-python "$SLEEP_PYTHON" --expected-docker "$SLEEP_DOCKER"
+      - name: Retain preparation, failure and owned-container evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sleep-detached-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/sleep-evidence
+          if-no-files-found: error
+          retention-days: 14

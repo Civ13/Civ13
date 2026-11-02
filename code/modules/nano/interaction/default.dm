@@ -21,7 +21,7 @@
 	return user.shared_living_nano_distance(src_object)
 
 /mob/living/proc/shared_living_nano_distance(var/atom/movable/src_object)
-	if (!(src_object in view(4, src))) 	// If the src object is not in visable, disable updates
+	if (!(src_object in view(4, src))) 	// If the src object is not in visible, disable updates
 		return STATUS_CLOSE
 
 	var/dist = get_dist(src_object, src)

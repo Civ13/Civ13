@@ -79,7 +79,7 @@ var/no_loop_t = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Red Army</b> has sucessfuly defended the church! The whites halted the attack!"
+		var/message = "The <b>Red Army</b> has successfully defended the church! The whites halted the attack!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

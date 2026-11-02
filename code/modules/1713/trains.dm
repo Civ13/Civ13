@@ -715,7 +715,7 @@
 	if (aprfuel >= 0.8)
 		to_chat(user, "The combustion chamber seems full!")
 	else if (aprfuel < 0.8 && aprfuel >= 0.6)
-		to_chat(user, "The combustion chamber seems to be suficiently fueled.")
+		to_chat(user, "The combustion chamber seems to be sufficiently fueled.")
 	else if (aprfuel < 0.6 && aprfuel >= 0.4)
 		to_chat(user, "The combustion chamber seems to be stable.")
 	else if (aprfuel < 0.4 && aprfuel >= 0.2)

@@ -42,7 +42,7 @@
 
 	var/chance = 0
 	if (istype(A, /turf/wall))
-		// wont penetrate walls
+		// won't penetrate walls
 		chance = 0
 
 	else if (istype(A, /obj/structure))

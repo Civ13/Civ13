@@ -104,7 +104,7 @@
 
 /obj/item/clothing/gloves/union_gloves
 	name = "cavalry gloves"
-	desc = "Gloves worn by union cavalry and other military personel."
+	desc = "Gloves worn by union cavalry and other military personnel."
 	icon_state = "union_gloves"
 	item_state = "union_gloves"
 	permeability_coefficient = 0.05

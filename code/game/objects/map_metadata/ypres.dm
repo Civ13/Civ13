@@ -2,7 +2,7 @@
 /obj/map_metadata/ypres
 	ID = MAP_YPRES
 	title = "2nd Battle of Ypres"
-	description = "The German and the Allied forces are facing eachother in the trenches near Ypres! It will start in 5 minutes."
+	description = "The German and the Allied forces are facing each other in the trenches near Ypres! It will start in 5 minutes."
 	lobby_icon = "icons/lobby/ww1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
@@ -21,7 +21,7 @@
 	ordinal_age = 5
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5, GERMAN = 0.5)
 	battle_name = "second battle of Ypres"
-	mission_start_message = "<font size=4>The <b>German</b> and the <b>Allied</b> forces are facing eachother in the trenches near Ypres! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>German</b> and the <b>Allied</b> forces are facing each other in the trenches near Ypres! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"
 	faction1 = BRITISH
 	faction2 = GERMAN
 	grace_wall_timer = 3000

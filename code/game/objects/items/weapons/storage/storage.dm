@@ -34,6 +34,13 @@
 	var/base_icon = ""
 	var/list/startswith
 
+// Storage screen objects and viewers are rebuilt per runtime.  Skipping these
+// fields on import also preserves constructor-created controls from old saves.
+/obj/item/weapon/storage/persistence_runtime_var(key)
+	if (key in list("is_seeing", "boxes", "storage_start", "storage_continue", "storage_end", "stored_start", "stored_continue", "stored_end", "closer"))
+		return TRUE
+	return ..()
+
 /obj/item/weapon/storage/verb/name_storage()
 	set category = null
 	set name = "Name"
@@ -166,15 +173,15 @@
 	return
 
 /obj/item/weapon/storage/proc/hide_from(mob/user as mob)
-
-	if (!user.client)
+	if (!user)
 		return
-	user.client.screen -= boxes
-	user.client.screen -= storage_start
-	user.client.screen -= storage_continue
-	user.client.screen -= storage_end
-	user.client.screen -= closer
-	user.client.screen -= contents
+	if (user.client)
+		user.client.screen -= boxes
+		user.client.screen -= storage_start
+		user.client.screen -= storage_continue
+		user.client.screen -= storage_end
+		user.client.screen -= closer
+		user.client.screen -= contents
 	if (user.s_active == src)
 		user.s_active = null
 	is_seeing -= user
@@ -183,14 +190,22 @@
 	if (use_sound)
 		playsound(loc, use_sound, 50, TRUE, -5)
 
+	var/rebuilt_controls = ensure_storage_controls()
 	orient2hud(user)
+	if (rebuilt_controls)
+		// Reattach the repaired controls only to viewers still viewing this storage.
+		var/list/viewers = is_seeing.Copy()
+		for (var/mob/M in viewers)
+			if (M.client && M.s_active == src)
+				show_to(M)
+			else
+				is_seeing -= M
 	if (user.s_active)
 		user.s_active.close(user)
 	show_to(user)
 
 /obj/item/weapon/storage/proc/close(mob/user as mob)
 	hide_from(user)
-	user.s_active = null
 	return
 
 /obj/item/weapon/storage/proc/close_all()
@@ -311,7 +326,7 @@
 		sample_object = sample
 		number = TRUE
 
-//This proc determins the size of the inventory to be displayed. Please touch it only if you know what you're doing.
+//This proc determines the size of the inventory to be displayed. Please touch it only if you know what you're doing.
 /obj/item/weapon/storage/proc/orient2hud(mob/user as mob)
 
 	var/adjusted_contents = contents.len
@@ -565,6 +580,67 @@
 	for (var/obj/item/I in contents)
 		remove_from_storage(I, T)
 
+// Rebuild only missing transient controls. Existing references may be shared by viewers.
+/obj/item/weapon/storage/proc/ensure_storage_controls()
+	var/changed = FALSE
+	if (!is_seeing)
+		is_seeing = list()
+		changed = TRUE
+	if (!boxes)
+		boxes = new /obj/screen/storage(  )
+		boxes.name = "storage"
+		boxes.master = src
+		boxes.icon_state = "block"
+		boxes.screen_loc = "7,7 to 10,8"
+		boxes.layer = 19
+		changed = TRUE
+	if (!storage_start)
+		storage_start = new /obj/screen/storage(  )
+		storage_start.name = "storage"
+		storage_start.master = src
+		storage_start.icon_state = "storage_start"
+		storage_start.screen_loc = "7,7 to 10,8"
+		storage_start.layer = 19
+		changed = TRUE
+	if (!storage_continue)
+		storage_continue = new /obj/screen/storage(  )
+		storage_continue.name = "storage"
+		storage_continue.master = src
+		storage_continue.icon_state = "storage_continue"
+		storage_continue.screen_loc = "7,7 to 10,8"
+		storage_continue.layer = 19
+		changed = TRUE
+	if (!storage_end)
+		storage_end = new /obj/screen/storage(  )
+		storage_end.name = "storage"
+		storage_end.master = src
+		storage_end.icon_state = "storage_end"
+		storage_end.screen_loc = "7,7 to 10,8"
+		storage_end.layer = 19
+		changed = TRUE
+	if (!stored_start)
+		stored_start = new /obj //we just need these to hold the icon
+		stored_start.icon_state = "stored_start"
+		stored_start.layer = 19
+		changed = TRUE
+	if (!stored_continue)
+		stored_continue = new /obj
+		stored_continue.icon_state = "stored_continue"
+		stored_continue.layer = 19
+		changed = TRUE
+	if (!stored_end)
+		stored_end = new /obj
+		stored_end.icon_state = "stored_end"
+		stored_end.layer = 19
+		changed = TRUE
+	if (!closer)
+		closer = new /obj/screen/close(  )
+		closer.master = src
+		closer.icon_state = "x"
+		closer.layer = 20
+		changed = TRUE
+	return changed
+
 /obj/item/weapon/storage/New()
 	..()
 	if (allow_quick_empty)
@@ -583,46 +659,7 @@
 			total_storage_space += I.get_storage_cost()
 		max_storage_space = max(total_storage_space,max_storage_space) //prevents spawned containers from being too small for their contents
 
-	boxes = new /obj/screen/storage(  )
-	boxes.name = "storage"
-	boxes.master = src
-	boxes.icon_state = "block"
-	boxes.screen_loc = "7,7 to 10,8"
-	boxes.layer = 19
-
-	storage_start = new /obj/screen/storage(  )
-	storage_start.name = "storage"
-	storage_start.master = src
-	storage_start.icon_state = "storage_start"
-	storage_start.screen_loc = "7,7 to 10,8"
-	storage_start.layer = 19
-	storage_continue = new /obj/screen/storage(  )
-	storage_continue.name = "storage"
-	storage_continue.master = src
-	storage_continue.icon_state = "storage_continue"
-	storage_continue.screen_loc = "7,7 to 10,8"
-	storage_continue.layer = 19
-	storage_end = new /obj/screen/storage(  )
-	storage_end.name = "storage"
-	storage_end.master = src
-	storage_end.icon_state = "storage_end"
-	storage_end.screen_loc = "7,7 to 10,8"
-	storage_end.layer = 19
-
-	stored_start = new /obj //we just need these to hold the icon
-	stored_start.icon_state = "stored_start"
-	stored_start.layer = 19
-	stored_continue = new /obj
-	stored_continue.icon_state = "stored_continue"
-	stored_continue.layer = 19
-	stored_end = new /obj
-	stored_end.icon_state = "stored_end"
-	stored_end.layer = 19
-
-	closer = new /obj/screen/close(  )
-	closer.master = src
-	closer.icon_state = "x"
-	closer.layer = 20
+	ensure_storage_controls()
 	orient2hud()
 
 /obj/item/weapon/storage/emp_act(severity)

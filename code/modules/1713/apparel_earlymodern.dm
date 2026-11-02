@@ -1623,7 +1623,7 @@
 
 //////spanish civil war
 
-/obj/item/clothing/under/spain/republican //recolored russian ww1 uniform cause they look very similiar
+/obj/item/clothing/under/spain/republican //recolored russian ww1 uniform cause they look very similar
 	name = "Spanish Republican Uniform"
 	desc = "A Uniform used by the spanish republican forces."
 	icon_state = "spanishrepublican"

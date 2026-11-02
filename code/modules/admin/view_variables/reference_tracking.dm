@@ -30,7 +30,7 @@
 	DoSearchVar(GLOB, "GLOB") //globals
 	log_reftracker("Finished searching globals")
 
-	for(var/datum/thing in world) //atoms (don't beleive its lies)
+	for(var/datum/thing in world) //atoms (don't believe its lies)
 		DoSearchVar(thing, "World -> [thing.type]", search_time = starting_time)
 	log_reftracker("Finished searching atoms")
 
@@ -104,7 +104,7 @@
 			#ifndef FIND_REF_NO_CHECK_TICK
 			CHECK_TICK
 			#endif
-			//Check normal entrys
+			//Check normal entries
 			if(element_in_list == src)
 				#ifdef REFERENCE_TRACKING_DEBUG
 				found_refs[potential_cache] = TRUE
@@ -115,7 +115,7 @@
 			var/assoc_val = null
 			if(!isnum(element_in_list) && normal)
 				assoc_val = potential_cache[element_in_list]
-			//Check assoc entrys
+			//Check assoc entries
 			if(assoc_val == src)
 				#ifdef REFERENCE_TRACKING_DEBUG
 				found_refs[potential_cache] = TRUE

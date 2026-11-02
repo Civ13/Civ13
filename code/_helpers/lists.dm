@@ -127,7 +127,7 @@ proc/isemptylist(list/list)
 	* INPUT: Object to be inserted
 	* LIST: List to insert object into
 	* TYPECONT: The typepath of the contents of the list
-	* COMPARE: The object to compare against, usualy the same as INPUT
+	* COMPARE: The object to compare against, usually the same as INPUT
 	* COMPARISON: The variable on the objects to compare
 	* COMPTYPE: How should the values be compared? Either COMPARE_KEY or COMPARE_VALUE.
 	*/

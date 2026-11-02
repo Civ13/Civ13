@@ -318,7 +318,7 @@
 
 /obj/item/clothing/under/wedding
 	name = "white wedding dress"
-	desc = "A cermonial white wedding dress. Something old, something new, something borrowed, something blue."
+	desc = "A ceremonial white wedding dress. Something old, something new, something borrowed, something blue."
 	icon_state = "bride_white"
 	item_state = "bride_white"
 

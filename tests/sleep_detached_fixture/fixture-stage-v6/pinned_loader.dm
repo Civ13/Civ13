@@ -1,0 +1,255 @@
+// Synthetic fixture: exact extracted production procedures; game dependencies stubbed.
+/map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
+	try
+		TICK_CHECK
+		var/nextContents
+		if(nocontents)
+			nextContents = 2
+		if(existing_references["[ind]"])
+			if(starting_loc)
+				var/atom/movable/A = existing_references["[ind]"]
+				A.loc = starting_loc
+			return existing_references["[ind]"]
+		savefile.cd = entry_path(savefile, ind)
+		var/type = savefile["type"]
+		var/format_version = savefile["/format_version"]
+		savefile.cd = entry_path(savefile, ind)
+		if(!ispath(type, /datum))
+			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
+		// Older completed saves can contain client HUD graphs. Never construct
+		// their screen/datum objects without the live client owner they require.
+		if(ispath(type, /obj/screen) || ispath(type, /datum/hud) || ispath(type, /datum/action) || ispath(type, /obj/item/weapon/grab))
+			return null
+		// Historical saves can retain derived lighting graphs through item vars.
+		// Their constructors require live owners/turfs; never import those graphs.
+		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay) || ispath(type, /atom/movable/lighting_fullbright))
+			return null
+		if(ispath(type, /obj/map_metadata))
+			existing_references["[ind]"] = map
+			return map
+		var/datum/object
+		if(ispath(type, /turf) && !old_turf)
+			old_turf = saved_turfs["[ind]"]
+			if(!old_turf)
+				throw EXCEPTION("Missing coordinate for turf entry [ind]")
+		// Map reservation policy is never restored from a save. Even same-type
+		// and legacy entries activate their destination before payload construction.
+		if (old_turf)
+			old_turf.activate_reserved_lighting()
+		if(lag_fix)
+			so_far++
+			if(so_far > per_pause)
+				sleep(10)
+				so_far = 0
+		if(old_turf)
+			var/xa = old_turf.x
+			var/ya = old_turf.y
+			var/za = old_turf.z
+			old_turf.ChangeTurf(type, FALSE, FALSE)
+			object = locate(xa,ya,za)
+			var/turf/restored_turf = object
+			restored_turf.activate_reserved_lighting()
+			if (istype(restored_turf, /turf/floor))
+				var/turf/floor/restored_floor = restored_turf
+				restored_floor.irrigation_prepare_load()
+			// Missing fields in legacy/clear-ground saves mean no generated snow.
+			restored_turf.weather_snow = 0
+			restored_turf.snowfall_ground_icon()
+		else if(replacement)
+			object = replacement
+		else if(ispath(type, /atom))
+			// A recursive field can reach a roof before its containing turf.
+			// Only the already validated direct-content location is authoritative.
+			var/list/roof = validated_roof_entries["[loading_z]:[ind]"]
+			if(roof)
+				var/turf/roof_turf = locate(roof["x"], roof["y"], roof["z"])
+				if(starting_loc && starting_loc != roof_turf)
+					throw EXCEPTION("Saved roof location changed during import")
+				starting_loc = roof_turf
+			object = new type(starting_loc)
+		else if(ispath(type, /datum/wound/lost_limb))
+			// The lost limb is not a constructor input during graph recovery.
+			// Register an explicit shell before decoding cyclic organ references.
+			object = new type(null, null, null, TRUE)
+		else
+			// Non-atom datums have no location argument. In particular, matrix
+			// construction must use its no-argument identity initializer.
+			object = new type()
+		if(!object)
+			throw EXCEPTION("Could not create saved entry [ind] ([type])")
+		// Mark before field decoding can yield to the constructor's spawn callback.
+		// This applies to unowned legacy humans as well as reclaimable players.
+		if(ishuman(object))
+			var/mob/living/human/restored_human = object
+			restored_human.persistence_restored = TRUE
+			savefile.cd = entry_path(savefile, ind)
+			restored_human.human_subtile_prepare_import(savefile)
+		if (istype(object, /mob/living/simple_animal))
+			var/mob/living/simple_animal/restored_npc = object
+			savefile.cd = entry_path(savefile, ind)
+			restored_npc.npc_subtile_prepare_import(savefile)
+		all_loaded += object
+		existing_references["[ind]"] = object
+		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
+		if(loading_level_link_targets["[loading_z]:[ind]"])
+			loading_level_link_targets["[loading_z]:[ind]"] = object
+		for(var/v in savefile.dir)
+			savefile.cd = entry_path(savefile, ind)
+			if(object.persistence_runtime_var(v))
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+				variable_observability_skipped(null, TRUE)
+#endif
+				continue
+			if(v == "type")
+				continue
+			else if(v in list("loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
+				continue
+			else if(v == "content")
+				if(nocontents != 2)
+					var/list/refs = saved_content_refs(savefile[v], format_version)
+					var/atom/container = object
+					if(container)
+						for(var/obj/ob in container.contents.Copy())
+							if(istype(ob, /obj/map_metadata) || istype(ob, /atom/movable/lighting_overlay) || istype(ob, /atom/movable/lighting_fullbright))
+								continue
+							// A recursive field may have already imported this roof.
+							// Do not delete the validated owner before reusing its ref.
+							if(is_loaded_validated_roof(ob))
+								continue
+							if(ob.loc == container)
+								qdel(ob)
+					for(var/x in refs)
+						Load_Entry(savefile, x, null, object, nocontents = nextContents, lag_fix = lag_fix)
+			else if((format_version == 2 || format_version == 3) && is_level_link_value(savefile[v]))
+				// The target may be on a later level; assign after all levels load.
+				loading_level_link_fields += list(list(object, v, level_link_row(savefile[v])))
+			else if(format_version == 2 || format_version == 3)
+				object.vars[v] = decode_saved_value(savefile, savefile[v])
+			else if(istext(savefile[v]) && findtext(savefile[v], "**list") == 1)
+				var/x = savefile[v]
+				var/list/fixed = string_explode(x, "list")
+				x = fixed[2]
+				var/list/lis = params2list(x)
+				var/list/final_list = list()
+				if(lis.len)
+					for(var/xa in lis)
+						if(findtext(xa, "**entry"))
+							var/list/fixed2 = string_explode(xa, "entry")
+							var/y = fixed2[2]
+							var/atom/movable/A = Load_Entry(savefile, y, lag_fix = lag_fix)
+							final_list += A
+						else
+							final_list += "**unique**"
+							final_list[final_list.len] = Numeric(xa)
+				object.vars[v] = final_list
+			else if(istext(savefile[v]) && findtext(savefile[v], "**entry") == 1)
+				var/x = savefile[v]
+				var/list/fixed = string_explode(x, "entry")
+				x = fixed[2]
+				var/atom/movable/A = Load_Entry(savefile, x, nocontents = nextContents, lag_fix = lag_fix)
+				object.vars[v] = A
+			else if(savefile[v] == "**null")
+				object.vars[v] = null
+			else if(v == "req_access_txt")
+				object.vars[v] = savefile[v]
+			else if(savefile[v] == "**emptylist")
+				object.vars[v] = list()
+			else
+				savefile.cd = entry_path(savefile, ind)
+				object.vars[v] = savefile[v]
+			savefile.cd = entry_path(savefile, ind)
+			TICK_CHECK
+		if(istype(object, /datum/wound/lost_limb))
+			var/datum/wound/lost_limb/restored_wound = object
+			restored_wound.validate_restored_state()
+		savefile.cd = ".."
+		if (ishuman(object))
+			var/mob/living/human/H = object
+			// A saved corpse must stay dead; do not replay death hooks on import.
+			if (H.stat != DEAD && !H.persistence_owner_ckey)
+				H.rejuvenate()
+			if (!H.name && savefile["name"])
+				H.name = savefile["name"]
+		if(isturf(object))
+			var/turf/coverage_turf = object
+			coverage_turf.sync_fullbright_coverage()
+		return object
+	catch(var/exception/e)
+		throw e
+
+/map_storage/proc/decode_saved_value(savefile/F, list/value)
+	if(!islist(value))
+		throw EXCEPTION("Invalid typed saved value")
+	switch(value["kind"])
+		if("map")
+			return map
+		if("zone")
+			validate_zone_reference(value["id"], value["type"])
+			var/area/A = restored_zones[value["id"]]
+			if(!A || A.persistence_zone_id != value["id"] || A.type != value["type"]) throw EXCEPTION("Zone reference was not restored")
+			return A
+		if("area")
+			var/turf/T = locate(value["x"], value["y"], value["z"])
+			if(!T || !istype(T.loc, value["type"]))
+				throw EXCEPTION("Referenced area differs from the current map")
+			return T.loc
+		if("value")
+			return value["value"]
+		if("turf")
+			var/turf/T = locate(value["x"], value["y"], value["z"])
+			if(!T)
+				throw EXCEPTION("Saved turf reference is outside the world")
+			return T
+		if("entry")
+			if(!value["ref"])
+				return null
+			return Load_Entry(F, value["ref"])
+		if("list")
+			var/id = value["ref"]
+			if(loaded_lists["[id]"])
+				return loaded_lists["[id]"]
+			var/list/L = list()
+			loaded_lists["[id]"] = L
+			var/length = F["/lists/[id]/length"]
+			for(var/i = 1, i <= length, i++)
+				var/encoded_key = F["/lists/[id]/[i]/key"]
+				var/encoded_value = F["/lists/[id]/[i]/value"]
+				var/key = decode_saved_value(F, encoded_key)
+				var/associated_value = decode_saved_value(F, encoded_value)
+				L.len++
+				L[L.len] = key
+				if(!isnum(key) && !isnull(associated_value))
+					L[key] = associated_value
+			return L
+	throw EXCEPTION("Unknown saved value kind: [value["kind"]]")
+/map_storage/proc/entry_path(savefile/F, ref)
+	if(F["/format_version"] == 2 || F["/format_version"] == 3)
+		return "/entries/[round((text2num("[ref]") - 1) / 512)]/[ref]"
+	return "/entries/[ref]"
+
+// Restores the world-level state written at the top of Save_World(). Load_World()
+// only rebuilds turfs (see the /turf/ check in Load_Entry()), so without this the
+// epoch and research progress would reset to map defaults on every reload.
+/map_storage/proc/saved_content_refs(value, version)
+	if(version != 3)
+		if(!istext(value) && !isnull(value)) throw EXCEPTION("Invalid legacy saved contents")
+		return params2list(value)
+	if(!islist(value)) throw EXCEPTION("Invalid version-3 saved contents")
+	var/list/refs = list()
+	for(var/chunk in value)
+		if(!istext(chunk) || length(chunk) > 32000)
+			throw EXCEPTION("Invalid saved content chunk")
+		var/list/part = params2list(chunk)
+		if(part.len > 500) throw EXCEPTION("Oversized saved content chunk")
+		refs += part
+		TICK_CHECK
+	return refs
+
+// Cross-level link rows are bounded JSON from round state: target level, entry
+// and exact type. Values in level files carry only the row index.
+/map_storage/proc/is_level_link_value(value)
+	if(!islist(value))
+		return FALSE
+	var/list/L = value
+	return L["kind"] == "level_link"
+

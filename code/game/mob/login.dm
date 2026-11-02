@@ -49,6 +49,8 @@
 		if(client.los_context)
 			client.los_context.retire()
 		client.images = null				//remove the images such as AIs being unable to see runes
+		if (s_active)
+			s_active.close(src)
 		client.screen = null				//remove hud items just in case
 		if (hud_used)	qdel(hud_used)		//remove the hud objects
 		hud_used = new /datum/hud(src)
@@ -64,7 +66,7 @@
 			client.eye = src
 			client.perspective = MOB_PERSPECTIVE
 
-	//set macro to normal incase it was overriden.
+	//set macro to normal in case it was overridden.
 	winset(client, null, "mainwindow.macro=hotkeymode input.focus=true input.background-color=#D3B5B5")
 
 	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))

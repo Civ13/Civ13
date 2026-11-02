@@ -178,7 +178,7 @@
 	H.add_note("Role", " You are a <b>[title]</b>, the leader of this colony's funds.")
 	H.add_note("Command", " You answer directly to the Colonial Administration. Bank Tellers are your subordinates. The bank is property of Central Administration and YOU are the trusted manager.")
 	H.add_note("You & the Governor", "The government isn't your Boss, nor are you his, however when it comes to colonial funds, you have equal authority and therefore a say. You must make sure the Governor does not waste our funds!")
-	H.add_note("Job Summary", "• Make sure the Governor doesnt waste our money. • Complain to CA if they do. • Manage the bank. • Follow the guidelines, tax people, pay their wages. • Manage your subordinates.")
+	H.add_note("Job Summary", "• Make sure the Governor doesn't waste our money. • Complain to CA if they do. • Manage the bank. • Follow the guidelines, tax people, pay their wages. • Manage your subordinates.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -3287,7 +3287,7 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.nationality = "United Nations"
-	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of all United Nations Personelle. Distrubute your aid accordingly!")
+	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of all United Nations Personelle. Distribute your aid accordingly!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_VERY_HIGH)
 	H.setStat("rifle", STAT_NORMAL)

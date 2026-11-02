@@ -1831,7 +1831,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are a <b>[title]</b>. Use guerrila warfare tactics to defeat the infidels!")
+	H.add_note("Role", "You are a <b>[title]</b>. Use guerrilla warfare tactics to defeat the infidels!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)

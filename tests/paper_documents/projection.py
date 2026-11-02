@@ -97,6 +97,7 @@ def project(source,signature,args,env,method=False):
    elif code.startswith('while ('):
     assert code.endswith(')'),code;code='while '+expression(code[7:-1])+':'
    elif code=='try':code='try:'
+   elif code=='catch':code='except Exception:'
    elif re.fullmatch(r'catch \((\w+)\)',code):code='except Exception as '+re.fullmatch(r'catch \((\w+)\)',code)[1]+':'
    elif code=='else':code='else:'
    elif code in ('break','continue','return'):pass

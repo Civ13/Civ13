@@ -81,7 +81,7 @@ def extract(source, declaration, *, defines=None):
 
 
 FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
-          'inducedSSD', 'buckled', 'storage', 'kind', 'backend_started',
+          'inducedSSD', 'buckled', 's_active', 'storage', 'kind', 'backend_started',
           'contents_started', 'mutation_started', 'restoring_players',
           'current', 'enter_backend', 'enter_contents', 'finish', 'withdraw',
           'contents', 'stomach_contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
@@ -139,8 +139,9 @@ def project(source, declaration, args, env, method=False, *, defines=None):
             code = 'if deferred' + code[5:] + ':'  # injected timer callback boundary
         elif code == 'try':
             code = 'try:'
-        elif code.startswith('catch('):
-            code = 'except Exception as ' + code[6:-1] + ':'
+        elif re.fullmatch(r'catch\s*\(\s*[A-Za-z_]\w*\s*\)', code):
+            name = re.fullmatch(r'catch\s*\(\s*([A-Za-z_]\w*)\s*\)', code)[1]
+            code = 'except Exception as ' + name + ':'
         elif code.startswith('throw '):
             code = 'raise ' + code[6:]
         elif code.startswith('else if'):

@@ -16,6 +16,17 @@ import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+ZERO_BASE = '0' * 40
+
+
+def comparison_module():
+    # Ordinary standalone baseline consumers do not need checkout preparation.
+    spec = importlib.util.spec_from_file_location('ci_source_comparison', Path(__file__).with_name('ci_checkout_refs.py'))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 _toolchain_spec = importlib.util.spec_from_file_location('ci_byond_toolchain', ROOT / 'scripts/byond_toolchain.py')
 toolchain = importlib.util.module_from_spec(_toolchain_spec)
 _toolchain_spec.loader.exec_module(toolchain)
@@ -37,6 +48,11 @@ SUITES = {
             'code/modules/persistence/player_reclaim.dm',
             'code/modules/persistence/nomads_lifecycle.dm',
             'tests/save_movement/source_adapter.py', 'civ13.dme')},
+
+    # Reviewed stdlib-only source/guard projections; no BYOND runtime.
+    'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
+        'paths': ('tests/stone_brazier/',), 'shared_paths': (
+            'code/modules/1713/siege/fire.dm',)},
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.
     'crafting_ui_contracts': {'files': ('tests/human_subtile/test_crafting_ui.py',),
@@ -57,6 +73,50 @@ SUITES = {
             'code/_helpers/mobs.dm',
             'code/game/mob/living/carbon/human/human_helpers.dm',
             'tests/save_movement/source_adapter.py')},
+
+    # Source-projected pouch-slot HUD visibility; no BYOND or browser runner.
+    'pouch_hud': {'files': ('tests/pouch_hud/test_pouch_hud.py',),
+        'paths': ('tests/pouch_hud/',), 'shared_paths': (
+            'code/_onclick/hud/base_screen_objects.dm', 'code/_onclick/hud/hud_civstyle.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/game/mob/living/carbon/human/inventory.dm', 'code/game/mob/inventory.dm',
+            'code/game/mob/living/carbon/human/species/species_hud.dm',
+            'code/game/objects/items.dm', 'code/modules/1713/apparel_imperial.dm',
+            'interface/skin.dmf', 'scripts/select-ci.py', 'tests/save_movement/source_adapter.py')},
+
+    # Source-projected storage-session and legacy import contracts; no BYOND run.
+    'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
+        'paths': ('tests/storage_runtime/',), 'shared_paths': (
+            'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/mob/login.dm', 'code/game/mob/living/carbon/human/human_helpers.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/functions.dm',
+            'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm',
+            'tests/save_movement/source_adapter.py', 'scripts/select-ci.py')},
+
+    # Reviewed stdlib-only hand-placement source projection; no native world.
+    'axe_active_hand': {'files': ('tests/axe_active_hand/test_axe_active_hand.py',),
+        'paths': ('tests/axe_active_hand/',), 'shared_paths': (
+            'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/items/weapons/material/ooga_booga_weapons.dm',
+            'code/game/objects/items.dm', 'code/game/mob/inventory.dm',
+            'code/game/mob/living/carbon/human/human.dm', 'tests/crafting/handles.dm')},
+
+    # Stdlib-only native fixture preparation/protocol/supervisor contracts.
+    # No compiler, daemon, client, workflow dispatch or installer execution.
+    'tree_refresh_native_preparation': {'files': ('tests/tree_refresh_native/test_harness.py',),
+        'paths': ('tests/tree_refresh_native/',), 'shared_paths': (
+            '.github/workflows/tree-refresh-native.yml',
+            'tests/human_subtile/run.py', 'tests/human_subtile/run-npc.py',
+            'tests/human_subtile/run-diagonal.py', 'tests/human_subtile/probe.dm',
+            'tests/human_subtile/native_1688/windows.py',
+            'tests/human_subtile/native_1688/owned_job.py',
+            'tests/human_subtile/native_1688/guard_config.py', 'scripts/native_fixture.py',
+            'tools/byond/version.json', 'code/game/mob/mob_movement.dm',
+            'code/datums/observation/moved.dm', 'code/modules/client/client_procs.dm',
+            'code/modules/visibility/los_context.dm', 'code/modules/visibility/los_lifecycle.dm',
+            'code/modules/visibility/los_presenter.dm', 'code/modules/visibility/root_tree_presenter.dm',
+            'code/modules/visibility/root_light_snapshot.dm',
+            'code/modules/lighting/lighting_overlay.dm')},
     # Complete selected anvil admission/message projection; no native world.
     'anvil_feedback': {'files': ('tests/anvil_feedback/test_feedback.py',),
         'paths': ('tests/anvil_feedback/',), 'shared_paths': (
@@ -77,6 +137,42 @@ SUITES = {
         'shared_paths': ('code/_helpers/access_lists.dm', 'code/setup.dm', 'code/world.dm',
                    'code/modules/admin/admin.dm', 'code/game/mob/new_player/new_player.dm',
                    'civ13.dme', 'tests/save_movement/source_adapter.py')},
+
+    # Offline ownership, continuation and source controls; the one Git process
+    # runs only against a freshly created synthetic test repository. No BYOND run.
+    'wildlife_offline': {'files': (
+        'tests/human_subtile/test_insect_cadence_candidate.py',
+        'tests/human_subtile/test_insect_idle_slot.py',
+        'tests/human_subtile/test_npc.py',
+        'tests/human_subtile/test_npc_completion.py',
+        'tests/human_subtile/test_npc_contact_food.py',
+        'tests/human_subtile/test_npc_flee.py',
+        'tests/human_subtile/test_npc_follow.py',
+        'tests/human_subtile/test_npc_intent.py',
+        'tests/human_subtile/test_npc_mutation_hooks.py',
+        'tests/human_subtile/test_npc_pending.py',
+        'tests/human_subtile/test_npc_pet.py',
+        'tests/human_subtile/test_npc_pursuit.py',
+        'tests/human_subtile/test_npc_recovery.py',
+        'tests/human_subtile/test_npc_species.py',
+        'tests/human_subtile/test_npc_wild_walk.py',
+        'tests/human_subtile/test_vendor_legacy_integrated.py',
+        'tests/human_subtile/test_wild_handoff.py',
+        'tests/human_subtile/test_wildlife_integration_reconcile.py',
+        'tests/test_wildlife_ci_registration.py',
+    ), 'paths': (), 'shared_paths': (
+        'code/game/mob/living/simple_animal/', 'code/game/mob/living/living.dm',
+        'code/game/mob/mob_movement.dm', 'code/game/atoms.dm',
+        'code/game/mob/living/carbon/human/human.dm',
+        'code/game/mob/living/carbon/human/human_life.dm',
+        'code/game/objects/structures/vending/npc_vendors.dm',
+        'code/game/objects/structures/railing.dm', 'code/game/objects/structures/table.dm',
+        'code/game/objects/structures/window.dm',
+        'code/modules/1713/machinery/modular_vehicles/frame.dm',
+        'code/modules/1713/structures.dm', 'tests/save_movement/source_adapter.py',
+        'tests/human_subtile/scheduler_core_draft.dm', 'tests/human_subtile/run-npc.py',
+        'tests/human_subtile/run-diagonal.py', 'tests/human_subtile/run.py',
+        'tests/human_subtile/probe.dm', 'scripts/native_fixture.py')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',
@@ -109,7 +205,8 @@ SUITES = {
                                   'tests/paper_documents/test_mutations.py',
                                   'tests/paper_documents/test_copying.py',
                                   'tests/paper_documents/test_authoring.py',
-                                  'tests/paper_documents/test_lifecycle.py'),
+                                  'tests/paper_documents/test_lifecycle.py',
+                                  'tests/paper_documents/test_editor.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
@@ -505,7 +602,7 @@ def impact(paths, comparison='available'):
                        for name, why in reasons.items()}, 'fallback_reasons': unknown}
 
 
-def selection_receipt(base, head, game, extensive, new_tests, reason, event, eligibility=None):
+def selection_receipt(base, head, game, extensive, new_tests, reason, event, eligibility=None, payload=None):
     receipt = dict(schema_version=1, kind='selection', status='passed',
                    **provenance(head, base), event=event)
     if eligibility is not None:
@@ -526,6 +623,10 @@ def selection_receipt(base, head, game, extensive, new_tests, reason, event, eli
                               else 'No reliable diff; compile policy and bounded offline fallback apply'},
                    compile={'selected': game, 'reason': reason}, extensive=extensive,
                    new_tests=new_tests, baseline=impact(paths, comparison))
+    if event == 'push' and base == ZERO_BASE:
+        comparison_refs = comparison_module()
+        receipt['source_comparison'] = comparison_refs.new_branch_comparison(
+            receipt['head'], payload if payload is not None else comparison_refs.push_event(), cwd=ROOT)
     return receipt
 
 
@@ -546,6 +647,28 @@ def attempt_number(value):
     if type(value) is not str or not re.fullmatch(r'[1-9][0-9]{0,5}', value):
         raise ValueError('Invalid run attempt: ' + repr(value))
     return int(value)
+
+
+def validate_source_comparison(plan, *, current_event=False):
+    if current_event and (not os.environ.get('GITHUB_EVENT_NAME')
+                          or plan.get('event') != os.environ['GITHUB_EVENT_NAME']):
+        raise ValueError('Selection event mismatch: GITHUB_EVENT_NAME')
+    expected = plan.get('event') == 'push' and plan.get('requested_base') == ZERO_BASE
+    proof = plan.get('source_comparison')
+    if not expected:
+        if proof is not None:
+            raise ValueError('Unexpected offline source comparison')
+        return
+    if plan.get('base') is not None or not isinstance(proof, dict):
+        raise ValueError('Missing/invalid new-branch source comparison')
+    comparison_refs = comparison_module()
+    derived = comparison_refs.new_branch_comparison(plan['head'], proof.get('evidence'), cwd=ROOT)
+    if proof != derived:
+        raise ValueError('Offline source comparison differs from immutable ancestry')
+    if current_event:
+        event_proof = comparison_refs.new_branch_comparison(plan['head'], comparison_refs.push_event(), cwd=ROOT)
+        if proof != event_proof:
+            raise ValueError('Offline source comparison differs from event metadata')
 
 
 def load_selection(path, head, base, selection_attempt=None):
@@ -573,6 +696,7 @@ def load_selection(path, head, base, selection_attempt=None):
     if type(plan['compile']['selected']) is not bool:
         raise ValueError('Invalid compilation selection')
     selection_eligibility(plan)
+    validate_source_comparison(plan, current_event=True)
     return plan
 
 
@@ -599,7 +723,9 @@ def run_unit(name, output):
 def suite_environment(name, plan):
     environment = os.environ.copy()
     if name == 'los_context':
-        environment['LOS_EVENT_BASE'] = plan['base'] or ''
+        validate_source_comparison(plan)
+        proof = plan.get('source_comparison')
+        environment['LOS_EVENT_BASE'] = proof['base'] if proof else (plan['base'] or '')
         environment['LOS_EVENT_HEAD'] = plan['head'] or ''
     return environment
 
@@ -611,6 +737,8 @@ def execute(plan, output):
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
                    job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
                    selection_sha256=digest(plan), suites={})
+    if 'source_comparison' in plan:
+        receipt['source_comparison'] = plan['source_comparison']
     (output / 'source-tree.txt').write_text(git('ls-tree', '-r', 'HEAD') + '\n', encoding='utf-8')
     observed_head_before = revision('HEAD')
     tracked_patch = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=ROOT, timeout=15)
@@ -689,6 +817,8 @@ def compile_receipt(plan, outcome, output):
                    toolchain_error=toolchain_error,
                    acquisition=acquisition,
                    archive_authenticity=requirement['integritySource'] if requirement else 'Unavailable')
+    if 'source_comparison' in plan:
+        receipt['source_comparison'] = plan['source_comparison']
     write_json(output, receipt)
     return 1 if status == 'failed' else 0
 
@@ -701,7 +831,8 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected, attempts=N
         attempts = dict.fromkeys(('baseline', 'compile', 'current'), plan.get('run_attempt'))
     try:
         selection_eligibility(plan)
-    except ValueError as error:
+        validate_source_comparison(plan)
+    except (ValueError, RuntimeError, subprocess.SubprocessError) as error:
         errors.append(str(error))
     if plan['compile']['selected']:
         requirement = toolchain.load()
@@ -725,6 +856,8 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected, attempts=N
         for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt'):
             if receipt.get(key) != plan.get(key):
                 errors.append(kind + ' provenance mismatch: ' + key)
+        if receipt.get('source_comparison') != plan.get('source_comparison'):
+            errors.append(kind + ' offline source comparison mismatch')
         if receipt.get('selection_sha256') != digest(plan):
             errors.append(kind + ' selection digest mismatch')
         try:

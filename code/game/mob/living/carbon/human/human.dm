@@ -102,6 +102,7 @@
 	riding = FALSE
 	riding_mob = null
 	if (!QDELETED(old_mount) && old_mount.rider == src)
+		old_mount.npc_subtile_pending_intent = null
 		old_mount.ride = FALSE
 		old_mount.rider = null
 		old_mount.stop_automated_movement = FALSE
@@ -390,7 +391,7 @@ var/list/coefflist = list()
 	onclose(user, "inventory")
 	return
 
-//repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere
+//repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a separate proc as it'll be useful elsewhere
 /mob/living/human/proc/get_visible_name()
 	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)) || (werewolf && body_build.name != "Default"))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
 		return "Unknown"
@@ -988,7 +989,7 @@ var/list/coefflist = list()
 	usr.setClickCooldown(20)
 
 	if (usr.stat > 0)
-		to_chat(usr, "You are unconcious and cannot do that!")
+		to_chat(usr, "You are unconscious and cannot do that!")
 		return
 
 	if (usr.restrained())
@@ -1128,7 +1129,7 @@ var/list/coefflist = list()
 	if(stat == CONSCIOUS)
 		reagents.add_reagent("adrenaline", amount)
 
-/mob/living/human/proc/using_look() //May not be nessecary
+/mob/living/human/proc/using_look() //May not be necessary
 	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
 		return TRUE
 	if(stat == CONSCIOUS)

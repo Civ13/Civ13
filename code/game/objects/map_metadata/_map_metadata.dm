@@ -185,7 +185,7 @@ var/civmax_research = list(230,230,230)
 	var/hasnukes = FALSE
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
-	var/autoresearch_mult = 0.03 // the amount research goes up per minute. Can be editted by admins.
+	var/autoresearch_mult = 0.03 // the amount research goes up per minute. Can be edited by admins.
 	var/resourceresearch = FALSE
 
 	var/age1_lim = 75

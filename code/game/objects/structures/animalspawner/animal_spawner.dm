@@ -1,7 +1,7 @@
 /obj/structure/animalspawner
 	name = "Empty Cave"
 	icon = 'icons/obj/animal_spawner.dmi'
-	desc = "Thats a empty cave. It would look like a preferable place for animals to shelter."
+	desc = "That's a empty cave. It would look like a preferable place for animals to shelter."
 	anchored = TRUE
 	density = TRUE
 	var/females = 0

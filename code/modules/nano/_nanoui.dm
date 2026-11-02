@@ -140,7 +140,7 @@ nanoui is used to open and update nano browser uis
  /**
   * Update the status (visibility) of this ui based on the user's status
   *
-  * @param push_update int (bool) Push an update to the ui to update it's status. This is set to FALSE/false if an update is going to be pushed anyway (to avoid unnessary updates)
+  * @param push_update int (bool) Push an update to the ui to update it's status. This is set to FALSE/false if an update is going to be pushed anyway (to avoid unnecessary updates)
   *
   * @return nothing
   */
@@ -263,7 +263,7 @@ nanoui is used to open and update nano browser uis
  /**
   * Set the layout key for use in the frontend Javascript
   * The layout key is the basic layout key for the page
-  * Two files are loaded on the client based on the layout key varable:
+  * Two files are loaded on the client based on the layout key variable:
   *	 -> a template in /UI/templates with the filename "layout_<layout_key>.tmpl
   *	 -> a CSS stylesheet in /UI/css with the filename "layout_<layout_key>.css
   *
@@ -370,7 +370,7 @@ nanoui is used to open and update nano browser uis
 		<script type='text/javascript'>
 			function receiveUpdateData(jsonString)
 			{
-				// We need both jQuery and NanoStateManager to be able to recieve data
+				// We need both jQuery and NanoStateManager to be able to receive data
 				// At the moment any data received before those libraries are loaded will be lost
 				if (typeof NanoStateManager != 'undefined' && typeof jQuery != 'undefined')
 				{
@@ -378,7 +378,7 @@ nanoui is used to open and update nano browser uis
 				}
 				//else
 				//{
-				//	alert('browser.recieveUpdateData failed due to jQuery or NanoStateManager being unavailiable.');
+				//	alert('browser.recieveUpdateData failed due to jQuery or NanoStateManager being unavailable.');
 				//}
 			}
 		</script>
@@ -492,6 +492,10 @@ nanoui is used to open and update nano browser uis
   *
   * @return nothing
   */
+// Subtypes may handle a fixed owned action after the same status/owner checks.
+/datum/nanoui/proc/consume_topic(href, href_list)
+	return FALSE
+
 /datum/nanoui/Topic(href, href_list)
 	update_status(0) // update the status
 	if (status != STATUS_INTERACTIVE || user != usr) // If UI is not interactive or usr calling Topic is not the UI user
@@ -511,6 +515,8 @@ nanoui is used to open and update nano browser uis
 		else
 			return*/
 
+	if (consume_topic(href, href_list))
+		return
 	if ((src_object && src_object.Topic(href, href_list, state)) || map_update)
 		GLOB.nanomanager.update_uis(src_object) // update all UIs attached to src_object
 

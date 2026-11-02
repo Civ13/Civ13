@@ -75,7 +75,7 @@
 	to_chat(user, SPAN_NOTICE("\The [src] will now write in [colour] ink."))
 
 /obj/item/weapon/pen/invisible
-	desc = "It's an invisble pen marker."
+	desc = "It's an invisible pen marker."
 	icon_state = "pen"
 	colour = COLOR_WHITE
 

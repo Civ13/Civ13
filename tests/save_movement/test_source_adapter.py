@@ -125,6 +125,22 @@ class SourceAdapterTests(unittest.TestCase):
         self.assertIn('return to_save',body)
         self.assertNotIn('variable_observability_skipped',body)
 
+    def test_typed_catch_with_optional_space_executes_and_does_not_hide_faults(self):
+        for header in ('catch(var/exception/fault)', 'catch (var/exception/fault)'):
+            with self.subTest(header=header):
+                source = '/proc/probe()\n\ttry\n\t\tdanger()\n\t' + header + '\n\t\ttrace.append(fault)\n\treturn 731\n'
+                fault = ValueError('controlled')
+                def danger():
+                    raise fault
+                trace = []
+                self.assertEqual(project(source, '/proc/probe', '', {'danger': danger, 'trace': trace})(), 731)
+                self.assertEqual(trace, [fault])
+                trace = []
+                self.assertEqual(project(source, '/proc/probe', '', {'danger': lambda: None, 'trace': trace})(), 731)
+                self.assertEqual(trace, [])
+        with self.assertRaises(SyntaxError):
+            project('/proc/probe()\n\ttry\n\t\tpass\n\tcatch (fault, other)\n\t\tpass\n', '/proc/probe', '', {})
+
     def test_unsupported_executable_syntax_still_fails_projection(self):
         with self.assertRaises(SyntaxError):
             project('/proc/probe()\n\tunknown >>> syntax\n', '/proc/probe', '', {})

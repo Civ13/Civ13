@@ -59,7 +59,7 @@
 	var/list/item_state_slots = list() //overrides the default item_state for particular slots.
 
 	// Used to specify the icon file to be used when the item is worn. If not set the default icon for that slot will be used.
-	// If icon_override or sprite_sheets are set they will take precendence over this, assuming they apply to the slot in question.
+	// If icon_override or sprite_sheets are set they will take precedence over this, assuming they apply to the slot in question.
 	// Only slot_l_hand/slot_r_hand are implemented at the moment. Others to be implemented as needed.
 	var/list/item_icons = list()
 
@@ -609,7 +609,7 @@ var/list/global/slot_flags_enumeration = list(
 
 	var/icon/I = new /icon(icon, icon_state)
 	I.Blend(new /icon('icons/effects/blood.dmi', rgb(255,255,255)),ICON_ADD) //fills the icon_state with white (except where it's transparent)
-	I.Blend(new /icon('icons/effects/blood.dmi', "itemblood"),ICON_MULTIPLY) //adds blood and the remaining white areas become transparant
+	I.Blend(new /icon('icons/effects/blood.dmi', "itemblood"),ICON_MULTIPLY) //adds blood and the remaining white areas become transparent
 
 	//not sure if this is worth it. It attaches the blood_overlay to every item of the same type if they don't have one already made.
 	for (var/obj/item/A in world)

@@ -37,30 +37,32 @@
 			var/done = FALSE
 			for (var/mob/living/human/H in range(8, src))
 				if (done == FALSE)
-					walk_towards(src, H, 3)
+					npc_subtile_species_walk("towards", H, 3)
 					done = TRUE
 			if (done == FALSE)
-				walk_rand(src,4)
+				npc_subtile_species_walk("random", null, 4)
 		else if (prob(20))
 			var/done = FALSE
 			for (var/mob/living/simple_animal/cow in range(10, src))
 				if (done == FALSE)
-					walk_towards(src, cow, 3)
+					npc_subtile_species_walk("towards", cow, 3)
 					done = TRUE
 			if (done == FALSE)
-				walk_rand(src,4)
+				npc_subtile_species_walk("random", null, 4)
 		else if (prob(20))
 			var/done = FALSE
 			for (var/mob/living/simple_animal/bull in range(10, src))
 				if (done == FALSE)
-					walk_towards(src, bull, 3)
+					npc_subtile_species_walk("towards", bull, 3)
 					done = TRUE
 			if (done == FALSE)
-				walk_rand(src,4)
+				npc_subtile_species_walk("random", null, 4)
 		else
-			walk_rand(src,4)
+			npc_subtile_species_walk("random", null, 4)
 		if (prob(5))
 			for (var/mob/living/human/TG in range(1,src))
+				if (!npc_subtile_contact_settled())
+					continue
 				visible_message("<span class = 'danger'>\The [src] bites [TG]!")
 				TG.adjustBruteLoss(1,2)
 				if (TG.disease == 0)
