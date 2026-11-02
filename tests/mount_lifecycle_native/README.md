@@ -154,8 +154,8 @@ after tool acquisition. The job cap is 35 minutes, allowing bounded checkout/pre
 and final artifact upload without shortening the native cleanup allowance; the native step cap is 16
 minutes, while the actual attempt remains 900 seconds. Artifact retention is
 always selected, including partial compiler/supervision/runtime evidence on
-failure. The corrected clock has not been dispatched for native execution;
-the historical failed attempt above remains unaccepted.
+failure. The corrected clock was exercised by run 41375272842 at 8b2ffb45;
+its failed result is recorded below. Both historical attempts remain unaccepted.
 
 It refuses other active native engines, foreign/extra session members, changed
 birth identities, UDP/connected/external sockets, occupied port and all sockets
@@ -181,3 +181,28 @@ retained process-group/Job mechanism. Verify retained identity, reaping, no extr
 members and final process/socket census. Preserve complete logs, partial receipts,
 compiler artifacts, hash manifests and failures. Do not delete source packets,
 branches, shared outputs or historical failures. No Gaia, restart or deployment.
+
+
+2026-11-02 corrected-clock attempt 41375272842 compiled with 516.1688 and
+zero errors/warnings, passed the external closed-port acknowledgment and recorded
+39 passing checks (startup plus four death and five separation cases). It then
+reported `bad index` before the first mount-qdel assertion; cleanup reported
+`bad index` too. The caught receipt preserves names only, not exception file/line.
+All four controls were unrun, and this is not completed native acceptance.
+The host supervisor recorded no errors, empty final owned group/native censuses
+and observed retained-leader exit. Final socket rows were unavailable after exit
+(PermissionError), not observed empty; an earlier closed empty-socket sample exists.
+Fixture-owned mob cleanup failed, separately from successful host process cleanup.
+
+The isolated startup returns before normal global-variable initialization.
+The shared human fixture initializes observable events but omits the three managed
+observer count lists. Actual observer register/unregister indexes these lists;
+the first mount-qdel registration and its failed-case unregister are the
+source-backed candidate error sites, not a captured native exception location.
+This fixture now initializes those three lists before its shared initializer.
+Offline tests project the actual assignments and production counter increments,
+with a causal missing-initializer control for each list. They model only this
+initialization boundary and do not prove native dispatch or deletion semantics.
+No production code, qdel/Destroy order, guards, oracle or timeout was changed.
+The initialization correction has not been compiled or run natively; another
+attempt needs source/manifest review and specific execution approval.
