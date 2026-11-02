@@ -1592,6 +1592,8 @@
 	not_disassemblable = TRUE
 
 /obj/structure/printingpress/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/paper))
+		return insert_copy_paper(W, user)
 	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper))
 		var/tolist = list("Cancel")
 		if (isemptylist(copy) && isemptylist(base))
@@ -1675,6 +1677,8 @@
 				base -= B
 			return
 		else
+			if (istype(base[1], /obj/item/weapon/paper))
+				return copy_paper_document(H)
 			var/spawntimer = 90
 			if (istype(base[1], /obj/item/weapon/book))
 				spawntimer = 250
@@ -1707,16 +1711,6 @@
 							NB.desc = NC.desc
 							NB.religion = NC.religion
 							NB.religion_type = NC.religion_type
-						else if (istype(B, /obj/item/weapon/paper))
-							var/obj/item/weapon/paper/NC = B
-							var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(src.loc)
-							NP.name = NC.name
-							NP.info = NC.info
-							NP.info_links = NC.info_links
-							NP.fields = NC.fields
-							NP.free_space = NC.free_space
-							NP.rigged = NC.rigged
-							NP.spam_flag = NC.spam_flag
 						else if (istype(B, /obj/item/weapon/book/research))
 							var/obj/item/weapon/book/research/NC = B
 							var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(src.loc)

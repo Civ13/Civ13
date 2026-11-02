@@ -95,6 +95,7 @@ def project(source,signature,args,env,method=False):
      match=re.fullmatch(r'for \((\w+) in (.*)\)',code);assert match,code
      code='for '+match[1]+' in '+expression(match[2])+':'
    elif code=='else':code='else:'
+   elif code in ('break','continue','return'):pass
    elif code.startswith('return '):code='return '+expression(code[7:])
    elif code.endswith('++'):code=expression(code[:-2])+' += 1'
    elif code.endswith('--'):code=expression(code[:-2])+' -= 1'

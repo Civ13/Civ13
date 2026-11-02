@@ -140,7 +140,7 @@
 
 //lipstick wiping is in code/game/objects/items/weapons/cosmetics.dm!
 
-/obj/item/weapon/paper/New()
+/obj/item/weapon/paper/New(var/newloc, var/copy_skip_space = FALSE)
 	..()
 	pixel_y = rand(-8, 8)
 	pixel_x = rand(-9, 9)
@@ -155,8 +155,13 @@
 		info = parsepencode(info)
 
 	spawn(2)
+		if (gc_destroyed)
+			return
 		update_icon()
-		update_space(info)
+		// Copies already carry exact capacity; imported classified records own
+		// theirs too. The local constructor argument is never persisted.
+		if (!copy_skip_space && isnull(document_record))
+			update_space(info)
 		updateinfolinks()
 
 	if (map && base_icon == "paper")
@@ -211,6 +216,23 @@
 		return
 
 	free_space -= length(strip_html_properly(new_text))
+
+/obj/item/weapon/paper/proc/document_copy_legacy_valid(list/legacy)
+	if (!paper_document_keys(legacy, list("name", "info", "stamps", "fields", "free_space", "stamped", "ico", "offset_x", "offset_y")))
+		return FALSE
+	if ((!isnull(legacy["name"]) && !istext(legacy["name"])) || (!isnull(legacy["info"]) && !istext(legacy["info"])) || (!isnull(legacy["stamps"]) && !istext(legacy["stamps"])))
+		return FALSE
+	var/count = legacy["fields"]
+	if (!isnull(count) && (!isnum(count) || count != round(count) || count < 0 || count > MAX_FIELDS))
+		return FALSE
+	var/space = legacy["free_space"]
+	// Retain bounded negative capacity of old overfull documents verbatim.
+	if (!isnum(space) || space != round(space) || space < -131072 || space > MAX_PAPER_MESSAGE_LEN)
+		return FALSE
+	for (var/key in list("stamped", "ico", "offset_x", "offset_y"))
+		if (!isnull(legacy[key]) && !islist(legacy[key]))
+			return FALSE
+	return TRUE
 
 /obj/item/weapon/paper/examine(mob/user)
 	..()
