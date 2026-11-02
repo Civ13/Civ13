@@ -68,7 +68,7 @@ def expression(value):
  value=value.replace('istype(actor)','is_actor(actor)').replace('istype(pen)','is_pen(pen)').replace('istype(L)','is_living(L)')
  return value
 
-ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_prepare_edit','paper_document_commit_edit','paper_document_mint_id','paper_written_language_types','paper_written_language','paper_knows_written_language'}
+ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_prepare_edit','paper_document_commit_edit','paper_document_mint_id','paper_authoring_notify','paper_written_language_types','paper_written_language','paper_knows_written_language'}
 METHODS={'get','append','can_speak','get_active_hand','restrained','Adjacent','get_signature','has_access','can_mutate'}
 def project(source,signature,args,env,method=False):
  lines=['def projected('+args+'):']
@@ -94,6 +94,10 @@ def project(source,signature,args,env,method=False):
     else:
      match=re.fullmatch(r'for \((\w+) in (.*)\)',code);assert match,code
      code='for '+match[1]+' in '+expression(match[2])+':'
+   elif code.startswith('while ('):
+    assert code.endswith(')'),code;code='while '+expression(code[7:-1])+':'
+   elif code=='try':code='try:'
+   elif re.fullmatch(r'catch \((\w+)\)',code):code='except Exception as '+re.fullmatch(r'catch \((\w+)\)',code)[1]+':'
    elif code=='else':code='else:'
    elif code in ('break','continue','return'):pass
    elif code.startswith('return '):code='return '+expression(code[7:])
@@ -168,13 +172,14 @@ def environment(bytes_mode=False):
  env=dict(__builtins__={},len=len,range=range,round=math.floor,isinstance=isinstance,dict=dict,length=length,isnull=lambda v:v is None,isnum=lambda v:isinstance(v,(int,float)),ispath=lambda v:isinstance(v,TypePath),istext=lambda v:isinstance(v,str) and not isinstance(v,TypePath),islist=lambda v:isinstance(v,(dict,list)),lowertext=lambda v:v.lower(),copytext=lambda v,a=1,b=None:v[a-1:None if b is None else b-1],text2ascii=lambda v,i=1:ord(v[i-1]),dm_text=lambda v:'' if v is None else str(v),MAX_PAPER_MESSAGE_LEN=MAXIMUM,
   is_actor=lambda v:isinstance(v,Actor),is_pen=lambda v:isinstance(v,Pen),is_living=lambda v:isinstance(v,Actor) and v.kind!='ghost',istype=istype,isturf=lambda v:getattr(v,'kind',None)=='turf',isghost=lambda v:getattr(v,'kind',None)=='ghost',json_encode=lambda v:json.dumps(v,separators=(',',':'),ensure_ascii=False),section_id=lambda v:'section-'+str(v['next_section']),copy_keys=lambda v:list(v) if isinstance(v,dict) else v,copy_value=lambda v,k:v[k] if isinstance(v,dict) else None,copy_append=copy_append,copy_assoc=copy_assoc,new_budget=Budget,stars=lambda v:'*'*len(v or ''),paper_document_mint_id=mint,paper_written_language_types=lambda:dict(IDS),all_languages={v.name:v for v in langs.values()},INNATE=64,SIGNLANG=8,NONVERBAL=4,HIVEMIND=16)
  env['new_record_budget']=RecordBudget
+ env['paper_authoring_notify']=lambda *args:None
  env['paper_written_language']=project(LANG,'/proc/paper_written_language','language_id',env)
  env['paper_knows_written_language']=project(LANG,'/proc/paper_knows_written_language','actor,language_id',env)
  env['paper_written_language_choices']=project(LANG,'/proc/paper_written_language_choices','actor',env)
  env['paper_written_default_language']=project(LANG,'/proc/paper_written_default_language','actor',env)
  for name,args in [('copy','value,budget,depth=0'),('legacy_snapshot','P'),('keys','value,keys'),('ink','value'),('section_valid','section'),('record_valid','record')]:
   env['paper_document_'+name]=project(SOURCE,'/proc/paper_document_'+name,args,env)
- for name,args in [('prepare_edit','P'),('commit_edit','P,edit')]:
+ for name,args in [('prepare_edit','P'),('commit_edit','P,edit,authoring_owner=None')]:
   env['paper_document_'+name]=project(SOURCE,'/proc/paper_document_'+name,args,env)
  class Service:
   def __init__(self,paper,actor):self.paper=paper;self.controller=actor;self.control_client=actor.client

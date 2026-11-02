@@ -324,9 +324,11 @@ var/list/slot_equipment_priority = list( \
 /mob/proc/u_equip(obj/W as obj)
 	if (W == r_hand)
 		r_hand = null
+		paper_authoring_notify(W, "custody")
 		update_inv_r_hand(0)
 	else if (W == l_hand)
 		l_hand = null
+		paper_authoring_notify(W, "custody")
 		update_inv_l_hand(0)
 	else if (W == back)
 		back = null
