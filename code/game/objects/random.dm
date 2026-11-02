@@ -2,15 +2,15 @@
 A little documentation of the mess I've made here :D --Bierkraan 2022
 
 You can spawn a random object of your desire, just return it in the proc spawn_choises().
-Because we're calling all /obj/random on spawn and not on Initialize you can spawn in a /random in the middle of a round and get an object, though this might lag out the round on roundstart (untill someone finds a better solution).
+Because we're calling all /obj/random on spawn and not on Initialize you can spawn in a /random in the middle of a round and get an object, though this might lag out the round on roundstart (until someone finds a better solution).
 Example for later use:
 
 /obj/random/myItems
 	name = "gun or health kit"
-	desc "Nobody will EVER read this exept a curious mapper"
+	desc "Nobody will EVER read this except a curious mapper"
 	icon = 'icons/misc/mark.dmi'
 	icon_state = "dice"
-	spawn_nothing_percentage = 0 // This variable determines the likelyhood that this random object will not spawn anything
+	spawn_nothing_percentage = 0 // This variable determines the likelihood that this random object will not spawn anything
 
 /obj/random/myItems/spawn_choices()
 	return list(/obj/item/weapon/gun/myverycoolgun,
@@ -22,7 +22,7 @@ Example for later use:
 	desc = "This item type is used to spawn random objects at round-start."
 	icon = 'icons/misc/mark.dmi' // This is where all the /random icons are located
 	icon_state = "dice"
-	var/spawn_nothing_percentage = 0 // This variable determines the likelyhood that this random object will not spawn anything
+	var/spawn_nothing_percentage = 0 // This variable determines the likelihood that this random object will not spawn anything
 	var/number_to_spawn = 1
 
 	var/spawn_method = /obj/random/proc/spawn_item

@@ -1522,7 +1522,7 @@
 						NW.reason = SW.reason
 						NW.arn = SW.arn
 						playsound(origin.loc, 'sound/machines/printer.ogg', 100, TRUE)
-						mainbody += "Sucessfully printed warrant number [tcode]."
+						mainbody += "Successfully printed warrant number [tcode]."
 						sleep(0.5)
 						do_html(user)
 						return
@@ -1753,7 +1753,7 @@
 					if (map.globalmarketplace[i][7]==1 && map.globalmarketplace[i][5]=="nile")
 						currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 				if (isemptylist(currlist))
-					mainbody = "<b>We do not currently have any stock. Sorry for the incovenience.</b>"
+					mainbody = "<b>We do not currently have any stock. Sorry for the inconvenience.</b>"
 				else
 
 					for (var/list/k in currlist)

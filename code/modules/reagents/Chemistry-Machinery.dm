@@ -115,7 +115,7 @@
   * ui_interact is currently defined for /atom/movable
   *
   * @param user /mob The mob who is interacting with this ui
-  * @param ui_key string A string key to use for this ui. Allows for multiple unique uis on one obj/mob (defaut value "main")
+  * @param ui_key string A string key to use for this ui. Allows for multiple unique uis on one obj/mob (default value "main")
   *
   * @return nothing
   */

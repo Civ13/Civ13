@@ -190,7 +190,7 @@
 
 /obj/item/weapon/storage/box/nbcbox
 	name = "NBC Protection Box"
-	desc = "cointains items that might increase your chances of survival against a Nuclear biological or a chemical attack."
+	desc = "contains items that might increase your chances of survival against a Nuclear biological or a chemical attack."
 	icon_state = "boxnbc"
 	item_state = "boxnbc"
 	w_class = ITEM_SIZE_NORMAL

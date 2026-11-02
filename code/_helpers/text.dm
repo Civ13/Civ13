@@ -56,7 +56,7 @@
 
 //Run sanitize(), but remove <, >, " first to prevent displaying them as &gt; &lt; &34; in some places, after html_encode().
 //Best used for sanitize object names, window titles.
-//If you have a problem with sanitize() in chat, when quotes and >, < are displayed as html entites -
+//If you have a problem with sanitize() in chat, when quotes and >, < are displayed as html entities -
 //this is a problem of double-encode(when & becomes &amp;), use sanitize() with encode=0, but not the sanitizeSafe()!
 /proc/sanitizeSafe(var/input, var/max_length = MAX_MESSAGE_LEN, var/encode = TRUE, var/trim = TRUE, var/extra = TRUE)
 	return sanitize(replace_characters(input, list(">"=" ","<"=" ", "\""="'")), max_length, encode, trim, extra)

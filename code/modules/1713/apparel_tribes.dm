@@ -417,7 +417,7 @@ wip pending sprites
 	icon_state = "wyvern"
 	item_state = "wyvern"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 40, gun = 10, energy = 40, bomb = 50, bio = 20, rad = FALSE) //compared agianst a iron chestplate
+	armor = list(melee = 60, arrow = 40, gun = 10, energy = 40, bomb = 50, bio = 20, rad = FALSE) //compared against a iron chestplate
 	slowdown = 0.8
 	health = 50
 	heat_protection = UPPER_TORSO|LOWER_TORSO
@@ -428,14 +428,14 @@ wip pending sprites
 	icon_state = "wyvern"
 	item_state = "wyvern"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, arrow = 40, gun = 10, energy = 40, bomb = 50, bio = 20, rad = FALSE) //compared agianst a iron chestplate
+	armor = list(melee = 60, arrow = 40, gun = 10, energy = 40, bomb = 50, bio = 20, rad = FALSE) //compared against a iron chestplate
 	slowdown = 0.8
 	health = 50
 	cold_protection = UPPER_TORSO|LOWER_TORSO
 
 /obj/item/clothing/suit/armor/dragon/green
 	name = "green dragon armor"
-	desc = "A set of armor made out of the scaly hide of a green dragon. Its thick plates cover the entire body suprisingly without being rigid and cumbersome."
+	desc = "A set of armor made out of the scaly hide of a green dragon. Its thick plates cover the entire body surprisingly without being rigid and cumbersome."
 	icon_state = "green_dragon"
 	item_state = "green_dragon"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -456,7 +456,7 @@ wip pending sprites
 
 /obj/item/clothing/suit/armor/imperial/arbites
 	name = "arbites armor"
-	desc = "A thick, authoritive red armor with reinforced steel leggings and shoulder plates, covering most of the body. Futile attempts to assault arbite enforcers of the law find that rebellion is fruitless."
+	desc = "A thick, authoritative red armor with reinforced steel leggings and shoulder plates, covering most of the body. Futile attempts to assault arbite enforcers of the law find that rebellion is fruitless."
 	icon_state = "arbit"
 	item_state = "arbit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -467,14 +467,14 @@ wip pending sprites
 
 /obj/item/clothing/suit/storage/jacket/inquisition
 	name = "inquisitorial jacket"
-	desc = "A black jacket with red arm stripes belonging to expert investigators of intrigue and heresy. By all means nessecary..."
+	desc = "A black jacket with red arm stripes belonging to expert investigators of intrigue and heresy. By all means necessary..."
 	icon_state = "commissar"
 	icon_state = "commissar"
 	icon_state = "commissar"
 
 /obj/item/clothing/suit/storage/jacket/inquisition/alt
 	name = "inquisitorial light jacket"
-	desc = "A black light jacket belonging to expert investigators of intrigue and heresy. By all means nessecary..."
+	desc = "A black light jacket belonging to expert investigators of intrigue and heresy. By all means necessary..."
 	icon_state = "inquistor_alt"
 	icon_state = "inquistor_alt"
 	icon_state = "inquistor_alt"

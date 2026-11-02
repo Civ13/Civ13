@@ -3,7 +3,7 @@
 /obj/effect/step_trigger
 	var/affect_ghosts = FALSE
 	var/stopper = TRUE // stops throwers
-	invisibility = 101 // nope cant see this shit
+	invisibility = 101 // nope can't see this shit
 	anchored = TRUE
 
 /obj/effect/step_trigger/proc/Trigger(var/atom/movable/A)

@@ -19,7 +19,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	desc = "yummy" //String, that you see, when examine
 	icon = 'icons/obj/food/food.dmi' //Icons file. Don't define it, if you not want to use another file.
 	icon_state = null //Icon. By default from icon file, if you don't inherit it with custom file.
-	color = null //Additional coloring of icon. Usual as grayscale icon, but you may do rotten icon by adding disguisting color for original icon.
+	color = null //Additional coloring of icon. Usual as grayscale icon, but you may do rotten icon by adding disgusting color for original icon.
 	center_of_mass = list("x"=16, "y"=16) //Used for table placement, by default it is center of icon
 	filling_color = "#7F7F7F" //which color it will be in sandwiches or in spoon/fork/chopsticks
 	var/nutriment_amt = 0 //By default, the snack does have reagent "nutriment"
@@ -151,7 +151,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	spawn(1) //because we need to work new() proc of child before this calculations
 		recalculate_bitesize()
 		appraise()
-		if (debug_snacks) //for debugging log of calculated values snacks creating on/off it by set TRUE/FALSE at begining of snacks.dm (this file)
+		if (debug_snacks) //for debugging log of calculated values snacks creating on/off it by set TRUE/FALSE at beginning of snacks.dm (this file)
 			message_admins("Created snack: [name]. Bite amount: [biteamount], bite size: [bitesize]. Value: [value].")
 			if (reagents)
 				message_admins("Size: [round((AVim()*100)/100)] milliliters")
@@ -1135,7 +1135,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 /obj/item/weapon/reagent_containers/food/snacks/meatballspagetti
 	name = "spaghetti & meatballs"
-	desc = "Now thats a nic'e meatball!"
+	desc = "Now that's a nic'e meatball!"
 	icon_state = "meatballspagetti"
 	filling_color = "#DE4545"
 	center_of_mass = list("x"=16, "y"=10)

@@ -1,4 +1,4 @@
-//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
+//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesn't get colored
 /obj/structure/bed/chair/drivers/car
 	icon_state = "carseat_driver_left"
 	material = "leather"

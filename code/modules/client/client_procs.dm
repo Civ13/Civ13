@@ -114,7 +114,7 @@
 		to_chat(src, "<font color='red'>Error: AllowUpload(): File Upload too large. Upload Limit: [UPLOAD_LIMIT/1024]KiB.</font>")
 		return FALSE
 /*	//Don't need this at the moment. But it's here if it's needed later.
-	//Helps prevent multiple files being uploaded at once. Or right after eachother.
+	//Helps prevent multiple files being uploaded at once. Or right after each other.
 	var/time_to_wait = fileaccess_timer - world.time
 	if (time_to_wait > 0)
 		to_chat(src, "<font color='red'>Error: AllowUpload(): Spam prevention. Please wait [round(time_to_wait/10)] seconds.</font>")
@@ -148,7 +148,7 @@
 	if (processes.client && processes.client.logged_next_normal_respawns[ckey])
 		next_normal_respawn = processes.client.logged_next_normal_respawns[ckey]
 
-	//preferences datum - also holds some persistant data for the client (because we may as well keep these datums to a minimum)
+	//preferences datum - also holds some persistent data for the client (because we may as well keep these datums to a minimum)
 	prefs = preferences_datums[ckey]
 	if (prefs)
 		if ((prefs.last_ip != address) || (prefs.last_id != computer_id))
@@ -406,7 +406,7 @@
 	var/seconds = inactivity/10
 	return "[round(seconds / 60)] minute\s, [seconds % 60] second\s"
 
-//send resources to the client. It's here in its own proc so we can move it around easiliy if need be
+//send resources to the client. It's here in its own proc so we can move it around easily if need be
 /client/proc/send_resources()
 
 	getFiles(
@@ -436,7 +436,7 @@
 	if (mob)
 		return mob.MayRespawn()
 
-	// Something went wrong, client is usually kicked or transfered to a new mob at this point
+	// Something went wrong, client is usually kicked or transferred to a new mob at this point
 	return FALSE
 
 /client/verb/character_setup()

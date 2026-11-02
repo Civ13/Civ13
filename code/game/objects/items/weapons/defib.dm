@@ -251,7 +251,7 @@
 //Checks for various conditions to see if the mob is revivable
 /obj/item/weapon/shockpaddles/proc/can_defib(mob/living/human/H) //This is checked before doing the defib operation
 	if((H.species.flags & NO_SCAN))
-		return "buzzes, \"Unrecogized physiology. Operation aborted.\""
+		return "buzzes, \"Unrecognized physiology. Operation aborted.\""
 	if(!check_contact(H))
 		return "buzzes, \"Patient's chest is obstructed. Operation aborted.\""
 	if(H.stat != DEAD)

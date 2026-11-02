@@ -35,8 +35,8 @@ Another feature of this new system is that our lists are indexed. This means we 
 So we only regenerate icons when we need them to be updated! This is the main saving for this system.
 
 In practice this means that:
-	everytime you fall over, we just switch between precompiled lists. Which is fast and cheap.
-	Everytime you do something minor like take a pen out of your pocket, we only update the in-hand overlay
+	every time you fall over, we just switch between precompiled lists. Which is fast and cheap.
+	Every time you do something minor like take a pen out of your pocket, we only update the in-hand overlay
 	etc...
 
 
@@ -91,7 +91,7 @@ There are several things that need to be remembered:
 
 >	If you need to update all overlays you can use regenerate_icons(). it works exactly like update_clothing used to.
 
->	I reimplimented an old unused variable which was in the code called (coincidentally) var/update_icon
+>	I reimplemented an old unused variable which was in the code called (coincidentally) var/update_icon
 	It can be used as another method of triggering regenerate_icons(). It's basically a flag that when set to non-zero
 	will call regenerate_icons() at the next life() call and then reset itself to 0.
 	The idea behind it is icons are regenerated only once, even if multiple events requested it.
@@ -101,7 +101,7 @@ reducing processing costs. So please bear with me while I iron out the kinks. It
 If I can eventually free var/lying stuff from the life() process altogether, stuns/death/status stuff
 will become less affected by lag-spikes and will be instantaneous! :3
 
-If you have any questions/constructive-comments/bugs-to-report/or have a massivly devestated butt...
+If you have any questions/constructive-comments/bugs-to-report/or have a massivly devastated butt...
 Please contact me on #coderbus IRC. ~Carn x
 */
 
@@ -521,7 +521,7 @@ var/global/list/damage_icon_parts = list()
 		if (HUDinv.slot_id == slot_id)
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
 //	world.log << "DEBUG: [src] tried to find_inv_position for [slot_id], but does not have that slot!"
-//	to_chat(src, "Some problem has occured, change UI style or notify the devs.")
+//	to_chat(src, "Some problem has occurred, change UI style or notify the devs.")
 	return "7,7"
 
 

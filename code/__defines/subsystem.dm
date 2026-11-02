@@ -11,7 +11,7 @@
 #define TIMER_OVERRIDE (1<<1)
 //Timing should be based on how timing progresses on clients, not the sever.
 //	tracking this is more expensive,
-//	should only be used in conjuction with things that have to progress client side, such as animate() or sound()
+//	should only be used in conjunction with things that have to progress client side, such as animate() or sound()
 #define TIMER_CLIENT_TIME (1<<2)
 //Timer can be stopped using deltimer()
 #define TIMER_STOPPABLE (1<<3)

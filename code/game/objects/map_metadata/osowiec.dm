@@ -87,7 +87,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Russian Army</b> has sucessfuly defended Fort Osowiec! The Germans have halted the attack!"
+		var/message = "The <b>Russian Army</b> has successfully defended Fort Osowiec! The Germans have halted the attack!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
