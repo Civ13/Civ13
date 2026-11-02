@@ -358,7 +358,7 @@ def main():
     if args.receipt:
         from ci_baseline import selection_receipt, write_json
         receipt = selection_receipt(args.base, args.head, game, extensive,
-                                    new_tests, reason, args.event, policy)
+                                    new_tests, reason, args.event, policy, payload)
         if not policy['metadata_valid']:
             receipt['status'] = 'failed'
         write_json(args.receipt, receipt)

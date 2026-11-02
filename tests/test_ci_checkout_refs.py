@@ -1,5 +1,8 @@
 """Exact-event shallow preparation and failed-selection regression controls."""
 import ast
+from contextlib import contextmanager, redirect_stdout
+import json
+import io
 import importlib.util
 import os
 from pathlib import Path
@@ -7,6 +10,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -17,6 +21,245 @@ spec.loader.exec_module(refs)
 spec = importlib.util.spec_from_file_location('checkout_baseline', ROOT / 'scripts/ci_baseline.py')
 baseline = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(baseline)
+
+
+@contextmanager
+def branch_fixture(*, introduce_core=False):
+    """Fresh Git objects/source snapshots; no dependency on repository history."""
+    with tempfile.TemporaryDirectory(prefix='ci-new-branch-') as directory:
+        folder = Path(directory)
+        origin, clone = folder / 'origin', folder / 'clone'
+        origin.mkdir()
+        def run(*args, cwd=origin):
+            return subprocess.check_output(['git', *args], cwd=cwd, stderr=subprocess.PIPE,
+                                           text=True, timeout=30).strip()
+        run('init', '-q')
+        run('config', 'user.name', 'CI fixture')
+        run('config', 'user.email', 'fixture@example.invalid')
+        los_path = ROOT / 'tests/los_context/test_offline.py'
+        spec = importlib.util.spec_from_file_location('new_branch_los', los_path)
+        los = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(los)
+        current = {name: (ROOT/name).read_text(encoding='utf-8') for name in los.ADDITIONS}
+        initial = dict(current)
+        if introduce_core:
+            initial = {name: text.replace(los.ADDITIONS[name], '', 1) for name, text in current.items()}
+            initial['code/game/mob/mob.dm'] = initial['code/game/mob/mob.dm'].replace(los.TURN_GUARD, los.TURN_OFF, 1)
+        def write(rows):
+            for name, text in rows.items():
+                target = origin/name; target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(text, encoding='utf-8', newline='\n')
+        write(initial)
+        for name in ('ci_checkout_refs.py','ci_baseline.py','select-ci.py','byond_toolchain.py'):
+            target=origin/'scripts'/name; target.parent.mkdir(exist_ok=True)
+            shutil.copyfile(ROOT/'scripts'/name,target)
+        target=origin/'tools/byond/version.json'; target.parent.mkdir(parents=True)
+        shutil.copyfile(ROOT/'tools/byond/version.json',target)
+        run('add', '.'); run('commit', '-qm', 'baseline')
+        base = run('rev-parse', 'HEAD')
+        if introduce_core:
+            changed = dict(current)
+            changed['code/modules/client/client_procs.dm'] = changed['code/modules/client/client_procs.dm'].replace(
+                '\thuman_subtile_release_visuals()\n', '\thuman_subtile_release_visuals()\n\tunexpected_fixture_change()\n', 1)
+            write(changed)
+        (origin/'early.txt').write_text('first push commit')
+        run('add', '.'); run('commit', '-qm', 'early change')
+        first = run('rev-parse', 'HEAD')
+        (origin/'late.txt').write_text('second push commit')
+        run('add', '.'); run('commit', '-qm', 'late change')
+        head = run('rev-parse', 'HEAD')
+        run('clone', '-q', '--depth=1', origin.as_uri(), str(clone))
+        def payload(ids):
+            return dict(before='0'*40,after=head,created=True,deleted=False,ref='refs/heads/new',
+                        commits=[dict(id=x,message='data') for x in ids],size=len(ids),head_commit=dict(id=head))
+        yield dict(folder=folder,origin=origin,clone=clone,run=run,base=base,first=first,
+                   head=head,payload=payload,los=los)
+
+
+class NewBranchComparisonTests(unittest.TestCase):
+    def test_shallow_multi_commit_range_and_conservative_selection(self):
+        with branch_fixture() as f:
+            payload=f['payload']([f['head'],f['first']])  # Order is not ancestry evidence.
+            proof=refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            self.assertEqual(proof['base'],f['base']);self.assertEqual(proof['kind'],'new-branch-push-range')
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=f['clone']),f['head'])
+            with patch.object(baseline,'ROOT',f['clone']):
+                plan=baseline.selection_receipt('0'*40,f['head'],True,False,[],'unavailable diff','push',payload=payload)
+                self.assertIsNone(plan['base']);self.assertEqual(plan['requested_base'],'0'*40)
+                self.assertEqual(plan['comparison']['status'],'unavailable')
+                self.assertTrue(all(x['selected'] for x in plan['baseline']['suites'].values()))
+                self.assertEqual(plan['source_comparison'],proof)
+                env=baseline.suite_environment('los_context',plan)
+            with patch.dict(os.environ,env),patch.object(f['los'],'ROOT',f['clone']):
+                f['los'].SourceBoundaries().test_disabled_projection_against_event_base()
+
+    def test_ref_only_creation_uses_real_parent_and_strict_comparator(self):
+        with branch_fixture() as f:
+            payload=f['payload']([])
+            proof=refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            self.assertEqual(proof['base'],f['first']);self.assertEqual(proof['kind'],'new-branch-tip-parent')
+            with patch.dict(os.environ,{'LOS_EVENT_BASE':proof['base'],'LOS_EVENT_HEAD':f['head']}),patch.object(f['los'],'ROOT',f['clone']):
+                f['los'].SourceBoundaries().test_disabled_projection_against_event_base()
+
+    def test_early_disabled_path_change_is_not_hidden_by_head_parent(self):
+        with branch_fixture(introduce_core=True) as f:
+            proof=refs.new_branch_comparison(f['head'],f['payload']([f['first'],f['head']]),fetch=True,cwd=f['clone'])
+            read=lambda commit:{name:f['run']('show',commit+':'+name,cwd=f['clone'])+'\n' for name in f['los'].ADDITIONS}
+            current=read(f['head'])
+            self.assertEqual(proof['base'],f['base'])
+            with self.assertRaisesRegex(AssertionError,'differs from event base'):
+                f['los'].verify_adapters(read(proof['base']),current)
+            self.assertTrue(f['los'].verify_adapters(read(f['first']),current))
+
+    def test_normal_push_uses_original_before_without_metadata_fallback(self):
+        with branch_fixture() as f:
+            old=os.getcwd()
+            try:
+                os.chdir(f['clone'])
+                with patch.object(refs,'new_branch_comparison',side_effect=AssertionError('fallback on normal push')):
+                    self.assertIsNone(refs.prepare(f['head'],f['first'],'push',payload={}))
+                    with self.assertRaises(RuntimeError):
+                        refs.prepare(f['head'],'f'*40,'push',payload=f['payload']([]))
+            finally:os.chdir(old)
+            with patch.object(baseline,'ROOT',f['clone']):
+                plan=baseline.selection_receipt(f['first'],f['head'],False,False,[],'normal','push')
+                self.assertNotIn('source_comparison',plan)
+                self.assertEqual(plan['base'],f['first'])
+                self.assertEqual(plan['comparison']['paths'],['late.txt'])
+                self.assertEqual(baseline.suite_environment('los_context',plan)['LOS_EVENT_BASE'],f['first'])
+
+    def test_missing_history_and_failed_fetch_cannot_produce_a_baseline(self):
+        with branch_fixture() as f:
+            payload=f['payload']([f['first'],f['head']])
+            with self.assertRaises(refs.MissingHistory):refs.new_branch_comparison(f['head'],payload,cwd=f['clone'])
+            f['run']('remote','set-url','origin',(f['folder']/'absent-origin').as_uri(),cwd=f['clone'])
+            with self.assertRaisesRegex(RuntimeError,'Git preparation failed'):
+                refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=f['clone']),f['head'])
+
+    def test_invalid_metadata_never_fetches_or_invents_a_baseline(self):
+        with branch_fixture() as f:
+            good=f['payload']([f['first'],f['head']])
+            cases=[]
+            for key,value in [('created',False),('deleted',True),('after',f['first']),
+                              ('before','f'*40),('ref','refs/tags/not-a-branch'),
+                              ('commits',None),('size',3),('size',True),('distinct_size',3),
+                              ('head_commit',dict(id=f['first']))]:
+                changed=json.loads(json.dumps(good));changed[key]=value;cases.append(changed)
+            for ids in ([f['head'],f['head']],['HEAD'],[f['first']],[f['head']]*2048):
+                changed=f['payload'](ids);cases.append(changed)
+            for payload in cases:
+                with self.subTest(payload=payload.get('size')),patch.object(refs,'git',wraps=refs.git) as calls:
+                    with self.assertRaises(ValueError):refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+                    self.assertFalse(any(c.args[0]=='fetch' for c in calls.call_args_list))
+
+    def test_root_and_disconnected_history_remain_rejected(self):
+        with branch_fixture() as f:
+            f['run']('branch','root-only',f['base'])
+            root_clone=f['folder']/'root-clone'
+            f['run']('clone','-q','--depth=1','--branch','root-only',f['origin'].as_uri(),str(root_clone))
+            payload=f['payload']([]);payload.update(after=f['base'],head_commit=dict(id=f['base']))
+            with self.assertRaisesRegex(ValueError,'no real comparison parent'):
+                refs.new_branch_comparison(f['base'],payload,fetch=True,cwd=root_clone)
+            tree=f['run']('rev-parse',f['base']+'^{tree}')
+            unrelated=f['run']('commit-tree',tree,'-m','unrelated root')
+            f['run']('update-ref','refs/heads/unrelated',unrelated)
+            f['run']('fetch','-q','--depth=1','origin','unrelated',cwd=f['clone'])
+            with self.assertRaisesRegex(ValueError,'disconnected'):
+                refs.new_branch_comparison(f['head'],f['payload']([f['head'],f['first'],unrelated]),fetch=True,cwd=f['clone'])
+
+    def test_merge_uses_real_first_parent_boundary_with_side_commits(self):
+        with branch_fixture() as f:
+            f['run']('checkout','-qb','merge-fixture',f['base'])
+            f['run']('merge','--no-ff','-qm','merge introduced side',f['head'])
+            merged=f['run']('rev-parse','HEAD');clone=f['folder']/'merge-clone'
+            f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
+            payload=f['payload']([f['head'],merged,f['first']]);payload.update(after=merged,head_commit=dict(id=merged))
+            proof=refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+            self.assertEqual(proof['base'],f['base'])
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
+
+    def test_ambiguous_merge_boundaries_require_an_explicit_baseline(self):
+        with branch_fixture() as f:
+            f['run']('checkout','-qb','advanced-main',f['base'])
+            (f['origin']/'main-only.txt').write_text('outside pushed range')
+            f['run']('add','.');f['run']('commit','-qm','outside main commit')
+            f['run']('merge','--no-ff','-qm','merge side',f['head'])
+            merged=f['run']('rev-parse','HEAD');clone=f['folder']/'ambiguous-clone'
+            f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
+            payload=f['payload']([f['first'],f['head'],merged]);payload.update(after=merged,head_commit=dict(id=merged))
+            with self.assertRaisesRegex(ValueError,'[Aa]mbiguous.*comparison_base'):
+                refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+
+    def test_job_receipts_retain_and_bind_the_immutable_source_baseline(self):
+        with branch_fixture() as f:
+            payload=f['payload']([])
+            refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            spec=importlib.util.spec_from_file_location('comparison_selector',ROOT/'scripts/select-ci.py')
+            selector=importlib.util.module_from_spec(spec);spec.loader.exec_module(selector)
+            with patch.object(baseline,'ROOT',f['clone']), patch.dict(os.environ,{'GITHUB_RUN_ID':'77','GITHUB_RUN_ATTEMPT':'1'}):
+                plan=baseline.selection_receipt('0'*40,f['head'],False,False,[],'receipt component test','push',
+                                                selector.eligibility('push',payload,True),payload)
+                real_run=subprocess.run
+                def unit_dispatch(command,*args,**kwargs):
+                    # Test only receipt plumbing here. The actual strict
+                    # comparator and CLI run in other cases above/below.
+                    if command[0]==sys.executable and 'unit' in command:
+                        counts=Path(command[command.index('--output')+1])
+                        counts.write_text(json.dumps(dict(status='passed',tests=1,errors=0,failures=0,skipped=0)))
+                        return subprocess.CompletedProcess(command,0)
+                    return real_run(command,*args,**kwargs)
+                output=f['folder']/'baseline'
+                with patch.object(baseline.subprocess,'run',side_effect=unit_dispatch), redirect_stdout(io.StringIO()):
+                    self.assertEqual(baseline.execute(plan,output),0)
+                compile_path=f['folder']/'compile/compile.json'
+                self.assertEqual(baseline.compile_receipt(plan,'skipped',compile_path),0)
+                tested=json.loads((output/'baseline.json').read_text())
+                compiled=json.loads(compile_path.read_text())
+                self.assertEqual(tested['source_comparison'],plan['source_comparison'])
+                self.assertEqual(compiled['source_comparison'],plan['source_comparison'])
+                jobs={name:dict(result='success') for name in ('changes','baseline','evidence-checker','build')}
+                jobs['extraction-instances']=dict(result='skipped')
+                self.assertEqual(baseline.aggregate(plan,tested,compiled,jobs,False),[])
+                tested['source_comparison']['base']=f['head']
+                self.assertIn('baseline offline source comparison mismatch',baseline.aggregate(plan,tested,compiled,jobs,False))
+                tested['source_comparison']=json.loads(json.dumps(plan['source_comparison']))
+                compiled.pop('source_comparison')
+                self.assertIn('compile offline source comparison mismatch',baseline.aggregate(plan,tested,compiled,jobs,False))
+
+    def test_real_cli_records_baseline_without_changing_selection_or_native_admission(self):
+        with branch_fixture() as f:
+            event=f['folder']/'event.json';event.write_text(json.dumps(f['payload']([])))
+            env=dict(os.environ,GITHUB_EVENT_PATH=str(event),GITHUB_RUN_ID='77',GITHUB_RUN_ATTEMPT='1',PYTHONDONTWRITEBYTECODE='1')
+            commands=[
+                [sys.executable,'-B','scripts/ci_checkout_refs.py','--head',f['head'],'--base','0'*40,'--event','push'],
+                [sys.executable,'-B','scripts/select-ci.py','--head',f['head'],'--base','0'*40,'--event','push',
+                 '--build-prefix','true','--output',str(f['folder']/'outputs'),'--receipt',str(f['folder']/'selection.json')]]
+            for command in commands:
+                result=subprocess.run(command,cwd=f['clone'],env=env,capture_output=True,text=True,timeout=30)
+                self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+            plan=json.loads((f['folder']/'selection.json').read_text())
+            self.assertIsNone(plan['base']);self.assertEqual(plan['source_comparison']['base'],f['first'])
+            self.assertTrue(plan['compile']['selected'])
+            self.assertTrue(all(x['selected'] for x in plan['baseline']['suites'].values()))
+            self.assertFalse(plan['eligibility']['native']['eligible']);self.assertFalse(plan['eligibility']['gating']['eligible'])
+            self.assertEqual(plan['new_tests'],[])
+            with patch.object(baseline,'ROOT',f['clone']),patch.dict(os.environ,env):
+                loaded=baseline.load_selection(f['folder']/'selection.json',f['head'],'0'*40)
+                self.assertEqual(loaded['source_comparison'],plan['source_comparison'])
+                for key,value in [('base',f['head']),('base','0'*40),('base','f'*40),
+                                  ('kind','invented'),('head',f['first'])]:
+                    bad=json.loads(json.dumps(plan));bad['source_comparison'][key]=value
+                    baseline.write_json(f['folder']/'bad.json',bad)
+                    with self.subTest(key=key),self.assertRaises(ValueError):
+                        baseline.load_selection(f['folder']/'bad.json',f['head'],'0'*40)
+                bad=dict(plan);bad.pop('source_comparison');baseline.write_json(f['folder']/'bad.json',bad)
+                with self.assertRaisesRegex(ValueError,'Missing/invalid'):
+                    baseline.load_selection(f['folder']/'bad.json',f['head'],'0'*40)
+                changed=f['payload']([]);changed['ref']='refs/heads/different-event'
+                event.write_text(json.dumps(changed))
+                with self.assertRaisesRegex(ValueError,'event metadata'):
+                    baseline.load_selection(f['folder']/'selection.json',f['head'],'0'*40)
 
 
 class CheckoutRefsTests(unittest.TestCase):
@@ -231,7 +474,7 @@ class CheckoutRefsTests(unittest.TestCase):
                     plan = baseline.selection_receipt(base, head, False, False, [], 'docs', 'pull_request')
                 self.assertEqual(plan['comparison']['status'], 'available')
                 self.assertEqual(plan['comparison']['paths'], ['README.md'])
-                refs.prepare(head, '0' * 40, 'push')
+                refs.prepare(head, '0' * 40, 'push', payload=dict(before='0'*40, after=head, created=True, deleted=False, ref='refs/heads/new', commits=[], size=0, head_commit=dict(id=head)))
                 with self.assertRaises(ValueError):
                     refs.prepare(head, '', 'pull_request')
                 with self.assertRaises(ValueError):
