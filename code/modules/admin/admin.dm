@@ -1018,29 +1018,14 @@ proc/admin_notice(var/message, var/rights)
 
 	if (!check_rights(R_SERVER))	return
 
-	message_admins("[key_name(usr)] manually reloaded admins, whitelists and approved lists.", key_name(usr))
+	message_admins("[key_name(usr)] requested reload of admins, whitelists and approved lists.", key_name(usr))
 
 	load_admins(1)
 
-	var/F = file("SQL/approved.txt")
-	if (fexists(F))
-		var/list/approved_list_temp = file2list(F,"\n")
-		for (var/i in approved_list_temp)
-			if (findtext(i, "="))
-				var/list/current = splittext(i, "=")
-				approved_list += current[1]
-	else
-		message_admins("<span class='danger'>Failed to load approved list!</span>", key_name(usr))
-
-	var/F2 = file("SQL/whitelist.txt")
-	if (fexists(F2))
-		var/list/whitelist_temp = file2list(F2,"\n")
-		for (var/i in whitelist_temp)
-			if (findtext(i, "="))
-				var/list/current = splittext(i, "=")
-				whitelist_list += current[1]
-	else
-		message_admins("<span class='danger'>Failed to load whitelist!</span>", key_name(usr))
+	if (!reload_verified_access_list("approved"))
+		message_admins("<span class='danger'>Failed to load approved list; prior membership and readiness retained.</span>", key_name(usr))
+	if (!reload_verified_access_list("whitelist"))
+		message_admins("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", key_name(usr))
 
 	var/F3 = file("SQL/factionlist.txt")
 	if (fexists(F3))
