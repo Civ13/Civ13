@@ -10,15 +10,17 @@
 	should_save = FALSE
 	var/tmp/datum/weakref/hover_target
 	var/tmp/datum/weakref/hover_origin
+	var/tmp/datum/weakref/hover_storage
 	var/tmp/hover_inventory = FALSE
 	var/tmp/hover_screen_loc
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "hover_origin", "hover_inventory", "hover_screen_loc", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
 	hover_origin = null
+	hover_storage = null
 	hover_inventory = FALSE
 	hover_screen_loc = null
 	maptext = ""
@@ -40,7 +42,11 @@
 		return FALSE
 	var/client/C = parentmob.client
 	var/obj/item/I = target
-	if(C.mob != parentmob || I.loc != parentmob || !I.screen_loc || !(I in C.screen))
+	if(C.mob != parentmob || !I.screen_loc || !(I in C.screen))
+		return FALSE
+	if(los_storage_hover_visible(parentmob, I))
+		return TRUE
+	if(I.loc != parentmob)
 		return FALSE
 	// A stale displayed item can outlive its hidden slot (for example a pouch).
 	// Apply this to direct item hits as well as slot art and stationary refresh.
@@ -53,6 +59,11 @@
 	if(!inventory_item_visible(target))
 		return FALSE
 	var/obj/item/I = target
+	if (hover_storage)
+		if (hover_storage.resolve() != I.loc)
+			return FALSE
+	else if (I.loc != parentmob)
+		return FALSE
 	return I.screen_loc == hover_screen_loc
 
 // Slot art can receive the mouse hit around a transparent item sprite. Resolve
@@ -98,6 +109,8 @@
 	if(hover_inventory)
 		var/obj/item/I = target
 		hover_screen_loc = I.screen_loc
+		if (I.loc != parentmob)
+			hover_storage = WEAKREF(I.loc)
 	// Complete pointer setup synchronously, then validate in process once before
 	// reading a label. Later process calls still obtain their own fresh visibility.
 	process()
