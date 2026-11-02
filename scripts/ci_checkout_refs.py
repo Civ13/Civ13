@@ -230,7 +230,7 @@ def atlas_pr_comparison(base, head, *, fetch=False, cwd=None):
             raise ValueError('Invalid Atlas ancestry identity')
         visited = {row for row in rows if not row.startswith('-')}
         if len(visited) > MAX_ATLAS_COMMITS:
-            raise ValueError('Atlas ancestry exceeds the bounded comparison range')
+            raise ValueError('Atlas ancestry exceeds the bounded comparison range; update the PR branch from its base or reduce its commit range')
         if visited & shallow:
             raise MissingHistory('Atlas comparison crosses an incomplete shallow boundary')
         check_head()

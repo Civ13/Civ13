@@ -87,7 +87,9 @@ legacy grafts are rejected. Fetch depth is a commit-history limit, not a bound
 on transferred object count or bytes. The 1 MiB stdout/metadata check occurs
 after subprocess capture; it is not a hard capture-memory limit. Existing fetch,
 step and outer-job timeouts remain the hard time limits. No moving base branch or first-parent approximation
-is used. The selection receipt retains its original `base`, `requested_base`
+is used. If proof exceeds these limits, update the PR branch from its base;
+if its own history still exceeds the range, shorten or split the PR before
+retrying. The selection receipt retains its original `base`, `requested_base`
 and `head`; the separately recorded `atlas_comparison` contains `event_base`,
 `head`, `ancestor` and range bound/count. `atlas_ancestor` is also written to
 the selection output. Push, new-branch, manual and ineligible-PR behavior is
