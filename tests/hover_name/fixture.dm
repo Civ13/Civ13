@@ -79,7 +79,7 @@
 	last_mouse_params = params
 // The native fixture does not execute the full LOS subsystem.
 /proc/los_read_allowed(mob/user, atom/target, operation)
-	return TRUE
+	return !!user && !!target && operation == "hover"
 /proc/check(condition, message)
 	if (!condition)
 		throw message

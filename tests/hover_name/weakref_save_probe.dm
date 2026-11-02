@@ -25,7 +25,7 @@
 	var/list/is_seeing = list()
 // Full LOS is outside this save fixture.
 /proc/los_read_allowed(mob/user, atom/target, operation)
-	return TRUE
+	return !!user && !!target && operation == "hover"
 /mob/proc/get_equipped_item(slot)
 	return null
 /mob/living/human
