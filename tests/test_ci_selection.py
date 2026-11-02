@@ -220,6 +220,28 @@ class SelectionTests(unittest.TestCase):
         self.assertFalse(selection.needs_game(['AGENTS.md', 'docs/api/search.js',
             'docs/api/search.css', 'scripts/build-api-docs.py',
             '.github/workflows/api-pages.yml']))
+    def test_only_reviewed_skill_prose_avoids_game_compilation(self):
+        prose = ['.agents/skills/civ13-compile/SKILL.md',
+                 '.agents/skills/group/skill/SKILL.md',
+                 '.agents/skills/civ13-compile/references/notes.md',
+                 '.agents/skills/civ13-compile/references/nested/notes.md']
+        self.assertFalse(selection.needs_game(prose))
+        for path in ('.agents/skills/civ13/scripts/run.py', '.agents/skills/civ13/references/probe.dm',
+                     '.agents/skills/civ13/references/run.sh', '.agents/skills/civ13/references/config.yaml',
+                     '.agents/skills/civ13/references/config.json', '.agents/skills/civ13/README.md',
+                     '.agents/skills/civ13/templates/note.md', '.agents/skills/civ13/skill.md',
+                     '.agents/skills/SKILL.md', '.agents/skills/references/note.md',
+                     '.agents/skills/civ13/../SKILL.md', '.agents/skills/civ13/references/note.MD'):
+            with self.subTest(path=path):
+                self.assertTrue(selection.needs_game(prose + [path]))
+        with patch.object(selection.subprocess,'check_output',return_value=('\0'.join(prose)+'\0').encode()):
+            self.assertFalse(selection.select('base','head')[0])
+            self.assertTrue(selection.select('0'*40,'head')[0])
+            for title,expected in [('Document skill prose',False),('build: document skill prose',True)]:
+                game,extensive,new_tests,_=selection.selections('base','head','pull_request',False,True,
+                    dict(action='synchronize',pull_request=dict(title=title,base=dict(ref='master'))))
+                self.assertEqual(game,expected);self.assertFalse(extensive);self.assertEqual(new_tests,[])
+
     def test_shared_and_runtime_paths(self):
         for path in ('civ13.dme', 'code/__defines/maps.dm', 'code/world.dm',
                      'maps/nomads/map.dmm', 'icons/obj/test.dmi', 'sound/a.ogg',

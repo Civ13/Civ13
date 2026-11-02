@@ -854,6 +854,23 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertFalse(ci.documentation('docs/new.dm'))
         self.assertEqual(self.selected(['docs/new.dm']), set(ci.SUITES))
 
+    def test_skill_prose_retains_mandatory_checks_and_unknown_skill_impact_fails_closed(self):
+        for path in ('.agents/skills/civ13/SKILL.md', '.agents/skills/group/civ13/SKILL.md',
+                     '.agents/skills/civ13/references/note.md', '.agents/skills/civ13/references/deep/note.md'):
+            with self.subTest(path=path):
+                self.assertTrue(ci.documentation(path))
+                self.assertEqual(self.selected([path]), {'policy','bootstrap','progress'})
+                self.assertEqual(self.selected([path],'unavailable'),set(ci.SUITES))
+        for path in ('.agents/skills/civ13/scripts/run.py', '.agents/skills/civ13/references/run.sh',
+                     '.agents/skills/civ13/references/config.yaml', '.agents/skills/civ13/references/config.json',
+                     '.agents/skills/civ13/references/probe.dm', '.agents/skills/civ13/README.md',
+                     '.agents/skills/civ13/templates/note.md', '.agents/skills/civ13/skill.md',
+                     '.agents/skills/SKILL.md', '.agents/skills/references/note.md',
+                     '.agents/skills/civ13/../SKILL.md', '.agents/skills/civ13/references/note.MD'):
+            with self.subTest(path=path):
+                self.assertFalse(ci.documentation(path))
+                self.assertEqual(self.selected(['.agents/skills/civ13/SKILL.md',path]),set(ci.SUITES))
+
     def test_docs_scripts_and_config_cannot_evade_unknown_impact_fallback(self):
         for path in ('docs/helper.py', 'docs/tool.sh', 'docs/helper.js', 'docs/helper.ps1',
                      'docs/config.json', 'docs/config.yaml', 'docs/config.toml',

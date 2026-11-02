@@ -206,11 +206,19 @@ def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     extensive = policy['native']['eligible'] and game and needs_extensive(event, opted_in)
     return game, extensive, new_tests, reason
 
+def skill_prose(path):
+    parts = path.split('/')
+    return (len(parts) >= 4 and parts[:2] == ['.agents', 'skills']
+            and all(part not in ('', '.', '..') for part in parts)
+            and (parts[-1] == 'SKILL.md'
+                 or ('references' in parts[3:-1] and parts[-1].endswith('.md'))))
+
+
 def needs_game(paths):
     # Compilation depends on shared includes. Unknown paths compile, but do
     # not implicitly authorize running existing regression suites.
     return any(PurePosixPath(path).suffix.lower() in {'.dm', '.dme', '.dmm', '.dmi', '.rsc'} or not (
-        path.startswith('docs/') or
+        skill_prose(path) or path.startswith('docs/') or
         (len(PurePosixPath(path).parts) == 1 and path.endswith('.md')) or
         path == 'scripts/build-api-docs.py' or path in DOC_WORKFLOWS
     ) for path in paths)
