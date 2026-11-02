@@ -286,14 +286,14 @@
 	var/committed = FALSE
 	var/prepared = FALSE
 
-/datum/tablet_transfer/New(obj/structure/chem_master/tablet_press/owner, mob/living/human/user, datum/reagents/from, datum/reagents/to, list/amounts, obj/item/weapon/reagent_containers/pill/output)
+/datum/tablet_transfer/New(obj/structure/chem_master/tablet_press/owner, mob/living/human/user, datum/reagents/source_buffer, datum/reagents/target_buffer, list/amounts, obj/item/weapon/reagent_containers/pill/output)
 	machine = owner
 	actor = user
 	site = get_turf(owner)
 	vessel = owner.beaker
 	product = output
-	source = new(from)
-	target = new(to)
+	source = new(source_buffer)
+	target = new(target_buffer)
 	cost = amounts.Copy()
 	save_epoch = persistence_admission_identity
 

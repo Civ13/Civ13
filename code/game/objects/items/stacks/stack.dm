@@ -1860,9 +1860,9 @@
 			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
+		if (press_construction && !press_construction.valid())
+			return
 		if (H && !joinery && !carving)
-			if (press_construction && !press_construction.valid())
-				return
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1966,13 +1966,13 @@
 	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	// Retain and recheck tools, secondary stock, occupied tile and research after
 	// the wait. No debit occurs on an interrupted or invalidated action.
+	if (press_construction && !press_construction.valid())
+		return
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
 		return
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
-		return
-	if (press_construction && !press_construction.valid())
 		return
 	if (use(required, (joinery || carving) ? null : H))
 		if (joinery)

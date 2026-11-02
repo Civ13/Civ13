@@ -486,6 +486,23 @@ class TabletProtocolTests(unittest.TestCase):
         self.assertLess(block.index('product.loc = site'), block.index('finish()'))
         self.assertIn('if (!commit_staged())', block)
 
+    def test_constructor_parameters_reject_dm_range_keyword(self):
+        def check(source):
+            match = re.search(r'^/datum/tablet_transfer/New\((.*)\)$', source, re.M)
+            self.assertIsNotNone(match)
+            names = [parameter.strip().rsplit('/', 1)[-1]
+                     for parameter in match[1].split(',')]
+            self.assertNotIn('to', names)
+        check(SOURCE)
+        # The offline holder adapter must not hide this hosted compiler fault.
+        declaration = re.search(r'^/datum/tablet_transfer/New.*$', SOURCE, re.M)[0]
+        parameters = list(re.finditer(r'datum/reagents/\w+', declaration))
+        self.assertEqual(len(parameters), 2)
+        target = parameters[1]
+        mutant = declaration[:target.start()] + 'datum/reagents/to' + declaration[target.end():]
+        with self.assertRaises(AssertionError):
+            check(SOURCE.replace(declaration, mutant, 1))
+
     def test_prepare_has_exact_acceptance_and_metadata_controls(self):
         block = SOURCE.split('/datum/tablet_transfer/proc/prepare()\n', 1)[1].split('\n/', 1)[0]
         for required in ('accepted["amount"] != amount', 'incoming.volume != amount',
