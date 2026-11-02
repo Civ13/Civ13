@@ -67,7 +67,7 @@ root history without a real parent, unavailable objects or an invalid comparison
 fails closed with an explicit comparison-base requirement. The LOS comparator is
 not skipped or relaxed, and the moving default branch is never used as its base.
 
-Atlas test-edit admission on ordinary PRs uses a separately verified unique
+Atlas test-edit admission on admitted PRs uses a separately verified unique
 merge base of the exact event base and head, then compares that ancestor to the
 exact head. Upstream-only test changes therefore do not count as PR edits. An
 intentional PR revert remains an edit relative to the applicable merge base;
@@ -76,12 +76,17 @@ path allowlist and added/modified-only filter are unchanged, including deletion
 exclusion. Other selectors keep their original event base/head comparisons.
 
 The shallow selection checkout makes at most one additional exact-SHA fetch of
-both event tips, with depth 2049 and a 90-second timeout, only for ordinary PR
-admission. It verifies one merge base and at most 2048 commits above its proven
+both event tips, with depth 2049 and a 90-second timeout. Preparation matches
+actual selector eligibility: legacy callers with `build_prefix=false` retain
+all PR bases/actions, while build-prefix callers retain only supported ordinary
+PR scopes. Push/manual events do not take this Atlas-only preparation path. It verifies one merge base and at most 2048 commits above its proven
 ancestor exclusion; shallow boundaries in that range, missing objects,
 unrelated histories, criss-cross ambiguity or changed checkout identity fail
 selection. Replacement objects are disabled for this Atlas proof/diff and
-legacy grafts are rejected. No moving base branch or first-parent approximation
+legacy grafts are rejected. Fetch depth is a commit-history limit, not a bound
+on transferred object count or bytes. The 1 MiB stdout/metadata check occurs
+after subprocess capture; it is not a hard capture-memory limit. Existing fetch,
+step and outer-job timeouts remain the hard time limits. No moving base branch or first-parent approximation
 is used. The selection receipt retains its original `base`, `requested_base`
 and `head`; the separately recorded `atlas_comparison` contains `event_base`,
 `head`, `ancestor` and range bound/count. `atlas_ancestor` is also written to
