@@ -10,7 +10,8 @@ spec = importlib.util.spec_from_file_location('storage_source_adapter', ROOT/'te
 A = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(A)
 A.FIELDS += ('boxes','storage_start','storage_continue','storage_end','closer','contents',
-             'is_seeing','storage_slots','use_sound','loc','hide_from','show_to','orient2hud','s_active')
+             'is_seeing','storage_slots','use_sound','loc','hide_from','show_to','orient2hud','s_active',
+             'stored_start','stored_continue','stored_end','ensure_storage_controls')
 STORAGE = (ROOT/'code/game/objects/items/weapons/storage/storage.dm').read_text(encoding='utf8')
 PERSISTENCE = (ROOT/'code/modules/persistence/functions.dm').read_text(encoding='utf8')
 SAVING = (ROOT/'code/modules/persistence/saving.dm').read_text(encoding='utf8')
@@ -31,6 +32,8 @@ def storage_filter(source=STORAGE, parent=lambda key: False):
     return A.project(projected,'/fixture','key',{'list':lambda *values: values,'parent_runtime':parent})
 
 class DMList(set):
+    def __bool__(self):return True  # BYOND empty lists remain non-null datums.
+    def Copy(self):return DMList(self)
     def __isub__(self, item):
         if isinstance(item,(list,set,tuple)):self.difference_update(item)
         else:self.discard(item)
@@ -60,9 +63,13 @@ class Actor:
         self.s_active=None;self.client=SimpleNamespace(screen=DMList(),prefs=SimpleNamespace(UI_file='ui'))
 
 def install_storage(source=STORAGE):
-    env={'typed_iter':lambda xs,kind: xs,'playsound':lambda *args:None}
-    for name in ('hide_from','close','show_to','open'):
-        fn=A.project(source,'/obj/item/weapon/storage/proc/'+name,'src,user',env,method=True)
+    env={'typed_iter':lambda xs,kind: xs,'playsound':lambda *args:None,
+         'new_screen':Control,'new_obj':Control,'list':DMList}
+    source=source.replace('new /obj/screen/storage(  )','new_screen()')
+    source=source.replace('new /obj/screen/close(  )','new_screen()')
+    source=source.replace('new /obj //','new_obj() //').replace('new /obj\n','new_obj()\n')
+    for name in ('hide_from','close','show_to','ensure_storage_controls','open'):
+        fn=A.project(source,'/obj/item/weapon/storage/proc/'+name,'src' if name=='ensure_storage_controls' else 'src,user',env,method=True)
         setattr(FakeBag,name,fn)
 
 class StorageRuntime(unittest.TestCase):
@@ -73,12 +80,55 @@ class StorageRuntime(unittest.TestCase):
             self.assertRegex(STORAGE,r'(?m)^\s*'+name+r' = new /obj/screen')
         for proc in ('/obj/item/weapon/storage/proc/slot_orient_objs','/obj/item/weapon/storage/proc/space_orient_objs'):
             self.assertIn('closer.screen_loc =',body(STORAGE,proc))
-        install_storage();user=Actor();broken=FakeBag();broken.closer=None
+        prior=STORAGE.replace('var/rebuilt_controls = ensure_storage_controls()', 'var/rebuilt_controls = FALSE')
+        install_storage(prior);user=Actor();broken=FakeBag();broken.closer=None
         with self.assertRaises(AttributeError):broken.open(user)
-        repaired=FakeBag();original=repaired.closer
+        install_storage();repaired=FakeBag();original=repaired.closer
         if not storage_filter()('closer'):repaired.closer=None
         repaired.open(user)
         self.assertIs(repaired.closer,original);self.assertIs(user.s_active,repaired)
+
+    def test_all_null_controls_recover_and_reopen_without_replacing_items(self):
+        install_storage();user=Actor();bag=FakeBag();items=list(bag.contents)
+        for key in RUNTIME_CONTROLS:setattr(bag,key,None)
+        bag.open(user)
+        self.assertIs(user.s_active,bag);self.assertEqual(bag.contents,items)
+        self.assertTrue(all(getattr(bag,key) is not None for key in RUNTIME_CONTROLS))
+        self.assertIs(bag.boxes.master,bag);self.assertIs(bag.closer.master,bag)
+        self.assertIn(items[0],user.client.screen)
+        first={key:getattr(bag,key) for key in RUNTIME_CONTROLS}
+        bag.open(user)
+        for key in RUNTIME_CONTROLS:self.assertIs(getattr(bag,key),first[key],key)
+        self.assertEqual(bag.contents,items);self.assertIs(user.s_active,bag)
+
+    def test_partial_recovery_preserves_valid_control_identity(self):
+        install_storage();user=Actor();bag=FakeBag()
+        before={key:getattr(bag,key) for key in RUNTIME_CONTROLS}
+        for key in ('storage_start','stored_continue','closer'):setattr(bag,key,None)
+        bag.open(user)
+        for key in RUNTIME_CONTROLS:
+            if key in ('storage_start','stored_continue','closer'):
+                self.assertIsNotNone(getattr(bag,key));self.assertIsNot(getattr(bag,key),before[key])
+            else:self.assertIs(getattr(bag,key),before[key],key)
+        self.assertIs(bag.storage_start.master,bag);self.assertIs(bag.closer.master,bag)
+
+    def test_recovery_refreshes_active_viewer_without_disturbing_other_bag(self):
+        install_storage(); first=Actor();opener=Actor();stale=Actor();bag=FakeBag();other=FakeBag()
+        bag.open(first);old_box=bag.boxes;old_item=bag.contents[0]
+        other.open(stale);other_screen=set(stale.client.screen);bag.is_seeing.add(stale)
+        bag.closer=None;bag.open(opener)
+        self.assertIs(first.s_active,bag);self.assertIn(first,bag.is_seeing)
+        self.assertIs(bag.boxes,old_box);self.assertIn(old_box,first.client.screen)
+        self.assertIn(bag.closer,first.client.screen);self.assertIn(old_item,first.client.screen)
+        self.assertIs(stale.s_active,other);self.assertEqual(stale.client.screen,other_screen)
+        self.assertNotIn(stale,bag.is_seeing);self.assertIs(opener.s_active,bag)
+
+    def test_recovery_rejects_disconnected_stale_viewer_without_clearing_other_view(self):
+        install_storage();gone=Actor();opener=Actor();bag=FakeBag();other=FakeBag()
+        other.open(gone);gone.client=None;bag.is_seeing.add(gone)
+        bag.storage_end=None;bag.open(opener)
+        self.assertIs(gone.s_active,other);self.assertNotIn(gone,bag.is_seeing)
+        self.assertIs(opener.s_active,bag)
 
     def test_control_references_round_trip_and_historical_nulls(self):
         policy=storage_filter(); bag=FakeBag(); original={n:getattr(bag,n) for n in RUNTIME_CONTROLS}
