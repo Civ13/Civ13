@@ -107,7 +107,7 @@ def project(source,signature,args,env,method=False):
   if method:
    pieces=re.split(r'("(?:[^"\\]|\\.)*")',code)
    for i in range(0,len(pieces),2):
-    pieces[i]=re.sub(r'(?<![\w.])paper\b','self.paper',pieces[i])
+    pieces[i]=re.sub(r'(?<![\w./])paper\b','self.paper',pieces[i])
     pieces[i]=re.sub(r'(?<![\w.])(controller|control_client)\b',lambda m:'self.'+m[1],pieces[i])
     pieces[i]=re.sub(r'(?<![\w.])(has_access|can_mutate)\(',lambda m:'self.'+m[1]+'(',pieces[i])
    code=''.join(pieces)
