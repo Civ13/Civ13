@@ -66,6 +66,7 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
             require(not (stage/name).exists(),'Stale native protocol output')
         (stage/'binding.json').write_text(json.dumps(dict(head=head,binding=binding)))
         runtime=OwnedRun(output,hashes,180);runtime.port=PORT;runtime.open()
+        runtime.poll()  # Enforce watcher/free-memory/zero-child preflight before launch.
         daemon=runtime.launch([str(binaries['dd.exe']),str(dme.with_suffix('.dmb')),str(PORT),'-trusted','-invisible','-ip','127.0.0.1','-nowebclient','-logself'],stage,'daemon')
         receipt.update(head=head,binding=binding,manifest_sha256=reviewed,native_executed=True)
         persist();connected=0
