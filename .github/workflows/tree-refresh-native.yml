@@ -4,7 +4,7 @@ on:
     inputs:
       mode:
         type: choice
-        options: [prepare, execute]
+        options: [prepare, execute, dependency-audit]
         default: prepare
         required: true
         description: Prepare exact source/toolchain manifest; execute only after independent review
@@ -32,7 +32,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   fixture:
-    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch'
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch' && inputs.mode != 'dependency-audit'
     runs-on: windows-2022
     timeout-minutes: 20
     env:
@@ -105,3 +105,31 @@ jobs:
             ${{ runner.temp }}/tree-native-stage/stage/code/world.dm
             ${{ runner.temp }}/tree-native-stage/stage/code/controllers/mc/globals.dm
             ${{ runner.temp }}/tree-native-evidence
+
+  dependency-audit:
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch' && inputs.mode == 'dependency-audit'
+    runs-on: windows-2022
+    timeout-minutes: 5
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Audit pinned installer data and DLL provider files only
+        timeout-minutes: 4
+        shell: pwsh
+        run: |
+          py -3 -B tests/tree_refresh_native/dependency_audit.py --source "$env:SOURCE_SHA" --work "$env:RUNNER_TEMP/tree-dependency-data" --output "$env:RUNNER_TEMP/tree-dependency-evidence"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain bounded data-only findings and failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: byond-dependency-audit-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/tree-dependency-evidence
