@@ -91,8 +91,24 @@ class Sources(unittest.TestCase):
     def test_shared_force_move_and_destroy_have_no_new_overrides(self):
         self.assertNotIn('/atom/movable/forceMove(',self.s)
         self.assertNotIn('/atom/movable/Destroy(',self.s)
+    def test_tack_substitutions_are_exact_before_legacy_projection(self):
+        for slot in range(1,5):
+            call=f'pulling{slot}.simplehunger -= pulling{slot}.animal_draft_hunger_cost()'
+            self.assertEqual(self.s.count(call),1)
+            self.assertNotIn(f'pulling{slot}.simplehunger -= 1',self.s)
+
     def test_complete_legacy_transport_projection(self):
         s=self.s.split('// Appearance-only leases.')[0].removesuffix('\n\n')
+        # The optional leather harness is a separately reviewed gameplay
+        # change. Undo exactly its four substitutions, retaining the original
+        # frozen transport hash for every other legacy statement.
+        for slot in range(1,5):
+            call=f'pulling{slot}.simplehunger -= pulling{slot}.animal_draft_hunger_cost()'
+            self.assertEqual(s.count(call),1)
+            s=s.replace(call,f'pulling{slot}.simplehunger -= 1')
+        comment='// Harnesses halve this extra draft-work hunger.'
+        self.assertEqual(s.count(comment),1)
+        s=s.replace(comment,"//Each step -1 hunger. Basically doubles it's food comsuption while carrying the carriage")
         s=re.sub(r'(?m)^\t+(M|O|user|driver)\.release_carriage_glide\(\)\n','',s)
         s=s.replace('var/m_dir = null, interval = null','var/m_dir = null')
         s=s.replace('\t\tvar/interval = null\n','').replace('\t\t\tinterval = vehicle_m_delay + 1\n','')

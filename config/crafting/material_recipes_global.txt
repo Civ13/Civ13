@@ -2611,3 +2611,6 @@ RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1
 RECIPE: /material/electronics/,solar array controller,/obj/structure/civ_generator/solar,20,200,1,1,none,105,0,0,8,null
 RECIPE: /material/electronics/,controlled reactor generator,/obj/structure/civ_generator/nuclear,40,300,1,1,none,105,0,0,8,null
 RECIPE: /material/steel/,reactor fuel processor,/obj/structure/reactor_fuel_processor,20,200,1,1,none,105,0,0,8,null
+
+RECIPE: /material/leather/,leather saddle,/obj/item/animal_tack/saddle,6,80,0,1,none,0,0,0,8,null
+RECIPE: /material/leather/,leather animal harness,/obj/item/animal_tack/harness,4,60,0,1,none,0,0,0,8,null

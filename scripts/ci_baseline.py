@@ -36,6 +36,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'animal_tack': {'files': ('tests/animal_tack/test_tack.py',),
+        'paths': ('tests/animal_tack/', 'code/game/objects/items/weapons/animal_tack.dm'),
+        'shared_paths': ('code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/objects/structures/transports.dm',
+            'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt',
+            'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
+            'tests/save_movement/source_adapter.py', 'civ13.dme')},
     # Reviewed stdlib-only source/guard projections; no BYOND runtime.
     'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
         'paths': ('tests/stone_brazier/',), 'shared_paths': (
