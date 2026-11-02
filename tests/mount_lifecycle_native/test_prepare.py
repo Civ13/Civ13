@@ -76,6 +76,64 @@ class ClockReadings:
         return ClockFloat(8468928000 + next(self.values))
 
 
+class ObserverInitializationTests(unittest.TestCase):
+    """Project actual fixture assignments and production counter expressions.
+
+    Fake associative lists model only initialization/bookkeeping, not native
+    observer dispatch, BYOND bad-index diagnostics or qdel semantics.
+    """
+    names = ('global_listen_count', 'event_sources_count', 'event_listen_count')
+
+    def initialize(self, source):
+        from collections import defaultdict
+        from types import SimpleNamespace
+        glob = SimpleNamespace(**dict.fromkeys(self.names))
+        body = clock_adapter.extract(source, '/world/New')
+        before = body.split('human_subtile_fixture_initialize()', 1)[0]
+        lines = [line.strip() for line in before.splitlines()
+                 if line.strip().startswith(tuple('GLOB.' + name + ' =' for name in self.names))]
+        selected = '/observer_fixture_init()\n' + ''.join('\t' + line + '\n' for line in lines)
+        clock_adapter.project(selected, '/observer_fixture_init', '',
+                              dict(GLOB=glob, list=lambda: defaultdict(int)))()
+        return glob
+
+    def test_all_production_managed_lists_initialized_before_fixture_startup(self):
+        source = (HERE/'probe.dm').read_text()
+        production = (ROOT/'code/datums/observation/~cleanup.dm').read_text()
+        declared = [line[len('GLOBAL_LIST_EMPTY('):-1] for line in production.splitlines()
+                    if line.startswith('GLOBAL_LIST_EMPTY(')]
+        self.assertEqual(set(declared), set(self.names))
+        glob = self.initialize(source)
+        for name in declared:
+            self.assertIsInstance(getattr(glob, name), dict)
+            self.assertEqual(getattr(glob, name), {})
+        self.assertEqual(len({id(getattr(glob, name)) for name in declared}), 3)
+        glob.event_sources_count[object()] += 1
+        self.assertEqual(glob.global_listen_count, {})
+        self.assertEqual(glob.event_listen_count, {})
+
+    def test_omitting_each_initializer_leaves_its_production_counter_unusable(self):
+        source = (HERE/'probe.dm').read_text()
+        production = (ROOT/'code/datums/observation/~cleanup.dm').read_text()
+        for name in self.names:
+            with self.subTest(name=name):
+                assignment = 'GLOB.' + name + ' = list()'
+                self.assertEqual(source.count(assignment), 1)
+                # Select the actual production counter increment. Null list
+                # indexing is represented by Python TypeError at this fake boundary.
+                lines = [line.strip() for line in production.splitlines()
+                         if line.strip().startswith('GLOB.' + name + '[')
+                         and line.strip().endswith(' += 1')]
+                self.assertEqual(len(lines), 1)
+                selected = '/observer_count()\n\t' + lines[0] + '\n'
+                def increment(glob):
+                    clock_adapter.project(selected, '/observer_count', '',
+                        dict(GLOB=glob, event_source=object(), listener=object()))()
+                increment(self.initialize(source))
+                with self.assertRaises(TypeError):
+                    increment(self.initialize(source.replace(assignment, '// omitted initializer')))
+
+
 class PrepareTests(unittest.TestCase):
     def clock_expired(self, source, start, now):
         body = clock_adapter.extract(source, '/world/New')

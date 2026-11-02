@@ -325,6 +325,11 @@ var/list/mount_native_observations = list()
 			sleep(1)
 		if (file2text("port-closed.ack") != "closed\n")
 			throw EXCEPTION("startup.external_ack_invalid")
+		// Normal global initialization is disabled by the isolated startup seam.
+		// Actual observer registration/cleanup still requires its count lists.
+		GLOB.global_listen_count = list()
+		GLOB.event_sources_count = list()
+		GLOB.event_listen_count = list()
 		human_subtile_fixture_initialize()
 		for (var/operation in list("death", "separation", "mount_qdel", "rider_qdel"))
 			for (var/kind in list("matching", "foreign", "retiring", "reassignment"))
