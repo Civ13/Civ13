@@ -1956,6 +1956,7 @@
 			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
 			return
 
+	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	// Retain and recheck tools, secondary stock, occupied tile and research after
 	// the wait. No debit occurs on an interrupted or invalidated action.
 	if (joinery && !joinery.valid())
@@ -1964,7 +1965,6 @@
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
 		return
-	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	if (use(required, (joinery || carving) ? null : H))
 		if (joinery)
 			joinery.consume_component()
