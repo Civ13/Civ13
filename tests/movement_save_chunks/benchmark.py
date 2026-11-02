@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import hashlib
 import importlib.util
 import json
+import math
 from pathlib import Path
 import re
 import shutil
@@ -222,6 +223,80 @@ def native_phases(log):
     return list(found.values())
 
 
+CAPTURE_BUDGET_MESSAGE = 'Moving save chunk exceeded its capture budget or yielded:'
+CAPTURE_BUDGET_FIELDS = ('work', 'tick_delta', 'usage_delta', 'total_usage',
+                         'elapsed_ds', 'admission_usage', 'start_usage')
+CAPTURE_CONTEXT_PHASES = frozenset(('before_save', 'roster_start', 'roster_end',
+                                    'after_capture', 'after_success_cleanup',
+                                    'after_refusal_cleanup', 'after_idle'))
+
+
+def capture_budget_observations(logs, case, case_id):
+    """Post-exit diagnostics only; never substitutes for the native verdict.
+
+    Duplicate streams remain labelled observations, not unique failures. Attempt
+    context must precede the exception in the same stream and match this case.
+    """
+    observations = []
+    for log_name, text in logs.items():
+        context = None
+        for line_number, line in enumerate(text.splitlines(), 1):
+            if 'BENCHMARK_PHASE ' in line:
+                context = None
+                try:
+                    phase = json.loads(line.split('BENCHMARK_PHASE ', 1)[1])
+                except (ValueError, TypeError):
+                    phase = None
+                if (isinstance(phase, dict)
+                        and type(phase.get('attempt')) is int
+                        and 1 <= phase['attempt'] <= 7
+                        and type(phase.get('baseline')) is int
+                        and phase['baseline'] == case['baseline']
+                        and isinstance(phase.get('phase'), str)
+                        and phase['phase'] in CAPTURE_CONTEXT_PHASES):
+                    context = {key: phase.get(key) for key in
+                               ('attempt', 'phase', 'baseline', 'clock', 'capture_tick_usage')}
+            if CAPTURE_BUDGET_MESSAGE not in line:
+                continue
+            raw = line.split(CAPTURE_BUDGET_MESSAGE, 1)[1]
+            values = {}
+            for field, token in re.findall(r'\b(' + '|'.join(CAPTURE_BUDGET_FIELDS) + r')=([^\s]+)', raw):
+                values.setdefault(field, []).append(token)
+            metrics, reported, invalid = {}, {}, []
+            for field in CAPTURE_BUDGET_FIELDS:
+                tokens = values.get(field, [])
+                if len(tokens) != 1:
+                    invalid.append(field)
+                    continue
+                token = reported[field] = tokens[0]
+                try:
+                    if len(token) > 64 or not re.fullmatch(r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?', token):
+                        raise ValueError('Not a finite decimal token')
+                    number = int(token) if re.fullmatch(r'[+-]?\d+', token) else float(token)
+                    if not math.isfinite(number):
+                        raise ValueError('Not finite')
+                    metrics[field] = number
+                except (ValueError, OverflowError):
+                    invalid.append(field)
+            observations.append({
+                'case_id': case_id,
+                'configuration': dict(case),
+                'attempt': context['attempt'] if context else None,
+                'attempt_source': 'preceding validated phase in same log' if context else 'unknown',
+                'log_name': log_name,
+                'line_number': line_number,
+                'raw_exception': line,
+                'exception_metrics': metrics,
+                'reported_values': reported,
+                'metric_status': 'complete' if not invalid else 'incomplete_or_invalid',
+                'invalid_fields': invalid,
+                'metric_scope': 'values printed by production exception; display precision retained',
+                'cumulative_counter_snapshot': dict(context) if context else None,
+                'counter_scope': 'latest emitted cumulative phase; not the failing chunk peak',
+            })
+    return observations
+
+
 def phase_contract(phases, baseline):
     observed = {(row.get('attempt'), row.get('phase')) for row in phases}
     expected = {(attempt, 'after_success_cleanup') for attempt in (1, 2, 3, 7)}
@@ -272,7 +347,8 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
         identity = verify_runtime(byond_bin, byond_archive)
         (folder / 'runtime-identity.json').write_text(json.dumps(identity, indent=2))
         result = run_monitored([str(daemon), 'benchmark.dmb', '-trusted', '-ip', '127.0.0.1', '-nowebclient', '-log', 'runtime.log', '-params', params], folder, 'daemon', limits, deadline)
-        native_log = ''.join((folder / name).read_text() for name in ('daemon.log', 'runtime.log', 'errors.txt') if (folder / name).exists())
+        native_logs = {name: (folder / name).read_text() for name in ('daemon.log', 'runtime.log', 'errors.txt') if (folder / name).exists()}
+        native_log = ''.join(native_logs.values())
         marker = (folder / 'result.txt').read_text().strip() if (folder / 'result.txt').exists() else None
         diagnostics = bool(DIAGNOSTIC.search(native_log)) or ((folder / 'errors.txt').exists() and bool((folder / 'errors.txt').read_text().strip()))
         phases = native_phases(native_log)
@@ -280,6 +356,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
         admitted = max((row.get('roster', 0) for row in phases), default=0)
         result.update(case=case, marker=marker, native_diagnostics=diagnostics, phases=phases, phase_contract=contract_ok,
                       admitted_roots=admitted, fallback_roots=case['count']-admitted,
+                      capture_budget_observations=capture_budget_observations(native_logs, case, folder.name),
                       passed=result['status'] == 'exited' and result.get('returncode') == 0 and marker == 'PASS' and not diagnostics and contract_ok and 'rss_bytes' in result.get('peaks', {}))
         results.append(result)
         (output / 'results.json').write_text(json.dumps(results, indent=2))

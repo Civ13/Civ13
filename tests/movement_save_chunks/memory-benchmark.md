@@ -69,3 +69,27 @@ post-operation capture checks cannot preempt a slow native operation or guarante
 a hard maximum stall. Representative full-game latency/memory thresholds and a
 fresh whole-world restore remain outside this synthetic result. No merge,
 deployment or Gaia operation follows automatically from benchmark success.
+
+
+## Post-exit capture-budget reporting
+
+Each result now retains `capture_budget_observations` separately from its phase
+counters. These observations parse the production exception's printed values
+after the child exits; they do not change the measured capture, guard, case
+schedule or pass/fail expression. Each observation identifies its configuration,
+case folder and preceding validated attempt in the same log stream. Missing,
+malformed or mismatched phase context leaves the attempt unknown. Duplicate log
+streams remain separate labelled observations; their count is not a failure count.
+
+`exception_metrics.usage_delta` is the failing chunk's reported breach value.
+`reported_values` and `raw_exception` preserve the printed precision. The
+`cumulative_counter_snapshot` is the latest emitted process-wide phase snapshot,
+which can predate a later root's failure; it is not that chunk's final peak.
+Incomplete, duplicate or nonfinite metric tokens remain visible as invalid
+diagnostics and cannot make the original failed verdict pass.
+
+The frozen synthetic log excerpt in `fixtures/capture-budget-e042.txt` comes
+from run41443261135, heade0429b81e, candidate64roots/1024bytes/baseline0,
+attempt7: exception usage10.022 versus last phase counter5.986. Its existing
+native failure remains unresolved. Offline tests use injected process results;
+they never compile or start BYOND, and do not establish a new native pass.
