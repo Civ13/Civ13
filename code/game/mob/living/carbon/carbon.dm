@@ -148,6 +148,7 @@
 			return
 
 	hand = !( hand )
+	paper_authoring_notify(src, "hand")
 	for (var/obj/screen/inventory/hand/H in HUDinventory)
 		H.update_icon()
 	if (istype(src, /mob/living/human))

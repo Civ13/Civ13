@@ -16,14 +16,14 @@ def environment(source=SOURCE):
  env.update(max=max,parent_access=lambda s,a,w:Base.has_access(s,a,w),
             parent_mutate=lambda s,a,p:Base.can_mutate(s,a,p))
  vm.ALLOWED |= {'parent_access','parent_mutate','paper_written_language_choices','paper_written_default_language'}
- vm.METHODS |= {'capture_state','state_current','retire','project','document_copy_legacy_valid'}
+ vm.METHODS |= {'capture_state','state_current','retire','start_lifecycle','stop_lifecycle','close','project','document_copy_legacy_valid'}
  # Explicit parent dispatch and inherited/runtime fields only. Every production
  # procedure statement is projected; constructor is an inert reference seam.
- adapted=source.replace('..(actor, writing)','parent_access(self, actor, writing)').replace('..(actor, pen)','parent_mutate(self, actor, pen)')
+ adapted=source.replace('paper_authoring_notify(paper, "physical", src)','paper_authoring_notify(paper, "physical", self)').replace('paper_document_commit_edit(paper, edit, src)','paper_document_commit_edit(paper, edit, self)').replace('..(actor, writing)','parent_access(self, actor, writing)').replace('..(actor, pen)','parent_mutate(self, actor, pen)')
  adapted=adapted.replace('paper.document_record != expected_record','paper.document_record is not expected_record')
  adapted=adapted.replace('view["error"]','view.get("error")')
  fields=('writing_pen','projection_reader','session_lease','session_closed','expected_record','expected_record_json','expected_legacy_json','context_owner','context_parent')
- methods=('capture_state','state_current','retire')
+ methods=('capture_state','state_current','retire','start_lifecycle','stop_lifecycle')
  pieces=re.split(r'("(?:[^"\\]|\\.)*")',adapted)
  for i in range(0,len(pieces),2):
   pieces[i]=re.sub(r'(?<![\w./])('+'|'.join(fields)+r')\b',lambda m:'self.'+m[1],pieces[i])
@@ -38,6 +38,9 @@ def environment(source=SOURCE):
   setattr(Session,name,vm.project(adapted,'/datum/paper_document_authoring/proc/'+name,args,env,True))
  for name,args in [('has_access','self,actor,writing=False'),('can_mutate','self,actor,pen'),('initialize','self,actor,pen'),('canonical_copy','self,actor'),('project','self,reader,forceshow=False'),('append','self,actor,pen,document_id,revision,language_id,kind,value,expected_lease=None')]:
   setattr(Session,name,vm.project(adapted,'/datum/paper_document_authoring/'+name,args,env,True))
+# Core API tests stub observer setup; test_lifecycle projects the real bodies.
+ Session.start_lifecycle=lambda self:True
+ Session.stop_lifecycle=lambda self:None
  return env,Session,Base,Reader,langs,render,Paper
 
 class Authoring(unittest.TestCase):
@@ -198,7 +201,7 @@ class Authoring(unittest.TestCase):
   self.assertIn('retire()',vm.body(SOURCE,'/datum/paper_document_authoring/Destroy'))
   self.assertNotRegex(SOURCE,r'(?i)hear_say\(|add_language\(|partial_languages|using_object\s*=')
   for path in (vm.ROOT/'code/modules/paperwork').glob('*.dm'):
-   if path.name!='authoring.dm':self.assertNotIn('/datum/paper_document_authoring',path.read_text(encoding='utf-8'))
+   if path.name not in ('authoring.dm','lifecycle.dm'):self.assertNotIn('/datum/paper_document_authoring',path.read_text(encoding='utf-8'))
   self.assertNotIn('paper_document_authoring',(vm.ROOT/'code/game/objects/items/paper/paper.dm').read_text(encoding='utf-8'))
 
 

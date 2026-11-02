@@ -212,6 +212,7 @@ GLOBAL_DATUM_INIT(nanomanager, /datum/nanomanager, new) // NanoManager, the mana
 
 //
 /datum/nanomanager/proc/user_logout(var/mob/user)
+	paper_authoring_notify(user, "logout")
 	//testing("nanomanager/user_logout user [user.name]")
 	return close_user_uis(user)
 
@@ -225,6 +226,7 @@ GLOBAL_DATUM_INIT(nanomanager, /datum/nanomanager, new) // NanoManager, the mana
   * @return nothing
   */
 /datum/nanomanager/proc/user_transferred(var/mob/oldMob, var/mob/newMob)
+	paper_authoring_notify(oldMob, "transfer")
 	//testing("nanomanager/user_transferred from mob [oldMob.name] to mob [newMob.name]")
 	if (!oldMob || isnull(oldMob.open_uis) || !istype(oldMob.open_uis, /list) || open_uis.len == FALSE)
 		//testing("nanomanager/user_transferred mob [oldMob.name] has no open uis")
