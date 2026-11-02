@@ -1,17 +1,31 @@
 // Headless Chromium layout test of the actual chat page; no server or BYOND.
 // Set CHROME_BIN to an installed Chrome/Chromium and CHAT_TEST_TMP to a scratch
-// directory. CHAT_HTML can point to a historical page for negative controls.
+// directory. CHAT_NEGATIVE_CONTROL=1 runs the frozen original page.
 'use strict';
 const fs = require('fs');
 const path = require('path');
-const cp = require('child_process');
+const crypto = require('crypto');
 const { pathToFileURL } = require('url');
-const chrome = process.env.CHROME_BIN;
+const chrome = process.env.CHROME_BIN || process.env.CHROMIUM_PATH;
 const scratch = process.env.CHAT_TEST_TMP;
-if (!chrome || !scratch) throw new Error('Set CHROME_BIN and CHAT_TEST_TMP');
-const htmlPath = process.env.CHAT_HTML || path.resolve(__dirname, '../../interface/chat/chat.html');
+if (!chrome || !scratch) throw new Error('Set CHROME_BIN (or CHROMIUM_PATH) and CHAT_TEST_TMP');
+fs.mkdirSync(scratch, { recursive: true });
+process.env.TMPDIR = scratch; process.env.TEMP = scratch; process.env.TMP = scratch;
+const root = path.resolve(__dirname, '../..');
+const modulePath = process.env.PLAYWRIGHT_CORE_PATH || path.join(root, 'tgui/node_modules/playwright-core');
+const lock = JSON.parse(fs.readFileSync(path.join(root, 'tgui/package-lock.json'), 'utf8'));
+const pinned = lock.packages['node_modules/playwright-core'].version;
+const installed = JSON.parse(fs.readFileSync(path.join(modulePath, 'package.json'), 'utf8')).version;
+if (installed !== pinned) throw new Error('playwright-core does not match the repository lock');
+const { chromium } = require(modulePath);
+const negative = process.env.CHAT_NEGATIVE_CONTROL === '1';
+const htmlPath = negative ? path.join(__dirname, 'fixtures/chat-before-tail-follow.html') : path.join(root, 'interface/chat/chat.html');
 const fontData = fs.readFileSync(path.resolve(__dirname, '../../interface/fonts/Alegreya-Regular.ttf')).toString('base64');
-let html = fs.readFileSync(htmlPath, 'utf8');
+const pageBytes = fs.readFileSync(htmlPath);
+if (negative && crypto.createHash('sha256').update(pageBytes.toString('utf8').replace(/\r\n/g, '\n'), 'utf8').digest('hex') !== '6b3a01d2d0e69d7d0b44e1c06c1342029e5f6c8a3baa7971cc30bd66677964d4') {
+  throw new Error('Original-page fixture does not match the reviewed preimage');
+}
+let html = pageBytes.toString('utf8');
 const bridge = "window.location.href = 'byond://?chat_ready=1';";
 if (html.split(bridge).length !== 2) throw new Error('Chat ready bridge anchor changed');
 html = html.replace(bridge, 'window.__chatTestReady = true;');
@@ -30,6 +44,10 @@ const script = String.raw`
     const add = text => window.receiveMessage(text, true);
     try {
         check(window.__chatTestReady, 'chat initialization');
+        window.receiveMessage(encodeURIComponent('<span id="safe-probe">safe</span><img id="sanitize-probe" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22/%3E" onerror="window.__unsafe=1">'));
+        await delay(50);
+        const sanitized = document.getElementById('sanitize-probe');
+        check(window.DOMPurify && sanitized && !sanitized.hasAttribute('onerror') && !window.__unsafe, 'normal chat sanitizer preserved');
         for (let i = 0; i < 35; i++) add('Initial line ' + i + ' with enough content to fill the chat.');
         await delay(120);
         check(c.scrollHeight > c.clientHeight && tail(), 'initial messages follow tail');
@@ -118,76 +136,51 @@ const dir = fs.mkdtempSync(path.join(scratch, 'chat-scroll-'));
 const fixture = path.join(dir, 'fixture.html');
 const profile = path.join(dir, 'profile');
 fs.writeFileSync(fixture, html);
-const args = ['--headless=new', '--disable-gpu', '--disable-extensions', '--disable-background-networking',
-  '--disable-sync', '--no-first-run', '--no-default-browser-check', '--host-resolver-rules=MAP * ~NOTFOUND',
-  '--user-data-dir=' + profile, '--remote-debugging-pipe', '--no-startup-window'];
+for (const name of ['Alegreya-Regular.ttf', 'Alegreya-Bold.ttf', 'Alegreya-Italic.ttf', 'Alegreya-BoldItalic.ttf', 'Alegreya-Black.ttf', 'Wizard.ttf']) {
+  fs.copyFileSync(path.join(root, 'interface/fonts', name), path.join(dir, name));
+}
+fs.copyFileSync(path.join(root, 'code/js/purify.min.js'), path.join(dir, 'purify.min.js'));
 
-// The debugging pipe is an owned process pipe, not a listening TCP port. Run
-// against real compositor frames: virtual time can starve ResizeObserver.
+// Use the same integrity-locked playwright-core and runner browser as TGUI.
+// No BYOND bridge, server, browser download, or remote network is used.
 (async function () {
-  const browser = cp.spawn(chrome, args, { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe', 'pipe', 'pipe'] });
-  let log = '';
-  browser.stderr.on('data', chunk => { if (log.length < 100000) log += chunk.toString(); });
-  let input = Buffer.alloc(0), next = 0;
-  const pending = new Map();
-  const exited = new Promise(resolve => browser.once('exit', (code, signal) => {
-    for (const p of pending.values()) p.reject(new Error('Browser exited before reply'));
-    pending.clear();
-    resolve({ code, signal });
-  }));
-  browser.on('error', err => { for (const p of pending.values()) p.reject(err); pending.clear(); });
-  browser.stdio[3].on('error', err => { for (const p of pending.values()) p.reject(err); pending.clear(); });
-  browser.stdio[4].on('data', chunk => {
-    input = Buffer.concat([input, chunk]);
-    for (;;) {
-      const end = input.indexOf(0);
-      if (end < 0) break;
-      const message = JSON.parse(input.subarray(0, end).toString('utf8'));
-      input = input.subarray(end + 1);
-      if (message.id && pending.has(message.id)) {
-        const p = pending.get(message.id); pending.delete(message.id);
-        if (message.error) p.reject(new Error(message.error.message)); else p.resolve(message.result);
-      }
-    }
-  });
-  function send(method, params, sessionId) {
-    const id = ++next;
-    return new Promise((resolve, reject) => {
-      pending.set(id, { resolve, reject });
-      browser.stdio[3].write(JSON.stringify({ id, method, params: params || {}, ...(sessionId ? { sessionId } : {}) }) + '\0');
-    });
-  }
-  const timer = setTimeout(() => browser.kill(), 30000);
+  let context, verdict = null, closeOk = false;
+  const errors = [];
   try {
-    const target = await send('Target.createTarget', { url: 'about:blank' });
-    const attached = await send('Target.attachToTarget', { targetId: target.targetId, flatten: true });
-    await send('Page.enable', {}, attached.sessionId);
-    await send('Runtime.enable', {}, attached.sessionId);
-    await send('Page.navigate', { url: pathToFileURL(fixture).href }, attached.sessionId);
-    let verdict = null;
-    for (let i = 0; i < 150; i++) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      const response = await send('Runtime.evaluate', { expression: "document.documentElement && document.documentElement.getAttribute('data-chat-test')", returnByValue: true }, attached.sessionId);
-      verdict = response.result && response.result.value;
-      if (verdict) break;
+    context = await chromium.launchPersistentContext(profile, {
+      executablePath: chrome, headless: true, viewport: { width: 1000, height: 520 },
+      timeout: 15000,
+      args: ['--disable-background-networking', '--disable-extensions', '--disable-sync', '--host-resolver-rules=MAP * ~NOTFOUND'],
+    });
+    await context.route('**/*', route => {
+      const protocol = new URL(route.request().url()).protocol;
+      return protocol === 'file:' || protocol === 'data:' ? route.continue() : route.abort();
+    });
+    const page = context.pages()[0] || await context.newPage();
+    page.on('pageerror', error => errors.push(error.message));
+    await page.goto(pathToFileURL(fixture).href, { waitUntil: 'load', timeout: 15000 });
+    await page.waitForFunction(() => document.documentElement.hasAttribute('data-chat-test'), null, { timeout: 15000 });
+    verdict = await page.getAttribute('html', 'data-chat-test');
+    fs.writeFileSync(path.join(dir, 'browser.stdout.html'), await page.content());
+    if (errors.length) throw new Error('Page errors: ' + errors.join(' | '));
+    if (negative) {
+      const expected = ['scrolled-up position preserved on append', 'late image growth follows tail',
+        'width reflow follows tail', 'upward wheel intent blocks pending follow', 'trim preserves anchor'];
+      if (!verdict || !verdict.startsWith('FAIL: ') || verdict.includes('exception:') || expected.some(label => !verdict.includes(label))) {
+        throw new Error('Original-page control did not fail the expected assertions: ' + verdict);
+      }
+      console.log('PASS original-page negative control; evidence: ' + dir);
+    } else {
+      if (verdict !== 'PASS') throw new Error('Browser assertion: ' + (verdict || 'missing verdict'));
+      console.log('PASS chat scroll browser cases; evidence: ' + dir);
     }
-    const page = await send('Runtime.evaluate', { expression: 'document.documentElement.outerHTML', returnByValue: true }, attached.sessionId);
-    fs.writeFileSync(path.join(dir, 'browser.stdout.html'), page.result.value || '');
-    if (verdict !== 'PASS') throw new Error('Browser assertion: ' + (verdict || 'missing verdict'));
-    console.log('PASS chat scroll browser cases; evidence: ' + dir);
   } catch (err) {
     console.error(String(err) + '; evidence: ' + dir);
     process.exitCode = 1;
   } finally {
-    clearTimeout(timer);
-    try { browser.stdio[3].write(JSON.stringify({ id: ++next, method: 'Browser.close', params: {} }) + '\0'); } catch (_) {}
-    let end = await Promise.race([exited, new Promise(resolve => setTimeout(() => resolve(null), 3000))]);
-    if (!end) {
-      browser.kill();
-      end = await Promise.race([exited, new Promise(resolve => setTimeout(() => resolve(null), 3000))]);
+    if (context) {
+      try { await context.close(); closeOk = true; } catch (err) { console.error('Browser cleanup failed: ' + err); process.exitCode = 1; }
     }
-    fs.writeFileSync(path.join(dir, 'browser.stderr.log'), log);
-    fs.writeFileSync(path.join(dir, 'browser.cleanup.json'), JSON.stringify({ ownedBrowserExited: !!end, end }));
-    if (!end) { console.error('Owned browser process did not exit; evidence: ' + dir); process.exitCode = 1; }
+    fs.writeFileSync(path.join(dir, 'browser.cleanup.json'), JSON.stringify({ contextClosed: closeOk, verdict, errors }));
   }
 })().catch(err => { console.error(err); process.exitCode = 1; });
