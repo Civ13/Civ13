@@ -27,6 +27,12 @@ RESOURCE_WORK_OFFLINE_TESTS = frozenset({'tests/test_resource_work_animation.py'
 # This exact storage regression is a stdlib-only source projection, not a native fixture.
 STORAGE_RUNTIME_OFFLINE_TESTS = frozenset({'tests/storage_runtime/test_storage_runtime.py'})
 
+# This exact pouch HUD test is an offline source projection.
+POUCH_HUD_OFFLINE_TESTS = frozenset({'tests/pouch_hud/test_pouch_hud.py'})
+
+# Exact source-only suite runs in the reviewed bounded offline baseline.
+STONE_BRAZIER_OFFLINE_TESTS = frozenset({'tests/stone_brazier/test_stone_brazier_disposal.py'})
+
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
 ATLAS_TEST_INPUTS = {
@@ -292,7 +298,11 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
-        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS:
+        if path in STONE_BRAZIER_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/stone_brazier/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered stone-brazier executable test requires explicit CI review')
+        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS or path in POUCH_HUD_OFFLINE_TESTS:
             continue
         parts = PurePosixPath(path).parts
         suffix = PurePosixPath(path).suffix.lower()
@@ -361,7 +371,7 @@ def main():
     if args.receipt:
         from ci_baseline import selection_receipt, write_json
         receipt = selection_receipt(args.base, args.head, game, extensive,
-                                    new_tests, reason, args.event, policy)
+                                    new_tests, reason, args.event, policy, payload)
         if not policy['metadata_valid']:
             receipt['status'] = 'failed'
         write_json(args.receipt, receipt)
