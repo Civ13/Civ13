@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_stone_brazier_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'stone_brazier'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/stone_brazier/test_stone_brazier_disposal.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
+
     def test_crafting_ui_offline_registration_preserves_shared_coverage(self):
         suite = ci.SUITES['crafting_ui_contracts']
         self.assertEqual(suite['files'], ('tests/human_subtile/test_crafting_ui.py',))
@@ -91,6 +103,18 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertNotIn('  pull_request:',workflow)
         ordinary=(ROOT/'.github/workflows/test.yml').read_text()
         self.assertNotIn('tests/tree_refresh_native',ordinary)
+
+    def test_axe_active_hand_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'axe_active_hand'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/axe_active_hand/test_axe_active_hand.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
 
     def test_anvil_feedback_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['anvil_feedback']
@@ -1151,6 +1175,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 else:
                     self.assertFalse(result['tracked_dirty_after'])
                     self.assertNotEqual(result['observed_head_after'], head)
+    @patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'pull_request'})
     def test_selection_loader_rejects_disabled_mandatory_tests_and_stale_source(self):
         plan, _, _, _ = fixtures()
         with tempfile.TemporaryDirectory() as temporary:
@@ -1170,6 +1195,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Always-required'):
                     ci.load_selection(path, plan['head'], plan['base'])
 
+    @patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'pull_request'})
     def test_selection_from_an_earlier_attempt_of_the_same_run_is_named_explicitly(self):
         # Re-running failed jobs reuses the successful selection job, so its
         # receipt keeps attempt 1 while the consumer runs in attempt 2.

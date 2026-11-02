@@ -5,7 +5,7 @@
 */
 
 /* Note the toc1, toc2 args here. These are short for "type_or_choices". When neither are defined, we just go to alert().
- * When both are defined, toc1 will be the type argument, toc2 will be the choices (list) argument, mimicing the traditional BYOND input construct of "as type in list".
+ * When both are defined, toc1 will be the type argument, toc2 will be the choices (list) argument, mimicking the traditional BYOND input construct of "as type in list".
  * toc2 should never be defined unless toc1 is also defined, or the proc will return FALSE and do nothing. When toc1 is the only argument of the two
  * defined, it will be checked to see if its a type or a choices list. If it's a list with >= 1 object (text, num, actual object), its considered to be a choices list.
  * If it's "num" or "text", it will be converted into the appropriate type. Object types can't go here, or the proc returns FALSE and fails.

@@ -375,7 +375,7 @@
 
 /obj/structure/vending/sales/cia_agent
 	name = "CIA agent"
-	desc = "The USA supports your cause in exchange of ressources."
+	desc = "The USA supports your cause in exchange of resources."
 	icon = 'icons/mob/npcs.dmi'
 	icon_state = "afghcia"
 	products = list(

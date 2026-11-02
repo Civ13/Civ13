@@ -3176,7 +3176,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/grenade/coldwar/rgd5(H), slot_l_store)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[en_meaning]</b>, stationed at the Soviet-Chinese border. Use your superior firepower to provide supression. Follow your <b>Sergeant's</b> orders!")
+	H.add_note("Role", "You are a <b>[en_meaning]</b>, stationed at the Soviet-Chinese border. Use your superior firepower to provide suppression. Follow your <b>Sergeant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)

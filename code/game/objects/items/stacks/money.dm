@@ -321,7 +321,7 @@
 
 /obj/item/stack/money/european/euro200
 	name = "200 Euro Note"
-	desc = "A 200 Euro banknote, depicting bridges and arches/doorways in Art Noveau style with a mixture of ywllow, some blue and some brown. Imprinted upon it is the flag of the European Union"
+	desc = "A 200 Euro banknote, depicting bridges and arches/doorways in Art Nouveau style with a mixture of ywllow, some blue and some brown. Imprinted upon it is the flag of the European Union"
 	singular_name = "200 Euro note"
 	icon_state = "200euro"
 	amount = 1

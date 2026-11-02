@@ -1,6 +1,6 @@
 
 //types of walls/borders
-//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
+//format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesn't get colored
 var/global/list/vehicle_walls = list( \
 	"" = list("",FALSE,FALSE,0,40,FALSE,FALSE), \
 	"c_wall" = list("c_window",FALSE,TRUE,20,50,FALSE,FALSE), \

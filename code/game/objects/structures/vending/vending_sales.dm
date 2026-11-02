@@ -77,7 +77,7 @@
 					else
 						stock(W, R, user)
 						return TRUE
-			//if it isnt in the list yet
+			//if it isn't in the list yet
 			if (product_records.len >= max_products)
 				var/datum/data/vending_product/free = null
 				for (var/datum/data/vending_product/R in product_records)

@@ -84,7 +84,7 @@
 						qdel(src)
 		else
 			..()
-/obj/item/stack/ore/iron_pig //slighly better iron from a blast furnace.
+/obj/item/stack/ore/iron_pig //slightly better iron from a blast furnace.
 	name = "pig iron"
 	desc = "A soft iron with a high carbon content. Used to make steel using an anvil."
 	icon_state = "ore_pig_iron"

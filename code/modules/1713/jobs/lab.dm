@@ -521,7 +521,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/toolbox/emergency(H), slot_l_hand)
 	H.civilization = "Facility personnel"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. a Maintaince technician of this facility,make sure that the facility stays in tip top shape!")
+	H.add_note("Role", "You are a <b>[title]</b>. a Maintenance technician of this facility,make sure that the facility stays in tip top shape!")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_NORMAL)
@@ -678,7 +678,7 @@
 
 	H.civilization = "Monster"
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>. a Former prisoner, the facility has commited unspeakable acts on you, take your revenge on them all!")
+	H.add_note("Role", "You are a <b>[title]</b>. a Former prisoner, the facility has committed unspeakable acts on you, take your revenge on them all!")
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
 	H.setStat("rifle", STAT_NORMAL)

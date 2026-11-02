@@ -18,7 +18,7 @@
 	//How much blood this step can get on surgeon. 1 - hands, 2 - full body.
 	var/blood_level = 0
 
-	//returns how well the tool is suited for this step. from 1 to 100 (to be used as a prob of suceeding)
+	//returns how well the tool is suited for this step. from 1 to 100 (to be used as a prob of succeeding)
 	proc/tool_quality(obj/item/TT, var/mob/living/human/user)
 		var/quality = FALSE
 		var/alist_len = alist_length(allowed_tools)
@@ -57,7 +57,7 @@
 	proc/can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		return FALSE
 
-	// does stuff to begin the step, usually just printing messages. Moved germs transfering and bloodying here too
+	// does stuff to begin the step, usually just printing messages. Moved germs transferring and bloodying here too
 	proc/begin_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		if (can_infect && affected)

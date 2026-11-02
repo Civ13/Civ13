@@ -166,7 +166,7 @@ datum/admins/proc/print_chemical_reactions()
 		progress = min(progress, yield_limit) //apply yield limit
 
 	//apply min reaction progress - wasn't sure if this should go before or after applying yield
-	//I guess people can just have their miniscule reactions go to completion regardless of yield.
+	//I guess people can just have their minuscule reactions go to completion regardless of yield.
 	for (var/reactant in required_reagents)
 		var/remainder = holder.get_reagent_amount(reactant) - progress*required_reagents[reactant]
 		if (remainder <= min_reaction*required_reagents[reactant])

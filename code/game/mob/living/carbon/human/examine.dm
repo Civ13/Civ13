@@ -250,7 +250,7 @@
 	//If they have something that covers the limb, and it is not missing, put flavortext.  If it is covered but bleeding, add other flavortext.
 
 
-	for (var/limb in wound_flavor_text)//Uneeded.
+	for (var/limb in wound_flavor_text)//Unneeded.
 		msg += wound_flavor_text[limb]
 		is_bleeding[limb] = null
 	for (var/limb in is_bleeding)
@@ -325,7 +325,7 @@
 				if (H.nationality == nationality)
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[H.nationality]</b>!</i>"
 				if (H.original_job_title == "Auxillary Police" && original_job_title == H.original_job_title)
-					msg += "<br><i>You recognize [T.him] as a fellow <b>Auxillary Police</b>!</i>"
+					msg += "<br><i>You recognize [T.him] as a fellow <b>Auxiliary Police</b>!</i>"
 			if (H.faction_text == "GERMAN" && original_job_title == "Auxillary Police")
 				msg += "<br><i>You recognize [T.him] as a <b>collaborator</b>!</i>"
 

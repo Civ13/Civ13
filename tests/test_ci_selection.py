@@ -13,6 +13,19 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 class SelectionTests(unittest.TestCase):
+    def test_stone_brazier_offline_admission_is_exact(self):
+        path = 'tests/stone_brazier/test_stone_brazier_disposal.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/stone_brazier/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered stone-brazier'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        with patch.object(selection, 'STONE_BRAZIER_OFFLINE_TESTS', frozenset()):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered stone-brazier'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_mcp_changed_files_and_comparison_failure(self):
         for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
                      'tools/mcp/package-lock.json', '.github/workflows/mcp.yml',
@@ -207,6 +220,19 @@ class SelectionTests(unittest.TestCase):
             self.assertIn('must differ', result.stderr)
             self.assertFalse(output.exists())
             self.assertFalse(receipt.exists())
+
+    def test_axe_active_hand_offline_admission_is_exact(self):
+        path = 'tests/axe_active_hand/test_axe_active_hand.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/axe_active_hand/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered axe active-hand'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        with patch.object(selection, 'AXE_ACTIVE_HAND_OFFLINE_TESTS', frozenset()):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered axe active-hand'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_extensive_is_explicit_manual_opt_in(self):
         self.assertTrue(selection.needs_extensive('workflow_dispatch', True))

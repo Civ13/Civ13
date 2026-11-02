@@ -237,7 +237,7 @@ var/global/redirect_all_players = null
 			var/mob/observer/ghost/observer = new(150, 317, 1)
 
 			spawning = TRUE
-			src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS cant last forever yo
+			src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS can't last forever yo
 
 			observer.started_as_observer = TRUE
 			#ifdef OPENDREAM
@@ -1340,7 +1340,7 @@ var/global/redirect_all_players = null
 		character = job_master.EquipRank(character, rank, TRUE)
 		return
 	if (!job.can_be_minor && client.prefs.age < 18)
-		WWalert(usr,"You must be atleast 18 to play this role.","Error")
+		WWalert(usr,"You must be at least 18 to play this role.","Error")
 		return FALSE
 
 	if (istype(job, /datum/job/german/hj_reichstag) && client.prefs.age > 17)
@@ -1408,7 +1408,7 @@ var/global/redirect_all_players = null
 			H.verbs += /mob/living/human/proc/find_nco
 			if (H.original_job.is_squad_leader)
 				H.verbs += /mob/living/human/proc/Squad_Announcement
-			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest ammount of members
+			if (H.faction_text == map.faction1) //lets check the squads and see what is the one with the lowest amount of members
 				if (H.original_job.is_officer || H.original_job.is_squad_leader || H.original_job.is_commander)
 					if (map.ordinal_age >= 6 && map.ordinal_age < 8)
 						if (map.ID != MAP_YELTSIN && map.ID != MAP_WACO)
@@ -1662,7 +1662,7 @@ var/global/redirect_all_players = null
 			spawning = FALSE
 			return null
 
-	src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS cant last forever yo
+	src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS can't last forever yo
 
 	if (mind)
 		mind.active = FALSE					//we wish to transfer the key manually

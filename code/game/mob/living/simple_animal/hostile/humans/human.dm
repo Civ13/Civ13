@@ -833,7 +833,7 @@ var/global/list/npc_appearance_cache = list()
 			do_movement(loc)
 
 /mob/living/simple_animal/hostile/human/proc/take_cover(var/mob/living/H)
-	var/mob/tgt = null //if theres no enemy, take cover somewhere behind the officer
+	var/mob/tgt = null //if there's no enemy, take cover somewhere behind the officer
 	if (target_mob)
 		tgt = target_mob
 	else

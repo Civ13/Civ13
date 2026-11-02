@@ -17,7 +17,7 @@
 		)
 	age = "1937"
 	faction_distribution_coeffs = list(JAPANESE = 0.4, CHINESE = 0.6)
-	battle_name = "The Marco Polo Birdge Incident"
+	battle_name = "The Marco Polo Bridge Incident"
 	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Kuomintang</b> are battling for the control of Marco Polo Bridge! Each side will win if they manage to hold the <b>central island</b> for <b>4 minutes</b>.<br>The battle will start in <b>4 minutes</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = CHINESE

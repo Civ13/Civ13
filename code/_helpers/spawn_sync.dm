@@ -2,7 +2,7 @@
 /*
 	Spawn sync helper
 
-	Helps syncronize spawn()ing multiple processes in loops.
+	Helps synchronize spawn()ing multiple processes in loops.
 
 	Example for using this:
 

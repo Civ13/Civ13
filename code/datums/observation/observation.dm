@@ -27,7 +27,7 @@
 //		When proc_call is called the first argument is always the source of the event (event_source).
 //		Additional arguments may or may not be supplied, see individual event definition files (destroyed.dm, moved.dm, etc.) for details.
 //
-//		The instance making the register() call is also responsible for calling unregister(), see below for additonal details, including when event_source is destroyed.
+//		The instance making the register() call is also responsible for calling unregister(), see below for additional details, including when event_source is destroyed.
 //			This can be handled by listening to the event_source's destroyed event, unregistering in the listener's Destroy() proc, etc.
 //
 //	/decl/observ/proc/unregister(var/event_source, var/datum/listener, var/proc_call)
@@ -79,7 +79,7 @@
 	if (!(event_source in event_sources))
 		return FALSE
 
-	// Get and check the listeners for the reuqested event.
+	// Get and check the listeners for the requested event.
 	var/listeners = event_sources[event_source]
 	if (!(listener in listeners))
 		return FALSE

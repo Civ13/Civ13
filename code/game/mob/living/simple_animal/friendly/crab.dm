@@ -61,7 +61,7 @@
 
 /mob/living/simple_animal/crab/small/trilobite
 	name = "trilobite"
-	desc = "A hard-shelled artiopodan. it seems to be scavanging for food."
+	desc = "A hard-shelled artiopodan. it seems to be scavenging for food."
 	icon_state = "trilobite_living"
 	icon_living = "trilobite_living"
 	icon_dead = "trilobite_dead"

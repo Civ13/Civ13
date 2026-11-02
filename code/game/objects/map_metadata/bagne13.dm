@@ -132,7 +132,7 @@
 					to_chat(H, "<font size = 4><span style='color:green'><b>Congratulations! You have achieved your personal objective!</b></span></font>")
 					to_chat(H, "<font size = 4>Your final score is: <b>[score]</b> out of <b>[score_tgt]</b> [score_item].</font>")
 					if (H.client && H.client.ckey)
-						to_chat(world, "[H.ckey]: <span style='color:green'><b>SUCESS</b></span>!")
+						to_chat(world, "[H.ckey]: <span style='color:green'><b>SUCCESS</b></span>!")
 				else
 					to_chat(H, "<font size = 4><span style='color:red'><b>You did not achieve your personal objective.</b></span></font>")
 					if (H.client && H.client.ckey)

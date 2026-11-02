@@ -94,7 +94,7 @@
 			else
 				C.powered = FALSE
 	return min(max(powerused,maxpower*0.1), maxpower) //minimum powerused is 10% of maxpower, maximum is the maxpower value
-	//TODO: diferentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
+	//TODO: differentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
 
 
 /obj/structure/engine/proc/process_current_weight()
@@ -180,7 +180,7 @@
 	if (broken && istype(W, /obj/item/weapon/weldingtool))
 		visible_message("[user] starts repairing \the [src]...")
 		if (do_after(user, 200, src))
-			visible_message("[user] sucessfully repairs \the [src].")
+			visible_message("[user] successfully repairs \the [src].")
 			broken = FALSE
 			return
 	else if (istype(W,/obj/item/weapon/wrench) && !not_movable)

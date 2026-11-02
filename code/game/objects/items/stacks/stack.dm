@@ -1956,6 +1956,7 @@
 			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
 			return
 
+	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	// Retain and recheck tools, secondary stock, occupied tile and research after
 	// the wait. No debit occurs on an interrupted or invalidated action.
 	if (joinery && !joinery.valid())
@@ -1978,6 +1979,8 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+		if (offer_stone_hatchet)
+			offer_crafted_axe_to_active_hand(user, O)
 
 		if (building_floor_recipe)
 			var/obj/covers/floor = O

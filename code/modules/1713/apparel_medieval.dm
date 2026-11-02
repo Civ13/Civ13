@@ -26,7 +26,7 @@
    * - 11d Medieval Japanese Headpieces & Helmets
    * - 11e Medieval Japanese Masks
    /////////////////////////////////////
-   * - 12 Miscallenous Medieval Extra-Cultural Clothes
+   * - 12 Miscellaneous Medieval Extra-Cultural Clothes
    * - 13 Fantasy Medieval Clothes
    * - 13a Fantasy Crusader Helmets
    * - 13b Dark Souls Armor
@@ -2057,7 +2057,7 @@ obj/item/clothing/head/helmet/samurai/black
 	icon_state = "samurai3"
 	item_state = "samurai3"
 
-/* Miscallenous Medieval Extra-Cultural Clothes*/
+/* Miscellaneous Medieval Extra-Cultural Clothes*/
 
 /obj/item/clothing/head/gat
 	name = "gat hat"
@@ -2151,7 +2151,7 @@ obj/item/clothing/head/helmet/samurai/black
 
 /obj/item/clothing/shoes/medieval/giantdad
 	name = "lordran shoes"
-	desc = "A legendary pair of plated armored shoes, they are suprisingly light. Ideal for outmaneuvering duelists."
+	desc = "A legendary pair of plated armored shoes, they are surprisingly light. Ideal for outmaneuvering duelists."
 	icon_state = "giantdad"
 	item_state = "giantdad"
 	body_parts_covered = FEET

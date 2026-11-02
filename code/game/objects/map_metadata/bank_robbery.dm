@@ -132,7 +132,7 @@
 	else
 		for(var/obj/structure/money_bag/C in world)
 			if (C.storedvalue >= 10000) // total value stored = 12400+. So roughly 3/4th
-				var/message = "The Robbers have sucessfully stolen over 10.000 dollars! The robbery was successful!"
+				var/message = "The Robbers have successfully stolen over 10.000 dollars! The robbery was successful!"
 				to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 				show_global_battle_report(null)
 				win_condition_spam_check = TRUE

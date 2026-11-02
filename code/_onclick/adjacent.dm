@@ -38,7 +38,7 @@
 		// Check for border blockages
 		return T0.ClickCross(get_dir(T0,src), border_only = TRUE) && ClickCross(get_dir(src,T0), border_only = TRUE, target_atom = target)
 
-	// Not orthagonal
+	// Not orthogonal
 	var/in_dir = get_dir(neighbor,src) // eg. northwest (1+8)
 	var/d1 = in_dir&(in_dir-1)		// eg west		(1+8)&(8) = 8
 	var/d2 = in_dir - d1			// eg north		(1+8) - 8 = TRUE
@@ -68,7 +68,7 @@
 		// Check for border blockages
 		return T0.ClickCross(get_dir(T0,src), border_only = TRUE) && ClickCross(get_dir(src,T0), border_only = TRUE, target_atom = target)
 
-	// Not orthagonal
+	// Not orthogonal
 	var/in_dir = get_dir(neighbor,src) // eg. northwest (1+8)
 	var/d1 = in_dir&(in_dir-1)		// eg west		(1+8)&(8) = 8
 	var/d2 = in_dir - d1			// eg north		(1+8) - 8 = TRUE

@@ -26,7 +26,7 @@
 	if (decay > 0)
 		food_decay()
 	if (center_of_mass.len && !pixel_x && !pixel_y)
-		pixel_x = rand(-6.0, 6) //Randomizes postion
+		pixel_x = rand(-6.0, 6) //Randomizes position
 		pixel_y = rand(-6.0, 6)
 
 /obj/item/weapon/reagent_containers/food/proc/rot()
@@ -63,7 +63,7 @@
 			if (!C.open)
 				food_decay()
 				return
-		//temp until I put a continuing proc somewhere else like by the potatoes but i cant figure it right now because i have other stuff to do k thx bye.
+		//temp until I put a continuing proc somewhere else like by the potatoes but i can't figure it right now because i have other stuff to do k thx bye.
 		if(istype(src, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
 			if (isturf(loc))
 				if(prob(10))
