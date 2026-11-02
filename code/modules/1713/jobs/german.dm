@@ -138,7 +138,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
-	to_chat(world, "<big><b>[H.real_name] is the Leutenant of the German Forces!</b></big>")
+	to_chat(world, "<big><b>[H.real_name] is the Lieutenant of the German Forces!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the troops and their orders. The whole operation relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -1106,7 +1106,7 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/g41(H), slot_shoulder)
 			var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/assault(null)
 			uniform.attackby(webbing, H)
-		if (5) //this is here so every 2th german doesnt get a semiauto
+		if (5) //this is here so every 2th german doesn't get a semiauto
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_shoulder)
 			if (prob(30))
 				var/obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/german/ww2/gewehr98(null)
@@ -1396,7 +1396,7 @@
 
 	return TRUE
 /datum/job/german/german_antitankassitant
-	title = "Anti Panzer Schützen Assistent"
+	title = "Anti Panzer Schützen Assistant"
 	en_meaning = "Anti Tank Rifleman Assistant"
 	rank_abbreviation = ""
 	allowed_maps = list(MAP_BARBAROSSA, MAP_FOREST, MAP_HOTEL, MAP_KURSK, MAP_REICHFLAKTURM, MAP_STALINGRAD, MAP_VITEBSK, MAP_WARSAW)

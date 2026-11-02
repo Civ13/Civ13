@@ -222,7 +222,7 @@
 			visible_message("<span class='danger'>[H] starts assembling the Type 92 HMG.</span>", "<span class='danger'>You start assembling the Type 92 HMG.</span>")
 			return
 	else
-		to_chat(usr, SPAN_WARNING("You cant put that on the tripod!"))
+		to_chat(usr, SPAN_WARNING("You can't put that on the tripod!"))
 		return
 
 /obj/structure/type92tripod/attack_hand(var/mob/living/human/H as mob)
@@ -257,7 +257,7 @@
 	if (ishuman(user))
 		var/turf/targetfloor = get_turf(get_step(user, user.dir))
 		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
-			to_chat(usr, SPAN_WARNING("You cant place this here!."))
+			to_chat(usr, SPAN_WARNING("You can't place this here!."))
 			return
 		else
 			var/mob/living/human/H = user

@@ -802,7 +802,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/longer/h = new /obj/item/clothing/accessory/storage/sheath/longer(null)
 	uniform.attackby(h, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a Knight who joined the Templars. Lead your bretheren to victory!")
+	H.add_note("Role", "You are a <b>[title]</b>, a Knight who joined the Templars. Lead your brethren to victory!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -971,7 +971,7 @@
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(h, H)
 
-	H.add_note("Role", "You are a <b>[title]</b>, an annointed member of the Templar Order. Take care of the injured soldiers and keep the morale up!")
+	H.add_note("Role", "You are a <b>[title]</b>, an anointed member of the Templar Order. Take care of the injured soldiers and keep the morale up!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW)

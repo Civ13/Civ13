@@ -1,4 +1,4 @@
-//wall format (w_type var): type of wall, opacity, density, armor, current health, can open/close, is open?, doesnt get colored
+//wall format (w_type var): type of wall, opacity, density, armor, current health, can open/close, is open?, doesn't get colored
 
 //tanks
 

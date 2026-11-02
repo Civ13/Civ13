@@ -76,7 +76,7 @@ var/no_loop_iwo = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Japanese</b> have successfuly defended the Island! The Americans have halted the attack!"
+		var/message = "The <b>Japanese</b> have successfully defended the Island! The Americans have halted the attack!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

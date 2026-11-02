@@ -475,7 +475,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	var/obj/FFL = corners[2]
 	if (!istype(corners[2], /obj/structure/vehicleparts/frame) && !istype(corners[2], /obj/effect/pseudovehicle))
 
-		world.log << "ERROR BUILDING MATRIX! (Front-Left doesnt exist)"
+		world.log << "ERROR BUILDING MATRIX! (Front-Left doesn't exist)"
 		return FALSE
 	for (var/obj/structure/vehicleparts/frame/FM in components)
 		var/disx = abs(FM.y-FFL.y)

@@ -12,7 +12,7 @@
 //             Lids have own pore_size. For example beakers lid must (may) have pore_size=0
 //TO DO TODO: Why not all pots from 'icons/obj/claystuff.dmi' are /glass objects??? Need reworking to usual concept!
 //TO DO TODO: Satisfaction of drinking from a glass
-//TO DO TODO: resolve theese objects attackby procedures (they must return TRUE for interrupt attack chain):
+//TO DO TODO: resolve these objects attackby procedures (they must return TRUE for interrupt attack chain):
 var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispenser, /obj/structure/lab_distillery,
 		/obj/structure/table, /obj/structure/closet, /obj/structure/sink, /obj/structure/engine,
 		/obj/item/weapon/storage, /mob/living/simple_animal/cattle/cow,
@@ -97,7 +97,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	return TRUE //open container attack will resolved anyway
 
 /obj/item/weapon/reagent_containers/glass/attack_obj(obj/attacked, mob/user, icon_x, icon_y)
-	for (var/type in not_resolved_in_attackby_objects) //Old code artefact. TO DO TODO: resolve theese objects attackby procedures (they must return TRUE for interrupt attack chain)
+	for (var/type in not_resolved_in_attackby_objects) //Old code artefact. TO DO TODO: resolve these objects attackby procedures (they must return TRUE for interrupt attack chain)
 		if (istype(attacked, type))
 			return FALSE
 	if (istype(attacked, /obj/structure/pot))
@@ -963,7 +963,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 
 /obj/item/weapon/reagent_containers/glass/barrel/fueltank
 	name = "large fueltank"
-	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
+	desc = "A metallic fueltank. Used to connect to a engine and supply it with fuel."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "fueltank_large"
 	volume = 250

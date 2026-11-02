@@ -148,7 +148,7 @@
 	//we can assume 'stop following' is handled by stop_command
 	if (findtext(text,"me"))
 		stance = COMMANDED_FOLLOW
-		npc_set_combat_target(speaker) //this wont bite me in the ass later.
+		npc_set_combat_target(speaker) //this won't bite me in the ass later.
 		return TRUE
 	var/list/targets = get_targets_by_name(text)
 	if (targets.len > 1 || !targets.len) //CONFUSED. WHO DO I FOLLOW?

@@ -88,7 +88,7 @@
 	message_admins("<span class = 'notice'>\bold GlobalNarrate: [key_name_admin(usr)] : [msg]</span><br>", key_name_admin(usr))
 
 
-/client/proc/cmd_admin_direct_narrate(var/mob/M)	// Targetted narrate -- TLE
+/client/proc/cmd_admin_direct_narrate(var/mob/M)	// Targeted narrate -- TLE
 	set category = "Special"
 	set name = "Direct Narrate"
 

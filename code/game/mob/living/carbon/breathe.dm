@@ -1,6 +1,6 @@
 //Common breathing procs
 
-//Handle possble chem smoke effect
+//Handle possible chem smoke effect
 /mob/living/human/proc/handle_chemical_smoke(var/datum/gas_mixture/environment)
 /*	if (species && environment.return_pressure() < species.breath_pressure/5)
 		return //pressure is too low to even breathe in.

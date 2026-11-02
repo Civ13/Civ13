@@ -55,8 +55,8 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 /proc/stack_trace(msg)
 	CRASH(msg)
 
-// \ref behaviour got changed in 512 so this is necesary to replicate old behaviour.
-// If it ever becomes necesary to get a more performant REF(), this lies here in wait
+// \ref behaviour got changed in 512 so this is necessary to replicate old behaviour.
+// If it ever becomes necessary to get a more performant REF(), this lies here in wait
 // #define REF(thing) (thing && istype(thing, /datum) && (thing:datum_flags & DF_USE_TAG) && thing:tag ? "[thing:tag]" : "\ref[thing]")
 /proc/REF(input)
 	if(istype(input, /datum))
@@ -118,7 +118,7 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	var/sdx=((dx) ? ((dx) < 0 ? -1 : 1) : 0)	//Sign of x distance (+ or -)
 	var/sdy=((dy) ? ((dy) < 0 ? -1 : 1) : 0)
 	var/x=dxabs>>1	//Counters for steps taken, setting to distance/2
-	var/y=dyabs>>1	//Bit-shifting makes me l33t.  It also makes getline() unnessecarrily fast.
+	var/y=dyabs>>1	//Bit-shifting makes me l33t.  It also makes getline() unnecessarily fast.
 	var/j			//Generic integer for counting
 	if (dxabs>=dyabs)	//x distance is greater than y
 		for (j=0;j<dxabs;j++)//It'll take dxabs steps to get there
@@ -309,7 +309,7 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 /proc/between(var/low, var/middle, var/high)
 	return max(min(middle, high), low)
 
-//Will return the contents of an atom recursivly to a depth of 'searchDepth'
+//Will return the contents of an atom recursively to a depth of 'searchDepth'
 /atom/proc/GetAllContents(searchDepth = 5)
 	var/list/toReturn = list()
 

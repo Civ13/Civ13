@@ -11,7 +11,7 @@
  * @code
 	hook/foo/proc/bar()
 		if (TRUE)
-			return TRUE //Sucessful
+			return TRUE //Successful
 		else
 			return FALSE //Error, or runtime.
  * @endcode

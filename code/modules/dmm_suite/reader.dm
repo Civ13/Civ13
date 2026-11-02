@@ -23,7 +23,7 @@ dmm_suite/proc/loadModel(atomPath, list/attributes, list/strings, xcrd, ycrd, zc
 	for(var/attributeName in attributes)
 		attributesMirror[attributeName] = loadAttribute(attributes[attributeName], strings)
 	var/dmm_suite/preloader/preloader = new(location, attributesMirror)
-	// Begin Instanciation
+	// Begin Instantiation
 	// Handle Areas (not created every time)
 	var/atom/instance
 	if(ispath(atomPath, /area))
@@ -47,7 +47,7 @@ dmm_suite/proc/loadModel(atomPath, list/attributes, list/strings, xcrd, ycrd, zc
 				spawn(10)
 					N.open()
 					N.close()
-	// Handle cases where Atom/New was redifined without calling Super()
+	// Handle cases where Atom/New was redefined without calling Super()
 	if(preloader && instance) // Atom could delete itself in New()
 		preloader.load(instance)
 	//

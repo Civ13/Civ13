@@ -253,7 +253,7 @@
 /////////////////////////////STAT MG'S/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary/laser
 	name = "laser MG"
-	desc = "shouldnt be viewing this"
+	desc = "shouldn't be viewing this"
 	icon_state = "repeating_blaster"
 	base_icon = "repeating_blaster"
 	caliber = "laser"
@@ -306,7 +306,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/laser
 	name = "laser minigun"
-	desc = "shouldnt be using this m8"
+	desc = "shouldn't be using this m8"
 	icon_state = "Z-6"
 	item_state = "Z-6"
 	base_icon = "Z-6"

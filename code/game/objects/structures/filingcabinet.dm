@@ -30,7 +30,7 @@
 	color = "#A07449"
 
 
-/obj/structure/filingcabinet/filingcabinet	//not changing the path to avoid unecessary map issues, but please don't name stuff like this in the future -Pete
+/obj/structure/filingcabinet/filingcabinet	//not changing the path to avoid unnecessary map issues, but please don't name stuff like this in the future -Pete
 	icon_state = "tallcabinet"
 
 

@@ -322,7 +322,7 @@
 
 /obj/item/weapon/material/pickaxe/jackhammer
 	name = "jackhammer"
-	desc = "An effecient mining tool."
+	desc = "An efficient mining tool."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "jackhammer"
 	force = 12.0

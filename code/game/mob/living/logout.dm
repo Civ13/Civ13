@@ -2,7 +2,7 @@
 	..()
 	if (mind)
 		//Per BYOND docs key remains set if the player DCs, becomes null if switching bodies.
-		if (!key)	//key and mind have become seperated.
+		if (!key)	//key and mind have become separated.
 			mind.active = FALSE	//This is to stop say, a mind.transfer_to call on a corpse causing a ghost to re-enter its body.
 
 /mob/living/human/Logout()
