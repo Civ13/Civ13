@@ -130,3 +130,7 @@ does not cause an image/frame withdrawal. Verify native hover/examine and hidden
 terrain/entity controls in the approved isolated scene. Actual flicker acceptance
 still needs genuine motion evidence linked to the tested native build.
 
+
+## Prepared native harness
+
+The separate [current-source native harness](../tests/tree_refresh_native/README.md) implements executable isolated preparation, real-client callback/state witnesses and fixed resource/failure cleanup contracts. Its workflow is manual-only and defaults to preparation. Native compilation/execution, pixel acceptance and dense-scene measurements remain unrun; independent review is required before execution. The frozen historical tree fixture remains unchanged.

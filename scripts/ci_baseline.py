@@ -25,6 +25,21 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only native fixture preparation/protocol/supervisor contracts.
+    # No compiler, daemon, client, workflow dispatch or installer execution.
+    'tree_refresh_native_preparation': {'files': ('tests/tree_refresh_native/test_harness.py',),
+        'paths': ('tests/tree_refresh_native/',), 'shared_paths': (
+            '.github/workflows/tree-refresh-native.yml',
+            'tests/human_subtile/run.py', 'tests/human_subtile/run-npc.py',
+            'tests/human_subtile/run-diagonal.py', 'tests/human_subtile/probe.dm',
+            'tests/human_subtile/native_1688/windows.py',
+            'tests/human_subtile/native_1688/owned_job.py',
+            'tests/human_subtile/native_1688/guard_config.py', 'scripts/native_fixture.py',
+            'tools/byond/version.json', 'code/game/mob/mob_movement.dm',
+            'code/datums/observation/moved.dm', 'code/modules/client/client_procs.dm',
+            'code/modules/visibility/los_context.dm', 'code/modules/visibility/los_lifecycle.dm',
+            'code/modules/visibility/los_presenter.dm', 'code/modules/visibility/root_tree_presenter.dm',
+            'code/modules/visibility/root_light_snapshot.dm')},
     # Complete selected anvil admission/message projection; no native world.
     'anvil_feedback': {'files': ('tests/anvil_feedback/test_feedback.py',),
         'paths': ('tests/anvil_feedback/',), 'shared_paths': (

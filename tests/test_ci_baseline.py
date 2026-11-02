@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_tree_native_preparation_preserves_offline_and_native_boundaries(self):
+        suite=ci.SUITES['tree_refresh_native_preparation']
+        self.assertEqual(suite['files'],('tests/tree_refresh_native/test_harness.py',))
+        for path in suite['shared_paths']+('tests/tree_refresh_native/probe.dm',):
+            self.assertIn('tree_refresh_native_preparation',self.selected([path]))
+        workflow=(ROOT/'.github/workflows/tree-refresh-native.yml').read_text()
+        self.assertIn('workflow_dispatch:',workflow)
+        self.assertNotIn('  push:',workflow)
+        self.assertNotIn('  pull_request:',workflow)
+        ordinary=(ROOT/'.github/workflows/test.yml').read_text()
+        self.assertNotIn('tests/tree_refresh_native',ordinary)
+
     def test_anvil_feedback_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['anvil_feedback']
         self.assertEqual(suite['files'], ('tests/anvil_feedback/test_feedback.py',))
