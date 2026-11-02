@@ -62,6 +62,10 @@ SUITES = {
     'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
         'paths': ('tests/stone_brazier/',), 'shared_paths': (
             'code/modules/1713/siege/fire.dm',)},
+    # Showcase room templates parsed with the runtime reader's rules; no BYOND runtime.
+    'showcase_rooms': {'files': ('tests/showcase_rooms/test_templates.py',),
+        'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
+                  'code/modules/admin/showcase_rooms.dm')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (

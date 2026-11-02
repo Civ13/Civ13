@@ -1,0 +1,27 @@
+"a" = (/turf/wall/wood)
+"b" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood)
+"c" = (/turf/floor/wood)
+"d" = (/obj/structure/sawmill,/turf/floor/wood)
+"e" = (/obj/structure/loom,/turf/floor/wood)
+"f" = (/obj/item/stack/material/wood{amount = 25},/turf/floor/wood)
+"g" = (/obj/item/stack/material/cotton{amount = 20},/turf/floor/wood)
+"h" = (/obj/structure/table/wood,/obj/item/weapon/flint/sharpened,/obj/item/weapon/flint/sharpened,/turf/floor/wood)
+"i" = (/obj/structure/roof_support,/turf/floor/wood)
+"j" = (/obj/item/stack/material/wethide{amount = 5},/turf/floor/wood)
+"k" = (/obj/structure/table/wood,/obj/item/weapon/saw,/obj/item/weapon/chisel,/obj/item/weapon/hammer,/obj/item/weapon/paper{name = "workshop guide"; info = "<b>Workshop</b><br>1. Fit a sharpened flint blade into the primitive saw mill, then feed it logs to cut planks. The blade wears out.<br>2. Use cotton on the loom to weave cloth.<br>3. Hang washed hides on the tanning rack to dry them, then treat the dried hides with bark tannin.<br>4. Planks, cloth and leather feed the crafting menu: furniture, clothing and tools."},/turf/floor/wood)
+"l" = (/obj/structure/converter/tanning,/turf/floor/wood)
+"m" = (/obj/item/stack/material/woodplank{amount = 25},/turf/floor/wood)
+"n" = (/obj/structure/table/rack,/obj/item/stack/material/rope{amount = 10},/obj/item/stack/material/cloth{amount = 10},/turf/floor/wood)
+"o" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood)
+
+(1,1,1) = {"
+aaaaaaaaaaa
+abcdcccecba
+accccccccca
+afcccccccga
+ahcccicccja
+akcccccccla
+amcccccccna
+accccccccca
+aaaaaoaaaaa
+"}

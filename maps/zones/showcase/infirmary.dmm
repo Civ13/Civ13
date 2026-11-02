@@ -1,0 +1,25 @@
+"a" = (/turf/wall/wood)
+"b" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood)
+"c" = (/obj/structure/bed,/obj/item/weapon/bedsheet/medical,/turf/floor/wood)
+"d" = (/turf/floor/wood)
+"e" = (/obj/structure/sink,/turf/floor/wood)
+"f" = (/obj/structure/table/wood,/obj/structure/lab_distillery,/turf/floor/wood)
+"g" = (/obj/structure/roof_support,/turf/floor/wood)
+"h" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/paper{name = "infirmary guide"; info = "<b>Infirmary</b><br>1. Lay patients on a bed or the roller bed before treating them.<br>2. Bandages stop bleeding and splints set broken limbs.<br>3. Surgery tools need a steady hand: scalpel, retractor, hemostat, then cautery to close.<br>4. Herbs make simple medicine. The laboratory distiller separates chemicals.<br>Wash your hands at the sink between patients."},/turf/floor/wood)
+"i" = (/obj/structure/bed/roller,/turf/floor/wood)
+"j" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack{amount = 10},/obj/item/stack/medical/splint{amount = 5},/obj/item/stack/medical/advanced/herbs{amount = 10},/turf/floor/wood)
+"k" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/wood)
+"l" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid,/turf/floor/wood)
+"m" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood)
+
+(1,1,1) = {"
+aaaaaaaaaaa
+abcdcdcddba
+addddddddda
+aedddddddfa
+addddgdddha
+aidddddddja
+akdddddddla
+addddddddda
+aaaaamaaaaa
+"}

@@ -1,0 +1,27 @@
+"a" = (/turf/wall/wood)
+"b" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt)
+"c" = (/turf/floor/dirt)
+"d" = (/obj/structure/mill,/turf/floor/dirt)
+"e" = (/obj/structure/compost,/turf/floor/dirt)
+"f" = (/obj/structure/table/wood,/obj/item/stack/farming/seeds/wheat{amount = 10},/obj/item/stack/farming/seeds/potato{amount = 10},/obj/item/stack/farming/seeds/carrot{amount = 10},/obj/item/stack/farming/seeds/cabbage{amount = 10},/turf/floor/dirt)
+"g" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/dirt)
+"h" = (/obj/structure/table/rack,/obj/item/weapon/material/minihoe,/obj/item/weapon/plough,/obj/item/weapon/material/scythe,/obj/item/weapon/material/shovel,/turf/floor/dirt)
+"i" = (/obj/structure/roof_support,/turf/floor/dirt)
+"j" = (/obj/item/weapon/reagent_containers/food/snacks/grown/wheat,/obj/item/weapon/reagent_containers/food/snacks/grown/wheat,/obj/item/weapon/reagent_containers/food/snacks/grown/wheat,/turf/floor/dirt)
+"k" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/paper{name = "farm shed guide"; info = "<b>Farm shed</b><br>1. Plough soil outside, plant the seeds from the table and water them with the bucket.<br>2. Harvest ripe crops with the scythe or by hand.<br>3. Grind wheat at the mill to make flour.<br>4. Put scraps and trash in the compost bin to make fertilizer.<br>5. Hang meat on the drying rack to cure it."},/turf/floor/dirt)
+"l" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/dirt)
+"m" = (/obj/structure/drying_rack,/turf/floor/dirt)
+"n" = (/obj/item/stack/material/wood{amount = 10},/turf/floor/dirt)
+"o" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/dirt)
+
+(1,1,1) = {"
+aaaaaaaaaaa
+abcdcccecba
+accccccccca
+afcccccccga
+ahcccicccja
+akcccccccla
+amcccccccna
+accccccccca
+aaaaaoaaaaa
+"}

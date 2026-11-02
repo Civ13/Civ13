@@ -166,6 +166,15 @@ class SelectionTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, 'Unregistered well-smell'):
                     selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_showcase_rooms_offline_admission_is_exact(self):
+        path = 'tests/showcase_rooms/test_templates.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/showcase_rooms/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered showcase-room'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:
             def git(*args):
