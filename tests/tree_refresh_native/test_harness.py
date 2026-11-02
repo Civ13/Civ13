@@ -15,6 +15,34 @@ import runner as R
 import acquire as A
 from budget import EvidenceBudget
 
+def modeled_trace(row,case,before,after,phases):
+    # Protocol-only synthetic samples, never runtime or pixel evidence.
+    enabled=row['class']=='viewer_move' and row['iteration']==1
+    row.update(trace_enabled=int(enabled),trace=[],trace_bytes=0,trace_entered_calls=0,trace_pulses=0)
+    if not enabled:return
+    def state(source,failed=False):
+        front=source['identities'][0]
+        return dict(client=1,body='body1',position=[12,12,1,0,0],dirty=int(failed),mask_dirty=int(failed),context_retired=0,
+                    revision=1,mutations=int(failed),eye_owned=1,turf_matches=int(not failed),mask_epoch_present=1,mask_epoch_matches=1,
+                    mask_count=10,hidden_mask='mask1',hidden_denial=1,scene_active=int(case['mode']=='root'),fallback_reason=source['fallback_reason'],
+                    root_frames=case['roots'] if front['published_frame'] else 0,fallback_images=int(case['mode']=='fallback' and front['image'] is not None),
+                    root=front['root'],image=front['image'],frame=front['published_frame'],icon_present=front['native_icon_present'],image_member=int(front['image'] is not None))
+    gone=phases[0]['clients'][0]
+    sequence=[('event_begin',before[0]),('native_begin',before[0]),('entered_begin',before[0]),
+              ('root_invalidate_before',before[0]),('root_invalidate_after',gone),('mask_invalidate_before',gone),('mask_invalidate_after',gone),
+              ('entered_end',gone),('native_return',gone),('postmove',gone),('root_refresh_return',after[0]),('mask_refresh_return',after[0]),
+              ('reconcile_return',after[0]),('capture_failure_begin',after[0]),('capture_unavailable',gone),
+              ('capture_failure_observed',gone),('capture_failure_recovered',after[0]),('event_end',after[0])]
+    row['trace_pulses']=1;row['trace_entered_calls']=1
+    for index,(phase,source) in enumerate(sequence):
+        invalid='invalidate' in phase
+        reason='entered_mover' if invalid else 'capture_failure' if phase.startswith('capture_') else 'movement'
+        row['trace'].append(dict(seq=index+1,phase=phase,tick=1,usage=index,native_seq=int(index>0),reason=reason,
+                                subject='subject',changed='body1' if invalid else None,changed_is_body=int(invalid),possible_opacity=0 if invalid else None,
+                                viewer_refresh=0 if invalid else None,result=2 if phase=='native_return' else None,
+                                state=state(source,phase in ('capture_unavailable','capture_failure_observed'))))
+    row['trace_bytes']=len(json.dumps(row['trace'],separators=(',',':')).encode())
+
 def witness():
     rows=[]
     for case in P.CASES:
@@ -34,8 +62,9 @@ def witness():
                 if kind=='viewer_move' and iteration==1:row['capture_failed']=deepcopy(phases[0]['clients'])
                 if kind=='queued_light':
                     row['pending_committed']=deepcopy(before);row['light_notifications']=dict(calls=128,resolved=128,unresolved=0,sum_ms=2,max_ms=.02)
+                modeled_trace(row,case,before,after,phases)
                 rows.append(row)
-    return dict(head='a'*40,binding='run',engine=[516,1688],world=dict(map=[64,64,1],view='15x15',fps=20,tick_lag=.5,icon_size=32,seed=13013),error=None,cleanup=1,events=800,pixels_verified=0),rows
+    return dict(head='a'*40,binding='run',engine=[516,1688],world=dict(map=[64,64,1],view='15x15',fps=20,tick_lag=.5,icon_size=32,seed=13013),error=None,cleanup=1,events=800,pixels_verified=0,trace_schema=1,trace_events=8,trace_bytes=sum(r['trace_bytes'] for r in rows)),rows
 
 class Protocol(unittest.TestCase):
     def test_complete_native_schema_and_limits(self):
@@ -43,6 +72,28 @@ class Protocol(unittest.TestCase):
         self.assertTrue(s['native_dispatch_validated']);self.assertFalse(s['pixels_verified']);self.assertEqual(len(rows),800)
         self.assertEqual(sum(r['iteration']>5 for r in rows),640)
         self.assertEqual(P.LIMITS['rss_bytes'],1920*1024**2)
+    def test_diagnostic_trace_is_bounded_correlated_and_not_recorded_measurement_data(self):
+        receipt,rows=witness();P.validate(receipt,rows,'a'*40,'run')
+        self.assertEqual(sum(r['trace_enabled'] for r in rows),8)
+        for mutation in ('missing','sequence','reason','native_seq','native_result','mask_fact','stale_capture','row_bound','byte_bound','measured','receipt'):
+            with self.subTest(mutation=mutation):
+                receipt,rows=witness();row=next(r for r in rows if r['trace_enabled']);trace=row['trace']
+                if mutation=='missing':row['trace']=[]
+                if mutation=='sequence':trace[1]['seq']=99
+                if mutation=='reason':
+                    for item in trace:
+                        if 'invalidate' in item['phase']:item['reason']='movement'
+                if mutation=='native_seq':next(x for x in trace if x['phase']=='native_return')['native_seq']=0
+                if mutation=='native_result':next(x for x in trace if x['phase']=='native_return')['result']=None
+                if mutation=='mask_fact':trace[0]['state']['mask_epoch_matches']=None
+                if mutation=='stale_capture':next(x for x in trace if x['phase']=='capture_failure_observed')['state']['icon_present']=1
+                if mutation=='row_bound':row['trace']=trace*4
+                if mutation=='byte_bound':row['trace_bytes']=65537
+                if mutation=='measured':
+                    target=next(r for r in rows if r['class']=='viewer_move' and r['iteration']==6);target.update(deepcopy({k:row[k] for k in ('trace_enabled','trace','trace_bytes','trace_entered_calls','trace_pulses')}))
+                if mutation=='receipt':receipt['trace_events']=7
+                with self.assertRaises(ValueError):P.validate(receipt,rows,'a'*40,'run')
+
     def test_native_omission_and_unsafe_identity_controls(self):
         for mutation in ('entered','root_stale','fallback_retained','unrelated','capture_failed','pending','budget_fallback','density','extra_event'):
             with self.subTest(mutation=mutation):
@@ -110,6 +161,25 @@ class Preparation(unittest.TestCase):
         text=(ROOT/'code/modules/client/client_procs.dm').read_text()
         for header in ('/client/New(TopicData)','/client/Topic(href, href_list, hsrc)','/client/Del()'):Q.proc(text,header)
         Q.proc((ROOT/'tests/human_subtile/probe.dm').read_text(),'/proc/human_subtile_fixture_initialize()')
+    def test_incremental_trace_observations_strip_to_the_existing_adapters(self):
+        import re
+        for rel in set(Q.SPANS)|{'code/datums/observation/moved.dm','code/modules/visibility/root_light_snapshot.dm'}:
+            original=(ROOT/rel).read_text();traced=Q.adapt(rel,original);base=Q.adapt(rel,original,trace=False)
+            stripped=''.join(line for line in traced.splitlines(True) if 'tree_native_trace' not in line)
+            with self.subTest(source=rel):self.assertEqual(stripped,base)
+        source=(ROOT/'code/datums/observation/moved.dm').read_text()
+        traced=Q.adapt('code/datums/observation/moved.dm',source)
+        self.assertIn('los_invalidate(old_loc, am.opacity)',traced);self.assertIn('los_invalidate(am)',traced)
+        self.assertLess(traced.index('entered_old_loc'),traced.index('los_invalidate(old_loc, am.opacity)'))
+        self.assertLess(traced.index('entered_mover'),traced.index('los_invalidate(am)'))
+        native=Q.adapt('code/game/mob/mob_movement.dm',(ROOT/'code/game/mob/mob_movement.dm').read_text())
+        self.assertEqual(native.count('tree_native_trace_native_begin(src)'),native.count('tree_native_engine_return(src, .)'))
+        probe=(HERE/'probe.dm').read_text()
+        for control in ('trace_row_limit','trace_byte_limit','trace_total_byte_limit','trace_missing_native_begin','trace_entered_limit','trace_native_pulse_limit'):
+            self.assertIn(control,probe)
+        self.assertIn('row["iteration"] == 1',probe)
+        self.assertLess(probe.index('tree_native_trace_finish(row)'),probe.index('var/list/scheduled = list('))
+
     def test_source_selector_drift_fails_closed(self):
         with self.assertRaises(ValueError):Q.adapt('code/datums/observation/moved.dm','/atom/Entered()\n\treturn\n')
         with self.assertRaises(ValueError):Q.instrument('/proc/f()\n\treturn\n/proc/f()\n\treturn\n','/proc/f()','span')

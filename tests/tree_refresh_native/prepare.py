@@ -26,6 +26,19 @@ def instrument(text, header, name):
     out.append('\ttree_native_end(tree_native_clock)\n')
     return text[:start]+''.join(out)+text[end:]
 
+def trace_proc(text, header, before=None, after=None):
+    """Add read-only staged observations; removing trace lines restores the old adapter."""
+    start,end,body=proc(text,header);lines=body.splitlines(True);out=[lines[0]]
+    def emit(indent,call):
+        if call:
+            out.extend([indent+'if(tree_native_trace_row && tree_native_trace_sampling)\n',indent+'\t'+call+'\n'])
+    emit('\t',before)
+    for line in lines[1:]:
+        if re.match(r'^\t+return(?:\s|$)',line):emit(line[:len(line)-len(line.lstrip('\t'))],after)
+        out.append(line)
+    emit('\t',after)
+    return text[:start]+''.join(out)+text[end:]
+
 def once(text, old, new):
     require(text.count(old)==1,'Instrumentation anchor drift: '+old[:70]);return text.replace(old,new,1)
 
@@ -37,11 +50,14 @@ SPANS={
  'code/modules/visibility/los_presenter.dm':[('/datum/los_presenter/proc/refresh(datum/los_snapshot/S)','los_refresh')],
 }
 
-def adapt(relative,text):
+def adapt(relative,text, trace=True):
     for header,name in SPANS.get(relative,[]):text=instrument(text,header,name)
     if relative=='code/game/mob/mob_movement.dm':
         start,end,body=proc(text,'/atom/movable/Move(newloc, direct)');lines=[]
         for line in body.splitlines(True):
+            if trace and re.match(r'^\t+\. = \.\.\(',line):
+                indent=line[:len(line)-len(line.lstrip('\t'))]
+                lines.append(indent+'tree_native_trace_native_begin(src)\n')
             lines.append(line)
             if re.match(r'^\t+\. = \.\.\(',line):
                 indent=line[:len(line)-len(line.lstrip('\t'))]
@@ -75,6 +91,25 @@ def adapt(relative,text):
                 indent=line[:len(line)-len(line.lstrip('\t'))];lines.append(indent+'tree_native_count("image_allocations", src)\n')
             lines.append(line)
         text=''.join(lines)
+    if not trace:return text
+    if relative=='code/datums/observation/moved.dm':
+        text=once(text,'/atom/Entered(var/atom/movable/am, var/atom/old_loc)\n','/atom/Entered(var/atom/movable/am, var/atom/old_loc)\n\tvar/tree_native_trace_previous_reason = tree_native_trace_reason\n\ttree_native_trace_entered_begin(am, old_loc)\n')
+        text=once(text,'\t\tlos_invalidate(old_loc, am.opacity)\n','\t\ttree_native_trace_set_reason("entered_old_loc", am)\n\t\tlos_invalidate(old_loc, am.opacity)\n')
+        text=once(text,'\tlos_invalidate(am)\n','\ttree_native_trace_set_reason("entered_mover", am)\n\tlos_invalidate(am)\n\ttree_native_trace_set_reason(tree_native_trace_previous_reason, am)\n')
+        text=once(text,'\tGLOB.moved_event.raise_event(am, old_loc, am.loc)\n','\tGLOB.moved_event.raise_event(am, old_loc, am.loc)\n\ttree_native_trace("entered_end", am, am)\n')
+    if relative=='code/modules/visibility/los_lifecycle.dm':
+        text=once(text,'\tif(!S)\n','\tif(!S)\n\t\tif(tree_native_trace_row && tree_native_trace_sampling)\n\t\t\ttree_native_trace("capture_unavailable", src)\n')
+        text=trace_proc(text,'/client/proc/reconcile_geometric_los()','tree_native_trace("reconcile_begin", src)','tree_native_trace("reconcile_return", src)')
+    for rel,kind,header in (
+        ('code/modules/visibility/root_tree_presenter.dm','root','/datum/root_tree_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)'),
+        ('code/modules/visibility/los_presenter.dm','mask','/datum/los_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)')):
+        if relative==rel:
+            args=', src, changed, possible_opacity, viewer_refresh)'
+            text=trace_proc(text,header,'tree_native_trace("'+kind+'_invalidate_before"'+args,'tree_native_trace("'+kind+'_invalidate_after"'+args)
+    for rel,kind,header in (
+        ('code/modules/visibility/root_tree_presenter.dm','root','/datum/root_tree_presenter/proc/refresh(datum/los_snapshot/S)'),
+        ('code/modules/visibility/los_presenter.dm','mask','/datum/los_presenter/proc/refresh(datum/los_snapshot/S)')):
+        if relative==rel:text=trace_proc(text,header,after='tree_native_trace("'+kind+'_refresh_return", src)')
     return text
 
 def prepare(root,out,head,toolchain=None):
@@ -108,7 +143,7 @@ def prepare(root,out,head,toolchain=None):
     require(pin['version']=='516.1688','Review canonical pin advance')
     if toolchain:
         require(toolchain['version']==pin['version'] and toolchain['installer_sha256']==pin['sha256'] and toolchain['installer_bytes']==pin['bytes'],'Toolchain does not bind current canonical pin')
-    m.update(kind='tree-refresh-native',schema=1,head=head,dme='stage/tree_refresh.dme',limits=LIMITS,cases=CASES,
+    m.update(trace=dict(schema=1,events=8,rows_per_event=64,bytes_per_event=65536,total_bytes=524288,selection='first viewer_move warm-up only',branch_overhead='present in recorded callbacks; detailed sampling only warm-up'),kind='tree-refresh-native',schema=1,head=head,dme='stage/tree_refresh.dme',limits=LIMITS,cases=CASES,
              toolchain=toolchain,canonical_pin_sha256=digest(pin_raw),stage_adaptations=changes,prepared_only=True,native_executed=False,pixels_verified=False,
              input_files={p.relative_to(stage).as_posix():dict(bytes=p.stat().st_size,sha256=digest(p.read_bytes())) for p in stage.rglob('*') if p.is_file()})
     raw=(json.dumps(m,indent=2,sort_keys=True)+'\n').encode();(out/'tree-native-manifest.json').write_bytes(raw)
