@@ -134,3 +134,62 @@ still needs genuine motion evidence linked to the tested native build.
 ## Prepared native harness
 
 The separate [current-source native harness](../tests/tree_refresh_native/README.md) implements executable isolated preparation, real-client callback/state witnesses and fixed resource/failure cleanup contracts. Its workflow is manual-only and defaults to preparation. Native compilation/execution, pixel acceptance and dense-scene measurements remain unrun; independent review is required before execution. The frozen historical tree fixture remains unchanged.
+
+## Video-driven Entered correlation plan (source-only, 2026-11-02)
+
+The coordinator inspected private video libfile_75806be7c674819180fd10d9fd53dfed,
+reported SHA256 932e97c5d409c877483d0f6dd4999c22d8c5a57b3a732494aa8e413ad36386cd:
+nine whole-tree dropouts during 6.233 seconds of horizontal travel, lasting
+67-167 ms, while terrain/mask/HUD remain. This is supplied visual evidence, not
+this consumer's independent pixel inspection: the supported consumer-local Library
+helper failed to download/install the clip, including one fresh-transfer retry.
+No alternate transfer or publication was attempted. This clip does not establish
+the stationary report or identify packet/render timing.
+
+At deployed a48c2b226, unconditional /atom/Entered calls los_invalidate(am).
+For an owned viewer body, root and fallback presenters withdraw trees before the
+native parent Move returns. The earlier mitigation avoids preMove/redundant
+postMove withdrawal but does not remove this Entered path. This is a source-level
+mechanism and strongest hypothesis, not proof that the client displayed an
+intermediate state or that every reported dropout has this cause.
+
+1. Review the staged source/probe/protocol and source-only preparation. The new
+   observations must strip exactly to the prior adapters. Production Move,
+   Entered, blocker, eye, capture and presenter decisions remain unchanged. Bind
+   every source and staged-input hash. Toolchain-null preparation is not native
+   admission; the old approved manifest/source cannot authorize this revision.
+2. If separately approved, use the existing isolated hosted fixture and resource
+   limits, with a new reviewed source/toolchain binding and run ledger entry.
+   Keep both root and intentional fallback, one/two viewers, 64/256 roots and the
+   800-event matrix. No existing Gaia/user session, real save or credentials.
+3. Inspect the first movement warm-up trace for each case. Correlate the pending
+   native-begin marker, Entered old-location/mover invalidations, root/mask
+   before/after state, actual parent return and publication. Aggregate counts
+   disclose unsampled later calls. Do not treat absent/overflowed/misattributed
+   trace data as zero work or a fixed glitch; retain the failed active row.
+4. The source predicts stable root image identity with an absent published frame
+   between Entered and republication, and replacement allowed-copy identity in
+   fallback. Treat this as a characterization hypothesis. Dirty/published-policy
+   equality and a retained sentinel mask are not fresh authorization. Existing
+   hidden hover/examine and mutation-suspension controls remain mandatory.
+   The mutation control returns before capture: require `mutation_suspended`
+   inside the owned-ticket reconcile interval, not a fabricated null-capture
+   event. A real attempted capture returning null has a separate observation.
+5. Establish pixels separately on a fresh isolated client, only after approval.
+   A short high-frame-rate world crop must link exact source, map/view, mode,
+   movement and event ID to the server trace. A future event-boundary marker may
+   align capture clocks, but must not be injected into critical invalidation
+   callbacks or assumed to prove network delivery order. Compare with an
+   uninstrumented isolated control because observation work can perturb timing.
+   Do not publish the private clip, chat/admin text or claim current video was
+   retrospectively synchronized with new telemetry.
+6. Before proposing any production change, retain immediate denial for opaque
+   movers, door/wall writes, teleport/z and eye/body transitions, context/HUD loss
+   and unavailable capture. Opaque, capture-failure, lighting and unrelated-viewer
+   fixture controls already exist. Teleport/eye/client-pixel scenarios still need
+   separately reviewed validation; no new cases or native grant are implied here.
+   A production solution must not broadly retain old tree visibility through a
+   genuine occlusion or context change.
+
+The trace adds no production fix. No native dispatch, compiler/client run, live
+inspection, deployment or performance acceptance has been performed for it.

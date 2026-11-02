@@ -47,6 +47,67 @@ def admit(head, manifest, reviewed, deadline, environment, now=None):
             'Execution only on exact-head fresh hosted Windows manual attempt1; no desktop/live fallback')
     return end.timestamp()
 
+TRACE_FLAGS = ('dirty','mask_dirty','context_retired','eye_owned','turf_matches',
+               'mask_epoch_present','mask_epoch_matches','hidden_denial','scene_active','icon_present','image_member')
+TRACE_PHASES = {'event_begin','event_end','native_begin','native_return','entered_begin','entered_end',
+                'postmove','root_invalidate_before','root_invalidate_after','mask_invalidate_before','mask_invalidate_after',
+                'root_refresh_return','mask_refresh_return','reconcile_begin','reconcile_return',
+                'capture_unavailable','mutation_suspended','mutation_control_begin','mutation_control_observed','mutation_control_recovered'}
+
+def validate_trace(row,case):
+    expected = row['class']=='viewer_move' and row['iteration']==1
+    require(type(row.get('trace_enabled')) is int and row['trace_enabled']==int(expected),'Diagnostic warm-up selection')
+    trace=row.get('trace');require(isinstance(trace,list),'Missing diagnostic trace')
+    if not expected:
+        require(not trace and row.get('trace_bytes')==0 and row.get('trace_pulses')==0 and row.get('trace_entered_calls')==0,'Diagnostic sampling leaked into measured events')
+        return
+    require(1<=len(trace)<=64 and type(row.get('trace_bytes')) is int and 0<row['trace_bytes']<=65536,'Trace row/byte bound')
+    require(len(json.dumps(trace,separators=(',',':')).encode())<=65536,'Actual diagnostic byte bound')
+    require(type(row.get('trace_pulses')) is int and 1<=row['trace_pulses']<=32 and type(row.get('trace_entered_calls')) is int and 1<=row['trace_entered_calls']<=32,'Bounded actual native/Entered census')
+    require([x.get('seq') for x in trace]==list(range(1,len(trace)+1)),'Diagnostic sequence')
+    ticks=[]
+    for item in trace:
+        require(item.get('phase') in TRACE_PHASES and item.get('reason') in {'movement','entered_old_loc','entered_mover','mutation_control'},'Diagnostic phase/reason')
+        require(type(item.get('tick')) is int and item['tick']>=0 and type(item.get('usage')) in (int,float) and math.isfinite(item['usage']) and item['usage']>=0,'Diagnostic native clock')
+        ticks.append(item['tick'])
+        require(type(item.get('native_seq')) is int and 0<=item['native_seq']<=row['trace_pulses'],'Diagnostic native correlation')
+        state=item.get('state');require(isinstance(state,dict) and state.get('client')==1,'Diagnostic actor census')
+        require(all(type(state.get(k)) is int and state[k] in (0,1) for k in TRACE_FLAGS),'Mask/publication state facts')
+        require(isinstance(state.get('position'),list) and len(state['position'])==5 and all(type(x) in (int,float) and math.isfinite(x) for x in state['position']),'Native position/offset state')
+        for key in ('revision','mutations','mask_count','root_frames','fallback_images'):
+            require(type(state.get(key)) is int and 0<=state[key]<=8192,'Bounded diagnostic state: '+key)
+        require(all(isinstance(state.get(key),str) and 0<len(state[key])<=80 for key in ('body','root')),'Missing actual body/root identity')
+        for key in ('body','root','image','frame','hidden_mask'):
+            require(state.get(key) is None or isinstance(state[key],str) and 0<len(state[key])<=80,'Native identity field: '+key)
+        if 'invalidate' in item['phase']:
+            require(all(type(item.get(k)) is int and item[k] in (0,1) for k in ('possible_opacity','viewer_refresh','changed_is_body')),'Actual invalidation arguments')
+    require(ticks==sorted(ticks) and trace[0]['phase']=='event_begin' and trace[-1]['phase']=='event_end','Diagnostic clock/order')
+    def index(phase):
+        found=next((i for i,x in enumerate(trace) if x['phase']==phase),None)
+        require(found is not None,'Missing diagnostic boundary: '+phase);return found
+    begin,entered,end=index('native_begin'),index('entered_begin'),index('native_return')
+    require(begin<entered<end and trace[begin]['native_seq']>0 and trace[begin]['native_seq']==trace[entered]['native_seq']==trace[end]['native_seq'],'Entered/native-return attribution')
+    require(type(trace[end].get('result')) is int and trace[end]['result'] in (0,1,2),'Missing actual native return result')
+    for layer in ('root','mask'):
+        pair=[]
+        for phase in (layer+'_invalidate_before',layer+'_invalidate_after'):
+            found=next((i for i,x in enumerate(trace) if x['phase']==phase and x['reason']=='entered_mover' and x.get('changed_is_body')==1 and x.get('viewer_refresh')==0 and x['native_seq']==trace[entered]['native_seq']),None)
+            require(found is not None,'Missing exact Entered invalidation source: '+phase);pair.append(found)
+        require(entered<pair[0]<pair[1]<end,'Invalidation outside native Entered interval')
+    control=index('mutation_control_begin');suspended=index('mutation_suspended');observed=index('mutation_control_observed');recovered=index('mutation_control_recovered')
+    require(end<control<suspended<observed<recovered,'Mutation suspension/republish order')
+    interval=trace[control+1:observed]
+    require(not any(x['phase']=='capture_unavailable' for x in interval),'Mutation suspension was mislabeled as attempted capture failure')
+    reconciles=[i for i in range(control+1,suspended) if trace[i]['phase']=='reconcile_begin']
+    returns=[i for i in range(suspended+1,observed) if trace[i]['phase']=='reconcile_return']
+    require(len(reconciles)==len(returns)==1,'Missing mutation-suspended reconcile boundaries')
+    for i in (reconciles[0],suspended,returns[0],observed):
+        item=trace[i];state=item['state']
+        require(item['reason']=='mutation_control' and state['mutations']>0 and state['eye_owned']==1 and state['context_retired']==0,'Mutation suspension lacks owned active mutation cause')
+    require(trace[control]['state']['mutations']==0 and trace[recovered]['state']['mutations']==0,'Mutation ticket lifecycle did not close')
+    require(trace[observed]['state']['icon_present']==0 and trace[observed]['state']['frame'] is None,'Mutation suspension kept stale tree lease')
+    restored=trace[recovered]['state'];require(restored['icon_present']==1 and restored['image_member']==1 and (case['mode']!='root' or restored['frame']),'Missing observed publication recovery')
+
 def validate(receipt, rows, head, binding):
     require(receipt.get('head')==head and receipt.get('binding')==binding,'Native receipt source binding')
     require(receipt.get('engine')==[516,1688] and receipt.get('error') is None,'Engine/build/native failure')
@@ -56,6 +117,9 @@ def validate(receipt, rows, head, binding):
     require(world.get('map')==[64,64,1] and world.get('view')=='15x15' and world.get('fps')==20 and world.get('icon_size')==32 and world.get('seed')==13013,'Actual native world identity/seed')
     require(type(world.get('tick_lag')) in (int,float) and world['tick_lag']>0,'Actual native tick_lag')
     require(len(rows)==800,'Missing/extra raw native events')
+    require(receipt.get('trace_schema')==1 and receipt.get('trace_events')==8,'Diagnostic receipt binding')
+    traced=[r for r in rows if r.get('trace_enabled')==1]
+    require(len(traced)==8 and type(receipt.get('trace_bytes')) is int and receipt['trace_bytes']==sum(r.get('trace_bytes',0) for r in traced) and 0<receipt['trace_bytes']<=524288,'Diagnostic total byte/event bound')
     unresolved=[]; result=[]
     for case in CASES:
         group=[r for r in rows if r.get('case')==case['id']]
@@ -65,6 +129,7 @@ def validate(receipt, rows, head, binding):
             require([r.get('iteration') for r in selected]==list(range(1,26)),'Warm/recorded sequence')
             for r in selected:
                 require(r.get('viewers')==case['viewers'] and r.get('roots')==case['roots'] and r.get('mode')==case['mode'],'Case identity')
+                validate_trace(r,case)
                 require(type(r.get('scene_valid')) is int and r['scene_valid']==1 and type(r.get('safe')) is int and r['safe']==1,'Admission/visibility/ownership witness')
                 if kind=='opaque_move' and case['viewers']==2:
                     require(r.get('other_sync_captures')==0,'Unrelated dirty viewer synchronously refreshed')

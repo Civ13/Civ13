@@ -16,6 +16,34 @@ import acquire as A
 import dependency_audit as D
 from budget import EvidenceBudget
 
+def modeled_trace(row,case,before,after,phases):
+    # Protocol-only synthetic samples, never runtime or pixel evidence.
+    enabled=row['class']=='viewer_move' and row['iteration']==1
+    row.update(trace_enabled=int(enabled),trace=[],trace_bytes=0,trace_entered_calls=0,trace_pulses=0)
+    if not enabled:return
+    def state(source,failed=False):
+        front=source['identities'][0]
+        return dict(client=1,body='body1',position=[12,12,1,0,0],dirty=int(failed),mask_dirty=int(failed),context_retired=0,
+                    revision=1,mutations=int(failed),eye_owned=1,turf_matches=int(not failed),mask_epoch_present=1,mask_epoch_matches=1,
+                    mask_count=10,hidden_mask='mask1',hidden_denial=1,scene_active=int(case['mode']=='root'),fallback_reason=source['fallback_reason'],
+                    root_frames=case['roots'] if front['published_frame'] else 0,fallback_images=int(case['mode']=='fallback' and front['image'] is not None),
+                    root=front['root'],image=front['image'],frame=front['published_frame'],icon_present=front['native_icon_present'],image_member=int(front['image'] is not None))
+    gone=phases[0]['clients'][0]
+    sequence=[('event_begin',before[0]),('native_begin',before[0]),('entered_begin',before[0]),
+              ('root_invalidate_before',before[0]),('root_invalidate_after',gone),('mask_invalidate_before',gone),('mask_invalidate_after',gone),
+              ('entered_end',gone),('native_return',gone),('postmove',gone),('root_refresh_return',after[0]),('mask_refresh_return',after[0]),
+              ('reconcile_return',after[0]),('mutation_control_begin',after[0]),('reconcile_begin',gone),
+              ('mutation_suspended',gone),('reconcile_return',gone),('mutation_control_observed',gone),('mutation_control_recovered',after[0]),('event_end',after[0])]
+    row['trace_pulses']=1;row['trace_entered_calls']=1
+    for index,(phase,source) in enumerate(sequence):
+        invalid='invalidate' in phase
+        reason='entered_mover' if invalid else 'mutation_control' if 13<=index<=18 else 'movement'
+        row['trace'].append(dict(seq=index+1,phase=phase,tick=1,usage=index,native_seq=int(index>0),reason=reason,
+                                subject='subject',changed='body1' if invalid else None,changed_is_body=int(invalid),possible_opacity=0 if invalid else None,
+                                viewer_refresh=0 if invalid else None,result=2 if phase=='native_return' else None,
+                                state=state(source,14<=index<=17)))
+    row['trace_bytes']=len(json.dumps(row['trace'],separators=(',',':')).encode())
+
 def witness():
     rows=[]
     for case in P.CASES:
@@ -35,8 +63,9 @@ def witness():
                 if kind=='viewer_move' and iteration==1:row['capture_failed']=deepcopy(phases[0]['clients'])
                 if kind=='queued_light':
                     row['pending_committed']=deepcopy(before);row['light_notifications']=dict(calls=128,resolved=128,unresolved=0,sum_ms=2,max_ms=.02)
+                modeled_trace(row,case,before,after,phases)
                 rows.append(row)
-    return dict(head='a'*40,binding='run',engine=[516,1688],world=dict(map=[64,64,1],view='15x15',fps=20,tick_lag=.5,icon_size=32,seed=13013),error=None,cleanup=1,events=800,pixels_verified=0),rows
+    return dict(head='a'*40,binding='run',engine=[516,1688],world=dict(map=[64,64,1],view='15x15',fps=20,tick_lag=.5,icon_size=32,seed=13013),error=None,cleanup=1,events=800,pixels_verified=0,trace_schema=1,trace_events=8,trace_bytes=sum(r['trace_bytes'] for r in rows)),rows
 
 class Protocol(unittest.TestCase):
     def test_complete_native_schema_and_limits(self):
@@ -44,6 +73,44 @@ class Protocol(unittest.TestCase):
         self.assertTrue(s['native_dispatch_validated']);self.assertFalse(s['pixels_verified']);self.assertEqual(len(rows),800)
         self.assertEqual(sum(r['iteration']>5 for r in rows),640)
         self.assertEqual(P.LIMITS['rss_bytes'],1920*1024**2)
+    def test_diagnostic_trace_is_bounded_correlated_and_not_recorded_measurement_data(self):
+        receipt,rows=witness();P.validate(receipt,rows,'a'*40,'run')
+        self.assertEqual(sum(r['trace_enabled'] for r in rows),8)
+        for mutation in ('missing','sequence','reason','native_seq','native_result','mask_fact','stale_capture','row_bound','byte_bound','measured','receipt'):
+            with self.subTest(mutation=mutation):
+                receipt,rows=witness();row=next(r for r in rows if r['trace_enabled']);trace=row['trace']
+                if mutation=='missing':row['trace']=[]
+                if mutation=='sequence':trace[1]['seq']=99
+                if mutation=='reason':
+                    for item in trace:
+                        if 'invalidate' in item['phase']:item['reason']='movement'
+                if mutation=='native_seq':next(x for x in trace if x['phase']=='native_return')['native_seq']=0
+                if mutation=='native_result':next(x for x in trace if x['phase']=='native_return')['result']=None
+                if mutation=='mask_fact':trace[0]['state']['mask_epoch_matches']=None
+                if mutation=='stale_capture':next(x for x in trace if x['phase']=='mutation_control_observed')['state']['icon_present']=1
+                if mutation=='row_bound':row['trace']=trace*4
+                if mutation=='byte_bound':row['trace_bytes']=65537
+                if mutation=='measured':
+                    target=next(r for r in rows if r['class']=='viewer_move' and r['iteration']==6);target.update(deepcopy({k:row[k] for k in ('trace_enabled','trace','trace_bytes','trace_entered_calls','trace_pulses')}))
+                if mutation=='receipt':receipt['trace_events']=7
+                with self.assertRaises(ValueError):P.validate(receipt,rows,'a'*40,'run')
+
+    def test_mutation_suspension_requires_actual_branch_cause_not_failed_capture(self):
+        _,rows=witness();baseline=next(r for r in rows if r['trace_enabled']);case=P.CASES[0]
+        P.validate_trace(baseline,case)
+        for defect in ('failed_capture_label','missing_reconcile','no_mutation','wrong_reason','unowned','unclosed','capture_phase'):
+            with self.subTest(defect=defect):
+                row=deepcopy(baseline);trace=row['trace']
+                suspended=next(x for x in trace if x['phase']=='mutation_suspended')
+                if defect=='failed_capture_label':suspended['phase']='capture_unavailable'
+                if defect=='missing_reconcile':trace[14]['phase']='event_begin'
+                if defect=='no_mutation':suspended['state']['mutations']=0
+                if defect=='wrong_reason':suspended['reason']='movement'
+                if defect=='unowned':suspended['state']['eye_owned']=0
+                if defect=='unclosed':next(x for x in trace if x['phase']=='mutation_control_recovered')['state']['mutations']=1
+                if defect=='capture_phase':trace[16]['phase']='capture_unavailable'
+                with self.assertRaises(ValueError):P.validate_trace(row,case)
+
     def test_native_omission_and_unsafe_identity_controls(self):
         for mutation in ('entered','root_stale','fallback_retained','unrelated','capture_failed','pending','budget_fallback','density','extra_event'):
             with self.subTest(mutation=mutation):
@@ -111,6 +178,43 @@ class Preparation(unittest.TestCase):
         text=(ROOT/'code/modules/client/client_procs.dm').read_text()
         for header in ('/client/New(TopicData)','/client/Topic(href, href_list, hsrc)','/client/Del()'):Q.proc(text,header)
         Q.proc((ROOT/'tests/human_subtile/probe.dm').read_text(),'/proc/human_subtile_fixture_initialize()')
+    def test_incremental_trace_observations_strip_to_the_existing_adapters(self):
+        import re
+        for rel in set(Q.SPANS)|{'code/datums/observation/moved.dm','code/modules/visibility/root_light_snapshot.dm'}:
+            original=(ROOT/rel).read_text();traced=Q.adapt(rel,original);base=Q.adapt(rel,original,trace=False)
+            stripped=''.join(line for line in traced.splitlines(True) if 'tree_native_trace' not in line)
+            with self.subTest(source=rel):self.assertEqual(stripped,base)
+        source=(ROOT/'code/datums/observation/moved.dm').read_text()
+        traced=Q.adapt('code/datums/observation/moved.dm',source)
+        self.assertIn('los_invalidate(old_loc, am.opacity)',traced);self.assertIn('los_invalidate(am)',traced)
+        self.assertLess(traced.index('entered_old_loc'),traced.index('los_invalidate(old_loc, am.opacity)'))
+        self.assertLess(traced.index('entered_mover'),traced.index('los_invalidate(am)'))
+        native=Q.adapt('code/game/mob/mob_movement.dm',(ROOT/'code/game/mob/mob_movement.dm').read_text())
+        self.assertEqual(native.count('tree_native_trace_native_begin(src)'),native.count('tree_native_engine_return(src, .)'))
+        probe=(HERE/'probe.dm').read_text()
+        for control in ('trace_row_limit','trace_byte_limit','trace_total_byte_limit','trace_missing_native_begin','trace_entered_limit','trace_native_pulse_limit'):
+            self.assertIn(control,probe)
+        self.assertIn('row["iteration"] == 1',probe)
+        self.assertLess(probe.index('tree_native_trace_finish(row)'),probe.index('var/list/scheduled = list('))
+
+    def test_mutation_suspension_phase_is_in_actual_early_return_before_capture(self):
+        relative='code/modules/visibility/los_lifecycle.dm'
+        source=(ROOT/relative).read_text();adapted=Q.adapt(relative,source)
+        start=adapted.index('if(V.eligible() && ((persistence_active_operation')
+        end=adapted.index('var/key = V.presentation_key()',start)
+        branch=adapted[start:end]
+        self.assertEqual(branch.count('tree_native_trace("mutation_suspended", src)'),1)
+        self.assertLess(branch.index('root_tree_presenter.invalidate()'),branch.index('"mutation_suspended"'))
+        self.assertLess(branch.index('los_dirty = TRUE'),branch.index('"mutation_suspended"'))
+        self.assertLess(branch.index('"mutation_suspended"'),branch.index('tree_native_end(tree_native_clock)'))
+        self.assertLess(branch.index('"mutation_suspended"'),branch.index('"reconcile_return"'))
+        self.assertTrue(branch.rstrip().endswith('return'))
+        self.assertNotIn('V.capture(',branch);self.assertNotIn('"capture_unavailable"',branch)
+        self.assertLess(end,adapted.index('var/datum/los_snapshot/S = V.capture(TRUE)'))
+        failed=adapted[adapted.index('if(!S)'):]
+        self.assertIn('tree_native_trace("capture_unavailable", src)',failed)
+        with self.assertRaises(ValueError):Q.adapt(relative,source.replace('|| V.mutations.len))','|| FALSE))',1))
+
     def test_source_selector_drift_fails_closed(self):
         with self.assertRaises(ValueError):Q.adapt('code/datums/observation/moved.dm','/atom/Entered()\n\treturn\n')
         with self.assertRaises(ValueError):Q.instrument('/proc/f()\n\treturn\n/proc/f()\n\treturn\n','/proc/f()','span')
@@ -139,6 +243,21 @@ class Preparation(unittest.TestCase):
         _,_,finish=Q.proc(source,'/proc/tree_native_finish(error)')
         self.assertLess(finish.index('tree_native_save_failure(error)'),finish.index('tree_native_active_row = null'))
         self.assertIn('length(encoded) <= 131072',source)
+
+    def test_global_cleanup_has_explicit_world_receivers(self):
+        # The first native compile rejected implicit world members in this
+        # global proc. Check both operations and independent omission controls.
+        source=(HERE/'probe.dm').read_text()
+        _,_,finish=Q.proc(source,'/proc/tree_native_finish(error)')
+        def check(body):
+            self.assertRegex(body,r'world\.OpenPort\("none"\)')
+            self.assertRegex(body,r'!world\.port\b')
+            self.assertNotRegex(body,r'(?<![\w.])OpenPort\(')
+            self.assertNotRegex(body,r'!port\b')
+        check(finish)
+        for member in ('OpenPort','port'):
+            with self.subTest(member=member),self.assertRaises(AssertionError):
+                check(finish.replace('world.'+member,member,1))
 
     def test_no_model_or_frozen_fixture_in_native_entry(self):
         text=(HERE/'probe.dm').read_text();self.assertIn('H.SelfMove(',text);self.assertIn('begin_change()',text);self.assertIn('C.reconcile_geometric_los()',text)

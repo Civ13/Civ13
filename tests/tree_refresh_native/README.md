@@ -198,6 +198,55 @@ rejection, never to declare acceptance. Local source-only manifests keep a null
 toolchain and cannot authorize execution. Data-only hosted preparation and review
 of its actual toolchain-bound manifest remain necessary before one native attempt.
 
+## Entered withdrawal diagnostic (source-only, 2026-11-02)
+
+This revision targets the deployed a48c2b226 source. It reuses the separately
+accepted explicit-world cleanup correction from the previous failed compiler
+attempt. The original failed attempt remains evidence; this revision has not been
+compiled or executed. Later Master spelling/job-title concerns remain Main-owned.
+
+Read-only staged observations now bracket the actual native parent Move, Entered,
+root/mask invalidation and reconciliation/publication. Entered's old-location and
+mover calls are explicitly labelled without changing their arguments, ordering or
+return values. The first native call containing Entered is sampled; later native
+pulses/Entered calls retain bounded aggregate counts. The existing per-pulse
+native-return and before/after two-viewer witnesses remain unchanged.
+
+Only iteration 1 (warm-up) of viewer_move in each of the eight cases receives the
+detailed trace. Each trace is capped at 64 rows and 64 KiB; all eight at 512 KiB.
+No processes, events, measured samples, timeouts, native input ceiling or 16 MiB
+combined evidence allowance are added. The 64 witnessed image/icon lease limit is
+unchanged; a sampled denial-mask image is also held through that event to prevent
+reference reuse. No held image is re-added to client.images. Detailed tracing ends
+before the scheduled pass. Recorded callbacks still have extra branch checks, so
+costs remain instrumented observations and never a production performance claim.
+
+Each sample records sequence, native-call ID, world tick and tick-usage clock,
+invalidation reason/flags, body/offset and source identity, compositor/fallback
+state, sampled image/frame refs and membership. Mask fields are facts: dirty and
+mutation flags, published-policy equality, mask counts and a sentinel denial
+image. Policy equality is NOT fresh LOS authorization or proof of valid pixels.
+The observer never captures new geometry, calls an authorization decision or
+changes a mask, image, icon, light or lease admission.
+
+The existing mutation suspension/recovery control is traced after the movement
+sample, with the same immediate withdrawal oracle. Its owned mutation ticket
+causes reconciliation to return before capture; `mutation_suspended` is emitted
+at that actual early return after withdrawal. The protocol requires the active
+mutation and owned context between reconcile entry and return, then a closed
+ticket and restored publication. The later `capture_unavailable` phase remains
+an observation of an attempted capture returning null; it is not a substitute
+for this control. Offline phase/ownership/omission controls and a staged-source
+branch check guard that distinction; they do not execute native dispatch. Existing opaque mover,
+lighting, hidden hover/examine, unrelated-viewer, failure-retention and cleanup
+controls remain mandatory. Teleport, eye/body replacement and client pixels are
+not newly exercised by this workload; see docs/tree-refresh-measurement.md for
+follow-up acceptance. Removing every newly added trace line exactly reconstructs
+the previous staged adapters, checked offline without Git-history dependency.
+
+No native attempt, live operation, deployment or production flicker fix is
+authorized by these instructions. A fresh source/toolchain-bound manifest and
+specific reviewed execution approval are required before any new native attempt.
 
 ## Data-only dependency audit
 

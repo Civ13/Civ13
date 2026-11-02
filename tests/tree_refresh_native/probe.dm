@@ -29,6 +29,13 @@ var/global/tree_native_binding
 var/global/tree_native_error
 var/global/tree_native_ready = FALSE
 var/global/tree_native_finishing = FALSE
+var/global/list/tree_native_trace_row
+var/global/list/tree_native_trace_pending
+var/global/atom/movable/tree_native_trace_actor
+var/global/tree_native_trace_sampling = FALSE
+var/global/tree_native_trace_reason = "movement"
+var/global/tree_native_trace_events = 0
+var/global/tree_native_trace_bytes = 0
 var/global/processScheduler/tree_native_scheduler
 var/global/process/visibility/tree_native_process
 var/global/obj/tree_native_opaque/tree_native_mover
@@ -131,6 +138,9 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		throw EXCEPTION(reason)
 
 /proc/tree_native_client(datum/D)
+	if(ismob(D))
+		var/mob/M = D
+		return M.client
 	if(istype(D, /client))
 		return D
 	if(istype(D, /datum/los_context))
@@ -170,6 +180,101 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	var/list/sets = tree_native_row["affected"]
 	tree_native_require(sets.len < 32, "affected_context_sample_bound")
 	sets += list(list("phase"=phase,"contexts"=refs))
+
+/proc/tree_native_trace_state(client/C)
+	if(!C || !C.mob)
+		return null
+	var/datum/root_tree_presenter/P = C.root_tree_presenter
+	var/datum/los_presenter/L = C.los_presenter
+	var/datum/los_context/V = C.los_context
+	var/list/roots = tree_native_roots[C]
+	var/atom/T = length(roots) ? roots[1] : null
+	var/image/I = T ? (P && P.scene_active ? P.images[T] : (L ? L.tree_images[T] : null)) : null
+	var/icon/F = T && P ? P.published_frames[T] : null
+	var/image/H = L ? L.images[tree_native_hidden[C]] : null
+	// Preserve only witnessed objects, never re-add an image or grant visibility.
+	if(I)
+		tree_native_event_leases |= I
+	if(F)
+		tree_native_event_leases |= F
+	if(H)
+		tree_native_event_leases |= H
+	tree_native_require(tree_native_event_leases.len <= 64, "identity_lease_limit")
+	return list("client"=tree_native_clients.Find(C),"body"="\ref[C.mob]","position"=list(C.mob.x,C.mob.y,C.mob.z,C.mob.step_x,C.mob.step_y),"dirty"=C.los_dirty ? 1 : 0,"mask_dirty"=(L && L.dirty) ? 1 : 0,"context_retired"=(!V || V.retired) ? 1 : 0,"revision"=V ? V.revision : 0,"mutations"=V ? V.mutations.len : 0,"eye_owned"=(V && C.mob == V.body && C.eye == V.body) ? 1 : 0,"turf_matches"=(V && V.movement_turf == get_turf(C.mob)) ? 1 : 0,"mask_epoch_present"=C.los_last_policy ? 1 : 0,"mask_epoch_matches"=(L && C.los_last_policy && L.last_policy == C.los_last_policy) ? 1 : 0,"mask_count"=L ? L.images.len : 0,"hidden_mask"=H ? "\ref[H]" : null,"hidden_denial"=(H && H.override && !H.mouse_opacity && (H in C.images)) ? 1 : 0,"scene_active"=(P && P.scene_active) ? 1 : 0,"fallback_reason"=P ? P.fallback_reason : null,"root_frames"=P ? P.published_frames.len : 0,"fallback_images"=L ? L.tree_images.len : 0,"root"=T ? "\ref[T]" : null,"image"=I ? "\ref[I]" : null,"frame"=F ? "\ref[F]" : null,"icon_present"=(I && !isnull(I.icon)) ? 1 : 0,"image_member"=(I && (I in C.images)) ? 1 : 0)
+
+/proc/tree_native_trace_sample(phase, datum/D, atom/changed, possible_opacity, viewer_refresh, result)
+	if(!tree_native_trace_row || !tree_native_trace_sampling)
+		return null
+	var/client/C = tree_native_client(D)
+	if(C != tree_native_clients[1])
+		return null
+	return list("phase"=phase,"tick"=world.time,"usage"=TICK_USAGE,"native_seq"=tree_native_trace_row["trace_pulses"],"reason"=tree_native_trace_reason,"subject"=D ? "\ref[D]" : null,"changed"=changed ? "\ref[changed]" : null,"changed_is_body"=(C && changed == C.mob) ? 1 : 0,"possible_opacity"=possible_opacity,"viewer_refresh"=viewer_refresh,"result"=result,"state"=tree_native_trace_state(C))
+
+/proc/tree_native_trace_append(list/sample)
+	if(!sample || !tree_native_trace_row)
+		return
+	var/list/rows = tree_native_trace_row["trace"]
+	tree_native_require(rows.len < 64, "trace_row_limit")
+	sample["seq"] = rows.len + 1
+	rows += list(sample)
+
+/proc/tree_native_trace(phase, datum/D, atom/changed, possible_opacity, viewer_refresh, result)
+	tree_native_trace_append(tree_native_trace_sample(phase, D, changed, possible_opacity, viewer_refresh, result))
+
+/proc/tree_native_trace_start(list/row, atom/movable/A)
+	row["trace_enabled"] = (row["class"] == "viewer_move" && row["iteration"] == 1) ? 1 : 0
+	row["trace"] = list()
+	row["trace_bytes"] = 0
+	row["trace_entered_calls"] = 0
+	row["trace_pulses"] = 0
+	if(!row["trace_enabled"])
+		return
+	tree_native_require(!tree_native_trace_row, "trace_overlap")
+	tree_native_require(++tree_native_trace_events <= 8, "trace_event_limit")
+	tree_native_trace_row = row
+	tree_native_trace_actor = A
+	tree_native_trace_sampling = TRUE
+	tree_native_trace_reason = "movement"
+	tree_native_trace_pending = null
+	tree_native_trace("event_begin", A)
+
+/proc/tree_native_trace_native_begin(atom/movable/A)
+	if(!tree_native_trace_row || A != tree_native_trace_actor)
+		return
+	tree_native_require(++tree_native_trace_row["trace_pulses"] <= 32, "trace_native_pulse_limit")
+	if(tree_native_trace_row["trace_entered_calls"])
+		tree_native_trace_sampling = FALSE
+		tree_native_trace_pending = null
+		return
+	tree_native_trace_pending = tree_native_trace_sample("native_begin", A)
+
+/proc/tree_native_trace_entered_begin(atom/movable/A, atom/old_loc)
+	if(!tree_native_trace_row || A != tree_native_trace_actor)
+		return
+	tree_native_require(++tree_native_trace_row["trace_entered_calls"] <= 32, "trace_entered_limit")
+	if(tree_native_trace_row["trace_entered_calls"] != 1)
+		return
+	tree_native_require(islist(tree_native_trace_pending), "trace_missing_native_begin")
+	tree_native_trace_append(tree_native_trace_pending)
+	tree_native_trace("entered_begin", A, old_loc)
+
+/proc/tree_native_trace_set_reason(reason, atom/movable/A)
+	if(tree_native_trace_row && A == tree_native_trace_actor)
+		tree_native_trace_reason = reason
+
+/proc/tree_native_trace_finish(list/row)
+	if(tree_native_trace_row != row)
+		return
+	tree_native_trace_reason = "movement"
+	tree_native_trace("event_end", tree_native_trace_actor)
+	row["trace_bytes"] = length(json_encode(row["trace"]))
+	tree_native_require(row["trace_bytes"] <= 65536, "trace_byte_limit")
+	tree_native_trace_bytes += row["trace_bytes"]
+	tree_native_require(tree_native_trace_bytes <= 524288, "trace_total_byte_limit")
+	tree_native_trace_row = null
+	tree_native_trace_actor = null
+	tree_native_trace_pending = null
+	tree_native_trace_sampling = FALSE
 
 /proc/tree_native_begin(name, datum/D)
 	if(name == "capture")
@@ -244,6 +349,8 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	var/list/rows = tree_native_row["native_returns"]
 	tree_native_require(rows.len < 32, "native_pulse_bound")
 	rows += list(list("result"=result, "at"=world.time, "x"=A.x, "y"=A.y, "sx"=A.step_x, "sy"=A.step_y, "phase_count"=length(tree_native_row["phases"]), "first_pulse_clients"=rows.len ? null : tree_native_snapshot()))
+	if(tree_native_trace_row && tree_native_trace_sampling && tree_native_trace_row["trace_entered_calls"])
+		tree_native_trace("native_return", A, A, null, null, result)
 
 /proc/tree_native_checkpoint(phase, atom/movable/A)
 	if(!tree_native_row || !(A == tree_native_mover || istype(A, /mob/living/human/tree_native)))
@@ -252,6 +359,8 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		var/mob/M = A
 		if(M.client && M.client.los_context && M.client.los_context.movement_turf == M.loc)
 			return
+	if(phase == "postmove")
+		tree_native_trace("postmove", A, A)
 	var/list/phases = tree_native_row["phases"]
 	tree_native_require(phases.len < 16, "callback_phase_limit")
 	phases += list(list("phase"=phase, "mover"="\ref[A]", "loc"="\ref[A.loc]", "x"=A.x, "y"=A.y, "sx"=A.step_x, "sy"=A.step_y, "clients"=tree_native_snapshot()))
@@ -334,6 +443,7 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	var/list/row = list("case"=tree_native_case, "class"=kind, "iteration"=iteration, "recorded"=(iteration > 5), "viewers"=viewers, "roots"=count, "mode"=mode, "phases"=list(), "timings"=list(), "counters"=list(), "native_returns"=list(), "affected"=list())
 	tree_native_active_row = row
 	tree_native_row = row
+	tree_native_trace_start(row, A.mob)
 	row["before"] = tree_native_snapshot()
 	var/list/clock = tree_native_begin("event", null)
 	if(kind == "audit")
@@ -381,12 +491,18 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		if(!denial || !denial.override || denial.mouse_opacity || !(denial in C.images))
 			safe = FALSE
 	if(kind == "viewer_move" && iteration == 1)
-		// Real production mutation ownership creates an unavailable capture.
+		tree_native_trace_sampling = TRUE
+		tree_native_trace_reason = "mutation_control"
+		tree_native_trace("mutation_control_begin", A)
+		// Real mutation ownership suspends reconciliation before capture is attempted.
 		var/datum/los_mutation/ticket = A.los_context.begin_change()
 		tree_native_require(ticket && !A.reconcile_geometric_los(), "capture_failure_control")
 		row["capture_failed"] = tree_native_snapshot()
+		tree_native_trace("mutation_control_observed", A)
 		tree_native_require(A.los_context.finish_change(ticket), "capture_failure_release")
 		tree_native_require(A.reconcile_geometric_los(), "capture_failure_recovery")
+		tree_native_trace("mutation_control_recovered", A)
+	tree_native_trace_finish(row)
 	row["scene_valid"] = scene_valid
 	row["safe"] = safe
 	row["allowance_usage"] = tree_native_process.run_time_tick_usage_allowance
@@ -485,16 +601,19 @@ var/global/obj/tree_native_opaque/tree_native_mover
 			retention_error = tree_native_retention_exception.name
 	var/cleaned = FALSE
 	try
+		tree_native_trace_row = null
+		tree_native_trace_actor = null
+		tree_native_trace_pending = null
 		tree_native_row = null
 		tree_native_active_row = null
 		tree_native_holding = FALSE
 		tree_native_event_leases.Cut()
 		tree_native_clear_scene()
-		OpenPort("none")
-		cleaned = !port && !length(root_tree_presenters) && !length(los_active_contexts)
+		world.OpenPort("none")
+		cleaned = !world.port && !length(root_tree_presenters) && !length(los_active_contexts)
 	catch(var/exception/tree_native_cleanup_error)
 		if(!error)
 			error = tree_native_cleanup_error.name
-	text2file(json_encode(list("head"=TREE_NATIVE_HEAD,"binding"=tree_native_binding,"engine"=list(world.byond_version,world.byond_build),"world"=list("map"=list(world.maxx,world.maxy,world.maxz),"view"=world.view,"fps"=world.fps,"tick_lag"=world.tick_lag,"icon_size"=world.icon_size,"seed"=13013),"error"=error,"failure_retention_error"=retention_error,"cleanup"=cleaned,"events"=tree_native_events,"pixels_verified"=FALSE)), "receipt.json")
+	text2file(json_encode(list("head"=TREE_NATIVE_HEAD,"binding"=tree_native_binding,"engine"=list(world.byond_version,world.byond_build),"world"=list("map"=list(world.maxx,world.maxy,world.maxz),"view"=world.view,"fps"=world.fps,"tick_lag"=world.tick_lag,"icon_size"=world.icon_size,"seed"=13013),"error"=error,"failure_retention_error"=retention_error,"cleanup"=cleaned,"events"=tree_native_events,"trace_schema"=1,"trace_events"=tree_native_trace_events,"trace_bytes"=tree_native_trace_bytes,"pixels_verified"=FALSE)), "receipt.json")
 	del(world)
 	return
