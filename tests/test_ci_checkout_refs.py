@@ -179,17 +179,63 @@ class NewBranchComparisonTests(unittest.TestCase):
             self.assertEqual(proof['base'],f['base'])
             self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
 
-    def test_ambiguous_merge_boundaries_require_an_explicit_baseline(self):
+    def test_merged_new_branch_uses_proven_full_frontier_and_retains_early_change_control(self):
+        for introduce_core in (False,True):
+            with self.subTest(introduce_core=introduce_core),branch_fixture(introduce_core=introduce_core) as f:
+                f['run']('checkout','-qb','advanced-main',f['base'])
+                (f['origin']/'main-only.txt').write_text('outside pushed range')
+                f['run']('add','.');f['run']('commit','-qm','outside main commit')
+                main=f['run']('rev-parse','HEAD')
+                f['run']('merge','--no-ff','-qm','merge side',f['head'])
+                merged=f['run']('rev-parse','HEAD');clone=f['folder']/'merged-clone'
+                f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
+                payload=f['payload']([f['first'],f['head'],merged]);payload.update(after=merged,head_commit=dict(id=merged))
+                proof=refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+                self.assertEqual(proof['base'],f['base'])
+                self.assertEqual(proof['kind'],'new-branch-merge-frontier')
+                self.assertEqual(proof['frontier'],sorted([f['base'],main]))
+                self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
+                read=lambda commit:{name:f['run']('show',commit+':'+name,cwd=clone)+'\n' for name in f['los'].ADDITIONS}
+                if introduce_core:
+                    with self.assertRaisesRegex(AssertionError,'differs from event base'):
+                        f['los'].verify_adapters(read(proof['base']),read(merged))
+                else:self.assertTrue(f['los'].verify_adapters(read(proof['base']),read(merged)))
+                with patch.object(baseline,'ROOT',clone):
+                    plan=baseline.selection_receipt('0'*40,merged,True,False,[],'merge frontier','push',payload=payload)
+                    baseline.validate_source_comparison(plan)
+                    plan['source_comparison']['frontier']=[main]
+                    with self.assertRaisesRegex(ValueError,'immutable ancestry'):baseline.validate_source_comparison(plan)
+                with patch.object(refs,'MAX_MERGE_FRONTIER',1),self.assertRaisesRegex(ValueError,'frontier exceeds bound'):
+                    refs.new_branch_comparison(merged,payload,cwd=clone)
+
+    def test_criss_cross_common_ancestor_ambiguity_still_requires_explicit_base(self):
+        with branch_fixture() as f:
+            tree=f['run']('rev-parse',f['base']+'^{tree}')
+            a=f['run']('commit-tree',tree,'-p',f['base'],'-m','left')
+            b=f['run']('commit-tree',tree,'-p',f['base'],'-m','right')
+            left=f['run']('commit-tree',tree,'-p',a,'-p',b,'-m','left merge')
+            right=f['run']('commit-tree',tree,'-p',b,'-p',a,'-m','right merge')
+            merged=f['run']('commit-tree',tree,'-p',left,'-p',right,'-m','new branch merge')
+            f['run']('checkout','-q','--detach',merged)
+            payload=f['payload']([merged]);payload.update(after=merged,head_commit=dict(id=merged))
+            self.assertEqual(len(f['run']('merge-base','--all','--octopus',left,right).splitlines()),2)
+            with self.assertRaisesRegex(ValueError,'Ambiguous.*comparison_base'):
+                refs.new_branch_comparison(merged,payload,cwd=f['origin'])
+
+    def test_unavailable_frontier_history_does_not_expand_fetch_or_invent_a_base(self):
         with branch_fixture() as f:
             f['run']('checkout','-qb','advanced-main',f['base'])
-            (f['origin']/'main-only.txt').write_text('outside pushed range')
-            f['run']('add','.');f['run']('commit','-qm','outside main commit')
+            (f['origin']/'main-only.txt').write_text('main outside push')
+            f['run']('add','.');f['run']('commit','-qm','outside main')
             f['run']('merge','--no-ff','-qm','merge side',f['head'])
-            merged=f['run']('rev-parse','HEAD');clone=f['folder']/'ambiguous-clone'
+            merged=f['run']('rev-parse','HEAD');clone=f['folder']/'history-clone'
             f['run']('clone','-q','--depth=1',f['origin'].as_uri(),str(clone))
-            payload=f['payload']([f['first'],f['head'],merged]);payload.update(after=merged,head_commit=dict(id=merged))
-            with self.assertRaisesRegex(ValueError,'[Aa]mbiguous.*comparison_base'):
+            payload=f['payload']([merged]);payload.update(after=merged,head_commit=dict(id=merged))
+            with patch.object(refs,'git',wraps=refs.git) as calls,self.assertRaisesRegex(refs.MissingHistory,'ancestry unavailable'):
                 refs.new_branch_comparison(merged,payload,fetch=True,cwd=clone)
+            fetches=[call for call in calls.call_args_list if call.args[0]=='fetch']
+            self.assertEqual(len(fetches),1);self.assertIn('--depth=2',fetches[0].args)
+            self.assertEqual(f['run']('rev-parse','HEAD',cwd=clone),merged)
 
     def test_job_receipts_retain_and_bind_the_immutable_source_baseline(self):
         with branch_fixture() as f:

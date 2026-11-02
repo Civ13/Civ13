@@ -21,6 +21,7 @@ def git(*args, check=True, cwd=None):
 
 ZERO = '0' * 40
 MAX_PUSH_COMMITS = 2048
+MAX_MERGE_FRONTIER = 64
 
 
 def push_event():
@@ -114,32 +115,56 @@ def new_branch_comparison(head, payload, *, fetch=False, cwd=None):
             if any(not parents(value) for value in reached):
                 raise ValueError('New-branch root has no real comparison parent; supply comparison_base')
             boundaries = {parent for value in reached for parent in parents(value) if parent not in pushed}
-            if len(boundaries) != 1:
-                raise ValueError('Ambiguous new-branch parent boundary; supply comparison_base')
-            value = next(iter(boundaries))
+            frontier = sorted(boundaries)
+            if len(frontier) == 1:
+                value = frontier[0]
+            else:
+                if not frontier or len(frontier) > MAX_MERGE_FRONTIER:
+                    raise ValueError('New-branch merge frontier exceeds bound; supply comparison_base')
+                for boundary in frontier:
+                    parents(boundary)
+                common = git('merge-base', '--all', '--octopus', *frontier, check=False, cwd=cwd)
+                if common.returncode:
+                    raise MissingHistory('Merged new-branch ancestry unavailable; supply comparison_base')
+                candidates = common.stdout.splitlines()
+                if len(candidates) != 1:
+                    raise ValueError('Ambiguous new-branch common ancestor; supply comparison_base')
+                value = candidates[0]
+                if not SHA.fullmatch(value) or value == ZERO or value in pushed:
+                    raise ValueError('Invalid merged new-branch comparison ancestor')
+                # A proven ancestor of every external parent covers the full
+                # pushed subgraph plus any already-existing merge history.
+                for boundary in frontier:
+                    ancestry = git('merge-base', '--is-ancestor', value, boundary, check=False, cwd=cwd)
+                    if ancestry.returncode:
+                        raise MissingHistory('Unproved new-branch frontier ancestry; supply comparison_base')
         else:
+            frontier = []
             links = parents(head)
             if not links:
                 raise ValueError('New-branch root has no real comparison parent; supply comparison_base')
             value = links[0]
-        parents(value)  # Require the exact boundary commit object, not merely its hash.
-        return value
+        parents(value)  # Require the exact comparison commit object, not merely its hash.
+        return value, frontier if len(frontier) > 1 else []
 
     try:
-        base = derive()
+        base, frontier = derive()
     except MissingHistory:
         if not fetch:
             raise
         # At most one fetch, by immutable SHA, bounded by git() and the job step.
         git('fetch', '--no-tags', '--depth=' + str(max(2, len(pushed) + 1)),
             'origin', head, cwd=cwd)
-        base = derive()
+        base, frontier = derive()
     if base == head or base == ZERO:
         raise ValueError('Invalid self/zero source comparison')
     if git('rev-parse', '--verify', 'HEAD^{commit}', cwd=cwd).stdout.strip() != head:
         raise RuntimeError('Source comparison changed checked-out head')
-    return dict(schema_version=1, kind='new-branch-push-range' if pushed else 'new-branch-tip-parent',
-                base=base, head=head, evidence=evidence)
+    proof = dict(schema_version=1, kind='new-branch-push-range' if pushed else 'new-branch-tip-parent',
+                 base=base, head=head, evidence=evidence)
+    if frontier:
+        proof.update(kind='new-branch-merge-frontier', frontier=frontier)
+    return proof
 
 
 def prepare(head, base, event, payload=None):

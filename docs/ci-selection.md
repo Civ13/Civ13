@@ -49,8 +49,12 @@ The strict LOS source comparator receives a separate recorded immutable baseline
 for a complete pushed-commit set, its unique real parent boundary outside that set;
 for an explicit empty-commit ref creation, the tip's real parent, labelled as a
 tip snapshot comparison. Multi-commit and merge ancestry is checked from Git
-objects rather than event-list ordering; multiple external boundaries require an
-explicit base instead of an inferred choice. Shallow preparation may make one bounded
+objects rather than event-list ordering. Multiple external parents use a recorded
+merge frontier only when Git proves one unique common ancestor of every parent;
+this conservatively includes the whole pushed range and already-existing merged
+history. Missing ancestry, criss-cross ambiguity or more than 64 frontier parents
+requires an explicit base. No first-parent or moving-branch guess is used.
+Shallow preparation may make one bounded
 exact-head fetch to obtain that history, preserving checked-out HEAD.
 
 The selection receipt records `source_comparison` with the source/head identities,
