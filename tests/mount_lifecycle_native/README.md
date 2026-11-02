@@ -1,11 +1,19 @@
 # Consolidated mount lifecycle native acceptance proposal
 
-Status: source/preparation for Main review, not native acceptance. No compiler,
-daemon, client, live world, save or workflow dispatch has been used. The dedicated
-manual-only .github/workflows/mount-lifecycle-native.yml now invokes the actual
-mount runner through the explicit guards described below. Ordinary push/PR CI
-runs only the three named offline preparation, supervisor and hosted-entry tests;
-test.yml gains no native selection.
+Status: fixture clock correction after native attempt 41368187879 at
+cae81ac363a926bf8cb6f5d00f28657d30e61630. The positive fixture compiled on
+516.1688 with zero errors/warnings, then passed only the three startup checks
+before startup.external_ack_timeout. No lifecycle case or negative control ran.
+The exact native clock value was not captured; source and float32 modeling
+identify loss of the 50-decisecond interval in world.realtime + 50.
+The failed receipt and logs remain preserved. Final socket rows were unavailable
+on the exited retained leader, with waitid exit confirmation and an earlier
+zero-owned-socket sample; final process groups/native censuses were empty.
+
+The dedicated manual workflow defaults to preparation without native acquisition
+or execution. Ordinary push/PR CI runs only the three named offline fixture,
+supervisor and hosted-entry files. The corrected native fixture still requires
+new exact-head preparation/artifact review and a separately admitted attempt.
 
 ## Source and entry selector
 
@@ -28,6 +36,13 @@ AI processing loops, saves and game input are not enabled.
 After closing, the fixture waits at most five seconds for an external closed-port
 acknowledgement. The Linux supervisor writes it only after a zero-owned-socket
 sample. No case executes before this acknowledgement.
+The fixture measures the same 50 deciseconds using modulo-day world.timeofday,
+so a midnight rollover is handled without large epoch arithmetic. timeofday is
+wallclock, not monotonic; clock changes can fail the fixture early. The unchanged
+host-monotonic five-second startup, 30-second daemon and 900-second attempt
+limits remain the safety bounds. Offline clock regressions project the actual
+fixture declaration/predicate with synthetic float32 readings; they establish
+boundary arithmetic, not corrected native behavior.
 
 Production qdel, finalize_qdel, both human Destroy layers, the animal/mob/atom/
 datum parent chain, destroyed-event dispatcher and human/horse constructors are
@@ -139,7 +154,8 @@ after tool acquisition. The job cap is 35 minutes, allowing bounded checkout/pre
 and final artifact upload without shortening the native cleanup allowance; the native step cap is 16
 minutes, while the actual attempt remains 900 seconds. Artifact retention is
 always selected, including partial compiler/supervision/runtime evidence on
-failure. No job, dispatch or native launch has occurred.
+failure. The corrected clock has not been dispatched for native execution;
+the historical failed attempt above remains unaccepted.
 
 It refuses other active native engines, foreign/extra session members, changed
 birth identities, UDP/connected/external sockets, occupied port and all sockets

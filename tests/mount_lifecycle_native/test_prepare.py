@@ -1,7 +1,8 @@
-"""Selector, mutation and receipt contracts only. No DM process or game models."""
+"""Selectors, receipts and projected fixture clock; no native process/game model."""
 from copy import deepcopy
 import importlib.util
 import json
+import struct
 from pathlib import Path
 import tempfile
 import unittest
@@ -34,7 +35,103 @@ def receipt(variant='none'):
                 port=0, checks=checks, observations=observations, error=failure, cleanup_error=None)
 
 
+clock_spec = importlib.util.spec_from_file_location(
+    'mount_fixture_clock_adapter', ROOT/'tests/save_movement/source_adapter.py')
+clock_adapter = importlib.util.module_from_spec(clock_spec)
+clock_spec.loader.exec_module(clock_adapter)
+
+
+class ClockExpired(RuntimeError):
+    pass
+
+
+class ClockFloat(float):
+    """Documented DM float32 arithmetic; only the fixture clock is modeled."""
+    def __new__(cls, value):
+        return super().__new__(cls, struct.unpack('<f', struct.pack('<f', value))[0])
+
+    def __add__(self, other):
+        return ClockFloat(float(self) + other)
+
+    def __sub__(self, other):
+        return ClockFloat(float(self) - other)
+
+    def __mod__(self, other):
+        return ClockFloat(float(self) % other)
+
+
+class ClockReadings:
+    def __init__(self, start, now):
+        assert 0 <= start < 864000 and 0 <= now < 864000
+        self.values = iter((start, now))
+
+    @property
+    def timeofday(self):
+        return ClockFloat(next(self.values))
+
+    @property
+    def realtime(self):
+        # Precision stress value for the failed fixture's epoch-clock mutant.
+        # The actual native world.realtime value was not captured in run41368187879.
+        return ClockFloat(8468928000 + next(self.values))
+
+
 class PrepareTests(unittest.TestCase):
+    def clock_expired(self, source, start, now):
+        body = clock_adapter.extract(source, '/world/New')
+        start_at = body.index('var/ack_')
+        region = body[start_at:body.index('if (file2text("port-closed.ack")', start_at)]
+        lines = [line.strip() for line in region.splitlines()]
+        declarations = [line for line in lines if line.startswith('var/ack_')]
+        conditions = [line for line in lines if line.startswith('if (')]
+        throws = [line for line in lines if line.startswith('throw EXCEPTION(')]
+        self.assertEqual((len(declarations), len(conditions), len(throws)), (1, 1, 1))
+        # Project the actual declaration, predicate and exception, preserving
+        # their expressions. The wait loop/engine file and sleep effects are
+        # outside this one-sample clock contract.
+        selected = ('/ack_wait_sample()\n\t' + declarations[0] + '\n\t' +
+                    conditions[0] + '\n\t\t' + throws[0] + '\n')
+        sample = clock_adapter.project(selected, '/ack_wait_sample', '',
+            dict(world=ClockReadings(start, now), EXCEPTION=ClockExpired))
+        try:
+            sample()
+        except ClockExpired as error:
+            self.assertEqual(str(error), 'startup.external_ack_timeout')
+            return True
+        return False
+
+    def test_fixture_ack_clock_exact_boundary(self):
+        source = (HERE/'probe.dm').read_text()
+        for start in (0, 123456, 800000):
+            for elapsed in (0, 49, 50, 51):
+                with self.subTest(start=start, elapsed=elapsed):
+                    self.assertEqual(self.clock_expired(source, start, start+elapsed),
+                                     elapsed >= 50)
+
+    def test_fixture_ack_clock_midnight_rollover(self):
+        source = (HERE/'probe.dm').read_text()
+        for start, now, expired in ((863999, 0, False), (863999, 48, False),
+                                    (863999, 49, True), (863990, 39, False),
+                                    (863990, 40, True)):
+            with self.subTest(start=start, now=now):
+                self.assertEqual(self.clock_expired(source, start, now), expired)
+
+    def test_fixture_ack_legacy_epoch_mutation_expires_without_elapsed_time(self):
+        source = (HERE/'probe.dm').read_text()
+        legacy = source.replace('var/ack_started = world.timeofday',
+                                'var/ack_deadline = world.realtime + 50').replace(
+            'if (((world.timeofday - ack_started + 864000) % 864000) >= 50)',
+            'if (world.realtime >= ack_deadline)')
+        self.assertNotEqual(legacy, source)
+        self.assertTrue(self.clock_expired(legacy, 123456, 123456))
+        self.assertFalse(self.clock_expired(source, 123456, 123456))
+
+    def test_fixture_ack_clock_backward_wallclock_jump_fails_closed(self):
+        # timeofday is wallclock, not monotonic; the unchanged supervisor's
+        # monotonic startup/phase/attempt bounds remain the safety boundary.
+        self.assertTrue(self.clock_expired((HERE/'probe.dm').read_text(),
+                                          123456, 123455))
+
     def test_case_order_and_bounded_protocol(self):
         self.assertEqual(len(probe.cases()), 19)
         self.assertEqual(len(probe.labels()), 79)

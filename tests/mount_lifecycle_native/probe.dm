@@ -318,9 +318,9 @@ var/list/mount_native_observations = list()
 		mount_native_check(!port && !OpenPort(0) && !port, "startup.closed_port")
 		mount_native_check(byond_version == 516 && byond_build == 1688, "startup.engine")
 		mount_native_check(world.params["tested_commit"] == MOUNT_NATIVE_HEAD && world.params["fixture_variant"] == MOUNT_NATIVE_VARIANT, "startup.identity")
-		var/ack_deadline = world.realtime + 50
+		var/ack_started = world.timeofday
 		while (!fexists("port-closed.ack"))
-			if (world.realtime >= ack_deadline)
+			if (((world.timeofday - ack_started + 864000) % 864000) >= 50)
 				throw EXCEPTION("startup.external_ack_timeout")
 			sleep(1)
 		if (file2text("port-closed.ack") != "closed\n")
