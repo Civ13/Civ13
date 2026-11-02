@@ -53,6 +53,17 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_access_lists_registration_preserves_existing_coverage(self):
+        suite = ci.SUITES['access_lists']
+        self.assertEqual(suite['files'], ('tests/access_lists/test_access_lists.py',))
+        for path in suite['shared_paths'] + ('tests/access_lists/producer-vectors.json',):
+            self.assertIn('access_lists', self.selected([path]))
+        previous = {name: entry for name, entry in ci.SUITES.items() if name != 'access_lists'}
+        with patch.object(ci, 'SUITES', previous):
+            old = self.selected(['code/setup.dm'])
+        self.assertEqual(self.selected(['code/setup.dm']), old | {'access_lists'})
+        self.assertNotIn('access_lists', self.selected(['README.md']))
+
     def test_mount_native_preparation_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['mount_native_preparation']
         self.assertEqual(suite['files'], ('tests/mount_lifecycle_native/test_prepare.py',
@@ -826,6 +837,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 if path == 'code/world.dm':
                     expected.add('dictionary')
                     expected.add('character_return_preparation')
+                    expected.add('access_lists')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 

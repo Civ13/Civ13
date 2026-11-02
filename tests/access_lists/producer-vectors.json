@@ -1,0 +1,86 @@
+{
+  "schema": "civ13.access-lines.v1",
+  "note": "Synthetic producer-canonical vectors. Consumer compatibility extensions such as legacy whitespace/CRLF are independently reviewed; canonical valid set and LF-empty must agree.",
+  "vectors": [
+    {
+      "name": "canonical_one",
+      "bytes": "fakealpha=990000000000000001\n",
+      "producer_accept": true
+    },
+    {
+      "name": "canonical_two",
+      "bytes": "fakealpha=990000000000000001\nfakebeta=990000000000000002\n",
+      "producer_accept": true
+    },
+    {
+      "name": "authoritative_empty",
+      "bytes": "\n",
+      "producer_accept": true
+    },
+    {
+      "name": "zero_bytes",
+      "bytes": "",
+      "producer_accept": false
+    },
+    {
+      "name": "extra_blank",
+      "bytes": "\n\n",
+      "producer_accept": false
+    },
+    {
+      "name": "missing_lf",
+      "bytes": "fakealpha=990000000000000001",
+      "producer_accept": false
+    },
+    {
+      "name": "crlf",
+      "bytes": "fakealpha=990000000000000001\r\n",
+      "producer_accept": false
+    },
+    {
+      "name": "trailing_space",
+      "bytes": "fakealpha=990000000000000001 \n",
+      "producer_accept": false
+    },
+    {
+      "name": "embedded_space",
+      "bytes": "fake alpha=990000000000000001\n",
+      "producer_accept": false
+    },
+    {
+      "name": "leading_zero_id",
+      "bytes": "fakealpha=099000000000000001\n",
+      "producer_accept": false
+    },
+    {
+      "name": "id_too_short",
+      "bytes": "fakealpha=9900000000000000\n",
+      "producer_accept": false
+    },
+    {
+      "name": "id_too_long",
+      "bytes": "fakealpha=990000000000000000001\n",
+      "producer_accept": false
+    },
+    {
+      "name": "duplicate_ckey",
+      "bytes": "fakealpha=990000000000000001\nfakealpha=990000000000000002\n",
+      "producer_accept": false
+    },
+    {
+      "name": "duplicate_id",
+      "bytes": "fakealpha=990000000000000001\nfakebeta=990000000000000001\n",
+      "producer_accept": false
+    },
+    {
+      "name": "nul",
+      "bytes": "fakealpha=990000000000000001\u0000\n",
+      "producer_accept": false
+    },
+    {
+      "name": "extra_field",
+      "bytes": "fakealpha=990000000000000001=extra\n",
+      "producer_accept": false
+    }
+  ]
+}
