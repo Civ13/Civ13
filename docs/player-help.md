@@ -97,6 +97,34 @@ before `browse()`. No prompt change, dependency, model request or bridge reload
 is required for this conversion. A source change does require a game build and
 separately coordinated save/update before affecting a running host.
 
+## Toxin-damage questions
+
+The bridge includes one compact, source-checked general toxin-damage record.
+Poison, poisoning and toxin aliases prioritize it over generic damage matches,
+including in follow-ups. It covers possible starvation/dehydration (when enabled),
+toxic reagents, overdoses and severe wound infection. It distinguishes reagent
+metabolism from healing toxin damage; liver/kidney processing is not a general
+automatic cure. These are game mechanics, not real-world medical advice or a
+statement about the current character. Seven bounded source sections were
+compared at deployed `a48c2b22646a23dabdcef64bfd15d7f86412e513` and source
+`492d9b7f47d14ec906d5ad8a1b52d8627dce09f7`; their normalized hashes match.
+Changed relevant source fails validation rather than silently retaining advice.
+
+The existing game-written nutrition/hydration percentages may be negative.
+The bridge preserves them within -100..100 as depleted game resources, not
+negative body water or proof of a damage cause. No new snapshot fields, reagent
+contents, internal-organ diagnoses, attackers or private logs are exposed. Empty
+active-effects or injury observations do not rule out an unreported cause. A
+player's reported symptom is not server confirmation; the snapshot supplies no
+toxin-damage measurement and does not establish that damage is still increasing.
+
+The record and existing request/transport budgets remain bounded. If escaped
+history or transport metadata leaves no room for its complete text, the bridge
+returns unavailable without dispatching a partial record. Offline injected tests
+verify prompt construction and privacy, not model answer quality. Applying this
+bridge-only change to an installed helper requires a separately authorized helper
+update/reload; it does not change or restart the game.
+
 ## Owner setup
 
 The game never performs model HTTP calls. A separately supervised Python 3.10+
