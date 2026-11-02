@@ -1,0 +1,143 @@
+name: Mount lifecycle native acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Prepare review artifacts or execute a separately approved bounded test
+        type: choice
+        options: [prepare, execute]
+        default: prepare
+        required: true
+      source_sha:
+        description: Reviewed full commit SHA; must equal the dispatched branch head
+        type: string
+        required: true
+      manifest_sha256:
+        description: Reviewed manifest hash from prepare mode; required for execute
+        type: string
+        default: ''
+      authorized_until:
+        description: Renewed specifically approved UTC deadline; required for execute
+        type: string
+        default: ''
+      execution_approved:
+        description: Explicit execution intent after separate human approval; not itself permission
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: mount-lifecycle-native
+  cancel-in-progress: false
+env:
+  BYOND_MAJOR: "516"
+  BYOND_MINOR: "1688"
+  PYTHONDONTWRITEBYTECODE: "1"
+jobs:
+  acceptance:
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      WORKFLOW_SHA: ${{ github.workflow_sha }}
+      DISPATCH_SHA: ${{ github.sha }}
+      SOURCE_REF: ${{ github.ref }}
+      MODE: ${{ inputs.mode }}
+      MANIFEST_SHA: ${{ inputs.manifest_sha256 }}
+      AUTHORIZED_UNTIL: ${{ inputs.authorized_until }}
+      EXECUTION_APPROVED: ${{ inputs.execution_approved && 'true' || 'false' }}
+    steps:
+      - name: Bind private runner paths in supported step context
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$RUNNER_TEMP"
+          printf '%s\n' \
+            "PREPARED=$RUNNER_TEMP/mount-prepared-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            "TOOLCHAIN=$RUNNER_TEMP/mount-toolchain" \
+            "OUTPUT=$RUNNER_TEMP/mount-execution-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+      - name: Require immutable dispatch implementation and source
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$SOURCE_SHA" = "$DISPATCH_SHA"
+          test "$SOURCE_SHA" = "$WORKFLOW_SHA"
+          [[ "$SOURCE_REF" == refs/heads/* ]]
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 3
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Validate explicit mode and renewed execution window
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          git diff --exit-code HEAD
+          /usr/bin/python3 -B tests/mount_lifecycle_native/hosted_entry.py \
+            --source-sha "$SOURCE_SHA" --dispatch-sha "$DISPATCH_SHA" --workflow-sha "$WORKFLOW_SHA" --ref "$SOURCE_REF" \
+            --mode "$MODE" --approved "$EXECUTION_APPROVED" --manifest-sha "$MANIFEST_SHA" \
+            --authorized-until "$AUTHORIZED_UNTIL" --repository "$GITHUB_REPOSITORY" \
+            --event "$GITHUB_EVENT_NAME"
+      - name: Check preparation and admission contracts offline
+        timeout-minutes: 2
+        run: /usr/bin/python3 -B -m unittest discover -s tests/mount_lifecycle_native -p 'test_*.py' -v
+      - name: Prepare exact committed native fixture without execution
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -B tests/mount_lifecycle_native/prepare.py --source-commit "$SOURCE_SHA" --output "$PREPARED"
+          /usr/bin/python3 -B tests/mount_lifecycle_native/hosted_entry.py \
+            --source-sha "$SOURCE_SHA" --dispatch-sha "$DISPATCH_SHA" --workflow-sha "$WORKFLOW_SHA" --ref "$SOURCE_REF" \
+            --mode "$MODE" --approved "$EXECUTION_APPROVED" --manifest-sha "$MANIFEST_SHA" \
+            --authorized-until "$AUTHORIZED_UNTIL" --repository "$GITHUB_REPOSITORY" \
+            --event "$GITHUB_EVENT_NAME" --prepared "$PREPARED"
+      - name: Acquire existing pinned Linux CI toolchain
+        if: inputs.mode == 'execute' && inputs.execution_approved
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo dpkg --add-architecture i386
+          sudo timeout 120 apt-get update
+          sudo timeout 120 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip make
+          mkdir "$TOOLCHAIN"
+          /usr/bin/python3 -B scripts/byond_toolchain.py download --platform linux --source repository-release --output "$TOOLCHAIN/pinned.zip" > "$PREPARED/acquisition.json"
+          unzip -q "$TOOLCHAIN/pinned.zip" -d "$TOOLCHAIN"
+          (cd "$TOOLCHAIN/byond" && make here)
+      - name: Execute specifically approved mount fixture and four controls
+        if: inputs.mode == 'execute' && inputs.execution_approved
+        timeout-minutes: 16
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -B tests/mount_lifecycle_native/run_linux.py \
+            --prepared "$PREPARED" --output "$OUTPUT" \
+            --byond-bin "$TOOLCHAIN/byond/bin" \
+            --archive "$TOOLCHAIN/pinned.zip" \
+            --expected-head "$SOURCE_SHA" --manifest-sha256 "$MANIFEST_SHA" \
+            --authorized-until "$AUTHORIZED_UNTIL"
+      - name: Retain review and all execution evidence including failures
+        if: always() && env.PREPARED != '' && env.OUTPUT != ''
+        timeout-minutes: 3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mount-native-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            ${{ env.PREPARED }}/hosted-review.json
+            ${{ env.PREPARED }}/mount-native-manifest.json
+            ${{ env.PREPARED }}/source-manifest.json
+            ${{ env.PREPARED }}/acquisition.json
+            ${{ env.PREPARED }}/stage/human_subtile.dme
+            ${{ env.PREPARED }}/stage/mount_native_*.dme
+            ${{ env.PREPARED }}/stage/tests/mount_lifecycle_native/
+            ${{ env.PREPARED }}/stage/compile-*.log
+            ${{ env.PREPARED }}/stage/compile-*-supervision.json
+            ${{ env.OUTPUT }}/

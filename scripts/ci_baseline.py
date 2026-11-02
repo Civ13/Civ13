@@ -25,6 +25,26 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
+    'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
+                                         'tests/mount_lifecycle_native/test_runner.py',
+                                         'tests/mount_lifecycle_native/test_hosted_entry.py'),
+        'paths': ('tests/mount_lifecycle_native/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'tests/human_subtile/run-npc.py', 'tests/human_subtile/run-diagonal.py',
+            'tests/human_subtile/run.py', 'tests/human_subtile/probe.dm',
+            'scripts/native_fixture.py', 'tools/byond/version.json',
+            'tests/movement_save_chunks/human_spatial_run.py',
+            'tests/movement_save_chunks/benchmark.py',
+            'tests/movement_save_chunks/human_spatial_stage.py',
+            'tests/nomads_lifecycle/run_variable_probe_linux.py',
+            'tests/nomads_lifecycle/run_variable_probe.py',
+            'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+            '.github/workflows/mount-lifecycle-native.yml',
+            'tests/save_movement/source_adapter.py')},
     # Stdlib-only source contracts and causal omission controls; no native world.
     # Shared game/Atlas/Help sources retain the existing conservative fallback.
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (

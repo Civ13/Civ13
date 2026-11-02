@@ -53,6 +53,21 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_mount_native_preparation_registration_preserves_existing_coverage(self):
+        suite = ci.SUITES['mount_native_preparation']
+        self.assertEqual(suite['files'], ('tests/mount_lifecycle_native/test_prepare.py',
+                                         'tests/mount_lifecycle_native/test_runner.py',
+                                         'tests/mount_lifecycle_native/test_hosted_entry.py'))
+        expected = {'policy', 'bootstrap', 'progress', 'mount_native_preparation'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/mount_lifecycle_native/probe.dm']), expected)
+        self.assertEqual(self.selected(['tests/mount_lifecycle_native/README.md']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_native_preparation'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'mount_native_preparation'})
+
     def test_paper_mutation_contracts_are_registered_offline(self):
         suite = ci.SUITES['paper_documents']
         self.assertEqual(suite['files'], ('tests/paper_documents/test_documents.py',
