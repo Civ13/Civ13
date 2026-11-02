@@ -656,6 +656,55 @@ class ByondToolchainTests(unittest.TestCase):
             self.assertEqual(archive.read_bytes(), body)
             self.assertFalse(output.exists())
 
+    def test_moving_save_archive_cache_never_caches_verdicts_or_skips_exact_compile(self):
+        workflow=(ROOT/'.github/workflows/moving-save-chunks.yml').read_text()
+        def verify(text):
+            job=text.split('  isolated-native:\n',1)[1].split('\n  lighting-interleave:',1)[0]
+            def step(name):return job.split('      - name: '+name+'\n',1)[1].split('      - ',1)[0]
+            identity=step('Read reviewed BYOND archive cache identity')
+            restore=step('Restore exact BYOND archive only')
+            self.assertIn('      - name: Discard non-exact BYOND archive restore\n',job)
+            discard=step('Discard non-exact BYOND archive restore')
+            compile=step('Install verified 516.1688 and compile exact game source')
+            save=step('Save verified BYOND archive after successful compilation')
+            self.assertIn('scripts/byond_toolchain.py field linux-cache-key',identity)
+            for cache,action in [(restore,'restore'),(save,'save')]:
+                self.assertIn('uses: actions/cache/'+action+'@5a3ec84eff668545956fd18022155c47e93e2684',cache)
+                with_block=cache.split('        with:\n',1)[1]
+                self.assertEqual([line.strip() for line in with_block.splitlines() if line.strip() and not line.lstrip().startswith('#')],
+                                 ['path: ${{ runner.temp }}/civ13-byond-archives','key: ${{ steps.byond_archive.outputs.key }}'])
+            self.assertIn("if: steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'",save)
+            self.assertIn("if: steps.byond_cache.outputs.cache-hit != 'true'",discard)
+            self.assertIn('shell: bash',discard)
+            self.assertIn('run: rm -rf -- "$RUNNER_TEMP/civ13-byond-archives"',discard)
+            self.assertLess(job.index('Restore exact BYOND'),job.index('Discard non-exact BYOND'))
+            self.assertLess(job.index('Discard non-exact BYOND'),job.index('Install verified'))
+            self.assertNotIn('        if:',compile)
+            self.assertIn('id: compile',compile)
+            self.assertIn('BYOND_ARCHIVE_CACHE: ${{ runner.temp }}/civ13-byond-archives',compile)
+            self.assertIn('BYOND_ARCHIVE_SOURCE: repository-release',compile)
+            self.assertIn('bash scripts/travis_pre_byond.sh',compile)
+            self.assertLess(job.index('Restore exact BYOND'),job.index('Install verified'))
+            self.assertLess(job.index('Install verified'),job.index('Save verified BYOND'))
+            self.assertLess(job.index('Save verified BYOND'),job.index('Isolated native correctness'))
+            self.assertIn("test \"$(git rev-parse HEAD)\" = \"$EXPECTED_HEAD\"",job)
+            self.assertIn('correctness.py --run-native',job)
+            self.assertIn('benchmark.py --run-native',job)
+            self.assertIn("- 'code/modules/persistence/functions.dm'",text)
+            self.assertIn('Retain all exact-head evidence including failed attempts',job)
+        verify(workflow)
+        mutations=[workflow.replace('          key: ${{ steps.byond_archive.outputs.key }}',
+                    '          key: floating-byond\n          restore-keys: byond-',1),
+                   workflow.replace('          path: ${{ runner.temp }}/civ13-byond-archives',
+                    '          path: BYOND/',1),
+                   workflow.replace('        id: compile\n',"        id: compile\n        if: steps.byond_cache.outputs.cache-hit != 'true'\n",1)]
+        mutations += [workflow.replace("        if: steps.byond_cache.outputs.cache-hit != 'true'\n",
+                                      "        if: steps.byond_cache.outputs.cache-hit == 'true'\n",1),
+                      workflow.replace('run: rm -rf -- "$RUNNER_TEMP/civ13-byond-archives"',
+                                       'run: echo preserve non-exact restore',1)]
+        for mutated in mutations:
+            with self.subTest(mutation=mutations.index(mutated)),self.assertRaises(AssertionError):verify(mutated)
+
     def test_repository_cli_is_explicit_and_fresh_extraction_compile_contract_is_unchanged(self):
         result = subprocess.run([sys.executable, '-B', str(ROOT/'scripts/byond_toolchain.py'), 'download', '--help'],
                                 capture_output=True, text=True, timeout=5)

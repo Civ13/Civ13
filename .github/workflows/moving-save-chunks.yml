@@ -83,17 +83,39 @@ jobs:
           python3 -B -m unittest discover -s tests/save_debug_lossy -p 'test*.py' -v
           python3 -B -m unittest discover -s tests/save_debug_fixture -p 'test*.py' -v
           python3 -B -m unittest discover -s tests/save_debug_combined -p 'test*.py' -v
+      - name: Read reviewed BYOND archive cache identity
+        id: byond_archive
+        run: echo "key=$(python3 -B scripts/byond_toolchain.py field linux-cache-key)" >> "$GITHUB_OUTPUT"
+      - name: Restore exact BYOND archive only
+        id: byond_cache
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/civ13-byond-archives
+          key: ${{ steps.byond_archive.outputs.key }}
+          # No restore prefixes or shared installed-tree cache.
+      - name: Discard non-exact BYOND archive restore
+        if: steps.byond_cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: rm -rf -- "$RUNNER_TEMP/civ13-byond-archives"
       - name: Install verified 516.1688 and compile exact game source
+        id: compile
         timeout-minutes: 15
         env:
           BYOND_MAJOR: '516'
           BYOND_MINOR: '1688'
           BYOND_ARCHIVE_SOURCE: repository-release
+          BYOND_ARCHIVE_CACHE: ${{ runner.temp }}/civ13-byond-archives
         shell: bash
         run: |
           set -euo pipefail
           test "$(python3 scripts/byond_toolchain.py field version)" = 516.1688
           bash scripts/travis_pre_byond.sh
+      - name: Save verified BYOND archive after successful compilation
+        if: steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/civ13-byond-archives
+          key: ${{ steps.byond_archive.outputs.key }}
       - name: Isolated native correctness and bounded memory matrix
         timeout-minutes: 21
         shell: bash

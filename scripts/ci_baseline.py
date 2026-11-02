@@ -615,9 +615,17 @@ def provenance(head, base):
                 run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'))
 
 
+def skill_prose(path):
+    parts = path.split('/')
+    return (len(parts) >= 4 and parts[:2] == ['.agents', 'skills']
+            and all(part not in ('', '.', '..') for part in parts)
+            and (parts[-1] == 'SKILL.md'
+                 or ('references' in parts[3:-1] and parts[-1].endswith('.md'))))
+
+
 def documentation(path):
     relative = PurePosixPath(path)
-    return (path in DOC_ASSETS or
+    return (skill_prose(path) or path in DOC_ASSETS or
             (path.startswith('docs/') and relative.suffix.lower() in DOC_SUFFIXES) or
             (len(relative.parts) == 1 and relative.suffix.lower() == '.md'))
 

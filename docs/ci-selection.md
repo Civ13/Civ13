@@ -4,6 +4,12 @@ On pushes to `master` and opened/reopened/synchronized PRs targeting `master` or
 `help-markdown-byond-html`, game compilation remains automatic for source, maps,
 assets, config, shared CI and unknown changes. Documentation-only PRs skip compilation. Missing comparisons
 still compile; failed selection fails the build rather than silently skipping.
+Skill prose under `.agents/skills/**/SKILL.md` and skill `references/**/*.md`
+also keeps documentation selection. Other skill files retain conservative impact
+and compile selection; mixed changes, missing comparisons and explicit `build:`
+requests retain existing checks. Mandatory policy/bootstrap/progress and aggregate
+validation still run for skill prose.
+
 Workflow syntax, security analysis, documentation builds and publication validation
 remain automatic. Compilation and publication validation are not regression suites.
 
@@ -362,3 +368,14 @@ The default compiler target now comes from `tools/byond/version.json` (516.1688)
 selected success receipts require the matching installed-version record and clean
 compiler banner. Historical native fixture lanes remain explicit 516.1681
 exceptions. See [the upgrade disposition and acceptance matrix](byond-5161688.md).
+
+The default `moving-save-chunks.yml` isolated job reuses the same immutable Linux
+archive cache as normal compilation. Only the version/OS/hash-keyed archive and
+acquisition metadata are retained. Every hit is checksum/provenance-verified by
+the existing downloader, then freshly extracted and compiled at the exact head.
+Non-exact key restores are discarded before bootstrap; an invalid exact-key cache
+still fails closed. Cache publication follows successful
+compilation; correctness, memory, movement mutation controls and failed evidence
+retention are unchanged. Installed trees, test outputs and verdicts are not cached.
+Changing this workflow still automatically selects its existing native PR job;
+this optimization does not authorize a new native run.
