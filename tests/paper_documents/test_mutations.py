@@ -5,6 +5,7 @@ spec=importlib.util.spec_from_file_location('mutation_view_fixture',Path(__file_
 views=importlib.util.module_from_spec(spec);spec.loader.exec_module(views)
 vm=views.vm
 PAPER=(vm.ROOT/'code/game/objects/items/paper/paper.dm').read_text(encoding='utf-8')
+PHYSICAL=(vm.ROOT/'code/modules/paperwork/physical.dm').read_text(encoding='utf-8')
 CHEM=(vm.ROOT/'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Compounds.dm').read_text(encoding='utf-8')
 EN='civ13:english:v1';RU='civ13:russian:v1'
 
@@ -15,6 +16,15 @@ def environment():
  vm.METHODS |= {'Cut','updateinfolinks','update_icon'}
  allowed=views.SOURCE.replace('B.pages.len','length(B.pages)').replace('B.pages[B.page]','B.pages[B.page-1]')
  env['paper_document_legacy_edit_allowed']=vm.project(allowed,'/proc/paper_document_legacy_edit_allowed','P,actor,expected_client,pen',env)
+ # Deterministic native-randomness seam: only the damage choice is substituted.
+ # Production bodies, arguments, candidate edits and commits execute unchanged.
+ env['damage_calls']=[]
+ def damage(value,prob=None):
+  env['damage_calls'].append((value,prob))
+  return ''.join(' ' if c==' ' else '*' for c in (value or ''))
+ env['stars']=damage
+ for name,args in [('set_name','P,value,edit=None'),('crumple','P')]:
+  env['paper_document_'+name]=vm.project(PHYSICAL,'/proc/paper_document_'+name,args,env)
  # Only engine effects are inert: overlay clear, href rebuild, icon update.
  code=vm.body(PAPER,'/obj/item/weapon/paper/proc/clearpaper')
  pieces=re.split(r'("(?:[^"\\]|\\.)*")',code)
@@ -185,5 +195,116 @@ class Mutations(unittest.TestCase):
   self.assertEqual(CHEM.count('if (paperaffected.clearpaper())'),2)
   commit=vm.body(vm.SOURCE,'/proc/paper_document_commit_edit')
   for forbidden in ('sleep(', 'input(', 'spawn(', 'get_signature(', 'to_chat(', 'browse('):self.assertNotIn(forbidden,commit)
+
+ def rename(self,value,edit=None):return self.env['paper_document_set_name'](self.paper,value,edit)
+ def crumple(self):return self.env['paper_document_crumple'](self.paper)
+ def test_classified_name_sync_preserves_written_title_languages_and_copy_identity(self):
+  before=copy.deepcopy(self.initialize());edit=self.prepare()
+  self.assertTrue(self.rename('Public &amp; item label',edit));record=self.paper.document_record
+  self.assertEqual(self.paper.name,record['legacy']['name']);self.assertEqual(record['sections'],before['sections'])
+  self.assertEqual(record['document_id'],before['document_id']);self.assertEqual(record['next_section'],before['next_section'])
+  self.assertEqual(record['revision'],before['revision']+1);self.assertIsNotNone(self.service.canonical_copy(self.actor))
+  self.actor.languages=[self.langs[EN]]
+  payload=json.dumps(self.service.project(self.actor))
+  self.assertIn('Public &amp; item label',payload);self.assertNotIn('SECRET_TITLE',payload)
+ def test_name_edit_rejects_stale_invalid_or_missing_token_without_partial_effect(self):
+  for change in ('missing','identity','content','legacy','deleted','version'):
+   with self.subTest(change=change):
+    self.setUp();self.initialize();edit=self.prepare()
+    if change=='missing':edit=None
+    elif change=='identity':self.paper.document_record=copy.deepcopy(self.paper.document_record)
+    elif change=='content':self.paper.document_record['sections'][0]['text']='concurrent'
+    elif change=='legacy':self.paper.info+=' concurrent'
+    elif change=='deleted':self.paper.gc_destroyed=True
+    else:self.paper.document_record['revision']=1048575;edit=self.prepare()
+    before=copy.deepcopy(self.paper.document_record);name=self.paper.name
+    self.assertFalse(self.rename('Rejected label',edit));self.assertEqual(self.paper.name,name);self.assertEqual(self.paper.document_record,before)
+ def test_legacy_name_retains_bytes_and_classification_cannot_be_downgraded(self):
+  self.assertTrue(self.rename('A &amp; B &lt;literal&gt;'));self.assertEqual(self.paper.name,'A &amp; B &lt;literal&gt;')
+  self.assertIsNone(self.paper.document_record)
+  self.initialize();token=self.prepare();self.paper.document_record=None;before=self.paper.name
+  self.assertFalse(self.rename('Stale classified name',token));self.assertEqual(self.paper.name,before)
+ def test_crumple_damages_all_sections_once_preserves_ink_language_and_versions(self):
+  before=copy.deepcopy(self.initialize());self.env['damage_calls'].clear()
+  self.assertTrue(self.crumple());record=copy.deepcopy(self.paper.document_record)
+  self.assertEqual(len(self.env['damage_calls']),1+len(before['sections']))
+  self.assertTrue(all(prob==85 for value,prob in self.env['damage_calls']))
+  self.assertEqual(self.paper.info,record['legacy']['info'])
+  self.assertEqual(record['revision'],before['revision']+1);self.assertEqual(record['document_id'],before['document_id'])
+  self.assertEqual(record['next_section'],before['next_section']);self.assertEqual(self.paper.free_space,before['legacy']['free_space'])
+  for old,new in zip(before['sections'],record['sections']):
+   self.assertNotEqual(old['text'],new['text']);self.assertEqual(new['version'],old['version']+1)
+   for key in ('id','lineage','kind','language_id','ink','tool'):self.assertEqual(new[key],old[key])
+  calls=len(self.env['damage_calls'])
+  self.service.project(self.actor);self.service.canonical_copy(self.actor)
+  self.assertEqual(len(self.env['damage_calls']),calls);self.assertEqual(self.paper.document_record,record)
+ def test_crumple_unchanged_text_keeps_section_version_and_stale_append_rejects(self):
+  self.initialize();self.paper.document_record['sections'][0]['text']='***'
+  before=copy.deepcopy(self.paper.document_record);edit=self.prepare();edit['record']['revision']+=1
+  self.assertTrue(self.crumple());record=self.paper.document_record
+  self.assertEqual(record['sections'][0]['version'],before['sections'][0]['version'])
+  self.assertFalse(self.commit(edit))
+  self.assertFalse(self.service.append(self.actor,self.pen,before['document_id'],before['revision'],EN,'body','stale'))
+ def test_crumple_invalid_drift_budget_and_version_refuse_atomically(self):
+  for change in ('malformed','legacy','revision','section-version','budget'):
+   with self.subTest(change=change):
+    self.setUp();self.initialize()
+    if change=='malformed':self.paper.document_record['schema_version']=2
+    elif change=='legacy':self.paper.info+=' external'
+    elif change=='revision':self.paper.document_record['revision']=1048575
+    elif change=='section-version':self.paper.document_record['sections'][0]['version']=1048575
+    else:self.paper.document_record['legacy']['ico']=[0]*4096
+    before=copy.deepcopy(self.paper.document_record);info=self.paper.info;space=self.paper.free_space
+    self.assertFalse(self.crumple());self.assertEqual(self.paper.document_record,before)
+    self.assertEqual(self.paper.info,info);self.assertEqual(self.paper.free_space,space);self.assertEqual(self.effects,[])
+ def test_legacy_crumple_does_not_classify_or_change_capacity_or_stamps(self):
+  before=self.env['paper_document_legacy_snapshot'](self.paper);self.env['damage_calls'].clear()
+  self.assertTrue(self.crumple());self.assertIsNone(self.paper.document_record)
+  self.assertEqual(self.env['damage_calls'],[(before['info'],85)])
+  after=self.env['paper_document_legacy_snapshot'](self.paper)
+  for key in before:
+   if key!='info':self.assertEqual(after[key],before[key])
+ def test_physical_handlers_commit_before_effects_and_rename_binds_prompt(self):
+  plane=vm.body(PAPER,'/obj/item/weapon/paper/verb/airplane')
+  self.assertLess(plane.index('paper_document_set_name('),plane.index('src.icon_state ='))
+  self.assertLess(plane.index('if (!fold_edit)'),plane.index('paper_document_set_name('))
+  crumple=vm.body(PAPER,'/obj/item/weapon/paper/attack_self')
+  self.assertLess(crumple.index('if (!paper_document_crumple(src))'),crumple.index('user.visible_message('))
+  rename=vm.body(PAPER,'/obj/item/weapon/paper/verb/rename')
+  self.assertLess(rename.index('paper_document_prepare_edit(src)'),rename.index('input(renamer,'))
+  for guard in ('usr == renamer','renamer.client == rename_client','rename_client.mob == renamer','document_record == rename_record','rename_legacy_json'):
+   self.assertIn(guard,rename)
+  self.assertLess(rename.index('if (!paper_document_set_name('),rename.index('desc ='))
+  self.assertNotRegex(PHYSICAL,r'(?i)hear_say\(|add_language\(|partial_languages|new /datum/paper_document_authoring')
+
+ def test_physical_changes_copy_canonical_bytes_with_faithful_section_identity(self):
+  spec=importlib.util.spec_from_file_location('physical_copy_fixture',Path(__file__).with_name('test_copying.py'))
+  copies=importlib.util.module_from_spec(spec);spec.loader.exec_module(copies)
+  env,Base,Reader,langs,render,Paper,state,*_=copies.environment()
+  env['stars']=lambda value,prob=None:''.join(' ' if c==' ' else '*' for c in (value or ''))
+  for name,args in [('set_name','P,value,edit=None'),('crumple','P')]:
+   env['paper_document_'+name]=vm.project(PHYSICAL,'/proc/paper_document_'+name,args,env)
+  actor=copies.vm.Actor();actor.languages=[langs[EN],langs[RU]];pen=copies.vm.Pen(actor);paper=Paper(actor);service=Base(paper,actor)
+  self.assertTrue(service.initialize(actor,pen));r=paper.document_record
+  self.assertTrue(service.append(actor,pen,r['document_id'],r['revision'],RU,'body','UNKNOWN_CANARY'))
+  stale=env['paper_document_copy_snapshot'](paper);token=env['paper_document_prepare_edit'](paper)
+  self.assertTrue(env['paper_document_set_name'](paper,'Folded public label',token))
+  self.assertFalse(env['paper_document_copy_current'](stale))
+  self.assertTrue(env['paper_document_crumple'](paper));current=copy.deepcopy(paper.document_record)
+  snapshot=env['paper_document_copy_snapshot'](paper);result=env['paper_document_create_copy'](snapshot)
+  self.assertIsNotNone(result);self.assertNotEqual(result.document_record['document_id'],current['document_id'])
+  self.assertEqual(result.document_record['sections'],current['sections'])
+  self.assertEqual(env['paper_document_legacy_snapshot'](result),current['legacy'])
+  self.assertIsNot(result.document_record['sections'],paper.document_record['sections'])
+  result.document_record['sections'][0]['text']='different copy'
+  self.assertEqual(paper.document_record,current)
+ def test_changed_damage_candidate_cannot_commit_after_nested_source_mutation(self):
+  before=copy.deepcopy(self.initialize());space=self.paper.free_space
+  def damaged(value,prob=None):
+   self.paper.document_record['sections'][0]['text']='concurrent callback seam'
+   return '*'*len(value or '')
+  self.env['stars']=damaged;self.assertFalse(self.crumple())
+  self.assertEqual(self.paper.info,before['legacy']['info']);self.assertEqual(self.paper.free_space,space)
+  self.assertEqual(self.paper.document_record['sections'][0]['text'],'concurrent callback seam')
 
 if __name__=='__main__':unittest.main()
