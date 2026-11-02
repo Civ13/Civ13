@@ -14,6 +14,7 @@ public static class Program {
         output.WriteLine("  --version                      Show launcher version and exit.");
         output.WriteLine("  --self-check                   Check bundled manifests and exit.");
         output.WriteLine("  --byond-contract               Show the bundled BYOND requirement and exit.");
+        output.WriteLine("  --manage-servers               Open the read-only management menu without updates or BYOND setup.");
         output.WriteLine("  --registered-instances <trusted-D-root> <registration-file> <local-host-id>");
         output.WriteLine("      Inspect one explicitly selected registration catalog and exit. Use a trusted D: root.");
         output.WriteLine("      Registrations are declarations; process state, ownership and readiness remain unknown.");
@@ -30,6 +31,7 @@ public static class Program {
         foreach (var link in CommunityLinks.Items)
             output.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
         output.WriteLine(ServerCatalog.OpenDreamMenu);
+        output.WriteLine(RegisteredInstancesMenu.Menu);
         if (hosting) output.WriteLine(LocalHosting.Menu);
     }
 
@@ -51,6 +53,12 @@ public static class Program {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
             if (args.SequenceEqual(["--help"])) {
                 WriteHelp(Console.Out);
+                return 0;
+            }
+            if (args.SequenceEqual([RegisteredInstancesMenu.Option])) {
+                RegisteredInstancesMenu.TryHandle(RegisteredInstancesMenu.Key, Console.In, Console.Out,
+                    root => new ReadOnlyRegistrationFileReader(root),
+                    () => new MonotonicProcessObservationClock());
                 return 0;
             }
             if (args.Length > 0 && args[0] == RegisteredInstancesCommand.Option)
@@ -147,9 +155,12 @@ public static class Program {
             var discovery = new ServerDiscovery();
             while (true) {
                 WriteMainMenu(Console.Out, host != null);
-                Console.Write("Choose a number: ");
+                Console.Write("Choose an option: ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
+                if (RegisteredInstancesMenu.TryHandle(choice, Console.In, Console.Out,
+                    root => new ReadOnlyRegistrationFileReader(root),
+                    () => new MonotonicProcessObservationClock())) continue;
                 if (host != null && string.Equals(choice, LocalHosting.MenuKey, StringComparison.OrdinalIgnoreCase)) {
                     try {
                         if (host.Update != null && !LocalHosting.Listening(host.Port))
