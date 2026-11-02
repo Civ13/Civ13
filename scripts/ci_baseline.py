@@ -318,7 +318,10 @@ SUITES = {
             'code/_onclick/hud/base_screen_objects.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_needs.dm',
-            'code/game/mob/living/carbon/human/human_stats.dm')},
+            'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/modules/reagents/Chemistry-Reagents.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
     # Exact stdlib/injected transport suite. test_bridge supplies inert setup/
     # teardown helpers; its tests are not discovered. No native runner or model.
     # All production/import inputs stay shared to preserve existing fallback.
