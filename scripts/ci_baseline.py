@@ -25,6 +25,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only startup loader projection with inert file/log boundaries.
+    # Existing startup/source-adapter coverage is retained additively.
+    'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',),
+        'paths': ('tests/crafting_loader/',), 'shared_paths': (
+            'code/setup.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',
