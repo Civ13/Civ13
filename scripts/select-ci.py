@@ -24,6 +24,9 @@ PLAYER_HELP_OFFLINE_TESTS = frozenset({'tests/player_help/test_help_links.py',
 # Exact stdlib-only production projections, registered in the offline baseline.
 RESOURCE_WORK_OFFLINE_TESTS = frozenset({'tests/test_resource_work_animation.py'})
 
+# This exact storage regression is a stdlib-only source projection, not a native fixture.
+STORAGE_RUNTIME_OFFLINE_TESTS = frozenset({'tests/storage_runtime/test_storage_runtime.py'})
+
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
 ATLAS_TEST_INPUTS = {
@@ -289,7 +292,7 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
-        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS:
+        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS:
             continue
         parts = PurePosixPath(path).parts
         suffix = PurePosixPath(path).suffix.lower()

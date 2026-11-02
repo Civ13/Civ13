@@ -123,6 +123,8 @@
 		sleeping = previous_sleeping
 		inducedSSD = FALSE
 		return FALSE
+	if (s_active)
+		s_active.close(src)
 	sleep_update()
 	return TRUE
 

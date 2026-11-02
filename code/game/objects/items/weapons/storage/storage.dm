@@ -34,6 +34,13 @@
 	var/base_icon = ""
 	var/list/startswith
 
+// Storage screen objects and viewers are rebuilt per runtime.  Skipping these
+// fields on import also preserves constructor-created controls from old saves.
+/obj/item/weapon/storage/persistence_runtime_var(key)
+	if (key in list("is_seeing", "boxes", "storage_start", "storage_continue", "storage_end", "stored_start", "stored_continue", "stored_end", "closer"))
+		return TRUE
+	return ..()
+
 /obj/item/weapon/storage/verb/name_storage()
 	set category = null
 	set name = "Name"
@@ -166,15 +173,15 @@
 	return
 
 /obj/item/weapon/storage/proc/hide_from(mob/user as mob)
-
-	if (!user.client)
+	if (!user)
 		return
-	user.client.screen -= boxes
-	user.client.screen -= storage_start
-	user.client.screen -= storage_continue
-	user.client.screen -= storage_end
-	user.client.screen -= closer
-	user.client.screen -= contents
+	if (user.client)
+		user.client.screen -= boxes
+		user.client.screen -= storage_start
+		user.client.screen -= storage_continue
+		user.client.screen -= storage_end
+		user.client.screen -= closer
+		user.client.screen -= contents
 	if (user.s_active == src)
 		user.s_active = null
 	is_seeing -= user
@@ -190,7 +197,6 @@
 
 /obj/item/weapon/storage/proc/close(mob/user as mob)
 	hide_from(user)
-	user.s_active = null
 	return
 
 /obj/item/weapon/storage/proc/close_all()
