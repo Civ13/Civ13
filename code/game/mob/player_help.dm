@@ -382,6 +382,9 @@ var/global/datum/player_help_service/player_help_service = new
 		var/mob/living/human/H = asking_player
 		var/list/condition = list("health_percent" = round(100 * H.health / max(1, H.maxHealth)), "nutrition_percent" = round(100 * H.nutrition / max(1, H.max_nutrition)), "hydration_percent" = round(100 * H.water / max(1, H.max_water)), "body_temperature_kelvin" = round(H.bodytemperature), "wetness_percent" = round(100 * H.cold_wetness))
 		condition["mood_category"] = mood_category(H.mood)
+		// Job title the player already sees; lets Help tailor advice to their role.
+		if (H.original_job && istext(H.original_job_title) && length(H.original_job_title))
+			condition["role"] = copytext(H.original_job_title, 1, 81)
 		var/list/events = list()
 		if (H.on_fire)
 			events += "On fire"
