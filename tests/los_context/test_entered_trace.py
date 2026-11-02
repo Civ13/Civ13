@@ -68,6 +68,9 @@ class IdentityTrace:
         for index, m in enumerate(self.models):
             if index == 0:
                 m.V.body = self.mover
+            m.V.body.type = '/mob/living/human'
+            m.V.body.client = m.C
+            m.C.mob = m.V.body
             m.V.owner, m.V.retired = m.C, False
             m.V.movement_turf = m.V.body.loc
             m.V.viewport_radii = lambda: P.geometry.DMList([4, 4])
