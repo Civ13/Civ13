@@ -1,4 +1,4 @@
-name: Bounded human-goat pair callback observations
+name: Bounded ordinary human-goat bump observations
 on:
   workflow_dispatch:
     inputs:
@@ -6,8 +6,8 @@ on:
         description: Select the reviewed observation
         required: true
         type: choice
-        default: pair_order
-        options: [pair_order]
+        default: ordinary_bump
+        options: [ordinary_bump]
       expected_head:
         description: Full reviewed fixture commit SHA
         required: true
@@ -26,7 +26,7 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        suite: [pair05]
+        suite: [ordinary05]
     steps:
       - name: Validate manual source and exclusive rate selection
         env:
@@ -40,8 +40,8 @@ jobs:
           test "$RUNNER_ARCH" = X64
           [[ "$EXPECTED_HEAD" =~ ^[0-9a-f]{40}$ ]]
           test "$EXPECTED_HEAD" = "$GITHUB_SHA"
-          test "$EXPERIMENT" = pair_order
-          test "$WILDLIFE_SUITE" = pair05
+          test "$EXPERIMENT" = ordinary_bump
+          test "$WILDLIFE_SUITE" = ordinary05
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.sha }}
@@ -68,6 +68,10 @@ jobs:
           /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_bump_integration.py' -v
           /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_pair_order.py' -v
           /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_pair_integration.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_ordinary_bump_stage.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_ordinary_bump_materialize.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_ordinary_bump_receipt.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_ordinary_bump_integration.py' -v
           /usr/bin/python3 -I -B -m unittest discover -s tests/persistence_pointers -p 'test_contract.py' -v
       - name: Bounded isolated observations, no parity claim
         env:

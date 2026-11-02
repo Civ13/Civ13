@@ -108,10 +108,10 @@ def tar_bytes(files):
 
 
 class EvidenceTests(unittest.TestCase):
-    def test_current_workflow_only_selects_pair_and_serializes(self):
+    def test_current_workflow_only_selects_ordinary_and_serializes(self):
         text = (ROOT / '.github/workflows/wildlife-cardinal-cadence.yml').read_text(encoding='utf-8')
-        for token in ('on:\n  workflow_dispatch:', 'options: [pair_order]', 'suite: [pair05]',
-                      'test "$EXPERIMENT" = pair_order', 'test "$WILDLIFE_SUITE" = pair05',
+        for token in ('on:\n  workflow_dispatch:', 'options: [ordinary_bump]', 'suite: [ordinary05]',
+                      'test "$EXPERIMENT" = ordinary_bump', 'test "$WILDLIFE_SUITE" = ordinary05',
                       'max-parallel: 1', 'cancel-in-progress: false',
                       'test "$EXPECTED_HEAD" = "$GITHUB_SHA"', 'persist-credentials: false'):
             self.assertIn(token, text)

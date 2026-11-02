@@ -93,7 +93,7 @@ def package_evidence(root):
     for rel in EVIDENCE_PATHS:
         # The extended manifest contains both the original and final source
         # inventories; its pre-adaptation npc manifest is redundant.
-        if RUN_STATE.get('suite') in ('extended', 'bridge', 'scheduler', 'random05', 'random10', 'cardinal05', 'cardinal10', 'transition05', 'bump05', 'pair05') and rel == 'npc-smoke/npc-manifest.json':
+        if RUN_STATE.get('suite') in ('extended', 'bridge', 'scheduler', 'random05', 'random10', 'cardinal05', 'cardinal10', 'transition05', 'bump05', 'pair05', 'ordinary05') and rel == 'npc-smoke/npc-manifest.json':
             continue
         path = root / rel
         if not path.exists():
@@ -752,7 +752,7 @@ def main():
                         help='fresh dedicated <=1 GiB mount; evidence remains inside it')
     parser.add_argument('--reviewed-cloud-envelope', action='store_true',
                         help='operator confirms separate cloud isolation review')
-    parser.add_argument('--suite', choices=('random05','random10','cardinal05','cardinal10','transition05','bump05','pair05'), required=True)
+    parser.add_argument('--suite', choices=('random05','random10','cardinal05','cardinal10','transition05','bump05','pair05','ordinary05'), required=True)
     parser.add_argument('--work-deadline', type=float)
     args = parser.parse_args()
     require(sys.platform == 'linux', 'Cloud smoke supports Linux only')
@@ -794,6 +794,9 @@ def main():
         return run_bridge(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'scheduler':
         return run_scheduler(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
+    if args.suite == 'ordinary05':
+        worker = load_module('ordinary_bump_worker', HERE/'ordinary_bump_worker.py')
+        return worker.run(sys.modules[__name__],args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'pair05':
         worker = load_module('pair_worker', HERE/'pair_worker.py')
         return worker.run(sys.modules[__name__],args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)

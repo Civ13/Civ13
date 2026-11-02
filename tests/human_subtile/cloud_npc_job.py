@@ -117,13 +117,13 @@ def selected_estimate(raw,suite='smoke'):
     require(count>0,'No selected source')
     # Random comparison adds a hardlinked second stage with separate metadata.
     # Compiled artifacts and runtime resources remain additional bounded scratch.
-    metadata_per_file=32768 if suite in ('random05','random10','bump05','pair05') else 16384
+    metadata_per_file=32768 if suite in ('random05','random10','bump05','pair05','ordinary05') else 16384
     estimate=2*total+metadata_per_file*count
     require(estimate<SCRATCH,'Selected source alone cannot fit 1 GiB scratch')
     return {'files':count,'blob_bytes':total,'archive_and_stage_estimate_bytes':estimate,
             'scratch_limit_bytes':SCRATCH,
             'limitation':('Includes second-stage metadata but not compiled artifacts, logs, saves or short-lived peaks.'
-                          if suite in ('random05','random10','bump05','pair05') else
+                          if suite in ('random05','random10','bump05','pair05','ordinary05') else
                           'Does not include compiled artifacts, logs, saves or short-lived peaks.')}
 
 
@@ -183,7 +183,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute',action='store_true');parser.add_argument('--head',required=True)
     parser.add_argument('--output',required=True,type=Path);parser.add_argument('--controller-output',required=True,type=Path)
-    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10','transition05','bump05','pair05'),required=True)
+    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10','transition05','bump05','pair05','ordinary05'),required=True)
     args=parser.parse_args();require(args.execute,'Explicit --execute required')
     controller.hosted(os.environ,args.head)
     signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
@@ -212,7 +212,13 @@ def main():
         _,head,_=run(git+['rev-parse','HEAD'],clean_env,deadline,10,storage)
         _,dirty,_=run(git+['status','--porcelain=v1','--untracked-files=all'],clean_env,deadline,30,storage)
         require(head.decode().strip()==args.head and not dirty,'Source differs from clean exact head')
-        _,tree,_=run(git+['ls-tree','-r','-l','-z',args.head],clean_env,deadline,30,storage,maximum=16*1024**2)
+        estimate_head=args.head
+        if args.suite == 'ordinary05':
+            estimate_head='5b0040a099cdacf1091bc8b4859c298f65dda63d'
+            _,game_tree,_=run(git+['rev-parse',estimate_head+'^{tree}'],clean_env,deadline,10,storage)
+            require(game_tree.decode().strip()=='6559a4507c5e874051966b55c758c2908541e711','Unexpected merged game tree')
+        _,tree,_=run(git+['ls-tree','-r','-l','-z',estimate_head],clean_env,deadline,30,storage,maximum=16*1024**2)
+        record['scratch_source_head']=estimate_head
         record['scratch_estimate']=selected_estimate(tree,args.suite);record['suite']=args.suite;record['phase']='image-acquisition';save(out/'coordinator.json',record)
         rc,existing,err=run(docker+['image','inspect',controller.IMAGE],clean_env,deadline,10,storage,optional=True)
         if rc:
