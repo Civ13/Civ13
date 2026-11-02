@@ -694,5 +694,171 @@ class CheckoutRefsTests(unittest.TestCase):
             self.assertIn('fetch-depth: 0', block)
 
 
+
+@contextmanager
+def atlas_graph():
+    """Real local Git DAG, independent of Civ13 history or remote services."""
+    with tempfile.TemporaryDirectory(prefix='ci-atlas-') as directory:
+        root = Path(directory)/'origin'; root.mkdir()
+        def run(*args, cwd=root, input=None):
+            return subprocess.check_output(['git', *args], cwd=cwd, input=input,
+                                           stderr=subprocess.PIPE, text=True, timeout=15).strip()
+        run('init', '-q'); run('config', 'user.name', 'Atlas fixture'); run('config', 'user.email', 'atlas@example.invalid')
+        run('config', 'commit.gpgsign', 'false')
+        paths = ('tests/test_crafting_atlas.py', 'tests/crafting_atlas/probe.dm',
+                 'tests/crafting_atlas/resource-search.test.mjs')
+        def commit(name, content, message='fixture change'):
+            target=root/name; target.parent.mkdir(parents=True,exist_ok=True); target.write_text(content)
+            run('add', '--', name); run('commit', '-qm', message); return run('rev-parse', 'HEAD')
+        for name in paths:
+            target=root/name; target.parent.mkdir(parents=True,exist_ok=True); target.write_text('initial\n')
+        run('add','.');run('commit','-qm','root'); initial=run('rev-parse','HEAD')
+        fork=commit(paths[1],'fork\n')
+        run('branch','pr',fork);run('branch','base',fork)
+        spec=importlib.util.spec_from_file_location('atlas_graph_selection', ROOT/'scripts/select-ci.py')
+        selection=importlib.util.module_from_spec(spec);spec.loader.exec_module(selection)
+        previous=os.getcwd()
+        try:
+            os.chdir(root)
+            yield dict(root=root, run=run, commit=commit, initial=initial, fork=fork, paths=paths, selection=selection, directory=Path(directory))
+        finally:
+            os.chdir(previous)
+
+
+class AtlasPRComparisonTests(unittest.TestCase):
+    def test_upstream_only_test_change_does_not_select_pr_native(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+            g('checkout','-q','pr');head=f['commit']('docs/pr.md','PR prose\n')
+            self.assertEqual(f['selection'].changed_atlas_tests(base,head,'pull_request'),[])
+            self.assertIn(f['paths'][1],g('diff','--name-only','--diff-filter=AM',base,head))
+            proof=refs.atlas_pr_comparison(base,head)
+            self.assertEqual((proof['event_base'],proof['head'],proof['ancestor']),(base,head,f['fork']))
+
+    def test_actual_add_modify_and_deletion_semantics(self):
+        for operation in ('add','modify','delete'):
+            with self.subTest(operation=operation), atlas_graph() as f:
+                g=f['run'];path=f['paths'][1]
+                if operation=='add':
+                    g('rm','--',path);g('commit','-qm','remove baseline file')
+                    fork=g('rev-parse','HEAD');g('branch','-f','pr',fork)
+                else:fork=f['fork']
+                g('checkout','-q','pr')
+                if operation=='delete':
+                    g('rm','--',path);g('commit','-qm','PR deletion');head=g('rev-parse','HEAD')
+                else:head=f['commit'](path,'PR edit\n')
+                expected=[] if operation=='delete' else ['tests/crafting_atlas']
+                self.assertEqual(f['selection'].changed_atlas_tests(fork,head,'pull_request'),expected)
+
+    def test_intentional_revert_before_and_after_merging_base(self):
+        for merged in (False,True):
+            with self.subTest(merged=merged), atlas_graph() as f:
+                g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+                g('checkout','-q','pr');f['commit']('docs/pr.md','PR prose\n')
+                if merged:
+                    g('merge','--no-ff','-qm','merge event base',base);g('revert','--no-edit',base)
+                else:g('revert','--no-edit',f['fork'])
+                head=g('rev-parse','HEAD')
+                self.assertEqual(f['selection'].changed_atlas_tests(base,head,'pull_request'),['tests/crafting_atlas'])
+                self.assertEqual(refs.atlas_pr_comparison(base,head)['ancestor'],base if merged else f['fork'])
+
+    def test_no_net_change_reversal_does_not_select(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+            g('checkout','-q','pr');edit=f['commit'](f['paths'][1],'temporary PR change\n');g('revert','--no-edit',edit)
+            head=g('rev-parse','HEAD')
+            self.assertEqual(f['selection'].changed_atlas_tests(base,head,'pull_request'),[])
+
+    def test_shallow_requires_one_exact_tip_fetch_and_preserves_head(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit']('base.txt','base\n')
+            g('checkout','-q','pr');head=f['commit']('pr.txt','PR\n')
+            clone=f['directory']/'shallow';g('clone','-q','--depth=1','--branch','pr',f['root'].as_uri(),str(clone))
+            with self.assertRaises(refs.MissingHistory):refs.atlas_pr_comparison(base,head,cwd=clone)
+            with patch.object(refs,'git',wraps=refs.git) as commands:
+                proof=refs.atlas_pr_comparison(base,head,fetch=True,cwd=clone)
+            fetches=[c for c in commands.call_args_list if 'fetch' in c.args]
+            self.assertEqual(len(fetches),1)
+            self.assertEqual(fetches[0].args,('--no-replace-objects','fetch','--no-tags','--depth=2049','origin',base,head))
+            self.assertEqual(proof['ancestor'],f['fork']);self.assertEqual(g('rev-parse','HEAD',cwd=clone),head)
+
+    def test_incomplete_bounded_fetch_fails_without_second_attempt(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base')
+            for i in range(4):base=f['commit']('base.txt',str(i))
+            g('checkout','-q','pr')
+            for i in range(4):head=f['commit']('pr.txt',str(i))
+            clone=f['directory']/'shallow';g('clone','-q','--depth=1','--branch','pr',f['root'].as_uri(),str(clone))
+            with patch.object(refs,'MAX_ATLAS_COMMITS',1),patch.object(refs,'git',wraps=refs.git) as commands:
+                with self.assertRaises(refs.MissingHistory):refs.atlas_pr_comparison(base,head,fetch=True,cwd=clone)
+            self.assertEqual(sum('fetch' in c.args for c in commands.call_args_list),1)
+            self.assertEqual(g('rev-parse','HEAD',cwd=clone),head)
+
+    def test_criss_cross_ambiguity_and_unrelated_roots_fail(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');left=f['commit']('left.txt','left')
+            g('checkout','-q','pr');right=f['commit']('right.txt','right')
+            first=g('commit-tree',g('rev-parse',left+'^{tree}'),'-p',left,'-p',right,'-m','cross one')
+            second=g('commit-tree',g('rev-parse',right+'^{tree}'),'-p',right,'-p',left,'-m','cross two')
+            g('reset','--hard',second)
+            with self.assertRaisesRegex(ValueError,'unique'):refs.atlas_pr_comparison(first,second)
+            empty=g('hash-object','-t','tree','--stdin',input='')
+            orphan=g('commit-tree',empty,'-m','unrelated');g('reset','--hard',orphan)
+            with self.assertRaisesRegex(ValueError,'unrelated'):refs.atlas_pr_comparison(first,orphan)
+
+    def test_apparent_unique_base_with_hidden_parent_still_fails_closed(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');left=f['commit']('left.txt','left')
+            g('checkout','-q','pr');right=f['commit']('right.txt','right')
+            tree=g('rev-parse',right+'^{tree}')
+            hidden=g('commit-tree',tree,'-p',right,'-m','hidden right edge')
+            base=g('commit-tree',tree,'-p',left,'-p',right,'-m','base two parents')
+            head=g('commit-tree',tree,'-p',left,'-p',hidden,'-m','PR two parents')
+            g('reset','--hard',head)
+            shallow=f['root']/'.git/shallow';shallow.write_text(hidden+'\n')
+            # Git sees one candidate after the cut hides a second common base.
+            self.assertEqual(g('merge-base','--all',base,head),left)
+            with self.assertRaisesRegex(refs.MissingHistory,'shallow boundary'):
+                refs.atlas_pr_comparison(base,head)
+
+    def test_mismatched_missing_and_invalid_identities_fail(self):
+        with atlas_graph() as f:
+            head=f['commit']('pr.txt','PR')
+            with self.assertRaisesRegex(ValueError,'checked-out'):refs.atlas_pr_comparison(f['fork'],f['initial'])
+            with self.assertRaises(refs.MissingHistory):refs.atlas_pr_comparison('f'*40,head)
+            for base in ('','0'*40,'main'):
+                with self.subTest(base=base),self.assertRaises(ValueError):refs.atlas_pr_comparison(base,head)
+
+    def test_non_pr_admission_and_preparation_are_unchanged(self):
+        with atlas_graph() as f:
+            head=f['commit']('pr.txt','PR')
+            with patch.object(refs,'atlas_pr_comparison',side_effect=AssertionError('Atlas PR only')):
+                for event in ('push','workflow_dispatch'):
+                    self.assertIsNone(refs.prepare(head,f['fork'],event,atlas_ancestry=True))
+                self.assertIsNone(refs.prepare(head,f['fork'],'pull_request'))
+            with patch.object(f['selection'],'atlas_comparison',side_effect=AssertionError('Atlas PR only')):
+                for event in ('push','workflow_dispatch'):
+                    self.assertEqual(f['selection'].changed_atlas_tests(f['fork'],head,event),[])
+
+    def test_actual_selector_records_ancestor_without_replacing_event_base(self):
+        with atlas_graph() as f:
+            g=f['run'];g('checkout','-q','base');base=f['commit'](f['paths'][1],'upstream\n')
+            g('checkout','-q','pr');head=f['commit']('docs/pr.md','PR prose\n')
+            out=f['directory']/'out';receipt=f['directory']/'selection.json'
+            payload=dict(action='opened',pull_request=dict(title='Atlas test',base=dict(ref='master',sha=base),head=dict(sha=head)))
+            argv=['select-ci.py','--base',base,'--head',head,'--event','pull_request','--build-prefix','true','--output',str(out),'--receipt',str(receipt)]
+            with patch.object(sys,'argv',argv),patch.object(f['selection'],'load_event',return_value=payload), \
+                 patch.object(baseline,'ROOT',f['root']),patch.dict(sys.modules,{'ci_baseline':baseline}):
+                f['selection'].main()
+            plan=json.loads(receipt.read_text())
+            self.assertEqual((plan['base'],plan['requested_base'],plan['head']),(base,base,head))
+            self.assertEqual(plan['atlas_comparison']['ancestor'],f['fork']);self.assertEqual(plan['new_tests'],[])
+            self.assertIn('atlas_ancestor='+f['fork'],out.read_text())
+            out.unlink();receipt.unlink();payload['pull_request']['base']['sha']=f['fork']
+            with patch.object(sys,'argv',argv),patch.object(f['selection'],'load_event',return_value=payload):
+                with self.assertRaisesRegex(RuntimeError,'matching event'):f['selection'].main()
+            self.assertFalse(out.exists());self.assertFalse(receipt.exists())
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -10,10 +10,10 @@ import sys
 SHA = re.compile(r'^[0-9a-f]{40}$')
 
 
-def git(*args, check=True, cwd=None):
+def git(*args, check=True, cwd=None, timeout=90):
     env = os.environ.copy()
     env['GIT_TERMINAL_PROMPT'] = '0'
-    result = subprocess.run(['git', *args], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=90, env=env, cwd=cwd)
+    result = subprocess.run(['git', *args], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=timeout, env=env, cwd=cwd)
     if check and result.returncode:
         raise RuntimeError('Git preparation failed: ' + (result.stderr or result.stdout)[-2000:])
     return result
@@ -167,7 +167,86 @@ def new_branch_comparison(head, payload, *, fetch=False, cwd=None):
     return proof
 
 
-def prepare(head, base, event, payload=None):
+
+MAX_ATLAS_COMMITS = 2048
+
+
+def atlas_pr_comparison(base, head, *, fetch=False, cwd=None):
+    """Prove one merge base without trusting a shallow graph's apparent roots.
+
+    Only Atlas PR admission uses this origin. Event base/head remain unchanged.
+    Excluding the candidate and its proven ancestors bounds the graph we need;
+    any shallow boundary above that exclusion makes the proof incomplete.
+    """
+    if any(not isinstance(value, str) or not SHA.fullmatch(value) or value == ZERO for value in (base, head)):
+        raise ValueError('Atlas PR comparison requires exact nonzero base and head SHAs')
+    def run(*args, check=True, timeout=15):
+        result = git('--no-replace-objects', *args, check=check, cwd=cwd, timeout=timeout)
+        if len(result.stdout.encode('utf-8')) > 1024*1024:
+            raise ValueError('Atlas ancestry output bound exceeded')
+        return result
+    def metadata(name):
+        path = Path(run('rev-parse', '--git-path', name).stdout.strip())
+        if not path.is_absolute():
+            path = Path(cwd or os.getcwd())/path
+        if not path.exists():
+            return ''
+        if path.stat().st_size > 1024*1024:
+            raise ValueError('Atlas ancestry metadata bound exceeded')
+        return path.read_text(encoding='ascii')
+    def check_head():
+        if run('rev-parse', '--verify', 'HEAD^{commit}').stdout.strip() != head:
+            raise ValueError('Atlas event head differs from checked-out head')
+    check_head()
+    if metadata('info/grafts').strip():
+        raise ValueError('Atlas ancestry does not accept grafted history')
+    def derive():
+        for value in (base, head):
+            result = run('rev-parse', '--verify', value+'^{commit}', check=False)
+            if result.returncode or result.stdout.strip() != value:
+                raise MissingHistory('Atlas event commit unavailable')
+        shallow_text = metadata('shallow')
+        shallow = set(shallow_text.splitlines())
+        if any(not SHA.fullmatch(value) for value in shallow):
+            raise ValueError('Invalid Atlas shallow-boundary metadata')
+        result = run('merge-base', '--all', base, head, check=False)
+        if result.returncode:
+            if shallow or result.returncode != 1:
+                raise MissingHistory('Atlas common ancestry unavailable or incomplete')
+            raise ValueError('Atlas PR histories are unrelated')
+        candidates = result.stdout.splitlines()
+        if len(candidates) != 1 or not SHA.fullmatch(candidates[0]):
+            raise ValueError('Atlas PR comparison requires a unique merge base')
+        ancestor = candidates[0]
+        for value in (base, head):
+            if run('merge-base', '--is-ancestor', ancestor, value, check=False).returncode:
+                raise MissingHistory('Atlas common ancestor not proved')
+        result = run('rev-list', '--boundary', '--max-count='+str(MAX_ATLAS_COMMITS+1),
+                     base, head, '--not', ancestor, check=False)
+        if result.returncode:
+            raise MissingHistory('Atlas comparison history is incomplete')
+        rows = result.stdout.splitlines()
+        if any(not SHA.fullmatch(row.removeprefix('-')) for row in rows):
+            raise ValueError('Invalid Atlas ancestry identity')
+        visited = {row for row in rows if not row.startswith('-')}
+        if len(visited) > MAX_ATLAS_COMMITS:
+            raise ValueError('Atlas ancestry exceeds the bounded comparison range')
+        if visited & shallow:
+            raise MissingHistory('Atlas comparison crosses an incomplete shallow boundary')
+        check_head()
+        return dict(kind='atlas-pr-merge-base', event_base=base, head=head, ancestor=ancestor,
+                    range_commits=len(visited), max_range_commits=MAX_ATLAS_COMMITS)
+    try:
+        return derive()
+    except MissingHistory:
+        if not fetch:
+            raise
+    # One exact-SHA bounded fetch, no moving branch names or first-parent guess.
+    run('fetch', '--no-tags', '--depth='+str(MAX_ATLAS_COMMITS+1), 'origin', base, head, timeout=90)
+    return derive()
+
+
+def prepare(head, base, event, payload=None, *, atlas_ancestry=False):
     if not SHA.fullmatch(head) or head == '0' * 40:
         raise ValueError('Expected a nonzero full head SHA')
     if git('rev-parse', '--verify', 'HEAD^{commit}').stdout.strip() != head:
@@ -178,6 +257,8 @@ def prepare(head, base, event, payload=None):
         if event == 'push' and base == ZERO:
             return new_branch_comparison(head, payload if payload is not None else push_event(), fetch=True)
         return
+    if atlas_ancestry and event == 'pull_request':
+        return atlas_pr_comparison(base, head, fetch=True)
     if not SHA.fullmatch(base):
         raise ValueError('Expected a full comparison SHA')
     if git('cat-file', '-e', base + '^{commit}', check=False).returncode:
@@ -193,9 +274,10 @@ def main():
     parser.add_argument('--head', required=True)
     parser.add_argument('--base', default='')
     parser.add_argument('--event', required=True)
+    parser.add_argument('--atlas-ancestry', action='store_true', help='Bounded Atlas-only ordinary PR ancestry preparation')
     args = parser.parse_args()
     try:
-        prepare(args.head, args.base, args.event)
+        prepare(args.head, args.base, args.event, atlas_ancestry=args.atlas_ancestry)
     except (ValueError, RuntimeError, subprocess.TimeoutExpired) as error:
         print('CI checkout preparation failed: ' + str(error), file=sys.stderr)
         return 1

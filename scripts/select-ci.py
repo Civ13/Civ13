@@ -3,7 +3,8 @@ import argparse
 import os
 import json
 import re
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+import importlib.util
 import subprocess
 
 DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'}
@@ -243,16 +244,27 @@ def select(base, head):
 def needs_extensive(event, opted_in):
     return event == 'workflow_dispatch' and opted_in
 
+
+def atlas_comparison(base, head):
+    spec = importlib.util.spec_from_file_location('atlas_checkout_refs', Path(__file__).with_name('ci_checkout_refs.py'))
+    refs = importlib.util.module_from_spec(spec); spec.loader.exec_module(refs)
+    try:
+        return refs.atlas_pr_comparison(base, head)
+    except (ValueError, RuntimeError, subprocess.SubprocessError, OSError, UnicodeError) as error:
+        raise RuntimeError('Atlas test selection could not prove base and head ancestry') from error
+
+
 def changed_atlas_tests(base, head, event):
     """Select only explicitly reviewed Atlas test edits on ordinary PRs."""
     if event != 'pull_request':
         return []
     if not base or not head or set(base) == {'0'}:
         raise RuntimeError('Atlas test selection requires a valid base and head comparison')
+    proof = atlas_comparison(base, head)
     try:
         paths = subprocess.check_output(
-            ['git', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
-             base, head, '--', *ATLAS_TEST_INPUTS],
+            ['git', '--no-replace-objects', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
+             proof['ancestor'], head, '--', *ATLAS_TEST_INPUTS],
             stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
     except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
         raise RuntimeError('Atlas test selection could not compare base and head; check Git and the refs') from exc
@@ -379,6 +391,12 @@ def main():
                 or pr['base'].get('sha') != args.base):
             policy['metadata_valid'] = False
             policy['skip_duplicate'] = False
+    atlas_proof = None
+    if args.event == 'pull_request' and policy['native']['eligible']:
+        pr = payload.get('pull_request', {})
+        if pr.get('base', {}).get('sha') != args.base or pr.get('head', {}).get('sha') != args.head:
+            raise RuntimeError('Atlas test selection requires matching event base and head')
+        atlas_proof = atlas_comparison(args.base, args.head)
     game, extensive, new_tests, reason = selections(
         args.base, args.head, args.event, args.extensive == 'true',
         args.build_prefix == 'true', payload)
@@ -386,12 +404,16 @@ def main():
         from ci_baseline import selection_receipt, write_json
         receipt = selection_receipt(args.base, args.head, game, extensive,
                                     new_tests, reason, args.event, policy, payload)
+        if atlas_proof is not None:
+            receipt['atlas_comparison'] = atlas_proof
         if not policy['metadata_valid']:
             receipt['status'] = 'failed'
         write_json(args.receipt, receipt)
     if not policy['metadata_valid']:
         parser.error('Missing event scope metadata; refusing to publish informational success')
     with open(args.output, 'a', encoding='utf-8') as output:
+        if atlas_proof is not None:
+            output.write('atlas_ancestor=' + atlas_proof['ancestor'] + '\n')
         output.write('new_tests=' + json.dumps(new_tests, separators=(',', ':')) + '\n')
         output.write(f'game={str(game).lower()}\nextensive={str(extensive).lower()}\n')
         output.write(f'gating={int(policy["gating"]["eligible"])}\n')

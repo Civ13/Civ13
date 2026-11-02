@@ -270,7 +270,7 @@ class RegressionPolicyTests(unittest.TestCase):
             self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), '" + suite + "')", workflow)
 
     def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
-        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master', 'sha': 'a'*40}, 'head': {'sha': 'b'*40}}}
         faults = (
             ('timeout', subprocess.TimeoutExpired('git', 15)),
             ('git failure', subprocess.CalledProcessError(1, 'git')),
@@ -280,13 +280,14 @@ class RegressionPolicyTests(unittest.TestCase):
             with self.subTest(fault=label), tempfile.TemporaryDirectory() as directory:
                 output = Path(directory) / 'output.txt'
                 receipt = Path(directory) / 'receipt.json'
-                argv = ['select-ci.py', '--base', 'base', '--head', 'head',
+                argv = ['select-ci.py', '--base', 'a'*40, '--head', 'b'*40,
                         '--event', 'pull_request', '--build-prefix', 'true',
                         '--output', str(output), '--receipt', str(receipt)]
                 kwargs = {'return_value': fault} if isinstance(fault, bytes) else {'side_effect': fault}
                 with patch.object(sys, 'argv', argv), patch.object(selection, 'load_event', return_value=payload), \
                         patch.object(selection, 'select', return_value=(True, 'selected')), \
                         patch.object(selection, 'introduced_tests', return_value=[]), \
+                        patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='a'*40)), \
                         patch.object(selection.subprocess, 'check_output', **kwargs):
                     with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
                         selection.main()
@@ -504,7 +505,8 @@ class PlayerHelpLinkAdmissionTests(unittest.TestCase):
             def diff(command, **kwargs):
                 paths = added if '--diff-filter=A' in command else changed
                 return ('\0'.join(paths) + '\0').encode()
-            with self.subTest(changed=changed), patch.object(selection.subprocess, 'check_output', side_effect=diff):
+            with self.subTest(changed=changed), patch.object(selection.subprocess, 'check_output', side_effect=diff), \
+                    patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
                 self.assertEqual(selection.selections('base', 'head', 'pull_request',
                                  False, True, payload)[:3], (True, False, expected))
 
@@ -560,7 +562,8 @@ class SourcePreparationAdmissionTests(unittest.TestCase):
                            'code/modules/persistence/player_reclaim.dm'):
             paths = [*self.FILES, production, 'tests/world_save/new_probe.dm']
             with self.subTest(production=production), patch.object(selection.subprocess,
-                    'check_output', return_value=('\0'.join(paths) + '\0').encode()):
+                    'check_output', return_value=('\0'.join(paths) + '\0').encode()), \
+                    patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
                 self.assertEqual(selection.selections('base', 'head', 'pull_request',
                                  False, True, payload)[:3], (True, False, ['tests/world_save']))
 
@@ -574,7 +577,8 @@ class SourcePreparationAdmissionTests(unittest.TestCase):
                 paths = [production, *added]
                 with self.subTest(production=production, added=added), patch.object(
                         selection.subprocess, 'check_output',
-                        return_value=('\0'.join(paths) + '\0').encode()):
+                        return_value=('\0'.join(paths) + '\0').encode()), \
+                        patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
                     # Existing production-only policy compiles, but does not
                     # invent introduced native tests without a new runnable file.
                     self.assertEqual(selection.selections('base', 'head', 'pull_request',

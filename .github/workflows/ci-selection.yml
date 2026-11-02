@@ -58,6 +58,13 @@ jobs:
           BASE_REF: ${{ inputs.base }}
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
+      - name: Prepare bounded Atlas ancestry for ordinary PR admission
+        if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened') && (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'help-markdown-byond-html')
+        timeout-minutes: 2
+        env:
+          BASE_REF: ${{ inputs.base }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha }}
+        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event pull_request --atlas-ancestry
       - name: Selection regression tests on every invocation
         run: python3 -B scripts/ci_baseline.py unit --suite policy --output .ci/selection/policy.json
       - id: select

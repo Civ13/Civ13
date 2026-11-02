@@ -164,7 +164,8 @@ class BuildPrefixTests(unittest.TestCase):
         self.assertIn("if: inputs.lint_workflows && (steps.select.outputs.gating == '1' || steps.select.outputs.game == 'true' || github.event_name == 'workflow_dispatch')", reusable)
 
     def choose(self, event, payload, paths=b'README.md\0'):
-        with patch.object(selection.subprocess, 'check_output', return_value=paths):
+        with patch.object(selection.subprocess, 'check_output', return_value=paths), \
+                patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
             return selection.selections('base', 'head', event, True, True, payload)[:3]
 
     def test_every_pushed_commit_first_line_and_branch(self):
@@ -290,7 +291,8 @@ class BuildPrefixTests(unittest.TestCase):
         self.assertEqual(self.choose('pull_request_target', pr('build: x')), (False, False, []))
 
     def test_other_reusable_callers_keep_existing_selection(self):
-        with patch.object(selection.subprocess, 'check_output', return_value=b'world.dm\0'):
+        with patch.object(selection.subprocess, 'check_output', return_value=b'world.dm\0'), \
+                patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
             result = selection.selections('base', 'head', 'pull_request', False)
         self.assertEqual(result[:3], (True, False, []))
 
