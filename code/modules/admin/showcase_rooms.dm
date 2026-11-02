@@ -76,6 +76,7 @@
 	var/y1 = origin.y + 1
 	var/x2 = x1 + width - 1
 	var/y2 = y1 + height - 1
+	var/z = origin.z
 	if (x1 < 1 || y1 < 1 || x2 > world.maxx || y2 > world.maxy)
 		WWalert(usr, "There is not enough room here: [choice] needs [width]x[height] tiles north of you.", "Showcase Room")
 		return
@@ -86,11 +87,10 @@
 
 	// The admin may have moved while the prompts were open.
 	origin = get_turf(mob)
-	if (!origin || origin.x != x1 + round(width / 2) || origin.y != y1 - 1)
+	if (!origin || origin.x != x1 + round(width / 2) || origin.y != y1 - 1 || origin.z != z)
 		WWalert(usr, "You moved. Stand where you want the door and try again.", "Showcase Room")
 		return
 
-	var/z = origin.z
 	showcase_room_clear_footprint(x1, y1, x2, y2, z, origin)
 	var/dmm_suite/suite = new()
 	suite.read_map(dmm_text, x1, y1, z)

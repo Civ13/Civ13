@@ -132,7 +132,7 @@ class BaselinePolicyTests(unittest.TestCase):
         name = 'showcase_rooms'
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/showcase_rooms/test_templates.py',))
-        for path in suite['files'] + suite['paths'] + ('maps/zones/showcase/smithy.dmm',):
+        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('maps/zones/showcase/smithy.dmm',):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 

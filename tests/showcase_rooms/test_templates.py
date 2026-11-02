@@ -169,6 +169,10 @@ class ShowcaseTemplates(unittest.TestCase):
         self.assertIn('#define SHOWCASE_ROOM_DIR "maps/zones/showcase/"', source)
         self.assertIn("var/x1 = origin.x - round(width / 2)", source)
         self.assertIn("var/y1 = origin.y + 1", source)
+        # The movement recheck must reject a different z-level before clearing.
+        recheck = source.index("origin.y != y1 - 1 || origin.z != z")
+        self.assertLess(source.index("var/z = origin.z"), recheck)
+        self.assertLess(recheck, source.index("showcase_room_clear_footprint(x1, y1, x2, y2, z, origin)"))
         self.assertIn("if (!check_rights(R_SPAWN))", source)
         self.assertIn("suite.read_map(dmm_text, x1, y1, z)", source)
         verbs = (ROOT / "code/modules/admin/admin_verbs.dm").read_text(encoding="utf-8")
