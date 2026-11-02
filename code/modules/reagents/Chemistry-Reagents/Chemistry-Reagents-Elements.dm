@@ -519,7 +519,7 @@
 /datum/reagent/tin
 	name = "Tin"
 	id = "tin"
-	description = "Tin is a silvery metal that characteristicly has a faint yellow hue. Tin, like indium, is soft enough to be cut without much force."
+	description = "Tin is a silvery metal that characteristically has a faint yellow hue. Tin, like indium, is soft enough to be cut without much force."
 	taste_description = "metal"
 	reagent_state = SOLID
 	color = "#d3d4d5"

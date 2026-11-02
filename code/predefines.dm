@@ -31,7 +31,7 @@
 #define FIRE_MAX_FIRESUIT_STACKS  20 // If the number of stacks goes above this firesuits won't protect you anymore. If not, you can walk around while on fire like a badass.
 
 #define THROWFORCE_SPEED_DIVISOR	5  // The throwing speed value at which the throwforce multiplier is exactly 1.
-#define THROWNOBJ_KNOCKBACK_SPEED   15 // The minumum speed of a w_class 2 thrown object that will cause living mobs it hits to be knocked back. Heavier objects can cause knockback at lower speeds.
+#define THROWNOBJ_KNOCKBACK_SPEED   15 // The minimum speed of a w_class 2 thrown object that will cause living mobs it hits to be knocked back. Heavier objects can cause knockback at lower speeds.
 #define THROWNOBJ_KNOCKBACK_DIVISOR 2  // Affects how much speed the mob is knocked back with.
 
 #define HUNGER_FACTOR			  0.05 // Factor of how fast mob nutrition decreases
@@ -50,9 +50,9 @@
 #define   OPEN_HEAT_TRANSFER_COEFFICIENT 0.4
 #define WINDOW_HEAT_TRANSFER_COEFFICIENT 0.1 // A hack for now.
 
-#define T0C  273.15 //	0.0 degrees celcius
-#define T20C 293.15 //   20.0 degrees celcius
-#define TCMB 2.7	// -270.3 degrees celcius
+#define T0C  273.15 //	0.0 degrees Celsius
+#define T20C 293.15 //   20.0 degrees Celsius
+#define TCMB 2.7	// -270.3 degrees Celsius
 
 #define HUMAN_STRIP_DELAY		40   // Takes 40ds = 4s to strip someone.
 #define SHOES_SLOWDOWN		  -0.2  // How much shoes slow you down by default. Negative values speed you up.
@@ -381,9 +381,9 @@
 #define EVENT_LEVEL_MAJOR	3
 
 // NanoUI flags
-#define STATUS_INTERACTIVE 2 // GREEN Visability
-#define STATUS_UPDATE 1 // ORANGE Visability
-#define STATUS_DISABLED 0 // RED Visability
+#define STATUS_INTERACTIVE 2 // GREEN Visibility
+#define STATUS_UPDATE 1 // ORANGE Visibility
+#define STATUS_DISABLED 0 // RED Visibility
 #define STATUS_CLOSE -1 // Close the interface
 
 //General-purpose life speed define for plants.

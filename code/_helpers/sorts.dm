@@ -216,7 +216,7 @@
 		//ASSERT(len1 > 0 && len2 > 0)
 		//ASSERT(base1 + len1 == base2)
 
-		//Record the legth of the combined runs. If i is the 3rd last run now, also slide over the last run
+		//Record the length of the combined runs. If i is the 3rd last run now, also slide over the last run
 		//(which isn't involved in this merge). The current run (i+1) goes away in any case.
 		runLens[i] += runLens[i+1]
 		runLens.Cut(i+1, i+2)
@@ -389,7 +389,7 @@
 				var/count1 = 0	//# of times in a row that first run won
 				var/count2 = 0	//	"	"	"	"	"	"  second run won
 
-				//do the straightfoward thin until one run starts winning consistently
+				//do the straightforward thin until one run starts winning consistently
 
 				do
 					//ASSERT(len1 > 1 && len2 > 0)
@@ -414,7 +414,7 @@
 				while((count1 | count2) < minGallop)
 
 
-				//one run is winning consistently so galloping may provide huge benifits
+				//one run is winning consistently so galloping may provide huge benefits
 				//so try galloping, until such time as the run is no longer consistently winning
 				do
 					//ASSERT(len1 > 1 && len2 > 0)
@@ -489,7 +489,7 @@
 				var/count1 = 0	//# of times in a row that first run won
 				var/count2 = 0	//	"	"	"	"	"	"  second run won
 
-				//do the straightfoward thing until one run starts winning consistently
+				//do the straightforward thing until one run starts winning consistently
 				do
 					//ASSERT(len1 > 0 && len2 > 1)
 					if(call(cmp)(fetchElement(L,cursor2), fetchElement(L,cursor1)) < 0)
@@ -512,7 +512,7 @@
 							break outer
 				while((count1 | count2) < minGallop)
 
-				//one run is winning consistently so galloping may provide huge benifits
+				//one run is winning consistently so galloping may provide huge benefits
 				//so try galloping, until such time as the run is no longer consistently winning
 				do
 					//ASSERT(len1 > 0 && len2 > 1)
@@ -636,7 +636,7 @@
 				val2 = fetchElement(L,cursor2)
 
 
-		//Record the legth of the combined runs. If i is the 3rd last run now, also slide over the last run
+		//Record the length of the combined runs. If i is the 3rd last run now, also slide over the last run
 		//(which isn't involved in this merge). The current run (i+1) goes away in any case.
 		runLens[i] += runLens[i+1]
 		runLens.Cut(i+1, i+2)

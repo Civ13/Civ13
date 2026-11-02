@@ -28,7 +28,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	attached_icon_state = "mad_mag"
 	mag_type = MAGAZINE
 	caliber = "a762x54"
-	w_class = ITEM_SIZE_SMALL //most 30 round and 46 round mags have no wclass why give just madsen a wclass you cant fit it into a pouch anymore no reason anyways making it 2
+	w_class = ITEM_SIZE_SMALL //most 30 round and 46 round mags have no wclass why give just madsen a wclass you can't fit it into a pouch anymore no reason anyways making it 2
 	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 25
 	multiple_sprites = TRUE

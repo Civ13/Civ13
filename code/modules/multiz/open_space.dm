@@ -37,7 +37,7 @@ var/process/open_space/OS_controller = null
 			// get objects
 			var/image/o_img = list()
 			for (var/obj/o in floorbelowz)
-				// ingore objects that have any form of invisibility
+				// ignore objects that have any form of invisibility
 				if (o.invisibility) continue
 				var/image/temp2 = image(o, dir=o.dir, layer = o.layer+0.02)
 				temp2.plane = plane

@@ -145,7 +145,7 @@
 			if (code != SD.activation_code)
 				to_chat(H, SPAN_WARNING("\icon[getFlatIcon(src)] Wrong password."))
 				return
-		src.visible_message(SPAN_NOTICE("\icon[getFlatIcon(src)] Initiliazing protocols... Please wait."))
+		src.visible_message(SPAN_NOTICE("\icon[getFlatIcon(src)] Initializing protocols... Please wait."))
 		spawn(100)
 			src.visible_message(SPAN_WARNING("\icon[getFlatIcon(src)] Security protocol terminated. Please insert the trajectory path disk."))
 			src.unlocked = TRUE

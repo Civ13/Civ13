@@ -215,7 +215,7 @@
 /datum/reagent/drink/apricotjuice //Added new reagent for apricots
 	name = "Apricot juice"
 	id = "apricotjuice"
-	description = "An orange, transparant liquid, tasting of apricots."
+	description = "An orange, transparent liquid, tasting of apricots."
 	taste_description = "sweetness"
 	nutrition = 25
 	reagent_state = LIQUID
@@ -296,7 +296,7 @@
 /datum/reagent/enzyme
 	name = "Yeast"
 	id = "enzyme"
-	description = "A type of fungus used in the preperation of certain chemicals and foods."
+	description = "A type of fungus used in the preparation of certain chemicals and foods."
 	taste_description = "sweetness"
 	taste_mult = 0.7
 	reagent_state = LIQUID
@@ -514,7 +514,7 @@
 /datum/reagent/drink/lard
 	name = "lard"
 	id = "lard"
-	description = "A thick and smelling lard, with meat and bones fragments. Doesnt looks good."
+	description = "A thick and smelling lard, with meat and bones fragments. Doesn't looks good."
 	taste_description = "greasy"
 	color = "#F6EFE2"
 
@@ -615,7 +615,7 @@
 	name = "Sapote Juice"
 	id = "sapotejuice"
 	description = "Juice of the Sapote Fruit."
-	taste_description = "slighty sweet yet nutty"
+	taste_description = "slightly sweet yet nutty"
 	color = "#ff6249"
 
 /datum/reagent/drink/tomatojuice
@@ -1014,7 +1014,7 @@
 /datum/reagent/ethanol/ale
 	name = "Ale"
 	id = "ale"
-	description = "A dark alchoholic beverage made by malted barley and yeast."
+	description = "A dark alcoholic beverage made by malted barley and yeast."
 	taste_description = "hearty barley ale"
 	color = "#53150AE6"
 	strength = 90
@@ -1023,7 +1023,7 @@
 /datum/reagent/ethanol/mead
 	name = "Mead"
 	id = "mead"
-	description = "A dark alchoholic beverage made by malted barley and yeast."
+	description = "A dark alcoholic beverage made by malted barley and yeast."
 	taste_description = "a drink to put some hair on your chest"
 	color = "#53150AE6"
 	strength = 40
@@ -1063,7 +1063,7 @@
 /datum/reagent/ethanol/cognac
 	name = "Cognac"
 	id = "cognac"
-	description = "A sweet and strongly alchoholic drink, made after numerous distillations and years of maturing. Classy as fornication."
+	description = "A sweet and strongly alcoholic drink, made after numerous distillations and years of maturing. Classy as fornication."
 	taste_description = "rich and smooth alcohol"
 	taste_mult = 1.1
 	color = "#AB3C05"
@@ -1089,7 +1089,7 @@
 	color = "#ffffff80"
 	strength = 60
 
-//Base type for alchoholic drinks containing coffee
+//Base type for alcoholic drinks containing coffee
 /datum/reagent/ethanol/coffee
 	name = null // abstract parent; not registered
 	overdose = 45
@@ -1192,7 +1192,7 @@
 /datum/reagent/ethanol/wine
 	name = "Wine"
 	id = "wine"
-	description = "An alchoholic beverage made from distilled grape juice."
+	description = "An alcoholic beverage made from distilled grape juice."
 	taste_description = "bitter sweetness"
 	color = "#6C0F1CD9"
 	strength = 45
@@ -1507,7 +1507,7 @@
 /datum/reagent/ethanol/hooch
 	name = "Hooch"
 	id = "hooch"
-	description = "Either someone's failure at cocktail making or attempt in alchohol production. In any case, do you really want to drink that?"
+	description = "Either someone's failure at cocktail making or attempt in alcohol production. In any case, do you really want to drink that?"
 	taste_description = "pure resignation"
 	color = "#664300"
 	strength = 25

@@ -1036,7 +1036,7 @@
 
 /obj/item/clothing/under/napoleonic/portuguese
 	name = "napoleonic portuguese soldier uniform"
-	desc = "A uniform of the portuguese army. Often worn by pennisula soldiers, it has a dark navy shirt with a white saltire."
+	desc = "A uniform of the portuguese army. Often worn by peninsula soldiers, it has a dark navy shirt with a white saltire."
 	icon_state = "nap_portuguese_army"
 	item_state = "nap_portuguese_army"
 
@@ -1059,7 +1059,7 @@
 	item_state = "merchant_suit"
 
 /* Napoleonic Armor*/
-// Can't add these helmets to blacksmithing.dm until code seperation of the napoleonic era or new functions make them inaccessible to early colonial settlers. @FantasticFwoosh
+// Can't add these helmets to blacksmithing.dm until code separation of the napoleonic era or new functions make them inaccessible to early colonial settlers. @FantasticFwoosh
 
 /obj/item/clothing/head/helmet/leather_infantry
 	name = "leather infantry cap"
@@ -1134,7 +1134,7 @@
 
 /* Miscallaneous*/
 
-//These two seem misplaced, refer to be moved to modern or their own apparel, quiver is wierdly placed too.
+//These two seem misplaced, refer to be moved to modern or their own apparel, quiver is weirdly placed too.
 /obj/item/clothing/under/scavfit
 	name = "Ripped outfit"
 	desc = "A set of blue jeans and brown hoodie."

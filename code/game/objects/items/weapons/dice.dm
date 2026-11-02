@@ -33,7 +33,7 @@
 	if (sides == 4 && result == 4)
 		comment = "Nice roll!"
 	if (sides == 2 && result == 2)
-		comment = "Nice filp!"
+		comment = "Nice flip!"
 	if (sides == 10 && (initial(icon_state) == "d00") && result == 1)
 		comment = "Bad luck, maybe..."
 	else if (result == 1 && (initial(icon_state) != "d00"))

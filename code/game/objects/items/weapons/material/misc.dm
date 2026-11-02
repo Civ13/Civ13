@@ -275,7 +275,7 @@
 
 /obj/item/weapon/material/classic_baton/blackjack
 	name = "Blackjack"
-	desc = "A Heavy leather wrapped truncheon with a hefty lead weight in the tip for makeing scum comply."
+	desc = "A Heavy leather wrapped truncheon with a hefty lead weight in the tip for making scum comply."
 	icon_state = "blackjack"
 	item_state = "blackjack"
 	default_material = "leather"
@@ -546,7 +546,7 @@
 	name = "javelin"
 	sharp = TRUE
 	edge = TRUE
-	desc = "A meter long short spear that can be used as a hand launched missle or for close combat." */
+	desc = "A meter long short spear that can be used as a hand launched missile or for close combat." */
 
 /obj/item/weapon/material/roman_standard
 	name = "roman standard"
@@ -1108,7 +1108,7 @@
 
 /obj/item/weapon/material/hatchet/battleaxe/tes13
 	name = "war axe"
-	desc = "A very sharp axe blade upon a steel handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	desc = "A very sharp axe blade upon a steel handle. Not practical for chopping wood, but practical for chopping limbs."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "waraxe_tes13"
 	item_state = "battleaxe"
@@ -1131,7 +1131,7 @@
 
 /obj/item/weapon/material/hatchet/battleaxe/tes13/battleaxe
 	name = "battle axe"
-	desc = "A very sharp double axe blade upon a twohanded steel handle. Not pratical for felling trees but perhaps felling people."
+	desc = "A very sharp double axe blade upon a twohanded steel handle. Not practical for felling trees but perhaps felling people."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "battleaxe_tes13"
 	force_divisor = 0.8 // 30 with hardness 60 (steel)
@@ -1144,7 +1144,7 @@
 
 /obj/item/weapon/material/hatchet/battleaxe/tes13/ulfric
 	name = "ulfric's war axe"
-	desc = "A very sharp axe blade upon a steel handle. Not pratical for chopping wood, but pratical for chopping limbs. This one belongs to the Jarl of Windhelm, Ulfric Stormcloak."
+	desc = "A very sharp axe blade upon a steel handle. Not practical for chopping wood, but practical for chopping limbs. This one belongs to the Jarl of Windhelm, Ulfric Stormcloak."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "waraxe_tes13"
 	item_state = "battleaxe"

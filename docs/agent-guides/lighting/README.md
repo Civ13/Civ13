@@ -65,7 +65,7 @@ frozen Windows helper bytes and require a fresh grant for that held runner.
 
 <!-- 2026-10-23: footwear water composition -->
 Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
-clothing dirtyness only supplies examine text. Water filters must group the
+clothing dirtiness only supplies examine text. Water filters must group the
 footwear image with its nested stain (KEEP_TOGETHER only while masked), and
 new update_inv_shoes images need the current mask before publication. Keep
 durable stain data intact. tests/footwear_water_mask checks source contracts

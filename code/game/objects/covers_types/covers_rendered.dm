@@ -7,7 +7,7 @@
 	health = 1050
 	explosion_resistance = 7
 
-/* Additional red-earth types seperately defined for mapping/spawning purposes*/
+/* Additional red-earth types separately defined for mapping/spawning purposes*/
 
 /obj/covers/clay_wall/redearth/smooth
 	name = "red earthern smooth wall"
@@ -28,7 +28,7 @@
 
 /* Red Earth Types -End*/
 
-/obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)  //this list doesn't like multi arguements, single type per stucco catalyst unless you know what you're doing please.
+/obj/covers/clay_wall/attackby(obj/item/W as obj, mob/user as mob)  //this list doesn't like multi arguments, single type per stucco catalyst unless you know what you're doing please.
 	if (istype(W, /obj/item/weapon/stucco/generic))
 		to_chat(user, "You start adding stucco to the wall...")
 		if (do_after(user, 20, src))
@@ -82,7 +82,7 @@
 	icon_state = "villa_wall_l_relief"
 
 
-/* Additional roman villa types seperately defined for mapping/spawning purposes*/
+/* Additional roman villa types separately defined for mapping/spawning purposes*/
 
 /obj/covers/stone_wall/classic/villa/pillared
 	name = "pillared villa wall"

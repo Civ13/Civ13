@@ -2,7 +2,7 @@
 /obj/map_metadata/verdun
 	ID = MAP_VERDUN
 	title = "Battle of Verdun"
-	description = "The German and the Allied forces are facing eachother at the Douaumont Fort in Verdun! It will start in 5 minutes. The French Army must defend for 20 minutes!"
+	description = "The German and the Allied forces are facing each other at the Douaumont Fort in Verdun! It will start in 5 minutes. The French Army must defend for 20 minutes!"
 	lobby_icon = "icons/lobby/ww1.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall, /area/caribbean/no_mans_land/invisible_wall/one)
 	respawn_delay = 300
@@ -22,7 +22,7 @@
 	ordinal_age = 5
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5, GERMAN = 0.6)
 	battle_name = "battle of Verdun"
-	mission_start_message = "<font size=4>The <b>German</b> and the <b>Allied</b> forces are facing eachother at the Douaumont Fort in Verdun! Get ready for the battle! It will start in <b>5 minutes</b>. The French Army must defend for 20 minutes!</font>"
+	mission_start_message = "<font size=4>The <b>German</b> and the <b>Allied</b> forces are facing each other at the Douaumont Fort in Verdun! Get ready for the battle! It will start in <b>5 minutes</b>. The French Army must defend for 20 minutes!</font>"
 	faction1 = GERMAN
 	faction2 = FRENCH
 	grace_wall_timer = 3000
@@ -140,7 +140,7 @@ var/no_loop_verdun = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>French Army</b> has successfuly defended Fort Douaumont! The Imperial German Army has halted the attack!"
+		var/message = "The <b>French Army</b> has successfully defended Fort Douaumont! The Imperial German Army has halted the attack!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

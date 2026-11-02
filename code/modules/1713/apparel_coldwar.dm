@@ -71,7 +71,7 @@
 
 /obj/item/clothing/suit/storage/jacket/afghanka
 	name = "afghanka coat"
-	desc = "A soviet winter jacket issued and developped in the early 80's."
+	desc = "A soviet winter jacket issued and developed in the early 80's."
 	icon_state = "winter_afghanka"
 	item_state = "winter_afghanka"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
@@ -930,7 +930,7 @@
 			mob_overlay = image("icon" = 'icons/mob/ties.dmi', "icon_state" = "[tmp_icon_state]")
 	return mob_overlay
 
-/obj/item/clothing/accessory/armor/coldwar/plates/tatba //cant find any info on it, looks like a pasgt copy
+/obj/item/clothing/accessory/armor/coldwar/plates/tatba //can't find any info on it, looks like a pasgt copy
 	name = "TATBA-7 vest"
 	desc = "Chinese light plate carrier, comes with a single plate inserted."
 	icon_state = "tatba"
@@ -999,7 +999,7 @@
 	icon_state = "6b3blu"
 	item_state = "6b3blu"
 
-/obj/item/clothing/accessory/armor/coldwar/plates/b3/camo //uses civ grass tiles, provides alot more camo
+/obj/item/clothing/accessory/armor/coldwar/plates/b3/camo //uses civ grass tiles, provides a lot more camo
 	name = "6B3 green camo body armor"
 	icon_state = "6b3cam"
 	item_state = "6b3cam"
@@ -1858,7 +1858,7 @@
 
 /* Miscallaneous*/
 
-	/* John Toughguy - Jungle Commando defintiely does not rhyme with a certain movie franchise*/
+	/* John Toughguy - Jungle Commando definitely does not rhyme with a certain movie franchise*/
 
 /* Woodland Face Paint Recommended*/
 

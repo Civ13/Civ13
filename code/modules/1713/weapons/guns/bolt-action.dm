@@ -697,7 +697,7 @@
 	accuracy = 2
 	barrel_x_offset = 15
 
-/obj/item/weapon/gun/projectile/boltaction/vg //for balance reasons this gun wont use the STG mags instead it will use just clips also i dont know how to code in mag usage by bolties
+/obj/item/weapon/gun/projectile/boltaction/vg //for balance reasons this gun won't use the STG mags instead it will use just clips also i dont know how to code in mag usage by bolties
 	name = "Volkssturmgewehr"
 	desc = "A very primitive german bolt action rifle chambered in 7.92x33mm Kurz."
 	icon_state = "vg1"
