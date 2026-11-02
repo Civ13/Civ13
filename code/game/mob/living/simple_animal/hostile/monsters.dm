@@ -349,6 +349,11 @@
 	behaviour = "hunt"	
 	var/obj/structure/oven/closest_oven = null
 
+/mob/living/simple_animal/hostile/boreas/proc/set_closest_oven(obj/structure/oven/new_oven)
+	if (closest_oven != new_oven && npc_subtile_pending_intent && npc_subtile_pending_intent.kind == "wild" && npc_subtile_pending_intent.mode == "path" && npc_subtile_pending_intent.target == closest_oven)
+		npc_subtile_cancel_pending("wild")
+	closest_oven = new_oven
+
 /mob/living/simple_animal/hostile/boreas/bullet_act(var/obj/item/projectile/P)
 	return FALSE
 
@@ -390,7 +395,7 @@
 		if (!closest_oven && map && map.ID == MAP_ANTARCTICA)
 			var/obj/map_metadata/antarctica/AN = map
 			if (AN.furnace)
-				closest_oven = AN.furnace
+				set_closest_oven(AN.furnace)
 		else
 			if (!closest_oven || closest_oven.fuel <= 0)
 				var/closest_dist = 999
@@ -399,11 +404,11 @@
 						var/d = get_dist(src, O)
 						if (d < closest_dist)
 							closest_dist = d
-							closest_oven = O
+							set_closest_oven(O)
 		if (closest_oven)
-			walk_to(src, closest_oven, 1, move_to_delay)
+			npc_subtile_species_walk("path", closest_oven, move_to_delay, 0, 1)
 		else
-			walk(src, 0)
+			npc_subtile_stop_continuous_walk()
 
 // --------------------------------
 // ECHOFIEND (Jungle Sound Hunter)
@@ -425,6 +430,11 @@
 	flying = TRUE
 	var/turf/investigate_turf = null
 	var/sound_spam_timer = 0
+
+/mob/living/simple_animal/hostile/echofiend/proc/set_investigate_turf(turf/new_turf)
+	if (investigate_turf != new_turf && npc_subtile_pending_intent && npc_subtile_pending_intent.kind == "wild" && npc_subtile_pending_intent.mode == "path" && npc_subtile_pending_intent.target == investigate_turf)
+		npc_subtile_cancel_pending("wild")
+	investigate_turf = new_turf
 
 /mob/living/simple_animal/hostile/echofiend/FindTarget()
 	return null
@@ -456,29 +466,29 @@
 	if (!target_mob)
 		for (var/mob/living/human/H in range(1, src))
 			if (H.stat != DEAD)
-				target_mob = H
+				npc_set_combat_target(H)
 				stance = HOSTILE_STANCE_ATTACK
-				walk_to(src, H, TRUE, move_to_delay)
+				npc_subtile_species_walk("path", H, move_to_delay, 0, TRUE)
 				break
 
 	if (target_mob)
 		if (target_mob.stat == DEAD || get_dist(src, target_mob) > 6)
-			target_mob = null
+			npc_set_combat_target(null)
 			stance = HOSTILE_STANCE_IDLE
-			walk(src, 0)
+			npc_subtile_stop_continuous_walk()
 		return
 
 	if (investigate_turf)
 		if (get_turf(src) == investigate_turf)
-			investigate_turf = null
-			walk(src, 0)
+			set_investigate_turf(null)
+			npc_subtile_stop_continuous_walk()
 		else
-			walk_to(src, investigate_turf, TRUE, move_to_delay)
+			npc_subtile_species_walk("path", investigate_turf, move_to_delay, 0, TRUE)
 
 /mob/living/simple_animal/hostile/echofiend/proc/hear_sound(var/turf/T)
 	if (stat != CONSCIOUS || target_mob)
 		return
-	investigate_turf = T
+	set_investigate_turf(T)
 	if (sound_spam_timer <= 10)
 		sound_spam_timer++
 		return

@@ -39,7 +39,13 @@
 		if (isturf(loc) && !resting && !buckled)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
-				if (Move(get_step(src,pick(4,8))))
+				var/turf/destination = get_step(src, pick(4, 8))
+				var/moved = FALSE
+				if (npc_subtile_species_enabled)
+					moved = ai_step(destination, move_to_delay, TRUE)
+				else
+					moved = Move(destination)
+				if (moved)
 					turns_since_move = FALSE
 	regenerate_icons()
 

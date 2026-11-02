@@ -132,6 +132,7 @@
 			var/mob/living/human/H = src
 			forceMove(H.loc)
 			if (!QDELETED(old_mount) && old_mount.rider == src && riding_mob != old_mount)
+				old_mount.npc_subtile_pending_intent = null
 				old_mount.ride = FALSE
 				old_mount.rider = null
 				old_mount.update_icons()

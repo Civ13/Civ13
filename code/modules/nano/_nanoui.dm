@@ -492,6 +492,10 @@ nanoui is used to open and update nano browser uis
   *
   * @return nothing
   */
+// Subtypes may handle a fixed owned action after the same status/owner checks.
+/datum/nanoui/proc/consume_topic(href, href_list)
+	return FALSE
+
 /datum/nanoui/Topic(href, href_list)
 	update_status(0) // update the status
 	if (status != STATUS_INTERACTIVE || user != usr) // If UI is not interactive or usr calling Topic is not the UI user
@@ -511,6 +515,8 @@ nanoui is used to open and update nano browser uis
 		else
 			return*/
 
+	if (consume_topic(href, href_list))
+		return
 	if ((src_object && src_object.Topic(href, href_list, state)) || map_update)
 		GLOB.nanomanager.update_uis(src_object) // update all UIs attached to src_object
 

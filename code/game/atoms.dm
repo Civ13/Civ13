@@ -86,8 +86,20 @@
 		return flags & INSERT_CONTAINER
 */
 
-/atom/proc/CheckExit()
+/atom/proc/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
 	return TRUE
+
+// Only an authenticated executing experimental large-animal pulse installs a
+// frame. Ordinary movement and native parent Uncross results stay unchanged.
+/obj/Uncross(atom/movable/mover, atom/newloc)
+	. = ..()
+	if (!. || !istype(mover, /mob/living/simple_animal))
+		return .
+	var/mob/living/simple_animal/A = mover
+	var/datum/npc_subtile_large_frame/F = A.npc_subtile_large_frame
+	if (!F)
+		return .
+	return F.check_exit(src)
 
 /atom/proc/emp_act(var/severity)
 	return
