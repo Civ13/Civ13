@@ -6,6 +6,7 @@ from atlas.tanning import add_tanning
 from atlas.rope_making import add_rope_making
 from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
+from atlas.families import annotate_families
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
@@ -307,6 +308,7 @@ add_processors(files, add, records)
 add_tablet_press(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)
+annotate_families(records, files)
 data['recipes']=records
 data['limitations'].append('Unlock eras use explicit minimum gates or mapped research tiers; processor eras describe station construction research. Research can be ahead of the map era. Unknown entries are not assigned an era from their maximum expiry. No filter guarantees current faction availability.')
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})

@@ -104,5 +104,5 @@ assert.equal(bounded.rows('resource').length,150,'independent resource bound');
 assert.equal(bounded.rows('recipe').length,250,'independent recipe bound');
 assert.equal(bounded.get('count').textContent,'260 recipe matches · 160 resource matches');
 assert(text(bounded.get('catalog')).includes('first 150 resource matches'));
-assert(text(bounded.get('catalog')).includes('first 250 matches'));
+assert(text(bounded.get('catalog')).includes('first 250 recipe families'));
 console.log('PASS: direct resource/name/ID search, normalization and omission controls, distinct identities/types, independent bounds, filter clearing, acquisition/producer navigation, empty/no-match/reset and unchanged labels/variants; offline DOM only.');
