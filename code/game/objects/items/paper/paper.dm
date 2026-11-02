@@ -181,10 +181,15 @@
 		set name = "Make Paper Airplane"
 		set category = null
 		set src in usr
+		var/list/fold_edit = null
+		if (!isnull(document_record))
+			fold_edit = paper_document_prepare_edit(src)
+			if (!fold_edit)
+				return
+		if (!paper_document_set_name(src, "paper airplane - \"[src.name]\"", fold_edit))
+			return
 		src.icon_state = "paper_plane"
 		src.throw_range = 14
-		src.name = "paper airplane - \"[src.name]\""
-		paper_authoring_notify(src, "physical")
 		done = TRUE
 		add_fingerprint(usr)
 
@@ -254,12 +259,25 @@
 	set src in usr
 	playsound(src,'sound/effects/pen.ogg',40,1)
 
-	var/n_name = sanitizeSafe(input(usr, "What would you like to label the paper?", "Paper Labelling", null)  as text, MAX_NAME_LEN)
+	var/mob/renamer = usr
+	var/client/rename_client = renamer ? renamer.client : null
+	var/list/rename_record = document_record
+	var/list/rename_edit = null
+	var/list/rename_legacy = paper_document_legacy_snapshot(src)
+	if (!rename_client || !rename_legacy)
+		return
+	var/rename_legacy_json = json_encode(rename_legacy)
+	if (!isnull(rename_record))
+		rename_edit = paper_document_prepare_edit(src)
+		if (!rename_edit)
+			return
+	var/n_name = sanitizeSafe(input(renamer, "What would you like to label the paper?", "Paper Labelling", null)  as text, MAX_NAME_LEN)
 
-	// We check loc one level up, so we can rename in clipboards and such. See also: /obj/item/weapon/photo/rename()
-	if ((loc == usr || loc.loc && loc.loc == usr) && usr.stat == FALSE && n_name)
-		name = n_name
-		paper_authoring_notify(src, "physical")
+	// Retain the existing one-level label admission, including held containers.
+	// Bind the original body/client and reject a concurrent edit after input().
+	if (!gc_destroyed && usr == renamer && renamer.client == rename_client && rename_client.mob == renamer && (loc == renamer || loc && loc.loc == renamer) && renamer.stat == FALSE && n_name && document_record == rename_record && json_encode(paper_document_legacy_snapshot(src)) == rename_legacy_json)
+		if (!paper_document_set_name(src, n_name, rename_edit))
+			return
 		if (n_name != "paper")
 			desc = "This is a paper titled '" + name + "'."
 
@@ -272,8 +290,8 @@
 			user.show_message("<span class='warning'>\The [src] is already crumpled.</span>")
 			return
 		//crumple dat paper
-		info = stars(info,85)
-		paper_authoring_notify(src, "physical")
+		if (!paper_document_crumple(src))
+			return
 		user.visible_message("\The [user] crumples \the [src] into a ball!")
 		if (map.ordinal_age <= 1)
 			if (info)
