@@ -83,6 +83,10 @@
 
 /obj/structure/teleprinter/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/paper))
+		var/obj/item/weapon/paper/document = W
+		if (!isnull(document.document_record))
+			to_chat(user, "This paper cannot be used in the teleprinter.")
+			return
 		if (isemptylist(inpaper))
 			inpaper += W
 			to_chat(user, "You put the paper in the teleprinter.")
@@ -108,6 +112,8 @@
 		return
 	else
 		for(var/obj/item/weapon/paper/C in inpaper)
+			if (C.gc_destroyed || !isnull(C.loc) || !isnull(C.document_record))
+				continue
 			if (C.free_space >= 22)
 				new_text = "<b><font face='Courier New'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"
 				C.info += new_text

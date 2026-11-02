@@ -136,27 +136,11 @@
 	if (receive_only == TRUE)
 		to_chat(H, "This is only for received letters! It wont be delivered if you put it here!")
 		return
+	if (!istype(W, /obj/item/weapon/paper))
+		to_chat(H, "You cannot send this by mail. Only paper is accepted.")
+		return
+	if (copy_paper_delivery(W, H))
+		to_chat(H, "Your message has been sent and will be delivered soon.")
 	else
-		if (istype(W, /obj/item/weapon/paper))
-			for (var/obj/structure/mailbox/received/B)
-				if (B.faction == faction)
-					var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(B.loc)
-
-					if(W.info)
-						NP.info = W.info
-					if(W.name)
-						NP.name = W.name
-					if(W.stamps)
-						NP.stamps = W.stamps
-					if(W.fields)
-						NP.fields = W.fields
-					if(W.stamped)
-						NP.stamped = W.stamped
-					if(W.ico)
-						NP.ico = W.ico
-					qdel(W)
-					to_chat(H, "Your message has been sent and will be delivered soon.")
-			return
-		else
-			to_chat(H, "You cannot send this by mail. Only paper is accepted.")
-			return
+		to_chat(H, "Your letter could not be sent.")
+	return

@@ -435,6 +435,7 @@
 #include "code\modules\paperwork\written_languages.dm"
 #include "code\modules\paperwork\document.dm"
 #include "code\modules\paperwork\view.dm"
+#include "code\modules\paperwork\copy.dm"
 #include "code\game\objects\items\paper\photography.dm"
 #include "code\game\objects\items\stacks\civ_recipes.dm"
 #include "code\game\objects\items\stacks\medical.dm"
