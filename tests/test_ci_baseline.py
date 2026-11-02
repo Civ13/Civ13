@@ -53,6 +53,17 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_sleep_resting_registration_preserves_existing_coverage(self):
+        suite = ci.SUITES['sleep_resting']
+        self.assertEqual(suite['files'], ('tests/sleep_resting/test_sleep_resting.py',))
+        for path in suite['shared_paths'] + ('tests/sleep_resting/fixtures/legacy_incapacitated.dm',):
+            self.assertIn('sleep_resting', self.selected([path]))
+        previous = {name: entry for name, entry in ci.SUITES.items() if name != 'sleep_resting'}
+        with patch.object(ci, 'SUITES', previous):
+            old = self.selected(['code/game/mob/mob.dm'])
+        self.assertEqual(self.selected(['code/game/mob/mob.dm']), old | {'sleep_resting'})
+        self.assertNotIn('sleep_resting', self.selected(['README.md']))
+
     def test_tree_native_preparation_preserves_offline_and_native_boundaries(self):
         suite=ci.SUITES['tree_refresh_native_preparation']
         self.assertEqual(suite['files'],('tests/tree_refresh_native/test_harness.py',))
