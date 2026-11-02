@@ -1,0 +1,44 @@
+name: Synthetic Windows custody probe
+on:
+  workflow_dispatch:
+    inputs:
+      reviewed_commit:
+        description: Exact independently reviewed workflow commit
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  custody:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    env:
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+    steps:
+      - name: Checkout reviewed event commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify signed runtime and build frozen fixture
+        shell: pwsh
+        timeout-minutes: 5
+        env:
+          REVIEWED_COMMIT: ${{ inputs.reviewed_commit }}
+        run: ./tools/custody-fixture/prepare.ps1
+      - name: Run one synthetic custody fixture
+        shell: pwsh
+        timeout-minutes: 2
+        run: ./tools/custody-fixture/run.ps1
+      - name: Preserve bounded receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        timeout-minutes: 1
+        with:
+          name: synthetic-custody-receipts
+          path: ${{ runner.temp }}/civ13-custody/evidence/
+          if-no-files-found: warn
+          retention-days: 7
