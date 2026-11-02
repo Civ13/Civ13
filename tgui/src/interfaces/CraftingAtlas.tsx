@@ -26,10 +26,15 @@ function Resource({ ui, resource }: { ui: ScreenProps; resource: Data }) {
 }
 function Recipe({ ui, recipe, graph }: { ui: ScreenProps; recipe: Data; graph: boolean }) {
   const variants = list(recipe.variants);
+  const familyVariants = list(recipe.family_variants);
   const chooseVariant = (id: string) => navigate(ui, graph
     ? { route: 'open', query: text(ui.data.query), era: String(ui.data.era ?? ''), processor: String(ui.data.processor ?? ''), recipe: id }
     : { route: 'page', query: text(ui.data.query), page: Number(ui.data.page), recipe: id });
   return <Section title={text(recipe.name)}>
+    {familyVariants.length > 1 && <p><label>Recipe variant <select aria-label="Recipe variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => chooseVariant(event.target.value)}>
+      {familyVariants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{text(variant.label)}</option>)}
+    </select></label></p>}
+    {familyVariants.length > 1 && <p>Each variant has its own ingredients, outputs and requirements shown below.</p>}
     {variants.length > 0 && <p><label>Transformation / catalog variant <select aria-label="Transformation / catalog variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => chooseVariant(event.target.value)}>
       {variants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{text(variant.kind)} (line {text(variant.line)})</option>)}
     </select></label></p>}
@@ -67,7 +72,7 @@ export function CraftingAtlas(ui: ScreenProps) {
   const resetDraft = () => { setQuery(text(data.query)); setEra(String(data.era ?? '')); setProcessor(String(data.processor ?? '')); };
   useEffect(resetDraft, [data]);
   const resources = list(data.resources), recipes = list(data.recipes);
-  const counts = text(data.recipe_count) + ' matching recipes' + (graph ? ', sorted by unlock era. ' + text(data.resource_count) + ' matching resources.' : '. Page ' + text(data.page) + '.');
+  const counts = graph ? text(data.family_count ?? data.recipe_count) + (Number(data.family_count ?? data.recipe_count) === 1 ? ' recipe family / ' : ' recipe families / ') + text(data.recipe_count) + ' matching recipes, sorted by unlock era. ' + text(data.resource_count) + ' matching resources.' : text(data.recipe_count) + ' matching recipes. Page ' + text(data.page) + '.';
   return <>
     <Section title="Crafting Atlas">
       <form className="atlas-filter" onSubmit={event => { event.preventDefault(); navigate(ui, graph ? { route: 'open', query, era, processor } : { route: 'open', query }); }}>
@@ -99,8 +104,8 @@ export function CraftingAtlas(ui: ScreenProps) {
       <Section title="Results">
         {resources.length > 0 && <><h3>Resources</h3><ul>{resources.map(resource => <li key={String(resource.id)} data-result-type="resource"><Button disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(resource.id) })}>{text(resource.name)}</Button><br /><small>Resource: {text(resource.id)}</small></li>)}</ul></>}
         {Number(data.resource_count) > 150 && <p>First 150 resource matches shown. Refine your search to find more.</p>}
-        <h3>Recipes</h3><ul>{recipes.map(recipe => <li key={String(recipe.id)} data-result-type="recipe"><Button disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })}>{text(recipe.name)}</Button><br /><small>Recipe: {text(recipe.era_label)}</small></li>)}</ul>
-        {Number(data.recipe_count) > 150 && <p>First 150 recipe matches shown. Refine filters to find more.</p>}
+        <h3>Recipes</h3><ul>{recipes.map(recipe => <li key={String(recipe.family_id ?? recipe.id)} data-result-type="recipe"><Button disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })}>{text(recipe.name)}</Button><br /><small>{Number(recipe.variant_count) > 1 ? text(recipe.variant_count) + ' recipe variants / ' : 'Recipe: '}{text(recipe.era_label)}</small></li>)}</ul>
+        {Number(data.family_count ?? data.recipe_count) > 150 && <p>First 150 recipe families shown. Refine filters to find more.</p>}
       </Section>
       <div>{data.detail ? <Recipe ui={ui} recipe={data.detail} graph /> : <NoticeBox>{Number(data.resource_count) > 0 ? 'No matching recipes. Select a Resource result to view acquisition routes and related recipes.' : 'No matching recipes or resources. Clear filters or search for an ingredient.'}</NoticeBox>}</div>
     </div> : list(data.entries).map((recipe, i) => <Recipe key={i} ui={ui} recipe={recipe} graph={false} />)}

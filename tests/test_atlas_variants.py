@@ -6,6 +6,9 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+family_spec = importlib.util.spec_from_file_location('families', ROOT/'scripts/atlas/families.py')
+families = importlib.util.module_from_spec(family_spec)
+family_spec.loader.exec_module(families)
 spec = importlib.util.spec_from_file_location('variants', ROOT/'scripts/atlas/variants.py')
 variants = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(variants)
@@ -92,6 +95,57 @@ class AtlasVariantTests(unittest.TestCase):
                          len(row.split('RECIPE: ', 1)[1].strip().split(',')) == 13 and
                          row.split('RECIPE: ', 1)[1].strip().split(',')[0] not in processing_inputs}
         self.assertEqual(catalog_rows, expected_rows, 'every loader row survives grouping')
+
+
+class PresentationFamilyTests(unittest.TestCase):
+    def item(self, identity, output, name='fur gloves', **changes):
+        return record(identity) | dict(name=name, outputs=[dict(id=output, name=output, quantity='1')]) | changes
+
+    def test_exact_names_output_identity_and_declared_ancestry_preserve_all_recipe_fields(self):
+        files = {'code/items.dm': '/obj/base\n/obj/base/brown\n/elsewhere/white\n\tparent_type = /obj/base\n/obj/base/trap\n\tparent_type = /obj/unrelated\n/obj/unrelated\n'}
+        rows = [self.item('r1','/obj/base'), self.item('r2','/obj/base/brown'),
+                self.item('r3','/elsewhere/white'), self.item('r4','/obj/base/trap'),
+                self.item('r5','/obj/base',name='different exact name'),
+                self.item('r6','/obj/base/brown', inputs=[dict(id='bisonpelt',name='bison pelt',quantity='3')])]
+        original = deepcopy(rows)
+        families.annotate_families(rows,files)
+        self.assertEqual(len({rows[i]['family_id'] for i in (0,1,2,5)}),1)
+        self.assertNotEqual(rows[0]['family_id'],rows[3]['family_id'])
+        self.assertNotEqual(rows[0]['family_id'],rows[4]['family_id'])
+        self.assertEqual([{k:v for k,v in row.items() if k!='family_id'} for row in rows],original)
+        reversed_rows = deepcopy(original[::-1]);families.annotate_families(reversed_rows,files)
+        self.assertEqual({r['id']:r['family_id'] for r in rows},{r['id']:r['family_id'] for r in reversed_rows})
+
+    def test_unknown_conflicting_dynamic_and_cyclic_parents_do_not_prove_ancestry(self):
+        for source in ('/obj/base\n/obj/base/red\n\tparent_type = dynamic_parent\n',
+                       '/obj/base\n/obj/base/red\n\tparent_type = /obj/base\n/obj/base/red\n\tparent_type = /obj/other\n',
+                       '/obj/base\n/obj/base/red\n\tparent_type = /obj/other\n/obj/other\n\tparent_type = /obj/base/red\n',
+                       '/obj/base\n', '/obj/base/red\n'):
+            with self.subTest(source=source):
+                rows=[self.item('r1','/obj/base'),self.item('r2','/obj/base/red')]
+                families.annotate_families(rows,{'code/items.dm':source})
+                self.assertNotEqual(rows[0]['family_id'],rows[1]['family_id'])
+        # Even unparsed reagents can share one exact canonical identity safely.
+        rows=[self.item('r1','water'),self.item('r2','water')]
+        families.annotate_families(rows,{})
+        self.assertEqual(rows[0]['family_id'],rows[1]['family_id'])
+
+    def test_multiple_products_similar_names_and_other_output_types_remain_separate(self):
+        rows=[self.item('r1','/obj/a'),self.item('r2','/obj/b'),
+              self.item('r3','/obj/a',name='fur glove'),
+              self.item('r4','/obj/a',outputs=[dict(id='/obj/a'),dict(id='/obj/b')]),
+              self.item('r5','/obj/a',outputs=[dict(id='/obj/a'),dict(id='/obj/b')])]
+        families.annotate_families(rows,{})
+        self.assertEqual(len({r['family_id'] for r in rows}),len(rows))
+
+    def test_real_screenshot_family_is_one_menu_family_with_distinct_inputs_and_ids(self):
+        catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+        gloves=[r for r in catalog['recipes'] if r['name']=='fur gloves']
+        self.assertGreater(len(gloves),1)
+        self.assertEqual(len({r['family_id'] for r in gloves}),1)
+        self.assertGreater(len({tuple(x['id'] for x in r['inputs']) for r in gloves}),1)
+        self.assertEqual(len({r['id'] for r in gloves}),len(gloves))
+        self.assertTrue(all('conditions' in r and 'unlock_eras' in r for r in gloves))
 
 
 if __name__ == '__main__':
