@@ -1,0 +1,11 @@
+window "tree_native"
+    elem "tree_native"
+        type = MAIN
+        title = "Isolated native tree refresh"
+        size = 480x480
+    elem "map"
+        type = MAP
+        pos = 0,0
+        size = 480x480
+        is-default = true
+        zoom = 1
