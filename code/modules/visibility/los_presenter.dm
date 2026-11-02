@@ -31,11 +31,15 @@
 
 // Movement/opacity hooks mark the local viewport dirty. The shared process
 // supplies a fresh capture; this owner never starts its own sleeping driver.
-/datum/los_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE)
+/datum/los_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)
 	if(retired || !owner || !context || !context.body)
 		return
 	dirty = TRUE
 	owner.los_dirty = TRUE
+	// Only the non-yielding post-move refresh may retain an unchanged lease.
+	// Pre-write invalidation, opaque movers and unknown contexts still withdraw.
+	if(viewer_refresh && changed == context.body && !possible_opacity && !changed.opacity)
+		return
 	// Allowed fallback canopies can span several physical cells. Withdraw
 	// their copies conservatively before a blocker or viewer/context change;
 	// the ordinary root-footprint filter below cannot cover every owned edge.
@@ -150,6 +154,7 @@
 	if(!S)
 		S = context.capture(TRUE)
 	if(!S || S.policy != context.policy_key())
+		invalidate()
 		// Keep previous conservative masks while a mutation is in flight. Do not
 		// black out the screen or publish a partial fresh geometry decision.
 		dirty = TRUE
@@ -191,6 +196,7 @@
 						next_appearances[A] = A.appearance
 						next_owned |= tree_image
 	if(S.policy != context.policy_key() || S.revision != context.revision)
+		invalidate()
 		dirty = TRUE
 		return FALSE
 	// This non-sleeping publication removes stale masks and adds only changed

@@ -99,7 +99,7 @@
 			#else
 			if (!T.lighting_overlay.needs_update)
 				#if CIV13_ROOT_TREE_PRESENTATION
-				root_tree_invalidate(T)
+				root_tree_light_changed(T)
 				#endif
 				T.lighting_overlay.needs_update = TRUE
 				lighting_update_overlays += T.lighting_overlay

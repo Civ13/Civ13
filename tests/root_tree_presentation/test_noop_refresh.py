@@ -87,10 +87,10 @@ class NoOpRefresh(unittest.TestCase):
         tail=tail.replace('for (var/i = 1; i <= L.len; i++)','for(var/i = 1, i <= 20, i++)')
         tail=tail.replace('if (','if(')
         if old_invalidation:
-            tail=tail.replace('\troot_tree_invalidate(loc)\n','')
-            tail='\troot_tree_invalidate(loc)\n'+tail
+            tail=tail.replace('\troot_tree_light_changed(loc)\n','')
+            tail='\troot_tree_light_changed(loc)\n'+tail
         code='/proc/commit_light()\n'+tail+'\treturn list(last_color, last_luminosity, color, luminosity)\n'
-        calls=[];env=environment();env.update(root_tree_invalidate=lambda loc:calls.append(loc),loc='root')
+        calls=[];env=environment();env.update(root_tree_light_changed=lambda loc:calls.append(loc),loc='root')
         f=compile_proc(code,'/proc/commit_light(','L, new_luminosity, last_color, last_luminosity',env)
         return f,calls
 
@@ -111,5 +111,74 @@ class NoOpRefresh(unittest.TestCase):
         self.assertIn('composition_conflict(S, scene)',refresh)
         self.assertIn('scene_roots(scene)',refresh)
         self.assertLess(refresh.index('if(!roots.len)'),refresh.index('if(!setup_scene())'))
+
+
+class ViewerPublication(unittest.TestCase):
+    def test_root_lease_survives_only_postmove_transparent_viewer_refresh(self):
+        env=environment();calls=[]
+        env['withdraw_tree']=lambda tree,image:calls.append(tree)
+        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/invalidate(',
+                       'self, changed=None, possible_opacity=False, viewer_refresh=False',env,True)
+        body=N(opacity=False);tree=N(loc=object());image=N(loc=tree)
+        r=N(retired=False,owner=N(los_dirty=False),context=N(body=body),owned_images=[image])
+        f(r,body,False,True);self.assertEqual(calls,[])
+        self.assertTrue(r.owner.los_dirty)
+        for changed,opacity,refresh in [(body,False,False),(body,True,True),(None,False,True)]:
+            body.opacity=opacity;f(r,changed,False,refresh)
+        self.assertEqual(len(calls),3)
+        lifecycle=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text()
+        capture=P.fragment(lifecycle,'/client/proc/reconcile_geometric_los(')
+        failed=capture[capture.index('if(!S)'):capture.index('var/published = TRUE')]
+        self.assertIn('root_tree_presenter.invalidate()',failed)
+        self.assertIn('los_presenter.invalidate()',failed)
+
+class PendingLightPublication(unittest.TestCase):
+    def snapshot(self):
+        env=environment()
+        f=compile_proc(_contract.SNAP,'/proc/root_light_mask_snapshot(','root, allow_pending=False',env)
+        root=N(type='/turf/floor')
+        root.lighting_overlay=N(loc=root,needs_update=True,color=Values([.25]*20),last_color=Values([.25]*20))
+        return env,f,root
+
+    def test_pending_queue_uses_only_still_displayed_committed_matrix(self):
+        env,f,root=self.snapshot()
+        self.assertIsNone(f(root))  # Existing strict callers stay strict.
+        self.assertEqual(f(root,True),[.25]*20)
+        for case in ['foreign','missing','partial','changed','startup']:
+            env,f,root=self.snapshot()
+            if case=='foreign':root.lighting_overlay.loc=object()
+            if case=='missing':root.lighting_overlay=None
+            if case=='partial':root.lighting_overlay.last_color=Values([.25])
+            if case=='changed':root.lighting_overlay.color[1]=.5
+            if case=='startup':env['lighting_startup_in_progress']=True
+            self.assertIsNone(f(root,True),case)
+
+    def test_queue_and_commit_mark_only_owners_without_withdrawing_frames(self):
+        env=environment()
+        changed=compile_proc(TREE,'/proc/root_tree_light_changed(','root',env)
+        root,other=object(),object()
+        class Atom(N):__hash__=object.__hash__
+        own=N(retired=False,owner=N(los_dirty=False),images={Atom(loc=root):'frame'})
+        foreign=N(retired=False,owner=N(los_dirty=False),images={Atom(loc=other):'foreign'})
+        env['root_tree_presenters']=_contract.Items([own,foreign])
+        for _ in range(10):changed(root)
+        self.assertTrue(own.owner.los_dirty)
+        self.assertFalse(foreign.owner.los_dirty)
+        self.assertEqual(list(own.images.values()),['frame'])
+        light=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text()
+        corner=(ROOT/'code/modules/lighting/lighting_corner.dm').read_text()
+        self.assertIn('root_tree_light_changed(T)',corner)
+        self.assertNotIn('root_tree_invalidate(T)',corner)
+        self.assertIn('root_tree_light_changed(loc)',light)
+        cached=P.fragment(TREE,'/datum/root_tree_presenter/proc/cached_light(')
+        self.assertIn('root_light_mask_snapshot(root, TRUE)',cached)
+        self.assertIn('root_light_rgb(root, context.body, TRUE)',cached)
+
+    def test_legacy_queue_rejects_same_committed_pending_mask_control(self):
+        env,f,root=self.snapshot()
+        old=_contract.SNAP.replace('(owner.needs_update && !allow_pending)','owner.needs_update')
+        reject=compile_proc(old,'/proc/root_light_mask_snapshot(','root, allow_pending=False',env)
+        self.assertEqual(f(root,True),[.25]*20)
+        self.assertIsNone(reject(root,True))
 
 if __name__=='__main__':unittest.main()

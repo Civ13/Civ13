@@ -19,21 +19,25 @@ class Tile:
     def __init__(self,x,y=1,z=1):self.x,self.y,self.z=x,y,z
 class Contexts(list):
     def Copy(self):return self.copy()
+    def __ior__(self,values):
+        for v in (values if isinstance(values,(list,tuple)) else [values]) if values is not None else []:
+            if not any(v is old for old in self):self.append(v)
+        return self
 
 class TileMotion(unittest.TestCase):
     def scene(self,source=LIFE):
         events=[]
-        env=dict(CIV13_GEOMETRIC_LOS_CORE=True,abs=abs,list=lambda *a:a,
+        env=dict(CIV13_GEOMETRIC_LOS_CORE=True,abs=abs,list=lambda *a:Contexts(a),
             typed_iter=lambda values,kind:values,ishuman=lambda a:getattr(a,'human',False),
             ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a.loc,
-            los_invalidate=lambda a,possible=False:events.append((a,possible)))
+            los_invalidate=lambda a,possible=False,viewer_refresh=False:(events.append((a,possible)) or Contexts(contexts[:2])))
         before=A.project(source,'/proc/los_invalidate_movement','A',env)
         near=A.project(source,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
         env['los_movement_affects_context']=near
-        after=A.project(source,'/proc/los_refresh_moved_viewer','A, force_refresh=False',env)
+        after=A.project(source,'/proc/los_refresh_moved_viewer','A, force_refresh=False, previous_contexts=None',env)
         tile=Tile(3)
         actor=N(human=True,mob=True,opacity=False,loc=tile,x=3,y=1,z=1,step_x=0,step_y=0)
-        owner=N(los_dirty=False,captures=0)
+        owner=N(los_dirty=False,captures=0,root_tree_presenter=None,los_presenter=None)
         context=N(body=actor,owner=owner,retired=False,movement_turf=tile,viewport_radii=lambda:P.DMList([7,7]))
         actor.client=owner;owner.los_context=context
         geometry=P.projected_geometry()
@@ -42,6 +46,7 @@ class TileMotion(unittest.TestCase):
         for x,z in [(1,1),(100,1),(1,2)]:
             c=N(los_dirty=False,captures=0,masked=False)
             contexts.append(N(body=N(x=x,y=1,z=z),owner=c,viewport_radii=lambda:P.DMList([7,7])))
+            c.los_context=contexts[-1]
             clients.append(c)
         def publish(c,body):
             c.captures+=1;c.los_dirty=False
@@ -49,6 +54,7 @@ class TileMotion(unittest.TestCase):
                 # Real geometry with a fixed blocker; image storage is an adapter.
                 c.masked=bool(body.z==actor.z and blocked(actor.x-body.x,0,4-body.x,0,
                     actor.x-body.x,0,4-body.x,0,False))
+            return True
         for c,v in zip(clients,contexts):
             c.reconcile_geometric_los=lambda c=c,body=v.body:publish(c,body)
         env['los_active_contexts']=contexts
@@ -84,7 +90,7 @@ class TileMotion(unittest.TestCase):
         self.assertEqual([c.captures for c in s.clients],[2,1,0,1])
         self.assertIs(s.context.movement_turf,s.actor.loc)
         source=(ROOT/'code/game/atoms_movable.dm').read_text()
-        self.assertEqual(source.count('los_refresh_moved_viewer(src, TRUE)'),2)
+        self.assertEqual(source.count('los_refresh_moved_viewer(src, TRUE, los_move_contexts)'),2)
         self.assertIn('root_tree_invalidate(src)',P.fragment(source,'/atom/movable/proc/forceMove('))
 
     def test_blockers_and_replaced_contexts_do_not_take_quiet_path(self):
@@ -109,6 +115,84 @@ class TileMotion(unittest.TestCase):
         self.assertEqual(s.owner.captures,1)
         self.assertEqual(s.clients[1].captures,0)
         self.assertFalse(s.clients[1].masked)
+
+    def test_opaque_nonclient_movers_refresh_dirty_viewers_before_return(self):
+        for kind in ['object','npc']:
+            s=self.scene()
+            # Project native post-move handling with a stationary viewer. The
+            # prior pre-write hook has already withdrawn a canopy conservatively.
+            s.actor.human=False;s.actor.mob=kind=='npc';s.actor.client=None
+            s.actor.opacity=True;s.owner.los_dirty=True
+            s.after(s.actor)
+            self.assertEqual(s.owner.captures,1,kind)
+            self.assertFalse(s.owner.los_dirty)
+        # Omission control reproduces waiting for the scheduled visibility tick.
+        begin=LIFE.index('\tif(A.opacity)')
+        end=LIFE.index('\tif(!M)',begin)
+        s=self.scene(LIFE[:begin]+LIFE[end:])
+        s.actor.human=False;s.actor.mob=False;s.actor.opacity=True
+        s.owner.los_dirty=True;s.after(s.actor)
+        self.assertEqual(s.owner.captures,0)
+        self.assertTrue(s.owner.los_dirty)
+
+    def test_every_failed_viewer_publication_revokes_deferred_trees(self):
+        for result in [False,None]:
+            s=self.scene();withdrawals=[]
+            s.owner.root_tree_presenter=N(invalidate=lambda:withdrawals.append('root'))
+            s.owner.los_presenter=N(invalidate=lambda:withdrawals.append('fallback'))
+            s.owner.reconcile_geometric_los=lambda:result
+            s.actor.loc=Tile(5);s.actor.x=5
+            s.after(s.actor)
+            self.assertEqual(withdrawals,['root','fallback'],result)
+
+    def test_opaque_refresh_retains_old_neighborhood_but_not_unrelated_dirty_clients(self):
+        s=self.scene();s.actor.human=False;s.actor.mob=False;s.actor.client=None
+        s.actor.opacity=True
+        # Current invalidation adapter returns only owner+nearby viewer. The old
+        # hook supplies a third context reached before a distant teleport.
+        for c in s.clients:c.los_dirty=True
+        old_context=s.clients[2].los_context
+        s.after(s.actor,True,Contexts([old_context]))
+        self.assertEqual([c.captures for c in s.clients],[1,1,1,0])
+        self.assertTrue(s.clients[3].los_dirty)
+        # Retired/replaced context references cannot refresh a replacement owner.
+        s=self.scene();s.actor.human=False;s.actor.mob=False;s.actor.opacity=True
+        old=s.clients[2].los_context;s.clients[2].los_context=object()
+        s.clients[2].los_dirty=True;s.after(s.actor,True,Contexts([old]))
+        self.assertEqual(s.clients[2].captures,0)
+        # Omit the old endpoint union: its conservative mask remains pending.
+        mutant=LIFE.replace('affected |= previous_contexts','affected |= list()',1)
+        s=self.scene(mutant);s.actor.human=False;s.actor.mob=False;s.actor.opacity=True
+        s.clients[2].los_dirty=True
+        s.after(s.actor,True,Contexts([s.clients[2].los_context]))
+        self.assertEqual(s.clients[2].captures,0)
+
+    def test_movement_frames_pass_invalidation_contexts_through_native_callbacks(self):
+        movable=(ROOT/'code/game/atoms_movable.dm').read_text()
+        movement=(ROOT/'code/game/mob/mob_movement.dm').read_text()
+        self.assertEqual(movement.count('los_move_contexts = los_invalidate_movement(src)'),1)
+        self.assertEqual(movement.count('los_refresh_moved_viewer(src, FALSE, los_move_contexts)'),3)
+        self.assertEqual(movable.count('los_move_contexts = root_tree_invalidate(src)'),2)
+        self.assertEqual(movable.count('los_refresh_moved_viewer(src, TRUE, los_move_contexts)'),2)
+        atom=(ROOT/'code/datums/observation/moved.dm').read_text()
+        self.assertIn('los_invalidate(am)',atom)  # Native Entered remains conservative.
+
+    def test_refused_move_has_no_visibility_effect_even_with_los_enabled(self):
+        movement=(ROOT/'code/game/mob/mob_movement.dm').read_text()
+        body=P.fragment(movement,'/atom/movable/Move(').splitlines()[1:]
+        body='\n'.join(body)
+        body=body[:body.index('\tvar/datum/subtile_pull_pair')]
+        code='/proc/admit_move(newloc)\n'+body+'\treturn TRUE\n'
+        for admitted in [False,True]:
+            events=[]
+            def admit(actor,destination):
+                events.append('admit');return admitted
+            env=dict(src=object(),persistence_movement_allowed=admit,
+                     los_invalidate_movement=lambda actor:events.append('invalidate'))
+            f=A.project(code,'/proc/admit_move','newloc',env,
+                        defines={'CIV13_ROOT_TREE_PRESENTATION':True})
+            self.assertEqual(bool(f(object())),admitted)
+            self.assertEqual(events,['admit','invalidate'] if admitted else ['admit'])
 
     def render_key(self,body,owner,anchored,source=CORE,time=0):
         # Evaluate the actual key template/offset branch, not a separate cache.
@@ -292,7 +376,7 @@ class DistanceCamera(unittest.TestCase):
         for px,pad in [(0,0),(1,1),(-1,1),(32,1),(33,2),(96,3),(1024,32),(4096,128)]:
             self.assertEqual(self.camera(px).V.viewport_radii()[1],7+pad)
         # Panned neighbors use the same expanded bounds for synchronous refresh.
-        m=self.camera(96);env=dict(typed_iter=lambda xs,t:xs,list=lambda *a:a,abs=abs)
+        m=self.camera(96);env=dict(typed_iter=lambda xs,t:xs,list=lambda *a:Contexts(a),abs=abs)
         near=A.project(LIFE,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
         self.assertTrue(near(m.V,Tile(116,100),Tile(116,100)))
         self.assertFalse(near(m.V,Tile(117,100),Tile(117,100)))
@@ -308,12 +392,15 @@ class DistanceCamera(unittest.TestCase):
         key=motion.render_key(body,owner,True,mutant);owner.pixel_x=96
         self.assertEqual(motion.render_key(body,owner,True,mutant),key)
         m=self.camera(96);events=[]
-        m.C.root_tree_presenter=None;m.C.los_presenter=N(invalidate=lambda *a:events.append(a))
+        m.C.root_tree_presenter=None;m.C.los_presenter=N(invalidate=lambda changed,possible,viewer_refresh=False:events.append((changed,possible)))
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,los_active_contexts=[m.V],get_turf=lambda a:a,
                  typed_iter=lambda xs,t:xs,abs=abs)
-        invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False',env)
-        door=Tile(116,100);invalidate(door,True);self.assertEqual(events,[(door,True)])
-        events.clear();m.C.pixel_x=0;invalidate(door,True);self.assertEqual(events,[])
+        env['list']=Contexts
+        invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False, viewer_refresh=False',env)
+        door=Tile(116,100);affected=invalidate(door,True);self.assertEqual(events,[(door,True)])
+        self.assertEqual(affected,[m.V])
+        events.clear();m.C.pixel_x=0;affected=invalidate(door,True);self.assertEqual(events,[])
+        self.assertEqual(affected,[])
 
     def test_exit_shrink_axis_change_and_rapid_toggle_retain_previous_animation_extents(self):
         m=self.camera(96);m.prepare(0,0,2);m.C.pixel_x=0

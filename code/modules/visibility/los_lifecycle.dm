@@ -82,7 +82,7 @@
 		los_dirty = TRUE
 		return
 	if(!los_dirty && key == los_last_policy && world.time < los_next_audit)
-		return
+		return TRUE
 	if(root_tree_presenter && !root_tree_presenter.planes_admitted())
 		root_tree_presenter.retire()
 	if(!root_tree_presenter && CIV13_ROOT_TREE_PRESENTATION)
@@ -95,6 +95,11 @@
 		new /datum/los_presenter(src, V)
 	var/datum/los_snapshot/S = V.capture(TRUE)
 	if(!S)
+		// Deferred viewer publication is safe only with a fresh snapshot.
+		if(root_tree_presenter)
+			root_tree_presenter.invalidate()
+		if(los_presenter)
+			los_presenter.invalidate()
 		los_dirty = TRUE
 		return
 	var/published = TRUE
@@ -112,14 +117,16 @@
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	los_next_audit = world.time + 5
+	return TRUE
 
-/proc/los_invalidate(atom/changed, possible_opacity = FALSE)
+/proc/los_invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)
 	if(!CIV13_GEOMETRIC_LOS_CORE || !los_active_contexts)
 		return
 	var/turf/T = get_turf(changed)
 	// Null-space HUD/helper retirement has no world neighborhood to invalidate.
 	if(!T)
 		return
+	var/list/affected = list()
 	for(var/datum/los_context/V in los_active_contexts)
 		var/client/C = V.owner
 		if(!C || !V.body)
@@ -127,11 +134,13 @@
 		var/list/radii = V.viewport_radii()
 		if(T && changed != V.body && (T.z != V.body.z || !radii || abs(T.x-V.body.x) > radii[1]+6 || abs(T.y-V.body.y) > radii[2]+6))
 			continue
+		affected |= V
 		C.los_dirty = TRUE
 		if(C.root_tree_presenter)
-			C.root_tree_presenter.invalidate(changed, possible_opacity)
+			C.root_tree_presenter.invalidate(changed, possible_opacity, viewer_refresh)
 		if(C.los_presenter)
-			C.los_presenter.invalidate(changed, possible_opacity)
+			C.los_presenter.invalidate(changed, possible_opacity, viewer_refresh)
+	return affected
 
 // Transparent player geometry is tile anchored. Before a movement attempt,
 // neither its eye nor its target footprint has changed; failed/offset-only
@@ -143,13 +152,14 @@
 		var/mob/living/human/H = A
 		if(H.client && H.client.los_context && !H.client.los_context.retired && H.client.los_context.body == H && H.client.los_context.owner == H.client)
 			return
-	// Opaque actors and other movers still change physical blocker geometry.
-	los_invalidate(A)
+	// Return the pre-move neighborhood to the call-local movement frame.
+	// No atom/client runtime state or cross-move token is retained.
+	return los_invalidate(A)
 
 // Called after authoritative movement callbacks, before the movement proc
 // returns to a yielding locomotion loop. Native client timing remains tested
 // separately; this avoids intentionally waiting for the next process tick.
-/proc/los_refresh_moved_viewer(atom/movable/A, force_refresh = FALSE)
+/proc/los_refresh_moved_viewer(atom/movable/A, force_refresh = FALSE, list/previous_contexts)
 	if(!CIV13_GEOMETRIC_LOS_CORE || !A)
 		return
 	var/turf/previous_turf = null
@@ -166,16 +176,37 @@
 			tile_changed = previous_turf != T
 			V.movement_turf = T
 	// Entered handles old/new tile neighborhoods. Blocker offsets still need
-	// immediate withdrawal even without a native tile transition.
-	los_invalidate(A)
+	// immediate withdrawal even without a native tile transition. Avoid another
+	// post-move withdrawal for transparent viewers; native Entered can already
+	// have invalidated their images before this hook.
+	var/list/affected = los_invalidate(A, FALSE, !force_refresh)
+	if(!affected)
+		affected = list()
+	if(previous_contexts)
+		affected |= previous_contexts
 	if(tile_changed && previous_turf)
-		los_invalidate(previous_turf, A.opacity)
-	if(!ismob(A))
-		return
-	var/mob/M = A
-	if(M.client && M.client.los_context)
+		affected |= los_invalidate(previous_turf, A.opacity)
+	var/mob/M = null
+	if(ismob(A))
+		M = A
+	if(M && M.client && M.client.los_context)
 		M.client.los_dirty = TRUE
-		M.client.reconcile_geometric_los()
+		if(!M.client.reconcile_geometric_los())
+			// Any early admission/capture/publication failure ends the deferred
+			// lease, including mutation suspension and unavailable scene leases.
+			if(M.client.root_tree_presenter)
+				M.client.root_tree_presenter.invalidate()
+			if(M.client.los_presenter)
+				M.client.los_presenter.invalidate()
+	// Reconcile only the old/new neighborhoods invalidated by this move.
+	// Unrelated dirty/pending-light clients keep their scheduled refresh.
+	if(A.opacity)
+		for(var/datum/los_context/blocked_context in affected)
+			var/client/blocked_client = blocked_context.owner
+			if(blocked_client && blocked_client.los_context == blocked_context && blocked_client.los_dirty)
+				blocked_client.reconcile_geometric_los()
+	if(!M)
+		return
 	// A human's target footprint moved too. Refresh nearby other viewers at
 	// this tile boundary before returning, so a previously visible character
 	// cannot retain a visible image after entering a denied tile. Offset-only
