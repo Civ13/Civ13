@@ -43,8 +43,9 @@ wait duration and rewards fail. The normalized whole-file digest must match the
 original frozen projection in both feature modes. Current disabled projections
 must also match the existing helper hashes, which are not refreshed by this
 correction. Enabled context-claim, type and forwarding omissions and arbitrary
-file drift are negative controls. Other existing checks in this file retain
-their earlier Git-history references; this correction does not migrate them.
+file drift are negative controls. The current scoped [crafting UI contracts](crafting-ui-contracts.md) freeze
+the remaining wait/pulling references and protect owned charge, refund, focus and
+close paths without historical whole-file comparisons or runtime Git access.
 Bridge/mechanics, FPS feature code, workflow admission and native fixture inputs
 remain unchanged. These controls are offline source checks, not native evidence.
 `crafting_ui.dm` prepares fourteen native assertions using real human/stack Move,

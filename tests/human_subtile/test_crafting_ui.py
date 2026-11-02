@@ -5,7 +5,6 @@ import importlib.util
 import json
 from pathlib import Path
 import re
-import subprocess
 from types import SimpleNamespace
 import unittest
 
@@ -79,13 +78,105 @@ def read(path):
     return (ROOT / path).read_text(encoding='utf-8')
 
 
-def baseline(path):
-    return subprocess.check_output(['git', 'show', BASE + ':' + path], cwd=ROOT).decode().replace('\r\n', '\n')
-
-
 def block(path, start, end):
     source = read(path)
     return source[source.index(start):source.index(end, source.index(start))]
+
+ATLAS = 'code/game/mob/crafting_atlas.dm'
+BROWSER = 'code/datums/browser.dm'
+SKIN = 'interface/skin.dmf'
+CONTRACTS = json.loads(read('tests/human_subtile/crafting_ui_contracts.json'))
+
+
+def section(source, start, end=None):
+    if source.count(start) != 1:
+        raise AssertionError('missing or ambiguous contract start: ' + start)
+    tail = source[source.index(start):]
+    if end is None:
+        next_proc = re.search(r"\n/(?![/*])", tail)
+        return (tail[:next_proc.start()] if next_proc else tail).rstrip() + "\n"
+    if tail.count(end) != 1:
+        raise AssertionError('missing or ambiguous contract end: ' + end)
+    return tail[:tail.index(end)]
+
+
+def once(source, fragment):
+    if source.count(fragment) != 1:
+        raise AssertionError('missing or ambiguous contract: ' + fragment)
+
+
+def ordered(source, *fragments):
+    positions = []
+    for fragment in fragments:
+        once(source, fragment)
+        positions.append(source.index(fragment))
+    if positions != sorted(positions):
+        raise AssertionError('contract order changed')
+
+
+def passive(source):
+    # This suite owns movement/focus effects, not recipe content or HTML.
+    for forbidden in ('set_using_object', 'unset_using_object', 'forceMove',
+                      'step_x =', 'step_y =', 'pixel_x =', 'pixel_y =',
+                      'winset(', 'focus='):
+        if forbidden in source:
+            raise AssertionError('active UI side effect: ' + forbidden)
+
+
+def verify_stack_contract(source):
+    menu = section(source, '/obj/item/stack/proc/list_recipes', '// Custom qdel')
+    ordered(menu, 'if (!recipes)\n\t\treturn',
+            'if (!src || amount <= 0)\n\t\tuser << browse(null, "window=stack")',
+            'user.set_using_object(src)',
+            'user << browse(t1, "window=stack")', 'onclose(user, "stack")')
+    # Owning the menu is deliberate; movement/focus changes are not.
+    passive(menu.replace('user.set_using_object(src)', ''))
+    produce = section(source, '/obj/item/stack/proc/produce_recipe', '/obj/item/stack/Topic')
+    once(produce, 'var/required = quantity*recipe.req_amount')
+    once(produce, CONTRACTS['stack_wait'])
+    once(produce, CONTRACTS['stack_refund'])
+    debit = 'if (use(required, (joinery || carving) ? null : H))'
+    if len(re.findall(r'(?<![.A-Za-z0-9_])use\(', '\n'.join(line.split('//', 1)[0] for line in produce.splitlines()))) != 1:
+        raise AssertionError('primary debit count changed')
+    ordered(produce, 'if (!can_use(required))', CONTRACTS['stack_wait'],
+            debit, 'O = new recipe.result_type(user.loc, recipe.use_material)',
+            'O = new recipe.result_type(user.loc)', CONTRACTS['stack_refund'])
+    topic = section(source, '/obj/item/stack/Topic', '// The normal menu')
+    if topic != CONTRACTS['stack_topic']:
+        raise AssertionError('crafting admission/ownership/refresh changed')
+
+
+def verify_focus_contract(sources):
+    atlas = section(sources[ATLAS], '/datum/crafting_atlas_reference/proc/show(',
+                    '/datum/crafting_atlas_reference/proc/render_html(')
+    passive(atlas)
+    ordered(atlas, 'if (!viewer || !viewer.client)\n\t\treturn',
+            'if (world.time < viewer.client.atlas_last_request + 10)\n\t\treturn',
+            'viewer.client.atlas_last_request = world.time', 'if (!load_catalog())',
+            'if (crafting_atlas_presenter && crafting_atlas_presenter.open(',
+            'viewer << browse(render_html(')
+    once(atlas, '"window=crafting_atlas;size=1000x700"')
+    browser = sources[BROWSER]
+    once(browser, 'var/window_options = "focus=0;can_close=1;')
+    for key, start, end in (
+        ('browser_open', '/datum/browser/proc/open(', '/datum/browser/proc/close('),
+        ('browser_close', '/datum/browser/proc/close(', '// This will allow'),
+        ('onclose', '/proc/onclose(', '// the on-close client verb'),
+        ('windowclose', '/client/verb/windowclose(', None),
+    ):
+        if section(browser, start, end) != CONTRACTS[key]:
+            raise AssertionError('browser focus/close contract changed: ' + key)
+    for contract in ('mainwindow.macro=macro input.focus=true',
+                     'mainwindow.macro=hotkeymode mapwindow.map.focus=true'):
+        once(sources[SKIN], contract)
+
+
+def verify_wait_contract(source):
+    restored = restore_crafting_projection(WAIT, source)
+    wait = section(restored, '/mob/var/may_do_after', '//Returns a list')
+    if wait != CONTRACTS['legacy_wait']:
+        raise AssertionError('wait signature/timing/claims/cleanup changed')
+
 
 
 def expression(source):
@@ -184,7 +275,7 @@ class CraftingMovementContracts(unittest.TestCase):
         unlinked = block(HUMAN, '/mob/living/human/proc/human_subtile_unlinked()', '\n\n')
         self.assertEqual(unlinked, '/mob/living/human/proc/human_subtile_unlinked()\n\treturn ' +
                          block(HUMAN, '!buckled && !riding', '\n'))
-        self.assertEqual(unlinked, baseline(HUMAN)[baseline(HUMAN).index('/mob/living/human/proc/human_subtile_unlinked()'):][:len(unlinked)])
+        self.assertEqual(unlinked, CONTRACTS['legacy_unlinked'])
         self.assertNotRegex(unlinked, r'!pulling\b')
         self.assertIn('!istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary)', unlinked)
         for gate in ('!using_object &&', 'allows_smooth_movement_ui', 'human_subtile_object_use_supported'):
@@ -253,21 +344,60 @@ class CraftingMovementContracts(unittest.TestCase):
             self.assertEqual(bool(eval(code, {'__builtins__': {}}, values)), cancels)
         self.assertRegex(source, r'if \(!can_move\)\n\t\t\t//[^\n]*\n\t\t\t//[^\n]*\n\t\t\tif \(user.loc')
 
+
     def test_wait_signature_timing_context_claims_and_cleanup_unchanged(self):
-        source = read(WAIT)
-        source = source.replace('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', '')
-        source = source.replace('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', '')
-        source = source.replace('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc')
-        self.assertEqual(source, baseline(WAIT))
+        verify_wait_contract(read(WAIT))
 
     def test_crafting_charges_refunds_refresh_and_close_paths_unchanged(self):
+        verify_stack_contract(read(STACK))
+
+    def test_crafting_contract_rejects_charge_refund_and_close_mutations(self):
         source = read(STACK)
-        added = block(STACK, '/obj/item/stack/allows_smooth_movement_ui', '/obj/item/stack/proc/list_recipes')
-        self.assertEqual(source.replace(added, ''), baseline(STACK))
-        self.assertIn('user.set_using_object(src)', source)
-        self.assertIn('onclose(user, "stack")', source)
-        self.assertIn('if (src && usr.using_object == src) //do not reopen closed window', source)
-        self.assertIn('if (!do_after(user, buildtime))', source)
+        controls = (
+            ('var/required = quantity*recipe.req_amount', 'var/required = recipe.req_amount'),
+            ('buildtime = round(buildtime)', 'buildtime = 1'),
+            ('buildtime /= H.getStatCoeff("strength")', 'buildtime *= H.getStatCoeff("strength")'),
+            ('if (!do_after(user, buildtime))', 'if (do_after(user, buildtime))'),
+            ('H.put_in_hands(O)', 'H.drop_from_inventory(O)'),
+            ('handReturnMap.Remove(H.key)', 'handReturnMap.Remove(user)'),
+            ('if (required > 0)', 'if (required > 1)'),
+            ('new type(get_turf(H), required)', 'new type(get_turf(H), 1)'),
+            ('user.set_using_object(src)', 'user.set_using_object(null)'),
+            ('onclose(user, "stack")', 'onclose(user, "wrong")'),
+            ('if (H.can_build_recipe)', 'if (!H.can_build_recipe)'),
+            ('if (src && usr.using_object == src) //do not reopen closed window', 'if (src) //do not reopen closed window'),
+            ('H.can_build_recipe = FALSE', 'H.can_build_recipe = TRUE'),
+        )
+        for before, after in controls:
+            self.assertEqual(source.count(before), 1, before)
+            with self.subTest(control=before), self.assertRaises(AssertionError):
+                verify_stack_contract(source.replace(before, after, 1))
+        debit = 'if (use(required, (joinery || carving) ? null : H))'
+        early = source.replace(debit, 'if (TRUE)', 1).replace(
+            '\tif (recipe.time)\n', '\t' + debit + '\n\t\treturn\n\tif (recipe.time)\n', 1)
+        with self.subTest(control='debit moved before wait'), self.assertRaises(AssertionError):
+            verify_stack_contract(early)
+        with self.subTest(control='double primary debit'), self.assertRaises(AssertionError):
+            verify_stack_contract(source.replace(debit, 'use(required, H)\n\t' + debit, 1))
+
+    def test_wait_contract_rejects_signature_claim_timing_and_cleanup_mutations(self):
+        source = read(WAIT)
+        for before, after in (
+            ('needhand = TRUE, progress = TRUE', 'needhand = FALSE, progress = TRUE'),
+            ('check_for_repeats = TRUE', 'check_for_repeats = FALSE'),
+            ('!gameplay_lease.claim_gather_wait(user, target)', 'FALSE'),
+            ('user.may_do_after = FALSE', 'user.may_do_after = TRUE'),
+            ('endtime = world.time + delay', 'endtime = world.time + 1'),
+            ('user.may_do_after = TRUE', 'user.may_do_after = FALSE'),
+            ('qdel(progbar)', 'progbar = null'),
+        ):
+            # qdel(progbar) also belongs to do_mob; mutate the selected wait only.
+            start = source.index('/mob/var/may_do_after')
+            prefix, wait = source[:start], source[start:]
+            expected = 2 if before.startswith(('needhand =', 'check_for_repeats =')) else 1
+            self.assertEqual(wait.count(before), expected, before)
+            with self.subTest(control=before), self.assertRaises(AssertionError):
+                verify_wait_contract(prefix + wait.replace(before, after))
 
     def test_player_authority_optout_cadence_save_and_prone_unchanged(self):
         # Focus on the contracts this suite owns, not whole-file historical
@@ -285,14 +415,44 @@ class CraftingMovementContracts(unittest.TestCase):
         ):
             self.assertIn(contract, source)
 
+
     def test_atlas_and_focus_paths_are_not_rewritten(self):
-        for path in ('code/game/mob/crafting_atlas.dm', 'code/datums/browser.dm'):
-            self.assertEqual(read(path), baseline(path))
-        skin = read('interface/skin.dmf')
-        self.assertIn('mainwindow.macro=macro input.focus=true', skin)
-        self.assertIn('mainwindow.macro=hotkeymode mapwindow.map.focus=true', skin)
-        atlas = block('code/game/mob/crafting_atlas.dm', '/datum/crafting_atlas_reference/proc/show(', '/datum/crafting_atlas_reference/proc/render_html(')
-        self.assertNotIn('set_using_object', atlas)
+        verify_focus_contract({path: read(path) for path in (ATLAS, BROWSER, SKIN)})
+
+    def test_focus_contract_rejects_active_ui_and_broken_close_mutations(self):
+        sources = {path: read(path) for path in (ATLAS, BROWSER, SKIN)}
+        controls = (
+            (ATLAS, '\tviewer.client.atlas_last_request = world.time',
+             '\tviewer.set_using_object(src)\n\tviewer.client.atlas_last_request = world.time'),
+            (ATLAS, '\tviewer.client.atlas_last_request = world.time',
+             '\twinset(viewer, null, "focus=1")\n\tviewer.client.atlas_last_request = world.time'),
+            (BROWSER, 'var/window_options = "focus=0;', 'var/window_options = "focus=1;'),
+            (BROWSER, 'open(var/use_onclose = TRUE)', 'open(var/use_onclose = FALSE)'),
+            (BROWSER, 'onclose(user, window_id, ref)', 'onclose(user, window_id, null)'),
+            (BROWSER, 'browse(null, "window=[window_id]")', 'browse(null, "window=wrong")'),
+            (BROWSER, 'Topic("close=1", list("close"="1"), hsrc)', 'Topic("close=0", list("close"="0"), hsrc)'),
+            (BROWSER, 'mob.unset_using_object()', 'mob.set_using_object(src)'),
+            (SKIN, 'mainwindow.macro=macro input.focus=true', 'mainwindow.macro=macro input.focus=false'),
+            (SKIN, 'mainwindow.macro=hotkeymode mapwindow.map.focus=true', 'mainwindow.macro=hotkeymode mapwindow.map.focus=false'),
+        )
+        for path, before, after in controls:
+            self.assertEqual(sources[path].count(before), 1, before)
+            changed = dict(sources, **{path: sources[path].replace(before, after, 1)})
+            with self.subTest(path=path, control=before), self.assertRaises(AssertionError):
+                verify_focus_contract(changed)
+
+    def test_scoped_contracts_allow_unrelated_procedure_and_recipe_content_changes(self):
+        stack = read(STACK)
+        self.assertEqual(stack.count('Amount Left:'), 1)
+        verify_stack_contract(stack.replace('Amount Left:', 'Stock Remaining:') + '\n/obj/item/stack/proc/unrelated_ui_probe()\n\treturn\n')
+        verify_wait_contract(read(WAIT) + '\n/proc/unrelated_wait_probe()\n\treturn\n')
+        sources = {path: read(path) for path in (ATLAS, BROWSER, SKIN)}
+        self.assertIn('Full web atlas', sources[ATLAS])
+        sources[ATLAS] = sources[ATLAS].replace('Full web atlas', 'Complete web reference')
+        sources[ATLAS] += '\n/proc/unrelated_atlas_probe()\n\treturn\n'
+        sources[BROWSER] += '\n/proc/unrelated_browser_probe()\n\treturn\n'
+        verify_focus_contract(sources)
+
 
 
 if __name__ == '__main__':
