@@ -606,6 +606,9 @@ def attempt_number(value):
 
 
 def validate_source_comparison(plan, *, current_event=False):
+    if current_event and (not os.environ.get('GITHUB_EVENT_NAME')
+                          or plan.get('event') != os.environ['GITHUB_EVENT_NAME']):
+        raise ValueError('Selection event mismatch: GITHUB_EVENT_NAME')
     expected = plan.get('event') == 'push' and plan.get('requested_base') == ZERO_BASE
     proof = plan.get('source_comparison')
     if not expected:

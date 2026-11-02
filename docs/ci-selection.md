@@ -55,7 +55,8 @@ exact-head fetch to obtain that history, preserving checked-out HEAD.
 
 The selection receipt records `source_comparison` with the source/head identities,
 derivation kind and normalized push evidence. Baseline and compile receipts retain
-it; loaders revalidate ancestry and event identity, and the aggregate rejects
+it; loaders bind the receipt event to `GITHUB_EVENT_NAME` before deciding whether
+comparison evidence is required, then revalidate ancestry and push metadata. The aggregate rejects
 missing or changed copies. Existing `base`/`requested_base`, impact selection,
 check scope and native opt-in rules are unchanged. Missing/truncated metadata,
 root history without a real parent, unavailable objects or an invalid comparison

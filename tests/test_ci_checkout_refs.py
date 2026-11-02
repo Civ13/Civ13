@@ -227,10 +227,39 @@ class NewBranchComparisonTests(unittest.TestCase):
                 compiled.pop('source_comparison')
                 self.assertIn('compile offline source comparison mismatch',baseline.aggregate(plan,tested,compiled,jobs,False))
 
+    def test_zero_base_receipt_event_is_bound_before_optional_proof_validation(self):
+        with branch_fixture() as f:
+            payload=f['payload']([])
+            refs.new_branch_comparison(f['head'],payload,fetch=True,cwd=f['clone'])
+            event=f['folder']/'event.json';event.write_text(json.dumps(payload))
+            env=dict(GITHUB_EVENT_NAME='push',GITHUB_EVENT_PATH=str(event),GITHUB_RUN_ID='77',GITHUB_RUN_ATTEMPT='1')
+            spec=importlib.util.spec_from_file_location('event_bound_selector',ROOT/'scripts/select-ci.py')
+            selector=importlib.util.module_from_spec(spec);spec.loader.exec_module(selector)
+            with patch.object(baseline,'ROOT',f['clone']),patch.dict(os.environ,env):
+                plan=baseline.selection_receipt('0'*40,f['head'],False,False,[],'event identity fixture','push',
+                                                selector.eligibility('push',payload,False),payload)
+                path=f['folder']/'selection.json';baseline.write_json(path,plan)
+                self.assertEqual(baseline.load_selection(path,f['head'],'0'*40),plan)
+                for label in ('workflow_dispatch','pull_request','',None):
+                    for remove_proof in (False,True):
+                        bad=json.loads(json.dumps(plan));bad['event']=label
+                        if remove_proof:bad.pop('source_comparison')
+                        baseline.write_json(path,bad)
+                        with self.subTest(event=label,remove_proof=remove_proof),self.assertRaisesRegex(ValueError,'event mismatch'):
+                            baseline.load_selection(path,f['head'],'0'*40)
+                baseline.write_json(path,plan)
+                for actual in ('workflow_dispatch','pull_request',''):
+                    with patch.dict(os.environ,{'GITHUB_EVENT_NAME':actual}),self.subTest(actual=actual),self.assertRaisesRegex(ValueError,'event mismatch'):
+                        baseline.load_selection(path,f['head'],'0'*40)
+                with patch.dict(os.environ):
+                    os.environ.pop('GITHUB_EVENT_NAME',None)
+                    with self.assertRaisesRegex(ValueError,'event mismatch'):
+                        baseline.load_selection(path,f['head'],'0'*40)
+
     def test_real_cli_records_baseline_without_changing_selection_or_native_admission(self):
         with branch_fixture() as f:
             event=f['folder']/'event.json';event.write_text(json.dumps(f['payload']([])))
-            env=dict(os.environ,GITHUB_EVENT_PATH=str(event),GITHUB_RUN_ID='77',GITHUB_RUN_ATTEMPT='1',PYTHONDONTWRITEBYTECODE='1')
+            env=dict(os.environ,GITHUB_EVENT_NAME='push',GITHUB_EVENT_PATH=str(event),GITHUB_RUN_ID='77',GITHUB_RUN_ATTEMPT='1',PYTHONDONTWRITEBYTECODE='1')
             commands=[
                 [sys.executable,'-B','scripts/ci_checkout_refs.py','--head',f['head'],'--base','0'*40,'--event','push'],
                 [sys.executable,'-B','scripts/select-ci.py','--head',f['head'],'--base','0'*40,'--event','push',
@@ -516,7 +545,7 @@ class CheckoutRefsTests(unittest.TestCase):
                     eligibility = {'action': None, 'metadata_valid': True,
                                    **{key: {'eligible': key != 'gating', 'reason': 'manual fixture'}
                                       for key in ('compile', 'native', 'gating')}}
-                    with patch.object(baseline, 'ROOT', clone), patch.dict(os.environ, {'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '2'}):
+                    with patch.object(baseline, 'ROOT', clone), patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'workflow_dispatch', 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '2'}):
                         receipt = baseline.selection_receipt(base, head, False, False, [], 'manual', 'workflow_dispatch', eligibility)
                         import json
                         receipt_path = clone / 'selection.json'
