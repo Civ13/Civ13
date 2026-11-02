@@ -416,7 +416,7 @@
 // Do not call this directly, call trans_to() instead.
 /datum/reagents/proc/splash_mob(var/mob/target, var/amount = TRUE, var/copy = FALSE)
 	var/perm = TRUE
-	if (isliving(target)) //will we ever even need to tranfer reagents to non-living mobs?
+	if (isliving(target)) //will we ever even need to transfer reagents to non-living mobs?
 		var/mob/living/L = target
 		perm = L.reagent_permeability()
 	return trans_to_mob(target, amount, CHEM_TOUCH, perm, copy)

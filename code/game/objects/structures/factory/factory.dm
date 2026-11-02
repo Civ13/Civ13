@@ -191,7 +191,7 @@
 		newtin.amount = tin
 		tin = 0
 
-		//EMTPY
+		//EMPTY
 
 /obj/structure/machinery/factory/verb/empty()
 	set category = null
@@ -411,7 +411,7 @@
 		newsilvercoin.amount = silver
 		silver = 0
 
-		//EMTPY
+		//EMPTY
 
 /obj/structure/machinery/factory/coinsmelter/verb/emptycoin()
 	set category = null

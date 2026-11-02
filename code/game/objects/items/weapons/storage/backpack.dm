@@ -62,7 +62,7 @@
 
 /obj/item/weapon/storage/backpack/satchel/black/germanat
 	name = "German Anti Tank Satchel"
-	desc = "It's a standard issue satchel for German military personel"
+	desc = "It's a standard issue satchel for German military personnel"
 	max_storage_space = 28
 	slowdown = 0.1
 	can_hold = list(
@@ -93,7 +93,7 @@
 
 /obj/item/weapon/storage/backpack/satchel/replicant
 	name = "synthetic backpack"
-	desc = "A very versitile backpack made out of synthetic leather."
+	desc = "A very versatile backpack made out of synthetic leather."
 	icon_state = "replicant_backpack"
 	base_icon = "replicant_backpack"
 
@@ -108,7 +108,7 @@
 
 /obj/item/weapon/storage/backpack/ww2/jap
 	name = "japanese backpack"
-	desc = "It's a standard issue backpack for japanese military personel"
+	desc = "It's a standard issue backpack for japanese military personnel"
 	icon_state = "jappack"
 	item_state = "jappack"
 	base_icon = "jappack"
@@ -159,7 +159,7 @@
 
 /obj/item/weapon/storage/backpack/ww2/german
 	name = "backpack"
-	desc = "A standard issue backpack for German military personel"
+	desc = "A standard issue backpack for German military personnel"
 	icon_state = "germanpack"
 	item_state = "germanpack"
 	base_icon = "germanpack"
@@ -176,7 +176,7 @@
 		)
 /obj/item/weapon/storage/backpack/ww2/russian
 	name = "backpack"
-	desc = "A standard issue backpack for Soviet military personel."
+	desc = "A standard issue backpack for Soviet military personnel."
 	icon_state = "germanpack" //To be replaced with proper, high quality sprites
 	item_state = "germanpack" //To be replaced with proper, high quality sprites
 	base_icon = "germanpack" //To be replaced with proper, high quality sprites
@@ -234,7 +234,7 @@
 
 /obj/item/weapon/storage/backpack/ww2/american
 	name = "american backpack"
-	desc = "It's a standard issue backpack for American military personel"
+	desc = "It's a standard issue backpack for American military personnel"
 	icon_state = "uspack"
 	item_state = "uspack"
 	base_icon = "uspack"
@@ -463,7 +463,7 @@
 
 /obj/item/weapon/storage/backpack/buttpack
 	name = "US Army buttpack"
-	desc = "Standard issue buttpack for american military personel."
+	desc = "Standard issue buttpack for american military personnel."
 	icon_state = "us_buttpack"
 	item_state = "us_buttpack"
 	item_state_slots = list(

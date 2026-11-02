@@ -145,7 +145,7 @@
 	to_chat(target, "<big>You received [stock]% of [companyname] from [src].</big>")
 	return
 
-//to be used when the seller does not exist (normally if he died and theres no body)
+//to be used when the seller does not exist (normally if he died and there's no body)
 //the stock is still for sale but "nobody" will receive the cost.
 /proc/transfer_stock_nomob(var/companyname, var/stock, var/mob/living/human/target)
 	if (!companyname || !stock || !target)

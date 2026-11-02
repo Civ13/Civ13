@@ -92,7 +92,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>PMCS</b> have sucessfuly defended the lab bridge! Order has been restored!"
+		var/message = "The <b>PMCS</b> have successfully defended the lab bridge! Order has been restored!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

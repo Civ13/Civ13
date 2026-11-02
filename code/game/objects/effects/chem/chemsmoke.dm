@@ -214,7 +214,7 @@
 	smokeFlow() //pathing check
 
 	//set the density of the cloud - for diluting reagents
-	density = max(1, targetTurfs.len / 4) //clamp the cloud density minimum to TRUE so it cant multiply the reagents
+	density = max(1, targetTurfs.len / 4) //clamp the cloud density minimum to TRUE so it can't multiply the reagents
 
 	//Admin messaging
 	var/contained = carry.get_reagents()

@@ -188,7 +188,7 @@ default behaviour is:
 			return FALSE
 	if (tmob.buckled || buckled)
 		return FALSE
-	//BubbleWrap: people in handcuffs are always switched around as if they were on 'help' intent to prevent a person being pulled from being seperated from their puller
+	//BubbleWrap: people in handcuffs are always switched around as if they were on 'help' intent to prevent a person being pulled from being separated from their puller
 	if (!(tmob.mob_always_swap || (tmob.a_intent == I_HELP || tmob.restrained()) && (a_intent == I_HELP || restrained())))
 		return FALSE
 	if (!tmob.canmove || !canmove)
@@ -512,7 +512,7 @@ default behaviour is:
 		register_living_mob(src)
 		timeofdeath = FALSE
 
-	// restore us to conciousness
+	// restore us to consciousness
 	set_stat(CONSCIOUS)
 
 	// make the icons look correct

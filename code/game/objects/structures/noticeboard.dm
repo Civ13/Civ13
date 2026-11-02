@@ -134,7 +134,7 @@
 
 /obj/structure/mailbox/attackby(var/obj/item/weapon/paper/W as obj, var/mob/living/human/H as mob)
 	if (receive_only == TRUE)
-		to_chat(H, "This is only for received letters! It wont be delivered if you put it here!")
+		to_chat(H, "This is only for received letters! It won't be delivered if you put it here!")
 		return
 	if (!istype(W, /obj/item/weapon/paper))
 		to_chat(H, "You cannot send this by mail. Only paper is accepted.")

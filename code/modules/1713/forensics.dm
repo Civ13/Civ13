@@ -1,4 +1,4 @@
-//Messy port of forensics from other servers, may need to be splitted into multiple .dm files
+//Messy port of forensics from other servers, may need to be split into multiple .dm files
 
 
 /obj/item/weapon/forensics

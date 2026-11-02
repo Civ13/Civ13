@@ -1,21 +1,33 @@
-Drag yourself to a ladder to look up or down.
-Overhunting can lead to extinction. Consider taking up Animal Husbandry to ensure a long-lasting supply of food and leather for your civilization.
-Cannibalism is a feature, but eating other people might make you valid.
-You can build locked doors in the same way as regular doors. You have to have a key in one hand and metal/wood in the other (active) hand.
-You can use rope to build nooses, rope handcuffs, and leashes.
-Everyone dies eventually; don't get too salty about it.
-If you are a sharpshooter, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
-Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout but does less damage. Slash will easily make your enemy bleed. Stabbing gives a higher probability of internal bleeding.
-You can switch between Parry mode and Dodge mode in the HUD. Parry takes your skill with the weapon and the weapon's stats into account and will increase your skill. Dodge takes dexterity into account and will increase it.
-Weather and season changes can threaten your civilization's survival. Be sure to have a shelter stocked with vital supplies like food and water to survive the storms to come.
-Water hole went dry? Fill up your cups with cow or goat milk or make sap wine from extracting it from a palm tree with a knife.
-In TDM, it's a good idea to strip dead enemies/comrades and tear up their uniforms to make bandages. To do this, press C while holding clothing, and it'll tear into rags, then just craft the rags into bandages.
-A fast way to train medical is to perform surgeries on a fresh corpse. Butchering animals also works.
-If you are bleeding you can use the grab intent, aim at the injured body part, and then click on yourself to apply pressure and stop the bleeding.
-Entrenching tool fits in your backpack slot and is always worth taking in TDM.
-When using an LMG, it is best to prone for the most effective accuracy, take cover behind incomplete sandbags so you can still fire while behind cover (sandbags must be incomplete).
-Use the numpad to quickly change your aim between body parts.
-You can disarm mines and tripmines by clicking on a trap with bare hands or a wirecutter. Be wary that, while success gives a grenade/mine, failure on AP mines/tripmines yields a deadly result to you and everyone near you, enemy included. It is much easier to spot a tripmine than a normal one.
-Butchering an animal with GRAB intent active will output pelts instead of leather.
-Use an empty hand with grab intent on a water source to drink from it.
-Tools and melee weapons only take durability damage from attacking people and animals; actions like throwing, using for intended purposes (tools only), and breaking stuff (other than targets) do not damage them in any way.
+To look up or down a ladder, click and drag yourself onto it. Drag yourself onto it again to stop looking.
+Overhunting can wipe out the local wildlife. Consider animal husbandry to keep a long-lasting supply of food and hides for your civilization.
+Cannibalism is a feature, but eating other people may get you treated as a fair target.
+To build a locked door, hold a key in one hand and the wood or metal in your active hand, then pick the door from the crafting menu.
+Rope can be crafted into nooses, rope handcuffs and, on some maps, leashes.
+Everyone dies eventually, so don't get too salty about it.
+Use the body target on your HUD to choose where you hit. Aim for the head if you can land it, the chest for reliable damage, and the legs or feet to cripple.
+Press Z with a sword to cycle between Slash, Stab and Bash; knives switch between Slash and Stab. Slashing causes open bleeding and can sever limbs, stabbing is more likely to cause internal bleeding, and bashing causes neither.
+Press V (or click the button on your HUD) to switch between Dodge and Parry. Dodge depends on your dexterity and trains it. Parry only works with a weapon in your active hand, can't block attacks from behind, and trains your weapon skill.
+Weather and season changes can threaten your civilization's survival. Keep a shelter stocked with food and water to wait out storms.
+Water hole went dry? Milk a cow or goat by using an open container on it, or use a knife on help intent on a palm tree while holding a tribal pot to collect sap that ferments into palm wine.
+Press C while holding a uniform, suit or hat to tear it into rags, then craft two rags into bandages. Stripping fallen soldiers is a good source of cloth in TDM.
+Performing surgery and butchering animals both train your medical skill, so practicing on corpses and game is a quick way to improve it.
+If you are bleeding, switch to grab intent, target the bleeding body part and click on yourself to apply pressure and slow the bleeding.
+An entrenching tool fits in your belt or back slot and is always worth taking in TDM. Foldable ones can be folded up with C.
+Lying prone halves your weapon recoil. Incomplete sandbags let you shoot over them while prone; completed sandbag walls will block your own shots at close range.
+In hotkey mode, use the numpad to switch your target quickly: 8 for the head, 5 for the chest, 2 for the groin, 4 and 6 for the arms, and 1 and 3 for the legs.
+Wirecutters are by far the safest way to disarm a mine. A knife or bayonet is a gamble, bare hands are worse, and hitting a mine with anything else sets it off. Disarming a booby trap gives you back its grenade.
+Butchering a dead animal on harm intent gives raw hide; on grab intent you get a pelt instead.
+To drink straight from a river, lake, puddle or well, use an empty hand on grab intent. Puddles, flooded trenches and dirty water can give you cholera, and saltwater can't be drunk at all.
+Melee weapons and tools wear down when you hit people and animals, when you parry, and when you fell trees. Harder materials last longer, and brittle ones can shatter on the first hit.
+You don't need an axe to make planks. Hold a wooden wedge in one hand and hit logs with a hammer or wooden mallet to split crude planks, then flatten them with any sharp stone or metal tool. Whittle the wedge from a small wood piece with sharpened flint or a knife.
+A saw cuts one log into four planks, while a hatchet needs two logs for a single plank. Use a saw whenever you have one.
+Bark from cutting logs can be soaked in water to make tannin. Tanning hides takes several steps: scrape with a sharp tool, wash with water, dry on a tanning rack, then soak in tannin to get leather.
+Raw meat can give you food poisoning, and so can raw fish occasionally. Cook it first. Boiling water removes cholera but not salt.
+Hotkey mode is on by default. Press Tab to switch between hotkey mode and typing in the chat bar.
+Press 1, 2, 3 and 4 in hotkey mode to switch between the help, disarm, grab and harm intents.
+Press M to toggle walking and running, and the comma key to go prone. Moving right before you shoot ruins your accuracy, so stop for a moment before firing.
+Middle-click to kick, jump or bite. Press U to cycle between them.
+Press N to cycle your tactic. Rush makes your melee attacks faster, Defend improves your dodge and parry chances, and Charge makes your punches hit harder.
+Your skills improve by using them. Building trains crafting, digging and chopping train strength, and fighting trains your weapon skills.
+Check Notes in the IC tab for information about your role, faction and race.
+New to the game or stuck? Press F2 to ask a mentor, or F1 to contact an admin. Nobody minds a polite question.

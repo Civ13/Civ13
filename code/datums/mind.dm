@@ -8,12 +8,12 @@
 		ghost.mind is however used as a reference to the ghost's corpse
 
 	-	When creating a new mob for an existing IC character (e.g. cloning a dead guy)
-		the existing mind of the old mob should be transfered to the new mob like so:
+		the existing mind of the old mob should be transferred to the new mob like so:
 
 			mind.transfer_to(new_mob)
 
 	-	You must not assign key= or ckey= after transfer_to() since the transfer_to transfers the client for you.
-		By setting key or ckey explicitly after transfering the mind with transfer_to you will cause bugs like DCing
+		By setting key or ckey explicitly after transferring the mind with transfer_to you will cause bugs like DCing
 		the player.
 
 	-	IMPORTANT NOTE 2, if you want a player to become a ghost, use mob.ghostize() It does all the hard work for you.
@@ -300,4 +300,4 @@
 //HUMAN
 /mob/living/human/mind_initialize()
 	..()
-	if (!mind.assigned_role)	mind.assigned_role = "Sailor"	//defualt
+	if (!mind.assigned_role)	mind.assigned_role = "Sailor"	//default

@@ -216,7 +216,7 @@ var/global/civvies_killed = list()
 
 /mob/living/simple_animal/civilian/greenistani_ambassador
 	name = "Greenistani Ambassador"
-	desc = "The ambassator of Greenistan. Keep him safe!"
+	desc = "The ambassador of Greenistan. Keep him safe!"
 	icon_state = "greenistani_2"
 	icon_living = "greenistani_2"
 	icon_dead = "greenistani_2_dead"

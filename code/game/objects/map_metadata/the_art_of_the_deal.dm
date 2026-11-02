@@ -14,7 +14,7 @@
 		CIVILIAN)
 
 	roundend_condition_sides = list(
-		list(CIVILIAN) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
+		list(CIVILIAN) = /area/caribbean/british/ship, //it isn't in the map so nobody wins by capture
 		)
 	age = "1994"
 	ordinal_age = 8
@@ -124,7 +124,7 @@
 		E.receiver = i
 		E.message = pick(
 			"Hey man, send [needed], really need it. Is [pay] ok? Will be expecting.<br>kudos from [uppertext(E.sender[1])].",
-			"Hope you guys are ok. Need [needed]. ASAP. Will pay [pay]$ for all of it. Yours trully",
+			"Hope you guys are ok. Need [needed]. ASAP. Will pay [pay]$ for all of it. Yours truly",
 			"Hey, need a delivery of [needed] for [pay], thanks.",
 			"I heard you can get your hands on something i need. I'll pay you [pay]. Send me [needed].<br>Thanks",
 			"Send [needed]. Pay is [pay]$. Discretion as always.<br>-[uppertext(E.sender[1])]",

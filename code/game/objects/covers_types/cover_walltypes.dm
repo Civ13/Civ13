@@ -836,7 +836,7 @@
 
 /obj/covers/stone_wall/roman/modern
 	name = "tiled white brick wall"
-	desc = "A contempoary white stone wall."
+	desc = "A contemporary white stone wall."
 
 /obj/covers/stone_wall/brick
 	name = "stone brick wall"

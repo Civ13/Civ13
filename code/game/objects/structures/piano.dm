@@ -297,14 +297,14 @@
 		if (help)
 			dat += "<A href='?src=\ref[src];help=1'>Hide Help</A><BR>"
 			dat += {"
-					Lines are a series of chords, separated by commas (,), each with notes seperated by hyphens (-).<br>
+					Lines are a series of chords, separated by commas (,), each with notes separated by hyphens (-).<br>
 					Every note in a chord will play together, with chord timed by the tempo.<br>
 					<br>
 					Notes are played by the names of the note, and optionally, the accidental, and/or the octave number.<br>
 					By default, every note is natural and in octave 3. Defining otherwise is remembered for each note.<br>
 					Example: <i>C,D,E,F,G,A,B</i> will play a C major scale.<br>
 					After a note has an accidental placed, it will be remembered: <i>C,C4,C,C3</i> is <i>C3,C4,C4,C3</i><br>
-					Chords can be played simply by seperating each note with a hyphon: <i>A-C#,Cn-E,E-G#,Gn-B</i><br>
+					Chords can be played simply by separating each note with a hyphon: <i>A-C#,Cn-E,E-G#,Gn-B</i><br>
 					A pause may be denoted by an empty chord: <i>C,E,,C,G</i><br>
 					To make a chord be a different time, end it with /x, where the chord length will be length<br>
 					defined by tempo / x: <i>C,G/2,E/4</i><br>
@@ -330,7 +330,7 @@
 		song = new()
 	else if (song)
 		if (href_list["repeat"]) //Changing this from a toggle to a number of repeats to avoid infinite loops.
-			if (playing) return //So that people cant keep adding to repeat. If the do it intentionally, it could result in the server crashing.
+			if (playing) return //So that people can't keep adding to repeat. If the do it intentionally, it could result in the server crashing.
 			repeat = round(Clamp(WWinput(usr, "How many times do you want to repeat this piece? (maximum of 5 times)", "Repeats", 1, "num"), 0, 5))
 
 		else if (href_list["tempo"])

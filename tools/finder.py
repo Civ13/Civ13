@@ -15,7 +15,7 @@ with open("imglist.txt", "w") as writing:
 					rep = str(root)+"\\"+filesp[len(filesp)-1]
 					rep = rep.replace("..\\","")
 					rep = rep.replace("\\","/")
-					writing.write(rep+"\n") # return the last value of the splitted array and write to the file
+					writing.write(rep+"\n") # return the last value of the split array and write to the file
 				#moving on to the code file listing...
 				elif(file.endswith(".dm") or file.endswith(".js")): #search code files
 					filesp = str(root)+"\\"+str(file) # get the absolute directory

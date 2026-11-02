@@ -71,7 +71,7 @@ var/no_loop_lm = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>National Army</b> have sucessfuly stopped the Red Army's retreat into the mountains."
+		var/message = "The <b>National Army</b> have successfully stopped the Red Army's retreat into the mountains."
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

@@ -14,7 +14,7 @@
 	faction_organization = list(PIRATES)
 
 	roundend_condition_sides = list(
-		list(PIRATES) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
+		list(PIRATES) = /area/caribbean/british/ship, //it isn't in the map so nobody wins by capture
 		)
 	age = "1713"
 	ordinal_age = 3

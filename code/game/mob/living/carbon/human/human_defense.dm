@@ -488,7 +488,7 @@ bullet_act
 		var/obj/item/organ/external/affecting = get_organ(def_zone)
 		if (affecting)
 			return getarmor_organ(affecting, type)
-		//If a specific bodypart is targetted, check how that bodypart is protected and return the value.
+		//If a specific bodypart is targeted, check how that bodypart is protected and return the value.
 
 	//If you don't specify a bodypart, it checks ALL your bodyparts for protection, and averages out the values
 	for (var/organ_name in organs_by_name)
