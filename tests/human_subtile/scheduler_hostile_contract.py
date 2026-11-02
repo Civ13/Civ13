@@ -104,10 +104,14 @@ def validate(row):
             ident = e.get("call_id")
             require(integer(ident) and ident in moves, "unpaired move return")
             before = moves.pop(ident)
+            require(all(before[k] == e[k] for k in
+                    ("generation", "transaction", "transaction_generation", "transaction_owner", "transaction_old")),
+                    "move authority changed during callback")
             before_xy = (before["x"] * 32 + before["sx"], before["y"] * 32 + before["sy"])
             after_xy = (e["x"] * 32 + e["sx"], e["y"] * 32 + e["sy"])
             if before_xy != after_xy:
                 require(before["transaction"] and before["pulse"]
+                        and before["transaction_generation"] == before["generation"]
                         and abs(before_xy[0] - after_xy[0]) <= 2 and abs(before_xy[1] - after_xy[1]) <= 2,
                         "unauthenticated or oversized move")
             if before["phase"] == "wander" and not before["target_matches"] and before_xy != after_xy:

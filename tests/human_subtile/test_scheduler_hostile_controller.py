@@ -97,6 +97,8 @@ class HostileController(unittest.TestCase):
         self.assertIn('contract.validate_receipt(',evidence)
         self.assertIn('stage.adapted_probe(',evidence)
         self.assertIn('stage.adapted_dme(',evidence)
+        self.assertIn('expected[stage.FIXTURE] = source(stage.FIXTURE)',evidence)
+        self.assertIn('for path in (*binding.PINNED, stage.FIXTURE):',evidence)
 
 
 if __name__=='__main__':unittest.main()

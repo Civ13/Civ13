@@ -26,7 +26,7 @@ def good():
         nonlocal actor_x,actor_sx,tick,call_id
         call_id+=1
         common=dict(phase=phase,x=actor_x,sx=actor_sx,call_id=call_id,transaction=1,pulse=1,
-                    transaction_generation=2,transaction_owner=owner,owned=1,**target)
+                    generation=2,transaction_generation=2,transaction_owner=owner,owned=1,**target)
         if owner=="pursuit":common["pursuit"]=1
         if phase=="wander":common["wander_moves"]=index
         events.append(event("move_before",tick,**common))
@@ -50,7 +50,7 @@ def good():
     reacq=dict(contact,phase="reacquire",target_x=8)
     events.append(event("target_relocate_after",tick,**reacq));tick+=0.5
     call_id+=1
-    before=dict(reacq,call_id=call_id,transaction=1,pulse=1,transaction_generation=3,
+    before=dict(reacq,call_id=call_id,transaction=1,pulse=1,generation=3,transaction_generation=3,
                 transaction_owner="pursuit",pursuit=1,owned=1)
     events.append(event("move_before",tick,**before))
     events.append(event("move_after",tick,**dict(before,x=11,sx=30)));tick+=0.5
@@ -111,6 +111,19 @@ class ContractTests(unittest.TestCase):
         self.check_bad(lambda r:first(r,"quiet_start").update(target_damage=13))
     def test_terminal_owner_reacquisition_rejected(self):
         self.check_bad(lambda r:first(r,"cleanup").update(recovery=1))
+    def test_move_return_changed_actor_generation_rejected(self):
+        self.check_bad(lambda r:first(r,"move_after").update(generation=99))
+    def test_move_return_changed_transaction_owner_rejected(self):
+        self.check_bad(lambda r:first(r,"move_after").update(transaction_owner="recovery"))
+    def test_move_return_changed_transaction_generation_rejected(self):
+        self.check_bad(lambda r:first(r,"move_after").update(transaction_generation=99))
+    def test_move_return_changed_old_identity_rejected(self):
+        self.check_bad(lambda r:first(r,"move_after").update(transaction_old=1))
+    def test_moving_entry_transaction_generation_must_match_actor(self):
+        def mutate(r):
+            first(r,"move_before").update(transaction_generation=7)
+            first(r,"move_after").update(transaction_generation=7)
+        self.check_bad(mutate)
     def test_target_offset_alias_rejected(self):
         self.check_bad(lambda r:first(r,"attack_before").update(target_x=12,target_sx=32))
     def test_oversized_pulse_rejected(self):

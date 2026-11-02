@@ -82,6 +82,9 @@ def validate(data, head, suite, git, git_env, deadline):
                                         for path in (stage.base.ANIMAL, stage.base.AI, stage.base.CAT)})
         expected.update({path: text.encode('utf-8') for path, text in overlays.items()})
         expected[stage.PROBE] = stage.adapted_probe(originals[stage.PROBE].decode('utf-8')).encode('utf-8')
+        # Reconstruct the actual fixture bytes from Git, independently of the
+        # worker-supplied stage manifest and separate from the base-path pins.
+        expected[stage.FIXTURE] = source(stage.FIXTURE)
         dme = re.sub(r'^#include ".*\.dmm"\s*$', '', originals['civ13.dme'].decode('utf-8'), flags=re.M)
         dme += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n'
         dme += '\n#include "tests\\human_subtile\\scheduler_core_draft.dm"\n'
@@ -89,7 +92,7 @@ def validate(data, head, suite, git, git_env, deadline):
         for path, raw in expected.items():
             require(manifest.get("stage_files", {}).get(path) == record(raw),
                     "adapted source mismatch: " + path)
-        for path in binding.PINNED:
+        for path in (*binding.PINNED, stage.FIXTURE):
             require(manifest.get("original_git_files", {}).get(path) == record(source(path)),
                     "original source mismatch: " + path)
 
