@@ -13,9 +13,11 @@ EN=copies.EN;RU=copies.RU
 def environment(source=SOURCE):
  env,Base,Reader,langs,render,Paper,*_=copies.environment()
  Paper.document_capacity_ready=True # Explicit completed-constructor seam.
- env.update(max=max,parent_access=lambda s,a,w:Base.has_access(s,a,w),
+ env.update(Exception=Exception,error=lambda value:None,max=max,parent_access=lambda s,a,w:Base.has_access(s,a,w),
             parent_mutate=lambda s,a,p:Base.can_mutate(s,a,p))
  vm.ALLOWED |= {'parent_access','parent_mutate','paper_written_language_choices','paper_written_default_language'}
+ vm.ALLOWED |= {'paper_document_refresh_written','error'}
+ env['paper_document_refresh_written']=vm.project(source,'/proc/paper_document_refresh_written','P',env)
  vm.METHODS |= {'capture_state','state_current','retire','start_lifecycle','stop_lifecycle','close','project','document_copy_legacy_valid'}
  # Explicit parent dispatch and inherited/runtime fields only. Every production
  # procedure statement is projected; constructor is an inert reference seam.
@@ -81,6 +83,15 @@ class Authoring(unittest.TestCase):
   self.assertTrue(self.write('SECOND',RU));self.assertEqual(self.paper.document_record['revision'],2)
   self.assertEqual([s['language_id'] for s in self.paper.document_record['sections']],[EN,RU])
   self.assertEqual(self.paper.free_space,space-11)
+ def test_refresh_exception_does_not_reject_or_replay_committed_text(self):
+  self.start();old=self.session.session_lease
+  class FixtureFailure(Exception):desc='synthetic icon failure'
+  self.paper.update_icon=lambda:(_ for _ in ()).throw(FixtureFailure())
+  self.assertTrue(self.write('ONCE'))
+  self.assertEqual([section['text'] for section in self.paper.document_record['sections']],['ONCE'])
+  self.assertNotEqual(self.session.session_lease,old)
+  self.assertFalse(self.write('REPLAY',expected_lease=old))
+  self.assertEqual(self.paper.document_record['revision'],1)
  def test_invalid_first_actions_never_create_empty_classified_record(self):
   self.start();before=self.state()
   for changes in (dict(language='English'),dict(language='unknown'),dict(kind='field_answer'),dict(text='x'*3073),dict(text=''),dict(text=None),dict(revision=0.5),dict(revision='0'),dict(document_id='guessed'),dict(expected_lease=None)):
@@ -201,7 +212,7 @@ class Authoring(unittest.TestCase):
   self.assertIn('retire()',vm.body(SOURCE,'/datum/paper_document_authoring/Destroy'))
   self.assertNotRegex(SOURCE,r'(?i)hear_say\(|add_language\(|partial_languages|using_object\s*=')
   for path in (vm.ROOT/'code/modules/paperwork').glob('*.dm'):
-   if path.name not in ('authoring.dm','lifecycle.dm'):self.assertNotIn('/datum/paper_document_authoring',path.read_text(encoding='utf-8'))
+   if path.name not in ('authoring.dm','lifecycle.dm','editor.dm'):self.assertNotIn('/datum/paper_document_authoring',path.read_text(encoding='utf-8'))
   self.assertNotIn('paper_document_authoring',(vm.ROOT/'code/game/objects/items/paper/paper.dm').read_text(encoding='utf-8'))
 
 

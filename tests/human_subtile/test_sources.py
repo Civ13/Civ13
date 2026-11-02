@@ -4,6 +4,7 @@ import math
 import re
 import subprocess
 import unittest
+from tile_restore_contract import validate_tile_restore
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = "cc03b199128f8afed58713912c551ad7556e6bc4"
@@ -73,7 +74,7 @@ class SourceContracts(unittest.TestCase):
         self.assertNotIn('/proc/run(', module)  # DM reserves run.
         for guard in ('!P.armed', 'P.actor != src', 'P.destination != destination', 'P.direction != direction', 'P.armed = FALSE'):
             self.assertIn(guard, module)
-        self.assertNotRegex(module, r"\b(?:loc|step_x|step_y)\s*=(?!=)")
+        validate_tile_restore(module)
         source = read(MOVEMENT)
         self.assertIn('var/mob/living/human/subtile_actor\n\tif (ishuman(src))\n\t\tsubtile_actor = src', source)
         self.assertIn("..(newloc, direct, subtile_pulse.sx, subtile_pulse.sy)", source)

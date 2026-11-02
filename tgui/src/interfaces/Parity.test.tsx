@@ -82,7 +82,7 @@ describe('research parity', () => {
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { interfaces } from './index';
 describe('standard screen parity', () => {
-  it('registers all merged reader routes', () => {
+  it('registers converted renderer routes and the inactive Paper editor', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
       'appearance_changer.tmpl',
       'book_reader.tmpl',
@@ -95,6 +95,7 @@ describe('standard screen parity', () => {
       'faction_list.tmpl',
       'faction_symbol.tmpl',
       'known_languages.tmpl',
+      'paper_editor.tmpl',
       'photo_viewer.tmpl',
       'religion_list.tmpl',
       'research_bench.tmpl',

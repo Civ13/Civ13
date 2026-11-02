@@ -222,5 +222,277 @@
     "path": "code/_onclick/hud/action.dm",
     "policy": "unsaved_graph",
     "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient movement-command target is reacquired; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient movement-command target is reacquired; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_large_frame",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_large_frame",
+    "field": "destination",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Destination exists only during native Move collision; its enclosing execution frame is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_large_frame",
+    "field": "path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_large_frame",
+    "field": "combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_large_frame",
+    "field": "following",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient movement-command target is reacquired; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "side_origin",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient pursuit direction check; the enclosing pending movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "side_target",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient pursuit direction check; the enclosing pending movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "actor",
+    "type": "/mob/living/simple_animal/pet",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient movement-command target is reacquired; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Process-local movement ownership actor; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient movement-command target is reacquired; the enclosing runtime datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
   }
 ]

@@ -143,6 +143,7 @@
 	// Recheck after the actual pen getter, before any paper dereference.
 	if (!can_mutate(actor, pen) || !paper_knows_written_language(actor, language_id) || !istext(value) || !length(value) || length(value) > paper.free_space)
 		return FALSE
+	var/obj/item/weapon/paper/written_paper = paper
 	var/list/edit = null
 	var/list/next = null
 	if (isnull(expected_record))
@@ -173,12 +174,26 @@
 	else
 		if (!paper_document_commit_edit(paper, edit, src))
 			return FALSE
+	try
+		paper_document_refresh_written(written_paper)
+	catch (var/exception/e)
+		error(e.desc)
 	// A committed write remains success even if future capture cannot continue.
 	if (!capture_state())
 		retire()
 		return TRUE
 	session_lease = paper_document_mint_id(paper)
 	return TRUE
+
+// Rebuild the legacy link cache for this exact item and refresh its public icon.
+// This happens only after a successful canonical commit; no section text enters
+// the legacy cache. Subtype icon overrides retain their existing behavior.
+/proc/paper_document_refresh_written(obj/item/weapon/paper/P)
+	if (!P || P.gc_destroyed)
+		return
+	P.updateinfolinks()
+	if (!P.gc_destroyed)
+		P.update_icon()
 
 // Future UI data is available only through the guarded snapshot boundary.
 /datum/paper_document_authoring/project(mob/reader, forceshow = FALSE)

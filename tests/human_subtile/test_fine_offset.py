@@ -2,6 +2,7 @@
 from pathlib import Path
 import re
 import unittest
+from tile_restore_contract import validate_tile_restore
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULE = (ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
@@ -49,7 +50,7 @@ class FineOffsetContracts(unittest.TestCase):
         self.assertIn('if (fine_step && !actor.human_subtile_fine_ready(direction))', MODULE)
         self.assertIn('!pulling && !driver && !confused', MODULE)
         self.assertIn('else if (!fine_step)\n\t\t\t\t\t. = mob.SelfMove(n, direct)', MOVE)
-        self.assertNotRegex(MODULE, r'\b(?:step_x|step_y|pixel_x|pixel_y|loc)\s*=(?!=)')
+        validate_tile_restore(MODULE)
 
     def test_costs_cooldown_and_no_stomp_acceleration(self):
         self.assertIn('var/distance_fraction = fine_step ? (2 / 32) : 1', MOVE)
