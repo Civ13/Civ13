@@ -331,7 +331,36 @@ SUITES = {
             'code/_onclick/hud/base_screen_objects.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_needs.dm',
-            'code/game/mob/living/carbon/human/human_stats.dm')},
+            'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/modules/reagents/Chemistry-Reagents.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
+    # Exact stdlib/injected transport suite. test_bridge supplies inert setup/
+    # teardown helpers; its tests are not discovered. No native runner or model.
+    # All production/import inputs stay shared to preserve existing fallback.
+    'help_toxin_context': {'files': ('tests/player_help/test_toxin_context.py',),
+        'paths': (), 'shared_paths': (
+            'tests/player_help/test_bridge.py', 'scripts/player_help_bridge.py',
+            'UI/player-help.json', 'UI/crafting-atlas.json',
+            'code/game/objects/structures/blacksmithing/refining.dm',
+            'code/game/objects/structures/blacksmithing/molds.dm',
+            'code/game/objects/structures/blacksmithing/blacksmithing.dm',
+            'code/game/objects/structures/kitchen/oven.dm',
+            'code/modules/research_tree/research_node.dm',
+            'code/game/objects/items/stacks/civ_recipes.dm',
+            'code/modules/research_tree/research_bench.dm',
+            'code/modules/materials/materials.dm',
+            'code/game/objects/items/weapons/material/shards.dm',
+            'code/predefines.dm', 'code/game/objects/items/clothing/clothing.dm',
+            'code/modules/reagents/reagent_containers/food/sandwich.dm',
+            'code/modules/1713/dew_collector.dm',
+            'code/_onclick/hud/base_screen_objects.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/modules/reagents/Chemistry-Reagents.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
     # Injected transport and source-only contracts; no BYOND or network calls.
     'help_mood_history': {'files': ('tests/player_help/test_bridge.py',
                                    'tests/player_help/test_question_display_source.py'),
@@ -728,6 +757,8 @@ def run_unit(name, output):
     # These reviewed suites import adjacent, source-only specification helpers.
     if name in ('save_movement', 'character_traits'):
         sys.path.insert(0, str(ROOT / 'tests' / name))
+    elif name == 'help_toxin_context':
+        sys.path.insert(0, str(ROOT / 'tests' / 'player_help'))
     for index, relative in enumerate(SUITES[name]['files']):
         path = ROOT / relative
         spec = importlib.util.spec_from_file_location(f'baseline_{name}_{index}', path)

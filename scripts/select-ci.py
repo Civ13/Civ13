@@ -22,7 +22,8 @@ AXE_ACTIVE_HAND_OFFLINE_TESTS = frozenset({'tests/axe_active_hand/test_axe_activ
 
 # These exact tests run in their respective offline baseline suites.
 PLAYER_HELP_OFFLINE_TESTS = frozenset({'tests/player_help/test_help_links.py',
-                                      'tests/player_help/test_wiki_guides.py'})
+                                      'tests/player_help/test_wiki_guides.py',
+                                      'tests/player_help/test_toxin_context.py'})
 
 # Exact stdlib-only production projections, registered in the offline baseline.
 RESOURCE_WORK_OFFLINE_TESTS = frozenset({'tests/test_resource_work_animation.py'})
