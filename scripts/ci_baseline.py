@@ -25,6 +25,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Reviewed stdlib-only source/guard projections; no BYOND runtime.
+    'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
+        'paths': ('tests/stone_brazier/',), 'shared_paths': (
+            'code/modules/1713/siege/fire.dm',)},
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.
     'crafting_ui_contracts': {'files': ('tests/human_subtile/test_crafting_ui.py',),
