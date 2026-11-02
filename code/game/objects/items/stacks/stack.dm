@@ -316,7 +316,6 @@
 	var/customvar = ""
 	var/customvar2 = ""
 	var/customdesc = ""
-	var/turn_dir = 0
 	var/mob/living/human/H = user
 	var/datum/furniture_joinery_action/joinery
 	var/datum/stone_mold_carving/carving
@@ -2107,9 +2106,6 @@
 			O.desc = customdesc
 			var/obj/structure/sign/signpost/STR = O
 			STR.update_icon()
-		if (istype(O, /obj/structure/rails/turn))
-			var/obj/structure/rails/turn/RT = O
-			RT.turn_dir = turn_dir
 		O.set_dir(user.dir)
 		if (istype(O, /obj/structure/vehicleparts/frame))
 			O.dir = 1
