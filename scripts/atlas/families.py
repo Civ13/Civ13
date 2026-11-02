@@ -33,15 +33,19 @@ def declared_parents(files):
 
 
 def descendant(child, ancestor, parents):
-    if child != ancestor and ancestor not in parents:
+    if child == ancestor:
+        return True  # Exact output identity needs no ancestry inference.
+    if ancestor not in parents:
         return False
-    seen = set()
-    while child != ancestor:
-        if child in seen or child not in parents or parents[child] is None:
+    seen, found = set(), False
+    while child in parents:
+        if child in seen:
             return False
         seen.add(child)
+        found = found or child == ancestor
         child = parents[child]
-    return True
+    # Continue past the candidate: it may itself participate in a cycle.
+    return found
 
 
 def annotate_families(records, files):

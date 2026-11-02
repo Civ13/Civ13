@@ -130,6 +130,12 @@ class PresentationFamilyTests(unittest.TestCase):
         families.annotate_families(rows,{})
         self.assertEqual(rows[0]['family_id'],rows[1]['family_id'])
 
+    def test_candidate_ancestor_cycle_does_not_merge_families(self):
+        rows=[self.item('r1','/obj/a'), self.item('r2','/obj/b')]
+        files={'code/items.dm': '/obj/a\n\tparent_type = /obj/b\n/obj/b\n\tparent_type = /obj/a\n'}
+        families.annotate_families(rows,files)
+        self.assertNotEqual(rows[0]['family_id'],rows[1]['family_id'])
+
     def test_multiple_products_similar_names_and_other_output_types_remain_separate(self):
         rows=[self.item('r1','/obj/a'),self.item('r2','/obj/b'),
               self.item('r3','/obj/a',name='fur glove'),
