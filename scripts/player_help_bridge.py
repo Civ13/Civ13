@@ -24,6 +24,7 @@ HISTORY_BYTES = 4096
 HISTORY_PAIRS = 3
 NUM_PREDICT = 650
 DEFAULT_NUM_CTX = 8192
+MIN_NUM_CTX = 4096
 # Generic question words match nearly every page and only add retrieval noise.
 RETRIEVAL_STOPWORDS = frozenset({
     'how', 'the', 'get', 'craft', 'can', 'make', 'with', 'and', 'nomads', 'gaia',
@@ -58,7 +59,7 @@ def evidence_budget(num_ctx):
     reserved answer inside num_ctx, so the model never silently truncates the
     instructions or evidence. Larger windows admit more retrieved evidence.
     """
-    prompt_chars = max(4000, (num_ctx - NUM_PREDICT - 256) * 3)
+    prompt_chars = (num_ctx - NUM_PREDICT - 256) * 3
     if num_ctx >= 16384:
         return 10, 32000, 64000, prompt_chars
     return 6, 16000, 32000, prompt_chars
@@ -870,8 +871,9 @@ def load_config(path):
         raise ValueError('timeout_seconds must be 1..120 and workers 1..2')
     config['num_ctx'] = config.get('num_ctx', DEFAULT_NUM_CTX)
     config['think'] = config.get('think', False)
-    if type(config['num_ctx']) is not int or not 1024 <= config['num_ctx'] <= 32768:
-        raise ValueError('num_ctx must be an integer in 1024..32768')
+    if type(config['num_ctx']) is not int or not MIN_NUM_CTX <= config['num_ctx'] <= 32768:
+        # Smaller windows cannot hold the fixed rules plus any evidence.
+        raise ValueError('num_ctx must be an integer in 4096..32768')
     if type(config['think']) is not bool:
         raise ValueError('think must be true or false')
     token_env = config.get('auth_token_env', '')
@@ -1071,7 +1073,8 @@ class Bridge:
                 if terms is None:
                     terms = entry['_terms'] = (retrieval_terms(entry['topic']), retrieval_terms(entry['text']))
                 topic, body = terms
-                scores[key] = 4 * len(words & topic) + len(words & body) + min(2, len(hints & topic))
+                # Hints (at most 2) only order entries with equal question relevance.
+                scores[key] = 3 * (4 * len(words & topic) + len(words & body)) + min(2, len(hints & topic))
             return scores[key]
         ranked = sorted(candidates, key=lambda entry: (score(entry), entry.get('catalog') == 'Material / global'), reverse=True)
         selected = []
@@ -1086,12 +1089,16 @@ class Bridge:
         # procedure for four seed types) must not crowd out a matching guide.
         # Extra rows stay eligible after every source has had its share.
         per_source = max(2, entries // 2)
-        counts, diverse, overflow = {}, [], []
+        # Entries matched only by role/mode hints come after every question match.
+        counts, diverse, overflow, hinted = {}, [], [], []
         for entry in selected:
+            if score(entry) < 3:
+                hinted.append(entry)
+                continue
             source = entry.get('source')
             counts[source] = counts.get(source, 0) + 1
             (diverse if counts[source] <= per_source else overflow).append(entry)
-        selected = diverse + overflow
+        selected = diverse + overflow + hinted
         # Keep the reviewed severe-illness guidance visible for disease questions,
         # even if several longer generic results score higher.
         if re.search(r'\b(?:cholera|malaria|plague|typhus)\b', retrieval_question, re.I):

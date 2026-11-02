@@ -71,6 +71,22 @@ class ContextQualityTests(unittest.TestCase):
         prompt = self.ask(corpus, 'How do I fish with bait?', game_context={'player': {'role': 'Medic'}})['messages'][0]['content']
         self.assertNotIn('medic page', prompt)
 
+    def test_question_body_match_outranks_role_hints(self):
+        corpus = [{'topic': 'medic doctor role clinic colony', 'source': 'wiki', 'text': 'PLAYER WIKI medic page'}]
+        corpus += [{'topic': 'misc ' + str(i), 'source': 'recipe', 'text': 'Recipe ' + str(i) + ' needs a hammer.'} for i in range(6)]
+        prompt = self.ask(corpus, 'What uses a hammer?', game_context={'gamemode': 'Colony Building RP', 'player': {'role': 'Colony Medic'}})['messages'][0]['content']
+        self.assertNotIn('medic page', prompt)
+
+    def test_small_context_windows_are_rejected_at_load(self):
+        path = self.root / 'config.json'
+        for value, ok in ((4095, False), (1024, False), (4096, True)):
+            path.write_text(json.dumps({'enabled': True, 'ollama_url': 'http://127.0.0.1:11434', 'model': 'm', 'num_ctx': value}))
+            if ok:
+                self.assertEqual(bridge.load_config(path)['num_ctx'], value)
+            else:
+                with self.assertRaises(ValueError):
+                    bridge.load_config(path)
+
     def test_plural_folding_and_stopwords(self):
         self.assertEqual(bridge.retrieval_terms('This: ingots, wounds, berries and glass', bridge.RETRIEVAL_STOPWORDS),
                          {'ingot', 'wound', 'berry', 'glass'})
