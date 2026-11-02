@@ -77,6 +77,7 @@ class Loader:
         text = loader_source() if source is None else source
         text = re.sub(r'"(?:[^"\\]|\\.)*"', message_literal, text)
         env = {
+            'ascii2text': chr,
             'flist': lambda folder: DMList(self.filenames),
             'file': self.file,
             'fexists': lambda path: path in self.files,
@@ -114,6 +115,13 @@ def run_file(filename, text, source=None):
 
 
 class CraftingLoaderTests(unittest.TestCase):
+    def test_carriage_return_diagnostic_uses_engine_safe_literal(self):
+        self.assertNotIn(r'"\r"', loader_source())
+        self.assertIn('ascii2text(13)', loader_source())
+        result = Loader(['material_recipes_bad\rcatalog.txt'], {})
+        self.assertIn(r'bad\rcatalog.txt', result.notices[0])
+        self.assertNotIn('\r', result.notices[0])
+
     def test_unrelated_files_are_ignored_without_file_access_or_warning(self):
         result = Loader(['furniture_joinery.json', 'README.txt', 'notes/'], {})
         self.assertEqual((result.opened, result.reads, result.notices, result.log, dict(result.rows)), ([], [], [], [], {}))

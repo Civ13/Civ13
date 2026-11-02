@@ -90,7 +90,7 @@
 		// This directory also contains non-recipe configuration such as joinery.
 		if (!findtext(i, "material_recipes"))
 			continue
-		var/safe_craft_filename = html_encode(replacetext(replacetext(i, "\n", "\\n"), "\r", "\\r"))
+		var/safe_craft_filename = html_encode(replacetext(replacetext(i, "\n", "\\n"), ascii2text(13), "\\r"))
 		var/current_list = "global"
 		var/F3 = file("config/crafting/[i]")
 		current_list = replacetext(i,"material_recipes_","")

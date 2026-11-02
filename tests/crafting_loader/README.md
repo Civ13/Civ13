@@ -31,3 +31,9 @@ This is offline source/control-flow evidence, not DM compiler, native startup or
 live-server acceptance. No runtime, access-list, persistence, config activation,
 server restart or deployment is performed by these tests. The CI registry selects
 this stdlib-only suite without weakening existing startup/shared-source coverage.
+
+The first hosted compile of integrated4d3a54607 rejected the unsupported DM
+carriage-return escape. Filename sanitization now uses the existing
+ascii2text(13) idiom; the offline fixture supplies that character-code boundary
+and checks both the supported source syntax and escaped CR output. Failed
+compiler evidence is preserved separately from the corrected head.
