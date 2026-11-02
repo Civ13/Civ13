@@ -215,3 +215,11 @@ movement callbacks rather than intentionally waiting for the process. Smooth
 blocker/target offsets enter the mask geometry. Unhooked direct opacity writers
 still rely on the periodic raw audit; native callback yielding and actual display
 latency remain explicit fixture requirements, not proved by source tests.
+
+
+### Entered identity and bounded refresh cost
+
+The [source trace and bounded measurement plan](tree-refresh-measurement.md)
+characterize the remaining Entered withdrawal and define isolated native timing,
+density, ownership and fail-closed criteria. The trace does not establish that
+movement flicker is eliminated, and the proposed native workload has not run.
