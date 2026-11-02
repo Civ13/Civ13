@@ -101,8 +101,11 @@ viewport exit, opacity changes and compositor handoff remove that copy. Blocker
 or unknown viewer/context invalidation synchronously withdraws allowed fallback
 tree copies. Ordinary transparent-viewer tile movement retains the copy only
 through the immediate fresh-snapshot refresh; denied trees and unavailable or
-stale captures revoke it. Opaque NPC/object movement refreshes dirty viewers
-before returning instead of waiting for the scheduled visibility process.
+stale captures revoke it. Opaque NPC/object movement refreshes only the affected old/new viewer contexts
+before returning, preserving unrelated dirty clients for their scheduled pass.
+The context sets live in each movement call frame; no persistent actor state is
+added. Native Entered still invalidates before the post-move hook, so movement
+flicker is not established as eliminated by the offline transaction checks.
 Ordinary terrain/entity masks retain their region filter.
 Lighting queue/commit notifications dirty only owners of the changed root.
 Pending lighting may use the mask matrix still displayed by the native overlay

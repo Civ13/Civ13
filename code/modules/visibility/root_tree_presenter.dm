@@ -445,7 +445,7 @@ var/global/list/root_tree_presenters
 	return ..()
 
 /proc/root_tree_invalidate(atom/changed)
-	los_invalidate(changed)
+	return los_invalidate(changed)
 
 
 // Photometric work does not change occlusion. Keep each published tree at the

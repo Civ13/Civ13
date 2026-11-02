@@ -191,8 +191,9 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	var/list/los_move_contexts = null
 	#if CIV13_ROOT_TREE_PRESENTATION
-	los_invalidate_movement(src)
+	los_move_contexts = los_invalidate_movement(src)
 	#endif
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
@@ -212,7 +213,7 @@
 		l_move_time = world.time
 		if (previous_location != loc && previous_location && previous_location.z == z)
 			last_move = get_dir(previous_location, loc)
-		los_refresh_moved_viewer(src)
+		los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 		return .
 	if (istype(src, /mob/living/simple_animal))
 		var/mob/living/simple_animal/npc = src
@@ -232,7 +233,7 @@
 			l_move_time = world.time
 			if (old_location != loc && old_location && old_location.z == z)
 				last_move = get_dir(old_location, loc)
-			los_refresh_moved_viewer(src)
+			los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 			return .
 		if (npc.npc_subtile_offset_owned && (step_x || step_y))
 			return FALSE
@@ -306,7 +307,7 @@
 				H.stop_pulling()
 			H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
-	los_refresh_moved_viewer(src)
+	los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 	return
 
 /client/proc/Move_object(direct)

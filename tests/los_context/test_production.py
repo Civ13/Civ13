@@ -1116,13 +1116,13 @@ class FallbackTreeSource(unittest.TestCase):
             m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
             m.P.refresh(m.S);old=m.P.tree_images[tree]
             mover=atom(11,11,opaque=True)
-            env=dict(CIV13_GEOMETRIC_LOS_CORE=True,ishuman=lambda a:False,
+            env=dict(CIV13_GEOMETRIC_LOS_CORE=True,list=List,ishuman=lambda a:False,
                      ismob=lambda a:False,get_turf=lambda a:a.loc,
                      los_active_contexts=List([m.V]),typed_iter=lambda x,t:x,
                      los_invalidate=lambda changed,possible=False,viewer_refresh=False:
-                         m.P.invalidate(changed,possible,viewer_refresh))
+                         (m.P.invalidate(changed,possible,viewer_refresh) or List([m.V])))
             after=adapter.project(source,'/proc/los_refresh_moved_viewer',
-                                  'A, force_refresh=False',env)
+                                  'A, force_refresh=False, previous_contexts=None',env)
             def reconcile():
                 m.C.los_dirty=not m.P.refresh(m.S)
             m.C.reconcile_geometric_los=reconcile
@@ -1137,7 +1137,7 @@ class FallbackTreeSource(unittest.TestCase):
         hidden,tree=interval(lifecycle,True)
         self.assertIsNone(hidden.P.tree_images[tree])
         self.assertIn(hidden.P.images[tree],hidden.C.images)
-        start=lifecycle.index('\tif(A.opacity && los_active_contexts)')
+        start=lifecycle.index('\tif(A.opacity)')
         end=lifecycle.index('\tif(!M)',start)
         waiting,tree=interval(lifecycle[:start]+lifecycle[end:],False)
         self.assertIsNone(waiting.P.tree_images[tree])
