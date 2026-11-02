@@ -21,7 +21,7 @@ def witness():
             for iteration in range(1,26):
                 def state(index,after=False):
                     moved=kind=='viewer_move' and case['mode']=='fallback' and index==1 and after
-                    return dict(client=index,scene_active=int(case['mode']=='root'),fallback_reason=None if case['mode']=='root' else 'native foreground or mixed-layer appearance',discovered=case['roots'],identities=[dict(root='root'+str(index),image='image'+str(index)+('new' if moved else ''),published_frame='frame' if case['mode']=='root' else None,native_icon_present=1,in_client_images=1,override=1,plane=1,mouse_opacity=1)])
+                    return dict(client=index,view='15x15',pan=[0,0],client_engine=[516,1688],scene_active=int(case['mode']=='root'),fallback_reason=None if case['mode']=='root' else 'native foreground or mixed-layer appearance',discovered=case['roots'],identities=[dict(root='root'+str(index),image='image'+str(index)+('new' if moved else ''),published_frame='frame' if case['mode']=='root' else None,native_icon_present=1,in_client_images=1,override=1,plane=1,mouse_opacity=1)])
                 before=[state(i) for i in range(1,case['viewers']+1)];after=[state(i,True) for i in range(1,case['viewers']+1)]
                 phases=[]
                 if kind=='viewer_move':
@@ -33,7 +33,7 @@ def witness():
                 if kind=='viewer_move' and iteration==1:row['capture_failed']=deepcopy(phases[0]['clients'])
                 if kind=='queued_light':row['pending_committed']=deepcopy(before)
                 rows.append(row)
-    return dict(head='a'*40,binding='run',engine=[516,1688],error=None,cleanup=1,events=800,pixels_verified=0),rows
+    return dict(head='a'*40,binding='run',engine=[516,1688],world=dict(map=[64,64,1],view='15x15',fps=20,tick_lag=.5,icon_size=32,seed=13013),error=None,cleanup=1,events=800,pixels_verified=0),rows
 
 class Protocol(unittest.TestCase):
     def test_complete_native_schema_and_limits(self):

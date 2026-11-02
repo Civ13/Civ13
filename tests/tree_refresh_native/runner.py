@@ -3,7 +3,7 @@
 The CLI is inert without an exact manifest hash and unexpired task request.
 No preparation/import/test invokes main or any native process.
 """
-import argparse,hashlib,importlib.util,json,os,subprocess,sys,time,uuid
+import argparse,hashlib,importlib.util,json,os,platform,subprocess,sys,time,uuid
 from datetime import datetime
 from pathlib import Path
 from protocol import LIMITS,admit,digest,require,validate
@@ -32,7 +32,7 @@ def inputs(prepared, manifest, compiled=False):
 
 def execute(prepared, bin_path, reviewed, until, output, run_index):
     prepared=Path(prepared).resolve();output=Path(output).resolve();output.mkdir(parents=True,exist_ok=False)
-    receipt=dict(status='failed',error=None,native_executed=False,pixels_verified=False,cleanup=None,run_index=run_index)
+    receipt=dict(host=dict(os=platform.platform(),machine=platform.machine(),cpu=platform.processor(),cpu_count=os.cpu_count()),status='failed',error=None,native_executed=False,pixels_verified=False,cleanup=None,run_index=run_index)
     runtime=None;cleanup_error=None;started=time.monotonic()
     def persist(): (output/'execution-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
     try:

@@ -212,7 +212,7 @@ var/global/obj/tree_native_opaque/tree_native_mover
 			for(var/obj/structure/wild/T in range(13, C.mob))
 				if(C.los_context.root_tree_admitted(T))
 					discovered++
-		result += list(list("client"=tree_native_clients.Find(C), "client_ref"="\ref[C]", "context_ref"="\ref[C.los_context]", "body_ref"="\ref[C.mob]", "scene_active"=(P && P.scene_active) ? TRUE : FALSE, "fallback_reason"=P ? P.fallback_reason : "no_presenter", "discovered"=discovered, "root_owned"=P ? P.images.len : 0, "root_published"=P ? P.published_frames.len : 0, "fallback_allowed"=L ? L.tree_images.len : 0, "client_images"=length(C.images), "identities"=identities))
+		result += list(list("client"=tree_native_clients.Find(C), "client_ref"="\ref[C]", "context_ref"="\ref[C.los_context]", "body_ref"="\ref[C.mob]", "body_position"=list(C.mob.x,C.mob.y,C.mob.z,C.mob.step_x,C.mob.step_y), "view"=C.view, "pan"=list(C.pixel_x,C.pixel_y), "client_engine"=list(C.byond_version,C.byond_build), "scene_active"=(P && P.scene_active) ? TRUE : FALSE, "fallback_reason"=P ? P.fallback_reason : "no_presenter", "discovered"=discovered, "root_owned"=P ? P.images.len : 0, "root_published"=P ? P.published_frames.len : 0, "fallback_allowed"=L ? L.tree_images.len : 0, "client_images"=length(C.images), "identities"=identities))
 	return result
 
 /proc/tree_native_engine_return(atom/movable/A, result)
@@ -386,6 +386,7 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	tree_native_binding = binding["binding"]
 	try
 		tree_native_require(world.byond_version == 516 && world.byond_build == 1688, "pinned_engine")
+		rand_seed(13013)
 		human_subtile_fixture_initialize()
 		config.disable_fov = TRUE
 		created_lighting_corners_and_overlays = TRUE
@@ -434,6 +435,6 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	catch(var/exception/tree_native_cleanup_error)
 		if(!error)
 			error = tree_native_cleanup_error.name
-	text2file(json_encode(list("head"=TREE_NATIVE_HEAD,"binding"=tree_native_binding,"engine"=list(world.byond_version,world.byond_build),"error"=error,"cleanup"=cleaned,"events"=tree_native_events,"pixels_verified"=FALSE)), "receipt.json")
+	text2file(json_encode(list("head"=TREE_NATIVE_HEAD,"binding"=tree_native_binding,"engine"=list(world.byond_version,world.byond_build),"world"=list("map"=list(world.maxx,world.maxy,world.maxz),"view"=world.view,"fps"=world.fps,"tick_lag"=world.tick_lag,"icon_size"=world.icon_size,"seed"=13013),"error"=error,"cleanup"=cleaned,"events"=tree_native_events,"pixels_verified"=FALSE)), "receipt.json")
 	del(world)
 	return

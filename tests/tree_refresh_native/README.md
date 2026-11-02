@@ -21,7 +21,7 @@ Topic and disconnect boundaries, provides a tiny fixture HUD using actual
 production plane-master types, and suppresses world Export/Import/Reboot/Topic.
 It never loads player preferences, accounts, production data, admin control or
 saves. World dimensions are64x64x1, view15x15, fps20, pan0, guest-only loopback.
-Inputs seed the four photometric corners; update_overlay, the mask snapshot,
+The fixture resets rand_seed to13013 before actors/trees and records actual map,view,fps,tick_lag,icon_size and both engine builds, together with host OS/CPU and sampled process resources. Inputs seed the four photometric corners; update_overlay, the mask snapshot,
 RGB/icon operations, LOS capture and geometric decisions are real production DM.
 This does not exercise natural lamp propagation or the lighting process queue.
 

@@ -52,6 +52,9 @@ def validate(receipt, rows, head, binding):
     require(receipt.get('engine')==[516,1688] and receipt.get('error') is None,'Engine/build/native failure')
     require(type(receipt.get('cleanup')) is int and receipt['cleanup']==1 and receipt.get('events')==800,'Native completion/cleanup')
     require(type(receipt.get('pixels_verified')) is int and receipt['pixels_verified']==0,'Server state cannot certify client pixels')
+    world=receipt.get('world',{})
+    require(world.get('map')==[64,64,1] and world.get('view')=='15x15' and world.get('fps')==20 and world.get('icon_size')==32 and world.get('seed')==13013,'Actual native world identity/seed')
+    require(type(world.get('tick_lag')) in (int,float) and world['tick_lag']>0,'Actual native tick_lag')
     require(len(rows)==800,'Missing/extra raw native events')
     unresolved=[]; result=[]
     for case in CASES:
@@ -68,6 +71,7 @@ def validate(receipt, rows, head, binding):
                 before=r.get('before',[]); after=r.get('after',[])
                 require(len(before)==len(after)==case['viewers'],'Real connected viewer census')
                 for state in before+after:
+                    require(state.get('view')=='15x15' and state.get('pan')==[0,0] and state.get('client_engine')==[516,1688],'Actual connected client viewport/engine')
                     require(state['discovered']==case['roots'],'Actual discovered-root density')
                     front=state['identities'][0]
                     require(front['image'] and front['native_icon_present']==1 and front['in_client_images']==1,'Visible blocker lacks owned native image')
