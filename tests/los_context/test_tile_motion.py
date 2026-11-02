@@ -177,6 +177,23 @@ class TileMotion(unittest.TestCase):
         atom=(ROOT/'code/datums/observation/moved.dm').read_text()
         self.assertIn('los_invalidate(am)',atom)  # Native Entered remains conservative.
 
+    def test_refused_move_has_no_visibility_effect_even_with_los_enabled(self):
+        movement=(ROOT/'code/game/mob/mob_movement.dm').read_text()
+        body=P.fragment(movement,'/atom/movable/Move(').splitlines()[1:]
+        body='\n'.join(body)
+        body=body[:body.index('\tvar/datum/subtile_pull_pair')]
+        code='/proc/admit_move(newloc)\n'+body+'\treturn TRUE\n'
+        for admitted in [False,True]:
+            events=[]
+            def admit(actor,destination):
+                events.append('admit');return admitted
+            env=dict(src=object(),persistence_movement_allowed=admit,
+                     los_invalidate_movement=lambda actor:events.append('invalidate'))
+            f=A.project(code,'/proc/admit_move','newloc',env,
+                        defines={'CIV13_ROOT_TREE_PRESENTATION':True})
+            self.assertEqual(bool(f(object())),admitted)
+            self.assertEqual(events,['admit','invalidate'] if admitted else ['admit'])
+
     def render_key(self,body,owner,anchored,source=CORE,time=0):
         # Evaluate the actual key template/offset branch, not a separate cache.
         policy=P.fragment(source,'/datum/los_context/proc/policy_key(')

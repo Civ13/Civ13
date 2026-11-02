@@ -359,7 +359,7 @@ class OwnershipAndComposition(unittest.TestCase):
         for path,signature,write in [
             ('code/game/atoms_movable.dm','/atom/movable/proc/forceMove(','loc = destination'),
             ('code/game/atoms_movable.dm','/atom/movable/proc/persistence_set_loc(','loc = destination'),
-            ('code/game/mob/mob_movement.dm','/atom/movable/Move(','persistence_movement_allowed'),
+            ('code/game/mob/mob_movement.dm','/atom/movable/Move(','. = ..('),
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
             ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','last_color = L.Copy()')]:
