@@ -160,9 +160,9 @@
 			return
 
 	// An unchanged update must not withdraw/re-publish client tree images.
-	// Pending-corner notifications still hide unsettled roots before this proc.
+	// Pending-corner notifications retain the still-displayed committed mask.
 	#if CIV13_ROOT_TREE_PRESENTATION
-	root_tree_invalidate(loc)
+	root_tree_light_changed(loc)
 	#endif
 	// Update last values and apply changes
 	last_color = L.Copy()
