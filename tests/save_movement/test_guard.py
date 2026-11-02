@@ -134,7 +134,7 @@ class Fixture:
                                               ('withdraw', 'src'))}
         self.env['new_operation'] = self.operation
         self.backend = project(functions, '/map_storage/proc/run_world_operation', 'src, kind, operation=None', self.env, True)
-        self.store = NS(dimension_recovery_required=False, dimension_budget_hold=False,
+        self.store = NS(dimension_recovery_required=False, dimension_budget_hold=False, debug_recovery_hold=False,
                         report_save_child_capture_failure=lambda operation: None)
     def operation(self):
         op = NS(storage=None, kind=None, admission_identity=object(), backend_started=False, contents_started=False,
