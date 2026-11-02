@@ -186,7 +186,7 @@
 		sleep_message = "Sleep here and assign this bed for saved-character returns? This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
 	if (WWinput(src, sleep_message, "Sleep", "Yes", list("Yes","No")) == "Yes")
 		to_chat(src, SPAN_NOTICE("You will start sleeping in two minutes."))
-		if (do_after(src, 2 MINUTES, src, FALSE))
+		if (do_after(src, 2 MINUTES, src, FALSE, incapacitation_flags = (INCAPACITATION_DEFAULT & ~INCAPACITATION_DISABLED) | INCAPACITATION_DISABLED_NO_REST))
 			if (!sleeping_client || client != sleeping_client || sleeping_client.mob != src)
 				return
 			if (sleeping)

@@ -146,7 +146,10 @@
 	return incapacitated(INCAPACITATION_DISABLED)
 
 /mob/proc/incapacitated(var/incapacitation_flags = INCAPACITATION_DEFAULT)
-	if ((incapacitation_flags & INCAPACITATION_DISABLED) && (stat || paralysis || stunned || weakened || resting || sleeping || (status_flags & FAKEDEATH)))
+	if ((incapacitation_flags & (INCAPACITATION_DISABLED|INCAPACITATION_DISABLED_NO_REST)) && (stat || paralysis || stunned || weakened || sleeping || (status_flags & FAKEDEATH)))
+		return TRUE
+
+	if ((incapacitation_flags & INCAPACITATION_DISABLED) && resting)
 		return TRUE
 
 	if ((incapacitation_flags & INCAPACITATION_RESTRAINED) && restrained())

@@ -43,6 +43,8 @@
 #define INCAPACITATION_STUNNED 8
 #define INCAPACITATION_FORCELYING 16 //needs a better name - represents being knocked down BUT still conscious.
 #define INCAPACITATION_KNOCKOUT 32
+// Sleep opts into checking disabled states except resting; DEFAULT is unchanged.
+#define INCAPACITATION_DISABLED_NO_REST 64
 
 #define INCAPACITATION_DEFAULT (INCAPACITATION_RESTRAINED|INCAPACITATION_BUCKLED_FULLY|INCAPACITATION_DISABLED)
 
