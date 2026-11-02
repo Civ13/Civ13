@@ -1,5 +1,6 @@
 """Exercise production hover callbacks and widget with an injected client boundary."""
 import argparse
+import json
 import os
 from pathlib import Path
 import re
@@ -8,10 +9,11 @@ import tempfile
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--byond-bin', type=Path, required=True)
-parser.add_argument('--negative-control', choices=['identity', 'exit', 'stale', 'parent'])
+parser.add_argument('--negative-control', choices=['identity', 'exit', 'stale', 'parent', 'storage-viewer', 'storage-origin'])
 parser.add_argument('--compile-only', action='store_true')
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
+pinned_version = json.loads((repo / 'tools/byond/version.json').read_text())['version']
 
 def proc(path, declaration):
     text = (repo / path).read_text(encoding='utf-8')
@@ -21,6 +23,7 @@ def proc(path, declaration):
     return match.group()
 
 widget = (repo / 'code/_onclick/hud/hover_name.dm').read_text()
+storage_helper = proc('code/modules/visibility/los_context.dm', '/proc/los_storage_hover_visible(')
 events = ''.join(proc('code/modules/client/client_procs.dm', name) for name in [
     '/client/MouseEntered(', '/client/MouseMove(', '/client/MouseDrag('])
 identity = proc('code/game/mob/living/carbon/human/human.dm', '/mob/living/human/proc/get_visible_name(')
@@ -40,13 +43,20 @@ elif args.negative_control == 'stale':
     mutate('if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_target_current(target)) || !target_visible(target))\n\t\tclear_target()', 'if (!target)\n\t\tclear_target()')
 elif args.negative_control == 'parent':
     mutate('|| ..()', '|| FALSE')
+elif args.negative_control == 'storage-viewer':
+    old = '!(user in S.is_seeing)'
+    assert storage_helper.count(old) == 1
+    storage_helper = storage_helper.replace(old, 'FALSE', 1)
+elif args.negative_control == 'storage-origin':
+    mutate('if (hover_storage.resolve() != I.loc)', 'if (FALSE)')
 
-# Only the unavailable network-client boundary is adapted. All event and widget
-# decisions, native view/loc/screen objects, weakrefs and visible names are real DM.
-production = widget + events + identity + weakref + runtime
+# The unavailable network-client and LOS-read boundaries are adapted. Event,
+# widget and storage-admission decisions, native locations and weakrefs are DM.
+production = widget + storage_helper + events + identity + weakref + runtime
 production = production.replace('/client/', '/datum/hover_client/')
 production = production.replace('var/client/C', 'var/datum/hover_client/C')
 production = production.replace('parentmob.client', 'parentmob.hover_client')
+production = production.replace('user.client', 'user.hover_client')
 
 # Keep attachment, life dispatch and both persistence entry guards connected to
 # production paths. These are wiring assertions, separate from the runtime cases.
@@ -70,7 +80,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     build = subprocess.run([str(compiler), 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=30, creationflags=flags)
     print(build.stdout, build.stderr)
-    if build.returncode or 'DM compiler version 516.1681' not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
+    if build.returncode or f'DM compiler version {pinned_version}' not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
         raise RuntimeError('Pinned fixture compilation failed')
     if args.compile_only:
         print('PASS compile only; runtime not run')
@@ -84,7 +94,8 @@ with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
     print(log)
     if run.returncode or re.search(r'runtime error|bad ref|bad index', log, re.I):
         raise RuntimeError('Invalid native execution')
-    expected = {'identity': 'masked identity', 'exit': 'late exit', 'stale': 'hidden target', 'parent': 'parent exclusion'}
+    expected = {'identity': 'masked identity', 'exit': 'late exit', 'stale': 'hidden target', 'parent': 'parent exclusion',
+                'storage-viewer': 'closed storage view clears hover', 'storage-origin': 'storage replacement clears hover'}
     if args.negative_control:
         if 'FAIL ' + expected[args.negative_control] not in log:
             raise RuntimeError('Negative control did not fail the intended assertion')

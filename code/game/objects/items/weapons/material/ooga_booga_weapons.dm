@@ -97,6 +97,12 @@
 /obj/item/weapon/branch/proc/axe_actor_connected(mob/user)
 	return user && user.client
 
+// Keep the original ground output if the actor cannot take it immediately.
+/proc/offer_crafted_axe_to_active_hand(mob/user, obj/item/axe)
+	if (QDELETED(user) || QDELETED(axe) || user.stat != CONSCIOUS || user.incapacitated() || !isturf(user.loc) || axe.loc != user.loc || user.get_active_hand())
+		return FALSE
+	return user.put_in_active_hand(axe)
+
 /obj/item/weapon/branch/proc/assemble_flint_axe(mob/user, obj/item/weapon/flint/head)
 	if (!user || !user.may_do_after)
 		return
@@ -129,6 +135,7 @@
 		axe.desc += " Its crude grass binding wears out quickly."
 	to_chat(user, SPAN_NOTICE("You finish making the bound flint axe."))
 	qdel(src)
+	offer_crafted_axe_to_active_hand(user, axe)
 
 /obj/item/weapon/branch/attack_self(mob/living/human/user as mob)
 	if (ants)

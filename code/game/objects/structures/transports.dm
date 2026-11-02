@@ -2058,7 +2058,7 @@
 				visible_message("<span class='warning'>The dead [pulling1.name] stops the [src] from moving!</span>")
 				return
 			else
-				pulling1.simplehunger -= 1 //Each step -1 hunger. Basically doubles it's food comsuption while carrying the carriage
+				pulling1.simplehunger -= pulling1.animal_draft_hunger_cost() // Harnesses halve this extra draft-work hunger.
 		if(pulling2)
 			if(pulling2.burnloss + pulling2.oxyloss + pulling2.toxloss + pulling2.bruteloss >= pulling2.health) //Is it dead?
 				axis.currentspeed = 0
@@ -2066,7 +2066,7 @@
 				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
 				return
 			else
-				pulling2.simplehunger -= 1
+				pulling2.simplehunger -= pulling2.animal_draft_hunger_cost()
 		if(pulling3)
 			if(pulling3.burnloss + pulling3.oxyloss + pulling3.toxloss + pulling3.bruteloss >= pulling3.health) //Is it dead?
 				axis.currentspeed = 0
@@ -2074,7 +2074,7 @@
 				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
 				return
 			else
-				pulling3.simplehunger -= 1
+				pulling3.simplehunger -= pulling3.animal_draft_hunger_cost()
 		if(pulling4)
 			if(pulling4.burnloss + pulling4.oxyloss + pulling4.toxloss + pulling4.bruteloss >= pulling4.health) //Is it dead?
 				axis.currentspeed = 0
@@ -2082,7 +2082,7 @@
 				visible_message("<span class='warning'>The dead [pulling2.name] stops the [src] from moving!</span>")
 				return
 			else
-				pulling4.simplehunger -= 1
+				pulling4.simplehunger -= pulling4.animal_draft_hunger_cost()
 	..()
 
 // Appearance-only leases. No timer or physical movement is owned here.

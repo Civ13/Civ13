@@ -13,7 +13,14 @@ to its actual equipped item. The item must belong directly to that body and be
 displayed at the same screen location. Other bodies, closed/nested containers,
 generic HUD controls, empty slots and arbitrary `screen.master` references do not
 grant a name. The existing world LOS/read guard still checks the resolved item.
-Direct item hits and stationary revalidation require the same visible registered
+Direct item hits on the current open storage view are also admitted when the
+item is actually in that storage, the viewer is registered for that view, and
+the item is displayed on that viewer's client. The LOS hover decision uses the
+same bounded check; closed, other-viewer and stale storage contents remain
+unreadable. The widget rechecks the original container and screen position on
+refresh. This does not grant examination or access to nested contents.
+
+Equipped-item hits and stationary revalidation require the same visible registered
 slot, equipped item identity and matching screen location. A pouch item left in
 the client's screen list after hiding its slot cannot retain a hover label.
 Separate weak pointer-origin and item references keep exits tied to the correct
@@ -30,8 +37,9 @@ export/import exclusions.
 
 The inventory correction is covered by offline source execution in the existing
 `los_context` baseline suite. Native mouse delivery and pixels remain unverified.
-The legacy native runners below still assert516.1681 and were not run for this
-repair; they require current-pin preparation before supplying new native evidence:
+The adapted runners use the current version manifest, but have not been compiled or
+executed for this repair. Their injected client and LOS-read boundaries do not
+prove real client mouse delivery or full-game LOS behavior:
 
 ```powershell
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>'
@@ -39,10 +47,13 @@ repair; they require current-pin preparation before supplying new native evidenc
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control exit
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control stale
 & '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control parent
+& '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control storage-viewer
+& '<verified-python.exe>' tests/hover_name/run.py --byond-bin '<BYOND-bin>' --negative-control storage-origin
 ```
 
-The isolated native fixture executes production widget methods, weakrefs,
-visible-name code and mouse callback bodies with a fake network-client boundary.
+The isolated native fixture is prepared to execute production widget methods,
+storage admission, weakrefs, visible-name code and mouse callback bodies with
+fake network-client and LOS-read boundaries.
 It uses real native view membership, locations, invisibility and screen atoms.
 Own-body enter/move/drag and exit are covered explicitly, including masked
 identity, transparent/invisible rejection and a remote-camera round trip.
