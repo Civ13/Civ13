@@ -1964,6 +1964,7 @@
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
 		return
+	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	if (use(required, (joinery || carving) ? null : H))
 		if (joinery)
 			joinery.consume_component()
@@ -1978,6 +1979,8 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+		if (offer_stone_hatchet)
+			offer_crafted_axe_to_active_hand(user, O)
 
 		if (building_floor_recipe)
 			var/obj/covers/floor = O

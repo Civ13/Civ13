@@ -32,6 +32,12 @@ var/handle_ci_retired = 0
 /mob/living/human/handle_ci/update_icons()
 	return
 
+// Only the connection and delay are adapted; assembly and hand placement are real.
+/obj/item/weapon/branch/sharpened/axe_hand_ci/axe_actor_connected(mob/user)
+	return TRUE
+/obj/item/weapon/branch/sharpened/axe_hand_ci/axe_assembly_wait(mob/user)
+	return TRUE
+
 /obj/item/weapon/material/handle/recipe_ci/Destroy()
 	handle_ci_retired++
 	return ..()
@@ -202,4 +208,32 @@ var/handle_ci_retired = 0
 		C = new(title, slot_shoulder)
 		C.craft()
 		handle_ci_expect(C.succeeded(), "catalog handle family: [title]")
+	// The completed stone hatchet goes to the current active hand only when
+	// the last input stack has actually vacated that hand.
+	C = new("stone hatchet", slot_back)
+	C.stock.amount = C.recipe.req_amount
+	C.craft()
+	var/obj/item/weapon/material/hatchet/tribal/held_hatchet = C.actor.get_active_hand()
+	handle_ci_expect(istype(held_hatchet) && held_hatchet.loc == C.actor && QDELETED(C.stock) && QDELETED(C.handle), "stone hatchet reaches newly empty active hand")
+	// Exercise the same production placement proc independently of recipe debit.
+	var/mob/living/human/handle_ci/recipient = new(T)
+	var/obj/item/weapon/material/hatchet/tribal/flint/axe = new(T)
+	recipient.hand = FALSE
+	var/obj/item/blocker = new(recipient)
+	recipient.r_hand = blocker
+	handle_ci_expect(!offer_crafted_axe_to_active_hand(recipient, axe) && axe.loc == T && recipient.r_hand == blocker, "occupied active hand leaves axe on floor")
+	// Switching during a wait must select the hand active at completion.
+	recipient.hand = TRUE
+	handle_ci_expect(offer_crafted_axe_to_active_hand(recipient, axe) && recipient.l_hand == axe && recipient.r_hand == blocker, "current active hand receives axe after switch")
+	var/obj/item/weapon/material/hatchet/tribal/flint/second_axe = new(T)
+	recipient.stat = UNCONSCIOUS
+	handle_ci_expect(!offer_crafted_axe_to_active_hand(recipient, second_axe) && second_axe.loc == T, "incapacitated actor leaves result on floor")
+	var/mob/living/human/handle_ci/flint_actor = new(T)
+	var/obj/item/weapon/branch/sharpened/axe_hand_ci/stick = new(T)
+	var/obj/item/weapon/flint/sharpened/head = new(flint_actor)
+	var/obj/item/stack/sinew/binding = new(T, 2, FALSE)
+	flint_actor.hand = FALSE
+	flint_actor.r_hand = head
+	stick.assemble_flint_axe(flint_actor, head)
+	handle_ci_expect(istype(flint_actor.r_hand, /obj/item/weapon/material/hatchet/tribal/flint) && QDELETED(head) && QDELETED(stick) && binding.amount == 1, "flint assembly consumes parts and fills vacated active hand")
 	text2file(json_encode(handle_ci_cases), "handle-checks.json")
