@@ -40,6 +40,11 @@ SUITES = {
     'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
         'paths': ('tests/stone_brazier/',), 'shared_paths': (
             'code/modules/1713/siege/fire.dm',)},
+    # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
+    'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
+        'paths': ('tests/well_smell/',), 'shared_paths': (
+            'code/game/objects/structures/watercloset.dm',)},
+
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.
     'crafting_ui_contracts': {'files': ('tests/human_subtile/test_crafting_ui.py',),
