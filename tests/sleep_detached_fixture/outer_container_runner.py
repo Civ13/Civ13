@@ -20,9 +20,9 @@ import sys
 import time
 
 ROOT=Path(__file__).resolve().parent
-CONTROLLER='4a201e057b63fcb6fc5e844d4962ac013ca52d7ab9218837a17968a41630e8d1'
-WATCHDOG='323768b10f3463e7eb5f9424e2045f948bca2ec31b8c02023951ecfb55d89c35'
-CONTRACT='152bb0b7398bfc47e814772f6f919bf6db01c5a63689e1001c339baf47cc0875'
+CONTROLLER='81c94ce35fd85ac48d2eaaaacf0b0fd9b48f9fd2f64b6a63e1b5f1eda687f5dc'
+WATCHDOG='850d73888574eddd97a1b6844715d30fab74b93e7c6b0a27a2cc28134c4e9824'
+CONTRACT='c5d93edc41574e834498a8f0d5d5f63ad635d39f801b59847c13eebd83193b90'
 BINDING='790120b605e77d24188655e962207c5b41f5553c79069cab68ad721c91b660d8'
 STAGE='1b87f3b04561be600b0475d981f754f646d0144c6cded816a06560d5e6bbcc95'
 MAX_LOG=8*1024**2
@@ -73,6 +73,10 @@ def wait_ready(proc,path,token,owner,deadline):
         time.sleep(.05)
     raise TimeoutError('watchdog readiness deadline')
 
+def attached_exit(problem,code):
+    require(problem is None and type(code) is int and 0<=code<=255,'attach outcome unknown: '+str(problem or code))
+    return code
+
 def attach(docker,ident,env,main_dir,watcher,deadline):
     import resource
     out=main_dir/'attach.stdout.log';err=main_dir/'attach.stderr.log'
@@ -92,10 +96,11 @@ def attach(docker,ident,env,main_dir,watcher,deadline):
             except OSError as exc:problem='attach group cleanup unknown: '+str(exc)
             try:code=proc.wait(timeout=10)
             except subprocess.TimeoutExpired:problem='attach CLI leader unreaped'
-        require(problem is None and code==0,'attach failed: '+str(problem or code))
+        attached_exit(problem,code)
     read(out,MAX_LOG);read(err,MAX_LOG)
+    return code
 
-def await_watchdog(watcher,watch_dir,timeout):
+def await_watchdog(watcher,watch_dir,timeout,expected_id):
     deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
         if os.waitid(os.P_PID,watcher.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT) is not None:
@@ -103,7 +108,7 @@ def await_watchdog(watcher,watch_dir,timeout):
             except ProcessLookupError:pass
             code=watcher.wait(timeout=10)
             row=json.loads(read(watch_dir/'watchdog-result.json',65536),object_pairs_hook=unique)
-            require(code==0 and row.get('status')=='docker_cleanup_verified' and row.get('trigger')=='requested','watchdog cleanup not verified')
+            require(code==0 and row.get('status')=='docker_cleanup_verified' and row.get('trigger')=='requested' and row.get('container_id')==expected_id and row.get('census_after')==[] and row.get('create_uncertain') is False and row.get('start_uncertain') is False,'watchdog cleanup not verified')
             return row
         time.sleep(.1)
     # Do not blindly issue a second mutation: the watchdog may be inside one.
@@ -172,7 +177,7 @@ def run(sandbox,byond,archive,image,docker,docker_sha,runner_sha,python_sha,bind
     deadline=time.monotonic()+420
     env={'PATH':'/usr/bin:/bin','HOME':str(main),'LANG':'C','LC_ALL':'C'}
     wout=main/'watchdog.stdout.log';werr=main/'watchdog.stderr.log'
-    watcher=None;outer_error=None;inner=None;cleanup=None;container_id=None;exit_state=None
+    watcher=None;outer_error=None;inner=None;cleanup=None;container_id=None;exit_state=None;attach_exit=None
     require(digest(read(ROOT/'owned_container_watchdog.py',2*1024**2))==WATCHDOG,'watchdog source changed')
     try:
         with wout.open('xb') as stdout,werr.open('xb') as stderr:
@@ -192,14 +197,15 @@ def run(sandbox,byond,archive,image,docker,docker_sha,runner_sha,python_sha,bind
         require(digest(read(docker,64*1024**2))==docker_sha,'Docker CLI changed before attach')
         dc.ensure_binding()
         state['start_started']=True;atomic_state(watch/'container-state.json',state,3)
-        attach(docker,container_id,env,main,watcher,deadline)
+        attach_exit=attach(docker,container_id,env,main,watcher,deadline)
         dc.ensure_binding()
-        state['start_confirmed']=True;atomic_state(watch/'container-state.json',state,4)
         require(digest(read(docker,64*1024**2))==docker_sha,'Docker CLI changed after attach')
         details=json.loads(dc(['inspect',container_id]),object_pairs_hook=unique)
         require(type(details) is list and len(details)==1,'post-run inspect shape')
-        contract.validate_inspect(details[0],spec,container_id,expected_state='exited')
+        contract.validate_inspect(details[0],spec,container_id,expected_state='exited',expected_exit_code=attach_exit)
         exit_state=details[0]['State'].copy()
+        state['start_confirmed']=True;atomic_state(watch/'container-state.json',state,4)
+        if attach_exit!=0:raise RuntimeError('fixture container exited nonzero: '+str(attach_exit))
         inner=verify_inner(controller,fixture_root/'run')
     except Exception as exc:
         outer_error=str(exc)[:1024]
@@ -207,12 +213,12 @@ def run(sandbox,byond,archive,image,docker,docker_sha,runner_sha,python_sha,bind
         if watcher:
             try:
                 with (watch/'cleanup-request.json').open('x',encoding='utf-8') as f:json.dump({'token':token},f)
-                cleanup=await_watchdog(watcher,watch,90)
+                cleanup=await_watchdog(watcher,watch,90,container_id)
             except Exception as exc:
                 outer_error=(outer_error+'; ' if outer_error else '')+'cleanup unverified: '+str(exc)[:1024]
     result={'status':'passed_synthetic' if not outer_error and inner and cleanup else 'held',
             'error':outer_error,'image_id':image,'container_id':container_id,'token':token,
-            'inner':inner,'cleanup':cleanup,'docker_exit_state':exit_state,'docker_cleanup_scope':'Docker metadata and owned label only; no proof of escaped descendants'}
+            'inner':inner,'cleanup':cleanup,'attach_exit':attach_exit,'docker_exit_state':exit_state,'docker_cleanup_scope':'Docker metadata and owned label only; no proof of escaped descendants'}
     with (main/'outer-result.json').open('x',encoding='utf-8') as f:json.dump(result,f,sort_keys=True,indent=2);f.write('\n')
     return result
 
