@@ -35,27 +35,13 @@
 
 	admin_notice("<span class='danger'>Initializing approved list...</span>", R_DEBUG)
 	sleep(-1)
-	var/F = file("SQL/approved.txt")
-	if (fexists(F))
-		var/list/approved_list_temp = file2list(F,"\n")
-		for (var/i in approved_list_temp)
-			if (findtext(i, "="))
-				var/list/current = splittext(i, "=")
-				approved_list += current[1]
-	else
-		admin_notice("<span class='danger'>Failed to load approved list!</span>", R_DEBUG)
+	if (!reload_verified_access_list("approved"))
+		admin_notice("<span class='danger'>Failed to load approved list; prior membership and readiness retained.</span>", R_DEBUG)
 
-	admin_notice("<span class='danger'>Initializing whitelistlist...</span>", R_DEBUG)
+	admin_notice("<span class='danger'>Initializing whitelist...</span>", R_DEBUG)
 	sleep(-1)
-	var/F2 = file("SQL/whitelist.txt")
-	if (fexists(F2))
-		var/list/whitelist_temp = file2list(F2,"\n")
-		for (var/i in whitelist_temp)
-			if (findtext(i, "="))
-				var/list/current = splittext(i, "=")
-				whitelist_list += current[1]
-	else
-		admin_notice("<span class='danger'>Failed to load whitelist!</span>", R_DEBUG)
+	if (!reload_verified_access_list("whitelist"))
+		admin_notice("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", R_DEBUG)
 
 	admin_notice("<span class='danger'>Initializing factionlist...</span>", R_DEBUG)
 	sleep(-1)
@@ -87,21 +73,34 @@
 	var/all_craft_lists = flist("config/crafting/")
 
 	for (var/i in all_craft_lists)
+		// This directory also contains non-recipe configuration such as joinery.
+		if (!findtext(i, "material_recipes"))
+			continue
+		var/safe_craft_filename = html_encode(replacetext(replacetext(i, "\n", "\\n"), ascii2text(13), "\\r"))
 		var/current_list = "global"
 		var/F3 = file("config/crafting/[i]")
 		current_list = replacetext(i,"material_recipes_","")
 		current_list = replacetext(current_list,".txt","")
-		if (fexists(F3) && findtext(i,"material_recipes"))
-			var/list/craftlist_temp = file2list(F3,"\n")
-			for (var/j in craftlist_temp)
-				if (findtext(j, ",") && findtext(j,"RECIPE: ") && !(findtext(j,"//")))
-					var/tmpj = replacetext(j, "RECIPE: ", "")
-					var/list/current = splittext(tmpj, ",")
+		if (!fexists(F3))
+			admin_notice("<span class='danger'>Failed to load crafting recipes from [safe_craft_filename]: file not found.</span>", R_DEBUG)
+			continue
+		// Match file2list's read/split behavior, but report read failures here.
+		var/craftlist_text = file2text(F3)
+		if (!istext(craftlist_text) || !length(craftlist_text))
+			admin_notice("<span class='danger'>Failed to load crafting recipes from [safe_craft_filename]: empty or unreadable file.</span>", R_DEBUG)
+			continue
+		var/list/craftlist_temp = splittext(craftlist_text, "\n")
+		var/craft_line = 0
+		for (var/j in craftlist_temp)
+			craft_line++
+			if (findtext(j, "RECIPE: ") && !(findtext(j, "//")))
+				var/tmpj = replacetext(j, "RECIPE: ", "")
+				var/list/current = splittext(tmpj, ",")
+				// Preserve registration/order, including legacy malformed comma rows.
+				if (findtext(j, ","))
 					craftlist_lists[current_list] += list(current)
-					if (current.len != 13)
-						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13) ([current_list])."
-		else
-			admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+				if (current.len != 13)
+					world.log << "Error! Crafting recipe file [safe_craft_filename], row [craft_line]: expected 13 fields, got [current.len]."
 
 	admin_notice("<span class='danger'>Initializing dictionary...</span>", R_DEBUG)
 	sleep(-1)
