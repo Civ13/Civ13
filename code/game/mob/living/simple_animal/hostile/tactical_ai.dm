@@ -129,8 +129,12 @@
 // Combat-specific AI behaviors and stance handling
 
 /mob/living/simple_animal/proc/npc_subtile_combat_wander(turf/destination)
-	if (npc_subtile_pursuit_enabled)
+	if (npc_subtile_enabled && npc_subtile_pursuit_enabled)
 		return ai_step(destination, move_to_delay, TRUE)
+	if (!npc_subtile_enabled && (npc_subtile_transaction || npc_subtile_pulse || (npc_subtile_offset_owned && (step_x || step_y))))
+		return FALSE
+	if (!npc_subtile_enabled && npc_subtile_pursuit)
+		npc_subtile_stop_pursuit()
 	return Move(destination)
 
 /mob/living/simple_animal/handle_combat_behaviour(t_behaviour)
@@ -523,7 +527,11 @@
 		stance = HOSTILE_STANCE_IDLE
 		walk(src, 0)
 		return
-	if (npc_subtile_pursuit_enabled)
+	if (!npc_subtile_enabled && (npc_subtile_transaction || npc_subtile_pulse || (npc_subtile_offset_owned && (step_x || step_y))))
+		return
+	if (!npc_subtile_enabled && npc_subtile_pursuit)
+		npc_subtile_stop_pursuit()
+	if (npc_subtile_enabled && npc_subtile_pursuit_enabled)
 		// Match the legacy AI-tick stuck observation and random side choice.
 		// Physical execution remains serialized with the active pulse.
 		if (loc == last_loc)

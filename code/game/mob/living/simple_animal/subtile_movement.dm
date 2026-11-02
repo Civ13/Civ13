@@ -69,6 +69,7 @@
 		return FALSE
 	npc_subtile_enabled = !!enabled
 	if (!enabled)
+		npc_subtile_stop_pursuit()
 		npc_subtile_offset_owned = FALSE
 		npc_subtile_release_glide()
 	return TRUE

@@ -29,11 +29,20 @@ class WildlifeCIRegistration(unittest.TestCase):
  def test_missing_shared_input_fails_selection_negative_control(self):
   path='code/game/mob/living/simple_animal/subtile_movement.dm'
   suite=ci.SUITES['wildlife_offline'];old=suite['shared_paths']
+  self.assertTrue(any(ci.matches(path,x) for x in old),path)
   try:
    suite['shared_paths']=tuple(x for x in old if x!='code/game/mob/living/simple_animal/')
    # Another suite still owns this path; the negative is specifically the
    # direct shared-input match, independent of conservative global fallback.
    self.assertFalse(any(ci.matches(path,x) for x in suite['shared_paths']))
+  finally:suite['shared_paths']=old
+
+ def test_negative_control_rejects_missing_original_mapping(self):
+  suite=ci.SUITES['wildlife_offline'];old=suite['shared_paths']
+  try:
+   suite['shared_paths']=tuple(x for x in old if x!='code/game/mob/living/simple_animal/')
+   with self.assertRaises(AssertionError):
+    self.test_missing_shared_input_fails_selection_negative_control()
   finally:suite['shared_paths']=old
 
 if __name__=='__main__':unittest.main(verbosity=2)
