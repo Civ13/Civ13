@@ -1,10 +1,75 @@
-name: Train collision regression
+# Manual exact-source native station proof. No push or PR trigger.
+name: Train station native proof
 on:
   workflow_dispatch:
+    inputs:
+      profile:
+        description: Select station proof or existing collision regression
+        required: true
+        type: choice
+        default: station
+        options: [station, collision]
+      expected_head:
+        description: Full independently reviewed candidate commit
+        required: true
+        type: string
+      expected_tree:
+        description: Full independently reviewed candidate Git tree
+        required: true
+        type: string
 permissions:
   contents: read
+concurrency:
+  group: civ13-train-station-native-proof
+  cancel-in-progress: false
 jobs:
+  proof:
+    if: ${{ inputs.profile == 'station' && github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Offline station oracle and admission controls
+        timeout-minutes: 1
+        run: |
+          /usr/bin/python3 -I -B -m unittest discover -s tests/train_station_cloud -p 'test_*.py' -v
+      - name: One bounded isolated native station observation and sprite replay
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_head }}
+          EXPECTED_TREE: ${{ inputs.expected_tree }}
+          CIV13_REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I -B tests/train_station_cloud/cloud.py host \
+            --head "$EXPECTED_HEAD" --tree "$EXPECTED_TREE" \
+            --output "$RUNNER_TEMP/train-station-proof"
+      - name: Preserve source, trace, video and failure receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: train-station-proof-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/train-station-proof/host-receipt.json
+            ${{ runner.temp }}/train-station-proof/renderer-capabilities.json
+            ${{ runner.temp }}/train-station-proof/renderer-group-receipt.json
+            ${{ runner.temp }}/train-station-proof/container*.log
+            ${{ runner.temp }}/train-station-proof/watchdog*.log
+            ${{ runner.temp }}/train-station-proof/watchdog.json
+            ${{ runner.temp }}/train-station-proof/native-evidence.tar.xz
+            ${{ runner.temp }}/train-station-proof/native/
+            ${{ runner.temp }}/train-station-proof/prepared/source-manifest.json
+            ${{ runner.temp }}/train-station-proof/prepared/run-provenance.json
+            ${{ runner.temp }}/train-station-proof/prepared/stage/**/*.dm
+            ${{ runner.temp }}/train-station-proof/prepared/stage/**/*.dme
+            ${{ runner.temp }}/train-station-proof/civ13-station-native-replay.*
+          if-no-files-found: error
+          retention-days: 7
   train-collision:
+    if: ${{ inputs.profile == 'collision' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
