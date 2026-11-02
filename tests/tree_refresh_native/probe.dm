@@ -229,7 +229,7 @@ var/global/obj/tree_native_opaque/tree_native_mover
 				if(F)
 					tree_native_event_leases |= F
 				tree_native_require(tree_native_event_leases.len <= 64, "identity_lease_limit")
-			identities += list(list("root"="\ref[T]", "image"=I ? "\ref[I]" : null, "published_frame"=F ? "\ref[F]" : null, "native_icon_present"=I && !isnull(I.icon), "in_client_images"=I && (I in C.images), "override"=I ? I.override : null, "plane"=I ? I.plane : null, "mouse_opacity"=I ? I.mouse_opacity : null))
+			identities += list(list("root"="\ref[T]", "image"=I ? "\ref[I]" : null, "published_frame"=F ? "\ref[F]" : null, "native_icon_present"=(I && !isnull(I.icon)) ? 1 : 0, "in_client_images"=(I && (I in C.images)) ? 1 : 0, "override"=I ? I.override : null, "plane"=I ? I.plane : null, "mouse_opacity"=I ? I.mouse_opacity : null))
 		var/discovered = 0
 		if(C.los_context)
 			for(var/obj/structure/wild/T in range(13, C.mob))

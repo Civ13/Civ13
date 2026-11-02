@@ -66,6 +66,16 @@ class Protocol(unittest.TestCase):
         row['light_notifications'].update(calls=128,resolved=127,unresolved=1)
         self.assertFalse(P.validate(receipt,rows,'a'*40,'run')['cost_accepted'])
 
+    def test_absent_native_image_flags_are_numeric_not_null(self):
+        source=(HERE/'probe.dm').read_text()
+        self.assertIn('"native_icon_present"=(I && !isnull(I.icon)) ? 1 : 0',source)
+        self.assertIn('"in_client_images"=(I && (I in C.images)) ? 1 : 0',source)
+        receipt,rows=witness()
+        row=next(r for r in rows if r['class']=='viewer_move' and r['mode']=='fallback' and r['iteration']==1)
+        self.assertEqual(row['capture_failed'][0]['identities'][0]['native_icon_present'],0)
+        row['capture_failed'][0]['identities'][0]['native_icon_present']=None
+        with self.assertRaises(ValueError):P.validate(receipt,rows,'a'*40,'run')
+
     def test_invalid_native_receipts_never_pass(self):
         for field,value in [('head','b'*40),('binding','other'),('engine',[516,1681]),('cleanup',0),('pixels_verified',1),('error','native failure')]:
             receipt,rows=witness();receipt[field]=value
