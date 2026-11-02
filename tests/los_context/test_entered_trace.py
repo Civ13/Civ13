@@ -214,8 +214,13 @@ class IdentityTrace:
             m = self.models[index]
             image = (self.roots[index].image if self.mode == 'root'
                      else m.P.tree_images[self.tree])
+            mask = image if self.mode == 'root' else m.P.images[self.tree]
+            denied = bool(mask and mask in m.C.images and mask.override and
+                          mask.mouse_opacity == 0 and
+                          (self.mode != 'root' or mask.icon is None))
             return dict(image=image, allowed=bool(image and image in m.C.images and
                        (self.mode != 'root' or image.icon is not None)),
+                        owned_denial_override=denied,
                         frame=image.icon if self.mode == 'root' else None)
         self.trace.append(dict(event=event, own=state(0), other=state(1)))
 
@@ -241,6 +246,7 @@ class EnteredIdentityRegression(unittest.TestCase):
         self.assertTrue(first['allowed'])
         self.assertFalse(rows['after_entered']['own']['allowed'])
         self.assertFalse(rows['moved_event']['own']['allowed'])
+        self.assertTrue(rows['after_entered']['own']['owned_denial_override'])
         self.assertTrue(final['allowed'])
         self.assertIsNot(first['image'], final['image'])
         self.assertIs(rows['initial']['other']['image'], rows['returned']['other']['image'])
@@ -253,6 +259,7 @@ class EnteredIdentityRegression(unittest.TestCase):
         self.assertIs(rows['initial']['own']['image'], rows['returned']['own']['image'])
         self.assertFalse(rows['after_entered']['own']['allowed'])
         self.assertIsNone(rows['after_entered']['own']['frame'])
+        self.assertTrue(rows['after_entered']['own']['owned_denial_override'])
         self.assertTrue(rows['returned']['own']['allowed'])
         self.assertEqual([r.frame_writes for r in scene.roots], [2, 1])
 
@@ -264,6 +271,8 @@ class EnteredIdentityRegression(unittest.TestCase):
                 self.assertTrue(rows['initial']['own']['allowed'])
                 self.assertFalse(rows['after_entered']['own']['allowed'])
                 self.assertFalse(rows['returned']['own']['allowed'], (mode, outcome))
+                self.assertTrue(rows['after_entered']['own']['owned_denial_override'])
+                self.assertTrue(rows['returned']['own']['owned_denial_override'])
 
     def test_blocked_and_offset_only_native_outcomes_do_not_deliver_entered(self):
         for mode in ('fallback', 'root'):
@@ -321,6 +330,7 @@ def write_trace(destination):
         for row in scene.trace:
             phases.append(dict(event=row['event'], **{
                 who: dict(allowed=row[who]['allowed'],
+                          owned_denial_override=row[who]['owned_denial_override'],
                           image=label(row[who]['image']), frame=label(row[who]['frame']))
                 for who in ('own', 'other')}))
         scenarios.append(dict(mode=mode, outcome=outcome, native_adapter_outcome=native,
