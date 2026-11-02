@@ -85,6 +85,20 @@ class HostedEntryTests(unittest.TestCase):
         self.assertIn('    timeout-minutes: 35',text)
         self.assertIn('        timeout-minutes: 16',text)
         self.assertIn('compile-*-supervision.json',text)
+    def test_checkout_uses_event_sha_and_rejects_input_directed_mutation(self):
+        text=(ROOT/'.github/workflows/mount-lifecycle-native.yml').read_text()
+        event_ref='ref: '+chr(36)+'{{ github.sha }}'
+        input_ref='ref: '+chr(36)+'{{ inputs.source_sha }}'
+        def require_event_checkout(source):
+            self.assertEqual(source.count('uses: actions/checkout@'),1)
+            checkout=source.split('uses: actions/checkout@',1)[1].split('\n      - ',1)[0]
+            refs=[line.strip() for line in checkout.splitlines() if line.strip().startswith('ref:')]
+            self.assertEqual(refs,[event_ref])
+            self.assertNotIn('inputs.source_sha',checkout)
+        require_event_checkout(text)
+        with self.assertRaises(AssertionError):
+            require_event_checkout(text.replace(event_ref,input_ref,1))
+
     def test_workflow_pin_matches_canonical_source_and_inputs_use_env(self):
         text=(ROOT/'.github/workflows/mount-lifecycle-native.yml').read_text()
         version=json.loads((ROOT/'tools/byond/version.json').read_text())['version']
