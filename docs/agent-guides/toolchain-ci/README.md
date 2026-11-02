@@ -164,3 +164,19 @@ Admitted ci-selection.yml runs select compilation conservatively and skip it for
 The bounded-build test suite runs without Windows DLLs. Inject ctypes error
 state too: get_last_error does not exist on Linux. CI explicitly recognizes the
 two added bounded-build tests; passing them is not native containment evidence.
+
+<!-- 2026-11-02: agent preflight and known red jobs -->
+Linux and cloud sessions can compile: `bash scripts/cloud_byond_setup.sh`
+installs the pinned 516.1688 compiler outside the repository (i386 libraries
+plus the repository-release archive, which the agent proxy allows); a full
+`DreamMaker -max_errors 0 civ13.dme` takes about 20 seconds. Local compiles
+are developer evidence, not hosted CI receipts.
+`scripts/agent_preflight.py` wraps the checks agents most often skipped:
+`pins` (tests that byte-pin changed files), `generated` (atlas/audit drift),
+`suites` (every ci_baseline suite with the los_context env set) and `wiki-pins`.
+The moving-save `isolated-native` benchmark fails on unmodified master with
+"exceeded its capture budget" because its per-tick budget depends on runner
+load. Treat it as pre-existing when the compile step is clean and the same
+cases fail on master; do not change gameplay code for it.
+`SUITES` in scripts/ci_baseline.py conflicts in most concurrent PRs; keep the
+union of both sides' entries, then rerun the affected suites.
