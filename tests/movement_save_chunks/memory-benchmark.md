@@ -93,3 +93,29 @@ from run41443261135, heade0429b81e, candidate64roots/1024bytes/baseline0,
 attempt7: exception usage10.022 versus last phase counter5.986. Its existing
 native failure remains unresolved. Offline tests use injected process results;
 they never compile or start BYOND, and do not establish a new native pass.
+
+
+## Fixed capture-budget recurrence pilot
+
+budget_pilot.py is a separate diagnostic entry point; ordinary benchmark.py,
+its18-case selection and CI remain unchanged. Default operation only prepares.
+Its8fresh-process order is B,C | C,B | C,B | B,C, with64roots/1024bytes each;
+each process retains the same7-save schedule, guard and instrumentation.
+There are at most2compiler and8daemon children, no replacements. Existing90s,
+900s,1GiB and20ms limits remain fixed. An explicit newly approved UTC deadline
+is additionally required for native mode, with5seconds reserved for reaping/reporting.
+
+Only the targeted usage_delta>10 breach with no changed tick, work/absolute
+usage/elapsed overrun, complete metrics and known attempt permits collection
+of the remaining fixed repetitions. It stays a failed case. Resource/process,
+identity/deadline, malformed or other guard failures stop launches and retain
+not-run records. Diagnostic verdicts are completed_no_breach_observed,
+completed_with_breaches or inconclusive_stopped. Acceptance always remains
+not_established; no diagnostic result clears the original native failure.
+No early success stopping, replacement runs or automatic retry is performed.
+
+Native execution and publication are HELD for independent source review and a
+fresh specific approval window. The old13:23UTC window does not authorize later
+execution. There is no new hosted workflow/dispatch route in this change; the
+exact reviewed source/manifest and supervised hosted invocation must be admitted
+separately. Publishing this branch can still trigger ordinary30-minute nativeCI.
