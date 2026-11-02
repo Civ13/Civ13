@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_game_ready_registration_is_explicit_offline_and_additive(self):
+        suite=ci.SUITES['game_ready']
+        self.assertEqual(suite['files'], ('tests/game_ready/test_release.py',
+            'tests/game_ready/test_ready.py','tests/game_ready/test_hooks.py'))
+        for path in suite['shared_paths'] + ('tests/game_ready/model.py',):
+            self.assertIn('game_ready',self.selected([path]))
+        previous={name:entry for name,entry in ci.SUITES.items() if name!='game_ready'}
+        for path in suite['shared_paths']:
+            with patch.object(ci,'SUITES',previous):prior=self.selected([path])
+            self.assertEqual(self.selected([path]),prior|{'game_ready'})
+        self.assertNotIn('game_ready',self.selected(['README.md']))
+
     def test_help_toxin_registration_is_bounded_and_preserves_shared_coverage(self):
         name = 'help_toxin_context'
         suite = ci.SUITES[name]
@@ -975,6 +987,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     expected.add('dictionary')
                     expected.add('character_return_preparation')
                     expected.add('access_lists')
+                    expected.add('game_ready')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 

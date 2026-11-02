@@ -43,6 +43,18 @@ on:
         description: 'Run the separately reviewed synthetic lighting interleaving fixture only'
         type: boolean
         default: false
+      capture_budget_pilot:
+        description: Select only the fixed capture-budget diagnostic pilot
+        type: boolean
+        default: false
+      budget_pilot_mode:
+        type: choice
+        options: [prepare, execute]
+        default: prepare
+      budget_pilot_until:
+        description: Newly approved absolute UTC deadline, execution only
+        type: string
+        default: ''
       reviewed_head:
         description: 'Full independently reviewed commit SHA (required for human fixture)'
         type: string
@@ -55,7 +67,7 @@ permissions:
   contents: read
 jobs:
   isolated-native:
-    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true && inputs.debug_lossy_only != true) && inputs.debug_combined_only != true }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true && inputs.debug_lossy_only != true) && inputs.debug_combined_only != true && inputs.capture_budget_pilot != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -114,7 +126,7 @@ jobs:
           retention-days: 7
   lighting-interleave:
     # Conflicting manual-only selectors fail before provisioning or native work.
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.lighting_interleave_only == true && inputs.debug_combined_only != true && inputs.debug_lossy_only != true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.lighting_interleave_only == true && inputs.debug_combined_only != true && inputs.debug_lossy_only != true && inputs.capture_budget_pilot != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -193,7 +205,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   human-spatial:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true && inputs.debug_combined_only != true && inputs.debug_lossy_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true && inputs.debug_combined_only != true && inputs.debug_lossy_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true && inputs.capture_budget_pilot != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -274,7 +286,7 @@ jobs:
           retention-days: 7
   human-scale:
     # If both exclusive inputs are true this job fails explicitly before staging.
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_scale_only == true && inputs.debug_combined_only != true && inputs.debug_lossy_only != true && inputs.lighting_interleave_only != true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_scale_only == true && inputs.debug_combined_only != true && inputs.debug_lossy_only != true && inputs.lighting_interleave_only != true && inputs.capture_budget_pilot != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -350,7 +362,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   debug-lossy:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_lossy_only == true && inputs.debug_combined_only != true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_lossy_only == true && inputs.debug_combined_only != true && inputs.capture_budget_pilot != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -429,7 +441,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   debug-combined:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_combined_only == true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_combined_only == true && inputs.capture_budget_pilot != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -509,3 +521,63 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+
+  capture-budget-pilot:
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch' && inputs.capture_budget_pilot == true
+    concurrency:
+      group: capture-budget-diagnostic
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+      REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+      AUTHORIZED_UNTIL: ${{ inputs.budget_pilot_until }}
+      PILOT_OTHER_SELECTORS: ${{ toJSON(inputs) }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Prepare exact source manifest without native execution
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          test "$GITHUB_SHA" = "$REVIEWED_HEAD"
+          test "$GITHUB_WORKFLOW_SHA" = "$REVIEWED_HEAD"
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          python3 -B tests/movement_save_chunks/budget_host.py prepare --head "$REVIEWED_HEAD" --output "$RUNNER_TEMP/budget-pilot-evidence"
+      - name: Admit fresh exact-scope execution window
+        if: inputs.budget_pilot_mode == 'execute'
+        timeout-minutes: 1
+        run: |
+          python3 -B tests/movement_save_chunks/budget_host.py admit --head "$REVIEWED_HEAD" --reviewed-scope "$REVIEWED_SCOPE" --authorized-until "$AUTHORIZED_UNTIL" --output "$RUNNER_TEMP/budget-pilot-evidence"
+      - name: Offline pilot contracts only
+        if: inputs.budget_pilot_mode == 'execute'
+        timeout-minutes: 2
+        run: python3 -B -m unittest discover -s tests/movement_save_chunks -p test_budget_pilot.py -v
+      - name: Existing pinned bootstrap under overall supervision
+        if: inputs.budget_pilot_mode == 'execute'
+        timeout-minutes: 16
+        run: python3 -B tests/movement_save_chunks/budget_host.py bootstrap --head "$REVIEWED_HEAD" --reviewed-scope "$REVIEWED_SCOPE" --output "$RUNNER_TEMP/budget-pilot-evidence"
+      - name: Fixed eight-process diagnostic under overall supervision
+        if: inputs.budget_pilot_mode == 'execute'
+        timeout-minutes: 17
+        run: python3 -B tests/movement_save_chunks/budget_host.py pilot --head "$REVIEWED_HEAD" --reviewed-scope "$REVIEWED_SCOPE" --output "$RUNNER_TEMP/budget-pilot-evidence"
+      - name: Retain source, failures and incomplete receipts
+        if: always()
+        timeout-minutes: 4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: budget-pilot-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/budget-pilot-evidence/
+            .ci/compile/
+            !${{ runner.temp }}/budget-pilot-evidence/**/*.dmb
+            !${{ runner.temp }}/budget-pilot-evidence/**/*.rsc

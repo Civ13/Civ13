@@ -110,15 +110,20 @@ var/world_is_open = TRUE
 
 	var/datum/persistence_area_startup/area_startup = new
 	persistence_area_startup_token = area_startup
+	var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+	var/datum/startup_context = game_ready_hook ? call(game_ready_hook)("begin", area_startup) : null
 	spawn(1)
+		var/scheduler_ready = FALSE
 		try
 			processScheduler.deferSetupFor (/process/ticker)
-			processScheduler.setup()
+			scheduler_ready = processScheduler.setup()
 			setup_everything(area_startup)
 		catch(var/exception/E)
+			if(game_ready_hook) call(game_ready_hook)("initialization_failed", startup_context)
 			area_startup.close()
 			throw E
 		area_startup.close()
+		if(game_ready_hook) call(game_ready_hook)("initialization_complete", startup_context, scheduler_ready == TRUE)
 //		master_controller.setup()
 #ifdef UNIT_TEST
 		initialize_unit_tests()

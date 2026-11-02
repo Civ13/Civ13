@@ -118,17 +118,17 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.assertFalse(self.env['round_start_announced'])
 
     def test_automatic_load_failure_then_success_uses_restored_identity(self):
-        gate = re.search(r'if\((ticker\.loadmap\(\))\) (announce_restored_round_once\(\))', self.setup)
+        gate = re.search(r'if\((ticker\.loadmap\(null, null, ready_ticket\))\) (announce_restored_round_once\(\))', self.setup)
         self.assertIsNotNone(gate)
         class Ticker:
             ok = False
-            def loadmap(inner):
+            def loadmap(inner, *startup_args):
                 if inner.ok:
                     self.env['game_id'] = 'saved-round'
                     self.storage.state = {'game_id': 'saved-round'}
                 return inner.ok
         ticker = Ticker()
-        self.env['ticker'] = ticker
+        self.env.update(ticker=ticker, null=None, ready_ticket=object())
         instruction = 'if ' + gate.group(1) + ': ' + gate.group(2)
         exec(instruction, self.env)
         self.assertEqual(self.events, [])
@@ -193,7 +193,7 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.assertNotIn('webhook_send_round_start(game_id)', self.world)
         self.assertIn('var/startup_round_pending = persistence_restart.startup_hold', self.setup)
         self.assertRegex(self.setup, r'if \(fexists\("map_saves/save_complete.txt"\)\)\s+startup_round_pending = TRUE')
-        self.assertRegex(self.setup, r'if\(ticker\.loadmap\(\)\) announce_restored_round_once\(\)')
+        self.assertRegex(self.setup, r'if\(ticker\.loadmap\(null, null, ready_ticket\)\) announce_restored_round_once\(\)')
         self.assertRegex(self.setup, r'if\(ticker && persistence_restart\.resume_startup\(\) && persistence_restart\.players_ready\)\s+announce_restored_round_once\(\)')
         self.assertRegex(self.setup, r'if\(!startup_round_pending\)\s+announce_round_start_once\(\)')
         self.assertRegex(self.setup, r'else\s+startup_round_pending = TRUE\s+admin_notice\("<span class=\'danger\'>A map save exists but has no completion marker')
