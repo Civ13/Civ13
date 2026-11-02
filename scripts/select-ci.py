@@ -11,11 +11,14 @@ DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.
 CI_BASES = {'master', 'help-markdown-byond-html'}
 ORDINARY_PR_ACTIONS = {'opened', 'synchronize', 'reopened'}
 # Reviewed source preparation, not native entry points. These exact files retain
-# ci_baseline's character_return_preparation suite; never exempt the directory.
+# ci_baseline's named preparation suites; never exempt a whole directory.
 SOURCE_PREPARATION_ONLY_TESTS = frozenset({
     'tests/world_save/character_return/fixture.dm',
     'tests/world_save/character_return/prepare.py',
     'tests/world_save/character_return/test_prepare.py',
+    'tests/tree_refresh_native/d3dx_data.py',
+    'tests/tree_refresh_native/d3dx-signature.ps1',
+    'tests/tree_refresh_native/test_d3dx_data.py',
 })
 
 # Exact source-only suite runs in the reviewed bounded offline baseline.

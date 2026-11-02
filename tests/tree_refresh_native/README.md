@@ -265,3 +265,84 @@ of Windows KnownDLL, API-set, WinSxS or runtime LoadLibrary resolution. A file
 inventory cannot identify retrospectively which DLL was absent on another VM.
 Native readiness is always false. Output is capped at 4 MiB and failures are
 retained; no automatic installation or runtime retry follows a missing provider.
+
+## Microsoft x86 dependency data preparation (source only)
+
+`d3dx_data.py` is deliberately not registered in a workflow or native runner.
+Its synthetic offline tests are registered alongside the existing preparation
+contracts. Only the three exact reviewed preparation paths are excluded from
+introduced native-suite discovery; neighboring executable files remain eligible.
+The reviewed proposal is data preparation, not prerequisite installation or an
+engine retry. It uses only Microsoft's fixed NuGet package
+`Microsoft.DXSDK.D3DX 9.29.952.8`. `tools/byond/d3dx-package.json` retains the
+official registration/catalog URLs and raw-metadata SHA256s, catalog package
+size/SHA512, exact selected member sizes, and the original 13-file BYOND binding
+from audit run 41502784807. These are expected pins, not measured DLL hashes.
+
+After specific publication/acquisition authorization, a future isolated hosted
+Windows manual job can call the helper with the exact source/workflow SHA,
+attempt 1, `D3DX_DATA_PREPARE=approved-data-only`, an already prepared immutable
+BYOND input bin below `RUNNER_TEMP`, and a new output at
+`RUNNER_TEMP/tree-d3dx-data`. The CLI also requires `--acquire-data`. No workflow
+or dispatch is added here. A future job must have a five-minute outer limit.
+
+```text
+<verified Python> -B tests/tree_refresh_native/d3dx_data.py --source <exact SHA> --input-bin <original private BYOND bin> --output <RUNNER_TEMP/tree-d3dx-data> --acquire-data
+```
+
+There is one exact HTTPS package request, no proxy/credential use, redirect,
+retry, alternate source or implicit prerequisite acquisition. Acquisition has a
+120-second deadline with 20-second read timeouts; normal preparation is capped
+at 240 seconds, leaving an original-input verification reserve through 270
+seconds and final report time inside the future 300-second job limit. New
+package, selected files and report share 16 MiB, with a 128 KiB report ceiling.
+Input BYOND files are read-only preexisting data and are not copied into this
+output. Their exact inventory, sizes and SHA256s are checked before and after.
+
+The catalog size and SHA512 are verified before opening the ZIP. Member paths,
+case-insensitive duplicates, links/reparse attributes, encryption, compression,
+counts, selected sizes and CRCs are checked. Only x86 `D3DX9_43.dll`, plus
+`LICENSE.txt`, `NOTICE.md` and `.signature.p7s`, are staged. No NuGet/MSBuild
+script, target, installer or DLL entrypoint is evaluated. The x86
+`D3DCompiler_43.dll` is included only when D3DX's actual normal or delay import
+table names it; no runtime LoadLibrary requirement is guessed. All selected
+files retain exact bytes and measured SHA256. PE architecture/import tables and
+why the compiler companion was included are recorded. Delay imports remain
+labelled; API sets, system resolution and dynamic loading are not emulated.
+
+`d3dx-signature.ps1` asks the existing Windows Authenticode verifier for metadata
+without loading the target. The helper requires a valid embedded Microsoft
+Corporation signature with timestamp certificate and records certificate
+SHA256s, issuer, subject, validity dates and status. Signature commands have a
+20-second timeout and 32 KiB output bound. Existing Windows trust validation may
+retrieve trust/revocation metadata over the network. That behavior is not an
+exact-URL-only claim: any future execution authorization must account for it.
+An unavailable/untrusted result fails; no trust-store, revocation or security
+policy is weakened. No verifier command has been run on a Microsoft payload in
+this source-only task. Package signature bytes are preserved, not separately
+claimed NuGet-signature validation.
+
+Successful preparation reports `native_ready=false`, `native_executed=false`
+and `software_installed=false`. Failures retain their report and original-input
+verification. Staging is separate from the BYOND bin; a future reviewed combined
+toolchain manifest and explicit execution approval are required before any
+application-local placement or loader/game test. Nothing writes System32,
+SysWOW64, user BYOND, PATH, registry, profiles, credentials, or Gaia.
+
+Firewall containment is outside this patch. Any future security-setting action
+requires its own exact program-path/rule-name/VM/deadline approval, verification
+and owned-rule cleanup. The native socket oracle is unchanged, and no endpoint
+allowlist, global rule or policy change is added here.
+
+Offline verification uses synthetic ZIP/PE data and injected acquisition/trust
+adapters, with sockets and external commands disabled:
+
+```text
+<verified Python> -B tests/tree_refresh_native/test_d3dx_data.py -v
+```
+
+Primary documentation: [Microsoft-owned package and redistribution terms](https://www.nuget.org/packages/Microsoft.DXSDK.D3DX/9.29.952.8),
+[Microsoft's application-local package guidance](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/packaging-framework-packages?view=gdk-2604),
+[Windows signature metadata](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature?view=powershell-7.5).
+The earlier audit's setup-log/environment image-version discrepancy remains
+unresolved; this preparation does not attribute the historical loader failure.

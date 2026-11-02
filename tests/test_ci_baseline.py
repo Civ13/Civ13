@@ -165,7 +165,8 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_tree_native_preparation_preserves_offline_and_native_boundaries(self):
         suite=ci.SUITES['tree_refresh_native_preparation']
-        self.assertEqual(suite['files'],('tests/tree_refresh_native/test_harness.py',))
+        self.assertEqual(suite['files'],('tests/tree_refresh_native/test_harness.py',
+                                         'tests/tree_refresh_native/test_d3dx_data.py'))
         for path in suite['shared_paths']+('tests/tree_refresh_native/probe.dm',):
             self.assertIn('tree_refresh_native_preparation',self.selected([path]))
         workflow=(ROOT/'.github/workflows/tree-refresh-native.yml').read_text()
@@ -174,6 +175,21 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertNotIn('  pull_request:',workflow)
         ordinary=(ROOT/'.github/workflows/test.yml').read_text()
         self.assertNotIn('tests/tree_refresh_native',ordinary)
+
+    def test_d3dx_data_preparation_stays_exact_offline_registration(self):
+        files = ('tests/tree_refresh_native/d3dx_data.py',
+                 'tests/tree_refresh_native/d3dx-signature.ps1',
+                 'tests/tree_refresh_native/test_d3dx_data.py')
+        for path in files+('tools/byond/d3dx-package.json',):
+            self.assertIn('tree_refresh_native_preparation', self.selected([path]))
+        spec = importlib.util.spec_from_file_location('d3dx_selection', ROOT/'scripts/select-ci.py')
+        selection = importlib.util.module_from_spec(spec); spec.loader.exec_module(selection)
+        with patch.object(selection.subprocess, 'check_output', return_value=('\0'.join(files)+'\0').encode()):
+            self.assertEqual(selection.introduced_tests('b'*40, 'a'*40, 'pull_request'), [])
+        with patch.object(selection.subprocess, 'check_output', return_value=b'tests/tree_refresh_native/unreviewed.py\0'):
+            self.assertEqual(selection.introduced_tests('b'*40, 'a'*40, 'pull_request'), ['tests/tree_refresh_native'])
+        # Exact preparation exclusions do not disable ordinary compilation.
+        self.assertTrue(selection.needs_game(files))
 
     def test_axe_active_hand_suite_is_bounded_and_not_silently_omitted(self):
         name = 'axe_active_hand'
