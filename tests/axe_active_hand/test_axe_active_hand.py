@@ -46,6 +46,14 @@ class PlacementContract(unittest.TestCase):
         with self.assertRaises(AssertionError):
             production_refuses(source=modified)
 
+    def test_missing_incapacity_guards_are_detected(self):
+        for check in (' || user.stat != CONSCIOUS', ' || user.incapacitated()'):
+            with self.subTest(check=check):
+                altered = BRANCH.replace(check, '', 1)
+                self.assertNotEqual(altered, BRANCH)
+                with self.assertRaises(AssertionError):
+                    production_refuses(source=altered)
+
     def test_calls_happen_after_payment_and_output(self):
         assembly = BRANCH.split('/obj/item/weapon/branch/proc/assemble_flint_axe(', 1)[1].split('\n/obj/', 1)[0]
         self.assertLess(assembly.index('binding.use(1)'), assembly.index('new(get_turf(user))'))
