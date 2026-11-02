@@ -42,6 +42,27 @@ default behaviour is:
 			return TRUE
 		return FALSE
 
+// Ordinary human-animal help bumps stay solid: the two legacy forceMove
+// calls can invoke callbacks between legs and do not form an atomic swap.
+/mob/living/proc/ordinary_human_animal_swap(var/mob/living/other)
+	var/mob/living/human/H
+	var/mob/living/simple_animal/A
+	if (ishuman(src) && istype(other, /mob/living/simple_animal))
+		H = src
+		A = other
+	else if (istype(src, /mob/living/simple_animal) && ishuman(other))
+		H = other
+		A = src
+	else
+		return FALSE
+	if (istype(A, /mob/living/simple_animal/horse) || H.riding || H.riding_mob || A.ride || A.rider)
+		return FALSE
+	if (a_intent != I_HELP || restrained() || other.restrained() || H.throwing || A.throwing || (H.status_flags & LEAPING) || (A.status_flags & LEAPING))
+		return FALSE
+	if (H.pulling || H.pulledby || A.pulling || A.pulledby || (H.grab_list && H.grab_list.len) || (H.grabbed_by && H.grabbed_by.len) || (A.grab_list && A.grab_list.len) || (A.grabbed_by && A.grabbed_by.len))
+		return FALSE
+	return TRUE
+
 /mob/living/Bump(atom/movable/AM, yes)
 
 	// no more pushing people past caribbean blocks - Kachnov
@@ -81,6 +102,9 @@ default behaviour is:
 				return
 
 			if (can_swap_with(tmob)) // mutual brohugs all around!
+				if (ordinary_human_animal_swap(tmob))
+					now_pushing = FALSE
+					return
 				if (istype(src, /mob/living/human))
 					var/mob/living/human/H = src
 					if (H.riding)
