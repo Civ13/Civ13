@@ -48,9 +48,10 @@ try {
         $process.StandardInput.WriteLine()
         $process.StandardInput.Close()
         if (!$process.WaitForExit(15000)) {
-            $process.Kill()
-            $process.WaitForExit()
             throw 'Packaged early management process did not exit after cancellation.'
+        }
+        if (![Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($stdout, $stderr), 3000)) {
+            throw 'Packaged early management output did not finish draining.'
         }
         $earlyText = $stdout.GetAwaiter().GetResult() + $stderr.GetAwaiter().GetResult()
         if ($process.ExitCode -ne 0 -or
@@ -63,7 +64,20 @@ try {
             throw 'Packaged early management cancellation entered normal startup or failed.'
         }
     } finally {
-        $process.Dispose()
+        try {
+            if (!$process.HasExited) {
+                try {
+                    $process.Kill()
+                } catch [InvalidOperationException] {
+                    if (!$process.HasExited) { throw }
+                }
+            }
+            if (!$process.WaitForExit(3000)) {
+                throw 'Packaged early management process did not terminate after cleanup.'
+            }
+        } finally {
+            $process.Dispose()
+        }
     }
 
     $output = @(& $exe --registered-instances $fixture $catalog 'example-host' 2>&1)
