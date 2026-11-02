@@ -124,3 +124,5 @@ cost acceptance. Smooth multi-tick whole-event timers will remain unresolved;
 per-capture/reconcile values remain individually useful, with that limitation.
 No result proves long-running stability, pixel delivery or acceptable dense live
 server scaling.
+
+An execution with valid native dispatch but unresolved/over-budget cost is marked measurement_incomplete and exits nonzero after owned cleanup. It is not reported as an overall native measurement pass. Raw per-capture/reconcile timings remain available for review. The derived retained launcher is the committed current-pin implementation with only its binary-allowlist import replaced; its suspended assignment, stripped private environment and handle/Job creation remain intact and are separately reviewable.

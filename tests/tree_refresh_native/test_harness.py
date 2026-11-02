@@ -122,6 +122,16 @@ class Containment(unittest.TestCase):
         self.assertTrue(S.socket_ok(client,59479,False))
         for bad in (dict(client,address='0.0.0.0'),dict(client,remote_address='1.1.1.1'),dict(client,remote_port=59478),dict(client,protocol='udp')):
             self.assertFalse(S.socket_ok(bad,59479,False))
+    def test_derived_launcher_changes_only_reviewed_binary_guard(self):
+        import ast
+        text=(ROOT/'tests/human_subtile/native_1688/windows.py').read_text()
+        tree=ast.parse(text);method=next(n for c in tree.body if isinstance(c,ast.ClassDef) and c.name=='Adapter' for n in c.body if isinstance(n,ast.FunctionDef) and n.name=='launch')
+        original=''.join(text.splitlines(True)[method.lineno-1:method.end_lineno])
+        derived=S.derive_launch(original);compile(derived,'<offline derived source>','exec')
+        self.assertIn('AssignProcessToJobObject',derived);self.assertIn('ResumeThread',derived)
+        self.assertIn('APPDATA=str(envroot)',derived);self.assertNotIn('from guard_config',derived)
+        with self.assertRaises(ValueError):S.derive_launch('def launch():\n    return None\n')
+
     def test_unexpected_cumulative_child_is_rejected_without_launch(self):
         adapter=N(accounting=lambda:N(total=1,terminated=0,active=1));fake=N(a=adapter,windows=N(),owned=N(query_members=lambda a:dict(pids=[])))
         with patch.object(S,'facade',return_value=fake):

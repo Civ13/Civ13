@@ -87,7 +87,7 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
                 require(receipt['daemon_exit']['exit_code']==0,'Native daemon nonzero exit')
                 require((stage/'events.jsonl').is_file(),'Native stopped before first event: '+str(native.get('error')))
                 rows=[json.loads(line) for line in read(stage/'events.jsonl',12*1024**2).splitlines() if line]
-                receipt['native_receipt']=native;receipt['analysis']=validate(native,rows,head,binding);receipt['status']='passed';break
+                receipt['native_receipt']=native;receipt['analysis']=validate(native,rows,head,binding);receipt['status']='passed' if receipt['analysis']['cost_accepted'] else 'measurement_incomplete';break
             require(not runtime.a.exited(daemon),'Daemon exited without final failure/success receipt')
             time.sleep(.1)
         spec=importlib.util.spec_from_file_location('tree_fixture_diagnostics',ROOT/'tests/human_subtile/run.py')
@@ -123,4 +123,5 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prepared',type=Path,required=True);p.add_argument('--bin',type=Path,required=True);p.add_argument('--reviewed-manifest',required=True);p.add_argument('--authorized-until',required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--run-index',type=int,required=True);a=p.parse_args()
-    execute(a.prepared,a.bin,a.reviewed_manifest,a.authorized_until,a.output,a.run_index)
+    result=execute(a.prepared,a.bin,a.reviewed_manifest,a.authorized_until,a.output,a.run_index)
+    sys.exit(0 if result['status']=='passed' else 1)

@@ -20,6 +20,13 @@ def socket_ok(row, port, daemon):
     if row.get('remote_address')!='127.0.0.1': return False
     return row.get('port')==port if daemon else row.get('remote_port')==port
 
+def derive_launch(source):
+    import textwrap
+    source=textwrap.dedent(source)
+    anchor='from guard_config import digest, BINARIES'
+    require(source.count(anchor)==1,'Launcher binary-boundary anchor drift')
+    return source.replace(anchor,'BINARIES = self.tree_native_binary_hashes\n    from hashlib import sha256\n    digest = lambda p: sha256(Path(p).read_bytes()).hexdigest()',1)
+
 class OwnedRun:
     def __init__(self, output, binary_hashes, wall=180, now=time.monotonic):
         self.b=facade();self.a=self.b.a;self.w=self.b.windows;self.o=self.b.owned
@@ -35,10 +42,7 @@ class OwnedRun:
         require(Path(argv[0]).name.lower() in self.hashes and digest(Path(argv[0]).read_bytes())==self.hashes[Path(argv[0]).name.lower()],'Reviewed executable identity changed')
         # Reuse exact retained/suspended launch implementation, changing only its
         # immutable binary allowlist boundary. Never mutate guard_config globals.
-        source=inspect.getsource(type(self.a).launch)
-        import textwrap
-        source=textwrap.dedent(source).replace('from guard_config import digest, BINARIES','BINARIES = self.tree_native_binary_hashes\n    from hashlib import sha256\n    digest = lambda p: sha256(Path(p).read_bytes()).hexdigest()')
-        require(source.count('self.tree_native_binary_hashes')==1,'Launcher selector drift')
+        source=derive_launch(inspect.getsource(type(self.a).launch))
         env=dict(vars(sys.modules[type(self.a).__module__]));exec(compile(source,'<source-bound native launch>','exec'),env)
         self.a.tree_native_binary_hashes=self.hashes
         child=env['launch'](self.a,list(map(str,argv)),Path(cwd),self.output,name)
