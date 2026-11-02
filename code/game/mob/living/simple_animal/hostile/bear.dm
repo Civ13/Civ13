@@ -83,7 +83,7 @@
 	if(!src.following_mob)
 		src.do_behaviour()
 	if (src.female && !src.pregnant)
-		if(!src.cub) //Cubs cant get pregnant
+		if(!src.cub) //Cubs can't get pregnant
 			var/nearbyObjects = range(1,src) //3x3 area around animal
 			for(var/mob/living/simple_animal/hostile/bear/boar/M in nearbyObjects)
 				if (M.stat == CONSCIOUS && !M.female) //Failsafe, no misscheck for self-reproduction

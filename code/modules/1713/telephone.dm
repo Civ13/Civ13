@@ -172,7 +172,7 @@ var/list/global/phone_numbers = list()
 			return
 		var/tgtnum = 0
 		if (input != 911)
-			tgtnum = sanitize_integer(input, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
+			tgtnum = sanitize_integer(input, min=1000, max=9999, default=0) //0 as a first digit doesn't really work
 		else
 			tgtnum = 911
 		if (tgtnum == 0)
@@ -277,7 +277,7 @@ var/list/global/phone_numbers = list()
 				to_chat(user, "<span class='notice'>You can't add your own number!</span>")
 				return
 			var/addnum = 0
-			addnum = sanitize_integer(input1, min=1000, max=9999, default=0) //0 as a first digit doesnt really work
+			addnum = sanitize_integer(input1, min=1000, max=9999, default=0) //0 as a first digit doesn't really work
 			if (addnum == 0)
 				return
 			var/input2 = input(user, "Choose the name to assign to this number: (up to 15 characters)") as text

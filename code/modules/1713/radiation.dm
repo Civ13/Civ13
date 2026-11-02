@@ -1,4 +1,4 @@
-///So in Civ13 theres two measures of radiation used: Sieverts (and mSv and uSv) for emitted radiation and Grays/rads (1 Gy = 100 rads) for absorbed radiation.
+///So in Civ13 there's two measures of radiation used: Sieverts (and mSv and uSv) for emitted radiation and Grays/rads (1 Gy = 100 rads) for absorbed radiation.
 ///GRAYS: basic unit used is rad. For an adult human, exposure to 2 Gy from an unfocused radiation source such as an excursion will cause radiation sickness but is not considered definitely lethal; 2.4-3.4 Gy is the median lethal dose; a dose of 5 Gy almost always kills.
 ///SIEVERTS: basic unit used is mSv. An exposure to 1 Sv for 1 hour gives a total exposure of 1 Gy (since 1 Sv is equal to 1 Gy for all except alpha radiation).
 ///The radiation var of humans is measured in rads, so 100 radiation means 1 Gy. 1 mSv = 0.1 rad

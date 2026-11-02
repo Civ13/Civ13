@@ -73,7 +73,7 @@
 	mob_swap_flags = ~HEAVY
 
 	var/flash_protection = FALSE				// Total level of flash protection
-	var/equipment_tint_total = FALSE			// Total level of visualy impairing items
+	var/equipment_tint_total = FALSE			// Total level of visually impairing items
 	var/equipment_darkness_modifier			// Darkvision modifier from equipped items
 	var/equipment_vision_flags				// Extra vision flags from equipped items
 	var/equipment_see_invis					// Max see invibility level granted by equipped items
@@ -89,7 +89,7 @@
 
 	var/shock_stage = 0
 	var/traumatic_shock = 0
-	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
+	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is embedded in us.
 
 
 	var/image/hud_list[200]

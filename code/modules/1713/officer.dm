@@ -82,7 +82,7 @@ var/global/list/valid_coordinates = list()
 		announcement_cooldown = world.time+600
 		log_admin("Squad Announcement: [key_name(usr)] - [messaget] : [message]")
 	else
-		to_chat(usr, "You can't make an annoucement while you're dead!")
+		to_chat(usr, "You can't make an announcement while you're dead!")
 
 /mob/living/human/proc/Commander_Announcement()
 	set category = "Officer"
@@ -107,7 +107,7 @@ var/global/list/valid_coordinates = list()
 		announcement_cooldown = world.time+1800
 		log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
 	else
-		to_chat(usr, "You can't make an annoucement while you're dead!")
+		to_chat(usr, "You can't make an announcement while you're dead!")
 
 
 

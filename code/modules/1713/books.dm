@@ -176,7 +176,7 @@
 				If, and only if, the attorney is interfering with police work, they may be arrested for Obstruction of Justice.
 				Suspects have the right to be bailed from Jail for non-violent crimes for a fee of 500$.
 				This sum is to be delivered in cash at the station and is to be stored in the Evidence room.
-				As for violent crimes, a suspect may be released, after serving some time, on the Sheriff’s responsability or on a court order from the Judge (or from an admin request).
+				As for violent crimes, a suspect may be released, after serving some time, on the Sheriff’s responsibility or on a court order from the Judge (or from an admin request).
 
 				<h3>List of Contraband</h3>
 

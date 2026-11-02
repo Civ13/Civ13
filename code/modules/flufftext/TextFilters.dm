@@ -37,7 +37,7 @@ proc/NewStutter(phrase,stunned)
 		unstuttered_words -= word //Remove from unstuttered words so we don't stutter it again.
 		var/index = split_phrase.Find(word) //Find the word in the split phrase so we can replace it.
 
-		//Search for dipthongs (two letters that make one sound.)
+		//Search for diphthongs (two letters that make one sound.)
 		var/first_sound = copytext(word,1,3)
 		var/first_letter = copytext(word,1,2)
 		if (lowertext(first_sound) in list("ch","th","sh"))

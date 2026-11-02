@@ -476,7 +476,7 @@ var/global/last_persistence_save_time = 0
 						"Kurama" = 0,
 					)
 					if (faction == 0)
-						question = "What kind of ships should face eachother?"
+						question = "What kind of ships should face each other?"
 						options = list(
 						"Small Ships" = 0,
 						"Destroyers" = 10,

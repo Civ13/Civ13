@@ -18,8 +18,8 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	flee_message = "Wip wip!"
-	minbodytemp = 223		//Below -50 Degrees Celcius
-	maxbodytemp = 323	//Above 50 Degrees Celcius
+	minbodytemp = 223		//Below -50 Degrees Celsius
+	maxbodytemp = 323	//Above 50 Degrees Celsius
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
 	carnivore = 1
@@ -66,7 +66,7 @@
 		walk(src,0)
 		turns_since_scan = FALSE
 
-		if (flee_target) //fleeing takes precendence
+		if (flee_target) //fleeing takes precedence
 			handle_flee_target()
 		else
 			handle_movement_target()

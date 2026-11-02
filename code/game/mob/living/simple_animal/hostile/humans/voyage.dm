@@ -280,7 +280,7 @@
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak = list("Could use a drink","Know where I might find a good man that doesnt drink all his pay?", "We need more stores around here...", "Damn these dresses can get warm")
+	speak = list("Could use a drink","Know where I might find a good man that doesn't drink all his pay?", "We need more stores around here...", "Damn these dresses can get warm")
 	speak_emote = list("grumbles")
 	emote_hear = list("hums something","whistles a tune")
 	emote_see = list("eyes down a suspicious looking grain of sand", "glares at the sea", "trips", "looks at the large number of pirates")

@@ -23,8 +23,8 @@
 	density = FALSE
 	var/body_color //brown, gray, black and white, leave blank for random
 	layer = MOB_LAYER
-	minbodytemp = 223		//Below -50 Degrees Celcius
-	maxbodytemp = 323	//Above 50 Degrees Celcius
+	minbodytemp = 223		//Below -50 Degrees Celsius
+	maxbodytemp = 323	//Above 50 Degrees Celsius
 	universal_speak = FALSE
 	universal_understand = TRUE
 //	holder_type = /obj/item/weapon/holder/mouse

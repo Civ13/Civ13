@@ -20,7 +20,7 @@
 	var/plough_road = FALSE
 	var/cattle_gender = null			//Nice info to have about the cattle. Will make it easier to work with
 	var/calf = FALSE  //Each gender was taking this var
-	fat_penalty = 1 //For ballance reasons
+	fat_penalty = 1 //For balance reasons
 	icon_state = "cow_random"
 
 /mob/living/simple_animal/cattle/uses_defensive_retaliation()
@@ -201,7 +201,7 @@
 				if (do_after(user,35,src))
 					NR.amount -= 2
 					if (NR.amount <= 0)
-						qdel(NR)			//When dealing with stack ammount, it could stay as object with 0 ammount
+						qdel(NR)			//When dealing with stack amount, it could stay as object with 0 amount
 					qdel(O)
 					if(cattle_gender == "female")
 						icon_state = "cow_plough"
@@ -241,7 +241,7 @@
 				new/obj/item/stack/material/rope(user.loc)
 				if(plough_material == "iron")
 					new/obj/item/weapon/plough/iron(user.loc)
-					plough_material = null						//I hate this much of redundancy thats needed
+					plough_material = null						//I hate this much of redundancy that's needed
 				else if(plough_material == "wood")
 					new/obj/item/weapon/plough(user.loc)
 					plough_material = null
@@ -278,7 +278,7 @@
 						T.ChangeTurf(/turf/floor/dirt/ploughed/flooded)	//returns a different ploughted field than the regular dirt
 					else
 						new/obj/covers/roads/dirt(O.loc)
-					simplehunger -= 65		//The hunger rates regenerates after doing brute damage, thats why it can take more than 1000 simplehunger
+					simplehunger -= 65		//The hunger rates regenerates after doing brute damage, that's why it can take more than 1000 simplehunger
 					visible_message("[src] [pick("ploughs the field","runs the plough into the field","begins ploughing the field.","plows.")]")
 		else if (istype(T, /turf/floor/dirt/underground) || locate(/obj/covers/roads/dirt) in get_turf(O))
 			return										//I hate these double checks and same looking code
@@ -297,7 +297,7 @@
 	if (stat == CONSCIOUS)
 		if ( plough && pulledby)
 			if ( istype(get_turf(src), /turf/floor/grass/jungle) )
-			else if ( istype(get_turf(src), /turf/floor/dirt/burned) )			//Not very modular, since the plough process isnt
+			else if ( istype(get_turf(src), /turf/floor/dirt/burned) )			//Not very modular, since the plough process isn't
 			else if ( istype(get_turf(src), /turf/floor/dirt/jungledirt) )		//We can module all the checks if the soil is ploughtable
 			else if (istype(get_turf(src), /turf/floor/grass) && !istype(get_turf(src), /turf/floor/grass/jungle))
 				do_plough(src)			//Maybe add a Turf var or proc is_ploughtable?
@@ -361,7 +361,7 @@
 			if (!stat && M)
 				if ( plough )
 					icon_state = "cow_plough"
-				else								//For some reason, updating the cow_work to icon_living doesnt work properly
+				else								//For some reason, updating the cow_work to icon_living doesn't work properly
 					icon_state = icon_living
 				var/list/responses = list(	"[src] looks at you imploringly.",
 											"[src] looks at you pleadingly",
@@ -401,7 +401,7 @@
 	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
-	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 	fat_extra = 2
 
@@ -434,7 +434,7 @@
 	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
-	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 	fat_extra = 2
 
@@ -576,7 +576,7 @@
 	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
-	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	predatory_carnivore = 1
 	behaviour = "defends"
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
@@ -610,7 +610,7 @@
 	herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	granivore = 1 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	scavenger = 1 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
-	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	carnivore = 1 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	behaviour = "defends"
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 	fat_extra = 2

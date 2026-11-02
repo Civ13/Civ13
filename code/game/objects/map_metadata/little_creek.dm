@@ -2,7 +2,7 @@
 /obj/map_metadata/little_creek
 	ID = MAP_LITTLE_CREEK
 	title = "Big Trouble in Little Creek (RP)"
-	description = "At the small frontier town of Little Creek, the Sheriff recieves a warning: Two groups of outlaws are about to rob the town's bank!"
+	description = "At the small frontier town of Little Creek, the Sheriff receives a warning: Two groups of outlaws are about to rob the town's bank!"
 	lobby_icon = "icons/lobby/wildwest.png"
 	no_winner ="The fighting for the town is still going on."
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -19,7 +19,7 @@
 	ordinal_age = 4
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "Little Creek"
-	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: Two groups of outlaws are about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>750 dollars</b>!</big></i>"
+	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff receives a warning: Two groups of outlaws are about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>750 dollars</b>!</big></i>"
 	faction1 = CIVILIAN
 	ambience = list("sound/ambience/desert.ogg")
 	gamemode = "Bank Robbery (RP)"
@@ -44,14 +44,14 @@
 		return FALSE
 	for(var/obj/structure/carriage/C in world)
 		if (C.faction1val >= 700) // total value stored = 2191. So roughly 1/3rd
-			var/message = "The <b>West Side Gang</b> has sucessfully stolen over 700 dollars! The robbery was successful!"
+			var/message = "The <b>West Side Gang</b> has successfully stolen over 700 dollars! The robbery was successful!"
 			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			return TRUE
 		else if (C.faction2val >= 700) // total value stored = 2191. So roughly 1/3rd
-			var/message = "The <b>East Side Gang</b> has sucessfully stolen over 700 dollars! The robbery was successful!"
+			var/message = "The <b>East Side Gang</b> has successfully stolen over 700 dollars! The robbery was successful!"
 			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
@@ -59,7 +59,7 @@
 			return TRUE
 	if (processes.ticker.playtime_elapsed >= 72000)
 		ticker.finished = TRUE
-		var/message = "The Sheriff's troops have sucessfully defended the Bank! With the Army arriving, the Outlaws retreat!"
+		var/message = "The Sheriff's troops have successfully defended the Bank! With the Army arriving, the Outlaws retreat!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

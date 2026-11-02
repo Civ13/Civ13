@@ -17,7 +17,7 @@
 
 /obj/item/weapon/storage/ww2/german
 	name = "german messkit"
-	desc = "It's a standard issue messkit for german military personel"
+	desc = "It's a standard issue messkit for german military personnel"
 	icon_state = "gerkit"
 	item_state = "gerkit"
 
@@ -30,7 +30,7 @@
 
 /obj/item/weapon/storage/ww2/unmeal
 	name = "UN messkit"
-	desc = "It's a cheap tin messkit for all peacekeeping personel."
+	desc = "It's a cheap tin messkit for all peacekeeping personnel."
 	max_w_class = 2
 	can_hold = new/list(
 	/obj/item/weapon/material/kitchen/utensil,
@@ -127,7 +127,7 @@
 
 /obj/item/weapon/storage/ww2/shaving_kit/german
 	name = "german shaving kit"
-	desc = "It's a standard issue shaving kit for german military personel"
+	desc = "It's a standard issue shaving kit for german military personnel"
 	icon_state = "shaving_kit_germ"
 	item_state = "shaving_kit_germ"
 	New()

@@ -84,7 +84,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Confederates Army</b> has sucessfuly defended Missionary Ridge! The Union have halted the attack!"
+		var/message = "The <b>Confederates Army</b> has successfully defended Missionary Ridge! The Union have halted the attack!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

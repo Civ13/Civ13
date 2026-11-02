@@ -52,7 +52,7 @@
 			w_class = max(w_class, holstered.w_class)
 			user.visible_message("<span class='notice'>[user] holsters \the [holstered].</span>", "<span class='notice'>You holster \the [holstered].</span>")
 			name = "occupied [initial(name)]"
-		else //this really shouldnt happen
+		else //this really shouldn't happen
 			return
 
 /obj/item/clothing/accessory/holster/proc/clear_holster()
@@ -192,7 +192,7 @@
 	if (!H.holstered)
 		var/obj/item/W = usr.get_active_hand()
 		if (!istype(W, /obj/item))
-			to_chat(usr, "<span class='warning'>You need your gun equiped to holster it.</span>")
+			to_chat(usr, "<span class='warning'>You need your gun equipped to holster it.</span>")
 			return
 		H.holster(W, usr)
 	else

@@ -86,7 +86,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/smokable/New()
 	..()
 	flags |= NOREACT // so it doesn't react until you light it
-	create_reagents(chem_volume) // making the cigarrete a chemical holder with a maximum volume of 15
+	create_reagents(chem_volume) // making the cigarette a chemical holder with a maximum volume of 15
 
 /obj/item/clothing/mask/smokable/process()
 	smoketime--
@@ -212,7 +212,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 	if (istype(glass)) //you can dip cigarettes into beakers
 		var/transfered = glass.reagents.trans_to_obj(src, chem_volume)
-		if (transfered)	//if reagents were transfered, show the message
+		if (transfered)	//if reagents were transferred, show the message
 			to_chat(user, "<span class='notice'>You dip \the [src] into \the [glass].</span>")
 		else			//if not, either the beaker was empty, or the cigarette was full
 			if (!glass.reagents.total_volume)

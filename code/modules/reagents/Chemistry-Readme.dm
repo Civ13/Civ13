@@ -159,7 +159,7 @@ About Reagents:
 			Current volume.
 
 		metabolism
-			How quickly reagent is processed in mob's bloodstream; by default aslo affects ingest and touch metabolism.
+			How quickly reagent is processed in mob's bloodstream; by default also affects ingest and touch metabolism.
 
 		ingest_met
 			How quickly reagent is processed when ingested; [metabolism] is used if zero.
@@ -227,7 +227,7 @@ About Reagents:
 			Called when [newamount] of reagent with [newdata] data is added to the current reagent. Used by paint.
 
 		get_data()
-			Returns data. Can be overriden.
+			Returns data. Can be overridden.
 
 About Recipes:
 

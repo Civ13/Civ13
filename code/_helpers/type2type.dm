@@ -91,7 +91,7 @@
 	return hex
 
 //TODO replace thise usage with the byond proc
-//Converts a string into a list by splitting the string at each delimiter found. (discarding the seperator)
+//Converts a string into a list by splitting the string at each delimiter found. (discarding the separator)
 /proc/text2list(text, delimiter = "\n")
 	var/delim_len = length_char(delimiter)
 	if(delim_len < 1)
@@ -105,7 +105,7 @@
 		. += copytext_char(text, last_found, found)
 		last_found = found + delim_len
 	while(found)
-// Splits the text of a file at seperator and returns them in a list.
+// Splits the text of a file at separator and returns them in a list.
 /proc/file2list(filename, seperator="\n")
 	return splittext(return_file_text(filename),seperator)
 

@@ -113,7 +113,7 @@
 	w_class = ITEM_SIZE_NORMAL
 	storage_slots = 7
 
-	allow_quick_empty = TRUE // this function is superceded
+	allow_quick_empty = TRUE // this function is superseded
 	New()
 		..()
 		//verbs -= /obj/item/weapon/storage/verb/quick_empty
@@ -220,7 +220,7 @@
 		if (!istype(S)) return FALSE
 
 		//I would prefer to drop a new stack, but the item/attack_hand code
-		// that calls this can't recieve a different object than you clicked on.
+		// that calls this can't receive a different object than you clicked on.
 		//Therefore, make a new stack internally that has the remainder.
 		// -Sayu
 

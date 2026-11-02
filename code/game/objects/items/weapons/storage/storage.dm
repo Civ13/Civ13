@@ -326,7 +326,7 @@
 		sample_object = sample
 		number = TRUE
 
-//This proc determins the size of the inventory to be displayed. Please touch it only if you know what you're doing.
+//This proc determines the size of the inventory to be displayed. Please touch it only if you know what you're doing.
 /obj/item/weapon/storage/proc/orient2hud(mob/user as mob)
 
 	var/adjusted_contents = contents.len

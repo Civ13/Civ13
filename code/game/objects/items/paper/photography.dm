@@ -351,9 +351,9 @@ var/global/photo_count = 0
 
 /*
 generate_image function generates image of specified range and location
-arguments tx, ty, tz are target coordinates (requred), range defines render distance to opposite corner (requred)
-cap_mode is capturing mode (optional), user is capturing mob (requred only wehen cap_mode = CAPTURE_MODE_REGULAR),
-lighting determines lighting capturing (optional), suppress_errors suppreses errors and continues to capture (optional).
+arguments tx, ty, tz are target coordinates (required), range defines render distance to opposite corner (required)
+cap_mode is capturing mode (optional), user is capturing mob (required only when cap_mode = CAPTURE_MODE_REGULAR),
+lighting determines lighting capturing (optional), suppress_errors suppresses errors and continues to capture (optional).
 */
 proc/generate_image(var/tx as num, var/ty as num, var/tz as num, var/range as num, var/cap_mode = 1, var/mob/living/user, var/lighting = 0, var/suppress_errors = 1)
 	var/list/turfstocapture = list()
@@ -385,7 +385,7 @@ proc/generate_image(var/tx as num, var/ty as num, var/tz as num, var/range as nu
 				continue
 			else
 				atoms.Add(A)
-	//Lines below actually render all colected data
+	//Lines below actually render all collected data
 	atoms = sort_atoms_by_layer(atoms)
 	var/icon/cap = icon('icons/effects/96x96.dmi', "")
 	cap.Scale(range*32, range*32)

@@ -78,7 +78,7 @@
 */
 /obj/item/weapon/pill_pack/pervitin
 	name = "pervitin pill pack"
-	desc = "Powerfull stimulant. Don't eat more than one."
+	desc = "Powerful stimulant. Don't eat more than one."
 	pill_type = /obj/item/weapon/reagent_containers/pill/pervitin
 
 /obj/item/weapon/pill_pack/potassium_iodide
