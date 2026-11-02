@@ -229,8 +229,15 @@ image. Policy equality is NOT fresh LOS authorization or proof of valid pixels.
 The observer never captures new geometry, calls an authorization decision or
 changes a mask, image, icon, light or lease admission.
 
-The existing unavailable-capture mutation/recovery control is traced after the
-movement sample, with the same immediate withdrawal oracle. Existing opaque mover,
+The existing mutation suspension/recovery control is traced after the movement
+sample, with the same immediate withdrawal oracle. Its owned mutation ticket
+causes reconciliation to return before capture; `mutation_suspended` is emitted
+at that actual early return after withdrawal. The protocol requires the active
+mutation and owned context between reconcile entry and return, then a closed
+ticket and restored publication. The later `capture_unavailable` phase remains
+an observation of an attempted capture returning null; it is not a substitute
+for this control. Offline phase/ownership/omission controls and a staged-source
+branch check guard that distinction; they do not execute native dispatch. Existing opaque mover,
 lighting, hidden hover/examine, unrelated-viewer, failure-retention and cleanup
 controls remain mandatory. Teleport, eye/body replacement and client pixels are
 not newly exercised by this workload; see docs/tree-refresh-measurement.md for

@@ -98,6 +98,8 @@ def adapt(relative,text, trace=True):
         text=once(text,'\tlos_invalidate(am)\n','\ttree_native_trace_set_reason("entered_mover", am)\n\tlos_invalidate(am)\n\ttree_native_trace_set_reason(tree_native_trace_previous_reason, am)\n')
         text=once(text,'\tGLOB.moved_event.raise_event(am, old_loc, am.loc)\n','\tGLOB.moved_event.raise_event(am, old_loc, am.loc)\n\ttree_native_trace("entered_end", am, am)\n')
     if relative=='code/modules/visibility/los_lifecycle.dm':
+        suspended='\tif(V.eligible() && ((persistence_active_operation && persistence_active_operation.kind != "save") || V.mutations.len))\n\t\tif(root_tree_presenter)\n\t\t\troot_tree_presenter.invalidate()\n\t\tlos_dirty = TRUE\n'
+        text=once(text,suspended,suspended+'\t\tif(tree_native_trace_row && tree_native_trace_sampling)\n\t\t\ttree_native_trace("mutation_suspended", src)\n')
         text=once(text,'\tif(!S)\n','\tif(!S)\n\t\tif(tree_native_trace_row && tree_native_trace_sampling)\n\t\t\ttree_native_trace("capture_unavailable", src)\n')
         text=trace_proc(text,'/client/proc/reconcile_geometric_los()','tree_native_trace("reconcile_begin", src)','tree_native_trace("reconcile_return", src)')
     for rel,kind,header in (

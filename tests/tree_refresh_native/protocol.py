@@ -52,7 +52,7 @@ TRACE_FLAGS = ('dirty','mask_dirty','context_retired','eye_owned','turf_matches'
 TRACE_PHASES = {'event_begin','event_end','native_begin','native_return','entered_begin','entered_end',
                 'postmove','root_invalidate_before','root_invalidate_after','mask_invalidate_before','mask_invalidate_after',
                 'root_refresh_return','mask_refresh_return','reconcile_begin','reconcile_return',
-                'capture_unavailable','capture_failure_begin','capture_failure_observed','capture_failure_recovered'}
+                'capture_unavailable','mutation_suspended','mutation_control_begin','mutation_control_observed','mutation_control_recovered'}
 
 def validate_trace(row,case):
     expected = row['class']=='viewer_move' and row['iteration']==1
@@ -67,7 +67,7 @@ def validate_trace(row,case):
     require([x.get('seq') for x in trace]==list(range(1,len(trace)+1)),'Diagnostic sequence')
     ticks=[]
     for item in trace:
-        require(item.get('phase') in TRACE_PHASES and item.get('reason') in {'movement','entered_old_loc','entered_mover','capture_failure'},'Diagnostic phase/reason')
+        require(item.get('phase') in TRACE_PHASES and item.get('reason') in {'movement','entered_old_loc','entered_mover','mutation_control'},'Diagnostic phase/reason')
         require(type(item.get('tick')) is int and item['tick']>=0 and type(item.get('usage')) in (int,float) and math.isfinite(item['usage']) and item['usage']>=0,'Diagnostic native clock')
         ticks.append(item['tick'])
         require(type(item.get('native_seq')) is int and 0<=item['native_seq']<=row['trace_pulses'],'Diagnostic native correlation')
@@ -94,9 +94,18 @@ def validate_trace(row,case):
             found=next((i for i,x in enumerate(trace) if x['phase']==phase and x['reason']=='entered_mover' and x.get('changed_is_body')==1 and x.get('viewer_refresh')==0 and x['native_seq']==trace[entered]['native_seq']),None)
             require(found is not None,'Missing exact Entered invalidation source: '+phase);pair.append(found)
         require(entered<pair[0]<pair[1]<end,'Invalidation outside native Entered interval')
-    unavailable=index('capture_unavailable');observed=index('capture_failure_observed');recovered=index('capture_failure_recovered')
-    require(end<index('capture_failure_begin')<unavailable<observed<recovered,'Capture failure/republish order')
-    require(trace[unavailable]['state']['mutations']>0 and trace[observed]['state']['icon_present']==0 and trace[observed]['state']['frame'] is None,'Capture failure kept stale tree lease')
+    control=index('mutation_control_begin');suspended=index('mutation_suspended');observed=index('mutation_control_observed');recovered=index('mutation_control_recovered')
+    require(end<control<suspended<observed<recovered,'Mutation suspension/republish order')
+    interval=trace[control+1:observed]
+    require(not any(x['phase']=='capture_unavailable' for x in interval),'Mutation suspension was mislabeled as attempted capture failure')
+    reconciles=[i for i in range(control+1,suspended) if trace[i]['phase']=='reconcile_begin']
+    returns=[i for i in range(suspended+1,observed) if trace[i]['phase']=='reconcile_return']
+    require(len(reconciles)==len(returns)==1,'Missing mutation-suspended reconcile boundaries')
+    for i in (reconciles[0],suspended,returns[0],observed):
+        item=trace[i];state=item['state']
+        require(item['reason']=='mutation_control' and state['mutations']>0 and state['eye_owned']==1 and state['context_retired']==0,'Mutation suspension lacks owned active mutation cause')
+    require(trace[control]['state']['mutations']==0 and trace[recovered]['state']['mutations']==0,'Mutation ticket lifecycle did not close')
+    require(trace[observed]['state']['icon_present']==0 and trace[observed]['state']['frame'] is None,'Mutation suspension kept stale tree lease')
     restored=trace[recovered]['state'];require(restored['icon_present']==1 and restored['image_member']==1 and (case['mode']!='root' or restored['frame']),'Missing observed publication recovery')
 
 def validate(receipt, rows, head, binding):

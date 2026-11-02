@@ -31,16 +31,16 @@ def modeled_trace(row,case,before,after,phases):
     sequence=[('event_begin',before[0]),('native_begin',before[0]),('entered_begin',before[0]),
               ('root_invalidate_before',before[0]),('root_invalidate_after',gone),('mask_invalidate_before',gone),('mask_invalidate_after',gone),
               ('entered_end',gone),('native_return',gone),('postmove',gone),('root_refresh_return',after[0]),('mask_refresh_return',after[0]),
-              ('reconcile_return',after[0]),('capture_failure_begin',after[0]),('capture_unavailable',gone),
-              ('capture_failure_observed',gone),('capture_failure_recovered',after[0]),('event_end',after[0])]
+              ('reconcile_return',after[0]),('mutation_control_begin',after[0]),('reconcile_begin',gone),
+              ('mutation_suspended',gone),('reconcile_return',gone),('mutation_control_observed',gone),('mutation_control_recovered',after[0]),('event_end',after[0])]
     row['trace_pulses']=1;row['trace_entered_calls']=1
     for index,(phase,source) in enumerate(sequence):
         invalid='invalidate' in phase
-        reason='entered_mover' if invalid else 'capture_failure' if phase.startswith('capture_') else 'movement'
+        reason='entered_mover' if invalid else 'mutation_control' if 13<=index<=18 else 'movement'
         row['trace'].append(dict(seq=index+1,phase=phase,tick=1,usage=index,native_seq=int(index>0),reason=reason,
                                 subject='subject',changed='body1' if invalid else None,changed_is_body=int(invalid),possible_opacity=0 if invalid else None,
                                 viewer_refresh=0 if invalid else None,result=2 if phase=='native_return' else None,
-                                state=state(source,phase in ('capture_unavailable','capture_failure_observed'))))
+                                state=state(source,14<=index<=17)))
     row['trace_bytes']=len(json.dumps(row['trace'],separators=(',',':')).encode())
 
 def witness():
@@ -86,13 +86,29 @@ class Protocol(unittest.TestCase):
                 if mutation=='native_seq':next(x for x in trace if x['phase']=='native_return')['native_seq']=0
                 if mutation=='native_result':next(x for x in trace if x['phase']=='native_return')['result']=None
                 if mutation=='mask_fact':trace[0]['state']['mask_epoch_matches']=None
-                if mutation=='stale_capture':next(x for x in trace if x['phase']=='capture_failure_observed')['state']['icon_present']=1
+                if mutation=='stale_capture':next(x for x in trace if x['phase']=='mutation_control_observed')['state']['icon_present']=1
                 if mutation=='row_bound':row['trace']=trace*4
                 if mutation=='byte_bound':row['trace_bytes']=65537
                 if mutation=='measured':
                     target=next(r for r in rows if r['class']=='viewer_move' and r['iteration']==6);target.update(deepcopy({k:row[k] for k in ('trace_enabled','trace','trace_bytes','trace_entered_calls','trace_pulses')}))
                 if mutation=='receipt':receipt['trace_events']=7
                 with self.assertRaises(ValueError):P.validate(receipt,rows,'a'*40,'run')
+
+    def test_mutation_suspension_requires_actual_branch_cause_not_failed_capture(self):
+        _,rows=witness();baseline=next(r for r in rows if r['trace_enabled']);case=P.CASES[0]
+        P.validate_trace(baseline,case)
+        for defect in ('failed_capture_label','missing_reconcile','no_mutation','wrong_reason','unowned','unclosed','capture_phase'):
+            with self.subTest(defect=defect):
+                row=deepcopy(baseline);trace=row['trace']
+                suspended=next(x for x in trace if x['phase']=='mutation_suspended')
+                if defect=='failed_capture_label':suspended['phase']='capture_unavailable'
+                if defect=='missing_reconcile':trace[14]['phase']='event_begin'
+                if defect=='no_mutation':suspended['state']['mutations']=0
+                if defect=='wrong_reason':suspended['reason']='movement'
+                if defect=='unowned':suspended['state']['eye_owned']=0
+                if defect=='unclosed':next(x for x in trace if x['phase']=='mutation_control_recovered')['state']['mutations']=1
+                if defect=='capture_phase':trace[16]['phase']='capture_unavailable'
+                with self.assertRaises(ValueError):P.validate_trace(row,case)
 
     def test_native_omission_and_unsafe_identity_controls(self):
         for mutation in ('entered','root_stale','fallback_retained','unrelated','capture_failed','pending','budget_fallback','density','extra_event'):
@@ -179,6 +195,24 @@ class Preparation(unittest.TestCase):
             self.assertIn(control,probe)
         self.assertIn('row["iteration"] == 1',probe)
         self.assertLess(probe.index('tree_native_trace_finish(row)'),probe.index('var/list/scheduled = list('))
+
+    def test_mutation_suspension_phase_is_in_actual_early_return_before_capture(self):
+        relative='code/modules/visibility/los_lifecycle.dm'
+        source=(ROOT/relative).read_text();adapted=Q.adapt(relative,source)
+        start=adapted.index('if(V.eligible() && ((persistence_active_operation')
+        end=adapted.index('var/key = V.presentation_key()',start)
+        branch=adapted[start:end]
+        self.assertEqual(branch.count('tree_native_trace("mutation_suspended", src)'),1)
+        self.assertLess(branch.index('root_tree_presenter.invalidate()'),branch.index('"mutation_suspended"'))
+        self.assertLess(branch.index('los_dirty = TRUE'),branch.index('"mutation_suspended"'))
+        self.assertLess(branch.index('"mutation_suspended"'),branch.index('tree_native_end(tree_native_clock)'))
+        self.assertLess(branch.index('"mutation_suspended"'),branch.index('"reconcile_return"'))
+        self.assertTrue(branch.rstrip().endswith('return'))
+        self.assertNotIn('V.capture(',branch);self.assertNotIn('"capture_unavailable"',branch)
+        self.assertLess(end,adapted.index('var/datum/los_snapshot/S = V.capture(TRUE)'))
+        failed=adapted[adapted.index('if(!S)'):]
+        self.assertIn('tree_native_trace("capture_unavailable", src)',failed)
+        with self.assertRaises(ValueError):Q.adapt(relative,source.replace('|| V.mutations.len))','|| FALSE))',1))
 
     def test_source_selector_drift_fails_closed(self):
         with self.assertRaises(ValueError):Q.adapt('code/datums/observation/moved.dm','/atom/Entered()\n\treturn\n')

@@ -171,7 +171,10 @@ intermediate state or that every reported dropout has this cause.
    between Entered and republication, and replacement allowed-copy identity in
    fallback. Treat this as a characterization hypothesis. Dirty/published-policy
    equality and a retained sentinel mask are not fresh authorization. Existing
-   hidden hover/examine and unavailable-capture controls remain mandatory.
+   hidden hover/examine and mutation-suspension controls remain mandatory.
+   The mutation control returns before capture: require `mutation_suspended`
+   inside the owned-ticket reconcile interval, not a fabricated null-capture
+   event. A real attempted capture returning null has a separate observation.
 5. Establish pixels separately on a fresh isolated client, only after approval.
    A short high-frame-rate world crop must link exact source, map/view, mode,
    movement and event ID to the server trace. A future event-boundary marker may

@@ -492,16 +492,16 @@ var/global/obj/tree_native_opaque/tree_native_mover
 			safe = FALSE
 	if(kind == "viewer_move" && iteration == 1)
 		tree_native_trace_sampling = TRUE
-		tree_native_trace_reason = "capture_failure"
-		tree_native_trace("capture_failure_begin", A)
-		// Real production mutation ownership creates an unavailable capture.
+		tree_native_trace_reason = "mutation_control"
+		tree_native_trace("mutation_control_begin", A)
+		// Real mutation ownership suspends reconciliation before capture is attempted.
 		var/datum/los_mutation/ticket = A.los_context.begin_change()
 		tree_native_require(ticket && !A.reconcile_geometric_los(), "capture_failure_control")
 		row["capture_failed"] = tree_native_snapshot()
-		tree_native_trace("capture_failure_observed", A)
+		tree_native_trace("mutation_control_observed", A)
 		tree_native_require(A.los_context.finish_change(ticket), "capture_failure_release")
 		tree_native_require(A.reconcile_geometric_los(), "capture_failure_recovery")
-		tree_native_trace("capture_failure_recovered", A)
+		tree_native_trace("mutation_control_recovered", A)
 	tree_native_trace_finish(row)
 	row["scene_valid"] = scene_valid
 	row["safe"] = safe
