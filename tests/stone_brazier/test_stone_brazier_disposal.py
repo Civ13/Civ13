@@ -56,5 +56,52 @@ class StoneBrazierSourceContract(unittest.TestCase):
             self.assertLess(self.base.index(path), guard)
 
 
+class PostDropProjection(unittest.TestCase):
+    """Project the actual post-drop disjuncts; does not execute BYOND callbacks."""
+    def refuses(self, source=TEXT, **state):
+        start = source.index("// Drop callbacks may move or fill the item")
+        guard = source[start:].splitlines()[1].strip()
+        assert guard.startswith("if (") and guard.endswith(")"), guard
+        expressions = guard[4:-1].split(" || ")
+        values = {
+            "QDELETED(src)": state.get("brazier_deleted", False),
+            "!on": state.get("extinguished", False),
+            "loc != brazier_loc": state.get("brazier_moved", False),
+            "QDELETED(user)": state.get("user_deleted", False),
+            "user.loc != drop_site": state.get("user_moved", False),
+            "QDELETED(W)": state.get("item_deleted", False),
+            "W.loc != drop_site": state.get("item_moved", False),
+            "length(W.contents)": state.get("item_filled", False),
+        }
+        assert set(expressions) == set(values), expressions
+        return any(values[item] for item in expressions)
+
+    def test_each_callback_change_refuses_without_payment_or_deletion(self):
+        # Rejection returns before qdel and before fuel credit in the source.
+        action = proc("/obj/structure/brazier/stone/attackby(obj/item/W, mob/user)")
+        guard = action.index("// Drop callbacks may move or fill the item")
+        self.assertLess(guard, action.index("qdel(W)"))
+        self.assertLess(action.index("qdel(W)"), action.index("fuel += 5"))
+        for key in ("brazier_deleted", "extinguished", "brazier_moved", "user_deleted",
+                    "user_moved", "item_deleted", "item_moved", "item_filled"):
+            with self.subTest(callback_effect=key):
+                self.assertTrue(self.refuses(**{key: True}))
+        self.assertFalse(self.refuses())
+
+    def test_omitted_post_drop_check_is_detected(self):
+        for check in (" || W.loc != drop_site", " || length(W.contents)", " || !on"):
+            with self.subTest(check=check):
+                start = TEXT.index("// Drop callbacks may move or fill the item")
+                altered = TEXT[:start] + TEXT[start:].replace(check, "", 1)
+                self.assertNotEqual(altered, TEXT)
+                with self.assertRaises(AssertionError):
+                    self.refuses(source=altered)
+
+    def test_original_ground_site_is_snapshotted_before_unequip(self):
+        action = proc("/obj/structure/brazier/stone/attackby(obj/item/W, mob/user)")
+        self.assertLess(action.index("var/turf/drop_site = get_turf(user)"), action.index("!user.unEquip(W)"))
+        self.assertIn("!drop_site || user.loc != drop_site", action)
+
+
 if __name__ == "__main__":
     unittest.main()

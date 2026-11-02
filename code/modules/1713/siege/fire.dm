@@ -174,7 +174,12 @@
 		if (!stack.use(1))
 			return
 	else
-		if (!user.unEquip(W) || QDELETED(W) || W.loc == user)
+		var/turf/drop_site = get_turf(user)
+		var/atom/brazier_loc = loc
+		if (!drop_site || user.loc != drop_site || !user.unEquip(W))
+			return
+		// Drop callbacks may move or fill the item, move an actor, or extinguish the fire.
+		if (QDELETED(src) || !on || loc != brazier_loc || QDELETED(user) || user.loc != drop_site || QDELETED(W) || W.loc != drop_site || length(W.contents))
 			return
 		qdel(W)
 	// Five seconds of fuel per item or stack unit, versus 80 for one wood.
