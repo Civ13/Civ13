@@ -14,6 +14,9 @@
 var/global/datum/global_init/init = new ()
 var/global/list/approved_list = list()
 var/global/list/whitelist_list = list()
+// Unavailable is distinct from a successfully published authoritative empty set.
+var/global/approved_list_ready = FALSE
+var/global/whitelist_list_ready = FALSE
 var/global/list/faction_list_blue = list()
 var/global/list/faction_list_red = list()
 var/global/list/faction_list_organizer = list()
