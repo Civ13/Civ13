@@ -51,7 +51,7 @@
 		return
 
 	turns_since_scan++
-	if (turns_since_scan > 5)
+	if (turns_since_scan > 5 && (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet")))
 		if (npc_subtile_pet_enabled)
 			npc_subtile_stop_pet_walk()
 		walk(src,0)
@@ -102,6 +102,8 @@
 
 		if (movement_target != friend)
 			if (current_dist > follow_dist && !istype(movement_target, /mob/living/simple_animal/mouse) && (friend in oview(src)))
+				if (!npc_subtile_enabled && !npc_subtile_continuous_legacy_ready("pet"))
+					return
 				//stop existing movement
 				if (npc_subtile_pet_enabled)
 					npc_subtile_stop_pet_walk()
@@ -111,13 +113,15 @@
 				//walk to friend
 				stop_automated_movement = TRUE
 				npc_set_movement_target(friend)
-				if (npc_subtile_pet_enabled)
+				if (npc_subtile_pet_enabled && npc_subtile_enabled)
 					npc_subtile_start_pet_walk(movement_target, "towards", near_dist, npc_subtile_native_interval(4))
-				else
+				else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet"))
 					walk_to(src, movement_target, near_dist, 4)
 
 		//already following and close enough, stop
 		else if (current_dist <= near_dist)
+			if (!npc_subtile_enabled && !npc_subtile_continuous_legacy_ready("pet"))
+				return
 			if (npc_subtile_pet_enabled)
 				npc_subtile_stop_pet_walk()
 			walk(src,0)

@@ -60,7 +60,7 @@
 		return
 
 	turns_since_scan++
-	if (turns_since_scan > 5)
+	if (turns_since_scan > 5 && (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet")))
 		if (npc_subtile_pet_enabled)
 			npc_subtile_stop_pet_walk()
 		walk(src,0)
