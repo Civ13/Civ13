@@ -6,7 +6,7 @@
 	var/list/request = null
 	try
 		request = json_decode(payload)
-	catch (var/exception/e)
+	catch
 		return null
 	if (!islist(request) || !istext(request["operation"]) || !istext(request["lease"]) || length(request["lease"]) != 32)
 		return null
