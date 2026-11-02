@@ -157,6 +157,7 @@ SUITES = {
         'tests/human_subtile/test_npc_recovery.py',
         'tests/human_subtile/test_npc_species.py',
         'tests/human_subtile/test_npc_wild_walk.py',
+        'tests/human_subtile/test_species_fallback_fixture.py',
         'tests/human_subtile/test_vendor_legacy_integrated.py',
         'tests/human_subtile/test_wild_handoff.py',
         'tests/human_subtile/test_wildlife_integration_reconcile.py',
@@ -172,6 +173,9 @@ SUITES = {
         'code/modules/1713/machinery/modular_vehicles/frame.dm',
         'code/modules/1713/structures.dm', 'tests/save_movement/source_adapter.py',
         'tests/human_subtile/scheduler_core_draft.dm', 'tests/human_subtile/run-npc.py',
+        'tests/human_subtile/species_fallback_fixture.dm',
+        'tests/human_subtile/species_fallback_stage.py',
+        'tests/human_subtile/species_fallback_contract.py',
         'tests/human_subtile/run-diagonal.py', 'tests/human_subtile/run.py',
         'tests/human_subtile/probe.dm', 'scripts/native_fixture.py')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.

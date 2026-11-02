@@ -1,18 +1,73 @@
-name: Inactive cardinal wildlife cadence registration
+name: Bounded species fallback observations
 on:
   workflow_dispatch:
     inputs:
+      experiment:
+        description: Select the reviewed observation
+        required: true
+        type: choice
+        default: species
+        options: [species]
+      expected_tree:
+        description: Full independently reviewed Git tree SHA
+        required: true
+        type: string
       expected_head:
         description: Full reviewed fixture commit SHA
         required: true
         type: string
-permissions: {}
+permissions:
+  contents: read
+concurrency:
+  group: civ13-wildlife-random-cadence-exclusive
+  cancel-in-progress: false
 jobs:
-  inactive:
+  cardinal-cadence:
+    if: ${{ github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 2
+    timeout-minutes: 12
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        suite: [species05]
     steps:
-      - name: Refuse default-branch execution
+      - name: Validate manual source and exclusive rate selection
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_head }}
+          EXPERIMENT: ${{ inputs.experiment }}
+          WILDLIFE_SUITE: ${{ matrix.suite }}
         run: |
-          echo 'Inactive registration only. Select the separately reviewed experimental ref for an authorized fixture run.'
-          exit 1
+          set -euo pipefail
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test "$RUNNER_OS" = Linux
+          test "$RUNNER_ARCH" = X64
+          [[ "$EXPECTED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          test "$EXPECTED_HEAD" = "$GITHUB_SHA"
+          test "$EXPERIMENT" = species
+          test "$WILDLIFE_SUITE" = species05
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify reviewed Git tree
+        env:
+          EXPECTED_TREE: ${{ inputs.expected_tree }}
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_TREE" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+      - name: Offline selector, observer and receipt contracts
+        run: |
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_species_fallback_fixture.py' -v
+          /usr/bin/python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_species_fallback_controller.py' -v
+      - name: Bounded isolated observations, no parity claim
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_head }}
+          WILDLIFE_SUITE: ${{ matrix.suite }}
+          CIV13_REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I -B tests/human_subtile/cloud_npc_job.py --execute --head "$EXPECTED_HEAD" --suite "$WILDLIFE_SUITE" \
+            --output "$RUNNER_TEMP/cardinal-setup" --controller-output "$RUNNER_TEMP/cardinal-controller"
