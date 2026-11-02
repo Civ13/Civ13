@@ -92,6 +92,18 @@ class BaselinePolicyTests(unittest.TestCase):
         ordinary=(ROOT/'.github/workflows/test.yml').read_text()
         self.assertNotIn('tests/tree_refresh_native',ordinary)
 
+    def test_axe_active_hand_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'axe_active_hand'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/axe_active_hand/test_axe_active_hand.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
+
     def test_anvil_feedback_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['anvil_feedback']
         self.assertEqual(suite['files'], ('tests/anvil_feedback/test_feedback.py',))
