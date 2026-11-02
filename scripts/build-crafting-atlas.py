@@ -1,7 +1,7 @@
 """Generate current-source recipes and genuine isolated BYOND icon previews."""
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
-from atlas.catalog_metadata import add_processors, annotate_eras
+from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras
 from atlas.tanning import add_tanning
 from atlas.rope_making import add_rope_making
 from atlas.woodworking import add_woodworking, reviewed_source_revision
@@ -33,6 +33,8 @@ def label(s):
         return 'sandstone '+('ingot' if shape=='fired' else shape)+' mold'
     if s.rstrip('/') == '/obj/structure/grinder/constructed':
         return 'wood grinder'
+    if s.rstrip('/') == '/obj/structure/chem_master/tablet_press/constructed':
+        return 'tablet press'
     if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
         return 'finished planks'
     if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
@@ -107,6 +109,8 @@ for p,s in files.items():
                 tool_notes+=' Chisel + hammer/mallet equipped/at feet; reused/rechecked. Ready without firing. From fired clay blacksmith pot/jug to anvil.'
             if b == '/obj/structure/grinder/constructed':
                 tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
+            if b == '/obj/structure/chem_master/tablet_press/constructed':
+                tool_notes += ' Calendar >1843; scaled base time. Full 20 required; Production debit 18. Buffer-only carbonate+aspirin; no salvage.'
             if n.startswith('joinery: '):
                 if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
                     raise ValueError('Joinery recipe contract drift: '+n)
@@ -301,6 +305,7 @@ for route in tanning_routes + rope_routes + woodworking_routes:
     for resource in route['outputs']:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
+add_tablet_press(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)
 annotate_families(records, files)

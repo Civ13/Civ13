@@ -59,7 +59,8 @@ class RestoreIntegrationSources(unittest.TestCase):
     def test_startup_cannot_allocate_outside_admitted_wrapper(self):
         source = (ROOT / 'code/modules/persistence/restart_transaction.dm').read_text()
         self.assertNotIn('prepare_saved_dimensions(', source)
-        self.assertIn('return ticker.loadmap(src, expected_intent)', source)
+        self.assertIn('return ticker.loadmap(src, expected_intent, startup_ready)', source)
+        self.assertIn('call(game_ready_hook)("restart_ticket", src)', source)
         self.assertIn('if(import_complete && !matches(I, current_identity()))', source)
         self.assertIn('transaction.matches(expected_intent, transaction.current_identity())', self.wrapper)
 

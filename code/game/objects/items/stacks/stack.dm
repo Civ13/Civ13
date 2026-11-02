@@ -325,6 +325,11 @@
 		if (quantity != 1 || !carving.valid())
 			to_chat(user, SPAN_WARNING("Carving molds needs sandstone, completed research, a chisel and a hammer or mallet equipped or at your feet."))
 			return
+	var/datum/tablet_press_construction/press_construction
+	if (recipe.result_type == /obj/structure/chem_master/tablet_press/constructed)
+		press_construction = new(src, H, recipe, quantity)
+		if (!press_construction.valid())
+			return
 	if (findtext(recipe.title, "joinery: ") == 1)
 		joinery = new(src, H, recipe)
 		if (quantity != 1 || !joinery.valid())
@@ -1855,6 +1860,8 @@
 			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
+		if (press_construction && !press_construction.valid())
+			return
 		if (H && !joinery && !carving)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
@@ -1959,6 +1966,8 @@
 	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	// Retain and recheck tools, secondary stock, occupied tile and research after
 	// the wait. No debit occurs on an interrupted or invalidated action.
+	if (press_construction && !press_construction.valid())
+		return
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
 		return

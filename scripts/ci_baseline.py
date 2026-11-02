@@ -36,6 +36,19 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete startup observer projections and hook contracts; fake timers/Export.
+    'game_ready': {'files': ('tests/game_ready/test_release.py',
+                             'tests/game_ready/test_ready.py',
+                             'tests/game_ready/test_hooks.py'),
+        'paths': ('tests/game_ready/', 'code/modules/webhooks/game_ready.dm',
+                  'config/game-ready.example.txt', 'docs/game-ready-webhook.md'),
+        'shared_paths': ('code/world.dm', 'code/setup.dm', 'code/datums/configuration.dm',
+            'code/modules/persistence/functions.dm',
+            'code/modules/persistence/restart_transaction.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/nomads_lifecycle.dm',
+            'tests/save_movement/source_adapter.py', 'civ13.dme')},
+
     'animal_tack': {'files': ('tests/animal_tack/test_tack.py',),
         'paths': ('tests/animal_tack/', 'code/game/objects/items/weapons/animal_tack.dm'),
         'shared_paths': ('code/game/mob/living/simple_animal/riding.dm',
@@ -345,6 +358,14 @@ SUITES = {
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm')},
+    # Reviewed stdlib-only projection; shared production changes keep fallback.
+    'tablet_press': {'files': ('tests/tablet_press/test_contract.py',),
+        'paths': ('tests/tablet_press/',),
+        'shared_paths': ('code/modules/reagents/tablet_press.dm',
+            'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/items/stacks/civ_recipes.dm',
+            'code/modules/research_tree/research_node.dm',
+            'code/modules/reagents/laboratory.dm', 'config/crafting/')},
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection, and the link test
     # imports the cross-level runner only to stage files; no native launch.

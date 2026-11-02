@@ -112,6 +112,11 @@ abstraction rather than a neutral-compound synthesis claim.
 
 ## Verification limits
 
+The constructed [calcium-bound tablet press](tablet-press.md) uses a retained
+internal buffer and a paid carbonate/aspirin recipe. Existing pill makers stay
+unchanged. Aspirin's controlled-bench supply remains pending a separate policy
+decision; the press's after 1843 floor is not an aspirin invention-date assertion.
+
 tests/chemistry/README.md documents production-method checks, mutations and
 adapters. They do not prove menu clicks, full crop growth, every map's progression,
 power-network integration, syringe collection or production-server behavior.
