@@ -78,7 +78,7 @@ def inspect_settings(info, image_id, mounts, uidgid, head, suite='smoke', work_d
                   '--byond-bin','/opt/byond/bin','--byond-archive','/inputs/byond.zip',
                   '--scratch-root','/work','--reviewed-cloud-envelope']
     if suite != 'smoke': expected_cmd += ['--suite',suite]
-    if suite in ('species05','transition05','handoff05'):
+    if suite in ('species05','transition05','handoff05','hostile05'):
         require(isinstance(work_deadline,float) and work_deadline>0, 'Missing random work deadline')
         expected_cmd += ['--work-deadline',str(work_deadline)]
     require(config.get('Cmd') == expected_cmd, 'Worker command mismatch')
@@ -202,7 +202,7 @@ def validate_package(data, expected, suite='smoke'):
                                         'daemon-stdout.log', 'daemon-stderr.log'))
             allowed.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout','stderr'))
             limit = len(allowed)  # Exactly 32 named members; failures may be incomplete.
-        elif suite in ('species05', 'handoff05'):
+        elif suite in ('species05', 'handoff05', 'hostile05'):
             allowed = {'harness-status.json', 'smoke-summary.json', 'npc-smoke/cloud-manifest.json',
                        'npc-smoke/stage/compile-stdout.log', 'npc-smoke/stage/compile-stderr.log'}
             allowed.update(f'npc-smoke/runtime/{name}' for name in ('receipt.json','result.txt','port-closed.txt',
@@ -614,7 +614,7 @@ def create_args(name,owner,head,source,binary,archive,uidgid,suite='smoke',work_
         '--head',head,'--byond-bin','/opt/byond/bin','--byond-archive','/inputs/byond.zip',
         '--scratch-root','/work','--reviewed-cloud-envelope']
     if suite != 'smoke': args += ['--suite',suite]
-    if suite in ('species05','transition05','handoff05'):
+    if suite in ('species05','transition05','handoff05','hostile05'):
         require(isinstance(work_deadline,float) and work_deadline>0, 'Missing random work deadline')
         args += ['--work-deadline',str(work_deadline)]
     return args
@@ -659,7 +659,7 @@ def main():
     parser.add_argument('--name',help=argparse.SUPPRESS)
     parser.add_argument('--owner',help=argparse.SUPPRESS)
     parser.add_argument('--deadline',type=float,help=argparse.SUPPRESS)
-    parser.add_argument('--suite',choices=('species05','transition05','handoff05'),required=True)
+    parser.add_argument('--suite',choices=('species05','transition05','handoff05','hostile05'),required=True)
     args=parser.parse_args()
     started=time.monotonic()
     require(args.execute, 'Execution requires explicit --execute')
@@ -718,7 +718,7 @@ def main():
         try:
             create_uncertain=True
             config_args=(create_args(name,owner,head,source,binary,archive,uidgid,args.suite,
-                         deadline-(MAX_SECONDS-WORK_SECONDS)) if args.suite in ('species05','transition05','handoff05') else
+                         deadline-(MAX_SECONDS-WORK_SECONDS)) if args.suite in ('species05','transition05','handoff05','hostile05') else
                          create_args(name,owner,head,source,binary,archive,uidgid,args.suite))
             value=docker.call(config_args,timeout=15)[1].decode().strip()
             require(CID.fullmatch(value), 'Bad created container ID'); cid=value; create_uncertain=False
@@ -731,7 +731,7 @@ def main():
         report['cid']=cid; save(out/'controller.json',report)
         info=inspect(docker,cid); inspect_owned(info,cid,name,owner,head)
         mounts=((source,'/source'),(binary,'/opt/byond/bin'),(archive,'/inputs/byond.zip'))
-        if args.suite in ('species05','transition05','handoff05'):
+        if args.suite in ('species05','transition05','handoff05','hostile05'):
             inspect_settings(info,image['Id'],mounts,uidgid,head,args.suite,deadline-(MAX_SECONDS-WORK_SECONDS))
         else:
             inspect_settings(info,image['Id'],mounts,uidgid,head,args.suite)
@@ -774,6 +774,10 @@ def main():
                     spec=importlib.util.spec_from_file_location('scheduler_enabled_handoff_evidence',Path(__file__).with_name('scheduler_enabled_handoff_evidence.py'))
                     handoff=importlib.util.module_from_spec(spec);spec.loader.exec_module(handoff)
                     handoff.validate(evidence,head,args.suite,git,git_env,deadline=deadline-60)
+                elif args.suite == 'hostile05':
+                    spec=importlib.util.spec_from_file_location('scheduler_hostile_evidence',Path(__file__).with_name('scheduler_hostile_evidence.py'))
+                    hostile=importlib.util.module_from_spec(spec);spec.loader.exec_module(hostile)
+                    hostile.validate(evidence,head,args.suite,git,git_env,deadline=deadline-60)
                 elif args.suite == 'transition05':
                     spec=importlib.util.spec_from_file_location('scheduler_transition_evidence',Path(__file__).with_name('scheduler_transition_evidence.py'))
                     transition=importlib.util.module_from_spec(spec);spec.loader.exec_module(transition)
