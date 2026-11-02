@@ -223,6 +223,7 @@
 	los_invalidate(src)
 	los_refresh_moved_viewer(src, TRUE, los_move_contexts)
 	#endif
+	paper_authoring_notify(src, "relocated")
 	return TRUE
 
 /atom/movable/proc/persistence_set_z(target_z)
