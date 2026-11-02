@@ -348,7 +348,11 @@ SUITES = {
     # Reviewed stdlib-only projection; shared production changes keep fallback.
     'tablet_press': {'files': ('tests/tablet_press/test_contract.py',),
         'paths': ('tests/tablet_press/',),
-        'shared_paths': ('code/modules/reagents/tablet_press.dm',)},
+        'shared_paths': ('code/modules/reagents/tablet_press.dm',
+            'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/items/stacks/civ_recipes.dm',
+            'code/modules/research_tree/research_node.dm',
+            'code/modules/reagents/laboratory.dm', 'config/crafting/')},
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection, and the link test
     # imports the cross-level runner only to stage files; no native launch.

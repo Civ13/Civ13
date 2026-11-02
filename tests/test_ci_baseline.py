@@ -619,6 +619,38 @@ class BaselinePolicyTests(unittest.TestCase):
                         self.assertIn('Incomplete test execution: character_traits', errors)
                     else:
                         self.assertEqual(errors, [])
+    def test_tablet_shared_inputs_survive_other_ownership_without_changing_fallback(self):
+        inputs = ['code/game/objects/items/stacks/stack.dm',
+                  'code/game/objects/items/stacks/civ_recipes.dm',
+                  'code/modules/research_tree/research_node.dm',
+                  'code/modules/reagents/laboratory.dm']
+        inputs += [path.relative_to(ROOT).as_posix()
+                   for path in (ROOT / 'config/crafting').glob('*.txt')]
+        inputs.append('config/crafting/future_tablet_dependency.txt')
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'tablet_press'}
+        for path in inputs:
+            with self.subTest(path=path):
+                current = ci.impact([path])
+                with patch.object(ci, 'SUITES', previous):
+                    before = ci.impact([path])
+                self.assertEqual(current['fallback_reasons'], before['fallback_reasons'])
+                self.assertTrue(current['suites']['tablet_press']['selected'])
+                owner = dict(files=(), paths=(path,), shared_paths=())
+                owned = {**ci.SUITES, 'isolated_tablet_input_owner': owner}
+                with patch.object(ci, 'SUITES', owned):
+                    selected = ci.impact([path])
+                self.assertFalse(selected['fallback_reasons'])
+                self.assertTrue(selected['suites']['tablet_press']['selected'])
+                # Removing only this dependency declaration recreates the
+                # silent omission when some other suite owns the same input.
+                original = owned['tablet_press']
+                missing = dict(original, shared_paths=tuple(
+                    shared for shared in original['shared_paths'] if not ci.matches(path, shared)))
+                with patch.object(ci, 'SUITES', owned | {'tablet_press': missing}):
+                    negative = ci.impact([path])
+                self.assertFalse(negative['fallback_reasons'])
+                self.assertFalse(negative['suites']['tablet_press']['selected'])
+
     def test_tablet_registration_and_failure_reach_required_aggregate(self):
         suite_name = 'tablet_press'
         suite = ci.SUITES[suite_name]
