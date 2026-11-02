@@ -134,9 +134,23 @@ class Containment(unittest.TestCase):
 
     def test_unexpected_cumulative_child_is_rejected_without_launch(self):
         adapter=N(accounting=lambda:N(total=1,terminated=0,active=1));fake=N(a=adapter,windows=N(),owned=N(query_members=lambda a:dict(pids=[])))
-        with patch.object(S,'facade',return_value=fake):
-            owned=S.OwnedRun(Path('.'),{})
+        with tempfile.TemporaryDirectory() as d,patch.object(S,'facade',return_value=fake):
+            owned=S.OwnedRun(Path(d),{})
             with self.assertRaises(ValueError):owned.poll()
+            failed=json.loads((Path(d)/'supervision.jsonl').read_text());self.assertIn('error',failed);self.assertEqual(failed['total'],1)
+    def test_supervision_stream_is_linear_and_preserves_bounds(self):
+        fake=N(a=N(),windows=N(),owned=N())
+        with tempfile.TemporaryDirectory() as d,patch.object(S,'facade',return_value=fake):
+            owned=S.OwnedRun(Path(d),{})
+            for n in range(100):owned.record_sample(dict(sample=n,rss=n))
+            path=Path(d)/'supervision.jsonl';rows=[json.loads(x) for x in path.read_text().splitlines()]
+            self.assertEqual(len(rows),100);self.assertEqual(rows[0]['sample'],0);self.assertEqual(rows[-1]['sample'],99)
+            self.assertLess(path.stat().st_size,100*100)
+            summary=owned.summary();self.assertEqual(summary['records'],100);self.assertEqual(summary['peak_rss'],99)
+            owned.stream_bytes=4*1024**2;before=path.read_bytes()
+            with self.assertRaises(ValueError):owned.record_sample(dict(sample=101))
+            self.assertEqual(path.read_bytes(),before)
+
     def test_expired_or_unreviewed_execution_emits_failure_before_native(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);prep=root/'prep';prep.mkdir();(prep/'tree-native-manifest.json').write_text(json.dumps(dict(head='a'*40)))

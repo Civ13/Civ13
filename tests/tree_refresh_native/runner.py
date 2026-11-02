@@ -75,10 +75,12 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
             if (stage/'ready.json').exists() and connected==0:
                 ready=json.loads(read(stage/'ready.json',4096));require(ready==dict(head=head,binding=binding,port=PORT),'Bound ready world identity/port')
                 runtime.launch([str(binaries['dreamseeker.exe']),'byond://127.0.0.1:'+str(PORT)],stage,'client1');connected=1
+                receipt['supervision']=runtime.summary();persist()
             if (stage/'need-second-client').exists() and connected==1:
                 require(read(stage/'need-second-client',16).strip()==b'2','Unexpected client request');runtime.launch([str(binaries['dreamseeker.exe']),'byond://127.0.0.1:'+str(PORT)],stage,'client2');connected=2
-            observations=runtime.poll();receipt['supervision']=dict(samples=runtime.samples,known_children=[dict(name=n,identity=runtime.a.identity(p)) for n,p in runtime.children]);persist()
-            logs=[p for p in output.rglob('*.log') if p.is_file()]
+                receipt['supervision']=runtime.summary();persist()
+            runtime.poll()  # One bounded JSONL append, no growing receipt rewrite.
+            logs=[p for p in output.rglob('*') if p.is_file() and p.suffix in ('.log','.json','.jsonl')]
             require(sum(p.stat().st_size for p in logs)+sum((stage/n).stat().st_size for n in ('events.jsonl','receipt.json') if (stage/n).exists())<=LIMITS['evidence_bytes'],'Generated log/state cap16MiB')
             if (stage/'receipt.json').exists():
                 native=json.loads(read(stage/'receipt.json',65536));receipt['native_receipt']=native
@@ -106,7 +108,7 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
         if runtime:
             try:receipt['cleanup']=runtime.cleanup()
             except BaseException as error:cleanup_error=error;receipt.update(status='failed',cleanup_error=str(error))
-            receipt['supervision_samples']=runtime.samples
+            receipt['supervision']=runtime.summary()
         for name in ('events.jsonl','failed-event.json','receipt.json','ready.json','binding.json'):
             if 'stage' in locals() and (stage/name).is_file():
                 try:(output/('native-'+name)).write_bytes(read(stage/name,LIMITS['evidence_bytes']))
