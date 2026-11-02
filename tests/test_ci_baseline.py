@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_stone_brazier_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'stone_brazier'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/stone_brazier/test_stone_brazier_disposal.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
+
     def test_crafting_ui_offline_registration_preserves_shared_coverage(self):
         suite = ci.SUITES['crafting_ui_contracts']
         self.assertEqual(suite['files'], ('tests/human_subtile/test_crafting_ui.py',))

@@ -36,6 +36,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Reviewed stdlib-only source/guard projections; no BYOND runtime.
+    'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
+        'paths': ('tests/stone_brazier/',), 'shared_paths': (
+            'code/modules/1713/siege/fire.dm',)},
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.
     'crafting_ui_contracts': {'files': ('tests/human_subtile/test_crafting_ui.py',),
@@ -56,6 +60,16 @@ SUITES = {
             'code/_helpers/mobs.dm',
             'code/game/mob/living/carbon/human/human_helpers.dm',
             'tests/save_movement/source_adapter.py')},
+
+    # Source-projected pouch-slot HUD visibility; no BYOND or browser runner.
+    'pouch_hud': {'files': ('tests/pouch_hud/test_pouch_hud.py',),
+        'paths': ('tests/pouch_hud/',), 'shared_paths': (
+            'code/_onclick/hud/base_screen_objects.dm', 'code/_onclick/hud/hud_civstyle.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/game/mob/living/carbon/human/inventory.dm', 'code/game/mob/inventory.dm',
+            'code/game/mob/living/carbon/human/species/species_hud.dm',
+            'code/game/objects/items.dm', 'code/modules/1713/apparel_imperial.dm',
+            'interface/skin.dmf', 'scripts/select-ci.py', 'tests/save_movement/source_adapter.py')},
 
     # Source-projected storage-session and legacy import contracts; no BYOND run.
     'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
