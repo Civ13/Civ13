@@ -1464,6 +1464,8 @@
 			if (H.r_ear)	 H.r_ear.screen_loc =	 (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_gloves)
 			if (H.gloves)	H.gloves.screen_loc =	(inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+		if (slot_wear_id)
+			if (H.wear_id) H.wear_id.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_w_uniform)
 			if (H.w_uniform) H.w_uniform.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_wear_suit)
