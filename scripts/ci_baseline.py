@@ -25,6 +25,18 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete startup observer projections and hook contracts; fake timers/Export.
+    'game_ready': {'files': ('tests/game_ready/test_release.py',
+                             'tests/game_ready/test_ready.py',
+                             'tests/game_ready/test_hooks.py'),
+        'paths': ('tests/game_ready/', 'code/modules/webhooks/game_ready.dm',
+                  'config/game-ready.example.txt', 'docs/game-ready-webhook.md'),
+        'shared_paths': ('code/world.dm', 'code/setup.dm', 'code/datums/configuration.dm',
+            'code/modules/persistence/functions.dm',
+            'code/modules/persistence/restart_transaction.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/nomads_lifecycle.dm',
+            'tests/save_movement/source_adapter.py', 'civ13.dme')},
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.
     'crafting_ui_contracts': {'files': ('tests/human_subtile/test_crafting_ui.py',),

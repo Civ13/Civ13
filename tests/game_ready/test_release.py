@@ -17,11 +17,11 @@ def completion_tail():
     return wrapper[start:].split('\n// The completion marker', 1)[0].strip('\n')
 
 
-def project(tail):
+def project(tail, observer=None):
     # Map this one global observation field to an injected state object.
     mapped = tail.replace('persistence_startup_recovery_status', 'state.startup_status')
     return A.project('/proc/complete_load()\n'+mapped+'\n', '/proc/complete_load',
-                     'operation,storage,state', {})
+                     'operation,storage,state,game_ready_hook=None,ready_ticket=None,transaction=None,ready_round=None,ready_generation=None', {'call':lambda path:observer})
 
 
 class Release:
@@ -34,7 +34,7 @@ class Release:
             raise RuntimeError('injected release failure')
         if self.state.active is not self:
             return False
-        if self.result is True:
+        if self.result == 1:
             self.state.active = None
         return self.result
 
@@ -50,12 +50,13 @@ class LoadReleaseContracts(unittest.TestCase):
         return call, op, storage, state, original
 
     def test_only_affirmative_owned_release_completes(self):
-        call, op, storage, state, _ = self.case()
-        self.assertEqual(call(op, storage, state), 1)
-        self.assertEqual(op.calls, [True])
-        self.assertIsNone(state.active)
-        self.assertIsNone(state.startup_status)
-        self.assertIsNone(storage.last_error)
+        for result in (True, 1):
+            call, op, storage, state, _ = self.case(result=result)
+            self.assertEqual(call(op, storage, state), 1)
+            self.assertEqual(op.calls, [True])
+            self.assertIsNone(state.active)
+            self.assertIsNone(state.startup_status)
+            self.assertIsNone(storage.last_error)
 
     def test_negative_null_or_nonaffirmative_release_keeps_startup_unresolved(self):
         for result in (False, None, 2):
@@ -73,6 +74,25 @@ class LoadReleaseContracts(unittest.TestCase):
         self.assertIs(state.active, original)
         self.assertEqual(state.startup_status, 'unresolved')
         self.assertIsNotNone(storage.last_error)
+
+    def test_observer_sees_exact_identity_only_after_affirmative_release(self):
+        for owner in (False, True):
+            call, op, storage, state, original = self.case(owner=owner)
+            events = []
+            def observe(*args):
+                events.append((args, state.startup_status))
+            call = project(completion_tail(), observe)
+            ticket, transaction = object(), object()
+            result = call(op, storage, state, game_ready_hook=object(), ready_ticket=ticket,
+                          transaction=transaction, ready_round='saved-round',
+                          ready_generation='round-v2:'+'b'*32)
+            if owner:
+                self.assertEqual(result, 1)
+                self.assertEqual(events, [(('loaded', ticket, op, storage, transaction,
+                    'saved-round', 'round-v2:'+'b'*32), None)])
+            else:
+                self.assertIs(result, False)
+                self.assertEqual([event[0][0] for event in events], ['load_failed'])
 
     def test_release_exception_propagates_without_clearing_startup(self):
         call, op, storage, state, original = self.case(error=True)

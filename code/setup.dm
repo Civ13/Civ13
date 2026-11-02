@@ -1,4 +1,6 @@
 /proc/setup_everything(datum/persistence_area_startup/startup)
+	var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+	var/datum/startup_context = game_ready_hook ? call(game_ready_hook)("setup_context", startup) : null
 
 	// job_master
 	if (!job_master)
@@ -168,13 +170,15 @@
 					startup_round_pending = TRUE
 					persistence_startup_recovery_status = "pending"
 					nextsave = world.realtime + 216000 // don't immediately resave what we are about to load
+					var/datum/ready_ticket = game_ready_hook ? call(game_ready_hook)("reserve_restore", startup_context, null) : null
 					spawn(50)
 						if (ticker)
 							to_chat(world, "<big><b>Restoring the world from the last persistent save...</b></big>")
 							try
-								if(ticker.loadmap()) announce_restored_round_once()
+								if(ticker.loadmap(null, null, ready_ticket)) announce_restored_round_once()
 								else persistence_startup_recovery_status = "unresolved"
 							catch(var/exception/automatic_load_error)
+								if(game_ready_hook) call(game_ready_hook)("initialization_failed", startup_context)
 								persistence_startup_recovery_status = "unresolved"
 								throw automatic_load_error
 						else
@@ -192,12 +196,14 @@
 	// All constructors/configuration are initialized before importing. An intent
 	// applies independently of the PERSISTENCE gamemode configuration above.
 	if(persistence_restart.startup_hold)
+		if(game_ready_hook) call(game_ready_hook)("reserve_restore", startup_context, persistence_restart)
 		nextsave = world.realtime + 216000
 		spawn(50)
 			if(ticker && persistence_restart.resume_startup() && persistence_restart.players_ready)
 				announce_restored_round_once()
 	if(!startup_round_pending)
 		announce_round_start_once()
+		if(game_ready_hook) call(game_ready_hook)("fresh", startup_context, game_id)
 	//////////////////////////////////////////////////////
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)

@@ -1,0 +1,5 @@
+# Startup observation only; copy settings into the existing config only after activation approval.
+# Existing webhook_address/webhook_key remain the authenticated bridge configuration.
+webhook_game_ready 0
+# Must exactly match the existing enabled bot route/server key; no identity rewriting.
+webhook_game_ready_server nomads

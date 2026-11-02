@@ -1254,6 +1254,7 @@
 #include "code\modules\surgery\surgery.dm"
 #include "code\modules\surgery\~defines.dm"
 #include "code\modules\webhooks\webhooks.dm"
+#include "code\modules\webhooks\game_ready.dm"
 #include "code\modules\xgm\xgm_gas_data.dm"
 #include "code\modules\xgm\xgm_gas_mixture.dm"
 #include "code\processes\___defines.dm"
