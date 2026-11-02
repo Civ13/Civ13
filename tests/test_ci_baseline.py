@@ -53,6 +53,29 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_help_toxin_registration_is_bounded_and_preserves_shared_coverage(self):
+        name = 'help_toxin_context'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/player_help/test_toxin_context.py',))
+        self.assertEqual(suite['paths'], ())
+        self.assertEqual(ci.TIMEOUT, 30)
+        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress',name})
+        self.assertNotIn(name,self.selected(['README.md']))
+        self.assertIn('tests/player_help/test_bridge.py',suite['shared_paths'])
+        self.assertIn('scripts/player_help_bridge.py',suite['shared_paths'])
+        prior={key:value for key,value in ci.SUITES.items() if key != name}
+        for path in suite['shared_paths']:
+            with self.subTest(path=path):
+                with patch.object(ci,'SUITES',prior):
+                    old=ci.impact([path])
+                    old_selected=self.selected([path])
+                current=ci.impact([path])
+                self.assertEqual(self.selected([path]),old_selected | {name})
+                self.assertEqual(current['fallback_reasons'],old['fallback_reasons'])
+        self.assertNotIn('tests/player_help/run.py',suite['files'])
+        with patch.object(ci,'SUITES',prior):
+            self.assertNotIn(name,self.selected(list(suite['files'])))
+
     def test_stone_brazier_suite_is_bounded_and_not_silently_omitted(self):
         name = 'stone_brazier'
         suite = ci.SUITES[name]
