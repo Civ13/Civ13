@@ -132,6 +132,16 @@ def write_report(output, report):
     require(len(raw) <= EVIDENCE_CAP-65536, 'Audit evidence bound')
     (Path(output)/'audit.json').write_bytes(raw)
 
+def retain_report(output, report):
+    try:
+        write_report(output,report)
+    except ValueError:
+        report=dict(source=report.get('source'),status='failed',error='Audit evidence budget exceeded',
+                    native_executed=False,native_ready=False,software_installed=False)
+        write_report(output,report)
+    require(sum(p.stat().st_size for p in Path(output).iterdir() if p.is_file())<=EVIDENCE_CAP,'Final audit evidence bound')
+    return report
+
 def audit(source, work, output):
     began = time.monotonic(); output = Path(output); output.mkdir(parents=True,exist_ok=False)
     report = dict(source=source,status='failed',native_executed=False,native_ready=False,software_installed=False,
@@ -154,8 +164,7 @@ def audit(source, work, output):
             with extract.open('rb') as stream: raw=stream.read(65537)
             if len(raw)>65536: report.update(status='failed',error='Acquisition diagnostic exceeded evidence bound')
             (output/'extract.log').write_bytes(raw[:65536])
-        write_report(output,report)
-        require(sum(p.stat().st_size for p in output.iterdir() if p.is_file())<=EVIDENCE_CAP,'Final audit evidence bound')
+        report = retain_report(output,report)
     return report['status']=='completed_file_facts'
 
 if __name__=='__main__':

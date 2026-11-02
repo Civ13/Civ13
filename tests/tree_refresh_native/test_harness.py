@@ -329,6 +329,13 @@ class DependencyAudit(unittest.TestCase):
             reader=D.Reader(time.monotonic()+5);reader.paths={str(i) for i in range(128)}
             with self.assertRaisesRegex(ValueError,'path bound'):reader.read(root/'x')
             with self.assertRaisesRegex(ValueError,'evidence bound'):D.write_report(root,dict(oversize='x'*D.EVIDENCE_CAP))
+    def test_oversize_report_retains_small_explicit_failure(self):
+        with tempfile.TemporaryDirectory() as d:
+            report=D.retain_report(Path(d),dict(source='a'*40,status='completed_file_facts',oversize='x'*D.EVIDENCE_CAP))
+            self.assertEqual(report['status'],'failed');self.assertFalse(report['native_executed'])
+            saved=Path(d)/'audit.json';self.assertLess(saved.stat().st_size,4096)
+            self.assertEqual(json.loads(saved.read_text()),report)
+
     def test_audit_mode_has_no_native_fixture_entry_or_permission_expansion(self):
         workflow=(ROOT/'.github/workflows/tree-refresh-native.yml').read_text();job=workflow.split('  dependency-audit:\n',1)[1]
         self.assertIn("inputs.mode != 'dependency-audit'",workflow.split('  dependency-audit:\n',1)[0])
