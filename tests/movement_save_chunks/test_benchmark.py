@@ -210,4 +210,136 @@ class BenchmarkSafetyTests(unittest.TestCase):
         self.assertIn('current[name] != expected[name]', source)
         self.assertIn('OpenPort("none")', source)
 
+
+class BudgetReportingTests(unittest.TestCase):
+    CASE = {'count': 64, 'payload': 1024, 'baseline': 0}
+    FIXTURE = ROOT / 'tests/movement_save_chunks/fixtures/capture-budget-e042.txt'
+
+    def retained(self):
+        return self.FIXTURE.read_text(encoding='utf-8')
+
+    def observations(self, logs):
+        return bench.capture_budget_observations(logs, self.CASE, 'case-01-64-1024-0')
+
+    def test_retained_exception_and_cumulative_counter_have_distinct_scopes(self):
+        rows = self.observations({'runtime.log': self.retained()})
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row['case_id'], 'case-01-64-1024-0')
+        self.assertEqual(row['configuration'], self.CASE)
+        self.assertEqual(row['attempt'], 7)
+        self.assertEqual(row['metric_status'], 'complete')
+        self.assertEqual(row['exception_metrics']['usage_delta'], 10.022)
+        self.assertEqual(row['reported_values']['usage_delta'], '10.022')
+        self.assertEqual(row['exception_metrics']['work'], 58)
+        self.assertEqual(row['cumulative_counter_snapshot']['capture_tick_usage'], 5.986)
+        self.assertEqual(row['cumulative_counter_snapshot']['attempt'], 7)
+        self.assertIn('not the failing chunk peak', row['counter_scope'])
+        self.assertIn('usage_delta=10.022', row['raw_exception'])
+
+    def test_context_never_leaks_between_log_streams(self):
+        failure = self.retained().splitlines()[-1]
+        rows = self.observations({'runtime.log': self.retained(), 'errors.txt': failure})
+        self.assertEqual([r['attempt'] for r in rows], [7, None])
+        self.assertIsNone(rows[1]['cumulative_counter_snapshot'])
+        self.assertEqual(rows[1]['configuration'], self.CASE)
+
+    def test_mismatched_malformed_or_invalid_phase_clears_context(self):
+        failure = self.retained().splitlines()[-1]
+        for phase in (
+            'BENCHMARK_PHASE not-json',
+            'BENCHMARK_PHASE ' + json.dumps(dict(attempt=7, baseline=1, phase='before_save')),
+            'BENCHMARK_PHASE ' + json.dumps(dict(attempt='7', baseline=0, phase='before_save')),
+            'BENCHMARK_PHASE ' + json.dumps(dict(attempt=8, baseline=0, phase='complete')),
+            'BENCHMARK_PHASE []',
+            'BENCHMARK_PHASE ' + json.dumps(dict(attempt=7, baseline=0, phase=[])),
+            'BENCHMARK_PHASE ' + json.dumps(dict(attempt=7, baseline=0, phase='unknown')),
+        ):
+            with self.subTest(phase=phase):
+                rows = self.observations({'runtime.log': self.retained() + '\n' + phase + '\n' + failure})
+                self.assertIsNone(rows[-1]['attempt'])
+
+    def test_incomplete_nonfinite_and_duplicate_metrics_stay_visible(self):
+        for broken in (
+            self.retained().replace('usage_delta=10.022', 'usage_delta=NaN'),
+            self.retained().replace('start_usage=59.292', ''),
+            self.retained().replace('usage_delta=10.022', 'usage_delta=10.022 usage_delta=0'),
+            self.retained().replace('usage_delta=10.022', 'usage_delta=1e999'),
+        ):
+            with self.subTest(broken=broken):
+                row = self.observations({'runtime.log': broken})[0]
+                self.assertEqual(row['metric_status'], 'incomplete_or_invalid')
+                self.assertIn('Moving save chunk exceeded', row['raw_exception'])
+
+    def test_duplicate_streams_are_separate_labelled_observations(self):
+        rows = self.observations({'daemon.log': self.retained(), 'runtime.log': self.retained()})
+        self.assertEqual(len(rows), 2)
+        self.assertEqual([r['log_name'] for r in rows], ['daemon.log', 'runtime.log'])
+        self.assertEqual([r['attempt'] for r in rows], [7, 7])
+
+    def complete_phases(self):
+        rows = [dict(attempt=i, phase='after_refusal_cleanup' if i in (4, 5, 6) else 'after_success_cleanup', baseline=0, capture_tick_usage=5.986)
+                for i in range(1, 8)]
+        rows += [dict(attempt=i, phase=p, baseline=0) for i in range(1, 8) for p in ('roster_start', 'roster_end')]
+        rows.append(dict(attempt=8, phase='complete', baseline=0))
+        return '\n'.join('BENCHMARK_PHASE ' + json.dumps(row) for row in rows) + '\n'
+
+    def offline_result(self, log, marker, returncode=0):
+        # One injected case drives the real post-run classifier; no tool executes.
+        def run(command, cwd, prefix, limits, deadline):
+            if prefix == 'compile':
+                (cwd / 'compile.log').write_text('DM compiler version 516.1688\nbenchmark.dmb - 0 errors, 0 warnings\n')
+                (cwd / 'benchmark.dmb').write_bytes(b'offline fake, never executable')
+                code = 0
+            else:
+                (cwd / 'runtime.log').write_text(log, encoding='utf-8')
+                (cwd / 'result.txt').write_text(marker)
+                code = returncode
+            return dict(status='exited', returncode=code, peaks={'rss_bytes': 1024}, samples=1)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            output = root / 'output'
+            bench.prepare(output)
+            receipt = json.loads((output / 'receipt.json').read_text())
+            receipt['cases'] = [dict(self.CASE)]
+            (output / 'receipt.json').write_text(json.dumps(receipt))
+            binaries = root / 'bin'
+            binaries.mkdir()
+            for name in ('DreamMaker', 'DreamDaemon'):
+                (binaries / name).touch()
+            with patch.object(bench.sys, 'platform', 'linux'), patch.object(bench, 'verify_runtime', return_value={'version': '516.1688'}), patch.object(bench, 'run_monitored', side_effect=run), patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('No native execution')) as spawn:
+                receipt = bench.run_native(output, binaries, root / 'pinned.zip', bench.Limits())
+                spawn.assert_not_called()
+            return receipt['results'][0], receipt['execution']
+
+    def test_real_classifier_retains_both_metrics_and_original_failure(self):
+        row, execution = self.offline_result(self.retained(), 'FAIL')
+        self.assertFalse(row['passed'])
+        self.assertEqual(execution, 'failed_or_incomplete')
+        self.assertEqual(row['capture_budget_observations'][0]['attempt'], 7)
+        self.assertEqual(row['capture_budget_observations'][0]['exception_metrics']['usage_delta'], 10.022)
+        self.assertEqual(row['capture_budget_observations'][0]['cumulative_counter_snapshot']['capture_tick_usage'], 5.986)
+
+    def test_reporting_does_not_relax_any_classification_failure(self):
+        full = self.complete_phases()
+        for log, marker, code in (
+            (full, 'FAIL', 0),
+            (full + self.retained(), 'PASS', 0),
+            (full + self.retained().replace('usage_delta=10.022', 'usage_delta=NaN'), 'PASS', 0),
+            (full + self.retained().replace('5.986', '0.001'), 'PASS', 0),
+            (full, 'PASS', 1),
+        ):
+            with self.subTest(marker=marker, code=code, has_exception='FAIL:' in log):
+                row, execution = self.offline_result(log, marker, code)
+                self.assertTrue(row['phase_contract'])  # Isolate verdict gates from incomplete phases.
+                self.assertFalse(row['passed'])
+                self.assertEqual(execution, 'failed_or_incomplete')
+
+    def test_complete_positive_has_no_breach_observation(self):
+        row, execution = self.offline_result(self.complete_phases(), 'PASS')
+        self.assertTrue(row['passed'])
+        self.assertEqual(execution, 'passed')
+        self.assertEqual(row['capture_budget_observations'], [])
+
+
 if __name__ == '__main__': unittest.main()

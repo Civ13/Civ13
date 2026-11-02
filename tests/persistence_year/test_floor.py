@@ -98,7 +98,7 @@ def wiring(mode, setup, load):
     setup = uncomment(setup)
     assert setup.count(CALL) == 1
     assert '\tif (config.allowedgamemodes == "PERSISTENCE")\n\t\tmap.persistence = TRUE\n\t\t' + CALL in setup
-    restore = uncomment(proc(load, "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)"))
+    restore = uncomment(proc(load, "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent, datum/startup_ready)"))
     assert restore.count(CALL) == 1
     assert restore.index("storage.load_map_metadata()") < restore.index("storage.restore_durable_world()") < restore.index(CALL) < restore.index("storage.restore_round_state(src, saved_round)")
     assert "\n\t\t" + CALL + "\n" in restore
@@ -148,6 +148,17 @@ class FloorTests(unittest.TestCase):
     def test_activation_startup_and_completed_restore_wiring(self):
         wiring(read(MODE), read(SETUP), self.source)
         self.assertEqual(sum(read(p).count(CALL) for p in (MODE, SETUP, LOAD)), 3)
+
+    def test_restore_wiring_rejects_signature_drift_and_moved_floor(self):
+        signature = "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent, datum/startup_ready)"
+        self.assertEqual(self.source.count(signature), 1)
+        with self.assertRaises(ValueError):
+            wiring(read(MODE), read(SETUP), self.source.replace(signature, signature.replace(", datum/startup_ready", "")))
+        # Keeping the floor call elsewhere cannot satisfy its loadmap binding.
+        moved = self.source.replace("\n\t\t" + CALL + "\n", "\n", 1)
+        moved += "\n/proc/unrelated_floor()\n\t" + CALL + "\n"
+        with self.assertRaises(AssertionError):
+            wiring(read(MODE), read(SETUP), moved)
 
     def test_minimal_save_fixture_includes_the_real_helper(self):
         environment = read("tests/world_save/roundtrip.dme")
