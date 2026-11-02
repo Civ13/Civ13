@@ -298,12 +298,15 @@ SUITES = {
     'los_context': {'files': ('tests/los_context/test_offline.py',
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',
+                              'tests/los_context/test_entered_trace.py',
                               'tests/test_geometric_presentation.py',
                               'tests/test_visibility_diagnostics.py'), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
         'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm'),
-        'shared_paths': ('code/game/atoms_movable.dm', 'tests/save_movement/source_adapter.py')},
+        'shared_paths': ('code/game/atoms_movable.dm', 'tests/save_movement/source_adapter.py',
+                         'code/game/mob/mob_movement.dm', 'code/datums/observation/moved.dm',
+                         'tests/root_tree_presentation/test_contract.py')},
     # Inert source projections and file-only fixture preparation. Import graph:
     # stdlib + existing LOS/save-movement projections; no native runner is imported.
     # Keep shared movement/lighting files unmapped: they retain all-suite fallback.
