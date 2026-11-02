@@ -22,7 +22,7 @@ class WildWalkContracts(unittest.TestCase):
         wrapper = section(self.source, '/mob/living/simple_animal/proc/npc_subtile_species_walk(', '/mob/living/simple_animal/proc/npc_subtile_start_wild_walk(')
         for statement in ('walk_rand(src, lag)', 'walk_towards(src, target, lag)', 'walk_away_od(src, target, distance_limit, lag)', 'walk(src, 0)', 'walk(src, direction, lag)', 'npc_subtile_native_interval(lag)'):
             self.assertIn(statement, wrapper)
-        self.assertLess(wrapper.index('if (!npc_subtile_species_enabled)'), wrapper.index('walk_rand(src, lag)'))
+        self.assertLess(wrapper.index('if (!npc_subtile_species_enabled || !npc_subtile_enabled)'), wrapper.index('walk_rand(src, lag)'))
         self.assertIn('var/npc_subtile_species_enabled = FALSE', self.source)
         self.assertIn('return lag', self.source)
         self.assertNotIn('return lag * world.tick_lag', self.source)

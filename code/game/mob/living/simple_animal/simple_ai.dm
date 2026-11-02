@@ -75,14 +75,14 @@
 	switch(t_behaviour)
 		if ("scared")
 			for (var/mob/living/human/H in range(7, src))
-				if (npc_subtile_flee_enabled)
+				if (npc_subtile_flee_enabled && npc_subtile_enabled)
 					var/list/flee_receipt = list()
 					if (npc_subtile_start_flee(H, 7, npc_subtile_native_interval(2), flee_receipt))
 						var/list/flee_ticket = flee_receipt["ticket"]
 						var/flee_remaining = max(0, flee_ticket["expires_at"] - world.time)
 						spawn(flee_remaining)
 							npc_subtile_stop_flee_ticket(flee_ticket)
-				else
+				else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("flee"))
 					walk_away_od(src, H, 7, 2)
 					spawn(50)
 						walk(src, 0)

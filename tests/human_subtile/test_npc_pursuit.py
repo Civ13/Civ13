@@ -185,7 +185,7 @@ class DisabledPursuitFallback(unittest.TestCase):
         self.target = object()
         self.location = object()
         self.actor = SimpleNamespace(npc_subtile_enabled=False, npc_subtile_pursuit_enabled=True,
-            npc_subtile_pursuit=None, npc_subtile_pending_intent=None, npc_subtile_transaction=None,
+            npc_subtile_pursuit=None, npc_subtile_pending_intent=None, npc_subtile_wild_walk=None, npc_subtile_transaction=None,
             npc_subtile_pulse=None, npc_subtile_offset_owned=False, step_x=0, step_y=0,
             move_gen=3, moving=False, found_path=[], target_obj=None, target_mob=self.target,
             stance="idle", loc=self.location, last_loc=object(), stuck_ticks=0,
@@ -205,6 +205,7 @@ class DisabledPursuitFallback(unittest.TestCase):
             self.calls.append("stop_pursuit")
             return self.stop(a)
         a.npc_subtile_stop_pursuit = stop
+        a.npc_subtile_stop_wild_walk = lambda: self.calls.append("stop_wild")
         def ai_step(*args):
             self.calls.append(("ai_step", args))
             return 2 if a.npc_subtile_enabled and not a.npc_subtile_transaction else False
@@ -225,9 +226,9 @@ class DisabledPursuitFallback(unittest.TestCase):
             step=lambda *args: self.calls.append(("step", args)) or True,
             HOSTILE_STANCE_IDLE="idle", HOSTILE_STANCE_ATTACK="attack")
         fields = ("npc_subtile_enabled", "npc_subtile_pursuit_enabled", "npc_subtile_pursuit",
-            "npc_subtile_pending_intent", "npc_subtile_transaction", "npc_subtile_pulse",
+            "npc_subtile_pending_intent", "npc_subtile_wild_walk", "npc_subtile_transaction", "npc_subtile_pulse",
             "npc_subtile_offset_owned", "step_x", "step_y", "npc_subtile_shape", "npc_subtile_release_glide",
-            "npc_subtile_stop_pursuit", "npc_subtile_start_pursuit", "npc_subtile_cancel_pending",
+            "npc_subtile_stop_pursuit", "npc_subtile_stop_wild_walk", "npc_subtile_start_pursuit", "npc_subtile_cancel_pending",
             "npc_subtile_release_generation", "move_gen", "moving", "found_path", "target_obj", "ai_step", "Move",
             "move_to_delay", "target_mob", "SA_attackable", "stance", "last_loc", "stuck_ticks",
             "aggro_vision_range", "idle_vision_range", "destroy_surroundings", "DestroySurroundings",
