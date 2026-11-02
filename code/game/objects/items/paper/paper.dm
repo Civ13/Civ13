@@ -162,6 +162,7 @@
 		// theirs too. The local constructor argument is never persisted.
 		if (!copy_skip_space && isnull(document_record))
 			update_space(info)
+		document_capacity_ready = TRUE
 		updateinfolinks()
 
 	if (map && base_icon == "paper")
