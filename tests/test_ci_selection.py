@@ -302,7 +302,9 @@ class SelectionTests(unittest.TestCase):
                      '.agents/skills/civ13/../SKILL.md', '.agents/skills/civ13/references/note.MD'):
             with self.subTest(path=path):
                 self.assertTrue(selection.needs_game(prose + [path]))
-        with patch.object(selection.subprocess,'check_output',return_value=('\0'.join(prose)+'\0').encode()):
+        # Atlas ancestry is independently exercised by the real-Git graph controls.
+        with patch.object(selection.subprocess,'check_output',return_value=('\0'.join(prose)+'\0').encode()), \
+             patch.object(selection, 'changed_atlas_tests', return_value=[]):
             self.assertFalse(selection.select('base','head')[0])
             self.assertTrue(selection.select('0'*40,'head')[0])
             for title,expected in [('Document skill prose',False),('build: document skill prose',True)]:
