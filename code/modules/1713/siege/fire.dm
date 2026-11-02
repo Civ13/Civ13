@@ -49,7 +49,7 @@
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
-		else if (istype(W, /obj/item/stack/material/wood) || istype(W, /obj/item/stack/material/woodplank))
+		else if (istype(W, /obj/item/stack/material/wood || /obj/item/stack/material/woodplank))
 			fuel += (80)*W.amount
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
@@ -99,10 +99,6 @@
 				WW.contents = list(WW.BB)
 				return
 		else if  (istype(W, /obj/item))
-			// Stone braziers must not consume arbitrary containers or valuables.
-			// Their explicit fuel and projectile cases above remain available.
-			if (istype(src, /obj/structure/brazier/stone))
-				return ..()
 			if (W.flammable)
 				if (istype(W, /obj/item/stack))
 					var/obj/item/stack/ST = W

@@ -43,13 +43,13 @@ class StoneBrazierSourceContract(unittest.TestCase):
         self.assertLess(self.action.index("qdel(W)"), self.action.index("fuel += 5"))
         self.assertIn("fuel += (80)*W.amount", self.base)
 
-    def test_other_stone_items_avoid_inherited_catch_all(self):
-        guard = self.base.index("if (istype(src, /obj/structure/brazier/stone))")
-        self.assertLess(guard, self.base.index("if (W.flammable)", guard))
-        self.assertIn("return ..()", self.base[guard:self.base.index("if (W.flammable)", guard)])
+    def test_other_items_keep_inherited_generic_fuel_behavior(self):
+        self.assertIn("if (W.flammable)", self.base)
+        self.assertNotIn("istype(src, /obj/structure/brazier/stone)", self.base)
+        self.assertIn("if (!is_disposable_organic(W))\n\t\treturn ..()", self.action)
 
     def test_existing_fuel_and_projectiles_precede_catch_all(self):
-        guard = self.base.index("if (istype(src, /obj/structure/brazier/stone))")
+        guard = self.base.index("if (W.flammable)")
         for path in ("ore/coal", "ore/charcoal", "material/wood", "material/bamboo",
                      "stack/dung", "weapon/branch", "material/leaf", "ammo_casing/arrow",
                      "ammo_casing/bolt"):
