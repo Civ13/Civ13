@@ -1151,6 +1151,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 else:
                     self.assertFalse(result['tracked_dirty_after'])
                     self.assertNotEqual(result['observed_head_after'], head)
+    @patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'pull_request'})
     def test_selection_loader_rejects_disabled_mandatory_tests_and_stale_source(self):
         plan, _, _, _ = fixtures()
         with tempfile.TemporaryDirectory() as temporary:
@@ -1170,6 +1171,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Always-required'):
                     ci.load_selection(path, plan['head'], plan['base'])
 
+    @patch.dict(os.environ, {'GITHUB_EVENT_NAME': 'pull_request'})
     def test_selection_from_an_earlier_attempt_of_the_same_run_is_named_explicitly(self):
         # Re-running failed jobs reuses the successful selection job, so its
         # receipt keeps attempt 1 while the consumer runs in attempt 2.
