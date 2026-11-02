@@ -43,6 +43,30 @@ fallback. No workflow can act on an event GitHub does not deliver.
 Missing PR action/base/title or push ref cannot classify the event's check scope:
 the selector fails without publishing outputs, retaining failed gating contexts.
 
+For a new-branch push, GitHub supplies an all-zero `before`. The event diff
+remains unavailable and conservative compile/offline selection remains in force.
+The strict LOS source comparator receives a separate recorded immutable baseline:
+for a complete pushed-commit set, its unique real parent boundary outside that set;
+for an explicit empty-commit ref creation, the tip's real parent, labelled as a
+tip snapshot comparison. Multi-commit and merge ancestry is checked from Git
+objects rather than event-list ordering. Multiple external parents use a recorded
+merge frontier only when Git proves one unique common ancestor of every parent;
+this conservatively includes the whole pushed range and already-existing merged
+history. Missing ancestry, criss-cross ambiguity or more than 64 frontier parents
+requires an explicit base. No first-parent or moving-branch guess is used.
+Shallow preparation may make one bounded
+exact-head fetch to obtain that history, preserving checked-out HEAD.
+
+The selection receipt records `source_comparison` with the source/head identities,
+derivation kind and normalized push evidence. Baseline and compile receipts retain
+it; loaders bind the receipt event to `GITHUB_EVENT_NAME` before deciding whether
+comparison evidence is required, then revalidate ancestry and push metadata. The aggregate rejects
+missing or changed copies. Existing `base`/`requested_base`, impact selection,
+check scope and native opt-in rules are unchanged. Missing/truncated metadata,
+root history without a real parent, unavailable objects or an invalid comparison
+fails closed with an explicit comparison-base requirement. The LOS comparator is
+not skipped or relaxed, and the moving default branch is never used as its base.
+
 The cheap offline baseline below runs on ordinary PR and master-push CI, explicit
 build requests and manual CI runs. Unforced feature pushes skip it. Other existing
 regression suites remain opt-in, including game runtime, atlas, resource
