@@ -663,6 +663,8 @@ class ByondToolchainTests(unittest.TestCase):
             def step(name):return job.split('      - name: '+name+'\n',1)[1].split('      - ',1)[0]
             identity=step('Read reviewed BYOND archive cache identity')
             restore=step('Restore exact BYOND archive only')
+            self.assertIn('      - name: Discard non-exact BYOND archive restore\n',job)
+            discard=step('Discard non-exact BYOND archive restore')
             compile=step('Install verified 516.1688 and compile exact game source')
             save=step('Save verified BYOND archive after successful compilation')
             self.assertIn('scripts/byond_toolchain.py field linux-cache-key',identity)
@@ -672,6 +674,11 @@ class ByondToolchainTests(unittest.TestCase):
                 self.assertEqual([line.strip() for line in with_block.splitlines() if line.strip() and not line.lstrip().startswith('#')],
                                  ['path: ${{ runner.temp }}/civ13-byond-archives','key: ${{ steps.byond_archive.outputs.key }}'])
             self.assertIn("if: steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'",save)
+            self.assertIn("if: steps.byond_cache.outputs.cache-hit != 'true'",discard)
+            self.assertIn('shell: bash',discard)
+            self.assertIn('run: rm -rf -- "$RUNNER_TEMP/civ13-byond-archives"',discard)
+            self.assertLess(job.index('Restore exact BYOND'),job.index('Discard non-exact BYOND'))
+            self.assertLess(job.index('Discard non-exact BYOND'),job.index('Install verified'))
             self.assertNotIn('        if:',compile)
             self.assertIn('id: compile',compile)
             self.assertIn('BYOND_ARCHIVE_CACHE: ${{ runner.temp }}/civ13-byond-archives',compile)
@@ -691,6 +698,10 @@ class ByondToolchainTests(unittest.TestCase):
                    workflow.replace('          path: ${{ runner.temp }}/civ13-byond-archives',
                     '          path: BYOND/',1),
                    workflow.replace('        id: compile\n',"        id: compile\n        if: steps.byond_cache.outputs.cache-hit != 'true'\n",1)]
+        mutations += [workflow.replace("        if: steps.byond_cache.outputs.cache-hit != 'true'\n",
+                                      "        if: steps.byond_cache.outputs.cache-hit == 'true'\n",1),
+                      workflow.replace('run: rm -rf -- "$RUNNER_TEMP/civ13-byond-archives"',
+                                       'run: echo preserve non-exact restore',1)]
         for mutated in mutations:
             with self.subTest(mutation=mutations.index(mutated)),self.assertRaises(AssertionError):verify(mutated)
 

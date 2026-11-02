@@ -81,6 +81,10 @@ jobs:
           path: ${{ runner.temp }}/civ13-byond-archives
           key: ${{ steps.byond_archive.outputs.key }}
           # No restore prefixes or shared installed-tree cache.
+      - name: Discard non-exact BYOND archive restore
+        if: steps.byond_cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: rm -rf -- "$RUNNER_TEMP/civ13-byond-archives"
       - name: Install verified 516.1688 and compile exact game source
         id: compile
         timeout-minutes: 15

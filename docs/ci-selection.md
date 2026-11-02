@@ -320,7 +320,8 @@ The default `moving-save-chunks.yml` isolated job reuses the same immutable Linu
 archive cache as normal compilation. Only the version/OS/hash-keyed archive and
 acquisition metadata are retained. Every hit is checksum/provenance-verified by
 the existing downloader, then freshly extracted and compiled at the exact head.
-A corrupt/incomplete cache fails closed. Cache publication follows successful
+Non-exact key restores are discarded before bootstrap; an invalid exact-key cache
+still fails closed. Cache publication follows successful
 compilation; correctness, memory, movement mutation controls and failed evidence
 retention are unchanged. Installed trees, test outputs and verdicts are not cached.
 Changing this workflow still automatically selects its existing native PR job;
