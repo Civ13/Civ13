@@ -297,7 +297,7 @@ class ProductionGeometry(unittest.TestCase):
 
 class InventoryHoverName(unittest.TestCase):
     """Widget/callback source execution; fake client, weakref and view boundaries."""
-    def model(self,source=None):
+    def model(self,source=None,core_source=None):
         import html,re,weakref
         from types import SimpleNamespace as N
         root=CORE.parents[3]
@@ -317,17 +317,17 @@ class InventoryHoverName(unittest.TestCase):
                 item=self.weak();return item if item and not item.deleted else None
         def atom(kind='/obj/item',**values):
             defaults=dict(type=kind,loc=None,name='item',screen_loc=None,mouse_opacity=1,alpha=255,
-                invisibility=0,x=1,y=1,z=1,deleted=False)
+                invisibility=0,x=1,y=1,z=1,deleted=False,gcDestroyed=False,gc_destroyed=False)
             defaults.update(values);return Node(**defaults)
-        body=atom('/mob/living/human',see_invisible=25,HUDneed={},HUDinventory=[],slots={})
+        body=atom('/mob/living/human',see_invisible=25,HUDneed={},HUDinventory=[],slots={},s_active=None)
         C=Node(mob=body,screen=[],view=7,eye=body)
         body.client=C;body.get_equipped_item=lambda slot:body.slots.get(slot)
         W=atom('/obj/screen/hover_name',parentmob=body,hover_target=None,hover_origin=None,
-               hover_inventory=False,hover_screen_loc=None,maptext='')
+               hover_inventory=False,hover_screen_loc=None,hover_storage=None,maptext='')
         body.HUDneed['hover name']=W;C.screen.append(W)
         world_visible=set();readable=set();read_calls=[];parents=[]
         def allowed(user,target,operation):
-            read_calls.append((user,target,operation));return target in readable
+            read_calls.append((user,target,operation));return target in readable or storage_visible(user,target)
         env=dict(istype=lambda x,t:bool(x and x.type.startswith(t)),ismovable=lambda x:bool(x and not x.type.startswith('/turf/')),
             typed_iter=lambda xs,t:[x for x in xs if x and x.type.startswith(t)],
             isturf=lambda x:bool(x and x.type.startswith('/turf/')),ishuman=lambda x:bool(x and x.type.startswith('/mob/living/human')),
@@ -336,6 +336,10 @@ class InventoryHoverName(unittest.TestCase):
             html_encode=html.escape,copytext=lambda text,start,end:text[start-1:end-1],
             parent_call=lambda:parents.append('parent'),parent_runtime=lambda key:key=='persistence_export_frame',
             list=lambda *xs:list(xs))
+        helper_source=core_source or CORE.read_text()
+        helper_source=re.sub(r'(, )(/obj/[\w/]+)(?=\))', lambda m:m[1]+repr(m[2]), helper_source)
+        storage_visible=A.project(helper_source,'/proc/los_storage_hover_visible','user, target',env)
+        env['los_storage_hover_visible']=storage_visible
         def method(text,declaration,args,fields):
             text=declaration+'('+args+')\n'+A.extract(text,declaration)+'\n'
             text=text.replace('hover_target?.resolve()','resolve(hover_target)').replace('hover_origin?.resolve()','resolve(hover_origin)')
@@ -352,7 +356,7 @@ class InventoryHoverName(unittest.TestCase):
             text=head+'\n'+''.join(pieces)
             text=re.sub(r'(?<=, )(/obj/[\w/]+)(?=\))',lambda m:repr(m[1]),text)
             return A.project(text,declaration,'self'+(', '+args if args else ''),env)
-        fields=['hover_target','hover_origin','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
+        fields=['hover_target','hover_origin','hover_storage','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
                 'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process']
         for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key')]:
@@ -380,6 +384,122 @@ class InventoryHoverName(unittest.TestCase):
                 item.loc=body;item.screen_loc=S.screen_loc;C.screen.append(item);readable.add(item)
             body.slots[slot_id]=item;return S
         return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,readable=readable,reads=read_calls,source=source,env=env)
+
+    def storage_view(self, m, name='visible <storage item>'):
+        S=m.atom('/obj/item/weapon/storage',is_seeing=[m.H],contents=[])
+        I=m.atom(name=name,loc=S,screen_loc='6:16,2:16')
+        S.contents.append(I);m.H.s_active=S;m.C.screen.append(I)
+        return S,I
+
+    def test_open_storage_hover_enter_move_drag_and_close(self):
+        for callback in ['MouseEntered','MouseMove','MouseDrag']:
+            m=self.model();S,I=self.storage_view(m)
+            if callback=='MouseDrag':m.C.MouseDrag(None,I)
+            else:getattr(m.C,callback)(I)
+            self.assertIn('visible &lt;storage item&gt;',m.W.maptext)
+            self.assertIs(m.W.hover_storage.resolve(),S)
+            self.assertTrue(m.W.hover_inventory)
+            m.H.s_active=None;m.W.process()
+            self.assertEqual(m.W.maptext,'')
+            self.assertIsNone(m.W.hover_target)
+
+    def test_unowned_stale_or_undisplayed_storage_never_reads_name(self):
+        for revoke in ['closed','wrong-viewer','not-member','no-screen','no-location','foreign-container','deleted-storage','deleted-item','other-body','no-client']:
+            with self.subTest(revoke=revoke):
+                m=self.model();S,I=self.storage_view(m);names=[];I.name_reads=names
+                if revoke=='closed':m.H.s_active=None
+                if revoke=='wrong-viewer':S.is_seeing=[]
+                if revoke=='not-member':S.contents=[]
+                if revoke=='no-screen':m.C.screen.remove(I)
+                if revoke=='no-location':I.screen_loc=None
+                if revoke=='foreign-container':I.loc=m.atom('/obj/item/weapon/storage')
+                if revoke=='deleted-storage':S.gc_destroyed=True
+                if revoke=='deleted-item':I.gc_destroyed=True
+                if revoke=='other-body':m.C.mob=m.atom('/mob/living/human')
+                if revoke=='no-client':m.H.client=None
+                m.W.set_target(I)
+                self.assertEqual(names,[])
+                self.assertEqual(m.W.maptext,'')
+
+    def test_stationary_storage_hover_revalidates_item_container_and_screen(self):
+        for revoke in ['closed','viewer-removed','item-moved','screen-moved','removed-screen','different-storage']:
+            with self.subTest(revoke=revoke):
+                m=self.model();S,I=self.storage_view(m);m.C.MouseEntered(I)
+                self.assertTrue(m.W.maptext)
+                if revoke=='closed':m.H.s_active=None
+                if revoke=='viewer-removed':S.is_seeing=[]
+                if revoke=='item-moved':I.loc=m.atom('/turf/floor')
+                if revoke=='screen-moved':I.screen_loc='9,9'
+                if revoke=='removed-screen':m.C.screen.remove(I)
+                if revoke=='different-storage':
+                    T=m.atom('/obj/item/weapon/storage',is_seeing=[m.H],contents=[I]);I.loc=T;m.H.s_active=T
+                m.W.process();self.assertEqual(m.W.maptext,'')
+                self.assertIsNone(m.W.hover_target)
+
+    def test_storage_authority_omissions_are_observable(self):
+        source=CORE.read_text()
+        for old, new, revoke in [
+            ('!(user in S.is_seeing)', 'FALSE', 'viewer'),
+            ('!(target in S.contents)', 'FALSE', 'contents'),
+            ('(I in C.screen)', 'TRUE', 'screen'),
+        ]:
+            self.assertEqual(source.count(old),1)
+            m=self.model(core_source=source.replace(old,new,1));S,I=self.storage_view(m)
+            if revoke=='viewer':S.is_seeing=[]
+            if revoke=='contents':S.contents=[]
+            if revoke=='screen':
+                # Exercise the shared admission directly; the widget has an
+                # independent screen guard and must continue to deny this hit.
+                m.C.screen.remove(I)
+                self.assertTrue(m.env['los_storage_hover_visible'](m.H,I))
+                m.W.set_target(I);self.assertEqual(m.W.maptext,'')
+                continue
+            m.W.set_target(I)
+            self.assertTrue(m.W.maptext, revoke)
+
+    def test_omitting_storage_admission_reproduces_missing_name(self):
+        source=(CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text()
+        gate='\tif(los_storage_hover_visible(parentmob, I))\n\t\treturn TRUE\n'
+        self.assertEqual(source.count(gate),1)
+        m=self.model(source.replace(gate,'',1));S,I=self.storage_view(m)
+        m.C.MouseEntered(I)
+        self.assertEqual(m.W.maptext,'')
+        self.assertIsNone(m.W.hover_target)
+
+    def test_storage_identity_omission_keeps_stale_label(self):
+        source=(CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text()
+        original='if (hover_storage.resolve() != I.loc)'
+        self.assertEqual(source.count(original),1)
+        m=self.model(source.replace(original,'if (FALSE)',1));S,I=self.storage_view(m)
+        m.C.MouseEntered(I);self.assertTrue(m.W.maptext)
+        T=m.atom('/obj/item/weapon/storage',is_seeing=[m.H],contents=[I]);I.loc=T;m.H.s_active=T
+        m.W.process();self.assertTrue(m.W.maptext)
+
+    def test_hover_fixture_adapters_bind_helper_and_preserve_controls(self):
+        import ast,json
+        root=CORE.parents[3];fixture=root/'tests/hover_name'
+        direct=(fixture/'run.py').read_text();save=(fixture/'run-weakref-save.py').read_text()
+        ast.parse(direct);ast.parse(save)
+        version=json.loads((root/'tools/byond/version.json').read_text())['version']
+        self.assertEqual(version,'516.1688')
+        for runner in [direct,save]:
+            self.assertIn('los_storage_hover_visible(',runner)
+            self.assertIn("'tools/byond/version.json'",runner)
+            self.assertIn('0 errors, 0 warnings',runner)
+            self.assertIn("replace('user.client', 'user.hover_client')",runner)
+        for control in ['identity','exit','stale','parent','storage-viewer','storage-origin']:
+            self.assertIn(control,direct)
+        probe=(fixture/'fixture.dm').read_text()
+        for assertion in ['open storage item hover','closed storage view clears hover','storage replacement clears hover']:
+            self.assertIn(assertion,probe)
+        self.assertIn('/proc/los_read_allowed',probe)
+
+    def test_storage_los_admission_is_hover_only_and_keeps_context_guards(self):
+        source=CORE.read_text();decision=fragment(source,'/datum/los_context/proc/decision(')
+        self.assertIn('operation == "hover" && los_storage_hover_visible(user, target)',decision)
+        self.assertLess(decision.index('owner.los_context != src'),decision.index('los_storage_hover_visible(user, target)'))
+        self.assertLess(decision.index('target.gcDestroyed'),decision.index('los_storage_hover_visible(user, target)'))
+        self.assertIn('hover_storage',fragment((CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text(),'/obj/screen/hover_name/persistence_runtime_var('))
 
     def test_entry_and_each_later_refresh_obtain_one_fresh_visibility_read(self):
         for mode in ['world','owned-item','slot-art']:
