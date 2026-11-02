@@ -725,7 +725,7 @@ proc/admin_notice(var/message, var/rights)
 		return
 ////////////////////////////////////////////////////////////////////////////////////////////////ADMIN HELPER PROCS
 
-/proc/is_special_character(mob/M as mob) // returns TRUE for specail characters and 2 for heroes of gamemode
+/proc/is_special_character(mob/M as mob) // returns TRUE for special characters and 2 for heroes of gamemode
 /*	if (!ticker || !ticker.mode)
 		return FALSE*/
 	if (!istype(M))

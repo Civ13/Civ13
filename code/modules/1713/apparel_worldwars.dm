@@ -1427,7 +1427,7 @@ obj/item/clothing/head/ww2/cra_cap
 	icon_state = "trenchsuit"
 	item_state = "trenchsuit"
 
-/obj/item/clothing/under/ww1/trenchsuit/poland //looks very similiar to the ww2 polish uniform so lets pretend that its the polish uniform
+/obj/item/clothing/under/ww1/trenchsuit/poland //looks very similar to the ww2 polish uniform so lets pretend that its the polish uniform
 	name = "Polish uniform"
 	desc = "A Polish uniform, used by the Polish Army."
 
@@ -3104,7 +3104,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/under/red/swimtrunks
 	name = "Red Swimtrunks"
-	desc = "Seems to be pants made for swiming in."
+	desc = "Seems to be pants made for swimming in."
 	icon_state = "r_swimtrunks"
 	item_state = "r_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -3129,7 +3129,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/under/blue/swimtrunks
 	name = "Blue Swimtrunks"
-	desc = "Seems to be pants made for swiming in."
+	desc = "Seems to be pants made for swimming in."
 	icon_state = "b_swimtrunks"
 	item_state = "b_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
@@ -3154,7 +3154,7 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 /obj/item/clothing/under/green/swimtrunks
 	name = "Green Swimtrunks"
-	desc = "Seems to be pants made for swiming in."
+	desc = "Seems to be pants made for swimming in."
 	icon_state = "g_swimtrunks"
 	item_state = "g_swimtrunks"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS

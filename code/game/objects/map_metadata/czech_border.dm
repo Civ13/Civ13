@@ -75,7 +75,7 @@ obj/map_metadata/czech_border/roundend_condition_def2name(define)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The <b>Czechs</b> have sucessfuly defended The Village! NATO forces have halted the attack!"
+		var/message = "The <b>Czechs</b> have successfully defended The Village! NATO forces have halted the attack!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

@@ -799,7 +799,7 @@
 			return
 
 		if ("Nuclear")
-			to_chat(world, "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missle will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>")
+			to_chat(world, "<font color='yellow'><big>Nuclear</big><br>To make things worse sometime between 2 and 3.5 hours a nuclear missile will be hitting somewhere nearby. Can you survive?</big><br><b>Wiki Guide: https://civ13.github.io/civ13-wiki/gamemodes/Civilizations_and_Nomads</b>")
 			map.gamemode = "Nuclear"
 			map.is_zombie = FALSE
 			map.hasnukes = TRUE

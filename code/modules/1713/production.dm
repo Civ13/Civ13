@@ -28,11 +28,11 @@
 		return FALSE
 */
 
-// TO DO TODO: Make this universal proc for all expirience gains
+// TO DO TODO: Make this universal proc for all experience gains
 /mob/living/human/proc/give_exp(var/list/exp_skills_list, var/list/exp_skills_percent = list(), work_amount = 10, no_emotes = FALSE, no_msg = FALSE, change_mood_coefficient = 1, EUREKA_chance = 0.5, breakthrough_chance = 5 , fail_chance = 0, EPIC_fail_chance = 0)
 	// returns 0 - nothing happens, 1 - breaktrough, 2 - EUREKA, -1 - fail, -2 - EPIC fail
 	// exp_skills_list - list of skills how it declared in human_defines.dm, f.e. list("swords","strength","dexterity","stamina") or empty list if you want simply generate chance
-	// exp_skills_percent - list of percent distribution of gain expirience, f.e. list(85,5,5,5) or empty list, if you want equal distribution in skills experience
+	// exp_skills_percent - list of percent distribution of gain experience, f.e. list(85,5,5,5) or empty list, if you want equal distribution in skills experience
 	// 		if you want to give more experience for any reason, then you can exceed 100% of the total experience (this will work wor mood gains too), f.e. list(130,5,5,5)
 	// work_amount - in deciseconds work amount
 	// no_emotes - set it to TRUE if no emotes when procedure work
@@ -554,13 +554,13 @@
 // Dehydrator //////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 // Accepts items with the dry_type path set, converting them to that path after the drying process is complete.
-// Dehydrator have 3x4 size, or 3 collums on 4 rows.
+// Dehydrator have 3x4 size, or 3 columns on 4 rows.
 // By default dry_size=2 - this means that the item will take up two slots from left to right in the first empty space on the dehydrator.
 // With dry_size values of 1, 2 and 3, an item will take up the corresponding number of slots. For dry_size=4 only turned position will be used, better use dry_size=13 (see below).
 // Values of +4 will occupy two rows, for example 6 will occupy 2 slots of 2 rows (2x2); 5: 1x2; 6: 2x2; 7: 3x2; 8 will fit only rotated 2x4, better use dry_size=14 (see below).
 // Values +8 will occupy three rows, and +12 all four rows. 9: 1x3; 10: 2x3; 11: 3x3; 12 - will fit only rotated, better use dry_size=15 (see below).
 // Values +12 will occipy all four rows 13: 1x4; 14: 2x4; 15: 3x4 (full dehydrator); dry_size>15 will never fit to dehydrator.
-// Alghorithm will try to rotate item if not empty space are found. For example 1x3 item (dry_size=9) not found a place, but dehydrator have free row, and item will placed 3x1 (as dry_size=3).
+// Algorithm will try to rotate item if not empty space are found. For example 1x3 item (dry_size=9) not found a place, but dehydrator have free row, and item will placed 3x1 (as dry_size=3).
 // ====================================================================
 // Items must have an icon in 'icons/obj/food/dryer.dmi' named the same as icon_state of drying product
 // Items must have an icon in 'icons/obj/food/dryer.dmi' named as icon_state of drying product with additional "R" at end. For example "rawcutletR"
@@ -1109,7 +1109,7 @@
 
 /obj/item/weapon/starterjar/proc/yeast_growth()
 	//Yeah there is a bug, form abuse load/unload yeast that may produce +4 fermenting_contents at time, BUT enzymes not essentials at this moment
-	//	and it will fixed, when working on TO DO part (look at the begining of starterjar TODO)
+	//	and it will fixed, when working on TO DO part (look at the beginning of starterjar TODO)
 	if (fermenting_contents>0)
 		spawn(1500+rand(0,400))
 			if (fermenting_contents > 0 && fermenting_contents < 5)
@@ -1731,7 +1731,7 @@
 							NB.name = NC.name
 							NB.desc = NC.desc
 							/*
- 							//Theese have no sense for research or not used anywhere in code
+ 							//These have no sense for research or not used anywhere in code
 							NB.sum_a = NC.sum_a = 0
 							NB.sum_b = NC.sum_b = 0
 							NB.sum_c = NC.sum_c = 0

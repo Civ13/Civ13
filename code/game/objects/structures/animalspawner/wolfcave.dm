@@ -2,7 +2,7 @@
 	name = "Wolf Cave"
 	icon = 'icons/obj/animal_spawner.dmi'
 	icon_state = "cave_den"
-	desc = "Thats a wolfcave. You probably want to stay away from it."
+	desc = "That's a wolfcave. You probably want to stay away from it."
 
 /obj/structure/animalspawner/wolfcave/New()
 	src.males = pick(1, 2, 3) //Initialize with some random amount of wolves, from 2 to 6
@@ -43,7 +43,7 @@
 
 /obj/structure/animalspawner/wolfcave/proc/reproduction()
 	if(total_population >= 0 && total_population < 10) //Greater than 0 or zero, and less than ten
-		if((females && males) && !procreate_cooldown) //Just one pregnancy at time, doesnt matter the ammount of females
+		if((females && males) && !procreate_cooldown) //Just one pregnancy at time, doesn't matter the amount of females
 			cubs++
 			procreate_cooldown = TRUE
 			spawn(procreate_holder)
@@ -61,7 +61,7 @@
 
 /obj/structure/animalspawner/wolfcave/proc/Ticker()
 //################## Description Ticker Settings Output #################
-	src.desc = "Thats a wolfcave. You probably want to stay away from it."
+	src.desc = "That's a wolfcave. You probably want to stay away from it."
 	var/number_flavor = 0
 	if(src.total_population > 0)
 		if(prob(35))

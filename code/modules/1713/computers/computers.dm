@@ -73,7 +73,7 @@
 				src.programs = list()
 				src.boot(OSD.operatingsystem)
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
-				to_chat(H, "You sucessfully install \the [src.operatingsystem] on this machine.")
+				to_chat(H, "You successfully install \the [src.operatingsystem] on this machine.")
 			else
 				to_chat(H, "You already have this operating system installed.")
 				return

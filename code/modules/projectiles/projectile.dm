@@ -418,7 +418,7 @@
 					player_help_service.record_observed_injury(target_mob.client, target_mob, "reported_projectile_hit")
 		else
 			if(hit_zone)
-				visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
+				visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you can't tell who shot you if you could not see the shooter
 		if (istype(target_mob, /mob/living/simple_animal/hostile/human/zombie))
 			var/mob/living/simple_animal/hostile/human/zombie/Z = target_mob
 			if(hit_zone)

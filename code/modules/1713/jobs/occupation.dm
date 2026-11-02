@@ -1033,7 +1033,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	H.gulag_languages()
 	randrole = title
-	H.add_note("Primary Role", "You are an <b>Auxillary Police</b>. Your job is to get information and pass it to the SS. Be careful, the civilians might not like your presence.")
+	H.add_note("Primary Role", "You are an <b>Auxiliary Police</b>. Your job is to get information and pass it to the SS. Be careful, the civilians might not like your presence.")
 	return TRUE
 
 /datum/job/civilian/occupation/basic

@@ -90,7 +90,7 @@
 
 	discord_adminpm_log(key_name(src),msg,key_name(C))
 
-	//play the recieving admin the adminhelp sound (if they have them enabled)
+	//play the receiving admin the adminhelp sound (if they have them enabled)
 	//non-admins shouldn't be able to disable this
 	if (C.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 		to_chat(C, 'sound/effects/adminhelp.ogg')
@@ -129,7 +129,7 @@
 
 	discord_adminpm_log(sender_name,msg,key_name(C))
 
-	//play the recieving admin the adminhelp sound (if they have them enabled)
+	//play the receiving admin the adminhelp sound (if they have them enabled)
 	//non-admins shouldn't be able to disable this
 	if (C.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 		to_chat(C, 'sound/effects/adminhelp.ogg')

@@ -30,7 +30,7 @@
 	var/fat_extra = 0
 	var/fat_penalty = 0
 	var/has_fat = TRUE //Does this animal drops fat?
-	var/stop_automated_movement = FALSE //Use this to temporarely stop random movement or to if you write special movement code for animals.
+	var/stop_automated_movement = FALSE //Use this to temporarily stop random movement or to if you write special movement code for animals.
 	var/wander = TRUE	// Does the mob wander around when idle?
 	var/stop_automated_movement_when_pulled = TRUE //When set to TRUE this stops the animal from moving when someone is pulling it.
 	var/flying = FALSE
@@ -73,7 +73,7 @@
 	var/herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	var/granivore = 0 //if it will be attracted to crops (i.e. rabbits, mice, birds)
 	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
-	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 	var/starves = TRUE
 
@@ -103,7 +103,7 @@
 	var/hostilesounds = list()
 	var/wandersounds = list()
 
-	//Radiation Varients
+	//Radiation Variants
 	var/mutation_variants = list()
 
 	var/attack_verb = "bites"
@@ -649,7 +649,7 @@
 	return FALSE
 
 /mob/living/simple_animal/movement_delay()
-	var/tally = FALSE //Incase I need to add stuff other than "speed" later
+	var/tally = FALSE //In case I need to add stuff other than "speed" later
 
 	tally = speed
 

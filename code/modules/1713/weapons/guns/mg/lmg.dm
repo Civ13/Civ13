@@ -355,7 +355,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/manual/m249
 	name = "M249 SAW"
-	desc = "An American variant of the Belgian FN Minimi machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
+	desc = "An American variant of the Belgian FN Minimi machinegun chambered in 5.56x45mm NATO rounds. Successor of the M60."
 	icon_state = "m249"
 	item_state = "m249"
 	base_icon = "m249"

@@ -488,7 +488,7 @@ var/list/vocal_emotes = list(
 						for (var/mob/living/M in viewers(7, src))
 							to_chat(M, speech_bubble)
 						
-						playsound(get_turf(src), "medic", 100) // Plays regardless of language for anyone. /probably shouldnt./
+						playsound(get_turf(src), "medic", 100) // Plays regardless of language for anyone. /probably shouldn't./
 						
 					else
 						message = "makes a weak noise."

@@ -438,7 +438,7 @@
 
 //--------------------------------------------------inventory---------------------------------------------------------
 /obj/screen/inventory
-	var/slot_id //The indentifier for the slot. It has nothing to do with ID cards.
+	var/slot_id //The identifier for the slot. It has nothing to do with ID cards.
 	icon = 'icons/mob/screen/1713Style.dmi'
 	layer = 19
 
@@ -893,7 +893,7 @@
 		return
 	if (C.legcuffed)
 		to_chat(C, "<span class='notice'>You are legcuffed! You cannot run until you get [C.legcuffed] removed!</span>")
-		C.m_intent = "walk"	//Just incase
+		C.m_intent = "walk"	//Just in case
 		update_icon()
 		return TRUE
 

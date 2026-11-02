@@ -673,9 +673,9 @@ proc/sort_atoms_by_layer(var/list/atoms)
 	return result
 /*
 generate_image function generates image of specified range and location
-arguments tx, ty, tz are target coordinates (requred), range defines render distance to opposite corner (requred)
-cap_mode is capturing mode (optional), user is capturing mob (requred only wehen cap_mode = CAPTURE_MODE_REGULAR),
-lighting determines lighting capturing (optional), suppress_errors suppreses errors and continues to capture (optional).
+arguments tx, ty, tz are target coordinates (required), range defines render distance to opposite corner (required)
+cap_mode is capturing mode (optional), user is capturing mob (required only when cap_mode = CAPTURE_MODE_REGULAR),
+lighting determines lighting capturing (optional), suppress_errors suppresses errors and continues to capture (optional).
 */
 
 

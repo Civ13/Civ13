@@ -27,7 +27,7 @@
    * - 10b Emergency Services Clothing
    * - 10c Emergency Services Objects
    /////////////////////////////////////
-   * - 11 Miscallenous
+   * - 11 Miscellaneous
    * - 11a Tactical
    * - 11b IOG armor
    * - 11c Scrap Armor*/
@@ -1387,7 +1387,7 @@
 	new /obj/item/weapon/grenade/flashbang(src)
 	new /obj/item/weapon/grenade/coldwar/stinger(src)
 
-/* Miscallenous*/
+/* Miscellaneous*/
 
 /obj/item/clothing/accessory/armor/nomads/baily //too broad, can't make out what detail this is actually meant to be associated with.
 	name = "baily vest"
@@ -1862,7 +1862,7 @@
 			cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS
 			update_clothing_icon()
 
-/obj/item/clothing/under/syria_fsa //cant find any source on what they use so im just gonna use this
+/obj/item/clothing/under/syria_fsa //can't find any source on what they use so im just gonna use this
 	name = "Free Syrian Army uniform"
 	desc = "Standard uniform used by the FSA forces."
 	icon_state = "salv_army"
@@ -1914,7 +1914,7 @@
 
 /obj/item/clothing/under/warband2
 	name = "camo trousers and white sleeveless shirt"
-	desc = "A mix of woodland camoflage trousers and a white sleeveless shirt."
+	desc = "A mix of woodland camouflage trousers and a white sleeveless shirt."
 	icon_state = "warband2"
 	item_state = "warband2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS

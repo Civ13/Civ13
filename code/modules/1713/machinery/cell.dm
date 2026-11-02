@@ -1,6 +1,6 @@
 /obj/item/weapon/cell
 	name = "power cell"
-	desc = "A rechargable electrochemical power cell."
+	desc = "A rechargeable electrochemical power cell."
 	icon = 'icons/obj/machines/power.dmi'
 	icon_state = "cell"
 	item_state = "cell"

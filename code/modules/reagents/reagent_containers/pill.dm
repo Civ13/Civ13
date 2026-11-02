@@ -281,7 +281,7 @@ quinine
 
 /obj/item/weapon/reagent_containers/pill/pervitin
 	name = "Pervitine pill"
-	desc = "Pill with powerfull stimulant. Don't eat two of these, one will be enough for you."
+	desc = "Pill with powerful stimulant. Don't eat two of these, one will be enough for you."
 	icon_state = "pill16"
 	is_contraband = TRUE
 	New()
