@@ -18,7 +18,7 @@
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "ada615fa5cc826dc96c9f66b02056b2015946b8cb373d65d4ffebdbd3d1d25db",
+      "sha256_normalized": "a89b38baae2099f40cae7a86ef84d75a5154feea2506bb0962b00340f874ec48",
       "declarations": [
         {
           "line": 81,
@@ -495,6 +495,16 @@
         {
           "line": 45,
           "declaration": "CanPass(obj/mover, turf/source, height, airflow)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/paperwork/authoring.dm",
+      "sha256_normalized": "7d20e67dbe0d998327d9d268a0fc56906cc75c212c327c966ba2924abcbca42f",
+      "declarations": [
+        {
+          "line": 11,
+          "declaration": "parent_type = /datum/paper_document_service"
         }
       ]
     },
