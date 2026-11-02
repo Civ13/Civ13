@@ -16,6 +16,7 @@ OVERLAY = (
 )
 SCOPE = tuple(sorted(OVERLAY + (
     'tests/save_debug_fixture/stage.py', 'tests/save_debug_fixture/probe.dm',
+    'tests/save_debug_fixture/location_controls.dm',
     'tests/save_debug_fixture/controller.py', 'tests/save_debug_fixture/test_fixture.py', 'tests/save_debug_fixture/README.md', 'tests/human_subtile/run.py',
     'tests/human_subtile/probe.dm', 'tests/human_subtile/mining.dm',
     'scripts/byond_runtime.py', 'scripts/byond_toolchain.py',
@@ -59,6 +60,17 @@ def inject_mob_handoff(source):
         'mob handoff')
 
 
+def inject_late_location(source):
+    # Test-only named actor mutation between round write and final audit.
+    anchor = ('\tif(!text2file(json_encode(round_state), "map_saves/round.json"))\n'
+              '\t\tthrow EXCEPTION("Could not write round state")\n'
+              '\tif(debug_policy) debug_policy.audit(generation, operation)\n')
+    return replace_once(source, anchor, anchor.replace(
+        '\tif(debug_policy) debug_policy.audit(generation, operation)\n',
+        '\tif(debug_policy) debug_fixture_before_final_audit(debug_policy)\n'
+        '\tif(debug_policy) debug_policy.audit(generation, operation)\n'), 'late audit handoff')
+
+
 def stage(output, expected_head, expected_scope):
     actual = scope()
     if not re.fullmatch(r'[0-9a-f]{40}', expected_head) or not re.fullmatch(r'[0-9a-f]{64}', expected_scope):
@@ -80,16 +92,18 @@ def stage(output, expected_head, expected_scope):
         target.write_bytes(canonical((ROOT / name).read_bytes()))
         overlays[name] = {'base_sha256': before, 'candidate_sha256': sha(target.read_bytes())}
     saver = staged / 'code/modules/persistence/saving.dm'
-    saver.write_text(inject_mob_handoff(saver.read_text(encoding='utf-8')), encoding='utf-8', newline='\n')
+    saver.write_text(inject_late_location(inject_mob_handoff(saver.read_text(encoding='utf-8'))), encoding='utf-8', newline='\n')
     old_probe = staged / 'tests/human_subtile/probe.dm'
     old = old_probe.read_text(encoding='utf-8')
     old_probe.write_text(replace_once(old, '/world/New()\n', '/world/proc/unused_debug_base_probe()\n', 'old world startup'), encoding='utf-8', newline='\n')
     probe = staged / 'tests/save_debug_fixture/probe.dm'
     probe.parent.mkdir(parents=True, exist_ok=True)
     probe.write_bytes(canonical((ROOT / 'tests/save_debug_fixture/probe.dm').read_bytes()))
+    location_controls = staged / 'tests/save_debug_fixture/location_controls.dm'
+    location_controls.write_bytes(canonical((ROOT / 'tests/save_debug_fixture/location_controls.dm').read_bytes()))
     dme = (staged / 'civ13.dme').read_text(encoding='utf-8')
     dme = re.sub(r'^#include ".*\.dmm"\s*$', '', dme, flags=re.M)
-    dme += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n#include "tests\\save_debug_fixture\\probe.dm"\n'
+    dme += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n#include "tests\\save_debug_fixture\\probe.dm"\n#include "tests\\save_debug_fixture\\location_controls.dm"\n'
     (staged / 'human_subtile.dme').write_text(dme, encoding='utf-8', newline='\n')
     result = {'head': expected_head, 'scope': actual, 'overlays': overlays,
               'adaptations': manifest['adaptations'], 'instrumented_saver_sha256': sha(saver.read_bytes()),

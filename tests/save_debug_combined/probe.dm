@@ -145,6 +145,8 @@ var/global/list/combined_capsule
 	debug_fixture_assert(fixture_moves == 1 && !fexists("map_saves/save_complete.txt"), "fixture_failed_capture_marker")
 	debug_fixture_assert(findtext(map_storage.last_error, "Child moved or disappeared during capture"), "fixture_wrong_original_failure")
 	debug_fixture_assert(trim(file2text("map_backups/save_complete.txt")) == seed_generation, "fixture_backup_generation_changed")
+	result["location_controls"] = debug_fixture_location_controls(box, fixture_subject)
+	result["late_capture_controls"] = debug_fixture_late_capture_controls(box, fixture_subject)
 	fixture_subject.loc = box
 	fixture_armed = TRUE
 	combined_start_walker()
@@ -152,7 +154,7 @@ var/global/list/combined_capsule
 	combined_active = FALSE
 	debug_fixture_assert(combined_handoffs == 1 && combined_pulses_after > 0 && islist(combined_capsule), "combined_handoff_or_continuation_missing")
 	debug_fixture_assert(!combined_capsule["sx"] && !combined_capsule["sy"], "combined_capsule_not_centered")
-	debug_fixture_assert(fixture_moves == 2 && !fixture_armed, "fixture_debug_fault_not_reached")
+	debug_fixture_assert(fixture_moves == 4 && !fixture_armed, "fixture_debug_fault_not_reached")
 	debug_fixture_assert(fixture_subject && fixture_subject.loc == locate(2, 2, 1), "fixture_live_animal_changed")
 	debug_fixture_assert(item && item.loc == box, "fixture_live_item_changed")
 	debug_fixture_assert(box.fixture_alias == shared && islist(box.fixture_nested) && box.fixture_nested.len == 1 && box.fixture_nested[1] == shared && shared.len == 4 && shared[1] == fixture_subject && shared[2] == "preserved-neighbor" && shared["linked"] == fixture_subject && shared[4] == shared, "fixture_live_nested_changed")

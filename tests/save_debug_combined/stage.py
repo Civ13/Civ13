@@ -16,6 +16,7 @@ OVERLAY = (
 )
 SCOPE = tuple(sorted(OVERLAY + (
     'tests/save_debug_combined/stage.py', 'tests/save_debug_combined/probe.dm',
+    'tests/save_debug_fixture/location_controls.dm',
     'tests/save_debug_combined/controller.py', 'tests/save_debug_combined/test_fixture.py', 'tests/save_debug_combined/README.md', 'tests/human_subtile/run.py',
     'tests/save_debug_combined/test_workflow.py', '.github/workflows/moving-save-chunks.yml',
     'tests/human_subtile/probe.dm', 'tests/human_subtile/mining.dm',
@@ -61,6 +62,17 @@ def inject_mob_handoff(source):
         'mob handoff')
 
 
+def inject_late_location(source):
+    # Test-only named actor mutation between round write and final audit.
+    anchor = ('\tif(!text2file(json_encode(round_state), "map_saves/round.json"))\n'
+              '\t\tthrow EXCEPTION("Could not write round state")\n'
+              '\tif(debug_policy) debug_policy.audit(generation, operation)\n')
+    return replace_once(source, anchor, anchor.replace(
+        '\tif(debug_policy) debug_policy.audit(generation, operation)\n',
+        '\tif(debug_policy) debug_fixture_before_final_audit(debug_policy)\n'
+        '\tif(debug_policy) debug_policy.audit(generation, operation)\n'), 'late audit handoff')
+
+
 def instrument_human(source):
     source = replace_once(source,
         '\treturn owner && client == owner && owner.mob == src && owner.canmove && owner.moving',
@@ -100,7 +112,7 @@ def stage(output, expected_head, expected_scope):
         target.write_bytes(canonical((ROOT / name).read_bytes()))
         overlays[name] = {'base_sha256': before, 'candidate_sha256': sha(target.read_bytes())}
     saver = staged / 'code/modules/persistence/saving.dm'
-    saver.write_text(inject_mob_handoff(saver.read_text(encoding='utf-8')), encoding='utf-8', newline='\n')
+    saver.write_text(inject_late_location(inject_mob_handoff(saver.read_text(encoding='utf-8'))), encoding='utf-8', newline='\n')
     movement = staged / 'code/game/mob/living/carbon/human/subtile_movement.dm'
     movement.write_text(instrument_human(movement.read_text(encoding='utf-8')), encoding='utf-8', newline='\n')
     old_probe = staged / 'tests/human_subtile/probe.dm'
@@ -109,10 +121,13 @@ def stage(output, expected_head, expected_scope):
     probe = staged / 'tests/save_debug_combined/probe.dm'
     probe.parent.mkdir(parents=True, exist_ok=True)
     probe.write_bytes(canonical((ROOT / 'tests/save_debug_combined/probe.dm').read_bytes()))
+    location_controls = staged / 'tests/save_debug_fixture/location_controls.dm'
+    location_controls.parent.mkdir(parents=True, exist_ok=True)
+    location_controls.write_bytes(canonical((ROOT / 'tests/save_debug_fixture/location_controls.dm').read_bytes()))
     dme = (staged / 'civ13.dme').read_text(encoding='utf-8')
     dme = re.sub(r'^#include ".*\.dmm"\s*$', '', dme, flags=re.M)
     dme = '#define CIV13_HUMAN_SPATIAL_EXPERIMENTAL 1\n' + dme
-    dme += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n#include "tests\\save_debug_combined\\probe.dm"\n'
+    dme += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n#include "tests\\save_debug_combined\\probe.dm"\n#include "tests\\save_debug_fixture\\location_controls.dm"\n'
     (staged / 'human_subtile.dme').write_text(dme, encoding='utf-8', newline='\n')
     result = {'head': expected_head, 'scope': actual, 'overlays': overlays,
               'adaptations': manifest['adaptations'], 'instrumented_saver_sha256': sha(saver.read_bytes()),

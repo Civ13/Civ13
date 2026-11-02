@@ -4,6 +4,11 @@ on:
     paths:
       - 'tests/movement_save_chunks/**'
       - 'tests/save_debug_combined/**'
+      - 'tests/save_debug_fixture/**'
+      - 'tests/save_debug_lossy/**'
+      - 'code/modules/persistence/debug_lossy.dm'
+      - 'code/modules/persistence/admin.dm'
+      - 'code/modules/admin/admin_verbs.dm'
       - 'code/modules/persistence/saving.dm'
       - 'code/modules/persistence/functions.dm'
       - 'code/modules/persistence/loading.dm'
@@ -61,6 +66,11 @@ jobs:
           persist-credentials: false
       - name: Offline source and resource-policy controls
         run: python3 -B -m unittest discover -s tests/movement_save_chunks -v
+      - name: Debug recovery source and fixture contracts
+        run: |
+          python3 -B -m unittest discover -s tests/save_debug_lossy -p 'test*.py' -v
+          python3 -B -m unittest discover -s tests/save_debug_fixture -p 'test*.py' -v
+          python3 -B -m unittest discover -s tests/save_debug_combined -p 'test*.py' -v
       - name: Install verified 516.1688 and compile exact game source
         timeout-minutes: 15
         env:

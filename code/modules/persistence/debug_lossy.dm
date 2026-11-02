@@ -25,6 +25,8 @@
 	var/pending_fault_id
 	var/list/signatures = list()
 	var/list/quarantine = list()
+	// One bounded witness per selected target; retained only for this session.
+	var/list/quarantine_witnesses = list()
 	var/list/incidents = list()
 	var/list/omissions = list()
 	var/list/attempt_history = list()
@@ -99,6 +101,7 @@
 		return FALSE
 	signatures[signature] = TRUE
 	quarantine[pending_child_ref] = A
+	quarantine_witnesses[pending_child_ref] = list("animal" = A, "animal_type" = pending_child_type, "destination" = pending_destination, "destination_ref" = pending_destination_ref, "destination_type" = pending_destination_type)
 	incidents += list(list("attempt" = attempt, "operation_id" = pending_operation_id, "generation" = pending_generation, "kind" = "moved_leaf_animal", "parent_type" = pending_parent_type, "parent_ref" = pending_parent_ref, "child_type" = pending_child_type, "child_ref" = pending_child_ref, "observed_destination_type" = pending_destination_type, "observed_destination_ref" = pending_destination_ref, "action" = "omit_entity_and_replace_references_with_null"))
 	try
 		world.log << "Debug loss selection [id]: [json_encode(incidents[incidents.len])]"
@@ -114,6 +117,22 @@
 /datum/save_debug_recovery/proc/is_quarantined(value)
 	if(!istype(value, /atom/movable) || !value) return FALSE
 	return quarantine["\ref[value]"] == value
+
+// The selected live object must still be at its admitted immediate location.
+// A deleted destination turns its stored handle null but retains its ref/type,
+// so it cannot be confused with a destination that was originally null.
+/datum/save_debug_recovery/proc/quarantine_witness_valid(ref, atom/movable/value)
+	if(!istext(ref) || !istype(value, /mob/living/simple_animal) || quarantine[ref] != value || "\ref[value]" != ref) return FALSE
+	var/list/witness = quarantine_witnesses[ref]
+	if(!islist(witness) || witness.len != 5 || witness["animal"] != value || "[value.type]" != witness["animal_type"]) return FALSE
+	var/mob/living/simple_animal/A = value
+	if(A.gc_destroyed || A.gcDestroyed || A.client || A.contents.len) return FALSE
+	var/atom/destination = A.loc
+	if(destination != witness["destination"] || (!!destination != !!witness["destination_ref"])) return FALSE
+	if(destination)
+		if(destination.gc_destroyed || destination.gcDestroyed || "\ref[destination]" != witness["destination_ref"] || "[destination.type]" != witness["destination_type"]) return FALSE
+	else if(witness["destination_type"] != "unavailable") return FALSE
+	return TRUE
 
 // Keep nested slot context attached to the owned encoding call across yields.
 // The caller owns list identity and association handling; this is not a
@@ -136,7 +155,7 @@
 	if(closed || !owner || !owner.current(map_storage, "save") || !value) return FALSE
 	var/ref = "\ref[value]"
 	if(quarantine[ref] != value) return FALSE
-	if(value.gc_destroyed || value.gcDestroyed || value.contents.len || (ismob(value) && value:client)) throw EXCEPTION("Debug omitted animal changed; candidate refused")
+	if(!quarantine_witness_valid(ref, value)) throw EXCEPTION("Debug omitted animal changed; candidate refused")
 	if(encoding_depth > 1 && !encoding_list_context.len) throw EXCEPTION("Debug nested omission lacks list context")
 	if(omissions.len >= 256) throw EXCEPTION("Debug omission audit limit exceeded")
 	var/datum/save_export_frame/frame = map_storage.saving_export_stack.len ? map_storage.saving_export_stack[map_storage.saving_export_stack.len] : null
@@ -157,9 +176,10 @@
 
 /datum/save_debug_recovery/proc/audit(generation, datum/persistence_world_operation/operation)
 	if(closed || owner != operation || !operation.current(map_storage, "save") || generation != operation.diagnostic_generation || incidents.len > 2 || omissions.len > 256) throw EXCEPTION("Debug audit is not owned or exceeds its bound")
+	if(quarantine_witnesses.len != quarantine.len) throw EXCEPTION("Debug omission witness coverage changed")
 	for(var/ref in quarantine)
 		var/mob/living/simple_animal/A = quarantine[ref]
-		if(!A || "\ref[A]" != ref || A.gc_destroyed || A.gcDestroyed || A.client || A.contents.len) throw EXCEPTION("Debug omitted animal changed before publication")
+		if(!quarantine_witness_valid(ref, A)) throw EXCEPTION("Debug omitted animal changed before publication")
 	var/list/result = list("schema" = 1, "mode" = "debug_lossy", "request_id" = id, "attempt" = attempt, "attempt_id" = operation.diagnostic_save_id, "outcome" = "candidate_commit_intent", "generation" = generation, "attempt_history" = attempt_history.Copy(), "incidents" = incidents.Copy(), "omissions" = omissions.Copy())
 	if(!valid_debug_recovery_audit(result, generation)) throw EXCEPTION("Debug recovery audit is invalid or too large")
 	return result
@@ -172,6 +192,7 @@
 	pending_destination = null
 	pending_fault_id = null
 	quarantine = list()
+	quarantine_witnesses = list()
 	encoding_list_context = list()
 	if(map_storage && map_storage.debug_recovery_session == src) map_storage.debug_recovery_session = null
 

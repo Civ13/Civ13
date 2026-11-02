@@ -1,9 +1,9 @@
-# Debug-lossy save fixture - source for review, not executed
+# Debug-lossy save fixture
 
 This is a synthetic-only writer/fresh-reader fixture for the narrow prototype.
 It stages exact reviewed Git source plus an explicit hashed overlay, substitutes
-only isolated startup and one deterministic test-only movement immediately after
-the real mob child is encoded, and keeps the real child-consistency guard. It
+isolated startup and deterministic test-only movement after the real mob child
+is encoded and before the final audit, and keeps the real consistency guards. It
 does not test Gaia, connected clients, general lossy recovery or full-world scale.
 The explicitly scoped text inputs are hashed and staged after CRLF-to-LF
 normalization; lone carriage returns are rejected. The Git base is bound by
@@ -19,15 +19,19 @@ and report an audit exactly matching the writer and completion marker. It also
 tests missing or nonempty child, an associated-key omission refusal, a bound owner
 and simulated lost-owner refusal. The named controls exercise specific direct
 policy paths; they are not a complete inventory of all possible failures.
+This revision also checks moved and detached destinations immediately after
+admission and after an encoded omission. Two additional debug-save runs inject
+those changes after round-state writing and before the real final audit; both
+must refuse the candidate marker and retain all four seed/backup bytes.
 The expanded fixture also requires nested positional and associated-value
 references to the target to restore as null while a neighboring value, an alias,
 and a self-cycle survive. Its audit names the saved level, list ID, index and
-side for each omitted occurrence. This expanded behavior is not yet natively
-validated; the earlier successful fixture tested the narrower policy.
+side for each omitted occurrence. The nested-list fixture passed on historical
+head `1a7364c2`; these new location controls have not yet run natively.
 
 ## Proposed execution envelope
 
-No native action has been performed. After source and envelope review, the
+For this revision, no native action has been performed. After source and envelope review, the
 proposed single Linux hosted run uses one 516.1688 compile and two sequential
 short-lived daemons, each limited to 120 seconds with a 360-second total native
 deadline; each process-group cleanup waits up to ten more seconds. The launcher

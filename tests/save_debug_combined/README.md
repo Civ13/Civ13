@@ -15,8 +15,12 @@ client, Gaia, every possible omitted type or live game continuity.
 The writer's capsule and reader's restored tile are compared by the controller;
 generation, all omission audit rows and the retained four-file synthetic seed
 remain separately checked. False/missing handoff, post-handoff movement,
-restore position, nested inventory, marker or seed bytes must fail. Fixture
-injection occurs only in the staged source, with exact anchors that fail on
+restore position, nested inventory, marker or seed bytes must fail. This
+revision also tests moved/detached destinations, including two actual debug
+saves that change the selected animal after round-state writing and require
+the final audit to refuse publication with unchanged seed and backup bytes.
+These new controls have not run natively. Fixture injection occurs only in the
+staged source, with exact anchors that fail on
 drift. It neither changes the production movement predicate nor claims that
 its headless seam proves real-client behavior.
 

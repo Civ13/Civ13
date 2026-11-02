@@ -22,6 +22,7 @@ class RecoveryModel:
         self.attempt_id = None
         self.generation = None
         self.quarantine = {}
+        self.witnesses = {}
         self.incidents = []
         self.omissions = []
         self.history = []
@@ -57,13 +58,14 @@ class RecoveryModel:
         if now > expiry or child['deleted'] or child['client'] or child['contents'] or child['loc'] is not destination or child['loc'] is parent or child['identity'] != identity or identity in self.quarantine:
             return False
         self.quarantine[identity] = child
+        self.witnesses[identity] = (child, destination, identity)
         self.incidents.append(identity)
         self.pending = None
         self.fault_id = None
         return True
     def encode(self, child):
         if child['identity'] in self.quarantine:
-            if child['deleted'] or child['client'] or child['contents']:
+            if not self.witness_valid(child):
                 raise ValueError('changed quarantined child')
             if len(self.omissions) >= 256:
                 raise ValueError('audit budget')
@@ -71,12 +73,15 @@ class RecoveryModel:
             return {'kind': 'entry', 'ref': 0}
         return {'kind': 'entry', 'ref': child['identity']}
     def publish(self, durable_bound=True):
-        if not self.owner or not durable_bound or any(x['contents'] or x['client'] or x['deleted'] for x in self.children()):
+        if not self.owner or not durable_bound or len(self.witnesses) != len(self.quarantine) or any(not self.witness_valid(x) for x in self.children()):
             return False
         self.marker = 'new'
         return True
     def children(self):
         return list(self.quarantine.values())
+    def witness_valid(self, child):
+        witness = self.witnesses.get(child['identity'])
+        return bool(witness and witness[0] is child and child['identity'] is witness[2] and child['loc'] is witness[1] and not child['deleted'] and not child['client'] and not child['contents'])
 
 def animal(loc):
     return {'kind': 'animal', 'loc': loc, 'identity': object(), 'client': False, 'contents': [], 'deleted': False}
@@ -142,6 +147,25 @@ class DebugLossySourceContracts(unittest.TestCase):
         self.assertIn('Debug nested omission lacks list context', self.policy)
         self.assertIn('"outcome" = "candidate_commit_intent"', self.policy)
 
+    def test_admitted_location_witness_rechecked_before_omission_and_marker(self):
+        retry = body(self.policy, '/datum/save_debug_recovery/proc/admit_retry(')
+        self.assertIn('quarantine_witnesses[pending_child_ref] = list(', retry)
+        witness = body(self.policy, '/datum/save_debug_recovery/proc/quarantine_witness_valid(')
+        for guard in ('quarantine[ref] != value', 'witness["animal"] != value',
+                      '"[value.type]" != witness["animal_type"]', 'destination != witness["destination"]',
+                      '!!destination != !!witness["destination_ref"]', 'destination.gc_destroyed',
+                      '"\\ref[destination]" != witness["destination_ref"]',
+                      '"[destination.type]" != witness["destination_type"]'):
+            self.assertIn(guard, witness)
+        self.assertIn('quarantine_witness_valid(ref, value)', body(self.policy, '/datum/save_debug_recovery/proc/omits('))
+        self.assertIn('quarantine_witness_valid(ref, A)', body(self.policy, '/datum/save_debug_recovery/proc/audit('))
+        save = body(self.saving, '/map_storage/proc/save_world_contents(')
+        final_audit = save.rindex('debug_policy.audit(generation, operation)')
+        marker = save.index('text2file(generation,"map_saves/save_complete.txt")')
+        self.assertLess(final_audit, marker)
+        for yielding in ('sleep(', 'stoplag(', 'spawn('):
+            self.assertNotIn(yielding, save[final_audit:marker])
+
     def test_nested_location_is_bounded_and_associative_key_fails_closed(self):
         encode = body(self.saving, '/map_storage/proc/encode_saved_value_contents(')
         self.assertIn('policy.is_quarantined(key) && !isnull(associated_value)', encode)
@@ -174,6 +198,19 @@ class DebugLossyModelContracts(unittest.TestCase):
         self.assertTrue(r.publish());self.assertEqual(r.backup,'previous');self.assertEqual(r.marker,'new')
     def test_strict_save_never_omits_target(self):
         r=RecoveryModel();child=animal(object());self.assertEqual(r.encode(child)['ref'],child['identity'])
+
+    def test_moved_or_detached_after_admission_refuses_encode_and_late_publish(self):
+        for phase in ('before_encode', 'after_encode'):
+            for destination in ('moved', 'detached'):
+                with self.subTest(phase=phase, destination=destination):
+                    parent, admitted = object(), object(); child = animal(admitted)
+                    r=RecoveryModel(); r.attempt=1; r.bind(object()); r.observe(parent, child, 0); r.failure('moved_child')
+                    self.assertTrue(r.admit_retry(1)); r.attempt=2; self.assertTrue(r.bind(object()))
+                    if phase == 'after_encode': self.assertEqual(r.encode(child), {'kind':'entry','ref':0})
+                    child['loc'] = object() if destination == 'moved' else None
+                    if phase == 'before_encode':
+                        with self.assertRaisesRegex(ValueError, 'changed quarantined child'): r.encode(child)
+                    self.assertFalse(r.publish()); self.assertIsNone(r.marker); self.assertEqual(r.backup, 'previous')
     def test_expired_or_changed_failure_capability_refuses(self):
         for change in ('expired','moved','identity','contents','client','deleted'):
             with self.subTest(change=change):

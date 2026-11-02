@@ -23,7 +23,9 @@ def evidence():
              'omissions': [{'target_ref': 'synthetic', 'target_type': incident['child_type'], 'source_type': '/obj/structure/debug_save_fixture', 'source_ref': 'box', 'field': 'fixture_reference', 'replacement': 'null_reference'},
                            {'target_ref': 'synthetic', 'target_type': incident['child_type'], 'replacement': 'null_reference', 'list_location': {'z': 1, 'list_id': 2, 'index': 1, 'side': 'key'}},
                            {'target_ref': 'synthetic', 'target_type': incident['child_type'], 'replacement': 'null_reference', 'list_location': {'z': 1, 'list_id': 2, 'index': 3, 'side': 'value'}}]}
-    writer = {'generation': generation, 'seed_generation': seed, 'fixture_moves': 2, 'audit': audit, 'live_nested_unchanged': True,
+    writer = {'generation': generation, 'seed_generation': seed, 'fixture_moves': 4, 'audit': audit, 'live_nested_unchanged': True,
+              'location_controls': {'moved_before_encode': True, 'detached_before_encode': True, 'moved_after_encode': True, 'detached_after_encode': True},
+              'late_capture_controls': {'moved_after_encode': True, 'detached_after_encode': True},
               'controls': {'unsupported_contents': True, 'missing_child': True, 'associated_key': True, 'owner_bound': True, 'owner_lost': True}}
     reader = {'generation': generation, 'audit': copy.deepcopy(audit), 'retained_box': True,
               'retained_item': True, 'retained_control_item': True, 'omitted_animal': True, 'reference_null': True,
@@ -83,6 +85,14 @@ class ControllerContracts(unittest.TestCase):
         args = evidence()
         controller.validate_writer(args[0], args[2], args[3], args[4], args[0]['seed_generation'])
         self.assertTrue(controller.validate_evidence(*args))
+        for name in ('moved_before_encode', 'detached_before_encode', 'moved_after_encode', 'detached_after_encode'):
+            for bad in (False, 1.0, '1', None):
+                altered = list(evidence()); altered[0]['location_controls'][name] = bad
+                with self.subTest(name=name, bad=bad), self.assertRaises(ValueError): controller.validate_evidence(*altered)
+        for name in ('moved_after_encode', 'detached_after_encode'):
+            for bad in (False, 1.0, '1', None):
+                altered = list(evidence()); altered[0]['late_capture_controls'][name] = bad
+                with self.subTest(late=name, bad=bad), self.assertRaises(ValueError): controller.validate_evidence(*altered)
         numeric = list(evidence())
         for key in ('retained_box', 'retained_item', 'retained_control_item', 'omitted_animal', 'reference_null'):
             numeric[1][key] = 1
@@ -261,6 +271,15 @@ class ControllerContracts(unittest.TestCase):
 
 
 class StagingContracts(unittest.TestCase):
+    def test_late_location_handoff_retains_final_audit_and_rejects_drift(self):
+        source = (stage.ROOT / 'code/modules/persistence/saving.dm').read_text(encoding='utf-8')
+        result = stage.inject_late_location(source)
+        self.assertEqual(result.count('debug_fixture_before_final_audit(debug_policy)'), 1)
+        self.assertEqual(result.count('debug_policy.audit(generation, operation)'), source.count('debug_policy.audit(generation, operation)'))
+        self.assertLess(result.index('debug_fixture_before_final_audit(debug_policy)'), result.index('text2file(generation,"map_saves/save_complete.txt")'))
+        with self.assertRaises(ValueError): stage.inject_late_location(source.replace('Could not write round state', 'changed anchor'))
+        with self.assertRaises(ValueError): stage.inject_late_location(source + source)
+
     def test_fixture_initializes_real_job_controller_before_load(self):
         probe = (stage.ROOT / 'tests/save_debug_fixture/probe.dm').read_text(encoding='utf-8')
         self.assertIn('job_master = new /datum/controller/occupations()', probe)
@@ -279,8 +298,17 @@ class StagingContracts(unittest.TestCase):
         result = stage.scope()
         self.assertEqual(len(result['sha256']), 64)
         for name in ('code/modules/persistence/debug_lossy.dm', 'tests/save_debug_fixture/probe.dm',
-                     'tests/save_debug_fixture/controller.py', 'tests/save_debug_fixture/test_fixture.py'):
+                     'tests/save_debug_fixture/controller.py', 'tests/save_debug_fixture/test_fixture.py',
+                     'tests/save_debug_fixture/location_controls.dm'):
             self.assertIn(name, result['files'])
+
+    def test_location_controls_reach_real_debug_save_and_check_all_backup_files(self):
+        source = (stage.ROOT / 'tests/save_debug_fixture/location_controls.dm').read_text(encoding='utf-8')
+        for marker in ('!ticker.debug_lossy_save()', 'Debug omitted animal changed before publication',
+                       'fixture_late_capture_fired == before + 1', 'if(fexists("map_saves/save_complete.txt")) return FALSE',
+                       '"map.txt", "round.json", "1.sav", "save_complete.txt"',
+                       'md5(file("fixture_seed/[file_name]")) != md5(file("map_backups/[file_name]"))'):
+            self.assertIn(marker, source)
 
     def test_scope_normalizes_only_crlf_and_refuses_lone_cr(self):
         self.assertEqual(stage.canonical(b'one\r\ntwo\r\n'), b'one\ntwo\n')
