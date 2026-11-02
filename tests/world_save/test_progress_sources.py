@@ -30,6 +30,14 @@ progress = load('progress_source_test', 'build-progress-probe.py')
 backend = load('backend_source_test', 'build-gaia-phase-backend.py')
 
 
+def verify_automatic_restore_announcement(setup):
+    # A readiness ticket is context, never permission to announce a failed load.
+    assert re.search(
+        r'if\(ticker\.loadmap\(null, null, ready_ticket\)\) announce_restored_round_once\(\)\s+else persistence_startup_recovery_status = "unresolved"',
+        setup,
+    )
+
+
 class ProgressSources(unittest.TestCase):
     def test_phase_negative_results_do_not_fall_through_to_positive_check(self):
         # Execute the runner's actual result dispatcher without compiling DM.
@@ -390,7 +398,7 @@ class PlayerStatusSources(unittest.TestCase):
         finish = self.functions.split('\tproc/finish(success)\n', 1)[1].split('\n/datum/', 1)[0]
         self.assertRegex(finish, r'if\(!success && kind == "load" && mutation_started\)\s+persistence_load_recovery_required = TRUE')
         self.assertIn('persistence_startup_recovery_status = null', load)
-        self.assertRegex(self.setup, r'if\(ticker\.loadmap\(\)\) announce_restored_round_once\(\)\s+else persistence_startup_recovery_status = "unresolved"')
+        verify_automatic_restore_announcement(self.setup)
         self.assertIn('persistence_startup_recovery_status = "pending"', self.setup)
 
         fixture = (SOURCE_ROOT / 'tests/world_save_operations/probe.dm').read_text(encoding='utf-8')
@@ -400,6 +408,21 @@ class PlayerStatusSources(unittest.TestCase):
         self.assertIn('if(!ready) return FALSE', callback)
         self.assertTrue(callback.rstrip().endswith('return TRUE'))
         self.assertIn('unconfirmed player readiness retains recovery hold', fixture)
+
+    def test_automatic_restore_guard_rejects_causal_drift(self):
+        call = 'ticker.loadmap(null, null, ready_ticket)'
+        guard = 'if(' + call + ') announce_restored_round_once()'
+        failure = 'else persistence_startup_recovery_status = "unresolved"'
+        self.assertEqual(self.setup.count(guard), 1)
+        for broken in (
+            self.setup.replace(guard, call + '\n\t\t\t\t\t\t\t\tannounce_restored_round_once()'),
+            self.setup.replace(call, 'ticker.loadmap(null, null, null)'),
+            self.setup.replace(failure, 'else announce_restored_round_once()'),
+            self.setup.replace(guard, 'if(!' + call + ') announce_restored_round_once()'),
+        ):
+            with self.subTest(broken=broken != self.setup):
+                with self.assertRaises(AssertionError):
+                    verify_automatic_restore_announcement(broken)
 
     def test_early_join_rejection_records_only_a_still_owned_lobby(self):
         handler = self.lobby.split('/mob/new_player/proc/handle_lobby_join(', 1)[1].split('\n/mob/new_player/proc/clear_lobby_join', 1)[0]
