@@ -70,6 +70,26 @@ class ControllerTests(unittest.TestCase):
             path.write_bytes(compact);controller.require_original_writer_receipt(path,compact)
             path.write_bytes(pretty)
             with self.assertRaises(ValueError):controller.require_original_writer_receipt(path,compact)
+    def test_compiler_diagnostic_preserves_raw_log_bytes_and_process_identity(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d);stdout=b'DM compiler\r\n\xff';stderr=b'warning: synthetic\n'
+            (path/'compile.stdout.log').write_bytes(stdout);(path/'compile.stderr.log').write_bytes(stderr)
+            proc={'role':'compile','pid':42,'exit':0,'timeout':False,'error':None,'cleanup':'group_signal_sent'}
+            raw=json.dumps(proc).encode();(path/'compile.process.json').write_bytes(raw)
+            record=controller.record_compiler_diagnostic(path,'a'*64,ValueError('compiler identity or diagnostics'))
+            self.assertEqual(record['status'],'retained');self.assertEqual(record['logs']['stdout'],{'bytes':len(stdout),'sha256':hashlib.sha256(stdout).hexdigest()})
+            self.assertEqual(record['logs']['stderr'],{'bytes':len(stderr),'sha256':hashlib.sha256(stderr).hexdigest()})
+            self.assertEqual(record['process_sha256'],hashlib.sha256(raw).hexdigest());self.assertEqual(record['process'],proc)
+            self.assertEqual((path/'compile.stdout.log').read_bytes(),stdout);self.assertEqual((path/'compile.stderr.log').read_bytes(),stderr)
+    def test_compiler_diagnostic_missing_or_oversize_is_explicit(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d);(path/'compile.stdout.log').write_bytes(b'12345')
+            with mock.patch.object(controller,'MAX_LOG',4):
+                record=controller.record_compiler_diagnostic(path,'a'*64,ValueError('original failure'))
+            self.assertEqual(record['status'],'unavailable');self.assertEqual(record['error'],'original failure')
+            self.assertIn('retention_error',record)
+        src=(ROOT/'controller_linux.py').read_text(encoding='utf-8');start=src.index('    except Exception as exc:',src.index('def execute('))
+        self.assertLess(src.index('record_compiler_diagnostic(output,expected_controller,exc)',start),src.index("(output/'failure.json').write_text",start))
     def test_execution_is_linux_only_and_explicit(self):
         src=(ROOT/'controller_linux.py').read_text(encoding='utf-8')
         self.assertIn("p.add_argument('--run-native',action='store_true',required=True)",src)

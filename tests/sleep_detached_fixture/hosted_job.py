@@ -171,15 +171,22 @@ def execute(args, receipt):
            '--image-id', receipt['image_id'], '--docker', receipt['docker_path'], '--docker-sha256', receipt['docker_sha256'],
            '--python-sha256', receipt['python_sha256'], '--runner-sha256', digest(runner.read_bytes()), '--binding', str(args.evidence / 'prepared.json')]
     (args.evidence / 'execution-started.json').write_text(json.dumps({'status': 'started', 'sandbox': str(sandbox)}) + '\n', encoding='utf-8')
-    verified = False
+    decision = {'fixture_passed': False, 'retention_eligible': False, 'reason': 'supervisor did not return'}
+    destination = args.evidence / 'owned-sandbox'
     try:
-        supervise_outer(cmd, sandbox, args.evidence)
-        verified = True
-    finally:
-        # An uncertain cleanup never causes traversal of container-writable tmp.
-        destination = args.evidence / 'owned-sandbox'
-        if sandbox.exists() and not destination.exists():
-            copy_evidence(sandbox, destination, evidence_roots(verified))
+        decision = supervise_outer(cmd, sandbox, args.evidence, receipt)
+    except Exception as exc:
+        decision['reason'] = 'supervisor exception: ' + str(exc)[:1024]
+    (args.evidence / 'retention-decision.json').write_text(json.dumps(decision, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+    # Evidence eligibility depends on cleanup proof, never on fixture success.
+    try:
+        captured = copy_evidence(sandbox, destination, evidence_roots(decision['retention_eligible']))
+    except Exception as exc:
+        (args.evidence / 'evidence-capture.json').write_text(json.dumps({'status':'unavailable','error':str(exc)[:1024],'original_reason':decision['reason']}, sort_keys=True) + '\n', encoding='utf-8')
+        raise RuntimeError(decision['reason']+'; evidence capture unavailable: '+str(exc)[:1024]) from exc
+    diagnostic = retained_compiler_diagnostic(captured,destination)
+    (args.evidence / 'evidence-capture.json').write_text(json.dumps({'files':captured,'compiler':diagnostic}, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+    require(decision['fixture_passed'] is True, decision['reason'])
 
 def evidence_roots(cleanup_verified):
     return ('main', 'watch', 'tmp', 'source', 'runtime') if cleanup_verified is True else ('main', 'watch')
@@ -192,16 +199,47 @@ def proc_identity(pid):
     require(len(fields) > 19, 'watchdog proc identity incomplete')
     return (int(fields[1]), int(fields[19]))  # parent PID, kernel start ticks
 
-def read_host_receipt(path):
+def read_host_file(path, limit):
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         before = os.fstat(fd)
-        require(stat.S_ISREG(before.st_mode) and before.st_size <= 4096, 'invalid host receipt')
-        raw = os.read(fd, 4097); after = os.fstat(fd)
+        require(stat.S_ISREG(before.st_mode) and before.st_size <= limit, 'invalid host receipt')
+        chunks=[]; length=0
+        while True:
+            part=os.read(fd,min(1024*1024,limit-length+1))
+            if not part:break
+            length+=len(part);require(length<=limit,'host receipt too large');chunks.append(part)
+        raw=b''.join(chunks); after = os.fstat(fd)
         require(len(raw) == before.st_size and (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns) ==
                 (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns), 'host receipt changed')
         return raw
     finally: os.close(fd)
+
+def read_host_receipt(path): return read_host_file(path,4096)
+
+def unique(pairs):
+    result={}
+    for key,value in pairs:
+        require(key not in result,'duplicate JSON key');result[key]=value
+    return result
+
+def retention_proof(state, ready, watchdog, outer, before, after, before_ids, removed, after_ids, monitor, receipt, spec, contract):
+    """Independent host checks for stable, stopped and removed Docker custody."""
+    require(type(monitor) is dict and monitor.get('binding')=='pidfd_bound' and monitor.get('termination')=='pidfd_exit_observed' and monitor.get('owner_error') is None,'watchdog exit unverified')
+    require(type(state) is dict and set(state)=={'token','image','create_started','create_confirmed','container_id','start_started','start_confirmed'} and all(state.get(k) is True for k in ('create_started','create_confirmed','start_started','start_confirmed')),'start or create unconfirmed')
+    cid=state.get('container_id');token=state.get('token');image=state.get('image')
+    require(isinstance(cid,str) and re.fullmatch(r'[0-9a-f]{64}',cid) and isinstance(token,str) and re.fullmatch(r'[0-9a-f]{32}',token) and image==receipt.get('image_id') and spec['token']==token and spec['image']==image,'container identity mismatch')
+    require(type(ready) is dict and ready.get('token')==token and type(ready.get('owner_pid')) is int and ready['owner_pid']>1 and type(ready.get('watchdog_pid')) is int and ready['watchdog_pid']>1 and ready['owner_pid']==monitor.get('owner_pid') and ready['watchdog_pid']==monitor.get('watchdog_pid') and type(monitor.get('watchdog_start_ticks')) is int and monitor['watchdog_start_ticks']>0,'watchdog identity mismatch')
+    require(type(watchdog) is dict and watchdog.get('status')=='docker_cleanup_verified' and watchdog.get('trigger')=='requested' and watchdog.get('owner_deadline_signal')=='not_requested' and watchdog.get('container_id')==cid and watchdog.get('create_uncertain') is False and watchdog.get('start_uncertain') is False and watchdog.get('census_after')==[],'watchdog cleanup unverified')
+    require(type(outer) is dict and outer.get('status') in ('held','passed_synthetic') and outer.get('container_id')==cid and outer.get('token')==token and outer.get('image_id')==image and outer.get('cleanup')==watchdog,'outer cleanup mismatch')
+    code=outer.get('attach_exit');require(type(code) is int and 0<=code<=255,'attach exit unverified')
+    require(type(before) is list and len(before)==1 and type(after) is list and len(after)==1,'terminal inspect shape')
+    contract.validate_inspect(before[0],spec,cid,expected_state='exited',expected_exit_code=code)
+    contract.validate_inspect(after[0],spec,cid,expected_state='exited',expected_exit_code=code)
+    keys=('Status','Running','ExitCode','OOMKilled','Error','StartedAt','FinishedAt')
+    require(all(before[0]['State'].get(k)==after[0]['State'].get(k) for k in keys) and outer.get('docker_exit_state')==before[0]['State'],'terminal state changed')
+    require(before_ids.strip()==cid and removed.strip()==cid and not after_ids.strip(),'removal or census unverified')
+    return True
 
 def bind_watchdog(ready_path, owner_pid):
     """Pin the still-owned watchdog, refusing reparenting and PID replacement."""
@@ -218,7 +256,7 @@ def bind_watchdog(ready_path, owner_pid):
         poll = select.poll(); poll.register(fd, select.POLLIN)
         require(not poll.poll(0) and proc_identity(pid) == before and read_host_receipt(ready_path) == raw,
                 'watchdog changed while binding')
-        return fd, poll
+        return fd, poll, {'owner_pid':owner_pid,'watchdog_pid':pid,'watchdog_start_ticks':before[1]}
     except Exception:
         os.close(fd); raise
 
@@ -226,12 +264,26 @@ def classify_watchdog_events(events, watcher_fd, pollin):
     if any(fd == watcher_fd and flags & pollin for fd, flags in events): return 'pidfd_exit_observed'
     return 'pidfd_unexpected_event' if events else 'not_observed_before_deadline'
 
-def supervise_outer(command, sandbox, evidence):
+def load_retention_proof(sandbox,receipt,monitor):
+    def j(path,limit=65536):return json.loads(read_host_file(sandbox/path,limit),object_pairs_hook=unique)
+    state=j('watch/container-state.json');ready=j('watch/watchdog-ready.json')
+    watchdog=j('watch/watchdog-result.json');outer=j('main/outer-result.json')
+    require(j('watch/daemon-binding.json')=={'socket':receipt['socket'],'daemon':receipt['daemon']},'daemon binding mismatch')
+    before=j('main/watch-docker-004.out',8*1024**2);after=j('watch/watch-docker-002.out',8*1024**2)
+    before_ids=read_host_file(sandbox/'watch/watch-docker-001.out',65536).decode('ascii')
+    removed=read_host_file(sandbox/'watch/watch-docker-003.out',65536).decode('ascii')
+    after_ids=read_host_file(sandbox/'watch/watch-docker-004.out',65536).decode('ascii')
+    contract=load_module('sleep_retention_contract',ROOT/'outer_container_contract.py')
+    spec=contract.command(receipt['image_id'],state['token'],os.geteuid(),os.getegid(),sandbox/'source',sandbox/'runtime',sandbox/'tmp')
+    retention_proof(state,ready,watchdog,outer,before,after,before_ids,removed,after_ids,monitor,receipt,spec,contract)
+    return outer
+
+def supervise_outer(command, sandbox, evidence, receipt):
     import resource
     def limits():
         resource.setrlimit(resource.RLIMIT_FSIZE, (8 * 1024**2, 8 * 1024**2))
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-    timed_out = False; watcher_fd = None; watcher_poll = None; watcher_bind = 'not_observed'; owner_error = None
+    timed_out = False; watcher_fd = None; watcher_poll = None; watcher_bind = 'not_observed'; watcher_identity = {}; owner_error = None
     with (evidence / 'outer.stdout.log').open('xb') as out, (evidence / 'outer.stderr.log').open('xb') as err:
         proc = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=out, stderr=err,
                                 start_new_session=True, preexec_fn=limits)
@@ -241,7 +293,7 @@ def supervise_outer(command, sandbox, evidence):
                 ready = sandbox / 'watch/watchdog-ready.json'
                 if watcher_bind == 'not_observed' and ready.is_file():
                     try:
-                        watcher_fd, watcher_poll = bind_watchdog(ready, proc.pid)
+                        watcher_fd, watcher_poll, watcher_identity = bind_watchdog(ready, proc.pid)
                         watcher_bind = 'pidfd_bound'
                     except (OSError, ValueError, TypeError, AttributeError, KeyError):
                         watcher_bind = 'identity_unverified'
@@ -257,6 +309,7 @@ def supervise_outer(command, sandbox, evidence):
             try: proc.wait(timeout=10)
             except subprocess.TimeoutExpired: owner_error = 'outer process termination unverified'
     monitor = {'binding': watcher_bind, 'termination': 'unknown', 'cleanup_receipt': 'not_observed', 'owner_error': owner_error}
+    monitor.update(watcher_identity)
     try:
         if watcher_poll is not None:
             try:
@@ -269,29 +322,47 @@ def supervise_outer(command, sandbox, evidence):
         (evidence / 'watchdog-monitor.json').write_text(json.dumps(monitor, sort_keys=True) + '\n', encoding='utf-8')
     finally:
         if watcher_fd is not None: os.close(watcher_fd)
-    if timed_out:
-        raise TimeoutError('outer deadline; cleanup requires retained watchdog review')
-    require(owner_error is None, owner_error)
-    require(proc.returncode == 0, 'outer runner did not pass; inspect retained evidence')
-    result = json.loads((sandbox / 'main/outer-result.json').read_bytes())
-    require(result.get('status') == 'passed_synthetic' and
-            result.get('cleanup', {}).get('status') == 'docker_cleanup_verified', 'outer result or cleanup unverified')
+    if timed_out or owner_error:
+        return {'fixture_passed':False,'retention_eligible':False,'reason':owner_error or 'outer deadline; cleanup unverified'}
+    try:
+        result=load_retention_proof(sandbox,receipt,monitor)
+    except Exception as exc:
+        return {'fixture_passed':False,'retention_eligible':False,'reason':'cleanup or terminal proof unavailable: '+str(exc)[:1024]}
+    passed=(proc.returncode==0 and result.get('status')=='passed_synthetic' and result.get('attach_exit')==0 and result.get('inner') is not None)
+    return {'fixture_passed':bool(passed),'retention_eligible':True,'reason':'passed synthetic fixture' if passed else (result.get('error') or 'outer runner did not pass')}
 
-def bounded_fd_copy(fd, destination, budget):
+def bounded_fd_copy(fd, destination, budget, limit=256 * 1024**2):
     """Copy bytes from one already-open descriptor, enforcing bounds while reading."""
     before = os.fstat(fd)
-    require(stat.S_ISREG(before.st_mode) and before.st_size <= 256 * 1024**2, 'invalid evidence file')
-    copied = 0
+    require(stat.S_ISREG(before.st_mode) and before.st_size <= limit, 'invalid evidence file')
+    copied = 0;hasher=hashlib.sha256()
     with destination.open('xb') as out:
         while True:
-            data = os.read(fd, min(1024 * 1024, 256 * 1024**2 - copied + 1))
+            data = os.read(fd, min(1024 * 1024, limit - copied + 1))
             if not data: break
             copied += len(data); budget['bytes'] += len(data)
-            require(copied <= 256 * 1024**2 and budget['bytes'] <= 512 * 1024**2, 'evidence byte limit')
-            out.write(data)
+            require(copied <= limit and budget['bytes'] <= 512 * 1024**2, 'evidence byte limit')
+            hasher.update(data);out.write(data)
     after = os.fstat(fd)
     identity = lambda x: (x.st_dev, x.st_ino, x.st_size, x.st_mtime_ns, x.st_ctime_ns)
     require(identity(before) == identity(after) and copied == before.st_size, 'evidence changed during copy')
+    return {'bytes':copied,'sha256':hasher.hexdigest()}
+
+def retained_compiler_diagnostic(captured,destination):
+    prefix='tmp/sleep-fixture/run/'
+    diag=prefix+'compile-diagnostic.json';process=prefix+'compile.process.json'
+    stdout=prefix+'compile.stdout.log';stderr=prefix+'compile.stderr.log'
+    if diag not in captured:return {'status':'not_retained'}
+    try:
+        row=json.loads(read_host_file(destination/diag,65536),object_pairs_hook=unique)
+        require(type(row) is dict and type(row.get('schema')) is int and row['schema']==1 and row.get('phase')=='compile' and row.get('status')=='retained','compiler diagnostic unavailable')
+        require(all(x in captured for x in (stdout,stderr,process)),'compiler artifacts missing')
+        require(row.get('controller_sha256')==digest((ROOT/'controller_linux.py').read_bytes()) and row.get('logs')=={'stdout':captured[stdout],'stderr':captured[stderr]} and row.get('process_sha256')==captured[process]['sha256'],'compiler diagnostic identity mismatch')
+        require(row.get('process')==json.loads(read_host_file(destination/process,65536),object_pairs_hook=unique),'compiler process receipt mismatch')
+        return {'status':'retained','diagnostic':captured[diag],'process':captured[process],
+                'stdout':captured[stdout],'stderr':captured[stderr]}
+    except Exception as exc:
+        return {'status':'unverified','reason':str(exc)[:1024]}
 
 def copy_evidence(source, destination, roots):
     """No-follow descriptor traversal with live entry and byte budgets."""
@@ -299,9 +370,9 @@ def copy_evidence(source, destination, roots):
             'descriptor-bound evidence copy unavailable')
     require(type(roots) is tuple and all(name in ('main', 'watch', 'tmp', 'source', 'runtime') for name in roots), 'evidence roots')
     flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_DIRECTORY
-    budget = {'entries': 0, 'bytes': 0}
+    budget = {'entries': 0, 'bytes': 0};captured={}
     destination.mkdir(mode=0o700)
-    def walk(fd, target, depth):
+    def walk(fd, target, depth, rel):
         require(depth <= 8, 'evidence depth')
         with os.scandir(fd) as entries:
             for entry in entries:
@@ -313,12 +384,14 @@ def copy_evidence(source, destination, roots):
                     child = os.open(entry.name, flags, dir_fd=fd)
                     try:
                         (target / entry.name).mkdir(mode=0o700)
-                        walk(child, target / entry.name, depth + 1)
+                        walk(child, target / entry.name, depth + 1, rel / entry.name)
                     finally: os.close(child)
                 else:
                     require(stat.S_ISREG(info.st_mode), 'special evidence refused')
                     child = os.open(entry.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
-                    try: bounded_fd_copy(child, target / entry.name, budget)
+                    try:
+                        limit=8*1024**2 if entry.name.endswith('.log') else 256*1024**2
+                        captured[(rel / entry.name).as_posix()]=bounded_fd_copy(child, target / entry.name, budget, limit)
                     finally: os.close(child)
     rootfd = os.open(source, flags)
     try:
@@ -327,9 +400,10 @@ def copy_evidence(source, destination, roots):
             except FileNotFoundError: continue
             try:
                 (destination / name).mkdir(mode=0o700)
-                walk(child, destination / name, 0)
+                walk(child, destination / name, 0, Path(name))
             finally: os.close(child)
     finally: os.close(rootfd)
+    return captured
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)

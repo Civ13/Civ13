@@ -82,7 +82,7 @@ def cleanup_owned(call,state,token,image):
     after=call(['ps','--all','--quiet','--no-trunc','--filter','label='+LABEL+'='+token]).splitlines()
     require(not after,'owned label still present')
     result['census_after']=[]
-    result['status']='cleanup_unverified_create_outcome' if result['create_uncertain'] else ('cleanup_unverified_start_outcome' if result['start_uncertain'] else 'docker_cleanup_verified')
+    result['status']='cleanup_unverified_create_outcome' if result['create_uncertain'] else ('cleanup_unverified_start_outcome' if result['start_uncertain'] else ('cleanup_unverified_missing_owned_container' if state['create_confirmed'] and not result['container_id'] else 'docker_cleanup_verified'))
     return result
 
 class Docker:
