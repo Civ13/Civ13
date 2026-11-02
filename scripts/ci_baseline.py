@@ -25,6 +25,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete selected anvil admission/message projection; no native world.
+    'anvil_feedback': {'files': ('tests/anvil_feedback/test_feedback.py',),
+        'paths': ('tests/anvil_feedback/',), 'shared_paths': (
+            'code/game/objects/structures/blacksmithing/blacksmithing.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/modules/1713/modern_telecom.dm',
+            'tests/save_movement/source_adapter.py')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',

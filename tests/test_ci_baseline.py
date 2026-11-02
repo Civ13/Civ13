@@ -53,6 +53,17 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_anvil_feedback_registration_preserves_existing_coverage(self):
+        suite = ci.SUITES['anvil_feedback']
+        self.assertEqual(suite['files'], ('tests/anvil_feedback/test_feedback.py',))
+        for path in suite['shared_paths'] + ('tests/anvil_feedback/fixtures/legacy_admission.dm',):
+            self.assertIn('anvil_feedback', self.selected([path]))
+        previous = {name: entry for name, entry in ci.SUITES.items() if name != 'anvil_feedback'}
+        with patch.object(ci, 'SUITES', previous):
+            old = self.selected(['code/game/objects/structures/blacksmithing/blacksmithing.dm'])
+        self.assertEqual(self.selected(['code/game/objects/structures/blacksmithing/blacksmithing.dm']), old | {'anvil_feedback'})
+        self.assertNotIn('anvil_feedback', self.selected(['README.md']))
+
     def test_mount_native_preparation_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['mount_native_preparation']
         self.assertEqual(suite['files'], ('tests/mount_lifecycle_native/test_prepare.py',
