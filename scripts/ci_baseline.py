@@ -16,6 +16,17 @@ import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+ZERO_BASE = '0' * 40
+
+
+def comparison_module():
+    # Ordinary standalone baseline consumers do not need checkout preparation.
+    spec = importlib.util.spec_from_file_location('ci_source_comparison', Path(__file__).with_name('ci_checkout_refs.py'))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 _toolchain_spec = importlib.util.spec_from_file_location('ci_byond_toolchain', ROOT / 'scripts/byond_toolchain.py')
 toolchain = importlib.util.module_from_spec(_toolchain_spec)
 _toolchain_spec.loader.exec_module(toolchain)
@@ -556,7 +567,7 @@ def impact(paths, comparison='available'):
                        for name, why in reasons.items()}, 'fallback_reasons': unknown}
 
 
-def selection_receipt(base, head, game, extensive, new_tests, reason, event, eligibility=None):
+def selection_receipt(base, head, game, extensive, new_tests, reason, event, eligibility=None, payload=None):
     receipt = dict(schema_version=1, kind='selection', status='passed',
                    **provenance(head, base), event=event)
     if eligibility is not None:
@@ -577,6 +588,10 @@ def selection_receipt(base, head, game, extensive, new_tests, reason, event, eli
                               else 'No reliable diff; compile policy and bounded offline fallback apply'},
                    compile={'selected': game, 'reason': reason}, extensive=extensive,
                    new_tests=new_tests, baseline=impact(paths, comparison))
+    if event == 'push' and base == ZERO_BASE:
+        comparison_refs = comparison_module()
+        receipt['source_comparison'] = comparison_refs.new_branch_comparison(
+            receipt['head'], payload if payload is not None else comparison_refs.push_event(), cwd=ROOT)
     return receipt
 
 
@@ -597,6 +612,28 @@ def attempt_number(value):
     if type(value) is not str or not re.fullmatch(r'[1-9][0-9]{0,5}', value):
         raise ValueError('Invalid run attempt: ' + repr(value))
     return int(value)
+
+
+def validate_source_comparison(plan, *, current_event=False):
+    if current_event and (not os.environ.get('GITHUB_EVENT_NAME')
+                          or plan.get('event') != os.environ['GITHUB_EVENT_NAME']):
+        raise ValueError('Selection event mismatch: GITHUB_EVENT_NAME')
+    expected = plan.get('event') == 'push' and plan.get('requested_base') == ZERO_BASE
+    proof = plan.get('source_comparison')
+    if not expected:
+        if proof is not None:
+            raise ValueError('Unexpected offline source comparison')
+        return
+    if plan.get('base') is not None or not isinstance(proof, dict):
+        raise ValueError('Missing/invalid new-branch source comparison')
+    comparison_refs = comparison_module()
+    derived = comparison_refs.new_branch_comparison(plan['head'], proof.get('evidence'), cwd=ROOT)
+    if proof != derived:
+        raise ValueError('Offline source comparison differs from immutable ancestry')
+    if current_event:
+        event_proof = comparison_refs.new_branch_comparison(plan['head'], comparison_refs.push_event(), cwd=ROOT)
+        if proof != event_proof:
+            raise ValueError('Offline source comparison differs from event metadata')
 
 
 def load_selection(path, head, base, selection_attempt=None):
@@ -624,6 +661,7 @@ def load_selection(path, head, base, selection_attempt=None):
     if type(plan['compile']['selected']) is not bool:
         raise ValueError('Invalid compilation selection')
     selection_eligibility(plan)
+    validate_source_comparison(plan, current_event=True)
     return plan
 
 
@@ -650,7 +688,9 @@ def run_unit(name, output):
 def suite_environment(name, plan):
     environment = os.environ.copy()
     if name == 'los_context':
-        environment['LOS_EVENT_BASE'] = plan['base'] or ''
+        validate_source_comparison(plan)
+        proof = plan.get('source_comparison')
+        environment['LOS_EVENT_BASE'] = proof['base'] if proof else (plan['base'] or '')
         environment['LOS_EVENT_HEAD'] = plan['head'] or ''
     return environment
 
@@ -662,6 +702,8 @@ def execute(plan, output):
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
                    job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
                    selection_sha256=digest(plan), suites={})
+    if 'source_comparison' in plan:
+        receipt['source_comparison'] = plan['source_comparison']
     (output / 'source-tree.txt').write_text(git('ls-tree', '-r', 'HEAD') + '\n', encoding='utf-8')
     observed_head_before = revision('HEAD')
     tracked_patch = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=ROOT, timeout=15)
@@ -740,6 +782,8 @@ def compile_receipt(plan, outcome, output):
                    toolchain_error=toolchain_error,
                    acquisition=acquisition,
                    archive_authenticity=requirement['integritySource'] if requirement else 'Unavailable')
+    if 'source_comparison' in plan:
+        receipt['source_comparison'] = plan['source_comparison']
     write_json(output, receipt)
     return 1 if status == 'failed' else 0
 
@@ -752,7 +796,8 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected, attempts=N
         attempts = dict.fromkeys(('baseline', 'compile', 'current'), plan.get('run_attempt'))
     try:
         selection_eligibility(plan)
-    except ValueError as error:
+        validate_source_comparison(plan)
+    except (ValueError, RuntimeError, subprocess.SubprocessError) as error:
         errors.append(str(error))
     if plan['compile']['selected']:
         requirement = toolchain.load()
@@ -776,6 +821,8 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected, attempts=N
         for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt'):
             if receipt.get(key) != plan.get(key):
                 errors.append(kind + ' provenance mismatch: ' + key)
+        if receipt.get('source_comparison') != plan.get('source_comparison'):
+            errors.append(kind + ' offline source comparison mismatch')
         if receipt.get('selection_sha256') != digest(plan):
             errors.append(kind + ' selection digest mismatch')
         try:
