@@ -243,6 +243,26 @@ class ReadyContracts(unittest.TestCase):
         self.assertIsNone(h.dispatch('begin',h.area))
         self.assertEqual(len(h.queue),1)
 
+    def test_consumer_server_grammar_vectors_reject_without_rewriting(self):
+        rows=json.loads((Path(__file__).parent/'fixtures/server-key-vectors.json').read_text())
+        for row in rows:
+            with self.subTest(name=row['name']):
+                h=M.Harness();h.config.webhook_game_ready_server=row['server']
+                context=h.begin()
+                self.assertEqual(bool(context),row['valid'])
+                self.assertEqual(h.config.webhook_game_ready_server,row['server'])
+                if not row['valid']:
+                    h.fresh();h.initialized()
+                    self.assertFalse(h.obj.committed)
+                    self.assertEqual((h.queue,h.requests),([],[]))
+
+    def test_round_grammar_stays_independent_and_preserves_case_hyphen_and_128(self):
+        for identity in ('Round-A_1','A-'+'b'*126):
+            h=M.Harness();h.env['game_id']=identity
+            h.begin();h.fresh();self.assertTrue(h.initialized());h.run_next()
+            self.assertEqual(h.requests[0].data['server'],'nomads')
+            self.assertEqual(h.requests[0].data['round'],identity)
+
     def test_shared_wire_vectors_match_production_payload_and_lf_ack(self):
         rows=json.loads((Path(__file__).parent/'fixtures/wire-vectors.json').read_text())
         for row in rows:

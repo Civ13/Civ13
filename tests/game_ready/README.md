@@ -23,3 +23,10 @@ These results do not establish engine timing, real network or player reachabilit
 
 Use the repository's pinned compiler/normal CI after source review. New native
 execution or real endpoint activation remains separately held.
+
+Shared server-key vectors reject uppercase, hyphen and every length 33-64, while
+round IDs retain their independent case/hyphen/128-character grammar. No invalid
+identity is normalized. Fake release tests cover entry ownership and return-value
+handling; they do not model arbitrary reentrant callbacks inside the unchanged
+production finish procedure. Producer completion separately checks no active
+operation.

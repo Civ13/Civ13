@@ -116,7 +116,7 @@ class Harness:
             url_encode=lambda x:quote(x,safe=''),schedule=self.schedule,
             new_operation=lambda:SimpleNamespace(**TICKET_DEFAULTS))
         self.clock.Export=self.export
-        for name in ('game_ready_identifier','game_ready_hex'):
+        for name in ('game_ready_identifier','game_ready_server','game_ready_hex'):
             body=A.extract(SOURCE,'/proc/'+name)
             parameters='value,maximum' if name.endswith('identifier') else 'value'
             self.env[name]=project(body,parameters,self.env)

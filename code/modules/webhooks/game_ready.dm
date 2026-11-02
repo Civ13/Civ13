@@ -7,6 +7,11 @@ var/global/datum/game_ready_startup/game_ready_startup = new
 		if(!findtextEx("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", copytext(value, i, i+1))) return FALSE
 	return TRUE
 
+/proc/game_ready_server(value)
+	if(!game_ready_identifier(value, 32)) return FALSE
+	if(lowertext(value) != value || findtextEx(value, "-")) return FALSE
+	return TRUE
+
 /proc/game_ready_hex(value)
 	if(!istext(value) || length(value) != 32) return FALSE
 	for(var/i = 1, i <= 32, i++)
@@ -46,7 +51,7 @@ var/global/datum/game_ready_startup/game_ready_startup = new
 
 	proc/begin(datum/area_token)
 		if(active || failed || !area_token || !config || !config.webhook_game_ready) return FALSE
-		if(!game_ready_identifier(config.webhook_game_ready_server, 64) || !nomads_lifecycle || !map_storage) return FALSE
+		if(!game_ready_server(config.webhook_game_ready_server) || !nomads_lifecycle || !map_storage) return FALSE
 		boot = nomads_lifecycle.boot_session()
 		if(!game_ready_hex(boot)) return FALSE
 		server = config.webhook_game_ready_server

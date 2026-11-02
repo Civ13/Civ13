@@ -28,8 +28,8 @@ string fields, in this order:
 ```
 
 The configured server key must match the receiver's currently enabled route.
-This producer accepts ASCII letters, digits, underscore and hyphen, length 1-64
-for server and 1-128 for round. Boot is exactly 32 lowercase hexadecimal digits
+Server is exactly `[a-z0-9_]{1,32}`, matching the consumer without rewriting.
+Round remains separately `[A-Za-z0-9_-]{1,128}`. Boot is exactly 32 lowercase hexadecimal digits
 from the existing lifecycle boot session. A restored generation is exactly
 `round-v2:` plus 32 lowercase hexadecimal digits; a fresh generation is
 `fresh:<boot>`. Unsupported legacy/v1 identities are suppressed without rewriting
@@ -59,8 +59,11 @@ only its original reserved ticket.
 The import claims that ticket for the exact admitted load operation and storage.
 It copies game_id and generation from the validated saved_round before mutation
 or restore callbacks. The existing load wrapper now returns failure unless the
-exact operation's finish(TRUE) returns TRUE; it does not clear another owner's
-admission. The observer publishes only after that affirmative release, normal
+same captured operation's finish(TRUE) returns TRUE. Rejected entry ownership is
+not treated as load success. The unchanged finish implementation checks its active
+owner before existing spatial/observability callbacks, without a second owner
+check afterward; this patch does not prove arbitrary callback reentrancy safety.
+The producer independently requires no active operation after release. The observer publishes only after that affirmative release, normal
 metadata/transient/player restoration and cleared recovery/operation/dimension
 holds. A restart additionally requires consumed intent and a successful
 finish_player_restoration return, not its prematurely set readiness flag.
