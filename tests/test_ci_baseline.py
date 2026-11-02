@@ -93,6 +93,18 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertNotIn('crafting_ui_contracts', self.selected(['README.md']))
         self.assertNotIn('tests/human_subtile/run.py', suite['files'])
 
+    def test_well_smell_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'well_smell'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/well_smell/test_well_smell.py',))
+        self.assertEqual(ci.TIMEOUT, 30)
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+        prior = {key: value for key, value in ci.SUITES.items() if key != name}
+        with patch.object(ci, 'SUITES', prior):
+            self.assertNotIn(name, self.selected(list(suite['files'])))
+
     def test_sleep_resting_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['sleep_resting']
         self.assertEqual(suite['files'], ('tests/sleep_resting/test_sleep_resting.py',))
