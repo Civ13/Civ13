@@ -80,6 +80,7 @@ class PostDropProjection(unittest.TestCase):
         # Rejection returns before qdel and before fuel credit in the source.
         action = proc("/obj/structure/brazier/stone/attackby(obj/item/W, mob/user)")
         guard = action.index("// Drop callbacks may move or fill the item")
+        self.assertEqual(action[guard:].splitlines()[2], "\t\t\treturn")
         self.assertLess(guard, action.index("qdel(W)"))
         self.assertLess(action.index("qdel(W)"), action.index("fuel += 5"))
         for key in ("brazier_deleted", "extinguished", "brazier_moved", "user_deleted",
