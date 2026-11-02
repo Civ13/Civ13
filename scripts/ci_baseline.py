@@ -25,6 +25,14 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete selected anvil admission/message projection; no native world.
+    'anvil_feedback': {'files': ('tests/anvil_feedback/test_feedback.py',),
+        'paths': ('tests/anvil_feedback/',), 'shared_paths': (
+            'code/game/objects/structures/blacksmithing/blacksmithing.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/modules/1713/modern_telecom.dm',
+            'tests/save_movement/source_adapter.py')},
+
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',),
