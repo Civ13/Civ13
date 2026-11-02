@@ -478,12 +478,15 @@ class PlayerHelpLinkAdmissionTests(unittest.TestCase):
                     return_value=('\0'.join(added) + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'), expected)
 
-    def test_only_the_registered_static_file_is_exempt(self):
+    def test_only_the_registered_help_offline_files_are_exempt(self):
         offline = 'tests/player_help/test_help_links.py'
         wiki_offline = 'tests/player_help/test_wiki_guides.py'
-        self.assertEqual(selection.PLAYER_HELP_OFFLINE_TESTS, frozenset({offline, wiki_offline}))
+        toxin_offline = 'tests/player_help/test_toxin_context.py'
+        self.assertEqual(selection.PLAYER_HELP_OFFLINE_TESTS, frozenset({offline, wiki_offline, toxin_offline}))
         for added, expected in (([offline], []),
                                 ([wiki_offline], []),
+                                ([toxin_offline], []),
+                                ([toxin_offline, 'tests/player_help/new_probe.dm'], ['tests/player_help']),
                                 ([wiki_offline, 'tests/player_help/new_test.py'], ['tests/player_help']),
                                 ([offline, 'tests/player_help/new_test.py'], ['tests/player_help']),
                                 ([offline, 'tests/player_help/run_native.py'], ['tests/player_help']),
