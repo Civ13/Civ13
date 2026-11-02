@@ -15,6 +15,18 @@ station each, stocked with starter materials and a guide note on a table:
 Each room is 11x9 tiles with walls, one wooden door at the middle of the south
 wall, anchored lanterns in the north corners and a central roof support.
 
+## Previews
+
+Top-down renders composed offline from each template's DMI sprites (default
+icon states, south-facing). They are not in-game screenshots: walls are shown
+unsmoothed and no lighting or roof is drawn.
+
+| | |
+| --- | --- |
+| ![Smithy](images/showcase-rooms/smithy.png) | ![Kitchen](images/showcase-rooms/kitchen.png) |
+| ![Tavern](images/showcase-rooms/tavern.png) | ![Workshop](images/showcase-rooms/workshop.png) |
+| ![Farm shed](images/showcase-rooms/farm_shed.png) | ![Infirmary](images/showcase-rooms/infirmary.png) |
+
 ## Placing a room
 
 Admins with spawn rights use **Debug > Load Showcase Room**. Stand where the
