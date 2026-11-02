@@ -1212,6 +1212,7 @@ var/global/list/node_grid_col_cache = null
 		// --- pharmacology (4) ---
 		"/obj/structure/centrifuge" = "pharmacology",
 		"/obj/structure/chem_master" = "pharmacology",
+		"/obj/structure/chem_master/tablet_press/constructed" = "pharmacology",
 		"/obj/structure/chemical_dispenser" = "pharmacology",
 		"/obj/structure/chemical_dispenser/full/laboratory" = "pharmacology",
 		"/obj/structure/closet/fridge" = "pharmacology",

@@ -117,6 +117,8 @@
 		var/node_req = get_recipe_node_req(i[3])
 		if (!civ_generation_era(text2path(i[3])))
 			continue
+		if (i[3] == "/obj/structure/chem_master/tablet_press/constructed" && !tablet_press_year_allowed())
+			continue
 		if (!exercise_recipe_era(text2path(i[3])) || (civ_telecom_crafting_skill(text2path(i[3])) && !civ_telecom_era_allowed()))
 			continue
 		if (ispath(text2path(i[3]), /obj/item/weapon/gun_mount) && (!map || map.ordinal_age < 6 || map.ordinal_age > 8))
