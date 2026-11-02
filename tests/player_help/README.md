@@ -156,3 +156,12 @@ brute/burn/missing state is an eleven-part allowlist, not evidence of a cause.
 Older wounds, unseen sources and causes absent from the snapshot remain unknown.
 This source change requires separately authorized game/worker updates to affect
 live Help; no deployment, restart or live inference is part of these checks.
+
+`test_toxin_context.py` captures the exact reported poison-damage question,
+aliases and follow-ups with injected transports. It verifies the complete compact
+mechanics record survives generic damage matches and accepted envelope budgets;
+insufficient budgets dispatch nothing. It checks empty-observation uncertainty,
+hidden-field exclusion, qualified negative nutrition/hydration values, and
+source-section hashes, changes, encoding and bounds. These are offline bridge
+contracts, not a current-player diagnosis, model-quality or native gameplay test.
+Run this file alone with `-m unittest discover -s tests/player_help -p test_toxin_context.py -v`.
