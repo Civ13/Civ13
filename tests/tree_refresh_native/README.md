@@ -266,9 +266,11 @@ inventory cannot identify retrospectively which DLL was absent on another VM.
 Native readiness is always false. Output is capped at 4 MiB and failures are
 retained; no automatic installation or runtime retry follows a missing provider.
 
-## Microsoft x86 dependency data preparation (source only)
+## Microsoft x86 dependency data preparation
 
-`d3dx_data.py` is deliberately not registered in a workflow or native runner.
+`d3dx_data.py` is wired only to the exclusive manual `d3dx-data` job in
+`tree-refresh-native.yml`; both the native fixture and dependency-audit jobs
+are excluded for this mode.
 Its synthetic offline tests are registered alongside the existing preparation
 contracts. Only the three exact reviewed preparation paths are excluded from
 introduced native-suite discovery; neighboring executable files remain eligible.
@@ -281,23 +283,35 @@ from audit run 41502784807. These are expected pins, not measured DLL hashes.
 
 After specific publication/acquisition authorization, a future isolated hosted
 Windows manual job can call the helper with the exact source/workflow SHA,
-attempt 1, `D3DX_DATA_PREPARE=approved-data-only`, an already prepared immutable
-BYOND input bin below `RUNNER_TEMP`, and a new output at
-`RUNNER_TEMP/tree-d3dx-data`. The CLI also requires `--acquire-data`. No workflow
-or dispatch is added here. A future job must have a five-minute outer limit.
+attempt 1, `D3DX_DATA_PREPARE=approved-data-only`, a fresh unchanged
+BYOND input extraction below `RUNNER_TEMP`, and a new output at
+`RUNNER_TEMP/tree-d3dx-data`. The CLI also requires `--acquire-data`. The job has a five-minute outer limit
+and a three-minute preparation step. Publication and one exact data-only
+dispatch still need action-specific authorization; no dispatch has run here.
 
 ```text
-<verified Python> -B tests/tree_refresh_native/d3dx_data.py --source <exact SHA> --input-bin <original private BYOND bin> --output <RUNNER_TEMP/tree-d3dx-data> --acquire-data
+<verified Python> -B tests/tree_refresh_native/d3dx_data.py --source <exact SHA> --prepare-input --output <RUNNER_TEMP/tree-d3dx-data> --acquire-data
 ```
 
 There is one exact HTTPS package request, no proxy/credential use, redirect,
 retry, alternate source or implicit prerequisite acquisition. Acquisition has a
-120-second deadline with 20-second read timeouts; normal preparation is capped
-at 240 seconds, leaving an original-input verification reserve through 270
-seconds and final report time inside the future 300-second job limit. New
+95-second absolute package deadline from the controller start, with 20-second
+read timeouts. Input preparation first uses the existing pinned BYOND installer
+as data: unchanged acquisition defaults remain available to existing callers,
+while this mode tightens download/read/extraction bounds to 35/10/25 seconds.
+The full returned 13-file manifest must equal the pinned audit manifest before
+Microsoft acquisition. No installer, compiler, daemon or client is executed.
+Normal combined preparation is capped at 150 seconds from controller start,
+with original-input verification through 165 seconds and final retention inside
+the 180-second step and 300-second outer job limit. A read already in progress
+can run until its socket timeout; the hosted step/job remain hard outer bounds.
+New
 package, selected files and report share 16 MiB, with a 128 KiB report ceiling.
-Input BYOND files are read-only preexisting data and are not copied into this
-output. Their exact inventory, sizes and SHA256s are checked before and after.
+The fresh BYOND installer/extracted bin stay in the separate private
+`RUNNER_TEMP/tree-d3dx-input` directory and are not uploaded. They are read-only
+inputs after preparation. Their exact inventory, sizes and SHA256s are checked
+before and after. Output retains the manifest, bounded extraction log and
+preparation facts even on input failure, not another installer/bin copy.
 
 The catalog size and SHA512 are verified before opening the ZIP. Member paths,
 case-insensitive duplicates, links/reparse attributes, encryption, compression,
@@ -319,12 +333,13 @@ retrieve trust/revocation metadata over the network. That behavior is not an
 exact-URL-only claim: any future execution authorization must account for it.
 An unavailable/untrusted result fails; no trust-store, revocation or security
 policy is weakened. No verifier command has been run on a Microsoft payload in
-this source-only task. Package signature bytes are preserved, not separately
+this source-only task. The workflow request and log explicitly disclose these
+OS trust-metadata lookups under unchanged trust policy. Package signature bytes are preserved, not separately
 claimed NuGet-signature validation.
 
 Successful preparation reports `native_ready=false`, `native_executed=false`
 and `software_installed=false`. Failures retain their report and original-input
-verification. Staging is separate from the BYOND bin; a future reviewed combined
+verification. Staging is separate from the BYOND bin; a separately reviewed combined
 toolchain manifest and explicit execution approval are required before any
 application-local placement or loader/game test. Nothing writes System32,
 SysWOW64, user BYOND, PATH, registry, profiles, credentials, or Gaia.

@@ -1,6 +1,6 @@
 """Prepare pinned Microsoft x86 DLLs as data only; never install or load them.
 
-Not wired to a workflow. Requires separately approved manual hosted preparation.
+Exclusive d3dx-data workflow mode requires approved manual hosted preparation.
 Existing BYOND acquisition, execution and socket guards are deliberately untouched.
 """
 import argparse
@@ -15,7 +15,8 @@ import time
 import urllib.request
 import zipfile
 
-from dependency_audit import admit_source, pe_imports, require
+from dependency_audit import admit_source, pe_imports, require, https_url, OfficialRedirect
+import acquire as A
 
 ROOT = Path(__file__).resolve().parents[2]
 PIN_PATH = ROOT / 'tools/byond/d3dx-package.json'
@@ -26,6 +27,8 @@ COMPILER = 'build/native/release/bin/x86/D3DCompiler_43.dll'
 LEGAL = ('LICENSE.txt', 'NOTICE.md', '.signature.p7s')
 CAP = 16 * 1024**2
 REPORT_CAP = 128 * 1024
+NORMAL_SECONDS = 150
+VERIFY_SECONDS = 165
 
 
 def sha256(raw):
@@ -231,8 +234,8 @@ def persist(output, report):
     census(output)
 
 
-def prepare(source, binary, output):
-    began = time.monotonic()
+def prepare(source, binary, output, *, started=None):
+    began = time.monotonic() if started is None else started
     admit_source(source, os.environ, os.name)
     require(os.environ.get('D3DX_DATA_PREPARE') == 'approved-data-only', 'Explicit data-only mode required')
     temporary = Path(os.environ['RUNNER_TEMP']).absolute()
@@ -247,19 +250,19 @@ def prepare(source, binary, output):
     report = dict(source=source, status='failed', native_ready=False, native_executed=False,
                   software_installed=False, package_url=PACKAGE_URL, byond_preserved=False,
                   trust_scope='Existing OS Authenticode validation; no trust/revocation policy changes. May require OS trust metadata network access.',
-                  limits=dict(seconds=240, outer_job_seconds=300, retained_bytes=CAP), error=None)
+                  limits=dict(seconds=NORMAL_SECONDS, verification_seconds=VERIFY_SECONDS, outer_step_seconds=180, outer_job_seconds=300, retained_bytes=CAP), error=None)
     original = None
     try:
-        original = byond_snapshot(binary, pin, began+240)
+        original = byond_snapshot(binary, pin, began+NORMAL_SECONDS)
         report['byond_before'] = original
-        fetch_package(output/'package.nupkg', pin, began+120)
+        fetch_package(output/'package.nupkg', pin, min(began+95, time.monotonic()+120))
         require(census(output) <= CAP-REPORT_CAP, 'Extraction reserve')
-        report['staging'] = stage_members(output/'package.nupkg', output, pin, began+240)
+        report['staging'] = stage_members(output/'package.nupkg', output, pin, began+NORMAL_SECONDS)
         for fact in report['staging']['files'].values():
             if 'pe' not in fact:
                 continue
             file = output/fact['path']
-            signature = signature_file(file, began+240)
+            signature = signature_file(file, began+NORMAL_SECONDS)
             fact['signature'] = signature  # Retain unsuccessful trust facts too.
             validate_signature(signature)
             require(sha256(file.read_bytes()) == fact['sha256'], 'DLL changed during signature check')
@@ -268,13 +271,13 @@ def prepare(source, binary, output):
             require(file.stat().st_size == fact['bytes'] and sha256(file.read_bytes()) == fact['sha256'],
                     'Selected file changed before final binding')
         require(verify_package(output/'package.nupkg', pin) == report['staging']['package'], 'Package changed before final binding')
-        check_time(began+240)
+        check_time(began+NORMAL_SECONDS)
         report['status'] = 'completed_data_preparation'
     except Exception as error:
         report['error'] = str(error)[:2048]
     finally:
         try:
-            after = byond_snapshot(binary, pin, began+270)
+            after = byond_snapshot(binary, pin, began+VERIFY_SECONDS)
             report['byond_after'] = after
             report['byond_preserved'] = original is not None and original == after
             require(report['byond_preserved'], 'Original BYOND not verified unchanged')
@@ -285,13 +288,67 @@ def prepare(source, binary, output):
     return report
 
 
+def prepare_with_input(source, output):
+    """One hosted data-only attempt, including a fresh unchanged BYOND extraction."""
+    began = time.monotonic()
+    admit_source(source, os.environ, os.name)
+    require(os.environ.get('D3DX_DATA_PREPARE') == 'approved-data-only', 'Explicit data-only mode required')
+    temporary = plain(Path(os.environ['RUNNER_TEMP']).absolute(), Path(os.environ['RUNNER_TEMP']).absolute())
+    output = Path(output).absolute()
+    work = temporary/'tree-d3dx-input'
+    require(output == temporary/'tree-d3dx-data' and not output.exists() and not work.exists(),
+            'Fresh exact input/output paths required')
+    pin = load_pin()
+    report = dict(source=source, status='failed', native_ready=False, native_executed=False,
+                  software_installed=False, byond_preserved=False, error=None)
+    try:
+        byond_pin = json.loads((ROOT/'tools/byond/version.json').read_text())
+        require((byond_pin['version'], byond_pin['bytes'], byond_pin['sha256']) ==
+                (pin['byond']['version'], pin['byond']['installer_bytes'], pin['byond']['installer_sha256']),
+                'BYOND installer metadata drift')
+        require(byond_pin['url'] == 'https://www.byond.com/download/build/516/516.1688_byond.exe', 'Exact BYOND URL pin')
+        https_url(byond_pin['url'])
+        # Existing official BYOND data path, with only tighter acquisition limits.
+        # Opener changes are process-local; package fetch uses its own NoRedirect.
+        urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler({}), OfficialRedirect()))
+        original = A.acquire(work, byond_pin, download_seconds=35, extract_seconds=25, read_timeout=10)
+        report['input_preparation'] = dict(toolchain=original, installer_url=byond_pin['url'], software_executed=False)
+        require(original == pin['byond'], 'Exact original 13-file BYOND toolchain required')
+        require(time.monotonic()-began < 75, 'Input preparation left no package/trust reserve')
+        binary = plain(Path((work/'bin-path.txt').read_text()), work)
+        report = prepare(source, binary, output, started=began)
+        report['input_preparation'] = dict(toolchain=original, installer_url=byond_pin['url'],
+                                         software_executed=False, elapsed_before_final_retention=time.monotonic()-began)
+    except Exception as error:
+        report.update(status='failed', error=str(error)[:2048])
+    finally:
+        output.mkdir(exist_ok=True)
+        log = work/'extract.log'
+        if log.is_file():
+            with log.open('rb') as stream:
+                raw = stream.read(65537)
+            (output/'input-extract.log').write_bytes(raw[:65536])
+            if len(raw) > 65536:
+                report.update(status='failed', error='BYOND extraction diagnostic exceeds retention cap')
+        report['execution'] = {key: os.environ.get(key) for key in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_SHA', 'GITHUB_WORKFLOW_SHA', 'RUNNER_OS', 'ImageVersion')}
+        report['total_elapsed_seconds'] = time.monotonic()-began
+        report['private_input_not_uploaded'] = str(work)
+        report['authorization_scope'] = ('Data-only acquisition/extraction and unchanged Windows Authenticode validation; '
+                                         'OS trust-metadata lookups may occur. No DLL loads, installation, firewall or native retry.')
+        persist(output, report)
+    return report
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', required=True)
-    parser.add_argument('--input-bin', type=Path, required=True)
+    inputs = parser.add_mutually_exclusive_group(required=True)
+    inputs.add_argument('--input-bin', type=Path)
+    inputs.add_argument('--prepare-input', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--acquire-data', action='store_true', required=True)
     arguments = parser.parse_args()
-    result = prepare(arguments.source, arguments.input_bin, arguments.output)
+    result = (prepare_with_input(arguments.source, arguments.output) if arguments.prepare_input else
+              prepare(arguments.source, arguments.input_bin, arguments.output))
     print(json.dumps(dict(status=result['status'], native_ready=False)))
     raise SystemExit(0 if result['status'] == 'completed_data_preparation' else 1)

@@ -8,23 +8,24 @@ from pathlib import Path
 from protocol import digest,require
 ROOT=Path(__file__).resolve().parents[2]
 
-def acquire(out, pin):
+def acquire(out, pin, *, download_seconds=120, extract_seconds=90, read_timeout=30):
     require(os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('RUNNER_OS')=='Windows','Hosted Windows data preparation only')
+    require(0 < download_seconds <= 120 and 0 < extract_seconds <= 90 and 0 < read_timeout <= 30, 'Acquisition limits may only tighten existing bounds')
     out=Path(out).resolve();out.mkdir(parents=True,exist_ok=False)
     require(pin['version']=='516.1688','Review pin advance')
     installer=out/'byond-pinned.exe';request=urllib.request.Request(pin['url'],headers={'User-Agent':'Civ13-native-fixture-preparation'})
     began=time.monotonic()
-    with urllib.request.urlopen(request,timeout=30) as response,installer.open('wb') as stream:
+    with urllib.request.urlopen(request,timeout=read_timeout) as response,installer.open('wb') as stream:
         total=0
         while True:
-            require(time.monotonic()-began<120,'Installer acquisition deadline')
+            require(time.monotonic()-began<download_seconds,'Installer acquisition deadline')
             chunk=response.read(1024*1024)
             if not chunk:break
             total+=len(chunk);require(total<=pin['bytes'],'Installer byte ceiling');stream.write(chunk)
     require(total==pin['bytes'] and digest(installer.read_bytes())==pin['sha256'],'Pinned installer digest/size')
     extracted=out/'extracted';extracted.mkdir()
     # Bounded contents of one already hash-checked known installer; no installation.
-    result=subprocess.run([r'C:\Program Files\7-Zip\7z.exe','x',str(installer),'-o'+str(extracted),'-y'],capture_output=True,timeout=90)
+    result=subprocess.run([r'C:\Program Files\7-Zip\7z.exe','x',str(installer),'-o'+str(extracted),'-y'],capture_output=True,timeout=extract_seconds)
     (out/'extract.log').write_bytes(result.stdout+result.stderr);require(result.returncode==0,'Pinned installer data extraction failed')
     candidates=[p for p in extracted.rglob('*') if p.is_file() and p.name.lower()=='dd.exe'];require(len(candidates)==1,'Unique extracted bin directory')
     binary=candidates[0].parent;files={}

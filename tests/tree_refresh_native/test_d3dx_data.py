@@ -208,7 +208,7 @@ class DataPreparation(unittest.TestCase):
         for name in original['files']:
             raw = ('original input '+name).encode(); (binary/name).write_bytes(raw)
             files[name] = dict(bytes=len(raw), sha256=M.sha256(raw))
-        pin['byond'] = dict(version='516.1688', files=files)
+        pin['byond'] = dict(original, files=files)
         environment = dict(RUNNER_TEMP=str(self.root), D3DX_DATA_PREPARE='approved-data-only', RUNNER_ENVIRONMENT='github-hosted',
                            RUNNER_OS='Windows', GITHUB_REPOSITORY='Civ13/Civ13', GITHUB_EVENT_NAME='workflow_dispatch',
                            GITHUB_SHA='a'*40, GITHUB_WORKFLOW_SHA='a'*40, GITHUB_RUN_ATTEMPT='1')
@@ -272,6 +272,90 @@ class DataPreparation(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'hash drift'): M.byond_snapshot(binary, pin, self.deadline)
         file.write_bytes(raw); (binary/'unexpected.dll').write_bytes(b'extra')
         with self.assertRaisesRegex(ValueError, 'inventory'): M.byond_snapshot(binary, pin, self.deadline)
+
+    def test_exclusive_hosted_controller_prepares_input_without_execution(self):
+        pin, unused_binary, environment = self.prepare_fixture()
+        def acquired(work, byond_pin, **bounds):
+            self.assertEqual(bounds, dict(download_seconds=35, extract_seconds=25, read_timeout=10))
+            work.mkdir(); binary = work/'bin'; binary.mkdir()
+            for name in pin['byond']['files']:
+                (binary/name).write_bytes(('original input '+name).encode())
+            (work/'bin-path.txt').write_text(str(binary))
+            (work/'extract.log').write_bytes(b'data extraction only')
+            return pin['byond']
+        def fake_fetch(target, unused_pin, deadline): target.write_bytes(self.archive.read_bytes())
+        with patch.dict(os.environ, environment), patch.object(M, 'load_pin', return_value=pin), \
+             patch.object(M.A, 'acquire', side_effect=acquired) as acquire, \
+             patch.object(M, 'fetch_package', side_effect=fake_fetch), patch.object(M, 'signature_file', return_value=certificate()):
+            out = self.root/'tree-d3dx-data'; report = M.prepare_with_input('a'*40, out)
+        acquire.assert_called_once()
+        self.assertEqual(report['status'], 'completed_data_preparation')
+        self.assertTrue(report['byond_preserved'])
+        self.assertFalse(report['input_preparation']['software_executed'])
+        self.assertEqual(report['input_preparation']['toolchain'], pin['byond'])
+        self.assertEqual((out/'input-extract.log').read_bytes(), b'data extraction only')
+        self.assertFalse(any(p.suffix.lower() in ('.exe', '.bat') for p in out.rglob('*')))
+        self.assertLessEqual(M.census(out), 16*1024**2)
+        self.assertIn('trust-metadata', report['authorization_scope'])
+        self.assertEqual(report['execution']['GITHUB_SHA'], 'a'*40)
+        self.assertEqual(report['execution']['GITHUB_RUN_ATTEMPT'], '1')
+
+    def test_input_failure_is_retained_and_cannot_fetch_microsoft(self):
+        pin, unused_binary, environment = self.prepare_fixture()
+        with patch.dict(os.environ, environment), patch.object(M, 'load_pin', return_value=pin), \
+             patch.object(M.A, 'acquire', side_effect=ValueError('pinned input failure')), patch.object(M, 'fetch_package') as fetch:
+            out = self.root/'tree-d3dx-data'; report = M.prepare_with_input('a'*40, out)
+        fetch.assert_not_called()
+        self.assertEqual(report['status'], 'failed')
+        self.assertIn('pinned input failure', json.loads((out/'preparation.json').read_text())['error'])
+        self.assertFalse(report['native_executed'])
+
+    def test_input_manifest_drift_is_recorded_and_stops_microsoft(self):
+        pin, unused_binary, environment = self.prepare_fixture()
+        bad = deepcopy(pin['byond']); bad['files']['dd.exe']['sha256'] = '0'*64
+        with patch.dict(os.environ, environment), patch.object(M, 'load_pin', return_value=pin), \
+             patch.object(M.A, 'acquire', return_value=bad), patch.object(M, 'fetch_package') as fetch:
+            report = M.prepare_with_input('a'*40, self.root/'tree-d3dx-data')
+        fetch.assert_not_called()
+        self.assertEqual(report['status'], 'failed')
+        self.assertEqual(report['input_preparation']['toolchain'], bad)
+
+    def test_slow_input_stops_before_package_and_retains_failure(self):
+        pin, unused_binary, environment = self.prepare_fixture()
+        with patch.dict(os.environ, environment), patch.object(M, 'load_pin', return_value=pin), \
+             patch.object(M.A, 'acquire', return_value=pin['byond']), \
+             patch.object(M.time, 'monotonic', side_effect=[0,80,80]), patch.object(M, 'fetch_package') as fetch:
+            report = M.prepare_with_input('a'*40, self.root/'tree-d3dx-data')
+        fetch.assert_not_called()
+        self.assertEqual(report['status'], 'failed')
+        self.assertIn('reserve', report['error'])
+        self.assertTrue((self.root/'tree-d3dx-data/preparation.json').is_file())
+
+    def test_reusable_byond_acquisition_limits_cannot_expand(self):
+        for bounds in (dict(download_seconds=121), dict(extract_seconds=91), dict(read_timeout=31), dict(download_seconds=0)):
+            with self.subTest(bounds=bounds), patch.dict(os.environ, dict(RUNNER_ENVIRONMENT='github-hosted', RUNNER_OS='Windows')):
+                with self.assertRaisesRegex(ValueError, 'only tighten'):
+                    M.A.acquire(self.root/'must-not-exist', {}, **bounds)
+                self.assertFalse((self.root/'must-not-exist').exists())
+
+    def test_workflow_mode_excludes_native_and_audit_jobs(self):
+        workflow = (M.ROOT/'.github/workflows/tree-refresh-native.yml').read_text()
+        fixture = workflow.split('  fixture:\n', 1)[1].split('  dependency-audit:\n', 1)[0]
+        audit = workflow.split('  dependency-audit:\n', 1)[1].split('  d3dx-data:\n', 1)[0]
+        job = workflow.split('  d3dx-data:\n', 1)[1]
+        self.assertIn("(inputs.mode == 'prepare' || inputs.mode == 'execute')", fixture)
+        self.assertIn("inputs.mode == 'dependency-audit'", audit)
+        self.assertIn("inputs.mode == 'd3dx-data'", job)
+        self.assertIn('timeout-minutes: 5', job)
+        self.assertIn('timeout-minutes: 3', job)
+        self.assertIn('GITHUB_WORKFLOW_SHA', job); self.assertIn('git rev-parse HEAD', job)
+        self.assertIn("GITHUB_RUN_ATTEMPT -ne '1'", job)
+        self.assertIn('--prepare-input', job); self.assertIn('--acquire-data', job)
+        self.assertIn('trust-metadata', job); self.assertIn('trust policy stays unchanged', job)
+        self.assertIn('path: ${{ runner.temp }}/tree-d3dx-data', job)
+        for entrypoint in ('runner.py', 'prepare.py', 'dm.exe', 'dd.exe', 'dreamseeker.exe', 'New-NetFirewallRule'):
+            self.assertNotIn(entrypoint, job)
+        self.assertNotIn('contents: write', workflow)
 
     def test_wrong_source_attempt_mode_or_paths_do_not_fetch(self):
         pin, binary, environment = self.prepare_fixture()

@@ -4,10 +4,10 @@ on:
     inputs:
       mode:
         type: choice
-        options: [prepare, execute, dependency-audit]
+        options: [prepare, execute, dependency-audit, d3dx-data]
         default: prepare
         required: true
-        description: Prepare exact source/toolchain manifest; execute only after independent review
+        description: d3dx-data acquires pinned files and queries OS trust metadata only; no DLL loading or installation
       source_sha:
         type: string
         required: true
@@ -32,7 +32,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   fixture:
-    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch' && inputs.mode != 'dependency-audit'
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch' && (inputs.mode == 'prepare' || inputs.mode == 'execute')
     runs-on: windows-2022
     timeout-minutes: 20
     env:
@@ -133,3 +133,43 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
           path: ${{ runner.temp }}/tree-dependency-evidence
+
+  d3dx-data:
+    if: github.repository == 'Civ13/Civ13' && github.event_name == 'workflow_dispatch' && inputs.mode == 'd3dx-data'
+    runs-on: windows-2022
+    timeout-minutes: 5
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      D3DX_DATA_PREPARE: approved-data-only
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Bind exact fresh data-only request before acquisition
+        shell: pwsh
+        run: |
+          if ($env:SOURCE_SHA -notmatch '^[0-9a-f]{40}$' -or $env:SOURCE_SHA -ne $env:GITHUB_SHA -or $env:SOURCE_SHA -ne $env:GITHUB_WORKFLOW_SHA) { throw 'Exact immutable source/workflow identity required' }
+          if ($env:GITHUB_RUN_ATTEMPT -ne '1') { throw 'One fresh attempt only; no retries' }
+          $observedSource = git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $observedSource -ne $env:SOURCE_SHA) { throw 'Checked-out head differs from requested source' }
+          Write-Output 'Data-only: pinned BYOND installer extraction and Microsoft package acquisition. Existing OS Authenticode trust-metadata lookups may occur; trust policy stays unchanged. No DLL loading, installation, firewall change or native retry.'
+      - name: Prepare original 13-file BYOND input and selected Microsoft data
+        timeout-minutes: 3
+        shell: pwsh
+        run: |
+          py -3 -B tests/tree_refresh_native/d3dx_data.py --source "$env:SOURCE_SHA" --prepare-input --output "$env:RUNNER_TEMP/tree-d3dx-data" --acquire-data
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain private bounded preparation facts and files
+        if: always()
+        timeout-minutes: 1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: d3dx-data-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/tree-d3dx-data
