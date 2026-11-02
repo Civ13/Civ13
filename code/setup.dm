@@ -87,21 +87,34 @@
 	var/all_craft_lists = flist("config/crafting/")
 
 	for (var/i in all_craft_lists)
+		// This directory also contains non-recipe configuration such as joinery.
+		if (!findtext(i, "material_recipes"))
+			continue
+		var/safe_craft_filename = html_encode(replacetext(replacetext(i, "\n", "\\n"), "\r", "\\r"))
 		var/current_list = "global"
 		var/F3 = file("config/crafting/[i]")
 		current_list = replacetext(i,"material_recipes_","")
 		current_list = replacetext(current_list,".txt","")
-		if (fexists(F3) && findtext(i,"material_recipes"))
-			var/list/craftlist_temp = file2list(F3,"\n")
-			for (var/j in craftlist_temp)
-				if (findtext(j, ",") && findtext(j,"RECIPE: ") && !(findtext(j,"//")))
-					var/tmpj = replacetext(j, "RECIPE: ", "")
-					var/list/current = splittext(tmpj, ",")
+		if (!fexists(F3))
+			admin_notice("<span class='danger'>Failed to load crafting recipes from [safe_craft_filename]: file not found.</span>", R_DEBUG)
+			continue
+		// Match file2list's read/split behavior, but report read failures here.
+		var/craftlist_text = file2text(F3)
+		if (!istext(craftlist_text) || !length(craftlist_text))
+			admin_notice("<span class='danger'>Failed to load crafting recipes from [safe_craft_filename]: empty or unreadable file.</span>", R_DEBUG)
+			continue
+		var/list/craftlist_temp = splittext(craftlist_text, "\n")
+		var/craft_line = 0
+		for (var/j in craftlist_temp)
+			craft_line++
+			if (findtext(j, "RECIPE: ") && !(findtext(j, "//")))
+				var/tmpj = replacetext(j, "RECIPE: ", "")
+				var/list/current = splittext(tmpj, ",")
+				// Preserve registration/order, including legacy malformed comma rows.
+				if (findtext(j, ","))
 					craftlist_lists[current_list] += list(current)
-					if (current.len != 13)
-						world.log << "Error! Recipe [current[2]] has a length of [current.len] (should be 13) ([current_list])."
-		else
-			admin_notice("<span class='danger'>Failed to load crafting recipes!</span>", R_DEBUG)
+				if (current.len != 13)
+					world.log << "Error! Crafting recipe file [safe_craft_filename], row [craft_line]: expected 13 fields, got [current.len]."
 
 	admin_notice("<span class='danger'>Initializing dictionary...</span>", R_DEBUG)
 	sleep(-1)
