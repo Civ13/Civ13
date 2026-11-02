@@ -321,8 +321,8 @@
 		bitesize = 1
 
 /obj/item/weapon/reagent_containers/food/snacks/animalfat
-	name = "animal"
-	desc = "Its a fresh and raw animal fat."
+	name = "animal fat"
+	desc = "Fresh, raw animal fat."
 	icon_state = "animalfat"
 	health = 100
 	filling_color = "#FFF783"

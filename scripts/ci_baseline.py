@@ -25,6 +25,26 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Explicit stdlib-only crafting policy/source checks; never imports a runner.
+    # Shared inputs retain existing conservative offline fallback semantics.
+    'crafting_ui_contracts': {'files': ('tests/human_subtile/test_crafting_ui.py',),
+        'paths': ('tests/human_subtile/crafting_ui_contracts.json',
+                  'tests/human_subtile/crafting_gather_baseline.json'),
+        'shared_paths': (
+            'code/game/objects/items/stacks/stack.dm', 'code/game/mob/crafting_atlas.dm',
+            'code/datums/browser.dm', 'interface/skin.dmf', 'code/_helpers/mobs.dm',
+            'code/game/mob/living/carbon/human/subtile_movement.dm',
+            'code/game/mob/mob_movement.dm', 'code/game/turfs/floor_attackby.dm',
+            'code/modules/gameplay_bridge/bridge.dm',
+            'code/modules/gameplay_bridge/mechanics.dm',
+            'scripts/gameplay_bridge/gather_context.py', 'tests/human_subtile/crafting_ui.dm')},
+    # Complete capacity/wait and selected Sleep-prefix projections; no engine.
+    'sleep_resting': {'files': ('tests/sleep_resting/test_sleep_resting.py',),
+        'paths': ('tests/sleep_resting/',), 'shared_paths': (
+            'code/__defines/mobs.dm', 'code/game/mob/mob.dm',
+            'code/_helpers/mobs.dm',
+            'code/game/mob/living/carbon/human/human_helpers.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete selected anvil admission/message projection; no native world.
     'anvil_feedback': {'files': ('tests/anvil_feedback/test_feedback.py',),
         'paths': ('tests/anvil_feedback/',), 'shared_paths': (
