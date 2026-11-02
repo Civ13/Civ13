@@ -19,14 +19,20 @@
 
 /mob/living/simple_animal/proc/eat_insects()
 	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		if (!npc_subtile_contact_settled(M))
+			continue
 		visible_message("\The [src] eats \the [M]!")
 		qdel(M)
 		adjustBruteLoss(-1)
 	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		if (!npc_subtile_contact_settled(F))
+			continue
 		visible_message("\The [src] eats \the [F]!")
 		qdel(F)
 		adjustBruteLoss(-1)
 	for (var/mob/living/simple_animal/cockroach/C in range(1,src))
+		if (!npc_subtile_contact_settled(C))
+			continue
 		visible_message("\The [src] eats \the [C]!")
 		qdel(C)
 		adjustBruteLoss(-1)
@@ -56,10 +62,14 @@
 
 /mob/living/simple_animal/frog/Life()
 	for (var/mob/living/simple_animal/mosquito/M in range(1,src))
+		if (!npc_subtile_contact_settled(M))
+			continue
 		visible_message("\The [src] eats \the [M]!")
 		qdel(M)
 		adjustBruteLoss(-1)
 	for (var/mob/living/simple_animal/fly/F in range(1,src))
+		if (!npc_subtile_contact_settled(F))
+			continue
 		visible_message("\The [src] eats \the [F]!")
 		qdel(F)
 		adjustBruteLoss(-1)

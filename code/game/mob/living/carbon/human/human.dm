@@ -102,6 +102,7 @@
 	riding = FALSE
 	riding_mob = null
 	if (!QDELETED(old_mount) && old_mount.rider == src)
+		old_mount.npc_subtile_pending_intent = null
 		old_mount.ride = FALSE
 		old_mount.rider = null
 		old_mount.stop_automated_movement = FALSE

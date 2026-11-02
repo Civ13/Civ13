@@ -129,7 +129,7 @@
 			return
 		else if (L.onedefined == TRUE && (src in range(3,L.S1)))
 			L.S2 = src
-			L.S2.following_mob = L.S1
+			L.S2.npc_set_following(L.S1)
 			to_chat(user, "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1].")
 			qdel(L)
 			return

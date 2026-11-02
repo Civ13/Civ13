@@ -94,7 +94,7 @@
 				dmod = 0.2
 			to_chat(M, "<span class = 'notice'>\icon[getFlatIcon(src)] Squeek!</span>")
 			to_chat(M, 'sound/effects/mousesqueek.ogg')
-			target_mob = M
+			npc_set_combat_target(M)
 			stance = HOSTILE_STANCE_ATTACK
 			stance_step = 6
 			if(plaguemouse && prob(2*dmod))

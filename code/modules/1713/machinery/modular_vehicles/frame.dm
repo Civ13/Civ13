@@ -135,8 +135,8 @@
 		TL.connection = src
 		to_chat(usr, "You place \the [VP] in \the [axis].")
 
-/obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)
-	var/chdir = get_dir(O.loc, target)
+/obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)
+	var/chdir = isnull(exit_direction) ? get_dir(O.loc, target) : exit_direction
 	switch(chdir)
 		if (NORTH,NORTHEAST,NORTHWEST)
 			switch(dir)
