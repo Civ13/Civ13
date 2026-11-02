@@ -139,6 +139,21 @@ class Preparation(unittest.TestCase):
         self.assertLess(finish.index('tree_native_save_failure(error)'),finish.index('tree_native_active_row = null'))
         self.assertIn('length(encoded) <= 131072',source)
 
+    def test_global_cleanup_has_explicit_world_receivers(self):
+        # The first native compile rejected implicit world members in this
+        # global proc. Check both operations and independent omission controls.
+        source=(HERE/'probe.dm').read_text()
+        _,_,finish=Q.proc(source,'/proc/tree_native_finish(error)')
+        def check(body):
+            self.assertRegex(body,r'world\.OpenPort\("none"\)')
+            self.assertRegex(body,r'!world\.port\b')
+            self.assertNotRegex(body,r'(?<![\w.])OpenPort\(')
+            self.assertNotRegex(body,r'!port\b')
+        check(finish)
+        for member in ('OpenPort','port'):
+            with self.subTest(member=member),self.assertRaises(AssertionError):
+                check(finish.replace('world.'+member,member,1))
+
     def test_no_model_or_frozen_fixture_in_native_entry(self):
         text=(HERE/'probe.dm').read_text();self.assertIn('H.SelfMove(',text);self.assertIn('begin_change()',text);self.assertIn('C.reconcile_geometric_los()',text)
         self.assertNotIn('IdentityTrace',text);self.assertNotIn('test_production.py',(HERE/'prepare.py').read_text())

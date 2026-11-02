@@ -490,8 +490,8 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		tree_native_holding = FALSE
 		tree_native_event_leases.Cut()
 		tree_native_clear_scene()
-		OpenPort("none")
-		cleaned = !port && !length(root_tree_presenters) && !length(los_active_contexts)
+		world.OpenPort("none")
+		cleaned = !world.port && !length(root_tree_presenters) && !length(los_active_contexts)
 	catch(var/exception/tree_native_cleanup_error)
 		if(!error)
 			error = tree_native_cleanup_error.name
