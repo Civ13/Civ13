@@ -33,7 +33,7 @@ class TileMotion(unittest.TestCase):
         after=A.project(source,'/proc/los_refresh_moved_viewer','A, force_refresh=False',env)
         tile=Tile(3)
         actor=N(human=True,mob=True,opacity=False,loc=tile,x=3,y=1,z=1,step_x=0,step_y=0)
-        owner=N(los_dirty=False,captures=0)
+        owner=N(los_dirty=False,captures=0,root_tree_presenter=None,los_presenter=None)
         context=N(body=actor,owner=owner,retired=False,movement_turf=tile,viewport_radii=lambda:P.DMList([7,7]))
         actor.client=owner;owner.los_context=context
         geometry=P.projected_geometry()
@@ -49,6 +49,7 @@ class TileMotion(unittest.TestCase):
                 # Real geometry with a fixed blocker; image storage is an adapter.
                 c.masked=bool(body.z==actor.z and blocked(actor.x-body.x,0,4-body.x,0,
                     actor.x-body.x,0,4-body.x,0,False))
+            return True
         for c,v in zip(clients,contexts):
             c.reconcile_geometric_los=lambda c=c,body=v.body:publish(c,body)
         env['los_active_contexts']=contexts
@@ -128,6 +129,16 @@ class TileMotion(unittest.TestCase):
         s.owner.los_dirty=True;s.after(s.actor)
         self.assertEqual(s.owner.captures,0)
         self.assertTrue(s.owner.los_dirty)
+
+    def test_every_failed_viewer_publication_revokes_deferred_trees(self):
+        for result in [False,None]:
+            s=self.scene();withdrawals=[]
+            s.owner.root_tree_presenter=N(invalidate=lambda:withdrawals.append('root'))
+            s.owner.los_presenter=N(invalidate=lambda:withdrawals.append('fallback'))
+            s.owner.reconcile_geometric_los=lambda:result
+            s.actor.loc=Tile(5);s.actor.x=5
+            s.after(s.actor)
+            self.assertEqual(withdrawals,['root','fallback'],result)
 
     def render_key(self,body,owner,anchored,source=CORE,time=0):
         # Evaluate the actual key template/offset branch, not a separate cache.

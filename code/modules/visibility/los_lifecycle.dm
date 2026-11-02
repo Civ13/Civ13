@@ -82,7 +82,7 @@
 		los_dirty = TRUE
 		return
 	if(!los_dirty && key == los_last_policy && world.time < los_next_audit)
-		return
+		return TRUE
 	if(root_tree_presenter && !root_tree_presenter.planes_admitted())
 		root_tree_presenter.retire()
 	if(!root_tree_presenter && CIV13_ROOT_TREE_PRESENTATION)
@@ -117,6 +117,7 @@
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	los_next_audit = world.time + 5
+	return TRUE
 
 /proc/los_invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)
 	if(!CIV13_GEOMETRIC_LOS_CORE || !los_active_contexts)
@@ -181,7 +182,13 @@
 		M = A
 	if(M && M.client && M.client.los_context)
 		M.client.los_dirty = TRUE
-		M.client.reconcile_geometric_los()
+		if(!M.client.reconcile_geometric_los())
+			// Any early admission/capture/publication failure ends the deferred
+			// lease, including mutation suspension and unavailable scene leases.
+			if(M.client.root_tree_presenter)
+				M.client.root_tree_presenter.invalidate()
+			if(M.client.los_presenter)
+				M.client.los_presenter.invalidate()
 	// Pre-write invalidation marked both old/new neighborhoods. Nonclient
 	// blockers must not leave their viewers blank until the budgeted tick.
 	if(A.opacity && los_active_contexts)
