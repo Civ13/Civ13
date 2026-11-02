@@ -46,6 +46,9 @@ preparation results, not native results.
 The first hosted compile at730690f40 failed because ordinary DM string
 literals interpreted regex character classes as embedded expressions. Both
 patterns now use DM raw strings; a focused regression requires noninterpolating
-literals. The original compiler failure is preserved in publication evidence.
+literals. The original compiler failure is preserved in publication evidence. The recipe
+branch compiler also proved that DM rejects the carriage-return escape; CRLF
+normalization uses the existing ascii2text(13) idiom, with a fake character-code
+boundary in this offline projection.
 Source PR publication is authorized; no configuration activation, live reload,
 restart or native access fixture has been performed.

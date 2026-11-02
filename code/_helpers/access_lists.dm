@@ -4,8 +4,8 @@
 		return null
 	if (access_text == "\n")
 		return list()
-	var/normalized_text = replacetext(access_text, "\r\n", "\n")
-	if (normalized_text == "\n" || findtext(normalized_text, "\r"))
+	var/normalized_text = replacetext(access_text, ascii2text(13) + "\n", "\n")
+	if (normalized_text == "\n" || findtext(normalized_text, ascii2text(13)))
 		return null
 	if (copytext(normalized_text, length(normalized_text)) != "\n")
 		return null

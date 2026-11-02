@@ -30,7 +30,7 @@ class Harness:
         self.files = {}
         self.state = SimpleNamespace(approved_list=DMList(), whitelist_list=DMList(),
                                      approved_list_ready=False, whitelist_list_ready=False)
-        self.env = dict(istext=lambda s:isinstance(s,str), length=len, list=DMList,
+        self.env = dict(ascii2text=chr, istext=lambda s:isinstance(s,str), length=len, list=DMList,
             replacetext=lambda s,a,b:s.replace(a,b), findtext=lambda s,t:s.find(t)+1,
             copytext=lambda s,start:s[start-1:], splittext=lambda s,d:DMList(s.split(d)),
             regex=Regex, ckey=lambda s:re.sub('[^a-z0-9]', '', s.lower()), trim=lambda s:s.strip(),
@@ -130,10 +130,13 @@ class AccessLists(unittest.TestCase):
         self.assertIn('if (!verified_access_member("whitelist", client.ckey))',source)
         self.assertNotIn('!isemptylist(approved_list)',source)
         self.assertNotIn('!isemptylist(whitelist_list)',source)
-    def test_regex_literals_are_noninterpolating(self):
+    def test_engine_safe_string_literals(self):
         # Ordinary DM quoted strings interpret square brackets as expressions.
         self.assertEqual(SOURCE.count('= regex(@"'), 2)
         self.assertNotIn('= regex("', SOURCE)
+        self.assertNotIn(r'"\r"', SOURCE)
+        self.assertNotIn(r'"\r\n"', SOURCE)
+        self.assertIn('ascii2text(13)', SOURCE)
 
     def test_include_and_initial_readiness(self):
         self.assertEqual((ROOT/'civ13.dme').read_text(encoding='utf-8-sig').count('#include "code\\_helpers\\access_lists.dm"'),1)
