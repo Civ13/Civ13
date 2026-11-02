@@ -83,6 +83,9 @@ def get_turf(atom):
 class Fixture:
     def __init__(self, movable_source=None, operation_source=None):
         self.save_results = []
+        # Inert lifecycle boundary: save guards execute the real relocation
+        # body; paper-session observer behavior belongs to paper_documents.
+        self.paper_notifications = []
         self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
@@ -98,6 +101,7 @@ class Fixture:
                                                         (kind == '/mob' and a.human)],
                         CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2, world=NS(time=42, timeofday=42),
                         to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
+                        paper_authoring_notify=lambda source, reason: self.paper_notifications.append((source, reason, source.loc)),
                         record_save_outcome=self.save_results.append)
         self.area, self.admin = Area(), Area(True)
         self.sleep = Atom(self.admin, turf=True, xyz=(1, 1, 1))
@@ -628,6 +632,17 @@ class GuardTests(unittest.TestCase):
         f.store.load_world_contents = lambda operation: True
         self.assertTrue(f.backend(f.store, 'load'))
         self.assertIs(f.store.last_save_reference_failure, prior)
+
+    def test_raw_relocation_notifies_after_commit_and_not_after_refusal(self):
+        f = Fixture()
+        human = f.actor()
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(human.persistence_set_loc(f.other))
+        self.assertEqual(f.paper_notifications, [])
+        self.assertTrue(human.persistence_set_loc(f.same))
+        self.assertEqual(f.paper_notifications, [(human, 'relocated', f.same)])
+        self.assertIs(human.loc, f.same)
+        operation.finish(True)
 
     def test_legacy_z_setter_uses_physical_container_turf_and_rejects_invalid_target(self):
         f = Fixture()

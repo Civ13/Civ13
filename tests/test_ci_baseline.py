@@ -88,6 +88,21 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(self.selected(['code/setup.dm']), old | {'access_lists'})
         self.assertNotIn('access_lists', self.selected(['README.md']))
 
+    def test_entered_identity_trace_registers_every_shared_source_dependency(self):
+        suite = ci.SUITES['los_context']
+        self.assertIn('tests/los_context/test_entered_trace.py', suite['files'])
+        for path in ('code/game/mob/mob_movement.dm', 'code/datums/observation/moved.dm',
+                     'tests/root_tree_presentation/test_contract.py'):
+            self.assertIn(path, suite['shared_paths'])
+            plan = ci.impact([path])
+            self.assertTrue(plan['suites']['los_context']['selected'], path)
+        # Shared registration must not claim previously-unmapped movement/event
+        # impact and suppress the existing all-offline fallback.
+        for path in ('code/game/mob/mob_movement.dm', 'code/datums/observation/moved.dm'):
+            plan = ci.impact([path])
+            self.assertTrue(plan['fallback_reasons'])
+            self.assertTrue(all(row['selected'] for row in plan['suites'].values()))
+
     def test_mount_native_preparation_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['mount_native_preparation']
         self.assertEqual(suite['files'], ('tests/mount_lifecycle_native/test_prepare.py',
@@ -107,7 +122,7 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['paper_documents']
         self.assertEqual(suite['files'], ('tests/paper_documents/test_documents.py',
             'tests/paper_documents/test_views.py', 'tests/paper_documents/test_mutations.py',
-            'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py'))
+            'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py', 'tests/paper_documents/test_lifecycle.py'))
         self.assertEqual(self.selected(['tests/paper_documents/test_mutations.py']),
             {'policy', 'bootstrap', 'progress', 'paper_documents'})
 
@@ -721,7 +736,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_visibility_selects_only_explicit_offline_file(self):
         self.assertEqual(ci.SUITES['los_context']['files'], ('tests/los_context/test_offline.py',
             'tests/los_context/test_production.py', 'tests/los_context/test_tile_motion.py',
-            'tests/test_geometric_presentation.py',
+            'tests/los_context/test_entered_trace.py', 'tests/test_geometric_presentation.py',
             'tests/test_visibility_diagnostics.py'))
         self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
         self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))

@@ -143,7 +143,7 @@ var/global/paper_document_sequence = 0
 		return null
 	return list("original" = current, "revision" = current["revision"], "document_id" = current["document_id"], "legacy_json" = json_encode(legacy), "canonical_json" = json_encode(current), "record" = next)
 
-/proc/paper_document_commit_edit(obj/item/weapon/paper/P, list/edit)
+/proc/paper_document_commit_edit(obj/item/weapon/paper/P, list/edit, datum/paper_document_authoring/authoring_owner = null)
 	if (!P || P.gc_destroyed || !paper_document_keys(edit, list("original", "revision", "document_id", "legacy_json", "canonical_json", "record")))
 		return FALSE
 	var/list/current = edit["original"]
@@ -177,6 +177,7 @@ var/global/paper_document_sequence = 0
 	P.offset_x = physical["offset_x"]
 	P.offset_y = physical["offset_y"]
 	P.document_record = committed
+	paper_authoring_notify(P, "physical", authoring_owner)
 	return TRUE
 
 /datum/paper_document_service
@@ -223,6 +224,7 @@ var/global/paper_document_sequence = 0
 	if (!paper_document_record_valid(record))
 		return FALSE
 	paper.document_record = record
+	paper_authoring_notify(paper, "physical")
 	return TRUE
 
 // Plain-text foundation operation only, not a new pencode/Markdown dialect.
