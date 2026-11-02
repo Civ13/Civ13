@@ -752,7 +752,7 @@ def main():
                         help='fresh dedicated <=1 GiB mount; evidence remains inside it')
     parser.add_argument('--reviewed-cloud-envelope', action='store_true',
                         help='operator confirms separate cloud isolation review')
-    parser.add_argument('--suite', choices=('species05',), required=True)
+    parser.add_argument('--suite', choices=('species05','transition05'), required=True)
     parser.add_argument('--work-deadline', type=float)
     args = parser.parse_args()
     require(sys.platform == 'linux', 'Cloud smoke supports Linux only')
@@ -796,6 +796,9 @@ def main():
         return run_scheduler(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'bump05':
         worker = load_module('bump_worker', HERE/'bump_worker.py')
+        return worker.run(sys.modules[__name__],args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
+    if args.suite == 'transition05':
+        worker = load_module('scheduler_transition_worker', HERE/'scheduler_transition_worker.py')
         return worker.run(sys.modules[__name__],args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'species05':
         worker = load_module('species_fallback_worker', HERE/'species_fallback_worker.py')

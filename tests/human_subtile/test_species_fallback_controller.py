@@ -190,14 +190,14 @@ class HostContracts(unittest.TestCase):
                 binding.validate_source(["git"],None,HEAD,time.monotonic()-1)
             called.assert_not_called()
 
-    def test_only_species_selector_and_explicit_execute(self):
+    def test_reviewed_selectors_and_explicit_execute(self):
         for name in ("cloud_npc_controller.py", "cloud_npc_job.py", "cloud_npc_smoke.py"):
             text = (HERE/name).read_text()
-            self.assertIn("choices=('species05',)", text)
+            self.assertIn("choices=('species05','transition05')", text)
         text = (HERE/"cloud_npc_job.py").read_text()
         self.assertIn("require(args.execute", text)
         workflow = (ROOT/".github/workflows/wildlife-cardinal-cadence.yml").read_text()
-        self.assertIn("suite: [species05]", workflow)
+        self.assertIn("suite: [transition05]", workflow)
         self.assertIn('test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"', workflow)
 
 

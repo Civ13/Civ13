@@ -217,3 +217,222 @@ var/global/list/fixture_scheduler_rows = list()
 		fixture_scheduler_rows += list(fixture_scheduler_observe(/mob/living/simple_animal/mosquito/scheduler_probe, mode == "smooth", 80, scenario))
 		fixture_scheduler_rows += list(fixture_scheduler_observe(/mob/living/simple_animal/vampirebatblack/scheduler_probe, mode == "smooth", 80, scenario))
 	fixture_scheduler_assert(fixture_scheduler_rows.len == 4, "scheduler_both_subjects_observed")
+
+
+// Source-only transition draft. Not called by fixture_scheduler_main and not
+// selected by species05. A reviewed staging adapter and host oracle are still
+// required before this can be compiled or run.
+var/global/list/fixture_transition_rows = list()
+var/global/fixture_transition_running = FALSE
+var/global/fixture_transition_phase = null
+var/global/list/fixture_transition_events = list()
+var/global/list/fixture_transition_accepted = list()
+var/global/fixture_transition_follow_moves = 0
+var/global/fixture_transition_flee_moves = 0
+var/global/fixture_transition_pet_moves = 0
+var/global/fixture_transition_sequence = 0
+var/global/fixture_transition_command_sequence = 0
+var/global/fixture_transition_command_id = 0
+var/global/fixture_transition_command_kind = null
+var/global/fixture_transition_active_moves = 0
+var/global/fixture_transition_move_entries = 0
+
+/proc/fixture_transition_record(label, mob/living/simple_animal/A, kind = null, accepted = null, call_id = null)
+	fixture_scheduler_assert(fixture_transition_events.len < 4096, "transition_event_bound")
+	fixture_scheduler_assert(A && !isDeleted(A), "transition_live_actor")
+	fixture_scheduler_assert(!A.npc_subtile_enabled && !A.npc_subtile_transaction && !A.npc_subtile_pulse && !A.npc_subtile_follow && !A.npc_subtile_flee && !A.npc_subtile_pet_walk && !A.npc_subtile_pursuit && !A.npc_subtile_wild_walk && !A.npc_subtile_recovery && !A.npc_subtile_pending_intent, "transition_no_staged_owner")
+	fixture_transition_events += list(list("event" = label, "at" = world.time, "phase" = fixture_transition_phase,
+		"kind" = kind, "accepted" = accepted, "call_id" = call_id,
+		"command_id" = fixture_transition_command_id, "command_kind" = fixture_transition_command_kind,
+		"x" = A.x, "y" = A.y, "z" = A.z,
+		"sx" = A.step_x, "sy" = A.step_y, "generation" = A.move_gen,
+		"follow_flag" = !!A.npc_subtile_follow_enabled, "flee_flag" = !!A.npc_subtile_flee_enabled,
+		"pet_flag" = !!A.npc_subtile_pet_enabled, "base_flag" = !!A.npc_subtile_enabled,
+		"transaction" = !!A.npc_subtile_transaction, "pulse" = !!A.npc_subtile_pulse,
+		"follow_owner" = !!A.npc_subtile_follow, "flee_owner" = !!A.npc_subtile_flee,
+		"pet_owner" = !!A.npc_subtile_pet_walk, "pursuit_owner" = !!A.npc_subtile_pursuit,
+		"wild_owner" = !!A.npc_subtile_wild_walk, "pending" = !!A.npc_subtile_pending_intent,
+		"recovery" = !!A.npc_subtile_recovery))
+
+
+// Called immediately after exact staged native command sites return. Markers
+// are test-only; non-subject actors do not record or alter command state.
+/proc/fixture_transition_command_return(mob/living/simple_animal/A, kind)
+	if (!fixture_transition_running || A != fixture_scheduler_subject)
+		return
+	fixture_scheduler_assert(kind in list("follow", "flee", "pet"), "transition_command_kind")
+	fixture_scheduler_assert(!fixture_transition_active_moves, "transition_dispatch_overlapping_move")
+	fixture_transition_command_sequence++
+	fixture_transition_command_id = fixture_transition_command_sequence
+	fixture_transition_command_kind = kind
+	fixture_transition_record("command_return", A, kind)
+
+// Called after a staged native stop site (cat scan or old flee timer) returns.
+/proc/fixture_transition_native_stop_return(mob/living/simple_animal/A, kind)
+	if (!fixture_transition_running || A != fixture_scheduler_subject)
+		return
+	fixture_scheduler_assert(!fixture_transition_active_moves, "transition_native_stop_overlapping_move")
+	fixture_transition_command_id = 0
+	fixture_transition_command_kind = null
+	fixture_transition_record("native_stop_return", A, kind)
+
+// Explicit fixture cancellation, not a claim that AI naturally stopped itself.
+/proc/fixture_transition_explicit_stop(mob/living/simple_animal/A)
+	fixture_scheduler_assert(!fixture_transition_active_moves, "transition_stop_overlapping_move")
+	fixture_transition_sequence++
+	var/call_id = fixture_transition_sequence
+	fixture_transition_record("stop_before", A, null, null, call_id)
+	walk(A, 0)
+	fixture_transition_command_id = 0
+	fixture_transition_command_kind = null
+	fixture_transition_record("stop_after", A, null, null, call_id)
+
+/mob/living/simple_animal/pet/cat/scheduler_transition
+
+/mob/living/simple_animal/pet/cat/scheduler_transition/Life()
+	var/call_id = null
+	if (fixture_transition_running)
+		fixture_transition_sequence++
+		call_id = fixture_transition_sequence
+		fixture_transition_record("life_before", src, null, null, call_id)
+	. = ..()
+	if (fixture_transition_running && src && !isDeleted(src))
+		fixture_transition_record("life_after", src, null, null, call_id)
+
+/mob/living/simple_animal/pet/cat/scheduler_transition/Move()
+	var/old_x = x * world.icon_size + step_x
+	var/old_y = y * world.icon_size + step_y
+	var/call_id = null
+	var/entry_command = fixture_transition_command_id
+	var/entry_kind = fixture_transition_command_kind
+	if (fixture_transition_running)
+		fixture_transition_sequence++
+		call_id = fixture_transition_sequence
+		fixture_transition_active_moves++
+		fixture_transition_move_entries++
+		fixture_transition_record("move_before", src, null, null, call_id)
+	. = ..()
+	if (fixture_transition_running && src && !isDeleted(src))
+		fixture_transition_active_moves--
+		fixture_transition_record("move_after", src, null, . ? TRUE : FALSE, call_id)
+		if (entry_command && entry_command == fixture_transition_command_id && entry_kind == fixture_transition_command_kind && (old_x != x * world.icon_size + step_x || old_y != y * world.icon_size + step_y))
+			if (fixture_transition_phase == "follow" && entry_kind == "follow")
+				fixture_transition_follow_moves++
+			else if (fixture_transition_phase == "flee" && entry_kind == "flee")
+				fixture_transition_flee_moves++
+			else if (fixture_transition_phase == "pet" && entry_kind == "pet")
+				fixture_transition_pet_moves++
+
+/mob/living/simple_animal/pet/cat/scheduler_transition/npc_subtile_continuous_legacy_ready(kind)
+	var/call_id = null
+	if (fixture_transition_running)
+		fixture_transition_sequence++
+		call_id = fixture_transition_sequence
+		fixture_transition_record("ready_before", src, kind, null, call_id)
+	. = ..()
+	if (fixture_transition_running && src && !isDeleted(src))
+		fixture_transition_record("ready_after", src, kind, . ? TRUE : FALSE, call_id)
+		if (.)
+			var/previous = fixture_transition_accepted[kind]
+			fixture_transition_accepted[kind] = (isnum(previous) ? previous : 0) + 1
+
+// Explicit initial state and timed stimulus are fixture inputs. All Life,
+// follow, flee, and pet commands still come from the real scheduler/AI routes.
+/proc/fixture_scheduler_transition_observe(mode, scenario)
+	fixture_scheduler_assert(mode in list("legacy", "mixed"), "transition_mode")
+	fixture_scheduler_assert(scenario in list("follow_flee", "pet"), "transition_scenario")
+	fixture_scheduler_assert(world.tick_lag == 0.5 && !clients.len && !processScheduler && !living_mob_list.len, "transition_fresh_world")
+	rand_seed(741239)
+	var/mob/living/simple_animal/pet/cat/scheduler_transition/A = new(locate(6, 6, 1))
+	var/mob/living/human/subtile_fixture/scheduler_target/H = new(locate(10, 6, 1))
+	var/mob/living/simple_animal/mouse/M = null
+	H.canmove = TRUE; H.stat = CONSCIOUS; H.lastarea = get_area(H)
+	H.persistence_owner_ckey = "fixture-owner"; H.real_name = "Movement subject"; H.name = H.real_name
+	A.npc_subtile_enabled = FALSE
+	A.npc_subtile_follow_enabled = mode == "mixed"
+	A.npc_subtile_flee_enabled = mode == "mixed"
+	A.npc_subtile_pet_enabled = mode == "mixed"
+	A.npc_subtile_recovery_enabled = FALSE
+	A.simplehunger = 1000; A.speak_chance = 0; A.behaviour = "none"
+	A.turns_since_move = A.move_to_delay - 1; A.ai_tick_delay = A.ai_tick_delay_max - 1
+	if (scenario == "follow_flee")
+		A.npc_set_following(H)
+		fixture_transition_phase = "follow"
+	else
+		M = new(locate(9, 6, 1))
+		M.anchored = TRUE
+		A.npc_set_movement_target(M)
+		A.turns_since_scan = 5
+		fixture_transition_phase = "pet"
+	fixture_scheduler_test_subjects = list(A)
+	fixture_scheduler_subject = A; fixture_scheduler_target = H
+	fixture_transition_events = list(); fixture_transition_accepted = list()
+	fixture_transition_follow_moves = 0; fixture_transition_flee_moves = 0; fixture_transition_pet_moves = 0; fixture_transition_sequence = 0
+	fixture_transition_command_sequence = 0; fixture_transition_command_id = 0; fixture_transition_command_kind = null
+	fixture_transition_active_moves = 0; fixture_transition_move_entries = 0
+	var/processScheduler/S = new
+	processScheduler = S
+	var/process/mob/P = new(S)
+	S.addProcess(P)
+	fixture_scheduler_assert(S.processes.len == 1 && S.processes[1] == P && P.schedule_interval == 1 SECONDS && P.start_delay == 0.6 SECONDS, "transition_original_scheduler")
+	fixture_transition_running = TRUE
+	var/started = world.time
+	var/changed = FALSE
+	var/gap_started = FALSE
+	var/gap_moves = 0
+	S.start()
+	while (world.time < started + (scenario == "follow_flee" ? 100 : 12))
+		if (scenario == "follow_flee" && !gap_started && world.time >= started + 30)
+			fixture_transition_record("stimulus_before", A)
+			fixture_scheduler_assert(fixture_transition_accepted["follow"] && fixture_transition_follow_moves > 0, "transition_follow_observed")
+			A.npc_set_following(null)
+			A.stop_automated_movement = FALSE; A.behaviour = "none"
+			fixture_transition_phase = "gap"; gap_started = TRUE
+			fixture_transition_explicit_stop(A)
+			gap_moves = fixture_transition_move_entries
+		if (scenario == "follow_flee" && gap_started && !changed && world.time >= started + 40)
+			fixture_scheduler_assert(!fixture_transition_active_moves && fixture_transition_move_entries == gap_moves, "transition_gap_quiet")
+			A.behaviour = "scared"
+			A.turns_since_move = A.move_to_delay - 1; A.ai_tick_delay = A.ai_tick_delay_max - 1
+			fixture_transition_phase = "flee"; changed = TRUE
+			fixture_transition_record("stimulus_after", A)
+		fixture_transition_record("sample", A)
+		sleep(world.tick_lag)
+	fixture_transition_record("observation_end", A)
+	S.stop()
+	var/finish_deadline = world.time + 10
+	while ((P.running || P.queued) && world.time < finish_deadline)
+		sleep(world.tick_lag)
+	fixture_scheduler_assert(P.ticks > 0 && !P.running && !P.queued && P.idle && !P.exceptions.len, "transition_scheduler_quiesced")
+	if (scenario == "follow_flee")
+		fixture_scheduler_assert(changed && fixture_transition_accepted["flee"] && fixture_transition_flee_moves > 0, "transition_flee_observed")
+	else
+		fixture_scheduler_assert(fixture_transition_accepted["pet"] && fixture_transition_pet_moves > 0, "transition_pet_observed")
+	fixture_transition_phase = "quiet"
+	fixture_transition_explicit_stop(A)
+	var/quiet_moves = fixture_transition_move_entries
+	var/quiet_started = world.time
+	while (world.time < quiet_started + 4)
+		fixture_transition_record("quiet_sample", A)
+		sleep(world.tick_lag)
+	fixture_scheduler_assert(!fixture_transition_active_moves && fixture_transition_move_entries == quiet_moves, "transition_final_quiet")
+	fixture_transition_record("quiet_end", A)
+	fixture_transition_record("end", A)
+	fixture_transition_running = FALSE
+	var/list/result = list("mode" = mode, "scenario" = scenario, "started" = started, "ended" = world.time,
+		"process_ticks" = P.ticks, "life_interval_ds" = P.schedule_interval, "start_delay_ds" = P.start_delay,
+		"tick_lag_ds" = world.tick_lag, "actual_clients" = clients.len, "events" = fixture_transition_events.Copy())
+	fixture_scheduler_test_subjects = list(); fixture_scheduler_subject = null; fixture_scheduler_target = null
+	qdel(A); qdel(H)
+	if (M && !isDeleted(M))
+		qdel(M)
+	qdel(P); processes.mob = null; processScheduler = null; qdel(S)
+	return result
+
+// Called only by a future separately reviewed staging adapter.
+/proc/fixture_scheduler_transition_main()
+	var/mode = world.params["scheduler_mode"]
+	fixture_transition_rows = list()
+	fixture_transition_rows += list(fixture_scheduler_transition_observe(mode, "follow_flee"))
+	fixture_transition_rows += list(fixture_scheduler_transition_observe(mode, "pet"))
+	return fixture_transition_rows
