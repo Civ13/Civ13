@@ -546,6 +546,8 @@
 	return 1
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
+	if (istype(O, /obj/item/animal_tack))
+		return src.fit_animal_tack(O, user)
 	var/attack_result = FALSE
 	var/health_before_attack = health
 	if (ishuman(user))
