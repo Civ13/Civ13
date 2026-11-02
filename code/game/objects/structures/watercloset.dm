@@ -962,6 +962,16 @@
 	volume = 750
 	mosquito_limit = 0
 
+// This is only a sensory cue for the well's existing fecal-dirty flag.
+// A clean flag says nothing about other contamination, including radiation.
+/obj/structure/sink/well/proc/has_observable_fecal_odor(mob/user)
+	return dirty && isliving(user) && isturf(loc) && isturf(user.loc) && user.z == z && get_dist(src, user) <= 1
+
+/obj/structure/sink/well/examine(mob/user, distance = -1)
+	. = ..()
+	if (. && has_observable_fecal_odor(user))
+		to_chat(user, SPAN_WARNING("A foul smell rises from the well."))
+
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"
 	icon_state = "sandstone_well1"
