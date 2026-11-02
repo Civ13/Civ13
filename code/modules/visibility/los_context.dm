@@ -619,6 +619,20 @@ var/global/list/los_active_contexts
 	S.clear_footprints[footprint_key] = result
 	return result
 
+// A displayed storage item is readable only through this body's current open
+// storage view. Screen membership alone does not authorize hidden contents.
+/proc/los_storage_hover_visible(mob/user, atom/target)
+	if (!user || !user.client || !istype(target, /obj/item))
+		return FALSE
+	var/client/C = user.client
+	var/obj/item/weapon/storage/S = user.s_active
+	if (C.mob != user || !istype(S, /obj/item/weapon/storage) || S.gcDestroyed || S.gc_destroyed || target.gcDestroyed || target.gc_destroyed)
+		return FALSE
+	if (target.loc != S || !(target in S.contents) || !(user in S.is_seeing))
+		return FALSE
+	var/obj/item/I = target
+	return I.screen_loc && (I in C.screen)
+
 // Fresh raw geometry on EACH information read covers direct opacity writers.
 /datum/los_context/proc/decision(mob/user, atom/target, operation)
 	if (operation != "hover" && operation != "examine")
@@ -629,6 +643,8 @@ var/global/list/los_active_contexts
 		return LOS_DENY
 	if (target == body)
 		return LOS_SELF
+	if (operation == "hover" && los_storage_hover_visible(user, target))
+		return LOS_OWN_SLOT
 	if (ismovable(target))
 		var/atom/movable/I = target
 		if (I.loc == body && (operation == "examine" || (I.screen_loc && (I in owner.screen))))

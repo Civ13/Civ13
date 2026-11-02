@@ -20,6 +20,12 @@
 	return
 /mob
 	var/datum/hover_client/hover_client
+	var/obj/item/weapon/storage/s_active
+/obj/item/weapon/storage
+	var/list/is_seeing = list()
+// Full LOS is outside this save fixture.
+/proc/los_read_allowed(mob/user, atom/target, operation)
+	return !!user && !!target && operation == "hover"
 /mob/proc/get_equipped_item(slot)
 	return null
 /mob/living/human

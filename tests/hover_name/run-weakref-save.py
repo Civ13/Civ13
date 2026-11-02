@@ -16,6 +16,7 @@ parser.add_argument('--negative-control', choices=['export', 'import'])
 parser.add_argument('--prepare-only', action='store_true')
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
+pinned_version = json.loads((repo / 'tools/byond/version.json').read_text())['version']
 saver = repo / 'code/modules/persistence/saving.dm'
 prepared = subprocess.run([
     sys.executable, '-B', str(repo / 'tests/world_save/run-string-path.py'),
@@ -39,8 +40,11 @@ widget = (repo / 'code/_onclick/hud/hover_name.dm').read_text()
 widget = widget.replace('/client/', '/datum/hover_client/')
 widget = widget.replace('var/client/C', 'var/datum/hover_client/C')
 widget = widget.replace('parentmob.client', 'parentmob.hover_client')
+storage_helper = declaration('code/modules/visibility/los_context.dm', '/proc/los_storage_hover_visible(')
+storage_helper = storage_helper.replace('var/client/C', 'var/datum/hover_client/C')
+storage_helper = storage_helper.replace('user.client', 'user.hover_client')
 adapter = (Path(__file__).with_name('weakref_save_probe.dm').read_text() + '\n'
-           + (repo / 'code/datums/weakref.dm').read_text() + '\n' + widget + '\n'
+           + (repo / 'code/datums/weakref.dm').read_text() + '\n' + widget + '\n' + storage_helper + '\n'
            + declaration('code/game/mob/living/carbon/human/human.dm',
                          '/mob/living/human/proc/get_visible_name('))
 (root / 'weakref_save_adapter.dm').write_text(adapter)
@@ -69,7 +73,8 @@ elif args.negative_control == 'import':
 
 inputs = ['tests/hover_name/run-weakref-save.py', 'tests/hover_name/weakref_save_probe.dm',
           'tests/world_save/run-string-path.py', 'code/_onclick/hud/hover_name.dm',
-          'code/datums/weakref.dm', 'code/game/mob/living/carbon/human/human.dm']
+          'code/datums/weakref.dm', 'code/game/mob/living/carbon/human/human.dm',
+          'code/modules/visibility/los_context.dm', 'tools/byond/version.json']
 manifest = json.loads((root / 'source-inputs.json').read_text())
 manifest['original'].update({name: hashlib.sha256((repo / name).read_bytes()).hexdigest() for name in inputs})
 manifest['generated'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -85,7 +90,7 @@ daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
 build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root,
                        capture_output=True, text=True, timeout=60, creationflags=flags)
 print(build.stdout, build.stderr)
-if build.returncode or '516.1681' not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
+if build.returncode or pinned_version not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
     raise RuntimeError('Pinned clean compilation required')
 run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'],
                      cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)
