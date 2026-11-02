@@ -44,6 +44,9 @@ class Tests(unittest.TestCase):
         d=FakeDocker(status='created');result=w.cleanup_owned(d,state(),TOKEN,IMAGE)
         self.assertEqual(result['status'],'docker_cleanup_verified')
         self.assertEqual([x[0] for x in d.calls],['ps','inspect','rm','ps'])
+    def test_missing_confirmed_container_is_not_verified_cleanup(self):
+        result=w.cleanup_owned(FakeDocker(ids=[]),state(),TOKEN,IMAGE)
+        self.assertEqual(result['status'],'cleanup_unverified_missing_owned_container')
     def test_container_before_create_never_mutates(self):
         d=FakeDocker()
         with self.assertRaises(ValueError):w.cleanup_owned(d,state(started=False,confirmed=False),TOKEN,IMAGE)

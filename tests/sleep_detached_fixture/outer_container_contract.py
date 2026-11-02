@@ -1,12 +1,13 @@
 """Pure Docker-create and inspect contract. No process or network is started."""
 from pathlib import Path
+from datetime import datetime
 import re
 
 LABEL='org.civ13.sleep-fixture'
 MEMORY=1536*1024**2
 PIDS=32
 NANOCPUS=1_000_000_000
-CONTROLLER_SHA='4a201e057b63fcb6fc5e844d4962ac013ca52d7ab9218837a17968a41630e8d1'
+CONTROLLER_SHA='81c94ce35fd85ac48d2eaaaacf0b0fd9b48f9fd2f64b6a63e1b5f1eda687f5dc'
 IMAGE_ID='sha256:4690e6bc50d08b799d527398716478f164832b5a9dddb8eb0588c88ba5cd40bc'
 
 def require(value,message):
@@ -44,13 +45,29 @@ def validate_image(info,image):
     require(type(env) is list and all(isinstance(item,str) and '=' in item and not item.split('=',1)[0].startswith('LD_') for item in env),'unsafe image environment')
     return True
 
-def validate_inspect(info,spec,container_id,expected_state="created"):
+def validate_terminal_state(state,expected_exit_code=0):
+    require(type(expected_exit_code) is int and 0<=expected_exit_code<=255,'invalid expected exit code')
+    require(type(state) is dict and state.get('Status')=='exited' and state.get('Running') is False and
+            type(state.get('ExitCode')) is int and state['ExitCode']==expected_exit_code and
+            state.get('OOMKilled') is False and state.get('Error')=='','container terminal status mismatch')
+    times=[]
+    for key in ('StartedAt','FinishedAt'):
+        value=state.get(key)
+        require(type(value) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z',value) is not None,'invalid container timestamp')
+        try: parsed=datetime.fromisoformat(value[:-1]+'+00:00')
+        except ValueError:raise ValueError('invalid container timestamp') from None
+        require(parsed.year>=1970,'container never started')
+        times.append(parsed)
+    require(times[1]>=times[0],'container finish precedes start')
+    return True
+
+def validate_inspect(info,spec,container_id,expected_state="created",expected_exit_code=0):
     require(type(info) is dict and re.fullmatch(r'[0-9a-f]{64}',container_id or '') is not None,'invalid container ID')
     require(info.get('Id')==container_id and info.get('Name')=='/'+spec['name'] and info.get('Image')==spec['image'],'container identity mismatch')
     state=info.get('State')
     require(expected_state in ('created','exited') and type(state) is dict and state.get('Status')==expected_state and state.get('Running') is False,'container state mismatch')
     if expected_state=='exited':
-        require(type(state.get('ExitCode')) is int and state['ExitCode']==0 and state.get('OOMKilled') is False and state.get('Error')=='','container exit was not clean')
+        validate_terminal_state(state,expected_exit_code)
     cfg=info.get('Config');host=info.get('HostConfig');net=info.get('NetworkSettings')
     require(type(cfg) is dict and type(host) is dict and type(net) is dict,'inspect shape')
     require(type(cfg.get('Labels')) is dict and cfg['Labels'].get(LABEL)==spec['token'],'label mismatch')

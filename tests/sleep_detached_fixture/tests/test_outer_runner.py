@@ -23,6 +23,11 @@ class Tests(unittest.TestCase):
             self.assertEqual(json.loads(p.read_text()),{'create_started':False})
             r.atomic_state(p,{'create_started':True},1)
             self.assertEqual(json.loads(p.read_text()),{'create_started':True})
+    def test_nonzero_attached_exit_is_observation_not_success_or_unknown(self):
+        self.assertEqual(r.attached_exit(None,1),1)
+        self.assertEqual(r.attached_exit(None,0),0)
+        for problem,code in [('timeout',1),(None,-9),(None,256),(None,False),(None,None)]:
+            with self.subTest(problem=problem,code=code),self.assertRaises(ValueError):r.attached_exit(problem,code)
     def test_outer_verifies_writer_bytes_payload_and_compiled_artifacts(self):
         with tempfile.TemporaryDirectory() as d:
             run=Path(d);work=run/'fixture';work.mkdir()
@@ -43,15 +48,17 @@ class Tests(unittest.TestCase):
         source=(ROOT/'outer_container_runner.py').read_text(encoding='utf-8')
         start=source.index("state['start_started']=True;atomic_state")
         attach=source.index('attach(docker,container_id,env,main,watcher,deadline)',start)
+        inspect=source.index("contract.validate_inspect(details[0],spec,container_id,expected_state='exited',expected_exit_code=attach_exit)",attach)
         done=source.index("state['start_confirmed']=True;atomic_state",attach)
-        self.assertLess(start,attach);self.assertLess(attach,done)
+        self.assertLess(start,attach);self.assertLess(attach,inspect);self.assertLess(inspect,done)
+        self.assertIn("if attach_exit!=0:raise RuntimeError('fixture container exited nonzero: '+str(attach_exit))",source)
         self.assertIn("'docker_exit_state':exit_state",source)
     def test_explicit_reviewed_execution_gate(self):
         source=(ROOT/'outer_container_runner.py').read_text(encoding='utf-8')
         self.assertIn("p.add_argument('--run-native',action='store_true',required=True)",source)
         self.assertIn("contract.validate_image(image_data[0],image)",source)
         self.assertIn("contract.validate_inspect(details[0],spec,container_id)",source)
-        self.assertIn("await_watchdog(watcher,watch,90)",source)
+        self.assertIn("await_watchdog(watcher,watch,90,container_id)",source)
     def test_job_binding_rejects_stale_or_prepare_only_receipt(self):
         env={'GITHUB_RUN_ID':'7','GITHUB_RUN_ATTEMPT':'1','GITHUB_JOB':'fixture','GITHUB_SHA':'a'*40}
         row={'schema':1,'status':'prepared','phase':'before_native','mode':'execute','native_executed':False,

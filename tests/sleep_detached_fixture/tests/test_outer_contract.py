@@ -30,14 +30,24 @@ class Tests(unittest.TestCase):
         with self.assertRaises(ValueError):c.validate_image({'Id':s['image'],'Os':'linux','Architecture':'386','Config':{'Volumes':{'/data':{}}}},s['image'])
     def test_exit_requires_exact_clean_status(self):
         s,original=fixture()
-        original['State']={'Status':'exited','Running':False,'ExitCode':0,'OOMKilled':False,'Error':''}
+        original['State']={'Status':'exited','Running':False,'ExitCode':0,'OOMKilled':False,'Error':'',
+                           'StartedAt':'2026-11-02T12:00:00.123456789Z','FinishedAt':'2026-11-02T12:00:01.123456789Z'}
         self.assertTrue(c.validate_inspect(original,s,'c'*64,expected_state='exited'))
         for key,value in [('ExitCode',1),('ExitCode',False),('OOMKilled',True),('Error','daemon error')]:
             i=copy.deepcopy(original);i['State'][key]=value
             with self.subTest(key=key,value=value),self.assertRaises(ValueError):c.validate_inspect(i,s,'c'*64,expected_state='exited')
-        for key in ('ExitCode','OOMKilled','Error'):
+        for key in ('ExitCode','OOMKilled','Error','StartedAt','FinishedAt'):
             i=copy.deepcopy(original);del i['State'][key]
             with self.subTest(missing=key),self.assertRaises(ValueError):c.validate_inspect(i,s,'c'*64,expected_state='exited')
+        for key,value in [('StartedAt','0001-01-01T00:00:00Z'),('FinishedAt','invalid'),('FinishedAt','2026-11-02T11:59:59Z')]:
+            i=copy.deepcopy(original);i['State'][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):c.validate_inspect(i,s,'c'*64,expected_state='exited')
+    def test_nonzero_exit_requires_matching_independent_terminal_state(self):
+        s,i=fixture();i['State']={'Status':'exited','Running':False,'ExitCode':1,'OOMKilled':False,'Error':'',
+                                 'StartedAt':'2026-11-02T12:00:00Z','FinishedAt':'2026-11-02T12:00:01Z'}
+        self.assertTrue(c.validate_inspect(i,s,'c'*64,expected_state='exited',expected_exit_code=1))
+        for code in (0,2,False,-1,256):
+            with self.subTest(code=code),self.assertRaises(ValueError):c.validate_inspect(i,s,'c'*64,expected_state='exited',expected_exit_code=code)
     def test_valid_inspect_and_mutated_guards(self):
         s,original=fixture();self.assertTrue(c.validate_inspect(original,s,'c'*64))
         mutations=[('HostConfig','NetworkMode','host'),('HostConfig','Privileged',True),('HostConfig','ReadonlyRootfs',False),

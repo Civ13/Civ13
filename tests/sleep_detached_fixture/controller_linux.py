@@ -152,6 +152,24 @@ def receipt(path,mode):
 def require_original_writer_receipt(path, original):
     require(bounded(path,65536)==original,'writer receipt bytes changed')
 
+def record_compiler_diagnostic(output, controller_sha, original_error):
+    """Record identities before propagating a compile failure; raw logs remain unchanged."""
+    record={'schema':1,'phase':'compile','controller_sha256':controller_sha,'status':'unavailable',
+            'error':str(original_error)[:1024]}
+    try:
+        logs={}
+        for stream in ('stdout','stderr'):
+            raw=bounded(output/('compile.'+stream+'.log'),MAX_LOG)
+            logs[stream]={'bytes':len(raw),'sha256':digest(raw)}
+        process_raw=bounded(output/'compile.process.json',65536)
+        process=json.loads(process_raw,object_pairs_hook=unique)
+        require(type(process) is dict and set(process)=={'role','pid','exit','timeout','error','cleanup'} and process['role']=='compile','invalid compiler process receipt')
+        record.update(status='retained',logs=logs,process_sha256=digest(process_raw),process=process)
+    except Exception as exc:
+        record['retention_error']=str(exc)[:1024]
+    (output/'compile-diagnostic.json').write_text(json.dumps(record,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+    return record
+
 def validate_payload(work):
     body=bounded(work/'sleep-payload.txt',1048576)
     require(bool(body),'empty payload refused')
@@ -176,7 +194,7 @@ def execute(output,isolated_root,byond,archive,expected_controller):
     require(time.monotonic()>0,'clock unavailable')
     output.mkdir(mode=0o700)
     work=output/'fixture';work.mkdir(mode=0o700)
-    records=[];deadline=time.monotonic()+TOTAL_SECONDS
+    records=[];deadline=time.monotonic()+TOTAL_SECONDS;active_role=None
     try:
         for name in sorted(STAGED):
             with (work/name).open('xb') as f:f.write(bounded(STAGE/name,2*1024**2))
@@ -189,6 +207,7 @@ def execute(output,isolated_root,byond,archive,expected_controller):
         (output/'runtime-identity.json').write_text(json.dumps(identity,indent=2)+'\n',encoding='utf-8')
         env={'PATH':'/usr/bin:/bin','HOME':str(work),'TMPDIR':str(work),'LANG':'C','LC_ALL':'C','LD_LIBRARY_PATH':str(byond)}
         for role in ('compile','writer','reader'):
+            active_role=role
             source_binding(expected_controller)
             work_binding(work,manifest)
             require_free(isolated_root)
@@ -226,6 +245,9 @@ def execute(output,isolated_root,byond,archive,expected_controller):
         (output/'accepted.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
         return result
     except Exception as exc:
+        if active_role=='compile':
+            try:record_compiler_diagnostic(output,expected_controller,exc)
+            except Exception:pass  # diagnostic failure never replaces the original failure
         (output/'failure.json').write_text(json.dumps({'error':str(exc)[:1024],'records':records},indent=2)+'\n',encoding='utf-8')
         raise
 
