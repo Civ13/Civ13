@@ -31,6 +31,50 @@ def inputs(prepared, manifest, compiled=False, generated=()):
         require(p.stat().st_size==row['bytes'] and hashed==row['sha256'],'Prepared input changed: '+rel)
     return stage
 
+def retain_evidence(stage,output,budget,receipt,persist):
+    """Fresh post-cleanup census, bounded copies, then actual combined check."""
+    def fail(error):
+        receipt.setdefault('retention_errors',[]).append(str(error));receipt['status']='failed'
+    remaining=0
+    if budget:
+        try:
+            budget.check(force=True)
+            # Reserve bounded final receipt and census/failure envelopes. Copies
+            # consume actual remaining shared bytes, never per-file allowances.
+            remaining=max(0,budget.state_cap-budget.last_row['state_bytes']-256*1024)
+        except BaseException as error:fail(error)
+        protocol=('failed-event.json','receipt.json','ready.json','binding.json','events.jsonl')
+        candidates=[('stage/'+name,Path(stage)/name) for name in protocol if (Path(stage)/name).is_file()]
+        candidates += [(key,path) for key,path in budget.generated.items() if not key.startswith('output/') and path.name not in (*protocol,'need-second-client')]
+        if len(candidates)>128:fail('Diagnostic retention file-count bound')
+        receipt['diagnostics']=[]
+        for key,path in candidates[:128]:
+            try:
+                original=path.stat().st_size
+                maximum=12*1024**2 if key=='stage/events.jsonl' else 1024**2
+                count=min(original,maximum,remaining)
+                if original>count:
+                    # Preserve a small explicit failure prefix, not an unbounded
+                    # second copy of a valid but large native event stream.
+                    count=min(count,1024**2);fail('Bounded evidence prefix retained: '+key)
+                target=Path(output)/('native-'+path.name) if key in ['stage/'+x for x in protocol] else Path(output)/'diagnostics'/key
+                require(not target.exists(),'Unexpected evidence copy target')
+                if count:
+                    target.parent.mkdir(parents=True,exist_ok=True)
+                    with path.open('rb') as f:raw=f.read(count)
+                    target.write_bytes(raw);remaining-=len(raw)
+                else:raw=b''
+                receipt['diagnostics'].append(dict(path=key,original_bytes=original,retained_bytes=len(raw),truncated=len(raw)!=original))
+            except BaseException as error:fail(error)
+        receipt['live_evidence_budget']=dict(records=budget.records,bytes=budget.stream_bytes,last=budget.last_row)
+    # The final receipt itself and every actual retained copy are present when
+    # the last forced scan runs. No success return may bypass that scan.
+    persist()
+    if budget:
+        try:budget.check(force=True)
+        except BaseException as error:
+            fail(error);persist()
+
 def execute(prepared, bin_path, reviewed, until, output, run_index):
     prepared=Path(prepared).resolve();output=Path(output).resolve();output.mkdir(parents=True,exist_ok=False)
     receipt=dict(host=dict(os=platform.platform(),machine=platform.machine(),cpu=platform.processor(),cpu_count=os.cpu_count()),status='failed',error=None,native_executed=False,pixels_verified=False,cleanup=None,run_index=run_index)
@@ -113,24 +157,8 @@ def execute(prepared, bin_path, reviewed, until, output, run_index):
             try:receipt['cleanup']=runtime.cleanup()
             except BaseException as error:cleanup_error=error;receipt.update(status='failed',cleanup_error=str(error))
             receipt['supervision']=runtime.summary()
-        for name in ('events.jsonl','failed-event.json','receipt.json','ready.json','binding.json'):
-            if 'stage' in locals() and (stage/name).is_file():
-                try:(output/('native-'+name)).write_bytes(read(stage/name,LIMITS['evidence_bytes']))
-                except BaseException as retention:receipt.setdefault('retention_errors',[]).append(str(retention));receipt['status']='failed'
-        if budget:
-            receipt['live_evidence_budget']=dict(records=budget.records,bytes=budget.stream_bytes,last=budget.last_row)
-            try:
-                candidates=[(key,path) for key,path in budget.generated.items() if not key.startswith('output/') and path.name not in ('events.jsonl','failed-event.json','receipt.json','ready.json','binding.json','need-second-client')]
-                require(len(candidates)<=128,'Diagnostic retention file-count bound')
-                receipt['diagnostics']=[]
-                for key,path in candidates:
-                    target=output/'diagnostics'/key;target.parent.mkdir(parents=True,exist_ok=True)
-                    with path.open('rb') as f:raw=f.read(1024*1024)
-                    target.write_bytes(raw);truncated=path.stat().st_size>len(raw)
-                    receipt['diagnostics'].append(dict(path=key,original_bytes=path.stat().st_size,retained_bytes=len(raw),truncated=truncated))
-                    if truncated:receipt.setdefault('retention_errors',[]).append('Bounded diagnostic prefix retained: '+key);receipt['status']='failed'
-            except BaseException as retention:receipt.setdefault('retention_errors',[]).append(str(retention));receipt['status']='failed'
-        receipt['elapsed_total']=time.monotonic()-started;persist()
+        receipt['elapsed_total']=time.monotonic()-started
+        retain_evidence(locals().get('stage'),output,budget,receipt,persist)
         if cleanup_error:raise cleanup_error
     return receipt
 

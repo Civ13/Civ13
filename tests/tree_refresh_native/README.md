@@ -186,3 +186,14 @@ cleanup, with original sizes and truncation markers; truncation prevents a pass.
 The source hashes are rechecked after the native world exits. The Windows daemon
 uses the existing -invisible/-close lifecycle flags. None of this has been
 executed as native acceptance yet.
+
+After owned cleanup, a fresh forced census discovers late diagnostics before any
+retention copy. Copies share the actual remaining 16 MiB state budget, reserving
+256 KiB for final receipt/census envelopes. An event stream that cannot fit a
+second copy retains at most a 1 MiB marked failure prefix; it cannot pass. Unknown
+cleanup logs share the same bound. A final forced census runs after actual copies
+and receipt persistence and accounts for its own append. Overflows mark failure;
+bounded failure envelopes may exceed an already-breached ceiling to record the
+rejection, never to declare acceptance. Local source-only manifests keep a null
+toolchain and cannot authorize execution. Data-only hosted preparation and review
+of its actual toolchain-bound manifest remain necessary before one native attempt.

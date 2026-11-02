@@ -48,6 +48,9 @@ class EvidenceBudget:
             self.generated=generated
             require(row['state_bytes']<=self.state_cap,'All generated native diagnostics/state exceed 16 MiB')
             require(row['artifact_bytes']<=self.artifact_cap,'Compiled/profile resources exceed 1 GiB')
+            row['scan_ms']=(self.now()-began)*1000
+            appended_bytes=len((json.dumps(row,separators=(',',':'))+'\n').encode())
+            require(row['state_bytes']+appended_bytes<=self.state_cap,'Evidence census append exceeds combined state cap')
         except BaseException as error:
             self.generated.update(generated);row['error']=str(error);row['scan_ms']=(self.now()-began)*1000;self.record(row);raise
-        row['scan_ms']=(self.now()-began)*1000;self.record(row)
+        self.record(row)

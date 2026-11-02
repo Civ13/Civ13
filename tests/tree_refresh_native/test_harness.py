@@ -207,6 +207,54 @@ class Containment(unittest.TestCase):
             with self.assertRaises(ValueError):budget.check(force=True)
             self.assertIn('resources',budget.last_row['error'])
 
+    def test_retention_rejects_doubled_nine_mib_event_copy(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir()
+            (stage/'events.jsonl').write_bytes(b'x'*(9*1024**2))
+            budget=EvidenceBudget(stage,out,{});budget.check(force=True)
+            self.assertLess(budget.last_row['state_bytes'],16*1024**2)
+            receipt=dict(status='passed')
+            def persist():(out/'execution-receipt.json').write_text(json.dumps(receipt))
+            R.retain_evidence(stage,out,budget,receipt,persist)
+            self.assertEqual(receipt['status'],'failed')
+            self.assertTrue(receipt['diagnostics'][0]['truncated'])
+            self.assertLessEqual((out/'native-events.jsonl').stat().st_size,1024**2)
+            self.assertLess(budget.last_row['state_bytes'],16*1024**2)
+
+    def test_retention_discovers_late_cleanup_log_and_rejects_overflow(self):
+        for size,expected in [(1024,'passed'),(17*1024**2,'failed')]:
+            with self.subTest(size=size),tempfile.TemporaryDirectory() as d:
+                root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir()
+                budget=EvidenceBudget(stage,out,{});budget.check(force=True)
+                # This diagnostic appears after the previous live poll, during cleanup.
+                late=stage/'late/cleanup.log';late.parent.mkdir();late.write_bytes(b'x'*size)
+                receipt=dict(status='passed')
+                def persist():(out/'execution-receipt.json').write_text(json.dumps(receipt))
+                R.retain_evidence(stage,out,budget,receipt,persist)
+                self.assertEqual(receipt['status'],expected)
+                self.assertIn('stage/late/cleanup.log',budget.generated)
+                if expected=='passed':self.assertEqual((out/'diagnostics/stage/late/cleanup.log').stat().st_size,size)
+                else:self.assertFalse((out/'diagnostics/stage/late/cleanup.log').exists())
+
+    def test_final_census_runs_after_actual_receipt_and_copies(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir()
+            budget=EvidenceBudget(stage,out,{});receipt=dict(status='passed')
+            def persist():
+                (out/'execution-receipt.json').write_text(json.dumps(receipt))
+                (out/'late-receipt-diagnostic.log').write_bytes(b'x'*(17*1024**2))
+            R.retain_evidence(stage,out,budget,receipt,persist)
+            self.assertEqual(receipt['status'],'failed')
+            self.assertIn('output/late-receipt-diagnostic.log',budget.generated)
+            self.assertIn('error',budget.last_row)
+
+    def test_census_accounts_for_its_own_final_append(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);stage=root/'stage';out=root/'out';stage.mkdir();out.mkdir()
+            (stage/'log.txt').write_bytes(b'x'*4090)
+            budget=EvidenceBudget(stage,out,{});budget.state_cap=4096
+            with self.assertRaisesRegex(ValueError,'append exceeds'):budget.check(force=True)
+
     def test_expired_or_unreviewed_execution_emits_failure_before_native(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);prep=root/'prep';prep.mkdir();(prep/'tree-native-manifest.json').write_text(json.dumps(dict(head='a'*40)))
