@@ -89,6 +89,14 @@ SUITES = {
             'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm',
             'tests/save_movement/source_adapter.py', 'scripts/select-ci.py')},
 
+    # Reviewed stdlib-only hand-placement source projection; no native world.
+    'axe_active_hand': {'files': ('tests/axe_active_hand/test_axe_active_hand.py',),
+        'paths': ('tests/axe_active_hand/',), 'shared_paths': (
+            'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/items/weapons/material/ooga_booga_weapons.dm',
+            'code/game/objects/items.dm', 'code/game/mob/inventory.dm',
+            'code/game/mob/living/carbon/human/human.dm', 'tests/crafting/handles.dm')},
+
     # Stdlib-only native fixture preparation/protocol/supervisor contracts.
     # No compiler, daemon, client, workflow dispatch or installer execution.
     'tree_refresh_native_preparation': {'files': ('tests/tree_refresh_native/test_harness.py',),
