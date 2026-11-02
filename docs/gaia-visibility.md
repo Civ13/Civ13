@@ -98,11 +98,19 @@ native pixel visibility still apply. Nonopaque tree images retain their previous
 flag. Native composition fallback uses a per-client allowed tree appearance with
 `TILE_BOUND` cleared, retaining the real atom, native plane and lighting. Denial,
 viewport exit, opacity changes and compositor handoff remove that copy. Blocker
-or viewer/context invalidation synchronously withdraws all allowed fallback tree
-copies; an unaffected fallback canopy may briefly disappear until refresh.
+or unknown viewer/context invalidation synchronously withdraws allowed fallback
+tree copies. Ordinary transparent-viewer tile movement retains the copy only
+through the immediate fresh-snapshot refresh; denied trees and unavailable or
+stale captures revoke it. Opaque NPC/object movement refreshes dirty viewers
+before returning instead of waiting for the scheduled visibility process.
 Ordinary terrain/entity masks retain their region filter.
-Root-source RGB, committed-light checks, mouse identity and tile-movement
-cadence are preserved. Fully occluded trees remain withdrawn; no terrain or
+Lighting queue/commit notifications dirty only owners of the changed root.
+Pending lighting may use the mask matrix still displayed by the native overlay
+only when color and last_color are matching complete committed matrices. Missing,
+foreign, partial or startup masks remain rejected; strict snapshot callers still
+reject pending work by default. This avoids blanking a tree during unchanged or
+budget-delayed photometric work. It does not retain stale geometric visibility.
+Root-source RGB, mouse identity and tile-movement cadence are preserved. Fully occluded trees remain withdrawn; no terrain or
 entities behind an admitted canopy are unmasked. Weather coverage is unchanged.
 
 Offline checks exercise exposed/fully covered surfaces, offset blockers,

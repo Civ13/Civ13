@@ -994,7 +994,7 @@ def model(source=None):
         TILE_BOUND=16,RESET_COLOR=1,RESET_ALPHA=2,RESET_TRANSFORM=4,LOS_DENY=0,
         world=N(maxx=25,maxy=25,time=1),locate=lambda x,y,z:grid.get((x,y,z)),
         inclusive_range=lambda lo,hi:range(int(lo),int(hi)+1))
-    fields=list(vars(presenter))+['owns_atom','hidden_image','native_tree_image','withdraw_tree_image','clear_images']
+    fields=list(vars(presenter))+['owns_atom','hidden_image','native_tree_image','withdraw_tree_image','clear_images','invalidate']
     def project(name,args):
         declaration='/datum/los_presenter/proc/'+name
         text=declaration+'('+args+')\n'+adapter.extract(source,declaration)+'\n'
@@ -1011,7 +1011,7 @@ def model(source=None):
                     r'for(var/\1 in inclusive_range(\2, \3))',text)
         return adapter.project(text,declaration,'self'+(', '+args if args else ''),env)
     for name,args in [('withdraw_tree_image','A'),('hidden_image','A'),('native_tree_image','A'),
-                      ('owns_atom','A'),('invalidate','changed=None, possible_opacity=False'),
+                      ('owns_atom','A'),('invalidate','changed=None, possible_opacity=False, viewer_refresh=False'),
                       ('refresh','S=None'),('clear_images',''),('retire','')]:
         f=project(name,args);setattr(presenter,name,lambda *a,_f=f:_f(presenter,*a))
     S=N(policy='fresh',revision=1,eye_z=1,radius_x=4,radius_y=4)
@@ -1074,6 +1074,74 @@ class FallbackTreeSource(unittest.TestCase):
         self.assertNotIn(I,m.C.images)
         m.P.refresh(m.S);m.P.clear_images()
         self.assertFalse(m.C.images);self.assertFalse(m.P.tree_appearances)
+
+    def test_transparent_viewer_transaction_keeps_only_fresh_allowed_copies(self):
+        m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
+        m.P.refresh(m.S);image=m.P.tree_images[tree]
+        for _ in range(10):
+            m.P.invalidate(m.V.body,False,True)
+            self.assertIn(image,m.C.images)
+            self.assertTrue(m.P.refresh(m.S))
+            self.assertIs(m.P.tree_images[tree],image)
+        m.outcomes[tree]=0
+        m.P.invalidate(m.V.body,False,True);m.P.refresh(m.S)
+        self.assertNotIn(image,m.C.images)
+        # The same call without the post-move transaction flag still revokes.
+        m.outcomes[tree]=2;m.P.refresh(m.S);image=m.P.tree_images[tree]
+        m.P.invalidate(m.V.body)
+        self.assertNotIn(image,m.C.images)
+
+    def test_deferred_copy_is_revoked_if_capture_or_policy_is_unavailable(self):
+        for failure in ['capture','policy','revision']:
+            m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
+            m.P.refresh(m.S);image=m.P.tree_images[tree]
+            m.P.invalidate(m.V.body,False,True)
+            if failure=='capture':
+                m.V.capture=lambda presentation:None
+                snapshot=None
+            elif failure=='policy':
+                m.V.policy_key=lambda:'changed'
+                snapshot=m.S
+            else:
+                m.V.revision+=1
+                snapshot=m.S
+            self.assertFalse(m.P.refresh(snapshot),failure)
+            self.assertNotIn(image,m.C.images,failure)
+            self.assertIsNone(m.P.tree_images[tree],failure)
+            self.assertIn(m.P.images[tree],m.C.images,failure)
+
+    def test_opaque_mover_replaces_withdrawn_copy_before_return_without_exposure(self):
+        lifecycle=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text()
+        def interval(source,denied):
+            m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
+            m.P.refresh(m.S);old=m.P.tree_images[tree]
+            mover=atom(11,11,opaque=True)
+            env=dict(CIV13_GEOMETRIC_LOS_CORE=True,ishuman=lambda a:False,
+                     ismob=lambda a:False,get_turf=lambda a:a.loc,
+                     los_active_contexts=List([m.V]),typed_iter=lambda x,t:x,
+                     los_invalidate=lambda changed,possible=False,viewer_refresh=False:
+                         m.P.invalidate(changed,possible,viewer_refresh))
+            after=adapter.project(source,'/proc/los_refresh_moved_viewer',
+                                  'A, force_refresh=False',env)
+            def reconcile():
+                m.C.los_dirty=not m.P.refresh(m.S)
+            m.C.reconcile_geometric_los=reconcile
+            m.V.owner=m.C
+            m.P.invalidate(mover)  # Actual pre-write revocation.
+            self.assertNotIn(old,m.C.images)
+            if denied:m.outcomes[tree]=0
+            after(mover)
+            return m,tree
+        visible,tree=interval(lifecycle,False)
+        self.assertIn(visible.P.tree_images[tree],visible.C.images)
+        hidden,tree=interval(lifecycle,True)
+        self.assertIsNone(hidden.P.tree_images[tree])
+        self.assertIn(hidden.P.images[tree],hidden.C.images)
+        start=lifecycle.index('\tif(A.opacity && los_active_contexts)')
+        end=lifecycle.index('\tif(!M)',start)
+        waiting,tree=interval(lifecycle[:start]+lifecycle[end:],False)
+        self.assertIsNone(waiting.P.tree_images[tree])
+        self.assertTrue(waiting.C.los_dirty)
 
     def test_omission_controls_catch_each_confirmed_fallback_gap(self):
         source=SOURCE.read_text()

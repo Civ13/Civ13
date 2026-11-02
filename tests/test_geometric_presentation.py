@@ -92,7 +92,7 @@ class PresenterSourceContracts(unittest.TestCase):
         self.assertIn('los_refresh_moved_viewer(src)', movement)
         self.assertIn('M.client.reconcile_geometric_los()', LIFECYCLE)
         postmove = LIFECYCLE.split('/proc/los_refresh_moved_viewer(', 1)[1]
-        self.assertLess(postmove.index('los_invalidate(A)'), postmove.index('if(!ismob(A))'))
+        self.assertLess(postmove.index('los_invalidate(A, FALSE, !force_refresh)'), postmove.index('if(!M)'))
         self.assertEqual(movement.split('/atom/movable/Move(newloc, direct)', 1)[1].split('/client/proc/Move_object', 1)[0].count('los_refresh_moved_viewer(src)'), 3)
 
     def test_transparent_clutter_does_not_create_hypothetical_blocker(self):

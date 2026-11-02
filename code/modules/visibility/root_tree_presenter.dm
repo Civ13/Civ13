@@ -156,12 +156,16 @@ var/global/list/root_tree_presenters
 			return FALSE
 	return TRUE
 
-/datum/root_tree_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE)
+/datum/root_tree_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)
 	if(retired || !owner)
 		return
 	owner.los_dirty = TRUE
-	// Transparent clutter movement cannot occlude any tree. Lighting turf
-	// notifications invalidate only roots actually owned by that turf.
+	// Only the non-yielding post-move refresh may retain an unchanged lease.
+	// Pre-write invalidation, opaque movers and unknown contexts still withdraw.
+	if(viewer_refresh && changed == context.body && !possible_opacity && !changed.opacity)
+		return
+	// Transparent clutter movement cannot occlude any tree. Nonblocking turf
+	// changes invalidate only roots actually owned by that turf.
 	if(changed && changed != context.body && !possible_opacity && !changed.opacity && !isturf(changed))
 		return
 	// Hide only owned tree content while a mutation is unsettled; never shutter
@@ -292,14 +296,16 @@ var/global/list/root_tree_presenters
 	var/turf/root = T.loc
 	if(context.body.see_invisible >= INVISIBILITY_LEVEL_TWO || (!root.lighting_overlay && root.needs_fullbright_coverage()))
 		return "#ffffff"
-	var/list/sample = root_light_mask_snapshot(root)
+	// Pending corner work has not replaced the native displayed mask. Read
+	// only its still-committed matrix; missing/replaced/partial masks still deny.
+	var/list/sample = root_light_mask_snapshot(root, TRUE)
 	if(!sample)
 		return null
 	var/atom/movable/lighting_overlay/L = root.lighting_overlay
 	var/key = "\ref[root]|[L.icon]|[L.icon_state]|[L.dir]|[json_encode(sample)]"
 	if(light_keys[T] == key)
 		return light_values[T]
-	var/rgb = root_light_rgb(root, context.body)
+	var/rgb = root_light_rgb(root, context.body, TRUE)
 	if(rgb)
 		light_keys[T] = key
 		light_values[T] = rgb
@@ -440,3 +446,18 @@ var/global/list/root_tree_presenters
 
 /proc/root_tree_invalidate(atom/changed)
 	los_invalidate(changed)
+
+
+// Photometric work does not change occlusion. Keep each published tree at the
+// same committed lighting as the native mask until the next matrix is ready.
+// Blocker/appearance/lifetime changes still use synchronous los_invalidate.
+/proc/root_tree_light_changed(turf/root)
+	if(!root || !root_tree_presenters)
+		return
+	for(var/datum/root_tree_presenter/P in root_tree_presenters)
+		if(P.retired || !P.owner)
+			continue
+		for(var/obj/structure/wild/T in P.images)
+			if(T.loc == root)
+				P.owner.los_dirty = TRUE
+				break

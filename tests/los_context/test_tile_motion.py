@@ -26,7 +26,7 @@ class TileMotion(unittest.TestCase):
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,abs=abs,list=lambda *a:a,
             typed_iter=lambda values,kind:values,ishuman=lambda a:getattr(a,'human',False),
             ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a.loc,
-            los_invalidate=lambda a,possible=False:events.append((a,possible)))
+            los_invalidate=lambda a,possible=False,viewer_refresh=False:events.append((a,possible)))
         before=A.project(source,'/proc/los_invalidate_movement','A',env)
         near=A.project(source,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
         env['los_movement_affects_context']=near
@@ -109,6 +109,25 @@ class TileMotion(unittest.TestCase):
         self.assertEqual(s.owner.captures,1)
         self.assertEqual(s.clients[1].captures,0)
         self.assertFalse(s.clients[1].masked)
+
+    def test_opaque_nonclient_movers_refresh_dirty_viewers_before_return(self):
+        for kind in ['object','npc']:
+            s=self.scene()
+            # Project native post-move handling with a stationary viewer. The
+            # prior pre-write hook has already withdrawn a canopy conservatively.
+            s.actor.human=False;s.actor.mob=kind=='npc';s.actor.client=None
+            s.actor.opacity=True;s.owner.los_dirty=True
+            s.after(s.actor)
+            self.assertEqual(s.owner.captures,1,kind)
+            self.assertFalse(s.owner.los_dirty)
+        # Omission control reproduces waiting for the scheduled visibility tick.
+        begin=LIFE.index('\tif(A.opacity && los_active_contexts)')
+        end=LIFE.index('\tif(!M)',begin)
+        s=self.scene(LIFE[:begin]+LIFE[end:])
+        s.actor.human=False;s.actor.mob=False;s.actor.opacity=True
+        s.owner.los_dirty=True;s.after(s.actor)
+        self.assertEqual(s.owner.captures,0)
+        self.assertTrue(s.owner.los_dirty)
 
     def render_key(self,body,owner,anchored,source=CORE,time=0):
         # Evaluate the actual key template/offset branch, not a separate cache.
@@ -308,10 +327,10 @@ class DistanceCamera(unittest.TestCase):
         key=motion.render_key(body,owner,True,mutant);owner.pixel_x=96
         self.assertEqual(motion.render_key(body,owner,True,mutant),key)
         m=self.camera(96);events=[]
-        m.C.root_tree_presenter=None;m.C.los_presenter=N(invalidate=lambda *a:events.append(a))
+        m.C.root_tree_presenter=None;m.C.los_presenter=N(invalidate=lambda changed,possible,viewer_refresh=False:events.append((changed,possible)))
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,los_active_contexts=[m.V],get_turf=lambda a:a,
                  typed_iter=lambda xs,t:xs,abs=abs)
-        invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False',env)
+        invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False, viewer_refresh=False',env)
         door=Tile(116,100);invalidate(door,True);self.assertEqual(events,[(door,True)])
         events.clear();m.C.pixel_x=0;invalidate(door,True);self.assertEqual(events,[])
 
