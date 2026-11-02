@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 class ScaleWorkflowContracts(unittest.TestCase):
     def test_scale_is_manual_exclusive_and_bounded(self):
         text = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
-        self.assertIn("github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true)", text)
+        self.assertIn("github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true && inputs.debug_lossy_only != true)", text)
         spatial = text.split('  human-spatial:\n', 1)[1].split('  human-scale:\n', 1)[0]
         scale = text.split('  human-scale:\n', 1)[1]
         self.assertIn('inputs.human_scale_only != true', spatial)

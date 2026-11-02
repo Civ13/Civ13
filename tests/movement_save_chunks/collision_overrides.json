@@ -499,6 +499,16 @@
       ]
     },
     {
+      "path": "code/modules/paperwork/view.dm",
+      "sha256_normalized": "56c66ea7823b16b2a7f3d71ddf2fa55f846e1c37ca96badd0b16367a6b9edfd6",
+      "declarations": [
+        {
+          "line": 61,
+          "declaration": "parent_type = /datum/paper_document_service"
+        }
+      ]
+    },
+    {
       "path": "code/modules/reagents/biochemistry.dm",
       "sha256_normalized": "23e4d3cb69829eb22e5b61fa0b3137f9cc9a973c1e8026007b87168dcc49050f",
       "declarations": [

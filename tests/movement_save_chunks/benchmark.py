@@ -31,7 +31,7 @@ _preflight_spec = importlib.util.spec_from_file_location('moving_save_preflight_
 _preflight_module = importlib.util.module_from_spec(_preflight_spec)
 _preflight_spec.loader.exec_module(_preflight_module)
 restore_preflight_reference_keys = _preflight_module.restore_preflight_reference_keys
-FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm',
+FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm', 'tests/movement_save_chunks/debug_lossy_adapter.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
          'code/modules/persistence/loading.dm', 'tests/movement_save_chunks/benchmark.dm')

@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 class WorkflowContracts(unittest.TestCase):
     def test_fixture_is_manual_and_preserves_ordinary_job_admission(self):
         text = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
-        self.assertIn("github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true)", text)
+        self.assertIn("github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true && inputs.debug_lossy_only != true)", text)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true", text)
         self.assertIn("persist-credentials: false", text)
         self.assertIn("contents: read", text)
