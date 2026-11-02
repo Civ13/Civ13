@@ -4,6 +4,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -252,6 +253,23 @@ class HarvestInputs(unittest.TestCase):
                     cwd=Path('cwd'),phase=phase,timeout=seconds,required_inputs=required), 'injected only')
                 self.assertIs(retained.call_args.kwargs['required_inputs'], required)
                 self.assertEqual(retained.call_args.kwargs['timeout'], seconds)
+
+
+class AnimalFatNaming(unittest.TestCase):
+    def test_standalone_and_goat_prefixed_fat_display_names(self):
+        # Source-derived labels, not an observation of native drops or yields.
+        meat = (ROOT/'code/modules/reagents/reagent_containers/food/snacks/meat.dm').read_text(encoding='utf-8-sig')
+        fat = meat.split('/obj/item/weapon/reagent_containers/food/snacks/animalfat\n', 1)[1].split('\n/obj/', 1)[0]
+        label = re.search(r'^\tname = "([^"]+)"$', fat, re.M)[1]
+        description = re.search(r'^\tdesc = "([^"]+)"$', fat, re.M)[1]
+        source = (ROOT/'code/modules/1713/animal_harvest.dm').read_text(encoding='utf-8-sig')
+        harvest = source.split('/mob/living/simple_animal/proc/harvest_food(typepath, turf/site)\n', 1)[1].split('\n/mob/', 1)[0]
+        template = re.search(r'^\t\tF.name = "([^"]+)"$', harvest, re.M)[1]
+        prefixed = template.replace('[name]', 'goat ram').replace('[F.name]', label)
+        for actual, expected in ((label, 'animal fat'), (prefixed, 'goat ram animal fat')):
+            with self.subTest(expected=expected):
+                self.assertEqual(actual, expected)
+        self.assertEqual(description, 'Fresh, raw animal fat.')
 
 
 if __name__ == '__main__':
