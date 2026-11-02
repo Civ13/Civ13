@@ -53,6 +53,22 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_crafting_ui_offline_registration_preserves_shared_coverage(self):
+        suite = ci.SUITES['crafting_ui_contracts']
+        self.assertEqual(suite['files'], ('tests/human_subtile/test_crafting_ui.py',))
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', 'crafting_ui_contracts'})
+        previous = {name: entry for name, entry in ci.SUITES.items()
+                    if name != 'crafting_ui_contracts'}
+        for path in suite['shared_paths'] + suite['paths']:
+            self.assertIn('crafting_ui_contracts', self.selected([path]))
+        for path in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior = self.selected([path])
+            self.assertEqual(self.selected([path]), prior | {'crafting_ui_contracts'})
+        self.assertNotIn('crafting_ui_contracts', self.selected(['README.md']))
+        self.assertNotIn('tests/human_subtile/run.py', suite['files'])
+
     def test_sleep_resting_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['sleep_resting']
         self.assertEqual(suite['files'], ('tests/sleep_resting/test_sleep_resting.py',))
