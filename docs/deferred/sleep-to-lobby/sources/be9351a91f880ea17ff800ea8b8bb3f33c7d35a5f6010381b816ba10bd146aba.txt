@@ -1,0 +1,61 @@
+// Synthetic fresh-process reader only. This is not a production loader path,
+// authenticated account flow, or validation of an untrusted savefile.
+/proc/sleep_graph_fixture_read(expected_round, expected_account)
+    if(!fexists("sleep-payload.txt") || !fexists("sleep-manifest.json")) return FALSE
+    var/payload = file2text("sleep-payload.txt")
+    var/list/M = json_decode(file2text("sleep-manifest.json"))
+    if(!islist(M) || M.len != 11 || M["schema"] != 1 || M["state"] != "unverified" || !istext(expected_round) || !cmptextEx(M["round_id"], expected_round) || M["account"] != expected_account || M["nonce"] != "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" || !isnum(M["root_ref"]) || M["root_ref"] != 1 || !isnum(M["entries"]) || M["entries"] < 1 || M["entries"] > 512 || !isnum(M["lists"]) || M["lists"] > 256 || !istext(payload) || M["payload_length"] != length(payload) || M["payload_md5"] != md5(payload)) return FALSE
+    var/savefile/F = new
+    F.ImportText("/", payload)
+    if(F["/format_version"] != 3 || F["/entries/0/1/type"] != /mob/living/human/sleep_graph_test_human) return FALSE
+    var/list/owner_value = F["/entries/0/1/persistence_owner_ckey"]
+    if(!islist(owner_value) || owner_value["kind"] != "value" || owner_value["value"] != expected_account) return FALSE
+    var/before_preflight = fixture_constructed
+    if(!sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    var/list/item_value = F["/entries/0/1/item_ref"]
+    F["/entries/0/1/item_ref"] << list("kind" = "entry", "ref" = M["entries"] + 1)
+    if(sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    F["/entries/0/1/item_ref"] << item_value
+    var/list/alias_value = F["/entries/0/1/alias"]
+    F["/entries/0/1/alias"] << list("kind" = "list", "ref" = M["lists"] + 1)
+    if(sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    F["/entries/0/1/alias"] << list("kind" = "turf", "ref" = 1)
+    if(sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    F["/entries/0/1/alias"] << alias_value
+    var/original_type = F["/entries/0/1/type"]
+    F["/entries/0/1/type"] << /obj/map_metadata
+    if(sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    F["/entries/0/1/type"] << original_type
+    var/original_length = F["/lists/1/length"]
+    F["/lists/1/length"] << 501
+    if(sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    F["/lists/1/length"] << original_length
+    if(!sleep_fixture_preflight(F, M) || fixture_constructed != before_preflight) return FALSE
+    var/map_storage/S = new
+    // Exact extracted production Load_Entry/decode methods; fake game APIs.
+    var/mob/living/human/sleep_graph_test_human/H = S.Load_Entry(F, 1)
+    if(!istype(H) || H.loc || H.persistence_owner_ckey != expected_account || !H.persistence_restored) return FALSE
+    var/obj/item/sleep_graph_test_item/I = H.item_ref
+    var/datum/sleep_graph_test_node/N = H.node
+    if(!istype(I) || I.loc != H || !istype(N) || I.node != N || N.peer != N || !islist(H.alias) || H.alias != I.alias || H.alias != N.alias || H.alias.len != 2 || H.alias[1] != H.alias || H.alias[2] != I) return FALSE
+    var/datum/reagents/R = I.reagents
+    if(!istype(R) || R.total_volume != 42 || R.maximum_volume != 100 || R.my_atom != I || !islist(R.reagent_list) || R.reagent_list.len != 1 || N.chemistry_alias != R.reagent_list) return FALSE
+    var/datum/reagent/W = R.reagent_list[1]
+    if(!istype(W) || W.id != "fixture_water" || W.volume != 42 || W.holder != R || fixture_chemistry_calls) return FALSE
+    // Synthetic fault injection: exercise the post-load repair independently of
+    // the saved backreference. No actual chemistry or live object is involved.
+    R.my_atom = null
+    if(R.my_atom || fixture_after_load_calls || fixture_registration_calls) return FALSE
+    sleep_graph_fixture_finalize(S)
+    if(R.my_atom != I || !fixture_item_seen_before_repair || fixture_after_load_calls != S.all_loaded.len || fixture_registration_calls != S.all_loaded.len || W.holder != R || N.chemistry_alias != R.reagent_list || fixture_chemistry_calls) return FALSE
+    var/count = 0
+    for(var/mob/living/human/sleep_graph_test_human/B in S.all_loaded)
+        if(B.persistence_owner_ckey == expected_account) count++
+    return count == 1
+
+/proc/sleep_graph_fixture_reader_case()
+    var/before = fixture_constructed
+    sleep_graph_fixture_check(!sleep_graph_fixture_read("round-a", "fixtureaccount") && fixture_constructed == before, "cross-round input constructed a graph")
+    sleep_graph_fixture_check(!sleep_graph_fixture_read("Round-A", "otheraccount") && fixture_constructed == before, "wrong-account input constructed a graph")
+    sleep_graph_fixture_check(sleep_graph_fixture_read("Round-A", "fixtureaccount"), "pinned loader round trip failed")
+    return TRUE

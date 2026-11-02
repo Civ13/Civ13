@@ -1,0 +1,72 @@
+"""Offline handoff-index source and model controls; no BYOND runtime."""
+from pathlib import Path
+import re
+import unittest
+
+ROOT=Path(__file__).resolve().parents[1]
+SOURCE=(ROOT/'sleep_handoff_index.dm').read_text(encoding='utf-8')
+
+class HandoffModel:
+    def __init__(self): self.round=None; self.slots={}; self.used=set(); self.closed=False
+    def open(self,round_id):
+        if self.closed or self.round is not None or not isinstance(round_id,str) or not 1<=len(round_id)<=128 or self.slots or self.used: return False
+        self.round=round_id; return True
+    def reserve(self,round_id,account,nonce,body,owner):
+        if (self.closed or round_id!=self.round or not isinstance(account,str) or not re.fullmatch('[a-z0-9]+',account) or
+            re.fullmatch(r'guestw?[0-9]+',account) or not re.fullmatch('[0-9a-f]{32}',nonce or '') or
+            body is None or owner is None or account in self.slots or nonce in self.used): return None
+        row={'round':round_id,'account':account,'nonce':nonce,'body':body,'owner':owner,'state':'reserved'}
+        self.slots[account]=row; self.used.add(nonce); return row
+    def bound(self,row,round_id,account,nonce,body,owner):
+        return (not self.closed and row is not None and round_id==self.round==row['round'] and account==row['account'] and
+                nonce==row['nonce'] and self.slots.get(account) is row and nonce in self.used and body is not None and
+                row['body'] is body and owner is not None and row['owner'] is owner)
+    def begin(self,row,round_id,account,nonce,body,owner):
+        if not self.bound(row,round_id,account,nonce,body,owner) or row['state']!='reserved': return False
+        row['state']='capturing'; return True
+    def cancel(self,row,round_id,account,nonce,body,owner):
+        if not self.bound(row,round_id,account,nonce,body,owner) or row['state']!='reserved': return False
+        del self.slots[account]; row['state']='cancelled'; return True
+    def uncertain(self,row,round_id,account,nonce):
+        if (self.closed or row is None or round_id!=self.round or row['round']!=round_id or row['account']!=account or row['nonce']!=nonce or
+            self.slots.get(account) is not row or nonce not in self.used or row['state'] not in ('reserved','capturing','uncertain')): return False
+        row['state']='uncertain'; return True
+    def held(self,round_id,account): return self.closed or round_id!=self.round or account in self.slots
+
+class HandoffTests(unittest.TestCase):
+    def setUp(self): self.i=HandoffModel(); self.assertTrue(self.i.open('Round-A')); self.id='a'*32; self.body=object(); self.owner=object()
+    def reserve(self): return self.i.reserve('Round-A','userone',self.id,self.body,self.owner)
+    def test_exact_round_and_canonical_account(self):
+        self.assertIsNone(self.i.reserve('round-a','userone',self.id,self.body,self.owner))
+        self.assertIsNone(self.i.reserve('Round-A','guest123',self.id,self.body,self.owner))
+        self.assertIsNone(self.i.reserve('Round-A','User One',self.id,self.body,self.owner))
+        self.assertTrue(self.i.held('different-round','userone'))
+    def test_duplicate_owner_and_nonce_never_reused(self):
+        row=self.reserve(); self.assertIsNotNone(row)
+        self.assertIsNone(self.i.reserve('Round-A','userone','b'*32,self.body,self.owner))
+        self.assertTrue(self.i.cancel(row,'Round-A','userone',self.id,self.body,self.owner))
+        self.assertIsNone(self.i.reserve('Round-A','usertwo',self.id,self.body,self.owner))
+    def test_capturing_cannot_cancel_and_uncertain_stays_held(self):
+        row=self.reserve(); self.assertTrue(self.i.begin(row,'Round-A','userone',self.id,self.body,self.owner))
+        self.assertFalse(self.i.cancel(row,'Round-A','userone',self.id,self.body,self.owner))
+        row['owner']=None
+        self.assertFalse(self.i.begin(row,'Round-A','userone',self.id,self.body,self.owner))
+        self.assertTrue(self.i.uncertain(row,'Round-A','userone',self.id)); self.assertTrue(self.i.held('Round-A','userone'))
+    def test_wrong_identity_and_invalid_slot_remain_held(self):
+        row=self.reserve(); self.assertFalse(self.i.begin(row,'Round-A','userone',self.id,object(),self.owner))
+        self.i.slots['userone']=None
+        self.assertTrue(self.i.held('Round-A','userone')); self.assertIsNone(self.reserve())
+    def test_standalone_source_has_no_live_effect_or_fake_commit(self):
+        for forbidden in ('qdel(', 'del(', 'forceMove(', 'text2file(', 'fdel(', 'fcopy(', 'H.key =', 'C.mob ='):
+            self.assertNotIn(forbidden,SOURCE)
+        self.assertNotIn('"committed"',SOURCE); self.assertNotIn('"archived"',SOURCE)
+        self.assertIn('cmptextEx(round_id, expected_round)',SOURCE)
+        self.assertIn('(account in slots)',SOURCE); self.assertIn('(nonce in used_nonces)',SOURCE)
+        self.assertIn('E.state != "reserved"',SOURCE); self.assertIn('E.state = "uncertain"',SOURCE)
+    def test_probe_is_unrun_index_only(self):
+        probe=(ROOT/'tests/sleep_handoff_probe.dm').read_text(encoding='utf-8')
+        for token in ('case exact round','duplicate account','started capture cannot cancel','lost session retained','nonce replay','index_only'):
+            self.assertIn(token,probe)
+        self.assertIn('if(!text2file(json_encode(result)',probe)
+
+if __name__=='__main__': unittest.main()

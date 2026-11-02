@@ -1,0 +1,19 @@
+{
+  "authority": "synthetic_only",
+  "original_sha256": {
+    "sleep_graph_export.dm": "2b1a14e0e7995fd97b8d618af985e997cf106cdb6fec62000043ab42ac0f27c3",
+    "tests/fixture.dme": "e19febf57fe311b0dfd99ca5ec25f74974d66085334fd3d833feb74df4b6107c",
+    "tests/fixture_stubs.dm": "b76b32b45e429072e5f18efa8d72fea8d040bf3c1ef32d5fe3d3901d058dbf6c",
+    "tests/fixture_world.dm": "ebff3fec29a6cae2dd9a15ed0a40c5db9e2bb4c7d66b0b372d080618348f7c3e",
+    "tests/graph_probe.dm": "f76c2dee092e5915a51e0996e05d6fd6b6d78b47a775b61b6d8ecb8678e1db88"
+  },
+  "production_enabled": false,
+  "staged_sha256": {
+    "fixture.dme": "e19febf57fe311b0dfd99ca5ec25f74974d66085334fd3d833feb74df4b6107c",
+    "fixture_stubs.dm": "b76b32b45e429072e5f18efa8d72fea8d040bf3c1ef32d5fe3d3901d058dbf6c",
+    "fixture_world.dm": "ebff3fec29a6cae2dd9a15ed0a40c5db9e2bb4c7d66b0b372d080618348f7c3e",
+    "graph_probe.dm": "f76c2dee092e5915a51e0996e05d6fd6b6d78b47a775b61b6d8ecb8678e1db88",
+    "sleep_graph_export_fixture.dm": "a5ade86a8bc784de2c135946f041811eff4fb06cdce310668eef52122be852f0"
+  },
+  "status": "source_only_unrun"
+}

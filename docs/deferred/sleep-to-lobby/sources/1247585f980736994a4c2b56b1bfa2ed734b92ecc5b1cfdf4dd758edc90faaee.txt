@@ -1,0 +1,158 @@
+"""Offline candidate source controls and isolated canonical-envelope model.
+
+No DM interpreter, live game, BYOND savefile or production decoder is run.
+"""
+from pathlib import Path
+import copy
+import re
+import unittest
+
+ROOT=Path(__file__).resolve().parents[1]
+CAP=(ROOT/'candidate/sleep_world_capture.dm').read_text(encoding='utf-8')
+SAVE=(ROOT/'candidate/saving.dm').read_text(encoding='utf-8')
+LOAD=(ROOT/'candidate/loading.dm').read_text(encoding='utf-8')
+
+
+def macro_off(text):
+    pattern=re.compile(r'^#ifdef CIV13_SLEEP_CHARACTER_CANDIDATE\n(.*?)^#endif\n',re.M|re.S)
+    def choose(m):
+        body=m.group(1)
+        if re.search(r'^#if',body,re.M): raise AssertionError('nested candidate directive')
+        parts=body.split('#else\n')
+        if len(parts)>2: raise AssertionError('ambiguous branch')
+        return parts[1] if len(parts)==2 else ''
+    return pattern.sub(choose,text)
+
+
+def fixture():
+    # Canonical envelope SHAPES and IDs only; this is not an actual savefile.
+    return dict(round_id='Round-A', generation='round-v2:'+'a'*32, z=1,
+        rows=[dict(schema=1,state='in_world_candidate',round_id='Round-A',account='userone',nonce='b'*32,
+                   generation='round-v2:'+'a'*32,z=1,root_ref=2,parent_ref=1,x=3,y=4)],
+        grid={(3,4):1}, entries={
+            1:dict(type='turf',content=[2],fields={}),
+            2:dict(type='human',content=[3],fields={'persistence_owner_ckey':{'kind':'value','value':'userone'},
+                'right_hand':{'kind':'entry','ref':3}, 'aliases':{'kind':'list','id':1}, 'same_alias':{'kind':'list','id':1}}),
+            3:dict(type='bag',content=[4],fields={'owner':{'kind':'entry','ref':2}}),
+            4:dict(type='item',content=[],fields={'condition':{'kind':'value','value':42}})},
+        lists={1:[{'kind':'entry','ref':3},{'kind':'list','id':1}]})
+
+
+def validate_and_reconstruct(data):
+    seen_accounts=set();seen_nonces=set(); entries=data['entries']; lists=data['lists']; cache={}; list_cache={}
+    for row in data['rows']:
+        keys={'schema','state','round_id','account','nonce','generation','z','root_ref','parent_ref','x','y'}
+        if set(row)!=keys or row['schema']!=1 or row['state']!='in_world_candidate': raise ValueError('shape')
+        if row['round_id']!=data['round_id'] or row['generation']!=data['generation'] or row['z']!=data['z']: raise ValueError('identity')
+        if row['account'] in seen_accounts or row['nonce'] in seen_nonces: raise ValueError('duplicate')
+        seen_accounts.add(row['account']);seen_nonces.add(row['nonce'])
+        root=entries.get(row['root_ref']); parent=entries.get(row['parent_ref'])
+        if not root or root['type']!='human' or not parent or parent['type']!='turf': raise ValueError('root')
+        if data['grid'].get((row['x'],row['y']))!=row['parent_ref'] or parent['content'].count(row['root_ref'])!=1: raise ValueError('parent')
+        if root['fields'].get('persistence_owner_ckey')!={'kind':'value','value':row['account']}: raise ValueError('owner')
+    def value(encoded):
+        if not isinstance(encoded,dict): raise ValueError('envelope')
+        if encoded.get('kind')=='value': return encoded['value']
+        if encoded.get('kind')=='entry': return entry(encoded['ref'])
+        if encoded.get('kind')=='list':
+            ident=encoded['id']
+            if ident not in lists: raise ValueError('missing list')
+            if ident not in list_cache:
+                dest=[];list_cache[ident]=dest;dest.extend(value(x) for x in lists[ident])
+            return list_cache[ident]
+        raise ValueError('unsupported external reference')
+    def entry(ident):
+        if ident not in entries: raise ValueError('missing entry')
+        if ident in cache: return cache[ident]
+        src=entries[ident];dest={'type':src['type']};cache[ident]=dest
+        dest['fields']={k:value(v) for k,v in src['fields'].items()}
+        dest['content']=[entry(x) for x in src['content']]
+        return dest
+    return [entry(row['root_ref']) for row in data['rows']]
+
+
+class CandidateTests(unittest.TestCase):
+    def test_macro_off_preserves_exact_saver_and_loader(self):
+        for name,actual in (('saving.dm',SAVE),('loading.dm',LOAD)):
+            self.assertEqual(macro_off(actual),(ROOT/'base'/name).read_text(encoding='utf-8-sig'))
+    def test_real_source_is_disabled_and_does_not_remove_or_restore_body(self):
+        self.assertIn('/proc/sleep_character_candidate_enabled()\n    return FALSE',CAP)
+        self.assertIn('BuildVarDirectory(F, H, 1, TRUE)',CAP)
+        self.assertIn('saving_reference_pins[ref] != H',CAP)
+        self.assertIn('saving_content_owners["[ref]"] != parent_ref',CAP)
+        self.assertIn('sleep_candidate_validation_owner(',CAP)
+        self.assertIn('persistence_player_claims[account] = E',CAP)
+        self.assertIn('persistence_player_claims[E.account] != E',CAP)
+        self.assertIn('persistence_player_claims[account] != E',CAP)
+        self.assertIn('slots.len >= 256 || used_nonces.len >= 4096',CAP)
+        self.assertIn('inspect_sleep_candidate_inventory(F, O, E, round_state, ref)',CAP)
+        for token in ('queue.len >= 8192', 'child.loc != parent', '!child.should_save', 'saving_content_owners["[child_ref]"] != parent_ref', 'parent.contents[i] != final_child'):
+            self.assertIn(token,CAP)
+        self.assertIn('"state" = "in_world_candidate"',CAP)
+        for forbidden in ('qdel(', 'del(', 'forceMove(', 'Load_Entry('): self.assertNotIn(forbidden,CAP)
+        self.assertNotRegex(CAP, r'\b(?:C\.mob|H\.key)\s*=(?!=)')
+        self.assertIsNone(re.search(r'\b(?:C\.mob|H\.key)\s*=(?!=)', 'C.mob == H'))
+        self.assertIsNotNone(re.search(r'\b(?:C\.mob|H\.key)\s*=(?!=)', 'C.mob = H'))
+        self.assertLess(SAVE.index('stage_sleep_candidate_level('),SAVE.index('savefile.Flush()'))
+        self.assertIn('validate_sleep_candidate_level(F, z, round_state, entry_set',LOAD)
+    def test_absent_metadata_revalidates_owner_before_acceptance(self):
+        start=CAP.index('        if!("sleep_candidate" in F.dir)') if '        if!("sleep_candidate" in F.dir)' in CAP else CAP.index('        if(!(\"sleep_candidate\" in F.dir))')
+        end=CAP.index('        F.cd = "/sleep_candidate"', start)
+        absent=CAP[start:end]
+        self.assertIn('sleep_candidate_validation_owner(O, F, z, round_state, expected_round, expected_generation)', absent)
+        self.assertLess(absent.index('sleep_candidate_validation_owner('), absent.index('return TRUE'))
+        # A synthetic source mutant without the recheck must fail the same predicate.
+        self.assertNotIn('sleep_candidate_validation_owner(', absent.replace('sleep_candidate_validation_owner(', 'removed_owner_check('))
+    def test_isolated_model_preserves_inventory_alias_and_cycle(self):
+        body=validate_and_reconstruct(fixture())[0]
+        bag=body['content'][0];item=bag['content'][0]
+        self.assertIs(body['fields']['right_hand'],bag);self.assertIs(bag['fields']['owner'],body)
+        alias=body['fields']['aliases'];self.assertIs(alias,body['fields']['same_alias']);self.assertIs(alias[1],alias)
+        self.assertIs(alias[0],bag);self.assertEqual(item['fields']['condition'],42)
+    def test_shared_claim_blocks_other_lobby_and_never_clears_foreign_claim(self):
+        claims={}; account='userone'; handoff=object(); lobby=object()
+        self.assertNotIn(account,claims)
+        claims[account]=handoff
+        self.assertIn(account,claims)  # existing reclaim checks this table
+        self.assertIs(claims[account],handoff)
+        claims[account]=lobby
+        if claims.get(account) is handoff: claims.pop(account)
+        self.assertIs(claims[account],lobby)
+
+    def test_inventory_owner_and_snapshot_mutations_refused_in_model(self):
+        # This model is intentionally not a BYOND object/codec execution.
+        def check(snapshot, after, refs, owner, limit=8192):
+            if len(snapshot)>limit or snapshot!=after or len(snapshot)!=len(refs): return False
+            if len(set(refs))!=len(refs): return False
+            return all(row['saveable'] and row['parent']==owner and row['ref']==ref
+                       for row,ref in zip(snapshot,refs))
+        snapshot=[dict(ref='bag',parent='human',saveable=True),dict(ref='coat',parent='human',saveable=True)]
+        self.assertTrue(check(snapshot,copy.deepcopy(snapshot),['bag','coat'],'human'))
+        moved=copy.deepcopy(snapshot);moved[0]['parent']='other'
+        omitted=copy.deepcopy(snapshot);omitted[0]['saveable']=False
+        self.assertFalse(check(snapshot,moved,['bag','coat'],'human'))
+        self.assertFalse(check(omitted,copy.deepcopy(omitted),['bag','coat'],'human'))
+        self.assertFalse(check(snapshot,copy.deepcopy(snapshot),['bag'],'human'))
+        self.assertFalse(check(snapshot,copy.deepcopy(snapshot),['bag','bag'],'human'))
+        self.assertFalse(check(snapshot,copy.deepcopy(snapshot),['bag','coat'],'human',limit=1))
+
+    def test_cross_round_and_generation_refused(self):
+        for field,value in [('round_id','round-a'),('generation','round-v2:'+'c'*32)]:
+            d=fixture();d['rows'][0][field]=value
+            with self.assertRaises(ValueError):validate_and_reconstruct(d)
+    def test_missing_inventory_wrong_owner_and_parent_refused(self):
+        cases=[]
+        d=fixture();del d['entries'][4];cases.append(d)
+        d=fixture();d['entries'][2]['fields']['persistence_owner_ckey']['value']='other';cases.append(d)
+        d=fixture();d['entries'][1]['content']=[];cases.append(d)
+        d=fixture();d['rows'][0]['state']='archived';cases.append(d)
+        d=fixture();d['entries'][2]['fields']['target']={'kind':'level_link','id':1};cases.append(d)
+        for d in cases:
+            with self.subTest(d=d), self.assertRaises(ValueError):validate_and_reconstruct(d)
+    def test_duplicate_account_or_nonce_refused(self):
+        for field in ('account','nonce'):
+            d=fixture();new=copy.deepcopy(d['rows'][0]);new['account']='usertwo';new['nonce']='c'*32
+            new[field]=d['rows'][0][field];d['rows'].append(new)
+            with self.assertRaises(ValueError):validate_and_reconstruct(d)
+
+if __name__=='__main__':unittest.main()

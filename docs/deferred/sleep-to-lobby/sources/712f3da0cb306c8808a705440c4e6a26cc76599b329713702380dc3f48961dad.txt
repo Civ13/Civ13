@@ -1,0 +1,31 @@
+{
+  "authority": "synthetic_only",
+  "loader_git_blob": "785b982dffef7954c2ae7f02fea0d5e887e93217",
+  "loader_procedure_sha256": {
+    "Load_Entry": "885deedc99fe77aeba691c56b460b955573583e2211e448c0f7460b90e2bcba0",
+    "decode_saved_value": "e8ead1a05cb0c97cd897f3759ef7b210c522b64896a44bbceeeb0a4da4e9a4b7",
+    "entry_path": "566fcd17bccdfa468ead09d893a33d7ff247e3f0fbc51ad6cf34e369bb2097a7",
+    "is_level_link_value": "7f9c4acb2bfd745977c4505dc88bfa850e67d673ad21e9fd5104ddc624469b75",
+    "saved_content_refs": "82ca6c9a9b83858ffff8ab1657573d0f8a6706180e919ad4a212013b20350ce5"
+  },
+  "original_sha256": {
+    "pinned/loading.dm": "1ccf7d30e231f0ee031db35402c5b6f172dfe903b22056bdbae6dff640c43a88",
+    "sleep_graph_export.dm": "4c6cc1572e72cab6d22b3a030b9e73f28715c88ae87cff6acd477c0cfec4a89e",
+    "tests/fixture.dme": "c2da3f397744f855d975e064829c53f1cc9021943e5c372d2ad056b0bce9b7d7",
+    "tests/fixture_stubs.dm": "89cb6ba6275a581218ac0daffdb297dee1653e8153cd9dbb3a486d086982489d",
+    "tests/fixture_world.dm": "d6c0f9d047431d313c176c422cead05d561642b769425de7c92187712852adcb",
+    "tests/graph_probe.dm": "f76c2dee092e5915a51e0996e05d6fd6b6d78b47a775b61b6d8ecb8678e1db88",
+    "tests/reader_probe.dm": "f648e489ce91b2320a15861726387fe0a10a01a38d5b1e63b30cd3f1130e578e"
+  },
+  "production_enabled": false,
+  "staged_sha256": {
+    "fixture.dme": "c2da3f397744f855d975e064829c53f1cc9021943e5c372d2ad056b0bce9b7d7",
+    "fixture_stubs.dm": "89cb6ba6275a581218ac0daffdb297dee1653e8153cd9dbb3a486d086982489d",
+    "fixture_world.dm": "d6c0f9d047431d313c176c422cead05d561642b769425de7c92187712852adcb",
+    "graph_probe.dm": "f76c2dee092e5915a51e0996e05d6fd6b6d78b47a775b61b6d8ecb8678e1db88",
+    "pinned_loader.dm": "0f2973f040e4e675bca3c8f155d7d0b0e097b31221ff7ebdcd059cf8b8b6ef54",
+    "reader_probe.dm": "f648e489ce91b2320a15861726387fe0a10a01a38d5b1e63b30cd3f1130e578e",
+    "sleep_graph_export_fixture.dm": "07468ad7ad7672efedce278f3b0fa15f446065476d569e15773da4f853af3d86"
+  },
+  "status": "source_only_unrun"
+}

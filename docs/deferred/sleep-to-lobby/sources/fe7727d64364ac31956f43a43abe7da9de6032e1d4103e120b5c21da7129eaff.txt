@@ -1,0 +1,52 @@
+// Unrun state-only synthetic probe; no save, client handoff or body effects.
+world
+    name = "Inactive sleep handoff index probe"
+    maxx = 1
+    maxy = 1
+    maxz = 1
+    visibility = 0
+
+/world/OpenPort(port)
+    if(port == "none") return ..("none")
+    return FALSE
+/world/Topic()
+    return null
+/client/New()
+    del(src)
+/proc/sh_check(ok, reason)
+    if(!ok) throw new /exception(reason)
+/world/New()
+    OpenPort("none")
+    ..()
+    var/list/result = list("status" = "FAIL", "port" = world.port)
+    try
+        sh_check(!world.port && !world.OpenPort(0) && !world.port, "port")
+        var/datum/sleep_handoff_index/I = new
+        var/datum/body = new
+        var/datum/session = new
+        var/id = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        sh_check(I.open_round("Round-A"), "round open")
+        sh_check(!I.reserve("round-a", "userone", id, body, session), "case exact round")
+        sh_check(!I.reserve("Round-A", "guest123", id, body, session), "guest refusal")
+        var/datum/sleep_handoff_entry/E = I.reserve("Round-A", "userone", id, body, session)
+        sh_check(E && I.held("Round-A", "userone"), "reservation held")
+        sh_check(!I.reserve("Round-A", "userone", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", body, session), "duplicate account")
+        sh_check(I.begin_capture(E, "Round-A", "userone", id, body, session), "capture reservation")
+        sh_check(!I.cancel_unstarted(E, "Round-A", "userone", id, body, session), "started capture cannot cancel")
+        del(session)
+        sh_check(I.mark_uncertain(E, "Round-A", "userone", id) && E.state == "uncertain" && I.held("Round-A", "userone"), "lost session retained")
+        sh_check(I.held("different-round", "userone"), "cross-round stays refused")
+        var/datum/sleep_handoff_index/J = new
+        var/datum/session2 = new
+        sh_check(J.open_round("Round-A"), "second index")
+        var/datum/sleep_handoff_entry/F = J.reserve("Round-A", "usertwo", id, body, session2)
+        sh_check(F && J.cancel_unstarted(F, "Round-A", "usertwo", id, body, session2), "safe cancel")
+        sh_check(!J.reserve("Round-A", "usertwo", id, body, session2), "nonce replay")
+        J.slots += "usertwo" // Key with no valid entry must still hold.
+        sh_check(J.held("Round-A", "usertwo"), "invalid slot remains held")
+        result["status"] = "PASS"
+        result["scope"] = "index_only"
+    catch(var/exception/E)
+        result["error"] = "[E]"
+    if(!text2file(json_encode(result), "sleep-handoff-receipt.json")) world.log << "FAIL: receipt write"
+    shutdown()

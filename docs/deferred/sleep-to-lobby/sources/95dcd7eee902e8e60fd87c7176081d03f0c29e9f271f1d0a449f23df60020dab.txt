@@ -1,0 +1,50 @@
+"""Prepare pinned synthetic writer/reader source only; never start BYOND."""
+from pathlib import Path
+import hashlib
+import json
+import re
+import sys
+
+ROOT=Path(__file__).resolve().parent
+FILES={
+ 'sleep_graph_export.dm':'4c6cc1572e72cab6d22b3a030b9e73f28715c88ae87cff6acd477c0cfec4a89e',
+ 'tests/graph_probe.dm':'c92dd9690c3a033f3f70f7f01ca61f1f2797581b2aab741dcc886ddc7e2cd0c7',
+ 'tests/reader_probe.dm':'f648e489ce91b2320a15861726387fe0a10a01a38d5b1e63b30cd3f1130e578e',
+ 'tests/fixture_stubs.dm':'77176195ee9a4318d4dcbb20fe38837ac58e92997e7ccf29ef507bc4603c210a',
+ 'tests/fixture_world.dm':'d6c0f9d047431d313c176c422cead05d561642b769425de7c92187712852adcb',
+ 'tests/fixture.dme':'c2da3f397744f855d975e064829c53f1cc9021943e5c372d2ad056b0bce9b7d7',
+ 'pinned/loading.dm':'1ccf7d30e231f0ee031db35402c5b6f172dfe903b22056bdbae6dff640c43a88'}
+PROCS=('Load_Entry','decode_saved_value','entry_path','saved_content_refs','is_level_link_value')
+def sha(data):return hashlib.sha256(data).hexdigest()
+def extract(source,name):
+    pattern=r'^/map_storage/proc/'+re.escape(name)+r'\([^\n]*\)\n'
+    matches=list(re.finditer(pattern,source,re.M))
+    if len(matches)!=1:raise ValueError('loader procedure binding mismatch: '+name)
+    start=matches[0].start(); after=matches[0].end()
+    end=re.search(r'^/(?!/)',source[after:],re.M)
+    return source[start:after+end.start() if end else len(source)]
+def build(out):
+    out=Path(out).resolve()
+    if out.parent!=ROOT or out.exists():raise ValueError('stage must be a new direct child of the source directory')
+    values={name:(ROOT/name).read_bytes() for name in FILES}
+    if any(sha(values[name])!=digest for name,digest in FILES.items()):raise ValueError('source binding mismatch')
+    raw=values['pinned/loading.dm']
+    if hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()!='785b982dffef7954c2ae7f02fea0d5e887e93217':raise ValueError('loader git blob mismatch')
+    source=raw.decode('utf-8-sig').replace('\r\n','\n')
+    proc_text={name:extract(source,name) for name in PROCS}
+    loader=('// Synthetic fixture: exact extracted production procedures; game dependencies stubbed.\n'+''.join(proc_text.values())).encode()
+    src=values['sleep_graph_export.dm']
+    before=b'/proc/sleep_graph_export_enabled()\n    return FALSE\n'
+    after=b'/proc/sleep_graph_export_enabled()\n    return TRUE\n'
+    if src.count(before)!=1:raise ValueError('feature gate mismatch')
+    staged={'sleep_graph_export_fixture.dm':src.replace(before,after,1),'pinned_loader.dm':loader}
+    staged.update({Path(name).name:data for name,data in values.items() if name.startswith('tests/')})
+    out.mkdir()
+    for name,data in staged.items():
+        with (out/name).open('xb') as f:f.write(data)
+    report={'status':'source_only_unrun','authority':'synthetic_only','loader_git_blob':'785b982dffef7954c2ae7f02fea0d5e887e93217','loader_procedure_sha256':{name:sha(body.encode()) for name,body in proc_text.items()},'original_sha256':FILES,'staged_sha256':{name:sha(data) for name,data in staged.items()},'production_enabled':False}
+    (out/'stage-manifest.json').write_text(json.dumps(report,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+    return report
+if __name__=='__main__':
+    if len(sys.argv)!=2:raise SystemExit('usage: prepare_fixture.py <new-direct-child>')
+    print(json.dumps(build(sys.argv[1]),sort_keys=True,indent=2))

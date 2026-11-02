@@ -1,0 +1,198 @@
+// INACTIVE candidate: no DME include, body/client transfer or archive commit.
+// Global capability remains hard FALSE; this is an in-world codec probe only.
+/proc/sleep_character_candidate_enabled()
+    return FALSE
+
+var/global/datum/sleep_handoff_index/sleep_handoff_authoritative_index = null
+
+/datum/sleep_handoff_index/proc/reserve_authoritative(expected_round, account, nonce, mob/living/human/H, client/C)
+    if(src != sleep_handoff_authoritative_index || !sleep_character_candidate_enabled() || !H || !C || C.mob != H || H.client != C || C.ckey != account || IsGuestKey(C.key) || H.persistence_owner_ckey != account || !map_storage || !islist(persistence_player_claims) || (account in persistence_player_claims)) return null
+    if(!islist(slots) || !islist(used_nonces) || slots.len >= 256 || used_nonces.len >= 4096) return null
+    var/list/bodies = map_storage.local_character_bodies(account)
+    if(!islist(bodies) || bodies.len != 1 || bodies[1] != H) return null
+    if(!istext(game_id) || !sleep_handoff_round_valid(game_id) || !sleep_handoff_round_valid(expected_round) || !cmptextEx(game_id, expected_round)) return null
+    var/datum/sleep_handoff_entry/E = reserve(expected_round, account, nonce, H, C)
+    if(!E) return null
+    // Claim the SAME account table used by lobby reclaim before any capture.
+    // A changed table/owner is uncertain; never clear another claimant.
+    if(!islist(persistence_player_claims) || (account in persistence_player_claims) || src != sleep_handoff_authoritative_index || C.mob != H || H.client != C || C.ckey != account)
+        mark_uncertain(E, expected_round, account, nonce)
+        return null
+    persistence_player_claims[account] = E
+    if(persistence_player_claims[account] != E)
+        mark_uncertain(E, expected_round, account, nonce)
+        return null
+    return E
+
+/datum/sleep_handoff_index/proc/cancel_authoritative(datum/sleep_handoff_entry/E, expected_round, account, nonce, mob/living/human/H, client/C)
+    if(src != sleep_handoff_authoritative_index || !islist(persistence_player_claims) || persistence_player_claims[account] != E) return FALSE
+    if(!cancel_unstarted(E, expected_round, account, nonce, H, C)) return FALSE
+    if(persistence_player_claims[account] != E) return FALSE
+    persistence_player_claims.Remove(account)
+    return TRUE
+
+// Same world, same level and live attached client only. This is NOT a parked
+// sleeper and never authorizes removal, transfer, or independent restoration.
+/map_storage/proc/sleep_candidate_live_binding(datum/persistence_world_operation/O, datum/sleep_handoff_entry/E, list/round_state)
+    if(!sleep_character_candidate_enabled() || !O || !O.current(src, "save") || !E || !E.index || E.index != sleep_handoff_authoritative_index || !islist(round_state) || !sleep_handoff_round_valid(game_id) || !sleep_handoff_round_valid(round_state["game_id"]) || !sleep_handoff_round_valid(E.round_id) || !cmptextEx(game_id, E.round_id) || !cmptextEx(game_id, round_state["game_id"]) || E.state != "capturing") return FALSE
+    var/mob/living/human/H = E.body
+    var/client/C = E.session_owner
+    if(!istype(H) || isDeleted(H) || !istype(C) || C.mob != H || H.client != C || C.ckey != E.account || IsGuestKey(C.key) || H.persistence_owner_ckey != E.account || H.stat == DEAD || !isturf(H.loc) || H.z != saving_z) return FALSE
+    if(!E.index.binding_current(E, E.round_id, E.account, E.nonce, H, C) || !islist(persistence_player_claims) || persistence_player_claims[E.account] != E) return FALSE
+    var/list/bodies = local_character_bodies(E.account)
+    return islist(bodies) && bodies.len == 1 && bodies[1] == H && O.current(src, "save")
+
+// Cheap revalidation for bounded inventory traversal; full account uniqueness
+// is checked again after the traversal rather than rescanning the world per item.
+/map_storage/proc/sleep_candidate_fast_binding(datum/persistence_world_operation/O, datum/sleep_handoff_entry/E, mob/living/human/H, client/C, list/round_state)
+    return sleep_character_candidate_enabled() && O && O.current(src, "save") && E && E.index && E.index == sleep_handoff_authoritative_index && E.state == "capturing" && H && !isDeleted(H) && C && E.body == H && E.session_owner == C && C.mob == H && H.client == C && C.ckey == E.account && H.persistence_owner_ckey == E.account && islist(persistence_player_claims) && persistence_player_claims[E.account] == E && islist(round_state) && sleep_handoff_round_valid(game_id) && sleep_handoff_round_valid(E.round_id) && sleep_handoff_round_valid(round_state["game_id"]) && cmptextEx(game_id, E.round_id) && cmptextEx(game_id, round_state["game_id"]) && E.index.binding_current(E, E.round_id, E.account, E.nonce, H, C)
+
+// Conservative same-level direct containment check over the already-written
+// canonical graph. Refuse ignored/non-saveable/moved/missing contents. This is
+// NOT an isolated archive or proof of external incoming reference closure.
+/map_storage/proc/inspect_sleep_candidate_inventory(savefile/F, datum/persistence_world_operation/O, datum/sleep_handoff_entry/E, list/round_state, root_ref)
+    var/mob/living/human/H = E.body
+    var/client/C = E.session_owner
+    if(!sleep_candidate_fast_binding(O, E, H, C, round_state)) throw EXCEPTION("Sleep candidate inventory owner unavailable")
+    var/list/queue = list(list("atom" = H, "ref" = root_ref))
+    var/list/seen = list()
+    var/cursor = 1
+    while(cursor <= queue.len)
+        if(queue.len > 8192 || !sleep_candidate_fast_binding(O, E, H, C, round_state)) throw EXCEPTION("Sleep candidate inventory bound exceeded or owner changed")
+        var/list/work = queue[cursor++]
+        var/atom/parent = work["atom"]
+        var/parent_ref = work["ref"]
+        if(!istype(parent) || isDeleted(parent) || !isnum(parent_ref) || saving_reference_pins[parent_ref] != parent) throw EXCEPTION("Sleep candidate inventory parent changed")
+        var/parent_identity = save_entry_identity(parent)
+        if(seen[parent_identity]) throw EXCEPTION("Sleep candidate inventory containment cycle")
+        seen[parent_identity] = TRUE
+        if(F["[entry_path(F, parent_ref)]/type"] != parent.type) throw EXCEPTION("Sleep candidate inventory type changed")
+        var/list/live = parent.contents.Copy()
+        if(!parent.load_contents && live.len) throw EXCEPTION("Sleep candidate contains unsupported hidden contents")
+        var/encoded = F["[entry_path(F, parent_ref)]/content"]
+        var/list/saved = isnull(encoded) ? list() : saved_content_refs(encoded, 3)
+        if(!sleep_candidate_fast_binding(O, E, H, C, round_state) || !islist(saved) || saved.len != live.len) throw EXCEPTION("Sleep candidate inventory changed or was omitted")
+        var/list/saved_counts = list()
+        for(var/saved_ref in saved)
+            if(!istext(saved_ref) || saved_counts[saved_ref]) throw EXCEPTION("Sleep candidate inventory duplicate reference")
+            saved_counts[saved_ref] = TRUE
+        for(var/i = 1, i <= live.len, i++)
+            var/atom/movable/child = live[i]
+            if(!istype(child) || isDeleted(child) || child.loc != parent || (!isobj(child) && !ismob(child)) || !child.should_save) throw EXCEPTION("Sleep candidate inventory contains unsupported child")
+            for(var/ignored in ignore_types)
+                if(istype(child, ignored)) throw EXCEPTION("Sleep candidate inventory contains ignored child")
+            var/child_ref = saving_references[save_entry_identity(child)]
+            if(!isnum(child_ref) || child_ref < 1 || child_ref != round(child_ref) || saving_reference_pins[child_ref] != child || saving_content_owners["[child_ref]"] != parent_ref) throw EXCEPTION("Sleep candidate inventory ownership mismatch")
+            if(!saved_counts["[child_ref]"]) throw EXCEPTION("Sleep candidate inventory child missing or duplicated")
+            if(queue.len >= 8192) throw EXCEPTION("Sleep candidate inventory bound exceeded")
+            queue += list(list("atom" = child, "ref" = child_ref))
+            save_work_check()
+            if(!sleep_candidate_fast_binding(O, E, H, C, round_state)) throw EXCEPTION("Sleep candidate inventory owner changed")
+        if(parent.contents.len != live.len) throw EXCEPTION("Sleep candidate inventory changed")
+        for(var/i = 1, i <= live.len, i++)
+            var/atom/movable/final_child = live[i]
+            if(!final_child || parent.contents[i] != final_child || final_child.loc != parent) throw EXCEPTION("Sleep candidate inventory changed")
+    if(!sleep_candidate_live_binding(O, E, round_state)) throw EXCEPTION("Sleep candidate inventory account changed")
+    return TRUE
+
+// Called only after the ordinary world traversal has already serialized this
+// exact body in this exact file. Reuses its canonical root/reference table; does
+// not capture a stand-alone archive or modify the live body/inventory.
+/map_storage/proc/stage_sleep_candidate(savefile/F, datum/persistence_world_operation/O, datum/sleep_handoff_entry/E, list/round_state)
+    if(!F || !sleep_candidate_live_binding(O, E, round_state) || !istext(O.diagnostic_generation) || F["/format_version"] != 3 || F["/generation"] != O.diagnostic_generation || !F["/map/[saving_z]/1/1"]) throw EXCEPTION("Sleep candidate binding unavailable")
+    var/mob/living/human/H = E.body
+    var/identity = save_entry_identity(H)
+    var/ref = saving_references[identity]
+    if(!isnum(ref) || ref < 1 || ref != round(ref) || saving_reference_pins[ref] != H) throw EXCEPTION("Sleep candidate root was not serialized")
+    var/check = BuildVarDirectory(F, H, 1, TRUE)
+    if(check != ref || saving_reference_pins[ref] != H || !sleep_candidate_live_binding(O, E, round_state)) throw EXCEPTION("Sleep candidate root changed")
+    var/turf/origin = H.loc
+    var/parent_ref = saving_references[save_entry_identity(origin)]
+    if(!origin || !parent_ref || saving_reference_pins[parent_ref] != origin || saving_content_owners["[ref]"] != parent_ref || F["/map/[saving_z]/[origin.y]/[origin.x]"] != parent_ref) throw EXCEPTION("Sleep candidate parent mismatch")
+    var/list/parent_contents = saved_content_refs(F["[entry_path(F, parent_ref)]/content"], 3)
+    var/parent_matches = 0
+    for(var/child_ref in parent_contents)
+        if(child_ref == "[ref]") parent_matches++
+    if(parent_matches != 1 || H.loc != origin || !sleep_candidate_live_binding(O, E, round_state)) throw EXCEPTION("Sleep candidate parent changed")
+    var/path = entry_path(F, ref)
+    var/type = F["[path]/type"]
+    var/list/owner_value = F["[path]/persistence_owner_ckey"]
+    if(!ispath(type, /mob/living/human) || type != H.type || !islist(owner_value) || owner_value["kind"] != "value" || owner_value["value"] != E.account || !sleep_candidate_live_binding(O, E, round_state)) throw EXCEPTION("Sleep candidate encoded owner mismatch")
+    inspect_sleep_candidate_inventory(F, O, E, round_state, ref)
+    if(H.loc != origin || !sleep_candidate_live_binding(O, E, round_state)) throw EXCEPTION("Sleep candidate changed after inventory inspection")
+    var/candidate_path = "/sleep_candidate/[E.nonce]"
+    if(!isnull(F[candidate_path])) throw EXCEPTION("Sleep candidate ID duplicated")
+    var/list/row = list("schema" = 1, "state" = "in_world_candidate", "round_id" = E.round_id, "account" = E.account, "nonce" = E.nonce, "generation" = O.diagnostic_generation, "z" = saving_z, "root_ref" = ref, "parent_ref" = parent_ref, "x" = origin.x, "y" = origin.y)
+    F[candidate_path] << row
+    var/list/readback = F[candidate_path]
+    if(!islist(readback) || readback.len != 11 || readback["schema"] != 1 || readback["state"] != "in_world_candidate" || !cmptextEx(readback["round_id"], E.round_id) || readback["account"] != E.account || readback["nonce"] != E.nonce || readback["generation"] != O.diagnostic_generation || readback["z"] != saving_z || readback["root_ref"] != ref || readback["parent_ref"] != parent_ref || readback["x"] != origin.x || readback["y"] != origin.y || H.loc != origin || !sleep_candidate_live_binding(O, E, round_state)) throw EXCEPTION("Sleep candidate readback mismatch")
+    return TRUE
+
+/map_storage/proc/stage_sleep_candidate_level(savefile/F, datum/persistence_world_operation/O, list/round_state)
+    if(!sleep_character_candidate_enabled()) return TRUE
+    var/datum/sleep_handoff_index/I = sleep_handoff_authoritative_index
+    if(!I || !islist(I.slots) || !islist(I.used_nonces) || I.slots.len > 256 || I.used_nonces.len > 4096 || !O || !O.current(src, "save") || !islist(round_state) || !sleep_handoff_round_valid(I.round_id) || !sleep_handoff_round_valid(round_state["game_id"]) || !cmptextEx(I.round_id, round_state["game_id"])) throw EXCEPTION("Sleep candidate index unavailable")
+    var/list/initial = I.slots.Copy()
+    for(var/account in initial)
+        var/datum/sleep_handoff_entry/E = initial[account]
+        if(I != sleep_handoff_authoritative_index || I.slots[account] != E) throw EXCEPTION("Sleep candidate index changed")
+        if(!istype(E) || E.index != I || E.account != account || E.state == "uncertain") throw EXCEPTION("Sleep candidate claim unavailable")
+        if(E.state != "capturing") continue
+        var/mob/living/human/H = E.body
+        if(!istype(H) || isDeleted(H) || !isturf(H.loc)) throw EXCEPTION("Sleep candidate body unavailable")
+        if(H.z != saving_z) continue
+        stage_sleep_candidate(F, O, E, round_state)
+        if(!O.current(src, "save")) throw EXCEPTION("Sleep candidate save owner changed")
+    if(I != sleep_handoff_authoritative_index || !islist(I.slots) || I.slots.len != initial.len || !O.current(src, "save")) throw EXCEPTION("Sleep candidate index changed")
+    for(var/account in initial)
+        if(!(account in I.slots) || I.slots[account] != initial[account]) throw EXCEPTION("Sleep candidate index changed")
+    return TRUE
+// Candidate metadata must never be interpreted as an archived sleeper. The
+// normal whole-world validator still validates every referenced graph entry.
+/map_storage/proc/sleep_candidate_validation_owner(datum/persistence_world_operation/O, savefile/F, z, list/round_state, expected_round, expected_generation)
+    return O && (O.kind in list("save", "load")) && O.current(src, O.kind) && F && F["/format_version"] == 3 && F["/generation"] == expected_generation && islist(round_state) && sleep_handoff_round_valid(round_state["game_id"]) && cmptextEx(round_state["game_id"], expected_round) && round_state["generation"] == expected_generation && isnum(z) && z >= 1 && z == round(z)
+
+/map_storage/proc/validate_sleep_candidate_level(savefile/F, z, list/round_state, list/entry_set, list/seen_accounts, list/seen_nonces)
+    if(!F || !isnum(z) || !islist(round_state) || !sleep_handoff_round_valid(round_state["game_id"]) || !istext(round_state["generation"]) || !islist(entry_set) || !islist(seen_accounts) || !islist(seen_nonces)) throw EXCEPTION("Sleep candidate validation context unavailable")
+    var/datum/persistence_world_operation/O = persistence_active_operation
+    var/expected_round = round_state["game_id"]
+    var/expected_generation = round_state["generation"]
+    if(!sleep_candidate_validation_owner(O, F, z, round_state, expected_round, expected_generation)) throw EXCEPTION("Sleep candidate validation owner unavailable")
+    var/old_cd = F.cd
+    try
+        F.cd = "/"
+        if(!("sleep_candidate" in F.dir))
+            if(!sleep_candidate_validation_owner(O, F, z, round_state, expected_round, expected_generation)) throw EXCEPTION("Sleep candidate validation owner changed")
+            F.cd = old_cd
+            return TRUE
+        F.cd = "/sleep_candidate"
+        var/list/names = F.dir.Copy()
+        if(!islist(names) || names.len > 256) throw EXCEPTION("Sleep candidate validation limit exceeded")
+        for(var/nonce in names)
+            if(seen_nonces.len >= 256 || !sleep_handoff_nonce_valid(nonce) || (nonce in seen_nonces)) throw EXCEPTION("Sleep candidate nonce invalid or limit exceeded")
+            var/list/row = F["/sleep_candidate/[nonce]"]
+            if(!islist(row) || row.len != 11 || row["schema"] != 1 || row["state"] != "in_world_candidate" || row["nonce"] != nonce || !sleep_handoff_round_valid(row["round_id"]) || !cmptextEx(row["round_id"], round_state["game_id"]) || row["generation"] != round_state["generation"] || row["z"] != z || !sleep_handoff_account_valid(row["account"]) || (row["account"] in seen_accounts)) throw EXCEPTION("Sleep candidate metadata invalid")
+            var/ref = row["root_ref"]
+            if(!isnum(ref) || ref < 1 || ref != round(ref) || !entry_set["[ref]"]) throw EXCEPTION("Sleep candidate root missing")
+            var/parent_ref = row["parent_ref"]
+            var/x = row["x"]
+            var/y = row["y"]
+            if(!isnum(x) || x < 1 || x != round(x) || x > world.maxx || !isnum(y) || y < 1 || y != round(y) || y > world.maxy || !isnum(parent_ref) || parent_ref < 1 || parent_ref != round(parent_ref) || !entry_set["[parent_ref]"] || F["/map/[z]/[y]/[x]"] != parent_ref) throw EXCEPTION("Sleep candidate saved tile invalid")
+            var/list/parent_contents = saved_content_refs(F["[entry_path(F, parent_ref)]/content"], 3)
+            var/parent_matches = 0
+            for(var/child_ref in parent_contents)
+                if(child_ref == "[ref]") parent_matches++
+            if(parent_matches != 1 || !sleep_candidate_validation_owner(O, F, z, round_state, expected_round, expected_generation)) throw EXCEPTION("Sleep candidate saved parent invalid")
+            var/path = entry_path(F, ref)
+            var/type = F["[path]/type"]
+            var/list/owner_value = F["[path]/persistence_owner_ckey"]
+            if(!ispath(type, /mob/living/human) || !islist(owner_value) || owner_value["kind"] != "value" || owner_value["value"] != row["account"]) throw EXCEPTION("Sleep candidate root owner mismatch")
+            if(!sleep_candidate_validation_owner(O, F, z, round_state, expected_round, expected_generation)) throw EXCEPTION("Sleep candidate validation owner changed")
+            seen_accounts[row["account"]] = TRUE
+            seen_nonces[nonce] = TRUE
+        if(!sleep_candidate_validation_owner(O, F, z, round_state, expected_round, expected_generation)) throw EXCEPTION("Sleep candidate validation owner changed")
+        F.cd = old_cd
+    catch(var/exception/E)
+        F.cd = old_cd
+        throw E
+    return TRUE

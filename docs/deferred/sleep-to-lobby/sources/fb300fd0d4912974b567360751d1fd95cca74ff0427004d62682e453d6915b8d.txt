@@ -1,0 +1,15 @@
+// Synthetic-only reproduction of the ordered load_world_contents finalization
+// fragment. after_load and registration are instrumentation stubs, not the
+// real game's hooks. No chemistry process is started by this fixture.
+/proc/sleep_graph_fixture_finalize(map_storage/S)
+	var/list/all_loaded = S.all_loaded
+	for(var/i in 1 to all_loaded.len)
+		var/datum/ob = all_loaded[i]
+		if (ob)
+			ob.after_load()
+			register_restored_player(ob)
+		if(istype(ob, /obj))
+			var/obj/obbie = ob
+			if(obbie.load_datums)
+				if(obbie.reagents)
+					obbie.reagents.my_atom = ob

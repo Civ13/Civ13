@@ -1,0 +1,111 @@
+// SOURCE-ONLY synthetic fixture; never compile into or run against a live world.
+// A staged copy may enable the disabled exporter for isolated review only.
+var/fixture_constructed = 0
+var/fixture_hook_calls = 0
+/datum/sleep_graph_test_node
+    var/datum/sleep_graph_test_node/peer
+    var/list/alias
+    New()
+        ..()
+        fixture_constructed++
+    get_saved_vars()
+        return list("peer", "alias")
+/obj/item/sleep_graph_test_item
+    var/datum/sleep_graph_test_node/node
+    var/list/alias
+    get_saved_vars()
+        return list("node", "alias")
+/mob/living/human/sleep_graph_test_human
+    var/obj/item/sleep_graph_test_item/item_ref
+    var/datum/sleep_graph_test_node/node
+    var/list/alias
+    var/atom/movable/external
+    get_saved_vars()
+        return list("persistence_owner_ckey", "item_ref", "node", "alias", "external")
+    before_save_context(map_storage/exporter, datum/save_export_frame/frame)
+        fixture_hook_calls++
+
+/datum/sleep_graph_authority/fixture
+    var/list/allowed_atoms = list()
+    var/list/allowed_datums = list()
+    var/list/allowed_lists = list()
+    var/approved = TRUE
+    owns_atom(atom/movable/A, mob/living/human/root)
+        return !!allowed_atoms["\ref[A]"]
+    owns_datum(datum/D, mob/living/human/root)
+        return !!allowed_datums["\ref[D]"]
+    owns_list(list/L, mob/living/human/root)
+        return !!allowed_lists[L]
+    verify_snapshot(mob/living/human/root, round_id, account, nonce)
+        return approved && root && round_id == "Round-A" && account == "fixtureaccount" && nonce == "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+/proc/sleep_graph_fixture_check(condition, text)
+    if(!condition) throw EXCEPTION(text)
+
+/proc/sleep_graph_fixture_case()
+    var/mob/living/human/sleep_graph_test_human/H = new(locate(1,1,1))
+    H.persistence_owner_ckey = "fixtureaccount"
+    var/obj/item/sleep_graph_test_item/I = new(H)
+    var/datum/sleep_graph_test_node/N = new
+    var/list/L = list()
+    L += list(L)
+    L += I
+    N.peer = N
+    N.alias = L
+    I.node = N
+    I.alias = L
+    H.item_ref = I
+    H.node = N
+    H.alias = L
+    var/datum/sleep_graph_authority/fixture/A = new
+    A.allowed_atoms["\ref[I]"] = TRUE
+    A.allowed_datums["\ref[N]"] = TRUE
+    A.allowed_lists[L] = TRUE
+    var/before = fixture_constructed
+    var/datum/sleep_graph_export_context/C = new
+    var/list/result = C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    sleep_graph_fixture_check(islist(result) && istext(result["payload"]) && result["manifest"]["state"] == "unverified", "candidate payload missing")
+    sleep_graph_fixture_check(before == fixture_constructed && !fixture_hook_calls, "capture invoked world construction or save hook")
+    sleep_graph_fixture_check(result["manifest"]["payload_length"] == length(result["payload"]) && result["manifest"]["payload_md5"] == md5(result["payload"]), "payload manifest mismatch")
+    sleep_graph_fixture_check(!fexists("sleep-payload.txt") && !fexists("sleep-manifest.json"), "fixture output was not fresh")
+    sleep_graph_fixture_check(text2file(result["payload"], "sleep-payload.txt") && text2file(json_encode(result["manifest"]), "sleep-manifest.json"), "fixture payload write failed")
+    sleep_graph_fixture_check(!C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), "context was reused")
+    var/savefile/F = new
+    F.ImportText("/", result["payload"])
+    var/root_ref = result["manifest"]["root_ref"]
+    var/root_path = "/entries/[round((root_ref - 1) / 512)]/[root_ref]"
+    var/list/root_item = F["[root_path]/item_ref"]
+    var/list/root_node = F["[root_path]/node"]
+    var/list/root_alias = F["[root_path]/alias"]
+    var/item_ref = root_item["ref"]
+    var/node_ref = root_node["ref"]
+    var/list_id = root_alias["ref"]
+    var/item_path = "/entries/[round((item_ref - 1) / 512)]/[item_ref]"
+    var/node_path = "/entries/[round((node_ref - 1) / 512)]/[node_ref]"
+    var/list/item_node = F["[item_path]/node"]
+    var/list/item_alias = F["[item_path]/alias"]
+    var/list/node_peer = F["[node_path]/peer"]
+    var/list/loop = F["/lists/[list_id]/1/key"]
+    sleep_graph_fixture_check(item_node["ref"] == node_ref && item_alias["ref"] == list_id && node_peer["ref"] == node_ref && loop["ref"] == list_id, "shared identity or cycle changed")
+    sleep_graph_fixture_check(H.loc && I.loc == H && H.item_ref == I && H.alias == L, "capture changed live test graph")
+    var/obj/item/sleep_graph_test_item/outside = new(locate(1,1,1))
+    H.external = outside
+    C = new
+    sleep_graph_fixture_check(!C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), "external atom was copied")
+    H.external = null
+    A.allowed_datums.Remove("\ref[N]")
+    C = new
+    sleep_graph_fixture_check(!C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), "unowned datum was copied")
+    A.allowed_datums["\ref[N]"] = TRUE
+    A.allowed_lists[L] = FALSE
+    C = new
+    sleep_graph_fixture_check(!C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), "unowned list was copied")
+    A.allowed_lists[L] = TRUE
+    A.approved = FALSE
+    C = new
+    sleep_graph_fixture_check(!C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), "unattested closure admitted")
+    A.approved = TRUE
+    L.len = 501
+    C = new
+    sleep_graph_fixture_check(!C.capture(H, A, "Round-A", "fixtureaccount", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"), "oversized list admitted")
+    return TRUE

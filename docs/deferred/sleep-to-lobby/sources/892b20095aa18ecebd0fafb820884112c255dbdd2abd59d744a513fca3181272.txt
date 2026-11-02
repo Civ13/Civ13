@@ -1,0 +1,74 @@
+// Synthetic fixture preflight only. ImportText has already run; this does not
+// establish a safe parser for hostile payloads or a production restore permit.
+// No datum/atom from the payload is constructed by these procs.
+/proc/sleep_fixture_integer(value, minimum, maximum)
+    return isnum(value) && value == round(value) && value >= minimum && value <= maximum
+
+/proc/sleep_fixture_envelope(value, entry_count, list_count)
+    if(!islist(value)) return FALSE
+    var/list/E = value
+    if(E.len != 2 || !("kind" in E)) return FALSE
+    switch(E["kind"])
+        if("value")
+            if(!("value" in E)) return FALSE
+            var/scalar = E["value"]
+            return isnull(scalar) || isnum(scalar) || (istext(scalar) && length(scalar) <= 262144) || ispath(scalar)
+        if("entry")
+            return ("ref" in E) && sleep_fixture_integer(E["ref"], 1, entry_count)
+        if("list")
+            return ("ref" in E) && sleep_fixture_integer(E["ref"], 1, list_count)
+    return FALSE
+
+/proc/sleep_fixture_preflight(savefile/F, list/M)
+    if(!F || !islist(M) || F["/format_version"] != 3 || M["root_ref"] != 1) return FALSE
+    var/entry_count = M["entries"]
+    var/list_count = M["lists"]
+    if(!sleep_fixture_integer(entry_count, 1, 512) || !sleep_fixture_integer(list_count, 0, 256)) return FALSE
+    var/edges = 0
+    var/list/parents = list()
+    for(var/id = 1, id <= entry_count, id++)
+        var/path = "/entries/[round((id - 1) / 512)]/[id]"
+        var/type = F["[path]/type"]
+        var/list/allowed = list("type")
+        if(type == /mob/living/human/sleep_graph_test_human)
+            if(id != 1) return FALSE
+            allowed += list("content", "reagents", "persistence_owner_ckey", "item_ref", "node", "alias", "external")
+        else if(type == /obj/item/sleep_graph_test_item)
+            allowed += list("content", "reagents", "node", "alias")
+        else if(type == /datum/sleep_graph_test_node)
+            allowed += list("peer", "alias", "chemistry_alias")
+        else if(type == /datum/reagents)
+            allowed += list("reagent_list", "total_volume", "maximum_volume", "my_atom")
+        else if(type == /datum/reagent)
+            allowed += list("id", "volume", "holder")
+        else return FALSE
+        F.cd = path
+        var/list/fields = F.dir.Copy()
+        if(!("type" in fields) || fields.len > 1024) return FALSE
+        for(var/field in fields)
+            if(!istext(field) || !(field in allowed)) return FALSE
+            if(field == "type") continue
+            if(field == "content")
+                var/list/chunks = F["[path]/content"]
+                if(!islist(chunks) || chunks.len > 1) return FALSE
+                for(var/chunk in chunks)
+                    if(!istext(chunk) || length(chunk) > 32000) return FALSE
+                    var/list/refs = params2list(chunk)
+                    if(refs.len > 500) return FALSE
+                    for(var/ref_text in refs)
+                        if(!istext(ref_text) || length(ref_text) > 4) return FALSE
+                        var/ref = text2num(ref_text)
+                        if(!sleep_fixture_integer(ref, 1, entry_count) || "[ref]" != ref_text || ref == id || ++edges > 4096) return FALSE
+                        var/child_path = "/entries/[round((ref - 1) / 512)]/[ref]"
+                        if(F["[child_path]/type"] != /obj/item/sleep_graph_test_item || parents["[ref]"]) return FALSE
+                        parents["[ref]"] = id
+                continue
+            if(++edges > 4096 || !sleep_fixture_envelope(F["[path]/[field]"], entry_count, list_count)) return FALSE
+    if(F["/entries/0/1/type"] != /mob/living/human/sleep_graph_test_human) return FALSE
+    for(var/id = 1, id <= list_count, id++)
+        var/list_path = "/lists/[id]"
+        var/count = F["[list_path]/length"]
+        if(!sleep_fixture_integer(count, 0, 500)) return FALSE
+        for(var/i = 1, i <= count, i++)
+            if((edges += 2) > 4096 || !sleep_fixture_envelope(F["[list_path]/[i]/key"], entry_count, list_count) || !sleep_fixture_envelope(F["[list_path]/[i]/value"], entry_count, list_count)) return FALSE
+    return TRUE

@@ -1,0 +1,198 @@
+// Inactive isolated character exporter. No DME include or gameplay caller.
+// Canonical envelope SHAPES only: parity with world hooks/decoder is unproven.
+/proc/sleep_graph_export_enabled()
+    return TRUE
+
+// Production has no provider: both outgoing ownership and incoming-reference
+// closure must be independently proven before a result can be trusted.
+/datum/sleep_graph_authority
+    should_save = FALSE
+    proc/owns_atom(atom/movable/A, mob/living/human/root)
+        return FALSE
+    proc/owns_datum(datum/D, mob/living/human/root)
+        return FALSE
+    proc/owns_list(list/L, mob/living/human/root)
+        return FALSE
+    proc/verify_snapshot(mob/living/human/root, round_id, account, nonce)
+        return FALSE
+
+/datum/sleep_graph_export_context
+    should_save = FALSE
+    var/mob/living/human/root
+    var/datum/sleep_graph_authority/authority
+    var/savefile/output
+    var/list/entry_ids = list()
+    var/list/entry_pins = list()
+    var/list/list_ids = list()
+    var/list/list_pins = list()
+    var/list/atom_owners = list()
+    var/start_tick
+    var/work = 0
+    var/edges = 0
+    var/text_budget = 0
+    var/state = "new"
+
+    proc/check()
+        if(state != "capturing" || !root || isDeleted(root) || !authority || !output || world.time != start_tick || world.tick_usage >= 90 || ++work > 12000) throw EXCEPTION("Detached graph capture unavailable")
+
+    proc/reserve_edge()
+        check()
+        if(++edges > 4096) throw EXCEPTION("Detached graph edge limit")
+
+    proc/reserve_text(value)
+        if(istext(value))
+            text_budget += 4 * length(value)
+            if(text_budget > 262144) throw EXCEPTION("Detached graph text limit")
+
+    // Enroll all physical children before following field references, so a
+    // slot may refer to a sibling without cloning or order-dependent refusal.
+    proc/enroll_atoms()
+        var/list/queue = list(root)
+        var/list/seen = list()
+        var/i = 1
+        while(i <= queue.len)
+            check()
+            if(queue.len > 512) throw EXCEPTION("Detached atom limit")
+            var/atom/parent = queue[i++]
+            if(!parent || isDeleted(parent)) throw EXCEPTION("Detached atom unavailable")
+            var/parent_id = "\ref[parent]"
+            if(seen[parent_id]) throw EXCEPTION("Detached atom containment cycle")
+            seen[parent_id] = TRUE
+            var/list/snapshot = parent.contents.Copy()
+            if((!parent.load_contents && snapshot.len) || snapshot.len > 500) throw EXCEPTION("Detached atom contents unsupported")
+            for(var/atom/movable/child in snapshot)
+                check()
+                if(!isobj(child) || isDeleted(child) || child.loc != parent || !authority.owns_atom(child, root)) throw EXCEPTION("Detached atom ownership unavailable")
+                var/key = "\ref[child]"
+                if(atom_owners[key]) throw EXCEPTION("Detached atom repeated ownership")
+                atom_owners[key] = parent
+                queue += child
+            if(parent.contents.len != snapshot.len) throw EXCEPTION("Detached contents changed")
+            for(var/j = 1, j <= snapshot.len, j++)
+                var/atom/movable/child = snapshot[j]
+                if(!child || parent.contents[j] != child || child.loc != parent) throw EXCEPTION("Detached contents changed")
+        return TRUE
+    // Lists and datum handles stay private to this context, never map_storage.
+    // No client, world object, turf, area or unowned mutable datum is copied.
+    proc/encode(value, depth = 0)
+        check()
+        if(depth > 64) throw EXCEPTION("Detached graph depth limit")
+        reserve_edge()
+        if(isnull(value) || isnum(value) || istext(value) || ispath(value))
+            reserve_text(value)
+            return list("kind" = "value", "value" = value)
+        if(islist(value))
+            var/list/L = value
+            var/id = list_ids[L]
+            if(id)
+                if(list_pins[id] != L) throw EXCEPTION("Detached list identity changed")
+                return list("kind" = "list", "ref" = id)
+            if(list_pins.len >= 256 || L.len > 500 || !authority.owns_list(L, root)) throw EXCEPTION("Detached list ownership unavailable")
+            check()
+            id = list_pins.len + 1
+            list_pins += list(L)
+            list_ids[L] = id
+            var/list/snapshot = L.Copy()
+            output["/lists/[id]/length"] << snapshot.len
+            for(var/i = 1, i <= snapshot.len, i++)
+                var/key = snapshot[i]
+                var/associated = (isnum(key) || isnull(key)) ? null : snapshot[key]
+                var/list/encoded_key = encode(key, depth + 1)
+                var/list/encoded_value = encode(associated, depth + 1)
+                output["/lists/[id]/[i]/key"] << encoded_key
+                output["/lists/[id]/[i]/value"] << encoded_value
+            if(L.len != snapshot.len) throw EXCEPTION("Detached list changed")
+            for(var/i = 1, i <= snapshot.len, i++)
+                var/key = snapshot[i]
+                if(L[i] != key || ((!isnum(key) && !isnull(key)) && L[key] != snapshot[key])) throw EXCEPTION("Detached list changed")
+            check()
+            return list("kind" = "list", "ref" = id)
+        if(istype(value, /datum))
+            var/id = encode_entry(value, depth + 1)
+            return list("kind" = "entry", "ref" = id)
+        throw EXCEPTION("Detached graph value type unsupported")
+
+    proc/encode_entry(datum/D, depth = 0)
+        check()
+        if(depth > 64 || !D || isDeleted(D) || istype(D, /client) || istype(D, /area) || istype(D, /turf) || istype(D, /obj/map_metadata)) throw EXCEPTION("Detached graph entry unsupported")
+        var/identity = "\ref[D]"
+        var/id = entry_ids[identity]
+        if(id)
+            if(entry_pins[id] != D) throw EXCEPTION("Detached entry identity changed")
+            return id
+        if(entry_pins.len >= 512 || !D.should_save) throw EXCEPTION("Detached graph entry limit or unsaved object")
+        if(istype(D, /atom/movable))
+            var/atom/movable/A = D
+            if(A != root)
+                if(!isobj(A) || !atom_owners[identity] || atom_owners[identity] != A.loc || !authority.owns_atom(A, root)) throw EXCEPTION("Detached graph references external atom")
+        else if(!authority.owns_datum(D, root)) throw EXCEPTION("Detached graph references unowned datum")
+        check()
+        id = entry_pins.len + 1
+        entry_pins += D
+        entry_ids[identity] = id
+        var/path = "/entries/[round((id - 1) / 512)]/[id]"
+        output["[path]/type"] << D.type
+        if(istype(D, /atom))
+            var/atom/A = D
+            var/list/content = A.contents.Copy()
+            if(!A.load_contents && content.len) throw EXCEPTION("Detached graph hidden contents")
+            if(content.len > 500) throw EXCEPTION("Detached graph container limit")
+            var/list/refs = list()
+            // Canonical serializer writes objects before mobs; this candidate
+            // refuses any nested mob and accepts only authority-owned objects.
+            for(var/atom/movable/child in content)
+                if(!isobj(child) || isDeleted(child) || child.loc != A || !authority.owns_atom(child, root)) throw EXCEPTION("Detached graph external or moved content")
+                var/child_identity = "\ref[child]"
+                if(atom_owners[child_identity] && atom_owners[child_identity] != A) throw EXCEPTION("Detached graph conflicting owners")
+                atom_owners[child_identity] = A
+                refs += "[encode_entry(child, depth + 1)]"
+            if(A.contents.len != content.len) throw EXCEPTION("Detached contents changed")
+            for(var/i = 1, i <= content.len, i++)
+                var/atom/movable/child = content[i]
+                if(!child || A.contents[i] != child || child.loc != A) throw EXCEPTION("Detached contents changed")
+            if(A.load_contents)
+                var/list/chunks = list()
+                if(refs.len) chunks += list(list2params(refs))
+                output["[path]/content"] << chunks
+        var/list/fields = D.get_saved_vars()
+        if(!islist(fields) || fields.len > 1024) throw EXCEPTION("Detached saved fields unavailable")
+        for(var/field in fields)
+            check()
+            if(!istext(field) || length(field) > 128) throw EXCEPTION("Detached field invalid")
+            if(D.persistence_runtime_var(field) || (field in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey", "step_x", "step_y", "human_subtile_position", "human_subtile_restore_schema"))) continue
+            if(D.vars.Find(field))
+                var/list/encoded = encode(D.vars[field], depth + 1)
+                output["[path]/[field]"] << encoded
+        check()
+        if(entry_pins[id] != D || "\ref[D]" != identity) throw EXCEPTION("Detached entry changed")
+        return id
+
+    // The returned payload is a temporary source-review artifact, not a
+    // committed save, safe deletion permit, or authenticated sleeper record.
+    proc/capture(mob/living/human/H, datum/sleep_graph_authority/A, round_id, account, nonce)
+        if(!sleep_graph_export_enabled() || state != "new" || !istype(H) || isDeleted(H) || !istype(A) || !sleep_handoff_round_valid(round_id) || !sleep_handoff_account_valid(account) || !sleep_handoff_nonce_valid(nonce) || H.persistence_owner_ckey != account) return null
+        root = H
+        authority = A
+        output = new
+        state = "capturing"
+        start_tick = world.time
+        try
+            output["/format_version"] << 3
+            enroll_atoms()
+            var/root_ref = encode_entry(H)
+            check()
+            if(!A.verify_snapshot(H, round_id, account, nonce)) throw EXCEPTION("Detached graph closure unattested")
+            check()
+            if(root != H || authority != A || H.persistence_owner_ckey != account || entry_pins[root_ref] != H) throw EXCEPTION("Detached graph owner changed")
+            var/payload = output.ExportText("/")
+            check()
+            if(!istext(payload) || !length(payload) || length(payload) > 1048576) throw EXCEPTION("Detached graph payload limit")
+            // MD5 is an accidental-change check only, not authority or security.
+            var/list/manifest = list("schema" = 1, "state" = "unverified", "round_id" = round_id, "account" = account, "nonce" = nonce, "root_ref" = root_ref, "entries" = entry_pins.len, "lists" = list_pins.len, "edges" = edges, "payload_length" = length(payload), "payload_md5" = md5(payload))
+            state = "complete_unverified"
+            output = null
+            return list("manifest" = manifest, "payload" = payload)
+        catch(var/exception/error)
+            state = "failed"
+            output = null
+            return null

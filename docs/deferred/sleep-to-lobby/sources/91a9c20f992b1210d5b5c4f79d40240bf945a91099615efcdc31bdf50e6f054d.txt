@@ -1,0 +1,35 @@
+{
+  "authority": "synthetic_only",
+  "loader_git_blob": "785b982dffef7954c2ae7f02fea0d5e887e93217",
+  "loader_procedure_sha256": {
+    "Load_Entry": "885deedc99fe77aeba691c56b460b955573583e2211e448c0f7460b90e2bcba0",
+    "decode_saved_value": "e8ead1a05cb0c97cd897f3759ef7b210c522b64896a44bbceeeb0a4da4e9a4b7",
+    "entry_path": "566fcd17bccdfa468ead09d893a33d7ff247e3f0fbc51ad6cf34e369bb2097a7",
+    "is_level_link_value": "7f9c4acb2bfd745977c4505dc88bfa850e67d673ad21e9fd5104ddc624469b75",
+    "saved_content_refs": "82ca6c9a9b83858ffff8ab1657573d0f8a6706180e919ad4a212013b20350ce5"
+  },
+  "original_sha256": {
+    "pinned/loading.dm": "1ccf7d30e231f0ee031db35402c5b6f172dfe903b22056bdbae6dff640c43a88",
+    "sleep_graph_export.dm": "51a303b9d74f345152155d5a788457d8ffcacece7bfea6d565f4731c271c1edf",
+    "tests/fixture.dme": "b13259d73cb1e10018f4cafb8e86d7d0c04404dd17c3350eb0fc627a8aafd86a",
+    "tests/fixture_finalize.dm": "fb300fd0d4912974b567360751d1fd95cca74ff0427004d62682e453d6915b8d",
+    "tests/fixture_preflight.dm": "892b20095aa18ecebd0fafb820884112c255dbdd2abd59d744a513fca3181272",
+    "tests/fixture_stubs.dm": "b7598df7b34aa76ed967f67023c7f8f004534cf1ee46482fc9dd5d1a890246a8",
+    "tests/fixture_world.dm": "d6c0f9d047431d313c176c422cead05d561642b769425de7c92187712852adcb",
+    "tests/graph_probe.dm": "3d562f27de32fca65c351bbb0cb74b389f445d28915ff98e00ef7ba0a3a74615",
+    "tests/reader_probe.dm": "be9351a91f880ea17ff800ea8b8bb3f33c7d35a5f6010381b816ba10bd146aba"
+  },
+  "production_enabled": false,
+  "staged_sha256": {
+    "fixture.dme": "b13259d73cb1e10018f4cafb8e86d7d0c04404dd17c3350eb0fc627a8aafd86a",
+    "fixture_finalize.dm": "fb300fd0d4912974b567360751d1fd95cca74ff0427004d62682e453d6915b8d",
+    "fixture_preflight.dm": "892b20095aa18ecebd0fafb820884112c255dbdd2abd59d744a513fca3181272",
+    "fixture_stubs.dm": "b7598df7b34aa76ed967f67023c7f8f004534cf1ee46482fc9dd5d1a890246a8",
+    "fixture_world.dm": "d6c0f9d047431d313c176c422cead05d561642b769425de7c92187712852adcb",
+    "graph_probe.dm": "3d562f27de32fca65c351bbb0cb74b389f445d28915ff98e00ef7ba0a3a74615",
+    "pinned_loader.dm": "58b46983a82b79836e4e361677928e221acf3d044d2a4ef2a51c3900ea1e301b",
+    "reader_probe.dm": "be9351a91f880ea17ff800ea8b8bb3f33c7d35a5f6010381b816ba10bd146aba",
+    "sleep_graph_export_fixture.dm": "8995b99d3d3600df9f62b5ba716c04b4d36a4f88fa361255259db52d156cbef4"
+  },
+  "status": "source_only_unrun"
+}

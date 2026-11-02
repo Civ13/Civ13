@@ -1,0 +1,219 @@
+"""Light source controls and a separate graph model; no DM execution."""
+from pathlib import Path
+import copy
+import hashlib
+import json
+import re
+import unittest
+
+ROOT=Path(__file__).resolve().parents[1]
+SOURCE=(ROOT/'sleep_graph_export.dm').read_text(encoding='utf-8')
+PROBE=(ROOT/'tests/graph_probe.dm').read_text(encoding='utf-8')
+
+def guard_contract(src):
+    return all(x in src for x in (
+        '/proc/sleep_graph_export_enabled()\n    return FALSE',
+        'proc/owns_atom(atom/movable/A, mob/living/human/root)\n        return FALSE',
+        'proc/owns_datum(datum/D, mob/living/human/root)\n        return FALSE',
+        'proc/owns_list(list/L, mob/living/human/root)\n        return FALSE',
+        'proc/verify_snapshot(mob/living/human/root, round_id, account, nonce)\n        return FALSE',
+        '!authority.owns_atom(A, root)', '!authority.owns_datum(D, root)',
+        '!authority.owns_list(L, root)', 'if(!A.verify_snapshot(H, round_id, account, nonce))',
+        'if(depth > 64)', 'if(++edges > 4096)', 'entry_pins.len >= 512',
+        'list_pins.len >= 256', '"state" = "unverified"')) and src.count('if(!A.verify_snapshot(H, round_id, account, nonce))') == 2
+
+class Entry:
+    def __init__(self,name):self.name=name;self.refs=[]
+class GraphModel:
+    """Independent ID/closure model; JSON is NOT the DM/savefile payload."""
+    def __init__(self,allowed,limit=32):self.allowed=set(allowed);self.limit=limit;self.ids={};self.nodes=[]
+    def encode(self,obj):
+        if obj not in self.allowed: raise ValueError('external')
+        if obj in self.ids:return self.ids[obj]
+        if len(self.nodes)>=self.limit:raise ValueError('limit')
+        number=len(self.nodes)+1;self.ids[obj]=number;self.nodes.append(None)
+        self.nodes[number-1]={'name':obj.name,'refs':[self.encode(x) for x in obj.refs]}
+        return number
+    def payload(self,root):
+        number=self.encode(root)
+        body=json.dumps({'root':number,'nodes':self.nodes},sort_keys=True,separators=(',',':')).encode()
+        return body,{'length':len(body),'sha256':hashlib.sha256(body).hexdigest()}
+
+class Tests(unittest.TestCase):
+    def test_default_denies_and_safety_guards_detect_mutants(self):
+        self.assertTrue(guard_contract(SOURCE))
+        for old in ('!authority.owns_atom(A, root)','!authority.owns_datum(D, root)',
+                    '!authority.owns_list(L, root)','if(!A.verify_snapshot(H, round_id, account, nonce))',
+                    'if(++edges > 4096)','entry_pins.len >= 512'):
+            with self.subTest(old=old):self.assertFalse(guard_contract(SOURCE.replace(old,'REMOVED_GUARD',1)))
+    def test_private_tables_and_no_world_effects(self):
+        self.assertIn('var/list/entry_ids = list()',SOURCE)
+        self.assertIn('var/list/list_ids = list()',SOURCE)
+        self.assertNotIn('saving_references',SOURCE)
+        for token in ('qdel(', 'del(', 'forceMove(', 'Load_Entry(', 'before_save_context('):self.assertNotIn(token,SOURCE)
+        self.assertIn('output.ExportText("/")',SOURCE)
+        self.assertIn('"payload_md5" = md5(payload)',SOURCE)
+    def test_movable_reagent_field_is_included_without_mutating_shared_field_list(self):
+        fields=SOURCE.index('var/list/fields = D.get_saved_vars()')
+        copy_at=SOURCE.index('fields = fields.Copy()', fields)
+        add_at=SOURCE.index('if(AM.load_datums && !("reagents" in fields)) fields += "reagents"', copy_at)
+        encode_at=SOURCE.index('for(var/field in fields)', add_at)
+        self.assertLess(fields,copy_at)
+        self.assertLess(copy_at,add_at)
+        self.assertLess(add_at,encode_at)
+        self.assertIn('!authority.owns_datum(D, root)',SOURCE)
+        self.assertIn('unowned reagent datum was copied',PROBE)
+        self.assertIn('disabled reagent loading captured an unowned datum',PROBE)
+        reader=(ROOT/'tests/reader_probe.dm').read_text(encoding='utf-8')
+        self.assertIn('W.holder != R',reader)
+        self.assertIn('N.chemistry_alias != R.reagent_list',reader)
+    def test_new_stage_is_bound_to_reagent_fixture_sources(self):
+        stage=ROOT/'fixture-stage-v9'
+        manifest=json.loads((stage/'stage-manifest.json').read_text(encoding='utf-8'))
+        self.assertEqual(manifest['status'],'source_only_unrun')
+        self.assertFalse(manifest['production_enabled'])
+        for name,digest in manifest['original_sha256'].items():
+            self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),digest)
+        for name,digest in manifest['staged_sha256'].items():
+            self.assertEqual(hashlib.sha256((stage/name).read_bytes()).hexdigest(),digest)
+        self.assertIn('unowned reagent datum was copied',(stage/'graph_probe.dm').read_text(encoding='utf-8'))
+        self.assertIn('W.holder != R',(stage/'reader_probe.dm').read_text(encoding='utf-8'))
+    def test_reagent_finalization_matches_production_fragment_and_is_synthetic(self):
+        original=(ROOT/'pinned/loading.dm').read_text(encoding='utf-8-sig')
+        anchor='\t\t\tfor(var/i in 1 to all_loaded.len)\n'
+        begin=original.index(anchor)
+        end=original.index('#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL',begin)
+        expected='\n'.join(line[2:] if line.startswith('\t\t') else line for line in original[begin:end].rstrip().splitlines())
+        fixture=(ROOT/'tests/fixture_finalize.dm').read_text(encoding='utf-8')
+        actual=fixture[fixture.index('\tfor(var/i in 1 to all_loaded.len)'):].rstrip()
+        self.assertEqual(expected,actual)
+        self.assertNotIn('process_reactions(',fixture)
+        self.assertIn('fixture_chemistry_calls++',(ROOT/'tests/fixture_stubs.dm').read_text(encoding='utf-8'))
+        reader=(ROOT/'tests/reader_probe.dm').read_text(encoding='utf-8')
+        self.assertLess(reader.index('R.my_atom = null'),reader.index('sleep_graph_fixture_finalize(S)'))
+        self.assertIn('fixture_item_seen_before_repair',reader)
+        self.assertIn('fixture_chemistry_calls',reader)
+        self.assertIn('unowned nested reagent member was copied',PROBE)
+        self.assertIn('unowned reagent list was copied',PROBE)
+    def test_fixture_reagent_fields_are_grounded_in_pinned_game_sources(self):
+        holder=(ROOT/'pinned/Chemistry-Holder.dm').read_text(encoding='utf-8-sig')
+        member=(ROOT/'pinned/Chemistry-Reagents.dm').read_text(encoding='utf-8-sig')
+        stub=(ROOT/'tests/fixture_stubs.dm').read_text(encoding='utf-8')
+        for name in ('reagent_list', 'total_volume', 'maximum_volume', 'my_atom'):
+            self.assertRegex(holder, r'var/[^\n]*\b'+name+r'\b')
+            self.assertRegex(stub, r'var/[^\n]*\b'+name+r'\b')
+        for name in ('id', 'volume', 'holder'):
+            self.assertRegex(member, r'var/[^\n]*\b'+name+r'\b')
+            self.assertRegex(stub, r'var/[^\n]*\b'+name+r'\b')
+        provenance=json.loads((ROOT/'PROVENANCE.json').read_text(encoding='utf-8'))
+        self.assertEqual(provenance['commit'],'024ea403f904426065b34f6a399b3533f01cace0')
+        for source,meta in provenance['files'].items():
+            local=ROOT/'pinned'/Path(source).name
+            raw=local.read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),meta['sha256'])
+            self.assertEqual(hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest(),meta['git_blob'])
+    def test_synthetic_preflight_is_bounded_and_before_fixture_construction(self):
+        pre=(ROOT/'tests/fixture_preflight.dm').read_text(encoding='utf-8')
+        reader=(ROOT/'tests/reader_probe.dm').read_text(encoding='utf-8')
+        self.assertNotIn('Load_Entry(',pre)
+        self.assertNotIn('new ',pre)
+        self.assertIn('value == round(value)',pre)
+        self.assertIn('sleep_fixture_integer(entry_count, 1, 512)',pre)
+        self.assertIn('sleep_fixture_integer(list_count, 0, 256)',pre)
+        self.assertIn('sleep_fixture_integer(count, 0, 500)',pre)
+        self.assertIn('++edges > 4096',pre)
+        self.assertLess(reader.index('sleep_fixture_preflight(F, M)'),reader.index('var/map_storage/S = new'))
+        self.assertLess(reader.index('sleep_fixture_preflight(F, M)'),reader.index('S.Load_Entry(F, 1)'))
+        self.assertIn('M["entries"] + 1',reader)
+        self.assertIn('M["lists"] + 1',reader)
+        self.assertIn('list("kind" = "turf", "ref" = 1)',reader)
+        self.assertIn('F["/lists/1/length"] << 501',reader)
+        self.assertIn('F["/entries/0/1/type"] << /obj/map_metadata',reader)
+        self.assertIn('ImportText has already run',pre)
+    def test_reference_boundaries_in_independent_envelope_model(self):
+        def admissible(record, entry_count, list_count):
+            if type(record) is not dict or set(record) not in ({'kind','ref'},{'kind','value'}):return False
+            if record['kind']=='value':return set(record)=={'kind','value'} and (record['value'] is None or type(record['value']) in (int,str))
+            if record['kind'] not in ('entry','list') or set(record)!={'kind','ref'}:return False
+            limit=entry_count if record['kind']=='entry' else list_count
+            return type(record['ref']) is int and 1<=record['ref']<=limit
+        self.assertTrue(admissible({'kind':'entry','ref':2},4,2))
+        self.assertTrue(admissible({'kind':'list','ref':2},4,2))
+        self.assertTrue(admissible({'kind':'value','value':None},4,2))
+        for value in ({'kind':'entry','ref':5},{'kind':'list','ref':3},
+                      {'kind':'entry','ref':0},{'kind':'entry','ref':1.5},
+                      {'kind':'turf','ref':1},{'kind':'entry','ref':1,'extra':1}):
+            with self.subTest(value=value):self.assertFalse(admissible(value,4,2))
+    def test_live_pins_released_after_success_and_failure(self):
+        self.assertIn('state = "complete_unverified"\n            release_pins()',SOURCE)
+        self.assertIn('state = "failed"\n            release_pins()',SOURCE)
+        for field in ('root = null','authority = null','entry_pins = list()','list_pins = list()','atom_owners = list()'):
+            self.assertIn(field,SOURCE[SOURCE.index('    proc/release_pins()'):SOURCE.index('    proc/check()')])
+        self.assertIn('capture retained live pins',PROBE)
+        self.assertIn('failed capture retained live pins',PROBE)
+    def test_probe_tests_actual_dm_shape_but_is_unrun(self):
+        for token in ('F.ImportText("/", result["payload"])','node_peer["ref"] == node_ref',
+                      'loop["ref"] == list_id','external atom was copied','unowned datum was copied',
+                      'unowned list was copied','oversized list admitted','sleep-payload.txt','sleep-manifest.json'):
+            self.assertIn(token,PROBE)
+    def test_reader_guards_before_import_and_pinned_loader_is_exact(self):
+        reader=(ROOT/'tests/reader_probe.dm').read_text(encoding='utf-8')
+        guard=reader.index('!cmptextEx(M["round_id"], expected_round)')
+        owner=reader.index('M["account"] != expected_account')
+        self.assertLess(guard,reader.index('F.ImportText("/", payload)'))
+        self.assertLess(owner,reader.index('S.Load_Entry(F, 1)'))
+        self.assertIn('cross-round input constructed a graph',reader)
+        self.assertIn('wrong-account input constructed a graph',reader)
+        self.assertIn('S.Load_Entry(F, 1)',reader)
+        stage=ROOT/'fixture-stage-v6'
+        manifest=json.loads((stage/'stage-manifest.json').read_text(encoding='utf-8'))
+        for name,digest in manifest['staged_sha256'].items():
+            self.assertEqual(hashlib.sha256((stage/name).read_bytes()).hexdigest(),digest)
+        self.assertEqual(manifest['status'],'source_only_unrun')
+        self.assertFalse(manifest['production_enabled'])
+        loader=(stage/'pinned_loader.dm').read_text(encoding='utf-8')
+        original=(ROOT/'pinned/loading.dm').read_text(encoding='utf-8-sig')
+        for name in ('Load_Entry','decode_saved_value','entry_path','saved_content_refs','is_level_link_value'):
+            pat=r'^/map_storage/proc/'+re.escape(name)+r'\([^\n]*\)\n'
+            def extract(source):
+                match=re.search(pat,source,re.M);self.assertIsNotNone(match)
+                end=re.search(r'^/(?!/)',source[match.end():],re.M)
+                return source[match.start():match.end()+end.start() if end else len(source)]
+            self.assertEqual(extract(loader),extract(original))
+    def test_fixture_declares_inherited_status_and_save_hook(self):
+        stub=(ROOT/'tests/fixture_stubs.dm').read_text(encoding='utf-8')
+        self.assertIn('/mob/var/stat = FALSE',stub)
+        self.assertIn('/datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)\n    return before_save()',stub)
+        self.assertIn('/datum/proc/before_save()\n    return',stub)
+    def test_model_alias_cycle_and_manifest(self):
+        human,item,organ=Entry('human'),Entry('item'),Entry('organ')
+        human.refs=[item,organ,organ];item.refs=[organ];organ.refs=[human,organ]
+        m=GraphModel([human,item,organ]);body,manifest=m.payload(human);d=json.loads(body)
+        self.assertEqual(d['nodes'][0]['refs'],[2,3,3]);self.assertEqual(d['nodes'][2]['refs'],[1,3])
+        self.assertEqual(manifest['length'],len(body));self.assertEqual(manifest['sha256'],hashlib.sha256(body).hexdigest())
+    def test_model_rejects_external_and_limit(self):
+        human,item,outside=Entry('human'),Entry('item'),Entry('outside');human.refs=[item];item.refs=[outside]
+        with self.assertRaises(ValueError):GraphModel([human,item]).payload(human)
+        with self.assertRaises(ValueError):GraphModel([human,item,outside],limit=2).payload(human)
+    def test_model_reagent_graph_preserves_alias_and_rejects_unowned_nested_members(self):
+        human,item,holder,members,member,node=(Entry(name) for name in
+            ('human','item','holder','member-list','member','node'))
+        human.refs=[item,node]
+        item.refs=[holder]
+        holder.refs=[item,members]
+        members.refs=[member]
+        member.refs=[holder]
+        node.refs=[members]
+        allowed=[human,item,holder,members,member,node]
+        model=GraphModel(allowed)
+        body,_=model.payload(human)
+        rows=json.loads(body)['nodes']
+        ids={row['name']: index+1 for index,row in enumerate(rows)}
+        self.assertEqual(rows[ids['holder']-1]['refs'],[ids['item'],ids['member-list']])
+        self.assertEqual(rows[ids['member']-1]['refs'],[ids['holder']])
+        self.assertEqual(rows[ids['node']-1]['refs'],[ids['member-list']])
+        for blocked in (members,member):
+            with self.subTest(blocked=blocked.name), self.assertRaises(ValueError):
+                GraphModel([entry for entry in allowed if entry is not blocked]).payload(human)
+
+if __name__=='__main__':unittest.main()

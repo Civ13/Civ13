@@ -1,0 +1,33 @@
+{
+  "status": "deferred_unmerged_not_accepted",
+  "source_snapshot": "source-index.json preserves original source byte identities; sources are inert .txt snapshots, including known-defective earlier versions.",
+  "historical_attempts": [
+    {
+      "run": 41443423586,
+      "url": "https://github.com/Civ13/Civ13/actions/runs/41443423586",
+      "head": "024ea403f904426065b34f6a399b3533f01cace0",
+      "status": "verified_prepare_only",
+      "scope": "preparation only",
+      "native_executed": false,
+      "reported_offline_checks": 52,
+      "raw_artifact_sha256": "d5b7b3bd2d989f693edff044042b6c48da55d4aeee89a2bf45078a90944c16af"
+    },
+    {
+      "run": 41444565318,
+      "url": "https://github.com/Civ13/Civ13/actions/runs/41444565318",
+      "head": "024ea403f904426065b34f6a399b3533f01cace0",
+      "status": "failed_held",
+      "container_exit": 1,
+      "failure": "compiler identity or diagnostics assertion",
+      "compile_log_retained": false,
+      "writer_or_reader_receipts_retained": false,
+      "raw_artifact_sha256": "8212ee3536bdbd659687267bc57db20f1345a534cf3a72877ecde99224eb7dfe",
+      "interpretation": "Failed before native writer/reader acceptance. Missing compiler output prevents identifying the exact mismatch; no save/load success is established."
+    }
+  ],
+  "later_compile_only_plan": "prepared but not executed",
+  "recovery_packaging": "source identity and privacy inspection only; no feature tests rerun",
+  "new_native_or_live_operations": false,
+  "ci": "Intentionally not requested for archival deferral; publication commit carries [skip ci]. No passing CI or readiness claim.",
+  "implementation": "No body removal or lobby handoff implemented; ownership, graph closure, recovery, serializer compatibility and duplication prevention remain unimplemented or unproven."
+}

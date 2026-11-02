@@ -1,0 +1,44 @@
+"""Stage an inactive same-level in-world candidate; no native execution."""
+from pathlib import Path
+root=Path(__file__).resolve().parent
+
+def once(s,a,b,label):
+    if s.count(a)!=1: raise SystemExit(f'{label}: expected 1 anchor, got {s.count(a)}')
+    return s.replace(a,b,1)
+
+saving=(root/'base/saving.dm').read_text(encoding='utf-8-sig')
+a='''#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+\t\tdrain_human_save_roster(savefile, operation)
+#endif
+\t\tsavefile.Flush()
+'''
+b='''#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+\t\tdrain_human_save_roster(savefile, operation)
+#endif
+#ifdef CIV13_SLEEP_CHARACTER_CANDIDATE
+\t\tif(sleep_character_candidate_enabled()) stage_sleep_candidate_level(savefile, operation, round_state)
+#endif
+\t\tsavefile.Flush()
+'''
+saving=once(saving,a,b,'world candidate capture')
+loading=(root/'base/loading.dm').read_text(encoding='utf-8-sig')
+a='\t\tvar/list/player_owners = list()\n'
+b=a+'#ifdef CIV13_SLEEP_CHARACTER_CANDIDATE\n\t\tvar/list/sleep_candidate_accounts = list()\n\t\tvar/list/sleep_candidate_nonces = list()\n#endif\n'
+loading=once(loading,a,b,'candidate validation indexes')
+a='''\t\t\tfor(var/ref in entries)
+\t\t\t\tentry_set["[ref]"] = TRUE
+\t\t\t\tTICK_CHECK
+\t\t\tfor(var/ref in entries)
+'''
+b='''\t\t\tfor(var/ref in entries)
+\t\t\t\tentry_set["[ref]"] = TRUE
+\t\t\t\tTICK_CHECK
+#ifdef CIV13_SLEEP_CHARACTER_CANDIDATE
+\t\t\tif(sleep_character_candidate_enabled()) validate_sleep_candidate_level(F, z, round_state, entry_set, sleep_candidate_accounts, sleep_candidate_nonces)
+#endif
+\t\t\tfor(var/ref in entries)
+'''
+loading=once(loading,a,b,'candidate validation')
+(root/'candidate/saving.dm').write_text(saving,encoding='utf-8',newline='\n')
+(root/'candidate/loading.dm').write_text(loading,encoding='utf-8',newline='\n')
+print('staged disabled in-world candidate; no body removal or native execution')

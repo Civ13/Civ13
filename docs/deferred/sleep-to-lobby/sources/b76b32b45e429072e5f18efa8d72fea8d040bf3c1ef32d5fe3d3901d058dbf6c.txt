@@ -1,0 +1,27 @@
+// Synthetic native-test scaffolding only; no production game behavior.
+#define TRUE 1
+#define FALSE 0
+#define EXCEPTION(message) new /exception(message)
+/datum/var/should_save = TRUE
+/datum/proc/get_saved_vars()
+    return list()
+/datum/proc/persistence_runtime_var(key)
+    return FALSE
+/atom/var/load_contents = TRUE
+/mob/living
+/mob/living/human
+    var/persistence_owner_ckey
+/obj/item
+/datum/save_export_frame
+/map_storage
+/proc/isDeleted(datum/D)
+    return isnull(D)
+/proc/sleep_handoff_round_valid(value)
+    return istext(value) && length(value) >= 1 && length(value) <= 128
+/proc/sleep_handoff_account_valid(value)
+    return istext(value) && length(value) && ckey(value) == value
+/proc/sleep_handoff_nonce_valid(value)
+    if(!istext(value) || length(value) != 32) return FALSE
+    for(var/i = 1, i <= 32, i++)
+        if(!findtextEx("0123456789abcdef", copytext(value, i, i+1))) return FALSE
+    return TRUE

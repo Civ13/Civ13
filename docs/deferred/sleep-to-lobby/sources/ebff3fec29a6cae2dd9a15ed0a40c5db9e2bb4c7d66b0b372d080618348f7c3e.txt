@@ -1,0 +1,28 @@
+// Isolated synthetic process only; not a production or authenticated-client test.
+/world
+    maxx = 1
+    maxy = 1
+    maxz = 1
+    hub = ""
+    hub_password = ""
+var/sleep_probe_runtime = FALSE
+/world/OpenPort(port)
+    if(port == "none") return ..("none")
+    return FALSE
+/world/Error(exception/E)
+    sleep_probe_runtime = TRUE
+    world.log << "Synthetic runtime failure: [E]"
+/world/New()
+    OpenPort("none")
+    ..()
+    var/result = "FAIL"
+    try
+        sleep_graph_fixture_check(!world.port && !OpenPort(0) && !world.port, "listener was not closed")
+        sleep_graph_fixture_check(sleep_graph_fixture_case(), "graph probe failed")
+        sleep_graph_fixture_check(!sleep_probe_runtime, "runtime diagnostic observed")
+        result = "PASS"
+    catch(var/exception/E)
+        world.log << "Synthetic graph probe failed: [E]"
+    var/list/receipt = list("schema" = 1, "result" = result, "runtime" = sleep_probe_runtime, "port" = world.port, "synthetic_authority" = TRUE)
+    if(!text2file(json_encode(receipt), "result.json")) world.log << "Receipt write failed"
+    del(world)

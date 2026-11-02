@@ -1,0 +1,89 @@
+// Inactive source-only ownership foundation. Not included in the game DME.
+// No codec, persistence record, client handoff, body movement or deletion.
+/proc/sleep_handoff_guest_account(account)
+    if(!istext(account) || copytext(account, 1, 6) != "guest") return FALSE
+    var/start = copytext(account, 6, 7) == "w" ? 7 : 6
+    if(length(account) < start) return FALSE
+    for(var/i = start, i <= length(account), i++)
+        var/ch = text2ascii(account, i)
+        if(ch < 48 || ch > 57) return FALSE
+    return TRUE
+
+/proc/sleep_handoff_account_valid(account)
+    return istext(account) && length(account) && ckey(account) == account && !sleep_handoff_guest_account(account)
+
+// Match the existing saved-round identity bound; never normalize or truncate.
+/proc/sleep_handoff_round_valid(round_id)
+    return istext(round_id) && length(round_id) >= 1 && length(round_id) <= 128
+
+/proc/sleep_handoff_nonce_valid(nonce)
+    if(!istext(nonce) || length(nonce) != 32) return FALSE
+    for(var/i = 1, i <= 32, i++)
+        if(!findtextEx("0123456789abcdef", copytext(nonce, i, i+1))) return FALSE
+    return TRUE
+
+/datum/sleep_handoff_entry
+    should_save = FALSE
+    var/datum/sleep_handoff_index/index
+    var/round_id
+    var/account
+    var/nonce
+    var/body
+    var/session_owner
+    var/state = "reserved"
+
+// One local slot per canonical authenticated account within one exact round.
+// This temporary structure is NOT the durable sleeper record; no snapshot of it
+// may be treated as a committed archive, proof of a timer, or client authority.
+/datum/sleep_handoff_index
+    should_save = FALSE
+    var/round_id
+    var/list/slots = list()
+    var/list/used_nonces = list()
+    var/closed = FALSE
+
+    proc/open_round(expected_round)
+        if(closed || round_id || !sleep_handoff_round_valid(expected_round) || !islist(slots) || slots.len || !islist(used_nonces) || used_nonces.len) return FALSE
+        round_id = expected_round
+        return TRUE
+
+    proc/reserve(expected_round, account, nonce, body, session_owner)
+        if(closed || !sleep_handoff_round_valid(round_id) || !sleep_handoff_round_valid(expected_round) || !cmptextEx(round_id, expected_round) || !sleep_handoff_account_valid(account) || !sleep_handoff_nonce_valid(nonce) || !body || !session_owner || !islist(slots) || !islist(used_nonces) || (account in slots) || (nonce in used_nonces)) return null
+        var/datum/sleep_handoff_entry/E = new
+        E.index = src; E.round_id = round_id; E.account = account; E.nonce = nonce
+        E.body = body; E.session_owner = session_owner
+        slots[account] = E
+        used_nonces[nonce] = TRUE
+        return E
+
+    proc/binding_current(datum/sleep_handoff_entry/E, expected_round, account, nonce, body, session_owner)
+        return !closed && istype(E, /datum/sleep_handoff_entry) && E.index == src && sleep_handoff_round_valid(round_id) && sleep_handoff_round_valid(expected_round) && cmptextEx(round_id, expected_round) && sleep_handoff_round_valid(E.round_id) && cmptextEx(E.round_id, expected_round) && sleep_handoff_account_valid(account) && E.account == account && sleep_handoff_nonce_valid(nonce) && E.nonce == nonce && islist(slots) && slots[account] == E && islist(used_nonces) && used_nonces[nonce] && body && E.body == body && session_owner && E.session_owner == session_owner
+
+    // Reserve a future codec attempt. This performs no serialization and makes
+    // no claim about world ownership, timer, inventory, durable data or safety.
+    proc/begin_capture(datum/sleep_handoff_entry/E, expected_round, account, nonce, body, session_owner)
+        if(!binding_current(E, expected_round, account, nonce, body, session_owner) || E.state != "reserved") return FALSE
+        E.state = "capturing"
+        return TRUE
+
+    // Only a wholly unstarted reservation can be cancelled. A capture that may
+    // have performed effects requires explicit reconciliation, not deletion.
+    proc/cancel_unstarted(datum/sleep_handoff_entry/E, expected_round, account, nonce, body, session_owner)
+        if(!binding_current(E, expected_round, account, nonce, body, session_owner) || E.state != "reserved") return FALSE
+        slots.Remove(account)
+        E.state = "cancelled"
+        E.index = null; E.body = null; E.session_owner = null
+        return TRUE
+
+    // On loss of body/client reference or uncertain capture, retain the account
+    // hold and all surviving refs. Reconciliation is intentionally unavailable.
+    proc/mark_uncertain(datum/sleep_handoff_entry/E, expected_round, account, nonce)
+        if(closed || !istype(E, /datum/sleep_handoff_entry) || E.index != src || !sleep_handoff_round_valid(expected_round) || !cmptextEx(round_id, expected_round) || !sleep_handoff_round_valid(E.round_id) || !cmptextEx(E.round_id, expected_round) || !sleep_handoff_account_valid(account) || E.account != account || !sleep_handoff_nonce_valid(nonce) || E.nonce != nonce || !islist(slots) || slots[account] != E || !islist(used_nonces) || !used_nonces[nonce] || !(E.state in list("reserved", "capturing", "uncertain"))) return FALSE
+        E.state = "uncertain"
+        return TRUE
+
+    proc/held(expected_round, account)
+        // A mismatched/invalid round is a refusal, never permission to create a
+        // second character or silently reuse another round's saved payload.
+        if(closed || !sleep_handoff_round_valid(expected_round) || !sleep_handoff_round_valid(round_id) || !cmptextEx(round_id, expected_round) || !sleep_handoff_account_valid(account) || !islist(slots)) return TRUE
+        return (account in slots)
