@@ -1,0 +1,9 @@
+{
+  "scope": "Prepare isolated current-source native tree callback and bounded density harness; independent review before any execution",
+  "authorized_until_utc": "2026-11-02T13:23:00Z",
+  "max_independent_runs": 3,
+  "source_acceptance": "Model trace3499 and narrow mitigation3496; actual native pixels and cost remain unverified",
+  "live_gaia_changes": false,
+  "existing_user_sessions": false,
+  "execution_precondition": "Independent review of exact prepared source/toolchain manifest and runner; this file is not an execution grant"
+}

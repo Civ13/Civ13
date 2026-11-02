@@ -439,6 +439,7 @@
 #include "code\modules\paperwork\copy.dm"
 #include "code\modules\paperwork\authoring.dm"
 #include "code\modules\paperwork\lifecycle.dm"
+#include "code\modules\paperwork\physical.dm"
 #include "code\game\objects\items\paper\photography.dm"
 #include "code\game\objects\items\stacks\civ_recipes.dm"
 #include "code\game\objects\items\stacks\medical.dm"
