@@ -196,7 +196,7 @@ var/global/obj/tree_native_opaque/tree_native_mover
 		var/datum/los_presenter/L = C.los_presenter
 		var/list/identities = list()
 		var/list/roots = tree_native_roots[C]
-		for(var/i = 1, i <= min(4, length(roots)), i++)
+		for(var/i = 1, i <= min(2, length(roots)), i++)
 			var/atom/T = roots[i]
 			var/image/I = P && P.scene_active ? P.images[T] : (L ? L.tree_images[T] : null)
 			var/icon/F = P ? P.published_frames[T] : null
@@ -367,10 +367,17 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	row["allowance_usage"] = tree_native_process.run_time_tick_usage_allowance
 	row["allowance_ms"] = TICK_DELTA_TO_MS(tree_native_process.run_time_tick_usage_allowance)
 	// Separate actual scheduled pass; never count it as synchronous opaque refresh.
+	var/list/scheduled = list("counters"=list(),"timings"=list(),"phases"=list(),"affected"=list(),"native_returns"=list())
+	var/scheduled_other_before = isnum(tree_native_totals["2|captures"]) ? tree_native_totals["2|captures"] : 0
+	tree_native_row = scheduled
 	tree_native_process.reset_current_list()
 	tree_native_process.run_time_tick_usage = TICK_USAGE
 	tree_native_scheduler.recordStart(tree_native_process)
 	tree_native_process.process()
+	tree_native_row = null
+	row["scheduled"] = scheduled
+	row["other_scheduled_captures"] = (isnum(tree_native_totals["2|captures"]) ? tree_native_totals["2|captures"] : 0) - scheduled_other_before
+	row["scheduled_remaining_clients"] = length(tree_native_process.current_list)
 	row["scheduler"] = list("last"=tree_native_scheduler.last_run_time[tree_native_process], "highest"=tree_native_scheduler.highest_run_time[tree_native_process], "last_twenty"=tree_native_scheduler.last_twenty_run_times[tree_native_process])
 	text2file(json_encode(row), "events.jsonl")
 	tree_native_holding = FALSE

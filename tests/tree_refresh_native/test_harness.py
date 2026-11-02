@@ -29,7 +29,7 @@ def witness():
                     if case['mode']=='fallback':front['image']=None
                     phases=[dict(phase='entered',clients=entered),dict(phase='postmove',clients=deepcopy(entered))]
                 timer=dict(name='event',start_tick=1,end_tick=1,start_usage=1,end_usage=2,tick_lag=.5)
-                row=dict(case=case['id'],**{'class':kind},iteration=iteration,viewers=case['viewers'],roots=case['roots'],mode=case['mode'],native_returns=[dict(result=2,sx=2,sy=0)] if kind=='viewer_move' else [],scene_valid=1,safe=1,other_sync_captures=0,before=before,after=after,phases=phases,timings=[dict(timer,name='reconcile',client=1)],event_timer=timer,allowance_ms=12.5)
+                row=dict(case=case['id'],**{'class':kind},iteration=iteration,viewers=case['viewers'],roots=case['roots'],mode=case['mode'],native_returns=[dict(result=2,sx=2,sy=0)] if kind=='viewer_move' else [],scene_valid=1,safe=1,other_sync_captures=0,before=before,after=after,phases=phases,timings=[dict(timer,name='reconcile',client=1)],event_timer=timer,allowance_ms=12.5,scheduled=dict(timings=[dict(timer,name='reconcile',client=i) for i in range(1,case['viewers']+1)],counters={}))
                 if kind=='viewer_move' and iteration==1:row['capture_failed']=deepcopy(phases[0]['clients'])
                 if kind=='queued_light':row['pending_committed']=deepcopy(before)
                 rows.append(row)

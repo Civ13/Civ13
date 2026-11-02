@@ -97,8 +97,8 @@ def validate(receipt, rows, head, binding):
                     require(before[1]['identities']==after[1]['identities'],'Unrelated viewer publication changed synchronously')
                 if kind=='queued_light':
                     require(r.get('pending_committed')==before,'Pending committed light withdrew/mutated image state')
-                require(bool(r.get('timings')),'No actual native span samples')
-                for sample in r.get('timings',[]):
+                require(bool(r.get('timings')) and isinstance(r.get('scheduled'),dict) and bool(r['scheduled'].get('timings')),'Missing synchronous/scheduled native span samples')
+                for sample in r.get('timings',[])+r['scheduled']['timings']:
                     ms=same_tick_ms(sample)
                     if ms is None: unresolved.append([case['id'],kind,r['iteration'],sample.get('name')])
                     else: require(ms < sample['tick_lag']*100,'Whole-tick callback cost')
@@ -117,9 +117,15 @@ def validate(receipt, rows, head, binding):
             for client in range(1,case['viewers']+1):
                 values=[same_tick_ms(t) for r in selected for t in r['timings'] if t['name']=='reconcile' and t['client']==client]
                 valid=sorted(v for v in values if v is not None)
+                scheduled_values=[same_tick_ms(t) for r in selected for t in r['scheduled']['timings'] if t['name']=='reconcile' and t['client']==client]
+                scheduled_valid=sorted(v for v in scheduled_values if v is not None)
+                if scheduled_valid:
+                    item=dict(case=case['id'],kind=kind,client=client,scope='scheduled',samples=len(scheduled_valid),p95_ms=scheduled_valid[math.ceil(.95*len(scheduled_valid))-1],allowance_ms=allowance)
+                    per_client.append(item)
+                    if item['p95_ms']>allowance:over_budget.append(item)
                 if valid:
                     p95=valid[math.ceil(.95*len(valid))-1]
-                    item=dict(case=case['id'],kind=kind,client=client,samples=len(valid),p95_ms=p95,allowance_ms=allowance)
+                    item=dict(case=case['id'],kind=kind,client=client,scope='synchronous',samples=len(valid),p95_ms=p95,allowance_ms=allowance)
                     per_client.append(item)
                     if p95>allowance:over_budget.append(item)
     return dict(native_dispatch_validated=True,pixels_verified=False,cost_accepted=not unresolved and not over_budget,

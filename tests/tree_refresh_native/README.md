@@ -126,3 +126,5 @@ No result proves long-running stability, pixel delivery or acceptable dense live
 server scaling.
 
 An execution with valid native dispatch but unresolved/over-budget cost is marked measurement_incomplete and exits nonzero after owned cleanup. It is not reported as an overall native measurement pass. Raw per-capture/reconcile timings remain available for review. The derived retained launcher is the committed current-pin implementation with only its binary-allowlist import replaced; its suspended assignment, stripped private environment and handle/Job creation remain intact and are separately reviewable.
+
+Synchronous and scheduled per-client spans/counters are retained separately, including the remote viewer capture count and unfinished process snapshot. Identity details are bounded to the first two roots per client; admission/owned-image and allocation counters cover the full discovered scene. This controls evidence size and is not an assertion about every canopy pixel.
