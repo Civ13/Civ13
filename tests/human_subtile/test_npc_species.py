@@ -153,5 +153,100 @@ class SpeciesContracts(unittest.TestCase):
                              path.read_text(encoding='utf-8', errors='replace'), str(path))
 
 
+    def test_continuous_fallback_source_executes_ownership_contract(self):
+        source = (ROOT / 'code/game/mob/living/simple_animal/subtile_movement.dm').read_text(encoding='utf-8')
+        spec = importlib.util.spec_from_file_location('continuous_fallback_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec); spec.loader.exec_module(adapter)
+        fields = ('npc_subtile_transaction', 'npc_subtile_pulse', 'npc_subtile_until',
+                  'npc_subtile_offset_owned', 'step_x', 'step_y', 'npc_subtile_follow',
+                  'npc_subtile_flee', 'npc_subtile_pet_walk', 'npc_subtile_pursuit',
+                  'npc_subtile_recovery', 'npc_subtile_wild_walk', 'npc_subtile_pending_intent',
+                  'npc_subtile_intent_valid', 'npc_subtile_stop_follow', 'npc_subtile_stop_flee',
+                  'npc_subtile_stop_pet_walk')
+        with patch.object(adapter, 'FIELDS', adapter.FIELDS + fields):
+            ready = adapter.project(source, '/mob/living/simple_animal/proc/npc_subtile_continuous_legacy_ready',
+                                    'src, kind', {'world': SimpleNamespace(time=10)}, method=True)
+        names = {'follow':'npc_subtile_follow', 'flee':'npc_subtile_flee', 'pet':'npc_subtile_pet_walk'}
+        for kind, field in names.items():
+            with self.subTest(kind=kind):
+                owner = object(); calls = []
+                actor = SimpleNamespace(npc_subtile_transaction=None, npc_subtile_pulse=None, npc_subtile_until=10,
+                    npc_subtile_offset_owned=False, step_x=0, step_y=0, npc_subtile_follow=None,
+                    npc_subtile_flee=None, npc_subtile_pet_walk=None, npc_subtile_pursuit=None,
+                    npc_subtile_recovery=None, npc_subtile_wild_walk=None, npc_subtile_pending_intent=None)
+                setattr(actor, field, owner)
+                def valid(candidate):
+                    owners = [getattr(actor, f) for f in (*names.values(), 'npc_subtile_pursuit', 'npc_subtile_recovery', 'npc_subtile_wild_walk')]
+                    return all(x is None or x is candidate for x in owners) and (candidate is None or candidate in owners)
+                actor.npc_subtile_intent_valid = valid
+                def stop(k, f):
+                    calls.append(k); setattr(actor, f, None)
+                    if actor.npc_subtile_pending_intent and actor.npc_subtile_pending_intent.kind == k:
+                        actor.npc_subtile_pending_intent = None
+                for k, f in names.items():
+                    setattr(actor, 'npc_subtile_stop_' + ('pet_walk' if k == 'pet' else k), lambda k=k,f=f: stop(k,f))
+                for field_name, value in (('npc_subtile_transaction',object()),('npc_subtile_pulse',object()),('npc_subtile_until',11),('npc_subtile_pursuit',object()),('npc_subtile_recovery',object()),('npc_subtile_pending_intent',SimpleNamespace(kind='other'))):
+                    with self.subTest(blocker=field_name):
+                        old=getattr(actor, field_name); setattr(actor, field_name, value); calls.clear()
+                        self.assertFalse(ready(actor,kind)); self.assertEqual(calls,[])
+                        self.assertIs(getattr(actor,field),owner); setattr(actor, field_name,old)
+                actor.npc_subtile_offset_owned=True; actor.step_x=2; calls.clear()
+                self.assertFalse(ready(actor,kind)); self.assertEqual(calls,[]); actor.step_x=0
+                actor.npc_subtile_pending_intent=SimpleNamespace(kind=kind)
+                self.assertTrue(ready(actor,kind)); self.assertEqual(calls,[kind])
+                self.assertIsNone(getattr(actor,field)); self.assertIsNone(actor.npc_subtile_pending_intent)
+                self.assertFalse(ready(actor,'unknown'))
+
+    def test_continuous_producers_route_mixed_flags_to_guarded_native_path(self):
+        paths = {'follow': ('simple_animal.dm','npc_subtile_start_follow(following_mob)','walk_to(src, following_mob, 1, 6)'),
+                 'flee': ('simple_ai.dm','npc_subtile_start_flee(H, 7, npc_subtile_native_interval(2), flee_receipt)','walk_away_od(src, H, 7, 2)'),
+                 'pet_to': ('simple_animal.dm','npc_subtile_start_pet_walk(movement_target, "towards", 0, npc_subtile_native_interval(3))','walk_to(src, movement_target, 0, 3)'),
+                 'pet_away': ('simple_animal.dm','npc_subtile_start_pet_walk(flee_target, "away", 7, npc_subtile_native_interval(2))','walk_away_od(src, flee_target, 7, 2)'),
+                 'cat': ('friendly/cat.dm','npc_subtile_start_pet_walk(movement_target, "towards", near_dist, npc_subtile_native_interval(4))','walk_to(src, movement_target, near_dist, 4)')}
+        base=ROOT/'code/game/mob/living/simple_animal'
+        for label,(path,staged,native) in paths.items():
+            kind = 'pet' if label.startswith('pet') or label == 'cat' else label
+            pattern = r'if \(npc_subtile_'+kind+r'_enabled && npc_subtile_enabled\)\n(?:[^\n]*\n){0,5}?[^\n]*'+re.escape(staged)+r'[^\n]*\n(?:[^\n]*\n){0,6}?\s*else if \(npc_subtile_enabled \|\| npc_subtile_continuous_legacy_ready\("'+kind+r'"\)\)\n\s*'+re.escape(native)
+            with self.subTest(producer=label):
+                text=(base/path).read_text(encoding='utf-8')
+                match=re.search(pattern,text)
+                self.assertIsNotNone(match,label)
+                prior=match.group().replace(' && npc_subtile_enabled','',1)
+                self.assertNotRegex(prior,pattern,'old single-flag branch must fail')
+                unguarded=match.group().replace(' || npc_subtile_continuous_legacy_ready("'+kind+'")','',1)
+                self.assertNotRegex(unguarded,pattern,'unguarded native fallback must fail')
+        for path in ('friendly/cat.dm','friendly/dogs.dm'):
+            source=(base/path).read_text(encoding='utf-8')
+            self.assertIn('turns_since_scan > 5 && (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet"))',source)
+        cat=(base/'friendly/cat.dm').read_text(encoding='utf-8')
+        self.assertEqual(cat.count('if (!npc_subtile_enabled && !npc_subtile_continuous_legacy_ready("pet"))'),2)
+
+
+    def test_real_flee_retirement_cannot_cancel_replacement_ticket(self):
+        source=(ROOT/'code/game/mob/living/simple_animal/subtile_movement.dm').read_text(encoding='utf-8')
+        spec=importlib.util.spec_from_file_location('flee_stop_adapter',ROOT/'tests/save_movement/source_adapter.py')
+        adapter=importlib.util.module_from_spec(spec); spec.loader.exec_module(adapter)
+        fields=('npc_subtile_pending_intent','npc_subtile_flee_ticket','npc_subtile_flee',
+                'npc_subtile_cancel_pending','npc_subtile_release_generation','npc_subtile_stop_flee','move_gen')
+        with patch.object(adapter,'FIELDS',adapter.FIELDS+fields):
+            stop=adapter.project(source,'/mob/living/simple_animal/proc/npc_subtile_stop_flee',
+                                 'src, cancel_pending=True',{},method=True)
+            expire=adapter.project(source,'/mob/living/simple_animal/proc/npc_subtile_stop_flee_ticket',
+                                   'src, ticket',{'isnull':lambda x:x is None},method=True)
+        old,new=object(),object(); releases=[]
+        actor=SimpleNamespace(npc_subtile_pending_intent=SimpleNamespace(kind='flee',flee_ticket=old),
+                              npc_subtile_flee_ticket=old,npc_subtile_flee=SimpleNamespace(flee_ticket=old,generation=4,cancelled=False),move_gen=4)
+        actor.npc_subtile_cancel_pending=lambda kind:setattr(actor,'npc_subtile_pending_intent',None)
+        actor.npc_subtile_release_generation=lambda generation,owned:releases.append((generation,owned))
+        actor.npc_subtile_stop_flee=lambda cancel_pending=True:stop(actor,cancel_pending)
+        stop(actor)
+        self.assertIsNone(actor.npc_subtile_pending_intent); self.assertIsNone(actor.npc_subtile_flee_ticket)
+        self.assertIsNone(actor.npc_subtile_flee); self.assertEqual(releases,[(4,True)])
+        replacement=SimpleNamespace(flee_ticket=new,generation=5,cancelled=False)
+        actor.npc_subtile_flee_ticket=new; actor.npc_subtile_flee=replacement; actor.move_gen=5
+        self.assertFalse(expire(actor,old)); self.assertIs(actor.npc_subtile_flee,replacement)
+        self.assertIs(actor.npc_subtile_flee_ticket,new); self.assertEqual(releases,[(4,True)])
+
+
 if __name__ == '__main__':
     unittest.main()

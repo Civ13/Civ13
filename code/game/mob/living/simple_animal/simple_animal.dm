@@ -186,9 +186,9 @@
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
 				if (get_dist(src, following_mob) > 1)
-					if (npc_subtile_follow_enabled)
+					if (npc_subtile_follow_enabled && npc_subtile_enabled)
 						npc_subtile_start_follow(following_mob)
-					else
+					else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("follow"))
 						walk_to(src, following_mob, 1, 6)
 					turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
@@ -470,9 +470,9 @@
 				break
 	if (movement_target)
 		stop_automated_movement = TRUE
-		if (npc_subtile_pet_enabled)
+		if (npc_subtile_pet_enabled && npc_subtile_enabled)
 			npc_subtile_start_pet_walk(movement_target, "towards", 0, npc_subtile_native_interval(3))
-		else
+		else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet"))
 			walk_to(src, movement_target, 0, 3)
 
 /mob/living/simple_animal/pet/proc/handle_flee_target()
@@ -482,9 +482,9 @@
 	if (flee_target)
 		if (prob(25)) say(flee_message)
 		stop_automated_movement = TRUE
-		if (npc_subtile_pet_enabled)
+		if (npc_subtile_pet_enabled && npc_subtile_enabled)
 			npc_subtile_start_pet_walk(flee_target, "away", 7, npc_subtile_native_interval(2))
-		else
+		else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("pet"))
 			walk_away_od(src, flee_target, 7, 2)
 
 /mob/living/simple_animal/pet/proc/set_flee_target(atom/A)

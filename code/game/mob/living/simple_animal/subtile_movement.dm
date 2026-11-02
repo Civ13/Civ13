@@ -370,6 +370,32 @@
 		return FALSE
 	return npc_subtile_intent_valid(null)
 
+// Retire only the corresponding obsolete continuous owner after a safe opt-out.
+// A paid pulse, partial offset, other owner, or different pending command blocks native movement.
+/mob/living/simple_animal/proc/npc_subtile_continuous_legacy_ready(kind)
+	if (npc_subtile_transaction || npc_subtile_pulse || world.time < npc_subtile_until || (npc_subtile_offset_owned && (step_x || step_y)))
+		return FALSE
+	var/datum/owner = null
+	if (kind == "follow")
+		owner = npc_subtile_follow
+	else if (kind == "flee")
+		owner = npc_subtile_flee
+	else if (kind == "pet")
+		owner = npc_subtile_pet_walk
+	else
+		return FALSE
+	if (!npc_subtile_intent_valid(owner))
+		return FALSE
+	if (npc_subtile_pending_intent && npc_subtile_pending_intent.kind != kind)
+		return FALSE
+	if (kind == "follow")
+		npc_subtile_stop_follow()
+	else if (kind == "flee")
+		npc_subtile_stop_flee()
+	else
+		npc_subtile_stop_pet_walk()
+	return !npc_subtile_pending_intent && npc_subtile_intent_valid(null)
+
 // Species producers retain their native commands until explicitly opted in.
 /mob/living/simple_animal/proc/npc_subtile_species_walk(mode, atom/target = null, lag = 0, direction = 0, distance_limit = 0)
 	if (!npc_subtile_species_enabled || !npc_subtile_enabled)
