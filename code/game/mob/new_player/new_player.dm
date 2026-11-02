@@ -727,12 +727,11 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!isemptylist(approved_list) && config.useapprovedlist)
-			var/found = FALSE
-			for (var/i in approved_list)
-				if (i == client.ckey)
-					found = TRUE
-			if (!found)
+		if (config.useapprovedlist)
+			if (!approved_list_ready)
+				WWalert(usr,"The approved player list is unavailable. Please contact an administrator.", "Error")
+				return
+			if (!verified_access_member("approved", client.ckey))
 				if (config.discordurl)
 					WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved: [config.discordurl]", "Error")
 				else
@@ -1131,15 +1130,8 @@ var/global/redirect_all_players = null
 							WWalert(usr,"The enemy is currently occupying your base! You can't be deployed as an underboss right now.", "Error")
 							return
 
-		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist && clients.len > 12)
-			var/found = FALSE
-			for (var/i in whitelist_list)
-				var/temp_ckey = lowertext(i)
-				temp_ckey = replacetext(temp_ckey," ", "")
-				temp_ckey = replacetext(temp_ckey,"_", "")
-				if (temp_ckey == client.ckey)
-					found = TRUE
-			if (!found)
+		if (actual_job.whitelisted && config.use_job_whitelist && clients.len > 12)
+			if (!verified_access_member("whitelist", client.ckey))
 				WWalert(usr,"You need to be whitelisted to play this job. Apply in the Discord.","Error")
 				return
 
