@@ -164,7 +164,8 @@ class BuildPrefixTests(unittest.TestCase):
         self.assertIn("if: inputs.lint_workflows && (steps.select.outputs.gating == '1' || steps.select.outputs.game == 'true' || github.event_name == 'workflow_dispatch')", reusable)
 
     def choose(self, event, payload, paths=b'README.md\0'):
-        with patch.object(selection.subprocess, 'check_output', return_value=paths):
+        with patch.object(selection.subprocess, 'check_output', return_value=paths), \
+                patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
             return selection.selections('base', 'head', event, True, True, payload)[:3]
 
     def test_every_pushed_commit_first_line_and_branch(self):
@@ -289,8 +290,39 @@ class BuildPrefixTests(unittest.TestCase):
                          (False, False, []))
         self.assertEqual(self.choose('pull_request_target', pr('build: x')), (False, False, []))
 
+    def test_atlas_ancestry_preparation_matches_actual_caller_eligibility(self):
+        reusable = (ROOT/'.github/workflows/ci-selection.yml').read_text()
+        block = reusable.split('      - name: Prepare bounded Atlas ancestry for admitted PRs\n', 1)[1].split('      - name:', 1)[0]
+        guard = next(line.strip()[4:] for line in block.splitlines() if line.strip().startswith('if: '))
+        expression = guard.replace('github.event.pull_request.base.ref', 'base').replace('github.event.action', 'action')
+        expression = expression.replace('github.event_name', 'event').replace('inputs.build_prefix', 'build_prefix')
+        expression = expression.replace('!build_prefix', 'not build_prefix').replace('&&', ' and ').replace('||', ' or ')
+        import ast
+        parsed = ast.parse(expression, mode='eval')
+        allowed = (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.UnaryOp, ast.Not,
+                   ast.Compare, ast.Eq, ast.Name, ast.Load, ast.Constant)
+        self.assertTrue(all(isinstance(node, allowed) for node in ast.walk(parsed)))
+        for event in ('pull_request', 'push', 'workflow_dispatch'):
+            for build_prefix in (False, True):
+                for action in ('opened', 'synchronize', 'reopened', 'edited', 'ready_for_review'):
+                    for base in ('master', 'help-markdown-byond-html', 'release', 'feature'):
+                        values = dict(event=event, build_prefix=build_prefix, action=action, base=base)
+                        with self.subTest(**values):
+                            admitted = selection.eligibility(event, pr('test', base, action), build_prefix)['native']['eligible']
+                            actual = eval(compile(parsed, '<Atlas preparation admission>', 'eval'), {'__builtins__': {}}, values)
+                            self.assertEqual(actual, event == 'pull_request' and admitted)
+        caller = (ROOT/'.github/workflows/comment-review-checks.yml').read_text()
+        changes = caller.split('  changes:\n', 1)[1].split('  contracts:\n', 1)[0]
+        self.assertIn('uses: ./.github/workflows/ci-selection.yml', changes)
+        self.assertNotIn('build_prefix:', changes)
+        subscription = caller.split('  pull_request:\n', 1)[1].split('  push:', 1)[0]
+        self.assertNotIn('branches:', subscription)
+        self.assertIn('--atlas-ancestry', block)
+        self.assertIn('timeout-minutes: 2', block)
+
     def test_other_reusable_callers_keep_existing_selection(self):
-        with patch.object(selection.subprocess, 'check_output', return_value=b'world.dm\0'):
+        with patch.object(selection.subprocess, 'check_output', return_value=b'world.dm\0'), \
+                patch.object(selection, 'atlas_comparison', return_value=dict(ancestor='base')):
             result = selection.selections('base', 'head', 'pull_request', False)
         self.assertEqual(result[:3], (True, False, []))
 
