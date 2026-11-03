@@ -633,8 +633,20 @@ var/global/list/los_active_contexts
 /proc/los_reach_admits(mob/body, atom/target)
 	if (!body || !target || !isturf(body.loc))
 		return FALSE
-	if (!isturf(target) && !isturf(target.loc))
+	var/turf/T = target.loc
+	if (isturf(target))
+		T = target
+	if (!isturf(T))
 		return FALSE
+	// Reach only settles the closed-corner question. Contents sharing a tile
+	// with an opaque blocker (closed door, curtain, bookcase, wall) keep the
+	// ordinary geometric decision; touch reach never reveals what it hides.
+	if (!target.opacity)
+		if (T.opacity)
+			return FALSE
+		for (var/atom/movable/A in T)
+			if (A.opacity && A != target)
+				return FALSE
 	return target.Adjacent(body)
 
 // A displayed storage item is readable only through this body's current open

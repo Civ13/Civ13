@@ -452,30 +452,105 @@ class DistanceCamera(unittest.TestCase):
         self.assertEqual(m.capture(False).eye_x,100.0625)
         self.assertEqual(m.capture(True).eye_x,100)
 
-    def test_reachable_diagonal_beside_a_wall_stays_rendered(self):
-        # Stand-in for Adjacent(): a diagonal is reachable when either shared
-        # cardinal tile is open. Hidden diagonals stay hidden.
-        def run(source,opaque_tiles,reach_calls=None):
-            m=self.camera(source=source);m.opaque.update(opaque_tiles)
-            def reach(body,target):
-                if reach_calls is not None:reach_calls.append((target.x,target.y))
-                dx,dy=target.x-body.x,target.y-body.y
-                return (body.x+dx,body.y) not in m.opaque or (body.x,body.y+dy) not in m.opaque
-            m.env['los_reach_admits']=reach
-            return m,[m.decision(m.target(101,101),m.capture(presentation)) for presentation in (True,False)]
+    def reach_world(self,source=CORE):
+        # Real click reach: turf/movable Adjacent() and ClickCross() are projected
+        # from code/_onclick/adjacent.dm, then los_reach_admits() from the core.
+        m=self.camera(source=source)
+        adjacent=(ROOT/'code/_onclick/adjacent.dm').read_text()
+        def one_liners(text):
+            return re.sub(r'^(\t*)if \((.*)\) (return \w+|continue)$',lambda g:g[1]+'if ('+g[2]+')\n'+g[1]+'\t'+g[3],text,flags=re.M)
+        grid={}
+        class Turf:
+            type='/turf/floor'
+            def __init__(self,x,y):self.x,self.y,self.z=x,y,1;self.opacity=self.density=False;self.contents=[]
+            def Adjacent(self,neighbor,target=None):return turf_adjacent(self,neighbor,target)
+            def ClickCross(self,target_dir,border_only,target_atom=None):return click_cross(self,target_dir,border_only,target_atom)
+        class Obj:
+            def __init__(self,kind,T,opaque=False,dense=False):
+                self.type,self.loc,self.opacity,self.density=kind,T,opaque,dense
+                self.x,self.y,self.z=T.x,T.y,T.z;self.locs=[T];T.contents.append(self)
+                self.flags=0;self.throwpass=False;self.dir=2;self.step_x=self.step_y=0
+                self.alpha=255;self.invisibility=0;self.gcDestroyed=self.gc_destroyed=False
+            def Adjacent(self,neighbor):return movable_adjacent(self,neighbor)
+        def turf(x,y):
+            if (x,y) not in grid:grid[x,y]=Turf(x,y)
+            return grid[x,y]
+        def wall(x,y):
+            T=turf(x,y);T.type='/turf/wall';T.opacity=T.density=True
+        def get_dir(a,b):
+            dx,dy=b.x-a.x,b.y-a.y
+            return (1 if dy>0 else 2 if dy<0 else 0)|(4 if dx>0 else 8 if dx<0 else 0)
+        def get_step(T,d):
+            return turf(T.x+(1 if d&4 else -1 if d&8 else 0),T.y+(1 if d&1 else -1 if d&2 else 0))
+        def typed_iter(xs,kind):
+            xs=getattr(xs,'contents',xs)
+            if kind in ('/atom','/atom/movable'):return [a for a in xs if not a.type.startswith('/turf/')]
+            return [a for a in xs if a.type.startswith(kind)]
+        isturf=lambda a:a is not None and a.type.startswith('/turf/')
+        env=dict(get_turf=lambda a:a if isturf(a) else a.loc,get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),
+                 get_dir=get_dir,get_step=get_step,typed_iter=typed_iter,isturf=isturf,isnull=lambda a:a is None,
+                 istype=lambda a,t=None:False,dm_list=lambda *a:list(a),ON_BORDER=512)
+        env['list']=env['dm_list']
+        bare=lambda text,names:re.sub(r'(?<![\w.])('+'|'.join(names)+r')\b(?!\s*=[^=])',r'src.\1',text)
+        T_adj=bare(one_liners(P.fragment(adjacent,'/turf/Adjacent(')),['x','y','z']).replace('src.ClickCross','ClickCross')
+        T_adj=re.sub(r'(?<![\w.])ClickCross\(','src.ClickCross(',T_adj)
+        turf_adjacent=A.project(T_adj,'/turf/Adjacent','src, neighbor, target=None',env)
+        click_cross=A.project(one_liners(P.fragment(adjacent,'/turf/proc/ClickCross(')),'/turf/proc/ClickCross','src, target_dir, border_only, target_atom=None',env)
+        M_adj=bare(one_liners(P.fragment(adjacent,'/atom/movable/Adjacent(')),['loc','locs'])
+        movable_adjacent=A.project(M_adj,'/atom/movable/Adjacent','src, neighbor',env)
+        reach=A.project(source,'/proc/los_reach_admits','body, target',env)
         calls=[]
-        m,seen=run(CORE,{(101,100)},calls)
-        self.assertEqual(seen,[1,1])
-        self.assertEqual(calls,[(101,101),(101,101)])
-        # Both shared cardinals walled: the corner stays hidden and unreadable.
-        self.assertEqual(run(CORE,{(101,100),(100,101)})[1],[0,0])
-        # Two tiles away is never a reach candidate, even past the same corner.
-        calls=[];m,_=run(CORE,{(101,100)},calls);before=len(calls)
-        m.decision(m.target(102,101),m.capture(True));self.assertEqual(len(calls),before)
-        # Control: without the reach admission the closed corner rule hides it.
+        def spy(body,target):calls.append((target.x,target.y));return reach(body,target)
+        m.env['los_reach_admits']=spy
+        m.env['locate']=lambda x,y,z:turf(x,y)
+        m.env['root_tree_family']=lambda a:False
+        m.body.loc=turf(100,100)
+        both=lambda target:[m.decision(target,m.capture(presentation)) for presentation in (True,False)]
+        return N(m=m,turf=turf,wall=wall,Obj=Obj,reach=reach,calls=calls,both=both)
+
+    def test_reachable_diagonal_beside_a_wall_stays_rendered(self):
         legacy=CORE.replace('if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))','if (FALSE)')
         self.assertNotEqual(legacy,CORE)
-        self.assertEqual(run(legacy,{(101,100)})[1],[0,0])
+        for source,expected in [(CORE,[1,1]),(legacy,[0,0])]:
+            w=self.reach_world(source);w.wall(101,100)
+            item=w.Obj('/obj/item',w.turf(101,101))
+            # Real Adjacent() reaches past one wall; the closed corner rule did not.
+            self.assertTrue(item.Adjacent(w.m.body))
+            self.assertEqual(w.both(item),expected)
+        # Both shared cardinals walled: unreachable, so the corner stays hidden.
+        w=self.reach_world();w.wall(101,100);w.wall(100,101)
+        item=w.Obj('/obj/item',w.turf(101,101))
+        self.assertFalse(item.Adjacent(w.m.body))
+        self.assertEqual(w.both(item),[0,0])
+        # Two tiles away is never a reach candidate, even past the same corner.
+        w=self.reach_world();w.wall(101,100)
+        w.both(w.Obj('/obj/item',w.turf(102,101)));self.assertEqual(w.calls,[])
+
+    def test_reach_preserves_destination_occlusion(self):
+        # A closed door (opaque, dense) beside a wall corner. The door itself is
+        # touchable, so it renders; foreign contents on its tile stay hidden.
+        w=self.reach_world();w.wall(101,100)
+        door=w.Obj('/obj/structure/door',w.turf(101,101),opaque=True,dense=True)
+        item=w.Obj('/obj/item',w.turf(101,101))
+        self.assertTrue(item.Adjacent(w.m.body))
+        self.assertFalse(w.reach(w.m.body,item))
+        self.assertTrue(w.reach(w.m.body,door))
+        self.assertEqual(w.both(item),[0,0])
+        self.assertEqual(w.both(door),[2,2])
+        # Opaque destination turf: contents keep the ordinary decision too.
+        w=self.reach_world();w.wall(101,100);w.wall(101,101)
+        self.assertFalse(w.reach(w.m.body,w.Obj('/obj/item',w.turf(101,101))))
+        # Cardinal neighbour sharing a closed door's tile: reach declines, and
+        # the decision is exactly the pre-change geometric one.
+        legacy=CORE.replace('if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))','if (FALSE)')
+        seen=[]
+        for source in (CORE,legacy):
+            w=self.reach_world(source);T=w.turf(101,100)
+            w.Obj('/obj/structure/door',T,opaque=True,dense=True)
+            item=w.Obj('/obj/item',T)
+            if source is CORE:self.assertFalse(w.reach(w.m.body,item))
+            seen.append(w.both(item))
+        self.assertEqual(seen[0],seen[1])
 
     def test_camera_pan_key_rounding_bounds_and_offset_cadence(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
