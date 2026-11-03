@@ -26,14 +26,16 @@ class RoofAreaPreparation(unittest.TestCase):
         def check(plan):
             self.assertIn('var/version = F["/format_version"]', plan)
             self.assertIn('if(version != 2 && version != 3) continue', plan)
-            self.assertIn('var/list/contents = saved_content_refs(F["[turf_path]/content"], version)', plan)
+            self.assertIn('if(version == 4) version = level_content_version(F)', plan)
+            self.assertIn('var/list/contents = saved_content_refs(level_entry_value(F, ref, "content"), version)', plan)
             self.assertNotIn('params2list(', plan)
         check(plan)
         # Each independently restored integration defect must be detected.
         for old in (plan.replace('if(version != 2 && version != 3) continue',
                                  'if(version != 2) continue'),
-                    plan.replace('saved_content_refs(F["[turf_path]/content"], version)',
-                                 'params2list(F["[turf_path]/content"])')):
+                    plan.replace('saved_content_refs(level_entry_value(F, ref, "content"), version)',
+                                 'params2list(level_entry_value(F, ref, "content"))'),
+                    plan.replace('if(version == 4) version = level_content_version(F)\n', '')):
             with self.subTest(old=old), self.assertRaises(AssertionError):
                 check(old)
 

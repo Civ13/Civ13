@@ -247,6 +247,9 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 	require_export_frame(frame)
 	var/turf/T = frame.source
 	if(T.z != saving_z || world.maxz != zone_export_maxz) throw EXCEPTION("Zone capture dimensions changed")
+	// Segmented levels keep the per-turf membership grid in the level index.
+	var/writer = ("saving_segments" in vars) ? vars["saving_segments"] : null
+	if(writer) F = writer:index
 	var/id = capture_zone_descriptor(T.loc)
 	var/path = "/zone_capture/[frame.entry]"
 	F["[path]/index"] << zone_index(T.x, T.y, T.z)
@@ -336,7 +339,7 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		F.cd = "/"
 		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz", "zone_capture", "map"))
 			if(!(key in F.dir)) throw EXCEPTION("Missing zone capture header")
-		if(!(F["/format_version"] in list(2, 3)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
+		if(!(F["/format_version"] in list(2, 3, 4)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
 		// savefile.dir builds a new list on every read, and indexing a whole level's
 		// directory is itself quadratic. Read each turf's entries by absolute path
 		// instead; a missing value reads as null. The entry count plus the per-turf

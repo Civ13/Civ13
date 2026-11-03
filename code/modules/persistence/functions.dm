@@ -426,6 +426,10 @@ map_storage
 // collected - these lists otherwise pin every atom they touched until the next
 // save/load runs. Called after a save or load finishes, successfully or not.
 /map_storage/proc/clear_bookkeeping()
+	// Release low-memory segment handles (loading.dm). Isolated fixtures that
+	// compile this file without the loader have no such fields.
+	if("saving_segments" in vars) vars["saving_segments"] = null
+	if("segment_reader" in vars) vars["segment_reader"] = null
 	moving_save_roots = list()
 	moving_save_chunk = null
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL

@@ -165,7 +165,7 @@
 				if(!isnum(z) || z < 1 || z > map_storage.save_validation_maxz() || z != round(z) || !isnum(ref) || ref < 1 || ref != round(ref) || !ispath(type, /atom/movable) || ispath(type, /obj/screen) || ispath(type, /mob/new_player))
 					throw EXCEPTION("Invalid durable metadata entry identity")
 				var/savefile/F = new("map_saves/[z].sav")
-				if(F["/generation"] != generation || F["[map_storage.entry_path(F, ref)]/type"] != type)
+				if(F["/generation"] != generation || (hascall(map_storage, "level_entry_value") ? call(map_storage, "level_entry_value")(F, ref, "type") : F["[map_storage.entry_path(F, ref)]/type"]) != type)
 					throw EXCEPTION("Durable metadata entry differs from its completed generation")
 				entry_targets["[z]:[ref]"] = TRUE
 			else

@@ -97,7 +97,7 @@ class RoundtripCompatibilityTests(unittest.TestCase):
                 self.assertEqual(prepared['expected'], result)
                 environment = (output / 'roundtrip.dme').read_text()
                 includes = re.findall(r'^#include "([^"]+)"$', environment, re.M)
-                self.assertEqual(len(includes), 13)
+                self.assertEqual(len(includes), 14)  # debug_lossy.dm: the saver needs its recovery types
                 for path in includes:
                     self.assertTrue(Path(path).is_file(), path)
                 self.assertIn((HERE / 'roundtrip_compat.dm').as_posix(), includes)

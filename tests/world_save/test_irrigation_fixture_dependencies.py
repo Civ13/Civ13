@@ -47,7 +47,7 @@ class FixtureDependencies(unittest.TestCase):
         self.assertEqual(len(re.findall(r'^#include "stubs\.dm"$', dme, re.M)), 1)
         self.assertEqual(len(re.findall(r'^#include "../../code/modules/persistence/loading\.dm"$', dme, re.M)), 1)
         self.assertIn('restored_floor.irrigation_prepare_load()', (ROOT / 'code/modules/persistence/loading.dm').read_text())
-        self.assertIn('validate_saved_irrigation(F, version)', (ROOT / 'code/modules/persistence/loading.dm').read_text())
+        self.assertIn('validate_saved_irrigation(turf_file, version)', (ROOT / 'code/modules/persistence/loading.dm').read_text())
 
 
 if __name__ == '__main__':

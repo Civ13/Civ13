@@ -49,6 +49,7 @@
 		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing saved roof level [z]")
 		var/savefile/F = new("map_saves/[z].sav")
 		var/version = F["/format_version"]
+		if(version == 4) version = level_content_version(F)
 		if(version != 2 && version != 3) continue
 		if((generation && F["/generation"] != generation) || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz())
 			throw EXCEPTION("Saved roof generation or dimensions differ")
@@ -56,23 +57,21 @@
 			for(var/x = 1, x <= world.maxx, x++)
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Missing roof-validation turf")
-				var/turf_path = entry_path(F, ref)
-				if(!ispath(F["[turf_path]/type"], /turf)) throw EXCEPTION("Invalid roof-validation turf")
-				var/list/contents = saved_content_refs(F["[turf_path]/content"], version)
+				if(!ispath(level_entry_value(F, ref, "type"), /turf)) throw EXCEPTION("Invalid roof-validation turf")
+				var/list/contents = saved_content_refs(level_entry_value(F, ref, "content"), version)
 				for(var/child in contents)
-					var/path = entry_path(F, child)
-					var/type = F["[path]/type"]
+					var/type = level_entry_value(F, child, "type")
 					if(!ispath(type, roof_root)) continue
 					var/key = "[x],[y],[z]"
 					if(validated_roof_areas[key] || validated_roof_entries["[z]:[child]"])
 						throw EXCEPTION("Ambiguous or multiply placed saved roof")
 					if(validated_zone_state)
-						prepare_zone_roof(F, x, y, z, child, type)
+						prepare_zone_roof(level_entry_file(F, child), x, y, z, child, type)
 						continue
 					// These fields are explicitly emitted by /obj/roof/get_saved_vars.
 					// Do not guess missing legacy settings or decode an object graph here.
-					var/list/switch_value = F["[path]/switch_area"]
-					var/list/base_value = F["[path]/current_area_type"]
+					var/list/switch_value = level_entry_value(F, child, "switch_area")
+					var/list/base_value = level_entry_value(F, child, "current_area_type")
 					if(!islist(switch_value) || switch_value["kind"] != "value" || !isnum(switch_value["value"]) || !(switch_value["value"] in list(TRUE, FALSE)) || !islist(base_value) || base_value["kind"] != "value" || !ispath(base_value["value"], /area))
 						throw EXCEPTION("Saved roof lacks scalar area metadata")
 					var/base_type = base_value["value"]
@@ -189,6 +188,8 @@
 				var/atom/movable/A = existing_references["[ind]"]
 				A.loc = starting_loc
 			return existing_references["[ind]"]
+		// A segmented level keeps this entry in one of its segment files.
+		savefile = level_entry_file(savefile, ind)
 		savefile.cd = entry_path(savefile, ind)
 		var/type = savefile["type"]
 		var/format_version = savefile["/format_version"]
@@ -389,10 +390,11 @@
 				return loaded_lists["[id]"]
 			var/list/L = list()
 			loaded_lists["[id]"] = L
-			var/length = F["/lists/[id]/length"]
+			var/savefile/LF = level_list_file(F, id)
+			var/length = LF["/lists/[id]/length"]
 			for(var/i = 1, i <= length, i++)
-				var/encoded_key = F["/lists/[id]/[i]/key"]
-				var/encoded_value = F["/lists/[id]/[i]/value"]
+				var/encoded_key = LF["/lists/[id]/[i]/key"]
+				var/encoded_value = LF["/lists/[id]/[i]/value"]
 				var/key = decode_saved_value(F, encoded_key)
 				var/associated_value = decode_saved_value(F, encoded_value)
 				L.len++
@@ -423,7 +425,7 @@
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/ref = F["/map/[z]/[y]/[x]"]
-				var/type = F["[entry_path(F, ref)]/type"]
+				var/type = level_entry_value(F, ref, "type")
 				var/turf/T = locate(x,y,z)
 				T.ChangeTurf(type, FALSE, FALSE)
 				TICK_CHECK
@@ -564,7 +566,7 @@
 			var/savefile/F = new("map_saves/[z].sav")
 			if(round_state.len && F["/generation"] != round_state["generation"])
 				throw EXCEPTION("Saved level belongs to another round generation")
-			var/version = F["/format_version"]
+			var/version = level_content_version(F)
 			if(version && version != 2 && version != 3)
 				throw EXCEPTION("Unsupported save version [version]")
 			if((version == 2 || version == 3) && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()))
@@ -592,16 +594,21 @@
 					if(!isnum(ref) || ref < 1 || ref != round(ref) || turf_refs["[ref]"])
 						throw EXCEPTION("Missing or duplicate turf at [x],[y],[z]")
 					turf_refs["[ref]"] = TRUE
-					F.cd = entry_path(F, ref)
-					var/type = F["type"]
+					var/savefile/turf_file = level_entry_file(F, ref)
+					turf_file.cd = entry_path(turf_file, ref)
+					var/type = turf_file["type"]
 					if(!ispath(type, /turf))
 						throw EXCEPTION("Invalid turf type at [x],[y],[z]")
 					if(ispath(type, /turf/floor))
-						validate_saved_irrigation(F, version)
+						validate_saved_irrigation(turf_file, version)
 					TICK_CHECK
-			F.cd = "/entries"
-			var/list/entries = F.dir.Copy()
-			if(version == 2 || version == 3)
+			var/list/entries
+			if(F["/format_version"] == 4)
+				entries = level_segment_entries(F)
+			else
+				F.cd = "/entries"
+				entries = F.dir.Copy()
+			if(F["/format_version"] != 4 && (version == 2 || version == 3))
 				var/list/shards = entries
 				entries = list()
 				for(var/shard in shards)
@@ -613,31 +620,33 @@
 				TICK_CHECK
 			for(var/ref in entries)
 				TICK_CHECK
-				F.cd = entry_path(F, ref)
-				var/type = F["type"]
+				var/savefile/E = level_entry_file(F, ref)
+				E.cd = entry_path(E, ref)
+				var/type = E["type"]
 				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !turf_refs["[ref]"]))
 					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
 				if(ispath(type, /mob/living/human))
-					validate_saved_player_owner(F, ref, player_owners)
-				var/list/fields = F.dir.Copy()
+					validate_saved_player_owner(E, ref, player_owners)
+					E.cd = entry_path(E, ref)
+				var/list/fields = E.dir.Copy()
 				if("human_subtile_restore_schema" in fields)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 					if(!candidate && (!persistence_active_operation || !persistence_active_operation.current(src, "load"))) throw EXCEPTION("Human direct preflight lacks its load owner")
-					if(type != /mob/living/human || human_candidate_scalar(F["human_subtile_restore_schema"]) != 1) throw EXCEPTION("Human direct restore schema is invalid")
+					if(type != /mob/living/human || human_candidate_scalar(E["human_subtile_restore_schema"]) != 1) throw EXCEPTION("Human direct restore schema is invalid")
 					human_direct_entries += "[ref]"
 #else
 					throw EXCEPTION("Human direct restore schema is unavailable")
 #endif
 				for(var/field in fields)
-					F.cd = entry_path(F, ref)
-					var/value = F[field]
+					E.cd = entry_path(E, ref)
+					var/value = E[field]
 					if(field == "type")
 						continue
 					if(field == "content")
 						for(var/content_ref in saved_content_refs(value, version))
 							if(!entry_set["[content_ref]"])
 								throw EXCEPTION("Missing content entry [content_ref] on z=[z]")
-							var/content_type = F["[entry_path(F, content_ref)]/type"]
+							var/content_type = level_entry_value(F, content_ref, "type")
 							if(!ispath(content_type, /atom/movable))
 								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
@@ -675,8 +684,10 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			if(persistence_active_operation && persistence_active_operation.current(src, "load")) persistence_active_operation.human_direct_preflight_generation = round_state["generation"]
 #endif
+		segment_reader = null // Preflight keeps no segment handles open.
 		return TRUE
 	catch(var/exception/e)
+		segment_reader = null
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 			persistence_active_operation.human_direct_preflight_generation = null
@@ -724,13 +735,14 @@
 			if(visited["[id]"])
 				return TRUE
 			visited["[id]"] = TRUE
-			var/length = F["/lists/[id]/length"]
+			var/savefile/LF = level_list_file(F, id)
+			var/length = LF["/lists/[id]/length"]
 			if(!isnum(length) || length < 0 || length != round(length))
 				throw EXCEPTION("Missing or invalid saved list [id]")
 			for(var/i = 1, i <= length, i++)
 				TICK_CHECK
-				var/key = F["/lists/[id]/[i]/key"]
-				var/associated_value = F["/lists/[id]/[i]/value"]
+				var/key = LF["/lists/[id]/[i]/key"]
+				var/associated_value = LF["/lists/[id]/[i]/value"]
 				validate_saved_value(F, key, entries, visited)
 				validate_saved_value(F, associated_value, entries, visited)
 			return TRUE
@@ -739,7 +751,7 @@
 // Large flat savefile directories make repeated entry navigation expensive.
 // Legacy files remain flat; new files cap each entry directory at 512 children.
 /map_storage/proc/entry_path(savefile/F, ref)
-	if(F["/format_version"] == 2 || F["/format_version"] == 3)
+	if(F["/format_version"] == 2 || F["/format_version"] == 3 || F["/format_version"] == 4)
 		return "/entries/[round((text2num("[ref]") - 1) / 512)]/[ref]"
 	return "/entries/[ref]"
 
@@ -849,7 +861,7 @@
 		if(generation && F["/generation"] != generation)
 			throw EXCEPTION("Cross-level link target belongs to another generation")
 		for(var/ref in wanted)
-			if("[F["[entry_path(F, ref)]/type"]]" != wanted[ref])
+			if("[level_entry_value(F, ref, "type")]" != wanted[ref])
 				throw EXCEPTION("Cross-level link target differs from its saved level")
 		var/list/queue = list()
 		var/list/seen = list()
@@ -862,10 +874,9 @@
 			if(seen[ref]) continue
 			seen[ref] = TRUE
 			wanted -= ref
-			var/path = entry_path(F, ref)
-			var/type = F["[path]/type"]
+			var/type = level_entry_value(F, ref, "type")
 			if(ispath(type, /obj/screen) || ispath(type, /datum/hud)) continue
-			for(var/child in saved_content_refs(F["[path]/content"], F["/format_version"])) queue += child
+			for(var/child in saved_content_refs(level_entry_value(F, ref, "content"), level_content_version(F))) queue += child
 		if(wanted.len) throw EXCEPTION("Cross-level link references an unreachable world entry")
 
 /map_storage/proc/begin_level_link_import()
@@ -894,3 +905,385 @@
 	loading_level_link_fields = list()
 	loading_level_link_targets = list()
 	loading_level_links = null
+
+// Low-memory world save and load.
+//
+// BYOND holds an open savefile in memory as a whole tree: the first read of any
+// key materializes every node, and writing grows the same tree until the file
+// object is released. A native probe measured about 5.8 bytes of resident memory
+// per byte of savefile (a 39 MB level held 227 MB), and BYOND never returns that
+// memory to the operating system. One large level file therefore sets the
+// server's resident high-water mark for the rest of its uptime.
+//
+// Segmented levels (format 4) bound that cost. map_saves/<z>.sav becomes an
+// index that keeps the header, the turf grid, zone capture rows and a segment
+// table. Entries and lists are written to map_saves/<z>.part<k>.sav, each an
+// ordinary format-3 file. A segment is closed and a new one started at a turf
+// boundary once it holds PERSISTENCE_SEGMENT_SIZE entries plus lists, so only
+// one segment's tree is resident while saving. Readers resolve an entry or list
+// ID to its segment through the table and keep at most a few segments open.
+// Saves choose this layout only when the projected memory would pass the
+// configured limit; otherwise they keep the single-file format 3 layout.
+//
+// Bound: the reader cache holds at most 2 (low-memory) or 6 segments, but a
+// recursive Load_Entry or list decode keeps its own segment handle while it
+// follows a reference into another segment. Resident segments are therefore
+// the cache plus one per distinct segment on the active reference chain.
+// Fresh references are captured in the segment that first reaches them, so
+// cross-segment chains come from references to entries captured on earlier
+// tiles and from late parent appends (roster drain, animal sweep). A long
+// chain of such references degrades toward the full-file cost, never beyond.
+
+#define PERSISTENCE_SAVEFILE_MEMORY_FACTOR 6
+#define PERSISTENCE_SEGMENT_CACHE_NORMAL 6
+#define PERSISTENCE_SEGMENT_CACHE_LOW 2
+
+/map_storage
+	var/datum/level_segment_writer/saving_segments
+	var/datum/level_segment_reader/segment_reader
+	var/datum/persistence_world_operation/low_memory_operation
+	var/low_memory_active = FALSE
+	var/last_low_memory_plan
+	var/low_memory_override = null // TRUE/FALSE pins the plan for admins and fixtures.
+	var/segment_size_override = null
+
+// map_saves/2.sav -> map_saves/2.part3.sav. The index's own path names its
+// segments, so a copied generation (map_backups/) reads its own copies.
+/proc/level_segment_path(index_path, number)
+	index_path = "[index_path]"
+	if(copytext(index_path, max(1, length(index_path) - 3)) != ".sav") throw EXCEPTION("Segmented level index has no .sav name")
+	return "[copytext(index_path, 1, length(index_path) - 3)].part[number].sav"
+
+// Segment files of one level, by file name in the given directory.
+/proc/level_segment_files(directory, z)
+	var/list/found = list()
+	var/prefix = "[z].part"
+	for(var/name in flist(directory))
+		if(findtext(name, prefix) == 1 && copytext(name, max(1, length(name) - 3)) == ".sav") found += name
+	return found
+
+/proc/delete_level_segment_files(directory, z)
+	for(var/name in level_segment_files(directory, z))
+		if(!fdel("[directory][name]")) throw EXCEPTION("Could not remove stale level segment [name]")
+
+// Resident set of this process in MiB, or null when it cannot be read. shell()
+// needs a trusted daemon; a probe failure only removes the resident term from
+// the projection, it never blocks a save or load.
+/proc/persistence_process_memory_mb()
+	var/pid = world.process
+	if(!pid) return null
+	var/path = "data/persistence_memory_probe.txt"
+	var/result
+	try
+		if(fexists(path)) fdel(path)
+		if(world.system_type == UNIX)
+			shell("grep VmRSS /proc/[pid]/status > [path]")
+		else
+			shell("tasklist /FI \"PID eq [pid]\" /FO CSV /NH > [path]")
+		var/text = fexists(path) ? file2text(path) : null
+		fdel(path)
+		if(!istext(text) || !length(text)) return null
+		if(world.system_type == UNIX)
+			result = persistence_digits(copytext(text, findtext(text, ":") + 1))
+		else
+			result = persistence_parse_tasklist_kib(text)
+	catch
+		return null
+	if(!isnum(result) || result <= 0) return null
+	return round(result / 1024) // Both sources report KiB.
+
+// tasklist /FO CSV row: "image","pid","session","number","memory K". The
+// memory field's grouping separator depends on locale (1,234 or 1.234 or 1 234).
+/proc/persistence_parse_tasklist_kib(text)
+	if(!istext(text)) return null
+	var/list/fields = splittext(text, "\",\"")
+	if(fields.len < 5) return null
+	return persistence_digits(fields[5])
+
+/proc/persistence_digits(text)
+	var/digits = ""
+	for(var/i = 1, i <= length(text), i++)
+		var/c = copytext(text, i, i + 1)
+		if(c >= "0" && c <= "9") digits += c
+	return length(digits) ? text2num(digits) : null
+
+// Bytes a full single-file save of the largest level would hold, from the
+// current generation on disk (index plus any segments of that level).
+/proc/persistence_largest_level_bytes(directory = "map_saves/")
+	var/largest = 0
+	for(var/z = 1, z <= world.maxz, z++)
+		var/total = 0
+		if(fexists("[directory][z].sav")) total += length(file("[directory][z].sav"))
+		for(var/name in level_segment_files(directory, z))
+			total += length(file("[directory][name]"))
+		largest = max(largest, total)
+	return largest
+
+// Decides once per world operation. "always" forces the low-memory path; a
+// positive limit enables it when the resident set plus the projected tree of
+// the largest level would pass that limit.
+/map_storage/proc/plan_low_memory(kind)
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(operation && low_memory_operation == operation) return low_memory_active
+	low_memory_operation = operation
+	low_memory_active = FALSE
+	// A failed operation can leave its segment handles behind; drop them here.
+	saving_segments = null
+	segment_reader = null
+	if(!isnull(low_memory_override))
+		low_memory_active = !!low_memory_override
+		last_low_memory_plan = "[kind]: [low_memory_active ? "low-memory" : "full-file"] (override)"
+		return low_memory_active
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// The human spatial prototype reads level files directly; keep it on format 3.
+	last_low_memory_plan = "[kind]: full-file (human spatial prototype)"
+	return FALSE
+#else
+	// Read through vars: isolated persistence fixtures compile without config.
+	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
+	var/limit = settings && ("persistence_memory_limit_mb" in settings.vars) ? settings.vars["persistence_memory_limit_mb"] : 0
+	var/forced = settings && ("persistence_low_memory_always" in settings.vars) && settings.vars["persistence_low_memory_always"]
+	if(!forced && (!isnum(limit) || limit <= 0))
+		last_low_memory_plan = "[kind]: full-file (no memory limit configured)"
+		return FALSE
+	var/resident = persistence_process_memory_mb()
+	var/level_mb = round(persistence_largest_level_bytes() / 1048576)
+	var/projected = (isnum(resident) ? resident : 0) + PERSISTENCE_SAVEFILE_MEMORY_FACTOR * level_mb
+	low_memory_active = forced || projected > limit
+	last_low_memory_plan = "[kind]: [low_memory_active ? "low-memory" : "full-file"] (resident=[isnum(resident) ? "[resident] MiB" : "unknown"], largest level=[level_mb] MiB, projected=[projected] MiB, limit=[limit] MiB[forced ? ", forced" : ""])"
+	world.log << "World [last_low_memory_plan]"
+	return low_memory_active
+#endif
+
+// Format 4 is unreadable by builds before it. Before the first segmented
+// save replaces a full-file generation, copy that completed generation to
+// map_rollback/ (once: a segmented current generation is never copied).
+/map_storage/proc/preserve_full_file_rollback()
+	if(!fexists("map_saves/save_complete.txt")) return
+	for(var/z = 1, z <= world.maxz, z++)
+		if(level_segment_files("map_saves/", z).len) return
+	var/rollback = "map_rollback/"
+	if(fexists("[rollback]save_complete.txt") && !fdel("[rollback]save_complete.txt"))
+		throw EXCEPTION("Could not invalidate rollback marker; existing save retained")
+	for(var/name in flist("map_saves/"))
+		save_work_check()
+		if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
+			if(!fcopy("map_saves/[name]", "[rollback][name]"))
+				throw EXCEPTION("Could not copy [name] to the full-file rollback; existing save retained")
+	if(!fcopy("map_saves/save_complete.txt", "[rollback]save_complete.txt"))
+		throw EXCEPTION("Could not mark the full-file rollback; existing save retained")
+	world.log << "Kept the last full-file world save in [rollback] for builds without segmented levels."
+
+/map_storage/proc/segment_cache_limit()
+	if(persistence_active_operation)
+		plan_low_memory(persistence_active_operation.kind)
+	return low_memory_active ? PERSISTENCE_SEGMENT_CACHE_LOW : PERSISTENCE_SEGMENT_CACHE_NORMAL
+
+/map_storage/proc/segment_budget()
+	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
+	var/budget = settings && ("persistence_segment_size" in settings.vars) ? settings.vars["persistence_segment_size"] : 0
+	if(isnum(segment_size_override) && segment_size_override >= 1) return round(segment_size_override)
+	if(!isnum(budget) || budget < 256) budget = 4096
+	return round(budget)
+
+// Content semantics of a level file: a segmented index describes format-3
+// content. Validates the segment table before reporting it.
+/map_storage/proc/level_content_version(savefile/F)
+	var/version = F["/format_version"]
+	if(version != 4) return version
+	level_segments(F)
+	return 3
+
+/map_storage/proc/level_segments(savefile/F)
+	// A segment file passed down a reader's recursion routes through the
+	// reader of its own index. Never probe absent keys of ordinary levels.
+	if(segment_reader && findtext("[F.name]", segment_reader.part_prefix) == 1) return segment_reader
+	if(F["/format_version"] != 4) return null
+	if(!segment_reader || segment_reader.index != F)
+		segment_reader = null
+		segment_reader = new /datum/level_segment_reader(F, segment_cache_limit())
+	return segment_reader
+
+// The file that holds an entry's fields: the level file itself, the segment
+// being written, or the segment the index assigns to that entry.
+/map_storage/proc/level_entry_file(savefile/F, ref)
+	if(saving_segments && saving_segments.owns(F)) return saving_segments.file_for_entry(ref)
+	var/datum/level_segment_reader/R = level_segments(F)
+	return R ? R.file_for(R.entry_last, ref, "entry") : F
+
+/map_storage/proc/level_list_file(savefile/F, id)
+	var/datum/level_segment_reader/R = level_segments(F)
+	return R ? R.file_for(R.list_last, id, "list") : F
+
+/map_storage/proc/level_entry_value(savefile/F, ref, field)
+	var/savefile/E = level_entry_file(F, ref)
+	return E["[entry_path(E, ref)]/[field]"]
+
+// Every entry ID of a segmented level. Each entry must sit in the segment its
+// ID range names, or readers would not find it.
+/map_storage/proc/level_segment_entries(savefile/F)
+	var/datum/level_segment_reader/R = level_segments(F)
+	var/list/entries = list()
+	var/first = 1
+	for(var/number = 1, number <= R.count, number++)
+		var/last = R.entry_last[number]
+		var/savefile/S = R.open(number)
+		S.cd = "/"
+		if("entries" in S.dir)
+			S.cd = "/entries"
+			var/list/shards = S.dir.Copy()
+			for(var/shard in shards)
+				S.cd = "/entries/[shard]"
+				for(var/ref in S.dir.Copy())
+					var/value = text2num(ref)
+					if(!isnum(value) || value < first || value > last) throw EXCEPTION("Saved entry [ref] is outside segment [number]")
+					entries += ref
+				TICK_CHECK
+		S.cd = "/"
+		first = last + 1
+	return entries
+
+/datum/level_segment_reader
+	var/savefile/index
+	var/base_path
+	var/part_prefix
+	var/generation
+	var/count = 0
+	var/list/entry_last
+	var/list/list_last
+	var/limit = PERSISTENCE_SEGMENT_CACHE_NORMAL
+	var/list/open_order = list()
+	var/list/open_files = list()
+
+/datum/level_segment_reader/New(savefile/F, cache_limit)
+	index = F
+	base_path = F.name
+	part_prefix = copytext(level_segment_path(base_path, 1), 1, -length("1.sav"))
+	generation = F["/generation"]
+	if(isnum(cache_limit) && cache_limit >= 1) limit = cache_limit
+	count = F["/segments/count"]
+	entry_last = F["/segments/entries"]
+	list_last = F["/segments/lists"]
+	if(!isnum(count) || count < 1 || count != round(count) || count > 1000000) throw EXCEPTION("Invalid level segment count")
+	if(!islist(entry_last) || !islist(list_last) || entry_last.len != count || list_last.len != count) throw EXCEPTION("Invalid level segment table")
+	check_bounds(entry_last)
+	check_bounds(list_last)
+
+/datum/level_segment_reader/proc/check_bounds(list/bounds)
+	var/previous = 0
+	for(var/value in bounds)
+		if(!isnum(value) || value < previous || value != round(value)) throw EXCEPTION("Invalid level segment bounds")
+		previous = value
+
+/datum/level_segment_reader/proc/file_for(list/bounds, id, kind)
+	if(!isnum(id)) id = text2num("[id]")
+	if(!isnum(id) || id < 1 || id > bounds[bounds.len]) throw EXCEPTION("Saved [kind] [id] is outside its level segments")
+	var/low = 1
+	var/high = bounds.len
+	while(low < high)
+		var/middle = round((low + high) / 2)
+		if(bounds[middle] >= id) high = middle
+		else low = middle + 1
+	return open(low)
+
+/datum/level_segment_reader/proc/open(number)
+	var/key = "[number]"
+	var/savefile/S = open_files[key]
+	if(S)
+		open_order -= key
+		open_order += key
+		return S
+	var/path = level_segment_path(base_path, number)
+	if(!fexists(path)) throw EXCEPTION("Missing level segment [path]")
+	S = new(path)
+	if(S["/format_version"] != 3 || S["/segment"] != number || S["/generation"] != generation) throw EXCEPTION("Level segment [path] belongs to another generation")
+	open_files[key] = S
+	open_order += key
+	while(open_order.len > limit)
+		var/oldest = open_order[1]
+		open_order.Cut(1, 2)
+		open_files -= oldest
+	return S
+
+/datum/level_segment_writer
+	var/map_storage/owner
+	var/savefile/index
+	var/savefile/current
+	var/savefile/late_file
+	var/late_number = 0
+	var/index_path
+	var/generation
+	var/z
+	var/budget
+	var/number = 0
+	var/start_nodes = 0
+	var/list/entry_last = list()
+	var/list/list_last = list()
+
+/datum/level_segment_writer/New(map_storage/storage, savefile/F, path, level, generation_id, segment_budget)
+	owner = storage
+	index = F
+	index_path = path
+	z = level
+	generation = generation_id
+	budget = segment_budget
+	open_next()
+
+/datum/level_segment_writer/proc/owns(savefile/F)
+	return F && (F == current || F == index || F == late_file)
+
+/datum/level_segment_writer/proc/open_next()
+	close_current()
+	number++
+	var/path = level_segment_path(index_path, number)
+	if(fexists(path) && !fdel(path)) throw EXCEPTION("Could not replace level segment [path]")
+	current = new(path)
+	current["/format_version"] << 3
+	current["/generation"] << generation
+	current["/segment"] << number
+	current["/level"] << z
+	start_nodes = owner.saving_reference_pins.len + owner.saving_list_pins.len
+
+/datum/level_segment_writer/proc/close_current()
+	if(!current) return
+	entry_last += owner.saving_reference_pins.len
+	list_last += owner.saving_list_pins.len
+	current.Flush()
+	current = null
+
+// Only between turfs: every entry's fields stay inside the segment that
+// allocated its ID, so the ID ranges in the table are exact.
+/datum/level_segment_writer/proc/rotate_if_full()
+	if(owner.saving_export_stack.len || owner.moving_save_chunk) return
+	if(owner.saving_reference_pins.len + owner.saving_list_pins.len - start_nodes < budget) return
+	open_next()
+	// Let the released tree's memory be reused before the next segment grows.
+	sleep(world.tick_lag)
+
+// Late writes (roster drain, animal sweep) can append to a turf saved in an
+// earlier segment. Reopen that one segment for the write.
+/datum/level_segment_writer/proc/file_for_entry(ref)
+	if(!isnum(ref)) ref = text2num("[ref]")
+	var/closed = entry_last.len ? entry_last[entry_last.len] : 0
+	if(!isnum(ref) || ref < 1) throw EXCEPTION("Invalid saved entry for a level segment")
+	if(ref > closed) return current
+	var/target = 1
+	while(entry_last[target] < ref) target++
+	if(late_number != target)
+		if(late_file) late_file.Flush()
+		late_file = null
+		late_file = new(level_segment_path(index_path, target))
+		late_number = target
+	return late_file
+
+/datum/level_segment_writer/proc/finish()
+	close_current()
+	if(late_file) late_file.Flush()
+	late_file = null
+	index["/segments/count"] << entry_last.len
+	index["/segments/entries"] << entry_last
+	index["/segments/lists"] << list_last
+
+#undef PERSISTENCE_SEGMENT_CACHE_LOW
+#undef PERSISTENCE_SEGMENT_CACHE_NORMAL
+#undef PERSISTENCE_SAVEFILE_MEMORY_FACTOR

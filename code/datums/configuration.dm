@@ -143,6 +143,9 @@ var/list/gamemode_cache = list()
 	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
+	var/persistence_memory_limit_mb = 0 // world saves/loads switch to segmented low-memory levels when projected memory passes this; 0 disables.
+	var/persistence_low_memory_always = FALSE
+	var/persistence_segment_size = 4096 // saved entries plus lists per low-memory level segment.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
 	var/new_z_cell_budget = 1400000
 	var/new_z_roof_levels = 1
@@ -462,6 +465,20 @@ var/list/gamemode_cache = list()
 						config.vars[name] = text2num(value)
 					else
 						log_misc("Configuration: '[name]' rejected; use a bounded decimal integer while no level reservation is active. Existing allocator policy retained.")
+
+				if ("persistence_memory_limit_mb")
+					var/limit_mb = text2num(value)
+					config.persistence_memory_limit_mb = (isnum(limit_mb) && limit_mb > 0) ? round(limit_mb) : 0
+
+				if ("persistence_low_memory_always")
+					config.persistence_low_memory_always = TRUE
+
+				if ("persistence_segment_size")
+					var/segment_size = text2num(value)
+					if (isnum(segment_size) && segment_size >= 256 && segment_size <= 1000000)
+						config.persistence_segment_size = round(segment_size)
+					else
+						log_misc("Configuration: PERSISTENCE_SEGMENT_SIZE '[value]' must be 256-1000000; keeping [config.persistence_segment_size].")
 
 				if ("persistence_reboot_hour")
 					var/reboot_hour = text2num(value)
