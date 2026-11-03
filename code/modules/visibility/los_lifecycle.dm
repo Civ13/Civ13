@@ -37,6 +37,15 @@
 	los_camera_union_until = max(los_camera_union_until, world.time + max(0, animation_time) + 1)
 	los_dirty = TRUE
 
+// Players can turn the root tree compositor off: it adds several full-screen
+// render passes. Trees then use the existing per-tree fallback presentation.
+/client/proc/root_tree_compositor_enabled()
+	if(!CIV13_ROOT_TREE_PRESENTATION)
+		return FALSE
+	if(!prefs)
+		return TRUE
+	return is_preference_enabled(/datum/client_preference/root_lit_trees)
+
 /client/proc/set_geometric_los(enabled)
 	los_enabled = !!enabled
 	if(!los_enabled)
@@ -83,11 +92,12 @@
 		return
 	if(!los_dirty && key == los_last_policy && world.time < los_next_audit)
 		return TRUE
-	if(root_tree_presenter && !root_tree_presenter.planes_admitted())
+	var/use_compositor = root_tree_compositor_enabled()
+	if(root_tree_presenter && (!use_compositor || !root_tree_presenter.planes_admitted()))
 		root_tree_presenter.retire()
-	if(!root_tree_presenter && CIV13_ROOT_TREE_PRESENTATION)
+	if(!root_tree_presenter && use_compositor)
 		new /datum/root_tree_presenter(src, V)
-	if(CIV13_ROOT_TREE_PRESENTATION && !root_tree_presenter)
+	if(use_compositor && !root_tree_presenter)
 		los_last_error = "root compositor admission failed"
 		los_dirty = TRUE
 		return
@@ -116,7 +126,7 @@
 	V.movement_turf = get_turf(mob)
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
-	los_next_audit = world.time + 5
+	los_next_audit = world.time + 10
 	return TRUE
 
 /proc/los_invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)
