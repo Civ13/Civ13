@@ -72,11 +72,16 @@ var/global/list/limb_icon_cache = list()
 
 	icon = mob_icon
 
+// Nonzero only while the persistence loader constructs a saved organ.
+var/global/persistence_organ_import_depth = 0
+
 /obj/item/organ/external/update_icon(var/regenerate = FALSE)
 	if (QDELETED(src))
 		return
 	if (!owner)//special check
-		qdel(src)
+		// World import constructs saved limbs before restoring their owner field.
+		if (!persistence_organ_import_depth)
+			qdel(src)
 		return
 	if (!owner.species || !species || !owner.body_build)
 		return
