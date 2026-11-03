@@ -16,7 +16,7 @@
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
 	M.shock_stage = max(0,M.shock_stage-removed)
-	M.mood += removed*10
+	M.adjust_mood(removed*10)
 	M.SetParalysis(0)
 	M.SetWeakened(0)
 
@@ -138,7 +138,7 @@
 
 /datum/reagent/tramadol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 80)
-	M.mood += removed*6
+	M.adjust_mood(removed*6)
 /datum/reagent/tramadol/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
@@ -417,7 +417,7 @@
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
 			to_chat(M, "<span class='notice'>Your mind feels stable... a little stable.</span>")
-	M.mood += removed*40
+	M.adjust_mood(removed*40)
 
 /datum/reagent/paroxetine
 	name = "Paroxetine"
@@ -440,7 +440,7 @@
 			else
 				to_chat(M, "<span class='warning'>Your mind breaks apart...</span>")
 				M.hallucination += 200
-	M.mood += removed*50
+	M.adjust_mood(removed*50)
 
 /datum/reagent/opium
 	name = "Opium"
@@ -455,7 +455,7 @@
 /datum/reagent/opium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 100)
 	M.addictions["opium"] += 0.1
-	M.mood += removed*30
+	M.adjust_mood(removed*30)
 /datum/reagent/opium/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
@@ -476,7 +476,7 @@
 	M.addictions["cocaine"] += 0.12
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
-	M.mood += removed*30
+	M.adjust_mood(removed*30)
 
 /datum/reagent/cocaine/overdose(var/mob/living/human/M, var/alien)
 	..()
@@ -503,7 +503,7 @@
 	M.make_jittery(5)
 	M.make_dizzy(10)
 	M.apply_effect(3, STUTTER, FALSE)
-	M.mood += removed*30
+	M.adjust_mood(removed*30)
 
 /datum/reagent/crack/overdose(var/mob/living/human/M, var/alien, var/removed)
 	..()
@@ -512,7 +512,7 @@
 	M.add_chemical_effect(CE_PULSE, 6)
 	M.hallucination = max(M.hallucination, 3)
 	M.apply_effect(3, STUTTER, FALSE)
-	M.mood -= 30
+	M.adjust_mood(-(30))
 
 /datum/reagent/pervitin
 	name = "Methamphetamine"
@@ -529,7 +529,7 @@
 		M.emote(pick("twitch", "blink_r", "shiver"))
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 	M.add_chemical_effect(CE_PULSE, 2)
-	M.mood += removed*20
+	M.adjust_mood(removed*20)
 
 /datum/reagent/morphine
 	name = "Morphine"
@@ -543,7 +543,7 @@
 
 /datum/reagent/morphine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
-	M.mood += removed*30
+	M.adjust_mood(removed*30)
 /datum/reagent/morphine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
@@ -663,7 +663,7 @@
 	M.addictions["cocaine"] += 0.50
 	M.add_chemical_effect(CE_SPEEDBOOST, 12)
 	M.add_chemical_effect(CE_PULSE, 9)
-	M.mood += removed*100
+	M.adjust_mood(removed*100)
 
 /datum/reagent/sterilizine
 	name = "Sterilizine"

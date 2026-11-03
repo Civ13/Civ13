@@ -382,7 +382,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if (!istype(H) || QDELETED(H) || H.gcDestroyed || !H.loc)
 		return
 
-	H.mood = max(H.mood, initial(H.mood))
+	H.set_mood(max(H.mood, initial(H.mood)))
 	H.handle_mood()
 
 	log_admin("[key_name(src)] restored mood for [key_name(H)]")

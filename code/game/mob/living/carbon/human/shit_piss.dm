@@ -304,7 +304,7 @@
 		message = "<B>[src]</B> shits \his pants."
 		reagents.add_reagent("poo", 10)
 		adjust_hygiene(-25)
-		mood -= 25
+		adjust_mood(-(25))
 		w_uniform.shit_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="shit")
 		w_uniform.overlays += w_uniform.shit_overlay
 		w_uniform.update_icon()
@@ -363,7 +363,7 @@
 	else if(w_uniform)//In your pants.
 		message = "<B>[src]</B> pisses \his pants."
 		adjust_hygiene(-25)
-		mood -= 15
+		adjust_mood(-(15))
 		w_uniform.piss_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="piss")
 		w_uniform.overlays += w_uniform.piss_overlay
 		w_uniform.update_icon()

@@ -85,9 +85,9 @@ class PlayerCareSourceContracts(unittest.TestCase):
 
     def test_mood_restores_baseline_preserves_boost_and_refreshes_modifier(self):
         body = command(COMMANDS[1])
-        self.assertIn('H.mood = max(H.mood, initial(H.mood))\n\tH.handle_mood()', body)
-        self.assertEqual(re.findall(r'^\s*H\.(\w+) = ', body, re.M), ['mood'])
-        self.assertEqual(re.findall(r'^\s*H\.(\w+)\(', body, re.M), ['handle_mood'])
+        self.assertIn('H.set_mood(max(H.mood, initial(H.mood)))\n\tH.handle_mood()', body)
+        self.assertEqual(re.findall(r'^\s*H\.(\w+) = ', body, re.M), [])
+        self.assertEqual(re.findall(r'^\s*H\.(\w+)\(', body, re.M), ['set_mood', 'handle_mood'])
         defines = (ROOT / 'code/game/mob/living/carbon/carbon_defines.dm').read_text()
         self.assertIn('var/mood = 100', defines)
         handler = proc('code/game/mob/living/carbon/human/human_needs.dm',

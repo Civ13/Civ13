@@ -44,6 +44,9 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
 
+# Exact stdlib-only mood projections, registered in the bounded offline baseline.
+MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
+
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
 ATLAS_TEST_INPUTS = {
@@ -328,6 +331,10 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
+        if path in MOOD_SLEEP_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/mood_sleep/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered mood-sleep executable test requires explicit CI review')
         if path in WELL_SMELL_OFFLINE_TESTS:
             continue
         if path.startswith('tests/well_smell/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

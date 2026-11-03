@@ -53,6 +53,22 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_mood_sleep_registration_is_explicit_and_preserves_prior_impact(self):
+        suite = ci.SUITES['mood_sleep']
+        self.assertEqual(suite['files'], ('tests/mood_sleep/test_mood_sleep.py',))
+        self.assertIn('mood_sleep', self.selected(['tests/mood_sleep/original_writes.json']))
+        previous = {name: entry for name, entry in ci.SUITES.items() if name != 'mood_sleep'}
+        for path in ('code/game/mob/living/carbon/human/human_needs.dm',
+                     'code/game/mob/living/carbon/human/human_life.dm',
+                     'code/modules/1713/production.dm'):
+            with self.subTest(path=path), patch.object(ci, 'SUITES', previous):
+                prior = ci.impact([path])
+                selected = self.selected([path])
+            current = ci.impact([path])
+            self.assertEqual(current['fallback_reasons'], prior['fallback_reasons'])
+            self.assertTrue(selected <= self.selected([path]))
+            self.assertIn('mood_sleep', self.selected([path]))
+
     def test_game_ready_registration_is_explicit_offline_and_additive(self):
         suite=ci.SUITES['game_ready']
         self.assertEqual(suite['files'], ('tests/game_ready/test_release.py',

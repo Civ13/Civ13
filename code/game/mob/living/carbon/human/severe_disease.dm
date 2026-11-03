@@ -41,7 +41,7 @@
 	// Symptoms remain meaningful during treatment, but never cause a random
 	// early lethal toxin/brain spike. Other injuries/starvation still matter.
 	if (disease_progression >= 180)
-		mood = max(0, mood - 0.1)
+		set_mood(max(0, mood - 0.1))
 		apply_effect(3, DROWSY, FALSE)
 		apply_effect(3, AGONY, FALSE)
 		if (disease_progression >= 900)

@@ -36,6 +36,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete mood helpers, maintenance and expression projections; no native world.
+    # Production paths retain the prior conservative fallback/neighbor selection.
+    'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),
+        'paths': ('tests/mood_sleep/',), 'shared_paths': (
+            'tests/save_movement/source_adapter.py',)},
     # Complete startup observer projections and hook contracts; fake timers/Export.
     'game_ready': {'files': ('tests/game_ready/test_release.py',
                              'tests/game_ready/test_ready.py',

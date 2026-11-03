@@ -82,16 +82,16 @@
 //			img_nasties.overlays += null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
 //			overlays_standing[27] = null
-			mood -= 0.01
+			adjust_mood(-(0.01))
 		if(0 to HYGIENE_LEVEL_DIRTY)
 			img_nasties.overlays += smell
-			mood -= 0.02
+			adjust_mood(-(0.02))
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
 		if (prob(12))
 			for(var/mob/living/human/HM in range(3,src))
 				if (HM != src && !HM.orc)
 					to_chat(HM, "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>")
-					HM.mood -= 1.5
+					HM.adjust_mood(-(1.5))
 	var/fleas_found = FALSE
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C)
@@ -106,7 +106,7 @@
 				fleas_found = TRUE
 	if (fleas_found)
 		img_nasties.overlays += fleas
-		mood -= 0.02
+		adjust_mood(-(0.02))
 		if ((prob(0.2) || (prob(0.5) && find_trait("Weak Immune System"))) && !disease && !inducedSSD)
 			disease = TRUE
 			disease_type = "typhus"
@@ -124,3 +124,14 @@
 /mob/living/human/proc/set_hygiene(var/amount)
 	if(amount >= 0)
 		hygiene = min(HYGIENE_LEVEL_CLEAN, amount)
+
+// Mood changes use the recipient's actual sleep state, including off-tick events.
+// Discard losses immediately; waking never replays them. Resting alone is awake.
+/mob/living/human/proc/set_mood(amount)
+	if (sleeping > 0 && amount < mood)
+		return mood
+	mood = amount
+	return mood
+
+/mob/living/human/proc/adjust_mood(amount)
+	return set_mood(mood + amount)

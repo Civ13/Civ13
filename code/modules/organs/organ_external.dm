@@ -197,7 +197,7 @@
 			droplimb(0,DROPLIMB_EDGE)
 			for(var/mob/living/human/NB in view(6,src))
 				if (!NB.orc)
-					NB.mood -= 10
+					NB.adjust_mood(-(10))
 	return
 
 
@@ -281,7 +281,7 @@
 			if (attempt_dismemberment(pure_brute, pure_burn, edge_eligible, used_weapon, spillover, (brute+burn>=max_damage*2)))
 				for(var/mob/living/human/NB in view(6,src))
 					if (!NB.orc)
-						NB.mood -= 10
+						NB.adjust_mood(-(10))
 				return
 
 	// High brute damage or sharp objects may damage internal organs

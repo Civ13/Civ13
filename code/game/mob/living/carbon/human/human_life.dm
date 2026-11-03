@@ -150,16 +150,16 @@
 			gib()
 */
 	if (mood > 120)
-		mood = 120
+		set_mood(120)
 	else if (mood < 0)
-		mood = 0
+		set_mood(0)
 	//mood natural balancing to neutral
 	if (mood > 50) //moves to 50 if more than 50.
-		mood -= 0.05
+		adjust_mood(-(0.05))
 	else if (mood < 40) //moves to 40 if below 40
-		mood += 0.05
+		adjust_mood(0.05)
 	if (droid)
-		mood = 100
+		set_mood(100)
 	if(istype(buckled, /obj/structure/cross))
 		if (stats["stamina"][1] > 0)
 			stats["stamina"][1]-=3
@@ -251,9 +251,9 @@
 					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (ct)
-					mood += 0.12
+					adjust_mood(0.12)
 				else
-					mood -= 0.4
+					adjust_mood(-(0.4))
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
@@ -261,11 +261,11 @@
 					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (!ct)
-					mood += 0.12
+					adjust_mood(0.12)
 				else
-					mood -= 0.4
+					adjust_mood(-(0.4))
 		if (!inducedSSD)
-			mood -= 0.02
+			adjust_mood(-(0.02))
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats && stats.len)
 	// hotfixes some stamina bugs
@@ -1630,7 +1630,7 @@
 			if ("cocaine")
 				if (ingested.has_reagent("cocaine"))
 					return
-				mood -= (value/100)*0.26
+				adjust_mood(-((value/100)*0.26))
 				switch (value)
 					if (0 to 24)
 						return
@@ -1674,7 +1674,7 @@
 			if ("opium")
 				if (ingested.has_reagent("opium"))
 					return
-				mood -= (value/100)*0.32
+				adjust_mood(-((value/100)*0.32))
 				switch (value)
 					if (0 to 13)
 						if (prob(5))
@@ -1727,7 +1727,7 @@
 			if ("tobacco")
 				if (ingested.has_reagent("nicotine"))
 					return
-				mood -= (value/100)*0.14
+				adjust_mood(-((value/100)*0.14))
 				switch (value)
 					if (0 to 21)
 						return
@@ -1742,7 +1742,7 @@
 			if ("alcohol")
 				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
 					return
-				mood -= (value/100)*0.20
+				adjust_mood(-((value/100)*0.20))
 				switch (value)
 					if (0 to 21)
 						return

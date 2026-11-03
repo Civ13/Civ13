@@ -21,7 +21,7 @@
 	gibs(loc, null, species.flesh_color, species.blood_color)
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
-			NB.mood -= 15
+			NB.adjust_mood(-(15))
 
 /mob/living/human/crush()
 
@@ -36,7 +36,7 @@
 	gibs(loc, null, species.flesh_color, species.blood_color)
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
-			NB.mood -= 15
+			NB.adjust_mood(-(15))
 
 /mob/living/human/maim()
 	next_emote["vocal"] = world.time + 50
