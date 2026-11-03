@@ -600,6 +600,14 @@ var/global/list/los_active_contexts
 		if (F && F.alpha && target.InCone(body, OPPOSITE_DIR(body.dir)))
 			return LOS_DENY
 	var/result = target.opacity ? LOS_SURFACE : LOS_WORLD
+	// Anything the body can touch right now stays rendered and examinable. The
+	// closed corner rule would otherwise black out a diagonal neighbour beside a
+	// wall even though clicks still reach it. Adjacent() keeps both-sides-walled
+	// diagonals hidden, so this admits nothing a hand could not already reach.
+	// The eye may carry a sub-tile step, so this is only a cheap prefilter;
+	// Adjacent() makes the real one-tile decision.
+	if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))
+		return result
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
@@ -618,6 +626,16 @@ var/global/list/los_active_contexts
 		return LOS_DENY
 	S.clear_footprints[footprint_key] = result
 	return result
+
+// Touch reach is the click system's own Adjacent() rule (border objects,
+// passable diagonal corner). It never grants a new action; it only stops the
+// geometric mask from hiding a world root the body can already interact with.
+/proc/los_reach_admits(mob/body, atom/target)
+	if (!body || !target || !isturf(body.loc))
+		return FALSE
+	if (!isturf(target) && !isturf(target.loc))
+		return FALSE
+	return target.Adjacent(body)
 
 // A displayed storage item is readable only through this body's current open
 // storage view. Screen membership alone does not authorize hidden contents.

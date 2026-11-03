@@ -452,6 +452,31 @@ class DistanceCamera(unittest.TestCase):
         self.assertEqual(m.capture(False).eye_x,100.0625)
         self.assertEqual(m.capture(True).eye_x,100)
 
+    def test_reachable_diagonal_beside_a_wall_stays_rendered(self):
+        # Stand-in for Adjacent(): a diagonal is reachable when either shared
+        # cardinal tile is open. Hidden diagonals stay hidden.
+        def run(source,opaque_tiles,reach_calls=None):
+            m=self.camera(source=source);m.opaque.update(opaque_tiles)
+            def reach(body,target):
+                if reach_calls is not None:reach_calls.append((target.x,target.y))
+                dx,dy=target.x-body.x,target.y-body.y
+                return (body.x+dx,body.y) not in m.opaque or (body.x,body.y+dy) not in m.opaque
+            m.env['los_reach_admits']=reach
+            return m,[m.decision(m.target(101,101),m.capture(presentation)) for presentation in (True,False)]
+        calls=[]
+        m,seen=run(CORE,{(101,100)},calls)
+        self.assertEqual(seen,[1,1])
+        self.assertEqual(calls,[(101,101),(101,101)])
+        # Both shared cardinals walled: the corner stays hidden and unreadable.
+        self.assertEqual(run(CORE,{(101,100),(100,101)})[1],[0,0])
+        # Two tiles away is never a reach candidate, even past the same corner.
+        calls=[];m,_=run(CORE,{(101,100)},calls);before=len(calls)
+        m.decision(m.target(102,101),m.capture(True));self.assertEqual(len(calls),before)
+        # Control: without the reach admission the closed corner rule hides it.
+        legacy=CORE.replace('if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))','if (FALSE)')
+        self.assertNotEqual(legacy,CORE)
+        self.assertEqual(run(legacy,{(101,100)})[1],[0,0])
+
     def test_camera_pan_key_rounding_bounds_and_offset_cadence(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
             see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
