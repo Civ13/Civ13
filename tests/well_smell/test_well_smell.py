@@ -4,6 +4,18 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 TEXT = (ROOT / "code/game/objects/structures/watercloset.dm").read_text(encoding="utf-8")
+WASTE = (ROOT / "code/game/mob/living/carbon/human/shit_piss.dm").read_text(encoding="utf-8")
+
+
+def body(source, header):
+    """Return the indented body of one top-level DM proc."""
+    rest = source.split(header, 1)[1]
+    lines = []
+    for line in rest.splitlines()[1:]:
+        if line and not line.startswith(("\t", " ")):
+            break
+        lines.append(line)
+    return "\n".join(lines)
 
 
 def project(source=TEXT, **state):
@@ -53,6 +65,39 @@ class WellSmellContract(unittest.TestCase):
         self.assertIn("A foul smell rises from the well.", section)
         for unsupported in ("safe", "cholera", "radiation", "reagents"):
             self.assertNotIn(unsupported, section.lower())
+
+
+class PlumbedToiletContract(unittest.TestCase):
+    def test_only_primitive_toilets_are_unplumbed(self):
+        expected = {
+            "/obj/structure/toilet/proc/is_plumbed()": "return TRUE",
+            "/obj/structure/toilet/pit_latrine/is_plumbed()": "return FALSE",
+            "/obj/structure/toilet/pit_latrine/floorgrate/is_plumbed()": "return TRUE",
+            "/obj/structure/toilet/outhouse/is_plumbed()": "return FALSE",
+        }
+        for header, result in expected.items():
+            with self.subTest(header=header):
+                self.assertEqual(body(TEXT, header).strip(), result)
+
+    def test_well_draw_uses_plumbing_aware_scan(self):
+        draw = TEXT.split("if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))", 1)[1]
+        draw = draw.split("RG.reagents.add_reagent(\"cholera\"", 1)[0]
+        self.assertIn("if (has_nearby_fecal_waste())", draw)
+        self.assertNotIn("range(", draw)
+
+    def test_scan_skips_compost_and_plumbed_tiles_only(self):
+        scan = body(TEXT, "/obj/structure/sink/proc/has_nearby_fecal_waste()")
+        self.assertIn("in range(4,src)", scan)
+        self.assertIn("/poo/fertilizer)", scan)
+        self.assertIn("for (var/obj/structure/toilet/T in PP.loc)", scan)
+        self.assertIn("if (T.is_plumbed())", scan)
+        self.assertIn("if (!plumbed)\n\t\t\treturn TRUE", scan)
+        self.assertTrue(scan.rstrip().endswith("return FALSE"))
+
+    def test_plumbed_toilet_flushes_waste(self):
+        loo = WASTE.split("//Poo in the loo.", 1)[1].split("else if(w_uniform)", 1)[0]
+        self.assertIn("if (T && !M.crap_inside && T.is_plumbed())\n\t\t\tqdel(V)", loo)
+        self.assertIn("else\n\t\t\tV.forceMove(T)", loo)
 
 
 if __name__ == "__main__":

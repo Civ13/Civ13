@@ -54,6 +54,19 @@
 /obj/structure/toilet/update_icon()
 	icon_state = "toilet[open][cistern]"
 
+// Plumbed fixtures carry waste away; pits and outhouses keep it in the ground.
+/obj/structure/toilet/proc/is_plumbed()
+	return TRUE
+
+/obj/structure/toilet/pit_latrine/is_plumbed()
+	return FALSE
+
+/obj/structure/toilet/pit_latrine/floorgrate/is_plumbed()
+	return TRUE
+
+/obj/structure/toilet/outhouse/is_plumbed()
+	return FALSE
+
 /obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
 	if (istype(I, /obj/item/weapon/hammer) && !istype(src, /obj/structure/toilet/pit_latrine))
 		user.visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>", "<span class='warning'>You start to deconstruct \the [src].</span>", "<span class='warning'>You hear the sound of some ratchetting nearby.</span>")
@@ -873,9 +886,8 @@
 				return TRUE
 			else
 				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
-					for (var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
-						if (PP && !istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer)) //only animal or human poo, not compost
-							dirty = TRUE
+					if (has_nearby_fecal_waste())
+						dirty = TRUE
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
@@ -930,6 +942,21 @@
 	user.visible_message( \
 		"<span class='notice'>[user] washes \a [I] using \the [src].</span>", \
 		"<span class='notice'>You wash \a [I] using \the [src].</span>")
+
+// Loose animal or human waste near the source; compost is safe, and waste on a
+// plumbed toilet's tile is carried away rather than seeping into the ground.
+/obj/structure/sink/proc/has_nearby_fecal_waste()
+	for (var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
+		if (istype(PP, /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer))
+			continue
+		var/plumbed = FALSE
+		for (var/obj/structure/toilet/T in PP.loc)
+			if (T.is_plumbed())
+				plumbed = TRUE
+				break
+		if (!plumbed)
+			return TRUE
+	return FALSE
 
 /obj/structure/sink/AltClick(var/mob/living/user)
 	var/H = user.get_active_hand()
