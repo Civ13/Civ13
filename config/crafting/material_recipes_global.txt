@@ -2387,6 +2387,7 @@ RECIPE: /material/iron/,canner,/obj/structure/canner,7,120,1,1,production,95,0,0
 
 RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,saw,/obj/item/weapon/saw,3,60,0,1,tools,36,0,0,8,null
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,trench shovel,/obj/item/weapon/material/shovel/trench,2,50,0,1,tools,14,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
