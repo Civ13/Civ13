@@ -158,6 +158,18 @@ var/list/_client_preferences_by_type
 	enabled_description = "Yes"
 	disabled_description = "No"
 
+// The soft drop shadow is a full-viewport filter redrawn every client frame.
+// Turning it off is the cheapest graphics saving for slower computers.
+/datum/client_preference/ambient_occlusion
+	description = "Ambient occlusion (turn off for higher FPS)"
+	key = "AMBIENT_OCCLUSION"
+	enabled_description = "On"
+	disabled_description = "Off"
+
+/datum/client_preference/ambient_occlusion/toggled(var/mob/preference_mob, var/enabled)
+	if (preference_mob && preference_mob.client)
+		preference_mob.client.refresh_ambient_occlusion()
+
 /********************
 * Admin Preferences *
 ********************/
