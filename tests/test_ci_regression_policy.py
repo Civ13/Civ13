@@ -532,12 +532,25 @@ class SourcePreparationAdmissionTests(unittest.TestCase):
         spec.loader.exec_module(module)
         return module
 
-    def test_only_three_reviewed_preparation_files_are_exempt(self):
+    def test_only_exact_reviewed_preparation_files_are_exempt(self):
         for paths in ((path,) for path in self.FILES):
             with self.subTest(paths=paths):
                 self.assertEqual(self.introduced(paths), [])
         self.assertEqual(self.introduced(self.FILES), [])
-        self.assertEqual(selection.SOURCE_PREPARATION_ONLY_TESTS, frozenset(self.FILES))
+        d3dx_files = (
+            'tests/tree_refresh_native/d3dx_data.py',
+            'tests/tree_refresh_native/d3dx-signature.ps1',
+            'tests/tree_refresh_native/test_d3dx_data.py',
+        )
+        self.assertEqual(selection.SOURCE_PREPARATION_ONLY_TESTS,
+                         frozenset((*self.FILES, *d3dx_files)))
+        for path in d3dx_files:
+            with self.subTest(path=path):
+                self.assertEqual(self.introduced([path]), [])
+                self.assertTrue(self.baseline().impact([path])['suites'][
+                    'tree_refresh_native_preparation']['selected'])
+        self.assertEqual(self.introduced(['tests/tree_refresh_native/unreviewed.py']),
+                         ['tests/tree_refresh_native'])
         baseline = self.baseline()
         self.assertEqual(baseline.SUITES['character_return_preparation']['files'],
                          ('tests/world_save/character_return/test_prepare.py',
