@@ -28,6 +28,9 @@
 /obj/map_metadata
 	var/list/faction_motto = list()
 	var/list/faction_flavour = list()
+	// current name => list(previous name, season count, realtime); see
+	// faction_rename.dm. Durable, like the motto and flavour.
+	var/list/faction_renames = list()
 
 /datum/nano_module/faction_creation
 	name = "Faction Creation"
