@@ -12,8 +12,20 @@ SNAP=(ROOT/'code/modules/visibility/root_light_snapshot.dm').read_text()
 TREE=(ROOT/'code/modules/visibility/root_tree_presenter.dm').read_text()
 
 class Values(list):
-    def __getitem__(self,i):return super().__getitem__(i-1)
-    def __setitem__(self,i,v):super().__setitem__(i-1,v)
+    # DM lists are 1-based for numeric indexes and associative for any other
+    # key. Datum keys compare by identity, like DM references.
+    def _assoc(self):
+        if '_keyed' not in self.__dict__:self.__dict__['_keyed']={}
+        return self.__dict__['_keyed']
+    def __getitem__(self,i):
+        if isinstance(i,int):return super().__getitem__(i-1)
+        entry=self._assoc().get(id(i))
+        return entry[1] if entry else None
+    def __setitem__(self,i,v):
+        if isinstance(i,int):return super().__setitem__(i-1,v)
+        keyed=self._assoc()
+        if id(i) not in keyed:self.append(i)
+        keyed[id(i)]=(i,v)
     def __iadd__(self,v):self.append(v);return self
 
 class Items(list):

@@ -201,12 +201,13 @@ var/global/list/root_tree_presenters
 		fallback_reason = "scene lease unavailable"
 		return TRUE
 	fallback_reason = null
+	// Keyed set so the stale-image sweep below is linear, not quadratic.
 	var/list/current = list()
 	var/settled = TRUE
 	// Existing flora sheets are at most 160px with <=32px offsets. Six cells
 	// cover that overhang; geometry still judges the root.
 	for(var/obj/structure/wild/T in roots)
-		current += T
+		current[T] = TRUE
 		var/image/I = images[T]
 		if(!I)
 			I = image(null, T)
@@ -248,7 +249,7 @@ var/global/list/root_tree_presenters
 			published_frames[T] = frame
 			source_appearances[T] = source_appearance
 	for(var/atom/old in images.Copy())
-		if(old in current)
+		if(current[old])
 			continue
 		var/image/I = images[old]
 		owner.images -= I
@@ -380,10 +381,16 @@ var/global/list/root_tree_presenters
 		// Dynamic render/vis grouping cannot be assigned a reliable footprint.
 		if(A.plane == GAME_PLANE && ((ismovable(A) && length(A:vis_contents)) || A.render_source || A.render_target || length(A.filters)))
 			return "unbounded game appearance"
+	// Build the presenter-owned image set once; scanning both owned lists for
+	// every client image made this audit quadratic on every refresh.
+	var/list/presenter_images = list()
+	for(var/owned in owned_images)
+		presenter_images[owned] = TRUE
+	if(owner.los_presenter)
+		for(var/owned in owner.los_presenter.owned_images)
+			presenter_images[owned] = TRUE
 	for(var/image/I in owner.images)
-		if(I in owned_images)
-			continue
-		if(owner.los_presenter && (I in owner.los_presenter.owned_images))
+		if(presenter_images[I])
 			continue
 		var/atom/anchor = I.loc
 		var/turf/T = get_turf(anchor)
