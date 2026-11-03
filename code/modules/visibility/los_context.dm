@@ -638,6 +638,10 @@ var/global/list/los_active_contexts
 		T = target
 	if (!isturf(T))
 		return FALSE
+	// Standing inside a closed curtain (opaque, non-dense) blinds the viewer
+	// to every other tile. Adjacent() ignores it, so keep that sight policy.
+	if (los_turf_blocks_sight(body.loc, body))
+		return FALSE
 	// Reach only settles the closed-corner question. Contents sharing a tile
 	// with an opaque blocker (closed door, curtain, bookcase, wall) keep the
 	// ordinary geometric decision; touch reach never reveals what it hides.
@@ -655,11 +659,11 @@ var/global/list/los_active_contexts
 			return FALSE
 	return target.Adjacent(body)
 
-/proc/los_turf_blocks_sight(turf/T)
+/proc/los_turf_blocks_sight(turf/T, atom/ignore = null)
 	if (!T || T.opacity)
 		return TRUE
 	for (var/atom/movable/A in T)
-		if (A.opacity)
+		if (A.opacity && A != ignore)
 			return TRUE
 	return FALSE
 

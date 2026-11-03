@@ -499,7 +499,7 @@ class DistanceCamera(unittest.TestCase):
         M_adj=bare(one_liners(P.fragment(adjacent,'/atom/movable/Adjacent(')),['loc','locs'])
         movable_adjacent=A.project(M_adj,'/atom/movable/Adjacent','src, neighbor',env)
         env['locate']=lambda x,y,z:turf(x,y)
-        env['los_turf_blocks_sight']=A.project(source,'/proc/los_turf_blocks_sight','T',env) if '/proc/los_turf_blocks_sight(' in source else None
+        env['los_turf_blocks_sight']=A.project(source,'/proc/los_turf_blocks_sight','T, ignore=None',env) if '/proc/los_turf_blocks_sight(' in source else None
         reach=A.project(source,'/proc/los_reach_admits','body, target',env)
         calls=[]
         def spy(body,target):calls.append((target.x,target.y));return reach(body,target)
@@ -564,6 +564,25 @@ class DistanceCamera(unittest.TestCase):
             if source is CORE:self.assertFalse(w.reach(w.m.body,item))
             seen.append(w.both(item))
         self.assertEqual(seen[0],seen[1])
+
+    def test_viewer_inside_a_curtain_keeps_its_sight_policy(self):
+        # Standing on a closed curtain (opaque, non-dense): Adjacent() ignores
+        # it, but the viewer's own blocker still hides neighbours, as before.
+        legacy=CORE.replace('if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))','if (FALSE)')
+        for x,y in [(101,100),(101,101)]:
+            seen=[]
+            for source in (CORE,legacy):
+                w=self.reach_world(source)
+                w.Obj('/obj/structure/curtain',w.turf(100,100),opaque=True)
+                item=w.Obj('/obj/item',w.turf(x,y))
+                self.assertTrue(item.Adjacent(w.m.body))
+                if source is CORE:self.assertFalse(w.reach(w.m.body,item))
+                seen.append(w.both(item))
+            self.assertEqual(seen,[[0,0],[0,0]])
+        # An opaque body is not its own blocker.
+        w=self.reach_world();w.wall(101,100);w.m.body.opacity=True;w.m.body.contents=[]
+        w.turf(100,100).contents.append(w.m.body)
+        self.assertTrue(w.reach(w.m.body,w.Obj('/obj/item',w.turf(101,101))))
 
     def test_camera_pan_key_rounding_bounds_and_offset_cadence(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
