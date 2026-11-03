@@ -26,3 +26,6 @@ scripts/setup-local-wsl.sh text eol=lf
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# Preserve exact bytes in the synthetic custody snapshot on all checkout platforms.
+tools/custody-fixture/snapshot/** text eol=lf

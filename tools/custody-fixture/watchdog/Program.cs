@@ -62,7 +62,29 @@ internal static class Program
             if(item.Name.Length>160||!Regex.IsMatch(item.Name,@"^[A-Za-z0-9_./-]+$")||item.Name.Contains("..")||!names.Add(item.Name))throw new Exception("manifest_path");
             string f=Path.GetFullPath(Path.Combine(snapshot,item.Name.Replace('/',Path.DirectorySeparatorChar)));
             var member=new FileInfo(f);
-            if(!f.StartsWith(snapshot,StringComparison.OrdinalIgnoreCase)||member.Length>1048576||(member.Attributes&FileAttributes.ReparsePoint)!=0||!LocalNoReparse(member.DirectoryName!)||!Regex.IsMatch(item.Value.GetString()??"","^[0-9a-f]{64}$")||Hash(f)!=item.Value.GetString())throw new Exception("manifest_member");
+            string fail(string reason) => "manifest_member:"+item.Name+":"+reason;
+            if(!f.StartsWith(snapshot,StringComparison.OrdinalIgnoreCase))throw new Exception(fail("outside_snapshot"));
+            long length;
+            try { length=member.Length; }
+            catch(Exception ex) when(ex is IOException || ex is UnauthorizedAccessException || ex is System.Security.SecurityException) { throw new Exception(fail("length_unavailable")); }
+            if(length>1048576)throw new Exception(fail("size:maximum=1048576:actual="+length));
+            FileAttributes attributes;
+            try { attributes=member.Attributes; }
+            catch(Exception ex) when(ex is IOException || ex is UnauthorizedAccessException || ex is System.Security.SecurityException) { throw new Exception(fail("attributes_unavailable:size="+length)); }
+            string facts=":size="+length+":attributes="+(uint)attributes;
+            if((attributes&FileAttributes.ReparsePoint)!=0)throw new Exception(fail("member_reparse"+facts));
+            bool parentsSafe;
+            try { parentsSafe=LocalNoReparse(member.DirectoryName!); }
+            catch(Exception ex) when(ex is IOException || ex is UnauthorizedAccessException || ex is System.Security.SecurityException) { throw new Exception(fail("parent_attributes_unavailable"+facts)); }
+            if(!parentsSafe)throw new Exception(fail("parent_reparse"+facts));
+            string expectedDigest;
+            try { expectedDigest=item.Value.GetString()??""; }
+            catch(InvalidOperationException) { throw new Exception(fail("digest_type"+facts)); }
+            if(!Regex.IsMatch(expectedDigest,"^[0-9a-f]{64}$"))throw new Exception(fail("digest_format"+facts));
+            string actualDigest;
+            try { actualDigest=Hash(f); }
+            catch(Exception ex) when(ex is IOException || ex is UnauthorizedAccessException || ex is System.Security.SecurityException) { throw new Exception(fail("hash_unavailable"+facts)); }
+            if(actualDigest!=expectedDigest)throw new Exception(fail("digest_mismatch"+facts+":expected="+expectedDigest+":actual="+actualDigest));
         }
     }
     static void Main(string[] args) {

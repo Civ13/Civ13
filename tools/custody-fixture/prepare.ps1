@@ -46,10 +46,10 @@ try {
         $project=if($name -eq 'watchdog'){'CustodyWatchdog.csproj'}else{'Outer.csproj'}
         $proj=Join-Path (Join-Path $root $name) $project
         foreach($record in $records) { Assert-RuntimeMatches $record }
-        & $dotnet restore $proj --configfile $config
+        & $dotnet restore $proj --configfile $config --disable-build-servers -nodeReuse:false
         if ($LASTEXITCODE -ne 0) { throw 'offline_restore_failed' }
         foreach($record in $records) { Assert-RuntimeMatches $record }
-        & $dotnet build $proj --no-restore --configuration Release
+        & $dotnet build $proj --no-restore --configuration Release --disable-build-servers -nodeReuse:false -p:UseSharedCompilation=false
         if ($LASTEXITCODE -ne 0) { throw 'watchdog_build_failed' }
     }
     $outer=Join-Path $root 'outer\bin\Release\net8.0\Outer.dll'
