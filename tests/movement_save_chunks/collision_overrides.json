@@ -154,10 +154,10 @@
     },
     {
       "path": "code/game/objects/structures/door.dm",
-      "sha256_normalized": "a4595c9ad54d33ffc0bbc8509addc3f94a60c7825b9144b8d1c98050672d733b",
+      "sha256_normalized": "70011d9eead00064eac230ea2258131e64a405eb73b12719ca184fc1d0b6e21a",
       "declarations": [
         {
-          "line": 171,
+          "line": 173,
           "declaration": "/obj/structure/simple_door/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
         }
       ]

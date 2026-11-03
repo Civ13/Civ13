@@ -114,13 +114,15 @@
 /obj/structure/simple_door/attack_hand(mob/user as mob)
 	return door_intent_interact(user)
 
-// Hand interactions follow intent: help opens or closes the door (a locked door
-// rattles instead), disarm and grab knock, harm kicks. An open door has nothing
-// to knock on or kick, so every intent just tries to close it.
+// Hand interactions follow intent: help opens the door (a locked door rattles
+// instead), disarm and grab knock, harm kicks. An open door has nothing to knock
+// on or kick, and closing needs no key, so every intent just tries to close it.
 /obj/structure/simple_door/proc/door_intent_interact(mob/user)
 	if (!user || !istype(user) || isSwitchingStates)
 		return FALSE
-	if (user.a_intent == I_HELP || state)
+	if (state)
+		return TryToSwitchState(user)
+	if (user.a_intent == I_HELP)
 		if (door_hand_locked(user))
 			return door_rattle(user)
 		return TryToSwitchState(user)

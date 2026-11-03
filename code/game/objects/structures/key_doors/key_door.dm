@@ -31,6 +31,9 @@ var/list/nonbreaking_types = list(
 		return H.civilization != faction
 	return TRUE
 
+/obj/structure/simple_door/key_door/faction_door/door_takes_kick_damage()
+	return FALSE
+
 /obj/structure/simple_door/key_door/faction_door/Bumped(atom/user)
 	if(istype(user, /mob/living/human))
 		var/mob/living/human/H = user
@@ -248,10 +251,13 @@ var/list/nonbreaking_types = list(
 		return FALSE
 	return keyslot.locked
 
-// Kicks wear down ordinary key doors; custom and jail doors only take the noise.
+// Kicks wear down ordinary key doors; custom, jail and faction doors only take the noise.
+/obj/structure/simple_door/key_door/proc/door_takes_kick_damage()
+	return !istype(src, /obj/structure/simple_door/key_door/custom)
+
 /obj/structure/simple_door/key_door/door_kick(mob/user)
 	. = ..()
-	if (. && !istype(src, /obj/structure/simple_door/key_door/custom))
+	if (. && door_takes_kick_damage())
 		update_damage(-10)
 
 /obj/structure/simple_door/key_door/Bumped(atom/user)
