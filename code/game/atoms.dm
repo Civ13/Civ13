@@ -163,8 +163,12 @@
 		else
 			f_name += "oil-stained [name][infix]."
 
+	// Bystanders cannot see inside a container, so examining its contents is private.
 	if (!isobserver(user))
-		user.visible_message("<font size=1>[user.name] looks at \the [src].</font>", "<font size =1>You look at \the [src].</font>")
+		if (istype(loc, /obj/item/weapon/storage))
+			to_chat(user, "<font size =1>You look at \the [src].</font>")
+		else
+			user.visible_message("<font size=1>[user.name] looks at \the [src].</font>", "<font size =1>You look at \the [src].</font>")
 
 	to_chat(user, "\icon[getFlatIcon(src)] That's [f_name] [suffix]")
 

@@ -667,8 +667,9 @@ var/global/list/los_active_contexts
 			return TRUE
 	return FALSE
 
-// A displayed storage item is readable only through this body's current open
-// storage view. Screen membership alone does not authorize hidden contents.
+// A displayed storage item is readable (hover and shift-click examine) only
+// through this body's current open storage view. Screen membership alone does
+// not authorize hidden contents.
 /proc/los_storage_hover_visible(mob/user, atom/target)
 	if (!user || !user.client || !istype(target, /obj/item))
 		return FALSE
@@ -691,7 +692,8 @@ var/global/list/los_active_contexts
 		return LOS_DENY
 	if (target == body)
 		return LOS_SELF
-	if (operation == "hover" && los_storage_hover_visible(user, target))
+	// Open storage contents sit off-turf, so geometry would always deny them.
+	if (los_storage_hover_visible(user, target))
 		return LOS_OWN_SLOT
 	if (ismovable(target))
 		var/atom/movable/I = target
