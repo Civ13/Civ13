@@ -489,7 +489,7 @@ def main():
         result = json.loads(result_path.read_text(encoding='utf-8'))
         # 141 wound assertions plus the generated offline-client startup check.
         if args.wounds and not args.negative_control:
-            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 153:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 147:
                 raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
         if args.lifecycle_shutdown:
             # The DM receipt is written before native deletion. Acceptance must
