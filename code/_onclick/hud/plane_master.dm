@@ -31,12 +31,14 @@
 	if(!istype(G))
 		return
 	// The root tree compositor leases this plane's filters onto its scene
-	// plane. Retire it first so it hands them back, then let the next LOS
-	// refresh rebuild it from the new filter list.
+	// plane. Retire it first so it hands them back, then rebuild it from the
+	// new filter list in the same call so denied trees are not left unmasked
+	// until the next scheduled LOS refresh.
 	if(root_tree_presenter)
 		root_tree_presenter.retire()
 	G.backdrop(mob)
 	los_dirty = TRUE
+	reconcile_geometric_los()
 
 /obj/screen/plane_master/lighting
 	name = "lighting plane master"
