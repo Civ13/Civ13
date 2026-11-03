@@ -25,11 +25,11 @@ class Contexts(list):
         return self
 
 class TileMotion(unittest.TestCase):
-    def scene(self,source=LIFE):
+    def scene(self,source=LIFE,real_invalidation=False):
         events=[]
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,abs=abs,list=lambda *a:Contexts(a),
             typed_iter=lambda values,kind:values,ishuman=lambda a:getattr(a,'human',False),
-            ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a.loc,
+            ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a if isinstance(a,Tile) else a.loc,
             los_invalidate=lambda a,possible=False,viewer_refresh=False:(events.append((a,possible)) or Contexts(contexts[:2])))
         before=A.project(source,'/proc/los_invalidate_movement','A',env)
         near=A.project(source,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
@@ -44,7 +44,7 @@ class TileMotion(unittest.TestCase):
         blocked=P.project(CORE,'/proc/los_target_blocked(',geometry)
         clients=[owner];contexts=Contexts([context])
         for x,z in [(1,1),(100,1),(1,2)]:
-            c=N(los_dirty=False,captures=0,masked=False)
+            c=N(los_dirty=False,captures=0,masked=False,root_tree_presenter=None,los_presenter=None)
             contexts.append(N(body=N(x=x,y=1,z=z),owner=c,viewport_radii=lambda:P.DMList([7,7])))
             c.los_context=contexts[-1]
             clients.append(c)
@@ -58,7 +58,10 @@ class TileMotion(unittest.TestCase):
         for c,v in zip(clients,contexts):
             c.reconcile_geometric_los=lambda c=c,body=v.body:publish(c,body)
         env['los_active_contexts']=contexts
-        return N(actor=actor,owner=owner,context=context,clients=clients,before=before,after=after,events=events)
+        if real_invalidation:
+            env['los_invalidate']=A.project(source,'/proc/los_invalidate',
+                'changed, possible_opacity=False, viewer_refresh=False',env)
+        return N(actor=actor,owner=owner,context=context,clients=clients,before=before,after=after,events=events,invalidate=env['los_invalidate'])
 
     def test_offset_pulses_and_failed_moves_do_not_force_capture(self):
         s=self.scene()
@@ -66,9 +69,93 @@ class TileMotion(unittest.TestCase):
             s.before(s.actor);s.actor.step_x=offset;s.after(s.actor)
         self.assertEqual(s.events,[])
         self.assertEqual([c.captures for c in s.clients],[0,0,0,0])
+
+    def test_dirty_unchanged_turf_recovers_before_return_without_neighbor_refresh(self):
+        s=self.scene();old=s.actor.loc
         s.owner.los_dirty=True
-        s.before(s.actor);s.after(s.actor)
-        self.assertTrue(s.owner.los_dirty)  # Pending door/light work is retained.
+        s.before(s.actor);s.actor.step_x=2;s.after(s.actor)
+        self.assertEqual([c.captures for c in s.clients],[1,0,0,0])
+        self.assertFalse(s.owner.los_dirty)
+        self.assertIs(s.context.movement_turf,old)
+        self.assertEqual(s.events,[])
+        # Once settled, subsequent transparent offset pulses remain cheap.
+        s.actor.step_x=4;s.after(s.actor)
+        self.assertEqual(s.owner.captures,1)
+        self.assertEqual(len(s.events),0)
+
+    def test_owner_recovery_omission_reproduces_skipped_recovery(self):
+        token='if(H.client.los_dirty && !H.client.reconcile_geometric_los())'
+        self.assertEqual(LIFE.count(token),1)
+        s=self.scene(LIFE.replace(token,'if(FALSE)',1));s.owner.los_dirty=True
+        s.after(s.actor)
+        self.assertEqual(s.owner.captures,0)
+        self.assertTrue(s.owner.los_dirty)
+
+    def test_real_invalidation_does_not_ping_pong_between_clean_neighbors(self):
+        def exercise(source):
+            s=self.scene(source,real_invalidation=True)
+            other=s.clients[1];body=other.los_context.body
+            vars(body).update(human=True,mob=True,opacity=False,loc=Tile(1),
+                step_x=0,step_y=0,client=other)
+            vars(other.los_context).update(retired=False,movement_turf=body.loc)
+            s.owner.los_dirty=True
+            for actor in [s.actor,body]*3:
+                actor.step_x+=2;s.after(actor)
+            return s
+        s=exercise(LIFE)
+        self.assertEqual([c.captures for c in s.clients],[1,0,0,0])
+        self.assertEqual([c.los_dirty for c in s.clients],[False]*4)
+        # Frozen rejected one-line strategy: dirty same-turf viewers fall through
+        # the global invalidation path, so nearby transparent players wake each other.
+        start=LIFE.index('\t\t\tif(!force_refresh && !H.opacity')
+        end=LIFE.index('\t\t\tprevious_turf = V.movement_turf',start)
+        rejected='\t\t\tif(!force_refresh && !H.opacity && !V.retired && V.body == H && V.owner == H.client && T && V.movement_turf == T && !H.client.los_dirty)\n\t\t\t\treturn\n'
+        s=exercise(LIFE[:start]+rejected+LIFE[end:])
+        self.assertEqual([c.captures for c in s.clients],[3,3,0,0])
+        self.assertEqual([c.los_dirty for c in s.clients],[True,False,False,False])
+
+    def test_real_opaque_and_turf_invalidation_still_reach_nearby_contexts(self):
+        s=self.scene(real_invalidation=True)
+        s.actor.opacity=True;s.after(s.actor)
+        self.assertEqual([c.captures for c in s.clients],[1,1,0,0])
+        self.assertEqual([c.los_dirty for c in s.clients],[False]*4)
+        s=self.scene(real_invalidation=True)
+        affected=s.invalidate(Tile(3),True)
+        self.assertEqual([v.owner for v in affected],s.clients[:2])
+        self.assertEqual([c.los_dirty for c in s.clients],[True,True,False,False])
+
+    def test_dirty_same_turf_failed_reconciliation_stays_withdrawn(self):
+        # Reconcile supplies admission/capture decisions. A failed or suspended
+        # call must not turn this recovery path into retention of stale images.
+        for result in [False,None]:
+            s=self.scene();withdrawals=[];calls=[]
+            s.owner.los_dirty=True
+            s.owner.root_tree_presenter=N(invalidate=lambda:withdrawals.append('root'))
+            s.owner.los_presenter=N(invalidate=lambda:withdrawals.append('fallback'))
+            def reconcile():
+                calls.append('reconcile');return result
+            s.owner.reconcile_geometric_los=reconcile
+            s.after(s.actor)
+            self.assertEqual(calls,['reconcile'])
+            self.assertEqual(withdrawals,['root','fallback'])
+            self.assertTrue(s.owner.los_dirty)
+            self.assertEqual([c.captures for c in s.clients],[0,0,0,0])
+
+    def test_dirty_recovery_keeps_existing_admission_and_suspension_gates(self):
+        # Source contracts only: eye changes and suspension are still decided
+        # by normal reconciliation, not by a new optimistic publication path.
+        eligible=P.fragment(CORE,'/datum/los_context/proc/eligible(')
+        self.assertIn('owner.eye == body',eligible)
+        reconcile=P.fragment(LIFE,'/client/proc/reconcile_geometric_los(')
+        self.assertIn('V.mutations.len',reconcile)
+        self.assertIn('persistence_active_operation.kind != "save"',reconcile)
+        self.assertLess(reconcile.index('V.mutations.len'),reconcile.index('V.capture(TRUE)'))
+        self.assertLess(reconcile.index('if(!key || !mob.hud_used)'),reconcile.index('V.capture(TRUE)'))
+        self.assertIn('root_tree_presenter.retire()',reconcile)
+        capture_failure=reconcile[reconcile.index('if(!S)'):reconcile.index('var/published')]
+        self.assertIn('root_tree_presenter.invalidate()',capture_failure)
+        self.assertIn('los_presenter.invalidate()',capture_failure)
+        self.assertIn('los_dirty = TRUE',capture_failure)
 
     def test_tile_transition_refreshes_nearby_hidden_character_before_return(self):
         s=self.scene();old=s.actor.loc

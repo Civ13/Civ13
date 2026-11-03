@@ -171,6 +171,13 @@
 			var/datum/los_context/V = H.client.los_context
 			var/turf/T = get_turf(H)
 			if(!force_refresh && !H.opacity && !V.retired && V.body == H && V.owner == H.client && T && V.movement_turf == T)
+				// Recover an invalidated viewer without dirtying neighboring viewers.
+				// A transparent same-turf pulse changes no other viewer's geometry.
+				if(H.client.los_dirty && !H.client.reconcile_geometric_los())
+					if(H.client.root_tree_presenter)
+						H.client.root_tree_presenter.invalidate()
+					if(H.client.los_presenter)
+						H.client.los_presenter.invalidate()
 				return
 			previous_turf = V.movement_turf
 			tile_changed = previous_turf != T
