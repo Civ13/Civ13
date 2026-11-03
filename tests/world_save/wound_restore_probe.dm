@@ -126,7 +126,7 @@
 	var/obj/item/organ/external/groin/G = length(R.children) == 1 ? R.children[1] : null
 	durable_world_check(istype(G) && !QDELETED(G), "field-referenced saved limb deleted itself during import")
 	durable_world_check(G.parent == R, "saved limb parent link changed")
-	durable_world_check(persistence_organ_import_depth == 0, "organ import guard leaked")
+	durable_world_check(persistence_saved_atom_construction == 0, "organ import guard leaked")
 	F = null
 	map_storage.clear_bookkeeping()
 	var/obj/item/organ/external/groin/orphan = new

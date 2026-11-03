@@ -123,6 +123,10 @@
 	// Replace the effective profile only after the complete snapshot is valid.
 	elevation_profile_cache = profile
 
+// Nonzero only while the loader constructs a saved atom whose owner fields
+// are not decoded yet. Orphan cleanup in constructors must wait for them.
+var/global/persistence_saved_atom_construction = 0
+
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
 // Omit only known process-local state, on export and historical import, without
 // mutating the live value. Unknown object links still require integrity validation;
