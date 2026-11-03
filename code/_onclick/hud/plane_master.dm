@@ -30,15 +30,15 @@
 	var/obj/screen/plane_master/game_world/G = mob.hud_used.plane_masters["[GAME_PLANE]"]
 	if(!istype(G))
 		return
-	// The root tree compositor leases this plane's filters onto its scene
-	// plane. Retire it first so it hands them back, then rebuild it from the
-	// new filter list in the same call so denied trees are not left unmasked
-	// until the next scheduled LOS refresh.
-	if(root_tree_presenter)
-		root_tree_presenter.retire()
 	G.backdrop(mob)
-	los_dirty = TRUE
-	reconcile_geometric_los()
+	// An active root tree compositor holds this plane's filters on its scene
+	// plane. Move the new list into that lease instead of retiring it, so its
+	// tree masks stay in place, including while capture is suspended.
+	var/datum/root_tree_presenter/P = root_tree_presenter
+	if(P && !P.retired && P.scene_active && P.game_plane == G && P.scene_plane)
+		P.original_filters = length(G.filters) ? G.filters.Copy() : list()
+		P.scene_plane.filters = P.original_filters.Copy()
+		G.filters = list()
 
 /obj/screen/plane_master/lighting
 	name = "lighting plane master"
