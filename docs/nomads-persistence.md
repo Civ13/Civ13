@@ -23,7 +23,8 @@ another ID. This change does not select a map or update a running installation.
 Every new profile also retains common Nomads flags, civilization names and the
 respawn-delay policy. Timers retain remaining server time, not old process clocks.
 Repeated load cancels prior queue rows; callbacks wait while save/load owns the
-world. Restoring completed one-shot work does not run the constructor work again.
+world or startup recovery is held. Restoring completed one-shot work does not run
+the constructor work again.
 Mutating eruption/nuke callbacks hold a save barrier. An exception leaves that
 barrier held for explicit recovery with fresh metadata, preventing a partial event
 from being published as a completed generation.

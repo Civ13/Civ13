@@ -179,6 +179,13 @@ var/nomads_inject_nuke_failure = FALSE
 	Q.cancel_all()
 	sleep(2)
 	nomads_assert(nomads_climate_calls == 3, "cancelled map callback fired")
+	persistence_restart.startup_hold = TRUE
+	Q.restore(list("nomads_initial_climate" = 1))
+	sleep(3)
+	nomads_assert(nomads_climate_calls == 3, "callback fired during startup recovery hold")
+	persistence_restart.startup_hold = FALSE
+	sleep(3)
+	nomads_assert(nomads_climate_calls == 4, "startup-held callback did not resume once")
 	del(map)
 	map = new /obj/map_metadata/nomads/mountain(locate(1,1,1))
 	map.durable_timer_queue().cancel_all()

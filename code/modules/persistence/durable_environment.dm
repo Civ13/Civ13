@@ -27,6 +27,9 @@
 /obj/map_metadata/proc/durable_pending(key)
 	return durable_callbacks && durable_callbacks.pending[key]
 
+/obj/map_metadata/durable_callback_blocked()
+	return nomads_event_busy || (persistence_restart && persistence_restart.startup_hold)
+
 /obj/map_metadata/proc/durable_cancel_season_phases()
 	if(!durable_callbacks) return
 	for(var/i = 1, i <= 9, i++)
