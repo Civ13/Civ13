@@ -228,3 +228,5 @@ RECIPE: /material/iron/,syringe,/obj/item/weapon/reagent_containers/syringe,1,25
 RECIPE: /material/iron/,hemostat,/obj/item/weapon/surgery/hemostat,2,50,0,1,healthcare,35,0,67,8,null
 RECIPE: /material/iron/,cautery,/obj/item/weapon/surgery/cautery,2,50,0,1,healthcare,35,0,67,8,null
 RECIPE: /material/iron/,surgical drill,/obj/item/weapon/surgery/surgicaldrill,2,50,0,1,healthcare,35,0,110,8,null
+
+RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_workbench/armor,10,100,1,1,tools,0,0,0,8,null

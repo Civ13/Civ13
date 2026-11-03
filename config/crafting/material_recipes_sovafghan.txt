@@ -1829,3 +1829,4 @@ RECIPE: /material/obsidian/,obsidian brazier,/obj/structure/brazier/obsidian,3,1
 
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 
+RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_workbench/armor,10,100,1,1,tools,0,0,0,8,null

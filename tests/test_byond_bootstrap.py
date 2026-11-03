@@ -224,6 +224,8 @@ class ManualCanonicalProfileTests(unittest.TestCase):
         for relative in ('scripts/check-component-tools.py', 'code/world.dm', 'code/controllers/mc/globals.dm',
                          'code/game/objects/structures/blacksmithing/component_workbench.dm', 'civ13.dme',
                          'tests/component_tools/checks.dm', 'tests/component_tools/workbench.dm',
+                         'tests/component_tools/armor.dm',
+                         'code/game/objects/structures/blacksmithing/armor_workbench.dm',
                          'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
                          'scripts/byond_toolchain.py', 'tools/byond/version.json', 'tests/new_z_budget/z_budget_evidence.py'):
             self.populate(relative)
@@ -274,6 +276,20 @@ class ManualCanonicalProfileTests(unittest.TestCase):
                     self.assertEqual('Deliberately leave both paid components alive.' in mutated, control == 'consumption')
                     if control == 'runtime-save': self.assertNotIn('(key in list("busy", "cancelled", "assembler", "assembly_time"))', mutated)
                 self.assertEqual((output / 'runtime/config/names/offline.txt').read_text(), 'isolated config fixture')
+
+    def test_armor_controls_require_their_specific_assertion(self):
+        for control, assertion in (('armor-consumption', 'armor carrier exact costs/excess'),
+                                   ('armor-research', 'armor specialist research bypass')):
+            for marker, expected in ((f'FAIL: {assertion}\nFAIL', 0), ('FAIL: unrelated\nFAIL', 1)):
+                with self.subTest(control=control, marker=marker), tempfile.TemporaryDirectory() as temp:
+                    self.root = Path(temp); self.events = []
+                    code, output, _, _ = self.component(control, marker=marker)
+                    self.assertEqual(code, expected)
+                    mutated = (output / 'source/armor.dm').read_text()
+                    if control == 'armor-consumption':
+                        self.assertNotIn('S.use(cost[1])', mutated)
+                    else:
+                        self.assertNotIn('map.is_node_done(H.civilization, R["node"])', mutated)
 
     def test_component_cli_requires_identity_and_new_evidence_before_any_effect(self):
         module = self.module('manual_component_cli', 'scripts/check-component-tools.py')
@@ -407,9 +423,11 @@ class ManualCanonicalProfileTests(unittest.TestCase):
             self.assertIn('timeout-minutes: 10', source)
             self.assertIn('BYOND/pinned.zip', source)
         component = (ROOT / '.github/workflows/component-tools.yml').read_text()
-        self.assertEqual(component.count('/usr/bin/python3 scripts/check-component-tools.py'), 3)
+        self.assertEqual(component.count('/usr/bin/python3 scripts/check-component-tools.py'), 5)
         self.assertIn('--negative-control consumption', component)
         self.assertIn('--negative-control runtime-save', component)
+        self.assertIn('--negative-control armor-consumption', component)
+        self.assertIn('--negative-control armor-research', component)
 
     def test_secondary_retention_failure_preserves_initial_identity_error(self):
         original = Path.write_text

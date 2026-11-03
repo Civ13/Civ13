@@ -22,6 +22,19 @@ class AtlasTests(unittest.TestCase):
             bench=next(r for r in before['recipes'] if r['name']=='Workbench Pickaxe')
             self.assertEqual({x['id'] for x in bench['inputs']},{'/obj/item/weapon/material/part/pickaxe','/obj/item/weapon/material/handle'})
             self.assertEqual(bench['outputs'][0]['id'],'/obj/item/weapon/material/pickaxe')
+            armor={r['name']:r for r in before['recipes'] if r['kind']=='Armor assembly'}
+            self.assertEqual(set(armor),{'Armor carrier','Aramid panels','Standard aramid vest'})
+            self.assertEqual([(x['id'],x['quantity']) for x in armor['Armor carrier']['inputs']],
+                             [('/material/cloth','4'),('/material/leather','2')])
+            self.assertEqual(armor['Aramid panels']['inputs'],[dict(id='/material/kevlar',name='kevlar',quantity='14')])
+            self.assertEqual(armor['Standard aramid vest']['outputs'][0]['id'],
+                             '/obj/item/clothing/accessory/armor/nomads/kevlarblack')
+            self.assertIn('modern_armor',armor['Standard aramid vest']['conditions'])
+            station='/obj/structure/component_workbench/armor,'
+            for catalog in (ROOT/'config/crafting').glob('material_recipes_*.txt'):
+                self.assertEqual(catalog.read_text().count(station),1,catalog.name)
+            anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm').read_text()
+            self.assertNotIn('"Standard Kevlar Vest" =',anvil)
             self.assertTrue(before['acquisition'])
             sand_item='/obj/item/stack/ore/glass'
             sand_turf='/turf/floor/beach/sand'

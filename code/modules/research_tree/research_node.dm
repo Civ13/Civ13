@@ -1749,6 +1749,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
 		// --- weaving (83) ---
+		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle/bronze" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle/copper" = "weaving",

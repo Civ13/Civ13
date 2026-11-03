@@ -2182,3 +2182,5 @@ RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 
 RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/stone/material/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null
+
+RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_workbench/armor,10,100,1,1,tools,0,0,0,8,null
