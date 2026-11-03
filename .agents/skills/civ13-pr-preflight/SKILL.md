@@ -96,7 +96,26 @@ head's run cannot establish that a specific hosted regression executed.
   not change gameplay code for it.
 - CodeRabbit skips PRs over 100 files and rate-limits to about one review an
   hour. Split broad mechanical sweeps so review is possible; do not wait on it.
-- Infrastructure failures (checkout timeout, cancelled runner) are reruns, not code changes.
+- Infrastructure failures (checkout or fetch timeout, cancelled runner, a
+  missing selection artifact after such a step, or failing to download or
+  compile BYOND on the runner) are reruns, not code changes.
+
+### When hosted CI is down: documented local build
+
+A GitHub build that fails for infrastructure reasons is not a hard merge
+blocker (maintainer policy, 2026-11-03). Rerun the failed jobs once. If they
+fail the same way before any test ran, post a dated PR comment that documents
+the local evidence for the exact head SHA:
+
+- the `DreamMaker -max_errors 0 civ13.dme` result (pinned version, "0 errors");
+- the `python3 scripts/agent_preflight.py all --write` result;
+- any push-event CI run that passed on that head;
+- the failing job, its log line and why it is infrastructure.
+
+With that comment and the user's merge authorization, the PR may be
+admin-merged. This covers infrastructure failures only. A compile error, test
+failure or other failure that reproduces locally is still yours to fix, and
+this policy does not add merge authority the user has not given.
 
 ## 6. Merge conflicts in shared registries
 
