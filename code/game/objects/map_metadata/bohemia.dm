@@ -30,5 +30,6 @@
 	is_RP = TRUE
 /obj/map_metadata/bohemia/New()
 	..()
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()

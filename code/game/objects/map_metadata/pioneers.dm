@@ -34,6 +34,7 @@
 
 /obj/map_metadata/pioneers/New()
 	..()
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()
 

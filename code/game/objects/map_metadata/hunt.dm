@@ -39,6 +39,7 @@
 		for (var/i = 1, i <= 50, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/island/river))
 			new/obj/structure/piranha(areaspawn)
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()
 

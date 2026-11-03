@@ -52,6 +52,7 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()
 		config.no_respawn_delays = FALSE
