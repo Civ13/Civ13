@@ -269,6 +269,7 @@ RECIPE: /material/iron/,meat grinder,/obj/structure/meat_grinder,8,120,1,1,produ
 RECIPE: /material/iron/,canner,/obj/structure/canner,7,120,1,1,production,95,0,0,8,null
 RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
+RECIPE: /material/iron/,saw,/obj/item/weapon/saw,3,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
 RECIPE: /material/iron/,pitchfork,/obj/item/weapon/material/pitchfork,4,120,0,1,tools,30,0,0,8,null
 RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,8,null
