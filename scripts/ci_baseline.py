@@ -65,7 +65,7 @@ SUITES = {
     # Showcase room templates parsed with the runtime reader's rules; no BYOND runtime.
     'showcase_rooms': {'files': ('tests/showcase_rooms/test_templates.py',),
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
-                  'code/modules/admin/showcase_rooms.dm'),
+                  'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),

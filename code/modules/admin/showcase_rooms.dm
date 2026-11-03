@@ -1,3 +1,11 @@
+// Showcase/demo build only. This file is not part of civ13.dme or the live
+// game: scripts/build_showcase_dme.py generates showcase.dme, which defines
+// CIV13_SHOWCASE_BUILD and includes it. Never run that build alongside, or as,
+// a persistent world such as Gaia.
+#ifndef CIV13_SHOWCASE_BUILD
+#error showcase_rooms.dm belongs to the separate showcase build; generate showcase.dme with scripts/build_showcase_dme.py.
+#endif
+
 // Furnished showcase rooms: small DMM templates in maps/zones/showcase/ that
 // stage a working gameplay station (smithy, kitchen, tavern, workshop, farm
 // shed, infirmary) with starter materials and a guide note. Templates carry
@@ -64,6 +72,8 @@
 // paired building level: deleting one half deletes its partner on the next or
 // previous z-level and drops whatever stands there, outside this footprint.
 /proc/showcase_room_mutation_blocker(x1, y1, x2, y2, z)
+	if (persistence_round_active())
+		return "Showcase rooms are for disposable demo rounds only and refuse persistent worlds."
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 		return "A world save or load is running or awaiting recovery. Try again when it finishes."
 	if (map_storage && (map_storage.dimension_recovery_required || map_storage.dimension_budget_hold))
@@ -116,6 +126,9 @@
 	set desc = "Place a furnished room that shows off a gameplay station, with its door just north of you."
 
 	if (!check_rights(R_SPAWN))
+		return
+	if (persistence_round_active())
+		WWalert(usr, "Showcase rooms are for disposable demo rounds only and refuse persistent worlds.", "Showcase Room")
 		return
 	if (persistence_save_in_progress)
 		WWalert(usr, "A world save is in progress. Try again when it finishes.", "Showcase Room")
@@ -176,5 +189,14 @@
 
 	log_admin("[key_name(usr)] loaded the [choice] showcase room at ([x1],[y1],[z])-([x2],[y2],[z]).")
 	message_admins("[key_name_admin(usr)] loaded the [choice] showcase room at ([x1],[y1],[z]).")
+
+/client/add_admin_verbs()
+	..()
+	if (holder && (holder.rights & R_SPAWN))
+		verbs += /client/proc/load_showcase_room
+
+/client/remove_admin_verbs()
+	..()
+	verbs -= /client/proc/load_showcase_room
 
 #undef SHOWCASE_ROOM_DIR

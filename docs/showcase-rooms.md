@@ -27,27 +27,45 @@ unsmoothed and no lighting or roof is drawn.
 | ![Tavern](images/showcase-rooms/tavern.png) | ![Workshop](images/showcase-rooms/workshop.png) |
 | ![Farm shed](images/showcase-rooms/farm_shed.png) | ![Infirmary](images/showcase-rooms/infirmary.png) |
 
-## Placing a room
+## Separate showcase build
+
+Showcase rooms are a demo tool, not part of the live game. `civ13.dme` does
+not include the loader, and the production admin verb lists never register
+it. `code/modules/admin/showcase_rooms.dm` stops compilation with `#error`
+unless `CIV13_SHOWCASE_BUILD` is defined, so it cannot be ticked into the live
+build by accident.
+
+Generate and compile the demo build with:
+
+```sh
+python3 scripts/build_showcase_dme.py --compile   # writes showcase.dme -> showcase.dmb
+```
+
+`showcase.dme` is generated from the current `civ13.dme` (plus the define and
+the loader include) and is git-ignored. Run `showcase.dmb` only as a
+disposable, non-persistent demo instance on its own port and data directory.
+Never run it alongside a persistent world such as Gaia, and never deploy it in
+place of `civ13.dmb`. The loader also refuses any persistent round
+(`persistence_round_active()`).
+
+## Placing a room (showcase build only)
 
 Admins with spawn rights use **Debug > Load Showcase Room**. Stand where the
 door should be: the room loads directly north of you. After the prompts the
 verb rechecks your position and refuses while a save or load is running or
 awaiting recovery, while level recovery or allocation is pending, or when the
-footprint holds a roof or floor paired with another building level (deleting
-one half would delete its partner on the next z-level and drop what stands
-there). It then moves every mob in the footprint onto your tile, including
-mobs inside closets or other containers, removes structures, items, floor/wall
-covers and roofs there, and places the template. It can add a wooden roof over
-every non-wall tile, which makes the room a roofed indoor area. Templates
-carry no areas, so the room otherwise keeps the area of the ground it is placed
-on. Loading changes the turfs under the footprint and is not undone
-automatically.
+footprint holds a roof or floor paired with another building level. It then
+moves every mob in the footprint onto your tile, including mobs inside
+closets or other containers, removes structures, items, floor/wall covers and
+roofs there, and places the template. It can add a wooden roof over every
+non-wall tile, which makes the room a roofed indoor area. Templates carry no
+areas, so the room keeps the area of the ground it is placed on. Loading
+changes the turfs under the footprint and is not undone automatically.
 
 The clear, place and roof steps run without yielding: they use the
 `dmm_suite` model parser directly instead of `read_map`, whose `sleep(-1)`
-calls could let a save begin partway through. This is source-reviewed only.
-Native loading, roofs and behaviour on a persistent world have not been
-validated in DreamDaemon, so treat the verb as untested there.
+calls yield. This is source-reviewed only. Native loading and roofs have not
+been validated in DreamDaemon.
 
 ## Adding a room
 

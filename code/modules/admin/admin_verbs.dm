@@ -118,8 +118,7 @@ var/list/admin_verbs_spawn = list(
 	/client/proc/drop_bomb,
 	/client/proc/drop_airstrike,
 	/client/proc/radiation_emission,
-	/client/proc/nuke,
-	/client/proc/load_showcase_room
+	/client/proc/nuke
 	)
 
 var/list/admin_verbs_server = list(

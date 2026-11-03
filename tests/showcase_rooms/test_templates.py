@@ -5,6 +5,9 @@ reader in code/modules/dmm_suite/reader.dm, then checks the room contract the
 "Load Showcase Room" admin verb relies on. No BYOND compiler or world runs.
 """
 from pathlib import Path
+import contextlib
+import importlib.util
+import io
 import re
 import unittest
 
@@ -177,11 +180,34 @@ class ShowcaseTemplates(unittest.TestCase):
         # A second grid block would load onto an unchecked z-level.
         self.assertIn('if (findtext(dmm_text, " = {\\"", grid_end))', source)
         self.assertNotIn("read_map(", source)
-        verbs = (ROOT / "code/modules/admin/admin_verbs.dm").read_text(encoding="utf-8")
-        self.assertIn("/client/proc/load_showcase_room", verbs)
-        dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
-        self.assertIn('#include "code\\modules\\admin\\showcase_rooms.dm"', dme)
+        self.assertIn("verbs += /client/proc/load_showcase_room", source)
 
+    def test_loader_is_only_in_the_separate_showcase_build(self):
+        # The live game (civ13.dme) never compiles or registers the loader.
+        dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
+        self.assertNotIn("showcase_rooms.dm", dme)
+        self.assertNotIn("CIV13_SHOWCASE_BUILD", dme)
+        verbs = (ROOT / "code/modules/admin/admin_verbs.dm").read_text(encoding="utf-8")
+        self.assertNotIn("load_showcase_room", verbs)
+        source = VERB.read_text(encoding="utf-8")
+        self.assertTrue(source.index("#ifndef CIV13_SHOWCASE_BUILD\n#error ") < source.index("/proc/"))
+        # The demo build refuses persistent worlds both up front and at admission.
+        verb = self.proc_body(source, "/client/proc/load_showcase_room()")
+        self.assertLess(verb.index("if (persistence_round_active())"), verb.index("WWinput("))
+        self.assertIn("if (persistence_round_active())", self.proc_body(source, "/proc/showcase_room_mutation_blocker("))
+        spec = importlib.util.spec_from_file_location("build_showcase_dme", ROOT / "scripts/build_showcase_dme.py")
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        generated = builder.generate(dme)
+        self.assertTrue(generated.startswith("#define CIV13_SHOWCASE_BUILD\n"))
+        self.assertIn('#include "code\\modules\\admin\\admin_verbs.dm"\n#include "code\\modules\\admin\\showcase_rooms.dm"\n', generated)
+        self.assertEqual(generated.replace("#define CIV13_SHOWCASE_BUILD\n", "", 1).replace('#include "code\\modules\\admin\\showcase_rooms.dm"\n', "", 1), dme)
+        with self.assertRaises(ValueError):
+            builder.generate(generated)
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            builder.main(["--output", "civ13.dme"])
+        ignored = (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+        self.assertIn("showcase.dme", ignored)
 
     def proc_body(self, source, signature):
         start = source.index(signature)
