@@ -264,7 +264,7 @@
 				if(content.loc != parent) continue
 				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
-				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))
+				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent) && !settled_child_relocation(content, parent))))
 					try
 						record_save_child_failure(parent, content, child_ref)
 					catch
@@ -278,7 +278,7 @@
 				if(content.loc != parent) continue
 				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
-				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))
+				if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent) && !settled_child_relocation(content, parent))))
 					try
 						record_save_child_failure(parent, content, child_ref)
 					catch
@@ -791,14 +791,33 @@
 	// use this allowance for a container or an unsupported ownership change.
 	return record && record["atom"] == A && record["identity"] == identity && record["ref"] && saving_reference_pins[record["ref"]] == A && isturf(parent) && isturf(record["origin"]) && moving_save_root_supported(A) && A.z == record["z"]
 
+// A completed child that later steps to another tile keeps its first captured
+// edge (add_export_content). Accept that same edge when the step lands while
+// the child's own fields were being written: a wandering mob or a sliding item
+// that stays on a turf of this level is a consistent snapshot of its origin.
+// Deletion, containment changes and level changes still refuse the capture.
+/map_storage/proc/settled_child_relocation(atom/movable/A, atom/parent)
+	if(!istype(A) || A.gcDestroyed || !isturf(parent) || !isturf(A.loc)) return FALSE
+	if(A.z != saving_z || parent.z != saving_z) return FALSE
+	var/identity = save_entry_identity(A)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(human_save_roots[identity]) return FALSE // Human roots own their saved origin.
+#endif
+	if(moving_save_roots[identity]) return FALSE // Roster roots use moving_save_root_edge.
+	var/ref = saving_references[identity]
+	return ref && saving_reference_pins[ref] == A
+
 /map_storage/proc/drain_moving_save_roster(savefile/F)
 	for(var/identity in moving_save_roots)
 		var/list/record = moving_save_roots[identity]
 		if(record["z"] != saving_z) continue
 		var/mob/living/simple_animal/A = record["atom"]
+		var/ref = record["ref"]
+		// An uncaptured member that was deleted during the save has no state
+		// left to persist; omitting it matches the live world.
+		if(!ref && (!A || A.gcDestroyed)) continue
 		if(!A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
 			throw EXCEPTION("Moving save roster member disappeared or changed ownership")
-		var/ref = record["ref"]
 		if(!ref) ref = capture_moving_save_root(F, record)
 		// Replay yields too: match the ordinary traversal post-capture refusal.
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)

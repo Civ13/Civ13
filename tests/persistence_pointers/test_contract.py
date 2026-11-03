@@ -243,7 +243,7 @@ class PointerContracts(unittest.TestCase):
 
     def test_moved_child_context_is_failure_only_and_retains_both_refusals(self):
         source = read('code/modules/persistence/saving.dm')
-        guard = 'if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent))))'
+        guard = 'if(child_ref && (!content || (content.loc != parent && !moving_save_root_edge(content, parent) && !settled_child_relocation(content, parent))))'
         refusal = 'throw EXCEPTION("Child moved or disappeared during capture")'
         record = 'record_save_child_failure(parent, content, child_ref)'
         self.assertEqual(source.count(guard), 2)
