@@ -810,8 +810,10 @@
 
 // The tile walk visits each turf once, so an animal outside the roster that
 // steps from an unvisited tile onto a visited one is never reached. Once every
-// turf of the level is captured, save such animals on the tile where this
-// sweep finds them. Roster roots are attached by drain_moving_save_roster.
+// turf of the level is captured, give each such animal exactly one physical
+// parent: the tile where this sweep finds it. An entry alone is not a parent,
+// because a saved field (or an earlier sweep member) can capture an animal by
+// reference without placing it. Roster roots are attached by the roster drain.
 /map_storage/proc/sweep_uncaptured_animals(savefile/F)
 	var/list/registry = global.vars["mob_list"]
 	if(!islist(registry)) return
@@ -821,15 +823,20 @@
 		if(!A || A.gcDestroyed || A.z != saving_z || !isturf(A.loc)) continue
 		var/identity = save_entry_identity(A)
 		if(moving_save_roots[identity]) continue
-		var/existing = saving_references[identity]
-		if(existing && saving_reference_pins[existing] == A) continue
+		var/ref = saving_references[identity]
+		if(ref && saving_reference_pins[ref] == A && saving_content_owners["[ref]"]) continue
 		var/turf/origin = A.loc
 		var/parent_ref = saving_references[save_entry_identity(origin)]
 		if(!parent_ref || saving_reference_pins[parent_ref] != origin) continue
-		var/ref = BuildVarDirectory(F, A, 1, TRUE)
-		if(!ref) continue // Omitted, unsaved, or already captured on another level.
-		if(saving_reference_pins[parent_ref] != origin)
-			throw EXCEPTION("Uncaptured animal origin turf was replaced")
+		if(!ref || saving_reference_pins[ref] != A)
+			ref = BuildVarDirectory(F, A, 1, TRUE)
+			if(!ref) continue // Omitted, unsaved, or already captured on another level.
+			// Capture yields. Apply the traversal's post-child rule: only a
+			// step to another tile of this level keeps the captured origin.
+			if(!A || A.gcDestroyed || !isturf(A.loc) || A.z != saving_z || saving_reference_pins[ref] != A)
+				throw EXCEPTION("Swept animal moved or disappeared during capture")
+			if(saving_reference_pins[parent_ref] != origin)
+				throw EXCEPTION("Uncaptured animal origin turf was replaced")
 		var/key = "[ref]"
 		if(saving_content_owners[key]) continue
 		var/path = "[entry_path(F, parent_ref)]/content"

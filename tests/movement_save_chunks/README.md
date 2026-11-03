@@ -9,7 +9,7 @@ inputs and the isolated native fixture to a new temporary directory, recording
 SHA-256 hashes in `receipt.json`. It never compiles or starts a daemon. Reprepare
 after every source change; an earlier receipt does not describe current bytes.
 
-Prepared scenarios: `walking`, `frontier`, `frontier-delete`, `delete`, `inventory`, `cross-z`, `legacy-step`, `legacy-cross-z`, `legacy-backstep`, `uncaptured-delete`, `yield`,
+Prepared scenarios: `walking`, `frontier`, `frontier-delete`, `delete`, `inventory`, `cross-z`, `legacy-step`, `legacy-cross-z`, `legacy-backstep`, `sweep-reference`, `sweep-companion`, `sweep-container`, `sweep-cross-z`, `uncaptured-delete`, `yield`,
 and `depth`. Positive cases assert exactly one saved animal parent and a completed
 marker. Refusal cases assert no new marker, released capture state, and unchanged
 prior completed backup marker. The native benchmark verifies full prior-backup bytes. Typed graph roundtrips
