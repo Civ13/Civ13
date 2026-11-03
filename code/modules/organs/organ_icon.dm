@@ -76,7 +76,9 @@ var/global/list/limb_icon_cache = list()
 	if (QDELETED(src))
 		return
 	if (!owner)//special check
-		qdel(src)
+		// World import constructs saved limbs before restoring their owner field.
+		if (!persistence_saved_atom_construction)
+			qdel(src)
 		return
 	if (!owner.species || !species || !owner.body_build)
 		return

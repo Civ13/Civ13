@@ -26,8 +26,12 @@ Do not hold a finding for more evidence unless the fix itself is risky.
 
 CI failures: read the failed job log before reacting. If the failure is
 infrastructure (checkout or fetch timeout, runner cancelled, artifact
-missing because an earlier step was cancelled), say so and push or rerun.
-Do not change code for it.
+missing because an earlier step was cancelled, BYOND download or compile
+failing on the runner), say so and push or rerun. Do not change code for it.
+Such a GitHub build failure is not a hard blocker: when a rerun fails the same
+way, document the local compile and preflight results for the exact head in
+the PR comment, and an authorized merge may then proceed as an admin merge
+(see the `civ13-pr-preflight` skill). Real test or compile failures still block.
 
 Merge conflicts: when both sides add independent code in the same spot,
 keep both and state the order you chose. Ask only when the two sides
