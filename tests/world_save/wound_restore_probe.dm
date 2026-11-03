@@ -132,6 +132,62 @@
 	var/obj/item/organ/external/groin/orphan = new
 	durable_world_check(QDELETED(orphan), "ordinary orphan limb no longer cleans itself up")
 
+// A body saved after a pre-guard load keeps its self-deleted limbs as null or
+// deleted entries in `organs`. Load repair rebuilds exactly those limbs, keeps
+// a real stump and leaves a clean body untouched.
+/mob/living/human/organ_repair_probe
+	var/regenerated = 0
+/mob/living/human/organ_repair_probe/New()
+	return
+/mob/living/human/organ_repair_probe/regenerate_appearance()
+	regenerated++
+
+/proc/organ_repair_body()
+	var/mob/living/human/organ_repair_probe/H = new
+	H.species = new /datum/species/human
+	H.organs = list()
+	H.organs_by_name = list()
+	H.internal_organs = list()
+	H.internal_organs_by_name = list()
+	for(var/tag in H.species.has_limbs)
+		var/list/data = H.species.has_limbs[tag]
+		var/path = data["path"]
+		new path(H)
+	return H
+
+/proc/organ_repair_case()
+	var/mob/living/human/organ_repair_probe/clean = organ_repair_body()
+	durable_world_check(clean.organs.len == 11 && clean.repair_import_lost_limbs() == 0 && clean.organs.len == 11 && !clean.regenerated, "intact body changed by limb repair")
+	var/mob/living/human/organ_repair_probe/H = organ_repair_body()
+	var/obj/item/organ/external/chest = H.organs_by_name["chest"]
+	var/obj/item/organ/external/left_foot = H.organs_by_name["l_foot"]
+	// Pre-guard import: the deleted limbs never left `organs`.
+	var/list/damaged = list(chest)
+	for(var/tag in list("groin", "head", "l_arm", "r_arm", "l_leg", "r_leg", "l_hand", "r_hand", "r_foot"))
+		var/obj/item/organ/external/E = H.organs_by_name[tag]
+		E.owner = null
+		E.children = null
+		qdel(E)
+		damaged += (tag == "head" ? null : E)
+	// A real amputation leaves a stump in the body.
+	var/obj/item/organ/external/stump/S = new(H, FALSE, left_foot)
+	H.organs -= left_foot
+	left_foot.loc = null
+	damaged += S
+	H.organs = damaged
+	durable_world_check(H.repair_import_lost_limbs() == 9, "self-deleted limbs not rebuilt")
+	var/intact = 0
+	for(var/tag in H.species.has_limbs)
+		var/obj/item/organ/external/E = H.organs_by_name[tag]
+		if(E && !QDELETED(E) && E.loc == H && E.owner == H && (E in H.organs))
+			intact++
+	durable_world_check(intact == 11 && H.organs.len == 11 && !(null in H.organs), "repaired body limbs incomplete")
+	durable_world_check(H.organs_by_name["l_foot"] == S && H.organs_by_name["chest"] == chest, "limb repair replaced a surviving limb or stump")
+	var/obj/item/organ/external/arm = H.organs_by_name["l_arm"]
+	var/obj/item/organ/external/hand = H.organs_by_name["l_hand"]
+	durable_world_check(hand.parent == arm && (hand in arm.children) && arm.parent == chest, "rebuilt limb hierarchy broken")
+	durable_world_check(H.regenerated == 1 && H.repair_import_lost_limbs() == 0, "limb repair appearance or idempotence changed")
+
 /world/New()
 	world.OpenPort(0)
 	try
@@ -142,6 +198,7 @@
 		for(var/key in list("stages", "desc_list", "damage_list"))
 			wound_restore_reject_missing(key)
 		organ_restore_case()
+		organ_repair_case()
 		text2file(json_encode(list("done" = TRUE, "checks" = durable_probe_checks, "roundtrips" = 18)), "metadata-result.json")
 	catch(var/exception/E)
 		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "error" = "[E]", "source" = E.file, "line" = E.line)), "metadata-result.json")

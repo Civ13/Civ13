@@ -838,7 +838,11 @@ The same run also imports a saved chest whose groin is reached only through the
 chest's `children` field, so both limbs are built with no holder before their
 owner/parent fields decode. It asserts neither limb deletes itself through the
 orphan-limb icon cleanup, the parent link survives, the import guard returns to
-zero and a freshly constructed orphan limb still cleans itself up (147 checks).
+zero and a freshly constructed orphan limb still cleans itself up. A further
+case covers bodies saved after a pre-guard load: their dead limb entries (null
+or deleted, unplaced limbs still listed in `organs`) are rebuilt by
+`repair_import_lost_limbs()` on `after_load`, while a surviving limb, a real
+stump and an intact body are left alone (153 checks).
 Without the loader guard, rejoining players' bodies kept only the torso.
 
 `--wounds --negative-control wound-restore` substitutes immutable wound and loader
