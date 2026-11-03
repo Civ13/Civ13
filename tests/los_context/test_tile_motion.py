@@ -498,6 +498,8 @@ class DistanceCamera(unittest.TestCase):
         click_cross=A.project(one_liners(P.fragment(adjacent,'/turf/proc/ClickCross(')),'/turf/proc/ClickCross','src, target_dir, border_only, target_atom=None',env)
         M_adj=bare(one_liners(P.fragment(adjacent,'/atom/movable/Adjacent(')),['loc','locs'])
         movable_adjacent=A.project(M_adj,'/atom/movable/Adjacent','src, neighbor',env)
+        env['locate']=lambda x,y,z:turf(x,y)
+        env['los_turf_blocks_sight']=A.project(source,'/proc/los_turf_blocks_sight','T',env) if '/proc/los_turf_blocks_sight(' in source else None
         reach=A.project(source,'/proc/los_reach_admits','body, target',env)
         calls=[]
         def spy(body,target):calls.append((target.x,target.y));return reach(body,target)
@@ -522,6 +524,17 @@ class DistanceCamera(unittest.TestCase):
         item=w.Obj('/obj/item',w.turf(101,101))
         self.assertFalse(item.Adjacent(w.m.body))
         self.assertEqual(w.both(item),[0,0])
+        # Closed curtains (opaque, non-dense) on both shared cardinals: Adjacent()
+        # still reaches through them, but touch must not see past that corner.
+        w=self.reach_world()
+        for x,y in [(101,100),(100,101)]:w.Obj('/obj/structure/curtain',w.turf(x,y),opaque=True)
+        item=w.Obj('/obj/item',w.turf(101,101))
+        self.assertTrue(item.Adjacent(w.m.body))
+        self.assertFalse(w.reach(w.m.body,item))
+        self.assertEqual(w.both(item),[0,0])
+        # One curtain, one open cardinal: the ordinary reachable-corner case.
+        w=self.reach_world();w.Obj('/obj/structure/curtain',w.turf(101,100),opaque=True)
+        self.assertEqual(w.both(w.Obj('/obj/item',w.turf(101,101))),[1,1])
         # Two tiles away is never a reach candidate, even past the same corner.
         w=self.reach_world();w.wall(101,100)
         w.both(w.Obj('/obj/item',w.turf(102,101)));self.assertEqual(w.calls,[])

@@ -647,7 +647,21 @@ var/global/list/los_active_contexts
 		for (var/atom/movable/A in T)
 			if (A.opacity && A != target)
 				return FALSE
+	// Adjacent() reaches a diagonal past non-dense blockers such as closed
+	// curtains. Touch must not see through a corner where BOTH shared
+	// cardinal tiles block sight; it may only clear the closed-contact crack.
+	if (T.x != body.x && T.y != body.y)
+		if (los_turf_blocks_sight(locate(T.x, body.y, T.z)) && los_turf_blocks_sight(locate(body.x, T.y, T.z)))
+			return FALSE
 	return target.Adjacent(body)
+
+/proc/los_turf_blocks_sight(turf/T)
+	if (!T || T.opacity)
+		return TRUE
+	for (var/atom/movable/A in T)
+		if (A.opacity)
+			return TRUE
+	return FALSE
 
 // A displayed storage item is readable only through this body's current open
 // storage view. Screen membership alone does not authorize hidden contents.
