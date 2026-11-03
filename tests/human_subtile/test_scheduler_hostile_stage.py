@@ -43,7 +43,7 @@ class HostileStage(unittest.TestCase):
         receipt=dict(head=head,error=None,port=0,byond_version=516,byond_build=1688,
                      scope=contract.SCOPE,transition_checks=42,transition_phase='quiet',
                      transition_rows=[row],transition_partial=copy.deepcopy(row['events']))
-        self.assertTrue(contract.validate_receipt(receipt,head)['positive_contact'])
+        self.assertTrue(contract.validate_receipt(receipt,head)['target_response'])
         for mutate in ('scope','phase','checks','missing','duplicate','partial','head'):
             broken=copy.deepcopy(receipt)
             if mutate=='scope':broken['scope']='fallback'

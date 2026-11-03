@@ -9,7 +9,7 @@ spec = importlib.util.spec_from_file_location("hostile_transition_stage", HERE /
 base = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base)
 
-SCOPE = "headless mob scheduler; hostile target-loss recovery; no client parity"
+SCOPE = "controlled mosquito towards idle-slot; no Life, contact or client parity"
 FIXTURE = "tests/human_subtile/scheduler_hostile_draft.dm"
 PROBE = base.PROBE
 

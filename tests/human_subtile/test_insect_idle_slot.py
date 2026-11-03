@@ -35,6 +35,21 @@ class IdleSlotContracts(unittest.TestCase):
         self.assertEqual(owner.actions,[(60,False)])
         self.assertEqual(owner.due,63)
 
+    def test_corrected_equal_interval_retains_idle_slot(self):
+        owner=IdleSlot(due=59.5,interval=3,period=3,tick=.5)
+        self.assertEqual(owner.run(59.5,True),'wait')
+        self.assertEqual((owner.due,owner.end),(59.5,62.5))
+        self.assertEqual(owner.run(60,False),('start',60,63))
+        self.assertEqual(owner.actions,[(60,False)])
+
+    def test_equal_interval_expiry_does_not_catch_up_or_replay(self):
+        owner=IdleSlot(due=59.5,interval=3,period=3,tick=.5)
+        self.assertEqual(owner.run(59.5,True),'wait')
+        self.assertEqual(owner.run(62.5,False),'expired')
+        self.assertEqual(owner.due,65.5)
+        self.assertIsNone(owner.run(63,False))
+        self.assertEqual(owner.actions,[])
+
     def test_window_cannot_start_before_due_or_replay_after_expiry(self):
         owner=IdleSlot()
         self.assertIsNone(owner.run(59,False));self.assertEqual(owner.run(59.5,True),'wait')
@@ -65,7 +80,7 @@ class IdleSlotContracts(unittest.TestCase):
         start=source.split('/proc/npc_subtile_start_wild_walk(',1)[1].split('/mob/living/simple_animal/proc/npc_subtile_stop_wild_walk',1)[0]
         self.assertLess(start.index('W.valid() && W.mode == mode'),start.index('W.idle_window_end = 0'))
         loop=source.split('/datum/npc_subtile_wild_walk/proc/perform_loop()',1)[1].split('/datum/npc_subtile_recovery',1)[0]
-        self.assertIn('mode == "towards" && period > interval && get_turf(actor) == get_turf(target)',loop)
+        self.assertIn('mode == "towards" && get_turf(actor) == get_turf(target)',loop)
         self.assertIn('idle_window_end = due + interval',loop)
         self.assertLess(loop.index('world.time >= idle_window_end'),loop.index('if (get_turf(actor) == get_turf(target))'))
         self.assertIn('due += max(1, floor((world.time - due) / period) + 1) * period',loop)

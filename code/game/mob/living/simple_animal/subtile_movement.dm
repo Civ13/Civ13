@@ -617,7 +617,7 @@
 				break
 			continue
 		var/period = actor.npc_subtile_wild_period(mode, interval)
-		if (!idle_window_end && mode == "towards" && period > interval && get_turf(actor) == get_turf(target))
+		if (!idle_window_end && mode == "towards" && get_turf(actor) == get_turf(target))
 			idle_window_end = due + interval
 		if (idle_window_end)
 			// Expire before observing a boundary-time target change. A delayed

@@ -1,230 +1,60 @@
 import copy
-import re
-import unittest
 from pathlib import Path
+import unittest
 import scheduler_hostile_contract as C
-import scheduler_hostile_stage as S
+HERE=Path(__file__).resolve().parent
 
-HERE = Path(__file__).resolve().parent
-
-def event(kind, at, **kw):
-    row = dict(event=kind, phase="wander", at=at, x=8, y=7, z=1, sx=0, sy=0,
-        bx=0, by=0, bw=32, bh=32, generation=1, stance=0, owned=0,
-        transaction=0, transaction_old=0, transaction_generation=None, transaction_owner=None,
-        pulse=0, pursuit=0, pursuit_old=0, wild=0, follow=0, flee=0, pet=0,
-        recovery=0, pending=0, target_matches=0, actor_faction="neutral",
-        target_faction=None, target_x=None, target_y=None, target_z=None,
-        target_sx=None, target_sy=None, target_bx=None, target_by=None, target_bw=None, target_bh=None,
-        target_damage=None, target_adjacent=0, old_finished=0, old_completions=0,
-        wander_moves=0, attacks=0, positive_attacks=0, damage_before=None, result=None, call_id=None)
-    row.update(kw)
-    return row
+def event(kind,at,**kw):
+    d=dict(event=kind,at=at,x=6,y=6,z=1,sx=0,sy=0,settled=1,transaction=0,wild_owner=1,wild_due=3,
+      wild_idle_end=0,wild_revision=1,wild_generation=1,wild_mode='towards',wild_target_matches=1,generation=1,
+      pending=0,recovery=0,choice=None,native_choice=None,chance=None,target_x=6,target_y=6,target_z=1,
+      target_sx=0,target_sy=0,target_in_range=1,target_brute=0,target_disease=0)
+    d.update(kw);return d
 
 def good():
-    events=[]; actor_x=8; actor_sx=0; tick=2.0; call_id=0
-    def move(phase, owner, target, index):
-        nonlocal actor_x,actor_sx,tick,call_id
-        call_id+=1
-        common=dict(phase=phase,x=actor_x,sx=actor_sx,call_id=call_id,transaction=1,pulse=1,
-                    generation=2,transaction_generation=2,transaction_owner=owner,owned=1,**target)
-        if owner=="pursuit":common["pursuit"]=1
-        if phase=="wander":common["wander_moves"]=index
-        events.append(event("move_before",tick,**common))
-        actor_sx+=2
-        if actor_sx>=32:actor_x+=1;actor_sx-=32
-        common.update(x=actor_x,sx=actor_sx)
-        if phase=="wander":common["wander_moves"]=index+1
-        events.append(event("move_after",tick,**common));tick+=0.5
-    for i in range(16):move("wander","wander_or_direct",{},i)
-    events.append(event("target_intro_before",tick,x=actor_x,sx=actor_sx,wander_moves=16));tick+=0.5
-    target=dict(target_faction="fixture-human",target_x=13,target_y=7,target_z=1,
-                target_sx=0,target_sy=0,target_bx=0,target_by=0,target_bw=32,target_bh=32,
-                target_damage=0,target_matches=1,wander_moves=16)
-    events.append(event("target_intro_after",tick,x=actor_x,sx=actor_sx,phase="acquire",**target));tick+=0.5
-    for _ in range(48):move("acquire","pursuit",target,16)
-    attack=dict(target,x=actor_x,sx=actor_sx,phase="acquire",target_adjacent=1,attacks=1,damage_before=0)
-    events.append(event("attack_before",tick,**attack))
-    events.append(event("attack_after",tick,**dict(attack,target_damage=12,positive_attacks=1)));tick+=0.5
-    contact=dict(target,x=actor_x,sx=actor_sx,phase="acquire",target_damage=12,positive_attacks=1,attacks=1)
-    events.append(event("target_relocate_before",tick,**contact))
-    reacq=dict(contact,phase="reacquire",target_x=8)
-    events.append(event("target_relocate_after",tick,**reacq));tick+=0.5
-    call_id+=1
-    before=dict(reacq,call_id=call_id,transaction=1,pulse=1,generation=3,transaction_generation=3,
-                transaction_owner="pursuit",pursuit=1,owned=1)
-    events.append(event("move_before",tick,**before))
-    events.append(event("move_after",tick,**dict(before,x=11,sx=30)));tick+=0.5
-    loss=dict(reacq,x=11,sx=30,generation=3,transaction=1,transaction_old=1,transaction_generation=3,
-              transaction_owner="lost_pursuit",pursuit=1,pursuit_old=1,owned=1)
-    events.append(event("target_loss_before",tick,**loss))
-    lost=dict(loss,phase="lost",target_faction="neutral",target_matches=0)
-    events.append(event("target_loss_after",tick,**lost));tick+=0.5
-    settled=dict(lost,transaction=0,transaction_old=0,transaction_generation=None,
-                 transaction_owner=None,pulse=0,pursuit=0,pursuit_old=0,old_completions=1)
-    events.append(event("lost_completion_hook",tick,**settled))
-    settled.update(phase="quiet",old_finished=1)
-    events.append(event("quiet_start",tick+0.5,**settled))
-    events.append(event("quiet_end",tick+4.5,**settled))
-    waiting=dict(settled,phase="recovery")
-    events.append(event("recovery_wait_start",tick+4.5,**waiting))
-    events.append(event("life_before",tick+5,**waiting))
-    events.append(event("life_after",tick+5,**waiting))
-    call_id+=1
-    recover=dict(waiting,generation=4,transaction=1,transaction_generation=4,
-                 transaction_owner="recovery",pulse=1,recovery=1,call_id=call_id)
-    events.append(event("move_before",tick+5.5,**recover))
-    events.append(event("move_after",tick+5.5,**dict(recover,x=12,sx=0)))
-    aligned=dict(waiting,x=12,sx=0,generation=4)
-    events.append(event("recovery_aligned",tick+6,**aligned))
-    post=dict(aligned,phase="post_recovery")
-    events.append(event("post_recovery_start",tick+6,**post))
-    events.append(event("post_recovery_end",tick+10,**post))
-    events.append(event("cleanup",tick+10.5,**post))
-    return dict(started=0,ended=tick+11,tick_lag_ds=0.5,actual_clients=0,
-                life_interval_ds=10,start_delay_ds=6,process_ticks=6,events=events)
+    events=[event('command_before',0,wild_owner=0,wild_due=None,wild_revision=None,wild_generation=None,wild_mode=None),
+            event('mosquito_intent_towards',0,wild_owner=0,wild_due=None,wild_revision=None,wild_generation=None,wild_mode=None),
+            event('command_after',0,choice=1),event('idle_before_target',3.5,wild_idle_end=6),
+            event('target_step_before',3.5,wild_idle_end=6),event('target_step_after',3.5,wild_idle_end=6,target_x=7)]
+    for i in range(16):
+        at=4+(i//3)*0.5;events.append(event('mosquito_move_before',at,sx=i*2,target_x=7,transaction=1,settled=0));
+        end=dict(x=7,sx=0) if i==15 else dict(sx=(i+1)*2)
+        events.append(event('mosquito_move_after',at,target_x=7,transaction=1,settled=0,**end))
+    events.extend([event('arrived',7,x=7,target_x=7),
+      event('stop',7,x=7,target_x=7,wild_owner=0,wild_due=None,wild_revision=None,wild_generation=None,wild_mode=None),
+      event('quiet_end',11,x=7,target_x=7,wild_owner=0,wild_due=None,wild_revision=None,wild_generation=None,wild_mode=None)])
+    return dict(started=0,ended=11,tick_lag_ds=.5,actual_clients=0,events=events)
 
-def first(row, kind):
-    return next(e for e in row["events"] if e["event"] == kind)
-
+def first(row,label): return next(e for e in row['events'] if e['event']==label)
 class ContractTests(unittest.TestCase):
-    def setUp(self): self.row = good()
-    def check_bad(self, mutate):
-        mutate(self.row)
-        with self.assertRaises(ValueError): C.validate(self.row)
-    def test_good_trace(self):
-        self.assertTrue(C.validate(self.row)["positive_contact"])
-    def test_late_old_pulse_rejected(self):
+    def setUp(self): self.row=good()
+    def bad(self,mutator):
+        mutator(self.row)
+        with self.assertRaises(ValueError):C.validate(self.row)
+    def test_good(self): self.assertTrue(C.validate(self.row)['target_response'])
+    def test_idle_deadline_missing(self): self.bad(lambda r:first(r,'idle_before_target').update(wild_idle_end=0))
+    def test_idle_owner_changed(self): self.bad(lambda r:first(r,'idle_before_target').update(wild_revision=2))
+    def test_first_pulse_late(self):
         def mutate(r):
-            e=copy.deepcopy(first(r,"target_loss_before")); e.update(event="move_before",phase="quiet",at=first(r,"quiet_end")["at"]-0.1,call_id=999)
-            r["events"].insert(r["events"].index(first(r,"quiet_end")),e)
-        self.check_bad(mutate)
-    def test_inflight_attack_rejected(self):
-        self.check_bad(lambda r:first(r,"attack_before").update(transaction=1,transaction_generation=2,transaction_owner="pursuit"))
-    def test_zero_damage_rejected(self):
-        self.check_bad(lambda r:first(r,"attack_after").update(target_damage=0))
-    def test_pursuit_without_progress_rejected(self):
-        def mutate(r):
-            for e in r["events"]:
-                if e["event"]=="move_after" and e["phase"]=="acquire":e.update(x=9,sx=0)
-        self.check_bad(mutate)
-    def test_stale_target_faction_rejected(self):
-        self.check_bad(lambda r:first(r,"target_loss_after").update(target_faction="fixture-human"))
-    def test_faked_nonnormalized_offset_rejected(self):
-        self.check_bad(lambda r:first(r,"quiet_start").update(x=10,sx=62))
-    def test_missing_move_return_rejected(self):
-        self.check_bad(lambda r:r["events"].remove(first(r,"move_after")))
-    def test_wrong_old_completion_count_rejected(self):
-        self.check_bad(lambda r:first(r,"quiet_end").update(old_completions=2))
-    def test_equal_null_generation_rejected(self):
-        self.check_bad(lambda r:first(r,"target_loss_before").update(transaction_generation=None))
-    def test_fabricated_wander_counter_rejected(self):
-        self.check_bad(lambda r:first(r,"move_after").update(sx=0))
-    def test_overlapping_continuous_owners_rejected(self):
-        self.check_bad(lambda r:first(r,"target_loss_before").update(wild=1))
-    def test_post_loss_damage_rejected(self):
-        self.check_bad(lambda r:first(r,"quiet_start").update(target_damage=13))
-    def test_terminal_owner_reacquisition_rejected(self):
-        self.check_bad(lambda r:first(r,"cleanup").update(recovery=1))
-    def test_move_return_changed_actor_generation_rejected(self):
-        self.check_bad(lambda r:first(r,"move_after").update(generation=99))
-    def test_move_return_changed_transaction_owner_rejected(self):
-        self.check_bad(lambda r:first(r,"move_after").update(transaction_owner="recovery"))
-    def test_move_return_changed_transaction_generation_rejected(self):
-        self.check_bad(lambda r:first(r,"move_after").update(transaction_generation=99))
-    def test_move_return_changed_old_identity_rejected(self):
-        self.check_bad(lambda r:first(r,"move_after").update(transaction_old=1))
-    def test_moving_entry_transaction_generation_must_match_actor(self):
-        def mutate(r):
-            first(r,"move_before").update(transaction_generation=7)
-            first(r,"move_after").update(transaction_generation=7)
-        self.check_bad(mutate)
-    def test_target_offset_alias_rejected(self):
-        self.check_bad(lambda r:first(r,"attack_before").update(target_x=12,target_sx=32))
-    def test_oversized_pulse_rejected(self):
-        self.check_bad(lambda r:first(r,"move_after").update(sx=4))
-    def test_unobserved_teleport_rejected(self):
-        self.check_bad(lambda r:first(r,"attack_before").update(x=11))
-    def test_missing_relocation_before_rejected(self):
-        self.check_bad(lambda r:r["events"].remove(first(r,"target_relocate_before")))
-    def test_partial_trace_binding_required(self):
-        row=self.row
-        receipt=dict(head="a"*40,error=None,port=0,byond_version=516,byond_build=1688,
-            scope=C.SCOPE,transition_checks=1,transition_phase="quiet",transition_rows=[row],
-            transition_partial=copy.deepcopy(row["events"]))
-        self.assertTrue(C.validate_receipt(receipt,"a"*40)["positive_contact"])
-        receipt["transition_partial"].pop()
-        with self.assertRaises(ValueError): C.validate_receipt(receipt,"a"*40)
-    def test_missing_post_loss_life_rejected(self):
-        self.check_bad(lambda r:r["events"].remove(first(r,"life_before")))
-    def test_nonrecovery_owner_cannot_claim_alignment(self):
-        def mutate(r):
-            for e in r["events"]:
-                if e["event"] in ("move_before","move_after") and e["phase"]=="recovery":
-                    e.update(transaction_owner="wander_or_direct",recovery=0)
-        self.check_bad(mutate)
-    def test_recovery_reusing_old_generation_rejected(self):
-        def mutate(r):
-            for e in r["events"]:
-                if e["event"] in ("move_before","move_after") and e["phase"]=="recovery":
-                    e.update(generation=3,transaction_generation=3)
-        self.check_bad(mutate)
-    def test_recovery_owner_flag_required(self):
-        def mutate(r):
-            for e in r["events"]:
-                if e["event"] in ("move_before","move_after") and e["phase"]=="recovery":
-                    e.update(recovery=0)
-        self.check_bad(mutate)
-    def test_recovery_progress_must_precede_alignment(self):
-        def mutate(r):
-            events=r["events"]
-            moves=[e for e in events if e["event"] in ("move_before","move_after") and e["phase"] == "recovery"]
-            for e in moves:
-                events.remove(e)
-                e.update(phase="post_recovery",at=first(r,"post_recovery_start")["at"]+0.5)
-            pos=events.index(first(r,"post_recovery_end"))
-            events[pos:pos]=moves
-        self.check_bad(mutate)
-    def test_unaligned_recovery_rejected(self):
-        self.check_bad(lambda r:first(r,"recovery_aligned").update(sx=2))
-    def test_post_recovery_window_cannot_be_shortened(self):
-        self.check_bad(lambda r:first(r,"post_recovery_end").update(at=first(r,"post_recovery_start")["at"]+2))
-    def test_recovery_wait_cannot_exceed_bound(self):
-        def mutate(r):
-            for e in r["events"]:
-                if e["phase"]=="post_recovery" or e["event"]=="recovery_aligned":
-                    e["at"]+=101
-            r["ended"]+=101
-        self.check_bad(mutate)
-    def test_unknown_field_rejected(self):
-        self.check_bad(lambda r:first(r,"sample").update(extra=1) if any(e["event"]=="sample" for e in r["events"]) else first(r,"quiet_start").update(extra=1))
-    def test_event_count_above_bound_rejected(self):
-        self.check_bad(lambda r:r.update(events=r["events"]*16))
-    def test_incomplete_target_geometry_rejected(self):
-        self.check_bad(lambda r:first(r,"attack_before").pop("target_sx"))
-    def test_fixture_forwards_real_ai_and_movement(self):
-        s=(HERE/"scheduler_hostile_draft.dm").read_text(encoding="utf-8-sig")
-        self.assertIn("/hostile/panther/scheduler_hostile/Life()",s)
-        self.assertIn("/hostile/panther/scheduler_hostile/AttackingTarget()",s)
-        self.assertGreaterEqual(s.count(". = ..()"),3)
-        self.assertNotIn("A.Life()",s);self.assertNotIn("A.AttackTarget()",s)
-        self.assertNotIn("A.npc_subtile_request_recovery(",s)
-        self.assertNotIn("A.npc_subtile_settle_axis(",s)
-        self.assertIn("A.npc_set_combat_target(null)",s)
-        self.assertIn('fixture_hostile_record("recovery_aligned", A)',s)
-    def test_fixture_event_schema_and_both_bounds_match_host(self):
-        s=(HERE/"scheduler_hostile_draft.dm").read_text(encoding="utf-8")
-        body=s.split("var/list/event_row = list(",1)[1].split('fixture_scheduler_assert(length(json_encode(event_row))',1)[0]
-        names=re.findall(r'"([^"]+)"\s*=',body)
-        self.assertEqual(len(names),len(set(names)))
-        self.assertEqual(set(names),C.EVENT_FIELDS)
-        self.assertIn('fixture_hostile_events.len < 2048',s)
-        self.assertIn('length(json_encode(event_row)) <= 900',s)
-        self.assertLess(2*2048*901+100000,4*1024*1024)
-    def test_adapter_binds_fixture_and_headless_gate(self):
-        original='\t\t\thuman_subtile_fixture_headless()\n"checks" = human_subtile_fixture_checks,\n"scope" = "actual human/codec; headless authority adapter"'
-        self.assertIn("fixture_scheduler_hostile_main()",S.adapted_probe(original))
-        dme='#include "tests\\human_subtile\\scheduler_core_draft.dm"'
-        self.assertIn("scheduler_hostile_draft.dm",S.adapted_dme(dme))
-        with self.assertRaises(ValueError): S.adapted_dme("")
-
-if __name__=="__main__":unittest.main()
+            for e in r['events']:
+                if e['event'] in ('mosquito_move_before','mosquito_move_after','arrived','stop','quiet_end'):e['at']+=1
+            r['ended']+=1
+        self.bad(mutate)
+    def test_pulse_teleport(self): self.bad(lambda r:first(r,'mosquito_move_after').update(sx=4))
+    def test_pulse_wrong_generation(self): self.bad(lambda r:first(r,'mosquito_move_after').update(wild_generation=2))
+    def test_target_not_moved(self): self.bad(lambda r:first(r,'target_step_after').update(target_x=6))
+    def test_stop_not_quiet(self): self.bad(lambda r:first(r,'quiet_end').update(wild_owner=1))
+    def test_idle_missing(self): self.bad(lambda r:r['events'].remove(first(r,'idle_before_target')))
+    def test_wrong_receipt_scope(self):
+        row=good();head='a'*40
+        receipt=dict(head=head,error=None,port=0,byond_version=516,byond_build=1688,scope=C.SCOPE,
+           transition_checks=1,transition_phase='quiet',transition_rows=[row],transition_partial=copy.deepcopy(row['events']))
+        self.assertTrue(C.validate_receipt(receipt,head)['target_response'])
+        receipt['scope']='incorrect'
+        with self.assertRaises(ValueError):C.validate_receipt(receipt,head)
+    def test_fixture_calls_real_adapter_and_preserves_bounds(self):
+        src=(HERE/'scheduler_hostile_draft.dm').read_text(encoding='utf-8')
+        self.assertIn('A.npc_subtile_species_walk("towards", H, 3)',src)
+        self.assertIn('W.idle_window_end == original_due + 3',src)
+        self.assertNotIn('A.Life()',src);self.assertNotIn('A.adjustBruteLoss',src)
+if __name__=='__main__':unittest.main()
