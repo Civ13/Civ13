@@ -16,7 +16,7 @@ import zipfile
 import master_guard
 import supervisor as core
 
-MAPS = {'NOMADS_GAIA': 'nomads_gaia.dmm', 'NOMADS_EUROPE': 'nomads_europe.dmm'}
+MAPS = core.NOMADS_MAPS
 
 
 def require(condition, message):

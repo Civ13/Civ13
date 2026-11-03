@@ -16,6 +16,7 @@
 		TREES.change_season()
 
 /obj/map_metadata/nomads/ice_age/seasons(looping = TRUE, force = FALSE, advance_decay = null)
+	if(uses_durable_metadata()) return durable_nomads_seasons(looping, force, advance_decay)
 	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "SUMMER")
 		season = "WINTER"

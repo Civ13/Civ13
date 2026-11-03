@@ -21,7 +21,7 @@ disk save or invulnerability; only a completed world generation is durable.
 
 ## Small local migration
 
-- Apply new behavior only to existing durable Nomads profiles (Gaia and Europe).
+- Apply new behavior to the [audited durable Nomads profiles](nomads-persistence.md).
   TDM and other maps retain their existing respawn and sleep rules. Dead bodies
   are never revived; normal new-character admission after death still uses the
   existing respawn restrictions. No rejuvenation, equipment or job assignment

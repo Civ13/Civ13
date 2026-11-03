@@ -7,11 +7,14 @@
 
 /obj/map_metadata/nomads/africa/New()
 	..()
-	spawn(2000)
-		eruption_check()
+	if(!durable_schedule("nomads_eruption_boot", 2000))
+		spawn(2000)
+			eruption_check()
 
 /obj/map_metadata/nomads/africa/proc/eruption_check()
-	spawn(rand(33000,40000))
+	var/delay = rand(33000,40000)
+	if(durable_schedule("nomads_eruption_check", delay)) return
+	spawn(delay)
 		if (eruptions_enabled)
 			do_eruption()
 		eruption_check()
@@ -20,7 +23,9 @@
 	if (eruptions_enabled)
 		if (clients.len>5)
 			to_chat(world, "<big><b>The mountain rumbles, while clouds of smoke emerge from the top... An eruption might be coming...</b></big>")
-			spawn(rand(4800,6000))
+			var/delay = rand(4800,6000)
+			if(durable_schedule("nomads_eruption_fire", delay)) return TRUE
+			spawn(delay)
 				if (clients.len>5)
 					volcano_eruption()
 				return

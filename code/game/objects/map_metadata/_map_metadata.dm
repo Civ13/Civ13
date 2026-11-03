@@ -1259,7 +1259,9 @@ var/civmax_research = list(230,230,230)
 			var/force = season_queue[3]
 			var/advance_decay = season_queue[4]
 			season_queue.Cut(1, 5)
-			if (kind == "transition")
+			if(kind == "nomads_transition")
+				durable_nomads_apply(value, advance_decay)
+			else if (kind == "transition")
 				// Reject author policy before retiring delayed work or touching climate.
 				if (!isnull(season_cycle) && !season_next_phase())
 					continue
@@ -1289,6 +1291,7 @@ var/civmax_research = list(230,230,230)
 	return
 
 /obj/map_metadata/persistence_runtime_var(var/key)
+	if(key == "nomads_event_busy") return TRUE
 	if (key in list("construction_last_season", "elevation_default_metres", "elevation_regions", "elevation_profile_cache", "season_duration_minutes", "season_cycle", "weather_timing", "weather_transitions", "durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)

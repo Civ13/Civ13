@@ -18,6 +18,35 @@ import time
 import urllib.parse
 import uuid
 
+# Authored map sources only. Unknown/custom IDs cannot silently select Europe.
+NOMADS_MAPS = {
+    'NOMADS': 'nomads.dmm',
+    'NOMADS_AFRICA': 'nomads_africa.dmm',
+    'NOMADS_ASIA': 'nomads_asia.dmm',
+    'NOMADS_CONTINENTAL': 'nomads_continental.dmm',
+    'NOMADS_DESERT': 'nomads_desert.dmm',
+    'NOMADS_DIVIDE': 'nomads_divide.dmm',
+    'NOMADS_EUROPE': 'nomads_europe.dmm',
+    'NOMADS_EXTENDED': 'nomads_extended.dmm',
+    'NOMADS_FROZEN_WASTELAND': 'nomads_frozen_wasteland.dmm',
+    'NOMADS_GAIA': 'nomads_gaia.dmm',
+    'NOMADS_ICE_AGE': 'nomads_ice_age.dmm',
+    'NOMADS_ISLAND': 'nomads_island.dmm',
+    'NOMADS_JUNGLE': 'nomads_jungle.dmm',
+    'NOMADS_KARAFUTO': 'nomads_karafuto.dmm',
+    'NOMADS_MEDITERRANEAN': 'nomads_mediterranean.dmm',
+    'NOMADS_MOUNTAIN': 'nomads_mountain.dmm',
+    'NOMADS_NEW_WORLD': 'nomads_new_world.dmm',
+    'NOMADS_NORTH_AMERICA': 'nomads_north_america.dmm',
+    'NOMADS_OCEANIA': 'nomads_oceania.dmm',
+    'NOMADS_PANGEA': 'nomads_pangea.dmm',
+    'NOMADS_PERSISTENCE_BETA': 'nomads_persistence_beta.dmm',
+    'NOMADS_STRANDED': 'nomads_stranded.dmm',
+    'NOMADS_UK': 'nomads_uk.dmm',
+    'NOMADS_WASTELAND': 'nomads_wasteland.dmm',
+    'NOMADS_WASTELAND_2': 'nomads_wasteland_2.dmm',
+}
+
 
 def write_json(path, value):
     path = Path(path)
@@ -347,12 +376,15 @@ class Supervisor:
 
     def build(self, revision):
         c = self.config
+        expected_map = c.get('map', 'NOMADS_EUROPE')
+        if expected_map not in NOMADS_MAPS:
+            raise RuntimeError('Unsupported Nomads build map')
         if c.get('canonical_game_directory'):
             raise RuntimeError('Canonical builds require the serialized save/load updater')
         folder = self.root / 'builds' / revision
         if folder.exists():
             manifest = json.loads((folder / 'build.json').read_text())
-            verify_binaries(folder / 'game', manifest, revision)
+            verify_binaries(folder / 'game', manifest, revision, expected_map)
             return folder
         folder.mkdir(parents=True)
         game = folder / 'game'
@@ -367,14 +399,14 @@ class Supervisor:
         includes = re.findall(r'(?m)^#include "[^"\r\n]*\.dmm"\s*$', dme)
         if len(includes) != 1:
             raise RuntimeError('Expected exactly one map include')
-        dme = dme.replace(includes[0], '#include "maps\\nomads\\nomads_europe.dmm"')
+        dme = dme.replace(includes[0], '#include "maps\\nomads\\' + NOMADS_MAPS[expected_map] + '"')
         (game / 'civ13.dme').write_text(dme, encoding='utf-8')
         output = self.command([c['compiler'], '-max_errors', '0', 'civ13.dme'], game, folder / 'compile.log')
         if '0 errors, 0 warnings' not in output:
             raise RuntimeError('Compilation did not confirm zero errors and warnings')
         if not (game / 'code/modules/persistence/nomads_lifecycle.dm').exists():
             raise RuntimeError('Candidate lacks the reviewed production lifecycle API')
-        write_json(folder / 'build.json', {'revision': revision, 'map': 'NOMADS_EUROPE', 'binaries': {name: digest(game / name) for name in ('civ13.dmb', 'civ13.rsc')}})
+        write_json(folder / 'build.json', {'revision': revision, 'map': expected_map, 'binaries': {name: digest(game / name) for name in ('civ13.dmb', 'civ13.rsc')}})
         return folder
 
     def owned_process_state(self):
@@ -509,7 +541,7 @@ class Supervisor:
         run = self.root / 'runs' / operation
         shutil.copytree(build / 'game', run, ignore=shutil.ignore_patterns('.git'))
         manifest = json.loads((build / 'build.json').read_text())
-        verify_binaries(run, manifest, build.name)
+        verify_binaries(run, manifest, build.name, c.get('map', 'NOMADS_EUROPE'))
         shutil.copytree(c['config_directory'], run / 'config', dirs_exist_ok=True)
         (run / 'config/lifecycle-revision.txt').write_text(build.name, encoding='ascii')
         if backup:

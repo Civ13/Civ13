@@ -16,7 +16,8 @@
 	return world.time
 
 /datum/durable_timer_queue/proc/blocked()
-	return persistence_save_in_progress
+	// Optional owner barrier keeps the generic queue usable by isolated owners.
+	return persistence_save_in_progress || (owner && ("nomads_event_busy" in owner.vars) && owner.vars["nomads_event_busy"])
 
 /datum/durable_timer_queue/proc/schedule(key, delay)
 	if(!(key in allowed) || !isnum(delay) || delay < 0 || delay > 1e15)
