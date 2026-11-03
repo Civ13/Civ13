@@ -219,7 +219,7 @@ var/global/list/root_tree_presenters
 		if(context.decision_snapshot(T, S, "visual_tree") == LOS_DENY)
 			withdraw_tree(T, I)
 			continue
-		var/rgb = cached_light(T)
+		var/rgb = root_tree_quantize_rgb(cached_light(T))
 		if(!rgb)
 			withdraw_tree(T, I)
 			settled = FALSE
@@ -311,6 +311,19 @@ var/global/list/root_tree_presenters
 		light_keys[T] = key
 		light_values[T] = rgb
 	return rgb
+
+// Each distinct light colour bakes a new tree icon that every viewer must
+// download. Rounding channels to steps of 8 (about 3%) is not visible but
+// stops gradual day/night changes from minting a new frame on every tick.
+/proc/root_tree_quantize_rgb(rgb)
+	if(!istext(rgb) || length(rgb) != 7 || rgb == "#ffffff")
+		return rgb
+	var/list/channels = rgb2num(rgb)
+	if(!islist(channels) || channels.len < 3)
+		return rgb
+	for(var/i = 1, i <= 3, i++)
+		channels[i] = min(255, round(channels[i] / 8 + 0.5) * 8)
+	return rgb(channels[1], channels[2], channels[3])
 
 /proc/root_tree_set_frame(image/I, obj/structure/wild/T, icon/frame)
 	I.appearance = T.appearance
