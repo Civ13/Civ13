@@ -379,6 +379,24 @@
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
 
+/mob/living/human/var/tmp/last_hair_key
+
+// Everything update_hair() reads. Growth runs every Life tick on civilization
+// maps; rebuilding the hair icons and every overlay each time was pure waste
+// when nothing changed. Hood/helmet state stays in the key so toggles that do
+// not refresh hair themselves are still picked up here, as before.
+/mob/living/human/proc/hair_appearance_key()
+	var/obj/item/organ/external/head/head_organ = get_organ("head")
+	var/suit_hood = (wear_suit && ("hood" in wear_suit.vars)) ? wear_suit:hood : null
+	return "[h_style]|[f_style]|[r_hair],[g_hair],[b_hair]|[r_facial],[g_facial],[b_facial]|\ref[head]:[head ? head.flags_inv : 0]|\ref[wear_mask]:[wear_mask ? wear_mask.flags_inv : 0]|\ref[wear_suit]:[suit_hood]|[head_organ && !head_organ.is_stump()]|[body_build ? body_build.name : null]|[species ? species.get_bodytype() : null]"
+
+/mob/living/human/proc/refresh_grown_hair()
+	var/key = hair_appearance_key()
+	if (key == last_hair_key)
+		return
+	last_hair_key = key
+	update_hair()
+
 /mob/living/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
 	if (gender == MALE)
 		var/currh = h_growth
@@ -408,7 +426,7 @@
 			f_style = pick("Long Beard","Full Beard")
 		else if (f_growth >= 4 && currf < 4)
 			f_style = "Very Long Beard"
-		update_hair()
+		refresh_grown_hair()
 
 	else if (gender == FEMALE)
 		var/currh = h_growth
@@ -422,7 +440,7 @@
 			h_style = pick("Shoulder-length Hair","Flaired Hair","Ombre","Gentle")
 		else if (h_growth >= 4 && currh < 4)
 			h_style = pick("Long Hair","Long Hair Alt")
-		update_hair()
+		refresh_grown_hair()
 	else
 		return
 
