@@ -4,6 +4,7 @@ Exclusive d3dx-data workflow mode requires approved manual hosted preparation.
 Existing BYOND acquisition, execution and socket guards are deliberately untouched.
 """
 import argparse
+import base64
 import hashlib
 import json
 import os
@@ -192,15 +193,61 @@ def stage_members(package, output, pin, deadline):
                 compiler_included=bool(compiler_edges), dynamic_dependencies_not_resolved=True)
 
 
+class SignatureMetadataError(ValueError):
+    def __init__(self, message, diagnostic):
+        super().__init__(message)
+        self.diagnostic = diagnostic
+
+
 def signature_file(path, deadline):
     check_time(deadline)
+    began = time.monotonic()
+    timeout = min(20, max(.1, deadline-began))
+
+    def failure(reason, message, *, returncode=None, stdout=None, stderr=None,
+                capture_complete=False, os_error=None):
+        detail = dict(reason=reason, returncode=returncode,
+                      elapsed_seconds=time.monotonic()-began, timeout_seconds=timeout,
+                      capture_complete=capture_complete, checked_output_limit_bytes=32768,
+                      retained_prefix_limit_bytes_per_stream=4096)
+        for name, raw in (('stdout', stdout), ('stderr', stderr)):
+            raw = raw or b''
+            if isinstance(raw, str):
+                raw = raw.encode('utf-8')
+            prefix = raw[:4096]
+            detail[name] = dict(captured_bytes=len(raw), sha256=sha256(raw),
+                                prefix_base64=base64.b64encode(prefix).decode('ascii'),
+                                prefix_bytes=len(prefix), truncated=len(prefix) < len(raw))
+        if os_error is not None:
+            detail['os_error'] = dict(errno=os_error.errno,
+                                      winerror=getattr(os_error, 'winerror', None),
+                                      message=str(os_error)[:1024])
+        return SignatureMetadataError(message, detail)
+
     shell = Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
-    result = subprocess.run([str(shell), '-NoLogo', '-NoProfile', '-NonInteractive', '-File',
-                             str(Path(__file__).with_name('d3dx-signature.ps1')), '-LiteralFile', str(path)],
-                            capture_output=True, timeout=min(20, max(.1, deadline-time.monotonic())))
-    require(len(result.stdout)+len(result.stderr) <= 32768, 'Signature output bound')
-    require(result.returncode == 0, 'Signature metadata command failed')
-    return json.loads(result.stdout.decode('utf-8-sig').strip())
+    try:
+        result = subprocess.run([str(shell), '-NoLogo', '-NoProfile', '-NonInteractive', '-File',
+                                 str(Path(__file__).with_name('d3dx-signature.ps1')), '-LiteralFile', str(path)],
+                                capture_output=True, timeout=timeout)
+    except subprocess.TimeoutExpired as error:
+        raise failure('timeout', 'Signature metadata command timed out',
+                      stdout=error.stdout, stderr=error.stderr) from error
+    except OSError as error:
+        raise failure('start_failed', 'Signature metadata command could not start',
+                      os_error=error) from error
+    facts = dict(returncode=result.returncode, stdout=result.stdout,
+                 stderr=result.stderr, capture_complete=True)
+    if len(result.stdout)+len(result.stderr) > 32768:
+        raise failure('output_limit', 'Signature output bound', **facts)
+    if result.returncode != 0:
+        raise failure('nonzero_exit', 'Signature metadata command failed', **facts)
+    try:
+        signature = json.loads(result.stdout.decode('utf-8-sig').strip())
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise failure('invalid_json', 'Signature metadata JSON invalid', **facts) from error
+    if not isinstance(signature, dict):
+        raise failure('non_object_json', 'Signature metadata must be an object', **facts)
+    return signature
 
 
 def validate_signature(fact):
@@ -262,7 +309,11 @@ def prepare(source, binary, output, *, started=None):
             if 'pe' not in fact:
                 continue
             file = output/fact['path']
-            signature = signature_file(file, began+NORMAL_SECONDS)
+            try:
+                signature = signature_file(file, began+NORMAL_SECONDS)
+            except SignatureMetadataError as error:
+                fact['signature_command_failure'] = error.diagnostic
+                raise
             fact['signature'] = signature  # Retain unsuccessful trust facts too.
             validate_signature(signature)
             require(sha256(file.read_bytes()) == fact['sha256'], 'DLL changed during signature check')

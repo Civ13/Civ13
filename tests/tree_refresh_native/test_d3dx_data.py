@@ -1,6 +1,7 @@
 """Offline D3DX preparation controls. Synthetic PE/ZIP bytes; no network or DLL load."""
 from contextlib import ExitStack
 from copy import deepcopy
+import base64
 import io
 import hashlib
 import json
@@ -176,6 +177,99 @@ class DataPreparation(unittest.TestCase):
         self.assertNotIn('Set-ExecutionPolicy', script)
         self.assertNotIn('Add-Type', script)
         self.assertNotIn('rundll32', script)
+
+    def test_nonzero_signature_exit_keeps_bounded_exact_byte_prefixes(self):
+        stdout = json.dumps(certificate()).encode()
+        stderr = b'\xff'*10000
+        with patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), patch.object(
+                M.subprocess, 'run', return_value=SimpleNamespace(
+                    stdout=stdout, stderr=stderr, returncode=23)):
+            with self.assertRaises(M.SignatureMetadataError) as raised:
+                M.signature_file(self.root/'selected.dll', self.deadline)
+        detail = raised.exception.diagnostic
+        self.assertEqual((detail['reason'], detail['returncode']), ('nonzero_exit', 23))
+        self.assertTrue(detail['capture_complete'])
+        self.assertLessEqual(detail['timeout_seconds'], 20)
+        for key, raw in (('stdout', stdout), ('stderr', stderr)):
+            self.assertEqual(detail[key]['captured_bytes'], len(raw))
+            self.assertEqual(detail[key]['sha256'], hashlib.sha256(raw).hexdigest())
+            self.assertEqual(base64.b64decode(detail[key]['prefix_base64']), raw[:4096])
+            self.assertLessEqual(detail[key]['prefix_bytes'], 4096)
+            self.assertEqual(detail[key]['truncated'], len(raw) > 4096)
+        with self.assertRaises(ValueError):
+            M.validate_signature(dict(status='command_failed'))
+
+    def test_invalid_or_excessive_signature_output_stays_rejected(self):
+        for stdout, reason in ((b'{', 'invalid_json'), (b'\xff', 'invalid_json'),
+                               (b'[]', 'non_object_json'), (b'x'*32769, 'output_limit')):
+            with self.subTest(reason=reason), patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), \
+                    patch.object(M.subprocess, 'run', return_value=SimpleNamespace(
+                        stdout=stdout, stderr=b'', returncode=0)):
+                with self.assertRaises(M.SignatureMetadataError) as raised:
+                    M.signature_file(self.root/'selected.dll', self.deadline)
+                detail = raised.exception.diagnostic
+                self.assertEqual(detail['reason'], reason)
+                self.assertEqual(detail['returncode'], 0)
+                self.assertEqual(detail['stdout']['captured_bytes'], len(stdout))
+                self.assertLessEqual(len(base64.b64decode(detail['stdout']['prefix_base64'])), 4096)
+
+    def test_signature_timeout_and_start_errors_retain_partial_facts(self):
+        for error, reason in ((M.subprocess.TimeoutExpired('fixed command', 20,
+                                    output=b'partial stdout', stderr=b'partial stderr'), 'timeout'),
+                              (OSError(2, 'synthetic command unavailable'), 'start_failed')):
+            with self.subTest(reason=reason), patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), \
+                    patch.object(M.subprocess, 'run', side_effect=error):
+                with self.assertRaises(M.SignatureMetadataError) as raised:
+                    M.signature_file(self.root/'selected.dll', self.deadline)
+                detail = raised.exception.diagnostic
+                self.assertEqual(detail['reason'], reason)
+                self.assertIsNone(detail['returncode'])
+                self.assertFalse(detail['capture_complete'])
+                if reason == 'timeout':
+                    self.assertEqual(base64.b64decode(detail['stderr']['prefix_base64']), b'partial stderr')
+                else:
+                    self.assertEqual(detail['os_error']['errno'], 2)
+                    self.assertEqual(detail['stdout']['captured_bytes'], 0)
+
+    def failed_signature_preparation(self, **command):
+        pin, binary, environment = self.prepare_fixture()
+        def fake_fetch(path, unused_pin, deadline):
+            path.write_bytes(self.archive.read_bytes())
+        with patch.dict(os.environ, dict(environment, SystemRoot=r'C:\Windows')), \
+                patch.object(M, 'load_pin', return_value=pin), \
+                patch.object(M, 'fetch_package', side_effect=fake_fetch), \
+                patch.object(M.subprocess, 'run', **command) as run:
+            out = self.root/'tree-d3dx-data'
+            report = M.prepare('a'*40, binary, out)
+        self.assertEqual(run.call_count, 1)  # No companion attempt after failure.
+        self.assertEqual(report['status'], 'failed')
+        self.assertFalse(report['native_ready'])
+        self.assertTrue(report['byond_preserved'])
+        self.assertEqual(report['byond_before'], report['byond_after'])
+        fact = report['staging']['files']['x86/D3DX9_43.dll']
+        self.assertNotIn('signature', fact)
+        saved = json.loads((out/'preparation.json').read_text())
+        self.assertEqual(saved['staging']['files']['x86/D3DX9_43.dll'][
+            'signature_command_failure'], fact['signature_command_failure'])
+        self.assertLessEqual((out/'preparation.json').stat().st_size, M.REPORT_CAP)
+        self.assertLessEqual(M.census(out), M.CAP)
+        return saved, fact['signature_command_failure']
+
+    def test_nonzero_command_details_survive_report_and_input_cleanup(self):
+        report, detail = self.failed_signature_preparation(return_value=SimpleNamespace(
+            stdout=json.dumps(certificate()).encode(), stderr=b'failure detail'*1700, returncode=31))
+        self.assertEqual(report['error'], 'Signature metadata command failed')
+        self.assertEqual(detail['returncode'], 31)
+        self.assertEqual(base64.b64decode(detail['stderr']['prefix_base64']), (b'failure detail'*1700)[:4096])
+        self.assertTrue(detail['stderr']['truncated'])
+
+    def test_timeout_details_survive_report_and_input_cleanup(self):
+        report, detail = self.failed_signature_preparation(side_effect=M.subprocess.TimeoutExpired(
+            'fixed metadata command', 20, output=b'partial', stderr=b'last diagnostic'))
+        self.assertEqual(report['error'], 'Signature metadata command timed out')
+        self.assertEqual(detail['reason'], 'timeout')
+        self.assertFalse(detail['capture_complete'])
+        self.assertEqual(base64.b64decode(detail['stderr']['prefix_base64']), b'last diagnostic')
 
     def test_fetch_url_response_bounds_and_no_redirect(self):
         raw = b'only synthetic package bytes'
