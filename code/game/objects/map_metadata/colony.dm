@@ -39,6 +39,7 @@
 
 /obj/map_metadata/colony/New()
 	..()
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()
 

@@ -37,5 +37,6 @@
 			D.ChangeTurf(/turf/floor/beach/drywater)
 		real_season = "dry"
 	if (looping)
+		season_note_next_change(18000)
 		spawn(18000)
 			seasons()

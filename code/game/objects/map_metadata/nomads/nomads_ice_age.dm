@@ -55,8 +55,10 @@
 		real_season = "SUMMER"
 
 	if (looping && real_season == "SUMMER")
+		season_note_next_change(9000)
 		spawn(9000)
 			seasons()
 	else if (looping && real_season == "WINTER")
+		season_note_next_change(27000)
 		spawn(27000)
 			seasons()

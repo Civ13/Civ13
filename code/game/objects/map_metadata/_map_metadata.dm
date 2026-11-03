@@ -1224,6 +1224,7 @@ var/civmax_research = list(230,230,230)
 		return
 	season_loop_scheduled = TRUE
 	var/delay = season_loop_delay()
+	season_note_next_change(delay)
 	if(durable_schedule("season_loop", delay)) return
 	spawn(delay)
 		season_loop_scheduled = FALSE

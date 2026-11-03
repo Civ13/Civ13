@@ -68,6 +68,7 @@
 	spawn(1)
 		civilians_forceEnabled = TRUE
 
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()
 	..()
