@@ -66,6 +66,8 @@
 			client.eye = src
 			client.perspective = MOB_PERSPECTIVE
 
+	client.apply_action_keybindings()
+
 	//set macro to normal in case it was overridden.
 	winset(client, null, "mainwindow.macro=hotkeymode input.focus=true input.background-color=#D3B5B5")
 

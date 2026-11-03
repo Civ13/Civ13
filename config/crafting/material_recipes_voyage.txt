@@ -134,6 +134,7 @@ RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,
 RECIPE: /material/iron/,large drying rack,/obj/structure/drying_rack,18,120,1,1,production,0,0,16,8,null
 grinder,/obj/structure/meat_grinder,19,120,1,1,production,0,0,90,8,null
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,6,40,0,1,none,0,0,0,8,null
+RECIPE: /material/iron/,saw,/obj/item/weapon/saw,3,60,0,1,tools,36,0,0,8,null
 RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass/extraction_kit,29,200,0,1,none,33,0,0,8,null
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,11,140,0,1,none,0,46,0,8,null
 RECIPE: /material/iron/,oven,/obj/structure/oven,45,150,1,1,production,45,0,0,8,null

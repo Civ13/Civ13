@@ -83,6 +83,11 @@ SUITES = {
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
+    # Nomads adoption source contracts and surname model; no BYOND runtime.
+    'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
+        'paths': ('tests/nomads_adoption/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/nomads_adoption.dm',
+            'code/_helpers/unsorted.dm', 'civ13.dme')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
@@ -592,6 +597,13 @@ SUITES = {
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
+    # Inert skin/catalog/guard and account-wiring checks; no native runner import.
+    # Existing shared inputs retain their conservative all-suite selection.
+    'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),
+        'paths': ('tests/action_keybindings/', 'code/modules/client/action_keybindings.dm'),
+        'shared_paths': ('interface/skin.dmf', 'interface/interface.dm',
+            'code/modules/client/client_procs.dm', 'code/game/mob/login.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

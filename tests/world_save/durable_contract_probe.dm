@@ -22,7 +22,7 @@ var/persistence_save_in_progress = FALSE
 
 /proc/check_contract()
 	var/list/full_schema = durable_metadata_map_schema()
-	check(full_schema.len == 131, "durable map field inventory changed without test update")
+	check(full_schema.len == 132, "durable map field inventory changed without test update")
 	check(!("season_epoch" in full_schema) && !("faction_symbol_icon" in full_schema), "runtime fields entered contract")
 	var/list/schema = list("flag" = "flag", "value" = "number", "name_value" = "text", "table" = "list", "deadline" = "world_time_deadline", "origin" = "world_time_origin", "real_deadline" = "realtime_deadline")
 	var/datum/fixture_metadata/source = new

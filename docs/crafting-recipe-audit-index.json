@@ -1,17 +1,17 @@
 {
   "scope": "Active 13-field material catalogs only. Categories are author labels; counts include repeated map/faction rows. Bespoke handlers and constructors require separate review.",
   "catalogs": {
-    "material_recipes_abashiri.txt": 264,
-    "material_recipes_battle_ships.txt": 1277,
-    "material_recipes_camp.txt": 225,
-    "material_recipes_carib.txt": 1271,
-    "material_recipes_crustacean.txt": 1324,
-    "material_recipes_global.txt": 1542,
-    "material_recipes_gorilla.txt": 1285,
+    "material_recipes_abashiri.txt": 265,
+    "material_recipes_battle_ships.txt": 1278,
+    "material_recipes_camp.txt": 226,
+    "material_recipes_carib.txt": 1272,
+    "material_recipes_crustacean.txt": 1325,
+    "material_recipes_global.txt": 1543,
+    "material_recipes_gorilla.txt": 1286,
     "material_recipes_kwai.txt": 204,
-    "material_recipes_pygmy.txt": 1266,
-    "material_recipes_sovafghan.txt": 883,
-    "material_recipes_voyage.txt": 219
+    "material_recipes_pygmy.txt": 1267,
+    "material_recipes_sovafghan.txt": 884,
+    "material_recipes_voyage.txt": 220
   },
   "categories": {
     "accessories": 173,
@@ -72,7 +72,7 @@
     "storage": 301,
     "structures": 20,
     "tool": 1,
-    "tools": 350,
+    "tools": 360,
     "trains": 91,
     "vehicle parts": 113,
     "wall coverings & stucco": 6,

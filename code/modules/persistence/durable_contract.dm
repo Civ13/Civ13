@@ -25,6 +25,33 @@
 /proc/durable_metadata_area_schema()
 	return list("climate" = "text", "weather" = "number", "weather_intensity" = "number", "capturable" = "flag", "artillery_integrity" = "artillery_integrity", "has_gravity" = "flag", "no_air" = "nullable_number")
 
+// Field versions are independent of topology and the round generation. Writers
+// before #3560 have exactly v1's 131 fields; #3560 wrote 132 without a marker.
+// Only that known addition has a default. Never infer arbitrary missing fields.
+/proc/durable_metadata_map_read_schema(list/state)
+	if(!islist(state) || !(state["schema"] in list(1, 2)))
+		throw EXCEPTION("Unsupported durable map schema envelope")
+	var/list/fields = state["fields"]
+	var/version = state["map_fields_version"]
+	if(!("map_fields_version" in state))
+		version = islist(fields) && !("faction_renames" in fields) ? 1 : 2
+	if(!(version in list(1, 2))) throw EXCEPTION("Unsupported durable map field version")
+	var/list/schema = durable_metadata_map_schema()
+	// A future inventory change needs its own reviewed version/default policy.
+	if(schema.len != 132 || schema["faction_renames"] != "list")
+		throw EXCEPTION("Unversioned durable map schema change")
+	if(version == 1) schema -= "faction_renames"
+	return schema
+
+// Normalize decoded values in memory only, after exact inventory/type checks.
+// Use a fresh empty mapping, not the current world's possibly stale rename data.
+/proc/durable_metadata_default_map_fields(list/fields, list/state)
+	var/list/schema = durable_metadata_map_read_schema(state)
+	durable_metadata_validate_fields(fields, schema)
+	var/list/result = fields.Copy()
+	if(!("faction_renames" in schema)) result["faction_renames"] = list()
+	return result
+
 /proc/durable_metadata_scalar_valid(value, kind)
 	switch(kind)
 		if("artillery_integrity") return isnum(value) && (value == INFINITY || abs(value) <= 1e15)

@@ -834,6 +834,13 @@ Missing dynamic stage tables are rejected rather than reconstructed as healing.
 The explicit entries model supported historical encodings; they are not the
 incident Gaia save graph or full-world recovery evidence.
 
+The same run also imports a saved chest whose groin is reached only through the
+chest's `children` field, so both limbs are built with no holder before their
+owner/parent fields decode. It asserts neither limb deletes itself through the
+orphan-limb icon cleanup, the parent link survives, the import guard returns to
+zero and a freshly constructed orphan limb still cleans itself up (147 checks).
+Without the loader guard, rejoining players' bodies kept only the torso.
+
 `--wounds --negative-control wound-restore` substitutes immutable wound and loader
 sources from `d0ffbfb2335eb735756b998f3f2ff617c28f144b` in generated copies. Its
 expected result is the original `Cannot read null.max_damage` constructor failure
