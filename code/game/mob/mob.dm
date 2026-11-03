@@ -688,7 +688,7 @@
 				client.add_stat("<b>Map:</b>", map.title)
 				client.add_stat("<b>Mode:</b>", gmd)
 				client.add_stat("<b>Epoch:</b>", map.age)
-				client.add_stat("<b>Season:</b>", get_season())
+				client.add_stat("<b>Season:</b>", get_season_with_progress())
 				client.add_stat("<b>Wind:</b>", map.winddesc)
 //				client.add_stat("Weather:", get_weather())
 				client.add_stat("<b>Time of Day:</b>", time_of_day)

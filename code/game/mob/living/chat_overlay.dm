@@ -52,6 +52,8 @@
 		message.target = target
 		message.owner = owner
 		message.plane = CHAT_PLANE
+		// Keep speech upright: do not inherit the speaker's lying or scale transform.
+		message.appearance_flags |= RESET_TRANSFORM
 		#ifdef OPENDREAM
 		message.maptext_width = TILE_SIZE*5
 		message.maptext_x = 0
@@ -62,6 +64,11 @@
 		message.maptext_x = (maptext_width * -0.5)-TILE_SIZE*2.5
 		#endif
 		message.maptext_y = TILE_SIZE*1
+		// RESET_TRANSFORM drops the standing scale, so lift text over the head of a larger human.
+		if (ishuman(origin_loc))
+			var/mob/living/human/H = origin_loc
+			if (!H.lying && !H.prone && H.size_multiplier > 1)
+				message.maptext_y += round(TILE_SIZE*(H.size_multiplier-1))
 		message.maptext_height = TILE_SIZE*3
 		message.maptext = "<center><span style=\"-dm-text-outline: 1 black; vertical-align: bottom;\">[desired_text]</span></center>"
 		if(target)

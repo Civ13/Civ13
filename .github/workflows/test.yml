@@ -233,6 +233,9 @@ jobs:
       - name: Test configurable shared season duration offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/season_duration')
         run: python3 -B -m unittest discover -s tests/season_duration -v
+      - name: Test player season progress readout offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/season_progress')
+        run: python3 -B -m unittest discover -s tests/season_progress -v
       - name: Test optional per-map weather policy offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/weather_policy')
         run: |

@@ -5,6 +5,7 @@
 	var/custom = FALSE //for customized locks in RP
 	var/custom_code = 0 //for customized locks in RP
 	var/locked = FALSE //for customized locks in RP
+	var/next_attack_hand = -1 //cooldown for rattling, knocking and kicking
 
 	var/override_material = FALSE
 	var/override_opacity = FALSE
@@ -111,7 +112,63 @@
 	return
 
 /obj/structure/simple_door/attack_hand(mob/user as mob)
-	return TryToSwitchState(user)
+	return door_intent_interact(user)
+
+// Hand interactions follow intent: help opens the door (a locked door rattles
+// instead), disarm and grab knock, harm kicks. An open door has nothing to knock
+// on or kick, and closing needs no key, so every intent just tries to close it.
+/obj/structure/simple_door/proc/door_intent_interact(mob/user)
+	if (!user || !istype(user) || isSwitchingStates)
+		return FALSE
+	if (state)
+		return TryToSwitchState(user)
+	if (user.a_intent == I_HELP)
+		if (door_hand_locked(user))
+			return door_rattle(user)
+		return TryToSwitchState(user)
+	if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
+		return door_knock(user)
+	return door_kick(user)
+
+// Whether a bare hand can't open this door for this user.
+/obj/structure/simple_door/proc/door_hand_locked(mob/user)
+	return locked
+
+// Shared cooldown so rattling, knocking and kicking can't be spammed.
+/obj/structure/simple_door/proc/door_noise_ready()
+	if (world.time < next_attack_hand)
+		return FALSE
+	next_attack_hand = world.time + 10
+	return TRUE
+
+/obj/structure/simple_door/proc/door_rattle(mob/user)
+	if (!door_noise_ready())
+		return FALSE
+	user.visible_message(SPAN_NOTICE("[user] tries to open the door, but it's locked."), SPAN_WARNING("You try to open the door, but it's locked."))
+	playsound(get_turf(src), 'sound/machines/door_locked.ogg', 75, TRUE)
+	return TRUE
+
+/obj/structure/simple_door/proc/door_knock(mob/user)
+	if (!door_noise_ready())
+		return FALSE
+	user.visible_message(SPAN_NOTICE("[user] knocks at the door."), SPAN_NOTICE("You knock at the door."))
+	for (var/mob/living/L in view(7, src))
+		if (L != user && !viewers(7, L).Find(user))
+			to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
+	playsound(get_turf(src), "doorknock", 75, TRUE)
+	return TRUE
+
+/obj/structure/simple_door/proc/door_kick(mob/user)
+	if (!door_noise_ready())
+		return FALSE
+	user.visible_message(SPAN_DANGER("[user] kicks the door!"), SPAN_DANGER("You kick the door!"))
+	if (istype(material, /material/wood))
+		playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
+	else if (istype(material, /material/paper))
+		playsound(get_turf(src), 'sound/effects/cardboardpunch.ogg', 100)
+	else
+		playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
+	return TRUE
 
 /obj/structure/simple_door/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (air_group) return FALSE

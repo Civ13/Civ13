@@ -182,6 +182,7 @@ var/global/datum/external_relations/external_relations = new()
 				BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
 		real_season = "FALL"
 	if (looping)
+		season_note_next_change(30 MINUTES)
 		spawn(30 MINUTES)
 			seasons()
 

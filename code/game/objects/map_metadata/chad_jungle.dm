@@ -35,6 +35,7 @@
 
 /obj/map_metadata/chad_jungle/New()
 	..()
+	season_note_next_change(18000)
 	spawn(18000)
 		seasons()
 
