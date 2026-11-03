@@ -4,7 +4,6 @@ Exclusive d3dx-data workflow mode requires approved manual hosted preparation.
 Existing BYOND acquisition, execution and socket guards are deliberately untouched.
 """
 import argparse
-import base64
 import hashlib
 import json
 import os
@@ -193,6 +192,30 @@ def stage_members(package, output, pin, deadline):
                 compiler_included=bool(compiler_edges), dynamic_dependencies_not_resolved=True)
 
 
+def signature_output_facts(raw):
+    # Error text is not safe for public artifacts. Inspect only a bounded sample
+    # for fixed categories; retain no text, encodings, or output fingerprints.
+    sample = raw[:8192].lower()
+    hint = 'unclassified_error'
+    categories = (
+        ('powershell_security_error', ('pssecurityexception', 'unauthorizedaccess')),
+        ('powershell_command_not_found', ('commandnotfoundexception',)),
+        ('powershell_parse_error', ('parsererror', 'parseexception')),
+        ('powershell_runtime_error', ('methodinvocationexception', 'propertynotfoundexception', 'runtimeexception')),
+    )
+    for category, tokens in categories:
+        if any(token.encode('ascii') in sample or token.encode('utf-16-le') in sample for token in tokens):
+            hint = category
+            break
+    return dict(captured_bytes=len(raw), hint=hint, hint_scan_bytes=len(sample),
+                hint_scan_truncated=len(sample) < len(raw))
+
+
+def signature_error_code(value):
+    # Never serialize arbitrary exception attributes or messages.
+    return value if type(value) is int and -(2**31) <= value < 2**32 else None
+
+
 class SignatureMetadataError(ValueError):
     def __init__(self, message, diagnostic):
         super().__init__(message)
@@ -206,25 +229,24 @@ def signature_file(path, deadline):
 
     def failure(reason, message, *, returncode=None, stdout=None, stderr=None,
                 capture_complete=False, os_error=None):
-        detail = dict(reason=reason, returncode=returncode,
+        detail = dict(reason=reason, returncode=signature_error_code(returncode),
                       elapsed_seconds=time.monotonic()-began, timeout_seconds=timeout,
                       capture_complete=capture_complete, checked_output_limit_bytes=32768,
-                      retained_prefix_limit_bytes_per_stream=4096)
+                      output_limit_enforced_during_capture=False, retained_raw_output_bytes=0,
+                      hint_scan_limit_bytes_per_stream=8192)
         for name, raw in (('stdout', stdout), ('stderr', stderr)):
             raw = raw or b''
             if isinstance(raw, str):
                 raw = raw.encode('utf-8')
-            prefix = raw[:4096]
-            detail[name] = dict(captured_bytes=len(raw), sha256=sha256(raw),
-                                prefix_base64=base64.b64encode(prefix).decode('ascii'),
-                                prefix_bytes=len(prefix), truncated=len(prefix) < len(raw))
+            detail[name] = signature_output_facts(raw)
         if os_error is not None:
-            detail['os_error'] = dict(errno=os_error.errno,
-                                      winerror=getattr(os_error, 'winerror', None),
-                                      message=str(os_error)[:1024])
+            detail['os_error'] = dict(errno=signature_error_code(os_error.errno),
+                                      winerror=signature_error_code(getattr(os_error, 'winerror', None)))
         return SignatureMetadataError(message, detail)
 
     shell = Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+    # Existing capture_output buffers until completion/timeout; the subsequent
+    # 32 KiB check is rejection after capture, not a peak-memory bound.
     try:
         result = subprocess.run([str(shell), '-NoLogo', '-NoProfile', '-NonInteractive', '-File',
                                  str(Path(__file__).with_name('d3dx-signature.ps1')), '-LiteralFile', str(path)],

@@ -178,9 +178,30 @@ class DataPreparation(unittest.TestCase):
         self.assertNotIn('Add-Type', script)
         self.assertNotIn('rundll32', script)
 
-    def test_nonzero_signature_exit_keeps_bounded_exact_byte_prefixes(self):
-        stdout = json.dumps(certificate()).encode()
-        stderr = b'\xff'*10000
+    PRIVATE_CANARY = br'C:\private\account\canary.json token=TEST_ONLY_SIGNATURE_CANARY'
+
+    def assert_private_failure_facts(self, detail):
+        self.assertEqual(detail['retained_raw_output_bytes'], 0)
+        self.assertFalse(detail['output_limit_enforced_during_capture'])
+        self.assertEqual(detail['checked_output_limit_bytes'], 32768)
+        self.assertEqual(detail['hint_scan_limit_bytes_per_stream'], 8192)
+        for stream in ('stdout', 'stderr'):
+            self.assertEqual(set(detail[stream]), {
+                'captured_bytes', 'hint', 'hint_scan_bytes', 'hint_scan_truncated'})
+            self.assertIn(detail[stream]['hint'], {
+                'unclassified_error', 'powershell_security_error', 'powershell_command_not_found',
+                'powershell_parse_error', 'powershell_runtime_error'})
+            self.assertLessEqual(detail[stream]['hint_scan_bytes'], 8192)
+        serialized = json.dumps(detail)
+        self.assertNotIn('TEST_ONLY_SIGNATURE_CANARY', serialized)
+        self.assertNotIn('canary.json', serialized)
+        self.assertNotIn(base64.b64encode(self.PRIVATE_CANARY).decode(), serialized)
+        self.assertNotIn('prefix_base64', serialized)
+        self.assertNotIn('sha256', serialized)  # No fingerprints of possibly secret text.
+
+    def test_nonzero_signature_exit_keeps_only_allowlisted_output_facts(self):
+        stdout = json.dumps(dict(certificate(), debug=self.PRIVATE_CANARY.decode())).encode()
+        stderr = self.PRIVATE_CANARY+b' PSSecurityException '+b'\xff'*10000
         with patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), patch.object(
                 M.subprocess, 'run', return_value=SimpleNamespace(
                     stdout=stdout, stderr=stderr, returncode=23)):
@@ -190,14 +211,29 @@ class DataPreparation(unittest.TestCase):
         self.assertEqual((detail['reason'], detail['returncode']), ('nonzero_exit', 23))
         self.assertTrue(detail['capture_complete'])
         self.assertLessEqual(detail['timeout_seconds'], 20)
-        for key, raw in (('stdout', stdout), ('stderr', stderr)):
-            self.assertEqual(detail[key]['captured_bytes'], len(raw))
-            self.assertEqual(detail[key]['sha256'], hashlib.sha256(raw).hexdigest())
-            self.assertEqual(base64.b64decode(detail[key]['prefix_base64']), raw[:4096])
-            self.assertLessEqual(detail[key]['prefix_bytes'], 4096)
-            self.assertEqual(detail[key]['truncated'], len(raw) > 4096)
+        self.assertEqual(detail['stdout']['captured_bytes'], len(stdout))
+        self.assertEqual(detail['stderr']['captured_bytes'], len(stderr))
+        self.assertEqual(detail['stderr']['hint'], 'powershell_security_error')
+        self.assertTrue(detail['stderr']['hint_scan_truncated'])
+        self.assert_private_failure_facts(detail)
         with self.assertRaises(ValueError):
             M.validate_signature(dict(status='command_failed'))
+
+    def test_output_hints_are_closed_and_scan_only_a_bounded_sample(self):
+        cases = [(self.PRIVATE_CANARY+b' CommandNotFoundException', 'powershell_command_not_found'),
+                 ((self.PRIVATE_CANARY.decode()+' ParserError').encode('utf-16-le'), 'powershell_parse_error'),
+                 (b'x'*8192+b' PSSecurityException '+self.PRIVATE_CANARY, 'unclassified_error'),
+                 (self.PRIVATE_CANARY+b' unknown free-form diagnostic', 'unclassified_error')]
+        for raw, expected in cases:
+            with self.subTest(expected=expected), patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), \
+                    patch.object(M.subprocess, 'run', return_value=SimpleNamespace(
+                        stdout=b'', stderr=raw, returncode=1)):
+                with self.assertRaises(M.SignatureMetadataError) as raised:
+                    M.signature_file(self.root/'selected.dll', self.deadline)
+                detail = raised.exception.diagnostic
+                self.assertEqual(detail['stderr']['hint'], expected)
+                self.assertEqual(detail['stderr']['captured_bytes'], len(raw))
+                self.assert_private_failure_facts(detail)
 
     def test_invalid_or_excessive_signature_output_stays_rejected(self):
         for stdout, reason in ((b'{', 'invalid_json'), (b'\xff', 'invalid_json'),
@@ -211,12 +247,13 @@ class DataPreparation(unittest.TestCase):
                 self.assertEqual(detail['reason'], reason)
                 self.assertEqual(detail['returncode'], 0)
                 self.assertEqual(detail['stdout']['captured_bytes'], len(stdout))
-                self.assertLessEqual(len(base64.b64decode(detail['stdout']['prefix_base64'])), 4096)
+                self.assert_private_failure_facts(detail)
 
     def test_signature_timeout_and_start_errors_retain_partial_facts(self):
         for error, reason in ((M.subprocess.TimeoutExpired('fixed command', 20,
-                                    output=b'partial stdout', stderr=b'partial stderr'), 'timeout'),
-                              (OSError(2, 'synthetic command unavailable'), 'start_failed')):
+                                    output=self.PRIVATE_CANARY,
+                                    stderr=self.PRIVATE_CANARY+b' RuntimeException'), 'timeout'),
+                              (OSError(2, self.PRIVATE_CANARY.decode()), 'start_failed')):
             with self.subTest(reason=reason), patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), \
                     patch.object(M.subprocess, 'run', side_effect=error):
                 with self.assertRaises(M.SignatureMetadataError) as raised:
@@ -225,11 +262,25 @@ class DataPreparation(unittest.TestCase):
                 self.assertEqual(detail['reason'], reason)
                 self.assertIsNone(detail['returncode'])
                 self.assertFalse(detail['capture_complete'])
+                self.assert_private_failure_facts(detail)
                 if reason == 'timeout':
-                    self.assertEqual(base64.b64decode(detail['stderr']['prefix_base64']), b'partial stderr')
+                    self.assertEqual(detail['stderr']['hint'], 'powershell_runtime_error')
                 else:
                     self.assertEqual(detail['os_error']['errno'], 2)
+                    self.assertEqual(set(detail['os_error']), {'errno', 'winerror'})
                     self.assertEqual(detail['stdout']['captured_bytes'], 0)
+
+    def test_non_numeric_exception_attributes_cannot_become_public_text(self):
+        error = OSError(2, self.PRIVATE_CANARY.decode())
+        error.errno = self.PRIVATE_CANARY.decode()
+        error.winerror = 2**80
+        with patch.dict(os.environ, {'SystemRoot': r'C:\Windows'}), patch.object(
+                M.subprocess, 'run', side_effect=error):
+            with self.assertRaises(M.SignatureMetadataError) as raised:
+                M.signature_file(self.root/'selected.dll', self.deadline)
+        detail = raised.exception.diagnostic
+        self.assertEqual(detail['os_error'], dict(errno=None, winerror=None))
+        self.assert_private_failure_facts(detail)
 
     def failed_signature_preparation(self, **command):
         pin, binary, environment = self.prepare_fixture()
@@ -253,23 +304,28 @@ class DataPreparation(unittest.TestCase):
             'signature_command_failure'], fact['signature_command_failure'])
         self.assertLessEqual((out/'preparation.json').stat().st_size, M.REPORT_CAP)
         self.assertLessEqual(M.census(out), M.CAP)
+        self.assert_private_failure_facts(fact['signature_command_failure'])
+        self.assertNotIn('TEST_ONLY_SIGNATURE_CANARY', json.dumps(saved))
+        self.assertNotIn('canary.json', json.dumps(saved))
         return saved, fact['signature_command_failure']
 
     def test_nonzero_command_details_survive_report_and_input_cleanup(self):
         report, detail = self.failed_signature_preparation(return_value=SimpleNamespace(
-            stdout=json.dumps(certificate()).encode(), stderr=b'failure detail'*1700, returncode=31))
+            stdout=json.dumps(dict(certificate(), debug=self.PRIVATE_CANARY.decode())).encode(),
+            stderr=self.PRIVATE_CANARY+b' RuntimeException '+b'failure detail'*1700, returncode=31))
         self.assertEqual(report['error'], 'Signature metadata command failed')
         self.assertEqual(detail['returncode'], 31)
-        self.assertEqual(base64.b64decode(detail['stderr']['prefix_base64']), (b'failure detail'*1700)[:4096])
-        self.assertTrue(detail['stderr']['truncated'])
+        self.assertEqual(detail['stderr']['hint'], 'powershell_runtime_error')
+        self.assertTrue(detail['stderr']['hint_scan_truncated'])
 
     def test_timeout_details_survive_report_and_input_cleanup(self):
         report, detail = self.failed_signature_preparation(side_effect=M.subprocess.TimeoutExpired(
-            'fixed metadata command', 20, output=b'partial', stderr=b'last diagnostic'))
+            'fixed metadata command', 20, output=self.PRIVATE_CANARY,
+            stderr=(self.PRIVATE_CANARY.decode()+' PSSecurityException').encode('utf-16-le')))
         self.assertEqual(report['error'], 'Signature metadata command timed out')
         self.assertEqual(detail['reason'], 'timeout')
         self.assertFalse(detail['capture_complete'])
-        self.assertEqual(base64.b64decode(detail['stderr']['prefix_base64']), b'last diagnostic')
+        self.assertEqual(detail['stderr']['hint'], 'powershell_security_error')
 
     def test_fetch_url_response_bounds_and_no_redirect(self):
         raw = b'only synthetic package bytes'
