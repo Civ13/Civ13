@@ -222,7 +222,10 @@ note dizziness decrements automatically in the mob's Life() proc.
 	var/expires
 	var/running = TRUE
 	var/image/strike
+	var/strike_appearance
 	var/list/viewing = list()
+	var/list/projected_strikes = list()
+	var/list/projection_owners = list()
 
 /datum/resource_work_animation/New(mob/user, obj/item/held_tool, atom/work_target, duration)
 	..()
@@ -275,18 +278,42 @@ note dizziness decrements automatically in the mob's Life() proc.
 		strike.pixel_x = 16
 	if (!direction)
 		strike.pixel_z = 16
+	// Seal the producer appearance before any per-client animation starts.
+	strike_appearance = strike.appearance
 	for (var/mob/M in viewers(target))
 		if (M.client)
 			viewing |= M.client
 	for (var/client/C in viewing)
-		C.images += strike
+		var/datum/root_tree_presenter/P = C.root_tree_presenter
+		if (P && P.scene_active && root_tree_family(target))
+			// A root scene owns its tree FX. An unavailable lease withholds only
+			// this cosmetic strike, never publishes a conflicting GAME image.
+			var/image/I = P.resource_strike(src)
+			if (I)
+				projected_strikes[C] = I
+				projection_owners[C] = P
+				animate(I, alpha = 175, pixel_x = 0, pixel_y = 0, pixel_z = 0, time = 3)
+		else
+			C.images += strike
 	animate(strike, alpha = 175, pixel_x = 0, pixel_y = 0, pixel_z = 0, time = 3)
 
+/datum/resource_work_animation/proc/clear_projected_strikes()
+	for (var/client/C in projected_strikes)
+		var/image/I = projected_strikes[C]
+		var/datum/root_tree_presenter/P = projection_owners[C]
+		if (P)
+			P.remove_work_image(I)
+		C.images -= I
+	projected_strikes.Cut()
+	projection_owners.Cut()
+
 /datum/resource_work_animation/proc/clear_strike()
+	clear_projected_strikes()
 	for (var/client/C in viewing)
 		C.images -= strike
 	viewing.Cut()
 	strike = null
+	strike_appearance = null
 
 /datum/resource_work_animation/proc/stop()
 	running = FALSE
@@ -319,3 +346,29 @@ note dizziness decrements automatically in the mob's Life() proc.
 			set_dir(D)
 			spintime -= speed
 	return
+
+// This is an ownership constructor, not an exception for foreign images.
+// The exact running producer supplies its sealed, still-unanimated strike.
+// A fresh ordinary visual decision is deliberately stricter than canopy-only
+// admission: a visible occluder must not reveal a hidden worker or tool FX.
+/datum/root_tree_presenter/proc/resource_strike(datum/resource_work_animation/A)
+	if(retired || !scene_active || !owner || owner.root_tree_presenter != src || owner.los_context != context || owner.los_dirty || work_images.len >= 64 || !planes_admitted())
+		return null
+	if(!A || !A.valid() || !A.strike || A.strike.appearance != A.strike_appearance || A.strike.loc != A.target || !context.root_tree_admitted(A.target))
+		return null
+	var/atom/T = A.target
+	if(!published_frames[T] || source_appearances[T] != T.appearance || !frame_lights[T])
+		return null
+	var/datum/los_snapshot/S = context.capture(TRUE)
+	if(!S || context.decision_snapshot(T, S, "visual") == LOS_DENY || context.decision_snapshot(A.actor, S, "visual") == LOS_DENY)
+		return null
+	var/image/I = image(A.strike.appearance, T)
+	I.plane = ROOT_TREE_PLANE
+	I.color = frame_lights[T]
+	I.appearance_flags |= RESET_COLOR|RESET_ALPHA|RESET_TRANSFORM
+	I.override = FALSE
+	I.mouse_opacity = 0
+	work_images[I] = T
+	owned_images += I
+	owner.images += I
+	return I

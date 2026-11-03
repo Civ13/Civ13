@@ -42,3 +42,43 @@ publication selects the canonical game compile, offline baseline and evidence
 checker, with extensive tests off and no daemon run. Rendering, real-client
 movement, native lifecycle timing and gameplay/save acceptance remain unverified
 until separately reviewed tests are authorized and run.
+
+## Root-tree strike composition - 2026-11-03
+
+A chopping strike formerly entered each viewer's client image list as a
+foreground GAME image. The root-tree composition audit correctly treats unknown
+foreground images as a reason to release the whole scene. That production path
+can therefore switch every tree to native fallback during a strike; this source
+mechanism is consistent with the reported flicker and canopy darkening, without
+establishing the timing or pixels of the live report.
+
+For an active root scene, the running resource-work producer now asks that
+viewer's presenter to construct an owned strike. The presenter accepts only the
+producer's sealed, unanimated appearance, a currently published ordinary tree,
+its committed root RGB, valid plane/context ownership, and a fresh ordinary
+visual decision for both worker and target. The copy keeps the tool art, scale,
+offsets, layer and animation, uses the tree plane and root RGB, and receives no
+mouse events. It shares the existing scene shadow with the forest. A denied or
+unsettled lease suppresses only the cosmetic strike. Non-tree work and viewers
+without an active root scene retain the previous native effect.
+
+There is no foreign-image whitelist: unknown foreground images still require
+fallback. Each presenter holds at most 64 strike copies. Stop/cancel, tree
+withdrawal/removal/republishing, LOS invalidation and scene release remove only
+owned effects. Tree frames and lighting caches remain unchanged by strike
+creation. Existing blocker/destruction denial remains in force.
+
+The focused offline tests execute production ownership, authorization, audit and
+cleanup procedures, including two viewers of the same root, different committed
+RGB, hidden worker/target, forged appearance, missing light/capture, cancellation
+and foreign lookalikes. They do not render pixels. Native continuous-canopy,
+strike layering, shadows, overlap darkness and dense-scene cost remain untested.
+The fresh per-viewer geometry capture adds work once per displayed strike; no
+performance improvement is claimed.
+
+Equipping is tracked separately. On this source, the human inventory path moves
+the item through forceMove; transparent-item invalidation marks nearby contexts
+dirty but does not withdraw their tree frames. Hand overlays use body layer
+plus 0.02, and progress bars use HUD_PLANE. The earlier unconditional Entered
+invalidation is absent. These findings do not establish an equip-only cause or
+claim this chopping correction resolves it.
