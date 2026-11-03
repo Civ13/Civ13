@@ -48,6 +48,9 @@ def package(path, edge=None, machine=0x14c, extras=()):
 class DataPreparation(unittest.TestCase):
     def setUp(self):
         self.guards = ExitStack()
+        # Model the hosted Windows identity without changing global os.name or Path.
+        self.guards.enter_context(patch.object(M, 'os', SimpleNamespace(
+            name='nt', environ=os.environ)))
         self.guards.enter_context(patch.object(socket, 'create_connection', side_effect=AssertionError('offline only')))
         self.guards.enter_context(patch.object(M.urllib.request.OpenerDirector, 'open', side_effect=AssertionError('offline only')))
         self.guards.enter_context(patch.object(M.subprocess, 'run', side_effect=AssertionError('no external commands')))
@@ -213,6 +216,19 @@ class DataPreparation(unittest.TestCase):
                            RUNNER_OS='Windows', GITHUB_REPOSITORY='Civ13/Civ13', GITHUB_EVENT_NAME='workflow_dispatch',
                            GITHUB_SHA='a'*40, GITHUB_WORKFLOW_SHA='a'*40, GITHUB_RUN_ATTEMPT='1')
         return pin, binary, environment
+
+    def test_actual_non_windows_admission_rejects_before_acquisition(self):
+        unused_pin, binary, environment = self.prepare_fixture()
+        with patch.dict(os.environ, environment), patch.object(
+                M, 'os', SimpleNamespace(name='posix', environ=os.environ)), \
+                patch.object(M, 'fetch_package') as fetch, patch.object(M.A, 'acquire') as acquire:
+            with self.assertRaisesRegex(ValueError, 'hosted Windows'):
+                M.prepare('a'*40, binary, self.root/'tree-d3dx-data')
+            with self.assertRaisesRegex(ValueError, 'hosted Windows'):
+                M.prepare_with_input('a'*40, self.root/'tree-d3dx-data')
+            fetch.assert_not_called()
+            acquire.assert_not_called()
+            self.assertFalse((self.root/'tree-d3dx-data').exists())
 
     def test_full_preparation_preserves_inputs_and_records_dependency_facts(self):
         pin, binary, environment = self.prepare_fixture()
