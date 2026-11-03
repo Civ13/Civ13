@@ -86,7 +86,8 @@ SUITES = {
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
-            'code/game/objects/structures/watercloset.dm',)},
+            'code/game/objects/structures/watercloset.dm',
+            'code/game/mob/living/carbon/human/shit_piss.dm')},
 
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.

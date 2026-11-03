@@ -298,7 +298,10 @@
 		var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 		if(reagents)
 			reagents.trans_to(V, rand(1,5))
-		V.forceMove(T)
+		if (T && !M.crap_inside && T.is_plumbed())
+			qdel(V) // Flushed away, so it cannot be fished back out of the cistern.
+		else
+			V.forceMove(T)
 
 	else if(w_uniform)
 		message = "<B>[src]</B> shits \his pants."
