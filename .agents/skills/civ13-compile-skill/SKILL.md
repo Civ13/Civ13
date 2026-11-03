@@ -12,6 +12,7 @@ Separate production defects from fixture defects before changing code. An isolat
 - Record the source revision, fixture generator or projector, exact generated inputs, build command, and pinned BYOND version. The historical study failure below used 516.1688; use the current task's actual pin.
 - Inspect applicable repository instructions and compare projected declarations, macros, type ancestry, constants, and overrides against production. Trace missing symbols to their definitions and include dependencies; do not guess values or treat project-defined fields as BYOND builtins.
 - Run available offline generation, projection, syntax-oriented, and invariant checks first. Verify the projector accepts the exact final source syntax and emits the intended behavior. These checks are not a native BYOND compile.
+- If hosted regression evidence is intended, follow the [PR preflight selection check](../civ13-pr-preflight/SKILL.md#verify-hosted-selection-as-well-as-local-execution). Confirm the exact event/base/head selects this fixture; a local compile cannot establish hosted execution.
 - Use the authorized environment for an expensive native compile. This skill does not authorize extra services, environment changes, or external publication.
 
 ## Observed failure patterns
@@ -38,3 +39,5 @@ The historical study fixture reported 50 errors and 11 warnings; identified root
 4. Preserve commands, versions, source and input identity, failure and success logs, and cleanup evidence. Confirm owned test processes and artifacts were cleaned up as required; do not terminate unrelated processes. Label passed, failed, pending, and not-run stages.
 
 If blocked, report the exact action, target, reason, and whether access was denied, approval is pending, or the result is uncertain. Do not retry through another environment to evade a restriction.
+Keep this blocker with the owned branch/PR and continue independent authorized
+projection checks or source work under CODEX.md's handoff rules.
