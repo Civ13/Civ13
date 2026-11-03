@@ -7,10 +7,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-SOURCE_HEAD = "76406ef6d26e2fd01fa3a3fbf87d4bded0577417"
+# 8609e887 changes only the piranha witness mood write elsewhere in this file.
+# The complete fishing procedure remains byte-identical to the original fixture.
+SOURCE_HEAD = "8609e887366cb27d4e434a3e48402c9fc2c4d197"
 SOURCE_PATH = "code/game/mob/living/simple_animal/friendly/static.dm"
-SOURCE_BLOB = "2a8a7803320d1ba5987bf986e718c6a59bd4303e"
-SOURCE_SHA256 = "49688581152ebea1d6f1f316e3b0e51a451b774ebcc643737c2c9288ce26369a"
+SOURCE_BLOB = "da78e23c3fac6c06bf374deb066c0e09dfc783e3"
+SOURCE_SHA256 = "a7cc9d9019568e17e9fafefe841ac5690fa2b479bd05b2adae1ec52816731124"
+FISH_PROCEDURE_SHA256 = "04ab33a59358725c0f6b5e2541670a0683f874e9aa63470cefa9205b2f4ffc51"
 SIGNATURE = "/obj/structure/fish/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)"
 NEXT_SIGNATURE = "/obj/structure/fish/proc/get_fish()"
 ROUTES = (("modern", 120, 40), ("ordinary", 150, 30), ("branch", 120, 20))
@@ -43,7 +46,7 @@ def expected_failures(variant):
 
 def extract_attackby(data):
     if len(data) > SOURCE_LIMIT or sha256(data) != SOURCE_SHA256:
-        raise ValueError("source does not match reviewed immutable 76406ef6 bytes")
+        raise ValueError("source does not match reviewed immutable 8609e887 bytes")
     blob = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
     if blob != SOURCE_BLOB:
         raise ValueError("source Git blob mismatch")
@@ -53,6 +56,8 @@ def extract_attackby(data):
     start = source.index(SIGNATURE + "\n")
     end = source.index(NEXT_SIGNATURE + "\n", start)
     body = source[start:end]
+    if sha256(body.encode()) != FISH_PROCEDURE_SHA256:
+        raise ValueError("reviewed fishing procedure changed")
     if body.count("if (do_after(") != 3 or body.count("counter = (counter-1)") != 3:
         raise ValueError("unexpected production procedure shape")
     return body.encode()
