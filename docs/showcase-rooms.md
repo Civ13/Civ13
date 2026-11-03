@@ -1,0 +1,87 @@
+# Showcase rooms
+
+Six furnished room templates in `maps/zones/showcase/` stage one gameplay
+station each, stocked with starter materials and a guide note on a table:
+
+| Room | Stations | Starter stock |
+| --- | --- | --- |
+| `smithy` | bloomery, anvil, grindstone, armor repair workbench | iron ore, coal, wood, iron, hammer, wrench, pickaxe, shovel, water barrel |
+| `kitchen` | wood stove, cutting board, kitchen sink, drying rack | meat, vegetable crate, flour, cooking pot, knife, rolling pin, plates |
+| `tavern` | beer/ale/wine/rum barrels, alcohol distiller, wood stove | beer mugs on the bar, candlelit tables, bookcase |
+| `workshop` | primitive saw mill, loom, tanning rack | logs, planks, sharpened flint, cotton, wet hides, rope, cloth, saw, chisel |
+| `farm_shed` | flour mill, compost bin, drying rack | wheat/potato/carrot/cabbage seeds, hoe, plough, scythe, shovel, bucket, wheat |
+| `infirmary` | three beds, roller bed, sink, laboratory distiller | surgery kit, first-aid kit, bandages, splints, herbs |
+
+Each room is 11x9 tiles with walls, one wooden door at the middle of the south
+wall, anchored lanterns in the north corners and a central roof support.
+
+## Previews
+
+Top-down renders composed offline from each template's DMI sprites (default
+icon states, south-facing). They are not in-game screenshots: walls are shown
+unsmoothed and no lighting or roof is drawn.
+
+| | |
+| --- | --- |
+| ![Smithy](images/showcase-rooms/smithy.png) | ![Kitchen](images/showcase-rooms/kitchen.png) |
+| ![Tavern](images/showcase-rooms/tavern.png) | ![Workshop](images/showcase-rooms/workshop.png) |
+| ![Farm shed](images/showcase-rooms/farm_shed.png) | ![Infirmary](images/showcase-rooms/infirmary.png) |
+
+## Separate showcase build
+
+Showcase rooms are a demo tool, not part of the live game. `civ13.dme` does
+not include the loader, and the production admin verb lists never register
+it. `code/modules/admin/showcase_rooms.dm` stops compilation with `#error`
+unless `CIV13_SHOWCASE_BUILD` is defined, so it cannot be ticked into the live
+build by accident.
+
+Generate and compile the demo build with:
+
+```sh
+python3 scripts/build_showcase_dme.py --compile   # writes showcase.dme -> showcase.dmb
+```
+
+`showcase.dme` is generated from the current `civ13.dme` (plus the define and
+the loader include) and is git-ignored. Run `showcase.dmb` only as a
+disposable, non-persistent demo instance on its own port and data directory.
+Never run it alongside a persistent world such as Gaia, and never deploy it in
+place of `civ13.dmb`. The loader also refuses any persistent round
+(`persistence_round_active()`).
+
+## Placing a room (showcase build only)
+
+Admins with spawn rights use **Debug > Load Showcase Room**. Stand where the
+door should be: the room loads directly north of you. After the prompts the
+verb rechecks your position and refuses while a save or load is running or
+awaiting recovery, while level recovery or allocation is pending, or when the
+footprint holds a roof or floor paired with another building level. It then
+moves every mob in the footprint onto your tile, including mobs inside
+closets or other containers, removes structures, items, floor/wall covers and
+roofs there, and places the template. It can add a wooden roof over every
+non-wall tile, which makes the room a roofed indoor area. Templates carry no
+areas, so the room keeps the area of the ground it is placed on. Loading
+changes the turfs under the footprint and is not undone automatically.
+
+The clear, place and roof steps run without yielding: they use the
+`dmm_suite` model parser directly instead of `read_map`, whose `sleep(-1)`
+calls yield. This is source-reviewed only. Native loading and roofs have not
+been validated in DreamDaemon.
+
+## Adding a room
+
+Keep templates single z-level, area-free, with LF line endings, letter-only
+keys and one model per line (the runtime reader in
+`code/modules/dmm_suite/reader.dm` does not read TGM). Keep the door at
+column `width / 2` (rounded down) of the bottom row and every floor tile within
+two tiles of a wall or three of a roof support so the optional roof stays up.
+Add the room name to `EXPECTED_ROOMS` and run:
+
+```sh
+python3 -B -m unittest tests/showcase_rooms/test_templates.py -v
+```
+
+The test checks parsing, declared type paths, the wall/door layout, roof
+support coverage, lighting and the guide note, plus the loader's admission,
+no-yield and evacuation contracts. To have the compiler check type
+paths as well, include the templates in a scratch copy of `civ13.dme` and
+compile it; delete the copy afterwards.

@@ -128,6 +128,14 @@ class BaselinePolicyTests(unittest.TestCase):
         with patch.object(ci, 'SUITES', prior):
             self.assertNotIn(name, self.selected(list(suite['files'])))
 
+    def test_showcase_rooms_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'showcase_rooms'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/showcase_rooms/test_templates.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('maps/zones/showcase/smithy.dmm',):
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_sleep_resting_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['sleep_resting']
         self.assertEqual(suite['files'], ('tests/sleep_resting/test_sleep_resting.py',))

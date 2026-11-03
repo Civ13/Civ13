@@ -1,0 +1,27 @@
+"a" = (/turf/wall/stone)
+"b" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone)
+"c" = (/turf/floor/plating/cobblestone)
+"d" = (/obj/structure/furnace,/turf/floor/plating/cobblestone)
+"e" = (/obj/structure/anvil,/turf/floor/plating/cobblestone)
+"f" = (/obj/item/stack/ore/iron{amount = 20},/obj/item/stack/ore/coal{amount = 20},/turf/floor/plating/cobblestone)
+"g" = (/obj/structure/repair/grindstone,/turf/floor/plating/cobblestone)
+"h" = (/obj/item/stack/material/wood{amount = 25},/turf/floor/plating/cobblestone)
+"i" = (/obj/structure/roof_support,/turf/floor/plating/cobblestone)
+"j" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/plating/cobblestone)
+"k" = (/obj/structure/table/wood,/obj/item/weapon/hammer,/obj/item/weapon/wrench,/obj/item/weapon/paper{name = "smithy guide"; info = "<b>Smithy</b><br>1. Feed the bloomery wood, coal or charcoal, add iron ore, then use an empty hand on it to light it.<br>2. Work sponge or pig iron on the anvil to refine it into iron.<br>3. Use iron on the anvil to forge tools, weapons and parts. The anvil needs a Crafting coefficient of 1.70 or more: see IC > Skill Progress. On most maps outside Nomads only blacksmith jobs may use it.<br>4. Sharpen blades at the grindstone and mend armor at the repair workbench.<br>Careful: a hammer on help intent dismantles the bloomery."},/turf/floor/plating/cobblestone)
+"l" = (/obj/structure/repair/workbench,/turf/floor/plating/cobblestone)
+"m" = (/obj/structure/closet/crate/wood,/obj/item/stack/material/iron{amount = 10},/turf/floor/plating/cobblestone)
+"n" = (/obj/structure/table/rack,/obj/item/weapon/material/pickaxe,/obj/item/weapon/material/shovel,/turf/floor/plating/cobblestone)
+"o" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/cobblestone)
+
+(1,1,1) = {"
+aaaaaaaaaaa
+abcdcccecba
+accccccccca
+afcccccccga
+ahcccicccja
+akcccccccla
+amcccccccna
+accccccccca
+aaaaaoaaaaa
+"}

@@ -41,6 +41,9 @@ STONE_BRAZIER_OFFLINE_TESTS = frozenset({'tests/stone_brazier/test_stone_brazier
 # Exact source-only suite runs in the reviewed bounded offline baseline.
 WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 
+# Exact template/source-only suite runs in the reviewed bounded offline baseline.
+SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
+
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
 ATLAS_TEST_INPUTS = {
@@ -329,6 +332,10 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/well_smell/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered well-smell executable test requires explicit CI review')
+        if path in SHOWCASE_ROOMS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/showcase_rooms/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered showcase-room executable test requires explicit CI review')
         if path in STONE_BRAZIER_OFFLINE_TESTS:
             continue
         if path.startswith('tests/stone_brazier/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

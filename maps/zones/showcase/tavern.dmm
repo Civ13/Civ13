@@ -1,0 +1,27 @@
+"a" = (/turf/wall/wood)
+"b" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood)
+"c" = (/obj/item/weapon/reagent_containers/glass/barrel/beer,/turf/floor/wood)
+"d" = (/turf/floor/wood)
+"e" = (/obj/item/weapon/reagent_containers/glass/barrel/ale,/turf/floor/wood)
+"f" = (/obj/item/weapon/reagent_containers/glass/barrel/wine,/turf/floor/wood)
+"g" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood)
+"h" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug,/turf/floor/wood)
+"i" = (/obj/structure/oven/woodstove,/turf/floor/wood)
+"j" = (/obj/structure/roof_support,/turf/floor/wood)
+"k" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/wood)
+"l" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle/on,/turf/floor/wood)
+"m" = (/obj/structure/distillery,/turf/floor/wood)
+"n" = (/obj/structure/bookcase,/obj/item/weapon/paper{name = "tavern guide"; info = "<b>Tavern</b><br>1. Pour drinks from the beer, ale, wine and rum barrels into the mugs on the bar.<br>2. The alcohol distiller turns any alcoholic drink into pure ethanol.<br>3. The wood stove keeps the room warm and cooks bar food when fuelled with logs.<br>Barrels can be refilled with drinks brewed elsewhere."},/turf/floor/wood)
+"o" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood)
+
+(1,1,1) = {"
+aaaaaaaaaaa
+abcdedfdgba
+addddddddda
+ahhhhdddida
+addddjdddda
+akdlkddkdla
+akdlkddkdla
+addddmdddna
+aaaaaoaaaaa
+"}
