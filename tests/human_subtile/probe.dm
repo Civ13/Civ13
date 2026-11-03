@@ -315,6 +315,18 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_assert(rejected, "owned_unsupported_buckle_save_fails_closed")
 	C.buckled = null
 	qdel(bed)
+	// A capsule that after_load would reject is never written: the body saves
+	// tile-aligned, without raw offsets, while it overlaps a dense object.
+	var/list/prior_position = C.human_subtile_position
+	var/obj/structure/closing = new(C.loc)
+	closing.density = TRUE
+	C.before_save()
+	human_subtile_fixture_assert(isnull(C.human_subtile_position) && C.human_subtile_save_aligned && C.persistence_runtime_var("step_x") && C.persistence_runtime_var("step_y") && C.step_x, "obstructed_offset_saves_tile_aligned")
+	closing.density = FALSE
+	C.before_save()
+	human_subtile_fixture_assert(islist(C.human_subtile_position) && !C.human_subtile_save_aligned, "clear_offset_keeps_capsule")
+	qdel(closing)
+	C.human_subtile_position = prior_position
 	// Actual target.Adjacent(user) direction used by the click gate.
 	var/mob/living/human/subtile_fixture/J = human_subtile_fixture_actor(11, 2)
 	var/obj/item/near = new(locate(12, 2, 1))

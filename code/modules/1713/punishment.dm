@@ -104,8 +104,10 @@
 			visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 			hanging.pixel_x = 0
 			hanging.pixel_y = 0
-			hanging.anchored = TRUE
+			hanging.anchored = FALSE
 			hanging = null
+			density = FALSE
+			icon_state = ""
 
 
 /obj/structure/gallows
@@ -235,6 +237,7 @@
 				hanging.pixel_y = 0
 				hanging.anchored = 0
 				hanging = null
+				density = FALSE
 				icon_state = "gallows1"
 
 /obj/structure/gallows/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
@@ -242,12 +245,13 @@
 		if (W.sharp == TRUE && hanging && roped)
 			visible_message("<span class = 'danger'>[H] starts to cut the noose with the [W]...</span>")
 			if (do_after(H, 45, src))
-				if (src)
+				if (src && hanging)
 					visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 					hanging.pixel_x = 0
 					hanging.pixel_y = 0
 					hanging.anchored = 0
 					hanging = null
+					density = FALSE
 					icon_state = "gallows0"
 					roped = FALSE
 	if (istype(W, /obj/item/stack/material/rope))
@@ -369,6 +373,7 @@
 			hanging.pixel_y = 0
 			hanging.anchored = 0
 			hanging = null
+			density = FALSE
 			overlays.Cut()
 
 //////////////////////////////////////////////////////////////
