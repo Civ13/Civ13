@@ -26,9 +26,14 @@ Do not hold a finding for more evidence unless the fix itself is risky.
 
 CI failures: read the failed job log before reacting. If the failure is
 infrastructure (checkout or fetch timeout, runner cancelled, artifact
-missing because an earlier step was cancelled), say so and push or rerun.
-Do not change code for it. Apply the documented local-build exception below
-when successful equivalent compilation is already available.
+missing because an earlier step was cancelled, BYOND download or compile
+prevented by runner infrastructure), say so and push or rerun. Do not change
+code for it. Apply the documented local-build exception below when successful
+equivalent compilation is available.
+Such a GitHub build failure is not a hard blocker: when a rerun fails the same
+way, document the local compile and preflight results for the exact head in
+the PR comment, and an authorized merge may then proceed as an admin merge
+(see the `civ13-pr-preflight` skill). Real test or compile failures still block.
 
 Merge conflicts: when both sides add independent code in the same spot,
 keep both and state the order you chose. Ask only when the two sides
@@ -75,8 +80,9 @@ passed. A fixture compile cannot replace a required full-game build.
 
 This exception covers compilation evidence only. Source/compiler/test failures,
 checksum or toolchain-integrity failures, conflicts, other required checks,
-reviews and explicit holds still apply. It grants no merge, deployment,
-history-rewriting force-push, security-setting or branch-protection authority.
+reviews and explicit holds still apply. This evidence exception alone grants no
+merge, deployment, history-rewriting force-push, security-setting or
+branch-protection authority.
 If a protected gate requires an override, use only an already authorized action
 permitted by the environment and its action-time requirements; otherwise report
 that gate. Never bypass an approval denial or manufacture a successful check.
