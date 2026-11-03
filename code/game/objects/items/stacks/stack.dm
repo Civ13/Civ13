@@ -654,6 +654,11 @@
 			return
 		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
 
+	else if (findtext(recipe.title, "farmer's almanac"))
+		if (H.getStatCoeff("farming") < GET_MIN_STAT_COEFF(STAT_HIGH))
+			to_chat(H, "<span class = 'danger'>You need more farming experience to write an almanac.</span>")
+			return
+
 	else if (findtext(recipe.title, "altar"))
 		if (H.religious_leader == FALSE)
 			if (H.religious_clergy == 0)

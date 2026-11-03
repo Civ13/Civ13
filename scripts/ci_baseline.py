@@ -72,6 +72,12 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # Farmer's almanac weather table and crop rule projected from production DM.
+    'farmers_almanac': {'files': ('tests/farmers_almanac/test_farmers_almanac.py',),
+        'paths': ('tests/farmers_almanac/',), 'shared_paths': (
+            'code/modules/1713/farmers_almanac.dm',
+            'code/modules/1713/weather.dm',
+            'code/game/objects/farming.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
@@ -85,7 +91,8 @@ SUITES = {
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
-            'code/game/objects/structures/watercloset.dm',)},
+            'code/game/objects/structures/watercloset.dm',
+            'code/game/mob/living/carbon/human/shit_piss.dm')},
 
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.

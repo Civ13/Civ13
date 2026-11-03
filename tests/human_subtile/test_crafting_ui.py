@@ -34,6 +34,15 @@ def restore_crafting_projection(path, source):
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
         )
     elif path == FLOOR:
+        # Mining balance is a separately checked production change. Invert only
+        # this exact body so the original crafting reference remains frozen.
+        mining_start = source.index('/turf/proc/mining_proc(')
+        mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
+        mining = source[mining_start:mining_end]
+        if hashlib.sha256(mining.encode()).hexdigest() != 'b7ca03e37e23238abe88c7ef8abb778c89eacfb721c31f2ca9c249eb1b2fe392':
+            raise AssertionError('unreviewed mining yield projection drift')
+        previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
+        source = source[:mining_start] + previous + source[mining_end:]
         # #3451: admission before announcements/effects. #3458: one owned work
         # image around the same wait, with release cleanup and unchanged reward.
         wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
@@ -242,6 +251,8 @@ class CraftingMovementContracts(unittest.TestCase):
             ('prepare_resource_work_animation(tool, wall,', 'prepare_resource_work_animation(null, wall,'),
             ('var/completed = do_after(actor, 240 /', 'var/completed = do_after(actor, 120 /'),
             ('wall.mining_proc(actor)', 'wall.mining_proc(null)'),
+            ('var/iron_chance = map.ordinal_age >= 1 ? 32 : 0', 'var/iron_chance = 32'),
+            ('var/geology_allowed = prob(100 * legacy_remaining / no_ore_chance)', 'var/geology_allowed = TRUE'),
         )
         for before, after in controls:
             self.assertEqual(source.count(before), 1, before)

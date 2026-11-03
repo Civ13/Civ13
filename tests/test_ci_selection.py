@@ -189,6 +189,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered showcase-room'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_farmers_almanac_offline_admission_is_exact(self):
+        path = 'tests/farmers_almanac/test_farmers_almanac.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/farmers_almanac/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered farmers-almanac'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_door_intents_offline_admission_is_exact(self):
         path = 'tests/door_intents/test_door_intents.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
