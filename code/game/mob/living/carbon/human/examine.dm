@@ -429,6 +429,10 @@
 			for (var/i in left_factions)
 				if (i[2]>world.realtime)
 					msg += "<br><font color='red'>[T.He] has abandoned <b>[i[1]]</b> recently!</font>"
+		if (civilization && civilization != "none")
+			var/rename_notice = map.faction_rename_notice(civilization)
+			if (rename_notice)
+				msg += "<br><i>[rename_notice]</i>"
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 

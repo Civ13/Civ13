@@ -8,6 +8,7 @@
 				<tr><td>{{if typeof value.symbol === 'string' && /^flist_[^/\\:?#%."'<>\s]*\.png$/.test(value.symbol)}}<img src="{{>encodeURIComponent(value.symbol)}}" width="32" height="32" alt="">{{/if}}</td>
 				<th scope="row" style="text-align:left"><strong>{{:value.name}}</strong>{{if value.motto}} - <em>{{:value.motto}}</em>{{/if}}
 				{{if value.flavour}}<p>{{:value.flavour}}</p>{{/if}}
+				{{if value.renamed}}<p><em>{{:value.renamed}}</em></p>{{/if}}
 				<p>{{>String(value.members)}} {{if value.members === 1}}member{{else}}members{{/if}}.</p></th></tr>
 			{{/for}}</tbody>
 		</table>

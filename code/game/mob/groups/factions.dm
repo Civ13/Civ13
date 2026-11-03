@@ -49,9 +49,18 @@
 /obj/map_metadata/proc/allows_custom_factions()
 	return nomads == TRUE || ID == MAP_NATIONSRP || ID == MAP_NATIONSRP_TRIPLE || ID == MAP_NATIONSRPMED || ID == MAP_NATIONSRP_WW2 || ID == MAP_NATIONSRP_COLDWAR || ID == MAP_NATIONSRP_COLDWAR_CMP
 
-/obj/map_metadata/proc/faction_name_taken(name)
+// except_faction: a faction renaming itself may take back its own old name.
+/obj/map_metadata/proc/faction_name_taken(name, except_faction = null)
 	for (var/i = 1, i <= custom_faction_nr.len, i++)
 		if (custom_faction_nr[i] == name)
+			return TRUE
+	// Map-defined factions (e.g. the Tribes clans) live only in custom_civs.
+	if (name in custom_civs)
+		return TRUE
+	// A recently renamed faction's old name stays reserved while examining
+	// it still shows "X was recently renamed" (see faction_rename.dm).
+	for (var/current in faction_renames)
+		if (current != except_faction && faction_previous_name(current) == name)
 			return TRUE
 	return FALSE
 
@@ -570,7 +579,7 @@
 				symbol_file = "flist_[ckey(relf)].png"
 				src << browse_rsc(symbol, symbol_file)
 			// Motto/flavour are already HTML-encoded by the existing creation flow.
-			entries += list(list("name" = html_encode("[relf]"), "motto" = map.faction_motto[relf], "flavour" = map.faction_flavour[relf], "members" = map.facl[relf], "symbol" = symbol_file))
+			entries += list(list("name" = html_encode("[relf]"), "motto" = map.faction_motto[relf], "flavour" = map.faction_flavour[relf], "members" = map.facl[relf], "symbol" = symbol_file, "renamed" = html_encode(map.faction_rename_notice(relf))))
 	var/list/data = list("factions" = entries)
 	var/mob/user = src
 	var/ui_key = "faction_list"
