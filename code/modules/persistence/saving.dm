@@ -55,6 +55,11 @@
 	prepare_human_save_roster(operation)
 #endif
 	// ***** MAP SECTION *****
+	// Segmented levels bound the resident savefile tree; see the low-memory
+	// section of loading.dm. Builds before it reject format 4, so the last
+	// full-file generation is kept in map_rollback/ before the first one.
+	var/low_memory = plan_low_memory("save")
+	if(low_memory) preserve_full_file_rollback()
 	var/backup_dir = "map_backups/"
 	// Back up the whole previous completed generation before overwriting any
 	// level. A per-level rolling backup mixed old and new levels after failures.
@@ -89,8 +94,6 @@
 		throw EXCEPTION("Could not write world-save metadata")
 	round_state["metadata"] = md5(file2text(F0))
 	log_startup_progress("	Saved metadata.")
-	// Segmented levels bound the resident savefile tree; see the low-memory section of loading.dm.
-	var/low_memory = plan_low_memory("save")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
 		saving_content_owners = list()

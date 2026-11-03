@@ -16,6 +16,12 @@ on:
       - 'code/modules/multiz/world_z_budget.dm'
       - 'code/predefines.dm'
       - 'tests/world_save/stubs.dm'
+      - 'tests/world_save/roundtrip.dm'
+      - 'tests/world_save/roundtrip.dme'
+      - 'tests/world_save/run.sh'
+      - 'code/modules/persistence/zone_topology.dm'
+      - 'code/modules/persistence/durable_world.dm'
+      - 'code/modules/persistence/durable_graph.dm'
       - 'scripts/byond_runtime.py'
       - 'scripts/byond_toolchain.py'
       - 'scripts/travis_pre_byond.sh'
@@ -133,6 +139,16 @@ jobs:
           git rev-parse HEAD 'HEAD^{tree}' > "$evidence/source-identity.txt"
           python3 -B tests/movement_save_chunks/correctness.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/correctness" --job-seconds 240
           python3 -B tests/movement_save_chunks/benchmark.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/memory" --job-seconds 900
+      - name: Full-file and segmented low-memory world-save round trips
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+          export MANPATH="${MANPATH:-}"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          bash tests/world_save/run.sh
+          bash tests/world_save/run.sh 'low_memory=1&segment=1'
       - name: Retain all exact-head evidence including failed attempts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

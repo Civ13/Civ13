@@ -31,9 +31,13 @@ turf boundaries so ID ranges are exact. Readers route through
 `level_entry_file`/`level_list_file`/`level_entry_value`; never read entry or
 list paths from a level index directly. `PERSISTENCE_MEMORY_LIMIT_MB`,
 `PERSISTENCE_LOW_MEMORY_ALWAYS` and `PERSISTENCE_SEGMENT_SIZE` configure it;
-`map_storage.low_memory_override` pins the plan. `tests/world_save/run.sh
-low_memory=1&segment=1` is the native round trip (it needs a local
-`debug_lossy.dm` include that the stale roundtrip.dme lacks).
+`map_storage.low_memory_override` pins the plan. Older builds reject format 4,
+so the first segmented save copies the last full-file generation to
+`map_rollback/`. The reader cache bound excludes handles held by recursive
+decoding (one per segment on the active reference chain). `clear_bookkeeping`
+and preflight release segment handles. `tests/world_save/run.sh
+'low_memory=1&segment=1'` is the native round trip (late sweep append, failed
+capture, backup and rollback); the moving-save workflow runs it.
 
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,

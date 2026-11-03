@@ -122,6 +122,19 @@ world
 			D.number = 55
 			D.reference = A.reference
 			D.alias = A.complex
+			// An animal that steps onto an already-saved tile mid-save is
+			// captured by the post-tile sweep in a later segment and appended
+			// to the first segment's turf: a late write and, on load, a
+			// recursive reference back into a later segment.
+			var/mob/living/simple_animal/wanderer = new(locate(world.maxx,1,1))
+			wanderer.name = "segment wanderer"
+			spawn(0)
+				for(var/wait = 1, wait <= 100000, wait++)
+					var/datum/level_segment_writer/writer = map_storage.saving_segments
+					if(writer && map_storage.saving_z == 1 && writer.number >= 3) break
+					sleep(world.tick_lag)
+				wanderer.loc = locate(1,1,1)
+				mob_list += wanderer
 		check(map_storage.Save_World(), "export failed")
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
@@ -164,16 +177,40 @@ world
 		if(world.params["low_memory"])
 			D = locate(/obj/item/test) in locate(5,1,1)
 			check(D && D.number == 55 && D.reference == A.reference && D.alias == A.complex, "cross-segment entry or list identity lost")
+			var/mob/living/simple_animal/swept = locate(/mob/living/simple_animal) in locate(1,1,1)
+			check(swept && swept.name == "segment wanderer" && !(locate(/mob/living/simple_animal) in locate(world.maxx,1,1)), "late sweep append to an earlier segment lost")
+			check(!map_storage.saving_segments && !map_storage.segment_reader, "segment handles retained after load")
+			check(persistence_parse_tasklist_kib("\"dreamdaemon.exe\",\"4242\",\"Console\",\"1\",\"1,234,567 K\"" + ascii2text(13) + ascii2text(10)) == 1234567, "tasklist memory parse")
+			check(persistence_parse_tasklist_kib("\"dreamdaemon.exe\",\"4242\",\"Console\",\"1\",\"1.234.567 K\"") == 1234567, "localized tasklist memory parse")
+			check(isnull(persistence_parse_tasklist_kib("INFO: No tasks are running which match the specified criteria.")), "missing tasklist row accepted")
 			var/savefile/index = new("map_saves/1.sav")
 			check(index["/format_version"] == 4 && index["/segments/count"] > 1 && fexists("map_saves/1.part2.sav"), "low-memory save did not segment its levels")
 			index = null
 			check(map_storage.Save_World(), "second segmented export failed")
 			check(fexists("map_backups/1.part2.sav") && fexists("map_backups/save_complete.txt"), "segmented backup incomplete")
 			check(map_storage.validate_world_save(), "second segmented export rejected")
+			check(!map_storage.saving_segments && !map_storage.segment_reader, "segment handles retained after save")
+			check(!fexists("map_rollback/save_complete.txt"), "segmented generation copied as a full-file rollback")
+			// A failed segmented capture keeps the completed backup and releases handles.
+			A.other_z = C
+			var/datum/controller/gameticker/failed_segmented = new
+			check(!failed_segmented.savemap(), "segmented cross-level object silently duplicated")
+			check(!fexists("map_saves/save_complete.txt") && fexists("map_backups/save_complete.txt") && fexists("map_backups/1.part1.sav"), "failed segmented export lost its completed backup")
+			check(!map_storage.saving_segments && !map_storage.segment_reader && !persistence_save_in_progress, "failed segmented export retained handles or lock")
+			A.other_z = null
+			check(map_storage.Save_World() && map_storage.validate_world_save(), "segmented recovery export failed")
 			map_storage.low_memory_override = FALSE
 			check(map_storage.Save_World(), "full-file export after segmented export failed")
 			check(!fexists("map_saves/1.part1.sav") && !fexists("map_saves/2.part1.sav"), "stale level segments retained")
 			check(map_storage.validate_world_save(), "full-file export after segments rejected")
+			// The first segmented save after a full-file one keeps that
+			// generation for builds that cannot read format 4.
+			map_storage.low_memory_override = TRUE
+			check(map_storage.Save_World() && map_storage.validate_world_save(), "segmented export after full-file export failed")
+			check(fexists("map_rollback/save_complete.txt") && fexists("map_rollback/1.sav") && !fexists("map_rollback/1.part1.sav"), "full-file rollback not kept")
+			var/savefile/rollback_level = new("map_rollback/1.sav")
+			check(rollback_level["/format_version"] == 3, "rollback is not a full-file generation")
+			rollback_level = null
 			world.log << "PASS: segmented low-memory world-save round trip"
 			text2file("PASS", "result.txt")
 			del(world)

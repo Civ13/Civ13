@@ -684,8 +684,10 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			if(persistence_active_operation && persistence_active_operation.current(src, "load")) persistence_active_operation.human_direct_preflight_generation = round_state["generation"]
 #endif
+		segment_reader = null // Preflight keeps no segment handles open.
 		return TRUE
 	catch(var/exception/e)
+		segment_reader = null
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 			persistence_active_operation.human_direct_preflight_generation = null
@@ -922,6 +924,15 @@
 // ID to its segment through the table and keep at most a few segments open.
 // Saves choose this layout only when the projected memory would pass the
 // configured limit; otherwise they keep the single-file format 3 layout.
+//
+// Bound: the reader cache holds at most 2 (low-memory) or 6 segments, but a
+// recursive Load_Entry or list decode keeps its own segment handle while it
+// follows a reference into another segment. Resident segments are therefore
+// the cache plus one per distinct segment on the active reference chain.
+// Fresh references are captured in the segment that first reaches them, so
+// cross-segment chains come from references to entries captured on earlier
+// tiles and from late parent appends (roster drain, animal sweep). A long
+// chain of such references degrades toward the full-file cost, never beyond.
 
 #define PERSISTENCE_SAVEFILE_MEMORY_FACTOR 6
 #define PERSISTENCE_SEGMENT_CACHE_NORMAL 6
@@ -975,14 +986,19 @@
 		if(world.system_type == UNIX)
 			result = persistence_digits(copytext(text, findtext(text, ":") + 1))
 		else
-			// "dreamdaemon.exe","1234","Console","1","1,234,567 K"
-			var/list/fields = splittext(text, "\",\"")
-			if(fields.len < 5) return null
-			result = persistence_digits(fields[5])
+			result = persistence_parse_tasklist_kib(text)
 	catch
 		return null
 	if(!isnum(result) || result <= 0) return null
 	return round(result / 1024) // Both sources report KiB.
+
+// tasklist /FO CSV row: "image","pid","session","number","memory K". The
+// memory field's grouping separator depends on locale (1,234 or 1.234 or 1 234).
+/proc/persistence_parse_tasklist_kib(text)
+	if(!istext(text)) return null
+	var/list/fields = splittext(text, "\",\"")
+	if(fields.len < 5) return null
+	return persistence_digits(fields[5])
 
 /proc/persistence_digits(text)
 	var/digits = ""
@@ -1038,6 +1054,25 @@
 	world.log << "World [last_low_memory_plan]"
 	return low_memory_active
 #endif
+
+// Format 4 is unreadable by builds before it. Before the first segmented
+// save replaces a full-file generation, copy that completed generation to
+// map_rollback/ (once: a segmented current generation is never copied).
+/map_storage/proc/preserve_full_file_rollback()
+	if(!fexists("map_saves/save_complete.txt")) return
+	for(var/z = 1, z <= world.maxz, z++)
+		if(level_segment_files("map_saves/", z).len) return
+	var/rollback = "map_rollback/"
+	if(fexists("[rollback]save_complete.txt") && !fdel("[rollback]save_complete.txt"))
+		throw EXCEPTION("Could not invalidate rollback marker; existing save retained")
+	for(var/name in flist("map_saves/"))
+		save_work_check()
+		if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
+			if(!fcopy("map_saves/[name]", "[rollback][name]"))
+				throw EXCEPTION("Could not copy [name] to the full-file rollback; existing save retained")
+	if(!fcopy("map_saves/save_complete.txt", "[rollback]save_complete.txt"))
+		throw EXCEPTION("Could not mark the full-file rollback; existing save retained")
+	world.log << "Kept the last full-file world save in [rollback] for builds without segmented levels."
 
 /map_storage/proc/segment_cache_limit()
 	if(persistence_active_operation)
