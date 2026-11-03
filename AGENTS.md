@@ -6,6 +6,12 @@ for findings, verification, committing/pushing, the dated PR update and CI check
 Keep subsystem notes in the scoped READMEs below; read the relevant entries only
 when that area is touched, rather than loading every guide for every task.
 
+<!-- 2026-11-03: ownership and useful work during blockers -->
+Use one owner per branch/PR for edits, publication and CI monitoring. Inspect
+existing ownership and local changes before editing; use an isolated checkout
+when the intended branch is in use. Follow [handoffs and blockers](CODEX.md#ownership-handoffs-and-blockers)
+to continue independent authorized work and preserve exact scope and permissions.
+
 ## Build, test and conventions
 
 - DM sources enter through `civ13.dme`. The canonical BYOND pin is in
@@ -19,7 +25,7 @@ when that area is touched, rather than loading every guide for every task.
   compiler install the pin with `bash scripts/cloud_byond_setup.sh`. Use the
   matching existing test runner and its README for the touched area. Report
   exact commands and results.
-- Before the first push, follow `.agents/skills/civ13-pr-preflight/SKILL.md`:
+- Before the first source or config push, follow `.agents/skills/civ13-pr-preflight/SKILL.md`:
   `python3 scripts/agent_preflight.py all --write` finds byte-pinned tests for
   touched files, regenerates the crafting atlas and recipe audit index, and runs
   every offline CI suite.

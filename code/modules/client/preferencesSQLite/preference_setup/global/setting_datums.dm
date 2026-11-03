@@ -170,6 +170,19 @@ var/list/_client_preferences_by_type
 	if (preference_mob && preference_mob.client)
 		preference_mob.client.refresh_ambient_occlusion()
 
+// Root-lit trees composite the game, lighting, roof and weather planes through
+// extra full-screen passes. Off falls back to per-tree presentation.
+/datum/client_preference/root_lit_trees
+	description = "Root-lit tree shading (turn off for higher FPS)"
+	key = "ROOT_LIT_TREES"
+	enabled_description = "On"
+	disabled_description = "Off"
+
+/datum/client_preference/root_lit_trees/toggled(var/mob/preference_mob, var/enabled)
+	if (preference_mob && preference_mob.client)
+		preference_mob.client.los_dirty = TRUE
+		preference_mob.client.reconcile_geometric_los()
+
 /********************
 * Admin Preferences *
 ********************/

@@ -13,6 +13,13 @@ Record the repository, PR and base/head refs, exact head SHA, workflow run and a
 
 A green summary is not proof that the requested work ran. Inspect individual jobs and matrix cells, their conditions, and the artifacts they produced. Distinguish **passed**, **failed**, **skipped**, **pending**, and **not observed**; report coverage gaps plainly.
 
+Use one monitoring owner per PR. Reuse a shared record of the exact head,
+workflow/run/attempt and job outcomes while those identities remain unchanged;
+refresh on meaningful state changes and immediately before an authorized external
+action. Keep independent authorized work moving while a particular action is
+blocked, carrying scope, authorization limits and blocker state as CODEX.md
+describes. This does not authorize extra workers or bypass confirmations.
+
 Read only the reference needed:
 
 - [PR, branch, and permission problems](references/pr-and-permissions.md): stacked bases, interrupted pushes, merge gates, reviews, and permission failures.

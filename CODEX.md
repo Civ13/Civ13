@@ -71,8 +71,35 @@ Use this task template:
 - Verification report: exact commands/results, CI head/status, and unverified items.
 - Blocker, only if one remains: one decision question with a recommended answer.
 
-Finish independent authorized work before raising a blocker. If genuinely blocked,
-ask exactly one actionable question, include your recommended answer, then stop.
+Finish independent authorized work before raising a blocker. If a user decision
+is required, ask one actionable question with a recommended answer. Stop the
+dependent action while continuing independent work within the authorized scope.
+
+## Ownership, handoffs and blockers
+
+<!-- 2026-11-03: avoid idle lanes and duplicate monitoring -->
+Keep one owner per branch/PR, including its push and CI follow-up. Before editing,
+inspect the checkout, branch and existing task ownership; preserve unrelated work.
+Use a separate checkout if another worker owns the branch. Do not spawn workers
+or expand the roadmap merely because an action is blocked.
+
+For a handoff, record the repository/worktree, owner, branch/PR, exact base/head
+SHAs, changed paths, stopping rule, completed checks and next dependency. Carry
+the relevant user authorization with its exact action, target and limits, plus
+remaining action-time confirmations or holds. Authorization in a handoff is
+context, not a new permission grant or a substitute for required confirmation.
+
+Track each blocker separately: action/target, reason, denied/pending/uncertain
+state, completed work, and the evidence or decision needed to resume. A blocked
+publication or native test need not stop independent implementation, review or
+offline checks. Follow the existing denial/retry rules; reconcile an uncertain
+outcome before retrying and never route around a denial.
+
+Keep a compact CI record per PR: head, workflow/run/attempt, selected jobs and
+latest outcomes. One owner checks an unchanged run; share that record rather
+than repeating checks in multiple tasks. Recheck when the head, run attempt,
+job state or required policy changes, and refresh immediately before an
+authorized external action. Preserve failed evidence and intentional skip reasons.
 
 ## Permissions and evidence
 

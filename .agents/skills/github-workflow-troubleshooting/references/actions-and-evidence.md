@@ -6,6 +6,13 @@ Compare the current PR head SHA with the workflow event SHA and checked-out comm
 
 ## Green summaries with missing coverage
 
+Before publication, compare the exact diff and intended regression with the
+repository's selector and the test job's event/path/input conditions. Local
+offline impact output is only one part of that check. After publication,
+inspect the selection receipt and actual test results for the current head,
+run and attempt. Record any unselected regression explicitly; request only
+an authorized focused run and preserve separate native execution holds.
+
 Inspect native-build, extraction, integration, and matrix jobs rather than trusting a summary badge. A skipped job may be intentional, but is not a passing test. Identify the condition that skipped it and whether the requested validation actually requires it.
 
 For PHP, a green version-policy check does not establish that every supported runtime installs dependencies or passes tests. Examine installation and test results for every intended matrix cell, including the selected PHP version, extensions, package-manager version, lockfile, and dependency resolution. Diagnose the first meaningful failure, not only the final summary.

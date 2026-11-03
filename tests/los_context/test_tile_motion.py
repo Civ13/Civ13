@@ -325,7 +325,7 @@ class TileMotion(unittest.TestCase):
         self.assertIn('var/datum/los_snapshot/S = capture()',read)
         self.assertIn('S.policy != policy_key()',decision)
         self.assertIn('V.capture(TRUE)',LIFE)
-        self.assertIn('los_next_audit = world.time + 5',LIFE)
+        self.assertIn('los_next_audit = world.time + 10',LIFE)
         for path in ['los_presenter.dm','root_tree_presenter.dm']:
             self.assertIn('context.capture(TRUE)',(ROOT/'code/modules/visibility'/path).read_text())
 
