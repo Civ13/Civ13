@@ -1,5 +1,13 @@
 # Movement combat: scoped agent notes
 
+<!-- 2026-11-03: mood and actual sleep -->
+Gameplay mood writes use human `set_mood`/`adjust_mood` in `human_needs.dm`.
+They discard decreases only while the recipient's `sleeping > 0`; resting,
+lying and unconsciousness alone retain awake behavior. Preserve increases and
+never queue sleep losses for wake-up. `tests/mood_sleep` projects the helpers,
+maintenance prefix and frozen migrated expressions offline; it is not native
+gameplay or persistence acceptance. The carbon directory declares human types.
+
 Mining and timed chopping work effects animate owned tool images only. Keep
 actor/client pixel offsets and physical step/glide ownership out of those effects.
 See [resource work images](../../resource-work-animation.md) for admission,

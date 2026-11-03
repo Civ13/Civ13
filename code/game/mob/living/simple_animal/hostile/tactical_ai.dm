@@ -637,7 +637,7 @@
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
 			visible_message("\The [src] bites off [H]'s limb!")
 			for(var/mob/living/human/NB in view(6, src))
-				NB.mood -= 10
+				NB.adjust_mood(-(10))
 		var/lost_limb = attached_before && (!affecting || affecting.owner != H)
 		if (observed_attack && player_help_service && (lost_limb || H.getBruteLoss() + H.getBurnLoss() > previous_damage))
 			player_help_service.record_animal_injury(observing_client, H, src, injury_limb, lost_limb)

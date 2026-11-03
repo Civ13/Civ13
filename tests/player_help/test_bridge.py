@@ -331,6 +331,9 @@ class BridgeTests(unittest.TestCase):
         prompt = calls[0]['messages'][0]['content']
         self.assertIn('REVIEWED CURRENT GAMEPLAY CODE - GENERAL MOOD MECHANICS', prompt)
         self.assertIn('Mood naturally moves toward the neutral range', prompt)
+        self.assertIn('Mood cannot decrease while actually asleep', prompt)
+        self.assertIn('positive mood changes still apply', prompt)
+        self.assertIn('Resting or lying awake does not pause mood loss', prompt)
         self.assertIn('mood_category', prompt)
         self.assertIn('not evidence of its cause', prompt)
         self.assertNotIn('hidden_reason', prompt)
@@ -343,7 +346,7 @@ class BridgeTests(unittest.TestCase):
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_bytes((ROOT / relative).read_bytes())
         life = self.root / 'code/game/mob/living/carbon/human/human_life.dm'
-        life.write_bytes(life.read_bytes().replace(b'mood -= 0.05', b'mood -= 0.06'))
+        life.write_bytes(life.read_bytes().replace(b'adjust_mood(-(0.05))', b'adjust_mood(-(0.06))'))
         with self.assertRaisesRegex(ValueError, 'Reviewed mood mechanics changed'):
             bridge.mood_knowledge(self.root)
 

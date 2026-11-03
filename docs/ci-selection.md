@@ -200,6 +200,7 @@ discovery admits future test files automatically.
 
 | ID | Reviewed files/effects | Admission |
 |---|---|---|
+| mood_sleep | `mood_sleep/test_mood_sleep.py`; shared helper, maintenance and frozen expression projections with inert engine boundaries | Mood tests/helper edits and existing conservative unmapped-source fallback; no native suite |
 | admin_player_care | `admin_player_care/test_player_care.py`, `test_hud_refresh.py`; source checks and injected appearance, HUD membership and recovery effects only | Care tests or shared admin, human appearance/HUD, cosmetic/healing callers and root-presenter inputs |
 | policy | Four named `test_ci_*.py` files; temporary Git repos, mocked outcomes, source reads | Always |
 | bootstrap | `test_byond_bootstrap.py` and `test_byond_toolchain.py`; Bash syntax, stub commands, strict pin validation and injected archive/receipt controls only | Always |

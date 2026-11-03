@@ -138,7 +138,7 @@
 				visible_message("The piranhas bite off [H]'s [affecting]!")
 				qdel(affecting)
 				for(var/mob/living/human/NB in view(6,src))
-					NB.mood -= 10
+					NB.adjust_mood(-(10))
 			spawn(300)
 				invisibility = 101
 			return

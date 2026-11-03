@@ -1,5 +1,13 @@
 # Fishing-stock completion source contracts
 
+The mood-sleep migration changes one piranha witness call outside fishing in
+`static.dm`. The fixture's complete-file identity now names immutable source
+`8609e887`; its extracted fishing procedure remains byte-identical to the prior
+base (SHA-256 `04ab33a59358725c0f6b5e2541670a0683f874e9aa63470cefa9205b2f4ffc51`).
+An independent procedure digest and mutation control prevent a full-file pin
+refresh from silently accepting fishing drift. Exact byte checks require an LF
+checkout; Windows `core.autocrlf=true` changes pinned dependency/template bytes.
+
 Run from the repository root:
 
 ```sh

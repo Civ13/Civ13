@@ -13,6 +13,20 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 class SelectionTests(unittest.TestCase):
+    def test_mood_sleep_admission_is_exact_and_offline(self):
+        path = 'tests/mood_sleep/test_mood_sleep.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a'*40, 'b'*40, 'pull_request'), [])
+        for other in ('tests/mood_sleep/new_probe.dm', 'tests/mood_sleep/new_runner.py',
+                      'tests/mood_sleep/new_runner.ps1', 'tests/mood_sleep/new_runner.sh'):
+            with self.subTest(path=other), patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered mood-sleep'):
+                    selection.introduced_tests('a'*40, 'b'*40, 'pull_request')
+        with patch.object(selection, 'MOOD_SLEEP_OFFLINE_TESTS', frozenset()), \
+             patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered mood-sleep'):
+                selection.introduced_tests('a'*40, 'b'*40, 'pull_request')
+
     def test_help_toxin_offline_admission_is_exact_and_preserves_native_gates(self):
         path = 'tests/player_help/test_toxin_context.py'
         def introduced(value):

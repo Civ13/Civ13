@@ -46,6 +46,18 @@ class PreparationTests(unittest.TestCase):
         self.assertTrue(body.startswith((prepare.SIGNATURE + "\n").encode()))
         self.assertNotIn(prepare.NEXT_SIGNATURE.encode(), body)
         self.assertEqual(body.count(b"if (do_after("), 3)
+        # Frozen from the pre-mood-change base; production pin refreshes must
+        # not silently accept a different fishing procedure.
+        self.assertEqual(hashlib.sha256(body).hexdigest(),
+                         '04ab33a59358725c0f6b5e2541670a0683f874e9aa63470cefa9205b2f4ffc51')
+
+    def test_whole_file_identity_refresh_does_not_hide_procedure_drift(self):
+        data = SOURCE.read_bytes().replace(b'counter = (counter-1)', b'counter = (counter-2)', 1)
+        blob = hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+        with patch.object(prepare, 'SOURCE_SHA256', hashlib.sha256(data).hexdigest()), \
+             patch.object(prepare, 'SOURCE_BLOB', blob):
+            with self.assertRaisesRegex(ValueError, 'reviewed fishing procedure changed'):
+                prepare.extract_attackby(data)
 
     def test_unknown_oversized_or_changed_source_rejected_before_output(self):
         for data in (b"", SOURCE.read_bytes() + b"\n", b"x" * (prepare.SOURCE_LIMIT + 1)):
