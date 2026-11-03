@@ -1051,6 +1051,7 @@
 #include "code\modules\client\asset_cache.dm"
 #include "code\modules\client\client_defines.dm"
 #include "code\modules\client\client_procs.dm"
+#include "code\modules\client\action_keybindings.dm"
 #include "code\modules\client\client_verbs.dm"
 #include "code\modules\client\fullscreen.dm"
 #include "code\modules\client\interface.dm"

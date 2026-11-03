@@ -140,6 +140,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 	set name = "Hotkeys Help"
 	set category = "OOC"
 
+	to_chat(src, "Use OOC > Keybindings (or the Keybindings menu) to view and change your saved action keys. The list below shows the factory defaults.")
 	to_chat(src, HOTKEY_MODE_OPTIONS)
 
 /mob/verb/a_intent_change(input as text)

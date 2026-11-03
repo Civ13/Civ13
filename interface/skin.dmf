@@ -12,9 +12,6 @@ macro "macro"
 		name = "Escape"
 		command = "updateFullscreen"
 	elem 
-		name = "Space"
-		command = "on-press-spacebar"
-	elem 
 		name = "Northeast"
 		command = ".northeast"
 	elem 
@@ -99,12 +96,6 @@ macro "macro"
 		name = "CTRL+C"
 		command = "secondary_activation"
 	elem 
-		name = "CTRL+E"
-		command = "quick-equip"
-	elem 
-		name = "F"
-		command = "Face-Direction"
-	elem 
 		name = "CTRL+F"
 		command = "a-intent left"
 	elem 
@@ -168,6 +159,107 @@ macro "macro"
 	elem
 		name = "ALT+Southwest+REP"
 		command = ".fine-offset-step 10"
+	elem "action_prone_1"
+		name = ""
+		command = "m-intent-prone"
+		is-disabled = true
+	elem "action_prone_2"
+		name = ""
+		command = "m-intent-prone"
+		is-disabled = true
+	elem "action_aim_1"
+		name = ""
+		command = "toggle-gun-mode"
+		is-disabled = true
+	elem "action_aim_2"
+		name = ""
+		command = "toggle-gun-mode"
+		is-disabled = true
+	elem "action_sights_1"
+		name = "Space"
+		command = "on-press-spacebar"
+	elem "action_sights_2"
+		name = ""
+		command = "on-press-spacebar"
+		is-disabled = true
+	elem "action_run_1"
+		name = ""
+		command = "m-intent-run"
+		is-disabled = true
+	elem "action_run_2"
+		name = ""
+		command = "m-intent-run"
+		is-disabled = true
+	elem "action_movement_1"
+		name = ""
+		command = "m-intent-change"
+		is-disabled = true
+	elem "action_movement_2"
+		name = ""
+		command = "m-intent-change"
+		is-disabled = true
+	elem "action_defense_1"
+		name = ""
+		command = "defense-intent-change"
+		is-disabled = true
+	elem "action_defense_2"
+		name = ""
+		command = "defense-intent-change"
+		is-disabled = true
+	elem "action_secondary_1"
+		name = ""
+		command = "secondary-intent-change"
+		is-disabled = true
+	elem "action_secondary_2"
+		name = ""
+		command = "secondary-intent-change"
+		is-disabled = true
+	elem "action_tactics_1"
+		name = ""
+		command = "tactic-intent"
+		is-disabled = true
+	elem "action_tactics_2"
+		name = ""
+		command = "tactic-intent"
+		is-disabled = true
+	elem "action_face_1"
+		name = "F"
+		command = "Face-Direction"
+	elem "action_face_2"
+		name = ""
+		command = "Face-Direction"
+		is-disabled = true
+	elem "action_buckle_1"
+		name = ""
+		command = "try_to_buckle"
+		is-disabled = true
+	elem "action_buckle_2"
+		name = ""
+		command = "try_to_buckle"
+		is-disabled = true
+	elem "action_equip_1"
+		name = "CTRL+E"
+		command = "quick-equip"
+	elem "action_equip_2"
+		name = ""
+		command = "quick-equip"
+		is-disabled = true
+	elem "action_holster_1"
+		name = ""
+		command = "holster"
+		is-disabled = true
+	elem "action_holster_2"
+		name = ""
+		command = "holster"
+		is-disabled = true
+	elem "action_attack_1"
+		name = ""
+		command = "attack-direction"
+		is-disabled = true
+	elem "action_attack_2"
+		name = ""
+		command = "attack-direction"
+		is-disabled = true
 macro "hotkeymode"
 	elem 
 		name = "Return"
@@ -181,9 +273,6 @@ macro "hotkeymode"
 	elem 
 		name = "Escape"
 		command = "updateFullscreen"
-	elem 
-		name = "Space"
-		command = "on-press-spacebar"
 	elem 
 		name = "Southwest"
 		command = ".southwest"
@@ -272,17 +361,11 @@ macro "hotkeymode"
 		name = "9"
 		command = "cast_quick_spell_9"
 	elem 
-		name = "."
-		command = "m-intent-change"
-	elem 
 		name = "A"
 		command = ".startmovingleft"
 	elem 
 		name = "A+UP"
 		command = ".stopmovingleft"
-	elem 
-		name = "B"
-		command = "try_to_buckle"
 	elem "secondaryactivation"
 		name = "C"
 		command = "secondary_activation"
@@ -293,15 +376,6 @@ macro "hotkeymode"
 		name = "D+UP"
 		command = ".stopmovingright"
 	elem 
-		name = "E"
-		command = "quick-equip"
-	elem 
-		name = "CTRL+E"
-		command = "quick-equip"
-	elem 
-		name = "F"
-		command = "Face-Direction"
-	elem 
 		name = "CTRL+F"
 		command = "a-intent left"
 	elem 
@@ -311,32 +385,8 @@ macro "hotkeymode"
 		name = "CTRL+G"
 		command = "a-intent right"
 	elem 
-		name = "H"
-		command = "holster"
-	elem 
-		name = "CTRL+H"
-		command = "holster"
-	elem 
-		name = "J"
-		command = "toggle-gun-mode"
-	elem 
-		name = "CTRL+J"
-		command = "toggle-gun-mode"
-	elem 
-		name = "L"
-		command = "attack-direction"
-	elem 
 		name = "ALT+L"
 		command = "looc"
-	elem 
-		name = "CTRL+L"
-		command = "attack-direction"
-	elem 
-		name = "M"
-		command = "m-intent-run"
-	elem 
-		name = "N"
-		command = "tactic-intent"
 	elem "ooc"
 		name = "O"
 		command = "ooc"
@@ -364,12 +414,6 @@ macro "hotkeymode"
 	elem 
 		name = "CTRL+T"
 		command = "asay"
-	elem 
-		name = "U"
-		command = "secondary-intent-change"
-	elem 
-		name = "V"
-		command = "defense-intent-change"
 	elem "w_key"
 		name = "W"
 		command = ".startmovingup"
@@ -433,9 +477,6 @@ macro "hotkeymode"
 	elem 
 		name = "F12"
 		command = "ChangeHUD"
-	elem 
-		name = ","
-		command = "m-intent-prone"
 
 	elem
 		name = "ALT+North+REP"
@@ -473,7 +514,97 @@ macro "hotkeymode"
 	elem
 		name = "ALT+A+REP"
 		command = ".fine-offset-step 8"
+	elem "action_prone_1"
+		name = ","
+		command = "m-intent-prone"
+	elem "action_prone_2"
+		name = ""
+		command = "m-intent-prone"
+		is-disabled = true
+	elem "action_aim_1"
+		name = "J"
+		command = "toggle-gun-mode"
+	elem "action_aim_2"
+		name = "CTRL+J"
+		command = "toggle-gun-mode"
+	elem "action_sights_1"
+		name = "Space"
+		command = "on-press-spacebar"
+	elem "action_sights_2"
+		name = ""
+		command = "on-press-spacebar"
+		is-disabled = true
+	elem "action_run_1"
+		name = "M"
+		command = "m-intent-run"
+	elem "action_run_2"
+		name = ""
+		command = "m-intent-run"
+		is-disabled = true
+	elem "action_movement_1"
+		name = "."
+		command = "m-intent-change"
+	elem "action_movement_2"
+		name = ""
+		command = "m-intent-change"
+		is-disabled = true
+	elem "action_defense_1"
+		name = "V"
+		command = "defense-intent-change"
+	elem "action_defense_2"
+		name = ""
+		command = "defense-intent-change"
+		is-disabled = true
+	elem "action_secondary_1"
+		name = "U"
+		command = "secondary-intent-change"
+	elem "action_secondary_2"
+		name = ""
+		command = "secondary-intent-change"
+		is-disabled = true
+	elem "action_tactics_1"
+		name = "N"
+		command = "tactic-intent"
+	elem "action_tactics_2"
+		name = ""
+		command = "tactic-intent"
+		is-disabled = true
+	elem "action_face_1"
+		name = "F"
+		command = "Face-Direction"
+	elem "action_face_2"
+		name = ""
+		command = "Face-Direction"
+		is-disabled = true
+	elem "action_buckle_1"
+		name = "B"
+		command = "try_to_buckle"
+	elem "action_buckle_2"
+		name = ""
+		command = "try_to_buckle"
+		is-disabled = true
+	elem "action_equip_1"
+		name = "E"
+		command = "quick-equip"
+	elem "action_equip_2"
+		name = "CTRL+E"
+		command = "quick-equip"
+	elem "action_holster_1"
+		name = "H"
+		command = "holster"
+	elem "action_holster_2"
+		name = "CTRL+H"
+		command = "holster"
+	elem "action_attack_1"
+		name = "L"
+		command = "attack-direction"
+	elem "action_attack_2"
+		name = "CTRL+L"
+		command = "attack-direction"
 menu "menu"
+	elem "action-keybindings"
+		name = "&Keybindings"
+		command = "Keybindings"
 	elem 
 		name = "&File"
 		command = ""
