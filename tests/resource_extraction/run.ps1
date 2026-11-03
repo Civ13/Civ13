@@ -6,6 +6,9 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+$pin = Get-Content -LiteralPath (Join-Path $repo 'tools/byond/version.json') -Raw | ConvertFrom-Json
+$versionPattern = [regex]::Escape($pin.version)
+$versionParts = $pin.version.Split('.')
 $prefix = '.resource_probe_' + [guid]::NewGuid().ToString('N')
 $temporary = Join-Path ([IO.Path]::GetTempPath()) ('civ13-resource-' + [guid]::NewGuid())
 $runtime = $null
@@ -52,7 +55,6 @@ try {
         $body = $mining.Substring($begin, $end - $begin)
         $body = [regex]::Replace($body, '\bprob\(', 'yield_prob(')
         $body = [regex]::Replace($body, '\brand\(', 'yield_rand(')
-        $body = $body.Replace('pick(1,2,3,4)', 'yield_pick()')
         $mining = $mining.Substring(0, $begin) + $body + $mining.Substring($end)
         [IO.File]::WriteAllText((Join-Path $repo ($prefix + '_mining.dm')), $mining)
         $source = $source.Replace('code\game\turfs\floor_attackby.dm', $prefix + '_mining.dm')
@@ -60,7 +62,7 @@ try {
     [IO.File]::WriteAllText((Join-Path $repo ($prefix + '.dme')), $source + "`n#include `"$Probe`"`n")
     $build = & (Join-Path $ByondBin $compilerName) -max_errors 0 ($prefix + '.dme') 2>&1
     $build | Tee-Object -FilePath (Join-Path $temporary 'compile.log')
-    if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch '516\.1681') { throw 'Pinned probe compile failed' }
+    if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch "(?m)^DM compiler version $versionPattern\r?$") { throw 'Pinned probe compile failed' }
     foreach ($extension in @('.dmb','.rsc')) { Copy-Item -LiteralPath ($prefix + $extension) -Destination (Join-Path $temporary ('probe' + $extension)) }
     Copy-Item -LiteralPath 'config' -Destination $temporary -Recurse
     [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty`ndigging_baseline=$DiggingBaseline")
@@ -72,7 +74,7 @@ try {
     $result | ConvertTo-Json -Compress
     $failuresUnexpected = if ($DiggingBaseline) { $result.failures -eq 0 } else { $result.failures -ne 0 }
     if ($DiggingBaseline -and $Probe -ne 'tests/resource_extraction/digging_probe.dm') { throw 'Baseline is only supported for digging probe' }
-    if ($runtime.ExitCode -ne 0 -or $failuresUnexpected -or $result.runtime_error -or $runtimeLog -match 'runtime error' -or $result.commit -ne $commit -or $result.byond_build -ne 1681) { throw 'Production-path extraction probe failed' }
+    if ($runtime.ExitCode -ne 0 -or $failuresUnexpected -or $result.runtime_error -or $runtimeLog -match 'runtime error' -or $result.commit -ne $commit -or $result.byond_version -ne [int]$versionParts[0] -or $result.byond_build -ne [int]$versionParts[1]) { throw 'Production-path extraction probe failed' }
 } finally {
     if ($runtime -and !$runtime.HasExited) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit() }
     foreach ($extension in @('.dme','_world.dm','_globals.dm','_mining.dm','.dmb','.rsc')) {

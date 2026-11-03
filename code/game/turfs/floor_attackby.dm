@@ -845,129 +845,103 @@
 	is_mineable = FALSE
 
 /turf/proc/mining_proc(var/mob/living/human/H = null)
-	if (!src)
+	if (!src || (!is_mineable && !istype(src, /turf/floor/mining)))
 		return
 	var/turf/T = get_turf(src)
 	var/area/area_above = null
 	if (z==1 && world.maxz>=2)
 		area_above = get_area(get_turf(locate(x,y,z+1)))
-	if (prob(20))
-		if (prob(60))
-			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
-			var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-			bonusstone.amount = rand(8,12)
-			mineral.amount = rand(12,24)
-			if (istype(get_area(src), /area/caribbean/void/caves/special))
-				mineral.amount *= 2
-			if (H)
-				var/material/M = get_material_by_name("copper")
-				var/ore_colour = M ? M.icon_colour : "#b87333"
-				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
-				H.adaptStat("strength", 1)
-		else
-			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
-			var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-			bonusstone.amount = rand(8,12)
-			mineral.amount = rand(12,24)
-			if (istype(get_area(src), /area/caribbean/void/caves/special))
-				mineral.amount *= 2
-			if (H)
-				var/material/M = get_material_by_name("tin")
-				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>tin</font></b> ore!"))
-				H.adaptStat("strength", 1)
-		change_the_turf()
-		return
-	if (prob(40) && map.ordinal_age >= 1)
+	// Independent ore rolls use the old table's marginal rates, not its conditional
+	// branch rates. Coal alone rises from 3% to 6%; see docs/mining-drop-balance.md.
+	var/iron_chance = map.ordinal_age >= 1 ? 32 : 0
+	var/fuel_chance = map.ordinal_age >= 2 && map.ID != MAP_ANTARCTICA ? 3 : 0
+	var/legacy_remaining = 80 - iron_chance
+	if (fuel_chance)
+		legacy_remaining *= 0.75
+	var/uranium_chance = is_mineable && map.ordinal_age >= 8 ? legacy_remaining * 0.05 : 0
+	legacy_remaining -= uranium_chance
+	var/silver_chance = legacy_remaining * 0.05
+	legacy_remaining -= silver_chance
+	var/gold_chance = legacy_remaining * 0.02
+	legacy_remaining -= gold_chance
+	var/diamond_chance = legacy_remaining * 0.01
+	legacy_remaining -= diamond_chance
+	var/no_ore_chance = 100
+	for (var/chance in list(12, 8, iron_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance))
+		no_ore_chance *= 1 - chance / 100
+	var/found_ore = FALSE
+	if (H)
+		H.adaptStat("strength", 1) // One completed action, even with several ores.
+	if (prob(12))
+		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
+		mineral.amount = rand(12,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("copper")
+			var/ore_colour = M ? M.icon_colour : "#b87333"
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
+		found_ore = TRUE
+	if (prob(8))
+		var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
+		mineral.amount = rand(12,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("tin")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>tin</font></b> ore!"))
+		found_ore = TRUE
+	if (prob(iron_chance) && iron_chance)
 		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-		bonusstone.amount = rand(8,12)
 		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2
 		if (H)
 			var/material/M = get_material_by_name("iron")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>iron</font></b> ore!"))
-			H.adaptStat("strength", 1)
-		change_the_turf()
-		return
-	if (prob(25) && map.ID != MAP_ANTARCTICA)
-		if (map.ordinal_age >= 2)
-			var/pickperc = pick(1,2,3,4)
-			switch (pickperc)
-				if (1)
-					var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-					bonusstone.amount = rand(8,12)
-					mineral.amount = rand(24,32)
-					if (istype(get_area(src), /area/caribbean/void/caves/special))
-						mineral.amount *= 2
-					if (H)
-						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
-						H.adaptStat("strength", 1)
-				if (2)
-					var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
-					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-					bonusstone.amount = rand(8,12)
-					mineral.amount = 8
-					if (istype(get_area(src), /area/caribbean/void/caves/special))
-						mineral.amount *= 2
-					if (H)
-						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
-						H.adaptStat("strength", 1)
-				if (3)
-					var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
-					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-					bonusstone.amount = rand(8,12)
-					mineral.amount = 8
-					if (istype(get_area(src), /area/caribbean/void/caves/special))
-						mineral.amount *= 2
-					if (mineral && mineral.get_material())
-						if (H)
-							to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
-							H.adaptStat("strength", 1)
-				if (4)
-					// if (prob(50))
-					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
-					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
-					bonusstone.amount = rand(8,12)
-					mineral.amount = 8
-					if (istype(get_area(src), /area/caribbean/void/caves/special))
-						mineral.amount *= 2
-					if (H)
-						var/material/M = get_material_by_name("lead")
-						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>lead</font> ore</b>!"))
-						H.adaptStat("strength", 1)
-			change_the_turf()
-			return
-	// Preserve common ore branches above; uranium uses only their fallback.
-	if (is_mineable && map.ordinal_age >= 8 && prob(5))
-		new /obj/item/stack/ore/uranium(src)
-		change_the_turf()
-		return
-	/*
-					else if (prob(10) && map.ordinal_age >= 6)
-						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
-						mineral.amount = rand(4,12)
-						if (istype(get_area(src), /area/caribbean/void/caves/special))
-							mineral.amount *= 2
-						if (H)
-							to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#325202><b>uranium</font></b>! Better clear the mine."))
-						change_the_turf()
-						if (H)
-							H.adaptStat("strength", 3)
-						return
-
-					else
-						var/obj/item/stack/ore/mercury/mineral = new/obj/item/stack/ore/mercury(src)
-						mineral.amount = 4
-						if (istype(get_area(src), /area/caribbean/void/caves/special))
-							mineral.amount *= 2
-						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#882c1d><b>mercury</font></b>!"))// no material
-						change_the_turf()
-						H.adaptStat("strength", 1)
-						return
-	*/
-	if (prob(5))
+		found_ore = TRUE
+	if (prob(2 * fuel_chance) && fuel_chance)
+		var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+		mineral.amount = rand(24,32)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
+		found_ore = TRUE
+	if (prob(fuel_chance) && fuel_chance)
+		var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
+		mineral.amount = 8
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
+		found_ore = TRUE
+	if (prob(fuel_chance) && fuel_chance)
+		var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
+		mineral.amount = 8
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (mineral && mineral.get_material())
+			if (H)
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
+		found_ore = TRUE
+	if (prob(fuel_chance) && fuel_chance)
+		var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
+		mineral.amount = 8
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("lead")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>lead</font> ore</b>!"))
+		found_ore = TRUE
+	// Common ores share one rubble batch, rather than minting stone per ore.
+	if (found_ore)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
+	if (prob(uranium_chance) && uranium_chance)
+		new /obj/item/stack/ore/uranium(src) // Retain one unit; no special-cave multiplier.
+		found_ore = TRUE
+	if (prob(silver_chance))
 		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
 		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -975,10 +949,8 @@
 		if (H)
 			var/material/M = get_material_by_name("silver")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>silver</font> ore</b>!"))
-			H.adaptStat("strength", 1)
-		change_the_turf()
-		return
-	if (prob(2))
+		found_ore = TRUE
+	if (prob(gold_chance))
 		var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
 		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -986,10 +958,8 @@
 		if (H)
 			var/material/M = get_material_by_name("gold")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>gold</font> ore</b>!"))
-			H.adaptStat("strength", 1)
-		change_the_turf()
-		return
-	if (prob(1))
+		found_ore = TRUE
+	if (prob(diamond_chance))
 		var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
 		mineral.amount = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -997,10 +967,15 @@
 		if (H)
 			var/material/M = get_material_by_name("diamond")
 			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[M.icon_colour]><b>diamonds</b></font>!"))
-			H.adaptStat("strength", 1)
+		found_ore = TRUE
+	if (found_ore)
 		change_the_turf()
 		return
-	if (istype(T, /turf/floor/dirt/underground/icy))
+	// Independent rolls leave more ore-free walls. Admit the old geology table
+	// only often enough to retain its original fossil/marble/obsidian rates;
+	// remaining ore-free walls give ordinary stone.
+	var/geology_allowed = prob(100 * legacy_remaining / no_ore_chance)
+	if (geology_allowed && istype(T, /turf/floor/dirt/underground/icy))
 		if (prob(2))
 			var/obj/item/stack/material/fossil/mineral = new/obj/item/stack/material/fossil(src)
 			mineral.amount = 1
@@ -1009,10 +984,9 @@
 			if (H)
 				var/material/M = get_material_by_name("bone")
 				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[M.icon_colour]><b>fossil</font></b>!"))
-				H.adaptStat("strength", 1)
 			change_the_turf()
 			return
-	if(istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
+	if(geology_allowed && (istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert")))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1020,10 +994,9 @@
 		if (H)
 			var/material/M = get_material_by_name("sandstone")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>sandstone</font> rocks</b>!"))
-			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
-	if(prob(20) && (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1)
+	if(geology_allowed && (prob(20) && (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1))
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
 		bonusstone.amount = rand(8,12)
@@ -1033,10 +1006,9 @@
 		if (H)
 			var/material/M = get_material_by_name("marble")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
-			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
-	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
+	else if(geology_allowed && (prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3))
 		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
 		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
 		bonusstone.amount = rand(8,12)
@@ -1045,10 +1017,9 @@
 			mineral.amount *= 2
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#060606><b>obsidian</font> rocks</b>!"))
-			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
-	else if(prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1)
+	else if(geology_allowed && (prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1))
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1056,7 +1027,6 @@
 		if (H)
 			var/material/M = get_material_by_name("marble")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
-			H.adaptStat("strength", 1)
 		change_the_turf()
 		return
 	else
@@ -1067,9 +1037,9 @@
 		if (H)
 			var/material/M = get_material_by_name("stone")
 			to_chat(H, SPAN_GREEN_BOLD("You found some usable <font color=[M.icon_colour]><b>stone</font> rocks</b>!"))
-			H.adaptStat("strength", 1)
 	change_the_turf()
 	return
+
 
 /turf/floor/dirt/underground/attack_hand(mob/user)
 	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))

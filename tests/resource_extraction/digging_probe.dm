@@ -94,5 +94,5 @@ var/obj/item/digging_tool
 		digging_check(digging_waits == 1 && !istype(locate(5,5,1),/turf/floor/dirt/underground), "successful mining waits once and converts finite turf")
 	catch(var/exception/e)
 		digging_check(FALSE,"exception [e]")
-	text2file(json_encode(list("commit"=world.params["tested_commit"],"failures"=digging_failures,"runtime_error"=digging_runtime_error,"byond_build"=world.byond_build)),"result.json")
+	text2file(json_encode(list("commit"=world.params["tested_commit"],"failures"=digging_failures,"runtime_error"=digging_runtime_error,"byond_version"=world.byond_version,"byond_build"=world.byond_build)),"result.json")
 	del(world)
