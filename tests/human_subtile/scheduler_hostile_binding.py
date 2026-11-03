@@ -2,8 +2,8 @@
 import subprocess
 import time
 
-BASE_COMMIT = 'a9f4c699c2d45eb12de8b07027b966c403835e9d'
-BASE_TREE = 'd5157e5c800f31d7fb99374e22f60035d80924a3'
+BASE_COMMIT = '02fc8fbb3d698d83344979347e284f35327f72cd'
+BASE_TREE = '0df50b9bdb1447690a195f97cb087251439c3ece'
 PINNED = {'civ13.dme': '1ec749aba78bbd2c944da0131540f3eca832a037',
  'code/game/mob/living/simple_animal/friendly/cat.dm': '451fb534a6f76c747150f3e45c3b7b4e82a8dca7',
  'code/game/mob/living/simple_animal/hostile/hostile.dm': '8772533242bd02ab3a6f8ab005d1d7dbf93d2c9c',
@@ -24,15 +24,15 @@ SOURCE_PINS = {'.github/workflows/wildlife-cardinal-cadence.yml': '2d3d62c694a3c
  'tests/human_subtile/cloud_npc_controller.py': 'cd99156a092bdb63a91771525c80300ce12362f0',
  'tests/human_subtile/cloud_npc_job.py': 'df0356762855401578407be52a02b40a74030bf0',
  'tests/human_subtile/cloud_npc_smoke.py': '0488777cac3edd8f8ce9f6bce6be19b46dd8b63d',
- 'tests/human_subtile/scheduler_hostile_contract.py': '74a1c8bbaddc783a40fdc55c09f48ff6c22bc74b',
- 'tests/human_subtile/scheduler_hostile_draft.dm': '9000cb39ae186edd230a9cf5f883c4d1461d9797',
+ 'tests/human_subtile/scheduler_hostile_contract.py': 'aa31f525ae1df655d4128ba2509e8000a4200974',
+ 'tests/human_subtile/scheduler_hostile_draft.dm': '91ae0afb223183359e7fc937267b71d18f133dde',
  'tests/human_subtile/scheduler_hostile_evidence.py': '89c79e68412b2c04a00c9e7b46faa530a8af2a5c',
- 'tests/human_subtile/scheduler_hostile_stage.py': '2a19318739a3128465d6c40be10d7e3de65fcc8e',
+ 'tests/human_subtile/scheduler_hostile_stage.py': '8f6d581fa6705f1905c3e5f310ea2c6aa0870218',
  'tests/human_subtile/scheduler_hostile_worker.py': 'c404fb848ae19500c5a6f5dea92df8b560310cba',
- 'tests/human_subtile/test_scheduler_hostile_contract.py': '2bfec3386c16c72b87de6aeddf6bad9da0788f26',
+ 'tests/human_subtile/test_scheduler_hostile_contract.py': '8fe2ab255582741f577e9698d87da48b4f6bcc57',
  'tests/human_subtile/test_scheduler_hostile_controller.py': '6367edb20188ebe40b770581c531646a993b92ce',
- 'tests/human_subtile/test_scheduler_hostile_stage.py': '12d2f51e699ee5622d6a3ed2faef4d14a1707fbb'}
-ALLOWED_DELTA = frozenset(['code/game/mob/living/simple_animal/subtile_movement.dm', 'tests/human_subtile/test_insect_idle_slot.py', 'tests/human_subtile/scheduler_hostile_binding.py', 'tests/human_subtile/scheduler_hostile_contract.py', 'tests/human_subtile/scheduler_hostile_draft.dm', 'tests/human_subtile/scheduler_hostile_stage.py', 'tests/human_subtile/test_scheduler_hostile_contract.py', 'tests/human_subtile/test_scheduler_hostile_stage.py'])
+ 'tests/human_subtile/test_scheduler_hostile_stage.py': 'eb112af051156805d7febe13a6c0db3b16ee9752'}
+ALLOWED_DELTA = frozenset(['tests/human_subtile/scheduler_hostile_binding.py', 'tests/human_subtile/scheduler_hostile_contract.py', 'tests/human_subtile/scheduler_hostile_draft.dm', 'tests/human_subtile/scheduler_hostile_stage.py', 'tests/human_subtile/test_scheduler_hostile_contract.py', 'tests/human_subtile/test_scheduler_hostile_stage.py'])
 
 
 def require(ok,label):

@@ -39,10 +39,10 @@ class HostileStage(unittest.TestCase):
         with self.assertRaises(ValueError):stage.adapted_dme('')
 
     def test_receipt_binds_partial_trace_and_exact_single_case(self):
-        row=fixture_test.good();head='a'*40
+        rows=fixture_test.good();head='a'*40
         receipt=dict(head=head,error=None,port=0,byond_version=516,byond_build=1688,
                      scope=contract.SCOPE,transition_checks=42,transition_phase='quiet',
-                     transition_rows=[row],transition_partial=copy.deepcopy(row['events']))
+                     transition_rows=rows,transition_partial=copy.deepcopy(rows[-1]['events']))
         self.assertTrue(contract.validate_receipt(receipt,head)['target_response'])
         for mutate in ('scope','phase','checks','missing','duplicate','partial','head'):
             broken=copy.deepcopy(receipt)
@@ -50,7 +50,7 @@ class HostileStage(unittest.TestCase):
             if mutate=='phase':broken['transition_phase']='replacement'
             if mutate=='checks':broken['transition_checks']=0
             if mutate=='missing':broken['transition_rows']=[]
-            if mutate=='duplicate':broken['transition_rows'].append(copy.deepcopy(row))
+            if mutate=='duplicate':broken['transition_rows'].append(copy.deepcopy(rows[0]))
             if mutate=='partial':broken['transition_partial'][-1]['sx']=7
             if mutate=='head':broken['head']='b'*40
             with self.subTest(mutate=mutate),self.assertRaises(ValueError):
