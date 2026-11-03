@@ -530,6 +530,17 @@ class InventoryHoverName(unittest.TestCase):
         m=self.model();S,I=self.storage_view(m);decision,_=self.decision_model(m,hover_only)
         self.assertEqual(decision(m.H,I,'examine'),0)
 
+    def test_examining_storage_contents_is_not_broadcast(self):
+        # Storage admission makes contents examinable; bystanders cannot see
+        # inside the container, so only the examiner gets the "look" line.
+        examine=fragment((CORE.parents[3]/'code/game/atoms.dm').read_text(),'/atom/proc/examine(')
+        guard='if (istype(loc, /obj/item/weapon/storage))'
+        self.assertIn(guard,examine)
+        private=examine[examine.index(guard):examine.index('else',examine.index(guard))]
+        self.assertNotIn('visible_message',private)
+        self.assertIn('to_chat(user',private)
+        self.assertLess(examine.index(guard),examine.index('user.visible_message('))
+
     def test_storage_los_admission_keeps_context_guards(self):
         source=CORE.read_text();decision=fragment(source,'/datum/los_context/proc/decision(')
         self.assertIn('if (los_storage_hover_visible(user, target))',decision)
