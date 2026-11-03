@@ -338,6 +338,7 @@ RECIPE: /material/leather/,work boots,/obj/item/clothing/shoes/workboots,4,80,0,
 RECIPE: /material/leather/,laceup shoes,/obj/item/clothing/shoes/laceup,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,plain leather shoes,/obj/item/clothing/shoes/leather,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,punk boots,/obj/item/clothing/shoes/punk,4,110,0,1,foot wear,175,0,180,8,null
+RECIPE: /material/leather/,leather gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,gloves,0,0,0,8,null
 
 //*****************| LEATHER ARMOR |***************************
 
