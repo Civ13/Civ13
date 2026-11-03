@@ -494,9 +494,45 @@ class InventoryHoverName(unittest.TestCase):
             self.assertIn(assertion,probe)
         self.assertIn('/proc/los_read_allowed',probe)
 
-    def test_storage_los_admission_is_hover_only_and_keeps_context_guards(self):
+    def decision_model(self, m, core_source=None):
+        import re
+        source=core_source or CORE.read_text()
+        spec=importlib.util.spec_from_file_location('los_decision_adapter',CORE.parents[3]/'tests/save_movement/source_adapter.py')
+        adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
+        text='/datum/los_context/proc/decision(mob/user, atom/target, operation)\n'+adapter.extract(source,'/datum/los_context/proc/decision')+'\n'
+        pieces=re.split(r'("(?:[^"\\]|\\.)*")',text)
+        for i in range(0,len(pieces),2):
+            pieces[i]=re.sub(r'\bsrc\b','self',pieces[i])
+            for field in ['retired','owner','body','capture','decision_snapshot']:
+                pieces[i]=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,pieces[i])
+        text=''.join(pieces)
+        env=dict(m.env,LOS_DENY=0,LOS_SELF=4,LOS_OWN_SLOT=3)
+        projected=adapter.project(text,'/datum/los_context/proc/decision','self, user, target, operation',env)
+        captures=[]
+        ctx=type('Ctx',(),{})()
+        ctx.retired=False;ctx.owner=m.C;ctx.body=m.H
+        ctx.capture=lambda:captures.append('capture') or 'snapshot'
+        ctx.decision_snapshot=lambda target,S,operation:0
+        m.C.los_context=ctx
+        return (lambda user,target,operation:projected(ctx,user,target,operation)),captures
+
+    def test_open_storage_item_is_examinable(self):
+        # Shift-click examine of an item in an open backpack used to be denied:
+        # its loc is the storage, so geometry never admits it.
+        m=self.model();S,I=self.storage_view(m);decision,captures=self.decision_model(m)
+        self.assertEqual(decision(m.H,I,'examine'),3)
+        self.assertEqual(decision(m.H,I,'hover'),3)
+        self.assertEqual(captures,[])
+        m.H.s_active=None
+        self.assertEqual(decision(m.H,I,'examine'),0)
+        self.assertEqual(captures,['capture'])
+        hover_only=CORE.read_text().replace('\tif (los_storage_hover_visible(user, target))','\tif (operation == "hover" && los_storage_hover_visible(user, target))',1)
+        m=self.model();S,I=self.storage_view(m);decision,_=self.decision_model(m,hover_only)
+        self.assertEqual(decision(m.H,I,'examine'),0)
+
+    def test_storage_los_admission_keeps_context_guards(self):
         source=CORE.read_text();decision=fragment(source,'/datum/los_context/proc/decision(')
-        self.assertIn('operation == "hover" && los_storage_hover_visible(user, target)',decision)
+        self.assertIn('if (los_storage_hover_visible(user, target))',decision)
         self.assertLess(decision.index('owner.los_context != src'),decision.index('los_storage_hover_visible(user, target)'))
         self.assertLess(decision.index('target.gcDestroyed'),decision.index('los_storage_hover_visible(user, target)'))
         self.assertIn('hover_storage',fragment((CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text(),'/obj/screen/hover_name/persistence_runtime_var('))
