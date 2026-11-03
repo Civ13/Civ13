@@ -63,6 +63,9 @@
 		if(fexists("map_backups/save_complete.txt"))
 			if(!fdel("map_backups/save_complete.txt"))
 				throw EXCEPTION("Could not invalidate backup marker; existing save retained")
+		// Segments of the replaced backup are not named by the copied indexes.
+		for(var/backup_z = 1, backup_z <= world.maxz, backup_z++)
+			delete_level_segment_files(backup_dir, backup_z)
 		for(var/name in flist("map_saves/"))
 			save_work_check()
 			if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
@@ -86,6 +89,8 @@
 		throw EXCEPTION("Could not write world-save metadata")
 	round_state["metadata"] = md5(file2text(F0))
 	log_startup_progress("	Saved metadata.")
+	// Segmented levels bound the resident savefile tree; see the low-memory section of loading.dm.
+	var/low_memory = plan_low_memory("save")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
 		saving_content_owners = list()
@@ -98,12 +103,15 @@
 		if(fexists("map_saves/[A].sav"))
 			if(!fdel("map_saves/[A].sav"))
 				throw EXCEPTION("Could not replace saved level [A]")
+		delete_level_segment_files("map_saves/", A)
 		var/savefile/savefile = new("map_saves/[A].sav")
 		savefile["/format_version"] << 3
+		if(low_memory) savefile["/format_version"] << 4
 		savefile["/generation"] << generation
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
 		savefile["/maxz"] << world.maxz
+		saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
@@ -113,11 +121,15 @@
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
 				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
+				if(saving_segments) saving_segments.rotate_if_full()
 		drain_moving_save_roster(savefile)
 		sweep_uncaptured_animals(savefile)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		drain_human_save_roster(savefile, operation)
 #endif
+		if(saving_segments)
+			saving_segments.finish()
+			saving_segments = null
 		savefile.Flush()
 		savefile = null // Close the candidate level before consistency validation.
 		sleep(world.tick_lag)
@@ -169,6 +181,8 @@
 	return 1
 
 /map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0, traversal = FALSE, datum/human_request = null)
+	// A segmented level's index holds only its grid; fields go to the open segment.
+	if(saving_segments && savefile == saving_segments.index) savefile = saving_segments.current
 	if(!A || istype(A, /client))
 		return 0
 	if(istype(A, /atom/movable) && save_debug_omits(A, null)) return 0
@@ -771,6 +785,7 @@
 	moving_save_chunk = null
 	record["origin"] = origin
 	record["ref"] = ref
+	if(saving_segments && destination == saving_segments.index) destination = saving_segments.current
 	// The native in-memory savefile is detached. Copy only paths written by this
 	// chunk, retaining typed envelopes and global per-level entry/list IDs.
 	for(var/path in chunk.paths)
@@ -839,11 +854,15 @@
 				throw EXCEPTION("Uncaptured animal origin turf was replaced")
 		var/key = "[ref]"
 		if(saving_content_owners[key]) continue
+		// A segmented level appends to the segment holding the origin turf.
+		var/savefile/level_file = F
+		F = level_entry_file(level_file, parent_ref)
 		var/path = "[entry_path(F, parent_ref)]/content"
 		var/list/chunks = F[path]
 		if(!islist(chunks)) throw EXCEPTION("Uncaptured animal origin has no version-3 contents")
 		chunks += list2params(list(key))
 		F[path] << chunks
+		F = level_file
 		saving_content_owners[key] = parent_ref
 
 /map_storage/proc/drain_moving_save_roster(savefile/F)
@@ -869,11 +888,15 @@
 		var/owner = saving_content_owners[key]
 		if(owner && owner != parent_ref) throw EXCEPTION("Moving save root has conflicting saved owners")
 		if(!owner)
+			// A segmented level appends to the segment holding the origin turf.
+			var/savefile/level_file = F
+			F = level_entry_file(level_file, parent_ref)
 			var/path = "[entry_path(F, parent_ref)]/content"
 			var/list/chunks = F[path]
 			if(!islist(chunks)) throw EXCEPTION("Moving save origin has no version-3 contents")
 			chunks += list2params(list(key))
 			F[path] << chunks
+			F = level_file
 			saving_content_owners[key] = parent_ref
 		save_work_check()
 		// The work check can yield after attaching the saved edge. Keep the

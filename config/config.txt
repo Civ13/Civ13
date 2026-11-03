@@ -232,6 +232,16 @@ SKIP_PERSISTENCE_SAVING
 #from the save automatically after the restart. Comment out to disable.
 PERSISTENCE_REBOOT_HOUR 9
 
+#memory limit (MiB) for persistence world saves and loads. When the server's resident
+#memory plus about 6x the largest saved level file would pass it, the save splits
+#each level into small segment files (slower, but only one segment is held in memory),
+#and loads keep fewer segments open. 0 or commented out keeps single-file levels.
+PERSISTENCE_MEMORY_LIMIT_MB 3072
+#always use segmented low-memory levels, regardless of the limit above
+#PERSISTENCE_LOW_MEMORY_ALWAYS
+#saved entries plus lists per level segment (256-1000000)
+#PERSISTENCE_SEGMENT_SIZE 4096
+
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE
 #WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads

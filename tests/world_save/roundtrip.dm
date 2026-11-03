@@ -79,6 +79,11 @@ world
 		if(world.params["large"])
 			world.maxx = 500
 			world.maxy = 500
+		// Segmented (format 4) levels: tiny segments force many ID ranges,
+		// cross-segment references, late content appends and list routing.
+		if(world.params["low_memory"])
+			map_storage.low_memory_override = TRUE
+			map_storage.segment_size_override = text2num(world.params["segment"]) || 2
 		map = new /obj/map_metadata(locate(1,1,1))
 		var/turf/edge = new /turf/test/edge(locate(world.maxx,world.maxy,2))
 		edge.name = "far corner"
@@ -110,6 +115,13 @@ world
 		corpse.stat = DEAD
 		var/mob/living/human/living = new(locate(3,1,1))
 		living.stat = UNCONSCIOUS
+		// A later tile's object reaches an earlier segment's entry and list.
+		var/obj/item/test/D
+		if(world.params["low_memory"])
+			D = new(locate(5,1,1))
+			D.number = 55
+			D.reference = A.reference
+			D.alias = A.complex
 		check(map_storage.Save_World(), "export failed")
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
@@ -149,6 +161,23 @@ world
 		check(C && C.number == 314 && C.items["second level"] == 271, "second-level objects/lists lost")
 		check(map && map.loc == locate(1,1,1), "metadata deleted")
 		check(!errors.len, "unexpected errors")
+		if(world.params["low_memory"])
+			D = locate(/obj/item/test) in locate(5,1,1)
+			check(D && D.number == 55 && D.reference == A.reference && D.alias == A.complex, "cross-segment entry or list identity lost")
+			var/savefile/index = new("map_saves/1.sav")
+			check(index["/format_version"] == 4 && index["/segments/count"] > 1 && fexists("map_saves/1.part2.sav"), "low-memory save did not segment its levels")
+			index = null
+			check(map_storage.Save_World(), "second segmented export failed")
+			check(fexists("map_backups/1.part2.sav") && fexists("map_backups/save_complete.txt"), "segmented backup incomplete")
+			check(map_storage.validate_world_save(), "second segmented export rejected")
+			map_storage.low_memory_override = FALSE
+			check(map_storage.Save_World(), "full-file export after segmented export failed")
+			check(!fexists("map_saves/1.part1.sav") && !fexists("map_saves/2.part1.sav"), "stale level segments retained")
+			check(map_storage.validate_world_save(), "full-file export after segments rejected")
+			world.log << "PASS: segmented low-memory world-save round trip"
+			text2file("PASS", "result.txt")
+			del(world)
+			return
 		// Large-map acceptance exercises the complete graph/grid round trip.
 		// Fault injection and backup recovery use the focused fixture below.
 		if(world.params["large"])

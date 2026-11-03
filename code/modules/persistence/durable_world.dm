@@ -156,10 +156,9 @@
 			if(seen[ref]) continue
 			seen[ref] = TRUE
 			wanted -= ref
-			var/path = entry_path(F, ref)
-			var/type = F["[path]/type"]
+			var/type = level_entry_value(F, ref, "type")
 			if(ispath(type, /obj/screen) || ispath(type, /datum/hud)) continue
-			for(var/child in saved_content_refs(F["[path]/content"], F["/format_version"])) queue += child
+			for(var/child in saved_content_refs(level_entry_value(F, ref, "content"), level_content_version(F))) queue += child
 		if(wanted.len) throw EXCEPTION("Durable metadata references an unreachable world entry")
 
 // Read-only rejection before player ownership or timer state is changed.

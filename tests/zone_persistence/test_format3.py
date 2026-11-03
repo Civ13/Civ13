@@ -35,15 +35,15 @@ class FormatCompatibility(unittest.TestCase):
         self.assertIn('if(isnull(F["/zone_capture/[ref]/id"])) throw EXCEPTION("Missing captured membership entry")', loop)
         self.assertRegex(loop, r'validated_zone_grid \+= id\n\t+TICK_CHECK\n')
 
-    def test_zone_header_admits_typed_versions_2_and_3_only(self):
+    def test_zone_header_admits_typed_versions_2_3_and_segmented_4_only(self):
         source = (ROOT/PATH).read_text()
-        self.assertEqual(source.count('!(F["/format_version"] in list(2, 3))'), 1)
+        self.assertEqual(source.count('!(F["/format_version"] in list(2, 3, 4))'), 1)
         self.assertNotIn('F["/format_version"] != 2', source)
 
     def test_actual_guard_accepts_only_typed_versions_with_matching_generation_and_dimensions(self):
         source = (ROOT/PATH).read_text()
         condition, = re.findall(r'if\(([^\n]+)\) throw EXCEPTION\("Zone capture header differs"\)', source)
-        expression = condition.replace('||', ' or ').replace('!(', 'not (').replace('list(2, 3)', '(2, 3)')
+        expression = condition.replace('||', ' or ').replace('!(', 'not (').replace('list(2, 3, 4)', '(2, 3, 4)')
         for field in ('maxx', 'maxy'):
             expression = expression.replace('world.'+field, 'expected["/'+field+'"]')
         expression = expression.replace('save_validation_maxz()', 'expected["/maxz"]')
@@ -56,10 +56,11 @@ class FormatCompatibility(unittest.TestCase):
         expected = {'/generation': 'round-v2:fixture', '/maxx': 3, '/maxy': 4, '/maxz': 2}
         def rejects(fields):
             return eval(guard, {'__builtins__': {}}, dict(F=fields, generation=expected['/generation'], expected=expected))
-        for version in (2, 3):
+        # Version 4 is a segmented index whose header and grid match format 3.
+        for version in (2, 3, 4):
             fields = dict(expected, **{'/format_version': version})
             self.assertFalse(rejects(fields))
             for key in expected:
                 self.assertTrue(rejects(dict(fields, **{key: 'wrong'})), (version, key))
-        for version in (None, 0, 1, 4, '2', '3', False):
+        for version in (None, 0, 1, 5, '2', '3', '4', False):
             self.assertTrue(rejects(dict(expected, **{'/format_version': version})), version)

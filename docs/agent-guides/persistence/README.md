@@ -22,6 +22,19 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-03: low-memory segmented levels -->
+BYOND materializes a whole savefile as an in-memory tree on first access (about
+6x the file size, never returned to the OS). Low-memory saves write format 4:
+`map_saves/<z>.sav` is an index (header, turf grid, zone capture, segment table)
+and entries/lists live in `<z>.part<k>.sav` format-3 segments, rotated only at
+turf boundaries so ID ranges are exact. Readers route through
+`level_entry_file`/`level_list_file`/`level_entry_value`; never read entry or
+list paths from a level index directly. `PERSISTENCE_MEMORY_LIMIT_MB`,
+`PERSISTENCE_LOW_MEMORY_ALWAYS` and `PERSISTENCE_SEGMENT_SIZE` configure it;
+`map_storage.low_memory_override` pins the plan. `tests/world_save/run.sh
+low_memory=1&segment=1` is the native round trip (it needs a local
+`debug_lossy.dm` include that the stale roundtrip.dme lacks).
+
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired
