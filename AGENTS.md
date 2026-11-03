@@ -25,6 +25,9 @@ to continue independent authorized work and preserve exact scope and permissions
   compiler install the pin with `bash scripts/cloud_byond_setup.sh`. Use the
   matching existing test runner and its README for the touched area. Report
   exact commands and results.
+- For a verified hosted infrastructure failure, an exact-revision successful
+  local build may satisfy compilation evidence under the [local-build policy](CODEX.md#local-build-after-a-hosted-infrastructure-failure).
+  Keep failed CI labelled failed and preserve other checks and action permissions.
 - Before the first source or config push, follow `.agents/skills/civ13-pr-preflight/SKILL.md`:
   `python3 scripts/agent_preflight.py all --write` finds byte-pinned tests for
   touched files, regenerates the crafting atlas and recipe audit index, and runs

@@ -25,6 +25,12 @@ Read only the reference needed:
 - [PR, branch, and permission problems](references/pr-and-permissions.md): stacked bases, interrupted pushes, merge gates, reviews, and permission failures.
 - [Actions and evidence problems](references/actions-and-evidence.md): wrong commits, skipped coverage, first pushes, manual dispatch, toolchains, and artifacts.
 
+For a verified hosted build infrastructure failure, apply the [local-build evidence procedure](references/actions-and-evidence.md#local-build-evidence-after-infrastructure-failure)
+and [repository policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure).
+Document successful equivalent local compilation of the exact revision so the
+hosted build alone does not hold otherwise authorized work. Keep the CI failure,
+other required checks, action-time requirements and denial rules intact.
+
 ## Authorization and retries
 
 This skill supplies procedures, not permission. Do not embed standing approvals or turn a past approval into authority for a future action. Apply current user instructions and platform permissions to the exact action and target. Permission to merge is distinct from permission to submit a formal approving review; neither implies permission to change protection rules or security settings.

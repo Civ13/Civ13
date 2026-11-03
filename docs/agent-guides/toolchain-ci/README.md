@@ -151,6 +151,14 @@ and inspect its outcomes/artifacts; never substitute local tool absence or an
 older green run. This policy does not authorize installing native tools, running
 held probes, deployment, release publication, branch-protection changes or merging.
 
+<!-- 2026-11-03: verified hosted infrastructure failure and exact-revision local evidence -->
+If hosted compilation fails for a verified infrastructure reason, apply the
+[local-build policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure).
+A documented successful equivalent local build of the exact revision may cover
+compilation evidence; the hosted build alone is not a source-publication hold.
+Keep the failed CI/aggregate status visible. Other checks, integrity failures,
+permissions and action-time requirements remain unchanged.
+
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual
 over HTTPS, with bounded downloads, cancellation and a temporary in-memory cache.

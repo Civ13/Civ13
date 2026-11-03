@@ -7,8 +7,9 @@ description: Pre-push checks for Civ13 PRs that avoid the CI failures agents kee
 
 Run these before the first source or config push. Documentation-only changes
 use the focused documentation checks in AGENTS.md. Reuse recorded passing local
-checks while their tested inputs and dependencies are unchanged; a new head
-still needs its own hosted evidence. Inspect existing branch ownership and use
+checks while their tested inputs and dependencies are unchanged; inspect hosted
+results for each new head, including any documented local-build exception below.
+Inspect existing branch ownership and use
 CODEX.md's handoff rules if an action is blocked.
 
 ## 1. Compile locally, even in a cloud session
@@ -25,6 +26,12 @@ rm -f civ13.dmb civ13.rsc civ13.int                # build outputs stay out of c
 The script installs i386 libraries and fetches the pinned archive from the
 repository-release mirror, which the agent proxy allows. On Windows use
 `dm.exe civ13.dme`. A local compile is still not hosted CI evidence.
+If the hosted build fails for a verified infrastructure reason, that local
+result may satisfy compilation evidence under the [shared policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure)
+and [evidence procedure](../github-workflow-troubleshooting/references/actions-and-evidence.md#local-build-evidence-after-infrastructure-failure).
+Document the exact clean revision and equivalent full build; keep GitHub's
+failure visible. Do not hold an otherwise authorized push or source PR solely
+for that hosted build failure. Other required checks and permissions still apply.
 
 ## 2. Find tests that pin the files you touched
 
@@ -96,7 +103,10 @@ head's run cannot establish that a specific hosted regression executed.
   not change gameplay code for it.
 - CodeRabbit skips PRs over 100 files and rate-limits to about one review an
   hour. Split broad mechanical sweeps so review is possible; do not wait on it.
-- Infrastructure failures (checkout timeout, cancelled runner) are reruns, not code changes.
+- For verified infrastructure failures (checkout/download timeout, cancelled
+  runner), retain the failed logs and use an authorized bounded rerun or the
+  documented exact-revision local-build exception. Do not change source code
+  merely to make an infrastructure failure green.
 
 ## 6. Merge conflicts in shared registries
 

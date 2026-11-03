@@ -19,6 +19,42 @@ For PHP, a green version-policy check does not establish that every supported ru
 
 Classify docs-only changes from the full diff and the repository's CI rules, including renames and deletions. Workflow files, build scripts, executable examples, generated inputs, and extraction fixtures may affect runtime or validation even when adjacent to documentation. Do not label a change docs-only just to make expensive or failing checks disappear.
 
+## Local build evidence after infrastructure failure
+
+Apply the [repository policy](../../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure)
+when GitHub cannot obtain or run the toolchain for a verified infrastructure
+reason and successful equivalent local compilation is available:
+
+1. Read and retain the failed run/job/attempt log. Identify the first failing
+   operation and its cause, such as a BYOND download outage or runner loss.
+   Do not infer infrastructure from a red badge, a missing artifact alone or
+   a local pass. Compiler diagnostics, test/assertion failures, checksum/version
+   mismatches and unknown causes are not covered by this exception.
+2. Bind the local build to the exact PR head (or explicitly identified proposed
+   revision), with tracked source matching that clean commit before and after.
+   Use the current pinned compiler and equivalent build target, flags, configs,
+   dependencies and generated inputs. Record OS/platform differences; local
+   Windows compilation does not establish Linux packaging or runtime behavior.
+   A dirty tree, old revision, stubbed compiler or fixture-only compile cannot
+   establish a successful full-game build of the current head.
+3. Retain the command, actual compiler/version banner, complete sanitized log,
+   exit status and error/warning counts. Require the normal successful build
+   criteria, including zero errors/warnings where required. Document the evidence
+   and its limits in the PR update before relying on it. Do not copy credentials
+   or private operational data into public logs.
+4. State both outcomes: hosted build failed for the verified reason; local
+   compilation passed for the named revision and target. That hosted failure
+   alone need not block an otherwise authorized push or source-PR readiness.
+   Preserve actual failed CI/aggregate statuses and any dependent checks that
+   did not run. Do not claim tests or native behavior from compilation.
+
+Other required checks, source/test failures, conflicts, reviews, holds and
+action-time requirements retain their force. This evidence exception does not
+authorize a merge, history rewrite, protection/security change or a new override.
+If an existing protected gate still prevents the requested action, report it
+or use only an independently authorized override permitted by the environment.
+Apply the skill's denial and uncertain-outcome rules without changing routes.
+
 ## All-zero before SHA on first branch push
 
 A first-push event can supply an all-zero `before` SHA. It is a sentinel, not a valid commit for `git diff`. Inspect the event and choose a baseline that matches the check's purpose:
