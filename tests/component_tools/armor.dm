@@ -55,7 +55,7 @@
 	component_check(vest && vest.armor["gun"] == 65 && vest.slowdown == 0.4, "armor legacy vest stats")
 	W.retrieve(H)
 	qdel(vest)
-	for (var/scenario in list("cancel", "remove", "amount", "move", "bench_move", "unlock", "era", "epoch", "delete"))
+	for (var/scenario in list("cancel", "remove", "amount", "move", "bench_move", "era", "epoch", "delete"))
 		W.selected_tool = "Armor carrier"
 		C = armor_stage(W, H, /obj/item/stack/material/cloth, 4)
 		L = armor_stage(W, H, /obj/item/stack/material/leather, 2)
@@ -69,7 +69,6 @@
 				if ("amount") C.amount = 5
 				if ("move") H.loc = locate(3,1,1)
 				if ("bench_move") W.forceMove(locate(2,1,1))
-				if ("unlock") H.civilization = "locked_armor_ci"
 				if ("era") map.ordinal_age = 9
 				if ("epoch") persistence_admission_identity = new /datum
 				if ("delete") qdel(W)
@@ -87,6 +86,18 @@
 			W.retrieve(H)
 		qdel(C)
 		qdel(L)
+	// Weaving is an era-baseline Main node, so changing faction cannot revoke it.
+	// Exercise actual post-wait research loss with the specialist panel recipe.
+	W.selected_tool = "Aramid panels"
+	K = armor_stage(W, H, /obj/item/stack/material/kevlar, 14)
+	W.assembly_time = 5
+	spawn(1)
+		H.civilization = "locked_armor_ci"
+	component_check(!W.assemble(H), "armor post-wait specialist research loss")
+	component_check(K.loc == W && K.amount == 14, "armor lost research consumed panels stock")
+	H.civilization = "armor_ci"
+	W.retrieve(H)
+	qdel(K)
 	W.selected_tool = "Armor carrier"
 	var/obj/item/stack/material/cloth/wrong = new(H, 4, FALSE)
 	H.l_hand = wrong
