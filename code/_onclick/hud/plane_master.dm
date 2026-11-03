@@ -15,8 +15,30 @@
 
 /obj/screen/plane_master/game_world/backdrop(mob/mymob)
 	filters = list()
-	if(istype(mymob) && mymob.client)
+	if(istype(mymob) && mymob.client && mymob.client.ambient_occlusion_enabled())
 		filters += filter(type="drop_shadow", x=0, y=-2, size=4, color="#04080FAA")
+
+// Default on; preferences that are not loaded yet keep the usual look.
+/client/proc/ambient_occlusion_enabled()
+	if(!prefs)
+		return TRUE
+	return is_preference_enabled(/datum/client_preference/ambient_occlusion)
+
+/client/proc/refresh_ambient_occlusion()
+	if(!mob || !mob.hud_used)
+		return
+	var/obj/screen/plane_master/game_world/G = mob.hud_used.plane_masters["[GAME_PLANE]"]
+	if(!istype(G))
+		return
+	G.backdrop(mob)
+	// An active root tree compositor holds this plane's filters on its scene
+	// plane. Move the new list into that lease instead of retiring it, so its
+	// tree masks stay in place, including while capture is suspended.
+	var/datum/root_tree_presenter/P = root_tree_presenter
+	if(P && !P.retired && P.scene_active && P.game_plane == G && P.scene_plane)
+		P.original_filters = length(G.filters) ? G.filters.Copy() : list()
+		P.scene_plane.filters = P.original_filters.Copy()
+		G.filters = list()
 
 /obj/screen/plane_master/lighting
 	name = "lighting plane master"

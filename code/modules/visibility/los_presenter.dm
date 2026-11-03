@@ -161,6 +161,8 @@
 		return FALSE
 	var/list/next = list()
 	var/list/next_owned = list()
+	// Keyed set: membership is checked for every movable in the viewport, so a
+	// plain list made each refresh quadratic in the number of visible atoms.
 	var/list/next_visible = list()
 	var/list/next_trees = list()
 	var/list/next_appearances = list()
@@ -176,10 +178,10 @@
 				next[T] = turf_mask
 				next_owned += turf_mask
 			else
-				next_visible += T
+				next_visible[T] = TRUE
 			for(var/atom/movable/A in T)
 				// Native contents repeats atoms whose bounds overlap turfs.
-				if(A in next_visible || next[A])
+				if(next_visible[A] || next[A])
 					continue
 				if(!owns_atom(A))
 					continue
@@ -189,7 +191,7 @@
 					next[A] = atom_mask
 					next_owned += atom_mask
 				else
-					next_visible += A
+					next_visible[A] = TRUE
 					if(visual_operation == "visual_tree")
 						var/image/tree_image = native_tree_image(A)
 						next_trees[A] = tree_image
