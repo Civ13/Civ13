@@ -47,6 +47,24 @@ ffmpeg/ffprobe/libx264 capabilities are checked read-only before native work;
 the replay has at most 1,200 frames and 8 MiB, with exact frame-count validation.
 No automatic retry is provided.
 
+The station profile also has a separate, privileged renderer setup step on the
+disposable Ubuntu 24.04 GitHub-hosted runner. It uses official snapshot
+`20261103T000000Z` and FFmpeg `7:6.1.1-3ubuntu5`. Only the missing subset of the
+locked required dependencies may be installed: at most 233 packages and
+145,446,530 archive bytes, plus repository metadata. Private APT sources/cache
+and the existing Ubuntu keyring are used; the helper does not edit system
+repositories or key configuration. It rejects upgrades, removals, pre-existing
+configuration work and package/status changes outside the exact plan.
+
+Approve that installation envelope before dispatching this profile. Package
+maintainer scripts and triggers run as root and can change caches/configuration
+or start services. They are not network-sandboxed. The root-owned timeout bounds
+the foreground installation group; it does not certify escaped-service cleanup
+or provide rollback. The helper has a 210-second internal deadline, a four-minute
+workflow step, and a 16-minute enclosing job. The existing native host and
+container limits are unchanged. Setup failure retains evidence and stops before
+native work; a further attempt needs separate admission.
+
 The pre-existing canonical train-collision job is retained under the separate
 `collision` profile. It is skipped when `station` is selected; the station proof
 does not implicitly run the other native fixture.

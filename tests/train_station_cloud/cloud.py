@@ -184,7 +184,9 @@ def renderer_capabilities(command,out):
     try:
         ffmpeg=shutil.which('ffmpeg',path='/usr/bin:/bin')
         ffprobe=shutil.which('ffprobe',path='/usr/bin:/bin')
-        require(ffmpeg and ffprobe,'preinstalled ffmpeg/ffprobe required; no dependency installation')
+        receipt.update(ffmpeg=ffmpeg,ffprobe=ffprobe,
+                       missing=[n for n,p in (('ffmpeg',ffmpeg),('ffprobe',ffprobe)) if not p])
+        require(ffmpeg and ffprobe,'preinstalled ffmpeg/ffprobe required; missing: '+','.join(receipt['missing'])+'; no dependency installation')
         checks=[('ffmpeg_version',[ffmpeg,'-version'],r'^ffmpeg version '),
                 ('ffprobe_version',[ffprobe,'-version'],r'^ffprobe version '),
                 ('libx264',[ffmpeg,'-hide_banner','-h','encoder=libx264'],r'^Encoder libx264 \[')]
