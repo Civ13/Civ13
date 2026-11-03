@@ -171,6 +171,25 @@ var/global/fixture_hostile_old_completions = 0
 		fixture_hostile_record("quiet_sample", A)
 		sleep(world.tick_lag)
 	fixture_hostile_record("quiet_end", A)
+	// Keep the real scheduler running beyond target loss. Recovery must come
+	// from a later Life call; the fixture never calls a recovery or movement proc.
+	fixture_hostile_phase = "recovery"
+	fixture_hostile_record("recovery_wait_start", A)
+	var/recovery_deadline = world.time + 100
+	while (world.time < recovery_deadline)
+		fixture_hostile_record("recovery_sample", A)
+		if (!(A.step_x || A.step_y) && !A.npc_subtile_transaction && !A.npc_subtile_pulse && !A.npc_subtile_recovery)
+			break
+		sleep(world.tick_lag)
+	fixture_scheduler_assert(!(A.step_x || A.step_y) && !A.npc_subtile_transaction && !A.npc_subtile_pulse && !A.npc_subtile_recovery, "hostile_recovery_aligned")
+	fixture_hostile_record("recovery_aligned", A)
+	fixture_hostile_phase = "post_recovery"
+	fixture_hostile_record("post_recovery_start", A)
+	var/post_recovery_started = world.time
+	while (world.time < post_recovery_started + 4)
+		fixture_hostile_record("post_recovery_sample", A)
+		sleep(world.tick_lag)
+	fixture_hostile_record("post_recovery_end", A)
 	S.stop()
 	var/deadline = world.time + 10
 	while ((P.running || P.queued || A.npc_subtile_transaction || A.npc_subtile_pulse || A.npc_subtile_pursuit || A.npc_subtile_wild_walk || A.npc_subtile_recovery || A.npc_subtile_pending_intent) && world.time < deadline)

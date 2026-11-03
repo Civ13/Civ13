@@ -2,8 +2,8 @@
 import subprocess
 import time
 
-BASE_COMMIT = 'd2688962ce3501adf232c60d0e28f5b26f475d48'
-BASE_TREE = '37d00802d0833d66fda33b59ccbade4906d1d045'
+BASE_COMMIT = '6643c6e42e53cbc3d357c8c45072e0727c914288'
+BASE_TREE = '31eab4b7f47d6cab9a21c425d76958cea32a9ab8'
 PINNED = {'civ13.dme': '1ec749aba78bbd2c944da0131540f3eca832a037',
  'code/game/mob/living/simple_animal/friendly/cat.dm': '451fb534a6f76c747150f3e45c3b7b4e82a8dca7',
  'code/game/mob/living/simple_animal/hostile/hostile.dm': '8772533242bd02ab3a6f8ab005d1d7dbf93d2c9c',
@@ -24,27 +24,19 @@ SOURCE_PINS = {'.github/workflows/wildlife-cardinal-cadence.yml': '2d3d62c694a3c
  'tests/human_subtile/cloud_npc_controller.py': 'cd99156a092bdb63a91771525c80300ce12362f0',
  'tests/human_subtile/cloud_npc_job.py': 'df0356762855401578407be52a02b40a74030bf0',
  'tests/human_subtile/cloud_npc_smoke.py': '0488777cac3edd8f8ce9f6bce6be19b46dd8b63d',
- 'tests/human_subtile/scheduler_hostile_contract.py': '6162e70c0c2c0e0019147ef631c4e595d9f8c255',
- 'tests/human_subtile/scheduler_hostile_draft.dm': 'e5e95cc6d15720661c433f33bbf2d46b83689f3c',
+ 'tests/human_subtile/scheduler_hostile_contract.py': 'a3cc1f74372631af08c858e5ba88c027c62dc727',
+ 'tests/human_subtile/scheduler_hostile_draft.dm': 'c9f342a4644efafdc0691ef136c3fed091382171',
  'tests/human_subtile/scheduler_hostile_evidence.py': '89c79e68412b2c04a00c9e7b46faa530a8af2a5c',
- 'tests/human_subtile/scheduler_hostile_stage.py': '069300ead4cab3985355230c98c807f00eb657f8',
+ 'tests/human_subtile/scheduler_hostile_stage.py': 'd8a867d22133033895a59711fbdbbd84399fe9c8',
  'tests/human_subtile/scheduler_hostile_worker.py': 'c404fb848ae19500c5a6f5dea92df8b560310cba',
- 'tests/human_subtile/test_scheduler_hostile_contract.py': '0b115ffbe2f1c9a1fb779bb07a7c0682965f9d30',
+ 'tests/human_subtile/test_scheduler_hostile_contract.py': '8e49fb108920c20de6803b3436bf17ed659a55d3',
  'tests/human_subtile/test_scheduler_hostile_controller.py': '6367edb20188ebe40b770581c531646a993b92ce',
  'tests/human_subtile/test_scheduler_hostile_stage.py': 'ab3ddd6f008b1a2c59952ec22c4d03f2bc1f169d'}
-ALLOWED_DELTA = frozenset(['.github/workflows/wildlife-cardinal-cadence.yml',
- 'tests/human_subtile/cloud_npc_controller.py',
- 'tests/human_subtile/cloud_npc_job.py',
- 'tests/human_subtile/cloud_npc_smoke.py',
- 'tests/human_subtile/scheduler_hostile_binding.py',
+ALLOWED_DELTA = frozenset(['tests/human_subtile/scheduler_hostile_binding.py',
  'tests/human_subtile/scheduler_hostile_contract.py',
  'tests/human_subtile/scheduler_hostile_draft.dm',
- 'tests/human_subtile/scheduler_hostile_evidence.py',
  'tests/human_subtile/scheduler_hostile_stage.py',
- 'tests/human_subtile/scheduler_hostile_worker.py',
- 'tests/human_subtile/test_scheduler_hostile_contract.py',
- 'tests/human_subtile/test_scheduler_hostile_controller.py',
- 'tests/human_subtile/test_scheduler_hostile_stage.py'])
+ 'tests/human_subtile/test_scheduler_hostile_contract.py'])
 
 
 def require(ok,label):

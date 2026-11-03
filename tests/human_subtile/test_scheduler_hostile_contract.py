@@ -54,7 +54,7 @@ def good():
                 transaction_owner="pursuit",pursuit=1,owned=1)
     events.append(event("move_before",tick,**before))
     events.append(event("move_after",tick,**dict(before,x=11,sx=30)));tick+=0.5
-    loss=dict(reacq,x=11,sx=30,transaction=1,transaction_old=1,transaction_generation=3,
+    loss=dict(reacq,x=11,sx=30,generation=3,transaction=1,transaction_old=1,transaction_generation=3,
               transaction_owner="lost_pursuit",pursuit=1,pursuit_old=1,owned=1)
     events.append(event("target_loss_before",tick,**loss))
     lost=dict(loss,phase="lost",target_faction="neutral",target_matches=0)
@@ -65,9 +65,23 @@ def good():
     settled.update(phase="quiet",old_finished=1)
     events.append(event("quiet_start",tick+0.5,**settled))
     events.append(event("quiet_end",tick+4.5,**settled))
-    events.append(event("cleanup",tick+5,**settled))
-    return dict(started=0,ended=tick+6,tick_lag_ds=0.5,actual_clients=0,
-                life_interval_ds=10,start_delay_ds=6,process_ticks=5,events=events)
+    waiting=dict(settled,phase="recovery")
+    events.append(event("recovery_wait_start",tick+4.5,**waiting))
+    events.append(event("life_before",tick+5,**waiting))
+    events.append(event("life_after",tick+5,**waiting))
+    call_id+=1
+    recover=dict(waiting,generation=4,transaction=1,transaction_generation=4,
+                 transaction_owner="recovery",pulse=1,recovery=1,call_id=call_id)
+    events.append(event("move_before",tick+5.5,**recover))
+    events.append(event("move_after",tick+5.5,**dict(recover,x=12,sx=0)))
+    aligned=dict(waiting,x=12,sx=0,generation=4)
+    events.append(event("recovery_aligned",tick+6,**aligned))
+    post=dict(aligned,phase="post_recovery")
+    events.append(event("post_recovery_start",tick+6,**post))
+    events.append(event("post_recovery_end",tick+10,**post))
+    events.append(event("cleanup",tick+10.5,**post))
+    return dict(started=0,ended=tick+11,tick_lag_ds=0.5,actual_clients=0,
+                life_interval_ds=10,start_delay_ds=6,process_ticks=6,events=events)
 
 def first(row, kind):
     return next(e for e in row["events"] if e["event"] == kind)
@@ -81,8 +95,8 @@ class ContractTests(unittest.TestCase):
         self.assertTrue(C.validate(self.row)["positive_contact"])
     def test_late_old_pulse_rejected(self):
         def mutate(r):
-            e=copy.deepcopy(first(r,"target_loss_before")); e.update(event="move_before",phase="quiet",at=r["ended"]-1,call_id=999)
-            r["events"].insert(-1,e)
+            e=copy.deepcopy(first(r,"target_loss_before")); e.update(event="move_before",phase="quiet",at=first(r,"quiet_end")["at"]-0.1,call_id=999)
+            r["events"].insert(r["events"].index(first(r,"quiet_end")),e)
         self.check_bad(mutate)
     def test_inflight_attack_rejected(self):
         self.check_bad(lambda r:first(r,"attack_before").update(transaction=1,transaction_generation=2,transaction_owner="pursuit"))
@@ -140,6 +154,47 @@ class ContractTests(unittest.TestCase):
         self.assertTrue(C.validate_receipt(receipt,"a"*40)["positive_contact"])
         receipt["transition_partial"].pop()
         with self.assertRaises(ValueError): C.validate_receipt(receipt,"a"*40)
+    def test_missing_post_loss_life_rejected(self):
+        self.check_bad(lambda r:r["events"].remove(first(r,"life_before")))
+    def test_nonrecovery_owner_cannot_claim_alignment(self):
+        def mutate(r):
+            for e in r["events"]:
+                if e["event"] in ("move_before","move_after") and e["phase"]=="recovery":
+                    e.update(transaction_owner="wander_or_direct",recovery=0)
+        self.check_bad(mutate)
+    def test_recovery_reusing_old_generation_rejected(self):
+        def mutate(r):
+            for e in r["events"]:
+                if e["event"] in ("move_before","move_after") and e["phase"]=="recovery":
+                    e.update(generation=3,transaction_generation=3)
+        self.check_bad(mutate)
+    def test_recovery_owner_flag_required(self):
+        def mutate(r):
+            for e in r["events"]:
+                if e["event"] in ("move_before","move_after") and e["phase"]=="recovery":
+                    e.update(recovery=0)
+        self.check_bad(mutate)
+    def test_recovery_progress_must_precede_alignment(self):
+        def mutate(r):
+            events=r["events"]
+            moves=[e for e in events if e["event"] in ("move_before","move_after") and e["phase"] == "recovery"]
+            for e in moves:
+                events.remove(e)
+                e.update(phase="post_recovery",at=first(r,"post_recovery_start")["at"]+0.5)
+            pos=events.index(first(r,"post_recovery_end"))
+            events[pos:pos]=moves
+        self.check_bad(mutate)
+    def test_unaligned_recovery_rejected(self):
+        self.check_bad(lambda r:first(r,"recovery_aligned").update(sx=2))
+    def test_post_recovery_window_cannot_be_shortened(self):
+        self.check_bad(lambda r:first(r,"post_recovery_end").update(at=first(r,"post_recovery_start")["at"]+2))
+    def test_recovery_wait_cannot_exceed_bound(self):
+        def mutate(r):
+            for e in r["events"]:
+                if e["phase"]=="post_recovery" or e["event"]=="recovery_aligned":
+                    e["at"]+=101
+            r["ended"]+=101
+        self.check_bad(mutate)
     def test_unknown_field_rejected(self):
         self.check_bad(lambda r:first(r,"sample").update(extra=1) if any(e["event"]=="sample" for e in r["events"]) else first(r,"quiet_start").update(extra=1))
     def test_event_count_above_bound_rejected(self):
@@ -152,7 +207,10 @@ class ContractTests(unittest.TestCase):
         self.assertIn("/hostile/panther/scheduler_hostile/AttackingTarget()",s)
         self.assertGreaterEqual(s.count(". = ..()"),3)
         self.assertNotIn("A.Life()",s);self.assertNotIn("A.AttackTarget()",s)
+        self.assertNotIn("A.npc_subtile_request_recovery(",s)
+        self.assertNotIn("A.npc_subtile_settle_axis(",s)
         self.assertIn("A.npc_set_combat_target(null)",s)
+        self.assertIn('fixture_hostile_record("recovery_aligned", A)',s)
     def test_fixture_event_schema_and_both_bounds_match_host(self):
         s=(HERE/"scheduler_hostile_draft.dm").read_text(encoding="utf-8")
         body=s.split("var/list/event_row = list(",1)[1].split('fixture_scheduler_assert(length(json_encode(event_row))',1)[0]

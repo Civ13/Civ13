@@ -6,7 +6,8 @@ EVENTS = frozenset(("life_before", "life_after", "move_before", "move_after",
     "attack_before", "attack_after", "lost_completion_hook", "sample",
     "target_intro_before", "target_intro_after", "target_relocate_before",
     "target_relocate_after", "target_loss_before", "target_loss_after",
-    "quiet_start", "quiet_sample", "quiet_end", "cleanup"))
+    "quiet_start", "quiet_sample", "quiet_end", "recovery_wait_start", "recovery_sample",
+    "recovery_aligned", "post_recovery_start", "post_recovery_sample", "post_recovery_end", "cleanup"))
 EVENT_FIELDS = frozenset(("event", "phase", "at", "x", "y", "z", "sx", "sy",
     "bx", "by", "bw", "bh", "generation", "stance", "owned", "transaction",
     "transaction_old", "transaction_generation", "transaction_owner", "pulse",
@@ -41,7 +42,7 @@ def validate(row):
             and row.get("start_delay_ds") == 6 and integer(row.get("process_ticks"))
             and row["process_ticks"] > 0, "scheduler configuration")
     require(number(row.get("started")) and number(row.get("ended"))
-            and row["started"] < row["ended"] <= row["started"] + 220, "time bound")
+            and row["started"] < row["ended"] <= row["started"] + 320, "time bound")
     events = row.get("events")
     require(type(events) is list and 0 < len(events) <= 2048, "event bound")
     previous = row["started"]
@@ -53,11 +54,14 @@ def validate(row):
     pursuit_progress = False
     wander_progress = False
     after_loss = False
+    post_loss_life = False
+    recovery_progress = False
+    loss_generation = None
     for e in events:
         require(type(e) is dict and set(e) == EVENT_FIELDS and len(json.dumps(e, ensure_ascii=True, separators=(",", ":")).encode("ascii")) <= 900,
                 "event size")
         require(e.get("event") in EVENTS
-                and e.get("phase") in ("wander", "acquire", "reacquire", "lost", "quiet"), "event kind")
+                and e.get("phase") in ("wander", "acquire", "reacquire", "lost", "quiet", "recovery", "post_recovery"), "event kind")
         require(number(e.get("at")) and previous <= e["at"] <= row["ended"], "event time")
         previous = e["at"]
         require(all(integer(e.get(k)) and 0 <= e[k] for k in COUNTS), "counter type")
@@ -90,11 +94,15 @@ def validate(row):
         require(sum(bool(e[k]) for k in ("pursuit", "wild", "follow", "flee", "pet")) <= 1,
                 "overlapping continuous owners")
         kind = e["event"]
-        if kind in ("target_intro_before", "target_intro_after", "target_relocate_before", "target_relocate_after", "target_loss_before", "target_loss_after", "quiet_start", "quiet_end"):
+        if kind in ("target_intro_before", "target_intro_after", "target_relocate_before", "target_relocate_after", "target_loss_before", "target_loss_after", "quiet_start", "quiet_end", "recovery_wait_start", "recovery_aligned", "post_recovery_start", "post_recovery_end"):
             require(kind not in phases, "duplicate phase boundary")
             phases[kind] = e
+        if kind == "target_loss_before":
+            loss_generation = e["transaction_generation"]
         if kind == "target_loss_after":
             after_loss = True
+        if kind == "life_before" and after_loss:
+            post_loss_life = True
         if kind == "move_before":
             ident = e.get("call_id")
             require(integer(ident) and ident > 0 and ident not in moves, "move admission identity")
@@ -118,6 +126,11 @@ def validate(row):
                 wander_progress = True
             if before["transaction_owner"] == "pursuit" and before["target_matches"] and before_xy != after_xy:
                 pursuit_progress = True
+            if after_loss and "recovery_aligned" not in phases and before["transaction_owner"] == "recovery" and before_xy != after_xy:
+                require(post_loss_life and before["recovery"] and before["old_finished"]
+                        and not before["transaction_old"] and integer(loss_generation)
+                        and before["generation"] > loss_generation, "invalid recovery owner")
+                recovery_progress = True
             require(not (after_loss and before["transaction_old"]), "late old move return")
         elif kind == "attack_before":
             ident = e["attacks"]
@@ -135,19 +148,23 @@ def validate(row):
             require(e.get("damage_before") == before["damage_before"] and number(e.get("target_damage")), "attack damage return")
             if e["target_damage"] > before["damage_before"]:
                 positive = True
-    require(not moves and not attacks and positive and pursuit_progress and wander_progress, "missing progress or unpaired callback")
+    require(not moves and not attacks and positive and pursuit_progress and wander_progress
+            and post_loss_life and recovery_progress, "missing progress or unpaired callback")
     boundary_names = ("target_intro_before", "target_intro_after", "target_relocate_before", "target_relocate_after",
-                      "target_loss_before", "target_loss_after", "quiet_start", "quiet_end")
+                      "target_loss_before", "target_loss_after", "quiet_start", "quiet_end",
+                      "recovery_wait_start", "recovery_aligned", "post_recovery_start", "post_recovery_end")
     require(set(phases) == set(boundary_names), "missing boundary")
-    intro_before, intro, relocate_before, relocate, loss, lost, quiet, end = (phases[k] for k in boundary_names)
+    intro_before, intro, relocate_before, relocate, loss, lost, quiet, end, wait, aligned, post, post_end = (phases[k] for k in boundary_names)
     boundary_order = [e["event"] for e in events if e["event"] in phases]
     require(boundary_order == list(boundary_names), "boundary order")
-    order = {"wander": 0, "acquire": 1, "reacquire": 2, "lost": 3, "quiet": 4}
+    order = {"wander": 0, "acquire": 1, "reacquire": 2, "lost": 3, "quiet": 4, "recovery": 5, "post_recovery": 6}
     require(all(order[a["phase"]] <= order[b["phase"]] for a, b in zip(events, events[1:])), "phase order")
     require(intro_before["phase"] == "wander" and intro["phase"] == "acquire"
             and relocate_before["phase"] == "acquire" and relocate["phase"] == "reacquire"
             and loss["phase"] == "reacquire" and lost["phase"] == "lost"
-            and quiet["phase"] == end["phase"] == "quiet", "boundary phases")
+            and quiet["phase"] == end["phase"] == "quiet"
+            and wait["phase"] == aligned["phase"] == "recovery"
+            and post["phase"] == post_end["phase"] == "post_recovery", "boundary phases")
     actor = lambda e: (e["x"], e["y"], e["z"], e["sx"], e["sy"], e["generation"])
     require(intro_before["target_x"] is None and actor(intro_before) == actor(intro)
             and abs(intro["target_x"] - intro["x"]) == 4 and intro["target_y"] == intro["y"], "target introduction")
@@ -158,22 +175,30 @@ def validate(row):
     require(intro["wander_moves"] > 0 and intro["actor_faction"] != intro.get("target_faction"), "wander or target eligibility")
     require(relocate["positive_attacks"] > 0, "relocated before contact")
     require(loss["pursuit_old"] and loss["transaction_old"] and loss["transaction"]
+            and loss["transaction_generation"] == loss["generation"]
             and loss["owned"] and (loss["sx"] or loss["sy"]) and loss["target_matches"], "loss not during owned pursuit")
     require(not lost["target_matches"] and lost.get("target_faction") == lost["actor_faction"], "target remains eligible")
     require(all(number(e["target_damage"]) and e["target_damage"] <= loss["target_damage"]
-                for e in events if e["phase"] in ("lost", "quiet")), "post-loss damage")
+                for e in events if e["phase"] in ("lost", "quiet", "recovery", "post_recovery")), "post-loss damage")
     require(quiet["old_finished"] and end["old_finished"] and quiet["old_completions"] == end["old_completions"] == 1
             and not quiet["pursuit_old"] and not end["pursuit_old"]
-            and end["at"] - quiet["at"] >= 4, "old owner or quiet boundary")
-    require(all(not e["transaction_old"] and not e["pursuit_old"] for e in events if e["phase"] == "quiet"), "old authority in quiet")
+            and end["at"] - quiet["at"] >= 4 and end["at"] <= row["started"] + 204, "old owner or quiet boundary")
+    require(all(not e["transaction_old"] and not e["pursuit_old"] for e in events
+                if e["phase"] in ("quiet", "recovery", "post_recovery")), "old authority after retirement")
+    require(aligned["at"] <= wait["at"] + 100 and aligned["old_finished"] and aligned["old_completions"] == 1
+            and not (aligned["sx"] or aligned["sy"]) and not aligned["transaction"]
+            and not aligned["pulse"] and not aligned["recovery"], "recovery did not align")
+    require(actor(aligned) == actor(post) and post_end["at"] - post["at"] >= 4, "post-recovery observation")
     cleanup = events[-1]
-    require(cleanup["event"] == "cleanup" and cleanup["phase"] == "quiet"
+    require(cleanup["event"] == "cleanup" and cleanup["phase"] == "post_recovery"
             and all(not cleanup[k] for k in ("transaction", "pulse", "pursuit", "wild", "follow", "flee", "pet", "recovery", "pending")),
             "terminal authority cleanup")
     return {"events": len(events), "old_completions": end["old_completions"],
             "positive_contact": positive, "pursuit_progress": pursuit_progress,
-            "quiet_ds": end["at"] - quiet["at"]}
-SCOPE = "headless mob scheduler; hostile pursuit and contact; no client parity"
+            "quiet_ds": end["at"] - quiet["at"], "post_loss_life": post_loss_life,
+            "recovery_progress": recovery_progress, "recovery_ds": aligned["at"] - wait["at"],
+            "post_recovery_ds": post_end["at"] - post["at"]}
+SCOPE = "headless mob scheduler; hostile target-loss recovery; no client parity"
 
 def validate_receipt(receipt, head):
     require(type(receipt) is dict and receipt.get("head") == head and receipt.get("error") is None
