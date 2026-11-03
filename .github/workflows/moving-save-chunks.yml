@@ -147,6 +147,9 @@ jobs:
           export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
           export MANPATH="${MANPATH:-}"
           source "$PWD/BYOND/byond/bin/byondsetup"
+          # run.sh keeps each run in a mktemp directory; keep them in the artifact.
+          export TMPDIR="$RUNNER_TEMP/moving-save-evidence/world-save-roundtrip"
+          mkdir -p "$TMPDIR"
           bash tests/world_save/run.sh
           bash tests/world_save/run.sh 'low_memory=1&segment=1'
       - name: Retain all exact-head evidence including failed attempts
