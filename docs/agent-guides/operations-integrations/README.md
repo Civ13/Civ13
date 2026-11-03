@@ -50,6 +50,32 @@ The owner selected sole required reviewer `valzargaming` (User ID `7202504`),
 with self-review allowed and administrator bypass disabled. Keep explicit manual
 environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
 
+## Read-only server preflight
+
+<!-- 2026-11-03: reusable preflight before authorized server work -->
+Before proposing or executing an authorized rollout, gather a bounded private
+record of the intended host/root, installed revision and these checks:
+
+- Resolve the supplied path with `git -C <path> rev-parse --show-toplevel`;
+  record branch/head and working-tree status. Stop if it is not the intended
+  repository or runtime. Do not infer the root from the shell's current folder.
+- Inspect the actual entry script and validate syntax without executing or
+  importing it. Use the matching parser, such as Python `ast.parse` or
+  PowerShell's `System.Management.Automation.Language.Parser.ParseFile`.
+  Avoid `py_compile` writes in the runtime checkout and scripts whose import
+  starts services, downloads dependencies or changes files.
+- Through already permitted status reads, record process identity/start time
+  and build/session identity when exposed, plus active save/load ownership and
+  completion state. Use metadata rather than opening save contents. Missing,
+  stale or inaccessible status is unknown, never proof the server is idle.
+- Keep raw process arguments, paths, tokens and save metadata private. Share
+  only reviewed summaries. Record blockers and continue independent source or
+  offline work; refresh mutable process/save state before any later live action.
+
+This preflight performs no pull, build, launch, restart, save/import, cleanup,
+credential or security-setting change. It neither grants rollout authority nor
+replaces existing action-time confirmations, held-runner rules or runtime guards.
+
 ## Server deployment
 
 - Linux-only for production (scripts use `sudo`, apt, systemd-style paths).

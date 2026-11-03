@@ -5,8 +5,11 @@ description: Pre-push checks for Civ13 PRs that avoid the CI failures agents kee
 
 # Civ13 PR preflight
 
-Run these before the first push. Each item comes from a real fix chain on an
-agent PR. The whole loop takes about three minutes.
+Run these before the first source or config push. Documentation-only changes
+use the focused documentation checks in AGENTS.md. Reuse recorded passing local
+checks while their tested inputs and dependencies are unchanged; a new head
+still needs its own hosted evidence. Inspect existing branch ownership and use
+CODEX.md's handoff rules if an action is blocked.
 
 ## 1. Compile locally, even in a cloud session
 
@@ -66,6 +69,21 @@ suite and sets `LOS_EVENT_BASE`/`LOS_EVENT_HEAD`, so `los_context` passes
 locally too. Prefer it to bare `pytest tests`, which hits module-name
 collisions. If a suite fails, rerun it on master before blaming your change.
 Any unmapped path makes CI run every suite, so run them all for broad edits.
+
+### Verify hosted selection as well as local execution
+
+For the exact base/head diff, inspect `docs/ci-selection.md`,
+`.github/workflows/ci-selection.yml` and the workflow containing the intended
+test. `agent_preflight.py pins` reports offline impact; it does not prove a
+native/manual job will be admitted. Confirm the event, paths, inputs and job
+conditions select the regression you intend. If not, report the gap and use
+only an already authorized focused workflow or local runner; do not broaden
+native admission or bypass a held runner to obtain a green check.
+
+After pushing, the assigned PR owner checks selection receipts and actual
+test/job outcomes for the new head and run attempt. Record what ran and why
+other jobs skipped. A local pass, green aggregate, pending job or another
+head's run cannot establish that a specific hosted regression executed.
 
 ## 5. Known red jobs that are not your fault
 
