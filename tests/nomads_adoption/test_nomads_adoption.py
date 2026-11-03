@@ -40,6 +40,11 @@ class NomadsAdoptionTests(unittest.TestCase):
         self.assertRegex(SOURCE, r'\n\tvar/adoption_original_name = null\n')
         self.assertIn('var/tmp/adoption_offer_pending = FALSE', SOURCE)
         self.assertIn('var/tmp/adoption_offer_next = 0', SOURCE)
+        # tmp alone does not keep a var out of the custom saver.
+        body = proc_body('/mob/living/human/persistence_runtime_var')
+        self.assertIn('if (key == "adoption_offer_pending" || key == "adoption_offer_next")\n\t\treturn TRUE', body)
+        self.assertIn('return ..()', body)
+        self.assertNotIn('adoption_original_name', body)
 
     def test_offer_requires_consent_and_rechecks_after_the_prompt(self):
         body = proc_body('/mob/living/human/proc/offer_adoption')

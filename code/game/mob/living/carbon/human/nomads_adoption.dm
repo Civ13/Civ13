@@ -13,6 +13,13 @@
 
 #define ADOPTION_OFFER_COOLDOWN 300
 
+// The custom saver visits tmp vars too. A pending prompt and a world.time
+// deadline belong to the running session, so they load at their defaults.
+/mob/living/human/persistence_runtime_var(key)
+	if (key == "adoption_offer_pending" || key == "adoption_offer_next")
+		return TRUE
+	return ..()
+
 /proc/adoption_enabled()
 	return map && map.nomads
 
