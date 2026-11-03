@@ -121,7 +121,7 @@ class RunnerContracts(unittest.TestCase):
 
     def test_exact_human_receipt_and_omission_controls(self):
         row = {'head': 'a' * 40, 'byond_version': 516, 'byond_build': 1688,
-               'checks': 42, 'error': None, 'rows': [{'scene': 'normal', 'rows':
+               'checks': 44, 'error': None, 'rows': [{'scene': 'normal', 'rows':
                 [{'sx': 2, 'locs': 2, 'native': 2}] + [{'native': 2}] * 15}]}
         runner.validate_receipt(row, 'human', 'none', 'a' * 40)
         for key, value in (('head', 'b' * 40), ('checks', 41), ('error', 'failed'),

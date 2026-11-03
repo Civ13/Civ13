@@ -15,6 +15,8 @@
 	var/tmp/human_subtile_previous_glide = 0
 	var/tmp/human_subtile_applied_glide = 0
 	var/tmp/client/human_subtile_visual_owner
+	// Set by before_save when an offset capsule would be rejected on load.
+	var/tmp/human_subtile_save_aligned = FALSE
 	var/list/human_subtile_position
 	// Absent in historical capsules. Only validated new captures may use 1.
 	var/human_subtile_restore_schema = 0
@@ -554,9 +556,9 @@
 #endif
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	if ((key == "step_x" || key == "step_y") && (human_subtile_import_owned || human_subtile_position))
+	if ((key == "step_x" || key == "step_y") && ((human_subtile_import_owned || human_subtile_position) || human_subtile_save_aligned))
 		return TRUE
-	return (key in list("human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner")) || ..()
+	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)
@@ -625,10 +627,19 @@
 		throw EXCEPTION("Cannot snapshot an in-flight sub-tile pulse")
 	if (human_subtile_transaction)
 		human_subtile_transaction.cancelled = TRUE
+	human_subtile_save_aligned = FALSE
 	if ((human_subtile_enabled || human_subtile_offset_owned) && (step_x || step_y))
 		if (!human_subtile_shape() || !human_subtile_unlinked())
 			throw EXCEPTION("Unsupported sub-tile save geometry")
 		human_subtile_position = human_subtile_snapshot()
+		// after_load rejects a capsule whose footprint is obstructed, and that
+		// fails the whole level. A door can close over a standing body, a noose,
+		// gallows or cross turns dense around its occupant, and a climbed crate
+		// or barricade stays dense. Save such a body tile-aligned at its anchor
+		// instead: no capsule and no raw step offsets, as an unmoved body saves.
+		if (!human_subtile_destination_clear(human_subtile_position))
+			human_subtile_position = null
+			human_subtile_save_aligned = TRUE
 	else
 		human_subtile_position = null
 
