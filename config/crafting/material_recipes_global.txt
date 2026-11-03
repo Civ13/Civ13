@@ -2277,6 +2277,7 @@ RECIPE: /material/wood/,siege ladder,/obj/item/weapon/siegeladder,8,100,0,1,sieg
 RECIPE: /material/wood/,wooden foot,/obj/item/weapon/prosthesis/woodfoot,3,80,0,1,medical,0,0,18,8,null
 RECIPE: /material/wood/,wooden pegleg,/obj/item/weapon/prosthesis/pegleg,5,110,0,1,medical,0,0,18,8,null
 RECIPE: /material/wood/soft/,doctor handbook,/obj/item/weapon/doctor_handbook,12,210,0,1,medical,33,0,48,8,null
+RECIPE: /material/wood/soft/,farmer's almanac,/obj/item/weapon/farmers_almanac,12,210,0,1,paper & printing,0,0,0,8,null
 
 //*********************| WOOD PAINTINGS |**************************
 

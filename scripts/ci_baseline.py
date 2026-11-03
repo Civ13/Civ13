@@ -72,6 +72,12 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # Farmer's almanac weather table and crop rule projected from production DM.
+    'farmers_almanac': {'files': ('tests/farmers_almanac/test_farmers_almanac.py',),
+        'paths': ('tests/farmers_almanac/',), 'shared_paths': (
+            'code/modules/1713/farmers_almanac.dm',
+            'code/modules/1713/weather.dm',
+            'code/game/objects/farming.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
