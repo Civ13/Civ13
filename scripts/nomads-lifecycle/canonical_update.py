@@ -184,12 +184,9 @@ class CanonicalUpdater:
         self.sup.command([self.config['git'], 'checkout', '--detach', revision], stage, timeout=300)
         self.verify_stage_source(stage, allowed=set())
         text = (stage / 'civ13.dme').read_text(encoding='utf-8')
-        includes = re.findall(r'(?m)^#include "[^"\r\n]*\.dmm"[ \t]*\r?$', text)
-        require(len(includes) == 1, 'Expected exactly one source map include')
         selected = stage / 'maps/nomads' / MAPS[self.config['map']]
         require(selected.is_file(), 'Selected map is missing')
-        replacement = '#include "maps\\nomads\\' + MAPS[self.config['map']] + '"'
-        expected_dme = text.replace(includes[0], replacement).replace('\n', os.linesep).encode('utf-8')
+        expected_dme = core.select_nomads_map(text, self.config['map']).replace('\n', os.linesep).encode('utf-8')
         (stage / 'civ13.dme').write_bytes(expected_dme)
         raw = self.sup.command([self.config['git'], '--no-optional-locks', 'ls-files', '-z'], stage)
         before_atlas = {name: core.digest(stage / name) for name in raw.split('\0') if name}

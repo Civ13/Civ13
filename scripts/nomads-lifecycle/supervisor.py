@@ -48,6 +48,38 @@ NOMADS_MAPS = {
 }
 
 
+def select_nomads_map(dme, identity):
+    """Select a reviewed source in a staged DME without interpreting macros."""
+    if identity not in NOMADS_MAPS:
+        raise RuntimeError('Unsupported Nomads build map')
+    replacement = '#include "maps\\nomads\\' + NOMADS_MAPS[identity] + '"'
+    include_pattern = r'(?m)^#include "[^"\r\n]*\.dmm"[ \t]*\r?$'
+    begin, end = '// BEGIN_SELECTED_MAP\n', '// END_SELECTED_MAP'
+    if begin in dme or end in dme:
+        if dme.count(begin) != 1 or dme.count(end) != 1:
+            raise RuntimeError('Ambiguous selected-map markers')
+        first, last = dme.index(begin)+len(begin), dme.index(end)
+        if last < first:
+            raise RuntimeError('Reversed selected-map markers')
+        lines = [line.strip() for line in dme[first:last].splitlines() if line.strip()]
+        conditional = ['#ifdef EXTRACTION_MODERN_CITY_MAP',
+            '#include "maps\\extraction\\modern_city_extraction.dmm"', '#else',
+            '#ifdef EXTRACTION_SURVIVAL_MAP',
+            '#include "maps\\extraction\\industrial_district.dmm"', '#else',
+            '#include "maps\\nomads\\nomads.dmm"', '#endif', '#endif']
+        if lines != conditional and not (len(lines) == 1 and re.fullmatch(include_pattern, lines[0])):
+            raise RuntimeError('Unsupported selected-map block')
+        result = dme[:first]+replacement+'\n'+dme[last:]
+    else:
+        includes = re.findall(include_pattern, dme)
+        if len(includes) != 1:
+            raise RuntimeError('Expected exactly one source map include')
+        result = dme.replace(includes[0], replacement)
+    if len(re.findall(include_pattern, result)) != 1:
+        raise RuntimeError('Unselected source map outside selected-map block')
+    return result
+
+
 def write_json(path, value):
     path = Path(path)
     temporary = path.with_suffix(path.suffix + '.tmp')
@@ -395,11 +427,7 @@ class Supervisor:
         self.command([c['git'], 'checkout', '--detach', revision], game, folder / 'checkout.log', timeout=300)
         self.command([c['python'], 'scripts/build-crafting-atlas.py', '--catalog-only', '--game-catalog', 'UI/crafting-atlas.json'], game, folder / 'atlas.log')
         dme = (game / 'civ13.dme').read_text(encoding='utf-8')
-        import re
-        includes = re.findall(r'(?m)^#include "[^"\r\n]*\.dmm"\s*$', dme)
-        if len(includes) != 1:
-            raise RuntimeError('Expected exactly one map include')
-        dme = dme.replace(includes[0], '#include "maps\\nomads\\' + NOMADS_MAPS[expected_map] + '"')
+        dme = select_nomads_map(dme, expected_map)
         (game / 'civ13.dme').write_text(dme, encoding='utf-8')
         output = self.command([c['compiler'], '-max_errors', '0', 'civ13.dme'], game, folder / 'compile.log')
         if '0 errors, 0 warnings' not in output:

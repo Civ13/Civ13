@@ -7,6 +7,9 @@ save/restart support. The 25 authored files in `maps/nomads` are bound to their
 actual IDs in `supervisor.NOMADS_MAPS`. Both updater paths select the configured
 map, and cached/startup binaries must match it. They never substitute Europe for
 another ID. This change does not select a map or update a running installation.
+The reviewed conditional selected-map block is replaced only in staged copies.
+Malformed blocks, unknown directives and additional map includes fail closed;
+legacy single-include source trees remain supported.
 
 | Profiles | Additional durable state and callbacks |
 | --- | --- |

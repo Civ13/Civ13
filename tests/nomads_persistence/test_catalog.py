@@ -67,7 +67,7 @@ class NomadsCatalogTests(unittest.TestCase):
                             pass
                         elif arguments[0] == 'NATIVE_DISABLED':
                             game = Path(cwd)
-                            self.assertEqual((game/'civ13.dme').read_text(), '#include "maps\\nomads\\'+map_file+'"')
+                            self.assertEqual((game/'civ13.dme').read_text().strip(), '#include "maps\\nomads\\'+map_file+'"')
                             for name in ('civ13.dmb', 'civ13.rsc'): (game/name).write_bytes(b'inert compiler result')
                             return '0 errors, 0 warnings'
                         else:
@@ -95,6 +95,25 @@ class NomadsCatalogTests(unittest.TestCase):
                     supervisor.build('a'*40)
                 command.assert_not_called()
             self.assertFalse((Path(temporary)/'builds').exists())
+
+    def test_real_conditional_dme_selects_only_the_configured_map(self):
+        source = (ROOT/'civ13.dme').read_text()
+        for identity, name in core.NOMADS_MAPS.items():
+            selected = core.select_nomads_map(source, identity)
+            includes = re.findall(r'^#include "[^"\r\n]*\.dmm"', selected, re.M)
+            self.assertEqual(includes, ['#include "maps\\nomads\\'+name+'"'])
+            self.assertEqual(source.split('// BEGIN_SELECTED_MAP')[0], selected.split('// BEGIN_SELECTED_MAP')[0])
+            self.assertEqual(source.split('// END_SELECTED_MAP')[1], selected.split('// END_SELECTED_MAP')[1])
+
+    def test_malformed_map_blocks_and_external_includes_are_rejected(self):
+        source = (ROOT/'civ13.dme').read_text()
+        for bad in (source.replace('// END_SELECTED_MAP', ''),
+                    source.replace('// BEGIN_SELECTED_MAP', '// BEGIN_SELECTED_MAP\n// BEGIN_SELECTED_MAP'),
+                    source.replace('#ifdef EXTRACTION_MODERN_CITY_MAP', '#ifdef UNREVIEWED_MAP'),
+                    source+'\n#include "maps/other.dmm"\n',
+                    '#include "one.dmm"\n#include "two.dmm"\n'):
+            with self.subTest(input=bad[-70:]), self.assertRaises(RuntimeError):
+                core.select_nomads_map(bad, 'NOMADS')
 
 
 if __name__ == '__main__':
