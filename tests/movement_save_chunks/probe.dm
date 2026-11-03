@@ -45,6 +45,13 @@ var/frontier_delete_attempted = FALSE
 		return ..()
 /mob/living/simple_animal/chunk_fixture/optional_cuff
 	var/handcuffed = TRUE
+// A missed animal that saves a reference to another missed animal.
+/mob/living/simple_animal/chunk_fixture/companion
+	map_storage_saved_vars = "name;companion"
+	var/mob/companion
+var/mob/living/simple_animal/chunk_fixture/companion/companion
+/proc/fixture_sweep_scenario()
+	return world.params["scenario"] in list("sweep-reference", "sweep-companion", "sweep-container", "sweep-cross-z")
 // Test-only headroom taps are called solely from the dedicated copied packet.
 var/headroom_waits = 0
 /proc/fixture_is_headroom()
@@ -101,6 +108,21 @@ var/peak_capture_tick_usage = 0
 			if(!mutations && top && top.source == subject)
 				subject.loc = world.params["scenario"] == "legacy-step" ? locate(3,1,1) : locate(2,1,2)
 				mutations++
+		else if(world.params["scenario"] == "legacy-backstep" || fixture_sweep_scenario())
+			// A non-roster animal steps back onto an already-saved empty tile.
+			var/datum/save_export_frame/top = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+			if(!mutations && !top && saving_references["\ref[locate(2,1,1)]"] && !saving_references["\ref[subject]"])
+				subject.loc = locate(2,1,1)
+				if(companion) companion.loc = locate(2,1,1)
+				mutations++
+			else if(mutations == 1 && top && top.source == subject && saving_references["\ref[locate(4,1,1)]"])
+				// The tile walk is complete: this is the sweep's own capture.
+				if(world.params["scenario"] == "sweep-container")
+					subject.loc = new /obj(locate(1,1,1))
+					mutations++
+				else if(world.params["scenario"] == "sweep-cross-z")
+					subject.loc = locate(2,1,2)
+					mutations++
 		else if(world.params["scenario"] == "uncaptured-delete")
 			// An admitted animal is deleted before traversal reaches its turf.
 			if(!mutations && record && !record["ref"])
@@ -160,10 +182,21 @@ var/peak_capture_tick_usage = 0
 		subject = new(locate(4,1,1))
 		if(world.params["scenario"] == "headroom-unvisited") subject.loc = locate(1,1,1)
 		if(!map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Absent optional cuff fields rejected an ordinary animal")
-		if(world.params["scenario"] in list("legacy-step", "legacy-cross-z"))
+		if((world.params["scenario"] in list("legacy-step", "legacy-cross-z", "legacy-backstep")) || fixture_sweep_scenario())
 			// Like a spawner-linked turkey: excluded from the roster, legacy traversal.
-			subject.loc = locate(2,1,1)
+			if(world.params["scenario"] != "legacy-backstep" && !fixture_sweep_scenario()) subject.loc = locate(2,1,1)
 			subject.origin = 1
+			if(world.params["scenario"] == "sweep-reference")
+				// Captured by a saved field before the sweep, with no tile parent.
+				var/obj/chunk_reference_holder/pet_holder = new(locate(3,1,1))
+				pet_holder.pet = subject
+			if(world.params["scenario"] == "sweep-companion")
+				// Sweep the referencing companion first so it captures subject.
+				mob_list -= subject
+				companion = new(locate(4,1,1))
+				companion.origin = 1
+				companion.companion = subject
+				mob_list += subject
 			if(map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Origin-linked animal was admitted")
 		subject.name = "admitted animal"
 		subject.payload = list("literal", "key" = 17)
@@ -186,7 +219,7 @@ var/peak_capture_tick_usage = 0
 		if(world.params["scenario"] == "frontier-delete")
 			world.log << "FRONTIER_DELETE: attempted=[frontier_delete_attempted] refused=[refused]"
 			if(!frontier_delete_attempted) throw EXCEPTION("FRONTIER_DELETE: deletion was not exercised")
-		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
+		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "sweep-container", "sweep-cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
 		if(fixture_is_headroom())
 			if(headroom_waits != 1) throw EXCEPTION("HEADROOM: expected exactly one injected wait")
@@ -222,6 +255,14 @@ var/peak_capture_tick_usage = 0
 			if(fixture_is_headroom())
 				var/expected_x = world.params["scenario"] == "headroom-visited" ? 1 : 4
 				if(found_x != expected_x) throw EXCEPTION("HEADROOM: saved owner did not follow actual post-wait turf")
+			if((world.params["scenario"] in list("sweep-reference", "sweep-companion")) && found_x != 2) throw EXCEPTION("SWEEP_REFERENCE: referenced animal was not placed on its tile")
+			if(world.params["scenario"] == "sweep-companion")
+				var/companion_owners = 0
+				for(var/x = 1, x <= world.maxx, x++)
+					for(var/ref in map_storage.saved_content_refs(F["[map_storage.entry_path(F, F["/map/1/1/[x]"])]/content"], 3))
+						if(F["[map_storage.entry_path(F, ref)]/type"] == /mob/living/simple_animal/chunk_fixture/companion) companion_owners++
+				if(companion_owners != 1) throw EXCEPTION("SWEEP_COMPANION: companion missing or multiply owned")
+			if(world.params["scenario"] == "legacy-backstep" && found_x != 2) throw EXCEPTION("LEGACY_BACKSTEP: animal was not saved on its new tile")
 			if(world.params["scenario"] == "legacy-step" && found_x != 2) throw EXCEPTION("LEGACY_STEP: saved owner is not the captured origin")
 			if(world.params["scenario"] == "reference")
 				if(!holder_ref) throw EXCEPTION("Shared-list legacy owner missing")

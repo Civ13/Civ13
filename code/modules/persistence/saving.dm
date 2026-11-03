@@ -114,6 +114,7 @@
 				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
 		drain_moving_save_roster(savefile)
+		sweep_uncaptured_animals(savefile)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		drain_human_save_roster(savefile, operation)
 #endif
@@ -806,6 +807,44 @@
 	if(moving_save_roots[identity]) return FALSE // Roster roots use moving_save_root_edge.
 	var/ref = saving_references[identity]
 	return ref && saving_reference_pins[ref] == A
+
+// The tile walk visits each turf once, so an animal outside the roster that
+// steps from an unvisited tile onto a visited one is never reached. Once every
+// turf of the level is captured, give each such animal exactly one physical
+// parent: the tile where this sweep finds it. An entry alone is not a parent,
+// because a saved field (or an earlier sweep member) can capture an animal by
+// reference without placing it. Roster roots are attached by the roster drain.
+/map_storage/proc/sweep_uncaptured_animals(savefile/F)
+	var/list/registry = global.vars["mob_list"]
+	if(!islist(registry)) return
+	var/list/animals = registry.Copy()
+	for(var/mob/living/simple_animal/A in animals)
+		save_work_check()
+		if(!A || A.gcDestroyed || A.z != saving_z || !isturf(A.loc)) continue
+		var/identity = save_entry_identity(A)
+		if(moving_save_roots[identity]) continue
+		var/ref = saving_references[identity]
+		if(ref && saving_reference_pins[ref] == A && saving_content_owners["[ref]"]) continue
+		var/turf/origin = A.loc
+		var/parent_ref = saving_references[save_entry_identity(origin)]
+		if(!parent_ref || saving_reference_pins[parent_ref] != origin) continue
+		if(!ref || saving_reference_pins[ref] != A)
+			ref = BuildVarDirectory(F, A, 1, TRUE)
+			if(!ref) continue // Omitted, unsaved, or already captured on another level.
+			// Capture yields. Apply the traversal's post-child rule: only a
+			// step to another tile of this level keeps the captured origin.
+			if(!A || A.gcDestroyed || !isturf(A.loc) || A.z != saving_z || saving_reference_pins[ref] != A)
+				throw EXCEPTION("Swept animal moved or disappeared during capture")
+			if(saving_reference_pins[parent_ref] != origin)
+				throw EXCEPTION("Uncaptured animal origin turf was replaced")
+		var/key = "[ref]"
+		if(saving_content_owners[key]) continue
+		var/path = "[entry_path(F, parent_ref)]/content"
+		var/list/chunks = F[path]
+		if(!islist(chunks)) throw EXCEPTION("Uncaptured animal origin has no version-3 contents")
+		chunks += list2params(list(key))
+		F[path] << chunks
+		saving_content_owners[key] = parent_ref
 
 /map_storage/proc/drain_moving_save_roster(savefile/F)
 	for(var/identity in moving_save_roots)
