@@ -160,6 +160,9 @@
 		preferences_datums[ckey] = prefs
 	apply_client_fps_preference()
 
+	// Cached account preferences must save through the current connection.
+	prefs.client = src
+
 	//these are gonna be used for banning
 	prefs.last_ip = address
 	prefs.last_id = computer_id
@@ -252,6 +255,7 @@
 	
 	init_statpanel()
 	winset(src, "mainwindow", "macro=macro")
+	apply_action_keybindings()
 
 	spawn (1)
 		log_to_db()

@@ -597,6 +597,13 @@ SUITES = {
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
+    # Inert skin/catalog/guard and account-wiring checks; no native runner import.
+    # Existing shared inputs retain their conservative all-suite selection.
+    'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),
+        'paths': ('tests/action_keybindings/', 'code/modules/client/action_keybindings.dm'),
+        'shared_paths': ('interface/skin.dmf', 'interface/interface.dm',
+            'code/modules/client/client_procs.dm', 'code/game/mob/login.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

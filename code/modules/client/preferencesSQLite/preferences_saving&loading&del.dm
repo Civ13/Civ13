@@ -67,6 +67,10 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	if (trait_error && client)
 		to_chat(client, SPAN_WARNING("Character traits need attention: [trait_error] Your saved choices have been preserved."))
 
+	sanitize_action_keybindings()
+	if (client && client.prefs == src)
+		client.apply_action_keybindings()
+
 	update_setup()
 
 	return TRUE
@@ -84,6 +88,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 	var/list/vars_to_save = list("preferences_disabled", "UI_style", "UI_file", "UI_useborder", "UI_style_color", "UI_style_alpha", "lobby_music_volume", "client_fps", "cursor", "real_name", "be_random_name", "be_random_body", "gender", "age", "b_type", "h_style", "hair_color", "facial_color", "eye_color", "r_hair", "g_hair", "b_hair", "f_style", "r_facial", "g_facial", "b_facial", "s_tone", "r_skin", "g_skin", "b_skin", "r_eyes", "g_eyes", "b_eyes", "traits")
 
+	vars_to_save += "action_keybindings"
 	// Preserve legacy choices, including invalid entries, until explicitly edited.
 
 	var/params = ""
