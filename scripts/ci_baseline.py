@@ -83,6 +83,11 @@ SUITES = {
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
+    # Nomads adoption source contracts and surname model; no BYOND runtime.
+    'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
+        'paths': ('tests/nomads_adoption/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/nomads_adoption.dm',
+            'code/_helpers/unsorted.dm', 'civ13.dme')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (

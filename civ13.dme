@@ -253,6 +253,7 @@
 #include "code\game\mob\living\carbon\human\inventory.dm"
 #include "code\game\mob\living\carbon\human\matt_combat.dm"
 #include "code\game\mob\living\carbon\human\MedicalSideEffects.dm"
+#include "code\game\mob\living\carbon\human\nomads_adoption.dm"
 #include "code\game\mob\living\carbon\human\nomads_spawn.dm"
 #include "code\game\mob\living\carbon\human\say.dm"
 #include "code\game\mob\living\carbon\human\screaming.dm"
