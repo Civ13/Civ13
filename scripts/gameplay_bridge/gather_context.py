@@ -4,7 +4,8 @@ Restricted to two known conditional symbols. Not a general DM preprocessor.
 Whole-file disabled hashes bind master10d264e5 plus the explicit physical
 stationary-wait change, grass busy-admission guard and call-local mining work
 images. The helper/bridge/mechanics projections stay unchanged. Mining waits
-and rewards are unchanged; both independent changes are retained. These are source, not native checks.
+are unchanged; independent mining ore yields are now separately verified. These
+are source, not native checks.
 """
 import hashlib
 import re
@@ -15,7 +16,7 @@ PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
          "code/modules/gameplay_bridge/bridge.dm", "code/modules/gameplay_bridge/mechanics.dm")
 DISABLED_SHA256 = {
  PATHS[0]: "65300bd76e9f96a461eb0a7faf486239d78deeedb27df183c2f0447dee365904",
- PATHS[1]: "233f8a0aae551491dd78ce7604f2bf5434e723d25400c0251dfa43114106c572",
+ PATHS[1]: "3aa1c430f74fdd69c268b4ca3c3f1e6a85844df6f92dc20e8ef4b5c5d32db044",
  PATHS[2]: "9a2f299490853811f6bb6c6bffaf25a1d1a4e92b1c7224b3c0e68c1bf01d53e9",
  PATHS[3]: "ef11a72c838e5b704e6e88029964d04182ba8f9920dd4493c1a76ce956ca369f",
 }

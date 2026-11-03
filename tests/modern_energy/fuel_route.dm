@@ -73,7 +73,7 @@ var/list/energy_mining_rolls = list()
 	var/obj/structure/reactor_fuel_processor/energy_ci/P = new(H.loc)
 	var/turf/mine = new /turf/floor/dirt/underground(locate(1,4,1))
 	energy_ci_check("real underground terrain is mineable", mine.is_mineable, TRUE)
-	energy_mining_rolls = list(FALSE,FALSE,FALSE,TRUE)
+	energy_mining_rolls = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE)
 	mine.mining_proc(null)
 	mine = locate(1,4,1)
 	var/obj/item/stack/ore/uranium/U = locate() in mine
@@ -82,12 +82,12 @@ var/list/energy_mining_rolls = list()
 	if (!U)
 		qdel(P)
 		return
-	energy_mining_rolls = list(FALSE,FALSE,FALSE,TRUE)
+	energy_mining_rolls = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE)
 	mine.mining_proc(null)
 	energy_ci_check("depleted terrain cannot mint more uranium", energy_ore_units(locate(1,4,1)), 1)
 	var/turf/early = new /turf/floor/dirt/underground(locate(4,4,1))
 	map.ordinal_age = 7
-	energy_mining_rolls = list(FALSE,FALSE,FALSE,TRUE)
+	energy_mining_rolls = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE)
 	early.mining_proc(null)
 	energy_ci_check("preModern mining cannot yield uranium", energy_ore_units(locate(4,4,1)), 0)
 	map.ordinal_age = 8

@@ -396,6 +396,9 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 /datum/nano_module/faction_symbol_editor/Topic(href, href_list)
 	if (!istype(owner) || owner.stat)
 		return
+	// An editor left open across a rename follows its faction to the new name.
+	if (map && faction && owner.civilization != faction && map.faction_previous_name(owner.civilization) == faction)
+		faction = owner.civilization
 	if (!map || !faction || faction == "none" || owner.civilization != faction)
 		return
 	if (!map.is_faction_leader(owner, faction))
@@ -470,6 +473,8 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 // stale grant is harmless -- these just keep the Faction panel honest.
 /mob/living/human/proc/grant_faction_symbol_editor()
 	verbs += /mob/living/human/proc/design_faction_symbol
+	grant_faction_rename()
 
 /mob/living/human/proc/remove_faction_symbol_editor()
 	verbs -= /mob/living/human/proc/design_faction_symbol
+	remove_faction_rename()
