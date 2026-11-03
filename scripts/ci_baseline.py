@@ -72,6 +72,11 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # Door hand-intent ladder projected from production DM; no BYOND runtime.
+    'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
+        'paths': ('tests/door_intents/',), 'shared_paths': (
+            'code/game/objects/structures/door.dm',
+            'code/game/objects/structures/key_doors/key_door.dm')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (

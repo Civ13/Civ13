@@ -17,7 +17,6 @@ var/list/nonbreaking_types = list(
 	var/showed_damage_messages[4]
 	var/unique_door_name = null
 	var/starts_open = FALSE
-	var/next_attack_hand = -1
 	var/breachable = TRUE
 	material = "iron"
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
@@ -26,18 +25,14 @@ var/list/nonbreaking_types = list(
 	var/faction = null
 	locked = 1
 
-/obj/structure/simple_door/key_door/faction_door/attack_hand(mob/user as mob)
-	if(istype(user, /mob/living/human))
+/obj/structure/simple_door/key_door/faction_door/door_hand_locked(mob/user)
+	if (istype(user, /mob/living/human))
 		var/mob/living/human/H = user
+		return H.civilization != faction
+	return TRUE
 
-		if(H.civilization == faction)
-			if(!state && !isSwitchingStates)
-				Open()
-			else if(state && !isSwitchingStates)
-				Close()
-		else
-			H.visible_message(SPAN_NOTICE("[H] knocks at the door."), SPAN_NOTICE("You knock at the door."))
-			playsound(get_turf(src), "doorknock", 75, TRUE)
+/obj/structure/simple_door/key_door/faction_door/door_takes_kick_damage()
+	return FALSE
 
 /obj/structure/simple_door/key_door/faction_door/Bumped(atom/user)
 	if(istype(user, /mob/living/human))
@@ -248,66 +243,22 @@ var/list/nonbreaking_types = list(
 		else
 			user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
 		playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-/obj/structure/simple_door/key_door/custom/attack_hand(mob/user as mob)
 
-	if (!locked)
-		return TryToSwitchState(user)
-	else
-		if (world.time < next_attack_hand)
-			return
+/obj/structure/simple_door/key_door/door_hand_locked(mob/user)
+	if (istype(src, /obj/structure/simple_door/key_door/custom))
+		return locked
+	if (istype(src, /obj/structure/simple_door/key_door/anyone))
+		return FALSE
+	return keyslot.locked
 
-		if (user.a_intent == I_HELP)
-			user.visible_message(SPAN_NOTICE("[user] knocks at the door."))
-			for (var/mob/living/L in view(7, src))
-				if (!viewers(7, L).Find(user))
-					to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
-			playsound(get_turf(src), "doorknock", 75, TRUE)
-		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
-			user.visible_message(SPAN_WARNING("[user] bangs on the door."), SPAN_WARNING("You bang on the door."))
-			for (var/mob/living/L in view(7, src))
-				if (!viewers(7, L).Find(user))
-					to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
-			playsound(get_turf(src), "doorknock", 100, TRUE)
-		else
-			user.visible_message(SPAN_DANGER("[user] kicks the door!"), SPAN_DANGER("You kick the door!"))
-			if (istype(material, /material/wood || /material/wood/soft))
-				playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
-			else
-				playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
+// Kicks wear down ordinary key doors; custom, jail and faction doors only take the noise.
+/obj/structure/simple_door/key_door/proc/door_takes_kick_damage()
+	return !istype(src, /obj/structure/simple_door/key_door/custom)
 
-		next_attack_hand = world.time + 10
-
-/obj/structure/simple_door/key_door/attack_hand(mob/user as mob)
-	if (!istype(src, /obj/structure/simple_door/key_door/custom))
-		if (!keyslot.locked || istype(src, /obj/structure/simple_door/key_door/anyone))
-			return ..(user)
-		else
-			if (world.time < next_attack_hand)
-				return
-
-			if (user.a_intent == I_HELP)
-				user.visible_message(SPAN_NOTICE("[user] knocks at the door."))
-				for (var/mob/living/L in view(7, src))
-					if (!viewers(7, L).Find(user))
-						to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
-				playsound(get_turf(src), "doorknock", 75, TRUE)
-			else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
-				user.visible_message(SPAN_WARNING("[user] bangs on the door."))
-				for (var/mob/living/L in view(7, src))
-					if (!viewers(7, L).Find(user))
-						to_chat(L, SPAN_NOTICE("You hear a knock at the door."))
-				playsound(get_turf(src), "doorknock", 100, TRUE)
-			else
-				user.visible_message(SPAN_DANGER("[user] kicks the door!"))
-				if (istype(material, /material/wood) || istype(material, /material/wood/soft))
-					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
-				if (istype(material, /material/paper))
-					playsound(get_turf(src), 'sound/effects/cardboardpunch.ogg', 100)
-				else
-					playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
-				update_damage(-10)
-
-			next_attack_hand = world.time + 10
+/obj/structure/simple_door/key_door/door_kick(mob/user)
+	. = ..()
+	if (. && door_takes_kick_damage())
+		update_damage(-10)
 
 /obj/structure/simple_door/key_door/Bumped(atom/user)
 	if (istype(src, /obj/structure/simple_door/key_door/custom))
