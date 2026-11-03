@@ -57,6 +57,27 @@ class NomadsAdoptionTests(unittest.TestCase):
         self.assertLess(body.index('if (adoption_original_name)'), prompt)
         self.assertIn('adoption_original_name)', body[recheck - 200:recheck + 120])
 
+    def test_post_prompt_recheck_matches_the_initial_gate(self):
+        body = proc_body('/mob/living/human/proc/offer_adoption')
+        prompt = body.index('WWinput(src,')
+        before, after = body[:prompt], body[prompt:]
+        self.assertIn('user.restrained()', before)
+        recheck = next(line for line in after.splitlines() if 'get_dist(user, src) > 1' in line)
+        for guard in ('user.stat', 'user.restrained()', 'adoption_can_respond()', 'adoption_original_name'):
+            self.assertIn(guard, recheck)
+
+    def test_rename_during_prompt_cannot_change_the_accepted_surname(self):
+        body = proc_body('/mob/living/human/proc/offer_adoption')
+        prompt = body.index('WWinput(src,')
+        after = body[prompt:]
+        # The offered surname is captured before the prompt and never reassigned after it.
+        self.assertIn('var/surname = adoption_surname(user.real_name)', body[:prompt])
+        self.assertIn('[surname] family. Your last name will become [surname].', body[prompt:prompt + 200])
+        self.assertNotRegex(after, r'\n\t*surname = ')
+        guard = after.index('if (adoption_surname(user.real_name) != surname')
+        self.assertLess(guard, after.index('adoption_rename(adoption_apply_surname(original, surname))'))
+        self.assertIn('return', after[guard:guard + 300])
+
     def test_rename_keeps_name_records_together(self):
         body = proc_body('/mob/living/human/proc/adoption_rename')
         self.assertIn('fully_replace_character_name(real_name, new_name)', body)

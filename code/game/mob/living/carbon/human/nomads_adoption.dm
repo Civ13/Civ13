@@ -112,13 +112,13 @@
 			to_chat(user, SPAN_WARNING("[src] declines your adoption offer."))
 		return
 	// Recheck everything that may have changed while the prompt was open.
-	if (!user || !adoption_enabled() || user.stat || get_dist(user, src) > 1 || !adoption_can_respond() || adoption_original_name)
+	if (!user || !adoption_enabled() || user.stat || user.restrained() || get_dist(user, src) > 1 || !adoption_can_respond() || adoption_original_name)
 		to_chat(src, SPAN_WARNING("The adoption could not be completed."))
 		if (user)
 			to_chat(user, SPAN_WARNING("The adoption of [src] could not be completed."))
 		return
-	surname = adoption_surname(user.real_name)
-	if (!surname || adoption_surname(real_name) == surname)
+	// Apply only the surname the target accepted; a rename during the prompt voids the offer.
+	if (adoption_surname(user.real_name) != surname || adoption_surname(real_name) == surname)
 		to_chat(src, SPAN_WARNING("The adoption could not be completed."))
 		to_chat(user, SPAN_WARNING("The adoption of [src] could not be completed."))
 		return
