@@ -39,7 +39,7 @@
 			for(var/x = 1, x <= 32, x++) pixels += list(I.GetPixel(x, y))
 		symbols[faction] = pixels
 	var/datum/durable_timer_queue/Q = map.durable_timer_queue()
-	return list("schema" = 2, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
+	return list("schema" = 2, "map_fields_version" = 2, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
 
 // Inspect encoded field roots without decoding references to atoms which have
 // not been loaded yet. All graph edges and entry identities are checked first.
@@ -51,12 +51,13 @@
 	var/datum/durable_save_graph/G = new
 	var/list/keys = list("schema", "map_type", "fields", "environment", "times", "areas", "symbols", "weather_process", "timers", "nodes")
 	if(state["schema"] == 2) keys += "topology"
+	if("map_fields_version" in state) keys += "map_fields_version"
 	G.check_fields(state, keys)
 	if(!(state["schema"] in list(1, 2)) || state["map_type"] != "[map.type]")
 		throw EXCEPTION("Durable world profile differs")
 	G.validate(state["nodes"], generation)
 	var/list/fields = state["fields"]
-	var/list/schema = durable_metadata_map_schema()
+	var/list/schema = durable_metadata_map_read_schema(state)
 	if(!islist(fields) || fields.len != schema.len)
 		throw EXCEPTION("Durable map field inventory differs")
 	for(var/key in schema)
@@ -180,6 +181,7 @@
 	var/list/fields = list()
 	var/list/encoded_fields = durable_state["fields"]
 	for(var/key in encoded_fields) fields[key] = values[encoded_fields[key]]
+	fields = durable_metadata_default_map_fields(fields, durable_state)
 	durable_metadata_restore_fields(map, fields, durable_metadata_map_schema())
 	var/list/E = durable_state["environment"]
 	season = E["season"]
