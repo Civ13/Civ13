@@ -95,7 +95,18 @@ var/peak_capture_tick_usage = 0
 	// checkpoint. This exercises movement while detached records are written.
 	if(armed && !fixture_is_headroom() && !moving_save_chunk && saving_z == 1 && subject)
 		var/list/record = moving_save_roots["\ref[subject]"]
-		if(world.params["scenario"] in list("frontier", "frontier-delete"))
+		if(world.params["scenario"] in list("legacy-step", "legacy-cross-z"))
+			// A non-roster animal steps while its own legacy frame is open.
+			var/datum/save_export_frame/top = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+			if(!mutations && top && top.source == subject)
+				subject.loc = world.params["scenario"] == "legacy-step" ? locate(3,1,1) : locate(2,1,2)
+				mutations++
+		else if(world.params["scenario"] == "uncaptured-delete")
+			// An admitted animal is deleted before traversal reaches its turf.
+			if(!mutations && record && !record["ref"])
+				mutations++
+				del(subject)
+		else if(world.params["scenario"] in list("frontier", "frontier-delete"))
 			// Wait until the visited turf frame is closed, not merely assigned an ID.
 			if(!mutations && !saving_export_stack.len && saving_references["\ref[locate(1,1,1)]"])
 				subject.loc = locate(1,1,1)
@@ -149,6 +160,11 @@ var/peak_capture_tick_usage = 0
 		subject = new(locate(4,1,1))
 		if(world.params["scenario"] == "headroom-unvisited") subject.loc = locate(1,1,1)
 		if(!map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Absent optional cuff fields rejected an ordinary animal")
+		if(world.params["scenario"] in list("legacy-step", "legacy-cross-z"))
+			// Like a spawner-linked turkey: excluded from the roster, legacy traversal.
+			subject.loc = locate(2,1,1)
+			subject.origin = 1
+			if(map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Origin-linked animal was admitted")
 		subject.name = "admitted animal"
 		subject.payload = list("literal", "key" = 17)
 		if(world.params["scenario"] == "reference")
@@ -170,7 +186,7 @@ var/peak_capture_tick_usage = 0
 		if(world.params["scenario"] == "frontier-delete")
 			world.log << "FRONTIER_DELETE: attempted=[frontier_delete_attempted] refused=[refused]"
 			if(!frontier_delete_attempted) throw EXCEPTION("FRONTIER_DELETE: deletion was not exercised")
-		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
+		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
 		if(fixture_is_headroom())
 			if(headroom_waits != 1) throw EXCEPTION("HEADROOM: expected exactly one injected wait")
@@ -200,10 +216,13 @@ var/peak_capture_tick_usage = 0
 							owners++
 							found_ref = ref
 							found_x = x
-			if(owners != 1 || !found_ref) throw EXCEPTION("admitted animal missing or multiply owned")
+			if(world.params["scenario"] == "uncaptured-delete")
+				if(owners) throw EXCEPTION("UNCAPTURED_DELETE: deleted animal was saved")
+			else if(owners != 1 || !found_ref) throw EXCEPTION("admitted animal missing or multiply owned")
 			if(fixture_is_headroom())
 				var/expected_x = world.params["scenario"] == "headroom-visited" ? 1 : 4
 				if(found_x != expected_x) throw EXCEPTION("HEADROOM: saved owner did not follow actual post-wait turf")
+			if(world.params["scenario"] == "legacy-step" && found_x != 2) throw EXCEPTION("LEGACY_STEP: saved owner is not the captured origin")
 			if(world.params["scenario"] == "reference")
 				if(!holder_ref) throw EXCEPTION("Shared-list legacy owner missing")
 				var/list/legacy_list = F["[map_storage.entry_path(F, holder_ref)]/shared"]

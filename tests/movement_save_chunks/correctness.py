@@ -17,7 +17,7 @@ def load(name):
     spec.loader.exec_module(module)
     return module
 
-SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth')
+SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'legacy-step', 'legacy-cross-z', 'uncaptured-delete', 'yield', 'depth')
 ROSTER_ANCHOR = '/map_storage/proc/prepare_moving_save_roster()\n'
 ORIGIN_ANCHOR = '''\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
 \tif(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])

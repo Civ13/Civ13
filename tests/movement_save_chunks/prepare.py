@@ -42,7 +42,7 @@ def prepare(output):
     (output / 'probe.dme').write_text(header + ''.join(f'#include "{name}"\n' for name in includes))
     hashes['probe.dme'] = hashlib.sha256((output / 'probe.dme').read_bytes()).hexdigest()
     (output / 'receipt.json').write_text(json.dumps({'execution': 'not_run', 'sources': hashes,
-        'scenarios': ['walking', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth']}, indent=2))
+        'scenarios': ['walking', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'legacy-step', 'legacy-cross-z', 'uncaptured-delete', 'yield', 'depth']}, indent=2))
     return hashes
 
 if __name__ == '__main__':
