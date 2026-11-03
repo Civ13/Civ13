@@ -1170,12 +1170,25 @@ class FallbackTreeSource(unittest.TestCase):
         I=m.P.tree_images[tree];m.grid.clear();m.P.refresh(m.S)
         self.assertNotIn(I,m.C.images);self.assertFalse(m.P.tree_images)
         m.include(tree);m.P.refresh(m.S);I=m.P.tree_images[tree]
-        m.C.root_tree_presenter=N(retired=False,owns_tree=lambda a:a is tree)
+        m.C.root_tree_presenter=N(retired=False,scene_active=True,owns_tree=lambda a:a is tree)
         m.P.refresh(m.S);self.assertNotIn(I,m.C.images)
         m.C.root_tree_presenter=None;m.P.refresh(m.S);I=m.P.tree_images[tree]
         m.V.eligible=lambda:False;m.P.refresh(m.S);self.assertNotIn(I,m.C.images)
         m.V.eligible=lambda:True;m.P.refresh(m.S);m.P.retire()
         self.assertFalse(m.C.images);self.assertIsNone(m.C.los_presenter)
+
+    def test_edge_rooted_trees_match_compositor_discovery_radius(self):
+        # Viewport radius 4 at (10,10): roots 3 to 6 tiles past the view can
+        # still overhang it and need the unclipped copy without a compositor.
+        m=model();edge=atom(19,10,tree=True,opaque=True);far=atom(21,10,tree=True,opaque=True)
+        clutter=atom(19,11);m.include(edge);m.include(far);m.include(clutter)
+        self.assertTrue(m.P.refresh(m.S))
+        self.assertIn(m.P.tree_images[edge],m.C.images)
+        self.assertIsNone(m.P.tree_images[far]);self.assertIsNone(m.P.images[clutter])
+        m.outcomes[edge]=0;m.P.refresh(m.S);self.assertIn(m.P.images[edge],m.C.images)
+        # An active compositor owns that discovery itself.
+        m.outcomes[edge]=1;m.C.root_tree_presenter=N(retired=False,scene_active=True,owns_tree=lambda a:False)
+        m.P.refresh(m.S);self.assertIsNone(m.P.tree_images[edge])
 
     def test_upper_cell_invalidation_is_synchronous_and_per_client(self):
         m=model();other=model();tree=atom(13,10,tree=True,opaque=True)

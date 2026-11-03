@@ -45,7 +45,7 @@ class PresenterSourceContracts(unittest.TestCase):
         self.assertIn('los_enabled = !!enabled', LIFECYCLE)
         self.assertIn('!los_enabled', LIFECYCLE)
         self.assertIn('world.time < los_next_audit', LIFECYCLE)
-        self.assertIn('los_next_audit = world.time + 5', LIFECYCLE)
+        self.assertIn('los_next_audit = world.time + 10', LIFECYCLE)
 
     def test_carried_items_and_lighting_are_not_visual_masks(self):
         self.assertIn('isturf(A) || isturf(A.loc)', SOURCE)

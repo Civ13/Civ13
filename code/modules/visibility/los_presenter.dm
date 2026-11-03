@@ -197,6 +197,31 @@
 						next_trees[A] = tree_image
 						next_appearances[A] = A.appearance
 						next_owned |= tree_image
+	// Without an active root compositor (player opt-out or fallback), opaque
+	// trees rooted outside the ring above can still overhang the view. Match
+	// the compositor's radius + 6 discovery for those roots only, so their
+	// canopy keeps its unclipped copy or mask.
+	if(!owner.root_tree_presenter || !owner.root_tree_presenter.scene_active)
+		for(var/cx = max(1, context.body.x-S.radius_x-6), cx <= min(world.maxx, context.body.x+S.radius_x+6), cx++)
+			for(var/cy = max(1, context.body.y-S.radius_y-6), cy <= min(world.maxy, context.body.y+S.radius_y+6), cy++)
+				if(abs(cx-context.body.x) <= S.radius_x+2 && abs(cy-context.body.y) <= S.radius_y+2)
+					continue
+				var/turf/T = locate(cx, cy, S.eye_z)
+				if(!T)
+					continue
+				for(var/atom/movable/A in T)
+					if(!A.opacity || !root_tree_family(A) || next_visible[A] || next[A] || !owns_atom(A))
+						continue
+					if(context.decision_snapshot(A, S, "visual_tree") == LOS_DENY)
+						var/image/edge_mask = hidden_image(A)
+						next[A] = edge_mask
+						next_owned += edge_mask
+					else
+						next_visible[A] = TRUE
+						var/image/edge_tree = native_tree_image(A)
+						next_trees[A] = edge_tree
+						next_appearances[A] = A.appearance
+						next_owned |= edge_tree
 	if(S.policy != context.policy_key() || S.revision != context.revision)
 		invalidate()
 		dirty = TRUE
