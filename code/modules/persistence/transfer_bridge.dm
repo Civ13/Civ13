@@ -26,6 +26,8 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// refuses any peer the operator has not enrolled.
 	var/list/peers = list()
 	var/polling = FALSE
+	// Deciseconds between arrival polls (config "poll_seconds", 1-300).
+	var/poll_interval = 300
 
 /datum/transfer_bridge/New()
 	..()
@@ -45,6 +47,8 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		return
 	port = settings["port"]
 	token = secret
+	if(isnum(settings["poll_seconds"]) && settings["poll_seconds"] >= 1 && settings["poll_seconds"] <= 300)
+		poll_interval = round(settings["poll_seconds"] * 10)
 	if(islist(settings["peers"]))
 		for(var/peer in settings["peers"])
 			if(istext(peer) && length(peer) <= 64 && ckey(peer) == peer && !(peer in peers))
@@ -170,7 +174,7 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // refused, into the first trade post. Nothing happens without a trade post.
 /datum/transfer_bridge/proc/poll_loop()
 	while(enabled())
-		sleep(300)
+		sleep(poll_interval)
 		if(ready() && !persistence_save_active())
 			poll_once()
 

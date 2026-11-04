@@ -124,24 +124,38 @@ var/global/list/transfer_trade_posts = list()
 	// The prompts slept: check everything again.
 	if(busy || QDELETED(src) || QDELETED(S) || user.get_active_hand() != S || !Adjacent(user) || transfer_trade_kind(S) != kind)
 		return
+	user.remove_from_mob(S)
+	var/amount = S.amount
+	var/shipped = ship_stack(S, peer, user.ckey, recipient)
+	if(shipped == "sent")
+		to_chat(user, "<span class='notice'>The traders pack up [amount] [kind] for [recipient] in [peer].</span>")
+	else if(shipped == "too_many")
+		to_chat(user, "<span class='warning'>The traders take at most [transfer_trade_max(kind)] at once.</span>")
+	else
+		to_chat(user, "<span class='warning'>The traders can't take a shipment right now.</span>")
+
+// Ships a whole stack lying in reach of the post. Returns "sent", or a reason;
+// on any refusal the stack is left on the post's tile.
+/obj/structure/transfer_trade_post/proc/ship_stack(obj/item/stack/S, peer, sender, recipient)
+	var/kind = transfer_trade_kind(S)
+	if(!kind || !(peer in transfer_bridge.peers)) return "refused"
+	if(busy || persistence_save_active() || !transfer_bridge.ready()) return "busy"
 	var/amount = S.amount
 	if(amount < 1 || amount > transfer_trade_max(kind))
-		to_chat(user, "<span class='warning'>The traders take at most [transfer_trade_max(kind)] at once.</span>")
-		return
+		S.forceMove(get_turf(src))
+		return "too_many"
 	// Hold the stack while the agent records the escrow, so it can't change.
 	busy = TRUE
-	user.remove_from_mob(S)
 	S.forceMove(src)
-	var/list/result = transfer_bridge.begin_escrow(peer, list(transfer_trade_payload(kind, amount, user.ckey, recipient)))
+	var/list/result = transfer_bridge.begin_escrow(peer, list(transfer_trade_payload(kind, amount, sender, recipient)))
 	busy = FALSE
 	if(result)
 		// Recorded: remove it now, without sleeping.
 		qdel(S)
-		to_chat(user, "<span class='notice'>The traders pack up [amount] [kind] for [recipient] in [peer].</span>")
-		return
+		return "sent"
 	if(!QDELETED(S))
 		S.forceMove(get_turf(src))
-	to_chat(user, "<span class='warning'>The traders can't take a shipment right now.</span>")
+	return "refused"
 
 /obj/structure/transfer_trade_post/attack_hand(mob/user)
 	if(!ishuman(user) || !user.ckey) return ..()
@@ -157,16 +171,23 @@ var/global/list/transfer_trade_posts = list()
 	var/choice = input(user, "Collect which goods?", "Trade post") as null|anything in mine
 	if(!choice || QDELETED(src) || !Adjacent(user)) return
 	var/kind = mine[choice]
-	var/key = "[prefix][kind]"
+	var/take = collect_goods(user.ckey, kind)
+	if(take)
+		to_chat(user, "<span class='notice'>You collect [take] [kind].</span>")
+
+// Moves up to one full stack of a player's goods onto the post's tile.
+// Returns the amount collected.
+/obj/structure/transfer_trade_post/proc/collect_goods(owner, kind)
+	var/key = "[owner]|[kind]"
 	var/have = holdings[key]
 	var/obj/item/stack/path = transfer_trade_goods[kind]
-	if(!path || !isnum(have) || have < 1) return
+	if(!path || !isnum(have) || have < 1) return 0
 	var/take = min(have, transfer_trade_max(kind))
 	if(have - take > 0)
 		holdings[key] = have - take
 	else
 		holdings -= key
 	new path(get_turf(src), take)
-	to_chat(user, "<span class='notice'>You collect [take] [kind].</span>")
+	return take
 
 #undef TRADE_POST_MAX_AMOUNT

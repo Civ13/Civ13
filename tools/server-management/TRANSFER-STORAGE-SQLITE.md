@@ -1,7 +1,9 @@
 # Transfer storage: SQLite per region plus a small coordinator
 
-Status: design proposal for review. Nothing here is enabled, deployed or wired
-into the game yet. It answers acceptance questions 1 and 4 of
+Status: implemented, off by default (2026-11-04). The store (#3642), agent,
+coordinator and save/load hooks (#3645), trade post (#3655) and the two-region
+pilot are merged; see [tools/transfer_storage](../transfer_storage/README.md).
+Nothing is enabled on a live server. It answers acceptance questions 1 and 4 of
 [TRANSFER-CONTRACT.md](TRANSFER-CONTRACT.md): which backend stores the minimal
 transfer state, and how that state commits atomically with inventory.
 

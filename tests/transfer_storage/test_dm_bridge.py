@@ -131,21 +131,26 @@ class TradePost(unittest.TestCase):
                        'amount != round(amount)', 'amount > transfer_trade_max(P["kind"])', 'ckey(key) != key'):
             self.assertIn(needle, body)
 
-    def test_send_holds_the_stack_and_removes_it_only_after_the_escrow_is_recorded(self):
+    def test_send_rechecks_after_prompts_and_ships_through_one_path(self):
         body = proc(POST, '/obj/structure/transfer_trade_post/proc/send_goods')
         recheck = body.index('// The prompts slept: check everything again.')
+        self.assertLess(body.index('input(user'), recheck)
+        self.assertLess(recheck, body.index('ship_stack(S, peer, user.ckey, recipient)'))
+        self.assertNotIn('begin_escrow', body)
+
+    def test_ship_holds_the_stack_and_removes_it_only_after_the_escrow_is_recorded(self):
+        body = proc(POST, '/obj/structure/transfer_trade_post/proc/ship_stack')
+        self.assertIn('!(peer in transfer_bridge.peers)', body)
         hold = body.index('S.forceMove(src)')
         escrow = body.index('transfer_bridge.begin_escrow(')
         remove = body.index('qdel(S)')
-        self.assertLess(body.index('input(user'), recheck)
-        self.assertLess(recheck, hold)
+        self.assertIn('persistence_save_active()', body[:hold])
         self.assertLess(hold, escrow)
         self.assertLess(escrow, body.index('if(result)'))
         self.assertLess(body.index('if(result)'), remove)
         for blocking in ('sleep(', 'input(', 'alert('):
             self.assertNotIn(blocking, body[escrow:remove])
         self.assertIn('S.forceMove(get_turf(src))', body[remove:])
-        self.assertIn('persistence_save_active()', body[:hold])
 
     def test_holdings_are_saved_with_the_post(self):
         self.assertIn('map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;holdings"', POST)
