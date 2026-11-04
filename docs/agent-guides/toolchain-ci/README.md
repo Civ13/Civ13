@@ -198,3 +198,12 @@ load. Treat it as pre-existing when the compile step is clean and the same
 cases fail on master; do not change gameplay code for it.
 `SUITES` in scripts/ci_baseline.py conflicts in most concurrent PRs; keep the
 union of both sides' entries, then rerun the affected suites.
+
+<!-- 2026-11-04: agent CI digest -->
+Each completed `pull_request` workflow starts a short `.github/workflows/agent-ci-digest.yml`
+pass. The pass that sees every Actions check on the head finished classifies
+failures (infra, known, timeout, real, unknown), reruns infrastructure-only
+failures once and posts a comment with a JSON block. Agents read that comment
+instead of polling, and fall back to reading CI directly when it is missing
+(free-plan limits); see [the digest guide](../../agent-ci-digest.md). New
+`pull_request` workflows must be added to its `workflows:` list.

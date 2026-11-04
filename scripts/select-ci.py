@@ -51,6 +51,7 @@ SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
+AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
@@ -372,6 +373,10 @@ def introduced_tests(base, head, event):
             continue
         if path in AGENT_CONTROL_OFFLINE_TESTS:
             continue
+        if path in AGENT_CI_DIGEST_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/agent_ci_digest/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered agent-ci-digest executable test requires explicit CI review')
         if path.startswith('tests/agent_control/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered agent-control executable test requires explicit CI review')
         if path.startswith('tests/nomads_adoption/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
