@@ -566,6 +566,43 @@
 /obj/structure/props/piping/small/pipet/under
 	layer = 1
 
+// These are decorative props, not a fluid network.
+/obj/structure/props/piping/small/plastic
+	name = "plastic pipe"
+	desc = "A decorative plastic pipe. It does not carry fluids."
+	icon = 'icons/obj/machines/pipes.dmi'
+	icon_state = "s_pipe2_thin"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	anchored = TRUE
+	layer = MOB_LAYER + 8
+
+/obj/structure/props/piping/small/plastic/elbow
+	name = "plastic pipe elbow"
+	icon_state = "s_pipe_turn"
+
+/obj/structure/props/piping/small/plastic/junction
+	name = "plastic pipe junction"
+	icon_state = "s_pipe_connection3_thin"
+
+/obj/structure/props/piping/small/plastic/proc/dismantle_plastic_pipe()
+	var/turf/site = get_turf(src)
+	if(gcDestroyed || gc_destroyed || !site)
+		return FALSE
+	new /obj/item/stack/material/plastic(site, 1)
+	qdel(src)
+	return TRUE
+
+/obj/structure/props/piping/small/plastic/attackby(obj/item/O, mob/user, icon_x, icon_y)
+	if(istype(O, /obj/item/weapon/hammer))
+		to_chat(user, SPAN_NOTICE("You begin dismantling the plastic pipe."))
+		if(do_after(user, 25, src) && dismantle_plastic_pipe())
+			to_chat(user, SPAN_NOTICE("You dismantle the plastic pipe."))
+		return
+	return ..()
+
 /////////////////////////////////////////////////////////
 
 /obj/structure/props/bathtub

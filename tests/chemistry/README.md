@@ -113,3 +113,4 @@ The biochemistry probe checks insulated cable production pays both plastic and c
 It checks the mixed water-and-ethanol gelatin recipe and rejects a batch missing ethanol.
 It also checks paid polypropylene cloth and comb production and insufficient-input rejection.
 Polyethylene play-ball production is checked for payment and insufficient input.
+It checks that dismantling a decorative plastic pipe returns one plastic sheet.
