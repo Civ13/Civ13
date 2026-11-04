@@ -107,19 +107,30 @@ cooldown, combat and crafting rules apply.
 - **Host characters without a ckey.** `character_spawn` creates a mob (default
   `/mob/living/human`) owned by that agent, up to `max_characters` (default 4).
   Humans still get their usual map identity; a `name` is applied after it.
+  With `job` (a late-join title on the current map, such as `Nomad`), the
+  character joins like a late joiner instead: that job's clothes, kit, name
+  and spawn point through the normal `EquipRank` path. An unknown job is
+  refused with the list of open ones.
 - **Player handover.** With `allow_handover` in the config, players get a
   **Toggle AI Control** verb (OOC). After they confirm, any agent with the
   `characters` scope can drive that character until the player uses the verb
   again or an agent releases it. The player's own input keeps working.
 
 `character_observe` returns the character's state (health, hands, intent,
-nutrition, water, worn items), the four neighbouring turfs, up to 64 visible
+nutrition, water, worn and carried items, and `craftable` recipes when the
+active hand holds a material stack), the nearest tile of each kind of terrain
+(`terrain`, clickable as `turf:x,y,z`), the four neighbouring turfs, up to 64 visible
 objects with `dx`/`dy` offsets and refs, and the messages the character saw or
 heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
 (`text`), `click` (`target` ref the character can see, optional `modifier`),
-`use` (the held item), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`,
-`harm`) and `resist`. Actions run with `usr` set to the character.
+`use` (the held item), `craft` (`recipe` from the held stack, optional
+`amount`), `equip` (the held item, as the quick-equip key does), `examine`
+(`target`), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`, `harm`)
+and `resist`. Crafting goes through the stack's own recipe handler, so costs,
+tools and research gates apply. Click, use and craft can start timed work; a
+direct call returns at once and the work continues in the game, while a queued
+step waits for it. Actions run with `usr` set to the character.
 A direct `character_act` that is still cooling down fails with `cooldown` and
 the ticks to wait. Cooldowns are the character's movement delay, the mob's own
 click cooldowns (`next_move`, `next_click`) and one second between `say` or
@@ -170,8 +181,14 @@ python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal 
 python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help my tribe build a hut"
 ```
 
-The model answers with a plan of up to five steps, which the autopilot sends
-through `character_queue` and reports back after the queue drains. It shows the
+A spawned character joins as `--job` (default `Nomad`). The model gets a short
+survival primer, matching lines from `config/tips.txt`, and a rule not to take
+from other players' camps. It answers with one to three steps and a note to
+itself; the autopilot runs them through `character_queue` and shows the next
+turn what changed (position, hands, clothes, carried items, water, nutrition)
+and warns when the same action keeps repeating. Only speech and lines about
+the character reach the model, so other players' work messages do not crowd
+the window. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
 

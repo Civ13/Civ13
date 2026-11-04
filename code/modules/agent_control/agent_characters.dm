@@ -69,6 +69,18 @@
 		if ("southwest", "sw") return SOUTHWEST
 	agent_fail("bad_args", "dir must be north, south, east, west or a diagonal")
 
+// Late-join jobs open on this map, as the join menu would offer them.
+/proc/agent_map_jobs()
+	. = list()
+	if (!job_master || !map)
+		return
+	for (var/datum/job/J in job_master.occupations)
+		if (J.title && (map.ID in J.allowed_maps) && J.spawn_location && findtext(J.spawn_location, "JoinLate"))
+			. |= J.title
+
+/proc/agent_job_allowed(title)
+	return title in agent_map_jobs()
+
 /datum/agent_control/proc/act_character_spawn(datum/agent_identity/A, list/req)
 	prune_characters()
 	var/owned = 0
@@ -84,12 +96,21 @@
 	var/turf/T = get_turf(agent_resolve_target(req["target"]))
 	if (!T)
 		agent_fail("bad_target", "target has no turf")
+	// A job gives the character a late joiner's kit, name and spawn point.
+	var/job_title = istext(req["job"]) ? trim(req["job"]) : null
+	if (job_title)
+		if (!ispath(path, /mob/living/human))
+			agent_fail("bad_type", "a job needs a human character")
+		if (!agent_job_allowed(job_title))
+			agent_fail("bad_job", "jobs on this map: [jointext(agent_map_jobs(), ", ")]")
 	var/list/before = list()
 	for (var/mob/living/L in T)
 		before += L
 	var/mob/living/M
 	try
 		M = new path(T)
+		if (job_title && !job_master.EquipRank(M, job_title, TRUE))
+			agent_fail("bad_job", "[job_title] could not be equipped")
 		if (istext(req["name"]) && length(trim(req["name"])))
 			var/new_name = sanitize(copytext(req["name"], 1, 33))
 			M.fully_replace_character_name(M.real_name, new_name)
@@ -107,7 +128,8 @@
 	C.body = M
 	C.owner_agent = A.name
 	agent_characters[M] = C
-	audit(A, "character_spawn", "[M] ([agent_ref(M)], [M.type]) at [T.x],[T.y],[T.z]")
+	var/turf/at = get_turf(M)
+	audit(A, "character_spawn", "[M] ([agent_ref(M)], [M.type][job_title ? ", [job_title]" : ""]) at [at.x],[at.y],[at.z]")
 	return character_state(C)
 
 /datum/agent_control/proc/act_character_list(datum/agent_identity/A, list/req)
@@ -138,6 +160,11 @@
 	out["active_hand"] = M.hand ? "left" : "right"
 	out["left_hand"] = agent_encode(M.l_hand)
 	out["right_hand"] = agent_encode(M.r_hand)
+	var/obj/item/stack/held_stack = M.get_active_hand()
+	if (istype(held_stack))
+		agent_refresh_recipes(held_stack, M)
+	if (istype(held_stack) && held_stack.recipes)
+		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
 	var/area/area = get_area(M)
 	if (area)
@@ -151,6 +178,15 @@
 		for (var/obj/item/I in H.get_equipped_items())
 			worn += I.name
 		out["worn"] = worn
+		var/list/carried = list()
+		for (var/obj/item/weapon/storage/S in H.get_equipped_items())
+			for (var/obj/item/I in S.contents)
+				if (carried.len < 24)
+					carried += "[I.name] (in [S.name])"
+		for (var/obj/item/I in list(H.l_store, H.r_store))
+			if (carried.len < 24)
+				carried += "[I.name] (pocket)"
+		out["carried"] = carried
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
 	return out
@@ -192,24 +228,40 @@
 						blocked = TRUE
 						break
 			surroundings[dir2text(d)] = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
+	// The nearest tile of each kind of terrain, so water and the like can be clicked.
+	var/list/terrain = list()
+	if (here)
+		var/list/nearest = list()
+		for (var/turf/T in view(radius, M))
+			if (T == here || !T.name)
+				continue
+			var/d = get_dist(here, T)
+			var/list/best = nearest[T.name]
+			if (!best || d < best["d"])
+				nearest[T.name] = list("d" = d, "turf" = T)
+		for (var/turf_name in nearest)
+			if (terrain.len >= 16)
+				break
+			var/turf/T = nearest[turf_name]["turf"]
+			terrain += list(list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y))
 	var/list/heard = list()
 	for (var/list/message in C.messages)
 		if (message["id"] > since)
 			heard += list(message)
 	var/queue_since = text2num("[req["queue_since"]]") || 0
-	return list("self" = character_state(C), "here" = here ? list("turf" = here.name, "type" = "[here.type]") : null, "surroundings" = surroundings, "nearby" = nearby, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
+	return list("self" = character_state(C), "here" = here ? list("turf" = here.name, "type" = "[here.type]") : null, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "drop", "swap_hand", "intent", "resist")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "resist")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "drop"))
+	if (action in list("move", "click", "use", "craft", "equip", "drop"))
 		ready = max(ready, next_action)
-	if (action in list("click", "use"))
+	if (action in list("click", "use", "craft"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote"))
 		ready = max(ready, next_speech)
@@ -223,8 +275,10 @@
 		agent_fail("cooldown", "wait [wait] ticks")
 	return perform_step(A, C, req)
 
-// One character action. Callers check wait_for() first.
-/datum/agent_control/proc/perform_step(datum/agent_identity/A, datum/agent_character/C, list/req)
+// One character action. Callers check wait_for() first. Clicks, use and
+// crafting can start timed work (do_after); a Topic reply must not sleep, so
+// direct calls run them in the background and the queue runs them in place.
+/datum/agent_control/proc/perform_step(datum/agent_identity/A, datum/agent_character/C, list/req, from_queue = FALSE)
 	var/mob/living/M = C.body
 	// Topic calls have no usr; click, pull and emote paths read it as the actor.
 	usr = M
@@ -263,16 +317,65 @@
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
 				params = "[req["modifier"]]=1"
-			M.ClickOn(target, params)
 			C.next_action = world.time + 2
 			detail = "[target] ([agent_ref(target)]) [params]"
+			if (from_queue)
+				M.ClickOn(target, params)
+			else
+				spawn(0)
+					usr = M
+					M.ClickOn(target, params)
 		if ("use")
 			var/obj/item/I = M.get_active_hand()
 			if (!I)
 				agent_fail("empty_hand", "nothing in the active hand")
-			I.attack_self(M)
 			C.next_action = world.time + 2
 			detail = "[I]"
+			if (from_queue)
+				I.attack_self(M)
+			else
+				spawn(0)
+					usr = M
+					I.attack_self(M)
+		if ("craft")
+			var/obj/item/stack/S = M.get_active_hand()
+			if (istype(S))
+				agent_refresh_recipes(S, M)
+			if (!istype(S) || !S.recipes)
+				agent_fail("bad_args", "hold a stack of material to craft from it")
+			var/wanted = agent_text_arg(req, "recipe", 128)
+			var/list/found = agent_find_recipe(S, wanted)
+			if (!found)
+				agent_fail("not_found", "no recipe [wanted] for [S]; see craftable in character_observe")
+			var/datum/stack_recipe/R = found["recipe"]
+			var/amount = clamp(round(text2num("[req["amount"]]") || 1), 1, max(1, round(S.amount / max(1, R.req_amount))))
+			var/list/href = list("make" = "[found["index"]]", "multiplier" = "[amount]")
+			if (found["sublist"])
+				href["sublist"] = "[found["sublist"]]"
+			C.next_action = world.time + 5
+			detail = "[R.title] x[amount] from [S]"
+			if (from_queue)
+				S.Topic("", href)
+			else
+				spawn(0)
+					usr = M
+					S.Topic("", href)
+		if ("equip")
+			var/obj/item/I = M.get_active_hand()
+			if (!I)
+				agent_fail("empty_hand", "nothing in the active hand")
+			if (!ishuman(M))
+				agent_fail("bad_type", "only humans can equip items")
+			var/mob/living/human/H = M
+			H.quick_equip()
+			C.next_action = world.time + 2
+			detail = "[I]"
+		if ("examine")
+			var/atom/target = agent_resolve_target(req["target"])
+			if (!isatom(target) || !(target in view(7, M)) && !(target in M.contents) && !(get_turf(target) in view(7, M)))
+				agent_fail("out_of_view", "the target is not visible to this character")
+			M.examinate(target)
+			detail = "[target]"
 		if ("drop")
 			M.drop_item()
 			C.next_action = world.time + 2
@@ -287,9 +390,59 @@
 		if ("resist")
 			M.resist()
 		else
-			agent_fail("bad_args", "do must be move, face, say, emote, click, use, drop, swap_hand, intent or resist")
+			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
 	return list("done" = action, "self" = character_state(C))
+
+// Material stacks pick their recipe list for the user when the menu opens
+// (era, faction, race); do the same before reading or using it.
+/proc/agent_refresh_recipes(obj/item/stack/S, mob/M)
+	var/obj/item/stack/material/MS = S
+	if (istype(MS) && MS.material && ishuman(M))
+		MS.recipes = MS.material.get_recipes_civs(M)
+
+// Recipes a held stack offers, as "title" or "group/title".
+/proc/agent_stack_recipes(obj/item/stack/S, buildable_only = FALSE)
+	. = list()
+	for (var/E in S.recipes)
+		if (istype(E, /datum/stack_recipe))
+			var/datum/stack_recipe/R = E
+			if (!buildable_only || S.amount >= R.req_amount)
+				. += "[R.title] ([R.req_amount])"
+		else if (istype(E, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/L = E
+			for (var/datum/stack_recipe/R in L.recipes)
+				if (!buildable_only || S.amount >= R.req_amount)
+					. += "[L.title]/[R.title] ([R.req_amount])"
+		if (length(.) >= 60)
+			break
+
+// Matches "title", "group/title" or either with the "(n)" cost suffix.
+/proc/agent_find_recipe(obj/item/stack/S, wanted)
+	wanted = lowertext(trim(wanted))
+	var/paren = findtext(wanted, " (")
+	if (paren)
+		wanted = copytext(wanted, 1, paren)
+	var/group = null
+	var/slash = findtext(wanted, "/")
+	if (slash)
+		group = copytext(wanted, 1, slash)
+		wanted = copytext(wanted, slash + 1)
+	for (var/i in 1 to S.recipes.len)
+		var/E = S.recipes[i]
+		if (istype(E, /datum/stack_recipe) && !group)
+			var/datum/stack_recipe/R = E
+			if (lowertext(R.title) == wanted)
+				return list("recipe" = R, "index" = i)
+		else if (istype(E, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/L = E
+			if (group && lowertext(L.title) != group)
+				continue
+			for (var/j in 1 to L.recipes.len)
+				var/datum/stack_recipe/R = L.recipes[j]
+				if (istype(R) && lowertext(R.title) == wanted)
+					return list("recipe" = R, "index" = j, "sublist" = i)
+	return null
 
 // ---------------------------------------------------------------------------
 // Action queue. An agent submits a plan of steps; the server runs them in
@@ -341,14 +494,16 @@
 		out["ticks"] = round(ticks)
 		return out
 	if (!(action in agent_character_actions()))
-		agent_fail("bad_args", "do must be wait, move, face, say, emote, click, use, drop, swap_hand, intent or resist")
+		agent_fail("bad_args", "do must be wait or one of [jointext(agent_character_actions(), ", ")]")
 	if (action in list("move", "face"))
 		agent_dir(step["dir"])
 	if (action in list("say", "emote"))
 		agent_text_arg(step, "text", 256)
-	if (action == "click")
+	if (action in list("click", "examine"))
 		agent_resolve_target(step["target"])
-	for (var/key in list("dir", "text", "target", "modifier", "intent"))
+	if (action == "craft")
+		agent_text_arg(step, "recipe", 128)
+	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out
@@ -396,7 +551,7 @@
 			C.queue.Cut()
 			break
 		try
-			var/list/result = perform_step(A, C, step)
+			var/list/result = perform_step(A, C, step, TRUE)
 			C.record(step, TRUE, result["moved"] == FALSE ? "blocked" : "done")
 		catch(var/exception/E)
 			var/detail = E.name == "agent_control_error" ? E.desc : "runtime_error:[E.name] ([E.file]:[E.line])"
