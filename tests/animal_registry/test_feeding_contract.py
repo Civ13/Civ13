@@ -54,6 +54,15 @@ class EggRefillTests(unittest.TestCase):
         self.assertIn('if (herbivore && IS_GRAIN(O))', text)
         self.assertIn('else if (IS_GRAIN(O))', text)
 
+    def test_bison_graze_and_milk_like_cows(self):
+        text = (ANIMALS / 'hostile/buffalo.dm').read_text()
+        for path in ('/mob/living/simple_animal/bison', '/mob/living/simple_animal/bisonbull'):
+            with self.subTest(type=path):
+                self.assertIn('\therbivore = 1', type_block(text, path))
+        milk = type_block(text, '/mob/living/simple_animal/bison/attackby(var/obj/item/O as obj, var/mob/user as mob) // milked exactly like a cow')
+        self.assertEqual([line.strip() for line in milk.splitlines() if line.strip()],
+                         ['if (!try_milk(O, user, udder))', '..()'])
+
 
 if __name__ == '__main__':
     unittest.main()
