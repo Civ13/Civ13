@@ -107,6 +107,14 @@
 
 	if (istype(target, /mob))
 		var/mob/M = target
+		if (agent_characters.len)
+			var/datum/agent_character/AC = agent_characters[M]
+			if (AC)
+				AC.capture(message)
+		if (istype(M, /mob/agent_proxy))
+			var/mob/agent_proxy/P = M
+			P.capture(message)
+			return
 		if (M.client)
 			to_chat_wrapper(M.client, message)
 		else

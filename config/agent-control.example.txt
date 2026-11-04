@@ -1,0 +1,29 @@
+# Agent control (docs/agent-control.md). Copy to config/agent-control.txt,
+# which is git-ignored. Without that file, or without an agent line, agent
+# control is off and every request is refused.
+#
+# agent <name> <token> <scopes> [rights]
+#   name    letters, digits, - and _ (up to 32)
+#   token   32-128 characters of letters, digits, - and _; generate one with
+#           python -c "import secrets; print(secrets.token_urlsafe(32))"
+#   scopes  comma-separated: observe, vars_read, vars_write, call_proc,
+#           admin_verbs, message, moderation, server, spawn, characters, or *
+#   rights  admin rights used by call_verb and check_rights: a rank name from
+#           config/admin_ranks.txt or a number of R_* flags (default none)
+#
+# agent observer CHANGE-ME-to-a-long-random-token-0000000 observe,vars_read
+# agent gamemaster CHANGE-ME-to-another-long-random-token-01 observe,vars_read,message,characters
+# agent operator CHANGE-ME-to-a-third-long-random-token-0002 * Host
+
+# Requests are accepted only from 127.0.0.1 unless another address is listed.
+# World Topic traffic is not encrypted: prefer an SSH tunnel to adding one.
+# A non-loopback address must also be in the config topic filtering whitelist
+# or the ordinary Topic flood limiter will ban it.
+# allow_address 10.0.0.5
+
+# Let players hand their own character to agents with the "Toggle AI Control"
+# verb. Off unless this line is present.
+# allow_handover
+
+# Characters each agent may spawn and own at once (0-32, default 4).
+# max_characters 4

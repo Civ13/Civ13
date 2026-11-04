@@ -1,0 +1,65 @@
+"""Agent control action catalog shared by the CLI, MCP server and tests.
+
+Keep in sync with agent_control_actions() in
+code/modules/agent_control/agent_control.dm; tests/agent_control checks both.
+"""
+
+TARGET = {
+    "type": "string",
+    "description": (
+        'An object: a ref like "[0x2000001]", "ckey:<ckey>" (that player\'s mob), '
+        '"client:<ckey>", "turf:x,y,z", "world", "global" or "global:<var>" (e.g. global:ticker).'
+    ),
+}
+VALUE = {
+    "description": (
+        'A number, string, boolean or null; or an object {"ref": "[0x..]"}, {"type": "/obj/item"}, '
+        '{"ckey": "name"}, {"turf": [x, y, z]}, {"text": "..."} or {"list": [...]}.'
+    ),
+}
+CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
+
+
+def _schema(properties=None, required=()):
+    return {"type": "object", "properties": properties or {}, "required": list(required), "additionalProperties": False}
+
+
+ACTIONS = {
+    "discover": ("observe", "List actions, this agent's scopes and rights, and handover settings.", _schema()),
+    "status": ("observe", "Server, round, map, season and persistence status.", _schema()),
+    "players": ("observe", "Connected players with their mob, health, area and admin rank.", _schema()),
+    "inspect": ("observe", "Describe one object: type, location, contents and mob state.", _schema({"target": TARGET}, ["target"])),
+    "look": ("observe", "List turfs and visible objects around a target (radius 0-7).", _schema({"target": TARGET, "radius": {"type": "integer", "minimum": 0, "maximum": 7}}, ["target"])),
+    "find": ("observe", "Find atoms of a type, optionally on one z-level or matching a name.", _schema({"type": {"type": "string"}, "z": {"type": "integer"}, "name": {"type": "string"}, "limit": {"type": "integer", "minimum": 1, "maximum": 200}}, ["type"])),
+    "logs": ("observe", "Recent admin log lines, including every agent action.", _schema({"count": {"type": "integer", "minimum": 1, "maximum": 200}})),
+    "job": ("observe", "Result of a proc or verb call that was still running.", _schema({"job": {"type": "string"}}, ["job"])),
+    "get_vars": ("vars_read", "Read variables of an object or global. Omit names for a summary of all.", _schema({"target": TARGET, "names": {"type": "array", "items": {"type": "string"}, "maxItems": 100}}, ["target"])),
+    "set_var": ("vars_write", "Set one variable on an object or global (logged with old and new value).", _schema({"target": TARGET, "name": {"type": "string"}, "value": VALUE}, ["target", "name", "value"])),
+    "call_proc": ("call_proc", "Call a proc on an object, or a global proc when target is omitted.", _schema({"target": TARGET, "proc": {"type": "string"}, "arguments": {"type": "array", "items": VALUE, "maxItems": 16}}, ["proc"])),
+    "list_verbs": ("admin_verbs", "Admin verbs this agent's configured rights allow.", _schema()),
+    "call_verb": ("admin_verbs", "Run an allowed admin verb by name or path, with optional arguments.", _schema({"verb": {"type": "string"}, "arguments": {"type": "array", "items": VALUE, "maxItems": 16}}, ["verb"])),
+    "announce": ("message", "Announce a message to every player.", _schema({"text": {"type": "string"}}, ["text"])),
+    "admin_pm": ("message", "Send a private admin message to one player.", _schema({"ckey": {"type": "string"}, "text": {"type": "string"}}, ["ckey", "text"])),
+    "narrate": ("message", "Narrate text to one player, or to everyone when ckey is omitted.", _schema({"ckey": {"type": "string"}, "text": {"type": "string"}}, ["text"])),
+    "asay": ("message", "Post a message to the online admins.", _schema({"text": {"type": "string"}}, ["text"])),
+    "kick": ("moderation", "Disconnect a non-admin player.", _schema({"ckey": {"type": "string"}, "reason": {"type": "string"}}, ["ckey"])),
+    "start_round": ("server", "Start the round now from the lobby.", _schema()),
+    "restart": ("server", "Restart the world in five seconds (refused during saves).", _schema({"confirm": {"type": "boolean"}, "reason": {"type": "string"}}, ["confirm"])),
+    "spawn_atom": ("spawn", "Create 1-20 objects or mobs of a type at a target's turf.", _schema({"type": {"type": "string"}, "target": TARGET, "amount": {"type": "integer", "minimum": 1, "maximum": 20}}, ["type", "target"])),
+    "delete_atom": ("spawn", "Delete an object or a mob without a connected player.", _schema({"target": TARGET}, ["target"])),
+    "character_spawn": ("characters", "Create a character this agent controls (no ckey needed).", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}}, ["target"])),
+    "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
+    "character_observe": ("characters", "What a character sees, its own state, and messages it heard since an id.", _schema({"character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}}, ["character"])),
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, drop, swap_hand, intent or resist.", _schema({
+        "character": CHARACTER,
+        "do": {"type": "string", "enum": ["move", "face", "say", "emote", "click", "use", "drop", "swap_hand", "intent", "resist"]},
+        "dir": {"type": "string", "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]},
+        "text": {"type": "string"},
+        "target": TARGET,
+        "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
+        "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
+    }, ["character", "do"])),
+    "character_release": ("characters", "Stop controlling a character; spawned ones can be deleted.", _schema({"character": CHARACTER, "delete": {"type": "boolean"}}, ["character"])),
+}
+
+SCOPES = ("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters")
