@@ -1,6 +1,6 @@
 # Modern factory automation: audit and phased design
 
-Status: **phase 0 implemented; later phases are design only.** Val chose the
+Status: **phases 0 and 1 implemented; later phases are design only.** Val chose the
 first slice on 2026-11-04: phase 0, then belts and transfer arms (phase 1).
 The other open decisions below are still pending. Each later phase lands with
 its own tests.
@@ -217,33 +217,40 @@ human move to the device that configured the machine (see "Ownership").
 
 ### 2. Belt lines
 
-New buildable belts (keep the old type for the mapped 1969 prop, but fix its
-load defect):
+Phase 1 implements `/obj/structure/factory_belt` (`code/modules/1713/factory_belts.dm`);
+the old mapped conveyor stays as it is for the 1969 map.
 
-- A belt tile holds up to **4 item slots** in its own `contents`. Items on a
-  belt are not on the turf, so moving them does not run turf `Entered`/crossing
-  hooks, abandoned-debris aging, or lighting updates.
-- Visibility: the belt shows its items through `vis_contents` with
-  per-slot pixel offsets and an `animate()` glide between slots, so motion looks
-  continuous without real movement. Clicking an item on a belt must pick it up
-  normally; that needs a pickup path for items whose `loc` is a belt (risk R3).
-- A `/datum/belt_line` owns an ordered list of tiles from a source end to a
-  sink end. Topology changes (build, remove, rotate) mark the line dirty and it
-  rebuilds lazily.
-- A dedicated factory process ticks active lines at 0.5 s with a per-tick
-  budget (`PROCESS_TICK_CHECK`), shifting slot indices forward when the next
-  slot is free. Target speed: 2 tiles/s for the basic belt, 4 tiles/s for a
-  later fast belt. A full or empty line costs nothing until woken.
-- At the sink end the line hands its front item to whatever port is in front
-  (another line, a machine, a crate) through `factory_insert`; if nothing takes
-  it, the line backs up and sleeps.
-- Belts carry items, never mobs. A mob on a belt tile is not moved; dropping an
-  item onto a belt places it into a free slot.
-- Belts draw power per line (for example 1 PU per 4 tiles, rounded up), so a
-  generator, cable and belt all have to be built and maintained.
-- Underground crossings ("belt tunnel", pair up to 4 tiles apart) and a merge
-  rule (side-loading onto a line inserts into the next free slot) come with
-  routing in phase 2.
+- **Cargo stays a floor item.** During implementation the slot-in-`contents`
+  model turned out to need new rules for adjacency, pickup, hover and examine
+  (risk R3). Phase 1 instead keeps cargo as ordinary items on the belt's turf,
+  so pickup, rendering, saving and debris rules are unchanged. Belts move cargo
+  with `persistence_set_loc()` (a raw location write that respects save
+  capture), so no turf `Entered` or crossing hooks run per step. Items that emit
+  light use `forceMove()` so their light follows. This is decision 3's
+  alternative, chosen because it avoids R3 entirely; it can still be revisited.
+- A belt tile tracks up to **4 slots** along its direction; slot position is
+  shown as a pixel offset (-12, -4, 4, 12) with one `animate()` glide per item
+  per step. A reloaded belt adopts saved cargo into the slot nearest its saved
+  pixel offset.
+- The `factory belts` process steps active belts once a second with the
+  scheduler's tick budget (`PROCESS_TICK_CHECK`, resuming next tick when over
+  budget). Items advance up to 8 slots a step: 2 tiles a second.
+- Belts are per tile rather than line datums: each belt hands its exit item to
+  the tile in front. That is a belt not facing back (from behind it enters at
+  the first slot, from a side partway along, so corners and side-loading work),
+  or any factory port that accepts it. If nothing takes it the belt backs up.
+- Empty belts leave the process; dropping or handing on an item wakes them.
+  A blocked belt retries every 2 steps, and a belt that frees space wakes the
+  belts feeding it.
+- Belts carry items, never mobs. A wrench turns a belt; a crowbar lifts it.
+- **Power:** phase 1 belts are unpowered. Per-belt cabling made layouts
+  tedious, so belt power (for example a drive unit per line) moves to phase 2.
+- Benchmark (fixture, 516.1688 DEBUG build): 1,922 belts with 2,356 moving
+  items cost about 60 ms per step while everything flows, i.e. about 6% of
+  one core at one step a second, and less once queues settle. Idle belts cost
+  nothing.
+- Underground crossings, splitters and sorting gates come with routing in
+  phase 2.
 
 ### 3. Transfer arms
 
@@ -254,7 +261,19 @@ port in front of it. Variants:
 | --- | --- | --- | --- | --- |
 | Feeder arm | 1 item / 2 s | none | 2 PU | `automation` |
 | Sorting arm | 1 item / 2 s | one item type, set by hand | 3 PU | `automation` |
-| Stack arm | up to 10 of one stack / 2 s | optional | 5 PU | `digital_computing` |
+| Stack arm (phase 3) | up to 10 of one stack / 2 s | optional | 5 PU | `digital_computing` |
+
+Phase 1 implements the feeder and sorting arms (`code/modules/1713/factory_arms.dm`).
+An arm takes from a port behind it (belt exit, crate, parts bin, or the output
+stacks on a drill, sifter or stamp mill tile) or a loose floor item, and only
+lifts an item it can set down in front: into a port, or onto a clear floor of
+fewer than 12 items. A partial insert (a nearly full stamp mill hopper) keeps
+the rest held for the next swing. A wrench turns an arm while it is off; a
+direction arrow overlay shows where it sends items. A running arm saves its
+switch and resumes after a reload; stored time never pays out a swing.
+
+The **parts bin** (`/obj/structure/closet/crate/factory_bin`, steel, Assembly
+Line) is a crate that only accepts more of what it already holds.
 
 Arms only act when both sides answer `factory_accepts` with a positive amount,
 then sleep until woken by either side. They never take from mobs.
@@ -322,7 +341,9 @@ Risks and mitigations:
   changes already traverse at least once a second, so a grid with many
   consumers does about one walk per second instead of one per consumer check.
   Anything else, including an overloaded or unpowered component, still takes
-  the full atomic traversal. A topology change made by a raw `connections`
+  the full atomic traversal. The fast path also refuses as soon as an engine
+  that powered the last traversal stops, because several engine paths set
+  `on = FALSE` without notifying the grid. A topology change made by a raw `connections`
   edit without a traversal can be seen up to one second late. A cached
   component datum with explicit invalidation remains an option if the phase 1
   benchmark needs it; it would have to cover the 81 direct `connections`
@@ -368,8 +389,8 @@ BYOND, plus a native benchmark where noted.
 | Phase | Scope | Exit check |
 | --- | --- | --- |
 | 0. Foundations (done) | Fix belt load direction and switch state; reuse fresh reservations (R1); add the port interface (`code/modules/1713/factory_ports.dm`) with crates and the stamp mill as first implementers. | `tests/factory_automation/probe.dm`; the native grid probe's 20 repeated draws now take one traversal; stamp mill accepts stone without a mob. |
-| 1. Belts and arms | Belt lines with slots, line ticking and sleep; feeder and sorting arms; storage bin; drill, sifter and stamp mill output buffers; recipes and research gates. | Ore from a drill reaches a crate by belt and arm with no player action; 2,000-tile benchmark within budget; save/load round trip. |
-| 2. Routing and smelting | Sorting gate, splitter, belt tunnel; ports for bloomery, blast furnace, kilns, powered sawmill and grinder. | Mixed ore line sorted into separate furnaces; ingots out by belt. |
+| 1. Belts and arms (done) | Belts with slots, per-belt stepping and sleep; feeder and sorting arms; parts bin; drill, sifter and stamp mill output ports; recipes and research gates. | `tests/factory_automation/belts_probe.dm`: crate to belt to crate, corners, blocking, drill output into the mill; 1,922-belt benchmark above. A full disk save/load round trip is still unverified. |
+| 2. Routing and smelting | Belt power (drive units); sorting gate, splitter, belt tunnel; ports for bloomery, blast furnace, kilns, powered sawmill and grinder. | Mixed ore line sorted into separate furnaces; ingots out by belt. |
 | 3. Fabricators | Fabricator tiers and the chosen recipe source; Atlas shows factory recipes; stack arm. | A configured line produces one modern good from raw inputs unattended. |
 | 4. Scale and logistics | Factory panel; fast belt; train and vehicle loading ports; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
 
@@ -385,10 +406,9 @@ beyond fixing saved belts.
    factories have their own production chains. Alternative: let fabricators run
    any existing hand recipe from the material catalog at its research gate,
    which is broader but reuses hand-balance numbers that assume a human.
-3. **Belt cargo model.** Recommended: items held in belt slots (`contents`,
-   rendered through `vis_contents`). Alternative: keep items on turfs and only
-   batch their movement, which keeps pickup semantics but leaves the per-item
-   `Move()` cost.
+3. **Belt cargo model.** Phase 1 keeps cargo as floor items moved by raw
+   location writes (see "Belt lines"), which avoids both the `contents`
+   pickup problems and the per-item `Move()` cost. Open for Val to revisit.
 4. **Era gating.** Recommended: belts at `assembly_line` (as today), arms and
    routing at `automation`, fabricators at `digital_computing`. Alternative:
    open basic belts and feeder arms earlier at `factories` with steam power.

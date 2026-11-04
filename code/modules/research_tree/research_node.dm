@@ -427,10 +427,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (18) ---
+		// --- assembly_line (20) ---
 		"/obj/item/camera/coldwar" = "assembly_line",
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
+		"/obj/item/factory_belt_assembly" = "assembly_line",
+		"/obj/structure/closet/crate/factory_bin" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/random" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/zippo" = "assembly_line",
 		"/obj/item/weapon/radio/walkietalkie" = "assembly_line",
@@ -446,10 +448,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (3) ---
+		// --- automation (5) ---
 		"/obj/item/camera" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
+		"/obj/structure/factory_arm" = "automation",
+		"/obj/structure/factory_arm/sorting" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",
 		// --- automobiles (13) ---
 		"/obj/structure/car_workshop" = "automobiles",
