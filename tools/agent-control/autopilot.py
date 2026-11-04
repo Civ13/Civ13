@@ -41,12 +41,18 @@ Each step is {"do": one of move|face|say|emote|click|use|craft|equip|examine|dro
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
-- Check your hands, clothes and carried items first; you joined with your job's clothes and tools.
+- Check your hands, clothes and carried items first. A new Nomad has only simple clothes and must make tools from nature.
+- Starting from nothing (rocks and trees are fixed in place; you cannot pick them up):
+  1. Flint: set intent to grab, empty active hand, click a rock next to you and stay still; after about 5 seconds a flint is in your hand.
+  2. Sharpen it: hold the flint and click the rock again a few times until it becomes "sharpened flint".
+  3. Branches: set intent to harm, empty hand, click a tree next to you; after about 8 seconds a branch falls. Grab intent on the branch picks leaves; harm intent on a bare branch makes a stick.
+  4. Hold the sharpened flint and click a stick to make a sharpened stick (a spear), or click grass to cut grass for twine.
+  5. With an axe or hatchet, click a tree to chop it into logs. Hold logs, leaves or other stacks to craft from them.
+- Timed work (searching, chopping, sharpening, drinking) runs for several seconds; the game waits for it to finish before your next step.
 - Keep water and nutrition up. Drink from a river, lake or well: empty active hand, grab intent, click the water tile next to you. Eat food by holding it and clicking yourself (target 0).
-- Gather from the wild: chop trees with an axe or hatchet (click the tree while holding it), pick up stones, sticks and loose items lying in the wild, use sharp tools on grass and bushes.
-- Craft: hold a stack of material (logs, planks, rope, stone, cloth...) in your active hand; its recipes are listed under "You can craft". Then {"do": "craft", "recipe": "<name>"}.
+- Craft: hold a stack of material (logs, planks, leaves, rope, stone, cloth...) in your active hand; its recipes are listed under "You can craft". Then {"do": "craft", "recipe": "<name>"}.
 - Hold an item and {"do": "equip"} to wear it or put it on your belt or back. "use" uses the held item by itself.
-- Clicking an item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
+- Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
 - Items in or next to other players' buildings, fences, workshops or camps belong to them: never take or break them. Gather from the wild instead.
 dx/dy are tiles from you (east and north are positive); you must be adjacent (|dx|,|dy| <= 1) to touch things.
@@ -92,10 +98,14 @@ def chat_endpoint(url):
     return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, "/api/chat", "", ""))
 
 
-def summarize(observation, note=""):
-    """Compact, model-facing view of character_observe. Returns (text, refs); refs[0] is the character."""
+def summarize(observation, note="", ignored=()):
+    """Compact, model-facing view of character_observe. Returns (text, refs); refs[0] is the character.
+
+    Targets in ignored (refs that kept having no effect) are left out of the lists.
+    """
     self_state = observation.get("self", {})
-    nearby = observation.get("nearby", [])[:MAX_NEARBY]
+    skipped = [row.get("name") for row in observation.get("nearby", []) if row.get("ref") in ignored]
+    nearby = [row for row in observation.get("nearby", []) if row.get("ref") not in ignored][:MAX_NEARBY]
     terrain = observation.get("terrain", [])[:MAX_TERRAIN]
     refs = [self_state.get("ref")]
     lines = [
@@ -117,6 +127,8 @@ def summarize(observation, note=""):
         lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{' (person)' if row.get('mob') else ''}")
     if not nearby:
         lines.append("  nothing")
+    if skipped:
+        lines.append("Left out because clicking them did nothing: " + ", ".join(map(str, skipped[:8])))
     if terrain:
         lines.append("Nearest ground of each kind:")
         for row in terrain:
@@ -260,14 +272,15 @@ def parse_plan(text, refs):
 
 
 def wait_for_queue(client, character, queue_since, limit=30.0):
-    """Poll until the queue drains (or limit seconds pass); return its new results."""
+    """Poll until the queue drains and timed work ends (or limit seconds pass); return its new results."""
     deadline = time.monotonic() + limit
     while True:
         reply = client.request("character_observe", {"character": character, "radius": 1, "queue_since": queue_since})
         if not reply.get("ok"):
             return []
         queue = reply["result"].get("queue", {})
-        if (not queue.get("pending") and not queue.get("running")) or time.monotonic() > deadline:
+        busy = reply["result"].get("self", {}).get("busy")
+        if (not queue.get("pending") and not queue.get("running") and not busy) or time.monotonic() > deadline:
             return queue.get("results", [])
         time.sleep(0.5)
 
@@ -290,7 +303,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     who = parser.add_mutually_exclusive_group(required=True)
     who.add_argument("--character", help="ref of a character this agent may control")
-    who.add_argument("--spawn", help="spawn a new character at this target, e.g. turf:x,y,z or ckey:<ckey>")
+    who.add_argument("--spawn", help="spawn a new character at this target, e.g. turf:x,y,z; with --job the job's own spawn point wins")
     parser.add_argument("--name", help="name for a spawned character")
     parser.add_argument("--goal", default="Survive, explore and be friendly to other players.")
     parser.add_argument("--steps", type=int, default=20)
@@ -355,6 +368,9 @@ def run(client, args, character, token):
     feedback = ""
     previous_self = None
     signatures = []
+    no_effect = {}  # target ref -> consecutive turns where clicking it changed nothing
+    ignored = {}  # target ref -> step until which it is left out
+    last_targets = []
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
         if deadline and time.monotonic() > deadline:
@@ -368,10 +384,19 @@ def run(client, args, character, token):
         since = observation.get("last_message", since)
         self_state = observation.get("self", {})
         if previous_self is not None:
-            feedback += f"\nWhat changed: {describe_change(previous_self, self_state)}"
+            change = describe_change(previous_self, self_state)
+            feedback += f"\nWhat changed: {change}"
+            # A click counts as useless only when nothing changed and the game said nothing to us.
+            useless = change == "nothing changed" and not relevant_messages(observation.get("messages", []), self_state.get("name"))
+            for ref in last_targets:
+                no_effect[ref] = no_effect.get(ref, 0) + 1 if useless else 0
+                if no_effect[ref] >= 3:
+                    ignored[ref] = step + 8
+                    no_effect[ref] = 0
+        ignored = {ref: until for ref, until in ignored.items() if until > step}
         if is_repeating(signatures):
             feedback += "\nYou keep repeating the same action in the same place without progress. Do something different."
-        text, refs = summarize(observation, note)
+        text, refs = summarize(observation, note, ignored)
         prompt = ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
         try:
@@ -382,6 +407,7 @@ def run(client, args, character, token):
         history.append({"role": "assistant", "content": answer})
         note = parse_note(answer) or note
         plan = parse_plan(answer, refs)
+        last_targets = [item["target"] for item in plan if item.get("do") == "click" and item.get("target") != refs[0]]
         previous_self = self_state
         feedback = ""
         if not plan:

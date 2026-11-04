@@ -182,11 +182,15 @@ python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help m
 ```
 
 A spawned character joins as `--job` (default `Nomad`). The model gets a short
-survival primer, matching lines from `config/tips.txt`, and a rule not to take
+survival primer (including the stone-age start: flint from rocks on grab
+intent, sharpening, branches, sticks and leaves), matching lines from
+`config/tips.txt`, and a rule not to take
 from other players' camps. It answers with one to three steps and a note to
 itself; the autopilot runs them through `character_queue` and shows the next
 turn what changed (position, hands, clothes, carried items, water, nutrition)
-and warns when the same action keeps repeating. Only speech and lines about
+and warns when the same action keeps repeating. It waits while the character
+is busy with timed work (`self.busy`), and leaves a target out of the lists
+for a while after three clicks on it changed nothing and drew no message. Only speech and lines about
 the character reach the model, so other players' work messages do not crowd
 the window. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,

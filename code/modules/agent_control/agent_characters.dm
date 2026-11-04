@@ -157,6 +157,7 @@
 	out["max_health"] = M.maxHealth
 	out["dir"] = dir2text(M.dir)
 	out["intent"] = M.a_intent
+	out["busy"] = M.may_do_after ? FALSE : TRUE
 	out["active_hand"] = M.hand ? "left" : "right"
 	out["left_hand"] = agent_encode(M.l_hand)
 	out["right_hand"] = agent_encode(M.r_hand)
@@ -261,6 +262,9 @@
 	var/ready = world.time
 	if (action in list("move", "click", "use", "craft", "equip", "drop"))
 		ready = max(ready, next_action)
+		// Timed work (do_after) in progress: acting now would cancel it.
+		if (!body.may_do_after)
+			ready = max(ready, world.time + 2)
 	if (action in list("click", "use", "craft"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote"))

@@ -223,6 +223,7 @@ class SecurityContractTests(unittest.TestCase):
         self.assertIn("perform_step(A, C, step, TRUE)", run)
         direct = re.search(r"/datum/agent_control/proc/act_character_act\(.*?(?=\n/)", chars, re.S).group(0)
         self.assertIn("C.wait_for(action)", direct)
+        self.assertIn("body.may_do_after", wait_for)  # timed work is not cancelled by the next step
         self.assertNotIn("next_click = 0", chars)  # clicks keep the mob's own cooldown
         queue = re.search(r"/datum/agent_control/proc/act_character_queue\(.*?(?=\n/)", chars, re.S).group(0)
         self.assertIn("AGENT_CHARACTER_QUEUE_MAX", queue)
@@ -317,6 +318,16 @@ class AutopilotTests(unittest.TestCase):
         self.assertTrue(autopilot.is_repeating(["a", "b", "a", "c", "a"]))
         self.assertFalse(autopilot.is_repeating(["a", "b", "c", "d"]))
         self.assertEqual(autopilot.parse_note('{"plan": [], "note": "build a hut"}'), "build a hut")
+
+    def test_ignored_targets_are_left_out(self):
+        text, refs = autopilot.summarize(self.OBSERVATION, ignored={"[0x1]": 9})
+        self.assertNotIn("[0x1]", refs)
+        self.assertIn("1. Cy", text)
+        self.assertIn("Left out because clicking them did nothing: stick", text)
+
+    def test_primer_teaches_the_stone_age_start(self):
+        for phrase in ("grab, empty active hand, click a rock", "sharpened flint", "intent to harm, empty hand, click a tree", "never take or break them"):
+            self.assertIn(phrase, autopilot.SYSTEM)
 
     def test_tips_are_relevant_and_bounded(self):
         tips = autopilot.load_tips()
