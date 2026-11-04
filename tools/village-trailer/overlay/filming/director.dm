@@ -283,12 +283,11 @@ var/trailer_cam_next_step = 0
 	qdel(groom)
 	trailer_locomotive = new(locate(73, 3, 1))
 	trailer_locomotive.dir = EAST
-	trailer_cabin = new(locate(72, 3, 1))
-	trailer_cabin.dir = EAST
-	trailer_locomotive.connected = trailer_cabin
+	trailer_stage_train()
 	trailer_locomotive.fuel = trailer_locomotive.max_fuel
 	trailer_engineer = trailer_actor(74, 4, "Engineer", /obj/item/clothing/under/civ4, SOUTH)
-	trailer_log("prepare done")
+	trailer_stage_life()
+	trailer_log("prepare done: [trailer_errands.len] villagers going about their day")
 
 /proc/trailer_oven()
 	var/obj/structure/oven/oven = locate(/obj/structure/oven) in locate(35, 13, 1)
@@ -621,9 +620,217 @@ var/trailer_engineer_spot = 0
 /proc/trailer_train_glide()
 	var/obj/structure/trains/locomotive/L = trailer_locomotive
 	while (!intro_stopping && L.automovement)
-		var/list/group = list(L, trailer_cabin, trailer_customer) + L.transporting + trailer_cabin.transporting
+		var/list/group = list()
+		for (var/obj/structure/trains/car in list(L) + trailer_extra_cars)
+			group |= car
+			for (var/atom/movable/A in car.loc)
+				group |= A
 		trailer_glide_group(group, L.train_speed)
 		sleep(world.tick_lag)
+
+// ---------------------------------------------------------------- village life
+// Background villagers each loop through a little routine of errands built
+// from the same native actions as the production chain: walking, picking
+// things up, setting them on tables, sitting, working at a tool, chatting.
+var/list/trailer_errands = list()
+var/list/trailer_errand_step = list()
+var/list/trailer_extra_cars = list()
+var/mob/living/human/intro_actor/trailer_passenger
+var/obj/structure/trains/transport/cabin/trailer_cabin2
+
+/proc/trailer_errand_actor(tx, ty, actor_name, uniform_type, list/routine, list/tools = null)
+	var/mob/living/human/intro_actor/H = trailer_actor(tx, ty, actor_name, uniform_type)
+	for (var/tool_type in tools)
+		var/obj/item/I = new tool_type(H.loc)
+		trailer_pickup(H, I)
+	trailer_errands[H] = routine
+	trailer_errand_step[H] = 1
+	return H
+
+/proc/trailer_bubble(mob/living/human/H, ticks)
+	var/image/I = image('icons/mob/talk.dmi', H, "typing", MOB_LAYER + 1)
+	H.overlays += I
+	sleep(ticks)
+	H.overlays -= I
+
+/proc/trailer_table_at(tx, ty)
+	return locate(/obj/structure/table) in locate(tx, ty, 1)
+
+/proc/trailer_job_errand(mob/living/human/H, token)
+	var/list/routine = trailer_errands[H]
+	var/i = trailer_errand_step[H]
+	if (i > routine.len)
+		i = 1
+	trailer_errand_step[H] = i + 1
+	var/list/step = routine[i]
+	switch (step[1])
+		if ("walk")
+			var/delay = step.len >= 4 ? step[4] : TRAILER_STEP
+			if (H.buckled)
+				H.buckled.user_unbuckle_mob(H)
+			trailer_walk(H, step[2], step[3], delay, token)
+		if ("face")
+			H.dir = step[2]
+		if ("wait")
+			sleep(step[2])
+		if ("chat")
+			if (step.len >= 3)
+				sleep(step[3])
+			trailer_bubble(H, step[2])
+		if ("work")
+			// Swing whatever is in hand at a nearby object, step[4] times.
+			var/turf/T = locate(step[2], step[3], 1)
+			trailer_face(H, T)
+			var/atom/target = T
+			for (var/obj/O in T)
+				target = O
+				break
+			for (var/k in 1 to step[4])
+				H.do_attack_animation(target)
+				sleep(7)
+		if ("take")
+			// Pick up an item of a type lying on or beside a tile.
+			var/turf/T = locate(step[2], step[3], 1)
+			var/obj/item/I
+			for (var/obj/item/C in T)
+				if (istype(C, step[4]) && !C.anchored)
+					I = C
+					break
+			if (I && I.Adjacent(H) && (!H.l_hand || !H.r_hand))
+				trailer_face(H, T)
+				trailer_pickup(H, I)
+		if ("put")
+			// Set the carried item of a type on the table at a tile.
+			var/obj/item/I = trailer_held(H, step[4])
+			var/obj/structure/table/T = trailer_table_at(step[2], step[3])
+			if (I && T && T.Adjacent(H))
+				trailer_face(H, T)
+				trailer_hold(H, I)
+				T.attackby(I, H, "icon-x=[rand(10, 22)];icon-y=[rand(12, 20)]")
+		if ("sit")
+			var/obj/structure/bed/chair/C = locate(/obj/structure/bed/chair) in locate(step[2], step[3], 1)
+			if (C && H.loc == C.loc && !H.buckled)
+				C.user_buckle_mob(H, H)
+				if (step.len >= 4)
+					H.dir = step[4]
+	sleep(1)
+	return TRUE
+
+/proc/trailer_stage_life()
+	// Decorative crops show as ready for harvest, like the wheat.
+	for (var/obj/structure/farming/plant/P in world)
+		if (istype(P, /obj/structure/farming/plant/wheat))
+			continue
+		P.stage = P.readyStageMin
+		var/sprite_name = P.sprite_plant ? P.sprite_plant : P.plant
+		P.icon_state = "[sprite_name]-harvest"
+	// Livestock in the pasture.
+	for (var/list/spec in list(
+		list(/mob/living/simple_animal/cattle/cow, 4, 17), list(/mob/living/simple_animal/cattle/cow, 8, 16),
+		list(/mob/living/simple_animal/goat/female, 10, 18), list(/mob/living/simple_animal/chicken, 5, 16),
+		list(/mob/living/simple_animal/chicken, 6, 18), list(/mob/living/simple_animal/chicken, 9, 17),
+		list(/mob/living/simple_animal/horse, 41, 2)))
+		var/animal_type = spec[1]
+		var/mob/living/simple_animal/A = new animal_type(locate(spec[2], spec[3], 1))
+		trailer_living += A
+	// Produce for the market and a drink for the tavern.
+	for (var/k in 1 to 12)
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/apple(locate(46, 12, 1))
+		new /obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin(locate(42, 12, 1))
+	new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood(locate(43, 18, 1))
+	new /obj/item/weapon/reagent_containers/food/drinks/bottle/wine(locate(42, 18, 1))
+	var/apple = /obj/item/weapon/reagent_containers/food/snacks/grown/apple
+	var/pumpkin = /obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin
+	var/glass = /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood
+	// Market: the stallholder restocks the stalls, two neighbours come shopping.
+	trailer_errand_actor(44, 12, "Stallholder", /obj/item/clothing/under/civf1, list(
+		list("walk", 45, 12), list("take", 46, 12, apple), list("walk", 44, 12), list("put", 44, 11, apple),
+		list("chat", 15), list("walk", 43, 12), list("take", 42, 12, pumpkin), list("put", 42, 11, pumpkin),
+		list("walk", 45, 12), list("put", 46, 11, apple), list("wait", 20)))
+	trailer_errand_actor(53, 9, "Neighbour", /obj/item/clothing/under/civ2, list(
+		list("walk", 46, 10), list("face", NORTH), list("chat", 15), list("take", 46, 11, apple),
+		list("walk", 49, 9), list("walk", 53, 9), list("face", NORTH), list("wait", 30),
+		list("walk", 44, 10), list("face", NORTH), list("chat", 12), list("take", 44, 11, apple),
+		list("walk", 53, 9), list("wait", 25)))
+	trailer_errand_actor(42, 9, "Neighbour", /obj/item/clothing/under/civf2, list(
+		list("wait", 20), list("walk", 42, 10), list("face", NORTH), list("chat", 12, 5),
+		list("take", 42, 11, pumpkin), list("walk", 48, 9), list("walk", 49, 8), list("face", EAST),
+		list("wait", 30), list("walk", 42, 9), list("wait", 15)))
+	// Two friends meet between the north cottages for a chat.
+	trailer_errand_actor(51, 8, "Villager", /obj/item/clothing/under/civ3, list(
+		list("walk", 55, 8), list("face", EAST), list("chat", 20), list("wait", 20), list("chat", 15),
+		list("wait", 10), list("walk", 51, 8), list("face", NORTH), list("wait", 40)))
+	trailer_errand_actor(61, 9, "Villager", /obj/item/clothing/under/civf3, list(
+		list("walk", 56, 8), list("face", WEST), list("wait", 20), list("chat", 20), list("wait", 15),
+		list("chat", 10), list("walk", 61, 9), list("face", NORTH), list("wait", 40)))
+	// Children playing tag around the meadow.
+	var/list/loop = list(list("walk", 2, 7, 2), list("walk", 12, 7, 2), list("walk", 12, 14, 2), list("walk", 2, 14, 2))
+	trailer_errand_actor(2, 14, "Child", /obj/item/clothing/under/civ5, loop)
+	var/mob/living/human/kid = trailer_errand_actor(12, 7, "Child", /obj/item/clothing/under/civf1, loop)
+	trailer_errand_step[kid] = 3
+	// The smith at the anvil, the woodcutter splitting logs.
+	trailer_errand_actor(32, 3, "Smith", /obj/item/clothing/under/medieval/leather, list(
+		list("walk", 32, 3), list("work", 31, 3, 8), list("walk", 32, 4), list("walk", 34, 4), list("walk", 34, 3),
+		list("work", 35, 2, 3), list("walk", 34, 4), list("walk", 32, 4), list("walk", 32, 3), list("work", 31, 3, 6),
+		list("face", NORTH), list("wait", 15)),
+		list(/obj/item/weapon/hammer))
+	trailer_errand_actor(53, 3, "Woodcutter", /obj/item/clothing/under/farmer_outfit, list(
+		list("walk", 53, 3), list("work", 53, 2, 6), list("walk", 54, 3), list("work", 54, 2, 5),
+		list("walk", 52, 3), list("work", 52, 2, 5), list("wait", 10)),
+		list(/obj/item/weapon/material/hatchet))
+	// The gardener waters the vegetable patch from the water barrels.
+	trailer_errand_actor(24, 3, "Gardener", /obj/item/clothing/under/civ6, list(
+		list("walk", 24, 3), list("work", 25, 3, 2), list("walk", 24, 5), list("walk", 16, 5), list("walk", 13, 4),
+		list("work", 13, 3, 3), list("walk", 11, 4), list("work", 11, 3, 3), list("walk", 16, 5), list("walk", 24, 5),
+		list("wait", 10)),
+		list(/obj/item/weapon/reagent_containers/glass/bucket))
+	// Tavern: the keeper serves a drink, two regulars chat at their tables.
+	trailer_errand_actor(43, 17, "Tavern keeper", /obj/item/clothing/under/civ4, list(
+		list("walk", 43, 17), list("take", 43, 18, glass), list("walk", 46, 16), list("put", 47, 16, glass),
+		list("chat", 15), list("walk", 44, 16), list("wait", 30), list("walk", 46, 16), list("take", 47, 16, glass),
+		list("walk", 43, 17), list("put", 43, 18, glass), list("work", 42, 18, 3), list("wait", 20)))
+	trailer_errand_actor(42, 17, "Regular", /obj/item/clothing/under/civ2, list(
+		list("sit", 42, 17, NORTH), list("chat", 20, 10), list("wait", 30)))
+	trailer_errand_actor(48, 16, "Regular", /obj/item/clothing/under/civ6, list(
+		list("sit", 48, 16, WEST), list("wait", 25), list("chat", 20), list("wait", 15)))
+	// Chapel: the priest tends the altar, two people at prayer.
+	trailer_errand_actor(56, 17, "Priest", /obj/item/clothing/under/medieval/blue, list(
+		list("walk", 56, 17), list("face", NORTH), list("work", 56, 18, 2), list("wait", 30),
+		list("walk", 56, 16), list("face", SOUTH), list("chat", 25), list("wait", 20)))
+	trailer_errand_actor(54, 16, "Worshipper", /obj/item/clothing/under/civf2, list(list("sit", 54, 16, NORTH), list("wait", 60)))
+	trailer_errand_actor(58, 17, "Worshipper", /obj/item/clothing/under/civ1, list(list("sit", 58, 17, NORTH), list("wait", 60)))
+	// Station: travellers waiting on the platform benches.
+	trailer_errand_actor(80, 5, "Traveller", /obj/item/clothing/under/civf3, list(
+		list("sit", 80, 5, SOUTH), list("wait", 40), list("chat", 15)))
+	trailer_passenger = trailer_errand_actor(68, 5, "Passenger", /obj/item/clothing/under/civ3, list(
+		list("sit", 68, 5, SOUTH), list("wait", 30), list("chat", 15)))
+
+// A longer train: tender, two passenger cabins, wagons and a loaded flatbed.
+/proc/trailer_stage_train()
+	var/obj/structure/trains/prev = trailer_locomotive
+	var/list/cars = list(
+		/obj/structure/trains/storage/tender, /obj/structure/trains/transport/cabin,
+		/obj/structure/trains/transport/cabin, /obj/structure/trains/storage/closed,
+		/obj/structure/trains/transport/flatbed, /obj/structure/trains/storage/closed)
+	var/tx = trailer_locomotive.x - 1
+	for (var/car_type in cars)
+		var/obj/structure/trains/car = new car_type(locate(tx, 3, 1))
+		car.dir = EAST
+		prev.connected = car
+		prev = car
+		trailer_extra_cars += car
+		tx--
+	trailer_cabin = trailer_extra_cars[2]
+	trailer_cabin2 = trailer_extra_cars[3]
+	var/obj/structure/trains/transport/flatbed/F = trailer_extra_cars[5]
+	for (var/crate_type in list(/obj/structure/closet/crate/empty))
+		var/obj/structure/closet/crate/C = new crate_type(F.loc)
+		C.anchored = TRUE
+		F.transporting += C
+
+/proc/trailer_start_errands()
+	for (var/mob/living/human/H in trailer_errands)
+		trailer_start_job(H, /proc/trailer_job_errand)
 
 // ---------------------------------------------------------------- the take
 /proc/trailer_run()
@@ -631,6 +838,7 @@ var/trailer_engineer_spot = 0
 	trailer_start_job(trailer_farmer, /proc/trailer_job_farmer)
 	trailer_start_job(trailer_baker, /proc/trailer_job_baker)
 	trailer_start_job(trailer_engineer, /proc/trailer_job_engineer)
+	trailer_start_errands()
 	trailer_scene_seeds()
 	trailer_scene_harvest()
 	trailer_scene_bakery()
@@ -733,6 +941,18 @@ var/trailer_engineer_spot = 0
 	intro_check(trailer_customer.loc == trailer_cabin.loc, "customer climbed into the cabin")
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
 	trailer_customer.dir = EAST
+	// A second traveller climbs into the cabin behind.
+	trailer_take(trailer_passenger)
+	if (trailer_passenger.buckled)
+		trailer_passenger.buckled.user_unbuckle_mob(trailer_passenger)
+	trailer_walk(trailer_passenger, trailer_cabin2.x, trailer_cabin2.y + 1)
+	trailer_passenger.dir = SOUTH
+	trailer_cabin2.MouseDrop_T(trailer_passenger, trailer_passenger)
+	if (trailer_passenger.loc == trailer_cabin2.loc)
+		trailer_cabin2.MouseDrop_T(trailer_passenger, trailer_passenger)
+		trailer_passenger.dir = EAST
+	else
+		trailer_log("passenger could not board the second cabin")
 	// The engineer finishes their round and heads for the footplate.
 	trailer_take(trailer_engineer)
 	spawn(0)

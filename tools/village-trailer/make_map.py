@@ -156,11 +156,9 @@ put(57, 8, LAMP)
 # Lamps and flowers along the road verge (y5 keeps the carriage lane clear).
 for x in (12, 26, 40, 52):
     put(x, 5, LAMP)
-for x, y in [(2, 8), (5, 8), (11, 8), (3, 13), (12, 10), (7, 15), (10, 15), (16, 5),
-             (24, 5), (35, 5), (63, 8), (64, 12)]:
+for x, y in [(2, 8), (5, 8), (11, 8), (3, 13), (12, 10), (16, 5), (24, 5), (35, 5), (63, 8), (64, 12)]:
     put(x, y, FLOWERS)
-for x, y in [(1, 11), (12, 16), (3, 16)]:
-    put(x, y, '/obj/structure/wild/rock')
+put(1, 11, '/obj/structure/wild/rock')
 
 # Farm stores beside the field path.
 put(28, 12, CRATE)
@@ -176,13 +174,86 @@ put(79, 8, '/obj/structure/sign/custom{name = "Ticket office"; desc = "All train
 for x in (71, 77, 83):
     put(x, 5, LANTERN)
 
-# Scenery: tree lines along the north edge and the empty corners.
-for x in range(2, W, 5):
-    put(x, 18, TREE)
-for x in (13, 26, 41, 52, 66, 88, 94):
-    put(x, 2 if x < 56 else 14, TREE)
-for x in (86, 91, 97):
-    put(x, 8, TREE)
+
+def fence_ring(x1, y1, x2, y2, gaps=()):
+    for x in range(x1, x2 + 1):
+        for y in range(y1, y2 + 1):
+            if (x in (x1, x2) or y in (y1, y2)) and (x, y) not in gaps:
+                put(x, y, '/obj/structure/grille/fence/picket')
+
+
+# North edge: pasture, orchard, granary, tavern, chapel and more homes.
+fence_ring(2, 15, 12, 19)                      # animals are placed by the director
+for x in range(15, 27, 3):
+    for y in (16, 18):
+        put(x, y, TREE)                         # orchard behind the wheat
+building(31, 15, 39, 19, doors=[(31, 17)], windows=[(35, 15)])
+for x, y in [(33, 18), (34, 18), (37, 18), (38, 16), (38, 17)]:
+    put(x, y, CRATE)
+for x, y in [(35, 18), (36, 18), (33, 16)]:
+    put(x, y, BARREL)
+put(30, 18, '/obj/structure/sign/custom{name = "Granary"; desc = "The village stores."}')
+# Tavern: bar along the back, two tables with chairs, door onto the market.
+building(41, 15, 49, 19, doors=[(45, 15)], windows=[(43, 15), (47, 15)])
+for x in (42, 43, 44):
+    put(x, 18, TABLE)                           # the bar
+put(48, 18, BARREL)
+put(42, 16, TABLE)
+put(42, 17, CHAIR)
+put(47, 16, TABLE)
+put(47, 17, CHAIR)
+put(48, 16, '/obj/structure/bed/chair/wood/alt')
+put(44, 14, '/obj/structure/sign/custom{name = "The Golden Sheaf"; desc = "Tavern. Ale, bread and gossip."}')
+# Chapel with pews and an altar.
+building(52, 15, 60, 19, doors=[(56, 15)], windows=[(54, 15), (58, 15)])
+put(56, 18, TABLE)
+put(55, 18, LANTERN)
+put(57, 18, LANTERN)
+for x in (54, 58):
+    put(x, 16, '/obj/structure/bed/chair/wood/alt')
+    put(x, 17, '/obj/structure/bed/chair/wood/alt')
+put(53, 14, FLOWERS)
+put(59, 14, FLOWERS)
+cottage(63, 15, door_side='south')
+cottage(71, 15, door_side='south')
+cottage(79, 15, door_side='south')
+
+# South edge: vegetable garden, water barrels, paddock and lumber yard.
+rect(11, 2, 15, 3, PLOUGH)
+for x in range(11, 16):
+    put(x, 2, '/obj/structure/farming/plant/cabbage')
+    put(x, 3, '/obj/structure/farming/plant/pumpkin')
+for x in range(10, 17):
+    put(x, 1, '/obj/structure/grille/fence/picket')
+put(25, 3, BARREL)
+put(26, 3, BARREL)
+put(25, 2, '/obj/item/weapon/reagent_containers/glass/bucket')
+fence_ring(39, 1, 43, 4)
+for x, y in [(52, 2), (53, 2), (54, 2)]:
+    put(x, y, '/obj/item/stack/material/wood{amount = 10}')
+put(51, 3, CRATE)
+put(55, 4, '/obj/structure/sign/custom{name = "Lumber yard"; desc = "Firewood and timber."}')
+
+# East of the station: a farmstead and a field the train runs past.
+cottage(88, 7, door_side='south')
+rect(86, 12, 99, 13, PLOUGH)
+for x in range(86, 100):
+    put(x, 12, '/obj/structure/farming/plant/corn')
+    put(x, 13, '/obj/structure/farming/plant/corn')
+
+
+def empty(x, y):
+    return grid[(x, y)][0] == GRASS and not grid[(x, y)][1]
+
+
+# Scenery: trees wherever the edges are still open grass.
+for x in range(2, W, 4):
+    for y in (19, 20):
+        if empty(x, y) and (x + y) % 2:
+            put(x, y, TREE)
+for x, y in [(13, 2), (27, 2), (66, 14), (94, 15), (97, 9), (86, 9), (99, 17), (90, 18)]:
+    if empty(x, y):
+        put(x, y, TREE)
 
 
 def main():
