@@ -141,3 +141,4 @@ Four units of polypropylene can also be made into an ordinary cloth sheet or a u
 Four units of polyethylene can be made into a throwable plastic play ball at the same bench.
 
 Plastic sheets can be crafted into decorative straight pipes, elbows and junctions on maps with the relevant plastic recipes. These props do not carry fluids. A hammer dismantles one back into one plastic sheet.
+At the reaction bench, two units each of butyl rubber and polypropylene make an adhesive tape roll. The tape can repair a broken drone using the existing tape interaction. Use it on a copper ingot to consume the roll and ingot and make one insulated power-cable piece.

@@ -25,6 +25,7 @@
 	biochemistry_insulated_cable_checks()
 	biochemistry_mixed_gelatin_checks()
 	biochemistry_plastic_pipe_checks()
+	biochemistry_butyl_tape_checks()
 	return TRUE
 
 /proc/biochemistry_plastic_pipe_checks()
@@ -34,6 +35,20 @@
 	var/obj/item/stack/material/plastic/plastic = locate() in site
 	chemistry_assert(plastic && plastic.amount == 1, "Plastic pipe did not return one sheet")
 	qdel(plastic)
+
+/proc/biochemistry_butyl_tape_checks()
+	var/obj/structure/reaction_bench/bench = processing_new_bench()
+	processing_add(bench, "butylrubber", 2)
+	chemistry_assert(!bench.finish_polymer_product("butyl_tape") && bench.collector.reagents.get_reagent_amount("butylrubber") == 2, "Tape without film consumed rubber")
+	processing_add(bench, "polypropylene", 2)
+	chemistry_assert(bench.finish_polymer_product("butyl_tape") && !bench.collector.reagents.get_reagent_amount("butylrubber") && !bench.collector.reagents.get_reagent_amount("polypropylene"), "Butyl tape production failed")
+	var/obj/item/taperoll/butyl/tape = locate() in get_turf(bench)
+	chemistry_assert(tape && !tape.insulate_copper(null), "Tape accepted missing copper")
+	var/obj/item/stack/material/copper/copper = new(get_turf(bench), 2, FALSE)
+	chemistry_assert(tape.insulate_copper(copper) && copper.amount == 1, "Tape did not consume one copper ingot")
+	chemistry_assert(locate(/obj/item/stack/cable_coil) in get_turf(bench), "Butyl-insulated cable missing")
+	qdel(copper)
+	qdel(bench)
 
 /proc/biochemistry_polymer_product_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench()
