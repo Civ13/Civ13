@@ -306,6 +306,38 @@
 		diet_assert(istype(restored) && restored.diet_taste_token == liker.mind.diet_taste_token && restored.diet_tastes ~= liker.mind.diet_tastes && restored.diet_tastes_known["carrot"] == 1, "tastes survive a native save and load")
 		restored.diet_ensure_tastes()
 		diet_assert(restored.diet_taste_token == liker.mind.diet_taste_token && findtext(restored.discoveries_html(), "enjoy the taste of carrot"), "restored character keeps tastes and readable notes without a reroll")
+		// Full body round trip: the saved character body carries its diet state and its mind.
+		var/mob/living/human/diet_tester/saved_body = diet_subject(site)
+		saved_body.mind.diet_tastes = list("carrot" = 1, "cabbage" = -1)
+		diet_eat(saved_body, "nutriment", 4, list("carrot" = 1))
+		saved_body.diet_reserves = list("carbohydrate" = 12.5, "protein" = 61, "fat" = 7, "vitamins" = 140)
+		saved_body.diet_enjoyment = 37
+		saved_body.diet_imbalance_ticks = 512
+		saved_body.diet_status_text() // populates the runtime trend snapshot
+		saved_body.persistence_owner_ckey = "dietfixture" // an owned character body is reclaimed, not rejuvenated
+		var/saved_bonus = saved_body.diet_capacity_bonus()
+		var/saved_token = saved_body.mind.diet_taste_token
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 1
+		var/savefile/B = new("body.sav")
+		B["/format_version"] << 2
+		var/body_entry = map_storage.BuildVarDirectory(B, saved_body, 1)
+		B.Flush()
+		B = null
+		B = new("body.sav")
+		map_storage.clear_bookkeeping()
+		var/mob/living/human/diet_tester/reclaimed = map_storage.Load_Entry(B, body_entry, starting_loc = site)
+		diet_assert(istype(reclaimed) && reclaimed != saved_body, "saved body loads as a new body")
+		diet_assert(reclaimed.diet_reserves ~= saved_body.diet_reserves && reclaimed.diet_enjoyment == 37 && reclaimed.diet_imbalance_ticks == 512, "body diet reserves, enjoyment and imbalance survive a body save and load")
+		diet_assert(!reclaimed.diet_last_check, "runtime trend snapshot is not restored")
+		diet_assert(diet_close(reclaimed.diet_capacity_bonus(), saved_bonus), "reclaimed body keeps its diet capacity bonus")
+		diet_assert(istype(reclaimed.mind) && reclaimed.mind != saved_body.mind && reclaimed.mind.diet_taste_token == saved_token && reclaimed.mind.diet_tastes ~= saved_body.mind.diet_tastes && reclaimed.mind.diet_tastes_known["carrot"] == 1, "saved body carries its character tastes")
+		reclaimed.mind.current = reclaimed
+		reclaimed.mind.diet_ensure_tastes()
+		diet_assert(reclaimed.mind.diet_taste_token == saved_token && findtext(reclaimed.mind.discoveries_html(), "enjoy the taste of carrot"), "reclaimed character keeps notes without a taste reroll")
+		var/before_enjoyment = reclaimed.diet_enjoyment
+		diet_eat(reclaimed, "nutriment", 2, list("carrot" = 1))
+		diet_assert(reclaimed.diet_enjoyment > before_enjoyment && reclaimed.diet_reserves["vitamins"] > 140, "reclaimed body keeps eating and enjoying liked food")
 		text2file("PASS: balanced diet", "result.txt")
 	catch (var/exception/E)
 		world.log << "DIET exception: [E] at [E.file]:[E.line]"
