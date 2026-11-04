@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-bakery-video-5161688-held-20261028-r1",
+  "message": "ci: native flatbread bake and same-output handoff r1",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "bakery",
+  "attempt": 1,
+  "scene_sha256": "35896119031c8d46a17434d15ad1117b2a912b02e50ad66e8f512049d60f7da2",
+  "approval": "User-approved next trailer capture: genuine flatbread baking and same-output handoff; scripted headless actors; unchanged limits and guards; expires 2026-10-29T03:19:44Z; no production or YouTube changes."
+}
