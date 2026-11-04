@@ -74,6 +74,7 @@ var/route_runtime_error = FALSE
 	catch(var/exception/e)
 		route_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = route_failures, "runtime_error" = route_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
 
 /proc/belt_make(x, y, d, type = /obj/structure/factory_belt)
 	var/obj/structure/factory_belt/B = new type(locate(x, y, 1))
