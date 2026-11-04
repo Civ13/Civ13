@@ -256,6 +256,38 @@ class AutopilotTests(unittest.TestCase):
     def test_player_help_config_is_optional(self):
         self.assertEqual(autopilot.load_player_help_config(str(ROOT / "does-not-exist.json")), {})
 
+    def test_chat_endpoint_accepts_player_help_url_forms(self):
+        for url in ("http://10.0.0.2:11434", "http://10.0.0.2:11434/", "http://10.0.0.2:11434/v1", "http://10.0.0.2:11434/api/chat"):
+            self.assertEqual(autopilot.chat_endpoint(url), "http://10.0.0.2:11434/api/chat", url)
+        for bad in ("ftp://host", "http://host/other", "not a url"):
+            with self.assertRaises(ValueError, msg=bad):
+                autopilot.chat_endpoint(bad)
+
+    def test_ask_ollama_disables_thinking_and_uses_settings(self):
+        sent = {}
+
+        class Reply(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return False
+
+        def fake_urlopen(request, timeout):
+            sent["url"], sent["timeout"], sent["body"] = request.full_url, timeout, json.loads(request.data)
+            return Reply(b'{"message": {"content": "{}"}}')
+
+        original = autopilot.urllib.request.urlopen
+        autopilot.urllib.request.urlopen = fake_urlopen
+        try:
+            autopilot.ask_ollama("http://h:11434/v1", "m", [], timeout=90, num_ctx=32768)
+        finally:
+            autopilot.urllib.request.urlopen = original
+        self.assertEqual(sent["url"], "http://h:11434/api/chat")
+        self.assertEqual(sent["timeout"], 90)
+        self.assertIs(sent["body"]["think"], False)
+        self.assertEqual(sent["body"]["options"]["num_ctx"], 32768)
+
 
 if __name__ == "__main__":
     unittest.main()

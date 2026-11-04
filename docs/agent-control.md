@@ -144,8 +144,11 @@ a JSON schema (from `tools/agent-control/catalog.py`). An MCP client entry:
   "env": {"CIV13_AGENT_NAME": "gamemaster", "CIV13_AGENT_TOKEN_FILE": "/path/to/token"}}}}
 ```
 
-`autopilot.py` lets a local Ollama model play one character. It reuses
-`config/player-help.json` (`ollama_url`, `model`, `auth_token_env`) when present:
+`autopilot.py` lets an Ollama model play one character. It reuses the Player
+Help bridge config (`--player-help-config`, else `data/player-help-config.json`,
+else `config/player-help.json`): `ollama_url` (origin, `/v1` or `/api/chat`),
+`model`, `auth_token_env`, `num_ctx` and `think` (off unless `true`). Using the
+same `num_ctx` keeps Ollama from reloading a model shared with Player Help:
 
 ```text
 python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal "Gather food and greet people" --steps 30 --release
