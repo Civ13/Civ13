@@ -1208,6 +1208,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     expected.add('character_return_preparation')
                     expected.add('access_lists')
                     expected.add('game_ready')
+                    expected.add('agent_control')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 

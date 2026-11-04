@@ -40,9 +40,6 @@
 	for (var/mob/M in agent_characters.Copy())
 		if (QDELETED(M))
 			agent_characters -= M
-	for (var/key in agent_characters.Copy())
-		if (isnull(key))
-			agent_characters -= key
 
 /datum/agent_control/proc/character_arg(datum/agent_identity/A, list/req)
 	prune_characters()
@@ -185,6 +182,8 @@
 /datum/agent_control/proc/act_character_act(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
 	var/mob/living/M = C.body
+	// Topic calls have no usr; click, pull and emote paths read it as the actor.
+	usr = M
 	var/action = lowertext("[req["do"]]")
 	if (world.time < C.next_action && (action in list("move", "click", "use", "drop")))
 		agent_fail("cooldown", "wait [C.next_action - world.time] ticks")

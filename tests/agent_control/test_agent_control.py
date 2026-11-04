@@ -129,6 +129,9 @@ class McpTests(unittest.TestCase):
         ])
         self.assertEqual([r["id"] for r in replies], [1, 2, 3, 4, 5])
         self.assertEqual(replies[0]["result"]["capabilities"], {"tools": {}})
+        self.assertEqual(replies[0]["result"]["protocolVersion"], "2025-06-18")
+        future = self.run_session([{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2099-01-01"}}])
+        self.assertEqual(future[0]["result"]["protocolVersion"], agent.PROTOCOL_VERSION)
         tools = replies[1]["result"]["tools"]
         self.assertEqual(len(tools), len(ACTIONS))
         for tool in tools:
@@ -175,6 +178,29 @@ class SecurityContractTests(unittest.TestCase):
             if "log" in line and "token" in line.lower():
                 self.assertNotIn("[input[\"token\"]]", line)
                 self.assertNotIn("A.token]", line)
+
+    def test_authentication_and_scope_decide_access(self):
+        source = dm_source("agent_control.dm")
+        handle = re.search(r"/datum/agent_control/proc/handle\(.*?(?=\n/)", source, re.S).group(0)
+        self.assertIn('if (!A || !agent_control_token_matches(input["token"], A.token))', handle)
+        self.assertIn('if (!A.has_scope(spec["scope"]))', handle)
+        self.assertLess(handle.index("agent_control_token_matches"), handle.index("dispatch(action, A, req)"))
+        self.assertLess(handle.index("A.has_scope"), handle.index("dispatch(action, A, req)"))
+        self.assertLess(handle.index("allowed_addresses"), handle.index("agent_control_token_matches"))
+
+    def test_agent_control_state_is_protected(self):
+        actions = dm_source("agent_actions.dm")
+        guard = re.search(r"/proc/agent_protected_target\(target\).*?(?=\n/)", actions, re.S).group(0)
+        for path in ("/datum/agent_control", "/datum/agent_identity", "/mob/agent_proxy", "/datum/agent_job", "agent_holder == target"):
+            self.assertIn(path, guard)
+        names = re.search(r"/proc/agent_protected_var\(name\)\n\treturn name in list\((.*)\)", actions).group(1)
+        for name in ("agent_control", "agent_characters", "token", "address", "computer_id"):
+            self.assertIn(f'"{name}"', names)
+        vars_of = re.search(r"/proc/agent_vars_of\(target\).*?(?=\n/)", actions, re.S).group(0)
+        self.assertIn("agent_protected_target(target)", vars_of)
+        call = re.search(r"/datum/agent_control/proc/act_call_proc\(.*?(?=\n/)", actions, re.S).group(0)
+        self.assertIn("agent_protected_target(target)", call)
+        self.assertIn("agent_protected_var(name)", re.search(r"/datum/agent_control/proc/act_set_var\(.*?(?=\n/)", actions, re.S).group(0))
 
     def test_mutations_are_audited(self):
         sources = dm_source("agent_actions.dm") + dm_source("agent_characters.dm")

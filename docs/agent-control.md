@@ -43,6 +43,11 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   procs and verbs) and shown to online admins, except announcements and
   individual character steps. Reads and character movement go to the game
   log. Agents can read the admin log back with `logs`.
+- **Protected state.** Agent control's own objects (the controller, agent
+  identities, proxies and their admin holders, jobs) cannot be read, edited or
+  have procs called on them, and `get_vars`/`set_var` never touch the globals
+  `agent_control` and `agent_characters` or any `token`, `address`,
+  `computer_id` or `lastKnownIP` variable, whatever scopes an agent holds.
 - **Guards kept.** `set_var` refuses `VVlocked` variables plus `type`,
   `parent_type`, `vars`, `ckey`, `key`, `computer_id` and `lastKnownIP`.
   `kick` refuses admins. `delete_atom` refuses mobs with a connected player.
@@ -114,7 +119,9 @@ heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
 (`text`), `click` (`target` ref the character can see, optional `modifier`),
 `use` (the held item), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`,
-`harm`) and `resist`. Movement waits for the mob's movement delay.
+`harm`) and `resist`. Actions run with `usr` set to the character. Movement waits for the mob's
+movement delay and is logged to the game log; other character actions reach
+the admin log.
 Controlled characters are not treated as SSD.
 
 ## Tools

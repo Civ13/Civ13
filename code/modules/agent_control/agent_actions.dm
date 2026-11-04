@@ -110,7 +110,13 @@
 	audit_read(A, "find", "[path] z=[z] limit=[limit]")
 	var/list/out = list()
 	var/list/source = ispath(path, /mob) ? mob_list : world
+	var/scanned = 0
+	var/scan_capped = FALSE
 	for (var/atom/AT in source)
+		// Bound one request's work; the whole Gaia world is about 400k turfs.
+		if (++scanned > 500000)
+			scan_capped = TRUE
+			break
 		if (!istype(AT, path))
 			continue
 		if (z && AT.z != z)
@@ -120,7 +126,7 @@
 		out += list(agent_encode(AT))
 		if (out.len >= limit)
 			break
-	return list("results" = out, "limited" = out.len >= limit)
+	return list("results" = out, "limited" = out.len >= limit || scan_capped, "scan_capped" = scan_capped)
 
 /datum/agent_control/proc/act_logs(datum/agent_identity/A, list/req)
 	var/count = clamp(round(text2num("[req["count"]]") || 50), 1, 200)
@@ -142,11 +148,28 @@
 // ---------------------------------------------------------------------------
 // Variables
 
+// Agent control's own state (tokens, scopes, proxy rights) is never readable
+// or writable through the API, whatever scopes an agent holds.
+/proc/agent_protected_target(target)
+	if (istype(target, /datum/agent_control) || istype(target, /datum/agent_identity) || istype(target, /mob/agent_proxy) || istype(target, /datum/agent_job))
+		return TRUE
+	if (istype(target, /datum/admins))
+		for (var/name in agent_control.agents)
+			var/datum/agent_identity/I = agent_control.agents[name]
+			if (I.proxy && I.proxy.agent_holder == target)
+				return TRUE
+	return FALSE
+
+/proc/agent_protected_var(name)
+	return name in list("agent_control", "agent_characters", "address", "computer_id", "lastKnownIP", "token")
+
 /proc/agent_vars_of(target)
 	if (target == "global")
 		return global.vars
 	if (target == world)
 		agent_fail("bad_target", "world variables are reported by status")
+	if (agent_protected_target(target))
+		agent_fail("forbidden", "agent control state is not accessible to agents")
 	if (istype(target, /datum) || istype(target, /client))
 		var/datum/D = target
 		return D.vars
@@ -162,13 +185,17 @@
 		if (names.len > 100)
 			agent_fail("bad_args", "at most 100 names")
 		for (var/name in names)
-			if (!(name in V))
+			if (agent_protected_var(name))
+				out[name] = list("protected" = TRUE)
+			else if (!(name in V))
 				out[name] = list("missing" = TRUE)
 			else
 				out[name] = agent_encode(V[name])
 	else
 		// Every variable, with lists and objects summarised to stay bounded.
 		for (var/name in V)
+			if (agent_protected_var(name))
+				continue
 			var/value = V[name]
 			out[name] = islist(value) ? list("list_len" = length(value)) : agent_encode(value, 2)
 	return list("target" = target == "global" ? "global" : agent_encode(target), "vars" = out)
@@ -181,7 +208,7 @@
 	var/name = req["name"]
 	if (!istext(name))
 		agent_fail("bad_args", "name is required")
-	if (agent_locked_var(name))
+	if (agent_locked_var(name) || agent_protected_var(name))
 		agent_fail("locked_var", "[name] cannot be edited by agents")
 	var/list/V = agent_vars_of(target)
 	if (!(name in V))
@@ -226,6 +253,8 @@
 		if (!procref)
 			agent_fail("missing_proc", "no global proc [procname]")
 	else
+		if (agent_protected_target(target))
+			agent_fail("forbidden", "agent control state is not accessible to agents")
 		if (!hascall(target, procname))
 			agent_fail("missing_proc", "[target] has no proc [procname]")
 		procref = procname

@@ -156,6 +156,19 @@ def main(argv=None):
         character = args.character
     print(f"controlling {character} with {args.model}")
 
+    try:
+        return run(client, args, character, token)
+    finally:
+        if args.release:
+            try:
+                released = client.request("character_release", {"character": character, "delete": bool(args.spawn)})
+                if not released.get("ok"):
+                    print(f"release failed: {released.get('error')} {released.get('detail', '')}", file=sys.stderr)
+            except (AgentError, OSError) as exc:
+                print(f"release failed: {exc}", file=sys.stderr)
+
+
+def run(client, args, character, token):
     history = [{"role": "system", "content": SYSTEM + f"\nYour goal: {args.goal}"}]
     since = 0
     for step in range(1, args.steps + 1):
@@ -183,9 +196,6 @@ def main(argv=None):
             if not act.get("ok"):
                 history.append({"role": "user", "content": f"That failed: {outcome}"})
         time.sleep(args.interval)
-
-    if args.release:
-        client.request("character_release", {"character": character, "delete": bool(args.spawn)})
     return 0
 
 

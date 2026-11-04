@@ -89,7 +89,8 @@ replaces existing action-time confirmations, held-runner rules or runtime guards
 <!-- 2026-11-04: authenticated agent control -->
 `docs/agent-control.md` owns the opt-in `agent_control` Topic API: per-agent
 tokens and scopes in git-ignored `config/agent-control.txt`, loopback-only by
-default, admin-log audit of every mutation, a proxy `usr` whose rights come from
+default, admin-log audit of every mutation (character moves go to the game log
+only), protected agent-control state, a proxy `usr` whose rights come from
 the agent line, and ckey-less or player-handed-over characters. It is separate
 from the read-only lifecycle/diagnostic transport and the disabled gameplay
 bridge; keep those boundaries unchanged. Keep `tools/agent-control/catalog.py`
