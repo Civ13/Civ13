@@ -350,3 +350,24 @@ var/global/cable_identity_sequence = 0
 	. = ..()
 	if (. && loc != previous_location)
 		disconnect()
+
+// Plastic insulation and copper are both paid before cable is created.
+/obj/item/stack/material/plastic/proc/make_insulated_cable(obj/item/stack/material/copper/conductor)
+	var/turf/site = get_turf(src)
+	if(gcDestroyed || gc_destroyed || !site || !can_use(1) || !conductor || conductor.gcDestroyed || conductor.gc_destroyed || !conductor.can_use(1))
+		return FALSE
+	conductor.use(1)
+	use(1)
+	new /obj/item/stack/cable_coil(site, 1)
+	return TRUE
+
+/obj/item/stack/material/plastic/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/stack/material/copper))
+		if(!user || user.stat)
+			return
+		if(make_insulated_cable(W))
+			to_chat(user, SPAN_NOTICE("You make insulated cable from the plastic and copper."))
+		else
+			to_chat(user, SPAN_WARNING("You need one plastic sheet and one copper ingot."))
+		return
+	..()
