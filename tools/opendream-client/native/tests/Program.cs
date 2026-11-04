@@ -1,5 +1,4 @@
 using Civ13.Launcher;
-using System.IO.Compression;
 using System.Text.Json;
 using System.Diagnostics;
 
@@ -28,7 +27,8 @@ try {
         Require(help.Contains("process state, ownership and readiness remain unknown") &&
             help.Contains("inspect the displayed status for freshness"), "help implied parsed registrations prove readiness");
         Require(help.Contains("launcher is optional for BYOND gameplay"), "help omitted the ordinary BYOND path");
-        Require(help.Contains("--root") && help.Contains("--local-dreamdaemon") && help.Contains("--server-port"), "help omitted existing options");
+        Require(help.Contains("--root") && help.Contains("--local-dreamdaemon") && help.Contains("--console"), "help omitted existing options");
+        Require(!help.Contains("--server-port") && !help.Contains("OpenDream"), "help still offers the removed OpenDream path");
     }
     if (args.Length is 1 or 2 && args[0] == "--byond-only") {
         await ByondDetectionTests.Run(root, args.Length == 2 ? args[1] : null);
@@ -86,18 +86,15 @@ try {
     Civ13.Launcher.Program.WriteMainMenu(menuOutput);
     var menuText = menuOutput.ToString();
     Require(menuText.Contains("2: Civ13.com servers") &&
-        menuText.Contains("3: ValZarGaming.com servers") &&
-        menuText.Contains("9: OpenDream (experimental)"), "public menu labels changed");
-    var menuPositions = Enumerable.Range(1, 9).Select(key => menuText.IndexOf(key + ": ", StringComparison.Ordinal)).ToArray();
+        menuText.Contains("3: ValZarGaming.com servers"), "public menu labels changed");
+    Require(!menuText.Contains("OpenDream") && !menuText.Contains("9: "), "main menu still offers OpenDream");
+    var menuPositions = Enumerable.Range(1, 8).Select(key => menuText.IndexOf(key + ": ", StringComparison.Ordinal)).ToArray();
     Require(menuPositions.All(position => position >= 0) &&
-        menuPositions.SequenceEqual(menuPositions.Order()), "main menu did not render options in 1-9 visual order");
-    Require(ServerCatalog.OpenDreamMenuKey == "9", "experimental menu key changed");
+        menuPositions.SequenceEqual(menuPositions.Order()), "main menu did not render options in 1-8 visual order");
     Require(ServerCatalog.MenuServer("2") == "Civ13.com", "option 2 selected wrong provider");
     Require(ServerCatalog.MenuServer("3") == "ValZarGaming", "option 3 selected wrong provider");
     foreach (var key in new string?[] { null, "1", "4", "5", "6", "7", "8", "9", "unknown" })
         Require(ServerCatalog.MenuServer(key) is null, "nonserver menu key selected a public provider");
-    Reject(() => ServerCatalog.OpenDreamPort("Nomads", null), "unconfigured OpenDream service");
-    Require(ServerCatalog.OpenDreamPort("Nomads", "18462") == 18462, "explicit OpenDream operator port changed");
     var expectedLinks = new[] { "https://civ13.com/", "https://civ13.github.io/civ13-wiki/", "https://civ13.com/discord", "https://github.com/civ13/civ13/" };
     Require(CommunityLinks.Items.Values.Select(link => link.Url).SequenceEqual(expectedLinks), "official community destinations changed");
     foreach (var item in CommunityLinks.Items) {
@@ -159,73 +156,20 @@ try {
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new TimeoutException())), "DNS timeout");
-    foreach (var file in new[] { "dotnet/dotnet.exe", "RobustToolbox/bin/ClientAuth/Robust.Client.dll", "Content.Client.zip" }) {
-        var path = Path.Combine(root, file);
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, "fixture never executed");
-    }
-    foreach (var mode in new[] { "Nomads", "TDM" }) {
-        var start = Connection.Start(root, mode, initialEndpoint);
-        var expectedPort = mode == "Nomads" ? 1715 : 1714;
-        Require(start.ArgumentList.SequenceEqual(new[] { Path.Combine(root, "RobustToolbox", "bin", "ClientAuth", "Robust.Client.dll"), "--self-contained", "--mount-zip", Path.Combine(root, "Content.Client.zip"), "--connect", "--connect-address", $"udp://8.8.8.8:{expectedPort}", "+launchauth" }), "connection default routing or authentication changed");
-        Require(start.FileName == Path.Combine(root, "dotnet", "dotnet.exe") && !start.UseShellExecute && start.WorkingDirectory == Path.Combine(root, "RobustToolbox", "bin", "ClientAuth"), "packaged runtime/working directory changed");
-        Require(start.Environment["DOTNET_ROOT"] == Path.Combine(root, "dotnet") && start.Environment["ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW"] == Path.Combine(root, "webview"), "packaged runtime environment lost");
-        foreach (var port in new[] { "1", "18459", "65535" })
-            Require(Connection.Start(root, mode, initialEndpoint, port).ArgumentList.Contains($"udp://8.8.8.8:{port}"), "explicit port override lost");
-        Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.") || value.Contains("127.0.0.")), "connection bypassed policy or used unverified/excluded address");
-    }
-    foreach (var invalid in new[] { "0", "65536", "-1", "abc", "1714;calc.exe", "" })
-        Reject(() => Connection.Start(root, "Nomads", initialEndpoint, invalid), "invalid port accepted");
-    Reject(() => Connection.Start(Path.Combine(root, "missing-client"), "Nomads", initialEndpoint), "missing client runtime accepted");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Loopback })), "loopback DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("8.8.8.8"), System.Net.IPAddress.Parse("192.0.2.3") })), "mixed public/reserved endpoint answer");
-    var otherProviderEndpoint = await Connection.ResolveHost("civ13.com", _ => Task.FromResult(new[] { System.Net.IPAddress.Parse("8.8.8.8") }));
-    Reject(() => Connection.Start(root, "Nomads", otherProviderEndpoint), "cross-provider connection address");
-    var package = Path.Combine(root, "package", "Civ13-OpenDream-Windows");
-    Directory.CreateDirectory(package);
-    foreach (var name in Updater.Required) {
-        var path = Path.Combine(package, name);
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, "fixture never executed");
-    }
-    var archive = Path.Combine(root, "client.zip");
-    ZipFile.CreateFromDirectory(Path.GetDirectoryName(package)!, archive);
+    // A plain fixture file stands in for the downloaded launcher bytes; it is never executed.
+    var archive = Path.Combine(root, "launcher-fixture.bin");
+    File.WriteAllText(archive, "fixture never executed");
     var channel = new Channel(1, "fixture", "https://github.com/Civ13/Civ13/releases/download/test/client.zip", Updater.Hash(archive));
     var transport = new MockTransport(archive, JsonSerializer.Serialize(channel));
     var install = Path.Combine(root, "install");
     using (Updater.Lock(install)) Reject(() => Updater.Lock(install).Dispose(), "concurrent update lock");
     using (Updater.Lock(install)) { assertions++; }
-    var first = await Updater.InstallClient(channel, install, transport);
-    Require(File.Exists(Path.Combine(first, "install-receipt.json")), "client receipt missing");
-    Require(await Updater.InstallClient(channel, install, transport) == first && transport.Downloads == 1, "repeat client installation downloaded again");
     var settings = Path.Combine(install, "account-settings.json");
     File.WriteAllText(settings, "preserve me");
-    transport.Offline = true;
-    Require((await Updater.ClientChannel(transport, install, Civ13.Launcher.Program.BundledChannel())).Sha256 == channel.Sha256, "offline cache not used");
-    Require(await Updater.InstallClient(channel, install, transport) == first, "offline installed client unavailable");
-    transport.Offline = false;
-    await RejectAsync(() => Updater.InstallClient(channel with { Sha256 = new string('0', 64) }, install, transport), "client hash failure");
-    Require(File.Exists(Path.Combine(first, "Sign-In.cmd")) && File.ReadAllText(settings) == "preserve me", "failure altered old client/account settings");
-    Require(await Updater.EnsureClient(channel with { Sha256 = new string('0', 64) }, install, transport) == first, "failed update did not fall back to installed client");
-    transport.Offline = true;
-    Require(await Updater.EnsureClient(channel with { Sha256 = new string('1', 64) }, install, transport) == first, "offline download did not fall back to installed client");
-    transport.Offline = false;
-    var before = File.ReadAllText(Path.Combine(install, "last-channel.json"));
-    var hostile = channel with { Url = "https://example.com/client.zip" };
-    transport.Manifest = JsonSerializer.Serialize(hostile);
-    await RejectAsync(() => Updater.ClientChannel(transport, install, Civ13.Launcher.Program.BundledChannel()), "remote invalid origin must not use cache");
-    Require(File.ReadAllText(Path.Combine(install, "last-channel.json")) == before, "invalid remote changed cache");
     foreach (var url in new[] { "http://github.com/Civ13/Civ13/releases/download/test/a.exe", "https://github.com/Other/Repo/releases/download/test/a.exe", "https://github.com:444/Civ13/Civ13/releases/download/test/a.exe", "https://github.com/Civ13/Civ13/releases/download/test/a.exe?extra=yes" })
         Reject(() => (channel with { Url = url }).Validate(), "origin restriction " + url);
-    var unsafeArchive = Path.Combine(root, "unsafe.zip");
-    using (var zip = ZipFile.Open(unsafeArchive, ZipArchiveMode.Create)) {
-        using var writer = new StreamWriter(zip.CreateEntry("../escape.txt").Open()); writer.Write("escape");
-    }
-    Reject(() => Updater.Extract(unsafeArchive, Path.Combine(root, "unsafe")), "archive traversal");
-    Require(!File.Exists(Path.Combine(root, "escape.txt")), "archive escaped staging");
-    var duplicateArchive = Path.Combine(root, "duplicate.zip");
-    using (var zip = ZipFile.Open(duplicateArchive, ZipArchiveMode.Create)) { zip.CreateEntry("same"); zip.CreateEntry("SAME"); }
-    Reject(() => Updater.Extract(duplicateArchive, Path.Combine(root, "duplicate")), "case duplicate archive");
     var exeChannel = channel with { Version = "1.0.1", Url = "https://github.com/Civ13/Civ13/releases/download/test/Civ13.exe" };
     var validated = false;
     var staged = await Updater.StageLauncher(exeChannel, new Version(1, 0, 0), install, transport,
@@ -241,14 +185,6 @@ try {
     Reject(() => Updater.ValidateExecutable(archive, "1.0.1"), "non-EXE update");
     transport.Offline = true;
     await RejectAsync(() => Updater.StageLauncher(exeChannel, new Version(1, 0, 0), install, transport), "offline launcher download");
-    Require(File.Exists(Path.Combine(first, "Sign-In.cmd")), "offline update lost client");
-    File.WriteAllText(Path.Combine(package, "Sign-In.cmd"), "second fixture never executed");
-    var secondArchive = Path.Combine(root, "second-client.zip");
-    ZipFile.CreateFromDirectory(Path.GetDirectoryName(package)!, secondArchive);
-    var secondChannel = channel with { Sha256 = Updater.Hash(secondArchive), Version = "second fixture" };
-    var second = await Updater.InstallClient(secondChannel, install, new MockTransport(secondArchive, JsonSerializer.Serialize(secondChannel)));
-    Require(second != first && File.ReadAllText(Path.Combine(first, "Sign-In.cmd")) == "fixture never executed", "side-by-side install changed previous client");
-    Require(File.ReadAllText(settings) == "preserve me", "new version changed account settings");
     var officialRequirement = Civ13.Launcher.Program.RequiredByond();
     Require(officialRequirement.Version == "516.1688" && officialRequirement.Matches(5, 0, 516, 1688) && !officialRequirement.Matches(5, 0, 516, 1681), "BYOND requirement does not match exact game pin");
     Reject(() => (officialRequirement with { Url = "https://example.com/byond.exe" }).Validate(), "nonofficial BYOND origin");
@@ -347,7 +283,7 @@ try {
                 _ => { if (failStartup) throw new IOException("controlled startup failure"); },
                 _ => { restarted = true; throw new IOException("controlled relaunch failure"); }), "failed update rollback");
             Require(Updater.Hash(target) == previousHash && Updater.Hash(target + ".failed") == Updater.Hash(exe), "failed startup/relaunch did not restore previous EXE");
-            Require(restarted != failStartup && File.ReadAllText(settings) == "preserve me" && Directory.Exists(first), "failure changed data/install or restarted failed startup");
+            Require(restarted != failStartup && File.ReadAllText(settings) == "preserve me", "failure changed data/install or restarted failed startup");
             Require(File.ReadAllText(Path.Combine(install, "native-update-result.json")).Contains("\"rolledBack\":true"), "rollback receipt missing");
         }
         File.Copy(exe, target, true);

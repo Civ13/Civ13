@@ -10,6 +10,17 @@ acceptance checks. No HTTPS server directory or additional backend deployment is
 required. See [SERVER-DISCOVERY.md](SERVER-DISCOVERY.md).
 One successful status query alone does not establish prejoin or gameplay acceptance.
 
+Opening `Civ13.exe` shows the launcher window. Its header shows launcher and BYOND
+status with **BYOND sign in** (or **Set up BYOND** when setup is still needed). The
+**Play** tab lists Civ13.com or ValZarGaming.com servers with Refresh and Join; a
+deferred join becomes **Recheck and join** after the displayed wait. Community links
+sit along the bottom beside links to the launcher data folder and read-only server
+management, and the launcher log shows update and BYOND messages. A
+**Host server** tab appears only when `host.json` enables local hosting.
+`Civ13.exe --console`, or redirected input, keeps the numbered text menu described
+below. Build.ps1 publishes the window build with `-p:Civ13Gui=true`; other projects
+reference the plain `net8.0` build, so their offline restores need no desktop packs.
+
 For native play, open `Civ13.exe`, sign into BYOND Pager with your own account,
 then choose **Civ13.com servers** or **ValZarGaming.com servers**. The launcher
 queries that hostname's explicitly configured candidate game ports, 1714 and 1715,
@@ -24,7 +35,7 @@ must still be in the complete safe DNS answer set. DreamSeeker connects to that
 verified literal and configured port. Status reuse cannot detect a round change
 within its short freshness window. Public port overrides and
 arbitrary scans are rejected. BYOND 516.1688 prerequisite verification/installation
-remains unchanged; public native choices do not download OpenDream.
+remains unchanged. `Civ13.exe` no longer offers or downloads OpenDream.
 
 Public status checks share conservative request spacing across launcher instances
 for this Windows account. A check can be deferred for up to 137 seconds after a
@@ -51,8 +62,8 @@ must wait for owner-coordinated normal eligibility before further public checks.
 
 The script ZIP and its existing shortcuts are legacy OpenDream entrypoints.
 New script-installed shortcuts include `OpenDream` in their names. They do not
-join native BYOND servers. Experimental OpenDream remains an explicit separate
-choice in `Civ13.exe`.
+join native BYOND servers. `Civ13.exe` no longer includes an OpenDream option
+or the OpenDream-only `--server-port` operator override.
 
 ## Isolated operator verification
 
@@ -264,17 +275,16 @@ The current published client's authentication flow remains unchanged.
 ## Player server selection and discovery
 
 Main-menu order: 1 BYOND sign-in, 2 Civ13.com, 3 ValZarGaming.com, 4 Exit,
-5-8 existing community links, and 9 experimental OpenDream.
+5-8 existing community links. Key 9 (experimental OpenDream) was removed.
 
 [The direct status and rollout checklist](SERVER-DISCOVERY.md) describes
 bounded game-service queries, status details, Refresh/Back, selection revalidation,
 provider hostname checks and fresh public IPv4 validation for both providers.
 Each validated address is bound to its approved hostname for one join attempt
-with a 15-second monotonic lifetime. Public choices reject `--server-port`.
+with a 15-second monotonic lifetime. There is no port override for public choices.
 No live availability is inferred from old website links,
 static mode names, DNS alone, or a cached snapshot.
 
-Experimental OpenDream still requires an explicitly verified operator
-`--server-port`. It does not use the BYOND status query. Legacy OpenDream
+Legacy OpenDream
 shortcuts retain their historical packaged endpoints; they are not native BYOND
 shortcuts. Local DreamDaemon verification still uses its genuine host receipt.

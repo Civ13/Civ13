@@ -12,6 +12,13 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
+  <!-- Build.ps1 publishes with -p:Civ13Gui=true for the launcher window. Test projects reference
+       the plain net8.0 build, so their offline restores never need the Windows desktop packs. -->
+  <PropertyGroup Condition="'$(Civ13Gui)' == 'true'">
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <DefineConstants>$(DefineConstants);CIV13_GUI</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Updater.cs" />
@@ -23,15 +30,16 @@
     <Compile Include="ServerStatus.cs" />
     <Compile Include="ServerBrowser.cs" />
     <Compile Include="CommunityLinks.cs" />
-    <Compile Include="LocalDreamDaemon.cs" />
+    <Compile Include="LocalDreamDaemon.cs" />
+
     <Compile Include="LocalHosting.cs" />
     <Compile Include="Social/*.cs" />
     <Compile Include="Management/*.cs" />
+    <Compile Include="Gui/*.cs" Condition="'$(Civ13Gui)' == 'true'" />
     <!-- Compiled in directly: a self-contained -r win-x64 restore would otherwise need runtime packs for the offline server-management feed. -->
     <Compile Include="../../server-management/Core/*.cs" />
     <!-- Offline fixtures construct clock-bound proofs without DNS or sockets. -->
     <InternalsVisibleTo Include="Civ13.Launcher.SocialContracts" />
-    <EmbeddedResource Include="../channel.json" LogicalName="client-channel.json" />
     <EmbeddedResource Include="../../byond/version.json" LogicalName="byond.json" />
   </ItemGroup>
 </Project>

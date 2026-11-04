@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Net.Sockets;
-using System.IO.Compression;
 using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -176,10 +175,7 @@ public static class Updater {
         return result.Length > 512 ? result[..509] + "..." : result;
     }
 
-    public const string ClientChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/master/tools/opendream-client/channel.json";
     public const string LauncherChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/native-launcher-updates/native-launcher-channel.json";
-    public static readonly string[] Required = ["Sign-In.cmd", "Play-Nomads.cmd", "Play-TDM.cmd", "Connect.ps1",
-        "dotnet/dotnet.exe", "RobustToolbox/bin/ClientAuth/Robust.Client.dll", "Content.Client.zip"];
     public static FileStream Lock(string root) {
         Directory.CreateDirectory(root);
         try { return new FileStream(Path.Combine(root, "launcher.lock"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None); }
@@ -201,79 +197,6 @@ public static class Updater {
             output.Flush(true);
         }
         File.Move(stage, path, true);
-    }
-    public static async Task<Channel> ClientChannel(ITransport transport, string root, string bundled) {
-        string json;
-        try { json = await transport.Text(ClientChannelUrl); }
-        catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException) {
-            Console.WriteLine("Update check unavailable. Using the last verified or bundled client.");
-            var cache = Path.Combine(root, "last-channel.json");
-            json = File.Exists(cache) ? File.ReadAllText(cache) : bundled;
-        }
-        var channel = Channel.Read(json);
-        channel.Validate();
-        return channel;
-    }
-    public static async Task<string> InstallClient(Channel channel, string root, ITransport transport) {
-        channel.Validate();
-        var destination = Path.Combine(root, "OpenDream-" + channel.Sha256[..12].ToLowerInvariant());
-        if (Directory.Exists(destination)) {
-            var receipt = Channel.Read(File.ReadAllText(Path.Combine(destination, "install-receipt.json")));
-            if (!receipt.Sha256.Equals(channel.Sha256, StringComparison.OrdinalIgnoreCase))
-                throw new IOException("Existing client receipt does not match.");
-            RequirePackage(destination);
-        } else {
-            var stage = Path.Combine(root, "setup-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(stage);
-            var archive = Path.Combine(stage, "client.zip");
-            Console.WriteLine("Downloading the complete Civ13 client. This may take several minutes...");
-            await transport.Download(channel.Url, archive);
-            CheckHash(archive, channel.Sha256);
-            var extracted = Path.Combine(stage, "extracted");
-            Extract(archive, extracted);
-            var package = Path.Combine(extracted, "Civ13-OpenDream-Windows");
-            RequirePackage(package);
-            AtomicText(Path.Combine(package, "install-receipt.json"), JsonSerializer.Serialize(channel));
-            Directory.Move(package, destination);
-            // Successful staging can be removed; failed staging is kept for recovery.
-            Directory.Delete(stage, true);
-        }
-        AtomicText(Path.Combine(root, "last-channel.json"), JsonSerializer.Serialize(channel));
-        return destination;
-    }
-    public static async Task<string> EnsureClient(Channel channel, string root, ITransport transport) {
-        try { return await InstallClient(channel, root, transport); }
-        catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException) {
-            var cache = Path.Combine(root, "last-channel.json");
-            if (!File.Exists(cache)) throw;
-            var previous = Channel.Read(File.ReadAllText(cache));
-            previous.Validate();
-            if (previous.Sha256.Equals(channel.Sha256, StringComparison.OrdinalIgnoreCase) ||
-                !Directory.Exists(Path.Combine(root, "OpenDream-" + previous.Sha256[..12].ToLowerInvariant()))) throw;
-            Console.WriteLine("Client update failed: " + e.Message + " Using the previous verified client.");
-            return await InstallClient(previous, root, transport);
-        }
-    }
-    private static void RequirePackage(string path) {
-        foreach (var file in Required)
-            if (!File.Exists(Path.Combine(path, file))) throw new InvalidDataException("Incomplete client package: " + file);
-    }
-    public static void Extract(string archive, string destination) {
-        Directory.CreateDirectory(destination);
-        var prefix = Path.GetFullPath(destination) + Path.DirectorySeparatorChar;
-        using var zip = ZipFile.OpenRead(archive);
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        long size = 0;
-        if (zip.Entries.Count > 10000) throw new InvalidDataException("Too many client archive entries.");
-        foreach (var entry in zip.Entries) {
-            var path = Path.GetFullPath(Path.Combine(destination, entry.FullName.Replace('/', Path.DirectorySeparatorChar)));
-            size = checked(size + entry.Length);
-            if (!path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) || !seen.Add(path) ||
-                size > 4L * 1024 * 1024 * 1024 || ((entry.ExternalAttributes >> 16) & 0xF000) == 0xA000 ||
-                entry.FullName.Contains(':'))
-                throw new InvalidDataException("Unsafe client archive entry.");
-        }
-        ZipFile.ExtractToDirectory(archive, destination);
     }
     public static void ValidateExecutable(string path, string version) {
         using (var stream = File.OpenRead(path)) {

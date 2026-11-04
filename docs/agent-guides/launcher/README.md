@@ -11,6 +11,17 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-04: launcher window, OpenDream removed -->
+Civ13.exe opens a WinForms window by default; `--console` or redirected input keeps
+the numbered text menu, and every other option stays console-only. Only Build.ps1's
+`-p:Civ13Gui=true` publish targets net8.0-windows and compiles `Gui/`; test projects
+reference the plain net8.0 build so offline restores never need desktop packs. On
+Linux the window build needs a Microsoft SDK (the Ubuntu source-built SDK lacks the
+WindowsDesktop SDK) plus `-p:EnableWindowsTargeting=true`. The exe stays a console
+subsystem binary for scripted exit codes; a double-clicked window frees its console.
+Val removed OpenDream from Civ13.exe (menu key 9, client install, `--server-port`);
+the legacy script ZIP is separate.
+
 <!-- 2026-10-21: direct BYOND status discovery -->
 Public native menus probe only the configured Civ13.com and ValZarGaming hostnames
 on ports 1714 and 1715. These are candidates, never an online assertion or a mode
