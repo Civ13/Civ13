@@ -141,6 +141,37 @@ var/global/persistence_saved_atom_construction = 0
 /datum/proc/persistence_level_link_var(key)
 	return FALSE
 
+// Turfs, wild plants and plain objects save only their map_storage_saved_vars
+// allowlist. Other datums save every field that differs from its default.
+// Keep this in step with the partial test in get_saved_vars below.
+/datum/proc/persistence_uses_field_allowlist()
+	if (istype(src, /turf))
+		return TRUE
+	if (!istype(src, /obj))
+		return FALSE
+	return istype(src, /obj/structure/wild) || (!istype(src, /obj/item) && !istype(src, /obj/structure) && !istype(src, /obj/map_metadata) && !istype(src, /obj/covers))
+
+// A value that equals its compiled default can be omitted and restored as
+// initial(). Lists, datums and resources keep their saved envelopes.
+/proc/persistence_default_scalar(value)
+	return isnull(value) || isnum(value) || istext(value) || ispath(value)
+
+var/global/list/persistence_field_allowlists = list()
+
+// The parsed map_storage_saved_vars allowlist, or null for changed-field types.
+// Shared per allowlist text; callers must not modify it. Only these fields may
+// be omitted at their default: get_saved_vars overrides add fields that readers
+// such as roof preflight require to be present.
+/datum/proc/persistence_field_allowlist()
+	if (!persistence_uses_field_allowlist())
+		return null
+	var/list/allowlist = persistence_field_allowlists[map_storage_saved_vars]
+	if (!allowlist)
+		allowlist = list()
+		allowlist |= params2list(map_storage_saved_vars)
+		persistence_field_allowlists[map_storage_saved_vars] = allowlist
+	return allowlist
+
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
 	var/partial = FALSE
@@ -1213,8 +1244,12 @@ var/global/datum/persistence_admission_identity
 	if(istype(A, /matrix)) return A
 	return "\ref[A]"
 
+// Runs before every saved field. The frame pins its source, so the identity
+// computed at registration cannot change while frame.source is set; the pin and
+// reference checks below reject any substituted source or key without building
+// a fresh native reference string per field.
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
-	if(!frame || !frame.active || frame.exporter != src || !frame.source || save_entry_identity(frame.source) != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	if(frame.human_spatial_request && (!frame.human_spatial_request.captured || !frame.human_spatial_request.actor || frame.human_spatial_request.actor != frame.source || frame.human_spatial_request.actor.human_subtile_save_request != frame.human_spatial_request || !frame.human_spatial_request.operation || !frame.human_spatial_request.operation.current(src, "save")))
