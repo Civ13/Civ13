@@ -1,6 +1,6 @@
 # Modern factory automation: audit and phased design
 
-Status: **phases 0 to 3 implemented; phase 4 is design only.** Val chose the first slice on 2026-11-04: phase 0, then
+Status: **phases 0 to 3 and 4a implemented; the rest of phase 4 is design only.** Val chose the first slice on 2026-11-04: phase 0, then
 belts and transfer arms (phase 1), and asked threads to continue the phases.
 The other open decisions below are still pending. Each later phase lands with
 its own tests.
@@ -433,7 +433,8 @@ BYOND, plus a native benchmark where noted.
 | 2b. Smelting and wood ports (done) | Bloomery and blast furnace take ore and fuel and start a smelt once both are loaded; the powered saw mill gets a 20-log hopper and cuts one log into 12 planks a second while powered; both offer their output stacks on their tile. Clay kilns (mold casting) and the reagent grinder stay manual. | `tests/factory_automation/machines_probe.dm`: limits, refusals, automatic smelt start and restart, output offers, mill power, plank merging, hopper save and return. |
 | 3a. Fabricators (done) | Three fabricator tiers on the curated factory recipe list (five starting recipes: rolled steel, barbwire, cable coil, electronic circuits, electronic components); Atlas shows factory recipes; research gates. | `tests/factory_automation/fabricators_probe.dm`: recipe parsing and rejection, tier and research filtering, buffer limits, no work without power, a full cycle, pause on power loss without losing inputs, sleep and wake, output offers and limit, save clamping, buffer return. |
 | 3b. Stack arm and more recipes (done) | Stack arm (`digital_computing`); factory recipes for bronze, glass and metal rods (eight in all). | `fabricators_probe.dm`: ten-item batches of one kind, no mixed batches, filter, feeder and sorting arms unchanged; recipe counts and tier lists. A complete unattended line in game is still unverified. |
-| 4. Scale and logistics | Factory panel; fast belt; train and vehicle loading ports; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
+| 4a. Fast belt and wagon loading (done) | Val chose this first on 2026-11-04. Fast belt (`/obj/structure/factory_belt/fast`, steel, Automation) takes a second belt step each tick, after every belt has taken its first, so cargo crosses two tiles a second and hands on to plain belts. Train wagons (`/obj/structure/trains/storage`: mining cart, tender, transport wagon) and shopping carts get storage ports: arms load and unload them within the same slot, size and item-type limits as a person (`code/modules/1713/factory_logistics.dm`). Modular vehicles have no item storage, so they have no port. | `tests/factory_automation/logistics_probe.dm`: fast line arrives in half the steps, fast-to-plain hand-off, fast list sleep, recipe gate; wagon load, capacity, unload, filters, tender fuel limit, cart load and unload. |
+| 4b. Panel and balance | Factory panel; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
 
 Phase 0 is useful even if the rest is reordered, and changes no gameplay
 beyond fixing saved belts.

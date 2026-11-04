@@ -784,6 +784,7 @@
 #include "code\modules\1713\factory_belts.dm"
 #include "code\modules\1713\factory_chemistry.dm"
 #include "code\modules\1713\factory_fabricators.dm"
+#include "code\modules\1713\factory_logistics.dm"
 #include "code\modules\1713\factory_machines.dm"
 #include "code\modules\1713\factory_pipes.dm"
 #include "code\modules\1713\factory_vessel.dm"
