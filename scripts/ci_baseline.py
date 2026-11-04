@@ -36,6 +36,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Pure source catalog and injected build transports; no native or network IO.
+    'nomads_persistence': {'files': ('tests/nomads_persistence/test_catalog.py',),
+        'paths': ('tests/nomads_persistence/',),
+        'shared_paths': ('code/modules/persistence/durable_nomads.dm',
+                         'scripts/nomads-lifecycle/supervisor.py',
+                         'scripts/nomads-lifecycle/canonical_update.py',
+                         'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
     # Complete mood helpers, maintenance and expression projections; no native world.
     # Production paths retain the prior conservative fallback/neighbor selection.
     'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),

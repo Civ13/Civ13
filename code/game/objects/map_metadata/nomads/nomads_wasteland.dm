@@ -25,6 +25,7 @@
 
 /obj/map_metadata/nomads/wasteland/New()
 	..()
+	if(durable_schedule("nomads_wasteland_boot", 18000)) return
 	spawn(18000)
 		var/randtimer = rand(72000,108000)
 		if (hasnukes)
@@ -34,6 +35,7 @@
 			supplydrop_proc()
 
 /obj/map_metadata/nomads/wasteland/proc/nuke_proc(var/timer=72000)
+	if(uses_durable_metadata()) nomads_nuke_threshold = timer
 	if (processes.ticker.playtime_elapsed > timer && hasnukes)
 		var/vx = rand(25,world.maxx-25)
 		var/vy = rand(25,world.maxy-25)
@@ -42,6 +44,13 @@
 		var/warning_sound = sound("sound/misc/siren.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound
+		if(uses_durable_metadata())
+			if(!epicenter) throw EXCEPTION("Nomads nuke target is unavailable")
+			nomads_nuke_x = vx
+			nomads_nuke_y = vy
+			nomads_nuke_z = 2
+			durable_schedule("nomads_nuke_fire", 330)
+			return
 		spawn(330)
 			to_chat(world, "<font size=4 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>")
 			nuke_map(epicenter, 200, 180, 0)
@@ -49,6 +58,7 @@
 			log_game("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 			return
 	else
+		if(durable_schedule("nomads_nuke_check", 600)) return
 		spawn(600) // 1 minute
 			nuke_proc(timer)
 	return
@@ -86,7 +96,9 @@
 				to_chat(world, "<font size=3 color='red'><center>EMERGENCY BROADCAST SYSTEM<br>Cold weather equipment has been airdropped in the area!</center></font>")
 				new/obj/structure/closet/crate/airdrops/cold(locationt)
 
-	spawn(rand(36000, 72000))
+	var/delay = rand(36000, 72000)
+	if(durable_schedule("nomads_supplydrop", delay)) return
+	spawn(delay)
 		supplydrop_proc()
 
 ///////////////////////////////////////////////

@@ -23,8 +23,9 @@
 
 /obj/map_metadata/nomads/extended/New()
 	..()
-	spawn(1200)
-		check_oil()
+	if(!durable_schedule("nomads_oil_check", 1200))
+		spawn(1200)
+			check_oil()
 
 /obj/map_metadata/nomads/extended/proc/check_oil()
 	if (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
@@ -38,6 +39,7 @@
 			if (custom_civs[custom_faction_nr[i]][5] > 0)
 				to_chat(world, "<b>[custom_faction_nr[i]]:</b> [custom_civs[custom_faction_nr[i]][5]] of 3000")
 
+	if(durable_schedule("nomads_oil_check", 1200)) return
 	spawn(1200)
 		check_oil()
 

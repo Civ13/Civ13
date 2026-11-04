@@ -172,6 +172,13 @@
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	operation.validate_human_spatial_candidates()
 #endif
+	// Player actions can create transient work after initial metadata capture.
+	// Never publish a candidate whose fire/explosion continuation is unrecorded.
+	if(world_state)
+		try
+			require_durable_world_idle()
+		catch(var/exception/effects_quiescence_error)
+			throw EXCEPTION("World effects changed during capture; completed backup retained. [effects_quiescence_error]")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
 	if(debug_policy)

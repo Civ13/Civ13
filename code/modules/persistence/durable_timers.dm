@@ -15,8 +15,11 @@
 /datum/durable_timer_queue/proc/now()
 	return world.time
 
+/datum/proc/durable_callback_blocked()
+	return FALSE
+
 /datum/durable_timer_queue/proc/blocked()
-	return persistence_save_in_progress
+	return persistence_save_in_progress || (owner && owner.durable_callback_blocked())
 
 /datum/durable_timer_queue/proc/schedule(key, delay)
 	if(!(key in allowed) || !isnum(delay) || delay < 0 || delay > 1e15)
