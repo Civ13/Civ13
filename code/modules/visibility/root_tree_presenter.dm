@@ -60,6 +60,11 @@ var/global/list/root_tree_presenters
 	var/scene_active = FALSE
 	var/fallback_reason
 	var/fallback_count = 0
+	// Foreground verdicts depend only on an appearance, which BYOND interns
+	// and shares between identical atoms. Keyed by appearance so a step walks
+	// only appearances this viewer has not audited yet. Bounded; never holds
+	// a budget-exhausted verdict, which is not a property of the appearance.
+	var/list/foreground_verdicts = list()
 
 /datum/root_tree_presenter/New(client/C, datum/los_context/V)
 	..()
@@ -414,7 +419,15 @@ var/global/list/root_tree_presenters
 			return "scene atom audit budget exceeded"
 		if(context.root_tree_admitted(A))
 			continue
-		if(root_tree_foreground_appearance(A, A.plane, A.layer, 0, budget))
+		var/appearance = A.appearance
+		var/verdict = foreground_verdicts[appearance]
+		if(isnull(verdict))
+			verdict = root_tree_foreground_appearance(A, A.plane, A.layer, 0, budget)
+			if(budget[1] > 0)
+				if(foreground_verdicts.len >= 2048)
+					foreground_verdicts.Cut()
+				foreground_verdicts[appearance] = verdict
+		if(verdict)
 			return budget[1] <= 0 ? "appearance audit budget exceeded" : "native foreground or mixed-layer appearance"
 		// Dynamic render/vis grouping cannot be assigned a reliable footprint.
 		if(A.plane == GAME_PLANE && ((ismovable(A) && length(A:vis_contents)) || A.render_source || A.render_target || length(A.filters)))
@@ -483,6 +496,7 @@ var/global/list/root_tree_presenters
 		owner.root_tree_presenter = null
 	if(root_tree_presenters)
 		root_tree_presenters -= src
+	foreground_verdicts.Cut()
 	// Fallback copies now belong to the mask presenter; refresh before any skip.
 	if(context)
 		context.clear_audit_scene()

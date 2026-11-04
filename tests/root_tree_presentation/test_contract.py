@@ -64,7 +64,7 @@ def compile_proc(text,signature,args,env,method=False):
         for path in ['/obj/structure/wild/largejungle','/obj/structure/wild/jungle','/obj/structure/wild/palm','/obj/structure/wild/tree']:
             line=line.replace(path,repr(path))
         if method:
-            for field in ['root_trees','owner','images','owned_images','work_images','retired','context','frames','frame_keys','frame_appearances','frame_lights','frame_dirs','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene']:
+            for field in ['root_trees','owner','images','owned_images','work_images','retired','context','frames','frame_keys','frame_appearances','frame_lights','frame_dirs','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene','foreground_verdicts']:
                 line=re.sub(r'(?<![.\w])'+field+r'\b','self.'+field,line)
         if line.startswith('for(var/i = 1, i <= 20, i++)'):line='for i in range(1,21):'
         else:
@@ -194,7 +194,7 @@ class OwnershipAndComposition(unittest.TestCase):
         r=N(retired=False,owner=N(screen=Items(['HUD',game,roof]),images=Items(['foreign','own']),root_tree_presenter=None),
             images={},owned_images=Items(['own']),work_images={},frames={},published_frames={},frame_keys={},frame_appearances={},frame_lights={},frame_dirs={},source_appearances={},light_keys={},light_values={},screens=Items([roof]),
             leased_planes=Items([game,roof]),lease_targets={game:'game',roof:'roof'},game_plane=game,
-            original_filters=['shadow'],scene_plane=None,scene_active=True,context=N(clear_audit_scene=lambda:None))
+            original_filters=['shadow'],scene_plane=None,scene_active=True,context=N(clear_audit_scene=lambda:None),foreground_verdicts=Values())
         r.owner.root_tree_presenter=r
         r.release_owned_scene=compile_proc(TREE,'/datum/root_tree_presenter/proc/release_owned_scene(','self',env,True).__get__(r)
         r.retire=compile_proc(TREE,'/datum/root_tree_presenter/proc/retire(','self',env,True).__get__(r)
@@ -386,7 +386,7 @@ class SceneFallback(unittest.TestCase):
     def appearance(self,**changes):
         values=dict(plane=1,layer=3,icon='sprite',maptext='',render_source=None,render_target=None,
                     overlays=[],underlays=[],filters=[],vis_contents=[],alpha=255,invisibility=0,loc=None)
-        values.update(changes);return N(**values)
+        values.update(changes);a=N(**values);a.appearance=a;return a
     def test_foreground_roof_and_inherited_nested_layers(self):
         self.assertFalse(self.foreground(self.appearance(),1,3))
         for layer in [5.11,6,10.1,11.1]:
@@ -404,13 +404,47 @@ class SceneFallback(unittest.TestCase):
         f=compile_proc(mutant,'/proc/root_tree_foreground_appearance(','A, inherited_plane, inherited_layer, depth=0, budget=None',env)
         mixed=self.appearance(overlays=[self.appearance(layer=11.1)])
         self.assertTrue(self.foreground(mixed,1,3));self.assertFalse(f(mixed,1,3))
-    def audit(self,atoms,client_images=(),owned=(),los_owned=()):
+    def audit(self,atoms,client_images=(),owned=(),los_owned=(),presenter=None,text=TREE):
         body=N(z=2,see_invisible=25)
         self.env.update(range=lambda radius,b:atoms,get_turf=lambda a:a,get_dist=lambda a,b:0)
         c=N(body=body,root_tree_admitted=lambda a:getattr(a,'root',False))
-        r=N(context=c,owner=N(images=list(client_images),los_presenter=N(owned_images=list(los_owned))),owned_images=list(owned))
-        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/composition_conflict(','self, S, scene=None',self.env,True)
+        r=presenter or N(context=c,owner=N(images=list(client_images),los_presenter=N(owned_images=list(los_owned))),owned_images=list(owned),foreground_verdicts=Values())
+        self.presenter=r
+        f=compile_proc(text,'/datum/root_tree_presenter/proc/composition_conflict(','self, S, scene=None',self.env,True)
         return f(r,N(radius_x=7,radius_y=7))
+    def counted_foreground(self):
+        calls=[];real=self.env['root_tree_foreground_appearance']
+        def counted(A,*rest,**kw):calls.append(A);return real(A,*rest,**kw)
+        self.env['root_tree_foreground_appearance']=counted
+        return calls
+    def test_foreground_verdicts_cached_per_shared_appearance(self):
+        calls=self.counted_foreground()
+        plain=self.appearance();twin=self.appearance();twin.appearance=plain.appearance
+        self.assertIsNone(self.audit([plain,twin]));self.assertEqual(calls,[plain])
+        r=self.presenter;self.assertFalse(r.foreground_verdicts[plain.appearance])
+        self.assertIsNone(self.audit([twin,plain],presenter=r));self.assertEqual(calls,[plain])
+        high=self.appearance(layer=10.1)
+        self.assertEqual(self.audit([plain,high],presenter=r),'native foreground or mixed-layer appearance')
+        self.assertEqual(calls,[plain,high]);self.assertTrue(r.foreground_verdicts[high.appearance])
+        # A cached foreground verdict still rejects without a second walk.
+        self.assertEqual(self.audit([high],presenter=r),'native foreground or mixed-layer appearance')
+        self.assertEqual(calls,[plain,high])
+        # A changed appearance is a new key, so it is audited again.
+        high.appearance=N(plane=1,layer=3,icon='sprite',maptext='',render_source=None,overlays=[],underlays=[])
+        high.layer=3
+        self.assertIsNone(self.audit([high],presenter=r));self.assertEqual(calls,[plain,high,high])
+    def test_exhausted_budget_verdict_is_not_cached(self):
+        broad=self.appearance(icon=None,overlays=[self.appearance(icon=None)]*4097)
+        self.assertEqual(self.audit([broad]),'appearance audit budget exceeded')
+        self.assertEqual(len(self.presenter.foreground_verdicts),0)
+        self.assertEqual(self.audit([broad],presenter=self.presenter),'appearance audit budget exceeded')
+    def test_uncached_audit_control_walks_every_atom(self):
+        calls=self.counted_foreground()
+        mutant=TREE.replace('\t\t\t\tforeground_verdicts[appearance] = verdict\n','')
+        self.assertNotEqual(mutant,TREE)
+        plain=self.appearance();twin=self.appearance();twin.appearance=plain.appearance
+        self.assertIsNone(self.audit([plain,twin],text=mutant));self.assertEqual(calls,[plain,twin])
+        self.assertIsNone(self.audit([plain,twin]));self.assertEqual(calls,[plain,twin,plain])
     def test_plain_root_success_and_native_world_conflicts(self):
         self.assertIsNone(self.audit([self.appearance(layer=5.11,root=True),self.appearance()]))
         self.assertEqual(self.audit([self.appearance(layer=10.1)]),'native foreground or mixed-layer appearance')
