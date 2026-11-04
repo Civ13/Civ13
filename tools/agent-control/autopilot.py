@@ -35,11 +35,13 @@ SKILLS = {
     "chop": ("axe", "harm", 1),
     "drink": ("empty", "grab", 1),
     "pick_up": ("empty", "help", 1),
+    "attack": ("any", "harm", 3),
 }
+ATTACK_WORDS = ("bites", "attacks", "hits", "claws", "slashes", "punches", "kicks", "stabs", "mauls", "gores", "scratches")
 # Items worth keeping when a skill needs a free hand; anything else is dropped first.
 TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword", "shovel", "hammer")
 MAX_APPROACH = 14
-ACTIONS = ("go", "move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "wait")
+ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "wait")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
@@ -54,11 +56,16 @@ Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent a
  find_flint (a rock: search it for flint), sharpen_flint (a rock: hit it with your flint until sharp),
  break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a cleared branch: strip it into a stick),
  sharpen_stick (a stick: sharpen it with sharpened flint), cut_grass (a grass tile: cut grass with sharpened flint),
- chop (a tree: chop it with an axe or hatchet), drink (a water tile: drink), pick_up (a loose item: pick it up).
+ chop (a tree: chop it with an axe or hatchet), drink (a water tile: drink), pick_up (a loose item: pick it up),
+ attack (a creature or person attacking you: hit it on harm intent with what you hold).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
 {"do": "go", "target": number} walks next to a thing, around obstacles. Prefer it to single moves.
+{"do": "flee", "target": number} runs away from a dangerous creature. {"do": "explore", "dir": north|south|east|west} walks several tiles to find new things.
+Every skill needs a target from the lists. If what you need (a rock, a tree, water) is not listed, explore to find it.
+Hands are limited. Do not drop what you gathered or made: skills free a hand themselves (stowing items first), and dropped items are left behind.
+If something attacks you, deal with it first: flee if hurt or unarmed, or attack it with a weapon.
 Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|examine|drop|swap_hand|intent|wait,
  "dir": north|south|east|west (move/face), "text": "..." (say/emote, short),
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
@@ -185,6 +192,24 @@ def target_rows(observation):
     return rows
 
 
+def danger(observation, previous=None):
+    """A first-line warning when something is attacking the character, or ""."""
+    me = observation.get("self", {})
+    own = str(me.get("name") or "").lower()
+    attackers = []
+    for message in observation.get("messages", []):
+        lowered = str(message.get("text", "")).lower()
+        for word in ATTACK_WORDS:
+            marker = f" {word} "
+            if own and marker in lowered and own in lowered.split(marker, 1)[1][:len(own) + 4]:
+                attackers.append(lowered.split(marker, 1)[0].strip().removeprefix("the "))
+    hurt = previous is not None and isinstance(previous.get("health"), (int, float)) and isinstance(me.get("health"), (int, float)) and me["health"] <= previous["health"] - 5
+    if not attackers and not hurt:
+        return ""
+    who = attackers[-1] if attackers else "something"
+    return f"DANGER: {who} is attacking you (health {me.get('health')}). Flee from it, or attack it if you hold a weapon. Do this before anything else."
+
+
 def relevant_messages(messages, own_name=None, limit=8, muted=()):
     """Speech and messages about this character, deduplicated.
 
@@ -277,7 +302,12 @@ def parse_decision(text, refs):
         if not text_value:
             return None
         args["text"] = text_value[:200]
-    elif action == "go":
+    elif action == "explore":
+        direction = str(data.get("dir", "")).lower()
+        if direction not in ("north", "south", "east", "west"):
+            return None
+        args["dir"] = direction
+    elif action in ("go", "flee"):
         try:
             index = int(data.get("target"))
         except (TypeError, ValueError):
@@ -304,6 +334,32 @@ def parse_decision(text, refs):
             return None
         args["intent"] = intent
     return args
+
+
+def plan_problem(text, refs):
+    """Why the first step of a reply was not accepted, in words the model can act on ("" if it was)."""
+    try:
+        data = json.loads(text)
+    except (TypeError, ValueError):
+        return "your reply was not JSON"
+    if not isinstance(data, dict):
+        return "your reply was not a JSON object"
+    raw = data.get("plan")
+    raw = raw if isinstance(raw, list) else [data]
+    for item in raw[:MAX_PLAN]:
+        if not isinstance(item, dict):
+            return "each plan step must be an object"
+        if parse_decision(json.dumps(item), refs) is not None or str(item.get("do", "")).lower() == "wait":
+            if str(item.get("do", "")).lower() in SKILLS:
+                return ""
+            continue
+        action = str(item.get("do", "")).lower()
+        if action in SKILLS or action in ("go", "flee"):
+            return f"{action} needs a target number from the lists (not 0). If nothing suitable is listed, explore in some direction to find it"
+        if action not in ACTIONS and action not in SKILLS:
+            return f'"{action}" is not a skill or action'
+        return f"{action} was missing a valid dir, text, target, recipe or intent"
+    return ""
 
 
 def parse_plan(text, refs):
@@ -387,7 +443,9 @@ def expand_skill(step, self_state, rows=None):
             return [], f"the {row.get('name')} has no branches; pick a tree marked (has branches)"
         if not adjacent(row):
             steps.append({"do": "go", "target": step["target"]})
-    if need == "empty":
+    if need == "any":
+        pass
+    elif need == "empty":
         if active != "empty":
             if other != "empty":
                 # Free a hand by putting away the spare item and keeping the tool.
@@ -421,6 +479,11 @@ def expand_plan(plan, self_state, rows=None):
             if error:
                 return steps, error
             steps.extend(expanded)
+        elif step.get("do") == "drop":
+            held = _name(self_state.get("left_hand") if self_state.get("active_hand") == "left" else self_state.get("right_hand"))
+            if held != "empty" and not _is_junk(held):
+                steps.append({"do": "equip"})  # keep what was gathered when there is room for it
+            steps.append(step)
         else:
             steps.append(step)
     return steps, ""
@@ -483,6 +546,8 @@ def approach(client, character, ref, queue_since, limit=MAX_APPROACH):
             return False, "lost sight of the target", queue_since
         if max(abs(offset[0]), abs(offset[1])) <= 1:
             return True, "next to it", queue_since
+        if me.get("can_move") is False:
+            return False, "you cannot move right now (hurt, stunned or held)", queue_since
         around = observation.get("surroundings", {})
         stuck = {d for d, v in around.items() if v == "edge" or (isinstance(v, dict) and v.get("blocked"))}
         stuck |= blocked.get(here, set())
@@ -502,6 +567,45 @@ def approach(client, character, ref, queue_since, limit=MAX_APPROACH):
             if any(r.get("detail") == "blocked" for r in results):
                 blocked.setdefault(here, set()).add(direction)
     return False, "still not there after walking", queue_since
+
+
+def walk(client, character, queue_since, direction=None, away_from=None, moves=6):
+    """Explore in a direction, or flee from away_from. Returns (ok, detail, queue_since)."""
+    walked = 0
+    blocked = set()
+    for _ in range(moves + 3):
+        if walked >= moves:
+            break
+        reply = client.request("character_observe", {"character": character, "radius": 7, "queue_since": queue_since})
+        if not reply.get("ok"):
+            return walked > 0, f"walked {walked} tiles", queue_since
+        observation = reply["result"]
+        me = observation.get("self", {})
+        if me.get("can_move") is False:
+            return walked > 0, f"walked {walked} tiles; you cannot move right now", queue_since
+        around = observation.get("surroundings", {})
+        stuck = {d for d, v in around.items() if v == "edge" or (isinstance(v, dict) and v.get("blocked"))} | blocked
+        if away_from is not None:
+            row = target_rows(observation).get(away_from)
+            if not row:
+                return True, f"walked {walked} tiles; it is out of sight", queue_since
+            choice = choose_step(-row.get("dx", 0) * 10, -row.get("dy", 0) * 10, stuck)
+        else:
+            sx, sy = DIR_STEPS[direction]
+            choice = direction if direction not in stuck else choose_step(sx * 10, sy * 10, stuck)
+        if choice is None:
+            break
+        if not client.request("character_queue", {"character": character, "actions": [{"do": "move", "dir": choice}]}).get("ok"):
+            break
+        results = wait_for_queue(client, character, queue_since)
+        if results:
+            queue_since = max(r.get("id", 0) for r in results)
+            if any(r.get("detail") == "blocked" for r in results):
+                blocked.add(choice)
+                continue
+        walked += 1
+        blocked.clear()
+    return walked > 0, f"walked {walked} tiles", queue_since
 
 
 def execute(client, character, steps, queue_since):
@@ -524,12 +628,17 @@ def execute(client, character, steps, queue_since):
         return queue_since
 
     for step in steps:
-        if step.get("do") != "go":
+        if step.get("do") not in ("go", "flee", "explore"):
             chunk.append(step)
             continue
         queue_since = flush(queue_since)
-        ok, detail, queue_since = approach(client, character, step["target"], queue_since)
-        parts.append(f"go {'ok' if ok else 'failed'} ({detail})")
+        if step["do"] == "go":
+            ok, detail, queue_since = approach(client, character, step["target"], queue_since)
+        elif step["do"] == "flee":
+            ok, detail, queue_since = walk(client, character, queue_since, away_from=step["target"])
+        else:
+            ok, detail, queue_since = walk(client, character, queue_since, direction=step["dir"])
+        parts.append(f"{step['do']} {'ok' if ok else 'failed'} ({detail})")
         if not ok:
             return "; ".join(parts) + "; stopped there", queue_since
     queue_since = flush(queue_since)
@@ -639,6 +748,12 @@ def run(client, args, character, token):
         observation = reply["result"]
         since = observation.get("last_message", since)
         self_state = observation.get("self", {})
+        if self_state.get("stat") not in (None, 0):
+            print(f"step {step}: {self_state.get('name')} is {'dead' if self_state.get('stat') == 2 else 'unconscious'}; stopping")
+            break
+        alarm = danger(observation, previous_self)
+        if alarm:
+            print(f"  {alarm}")
         for text in {str(m.get("text", ""))[:300] for m in observation.get("messages", [])}:
             seen_lines[text] = seen_lines.get(text, 0) + 1
             if seen_lines[text] >= 4:
@@ -670,7 +785,7 @@ def run(client, args, character, token):
         if is_repeating(signatures):
             feedback += "\nYou keep repeating the same action in the same place without progress. Do something different."
         text, refs = summarize(observation, note, ignored, muted)
-        prompt = ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
+        prompt = (alarm + "\n\n" if alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
         try:
             answer = ask_ollama(args.ollama_url, args.model, history[:1] + history[-7:], token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
@@ -694,7 +809,7 @@ def run(client, args, character, token):
         feedback = ""
         if not plan:
             print(f"step {step}: wait ({answer[:120]!r})")
-            feedback = "\nYour reply had no valid step, so nothing happened."
+            feedback = f"\nNothing happened: {plan_problem(answer, refs) or 'your reply had no valid step'}."
         else:
             signatures.extend(f"{self_state.get('x')},{self_state.get('y')}:{json.dumps(item, sort_keys=True)}" for item in plan)
             steps, error = expand_plan(plan, self_state, target_rows(observation))
@@ -706,6 +821,9 @@ def run(client, args, character, token):
             summary, queue_since = execute(client, character, steps, queue_since)
             print(f"step {step}: {json.dumps(plan)} -> {summary}" + (f" | note: {note}" if note else ""))
             feedback = f"\nYou did: {summary}"
+            problem = plan_problem(answer, refs)
+            if problem:
+                feedback += f"\nA later step was skipped: {problem}."
         time.sleep(args.interval)
     return 0
 

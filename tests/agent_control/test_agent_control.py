@@ -390,6 +390,30 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn('row["branch"] = B.leaves ? "leafy"', source)
         self.assertIn('row["item"] = TRUE', source)
 
+    def test_bad_steps_explain_themselves(self):
+        refs = ["[0x9]", "[0x1]"]
+        self.assertEqual(autopilot.parse_plan('{"plan": [{"do": "find_flint", "target": 0}]}', refs), [])
+        self.assertIn("explore", autopilot.plan_problem('{"plan": [{"do": "find_flint", "target": 0}]}', refs))
+        self.assertIn("not a skill", autopilot.plan_problem('{"do": "teleport"}', refs))
+        self.assertEqual(autopilot.plan_problem('{"plan": [{"do": "find_flint", "target": 1}, {"do": "fly"}]}', refs), "")
+        self.assertIn("missing", autopilot.plan_problem('{"plan": [{"do": "say", "text": "hi"}, {"do": "move"}]}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "explore", "dir": "West"}', refs), {"do": "explore", "dir": "west"})
+        self.assertEqual(autopilot.parse_decision('{"do": "flee", "target": 1}', refs), {"do": "flee", "target": "[0x1]"})
+        holding = {"active_hand": "right", "right_hand": {"name": "stick"}, "left_hand": None, "intent": "help"}
+        self.assertEqual(autopilot.expand_plan([{"do": "drop"}], holding)[0], [{"do": "equip"}, {"do": "drop"}])
+        self.assertEqual(autopilot.expand_plan([{"do": "drop"}], dict(holding, right_hand={"name": "flint"}))[0], [{"do": "drop"}])
+        self.assertEqual(autopilot.expand_plan([{"skill": "attack", "target": "[0x1]"}], holding)[0], [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x1]"}] * 3)
+
+    def test_attacks_put_danger_first_and_downed_bodies_stop(self):
+        observation = {"self": {"name": "Ada", "health": 77}, "messages": [{"text": "The grey she-wolf bites Ada!"}]}
+        alarm = autopilot.danger(observation, {"health": 100})
+        self.assertTrue(alarm.startswith("DANGER: grey she-wolf is attacking you"))
+        self.assertIn("DANGER", autopilot.danger({"self": {"name": "Ada", "health": 60}, "messages": []}, {"health": 80}))
+        self.assertEqual(autopilot.danger({"self": {"name": "Ada", "health": 80}, "messages": [{"text": "Ada hits the rock."}]}, {"health": 80}), "")
+        source = (ROOT / "tools/agent-control/autopilot.py").read_text(encoding="utf-8")
+        self.assertIn('if self_state.get("stat") not in (None, 0):', source)
+        self.assertIn("(alarm + ", source)
+
     def test_walking_goes_around_blocked_tiles(self):
         class FakeClient:
             def __init__(self):
@@ -419,6 +443,10 @@ class AutopilotTests(unittest.TestCase):
         self.assertLessEqual(len(client.moves), 4)
         ok, detail, _ = autopilot.approach(client, "[0x9]", "turf:%d,%d,2" % (client.pos[0], client.pos[1] + 1), 0)
         self.assertTrue(ok, detail)  # already next to it
+        start = list(client.pos)
+        ok, detail, _ = autopilot.walk(client, "[0x9]", 0, away_from="[0x2]", moves=3)
+        self.assertTrue(ok, detail)
+        self.assertLess(client.pos[1], start[1])  # ran away from the target to the north
 
     def test_ignored_targets_are_left_out(self):
         text, refs = autopilot.summarize(self.OBSERVATION, ignored={"[0x1]": 9})

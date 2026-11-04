@@ -195,7 +195,13 @@ tiles), swaps to the right hand and intent before the click, stows (or drops) a
 spare item rather than a tool when it needs a free hand, works a fallen
 branch where it lies (leaves, then stick) instead of trying to pick it up, and refuses a skill whose
 tool is not in either hand or a branch skill on a tree with no branches. The
-model can also walk with `{"do": "go", "target": n}`. The autopilot runs the
+model can also walk with `{"do": "go", "target": n}`, run from a target with
+`flee`, or `explore` a few tiles in a direction; `attack` hits a target on harm
+intent. A model `drop` of a gathered item tries to stow it first. A step the
+autopilot cannot accept is explained to the model next turn (for example a skill
+with no target listed: explore to find one). When something attacks the
+character, a danger line leads the next prompt, and the run stops once the
+character is unconscious or dead. The autopilot runs the
 steps through `character_queue` and shows the next
 turn what changed (position, hands, clothes, carried items, water, nutrition)
 and warns when the same action keeps repeating. It waits while the character
