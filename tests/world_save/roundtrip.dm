@@ -142,10 +142,25 @@ var/global/roundtrip_capture_failure = FALSE
 					sleep(world.tick_lag)
 				wanderer.loc = locate(1,1,1)
 				mob_list += wanderer
+		// Text macros do not survive a savefile's text export; the split
+		// copies such a node again by value.
+		if(world.params["split"])
+			var/obj/item/test/macro = new(locate(6,1,1))
+			macro.name = "\improper split turkey"
+			macro.number = 66
 		check(map_storage.Save_World(), "export failed")
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
 		check(map_storage.validate_world_save(), "valid export rejected")
+		// A full-file generation loaded in low-memory mode is split into
+		// segments first, then imported one segment at a time.
+		if(world.params["split"])
+			var/savefile/full_level = new("map_saves/1.sav")
+			check(full_level["/format_version"] == 3, "split fixture did not start from a full-file save")
+			full_level = null
+			map_storage.low_memory_override = TRUE
+			map_storage.segment_size_override = 2
+			map_storage.split_min_bytes = 0
 		// Force import to allocate a different turf, rather than only rehydrate
 		// the already matching type in the live fixture.
 		edge.ChangeTurf(/turf/test, FALSE, FALSE)
@@ -181,6 +196,27 @@ var/global/roundtrip_capture_failure = FALSE
 		check(C && C.number == 314 && C.items["second level"] == 271, "second-level objects/lists lost")
 		check(map && map.loc == locate(1,1,1), "metadata deleted")
 		check(!errors.len, "unexpected errors")
+		if(world.params["split"])
+			for(var/z = 1, z <= 2, z++)
+				var/savefile/split_index = new("map_saves/[z].sav")
+				check(split_index["/format_version"] == 4 && split_index["/segments/count"] > 1 && fexists("map_saves/[z].part2.sav"), "low-memory load did not split level [z]")
+				check(!fexists("map_saves/[z].index.tmp"), "split index temporary retained")
+			check(!map_storage.saving_segments && !map_storage.segment_reader, "segment handles retained after split load")
+			var/savefile/split_rollback = new("map_rollback/1.sav")
+			check(fexists("map_rollback/save_complete.txt") && split_rollback["/format_version"] == 3, "split load did not keep the full-file rollback")
+			split_rollback = null
+			check(map_storage.validate_world_save(), "split generation rejected")
+			map_storage.ClearMap()
+			check(map_storage.Load_World(), "second import of a split generation failed")
+			A = locate(/obj/item/test) in locate(1,1,1)
+			check(A && A.number == 17 && A.reference && A.reference.backlink == A && A.alias == A.complex, "split generation reload lost objects or identity")
+			var/obj/item/test/macro_copy = locate(/obj/item/test) in locate(6,1,1)
+			check(macro_copy && macro_copy.number == 66 && macro_copy.name == "\improper split turkey", "split changed a text-macro name")
+			check(!errors.len, "unexpected errors after split reload")
+			world.log << "PASS: low-memory load of a full-file world save"
+			text2file("PASS", "result.txt")
+			del(world)
+			return
 		if(world.params["low_memory"])
 			D = locate(/obj/item/test) in locate(5,1,1)
 			check(D && D.number == 55 && D.reference == A.reference && D.alias == A.complex, "cross-segment entry or list identity lost")

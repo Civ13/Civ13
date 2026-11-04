@@ -164,6 +164,7 @@ jobs:
           mkdir -p "$TMPDIR"
           bash tests/world_save/run.sh
           bash tests/world_save/run.sh 'low_memory=1&segment=1'
+          bash tests/world_save/run.sh 'split=1'
       - name: Retain all exact-head evidence including failed attempts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
