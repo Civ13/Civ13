@@ -111,10 +111,14 @@ class EntryPreparationContracts(unittest.TestCase):
         for marker in ('internal_organs += internal_item', 'organs += external_item',
                        'U.drop_from_inventory(B, W, TRUE)', 'U.drop_from_inventory(B, W, FALSE)',
                        'U.drop_from_inventory(default_target)', 'entry_deny', 'entry_redirect',
-                       'entry_special', 'client.screen', 'overlays_standing[L_HAND_LAYER]',
-                       'overlays_standing[R_HAND_LAYER]', 'T.MouseDrop_T(I, U)', 'D.reattach_paddles(U)',
+                       'entry_special', 'client.screen', 'overlays_standing[23]',
+                       'overlays_standing[24]', 'T.MouseDrop_T(I, U)', 'D.reattach_paddles(U)',
                        'not covered: no connected client', '!world.port && !OpenPort(12345)'):
             self.assertIn(marker, text)
+        # update_icons.dm undefines its layer macros, so the probe uses their values.
+        icons = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text()
+        self.assertRegex(icons, r'#define L_HAND_LAYER\s+23\b')
+        self.assertRegex(icons, r'#define R_HAND_LAYER\s+24\b')
         self.assertLess(text.index('human afterattack enters production wait'),
                         text.index('production internal-organ guard refuses before removal'))
 

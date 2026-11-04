@@ -296,11 +296,9 @@ var/list/slot_equipment_priority = list( \
 	return drop_from_inventory(r_hand, Target)
 
 /mob/proc/drop_inactive_hand(var/atom/Target)
-	if (!hand)
+	if (hand)
 		return drop_r_hand(Target)
-	else if (hand)
-		return drop_l_hand(Target)
-	return FALSE
+	return drop_l_hand(Target)
 
 /mob/proc/drop_active_hand(var/atom/Target)
 	return drop_item(Target)

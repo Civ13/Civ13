@@ -22,7 +22,7 @@
 	if (!use(2))
 		return FALSE
 	var/obj/item/flax_bundle/B = new(T)
-	user.put_in_any_hand_if_possible(B)
+	user.put_in_any_hand_if_possible(B, prioritize_active_hand = TRUE)
 	to_chat(user, SPAN_NOTICE("You tie two portions of flax with their own fibres. Place the bundle in fresh water to ret it."))
 	return TRUE
 
