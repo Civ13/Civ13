@@ -27,6 +27,16 @@ Outcome fields have these meanings:
 | `unchecked_handoff` | The self-collection hint was accepted without tracking physical disappearance. |
 | `let_live` | Cleanup explicitly kept the target alive. |
 
+Plain datums take the same queue as atoms since 2026-11-04: `qdel` no longer
+calls a native `del()` on them, because that call scans every reference in the
+world and cost about 18 ms per reagent holder on a populated Gaia save. An
+unreferenced queued datum is collected by reference counting; a retained one
+records `collection_failed` and a verified forced deletion after the grace
+period, under the same per-run budget. Mobs, icons, images and turfs keep their
+immediate native deletion. A stale expression temporary in a sleeping proc can
+keep a refcounted datum alive on pinned BYOND, so the fixture queues its datum
+inside a helper proc and lets only the ref string escape that frame.
+
 `GC Outcomes` requires Debug rights. Repeated failures and first/last failure
 times identify types worth investigating without storing offenders. The pending
 sample copies at most 64 ref strings, type strings and timestamps without
