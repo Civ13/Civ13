@@ -77,3 +77,30 @@ callbacks need native timing coverage; no scheduler quantization or no-jitter
 claim is made from source tests. Connected clients must cover prior subtile
 visual ownership, camera motion, logout/body handoff and restoration. Native
 save/load and arbitrary raw-location writers remain separate acceptance gates.
+
+## Rider synchronization regression (#3627)
+
+The rider jitter in the village trailer raw take (about 0:57-0:59) came from a
+build of game revision `58404f5`, which predates this lease. Frame tracking of
+that take shows the carriage and horses gliding at gallop speed while the rider
+glided at the fixed 4 px/tick its scripted walk left on it, so the rider fell
+about 11 pixels behind on each tile and then snapped forward. Players hit the
+same mismatch whenever their walking glide differed from the carriage's.
+
+`tests/carriage_glide/ride.py` is a headless full-game regression for that
+cause (native, not run by CI). It appends `ride_probe.dm` to a temporary copy of
+`civ13.dme`, boards a driver whose glide is a fixed 4 through the real
+`MouseDrop_T` path, hitches two horses, drives east through all three reins
+gears, stops and dismounts. Every leg must give the driver, both horses and the
+carriage the same glide_size, equal to `32 * world.tick_lag / interval`, and
+dismounting must restore the driver's 4.
+
+```sh
+source ~/byond-516.1688/byond/bin/byondsetup
+python3 tests/carriage_glide/ride.py --byond-bin ~/byond-516.1688/byond/bin
+```
+
+On master `6fb1998` with BYOND 516.1688 on Linux it passed with 6, 12 and 16
+sampled legs at gears 1-3. The same probe on `58404f5` fails at the first leg
+(carriage and horses 0, rider 4). This is server-side glide evidence; connected
+DreamSeeker camera acceptance remains as described above.
