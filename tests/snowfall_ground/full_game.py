@@ -38,9 +38,12 @@ def git(repo, *args):
 
 def generate(repo, prefix):
     dme = (repo / 'civ13.dme').read_text(encoding='utf-8-sig')
-    if dme.count(MAP_DEFAULT) != 1:
-        raise RuntimeError('Expected one default Nomads map include')
-    dme = dme.replace(MAP_DEFAULT, MAP_GAIA)
+    if dme.count(MAP_GAIA) == 1 and MAP_DEFAULT not in dme:
+        pass  # Gaia is already the compiled default map.
+    elif dme.count(MAP_DEFAULT) == 1 and MAP_GAIA not in dme:
+        dme = dme.replace(MAP_DEFAULT, MAP_GAIA)
+    else:
+        raise RuntimeError('Expected exactly one Nomads or Gaia map include')
     dme += '\n#include "tests\\snowfall_ground\\full_game_probe.dm"\n'
     path = repo / (prefix + '.dme')
     path.write_text(dme, encoding='utf-8')
@@ -131,7 +134,7 @@ def main():
         manifest = {'tested_commit': head, 'working_tree_status': tree_status,
                     'map': 'maps/nomads/nomads_gaia.dmm',
                     'source_sha256': {name: hashlib.sha256((repo / name).read_bytes()).hexdigest() for name in SNOW_SOURCES + ('maps/nomads/nomads_gaia.dmm',)},
-                    'adapters': ['map include swapped to Gaia', 'probe appended', 'Linux global_init initialisers completed by the probe before world/New',
+                    'adapters': ['Gaia map include (swapped in when not already the default)', 'probe appended', 'Linux global_init initialisers completed by the probe before world/New',
                                  'webhooks/ToRban off', 'round started via admin_started', 'random weather changes deferred; production weather procs drive area weather',
                                  'z-connection bit set only inside one connected-level check and restored']}
         (output / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
