@@ -267,6 +267,7 @@
 		if (!inducedSSD)
 			adjust_mood(-(0.02))
 	#undef HUNGER_THIRST_MULTIPLIER
+	handle_diet()
 	if (stats && stats.len)
 	// hotfixes some stamina bugs
 		if (stats["stamina"][1] < 0)
@@ -311,7 +312,7 @@
 	..()
 
 	// recover stamina
-	stats["stamina"][1] = min(stats["stamina"][1] + round(stats["stamina"][2] * 0.02), stats["stamina"][2])
+	diet_recover_stamina()
 
 	// recover juice (mana) - ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)

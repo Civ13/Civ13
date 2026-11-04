@@ -100,6 +100,19 @@ SUITES = {
         'paths': ('tests/well_smell/',), 'shared_paths': (
             'code/game/objects/structures/watercloset.dm',
             'code/game/mob/living/carbon/human/shit_piss.dm')},
+    # Balanced diet taxonomy reachability and source contracts; imports only the
+    # side-effect-free native runner for its mutation table, never launches it.
+    'balanced_diet': {'files': ('tests/balanced_diet/test_balanced_diet.py',),
+        'paths': ('tests/balanced_diet/', 'code/modules/diet/'), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/objects/structures/kitchen/cooked_meals.dm',
+            'code/modules/reagents/reagent_containers/food/grown.dm',
+            'code/modules/reagents/reagent_containers/food/snacks.dm',
+            'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
+            'code/game/objects/structures/berries.dm',
+            'code/game/mob/living/simple_animal/friendly/birds.dm',
+            'code/modules/1713/beekeeping.dm', 'code/datums/mind.dm', 'civ13.dme')},
 
     # Explicit stdlib-only crafting policy/source checks; never imports a runner.
     # Shared inputs retain existing conservative offline fallback semantics.

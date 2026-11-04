@@ -266,6 +266,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/examine(mob/user)
 	if (!..(user, TRUE))
 		return
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		var/diet_summary = H.diet_food_summary(src)
+		if (diet_summary)
+			to_chat(user, "<span class='notice'>[diet_summary]</span>")
 	if (bitecount == 0)
 		return
 	else if (bitecount == 1)

@@ -389,3 +389,6 @@ Recipe, constructor or atlas metadata changes must ship a regenerated
 `docs/crafting-recipe-audit-index.json`; CI fails on either being stale. Run
 `python3 scripts/agent_preflight.py generated --write`. On a merge conflict in
 either file, take one side and regenerate on the merged tree; never hand-merge.
+
+<!-- 2026-11-04: balanced diet -->
+- Diet (`code/modules/diet/diet.dm`, `docs/balanced-diet.md`) credits only metabolized nutrition after hunger; keep `nutriment`/drink `affect_ingest` hunger lines first. New edible flavours need a `diet_descriptor_profiles` entry, and taste-category flavours must stay reachable (`tests/balanced_diet`). Stamina refill goes through `diet_recover_stamina()`; penalties stay off until per-map availability is shown.

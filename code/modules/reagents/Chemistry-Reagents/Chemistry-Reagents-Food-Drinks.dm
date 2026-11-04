@@ -47,6 +47,7 @@
 	M.nutrition += nutriment_factor * removed // For hunger and fatness
 	M.bowels += (nutriment_factor * removed)/6
 	M.add_chemical_effect(CE_BLOODRESTORE, 4 * removed)
+	M.diet_intake(src, removed)
 
 /datum/reagent/nutriment/glucose
 	name = "Glucose"
@@ -458,6 +459,8 @@
 	M.nutrition += nutrition * removed
 	M.bladder += removed
 	M.bowels += (nutrition * removed)/6
+	if (nutrition > 0)
+		M.diet_intake(src, removed)
 
 	M.dizziness = max(0, M.dizziness + adj_dizzy)
 	M.drowsyness = max(0, M.drowsyness + adj_drowsy)
