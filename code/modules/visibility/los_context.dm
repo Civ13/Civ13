@@ -600,6 +600,14 @@ var/global/list/los_active_contexts
 		if (F && F.alpha && target.InCone(body, OPPOSITE_DIR(body.dir)))
 			return LOS_DENY
 	var/result = target.opacity ? LOS_SURFACE : LOS_WORLD
+	// Anything the body can touch right now stays rendered and examinable. The
+	// closed corner rule would otherwise black out a diagonal neighbour beside a
+	// wall even though clicks still reach it. Adjacent() keeps both-sides-walled
+	// diagonals hidden, so this admits nothing a hand could not already reach.
+	// The eye may carry a sub-tile step, so this is only a cheap prefilter;
+	// Adjacent() makes the real one-tile decision.
+	if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))
+		return result
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
@@ -619,8 +627,49 @@ var/global/list/los_active_contexts
 	S.clear_footprints[footprint_key] = result
 	return result
 
-// A displayed storage item is readable only through this body's current open
-// storage view. Screen membership alone does not authorize hidden contents.
+// Touch reach is the click system's own Adjacent() rule (border objects,
+// passable diagonal corner). It never grants a new action; it only stops the
+// geometric mask from hiding a world root the body can already interact with.
+/proc/los_reach_admits(mob/body, atom/target)
+	if (!body || !target || !isturf(body.loc))
+		return FALSE
+	var/turf/T = target.loc
+	if (isturf(target))
+		T = target
+	if (!isturf(T))
+		return FALSE
+	// Standing inside a closed curtain (opaque, non-dense) blinds the viewer
+	// to every other tile. Adjacent() ignores it, so keep that sight policy.
+	if (los_turf_blocks_sight(body.loc, body))
+		return FALSE
+	// Reach only settles the closed-corner question. Contents sharing a tile
+	// with an opaque blocker (closed door, curtain, bookcase, wall) keep the
+	// ordinary geometric decision; touch reach never reveals what it hides.
+	if (!target.opacity)
+		if (T.opacity)
+			return FALSE
+		for (var/atom/movable/A in T)
+			if (A.opacity && A != target)
+				return FALSE
+	// Adjacent() reaches a diagonal past non-dense blockers such as closed
+	// curtains. Touch must not see through a corner where BOTH shared
+	// cardinal tiles block sight; it may only clear the closed-contact crack.
+	if (T.x != body.x && T.y != body.y)
+		if (los_turf_blocks_sight(locate(T.x, body.y, T.z)) && los_turf_blocks_sight(locate(body.x, T.y, T.z)))
+			return FALSE
+	return target.Adjacent(body)
+
+/proc/los_turf_blocks_sight(turf/T, atom/ignore = null)
+	if (!T || T.opacity)
+		return TRUE
+	for (var/atom/movable/A in T)
+		if (A.opacity && A != ignore)
+			return TRUE
+	return FALSE
+
+// A displayed storage item is readable (hover and shift-click examine) only
+// through this body's current open storage view. Screen membership alone does
+// not authorize hidden contents.
 /proc/los_storage_hover_visible(mob/user, atom/target)
 	if (!user || !user.client || !istype(target, /obj/item))
 		return FALSE
@@ -643,7 +692,8 @@ var/global/list/los_active_contexts
 		return LOS_DENY
 	if (target == body)
 		return LOS_SELF
-	if (operation == "hover" && los_storage_hover_visible(user, target))
+	// Open storage contents sit off-turf, so geometry would always deny them.
+	if (los_storage_hover_visible(user, target))
 		return LOS_OWN_SLOT
 	if (ismovable(target))
 		var/atom/movable/I = target

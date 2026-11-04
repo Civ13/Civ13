@@ -4,6 +4,9 @@
 	var/list/explosion_turfs
 	var/explosion_in_progress
 	var/powernet_update_pending = FALSE
+	var/datum/durable_nomads_event/nomads_event
+	var/nomads_work_active = FALSE
+	var/nomads_work_failed = FALSE
 
 /process/explosion/setup()
 	name = "explosion"
@@ -15,6 +18,7 @@
 	processes.explosion = src
 
 /process/explosion/fire()
+	if(persistence_save_in_progress && map && map.uses_durable_metadata()) return
 	if (!work_queue)
 		setup()	// fix for process failing to re-init after termination
 
@@ -31,10 +35,28 @@
 	for (current in work_queue)
 		var/datum/explosiondata/data = current
 
-		if (data.is_rec)
-			explosion_rec(data.epicenter, data.rec_pow)
-		else
-			explosion(data)
+		nomads_event = data.nomads_event
+		nomads_work_active = TRUE
+		try
+			if(!nomads_event || nomads_event.valid())
+				if (data.is_rec)
+					explosion_rec(data.epicenter, data.rec_pow)
+				else
+					explosion(data)
+		catch(var/exception/E)
+			nomads_work_failed = TRUE
+			if(map && map.uses_durable_metadata()) map.durable_nomads_fail("explosion processor failure")
+			if(!nomads_event) throw E
+			nomads_event.failed = TRUE
+			nomads_event.release()
+			nomads_event = null
+			data.nomads_event = null
+			work_queue -= data
+			throw E
+		if(nomads_event) nomads_event.release()
+		nomads_work_active = FALSE
+		nomads_event = null
+		data.nomads_event = null
 
 		work_queue -= data
 
@@ -68,9 +90,9 @@
 	// Handles recursive propagation of explosions.
 	if (devastation_range > 2 || heavy_impact_range > 2)
 		if (HasAbove(epicenter.z) && z_transfer & UP)
-			explosion(GetAbove(epicenter), max(0, devastation_range - 2), max(0, heavy_impact_range - 2), max(0, light_impact_range - 2), max(0, flash_range - 2), FALSE, UP)
+			call(/proc/explosion)(GetAbove(epicenter), max(0, devastation_range - 2), max(0, heavy_impact_range - 2), max(0, light_impact_range - 2), max(0, flash_range - 2), FALSE, UP, data.is_rec, data.sound, data.create_smoke, data.nomads_event)
 		if (HasBelow(epicenter.z) && z_transfer & DOWN)
-			explosion(GetAbove(epicenter), max(0, devastation_range - 2), max(0, heavy_impact_range - 2), max(0, light_impact_range - 2), max(0, flash_range - 2), FALSE, DOWN)
+			call(/proc/explosion)(GetBelow(epicenter), max(0, devastation_range - 2), max(0, heavy_impact_range - 2), max(0, light_impact_range - 2), max(0, flash_range - 2), FALSE, DOWN, data.is_rec, data.sound, data.create_smoke, data.nomads_event)
 
 	var/max_range = max(devastation_range, heavy_impact_range, light_impact_range, flash_range)
 
@@ -217,6 +239,7 @@
 	return ..() + "[work_queue.len] datums in explosion queue"
 
 /datum/explosiondata
+	var/datum/durable_nomads_event/nomads_event
 	var/turf/epicenter
 	var/devastation_range
 	var/heavy_impact_range

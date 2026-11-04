@@ -105,6 +105,33 @@
 	durable_world_check(rejected, "incomplete saved lost-limb wound accepted")
 	map_storage.clear_bookkeeping()
 
+// Saved limbs are often first reached through another limb's field, with no
+// holder yet. Their owner arrives as a later field, so import must not let the
+// ordinary orphan cleanup delete them. A fresh orphan still cleans itself up.
+/proc/organ_restore_case()
+	var/savefile/F = new("organ-graph.sav")
+	F["/format_version"] << 2
+	F["[map_storage.entry_path(F, 1)]/type"] << /obj/item/organ/external/chest
+	F["[map_storage.entry_path(F, 1)]/children"] << list("kind" = "list", "ref" = 998)
+	F["/lists/998/length"] << 1
+	F["/lists/998/1/key"] << list("kind" = "entry", "ref" = 2)
+	F["/lists/998/1/value"] << list("kind" = "value", "value" = null)
+	F["[map_storage.entry_path(F, 2)]/type"] << /obj/item/organ/external/groin
+	F["[map_storage.entry_path(F, 2)]/parent"] << list("kind" = "entry", "ref" = 1)
+	F = null
+	map_storage.clear_bookkeeping()
+	F = new("organ-graph.sav")
+	var/obj/item/organ/external/chest/R = map_storage.Load_Entry(F, 1)
+	durable_world_check(istype(R) && !QDELETED(R), "saved limb deleted itself during import")
+	var/obj/item/organ/external/groin/G = length(R.children) == 1 ? R.children[1] : null
+	durable_world_check(istype(G) && !QDELETED(G), "field-referenced saved limb deleted itself during import")
+	durable_world_check(G.parent == R, "saved limb parent link changed")
+	durable_world_check(persistence_saved_atom_construction == 0, "organ import guard leaked")
+	F = null
+	map_storage.clear_bookkeeping()
+	var/obj/item/organ/external/groin/orphan = new
+	durable_world_check(QDELETED(orphan), "ordinary orphan limb no longer cleans itself up")
+
 /world/New()
 	world.OpenPort(0)
 	try
@@ -114,6 +141,7 @@
 					wound_restore_case(method, clean, encoding)
 		for(var/key in list("stages", "desc_list", "damage_list"))
 			wound_restore_reject_missing(key)
+		organ_restore_case()
 		text2file(json_encode(list("done" = TRUE, "checks" = durable_probe_checks, "roundtrips" = 18)), "metadata-result.json")
 	catch(var/exception/E)
 		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "error" = "[E]", "source" = E.file, "line" = E.line)), "metadata-result.json")

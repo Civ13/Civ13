@@ -151,6 +151,16 @@ and inspect its outcomes/artifacts; never substitute local tool absence or an
 older green run. This policy does not authorize installing native tools, running
 held probes, deployment, release publication, branch-protection changes or merging.
 
+<!-- 2026-11-03: infrastructure CI override -->
+The rule above still applies when hosted CI is up. A hosted build that is red
+only for infrastructure reasons (checkout or fetch timeout, cancelled runner,
+BYOND download or install failure) is not a hard merge blocker. After one rerun
+fails the same way, the PR may be admin-merged with Val's merge approval once a
+dated PR comment documents the local compile, the preflight results and the
+failing log line for its exact head. Say in that comment what stays unverified
+(native, in-game, save/load). A real compile or test failure still blocks. See
+"When hosted CI is down" in `.agents/skills/civ13-pr-preflight/SKILL.md`.
+
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual
 over HTTPS, with bounded downloads, cancellation and a temporary in-memory cache.

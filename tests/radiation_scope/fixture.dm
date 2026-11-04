@@ -9,6 +9,23 @@ var/global/list/assertion_failures = list()
 #define NORMALIZATION_CONTROL 0
 #endif
 var/global/normalization_control = NORMALIZATION_CONTROL
+#define UP 1
+#define DOWN 2
+var/datum/fixture_config/config = new
+/datum/fixture_config
+    var/use_recursive_explosions = FALSE
+// Direct-fallout scope uses null event ownership; the full-source Nomads probe
+// covers actual delayed completion and failure handling.
+/datum/durable_nomads_event
+    var/failed = FALSE
+/datum/durable_nomads_event/proc/retain()
+    return
+/datum/durable_nomads_event/proc/release()
+    return
+/datum/durable_nomads_event/proc/valid()
+    return TRUE
+/proc/log_debug(message)
+    return
 /atom
     var/radiation = 0
     var/received = 0
@@ -86,7 +103,7 @@ var/global/normalization_control = NORMALIZATION_CONTROL
     return
 /proc/shake_camera(mob/M, duration, strength)
     return
-/proc/explosion(turf/T, devastation, heavy, light, flash)
+/proc/explosion(turf/T, devastation, heavy, light, flash, adminlog, z_transfer, is_rec, sound, create_smoke, datum/durable_nomads_event/event)
     check(isturf(T), "epicenter normalized to turf")
     blasts++
 /proc/check(condition, message)

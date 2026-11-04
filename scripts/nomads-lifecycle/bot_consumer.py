@@ -115,7 +115,7 @@ def binding(config_path, profile_path, *, allow_disabled=False):
     hex_value(expected['revision'], 40)
     for key in ('dmb_sha256', 'rsc_sha256'):
         hex_value(expected[key], 64)
-    if expected['map'] not in ('NOMADS_GAIA', 'NOMADS_EUROPE') or not re.fullmatch('round-v2:[a-f0-9]{32}', expected['generation']):
+    if expected['map'] not in core.NOMADS_MAPS or not re.fullmatch('round-v2:[a-f0-9]{32}', expected['generation']):
         raise ValueError('Unsupported map or generation')
     daemon = local(settings['daemon'])
     result = {'supervisor_root': str(root), 'runtime_directory': str(run),

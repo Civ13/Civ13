@@ -43,7 +43,7 @@ are refused by that cycle and its builder, so it cannot compile before saving
 or create a detached build/run copy underneath canonical hosting.
 
 Windows supervisor for the separate native BYOND test server. It fetches the configured
-branch every 300 seconds by default, stages and compiles a separate Europe build,
+branch every 300 seconds by default, stages and compiles a separate configured-map build,
 then requests the production authenticated save-and-shutdown operation. It never
 pulls into the running directory. An unchanged revision only checks health.
 Ordinary saves defer polling while busy. Once ready, a later ordinary save's
