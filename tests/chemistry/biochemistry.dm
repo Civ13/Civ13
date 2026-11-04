@@ -18,7 +18,28 @@
 	biochemistry_heat_fuel_checks()
 	biochemistry_gelatin_checks()
 	biochemistry_wood_pulp_checks()
+	biochemistry_wood_fiber_checks()
 	return TRUE
+
+/proc/biochemistry_wood_fiber_checks()
+	var/obj/structure/reaction_bench/bench = processing_new_bench()
+	processing_add(bench, "purified_cellulose", 4)
+	processing_add(bench, "sodium_hydroxide", 1)
+	map.age = "1889"
+	chemistry_assert(!bench.synthesize("rayon_fiber") && bench.collector.reagents.get_reagent_amount("purified_cellulose") == 4, "Early rayon consumed inputs")
+	map.age = "1890"
+	chemistry_assert(bench.synthesize("rayon_fiber") && bench.collector.reagents.get_reagent_amount("rayon_fiber") == 4, "Rayon production")
+	chemistry_assert(bench.finish_wood_fiber("rayon_fiber") && !bench.collector.reagents.get_reagent_amount("rayon_fiber"), "Rayon cloth payment")
+	chemistry_assert(locate(/obj/item/stack/material/cloth) in get_turf(bench), "Rayon cloth missing")
+	chemistry_assert(!bench.finish_wood_fiber("rayon_fiber") && !bench.finish_wood_fiber("water"), "Unpaid or unknown fibre accepted")
+	processing_add(bench, "purified_cellulose", 4)
+	processing_add(bench, "n_methylmorpholine_n_oxide", 1)
+	map.age = "1979"
+	chemistry_assert(!bench.synthesize("lyocell_fiber") && bench.collector.reagents.get_reagent_amount("purified_cellulose") == 4, "Early lyocell consumed inputs")
+	map.age = "1980"
+	chemistry_assert(bench.synthesize("lyocell_fiber") && bench.finish_wood_fiber("lyocell_fiber"), "Lyocell cloth production")
+	map.age = "2000"
+	qdel(bench)
 
 /proc/biochemistry_wood_pulp_checks()
 	var/turf/site = locate(20, 20, 1)

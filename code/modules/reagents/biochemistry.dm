@@ -48,6 +48,52 @@
 	reagent_state = SOLID
 	color = "#EDE9DC"
 
+/datum/reagent/rayon_fiber
+	name = "Rayon Fibre"
+	id = "rayon_fiber"
+	description = "Regenerated fibre for the laboratory bench's cloth conversion."
+	reagent_state = SOLID
+	color = "#F1EFE7"
+
+/datum/reagent/lyocell_fiber
+	name = "Lyocell Fibre"
+	id = "lyocell_fiber"
+	description = "Regenerated fibre for the laboratory bench's cloth conversion."
+	reagent_state = SOLID
+	color = "#F5F2EA"
+
+/proc/wood_fiber_year_allowed(first_year)
+	if(!map || !istext(map.age))
+		return FALSE
+	var/year = text2num(map.age)
+	return isnum(year) && year == round(year) && "[year]" == map.age && year >= first_year
+
+/datum/chemical_reaction/rayon_fiber
+	name = "Rayon fibre"
+	id = "rayon_fiber"
+	result = "rayon_fiber"
+	required_reagents = list("purified_cellulose" = 4, "sodium_hydroxide" = 1)
+	result_amount = 4
+
+/datum/chemical_reaction/rayon_fiber/can_happen(datum/reagents/holder)
+	if(!..() || !wood_fiber_year_allowed(1890))
+		return FALSE
+	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
+	return istype(bench) && bench.collector == holder.my_atom
+
+/datum/chemical_reaction/lyocell_fiber
+	name = "Lyocell fibre"
+	id = "lyocell_fiber"
+	result = "lyocell_fiber"
+	required_reagents = list("purified_cellulose" = 4, "n_methylmorpholine_n_oxide" = 1)
+	result_amount = 4
+
+/datum/chemical_reaction/lyocell_fiber/can_happen(datum/reagents/holder)
+	if(!..() || !wood_fiber_year_allowed(1980))
+		return FALSE
+	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
+	return istype(bench) && bench.collector == holder.my_atom
+
 // One paid chip batch becomes a finite amount of pulp. An occupied kit or
 // unavailable reagent must never consume the batch.
 /obj/item/weapon/reagent_containers/glass/extraction_kit/proc/extract_wood_pulp(obj/item/stack/wood_chips/chips)

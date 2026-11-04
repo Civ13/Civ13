@@ -93,12 +93,16 @@
 	for(var/path in reaction_paths)
 		var/datum/chemical_reaction/R = new path()
 		options[R.name] = R.id
+	options["Make cloth from rayon fibre"] = "cloth_rayon"
+	options["Make cloth from lyocell fibre"] = "cloth_lyocell"
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
 	var/turf/user_turf = get_turf(user)
 	var/turf/bench_turf = get_turf(src)
 	if(!choice || !user || user.stat || user.restrained() || !user_turf || !bench_turf || user_turf.z != bench_turf.z || get_dist(user_turf, bench_turf) > 1)
 		return
-	if(synthesize(options[choice]))
+	var/selected = options[choice]
+	var/succeeded = selected == "cloth_rayon" ? finish_wood_fiber("rayon_fiber") : (selected == "cloth_lyocell" ? finish_wood_fiber("lyocell_fiber") : synthesize(selected))
+	if(succeeded)
 		to_chat(user, SPAN_NOTICE("The selected game reaction completes."))
 	else
 		to_chat(user, SPAN_WARNING("That reaction cannot proceed. Check inputs, catalysts, and available capacity. Nothing was consumed."))
@@ -115,9 +119,17 @@
 /obj/structure/reaction_bench/proc/is_heated()
 	return collector && collector.loc == src && heated_until > world.time
 
+// Four units of either fibre produce one ordinary cloth sheet.
+/obj/structure/reaction_bench/proc/finish_wood_fiber(id)
+	if(gcDestroyed || gc_destroyed || !(id in list("rayon_fiber", "lyocell_fiber")) || !collector || collector.gcDestroyed || collector.gc_destroyed || collector.loc != src || !(collector.flags & NOREACT) || !collector.reagents || !isturf(loc) || !collector.reagents.has_reagent(id, 4))
+		return FALSE
+	collector.reagents.remove_reagent(id, 4)
+	new /obj/item/stack/material/cloth(loc, 1)
+	return TRUE
+
 /obj/structure/reaction_bench/New()
 	..()
-	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/enginefuel)
+	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/enginefuel, /datum/chemical_reaction/rayon_fiber, /datum/chemical_reaction/lyocell_fiber)
 
 /obj/item/weapon/laboratory_burner
 	name = "laboratory burner"

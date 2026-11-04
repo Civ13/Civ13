@@ -44,7 +44,7 @@ Fuel recipe ratios, engine consumption, ethanol blends and balance are unchanged
 ## Controlled laboratory processing
 
 `run.py --probe processing --byond-bin <absolute BYOND bin directory>` runs
-all 23 offered reactions through production beaker transfer and bench synthesis.
+all offered reactions through production beaker transfer and bench synthesis.
 It checks exact products, consumed reactants, retained catalysts, the carbonate
 to chloride chain, reagent phases, and rejected missing-input/overflow/unknown
 recipes. It verifies inert-beaker restoration, preexisting inert flags, and
@@ -83,10 +83,11 @@ in a generated copy and must detect the missing output before consuming inputs.
   a restarted cycle that rejects its obsolete callback.
 - Paid chip-to-pulp extraction and centrifuge purification, with occupied-kit
   and full-collector controls preserving their inputs.
+- Rayon and lyocell year boundaries, reagent payment and conversion to cloth.
 
 `--probe biochemistry --negative-control` removes enginefuel registration in a
 generated source copy and requires the missing-product failure. CI runs both.
-All 32 offered recipes run through inherited processing checks. Success requires
+All 35 offered recipes run through inherited processing checks. Success requires
 every check to finish without a recorded failure; the fixture error handler
 preserves runtime diagnostics without normal game error infrastructure.
 
