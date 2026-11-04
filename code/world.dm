@@ -4,14 +4,15 @@
 /*
 	The initialization of the game happens roughly like this:
 
-	1. All global variables are initialized (including the global_init instance).
+	1. All global variables are initialized; the global_init instance is created last.
 	2. The map is initialized, and map objects are created.
 	3. world/New() runs, creating the process scheduler (and the old master controller) and spawning their setup.
 	4. processScheduler/setup() runs, creating all the processes. game_controller/setup() runs, calling initialize() on all movable atoms in the world.
 	5. The gameticker is created.
 
 */
-var/global/datum/global_init/init = new ()
+// The global_init instance is declared in code/global_init_last.dm, the last
+// file in civ13.dme, so every global it fills already holds its initial value.
 var/global/list/approved_list = list()
 var/global/list/whitelist_list = list()
 // Unavailable is distinct from a successfully published authoritative empty set.
