@@ -78,9 +78,7 @@ var/global/next_snowfall_ground_generation = 0
 /turf/proc/snowfall_ground_check(accumulate = TRUE)
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || !snowfall_ground_eligible() || locate(x, y, z) != src)
 		return
-	var/area/A = get_area(src)
-	var/precipitation = replacetext("[A.icon_state]", "rad_", "")
-	var/snowing = (A.weather == WEATHER_WET || A.weather == WEATHER_EXTREME) && A.weather_intensity > 0 && (precipitation in list("snow1", "snow2", "snow_storm"))
+	var/snowing = local_precipitation(src, SNOWFALL_STICK_C) == "snow"
 	if (weather_snow <= 0 && !snowing)
 		return // Clear ground in dry/rain weather needs no heat or exposure query.
 	var/had_snow = weather_snow > 0
