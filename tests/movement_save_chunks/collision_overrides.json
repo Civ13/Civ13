@@ -382,14 +382,14 @@
     },
     {
       "path": "code/modules/1713/structures.dm",
-      "sha256_normalized": "d53b8db23b90991f2632fcf4fd59e4aca7909c0df4a7ab5ac71deeecb9192116",
+      "sha256_normalized": "0253e26bfdffad743b51eb6053862ac817b0bd8d6a9548e6940ff3e01410c52f",
       "declarations": [
         {
-          "line": 621,
+          "line": 658,
           "declaration": "/obj/structure/props/sofa/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
         },
         {
-          "line": 631,
+          "line": 668,
           "declaration": "/obj/structure/props/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
         }
       ]
@@ -520,10 +520,10 @@
     },
     {
       "path": "code/modules/reagents/biochemistry.dm",
-      "sha256_normalized": "23e4d3cb69829eb22e5b61fa0b3137f9cc9a973c1e8026007b87168dcc49050f",
+      "sha256_normalized": "f03330ac2735ff8399747587bbd90eb434e763e18cfd720a18ab905f597f0099",
       "declarations": [
         {
-          "line": 52,
+          "line": 231,
           "declaration": "parent_type = /datum/reagent/gasoline"
         }
       ]

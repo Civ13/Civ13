@@ -91,12 +91,61 @@ fixture omission while preserving the real restore path.
 These results cover bounded synthetic native save/load, successive generations,
 legacy loading and malformed-input preflight. The synthetic Gaia metadata subtype
 overrides New; no Gaia map/startup, production saves, players or connected clients
-were used. Native roof-format/omission acceptance, constructor-surprise and
-retirement-failure injection, lighting/weather correctness, connected-client
-behavior, and scale/latency remain unverified. Existing offline failure controls
-are not native acceptance of those cases. The separately merged optional elevation
+were used. Roof, constructor, retirement, weather/lighting and late-join cases
+were added later; see "Native runner (#3311)" below. The separately merged optional elevation
 component is independent of native zones; this fixture does not establish combined
 nonzero-elevation/topology acceptance. See docs/elevation.md for its own coverage.
 
-Remaining native acceptance is tracked in [#3311](https://github.com/Civ13/Civ13/issues/3311).
 Source merge is distinct from deployment or approval to use production saves.
+
+## Native runner (#3311)
+
+`run_native.py` compiles the prepared fixture once with the pinned compiler and
+runs every mode in its own DreamDaemon process and directory. A reader gets only
+the disk files its writer left. The `moving-save-chunks.yml` isolated-native job
+runs it with `--all-controls` on every PR that touches zone persistence:
+
+```
+source <byond>/bin/byondsetup
+python3 -B tests/zone_persistence/run_native.py --byond-bin <byond>/bin --all-controls
+```
+
+Each case must reach its exact assertion count. Preflight rejections must give
+their named reason, leave the sentinel, registries and saved file hashes
+unchanged, and raise no recovery hold. Cases added for #3311:
+
+- Roofs under topology schema 2: `roof-write`/`roof-read` restore switched and
+  disabled roofs with the same zone identities, settings, aliases and overlays,
+  twice, then roof destruction restores the base type. `roof-omitted-settings`
+  (no `switch_area`) and `roof-absent-base` (base type not a saved zone) reject.
+- Unique base type: a switched roof's `current_area_type` must name exactly one
+  saved zone. `ambiguous-base-write` shows a save with a second explicit
+  same-type base is refused ("Ambiguous saved roof base zone"), the previous
+  generation stays the backup, and saving works again once the ambiguity is
+  gone. `ambiguous-base-read` rejects a saved topology with two such zones.
+- Constructors and retirement: `surprise-read` arms an unrequested area
+  constructor during staging; `retire-read` keeps a stale startup zone alive with
+  `QDEL_HINT_LETMELIVE`. Both fail after ClearMap, so they must hold recovery,
+  publish no registry or spawns, refuse registry readers, weather sweeps, saves
+  and a second load, and leave saved files unchanged. There is no in-memory
+  rollback; the cleared world stays cleared. `admission` shows ClearMap-time
+  areas are quarantined and retired, the registry epoch renews, only saved zones
+  are published, and a zone made after load gets a fresh restored-namespace ID.
+- Weather and lighting: `weather-read` restores per-zone weather, intensity,
+  icon state, `dynamic_lighting`, `location` and luminosity on a lit startup map,
+  builds or clears each turf's overlay to match, then shows ordinary area changes
+  and the next weather sweep still work after publication.
+- Late join: `latejoin-read` shows `job_master.relocate` refuses an empty or
+  removed saved group without inventing a fallback, admits a saved group, and
+  uses a spawn point an administrator places after load.
+- Formats: `unsupported-schema` and `unsupported-topology` reject schema 3.
+
+Omission controls rebuild with one production step removed and must fail at a
+named assertion: `roof-projection` (schema-2 roof validation), `roof-ambiguity`
+(unique-base check), `zone-fields` (zone field restore), `lighting-import`
+(overlay clearing) and `retire-check` (retirement verification).
+
+First run, 2026-11-04, Linux 516.1688 in a cloud container: 29 cases and five
+controls passed in 2m15s. This is synthetic 8x8x2 evidence. It does not show
+real-map capacity, save pauses, memory use, connected-client behavior or
+real-save compatibility; those are tracked separately.

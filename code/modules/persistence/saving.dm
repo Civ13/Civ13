@@ -148,7 +148,7 @@
 		if(zone_export_state)
 			if(debug_policy) round_state["debug_recovery"] = debug_policy.audit(generation, operation)
 			operation.diagnostic_phase = "candidate_validation"
-			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained")
+			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained: [last_error]")
 			clear_saved_zones()
 			release_durable_world()
 			clear_zone_export()

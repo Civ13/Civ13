@@ -20,6 +20,7 @@ on:
       - 'tests/world_save/roundtrip.dme'
       - 'tests/world_save/run.sh'
       - 'code/modules/persistence/zone_topology.dm'
+      - 'tests/zone_persistence/**'
       - 'code/modules/persistence/durable_world.dm'
       - 'code/modules/persistence/durable_graph.dm'
       - 'scripts/byond_runtime.py'
@@ -122,6 +123,17 @@ jobs:
         with:
           path: ${{ runner.temp }}/civ13-byond-archives
           key: ${{ steps.byond_archive.outputs.key }}
+      - name: Zone topology native acceptance
+        # Synthetic 8x8x2 world: fresh writer/reader processes plus source
+        # omission controls. Not real-map capacity or production-save evidence.
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+          export MANPATH="${MANPATH:-}"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B tests/zone_persistence/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/moving-save-evidence/zone-native" --all-controls
       - name: Isolated native correctness and bounded memory matrix
         timeout-minutes: 21
         shell: bash
