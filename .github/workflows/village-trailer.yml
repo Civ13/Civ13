@@ -98,7 +98,13 @@ jobs:
         run: gh run download "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" -n village-trailer-take -D "$RUNNER_TEMP/take"
       - name: Cut the trailer
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
+          # A hung package mirror once stalled this step for 20 minutes: bound
+          # each attempt and retry instead.
+          for attempt in 1 2 3; do
+            if command -v ffmpeg >/dev/null && [ -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf ]; then break; fi
+            timeout 240 sudo apt-get update -qq && timeout 300 sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null && break
+            echo "::warning::apt attempt $attempt failed"; sleep 10
+          done
           mkdir -p "$RUNNER_TEMP/media"
           cp "$RUNNER_TEMP"/take/*.json "$RUNNER_TEMP"/take/*.txt "$RUNNER_TEMP"/take/*.log "$RUNNER_TEMP"/take/*.png "$RUNNER_TEMP/media/" 2>/dev/null || true
           if [ -f "$RUNNER_TEMP/take/take.mkv" ]; then
