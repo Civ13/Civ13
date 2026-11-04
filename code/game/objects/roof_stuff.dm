@@ -239,6 +239,10 @@
 
 
 	roofs_list += roof_overlay
+	// Players outside already hold the roof images; show them this one too.
+	for (var/mob/living/human/H in human_mob_list)
+		if (H.client && H.client == H.roofs_client && !H.roofs_removed)
+			H.client.images += roof_overlay
 
 /obj/roof/Destroy()
 	unregister_seasonal_construction()
