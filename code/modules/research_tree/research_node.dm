@@ -450,7 +450,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (14) ---
+		// --- automation (15) ---
+		"/obj/structure/fluid_meter" = "automation",
 		"/obj/structure/fluid_bottler" = "automation",
 		"/obj/structure/fluid_vessel/fast" = "automation",
 		"/obj/item/camera" = "automation",

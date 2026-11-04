@@ -9,6 +9,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/pipes_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/vessel_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/packaging_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/meter_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -96,3 +97,5 @@ Letting catalysts leave the vessel makes two checks fail; letting heated recipes
 - Saving and catalog: the bottler's reagent is saved and press power is not; a reloaded press rejoins the press list; the press buffer is inert; research gates, recipes and reused sprites.
 
 Offering a bottler's container before it is full fails two checks; letting the press buffer fill without keeping the tablet ratio fails five.
+
+`meter_probe.dm` (chemistry phase 4) checks that a pipe meter off the pipes says so; on a network it counts pipes and pumps, shows stopped and running pumps and last step's flow, lists tank fill and filters, the vessel's recipe, stage and fill, and other machines' pipe roles; its dial lights only while liquid moves and goes dark when the network idles; a reloaded meter rejoins the meter list and is never a network member; and its research gate, recipe and sprites. Lighting the dial whenever the meter is on a network fails two checks.

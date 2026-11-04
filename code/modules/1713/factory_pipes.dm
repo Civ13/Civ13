@@ -216,6 +216,7 @@ var/global/fluid_step_serial = 0
 			N.idle_steps = 0
 		else
 			N.idle_steps++
+	factory_meters_update()
 
 /proc/factory_fluids_tick()
 	if (++fluid_tick < FLUID_STEP_INTERVAL)

@@ -1930,6 +1930,7 @@ RECIPE: /material/steel/,fast reaction vessel,/obj/structure/fluid_vessel/fast,2
 RECIPE: /material/steel/,industrial reaction vessel,/obj/structure/fluid_vessel/industrial,30,300,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,bottler,/obj/structure/fluid_bottler,8,150,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,automatic tablet press,/obj/structure/fluid_tablet_press,12,200,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,pipe meter,/obj/structure/fluid_meter,2,100,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,water intake,/obj/structure/fluid_intake,4,100,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,storage,115,130,0,8,null
