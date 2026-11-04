@@ -151,16 +151,19 @@ var/pipe_runtime_error = FALSE
 	var/obj/structure/fluid_intake/I = new(locate(12, 6, 1))
 	var/obj/structure/fluid_pipe/pipe = new(locate(13, 6, 1))
 	var/obj/structure/fluid_tank/T = new(locate(14, 6, 1))
+	var/obj/structure/fluid_tank/T2 = new(locate(13, 5, 1))
 	var/obj/structure/fluid_pump/P = new(locate(13, 7, 1))
 	var/list/power = pipe_power(P, 13, 8)
 	P.on = TRUE
 	factory_fluids_step()
 	var/turf/floor/beach/water/W = water
 	var/sick = 10 * W.sickness * 0.05
-	pipe_check(abs(T.reagents.total_volume - 10) < 0.01 && abs(T.reagents.get_reagent_amount("water") - (10 - sick)) < 0.01, "a water intake beside open water supplies what a person filling a container there would get")
+	var/total = T.reagents.total_volume + T2.reagents.total_volume
+	var/water_in = T.reagents.get_reagent_amount("water") + T2.reagents.get_reagent_amount("water")
+	pipe_check(abs(total - 10) < 0.01 && abs(water_in - (10 - sick)) < 0.01, "a water intake beside open water supplies what a person filling a container there would get, at most its rate per step even with two tanks demanding")
 	var/obj/structure/fluid_intake/dry = new(locate(17, 6, 1))
 	pipe_check(!dry.water_turf() && !dry.fluid_supply_holder().total_volume, "an intake away from water supplies nothing")
-	for (var/obj/O in list(I, pipe, T, P, dry) + power)
+	for (var/obj/O in list(I, pipe, T, T2, P, dry) + power)
 		qdel(O)
 	fluid_mark_dirty()
 

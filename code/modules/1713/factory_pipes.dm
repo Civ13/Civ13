@@ -27,6 +27,7 @@ var/global/list/fluid_networks = list()
 var/global/fluid_networks_dirty = TRUE
 var/global/fluid_tick = 0
 var/global/fluid_steps_since_rebuild = 0
+var/global/fluid_step_serial = 0
 
 /proc/fluid_mark_dirty()
 	fluid_networks_dirty = TRUE
@@ -193,6 +194,7 @@ var/global/fluid_steps_since_rebuild = 0
 
 // One network step: pumps draw power, then each awake network moves reagents.
 /proc/factory_fluids_step()
+	fluid_step_serial++
 	if (fluid_networks_dirty || ++fluid_steps_since_rebuild >= FLUID_REBUILD_STEPS)
 		fluid_rebuild_networks()
 	for (var/obj/structure/fluid_pump/P in fluid_pumps.Copy())
@@ -508,6 +510,7 @@ var/global/fluid_steps_since_rebuild = 0
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	var/tmp/drawn_step = -1
 
 /obj/structure/fluid_intake/New()
 	..()
@@ -544,9 +547,17 @@ var/global/fluid_steps_since_rebuild = 0
 /obj/structure/fluid_intake/fluid_supply_tier()
 	return FLUID_TIER_SOURCE
 
+// Draw once per network step, so an intake never supplies more than its rate.
 /obj/structure/fluid_intake/fluid_supply_holder()
-	draw_water()
+	if (drawn_step != fluid_step_serial)
+		drawn_step = fluid_step_serial
+		draw_water()
 	return reagents
+
+/obj/structure/fluid_intake/persistence_runtime_var(key)
+	if (key == "drawn_step")
+		return TRUE
+	return ..()
 
 /obj/structure/fluid_intake/examine(mob/user, distance)
 	..(user, distance)
