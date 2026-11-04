@@ -15,6 +15,38 @@
 /obj/structure/bed/proc/valid_character_bed(mob/living/human/H)
 	return !gc_destroyed && !gcDestroyed && anchored && buckle_lying && isturf(loc) && (!buckled_mob || buckled_mob == H) && persistence_character_turf_safe(loc, H)
 
+// One account per bed: another account's assignment blocks Sleep there.
+/obj/structure/bed/proc/assigned_to_other(ckey)
+	return persistence_bed_owner_ckey && persistence_bed_owner_ckey != ckey
+
+/obj/structure/bed/examine(mob/user, distance = -1)
+	. = ..()
+	if(!persistence_bed_owner_ckey || !persistence_bed_return_enabled() || !user || !user.client) return
+	if(persistence_bed_owner_ckey == user.client.ckey)
+		to_chat(user, SPAN_NOTICE("This is your assigned bed."))
+	else
+		to_chat(user, SPAN_WARNING("This bed is assigned to someone else."))
+
+// TRUE when every bed on this turf is assigned to another account.
+/mob/living/human/proc/saved_bed_taken_here()
+	if(!client) return FALSE
+	var/found = FALSE
+	for(var/obj/structure/bed/B in get_turf(src))
+		if(!B.assigned_to_other(client.ckey)) return FALSE
+		found = TRUE
+	return found
+
+// Where this account's current bed is: "here", "elsewhere" or null.
+/mob/living/human/proc/saved_bed_assignment()
+	if(!client) return null
+	var/turf/T = get_turf(src)
+	var/where = null
+	for(var/obj/structure/bed/B in world)
+		if(B.persistence_bed_owner_ckey != client.ckey) continue
+		if(get_turf(B) != T) return "elsewhere"
+		where = "here"
+	return where
+
 /mob/living/human/proc/enter_saved_bed_sleep()
 	if(!persistence_bed_return_enabled() || persistence_sleep_transfer_blocked() || map_storage.character_recovery_unready() || stat == DEAD || inducedSSD || !client || IsGuestKey(client.key)) return FALSE
 	var/obj/structure/bed/bed
