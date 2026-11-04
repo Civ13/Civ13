@@ -151,8 +151,23 @@ class Basics(unittest.TestCase):
             self.a.store.begin_escrow('gamma', ['a0'])
 
     def test_store_refuses_another_region_file(self):
-        with self.assertRaises(TransferError):
-            RegionStore(self.a.path, 'beta', 'test-group')
+        import sqlite3
+        from tools.transfer_storage import region
+        opened = []
+        real = region.sqlite3.connect
+
+        def tracking(*args, **kwargs):
+            opened.append(real(*args, **kwargs))
+            return opened[-1]
+        region.sqlite3.connect = tracking
+        try:
+            with self.assertRaises(TransferError):
+                RegionStore(self.a.path, 'beta', 'test-group')
+        finally:
+            region.sqlite3.connect = real
+        # The refused open must close its connection (Windows cannot delete open files).
+        with self.assertRaises(sqlite3.ProgrammingError):
+            opened[0].execute('SELECT 1')
 
 
 class RandomFaults(unittest.TestCase):

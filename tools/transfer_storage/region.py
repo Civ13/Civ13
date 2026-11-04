@@ -50,11 +50,16 @@ class RegionStore:
         self.region = region_id
         self.group = group_id
         self.db = sqlite3.connect(path, isolation_level=None)
-        self.db.execute('PRAGMA journal_mode=WAL')
-        self.db.execute('PRAGMA synchronous=FULL')
-        self.db.execute('PRAGMA foreign_keys=ON')
-        with self._tx():
-            self._migrate()
+        try:
+            self.db.execute('PRAGMA journal_mode=WAL')
+            self.db.execute('PRAGMA synchronous=FULL')
+            self.db.execute('PRAGMA foreign_keys=ON')
+            with self._tx():
+                self._migrate()
+        except Exception:
+            # Do not leave the file open (Windows cannot delete open files).
+            self.db.close()
+            raise
 
     def close(self):
         self.db.close()
