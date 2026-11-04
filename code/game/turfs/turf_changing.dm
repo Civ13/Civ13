@@ -1,5 +1,5 @@
 //Creates a new turf
-/turf/proc/ChangeTurf(var/path, var/tell_universe=1, var/force_lighting_update = FALSE)
+/turf/proc/ChangeTurf(var/path, var/tell_universe=1, var/force_lighting_update = FALSE, datum/durable_nomads_event/nomads_event = null)
 	if (!path)
 		return
 	// Construction/replacement is an explicit activation, including same-type use.
@@ -15,7 +15,11 @@
 	var/old_lighting_overlay = lighting_overlay
 	var/list/old_lighting_corners = corners
 	var/old_radiation = radiation
-	var/turf/W = new path(src)
+	var/turf/W
+	if(nomads_event && ispath(path, /turf/floor/lava))
+		W = new path(src, nomads_event)
+	else
+		W = new path(src)
 
 	W.levelupdate()
 	. =  W

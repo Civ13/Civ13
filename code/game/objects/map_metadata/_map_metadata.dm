@@ -1280,6 +1280,7 @@ var/civmax_research = list(230,230,230)
 			else if (season_worker_valid(value))
 				call(src, kind)(value)
 	catch (var/exception/E)
+		if(type in list(/obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/ice_age)) nomads_event_busy = TRUE
 		season_queue = list()
 		season_busy = FALSE
 		throw E

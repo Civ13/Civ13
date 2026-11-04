@@ -28,9 +28,15 @@ respawn-delay policy. Timers retain remaining server time, not old process clock
 Repeated load cancels prior queue rows; callbacks wait while save/load owns the
 world or startup recovery is held. Restoring completed one-shot work does not run
 the constructor work again.
-Mutating eruption/nuke callbacks hold a save barrier. An exception leaves that
-barrier held for explicit recovery with fresh metadata, preventing a partial event
-from being published as a completed generation.
+Mutating eruption/nuke callbacks retain a save/import barrier through actual child
+completion: queued explosions, delayed fallout, recursive radiation pulses, lava
+spread, drying and delayed lava casualties. Each child registers before scheduling;
+elapsed time and an empty queue alone do not release the barrier. Any child failure
+latches it even after other children drain. Failed Mountain/Ice Age transitions and
+delayed phases also latch a separate barrier when the season worker retires.
+Recovery means reloading a validated prior generation with fresh metadata; clearing
+the flag on a partially mutated world is not recovery. Unowned transient lava from
+older or map-authored sources conservatively blocks save/import until it dries.
 
 The 132-field shared inventory and its existing 131-field `faction_renames`
 migration remain unchanged. Gaia/Europe keep their existing envelope. Newly
@@ -64,6 +70,11 @@ disabled; real metadata constructors and the GC registration dependency remain.
 The current legacy migration fixture runs separately. The dedicated Nomads
 workflow runs these native tests on the exact PR head; the offline CI registry
 also checks subtype/catalog completeness and injected updater builds.
+`--events` tests nuke-tail completion and failure, actual lava propagation/drying,
+and injected errors after Mountain/Ice Age terrain mutation. It uses a yielding
+blast-body adapter and accelerates lava delays by 100 while retaining production
+phase bodies and ownership. The `nuke-tail`, `calendar-failure` and `lava-tail`
+negative controls must fail the corresponding named ownership assertions.
 
 The daemon uses loopback and closes/refuses its port, but may briefly listen and
 attempt BYOND pager login before `World/New`. This synthetic runner does not
@@ -74,8 +85,10 @@ this is not a hard memory or descendant-containment guarantee.
 Wasteland III has metadata but no authored DMM: its runtime profile can roundtrip,
 but the updater refuses that ID until a reviewed source binding exists. WIP/custom
 map files are not inferred from a shared ID; add an explicit reviewed binding.
-Tiny fixtures do not establish authored-map capacity, connected-client behavior,
-visual weather/lighting fidelity, native destructive-event completion or long-run
-memory stability. Existing dimension, roof/topology and host-growth admission
+Tiny fixtures do not establish authored-map capacity, cold-start recovery,
+connected-client behavior, visual weather/lighting fidelity, full blast damage or
+long-run memory stability. Spatial save/import occurs within each daemon. The
+event fixture covers the named direct descendants, not arbitrary gameplay scripts
+spawned by every possible damage hook. Existing dimension, roof/topology and host-growth admission
 limits remain enforced. No live save, map, deployment or restart is part of this
 source change.

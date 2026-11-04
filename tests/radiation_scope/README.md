@@ -1,6 +1,6 @@
 # Direct nuclear fallout scope
 
-`run.py --byond-bin <BYOND-516.1681-bin>` extracts the current production
+`run.py --byond-bin <BYOND-516.1688-bin>` extracts the current production
 `nuke_map`, `radiation_pulse`, turf and human radiation procedures. Native BYOND
 executes their range traversal and delayed stages in a 140x4x2 offline world.
 Explosion, camera, logging, plant response and turf replacement are isolated
@@ -28,4 +28,6 @@ This checks direct fallout scope, not blast damage, graphical acceptance,
 full-server performance or production survival. The real explosion engine can
 propagate to adjacent levels and is deliberately replaced here. Terrain RNG,
 stage delays, severity conversions, background radiation and same-level mapwide
-catastrophe are preserved. No batching or timing changes are introduced.
+catastrophe are preserved. The optional Nomads event owner is null in this scope
+fixture. Its completion and failure contract is exercised by the full-source
+Nomads event fixture.

@@ -1,5 +1,5 @@
 
-/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = "explosion", create_smoke = TRUE)
+/proc/explosion(turf/epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range, adminlog = TRUE, z_transfer = UP|DOWN, is_rec = config.use_recursive_explosions, sound = "explosion", create_smoke = TRUE, datum/durable_nomads_event/event = null)
 /*
 	// TODO: splits explosions bigger than 5x5 into sub-explosions
 	var/num_explosions = devastation_range/5
@@ -12,6 +12,9 @@
 */
 
 	var/datum/explosiondata/data = new
+	if(!event && processes.explosion) event = processes.explosion.nomads_event
+	data.nomads_event = event
+	if(event) event.retain()
 	data.epicenter = epicenter
 	data.devastation_range = devastation_range
 	data.heavy_impact_range = heavy_impact_range

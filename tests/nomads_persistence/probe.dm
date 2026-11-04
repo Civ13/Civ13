@@ -18,9 +18,42 @@
 var/nomads_checks = 0
 var/nomads_climate_calls = 0
 var/nomads_inject_nuke_failure = FALSE
-/obj/map_metadata/nomads/wasteland/durable_nomads_nuke_effect(turf/epicenter)
+var/nomads_event_fixture = FALSE
+var/nomads_fail_radiation = FALSE
+var/nomads_fail_calendar = FALSE
+var/nomads_fail_explosion = FALSE
+var/nomads_child_explosion = FALSE
+var/datum/durable_nomads_event/nomads_test_event
+/obj/map_metadata/nomads/wasteland/durable_nomads_nuke_effect(turf/epicenter, datum/durable_nomads_event/event)
 	if(nomads_inject_nuke_failure) throw EXCEPTION("Injected mutating-event failure")
+	if(nomads_event_fixture)
+		nomads_test_event = event
+		return nuke_map(epicenter, 1, 30, FALSE, event)
 	return ..()
+/turf/floor/nomads_radiation_fault/rad_act(amount)
+	if(nomads_fail_radiation) throw EXCEPTION("Injected delayed radiation failure")
+	return ..()
+/process/explosion/nomads_fixture/explosion(datum/explosiondata/data)
+	// Production queue ownership, with bounded blast effects. Deliberately yield
+	// so an empty queue or elapsed deadline cannot masquerade as completion.
+	if(nomads_child_explosion)
+		nomads_child_explosion = FALSE
+		call(/proc/explosion)(data.epicenter, 0, 0, 0, 0, FALSE, 0, FALSE, null, FALSE)
+	sleep(20)
+	if(nomads_fail_explosion) throw EXCEPTION("Injected queued explosion failure")
+/process/explosion/nomads_fixture/explosion_rec(turf/epicenter, power, sound)
+	sleep(20)
+/datum/durable_nomads_event/fast_lava/defer(delay, datum/target, method, list/arguments)
+	return ..(max(1, round(delay / 100)), target, method, arguments)
+/turf/floor/lava/nomads_failure/lava_dry_phase()
+	..()
+	throw EXCEPTION("Injected delayed lava drying failure")
+/obj/map_metadata/nomads/mountain/durable_nomads_replace(old_type, new_type, epoch, chance = 100)
+	. = ..()
+	if(nomads_fail_calendar) throw EXCEPTION("Injected partial Mountain transition")
+/obj/map_metadata/nomads/ice_age/durable_nomads_replace(old_type, new_type, epoch, chance = 100)
+	. = ..()
+	if(nomads_fail_calendar) throw EXCEPTION("Injected partial Ice Age phase")
 /obj/map_metadata/nomads/desert/durable_nomads_initial_climate()
 	nomads_climate_calls++
 	return ..()
@@ -291,6 +324,157 @@ var/nomads_inject_nuke_failure = FALSE
 	nomads_assert(file2text("map_saves/save_complete.txt") == original_marker && file2text("map_saves/round.json") == original_round, "import rewrote generation identity")
 	map.durable_timer_queue().cancel_all()
 	text2file("PASS: [nomads_checks] assertions; full spatial roundtrip [profile]", "result.txt")
+
+/proc/nomads_assert_event_barrier(message)
+	nomads_assert(map.nomads_event_busy, message + " flag")
+	var/rejected = FALSE
+	try
+		nomads_capture()
+	catch
+		rejected = TRUE
+	nomads_assert(rejected, message + " save")
+	map_storage.durable_state = list("fixture" = TRUE)
+	rejected = FALSE
+	try
+		map_storage.require_durable_world_idle()
+	catch
+		rejected = TRUE
+	map_storage.durable_state = null
+	nomads_assert(rejected, message + " import")
+
+/proc/nomads_event_tests()
+	nomads_event_fixture = TRUE
+	processes.callproc = new
+	processes.explosion = new /process/explosion/nomads_fixture
+	processes.explosion.setup()
+	persistence_save_in_progress = TRUE
+	map = new /obj/map_metadata/nomads/wasteland(locate(1,1,2))
+	map.durable_timer_queue().cancel_all()
+	map.nomads_nuke_x = 1
+	map.nomads_nuke_y = 1
+	map.nomads_nuke_z = 1
+	new /turf/floor/nomads_radiation_fault(locate(4,4,1))
+	for(var/failure in list(FALSE, TRUE))
+		nomads_fail_radiation = FALSE
+		var/start = world.time
+		map.durable_nomads_nuke_fire()
+		var/datum/durable_nomads_event/event = nomads_test_event
+		nomads_assert(event && event.pending >= 9, "nuke lost delayed or explosion work")
+		nomads_assert_event_barrier("nuke returned with pending descendants")
+		// Service the real queued handoff; blast adapter yields for 20 ticks.
+		sleep(2)
+		processes.callproc.fire()
+		nomads_assert(processes.explosion.work_queue.len, "nuke explosion was not queued")
+		processes.explosion.fire()
+		nomads_assert_event_barrier("after explosion before delayed fallout")
+		while(world.time < start + 66) sleep(1)
+		nomads_assert(event.pending > 0, "recursive radiation tail was not retained")
+		nomads_assert_event_barrier("after final direct phase during radiation tail")
+		nomads_fail_radiation = failure
+		var/deadline = world.time + 400
+		while(event.pending && world.time < deadline) sleep(1)
+		nomads_assert(!event.pending, "nuke work did not drain")
+		nomads_assert(event.failed == failure, "delayed failure result was lost")
+		if(failure)
+			nomads_assert_event_barrier("delayed failure drained but requires recovery")
+		else
+			nomads_assert(!map.nomads_event_busy, "successful nuke never released barrier")
+			nomads_capture()
+			nomads_assert(map_storage.durable_export, "successful nuke could not capture metadata")
+	nomads_fail_radiation = FALSE
+	del(map)
+	map = new /obj/map_metadata/nomads/wasteland(locate(1,1,2))
+	map.durable_timer_queue().cancel_all()
+	var/datum/durable_nomads_event/queued_event = new(map)
+	nomads_child_explosion = TRUE
+	call(/proc/explosion)(locate(1,1,1), 0, 0, 0, 0, FALSE, 0, FALSE, null, FALSE, queued_event)
+	queued_event.release()
+	sleep(2)
+	processes.callproc.fire()
+	processes.explosion.fire()
+	nomads_assert(!processes.explosion.work_queue.len && queued_event.pending == 1, "queued child handoff did not retain explosion ownership")
+	nomads_assert_event_barrier("empty explosion queue with child handoff outstanding")
+	sleep(2)
+	processes.callproc.fire()
+	processes.explosion.fire()
+	nomads_assert(!queued_event.pending && !map.nomads_event_busy, "child explosion completion did not release barrier")
+	queued_event = new(map)
+	nomads_fail_explosion = TRUE
+	call(/proc/explosion)(locate(1,1,1), 0, 0, 0, 0, FALSE, 0, FALSE, null, FALSE, queued_event)
+	queued_event.release()
+	sleep(2)
+	processes.callproc.fire()
+	var/explosion_failed = FALSE
+	try
+		processes.explosion.fire()
+	catch
+		explosion_failed = TRUE
+	nomads_fail_explosion = FALSE
+	nomads_assert(explosion_failed && queued_event.failed && !queued_event.pending && !processes.explosion.work_queue.len && !processes.explosion.nomads_event, "failed explosion lost or duplicated completion")
+	processes.explosion.fire()
+	nomads_assert_event_barrier("failed explosion requires recovery")
+	// Fresh metadata is explicit recovery; the failed original is never cleared.
+	del(map)
+	map = new /obj/map_metadata/nomads/africa(locate(1,1,2))
+	map.durable_timer_queue().cancel_all()
+	var/datum/durable_nomads_event/event = new /datum/durable_nomads_event/fast_lava(map)
+	var/area/lava_area = new /area/caribbean/nomads/forest/Jungle/lava_east
+	for(var/turf/T in block(locate(1,1,1), locate(4,4,1))) ChangeArea(T, lava_area)
+	var/turf/wall/rockwall/lavaspawner/source = new(locate(1,1,1))
+	map.volcano_eruption(event)
+	event.release()
+	nomads_assert_event_barrier("eruption returned with lava descendants")
+	var/deadline = world.time + 250
+	var/spread_seen = FALSE
+	while(event.pending && world.time < deadline)
+		var/count = 0
+		for(var/turf/floor/lava/L in world) count++
+		if(count > 4) spread_seen = TRUE
+		sleep(1)
+	nomads_assert(spread_seen, "production lava descendants did not spread")
+	nomads_assert(!event.pending && !event.failed && !map.nomads_event_busy, "lava drying did not complete ownership")
+	nomads_assert(istype(locate(4,4,1), /turf/floor/dirt/dry_lava), "lava descendant did not dry")
+	nomads_capture()
+	nomads_assert(map_storage.durable_export, "completed eruption could not capture")
+	nomads_assert(source, "lava source lost unexpectedly")
+	event = new /datum/durable_nomads_event/fast_lava(map)
+	new /turf/floor/lava/nomads_failure(locate(3,3,1), event)
+	event.release()
+	deadline = world.time + 250
+	while(event.pending && world.time < deadline) sleep(1)
+	nomads_assert(!event.pending && event.failed, "delayed lava failure was not retained after drain")
+	nomads_assert_event_barrier("failed lava drying requires recovery")
+	// Reset synthetic terrain before the independent calendar assertions so lava
+	// admission cannot account for their save/import rejection.
+	for(var/turf/floor/lava/L in world) L.ChangeTurf(/turf/floor/dirt/dry_lava)
+	// Actual terrain mutation precedes the injected error in both profiles.
+	for(var/profile in list(/obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/ice_age))
+		del(map)
+		map = new profile(locate(1,1,2))
+		map.durable_timer_queue().cancel_all()
+		var/turf/target = locate(3,3,2)
+		if(profile == /obj/map_metadata/nomads/mountain)
+			map:real_season = "dry"
+			target.ChangeTurf(/turf/floor/beach/drywater)
+		else
+			map:real_season = "WINTER"
+			target.ChangeTurf(/turf/floor/beach/water/shallowsaltwater)
+		var/failed = FALSE
+		nomads_fail_calendar = TRUE
+		try
+			if(profile == /obj/map_metadata/nomads/mountain)
+				map.season_queue += list("nomads_transition", TRUE, TRUE, TRUE)
+			else
+				map.season_queue += list("durable_nomads_ice_water_phase", map.season_epoch, FALSE, FALSE)
+			map.season_run_queue()
+		catch
+			failed = TRUE
+		nomads_fail_calendar = FALSE
+		nomads_assert(failed && !map.season_busy && !map.season_queue.len, "worker error did not retire normally")
+		nomads_assert(profile == /obj/map_metadata/nomads/mountain ? istype(locate(3,3,2), /turf/floor/beach/water/swamp) : istype(locate(3,3,2), /turf/floor/beach/water/ice/salty), "injected failure did not follow terrain mutation")
+		nomads_assert_event_barrier("partial calendar transition")
+		nomads_assert(!map.durable_nomads_seasons(TRUE, TRUE, TRUE), "failed transition reentered")
+	text2file("PASS: [nomads_checks] assertions; owned nuke/lava descendants and failed calendar recovery barriers", "result.txt")
 /world/New()
 	OpenPort("none")
 	try
@@ -308,6 +492,10 @@ var/nomads_inject_nuke_failure = FALSE
 		times_of_day = list("Morning")
 		game_hour = 9
 		global.game_id = "nomads-synthetic-fixture"
+		if(text2num(world.params["events"]))
+			nomads_event_tests()
+			del(world)
+			return
 		var/spatial = text2num(world.params["spatial"])
 		if(spatial)
 			var/list/profiles = durable_nomads_profiles()

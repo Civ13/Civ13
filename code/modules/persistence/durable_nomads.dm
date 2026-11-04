@@ -119,14 +119,16 @@
 
 /obj/map_metadata/proc/durable_nomads_eruption_fire()
 	if(map != src || !vars["eruptions_enabled"] || clients.len <= 5) return
-	nomads_event_busy = TRUE
+	var/datum/durable_nomads_event/event = new(src)
 	try
-		volcano_eruption()
+		volcano_eruption(event)
 	catch(var/exception/E)
 		// A partially applied event must not become a completed generation.
 		// Keep the barrier held for explicit recovery with fresh metadata.
+		event.failed = TRUE
+		event.release()
 		throw E
-	nomads_event_busy = FALSE
+	event.release()
 
 /obj/map_metadata/proc/durable_nomads_fish_boot()
 	var/count = type == /obj/map_metadata/nomads/continental ? 65 : 35
@@ -153,24 +155,65 @@
 /obj/map_metadata/proc/durable_nomads_nuke_fire()
 	var/turf/epicenter = locate(nomads_nuke_x, nomads_nuke_y, nomads_nuke_z)
 	if(!epicenter || map != src) throw EXCEPTION("Nomads nuke lost its captured target")
-	nomads_event_busy = TRUE
+	var/datum/durable_nomads_event/event = new(src)
 	try
 		to_chat(world, "<font size=4 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>")
-		durable_nomads_nuke_effect(epicenter)
+		durable_nomads_nuke_effect(epicenter, event)
 		message_admins("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 		log_game("Automatic nuke deployed at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
 	catch(var/exception/E)
 		// Failure keeps the barrier held; do not publish a partial event.
+		event.failed = TRUE
+		event.release()
 		throw E
-	nomads_event_busy = FALSE
+	event.release()
 
-/obj/map_metadata/proc/durable_nomads_nuke_effect(turf/epicenter)
-	nuke_map(epicenter, 200, 180, 0)
+/obj/map_metadata/proc/durable_nomads_nuke_effect(turf/epicenter, datum/durable_nomads_event/event)
+	if(!nuke_map(epicenter, 200, 180, 0, event)) throw EXCEPTION("Nomads nuke did not start")
+
+// Each delayed phase, recursive pulse and queued explosion retains one unit.
+// Failure latches the barrier even after all remaining work drains. A deadline
+// alone cannot prove completion when the scheduler is delayed or a phase yields.
+/datum/durable_nomads_event
+	var/obj/map_metadata/owner
+	var/pending = 1
+	var/failed = FALSE
+/datum/durable_nomads_event/New(obj/map_metadata/target)
+	owner = target
+	if(owner.nomads_event_busy) throw EXCEPTION("Nomads event is already active")
+	owner.nomads_event_busy = TRUE
+/datum/durable_nomads_event/proc/retain()
+	pending++
+/datum/durable_nomads_event/proc/release()
+	if(pending <= 0) throw EXCEPTION("Nomads event completion underflow")
+	pending--
+	if(!pending && !failed && owner && map == owner)
+		owner.nomads_event_busy = FALSE
+		owner = null
+/datum/durable_nomads_event/proc/valid()
+	if(!owner || map != owner) failed = TRUE
+	return !failed
+/datum/durable_nomads_event/proc/defer(delay, datum/target, method, list/arguments)
+	retain()
+	spawn(delay)
+		try
+			if(valid() && target) call(target, method)(arglist(arguments))
+		catch(var/exception/E)
+			failed = TRUE
+			log_debug("Nomads event child [method] failed: [E]")
+		release()
+
+/obj/map_metadata/proc/durable_nomads_lava_active()
+	// Legacy or map-authored transient lava has no event owner. Do not save a
+	// partially dried stage or load over its unowned constructor callbacks.
+	for(var/turf/floor/lava/L in world)
+		if(L.dries || L.spreads) return TRUE
+	return FALSE
 
 // Reuse the existing serialized worker and its epoch/budget checks. Custom
 // calendars preserve their own cadence instead of invoking the temperate cycle.
 /obj/map_metadata/proc/durable_nomads_seasons(looping, force, advance_decay)
-	if(map != src || season_retired || persistence_save_in_progress) return FALSE
+	if(map != src || season_retired || persistence_save_in_progress || nomads_event_busy) return FALSE
 	advance_decay = season_decay_requested(force, advance_decay)
 	if(force)
 		for(var/i = 1, i <= season_queue.len, i += 4)
@@ -192,6 +235,17 @@
 	return season_worker_valid(epoch)
 
 /obj/map_metadata/proc/durable_nomads_apply(looping, advance_decay)
+	if(nomads_event_busy) throw EXCEPTION("Nomads transition requires recovery")
+	nomads_event_busy = TRUE
+	try
+		durable_nomads_apply_work(looping, advance_decay)
+	catch(var/exception/E)
+		// season_run_queue retires its worker on failure; retain this separate
+		// recovery barrier so a partially changed calendar cannot be saved.
+		throw E
+	nomads_event_busy = FALSE
+
+/obj/map_metadata/proc/durable_nomads_apply_work(looping, advance_decay)
 	if(!(type in list(/obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/ice_age))) throw EXCEPTION("Unsupported Nomads custom calendar")
 	season_epoch++
 	var/epoch = season_epoch

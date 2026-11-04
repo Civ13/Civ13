@@ -39,23 +39,33 @@
 	var/stage = 0
 	var/dries = TRUE
 	var/spreads = TRUE
+	var/tmp/datum/durable_nomads_event/nomads_event
 	light_power = 2
 	light_color = "#FFA500"
-	New()
-		..()
+	New(loc, datum/durable_nomads_event/event = null)
+		nomads_event = event
+		..(loc)
 		if (dries)
 			dryproc()
-		spawn(5)
-			for (var/atom/movable/M in src)
-				Entered(M)
+		lava_defer(5, "lava_enter_contents")
 		if (spreads)
-			spawn(20)
-				var/area/A = get_area(src)
-				for(var/turf/T in range(1,src))
-					var/area/B = get_area(T)
-					if (istype(B, A.type) && !istype(T,/turf/floor/lava))
-						T.ChangeTurf(/turf/floor/lava)
+			lava_defer(20, "lava_spread")
 			new/obj/effect/fire(src)
+/turf/floor/lava/persistence_runtime_var(key)
+	return key == "nomads_event" || ..()
+/turf/floor/lava/proc/lava_defer(delay, method, list/arguments = list())
+	if(nomads_event)
+		nomads_event.defer(delay, src, method, arguments)
+	else
+		spawn(delay) call(src, method)(arglist(arguments))
+/turf/floor/lava/proc/lava_enter_contents()
+	for(var/atom/movable/M in src) Entered(M)
+/turf/floor/lava/proc/lava_spread()
+	var/area/A = get_area(src)
+	for(var/turf/T in range(1,src))
+		var/area/B = get_area(T)
+		if(istype(B, A.type) && !istype(T, /turf/floor/lava))
+			T.ChangeTurf(/turf/floor/lava, TRUE, FALSE, nomads_event)
 /turf/floor/lava/permanent
 	dries = FALSE
 	spreads = FALSE
@@ -69,9 +79,10 @@
 			stage = 2
 		else if (stage<0)
 			stage = 0
-		spawn(6000)
-			icon_state = "lava[stage]"
-			dryproc()
+		lava_defer(6000, "lava_dry_phase")
+/turf/floor/lava/proc/lava_dry_phase()
+	icon_state = "lava[stage]"
+	dryproc()
 
 /turf/floor/lava/Entered(atom/movable/O)
 	..()
@@ -94,38 +105,22 @@
 					H.apply_damage(100, BURN, affecting, FALSE, sharp=0, edge=0)
 				if (2)
 					H.apply_damage(75, BURN, affecting, FALSE, sharp=0, edge=0)
-			spawn(15)
-				if (istype(H.loc, /turf/floor/lava))
-					var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src)
-					HR.name = "[H]'s remains"
-					HR.icon = 'icons/obj/flora/rocks.dmi'
-					HR.icon_state = "remains"
-					qdel(H)
-					return
+			lava_defer(15, "lava_human_remains", list(H))
 		else
 			switch(stage)
 				if (0)
 					L.maim()
 					L.maim()
 					L.adjustBurnLoss(100)
-					spawn(20)
-						qdel(L)
-						new/obj/effect/decal/cleanable/ash(src)
-					return
+					lava_defer(20, "lava_animal_remains", list(L))
 				if (1)
 					if (prob(50))
 						L.maim()
 					L.adjustBurnLoss(80)
-					spawn(20)
-						qdel(L)
-						new/obj/effect/decal/cleanable/ash(src)
-					return
+					lava_defer(20, "lava_animal_remains", list(L))
 				if (2)
 					L.adjustBurnLoss(55)
-					spawn(20)
-						qdel(L)
-						new/obj/effect/decal/cleanable/ash(src)
-					return
+					lava_defer(20, "lava_animal_remains", list(L))
 	else if (istype(O, /obj/item) || istype(O, /obj/structure) || istype(O, /obj/roof) || istype(O, /obj/covers))
 		switch(stage)
 			if (0)
@@ -150,19 +145,29 @@
 						new/obj/effect/effect/smoke(loc)
 					qdel(O)
 	return
-/turf/wall/rockwall/lavaspawner/proc/start_lava_flow()
+/turf/floor/lava/proc/lava_human_remains(mob/living/human/H)
+	if(H && istype(H.loc, /turf/floor/lava))
+		var/obj/structure/religious/remains/HR = new(src)
+		HR.name = "[H]'s remains"
+		HR.icon = 'icons/obj/flora/rocks.dmi'
+		HR.icon_state = "remains"
+		qdel(H)
+/turf/floor/lava/proc/lava_animal_remains(mob/living/L)
+	if(L) qdel(L)
+	new/obj/effect/decal/cleanable/ash(src)
+/turf/wall/rockwall/lavaspawner/proc/start_lava_flow(datum/durable_nomads_event/event = null)
 
 	for(var/turf/T in range(1,src))
 		if (istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_east) || istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_west) || istype(T.loc, /area/caribbean/nomads/forest/Jungle/lava_south))
-			T.ChangeTurf(/turf/floor/lava)
+			T.ChangeTurf(/turf/floor/lava, TRUE, FALSE, event)
 	return
 
-/obj/map_metadata/proc/volcano_eruption()
+/obj/map_metadata/proc/volcano_eruption(datum/durable_nomads_event/event = null)
 	var/list/lavalist = list()
 	for(var/turf/wall/rockwall/lavaspawner/L in world)
 		lavalist += L
 	if (!isemptylist(lavalist))
 		var/turf/wall/rockwall/lavaspawner/T = pick(lavalist)
-		T.start_lava_flow()
+		T.start_lava_flow(event)
 		to_chat(world, "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>")
 		return TRUE

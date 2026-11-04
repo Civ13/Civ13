@@ -4,6 +4,7 @@
 	var/list/explosion_turfs
 	var/explosion_in_progress
 	var/powernet_update_pending = FALSE
+	var/datum/durable_nomads_event/nomads_event
 
 /process/explosion/setup()
 	name = "explosion"
@@ -31,10 +32,24 @@
 	for (current in work_queue)
 		var/datum/explosiondata/data = current
 
-		if (data.is_rec)
-			explosion_rec(data.epicenter, data.rec_pow)
-		else
-			explosion(data)
+		nomads_event = data.nomads_event
+		try
+			if(!nomads_event || nomads_event.valid())
+				if (data.is_rec)
+					explosion_rec(data.epicenter, data.rec_pow)
+				else
+					explosion(data)
+		catch(var/exception/E)
+			if(!nomads_event) throw E
+			nomads_event.failed = TRUE
+			nomads_event.release()
+			nomads_event = null
+			data.nomads_event = null
+			work_queue -= data
+			throw E
+		if(nomads_event) nomads_event.release()
+		nomads_event = null
+		data.nomads_event = null
 
 		work_queue -= data
 
@@ -217,6 +232,7 @@
 	return ..() + "[work_queue.len] datums in explosion queue"
 
 /datum/explosiondata
+	var/datum/durable_nomads_event/nomads_event
 	var/turf/epicenter
 	var/devastation_range
 	var/heavy_impact_range

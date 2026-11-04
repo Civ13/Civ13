@@ -34,8 +34,8 @@
 	else
 		return FALSE
 
-/obj/map_metadata/nomads/africa/volcano_eruption()
+/obj/map_metadata/nomads/africa/volcano_eruption(datum/durable_nomads_event/event = null)
 	for(var/turf/wall/rockwall/lavaspawner/L in world)
-		L.start_lava_flow()
+		L.start_lava_flow(event)
 	to_chat(world, "<font color='red'><big><b>The volcano erupts, with lava flowing down the mountain!</b></big></font>")
 	return TRUE
