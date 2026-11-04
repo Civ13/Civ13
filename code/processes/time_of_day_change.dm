@@ -49,19 +49,31 @@
 	updating_lighting = FALSE
 	admincaller = null
 
+// Both sweeps index a one-time copy instead of using for-in. A for-in loop
+// over a list this size that sleeps pays a cost proportional to the whole
+// list every time it resumes, outside world.tick_usage. On Gaia that held
+// every day/night change ~50% behind real time for 10-15 seconds, which
+// players saw as stuttering movement. The copy keeps for-in's snapshot.
 /process/time_of_day_change/proc/apply_daylight(target, revision)
 	var/work = 0
-	for (var/lighting_overlay in lighting_overlay_list)
-		var/atom/movable/lighting_overlay/LO = lighting_overlay
-		LO.invisibility = 0
+	var/list/sweep_overlays = lighting_overlay_list.Copy()
+	for (var/overlay_index = 1, overlay_index <= sweep_overlays.len, overlay_index++)
+		var/atom/movable/lighting_overlay/LO = sweep_overlays[overlay_index]
+		if (LO)
+			LO.invisibility = 0
 		if (environment_sweep_pause(++work))
 			work = 0
 			if (revision != lighting_revision)
 				return FALSE
+	sweep_overlays = null
 	setup_lighting = TRUE
 
 	var/m_lighting_z = max_lighting_z()
-	for (var/turf/T in turfs)
+	var/list/sweep_turfs = turfs.Copy()
+	for (var/turf_index = 1, turf_index <= sweep_turfs.len, turf_index++)
+		var/turf/T = sweep_turfs[turf_index]
+		if (!istype(T))
+			continue
 		if (T.z <= m_lighting_z)
 			var/area/a = T.loc
 			var/areacheck = TRUE
