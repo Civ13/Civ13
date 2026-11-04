@@ -36,11 +36,10 @@ Animals of medium size and larger leave dung when they eat.
 
 | Species | Diet flags | Notes |
 | --- | --- | --- |
-| Cattle, goats, sheep, camels, deer | Herbivore | Graze grass, so a pasture needs regrowing grass or grain feed |
+| Cattle, bison, goats, sheep, camels, deer | Herbivore | Graze grass, so a pasture needs regrowing grass or grain feed |
 | Pigs and wild boars | Granivore, carnivore (boars also hunt) | Eat seeds, crops and meat; cannot be fed grain by hand |
 | Chickens and turkeys | Granivore | Seed feeding also refills eggs |
 | Wolves and bears | Carnivore, predatory | Hunt and scavenge |
-| Bison | None | Never get hungry and never starve; no feed cost at all |
 
 ## Products
 
@@ -55,7 +54,7 @@ Animals of medium size and larger leave dung when they eat.
 | Eggs (refill) | Hand-feeding seeds | +1 egg per seed fed, up to `maxeggs` (5) |
 | Meat, hide, bone | Butchering | Per-type `meat_amount`; see [animal-harvesting.md](animal-harvesting.md) |
 
-## Fixed with this audit
+## Fixed since this audit
 
 - Hens could never be refilled once they had laid all their eggs. The refill
   check was `eggsleft != FALSE`, and `eggsleft` is 0 (FALSE) for exactly those
@@ -64,14 +63,15 @@ Animals of medium size and larger leave dung when they eat.
 - Hand-feeding grain only accepted wheat. `istype(O, GRAIN)` expanded to
   `istype(O, /wheat||/oat||/barley||/rice)`, and `||` returns the first path,
   so oat, barley and rice were silently ignored. Each grain is now checked.
-- `tests/animal_registry/test_feeding_contract.py` covers both.
+- Bison had no diet flag, so they never got hungry. They now graze like
+  cattle, and bison cows are milked through the same `try_milk()` as cows.
+- `tests/animal_registry/test_feeding_contract.py` covers all three.
 
 ## Open balance questions
 
 These are left for the maintainer. They change how farming feels, not just
 correctness:
 
-- Bison have no diet flag, so they cost nothing to keep.
 - Grazing turns grass into dirt with no regrowth cost to the herd owner beyond
   moving animals; whether pastures need managing depends on grass regrowth.
 - Milk and egg rates do not depend on how well fed the animal is.
