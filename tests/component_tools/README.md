@@ -34,3 +34,17 @@ Run `scripts/check-recipes.py` separately for recipe registration and generic
 stack consumption. These checks do not prove client interaction, every recipe
 in every era, full-map save performance or long-running gameplay. No screenshots
 are substituted by fixture output. `component-tools.yml` is a manual CI runner.
+
+The fixture also runs `armor.dm` against the production armor bench. It checks
+exact costs and excess stock, all three stages, unchanged vest stats, research
+and era gates, cancellation, concurrent entry, removed/changed inputs, actor or
+bench movement, lost research, persistence identity changes, destruction and a
+nested serializer round trip. Armor slot cleanup uses an explicit fixture human
+adapter; real `transfer_held_item_to` and material identity checks remain active.
+
+For current-pin Windows, use `run_windows.py --byond-bin <516.1688-bin>
+--output <fresh-directory>`. It reuses the existing canonical 1688 owned-Job
+facade and no-socket supervisor, retains logs/source hashes and runs no maps.
+`--negative-control armor-consumption` omits payment in generated source;
+`--negative-control armor-research` removes the research guard. Each must fail
+its named assertion. A supervisor rejection is a failed run, never a pass.

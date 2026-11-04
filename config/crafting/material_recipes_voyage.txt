@@ -246,3 +246,5 @@ RECIPE: /material/marble/,ashtray,/obj/item/weapon/material/ashtray/marble,3,30,
 RECIPE: /material/marble/,marble brazier,/obj/structure/brazier/stone,7,100,1,1,none,0,0,0,8,null
 RECIPE: /material/marble/,marble pillar,/obj/structure/mine_support/stone/marble,3,130,1,1,none,0,0,0,8,null
 RECIPE: /material/marble/,marble statue,/obj/structure/religious/statue,50,250,1,1,none,10,0,0,8,marble
+
+RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_workbench/armor,10,100,1,1,tools,0,0,0,8,null

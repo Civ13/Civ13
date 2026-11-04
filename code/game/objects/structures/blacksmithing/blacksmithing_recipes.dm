@@ -359,7 +359,7 @@ var/global/list/anvil_recipes = list(
 	///*Kevlar Armor*///
 			/*Cold War*/
 	"Police Bullet-Proof Vest" = list("Police Bullet-Proof Vest","armor",7,8,0,0,0,10,/obj/item/clothing/suit/police),
-	"Standard Kevlar Vest" = list("Standard Kevlar Vest","armor",7,8,0,0,0,14,/obj/item/clothing/accessory/armor/nomads/kevlarblack),
+	// Standard vest moved to the component-based armor assembly workbench.
 
 				/*PASGT Armor*/
 	"Standard PASGT Armor" = list("Standard PASGT Armor","pasgt armor",7,7,0,0,0,12,/obj/item/clothing/accessory/armor/coldwar/pasgt),

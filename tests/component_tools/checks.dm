@@ -3,6 +3,7 @@
 /world
 	hub = ""
 	hub_password = ""
+	visibility = 0
 	maxx = 3
 	maxy = 1
 	maxz = 1
@@ -120,6 +121,7 @@ var/list/component_errors = list()
 	var/obj/item/weapon/material/pickaxe/heavy = A.assemble_work_tool(B, H)
 	component_check(heavy.usespeed < 2 && heavy.maxhealth == round(25 * 1.5), "reinforced handle tradeoff missing")
 	run_workbench_checks(H, T)
+	run_armor_checks(H, T)
 	var/report = "Production assembly, rejection, bounds, condition, provenance and native save/load checks\n"
 	for (var/error in component_errors)
 		report += "FAIL: [error]\n"
@@ -128,3 +130,4 @@ var/list/component_errors = list()
 	del(world)
 
 #include "workbench.dm"
+#include "armor.dm"

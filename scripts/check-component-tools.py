@@ -62,7 +62,7 @@ def main(argv=None):
     parser.add_argument("--byond-bin", type=Path, required=True)
     parser.add_argument("--byond-archive", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--negative-control", choices=("consumption", "runtime-save"))
+    parser.add_argument("--negative-control", choices=("consumption", "runtime-save", "armor-consumption", "armor-research"))
     args = parser.parse_args(argv)
     args.output = args.output.absolute()
     root = ROOT
@@ -71,7 +71,8 @@ def main(argv=None):
     with evidence_workspace(args.output) as (build, run):
         inputs = ('scripts/check-component-tools.py', 'code/world.dm', 'code/controllers/mc/globals.dm',
                   'code/game/objects/structures/blacksmithing/component_workbench.dm', 'civ13.dme',
-                  'tests/component_tools/checks.dm', 'tests/component_tools/workbench.dm', 'tests/world_save/current_runtime.py',
+                  'tests/component_tools/checks.dm', 'tests/component_tools/workbench.dm', 'tests/component_tools/armor.dm',
+                  'code/game/objects/structures/blacksmithing/armor_workbench.dm', 'tests/world_save/current_runtime.py',
                   'scripts/byond_runtime.py', 'scripts/byond_toolchain.py', 'tools/byond/version.json',
                   'tests/new_z_budget/z_budget_evidence.py')
         (args.output / 'inputs.json').write_text(json.dumps({
@@ -81,7 +82,7 @@ def main(argv=None):
         source = (root / "code/world.dm").read_text(encoding="utf-8")
         for marker, replacement in [
             ("/datum/global_init/New()\n", "\treturn\n"),
-            ("/world/New()\n", "\tspawn(1)\n\t\trun_component_checks()\n\treturn\n"),
+            ("/world/New()\n", "\tworld.OpenPort(\"none\")\n\tspawn(1)\n\t\trun_component_checks()\n\treturn\n"),
         ]:
             if source.count(marker) != 1:
                 raise RuntimeError(f"Startup isolation marker changed: {marker!r}")
@@ -93,7 +94,7 @@ def main(argv=None):
             raise RuntimeError("Global-controller isolation marker changed")
         (build / "globals.dm").write_text(globals_source.replace(marker, marker + "\treturn\n"), encoding="utf-8")
         dme = (root / "civ13.dme").read_text(encoding="utf-8")
-        if args.negative_control:
+        if args.negative_control in ("consumption", "runtime-save"):
             bench = (root / "code/game/objects/structures/blacksmithing/component_workbench.dm").read_text(encoding="utf-8")
             if args.negative_control == "consumption":
                 bench = replace_once(bench, "\tqdel(P)\n\tqdel(B)\n", "\t// Deliberately leave both paid components alive.\n")
@@ -101,6 +102,14 @@ def main(argv=None):
                 bench = replace_once(bench, '(key in list("busy", "cancelled", "assembler", "assembly_time"))', '(key in list("cancelled", "assembler", "assembly_time"))')
             (build / "bench.dm").write_text(bench, encoding="utf-8")
             dme = replace_once(dme, '#include "code\\game\\objects\\structures\\blacksmithing\\component_workbench.dm"', f'#include "{build.as_posix()}/bench.dm"')
+        if args.negative_control in ("armor-consumption", "armor-research"):
+            armor = (root / 'code/game/objects/structures/blacksmithing/armor_workbench.dm').read_text(encoding='utf-8')
+            if args.negative_control == 'armor-consumption':
+                armor = replace_once(armor, '\t\t\tS.use(cost[1])', '\t\t\tS.can_use(cost[1])')
+            else:
+                armor = replace_once(armor, 'map.is_node_done(H.civilization, R["node"])', 'TRUE')
+            (build / 'armor.dm').write_text(armor, encoding='utf-8')
+            dme = replace_once(dme, '#include "code\\game\\objects\\structures\\blacksmithing\\armor_workbench.dm"', f'#include "{build.as_posix()}/armor.dm"')
         dme = replace_once(dme, '#include "code\\controllers\\mc\\globals.dm"', f'#include "{build.as_posix()}/globals.dm"')
         dme = re.sub(r'^#include ".*\.dmf"\s*$', '', dme, flags=re.M)
         dme = replace_once(dme, '#include "code\\world.dm"', f'#include "{build.as_posix()}/world.dm"')
@@ -136,6 +145,10 @@ def main(argv=None):
         if executed.returncode or any(marker in runtime_log.lower() for marker in ("runtime error:", "bug:", "## error:")):
             return 1
         expected = "FAIL" if args.negative_control else "PASS"
+        if args.negative_control in ('armor-consumption', 'armor-research'):
+            required = 'armor carrier exact costs/excess' if args.negative_control == 'armor-consumption' else 'armor specialist research bypass'
+            if f'FAIL: {required}' not in output:
+                return 1
         return 0 if output.rstrip().endswith(expected) else 1
 
 if __name__ == "__main__":

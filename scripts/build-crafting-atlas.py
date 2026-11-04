@@ -249,6 +249,14 @@ if bench:
     for name,result in re.findall(r'"(Pickaxe|Shovel|Hatchet)"\s*=\s*(/obj/item/weapon/material/\w+)',bench):
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
+armor_path='code/game/objects/structures/blacksmithing/armor_workbench.dm'
+armor=uncomment(files.get(armor_path,''))
+for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d+), "result" = (/\w[\w/]+), "inputs" = list\((.*)$',armor,re.M):
+    name,node,era,result,inputs=match.groups()
+    ingredients=[(p,int(cost)) for p,cost in re.findall(r'(/\w[\w/]+) = list\((\d+)',inputs)]
+    add(name,'Armor assembly',ingredients,[(result,1)],armor_path,armor[:match.start()].count('\n')+1,
+        f'Armor assembly workbench; {node} research; era {era}-8; 100 ticks per stage. Stage complete held inputs; exact costs, no bulk discount. Cancellation retains inputs; excess stock returned on retrieval.',match[0])
+
 tanning_routes=add_tanning(files, add, records, sprite_variants)
 rope_routes=add_rope_making(files, add, records)
 woodwork_path='code/modules/1713/primitive_woodworking.dm'

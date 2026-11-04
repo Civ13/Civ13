@@ -25,6 +25,8 @@ jobs:
           /usr/bin/python3 scripts/check-component-tools.py "${args[@]}" --output "$RUNNER_TEMP/component-tools/positive"
           /usr/bin/python3 scripts/check-component-tools.py "${args[@]}" --output "$RUNNER_TEMP/component-tools/consumption" --negative-control consumption
           /usr/bin/python3 scripts/check-component-tools.py "${args[@]}" --output "$RUNNER_TEMP/component-tools/runtime-save" --negative-control runtime-save
+          /usr/bin/python3 scripts/check-component-tools.py "${args[@]}" --output "$RUNNER_TEMP/component-tools/armor-consumption" --negative-control armor-consumption
+          /usr/bin/python3 scripts/check-component-tools.py "${args[@]}" --output "$RUNNER_TEMP/component-tools/armor-research" --negative-control armor-research
       - name: Retain manual fixture identity and failed evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

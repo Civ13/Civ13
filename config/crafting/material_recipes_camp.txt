@@ -256,3 +256,5 @@ RECIPE: /material/marble/,raw marble floor,/obj/covers/raw_marblefloor,5,25,1,1,
 RECIPE: /material/marble/,raw black marble floor,/obj/covers/raw_marblefloor/black,5,25,1,1,none,20,0,0,8,null
 RECIPE: /material/marble/,raw pink marble floor,/obj/covers/raw_marblefloor/pink,5,25,1,1,none,20,0,0,8,null
 RECIPE: /material/marble/,marble statue,/obj/structure/religious/statue,50,250,1,1,none,10,0,0,8,marble
+
+RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_workbench/armor,10,100,1,1,tools,0,0,0,8,null
