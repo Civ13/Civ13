@@ -7,11 +7,21 @@
 /atom/Click(var/location, var/control, var/params)
 	if (src && usr)
 		usr.blackout_click_trace("atom_entry")
-		usr.ClickOn(src, params)
+		usr.ClickOn(los_click_target(usr, src), params)
 
 /atom/DblClick(var/location, var/control, var/params)
 	if (src && usr)
-		usr.DblClickOn(src, params)
+		usr.DblClickOn(los_click_target(usr, src), params)
+
+// A click on a world object that geometric line of sight hides from the
+// clicker acts on that object's tile instead. Shots and throws still go to the
+// spot, but nothing names, examines or locks onto what is hidden there.
+/proc/los_click_target(mob/user, atom/A)
+	if (!ismovable(A) || !isturf(A.loc))
+		return A
+	if (los_read_allowed(user, A, "click"))
+		return A
+	return A.loc
 
 /*	Standard mob ClickOn()
 	Handles exceptions: Buildmode (unused), middle click, modified clicks, mech actions
