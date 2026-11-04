@@ -662,6 +662,9 @@ var/trailer_engineer_spot = 0
 	intro_check(trailer_carriage.buckled_animal_propulsion >= 4, "two horses hitched")
 	trailer_carriage.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_carriage.driver == trailer_customer, "customer took the reins")
+	// Ride with the carriage's own glide: the walking pace trailer_walk set
+	// would leave the rider trailing the horses and snapping forward each tile.
+	trailer_customer.glide_size = trailer_carriage.glide_size
 	var/obj/item/vehicleparts/wheel/rope/reins = trailer_customer.get_active_hand()
 	intro_check(istype(reins), "reins in hand")
 	trailer_customer.dir = EAST
