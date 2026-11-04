@@ -104,6 +104,7 @@
 	options["Make plastic play ball"] = "polyethylene_ball"
 	options["Make butyl adhesive tape"] = "butyl_tape"
 	options["Make butyl stopper"] = "butyl_stopper"
+	options["Make butyl gasket"] = "butyl_gasket"
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
 	var/turf/user_turf = get_turf(user)
 	var/turf/bench_turf = get_turf(src)
@@ -115,7 +116,7 @@
 		succeeded = finish_wood_fiber("rayon_fiber")
 	else if(selected == "cloth_lyocell")
 		succeeded = finish_wood_fiber("lyocell_fiber")
-	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet", "polypropylene_cloth", "polypropylene_comb", "polyethylene_ball", "butyl_tape", "butyl_stopper"))
+	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet", "polypropylene_cloth", "polypropylene_comb", "polyethylene_ball", "butyl_tape", "butyl_stopper", "butyl_gasket"))
 		succeeded = finish_polymer_product(selected)
 	else
 		succeeded = synthesize(selected)
@@ -183,11 +184,14 @@
 		collector.reagents.remove_reagent("polyethylene", 4)
 		new /obj/item/weapon/basketball/plastic(loc)
 		return TRUE
-	if(product == "butyl_stopper")
+	if(product == "butyl_stopper" || product == "butyl_gasket")
 		if(!collector.reagents.has_reagent("butylrubber", 1))
 			return FALSE
 		collector.reagents.remove_reagent("butylrubber", 1)
-		new /obj/item/butyl_stopper(loc)
+		if(product == "butyl_gasket")
+			new /obj/item/butyl_stopper/gasket(loc)
+		else
+			new /obj/item/butyl_stopper(loc)
 		return TRUE
 	if(product == "butyl_tape")
 		if(!collector.reagents.has_reagent("butylrubber", 2) || !collector.reagents.has_reagent("polypropylene", 2))
@@ -208,6 +212,10 @@
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "lid_bottle"
 	w_class = ITEM_SIZE_SMALL
+
+/obj/item/butyl_stopper/gasket
+	name = "butyl rubber gasket"
+	desc = "A rubber gasket for sealing a vial or drink bottle. Apply it to an open container."
 
 /obj/item/butyl_stopper/proc/seal_bottle(obj/item/weapon/reagent_containers/container)
 	if(gcDestroyed || gc_destroyed || !container || container.gcDestroyed || container.gc_destroyed || !container.is_open_container())

@@ -49,6 +49,12 @@
 	chemistry_assert(stopper.seal_bottle(vial) && !vial.is_open_container(), "Stopper failed to seal vial")
 	qdel(vial)
 	qdel(beaker)
+	processing_add(bench, "butylrubber", 1)
+	chemistry_assert(bench.finish_polymer_product("butyl_gasket") && !bench.collector.reagents.get_reagent_amount("butylrubber"), "Gasket payment failed")
+	var/obj/item/butyl_stopper/gasket/gasket = locate() in get_turf(bench)
+	var/obj/item/weapon/reagent_containers/food/drinks/bottle/drink = new(get_turf(bench))
+	chemistry_assert(gasket && gasket.seal_bottle(drink) && !drink.is_open_container(), "Gasket failed to seal bottle")
+	qdel(drink)
 	qdel(bench)
 
 /proc/biochemistry_butyl_tape_checks()
