@@ -4,6 +4,7 @@
 2. DreamMaker compiles the exported .dmm as the map of a second world.
 3. That world reports every tile; it must match the exported area with mobs,
    object contents, renames and runtime objects left out.
+4. The same for a whole-world export of both levels of the scene.
 
     python3 tests/map_area_export/run.py --byond-bin ~/byond-516.1688/byond/bin
 
@@ -47,42 +48,63 @@ def run_world(directory, bin_dir):
         raise AssertionError('runtime error in %s:\n%s' % (directory.name, output))
 
 
+def compile_and_report(directory, dmm, bin_dir):
+    """Compile dmm as the map of a fresh world and return every tile it reports."""
+    directory.mkdir()
+    shutil.copy(HERE / 'stubs.dm', directory / 'stubs.dm')
+    shutil.copy(dmm, directory / 'export.dmm')
+    shutil.copy(HERE / 'compiled.dm', directory / 'compiled.dm')
+    compile_world(directory, ['stubs.dm', 'compiled.dm', 'export.dmm'], bin_dir)
+    run_world(directory, bin_dir)
+    return json.loads((directory / 'found.json').read_text(encoding='utf-8'))
+
+
+def compare(label, found, expected, failures):
+    for key in sorted(set(found) | set(expected)):
+        if found.get(key) != expected.get(key):
+            failures.append('%s tile %s: expected %s, found %s' % (label, key, expected.get(key), found.get(key)))
+
+
 def check(bin_dir):
     failures = []
     with tempfile.TemporaryDirectory(prefix='map-export-') as tmp:
-        scene, compiled = Path(tmp) / 'scene', Path(tmp) / 'compiled'
-        for directory in (scene, compiled):
-            directory.mkdir()
-            shutil.copy(HERE / 'stubs.dm', directory / 'stubs.dm')
+        scene = Path(tmp) / 'scene'
+        scene.mkdir()
+        shutil.copy(HERE / 'stubs.dm', scene / 'stubs.dm')
         shutil.copy(EXPORTER, scene / 'map_area_export.dm')
         shutil.copy(HERE / 'scene.dm', scene / 'scene.dm')
         compile_world(scene, ['stubs.dm', 'map_area_export.dm', 'scene.dm'], bin_dir)
         run_world(scene, bin_dir)
+        read = lambda name: json.loads((scene / name).read_text(encoding='utf-8'))
+
+        # An admin-chosen area.
         dmm = (scene / 'export.dmm').read_text(encoding='utf-8')
-        report = json.loads((scene / 'report.json').read_text(encoding='utf-8'))
-        expected = json.loads((scene / 'expected.json').read_text(encoding='utf-8'))
-
-        shutil.copy(scene / 'export.dmm', compiled / 'export.dmm')
-        shutil.copy(HERE / 'compiled.dm', compiled / 'compiled.dm')
-        compile_world(compiled, ['stubs.dm', 'compiled.dm', 'export.dmm'], bin_dir)
-        run_world(compiled, bin_dir)
-        found = json.loads((compiled / 'found.json').read_text(encoding='utf-8'))
-
-        if found != expected:
-            for key in sorted(set(found) | set(expected)):
-                if found.get(key) != expected.get(key):
-                    failures.append('tile %s: expected %s, found %s' % (key, expected.get(key), found.get(key)))
+        report = read('report.json')
+        compare('area', compile_and_report(Path(tmp) / 'area', scene / 'export.dmm', bin_dir), read('expected.json'), failures)
         want = {'tiles': 12, 'width': 4, 'height': 3, 'objects': 5, 'mobs_left_out': 2, 'contents_left_out': 2,
                 'renamed_objects_reset': 1, 'runtime_objects_left_out': 1}
         for key, value in want.items():
             if report.get(key) != value:
-                failures.append('report %s: expected %s, got %s' % (key, value, report.get(key)))
+                failures.append('area report %s: expected %s, got %s' % (key, value, report.get(key)))
         if '/obj/structure/chair{dir = 4; pixel_x = 4; pixel_y = -3}' not in dmm:
             failures.append('the chair model lost its fields:\n' + dmm)
         if 'player text' in dmm or '/mob/' in dmm or 'apple' in dmm or 'lighting_overlay' in dmm:
             failures.append('left-out content reached the map:\n' + dmm)
         if (scene / 'refusal.txt').read_text().strip() != 'refused':
             failures.append('corners on different levels were accepted')
+
+        # The whole world, both levels in one map.
+        world_dmm = (scene / 'world.dmm').read_text(encoding='utf-8')
+        world_report = read('world_report.json')
+        compare('world', compile_and_report(Path(tmp) / 'world', scene / 'world.dmm', bin_dir),
+                read('expected_world.json'), failures)
+        want = {'tiles': 84, 'width': 7, 'height': 6, 'levels': 2, 'objects': 7, 'mobs_left_out': 3,
+                'contents_left_out': 2, 'renamed_objects_reset': 1, 'runtime_objects_left_out': 1}
+        for key, value in want.items():
+            if world_report.get(key) != value:
+                failures.append('world report %s: expected %s, got %s' % (key, value, world_report.get(key)))
+        if '(1,1,2) = {' not in world_dmm or '/mob/' in world_dmm:
+            failures.append('the world map is missing level 2 or kept a mob:\n' + world_dmm)
     return failures
 
 
