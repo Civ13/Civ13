@@ -1,15 +1,44 @@
 name: Agent CI digest
 
-# One PR comment per head that summarizes every GitHub Actions check, classifies
-# failures (infra / known / needs-fix), reruns infrastructure-only failures once
-# and embeds a JSON block for agents. Usage: docs/agent-ci-digest.md.
+# One PR comment per head and verdict that summarizes every GitHub Actions
+# check, classifies failures (infra / known / needs-fix), reruns
+# infrastructure-only failures once and embeds a JSON block for agents.
+# Usage: docs/agent-ci-digest.md.
+#
+# Free-plan budget: each completion of a listed workflow starts a short pass
+# (about 20 s, a few API calls). A pass that sees checks still running exits at
+# once instead of holding a runner slot; the last workflow to finish reports.
+# Any API failure exits 0 without a digest and agents read CI directly.
+# Keep `workflows:` equal to every workflow with a pull_request trigger;
+# tests/agent_ci_digest checks this.
 #
 # workflow_run executes this file from the default branch with the base
 # repository's token. It checks out only the default branch for the script and
 # never checks out or runs pull request code.
 on:
   workflow_run:
-    workflows: [CI]
+    workflows:
+      - API documentation
+      - Bounded moving-save correctness and memory
+      - Changelog contracts
+      - Chat browser layout
+      - CI
+      - Comment review checks
+      - Dagger map static checks
+      - Environment sweep regressions
+      - Inactive immutable capture experiment
+      - Isolated DreamSeeker feasibility
+      - MCP protocol checks
+      - Native supervisor consumer contracts
+      - Native Windows launcher
+      - Nomads durable profile roundtrips
+      - Offline authored rooms
+      - Offline native social companion
+      - Offline procedural maps
+      - Offline server management contracts
+      - Reserved-lighting containment pilot (manual only)
+      - Tgui frontend
+      - YouTube uploader contracts
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -25,7 +54,7 @@ on:
       rerun:
         description: 'Rerun infrastructure-only failures once'
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
@@ -36,9 +65,11 @@ concurrency:
 
 jobs:
   digest:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled'
+    # Push-event runs count too: a branch's push CI can be the last check on a
+    # PR head. Without a PR the digest step is skipped.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 10
     permissions:
       actions: write
       checks: read
@@ -54,6 +85,7 @@ jobs:
           persist-credentials: false
       - name: Find the pull request
         id: pr
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           EVENT_PRS: ${{ toJSON(github.event.workflow_run.pull_requests) }}
@@ -70,14 +102,17 @@ jobs:
           case "$pr" in ''|*[!0-9]*) pr='' ;; esac
           echo "number=$pr" >> "$GITHUB_OUTPUT"
           echo "sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
-      - name: Wait for checks and write the digest
+      - name: Write the digest when every check has finished
+        if: steps.pr.outcome == 'success' && (steps.pr.outputs.number != '' || github.event_name == 'workflow_dispatch')
         env:
           GITHUB_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ steps.pr.outputs.sha }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
           NO_RERUN: ${{ github.event_name == 'workflow_dispatch' && !inputs.rerun && '--no-rerun' || '' }}
+          REPORT_PENDING: ${{ github.event_name == 'workflow_dispatch' && '--report-pending' || '' }}
         run: |
           args=(--sha "$HEAD_SHA")
           [ -n "$PR_NUMBER" ] && args+=(--pr "$PR_NUMBER")
           [ -n "$NO_RERUN" ] && args+=("$NO_RERUN")
+          [ -n "$REPORT_PENDING" ] && args+=("$REPORT_PENDING")
           python3 -B scripts/ci_digest.py "${args[@]}"

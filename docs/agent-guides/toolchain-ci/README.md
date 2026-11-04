@@ -200,9 +200,10 @@ cases fail on master; do not change gameplay code for it.
 union of both sides' entries, then rerun the affected suites.
 
 <!-- 2026-11-04: agent CI digest -->
-After a PR's `CI` workflow completes, `.github/workflows/agent-ci-digest.yml`
-waits on the runner for every Actions check on the head, classifies failures
-(infra, known, timeout, real, unknown), reruns infrastructure-only failures once
-and posts one comment per head with a JSON block. Agents read that comment
-instead of polling runs and logs; see [the digest guide](../../agent-ci-digest.md).
-It runs from the default branch and never checks out PR code.
+Each completed `pull_request` workflow starts a short `.github/workflows/agent-ci-digest.yml`
+pass. The pass that sees every Actions check on the head finished classifies
+failures (infra, known, timeout, real, unknown), reruns infrastructure-only
+failures once and posts a comment with a JSON block. Agents read that comment
+instead of polling, and fall back to reading CI directly when it is missing
+(free-plan limits); see [the digest guide](../../agent-ci-digest.md). New
+`pull_request` workflows must be added to its `workflows:` list.

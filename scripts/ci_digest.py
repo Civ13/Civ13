@@ -1,16 +1,18 @@
 """Summarize every GitHub Actions check on a PR head into one comment.
 
-Run by .github/workflows/agent-ci-digest.yml after the main CI workflow
-completes. It waits on the runner (not in an agent session) until every
-Actions check run for the head SHA has finished, classifies each failure as
-infrastructure, known pre-existing or needs-fix, reruns infrastructure-only
-failures once, and posts a single comment per head with a Markdown table,
-log excerpts and a machine-readable JSON block. See docs/agent-ci-digest.md.
+Run by .github/workflows/agent-ci-digest.yml each time a PR workflow
+completes. A pass that sees checks still running exits at once (no runner is
+held waiting); the pass that sees every Actions check on the head finished
+classifies each failure as infrastructure, known pre-existing or needs-fix,
+reruns infrastructure-only first attempts once, and posts a comment for the
+head with a Markdown table, log excerpts and a machine-readable JSON block.
+Any API failure (rate limit, outage) exits 0 without a digest; agents then
+read CI directly. See docs/agent-ci-digest.md.
 
 Standard library only. Uses the workflow's GITHUB_TOKEN; never checks out or
 runs pull request code.
 
-    python3 scripts/ci_digest.py --sha <head> [--pr N] [--wait-minutes 150]
+    python3 scripts/ci_digest.py --sha <head> [--pr N] [--report-pending]
     python3 scripts/ci_digest.py --sha <head> --dry-run   # print, post nothing
 """
 import argparse
@@ -108,7 +110,9 @@ def classify(conclusion, step, lines):
     return 'unknown', f'failed in step "{step or "?"}"; read the excerpt'
 
 
-def verdict(failures, pending):
+def verdict(failures, pending, reruns=()):
+    if reruns:
+        return 'rerunning'
     if pending:
         return 'pending'
     classes = {f['class'] for f in failures}
@@ -129,19 +133,21 @@ ADVICE = {
                   'run link; do not change gameplay code for them.',
     'needs-fix': 'At least one failure looks like a real test, compile or unknown failure. Read the excerpt, '
                  'reproduce locally and fix it.',
-    'pending': 'Some checks did not finish before the digest stopped waiting.',
+    'pending': 'Some checks were still running.',
+    'rerunning': 'Every failure was infrastructure on its first attempt, so the failed jobs were rerun once. '
+                 'A final digest follows when the reruns finish; if none appears, check the reruns by hand.',
 }
 
 
 def render(sha, summary, failures, pending, reruns, run_url):
-    state = verdict(failures, pending)
+    state = verdict(failures, pending, reruns)
     counts = summary
     head = (f"### CI digest for `{sha[:10]}`: **{state}**\n\n"
             f"{counts['success']} passed, {len(failures)} failed, {counts['skipped']} skipped"
             f"{', %d still running' % len(pending) if pending else ''}. {ADVICE[state]}\n")
     parts = [head]
     if reruns:
-        parts.append('Infrastructure failures were rerun once automatically: '
+        parts.append('Rerun requested for: '
                      + ', '.join(f'[run {r}](https://github.com/{os.environ.get("GITHUB_REPOSITORY", "")}/actions/runs/{r})'
                                  for r in reruns) + '.\n')
     if failures:
@@ -165,7 +171,7 @@ def render(sha, summary, failures, pending, reruns, run_url):
                                           'reason', 'url')} for f in failures]}
     signature = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()[:16]
     body = '\n'.join(parts)
-    return (f'{MARKER} sha={sha} sig={signature} -->\n{body}\n'
+    return (f'{MARKER} sha={sha} sig={signature} verdict={state} -->\n{body}\n'
             f'<!-- agent-ci-digest-json {json.dumps(data, separators=(",", ":"))} -->\n'), state, signature
 
 
@@ -273,7 +279,9 @@ def pr_head(gh, pr):
     return gh.get(f'pulls/{pr}')['head']['sha']
 
 
-def post(gh, pr, sha, body, signature):
+def post(gh, pr, sha, body, signature, state):
+    """One comment per head and verdict: a new verdict posts (and wakes
+    subscribed agents); the same verdict with new details edits in place."""
     comments, page = [], 1
     while True:
         batch = gh.get(f'issues/{pr}/comments?per_page=100&page={page}')
@@ -283,22 +291,57 @@ def post(gh, pr, sha, body, signature):
         page += 1
     mine = [c for c in comments if (c.get('body') or '').startswith(f'{MARKER} sha={sha} ')]
     if mine:
-        if f'sig={signature} ' in mine[-1]['body']:
+        first_line = mine[-1]['body'].split('\n', 1)[0]
+        if f'sig={signature} ' in first_line:
             return 'unchanged'
-        gh.request('PATCH', f"issues/comments/{mine[-1]['id']}", {'body': body})
-        return 'updated'
+        if f' verdict={state} ' in first_line:
+            gh.request('PATCH', f"issues/comments/{mine[-1]['id']}", {'body': body})
+            return 'updated'
     gh.request('POST', f'issues/{pr}/comments', {'body': body})
     return 'posted'
+
+
+def digest_once(gh, args, run_url):
+    """One pass. Returns the verdict, or None when checks are still running."""
+    if args.pr and not args.dry_run and pr_head(gh, args.pr) != args.sha:
+        print(f'PR #{args.pr} moved past {args.sha}; a newer digest will report.')
+        return None
+    checks = actions_checks(gh, args.sha, os.environ.get('GITHUB_RUN_ID', ''))
+    busy = [c['name'] for c in checks if c['status'] != 'completed']
+    if busy and not args.report_pending:
+        # Do not hold a runner slot waiting: the free plan has a small
+        # concurrent-job limit. The next listed workflow to finish reports.
+        print(f'{len(busy)} checks still running ({", ".join(busy[:6])}); a later completion will report.')
+        return None
+    summary, failures, pending = collect(gh, args.sha, checks)
+    reruns = []
+    first = [f for f in failures if f['attempt'] == 1]
+    if (verdict(failures, pending) == 'infra-only' and len(first) == len(failures)
+            and not args.no_rerun and not args.dry_run):
+        for run_id in sorted({f['run_id'] for f in failures}):
+            try:
+                gh.request('POST', f'actions/runs/{run_id}/rerun-failed-jobs', {})
+                reruns.append(run_id)
+            except urllib.error.HTTPError as error:
+                print(f'Rerun of run {run_id} refused: HTTP {error.code}')
+    body, state, signature = render(args.sha, summary, failures, pending, reruns, run_url)
+    summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary_path:
+        with open(summary_path, 'a', encoding='utf-8') as handle:
+            handle.write(body)
+    print(body)
+    print(f'AGENT-CI-DIGEST verdict={state} sha={args.sha} sig={signature}')
+    if args.pr and not args.dry_run:
+        print('Comment', post(gh, args.pr, args.sha, body, signature, state))
+    return state
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--sha', required=True)
     parser.add_argument('--pr', type=int)
-    parser.add_argument('--wait-minutes', type=float, default=150)
-    parser.add_argument('--poll-seconds', type=float, default=45)
-    parser.add_argument('--settle-seconds', type=float, default=60,
-                        help='Wait this long after everything finishes in case a follow-up workflow queues')
+    parser.add_argument('--report-pending', action='store_true',
+                        help='Report even while checks are running (manual runs)')
     parser.add_argument('--no-rerun', action='store_true', help='Do not rerun infrastructure-only failures')
     parser.add_argument('--dry-run', action='store_true', help='Print the digest; post and rerun nothing')
     args = parser.parse_args(argv)
@@ -308,45 +351,12 @@ def main(argv=None):
     self_run = os.environ.get('GITHUB_RUN_ID', '')
     run_url = (f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{gh.repo}/actions/runs/{self_run}"
                if self_run else '')
-    deadline = time.monotonic() + args.wait_minutes * 60
-    reruns, settled = [], False
-    while True:
-        if args.pr and not args.dry_run and pr_head(gh, args.pr) != args.sha:
-            print(f'PR #{args.pr} moved past {args.sha}; a newer digest will report.')
-            return 0
-        checks = actions_checks(gh, args.sha, self_run)
-        busy = [c['name'] for c in checks if c['status'] != 'completed']
-        if busy and time.monotonic() < deadline:
-            settled = False
-            print(f'{len(busy)} checks running: {", ".join(busy[:6])}', flush=True)
-            time.sleep(args.poll_seconds)
-            continue
-        if not busy and not settled and time.monotonic() < deadline:
-            settled = True
-            time.sleep(args.settle_seconds)
-            continue
-        summary, failures, pending = collect(gh, args.sha, checks)
-        state = verdict(failures, pending)
-        first = [f for f in failures if f['attempt'] == 1]
-        if (state == 'infra-only' and first and len(first) == len(failures) and not reruns
-                and not args.no_rerun and not args.dry_run and time.monotonic() < deadline):
-            for run_id in sorted({f['run_id'] for f in failures}):
-                gh.request('POST', f'actions/runs/{run_id}/rerun-failed-jobs', {})
-                reruns.append(run_id)
-            print('Reran infrastructure failures in runs', reruns, flush=True)
-            settled = False
-            time.sleep(args.poll_seconds)
-            continue
-        break
-    body, state, signature = render(args.sha, summary, failures, pending, reruns, run_url)
-    summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
-    if summary_path:
-        with open(summary_path, 'a', encoding='utf-8') as handle:
-            handle.write(body)
-    print(body)
-    print(f'AGENT-CI-DIGEST verdict={state} sha={args.sha} sig={signature}')
-    if args.pr and not args.dry_run:
-        print('Comment', post(gh, args.pr, args.sha, body, signature))
+    try:
+        digest_once(gh, args, run_url)
+    except (urllib.error.URLError, OSError, KeyError, ValueError) as error:
+        # Rate limits, outages and API changes must not turn a PR red. Agents
+        # fall back to reading CI directly when no digest appears.
+        print(f'AGENT-CI-DIGEST verdict=unavailable sha={args.sha} reason={error}')
     return 0
 
 

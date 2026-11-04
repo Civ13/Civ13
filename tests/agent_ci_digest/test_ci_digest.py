@@ -86,11 +86,12 @@ class RenderTests(unittest.TestCase):
         self.assertEqual(digest.verdict([self.failure('infra'), self.failure('known')], []), 'known-only')
         self.assertEqual(digest.verdict([self.failure('unknown')], []), 'needs-fix')
         self.assertEqual(digest.verdict([], ['x']), 'pending')
+        self.assertEqual(digest.verdict([self.failure('infra')], [], [7]), 'rerunning')
 
     def test_render_has_marker_json_and_stable_signature(self):
         summary = {'success': 3, 'skipped': 1, 'failed': 1}
         body, state, sig = digest.render(SHA, summary, [self.failure('real')], [], [], '')
-        self.assertTrue(body.startswith(f'<!-- agent-ci-digest sha={SHA} sig={sig} -->'))
+        self.assertTrue(body.startswith(f'<!-- agent-ci-digest sha={SHA} sig={sig} verdict=needs-fix -->'))
         self.assertEqual(state, 'needs-fix')
         data = json.loads(re.search(r'<!-- agent-ci-digest-json (.*) -->', body).group(1))
         self.assertEqual(data['verdict'], 'needs-fix')
@@ -104,28 +105,30 @@ class RenderTests(unittest.TestCase):
 
 
 class FakeGitHub:
-    """Two polls running, then one infra failure that passes after the rerun."""
+    """A head whose single Actions job moves through the given states."""
 
-    def __init__(self):
-        self.repo, self.calls, self.polls, self.comments, self.reran = 'o/r', [], 0, [], False
+    def __init__(self, conclusion='failure', step='Check out source', head=SHA):
+        self.repo, self.calls, self.comments = 'o/r', [], []
+        self.status, self.conclusion, self.step, self.head, self.attempt = 'in_progress', None, step, head, 1
+        self.final = conclusion
 
-    def check(self, status, conclusion, job_id=11):
-        return {'name': 'build', 'status': status, 'conclusion': conclusion, 'app': {'slug': 'github-actions'},
-                'details_url': f'https://github.com/o/r/actions/runs/5/job/{job_id}',
+    def finish(self, conclusion=None, attempt=1):
+        self.status, self.conclusion, self.attempt = 'completed', conclusion or self.final, attempt
+
+    def check(self):
+        return {'name': 'build', 'status': self.status, 'conclusion': self.conclusion,
+                'app': {'slug': 'github-actions'}, 'details_url': f'https://github.com/o/r/actions/runs/5/job/1{self.attempt}',
                 'html_url': 'https://example.invalid/j'}
 
     def check_runs(self, sha):
-        self.polls += 1
-        other_app = dict(self.check('in_progress', None), app={'slug': 'coderabbitai'})
-        if self.polls == 1:
-            return [self.check('in_progress', None), other_app]
-        return [self.check('completed', 'success' if self.reran else 'failure', 12 if self.reran else 11), other_app]
+        other_app = dict(self.check(), status='in_progress', app={'slug': 'coderabbitai'})
+        return [self.check(), other_app]
 
     def get(self, path):
         if path.startswith('pulls/'):
-            return {'head': {'sha': SHA}}
+            return {'head': {'sha': self.head}}
         if path.startswith('actions/jobs/'):
-            return {'run_attempt': 2 if self.reran else 1, 'steps': [{'name': 'Check out source', 'conclusion': 'failure'}]}
+            return {'run_attempt': self.attempt, 'steps': [{'name': self.step, 'conclusion': 'failure'}]}
         if path.startswith('actions/runs/'):
             return {'name': 'CI'}
         if path.startswith('issues/'):
@@ -137,13 +140,14 @@ class FakeGitHub:
 
     def request(self, method, path, payload=None, raw=False):
         self.calls.append((method, path))
-        if path.endswith('rerun-failed-jobs'):
-            self.reran = True
-        elif method == 'POST':
-            self.comments.append({'id': 1, 'body': payload['body']})
+        if method == 'POST' and path.startswith('issues/'):
+            self.comments.append({'id': len(self.comments) + 1, 'body': payload['body']})
         elif method == 'PATCH':
-            self.comments[0]['body'] = payload['body']
+            self.comments[-1]['body'] = payload['body']
         return {}
+
+    def writes(self):
+        return [c for c in self.calls if c[0] in ('POST', 'PATCH')]
 
 
 class MainFlowTests(unittest.TestCase):
@@ -152,24 +156,57 @@ class MainFlowTests(unittest.TestCase):
                 mock.patch.object(digest.time, 'sleep'), \
                 mock.patch.dict(digest.os.environ, {'GITHUB_REPOSITORY': 'o/r', 'GITHUB_TOKEN': 't',
                                                     'GITHUB_STEP_SUMMARY': '', 'GITHUB_RUN_ID': '99'}), \
-                mock.patch('builtins.print'):
-            return digest.main(['--sha', SHA, '--pr', '3', *extra])
+                mock.patch('builtins.print') as printed:
+            self.assertEqual(digest.main(['--sha', SHA, '--pr', '3', *extra]), 0)
+            return ' '.join(str(c) for c in printed.call_args_list)
 
-    def test_waits_reruns_infra_once_then_posts_green(self):
+    def test_running_checks_exit_at_once_without_writing(self):
         fake = FakeGitHub()
-        self.assertEqual(self.run_main(fake), 0)
-        self.assertIn(('POST', 'actions/runs/5/rerun-failed-jobs'), fake.calls)
-        self.assertEqual(len(fake.comments), 1)
-        self.assertIn('**green**', fake.comments[0]['body'])
-        self.assertIn('rerun once automatically', fake.comments[0]['body'])
+        self.run_main(fake)
+        self.assertEqual(fake.writes(), [])
 
-    def test_no_rerun_reports_infra_and_repeat_is_unchanged(self):
+    def test_infra_rerun_once_then_new_comment_for_final_verdict(self):
         fake = FakeGitHub()
-        self.run_main(fake, '--no-rerun')
-        self.run_main(fake, '--no-rerun')
+        fake.finish()
+        self.run_main(fake)
+        self.assertEqual(fake.writes(), [('POST', 'actions/runs/5/rerun-failed-jobs'), ('POST', 'issues/3/comments')])
+        self.assertIn('verdict=rerunning', fake.comments[0]['body'])
+        fake.finish('success', attempt=2)
+        self.run_main(fake)
+        self.assertEqual(len(fake.comments), 2)
+        self.assertIn('**green**', fake.comments[1]['body'])
+        self.run_main(fake)
+        self.assertEqual(len(fake.writes()), 3)
+
+    def test_second_infra_failure_is_reported_not_rerun(self):
+        fake = FakeGitHub()
+        fake.finish(attempt=2)
+        self.run_main(fake)
         self.assertNotIn(('POST', 'actions/runs/5/rerun-failed-jobs'), fake.calls)
-        self.assertEqual([c for c in fake.calls if c[0] in ('POST', 'PATCH')], [('POST', 'issues/3/comments')])
         self.assertIn('**infra-only**', fake.comments[0]['body'])
+
+    def test_real_failure_is_never_rerun(self):
+        fake = FakeGitHub(step='Run suites')
+        fake.job_log = lambda job_id: 'AssertionError: x\n##[error]Process completed with exit code 1.'
+        fake.finish()
+        self.run_main(fake)
+        self.assertEqual(fake.writes(), [('POST', 'issues/3/comments')])
+        self.assertIn('**needs-fix**', fake.comments[0]['body'])
+
+    def test_moved_head_and_api_failure_post_nothing(self):
+        fake = FakeGitHub(head='b' * 40)
+        fake.finish()
+        self.run_main(fake)
+        self.assertEqual(fake.writes(), [])
+        broken = FakeGitHub()
+        broken.check_runs = mock.Mock(side_effect=digest.urllib.error.HTTPError('u', 403, 'rate limit', {}, None))
+        self.assertIn('verdict=unavailable', self.run_main(broken))
+        self.assertEqual(broken.writes(), [])
+
+    def test_manual_report_pending(self):
+        fake = FakeGitHub()
+        self.run_main(fake, '--report-pending')
+        self.assertIn('**pending**', fake.comments[0]['body'])
 
     def test_rejects_short_sha(self):
         with self.assertRaises(SystemExit), mock.patch('sys.stderr'):
@@ -186,8 +223,19 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn('pull_request_target', self.text)
         self.assertEqual(self.text.count('actions/checkout@'), 1)
 
-    def test_follows_main_ci_and_documents_usage(self):
-        self.assertIn('workflows: [CI]', self.text)
+    def test_triggers_on_every_pull_request_workflow(self):
+        listed = set(re.findall(r'^      - (.+)$', self.text.split('types: [completed]')[0], re.M))
+        expected = set()
+        for path in (ROOT / '.github/workflows').glob('*.yml'):
+            source = path.read_text(encoding='utf-8')
+            triggers = source.split('\njobs:')[0]
+            if re.search(r'^  pull_request:?\s*$', triggers, re.M):
+                expected.add(re.search(r'^name:\s*(.+?)\s*$', source, re.M).group(1).strip('\'"'))
+        self.assertIn('CI', expected)
+        self.assertEqual(listed, expected, 'Add new pull_request workflows to agent-ci-digest.yml workflows:')
+
+    def test_short_job_and_usage_doc(self):
+        self.assertIn('timeout-minutes: 10', self.text)
         self.assertTrue((ROOT / 'docs/agent-ci-digest.md').is_file())
 
 

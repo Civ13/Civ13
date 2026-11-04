@@ -97,7 +97,8 @@ head's run cannot establish that a specific hosted regression executed.
 After pushing to a PR, wait for the `agent-ci-digest` comment for the new head
 instead of polling runs and logs. It gives the verdict (`green`, `infra-only`,
 `known-only`, `needs-fix`), the failed step and a log excerpt per job, and it
-has already rerun infrastructure-only failures once. See
+has already rerun infrastructure-only failures once. If no digest for the head
+appears about 10 minutes after CI finishes, read CI directly as before. See
 [docs/agent-ci-digest.md](../../../docs/agent-ci-digest.md).
 
 - `isolated-native` / "Bounded moving-save correctness and memory"

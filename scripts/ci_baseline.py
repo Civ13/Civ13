@@ -119,7 +119,7 @@ SUITES = {
     # no network or BYOND runtime.
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
-            '.github/workflows/agent-ci-digest.yml',)},
+            '.github/workflows/',)},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
