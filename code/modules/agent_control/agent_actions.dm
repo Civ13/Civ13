@@ -109,24 +109,50 @@
 	var/name_filter = istext(req["name"]) ? lowertext(req["name"]) : null
 	audit_read(A, "find", "[path] z=[z] limit=[limit]")
 	var/list/out = list()
-	var/list/source = ispath(path, /mob) ? mob_list : world
+	// Typed loops let BYOND filter natively; turfs are walked per z with
+	// block(). One request scans at most 500k candidates.
 	var/scanned = 0
 	var/scan_capped = FALSE
-	for (var/atom/AT in source)
-		// Bound one request's work; the whole Gaia world is about 400k turfs.
-		if (++scanned > 500000)
-			scan_capped = TRUE
-			break
-		if (!istype(AT, path))
-			continue
-		if (z && AT.z != z)
-			continue
-		if (name_filter && !findtext(lowertext(AT.name), name_filter))
-			continue
-		out += list(agent_encode(AT))
-		if (out.len >= limit)
-			break
+	if (ispath(path, /turf))
+		for (var/zz = (z ? z : 1), zz <= (z ? z : world.maxz), zz++)
+			for (var/turf/T in block(locate(1, 1, zz), locate(world.maxx, world.maxy, zz)))
+				if (++scanned > 500000)
+					scan_capped = TRUE
+					break
+				if (agent_find_match(T, path, null, name_filter))
+					out += list(agent_encode(T))
+					if (out.len >= limit)
+						break
+			if (scan_capped || out.len >= limit)
+				break
+	else
+		var/list/source = world
+		if (ispath(path, /mob))
+			source = mob_list
+		for (var/atom/movable/AM in source)
+			if (++scanned > 500000)
+				scan_capped = TRUE
+				break
+			if (agent_find_match(AM, path, z, name_filter))
+				out += list(agent_encode(AM))
+				if (out.len >= limit)
+					break
+		if (ispath(path, /area))
+			for (var/area/AR in world)
+				if (agent_find_match(AR, path, null, name_filter))
+					out += list(agent_encode(AR))
+					if (out.len >= limit)
+						break
 	return list("results" = out, "limited" = out.len >= limit || scan_capped, "scan_capped" = scan_capped)
+
+/proc/agent_find_match(atom/AT, path, z, name_filter)
+	if (!istype(AT, path))
+		return FALSE
+	if (z && AT.z != z)
+		return FALSE
+	if (name_filter && !findtext(lowertext(AT.name), name_filter))
+		return FALSE
+	return TRUE
 
 /datum/agent_control/proc/act_logs(datum/agent_identity/A, list/req)
 	var/count = clamp(round(text2num("[req["count"]]") || 50), 1, 200)

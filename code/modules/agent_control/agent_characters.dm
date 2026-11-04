@@ -76,14 +76,25 @@
 	var/turf/T = get_turf(agent_resolve_target(req["target"]))
 	if (!T)
 		agent_fail("bad_target", "target has no turf")
-	var/mob/living/M = new path(T)
-	if (istext(req["name"]) && length(trim(req["name"])))
-		var/new_name = sanitize(copytext(req["name"], 1, 33))
-		M.fully_replace_character_name(M.real_name, new_name)
-		// Humans pick a map identity (nomads_spawn) half a second after New.
-		spawn(6)
-			if (!QDELETED(M) && M.real_name != new_name)
-				M.fully_replace_character_name(M.real_name, new_name)
+	var/list/before = list()
+	for (var/mob/living/L in T)
+		before += L
+	var/mob/living/M
+	try
+		M = new path(T)
+		if (istext(req["name"]) && length(trim(req["name"])))
+			var/new_name = sanitize(copytext(req["name"], 1, 33))
+			M.fully_replace_character_name(M.real_name, new_name)
+			// Humans pick a map identity (nomads_spawn) half a second after New.
+			spawn(6)
+				if (!QDELETED(M) && M.real_name != new_name)
+					M.fully_replace_character_name(M.real_name, new_name)
+	catch(var/exception/E)
+		// A runtime in New leaves a half-built, untracked body; remove it.
+		for (var/mob/living/L in T)
+			if (!(L in before) && istype(L, path) && !L.client)
+				qdel(L)
+		throw E
 	var/datum/agent_character/C = new
 	C.body = M
 	C.owner_agent = A.name
