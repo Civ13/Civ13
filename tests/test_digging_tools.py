@@ -174,5 +174,39 @@ class DiggingToolRules(unittest.TestCase):
         self.assertNotIn('byond', step.lower())
 
 
+class SharedTurfWorkRechecks(unittest.TestCase):
+    """#888: a second worker on the same turf must not collect after the first emptied it."""
+
+    def setUp(self):
+        self.floor = source(FLOOR)
+        self.hand = procedure(self.floor, '/turf/floor/attack_hand(mob/user)')
+        self.dig = procedure(self.floor, '/turf/floor/verb/Dig()')
+
+    def assert_recheck_after_wait(self, body, wait, check, take):
+        wait_at = body.index(wait)
+        check_at = body.index(check, wait_at)
+        self.assertLess(check_at, body.index(take, wait_at))
+
+    def test_hand_collected_dirt_and_sand_recheck_stock_after_the_wait(self):
+        self.assert_recheck_after_wait(self.hand, 'do_after(user, rand(25,30)))\n\t\t\t\t\t\tif',
+                                       'T.available_dirt <= 0', 'T.available_dirt -= 1')
+        self.assert_recheck_after_wait(self.hand, 'do_after(user, rand(45,60))',
+                                       'T.available_sand <= 0', 'T.available_sand -= 1')
+
+    def test_tunnel_entrances_recheck_for_an_existing_ladder_after_the_wait(self):
+        for take in ('new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))',
+                     'new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)'):
+            with self.subTest(take=take):
+                take_at = self.dig.index(take)
+                wait_at = self.dig.rindex('do_after(user, digging_tunnel_time, user.loc)', 0, take_at)
+                between = self.dig[wait_at:take_at]
+                self.assertIn('(locate(/obj/structure/multiz) in user.loc)', between)
+
+    def test_removing_a_recheck_is_detected(self):
+        broken = self.hand.replace('if (!T || T.available_sand <= 0) // someone else took the last sand during the wait', 'if (FALSE)')
+        with self.assertRaises((AssertionError, ValueError)):
+            self.assert_recheck_after_wait(broken, 'do_after(user, rand(45,60))', 'T.available_sand <= 0', 'T.available_sand -= 1')
+
+
 if __name__ == '__main__':
     unittest.main()

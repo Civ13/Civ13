@@ -62,6 +62,13 @@ def restore_crafting_projection(path, source):
              + '\t\t\tvar/completed = ' + wait + '\n'
              + '\t\t\tif (work_animation)\n\t\t\t\twork_animation.stop()\n\t\t\t\twork_animation = null\n'
              + '\t\t\tif (completed && valid(actor, wall))', '\t\t\tif (' + wait + ' && valid(actor, wall))'),
+            # #888: shared-turf stock and tunnel-entrance rechecks after the wait.
+            ('\t\t\t\t\t\tif (!T || T.available_dirt <= 0) // someone else took the last dirt during the wait\n\t\t\t\t\t\t\tH.shoveling = FALSE\n\t\t\t\t\t\t\treturn\n', ''),
+            ('\t\t\t\t\t\tif (!T || T.available_sand <= 0) // someone else took the last sand during the wait\n\t\t\t\t\t\t\tH.shoveling = FALSE\n\t\t\t\t\t\t\treturn\n', ''),
+            ('\t\t\t\tif (!TB.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (locate(/obj/structure/multiz) in TB))\n\t\t\t\t\treturn // another digger finished this entrance during the wait\n',
+             '\t\t\t\tif (!TB.is_diggable)\n\t\t\t\t\treturn\n'),
+            ('\t\t\t\tvar/turf/below = locate(user.x, user.y, user.z-1)\n\t\t\t\tif (!TO.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (below && (locate(/obj/structure/multiz) in below)))\n\t\t\t\t\treturn // another digger finished this entrance during the wait\n',
+             '\t\t\t\tif (!TO.is_diggable)\n\t\t\t\t\treturn\n'),
         )
     else:
         edits = ()
