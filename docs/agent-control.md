@@ -201,7 +201,10 @@ model can also walk with `{"do": "go", "target": n}`, run from a target with
 `flee`, or `explore` a few tiles in a direction; `attack` hits a target on harm
 intent. A model `drop` of a gathered item tries to stow it first; a skill that needs a
 free hand stows the spare item and stops (keeping it in hand) when `equip`
-finds no free slot (`no_slot`). `sharpen_stick` only takes a stick, or with
+finds no free slot (`no_slot`). Each skill checks its target kind (a rock for flint, a tree for branches, a
+fallen branch for leaves and sticks, fresh rather than salt water for
+drinking), and loose leaves or grass are dropped rather than juggled when a
+hand is needed. `sharpen_stick` only takes a stick, or with
 target 0 the stick in the other hand. After `pick_leaves`, `make_stick` or
 `cut_grass` the autopilot picks up what fell when a hand is free, and a
 `NEEDS` line leads the observation when water or nutrition drops below 250;

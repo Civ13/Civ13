@@ -344,7 +344,9 @@ class AutopilotTests(unittest.TestCase):
         tools = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint hatchet"}, "intent": "grab"}
         self.assertIn("both tools", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools)[1])
         leaves = {"active_hand": "left", "left_hand": {"name": "leaf bundles"}, "right_hand": {"name": "sharpened flint"}, "intent": "grab"}
-        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:1], [{"do": "equip"}])
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:1], [{"do": "drop"}])  # leaves may stay on the ground
+        stick = dict(leaves, left_hand={"name": "stick"})
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], stick)[0][:1], [{"do": "equip"}])  # a made item is stowed
         steps, _ = autopilot.expand_plan([{"skill": "chop", "target": "[0x1]"}], {"active_hand": "left", "left_hand": None, "right_hand": {"name": "flint hatchet"}, "intent": "harm"})
         self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
 
@@ -440,6 +442,21 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("map.job_enabled_specialcheck(J)", source)
         self.assertIn("reserved.current_positions++", source)
         self.assertIn("reserved.current_positions = max(0, reserved.current_positions - 1)", source)
+
+    def test_skills_refuse_the_wrong_kind_of_target(self):
+        empty = {"ref": "[0x9]", "active_hand": "right", "left_hand": None, "right_hand": None, "intent": "grab"}
+        rows = {"[0x1]": {"ref": "[0x1]", "name": "rock", "type": "/obj/structure/wild/rock", "dx": 1, "dy": 0},
+                "[0x2]": {"ref": "[0x2]", "name": "tree", "type": "/obj/structure/wild/tree/live_tree", "dx": 0, "dy": 1, "branches": 3},
+                "turf:1,1,2": {"ref": "turf:1,1,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallowsaltwater", "dx": 1, "dy": 1},
+                "turf:2,2,2": {"ref": "turf:2,2,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallow", "dx": -1, "dy": 1}}
+        expand = lambda skill, ref: autopilot.expand_plan([{"skill": skill, "target": ref}], empty, rows)
+        self.assertIn("needs a cleared fallen branch, not the rock", expand("make_stick", "[0x1]")[1])
+        self.assertIn("needs a tree", expand("break_branch", "[0x1]")[1])
+        self.assertIn("needs a rock", expand("find_flint", "[0x2]")[1])
+        self.assertIn("not salt water", expand("drink", "turf:1,1,2")[1])
+        self.assertEqual(expand("drink", "turf:2,2,2")[1], "")
+        thirsty = {"self": {"water": 150}, "terrain": list(row for ref, row in rows.items() if ref.startswith("turf:"))}
+        self.assertEqual(autopilot.thirst_plan(thirsty), {"skill": "drink", "target": "turf:2,2,2"})
 
     def test_stowed_tools_are_taken_and_thirst_comes_first(self):
         me = {"ref": "[0x9]", "active_hand": "right", "right_hand": None, "left_hand": {"name": "leaf bundles"}, "intent": "help", "carried": ["sharpened flint (pocket)"], "worn": ["loincloth", "stick"]}

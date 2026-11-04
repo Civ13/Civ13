@@ -436,7 +436,7 @@ def thirst_plan(observation, explore_dir="north", ignored=()):
     if not isinstance(water, (int, float)) or water >= 200:
         return None
     for row in observation.get("terrain", []):
-        if row.get("ref") not in ignored and any(word in str(row.get("name", "")).lower() for word in WATER_WORDS):
+        if row.get("ref") not in ignored and _is_drinkable(row):
             return {"skill": "drink", "target": row.get("ref")}
     return {"do": "explore", "dir": explore_dir}
 
@@ -447,9 +447,27 @@ def _is_plain_stick(name):
 
 
 def _is_junk(name):
-    """A spare plain flint is easy to find again; anything else is worth stowing."""
+    """Spares that are fine to leave on the ground: a plain flint, or loose material (leaves, grass) with no slot."""
     name = str(name or "").lower()
-    return name == "flint"
+    return name == "flint" or any(word in name for word in ("leaf", "leaves", "grass"))
+
+
+def _is_drinkable(row):
+    name, kind = str(row.get("name", "")).lower(), str(row.get("type", "")).lower()
+    return any(word in name for word in WATER_WORDS) and "salt" not in name and "salt" not in kind and "sea" not in name
+
+
+SKILL_TARGETS = {
+    # skill: (check on the observation row, what to say when it does not fit)
+    "find_flint": (lambda row: "rock" in str(row.get("type", "")) or "rock" in str(row.get("name", "")).lower(), "a rock"),
+    "sharpen_flint": (lambda row: "rock" in str(row.get("type", "")) or "rock" in str(row.get("name", "")).lower(), "a rock"),
+    "break_branch": (lambda row: "branches" in row, "a tree"),
+    "chop": (lambda row: "branches" in row, "a tree"),
+    "pick_leaves": (lambda row: row.get("branch") == "leafy", "a leafy fallen branch"),
+    "make_stick": (lambda row: row.get("branch") == "cleared", "a cleared fallen branch"),
+    "drink": (_is_drinkable, "fresh water (not salt water)"),
+    "cut_grass": (lambda row: "grass" in str(row.get("name", "")).lower(), "grass"),
+}
 
 
 def progressed(change):
@@ -481,6 +499,11 @@ def expand_skill(step, self_state, rows=None):
             return [], f"{step['skill']} needs a target number from the lists, not yourself (0). If nothing suitable is listed, explore in some direction to find it"
     if row is not None and step["skill"] == "sharpen_stick" and not _is_plain_stick(row.get("name")):
         return [], f"sharpen_stick needs a stick (on the ground or in your other hand), not the {row.get('name')}"
+    redirect = row is not None and row.get("branch") in ("leafy", "cleared") and step["skill"] in ("pick_up", "pick_leaves", "make_stick")
+    if row is not None and step["skill"] in SKILL_TARGETS and not redirect:
+        fits, wanted = SKILL_TARGETS[step["skill"]]
+        if not fits(row):
+            return [], f"{step['skill']} needs {wanted}, not the {row.get('name')}"
     if row is not None and row.get("branch") in ("leafy", "cleared") and step["skill"] in ("pick_up", "pick_leaves", "make_stick"):
         # A fallen branch cannot be picked up; work it where it lies.
         skill = "pick_leaves" if row["branch"] == "leafy" else "make_stick"
