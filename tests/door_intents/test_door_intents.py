@@ -85,3 +85,31 @@ class DoorIntentContract(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+PERSISTENCE = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+
+
+class DoorRebootTimers(unittest.TestCase):
+    """world.time restarts at zero after a reboot, so saved stamps must not block doors."""
+
+    def test_last_bumped_is_not_saved(self):
+        body = '\n'.join(proc_body(PERSISTENCE, '/atom/persistence_runtime_var'))
+        match = re.search(r'if \(([^)]*)\)\n\t\t\treturn TRUE', body)
+        self.assertIn('"last_bumped"', match.group(1))
+
+    def test_door_noise_cooldown_is_not_saved(self):
+        body = [line.strip() for line in proc_body(DOOR, '/obj/structure/simple_door/persistence_runtime_var') if line.strip()]
+        self.assertEqual(body, ['return key == "next_attack_hand" || ..()'])
+
+    def test_future_bump_stamp_is_cleared_before_the_cooldown(self):
+        body = [line.strip() for line in proc_body(DOOR, '/obj/structure/simple_door/proc/TryToSwitchState')]
+        reset = body.index('if (user.last_bumped > world.time)')
+        self.assertEqual(body[reset + 1], 'user.last_bumped = FALSE')
+        self.assertLess(reset, body.index('if (user.last_bumped && world.time - user.last_bumped <= 60)'))
+
+    def test_future_noise_stamp_is_cleared(self):
+        body = [line.strip() for line in proc_body(DOOR, '/obj/structure/simple_door/proc/door_noise_ready')]
+        reset = body.index('if (next_attack_hand > world.time + 10)')
+        self.assertEqual(body[reset + 1], 'next_attack_hand = -1')
+        self.assertLess(reset, body.index('if (world.time < next_attack_hand)'))
