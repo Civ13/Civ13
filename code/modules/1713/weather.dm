@@ -516,6 +516,8 @@
 				loc_temp = -82
 			else if (mob_area.icon_state == "sandstorm")
 				loc_temp = 60
+	// Opt-in per-map lapse rate; zero on every existing map.
+	loc_temp -= elevation_temperature_drop(A)
 	loc_temp = round(loc_temp)
 
 	//inside areas have natural insulation, so the temp will be more moderate than outside.
