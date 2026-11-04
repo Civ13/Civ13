@@ -101,8 +101,8 @@ jobs:
           # A hung package mirror once stalled this step for 20 minutes: bound
           # each attempt and retry instead.
           for attempt in 1 2 3; do
-            if command -v ffmpeg >/dev/null && [ -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf ]; then break; fi
-            timeout 240 sudo apt-get update -qq && timeout 300 sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null && break
+            if command -v ffmpeg >/dev/null && [ -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf ] && python3 -c 'import numpy' 2>/dev/null; then break; fi
+            timeout 240 sudo apt-get update -qq && timeout 300 sudo apt-get install -y -qq ffmpeg fonts-dejavu-core python3-numpy >/dev/null && break
             echo "::warning::apt attempt $attempt failed"; sleep 10
           done
           mkdir -p "$RUNNER_TEMP/media"

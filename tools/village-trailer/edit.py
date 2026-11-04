@@ -2,7 +2,8 @@
 
 Upscales the native capture with nearest-neighbour filtering to 1080p, adds a
 caption for each production step from the director's timeline, then
-crossfades into the Civ13 end card with the Civ13.com call to action.
+crossfades into the Civ13 end card with the Civ13.com call to action, and
+scores it with the original medieval town tune from music.py.
 
     python3 tools/village-trailer/edit.py --take take.mkv \
         --timeline trailer-timeline.json --title UI/images/civ13.png --out trailer.mp4
@@ -11,6 +12,9 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
+import sys
+import tempfile
+import wave
 
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf'
 FONT_SANS = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
@@ -72,6 +76,7 @@ def main():
     p.add_argument('--title', required=True)
     p.add_argument('--out', required=True)
     p.add_argument('--trim-end', type=float, default=0.0, help='seconds to drop from the end of the take')
+    p.add_argument('--no-music', action='store_true')
     a = p.parse_args()
     timeline = json.loads(Path(a.timeline).read_text())
     take_seconds = probe_duration(a.take) - a.trim_end
@@ -91,11 +96,27 @@ def main():
         f"x=(w-text_w)/2:y=h-140,fps=30,format=yuv420p,setsar=1,trim=0:{END_SECONDS + FADE},setpts=PTS-STARTPTS[end];"
         f"[game][end]xfade=transition=fade:duration={FADE}:offset={offset},fade=t=out:st={offset + FADE + END_SECONDS - 1.0}:d=1.0[v]"
     )
+    total = take_seconds + END_SECONDS
     cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'warning', '-y', '-i', a.take,
-           '-loop', '1', '-framerate', '30', '-t', str(END_SECONDS + FADE + 1), '-i', a.title,
-           '-filter_complex', graph, '-map', '[v]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '18',
-           '-movflags', '+faststart', a.out]
-    subprocess.check_call(cmd)
+           '-loop', '1', '-framerate', '30', '-t', str(END_SECONDS + FADE + 1), '-i', a.title]
+    audio = []
+    with tempfile.TemporaryDirectory() as tmp:
+        if not a.no_music:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            import music
+            mix = music.compose(total)
+            track = Path(tmp) / 'music.wav'
+            with wave.open(str(track), 'wb') as w:
+                w.setnchannels(2)
+                w.setsampwidth(2)
+                w.setframerate(music.SR)
+                w.writeframes((mix * 32767).astype('<i2').tobytes())
+            cmd += ['-i', str(track)]
+            graph += f";[2:a]atrim=0:{total},afade=t=in:st=0:d=0.3,volume=0.9[a]"
+            audio = ['-map', '[a]', '-c:a', 'aac', '-b:a', '192k']
+        cmd += ['-filter_complex', graph, '-map', '[v]', *audio, '-c:v', 'libx264', '-preset', 'slow',
+                '-crf', '18', '-movflags', '+faststart', a.out]
+        subprocess.check_call(cmd)
     print(a.out, probe_duration(a.out))
 
 
