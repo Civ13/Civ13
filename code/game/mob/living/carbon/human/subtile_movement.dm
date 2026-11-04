@@ -313,6 +313,13 @@
 
 // Same arithmetic as the existing cardinal client.Move epilogue, captured BEFORE
 // sleeping. The disabled path still executes the original epilogue unchanged.
+// A held key used to wait for the deadline tick and then one more scan tick
+// before its next step. Chained held steps keep that pace, so smooth walking
+// and running are no faster than before; only the stop at tile centres is gone.
+/mob/living/human/proc/human_subtile_held_pace(duration)
+	var/ticks = -round(-round(duration / world.tick_lag, 0.001))
+	return (max(1, ticks) + 1) * world.tick_lag
+
 /mob/living/human/proc/human_subtile_deadline(raw_deadline, now, ordinal = FALSE)
 	var/multiplier = movement_speed_multiplier
 	if (find_trait("Slowness"))
