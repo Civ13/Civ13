@@ -12,6 +12,8 @@ window "cloud"
         type = MAP
         pos = 0,0
         size = 960x576
+        anchor1 = 0,0
+        anchor2 = 100,100
         zoom = 2
         zoom-mode = distort
         letterbox = true

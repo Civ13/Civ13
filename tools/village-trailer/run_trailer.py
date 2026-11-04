@@ -62,21 +62,44 @@ def wait_for(path, timeout, procs=()):
 user32 = ctypes.WinDLL('user32', use_last_error=True) if os.name == 'nt' else None
 
 
+def title_windows(title):
+    # Every visible top-level window with this title: DreamSeeker can show a
+    # small transient window before the skin's MAIN window takes the title.
+    found = []
+    buf = ctypes.create_unicode_buffer(256)
+
+    @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+    def visit(hwnd, _):
+        if user32.IsWindowVisible(hwnd):
+            user32.GetWindowTextW(hwnd, buf, 256)
+            if buf.value == title:
+                rect = wintypes.RECT()
+                user32.GetClientRect(hwnd, ctypes.byref(rect))
+                found.append(((rect.right - rect.left) * (rect.bottom - rect.top), hwnd))
+        return True
+
+    user32.EnumWindows(visit, 0)
+    return [hwnd for _, hwnd in sorted(found, reverse=True)]
+
+
 def find_window(title, timeout=30):
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        hwnd = user32.FindWindowW(None, title)
-        if hwnd:
-            return hwnd
+        windows = title_windows(title)
+        if windows:
+            return windows[0]
         time.sleep(0.2)
     raise RuntimeError('DreamSeeker window not found')
 
 
-def place_window(hwnd):
-    # Top-left, topmost, then measure where the client (map) area landed.
+def place_window(hwnd, size=None):
+    # Top-left, topmost, at the skin's size, then measure where the client
+    # (map) area landed.
     HWND_TOPMOST = -1
+    flags = 0x0040 | (0x0001 if size is None else 0)  # SHOWWINDOW (| NOSIZE)
+    width, height = size or (0, 0)
     user32.ShowWindow(hwnd, 9)  # SW_RESTORE
-    user32.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, 0x0001 | 0x0040)  # NOSIZE | SHOWWINDOW
+    user32.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, width, height, flags)
     user32.SetForegroundWindow(hwnd)
     time.sleep(0.5)
     rect = wintypes.RECT()
@@ -118,11 +141,21 @@ def run(byond, build, ffmpeg, output):
                                   env=env, stdout=(output / 'client.log').open('w'), stderr=subprocess.STDOUT)
         procs.append(('DreamSeeker', client))
         result['client'] = wait_for(build / 'cloud-client.txt', 120, procs)
-        hwnd = find_window(TITLE)
+        find_window(TITLE)
         result['screen'] = screen_size()
         wait_for(build / 'trailer-armed.txt', 180, procs)
-        window = place_window(hwnd)
+        # Pick the window again now the skin is certainly loaded, and insist on
+        # the full frame rather than recording whatever size it opened at.
+        window = None
+        for attempt in range(10):
+            window = place_window(find_window(TITLE), SIZE)
+            if window['width'] >= SIZE[0] and window['height'] >= SIZE[1]:
+                break
+            log(f'map client area too small ({window}), retrying')
+            time.sleep(1.0)
         result['window'] = window
+        if window['width'] < SIZE[0] or window['height'] < SIZE[1]:
+            raise RuntimeError(f'DreamSeeker map area is {window["width"]}x{window["height"]}, expected {SIZE}')
         log(f'screen {result["screen"]}, map client area {window}')
         width, height = min(window['width'], SIZE[0]), min(window['height'], SIZE[1])
         width -= width % 2
@@ -150,9 +183,9 @@ def run(byond, build, ffmpeg, output):
         log('ERROR: ' + result['error'])
         if os.name == 'nt':
             try:
-                hwnd = user32.FindWindowW(None, TITLE)
-                if hwnd and recorder is None:
-                    result['window_on_error'] = place_window(hwnd)
+                windows = title_windows(TITLE)
+                if windows and recorder is None:
+                    result['window_on_error'] = place_window(windows[0])
             except Exception:
                 pass
     finally:
