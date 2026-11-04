@@ -354,6 +354,9 @@
 			grab_list -= D
 
 /client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)
+	// One-shot: only the movementMachine's held-key continuation sets this.
+	var/subtile_chain_time = human_subtile_chain_time
+	human_subtile_chain_time = null
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements
 	if (!canmove)
@@ -864,7 +867,13 @@
 						move_delay = subtile_deadline
 						. = H.SelfMove(n, direct, subtile_deadline, TRUE)
 					else
+						// Continue a held key from the previous step's deadline, not
+						// from the tick this Move happened to run in.
+						if (isnum(subtile_chain_time) && subtile_chain_time <= world.time && world.time - subtile_chain_time < world.tick_lag && !H.human_subtile_pull_ready(direct) && subtile_deadline - (world.time - subtile_chain_time) > world.time)
+							subtile_deadline -= world.time - subtile_chain_time
+							H.human_subtile_chain_start = subtile_chain_time
 						. = H.SelfMove(n, direct, subtile_deadline)
+						H.human_subtile_chain_start = null
 				else if (!fine_step)
 					. = mob.SelfMove(n, direct)
 			if (!isnull(subtile_deadline) && (mob != input_actor || input_actor.client != src))

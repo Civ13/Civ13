@@ -101,6 +101,11 @@ SUITES = {
             'code/modules/persistence/world_time_stamps.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
     # Day/night sweep loop-shape contracts; no BYOND runtime.
+    # Held-key smooth movement continuation contracts; no BYOND runtime.
+    'held_movement': {'files': ('tests/held_movement/test_held_movement.py',),
+        'paths': ('tests/held_movement/',), 'shared_paths': (
+            'code/movementMachine.dm', 'code/game/mob/mob_movement.dm',
+            'code/game/mob/living/carbon/human/subtile_movement.dm')},
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
             'code/processes/time_of_day_change.dm',
