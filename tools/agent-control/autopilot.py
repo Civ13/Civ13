@@ -52,9 +52,10 @@ Reply with one JSON object and nothing else:
 {"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words"}
 Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent and hand for you, then clicks the target:
  find_flint (a rock: search it for flint), sharpen_flint (a rock: hit it with your flint until sharp),
- break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a bare branch: strip it into a stick),
+ break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a cleared branch: strip it into a stick),
  sharpen_stick (a stick: sharpen it with sharpened flint), cut_grass (a grass tile: cut grass with sharpened flint),
  chop (a tree: chop it with an axe or hatchet), drink (a water tile: drink), pick_up (a loose item: pick it up).
+A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
 {"do": "go", "target": number} walks next to a thing, around obstacles. Prefer it to single moves.
@@ -166,6 +167,10 @@ def summarize(observation, note="", ignored=(), muted=()):
 
 
 def _branch_mark(row):
+    if row.get("branch") == "leafy":
+        return " (leafy branch: pick_leaves, then make_stick)"
+    if row.get("branch") == "cleared":
+        return " (cleared branch: make_stick)"
     if "branches" not in row:
         return ""
     return " (has branches)" if _int(row.get("branches"), 0) else " (no branches)"
@@ -344,6 +349,18 @@ def _is_tool(name):
     return any(word in name for word in TOOL_WORDS)
 
 
+def _is_junk(name):
+    """A spare plain flint is easy to find again; anything else is worth stowing."""
+    name = str(name or "").lower()
+    return name == "flint"
+
+
+def progressed(change):
+    """True when a change is more than intent or active-hand bookkeeping."""
+    parts = [part for part in str(change).split("; ") if part and part != "nothing changed" and not part.startswith(("intent ", "active hand "))]
+    return bool(parts)
+
+
 def adjacent(row):
     try:
         return max(abs(int(row.get("dx"))), abs(int(row.get("dy")))) <= 1
@@ -358,6 +375,13 @@ def expand_skill(step, self_state, rows=None):
     active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
     row = (rows or {}).get(step["target"])
     steps = []
+    if row is not None and row.get("branch") in ("leafy", "cleared") and step["skill"] in ("pick_up", "pick_leaves", "make_stick"):
+        # A fallen branch cannot be picked up; work it where it lies.
+        skill = "pick_leaves" if row["branch"] == "leafy" else "make_stick"
+        if skill != step["skill"]:
+            return expand_skill(dict(step, skill=skill), self_state, rows)
+    if row is not None and step["skill"] == "pick_up" and not row.get("item") and not row.get("mob"):
+        return [], f"the {row.get('name')} is fixed in place and cannot be picked up"
     if row is not None:
         if step["skill"] in ("break_branch", "pick_leaves") and "branches" in row and not _int(row.get("branches"), 0):
             return [], f"the {row.get('name')} has no branches; pick a tree marked (has branches)"
@@ -366,13 +390,16 @@ def expand_skill(step, self_state, rows=None):
     if need == "empty":
         if active != "empty":
             if other != "empty":
-                # Free a hand by dropping the spare item and keeping the tool.
-                if _is_tool(active) == _is_tool(other):
-                    keep = " (both are tools; equip one)" if _is_tool(active) else ""
-                    return [], f"{step['skill']} needs an empty hand, but you hold {left} and {right}: equip or drop one first{keep}"
-                if _is_tool(active):
+                # Free a hand by putting away the spare item and keeping the tool.
+                if _is_tool(active) and _is_tool(other):
+                    return [], f"{step['skill']} needs an empty hand, but you hold {left} and {right} (both tools): equip one first"
+                spare_is_other = _is_tool(active) or (_is_junk(other) and not _is_junk(active))
+                if spare_is_other:
                     steps.append({"do": "swap_hand"})
-                steps.append({"do": "drop"})
+                spare = other if spare_is_other else active
+                if not _is_junk(spare):
+                    steps.append({"do": "equip"})  # stow gathered materials when there is room
+                steps.append({"do": "drop"})  # does nothing when equip already freed the hand
             else:
                 steps.append({"do": "swap_hand"})
     elif not _holds(active, need):
@@ -596,6 +623,8 @@ def run(client, args, character, token):
     ignored = {}  # target ref -> step until which it is left out
     last_targets = []
     target_turns = []
+    stalled = {}  # target name -> turns in a row on things of that name without progress
+    last_names = []
     seen_lines = {}  # message text -> steps it showed up in; ones that keep coming back (heat, weather) are muted
     muted = set()
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
@@ -620,7 +649,18 @@ def run(client, args, character, token):
             heard = relevant_messages(observation.get("messages", []), self_state.get("name"), limit=4, muted=muted)
             print(f"  changed: {change}" + (f" | heard: {' / '.join(heard)}" if heard else ""))
             # A click counts as useless only when nothing changed and the game said nothing to us.
-            useless = change == "nothing changed" and not relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
+            said = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
+            useless = change == "nothing changed" and not said
+            # Alternating between similar targets (two branches, a tree) without progress is a loop too.
+            moved_on = progressed(change) or any(not text.startswith("You start") for text in said)
+            for name in set(last_names):
+                stalled[name] = 0 if moved_on else stalled.get(name, 0) + 1
+                if stalled[name] >= 4:
+                    stalled[name] = 0
+                    for row in observation.get("nearby", []):
+                        if row.get("name") == name:
+                            ignored[row.get("ref")] = step + 6
+                    feedback += f"\nWorking on {name} kept getting nowhere; it is hidden for a while. Try another skill or another kind of target."
             for ref in last_targets:
                 no_effect[ref] = no_effect.get(ref, 0) + 1 if useless else 0
                 if no_effect[ref] >= 3:
@@ -641,6 +681,8 @@ def run(client, args, character, token):
         note = parse_note(answer) or note
         plan = parse_plan(answer, refs)
         last_targets = [item["target"] for item in plan if (item.get("do") in ("click", "go") or "skill" in item) and item.get("target") != refs[0]]
+        rows_now = target_rows(observation)
+        last_names = [rows_now[ref].get("name") for ref in last_targets if ref in rows_now and rows_now[ref].get("name")]
         # Many turns on one target without moving on is a loop even when the game keeps answering.
         for ref in last_targets:
             target_turns.append((step, ref))

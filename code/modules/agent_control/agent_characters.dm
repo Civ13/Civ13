@@ -216,6 +216,12 @@
 			var/list/row = list("ref" = agent_ref(AM), "name" = AM.name, "type" = "[AM.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
 			if (AM.density)
 				row["dense"] = TRUE
+			if (istype(AM, /obj/item) && !AM.anchored)
+				row["item"] = TRUE
+			if (istype(AM, /obj/structure/branch))
+				var/obj/structure/branch/B = AM
+				// A fallen branch is not an item: grab intent takes its leaves, harm intent strips a cleared one into a stick.
+				row["branch"] = B.leaves ? "leafy" : (B.branched ? "cleared" : "bare")
 			if (istype(AM, /obj/structure/wild) && !istype(AM, /obj/structure/wild/rock))
 				var/obj/structure/wild/W = AM
 				// Trees and plants say whether harm intent can break a branch off them right now.

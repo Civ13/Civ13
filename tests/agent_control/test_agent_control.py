@@ -337,11 +337,13 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("needs flint", autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], sharp)[1])
         # A free hand comes from dropping the spare item, never the tool.
         steps, error = autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], sharp)
-        self.assertEqual(steps[:2], [{"do": "swap_hand"}, {"do": "drop"}])
+        self.assertEqual(steps[:3], [{"do": "swap_hand"}, {"do": "equip"}, {"do": "drop"}])  # stow the stick if there is room
         spare = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint"}, "intent": "grab"}
         self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], spare)[0], [{"do": "drop"}, {"do": "click", "target": "[0x1]"}])
         tools = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint hatchet"}, "intent": "grab"}
-        self.assertIn("equip or drop", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools)[1])
+        self.assertIn("both tools", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools)[1])
+        leaves = {"active_hand": "left", "left_hand": {"name": "leaf bundles"}, "right_hand": {"name": "sharpened flint"}, "intent": "grab"}
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:2], [{"do": "equip"}, {"do": "drop"}])
         steps, _ = autopilot.expand_plan([{"skill": "chop", "target": "[0x1]"}], {"active_hand": "left", "left_hand": None, "right_hand": {"name": "flint hatchet"}, "intent": "harm"})
         self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
 
@@ -366,6 +368,27 @@ class AutopilotTests(unittest.TestCase):
         self.assertNotEqual(autopilot.choose_step(0, 3, blocked={"north", "northeast", "northwest"}, visited={(0, -1)}), "south")
         source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
         self.assertIn('row["branches"] = W.branches', source)
+
+    def test_fallen_branches_are_worked_where_they_lie(self):
+        empty = {"active_hand": "right", "left_hand": None, "right_hand": None, "intent": "help"}
+        rows = {"[0x4]": {"ref": "[0x4]", "name": "branch", "dx": 1, "dy": 0, "branch": "leafy"},
+                "[0x5]": {"ref": "[0x5]", "name": "cleared branch", "dx": 0, "dy": 1, "branch": "cleared"},
+                "[0x6]": {"ref": "[0x6]", "name": "stick", "dx": 1, "dy": 1, "item": True},
+                "[0x7]": {"ref": "[0x7]", "name": "jungle tree", "dx": -1, "dy": 0, "branches": 2}}
+        expand = lambda skill, ref: autopilot.expand_plan([{"skill": skill, "target": ref}], empty, rows)
+        self.assertEqual(expand("pick_up", "[0x4]")[0], [{"do": "intent", "intent": "grab"}, {"do": "click", "target": "[0x4]"}])
+        self.assertEqual(expand("pick_up", "[0x5]")[0], [{"do": "intent", "intent": "harm"}, {"do": "click", "target": "[0x5]"}])
+        self.assertEqual(expand("pick_leaves", "[0x5]")[0][0], {"do": "intent", "intent": "harm"})
+        self.assertEqual(expand("pick_up", "[0x6]")[0], [{"do": "click", "target": "[0x6]"}])
+        self.assertIn("cannot be picked up", expand("pick_up", "[0x7]")[1])
+        text, _ = autopilot.summarize({"self": {"ref": "[0x9]"}, "nearby": list(rows.values())})
+        self.assertIn("branch dx=1 dy=0 (leafy branch: pick_leaves, then make_stick)", text)
+        self.assertIn("cleared branch dx=0 dy=1 (cleared branch: make_stick)", text)
+        self.assertTrue(autopilot.progressed("right hand: empty -> stick; intent harm"))
+        self.assertFalse(autopilot.progressed("active hand left; intent grab"))
+        source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('row["branch"] = B.leaves ? "leafy"', source)
+        self.assertIn('row["item"] = TRUE', source)
 
     def test_walking_goes_around_blocked_tiles(self):
         class FakeClient:

@@ -122,7 +122,8 @@ nutrition, water, worn and carried items, and `craftable` recipes when the
 active hand holds a material stack), the nearest tile of each kind of terrain
 (`terrain`, clickable as `turf:x,y,z`), the four neighbouring turfs, up to 64 visible
 objects with `dx`/`dy` offsets and refs (trees and plants add `branches`, the
-branches harm intent can break off now), and the messages the character saw or
+branches harm intent can break off now; fallen branches add `branch` as
+`leafy` or `cleared`; loose items that can be picked up add `item`), and the messages the character saw or
 heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
 (`text`), `click` (`target` ref the character can see, optional `modifier`),
@@ -190,8 +191,9 @@ intent, sharpening, branches, sticks and leaves), matching lines from
 from other players' camps. It answers with one to three steps and a note to
 itself. Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
 target; the autopilot walks next to the target (stepping around blocked
-tiles), swaps to the right hand and intent before the click, drops a spare
-item rather than a tool when it needs a free hand, and refuses a skill whose
+tiles), swaps to the right hand and intent before the click, stows (or drops) a
+spare item rather than a tool when it needs a free hand, works a fallen
+branch where it lies (leaves, then stick) instead of trying to pick it up, and refuses a skill whose
 tool is not in either hand or a branch skill on a tree with no branches. The
 model can also walk with `{"do": "go", "target": n}`. The autopilot runs the
 steps through `character_queue` and shows the next
@@ -199,7 +201,8 @@ turn what changed (position, hands, clothes, carried items, water, nutrition)
 and warns when the same action keeps repeating. It waits while the character
 is busy with timed work (`self.busy`), and leaves a target out of the lists
 for a while after three clicks on it changed nothing and drew no message, or
-after five turns on it within eight steps. Each turn's changes and messages are
+after five turns on it within eight steps, and hides every target of a name
+after four turns on it in a row without progress. Each turn's changes and messages are
 printed to the run log. Only speech and lines about
 the character reach the model, lines that keep recurring (heat, weather) are
 muted after four turns, so other players' work messages do not crowd
