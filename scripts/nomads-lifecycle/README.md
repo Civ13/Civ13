@@ -83,6 +83,31 @@ to the acknowledged request. An older internally consistent save is insufficient
    handoff in this design. `--once`, including `--once --force-cycle`, is
    rejected before configuration or game startup.
 
+### Linux hosts
+
+The supervisor, canonical updater and prepared backend also run on Linux. Process
+identity is `(boot_id << 64) | start ticks` from `/proc/PID/stat` and
+`/proc/sys/kernel/random/boot_id`, stored in the same `creation_filetime` field,
+so a recycled PID or a reboot never matches. A zombie or missing PID has no
+identity. Listener ownership reads the child's socket inodes from
+`/proc/PID/fd` and the TCP tables from `/proc/PID/net/tcp{,6}`: a listener whose
+inode is not the child's has no attributable owner, so any second listener on
+the port fails closed. Executable and working directory come from
+`/proc/PID/exe` and `/proc/PID/cwd`. psutil is not needed on Linux.
+
+The game starts in its own session (`start_new_session`) with stdin closed, and
+`DreamMaker`/`DreamDaemon` get their own directory prepended to
+`LD_LIBRARY_PATH`. Install the Linux pin with `scripts/cloud_byond_setup.sh` or
+the official archive and point `compiler`/`daemon` at its absolute
+`DreamMaker`/`DreamDaemon` paths. Use the example
+[`civ13-supervisor.service.example`](civ13-supervisor.service.example) as a
+systemd user unit (`Restart=no`, `KillMode=process`); run `loginctl
+enable-linger` for the account if it must outlive a login session.
+
+The /proc checks are covered by offline tests with a fake `/proc` and a real
+child listener. A real Linux DreamDaemon host has not yet run a full
+build/save/restart cycle under the supervisor.
+
 Do not install from a temporary worktree that will be archived. Copy the reviewed
 script into a durable installation and record its hash. No task or host is
 installed by the offline tests or example configuration.

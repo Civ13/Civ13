@@ -13,6 +13,7 @@ import shutil
 import socket
 import struct
 import subprocess
+import sys
 import threading
 import time
 import urllib.parse
@@ -159,10 +160,67 @@ def exclusive_lock(path):
             lease.active = False
 
 
+def is_linux():
+    return os.name != 'nt' and sys.platform.startswith('linux')
+
+
+NATIVE_PROCESS_NAMES = ('dd', 'dm', 'dreamdaemon', 'dreammaker',
+                        'dd.exe', 'dm.exe', 'dreamdaemon.exe', 'dreammaker.exe')
+
+
+def linux_boot_id(proc=Path('/proc')):
+    text = (Path(proc) / 'sys/kernel/random/boot_id').read_text(encoding='ascii').strip()
+    return uuid.UUID(text).int
+
+
+def linux_process_identity(pid, proc=Path('/proc')):
+    """Boot-bound start time, so neither a recycled PID nor a reboot is our host.
+
+    The value is (boot_id << 64) | start-time clock ticks from /proc/PID/stat.
+    A missing PID, zombie or dead entry is None, like an exited Windows process.
+    Permission and malformed-record failures raise instead of guessing.
+    """
+    if type(pid) is not int or pid <= 0:
+        raise RuntimeError('Invalid process identifier')
+    try:
+        text = (Path(proc) / str(pid) / 'stat').read_text(encoding='utf-8', errors='replace')
+    except (FileNotFoundError, ProcessLookupError):
+        return None
+    if ')' not in text or '(' not in text:
+        raise RuntimeError('Malformed process identity')
+    prefix, rest = text.rsplit(')', 1)
+    fields = rest.split()
+    if len(fields) < 20 or prefix.split('(', 1)[0].strip() != str(pid):
+        raise RuntimeError('Malformed process identity')
+    if fields[0] in ('Z', 'X', 'x'):
+        return None
+    start = int(fields[19])
+    if start < 0 or start >= 1 << 64:
+        raise RuntimeError('Malformed process identity')
+    return (linux_boot_id(proc) << 64) | start
+
+
 def process_identity(pid):
+    if os.name == 'nt':
+        return windows_process_identity(pid)
+    if is_linux():
+        return linux_process_identity(pid)
+    raise RuntimeError('Live supervisor supports Windows and Linux only')
+
+
+def native_environment(executable):
+    """Linux BYOND binaries load their shared libraries from their own directory."""
+    if not is_linux() or Path(executable).name not in ('DreamMaker', 'DreamDaemon'):
+        return None
+    environment = dict(os.environ)
+    directory = str(Path(executable).resolve().parent)
+    existing = environment.get('LD_LIBRARY_PATH')
+    environment['LD_LIBRARY_PATH'] = directory + (':' + existing if existing else '')
+    return environment
+
+
+def windows_process_identity(pid):
     """Creation FILETIME prevents a recycled Windows PID from becoming our host."""
-    if os.name != 'nt':
-        raise RuntimeError('Live supervisor currently supports Windows only')
     from ctypes import wintypes
     kernel = ctypes.WinDLL('kernel32', use_last_error=True)
     kernel.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
@@ -213,10 +271,132 @@ def require_unique_listener(pid, port, bind, process_rows, system_rows, listen_s
         raise RuntimeError('Native listener owner is absent, unknown, foreign or ambiguous')
 
 
+class _Address:
+    __slots__ = ('ip', 'port')
+
+    def __init__(self, ip, port):
+        self.ip, self.port = ip, port
+
+
+class _ListenerRow:
+    __slots__ = ('status', 'laddr', 'pid')
+
+    def __init__(self, status, laddr, pid):
+        self.status, self.laddr, self.pid = status, laddr, pid
+
+
+LINUX_LISTEN = 'LISTEN'
+
+
+def linux_tcp_listeners(table_text, family):
+    """Parse one /proc/net/tcp or tcp6 table into (ip, port, inode) listener rows."""
+    rows = []
+    lines = table_text.splitlines()
+    if len(lines) > 1048576:
+        raise RuntimeError('Socket table bound')
+    for line in lines[1:]:
+        fields = line.split()
+        if len(fields) < 10:
+            raise RuntimeError('Truncated socket row')
+        if fields[3] != '0A':
+            continue
+        raw, port = fields[1].split(':')
+        octets = bytes.fromhex(raw)
+        address = socket.inet_ntop(family, b''.join(octets[i:i + 4][::-1] for i in range(0, len(octets), 4)))
+        rows.append((address, int(port, 16), fields[9]))
+    return rows
+
+
+def linux_listener_rows(proc=Path('/proc'), pid='self'):
+    """Every TCP listener visible in the network namespace of pid."""
+    rows = []
+    for name, family in (('tcp', socket.AF_INET), ('tcp6', socket.AF_INET6)):
+        try:
+            text = (Path(proc) / str(pid) / 'net' / name).read_text(encoding='ascii')
+        except FileNotFoundError:
+            continue
+        rows += linux_tcp_listeners(text, family)
+    return rows
+
+
+def linux_socket_inodes(pid, proc=Path('/proc')):
+    descriptors = list((Path(proc) / str(pid) / 'fd').iterdir())
+    if len(descriptors) > 4096:
+        raise RuntimeError('Owned descriptor bound')
+    inodes = set()
+    for path in descriptors:
+        try:
+            link = os.readlink(path)
+        except FileNotFoundError:
+            continue
+        if link.startswith('socket:[') and link.endswith(']'):
+            inodes.add(link[8:-1])
+    return inodes
+
+
+def linux_listener_observation(host, daemon, run, port, bind, proc=Path('/proc')):
+    """Inspect only the configured child and listener through /proc; never adopt.
+
+    Foreign listeners have no attributable PID here, so any second listener on
+    the port fails closed exactly like an unknown owner on Windows.
+    """
+    pid, created = host['pid'], host['creation_filetime']
+    if linux_process_identity(pid, proc) != created:
+        raise RuntimeError('Owned process exited or PID was reused')
+    base = Path(proc) / str(pid)
+    executable = os.readlink(base / 'exe')
+    if executable.endswith(' (deleted)') or Path(executable).resolve(strict=True) != daemon \
+            or Path(os.readlink(base / 'cwd')).resolve(strict=True) != run:
+        raise RuntimeError('Actual native executable or working directory differs')
+    inodes = linux_socket_inodes(pid, proc)
+    listeners = linux_listener_rows(proc, pid)
+    system_rows = [_ListenerRow(LINUX_LISTEN, _Address(ip, number), pid if inode in inodes else None)
+                   for ip, number, inode in listeners]
+    process_rows = [row for row in system_rows if row.pid == pid]
+    require_unique_listener(pid, port, bind, process_rows, system_rows, LINUX_LISTEN)
+    if linux_process_identity(pid, proc) != created:
+        raise RuntimeError('Process identity changed during native inspection')
+    return {'pid': pid, 'creation_filetime': str(created),
+            'executable': str(daemon), 'working_directory': str(run)}
+
+
+def native_listener_observation(host, daemon, run, port, bind):
+    if os.name == 'nt':
+        return windows_listener_observation(host, daemon, run, port, bind)
+    if is_linux():
+        return linux_listener_observation(host, daemon, run, port, bind)
+    raise RuntimeError('Native listener inspection supports Windows and Linux only')
+
+
+def port_listening(port):
+    """Any TCP listener on port, from any process; read-only."""
+    if is_linux():
+        return any(number == port for _, number, _ in linux_listener_rows())
+    import psutil
+    return any(c.status == psutil.CONN_LISTEN and c.laddr.port == port
+               for c in psutil.net_connections(kind='tcp'))
+
+
+def native_process_names():
+    """Lowercased names of every visible BYOND compiler or daemon process."""
+    if is_linux():
+        names = []
+        for entry in Path('/proc').iterdir():
+            if entry.name.isdigit():
+                try:
+                    name = (entry / 'comm').read_text(encoding='utf-8', errors='replace').strip().lower()
+                except (FileNotFoundError, ProcessLookupError, PermissionError):
+                    continue
+                if name in NATIVE_PROCESS_NAMES:
+                    names.append(name)
+        return names
+    import psutil
+    return [name for name in ((p.info.get('name') or '').lower() for p in psutil.process_iter(['name']))
+            if not name or name in NATIVE_PROCESS_NAMES]
+
+
 def windows_listener_observation(host, daemon, run, port, bind):
     """Inspect only the configured child and listener; never elevate or adopt."""
-    if os.name != 'nt':
-        raise RuntimeError('Native listener inspection supports Windows only')
     import psutil
     pid, created = host['pid'], host['creation_filetime']
     if process_identity(pid) != created:
@@ -397,7 +577,8 @@ class Supervisor:
             stream.write(json.dumps({'time_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'event': event, **details}) + '\n')
 
     def command(self, arguments, cwd=None, log=None, timeout=1800):
-        result = subprocess.run(arguments, cwd=cwd, capture_output=True, timeout=timeout)
+        result = subprocess.run(arguments, cwd=cwd, capture_output=True, timeout=timeout,
+                                env=native_environment(arguments[0]))
         if log:
             Path(log).write_bytes(result.stdout + result.stderr)
         if result.returncode:
@@ -483,7 +664,7 @@ class Supervisor:
         if not self.alive():
             raise RuntimeError('Owned process exited before listener verification')
         host = self.state['host']
-        windows_listener_observation(host, Path(self.config['daemon']).resolve(strict=True),
+        native_listener_observation(host, Path(self.config['daemon']).resolve(strict=True),
             Path(host['workdir']).resolve(strict=True), self.config['port'], self.config.get('bind', '0.0.0.0'))
         if not self.alive():
             raise RuntimeError('Owned process exited during listener verification')
@@ -607,7 +788,12 @@ class Supervisor:
         if before_spawn is not None:
             before_spawn()
         self.owned_session = None
-        child = subprocess.Popen(argv, cwd=run, creationflags=flags)
+        if os.name == 'nt':
+            child = subprocess.Popen(argv, cwd=run, creationflags=flags)
+        else:
+            # A dedicated session keeps terminal signals for the supervisor away from the host.
+            child = subprocess.Popen(argv, cwd=run, stdin=subprocess.DEVNULL, start_new_session=True,
+                                     env=native_environment(c['daemon']))
         self.child = child
         previous = {key: self.state.get(key) for key in ('revision', 'host', 'generation', 'backup', 'operation')} if self.state else None
         self.state = {'revision': revision, 'map': manifest['map'], 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}

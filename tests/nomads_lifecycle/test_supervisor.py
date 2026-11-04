@@ -438,5 +438,125 @@ class SupervisorTests(unittest.TestCase):
                 constructor.assert_not_called()
 
 
+class LinuxOwnershipTests(unittest.TestCase):
+    """Linux /proc identity and listener ownership, against fake and real /proc."""
+    BOOT = '0123456789abcdef0123456789abcdef'
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.proc = Path(self.temporary.name)
+        (self.proc / 'sys/kernel/random').mkdir(parents=True)
+        (self.proc / 'sys/kernel/random/boot_id').write_text('01234567-89ab-cdef-0123-456789abcdef\n')
+
+    def stat(self, pid, state='S', start=4242, comm='DreamDaemon'):
+        folder = self.proc / str(pid)
+        folder.mkdir(exist_ok=True)
+        fields = [state] + ['0'] * 18 + [str(start)] + ['0'] * 30
+        (folder / 'stat').write_text(f'{pid} ({comm}) ' + ' '.join(fields) + '\n')
+
+    def test_identity_binds_boot_and_start_time(self):
+        self.stat(77)
+        identity = m.linux_process_identity(77, self.proc)
+        self.assertEqual(identity, (int(self.BOOT, 16) << 64) | 4242)
+        self.stat(77, start=4243)
+        self.assertNotEqual(m.linux_process_identity(77, self.proc), identity, 'a recycled PID differs')
+        self.stat(77)
+        (self.proc / 'sys/kernel/random/boot_id').write_text('11111111-89ab-cdef-0123-456789abcdef')
+        self.assertNotEqual(m.linux_process_identity(77, self.proc), identity, 'a reboot differs')
+
+    def test_identity_handles_hostile_command_names(self):
+        self.stat(78, comm='a) Z (b')
+        self.assertIsNotNone(m.linux_process_identity(78, self.proc))
+
+    def test_missing_or_dead_process_has_no_identity(self):
+        self.assertIsNone(m.linux_process_identity(79, self.proc))
+        for state in ('Z', 'X'):
+            self.stat(80, state=state)
+            self.assertIsNone(m.linux_process_identity(80, self.proc))
+
+    def test_malformed_identity_fails_closed(self):
+        (self.proc / '81').mkdir()
+        for text in ('81 (x) S 1 2', '82 (x) ' + ' '.join(['S'] + ['0'] * 25), 'garbage'):
+            (self.proc / '81/stat').write_text(text)
+            with self.subTest(text=text), self.assertRaises(RuntimeError):
+                m.linux_process_identity(81, self.proc)
+        with self.assertRaises(RuntimeError):
+            m.linux_process_identity(0, self.proc)
+
+    def test_listener_table_parsing(self):
+        table = ('  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n'
+                 '   0: 0100007F:06B2 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000        0 555 1\n'
+                 '   1: 00000000:06B2 00000000:0000 01 00000000:00000000 00:00000000 00000000  1000        0 556 1\n')
+        self.assertEqual(m.linux_tcp_listeners(table, m.socket.AF_INET), [('127.0.0.1', 1714, '555')])
+        with self.assertRaises(RuntimeError):
+            m.linux_tcp_listeners('header\n 0: 0100007F:06B2 0A\n', m.socket.AF_INET)
+
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'symlinked fake /proc entries')
+    def test_listener_observation_requires_the_owned_unique_listener(self):
+        root = self.proc / 'game'
+        root.mkdir()
+        daemon = self.proc / 'DreamDaemon'
+        daemon.write_bytes(b'inert')
+        self.stat(90)
+        (self.proc / '90/fd').mkdir()
+        (self.proc / '90/net').mkdir()
+        (self.proc / '90/exe').symlink_to(daemon)
+        (self.proc / '90/cwd').symlink_to(root)
+        (self.proc / '90/fd/3').symlink_to('socket:[555]')
+        header = 'sl local rem st tx rx tr tm retr uid timeout inode\n'
+        own = '0: 0100007F:06B2 00000000:0000 0A 0:0 0:0 0 1000 0 555 1\n'
+        foreign = '1: 00000000:06B2 00000000:0000 0A 0:0 0:0 0 1000 0 999 1\n'
+        host = {'pid': 90, 'creation_filetime': m.linux_process_identity(90, self.proc)}
+        (self.proc / '90/net/tcp').write_text(header + own)
+        seen = m.linux_listener_observation(host, daemon.resolve(), root.resolve(), 1714, '127.0.0.1', self.proc)
+        self.assertEqual(seen['pid'], 90)
+        (self.proc / '90/net/tcp').write_text(header + own + foreign)
+        with self.assertRaisesRegex(RuntimeError, 'ambiguous'):
+            m.linux_listener_observation(host, daemon.resolve(), root.resolve(), 1714, '127.0.0.1', self.proc)
+        (self.proc / '90/net/tcp').write_text(header)
+        with self.assertRaises(m.ListenerNotReady):
+            m.linux_listener_observation(host, daemon.resolve(), root.resolve(), 1714, '127.0.0.1', self.proc)
+        (self.proc / '90/net/tcp').write_text(header + own)
+        with self.assertRaisesRegex(RuntimeError, 'executable or working directory'):
+            m.linux_listener_observation(host, daemon.resolve(), self.proc.resolve(), 1714, '127.0.0.1', self.proc)
+        stale = dict(host, creation_filetime=host['creation_filetime'] + 1)
+        with self.assertRaisesRegex(RuntimeError, 'PID was reused'):
+            m.linux_listener_observation(stale, daemon.resolve(), root.resolve(), 1714, '127.0.0.1', self.proc)
+
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'real Linux /proc')
+    def test_real_child_identity_and_listener(self):
+        import socket as real_socket
+        with real_socket.socket() as probe:
+            probe.bind(('127.0.0.1', 0))
+            port = probe.getsockname()[1]
+        code = ('import socket,sys,time;s=socket.socket();s.bind(("127.0.0.1",%d));s.listen();'
+                'sys.stdout.write("ok\\n");sys.stdout.flush();time.sleep(30)' % port)
+        child = subprocess.Popen([sys.executable, '-c', code], cwd=self.proc, stdout=subprocess.PIPE,
+                                 start_new_session=True)
+        try:
+            self.assertEqual(child.stdout.readline().strip(), b'ok')
+            identity = m.process_identity(child.pid)
+            self.assertIsInstance(identity, int)
+            self.assertEqual(m.process_identity(child.pid), identity)
+            host = {'pid': child.pid, 'creation_filetime': identity}
+            executable = Path(m.os.readlink(f'/proc/{child.pid}/exe')).resolve()
+            seen = m.native_listener_observation(host, executable, self.proc.resolve(), port, '127.0.0.1')
+            self.assertEqual(seen['pid'], child.pid)
+            self.assertTrue(m.port_listening(port))
+        finally:
+            child.kill()
+            child.wait()
+            child.stdout.close()
+        self.assertIsNone(m.process_identity(child.pid))
+        self.assertFalse(m.port_listening(port))
+
+    def test_native_environment_only_adds_byond_library_path(self):
+        self.assertIsNone(m.native_environment('/usr/bin/git'))
+        if m.is_linux():
+            environment = m.native_environment(str(self.proc / 'DreamMaker'))
+            self.assertTrue(environment['LD_LIBRARY_PATH'].startswith(str(self.proc.resolve())))
+
+
 if __name__ == '__main__':
     unittest.main()
