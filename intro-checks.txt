@@ -1,0 +1,50 @@
+0 engine and closed port
+{"schema":1,"phase":"before_crop_guard","maxx":15,"maxy":15,"maxz":1,"map_file":"filming/harvest.dmm","expected_map_sha256":"55f245424868c71ef3838b4c66a1c042a2ab7a4336837ac996a113f4737dafea","game_source":"58404f5bd16e3fed80f1d9844c5db3edd144942c"}
+0 exact 225-cell crop
+0 authored harvest landmark
+0 original global registries
+0 explicit observer and isolated port
+1 normal daylight application
+4 actor tile has visible native lighting overlay
+4 observer listener opened
+31.5 client verbs empty before native New
+31.5 observer verbs empty after Login
+31.5 client verbs empty after native New
+31.5 observer verbs empty before capture
+31.5 existing client engine 516.1688
+31.5 fixed cadence phase
+31.5 same admitted observer
+31.5 fresh cadence evidence
+51.5 headless capable farmer holds normal scythe
+51.5 authored reachable wheat target
+51.5 valid mature crop staged before take
+51.5 authored reachable wheat target
+51.5 valid mature crop staged before take
+51.5 authored reachable wheat target
+51.5 valid mature crop staged before take
+61.5 capable actor after native render settling
+61.5 fresh one-shot capture handshake
+61.5 fixed cadence phase
+61.5 same admitted observer
+61.5 fresh cadence evidence
+63 first owned sample releases unchanged action
+63 reviewed three-crop harvest
+73 normal harvest preconditions
+73 normal harvest removes source crop
+73 native wheat yield within production bounds
+73 native seed return retained
+93 normal harvest preconditions
+93 normal harvest removes source crop
+93 native wheat yield within production bounds
+93 native seed return retained
+113 normal harvest preconditions
+113 normal harvest removes source crop
+113 native wheat yield within production bounds
+113 native seed return retained
+133 bounded native harvested grain
+133 grain pickup reachable
+133 same harvested wheat picked up
+143 fixed end request
+143 fixed cadence phase
+143 same admitted observer
+143 fresh cadence evidence

@@ -1,0 +1,423 @@
+{
+  "schema": 1,
+  "kind": "static-dependency-preflight",
+  "package_archive_sha256": "9079f29b0747719233715dfeff223641e6fb69bd16b8ba9676d5cd42cfcd0148",
+  "manifest_sha256": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9",
+  "source_sha256": {
+    "acquire.py": "aa675b74f184ade853358e46eb5ac059234e26d5604ab1db7cc9a38fb5705c29",
+    "inspect_package.py": "9dbb3eb0a5e3de48c5330cb791c4aa2d4f6362368c15595087731fb30fcb1a0e",
+    "vendor.json": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9"
+  },
+  "package_binaries": {
+    "byondcore.dll": {
+      "machine": "0x014c",
+      "imports": [
+        "byondext.dll",
+        "wsock32.dll",
+        "winmm.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "advapi32.dll",
+        "shell32.dll",
+        "msvcp140.dll",
+        "winhttp.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-multibyte-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": [
+        "steam_api.dll"
+      ],
+      "sha256": "fd3855446a094ac57e4cf7189d7249be29c3f45b0cf620fd96104d93d901c29c",
+      "bytes": 4481536
+    },
+    "byondext.dll": {
+      "machine": "0x014c",
+      "imports": [
+        "user32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "kernel32.dll"
+      ],
+      "delay_imports": [],
+      "sha256": "7d8d115728059d48a2c9134f08ef010d59dd4d9e1c2df47e63aa9c33e87cdf79",
+      "bytes": 1976320
+    },
+    "byondwin.dll": {
+      "machine": "0x014c",
+      "imports": [
+        "webview2loader.dll",
+        "byondcore.dll",
+        "version.dll",
+        "msimg32.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "comdlg32.dll",
+        "advapi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "shlwapi.dll",
+        "uxtheme.dll",
+        "ole32.dll",
+        "oleaut32.dll",
+        "winmm.dll",
+        "msvcp140.dll",
+        "d3dx9_43.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll"
+      ],
+      "delay_imports": [
+        "d3d9.dll"
+      ],
+      "sha256": "160181fed9699847d9ec39dfb38e066540bc7a68378f0cd9c8ce2dff05530d69",
+      "bytes": 2720768
+    },
+    "dd.exe": {
+      "machine": "0x014c",
+      "imports": [
+        "byondcore.dll",
+        "dbghelp.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll"
+      ],
+      "delay_imports": [],
+      "sha256": "abb21de26047724bf64411e17da5e17cacc74221817c3e049a79626156b44866",
+      "bytes": 38400
+    },
+    "dm.exe": {
+      "machine": "0x014c",
+      "imports": [
+        "byondcore.dll",
+        "kernel32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll"
+      ],
+      "delay_imports": [],
+      "sha256": "f29b3041c46df453b3f999583bef0bb0ff79fe2b53ee1b8686bb46ce18c7df77",
+      "bytes": 46080
+    },
+    "dreamseeker.exe": {
+      "machine": "0x014c",
+      "imports": [
+        "byondwin.dll",
+        "version.dll",
+        "byondcore.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "oleaut32.dll",
+        "ws2_32.dll",
+        "psapi.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": [
+        "fmodex.dll",
+        "steam_api.dll"
+      ],
+      "sha256": "dde2893d7d6721eb8cb73d9e6b9f8cb28d86d1e432b42edaad10b066800a97e4",
+      "bytes": 881152
+    },
+    "fmodex.dll": {
+      "machine": "0x014c",
+      "imports": [
+        "kernel32.dll",
+        "advapi32.dll",
+        "msacm32.dll",
+        "msvcrt.dll",
+        "ole32.dll",
+        "user32.dll",
+        "winmm.dll",
+        "wsock32.dll"
+      ],
+      "delay_imports": [],
+      "sha256": "70d2fb7c17820dd3671f4481dc37b4bc386313a9d8ec5fa73cd2dac375b27312",
+      "bytes": 381440
+    },
+    "webview2loader.dll": {
+      "machine": "0x014c",
+      "imports": [
+        "kernel32.dll"
+      ],
+      "delay_imports": [
+        "advapi32.dll",
+        "ole32.dll"
+      ],
+      "sha256": "93894609e3365b62fbb4d5b4219b4199a271888160669c33dbaadbbaf5aff087",
+      "bytes": 117328
+    }
+  },
+  "resolved_x86_dependencies": {
+    "advapi32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 529848,
+      "sha256": "ed4d6851d6852998d325139e52b02001cf7e13e7b4d71385ae49255e655cfd5a",
+      "location": "windows-x86-system"
+    },
+    "comctl32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 581112,
+      "sha256": "64488ffb44c875730ecdfff54af44cb8e8797eb868366339c59e2c860ea78169",
+      "location": "windows-x86-system"
+    },
+    "comdlg32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 701952,
+      "sha256": "01fb64685f419d2cd77566bef13a8c7861f99aa7865a17240e3ef3e513b9aecd",
+      "location": "windows-x86-system"
+    },
+    "d3d9.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 1497496,
+      "sha256": "9244c08d7d5fcf37eb1c42bfb77cd2e55aeee1e9bc3134ef3131942c737cba4a",
+      "location": "windows-x86-system"
+    },
+    "d3dx9_43.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 1998168,
+      "sha256": "0b28546be22c71834501f7d7185ede5d79742457331c7ee09efc14490dd64f5f",
+      "location": "windows-x86-system"
+    },
+    "dbghelp.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 1779200,
+      "sha256": "e0bd49ef5d84167267f24e70ca6234105686d7f5d1c1e1969d21b74b4021ba33",
+      "location": "windows-x86-system"
+    },
+    "gdi32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 139656,
+      "sha256": "86ffa517ce38f13e8d5488ff9bff60845b98327777496582ca1949e72221d855",
+      "location": "windows-x86-system"
+    },
+    "kernel32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 661904,
+      "sha256": "f68966e72d3f8c60afa30d99d26b6b223ee1b6df24f89278cab743a49d0d6b2f",
+      "location": "windows-x86-system"
+    },
+    "mfc140u.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 4882368,
+      "sha256": "c5822d9f3965a6982623c2d691df397f3e71c35f1b552f74dc24e5e7e40f07ff",
+      "location": "windows-x86-system"
+    },
+    "msacm32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 96056,
+      "sha256": "f3f9c803b42177038ec3595450d2091b9e42f742eb8691202303f88f808c5b1b",
+      "location": "windows-x86-system"
+    },
+    "msimg32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 7168,
+      "sha256": "f4f1134e2bd6b6b538e8700184564aefc138ea32e397d26f9a269ab0cce93c51",
+      "location": "windows-x86-system"
+    },
+    "msvcp140.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 618944,
+      "sha256": "f0cda2a0cf1fe6fbbf579b9098462329d3aaa7513a207af2e0f33b01456e388a",
+      "location": "windows-x86-system"
+    },
+    "msvcrt.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 805488,
+      "sha256": "21aaccd1777e4852c6728c5f5e1c38b4d5ba746483cad9f3a038099e9db51cc3",
+      "location": "windows-x86-system"
+    },
+    "ole32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 954136,
+      "sha256": "144279bfe5e99181d97295957e9e0cc8721f9bacc832d459930029d907c65af8",
+      "location": "windows-x86-system"
+    },
+    "oleaut32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 656496,
+      "sha256": "16f8c0acea3adeacc04f4eadd4462619b1c11913019711b1097ec4ce0ea23890",
+      "location": "windows-x86-system"
+    },
+    "psapi.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 18216,
+      "sha256": "61f5609989af7fb00ca926a1edfc2e4d5cfdeba177de0de96149d19695504f21",
+      "location": "windows-x86-system"
+    },
+    "shell32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 6218264,
+      "sha256": "c29a04f0bab809b9276bd0142ada17e1f64ddb2ca77143674a85f726bf328c8c",
+      "location": "windows-x86-system"
+    },
+    "shlwapi.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 322984,
+      "sha256": "b89b3be3ba3778ec08d08d9440f784dc1db89466736d747f6faed3bc46ec5caf",
+      "location": "windows-x86-system"
+    },
+    "ucrtbase.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 1148376,
+      "sha256": "a9bea3b03fea1323111246e7e3c349603b8af29cce2af5143903a8d815a536ed",
+      "location": "windows-x86-system"
+    },
+    "user32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 1750560,
+      "sha256": "444d7fca966a74bfbcec80649c700ec22ace8f9575594bb4868c43ffb28add13",
+      "location": "windows-x86-system"
+    },
+    "uxtheme.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 487424,
+      "sha256": "5e9e5f02b0e26b98d9f7744e218f7b36d17b93ab52378d8ecbaa37629ab4e707",
+      "location": "windows-x86-system"
+    },
+    "vcruntime140.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 123328,
+      "sha256": "2fa6efc053203460a23d3a25158f227d895d2dadc63acc1a372da97c3a4281c3",
+      "location": "windows-x86-system"
+    },
+    "version.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 29048,
+      "sha256": "31aeb78ac5969642d7785f7edb3c7860f7430618cf6bc9b21c63e6a77c328f22",
+      "location": "windows-x86-system"
+    },
+    "winhttp.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 900872,
+      "sha256": "d5dfee3c62aeead2e092e811fc31e8b86376e2c7ad907f9f251869ef828a979e",
+      "location": "windows-x86-system"
+    },
+    "winmm.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 149472,
+      "sha256": "765befb78a1957f984ee51727bfc2d5d948367b2908f1229729bd676ec2e08c0",
+      "location": "windows-x86-system"
+    },
+    "ws2_32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 450264,
+      "sha256": "bc59a959104461176a6e74733f5d7eca16a2e48435b9a135fe221908733acb97",
+      "location": "windows-x86-system"
+    },
+    "wsock32.dll": {
+      "machine": "0x014c",
+      "optional_header": "PE32",
+      "bytes": 16896,
+      "sha256": "416cb83c729c0cc3908929704b9851a6861652e2319d1626f5cd82076922f340",
+      "location": "windows-x86-system"
+    }
+  },
+  "ucrt_api_set_contracts_not_individually_resolved": [
+    "api-ms-win-crt-convert-l1-1-0.dll",
+    "api-ms-win-crt-environment-l1-1-0.dll",
+    "api-ms-win-crt-filesystem-l1-1-0.dll",
+    "api-ms-win-crt-heap-l1-1-0.dll",
+    "api-ms-win-crt-locale-l1-1-0.dll",
+    "api-ms-win-crt-math-l1-1-0.dll",
+    "api-ms-win-crt-multibyte-l1-1-0.dll",
+    "api-ms-win-crt-runtime-l1-1-0.dll",
+    "api-ms-win-crt-stdio-l1-1-0.dll",
+    "api-ms-win-crt-string-l1-1-0.dll",
+    "api-ms-win-crt-time-l1-1-0.dll",
+    "api-ms-win-crt-utility-l1-1-0.dll"
+  ],
+  "unresolved_delay_imports": [
+    "steam_api.dll"
+  ],
+  "cab_extraction": null,
+  "package_code_executed": false,
+  "installers_executed": false,
+  "runtime_validation": "not_performed",
+  "limitations": [
+    "Static regular/delay import inspection and on-disk PE checks do not prove API-set resolution, dynamically loaded dependencies, graphics availability, WebView2 availability, or successful program startup."
+  ],
+  "status": "static-checks-passed-with-stated-limitations"
+}

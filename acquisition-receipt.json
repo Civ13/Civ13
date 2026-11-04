@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "version": "516.1688",
+  "source_kind": "pinned-https-download",
+  "source_url": "https://cmss13-devs.github.io/byond-build-mirror/download/build/516/516.1688_byond.zip",
+  "archive_bytes": 8602470,
+  "archive_sha256": "9079f29b0747719233715dfeff223641e6fb69bd16b8ba9676d5cd42cfcd0148",
+  "manifest_files": 45,
+  "manifest_sha256": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9",
+  "source_sha256": {
+    "acquire.py": "aa675b74f184ade853358e46eb5ac059234e26d5604ab1db7cc9a38fb5705c29",
+    "inspect_package.py": "9dbb3eb0a5e3de48c5330cb791c4aa2d4f6362368c15595087731fb30fcb1a0e",
+    "vendor.json": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9"
+  },
+  "all_package_files_and_notices_preserved": true,
+  "package_code_executed": false,
+  "installers_executed": false,
+  "limitations": [
+    "Static regular/delay import inspection and on-disk PE checks do not prove API-set resolution, dynamically loaded dependencies, graphics availability, WebView2 availability, or successful program startup."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "source_revision": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "source_blob_count": 3673,
+  "source_bytes": 241269067,
+  "derived_manifest_sha256": "5a8d4a63a75b57e71e708abb0ad71cdc3fc89ff8ab1fd7a2e1c9a148d4743676",
+  "map_sha256": "55f245424868c71ef3838b4c66a1c042a2ab7a4336837ac996a113f4737dafea",
+  "source_manifest_sha256": "e76390c936823537c53eef3b5f1f983a94545ab562f04f95eb821c9451440c33",
+  "native_released": true,
+  "native_executed": false,
+  "scope": "225 authored cells; scripted normal staged mature wheat; native harvest and pickup; no observed growth or cross-run identity handlers; isolated startup, not ordinary-player acceptance"
+}

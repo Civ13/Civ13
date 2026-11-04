@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "binding": {
+    "GITHUB_SHA": "c7b4f2369567820c18bde5ac890f749aafaf61d0",
+    "GITHUB_RUN_ID": "41855671423",
+    "GITHUB_RUN_ATTEMPT": "1",
+    "GITHUB_JOB": "harvest",
+    "GITHUB_REF": "refs/heads/ci/cloud-trailer-test-5161688-20261104-r1"
+  },
+  "archive_sha256": "9079f29b0747719233715dfeff223641e6fb69bd16b8ba9676d5cd42cfcd0148",
+  "installer_sha256": "046041aba6ba77534c36bb0c2496408d23c6a09f930c46b392f1edc70dfd66de",
+  "command": [
+    "DXSETUP.exe",
+    "/silent"
+  ],
+  "terms_accepted_by_authorized_caller": true,
+  "work_seconds": 60,
+  "cleanup_seconds": 5,
+  "runtime_rendering_verified": false,
+  "setup_network_policy": "Sampled installer-owned non-listening TCP only; UDP, LISTEN, SYN_RECEIVED, malformed/stale rows rejected; initiation direction and endpoint purpose not proven",
+  "continuous_os_network_isolation": false,
+  "sampled_tcp_observations": [
+    {
+      "status": "observed",
+      "pid": 4088,
+      "creation_filetime": 134382789261901194,
+      "owned_rows_count": 1,
+      "retained_handle_live_after_query": true,
+      "first_row": {
+        "protocol": "tcp",
+        "address": "10.1.0.5",
+        "remote": "150.171.109.149",
+        "port": 51333,
+        "state": "5"
+      }
+    }
+  ],
+  "exit_code": 0,
+  "system_dlls": {
+    "d3dx9_43.dll": {
+      "bytes": 1998168,
+      "sha256": "0b28546be22c71834501f7d7185ede5d79742457331c7ee09efc14490dd64f5f",
+      "location": "windows-x86-system"
+    },
+    "D3DCompiler_43.dll": {
+      "bytes": 2106216,
+      "sha256": "2f23182ec6f4889397ac4bf03d62536136c5bdba825c7d2c4ef08c827f3a8a1c",
+      "location": "windows-x86-system"
+    }
+  },
+  "cleanup": {
+    "all_exited": true,
+    "primitives": {
+      "terminate_job": true,
+      "close_job": true
+    },
+    "exits": [
+      {
+        "wait_signaled": true,
+        "exit_code_read": true,
+        "thread_handle_closed": true,
+        "process_handle_closed": true,
+        "wait_result": 0,
+        "exit_code": 0
+      }
+    ],
+    "error_count": 0
+  }
+}
