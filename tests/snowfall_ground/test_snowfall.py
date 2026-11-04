@@ -418,6 +418,28 @@ class SnowTests(unittest.TestCase):
         self.assertNotIn('overlays.Cut', image)
         self.assertIn("image('icons/turf/snow.dmi'", image)
 
+    def test_grass_shovel_reaches_the_generated_snow_handler_first(self):
+        # The last included override wins; it must hand snowed grass to the pile
+        # handler instead of stripping the grass layer (and the snow) to dirt.
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
+        includes = [line.split('"')[1].replace('\\', '/') for line in dme.splitlines() if line.startswith('#include "code')]
+        owners = [path for path in includes if '/turf/floor/grass/attackby(' in (ROOT / path).read_text(errors='replace')]
+        self.assertEqual(owners[-1], 'code/modules/1713/trench.dm')
+        grass = body((ROOT / owners[-1]).read_text(), '/turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)')
+        guard = grass.index('if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0)\n\t\treturn ..()')
+        self.assertLess(guard, grass.index('ChangeTurf('))
+
+    def test_full_game_probe_is_test_only_and_checks_every_required_step(self):
+        self.assertNotIn('full_game_probe', (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig'))
+        probe = (ROOT / 'tests/snowfall_ground/full_game_probe.dm').read_text()
+        runner = (ROOT / 'tests/snowfall_ground/full_game.py').read_text()
+        required = re.search(r'REQUIRED_CHECKS = \((.*?)\)\n', runner, re.S).group(1)
+        for name in re.findall(r"'([a-zA-Z_]+)'", required):
+            if name.startswith(('registry_', 'season_')):
+                self.assertIn(name.split('_', 1)[1], probe, name)
+            else:
+                self.assertIn('pass("' + name + '"', probe, name)
+
     def test_process_setup_registers_its_typed_global_slot(self):
         registry = body((ROOT / 'code/processes/__processes.dm').read_text(), '/datum/process_list')
         self.assertRegex(registry, r'(?m)^\tvar/process/snowfall_ground/snowfall_ground = null$')

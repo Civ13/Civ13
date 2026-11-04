@@ -408,6 +408,8 @@ var/list/global/floor_cache = list()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
 	var/mob/living/human/H = user
+	if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0)
+		return ..() // Shovel generated snow into piles before the grass layer can be removed.
 	if (istype(C, /obj/item/weapon/material/shovel))
 		var/obj/item/weapon/material/shovel/trench/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
