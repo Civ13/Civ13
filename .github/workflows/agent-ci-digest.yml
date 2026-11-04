@@ -38,6 +38,7 @@ on:
       - Offline server management contracts
       - Reserved-lighting containment pilot (manual only)
       - Tgui frontend
+      - Transfer storage
       - YouTube uploader contracts
     types: [completed]
   workflow_dispatch:
