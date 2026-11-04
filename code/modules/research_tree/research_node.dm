@@ -450,7 +450,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (15) ---
+		// --- automation (16) ---
 		"/obj/structure/fluid_meter" = "automation",
 		"/obj/structure/fluid_bottler" = "automation",
 		"/obj/structure/fluid_vessel/fast" = "automation",
@@ -463,6 +463,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/factory_belt_assembly/gate" = "automation",
 		"/obj/item/factory_belt_assembly/gate/reagent" = "automation",
 		"/obj/item/factory_belt_assembly/splitter" = "automation",
+		"/obj/item/factory_belt_assembly/fast" = "automation",
 		"/obj/item/factory_belt_assembly/tunnel" = "automation",
 		"/obj/item/factory_belt_assembly/tunnel_exit" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",

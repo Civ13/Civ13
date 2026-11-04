@@ -33,6 +33,7 @@ var/global/list/factory_belt_moved = list()
 			factory_active_belts -= B
 			continue
 		B.belt_step()
+	factory_fast_belts_step()
 
 /obj/structure/factory_belt
 	name = "factory belt"
@@ -50,6 +51,7 @@ var/global/list/factory_belt_moved = list()
 	var/tmp/next_poll = 0
 	var/tmp/obj/structure/factory_drive/drive = null // the powered drive that last ran this belt
 	var/assembly_type = /obj/item/factory_belt_assembly
+	var/belt_passes = 1 // belt steps per process tick; fast belts take two
 
 /obj/structure/factory_belt/New()
 	..()
@@ -114,10 +116,13 @@ var/global/list/factory_belt_moved = list()
 	if (!belt_active && !QDELETED(src))
 		belt_active = TRUE
 		factory_active_belts |= src
+		if (belt_passes > 1)
+			factory_active_fast_belts |= src
 
 /obj/structure/factory_belt/proc/belt_sleep()
 	belt_active = FALSE
 	factory_active_belts -= src
+	factory_active_fast_belts -= src
 
 // A belt runs while a powered drive on its level is within the drive's range.
 // The last drive is cached; only a lost drive searches the powered drives.
@@ -150,7 +155,7 @@ var/global/list/factory_belt_moved = list()
 /obj/structure/factory_belt/proc/show_in_slot(obj/item/I, slot, glide = TRUE)
 	var/list/P = slot_pixels(slot)
 	if (glide)
-		animate(I, pixel_x = P[1], pixel_y = P[2], time = FACTORY_BELT_TICK)
+		animate(I, pixel_x = P[1], pixel_y = P[2], time = FACTORY_BELT_TICK / belt_passes)
 	else
 		animate(I)
 		I.pixel_x = P[1]

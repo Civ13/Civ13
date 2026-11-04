@@ -99,3 +99,8 @@ Letting catalysts leave the vessel makes two checks fail; letting heated recipes
 Offering a bottler's container before it is full fails two checks; letting the press buffer fill without keeping the tablet ratio fails five.
 
 `meter_probe.dm` (chemistry phase 4) checks that a pipe meter off the pipes says so; on a network it counts pipes and pumps, shows stopped and running pumps and last step's flow, lists tank fill and filters, the vessel's recipe, stage and fill, and other machines' pipe roles; its dial lights only while liquid moves and goes dark when the network idles; a reloaded meter rejoins the meter list and is never a network member; and its research gate, recipe and sprites. Lighting the dial whenever the meter is on a network fails two checks.
+
+`logistics_probe.dm` (phase 4a) checks:
+
+- Fast belts: a fast belt takes two steps a tick and joins the fast list; on a six-tile line cargo on fast belts reaches the crate in about half the steps of plain belts (3 against 6); a fast run hands cargo on to plain belts; an empty fast belt sleeps and leaves the fast list; the assembly lays and returns a fast belt; Automation gates it.
+- Wagons and carts: an arm loads a transport wagon until its eight slots are full and a full wagon refuses more; an arm unloads it; filters limit what it offers; a tender takes only fuel; a shopping cart loads from and unloads to automation.
