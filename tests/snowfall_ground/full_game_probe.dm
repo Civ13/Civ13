@@ -74,11 +74,12 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		if(ticker.pregame_timeleft > 1)
 			ticker.pregame_timeleft = 1
 		wait_for(src, "game_playing", 3000, "Round did not reach PLAYING")
-		// Keep random weather from changing the area under a controlled check.
-		// The weather process and every production weather proc still run.
+		// Keep the weather process from re-rolling the area under a controlled
+		// check (deferred deadlines alone still let it change mid-accumulation).
+		// The probe's explicit change_weather() calls and every production
+		// weather proc they reach still run.
 		if(processes.weather)
-			processes.weather.next_can_mod_weather = world.realtime + 864000
-			processes.weather.next_can_change_weather = world.realtime + 864000
+			processes.weather.disable()
 		metrics["map"] = list("id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "z_levels" = z_levels, "durable_metadata" = map.uses_durable_metadata(), "byond_version" = world.byond_version, "byond_build" = world.byond_build, "tested_commit" = world.params["tested_commit"])
 		check_registry("startup")
 		mark("seasons_to_winter")

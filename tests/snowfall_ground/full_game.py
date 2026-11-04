@@ -135,7 +135,7 @@ def main():
                     'map': 'maps/nomads/nomads_gaia.dmm',
                     'source_sha256': {name: hashlib.sha256((repo / name).read_bytes()).hexdigest() for name in SNOW_SOURCES + ('maps/nomads/nomads_gaia.dmm',)},
                     'adapters': ['Gaia map include (swapped in when not already the default)', 'probe appended', 'Linux global_init initialisers completed by the probe before world/New',
-                                 'webhooks/ToRban off', 'round started via admin_started', 'random weather changes deferred; production weather procs drive area weather', 'natural season timer cancelled after the forced WINTER; seasons are forced by the probe',
+                                 'webhooks/ToRban off', 'round started via admin_started', 'weather process disabled; explicit production change_weather calls drive area weather', 'natural season timer cancelled after the forced WINTER; seasons are forced by the probe',
                                  'z-connection bit set only inside one connected-level check and restored']}
         (output / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
         compiler = args.byond_bin / 'DreamMaker'
