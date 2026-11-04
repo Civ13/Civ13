@@ -139,8 +139,12 @@ def compile_fixture(byond, source, dme, names, output):
 def run_case(byond, output, mode, writer, timeout):
     case = output / 'cases' / mode
     case.mkdir(parents=True)
+    # Hard links keep 30+ cases from copying ~75 MB of build output each.
     for suffix in ('.dmb', '.rsc'):
-        shutil.copy2(output / ('fixture' + suffix), case / ('fixture' + suffix))
+        try:
+            os.link(output / ('fixture' + suffix), case / ('fixture' + suffix))
+        except OSError:
+            shutil.copy2(output / ('fixture' + suffix), case / ('fixture' + suffix))
     (case / 'config').mkdir()
     shutil.copy2(ROOT / 'config/tips.txt', case / 'config/tips.txt')
     shutil.copytree(ROOT / 'config/names', case / 'config/names')
@@ -174,6 +178,8 @@ def run_case(byond, output, mode, writer, timeout):
         if process.poll() is None:
             process.kill()
             process.wait(timeout=10)
+    for suffix in ('.dmb', '.rsc'):
+        (case / ('fixture' + suffix)).unlink(missing_ok=True)
     log = (case / 'runtime.log').read_text(encoding='utf-8', errors='replace') if (case / 'runtime.log').exists() else ''
     (case / 'daemon.log').write_text(stdout + stderr, encoding='utf-8')
     result_path = case / 'zone-result.json'
@@ -200,7 +206,7 @@ def accept(row, expected_checks, expected_failure):
 def run_suite(byond, output, control, only):
     output.mkdir(parents=True, exist_ok=True)
     source, dme, names = prepare(control)
-    receipt = dict(pin=PIN, control=control, head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+    receipt = dict(pin=PIN, control=control, head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True, timeout=30).strip(),
                    probe_sha256=sha(ROOT / 'tests/zone_persistence/probe.dm'),
                    production_sha256={p.relative_to(ROOT).as_posix(): sha(p) for p in sorted((ROOT / 'code/modules/persistence').glob('*.dm'))},
                    cases=[])
