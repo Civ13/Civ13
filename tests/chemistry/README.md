@@ -111,3 +111,5 @@ The biochemistry probe also checks gelatin foam, paid drying batches, stale call
 The biochemistry probe checks paid polymer container production, a missing-stopper rejection and unknown product rejection.
 The biochemistry probe checks insulated cable production pays both plastic and copper and rejects a missing conductor.
 It checks the mixed water-and-ethanol gelatin recipe and rejects a batch missing ethanol.
+It also checks paid polypropylene cloth and comb production and insufficient-input rejection.
+Polyethylene play-ball production is checked for payment and insufficient input.
