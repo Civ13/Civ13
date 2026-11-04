@@ -185,9 +185,13 @@ var/factory_runtime_error = FALSE
 	C.rebuild_supply()
 	factory_check(consumer.draw_cable_power() && C.currentflow == 40, "restored capacity admits the load again")
 	E.on = FALSE
+	factory_check(!consumer.draw_cable_power() && C.currentflow == 0, "an engine switched off without notifying the grid refuses the load at once")
+	E.on = TRUE
+	factory_check(consumer.draw_cable_power() && C.currentflow == 40, "the restarted engine admits the load again")
+	E.on = FALSE
 	C.rebuild_supply()
 	factory_check(!consumer.draw_cable_power() && C.currentflow == 0, "a stopped source refuses the load at once")
-	factory_check(C.persistence_runtime_var("rebuild_time"), "traversal time is runtime-only")
+	factory_check(C.persistence_runtime_var("rebuild_time") && C.persistence_runtime_var("rebuild_engines"), "traversal time and engines are runtime-only")
 	E.on = TRUE
 	consumer.powersource = null
 	C.connections -= consumer
