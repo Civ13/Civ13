@@ -67,7 +67,7 @@ class IdleSlotContracts(unittest.TestCase):
         loop=source.split('/datum/npc_subtile_wild_walk/proc/perform_loop()',1)[1].split('/datum/npc_subtile_recovery',1)[0]
         self.assertIn('mode == "towards" && period > interval && get_turf(actor) == get_turf(target)',loop)
         self.assertIn('idle_window_end = due + interval',loop)
-        self.assertLess(loop.index('world.time >= idle_window_end'),loop.index('if (get_turf(actor) == get_turf(target))'))
+        self.assertLess(loop.index('world.time + world.tick_lag / 2 >= idle_window_end'),loop.index('if (get_turf(actor) == get_turf(target))'))
         self.assertIn('due += max(1, floor((world.time - due) / period) + 1) * period',loop)
         self.assertIn('actor.ai_step(next, interval, TRUE, receipt, src)',loop)
         self.assertNotIn('prob(',loop);self.assertNotIn('adjustBruteLoss',loop)

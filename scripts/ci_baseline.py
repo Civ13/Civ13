@@ -232,6 +232,7 @@ SUITES = {
         'tests/human_subtile/test_wild_handoff.py',
         'tests/human_subtile/test_wildlife_integration_reconcile.py',
         'tests/test_wildlife_ci_registration.py',
+        'tests/wildlife_arrival/test_check.py',
     ), 'paths': (), 'shared_paths': (
         'code/game/mob/living/simple_animal/', 'code/game/mob/living/living.dm',
         'code/game/mob/mob_movement.dm', 'code/game/atoms.dm',
@@ -244,7 +245,8 @@ SUITES = {
         'code/modules/1713/structures.dm', 'tests/save_movement/source_adapter.py',
         'tests/human_subtile/scheduler_core_draft.dm', 'tests/human_subtile/run-npc.py',
         'tests/human_subtile/run-diagonal.py', 'tests/human_subtile/run.py',
-        'tests/human_subtile/probe.dm', 'scripts/native_fixture.py')},
+        'tests/human_subtile/probe.dm', 'scripts/native_fixture.py',
+        'tests/wildlife_arrival/')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',
