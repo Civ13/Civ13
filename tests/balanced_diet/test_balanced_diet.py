@@ -123,7 +123,7 @@ class ExistingSystemsUnchanged(unittest.TestCase):
     def test_prepared_dish_reads_lineage_before_the_bite(self):
         meals = read('code/game/objects/structures/kitchen/cooked_meals.dm')
         body = meals[meals.index('/proc/take_food_bite('):]
-        self.assertLess(body.index('diet_flavor_shares('), body.index('reagents.trans_to_mob('))
+        self.assertLess(body.index('diet_lineage_shares(reagents)'), body.index('reagents.trans_to_mob('))
         self.assertIn('H.diet_credit_dish(M.meal_quality, paid_credit, diet_flavours)', body)
 
     def test_included_in_build(self):

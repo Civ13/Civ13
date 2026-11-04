@@ -21,7 +21,9 @@ can store and spend. Hunger, thirst and digestion work exactly as before.
   in **IC > Notes** under Discoveries. Neutral flavours reveal nothing.
 - **Better dishes.** A prepared meal (vegetable potage, hearty stew, seasoned
   hearty stew) whose ingredients include liked flavours earns extra enjoyment,
-  scaled by the meal's quality tier.
+  scaled by the meal's quality tier. The dish lineage covers every nutritious
+  reagent in the bowl, weighted by its nutrition, so meat and eggs (which are
+  their own reagents rather than nutriment flavours) count like vegetables.
 - **Check Diet** (IC tab) lists each group as depleted, low, adequate or plenty,
   whether it is rising or falling since the last check, capacity versus available
   stamina, active effects, and which foods would help each low group.
@@ -29,7 +31,9 @@ can store and spend. Hunger, thirst and digestion work exactly as before.
   some carbohydrate") and any tastes this character has already learned about
   its main flavours.
 - **Imbalance.** If two or more groups stay below adequate for about 15 minutes
-  the character is warned. The diet bonus fades as reserves fall. A mild
+  the character is warned. Once that warning is in effect, eating varied food
+  again announces the recovery; a brief dip that never reached the warning is
+  silent. The diet bonus fades as reserves fall. A mild
   fatigue penalty (stamina refills 25% slower after about 45 minutes of
   imbalance) exists but is **off** (`diet_penalties_enabled = FALSE`) until
   availability is shown in every supported map and season; see below.
@@ -58,6 +62,11 @@ here causes damage, disease or death.
   protein and half carbohydrate, `mushroom` half vitamins and half protein.
 - `diet_reagent_profiles`: reagents whose identity fixes the profile (`protein`,
   `egg`, `cornoil`, `honey`, flours, `coconutmilk`, `apricotjuice`).
+- `diet_neutral_descriptors`: texture and seasoning words (`jaw tension`,
+  `spices`, `salt`, `vinegar`, `sourness`) are not ingredients. They are left out
+  of the profile and the remaining flavours are rescaled, so jerky counts as meat
+  rather than mostly carbohydrate. Food carrying only such words counts as
+  carbohydrate.
 - Unknown flavours and plain nutriment count as carbohydrate.
 
 Each digested tick adds `nutrition points * share` to each group, where nutrition
@@ -148,7 +157,7 @@ proven in play, enabling penalties is tracked as separate follow-up work.
 ```sh
 python3 -I -B -m unittest discover -s tests/balanced_diet -p 'test_*.py' -v
 python3 tests/balanced_diet/run.py --byond-bin "$BYOND_BIN" --output <empty dir>
-for c in balance conservation trace penalty; do
+for c in balance conservation trace penalty lineage neutral recovery; do
   python3 tests/balanced_diet/run.py --byond-bin "$BYOND_BIN" --negative-control $c --output <empty dir>
 done
 ```
