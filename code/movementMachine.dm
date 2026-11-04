@@ -41,28 +41,9 @@ var/movementMachine/movementMachine = null
 					var/mob/M = client:mob
 
 					if (!isDeleted(M))
-						if ((M.movement_eastwest || M.movement_northsouth) && M.client.canmove && !M.client.moving && world.time >= M.client.move_delay)
-							var/diag = FALSE
-							var/movedir = M.movement_northsouth ? M.movement_northsouth : M.movement_eastwest
-							if ((M.movement_eastwest && M.movement_northsouth))
-								if (M.movement_northsouth == NORTH && M.movement_eastwest == WEST)
-									movedir = NORTHWEST
-									diag = TRUE
-								else if (M.movement_northsouth == NORTH && M.movement_eastwest == EAST)
-									movedir = NORTHEAST
-									diag = TRUE
-								else if (M.movement_northsouth == SOUTH && M.movement_eastwest == WEST)
-									movedir = SOUTHWEST
-									diag = TRUE
-								else if (M.movement_northsouth == SOUTH && M.movement_eastwest == EAST)
-									movedir = SOUTHEAST
-									diag = TRUE
+						if (held_movement_ready(M))
 							// hack to let other clients Move() earlier
-							do_movement(M, movedir, diag)
-							if (ishuman(M))
-								var/mob/living/human/H = M
-								if (H.football && H.football.owner == H)
-									H.football.update_movement()	
+							begin_held_movement(M)
 					else
 						mob_list -= M
 				else
@@ -95,16 +76,42 @@ var/movementMachine/movementMachine = null
 #undef SECONDS
 
 
+/movementMachine/proc/held_movement_ready(var/mob/M)
+	return M && M.client && (M.movement_eastwest || M.movement_northsouth) && M.client.canmove && !M.client.moving && world.time >= M.client.move_delay
+
+/movementMachine/proc/begin_held_movement(var/mob/M)
+	var/diag = FALSE
+	var/movedir = M.movement_northsouth ? M.movement_northsouth : M.movement_eastwest
+	if ((M.movement_eastwest && M.movement_northsouth))
+		if (M.movement_northsouth == NORTH && M.movement_eastwest == WEST)
+			movedir = NORTHWEST
+			diag = TRUE
+		else if (M.movement_northsouth == NORTH && M.movement_eastwest == EAST)
+			movedir = NORTHEAST
+			diag = TRUE
+		else if (M.movement_northsouth == SOUTH && M.movement_eastwest == WEST)
+			movedir = SOUTHWEST
+			diag = TRUE
+		else if (M.movement_northsouth == SOUTH && M.movement_eastwest == EAST)
+			movedir = SOUTHEAST
+			diag = TRUE
+	do_movement(M, movedir, diag)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if (H.football && H.football.owner == H)
+			H.football.update_movement()
+
 /movementMachine/proc/do_movement(var/mob/M, movedir, diag)
 	set waitfor = FALSE
 	if (M && M.client)
+		var/started = world.time
 		M.client.movement_busy = TRUE
 		M.client.Move(get_step(M, movedir), movedir, diag)
 		// remove this client from movementMachine_clients until it needs to be in it again. This makes the amount of loops to be done the absolute minimum
 		movementMachine_clients -= M.client
-		do_movement_continued(M)
+		do_movement_continued(M, started)
 
-/movementMachine/proc/do_movement_continued(var/mob/M)
+/movementMachine/proc/do_movement_continued(var/mob/M, started = null)
 	set waitfor = FALSE
 	var/movtoset = 0
 	if (M && M.client)
@@ -114,6 +121,15 @@ var/movementMachine/movementMachine = null
 		else
 			sleep(3)
 	if (M && M.client)
+		// A held key continues smooth movement in the tick its step ends, from
+		// that step's exact deadline. Waiting for the next scan here left the
+		// body standing still at each tile centre for a tick or more.
+		if (!isnull(started) && movtoset && world.time > started && world.time - movtoset < world.tick_lag && ishuman(M) && held_movement_ready(M))
+			var/mob/living/human/H = M
+			if (H.human_subtile_enabled)
+				M.client.human_subtile_chain_time = movtoset
+				begin_held_movement(M)
+				return
 		M.client.movement_busy = FALSE
 		movementMachine_clients += M.client
 
