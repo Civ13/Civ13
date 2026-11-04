@@ -6,7 +6,7 @@ $configured = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'version.json') 
 if ($configured.schema -ne 1 -or $configured.version -notmatch '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$') { throw 'Invalid native launcher version configuration.' }
 if (!$Version) { $Version = $configured.version }
 if ($Version -cne $configured.version) { throw 'Build version differs from the checked-out release configuration.' }
-& $Dotnet publish (Join-Path $PSScriptRoot 'Civ13.Launcher.csproj') -c Release -r win-x64 --self-contained true "-p:Version=$Version" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o $Output
+& $Dotnet publish (Join-Path $PSScriptRoot 'Civ13.Launcher.csproj') -c Release -r win-x64 --self-contained true -p:Civ13Gui=true "-p:Version=$Version" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o $Output
 if ($LASTEXITCODE -ne 0) { throw 'Launcher publish failed.' }
 $exe = Join-Path $Output 'Civ13.exe'
 $actual = & $exe --version

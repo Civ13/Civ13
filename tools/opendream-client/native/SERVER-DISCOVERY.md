@@ -156,7 +156,7 @@ The successful result binds status, public literal and configured port together.
 Dispatch verifies catalog membership, original UTC and process-monotonic status
 age <=60 seconds when a recent proof is present, and the DNS literal lifetime <=15 seconds and the required verified BYOND client, then passes
 one argument `byond://<verified-IP>:<configured-port>` to DreamSeeker. No DNS lookup
-occurs in the client URL. OpenDream remains a separate explicit operator path;
+occurs in the client URL. Civ13.exe has no OpenDream path;
 this JSON status contract is BYOND-specific.
 
 The conservative IPv4 exclusions follow the IANA special-purpose registries:

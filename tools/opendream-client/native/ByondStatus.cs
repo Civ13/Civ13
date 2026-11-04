@@ -9,7 +9,7 @@ namespace Civ13.Launcher;
 
 public delegate Task<ReadOnlyMemory<byte>> StatusProbe(IPAddress address, int port, Action beforeWrite, CancellationToken token);
 
-// BYOND-specific availability selection. OpenDream keeps its separate operator path.
+// BYOND-specific availability selection.
 public static class ByondStatus {
     public static readonly TimeSpan TotalTimeout = TimeSpan.FromSeconds(3);
     public const int MaxBytes = 65536;

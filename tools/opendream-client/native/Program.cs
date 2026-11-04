@@ -22,7 +22,7 @@ public static class Program {
         output.WriteLine("  --root <absolute folder>       Use an explicit launcher data folder.");
         output.WriteLine("  --local-dreamdaemon <absolute host receipt>");
         output.WriteLine("      Join the verified local host; requires --root.");
-        output.WriteLine("  --server-port <1-65535>        Specify an operator OpenDream port.");
+        output.WriteLine("  --console                      Use the text menu instead of the launcher window.");
         output.WriteLine("Run without options for the normal launcher. The launcher is optional for BYOND gameplay.");
     }
 
@@ -30,17 +30,10 @@ public static class Program {
         output.WriteLine(ServerCatalog.MainMenu);
         foreach (var link in CommunityLinks.Items)
             output.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
-        output.WriteLine(ServerCatalog.OpenDreamMenu);
         output.WriteLine(RegisteredInstancesMenu.Menu);
         if (hosting) output.WriteLine(LocalHosting.Menu);
     }
 
-    public static string BundledChannel() {
-        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("client-channel.json")
-            ?? throw new InvalidOperationException("Bundled client manifest missing.");
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
-    }
     public static string BundledByond() {
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("byond.json")
             ?? throw new InvalidOperationException("Bundled BYOND requirement missing.");
@@ -69,9 +62,8 @@ public static class Program {
                 return 0;
             }
             if (args.SequenceEqual(["--self-check"])) {
-                Channel.Read(BundledChannel()).Validate();
                 RequiredByond().Validate();
-                Console.WriteLine("PASS: embedded client/BYOND manifests and native launcher entrypoint.");
+                Console.WriteLine("PASS: embedded BYOND manifest and native launcher entrypoint.");
                 return 0;
             }
             if (args.SequenceEqual(["--byond-contract"])) {
@@ -84,21 +76,17 @@ public static class Program {
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
             string? explicitRoot = null;
             string? localReceipt = null;
-            string? serverPort = null;
+            var textMenu = false;
             for (var index = 0; index < args.Length; index++) {
-                if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
+                if (args[index] == "--console" && !textMenu) textMenu = true;
+                else if (args[index] == "--root" && explicitRoot == null && index + 1 < args.Length)
                     explicitRoot = LocalDreamDaemon.RequirePath(args[++index]);
                 else if (args[index] == "--local-dreamdaemon" && localReceipt == null && index + 1 < args.Length)
                     localReceipt = LocalDreamDaemon.RequirePath(args[++index]);
-                else if (args[index] == "--server-port" && serverPort == null && index + 1 < args.Length) {
-                    serverPort = args[++index];
-                    Connection.Port("Nomads", serverPort);
-                }
                 else throw new ArgumentException("Unsupported option. Run --help for available launcher options.");
             }
             var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
             if (localReceipt != null) {
-                if (serverPort != null) throw new IOException("Local DreamDaemon connections use the verified host receipt port; omit --server-port.");
                 if (explicitRoot == null) throw new IOException("Local DreamDaemon testing requires an explicit --root.");
                 var receipt = LocalDreamDaemon.Read(localReceipt);
                 var desktop = new WindowsByondDesktop();
@@ -120,30 +108,14 @@ public static class Program {
                 Environment.SetEnvironmentVariable("TMP", root);
                 Environment.SetEnvironmentVariable("TMPDIR", root);
             }
+#if CIV13_GUI
+            // The window is the normal entrypoint; --console or redirected input keeps the text menu.
+            if (!textMenu && !Console.IsInputRedirected) return Gui.LauncherWindow.Run(root, version);
+#endif
             using var owner = Updater.Lock(root);
             using var transport = new ReleaseTransport(new HttpClientHandler { AllowAutoRedirect = false }, Console.WriteLine);
             Console.WriteLine("Civ13 Launcher " + version.ToString(3));
-            Console.WriteLine("Checking for launcher updates (installed " + version.ToString(3) + ")...");
-            var updateStage = "manifest check";
-            try {
-                var manifest = Channel.Read(await transport.Text(Updater.LauncherChannelUrl));
-                manifest.Validate(true);
-                var latest = Version.Parse(manifest.Version);
-                Console.WriteLine("Latest stable launcher: " + latest + ".");
-                if (latest <= version)
-                    Console.WriteLine("This launcher is current or newer than the stable release.");
-                else Console.WriteLine("Downloading and verifying launcher " + latest + "...");
-                updateStage = "download and verification";
-                var candidate = await Updater.StageLauncher(manifest, version, root, transport);
-                if (candidate is not null) {
-                    updateStage = "starting update helper";
-                    StartUpdateHelper(candidate, manifest, root);
-                    Console.WriteLine("Verified launcher update downloaded. Restarting after this launcher exits...");
-                    return 0;
-                }
-            } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException or TimeoutException or JsonException or FormatException) {
-                Console.WriteLine("Launcher update unavailable during " + updateStage + ": " + Updater.DescribeFailure(e));
-            }
+            if (await CheckLauncherUpdate(transport, version, root)) return 0;
             using var byondTransport = new ByondTransport();
             var byond = await Byond.Ensure(RequiredByond(), root, byondTransport, new WindowsByondDesktop());
             Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
@@ -173,44 +145,13 @@ public static class Program {
                     continue;
                 }
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
-                if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
+                if (choice == "1") StartByondPager(byond);
                 if (ServerCatalog.MenuServer(choice) is { } serverName) {
-                    if (serverPort != null) {
-                        Console.WriteLine("Public server selections check the configured game ports; omit --server-port.");
-                        continue;
-                    }
                     var desktop = new WindowsByondDesktop();
                     await ServerBrowser.Run(serverName, discovery, Console.In, Console.Out, verified => {
-                        var server = verified.Status;
-                        Console.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
-                        try {
-                            using var game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
-                                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
-                                ?? throw new IOException("BYOND client did not start.");
-                        } catch (System.ComponentModel.Win32Exception e) {
-                            throw new IOException("BYOND client could not start.", e);
-                        }
+                        StartNativeGame(verified, byond, desktop, Console.Out);
                         return Task.CompletedTask;
                     });
-                }
-                if (choice == ServerCatalog.OpenDreamMenuKey) {
-                    try {
-                        using var clientOwner = Updater.Lock(root);
-                        var client = await Updater.ClientChannel(transport, root, BundledChannel());
-                        var destination = await Updater.EnsureClient(client, root, transport);
-                        Console.WriteLine("OpenDream - 1: Sign in   2: Operator Nomads target   3: Operator TDM target   4: Back");
-                        Console.WriteLine("No public OpenDream game service is configured. Joining requires an operator's verified --server-port.");
-                        var engineChoice = Console.ReadLine();
-                        if (engineChoice == "1") { Process.Start(new ProcessStartInfo(Path.Combine(destination, "Sign-In.cmd")) { UseShellExecute = true, WorkingDirectory = destination }); continue; }
-                        if (engineChoice is not ("2" or "3")) continue;
-                        var mode = engineChoice == "2" ? "Nomads" : "TDM";
-                        var openDreamPort = ServerCatalog.OpenDreamPort(mode, serverPort);
-                        var endpoint = await Connection.Resolve();
-                        Console.WriteLine(Connection.Host + " verified public address for this attempt: " + endpoint.Address);
-                        // Pass this one validated DNS result, never ask the game client to resolve again.
-                        Console.WriteLine($"Connecting to experimental OpenDream {mode} on operator port {openDreamPort}.");
-                        Process.Start(Connection.Start(destination, mode, endpoint, serverPort));
-                    } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
             }
         } catch (Exception e) {
@@ -219,6 +160,47 @@ public static class Program {
             return 1;
         }
     }
+    // Shared by the text menu and the window. True means a verified update was staged and this launcher must exit.
+    public static async Task<bool> CheckLauncherUpdate(ReleaseTransport transport, Version version, string root) {
+        Console.WriteLine("Checking for launcher updates (installed " + version.ToString(3) + ")...");
+        var updateStage = "manifest check";
+        try {
+            var manifest = Channel.Read(await transport.Text(Updater.LauncherChannelUrl));
+            manifest.Validate(true);
+            var latest = Version.Parse(manifest.Version);
+            Console.WriteLine("Latest stable launcher: " + latest + ".");
+            if (latest <= version)
+                Console.WriteLine("This launcher is current or newer than the stable release.");
+            else Console.WriteLine("Downloading and verifying launcher " + latest + "...");
+            updateStage = "download and verification";
+            var candidate = await Updater.StageLauncher(manifest, version, root, transport);
+            if (candidate is not null) {
+                updateStage = "starting update helper";
+                StartUpdateHelper(candidate, manifest, root);
+                Console.WriteLine("Verified launcher update downloaded. Restarting after this launcher exits...");
+                return true;
+            }
+        } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException or TimeoutException or JsonException or FormatException) {
+            Console.WriteLine("Launcher update unavailable during " + updateStage + ": " + Updater.DescribeFailure(e));
+        }
+        return false;
+    }
+
+    public static void StartNativeGame(VerifiedGameServer verified, string byond, IByondDesktop desktop, TextWriter output) {
+        var server = verified.Status;
+        output.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
+        try {
+            using var game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
+                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
+                ?? throw new IOException("BYOND client did not start.");
+        } catch (System.ComponentModel.Win32Exception e) {
+            throw new IOException("BYOND client could not start.", e);
+        }
+    }
+
+    public static void StartByondPager(string byond) =>
+        Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
+
     private static void StartUpdateHelper(string candidate, Channel manifest, string root) {
         var target = Environment.ProcessPath ?? throw new IOException("Launcher path unavailable.");
         var helper = Path.Combine(Path.GetDirectoryName(candidate)!, "UpdateHelper.exe");

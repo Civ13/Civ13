@@ -6,10 +6,8 @@ public static class ServerCatalog {
     public const string OfficialHost = "civ13.com";
     public const string OfficialMenuKey = "2";
     public const string ValZarGamingMenuKey = "3";
-    public const string OpenDreamMenuKey = "9";
     public const string MainMenu = "\nCiv13 - 1: BYOND sign in   " + OfficialMenuKey +
         ": Civ13.com servers   " + ValZarGamingMenuKey + ": ValZarGaming.com servers   4: Exit";
-    public const string OpenDreamMenu = OpenDreamMenuKey + ": OpenDream (experimental)";
     public static string? MenuServer(string? choice) => choice switch {
         OfficialMenuKey => "Civ13.com",
         ValZarGamingMenuKey => "ValZarGaming",
@@ -24,11 +22,6 @@ public static class ServerCatalog {
         _ = Host(provider); // Reject unknown providers before constructing targets.
         // Explicit pre-existing native game ports. No ranges or arbitrary overrides.
         return Array.AsReadOnly(new[] { new GameTarget(provider, 1714), new GameTarget(provider, 1715) });
-    }
-    public static int OpenDreamPort(string mode, string? operatorPort) {
-        if (operatorPort == null)
-            throw new IOException("OpenDream game service is not configured. An operator must supply --server-port for a verified OpenDream service.");
-        return Connection.Port(mode, operatorPort);
     }
 
     public static async Task<VerifiedGameServer> NativeEndpoint(GameServer server,

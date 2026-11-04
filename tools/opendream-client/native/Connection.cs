@@ -37,7 +37,7 @@ public static class Connection {
         CancellationToken cancellationToken = default) {
         if (!IsApprovedHost(host)) throw new IOException("Unapproved game hostname.");
         try {
-            // This candidate uses IPv4 literals for verified BYOND/OpenDream dispatch.
+            // This candidate uses IPv4 literals for verified BYOND dispatch.
             // Resolving A records explicitly avoids an unchecked second client-side lookup.
             var addresses = await (resolver ?? (name => Dns.GetHostAddressesAsync(name, AddressFamily.InterNetwork)))(host)
                 .WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
@@ -62,29 +62,5 @@ public static class Connection {
                 (b == 52 && c == 193) || (b == 88 && c == 99) || b == 168 || (b == 175 && c == 48))) ||
             (a == 198 && (b is 18 or 19 || (b == 51 && c == 100))) ||
             (a == 203 && b == 0 && c == 113));
-    }
-    public static int Port(string mode, string? explicitPort = null) {
-        if (mode is not ("Nomads" or "TDM")) throw new ArgumentException("Unknown game mode.");
-        if (explicitPort == null) return mode == "Nomads" ? 1715 : 1714;
-        if (!int.TryParse(explicitPort, out var port) || port is < 1 or > 65535)
-            throw new IOException("Server port must be between 1 and 65535.");
-        return port;
-    }
-    public static ProcessStartInfo Start(string destination, string mode, PublicEndpoint endpoint, string? explicitPort = null) {
-        if (mode is not ("Nomads" or "TDM")) throw new ArgumentException("Unknown game mode.");
-        var address = endpoint.Validate(Host);
-        var port = Port(mode, explicitPort);
-        var runtime = Path.Combine(destination, "dotnet", "dotnet.exe");
-        var client = Path.Combine(destination, "RobustToolbox", "bin", "ClientAuth", "Robust.Client.dll");
-        var content = Path.Combine(destination, "Content.Client.zip");
-        foreach (var file in new[] { runtime, client, content })
-            if (!File.Exists(file)) throw new IOException("Client connection file is missing: " + file);
-        var start = new ProcessStartInfo(runtime) {
-            UseShellExecute = false, WorkingDirectory = Path.GetDirectoryName(client)!
-        };
-        start.Environment["DOTNET_ROOT"] = Path.Combine(destination, "dotnet");
-        start.Environment["ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW"] = Path.Combine(destination, "webview");
-        foreach (var arg in new[] { client, "--self-contained", "--mount-zip", content, "--connect", "--connect-address", $"udp://{address}:{port}", "+launchauth" }) start.ArgumentList.Add(arg);
-        return start;
     }
 }

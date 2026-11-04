@@ -5,6 +5,22 @@ namespace Civ13.Launcher;
 public static class ServerBrowser {
     public static void WriteServers(TextWriter output, string provider, ServerSnapshot snapshot) {
         output.WriteLine($"{provider} - recent BYOND status. Game address verified before joining.");
+        WriteNotes(output, snapshot);
+        for (var index = 0; index < snapshot.Servers.Count; index++) {
+            var server = snapshot.Servers[index];
+            var cached = CachedFor(snapshot, server);
+            if (cached != null) output.WriteLine($"Cached last verified status ({cached.AgeSeconds} seconds old); " +
+                (cached.Recent != null ? "game address checked before joining." : "next eligible status check required before joining."));
+            output.WriteLine($"{index + 1}: {server.Name} | Players: {server.Players} | {server.Engine}");
+            output.WriteLine($"   Map: {Display(server.Map)} | Mode: {Display(server.Mode)}" + (server.Epoch.Length == 0 ? "" : " | Epoch: " + server.Epoch));
+            output.WriteLine($"   Round: {Display(server.RoundId)} | Elapsed: {Elapsed(server)}");
+            output.WriteLine($"   {server.Host}:{server.Port} | Checked: {server.CheckedAt:HH:mm:ss} UTC");
+        }
+        output.WriteLine("R: Refresh   B: Back");
+    }
+
+    // Snapshot-wide notes, shared by the text menu and the launcher window.
+    public static void WriteNotes(TextWriter output, ServerSnapshot snapshot) {
         if (snapshot.PacingPaused) output.WriteLine("Public checks paused: shared request timing could not be verified. No automatic retry; local timing state needs review.");
         foreach (var deferred in snapshot.Deferred ?? []) {
             output.WriteLine($"{deferred.Target.Name}: next check in {deferred.Seconds} seconds. No request sent.");
@@ -21,25 +37,16 @@ public static class ServerBrowser {
                 output.WriteLine("No selectable status yet. Deferred or paused checks do not mean the servers are offline.");
             else output.WriteLine("No configured endpoint returned valid BYOND status.");
         }
-        for (var index = 0; index < snapshot.Servers.Count; index++) {
-            var server = snapshot.Servers[index];
-            var duration = "unavailable";
-            if (server.RoundDurationSeconds is { } seconds) {
-                var elapsed = TimeSpan.FromSeconds(seconds);
-                duration = $"{(int)elapsed.TotalHours}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
-            }
-            var cached = snapshot.Deferred?.SingleOrDefault(item => item.Target == server.Target)?.Cached;
-            if (cached != null) output.WriteLine($"Cached last verified status ({cached.AgeSeconds} seconds old); " +
-                (cached.Recent != null ? "game address checked before joining." : "next eligible status check required before joining."));
-            output.WriteLine($"{index + 1}: {server.Name} | Players: {server.Players} | {server.Engine}");
-            output.WriteLine($"   Map: {Display(server.Map)} | Mode: {Display(server.Mode)}" + (server.Epoch.Length == 0 ? "" : " | Epoch: " + server.Epoch));
-            output.WriteLine($"   Round: {Display(server.RoundId)} | Elapsed: {duration}");
-            output.WriteLine($"   {server.Host}:{server.Port} | Checked: {server.CheckedAt:HH:mm:ss} UTC");
-        }
-        output.WriteLine("R: Refresh   B: Back");
     }
 
-    private static string Display(string value) => value.Length == 0 ? "unavailable" : value;
+    public static CachedStatus? CachedFor(ServerSnapshot snapshot, GameServer server) =>
+        snapshot.Deferred?.SingleOrDefault(item => item.Target == server.Target)?.Cached;
+    public static string Elapsed(GameServer server) {
+        if (server.RoundDurationSeconds is not { } seconds) return "unavailable";
+        var elapsed = TimeSpan.FromSeconds(seconds);
+        return $"{(int)elapsed.TotalHours}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
+    }
+    public static string Display(string value) => value.Length == 0 ? "unavailable" : value;
     public static async Task Run(string provider, IServerDiscovery discovery, TextReader input,
         TextWriter output, Func<VerifiedGameServer, Task> launch) {
         while (true) {
