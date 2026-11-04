@@ -152,6 +152,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_gaia_host_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'gaia_host'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',):
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_farmers_almanac_suite_is_bounded_and_not_silently_omitted(self):
         name = 'farmers_almanac'
         suite = ci.SUITES[name]
