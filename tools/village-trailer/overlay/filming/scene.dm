@@ -18,7 +18,9 @@ var/intro_port
 	hub_password = ""
 	visibility = FALSE
 	mob = /mob/intro_observer
-	view = "15x9"
+	// One extra ring of tiles beyond the 15x9 frame, clipped by the zoomed map
+	// control, so the camera's sub-tile pixel offsets never reveal unsent tiles.
+	view = "17x11"
 	fps = 20
 
 /world/OpenPort(requested)
@@ -81,7 +83,7 @@ var/intro_port
 	for (var/fixture_verb in verbs.Copy())
 		verbs -= fixture_verb
 	..()
-	view = "15x9"
+	view = "17x11"
 	fps = 20
 	trailer_camera_attach(src)
 	text2file("guest=1;version=[byond_version];build=[byond_build]", "cloud-client.txt")
