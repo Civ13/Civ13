@@ -27,7 +27,9 @@ Do not hold a finding for more evidence unless the fix itself is risky.
 CI failures: read the failed job log before reacting. If the failure is
 infrastructure (checkout or fetch timeout, runner cancelled, artifact
 missing because an earlier step was cancelled, BYOND download or compile
-failing on the runner), say so and push or rerun. Do not change code for it.
+prevented by runner infrastructure), say so and push or rerun. Do not change
+code for it. Apply the documented local-build exception below when successful
+equivalent compilation is available.
 Such a GitHub build failure is not a hard blocker: when a rerun fails the same
 way, document the local compile and preflight results for the exact head in
 the PR comment, and an authorized merge may then proceed as an admin merge
@@ -59,6 +61,31 @@ PR comments: one dated comment per pushed head, in plain sentences, ideally
 under 150 words. Give the change, the commands and results, the CI run link
 and what is unverified. Do not repeat unchanged "not run" lists or internal
 review-process narration in every comment.
+
+## Local build after a hosted infrastructure failure
+
+<!-- 2026-11-03: exact-revision local compilation can replace unavailable hosted build evidence -->
+A verified GitHub infrastructure failure, such as an unavailable BYOND download,
+does not by itself block an otherwise authorized push or source-PR readiness
+when a documented successful local build covers the exact revision and intended
+build target. Read the failed job log first; an unknown failure is not an
+infrastructure exception. Follow the [evidence procedure](.agents/skills/github-workflow-troubleshooting/references/actions-and-evidence.md#local-build-evidence-after-infrastructure-failure).
+
+Record the exact clean commit, pinned compiler version, OS, build target,
+configuration and generated inputs, full command/log, exit status and diagnostic
+counts. Explain any platform or build-input differences and what the local
+build actually covers. Preserve the failed GitHub run/job/attempt and its cause;
+report "hosted build failed; local compilation passed" rather than marking CI
+passed. A fixture compile cannot replace a required full-game build.
+
+This exception covers compilation evidence only. Source/compiler/test failures,
+checksum or toolchain-integrity failures, conflicts, other required checks,
+reviews and explicit holds still apply. This evidence exception alone grants no
+merge, deployment, history-rewriting force-push, security-setting or
+branch-protection authority.
+If a protected gate requires an override, use only an already authorized action
+permitted by the environment and its action-time requirements; otherwise report
+that gate. Never bypass an approval denial or manufacture a successful check.
 
 ## Task stopping rule
 
