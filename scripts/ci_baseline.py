@@ -562,6 +562,7 @@ SUITES = {
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',
                               'tests/los_context/test_entered_trace.py',
+                              'tests/los_context/test_audit_skip.py',
                               'tests/test_geometric_presentation.py',
                               'tests/test_visibility_diagnostics.py'), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',

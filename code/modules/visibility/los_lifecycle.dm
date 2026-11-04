@@ -92,6 +92,9 @@
 		return
 	if(!los_dirty && key == los_last_policy && world.time < los_next_audit)
 		return TRUE
+	// Only an unchanged, already published presentation may renew its audit
+	// without a refresh; every dirty or policy-changed viewer refreshes.
+	var/audit_only = !los_dirty && key == los_last_policy
 	var/use_compositor = root_tree_compositor_enabled()
 	if(root_tree_presenter && (!use_compositor || !root_tree_presenter.planes_admitted()))
 		root_tree_presenter.retire()
@@ -112,6 +115,9 @@
 			los_presenter.invalidate()
 		los_dirty = TRUE
 		return
+	if(audit_only && V.audit_scene_unchanged(S))
+		los_next_audit = world.time + 10
+		return TRUE
 	var/published = TRUE
 	if(root_tree_presenter && !root_tree_presenter.refresh(S))
 		published = FALSE
@@ -126,6 +132,8 @@
 	V.movement_turf = get_turf(mob)
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
+	// The recorded scene lets an unchanged audit skip the presenter refresh.
+	V.record_audit_scene(S)
 	los_next_audit = world.time + 10
 	return TRUE
 

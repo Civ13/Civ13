@@ -159,7 +159,7 @@ def expression(text, method=False):
     if method:
         for name in ['revision','retired','mutations','owner']:
             text = re.sub(r'(?<!\.)\b'+name+r'\b', 'self.'+name, text)
-        for name in ['retire','advance_revision']:
+        for name in ['retire','advance_revision','clear_audit_scene']:
             text = re.sub(r'(?<!\.)\b'+name+r'\(', 'self.'+name+'(', text)
         text = text.replace('self.mutations.len', 'len(self.mutations)')
     return text
@@ -266,7 +266,10 @@ class Mutation:
 
 class Context:
     def __init__(self):
-        self.retired=False; self.revision=1; self.mutations=[]; self.owner=None
+        self.retired=False; self.revision=1; self.mutations=[]; self.owner=None; self.audit_clears=0
+
+    def clear_audit_scene(self):
+        self.audit_clears+=1
 
     def retire(self):
         self.retired=True

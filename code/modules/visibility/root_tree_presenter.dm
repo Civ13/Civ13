@@ -69,6 +69,8 @@ var/global/list/root_tree_presenters
 	owner = C
 	context = V
 	owner.root_tree_presenter = src
+	// A fresh presenter has published nothing; the audit may not skip it.
+	context.clear_audit_scene()
 	if(!root_tree_presenters)
 		root_tree_presenters = list()
 	root_tree_presenters += src
@@ -481,6 +483,9 @@ var/global/list/root_tree_presenters
 		owner.root_tree_presenter = null
 	if(root_tree_presenters)
 		root_tree_presenters -= src
+	// Fallback copies now belong to the mask presenter; refresh before any skip.
+	if(context)
+		context.clear_audit_scene()
 	owner = null
 	context = null
 
