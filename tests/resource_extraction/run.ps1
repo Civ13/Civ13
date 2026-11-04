@@ -1,7 +1,7 @@
 param(
     [switch]$DiggingBaseline,
     [Parameter(Mandatory)][string]$ByondBin,
-    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm','tests/stone_crushing/probe.dm')]
+    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm','tests/stone_crushing/probe.dm','tests/hydroponics/probe.dm')]
     [string]$Probe = 'tests/resource_extraction/probe.dm'
 )
 $ErrorActionPreference = 'Stop'
