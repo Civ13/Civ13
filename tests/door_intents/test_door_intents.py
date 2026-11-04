@@ -87,20 +87,15 @@ if __name__ == '__main__':
     unittest.main()
 
 
-PERSISTENCE = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+STAMPS = (ROOT / 'code/modules/persistence/world_time_stamps.dm').read_text()
 
 
 class DoorRebootTimers(unittest.TestCase):
     """world.time restarts at zero after a reboot, so saved stamps must not block doors."""
 
-    def test_last_bumped_is_not_saved(self):
-        body = '\n'.join(proc_body(PERSISTENCE, '/atom/persistence_runtime_var'))
-        match = re.search(r'if \(([^)]*)\)\n\t\t\treturn TRUE', body)
-        self.assertIn('"last_bumped"', match.group(1))
-
-    def test_door_noise_cooldown_is_not_saved(self):
-        body = [line.strip() for line in proc_body(DOOR, '/obj/structure/simple_door/persistence_runtime_var') if line.strip()]
-        self.assertEqual(body, ['return key == "next_attack_hand" || ..()'])
+    def test_bump_and_knock_stamps_are_not_saved(self):
+        self.assertIn('\t"last_bumped" = list(/atom),\n', STAMPS)
+        self.assertIn('\t"next_attack_hand" = list(/obj/structure/simple_door),\n', STAMPS)
 
     def test_future_bump_stamp_is_cleared_before_the_cooldown(self):
         body = [line.strip() for line in proc_body(DOOR, '/obj/structure/simple_door/proc/TryToSwitchState')]

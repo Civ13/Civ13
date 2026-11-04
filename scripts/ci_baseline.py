@@ -98,6 +98,7 @@ SUITES = {
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
+            'code/modules/persistence/world_time_stamps.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
     # Nomads adoption source contracts and surname model; no BYOND runtime.
     'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
@@ -460,7 +461,8 @@ SUITES = {
     'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',
                                     'tests/persistence_pointers/test_restore_dependents.py',
                                     'tests/persistence_pointers/test_action_reconnect.py',
-                                    'tests/persistence_pointers/test_level_links.py'),
+                                    'tests/persistence_pointers/test_level_links.py',
+                                    'tests/persistence_pointers/test_world_time_stamps.py'),
         'paths': ('tests/persistence_pointers/',),
         'shared_paths': ('code/modules/persistence/',
             'code/game/mob/living/simple_animal/',

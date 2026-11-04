@@ -165,11 +165,9 @@ var/global/persistence_saved_atom_construction = 0
 
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
-// last_bumped is a world.time stamp. world.time restarts at zero after a reboot,
-// so a restored stamp sits in the future and blocks doors for hours.
 /atom/persistence_runtime_var(key)
 	switch(key)
-		if ("appearance", "light", "light_sources", "last_bumped")
+		if ("appearance", "light", "light_sources")
 			return TRUE
 	return ..()
 

@@ -134,10 +134,6 @@
 /obj/structure/simple_door/proc/door_hand_locked(mob/user)
 	return locked
 
-// The noise cooldown is a world.time stamp, which a reboot resets.
-/obj/structure/simple_door/persistence_runtime_var(key)
-	return key == "next_attack_hand" || ..()
-
 // Shared cooldown so rattling, knocking and kicking can't be spammed.
 // A stamp further ahead than one cooldown came from before a reboot.
 /obj/structure/simple_door/proc/door_noise_ready()
