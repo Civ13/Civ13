@@ -15,6 +15,7 @@ HUMAN = 'code/game/mob/living/carbon/human/subtile_movement.dm'
 STACK = 'code/game/objects/items/stacks/stack.dm'
 WAIT = 'code/_helpers/mobs.dm'
 FLOOR = 'code/game/turfs/floor_attackby.dm'
+BRIDGE = 'code/modules/gameplay_bridge/bridge.dm'
 
 
 def replace_reviewed_once(source, current, previous):
@@ -32,6 +33,13 @@ def restore_crafting_projection(path, source):
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
+        )
+    elif path == BRIDGE:
+        # #3233: agent observations share the geometric line-of-sight gate.
+        edits = (
+            ('\t// Same geometric line-of-sight authority as hover and examine: an entity\n'
+             '\t// masked on the actor\'s screen is not reported to the agent either.\n'
+             '\tif (!los_read_allowed(actor, A, "observe"))\n\t\treturn FALSE\n', ''),
         )
     elif path == FLOOR:
         # Mining balance is a separately checked production change. Invert only

@@ -17,7 +17,7 @@ PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
 DISABLED_SHA256 = {
  PATHS[0]: "65300bd76e9f96a461eb0a7faf486239d78deeedb27df183c2f0447dee365904",
  PATHS[1]: "3aa1c430f74fdd69c268b4ca3c3f1e6a85844df6f92dc20e8ef4b5c5d32db044",
- PATHS[2]: "9a2f299490853811f6bb6c6bffaf25a1d1a4e92b1c7224b3c0e68c1bf01d53e9",
+ PATHS[2]: "ea7f98bc4bf6e736bd1313a450ace35ef0304f2c3923d4f05c57fc44484556e6",
  PATHS[3]: "ef11a72c838e5b704e6e88029964d04182ba8f9920dd4493c1a76ce956ca369f",
 }
 CLIENT_FILES = ("code/modules/client/client_procs.dm", "code/modules/client/movement.dm")

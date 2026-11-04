@@ -471,6 +471,11 @@ class SourceBoundaries(unittest.TestCase):
         examine=fragment((ROOT/'code/game/mob/mob.dm').read_text(),'/mob/verb/examinate(')
         self.assertLess(examine.index('los_read_allowed'),examine.index('face_atom'))
         self.assertLess(examine.index('los_read_allowed'),examine.index('to_chat'))
+        # Agent observations use the same authority before any light or name read.
+        visible=fragment((ROOT/'code/modules/gameplay_bridge/bridge.dm').read_text(),'/datum/gameplay_bridge/proc/visible(')
+        self.assertLess(visible.index('los_read_allowed(actor, A, "observe")'),visible.index('get_lumcount'))
+        decision=fragment(CORE.read_text(),'/datum/los_context/proc/decision(')
+        self.assertIn('operation != "observe"',decision.split('\n',3)[1])
 
     def test_operation_type_cap_and_persistence_boundaries(self):
         source=CORE.read_text(); decision=fragment(source,'/datum/los_context/proc/decision(')

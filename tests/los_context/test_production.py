@@ -822,7 +822,7 @@ class BlockingTreeSurface(unittest.TestCase):
             root_tree_family=lambda x:x.type.startswith(('/obj/structure/wild/tree','/obj/structure/wild/jungle','/obj/structure/wild/palm')),
             LOS_DENY=0,LOS_WORLD=1,LOS_SURFACE=2,LOS_SELF=4,id=id)
         snapshot=N(blockers=Cells(),blocker_bins=None,tree_bounds=None,presentation=True,eye_x=0,eye_y=0,eye_z=1,
-                   radius_x=15,radius_y=15,revision=1,policy='fresh',clear_footprints=defaultdict(lambda:None))
+                   radius_x=15,radius_y=15,revision=1,policy='fresh',clear_footprints=defaultdict(lambda:None),blocking_tiles=None)
         def method(name,args,fields):
             declaration='/datum/los_snapshot/proc/'+name
             text=fragment(source,declaration+'(')
@@ -837,6 +837,11 @@ class BlockingTreeSurface(unittest.TestCase):
             body=body.replace('var/datum/los_surface_cell/C = new','var/datum/los_surface_cell/C = new_surface()')
             body=body.replace('for (var/cell_left = left, cell_left < right, cell_left++)','for (var/cell_left in unit_starts(left, right))')
             body=body.replace('for (var/cell_bottom = bottom, cell_bottom < top, cell_bottom++)','for (var/cell_bottom in unit_starts(bottom, top))')
+            body=body.replace('for (var/dx = -1, dx <= 1, dx++)','for (var/dx in inclusive_range(-1, 1))')
+            body=body.replace('for (var/dy = -1, dy <= 1, dy++)','for (var/dy in inclusive_range(-1, 1))')
+            body=body.replace('self.blocking_tiles = list()','self.blocking_tiles = owner_map()')
+            body=body.replace('"[B.tile_x],[B.tile_y]"','bin_key(B.tile_x, B.tile_y)').replace('"[nx],[ny]"','bin_key(nx, ny)')
+            body=body.replace('"0|[nx],[ny]|[nx],[ny]"','(0, nx, ny, nx, ny)')
             f=adapter.project(head+'\n'+body,declaration,'self, '+args,env)
             setattr(snapshot,name,lambda *a:f(snapshot,*a))
         method('surface_blockers','tx, ty',['blocker_bins','blockers'])
@@ -844,6 +849,7 @@ class BlockingTreeSurface(unittest.TestCase):
         method('capture_tree_bounds','A',['tree_bounds','eye_x','eye_y'])
         method('owned_surface_cells','target',['tree_bounds','radius_x','radius_y'])
         method('tree_surface_visible','target, tx, ty, tile_x, tile_y',['owned_surface_cells','surface_blockers','surface_edge_visible','radius_x','radius_y'])
+        method('opaque_borders_visible','target_tile_x, target_tile_y',['blocking_tiles','blockers','radius_x','radius_y','clear_footprints','blocks_target'])
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
         body=N(type='/mob/living/human',see_invisible=25)
         context=N(body=body,revision=1,policy_key=lambda:'fresh')
@@ -866,7 +872,7 @@ class BlockingTreeSurface(unittest.TestCase):
         def capture(objects,opaque_tiles=(),presentation=True):
             # Engine boundary: native contents lists every strictly overlapping
             # turf, including partial overlaps. Execute the entire DM capture.
-            snapshot.tree_bounds=None;snapshot.blockers=Cells();snapshot.clear_footprints.clear()
+            snapshot.tree_bounds=None;snapshot.blocking_tiles=None;snapshot.blockers=Cells();snapshot.clear_footprints.clear()
             body.x=10;body.y=10;body.z=1;body.step_x=body.step_y=0
             def locate(x,y,z):
                 t=Atom(type='/turf/floor',x=x,y=y,z=z,opacity=(x,y) in opaque_tiles)

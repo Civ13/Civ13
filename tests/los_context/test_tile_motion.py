@@ -416,8 +416,21 @@ class DistanceCamera(unittest.TestCase):
         opaque=set();visited=[]
         def locate(x,y,z):
             visited.append((x,y));return N(type='/turf/floor',x=x,y=y,z=z,opacity=(x,y) in opaque,contents=[])
+        borders=None
+        if '/datum/los_snapshot/proc/opaque_borders_visible(' in source:
+            text=P.fragment(source,'/datum/los_snapshot/proc/opaque_borders_visible(')
+            head,code=text.split('\n',1)
+            for field in ['blocking_tiles','blockers','radius_x','radius_y','clear_footprints','blocks_target']:
+                code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
+            code=re.sub(r'for \(var/(d[xy]) = -1, \1 <= 1, \1\+\+\)',r'for (var/\1 in inclusive_range(-1, 1))',code)
+            code=code.replace('self.blocking_tiles = list()','self.blocking_tiles = none_map()')
+            code=code.replace('"[B.tile_x],[B.tile_y]"','(B.tile_x, B.tile_y)').replace('"[nx],[ny]"','(nx, ny)')
+            code=code.replace('"0|[nx],[ny]|[nx],[ny]"','(0, nx, ny, nx, ny)')
+            env['none_map']=lambda:defaultdict(lambda:None)
+            borders=A.project(head+'\n'+code,'/datum/los_snapshot/proc/opaque_borders_visible','self, target_tile_x, target_tile_y',env)
         def snapshot():
-            S=N(blockers=Cells(),clear_footprints=defaultdict(lambda:None))
+            S=N(blockers=Cells(),clear_footprints=defaultdict(lambda:None),blocking_tiles=None)
+            if borders:S.opaque_borders_visible=lambda x,y:borders(S,x,y)
             S.index_blockers=lambda:None  # Derived acceleration; flat cells remain authoritative.
             S.blocks_target=lambda tx,ty,tile_x,tile_y,opacity:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opacity) for b in S.blockers)
             return S
@@ -509,6 +522,54 @@ class DistanceCamera(unittest.TestCase):
         m.body.loc=turf(100,100)
         both=lambda target:[m.decision(target,m.capture(presentation)) for presentation in (True,False)]
         return N(m=m,turf=turf,wall=wall,Obj=Obj,reach=reach,calls=calls,both=both)
+
+    WALL_FACE='if (target.opacity && !outside_view && !tree_presentation && !root_tree_family(target) && S.opaque_borders_visible(target_tile_x, target_tile_y))'
+
+    def wall_world(self,source=CORE,walls=()):
+        m=self.camera(source=source);m.env['root_tree_family']=lambda a:False
+        m.opaque.update(walls)
+        def wall(x,y):
+            return N(type='/turf/wall',x=x,y=y,z=1,step_x=0,step_y=0,opacity=True,alpha=255,invisibility=0,
+                     gcDestroyed=False,gc_destroyed=False,loc=None)
+        both=lambda target:[m.decision(target,m.capture(presentation)) for presentation in (True,False)]
+        return N(m=m,wall=wall,both=both)
+
+    def test_wall_faces_bounding_visible_ground_render_like_native(self):
+        legacy=CORE.replace(self.WALL_FACE,'if (FALSE)')
+        self.assertNotEqual(legacy,CORE)
+        row=[(x,103) for x in range(93,108)]
+        back=[(x,104) for x in range(93,108)]
+        # A long straight wall: grazing rays to far segments cross the nearer
+        # segments, but each face borders open ground the viewer can see.
+        far=[(106,103),(107,103),(93,103)]
+        seen={}
+        for source in (CORE,legacy):
+            w=self.wall_world(source,row+back)
+            seen[source]=[w.both(w.wall(x,y)) for x,y in far]
+            self.assertEqual(w.both(w.wall(100,103)),[2,2])  # Faced head-on either way.
+            # The second course of wall and anything beyond stay hidden.
+            for x in (100,106):self.assertEqual(w.both(w.wall(x,104)),[0,0])
+            self.assertEqual(w.both(w.m.target(106,105)),[0,0])
+        self.assertTrue(all(r==[2,2] for r in seen[CORE]),seen[CORE])
+        self.assertIn([0,0],seen[legacy])  # Control: the old ray test hid them.
+
+    def test_room_inner_corner_renders_and_outside_stays_hidden(self):
+        legacy=CORE.replace(self.WALL_FACE,'if (FALSE)')
+        # 9x7 room interior 96..104 x 97..103, walls one tile outside it.
+        walls={(x,y) for x in range(95,106) for y in (96,104)}|{(x,y) for y in range(96,105) for x in (95,105)}
+        seen={}
+        for source in (CORE,legacy):
+            w=self.wall_world(source,walls)
+            seen[source]=[w.both(w.wall(x,y)) for x,y in [(105,104),(95,96),(105,96),(95,104)]]
+            self.assertEqual(w.both(w.m.target(107,100)),[0,0])  # Outside the room.
+            self.assertEqual(w.both(w.wall(106,100)),[0,0])  # Wall behind a wall.
+        self.assertTrue(all(r==[2,2] for r in seen[CORE]),seen[CORE])
+        self.assertIn([0,0],seen[legacy])
+
+    def test_wall_face_needs_a_visible_open_neighbour(self):
+        # A wall whose open neighbours are all behind other walls stays hidden.
+        w=self.wall_world(walls=[(x,102) for x in range(90,111)]+[(100,105)])
+        self.assertEqual(w.both(w.wall(100,105)),[0,0])
 
     def test_reachable_diagonal_beside_a_wall_stays_rendered(self):
         legacy=CORE.replace('if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))','if (FALSE)')
