@@ -36,6 +36,21 @@
 	verbs += /mob/living/human/proc/create_company
 	verbs += /mob/living/human/proc/transfer_company_stock
 
+// Verbs are never saved, so a body restored from a persistent save comes back
+// without the role verbs its job's equip() granted (Create Faction, Abandon
+// Faction, Create Company, ...). Re-grant the map-wide ones on restore.
+/mob/living/human/after_load()
+	. = ..()
+	restore_role_verbs()
+
+/mob/living/human/proc/restore_role_verbs()
+	if (!map)
+		return
+	if (map.nomads)
+		make_nomad()
+	else if (map.civilizations)
+		make_nation()
+
 /mob/New()
 	..()
 	if (map && map.nomads)
