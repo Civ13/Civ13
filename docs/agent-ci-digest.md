@@ -92,9 +92,12 @@ it only writes the job summary and the log, whose last line is
 
 - `workflow_run` workflows run from the default branch, so changes to this
   workflow or `scripts/ci_digest.py` take effect only after they merge.
-- A new workflow with a `pull_request` trigger must be added to `workflows:`;
-  the `agent_ci_digest` offline suite runs for every workflow change and fails
-  until it is.
+- `workflow_run` needs workflow names written out, so the trigger list is
+  generated: `python3 scripts/agent_preflight.py generated --write` (or
+  `python3 scripts/ci_digest.py sync-workflows --write`) adds every workflow
+  with a `pull_request` trigger. The `agent_ci_digest` suite runs for every
+  workflow change and fails while the list is stale. A missed workflow only
+  costs a digest (agents fall back), never a check.
 - Fork PRs may not resolve to a PR number; then no comment is written.
 - The classifier is a heuristic. `unknown` means read the excerpt yourself, and
   a `real` verdict on a job that also fails on master is still worth comparing

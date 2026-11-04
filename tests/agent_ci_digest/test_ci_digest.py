@@ -224,15 +224,27 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertEqual(self.text.count('actions/checkout@'), 1)
 
     def test_triggers_on_every_pull_request_workflow(self):
-        listed = set(re.findall(r'^      - (.+)$', self.text.split('types: [completed]')[0], re.M))
-        expected = set()
-        for path in (ROOT / '.github/workflows').glob('*.yml'):
-            source = path.read_text(encoding='utf-8')
-            triggers = source.split('\njobs:')[0]
-            if re.search(r'^  pull_request:?\s*$', triggers, re.M):
-                expected.add(re.search(r'^name:\s*(.+?)\s*$', source, re.M).group(1).strip('\'"'))
+        expected = digest.pull_request_workflows(ROOT)
         self.assertIn('CI', expected)
-        self.assertEqual(listed, expected, 'Add new pull_request workflows to agent-ci-digest.yml workflows:')
+        self.assertEqual(digest.listed_workflows(self.text), expected,
+                         'Run: python3 scripts/agent_preflight.py generated --write')
+
+    def test_sync_rewrites_only_the_trigger_list(self):
+        import shutil
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            shutil.copytree(ROOT / '.github/workflows', root / '.github/workflows')
+            (root / '.github/workflows/new-check.yml').write_text(
+                'name: New check\non:\n  pull_request:\n    branches: [master]\njobs:\n  a:\n    runs-on: x\n',
+                encoding='utf-8')
+            self.assertEqual(digest.sync_workflows(root)[0], True)
+            stale, text = digest.sync_workflows(root, write=True)
+            self.assertTrue(stale)
+            self.assertIn('New check', digest.listed_workflows(text))
+            self.assertEqual(digest.sync_workflows(root)[0], False)
+            before, after = self.text.split('    types: [completed]'), text.split('    types: [completed]')
+            self.assertEqual(before[1], after[1])
 
     def test_short_job_and_usage_doc(self):
         self.assertIn('timeout-minutes: 10', self.text)

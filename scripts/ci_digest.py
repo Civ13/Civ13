@@ -14,11 +14,13 @@ runs pull request code.
 
     python3 scripts/ci_digest.py --sha <head> [--pr N] [--report-pending]
     python3 scripts/ci_digest.py --sha <head> --dry-run   # print, post nothing
+    python3 scripts/ci_digest.py sync-workflows [--write]  # trigger list
 """
 import argparse
 import hashlib
 import json
 import os
+from pathlib import Path
 import re
 import sys
 import time
@@ -336,7 +338,53 @@ def digest_once(gh, args, run_url):
     return state
 
 
+ROOT = Path(__file__).resolve().parents[1]
+DIGEST_WORKFLOW = '.github/workflows/agent-ci-digest.yml'
+LIST = re.compile(r'(  workflow_run:\n    workflows:\n)((?:      - .+\n)+)')
+
+
+def pull_request_workflows(root=ROOT):
+    """Names of every workflow with a pull_request trigger."""
+    names = set()
+    for path in sorted((root / '.github/workflows').glob('*.yml')):
+        source = path.read_text(encoding='utf-8')
+        if re.search(r'^  pull_request:?\s*$', source.split('\njobs:')[0], re.M):
+            names.add(re.search(r'^name:\s*(.+?)\s*$', source, re.M).group(1).strip('\'"'))
+    return names
+
+
+def listed_workflows(text):
+    return set(re.findall(r'^      - (.+)$', LIST.search(text).group(2), re.M))
+
+
+def sync_workflows(root=ROOT, write=False):
+    """Return (stale, text). With write, rewrite the digest's trigger list to
+    every pull_request workflow so a new workflow is watched automatically."""
+    path = root / DIGEST_WORKFLOW
+    text = path.read_text(encoding='utf-8')
+    expected = pull_request_workflows(root)
+    stale = listed_workflows(text) != expected
+    if stale and write:
+        block = ''.join(f'      - {name}\n' for name in sorted(expected, key=str.lower))
+        text = LIST.sub(lambda m: m.group(1) + block, text, count=1)
+        path.write_text(text, encoding='utf-8')
+    return stale, text
+
+
+def sync_main(argv):
+    parser = argparse.ArgumentParser(prog='ci_digest.py sync-workflows')
+    parser.add_argument('--write', action='store_true')
+    args = parser.parse_args(argv)
+    stale, _ = sync_workflows(write=args.write)
+    state = 'regenerated' if stale and args.write else 'STALE (rerun with --write)' if stale else 'current'
+    print(f'{DIGEST_WORKFLOW} trigger list: {state}')
+    return 1 if stale and not args.write else 0
+
+
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ['sync-workflows']:
+        return sync_main(argv[1:])
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--sha', required=True)
     parser.add_argument('--pr', type=int)
