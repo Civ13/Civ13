@@ -1368,7 +1368,7 @@
 #ifdef EXTRACTION_SURVIVAL_MAP
 #include "maps\extraction\industrial_district.dmm"
 #else
-#include "maps\nomads\nomads.dmm"
+#include "maps\nomads\nomads_gaia.dmm"
 #endif
 #endif
 // END_SELECTED_MAP
