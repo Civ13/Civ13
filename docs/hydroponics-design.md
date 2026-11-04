@@ -1,12 +1,45 @@
 # Modern hydroponics: accepted direction and implementation contract
 
-Status: **design documentation; no tray implementation or activation.**
-This records the accepted #3050 choices and the remaining integration decisions.
-Merging this document does not complete #3050 or admit live runtime execution.
+Status: **implemented** in `code/modules/1713/hydroponics.dm` (roadmap plan,
+2026-11-04), with the focused probe in `tests/hydroponics`. The sections below
+keep the original contract; this first section records how it was resolved.
 
-Source reconciliation: master `0f12bdd809f93ea8d8d6c631332404a894eb55df`.
-The source links below are immutable. Test requirements are acceptance criteria,
-not claims that those tests have run.
+## Implementation (2026-11-04)
+
+- **Crop ownership.** The tray holds its crop as plain saved state (crop id,
+  stage, partial cycle). It never creates an `/obj/structure/farming/plant`, so
+  no outdoor growth chain, soil rule or second sleeper exists. One processing
+  registration per planted tray; no catch-up loop.
+- **Transaction contract.** Completion-time debit (candidate 2). Progress only
+  accrues on steps where the tray holds at least 1 N and 2 U and its cable
+  accepts the 5 PU reservation. Supplies only fall at completion, so a cycle
+  that could pay at every step can pay at the end. Without power or supply the
+  cycle pauses and keeps its progress. Offline time earns nothing.
+- **Reservoir.** 60 U combined water and nutrient. Water is poured from any open
+  container; only water leaves the donor, and only the measured removal is
+  credited. Nutrient: one compost item (from a compost bin) dissolves into 3 N.
+  A crop costs 6 N, so about two composts; composting a crop's own harvest
+  returns roughly 3.6 N, so there is no closed-loop gain.
+- **Fragile crops.** Tomato and beans die after ten productive-clock minutes
+  without the 2 U water a cycle needs. Other crops, and nutrient or power
+  shortages, only pause.
+- **Weather.** A tray outdoors with no roof loses its crop (growing or ready) to
+  the same snowstorm and sandstorm that kill field crops. Ready crops otherwise
+  never expire.
+- **Research and construction.** New Agriculture-tree node `hydroponics`
+  (era 6, bench tier 5, 305 ticks, prerequisites Advanced Agriculture and
+  Electricity). Like the rest of that tree it must be researched; the era never
+  grants it. A tray frame costs 4 steel sheets; fitting 2 glass sheets and then
+  1 cable coil finishes the tray. Dismantling refunds 2 steel and 1 glass and
+  drains the reservoir; a planted or cabled tray refuses to be dismantled.
+- **Harvest.** Hand or knife/hatchet/scythe on a ready crop gives 2 seeds and
+  1-3 produce on the tray's tile, once. A knife clears a growing or dead crop.
+- **Saves.** Crop, stage, reservoir and partial cycle are saved; the clock
+  anchor, processing membership and power lease are runtime-only. Loading
+  clamps values, rejoins the cable on the tray's tile and registers once.
+
+Not verified: real client appearance and interaction, the live scheduler
+cadence, and a real save round trip.
 
 ## Accepted user decisions
 
