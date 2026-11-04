@@ -151,7 +151,8 @@ SUITES = {
 
     # Stdlib-only native fixture preparation/protocol/supervisor contracts.
     # No compiler, daemon, client, workflow dispatch or installer execution.
-    'tree_refresh_native_preparation': {'files': ('tests/tree_refresh_native/test_harness.py',),
+    'tree_refresh_native_preparation': {'files': ('tests/tree_refresh_native/test_harness.py',
+                                                  'tests/tree_refresh_native/test_d3dx_data.py'),
         'paths': ('tests/tree_refresh_native/',), 'shared_paths': (
             '.github/workflows/tree-refresh-native.yml',
             'tests/human_subtile/run.py', 'tests/human_subtile/run-npc.py',
@@ -159,7 +160,8 @@ SUITES = {
             'tests/human_subtile/native_1688/windows.py',
             'tests/human_subtile/native_1688/owned_job.py',
             'tests/human_subtile/native_1688/guard_config.py', 'scripts/native_fixture.py',
-            'tools/byond/version.json', 'code/game/mob/mob_movement.dm',
+            'tools/byond/version.json', 'tools/byond/d3dx-package.json',
+            'code/game/mob/mob_movement.dm',
             'code/datums/observation/moved.dm', 'code/modules/client/client_procs.dm',
             'code/modules/visibility/los_context.dm', 'code/modules/visibility/los_lifecycle.dm',
             'code/modules/visibility/los_presenter.dm', 'code/modules/visibility/root_tree_presenter.dm',

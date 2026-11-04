@@ -457,7 +457,7 @@ class DependencyAudit(unittest.TestCase):
 
     def test_audit_mode_has_no_native_fixture_entry_or_permission_expansion(self):
         workflow=(ROOT/'.github/workflows/tree-refresh-native.yml').read_text();job=workflow.split('  dependency-audit:\n',1)[1]
-        self.assertIn("inputs.mode != 'dependency-audit'",workflow.split('  dependency-audit:\n',1)[0])
+        self.assertIn("(inputs.mode == 'prepare' || inputs.mode == 'execute')",workflow.split('  dependency-audit:\n',1)[0])
         self.assertIn('timeout-minutes: 5',job);self.assertIn('dependency_audit.py',job);self.assertNotIn('runner.py',job);self.assertNotIn('prepare.py',job)
         self.assertIn('contents: read',workflow);self.assertNotIn('contents: write',workflow)
         import ast
