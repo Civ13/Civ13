@@ -22,6 +22,12 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-04: movement during saves -->
+Players keep walking during ordinary saves; human saves are tile-only (no
+step offsets) and the post-walk sweep places any `/mob/living` that stepped
+onto an already-saved tile. See `docs/human-save-motion-candidate.md`. Do not
+reintroduce a movement freeze to hide a capture race; fix the capture.
+
 <!-- 2026-11-04: native zone acceptance (#3311) -->
 `tests/zone_persistence/run_native.py --all-controls` runs the synthetic zone
 modes natively (moving-save-chunks isolated-native job). A switched roof's base

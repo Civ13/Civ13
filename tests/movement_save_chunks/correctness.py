@@ -17,7 +17,7 @@ def load(name):
     spec.loader.exec_module(module)
     return module
 
-SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'legacy-step', 'legacy-cross-z', 'legacy-backstep', 'sweep-reference', 'sweep-companion', 'sweep-container', 'sweep-cross-z', 'uncaptured-delete', 'yield', 'depth')
+SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'legacy-step', 'legacy-cross-z', 'legacy-backstep', 'walker-backstep', 'sweep-reference', 'sweep-companion', 'sweep-container', 'sweep-cross-z', 'uncaptured-delete', 'yield', 'depth')
 ROSTER_ANCHOR = '/map_storage/proc/prepare_moving_save_roster()\n'
 SWEEP_ANCHOR = '/map_storage/proc/sweep_uncaptured_animals(savefile/F)\n'
 ORIGIN_ANCHOR = '''\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null

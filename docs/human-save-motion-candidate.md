@@ -1,9 +1,26 @@
 # Tile-only human save candidate
 
-Status: experimental and default off. `CIV13_HUMAN_SPATIAL_EXPERIMENTAL` is
-not enabled in ordinary builds. The synthetic results below apply to their
-named historical commit, not to a later integration, a connected client or a
-live Gaia session. Enabling or deploying the feature is a separate decision.
+<!-- 2026-11-04: players keep moving during ordinary saves -->
+Ordinary builds no longer freeze human movement during a world save. Same-z
+walking, smooth (sub-tile) steps and crawling continue; cross-z transfers,
+protected sleep transfers and pull-pair claims stay blocked, and loads or
+recovery holds still stop motion. Human saves are tile-only in every build:
+`step_x`/`step_y` are never exported, `before_save` no longer cancels a step
+or refuses an in-flight pulse, and a body saved mid-step loads at zero offset
+on the tile it occupied when its entry was written. Historical exact-offset
+capsules remain readable. The ordinary tile walk keeps the first captured
+parent edge when a body steps later (`add_export_content`,
+`settled_child_relocation`), and `sweep_uncaptured_animals` now covers every
+`/mob/living`, so a player who steps onto an already-saved tile is still saved
+once. The `walker-backstep` scenario in `tests/movement_save_chunks` fails
+without that sweep. The heavier experimental roster and post-write proofs
+below remain behind the flag: they read whole level files and require format
+3, so they are not compatible with low-memory format 4 saves.
+
+Status of the flagged roster: experimental and default off.
+`CIV13_HUMAN_SPATIAL_EXPERIMENTAL` is not enabled in ordinary builds. The
+synthetic results below apply to their named historical commit, not to a later
+integration, a connected client or a live Gaia session.
 
 A save captures a supported, directly located moving human's actual turf at a
 between-pulses acknowledgement. The owner, turf identity and coordinates are

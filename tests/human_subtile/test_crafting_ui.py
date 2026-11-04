@@ -484,12 +484,20 @@ class CraftingMovementContracts(unittest.TestCase):
             'if (!enabled && (step_x || step_y))',
             'human_subtile_transaction || human_subtile_pulse || subtile_pull_ownership.owners[src]',
             'return human_subtile_pull_travel(n, direct, deadline)',
-            'human_subtile_position = human_subtile_snapshot()',
             'T.initial_prone = prone',
             'T.initial_lying = lying',
             'T.wait_paid_interval()',
         ):
             self.assertIn(contract, source)
+        # Saves are tile-only and never stop a walking body: no offset capsule
+        # is exported, and movement offsets are always runtime-only.
+        save = source.split('/mob/living/human/before_save()', 1)[1].split('/mob/living/human/proc/human_subtile_destination_clear', 1)[0]
+        self.assertNotIn('human_subtile_position = human_subtile_snapshot()', save)
+        self.assertNotIn('human_subtile_transaction.cancelled = TRUE', save)
+        self.assertIn('human_subtile_position = null', save)
+        runtime = source.split('/mob/living/human/persistence_runtime_var(key)', 1)[1].split('/mob/living/human/proc/human_subtile_prepare_import', 1)[0]
+        self.assertIn('\tif (key == "step_x" || key == "step_y") return TRUE\n', runtime)
+        self.assertNotIn('#ifdef', runtime)
 
 
     def test_atlas_and_focus_paths_are_not_rewritten(self):
