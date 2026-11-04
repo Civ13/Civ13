@@ -26,6 +26,10 @@ protease from one unspoiled papaya. Success consumes the source; nonempty kits,
 unsupported and spoiled sources consume nothing. Pour extracts into the bench
 before reusing the kit. These yields are game choices.
 
+Use a knife on a bone stack to clean one bone. An empty extraction kit consumes
+one cleaned bone for four collagen, which follows the existing gelatin chain.
+Cleaned bones are separate from the bone material used in ordinary crafting.
+
 Papaya seeds enter normal wild seed gathering in jungle/savanna. Plant and tend
 them through normal farming, then harvest with a knife, hatchet, bayonet or scythe
 for fruit and replacement seeds. Papaya reuses the existing orange fruit/tree

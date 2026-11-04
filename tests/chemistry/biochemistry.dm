@@ -19,6 +19,7 @@
 	biochemistry_gelatin_checks()
 	biochemistry_wood_pulp_checks()
 	biochemistry_wood_fiber_checks()
+	biochemistry_clean_bone_checks()
 	return TRUE
 
 /proc/biochemistry_wood_fiber_checks()
@@ -60,6 +61,23 @@
 	qdel(kit)
 	qdel(chips)
 	qdel(C)
+/proc/biochemistry_clean_bone_checks()
+	var/turf/site = locate(24, 20, 1)
+	var/mob/living/human/chemistry_builder/builder = new(site)
+	var/obj/item/weapon/material/kitchen/utensil/knife/knife = new(site)
+	var/obj/item/stack/material/bone/bones = new(site, 2, FALSE)
+	bones.attackby(knife, builder)
+	var/obj/item/stack/cleaned_bones/cleaned = locate() in site
+	chemistry_assert(bones.amount == 1 && cleaned && cleaned.amount == 1, "Knife cleaning did not pay one bone")
+	var/obj/item/weapon/reagent_containers/glass/extraction_kit/kit = new(site)
+	kit.reagents.add_reagent("water", 1)
+	chemistry_assert(!kit.extract_clean_bone(cleaned) && cleaned.amount == 1, "Occupied kit consumed cleaned bone")
+	kit.reagents.clear_reagents()
+	chemistry_assert(kit.extract_clean_bone(cleaned) && !cleaned.loc && kit.reagents.get_reagent_amount("collagen") == 4, "Cleaned bone collagen yield")
+	qdel(kit)
+	qdel(bones)
+	qdel(knife)
+	qdel(builder)
 
 /proc/biochemistry_build(result_path, material_path, stack_path, cost, x, faction = "global")
 	var/material/M = new material_path()
