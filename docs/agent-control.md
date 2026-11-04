@@ -110,7 +110,8 @@ cooldown, combat and crafting rules apply.
   With `job` (a late-join title on the current map, such as `Nomad`), the
   character joins like a late joiner instead: that job's clothes, kit, name
   and spawn point through the normal `EquipRank` path. An unknown job is
-  refused with the list of open ones.
+  refused with the list of open ones. Spawned characters get a mind (key
+  `agent_<name>`, never active) so job notes have somewhere to go.
 - **Player handover.** With `allow_handover` in the config, players get a
   **Toggle AI Control** verb (OOC). After they confirm, any agent with the
   `characters` scope can drive that character until the player uses the verb
@@ -186,11 +187,15 @@ survival primer (including the stone-age start: flint from rocks on grab
 intent, sharpening, branches, sticks and leaves), matching lines from
 `config/tips.txt`, and a rule not to take
 from other players' camps. It answers with one to three steps and a note to
-itself; the autopilot runs them through `character_queue` and shows the next
+itself. Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
+target; the autopilot swaps to the right hand and intent before the click and
+refuses a skill whose tool is not in either hand; the autopilot runs them through `character_queue` and shows the next
 turn what changed (position, hands, clothes, carried items, water, nutrition)
 and warns when the same action keeps repeating. It waits while the character
 is busy with timed work (`self.busy`), and leaves a target out of the lists
-for a while after three clicks on it changed nothing and drew no message. Only speech and lines about
+for a while after three clicks on it changed nothing and drew no message, or
+after five turns on it within eight steps. Each turn's changes and messages are
+printed to the run log. Only speech and lines about
 the character reach the model, so other players' work messages do not crowd
 the window. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,

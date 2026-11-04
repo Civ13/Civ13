@@ -23,6 +23,19 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+SKILLS = {
+    # skill: (what the active hand must hold, intent, clicks)
+    "find_flint": ("empty", "grab", 1),
+    "sharpen_flint": ("flint", "help", 3),
+    "break_branch": ("empty", "harm", 1),
+    "pick_leaves": ("empty", "grab", 1),
+    "make_stick": ("empty", "harm", 1),
+    "sharpen_stick": ("sharpened flint", "help", 1),
+    "cut_grass": ("sharpened flint", "help", 1),
+    "chop": ("axe", "harm", 1),
+    "drink": ("empty", "grab", 1),
+    "pick_up": ("empty", "help", 1),
+}
 ACTIONS = ("move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "wait")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
@@ -34,7 +47,13 @@ TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick"
 SYSTEM = """You control one character in Civ13, a multiplayer survival and civilization game. Play it like a real player.
 Reply with one JSON object and nothing else:
 {"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words"}
-Each step is {"do": one of move|face|say|emote|click|use|craft|equip|examine|drop|swap_hand|intent|wait,
+Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent and hand for you, then clicks the target:
+ find_flint (a rock: search it for flint), sharpen_flint (a rock: hit it with your flint until sharp),
+ break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a bare branch: strip it into a stick),
+ sharpen_stick (a stick: sharpen it with sharpened flint), cut_grass (a grass tile: cut grass with sharpened flint),
+ chop (a tree: chop it with an axe or hatchet), drink (a water tile: drink), pick_up (a loose item: pick it up).
+A skill ends the plan; you see the result next turn.
+Other steps are {"do": one of move|face|say|emote|click|use|craft|equip|examine|drop|swap_hand|intent|wait,
  "dir": north|south|east|west (move/face), "text": "..." (say/emote, short),
  "target": a number from the lists (click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
  "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second)}.
@@ -210,6 +229,14 @@ def parse_decision(text, refs):
     if not isinstance(data, dict):
         return None
     action = str(data.get("do", "")).lower()
+    if action in SKILLS:
+        try:
+            index = int(data.get("target"))
+        except (TypeError, ValueError):
+            return None
+        if not 1 <= index < len(refs) or not refs[index]:
+            return None
+        return {"skill": action, "target": refs[index]}
     if action not in ACTIONS or action == "wait":
         return None
     args = {"do": action}
@@ -268,7 +295,53 @@ def parse_plan(text, refs):
         if step is None:
             break  # keep the valid prefix; later steps may depend on the bad one
         plan.append(step)
+        if "skill" in step:
+            break  # the hands change; plan the next step after seeing the result
     return plan
+
+
+def _holds(name, need):
+    name = str(name or "").lower()
+    if need == "flint":
+        return "flint" in name and "sharpened" not in name
+    if need == "axe":
+        return "axe" in name or "hatchet" in name
+    return need in name
+
+
+def expand_skill(step, self_state):
+    """Turn a skill into queue steps that set the hand and intent first. Returns (steps, error)."""
+    need, intent, clicks = SKILLS[step["skill"]]
+    left, right = _name(self_state.get("left_hand")), _name(self_state.get("right_hand"))
+    active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
+    steps = []
+    if need == "empty":
+        if active != "empty":
+            if other != "empty":
+                return [], f"{step['skill']} needs an empty hand, but you hold {left} and {right}: equip or drop one first"
+            steps.append({"do": "swap_hand"})
+    elif not _holds(active, need):
+        if not _holds(other, need):
+            return [], f"{step['skill']} needs {need} in a hand"
+        steps.append({"do": "swap_hand"})
+    if self_state.get("intent") != intent:
+        steps.append({"do": "intent", "intent": intent})
+    steps.extend({"do": "click", "target": step["target"]} for _ in range(clicks))
+    return steps, ""
+
+
+def expand_plan(plan, self_state):
+    """Queue steps for a parsed plan, expanding skills. Returns (steps, error)."""
+    steps = []
+    for step in plan:
+        if "skill" in step:
+            expanded, error = expand_skill(step, self_state)
+            if error:
+                return steps, error
+            steps.extend(expanded)
+        else:
+            steps.append(step)
+    return steps, ""
 
 
 def wait_for_queue(client, character, queue_since, limit=30.0):
@@ -371,6 +444,7 @@ def run(client, args, character, token):
     no_effect = {}  # target ref -> consecutive turns where clicking it changed nothing
     ignored = {}  # target ref -> step until which it is left out
     last_targets = []
+    target_turns = []
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
         if deadline and time.monotonic() > deadline:
@@ -386,6 +460,8 @@ def run(client, args, character, token):
         if previous_self is not None:
             change = describe_change(previous_self, self_state)
             feedback += f"\nWhat changed: {change}"
+            heard = relevant_messages(observation.get("messages", []), self_state.get("name"), limit=4)
+            print(f"  changed: {change}" + (f" | heard: {' / '.join(heard)}" if heard else ""))
             # A click counts as useless only when nothing changed and the game said nothing to us.
             useless = change == "nothing changed" and not relevant_messages(observation.get("messages", []), self_state.get("name"))
             for ref in last_targets:
@@ -407,7 +483,14 @@ def run(client, args, character, token):
         history.append({"role": "assistant", "content": answer})
         note = parse_note(answer) or note
         plan = parse_plan(answer, refs)
-        last_targets = [item["target"] for item in plan if item.get("do") == "click" and item.get("target") != refs[0]]
+        last_targets = [item["target"] for item in plan if (item.get("do") == "click" or "skill" in item) and item.get("target") != refs[0]]
+        # Many turns on one target without moving on is a loop even when the game keeps answering.
+        for ref in last_targets:
+            target_turns.append((step, ref))
+        recent = [ref for turn, ref in target_turns if turn > step - 8]
+        for ref in set(last_targets):
+            if recent.count(ref) >= 5:
+                ignored[ref] = step + 6
         previous_self = self_state
         feedback = ""
         if not plan:
@@ -415,7 +498,13 @@ def run(client, args, character, token):
             feedback = "\nYour reply had no valid step, so nothing happened."
         else:
             signatures.extend(f"{self_state.get('x')},{self_state.get('y')}:{json.dumps(item, sort_keys=True)}" for item in plan)
-            queued = client.request("character_queue", {"character": character, "actions": plan})
+            steps, error = expand_plan(plan, self_state)
+            if error:
+                print(f"step {step}: {json.dumps(plan)} -> not possible: {error}")
+                feedback = f"\nThat was not possible: {error}"
+                time.sleep(args.interval)
+                continue
+            queued = client.request("character_queue", {"character": character, "actions": steps})
             if not queued.get("ok"):
                 outcome = f"{queued.get('error')} {queued.get('detail', '')}"
                 print(f"step {step}: {json.dumps(plan)} -> {outcome}")

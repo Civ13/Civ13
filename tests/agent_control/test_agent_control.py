@@ -235,6 +235,7 @@ class SecurityContractTests(unittest.TestCase):
     def test_characters_join_and_craft_like_players(self):
         chars = dm_source("agent_characters.dm")
         spawn = re.search(r"/datum/agent_control/proc/act_character_spawn\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertLess(spawn.index("agent_mind.transfer_to(M)"), spawn.index("EquipRank"))  # job notes need a mind
         self.assertIn("agent_job_allowed(job_title)", spawn)
         self.assertIn("job_master.EquipRank(M, job_title, TRUE)", spawn)
         self.assertLess(spawn.index("EquipRank"), spawn.index("catch(var/exception/E)"))  # a failed join cleans up the body
@@ -318,6 +319,23 @@ class AutopilotTests(unittest.TestCase):
         self.assertTrue(autopilot.is_repeating(["a", "b", "a", "c", "a"]))
         self.assertFalse(autopilot.is_repeating(["a", "b", "c", "d"]))
         self.assertEqual(autopilot.parse_note('{"plan": [], "note": "build a hut"}'), "build a hut")
+
+    def test_skills_set_hand_and_intent_first(self):
+        refs = ["[0x9]", "[0x1]"]
+        plan = autopilot.parse_plan('{"plan": [{"do": "find_flint", "target": 1}, {"do": "move", "dir": "north"}]}', refs)
+        self.assertEqual(plan, [{"skill": "find_flint", "target": "[0x1]"}])  # a skill ends the plan
+        self.assertIsNone(autopilot.parse_decision('{"do": "find_flint", "target": 0}', refs))  # not on yourself
+        holding = {"active_hand": "right", "right_hand": {"name": "flint"}, "left_hand": None, "intent": "help"}
+        steps, error = autopilot.expand_plan(plan, holding)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "intent", "intent": "grab"}, {"do": "click", "target": "[0x1]"}])
+        steps, error = autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], holding)
+        self.assertEqual(steps, [{"do": "click", "target": "[0x1]"}] * 3)
+        sharp = {"active_hand": "left", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "stick"}, "intent": "help"}
+        self.assertIn("needs flint", autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], sharp)[1])
+        self.assertIn("equip or drop", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], sharp)[1])
+        steps, _ = autopilot.expand_plan([{"skill": "chop", "target": "[0x1]"}], {"active_hand": "left", "left_hand": None, "right_hand": {"name": "flint hatchet"}, "intent": "harm"})
+        self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
 
     def test_ignored_targets_are_left_out(self):
         text, refs = autopilot.summarize(self.OBSERVATION, ignored={"[0x1]": 9})

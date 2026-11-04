@@ -109,6 +109,12 @@
 	var/mob/living/M
 	try
 		M = new path(T)
+		// A mind holds the job's notes; without one the join path complains it is missing.
+		if (!M.mind)
+			var/datum/mind/agent_mind = new /datum/mind("agent_[A.name]")
+			agent_mind.name = M.real_name
+			agent_mind.original = M
+			agent_mind.transfer_to(M)
 		if (job_title && !job_master.EquipRank(M, job_title, TRUE))
 			agent_fail("bad_job", "[job_title] could not be equipped")
 		if (istext(req["name"]) && length(trim(req["name"])))
