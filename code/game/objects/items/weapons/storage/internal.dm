@@ -40,6 +40,11 @@
 		if (!( istype(over_object, /obj/screen) ))
 			return TRUE
 
+		// Anything other than taking the worn master item into a hand goes to the master
+		// item's parent MouseDrop(), which moves it between inventories by drag and drop.
+		if (!istype(over_object, /obj/screen/inventory/hand) || master_item.loc != user)
+			return TRUE
+
 		//makes sure master_item is equipped before putting it in hand, so that we can't drag it into our hand from miles away.
 		//there's got to be a better way of doing this...
 		if (!(master_item.loc == user) || (master_item.loc && master_item.loc.loc == user))

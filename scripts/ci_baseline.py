@@ -85,6 +85,15 @@ SUITES = {
             'code/modules/1713/farmers_almanac.dm',
             'code/modules/1713/weather.dm',
             'code/game/objects/farming.dm')},
+    # Inventory drag-and-drop transfer source contracts; no BYOND runtime.
+    'inventory_drag': {'files': ('tests/inventory_drag/test_inventory_drag.py',),
+        'paths': ('tests/inventory_drag/',), 'shared_paths': (
+            'code/_onclick/inventory_drag.dm',
+            'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/objects/items/weapons/storage/internal.dm',
+            'code/game/objects/items/clothing/clothing_accessories.dm',
+            'code/game/objects/structures/key_doors/keychain.dm',
+            'code/game/objects/structures/mail.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (

@@ -196,6 +196,9 @@
 	add_fingerprint(user)
 	return TRUE
 
+/obj/item/weapon/storage/envelope/accepts_inventory_drag(obj/item/W, mob/user)
+	return opened
+
 /obj/item/weapon/storage/envelope/attackby(obj/item/W as obj, mob/user as mob)
 	if(!opened)
 		if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
