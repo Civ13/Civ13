@@ -95,13 +95,25 @@
 		options[R.name] = R.id
 	options["Make cloth from rayon fibre"] = "cloth_rayon"
 	options["Make cloth from lyocell fibre"] = "cloth_lyocell"
+	options["Make stoppered plastic bottle"] = "polymer_bottle"
+	options["Make plastic storage bag"] = "polymer_bag"
+	options["Make polyethylene sheet"] = "polyethylene_sheet"
+	options["Make polypropylene sheet"] = "polypropylene_sheet"
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
 	var/turf/user_turf = get_turf(user)
 	var/turf/bench_turf = get_turf(src)
 	if(!choice || !user || user.stat || user.restrained() || !user_turf || !bench_turf || user_turf.z != bench_turf.z || get_dist(user_turf, bench_turf) > 1)
 		return
 	var/selected = options[choice]
-	var/succeeded = selected == "cloth_rayon" ? finish_wood_fiber("rayon_fiber") : (selected == "cloth_lyocell" ? finish_wood_fiber("lyocell_fiber") : synthesize(selected))
+	var/succeeded
+	if(selected == "cloth_rayon")
+		succeeded = finish_wood_fiber("rayon_fiber")
+	else if(selected == "cloth_lyocell")
+		succeeded = finish_wood_fiber("lyocell_fiber")
+	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet"))
+		succeeded = finish_polymer_product(selected)
+	else
+		succeeded = synthesize(selected)
 	if(succeeded)
 		to_chat(user, SPAN_NOTICE("The selected game reaction completes."))
 	else
@@ -126,6 +138,40 @@
 	collector.reagents.remove_reagent(id, 4)
 	new /obj/item/stack/material/cloth(loc, 1)
 	return TRUE
+
+// Paid polymer batches become existing functional containers.
+/obj/structure/reaction_bench/proc/finish_polymer_product(product)
+	if(gcDestroyed || gc_destroyed || !collector || collector.gcDestroyed || collector.gc_destroyed || collector.loc != src || !(collector.flags & NOREACT) || !collector.reagents || !isturf(loc))
+		return FALSE
+	if(product == "polymer_bottle")
+		if(!collector.reagents.has_reagent("polyethylene", 4) || !collector.reagents.has_reagent("butylrubber", 1))
+			return FALSE
+		collector.reagents.remove_reagent("polyethylene", 4)
+		collector.reagents.remove_reagent("butylrubber", 1)
+		new /obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/stoppered(loc)
+		return TRUE
+	if(product == "polyethylene_sheet" || product == "polypropylene_sheet")
+		var/plastic = product == "polyethylene_sheet" ? "polyethylene" : "polypropylene"
+		if(!collector.reagents.has_reagent(plastic, 4))
+			return FALSE
+		collector.reagents.remove_reagent(plastic, 4)
+		new /obj/item/stack/material/plastic(loc, 1)
+		return TRUE
+	if(product == "polymer_bag")
+		if(!collector.reagents.has_reagent("polypropylene", 4))
+			return FALSE
+		collector.reagents.remove_reagent("polypropylene", 4)
+		new /obj/item/weapon/evidencebag(loc)
+		return TRUE
+	return FALSE
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/stoppered
+	name = "stoppered plastic bottle"
+	desc = "A plastic bottle closed with a butyl rubber stopper."
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/stoppered/New()
+	..()
+	flags &= ~OPENCONTAINER
 
 /obj/structure/reaction_bench/New()
 	..()
