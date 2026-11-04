@@ -1,0 +1,35 @@
+name: Transfer storage
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - tools/transfer_storage/**
+      - tests/transfer_storage/**
+      - .github/workflows/transfer-storage.yml
+  push:
+    branches: [master]
+    paths:
+      - tools/transfer_storage/**
+      - tests/transfer_storage/**
+      - .github/workflows/transfer-storage.yml
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Store crash and retry tests
+        run: python -I -B tests/transfer_storage/run.py
