@@ -29,6 +29,7 @@ PRODUCTION = (
     'code/predefines.dm',
     'code/modules/multiz/world_z_budget.dm',
     'code/modules/persistence/functions.dm',
+    'code/modules/persistence/debug_lossy.dm',
     'code/modules/persistence/player_reclaim.dm',
     'code/modules/persistence/saving.dm',
     'code/modules/persistence/loading.dm',
@@ -38,10 +39,6 @@ BASELINE_DEFECTS = {
     'move-direct': {'pattern': r'FAIL: movement export rejected: Durable metadata atom was exported more than once: type=/obj/item/cross_target first_z=1 first_ref=[1-9][0-9]* current_z=2 current_ref=[1-9][0-9]* native_z=2 turf_z=2'},
     'move-nested': {'pattern': r'FAIL: movement export rejected: Durable metadata atom was exported more than once: type=/obj/item/cross_target first_z=1 first_ref=[1-9][0-9]* current_z=2 current_ref=[1-9][0-9]* native_z=0 turf_z=2'},
     'same-level': 'FAIL: movement serialized more than one spatial parent',
-    'field-nested': 'FAIL: foreign-level saved-variable reference was accepted',
-    'field-backward-direct': 'FAIL: foreign-level saved-variable reference was accepted',
-    'field-backward-nested': 'FAIL: foreign-level saved-variable reference was accepted',
-    'unplaced': 'FAIL: unplaced first capture was silently skipped or duplicated',
 }
 CONTROLS = {
     'first-capture': ('saving.dm',
@@ -55,8 +52,9 @@ CONTROLS = {
                        'if(node["kind"] == "entry" && !node["ref"])',
                        'if(FALSE)', 'missing-target', 'FAIL: missing durable target was accepted'),
     'field-level': ('saving.dm',
-                    'if(movable.z && movable.z != saving_z)',
-                    'if(FALSE)', 'field-direct', 'FAIL: foreign-level saved-variable reference was accepted'),
+                    'if(istype(value, /atom/movable) && drop_cross_level_reference(value))',
+                    'if(FALSE)', 'field-direct',
+                    {'pattern': r'FAIL: stale cross-level field aborted the save: Cross-level object reference cannot be represented in per-level save files: .*'}),
 }
 
 

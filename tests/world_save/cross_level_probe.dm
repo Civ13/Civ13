@@ -199,10 +199,15 @@ var/list/cross_observations = list()
 		holder.payload = list("wrapper" = inner)
 	else
 		holder.payload = cross_target
+	// A stale field naming an object on another level is saved as null and
+	// logged; it must not abort the world save or change the live field.
 	var/reason = cross_try_save()
-	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "foreign-level saved-variable reference was accepted")
-	if(!nested && !backward)
-		cross_check(findtext(reason, "saved_z=1 native_z=2 turf_z=2 source_type=/obj/cross_holder source_field=payload"), "cross-level diagnostic omitted its source field context")
+	cross_check(!reason, "stale cross-level field aborted the save: [reason]")
+	cross_check(fexists("map_saves/save_complete.txt"), "cross-level field save left no completion marker")
+	cross_check(!persistence_active_operation && !persistence_save_in_progress, "cross-level field save retained operation admission")
+	if(!backward)
+		var/live = nested ? holder.payload["wrapper"]["target"] : holder.payload
+		cross_check(live == cross_target, "save changed the live cross-level field")
 
 /proc/cross_check_unplaced()
 	cross_capture_target = FALSE
@@ -214,7 +219,10 @@ var/list/cross_observations = list()
 	cross_move_mode = "place"
 	var/reason = cross_try_save()
 	cross_check(cross_mutated, "unplaced first-capture scenario did not reach later placement")
-	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "unplaced first capture was silently skipped or duplicated")
+	// The target is captured once, by its own level; the holder's field on the
+	// other level is saved as null rather than aborting the save.
+	cross_check(!reason, "unplaced cross-level field aborted the save: [reason]")
+	cross_check(fexists("map_saves/save_complete.txt") && holder.payload == cross_target, "unplaced cross-level save did not complete or changed the live field")
 
 /proc/cross_check_missing()
 	cross_target = new(locate(1,1,1))
