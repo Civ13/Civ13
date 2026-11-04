@@ -82,6 +82,71 @@
 	reagent_state = SOLID
 	color = "#EEDD99"
 
+/datum/reagent/gelatin_foam
+	name = "Gelatin Foam"
+	id = "gelatin_foam"
+	description = "Whipped gelatin for the game's drying rack."
+	reagent_state = LIQUID
+	color = "#F4EBD0"
+
+/datum/chemical_reaction/gelatin_foam
+	name = "Gelatin foam"
+	id = "gelatin_foam"
+	result = "gelatin_foam"
+	required_reagents = list("gelatin" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/gelatin_foam/can_happen(datum/reagents/holder)
+	if(!..())
+		return FALSE
+	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
+	return istype(bench) && bench.collector == holder.my_atom
+
+/obj/item/stack/dry_gelatin
+	name = "dry gelatin"
+	singular_name = "dry gelatin batch"
+	desc = "Dried gelatin ready to cut into medical sheets."
+	icon = 'icons/obj/materials.dmi'
+	icon_state = "sheet-bone"
+	max_amount = 50
+	can_stack = TRUE
+	stacktype = /obj/item/stack/dry_gelatin
+	value = 0
+
+/obj/item/stack/dry_gelatin/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1))
+		var/turf/site = get_turf(src)
+		if(!user || user.stat || gcDestroyed || gc_destroyed || !site || !use(1))
+			return
+		new /obj/item/stack/gelatin_sheets(site, 1)
+		to_chat(user, SPAN_NOTICE("You cut the dry gelatin into a sheet."))
+		return
+	..()
+
+/obj/item/stack/gelatin_sheets
+	name = "gelatin sheets"
+	singular_name = "gelatin sheet"
+	desc = "A dried gelatin sheet that can be folded into a bandage."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "gauze"
+	max_amount = 50
+	can_stack = TRUE
+	stacktype = /obj/item/stack/gelatin_sheets
+	value = 0
+
+/obj/item/stack/gelatin_sheets/attack_self(mob/user)
+	var/turf/site = get_turf(src)
+	if(!user || user.stat || gcDestroyed || gc_destroyed || !site || !use(1))
+		return
+	new /obj/item/stack/medical/bruise_pack/bint/gelatin(site, 1)
+	to_chat(user, SPAN_NOTICE("You fold a gelatin sheet into a bandage."))
+
+/obj/item/stack/medical/bruise_pack/bint/gelatin
+	name = "gelatin bandages"
+	singular_name = "gelatin bandage"
+	desc = "A medical bandage cut from dried gelatin."
+	amount = 1
+
 /datum/reagent/purified_cellulose
 	name = "Purified Cellulose"
 	id = "purified_cellulose"

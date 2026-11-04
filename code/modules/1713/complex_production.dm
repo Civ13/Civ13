@@ -236,8 +236,17 @@
 	var/filled = 0
 	var/max_capacity = 3
 	var/drying = FALSE
+	var/gelatin_drying = FALSE
+	var/gelatin_batch_id = 0
 
 /obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
+	if(istype(W, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/container = W
+		if(load_gelatin(container))
+			to_chat(H, SPAN_NOTICE("You spread gelatin on the rack to dry."))
+		else
+			to_chat(H, SPAN_WARNING("The rack must be empty and the container must hold five units of gelatin or gelatin foam."))
+		return
 	if (filled >= max_capacity)
 		to_chat(H, SPAN_WARNING("\The [src] is full!"))
 		return
@@ -298,6 +307,42 @@
 			qdel(W)
 			dry_obj(producttype)
 			return
+// One paid batch occupies the rack until its callback completes.
+/obj/structure/drying_rack/proc/load_gelatin(obj/item/weapon/reagent_containers/glass/container)
+	if(gcDestroyed || gc_destroyed || !isturf(loc) || filled || gelatin_drying || !container || container.gcDestroyed || container.gc_destroyed || !container.reagents)
+		return FALSE
+	var/feedstock = container.reagents.has_reagent("gelatin", 5) ? "gelatin" : (container.reagents.has_reagent("gelatin_foam", 5) ? "gelatin_foam" : null)
+	if(!feedstock)
+		return FALSE
+	container.reagents.remove_reagent(feedstock, 5)
+	filled = 1
+	gelatin_drying = TRUE
+	var/batch_id = ++gelatin_batch_id
+	producttype = /obj/item/weapon/reagent_containers/glass
+	producttype_name = "gelatin"
+	spawn(1500)
+		finish_gelatin(batch_id)
+	return TRUE
+
+// A loaded rack resumes a paid batch; old callbacks cannot finish the new cycle.
+/obj/structure/drying_rack/after_load()
+	..()
+	if(gelatin_drying && filled == 1 && producttype == /obj/item/weapon/reagent_containers/glass)
+		var/batch_id = ++gelatin_batch_id
+		spawn(1500)
+			finish_gelatin(batch_id)
+
+/obj/structure/drying_rack/proc/finish_gelatin(batch_id)
+	if(gcDestroyed || gc_destroyed || batch_id != gelatin_batch_id || !gelatin_drying || filled != 1 || producttype != /obj/item/weapon/reagent_containers/glass || !isturf(loc))
+		return FALSE
+	gelatin_drying = FALSE
+	filled = 0
+	producttype = null
+	icon_state = "drying_rack"
+	new /obj/item/stack/dry_gelatin(loc, 1)
+	visible_message("The gelatin finishes drying.")
+	return TRUE
+
 /obj/structure/drying_rack/proc/dry_obj(var/obj_type = null)
 	spawn(1500) //2.5 minutes or so.
 		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/sausage/salted)
