@@ -1,7 +1,7 @@
 param(
     [switch]$DiggingBaseline,
     [Parameter(Mandatory)][string]$ByondBin,
-    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm','tests/stone_crushing/probe.dm','tests/hydroponics/probe.dm','tests/elevation_climate/probe.dm','tests/factory_automation/probe.dm','tests/factory_automation/belts_probe.dm','tests/factory_automation/routing_probe.dm','tests/factory_automation/machines_probe.dm','tests/ecology_spawning/probe.dm','tests/factory_automation/fabricators_probe.dm','tests/factory_automation/chemistry_probe.dm')]
+    [ValidateSet('tests/resource_extraction/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm','tests/stone_crushing/probe.dm','tests/hydroponics/probe.dm','tests/elevation_climate/probe.dm','tests/factory_automation/probe.dm','tests/factory_automation/belts_probe.dm','tests/factory_automation/routing_probe.dm','tests/factory_automation/machines_probe.dm','tests/ecology_spawning/probe.dm','tests/factory_automation/fabricators_probe.dm','tests/factory_automation/chemistry_probe.dm','tests/factory_automation/pipes_probe.dm')]
     [string]$Probe = 'tests/resource_extraction/probe.dm'
 )
 $ErrorActionPreference = 'Stop'
