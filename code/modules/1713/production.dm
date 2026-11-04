@@ -780,6 +780,8 @@
 		H.visible_message(
 			"<span class='notice'>You can see how [H.name] removes \a [S.name] from \the [src].</span>",
 			"<span class='notice'>You remove \a [S.name] from \the [src].")
+	else
+		update_icon() // nothing hangs here; drop any overlay left from an item that already left
 	return TRUE
 
 // Refill can restore encoded inputs without going through attackby admission.
@@ -925,16 +927,45 @@
 	var/list/sizeHV
 	clean_drop_slots()
 	//place temporary dropped or saved items back in place
-	for (S in src.loc)
-		if (findtext(S.name, "ON_DEHYDRATOR"))
-			is_rotated = !!findtext(S.name, "_ROTATED_")
-			T = findtext(S.name,"POS_") + 4
-			T = text2num(copytext(S.name, T, T+1), 16)
+	for (var/obj/item/E in src.loc)
+		if (findtext(E.name, "ON_DEHYDRATOR"))
+			is_rotated = !!findtext(E.name, "_ROTATED_")
+			T = findtext(E.name,"POS_") + 4
+			T = text2num(copytext(E.name, T, T+1), 16)
 			pos = split_size(T)
-			sizeHV = split_size(S.dry_size, is_rotated)
-			put_in_place(S, pos, sizeHV, is_rotated, TRUE)
+			sizeHV = split_size(E.dry_size, is_rotated)
+			if (!dehydrator_area_free(pos, sizeHV))
+				// The saved place is gone or already claimed: hand the item back as ordinary loose produce.
+				E.clear_dehydrator_marker()
+				continue
+			put_in_place(E, pos, sizeHV, is_rotated, TRUE)
 	for (S in src.loc) //On second pass we try to hang food/snacks items in location (from mapping)
 		attackby(S, null)
+	update_icon()
+
+/obj/structure/dehydrator/proc/dehydrator_area_free(list/pos, list/sizeHV)
+	if (!islist(pos) || pos.len < 2 || !islist(sizeHV) || sizeHV.len < 2)
+		return FALSE
+	for (var/W=0, W<sizeHV[1], W++)
+		for (var/H=0, H<sizeHV[2], H++)
+			var/row = pos[1]+H
+			var/column = pos[2]+W
+			if (row < 1 || row > 4 || column < 1 || column > 3 || slots[row][column] != null)
+				return FALSE
+	return TRUE
+
+// A live world save drops every hung item to the turf with its encoded rack state.
+// Without a world restart nothing put them back, so the rack kept drawing them while
+// players could walk off with "...ON_DEHYDRATOR..." items. Re-adopt once the save ends.
+/obj/structure/dehydrator/proc/readopt_after_save(map_storage/save_storage)
+	spawn(10)
+		for (var/wait = 0, wait < 600 && (persistence_save_in_progress || persistence_save_active() || (save_storage && length(save_storage.saving_export_stack))), wait++)
+			sleep(10)
+		if (persistence_save_in_progress || persistence_save_active() || (save_storage && length(save_storage.saving_export_stack)))
+			return // still saving after ten minutes; the next load's reinit re-adopts them
+		if (current_process_id == "SAVE_REPAIR_REQUIRED" || !isturf(loc) || gcDestroyed)
+			return
+		reinit()
 
 /obj/structure/dehydrator/proc/reinit()
 	spawn(rand(5,15)) //To prevent too much load when starting the server and to slightly spread the processes of dehydrators loaded from the map in time.
@@ -995,6 +1026,7 @@
 /obj/structure/dehydrator/before_save() //before save to map
 	//Don't know which algorithm will be used, but we have reinit() and may safely drop all items to ground without changes
 	clean_drop_slots()
+	update_icon() // the dropped items are no longer on the rack
 	..()
 
 /obj/structure/dehydrator/before_save_context(map_storage/save_storage, datum/save_export_frame/frame)
@@ -1033,11 +1065,67 @@
 	try
 		before_save()
 		save_storage.commit_save_transfer(ticket)
+		readopt_after_save(save_storage)
 	catch (var/exception/error)
 		// Keep real paid items and encoded progress. Delayed refill could reclaim
 		// an item whose ownership changed while sleeping; leave failure quiescent.
 		current_process_id = "SAVE_REPAIR_REQUIRED"
 		throw EXCEPTION("Dehydrator save failed; rack ownership requires repair: [error]")
+
+// Restores an item that left a rack without going through remove_from_dehydrator().
+// Mirrors that proc: plain name, encoded decay limit back, decay loop restarted.
+/obj/item/proc/clear_dehydrator_marker(restart_delay = 600)
+	var/marker = findtext(name, "ON_DEHYDRATOR")
+	if (!marker)
+		return FALSE
+	var/decay_offset = findtext(name, "DECAY_", marker)
+	var/original_decay = decay_offset ? text2num(copytext(name, decay_offset + 6, decay_offset + 14)) : null
+	name = copytext(name, 1, marker)
+	if (istype(src, /obj/item/weapon/reagent_containers/food))
+		var/obj/item/weapon/reagent_containers/food/D = src
+		if (D.decay == 0 && isnum(original_decay) && original_decay > 0)
+			D.decay = original_decay
+			spawn(restart_delay+rand(1, 50)) //in order not to create a duplicate process, we wait until the old process dies
+				if (D && !D.gcDestroyed && D.decay > 0 && !findtext(D.name, "ON_DEHYDRATOR"))
+					D.food_decay()
+	return TRUE
+
+/obj/item/proc/dehydrator_marker_orphaned()
+	if (!findtext(name, "ON_DEHYDRATOR"))
+		return FALSE
+	if (istype(loc, /obj/item/weapon/storage/internal))
+		var/obj/item/weapon/storage/internal/holder = loc
+		if (istype(holder.master_item, /obj/structure/dehydrator))
+			return FALSE
+	// Loose items on a rack's own turf are re-adopted by its refill.
+	if (isturf(loc) && (locate(/obj/structure/dehydrator) in loc))
+		return FALSE
+	return TRUE
+
+/obj/item/pickup(mob/user)
+	if (findtext(name, "ON_DEHYDRATOR"))
+		clear_dehydrator_marker()
+	. = ..()
+
+// /obj/item/weapon/pickup() does not call its parent, so food needs its own hook.
+/obj/item/weapon/pickup(mob/user)
+	if (findtext(name, "ON_DEHYDRATOR"))
+		clear_dehydrator_marker()
+	. = ..()
+
+/obj/item/on_enter_storage(obj/item/weapon/storage/S)
+	if (dehydrator_marker_orphaned())
+		clear_dehydrator_marker()
+	. = ..()
+
+/obj/item/after_load()
+	..()
+	if (findtext(name, "ON_DEHYDRATOR"))
+		// Repair items from older saves that a rack dropped and a player carried off.
+		// Wait out the constructor decay callback so restoration starts only one loop.
+		spawn(rand(650, 700))
+			if (!gcDestroyed && dehydrator_marker_orphaned())
+				clear_dehydrator_marker(0)
 
 ////////////////////////////////////////////////////////////////////////
 //  Fermentation jar  //////////////////////////////////////////////////

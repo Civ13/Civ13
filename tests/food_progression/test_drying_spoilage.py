@@ -45,7 +45,7 @@ class DryingSpoilageTests(unittest.TestCase):
         self.assertLess(refusal, worker.index('P = new I.dried_type(null)'))
         self.assertIn('if (!drying_input_is_safe(I))\n\t\t\t\t\t\tcontinue', worker)
         refill = RACK.split('/proc/refill()', 1)[1].split('\n/obj/', 1)[0]
-        self.assertIn('put_in_place(S, pos, sizeHV, is_rotated, TRUE)', refill)
+        self.assertIn('put_in_place(E, pos, sizeHV, is_rotated, TRUE)', refill)
         self.assertIn('var/rotten = FALSE', FOOD)
         self.assertIn('var/decaytimer = 0', FOOD)
         self.assertIn('src.vars[key] != initial(src.vars[key])', SAVER)
