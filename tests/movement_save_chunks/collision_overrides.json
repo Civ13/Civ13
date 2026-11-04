@@ -18,7 +18,7 @@
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "2771f7246f9aa099cd669339c77e83f1ebc8f3012c96c84671fa42ff7100072d",
+      "sha256_normalized": "c7854ebd02107ee66ddeccd1db11e95cc8890484f9d0e48fd4aca2091aa56098",
       "declarations": [
         {
           "line": 81,
@@ -520,10 +520,10 @@
     },
     {
       "path": "code/modules/reagents/biochemistry.dm",
-      "sha256_normalized": "f03330ac2735ff8399747587bbd90eb434e763e18cfd720a18ab905f597f0099",
+      "sha256_normalized": "fa9bdf55eb24a712a3e61e0e8056ed247c81983fb842dc918453d7a10be384d5",
       "declarations": [
         {
-          "line": 231,
+          "line": 228,
           "declaration": "parent_type = /datum/reagent/gasoline"
         }
       ]

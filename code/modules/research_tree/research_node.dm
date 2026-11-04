@@ -696,7 +696,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
-		// --- factories (22) ---
+		// --- factories (23) ---
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that
 		// node, or the tree deadlocks (can't craft the geiger counter the
@@ -714,6 +714,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fluid_pipe/valve" = "factories",
 		"/obj/structure/fluid_pump" = "factories",
 		"/obj/structure/fluid_tank" = "factories",
+		"/obj/structure/fluid_vessel" = "factories",
 		"/obj/structure/fluid_intake" = "factories",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/hangou" = "factories",
 		"/obj/item/weapon/storage/ww2" = "factories",

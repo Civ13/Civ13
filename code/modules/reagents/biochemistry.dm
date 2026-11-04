@@ -99,8 +99,7 @@
 /datum/chemical_reaction/gelatin_foam/can_happen(datum/reagents/holder)
 	if(!..())
 		return FALSE
-	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
-	return istype(bench) && bench.collector == holder.my_atom
+	return controlled_reaction_site(holder)
 
 /obj/item/stack/dry_gelatin
 	name = "dry gelatin"
@@ -184,8 +183,7 @@
 /datum/chemical_reaction/rayon_fiber/can_happen(datum/reagents/holder)
 	if(!..() || !wood_fiber_year_allowed(1890))
 		return FALSE
-	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
-	return istype(bench) && bench.collector == holder.my_atom
+	return controlled_reaction_site(holder)
 
 /datum/chemical_reaction/lyocell_fiber
 	name = "Lyocell fibre"
@@ -197,8 +195,7 @@
 /datum/chemical_reaction/lyocell_fiber/can_happen(datum/reagents/holder)
 	if(!..() || !wood_fiber_year_allowed(1980))
 		return FALSE
-	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
-	return istype(bench) && bench.collector == holder.my_atom
+	return controlled_reaction_site(holder)
 
 // One paid chip batch becomes a finite amount of pulp. An occupied kit or
 // unavailable reagent must never consume the batch.
@@ -287,8 +284,7 @@
 /datum/chemical_reaction/polypropylene/can_happen(datum/reagents/holder)
 	if(!..())
 		return FALSE
-	var/obj/structure/reaction_bench/bench = holder.my_atom ? holder.my_atom.loc : null
-	return istype(bench) && bench.collector == holder.my_atom && bench.is_heated()
+	return controlled_reaction_site(holder, TRUE)
 
 // Commit the extraction only after a registered product fits in an empty kit.
 /obj/item/weapon/reagent_containers/glass/extraction_kit/proc/extract_biological(atom/source)
