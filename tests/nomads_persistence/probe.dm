@@ -333,6 +333,13 @@ var/datum/durable_nomads_event/nomads_test_event
 	catch
 		rejected = TRUE
 	nomads_assert(rejected, message + " save")
+	map_storage.durable_state = null
+	rejected = FALSE
+	try
+		map_storage.require_durable_world_idle()
+	catch
+		rejected = TRUE
+	nomads_assert(rejected, message + " legacy import")
 	map_storage.durable_state = list("fixture" = TRUE)
 	rejected = FALSE
 	try
@@ -344,6 +351,9 @@ var/datum/durable_nomads_event/nomads_test_event
 
 /proc/nomads_event_tests()
 	nomads_event_fixture = TRUE
+	var/turf/floor/lava/permanent/compat = new(locate(4,4,2), /decl/flooring/grass)
+	nomads_assert(compat.flooring == get_flooring_data(/decl/flooring/grass), "lava constructor lost inherited flooring argument")
+	compat.ChangeTurf(/turf/floor)
 	processes.callproc = new
 	processes.explosion = new /process/explosion/nomads_fixture
 	processes.explosion.setup()
@@ -438,7 +448,7 @@ var/datum/durable_nomads_event/nomads_test_event
 	nomads_assert(map_storage.durable_export, "completed eruption could not capture")
 	nomads_assert(source, "lava source lost unexpectedly")
 	event = new /datum/durable_nomads_event/fast_lava(map)
-	new /turf/floor/lava/nomads_failure(locate(3,3,1), event)
+	new /turf/floor/lava/nomads_failure(locate(3,3,1), null, event)
 	event.release()
 	deadline = world.time + 250
 	while(event.pending && world.time < deadline) sleep(1)

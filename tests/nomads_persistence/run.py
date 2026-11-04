@@ -16,11 +16,11 @@ ROOT = Path(__file__).resolve().parents[2]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
-    parser.add_argument('--negative-control', choices=('profile', 'timer-restore', 'nuke-tail', 'calendar-failure', 'lava-tail'))
+    parser.add_argument('--negative-control', choices=('profile', 'timer-restore', 'nuke-tail', 'calendar-failure', 'lava-tail', 'legacy-import'))
     parser.add_argument('--spatial', action='store_true', help='26 sequential fresh-process production world-save roundtrips')
     parser.add_argument('--events', action='store_true', help='owned delayed event completion and failure barriers')
     args = parser.parse_args()
-    event_control = args.negative_control in ('nuke-tail', 'calendar-failure', 'lava-tail')
+    event_control = args.negative_control in ('nuke-tail', 'calendar-failure', 'lava-tail', 'legacy-import')
     if event_control: args.events = True
     if (args.spatial and args.negative_control) or (args.events and (args.spatial or (args.negative_control and not event_control))):
         parser.error('Spatial matrix and metadata mutation controls are separate runs')
@@ -40,7 +40,8 @@ def main():
         module_path = {'timer-restore': 'code/modules/persistence/durable_timers.dm',
                        'nuke-tail': 'code/modules/1713/radiation.dm',
                        'calendar-failure': 'code/game/objects/map_metadata/_map_metadata.dm',
-                       'lava-tail': 'code/modules/1713/natural_disasters.dm'}.get(args.negative_control, 'code/modules/persistence/durable_nomads.dm')
+                       'lava-tail': 'code/modules/1713/natural_disasters.dm',
+                       'legacy-import': 'code/modules/persistence/durable_world.dm'}.get(args.negative_control, 'code/modules/persistence/durable_nomads.dm')
         module = (ROOT/module_path).read_text(encoding='utf-8')
         if args.negative_control == 'profile':
             anchor = 'return list(/obj/map_metadata/nomads, '
@@ -62,6 +63,10 @@ def main():
             anchor = 'T.ChangeTurf(/turf/floor/lava, TRUE, FALSE, event)'
             assert module.count(anchor) == 1
             module = module.replace(anchor, 'T.ChangeTurf(/turf/floor/lava)', 1)
+        elif args.negative_control == 'legacy-import':
+            anchor = '\tif(!durable_state && !map.uses_durable_metadata()) return'
+            assert module.count(anchor) == 1
+            module = module.replace(anchor, '\tif(!durable_state) return', 1)
         files[2].write_text(module, encoding='utf-8')
         source = (ROOT/'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', files[1].name)
@@ -114,7 +119,8 @@ def main():
             expected = {'profile': 'unsupported registered profile: /obj/map_metadata/nomads', 'timer-restore': 'restored callback deadline:',
                         'nuke-tail': 'nuke lost delayed or explosion work',
                         'calendar-failure': 'partial calendar transition flag',
-                        'lava-tail': 'eruption returned with lava descendants flag'}
+                        'lava-tail': 'eruption returned with lava descendants flag',
+                        'legacy-import': 'nuke returned with pending descendants legacy import'}
             if args.negative_control:
                 if not result.startswith('FAIL: '+expected[args.negative_control]): raise RuntimeError(result)
                 print('PASS: intended '+args.negative_control+' mutation detected', flush=True)

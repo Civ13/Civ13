@@ -17,7 +17,7 @@
 	var/old_radiation = radiation
 	var/turf/W
 	if(nomads_event && ispath(path, /turf/floor/lava))
-		W = new path(src, nomads_event)
+		W = new path(src, null, nomads_event)
 	else
 		W = new path(src)
 

@@ -37,6 +37,7 @@ delayed phases also latch a separate barrier when the season worker retires.
 Recovery means reloading a validated prior generation with fresh metadata; clearing
 the flag on a partially mutated world is not recovery. Unowned transient lava from
 older or map-authored sources conservatively blocks save/import until it dries.
+Current-world barriers also apply when the incoming save is legacy spatial-only.
 
 The 132-field shared inventory and its existing 131-field `faction_renames`
 migration remain unchanged. Gaia/Europe keep their existing envelope. Newly
@@ -75,6 +76,9 @@ and injected errors after Mountain/Ice Age terrain mutation. It uses a yielding
 blast-body adapter and accelerates lava delays by 100 while retaining production
 phase bodies and ownership. The `nuke-tail`, `calendar-failure` and `lava-tail`
 negative controls must fail the corresponding named ownership assertions.
+The `legacy-import` control proves incoming legacy metadata cannot bypass a
+current-world event barrier. Lava constructors retain their inherited flooring
+argument; the runtime event owner is passed separately and excluded from saves.
 
 The daemon uses loopback and closes/refuses its port, but may briefly listen and
 attempt BYOND pager login before `World/New`. This synthetic runner does not

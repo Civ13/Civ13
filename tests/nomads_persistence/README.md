@@ -13,6 +13,7 @@ Mountain/Ice Age transitions. Blast bodies use a yielding adapter; lava delays
 are accelerated by 100 with production callbacks. Run the `nuke-tail`,
 `calendar-failure` and `lava-tail` negative controls separately to confirm that
 removing the respective barriers fails their named assertions.
+The `legacy-import` control detects a bypass based on absent incoming metadata.
 The runner records complete source hashes, dirty diff, runtime file hashes,
 compiler/runtime diagnostics and each case result in its printed temporary path.
 It does not use production saves. Normal startup is disabled; GC registration

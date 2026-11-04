@@ -42,9 +42,9 @@
 	var/tmp/datum/durable_nomads_event/nomads_event
 	light_power = 2
 	light_color = "#FFA500"
-	New(loc, datum/durable_nomads_event/event = null)
+	New(loc, floortype, datum/durable_nomads_event/event = null)
 		nomads_event = event
-		..(loc)
+		..(loc, floortype)
 		if (dries)
 			dryproc()
 		lava_defer(5, "lava_enter_contents")

@@ -170,7 +170,8 @@
 
 // Read-only rejection before player ownership or timer state is changed.
 /map_storage/proc/require_durable_world_idle()
-	if(!durable_state) return
+	// A legacy incoming generation does not make active current-world work safe.
+	if(!durable_state && !map.uses_durable_metadata()) return
 	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.durable_nomads_lava_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
 		throw EXCEPTION("World metadata is transitioning; retry loading after it settles")
 
