@@ -1380,3 +1380,29 @@ datum/admins/proc/print_chemical_reactions()
 	for (var/i = TRUE, i <= created_volume, i++)
 		new /obj/item/weapon/soap/lard(location)
 	return
+
+/datum/chemical_reaction/plain_soap
+	name = "Soap"
+	id = "plain_soap"
+	result = null
+	required_reagents = list("cornoil" = 20, "lye" = 2)
+	result_amount = 1
+
+/datum/chemical_reaction/plain_soap/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new /obj/item/weapon/soap(location)
+	return
+
+/datum/chemical_reaction/deluxe_soap
+	name = "Deluxe Soap"
+	id = "deluxe_soap"
+	result = null
+	required_reagents = list("olive_oil" = 20, "lye" = 2)
+	result_amount = 1
+
+/datum/chemical_reaction/deluxe_soap/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/location = get_turf(holder.my_atom)
+	for (var/i = TRUE, i <= created_volume, i++)
+		new /obj/item/weapon/soap/deluxe(location)
+	return

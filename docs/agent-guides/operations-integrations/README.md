@@ -84,6 +84,19 @@ replaces existing action-time confirmations, held-runner rules or runtime guards
 - Config in `config/config.txt` controls gamemodes, ports, hub visibility, logging, etc.
 - Discord integration via Civilizationbot (file-based IPC through `SQL/discord2*.txt` files).
 
+## Agent control
+
+<!-- 2026-11-04: authenticated agent control -->
+`docs/agent-control.md` owns the opt-in `agent_control` Topic API: per-agent
+tokens and scopes in git-ignored `config/agent-control.txt`, loopback-only by
+default, admin-log audit of every mutation (character moves go to the game log
+only), protected agent-control state, a proxy `usr` whose rights come from
+the agent line, and ckey-less or player-handed-over characters. It is separate
+from the read-only lifecycle/diagnostic transport and the disabled gameplay
+bridge; keep those boundaries unchanged. Keep `tools/agent-control/catalog.py`
+in sync with `agent_control_actions()`; `tests/agent_control` checks both.
+Creating the config file on a live server is a host decision, not part of a PR.
+
 ## Local MCP tooling
 
 <!-- 2026-10-23: private variable observability -->

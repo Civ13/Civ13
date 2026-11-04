@@ -99,11 +99,20 @@ SUITES = {
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
+    # Day/night sweep loop-shape contracts; no BYOND runtime.
+    'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
+        'paths': ('tests/sweep_loops/',), 'shared_paths': (
+            'code/processes/time_of_day_change.dm',)},
     # Nomads adoption source contracts and surname model; no BYOND runtime.
     'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
         'paths': ('tests/nomads_adoption/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/nomads_adoption.dm',
             'code/_helpers/unsorted.dm', 'civ13.dme')},
+    # Agent control client/MCP/catalog and DM source contracts; loopback fake
+    # Topic server only, no BYOND runtime.
+    'agent_control': {'files': ('tests/agent_control/test_agent_control.py',),
+        'paths': ('tests/agent_control/', 'tools/agent-control/', 'code/modules/agent_control/'), 'shared_paths': (
+            'code/_helpers/admin.dm', 'code/world.dm', '.gitignore')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
@@ -199,7 +208,8 @@ SUITES = {
 
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
-    'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',),
+    'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',
+                                'tests/crafting_loader/test_supplied_item_recipes.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
             'code/setup.dm', 'tests/save_movement/source_adapter.py')},
 
@@ -579,7 +589,8 @@ SUITES = {
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
                                 'tests/fishing_stock/test_preparation.py',
-                                'tests/fishing_stock/test_native_runner.py'), 'paths': (
+                                'tests/fishing_stock/test_native_runner.py',
+                                'tests/fishing_stock/test_ocean_fishing.py'), 'paths': (
         'tests/fishing_stock/',)},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing

@@ -44,6 +44,30 @@
 	else
 		to_chat(user, "<span class='warning'>[name] is empty!</span>")
 
+// Packs hold up to six pills of one kind. A filled pack only takes its own pill;
+// a crafted empty pack takes the first kind put in and is named after it.
+/obj/item/weapon/pill_pack/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W, /obj/item/weapon/reagent_containers/pill))
+		return ..()
+	if (contents.len >= 6)
+		to_chat(user, "<span class='warning'>\The [src] is full.</span>")
+		return
+	if (pill_type && !istype(W, pill_type))
+		to_chat(user, "<span class='warning'>\The [W] doesn't fit in \the [src].</span>")
+		return
+	if (contents.len)
+		var/obj/item/first = contents[1]
+		if (W.type != first.type)
+			to_chat(user, "<span class='warning'>\The [src] only holds one kind of pill.</span>")
+			return
+	user.drop_from_inventory(W, src)
+	if (W.loc != src)
+		return
+	if (!pill_type && contents.len == 1)
+		name = "[W.name] pack"
+	to_chat(user, "<span class='notice'>You press \the [W] into \the [src].</span>")
+	update_icon()
+
 /obj/item/weapon/pill_pack/update_icon()
 	icon_state = "[initial(icon_state)][contents.len]"
 

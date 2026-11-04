@@ -6,6 +6,10 @@
     else if (user && user.client)
         C = user.client
 
+    if (!C && istype(user, /mob/agent_proxy))
+        var/mob/agent_proxy/P = user
+        return P.has_rights(rights_required)
+
     if (!C)
         if (show_msg)
             to_chat(user, "<font color='red'>Error: You are not an admin.</font>")

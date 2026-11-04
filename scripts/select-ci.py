@@ -47,8 +47,10 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
 DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
+SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
+AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
@@ -356,6 +358,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered farmers-almanac executable test requires explicit CI review')
         if path in DOOR_INTENTS_OFFLINE_TESTS:
             continue
+        if path in SWEEP_LOOPS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/sweep_loops/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered sweep-loop executable test requires explicit CI review')
         if path in INVENTORY_DRAG_OFFLINE_TESTS:
             continue
         if path.startswith('tests/inventory_drag/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
@@ -364,6 +370,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered door-intent executable test requires explicit CI review')
         if path in NOMADS_ADOPTION_OFFLINE_TESTS:
             continue
+        if path in AGENT_CONTROL_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/agent_control/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered agent-control executable test requires explicit CI review')
         if path.startswith('tests/nomads_adoption/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered nomads-adoption executable test requires explicit CI review')
         if path in STONE_BRAZIER_OFFLINE_TESTS:

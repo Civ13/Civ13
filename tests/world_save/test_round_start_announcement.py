@@ -62,11 +62,12 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.world = source('code/world.dm')
         self.admin = source('code/modules/persistence/admin.dm')
         self.persistence = source('code/modules/persistence/functions.dm')
-        helpers = ['announce_round_start_once', 'announce_restored_round_once']
+        helpers = [('announce_round_start_once', '(resumed = FALSE)', '(resumed=False)'),
+                   ('announce_restored_round_once', '()', '()')]
         definitions = []
-        for name in helpers:
-            body = proc(self.webhooks, '/proc/' + name + '()')
-            definitions.append('def ' + name + '():\n    global round_start_announced\n' + helper_projection(body))
+        for name, dm_args, py_args in helpers:
+            body = proc(self.webhooks, '/proc/' + name + dm_args)
+            definitions.append('def ' + name + py_args + ':\n    global round_start_announced\n' + helper_projection(body))
         self.events = []
         owner = self
         class Storage:
@@ -80,18 +81,18 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.storage = Storage()
         self.env = {'round_start_announced': False, 'game_id': 'generated',
                     'map_storage': self.storage, 'istext': lambda x: isinstance(x, str)}
-        def send(identity):
-            self.events.append(('send', identity, self.env['round_start_announced']))
+        def send(identity, resumed=False):
+            self.events.append(('send', identity, self.env['round_start_announced'], resumed))
         self.env['webhook_send_round_start'] = send
         exec('\n\n'.join(definitions), self.env)
 
     def test_fresh_round_announces_current_identity_once(self):
         self.assertTrue(self.env['announce_round_start_once']())
         self.assertFalse(self.env['announce_round_start_once']())
-        self.assertEqual(self.events, [('send', 'generated', True)])
+        self.assertEqual(self.events, [('send', 'generated', True, False)])
 
     def test_send_exception_cannot_replay_the_reserved_announcement(self):
-        def failing_send(identity):
+        def failing_send(identity, resumed=False):
             self.events.append(('send', identity))
             raise ValueError('fixture transport failure')
         self.env['webhook_send_round_start'] = failing_send
@@ -106,8 +107,8 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.assertTrue(self.env['announce_restored_round_once']())
         self.assertFalse(self.env['announce_restored_round_once']())
         self.assertEqual([event for event in self.events if event[0] == 'send'],
-                         [('send', 'saved-round', True)])
-        self.assertLess(self.events.index(('read', 'saved-round')), self.events.index(('send', 'saved-round', True)))
+                         [('send', 'saved-round', True, True)])
+        self.assertLess(self.events.index(('read', 'saved-round')), self.events.index(('send', 'saved-round', True, True)))
 
     def test_missing_legacy_mismatched_or_invalid_state_never_sends(self):
         for state, error in [({}, False), ({'game_id': 'other-round'}, False), ({}, True)]:
@@ -134,7 +135,7 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.assertEqual(self.events, [])
         ticker.ok = True
         exec(instruction, self.env)
-        self.assertEqual(self.events, [('read', 'saved-round'), ('send', 'saved-round', True)])
+        self.assertEqual(self.events, [('read', 'saved-round'), ('send', 'saved-round', True, True)])
         exec(instruction, self.env)
         self.assertEqual(sum(event[0] == 'send' for event in self.events), 1)
 
@@ -156,7 +157,7 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.assertEqual(self.events, [])
         recovery.players_ready = True
         exec(instruction, self.env)
-        self.assertEqual(self.events, [('read', 'saved-round'), ('send', 'saved-round', True)])
+        self.assertEqual(self.events, [('read', 'saved-round'), ('send', 'saved-round', True, True)])
 
     def test_unresolved_metadata_defers_notice_until_successful_manual_recovery(self):
         block = self.setup.split('if (!persistence_restart.startup_hold && fexists("map_saves/map.txt"))', 1)[1].split('\n\t\telse if', 1)[0]
@@ -187,7 +188,12 @@ class RoundAnnouncementTests(unittest.TestCase):
                         return True
                 self.env['ticker'] = Ticker()
                 exec('if ' + manual.group(1) + ': ' + manual.group(2), self.env)
-                self.assertEqual(self.events, [('read', 'recovered-round'), ('send', 'recovered-round', True)])
+                self.assertEqual(self.events, [('read', 'recovered-round'), ('send', 'recovered-round', True, True)])
+
+    def test_round_start_payload_carries_resumed_flag(self):
+        sender = proc(self.webhooks, '/proc/webhook_send_round_start(round = "", resumed = FALSE)')
+        self.assertIn('list("round" = round, "resumed" = resumed ? TRUE : FALSE)', sender)
+        self.assertIn('webhook_send("round_start", query)', sender)
 
     def test_startup_and_manual_paths_are_success_gated(self):
         self.assertNotIn('webhook_send_round_start(game_id)', self.world)

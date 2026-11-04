@@ -71,8 +71,10 @@ var/grid_probe_failures = 0
 		grid_check(consumer.draw_cable_power(), "load admitted")
 	grid_check(root.currentflow == 4, "repeated reservation remains four units")
 #ifdef GRID_CURRENT
-	grid_check(grid_probe_calls == 20, "one traversal per draw")
-	grid_check(grid_probe_steps == 20 * 512, "one discovery per cable per draw")
+	// The first draw reserves through a full traversal. Later draws within a
+	// second of it reuse that published, in-capacity reservation.
+	grid_check(grid_probe_calls == 1, "one traversal for repeated draws within a second")
+	grid_check(grid_probe_steps == 512, "one discovery per cable for the traversal")
 	grid_check(root.component_size == 512, "large component size")
 	var/obj/structure/cable/last = graph[graph.len]
 	grid_check(root.component_id == last.component_id, "large graph shares identity")

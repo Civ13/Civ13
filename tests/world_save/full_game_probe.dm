@@ -76,6 +76,8 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 	var/mob/living/simple_animal/frog/persistence_pointer_probe/actor = new(home)
 	var/mob/living/simple_animal/frog/persistence_pointer_probe/target = new(home)
 	actor.LAssailant = target
+	actor.lastattacker = target
+	actor.lastattacked = target
 	actor.target_mob = target
 	actor.target_obj = target
 	actor.pathfind_target = target
@@ -92,7 +94,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 	F["/format_version"] << 3
 	var/ref = storage.BuildVarDirectory(F, actor, 1)
 	F.cd = storage.entry_path(F, ref)
-	for(var/key in list("LAssailant", "target_mob", "target_obj", "pathfind_target", "stance", "moving", "found_path"))
+	for(var/key in list("LAssailant", "lastattacker", "lastattacked", "target_mob", "target_obj", "pathfind_target", "stance", "moving", "found_path"))
 		if(key in F.dir)
 			throw EXCEPTION("Runtime pointer or dependent AI state was exported: [key]")
 	if(actor.target_mob != target || actor.target_obj != target || actor.pathfind_target != target || actor.LAssailant != target || actor.stance != HOSTILE_STANCE_ATTACK || !actor.moving)

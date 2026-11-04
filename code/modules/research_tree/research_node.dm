@@ -427,10 +427,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (18) ---
+		// --- assembly_line (20) ---
 		"/obj/item/camera/coldwar" = "assembly_line",
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
+		"/obj/item/factory_belt_assembly" = "assembly_line",
+		"/obj/structure/closet/crate/factory_bin" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/random" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/zippo" = "assembly_line",
 		"/obj/item/weapon/radio/walkietalkie" = "assembly_line",
@@ -446,10 +448,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (3) ---
+		// --- automation (5) ---
 		"/obj/item/camera" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
+		"/obj/structure/factory_arm" = "automation",
+		"/obj/structure/factory_arm/sorting" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",
 		// --- automobiles (13) ---
 		"/obj/structure/car_workshop" = "automobiles",
@@ -1873,6 +1877,33 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/singledoor/privacy" = "workshops",
 		"/obj/structure/simple_door/key_door/custom" = "workshops",
 		"/obj/structure/simple_door/key_door/faction_door" = "workshops",
+
+		// --- supplied items made craftable (#3563) ---
+		"/obj/item/weapon/screwdriver" = "iron_tools",
+		"/obj/item/weapon/lockpick" = "iron_tools",
+		"/obj/item/weapon/legcuffs" = "law_order",
+		"/obj/item/weapon/whistle/tin" = "law_order",
+		"/obj/item/taperoll/police" = "law_order",
+		"/obj/item/bag_valve_mask" = "modern_medicine",
+		"/obj/item/weapon/pill_pack" = "pharmacology",
+		"/obj/item/clothing/accessory/stethoscope" = "surgical_theory",
+		"/obj/item/glass_jar" = "glassworking",
+		"/obj/item/weapon/attachment/scope/adjustable/binoculars/small" = "optics_instruments",
+		"/obj/item/shamisen" = "fine_arts",
+		"/obj/item/weapon/pen/pencil" = "papermaking",
+		"/obj/item/weapon/pen/fancy" = "papermaking",
+		"/obj/item/weapon/haircomb" = "hygiene",
+		"/obj/item/weapon/lipstick/black" = "haberdashery",
+		"/obj/item/weapon/lipstick/purple" = "haberdashery",
+		"/obj/item/video_camera" = "automation",
+		"/obj/item/weapon/barstool" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/green" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/blue" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/yellow" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/black" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/white" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/brown" = "manufactured_furniture",
+		"/obj/item/weapon/barstool/grey" = "manufactured_furniture",
 	)
 
 	validate_research_tree()

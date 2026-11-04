@@ -229,6 +229,8 @@ var/world_topic_spam_protect_time = world.timeofday
 	// Lifecycle credentials never enter generic Topic logging or dispatch.
 	if("nomads_lifecycle" in input)
 		return nomads_lifecycle.handle(input, addr)
+	if("agent_control" in input)
+		return agent_control.handle(input, addr)
 	var/datum/world_topic/handler
 	for(var/I in topic_handlers)
 		if(I in input)

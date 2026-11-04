@@ -176,10 +176,26 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_sweep_loops_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'sweep_loops'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/sweep_loops/test_sweep_loops.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_nomads_adoption_suite_is_bounded_and_not_silently_omitted(self):
         name = 'nomads_adoption'
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/nomads_adoption/test_nomads_adoption.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
+    def test_agent_control_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'agent_control'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/agent_control/test_agent_control.py',))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
@@ -248,7 +264,8 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_crafting_loader_registration_preserves_startup_coverage(self):
         suite = ci.SUITES['crafting_loader']
-        self.assertEqual(suite['files'], ('tests/crafting_loader/test_loader.py',))
+        self.assertEqual(suite['files'], ('tests/crafting_loader/test_loader.py',
+                                          'tests/crafting_loader/test_supplied_item_recipes.py'))
         self.assertEqual(self.selected(list(suite['files'])),
             {'policy', 'bootstrap', 'progress', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}
@@ -1199,6 +1216,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     expected.add('character_return_preparation')
                     expected.add('access_lists')
                     expected.add('game_ready')
+                    expected.add('agent_control')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 
@@ -1246,7 +1264,8 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['fishing_stock']
         self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',
                                          'tests/fishing_stock/test_preparation.py',
-                                         'tests/fishing_stock/test_native_runner.py'))
+                                         'tests/fishing_stock/test_native_runner.py',
+                                         'tests/fishing_stock/test_ocean_fishing.py'))
         self.assertEqual(suite['paths'], ('tests/fishing_stock/',))
         self.assertFalse(suite.get('always', False))
         source = (ROOT / suite['files'][0]).read_text()

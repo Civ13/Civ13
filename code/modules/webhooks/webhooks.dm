@@ -26,18 +26,19 @@
 	var/list/query = list("ckey" = ckey, "message" = message)
 	webhook_send("garbage", query)
 
-/proc/webhook_send_round_start(round = "")
-    var/list/query = list("round" = round)
+// resumed tells the bot this round was loaded from a save, not freshly started.
+/proc/webhook_send_round_start(round = "", resumed = FALSE)
+    var/list/query = list("round" = round, "resumed" = resumed ? TRUE : FALSE)
     webhook_send("round_start", query)
 
 // One announcement per process, only after startup has chosen its identity.
 var/global/round_start_announced = FALSE
-/proc/announce_round_start_once()
+/proc/announce_round_start_once(resumed = FALSE)
 	if(round_start_announced || !istext(game_id) || !length(game_id)) return FALSE
 	round_start_announced = TRUE // Reserve before the asynchronous webhook dispatch.
 	var/oocdiary = file("ooc.log")
-	oocdiary << "> \[[time_stamp()]] New round [game_id] starting!"
-	webhook_send_round_start(game_id)
+	oocdiary << "> \[[time_stamp()]] [resumed ? "Resumed round [game_id] from save" : "New round [game_id] starting"]!"
+	webhook_send_round_start(game_id, resumed)
 	return TRUE
 
 /proc/announce_restored_round_once()
@@ -51,7 +52,7 @@ var/global/round_start_announced = FALSE
 	catch
 		world.log << "Round-start announcement suppressed: saved identity could not be validated."
 		return FALSE
-	return announce_round_start_once()
+	return announce_round_start_once(TRUE)
 
 /proc/webhook_send_login(ckey, ip = "", cid = "")
     var/list/query = list("ckey" = ckey, "ip" = ip, "cid" = cid)
