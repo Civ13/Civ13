@@ -62,12 +62,16 @@ def select_nomads_map(dme, identity):
         if last < first:
             raise RuntimeError('Reversed selected-map markers')
         lines = [line.strip() for line in dme[first:last].splitlines() if line.strip()]
-        conditional = ['#ifdef EXTRACTION_MODERN_CITY_MAP',
-            '#include "maps\\extraction\\modern_city_extraction.dmm"', '#else',
-            '#ifdef EXTRACTION_SURVIVAL_MAP',
-            '#include "maps\\extraction\\industrial_district.dmm"', '#else',
-            '#include "maps\\nomads\\nomads.dmm"', '#endif', '#endif']
-        if lines != conditional and not (len(lines) == 1 and re.fullmatch(include_pattern, lines[0])):
+        # Both checked-in defaults use the same reviewed extraction branches.
+        conditionals = [
+            ['#ifdef EXTRACTION_MODERN_CITY_MAP',
+             '#include "maps\\extraction\\modern_city_extraction.dmm"', '#else',
+             '#ifdef EXTRACTION_SURVIVAL_MAP',
+             '#include "maps\\extraction\\industrial_district.dmm"', '#else',
+             f'#include "maps\\nomads\\{default_map}"', '#endif', '#endif']
+            for default_map in ('nomads.dmm', 'nomads_gaia.dmm')
+        ]
+        if lines not in conditionals and not (len(lines) == 1 and re.fullmatch(include_pattern, lines[0])):
             raise RuntimeError('Unsupported selected-map block')
         result = dme[:first]+replacement+'\n'+dme[last:]
     else:

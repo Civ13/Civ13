@@ -13,6 +13,17 @@ core = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(core)
 
 
+def conditional_map_source(default_map):
+    return '\n'.join((
+        '// untouched prefix', '// BEGIN_SELECTED_MAP',
+        '#ifdef EXTRACTION_MODERN_CITY_MAP',
+        '#include "maps\\extraction\\modern_city_extraction.dmm"', '#else',
+        '#ifdef EXTRACTION_SURVIVAL_MAP',
+        '#include "maps\\extraction\\industrial_district.dmm"', '#else',
+        '#include "maps\\nomads\\'+default_map+'"', '#endif', '#endif',
+        '// END_SELECTED_MAP', '// untouched suffix', ''))
+
+
 class NomadsCatalogTests(unittest.TestCase):
     def test_every_declared_subtype_is_explicitly_audited(self):
         declarations = {}
@@ -104,6 +115,39 @@ class NomadsCatalogTests(unittest.TestCase):
             self.assertEqual(includes, ['#include "maps\\nomads\\'+name+'"'])
             self.assertEqual(source.split('// BEGIN_SELECTED_MAP')[0], selected.split('// BEGIN_SELECTED_MAP')[0])
             self.assertEqual(source.split('// END_SELECTED_MAP')[1], selected.split('// END_SELECTED_MAP')[1])
+
+    def test_reviewed_conditional_defaults_select_all_authored_maps(self):
+        for default_map in ('nomads.dmm', 'nomads_gaia.dmm'):
+            source = conditional_map_source(default_map)
+            for identity, name in core.NOMADS_MAPS.items():
+                with self.subTest(default=default_map, target=identity):
+                    selected = core.select_nomads_map(source, identity)
+                    self.assertEqual(selected, '// untouched prefix\n// BEGIN_SELECTED_MAP\n'
+                        '#include "maps\\nomads\\'+name+'"\n// END_SELECTED_MAP\n// untouched suffix\n')
+
+    def test_changed_conditional_branches_rejected_for_both_defaults(self):
+        for default_map in ('nomads.dmm', 'nomads_gaia.dmm'):
+            source = conditional_map_source(default_map)
+            for bad in (
+                source.replace(default_map, 'unreviewed.dmm'),
+                source.replace(default_map, 'nomads_europe.dmm'),
+                source.replace('modern_city_extraction.dmm', 'unreviewed.dmm'),
+                source.replace('#else', '#elif UNREVIEWED_MAP', 1),
+                source.replace('#endif\n', '', 1),
+                source.replace('// END_SELECTED_MAP', '#include "maps/extra.dmm"\n// END_SELECTED_MAP'),
+            ):
+                with self.subTest(default=default_map, source=bad), self.assertRaisesRegex(RuntimeError, 'Unsupported selected-map block'):
+                    core.select_nomads_map(bad, 'NOMADS_GAIA')
+
+    def test_legacy_single_map_selection_preserves_surrounding_source(self):
+        for source, expected in (
+            ('// before\n#include "maps/legacy.dmm"\n// after\n',
+             '// before\n#include "maps\\nomads\\nomads_gaia.dmm"\n// after\n'),
+            ('// before\n// BEGIN_SELECTED_MAP\n#include "maps/legacy.dmm"\n// END_SELECTED_MAP\n// after\n',
+             '// before\n// BEGIN_SELECTED_MAP\n#include "maps\\nomads\\nomads_gaia.dmm"\n// END_SELECTED_MAP\n// after\n'),
+        ):
+            with self.subTest(source=source):
+                self.assertEqual(core.select_nomads_map(source, 'NOMADS_GAIA'), expected)
 
     def test_malformed_map_blocks_and_external_includes_are_rejected(self):
         source = (ROOT/'civ13.dme').read_text()
