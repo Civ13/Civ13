@@ -21,6 +21,7 @@ var/mob/living/human/intro_actor/trailer_baker
 var/mob/living/human/intro_actor/trailer_customer
 var/mob/living/human/intro_actor/trailer_engineer
 var/mob/living/simple_animal/horse/trailer_horse
+var/mob/living/simple_animal/horse/trailer_horse2
 var/obj/structure/vehicle/carriage/trailer_carriage
 var/obj/structure/trains/locomotive/coal/trailer_locomotive
 var/obj/structure/trains/transport/cabin/trailer_cabin
@@ -174,14 +175,16 @@ var/obj/trailer_camera/trailer_cam
 	trailer_carriage = new(locate(43, 6, 1))
 	trailer_carriage.dir = EAST
 	trailer_horse = new(locate(42, 5, 1))
+	trailer_horse2 = new(locate(42, 7, 1))
 	trailer_living += trailer_horse
-	trailer_locomotive = new(locate(80, 3, 1))
+	trailer_living += trailer_horse2
+	trailer_locomotive = new(locate(73, 3, 1))
 	trailer_locomotive.dir = EAST
-	trailer_cabin = new(locate(79, 3, 1))
+	trailer_cabin = new(locate(72, 3, 1))
 	trailer_cabin.dir = EAST
 	trailer_locomotive.connected = trailer_cabin
 	trailer_locomotive.fuel = trailer_locomotive.max_fuel
-	trailer_engineer = trailer_actor(81, 4, "Engineer", /obj/item/clothing/under/civ4, SOUTH)
+	trailer_engineer = trailer_actor(74, 4, "Engineer", /obj/item/clothing/under/civ4, SOUTH)
 	trailer_log("prepare done")
 
 /proc/trailer_oven()
@@ -366,8 +369,11 @@ var/obj/trailer_camera/trailer_cam
 	if (hand_bread)
 		trailer_customer.swap_hand()
 	trailer_carriage.MouseDrop_T(trailer_horse, trailer_customer)
+	sleep(5)
+	trailer_face(trailer_customer, trailer_horse2)
+	trailer_carriage.MouseDrop_T(trailer_horse2, trailer_customer)
 	trailer_log("hitch: propulsion=[trailer_carriage.buckled_animal_propulsion]")
-	intro_check(trailer_carriage.buckled_animal_propulsion >= 2, "horse hitched")
+	intro_check(trailer_carriage.buckled_animal_propulsion >= 4, "two horses hitched")
 	trailer_carriage.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_carriage.driver == trailer_customer, "customer took the reins")
 	var/obj/item/vehicleparts/wheel/rope/reins = trailer_customer.get_active_hand()
@@ -377,9 +383,11 @@ var/obj/trailer_camera/trailer_cam
 	reins.attack_self(trailer_customer)
 	sleep(15)
 	reins.attack_self(trailer_customer)
+	sleep(15)
+	reins.attack_self(trailer_customer)
 	trailer_follow(trailer_carriage)
 	var/deadline = world.time + 400
-	while (trailer_carriage.x < 62 && world.time < deadline)
+	while (trailer_carriage.x < 58 && world.time < deadline)
 		sleep(1)
 	trailer_log("carriage at [trailer_carriage.x],[trailer_carriage.y] speed [trailer_carriage.axis.currentspeed]")
 	while (trailer_carriage.axis.currentspeed > 0 && world.time < deadline)
@@ -395,6 +403,9 @@ var/obj/trailer_camera/trailer_cam
 // 5. The customer boards the train and it steams off east.
 /proc/trailer_scene_train()
 	trailer_beat("station")
+	trailer_camera_pan(trailer_customer.x + 4, 6, 3)
+	spawn(0)
+		trailer_camera_pan(trailer_cabin.x - 1, 6, 4)
 	var/turf/board = locate(trailer_cabin.x, trailer_cabin.y + 1, 1)
 	trailer_walk(trailer_customer, board.x, board.y)
 	trailer_customer.dir = SOUTH
@@ -404,16 +415,16 @@ var/obj/trailer_camera/trailer_cam
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
 	trailer_customer.dir = EAST
 	sleep(10)
-	trailer_camera_cut(trailer_locomotive.x + 1, 5)
+	trailer_camera_pan(trailer_locomotive.x + 1, 6, 3)
 	trailer_engineer.dir = SOUTH
 	trailer_locomotive.attack_hand(trailer_engineer)
 	intro_check(trailer_locomotive.on, "engineer started the locomotive")
 	trailer_beat("depart")
 	sleep(10)
-	// Follow the train for a few tiles, then let it run out of shot.
-	trailer_camera_pan(min(TRAILER_MAP_W - 8, trailer_locomotive.x + 6), 5, 5)
+	// Follow the train briefly, then hold while it steams out of shot.
+	trailer_camera_pan(82, 6, 5)
 	var/deadline = world.time + 200
-	while (trailer_locomotive.automovement && trailer_locomotive.x < TRAILER_MAP_W - 1 && world.time < deadline)
+	while (trailer_locomotive.automovement && trailer_cabin.x <= 90 && world.time < deadline)
 		sleep(1)
 	trailer_log("train at [trailer_locomotive.x], customer at [trailer_customer.x]")
 	trailer_beat("gone")
