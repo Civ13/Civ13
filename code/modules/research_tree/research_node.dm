@@ -314,6 +314,8 @@ var/global/list/node_grid_col_cache = null
 	// /obj/item/weapon/material/shovel/attack_self() in code/modules/1713/tools.dm.
 	register_research_node(new /datum/research_node("irrigation", "Irrigation", "Agriculture", 165, 1, RESEARCH_MODE_ANALYSIS, list("basic_agriculture"), 2, null, "Agriculture"))
 	register_research_node(new /datum/research_node("advanced_agriculture", "Advanced Agriculture", "Agriculture", 235, 3, RESEARCH_MODE_ANALYSIS, list("irrigation"), 4, null, "Agriculture"))
+	// Hydroponics (docs/hydroponics-design.md H5): era 6, after Advanced Agriculture and Electricity.
+	register_research_node(new /datum/research_node("hydroponics", "Hydroponics", "Agriculture", 305, 5, RESEARCH_MODE_ANALYSIS, list("advanced_agriculture","electricity"), 6, null, "Agriculture"))
 	// --- Military: Melee ---
 	register_research_node(new /datum/research_node("stone_arms", "Stone Arms", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("bronze_weapons", "Bronze Arms & Armor", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, list("stone_arms"), 1))
@@ -478,6 +480,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/produce_basket" = "basic_agriculture",
 		"/obj/item/weapon/storage/seed_collector" = "basic_agriculture",
 		"/obj/item/weapon/farmers_almanac" = "basic_agriculture",
+		// --- hydroponics (2) ---
+		"/obj/structure/hydroponics_frame" = "hydroponics",
+		"/obj/structure/hydroponics_tray" = "hydroponics",
 		// --- basic_furniture (17) ---
 		"/obj/item/weapon/stool/wood" = "basic_furniture",
 		"/obj/item/weapon/bedsheet" = "basic_furniture",

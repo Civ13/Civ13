@@ -802,6 +802,7 @@
 #include "code\modules\1713\football.dm"
 #include "code\modules\1713\forensics.dm"
 #include "code\modules\1713\helmet.dm"
+#include "code\modules\1713\hydroponics.dm"
 #include "code\modules\1713\language_book.dm"
 #include "code\modules\1713\lantern.dm"
 #include "code\modules\1713\mags_fallout.dm"
