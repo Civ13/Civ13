@@ -36,6 +36,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Pure source catalog and injected build transports; no native or network IO.
+    'nomads_persistence': {'files': ('tests/nomads_persistence/test_catalog.py',),
+        'paths': ('tests/nomads_persistence/',),
+        'shared_paths': ('code/modules/persistence/durable_nomads.dm',
+                         'scripts/nomads-lifecycle/supervisor.py',
+                         'scripts/nomads-lifecycle/canonical_update.py',
+                         'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
     # Complete mood helpers, maintenance and expression projections; no native world.
     # Production paths retain the prior conservative fallback/neighbor selection.
     'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),
@@ -72,11 +79,22 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # Farmer's almanac weather table and crop rule projected from production DM.
+    'farmers_almanac': {'files': ('tests/farmers_almanac/test_farmers_almanac.py',),
+        'paths': ('tests/farmers_almanac/',), 'shared_paths': (
+            'code/modules/1713/farmers_almanac.dm',
+            'code/modules/1713/weather.dm',
+            'code/game/objects/farming.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
+    # Nomads adoption source contracts and surname model; no BYOND runtime.
+    'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
+        'paths': ('tests/nomads_adoption/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/nomads_adoption.dm',
+            'code/_helpers/unsorted.dm', 'civ13.dme')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
@@ -588,6 +606,13 @@ SUITES = {
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
+    # Inert skin/catalog/guard and account-wiring checks; no native runner import.
+    # Existing shared inputs retain their conservative all-suite selection.
+    'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),
+        'paths': ('tests/action_keybindings/', 'code/modules/client/action_keybindings.dm'),
+        'shared_paths': ('interface/skin.dmf', 'interface/interface.dm',
+            'code/modules/client/client_procs.dm', 'code/game/mob/login.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

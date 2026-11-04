@@ -246,7 +246,16 @@
 				if(starting_loc && starting_loc != roof_turf)
 					throw EXCEPTION("Saved roof location changed during import")
 				starting_loc = roof_turf
-			object = new type(starting_loc)
+			// A saved atom first reached through another entry's field (a limb's
+			// parent or children) has no holder yet. Its owner is restored as a
+			// field below, so constructors must not discard it as an orphan.
+			persistence_saved_atom_construction++
+			try
+				object = new type(starting_loc)
+			catch(var/exception/construct_error)
+				persistence_saved_atom_construction--
+				throw construct_error
+			persistence_saved_atom_construction--
 		else if(ispath(type, /datum/wound/lost_limb))
 			// The lost limb is not a constructor input during graph recovery.
 			// Register an explicit shell before decoding cyclic organ references.

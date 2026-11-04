@@ -15,7 +15,8 @@
 /map_storage/proc/capture_durable_world()
 	durable_export = null
 	if(!map.uses_durable_metadata()) return null
-	if(map.season_busy || map.season_queue.len || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
+	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before saving")
+	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.nomads_active_event || map.nomads_recovery_required || map.durable_nomads_lava_active() || map.durable_nomads_transients_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
 		throw EXCEPTION("World metadata is transitioning; retry saving after it settles")
 	if(!processes.time_of_day || !processes.weather)
 		throw EXCEPTION("World metadata processes are unavailable")
@@ -39,7 +40,9 @@
 			for(var/x = 1, x <= 32, x++) pixels += list(I.GetPixel(x, y))
 		symbols[faction] = pixels
 	var/datum/durable_timer_queue/Q = map.durable_timer_queue()
-	return list("schema" = 2, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
+	var/list/result = list("schema" = 2, "map_fields_version" = 2, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
+	if(map.durable_nomads_extension()) result["nomads_profile"] = capture_durable_nomads()
+	return result
 
 // Inspect encoded field roots without decoding references to atoms which have
 // not been loaded yet. All graph edges and entry identities are checked first.
@@ -51,12 +54,15 @@
 	var/datum/durable_save_graph/G = new
 	var/list/keys = list("schema", "map_type", "fields", "environment", "times", "areas", "symbols", "weather_process", "timers", "nodes")
 	if(state["schema"] == 2) keys += "topology"
+	if("map_fields_version" in state) keys += "map_fields_version"
+	if(map.durable_nomads_extension() || ("nomads_profile" in state)) keys += "nomads_profile"
 	G.check_fields(state, keys)
 	if(!(state["schema"] in list(1, 2)) || state["map_type"] != "[map.type]")
 		throw EXCEPTION("Durable world profile differs")
 	G.validate(state["nodes"], generation)
+	validate_durable_nomads(state, G)
 	var/list/fields = state["fields"]
-	var/list/schema = durable_metadata_map_schema()
+	var/list/schema = durable_metadata_map_read_schema(state)
 	if(!islist(fields) || fields.len != schema.len)
 		throw EXCEPTION("Durable map field inventory differs")
 	for(var/key in schema)
@@ -73,7 +79,7 @@
 			durable_metadata_validate_fields(value, list("[key]" = kind))
 	durable_metadata_validate_fields(state["environment"], durable_environment_schema())
 	var/list/environment = state["environment"]
-	if(!(environment["season"] in list("SPRING", "SUMMER", "FALL", "WINTER")) || !(environment["time_of_day"] in time_of_day2luminosity) || environment["tod_ticks"] < 0 || environment["research_clock"] < 0)
+	if(!(environment["season"] in map.durable_nomads_seasons_allowed()) || !(environment["time_of_day"] in time_of_day2luminosity) || environment["tod_ticks"] < 0 || environment["research_clock"] < 0)
 		throw EXCEPTION("Invalid durable environment phase")
 	G.check_index(state["times"])
 	var/list/times_node = G.nodes[state["times"]]
@@ -127,7 +133,9 @@
 	durable_metadata_validate_fields(state["weather_process"], durable_weather_schema())
 	var/list/policy = state["weather_process"]
 	if(policy["mod_weather_interval"] <= 0 || policy["change_weather_interval"] <= 0) throw EXCEPTION("Invalid durable weather interval")
-	var/datum/durable_timer_queue/Q = new(map, map.durable_callback_names())
+	var/list/callbacks = map.durable_callback_names()
+	callbacks += map.durable_nomads_callbacks()
+	var/datum/durable_timer_queue/Q = new(map, callbacks)
 	Q.validate(state["timers"])
 	Q.owner = null
 	validate_durable_reachability(G)
@@ -163,8 +171,10 @@
 
 // Read-only rejection before player ownership or timer state is changed.
 /map_storage/proc/require_durable_world_idle()
-	if(!durable_state) return
-	if(map.season_busy || map.season_queue.len || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
+	// A legacy incoming generation does not make active current-world work safe.
+	if(!durable_state && !map.uses_durable_metadata()) return
+	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before loading")
+	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.nomads_active_event || map.nomads_recovery_required || map.durable_nomads_lava_active() || map.durable_nomads_transients_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
 		throw EXCEPTION("World metadata is transitioning; retry loading after it settles")
 
 /map_storage/proc/suspend_durable_world()
@@ -180,7 +190,9 @@
 	var/list/fields = list()
 	var/list/encoded_fields = durable_state["fields"]
 	for(var/key in encoded_fields) fields[key] = values[encoded_fields[key]]
+	fields = durable_metadata_default_map_fields(fields, durable_state)
 	durable_metadata_restore_fields(map, fields, durable_metadata_map_schema())
+	restore_durable_nomads(durable_state, values)
 	var/list/E = durable_state["environment"]
 	season = E["season"]
 	game_hour = E["game_hour"]

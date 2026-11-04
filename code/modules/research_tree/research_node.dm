@@ -475,6 +475,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/shears" = "basic_agriculture",
 		"/obj/item/weapon/storage/produce_basket" = "basic_agriculture",
 		"/obj/item/weapon/storage/seed_collector" = "basic_agriculture",
+		"/obj/item/weapon/farmers_almanac" = "basic_agriculture",
 		// --- basic_furniture (17) ---
 		"/obj/item/weapon/stool/wood" = "basic_furniture",
 		"/obj/item/weapon/bedsheet" = "basic_furniture",

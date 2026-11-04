@@ -1,6 +1,7 @@
 # Resource extraction regression
 
-Run `pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin <516.1681-bin>`.
+Use the canonical version in `tools/byond/version.json` (currently 516.1688).
+Run `pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin <BYOND-bin>`.
 
 The launcher compiles the checkout's production types with ordinary game startup
 disabled, removes map includes, and runs a 12 x 12 x 2 constructor fixture in
@@ -34,6 +35,6 @@ errors in the full runtime log.
 
 ## Finite digging regression
 
-`./tests/resource_extraction/run.ps1 -ByondBin <516.1681-bin> -Probe tests/resource_extraction/digging_probe.dm` executes the complete production floor attack handler with an injected action-wait adapter. A competing actor finishes during the first actor's wait; snow, dirt and sand must produce only one output from one remaining unit. Cancellation releases actor locks, and underground mining performs one wait and one conversion. `-DiggingBaseline` substitutes immutable pre-fix floor source at aa675de6dbade0f3740c516dc4b5945c5c9a43c7 and requires the assertions to fail without runtime errors.
+`./tests/resource_extraction/run.ps1 -ByondBin <BYOND-bin> -Probe tests/resource_extraction/digging_probe.dm` executes the complete production floor attack handler with an injected action-wait adapter. A competing actor finishes during the first actor's wait; snow, dirt and sand must produce only one output from one remaining unit. Cancellation releases actor locks, and underground mining performs one wait and one conversion. `-DiggingBaseline` substitutes immutable pre-fix floor source at aa675de6dbade0f3740c516dc4b5945c5c9a43c7 and requires the assertions to fail without runtime errors.
 
 The fixture does not establish graphical interaction or elapsed player timing. It leaves cooperative speed/yield balance unchanged. CI selects the existing extraction suite for this PR because it adds an executable integration probe; later edits remain opt-in.

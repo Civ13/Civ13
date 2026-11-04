@@ -18,6 +18,7 @@ export function FactionList({ data }: ScreenProps) {
           <th scope="row"><strong>{text(faction.name)}</strong>
             {faction.motto && <> - <em>{text(faction.motto)}</em></>}
             {faction.flavour && <p>{text(faction.flavour)}</p>}
+            {faction.renamed && <p><em>{text(faction.renamed)}</em></p>}
             <p>{text(faction.members)} {faction.members === 1 ? 'member' : 'members'}.</p>
           </th>
         </tr>;

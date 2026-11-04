@@ -9,6 +9,7 @@
 
 /obj/map_metadata/nomads/divide/New()
 	..()
-	spawn(1200)
-		if (season == "SPRING") //fixes game setting the season as spring
-			season = "Wet Season"
+	if(!durable_schedule("nomads_initial_climate", 1200))
+		spawn(1200)
+			if (season == "SPRING") //fixes game setting the season as spring
+				season = "Wet Season"

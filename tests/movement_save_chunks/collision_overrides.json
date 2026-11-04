@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "code/game/atoms.dm",
-      "sha256_normalized": "1f07164ec2c2d311494bdc5f34e0563a3f5e64bd0a589f34b855849eb7f6f9af",
+      "sha256_normalized": "8a14138b61750f240b1869f73fe6c6d1d5325100c79f22a13ad3822590eb7bb8",
       "declarations": [
         {
           "line": 44,

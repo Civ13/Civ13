@@ -1,0 +1,77 @@
+name: Nomads durable profile roundtrips
+on:
+  pull_request:
+    paths:
+      - 'tests/nomads_persistence/**'
+      - 'tests/durable_map_migration/**'
+      - 'code/game/objects/map_metadata/nomads/**'
+      - 'code/game/objects/map_metadata/_map_metadata.dm'
+      - 'code/modules/persistence/**'
+      - 'code/modules/1713/radiation.dm'
+      - 'code/modules/1713/natural_disasters.dm'
+      - 'code/modules/1713/oil_fires.dm'
+      - 'code/game/objects/explosion.dm'
+      - 'code/processes/explosion.dm'
+      - 'code/game/turfs/turf_changing.dm'
+      - 'maps/nomads/**'
+      - 'code/world.dm'
+      - 'scripts/nomads-lifecycle/**'
+      - '.github/workflows/nomads-persistence.yml'
+      - 'civ13.dme'
+permissions:
+  contents: read
+jobs:
+  synthetic-nomads:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Install pinned BYOND and compile exact game source
+        timeout-minutes: 15
+        env:
+          BYOND_MAJOR: '516'
+          BYOND_MINOR: '1688'
+          BYOND_ARCHIVE_SOURCE: repository-release
+        run: bash scripts/travis_pre_byond.sh
+      - name: Native synthetic profiles, corruption controls and spatial matrix
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
+          export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+          export MANPATH="${MANPATH:-}"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          evidence="$RUNNER_TEMP/nomads-persistence"
+          mkdir -p "$evidence"
+          export TMPDIR="$evidence"
+          python3 -B tests/nomads_persistence/run.py --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/profiles.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control profile --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/profile-control.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control timer-restore --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/timer-control.log"
+          python3 -B tests/nomads_persistence/run.py --events --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/events.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control nuke-tail --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/nuke-tail-control.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control calendar-failure --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/calendar-failure-control.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control lava-tail --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/lava-tail-control.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control legacy-import --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/legacy-import-control.log"
+          python3 -B tests/nomads_persistence/run.py --effects --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/effects.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control chain-ownership --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/chain-control.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control fire-boundary --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/fire-control.log"
+          python3 -B tests/nomads_persistence/run.py --negative-control late-fire --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/late-fire-control.log"
+          python3 -B tests/nomads_persistence/run.py --spatial --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/spatial.log"
+          python3 -B tests/durable_map_migration/run.py --byond-bin "$PWD/BYOND/byond/bin" | tee "$evidence/legacy-migration.log"
+      - name: Retain exact-head successes and failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nomads-persistence-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/nomads-persistence/
+            .ci/compile/
+            !${{ runner.temp }}/nomads-persistence/**/*.dmb
+            !${{ runner.temp }}/nomads-persistence/**/*.rsc
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
