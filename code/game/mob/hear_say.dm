@@ -1,7 +1,7 @@
 // At minimum every mob has a hear_say proc.
 /mob/var/next_language_learn = -1
 /mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE, var/original_message = "")
-	if (!client)
+	if (!client && !agent_character_for(src))
 		return
 
 	if (speaker && !speaker.client && isghost(src) && is_preference_enabled(/datum/client_preference/ghost_ears) && !(speaker in view(src)))

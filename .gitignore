@@ -62,3 +62,4 @@ __pycache__/
 
 # Generated showcase/demo build (scripts/build_showcase_dme.py)
 showcase.dme
+config/agent-control.txt

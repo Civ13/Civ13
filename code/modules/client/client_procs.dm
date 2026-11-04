@@ -237,6 +237,7 @@
 	if (holder)
 		add_admin_verbs()
 		admin_memo_show()
+	agent_control.update_handover_verbs(src)
 
 	// Forcibly enable hardware-accelerated graphics, as we need them for the lighting overlays.
 	// (but turn them off first, since sometimes BYOND doesn't turn them on properly otherwise)

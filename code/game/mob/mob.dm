@@ -1,4 +1,5 @@
 /mob/Destroy()//This makes sure that mobs with clients/keys are not just deleted from the game.
+	agent_characters -= src
 	mob_list -= src
 	dead_mob_list -= src
 	unregister_living_mob(src)
@@ -44,7 +45,7 @@
 
 /mob/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
 
-	if (!client)	return
+	if (!client && !agent_character_for(src))	return
 
 	if (type)
 		if (type & TRUE && ((sdisabilities & BLIND) || blinded || find_trait("Blind") || paralysis) )//Vision related
@@ -892,12 +893,14 @@
 	return
 
 /mob/proc/facedir(var/ndir)
-	if (!canface() || client.moving || world.time < client.move_delay)
+	// Agent-driven characters have no client (code/modules/agent_control).
+	if (!canface() || (client && (client.moving || world.time < client.move_delay)))
 		return FALSE
 	set_dir(ndir)
 	if (buckled && buckled.buckle_movable)
 		buckled.set_dir(ndir)
-	client.move_delay = world.time + movement_delay()
+	if (client)
+		client.move_delay = world.time + movement_delay()
 	update_vision_cone()
 	return TRUE
 
