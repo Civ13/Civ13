@@ -164,6 +164,9 @@
 	operation.validate_human_spatial_candidates()
 #endif
 	operation.diagnostic_phase = "write_marker"
+	// Transfer effects applied in memory, so the committed save can confirm them.
+	var/list/transfer_capture = transfer_capture(generation)
+	if(transfer_capture) round_state["transfer"] = transfer_capture
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
 	if(!text2file(json_encode(round_state), "map_saves/round.json"))
@@ -181,6 +184,7 @@
 			throw EXCEPTION("World effects changed during capture; completed backup retained. [effects_quiescence_error]")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
+	if(transfer_capture) transfer_saved(transfer_capture)
 	if(debug_policy)
 		try
 			world.log << "Debug lossy save committed: [json_encode(round_state["debug_recovery"])]"

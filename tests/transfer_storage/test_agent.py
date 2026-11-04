@@ -83,7 +83,9 @@ class AgentTests(unittest.TestCase):
         answer = self.a('/escrow', {'peer': 'gamma', 'payloads': ['axe']})
         self.assertFalse(answer['ok'])
         answer = self.a('/load', {'generation': 'old', 'effects': [], 'ledger_seq': 0})
-        self.assertTrue(answer['ok'])  # the hold is recorded...
+        self.assertFalse(answer['ok'])  # the rollback hold is reported...
+        self.assertTrue(answer['held'])
+        self.assertIn('rollback', answer['error'])
         held = self.a('/escrow', {'peer': 'beta', 'payloads': ['axe']})
         self.assertTrue(held['held'])  # ...and later steps are refused
 

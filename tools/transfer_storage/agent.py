@@ -19,6 +19,14 @@ from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError
 MAX_BODY = 1 << 20  # 1 MiB per request
 
 
+def _load(store, body):
+    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'])
+    if seq is None:
+        # reconcile_load just put the region on hold; say so like other refusals.
+        raise RegionHeld(store.status().get('hold_reason') or 'rollback')
+    return {'ledger_seq': seq}
+
+
 def _routes(store):
     return {
         '/status': lambda body: store.status(),
@@ -29,7 +37,7 @@ def _routes(store):
         '/return': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_return(body['transfer_id']))),
         '/abort': lambda body: store.abort(body['transfer_id']) or {},
         '/save': lambda body: {'ledger_seq': store.report_save(body['generation'], body['effects'], body['ledger_seq'])},
-        '/load': lambda body: {'ledger_seq': store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'])},
+        '/load': lambda body: _load(store, body),
     }
 
 

@@ -550,6 +550,14 @@
 		while (!surface_inventory.world_inventory_complete)
 			if (!surface_inventory.finish_world_inventory()) return FALSE
 			TICK_CHECK
+	// An unreadable round state reports an empty capture; the agent then holds
+	// if it has confirmed anything, instead of trusting the reloaded world.
+	var/list/transfer_round_state = null
+	try
+		transfer_round_state = read_round_state()
+	catch
+		transfer_round_state = null
+	transfer_loaded(transfer_round_state)
 	log_startup_progress("Finished loading.")
 	return TRUE
 
