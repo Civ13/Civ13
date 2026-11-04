@@ -323,6 +323,8 @@ SUITES = {
     'mount_lifecycle': {'files': ('tests/mount_lifecycle/test_death.py',),
         'paths': ('tests/mount_lifecycle/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/damage_procs.dm',
             'code/game/mob/living/carbon/human/subtile_movement.dm',
             'code/modules/persistence/bed_return.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only complete destruction-layer projection; frozen source is data.
