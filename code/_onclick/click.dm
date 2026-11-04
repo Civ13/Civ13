@@ -19,6 +19,9 @@
 /proc/los_click_target(mob/user, atom/A)
 	if (!ismovable(A) || !isturf(A.loc))
 		return A
+	// ClickOn refuses clicks inside the cooldown, so skip the sight check.
+	if (world.time <= user.next_click)
+		return A.loc
 	if (los_read_allowed(user, A, "click"))
 		return A
 	return A.loc

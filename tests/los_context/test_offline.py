@@ -523,21 +523,30 @@ class SourceBoundaries(unittest.TestCase):
         class Atom:
             def __init__(self,loc=None,movable=True):self.loc=loc;self.movable=movable
         turf=Atom(movable=False);thing=Atom(turf);worn=Atom(Atom())
-        allowed={}
-        env={'__builtins__':{},'ismovable':lambda a:a.movable,'isturf':lambda a:a is turf,
-             'los_read_allowed':lambda user,a,op:(op=='click') and allowed.get(id(a),False)}
+        allowed={};checks=[]
+        class World:time=10
+        class User:next_click=0
+        user=User()
+        def read(u,a,op):
+            checks.append(a);return (op=='click') and allowed.get(id(a),False)
+        env={'__builtins__':{},'world':World,'ismovable':lambda a:a.movable,'isturf':lambda a:a is turf,
+             'los_read_allowed':read}
         f=project(click,'/proc/los_click_target(',env)
-        self.assertIs(f(None,thing),turf)            # hidden world object -> its tile
+        self.assertIs(f(user,thing),turf)            # hidden world object -> its tile
         allowed[id(thing)]=True
-        self.assertIs(f(None,thing),thing)           # visible -> unchanged
-        self.assertIs(f(None,turf),turf)             # turfs are never redirected
-        self.assertIs(f(None,worn),worn)             # inventory/screen objects are untouched
+        self.assertIs(f(user,thing),thing)           # visible -> unchanged
+        self.assertIs(f(user,turf),turf)             # turfs are never redirected
+        self.assertIs(f(user,worn),worn)             # inventory/screen objects are untouched
+        # Inside the click cooldown ClickOn refuses the click, so no sight check runs.
+        checks.clear();user.next_click=World.time
+        self.assertIs(f(user,thing),turf);self.assertEqual([],checks)
+        user.next_click=0
         # Omission control: returning the object itself would hand the hidden target to ClickOn.
-        leaky=click.replace('\treturn A.loc\n','\treturn A\n',1)
+        leaky=click.replace('\t\treturn A\n\treturn A.loc\n','\t\treturn A\n\treturn A\n',1)
         self.assertNotEqual(leaky,click)
         g=project(leaky,'/proc/los_click_target(',env)
         allowed.clear()
-        self.assertIs(g(None,thing),thing)
+        self.assertIs(g(user,thing),thing)
 
     def test_read_only_examine_and_retirement(self):
         body=fragment((ROOT/'code/game/mob/mob.dm').read_text(),'/mob/verb/examinate(')
