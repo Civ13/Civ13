@@ -100,6 +100,34 @@ static class LocalHostingTests {
         ran.Clear(); started.Clear();
         LocalHosting.Run(host, @"C:\BYOND\bin", port => port == 1714, started.Add, Ok);
         Require(ran.Count == 0 && started.Count == 0, "updated or restarted a running world");
+        // control: the shared gaia_host.py path replaces the direct start and update.
+        var python = Path.Combine(dir, "python.exe");
+        var script = Path.Combine(dir, "gaia_host.py");
+        var controlConfig = Path.Combine(dir, "gaia-host.json");
+        foreach (var file in new[] { python, script, controlConfig }) File.WriteAllText(file, "");
+        Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, update = new { git, branch = "master" }, control = new { python, script, config = controlConfig } }); LocalHosting.Load(launcher); }, "control and update together");
+        Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, control = new { python = "python", script, config = controlConfig } }); LocalHosting.Load(launcher); }, "relative control python");
+        Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, control = new { python, script, config = controlConfig } });
+        host = LocalHosting.Load(launcher)!;
+        Require(host.Control is { } loaded && loaded.Python == python && loaded.Script == script && loaded.Config == controlConfig && host.Update is null, "control section not read");
+        var controlStep = LocalHosting.ControlStep(host.Control!, "stop");
+        Require(controlStep.FileName == python && !controlStep.UseShellExecute && controlStep.RedirectStandardOutput &&
+            controlStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", script, "--config", controlConfig, "stop" }), "control argv changed: " + string.Join(" ", controlStep.ArgumentList));
+        try { LocalHosting.ControlStep(host.Control!, "mapswap"); throw new Exception("unsupported control action accepted"); } catch (ArgumentException) { assertions++; }
+        ran.Clear(); started.Clear();
+        lines = LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add, s => { ran.Add(s); return (0, "{\"ok\": true, \"accepted\": true, \"action\": \"start\", \"operation\": \"x\"}"); });
+        Require(started.Count == 0 && ran.Count == 1 && ran[0].ArgumentList.Last() == "start" && lines[0] == "Starting the server...", "control start did not go through the script");
+        ran.Clear();
+        lines = LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add, s => { ran.Add(s); return (1, "{\"ok\": false, \"refused\": \"level 2 of the save is missing\"}"); });
+        Require(started.Count == 0 && lines.Single() == "Refused: level 2 of the save is missing", "a refused start was not reported");
+        var status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"busy\": true, \"world\": {\"ready\": false, \"clients\": 4, \"error\": null}, \"operation\": {\"action\": \"restart\", \"phase\": \"saving\", \"error\": null}}");
+        Require(status.Ok && status.Busy && status.Message == "Server port is open. World not ready. 4 players. Last action: restart (saving).", "status line: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": false, \"busy\": false, \"operation\": {\"action\": \"update\", \"phase\": \"failed\", \"error\": \"compile failed\"}}");
+        Require(!status.Busy && status.Message == "Server is not running. Last action: update (failed): compile failed.", "failure line: " + status.Message);
+        Require(!LocalHosting.ParseControl("stop", 0, "{\"ok\": true, \"accepted\": true, \"action\": \"start\"}").Ok, "acceptance for another action counted");
+        Require(LocalHosting.ParseControl("update", 1, "Traceback (most recent call last)") is { Ok: false, Busy: false } garbage && garbage.Message.Contains("no answer"), "garbage output accepted");
+        Require(LocalHosting.ParseControl("restart", 0, "warning: x\n{\"ok\": true, \"accepted\": true, \"action\": \"restart\"}") is { Ok: true, Busy: true }, "answer after a warning line not found");
+
         Reject(() => { Write(new { schema = 2, game_directory = game, world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "future schema");
         Reject(() => { Write(new { schema = 1, game_directory = "relative", world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "relative game folder");
         Reject(() => { Write(new { schema = 1, game_directory = game, world = @"..\civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "world outside the game folder");
@@ -108,7 +136,7 @@ static class LocalHostingTests {
         Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, bot = new { php, root = game, profile } }); LocalHosting.Load(launcher); }, "bot root without control.php");
         File.WriteAllText(profile, "{}");
         Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, bot = new { php, root = bot, profile } }); LocalHosting.Load(launcher); }, "bot profile without http_port");
-        Console.WriteLine($"PASS local hosting: {assertions} assertions; opt-in host.json, menu visibility, DreamDaemon/bot supervisor starts only when absent, strict profile validation, fast-forward update and 0-warning rebuild before start.");
+        Console.WriteLine($"PASS local hosting: {assertions} assertions; opt-in host.json, menu visibility, DreamDaemon/bot supervisor starts only when absent, strict profile validation, fast-forward update and 0-warning rebuild before start, shared control script.");
         return assertions;
     }
 }

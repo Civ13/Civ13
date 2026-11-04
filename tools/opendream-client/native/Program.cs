@@ -149,7 +149,7 @@ public static class Program {
                 if (ServerCatalog.MenuServer(choice) is { } serverName) {
                     var desktop = new WindowsByondDesktop();
                     await ServerBrowser.Run(serverName, discovery, Console.In, Console.Out, verified => {
-                        StartNativeGame(verified, byond, desktop, Console.Out);
+                        using var game = StartNativeGame(verified, byond, desktop, Console.Out);
                         return Task.CompletedTask;
                     });
                 }
@@ -186,11 +186,12 @@ public static class Program {
         return false;
     }
 
-    public static void StartNativeGame(VerifiedGameServer verified, string byond, IByondDesktop desktop, TextWriter output) {
+    // Returns the started DreamSeeker; the caller disposes it.
+    public static Process StartNativeGame(VerifiedGameServer verified, string byond, IByondDesktop desktop, TextWriter output) {
         var server = verified.Status;
         output.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
         try {
-            using var game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
+            return Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
                 path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
                 ?? throw new IOException("BYOND client did not start.");
         } catch (System.ComponentModel.Win32Exception e) {
