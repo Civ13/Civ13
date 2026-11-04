@@ -1105,6 +1105,9 @@
 					user.visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
 					if (do_after(user, rand(25,30)))
+						if (!T || T.available_dirt <= 0) // someone else took the last dirt during the wait
+							H.shoveling = FALSE
+							return
 						user.visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
 						H.shoveling = FALSE
 						H.adaptStat("strength", 1)
@@ -1120,6 +1123,9 @@
 					user.visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
 					if (do_after(user, rand(45,60)))
+						if (!T || T.available_sand <= 0) // someone else took the last sand during the wait
+							H.shoveling = FALSE
+							return
 						user.visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
 						H.shoveling = FALSE
 						H.adaptStat("strength", 1)
@@ -1163,8 +1169,8 @@
 			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
 			user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
-				if (!TB.is_diggable)
-					return
+				if (!TB.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (locate(/obj/structure/multiz) in TB))
+					return // another digger finished this entrance during the wait
 				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
 				user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
@@ -1182,8 +1188,9 @@
 			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
 			user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
-				if (!TO.is_diggable)
-					return
+				var/turf/below = locate(user.x, user.y, user.z-1)
+				if (!TO.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (below && (locate(/obj/structure/multiz) in below)))
+					return // another digger finished this entrance during the wait
 				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
 				new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
 				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))

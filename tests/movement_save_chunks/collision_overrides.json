@@ -382,7 +382,7 @@
     },
     {
       "path": "code/modules/1713/structures.dm",
-      "sha256_normalized": "0253e26bfdffad743b51eb6053862ac817b0bd8d6a9548e6940ff3e01410c52f",
+      "sha256_normalized": "ec4054ea73c4ff56b5651d1a568bc1417e457b4b9895c8627202a7cc22ddddc1",
       "declarations": [
         {
           "line": 658,
@@ -500,7 +500,7 @@
     },
     {
       "path": "code/modules/paperwork/authoring.dm",
-      "sha256_normalized": "c4221d7f8a771ac167cac4f63e63ef64007368bbaedaaab31e4da977456b6b51",
+      "sha256_normalized": "76c05137b04879b871b9360eb212fd5fe85b545d03736e4cbba4c5e8950ddadf",
       "declarations": [
         {
           "line": 11,
@@ -510,7 +510,7 @@
     },
     {
       "path": "code/modules/paperwork/view.dm",
-      "sha256_normalized": "56c66ea7823b16b2a7f3d71ddf2fa55f846e1c37ca96badd0b16367a6b9edfd6",
+      "sha256_normalized": "8fc5c3461bc989bde8858b326ebf70cb8f7fb2c7819c0869ac2917171e24249b",
       "declarations": [
         {
           "line": 61,

@@ -2629,3 +2629,29 @@ RECIPE: /material/steel/,reactor fuel processor,/obj/structure/reactor_fuel_proc
 
 RECIPE: /material/leather/,leather saddle,/obj/item/animal_tack/saddle,6,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,leather animal harness,/obj/item/animal_tack/harness,4,60,0,1,none,0,0,0,8,null
+//**| SUPPLIED-ITEM RECIPES (#3563) |**
+RECIPE: /material/iron/,screwdriver,/obj/item/weapon/screwdriver,2,50,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,lockpick,/obj/item/weapon/lockpick,1,60,0,1,tools,18,0,0,8,null
+RECIPE: /material/iron/,legcuffs,/obj/item/weapon/legcuffs,2,60,0,1,tools,0,61,0,8,null
+RECIPE: /material/tin/,tin whistle,/obj/item/weapon/whistle/tin,2,60,0,1,tools,0,0,0,8,null
+RECIPE: /material/plastic/,police tape,/obj/item/taperoll/police,2,40,0,1,none,0,0,0,8,null
+RECIPE: /material/plastic/,bag valve mask,/obj/item/bag_valve_mask,4,90,0,1,medical,0,0,60,8,null
+RECIPE: /material/plastic/,empty pill pack,/obj/item/weapon/pill_pack,1,30,0,1,medical,0,0,60,8,null
+RECIPE: /material/steel/,stethoscope,/obj/item/clothing/accessory/stethoscope,2,70,0,1,medical,0,0,40,8,null
+RECIPE: /material/glass/,glass jar,/obj/item/glass_jar,2,50,0,1,none,0,0,0,8,null
+RECIPE: /material/glass/,small telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,3,120,0,1,none,0,46,0,8,null
+RECIPE: /material/wood/soft/,shamisen,/obj/item/shamisen,10,135,0,1,entertainment & other,50,0,0,8,null
+RECIPE: /material/wood/soft/,pencil,/obj/item/weapon/pen/pencil,1,40,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/gold/,fancy pen,/obj/item/weapon/pen/fancy,1,60,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,null
+RECIPE: /material/plastic/,black lipstick,/obj/item/weapon/lipstick/black,1,40,0,1,none,0,0,0,8,null
+RECIPE: /material/plastic/,purple lipstick,/obj/item/weapon/lipstick/purple,1,40,0,1,none,0,0,0,8,null
+RECIPE: /material/electronics/,video camera,/obj/item/video_camera,8,150,0,1,none,205,0,0,8,null
+RECIPE: /material/steel/,red bar stool,/obj/item/weapon/barstool,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,green bar stool,/obj/item/weapon/barstool/green,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,blue bar stool,/obj/item/weapon/barstool/blue,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,yellow bar stool,/obj/item/weapon/barstool/yellow,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,black bar stool,/obj/item/weapon/barstool/black,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,white bar stool,/obj/item/weapon/barstool/white,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,brown bar stool,/obj/item/weapon/barstool/brown,3,90,0,1,furniture,0,0,0,8,null
+RECIPE: /material/steel/,grey bar stool,/obj/item/weapon/barstool/grey,3,90,0,1,furniture,0,0,0,8,null

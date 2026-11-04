@@ -67,18 +67,14 @@ def native_quiet(game, host, port):
     An unknown idle GUI is not silently adopted or terminated. The operator must
     reconcile it through normal admission before this explicit updater can run.
     """
-    if os.name != 'nt':
-        raise RuntimeError('Live canonical updating supports Windows only')
+    if os.name != 'nt' and not core.is_linux():
+        raise RuntimeError('Live canonical updating supports Windows and Linux only')
     if host is not None:
         require(core.process_identity(host['pid']) is None,
                 'Previous owned PID is still alive or was reused')
-    import psutil
-    for process in psutil.process_iter(['name']):
-        name = (process.info.get('name') or '').lower()
-        require(name and name not in ('dd.exe', 'dm.exe', 'dreamdaemon.exe', 'dreammaker.exe'),
-                'Another native process requires ownership reconciliation')
-    require(not any(c.status == psutil.CONN_LISTEN and c.laddr.port == port
-                    for c in psutil.net_connections(kind='tcp')),
+    require(not core.native_process_names(),
+            'Another native process requires ownership reconciliation')
+    require(not core.port_listening(port),
             'Conflicting listener; no process action permitted')
 
 

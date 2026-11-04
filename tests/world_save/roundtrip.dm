@@ -23,6 +23,13 @@ world
 	var/obj/map_metadata/metadata
 	var/obj/item/test/other_z
 	var/matrix/matrix_value
+// Fault injection for failed-export recovery. A stale cross-level field no
+// longer aborts a save, so a throwing capture hook stands in for it.
+var/global/roundtrip_capture_failure = FALSE
+/obj/item/test/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
+	if(roundtrip_capture_failure)
+		throw EXCEPTION("Injected capture failure")
+	return ..()
 /datum/test
 	var/value = 0
 	var/datum/test/next
@@ -192,12 +199,12 @@ world
 			check(!map_storage.saving_segments && !map_storage.segment_reader, "segment handles retained after save")
 			check(!fexists("map_rollback/save_complete.txt"), "segmented generation copied as a full-file rollback")
 			// A failed segmented capture keeps the completed backup and releases handles.
-			A.other_z = C
+			roundtrip_capture_failure = TRUE
 			var/datum/controller/gameticker/failed_segmented = new
-			check(!failed_segmented.savemap(), "segmented cross-level object silently duplicated")
+			check(!failed_segmented.savemap(), "segmented capture failure accepted")
 			check(!fexists("map_saves/save_complete.txt") && fexists("map_backups/save_complete.txt") && fexists("map_backups/1.part1.sav"), "failed segmented export lost its completed backup")
 			check(!map_storage.saving_segments && !map_storage.segment_reader && !persistence_save_in_progress, "failed segmented export retained handles or lock")
-			A.other_z = null
+			roundtrip_capture_failure = FALSE
 			check(map_storage.Save_World() && map_storage.validate_world_save(), "segmented recovery export failed")
 			map_storage.low_memory_override = FALSE
 			check(map_storage.Save_World(), "full-file export after segmented export failed")
@@ -233,14 +240,25 @@ world
 			check(fexists("map_saves/save_complete.txt") && !persistence_save_in_progress, "failed marker deletion changed active completion or retained lock")
 			delete_failure_path = null
 			check(map_storage.validate_world_save(), "failed marker deletion changed original save")
-			A.other_z = C
+			roundtrip_capture_failure = TRUE
 			var/datum/controller/gameticker/failed_export_ticker = new
-			check(!failed_export_ticker.savemap(), "cross-level object silently duplicated")
+			check(!failed_export_ticker.savemap(), "capture failure accepted")
 			check(!fexists("map_saves/save_complete.txt") && !persistence_save_in_progress, "failed export retained completion marker or lock")
 			check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "failed export retained save pins")
 			check(fexists("map_backups/save_complete.txt"), "failed export lost completed backup")
-			A.other_z = null
+			roundtrip_capture_failure = FALSE
 			check(map_storage.Save_World(), "recovery export failed")
+			// A stale pointer to an object on another level (an attacker log,
+			// an AI target) is saved as null instead of aborting the world save.
+			A.other_z = C
+			check(map_storage.Save_World() && map_storage.validate_world_save(), "stale cross-level reference aborted the world save")
+			check(A.other_z == C, "save cleared a live cross-level reference")
+			var/savefile/stale_level = new("map_saves/1.sav")
+			var/list/stale_value = stale_level["[map_storage.entry_path(stale_level, 2)]/other_z"]
+			check(islist(stale_value) && stale_value["kind"] == "entry" && stale_value["ref"] == 0, "cross-level reference was not saved as null")
+			stale_level = null
+			A.other_z = null
+			check(map_storage.Save_World(), "export after cross-level reference failed")
 		var/savefile/F1 = new("map_saves/1.sav")
 		F1["/maxx"] << world.maxx + 1
 		check(!map_storage.validate_world_save(), "dimension mismatch accepted")

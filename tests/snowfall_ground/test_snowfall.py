@@ -45,6 +45,8 @@ def project(signature):
             'precipitation = A.icon_state.replace("rad_", "")',
         'var/snowing = (A.weather == WEATHER_WET || A.weather == WEATHER_EXTREME) && A.weather_intensity > 0 && (precipitation in list("snow1", "snow2", "snow_storm"))':
             'snowing = A.weather in (2, 3) and A.weather_intensity > 0 and precipitation in ("snow1", "snow2", "snow_storm")',
+        'var/snowing = local_precipitation(src, SNOWFALL_STICK_C) == "snow"':
+            'snowing = self.precipitation() == "snow"',
         'if (weather_snow <= 0 && !snowing)': 'if self.weather_snow <= 0 and not snowing:',
         'weather_snow = min(SNOWFALL_MAX_UNITS, weather_snow + 1)': 'self.weather_snow = min(2, self.weather_snow + 1)',
         'snowfall_ground_icon()': 'self.icon()',
@@ -114,6 +116,18 @@ class Tile:
                 return lambda generated_source=None: self.funcs[key](self, generated_source=generated_source)
             return lambda *args: self.funcs[key](self, *args)
         raise AttributeError(key)
+
+    def precipitation(self):
+        # Mirror of local_precipitation() in elevation_climate.dm.
+        A = self.area
+        if A.weather not in (2, 3) or A.weather_intensity <= 0:
+            return None
+        state = A.icon_state.replace('rad_', '')
+        if state in ('snow1', 'snow2', 'snow_storm'):
+            return 'snow'
+        if 'rain' in state or 'monsoon' in state:
+            return 'snow' if getattr(self, 'elevation_drop', 0) > 0 and self.temperature() <= 0 else 'rain'
+        return None
 
     def icon(self):
         # Image/list renderer adapter, not BYOND image identity/rendering evidence.
@@ -314,6 +328,20 @@ class SnowTests(unittest.TestCase):
             self.assertEqual(t.calls, 0, 'clear ground performed unnecessary thermal queries')
         t = Tile(); t.area.weather = 1; t.check()
         self.assertEqual(t.weather_snow, 0)
+
+    def test_rain_settles_as_snow_only_on_cooled_high_ground(self):
+        source = (ROOT / 'code/modules/1713/elevation_climate.dm').read_text()
+        self.assertIn('if (elevation_temperature_drop(T) > 0 && get_temp(T) <= stick_c)', source)
+        self.assertIn('var/elevation_lapse_c_per_km = 0', source)
+        high = Tile(c=-5, precip='rain2'); high.elevation_drop = 6.5
+        high.check()
+        self.assertEqual(high.weather_snow, 1, 'cold high ground turns rain to snow')
+        warm = Tile(c=1, precip='rain2'); warm.elevation_drop = 6.5
+        warm.check()
+        self.assertEqual(warm.weather_snow, 0, 'above the sticking point rain stays rain')
+        flat = Tile(c=-5, precip='rain2')
+        flat.check()
+        self.assertEqual((flat.weather_snow, flat.calls), (0, 0), 'no lapse rate keeps rain and skips thermal queries')
 
     def test_actual_precipitation_and_local_temperature_boundaries(self):
         for icon in ('snow1', 'snow2', 'snow_storm', 'rad_snow2'):
