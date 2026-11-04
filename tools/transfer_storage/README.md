@@ -17,8 +17,27 @@ it opens no network port.
   envelope enters the outbox only after its effects are confirmed.
   Retransmissions and stale steps change nothing.
 
-Not here yet: the coordinator process, an HTTP endpoint for DM, envelope
-signing, and the DM bridge (phase 2).
+`agent.py` serves one store over HTTP for DM (through `rustg_http_request_async`)
+and the coordinator:
+
+```
+python3 tools/transfer_storage/agent.py --db transfers.sqlite --region gaia \
+    --group pilot --port 47201 --token-file transfer-token.txt
+```
+
+It binds 127.0.0.1 only, refuses any other client address, requires the
+token (at least 32 characters) in `X-Transfer-Token`, caps bodies at 1 MiB, and
+handles one request at a time. Every route is a POST with a JSON body:
+`/status`, `/outbox`, `/receive`, `/escrow`, `/import`, `/return`, `/abort`,
+`/save` and `/load`. A refusal answers 409 with `ok: false` (and `held: true`
+while the region is on hold).
+
+`coordinator.py` keeps the region directory in its own SQLite file and moves
+outbox envelopes between agents (`relay_once`). It holds no custody, and for
+the pilot it only enrolls loopback agents.
+
+Not here yet: envelope signing for agents on different hosts, and the DM
+bridge (save/load hooks and an arrival point).
 
 ## Tests
 
