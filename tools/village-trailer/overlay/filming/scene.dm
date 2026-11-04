@@ -105,6 +105,9 @@ var/intro_port
 	name = "Trailer camera"
 	density = FALSE
 	invisibility = 101
+	// A film camera, not a character: see past opaque trees and walls so
+	// tiles behind them are never blacked out by line of sight.
+	sight = SEE_TURFS|SEE_MOBS|SEE_OBJS
 
 /mob/intro_observer/Login()
 	loc = locate(8, 10, 1)
