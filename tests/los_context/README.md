@@ -2,8 +2,11 @@
 
 `CIV13_GEOMETRIC_LOS_CORE` defaults to **1**, with a compile-time override to 0.
 This replaces the former test-only 21x21/two-client admission policy. It is a
-visual and hover/examine policy, **not** a new weapon, click, drag or Topic
-authorization system. Existing action checks remain unchanged.
+visual and hover/examine policy, **not** a new weapon, drag or Topic
+authorization system. Existing action checks remain unchanged. One click
+adapter applies: a plain or double click on a world object the clicker cannot
+see acts on that object's tile instead (`los_click_target`), so a shot or throw
+still goes to the spot without naming or locking onto what is hidden there.
 
 Contexts belong to one connected human/body/own-eye combination. Observer,
 non-human and remote-camera modes retain their native behavior. An otherwise

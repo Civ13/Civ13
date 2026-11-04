@@ -511,8 +511,33 @@ class SourceBoundaries(unittest.TestCase):
         class Bomb:
             def __getattribute__(self,key):
                 raise AssertionError('Denied operation read '+key)
-        for op in ['click','fire','drag','agent','unknown']:
+        for op in ['fire','drag','agent','unknown']:
             self.assertEqual(f(Bomb(),Bomb(),op),0)
+        # A click is a supported read: the operation gate lets it reach the context checks.
+        self.assertIsNone(f(Bomb(),Bomb(),'click'))
+
+    def test_hidden_world_click_acts_on_the_tile(self):
+        click=(ROOT/'code/_onclick/click.dm').read_text()
+        self.assertIn('usr.ClickOn(los_click_target(usr, src), params)',click)
+        self.assertIn('usr.DblClickOn(los_click_target(usr, src), params)',click)
+        class Atom:
+            def __init__(self,loc=None,movable=True):self.loc=loc;self.movable=movable
+        turf=Atom(movable=False);thing=Atom(turf);worn=Atom(Atom())
+        allowed={}
+        env={'__builtins__':{},'ismovable':lambda a:a.movable,'isturf':lambda a:a is turf,
+             'los_read_allowed':lambda user,a,op:(op=='click') and allowed.get(id(a),False)}
+        f=project(click,'/proc/los_click_target(',env)
+        self.assertIs(f(None,thing),turf)            # hidden world object -> its tile
+        allowed[id(thing)]=True
+        self.assertIs(f(None,thing),thing)           # visible -> unchanged
+        self.assertIs(f(None,turf),turf)             # turfs are never redirected
+        self.assertIs(f(None,worn),worn)             # inventory/screen objects are untouched
+        # Omission control: returning the object itself would hand the hidden target to ClickOn.
+        leaky=click.replace('\treturn A.loc\n','\treturn A\n',1)
+        self.assertNotEqual(leaky,click)
+        g=project(leaky,'/proc/los_click_target(',env)
+        allowed.clear()
+        self.assertIs(g(None,thing),thing)
 
     def test_read_only_examine_and_retirement(self):
         body=fragment((ROOT/'code/game/mob/mob.dm').read_text(),'/mob/verb/examinate(')
