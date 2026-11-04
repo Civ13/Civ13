@@ -52,8 +52,46 @@ capture to `/load`, retrying every minute until the agent answers. No effect
 can be applied before that reconcile succeeds, while a save is running, or
 while the region is on hold.
 
-Not here yet: the arrival point that calls `begin_escrow`, `begin_import` and
-`begin_return`, and envelope signing for agents on different hosts.
+## Trade post (admin-placed)
+
+`code/modules/persistence/transfer_trade_post.dm` adds
+`/obj/structure/transfer_trade_post`. It has no recipe; an admin spawns it.
+It stays closed while the bridge is off or `peers` is empty in the config:
+
+```
+{"port": 47201, "token_file": "config/transfer-token.txt", "peers": ["beta"]}
+```
+
+- A player hands it a stack of an allowlisted material (wood, stone, clay,
+  rope, cloth, leather, copper, tin, bronze, iron, steel, silver or gold; exact
+  types only, up to one full stack) and names the recipient's key. The post
+  holds the stack while the agent records the escrow, then deletes it. If the
+  agent refuses, or a save starts meanwhile, the stack is put back.
+- Every 30 seconds the world asks its agent for committed arrivals and
+  refused shipments. It imports them into the first trade post, under the
+  recipient's key (or the sender's for a return). If that post was deleted
+  during the request, a new one is built on the same tile.
+- A player uses the post empty-handed to collect what waits under their key.
+  Holdings are saved with the post.
+
+Only the kind and amount travel, never the object, so no other field of a stack
+crosses regions.
+
+## Pilot command lines
+
+```
+python3 tools/transfer_storage/agent.py --db alpha.sqlite --region alpha --group pilot \
+    --port 47201 --token-file alpha-token.txt --enroll beta:out --enroll beta:in
+python3 tools/transfer_storage/coordinator.py --db coordinator.sqlite --group pilot \
+    --region alpha=http://127.0.0.1:47201=alpha-token.txt \
+    --region beta=http://127.0.0.1:47202=beta-token.txt
+```
+
+The coordinator relays every five seconds (`--interval`). A pass that can't
+reach an agent is reported on stderr, and that agent's outbox waits for the
+next pass.
+
+Not here yet: envelope signing for agents on different hosts.
 
 ## Tests
 
