@@ -12,6 +12,7 @@
 #define TRAILER_STEP 4
 
 var/list/trailer_living = list()
+var/list/trailer_ripe = list()
 var/trailer_timeline_origin = 0
 var/list/trailer_timeline = list()
 
@@ -202,9 +203,11 @@ var/trailer_cam_next_step = 0
 
 // Walk one tile at a time through the native movement handlers, cardinal
 // steps only (closing the longer axis first, sidestepping around blockers).
-/proc/trailer_walk(mob/living/human/H, tx, ty, delay = TRAILER_STEP)
+/proc/trailer_walk(mob/living/human/H, tx, ty, delay = TRAILER_STEP, token = 0)
 	var/guard = 200
 	while ((H.x != tx || H.y != ty) && guard-- > 0)
+		if (token)
+			trailer_job_yield(H, token)
 		var/dx = tx - H.x
 		var/dy = ty - H.y
 		var/hdir = dx > 0 ? EAST : (dx < 0 ? WEST : 0)
@@ -246,11 +249,12 @@ var/trailer_cam_next_step = 0
 		P.icon_state = "[sprite_name]-harvest"
 		P.name = "ready [P.plant] plant"
 		P.desc = "A ready to harvest [P.plant] plant."
+		trailer_ripe += P
 	// Baker behind the counter; oven fuelled from the bakery's wood store.
 	trailer_baker = trailer_actor(34, 11, "Baker", /obj/item/clothing/under/civ4, SOUTH)
 	var/obj/structure/oven/oven = trailer_oven()
 	var/obj/item/stack/material/wood/W = new(locate(35, 12, 1))
-	W.amount = 2
+	W.amount = 8
 	trailer_walk(trailer_baker, 35, 12, 1)
 	trailer_pickup(trailer_baker, W)
 	oven.attackby(W, trailer_baker)
@@ -258,7 +262,7 @@ var/trailer_cam_next_step = 0
 	if (trailer_baker.get_active_hand())
 		trailer_baker.drop_item()
 	trailer_bucket = new(locate(36, 10, 1))
-	trailer_bucket.reagents.add_reagent("water", 10)
+	trailer_bucket.reagents.add_reagent("water", 60)
 	trailer_walk(trailer_baker, 33, 10, 1)
 	trailer_baker.dir = SOUTH
 	// Customer waits at the counter; carriage, horse and train wait outside.
@@ -288,8 +292,311 @@ var/trailer_cam_next_step = 0
 	intro_check(M, "authored mill")
 	return M
 
+// ---------------------------------------------------------------- jobs
+// Every villager runs their own job loop for the whole take, so work carries
+// on while the camera is elsewhere. Scenes only move the camera and wait for
+// the jobs to reach the next step of the chain; a scene that needs to script
+// an actor directly takes them off their job first.
+var/list/trailer_job_token = list()
+var/list/trailer_job_active = list()
+var/trailer_job_serial = 0
+
+var/trailer_seeds_gathered = 0
+var/trailer_gatherer_planting = FALSE
+var/trailer_seeds_planted = 0
+var/trailer_wheat_harvested = 0
+var/trailer_farmer_batch = 0
+var/trailer_farmer_delivering = FALSE
+var/trailer_wheat_milled = 0
+var/trailer_oven_lit = 0
+var/trailer_bread_served = 0
+var/list/trailer_counter_bread = list()
+var/trailer_baker_idle_spot = 0
+var/trailer_engineer_spot = 0
+
+#define TRAILER_FARMER_BATCH 10
+
+/proc/trailer_job_live(mob/H, token)
+	return !intro_stopping && trailer_job_token[H] == token
+
+/proc/trailer_job_yield(mob/H, token)
+	if (!trailer_job_live(H, token))
+		throw EXCEPTION("job yielded")
+
+/proc/trailer_start_job(mob/H, job)
+	var/token = ++trailer_job_serial
+	trailer_job_token[H] = token
+	spawn(0)
+		trailer_job_runner(H, job, token)
+
+/proc/trailer_job_runner(mob/H, job, token)
+	trailer_job_active[H] = token
+	while (trailer_job_live(H, token))
+		try
+			if (!call(job)(H, token))
+				sleep(10)
+		catch (var/exception/job_error)
+			if (trailer_job_live(H, token))
+				trailer_log("[H] job: [job_error.name] at [job_error.line]")
+				sleep(20)
+		sleep(1)
+	if (trailer_job_active[H] == token)
+		trailer_job_active[H] = 0
+
+// Take an actor off their job, waiting for the current step to finish.
+/proc/trailer_take(mob/H)
+	trailer_job_token[H] = 0
+	var/deadline = world.time + 150
+	while (trailer_job_active[H] && world.time < deadline)
+		sleep(1)
+
+/proc/trailer_wait_for(name, minimum, timeout, label)
+	var/deadline = world.time + timeout
+	while (global.vars[name] < minimum && world.time < deadline)
+		sleep(1)
+	intro_check(global.vars[name] >= minimum, label)
+
+/proc/trailer_held(mob/living/human/H, type)
+	if (istype(H.l_hand, type))
+		return H.l_hand
+	if (istype(H.r_hand, type))
+		return H.r_hand
+	return null
+
+/proc/trailer_open(turf/T)
+	if (!T || T.density)
+		return FALSE
+	for (var/atom/movable/A in T)
+		if (A.density)
+			return FALSE
+	return TRUE
+
+/proc/trailer_nearest(atom/from, list/candidates)
+	var/best
+	var/best_dist = 1000
+	for (var/atom/A in candidates)
+		var/d = get_dist(from, A)
+		if (d < best_dist)
+			best = A
+			best_dist = d
+	return best
+
+// The gatherer cuts seeds from the meadow bushes and sows the empty rows.
+/proc/trailer_job_gatherer(mob/living/human/H, token)
+	var/obj/item/stack/farming/seeds/carry = trailer_held(H, /obj/item/stack/farming/seeds)
+	if (carry)
+		var/list/plots = list()
+		for (var/tx in 15 to 26)
+			for (var/ty in 8 to 9)
+				var/turf/T = locate(tx, ty, 1)
+				if (istype(T, /turf/floor/dirt/ploughed) && !(locate(/obj/structure/farming/plant) in T))
+					plots += T
+		var/turf/plot = trailer_nearest(H, plots)
+		if (!plot)
+			return FALSE
+		trailer_gatherer_planting = TRUE
+		trailer_walk(H, plot.x, plot.y + 1, TRAILER_STEP, token)
+		trailer_face(H, plot)
+		trailer_hold(H, carry)
+		plot.attackby(carry, H)
+		if (locate(/obj/structure/farming/plant) in plot)
+			trailer_seeds_planted++
+		sleep(8)
+		return TRUE
+	var/list/bushes = list()
+	for (var/obj/structure/wild/smallbush/B in range(12, locate(8, 11, 1)))
+		if (B.seedtimer == 1 && B.x < 14)
+			bushes += B
+	var/obj/structure/wild/smallbush/B = trailer_nearest(H, bushes)
+	if (!B)
+		return FALSE
+	var/turf/stand
+	for (var/d in list(SOUTH, EAST, WEST, NORTH))
+		var/turf/T = get_step(B, d)
+		if (trailer_open(T))
+			stand = T
+			break
+	intro_check(stand, "open tile beside [B] at [B.x],[B.y]")
+	trailer_walk(H, stand.x, stand.y, TRAILER_STEP, token)
+	trailer_face(H, B)
+	var/obj/item/weapon/material/kitchen/utensil/knife/knife = trailer_held(H, /obj/item/weapon/material/kitchen/utensil/knife)
+	intro_check(knife, "gatherer has the knife")
+	trailer_hold(H, knife)
+	var/list/before = list()
+	for (var/obj/item/stack/farming/seeds/S in H.loc)
+		before += S
+	B.attackby(knife, H)
+	sleep(6)
+	for (var/obj/item/stack/farming/seeds/S in H.loc)
+		if (!(S in before))
+			trailer_seeds_gathered++
+			trailer_pickup(H, S)
+			break
+	sleep(4)
+	return TRUE
+
+// The farmer scythes the ripe wheat a few plants at a time, then carries each
+// sheaf to the mill.
+/proc/trailer_job_farmer(mob/living/human/H, token)
+	var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/sheaf = trailer_held(H, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat)
+	if (sheaf)
+		var/obj/structure/mill/large/M = trailer_mill()
+		trailer_farmer_delivering = TRUE
+		if (H.x < 28)
+			trailer_walk(H, 27, 9, TRAILER_STEP, token)
+		trailer_walk(H, 32, 8, TRAILER_STEP, token)
+		trailer_walk(H, 32, 11, TRAILER_STEP, token)
+		var/deadline = world.time + 200
+		while (M.current_work && world.time < deadline)
+			trailer_job_yield(H, token)
+			sleep(2)
+		trailer_face(H, M)
+		trailer_hold(H, sheaf)
+		M.attackby(sheaf, H)
+		intro_check(M.current_material == sheaf, "mill accepted the harvested wheat")
+		trailer_wheat_milled++
+		trailer_farmer_delivering = FALSE
+		sleep(5)
+		trailer_walk(H, 32, 8, TRAILER_STEP, token)
+		trailer_walk(H, 27, 9, TRAILER_STEP, token)
+		return TRUE
+	var/list/ripe = list()
+	for (var/obj/structure/farming/plant/wheat/P in trailer_ripe)
+		if (!QDELETED(P))
+			ripe += P
+	var/list/loose = list()
+	for (var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/G in range(8, locate(20, 11, 1)))
+		if (isturf(G.loc))
+			loose += G
+	if (loose.len && (trailer_farmer_batch >= TRAILER_FARMER_BATCH || !ripe.len))
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/G = trailer_nearest(H, loose)
+		trailer_walk(H, G.x, G.y, TRAILER_STEP, token)
+		if (H.l_hand && H.r_hand)
+			H.drop_item()
+		trailer_pickup(H, G)
+		if (loose.len == 1)
+			trailer_farmer_batch = 0
+		sleep(4)
+		return TRUE
+	if (!ripe.len)
+		return FALSE
+	var/obj/item/weapon/material/scythe/scythe = trailer_held(H, /obj/item/weapon/material/scythe)
+	if (!scythe)
+		intro_check(isturf(trailer_scythe.loc), "scythe within reach")
+		trailer_walk(H, trailer_scythe.x, trailer_scythe.y, TRAILER_STEP, token)
+		trailer_pickup(H, trailer_scythe)
+		scythe = trailer_scythe
+	// Work the nearest row first, so each plant is reached from a cleared tile.
+	var/low = 100
+	for (var/obj/structure/farming/plant/wheat/P in ripe)
+		low = min(low, P.y)
+	var/list/row = list()
+	for (var/obj/structure/farming/plant/wheat/P in ripe)
+		if (P.y == low)
+			row += P
+	var/obj/structure/farming/plant/wheat/P = trailer_nearest(H, row)
+	trailer_walk(H, P.x, P.y - 1, TRAILER_STEP, token)
+	H.dir = NORTH
+	trailer_hold(H, scythe)
+	P.attackby(scythe, H)
+	if (QDELETED(P))
+		trailer_wheat_harvested++
+		trailer_farmer_batch++
+	sleep(15)
+	return TRUE
+
+// The baker turns any flour into dough, bakes it and sets the bread out on
+// the counter; between batches they tend the shop.
+/proc/trailer_job_baker(mob/living/human/H, token)
+	var/obj/structure/oven/oven = trailer_oven()
+	for (var/obj/item/weapon/reagent_containers/food/snacks/flatbread/B in oven.loc)
+		trailer_walk(H, 35, 12, TRAILER_STEP, token)
+		trailer_pickup(H, B)
+		var/obj/structure/table/counter
+		for (var/tx in list(34, 35, 33, 36))
+			var/obj/structure/table/T = locate(/obj/structure/table) in locate(tx, 9, 1)
+			if (T && !(locate(/obj/item/weapon/reagent_containers/food/snacks/flatbread) in T.loc))
+				counter = T
+				break
+		if (!counter)
+			counter = locate(/obj/structure/table) in locate(35, 9, 1)
+		trailer_walk(H, counter.x, 10, TRAILER_STEP, token)
+		H.dir = SOUTH
+		trailer_hold(H, B)
+		counter.attackby(B, H, "icon-x=16;icon-y=16")
+		intro_check(B.loc == counter.loc, "bread placed on the counter")
+		trailer_counter_bread += B
+		trailer_bread_served++
+		sleep(8)
+		return TRUE
+	var/obj/item/weapon/reagent_containers/food/condiment/flour/F
+	if (!oven.on && oven.fuel > 0 && trailer_bucket.reagents.has_reagent("water", 5))
+		var/list/flour = list()
+		for (var/obj/item/weapon/reagent_containers/food/condiment/flour/S in range(6, locate(34, 11, 1)))
+			if (isturf(S.loc) && S.reagents.has_reagent("flour", 5))
+				flour += S
+		F = trailer_nearest(H, flour)
+	if (!F)
+		// Tend the shop between batches.
+		trailer_baker_idle_spot = !trailer_baker_idle_spot
+		trailer_walk(H, trailer_baker_idle_spot ? 36 : 34, 11, 6, token)
+		H.dir = SOUTH
+		sleep(15)
+		return TRUE
+	var/obj/structure/mill/large/M = trailer_mill()
+	if (F.loc == M.loc)
+		trailer_walk(H, 33, 11, TRAILER_STEP, token)
+	else
+		trailer_walk(H, F.x, F.y, TRAILER_STEP, token)
+	trailer_face(H, F)
+	trailer_pickup(H, F)
+	trailer_walk(H, 35, 10, TRAILER_STEP, token)
+	if (!trailer_bucket.Adjacent(H))
+		trailer_walk(H, trailer_bucket.x, trailer_bucket.y, TRAILER_STEP, token)
+	H.dir = EAST
+	trailer_pickup(H, trailer_bucket)
+	trailer_hold(H, F)
+	var/list/old_dough = list()
+	for (var/obj/item/weapon/reagent_containers/food/snacks/dough/D in H.loc)
+		old_dough += D
+	F.attack_self(H)
+	var/obj/item/weapon/reagent_containers/food/snacks/dough/D
+	for (var/obj/item/weapon/reagent_containers/food/snacks/dough/ND in H.loc)
+		if (!(ND in old_dough))
+			D = ND
+	intro_check(D, "dough recipe produced dough")
+	sleep(5)
+	trailer_hold(H, trailer_bucket)
+	H.drop_item()
+	// An emptied sack may be used up by the recipe; set down whatever is left.
+	for (var/obj/item/I in list(H.l_hand, H.r_hand))
+		trailer_hold(H, I)
+		H.drop_item()
+	trailer_pickup(H, D)
+	trailer_walk(H, 35, 12, TRAILER_STEP, token)
+	H.dir = NORTH
+	oven.attackby(D, H)
+	intro_check(D.loc == oven, "oven loaded with dough")
+	oven.attack_hand(H)
+	intro_check(oven.on, "oven lit through the normal handler")
+	trailer_oven_lit++
+	sleep(10)
+	return TRUE
+
+// The engineer walks the platform until the train is due out.
+/proc/trailer_job_engineer(mob/living/human/H, token)
+	trailer_engineer_spot = !trailer_engineer_spot
+	trailer_walk(H, trailer_engineer_spot ? 79 : 74, 4, 6, token)
+	H.dir = SOUTH
+	sleep(20)
+	return TRUE
+
 // ---------------------------------------------------------------- the take
 /proc/trailer_run()
+	trailer_start_job(trailer_gatherer, /proc/trailer_job_gatherer)
+	trailer_start_job(trailer_farmer, /proc/trailer_job_farmer)
+	trailer_start_job(trailer_baker, /proc/trailer_job_baker)
+	trailer_start_job(trailer_engineer, /proc/trailer_job_engineer)
 	trailer_scene_seeds()
 	trailer_scene_harvest()
 	trailer_scene_bakery()
@@ -301,150 +608,39 @@ var/trailer_cam_next_step = 0
 	trailer_beat("seeds")
 	sleep(15)
 	trailer_follow(trailer_gatherer, 1, 1, 6)
-	var/list/gathered = list()
-	for (var/list/spot in list(list(6, 10, 7, 10), list(8, 11, 8, 10)))
-		trailer_walk(trailer_gatherer, spot[3], spot[4])
-		var/obj/structure/wild/smallbush/B = locate(/obj/structure/wild/smallbush) in locate(spot[1], spot[2], 1)
-		intro_check(B && B.Adjacent(trailer_gatherer), "reachable wild bush")
-		trailer_face(trailer_gatherer, B)
-		trailer_hold(trailer_gatherer, trailer_knife)
-		var/list/before = list()
-		for (var/obj/item/stack/farming/seeds/S in trailer_gatherer.loc)
-			before += S
-		B.attackby(trailer_knife, trailer_gatherer)
-		for (var/obj/item/stack/farming/seeds/S in trailer_gatherer.loc)
-			if (!(S in before))
-				gathered += S
-		sleep(8)
-	intro_check(gathered.len >= 1, "native seed gathering produced seeds")
-	trailer_log("gathered [gathered.len] seed stacks: [english_list(gathered)]")
-	// Pocket the knife hand, carry the seeds.
-	var/obj/item/stack/farming/seeds/carry = gathered[1]
-	trailer_gatherer.swap_hand()
-	trailer_pickup(trailer_gatherer, carry)
-	trailer_walk(trailer_gatherer, 13, 9)
-	trailer_walk(trailer_gatherer, 16, 9)
+	trailer_wait_for("trailer_gatherer_planting", 1, 400, "gatherer heads to the field")
+	sleep(20)
 	trailer_beat("plant")
-	var/planted = 0
-	for (var/list/plot in list(list(16, 8), list(17, 8)))
-		if (QDELETED(carry) || carry.loc != trailer_gatherer)
-			break
-		var/turf/T = locate(plot[1], plot[2], 1)
-		if (get_dist(trailer_gatherer, T) > 1)
-			trailer_walk(trailer_gatherer, plot[1], plot[2] + 1)
-		trailer_face(trailer_gatherer, T)
-		trailer_hold(trailer_gatherer, carry)
-		T.attackby(carry, trailer_gatherer)
-		if (locate(/obj/structure/farming/plant) in T)
-			planted++
-		sleep(8)
-	intro_check(planted >= 1, "seeds planted through the ploughed-field handler")
-	sleep(10)
+	trailer_wait_for("trailer_seeds_planted", 2, 400, "seeds planted through the ploughed-field handler")
+	trailer_log("gathered [trailer_seeds_gathered], planted [trailer_seeds_planted]")
+	sleep(12)
 
-// 2. The farmer harvests ready wheat and carries it to the bakery.
+// 2. The farmer harvests ready wheat and carries it to the mill.
 /proc/trailer_scene_harvest()
 	trailer_beat("harvest")
 	trailer_follow(trailer_farmer, 0, 1, 8)
-	var/list/grain = list()
-	for (var/tx in list(18, 19, 20))
-		var/obj/structure/farming/plant/wheat/P = locate(/obj/structure/farming/plant/wheat) in locate(tx, 11, 1)
-		intro_check(P, "ready wheat at [tx],11")
-		if (!P.Adjacent(trailer_farmer))
-			trailer_walk(trailer_farmer, tx, 10)
-		trailer_farmer.dir = NORTH
-		trailer_hold(trailer_farmer, trailer_scythe)
-		var/turf/T = get_turf(P)
-		P.attackby(trailer_scythe, trailer_farmer)
-		intro_check(QDELETED(P), "normal harvest removes the crop")
-		for (var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/G in T)
-			grain += G
-		sleep(12)
-	intro_check(grain.len >= 1, "harvest produced wheat")
-	trailer_log("harvested [grain.len] wheat")
-	// Drop the scythe hand's tool on the field and gather the grain.
-	trailer_hold(trailer_farmer, trailer_scythe)
-	trailer_farmer.drop_item()
-	var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/sheaf = grain[1]
-	trailer_walk(trailer_farmer, sheaf.x, sheaf.y - 1)
-	trailer_farmer.dir = NORTH
-	trailer_pickup(trailer_farmer, sheaf)
-	sleep(5)
+	// Show a couple of plants coming down before the walk to the mill.
+	var/until = trailer_wheat_harvested + 2
+	var/deadline = world.time + 100
+	while (trailer_wheat_harvested < until && trailer_farmer_batch && world.time < deadline)
+		sleep(1)
+	trailer_wait_for("trailer_farmer_delivering", 1, 600, "farmer carries wheat to the mill")
+	trailer_log("harvested [trailer_wheat_harvested] wheat")
 	trailer_beat("deliver")
-	trailer_walk(trailer_farmer, 27, 9)
-	trailer_walk(trailer_farmer, 32, 8)
-	trailer_walk(trailer_farmer, 32, 11)
-	// Hand the wheat straight into the mill hopper.
-	var/obj/structure/mill/large/M = trailer_mill()
-	trailer_face(trailer_farmer, M)
-	trailer_hold(trailer_farmer, sheaf)
-	M.attackby(sheaf, trailer_farmer)
-	intro_check(M.current_material == sheaf, "mill accepted the harvested wheat")
-	trailer_farmer.dir = SOUTH
+	trailer_wait_for("trailer_wheat_milled", 1, 400, "mill accepted the harvested wheat")
 
-// 3. The baker mills flour, mixes dough, bakes bread and serves the customer.
+// 3. The mill grinds flour, the baker bakes bread and serves the customer.
 /proc/trailer_scene_bakery()
 	trailer_beat("bakery")
 	trailer_camera_pan(34, 10, 3, FALSE)
-	var/obj/structure/mill/large/M = trailer_mill()
-	var/deadline = world.time + 150
-	var/obj/item/weapon/reagent_containers/food/condiment/flour/F
-	while (!F && world.time < deadline)
-		F = locate(/obj/item/weapon/reagent_containers/food/condiment/flour) in M.loc
-		sleep(1)
-	intro_check(F, "mill produced flour")
-	trailer_log("flour [F] with [F.reagents.get_reagent_amount("flour")] units")
-	// The farmer heads back to the field.
-	spawn(0)
-		trailer_walk(trailer_farmer, 30, 10)
-		trailer_walk(trailer_farmer, 27, 9)
-	trailer_walk(trailer_baker, 33, 11)
-	trailer_face(trailer_baker, F)
-	trailer_pickup(trailer_baker, F)
-	trailer_walk(trailer_baker, 35, 10)
-	trailer_baker.dir = EAST
-	trailer_baker.swap_hand()
-	trailer_pickup(trailer_baker, trailer_bucket)
-	trailer_hold(trailer_baker, F)
-	var/obj/item/weapon/reagent_containers/food/snacks/dough/D
-	F.attack_self(trailer_baker)
-	D = locate(/obj/item/weapon/reagent_containers/food/snacks/dough) in trailer_baker.loc
-	intro_check(D, "dough recipe produced dough")
-	sleep(5)
-	trailer_hold(trailer_baker, trailer_bucket)
-	trailer_baker.drop_item()
-	trailer_hold(trailer_baker, F)
-	trailer_baker.drop_item()
-	trailer_pickup(trailer_baker, D)
-	var/obj/structure/oven/oven = trailer_oven()
-	trailer_walk(trailer_baker, 35, 12)
-	trailer_baker.dir = NORTH
-	var/list/old_bread = list()
-	for (var/obj/item/weapon/reagent_containers/food/snacks/flatbread/B in world)
-		old_bread += B
-	oven.attackby(D, trailer_baker)
-	intro_check(D.loc == oven, "oven loaded with dough")
-	oven.attack_hand(trailer_baker)
-	intro_check(oven.on, "oven lit through the normal handler")
+	trailer_wait_for("trailer_oven_lit", 1, 400, "baker lit the oven")
 	trailer_beat("bake")
-	var/obj/item/weapon/reagent_containers/food/snacks/flatbread/bread
-	deadline = world.time + 200
-	while (!bread && world.time < deadline)
-		for (var/obj/item/weapon/reagent_containers/food/snacks/flatbread/B in oven.loc)
-			if (!(B in old_bread))
-				bread = B
-		sleep(1)
-	intro_check(bread, "fresh flatbread from the oven")
-	trailer_pickup(trailer_baker, bread)
-	trailer_walk(trailer_baker, 34, 10)
-	trailer_baker.dir = SOUTH
-	var/obj/structure/table/counter = locate(/obj/structure/table) in locate(34, 9, 1)
-	intro_check(counter, "authored counter")
+	trailer_wait_for("trailer_bread_served", 1, 300, "bread on the counter")
 	trailer_beat("serve")
-	counter.attackby(bread, trailer_baker, "icon-x=16;icon-y=16")
-	intro_check(bread.loc == counter.loc, "bread placed on the counter")
+	var/obj/item/weapon/reagent_containers/food/snacks/flatbread/bread = trailer_counter_bread[1]
 	sleep(8)
+	trailer_walk(trailer_customer, bread.x, 8)
 	trailer_customer.dir = NORTH
-	trailer_walk(trailer_customer, 34, 8)
 	trailer_pickup(trailer_customer, bread)
 	sleep(10)
 
@@ -504,9 +700,13 @@ var/trailer_cam_next_step = 0
 	intro_check(trailer_customer.loc == trailer_cabin.loc, "customer climbed into the cabin")
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
 	trailer_customer.dir = EAST
-	sleep(10)
-	trailer_camera_pan(trailer_locomotive.x, 5, 4)
+	// The engineer finishes their round and heads for the footplate.
+	trailer_take(trailer_engineer)
+	spawn(0)
+		trailer_camera_pan(trailer_locomotive.x, 5, 4)
+	trailer_walk(trailer_engineer, 74, 4, TRAILER_STEP)
 	trailer_engineer.dir = SOUTH
+	sleep(5)
 	trailer_locomotive.attack_hand(trailer_engineer)
 	intro_check(trailer_locomotive.on, "engineer started the locomotive")
 	trailer_beat("depart")
@@ -518,6 +718,6 @@ var/trailer_cam_next_step = 0
 	var/deadline = world.time + 200
 	while (trailer_locomotive.automovement && trailer_cabin.x <= 90 && world.time < deadline)
 		sleep(1)
-	trailer_log("train at [trailer_locomotive.x], customer at [trailer_customer.x]")
+	trailer_log("train at [trailer_locomotive.x], customer at [trailer_customer.x]; milled [trailer_wheat_milled], baked [trailer_bread_served], planted [trailer_seeds_planted]")
 	trailer_beat("gone")
 	sleep(10)
