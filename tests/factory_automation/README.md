@@ -5,6 +5,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/belts_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/routing_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/machines_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/chemistry_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -50,3 +51,15 @@ Removing the belt power check makes five drive checks fail.
 - Fabricators: no recipes without research, tier 1 lists only tier 1 recipes and tier 3 lists all; unknown recipes are refused; it takes only its recipe's inputs, up to two cycles each; nothing happens without power; powered steps add progress without spending inputs early; a finished cycle spends one cycle of inputs and leaves the output on the tile, which is offered (honouring arm filters) and can be taken; a power cut pauses the cycle without losing progress or inputs and restored power finishes it; an empty fabricator sleeps and new inputs wake it; a crowded tile makes it wait; the computerized tier runs at half time.
 - Lifecycle: every input buffers on its own; load clamps progress and resumes unpowered; the recipe and progress are saved and the active flag is not; load clears a recipe the list no longer has; changing the recipe or removing the fabricator drops its buffer.
 - Catalog: each fabricator tier is gated behind its research node.
+
+`chemistry_probe.dm` (phase 0 of `docs/chemistry-automation-design.md`) checks:
+
+- Oil well: no port off a spring; takes one barrel with room and starts extracting; offers it only when full (honouring arm filters); taking it stops extraction and frees the well for the next barrel.
+- Refineries: a petroleum barrel is drained and, once empty, becomes the output barrel; feed fills the refinery to its limit and the drained barrel waits on its tile, blocking more feed until it is taken; with an output barrel, feed and cable power the refinery starts itself once and reserves its power; a full output barrel is offered, and taking it stops the refinery and releases power; the barrel list and refine loop are runtime-only, load restores the held barrel and leaves the refinery stopped, and removal releases the barrel. The biofuel refinery takes olive oil and ethanol (at its purity) and refuses other barrels.
+- Engines: no port without a connected fuel tank or while unsecured; a barrel of a fuel the engine burns tops up the tank and waits on the engine's tile; the tank itself is never offered.
+- Barrel station: inert tank; no port while unsecured; drain mode empties a barrel and holds it until taken, one at a time; fill mode fills an empty barrel; a locked station offers nothing; removal releases the held barrel.
+- Reagent gate: no filter sends everything straight on; a reagent or "empty" filter sends matching containers to the side and anything else straight on; the filter is saved.
+- A powered feeder arm carries a drained barrel from a station into a refinery.
+- Catalog: research gates, the two global recipes and the reused sprite.
+
+Removing the station's `NOREACT` flag makes the inert-tank check fail.

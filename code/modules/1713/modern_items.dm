@@ -366,6 +366,7 @@
 	var/maxvolume = 300
 	var/active = FALSE
 	var/product = "gasoline"
+	var/tmp/refine_scheduled = FALSE // a refine() call is waiting to run
 	powerneeded = 1
 
 /obj/structure/refinery/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
@@ -373,7 +374,7 @@
 		if (isemptylist(barrel))
 			barrel += W
 			H.drop_from_inventory(W)
-			W.forceMove(locate(0,0,0))
+			W.forceMove(src) // held inside, so it is saved with the refinery
 			visible_message("[H] puts \the [W] in \the [src].","You put \the [W] in \the [src].")
 			return
 		else
@@ -479,7 +480,9 @@
 /obj/structure/refinery/proc/power_on()
 	if (active)
 		update_icon()
+		refine_scheduled = TRUE
 		spawn(600) // 1 minute
+			refine_scheduled = FALSE
 			refine()
 	else
 		update_icon()
@@ -512,7 +515,9 @@
 		else // default to diesel
 			volume -= amt
 			barrel[1].reagents.add_reagent("diesel",0.7*amt)
+		refine_scheduled = TRUE
 		spawn(600) // 1 minute
+			refine_scheduled = FALSE
 			refine()
 		return
 	else
@@ -536,7 +541,7 @@
 		if (isemptylist(barrel))
 			barrel += W
 			H.drop_from_inventory(W)
-			W.forceMove(locate(0,0,0))
+			W.forceMove(src) // held inside, so it is saved with the refinery
 			H.visible_message("[H] puts \the [W] in \the [src].", "You put \the [W] in \the [src].")
 			return
 		else
@@ -665,7 +670,9 @@
 				amt = volume_di
 			volume_di -= amt
 			barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
+		refine_scheduled = TRUE
 		spawn(600) // 1 minute
+			refine_scheduled = FALSE
 			refine()
 		return
 	else

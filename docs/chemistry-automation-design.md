@@ -1,0 +1,81 @@
+# Automated chemistry: design and phased plan
+
+Civ13 chemistry is hand-driven: every transfer is a person pouring one
+container into another. This plan automates it in the same style as the
+factory belts and arms ([factory automation](factory-automation-design.md)):
+barrels ride belts first, then pipe networks link tanks and machines, and an
+inert reaction vessel runs one chosen recipe. Val accepted the recommended
+option for every decision below on 2026-11-04.
+
+## What other codebases do
+
+- **/tg/station plumbing** (inherited by Beestation, Monkestation, Nova Sector
+  and others) is the only mature system. Ducts join machines into a network;
+  demand ports pull up to 10 units every 2 seconds from supply ports,
+  round-robin. Ducts hold nothing; tanks and machines do. Its mixing chamber
+  lets in only a configured list of reagents, holds them unreactive, then
+  reacts and empties before refilling. Code is AGPL v3 (art CC BY-SA 3.0), so
+  it is legally reusable with credit, but it needs components, signals, tgui,
+  reagent temperature and pH, which Civ13 lacks. We reuse the design and write
+  Civ13-style code.
+- **/tg/ synthesizers** make reagents from power alone. Beestation later made
+  each consume a matter cartridge. Civ13 does not build them.
+- **Goonstation's ChemiCompiler** is a programmable 10-beaker machine. Goon is
+  CC BY-NC-SA 3.0, which is incompatible with AGPL: no code or art from it.
+- **Nova Sector liquids and Nebula fluids** flood turfs. Not automation; only
+  pipe-leak spills might borrow the idea later.
+
+## Principles
+
+- Every unit comes from a real source (well, spring, crop, ore, dispenser
+  stock). Nothing creates chemicals from power.
+- Storage and transport are inert; reactions happen only where a player chose
+  a recipe, as at the reaction bench.
+- The factory automation rules apply: mob-free ports, sleep when idle, no
+  offline production, physical goods are real loot.
+
+## Phased plan
+
+| Phase | Scope | Research gate |
+| --- | --- | --- |
+| 0. Container ports (done) | Barrel ports on the oil well, petroleum and biofuel refineries and internal combustion engines; barrel station; reagent gate. | Machines keep their gates; station at Factories; reagent gate at Automation |
+| 1. Pipes and tanks | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
+| 2. Reaction vessel | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
+| 3. Packaging and tiers | Bottler and automated tablet press fed by belts; faster vessel tiers; piped reagents as fabricator inputs. | Pharmacology, Automation, Digital Computing |
+| 4. Monitoring and hazards | Network rows on the factory panel; optional leak spills (decided after playtesting). | Automation |
+
+## Phase 0 as built
+
+`code/modules/1713/factory_chemistry.dm` adds factory ports (see
+`factory_ports.dm`) so belts and arms move barrels between machines:
+
+- **Oil well:** takes one barrel with room when it has none and starts
+  extracting; offers it once full. Taking it stops extraction.
+- **Refineries:** a barrel holding feedstock (petroleum; olive oil, fat oil or
+  ethanol for the biofuel refinery) is drained into the refinery, ethanol at
+  its purity as by hand. An emptied barrel becomes the output barrel when there
+  is none; otherwise it waits on the refinery's tile, and no more feed is taken
+  until an arm removes it. A barrel without feedstock becomes the output barrel
+  when there is none. The refinery starts itself when it has feed, an output
+  barrel with room and cable power, never twice. A full output barrel is
+  offered; taking it stops the refinery and releases its power.
+- **Engines:** a secured internal combustion engine with a connected fuel tank
+  takes a barrel of a fuel it burns, tops up the tank and leaves the barrel on
+  its tile to be taken. The tank itself is never offered.
+- **Barrel station** (`/obj/structure/reagent_dispensers/largebarrel/factory_station`,
+  12 steel, Factories): a secured 1,000-unit inert tank that drains barrels
+  into itself or fills them from it (Switch Station Mode), one at a time, and
+  hands each barrel back. Locks and hand use work as on any large barrel.
+- **Reagent gate** (8 steel, Automation): a sorting gate whose filter is the
+  main reagent of the container held when it is set, or empty containers.
+
+Refinery changes: hand-loaded output barrels are now held inside the refinery
+instead of in nullspace, so they are saved with it. The barrel list and the
+refine loop are runtime-only; load rebuilds the list from the held barrel and
+leaves the refinery stopped, because no refine loop survives a restart.
+
+Lab distillery, centrifuge and chem master work on beakers and vials, so they
+stay manual until the pipe phases.
+
+Verification: `tests/factory_automation/chemistry_probe.dm` (see the README in
+that folder). Not verified: a full disk save/load round trip and in-game play.

@@ -450,7 +450,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (11) ---
+		// --- automation (12) ---
 		"/obj/item/camera" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
@@ -458,6 +458,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/factory_arm/sorting" = "automation",
 		"/obj/structure/factory_fabricator/automated" = "automation",
 		"/obj/item/factory_belt_assembly/gate" = "automation",
+		"/obj/item/factory_belt_assembly/gate/reagent" = "automation",
 		"/obj/item/factory_belt_assembly/splitter" = "automation",
 		"/obj/item/factory_belt_assembly/tunnel" = "automation",
 		"/obj/item/factory_belt_assembly/tunnel_exit" = "automation",
@@ -695,7 +696,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
-		// --- factories (16) ---
+		// --- factories (17) ---
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that
 		// node, or the tree deadlocks (can't craft the geiger counter the
@@ -708,6 +709,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/food/drinks/sillycup" = "factories",
 		"/obj/item/weapon/reagent_containers/glass/barrel/jerrycan" = "factories",
 		"/obj/item/weapon/reagent_containers/glass/barrel/modern" = "factories",
+		"/obj/structure/reagent_dispensers/largebarrel/factory_station" = "factories",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/hangou" = "factories",
 		"/obj/item/weapon/storage/ww2" = "factories",
 		"/obj/structure/closet" = "factories",
