@@ -207,6 +207,7 @@ var/global/fluid_step_serial = 0
 			fluid_vessels -= V
 			continue
 		V.vessel_step()
+	factory_presses_step()
 	for (var/datum/fluid_network/N in fluid_networks)
 		if (N.idle_steps && N.idle_steps % FLUID_IDLE_RECHECK)
 			N.idle_steps++

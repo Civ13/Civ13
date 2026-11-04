@@ -41,7 +41,7 @@ option for every decision below on 2026-11-04.
 | 0. Container ports (done) | Barrel ports on the oil well, petroleum and biofuel refineries and internal combustion engines; barrel station; reagent gate. | Machines keep their gates; station at Factories; reagent gate at Automation |
 | 1. Pipes and tanks (done) | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
 | 2. Reaction vessel (done) | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
-| 3. Packaging and tiers | Bottler and automated tablet press fed by belts; faster vessel tiers; piped reagents as fabricator inputs. | Pharmacology, Automation, Digital Computing |
+| 3. Packaging and tiers (done) | Bottler and automated tablet press fed by belts; faster vessel tiers; piped reagents as fabricator inputs. | Pharmacology, Automation, Digital Computing |
 | 4. Monitoring and hazards | Network rows on the factory panel; optional leak spills (decided after playtesting). | Automation |
 
 ## Phase 0 as built
@@ -136,8 +136,34 @@ both now share):
 Heated recipes (polypropylene) and bench-only recipes (gelatin foam, rayon and
 lyocell fibre) now ask `controlled_reaction_site()`, which accepts a secured
 bench beaker (heated by its burner when needed) or a powered vessel. Item
-products such as cloth and plastic sheets stay on the bench until phase 3.
+products such as cloth and plastic sheets stay on the bench (see phase 3).
 
 Verification: `tests/factory_automation/vessel_probe.dm`. Not verified: a full
 disk save/load round trip and in-game play.
+
+## Phase 3 as built
+
+`code/modules/1713/factory_packaging.dm` and two vessel subtypes:
+
+- **Bottler** (8 steel, Automation): a pipe sink with a cradle for one
+  container. Belts and arms bring it open containers that hold nothing but its
+  reagent (Set Bottler Reagent, chosen from a held container); it fills each
+  from the pipes and offers it back once full.
+- **Automatic tablet press** (12 steel, 2 PU, Pharmacology, after 1843 as the
+  hand press): a pipe sink that keeps an inert 40-unit buffer of calcium
+  carbonate and aspirin in tablet ratio, and with power presses one aspirin
+  tablet (one carbonate, four aspirin, as the hand press) a step onto its tile
+  for arms, waiting once twelve items lie there. The hand-run press is
+  unchanged.
+- **Fast reaction vessel** (20 steel, 8 PU, Automation): 400 units, reacts on
+  the first powered step. **Industrial reaction vessel** (30 steel, 15 PU,
+  Digital Computing): 1,000 units, the same.
+
+Not built: piped reagents as fabricator inputs, and the bench's item products
+(cloth, plastic sheets, bottles) in the vessel. Fabricator recipes take items
+only, and the bottler already moves piped liquids into containers that belts
+carry; both stay open for later if play shows a need.
+
+Verification: `tests/factory_automation/packaging_probe.dm`. Not verified: a
+full disk save/load round trip and in-game play.
 
