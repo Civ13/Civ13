@@ -210,6 +210,7 @@ var/list/nonbreaking_types = list(
 			playsound(src.loc, 'sound/weapons/heavysmash.ogg', 50, 1)
 			density = FALSE
 			opacity = FALSE
+			los_invalidate(src, TRUE)
 			state = TRUE
 			update_icon()
 			isSwitchingStates = FALSE

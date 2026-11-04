@@ -165,6 +165,10 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 		return FALSE
 	if (!(A in view(3, actor)) || get_dist(actor, A) > 3 || A.z != actor.z)
 		return FALSE
+	// Same geometric line-of-sight authority as hover and examine: an entity
+	// masked on the actor's screen is not reported to the agent either.
+	if (!los_read_allowed(actor, A, "observe"))
+		return FALSE
 	var/turf/T = get_turf(A)
 	// Conservative darkness rule. Night/thermal vision is not implemented.
 	if (!T || T.get_lumcount() < 0.5)

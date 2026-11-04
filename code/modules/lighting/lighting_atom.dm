@@ -74,6 +74,9 @@
 	var/turf/T = loc
 	if (old_opacity != new_opacity && istype(T))
 		T.reconsider_lights()
+	// Line of sight refreshes now, not at the next one-second presentation audit.
+	if (old_opacity != new_opacity)
+		los_invalidate(src, TRUE)
 
 // This code makes the light be queued for update when it is moved.
 // Entered() should handle it, however Exited() can do it if it is being moved to nullspace (as there would be no Entered() call in that situation).

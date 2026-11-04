@@ -177,11 +177,13 @@ var/global/list/los_active_contexts
 	var/list/blocker_bins
 	var/list/clear_footprints = list()
 	var/list/tree_bounds
+	var/list/blocking_tiles
 
 // The flat list remains authoritative and is retained for sparse scenes and
 // snapshot fixtures. Bins are derived once per fresh capture, never shared.
 /datum/los_snapshot/proc/index_blockers()
 	blocker_bins = null
+	blocking_tiles = null
 	if(blockers.len <= 16)
 		return
 	blocker_bins = list()
@@ -192,6 +194,32 @@ var/global/list/los_active_contexts
 			bin = list()
 			blocker_bins[bin_key] = bin
 		bin += B
+
+// True when one of the eight neighbours of this eye-relative native tile is
+// open (holds no blocker) and its own quarter footprint is visible.
+/datum/los_snapshot/proc/opaque_borders_visible(target_tile_x, target_tile_y)
+	if (!blocking_tiles)
+		blocking_tiles = list()
+		for (var/datum/los_cell/B in blockers)
+			blocking_tiles["[B.tile_x],[B.tile_y]"] = TRUE
+	for (var/dx = -1, dx <= 1, dx++)
+		for (var/dy = -1, dy <= 1, dy++)
+			if (!dx && !dy)
+				continue
+			var/nx = target_tile_x + dx
+			var/ny = target_tile_y + dy
+			if (abs(nx) > radius_x + 0.5 || abs(ny) > radius_y + 0.5 || blocking_tiles["[nx],[ny]"])
+				continue
+			var/neighbour_key = "0|[nx],[ny]|[nx],[ny]"
+			var/neighbour = clear_footprints[neighbour_key]
+			if (isnull(neighbour))
+				neighbour = LOS_WORLD
+				if (blocks_target(nx, ny, nx, ny, FALSE))
+					neighbour = LOS_DENY
+				clear_footprints[neighbour_key] = neighbour
+			if (neighbour != LOS_DENY)
+				return TRUE
+	return FALSE
 
 /datum/los_snapshot/proc/blocks_target(tx, ty, target_tile_x, target_tile_y, opaque_target)
 	if(!blocker_bins)
@@ -622,6 +650,13 @@ var/global/list/los_active_contexts
 		if (tree_presentation && S.tree_surface_visible(target, tx, ty, target_tile_x, target_tile_y))
 			S.clear_footprints[footprint_key] = LOS_SURFACE
 			return LOS_SURFACE
+		// A wall, closed door or other opaque tile that bounds visible open
+		// ground is a seen surface, like BYOND's own view. The closed-contact
+		// ray otherwise blacks out every wall tile seen along its face and a
+		// room's inner corner. It reveals the blocker only, never what is behind.
+		if (target.opacity && !outside_view && !tree_presentation && !root_tree_family(target) && S.opaque_borders_visible(target_tile_x, target_tile_y))
+			S.clear_footprints[footprint_key] = LOS_SURFACE
+			return LOS_SURFACE
 		S.clear_footprints[footprint_key] = LOS_DENY
 		return LOS_DENY
 	S.clear_footprints[footprint_key] = result
@@ -684,7 +719,7 @@ var/global/list/los_active_contexts
 
 // Fresh raw geometry on EACH information read covers direct opacity writers.
 /datum/los_context/proc/decision(mob/user, atom/target, operation)
-	if (operation != "hover" && operation != "examine")
+	if (operation != "hover" && operation != "examine" && operation != "observe")
 		return LOS_DENY
 	if (retired || !owner || !body || owner.los_context != src || owner.mob != user || user != body || user.client != owner)
 		return LOS_DENY

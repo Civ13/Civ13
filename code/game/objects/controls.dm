@@ -39,6 +39,7 @@
 					G.icon_state = "blast"
 					G.density = TRUE
 					G.opacity = TRUE
+					los_invalidate(G, TRUE)
 			else
 				user.visible_message("<span class='warning'>[user] opens the blast doors!</span>",
 									"<span class='notice'>You open the blast doors.</span>",
@@ -52,6 +53,7 @@
 					G.icon_state = "blastopen"
 					G.density = FALSE
 					G.opacity = FALSE
+					los_invalidate(G, TRUE)
 
 /obj/structure/gatecontrol/blastcontrol/garage
 	name = "garage shutter control"
@@ -72,6 +74,7 @@
 					G.icon_state = "garage_closed"
 					G.density = TRUE
 					G.opacity = TRUE
+					los_invalidate(G, TRUE)
 			else
 				user.visible_message("<span class='warning'>[user] opens the shutters!</span>",
 									"<span class='notice'>You open the shutters.</span>",
@@ -84,6 +87,7 @@
 					G.icon_state = "garage_open"
 					G.density = FALSE
 					G.opacity = FALSE
+					los_invalidate(G, TRUE)
 
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
@@ -514,6 +518,7 @@
 			icon_state = "elevator_door"
 			density = TRUE
 			opacity = TRUE
+			los_invalidate(src, TRUE)
 			for(var/atom/movable/S in opacity_objects)
 				S.set_opacity(TRUE)
 	else
@@ -524,6 +529,7 @@
 			icon_state = "elevator_dooropen"
 			density = FALSE
 			opacity = FALSE
+			los_invalidate(src, TRUE)
 			for(var/atom/movable/S in opacity_objects)
 				S.set_opacity(FALSE)
 	autoclose()
