@@ -102,6 +102,9 @@
 	options["Make polypropylene cloth"] = "polypropylene_cloth"
 	options["Make plastic comb"] = "polypropylene_comb"
 	options["Make plastic play ball"] = "polyethylene_ball"
+	options["Make butyl adhesive tape"] = "butyl_tape"
+	options["Make butyl stopper"] = "butyl_stopper"
+	options["Make butyl gasket"] = "butyl_gasket"
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
 	var/turf/user_turf = get_turf(user)
 	var/turf/bench_turf = get_turf(src)
@@ -113,7 +116,7 @@
 		succeeded = finish_wood_fiber("rayon_fiber")
 	else if(selected == "cloth_lyocell")
 		succeeded = finish_wood_fiber("lyocell_fiber")
-	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet", "polypropylene_cloth", "polypropylene_comb", "polyethylene_ball"))
+	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet", "polypropylene_cloth", "polypropylene_comb", "polyethylene_ball", "butyl_tape", "butyl_stopper", "butyl_gasket"))
 		succeeded = finish_polymer_product(selected)
 	else
 		succeeded = synthesize(selected)
@@ -181,11 +184,83 @@
 		collector.reagents.remove_reagent("polyethylene", 4)
 		new /obj/item/weapon/basketball/plastic(loc)
 		return TRUE
+	if(product == "butyl_stopper" || product == "butyl_gasket")
+		if(!collector.reagents.has_reagent("butylrubber", 1))
+			return FALSE
+		collector.reagents.remove_reagent("butylrubber", 1)
+		if(product == "butyl_gasket")
+			new /obj/item/butyl_stopper/gasket(loc)
+		else
+			new /obj/item/butyl_stopper(loc)
+		return TRUE
+	if(product == "butyl_tape")
+		if(!collector.reagents.has_reagent("butylrubber", 2) || !collector.reagents.has_reagent("polypropylene", 2))
+			return FALSE
+		collector.reagents.remove_reagent("butylrubber", 2)
+		collector.reagents.remove_reagent("polypropylene", 2)
+		new /obj/item/taperoll/butyl(loc)
+		return TRUE
 	return FALSE
 
 /obj/item/weapon/basketball/plastic
 	name = "plastic play ball"
 	desc = "A lightweight polyethylene ball for play."
+
+/obj/item/butyl_stopper
+	name = "butyl rubber stopper"
+	desc = "A rubber stopper for sealing a small vial or drink bottle."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "lid_bottle"
+	w_class = ITEM_SIZE_SMALL
+
+/obj/item/butyl_stopper/gasket
+	name = "butyl rubber gasket"
+	desc = "A rubber gasket for sealing a vial or drink bottle. Apply it to an open container."
+
+/obj/item/butyl_stopper/proc/seal_bottle(obj/item/weapon/reagent_containers/container)
+	if(gcDestroyed || gc_destroyed || !container || container.gcDestroyed || container.gc_destroyed || !container.is_open_container())
+		return FALSE
+	if(!istype(container, /obj/item/weapon/reagent_containers/glass/bottle) && !istype(container, /obj/item/weapon/reagent_containers/food/drinks/bottle))
+		return FALSE
+	if(istype(container, /obj/item/weapon/reagent_containers/food/drinks/bottle))
+		var/obj/item/weapon/reagent_containers/food/drinks/bottle/drink = container
+		if(drink.rag)
+			return FALSE
+	container.flags &= ~OPENCONTAINER
+	container.update_icon()
+	qdel(src)
+	return TRUE
+
+/obj/item/butyl_stopper/afterattack(atom/A, mob/user, proximity)
+	if(istype(A, /obj/item/weapon/reagent_containers))
+		if(!proximity || !user || user.stat || user.restrained() || user.get_active_hand() != src)
+			return
+		if(seal_bottle(A))
+			to_chat(user, SPAN_NOTICE("You seal [A] with the rubber stopper."))
+		return
+	return ..()
+
+/obj/item/taperoll/butyl
+	name = "butyl adhesive tape"
+	desc = "A roll of butyl adhesive tape. Use it on copper to make insulated cable, or to repair a broken drone."
+
+/obj/item/taperoll/butyl/proc/insulate_copper(obj/item/stack/material/copper/conductor)
+	var/turf/site = get_turf(src)
+	if(gcDestroyed || gc_destroyed || !site || !conductor || conductor.gcDestroyed || conductor.gc_destroyed || !conductor.can_use(1))
+		return FALSE
+	conductor.use(1)
+	new /obj/item/stack/cable_coil(site, 1)
+	qdel(src)
+	return TRUE
+
+/obj/item/taperoll/butyl/afterattack(atom/A, mob/user, proximity)
+	if(istype(A, /obj/item/stack/material/copper))
+		if(!proximity || !user || user.stat || user.restrained() || user.get_active_hand() != src)
+			return
+		if(insulate_copper(A))
+			to_chat(user, SPAN_NOTICE("You use the tape to insulate a copper cable."))
+		return
+	return ..()
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/stoppered
 	name = "stoppered plastic bottle"
