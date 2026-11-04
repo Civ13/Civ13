@@ -1,0 +1,126 @@
+name: Village trailer render
+# Renders the scripted village trailer (tools/village-trailer) with native
+# DreamSeeker on a disposable hosted Windows runner, then cuts the take into
+# the finished trailer and publishes the media to an orphan media branch.
+on:
+  push:
+    branches: ['ci/village-trailer-*']
+    paths:
+      - .github/workflows/village-trailer.yml
+      - tools/village-trailer/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: village-trailer-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  render:
+    if: github.repository == 'Civ13/Civ13'
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: tool
+          persist-credentials: false
+      - name: Check out the game revision the trailer overlay was reviewed against
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 58404f5bd16e3fed80f1d9844c5db3edd144942c
+          path: game
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Acquire the pinned BYOND 516.1688 package
+        working-directory: tool/tools/village-trailer
+        shell: powershell
+        run: |
+          $engine = Join-Path $env:RUNNER_TEMP 'engine'
+          New-Item -ItemType Directory -Path $engine | Out-Null
+          python -B acquire.py --root "$engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install the bundled DirectX runtime DreamSeeker needs
+        working-directory: tool/tools/village-trailer
+        shell: powershell
+        run: |
+          python -B directx_setup.py --root "$env:RUNNER_TEMP/engine" --output "$env:RUNNER_TEMP/engine/directx-evidence" --accept-bundled-microsoft-directx-terms
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install a pinned ffmpeg with the gdigrab screen recorder
+        shell: powershell
+        run: |
+          python -m pip install --disable-pip-version-check imageio-ffmpeg==0.5.1
+          $ffmpeg = python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"
+          & $ffmpeg -hide_banner -devices 2>&1 | Select-String gdigrab
+          if (-not (& $ffmpeg -hide_banner -devices 2>&1 | Select-String gdigrab)) { throw 'ffmpeg lacks gdigrab' }
+          Add-Content -LiteralPath $env:GITHUB_ENV -Value "TRAILER_FFMPEG=$ffmpeg"
+      - name: Stage the trailer build
+        shell: powershell
+        run: |
+          python -B tool/tools/village-trailer/stage.py --game game --out "$env:RUNNER_TEMP/build"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Record the take
+        timeout-minutes: 15
+        shell: powershell
+        run: |
+          python -B tool/tools/village-trailer/run_trailer.py --byond "$env:RUNNER_TEMP/engine/byond/bin" --build "$env:RUNNER_TEMP/build" --ffmpeg "$env:TRAILER_FFMPEG" --output "$env:RUNNER_TEMP/take"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Screenshot the desktop on failure
+        if: failure()
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP/take" | Out-Null
+          & "$env:TRAILER_FFMPEG" -hide_banner -loglevel error -y -f gdigrab -i desktop -frames:v 1 "$env:RUNNER_TEMP/take/desktop-on-failure.png"
+      - name: Keep the take and its logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: village-trailer-take
+          path: |
+            ${{ runner.temp }}/take/*.mkv
+            ${{ runner.temp }}/take/*.json
+            ${{ runner.temp }}/take/*.txt
+            ${{ runner.temp }}/take/*.log
+            ${{ runner.temp }}/take/*.png
+          retention-days: 7
+          if-no-files-found: warn
+  publish:
+    needs: render
+    if: ${{ always() && github.repository == 'Civ13/Civ13' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Download the take
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" -n village-trailer-take -D "$RUNNER_TEMP/take"
+      - name: Cut the trailer
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
+          mkdir -p "$RUNNER_TEMP/media"
+          cp "$RUNNER_TEMP"/take/*.json "$RUNNER_TEMP"/take/*.txt "$RUNNER_TEMP"/take/*.log "$RUNNER_TEMP"/take/*.png "$RUNNER_TEMP/media/" 2>/dev/null || true
+          if [ -f "$RUNNER_TEMP/take/take.mkv" ]; then
+            ffmpeg -hide_banner -loglevel error -y -i "$RUNNER_TEMP/take/take.mkv" -c:v libx264 -crf 14 -pix_fmt yuv420p "$RUNNER_TEMP/media/raw-take.mp4"
+            if [ -f "$RUNNER_TEMP/take/trailer-timeline.json" ]; then
+              python3 tools/village-trailer/edit.py --take "$RUNNER_TEMP/take/take.mkv" --timeline "$RUNNER_TEMP/take/trailer-timeline.json" --title UI/images/civ13.png --out "$RUNNER_TEMP/media/village-trailer.mp4"
+            fi
+          fi
+          ls -la "$RUNNER_TEMP/media"
+      - name: Publish the media to an orphan branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/media"
+          git init -q -b media
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Village trailer media from run ${GITHUB_RUN_ID} (${GITHUB_SHA})"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "media:refs/heads/media/village-trailer"

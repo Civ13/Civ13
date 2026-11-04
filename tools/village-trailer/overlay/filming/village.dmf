@@ -1,0 +1,19 @@
+window "cloud"
+    elem "cloud"
+        type = MAIN
+        statusbar = false
+        pos = 0,0
+        size = 960x576
+        title = "Civ13 village trailer"
+        can-resize = false
+        titlebar = false
+        is-pane = false
+    elem "map"
+        type = MAP
+        pos = 0,0
+        size = 960x576
+        zoom = 2
+        zoom-mode = distort
+        letterbox = true
+        is-default = true
+
