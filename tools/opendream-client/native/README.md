@@ -189,6 +189,19 @@ and its phase) that refreshes every five seconds while an action runs. Only the
 action name reaches the script. `tests/LocalHostingTests.cs` injects process
 starts, update steps, control answers and port probes, so it launches nothing.
 
+## Discord activity
+
+When the Discord desktop app is running, the GUI shows "In the launcher" and,
+after a join, "Playing Civ13" with `MAP on host` and the elapsed time on the
+player's Discord profile, then returns to "In the launcher" when DreamSeeker
+exits. It writes to Discord's local RPC pipe (`\\.\pipe\discord-ipc-N`) with
+only a public application ID: no Discord SDK, login, OAuth or token. The BYOND
+key, character and location are never sent. The feature stays off until an ID
+is set in `PresenceSettings.BuiltInApplicationId` or in `discord.json` beside the
+launcher (`{"application_id": "...", "show_activity": true}`); the footer's
+**Show on Discord** box then saves the player's choice there.
+`tests/DiscordPresenceTests.cs` replaces the pipe with an in-memory stream.
+
 ## Release deployment
 
 Publishing any GitHub release triggers `native-launcher-release.yml`. It checks

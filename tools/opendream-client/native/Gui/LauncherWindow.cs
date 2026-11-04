@@ -57,6 +57,9 @@ internal sealed class LauncherWindow : Form {
     private Label? hostState;
     private Button? hostStart;
     private TextBox? hostOutput;
+    private DiscordPresence? presence;
+    private PresenceSettings presenceSettings = new(false, null);
+    private readonly CheckBox discordBox = new() { Text = "Show on Discord", AutoSize = true, Visible = false, Margin = new Padding(0, 1, 14, 0) };
     private readonly List<Button> hostActions = [];
     private System.Windows.Forms.Timer? hostPoll;
     private bool hostControlBusy;
@@ -106,7 +109,7 @@ internal sealed class LauncherWindow : Form {
             body.SplitterDistance = Math.Max(body.Panel1MinSize, body.Height - LogicalToDeviceUnits(150));
         };
         Shown += async (_, _) => await Startup();
-        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); };
+        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); presence?.Clear(); presence?.Dispose(); };
         waitTimer.Tick += (_, _) => UpdatePendingWait();
     }
 
@@ -193,6 +196,8 @@ internal sealed class LauncherWindow : Form {
         }
         // Operator tools stay out of the main view.
         var tools = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0), Anchor = AnchorStyles.Right };
+        discordBox.CheckedChanged += (_, _) => SetDiscordPresence(discordBox.Checked, true);
+        tools.Controls.Add(discordBox);
         var dataFolder = new LinkLabel { Text = "Launcher data folder", AutoSize = true, Margin = new Padding(0, 3, 14, 0) };
         dataFolder.LinkClicked += (_, _) => Open(new ProcessStartInfo(root) { UseShellExecute = true }, "the launcher data folder");
         manageLink.Margin = new Padding(0, 3, 0, 0);
@@ -278,6 +283,12 @@ internal sealed class LauncherWindow : Form {
         try { host = LocalHosting.Load(root); }
         catch (Exception e) when (e is InvalidDataException or JsonException or IOException) { Console.WriteLine("Local hosting disabled: " + e.Message); }
         if (host != null) tabs.TabPages.Add(hostPage = BuildHostPage(host));
+        presenceSettings = PresenceSettings.Load(root);
+        if (presenceSettings.ApplicationId != null) {
+            discordBox.Checked = presenceSettings.ShowActivity;
+            discordBox.Visible = true;
+            SetDiscordPresence(presenceSettings.ShowActivity, false);
+        }
         startupDone = true;
         manageLink.Enabled = true;
         UpdateReadiness();
@@ -408,7 +419,8 @@ internal sealed class LauncherWindow : Form {
         joinStatus.Text = $"Verifying {selected.Name}...";
         try {
             var verified = await discovery.Recheck(selected);
-            Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            WatchGame(game, DiscordPresence.ServerLine(verified.Status));
             pending = null;
             if (KnownFor(selected.Provider).TryGetValue(selected.Target, out var entry)) {
                 entry.Server = verified.Status;
@@ -534,6 +546,32 @@ internal sealed class LauncherWindow : Form {
         foreach (var button in hostActions) button.Enabled = !value;
         if (hostStart != null) hostStart.Enabled = !value && byond != null;
         if (hostPoll != null) hostPoll.Enabled = value;
+    }
+
+    // Turning it off clears the activity at once; the choice is kept in discord.json.
+    private void SetDiscordPresence(bool show, bool save) {
+        if (save) {
+            try { PresenceSettings.SaveShowActivity(root, show); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException) { Console.WriteLine("Could not save the Discord setting: " + e.Message); }
+        }
+        if (!show || presenceSettings.ApplicationId == null) {
+            presence?.Clear();
+            presence?.Dispose();
+            presence = null;
+            return;
+        }
+        presence ??= new DiscordPresence(presenceSettings.ApplicationId);
+        presence.Browsing();
+    }
+
+    // "Playing" lasts while that DreamSeeker runs, then the launcher goes back to browsing.
+    private async void WatchGame(Process game, string server) {
+        using (game) {
+            presence?.Playing(server, DateTimeOffset.UtcNow);
+            try { await game.WaitForExitAsync(); }
+            catch (InvalidOperationException) { return; }
+        }
+        if (!IsDisposed) presence?.Browsing();
     }
 
     private void HostLine(string line) {

@@ -47,6 +47,10 @@ try {
         Console.WriteLine("Prejoin NOT attempted. Use the interactive J recheck after spacing only when the runtime owner confirms eligibility.");
         return 0;
     }
+    if (args.SequenceEqual(new[] { "--presence-only" })) {
+        Console.WriteLine("Discord presence assertions: " + DiscordPresenceTests.Run(root));
+        return 0;
+    }
     if (args.SequenceEqual(new[] { "--discovery-only" })) {
         await CachedJoinTests.Run(root);
         await ServerDiscoveryTests.Run(root);
@@ -59,6 +63,7 @@ try {
     assertions += await ServerDiscoveryTests.Run(root);
     assertions += await TopicPacingTests.Run(root);
     assertions += LocalHostingTests.Run(root);
+    assertions += DiscordPresenceTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
     var reset = new System.Net.Sockets.SocketException(10054);
     var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);
