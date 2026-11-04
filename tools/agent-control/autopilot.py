@@ -41,7 +41,8 @@ ATTACK_WORDS = ("bites", "attacks", "hits", "claws", "slashes", "punches", "kick
 # Items worth keeping when a skill needs a free hand; anything else is dropped first.
 TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword", "shovel", "hammer")
 MAX_APPROACH = 14
-ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "wait")
+WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
+ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
@@ -64,6 +65,8 @@ Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)
 {"do": "go", "target": number} walks next to a thing, around obstacles. Prefer it to single moves.
 {"do": "flee", "target": number} runs away from a dangerous creature. {"do": "explore", "dir": north|south|east|west} walks several tiles to find new things.
 Every skill needs a target from the lists. If what you need (a rock, a tree, water) is not listed, explore to find it.
+{"do": "take", "item": "name"} takes a carried or worn item (pocket, belt, bag) into your empty active hand; skills take the tool they need by themselves.
+Material you cannot stow (like leaf bundles) can stay on the ground where you work; pick it up again only to craft with it.
 Hands are limited. Do not drop what you gathered or made: skills free a hand themselves (stowing items first), and dropped items are left behind.
 If something attacks you, deal with it first: flee if hurt or unarmed, or attack it with a weapon.
 Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|examine|drop|swap_hand|intent|wait,
@@ -333,6 +336,11 @@ def parse_decision(text, refs):
         if not 0 <= index < len(refs) or not refs[index]:
             return None
         args["target"] = refs[index]
+    elif action == "take":
+        item = str(data.get("item", "")).strip()
+        if not item:
+            return None
+        args["item"] = item[:64]
     elif action == "craft":
         recipe = str(data.get("recipe", "")).strip()
         if not recipe:
@@ -415,6 +423,24 @@ def _is_tool(name):
     return any(word in name for word in TOOL_WORDS)
 
 
+def _stowed(self_state):
+    """Names of carried and worn items, without the "(pocket)" or "(in bag)" note."""
+    names = [str(item).split(" (", 1)[0] for item in self_state.get("carried") or []]
+    return names + [str(item) for item in self_state.get("worn") or []]
+
+
+def thirst_plan(observation, explore_dir="north", ignored=()):
+    """When very thirsty, the step that goes for water: drink at listed water, else explore. None when not needed."""
+    me = observation.get("self", {})
+    water = me.get("water")
+    if not isinstance(water, (int, float)) or water >= 200:
+        return None
+    for row in observation.get("terrain", []):
+        if row.get("ref") not in ignored and any(word in str(row.get("name", "")).lower() for word in WATER_WORDS):
+            return {"skill": "drink", "target": row.get("ref")}
+    return {"do": "explore", "dir": explore_dir}
+
+
 def _is_plain_stick(name):
     name = str(name or "").lower()
     return name == "stick" or (name.endswith(" stick") and "sharpened" not in name and "cleared" not in name)
@@ -486,9 +512,17 @@ def expand_skill(step, self_state, rows=None):
             else:
                 steps.append({"do": "swap_hand"})
     elif not _holds(active, need):
-        if not _holds(other, need):
-            return [], f"{step['skill']} needs {need} in a hand"
-        steps.append({"do": "swap_hand"})
+        if _holds(other, need):
+            steps.append({"do": "swap_hand"})
+        else:
+            stowed = next((item for item in _stowed(self_state) if _holds(item, need)), None)
+            if not stowed:
+                return [], f"{step['skill']} needs {need} in a hand"
+            if active != "empty":
+                if other != "empty":
+                    return [], f"{step['skill']} needs your {stowed}, but both hands are full: put one item down first"
+                steps.append({"do": "swap_hand"})
+            steps.append({"do": "take", "item": stowed})  # out of a pocket, belt or bag
     if self_state.get("intent") != intent:
         steps.append({"do": "intent", "intent": intent})
     steps.extend({"do": "click", "target": step["target"]} for _ in range(clicks))
@@ -798,6 +832,7 @@ def run(client, args, character, token):
     ignored = {}  # target ref -> step until which it is left out
     last_targets = []
     target_turns = []
+    explore_dir = "north"
     stalled = {}  # target name -> turns in a row on things of that name without progress
     last_names = []
     seen_lines = {}  # message text -> steps it showed up in; ones that keep coming back (heat, weather) are muted
@@ -861,6 +896,13 @@ def run(client, args, character, token):
         history.append({"role": "assistant", "content": answer})
         note = parse_note(answer) or note
         plan = parse_plan(answer, refs)
+        thirsty = thirst_plan(observation, explore_dir, ignored)
+        if thirsty and not any(item.get("skill") == "drink" or item.get("do") == "explore" for item in plan):
+            print(f"  very thirsty (water {self_state.get('water')}): going for water instead")
+            plan = [thirsty]
+            feedback_extra = "You were very thirsty, so you went for water instead of your plan."
+        else:
+            feedback_extra = ""
         last_targets = [item["target"] for item in plan if (item.get("do") in ("click", "go") or "skill" in item) and item.get("target") != refs[0]]
         rows_now = target_rows(observation)
         last_names = [rows_now[ref].get("name") for ref in last_targets if ref in rows_now and rows_now[ref].get("name")]
@@ -885,13 +927,15 @@ def run(client, args, character, token):
                 time.sleep(args.interval)
                 continue
             summary, queue_since = execute(client, character, steps, queue_since)
+            if "explore failed" in summary or "explore ok (walked 0" in summary:
+                explore_dir = {"north": "east", "east": "south", "south": "west", "west": "north"}[explore_dir]
             word = next((COLLECT_AFTER[item["skill"]] for item in plan if item.get("skill") in COLLECT_AFTER), None)
             if word and "failed" not in summary:
                 picked, queue_since = collect(client, character, queue_since, word)
                 if picked:
                     summary += f"; {picked}"
             print(f"step {step}: {json.dumps(plan)} -> {summary}" + (f" | note: {note}" if note else ""))
-            feedback = f"\nYou did: {summary}"
+            feedback = f"\nYou did: {summary}" + (f"\n{feedback_extra}" if feedback_extra else "")
             problem = plan_problem(answer, refs)
             if problem:
                 feedback += f"\nA later step was skipped: {problem}."

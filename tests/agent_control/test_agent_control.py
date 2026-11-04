@@ -441,6 +441,24 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("reserved.current_positions++", source)
         self.assertIn("reserved.current_positions = max(0, reserved.current_positions - 1)", source)
 
+    def test_stowed_tools_are_taken_and_thirst_comes_first(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": None, "left_hand": {"name": "leaf bundles"}, "intent": "help", "carried": ["sharpened flint (pocket)"], "worn": ["loincloth", "stick"]}
+        rows = {"[0x2]": {"ref": "[0x2]", "name": "stick", "dx": 1, "dy": 0, "item": True}}
+        steps, error = autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x2]"}], me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "take", "item": "sharpened flint"}, {"do": "click", "target": "[0x2]"}])
+        full = dict(me, right_hand={"name": "stick"})
+        self.assertIn("both hands are full", autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x2]"}], full, rows)[1])
+        self.assertEqual(autopilot.parse_decision('{"do": "take", "item": "sharpened flint"}', ["[0x9]"]), {"do": "take", "item": "sharpened flint"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "take"}', ["[0x9]"]))
+        thirsty = {"self": {"water": 150}, "terrain": [{"ref": "turf:1,2,2", "name": "river", "dx": 4, "dy": 0}]}
+        self.assertEqual(autopilot.thirst_plan(thirsty), {"skill": "drink", "target": "turf:1,2,2"})
+        self.assertEqual(autopilot.thirst_plan(thirsty, "west", ignored={"turf:1,2,2": 9}), {"do": "explore", "dir": "west"})
+        self.assertIsNone(autopilot.thirst_plan({"self": {"water": 300}}))
+        source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('var/obj/item/I = agent_find_carried(H, req["item"])', source)
+        self.assertIn("S.remove_from_storage(I, get_turf(H))", source)
+
     def test_attacks_put_danger_first_and_downed_bodies_stop(self):
         observation = {"self": {"name": "Ada", "health": 77}, "messages": [{"text": "The grey she-wolf bites Ada!"}]}
         alarm = autopilot.danger(observation, {"health": 100})

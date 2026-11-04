@@ -18,8 +18,9 @@ VALUE = {
     ),
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "resist"]
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
+ITEM = {"type": "string", "description": 'take: the name of a carried or worn item to take into the empty active hand, e.g. "sharpened flint".'}
 
 
 def _schema(properties=None, required=()):
@@ -52,10 +53,11 @@ ACTIONS = {
     "character_spawn": ("characters", "Create a character this agent controls (no ckey needed). With job, it joins like a late joiner: that job's clothes, kit and spawn point.", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}, "job": {"type": "string", "description": 'A late-join job title on this map, e.g. "Nomad".'}}, ["target"])),
     "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
     "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, and its action queue with results since queue_since.", _schema({"character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"}}, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, examine, drop, swap_hand, intent or resist.", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent or resist.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
+        "item": ITEM,
         "amount": {"type": "integer", "minimum": 1},
         "dir": {"type": "string", "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]},
         "text": {"type": "string"},
@@ -70,6 +72,7 @@ ACTIONS = {
             "properties": {
                 "do": {"type": "string", "enum": ["wait"] + CHARACTER_ACTIONS},
                 "recipe": RECIPE,
+                "item": ITEM,
                 "amount": {"type": "integer", "minimum": 1},
                 "ticks": {"type": "integer", "minimum": 1, "maximum": 600, "description": "wait only: deciseconds"},
                 "dir": {"type": "string", "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]},

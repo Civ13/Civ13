@@ -83,6 +83,28 @@
 			continue
 		. |= J.title
 
+// A stowed item by name: pockets, then bags and belts, then other worn things (not clothing in hands).
+/proc/agent_find_carried(mob/living/human/H, wanted)
+	wanted = lowertext(trim("[wanted]"))
+	if (!length(wanted))
+		return null
+	var/list/candidates = list()
+	for (var/obj/item/I in list(H.l_store, H.r_store))
+		candidates += I
+	for (var/obj/item/weapon/storage/S in H.get_equipped_items())
+		for (var/obj/item/I in S.contents)
+			candidates += I
+	for (var/obj/item/I in H.get_equipped_items())
+		if (I != H.l_hand && I != H.r_hand)
+			candidates += I
+	for (var/obj/item/I in candidates)
+		if (lowertext(I.name) == wanted)
+			return I
+	for (var/obj/item/I in candidates)
+		if (findtext(lowertext(I.name), wanted))
+			return I
+	return null
+
 /proc/agent_job_allowed(title)
 	return title in agent_map_jobs()
 
@@ -282,13 +304,13 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "examine", "drop", "swap_hand", "intent", "resist")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "drop"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
@@ -410,6 +432,25 @@
 				agent_fail("out_of_view", "the target is not visible to this character")
 			M.examinate(target)
 			detail = "[target]"
+		if ("take")
+			// Take a stowed item (pocket, belt, bag) back into the empty active hand.
+			if (!ishuman(M))
+				agent_fail("bad_type", "only humans carry items")
+			var/mob/living/human/H = M
+			if (H.get_active_hand())
+				agent_fail("hands_full", "the active hand must be empty to take something")
+			var/obj/item/I = agent_find_carried(H, req["item"])
+			if (!I)
+				agent_fail("not_carried", "no carried item called [req["item"]]")
+			if (istype(I.loc, /obj/item/weapon/storage))
+				var/obj/item/weapon/storage/S = I.loc
+				S.remove_from_storage(I, get_turf(H))
+			else if (!H.unEquip(I))
+				agent_fail("stuck", "[I] cannot be taken off")
+			if (!H.put_in_active_hand(I))
+				agent_fail("hands_full", "[I] could not be put in the hand")
+			C.next_action = world.time + 2
+			detail = "[I]"
 		if ("drop")
 			M.drop_item()
 			C.next_action = world.time + 2
@@ -537,7 +578,9 @@
 		agent_resolve_target(step["target"])
 	if (action == "craft")
 		agent_text_arg(step, "recipe", 128)
-	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount"))
+	if (action == "take")
+		agent_text_arg(step, "item", 64)
+	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

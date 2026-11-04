@@ -128,7 +128,9 @@ heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
 (`text`), `click` (`target` ref the character can see, optional `modifier`),
 `use` (the held item), `craft` (`recipe` from the held stack, optional
-`amount`), `equip` (the held item, as the quick-equip key does), `examine`
+`amount`), `equip` (the held item, as the quick-equip key does; `no_slot`
+when nothing can take it), `take` (`item`: a stowed item's name, into the
+empty active hand), `examine`
 (`target`), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`, `harm`)
 and `resist`. Crafting goes through the stack's own recipe handler, so costs,
 tools and research gates apply. Click, use and craft can start timed work; a
@@ -202,7 +204,10 @@ free hand stows the spare item and stops (keeping it in hand) when `equip`
 finds no free slot (`no_slot`). `sharpen_stick` only takes a stick, or with
 target 0 the stick in the other hand. After `pick_leaves`, `make_stick` or
 `cut_grass` the autopilot picks up what fell when a hand is free, and a
-`NEEDS` line leads the observation when water or nutrition drops below 250. A step the
+`NEEDS` line leads the observation when water or nutrition drops below 250;
+below 200 water the autopilot replaces the plan with drinking at listed water,
+or exploring for it. `take` (`item`: a carried or worn item's name) moves a
+stowed item into the empty active hand, and skills take a stowed tool they need. A step the
 autopilot cannot accept is explained to the model next turn (for example a skill
 with no target listed: explore to find one). When something attacks the
 character, a danger line leads the next prompt, and the run stops once the
