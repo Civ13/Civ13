@@ -580,7 +580,8 @@ SUITES = {
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
                                 'tests/fishing_stock/test_preparation.py',
-                                'tests/fishing_stock/test_native_runner.py'), 'paths': (
+                                'tests/fishing_stock/test_native_runner.py',
+                                'tests/fishing_stock/test_ocean_fishing.py'), 'paths': (
         'tests/fishing_stock/',)},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing
