@@ -1,5 +1,11 @@
 name: Transfer storage
 on:
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: Seconds of shipping with forced restarts in the two-region pilot
+        type: number
+        default: 90
   pull_request:
     branches: [master]
     paths:
@@ -43,3 +49,23 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Store crash and retry tests
         run: python -I -B tests/transfer_storage/run.py
+  pilot:
+    # Two DreamDaemon regions with forced restarts. Manual only: it installs
+    # BYOND and takes a few minutes of runner time.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install the pinned BYOND
+        run: bash scripts/cloud_byond_setup.sh
+      - name: Fetch rust-g 3.0.0 (the pilot checks its SHA-256)
+        run: curl -sSLf --retry 3 -o "$RUNNER_TEMP/librust_g.so" https://github.com/tgstation/rust-g/releases/download/3.0.0/librust_g.so
+      - name: Two-region pilot
+        env:
+          PILOT_SECONDS: ${{ inputs.seconds }}
+        run: |
+          python3 -B tests/transfer_storage/pilot/run.py --byond-bin "$HOME/byond-516.1688/byond/bin" \
+            --rust-g "$RUNNER_TEMP/librust_g.so" --seconds "$PILOT_SECONDS" --seed "$GITHUB_RUN_ID" --keep-logs

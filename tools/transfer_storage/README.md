@@ -1,4 +1,4 @@
-# Transfer storage (phases 1 and 2)
+# Transfer storage (phases 1 to 3)
 
 `region.py` is the per-region SQLite store from
 [TRANSFER-STORAGE-SQLITE.md](../server-management/TRANSFER-STORAGE-SQLITE.md).
@@ -90,6 +90,30 @@ python3 tools/transfer_storage/coordinator.py --db coordinator.sqlite --group pi
 The coordinator relays every five seconds (`--interval`). A pass that can't
 reach an agent is reported on stderr, and that agent's outbox waits for the
 next pass.
+
+## Two-region pilot (phase 3)
+
+`tests/transfer_storage/pilot/run.py` runs two DreamDaemon regions built from
+the real `transfer_bridge.dm`, `transfer_trade_post.dm`, `http.dm` and the
+transfer hooks in `functions.dm`, against two agents and a relay. Each region
+keeps wood on a stock tile, ships stacks to the other region's player and
+collects what arrives. Its save writes the world and `round_state["transfer"]`
+and then a completion marker, as the world save does. The driver kills and
+restarts the regions at random moments, drains every transfer, stops both
+after a final save, and fails unless:
+
+- the committed saves hold exactly the wood the run started with
+- no transfer is in flight and no region is on hold
+- no world logged a runtime error
+
+```
+python3 tests/transfer_storage/pilot/run.py --byond-bin ~/byond-516.1688/byond/bin \
+    --rust-g librust_g.so --seconds 120 --seed 7
+```
+
+On Linux it needs the i686 `librust_g.so` from rust-g 3.0.0 (SHA-256 checked).
+On Windows it uses the repository's `rust_g.dll`. The "Transfer storage"
+workflow runs it when dispatched by hand. `--workdir` keeps the run directory.
 
 Not here yet: envelope signing for agents on different hosts.
 
