@@ -35,7 +35,7 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   | `moderation` | `kick` |
   | `server` | `start_round`, `restart` |
   | `spawn` | `spawn_atom`, `delete_atom` |
-  | `characters` | `character_spawn`, `character_list`, `character_observe`, `character_act`, `character_release` |
+  | `characters` | `character_spawn`, `character_list`, `character_observe`, `character_act`, `character_queue`, `character_release` |
   | `*` | everything |
 
 - **Audit.** Every mutating action is written to the admin log as
@@ -119,7 +119,22 @@ heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
 (`text`), `click` (`target` ref the character can see, optional `modifier`),
 `use` (the held item), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`,
-`harm`) and `resist`. Actions run with `usr` set to the character. Movement waits for the mob's
+`harm`) and `resist`. Actions run with `usr` set to the character.
+A direct `character_act` that is still cooling down fails with `cooldown` and
+the ticks to wait. Cooldowns are the character's movement delay, the mob's own
+click cooldowns (`next_move`, `next_click`) and one second between `say` or
+`emote`.
+
+`character_queue` takes a plan of up to 32 `actions` (64 pending per
+character), each shaped like `character_act` arguments, plus
+`{"do": "wait", "ticks": 1-600}`. Every step is validated before any is queued.
+The server runs them in order, waiting out each cooldown, at most one step per
+tick, so one request replaces many polled ones and the request rate limit is
+not spent on retries. A failed step skips the rest unless `stop_on_failure` is
+false. `clear: true` cancels pending steps. `character_observe` reports the
+queue as `pending`, `running` and `results` with ids above `queue_since`.
+Queued steps are logged like direct ones; releasing a character, or removing
+its agent from the config, stops its queue. Movement waits for the mob's
 movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
@@ -155,8 +170,10 @@ python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal 
 python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help my tribe build a hut"
 ```
 
-The autopilot shows the model only names and offsets (refs stay local), marks
-game text as untrusted, and validates every reply before acting.
+The model answers with a plan of up to five steps, which the autopilot sends
+through `character_queue` and reports back after the queue drains. It shows the
+model only names and offsets (refs stay local), marks game text as untrusted,
+and validates every reply before acting.
 
 ## Tests
 

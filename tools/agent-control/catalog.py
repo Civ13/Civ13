@@ -49,7 +49,7 @@ ACTIONS = {
     "delete_atom": ("spawn", "Delete an object or a mob without a connected player.", _schema({"target": TARGET}, ["target"])),
     "character_spawn": ("characters", "Create a character this agent controls (no ckey needed).", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}}, ["target"])),
     "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
-    "character_observe": ("characters", "What a character sees, its own state, and messages it heard since an id.", _schema({"character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}}, ["character"])),
+    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, and its action queue with results since queue_since.", _schema({"character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"}}, ["character"])),
     "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, drop, swap_hand, intent or resist.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": ["move", "face", "say", "emote", "click", "use", "drop", "swap_hand", "intent", "resist"]},
@@ -59,6 +59,24 @@ ACTIONS = {
         "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
         "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
     }, ["character", "do"])),
+    "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
+        "character": CHARACTER,
+        "actions": {"type": "array", "maxItems": 32, "items": {
+            "type": "object",
+            "properties": {
+                "do": {"type": "string", "enum": ["wait", "move", "face", "say", "emote", "click", "use", "drop", "swap_hand", "intent", "resist"]},
+                "ticks": {"type": "integer", "minimum": 1, "maximum": 600, "description": "wait only: deciseconds"},
+                "dir": {"type": "string", "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]},
+                "text": {"type": "string"},
+                "target": TARGET,
+                "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
+                "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
+            },
+            "required": ["do"],
+        }},
+        "clear": {"type": "boolean", "description": "drop pending steps first (alone, cancels the queue)"},
+        "stop_on_failure": {"type": "boolean", "description": "skip the rest when a step fails (default true)"},
+    }, ["character"])),
     "character_release": ("characters", "Stop controlling a character; spawned ones can be deleted.", _schema({"character": CHARACTER, "delete": {"type": "boolean"}}, ["character"])),
 }
 

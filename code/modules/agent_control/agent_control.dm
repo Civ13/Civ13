@@ -275,6 +275,7 @@ var/global/list/agent_characters = list()
 		"character_list" = list("scope" = "characters"),
 		"character_observe" = list("scope" = "characters"),
 		"character_act" = list("scope" = "characters"),
+		"character_queue" = list("scope" = "characters"),
 		"character_release" = list("scope" = "characters"),
 	)
 	return actions
@@ -310,6 +311,7 @@ var/global/list/agent_characters = list()
 		if ("character_list") return act_character_list(A, req)
 		if ("character_observe") return act_character_observe(A, req)
 		if ("character_act") return act_character_act(A, req)
+		if ("character_queue") return act_character_queue(A, req)
 		if ("character_release") return act_character_release(A, req)
 	agent_fail("unknown_action")
 

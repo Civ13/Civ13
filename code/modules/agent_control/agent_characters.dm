@@ -8,6 +8,9 @@
 // ordinary range, cooldown and mechanic rules apply.
 
 #define AGENT_CHARACTER_MESSAGES 100
+#define AGENT_CHARACTER_QUEUE_MAX 64
+#define AGENT_CHARACTER_QUEUE_BATCH 32
+#define AGENT_CHARACTER_SPEECH_DELAY 10
 
 /datum/agent_character
 	var/mob/living/body
@@ -16,6 +19,11 @@
 	var/list/messages = list()
 	var/message_serial = 0
 	var/next_action = 0
+	var/next_speech = 0
+	var/list/queue = list()
+	var/list/queue_results = list()
+	var/queue_serial = 0
+	var/queue_running = FALSE
 
 /datum/agent_character/proc/capture(message)
 	var/text = agent_plain_text(message)
@@ -188,16 +196,39 @@
 	for (var/list/message in C.messages)
 		if (message["id"] > since)
 			heard += list(message)
-	return list("self" = character_state(C), "here" = here ? list("turf" = here.name, "type" = "[here.type]") : null, "surroundings" = surroundings, "nearby" = nearby, "messages" = heard, "last_message" = C.message_serial)
+	var/queue_since = text2num("[req["queue_since"]]") || 0
+	return list("self" = character_state(C), "here" = here ? list("turf" = here.name, "type" = "[here.type]") : null, "surroundings" = surroundings, "nearby" = nearby, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
+
+// Actions a character can take, directly or from its queue.
+/proc/agent_character_actions()
+	return list("move", "face", "say", "emote", "click", "use", "drop", "swap_hand", "intent", "resist")
+
+// Ticks until the character may take this action: the agent pacing plus the
+// mob's own click cooldown (next_move/next_click) and a speech spacing.
+/datum/agent_character/proc/wait_for(action)
+	var/ready = world.time
+	if (action in list("move", "click", "use", "drop"))
+		ready = max(ready, next_action)
+	if (action in list("click", "use"))
+		ready = max(ready, body.next_move, body.next_click + 1)
+	if (action in list("say", "emote"))
+		ready = max(ready, next_speech)
+	return max(0, ready - world.time)
 
 /datum/agent_control/proc/act_character_act(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
+	var/action = lowertext("[req["do"]]")
+	var/wait = (action in agent_character_actions()) ? C.wait_for(action) : 0
+	if (wait)
+		agent_fail("cooldown", "wait [wait] ticks")
+	return perform_step(A, C, req)
+
+// One character action. Callers check wait_for() first.
+/datum/agent_control/proc/perform_step(datum/agent_identity/A, datum/agent_character/C, list/req)
 	var/mob/living/M = C.body
 	// Topic calls have no usr; click, pull and emote paths read it as the actor.
 	usr = M
 	var/action = lowertext("[req["do"]]")
-	if (world.time < C.next_action && (action in list("move", "click", "use", "drop")))
-		agent_fail("cooldown", "wait [C.next_action - world.time] ticks")
 	var/detail = ""
 	switch (action)
 		if ("move")
@@ -218,10 +249,12 @@
 		if ("say")
 			var/message = copytext(agent_text_arg(req, "text", 256), 1, 257)
 			M.say(message)
+			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
 			detail = message
 		if ("emote")
 			var/message = copytext(agent_text_arg(req, "text", 256), 1, 257)
 			M.custom_emote(1, html_encode(message))
+			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
 			detail = message
 		if ("click")
 			var/atom/target = agent_resolve_target(req["target"])
@@ -230,7 +263,6 @@
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
 				params = "[req["modifier"]]=1"
-			M.next_click = 0
 			M.ClickOn(target, params)
 			C.next_action = world.time + 2
 			detail = "[target] ([agent_ref(target)]) [params]"
@@ -259,10 +291,130 @@
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
 	return list("done" = action, "self" = character_state(C))
 
+// ---------------------------------------------------------------------------
+// Action queue. An agent submits a plan of steps; the server runs them in
+// order, waiting for each step's cooldown, so the agent need not poll per step.
+
+/datum/agent_control/proc/act_character_queue(datum/agent_identity/A, list/req)
+	var/datum/agent_character/C = character_arg(A, req)
+	var/list/steps = req["actions"]
+	if (!isnull(steps) && !islist(steps))
+		agent_fail("bad_args", "actions must be a list")
+	if (req["clear"] == TRUE || req["clear"] == 1)
+		if (C.queue.len)
+			log_admin("AGENT [A.name]: character_queue cleared [C.queue.len] steps for [C.body] ([agent_ref(C.body)])")
+		C.queue.Cut()
+	var/list/added = list()
+	if (steps && steps.len)
+		if (steps.len > AGENT_CHARACTER_QUEUE_BATCH)
+			agent_fail("bad_args", "at most [AGENT_CHARACTER_QUEUE_BATCH] actions per request")
+		if (C.queue.len + steps.len > AGENT_CHARACTER_QUEUE_MAX)
+			agent_fail("queue_full", "the queue holds at most [AGENT_CHARACTER_QUEUE_MAX] steps; [C.queue.len] are pending")
+		var/list/checked = list()
+		for (var/list/step in steps)
+			checked += list(check_step(step))
+		if (checked.len != steps.len)
+			agent_fail("bad_args", "each action must be an object")
+		var/stop_on_failure = req["stop_on_failure"] != FALSE && req["stop_on_failure"] != 0
+		for (var/list/step in checked)
+			step["id"] = ++C.queue_serial
+			step["agent"] = A.name
+			step["stop_on_failure"] = stop_on_failure
+			C.queue += list(step)
+			added += step["id"]
+		log_admin("AGENT [A.name]: character_queue [added.len] steps for [C.body] ([agent_ref(C.body)])")
+		if (!C.queue_running)
+			spawn(0)
+				run_queue(C)
+	return list("queued" = added, "queue" = C.queue_state())
+
+// Validates a queued step up front so a typo fails the request, not step 7.
+/datum/agent_control/proc/check_step(list/step)
+	if (!islist(step))
+		agent_fail("bad_args", "each action must be an object")
+	var/action = lowertext("[step["do"]]")
+	var/list/out = list("do" = action)
+	if (action == "wait")
+		var/ticks = text2num("[step["ticks"]]")
+		if (!isnum(ticks) || ticks < 1 || ticks > 600)
+			agent_fail("bad_args", "wait needs ticks 1-600 (deciseconds)")
+		out["ticks"] = round(ticks)
+		return out
+	if (!(action in agent_character_actions()))
+		agent_fail("bad_args", "do must be wait, move, face, say, emote, click, use, drop, swap_hand, intent or resist")
+	if (action in list("move", "face"))
+		agent_dir(step["dir"])
+	if (action in list("say", "emote"))
+		agent_text_arg(step, "text", 256)
+	if (action == "click")
+		agent_resolve_target(step["target"])
+	for (var/key in list("dir", "text", "target", "modifier", "intent"))
+		if (!isnull(step[key]))
+			out[key] = step[key]
+	return out
+
+/datum/agent_character/proc/queue_state(since = 0)
+	var/list/pending = list()
+	for (var/list/step in queue)
+		pending += list(list("id" = step["id"], "do" = step["do"]))
+	var/list/done = list()
+	for (var/list/result in queue_results)
+		if (result["id"] > since)
+			done += list(result)
+	return list("pending" = pending, "running" = queue_running ? TRUE : FALSE, "results" = done)
+
+/datum/agent_character/proc/record(list/step, ok, detail)
+	queue_results += list(list("id" = step["id"], "do" = step["do"], "ok" = ok ? TRUE : FALSE, "detail" = detail, "time" = world.time))
+	if (queue_results.len > AGENT_CHARACTER_QUEUE_MAX)
+		queue_results.Cut(1, 2)
+
+/datum/agent_control/proc/run_queue(datum/agent_character/C)
+	if (C.queue_running)
+		return
+	C.queue_running = TRUE
+	while (C.queue.len)
+		var/mob/living/M = C.body
+		if (QDELETED(M) || agent_characters[M] != C)
+			C.queue.Cut()
+			break
+		var/list/step = C.queue[1]
+		var/action = step["do"]
+		if (action == "wait")
+			C.queue.Cut(1, 2)
+			sleep(step["ticks"])
+			C.record(step, TRUE, "waited [step["ticks"]] ticks")
+			continue
+		var/wait = C.wait_for(action)
+		if (wait)
+			sleep(wait)
+			continue
+		C.queue.Cut(1, 2)
+		reload() // a removed or changed agent stops its queued steps too
+		var/datum/agent_identity/A = agents[step["agent"]]
+		if (!A || !C.can_drive(A))
+			C.record(step, FALSE, "forbidden: the agent no longer controls this character")
+			C.queue.Cut()
+			break
+		try
+			var/list/result = perform_step(A, C, step)
+			C.record(step, TRUE, result["moved"] == FALSE ? "blocked" : "done")
+		catch(var/exception/E)
+			var/detail = E.name == "agent_control_error" ? E.desc : "runtime_error:[E.name] ([E.file]:[E.line])"
+			C.record(step, FALSE, detail)
+			if (step["stop_on_failure"])
+				for (var/list/rest in C.queue)
+					C.record(rest, FALSE, "skipped: an earlier step failed")
+				C.queue.Cut()
+				break
+		// At most one queued step per tick for each character.
+		sleep(1)
+	C.queue_running = FALSE
+
 /datum/agent_control/proc/act_character_release(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
 	var/mob/living/M = C.body
 	agent_characters -= M
+	C.queue.Cut()
 	if (C.handover_ckey)
 		if (M.client)
 			to_chat(M, "<span class='notice'>The AI has handed control of your character back to you.</span>")

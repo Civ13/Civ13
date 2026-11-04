@@ -207,8 +207,29 @@ class SecurityContractTests(unittest.TestCase):
         for proc in ("set_var", "call_proc", "call_verb", "announce", "admin_pm", "kick", "start_round", "restart", "spawn_atom", "delete_atom", "character_spawn", "character_release"):
             body = re.search(rf"/datum/agent_control/proc/act_{proc}\(.*?(?=\n/)", sources, re.S).group(0)
             self.assertIn("audit(A,", body, proc)
-        act = re.search(r"/datum/agent_control/proc/act_character_act\(.*?(?=\n/)", sources, re.S).group(0)
+        act = re.search(r"/datum/agent_control/proc/perform_step\(.*?(?=\n/)", sources, re.S).group(0)
         self.assertIn('log_admin("AGENT [A.name]: character_act', act)
+
+    def test_queue_respects_cooldowns_and_limits(self):
+        chars = dm_source("agent_characters.dm")
+        wait_for = re.search(r"/datum/agent_character/proc/wait_for\(.*?(?=\n/)", chars, re.S).group(0)
+        for guard in ("next_action", "body.next_move", "body.next_click", "next_speech"):
+            self.assertIn(guard, wait_for)
+        run = re.search(r"/datum/agent_control/proc/run_queue\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("C.wait_for(action)", run)
+        self.assertIn("sleep(1)", run)  # at most one step per tick
+        self.assertIn("reload()", run)  # a revoked agent's queue stops
+        self.assertIn("C.can_drive(A)", run)
+        self.assertIn("perform_step(A, C, step)", run)
+        direct = re.search(r"/datum/agent_control/proc/act_character_act\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("C.wait_for(action)", direct)
+        self.assertNotIn("next_click = 0", chars)  # clicks keep the mob's own cooldown
+        queue = re.search(r"/datum/agent_control/proc/act_character_queue\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("AGENT_CHARACTER_QUEUE_MAX", queue)
+        self.assertIn("check_step(step)", queue)
+        self.assertIn('log_admin("AGENT [A.name]: character_queue', queue)
+        release = re.search(r"/datum/agent_control/proc/act_character_release\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("C.queue.Cut()", release)
 
     def test_rights_and_locked_vars(self):
         helper = (ROOT / "code" / "_helpers" / "admin.dm").read_text(encoding="utf-8")
@@ -252,6 +273,21 @@ class AutopilotTests(unittest.TestCase):
         for bad in ('{"do": "click", "target": 9}', '{"do": "move", "dir": "up and away"}', '{"do": "call_proc"}', '{"do": "wait"}', "not json", '["move"]', '{"do": "say", "text": ""}'):
             self.assertIsNone(autopilot.parse_decision(bad, refs), bad)
         self.assertEqual(len(autopilot.parse_decision('{"do": "say", "text": "%s"}' % ("a" * 500), refs)["text"]), 200)
+
+    def test_repeated_messages_do_not_crowd_out_speech(self):
+        observation = {"messages": [{"text": "Ada says, \"hi\""}] + [{"text": "The ground burns your feet."}] * 12}
+        text, _ = autopilot.summarize(observation)
+        self.assertIn('Ada says', text)
+        self.assertEqual(text.count("burns your feet"), 1)
+
+    def test_plans_are_validated_and_capped(self):
+        refs = ["[0x1]", "[0x2]"]
+        plan = autopilot.parse_plan('{"plan": [{"do": "move", "dir": "north"}, {"do": "wait", "ticks": 999}, {"do": "click", "target": 2}]}', refs)
+        self.assertEqual(plan, [{"do": "move", "dir": "north"}, {"do": "wait", "ticks": 50}, {"do": "click", "target": "[0x2]"}])
+        self.assertEqual(autopilot.parse_plan('{"do": "say", "text": "hi"}', refs), [{"do": "say", "text": "hi"}])
+        self.assertEqual(autopilot.parse_plan('{"plan": [{"do": "move", "dir": "north"}, {"do": "fly"}, {"do": "say", "text": "x"}]}', refs), [{"do": "move", "dir": "north"}])
+        self.assertEqual(len(autopilot.parse_plan(json.dumps({"plan": [{"do": "swap_hand"}] * 9}), refs)), autopilot.MAX_PLAN)
+        self.assertEqual(autopilot.parse_plan("not json", refs), [])
 
     def test_player_help_config_is_optional(self):
         self.assertEqual(autopilot.load_player_help_config(str(ROOT / "does-not-exist.json")), {})
