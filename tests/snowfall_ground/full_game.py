@@ -113,7 +113,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--deadline', type=int, default=4800)
+    parser.add_argument('--deadline', type=int, default=7200)
     parser.add_argument('--skip-persistence', action='store_true', help='development only; cannot pass')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]

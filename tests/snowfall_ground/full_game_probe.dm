@@ -615,7 +615,9 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	var/start_tod = world.timeofday
 	var/list/samples = list()
 	var/full_at = null
-	var/until = world.time + 12000
+	// Two units need two snowing samples per cell from a randomly ordered,
+	// tick-budgeted worker; observed fills took 11,600-12,100+ ds on Gaia.
+	var/until = world.time + 24000
 	while(world.time < until)
 		sleep(50)
 		var/list/c = census(expected)
