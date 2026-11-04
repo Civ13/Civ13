@@ -31,3 +31,6 @@ Press N to cycle your tactic. Rush makes your melee attacks faster, Defend impro
 Your skills improve by using them. Building trains crafting, digging and chopping train strength, and fighting trains your weapon skills.
 Check Notes in the IC tab for information about your role, faction and race.
 New to the game or stuck? Press F2 to ask a mentor, or F1 to contact an admin. Nobody minds a polite question.
+On persistent maps, straw walls and thatch or palm roofs weather away in about 16 game years, dirt walls in about 32 and wooden walls and roofs in about 64. Examine a wall or roof to see how long it has left.
+A weathered wall or roof gives a warning once it has a year left. Repair walls by hitting them with their building material, and roofs by using matching roofing while facing them.
+Roofs collapse when they lose all support, even with people underneath. Keep pillars or walls close by, and repair the walls holding a roof up before they fall apart.

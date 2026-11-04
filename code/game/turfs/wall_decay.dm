@@ -25,7 +25,11 @@
 	if (!istype(I, buildstack))
 		to_chat(user, "This is the wrong material for this wall!")
 		return
-	var/amt = (health/maxhealth)*buildstackamount
+	if (health >= maxhealth)
+		to_chat(user, "\The [src] doesn't need repairs.")
+		return
+	// Cost is the missing share of the build stack, at least one.
+	var/amt = max(1, ceil((maxhealth - health) / maxhealth * buildstackamount))
 	do_repair(user, I, amt)
 
 /obj/covers/proc/do_repair(var/mob/user,var/obj/item/I, var/amt=0)
@@ -63,6 +67,9 @@
 		var/mob/living/human/H = user
 		if (H.getStatCoeff("crafting") > 1.8)
 			to_chat(H, get_wall_condition())
+	var/weathering = seasonal_construction_condition()
+	if (weathering)
+		to_chat(user, weathering)
 
 /obj/covers/proc/get_wall_condition()
 	var/healthp = (health/maxhealth)*100
