@@ -82,7 +82,7 @@ describe('research parity', () => {
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { interfaces } from './index';
 describe('standard screen parity', () => {
-  it('registers converted renderer routes and the inactive Paper editor', () => {
+  it('registers converted renderer routes and the Paper editor', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
       'appearance_changer.tmpl',
       'book_reader.tmpl',

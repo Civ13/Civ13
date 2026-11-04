@@ -11,7 +11,8 @@ def run():
  ('acknowledged transport','/datum/nanoui/tgui/paper_editor/consume_topic','!frontend_acknowledged','FALSE','test_ready_ack_status_owner_legacy_state_and_binding_guards'),
  ('actual caller','/datum/nanoui/tgui/paper_editor/consume_topic','usr != user','FALSE','test_ready_ack_status_owner_legacy_state_and_binding_guards'),
  ('fresh viewer projection','/datum/nanoui/tgui/paper_editor/push_data','var/list/current = editor_data()','var/list/current = isnull(data) ? editor_data() : data','test_every_push_reprojects_knowledge_and_ignores_cached_payload'),
- ('whole legacy fallback','/proc/paper_editor_modern_supported','if (!islist(view) || view["legacy_body_html"] != "")','if (!islist(view))','test_whole_legacy_and_crayon_views_select_readonly_fallback_before_open'),
+ ('oversize legacy fallback','/proc/paper_editor_modern_supported','if (!islist(view) || !istext(view["legacy_body_html"]) || length(view["legacy_body_html"]) > 65536)','if (!islist(view))','test_legacy_and_crayon_views_use_modern_editor_and_oversize_falls_back'),
+ ('classified paper never downgrades','/proc/paper_editor_try_entrypoint','if (P && !P.gc_destroyed && isnull(P.document_record))','if (P)','test_enabled_entrypoint_opens_editor_and_only_unclassified_papers_fall_back'),
  ('early closed preparation retirement','/proc/paper_editor_open','if (ui.editor_closed || !ui.state || !session.bind_ui(actor, session.session_lease, ui))\n\t\t\tsession.retire()','if (ui.editor_closed || !ui.state || !session.bind_ui(actor, session.session_lease, ui))','test_constructor_custody_transfer_early_close_and_failure_release_session'),
  ]
  original=tests.environment;original_nano=tests.NANO;rows=[]

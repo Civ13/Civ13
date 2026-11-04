@@ -140,6 +140,8 @@
 			return FALSE
 	if (kind == "signature")
 		value = pen.get_signature(actor)
+	else
+		value = paper_document_expand_pencode(value, pen, actor)
 	// Recheck after the actual pen getter, before any paper dereference.
 	if (!can_mutate(actor, pen) || !paper_knows_written_language(actor, language_id) || !istext(value) || !length(value) || length(value) > paper.free_space)
 		return FALSE
@@ -184,6 +186,14 @@
 		return TRUE
 	session_lease = paper_document_mint_id(paper)
 	return TRUE
+
+// Legacy pencode stamps resolve once, at write time, into plain section text.
+/proc/paper_document_expand_pencode(value, obj/item/weapon/pen/pen, mob/actor)
+	if (!istext(value) || !findtext(value, "\["))
+		return value
+	if (findtext(value, "\[sign\]"))
+		value = replacetext(value, "\[sign\]", pen.get_signature(actor))
+	return replacetext(replacetext(value, "\[date\]", stationdate2text()), "\[time\]", stationtime2text())
 
 // Rebuild the legacy link cache for this exact item and refresh its public icon.
 // This happens only after a successful canonical commit; no section text enters

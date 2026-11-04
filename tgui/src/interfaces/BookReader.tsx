@@ -2,9 +2,11 @@ import { useLayoutEffect, useRef, useState, type CSSProperties, type RefObject }
 import type { Data, ScreenProps } from '../types';
 import { text } from './common';
 
-type Face = 'times' | 'verdana';
+export type Face = 'times' | 'verdana' | 'comic';
 export type BookRun = { text?: string; br?: true; ink: string; face: Face; bold: boolean; italic: boolean };
-const faces: Record<Face, string> = { times: '"Times New Roman", serif', verdana: 'Verdana' };
+// Comic is used only by paper crayon writing; book snapshots never send it.
+const faces: Record<Face, string> = { times: '"Times New Roman", serif', verdana: 'Verdana', comic: '"Comic Sans MS", cursive' };
+const families: Record<Face, string> = { times: 'times new roman', verdana: 'verdana', comic: 'comic sans ms' };
 const named = new Set(['amp', 'lt', 'gt', 'quot', 'apos', 'AMP', 'LT', 'GT', 'QUOT']);
 export function bookText(encoded: unknown): string {
   if (typeof encoded !== 'string' || /[<\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(encoded)) throw new Error('Unsupported book text');
@@ -38,7 +40,7 @@ export function bookRuns(data: Data): BookRun[] {
     if (!run || typeof run !== 'object' || Array.isArray(run)) throw new Error('Unsupported book node');
     const hasBreak = run.br === true || run.br === 1;
     const expected = hasBreak ? 'bold,br,face,ink,italic' : 'bold,face,ink,italic,text';
-    if (Object.keys(run).sort().join(',') !== expected || !['times', 'verdana'].includes(run.face) || typeof run.ink !== 'string' || !/^#[0-9a-f]{6}$/i.test(run.ink)) throw new Error('Unsupported book metadata');
+    if (Object.keys(run).sort().join(',') !== expected || !Object.hasOwn(faces, run.face) || typeof run.ink !== 'string' || !/^#[0-9a-f]{6}$/i.test(run.ink)) throw new Error('Unsupported book metadata');
     const bold = flag(run.bold), italic = flag(run.italic);
     if (hasBreak) return { br: true, ink: run.ink.toLowerCase(), face: run.face, bold, italic };
     if (typeof run.text !== 'string' || (units += run.text.length) > 65536) throw new Error('Book text budget');
@@ -50,7 +52,8 @@ const pageStyle: CSSProperties = {
   fontFamily: faces.times, fontSize: '16px', fontStyle: 'normal', fontWeight: 400,
   lineHeight: 'normal', letterSpacing: 'normal', wordSpacing: 'normal', fontVariant: 'normal',
   textTransform: 'none', textDecoration: 'none', textShadow: 'none',
-  whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'normal', textIndent: 0,
+  // Long unbroken words wrap instead of overflowing, which would reject the page.
+  whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'anywhere', textIndent: 0,
   opacity: 1, filter: 'none', mixBlendMode: 'normal', WebkitTextFillColor: '#000000', WebkitTextStrokeWidth: 0,
   userSelect: 'text', WebkitUserSelect: 'text', padding: '8px', minHeight: '32px', overflow: 'auto',
 };
@@ -84,7 +87,7 @@ export function bookRenderingSupported(page: HTMLElement, runs: BookRun[]): bool
     const run = runs[index], s = w.getComputedStyle(element), family = s.fontFamily.split(',')[0].replaceAll('"', '').trim().toLowerCase();
     return clean(s) && s.color === rgb(run.ink) && s.webkitTextFillColor === rgb(run.ink) && s.webkitTextStrokeWidth === '0px'
       && s.backgroundColor === 'rgba(0, 0, 0, 0)' && s.backgroundImage === 'none' && s.fontSize === '16px'
-      && family === (run.face === 'times' ? 'times new roman' : 'verdana')
+      && family === families[run.face]
       && s.fontWeight === (run.bold ? '700' : '400') && s.fontStyle === (run.italic ? 'italic' : 'normal');
   });
 }

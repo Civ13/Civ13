@@ -49,6 +49,11 @@ def environment(source=SOURCE):
    super().__init__(paper,actor);self.read_route=route;self.read_owner=owner
  Reader.has_access=vm.project(adapted,'/datum/paper_document_reader/has_access','self,reader,writing=False',env,True)
  Reader.project=vm.project(adapted,'/datum/paper_document_reader/project','self,reader,forceshow=False',env,True)
+ # DM escapes literal pencode brackets; the projected Python literal does not.
+ # Closing tokens are protected from the typepath tokenizer like closing tags.
+ env['findtext']=lambda text,needle:text.find(needle)+1
+ vm.ALLOWED|={'findtext','paper_document_section_pencode'}
+ env['paper_document_section_pencode']=vm.project(adapted.replace('\\[','[').replace('\\]',']').replace('[/','[\\x2f'),'/proc/paper_document_section_pencode','text',env)
  renderer=vm.project(adapted,'/proc/paper_document_view_body','data,P',env)
  env['paper_document_view_title']=vm.project(adapted,'/proc/paper_document_view_title','value',env)
  return env,Base,Reader,langs,renderer
@@ -190,6 +195,15 @@ class Views(unittest.TestCase):
   self.assertIn('paper_document_view_title(name)',SOURCE)
   self.assertIn('reader << browse(html, "window=[name]")',SOURCE)
   self.assertIn('onclose(reader, "[name]")',SOURCE)
+ def test_section_pencode_applies_only_bold_italic_breaks_and_closes_unbalanced_tags(self):
+  pencode=self.env['paper_document_section_pencode']
+  self.assertEqual(pencode('plain [u]x[/u] [center]'),'plain [u]x[/u] [center]')
+  self.assertEqual(pencode('[b]a[/b][br][i]b'),'<b>a</b>\n<i>b</i></b>')
+  self.classify();self.actor.languages=[self.langs[RU]]
+  for section in self.paper.document_record['sections']:section['text']='[b]&lt;x&gt;'
+  result=self.render(self.context('paper').project(self.actor),self.paper)
+  self.assertIn('<b>&amp;lt;x&amp;gt;</i></b>',result)
+  self.assertIn('else\n\t\t\ttext = paper_document_section_pencode(text)',SOURCE)
  def test_crayon_signature_retains_combined_bold_italic_and_ink(self):
   legacy_signature='<font face="Times New Roman"><i>Old &amp; unchanged</i></font>'
   self.paper.info=legacy_signature;self.pen.kind='crayon';self.pen.signature='Crayon & <Literal Signature>'

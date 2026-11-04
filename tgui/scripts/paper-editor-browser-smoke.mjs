@@ -48,18 +48,41 @@ export async function paperEditorSmoke(browser, js, css) {
         {id:'section-1',kind:'body',language_id:EN,text:writing,ink:'white',tool:'pen'}]}};
     await update(page,current);await page.getByText('Writing saved.',{exact:true}).waitFor();
     assert.equal(await page.getByLabel('Writing text').inputValue(),'');
-    const paper=page.locator('article').first(), run=paper.locator('[data-book-run]').nth(1);
+    const paper=page.locator('article').first(), run=paper.locator('[data-book-run]').nth(0);
     assert.equal(await paper.textContent(),writing);assert.equal(await paper.locator('paper,img,script,button,[title],[aria-label],[hidden]').count(),0);
     assert.equal(await paper.evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(255, 255, 255)');
     assert.equal(await run.evaluate(e=>getComputedStyle(e).color),'rgb(255, 255, 255)');
     await page.setViewportSize({width:380,height:700});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-    const invalid=await load();await update(invalid,{...data(),view:{legacy_name:'Synthetic paper',legacy_body_html:'UNSUPPORTED_PARTIAL<table><tr><td>old</td></tr></table>',sections:[]}});
+    // Older pencode HTML and crayon writing render as inert styled text in the
+    // real Chromium page checks; the editor stays usable and does not fall back.
+    const legacyHtml='<font face="Verdana" color=blue><b>Orders</b><BR>March north<img src=x onerror="window.pwned=1"><script>window.pwned=1</script>'
+      +'<table><tr><td>a</td><td>b</td></tr></table><span class="paper_field"></span></font><font face="Comic Sans MS" color=#ff0000><b>crayon</b></font>';
+    const legacy=await load();
+    await update(legacy,{...data(),draft_tool:'crayon',draft_ink:'#ff0000',view:{legacy_name:'Synthetic paper',legacy_body_html:legacyHtml,sections:[
+      {id:'section-1',kind:'body',language_id:EN,text:'Wax [b]bold[/b]\n'+'W'.repeat(400),ink:'#ff0000',tool:'crayon'}]},document_id:'b'.repeat(32),revision:1});
+    await legacy.getByLabel('Writing text').waitFor();
+    const legacyPage=legacy.locator('article').first();
+    assert.equal(await legacy.evaluate(()=>window.fallback),false);
+    assert.equal(await legacy.evaluate(()=>window.pwned),undefined);
+    assert.equal(await legacyPage.locator('img,script,table,font').count(),0);
+    assert.match(await legacyPage.textContent(),/^OrdersMarch north\[stamp\]a b crayonWax boldW+$/);
+    const orders=legacyPage.locator('[data-book-run]').first();
+    assert.equal(await orders.evaluate(e=>getComputedStyle(e).color),'rgb(0, 0, 255)');
+    assert.equal(await orders.evaluate(e=>getComputedStyle(e).fontWeight),'700');
+    const wax=legacyPage.getByText('crayon',{exact:true});
+    assert.equal(await wax.evaluate(e=>getComputedStyle(e).fontFamily.split(',')[0].replaceAll('"','')),'Comic Sans MS');
+    assert.equal(await legacy.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await legacy.getByLabel('Writing text').fill('More [i]wax[/i]');
+    await legacy.getByRole('button',{name:'Write',exact:true}).click();
+    await legacy.waitForFunction(()=>window.sent.length===1);
+    assert.equal(JSON.parse((await legacy.evaluate(()=>window.sent[0])).payload.paper_edit).value,'More [i]wax[/i]');
+    const invalid=await load();await update(invalid,{...data(),view:{legacy_name:'Synthetic paper',legacy_body_html:'UNSUPPORTED_PARTIAL'+'x'.repeat(65536),sections:[]}});
     await invalid.getByText('Switching to classic interface...',{exact:true}).waitFor();
     assert.equal(await invalid.evaluate(()=>window.fallback),true);
     assert.equal((await invalid.locator('body').textContent()).includes('UNSUPPORTED_PARTIAL'),false);
     assert.equal(await invalid.locator('textarea').count(),0);
     assert.deepEqual(errors,[]);
-    console.log('PASS: inactive Paper production form, Unicode/inert text, bounded append, no replay/truncation, white ink, narrow layout and whole-view fallback; substituted transport, no native acceptance');
+    console.log('PASS: Paper production form, Unicode/inert text, legacy pencode and crayon rendering, bounded append, no replay/truncation, white ink, narrow layout and oversize fallback; substituted transport, no native acceptance');
   } finally { await context.close(); }
 }
