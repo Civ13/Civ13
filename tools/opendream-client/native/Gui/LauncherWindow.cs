@@ -57,6 +57,9 @@ internal sealed class LauncherWindow : Form {
     private Label? hostState;
     private Button? hostStart;
     private TextBox? hostOutput;
+    private readonly List<Button> hostActions = [];
+    private System.Windows.Forms.Timer? hostPoll;
+    private bool hostControlBusy;
 
     public static int Run(string root, Version version) {
         var thread = new Thread(() => {
@@ -212,7 +215,8 @@ internal sealed class LauncherWindow : Form {
         }
         Row("Game folder", profile.GameDirectory);
         Row("World", profile.World + " on port " + profile.Port + " (listed publicly on the BYOND hub)");
-        Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
+        if (profile.Control is { } control) Row("Control", "Save-safe start, stop, restart and update through " + Path.GetFileName(control.Script));
+        else Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
         Row("Civilizationbot", profile.Bot is { } bot ? $"Start the supervisor if port {bot.HttpPort} is not listening" : "Not configured");
         hostState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6) };
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
@@ -221,6 +225,19 @@ internal sealed class LauncherWindow : Form {
         refresh.Click += async (_, _) => await RefreshHostState();
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         buttons.Controls.Add(hostStart);
+        if (profile.Control != null) {
+            foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update") }) {
+                var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+                button.Click += async (_, _) => await HostAction(action, text);
+                hostActions.Add(button);
+                buttons.Controls.Add(button);
+            }
+            var worldLog = new LinkLabel { Text = "Open world log", AutoSize = true, Margin = new Padding(12, 11, 0, 6) };
+            worldLog.LinkClicked += (_, _) => Open(new ProcessStartInfo(Path.Combine(profile.GameDirectory, "logs", "world.log")) { UseShellExecute = true }, "the world log");
+            buttons.Controls.Add(worldLog);
+            hostPoll = new System.Windows.Forms.Timer { Interval = 5000 };
+            hostPoll.Tick += async (_, _) => await RefreshHostState();
+        }
         buttons.Controls.Add(refresh);
         layout.Controls.Add(hostState);
         layout.SetColumnSpan(hostState, 2);
@@ -464,6 +481,14 @@ internal sealed class LauncherWindow : Form {
 
     private async Task RefreshHostState() {
         if (host == null || hostState == null) return;
+        if (host.Control is { } control) {
+            ControlAnswer answer;
+            try { answer = await Task.Run(() => LocalHosting.RunControl(control, "status")); }
+            catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { answer = new ControlAnswer(false, "Status unavailable: " + e.Message, false); }
+            hostState.Text = answer.Message;
+            SetHostBusy(answer.Busy);
+            return;
+        }
         var port = host.Port;
         var running = await Task.Run(() => LocalHosting.Listening(port));
         hostState.Text = running ? $"DreamDaemon is running on port {port}." : $"DreamDaemon is not running on port {port}.";
@@ -485,6 +510,30 @@ internal sealed class LauncherWindow : Form {
             hostStart.Enabled = byond != null;
             await RefreshHostState();
         }
+    }
+
+    // Accepted actions finish in the script's worker; the timer follows them until they settle.
+    private async Task HostAction(string action, string label) {
+        if (host?.Control is not { } control) return;
+        if (action != "update" && MessageBox.Show(this, label + " the server? Players are saved and can rejoin when it is back.", "Civ13 Launcher",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        SetHostBusy(true);
+        try {
+            var answer = await Task.Run(() => LocalHosting.RunControl(control, action));
+            HostLine(answer.Message);
+            if (!answer.Ok) SetHostBusy(false);
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine(label + " failed: " + e.Message);
+            SetHostBusy(false);
+        }
+    }
+
+    private void SetHostBusy(bool value) {
+        if (hostControlBusy && !value && hostState != null) HostLine(hostState.Text);
+        hostControlBusy = value;
+        foreach (var button in hostActions) button.Enabled = !value;
+        if (hostStart != null) hostStart.Enabled = !value && byond != null;
+        if (hostPoll != null) hostPoll.Enabled = value;
     }
 
     private void HostLine(string line) {

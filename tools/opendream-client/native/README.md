@@ -177,8 +177,17 @@ updates the server before starting it: `git fetch origin <branch>`, then
 checkout stops), then the verified BYOND `dm.exe -max_errors 0 <world>.dme`, which
 must report `0 errors, 0 warnings`. Any failed step leaves DreamDaemon unstarted.
 A server already listening on `port` is never updated, because it holds its `.dmb`.
-The launcher does not stop servers. `tests/LocalHostingTests.cs` injects process
-starts, update steps and port probes, so it launches nothing.
+
+An optional `"control": {"python": "C:/.../python.exe", "script": "D:/GitHub/Civ13/scripts/gaia-host/gaia_host.py", "config": "D:/private/gaia-host.json"}`
+hands the server to Civ13's host control script, the same path the Discord bot
+uses (see `scripts/gaia-host/README.md`). It replaces `update` (both together are
+rejected). Start then runs the script's `start` (save checks, then the scheduled
+task) instead of DreamDaemon directly, and the **Host server** tab adds **Save and
+stop**, **Restart** and **Update** (each confirmed first except Update), an
+**Open world log** link, and a status line (port, world ready, players, last action
+and its phase) that refreshes every five seconds while an action runs. Only the
+action name reaches the script. `tests/LocalHostingTests.cs` injects process
+starts, update steps, control answers and port probes, so it launches nothing.
 
 ## Release deployment
 
