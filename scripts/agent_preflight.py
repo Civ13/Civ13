@@ -117,7 +117,11 @@ def generated(args):
         else:
             print('docs/crafting-recipe-audit-index.json: STALE (rerun with --write)')
             status = 1
-    return status
+    # The CI digest must watch every pull_request workflow (docs/agent-ci-digest.md).
+    command = [sys.executable, '-B', 'scripts/ci_digest.py', 'sync-workflows'] + (['--write'] if args.write else [])
+    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+    print(result.stdout.strip() or result.stderr.strip())
+    return status or result.returncode
 
 
 def suites(args):
