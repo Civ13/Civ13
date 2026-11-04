@@ -1,8 +1,9 @@
 # Modern factory automation: audit and phased design
 
-Status: **design proposal; nothing here is implemented or activated.** Merging
-this document does not approve any phase. Each phase below starts only after
-Val picks a direction, and each lands as its own PR with its own tests.
+Status: **phase 0 implemented; later phases are design only.** Val chose the
+first slice on 2026-11-04: phase 0, then belts and transfer arms (phase 1).
+The other open decisions below are still pending. Each later phase lands with
+its own tests.
 
 Source pin: master `2181750c74d2a97d52ceb0063a663a63898395fb` (after #3601
 stamp mill, #3603 renewables and #3607 moving saves). Line numbers below refer
@@ -151,7 +152,9 @@ Shared facts across these machines:
 
 ## Defects found in the existing belt (independent of new features)
 
-These are small and worth fixing first whatever direction is chosen.
+These are small and worth fixing first whatever direction is chosen. Phase 0
+fixes the first two: belts rederive their directions in `after_load()` and save
+`operating`, and switches save `position` and reapply it after load.
 
 - **Saved belts can reverse or turn after load.** `New(loc, newdir, on)`
   computes `forwards`/`backwards` from `dir` in the constructor. Load calls
@@ -312,11 +315,18 @@ Budgets to design and benchmark against (per server, Gaia scale):
 
 Risks and mitigations:
 
-- **R1, grid walk per consumer.** Replace per-call `rebuild_supply()` walks with
-  a cached component datum: rebuild only on topology change (cable, source or
-  consumer added/removed/moved), settle supply/demand once per second next to
-  `civ_generation`, and answer `draw_cable_power()` from the cache. Keep the
-  current atomic reservation semantics and the existing negative controls.
+- **R1, grid walk per consumer.** Phase 0 lets `draw_cable_power()` reuse
+  the last traversal's published totals when the consumer already holds the
+  same reservation, the traversal is under a second old, and the component was
+  within capacity. Sources (generators, batteries, engines) and topology
+  changes already traverse at least once a second, so a grid with many
+  consumers does about one walk per second instead of one per consumer check.
+  Anything else, including an overloaded or unpowered component, still takes
+  the full atomic traversal. A topology change made by a raw `connections`
+  edit without a traversal can be seen up to one second late. A cached
+  component datum with explicit invalidation remains an option if the phase 1
+  benchmark needs it; it would have to cover the 81 direct `connections`
+  mutation sites first.
 - **R2, per-tile processing.** Belt lines tick per line with a budget and sleep
   when idle; belts leave `processing_objects`. Remove `spawn()` from belt
   processing.
@@ -357,7 +367,7 @@ BYOND, plus a native benchmark where noted.
 
 | Phase | Scope | Exit check |
 | --- | --- | --- |
-| 0. Foundations | Fix belt load direction and switch state; cache power components (R1) behind the existing tests; add the port interface with crates and the stamp mill as first implementers. | Belt round-trip probe; grid benchmark shows consumer checks no longer scale with grid size; stamp mill accepts stone without a mob. |
+| 0. Foundations (done) | Fix belt load direction and switch state; reuse fresh reservations (R1); add the port interface (`code/modules/1713/factory_ports.dm`) with crates and the stamp mill as first implementers. | `tests/factory_automation/probe.dm`; the native grid probe's 20 repeated draws now take one traversal; stamp mill accepts stone without a mob. |
 | 1. Belts and arms | Belt lines with slots, line ticking and sleep; feeder and sorting arms; storage bin; drill, sifter and stamp mill output buffers; recipes and research gates. | Ore from a drill reaches a crate by belt and arm with no player action; 2,000-tile benchmark within budget; save/load round trip. |
 | 2. Routing and smelting | Sorting gate, splitter, belt tunnel; ports for bloomery, blast furnace, kilns, powered sawmill and grinder. | Mixed ore line sorted into separate furnaces; ingots out by belt. |
 | 3. Fabricators | Fabricator tiers and the chosen recipe source; Atlas shows factory recipes; stack arm. | A configured line produces one modern good from raw inputs unattended. |
@@ -368,9 +378,8 @@ beyond fixing saved belts.
 
 ## Decisions for Val
 
-1. **Starting slice.** Recommended: phase 0 then phase 1 (move resources
-   automatically before adding fabricators). Alternative: phase 0 then a
-   fabricator first, fed by hand and arms, with belts later.
+1. **Starting slice.** Decided 2026-11-04: phase 0, then phase 1 (belts and
+   transfer arms) before fabricators.
 2. **Fabricator recipe source.** Recommended: a curated factory recipe list
    (new config file, Atlas-visible) of intermediate parts and goods, so
    factories have their own production chains. Alternative: let fabricators run

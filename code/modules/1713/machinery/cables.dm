@@ -197,6 +197,8 @@ var/global/cable_identity_sequence = 0
 /obj/structure/cable/var/tmp/component_id = 0
 /obj/structure/cable/var/tmp/component_size = 0
 /obj/structure/cable/var/tmp/rebuild_visits = 0
+// world.time of the last full traversal that published this cable's totals.
+/obj/structure/cable/var/tmp/rebuild_time = -1
 
 /obj/structure/cable/proc/grid_identity()
 	if (!grid_serial)
@@ -204,7 +206,7 @@ var/global/cable_identity_sequence = 0
 	return grid_serial
 
 /obj/structure/cable/persistence_runtime_var(key)
-	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits"))
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time"))
 		return TRUE
 	return ..()
 
@@ -308,6 +310,7 @@ var/global/cable_identity_sequence = 0
 		CB.component_id = identity
 		CB.component_size = cables.len
 		CB.rebuild_visits = cables.len
+		CB.rebuild_time = world.time
 	return requester ? accepted : capacity
 
 // Reservations are keyed by the consumer, so repeated checks are idempotent.
@@ -328,6 +331,13 @@ var/global/cable_identity_sequence = 0
 	if (!isturf(loc) || !(src in powersource.connections) || get_dist(src, powersource) > 1 || z != powersource.z)
 		powersource.update_power(-powerneeded, 1, src)
 		return FALSE
+	// A reservation that the last traversal, under a second ago, left within
+	// capacity is still honoured. Sources and topology changes already
+	// traverse at least once a second, so many consumers on one grid no longer
+	// each walk the whole component every check. Anything else, including an
+	// overloaded or unpowered component, takes the full traversal.
+	if (powersource.power_consumers[src] == powerneeded && powersource.rebuild_time >= 0 && world.time - powersource.rebuild_time < 10 && powersource.powerflow > 0 && powersource.currentflow <= powersource.powerflow)
+		return TRUE
 	// Validate capacity and publish the reservation atomically in one traversal.
 	return powersource.rebuild_supply(src, powerneeded)
 

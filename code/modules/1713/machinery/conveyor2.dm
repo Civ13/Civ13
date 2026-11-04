@@ -15,6 +15,9 @@
 	var/movedir			// the actual direction to move stuff in
 
 	var/id = ""			// the control ID	- must match controller ID
+	// Machinery saves only these fields. The run state is kept so a running
+	// line resumes after a reload; belt directions are derived from dir.
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;id;operating"
 
 /obj/machinery/conveyor/New(loc, newdir, on = 0)
 	..()
@@ -22,6 +25,15 @@
 	if(newdir)
 		set_dir(newdir)
 
+	set_belt_dirs()
+
+	if(on)
+		operating = 1
+		setmove()
+
+// Forward and backward movement follow the facing. Corner pieces carry
+// clockwise when running forward.
+/obj/machinery/conveyor/proc/set_belt_dirs()
 	if(dir & (dir-1)) // Diagonal. Forwards is *away* from dir, curving to the right.
 		forwards = turn(dir, 135)
 		backwards = turn(dir, 45)
@@ -29,9 +41,14 @@
 		forwards = dir
 		backwards = turn(dir, 180)
 
-	if(on)
-		operating = 1
-		setmove()
+// Load constructs the belt before the saved dir is applied, so the
+// constructor saw the default facing. Rederive directions from the saved dir.
+/obj/machinery/conveyor/after_load()
+	. = ..()
+	set_belt_dirs()
+	if(operating != 1 && operating != -1)
+		operating = 0
+	setmove()
 
 /obj/machinery/conveyor/Destroy()
 	processing_objects -= src
@@ -157,6 +174,8 @@
 
 	var/list/conveyors		// the list of conveyors that are controlled by this switch
 	anchored = 1
+	// Saved with the icon so a reloaded switch shows the state its belts run in.
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;id;position;last_pos"
 
 
 
@@ -174,6 +193,14 @@
 				conveyors += C
 
 // update the icon depending on the position
+
+// A reloaded switch reapplies its saved position to its belts on the next tick.
+/obj/machinery/conveyor_switch/after_load()
+	. = ..()
+	if(position != 1 && position != -1)
+		position = 0
+	operated = 1
+	update()
 
 /obj/machinery/conveyor_switch/proc/update()
 
