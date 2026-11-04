@@ -62,7 +62,7 @@ jobs:
           python -B tool/tools/village-trailer/run_trailer.py --byond "$env:RUNNER_TEMP/engine/byond/bin" --build "$env:RUNNER_TEMP/build" --ffmpeg "$env:TRAILER_FFMPEG" --output "$env:RUNNER_TEMP/take"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Screenshot the desktop on failure
-        if: failure()
+        if: failure() && env.TRAILER_FFMPEG != ''
         shell: powershell
         run: |
           New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP/take" | Out-Null
