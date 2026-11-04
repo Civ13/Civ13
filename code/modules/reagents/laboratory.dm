@@ -99,6 +99,9 @@
 	options["Make plastic storage bag"] = "polymer_bag"
 	options["Make polyethylene sheet"] = "polyethylene_sheet"
 	options["Make polypropylene sheet"] = "polypropylene_sheet"
+	options["Make polypropylene cloth"] = "polypropylene_cloth"
+	options["Make plastic comb"] = "polypropylene_comb"
+	options["Make plastic play ball"] = "polyethylene_ball"
 	var/choice = input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name) as null|anything in options
 	var/turf/user_turf = get_turf(user)
 	var/turf/bench_turf = get_turf(src)
@@ -110,7 +113,7 @@
 		succeeded = finish_wood_fiber("rayon_fiber")
 	else if(selected == "cloth_lyocell")
 		succeeded = finish_wood_fiber("lyocell_fiber")
-	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet"))
+	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet", "polypropylene_cloth", "polypropylene_comb", "polyethylene_ball"))
 		succeeded = finish_polymer_product(selected)
 	else
 		succeeded = synthesize(selected)
@@ -163,7 +166,26 @@
 		collector.reagents.remove_reagent("polypropylene", 4)
 		new /obj/item/weapon/evidencebag(loc)
 		return TRUE
+	if(product == "polypropylene_cloth" || product == "polypropylene_comb")
+		if(!collector.reagents.has_reagent("polypropylene", 4))
+			return FALSE
+		collector.reagents.remove_reagent("polypropylene", 4)
+		if(product == "polypropylene_cloth")
+			new /obj/item/stack/material/cloth(loc, 1)
+		else
+			new /obj/item/weapon/haircomb(loc)
+		return TRUE
+	if(product == "polyethylene_ball")
+		if(!collector.reagents.has_reagent("polyethylene", 4))
+			return FALSE
+		collector.reagents.remove_reagent("polyethylene", 4)
+		new /obj/item/weapon/basketball/plastic(loc)
+		return TRUE
 	return FALSE
+
+/obj/item/weapon/basketball/plastic
+	name = "plastic play ball"
+	desc = "A lightweight polyethylene ball for play."
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/stoppered
 	name = "stoppered plastic bottle"

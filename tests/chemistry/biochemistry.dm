@@ -24,7 +24,16 @@
 	biochemistry_polymer_product_checks()
 	biochemistry_insulated_cable_checks()
 	biochemistry_mixed_gelatin_checks()
+	biochemistry_plastic_pipe_checks()
 	return TRUE
+
+/proc/biochemistry_plastic_pipe_checks()
+	var/turf/site = locate(29, 20, 1)
+	var/obj/structure/props/piping/small/plastic/pipe = new(site)
+	chemistry_assert(pipe.dismantle_plastic_pipe(), "Plastic pipe dismantling failed")
+	var/obj/item/stack/material/plastic/plastic = locate() in site
+	chemistry_assert(plastic && plastic.amount == 1, "Plastic pipe did not return one sheet")
+	qdel(plastic)
 
 /proc/biochemistry_polymer_product_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench()
@@ -44,6 +53,21 @@
 	chemistry_assert(bench.finish_polymer_product("polypropylene_sheet") && !bench.collector.reagents.get_reagent_amount("polypropylene"), "Polypropylene sheet payment failed")
 	var/obj/item/stack/material/plastic/sheets = locate() in get_turf(bench)
 	chemistry_assert(sheets && sheets.amount == 2, "Plastic sheets missing")
+	processing_add(bench, "polypropylene", 3)
+	chemistry_assert(!bench.finish_polymer_product("polypropylene_cloth") && !bench.finish_polymer_product("polypropylene_comb") && bench.collector.reagents.get_reagent_amount("polypropylene") == 3, "Incomplete polypropylene batch consumed input")
+	processing_add(bench, "polypropylene", 1)
+	chemistry_assert(bench.finish_polymer_product("polypropylene_comb") && !bench.collector.reagents.get_reagent_amount("polypropylene") && locate(/obj/item/weapon/haircomb) in get_turf(bench), "Polypropylene comb production failed")
+	processing_add(bench, "polypropylene", 4)
+	var/obj/item/stack/material/cloth/cloth = locate() in get_turf(bench)
+	var/previous_cloth = cloth ? cloth.amount : 0
+	chemistry_assert(bench.finish_polymer_product("polypropylene_cloth") && !bench.collector.reagents.get_reagent_amount("polypropylene"), "Polypropylene cloth payment failed")
+	cloth = locate() in get_turf(bench)
+	chemistry_assert(cloth && cloth.amount == previous_cloth + 1, "Polypropylene cloth missing")
+	processing_add(bench, "polyethylene", 3)
+	chemistry_assert(!bench.finish_polymer_product("polyethylene_ball") && bench.collector.reagents.get_reagent_amount("polyethylene") == 3, "Incomplete ball batch consumed input")
+	processing_add(bench, "polyethylene", 1)
+	chemistry_assert(bench.finish_polymer_product("polyethylene_ball") && !bench.collector.reagents.get_reagent_amount("polyethylene"), "Plastic play ball payment failed")
+	chemistry_assert(locate(/obj/item/weapon/basketball/plastic) in get_turf(bench), "Plastic play ball missing")
 	qdel(bench)
 
 /proc/biochemistry_insulated_cable_checks()

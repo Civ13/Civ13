@@ -652,6 +652,9 @@ RECIPE: /material/lead/,lead safe,/obj/structure/closet/crate/lead,3,100,1,1,non
 //*********************| PLASTIC |******************************
 //**************************************************************
 
+RECIPE: /material/plastic/,decorative plastic pipe,/obj/structure/props/piping/small/plastic,1,55,1,1,plastic pipes,0,0,0,8,null
+RECIPE: /material/plastic/,decorative plastic pipe elbow,/obj/structure/props/piping/small/plastic/elbow,1,55,1,1,plastic pipes,0,0,0,8,null
+RECIPE: /material/plastic/,decorative plastic pipe junction,/obj/structure/props/piping/small/plastic/junction,1,55,1,1,plastic pipes,0,0,0,8,null
 RECIPE: /material/plastic/,camera film,/obj/item/camera_film,4,55,1,1,none,95,0,0,8,null
 RECIPE: /material/plastic/,blood pack,/obj/item/weapon/reagent_containers/blood/empty,2,40,0,1,none,0,0,95,8,null
 RECIPE: /material/plastic/,lighter,/obj/item/weapon/flame/lighter/random,3,95,0,1,none,150,0,0,8,null

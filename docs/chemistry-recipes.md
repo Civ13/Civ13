@@ -137,3 +137,7 @@ At a reaction bench, four units of polyethylene and one of butyl rubber make a c
 Apply a copper ingot to a plastic sheet to make one usable insulated power-cable piece. Both materials are consumed.
 
 The reaction bench also offers a mixed-solvent gelatin recipe: four units of purified gelatin, one of water, and one of purified ethanol produce six units of gelatin. The existing single-solvent recipes remain available.
+Four units of polypropylene can also be made into an ordinary cloth sheet or a usable plastic comb at the reaction bench.
+Four units of polyethylene can be made into a throwable plastic play ball at the same bench.
+
+Plastic sheets can be crafted into decorative straight pipes, elbows and junctions on maps with the relevant plastic recipes. These props do not carry fluids. A hammer dismantles one back into one plastic sheet.
