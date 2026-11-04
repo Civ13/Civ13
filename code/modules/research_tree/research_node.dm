@@ -444,8 +444,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (2) ---
+		// --- automation (3) ---
 		"/obj/item/camera" = "automation",
+		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
+		"/obj/structure/civ_generator/solar/panel" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",
 		// --- automobiles (13) ---
 		"/obj/structure/car_workshop" = "automobiles",
@@ -641,11 +643,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/compoundbow" = "crossbows",
 		"/obj/item/weapon/gun/projectile/bow/crossbow" = "crossbows",
 		"/obj/item/weapon/gun/projectile/bow/longbow" = "crossbows",
-		// --- digital_computing (3) ---
+		// --- digital_computing (5) ---
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
+		"/obj/structure/civ_generator/wind/turbine" = "digital_computing",
 		"/obj/structure/civ_generator/nuclear" = "nuclear_power",
 		"/obj/structure/reactor_fuel_processor" = "nuclear_power",
 		// --- early_economy (10) ---
@@ -659,7 +662,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (11) ---
+		// --- electricity (12) ---
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
@@ -673,6 +676,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/grinder/constructed" = "electricity",
 		"/obj/structure/telegraph" = "electricity",
 		"/obj/structure/teleprinter" = "electricity",
+		// Wind chargers (1920s-30s) need only dynamos and cable.
+		"/obj/structure/civ_generator/wind/charger" = "electricity",
 		// --- factories (16) ---
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that

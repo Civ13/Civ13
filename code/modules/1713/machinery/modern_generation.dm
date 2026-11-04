@@ -3,8 +3,15 @@
 
 var/global/list/civ_generators = list()
 
+// Earliest map age for a generator type; renewables set their own min_age.
+/proc/civ_generation_min_age(result_type)
+	if (ispath(result_type, /obj/structure/civ_generator))
+		var/obj/structure/civ_generator/G = result_type
+		return initial(G.min_age)
+	return 8
+
 /proc/civ_generation_era(result_type)
-	return !(ispath(result_type, /obj/structure/civ_generator) || ispath(result_type, /obj/structure/reactor_fuel_processor)) || (map && map.ordinal_age >= 8)
+	return !(ispath(result_type, /obj/structure/civ_generator) || ispath(result_type, /obj/structure/reactor_fuel_processor)) || (map && map.ordinal_age >= civ_generation_min_age(result_type))
 
 /proc/civ_generation_can_build(mob/living/human/H, result_type)
 	if (!(ispath(result_type, /obj/structure/civ_generator) || ispath(result_type, /obj/structure/reactor_fuel_processor)))
@@ -16,6 +23,7 @@ var/global/list/civ_generators = list()
 	anchored = TRUE
 	density = TRUE
 	var/enabled = FALSE
+	var/min_age = 8 // map.ordinal_age needed to build and run this source.
 	var/tmp/registered = FALSE
 	var/tmp/retired = FALSE
 	var/tmp/output_power = 0
@@ -81,7 +89,7 @@ var/global/list/civ_generators = list()
 		disconnect_generation()
 
 /obj/structure/civ_generator/persistence_runtime_var(key)
-	return (key in list("enabled", "registered", "retired", "output_power", "output_until", "output_epoch", "charge_power", "powersource")) || ..()
+	return (key in list("enabled", "registered", "retired", "output_power", "output_until", "output_epoch", "charge_power", "powersource", "min_age")) || ..()
 
 /obj/structure/civ_generator/after_load()
 	..()
@@ -99,8 +107,8 @@ var/global/list/civ_generators = list()
 	to_chat(user, "Generator: [enabled ? "enabled" : "off"]. Available output: [available_output()] PU. Maximum: [rated_output()] PU.")
 
 /obj/structure/civ_generator/attack_hand(mob/user)
-	if (!registered || !connected() || !map || map.ordinal_age < 8)
-		to_chat(user, "Secure and cable this Modern generator first. The shared registry supports at most 128 generators.")
+	if (!registered || !connected() || !map || map.ordinal_age < min_age)
+		to_chat(user, "Secure and cable this generator first. The shared registry supports at most 128 generators.")
 		return
 	if (enabled)
 		stop_generation()
@@ -143,7 +151,7 @@ var/global/list/civ_generators = list()
 	charge_power = 0
 	output_power = 0
 	output_until = 0
-	if (!enabled || !connected() || !map || map.ordinal_age < 8)
+	if (!enabled || !connected() || !map || map.ordinal_age < min_age)
 		return
 	output_power = max(0, rated_output())
 	// A delayed scheduler expires output rather than backfilling missed energy.
@@ -151,7 +159,7 @@ var/global/list/civ_generators = list()
 	powersource.rebuild_supply()
 
 /obj/structure/civ_generator/proc/available_output()
-	if (!enabled || !connected() || !map || map.ordinal_age < 8 || world.time >= output_until)
+	if (!enabled || !connected() || !map || map.ordinal_age < min_age || world.time >= output_until)
 		return 0
 	return max(0, output_power - charge_power)
 
