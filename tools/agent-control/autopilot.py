@@ -206,15 +206,18 @@ def danger(observation, previous=None):
     attackers = []
     for message in observation.get("messages", []):
         lowered = str(message.get("text", "")).lower()
+        if '"' in lowered:
+            continue  # speech is player-written, not a combat line
         for word in ATTACK_WORDS:
             marker = f" {word} "
             if own and marker in lowered and own in lowered.split(marker, 1)[1][:len(own) + 4]:
-                attackers.append(lowered.split(marker, 1)[0].strip().removeprefix("the "))
+                attackers.append(lowered.split(marker, 1)[0].strip().removeprefix("the ")[-40:])
     hurt = previous is not None and isinstance(previous.get("health"), (int, float)) and isinstance(me.get("health"), (int, float)) and me["health"] <= previous["health"] - 5
     if not attackers and not hurt:
         return ""
-    who = attackers[-1] if attackers else "something"
-    return f"DANGER: {who} is attacking you (health {me.get('health')}). Flee from it, or attack it if you hold a weapon. Do this before anything else."
+    if not attackers:
+        return f"WARNING: you lost health (now {me.get('health')}). Check for attackers, thirst, hunger and bleeding."
+    return f"DANGER: {attackers[-1]} is attacking you (health {me.get('health')}). Flee from it, or attack it if you hold a weapon. Do this before anything else."
 
 
 def relevant_messages(messages, own_name=None, limit=8, muted=()):

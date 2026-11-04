@@ -75,8 +75,13 @@
 	if (!job_master || !map)
 		return
 	for (var/datum/job/J in job_master.occupations)
-		if (J.title && (map.ID in J.allowed_maps) && J.spawn_location && findtext(J.spawn_location, "JoinLate"))
-			. |= J.title
+		if (!J.title || !(map.ID in J.allowed_maps) || !J.spawn_location || !findtext(J.spawn_location, "JoinLate"))
+			continue
+		if (!map.job_enabled_specialcheck(J))
+			continue
+		if (J.total_positions != -1 && J.current_positions >= J.total_positions)
+			continue
+		. |= J.title
 
 /proc/agent_job_allowed(title)
 	return title in agent_map_jobs()
@@ -107,6 +112,10 @@
 	for (var/mob/living/L in T)
 		before += L
 	var/mob/living/M
+	// Take a job slot the way AssignRole does for players; a failed join gives it back.
+	var/datum/job/reserved = job_title ? job_master.GetJob(job_title) : null
+	if (reserved)
+		reserved.current_positions++
 	try
 		M = new path(T)
 		// A mind holds the job's notes; without one the join path complains it is missing.
@@ -125,6 +134,8 @@
 				if (!QDELETED(M) && M.real_name != new_name)
 					M.fully_replace_character_name(M.real_name, new_name)
 	catch(var/exception/E)
+		if (reserved)
+			reserved.current_positions = max(0, reserved.current_positions - 1)
 		// A runtime in New leaves a half-built, untracked body; remove it.
 		for (var/mob/living/L in T)
 			if (!(L in before) && istype(L, path) && !L.client)
