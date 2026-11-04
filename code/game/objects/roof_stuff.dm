@@ -24,7 +24,32 @@
 	var/switch_area = TRUE
 	var/image/roof_overlay
 
+/obj/roof/examine(mob/user)
+	..()
+	var/weathering = seasonal_construction_condition()
+	if (weathering)
+		to_chat(user, weathering)
+
+// Matching roofing restores a damaged or weathered roof and is used up.
+/obj/roof/proc/repair_with(obj/item/weapon/roofbuilder/B, mob/user)
+	if (B.target_type != type)
+		to_chat(user, SPAN_WARNING("That roofing doesn't match \the [src]."))
+		return FALSE
+	if (health >= initial(health))
+		to_chat(user, "\The [src] doesn't need repairs.")
+		return FALSE
+	visible_message(SPAN_NOTICE("[user] starts repairing \the [src]."))
+	if (!do_after(user, 40, src) || !src || gcDestroyed || !B || B.gcDestroyed || B.loc != user)
+		return FALSE
+	health = initial(health)
+	visible_message(SPAN_NOTICE("[user] repairs \the [src]."))
+	qdel(B)
+	return TRUE
+
 /obj/roof/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/roofbuilder))
+		repair_with(W, user)
+		return
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(src)
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
@@ -377,6 +402,10 @@
 		return
 	var/turf/target = get_step(user, user.dir)
 	var/turf/start = get_turf(user)
+	var/obj/roof/damaged = locate(target_type) in target
+	if (damaged && damaged.health < initial(damaged.health))
+		damaged.repair_with(src, user)
+		return
 	var/error = building_roof_error(target)
 	if (error)
 		to_chat(user, SPAN_WARNING(error))

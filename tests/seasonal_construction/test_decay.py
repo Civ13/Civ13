@@ -77,6 +77,8 @@ def project(source, signature):
         "if (damage >= seasonal_construction_health() && FALSE)":
             "if damage >= self.seasonal_construction_health() and False:",
         "seasonal_construction_due = 0": "self.seasonal_construction_due = 0",
+        "else": "else:",
+        "seasonal_construction_warn(damage)": "self.warnings += 1",
         "damage_seasonal_construction(damage)": "self.damage_seasonal_construction(damage)",
         "if (seasonal_construction_index)": "if self.seasonal_construction_index:",
         "return ..()": "return",
@@ -118,6 +120,14 @@ def project(source, signature):
     return env["execute"]
 
 
+CONSTANTS = {name: int(value) for name, value in
+             re.findall(r"^#define (CONSTRUCTION_\w+) (\d+)$", SOURCE.read_text(), re.M)}
+# Lifetimes count game years: 16, 32 and 64 years of four seasons each.
+F = CONSTANTS["CONSTRUCTION_FIBRE_SEASONS"]
+E = CONSTANTS["CONSTRUCTION_EARTH_SEASONS"]
+T = CONSTANTS["CONSTRUCTION_TIMBER_SEASONS"]
+
+
 class State:
     def __init__(self, source=None):
         self.source = source or SOURCE.read_text()
@@ -147,7 +157,7 @@ class Construction:
         self.anchored = self.on_turf = self.wall = True
         self.incomplete = self.gc_destroyed = self.gcDestroyed = False
         self.seasonal_construction_due = self.seasonal_construction_last = self.seasonal_construction_index = 0
-        self.contents, self.messages = [], 0
+        self.contents, self.messages, self.warnings = [], 0, 0
         prefix = "/obj/roof" if self.is_roof else "/obj/covers"
         shared = ["register_seasonal_construction", "unregister_seasonal_construction", "seasonal_construction_lifetime",
                   "accrue_seasonal_construction", "check_seasonal_construction"]
@@ -175,10 +185,11 @@ class Construction:
 
 class DecayTests(unittest.TestCase):
     def test_exact_material_designs_and_rates(self):
-        cases = [("/obj/covers/straw_wall", 75, 16), ("/obj/roof/thatch", 100, 16),
-                 ("/obj/roof/palm", 100, 16), ("/obj/covers/dirt_wall", 90, 32),
-                 ("/obj/covers/wood_wall", 300, 64), ("/obj/covers/wood_wall/bamboo", 230, 64),
-                 ("/obj/covers/wood_wall/log", 330, 64), ("/obj/roof/wood", 100, 64)]
+        self.assertEqual((F, E, T), (16 * 4, 32 * 4, 64 * 4))
+        cases = [("/obj/covers/straw_wall", 75, F), ("/obj/roof/thatch", 100, F),
+                 ("/obj/roof/palm", 100, F), ("/obj/covers/dirt_wall", 90, E),
+                 ("/obj/covers/wood_wall", 300, T), ("/obj/covers/wood_wall/bamboo", 230, T),
+                 ("/obj/covers/wood_wall/log", 330, T), ("/obj/roof/wood", 100, T)]
         for kind, health, lifetime in cases:
             with self.subTest(kind=kind):
                 s = State()
@@ -192,6 +203,8 @@ class DecayTests(unittest.TestCase):
                 s.sweep()
                 self.assertTrue(item.gc_destroyed)
                 self.assertEqual(item.messages, 1)
+                # Every surviving season may warn; the final collapse does not.
+                self.assertEqual(item.warnings, lifetime - 1)
                 self.assertEqual(s.registry, [])
 
     def test_world_year_and_research_never_choose_the_rate(self):
@@ -201,7 +214,7 @@ class DecayTests(unittest.TestCase):
             item = Construction(s)
             s.transition()
             s.sweep()
-            self.assertEqual(item.health, 75 * 15 / 16)
+            self.assertEqual(item.health, 75 * (F - 1) / F)
 
     def test_modern_unknown_children_floors_and_paired_slabs_do_not_register(self):
         for kind in ("/obj/covers/vault", "/obj/covers/steel_wall", "/obj/covers/stone_wall",
@@ -224,13 +237,13 @@ class DecayTests(unittest.TestCase):
         for _ in range(20):
             s.record(s.map, s)
         s.sweep()
-        self.assertEqual(item.health, 75 * 15 / 16)
+        self.assertEqual(item.health, 75 * (F - 1) / F)
         s.transition(advance=False)
         s.sweep()
-        self.assertEqual(item.health, 75 * 15 / 16)
+        self.assertEqual(item.health, 75 * (F - 1) / F)
         s.transition(advance=True)
         s.sweep()
-        self.assertEqual(item.health, 75 * 14 / 16)
+        self.assertEqual(item.health, 75 * (F - 2) / F)
 
     def test_mode_toggle_counts_only_persistence_transitions(self):
         s = State()
@@ -248,7 +261,7 @@ class DecayTests(unittest.TestCase):
         self.assertEqual(item.health, 75)
         s.map.persistence = True
         s.sweep()
-        self.assertEqual(item.health, 75 * 15 / 16)
+        self.assertEqual(item.health, 75 * (F - 1) / F)
 
     def test_missed_sweeps_catch_up_once_and_new_construction_has_no_backlog(self):
         s = State()
@@ -257,11 +270,11 @@ class DecayTests(unittest.TestCase):
             s.transition()
         new = Construction(s)
         s.sweep()
-        self.assertEqual(old.health, 75 * 12 / 16)
+        self.assertEqual(old.health, 75 * (F - 4) / F)
         self.assertEqual(new.health, 75)
         for _ in range(20):
             s.sweep()
-        self.assertEqual(old.health, 75 * 12 / 16)
+        self.assertEqual(old.health, 75 * (F - 4) / F)
 
     def test_before_save_persists_unapplied_debt_without_damage_or_double_charge(self):
         for kind, hp in (("/obj/covers/straw_wall", 75), ("/obj/roof/thatch", 100)):
@@ -283,11 +296,11 @@ class DecayTests(unittest.TestCase):
             restored.after_load()
             fresh.sweep()
             fresh.sweep()
-            self.assertEqual(restored.health, hp * 13 / 16)
+            self.assertEqual(restored.health, hp * (F - 3) / F)
             self.assertEqual(restored.seasonal_construction_due, 0)
             fresh.transition()
             fresh.sweep()
-            self.assertEqual(restored.health, hp * 12 / 16)
+            self.assertEqual(restored.health, hp * (F - 4) / F)
 
     def test_legacy_load_rebases_without_retroactive_age(self):
         s = State()
@@ -298,7 +311,7 @@ class DecayTests(unittest.TestCase):
         self.assertEqual((item.health, item.seasonal_construction_due), (75, 0))
         s.transition()
         s.sweep()
-        self.assertEqual(item.health, 75 * 15 / 16)
+        self.assertEqual(item.health, 75 * (F - 1) / F)
 
     def test_repairs_restore_health_and_future_wear_keeps_its_material_rate(self):
         s = State()
@@ -311,7 +324,7 @@ class DecayTests(unittest.TestCase):
         self.assertEqual(item.health, 75)
         s.transition()
         s.sweep()
-        self.assertEqual(item.health, 75 * 15 / 16)
+        self.assertEqual(item.health, 75 * (F - 1) / F)
 
     def test_existing_combat_damage_is_preserved(self):
         s = State()
@@ -319,7 +332,7 @@ class DecayTests(unittest.TestCase):
         item.health = 12
         s.transition()
         s.sweep()
-        self.assertEqual(item.health, 12 - 75 / 16)
+        self.assertEqual(item.health, 12 - 75 / F)
 
     def test_terminal_decay_dispatches_normal_destruction_with_contents_and_debits_once(self):
         for kind, hp in (("/obj/covers/straw_wall", 75), ("/obj/roof/thatch", 100)):
@@ -328,10 +341,10 @@ class DecayTests(unittest.TestCase):
                 child = NS(contents=[object()])
                 occupant = NS(is_living=True)
                 item.contents.extend([child, occupant])
-                for _ in range(15): s.transition()
+                for _ in range(F - 1): s.transition()
                 s.sweep()
                 self.assertFalse(item.gc_destroyed)
-                self.assertEqual(item.health, hp / 16)
+                self.assertEqual(item.health, hp / F)
                 self.assertEqual(item.contents, [child, occupant])
                 s.transition(); s.sweep(); item.check_seasonal_construction()
                 self.assertTrue(item.gc_destroyed)
@@ -343,12 +356,12 @@ class DecayTests(unittest.TestCase):
         for kind, hp in (("/obj/covers/straw_wall", 75), ("/obj/roof/thatch", 100)):
             s = State(); item = Construction(s, kind, hp); child = object()
             item.contents.append(child)
-            for _ in range(16): s.transition()
+            for _ in range(F): s.transition()
             s.saving = True; item.before_save(); s.sweep(); item.check_seasonal_construction()
-            self.assertEqual((item.health, item.seasonal_construction_due), (hp, 16))
+            self.assertEqual((item.health, item.seasonal_construction_due), (hp, F))
             self.assertFalse(item.gc_destroyed)
             s.saving = False; s.map.persistence = False; item.check_seasonal_construction()
-            self.assertEqual((item.health, item.seasonal_construction_due), (hp, 16))
+            self.assertEqual((item.health, item.seasonal_construction_due), (hp, F))
             s.map.persistence = True; s.sweep(); s.sweep()
             self.assertEqual((item.qdel_calls, item.seasonal_construction_due), (1, 0))
             self.assertEqual(item.contents_at_qdel, (child,))
@@ -356,9 +369,9 @@ class DecayTests(unittest.TestCase):
     def test_reloaded_occupied_terminal_debt_is_not_damage_until_service(self):
         s = State(); s.clock = 999; item = Construction(s)
         child = NS(contents=[object()]); item.contents.append(child)
-        item.seasonal_construction_due = 16
+        item.seasonal_construction_due = F
         item.after_load(); item.after_load()
-        self.assertEqual((item.health, item.seasonal_construction_due), (75, 16))
+        self.assertEqual((item.health, item.seasonal_construction_due), (75, F))
         self.assertFalse(item.gc_destroyed)
         s.sweep(); s.sweep()
         self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls), (0, 0, 1))
@@ -376,12 +389,12 @@ class DecayTests(unittest.TestCase):
             setattr(item, attr, attr != "incomplete")
             s.transition()
             s.sweep()
-            self.assertEqual(item.health, 75 * 15 / 16)
+            self.assertEqual(item.health, 75 * (F - 1) / F)
 
     def test_batch_cursor_handles_swap_deletions_and_retains_tail(self):
         s = State()
         items = [Construction(s) for _ in range(160)]
-        for _ in range(16):
+        for _ in range(F):
             s.transition()
         s.sweep()
         self.assertEqual(len(s.visits), 64)
@@ -402,9 +415,9 @@ class DecayTests(unittest.TestCase):
         for _ in range(5):
             s.sweep()
         self.assertEqual(s.visits, items)
-        self.assertTrue(all(x.health == 75 * 15 / 16 for x in items))
+        self.assertTrue(all(x.health == 75 * (F - 1) / F for x in items))
         s.sweep()
-        self.assertEqual(items[0].health, 75 * 15 / 16)
+        self.assertEqual(items[0].health, 75 * (F - 1) / F)
 
     def test_retired_and_duplicate_registration_release_slots(self):
         s = State()
@@ -451,11 +464,11 @@ class DecayTests(unittest.TestCase):
                 self.assertEqual(s.clock, 2, "replay mutant did not duplicate a transition")
             elif name == "contents":
                 item.contents.append(object())
-                for _ in range(16):
+                for _ in range(F):
                     s.transition()
                 s.sweep()
                 self.assertFalse(item.gc_destroyed, "contents mutant did not postpone terminal destruction")
-                self.assertEqual((item.health, item.seasonal_construction_due), (75, 16))
+                self.assertEqual((item.health, item.seasonal_construction_due), (75, F))
             else:
                 s.transition()
                 item.before_save()
@@ -474,7 +487,7 @@ class DecayTests(unittest.TestCase):
         self.assertEqual(item.health, 75)
         s.map.persistence = True
         s.sweep()
-        self.assertEqual(item.health, 75 * 15 / 16)
+        self.assertEqual(item.health, 75 * (F - 1) / F)
 
 
 if __name__ == "__main__":
