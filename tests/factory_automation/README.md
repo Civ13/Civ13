@@ -6,6 +6,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/routing_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/machines_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/chemistry_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/pipes_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -63,3 +64,13 @@ Removing the belt power check makes five drive checks fail.
 - Catalog: research gates, the two global recipes and the reused sprite.
 
 Removing the station's `NOREACT` flag makes the inert-tank check fail.
+
+`pipes_probe.dm` (chemistry phase 1) calls the network step directly and checks:
+
+- Networks: a line of pipes joins the station, tank, engine and pump next to it into one network, and pipes draw straight runs and junctions; nothing moves without a running pump; a cabled pump draws its power and moves twenty units a step, sinks before buffers; a full sink lets the holding tank fill; a filtered tank refuses other reagents and the network goes idle, then looks again within five steps; a sink draws from a holding tank; a closed valve splits the network and an open one rejoins it; a filling barrel station draws from the network; a switched-off pump releases its power.
+- Water intake: beside open water it supplies the same mix a person filling a container there gets; away from water it supplies nothing.
+- Refinery: draws petroleum from an oil well's barrel through pipes; a full refinery's output barrel feeds a gasoline-filtered tank while petroleum stays in the well.
+- Saving: a pipe's network is runtime-only; valve, pump switch and tank filter are saved and pump power is not; reloaded pumps and pipes rebuild the networks; holding tanks are inert.
+- Catalog: research gates, the five global recipes and the reused sprites.
+
+Letting a network move reagents without a powered pump makes four checks fail.

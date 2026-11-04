@@ -39,7 +39,7 @@ option for every decision below on 2026-11-04.
 | Phase | Scope | Research gate |
 | --- | --- | --- |
 | 0. Container ports (done) | Barrel ports on the oil well, petroleum and biofuel refineries and internal combustion engines; barrel station; reagent gate. | Machines keep their gates; station at Factories; reagent gate at Automation |
-| 1. Pipes and tanks | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
+| 1. Pipes and tanks (done) | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
 | 2. Reaction vessel | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
 | 3. Packaging and tiers | Bottler and automated tablet press fed by belts; faster vessel tiers; piped reagents as fabricator inputs. | Pharmacology, Automation, Digital Computing |
 | 4. Monitoring and hazards | Network rows on the factory panel; optional leak spills (decided after playtesting). | Automation |
@@ -79,3 +79,34 @@ stay manual until the pipe phases.
 
 Verification: `tests/factory_automation/chemistry_probe.dm` (see the README in
 that folder). Not verified: a full disk save/load round trip and in-game play.
+
+## Phase 1 as built
+
+`code/modules/1713/factory_pipes.dm` adds pipe networks, stepped every two
+seconds by the factory process:
+
+- **Fluid pipe** (1 steel), **pipe valve** (2 steel), **fluid pump** (6 steel,
+  3 PU), **holding tank** (10 steel, 1,000 units) and **water intake**
+  (4 steel), all at Factories. Pipes join every adjacent pipe and machine
+  (including one on the pipe's own tile); a closed valve joins nothing. Pipes
+  reuse the existing atmospheric pipe sprites and redraw as straight runs,
+  bends and junctions.
+- Pipes hold no reagents. A network is rebuilt only when a pipe, valve, pump,
+  tank or intake changes, and at least once a minute so machines placed next to
+  pipes join it. Networks are runtime-only and rebuilt after load.
+- Each step, a network with powered pumps moves 20 units per pump. Sinks
+  (refinery feed, engine fuel tanks, filling barrel stations) take first, from
+  sources (oil well barrels, refinery output barrels, water intakes, draining
+  barrel stations) and holding tanks; then holding tanks take from sources.
+  Tanks never trade with tanks. Each transfer moves one reagent and keeps its
+  data. A network that moved nothing looks again every five steps.
+- A holding tank is inert; Set Tank Filter limits it to one reagent.
+- A water intake beside open water supplies what a person filling a container
+  there gets: cholera from sickly water, salt from salt water, irradiated
+  water from irradiated turfs.
+- The oil well still needs its barrel, which acts as the wellhead tank; pipes
+  draw petroleum from it. A piped refinery still needs an output barrel and
+  starts itself when fed.
+
+Verification: `tests/factory_automation/pipes_probe.dm`. Not verified: a full
+disk save/load round trip, in-game play and how the pipe sprites look in game.

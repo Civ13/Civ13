@@ -1920,6 +1920,11 @@ RECIPE: /material/steel/,paper bin,/obj/item/weapon/paper_bin/empty,4,60,0,1,sto
 RECIPE: /material/steel/,large crate,/obj/structure/closet/crate/large,15,230,1,1,storage,110,0,0,8,steel
 RECIPE: /material/steel/,steel barrel,/obj/item/weapon/reagent_containers/glass/barrel/modern,2,75,1,1,storage,105,0,0,8,null
 RECIPE: /material/steel/,barrel station,/obj/structure/reagent_dispensers/largebarrel/factory_station,12,150,1,1,storage,105,0,0,8,null
+RECIPE: /material/steel/,fluid pipe,/obj/structure/fluid_pipe,1,40,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,pipe valve,/obj/structure/fluid_pipe/valve,2,60,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,fluid pump,/obj/structure/fluid_pump,6,150,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,holding tank,/obj/structure/fluid_tank,10,150,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,water intake,/obj/structure/fluid_intake,4,100,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,storage,115,130,0,8,null
 

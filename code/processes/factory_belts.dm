@@ -1,4 +1,5 @@
-// Belt drives, factory belts, transfer arms and fed saw mills step once a second. Idle belts and arms
+// Belt drives, factory belts, transfer arms and fed saw mills step once a second;
+// pipe networks step every two seconds. Idle belts and arms
 // leave their lists, so an empty factory costs nothing here. A large factory
 // resumes within the tick budget instead of stalling the server tick.
 /datum/process_list/var/process/factory_belts/factory_belts = null
@@ -28,7 +29,8 @@
 	factory_arms_step()
 	factory_mills_step()
 	factory_fabricators_step()
+	factory_fluids_tick()
 
 /process/factory_belts/statProcess(client/C)
 	..(C)
-	C.add_stat("[factory_active_belts.len] active belts, [factory_active_arms.len] active arms, [factory_powered_drives.len]/[factory_active_drives.len] powered drives, [factory_active_fabricators.len] active fabricators")
+	C.add_stat("[factory_active_belts.len] active belts, [factory_active_arms.len] active arms, [factory_powered_drives.len]/[factory_active_drives.len] powered drives, [factory_active_fabricators.len] active fabricators, [fluid_networks.len] pipe networks")

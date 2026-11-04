@@ -61,6 +61,10 @@
 // is none. A full output barrel is offered, and the refinery starts itself
 // whenever it has feedstock, an output barrel with room and cable power.
 
+// Reagents the refinery takes as feedstock.
+/obj/structure/refinery/proc/factory_feed_ids()
+	return list("petroleum")
+
 // Feedstock units this barrel holds that the refinery could take.
 /obj/structure/refinery/proc/factory_feed_amount(datum/reagents/R)
 	return R.get_reagent_amount("petroleum")
@@ -79,6 +83,9 @@
 	R.remove_reagent("petroleum", amount)
 	volume = min(maxvolume, volume + amount)
 	return amount
+
+/obj/structure/refinery/biofuel/factory_feed_ids()
+	return list("olive_oil", "fat_oil", "ethanol")
 
 /obj/structure/refinery/biofuel/factory_feed_amount(datum/reagents/R)
 	return R.get_reagent_amount("olive_oil") + R.get_reagent_amount("fat_oil") + R.get_reagent_amount("ethanol")
