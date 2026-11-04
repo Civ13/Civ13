@@ -135,3 +135,5 @@ the changed procedures without needing graphical captures under project policy.
 Gelatin can be whipped into gelatin foam at the reaction bench. Apply a glass container holding five units of gelatin or foam to an empty drying rack; after 1500 ticks, one dry gelatin batch is produced. Loading a saved rack restarts that drying interval. Cut it with a knife into a gelatin sheet and use the sheet in hand to fold a bandage. These are simplified game conversions.
 At a reaction bench, four units of polyethylene and one of butyl rubber make a closed, stoppered plastic bottle; four units of polypropylene make a reusable single-item storage bag. Either polymer can also be made into an ordinary plastic sheet at a cost of four units. These are simplified game conversions.
 Apply a copper ingot to a plastic sheet to make one usable insulated power-cable piece. Both materials are consumed.
+
+The reaction bench also offers a mixed-solvent gelatin recipe: four units of purified gelatin, one of water, and one of purified ethanol produce six units of gelatin. The existing single-solvent recipes remain available.

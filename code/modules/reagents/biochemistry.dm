@@ -270,6 +270,13 @@
 	required_reagents = list("purified_gelatin" = 4, "pethanol" = 1)
 	result_amount = 5
 
+/datum/chemical_reaction/gelatin_mixed_solvent
+	name = "Solid gelatin - water and purified ethanol"
+	id = "gelatin_mixed_solvent"
+	result = "gelatin"
+	required_reagents = list("purified_gelatin" = 4, "water" = 1, "pethanol" = 1)
+	result_amount = 6
+
 /datum/chemical_reaction/enginefuel
 	name = "Engine fuel - 9:1 blend"
 	id = "enginefuel"

@@ -23,6 +23,7 @@
 	biochemistry_gelatin_bandage_checks()
 	biochemistry_polymer_product_checks()
 	biochemistry_insulated_cable_checks()
+	biochemistry_mixed_gelatin_checks()
 	return TRUE
 
 /proc/biochemistry_polymer_product_checks()
@@ -56,6 +57,19 @@
 	qdel(plastic)
 	qdel(copper)
 	qdel(cable)
+/proc/biochemistry_mixed_gelatin_checks()
+	var/obj/structure/reaction_bench/bench = processing_new_bench()
+	processing_add(bench, "purified_gelatin", 4)
+	processing_add(bench, "water", 1)
+	chemistry_assert(!bench.synthesize("gelatin_mixed_solvent") && bench.collector.reagents.get_reagent_amount("purified_gelatin") == 4 && bench.collector.reagents.get_reagent_amount("water") == 1, "Mixed gelatin consumed input without ethanol")
+	processing_add(bench, "pethanol", 1)
+	chemistry_assert(bench.synthesize("gelatin_mixed_solvent") && bench.collector.reagents.get_reagent_amount("gelatin") == 6 && bench.collector.reagents.total_volume == 6, "Mixed gelatin conversion failed")
+	qdel(bench)
+	bench = processing_new_bench()
+	processing_add(bench, "purified_gelatin", 4)
+	processing_add(bench, "pethanol", 1)
+	chemistry_assert(!bench.synthesize("gelatin_mixed_solvent") && bench.collector.reagents.get_reagent_amount("purified_gelatin") == 4 && bench.collector.reagents.get_reagent_amount("pethanol") == 1, "Mixed gelatin consumed input without water")
+	qdel(bench)
 
 /proc/biochemistry_wood_fiber_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench()
