@@ -67,6 +67,18 @@ and preflight release segment handles. `tests/world_save/run.sh
 'low_memory=1&segment=1'` is the native round trip (late sweep append, failed
 capture, backup and rollback); the moving-save workflow runs it.
 
+<!-- 2026-11-04: low-memory loads of full-file levels -->
+A level file is read whole into memory on first access (Gaia's 405 MB z2.sav
+took 620 MB, an 85 MB z1.sav 456 MB) and held while that level's objects load.
+When the plan is low-memory, `load_world_contents` first runs
+`split_large_full_file_levels`: each format-3 level over `split_min_bytes`
+becomes a format-4 index plus segments, before any saved object exists, after
+`preserve_full_file_rollback`. Nodes are copied as savefile text; a node whose
+text differs (text macros) is copied again by value and compared by value. The
+level file is replaced only after every node verifies. Unreadable resident
+memory now counts as 1024 MiB in the plan, and each loaded level logs server
+memory. `tests/world_save/run.sh 'split=1'` is the native check.
+
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired

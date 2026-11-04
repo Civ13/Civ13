@@ -437,6 +437,9 @@
 	if(validated_zone_state)
 		if(!operation.zone_restore) begin_zone_restore(operation)
 		operation.zone_restore.clearing_old_world = FALSE
+	if(plan_low_memory("load"))
+		log_startup_progress("Low-memory world load: [last_low_memory_plan].")
+		if(split_large_full_file_levels()) log_startup_progress("Split large saved levels into segments; loading one segment at a time.")
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
@@ -521,7 +524,7 @@
 				if(!QDELETED(light_owner) && !light_owner.gcDestroyed) light_owner.update_light()
 				if(TICK_CHECK)
 					if(!operation.current(src, "load") || all_loaded != lighting_entries || loading_z != B) throw EXCEPTION("Load ownership changed during lighting restoration")
-			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
+			report_load_memory(B, stop_watch(watch))
 		catch(var/exception/e)
 			if (surface_inventory) surface_inventory.discovery_fail()
 			clear_saved_roof_areas()
@@ -971,6 +974,9 @@
 #define PERSISTENCE_SAVEFILE_MEMORY_FACTOR 6
 #define PERSISTENCE_SEGMENT_CACHE_NORMAL 6
 #define PERSISTENCE_SEGMENT_CACHE_LOW 2
+// Assumed resident set when the process memory cannot be read (no trusted
+// shell): a running world is rarely smaller, so the plan errs toward low-memory.
+#define PERSISTENCE_UNKNOWN_RESIDENT_MB 1024
 
 /map_storage
 	var/datum/level_segment_writer/saving_segments
@@ -980,6 +986,7 @@
 	var/last_low_memory_plan
 	var/low_memory_override = null // TRUE/FALSE pins the plan for admins and fixtures.
 	var/segment_size_override = null
+	var/split_min_bytes = 8388608 // Smaller full-file levels load whole even in low-memory mode.
 
 // map_saves/2.sav -> map_saves/2.part3.sav. The index's own path names its
 // segments, so a copied generation (map_backups/) reads its own copies.
@@ -1082,12 +1089,207 @@
 		return FALSE
 	var/resident = persistence_process_memory_mb()
 	var/level_mb = round(persistence_largest_level_bytes() / 1048576)
-	var/projected = (isnum(resident) ? resident : 0) + PERSISTENCE_SAVEFILE_MEMORY_FACTOR * level_mb
+	var/projected = (isnum(resident) ? resident : PERSISTENCE_UNKNOWN_RESIDENT_MB) + PERSISTENCE_SAVEFILE_MEMORY_FACTOR * level_mb
 	low_memory_active = forced || projected > limit
-	last_low_memory_plan = "[kind]: [low_memory_active ? "low-memory" : "full-file"] (resident=[isnum(resident) ? "[resident] MiB" : "unknown"], largest level=[level_mb] MiB, projected=[projected] MiB, limit=[limit] MiB[forced ? ", forced" : ""])"
+	last_low_memory_plan = "[kind]: [low_memory_active ? "low-memory" : "full-file"] (resident=[isnum(resident) ? "[resident] MiB" : "unknown, assumed [PERSISTENCE_UNKNOWN_RESIDENT_MB] MiB"], largest level=[level_mb] MiB, projected=[projected] MiB, limit=[limit] MiB[forced ? ", forced" : ""])"
 	world.log << "World [last_low_memory_plan]"
 	return low_memory_active
 #endif
+
+// BYOND is a 32-bit process: past the configured limit, warn admins while
+// there is still time to save and restart before the address space runs out.
+/map_storage/proc/report_load_memory(z, seconds)
+	var/resident = persistence_process_memory_mb()
+	log_startup_progress("	Loaded z-level [z] in [seconds]s[isnum(resident) ? " (server memory [resident] MiB)" : ""].")
+	if(!isnum(resident)) return
+	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
+	var/limit = settings && ("persistence_memory_limit_mb" in settings.vars) ? settings.vars["persistence_memory_limit_mb"] : 0
+	if(isnum(limit) && limit > 0 && resident > limit)
+		message_admins("World load is using [resident] MiB, past the persistence memory limit of [limit] MiB. BYOND is 32-bit and fails near 4 GiB; consider PERSISTENCE_LOW_MEMORY_ALWAYS or a lower limit.")
+
+// Low-memory loads of single-file levels. BYOND reads a whole level file into
+// memory on first access and holds it while that level's objects are created,
+// so a large format-3 level stacks its file tree on top of the loaded world.
+// When the plan is low-memory, each large format-3 level is first split into a
+// format-4 index plus segments, before any saved object exists. The released
+// tree's memory is then reused by the import, which reads one segment at a
+// time. Slower, but the peak becomes the larger of the two, not their sum.
+// Content and generation are unchanged; the full-file generation is kept in
+// map_rollback/ first, as for the first segmented save.
+/map_storage/proc/split_large_full_file_levels()
+	var/list/candidates = list()
+	for(var/z = 1, z <= world.maxz, z++)
+		var/path = "map_saves/[z].sav"
+		if(!fexists(path) || length(file(path)) < split_min_bytes) continue
+		var/savefile/F = new(path)
+		var/version = F["/format_version"]
+		F = null
+		if(version == 3) candidates += z
+	if(!candidates.len) return 0
+	// Segments beside a full-file level are leftovers; the level ignores them.
+	for(var/z in candidates)
+		delete_level_segment_files("map_saves/", z)
+	preserve_full_file_rollback()
+	var/split = 0
+	for(var/z in candidates)
+		var/watch = start_watch()
+		try
+			var/count = split_full_file_level(z)
+			split++
+			world.log << "Split saved level [z] into [count] segments for a low-memory load in [stop_watch(watch)]s."
+		catch(var/exception/e)
+			// The level file is untouched until its index replaces it; a failed
+			// split leaves it as a full-file level and the load reads it whole.
+			fdel("map_saves/[z].index.tmp")
+			delete_level_segment_files("map_saves/", z)
+			world.log << "Could not split saved level [z] for a low-memory load ([e] on [e.file]:[e.line]); loading it as one file."
+	return split
+
+/map_storage/proc/split_full_file_level(z)
+	var/path = "map_saves/[z].sav"
+	var/index_path = "map_saves/[z].index.tmp"
+	if(fexists(index_path) && !fdel(index_path)) throw EXCEPTION("Could not replace [index_path]")
+	var/savefile/F = new(path)
+	if(F["/format_version"] != 3) throw EXCEPTION("Level [z] is not a full-file level")
+	var/generation = F["/generation"]
+	F.cd = "/"
+	var/list/top = F.dir.Copy()
+	var/list/present = list()
+	var/last_entry = 0
+	if("entries" in top)
+		F.cd = "/entries"
+		for(var/shard in F.dir.Copy())
+			F.cd = "/entries/[shard]"
+			for(var/ref in F.dir)
+				present["/entries/[shard]/[ref]"] = TRUE
+				last_entry = max(last_entry, text2num(ref))
+			F.cd = "/entries"
+	var/last_list = 0
+	if("lists" in top)
+		F.cd = "/lists"
+		for(var/id in F.dir)
+			present["/lists/[id]"] = TRUE
+			last_list = max(last_list, text2num(id))
+	var/count = max(1, -round(-(last_entry + last_list) / segment_budget()))
+	var/list/entry_last = list()
+	var/list/list_last = list()
+	for(var/number = 1, number <= count, number++)
+		var/first_entry = round(last_entry * (number - 1) / count) + 1
+		var/first_list = round(last_list * (number - 1) / count) + 1
+		entry_last += round(last_entry * number / count)
+		list_last += round(last_list * number / count)
+		var/segment_path = level_segment_path(path, number)
+		var/savefile/S = new(segment_path)
+		S["/format_version"] << 3
+		S["/generation"] << generation
+		S["/segment"] << number
+		S["/level"] << z
+		var/list/copied = list()
+		for(var/ref = first_entry, ref <= entry_last[number], ref++)
+			var/node = "/entries/[round((ref - 1) / 512)]/[ref]"
+			if(!present[node]) continue
+			copied[node] = copy_saved_node(F, S, node)
+			TICK_CHECK
+		for(var/id = first_list, id <= list_last[number], id++)
+			var/node = "/lists/[id]"
+			if(!present[node]) continue
+			copied[node] = copy_saved_node(F, S, node)
+			TICK_CHECK
+		S.Flush()
+		S = null
+		S = new(segment_path)
+		for(var/node in copied)
+			verify_saved_node(F, S, node, copied[node])
+			TICK_CHECK
+		S = null
+	// The index keeps every other top-level node; the turf grid row by row so
+	// no single exported text holds the whole grid.
+	var/savefile/I = new(index_path)
+	var/list/index_nodes = list()
+	for(var/key in top)
+		if(key == "entries" || key == "lists" || key == "segments") continue
+		if(key != "map")
+			index_nodes["/[key]"] = copy_saved_node(F, I, "/[key]")
+			continue
+		F.cd = "/map"
+		for(var/level in F.dir.Copy())
+			F.cd = "/map/[level]"
+			for(var/row in F.dir.Copy())
+				index_nodes["/map/[level]/[row]"] = copy_saved_node(F, I, "/map/[level]/[row]")
+				TICK_CHECK
+	I["/format_version"] << 4
+	I["/segments/count"] << count
+	I["/segments/entries"] << entry_last
+	I["/segments/lists"] << list_last
+	I.Flush()
+	I = null
+	I = new(index_path)
+	for(var/node in index_nodes)
+		if(node == "/format_version") continue
+		verify_saved_node(F, I, node, index_nodes[node])
+		TICK_CHECK
+	I = null
+	F = null
+	if(!fcopy(index_path, path)) throw EXCEPTION("Could not replace level [z] with its segmented index")
+	fdel(index_path)
+	var/savefile/check = new(path)
+	if(check["/format_version"] != 4 || check["/segments/count"] != count || check["/generation"] != generation)
+		check = null
+		// The full-file generation was kept before any level was replaced.
+		if(fexists("map_rollback/[z].sav")) fcopy("map_rollback/[z].sav", path)
+		throw EXCEPTION("Level [z] index did not read back after replacement")
+	return count
+
+// Raw text copy keeps every node exactly, including types the build no longer
+// defines. Text macros do not survive the text form, so a node whose copy
+// exports differently is copied again value by value and compared by value.
+/map_storage/proc/copy_saved_node(savefile/F, savefile/G, path)
+	var/text = F.ExportText(path)
+	G.ImportText(path, text)
+	return md5(text)
+
+/map_storage/proc/verify_saved_node(savefile/F, savefile/G, path, digest)
+	if(md5(G.ExportText(path)) == digest) return
+	var/cut = findlasttext(path, "/")
+	G.cd = cut > 1 ? copytext(path, 1, cut) : "/"
+	G.dir -= copytext(path, cut + 1)
+	copy_saved_values(F, G, path)
+	G.Flush()
+	if(!same_saved_tree(F, G, path)) throw EXCEPTION("Saved node [path] changed when copied")
+
+/map_storage/proc/copy_saved_values(savefile/F, savefile/G, path)
+	F.cd = path
+	var/list/children = F.dir.Copy()
+	var/value = F[path]
+	if(!isnull(value) || !children.len) G[path] << value
+	for(var/child in children)
+		copy_saved_values(F, G, "[path]/[child]")
+
+/map_storage/proc/same_saved_tree(savefile/F, savefile/G, path)
+	F.cd = path
+	G.cd = path
+	var/list/source = F.dir.Copy()
+	var/list/copy = G.dir.Copy()
+	if(source.len != copy.len) return FALSE
+	for(var/child in source)
+		if(!(child in copy)) return FALSE
+	if(!same_saved_value(F[path], G[path])) return FALSE
+	for(var/child in source)
+		if(!same_saved_tree(F, G, "[path]/[child]")) return FALSE
+	return TRUE
+
+/proc/same_saved_value(a, b)
+	if(islist(a) && islist(b))
+		var/list/A = a
+		var/list/B = b
+		if(A.len != B.len) return FALSE
+		for(var/i = 1, i <= A.len, i++)
+			var/key = A[i]
+			if(!same_saved_value(key, B[i])) return FALSE
+			if(!isnum(key) && !isnull(key) && !same_saved_value(A[key], B[key])) return FALSE
+		return TRUE
+	if(isicon(a) || isfile(a)) return "[a]" == "[b]"
+	return a == b
 
 // Format 4 is unreadable by builds before it. Before the first segmented
 // save replaces a full-file generation, copy that completed generation to
@@ -1321,3 +1523,4 @@
 #undef PERSISTENCE_SEGMENT_CACHE_LOW
 #undef PERSISTENCE_SEGMENT_CACHE_NORMAL
 #undef PERSISTENCE_SAVEFILE_MEMORY_FACTOR
+#undef PERSISTENCE_UNKNOWN_RESIDENT_MB
