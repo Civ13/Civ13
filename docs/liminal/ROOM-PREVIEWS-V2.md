@@ -1,9 +1,9 @@
 # Furnished room layouts (version 2 proposal)
 
-**Status: proposal for review.** This revises the ten room interiors after the
-[version-1 previews](ROOM-PREVIEWS.md) were rejected as sparse and unconvincing.
-It is not native-approved, and the topology tool keeps using the version-1
-catalog until this set is accepted.
+**Status: accepted by Val on 2026-11-04.** This revises the ten room interiors
+after the [version-1 previews](ROOM-PREVIEWS.md) were rejected as sparse and
+unconvincing. The topology tool now uses the version-2 catalog. It is still not
+native-approved.
 
 ![All ten furnished rooms](room-previews-v2/contact-sheet.png)
 
@@ -53,7 +53,6 @@ python3 docs/liminal/render_room_layouts_v2.py --output <new folder>
 
 ## Not decided here
 
-- Accepting this set, then switching the topology tool to the v2 catalog.
 - Native export, lighting and sound, and how a three-tile doorway maps to
   native doors.
 - Single-tile aisles, such as the archive's browsing aisles, are walkable for

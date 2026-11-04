@@ -2,8 +2,8 @@
   "schema": "civ13-liminal-config/1",
   "profile": "INDOOR_LIMINAL",
   "seed": "liminal-0",
-  "catalog_version": "liminal-authored-rooms/0.1.0",
-  "catalog_sha256": "7ee6647de885a921746f9ac9d0ec5fa9e5140a30a8c06294cd4ff16c3d37c95b",
+  "catalog_version": "liminal-authored-rooms/0.2.0",
+  "catalog_sha256": "04f558b58af836b4586d4c017a437397f8fab73bb5e0e8071a331f8d9f609fab",
   "hub_allowlist": [
     "acoustic_atrium",
     "archive_stacks",

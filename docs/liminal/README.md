@@ -12,8 +12,9 @@ the catalog or claiming native acceptance.
 The original [room catalog](room-archetypes-v1.json) and
 [bounded example config](liminal-example-config.json) freeze the small topology
 proof's design inputs. They contain no copied art or native mode registration.
-The [topology tool](../../tools/liminal_maps/README.md) still uses that version-1
-catalog; passing its checks does not make the rejected layouts accepted designs.
+The [topology tool](../../tools/liminal_maps/README.md) now uses the accepted
+[version-2 catalog](room-archetypes-v2.json) (see [ROOM-PREVIEWS-V2.md](ROOM-PREVIEWS-V2.md));
+version 1 is kept as the historical design input.
 
 This design precedes implementation commits. It chooses a finite offline-generated
 map, existing Civ13 assets first, explicit authored progression and independently

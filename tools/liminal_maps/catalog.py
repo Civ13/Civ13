@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from .common import canonical_hash
 
-CATALOG=json.loads(Path(__file__).with_name("room-archetypes-v1.json").read_text(encoding="utf-8"))
+CATALOG=json.loads(Path(__file__).with_name("room-archetypes-v2.json").read_text(encoding="utf-8"))
 CATALOG_SHA256=canonical_hash(CATALOG)
 HUBS=tuple(sorted(k for k,v in CATALOG["archetypes"].items() if v["role"]=="HUB"))
 
