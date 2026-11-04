@@ -24,15 +24,30 @@ var/global/list/fluid_vessels = list()
 	not_disassemblable = FALSE
 	flags = NOREACT
 	powerneeded = 4
+	var/volume = FLUID_VESSEL_VOLUME
+	var/react_time = FLUID_VESSEL_REACT_STEPS // powered steps per batch
 	var/recipe_id = null
 	var/stage = VESSEL_FILLING
 	// Emptying everything, catalysts included, after a recipe change.
 	var/flushing = FALSE
 	var/tmp/react_steps = 0
 
+// Faster tiers (phase 3): bigger batches that react in one powered step.
+/obj/structure/fluid_vessel/fast
+	name = "fast reaction vessel"
+	powerneeded = 8
+	volume = 400
+	react_time = 1
+
+/obj/structure/fluid_vessel/industrial
+	name = "industrial reaction vessel"
+	powerneeded = 15
+	volume = 1000
+	react_time = 1
+
 /obj/structure/fluid_vessel/New()
 	..()
-	create_reagents(FLUID_VESSEL_VOLUME)
+	create_reagents(volume)
 	fluid_vessels |= src
 	fluid_mark_dirty()
 
@@ -76,7 +91,7 @@ var/global/list/fluid_vessels = list()
 	var/per_batch = max(inputs, R.result_amount)
 	if (per_batch <= 0)
 		return 0
-	return max(0, round((FLUID_VESSEL_VOLUME - catalysts) / per_batch))
+	return max(0, round((volume - catalysts) / per_batch))
 
 // Units of id the batch still needs.
 /obj/structure/fluid_vessel/proc/batch_want(id)
@@ -117,10 +132,12 @@ var/global/list/fluid_vessels = list()
 		powersource.update_power(-powerneeded, 1, src)
 	powered = FALSE
 
-/obj/structure/fluid_vessel/proc/set_stage(new_stage)
+// A finished batch keeps its power reservation until the next step, so one
+// grid's capacity runs only one batch per step.
+/obj/structure/fluid_vessel/proc/set_stage(new_stage, keep_power = FALSE)
 	stage = new_stage
 	react_steps = 0
-	if (stage != VESSEL_REACTING)
+	if (stage != VESSEL_REACTING && !keep_power)
 		vessel_release_power()
 	var/datum/fluid_network/N = fluid_network_of(src)
 	if (N)
@@ -149,14 +166,16 @@ var/global/list/fluid_vessels = list()
 			powered = draw_cable_power() ? TRUE : FALSE
 			if (!powered)
 				return
-			if (++react_steps < FLUID_VESSEL_REACT_STEPS)
+			if (++react_steps < react_time)
 				return
 			if (react_batch())
-				set_stage(VESSEL_EMPTYING)
+				set_stage(VESSEL_EMPTYING, TRUE)
 			else
 				// Inputs stay put; examining the vessel says why it waits.
 				react_steps = 0
 		if (VESSEL_EMPTYING)
+			if (powered)
+				vessel_release_power()
 			if (emptied())
 				flushing = FALSE
 				set_stage(VESSEL_FILLING)
@@ -220,7 +239,7 @@ var/global/list/fluid_vessels = list()
 /obj/structure/fluid_vessel/examine(mob/user, distance)
 	..(user, distance)
 	var/datum/chemical_reaction/R = recipe()
-	to_chat(user, SPAN_NOTICE("It holds [round(reagents.total_volume)] of [FLUID_VESSEL_VOLUME] units[reagents.total_volume ? ", mostly [reagents.get_master_reagent_name()]" : ""]."))
+	to_chat(user, SPAN_NOTICE("It holds [round(reagents.total_volume)] of [volume] units[reagents.total_volume ? ", mostly [reagents.get_master_reagent_name()]" : ""]."))
 	if (!R)
 		to_chat(user, SPAN_NOTICE("No recipe is set."))
 		return

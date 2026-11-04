@@ -450,7 +450,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (12) ---
+		// --- automation (14) ---
+		"/obj/structure/fluid_bottler" = "automation",
+		"/obj/structure/fluid_vessel/fast" = "automation",
 		"/obj/item/camera" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
@@ -660,7 +662,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/compoundbow" = "crossbows",
 		"/obj/item/weapon/gun/projectile/bow/crossbow" = "crossbows",
 		"/obj/item/weapon/gun/projectile/bow/longbow" = "crossbows",
-		// --- digital_computing (7) ---
+		// --- digital_computing (8) ---
+		"/obj/structure/fluid_vessel/industrial" = "digital_computing",
 		"/obj/structure/factory_arm/stack" = "digital_computing",
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
 		"/obj/item/weapon/analyser" = "digital_computing",
@@ -1241,7 +1244,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/roads/cobble" = "paved_infrastructure",
 		"/obj/covers/roads/modern" = "paved_infrastructure",
 		"/obj/covers/roads/roman" = "paved_infrastructure",
-		// --- pharmacology (4) ---
+		// --- pharmacology (5) ---
+		"/obj/structure/fluid_tablet_press" = "pharmacology",
 		"/obj/structure/centrifuge" = "pharmacology",
 		"/obj/structure/chem_master" = "pharmacology",
 		"/obj/structure/chem_master/tablet_press/constructed" = "pharmacology",

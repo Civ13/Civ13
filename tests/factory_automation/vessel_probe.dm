@@ -112,7 +112,9 @@ var/pipe_runtime_error = FALSE
 	var/obj/structure/cable/C = vpower[1]
 	pipe_check(V.powered && C.power_consumers[V] == V.powerneeded && !vessel_amount(V, "enginefuel"), "a cabled vessel draws power while it reacts")
 	factory_fluids_step()
-	pipe_check(V.stage == 2 && vessel_amount(V, "enginefuel") + vessel_amount(out, "enginefuel") == 200 && !vessel_amount(V, "gasoline") && !(V in C.power_consumers), "after three powered steps the batch reacts at once and power is released")
+	pipe_check(V.stage == 2 && vessel_amount(V, "enginefuel") + vessel_amount(out, "enginefuel") == 200 && !vessel_amount(V, "gasoline") && (V in C.power_consumers), "after three powered steps the batch reacts at once and keeps its power for that step")
+	factory_fluids_step()
+	pipe_check(!V.powered && !(V in C.power_consumers), "the vessel releases its power on the next step")
 	steps = 0
 	while (V.stage == 2 && steps < 30)
 		steps++

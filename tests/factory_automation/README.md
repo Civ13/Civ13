@@ -8,6 +8,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/chemistry_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/pipes_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/vessel_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/packaging_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -86,3 +87,12 @@ Letting a network move reagents without a powered pump makes four checks fail.
 - Catalog: the Factories gate, the global recipe and the reused sprites.
 
 Letting catalysts leave the vessel makes two checks fail; letting heated recipes run in an unpowered vessel makes one fail.
+
+`packaging_probe.dm` (chemistry phase 3) checks:
+
+- Bottler: with no reagent set it takes nothing; it takes only open containers holding nothing but its reagent, one at a time, and offers nothing while filling; it fills from the pipes, offers the container once full and draws no more; an arm can take it; a removed bottler drops its container.
+- Automatic tablet press: it buffers calcium carbonate and aspirin in tablet ratio and nothing else, filled through pipes; unpowered it presses nothing; powered it presses an aspirin tablet of one carbonate and four aspirin paid from the buffer; it stops when the buffer runs out and waits once twelve items lie on its tile; before the tablet era it presses and draws nothing.
+- Vessel tiers: the fast and industrial vessels hold 400 and 1,000 units and react a full batch on the first powered step.
+- Saving and catalog: the bottler's reagent is saved and press power is not; a reloaded press rejoins the press list; the press buffer is inert; research gates, recipes and reused sprites.
+
+Offering a bottler's container before it is full fails two checks; letting the press buffer fill without keeping the tablet ratio fails five.
