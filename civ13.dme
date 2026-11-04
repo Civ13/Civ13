@@ -782,6 +782,7 @@
 #include "code\modules\1713\automation.dm"
 #include "code\modules\1713\factory_arms.dm"
 #include "code\modules\1713\factory_belts.dm"
+#include "code\modules\1713\factory_machines.dm"
 #include "code\modules\1713\factory_ports.dm"
 #include "code\modules\1713\factory_routing.dm"
 #include "code\modules\1713\barbwire.dm"

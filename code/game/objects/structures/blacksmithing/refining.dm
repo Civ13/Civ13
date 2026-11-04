@@ -12,6 +12,7 @@
 	var/on = FALSE
 	var/fuel = 0
 	var/iron = 0
+	var/smelt_time = 250 // deciseconds per smelt
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -141,17 +142,23 @@
 /obj/structure/furnace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
-		on = TRUE
-		burn_structure_fuel(2)
-		update_icon()
-		spawn (250)
-			on = FALSE
-			update_icon()
-			visible_message("<span class = 'notice'>The [name] finishes smelting.</span>")
-			process()
+		start_smelt()
 	else
 		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
 
+
+// One 25 second smelt; factory_machines.dm starts it from automation too.
+/obj/structure/furnace/proc/start_smelt()
+	on = TRUE
+	burn_structure_fuel(2)
+	update_icon()
+	spawn (smelt_time)
+		if (QDELETED(src))
+			return
+		on = FALSE
+		update_icon()
+		visible_message("<span class = 'notice'>The [name] finishes smelting.</span>")
+		process()
 
 /obj/structure/furnace/process()
 	if (iron > 0)
