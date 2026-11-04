@@ -106,3 +106,5 @@ adequate capacity. Mix 2 units of ethylene with 10 titaniumchloride,
 5 borontrifluoride, and 5 aluminumchloride. Expect 25 polyethylene and unchanged
 catalyst amounts. Omit a catalyst to verify no polymerization; substitute
 propylene for ethylene to verify that it does not produce polyethylene.
+
+The biochemistry probe also checks gelatin foam, paid drying batches, stale callback rejection, knife-cut sheets and bandage conversion.

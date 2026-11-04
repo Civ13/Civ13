@@ -129,7 +129,7 @@
 
 /obj/structure/reaction_bench/New()
 	..()
-	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/enginefuel, /datum/chemical_reaction/rayon_fiber, /datum/chemical_reaction/lyocell_fiber)
+	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/gelatin_foam, /datum/chemical_reaction/enginefuel, /datum/chemical_reaction/rayon_fiber, /datum/chemical_reaction/lyocell_fiber)
 
 /obj/item/weapon/laboratory_burner
 	name = "laboratory burner"

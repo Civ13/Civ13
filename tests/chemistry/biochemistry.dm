@@ -20,6 +20,7 @@
 	biochemistry_wood_pulp_checks()
 	biochemistry_wood_fiber_checks()
 	biochemistry_clean_bone_checks()
+	biochemistry_gelatin_bandage_checks()
 	return TRUE
 
 /proc/biochemistry_wood_fiber_checks()
@@ -76,6 +77,40 @@
 	chemistry_assert(kit.extract_clean_bone(cleaned) && !cleaned.loc && kit.reagents.get_reagent_amount("collagen") == 4, "Cleaned bone collagen yield")
 	qdel(kit)
 	qdel(bones)
+	qdel(knife)
+	qdel(builder)
+
+/proc/biochemistry_gelatin_bandage_checks()
+	var/obj/structure/reaction_bench/bench = processing_new_bench()
+	processing_add(bench, "gelatin", 5)
+	chemistry_assert(bench.synthesize("gelatin_foam") && bench.collector.reagents.get_reagent_amount("gelatin_foam") == 5, "Gelatin foam conversion failed")
+	var/turf/site = locate(26, 20, 1)
+	var/obj/structure/drying_rack/rack = new(site)
+	var/obj/item/weapon/reagent_containers/glass/beaker/beaker = new(site)
+	chemistry_assert(!rack.load_gelatin(beaker), "Empty beaker loaded gelatin")
+	beaker.reagents.add_reagent("gelatin", 10)
+	chemistry_assert(rack.load_gelatin(beaker) && beaker.reagents.get_reagent_amount("gelatin") == 5, "Drying did not consume one gelatin batch")
+	var/first_batch = rack.gelatin_batch_id
+	chemistry_assert(!rack.load_gelatin(beaker) && beaker.reagents.get_reagent_amount("gelatin") == 5, "Occupied rack consumed gelatin")
+	chemistry_assert(rack.finish_gelatin(first_batch), "Gelatin failed to dry")
+	chemistry_assert(rack.load_gelatin(beaker), "Rack did not accept next batch")
+	chemistry_assert(!rack.finish_gelatin(first_batch) && rack.gelatin_drying, "Old drying callback finished a new batch")
+	chemistry_assert(rack.finish_gelatin(rack.gelatin_batch_id), "Second gelatin batch failed")
+	bench.collector.reagents.trans_to_holder(beaker.reagents, 5)
+	chemistry_assert(rack.load_gelatin(beaker) && !beaker.reagents.get_reagent_amount("gelatin_foam"), "Foam was not accepted as paid feedstock")
+	chemistry_assert(rack.finish_gelatin(rack.gelatin_batch_id), "Foam did not dry")
+	var/obj/item/stack/dry_gelatin/dry = locate() in site
+	var/mob/living/human/chemistry_builder/builder = new(site)
+	var/obj/item/weapon/material/kitchen/utensil/knife/knife = new(site)
+	dry.attackby(knife, builder)
+	var/obj/item/stack/gelatin_sheets/sheet = locate() in site
+	chemistry_assert(sheet && sheet.amount == 1, "Cut gelatin sheet missing")
+	sheet.attack_self(builder)
+	var/obj/item/stack/medical/bruise_pack/bint/gelatin/bandage = locate() in site
+	chemistry_assert(bandage && bandage.amount == 1 && !sheet.loc, "Gelatin sheet did not become a paid bandage")
+	qdel(rack)
+	qdel(bench)
+	qdel(beaker)
 	qdel(knife)
 	qdel(builder)
 
