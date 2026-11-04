@@ -165,6 +165,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/take_food_bite(mob/living/human/H, amount)
 	var/before = reagents.get_reagent_amount("nutriment") + reagents.get_reagent_amount("protein")
+	var/list/diet_flavours = diet_flavor_shares(diet_find_reagent(reagents, "nutriment"))
 	reagents.trans_to_mob(H, amount, CHEM_INGEST)
 	if (istype(src, /obj/item/weapon/reagent_containers/food/snacks/prepared_meal))
 		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/M = src
@@ -173,3 +174,4 @@
 		M.meal_reward_food = max(0, M.meal_reward_food - food)
 		if (!rotten)
 			H.credit_prepared_meal(M.meal_quality, paid_credit)
+			H.diet_credit_dish(M.meal_quality, paid_credit, diet_flavours)

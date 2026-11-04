@@ -221,6 +221,9 @@ jobs:
       - name: Test character discoveries and berry smell contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/character_discoveries')
         run: python3 -I -B -m unittest discover -s tests/character_discoveries -p 'test_*.py' -v
+      - name: Test balanced diet taxonomy and source contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/balanced_diet')
+        run: python3 -I -B -m unittest discover -s tests/balanced_diet -p 'test_*.py' -v
       - name: Test winter crops and attributed sprite contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/winter_crops')
         run: python3 -I -S -B -m unittest discover -s tests/winter_crops -p 'test_*.py' -v
@@ -1475,6 +1478,22 @@ jobs:
         with:
           name: cooked-meals-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/cooked-meals/
+          retention-days: 7
+      - name: Verify balanced diet and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/balanced_diet')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/balanced_diet/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/balanced-diet/positive"
+          for control in balance conservation trace penalty; do
+            python3 tests/balanced_diet/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/balanced-diet/$control"
+          done
+      - name: Upload balanced diet evidence
+        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/balanced_diet'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: balanced-diet-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/balanced-diet/
           retention-days: 7
       - name: Verify chemical registration and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/chemical_registration')
