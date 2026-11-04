@@ -95,8 +95,9 @@ Crafted grinders cannot be dismantled and return no structural materials. To
 relocate one, remove cables with wirecutters, unfasten it with a wrench and move
 it. This leaves mapped grinders' existing behavior intact and avoids generic
 wood salvage or a nominal-electronics refund exceeding the actual paid debit.
-No pulp, additional operation or transaction change is introduced; remaining
-requirements of #2301/#2303 stay separate.
+The grinder transaction is unchanged by subsequent chip processing. See
+[Chemistry Recipes](chemistry-recipes.md) for the paid pulp and cellulose route;
+the remaining requirements of #2303 stay separate.
 
 `tests/grinder/test_transaction.py` checks the transaction offline using source
 projections, deterministic callbacks and external adapters. It does not establish

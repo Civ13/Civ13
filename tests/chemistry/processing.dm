@@ -24,6 +24,7 @@ var/processing_error = FALSE
 		initialize_chemical_reagents()
 		initialize_chemical_reactions()
 		map = new /obj/map_metadata/chemistry_ci
+		map.age = "2000"
 		chemistry_assert(processing_recipe_checks(), "Recipe checks did not complete")
 		chemistry_assert(processing_guard_checks(), "Guard checks did not complete")
 		chemistry_assert(processing_crafting_checks(), "Crafting checks did not complete")
@@ -32,7 +33,7 @@ var/processing_error = FALSE
 		chemistry_assert(!processing_error, "Runtime error during processing")
 		if(!processing_error)
 #ifdef BIOCHEMISTRY_PROBE
-			text2file("PASS: 33 controlled recipes, finite feedstock/equipment construction, seed/plant/harvest and biological extraction, cold/expired/fuelled polymerization, actual engine blend consumption, six gelatin routes, blood fractions and timed centrifuge callback", "chemistry_result.txt")
+			text2file("PASS: 35 controlled recipes, finite feedstock/equipment construction, seed/plant/harvest and biological extraction, fibre processing, cold/expired/fuelled polymerization, actual engine blend consumption, six gelatin routes, blood fractions and timed centrifuge callback", "chemistry_result.txt")
 #else
 			text2file("PASS: controlled recipe outputs, calcium chain, transfers, catalyst/capacity/missing-input guards, beaker lifecycle, research/catalog and production construction", "chemistry_result.txt")
 #endif

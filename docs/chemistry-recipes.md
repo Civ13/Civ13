@@ -8,7 +8,7 @@ instructions, biological models or real engine-fuel recommendations.
 The reaction bench costs 10 glass under Apothecary. Insert a glass container,
 then pour individual feedstocks from other glass containers using their selected
 transfer amount. Its collector stays inert so shared elemental ingredients do
-not react before you choose one of its 33 recipes. Missing inputs/catalysts,
+not react before you choose one of its 35 recipes. Missing inputs/catalysts,
 unregistered outputs and output overflow preserve inputs. Ejection or destruction
 restores the container's original inert state and releases it.
 
@@ -59,8 +59,13 @@ they cannot replace logs, planks or bark in crafting or be converted back to log
 An adjacent oven, campfire or wood stove accepts held chip batches. One batch
 adds five existing oven fuel units and five paid wood-residue units, equal to
 the five logs consumed. Ash appears only when paid fuel burns, not when loaded.
-Other fuel equipment and wood uses retain their existing behavior. No pulp,
-cellulose or fibre recipe is introduced.
+Other fuel equipment and wood uses retain their existing behavior. An empty
+extraction kit consumes one chip batch for four units of wood pulp. A powered
+centrifuge separates pulp into purified cellulose at an 80% yield, subject to
+collector capacity. At the reaction bench, four cellulose and one sodium
+hydroxide make four rayon fibre from 1890; four cellulose and one NMMO make four
+lyocell fibre from 1980. Four units of either fibre can be made into one ordinary
+cloth sheet at the bench. These are simplified game conversions and yields.
 
 The global catalog's wood grinder costs a nominal 20 electronics and has a base
 120-decisecond duration scaled by strength and crafting. Electricity gates its
