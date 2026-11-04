@@ -168,9 +168,14 @@ and serializer. It covers equal-intake comparisons (balanced versus single-group
 and liked versus neutral), usable stamina above the base ceiling, conservation
 across splitting and dilution, bounds, taste discovery and privacy, offsetting and
 trace flavours, prepared-dish credit and refill, taste generation and validation,
-legacy initialization, gradual imbalance and recovery, penalty gating and a
-native save and load of a detached character mind. Each negative control must
-fail the matching assertion.
+legacy initialization, gradual imbalance and recovery, penalty gating, a native
+save and load of a detached character mind, and a native save and load of an
+owned character body. The body round trip checks that reserves, enjoyment and
+the imbalance counter come back exactly, that the Check Diet trend snapshot does
+not, that the body's saved mind keeps its taste token, tastes and Notes without
+a reroll, and that the reclaimed body keeps eating and enjoying liked food. Each
+negative control must fail the matching assertion.
 
-Not verified here: live play with a connected client, a full saved-body reclaim
-round trip, and real per-map availability timing.
+Not verified here: live play with a connected client, a cold-start world load
+(the body round trip runs inside one daemon with a probe body that skips
+physiology setup), and real per-map availability timing.
