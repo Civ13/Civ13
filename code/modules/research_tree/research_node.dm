@@ -660,7 +660,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/compoundbow" = "crossbows",
 		"/obj/item/weapon/gun/projectile/bow/crossbow" = "crossbows",
 		"/obj/item/weapon/gun/projectile/bow/longbow" = "crossbows",
-		// --- digital_computing (6) ---
+		// --- digital_computing (7) ---
+		"/obj/structure/factory_arm/stack" = "digital_computing",
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
