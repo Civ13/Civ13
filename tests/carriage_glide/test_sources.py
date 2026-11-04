@@ -124,5 +124,15 @@ class Sources(unittest.TestCase):
         entry=s.split("'carriage_glide':",1)[1].split('},',1)[0]
         self.assertNotIn('transports.dm',entry)
         self.assertNotIn('probe.dm',entry)
+    def test_ride_regression_compares_every_member_to_the_carriage(self):
+        probe=(ROOT/'tests/carriage_glide/ride_probe.dm').read_text()
+        runner=(ROOT/'tests/carriage_glide/ride.py').read_text()
+        self.assertIn('#include "tests\\\\carriage_glide\\\\ride_probe.dm"',runner)
+        self.assertIn('R.glide_size = 4',probe)
+        self.assertIn('for(var/key in list("rider", "horse1", "horse2"))',probe)
+        self.assertIn('if(row[key] != row["carriage"])',probe)
+        self.assertIn('32 * world.tick_lag / max(row["delay"] + 1, world.tick_lag)',probe)
+        self.assertIn('after["rider_glide"] != 4',probe)
+        for gear in ('gear1','gear2','gear3'):self.assertIn('"'+gear+'" = 0',probe)
 
 if __name__=='__main__':unittest.main()
