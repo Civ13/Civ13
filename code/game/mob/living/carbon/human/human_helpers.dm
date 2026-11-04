@@ -351,6 +351,13 @@
 
 /mob/living/human
 	var/roofs_removed = TRUE
+	// The client whose image list roofs_removed describes. Never saved.
+	var/tmp/roofs_client
+
+// Roof images live in the client's image list, which a reconnect or a world
+// load starts empty. The flag alone would be restored from the save.
+/mob/living/human/persistence_runtime_var(key)
+	return key == "roofs_removed" || key == "roofs_client" || ..()
 
 /mob/living/human/proc/process_turret_roofs()
 	if (!client)
@@ -444,14 +451,21 @@
 	if (!client)
 		return
 	var/area/A = get_area(loc)
-	if (A && A.location == AREA_INSIDE)
+	sync_static_roofs(client, client.images, A && A.location == AREA_INSIDE)
+
+// viewer owns the images list. A new or reconnected client has no roof images
+// yet, even when a world load restored roofs_removed from an older client.
+/mob/living/human/proc/sync_static_roofs(viewer, list/images, inside)
+	if (roofs_client != viewer)
+		roofs_client = viewer
+		roofs_removed = TRUE
+	if (inside)
 		if (!roofs_removed)
-			client.images = (client.images ^ roofs_list)
+			images -= roofs_list
 			roofs_removed = TRUE
-	else
-		if (roofs_removed)
-			client.images |= roofs_list
-			roofs_removed = FALSE
+	else if (roofs_removed)
+		images |= roofs_list
+		roofs_removed = FALSE
 
 /mob/living/human
 	var/drowning = FALSE
