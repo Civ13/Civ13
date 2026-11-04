@@ -73,6 +73,9 @@ status 2 without installing or changing anything. Do not use the old
 
 ### Windows/WSL
 
+For a native Windows compile without launching the game, run `compile.bat`.
+See [compiler discovery and usage](scripts/windows/README.md#compile-only).
+
 See [the local Windows/WSL setup instructions](docs/local-wsl.md#windowswsl)
 for the existing Prepare, Build, Start, Stop and Status flow.
 
