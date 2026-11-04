@@ -82,7 +82,7 @@
 
 	if(!src.following_mob)
 		src.do_behaviour()
-	if (src.female && !src.pregnant)
+	if (src.female && !src.pregnant && bear_count.len < 12) // global cap, like the other breeding animals
 		if(!src.cub) //Cubs can't get pregnant
 			var/nearbyObjects = range(1,src) //3x3 area around animal
 			for(var/mob/living/simple_animal/hostile/bear/boar/M in nearbyObjects)
@@ -103,8 +103,11 @@
 				B.btype = btype
 			visible_message("A bear cub has been born!")
 
-/mob/living/simple_animal/hostile/bear/boar/New()
+/mob/living/simple_animal/hostile/bear/New() // register every bear, not only boars
 	bear_count |= src
+	..()
+
+/mob/living/simple_animal/hostile/bear/boar/New()
 	if (female)
 		name = "[btype] bear sow"
 	else
