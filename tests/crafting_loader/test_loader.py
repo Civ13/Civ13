@@ -198,7 +198,10 @@ class CraftingLoaderTests(unittest.TestCase):
         self.assertEqual(dict(new.rows), dict(old.rows))
         self.assertEqual(builtins.list(new.rows), builtins.list(old.rows))
         self.assertEqual(new.notices + new.log, [])
-        self.assertEqual(len(old.notices), 1)  # furniture_joinery.json only
+        # The legacy loop warned about every non-recipe file in the directory
+        # (furniture_joinery.json, factory_recipes.txt); the current one skips them.
+        self.assertEqual(len(old.notices), sum('material_recipes' not in name for name in files))
+        self.assertEqual(len(old.notices), 2)
         self.assertGreater(sum(len(rows) for rows in new.rows.values()), 9000)
 
     def test_omission_controls_do_not_suppress_real_errors(self):
