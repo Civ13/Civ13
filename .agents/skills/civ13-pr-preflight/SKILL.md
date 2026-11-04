@@ -61,6 +61,10 @@ can leave these stale, and CI fails on them:
 python3 scripts/agent_preflight.py generated --write
 ```
 
+The same command keeps the CI digest's trigger list
+(`.github/workflows/agent-ci-digest.yml`) equal to every workflow with a
+`pull_request` trigger, so run it when you add or rename a workflow.
+
 On a merge conflict in either file, never hand-merge JSON. Take either side,
 then rerun the command above on the merged tree and commit the result.
 
