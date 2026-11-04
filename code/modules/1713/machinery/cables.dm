@@ -197,6 +197,10 @@ var/global/cable_identity_sequence = 0
 /obj/structure/cable/var/tmp/component_id = 0
 /obj/structure/cable/var/tmp/component_size = 0
 /obj/structure/cable/var/tmp/rebuild_visits = 0
+// world.time of the last full traversal that published this cable's totals.
+/obj/structure/cable/var/tmp/rebuild_time = -1
+// Engines that powered the last traversal, shared by every cable it reached.
+/obj/structure/cable/var/tmp/list/rebuild_engines = null
 
 /obj/structure/cable/proc/grid_identity()
 	if (!grid_serial)
@@ -204,7 +208,7 @@ var/global/cable_identity_sequence = 0
 	return grid_serial
 
 /obj/structure/cable/persistence_runtime_var(key)
-	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits"))
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines"))
 		return TRUE
 	return ..()
 
@@ -248,6 +252,7 @@ var/global/cable_identity_sequence = 0
 	var/list/discovered = list()
 	discovered[src] = TRUE
 	var/list/engines = list()
+	var/list/running_engines = list()
 	var/list/batteries = list()
 	var/list/generators = list()
 	var/capacity = 0
@@ -281,6 +286,7 @@ var/global/cable_identity_sequence = 0
 					if (EN.on && !EN.broken && EN.maxpower > 0)
 						var/charging = EN.battery_charge_epoch == round(world.time / 10) ? EN.battery_charge_power : 0
 						capacity += max(0, EN.maxpower - charging)
+						running_engines += EN
 			else if (istype(OB, /obj/structure/civ_generator))
 				var/obj/structure/civ_generator/G = OB
 				if (!(G in generators) && G.powersource == CB)
@@ -308,6 +314,8 @@ var/global/cable_identity_sequence = 0
 		CB.component_id = identity
 		CB.component_size = cables.len
 		CB.rebuild_visits = cables.len
+		CB.rebuild_time = world.time
+		CB.rebuild_engines = running_engines
 	return requester ? accepted : capacity
 
 // Reservations are keyed by the consumer, so repeated checks are idempotent.
@@ -328,8 +336,23 @@ var/global/cable_identity_sequence = 0
 	if (!isturf(loc) || !(src in powersource.connections) || get_dist(src, powersource) > 1 || z != powersource.z)
 		powersource.update_power(-powerneeded, 1, src)
 		return FALSE
+	// A reservation that the last traversal, under a second ago, left within
+	// capacity is still honoured. Sources and topology changes already
+	// traverse at least once a second, so many consumers on one grid no longer
+	// each walk the whole component every check. Anything else, including an
+	// overloaded or unpowered component, takes the full traversal.
+	if (powersource.power_consumers[src] == powerneeded && powersource.rebuild_time >= 0 && world.time - powersource.rebuild_time < 10 && powersource.powerflow > 0 && powersource.currentflow <= powersource.powerflow && powersource.reservation_engines_running())
+		return TRUE
 	// Validate capacity and publish the reservation atomically in one traversal.
 	return powersource.rebuild_supply(src, powerneeded)
+
+// Engines can be switched off by code that never notifies the grid, so the
+// fast path still sees a cut engine at once instead of up to a second late.
+/obj/structure/cable/proc/reservation_engines_running()
+	for (var/obj/structure/engine/EN in rebuild_engines)
+		if (!EN.on || EN.broken || !EN.loc)
+			return FALSE
+	return TRUE
 
 /obj/structure/cable/proc/power_on(var/maxpower = 0)
 	return rebuild_supply()
