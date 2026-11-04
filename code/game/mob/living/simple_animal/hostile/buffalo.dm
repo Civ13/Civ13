@@ -53,6 +53,7 @@
 	hostilesounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_3.ogg')
 	behaviour = "wander"
 	fat_extra = 3
+	herbivore = 1 //grazes like cattle, so it gets hungry and can be fed grain
 
 /mob/living/simple_animal/bisonbull
 	name = "bison bull"
@@ -81,6 +82,7 @@
 	hostilesounds = list('sound/animals/cow/cow_1.ogg','sound/animals/cow/cow_3.ogg')
 	behaviour = "wander"
 	fat_extra = 3
+	herbivore = 1 //grazes like cattle, so it gets hungry and can be fed grain
 
 /mob/living/simple_animal/bison/death()
 
@@ -135,16 +137,8 @@
 				icon_dead = "bison_cow_dead"
 				mob_size = MOB_LARGE
 
-/mob/living/simple_animal/bison/attackby(var/obj/item/O as obj, var/mob/user as mob) //need some code to make them tempoarily calm or flip out after milking to make it risky.
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
-			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
-	else
+/mob/living/simple_animal/bison/attackby(var/obj/item/O as obj, var/mob/user as mob) // milked exactly like a cow
+	if (!try_milk(O, user, udder))
 		..()
 
 /mob/living/simple_animal/bison/Life()

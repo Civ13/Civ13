@@ -1889,6 +1889,8 @@ RECIPE: /material/steel/,vending machine,/obj/structure/vending/sales/vending,12
 
 RECIPE: /material/steel/,kitchen sink,/obj/structure/sink/kitchen,40,200,1,1,production,115,0,0,8,null
 
+RECIPE: /material/steel/,hydroponics tray frame,/obj/structure/hydroponics_frame,4,200,1,1,production,125,0,0,8,null
+
 //*********************| STEEL STORAGE |**************************
 
 RECIPE: /material/steel/,red toolbox,/obj/item/weapon/storage/toolbox,4,60,0,1,storage,95,0,0,8,null
