@@ -67,6 +67,7 @@ var/machine_runtime_error = FALSE
 		machine_recipe_checks()
 		machine_fabricator_checks()
 		machine_fabricator_lifecycle_checks()
+		machine_stack_arm_checks()
 	catch(var/exception/e)
 		machine_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = machine_failures, "runtime_error" = machine_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -85,7 +86,7 @@ var/machine_runtime_error = FALSE
 
 /proc/machine_recipe_checks()
 	var/list/recipes = factory_load_recipes()
-	machine_check(recipes.len == 5 && !factory_recipe_errors.len, "the curated factory recipe list loads five recipes without errors ([english_list(factory_recipe_errors)])")
+	machine_check(recipes.len == 8 && !factory_recipe_errors.len, "the curated factory recipe list loads eight recipes without errors ([english_list(factory_recipe_errors)])")
 	var/datum/factory_recipe/R = recipes["electronic circuits"]
 	machine_check(R && R.output_type == /obj/item/stack/material/electronics && R.output_amount == 3 && R.inputs[/obj/item/stack/material/copper] == 2 && R.inputs[/obj/item/stack/material/plastic] == 1 && R.tier == 2 && R.node == "automation", "recipe rows parse output, inputs, tier and node")
 	for (var/name in recipes)
@@ -95,9 +96,9 @@ var/machine_runtime_error = FALSE
 	var/list/bad = factory_load_recipes("bad_recipes.txt")
 	machine_check(bad.len == 1 && factory_recipe_errors.len == 4, "invalid and duplicate rows are reported and skipped")
 	factory_load_recipes()
-	machine_check(factory_get_recipes().len == 5, "the real list reloads")
+	machine_check(factory_get_recipes().len == 8, "the real list reloads")
 	var/list/node_map = recipe_node_requirements
-	var/list/tiers = list("/obj/structure/factory_fabricator" = "assembly_line", "/obj/structure/factory_fabricator/automated" = "automation", "/obj/structure/factory_fabricator/computerized" = "digital_computing")
+	var/list/tiers = list("/obj/structure/factory_arm/stack" = "digital_computing", "/obj/structure/factory_fabricator" = "assembly_line", "/obj/structure/factory_fabricator/automated" = "automation", "/obj/structure/factory_fabricator/computerized" = "digital_computing")
 	var/node_ok = TRUE
 	for (var/path in tiers)
 		if (node_map[path] != tiers[path])
@@ -117,8 +118,8 @@ var/machine_runtime_error = FALSE
 	machine_done("probe_civ", "automation")
 	machine_done("probe_civ", "digital_computing")
 	var/list/basic = F.available_recipes("probe_civ")
-	machine_check(basic.len == 3 && ("barbwire" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
-	machine_check(C.available_recipes("probe_civ").len == 5, "a tier 3 fabricator lists every researched recipe")
+	machine_check(basic.len == 6 && ("barbwire" in basic) && ("bronze" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
+	machine_check(C.available_recipes("probe_civ").len == 8, "a tier 3 fabricator lists every researched recipe")
 	machine_check(!F.set_recipe("no such recipe") && !F.recipe_name, "unknown recipes are refused")
 	var/obj/item/stack/material/iron/iron = new(locate(1, 2, 1), 10, FALSE)
 	machine_check(!F.factory_accepts(iron), "a fabricator without a recipe takes nothing")
@@ -194,3 +195,43 @@ var/machine_runtime_error = FALSE
 	for (var/obj/item/stack/material/copper/S in T)
 		left += S.amount
 	machine_check(left == 3 && !(F in factory_active_fabricators), "removing a fabricator drops its buffer")
+
+/proc/machine_arm_swing(obj/structure/factory_arm/A)
+	A.next_swing = 0
+	A.arm_step()
+
+/proc/machine_stack_arm_checks()
+	var/obj/structure/closet/crate/source = belt_closed_crate(locate(1, 13, 1), 40)
+	var/obj/structure/closet/crate/dest = belt_closed_crate(locate(3, 13, 1), 40)
+	for (var/i in 1 to 12)
+		new /obj/item/stack/material/steel(source, 1, FALSE)
+	for (var/i in 1 to 2)
+		new /obj/item/stack/material/copper(source, 1, FALSE)
+	var/obj/structure/factory_arm/stack/A = new(locate(2, 13, 1))
+	A.set_dir(EAST)
+	var/list/power = machine_power(A, 2, 14)
+	A.on = TRUE
+	machine_check(A.powerneeded == 5 && A.batch == 10, "a stack arm draws five power units and lifts ten items")
+	machine_arm_swing(A)
+	machine_check(belt_count(dest, /obj/item/stack/material/steel) == 10 && belt_count(source, /obj/item/stack/material/steel) == 2 && belt_count(source, /obj/item/stack/material/copper) == 2 && !A.contents.len, "with no filter a stack arm moves ten items of the first kind in one swing")
+	machine_arm_swing(A)
+	machine_check(belt_count(dest, /obj/item/stack/material/steel) == 12 && belt_count(dest, /obj/item/stack/material/copper) == 0, "a batch never mixes kinds")
+	for (var/i in 1 to 3)
+		new /obj/item/stack/material/steel(source, 1, FALSE)
+	A.filter_type = /obj/item/stack/material/copper
+	machine_arm_swing(A)
+	machine_check(belt_count(dest, /obj/item/stack/material/copper) == 2 && belt_count(source, /obj/item/stack/material/steel) == 3, "a filter limits a stack arm to one kind")
+	var/obj/structure/factory_arm/sorting/S = new(locate(2, 15, 1))
+	machine_check(!S.wanted(new /obj/item/stack/material/steel(locate(5, 15, 1), 1, FALSE)), "a sorting arm with no filter still moves nothing")
+	var/obj/structure/factory_arm/F = new(locate(5, 13, 1))
+	F.set_dir(EAST)
+	var/obj/structure/closet/crate/fsource = belt_closed_crate(locate(4, 13, 1), 40)
+	var/obj/structure/closet/crate/fdest = belt_closed_crate(locate(6, 13, 1), 40)
+	for (var/i in 1 to 3)
+		new /obj/item/stack/material/steel(fsource, 1, FALSE)
+	var/list/fpower = machine_power(F, 5, 14)
+	F.on = TRUE
+	machine_arm_swing(F)
+	machine_check(belt_count(fdest, /obj/item/stack/material/steel) == 1, "a feeder arm still moves one item a swing")
+	for (var/obj/O in power + fpower + list(A, F, S, source, dest, fsource, fdest))
+		qdel(O)
