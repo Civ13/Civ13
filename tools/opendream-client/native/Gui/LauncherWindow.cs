@@ -21,7 +21,13 @@ internal sealed class LauncherWindow : Form {
     private readonly ServerDiscovery discovery = new();
     private string? byond;
     private HostProfile? host;
-    private ServerSnapshot? snapshot;
+    // Servers found this session, per provider. Refresh updates their status but never removes
+    // them; a server that stops answering stays listed with when it was last seen.
+    private readonly Dictionary<string, Dictionary<GameTarget, KnownServer>> known = new();
+    private sealed class KnownServer(GameServer server, string status) {
+        public GameServer Server { get; set; } = server;
+        public string Status { get; set; } = status;
+    }
     private GameServer? pending;
     private DateTime pendingReadyUtc;
     private bool startupDone;
@@ -307,35 +313,66 @@ internal sealed class LauncherWindow : Form {
         CancelPending();
         SetBusy(true);
         notesLabel.Text = $"Checking {provider} servers...";
-        serverList.Items.Clear();
+        var servers = KnownFor(provider);
+        Populate();
         try {
-            snapshot = await discovery.Fetch(provider);
+            var snapshot = await discovery.Fetch(provider);
+            var answered = new HashSet<GameTarget>();
+            foreach (var server in snapshot.Servers) {
+                var cached = ServerBrowser.CachedFor(snapshot, server);
+                var status = cached == null ? $"Checked {server.CheckedAt:HH:mm:ss} UTC"
+                    : $"Cached, {cached.AgeSeconds}s old" + (cached.Recent != null ? "" : "; recheck needed");
+                servers[server.Target] = new KnownServer(server, status);
+                answered.Add(server.Target);
+            }
+            foreach (var (target, entry) in servers) {
+                if (answered.Contains(target)) continue;
+                var deferred = snapshot.Deferred?.FirstOrDefault(item => item.Target == target);
+                entry.Status = deferred != null ? $"Next check in {deferred.Seconds}s; {LastSeen(entry)}"
+                    : snapshot.PacingPaused ? "Checks paused; " + LastSeen(entry)
+                    : "Not responding; " + LastSeen(entry);
+            }
             using var notes = new StringWriter();
             notes.WriteLine($"{provider} - recent BYOND status. The game address is verified again before joining.");
             ServerBrowser.WriteNotes(notes, snapshot);
             notesLabel.Text = notes.ToString().TrimEnd();
-            Populate();
         } catch (IOException) {
-            snapshot = null;
+            foreach (var entry in servers.Values) entry.Status = "Check failed; " + LastSeen(entry);
             notesLabel.Text = $"{provider} status checks failed. No servers can be verified. Try Refresh shortly.";
-        } finally { SetBusy(false); }
+        } finally {
+            Populate();
+            SetBusy(false);
+        }
     }
 
+    private Dictionary<GameTarget, KnownServer> KnownFor(string provider) {
+        if (!known.TryGetValue(provider, out var servers)) known[provider] = servers = new();
+        return servers;
+    }
+
+    private static string LastSeen(KnownServer entry) => $"last seen {entry.Server.CheckedAt:HH:mm} UTC";
+
     private void Populate() {
+        var keep = Selected()?.Target;
         serverList.BeginUpdate();
         serverList.Items.Clear();
-        foreach (var server in snapshot?.Servers ?? []) {
-            var cached = ServerBrowser.CachedFor(snapshot!, server);
-            var status = cached == null ? $"Checked {server.CheckedAt:HH:mm:ss} UTC"
-                : $"Cached, {cached.AgeSeconds}s old" + (cached.Recent != null ? "" : "; recheck needed");
-            var item = new ListViewItem([server.Name, server.Players.ToString(), ServerBrowser.Display(server.Map),
-                ServerBrowser.Display(server.Mode), server.Epoch.Length == 0 ? "-" : server.Epoch, ServerBrowser.Display(server.RoundId),
-                ServerBrowser.Elapsed(server), status]) { Tag = server };
-            serverList.Items.Add(item);
-        }
-        if (serverList.Items.Count == 1) serverList.Items[0].Selected = true;
+        if (Provider is { } provider)
+            foreach (var entry in KnownFor(provider).Values.OrderBy(entry => entry.Server.Port)) {
+                var server = entry.Server;
+                var item = new ListViewItem([server.Name, server.Players.ToString(), ServerBrowser.Display(server.Map),
+                    ServerBrowser.Display(server.Mode), server.Epoch.Length == 0 ? "-" : server.Epoch, ServerBrowser.Display(server.RoundId),
+                    ServerBrowser.Elapsed(server), entry.Status]) { Tag = server };
+                serverList.Items.Add(item);
+                if (server.Target == keep) item.Selected = true;
+            }
+        if (serverList.SelectedItems.Count == 0 && serverList.Items.Count == 1) serverList.Items[0].Selected = true;
         serverList.EndUpdate();
         UpdateJoinButton();
+    }
+
+    private void MarkUnverified(GameServer server, string status) {
+        if (KnownFor(server.Provider).TryGetValue(server.Target, out var entry)) entry.Status = status + "; " + LastSeen(entry);
+        Populate();
     }
 
     private void FillLastColumn() {
@@ -356,6 +393,11 @@ internal sealed class LauncherWindow : Form {
             var verified = await discovery.Recheck(selected);
             Program.StartNativeGame(verified, byond, desktop, Console.Out);
             pending = null;
+            if (KnownFor(selected.Provider).TryGetValue(selected.Target, out var entry)) {
+                entry.Server = verified.Status;
+                entry.Status = $"Checked {verified.Status.CheckedAt:HH:mm:ss} UTC";
+                Populate();
+            }
             joinStatus.Text = $"Started BYOND for {selected.Name}.";
         } catch (TopicWaitException wait) {
             pending = selected;
@@ -365,16 +407,14 @@ internal sealed class LauncherWindow : Form {
             waitTimer.Start();
         } catch (TopicPacingException) {
             pending = null;
-            snapshot = null;
-            serverList.Items.Clear();
             joinStatus.Text = "";
+            MarkUnverified(selected, "Checks paused");
             notesLabel.Text = "Public checks paused: shared request timing could not be verified. Local timing state needs review.";
         } catch (IOException) {
             // Do not turn a failed recheck into another immediate status sweep; only Refresh probes again.
             pending = null;
-            snapshot = null;
-            serverList.Items.Clear();
             joinStatus.Text = "";
+            MarkUnverified(selected, "Could not verify");
             notesLabel.Text = "The selected server could not be verified or started. Refresh and choose again. No automatic retry.";
         } finally {
             SetBusy(false);
