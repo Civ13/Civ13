@@ -1151,7 +1151,7 @@ def model(source=None):
     source=source or SOURCE.read_text()
     body=atom(10,10);owner=N(images=List(),root_tree_presenter=None)
     context=N(body=body,revision=1,policy_key=lambda:'fresh',eligible=lambda:True,
-              verified_snapshot=None,verified_snapshot_time=-1)
+              verified_snapshot=None,verified_snapshot_time=-1,clear_audit_scene=lambda:None)
     presenter=N(owner=owner,context=context,retired=False,dirty=True,
                 images=List(),owned_images=List(),visible_targets=List(),tree_images=List(),tree_appearances=List())
     owner.los_presenter=presenter;owner.los_context=context

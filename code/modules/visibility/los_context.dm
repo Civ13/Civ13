@@ -195,6 +195,29 @@ var/global/list/los_active_contexts
 			blocker_bins[bin_key] = bin
 		bin += B
 
+// Index-wise equality of the captured blocking geometry. capture() walks the
+// viewport in one fixed order, so two captures of an unchanged scene produce
+// the same blockers in the same order. Fresh cells are compared by value; no
+// cell, bin or footprint cache is shared between the two snapshots.
+/datum/los_snapshot/proc/same_geometry(datum/los_snapshot/other)
+	if (!other || other.presentation != presentation || other.eye_x != eye_x || other.eye_y != eye_y || other.eye_z != eye_z || other.radius_x != radius_x || other.radius_y != radius_y)
+		return FALSE
+	if (blockers.len != other.blockers.len)
+		return FALSE
+	for (var/i = 1, i <= blockers.len, i++)
+		var/datum/los_cell/A = blockers[i]
+		var/datum/los_cell/B = other.blockers[i]
+		if (!A || !B || A.tile_x != B.tile_x || A.tile_y != B.tile_y || A.cell_x != B.cell_x || A.cell_y != B.cell_y || A.surface_owner != B.surface_owner || A.owners != B.owners)
+			return FALSE
+	if (length(tree_bounds) != length(other.tree_bounds))
+		return FALSE
+	for (var/root in tree_bounds)
+		var/datum/los_tree_bounds/R = tree_bounds[root]
+		var/datum/los_tree_bounds/O = other.tree_bounds ? other.tree_bounds[root] : null
+		if (!R || !O || R.root_x != O.root_x || R.root_y != O.root_y || R.root_z != O.root_z || R.step_x != O.step_x || R.step_y != O.step_y || R.bound_x != O.bound_x || R.bound_y != O.bound_y || R.bound_width != O.bound_width || R.bound_height != O.bound_height)
+			return FALSE
+	return TRUE
+
 // True when one of the eight neighbours of this eye-relative native tile is
 // open (holds no blocker) and its own quarter footprint is visible.
 /datum/los_snapshot/proc/opaque_borders_visible(target_tile_x, target_tile_y)
@@ -413,6 +436,12 @@ var/global/list/los_active_contexts
 	// Set only while one renderer runs a synchronous, non-sleeping pass.
 	var/datum/los_snapshot/verified_snapshot
 	var/verified_snapshot_time = -1
+	// Inputs of the last complete publication, read only by the periodic
+	// presentation audit. Never a lease: every refresh still captures fresh.
+	var/datum/los_snapshot/audit_snapshot
+	var/list/audit_appearances
+	var/audit_image_count = -1
+	var/audit_screen_count = -1
 
 /datum/los_context/New(client/C)
 	..()
@@ -441,6 +470,7 @@ var/global/list/los_active_contexts
 		owner.root_tree_presenter.retire()
 	root_trees.Cut()
 	end_snapshot_pass()
+	clear_audit_scene()
 	viewport_cache_ready = FALSE
 	viewport_cached_view = null
 	viewport_cached_dimensions = null
@@ -474,6 +504,7 @@ var/global/list/los_active_contexts
 	var/datum/los_mutation/M = new
 	M.context = src
 	mutations += M
+	clear_audit_scene()
 	if (owner && owner.los_presenter)
 		owner.los_presenter.invalidate()
 	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
@@ -555,6 +586,57 @@ var/global/list/los_active_contexts
 /datum/los_context/proc/end_snapshot_pass()
 	verified_snapshot = null
 	verified_snapshot_time = -1
+
+// The one-second presentation audit exists for raw opacity and art writers
+// that have no central setter. Almost every audit finds the scene unchanged,
+// yet it repaid the whole presenter refresh (about 25 ms per idle Gaia client).
+// A fresh capture plus this scan costs a small fraction of that. It is only a
+// skip condition for an already published presentation: any new, removed or
+// changed atom, blocker, tree bound, client image or screen object, or any
+// policy change, still takes the full refresh.
+/datum/los_context/proc/audit_scene_radius(datum/los_snapshot/S)
+	return max(S.radius_x, S.radius_y) + 6
+
+/datum/los_context/proc/audit_scene_member(atom/A)
+	// Lighting masks are never presented and change colour constantly; their
+	// tree lighting reaches the compositor through root_tree_light_changed.
+	return !istype(A, /atom/movable/lighting_overlay) && !istype(A, /atom/movable/lighting_fullbright)
+
+/datum/los_context/proc/clear_audit_scene()
+	audit_snapshot = null
+	audit_appearances = null
+	audit_image_count = -1
+	audit_screen_count = -1
+
+/datum/los_context/proc/record_audit_scene(datum/los_snapshot/S)
+	clear_audit_scene()
+	if (!S || !S.presentation || retired || !owner || !body)
+		return FALSE
+	var/list/appearances = list()
+	for (var/atom/A in range(audit_scene_radius(S), body))
+		if (audit_scene_member(A))
+			appearances[A] = A.appearance
+	audit_snapshot = S
+	audit_appearances = appearances
+	audit_image_count = length(owner.images)
+	audit_screen_count = length(owner.screen)
+	return TRUE
+
+/datum/los_context/proc/audit_scene_unchanged(datum/los_snapshot/S)
+	if (!S || !S.presentation || !audit_snapshot || !audit_appearances || retired || !owner || !body)
+		return FALSE
+	if (length(owner.images) != audit_image_count || length(owner.screen) != audit_screen_count)
+		return FALSE
+	if (!S.same_geometry(audit_snapshot))
+		return FALSE
+	var/count = 0
+	for (var/atom/A in range(audit_scene_radius(S), body))
+		if (!audit_scene_member(A))
+			continue
+		if (audit_appearances[A] != A.appearance)
+			return FALSE
+		count++
+	return count == audit_appearances.len
 
 /datum/los_context/proc/capture(presentation = FALSE)
 	var/key = policy_key()

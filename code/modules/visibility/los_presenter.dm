@@ -28,6 +28,8 @@
 	owner = C
 	context = V
 	owner.los_presenter = src
+	// A fresh presenter has published nothing; the audit may not skip it.
+	context.clear_audit_scene()
 
 // Movement/opacity hooks mark the local viewport dirty. The shared process
 // supplies a fresh capture; this owner never starts its own sleeping driver.
@@ -271,6 +273,9 @@
 	clear_images()
 	if(owner && owner.los_presenter == src)
 		owner.los_presenter = null
+	// The replacement presenter must publish before any audit skip.
+	if(context)
+		context.clear_audit_scene()
 	owner = null
 	context = null
 

@@ -194,7 +194,7 @@ class OwnershipAndComposition(unittest.TestCase):
         r=N(retired=False,owner=N(screen=Items(['HUD',game,roof]),images=Items(['foreign','own']),root_tree_presenter=None),
             images={},owned_images=Items(['own']),work_images={},frames={},published_frames={},frame_keys={},frame_appearances={},frame_lights={},frame_dirs={},source_appearances={},light_keys={},light_values={},screens=Items([roof]),
             leased_planes=Items([game,roof]),lease_targets={game:'game',roof:'roof'},game_plane=game,
-            original_filters=['shadow'],scene_plane=None,scene_active=True,context=object())
+            original_filters=['shadow'],scene_plane=None,scene_active=True,context=N(clear_audit_scene=lambda:None))
         r.owner.root_tree_presenter=r
         r.release_owned_scene=compile_proc(TREE,'/datum/root_tree_presenter/proc/release_owned_scene(','self',env,True).__get__(r)
         r.retire=compile_proc(TREE,'/datum/root_tree_presenter/proc/retire(','self',env,True).__get__(r)
