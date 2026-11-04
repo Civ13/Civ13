@@ -28,7 +28,7 @@ def main():
         evidence.mkdir(parents=True, exist_ok=False)
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
     source = (root / 'code/modules/1713/radiation.dm').read_text(encoding='utf-8')
-    paths = ['/proc/nuke_map', '/proc/radiation_pulse', '/atom/proc/rad_act',
+    paths = ['/proc/nuke_map', '/proc/nuke_map_schedule', '/proc/nuke_map_phase', '/proc/radiation_pulse', '/atom/proc/rad_act',
              '/turf/floor/rad_act', '/turf/floor/grass/rad_act',
              '/turf/floor/beach/water/rad_act', '/mob/living/rad_act',
              '/mob/living/human/rad_act', '/mob/living/human/proc/getarmor_rad']
@@ -65,7 +65,7 @@ def main():
         output = build.stdout + build.stderr
         (evidence / 'compile.log').write_text(output, encoding='utf-8')
         print(output, flush=True)
-        if build.returncode or not re.search(r'DM compiler version 516\.1681\b', output) or '0 errors, 0 warnings' not in output:
+        if build.returncode or not re.search(r'DM compiler version 516\.1688\b', output) or '0 errors, 0 warnings' not in output:
             raise RuntimeError('Pinned fixture compilation failed')
         daemon_args = [str(daemon), 'probe.dmb']
         if os.name == 'nt':

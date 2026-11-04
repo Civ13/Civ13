@@ -11,7 +11,7 @@
 /// RAD_LEVEL_DEADLY 500 //Always kills
 
 //severity: mSv per second. duration: duration in seconds
-/proc/radiation_pulse(turf/epicenter, range, severity, duration, log = TRUE, local_only = FALSE)
+/proc/radiation_pulse(turf/epicenter, range, severity, duration, log = TRUE, local_only = FALSE, datum/durable_nomads_event/event = null)
 	duration = round(duration)
 	var/last = world.time + duration
 	if(!epicenter || !severity || duration < 1) return FALSE
@@ -31,8 +31,15 @@
 		else if (distance > 1 && distance <= range)
 			T.rad_act(cseverity*(1-(distance/range)))
 	if (world.time <= last && duration > 0 && (!local_only || duration > 1))
+		if(event) event.retain()
 		spawn(10)
-			radiation_pulse(epicenter, range, severity, duration-1, 0, local_only)
+			try
+				if(!event || event.valid()) radiation_pulse(epicenter, range, severity, duration-1, 0, local_only, event)
+			catch(var/exception/E)
+				if(!event) throw E
+				event.failed = TRUE
+				log_debug("Nomads radiation phase failed: [E]")
+			if(event) event.release()
 	if (log)
 		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]), severity [severity] mSv, duration [duration/10] minutes and in area [epicenter.loc.name] ")
 	if (!local_only)
@@ -240,14 +247,33 @@
 		return
 
 
-/proc/nuke_map(turf/epicenter, severity, duration, log)
+/proc/nuke_map(turf/epicenter, severity, duration, log, datum/durable_nomads_event/event = null)
 	duration = round(duration)
 	var/last = world.time + duration
 	epicenter = get_turf(epicenter)
 	if(!epicenter || !severity || duration < 1) return FALSE
+	explosion(epicenter, 10, 18, 23, 200, TRUE, UP|DOWN, config.use_recursive_explosions, "explosion", TRUE, event)
+	for(var/phase in list(9, 14, 15, 20, 23, 26, 50, 65))
+		nuke_map_schedule(phase, epicenter, severity, duration, last, event)
+	if (log)
+		log_game("<font color='red'>Nuke detonated in the map!</font>")
+	change_global_radiation(310)
+	return TRUE
+
+/proc/nuke_map_schedule(phase, turf/epicenter, severity, duration, last, datum/durable_nomads_event/event)
+	if(event) event.retain()
+	spawn(phase)
+		try
+			if(!event || event.valid()) nuke_map_phase(phase, epicenter, severity, duration, last, event)
+		catch(var/exception/E)
+			if(!event) throw E
+			event.failed = TRUE
+			log_debug("Nomads nuke phase [phase] failed: [E]")
+		if(event) event.release()
+
+/proc/nuke_map_phase(phase, turf/epicenter, severity, duration, last, datum/durable_nomads_event/event)
 	var/event_z = epicenter.z
-	explosion(epicenter, 10, 18, 23, 200)
-	spawn(9)
+	if(phase == 9)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
 				if (prob(100*(1-(get_dist(TF,epicenter)/25))))
@@ -257,19 +283,19 @@
 						new/obj/effect/fire(TF)
 			if (TF)
 				TF.radiation = 20
-	spawn(14)
+	if(phase == 14)
 		for (var/mob/m in player_list)
 			if (m.client)
 				shake_camera(m, 3, (5 - (0.5)))
-	spawn (20)
+	if(phase == 20)
 		for (var/turf/floor/grass/G in grass_turf_list)
 			if (G.z == event_z)
 				G.rad_act(severity /3)
-	spawn (23)
+	if(phase == 23)
 		for (var/turf/floor/beach/water/G in water_turf_list)
 			if (G.z == event_z)
 				G.rad_act(severity /3)
-	spawn(26)
+	if(phase == 26)
 		for(var/atom/T)
 			var/area/A = get_area(T)
 			if (T.z == event_z && (istype(T, /mob/living) || istype(T, /obj)))
@@ -293,23 +319,24 @@
 				if (prob(20) && T.density && T.z == event_z)
 					T.ex_act(1.0)
 		if (world.time <= last && duration > 0)
+			if(event) event.retain()
 			spawn(10)
-				radiation_pulse(epicenter, 100, severity, duration-1, 0)
-	spawn(15)
+				try
+					if(!event || event.valid()) radiation_pulse(epicenter, 100, severity, duration-1, 0, FALSE, event)
+				catch(var/exception/E)
+					if(!event) throw E
+					event.failed = TRUE
+					log_debug("Nomads initial radiation phase failed: [E]")
+				if(event) event.release()
+	if(phase == 15)
 		global_colour_matrix = list(0.8, 0.1, 0.1,\
 						0.1, 0.8, 0.1,\
 						0.1, 0.1, 0.8)
-	spawn(50)
+	if(phase == 50)
 		for (var/obj/structure/wild/W)
 			if (W.z == event_z)
 				W.rad_act(22)
-	spawn(65)
+	if(phase == 65)
 		for (var/obj/structure/farming/F)
 			if (F.z == event_z)
 				F.rad_act(22)
-
-	if (log)
-		log_game("<font color='red'>Nuke detonated in the map!</font>")
-
-	change_global_radiation(310)
-	return TRUE

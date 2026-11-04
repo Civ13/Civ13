@@ -21,6 +21,7 @@
 
 /obj/map_metadata/nomads/stranded/New()
 	..()
-	spawn(1800)
-		if (season == "SPRING") //fixes game setting the season as spring
-			season = "Wet Season"
+	if(!durable_schedule("nomads_initial_climate", 1800))
+		spawn(1800)
+			if (season == "SPRING") //fixes game setting the season as spring
+				season = "Wet Season"
