@@ -32,7 +32,8 @@ class MatrixIdentitySourceTests(unittest.TestCase):
         helper = functions.split('/map_storage/proc/save_entry_identity(datum/A)')[1].split('/map_storage/proc/require_export_frame')[0]
         self.assertIn('if(istype(A, /matrix)) return A', helper)
         self.assertIn('return "\\ref[A]"', helper)
-        self.assertIn('save_entry_identity(frame.source) != frame.source_identity', functions)
+        self.assertIn('saving_reference_pins[frame.entry] != frame.source', functions)
+        self.assertNotIn('save_entry_identity(frame.source)', functions)
         self.assertIn('var/identity = save_entry_identity(A)', saving)
         self.assertIn('var/ind = saving_references[identity]', saving)
         self.assertIn('saving_references[identity] = ref', saving)

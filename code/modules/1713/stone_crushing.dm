@@ -153,20 +153,52 @@
 /obj/structure/drill/stamp_mill/proc/load_stone(mob/living/human/H, obj/item/stack/material/stone/S)
 	if (!istype(H) || S.loc != H || get_dist(src, H) > 1)
 		return 0
-	var/space = hopper_limit - loaded_stone_amount()
-	if (space <= 0)
+	if (hopper_space() <= 0)
 		to_chat(H, SPAN_WARNING("\The [src]'s hopper is full."))
 		return 0
-	var/moved = min(space, S.amount)
-	var/obj/item/stack/material/stone/hopper = loaded_stone()
-	if (!S.use(moved))
+	var/moved = fill_hopper(S, S.amount, H)
+	if (moved)
+		to_chat(H, SPAN_NOTICE("You load [moved] stone block[moved == 1 ? "" : "s"] into \the [src]."))
+	return moved
+
+/obj/structure/drill/stamp_mill/proc/hopper_space()
+	return max(0, hopper_limit - loaded_stone_amount())
+
+// Move up to amount stone into the hopper. H is only passed for hand loading,
+// which keeps the existing stack-use rules for a worker.
+/obj/structure/drill/stamp_mill/proc/fill_hopper(obj/item/stack/material/stone/S, amount, mob/living/human/H = null)
+	var/moved = min(hopper_space(), amount, S.amount)
+	if (moved <= 0)
 		return 0
+	var/obj/item/stack/material/stone/hopper = loaded_stone()
+	if (H)
+		if (!S.use(moved))
+			return 0
+	else
+		S.amount -= moved
+		if (S.amount <= 0)
+			qdel(S)
+		else
+			S.update_icon()
 	if (hopper)
 		hopper.amount += moved
 	else
 		new /obj/item/stack/material/stone(src, moved, FALSE)
-	to_chat(H, SPAN_NOTICE("You load [moved] stone block[moved == 1 ? "" : "s"] into \the [src]."))
 	return moved
+
+// Factory port: plain stone blocks fill the hopper. Nothing is offered;
+// crushed output still lands on the mill's tile.
+/obj/structure/drill/stamp_mill/factory_accepts(obj/item/I, from_dir = 0)
+	if (!is_crushable_stone(I) || !factory_movable_item(I))
+		return 0
+	var/obj/item/stack/material/stone/S = I
+	return min(S.amount, hopper_space())
+
+/obj/structure/drill/stamp_mill/factory_insert(obj/item/I, from_dir = 0)
+	var/amount = factory_accepts(I, from_dir)
+	if (amount <= 0)
+		return 0
+	return fill_hopper(I, amount)
 
 /obj/structure/drill/stamp_mill/verb/unload_stone()
 	set name = "Unload Stamp Mill"

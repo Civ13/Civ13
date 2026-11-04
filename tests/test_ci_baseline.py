@@ -1247,7 +1247,8 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['fishing_stock']
         self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',
                                          'tests/fishing_stock/test_preparation.py',
-                                         'tests/fishing_stock/test_native_runner.py'))
+                                         'tests/fishing_stock/test_native_runner.py',
+                                         'tests/fishing_stock/test_ocean_fishing.py'))
         self.assertEqual(suite['paths'], ('tests/fishing_stock/',))
         self.assertFalse(suite.get('always', False))
         source = (ROOT / suite['files'][0]).read_text()
