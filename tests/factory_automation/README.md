@@ -4,6 +4,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/belts_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/routing_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/machines_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -36,3 +37,9 @@ Without the end-of-step rescan, the blocked-belt resume check fails. A local ben
 - Catalog: research gates, the five global recipes and the reused sprite states.
 
 Removing the belt power check makes five drive checks fail.
+
+`machines_probe.dm` (phase 2b) checks:
+
+- Bloomery: takes up to fifty iron ore and burnable fuel from automation, refuses other items and has no port while unanchored; ore alone waits, fuel starts the smelt and pays its two fuel; the finished sponge iron is offered from the bloomery's tile and can be taken; more ore restarts a fuelled bloomery. Clay kilns stay manual.
+- Blast furnace: loads ore and charcoal, starts, and offers only pig iron.
+- Powered saw mill: a twenty-log hopper; nothing is cut without power or while unanchored; each powered step cuts one log into twelve planks that merge on the tile and are offered; load clamps and resumes the hopper, which is saved; removing the mill returns its logs.

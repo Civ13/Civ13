@@ -1,4 +1,4 @@
-// Belt drives, factory belts and transfer arms step once a second. Idle belts and arms
+// Belt drives, factory belts, transfer arms and fed saw mills step once a second. Idle belts and arms
 // leave their lists, so an empty factory costs nothing here. A large factory
 // resumes within the tick budget instead of stalling the server tick.
 /datum/process_list/var/process/factory_belts/factory_belts = null
@@ -26,6 +26,7 @@
 		PROCESS_LIST_CHECK
 		PROCESS_TICK_CHECK
 	factory_arms_step()
+	factory_mills_step()
 
 /process/factory_belts/statProcess(client/C)
 	..(C)

@@ -1,7 +1,6 @@
 # Modern factory automation: audit and phased design
 
-Status: **phases 0 and 1 and the routing half of phase 2 implemented; the
-rest is design only.** Val chose the first slice on 2026-11-04: phase 0, then
+Status: **phases 0, 1 and 2 implemented; later phases are design only.** Val chose the first slice on 2026-11-04: phase 0, then
 belts and transfer arms (phase 1), and asked threads to continue the phases.
 The other open decisions below are still pending. Each later phase lands with
 its own tests.
@@ -212,8 +211,10 @@ Crates and closets get the port for free (accept anything that fits, offer
 anything). A new **storage bin** offers only a chosen item type.
 
 Retrofit order: stamp mill (already has a hopper), drill/sifter (output only),
-powered sawmill, bloomery/blast furnace and kilns, grinder/centrifuge,
-canner, then the rest. Skill, faction and safety checks that today read the
+powered sawmill, bloomery/blast furnace, then canner and the rest. Phase 2
+did the first four (`code/modules/1713/factory_machines.dm`). Clay kilns cast
+into molds and the reagent grinder works on containers, so both stay manual
+until a later phase gives them a reason to be automated. Skill, faction and safety checks that today read the
 human move to the device that configured the machine (see "Ownership").
 
 ### 2. Belt lines
@@ -407,7 +408,7 @@ BYOND, plus a native benchmark where noted.
 | 0. Foundations (done) | Fix belt load direction and switch state; reuse fresh reservations (R1); add the port interface (`code/modules/1713/factory_ports.dm`) with crates and the stamp mill as first implementers. | `tests/factory_automation/probe.dm`; the native grid probe's 20 repeated draws now take one traversal; stamp mill accepts stone without a mob. |
 | 1. Belts and arms (done) | Belts with slots, per-belt stepping and sleep; feeder and sorting arms; parts bin; drill, sifter and stamp mill output ports; recipes and research gates. | `tests/factory_automation/belts_probe.dm`: crate to belt to crate, corners, blocking, drill output into the mill; 1,922-belt benchmark above. A full disk save/load round trip is still unverified. |
 | 2a. Belt power and routing (done) | Belt drives; sorting gate, splitter, belt tunnel; recipes (drive at Assembly Line, routing at Automation). | `tests/factory_automation/routing_probe.dm`: drive range, power loss and recovery, gate filtering, splitter alternation and overflow, tunnels under a crossing, save exclusions. |
-| 2b. Smelting ports | Ports for bloomery, blast furnace, kilns, powered sawmill and grinder. | Mixed ore line sorted into separate furnaces; ingots out by belt. |
+| 2b. Smelting and wood ports (done) | Bloomery and blast furnace take ore and fuel and start a smelt once both are loaded; the powered saw mill gets a 20-log hopper and cuts one log into 12 planks a second while powered; both offer their output stacks on their tile. Clay kilns (mold casting) and the reagent grinder stay manual. | `tests/factory_automation/machines_probe.dm`: limits, refusals, automatic smelt start and restart, output offers, mill power, plank merging, hopper save and return. |
 | 3. Fabricators | Fabricator tiers and the chosen recipe source; Atlas shows factory recipes; stack arm. | A configured line produces one modern good from raw inputs unattended. |
 | 4. Scale and logistics | Factory panel; fast belt; train and vehicle loading ports; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
 
