@@ -45,9 +45,11 @@
 /mob/living/simple_animal/proc/npc_subtile_wild_period(mode, interval)
 	return interval
 
-// Use the supplied lag in deciseconds; native modes other than direction need validation.
+// Native walk lag is in deciseconds, rounded down to whole server ticks (at
+// least one); tests/wildlife_arrival measured this cadence on 516.1688. Using
+// the same quantised interval keeps sub-tile arrival on the legacy schedule.
 /mob/living/simple_animal/proc/npc_subtile_native_interval(lag)
-	return lag
+	return max(1, floor(lag / world.tick_lag + 0.001)) * world.tick_lag
 
 // Native walk(0) cancels a continuous walker, but not the step-based pursuit.
 // Keep the same distinction for staged owners and their pending commands.
@@ -147,7 +149,9 @@
 	if (!T.distance)
 		T.finish()
 		return FALSE
-	npc_subtile_until = T.end_time
+	// end_time is a float sum of ticks; half a tick early keeps the next
+	// admission on the tick the pulse finishes rather than one tick later.
+	npc_subtile_until = T.end_time - world.tick_lag / 2
 	spawn(0)
 		T.perform_rest(continue_pulses)
 	return TRUE
@@ -460,7 +464,9 @@
 	W.direction = direction
 	W.distance_limit = distance_limit
 	W.idle_window_end = 0
-	W.due = world.time + interval
+	// The first pulse starts now and lands one interval later, like a native
+	// walk's first step. A replaced command keeps any later paid slot.
+	W.due = new_owner ? world.time : max(world.time, W.due)
 	W.expected_stance = stance
 	W.expected_behaviour = behaviour
 	W.expected_combat_target = target_mob
@@ -604,7 +610,8 @@
 
 /datum/npc_subtile_wild_walk/proc/perform_loop()
 	while (valid())
-		if (world.time < due || actor.npc_subtile_transaction || world.time < actor.npc_subtile_until)
+		// Half a tick early counts as due: started + period is a float tick sum.
+		if (world.time + world.tick_lag / 2 < due || actor.npc_subtile_transaction || world.time < actor.npc_subtile_until)
 			sleep(world.tick_lag)
 			continue
 		var/current_revision = revision
@@ -622,7 +629,7 @@
 		if (idle_window_end)
 			// Expire before observing a boundary-time target change. A delayed
 			// worker skips elapsed slots without allowing a burst of moves.
-			if (world.time >= idle_window_end)
+			if (world.time + world.tick_lag / 2 >= idle_window_end)
 				idle_window_end = 0
 				due += max(1, floor((world.time - due) / period) + 1) * period
 				sleep(world.tick_lag)
@@ -1263,12 +1270,13 @@
 			if (!continue_pulses || (!remaining_x && !remaining_y))
 				break
 			var/due = start_time + (i - 1) * (end_time - start_time) / 16
-			if (due > world.time)
+			// Within half a tick counts as due: float tick sums must not add a tick.
+			if (due > world.time + world.tick_lag / 2)
 				sleep(due - world.time)
 			if (!advance())
 				break
 		// Keep the original admission cadence, and let the last native glide end.
-		if (valid() && end_time > world.time)
+		if (valid() && end_time > world.time + world.tick_lag / 2)
 			sleep(end_time - world.time)
 	catch (var/exception/npc_worker_error)
 		finish(npc_worker_error)

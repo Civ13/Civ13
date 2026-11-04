@@ -1,5 +1,6 @@
 from pathlib import Path
 import unittest
+import math
 import re
 import sys
 from types import SimpleNamespace
@@ -24,13 +25,14 @@ class WildWalkContracts(unittest.TestCase):
             self.assertIn(statement, wrapper)
         self.assertLess(wrapper.index('if (!npc_subtile_species_enabled || !npc_subtile_enabled)'), wrapper.index('walk_rand(src, lag)'))
         self.assertIn('var/npc_subtile_species_enabled = FALSE', self.source)
-        self.assertIn('return lag', self.source)
         self.assertNotIn('return lag * world.tick_lag', self.source)
+        # Native walk lag is deciseconds rounded down to whole ticks (at least
+        # one), as tests/wildlife_arrival measured on 516.1688.
         world = SimpleNamespace(tick_lag=1)
-        convert = project(self.source, '/mob/living/simple_animal/proc/npc_subtile_native_interval', 'src, lag', {'world': world})
-        for tick, lag, expected in ((0.5, 6, 6), (1, 2, 2), (2, 3, 3)):
+        convert = project(self.source, '/mob/living/simple_animal/proc/npc_subtile_native_interval', 'src, lag', {'world': world, 'floor': math.floor})
+        for tick, lag, expected in ((0.5, 6, 6), (1, 2, 2), (2, 3, 2), (0.4, 3, 2.8), (0.4, 1, 0.8), (0.4, 4, 4), (0.4, 0.1, 0.4)):
             world.tick_lag = tick
-            self.assertEqual(convert(None, lag), expected)
+            self.assertAlmostEqual(convert(None, lag), expected)
 
     def test_latest_request_reuses_one_owner_and_invalidates_receipt(self):
         start = section(self.source, '/mob/living/simple_animal/proc/npc_subtile_start_wild_walk(', '/mob/living/simple_animal/proc/npc_subtile_stop_wild_walk(')
@@ -38,7 +40,7 @@ class WildWalkContracts(unittest.TestCase):
         self.assertIn('var/new_owner = !W', start)
         self.assertIn('if (new_owner)\n\t\tspawn(0)', start)
         self.assertLess(start.index('move_gen++'), start.index('W.generation = move_gen'))
-        for token in ('W.revision++', 'W.due = world.time + interval', 'npc_subtile_stop_follow()', 'npc_subtile_stop_flee()', 'npc_subtile_stop_pet_walk()', 'npc_subtile_stop_pursuit()'):
+        for token in ('W.revision++', 'W.due = new_owner ? world.time : max(world.time, W.due)', 'npc_subtile_stop_follow()', 'npc_subtile_stop_flee()', 'npc_subtile_stop_pet_walk()', 'npc_subtile_stop_pursuit()'):
             self.assertIn(token, start)
         loop = section(self.source, '/datum/npc_subtile_wild_walk/proc/perform_loop()', '/datum/npc_subtile_recovery\n')
         for token in ('actor.npc_subtile_transaction', 'actor.npc_subtile_until', 'revision == current_revision', 'actor.ai_step(next, interval, TRUE, receipt, src)', 'actor.npc_subtile_settle_axis(src, interval)', 'human_subtile_same(before, actor.npc_subtile_snapshot())'):
