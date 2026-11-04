@@ -22,6 +22,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-04: derived art and sound fields -->
+A savefile embeds a full copy of every .dmi/.ogg resource held in a saved field,
+per entry. On the Gaia backup, animal riding overlays (`cover_overlay`), animal
+sound lists and item `item_icons` lists were about 80% of 2.sav. They are runtime
+vars in `persistence/derived_assets.dm` and rebuilt from type defaults. Before
+saving a new field that holds an icon, image or sound, prefer rebuilding it.
+
 <!-- 2026-11-04: movement during saves -->
 Players keep walking during ordinary saves; human saves are tile-only (no
 step offsets) and the post-walk sweep places any `/mob/living` that stepped
