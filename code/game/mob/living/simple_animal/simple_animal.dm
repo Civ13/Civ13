@@ -1,4 +1,5 @@
-#define GRAIN /obj/item/weapon/reagent_containers/food/snacks/grown/wheat||/obj/item/weapon/reagent_containers/food/snacks/grown/oat||/obj/item/weapon/reagent_containers/food/snacks/grown/barley||/obj/item/weapon/reagent_containers/food/snacks/grown/rice
+// `istype(O, /a||/b)` only tests /a, so check each grain separately.
+#define IS_GRAIN(O) (istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/oat) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/barley) || istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 
 /mob/living/simple_animal
 	name = "animal"
@@ -82,6 +83,7 @@
 	var/simplehunger = 1000
 	var/eggsleft = FALSE //Eggs left that may be generated, currently set to FALSE by default to decide what animals lay eggs, may cause issues later
 	var/maxeggs = 5
+	var/lays_eggs = FALSE // feeding seeds restores eggsleft up to maxeggs
 
 	//hostile mob stuff
 	var/stance = HOSTILE_STANCE_IDLE	//Used to determine behavior
@@ -414,7 +416,7 @@
 	if (stat == CONSCIOUS)
 		if (granivore && istype(O, /obj/item/stack/farming/seeds))
 			var/obj/item/stack/S = O
-			if (eggsleft != FALSE && eggsleft < maxeggs)
+			if (lays_eggs && eggsleft < maxeggs) // eggsleft 0 is FALSE, so it cannot mark layers
 				eggsleft++
 			else if (simplehunger >= 800)
 				to_chat(user, SPAN_RED("\The [src] is not hungry."))
@@ -428,7 +430,7 @@
 				S.amount -= 1
 			else
 				qdel(S)
-		if (herbivore && istype(O, GRAIN))
+		if (herbivore && IS_GRAIN(O))
 			var/obj/item/weapon/reagent_containers/food/snacks/grown/G = O
 			if (simplehunger >= 800)
 				to_chat(user, SPAN_RED("\The [src] is not hungry."))
@@ -572,7 +574,7 @@
 	else if (istype(O, /obj/item/stack/farming/seeds))
 		var/obj/item/S = O
 		feed(S, user)
-	else if (istype(O, GRAIN))
+	else if (IS_GRAIN(O))
 		var/obj/item/G = O
 		feed(G, user)
 	else if (istype(O, /obj/item/stack/medical))
@@ -833,4 +835,4 @@
 	if(mutation_variants == null)
 		return
 
-#undef GRAIN
+#undef IS_GRAIN
