@@ -95,6 +95,10 @@
 		if (!( istype(over_object, /obj/screen) ))
 			return ..()
 
+		// Drops onto hand, equipment and storage HUD slots move the storage between inventories.
+		if (inventory_drag_transfer(over_object, usr))
+			return
+
 		//makes sure that the storage is equipped, so that we can't drag it into our hand from miles away.
 		//there's got to be a better way of doing this.
 		if (!(loc == usr) || (loc && loc.loc == usr))

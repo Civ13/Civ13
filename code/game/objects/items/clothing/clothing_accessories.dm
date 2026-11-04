@@ -90,6 +90,10 @@
 
 /obj/item/clothing/MouseDrop(var/obj/over_object)
 	if (ishuman(usr) || issmall(usr))
+		// Drops onto storage, hands or equipment slots move the clothing between inventories.
+		if (inventory_drag_transfer(over_object, usr))
+			return
+
 		//makes sure that the clothing is equipped so that we can't drag it into our hand from miles away.
 		if (!(loc == usr))
 			return

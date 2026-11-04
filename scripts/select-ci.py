@@ -47,6 +47,7 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
 DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
+INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 
@@ -355,6 +356,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered farmers-almanac executable test requires explicit CI review')
         if path in DOOR_INTENTS_OFFLINE_TESTS:
             continue
+        if path in INVENTORY_DRAG_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/inventory_drag/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered inventory-drag executable test requires explicit CI review')
         if path.startswith('tests/door_intents/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered door-intent executable test requires explicit CI review')
         if path in NOMADS_ADOPTION_OFFLINE_TESTS:
