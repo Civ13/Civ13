@@ -658,8 +658,14 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 				warm_snowed++
 		else
 			cold[T] = TRUE
-	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "cold" = cold.len)
+	var/warm_after_transition = 0
+	for(var/turf/floor/T in warm)
+		if(T.weather_snow)
+			warm_after_transition++
+	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "warm_after_transition" = warm_after_transition, "cold" = cold.len)
 	require(warm_snowed > 0, "No warm candidate held generated snow when spring began")
+	// Melt must come from the worker afterwards, not from the season transition itself.
+	require(warm_after_transition > 0, "The spring transition cleared generated snow before the worker could melt it")
 	start = world.time
 	start_tod = world.timeofday
 	samples = list()
@@ -676,7 +682,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		if(!remaining)
 			melted_at = world.time - start
 			break
-	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "cold" = cold.len, "samples" = samples)
+	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "warm_after_transition" = warm_after_transition, "cold" = cold.len, "samples" = samples)
 	require(melted_at, "Spring did not melt generated snow on warm candidates")
 	var/cold_kept = 0
 	for(var/turf/floor/T in cold)
@@ -684,7 +690,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 			cold_kept++
 	var/list/terrain_spring = snapshot_terrain()
 	require(terrain_spring["authored_snow"] == terrain_before["authored_snow"], "Spring transition changed authored permanent snow")
-	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "cold" = cold.len, "cold_kept" = cold_kept, "melted_world_ds" = melted_at, "samples" = samples, "terrain_before" = terrain_before, "terrain_spring" = terrain_spring)
+	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "warm_after_transition" = warm_after_transition, "cold" = cold.len, "cold_kept" = cold_kept, "melted_world_ds" = melted_at, "samples" = samples, "terrain_before" = terrain_before, "terrain_spring" = terrain_spring)
 	pass("seasonal_melt", list("warm" = warm.len, "warm_snowed" = warm_snowed, "melted_world_ds" = melted_at, "cold_kept" = cold_kept))
 	for(var/mob/M in actors)
 		qdel(M)
