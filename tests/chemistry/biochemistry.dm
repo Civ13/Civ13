@@ -17,7 +17,28 @@
 	biochemistry_carib_checks()
 	biochemistry_heat_fuel_checks()
 	biochemistry_gelatin_checks()
+	biochemistry_wood_pulp_checks()
 	return TRUE
+
+/proc/biochemistry_wood_pulp_checks()
+	var/turf/site = locate(20, 20, 1)
+	var/obj/item/weapon/reagent_containers/glass/extraction_kit/kit = new(site)
+	var/obj/item/stack/wood_chips/chips = new(site, 2, FALSE)
+	kit.reagents.add_reagent("water", 1)
+	chemistry_assert(!kit.extract_wood_pulp(chips) && chips.amount == 2, "Occupied kit consumed chips")
+	kit.reagents.clear_reagents()
+	chemistry_assert(kit.extract_wood_pulp(chips) && chips.amount == 1 && kit.reagents.get_reagent_amount("woodpulp") == 4, "Paid wood pulp extraction")
+	var/obj/structure/centrifuge/C = new(site)
+	var/obj/item/weapon/reagent_containers/glass/beaker/vial/V = new(C)
+	C.collector = V
+	kit.reagents.trans_to_holder(C.reagents, 4)
+	V.reagents.add_reagent("water", V.reagents.maximum_volume)
+	chemistry_assert(!C.separate_batch() && C.reagents.get_reagent_amount("woodpulp") == 4, "Full collector consumed pulp")
+	V.reagents.clear_reagents()
+	chemistry_assert(C.separate_batch() && V.reagents.get_reagent_amount("purified_cellulose") == 3.2 && !C.reagents.get_reagent_amount("woodpulp"), "Cellulose purification yield")
+	qdel(kit)
+	qdel(chips)
+	qdel(C)
 
 /proc/biochemistry_build(result_path, material_path, stack_path, cost, x, faction = "global")
 	var/material/M = new material_path()

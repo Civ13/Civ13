@@ -81,6 +81,8 @@ in a generated copy and must detect the missing output before consuming inputs.
   centrifuge yields, all blood fractions, unknown/full-collector rejection and
   the actual 15-second callback with powered/lost-power/lost-collector cases and
   a restarted cycle that rejects its obsolete callback.
+- Paid chip-to-pulp extraction and centrifuge purification, with occupied-kit
+  and full-collector controls preserving their inputs.
 
 `--probe biochemistry --negative-control` removes enginefuel registration in a
 generated source copy and requires the missing-product failure. CI runs both.

@@ -520,6 +520,8 @@
 			products = list("sodium" = 0.5, "chlorine" = 0.5)
 		if("unpurified_gelatin")
 			products = list("purified_gelatin" = 0.8)
+		if("woodpulp")
+			products = list("purified_cellulose" = 0.8)
 	if(!products)
 		return FALSE
 	var/yield_fraction = 0

@@ -41,6 +41,33 @@
 	reagent_state = SOLID
 	color = "#EEDD99"
 
+/datum/reagent/purified_cellulose
+	name = "Purified Cellulose"
+	id = "purified_cellulose"
+	description = "Purified wood fibre feedstock from the game's centrifuge."
+	reagent_state = SOLID
+	color = "#EDE9DC"
+
+// One paid chip batch becomes a finite amount of pulp. An occupied kit or
+// unavailable reagent must never consume the batch.
+/obj/item/weapon/reagent_containers/glass/extraction_kit/proc/extract_wood_pulp(obj/item/stack/wood_chips/chips)
+	if(!chips || chips.gcDestroyed || chips.gc_destroyed || !chips.can_use(1) || !reagents || reagents.total_volume || reagents.get_free_space() < 4 || !chemical_reagents_list["woodpulp"])
+		return FALSE
+	if(!chips.use(1))
+		return FALSE
+	reagents.add_reagent("woodpulp", 4)
+	return TRUE
+
+/obj/item/stack/wood_chips/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/kit = W
+		if(kit.extract_wood_pulp(src))
+			to_chat(user, SPAN_NOTICE("You process one batch of chips into wood pulp."))
+		else
+			to_chat(user, SPAN_WARNING("An empty extraction kit and a batch of chips are required."))
+		return
+	..()
+
 /datum/reagent/polypropylene
 	name = "Polypropylene"
 	id = "polypropylene"

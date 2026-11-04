@@ -59,8 +59,11 @@ they cannot replace logs, planks or bark in crafting or be converted back to log
 An adjacent oven, campfire or wood stove accepts held chip batches. One batch
 adds five existing oven fuel units and five paid wood-residue units, equal to
 the five logs consumed. Ash appears only when paid fuel burns, not when loaded.
-Other fuel equipment and wood uses retain their existing behavior. No pulp,
-cellulose or fibre recipe is introduced.
+Other fuel equipment and wood uses retain their existing behavior. An empty
+extraction kit consumes one chip batch for four units of wood pulp. A powered
+centrifuge separates pulp into purified cellulose at an 80% yield, subject to
+collector capacity. These are simplified game yields; fibre production is not
+yet available.
 
 The global catalog's wood grinder costs a nominal 20 electronics and has a base
 120-decisecond duration scaled by strength and crafting. Electricity gates its
