@@ -6,6 +6,7 @@ on:
       - tools/transfer_storage/**
       - tests/transfer_storage/**
       - code/modules/persistence/transfer_bridge.dm
+      - code/modules/persistence/transfer_trade_post.dm
       - code/modules/persistence/saving.dm
       - code/modules/persistence/loading.dm
       - code/modules/persistence/functions.dm
@@ -16,6 +17,7 @@ on:
       - tools/transfer_storage/**
       - tests/transfer_storage/**
       - code/modules/persistence/transfer_bridge.dm
+      - code/modules/persistence/transfer_trade_post.dm
       - code/modules/persistence/saving.dm
       - code/modules/persistence/loading.dm
       - code/modules/persistence/functions.dm

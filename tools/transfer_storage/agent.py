@@ -97,10 +97,20 @@ def main(argv=None):
     parser.add_argument('--group', required=True)
     parser.add_argument('--port', type=int, required=True)
     parser.add_argument('--token-file', required=True)
+    parser.add_argument('--enroll', action='append', default=[], metavar='PEER:DIRECTION',
+                        help='permit one direction (out or in) with a peer; repeatable, kept in the store')
     args = parser.parse_args(argv)
+    enrollments = []
+    for item in args.enroll:
+        peer, _, direction = item.partition(':')
+        if not peer or direction not in ('out', 'in'):
+            parser.error('--enroll takes PEER:out or PEER:in, got %r' % item)
+        enrollments.append((peer, direction))
     with open(args.token_file, encoding='utf-8') as f:
         token = f.read().strip()
     store = RegionStore(args.db, args.region, args.group)
+    for peer, direction in enrollments:
+        store.enroll(peer, direction)
     server = make_server(store, token, args.port)
     try:
         server.serve_forever()

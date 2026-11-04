@@ -28,6 +28,7 @@ SAVING = read('code/modules/persistence/saving.dm')
 LOADING = read('code/modules/persistence/loading.dm')
 FUNCTIONS = read('code/modules/persistence/functions.dm')
 BRIDGE = read('code/modules/persistence/transfer_bridge.dm')
+POST = read('code/modules/persistence/transfer_trade_post.dm')
 DME = read('civ13.dme')
 
 
@@ -86,7 +87,11 @@ class Bridge(unittest.TestCase):
         self.assertIn('length(secret) < 32', new)
         self.assertLess(new.index('length(secret) < 32'), new.index('port = settings["port"]'))
         self.assertIn('return port && token', proc(BRIDGE, '/datum/transfer_bridge/proc/enabled'))
-        self.assertIn('"http://127.0.0.1:[port][path]"', proc(BRIDGE, '/datum/transfer_bridge/proc/request'))
+        request = proc(BRIDGE, '/datum/transfer_bridge/proc/request')
+        self.assertIn('"http://127.0.0.1:[port][path]"', request)
+        # json_encode(list()) is "[]", which the agent refuses as a body.
+        self.assertIn('var/payload = length(body) ? json_encode(body) : "{}"', request)
+        self.assertNotIn('json_encode(body || list())', request)
 
     def test_effects_refused_during_saves_and_before_reconcile(self):
         body = proc(BRIDGE, '/datum/transfer_bridge/proc/begin_effect')
@@ -103,6 +108,65 @@ class Bridge(unittest.TestCase):
         self.assertEqual(saved.splitlines()[1].strip(), 'set waitfor = FALSE')
         self.assertIn('if(isnull(ledger_base) || capture["ledger_seq"] > ledger_base) return', saved)
 
+
+
+class TradePost(unittest.TestCase):
+    def test_included_after_the_bridge(self):
+        includes = [line for line in DME.splitlines() if line.startswith('#include')]
+        self.assertEqual(includes.index('#include "code\\modules\\persistence\\transfer_trade_post.dm"'),
+                         includes.index('#include "code\\modules\\persistence\\transfer_bridge.dm"') + 1)
+
+    def test_goods_are_exact_allowlisted_types(self):
+        kind = proc(POST, '/proc/transfer_trade_kind')
+        self.assertIn('S.type == transfer_trade_goods[kind]', kind)
+        self.assertNotIn('istype(S, transfer_trade_goods', kind)
+        goods = re.findall(r'"(\w+)" = (/obj/item/stack/material/\w+)', POST)
+        self.assertEqual(13, len(goods))
+        for name, path in goods:
+            self.assertEqual(path.rsplit('/', 1)[1], name)
+
+    def test_payload_is_bounded_on_decode(self):
+        body = proc(POST, '/proc/transfer_trade_decode')
+        for needle in ('length(payload) > 512', 'P.len != 5', 'P["v"] != 1', '(P["kind"] in transfer_trade_goods)',
+                       'amount != round(amount)', 'amount > transfer_trade_max(P["kind"])', 'ckey(key) != key'):
+            self.assertIn(needle, body)
+
+    def test_send_holds_the_stack_and_removes_it_only_after_the_escrow_is_recorded(self):
+        body = proc(POST, '/obj/structure/transfer_trade_post/proc/send_goods')
+        recheck = body.index('// The prompts slept: check everything again.')
+        hold = body.index('S.forceMove(src)')
+        escrow = body.index('transfer_bridge.begin_escrow(')
+        remove = body.index('qdel(S)')
+        self.assertLess(body.index('input(user'), recheck)
+        self.assertLess(recheck, hold)
+        self.assertLess(hold, escrow)
+        self.assertLess(escrow, body.index('if(result)'))
+        self.assertLess(body.index('if(result)'), remove)
+        for blocking in ('sleep(', 'input(', 'alert('):
+            self.assertNotIn(blocking, body[escrow:remove])
+        self.assertIn('S.forceMove(get_turf(src))', body[remove:])
+        self.assertIn('persistence_save_active()', body[:hold])
+
+    def test_holdings_are_saved_with_the_post(self):
+        self.assertIn('map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;holdings"', POST)
+
+    def test_arrivals_credit_right_after_the_recorded_effect(self):
+        body = proc(BRIDGE, '/datum/transfer_bridge/proc/poll_once')
+        effect = body.index('begin_import(transfer_id) : begin_return(transfer_id)')
+        credit = body.index('transfer_trade_credit(post, result["payloads"], incoming)')
+        self.assertLess(effect, credit)
+        self.assertNotIn('sleep(', body[effect:credit])
+        self.assertNotIn('request(', body[effect:credit])
+        # A post deleted during the request is replaced on its turf, so the credit has a home.
+        self.assertIn('new /obj/structure/transfer_trade_post(post_turf)', body[effect:credit])
+        self.assertIn('if(ready() && !persistence_save_active())', proc(BRIDGE, '/datum/transfer_bridge/proc/poll_loop'))
+        credit_proc = proc(POST, '/proc/transfer_trade_credit')
+        self.assertIn('incoming ? P["to"] : P["from"]', credit_proc)
+        self.assertNotIn('return FALSE', credit_proc)
+
+    def test_polling_starts_only_after_reconcile(self):
+        body = proc(BRIDGE, '/datum/transfer_bridge/proc/reconcile_loop')
+        self.assertLess(body.index('ledger_base = result["ledger_seq"]'), body.index('poll_loop()'))
 
 if __name__ == '__main__':
     unittest.main()

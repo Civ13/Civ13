@@ -3,8 +3,11 @@
 It holds no custody and no transfer phase. Losing its file only pauses
 transfers until the directory is enrolled again.
 """
+import argparse
 import json
 import sqlite3
+import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -61,3 +64,40 @@ class Coordinator:
                     if reply:
                         call(url, token, '/receive', {'envelope': reply})
         return delivered
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--db', required=True)
+    parser.add_argument('--group', required=True)
+    parser.add_argument('--region', action='append', default=[], metavar='NAME=URL=TOKEN_FILE',
+                        help='enroll a loopback agent; repeatable')
+    parser.add_argument('--interval', type=float, default=5.0, help='seconds between relay passes')
+    parser.add_argument('--once', action='store_true', help='relay one pass and exit')
+    args = parser.parse_args(argv)
+    enrollments = []
+    for item in args.region:
+        parts = item.split('=', 2)
+        if len(parts) != 3 or not all(parts):
+            parser.error('--region takes NAME=URL=TOKEN_FILE, got %r' % item)
+        with open(parts[2], encoding='utf-8') as f:
+            enrollments.append((parts[0], parts[1], f.read().strip()))
+    coordinator = Coordinator(args.db, args.group)
+    try:
+        for name, url, token in enrollments:
+            coordinator.enroll(name, url, token)
+        while True:
+            try:
+                coordinator.relay_once()
+            except (OSError, ValueError) as e:
+                # An agent is down or answered garbage: its outbox waits for the next pass.
+                print('relay pass failed: %s' % e, file=sys.stderr)
+            if args.once:
+                return
+            time.sleep(args.interval)
+    finally:
+        coordinator.close()
+
+
+if __name__ == '__main__':
+    main()

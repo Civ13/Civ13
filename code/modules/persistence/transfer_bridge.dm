@@ -22,6 +22,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	var/list/loaded_capture = null
 	var/hold_reason = null
 	var/reconcile_pending = FALSE
+	// Regions this world may send goods to (config "peers"); the agent still
+	// refuses any peer the operator has not enrolled.
+	var/list/peers = list()
+	var/polling = FALSE
 
 /datum/transfer_bridge/New()
 	..()
@@ -41,6 +45,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		return
 	port = settings["port"]
 	token = secret
+	if(islist(settings["peers"]))
+		for(var/peer in settings["peers"])
+			if(istext(peer) && length(peer) <= 64 && ckey(peer) == peer && !(peer in peers))
+				peers += peer
 
 /datum/transfer_bridge/proc/enabled()
 	return port && token
@@ -53,7 +61,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 /datum/transfer_bridge/proc/request(path, list/body)
 	if(!enabled()) return null
 	var/datum/http_request/R = new
-	R.prepare(RUSTG_HTTP_METHOD_POST, "http://127.0.0.1:[port][path]", json_encode(body || list()), list("Content-Type" = "application/json", "X-Transfer-Token" = token))
+	// An empty DM list encodes as a JSON array; the agent wants an object.
+	var/payload = length(body) ? json_encode(body) : "{}"
+	R.prepare(RUSTG_HTTP_METHOD_POST, "http://127.0.0.1:[port][path]", payload, list("Content-Type" = "application/json", "X-Transfer-Token" = token))
 	R.begin_async()
 	var/deadline = world.timeofday + 50
 	while(!R.is_complete())
@@ -143,12 +153,45 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 			var/list/result = answer["ok"] ? answer["result"] : null
 			if(islist(result) && isnum(result["ledger_seq"]))
 				ledger_base = result["ledger_seq"]
+				if(!polling)
+					polling = TRUE
+					spawn(0)
+						poll_loop()
 			else
 				hold_reason = answer["error"] || "reconcile refused"
 				message_admins("Transfer agent refused the loaded save: [hold_reason]. Transfers stay paused until an operator resolves it.")
 			return
 		sleep(600)
 	reconcile_pending = FALSE
+
+// -- arrivals and returns ------------------------------------------------
+
+// Imports goods that peers committed to this world, and takes back goods a peer
+// refused, into the first trade post. Nothing happens without a trade post.
+/datum/transfer_bridge/proc/poll_loop()
+	while(enabled())
+		sleep(300)
+		if(ready() && !persistence_save_active())
+			poll_once()
+
+/datum/transfer_bridge/proc/poll_once()
+	var/list/state = status()
+	if(!islist(state) || !islist(state["pending_transfers"]) || !islist(state["active"])) return
+	var/list/directions = list()
+	for(var/list/row in state["active"])
+		if(istext(row["transfer_id"])) directions[row["transfer_id"]] = row["direction"]
+	for(var/transfer_id in state["pending_transfers"])
+		if(!istext(transfer_id)) continue
+		var/obj/structure/transfer_trade_post/post = transfer_trade_arrival_post()
+		if(!post) return
+		var/turf/post_turf = get_turf(post)
+		var/incoming = directions[transfer_id] == "in"
+		if(("[transfer_id]:[incoming ? "credit" : "return"]") in applied) continue
+		var/list/result = incoming ? begin_import(transfer_id) : begin_return(transfer_id)
+		if(!result) continue
+		// The effect is recorded; credit it now, without sleeping.
+		if(QDELETED(post)) post = transfer_trade_arrival_post() || new /obj/structure/transfer_trade_post(post_turf)
+		transfer_trade_credit(post, result["payloads"], incoming)
 
 /map_storage/transfer_capture(generation)
 	return transfer_bridge.capture(generation)
