@@ -236,9 +236,9 @@ PERSISTENCE_REBOOT_HOUR 9
 #memory plus about 6x the largest saved level file would pass it, the save splits
 #each level into small segment files (slower, but only one segment is held in memory),
 #and loads keep fewer segments open; a load first splits any large single-file level.
-#BYOND is a 32-bit process (at most 4 GiB), so keep this well below that.
+#BYOND is a 32-bit process (at most 4 GiB), so keep this below that.
 #0 or commented out keeps single-file levels.
-PERSISTENCE_MEMORY_LIMIT_MB 2048
+PERSISTENCE_MEMORY_LIMIT_MB 3072
 #always use segmented low-memory levels, regardless of the limit above
 #PERSISTENCE_LOW_MEMORY_ALWAYS
 #saved entries plus lists per level segment (256-1000000)
