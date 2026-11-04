@@ -94,6 +94,9 @@ identity. Listener ownership reads the child's socket inodes from
 inode is not the child's has no attributable owner, so any second listener on
 the port fails closed. Executable and working directory come from
 `/proc/PID/exe` and `/proc/PID/cwd`. psutil is not needed on Linux.
+Use Python 3.11 or later (`hashlib.file_digest`). The free-port probe before
+launch sets `SO_REUSEADDR` on Linux, so `TIME_WAIT` sockets left by the previous
+game's connections do not block a restart, while an active listener still does.
 
 The game starts in its own session (`start_new_session`) with stdin closed, and
 `DreamMaker`/`DreamDaemon` get their own directory prepended to

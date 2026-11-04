@@ -438,6 +438,27 @@ class SupervisorTests(unittest.TestCase):
                 constructor.assert_not_called()
 
 
+class PortProbeTests(unittest.TestCase):
+    def test_probe_refuses_an_active_listener(self):
+        import socket
+        with socket.socket() as listener:
+            listener.bind(('127.0.0.1', 0)); listener.listen()
+            port = listener.getsockname()[1]
+            with self.assertRaises(OSError):
+                m.probe_port_free('127.0.0.1', port)
+        m.probe_port_free('127.0.0.1', port)
+
+    @unittest.skipIf(sys.platform == "win32", "Linux address reuse")
+    def test_probe_ignores_time_wait_from_closed_connections(self):
+        import socket
+        # Server side closes first, leaving its accepted socket in TIME_WAIT.
+        listener = socket.socket(); listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(('127.0.0.1', 0)); listener.listen(); port = listener.getsockname()[1]
+        client = socket.create_connection(('127.0.0.1', port)); accepted, _ = listener.accept()
+        accepted.close(); listener.close(); client.recv(1); client.close()
+        m.probe_port_free('127.0.0.1', port)
+
+
 class LinuxOwnershipTests(unittest.TestCase):
     """Linux /proc identity and listener ownership, against fake and real /proc."""
     BOOT = '0123456789abcdef0123456789abcdef'

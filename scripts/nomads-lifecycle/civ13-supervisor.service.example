@@ -5,12 +5,16 @@
 # Restart=no mirrors the Windows task: a halted supervisor stays halted.
 # KillMode=process stops only the supervisor; the game runs in its own session
 # and is never killed by stopping or restarting this unit.
+# The interpreter must be Python 3.11 or later (hashlib.file_digest); point
+# ExecStart at a verified one if /usr/bin/python3 is older. Do not add -I: it
+# drops the script directory from sys.path and sibling imports such as
+# master_guard then fail.
 [Unit]
 Description=Civ13 Nomads TEST1714 lifecycle supervisor
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 -I -B /ABSOLUTE/PATH/scripts/nomads-lifecycle/supervisor.py --config /ABSOLUTE/PATH/runtime/config.json
+ExecStart=/usr/bin/python3 -B /ABSOLUTE/PATH/scripts/nomads-lifecycle/supervisor.py --config /ABSOLUTE/PATH/runtime/config.json
 Restart=no
 KillMode=process
 NoNewPrivileges=yes

@@ -368,6 +368,21 @@ def native_listener_observation(host, daemon, run, port, bind):
     raise RuntimeError('Native listener inspection supports Windows and Linux only')
 
 
+def probe_port_free(host, port):
+    """Raise OSError unless nothing else holds host:port.
+
+    Windows asks for exclusive use. Linux sets SO_REUSEADDR so sockets left in
+    TIME_WAIT by the previous game's closed connections do not block a restart;
+    Linux still refuses the bind while any socket is listening on the port.
+    """
+    with socket.socket() as probe:
+        if os.name == 'nt':
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        else:
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        probe.bind((host, port))
+
+
 def port_listening(port):
     """Any TCP listener on port, from any process; read-only."""
     if is_linux():
@@ -747,10 +762,7 @@ class Supervisor:
 
     def start(self, build, backup, generation, operation):
         c = self.config
-        with socket.socket() as probe:
-            if os.name == 'nt':
-                probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
-            probe.bind(('0.0.0.0', c['port']))
+        probe_port_free('0.0.0.0', c['port'])
         run = self.root / 'runs' / operation
         shutil.copytree(build / 'game', run, ignore=shutil.ignore_patterns('.git'))
         manifest = json.loads((build / 'build.json').read_text())
@@ -776,10 +788,7 @@ class Supervisor:
         bind = c.get('bind', '0.0.0.0')
         if bind not in ('127.0.0.1', '0.0.0.0'):
             raise RuntimeError('Unsupported native bind address')
-        with socket.socket() as probe:
-            if os.name == 'nt':
-                probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
-            probe.bind((bind, c['port']))
+        probe_port_free(bind, c['port'])
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
         # -close ends the process when the world shuts down; save_shutdown waits for that exit.
         argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-public', '-close', '-log', 'supervisor-runtime.log']
