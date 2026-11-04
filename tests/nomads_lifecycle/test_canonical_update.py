@@ -24,7 +24,7 @@ class CanonicalUpdateTests(unittest.TestCase):
         listener_patch = patch.object(m, 'require_owned_listener')
         listener_patch.start()
         self.addCleanup(listener_patch.stop)
-        observation_patch = patch.object(m.core, 'windows_listener_observation', return_value={})
+        observation_patch = patch.object(m.core, 'native_listener_observation', return_value={})
         self.listener_observation = observation_patch.start()
         self.addCleanup(observation_patch.stop)
         self.temp = tempfile.TemporaryDirectory(prefix='cu-')

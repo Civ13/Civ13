@@ -1,7 +1,8 @@
 """Owned native operations behind the bot consumer's fixed protocol.
 
 Imports do not read tokens, contact a world, or launch a process. The live
-Windows adapter needs psutil for actual executable/cwd/listener inspection.
+Windows adapter needs psutil for actual executable/cwd/listener inspection;
+Linux reads the same facts from /proc.
 """
 from pathlib import Path
 import json
@@ -16,15 +17,13 @@ def require_unique_loopback_listener(pid, port, process_rows, system_rows, liste
 
 
 def windows_observation(host, daemon, run, port):
-    return core.windows_listener_observation(host, daemon, run, port, '127.0.0.1')
+    return core.native_listener_observation(host, daemon, run, port, '127.0.0.1')
 
 
 def closed_port(port):
-    if os.name != 'nt':
-        raise RuntimeError('Native consumer execution supports Windows only')
-    import psutil
-    if any(item.status == psutil.CONN_LISTEN and item.laddr.port == port
-           for item in psutil.net_connections(kind='tcp')):
+    if os.name != 'nt' and not core.is_linux():
+        raise RuntimeError('Native consumer execution supports Windows and Linux only')
+    if core.port_listening(port):
         raise RuntimeError('Conflicting local listener; no process action permitted')
 
 
