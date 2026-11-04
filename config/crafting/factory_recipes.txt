@@ -1,0 +1,8 @@
+// Factory fabricator recipes (phase 3 of docs/factory-automation-design.md).
+// These are a curated list for fabricators only; hand crafting is unchanged.
+// FACTORY: name|output path|output amount|input path=amount;input path=amount|time (deciseconds at tier 1)|minimum fabricator tier|research node
+FACTORY: rolled steel|/obj/item/stack/material/steel|4|/obj/item/stack/ore/iron_pig=5|80|1|assembly_line
+FACTORY: barbwire|/obj/item/stack/material/barbwire|3|/obj/item/stack/material/iron=2|40|1|assembly_line
+FACTORY: cable coil|/obj/item/stack/cable_coil|30|/obj/item/stack/material/copper=2|40|1|assembly_line
+FACTORY: electronic circuits|/obj/item/stack/material/electronics|3|/obj/item/stack/material/copper=2;/obj/item/stack/material/plastic=1|60|2|automation
+FACTORY: electronic components|/obj/item/stack/component|1|/obj/item/stack/material/electronics=3;/obj/item/stack/material/gold=1|150|3|digital_computing

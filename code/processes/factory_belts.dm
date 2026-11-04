@@ -27,7 +27,8 @@
 		PROCESS_TICK_CHECK
 	factory_arms_step()
 	factory_mills_step()
+	factory_fabricators_step()
 
 /process/factory_belts/statProcess(client/C)
 	..(C)
-	C.add_stat("[factory_active_belts.len] active belts, [factory_active_arms.len] active arms, [factory_powered_drives.len]/[factory_active_drives.len] powered drives")
+	C.add_stat("[factory_active_belts.len] active belts, [factory_active_arms.len] active arms, [factory_powered_drives.len]/[factory_active_drives.len] powered drives, [factory_active_fabricators.len] active fabricators")
