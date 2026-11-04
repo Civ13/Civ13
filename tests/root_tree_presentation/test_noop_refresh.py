@@ -156,15 +156,28 @@ class PendingLightPublication(unittest.TestCase):
     def test_queue_and_commit_mark_only_owners_without_withdrawing_frames(self):
         env=environment()
         changed=compile_proc(TREE,'/proc/root_tree_light_changed(','root',env)
-        root,other=object(),object()
+        # Turf contents is the native lookup boundary; presenter images are
+        # DM associative lists, so a missing key reads as null.
+        class Keyed(dict):
+            def __getitem__(self,k):return self.get(k)
         class Atom(N):__hash__=object.__hash__
-        own=N(retired=False,owner=N(los_dirty=False),images={Atom(loc=root):'frame'})
-        foreign=N(retired=False,owner=N(los_dirty=False),images={Atom(loc=other):'foreign'})
+        root,other=N(contents=[]),N(contents=[])
+        mine,theirs=Atom(loc=root),Atom(loc=other)
+        # Native contents also lists atoms that merely overlap the turf.
+        overhang=Atom(loc=other)
+        root.contents+=[mine,overhang];other.contents.append(theirs)
+        own=N(retired=False,owner=N(los_dirty=False),images=Keyed({mine:'frame'}))
+        foreign=N(retired=False,owner=N(los_dirty=False),images=Keyed({theirs:'foreign',overhang:'foreign'}))
         env['root_tree_presenters']=_contract.Items([own,foreign])
         for _ in range(10):changed(root)
         self.assertTrue(own.owner.los_dirty)
         self.assertFalse(foreign.owner.los_dirty)
         self.assertEqual(list(own.images.values()),['frame'])
+        # A treeless turf marks nobody, however many presenters exist.
+        bare=N(contents=[]);own.owner.los_dirty=False
+        changed(bare)
+        self.assertFalse(own.owner.los_dirty)
+        self.assertFalse(foreign.owner.los_dirty)
         light=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text()
         corner=(ROOT/'code/modules/lighting/lighting_corner.dm').read_text()
         self.assertIn('root_tree_light_changed(T)',corner)

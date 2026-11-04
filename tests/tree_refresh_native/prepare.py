@@ -75,8 +75,8 @@ def adapt(relative,text, trace=True):
         text=once(text,'\t\tif(!frame_inputs_unchanged(T, rgb, source_appearance))\n','\t\tvar/tree_native_cache_hit = frame_inputs_unchanged(T, rgb, source_appearance)\n\t\tif(tree_native_cache_hit)\n\t\t\ttree_native_count("frame_cache_hits", src)\n\t\tif(!tree_native_cache_hit)\n')
         text=once(text,'\t\t\troot_tree_set_frame(I, T, frame)\n','\t\t\ttree_native_count("frame_assignments", src)\n\t\t\troot_tree_set_frame(I, T, frame)\n')
         text=once(text,'\tif(light_keys[T] == key)\n\t\treturn light_values[T]','\tif(light_keys[T] == key)\n\t\ttree_native_count("light_cache_hits", src)\n\t\treturn light_values[T]')
-        text=once(text,'\tfor(var/datum/root_tree_presenter/P in root_tree_presenters)\n','\tfor(var/datum/root_tree_presenter/P in root_tree_presenters)\n\t\ttree_native_count("notification_presenters", P)\n')
-        text=once(text,'\t\tfor(var/obj/structure/wild/T in P.images)\n','\t\tfor(var/obj/structure/wild/T in P.images)\n\t\t\ttree_native_count("notification_root_keys", P)\n')
+        text=once(text,'\t\tfor(var/datum/root_tree_presenter/P in root_tree_presenters)\n','\t\tfor(var/datum/root_tree_presenter/P in root_tree_presenters)\n\t\t\ttree_native_count("notification_presenters", P)\n')
+        text=once(text,'\t\t\tif(P.images[T])\n','\t\t\ttree_native_count("notification_root_keys", P)\n\t\t\tif(P.images[T])\n')
     if relative=='code/modules/visibility/root_light_snapshot.dm':
         text=once(text,'\tvar/rgb = mask.GetPixel(16, 16)\n','\ttree_native_count("rgb_samples", viewer.client)\n\tvar/rgb = mask.GetPixel(16, 16)\n')
     if relative in ('code/modules/visibility/root_tree_presenter.dm','code/modules/visibility/los_presenter.dm'):
