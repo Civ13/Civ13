@@ -24,7 +24,16 @@
 	biochemistry_polymer_product_checks()
 	biochemistry_insulated_cable_checks()
 	biochemistry_mixed_gelatin_checks()
+	biochemistry_plastic_pipe_checks()
 	return TRUE
+
+/proc/biochemistry_plastic_pipe_checks()
+	var/turf/site = locate(29, 20, 1)
+	var/obj/structure/props/piping/small/plastic/pipe = new(site)
+	chemistry_assert(pipe.dismantle_plastic_pipe(), "Plastic pipe dismantling failed")
+	var/obj/item/stack/material/plastic/plastic = locate() in site
+	chemistry_assert(plastic && plastic.amount == 1, "Plastic pipe did not return one sheet")
+	qdel(plastic)
 
 /proc/biochemistry_polymer_product_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench()
