@@ -34,7 +34,8 @@ var/obj/item/digging_tool
 /world/Error(exception/e)
 	digging_runtime_error = TRUE
 	world.log << "runtime error: [e] [e.file]:[e.line]"
-/proc/digging_probe_wait(mob/user, delay, atom/target = null, a = null, b = null, c = null, d = null)
+// Mirrors do_after's parameter names so named production arguments bind.
+/proc/digging_probe_wait(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, incapacitation_flags = null, can_move = FALSE, check_for_repeats = TRUE, mining_context = null, gameplay_context = null)
 	digging_waits++
 	if (digging_mode == "cancel")
 		return FALSE
@@ -84,6 +85,9 @@ var/obj/item/digging_tool
 		var/turf/floor/dirt/underground/U = new(locate(5,5,1))
 		digging_target = U
 		digging_tool = new /obj/item/weapon/material/pickaxe(H)
+		// Pickaxe mining now requires the pickaxe in a hand slot, not just carried.
+		H.r_hand = digging_tool
+		H.hand = FALSE
 		digging_mode = "cancel"
 		digging_waits = 0
 		U.attackby(digging_tool,H)

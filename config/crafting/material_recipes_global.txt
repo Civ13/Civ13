@@ -413,6 +413,7 @@ RECIPE: /material/electronics/,industrial drill,/obj/structure/drill,20,300,1,1,
 RECIPE: /material/electronics/,hydraulic fracturing rig,/obj/structure/drill/fracking,20,300,1,1,none,0,0,0,8,null
 RECIPE: /material/electronics/,powered soil sifter,/obj/structure/drill/sifter,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,powered river concentrator,/obj/structure/drill/sifter/panner,20,300,1,1,none,125,0,0,8,null
+RECIPE: /material/electronics/,powered stamp mill,/obj/structure/drill/stamp_mill,20,300,1,1,none,125,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
@@ -1289,6 +1290,7 @@ RECIPE: /material/bone/,bone dart,/obj/item/ammo_casing/chemdart/bone,2,30,0,1,n
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
+RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
 RECIPE: /material/stone/,ashtray,/obj/item/weapon/material/ashtray/stone,3,30,0,1,none,14,0,0,8,null
 
 //*****************| STONE SUPPORTS & ROOFING |***************************

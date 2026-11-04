@@ -1261,6 +1261,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/fracking" = "hydraulic_fracturing",
 		"/obj/structure/drill/sifter" = "electricity",
 		"/obj/structure/drill/sifter/panner" = "electricity",
+		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
 		// --- primitive_construction (42) ---
 		"/obj/covers/fancywood" = "primitive_construction",
@@ -1416,6 +1417,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/dehydrator" = "resource_processing",
 		"/obj/structure/distillery" = "resource_processing",
 		"/obj/structure/mill" = "resource_processing",
+		"/obj/structure/stone_crusher" = "resource_processing",
 		"/obj/structure/repair/grindstone" = "resource_processing",
 		"/obj/structure/salting_container" = "resource_processing",
 		"/obj/structure/sawmill" = "resource_processing",
