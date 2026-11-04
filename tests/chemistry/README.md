@@ -108,3 +108,4 @@ catalyst amounts. Omit a catalyst to verify no polymerization; substitute
 propylene for ethylene to verify that it does not produce polyethylene.
 
 The biochemistry probe also checks gelatin foam, paid drying batches, stale callback rejection, knife-cut sheets and bandage conversion.
+The biochemistry probe checks paid polymer container production, a missing-stopper rejection and unknown product rejection.
