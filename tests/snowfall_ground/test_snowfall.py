@@ -471,6 +471,10 @@ class SnowTests(unittest.TestCase):
                 self.assertNotIn('/water/', block); self.assertNotIn('record_abandonment', block)
                 self.assertNotIn('change_weather', block); self.assertNotIn('seasons()', block)
             current = (ROOT / path).read_text()
+            # Later non-snow additions (#3552 Status-tab season bookkeeping and
+            # the durable Nomads calendar hand-off) stay out of the snow parity.
+            current = re.sub(r'(?m)^\t+season_note_next_change\([^\n]*\)\n', '', current)
+            current = re.sub(r'(?m)^\tif\(uses_durable_metadata\(\)\) return durable_nomads_seasons\([^\n]*\)\n', '', current)
             if file == '_map_metadata.dm':
                 start = projected.index('\tvar/list/changes = list(', projected.index('/obj/map_metadata/proc/season_reconcile_warm'))
                 end = projected.index('\tvar/season_work = 0', start)
