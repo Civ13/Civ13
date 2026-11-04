@@ -82,10 +82,13 @@ def main():
     offset = take_seconds - FADE
     graph = (
         f"[0:v]trim=0:{take_seconds},setpts=PTS-STARTPTS,fps=30,"
-        f"scale={W}:-2:flags=neighbor,crop={W}:'min(ih,{H})',pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:black,{captions},format=yuv420p,setsar=1[game];"
-        f"[1:v]scale=-1:{int(H * 0.72)}:flags=neighbor,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2-60:black,"
+        f"scale={W}:-2:flags=neighbor,crop={W}:'min(ih,{H})',pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:black,{captions},fade=t=in:st=0:d=0.8,format=yuv420p,setsar=1[game];"
+        # End card: the game's title art (header + illustration, without the
+        # badge between them) and the Civ13.com call to action.
+        f"[1:v]split[ha][ia];[ha]crop=800:104:0:18,pad=800:128:0:0:black[hd];[ia]crop=800:258:0:184[il];"
+        f"[hd][il]vstack,scale=-1:{int(H * 0.70)}:flags=neighbor,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2-70:black,"
         f"drawtext=fontfile={FONT_SANS}:text='Play free at Civ13.com':fontsize=64:fontcolor=white:"
-        f"x=(w-text_w)/2:y=h-150,fps=30,format=yuv420p,setsar=1,trim=0:{END_SECONDS + FADE},setpts=PTS-STARTPTS[end];"
+        f"x=(w-text_w)/2:y=h-140,fps=30,format=yuv420p,setsar=1,trim=0:{END_SECONDS + FADE},setpts=PTS-STARTPTS[end];"
         f"[game][end]xfade=transition=fade:duration={FADE}:offset={offset},fade=t=out:st={offset + FADE + END_SECONDS - 1.0}:d=1.0[v]"
     )
     cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'warning', '-y', '-i', a.take,

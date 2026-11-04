@@ -30,6 +30,10 @@ var/obj/item/weapon/material/scythe/trailer_scythe
 var/obj/item/weapon/reagent_containers/glass/bucket/trailer_bucket
 
 // ---------------------------------------------------------------- camera
+// A smoothed camera rig. The client looks through an invisible anchor; each
+// tick a critically damped spring moves the rig's pixel position toward its
+// target (a fixed point or a followed atom) and the remainder below one tile
+// is applied as client.pixel_x/y, so pans ease in and out with no hard steps.
 /obj/trailer_camera
 	name = ""
 	icon = null
@@ -39,39 +43,114 @@ var/obj/item/weapon/reagent_containers/glass/bucket/trailer_bucket
 	mouse_opacity = 0
 
 var/obj/trailer_camera/trailer_cam
+var/trailer_cam_px = TRAILER_OPENING_X * 32
+var/trailer_cam_py = TRAILER_OPENING_Y * 32
+var/trailer_cam_vx = 0
+var/trailer_cam_vy = 0
+var/trailer_cam_tx = TRAILER_OPENING_X * 32
+var/trailer_cam_ty = TRAILER_OPENING_Y * 32
+var/atom/trailer_cam_follow
+var/trailer_cam_fox = 0
+var/trailer_cam_foy = 0
+var/trailer_cam_omega = 3.2       // spring stiffness (rad/s): ~1.2 s to settle
+var/trailer_cam_max_speed = 320   // pixels per second
+var/trailer_cam_running = FALSE
 
 /proc/trailer_camera_attach(client/C)
 	if (!trailer_cam)
 		trailer_cam = new(locate(TRAILER_OPENING_X, TRAILER_OPENING_Y, 1))
 	C.perspective = EYE_PERSPECTIVE
 	C.eye = trailer_cam
+	if (!trailer_cam_running)
+		trailer_cam_running = TRUE
+		spawn(0)
+			trailer_camera_loop()
 
-/proc/trailer_eye(atom/A)
+/proc/trailer_clamp(v, lo, hi)
+	return v < lo ? lo : (v > hi ? hi : v)
+
+/proc/trailer_camera_target()
+	var/tx = trailer_cam_tx
+	var/ty = trailer_cam_ty
+	if (trailer_cam_follow && !QDELETED(trailer_cam_follow))
+		var/turf/T = get_turf(trailer_cam_follow)
+		if (T)
+			tx = (T.x + trailer_cam_fox) * 32
+			ty = (T.y + trailer_cam_foy) * 32
+			trailer_cam_tx = tx
+			trailer_cam_ty = ty
+	// Keep the 15x9 view inside the authored map.
+	tx = trailer_clamp(tx, 8 * 32, (TRAILER_MAP_W - 7) * 32)
+	ty = trailer_clamp(ty, 5 * 32, (TRAILER_MAP_H - 4) * 32)
+	return list(tx, ty)
+
+/proc/trailer_camera_loop()
+	while (!intro_stopping)
+		var/dt = world.tick_lag / 10
+		var/list/t = trailer_camera_target()
+		var/w = trailer_cam_omega
+		trailer_cam_vx += (w * w * (t[1] - trailer_cam_px) - 2 * w * trailer_cam_vx) * dt
+		trailer_cam_vy += (w * w * (t[2] - trailer_cam_py) - 2 * w * trailer_cam_vy) * dt
+		var/speed = sqrt(trailer_cam_vx * trailer_cam_vx + trailer_cam_vy * trailer_cam_vy)
+		if (speed > trailer_cam_max_speed)
+			trailer_cam_vx *= trailer_cam_max_speed / speed
+			trailer_cam_vy *= trailer_cam_max_speed / speed
+		trailer_cam_px += trailer_cam_vx * dt
+		trailer_cam_py += trailer_cam_vy * dt
+		trailer_camera_apply()
+		sleep(world.tick_lag)
+
+/proc/trailer_camera_apply()
+	var/ax = round(trailer_cam_px / 32 + 0.5)
+	var/ay = round(trailer_cam_py / 32 + 0.5)
+	var/turf/T = locate(ax, ay, 1)
+	if (T && trailer_cam && trailer_cam.loc != T)
+		// Re-anchor without a glide; the pixel offset below absorbs the jump.
+		trailer_cam.loc = null
+		trailer_cam.loc = T
 	if (intro_observer_client)
-		intro_observer_client.perspective = EYE_PERSPECTIVE
-		intro_observer_client.eye = A
+		intro_observer_client.eye = trailer_cam
+		intro_observer_client.pixel_x = round(trailer_cam_px - ax * 32)
+		intro_observer_client.pixel_y = round(trailer_cam_py - ay * 32)
 
-// Hard cut: move the camera instantly (no glide) and look through it.
+// Snap (only used before frame zero).
 /proc/trailer_camera_cut(tx, ty)
+	trailer_cam_follow = null
+	trailer_cam_tx = tx * 32
+	trailer_cam_ty = ty * 32
+	trailer_cam_px = tx * 32
+	trailer_cam_py = ty * 32
+	trailer_cam_vx = 0
+	trailer_cam_vy = 0
 	if (!trailer_cam)
 		trailer_cam = new(locate(tx, ty, 1))
-	trailer_cam.glide_size = 0
-	trailer_cam.loc = locate(tx, ty, 1)
-	trailer_eye(trailer_cam)
+	trailer_camera_apply()
+	if (!trailer_cam_running)
+		trailer_cam_running = TRUE
+		spawn(0)
+			trailer_camera_loop()
 
-// Smooth pan from wherever the eye is now (the camera jumps there first).
-/proc/trailer_camera_pan(tx, ty, ticks_per_tile = 4)
-	var/turf/start = get_turf(intro_observer_client ? intro_observer_client.eye : trailer_cam)
-	if (start)
-		trailer_camera_cut(start.x, start.y)
-	trailer_cam.glide_size = 32 / max(1, ticks_per_tile)
-	while (trailer_cam.x != tx || trailer_cam.y != ty)
-		var/turf/next = get_step(trailer_cam, get_dir(trailer_cam, locate(tx, ty, 1)))
-		trailer_cam.loc = next
-		sleep(ticks_per_tile * world.tick_lag)
+// Ease toward a fixed point; optionally wait until the camera has settled.
+/proc/trailer_camera_pan(tx, ty, ticks_per_tile = 4, wait = TRUE)
+	trailer_cam_follow = null
+	trailer_cam_tx = tx * 32
+	trailer_cam_ty = ty * 32
+	trailer_cam_max_speed = 32 / max(1, ticks_per_tile * world.tick_lag / 10)
+	if (!wait)
+		return
+	var/deadline = world.time + 150
+	while (world.time < deadline)
+		var/list/t = trailer_camera_target()
+		if (abs(t[1] - trailer_cam_px) < 6 && abs(t[2] - trailer_cam_py) < 6)
+			break
+		sleep(world.tick_lag)
 
-/proc/trailer_follow(atom/A)
-	trailer_eye(A)
+// Ease onto a moving atom and keep tracking it.
+/proc/trailer_follow(atom/A, ox = 0, oy = 0, max_tiles_per_second = 10)
+	trailer_cam_follow = A
+	trailer_cam_fox = ox
+	trailer_cam_foy = oy
+	trailer_cam_max_speed = max_tiles_per_second * 32
 
 // ---------------------------------------------------------------- timeline
 /proc/trailer_beat(label)
@@ -209,7 +288,7 @@ var/obj/trailer_camera/trailer_cam
 /proc/trailer_scene_seeds()
 	trailer_beat("seeds")
 	sleep(15)
-	trailer_follow(trailer_gatherer)
+	trailer_follow(trailer_gatherer, 1, 1, 6)
 	var/list/gathered = list()
 	for (var/list/spot in list(list(6, 10, 7, 10), list(8, 11, 8, 10)))
 		trailer_walk(trailer_gatherer, spot[3], spot[4])
@@ -253,8 +332,7 @@ var/obj/trailer_camera/trailer_cam
 // 2. The farmer harvests ready wheat and carries it to the bakery.
 /proc/trailer_scene_harvest()
 	trailer_beat("harvest")
-	trailer_camera_pan(19, 11, 3)
-	trailer_follow(trailer_farmer)
+	trailer_follow(trailer_farmer, 0, 1, 8)
 	var/list/grain = list()
 	for (var/tx in list(18, 19, 20))
 		var/obj/structure/farming/plant/wheat/P = locate(/obj/structure/farming/plant/wheat) in locate(tx, 11, 1)
@@ -294,7 +372,7 @@ var/obj/trailer_camera/trailer_cam
 // 3. The baker mills flour, mixes dough, bakes bread and serves the customer.
 /proc/trailer_scene_bakery()
 	trailer_beat("bakery")
-	trailer_camera_cut(34, 10)
+	trailer_camera_pan(34, 10, 3, FALSE)
 	var/obj/structure/mill/large/M = trailer_mill()
 	var/deadline = world.time + 150
 	var/obj/item/weapon/reagent_containers/food/condiment/flour/F
@@ -361,7 +439,7 @@ var/obj/trailer_camera/trailer_cam
 // 4. The customer rides the horse carriage to the station.
 /proc/trailer_scene_carriage()
 	trailer_beat("carriage")
-	trailer_follow(trailer_customer)
+	trailer_follow(trailer_customer, 2, 1, 6)
 	// Hitch the waiting horse, then take the driver's seat with a free hand.
 	trailer_walk(trailer_customer, 41, 6)
 	trailer_face(trailer_customer, trailer_horse)
@@ -385,7 +463,8 @@ var/obj/trailer_camera/trailer_cam
 	reins.attack_self(trailer_customer)
 	sleep(15)
 	reins.attack_self(trailer_customer)
-	trailer_follow(trailer_carriage)
+	// Lead the carriage so it stays in frame at full gallop.
+	trailer_follow(trailer_carriage, 4, 1, 12)
 	var/deadline = world.time + 400
 	while (trailer_carriage.x < 58 && world.time < deadline)
 		sleep(1)
@@ -395,7 +474,7 @@ var/obj/trailer_camera/trailer_cam
 		sleep(5)
 	intro_check(trailer_carriage.axis.currentspeed == 0, "carriage stopped at the station")
 	sleep(10)
-	trailer_follow(trailer_customer)
+	trailer_follow(trailer_customer, 2, 1)
 	trailer_carriage.attack_hand(trailer_customer)
 	intro_check(trailer_carriage.driver != trailer_customer, "customer left the carriage")
 	trailer_log("customer off at [trailer_customer.x],[trailer_customer.y]")
@@ -403,9 +482,8 @@ var/obj/trailer_camera/trailer_cam
 // 5. The customer boards the train and it steams off east.
 /proc/trailer_scene_train()
 	trailer_beat("station")
-	trailer_camera_pan(trailer_customer.x + 4, 6, 3)
-	spawn(0)
-		trailer_camera_pan(trailer_cabin.x - 1, 6, 4)
+	// Ease along the platform ahead of the traveller, framed on the rails.
+	trailer_follow(trailer_customer, 3, 1, 6)
 	var/turf/board = locate(trailer_cabin.x, trailer_cabin.y + 1, 1)
 	trailer_walk(trailer_customer, board.x, board.y)
 	trailer_customer.dir = SOUTH
@@ -415,14 +493,16 @@ var/obj/trailer_camera/trailer_cam
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
 	trailer_customer.dir = EAST
 	sleep(10)
-	trailer_camera_pan(trailer_locomotive.x + 1, 6, 3)
+	trailer_camera_pan(trailer_locomotive.x, 5, 4)
 	trailer_engineer.dir = SOUTH
 	trailer_locomotive.attack_hand(trailer_engineer)
 	intro_check(trailer_locomotive.on, "engineer started the locomotive")
 	trailer_beat("depart")
 	sleep(10)
-	// Follow the train briefly, then hold while it steams out of shot.
-	trailer_camera_pan(82, 6, 5)
+	// Ride along with the train for a moment, then let it steam out of shot.
+	trailer_follow(trailer_locomotive, 2, 2, 3)
+	sleep(25)
+	trailer_camera_pan(trailer_locomotive.x + 3, 5, 8, FALSE)
 	var/deadline = world.time + 200
 	while (trailer_locomotive.automovement && trailer_cabin.x <= 90 && world.time < deadline)
 		sleep(1)
