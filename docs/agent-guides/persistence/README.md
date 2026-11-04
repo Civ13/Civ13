@@ -22,6 +22,14 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-04: default allowlist fields -->
+Allowlisted types (turfs, wild plants, plain objects; `persistence_field_allowlist()`)
+omit `map_storage_saved_vars` scalars equal to `initial()`, and `Load_Entry`
+restores missing ones to `initial()` after decoding, overriding constructor
+randomization. Fields added by `get_saved_vars` overrides (roof area metadata,
+soil nutrition) are always written because readers require them. Older builds
+loading such a save keep constructor values for omitted fields.
+
 <!-- 2026-11-04: derived art and sound fields -->
 A savefile embeds a full copy of every .dmi/.ogg resource held in a saved field,
 per entry. On the Gaia backup, animal riding overlays (`cover_overlay`), animal

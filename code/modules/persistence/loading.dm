@@ -190,10 +190,10 @@
 			return existing_references["[ind]"]
 		// A segmented level keeps this entry in one of its segment files.
 		savefile = level_entry_file(savefile, ind)
-		savefile.cd = entry_path(savefile, ind)
+		var/entry_dir = entry_path(savefile, ind)
+		savefile.cd = entry_dir
 		var/type = savefile["type"]
 		var/format_version = savefile["/format_version"]
-		savefile.cd = entry_path(savefile, ind)
 		if(!ispath(type, /datum))
 			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
 		// Older completed saves can contain client HUD graphs. Never construct
@@ -271,11 +271,11 @@
 		if(ishuman(object))
 			var/mob/living/human/restored_human = object
 			restored_human.persistence_restored = TRUE
-			savefile.cd = entry_path(savefile, ind)
+			savefile.cd = entry_dir
 			restored_human.human_subtile_prepare_import(savefile)
 		if (istype(object, /mob/living/simple_animal))
 			var/mob/living/simple_animal/restored_npc = object
-			savefile.cd = entry_path(savefile, ind)
+			savefile.cd = entry_dir
 			restored_npc.npc_subtile_prepare_import(savefile)
 		all_loaded += object
 		existing_references["[ind]"] = object
@@ -283,17 +283,16 @@
 		if(loading_level_link_targets["[loading_z]:[ind]"])
 			loading_level_link_targets["[loading_z]:[ind]"] = object
 		for(var/v in savefile.dir)
-			savefile.cd = entry_path(savefile, ind)
+			savefile.cd = entry_dir
 			if(object.persistence_runtime_var(v))
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 				variable_observability_skipped(null, TRUE)
 #endif
 				continue
-			if(v == "type")
-				continue
-			else if(v in list("loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
-				continue
-			else if(v == "content")
+			switch(v)
+				if("type", "loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
+					continue
+			if(v == "content")
 				if(nocontents != 2)
 					var/list/refs = saved_content_refs(savefile[v], format_version)
 					var/atom/container = object
@@ -344,10 +343,23 @@
 			else if(savefile[v] == "**emptylist")
 				object.vars[v] = list()
 			else
-				savefile.cd = entry_path(savefile, ind)
+				savefile.cd = entry_dir
 				object.vars[v] = savefile[v]
-			savefile.cd = entry_path(savefile, ind)
+			savefile.cd = entry_dir
 			TICK_CHECK
+		// The saver omits map_storage_saved_vars scalars still at their compiled
+		// default. Constructors may have changed them (random turf states), so
+		// restore the default the save recorded by omission.
+		var/list/default_fields = object.persistence_field_allowlist()
+		if(default_fields)
+			savefile.cd = entry_dir
+			var/list/saved_fields = savefile.dir
+			for(var/v in default_fields)
+				if((v in saved_fields) || !(v in object.vars) || object.persistence_runtime_var(v))
+					continue
+				var/default_value = initial(object.vars[v])
+				if(persistence_default_scalar(default_value) && object.vars[v] != default_value)
+					object.vars[v] = default_value
 		if(istype(object, /datum/wound/lost_limb))
 			var/datum/wound/lost_limb/restored_wound = object
 			restored_wound.validate_restored_state()
@@ -623,20 +635,24 @@
 				for(var/shard in shards)
 					F.cd = "/entries/[shard]"
 					entries += F.dir.Copy()
+			// Each entry's type is read once here; content checks reuse it.
 			var/list/entry_set = list()
 			for(var/ref in entries)
-				entry_set["[ref]"] = TRUE
+				var/savefile/type_file = level_entry_file(F, ref)
+				var/saved_type = type_file["[entry_path(type_file, ref)]/type"]
+				entry_set["[ref]"] = isnull(saved_type) ? TRUE : saved_type
 				TICK_CHECK
 			for(var/ref in entries)
 				TICK_CHECK
 				var/savefile/E = level_entry_file(F, ref)
-				E.cd = entry_path(E, ref)
-				var/type = E["type"]
+				var/entry_dir = entry_path(E, ref)
+				E.cd = entry_dir
+				var/type = entry_set["[ref]"]
 				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !turf_refs["[ref]"]))
 					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
 				if(ispath(type, /mob/living/human))
 					validate_saved_player_owner(E, ref, player_owners)
-					E.cd = entry_path(E, ref)
+					E.cd = entry_dir
 				var/list/fields = E.dir.Copy()
 				if("human_subtile_restore_schema" in fields)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
@@ -647,7 +663,7 @@
 					throw EXCEPTION("Human direct restore schema is unavailable")
 #endif
 				for(var/field in fields)
-					E.cd = entry_path(E, ref)
+					E.cd = entry_dir
 					var/value = E[field]
 					if(field == "type")
 						continue
@@ -655,7 +671,7 @@
 						for(var/content_ref in saved_content_refs(value, version))
 							if(!entry_set["[content_ref]"])
 								throw EXCEPTION("Missing content entry [content_ref] on z=[z]")
-							var/content_type = level_entry_value(F, content_ref, "type")
+							var/content_type = entry_set["[content_ref]"]
 							if(!ispath(content_type, /atom/movable))
 								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
@@ -760,7 +776,8 @@
 // Large flat savefile directories make repeated entry navigation expensive.
 // Legacy files remain flat; new files cap each entry directory at 512 children.
 /map_storage/proc/entry_path(savefile/F, ref)
-	if(F["/format_version"] == 2 || F["/format_version"] == 3 || F["/format_version"] == 4)
+	var/format_version = F["/format_version"]
+	if(format_version == 2 || format_version == 3 || format_version == 4)
 		return "/entries/[round((text2num("[ref]") - 1) / 512)]/[ref]"
 	return "/entries/[ref]"
 

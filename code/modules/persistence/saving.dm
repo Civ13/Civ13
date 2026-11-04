@@ -279,7 +279,8 @@
 			if(!ticket.committed)
 				throw EXCEPTION("Save hook left a prepared transfer uncommitted")
 		capture_zone_turf(savefile, frame)
-		savefile.cd = entry_path(savefile, ref)
+		var/entry_dir = entry_path(savefile, ref)
+		savefile.cd = entry_dir
 		record_save_capture_path(savefile, "type")
 		savefile["type"] << A.type
 		if(frame.accepts_children)
@@ -341,14 +342,24 @@
 			var/atom/movable/AM = A
 			if(contents && AM.load_datums)
 				changing_vars += "reagents"
+		// Allowlisted fields still at their compiled default are not written;
+		// the loader restores missing allowlisted fields to that default.
+		var/list/default_fields = A.persistence_field_allowlist()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		// Spatial candidate checks read saved turf and object density directly.
+		default_fields = null
+#endif
 		for(var/v in changing_vars)
 			save_work_check()
 			require_export_frame(frame)
 			if(A.persistence_runtime_var(v))
 				continue
-			if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
-				continue
+			switch(v)
+				if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
+					continue
 			if(A.vars.Find(v))
+				if(default_fields && (v in default_fields) && persistence_default_scalar(A.vars[v]) && A.vars[v] == initial(A.vars[v]))
+					continue
 				frame.current_field = v
 				var/value
 				if(level_link_target(A, v, A.vars[v]))
@@ -357,7 +368,7 @@
 					value = encode_saved_value(savefile, A.vars[v])
 				frame.current_field = null
 				require_export_frame(frame)
-				savefile.cd = entry_path(savefile, ref)
+				savefile.cd = entry_dir
 				record_save_capture_path(savefile, v)
 				savefile[v] << value
 		// Saved-variable recursion can declare a sibling after direct traversal.
@@ -367,7 +378,7 @@
 			// Chunk encoding can yield after the first transfer drain. Recheck
 			// paid children at publication, not only before that last yield.
 			drain_save_transfers(frame)
-			savefile.cd = entry_path(savefile, ref)
+			savefile.cd = entry_dir
 			record_save_capture_path(savefile, "content")
 			savefile["content"] << content_value
 		savefile.cd = ".."
