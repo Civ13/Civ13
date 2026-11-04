@@ -97,6 +97,13 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
 for p,s in files.items():
     if p.startswith('config/crafting/'):
         for ln,row in enumerate(s.splitlines(),1):
+            if row.startswith('FACTORY: '):
+                cols=[c.strip() for c in row[len('FACTORY: '):].split('|')]
+                if len(cols)!=7: issues.append(dict(file=p,line=ln,reason='Expected 7 factory fields',raw=row));continue
+                n,b,c,ins,t,tier,node=cols
+                ingredients=[tuple(e.split('=',1)) for e in ins.split(';') if '=' in e]
+                add(n,'Factory fabricator',ingredients,[(b,c)],p,ln,f'Fabricator tier {tier} or higher; research node {node}; {int(t)/10:g} s per cycle at tier 1, needs cable power.',row)
+                continue
             if 'RECIPE: ' not in row or '//' in row: continue
             cols=row.split('RECIPE: ',1)[1].strip().split(',')
             if len(cols)!=13: issues.append(dict(file=p,line=ln,reason='Expected 13 fields',raw=row));continue

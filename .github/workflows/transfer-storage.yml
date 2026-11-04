@@ -5,12 +5,20 @@ on:
     paths:
       - tools/transfer_storage/**
       - tests/transfer_storage/**
+      - code/modules/persistence/transfer_bridge.dm
+      - code/modules/persistence/saving.dm
+      - code/modules/persistence/loading.dm
+      - code/modules/persistence/functions.dm
       - .github/workflows/transfer-storage.yml
   push:
     branches: [master]
     paths:
       - tools/transfer_storage/**
       - tests/transfer_storage/**
+      - code/modules/persistence/transfer_bridge.dm
+      - code/modules/persistence/saving.dm
+      - code/modules/persistence/loading.dm
+      - code/modules/persistence/functions.dm
       - .github/workflows/transfer-storage.yml
 permissions:
   contents: read

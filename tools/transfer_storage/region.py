@@ -49,7 +49,9 @@ class RegionStore:
     def __init__(self, path, region_id, group_id):
         self.region = region_id
         self.group = group_id
-        self.db = sqlite3.connect(path, isolation_level=None)
+        # One agent thread owns the store; the HTTP agent serves requests one
+        # at a time, so the connection is never used concurrently.
+        self.db = sqlite3.connect(path, isolation_level=None, check_same_thread=False)
         try:
             self.db.execute('PRAGMA journal_mode=WAL')
             self.db.execute('PRAGMA synchronous=FULL')

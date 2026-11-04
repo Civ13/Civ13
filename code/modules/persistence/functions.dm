@@ -1124,6 +1124,29 @@ var/global/datum/persistence_admission_identity
 	var/phase = ticker ? ticker.current_state : GAME_STATE_PREGAME
 	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = phase, "elapsed" = phase == GAME_STATE_PREGAME ? 0 : elapsed, "roundstart_time" = phase == GAME_STATE_PREGAME ? 0 : roundstart_time, "elevation" = map.elevation_snapshot())
 
+// Transfer storage hooks (tools/transfer_storage). The game build overrides
+// these in transfer_bridge.dm; isolated fixtures keep these inert stubs.
+/map_storage/proc/transfer_capture(generation)
+	return null
+
+/map_storage/proc/transfer_saved(list/capture)
+	return
+
+/map_storage/proc/transfer_loaded(list/round_state)
+	return
+
+/proc/valid_transfer_capture(list/capture)
+	if(!islist(capture) || capture.len != 3 || !("generation" in capture) || !("effects" in capture) || !("ledger_seq" in capture)) return FALSE
+	var/generation = capture["generation"]
+	if(!istext(generation) || !length(generation) || length(generation) > 128) return FALSE
+	var/seq = capture["ledger_seq"]
+	if(!isnum(seq) || seq < 0 || seq != round(seq) || seq > 1e12) return FALSE
+	var/list/effects = capture["effects"]
+	if(!islist(effects) || effects.len > 256) return FALSE
+	for(var/effect in effects)
+		if(!istext(effect) || !length(effect) || length(effect) > 96) return FALSE
+	return TRUE
+
 /map_storage/proc/read_round_state()
 	var/marker = trim(file2text("map_saves/save_complete.txt"))
 	var/version = copytext(marker, 1, 10) == "round-v2:" ? 2 : 1
@@ -1134,9 +1157,11 @@ var/global/datum/persistence_admission_identity
 	var/has_elevation = islist(state) && ("elevation" in state)
 	var/has_level_links = islist(state) && ("level_links" in state)
 	var/has_debug_recovery = islist(state) && ("debug_recovery" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_transfer = islist(state) && ("transfer" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(has_debug_recovery && !valid_debug_recovery_audit(state["debug_recovery"], marker)) throw EXCEPTION("Invalid debug recovery audit")
+	if(has_transfer && !valid_transfer_capture(state["transfer"])) throw EXCEPTION("Invalid transfer capture")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(has_level_links) validate_level_link_rows(state["level_links"])

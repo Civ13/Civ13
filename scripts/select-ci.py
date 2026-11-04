@@ -48,6 +48,7 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
 DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
 SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
+HELD_MOVEMENT_OFFLINE_TESTS = frozenset({'tests/held_movement/test_held_movement.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
@@ -363,6 +364,10 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/sweep_loops/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered sweep-loop executable test requires explicit CI review')
+        if path in HELD_MOVEMENT_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/held_movement/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered held-movement executable test requires explicit CI review')
         if path in INVENTORY_DRAG_OFFLINE_TESTS:
             continue
         if path.startswith('tests/inventory_drag/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

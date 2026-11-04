@@ -1,6 +1,6 @@
 # Modern factory automation: audit and phased design
 
-Status: **phases 0, 1 and 2 implemented; later phases are design only.** Val chose the first slice on 2026-11-04: phase 0, then
+Status: **phases 0, 1, 2 and 3a implemented; later phases are design only.** Val chose the first slice on 2026-11-04: phase 0, then
 belts and transfer arms (phase 1), and asked threads to continue the phases.
 The other open decisions below are still pending. Each later phase lands with
 its own tests.
@@ -307,8 +307,25 @@ starts on the right and a screwdriver swaps it; an arrow overlay shows it.
 ### 5. Fabricator
 
 A powered machine that turns inputs into one selected output from a
-**factory recipe list**. Two options for where those recipes come from are in
-the decisions section. Common rules either way:
+**factory recipe list**. Val chose a curated list (decision 2), implemented in
+phase 3a as `config/crafting/factory_recipes.txt` and
+`code/modules/1713/factory_fabricators.dm`. Each `FACTORY:` row gives a name,
+output path and amount, inputs (`path=amount;...`), cycle time at tier 1,
+minimum fabricator tier and research node. Invalid or duplicate rows are
+skipped and listed in `factory_recipe_errors`; the Atlas shows the rows as
+"Factory fabricator" recipes. Hand crafting is unchanged.
+
+As built: a person sets the recipe by hand from the recipes their faction has
+researched and the fabricator's tier allows (research only; no Crafting skill
+check). It buffers two cycles of each input from arms and belts, needs cable
+power for every one-second step of a cycle, and spends inputs only when the
+cycle completes, leaving output on its own tile and waiting once twelve items
+lie there. Changing the recipe or removing the machine drops the buffer. The
+recipe and progress are saved. Tiers: assembly fabricator (`assembly_line`,
+6 PU, full time), automated fabricator (`automation`, 10 PU, 0.75 time) and
+computerized fabricator (`digital_computing`, 15 PU, half time). Outputs are
+plain material stacks, so there is no quality to fix yet. Rules from the
+design:
 
 - The fabricator is configured once (recipe, by a player with the required
   research and Crafting skill), then runs from its input buffer without a mob.
@@ -409,7 +426,8 @@ BYOND, plus a native benchmark where noted.
 | 1. Belts and arms (done) | Belts with slots, per-belt stepping and sleep; feeder and sorting arms; parts bin; drill, sifter and stamp mill output ports; recipes and research gates. | `tests/factory_automation/belts_probe.dm`: crate to belt to crate, corners, blocking, drill output into the mill; 1,922-belt benchmark above. A full disk save/load round trip is still unverified. |
 | 2a. Belt power and routing (done) | Belt drives; sorting gate, splitter, belt tunnel; recipes (drive at Assembly Line, routing at Automation). | `tests/factory_automation/routing_probe.dm`: drive range, power loss and recovery, gate filtering, splitter alternation and overflow, tunnels under a crossing, save exclusions. |
 | 2b. Smelting and wood ports (done) | Bloomery and blast furnace take ore and fuel and start a smelt once both are loaded; the powered saw mill gets a 20-log hopper and cuts one log into 12 planks a second while powered; both offer their output stacks on their tile. Clay kilns (mold casting) and the reagent grinder stay manual. | `tests/factory_automation/machines_probe.dm`: limits, refusals, automatic smelt start and restart, output offers, mill power, plank merging, hopper save and return. |
-| 3. Fabricators | Fabricator tiers and the chosen recipe source; Atlas shows factory recipes; stack arm. | A configured line produces one modern good from raw inputs unattended. |
+| 3a. Fabricators (done) | Three fabricator tiers on the curated factory recipe list (five starting recipes: rolled steel, barbwire, cable coil, electronic circuits, electronic components); Atlas shows factory recipes; research gates. | `tests/factory_automation/fabricators_probe.dm`: recipe parsing and rejection, tier and research filtering, buffer limits, no work without power, a full cycle, pause on power loss without losing inputs, sleep and wake, output offers and limit, save clamping, buffer return. |
+| 3b. Stack arm and more recipes | Stack arm; extend the recipe list once lines are played. | A configured line produces one modern good from raw inputs unattended. |
 | 4. Scale and logistics | Factory panel; fast belt; train and vehicle loading ports; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
 
 Phase 0 is useful even if the rest is reordered, and changes no gameplay
@@ -419,7 +437,8 @@ beyond fixing saved belts.
 
 1. **Starting slice.** Decided 2026-11-04: phase 0, then phase 1 (belts and
    transfer arms) before fabricators.
-2. **Fabricator recipe source.** Recommended: a curated factory recipe list
+2. **Fabricator recipe source.** Decided 2026-11-04: the curated list.
+   Recommended was: a curated factory recipe list
    (new config file, Atlas-visible) of intermediate parts and goods, so
    factories have their own production chains. Alternative: let fabricators run
    any existing hand recipe from the material catalog at its research gate,

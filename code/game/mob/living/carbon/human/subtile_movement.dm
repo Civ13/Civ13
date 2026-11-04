@@ -15,6 +15,8 @@
 	var/tmp/human_subtile_previous_glide = 0
 	var/tmp/human_subtile_applied_glide = 0
 	var/tmp/client/human_subtile_visual_owner
+	// Start of a held-key continuation: the previous step's deadline.
+	var/tmp/human_subtile_chain_start
 	// Set by before_save when an offset capsule would be rejected on load.
 	var/tmp/human_subtile_save_aligned = FALSE
 	var/list/human_subtile_position
@@ -26,6 +28,8 @@
 	var/tmp/human_subtile_visual_owned = FALSE
 	var/tmp/human_subtile_previous_glide
 	var/tmp/human_subtile_applied_glide
+	// Deadline of the smooth step a held key is continuing from, for one Move.
+	var/tmp/human_subtile_chain_time
 
 /client/proc/human_subtile_release_visuals()
 	if (!human_subtile_visual_owned)
@@ -345,6 +349,11 @@
 	T.actor = src
 	T.owner = client
 	T.start_time = world.time
+	// A held-key continuation keeps the previous step's exact cadence, so the
+	// pulses and glide run on without a pause at the tile centre.
+	if (!legacy_posture && !paid_posture && !fine_step && isnum(human_subtile_chain_start) && human_subtile_chain_start <= world.time && world.time - human_subtile_chain_start < world.tick_lag && deadline > human_subtile_chain_start)
+		T.start_time = human_subtile_chain_start
+	human_subtile_chain_start = null
 	T.end_time = deadline
 	T.expected = human_subtile_snapshot()
 	T.legacy_posture = legacy_posture
@@ -353,7 +362,7 @@
 	T.initial_prone = prone
 	T.initial_lying = lying
 	if (!legacy_posture && !paid_posture)
-		human_subtile_update_visuals(deadline - world.time, direct, client, fine_step ? 2 : 32)
+		human_subtile_update_visuals(deadline - T.start_time, direct, client, fine_step ? 2 : 32)
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
@@ -548,7 +557,7 @@
 	if (key == "step_x" || key == "step_y") return TRUE
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner")) || ..()
+	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)
