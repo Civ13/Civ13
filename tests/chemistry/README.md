@@ -72,6 +72,8 @@ in a generated copy and must detect the missing output before consuming inputs.
 - Natural jungle seed-list registration, seed-to-plant construction, real ready
   crop harvest and meat/vomit/papaya extraction. Spoiled, unknown and nonempty-kit
   cases preserve sources.
+- Knife cleaning of one paid bone and collagen extraction from the cleaned bone,
+  including the nonempty-kit rejection.
 - Cold/expired/empty/remote burner rejection, actual fuel filling/consumption and
   heated polypropylene with retained catalysts.
 - Scaled 9:1 gasoline/purified-ethanol blending, missing-ethanol rejection and

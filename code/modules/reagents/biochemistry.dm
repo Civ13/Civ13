@@ -6,6 +6,47 @@
 	reagent_state = SOLID
 	color = "#EEDDBB"
 
+// Cleaned bones are separate paid feedstock, not a replacement for bone material.
+/obj/item/stack/cleaned_bones
+	name = "cleaned bones"
+	singular_name = "cleaned bone"
+	desc = "A cleaned bone for collagen extraction."
+	icon = 'icons/obj/materials.dmi'
+	icon_state = "sheet-bone"
+	w_class = ITEM_SIZE_SMALL
+	max_amount = 50
+	can_stack = TRUE
+	stacktype = /obj/item/stack/cleaned_bones
+	value = 0
+
+/obj/item/stack/material/bone/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1))
+		var/turf/site = get_turf(src)
+		if(!user || user.stat || gcDestroyed || gc_destroyed || !site || !use(1))
+			return
+		new /obj/item/stack/cleaned_bones(site, 1)
+		to_chat(user, SPAN_NOTICE("You clean a bone for collagen extraction."))
+		return
+	..()
+
+/obj/item/weapon/reagent_containers/glass/extraction_kit/proc/extract_clean_bone(obj/item/stack/cleaned_bones/bones)
+	if(!bones || bones.gcDestroyed || bones.gc_destroyed || !bones.can_use(1) || !reagents || reagents.total_volume || reagents.get_free_space() < 4 || !chemical_reagents_list["collagen"])
+		return FALSE
+	if(!bones.use(1))
+		return FALSE
+	reagents.add_reagent("collagen", 4)
+	return TRUE
+
+/obj/item/stack/cleaned_bones/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/kit = W
+		if(kit.extract_clean_bone(src))
+			to_chat(user, SPAN_NOTICE("You extract collagen from a cleaned bone."))
+		else
+			to_chat(user, SPAN_WARNING("An empty extraction kit and a cleaned bone are required."))
+		return
+	..()
+
 /datum/reagent/proteolytic_enzyme
 	name = "Digestive Protease"
 	id = "proteolytic_enzyme"
