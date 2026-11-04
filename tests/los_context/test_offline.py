@@ -477,6 +477,22 @@ class SourceBoundaries(unittest.TestCase):
         decision=fragment(CORE.read_text(),'/datum/los_context/proc/decision(')
         self.assertIn('operation != "observe"',decision.split('\n',3)[1])
 
+    def test_runtime_opacity_toggles_invalidate_los(self):
+        # Central setter: only a real change dirties nearby viewers.
+        setter=fragment((ROOT/'code/modules/lighting/lighting_atom.dm').read_text(),'/atom/proc/set_opacity(')
+        self.assertIn('if (old_opacity != new_opacity)\n\t\tlos_invalidate(src, TRUE)',setter)
+        # Raw writers that toggle at runtime refresh at once instead of waiting
+        # for the one-second presentation audit.
+        for path,proc,count in [('code/game/turfs/wall_attacks.dm','/turf/wall/proc/toggle_open(',2),
+                                ('code/game/objects/controls.dm','/obj/structure/gate/elevator_door/proc/toggle(',2),
+                                ('code/game/objects/controls.dm','/obj/structure/gatecontrol/blastcontrol/attack_hand(',2),
+                                ('code/game/objects/controls.dm','/obj/structure/gatecontrol/blastcontrol/garage/attack_hand(',2),
+                                ('code/game/objects/structures/key_doors/key_door.dm','/obj/structure/simple_door/key_door/attackby(',1)]:
+            body=fragment((ROOT/path).read_text(),proc)
+            writes=re.findall(r'(?m)^\t+(?:G\.)?opacity = (?:TRUE|FALSE)\n\t+los_invalidate\((?:src|G), TRUE\)',body)
+            self.assertEqual(len(writes),count,proc)
+        self.assertIn('los_next_audit = world.time + 10',(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text())
+
     def test_operation_type_cap_and_persistence_boundaries(self):
         source=CORE.read_text(); decision=fragment(source,'/datum/los_context/proc/decision(')
         self.assertLess(decision.index('operation != "hover" && operation != "examine"'),decision.index('capture()'))

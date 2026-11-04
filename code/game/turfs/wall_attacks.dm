@@ -10,6 +10,7 @@
 		sleep(15)
 		density = FALSE
 		opacity = FALSE
+		los_invalidate(src, TRUE)
 		update_icon()
 		set_light(0)
 	else
@@ -17,6 +18,7 @@
 		//flick("[material.icon_base]fwall_closing", src)
 		density = TRUE
 		opacity = TRUE
+		los_invalidate(src, TRUE)
 		update_icon()
 		sleep(15)
 		set_light(1)
