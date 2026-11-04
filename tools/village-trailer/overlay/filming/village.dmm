@@ -1,44 +1,73 @@
 "aa" = (/turf/floor/grass,/area/caribbean/nomads)
 "ab" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/nomads)
-"ac" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads)
-"ad" = (/obj/structure/grille/fence/picket,/turf/floor/grass,/area/caribbean/nomads)
-"ae" = (/turf/wall/wood,/area/caribbean/nomads)
-"af" = (/obj/structure/sign/custom{name = "Village Bakery"; desc = "Fresh bread every day!"},/turf/wall/wood,/area/caribbean/nomads)
-"ag" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/nomads)
-"ah" = (/turf/floor/dirt/ploughed,/area/caribbean/nomads)
-"ai" = (/obj/structure/farming/plant/wheat,/turf/floor/dirt/ploughed,/area/caribbean/nomads)
-"aj" = (/turf/floor/wood,/area/caribbean/nomads)
-"ak" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/nomads)
-"al" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood,/area/caribbean/nomads)
-"am" = (/obj/structure/closet/crate/wood,/turf/floor/wood,/area/caribbean/nomads)
-"an" = (/turf/floor/dirt,/area/caribbean/nomads)
-"ao" = (/obj/structure/mill/large,/turf/floor/wood,/area/caribbean/nomads)
-"ap" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/nomads)
-"aq" = (/turf/floor/dirt/dust,/area/caribbean/nomads)
-"ar" = (/turf/floor/plating/cobblestone,/area/caribbean/nomads)
-"as" = (/obj/structure/bed/chair/wood,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
-"at" = (/obj/structure/sign/custom{name = "Civ13 Station"; desc = "Trains depart east."},/turf/floor/plating/cobblestone,/area/caribbean/nomads)
-"au" = (/obj/structure/rails/regular/horizontal,/turf/floor/grass,/area/caribbean/nomads)
+"ac" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/nomads)
+"ad" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/nomads)
+"ae" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/nomads)
+"af" = (/obj/structure/grille/fence/picket,/turf/floor/grass,/area/caribbean/nomads)
+"ag" = (/turf/wall/wood,/area/caribbean/nomads)
+"ah" = (/obj/structure/sign/custom{name = "Village Bakery"; desc = "Fresh bread every day!"},/turf/wall/wood,/area/caribbean/nomads)
+"ai" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/nomads)
+"aj" = (/turf/floor/dirt/ploughed,/area/caribbean/nomads)
+"ak" = (/obj/structure/farming/plant/wheat,/turf/floor/dirt/ploughed,/area/caribbean/nomads)
+"al" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/grass,/area/caribbean/nomads)
+"am" = (/turf/floor/wood,/area/caribbean/nomads)
+"an" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/nomads)
+"ao" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood,/area/caribbean/nomads)
+"ap" = (/obj/structure/closet/crate/wood,/turf/floor/wood,/area/caribbean/nomads)
+"aq" = (/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"ar" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"as" = (/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"at" = (/turf/floor/dirt,/area/caribbean/nomads)
+"au" = (/obj/structure/closet/crate/empty,/turf/floor/grass,/area/caribbean/nomads)
+"av" = (/obj/structure/mill/large,/turf/floor/wood,/area/caribbean/nomads)
+"aw" = (/obj/structure/sign/custom{name = "Market"; desc = "Fresh produce from the village farms."},/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"ax" = (/obj/structure/bed,/turf/floor/wood,/area/caribbean/nomads)
+"ay" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/nomads)
+"az" = (/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/nomads)
+"ba" = (/obj/structure/wild/flowers,/turf/wall/wood,/area/caribbean/nomads)
+"bb" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/pumpkin,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"bc" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"bd" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/grown/carrot,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"be" = (/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/nomads)
+"bf" = (/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/nomads)
+"bg" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/nomads)
+"bh" = (/obj/structure/torch_stand/full,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"bi" = (/obj/structure/potted_plant,/turf/floor/grass,/area/caribbean/nomads)
+"bj" = (/obj/structure/bed/chair/wood/wings,/turf/floor/wood,/area/caribbean/nomads)
+"bk" = (/obj/structure/potted_plant,/turf/floor/wood,/area/caribbean/nomads)
+"bl" = (/obj/structure/torch_stand/full,/turf/floor/grass,/area/caribbean/nomads)
+"bm" = (/obj/structure/sign/custom{name = "Ticket office"; desc = "All trains depart east."},/turf/floor/wood,/area/caribbean/nomads)
+"bn" = (/turf/floor/dirt/dust,/area/caribbean/nomads)
+"bo" = (/obj/structure/bed/chair/wood,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"bp" = (/obj/structure/sign/custom{name = "Civ13 Station"; desc = "Trains depart east."},/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"bq" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone,/area/caribbean/nomads)
+"br" = (/obj/structure/torch_stand/full,/turf/floor/dirt,/area/caribbean/nomads)
+"bs" = (/obj/structure/sign/custom{name = "Smithy"; desc = "Tools mended while you wait."},/turf/floor/dirt,/area/caribbean/nomads)
+"bt" = (/obj/structure/anvil,/turf/floor/dirt,/area/caribbean/nomads)
+"bu" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/dirt,/area/caribbean/nomads)
+"bv" = (/obj/structure/rails/regular/horizontal,/turf/floor/grass,/area/caribbean/nomads)
+"bw" = (/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/nomads)
+"bx" = (/obj/structure/grille/fence/picket,/turf/floor/dirt,/area/caribbean/nomads)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaaaaabaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaacaaaaaaaaaaaaacaaaaadadadadadadadadadadadadaaaaaaaeafaeaeaeaeaeaeaeaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaagaaaaaaaaaaahaiaiaiaiaiaiaiaiaiaiahaaaaaaajajajajajakajalamajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaagaaaaaaaaaaaaacaaananahaiaiaiaiaiaiaiaiaiaiahaaaaaaajajaoajajajajajajajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaagaaaaaaaaananahaiaiaiaiaiaiaiaiaiaiahaaaaaaajajajajajajajajajajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaagaaaaaaagaaaaananahahahahahahahahahahahahanananajajajajajajajajajajaaaaabaaaaaaabaaaaaaabaaaaaaabaaaaaaabaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaacaaaaaaaaaaaaaaaaaaananahahahahahahahahahahahahanananajajajapapapapajajajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaacaaaaaaaaaaananahahahahahahahahahahahahanananajajajajajajajajajajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaananaaaaaaaaaaaaaaaaaaaaaaaaanananaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaararasaratarararasarararararasararararaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarararararararararararararararararararaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauauau
-aaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaacaaaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaadaaaaadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaeaaaaaaaaaaaaaeaaaaafafafafafafafafafafafafaaaaaaagahagagagagagagagagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaabaaaaaaaaaaaa
+aaaaadaaaaaaaaaaaiaaaaaaaaaaajakakakakakakakakakakajaaalaaamamamamamanamaoapamaaaqaqaraqasaqasaaaaagagagagagagagaaagagagagagagagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaiaaaaaaaaaaaaaeaaatatajakakakakakakakakakakajaaauaaamamavamamamamamamamaaaqaqaqawaqaqaqaaaaagaxamamayazagaaagaxamamayazbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+acaaaaaaaaaaaaaiaaaaaaaaatatajakakakakakakakakakakajaaaaaaamamamamamamamamamamaaaqbbaqbcaqbdaqaaaaagambeamamamagaaagambeamamamagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaiaaaaaaaiaaadatatajajajajajajajajajajajajatatatamamamamamamamamamamaaaqaqaqaqaqaqaqaaaaagbfagbgagbfagaaagbfagbgagbfagaaaaaaaaaaaaaaaaaaagagagagagagagagagagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaeaaaaaaaaaaaaaaaaaaatatajajajajajajajajajajajajatatatamamamayayayayamamamaabhaqaqaqaqaqbhaaaaaaaabiaaadaaaaaaaaaabiaaadaaaaaaaaaaaaaaaaaaaaaaagaybjamamambkamazagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaadaaaaadaaaeaaaaaaadaaatatajajajajajajajajajajajajatatatamamamamamamamamamamaaaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaablaaaaaaaaaaadaaaaaaaaaaaaaaaaaaaaagamamamambmamamamagaaaaabaaaaaaaaabaaaaaaaaaaabaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaatataaaaaaaaaaaaaaaaaaaaaaaaatatataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagamamamamamamamamagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnbnaaagagbfagbgagagbfagagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaabiaaadaaaaaaaablaaaaaaadaaaabiaaadaaaaadaablaaaaaaaaaaaaaaaaadaaaaaaaablaaaaaaaaaabiaaadaaaaaablaaaaaaaaaaaaaaaaaaaaaaaaaaaqaqboaqbpbqaqaqboaqaqbqaqaqboaqaqbqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaagbfagbgagbfagaaaaaaaaaaaaaaagbfagbgagbfagaaaaaaaaatbratatatatatatatbsataaaaaaaaaaagbfagbgagbfagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaagamamamamamagaaaaaaaaaaaaaaagamamamamamagaaaaaaaaatatatbtatbuatatatatataaaaaaaaaaagamamamamamagaaaaaaaaaabvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbvbv
+aaaaagaxbeamayazagaaaaaaabaaaaaaagaxbeamayazagaaaaabaaatatatatatatatbwbwatataaaaabaaaaagaxbeamayazagaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaagagagagagagagaaaaaaaaaaaaaaagagagagagagagaaaaaaaabxbxbxbxbxbxbxbxbxbxbxaaaaaaaaaaagagagagagagagaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}

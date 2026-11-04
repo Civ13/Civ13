@@ -273,6 +273,14 @@ var/trailer_cam_next_step = 0
 	trailer_horse2 = new(locate(42, 7, 1))
 	trailer_living += trailer_horse
 	trailer_living += trailer_horse2
+	// The team is harnessed before the take (hitching snaps each horse onto
+	// the shafts, which reads as a teleport on camera).
+	var/mob/living/human/intro_actor/groom = trailer_actor(41, 6, "Groom", /obj/item/clothing/under/civ4, EAST)
+	trailer_carriage.MouseDrop_T(trailer_horse, groom)
+	trailer_carriage.MouseDrop_T(trailer_horse2, groom)
+	intro_check(trailer_carriage.buckled_animal_propulsion >= 4, "two horses hitched")
+	trailer_living -= groom
+	qdel(groom)
 	trailer_locomotive = new(locate(73, 3, 1))
 	trailer_locomotive.dir = EAST
 	trailer_cabin = new(locate(72, 3, 1))
@@ -591,6 +599,32 @@ var/trailer_engineer_spot = 0
 	sleep(20)
 	return TRUE
 
+// ---------------------------------------------------------------- ride glides
+// Vehicles step everything aboard with forceMove/Move on their own timers and
+// leave each atom's glide at whatever it last was, so the rider, horses and
+// carriage (or train cars) slide at different rates and snap together every
+// tile. Give the whole group one glide matched to the vehicle's step period.
+/proc/trailer_glide_group(list/atoms, period)
+	// Steps land on server ticks, so round the period to whole ticks.
+	period = max(1, round(period / world.tick_lag)) * world.tick_lag
+	var/glide = 32 * world.tick_lag / period
+	for (var/atom/movable/A in atoms)
+		A.glide_size = glide
+
+/proc/trailer_carriage_glide()
+	var/obj/structure/vehicle/carriage/C = trailer_carriage
+	while (!intro_stopping && C.driver)
+		var/list/group = list(C) + C.ontop + C.ontop_o
+		trailer_glide_group(group, C.vehicle_m_delay + 1)
+		sleep(world.tick_lag)
+
+/proc/trailer_train_glide()
+	var/obj/structure/trains/locomotive/L = trailer_locomotive
+	while (!intro_stopping && L.automovement)
+		var/list/group = list(L, trailer_cabin, trailer_customer) + L.transporting + trailer_cabin.transporting
+		trailer_glide_group(group, L.train_speed)
+		sleep(world.tick_lag)
+
 // ---------------------------------------------------------------- the take
 /proc/trailer_run()
 	trailer_start_job(trailer_gatherer, /proc/trailer_job_gatherer)
@@ -650,21 +684,17 @@ var/trailer_engineer_spot = 0
 	trailer_follow(trailer_customer, 2, 1, 6)
 	// Hitch the waiting horse, then take the driver's seat with a free hand.
 	trailer_walk(trailer_customer, 41, 6)
-	trailer_face(trailer_customer, trailer_horse)
+	trailer_face(trailer_customer, trailer_carriage)
 	var/hand_bread = trailer_customer.get_active_hand()
 	if (hand_bread)
 		trailer_customer.swap_hand()
-	trailer_carriage.MouseDrop_T(trailer_horse, trailer_customer)
 	sleep(5)
-	trailer_face(trailer_customer, trailer_horse2)
-	trailer_carriage.MouseDrop_T(trailer_horse2, trailer_customer)
-	trailer_log("hitch: propulsion=[trailer_carriage.buckled_animal_propulsion]")
-	intro_check(trailer_carriage.buckled_animal_propulsion >= 4, "two horses hitched")
 	trailer_carriage.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_carriage.driver == trailer_customer, "customer took the reins")
 	// Ride with the carriage's own glide: the walking pace trailer_walk set
 	// would leave the rider trailing the horses and snapping forward each tile.
-	trailer_customer.glide_size = trailer_carriage.glide_size
+	spawn(0)
+		trailer_carriage_glide()
 	var/obj/item/vehicleparts/wheel/rope/reins = trailer_customer.get_active_hand()
 	intro_check(istype(reins), "reins in hand")
 	trailer_customer.dir = EAST
@@ -713,6 +743,8 @@ var/trailer_engineer_spot = 0
 	trailer_locomotive.attack_hand(trailer_engineer)
 	intro_check(trailer_locomotive.on, "engineer started the locomotive")
 	trailer_beat("depart")
+	spawn(0)
+		trailer_train_glide()
 	sleep(10)
 	// Ride along with the train for a moment, then let it steam out of shot.
 	trailer_follow(trailer_locomotive, 2, 2, 3)

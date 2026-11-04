@@ -77,13 +77,112 @@ put(70, 5, '/obj/structure/sign/custom{name = "Civ13 Station"; desc = "Trains de
 for x in (68, 74, 80):
     put(x, 5, '/obj/structure/bed/chair/wood')
 
-# Scenery: tree lines along the north and south edges.
+# ---------------------------------------------------------------- village dressing
+DOOR = '/obj/structure/simple_door/key_door/anyone/wood'
+WINDOW = '/obj/structure/window/classic'
+LAMP = '/obj/structure/torch_stand/full'
+LANTERN = '/obj/item/flashlight/lantern/on/anchored'
+FLOWERS = '/obj/structure/wild/flowers'
+POT = '/obj/structure/potted_plant'
+CRATE = '/obj/structure/closet/crate/empty'
+BARREL = '/obj/item/weapon/reagent_containers/glass/barrel/water'
+TABLE = '/obj/structure/table/wood'
+CHAIR = '/obj/structure/bed/chair/wood/wings'
+TREE = '/obj/structure/wild/tree/live_tree'
+
+
+def building(x1, y1, x2, y2, doors=(), windows=(), floor=WOOD):
+    """Walls on the perimeter, a wooden floor inside, doors/windows in the walls."""
+    rect(x1, y1, x2, y2, floor)
+    for x in range(x1, x2 + 1):
+        for y in range(y1, y2 + 1):
+            if x in (x1, x2) or y in (y1, y2):
+                turf(x, y, WALL)
+    for x, y in doors:
+        turf(x, y, floor)
+        put(x, y, DOOR)
+    for x, y in windows:
+        turf(x, y, floor)
+        put(x, y, WINDOW)
+
+
+def cottage(x1, y1, door_side='north'):
+    """A 7x4 family cottage: bed, table and chairs, cabinet, plant."""
+    x2, y2 = x1 + 6, y1 + 3
+    front = y2 if door_side == 'north' else y1
+    back = y1 + 1 if door_side == 'north' else y2 - 1
+    building(x1, y1, x2, y2, doors=[(x1 + 3, front)], windows=[(x1 + 1, front), (x1 + 5, front)])
+    inner = y1 + 1 if door_side == 'north' else y2 - 1
+    put(x1 + 1, back, '/obj/structure/bed')
+    put(x1 + 5, back, '/obj/structure/closet/cabinet')
+    put(x1 + 4, inner if back != inner else back, TABLE)
+    put(x1 + 2, y1 + 1 if y2 - y1 > 2 else back, '/obj/structure/bookcase')
+    outside = front + 1 if door_side == 'north' else front - 1
+    put(x1 + 2, outside, POT)
+    put(x1 + 4, outside, FLOWERS)
+
+
+# Homes along the south side of the road (the carriage passes them).
+cottage(3, 1)
+cottage(17, 1)
+cottage(44, 1)
+# Blacksmith's yard opposite the bakery.
+rect(28, 1, 38, 4, DIRT)
+put(31, 3, '/obj/structure/anvil')
+put(33, 3, BARREL)
+put(35, 2, CRATE)
+put(36, 2, CRATE)
+put(29, 4, LAMP)
+put(37, 4, '/obj/structure/sign/custom{name = "Smithy"; desc = "Tools mended while you wait."}')
+for x in range(28, 39):
+    put(x, 1, '/obj/structure/grille/fence/picket')
+
+# North of the road: a small market square and two more cottages.
+rect(41, 8, 47, 13, STONE)
+for x in (42, 44, 46):
+    put(x, 11, TABLE)
+for x, item in [(42, 'pumpkin'), (44, 'apple'), (46, 'carrot')]:
+    put(x, 11, f'/obj/item/weapon/reagent_containers/food/snacks/grown/{item}')
+put(43, 13, BARREL)
+put(45, 13, CRATE)
+put(47, 13, CRATE)
+put(41, 9, LAMP)
+put(47, 9, LAMP)
+put(44, 12, '/obj/structure/sign/custom{name = "Market"; desc = "Fresh produce from the village farms."}')
+cottage(50, 10, door_side='south')
+cottage(58, 10, door_side='south')
+put(57, 8, LAMP)
+
+# Lamps and flowers along the road verge (y5 keeps the carriage lane clear).
+for x in (12, 26, 40, 52):
+    put(x, 5, LAMP)
+for x, y in [(2, 8), (5, 8), (11, 8), (3, 13), (12, 10), (7, 15), (10, 15), (16, 5),
+             (24, 5), (35, 5), (48, 7), (63, 8), (64, 12)]:
+    put(x, y, FLOWERS)
+for x, y in [(1, 11), (12, 16), (3, 16)]:
+    put(x, y, '/obj/structure/wild/rock')
+
+# Farm stores beside the field path.
+put(28, 12, CRATE)
+put(28, 13, BARREL)
+
+# Station hall north of the platform, lanterns along the platform.
+building(74, 6, 83, 10, doors=[(78, 6)], windows=[(76, 6), (81, 6)])
+put(75, 9, TABLE)
+put(76, 9, CHAIR)
+put(82, 9, '/obj/structure/closet/cabinet')
+put(80, 9, POT)
+put(79, 8, '/obj/structure/sign/custom{name = "Ticket office"; desc = "All trains depart east."}')
+for x in (71, 77, 83):
+    put(x, 5, LANTERN)
+
+# Scenery: tree lines along the north edge and the empty corners.
 for x in range(2, W, 5):
-    put(x, 18, '/obj/structure/wild/tree/live_tree')
-for x in range(4, 60, 7):
-    put(x, 2, '/obj/structure/wild/tree/live_tree')
-for x in range(42, 64, 4):
-    put(x, 10, '/obj/structure/wild/tree/live_tree')
+    put(x, 18, TREE)
+for x in (13, 26, 41, 52, 66, 88, 94):
+    put(x, 2 if x < 56 else 14, TREE)
+for x in (86, 91, 97):
+    put(x, 8, TREE)
 
 
 def main():
