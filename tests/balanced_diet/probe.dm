@@ -20,6 +20,12 @@
 	reagents = new /datum/reagents(100, src)
 	stats = list("stamina" = list(100, 100))
 
+/mob/living/human/diet_tester
+	var/list/diet_heard = list()
+
+/mob/living/human/diet_tester/diet_notify(message)
+	diet_heard += message
+
 /mob/living/human/diet_tester/religion_check()
 	return "none"
 
@@ -47,6 +53,12 @@
 
 /proc/diet_eat(mob/living/human/H, id, amount, list/flavour)
 	H.ingested.add_reagent(id, amount, flavour ? flavour.Copy() : null)
+	for (var/i in 1 to 500)
+		if (H.ingested.total_volume <= 0)
+			break
+		H.ingested.metabolize()
+
+/proc/diet_metabolize(mob/living/human/H)
 	for (var/i in 1 to 500)
 		if (H.ingested.total_volume <= 0)
 			break
@@ -166,6 +178,36 @@
 		meal.take_food_bite(diner, 4)
 		diet_assert(diner.diet_enjoyment == after_dish, "refilled bowl cannot renew the dish bonus")
 
+		// Meat and eggs are their own reagents, not nutriment flavours. A stew made with a
+		// liked meat must still earn the dish bonus over the same stew eaten unprepared.
+		var/mob/living/human/stew_diner = diet_subject(site)
+		var/mob/living/human/plain_diner = diet_subject(site)
+		stew_diner.mind.diet_tastes = list("meat" = 1)
+		plain_diner.mind.diet_tastes = list("meat" = 1)
+		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/stew = new(site)
+		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/plain = new(site)
+		stew.meal_quality = 2
+		plain.meal_quality = 0
+		for (var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/bowl in list(stew, plain))
+			bowl.reagents.add_reagent("nutriment", 1, list("potato" = 1))
+			bowl.reagents.add_reagent("protein", 3)
+			bowl.meal_reward_food = 4
+		var/list/stew_lineage = diet_lineage_shares(stew.reagents)
+		diet_assert(diet_close(stew_lineage["meat"], 0.75) && diet_close(stew_lineage["potato"], 0.25), "dish lineage weighs every nutritious ingredient, including meat")
+		stew.take_food_bite(stew_diner, 4)
+		plain.take_food_bite(plain_diner, 4)
+		diet_metabolize(stew_diner)
+		diet_metabolize(plain_diner)
+		diet_assert(stew_diner.diet_enjoyment > plain_diner.diet_enjoyment, "a prepared stew with liked meat earns the dish bonus")
+
+		// Texture and seasoning words are not ingredients: jerky is meat, not mostly carbohydrate.
+		var/mob/living/human/jerky_eater = diet_subject(site)
+		diet_eat(jerky_eater, "nutriment", 4, list("meat" = 1, "jaw tension" = 2))
+		diet_assert(diet_close(jerky_eater.diet_reserves["carbohydrate"], 0) && diet_close(jerky_eater.diet_reserves["protein"], 84) && diet_close(diet_sum(jerky_eater), 120), "texture and seasoning words do not count as carbohydrate")
+		var/mob/living/human/pickle_eater = diet_subject(site)
+		diet_eat(pickle_eater, "nutriment", 2, list("vinegar" = 1))
+		diet_assert(diet_close(diet_sum(pickle_eater), 60), "food with only seasoning words still conserves its nutrition")
+
 		// Taste generation: one distinct like and dislike per valid category; bad categories fail validation.
 		var/list/categories = diet_taste_categories_valid()
 		diet_assert(categories.len == diet_taste_categories.len, "every shipped taste category validates")
@@ -206,6 +248,24 @@
 		for (var/i in 1 to 300)
 			drift.handle_diet()
 		diet_assert(drift.diet_adequate_groups() == 4 && drift.diet_imbalance_ticks == 0, "a missed meal does not cause imbalance")
+
+		// A brief dip below adequate is silent both ways; recovery is announced only after a warning.
+		var/mob/living/human/diet_tester/dip = diet_subject(site, 80)
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
+		for (var/i in 1 to 5)
+			dip.handle_diet()
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 120, "fat" = 120, "vitamins" = 120)
+		for (var/i in 1 to 5)
+			dip.handle_diet()
+		diet_assert(dip.diet_imbalance_ticks == 0 && !dip.diet_heard.len, "recovery is announced only after a warning")
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
+		for (var/i in 1 to DIET_WARN_TICKS)
+			dip.handle_diet()
+		diet_assert(dip.diet_heard.len == 1 && findtext(dip.diet_heard[1], "narrow"), "sustained imbalance warns once")
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 120, "fat" = 120, "vitamins" = 120)
+		for (var/i in 1 to 200)
+			dip.handle_diet()
+		diet_assert(dip.diet_imbalance_ticks == 0 && dip.diet_heard.len == 2 && findtext(dip.diet_heard[2], "restored"), "recovery after a warning is announced once")
 		drift.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
 		for (var/i in 1 to 1400)
 			drift.handle_diet()
