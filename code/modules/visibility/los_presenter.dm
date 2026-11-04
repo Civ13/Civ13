@@ -166,6 +166,7 @@
 	var/list/next_visible = list()
 	var/list/next_trees = list()
 	var/list/next_appearances = list()
+	context.begin_snapshot_pass(S)
 	// Two extra root tiles cover ordinary non-tree oversized art. Trees have
 	// their own appearance-aware discovery and whole-root ownership.
 	for(var/cx = max(1, context.body.x-S.radius_x-2), cx <= min(world.maxx, context.body.x+S.radius_x+2), cx++)
@@ -176,7 +177,7 @@
 			if(context.decision_snapshot(T, S, "visual") == LOS_DENY)
 				var/image/turf_mask = hidden_image(T)
 				next[T] = turf_mask
-				next_owned += turf_mask
+				next_owned[turf_mask] = TRUE
 			else
 				next_visible[T] = TRUE
 			for(var/atom/movable/A in T)
@@ -189,14 +190,14 @@
 				if(context.decision_snapshot(A, S, visual_operation) == LOS_DENY)
 					var/image/atom_mask = hidden_image(A)
 					next[A] = atom_mask
-					next_owned += atom_mask
+					next_owned[atom_mask] = TRUE
 				else
 					next_visible[A] = TRUE
 					if(visual_operation == "visual_tree")
 						var/image/tree_image = native_tree_image(A)
 						next_trees[A] = tree_image
 						next_appearances[A] = A.appearance
-						next_owned |= tree_image
+						next_owned[tree_image] = TRUE
 	// Without an active root compositor (player opt-out or fallback), opaque
 	// trees rooted outside the ring above can still overhang the view. Match
 	// the compositor's radius + 6 discovery for those roots only, so their
@@ -215,21 +216,34 @@
 					if(context.decision_snapshot(A, S, "visual_tree") == LOS_DENY)
 						var/image/edge_mask = hidden_image(A)
 						next[A] = edge_mask
-						next_owned += edge_mask
+						next_owned[edge_mask] = TRUE
 					else
 						next_visible[A] = TRUE
 						var/image/edge_tree = native_tree_image(A)
 						next_trees[A] = edge_tree
 						next_appearances[A] = A.appearance
-						next_owned |= edge_tree
+						next_owned[edge_tree] = TRUE
+	context.end_snapshot_pass()
 	if(S.policy != context.policy_key() || S.revision != context.revision)
 		invalidate()
 		dirty = TRUE
 		return FALSE
 	// This non-sleeping publication removes stale masks and adds only changed
 	// ones. Existing image identities are reused instead of resent each tick.
-	owner.images -= owned_images - next_owned
-	owner.images |= next_owned - owned_images
+	// next_owned is a keyed set; plain list subtraction rescanned one whole
+	// image list per entry, making every refresh quadratic in visible masks.
+	var/list/previous_owned = list()
+	var/list/stale_images = list()
+	for(var/I in owned_images)
+		previous_owned[I] = TRUE
+		if(!next_owned[I])
+			stale_images += I
+	var/list/new_images = list()
+	for(var/I in next_owned)
+		if(!previous_owned[I])
+			new_images += I
+	owner.images -= stale_images
+	owner.images |= new_images
 	visible_targets = next_visible
 	images = next
 	tree_images = next_trees
