@@ -52,18 +52,13 @@
 					if (accepted)
 						turfs += T
 				continue
-			// Index a one-time copy: a sleeping for-in re-pays the list on every resume.
-			var/list/area_contents = A.contents.Copy()
-			for (var/content_index = 1, content_index <= area_contents.len, content_index++)
-				var/turf/T = area_contents[content_index]
+			for (var/turf/T in A.contents)
 				season_work++
 				if (!(season_work % 64) && !season_owner.season_work_pause(season_epoch, season_work, TRUE))
 					return null
 #ifdef CIV13_ZONE_PERSISTENCE
 				require_persistence_area_snapshot(registry_epoch)
 #endif
-				if (!istype(T))
-					continue
 				if (turf_type && !istype(T, turf_type))
 					continue
 #ifdef CIV13_ZONE_PERSISTENCE

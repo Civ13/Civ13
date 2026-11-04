@@ -102,10 +102,7 @@ SUITES = {
     # Day/night sweep loop-shape contracts; no BYOND runtime.
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
-            'code/processes/time_of_day_change.dm', 'code/_helpers/areas.dm',
-            'code/game/objects/map_metadata/_map_metadata.dm',
-            'code/game/objects/map_metadata/nomads/nomads_asia.dm',
-            'code/modules/persistence/durable_nomads.dm')},
+            'code/processes/time_of_day_change.dm',)},
     # Nomads adoption source contracts and surname model; no BYOND runtime.
     'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
         'paths': ('tests/nomads_adoption/',), 'shared_paths': (

@@ -258,11 +258,7 @@
 
 /obj/map_metadata/proc/durable_nomads_replace(old_type, new_type, epoch, chance = 100)
 	var/work = 0
-	var/list/T_sweep = season_world_candidates(old_type, epoch)
-	for (var/T_index = 1, T_index <= length(T_sweep), T_index++)
-		var/turf/T = T_sweep[T_index]
-		if (!istype(T))
-			continue
+	for(var/turf/T in season_world_candidates(old_type, epoch))
 		if(!season_work_pause(epoch, ++work)) return FALSE
 		if(!season_candidate_valid(T, old_type)) continue
 		if(chance < 100 && (!prob(chance) || T:water_level < 50)) continue
@@ -313,19 +309,11 @@
 		to_chat(world, winter ? "<big>It's getting very cold. <b>Winter</b> has started.</big>" : "<big>The weather gets warmer. <b>Summer</b> has started.</big>")
 		change_weather_somehow()
 		var/work = 0
-		var/list/T_sweep = season_world_candidates(/obj/structure/wild/tree/live_tree, epoch)
-		for (var/T_index = 1, T_index <= length(T_sweep), T_index++)
-			var/obj/structure/wild/tree/live_tree/T = T_sweep[T_index]
-			if (!istype(T))
-				continue
+		for(var/obj/structure/wild/tree/live_tree/T in season_world_candidates(/obj/structure/wild/tree/live_tree, epoch))
 			if(!season_work_pause(epoch, ++work)) return
 			if(season_candidate_valid(T, /obj/structure/wild/tree/live_tree)) T.change_season()
 		var/bush_type = winter ? /obj/structure/wild/smallbush : /obj/structure/wild/smallbush/winter
-		var/list/B_sweep = season_world_candidates(bush_type, epoch)
-		for (var/B_index = 1, B_index <= length(B_sweep), B_index++)
-			var/obj/structure/wild/smallbush/B = B_sweep[B_index]
-			if (!istype(B))
-				continue
+		for(var/obj/structure/wild/smallbush/B in season_world_candidates(bush_type, epoch))
 			if(!season_work_pause(epoch, ++work)) return
 			if(!season_candidate_valid(B, bush_type) || (winter && istype(B, /obj/structure/wild/smallbush/winter))) continue
 			if(winter)
@@ -334,11 +322,7 @@
 				new /obj/structure/wild/smallbush(B.loc)
 			qdel(B)
 		if(!winter)
-			var/list/B2_sweep = season_world_candidates(/turf/floor/dirt/burned, epoch)
-			for (var/B2_index = 1, B2_index <= length(B2_sweep), B2_index++)
-				var/turf/floor/dirt/burned/B = B2_sweep[B2_index]
-				if (!istype(B))
-					continue
+			for(var/turf/floor/dirt/burned/B in season_world_candidates(/turf/floor/dirt/burned, epoch))
 				if(!season_work_pause(epoch, ++work)) return
 				if(season_candidate_valid(B, /turf/floor/dirt/burned) && prob(60)) B.ChangeTurf(/turf/floor/grass)
 		durable_schedule("nomads_ice_weather", winter ? 100 : 150)

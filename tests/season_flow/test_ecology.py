@@ -20,31 +20,6 @@ def subtype(value, root):
     return value == root or value.startswith(root + "/")
 
 
-def fold_index_sweeps(raw_lines):
-    """Read each indexed snapshot sweep as the typed for-in it replaced.
-
-    The index loop skips entries that fail istype exactly as the typed for-in
-    did; it only avoids re-paying the list on every budget resume.
-    """
-    folded, i = [], 0
-    while i < len(raw_lines):
-        head = raw_lines[i].split("//", 1)[0].rstrip()
-        match = re.fullmatch(r"(\t*)var/list/(\w+)_sweep = (.+)", head)
-        if match:
-            indent, name, expr = match.groups()
-            loop, element, check, skip = (line.rstrip() for line in raw_lines[i + 1:i + 5])
-            assert loop == f"{indent}for (var/{name}_index = 1, {name}_index <= length({name}_sweep), {name}_index++)", loop
-            item = re.fullmatch(indent + r"\tvar/([\w/]+)/(\w+) = " + name + r"_sweep\[" + name + r"_index\]", element)
-            assert item, element
-            assert check == f"{indent}\tif (!istype({item.group(2)}))" and skip == f"{indent}\t\tcontinue", (check, skip)
-            folded.append(f"{indent}for (var/{item.group(1)}/{item.group(2)} in {expr})")
-            i += 5
-            continue
-        folded.append(raw_lines[i])
-        i += 1
-    return folded
-
-
 def project_proc(source, signature):
     instructions = {
         "var/season_work = 0": "season_work = 0",
@@ -104,7 +79,7 @@ def project_proc(source, signature):
         "if (!season_candidate_valid(DF, /turf/floor/dirt/flooded))": 'if not self.candidate(DF, DIRT + "/flooded"):',
         "DF.ChangeTurf(/turf/floor/beach/water/flooded)": 'DF.replace(WATER + "/flooded")',
     }
-    raw_lines = fold_index_sweeps(body(source, signature).splitlines())
+    raw_lines = body(source, signature).splitlines()
     lines = ["def execute(self, world, epoch, previous_phase=None, next_phase=None, area_type=None, old_type=None, new_type=None, climate=None, upper_only=False):"]
     i = 0
     while i < len(raw_lines):

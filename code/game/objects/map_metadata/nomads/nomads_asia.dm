@@ -11,22 +11,14 @@
 		return
 	var/season_work = 0
 	if (season ==  "SUMMER" || season == "FALL")
-		var/list/DF_sweep = season_world_candidates(/turf/floor/beach/water/flooded, epoch) // Directly change, you have no Z levels on your map
-		for (var/DF_index = 1, DF_index <= length(DF_sweep), DF_index++)
-			var/turf/floor/beach/water/flooded/DF = DF_sweep[DF_index]
-			if (!istype(DF))
-				continue
+		for (var/turf/floor/beach/water/flooded/DF in season_world_candidates(/turf/floor/beach/water/flooded, epoch)) // Directly change, you have no Z levels on your map
 			if (!season_work_pause(epoch, ++season_work))
 				return
 			if (!season_candidate_valid(DF, /turf/floor/beach/water/flooded))
 				continue
 			DF.ChangeTurf(/turf/floor/dirt/flooded)
 	else
-		var/list/DF_sweep = season_world_candidates(/turf/floor/dirt/flooded, epoch) // Directly change, you have no Z levels on your map
-		for (var/DF_index = 1, DF_index <= length(DF_sweep), DF_index++)
-			var/turf/floor/dirt/flooded/DF = DF_sweep[DF_index]
-			if (!istype(DF))
-				continue
+		for (var/turf/floor/dirt/flooded/DF in season_world_candidates(/turf/floor/dirt/flooded, epoch)) // Directly change, you have no Z levels on your map
 			if (!season_work_pause(epoch, ++season_work))
 				return
 			if (!season_candidate_valid(DF, /turf/floor/dirt/flooded))
