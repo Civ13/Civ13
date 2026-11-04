@@ -4,16 +4,11 @@ name: Village trailer render
 # the finished trailer and publishes the media to an orphan media branch.
 on:
   push:
-    branches: ['ci/village-trailer-*']
-    paths:
-      - .github/workflows/village-trailer.yml
-      - tools/village-trailer/**
+    branches:
+      - 'ci/village-trailer-*'
   workflow_dispatch:
 permissions:
   contents: read
-concurrency:
-  group: village-trailer-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   render:
     if: github.repository == 'Civ13/Civ13'
