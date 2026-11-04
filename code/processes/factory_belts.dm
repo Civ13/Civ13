@@ -1,4 +1,4 @@
-// Factory belts and transfer arms step once a second. Idle belts and arms
+// Belt drives, factory belts and transfer arms step once a second. Idle belts and arms
 // leave their lists, so an empty factory costs nothing here. A large factory
 // resumes within the tick budget instead of stalling the server tick.
 /datum/process_list/var/process/factory_belts/factory_belts = null
@@ -29,4 +29,4 @@
 
 /process/factory_belts/statProcess(client/C)
 	..(C)
-	C.add_stat("[factory_active_belts.len] active belts, [factory_active_arms.len] active arms")
+	C.add_stat("[factory_active_belts.len] active belts, [factory_active_arms.len] active arms, [factory_powered_drives.len]/[factory_active_drives.len] powered drives")

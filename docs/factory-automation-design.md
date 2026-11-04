@@ -1,7 +1,8 @@
 # Modern factory automation: audit and phased design
 
-Status: **phases 0 and 1 implemented; later phases are design only.** Val chose the
-first slice on 2026-11-04: phase 0, then belts and transfer arms (phase 1).
+Status: **phases 0 and 1 and the routing half of phase 2 implemented; the
+rest is design only.** Val chose the first slice on 2026-11-04: phase 0, then
+belts and transfer arms (phase 1), and asked threads to continue the phases.
 The other open decisions below are still pending. Each later phase lands with
 its own tests.
 
@@ -243,14 +244,19 @@ the old mapped conveyor stays as it is for the 1969 map.
   A blocked belt retries every 2 steps, and a belt that frees space wakes the
   belts feeding it.
 - Belts carry items, never mobs. A wrench turns a belt; a crowbar lifts it.
-- **Power:** phase 1 belts are unpowered. Per-belt cabling made layouts
-  tedious, so belt power (for example a drive unit per line) moves to phase 2.
+- **Power:** a belt runs only while a powered **belt drive** is within the
+  drive's range (7 tiles, `code/modules/1713/factory_routing.dm`). One drive
+  takes one cable connection and 4 PU however many belts it runs, so a line
+  needs no cable under each tile. A belt caches the drive that last ran it and
+  only searches the (short) list of powered drives when that one stops; an
+  unpowered belt sleeps, and a drive that gains power wakes the belts in its
+  range. Drives step before belts each second.
 - Benchmark (fixture, 516.1688 DEBUG build): 1,922 belts with 2,356 moving
   items cost about 60 ms per step while everything flows, i.e. about 6% of
   one core at one step a second, and less once queues settle. Idle belts cost
   nothing.
-- Underground crossings, splitters and sorting gates come with routing in
-  phase 2.
+- Sorting gates, splitters and tunnels are belt subtypes that only change
+  where the exit item goes (see "Routing").
 
 ### 3. Transfer arms
 
@@ -280,10 +286,20 @@ then sleep until woken by either side. They never take from mobs.
 
 ### 4. Routing
 
-- **Sorting gate** (reuses the `diverter*` states): on a belt line, sends items
-  matching a filter to its side output and everything else straight on.
-- **Splitter**: alternates between two outputs.
-- **Belt tunnel** for crossings.
+Phase 2 implements these as belt subtypes in
+`code/modules/1713/factory_routing.dm`; each carries and saves like a belt and
+overrides only which outputs it tries for its exit item. The side output
+starts on the right and a screwdriver swaps it; an arrow overlay shows it.
+
+- **Sorting gate** (`diverter1` overlay): sends items matching its filter to
+  the side and everything else straight on; with no filter everything goes
+  straight on. The Set Gate Filter verb takes the held item's type, because
+  hitting a belt with an item drops it onto the belt.
+- **Splitter** (`diverter0` overlay): alternates straight and side, and uses
+  the other output when one is blocked, so a full branch never stops the line.
+- **Belt tunnel**: an entrance hands its exit item to the first tunnel exit
+  facing the same way up to 6 tiles ahead, under whatever lies between; an
+  exit that frees space wakes its entrance.
 - Lines stay simple straight-and-corner chains; routing devices are the
   junctions between lines, which keeps each line an ordered list.
 
@@ -390,7 +406,8 @@ BYOND, plus a native benchmark where noted.
 | --- | --- | --- |
 | 0. Foundations (done) | Fix belt load direction and switch state; reuse fresh reservations (R1); add the port interface (`code/modules/1713/factory_ports.dm`) with crates and the stamp mill as first implementers. | `tests/factory_automation/probe.dm`; the native grid probe's 20 repeated draws now take one traversal; stamp mill accepts stone without a mob. |
 | 1. Belts and arms (done) | Belts with slots, per-belt stepping and sleep; feeder and sorting arms; parts bin; drill, sifter and stamp mill output ports; recipes and research gates. | `tests/factory_automation/belts_probe.dm`: crate to belt to crate, corners, blocking, drill output into the mill; 1,922-belt benchmark above. A full disk save/load round trip is still unverified. |
-| 2. Routing and smelting | Belt power (drive units); sorting gate, splitter, belt tunnel; ports for bloomery, blast furnace, kilns, powered sawmill and grinder. | Mixed ore line sorted into separate furnaces; ingots out by belt. |
+| 2a. Belt power and routing (done) | Belt drives; sorting gate, splitter, belt tunnel; recipes (drive at Assembly Line, routing at Automation). | `tests/factory_automation/routing_probe.dm`: drive range, power loss and recovery, gate filtering, splitter alternation and overflow, tunnels under a crossing, save exclusions. |
+| 2b. Smelting ports | Ports for bloomery, blast furnace, kilns, powered sawmill and grinder. | Mixed ore line sorted into separate furnaces; ingots out by belt. |
 | 3. Fabricators | Fabricator tiers and the chosen recipe source; Atlas shows factory recipes; stack arm. | A configured line produces one modern good from raw inputs unattended. |
 | 4. Scale and logistics | Factory panel; fast belt; train and vehicle loading ports; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
 
