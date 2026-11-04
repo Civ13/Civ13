@@ -1,18 +1,19 @@
-// Profiles are intentionally explicit. Other maps retain their existing timers
-// until their subtype calendars/events have their own recovery contract.
+// Profiles are explicitly audited; unknown descendants remain unsupported.
 /obj/map_metadata
 	var/tmp/datum/durable_timer_queue/durable_callbacks
 	var/tmp/research_clock_offset = 0
 
 /obj/map_metadata/proc/uses_durable_metadata()
-	return type in list(/obj/map_metadata/nomads/gaia, /obj/map_metadata/nomads/europe)
+	return type in durable_nomads_profiles()
 
 /obj/map_metadata/proc/durable_callback_names()
 	return list("wind" = "wind", "religion" = "religious_timer", "tips" = "tip_process", "pollution" = "pollution", "autoresearch" = "durable_autoresearch_step", "season_loop" = "durable_season_loop", "season_phase_1" = "durable_season_phase_1", "season_phase_2" = "durable_season_phase_2", "season_phase_3" = "durable_season_phase_3", "season_phase_4" = "durable_season_phase_4", "season_phase_5" = "durable_season_phase_5", "season_phase_6" = "durable_season_phase_6", "season_phase_7" = "durable_season_phase_7", "season_phase_8" = "durable_season_phase_8", "season_phase_9" = "durable_season_phase_9", "blizzard_start" = "durable_blizzard_start", "blizzard_end" = "durable_blizzard_end", "heat_start" = "durable_heat_start", "heat_end" = "durable_heat_end", "sandstorm_start" = "durable_sandstorm_start", "sandstorm_end" = "durable_sandstorm_end")
 
 /obj/map_metadata/proc/durable_timer_queue()
 	if(!durable_callbacks)
-		durable_callbacks = new(src, durable_callback_names())
+		var/list/callbacks = durable_callback_names()
+		callbacks += durable_nomads_callbacks()
+		durable_callbacks = new(src, callbacks)
 	return durable_callbacks
 
 // TRUE means this profile owns the callback, including an already scheduled
@@ -25,6 +26,9 @@
 
 /obj/map_metadata/proc/durable_pending(key)
 	return durable_callbacks && durable_callbacks.pending[key]
+
+/obj/map_metadata/durable_callback_blocked()
+	return nomads_event_busy || nomads_active_event || nomads_recovery_required || season_busy || (persistence_restart && persistence_restart.startup_hold)
 
 /obj/map_metadata/proc/durable_cancel_season_phases()
 	if(!durable_callbacks) return

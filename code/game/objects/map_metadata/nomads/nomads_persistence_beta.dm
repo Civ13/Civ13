@@ -53,8 +53,9 @@
 	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
-	spawn(18000)
-		config.no_respawn_delays = FALSE
+	if(!durable_schedule("nomads_respawn_policy", 18000))
+		spawn(18000)
+			config.no_respawn_delays = FALSE
 
 /obj/map_metadata/nomads/persistence_beta/cross_message(faction)
 	var/warning_sound = sound("sound/effects/siren_once.ogg", repeat = FALSE, wait = TRUE, channel = 777)

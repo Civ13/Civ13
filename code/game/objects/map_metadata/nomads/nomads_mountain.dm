@@ -13,12 +13,14 @@
 
 /obj/map_metadata/nomads/mountain/New()
 	..()
-	spawn(1800)
-		if (season == "SPRING") //fixes game setting the season as spring
-			season = "Wet Season"
+	if(!durable_schedule("nomads_initial_climate", 1800))
+		spawn(1800)
+			if (season == "SPRING") //fixes game setting the season as spring
+				season = "Wet Season"
 
 
 /obj/map_metadata/nomads/mountain/seasons(looping = TRUE, force = FALSE, advance_decay = null)
+	if(uses_durable_metadata()) return durable_nomads_seasons(looping, force, advance_decay)
 	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "dry")
 		season = "Wet Season"
