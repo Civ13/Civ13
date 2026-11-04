@@ -88,8 +88,8 @@ def select_catalog(catalog_root=None):
 def project(doc):
     errors=validate(doc)
     if errors:raise ValueError("IR_REJECTED: "+json.dumps(errors))
-    if doc["profile"] not in {"SURFACE","OCEANIC"} or set(doc["layers"])!={"SURFACE","UNDERGROUND"}:
-        raise ValueError("EXPORT_PROFILE: two-plane SURFACE or OCEANIC only")
+    if doc["profile"] not in {"SURFACE","OCEANIC","UNDERGROUND_CAVERN"} or set(doc["layers"])!={"SURFACE","UNDERGROUND"}:
+        raise ValueError("EXPORT_PROFILE: two-plane SURFACE, OCEANIC or UNDERGROUND_CAVERN only")
     starts={tuple(p) for p in doc["starts"]};result={}
     for layer,level in doc["layers"].items():
         z=level["native_z"]
@@ -116,7 +116,8 @@ def project(doc):
                     elif c["terrain"]=="BEACH" or c["soil"]=="SAND":turf="/turf/floor/beach/sand"
                     else:turf="/turf/floor/grass"
                 if c["blocked"] and c["terrain"] not in {"MOUNTAIN","ROCK"}:raise ValueError("EXPORT_BLOCKER_UNSUPPORTED")
-                if c["tree"]!="NONE":
+                # Cavern fungus pillars have no pinned native type yet; they stay sidecar-only.
+                if c["tree"]!="NONE" and not (c["tree"]=="FUNGUS" and doc["profile"]=="UNDERGROUND_CAVERN"):
                     if c["tree"] not in TREES:raise ValueError("EXPORT_SPECIES_UNSUPPORTED")
                     atoms.append(TREES[c["tree"]])
                 if (x,y,layer) in starts:atoms.append('/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"}')
@@ -157,6 +158,8 @@ def emit(doc,manifest,catalog_root=None,catalog_version=None):
                "mountains and blocked reserve project to dense native basalt on underground dirt; no altitude/biome runtime behavior is added",
                "abstract supplies are sidecar-only and are not emitted as usable native supplies",
                "constructors may randomize appearance/start timers; static layout is not deterministic runtime or gameplay acceptance"]}
+    if doc["profile"]=="UNDERGROUND_CAVERN":
+        sidecar["projection_limits"].append("cavern fungus pillars and surface exit pairs are sidecar-only; the surface plane is placeholder ground")
     verify_roundtrip(text,sidecar)
     return text,sidecar
 

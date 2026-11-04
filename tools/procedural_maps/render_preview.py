@@ -29,13 +29,14 @@ FONT={
 COLORS={"TEMPERATE":(121,162,93),"COAST":(134,174,117),"LUSH":(69,143,76),"STEPPE":(177,177,98),"ARID":(206,173,110),
         "DESERT":(222,196,139),"HILL":(170,143,105),"MOUNTAIN":(72,77,71),"BEACH":(227,210,159),
         "RIVER":(48,140,210),"LAKE":(45,110,176),"SEA":(24,66,112),"SWAMP":(96,146,143),
-        "TREE":(25,69,47),"START":(255,219,72),"RESOURCE":(239,242,221),"PORT":(255,153,66),"JUNCTION":(221,109,255)}
+        "TREE":(25,69,47),"CAVE_FLOOR":(150,128,104),"ROCK":(46,42,40),"START":(255,219,72),"RESOURCE":(239,242,221),"PORT":(255,153,66),"EXIT":(255,153,66),"JUNCTION":(221,109,255)}
 
 
 def render(doc,path):
     tile=4 if doc["width"]>100 else 6
     mw,mh=doc["width"]*tile,doc["height"]*tile
-    ocean=doc['profile']=='OCEANIC'
+    ocean=doc['profile']=='OCEANIC';cavern=doc['profile']=='UNDERGROUND_CAVERN'
+    layer='UNDERGROUND' if cavern else 'SURFACE'
     width=max(900,mw+320);height=max(700 if doc.get('junctions') or ocean else 640,mh+150)
     pixels=bytearray(bytes((18,29,36))*(width*height))
     def rect(x,y,w,h,color):
@@ -50,12 +51,12 @@ def render(doc,path):
                     if b=='1':rect(x+xx*scale,y+yy*scale,scale,scale,color)
             x+=6*scale
     text(24,20,'OFFLINE PROTOTYPE - NOT GAMEPLAY',scale=2)
-    text(24,47,'SEED '+doc['seed']+'   '+str(doc['width'])+' X '+str(doc['height'])+'   SURFACE Z2',scale=2)
+    text(24,47,'SEED '+doc['seed']+'   '+str(doc['width'])+' X '+str(doc['height'])+('   UNDERGROUND Z1' if cavern else '   SURFACE Z2'),scale=2)
     text(24,73,'IR SHA256 '+canonical_hash(doc)[:24],scale=1)
     ox,oy=24,100
-    for y,row in enumerate(doc["layers"]["SURFACE"]["cells"]):
+    for y,row in enumerate(doc["layers"][layer]["cells"]):
         for x,c in enumerate(row):
-            key=c["water"] if c["water"]!="NONE" else c["terrain"] if c["terrain"] in {"MOUNTAIN","HILL","BEACH"} else c["biome"]
+            key=c["water"] if c["water"]!="NONE" else c["terrain"] if c["terrain"] in {"MOUNTAIN","HILL","BEACH","CAVE_FLOOR","ROCK"} else c["biome"]
             px,py=ox+x*tile,oy+(doc['height']-1-y)*tile
             rect(px,py,tile,tile,COLORS.get(key,(140,140,140)))
             if c["tree"]!="NONE":rect(px+tile//2-1,py+tile//2-1,2,2,COLORS["TREE"])
@@ -76,6 +77,10 @@ def render(doc,path):
         for port in doc['ports']:
             x,y,_=port['at'];rect(ox+x*tile,oy+(doc['height']-1-y)*tile,tile,tile,COLORS['PORT'])
     labels=['TEMPERATE','LUSH','STEPPE','ARID','DESERT']+(['COAST'] if ocean else [])+['RIVER','LAKE','SEA','SWAMP','MOUNTAIN','HILL','BEACH','TREE','START','RESOURCE']
+    if cavern:
+        labels=['CAVE_FLOOR','ROCK','LAKE','TREE','START','RESOURCE','EXIT']
+        for portal in doc['portals']:
+            x,y,_=portal['a'];rect(ox+x*tile,oy+(doc['height']-1-y)*tile,tile,tile,COLORS['EXIT'])
     for i,label in enumerate(labels):
         yy=oy+35+i*25;rect(lx,yy,15,15,COLORS[label]);text(lx+24,yy+1,label,scale=1)
     text(lx,oy+440,'ABSTRACT SUPPLIES',scale=1)

@@ -7,4 +7,7 @@ def generate(config,*,traversal='forward'):
     if isinstance(config,dict) and config.get('schema')==OCEAN_CONFIG_VERSION:
         from .ocean_generator import generate as ocean_generate
         return ocean_generate(config,traversal=traversal)
+    if isinstance(config,dict) and config.get('profile')=='UNDERGROUND_CAVERN':
+        from .cavern_generator import generate as cavern_generate
+        return cavern_generate(config,traversal=traversal)
     return surface_generate(config,traversal=traversal)
