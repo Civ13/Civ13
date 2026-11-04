@@ -132,4 +132,4 @@ power-network integration, syringe collection or production-server behavior.
 Existing power/crafting checks run separately in required CI. These tests resolve
 the changed procedures without needing graphical captures under project policy.
 
-Gelatin can be whipped into gelatin foam at the reaction bench. Apply a glass container holding five units of gelatin or foam to an empty drying rack; after 1500 ticks, one dry gelatin batch is produced. Cut it with a knife into a gelatin sheet and use the sheet in hand to fold a bandage. These are simplified game conversions.
+Gelatin can be whipped into gelatin foam at the reaction bench. Apply a glass container holding five units of gelatin or foam to an empty drying rack; after 1500 ticks, one dry gelatin batch is produced. Loading a saved rack restarts that drying interval. Cut it with a knife into a gelatin sheet and use the sheet in hand to fold a bandage. These are simplified game conversions.

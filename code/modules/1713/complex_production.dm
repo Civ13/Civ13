@@ -324,6 +324,14 @@
 		finish_gelatin(batch_id)
 	return TRUE
 
+// A loaded rack resumes a paid batch; old callbacks cannot finish the new cycle.
+/obj/structure/drying_rack/after_load()
+	..()
+	if(gelatin_drying && filled == 1 && producttype == /obj/item/weapon/reagent_containers/glass)
+		var/batch_id = ++gelatin_batch_id
+		spawn(1500)
+			finish_gelatin(batch_id)
+
 /obj/structure/drying_rack/proc/finish_gelatin(batch_id)
 	if(gcDestroyed || gc_destroyed || batch_id != gelatin_batch_id || !gelatin_drying || filled != 1 || producttype != /obj/item/weapon/reagent_containers/glass || !isturf(loc))
 		return FALSE

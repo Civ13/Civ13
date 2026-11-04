@@ -95,7 +95,10 @@
 	chemistry_assert(rack.finish_gelatin(first_batch), "Gelatin failed to dry")
 	chemistry_assert(rack.load_gelatin(beaker), "Rack did not accept next batch")
 	chemistry_assert(!rack.finish_gelatin(first_batch) && rack.gelatin_drying, "Old drying callback finished a new batch")
-	chemistry_assert(rack.finish_gelatin(rack.gelatin_batch_id), "Second gelatin batch failed")
+	var/before_load_batch = rack.gelatin_batch_id
+	rack.after_load()
+	chemistry_assert(rack.gelatin_batch_id != before_load_batch && !rack.finish_gelatin(before_load_batch), "Load did not invalidate the old drying callback")
+	chemistry_assert(rack.finish_gelatin(rack.gelatin_batch_id), "Restored gelatin batch failed")
 	bench.collector.reagents.trans_to_holder(beaker.reagents, 5)
 	chemistry_assert(rack.load_gelatin(beaker) && !beaker.reagents.get_reagent_amount("gelatin_foam"), "Foam was not accepted as paid feedstock")
 	chemistry_assert(rack.finish_gelatin(rack.gelatin_batch_id), "Foam did not dry")
