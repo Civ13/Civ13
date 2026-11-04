@@ -1,0 +1,83 @@
+name: Agent CI digest
+
+# One PR comment per head that summarizes every GitHub Actions check, classifies
+# failures (infra / known / needs-fix), reruns infrastructure-only failures once
+# and embeds a JSON block for agents. Usage: docs/agent-ci-digest.md.
+#
+# workflow_run executes this file from the default branch with the base
+# repository's token. It checks out only the default branch for the script and
+# never checks out or runs pull request code.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'Full 40-character head SHA to digest'
+        type: string
+        required: true
+      pr:
+        description: 'PR number to comment on (empty: job summary only)'
+        type: string
+        required: false
+        default: ''
+      rerun:
+        description: 'Rerun infrastructure-only failures once'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-ci-digest-${{ github.event.workflow_run.head_sha || inputs.sha }}
+  cancel-in-progress: true
+
+jobs:
+  digest:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      actions: write
+      checks: read
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          sparse-checkout: scripts/ci_digest.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Find the pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_PRS: ${{ toJSON(github.event.workflow_run.pull_requests) }}
+          INPUT_PR: ${{ inputs.pr }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || inputs.sha }}
+        run: |
+          pr="$INPUT_PR"
+          if [ -z "$pr" ] && [ "$GITHUB_EVENT_NAME" = workflow_run ]; then
+            pr="$(python3 -c 'import json,os; p=json.loads(os.environ["EVENT_PRS"] or "[]"); print(p[0]["number"] if p else "")')"
+            if [ -z "$pr" ]; then
+              pr="$(gh api "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/pulls" --jq '[.[] | select(.state == "open")][0].number // empty' || true)"
+            fi
+          fi
+          case "$pr" in ''|*[!0-9]*) pr='' ;; esac
+          echo "number=$pr" >> "$GITHUB_OUTPUT"
+          echo "sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+      - name: Wait for checks and write the digest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.pr.outputs.sha }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          NO_RERUN: ${{ github.event_name == 'workflow_dispatch' && !inputs.rerun && '--no-rerun' || '' }}
+        run: |
+          args=(--sha "$HEAD_SHA")
+          [ -n "$PR_NUMBER" ] && args+=(--pr "$PR_NUMBER")
+          [ -n "$NO_RERUN" ] && args+=("$NO_RERUN")
+          python3 -B scripts/ci_digest.py "${args[@]}"
