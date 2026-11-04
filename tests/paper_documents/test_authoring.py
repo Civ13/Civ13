@@ -38,6 +38,10 @@ def environment(source=SOURCE):
    self.expected_record_json=None;self.expected_legacy_json=None;self.context_owner=None;self.context_parent=None
  for name,args in [('capture_state','self'),('state_current','self'),('begin','self,actor'),('cancel','self,actor,lease'),('retire','self'),('snapshot','self,actor')]:
   setattr(Session,name,vm.project(adapted,'/datum/paper_document_authoring/proc/'+name,args,env,True))
+ env.update(stationdate2text=lambda:'FIXTURE-DATE',stationtime2text=lambda:'FIXTURE-TIME')
+ vm.ALLOWED|={'stationdate2text','stationtime2text','paper_document_expand_pencode'}
+ vm.METHODS|={'get_signature'}
+ env['paper_document_expand_pencode']=vm.project(source.replace('\\[','[').replace('\\]',']'),'/proc/paper_document_expand_pencode','value,pen,actor',env)
  for name,args in [('has_access','self,actor,writing=False'),('can_mutate','self,actor,pen'),('initialize','self,actor,pen'),('canonical_copy','self,actor'),('project','self,reader,forceshow=False'),('append','self,actor,pen,document_id,revision,language_id,kind,value,expected_lease=None')]:
   setattr(Session,name,vm.project(adapted,'/datum/paper_document_authoring/'+name,args,env,True))
 # Core API tests stub observer setup; test_lifecycle projects the real bodies.
@@ -231,6 +235,9 @@ class Authoring(unittest.TestCase):
   self.assertEqual([s['text'] for s in self.paper.document_record['sections']],['INNER'])
   self.assertIsNotNone(self.session.snapshot(self.actor))
 
+ def test_write_time_pencode_stamps_resolve_once_into_plain_text(self):
+  self.start();self.assertTrue(self.write('[sign] on [date] at [time] [b]x[/b]'))
+  self.assertEqual(self.paper.document_record['sections'][0]['text'],self.pen.signature+' on FIXTURE-DATE at FIXTURE-TIME [b]x[/b]')
  def test_direct_parent_projection_is_disabled_in_editor_context(self):
   self.start();self.assertIsNone(self.session.project(self.actor))
 

@@ -51,7 +51,7 @@ publication; previous six-hour publication/admin windows do not carry forward.
 | --- | --- |
 | Photo viewer | Selected independent reader; existing image plus canonical inert caption, no domain action or new prompt service. |
 | Notes/memory | Defer to character/save/knowledge rules and owners; only already learned records may be sent. |
-| Paper, books, notices, bundles, folders, clipboard editors | Need structured rich-text/stamp/link policy and per-action item/containment checks; no arbitrary stored HTML in React. |
+| Books, notices, bundles, folders, clipboard editors (paper sheets use the [Paper editor](paperwork-editor.md)) | Need structured rich-text/stamp/link policy and per-action item/containment checks; no arbitrary stored HTML in React. |
 | Instruments, shops/fuel, inventory/container, crafting, groups/votes | Need finite transaction/playback contracts and, where required, typed cancellation/post-wait validation. No generic href forwarding. |
 | Preferences/lobby, program host, privileged tools | Host, persistence and rights contracts; coordinate existing owners before implementation. |
 | Help, HUD/FPS, manager, vehicles/combat, chat/stat shell and engine controls | Existing owners/boundary review; not part of this slice. Engine MAP/INPUT/OUTPUT and screen widgets remain explicitly on the inventory. |

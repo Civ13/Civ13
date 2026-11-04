@@ -1,5 +1,5 @@
-// Inactive integration API: no verb, paper attack or player Topic calls this.
-// The existing transport still owns generation, ready/snapshot/ack and fallback.
+// Pen attacks reach this through paper_editor_try_entrypoint. The existing
+// transport still owns generation, ready/snapshot/ack and fallback.
 /proc/paper_editor_request(payload)
 	if (!istext(payload) || length(payload) > 8192)
 		return null
@@ -21,20 +21,20 @@
 		return null
 	return request
 
-// First inactive slice reuses the already validated Book page renderer for
-// plain pen runs. Rich legacy HTML and crayon fonts retain the whole classic
-// projected read-only view; neither is flattened or silently rewritten.
+// Pen and crayon sections render through the guarded Book page. Existing legacy
+// HTML is shown there as inert styled text parsed on the client; it is never
+// rewritten, and the classic read-only preview remains the failure fallback.
 /proc/paper_editor_modern_supported(list/data)
-	if (!data || data["draft_tool"] != "pen")
+	if (!data || !(data["draft_tool"] in list("pen", "crayon")))
 		return FALSE
 	var/list/view = data["view"]
-	if (!islist(view) || view["legacy_body_html"] != "")
+	if (!islist(view) || !istext(view["legacy_body_html"]) || length(view["legacy_body_html"]) > 65536)
 		return FALSE
 	var/list/sections = view["sections"]
 	if (!islist(sections))
 		return FALSE
 	for (var/list/section in sections)
-		if (section["tool"] != "pen")
+		if (!(section["tool"] in list("pen", "crayon")))
 			return FALSE
 	return TRUE
 
@@ -177,18 +177,22 @@
 			error(e.desc)
 	return ..()
 
-// This source-only route is deliberately disabled. When later enabled, a
-// failed admission or unsupported renderer never falls through to legacy write.
-#define PAPER_EDITOR_ENTRYPOINT_ENABLED FALSE
+// Pen use opens the language-aware editor. A paper it cannot take (a subtype,
+// or a writer with no written language) keeps the guarded legacy editor only
+// while it has no canonical record; a classified paper never downgrades.
+#define PAPER_EDITOR_ENTRYPOINT_ENABLED TRUE
 /proc/paper_editor_try_entrypoint(obj/item/weapon/paper/P, mob/actor, obj/item/weapon/pen/pen)
 	if (!PAPER_EDITOR_ENTRYPOINT_ENABLED)
 		return FALSE
-	if (!paper_editor_open(P, actor, pen))
-		to_chat(actor, SPAN_WARNING("You cannot write on this paper right now."))
+	if (paper_editor_open(P, actor, pen))
+		return TRUE
+	if (P && !P.gc_destroyed && isnull(P.document_record))
+		return FALSE
+	to_chat(actor, SPAN_WARNING("You cannot write on this paper right now."))
 	return TRUE
 #undef PAPER_EDITOR_ENTRYPOINT_ENABLED
 
-// The future route shares this factory; construction itself grants no access.
+// The pen route uses this factory; construction itself grants no access.
 /proc/paper_editor_open(obj/item/weapon/paper/P, mob/actor, obj/item/weapon/pen/pen)
 	if (!P || !actor || !actor.client)
 		return null
