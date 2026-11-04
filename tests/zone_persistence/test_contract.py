@@ -318,9 +318,9 @@ class Contract(unittest.TestCase):
         self.assertIn('points += locate(i+1,6,2)', sequence)
         self.assertIn('for(var/list/points in zone_fixture_registry_lists()) points.Cut()', sequence)
         control = probe.split('/proc/zone_fixture_remove_referenced_zone(',1)[1].split('/world\n',1)[0]
-        self.assertIn('var/id = spawn["zone"]', control)
+        self.assertIn('var/id = spawn_row["zone"]', control)
         self.assertIn('membership_cells > 0', control)
-        self.assertIn('removed == 1 && spawn["zone"] == id', control)
+        self.assertIn('removed == 1 && spawn_row["zone"] == id', control)
         self.assertNotIn('if("absent-zone") zones.Cut(1, 2)', probe)
 
 

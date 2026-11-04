@@ -24,7 +24,10 @@ def correction_contract(zone=ZONE, areas=AREAS, world=WORLD, setup=SETUP, init=I
     assert 'require_persistence_area_registry(null, TRUE)' not in setup
     assert 'persistence_area_startup_token = area_startup' in world
     assert 'setup_everything(area_startup)' in world
-    assert 'catch(var/exception/E)\n\t\t\tarea_startup.close()' in world
+    # The failure path may notify readiness hooks first, but must close the
+    # one-shot startup token before rethrowing.
+    failure=world.split('setup_everything(area_startup)\n\t\tcatch(var/exception/E)\n',1)[1].split('\n\t\tarea_startup.close()',1)[0]
+    assert '\t\t\tarea_startup.close()' in failure and failure.index('\t\t\tarea_startup.close()') < failure.index('\t\t\tthrow E')
     start=adapter.extract(zone,'proc/initialize_areas')
     assert 'if(used || persistence_area_startup_token != src)' in start
     assert 'used = TRUE' in start

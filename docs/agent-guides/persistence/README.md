@@ -22,6 +22,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-04: native zone acceptance (#3311) -->
+`tests/zone_persistence/run_native.py --all-controls` runs the synthetic zone
+modes natively (moving-save-chunks isolated-native job). A switched roof's base
+type must be exactly one saved zone: the save is refused otherwise. Failures
+after ClearMap hold recovery; nothing is rolled back in memory. Real-map scale
+and real-save checks need production data and are not covered by it.
+
 <!-- 2026-11-03: low-memory segmented levels -->
 BYOND materializes a whole savefile as an in-memory tree on first access (about
 6x the file size, never returned to the OS). Low-memory saves write format 4:
