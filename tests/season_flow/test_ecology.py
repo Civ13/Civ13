@@ -236,6 +236,10 @@ def queue_proc(source):
         "var/advance_decay = season_queue[4]": "advance_decay = self.queue[3]",
         "season_queue.Cut(1, 5)": "del self.queue[:4]",
         'if (kind == "transition")': 'if kind == "transition":',
+        # Durable Nomads maps (#3577) queue their own transition kind ahead of this branch.
+        'if(kind == "nomads_transition")': 'if kind == "nomads_transition":',
+        "durable_nomads_apply(value, advance_decay)": 'self.phase_calls.append((kind, value))',
+        'else if (kind == "transition")': 'elif kind == "transition":',
         "if (!isnull(season_cycle) && !season_next_phase())": "if self.policy is not None and not self.lookup(self.policy, self.season):",
         "continue": "continue", "var/epoch = season_epoch": "epoch = self.epoch",
         'if ((force || config.seasons_on) && (season in list("FALL", "WINTER", "SPRING", "SUMMER")))':
@@ -251,6 +255,8 @@ def queue_proc(source):
         "else if (season_worker_valid(value))": "elif self.valid(value):",
         "call(src, kind)(value)": "self.phase_calls.append((kind, value))",
         "catch (var/exception/E)": "except Exception:",
+        "if(uses_durable_metadata())": "if False:  # durable Nomads failure report, not modelled here",
+        'durable_nomads_fail("calendar phase failure")': "pass",
         "season_queue = list()": "self.queue = []",
         "season_busy = FALSE": "self.busy = False", "throw E": "raise",
         "if (season_retired || map != src)": "if self.retired or not self.current:",

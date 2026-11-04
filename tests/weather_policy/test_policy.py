@@ -11,6 +11,8 @@ POLICY = ROOT / "code/modules/1713/weather_policy.dm"
 import sys
 sys.path.insert(0, str(ROOT / "tests/seasonal_construction"))
 from construction_contract import without_construction_hook
+sys.path.insert(0, str(ROOT / "tests/snowfall_ground"))
+from source_contract import without_later_master_changes
 
 
 def body(source, signature):
@@ -260,12 +262,15 @@ class WeatherPolicyTests(unittest.TestCase):
         old_process = subprocess.check_output(["git", "show", BASE + ":code/processes/weather.dm"], cwd=ROOT, text=True)
         marker = "\tif(map && map.uses_durable_metadata())"
         self.assertEqual(self.source.split(marker)[1], old_process.split(marker)[1])
-        for relative in ("code/processes/abandoned_items.dm", "code/modules/persistence/durable_environment.dm",
-                         "code/modules/persistence/durable_timers.dm"):
-            current = (ROOT / relative).read_bytes()
-            if relative == "code/processes/abandoned_items.dm":
-                current = without_construction_hook(current.decode()).encode()
-            self.assertEqual(current, subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT))
+        relative = "code/processes/abandoned_items.dm"
+        current = without_construction_hook(without_later_master_changes((ROOT / relative).read_text()))
+        self.assertEqual(current, subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True))
+        # Durable persistence later grew per-map profiles and an owner hold
+        # (#3577); the policy must still stay out of it rather than freeze its bytes.
+        for relative in ("code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm"):
+            text = (ROOT / relative).read_text()
+            for name in ("weather_policy", "weather_timing"):
+                self.assertNotIn(name, text, relative)
 
     def test_durable_weather_schema_preserves_deadline_ownership(self):
         relative = "code/modules/persistence/durable_world.dm"

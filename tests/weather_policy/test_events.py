@@ -85,7 +85,10 @@ def active(event):
     # Native spawn/row ownership is not executed. This adapter invokes the real
     # end body at a due independent deadline, respecting the actual blocked body.
     blocked = body(QUEUE.read_text(), "/datum/durable_timer_queue/proc/blocked()").strip()
-    if blocked != "return persistence_save_in_progress":
+    # #3577 added an owner hold (Nomads event/season/recovery work); none of
+    # those owner flags is set in this weather-only state, so only saving blocks.
+    if blocked not in ("return persistence_save_in_progress",
+                       "return persistence_save_in_progress || (owner && owner.durable_callback_blocked())"):
         raise ValueError(blocked)
     def expire():
         if s.now >= deadline and not s.saving and getattr(m, event):
@@ -145,9 +148,16 @@ class EventTests(unittest.TestCase):
         old = early_return_control()
         marker = "\tif(map && map.uses_durable_metadata())"
         self.assertEqual(self.source.split(marker, 1)[1], old.split(marker, 1)[1])
-        for file in (EVENTS, QUEUE):
-            relative = file.relative_to(ROOT).as_posix()
-            self.assertEqual(file.read_bytes(), subprocess.check_output(["git", "show", MAIN_BASE + ":" + relative], cwd=ROOT))
+        # Durable persistence later grew per-map profiles and an owner hold
+        # (#3577; adapted in active()). Freeze the weather-event timer bodies
+        # this suite owns instead of whole persistence files.
+        relative = EVENTS.relative_to(ROOT).as_posix()
+        before = subprocess.check_output(["git", "show", MAIN_BASE + ":" + relative], cwd=ROOT, text=True)
+        current = EVENTS.read_text()
+        for name in ("weather_events", "blizzard_start", "blizzard_end", "sandstorm_start",
+                     "sandstorm_end", "heat_start", "heat_end", "schedule(key, delay)", "pending(key)"):
+            signature = "/obj/map_metadata/proc/durable_" + (name if "(" in name else name + "()")
+            self.assertEqual(body(current, signature), body(before, signature), signature)
 
 
 if __name__ == "__main__":

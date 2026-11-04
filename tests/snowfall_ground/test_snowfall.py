@@ -418,6 +418,37 @@ class SnowTests(unittest.TestCase):
         self.assertNotIn('overlays.Cut', image)
         self.assertIn("image('icons/turf/snow.dmi'", image)
 
+    def test_grass_shovel_reaches_the_generated_snow_handler_first(self):
+        # The last included override wins; it must hand snowed grass to the pile
+        # handler instead of stripping the grass layer (and the snow) to dirt.
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
+        includes = [line.split('"')[1].replace('\\', '/') for line in dme.splitlines() if line.startswith('#include "code')]
+        owners = [path for path in includes if '/turf/floor/grass/attackby(' in (ROOT / path).read_text(errors='replace')]
+        self.assertEqual(owners[-1], 'code/modules/1713/trench.dm')
+        grass = body((ROOT / owners[-1]).read_text(), '/turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)')
+        guard = grass.index('if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0 && user.a_intent != I_HARM)\n\t\treturn ..()')
+        self.assertLess(guard, grass.index('ChangeTurf('))
+        # Snow that lands during the grass-removal wait is not stripped with the grass.
+        recheck = grass.index('if (weather_snow > 0 && user.a_intent != I_HARM)\n\t\t\treturn', guard + 1)
+        self.assertLess(grass.index('do_after('), recheck)
+        self.assertLess(recheck, grass.index('ChangeTurf('))
+
+    def test_irrigated_floor_hands_snow_tools_to_the_snow_handler(self):
+        floor = body((ROOT / 'code/modules/1713/trench.dm').read_text(), '/turf/floor/attackby(obj/item/C as obj, mob/user as mob)')
+        self.assertIn('istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon)', floor)
+        self.assertIn('if (irrigation && irrigation_overlay && !(snow_tool && weather_snow > 0))', floor)
+
+    def test_full_game_probe_is_test_only_and_checks_every_required_step(self):
+        self.assertNotIn('full_game_probe', (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig'))
+        probe = (ROOT / 'tests/snowfall_ground/full_game_probe.dm').read_text()
+        runner = (ROOT / 'tests/snowfall_ground/full_game.py').read_text()
+        required = re.search(r'REQUIRED_CHECKS = \((.*?)\)\n', runner, re.S).group(1)
+        for name in re.findall(r"'([a-zA-Z_]+)'", required):
+            if name.startswith(('registry_', 'season_')):
+                self.assertIn(name.split('_', 1)[1], probe, name)
+            else:
+                self.assertIn('pass("' + name + '"', probe, name)
+
     def test_process_setup_registers_its_typed_global_slot(self):
         registry = body((ROOT / 'code/processes/__processes.dm').read_text(), '/datum/process_list')
         self.assertRegex(registry, r'(?m)^\tvar/process/snowfall_ground/snowfall_ground = null$')
@@ -449,6 +480,10 @@ class SnowTests(unittest.TestCase):
                 self.assertNotIn('/water/', block); self.assertNotIn('record_abandonment', block)
                 self.assertNotIn('change_weather', block); self.assertNotIn('seasons()', block)
             current = (ROOT / path).read_text()
+            # Later non-snow additions (#3552 Status-tab season bookkeeping and
+            # the durable Nomads calendar hand-off) stay out of the snow parity.
+            current = re.sub(r'(?m)^\t+season_note_next_change\([^\n]*\)\n', '', current)
+            current = re.sub(r'(?m)^\tif\(uses_durable_metadata\(\)\) return durable_nomads_seasons\([^\n]*\)\n', '', current)
             if file == '_map_metadata.dm':
                 start = projected.index('\tvar/list/changes = list(', projected.index('/obj/map_metadata/proc/season_reconcile_warm'))
                 end = projected.index('\tvar/season_work = 0', start)

@@ -137,8 +137,12 @@ class DiggingToolRules(unittest.TestCase):
         self.assertLess(mining.index('committed = TRUE'), mining.index('wall.collapse_check()'))
         self.assertEqual(mining.count('wall.mining_proc(actor)'), 1)
         research = 'code/modules/research_tree/research_node.dm'
-        strip_comments = lambda text: re.sub(r'(?m)^\s*//[^\n]*\n', '', text)
-        self.assertEqual(strip_comments(source(research)), strip_comments(baseline(research)))
+        # Later crafting PRs add unrelated research entries; freeze only the
+        # digging-tool unlocks rather than the whole node file.
+        tool_rows = lambda text: [line.strip() for line in text.splitlines()
+                                  if not line.strip().startswith('//') and any('"' + kind in line for kind in (PICK, SHOVEL, UTENSIL))]
+        self.assertTrue(tool_rows(source(research)))
+        self.assertEqual(tool_rows(source(research)), tool_rows(baseline(research)))
         backend = 'code/modules/research_tree/research_faction.dm'
         self.assertEqual(source(backend), baseline(backend))
 
