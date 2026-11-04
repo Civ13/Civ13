@@ -221,6 +221,9 @@ var/peak_capture_tick_usage = 0
 		subject.payload = list("literal", "key" = 17)
 		if(world.params["scenario"] == "reference")
 			var/obj/chunk_reference_holder/holder = new(locate(1,1,1))
+			// Allowlisted fields at their default are omitted; the owner scan
+			// below finds saved entries by their name field.
+			holder.name = "shared-list holder"
 			holder.pet = subject
 			holder.shared = subject.payload
 		if(!map_storage.Save_World()) throw EXCEPTION("baseline save failed")
