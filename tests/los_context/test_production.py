@@ -852,10 +852,10 @@ class BlockingTreeSurface(unittest.TestCase):
         method('opaque_borders_visible','target_tile_x, target_tile_y',['blocking_tiles','blockers','radius_x','radius_y','clear_footprints','blocks_target'])
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
         body=N(type='/mob/living/human',see_invisible=25)
-        context=N(body=body,revision=1,policy_key=lambda:'fresh')
+        context=N(body=body,revision=1,policy_key=lambda:'fresh',verified_snapshot=None,verified_snapshot_time=-1)
         text=fragment(source,'/datum/los_context/proc/decision_snapshot(')
         declaration,body_text=text.split('\n',1)
-        for field in ['body','revision','policy_key']:
+        for field in ['body','revision','policy_key','verified_snapshot_time','verified_snapshot']:
             body_text=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,body_text)
         body_text=body_text.replace('/mob/living/human',repr('/mob/living/human'))
         body_text=body_text.replace('target.opacity ? LOS_SURFACE : LOS_WORLD','(LOS_SURFACE if target.opacity else LOS_WORLD)')
@@ -1150,7 +1150,8 @@ def atom(x,y,*,tree=False,opaque=False,turf=False):
 def model(source=None):
     source=source or SOURCE.read_text()
     body=atom(10,10);owner=N(images=List(),root_tree_presenter=None)
-    context=N(body=body,revision=1,policy_key=lambda:'fresh',eligible=lambda:True)
+    context=N(body=body,revision=1,policy_key=lambda:'fresh',eligible=lambda:True,
+              verified_snapshot=None,verified_snapshot_time=-1)
     presenter=N(owner=owner,context=context,retired=False,dirty=True,
                 images=List(),owned_images=List(),visible_targets=List(),tree_images=List(),tree_appearances=List())
     owner.los_presenter=presenter;owner.los_context=context
@@ -1187,6 +1188,14 @@ def model(source=None):
                       ('owns_atom','A'),('invalidate','changed=None, possible_opacity=False, viewer_refresh=False'),
                       ('refresh','S=None'),('clear_images',''),('retire','')]:
         f=project(name,args);setattr(presenter,name,lambda *a,_f=f:_f(presenter,*a))
+    core=(ROOT/'code/modules/visibility/los_context.dm').read_text()
+    for name,args in [('begin_snapshot_pass','S'),('end_snapshot_pass','')]:
+        declaration='/datum/los_context/proc/'+name
+        text=declaration+'('+args+')\n'+adapter.extract(core,declaration)+'\n'
+        for field in ['revision','policy_key','verified_snapshot_time','verified_snapshot']:
+            text=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,text)
+        f=adapter.project(text,declaration,'self'+(', '+args if args else ''),env)
+        setattr(context,name,lambda *a,_f=f:_f(context,*a))
     S=N(policy='fresh',revision=1,eye_z=1,radius_x=4,radius_y=4)
     context.capture=lambda presentation:S
     context.decision_snapshot=lambda a,s,op:outcomes.get(a,1)

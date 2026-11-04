@@ -258,7 +258,7 @@ class StartupReadinessTests(unittest.TestCase):
                     m.require_unique_listener(host['pid'], port, bind, [owned], rows, 'LISTEN')
                 with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=child), \
                         patch.object(m, 'process_identity', return_value=200), \
-                        patch.object(m, 'windows_listener_observation', side_effect=observe), \
+                        patch.object(m, 'native_listener_observation', side_effect=observe), \
                         self.assertRaises((RuntimeError, PermissionError)):
                     supervisor.launch_prepared(self.run, manifest, None, 'a' * 32)
                 self.assertEqual(supervisor.state['phase'], 'starting')

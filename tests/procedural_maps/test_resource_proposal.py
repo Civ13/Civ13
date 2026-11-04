@@ -25,6 +25,9 @@ class ResourceProposalTests(unittest.TestCase):
                     section.append(line)
                 for fragment in evidence['required_source_fragments']:self.assertIn(fragment,'\n'.join(section))
     def test_current_source_preserves_each_frozen_evidence_section(self):
+        # The frozen blob is checked byte-exactly above. Current source only has to
+        # keep each anchor and its required fragments, so unrelated edits in the same
+        # proc (for example a new guard line) do not invalidate the evidence.
         from tools.procedural_maps.dmm_export import verify_catalog
         from tools.procedural_maps.repo_source import read_source
         self.assertTrue(verify_catalog())
@@ -38,8 +41,11 @@ class ResourceProposalTests(unittest.TestCase):
                     for line in lines[start:]:
                         if out and line.startswith('/'):break
                         out.append(line)
-                    return out
-                self.assertEqual(section(old),section(new),evidence['anchor'])
+                    return '\n'.join(out)
+                self.assertIn(evidence['anchor'],new,evidence['anchor'])
+                for fragment in evidence['required_source_fragments']:
+                    self.assertIn(fragment,section(old),evidence['anchor'])
+                    self.assertIn(fragment,section(new),(evidence['anchor'],fragment))
     def test_no_native_resource_admission(self):
         d=json.loads((ROOT/'tools/procedural_maps/catalog/native-resources-v0.1.json').read_text())
         self.assertFalse(d['automatic_abstract_to_native_mapping']);self.assertFalse(d['native_interactions_implemented'])

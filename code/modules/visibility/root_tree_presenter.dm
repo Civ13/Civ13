@@ -208,6 +208,7 @@ var/global/list/root_tree_presenters
 	// Keyed set so the stale-image sweep below is linear, not quadratic.
 	var/list/current = list()
 	var/settled = TRUE
+	context.begin_snapshot_pass(S)
 	// Existing flora sheets are at most 160px with <=32px offsets. Six cells
 	// cover that overhang; geometry still judges the root.
 	for(var/obj/structure/wild/T in roots)
@@ -253,6 +254,7 @@ var/global/list/root_tree_presenters
 			root_tree_set_frame(I, T, frame)
 			published_frames[T] = frame
 			source_appearances[T] = source_appearance
+	context.end_snapshot_pass()
 	for(var/atom/old in images.Copy())
 		if(current[old])
 			continue
@@ -496,10 +498,14 @@ var/global/list/root_tree_presenters
 /proc/root_tree_light_changed(turf/root)
 	if(!root || !root_tree_presenters)
 		return
-	for(var/datum/root_tree_presenter/P in root_tree_presenters)
-		if(P.retired || !P.owner)
+	// Every lighting corner/overlay change calls this, and most turfs hold no
+	// tree. Look this turf's own trees up in each presenter's keyed image
+	// table instead of scanning every presenter's whole forest per light tick.
+	for(var/obj/structure/wild/T in root.contents)
+		if(T.loc != root)
 			continue
-		for(var/obj/structure/wild/T in P.images)
-			if(T.loc == root)
+		for(var/datum/root_tree_presenter/P in root_tree_presenters)
+			if(P.retired || !P.owner)
+				continue
+			if(P.images[T])
 				P.owner.los_dirty = TRUE
-				break

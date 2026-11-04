@@ -95,9 +95,8 @@ class OceanicTests(unittest.TestCase):
         c=deepcopy(self.config);c['disable_navigation']=True;self.assertTrue(validate_config(c))
     def test_config_profile_mismatch(self):
         c=deepcopy(self.config);c['profile']='SURFACE';self.assertTrue(validate_config(c))
-    def test_cavern_and_legacy_ocean_do_not_fall_back(self):
-        for profile in ['UNDERGROUND_CAVERN','OCEANIC']:
-            r=generate(preset(profile));self.assertIsNone(r['document']);self.assertEqual('BACKEND_PROFILE',r['reasons'][0]['code'])
+    def test_legacy_ocean_does_not_fall_back(self):
+        r=generate(preset('OCEANIC'));self.assertIsNone(r['document']);self.assertEqual('BACKEND_PROFILE',r['reasons'][0]['code'])
     def test_small_impossible_geometry_rejects_once(self):
         c=oceanic_preset('impossible',32,32);c['ocean_layout']['island_gap_tiles']=24
         r=generate(c);self.assertIsNone(r['document']);self.assertEqual(1,len(r['reasons']))

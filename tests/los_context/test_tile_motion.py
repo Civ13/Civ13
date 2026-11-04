@@ -391,6 +391,7 @@ class DistanceCamera(unittest.TestCase):
         body=N(type='/mob/living/human',x=100,y=100,z=1,step_x=0,step_y=0,see_invisible=25)
         owner=N(view=7,pixel_x=pan_x,pixel_y=pan_y,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0,los_camera_pan_x=0,los_camera_pan_y=0)
         context=N(body=body,owner=owner,revision=1,policy_key=lambda:f'{owner.pixel_x},{owner.pixel_y}',
+                  verified_snapshot=None,verified_snapshot_time=-1,
                   viewport=lambda:Cells([owner.view*2+1,owner.view*2+1]))
         env=P.projected_geometry(source)
         P.project(source,'/proc/los_target_blocked(',env)
@@ -436,7 +437,7 @@ class DistanceCamera(unittest.TestCase):
             return S
         env.update(locate=locate,new_snapshot=snapshot,new_cell=lambda:N())
         capture=method('capture','presentation=False',['body','revision','policy_key','viewport_radii'])
-        decision=method('decision_snapshot','target, S, operation="visual"',['body','revision','policy_key'])
+        decision=method('decision_snapshot','target, S, operation="visual"',['body','revision','policy_key','verified_snapshot_time','verified_snapshot'])
         def target(x,y):
             return N(type='/obj/item',x=x,y=y,z=1,step_x=0,step_y=0,opacity=False,alpha=255,invisibility=0,
                      gcDestroyed=False,gc_destroyed=False,loc=N(type='/turf/floor'))
@@ -447,6 +448,53 @@ class DistanceCamera(unittest.TestCase):
         prepare=A.project(head+'\n'+code,'/client/proc/los_prepare_camera_pan','self, target_x, target_y, animation_time, previous_view',env)
         return N(V=context,C=owner,body=body,capture=capture,decision=decision,target=target,opaque=opaque,visited=visited,
                  env=env,prepare=lambda x,y,d,old_view=None:prepare(owner,x,y,d,owner.view if old_view is None else old_view))
+
+    def test_renderer_pass_checks_policy_once_and_only_for_its_own_live_snapshot(self):
+        m=self.camera()
+        calls=[]
+        real_key=m.V.policy_key
+        def counted():
+            calls.append(1);return real_key()
+        m.V.policy_key=counted
+        def method(name,args):
+            text=P.fragment(CORE,'/datum/los_context/proc/'+name+'(')
+            head,code=text.split('\n',1)
+            for field in ['revision','policy_key','verified_snapshot_time','verified_snapshot']:
+                code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
+            f=A.project(head+'\n'+code,'/datum/los_context/proc/'+name,'self'+(', '+args if args else ''),m.env)
+            return lambda *a:f(m.V,*a)
+        begin,end=method('begin_snapshot_pass','S'),method('end_snapshot_pass','')
+        S=m.capture(True);targets=[m.target(100+dx,100+dy) for dx in range(-4,5) for dy in range(-4,5) if max(abs(dx),abs(dy))>=2]
+        calls.clear()
+        self.assertTrue(begin(S))
+        self.assertEqual([m.decision(t,S) for t in targets],[1]*len(targets))
+        self.assertEqual(len(calls),1)
+        # Another snapshot, a later tick or an ended pass still check fresh.
+        other=m.capture(True);calls.clear()
+        m.decision(targets[0],other);self.assertEqual(len(calls),1)
+        m.env['world'].time+=1;calls.clear()
+        m.decision(targets[0],S);self.assertEqual(len(calls),1)
+        m.env['world'].time-=1;end();calls.clear()
+        m.decision(targets[0],S);self.assertEqual(len(calls),1)
+        # A pass cannot start on a snapshot whose policy or revision is stale.
+        m.C.pixel_x=32
+        self.assertFalse(begin(S));self.assertIsNone(m.V.verified_snapshot)
+        self.assertEqual(m.decision(targets[0],S),0)
+        m.C.pixel_x=0;m.V.revision+=1
+        self.assertFalse(begin(S));self.assertEqual(m.decision(targets[0],S),0)
+
+    def test_both_renderers_end_the_pass_before_their_publication_recheck(self):
+        presenter=(ROOT/'code/modules/visibility/los_presenter.dm').read_text()
+        tree=(ROOT/'code/modules/visibility/root_tree_presenter.dm').read_text()
+        for source,start in [(presenter,'/datum/los_presenter/proc/refresh('),(tree,'/datum/root_tree_presenter/proc/refresh(')]:
+            body=P.fragment(source,start)
+            begin=body.index('context.begin_snapshot_pass(S)')
+            first=body.index('decision_snapshot(')
+            end=body.index('context.end_snapshot_pass()')
+            recheck=body.index('S.policy != context.policy_key() || S.revision != context.revision')
+            self.assertLess(begin,first);self.assertLess(end,recheck)
+            self.assertNotIn('sleep(',body[begin:end]);self.assertNotIn('return',body[begin:end])
+        self.assertIn('end_snapshot_pass()',P.fragment(CORE,'/datum/los_context/proc/retire('))
 
     def test_panned_leading_edges_capture_from_real_body_and_keep_intervening_blockers(self):
         for dx,dy in [(3,0),(-3,0),(0,3),(0,-3),(3,3)]:

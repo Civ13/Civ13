@@ -139,8 +139,35 @@ IR grid row zero is south; the writer reverses rows for DMM and adds one to x/y.
 Native z-levels are layer IDs, not geographic elevation.
 
 Legacy schema 1 and `--legacy` preserve the earlier north-inlet/south-coast
-surface algorithm and golden hashes. Legacy oceanic schema 1 and cavern
-generation reject explicitly. The reserve underground plane is not a playable cavern.
+surface algorithm and golden hashes. Legacy oceanic schema 1 rejects explicitly.
+The reserve underground plane of a surface map is not a playable cavern; use the
+UNDERGROUND_CAVERN profile below for that.
+
+## Underground caverns
+
+```
+python3 -m tools.procedural_maps preset --profile UNDERGROUND_CAVERN --seed cave-0 --width 64 --height 80 --out cave.json
+python3 -m tools.procedural_maps generate --config cave.json --out cave-bundle
+python3 -m tools.procedural_maps verify cave-bundle
+```
+
+The cavern backend works on the UNDERGROUND plane (native z1):
+
+- About one chamber per 900 tiles (4 to 40) is grown from a noise-shaped blob
+  on a jittered lattice. A minimum spanning set of tunnels plus one loop joins
+  them, so every usable floor tile is connected.
+- Spring pools are fresh, terminal lakes grown into solid rock beside a chamber.
+  They can never cut the floor apart. The water and lake intervals in the config
+  bound their total area. Underground rivers and wetlands are rejected before
+  generation (`BACKEND_RIVERS`, `BACKEND_WATER`).
+- Fungus pillars (`FUNGUS`) only go where all eight neighbours are open floor and
+  no other pillar touches them, so they never block a passage, route or exit.
+- About one chamber in four gets a surface exit, paired with the same tile on an
+  open placeholder SURFACE plane. Starts keep a reserved route to a pool bank and
+  to FOOD/WOOD/STONE within four tiles.
+- DMM export writes cave floor as `/turf/floor/dirt/underground` and rock as
+  basalt. Fungus pillars and the exit pairs have no pinned native type yet and
+  stay in the sidecar.
 
 ## Oceanic islands (configuration and IR schema 3)
 
@@ -163,7 +190,7 @@ each island and four ocean edge ports are declared automatically.
 | --- | --- | --- |
 | SURFACE | Explicit river edge ports, graph/raster confluences, valid lake/sea endings; clear abstract survival routes | Config schemas 1 and 2 |
 | OCEANIC | Majority salt sea, separate inland islands, connected deep sea and eroded ship-clear core, ocean edge access, inland fresh basin and start on every island, bounded fresh/coast/resource routes | Config schema 3 |
-| UNDERGROUND_CAVERN | Connected usable chambers/passages, paired safe layer entrances/exits, start/resource/exit routes | Validators/fixtures only; generator rejects |
+| UNDERGROUND_CAVERN | Connected usable chambers/passages, paired safe layer entrances/exits, start/resource/exit routes | Config schema 1 |
 
 `ocean_layout` is required in schema 3. These are provisional offline caps:
 
@@ -297,8 +324,8 @@ and sidecars, and the emitter adds no playable native supply objects.
 
 Full hydraulic bed/head/capacity simulation, arbitrary river graphs, naturalistic
 channel curvature, minimum ecotone width, native actor/resource behavior,
-runtime climate/elevation, persistence and cavern generation remain
-future work. The prototype cannot approve production host capacity or a live
+runtime climate/elevation, persistence, native cavern fungus and exit types,
+and underground rivers remain future work. The prototype cannot approve production host capacity or a live
 map replacement. It never opens or overwrites saved player worlds.
 
 ## Tests and contributions

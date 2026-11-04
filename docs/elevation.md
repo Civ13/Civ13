@@ -3,7 +3,7 @@
 Elevation is metadata measured in metres. It is independent of native `/area`
 room membership, climate/biome, turf type and native z-level height. Existing maps
 default to **0 metres everywhere**. This foundation does not change temperature,
-precipitation, movement or terrain. Elevation does not yet make mountains colder.
+precipitation, movement or terrain unless a map opts into the lapse rate below.
 
 `get_elevation(atom)` reads the effective profile at the atom's physical turf,
 including contained items. An atom without a physical turf, or a missing map,
@@ -79,11 +79,20 @@ unnecessary. This is a source/lifetime argument, not a measured native GC result
 
 ## Scope and verification
 
-Nonzero temperature coupling is deferred. Weather visuals and precipitation type
-are currently area-wide; applying a per-coordinate Celsius/km lapse rate alone
-could disagree with rain/snow. Any later configurable lapse rate should default
-to zero and share a geographic resolver with precipitation. No new mountain
-biome, regional layering framework, admin editor or z allocation is introduced.
+Temperature coupling is opt-in per map. `elevation_lapse_c_per_km` on the map
+metadata defaults to 0, which leaves `get_temp()` and snowfall unchanged on
+every existing map. A map with elevation regions can set it (0 to 10; 6.5 is the
+standard atmosphere); `get_temp()` then subtracts `lapse * metres / 1000` before
+rounding and indoor insulation, so it also cools below-zero elevations less and
+warms them. `local_precipitation(turf)` in `code/modules/1713/elevation_climate.dm`
+is the shared resolver: area snow stays snow, and area rain falls as snow on a
+tile whose elevation drop is positive and whose local temperature is at or below
+the sticking point. Ground snowfall uses it. Weather visuals stay area-wide. No
+mountain biome, regional layering framework, admin editor or z allocation is
+introduced, and no shipped map opts in yet.
+
+`tests/elevation_climate/probe.dm` runs the production procs on a 2000 m
+plateau fixture through `tests/resource_extraction/run.ps1`.
 
 Run offline checks with a verified interpreter:
 

@@ -26,10 +26,16 @@ class PresenterSourceContracts(unittest.TestCase):
 
     def test_completed_revision_before_publication(self):
         start = SOURCE.index('/datum/los_presenter/proc/refresh(')
-        publication = SOURCE.index('owner.images -= owned_images - next_owned', start)
+        publication = SOURCE.index('owner.images -= stale_images', start)
         guard = SOURCE.index('S.revision != context.revision', start)
         self.assertLess(guard, publication)
-        self.assertIn('owner.images |= next_owned - owned_images', SOURCE)
+        self.assertIn('owner.images |= new_images', SOURCE)
+        # Keyed membership keeps publication linear in the visible masks.
+        refresh = SOURCE[start:SOURCE.index('/datum/los_presenter/proc/clear_images(', start)]
+        self.assertNotIn('owned_images - next_owned', refresh)
+        self.assertNotIn('next_owned - owned_images', refresh)
+        self.assertNotIn('next_owned |=', refresh)
+        self.assertNotIn('next_owned +=', refresh)
 
     def test_one_scheduler_and_body_rebind(self):
         self.assertIn('C.reconcile_geometric_los()', PROCESS)

@@ -410,6 +410,9 @@ var/global/list/los_active_contexts
 	var/viewport_cache_ready = FALSE
 	var/viewport_cached_view
 	var/list/viewport_cached_dimensions
+	// Set only while one renderer runs a synchronous, non-sleeping pass.
+	var/datum/los_snapshot/verified_snapshot
+	var/verified_snapshot_time = -1
 
 /datum/los_context/New(client/C)
 	..()
@@ -437,6 +440,7 @@ var/global/list/los_active_contexts
 	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
 		owner.root_tree_presenter.retire()
 	root_trees.Cut()
+	end_snapshot_pass()
 	viewport_cache_ready = FALSE
 	viewport_cached_view = null
 	viewport_cached_dimensions = null
@@ -537,6 +541,21 @@ var/global/list/los_active_contexts
 /datum/los_context/proc/presentation_key()
 	return policy_key(TRUE)
 
+// policy_key() builds a long string; a renderer pass would otherwise rebuild
+// it for every tile and atom in view. A pass checks its snapshot once here,
+// makes only non-sleeping decisions, then ends the pass and rechecks policy
+// and revision before it publishes anything. Other reads still check fresh.
+/datum/los_context/proc/begin_snapshot_pass(datum/los_snapshot/S)
+	verified_snapshot = null
+	if (S && S.revision == revision && S.policy == policy_key())
+		verified_snapshot = S
+		verified_snapshot_time = world.time
+	return !!verified_snapshot
+
+/datum/los_context/proc/end_snapshot_pass()
+	verified_snapshot = null
+	verified_snapshot_time = -1
+
 /datum/los_context/proc/capture(presentation = FALSE)
 	var/key = policy_key()
 	if (!key)
@@ -604,7 +623,7 @@ var/global/list/los_active_contexts
 // Shared synchronous geometric decision for a renderer's single captured pass.
 // Coordinates are eye-relative, keeping products small on large Gaia maps.
 /datum/los_context/proc/decision_snapshot(atom/target, datum/los_snapshot/S, operation = "visual")
-	if (!S || !target || target.gcDestroyed || target.gc_destroyed || S.revision != revision || S.policy != policy_key())
+	if (!S || !target || target.gcDestroyed || target.gc_destroyed || S.revision != revision || ((S != verified_snapshot || verified_snapshot_time != world.time) && S.policy != policy_key()))
 		return LOS_DENY
 	if (target == body)
 		return LOS_SELF
