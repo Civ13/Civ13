@@ -14,6 +14,11 @@ are accelerated by 100 with production callbacks. Run the `nuke-tail`,
 `calendar-failure` and `lava-tail` negative controls separately to confirm that
 removing the respective barriers fails their named assertions.
 The `legacy-import` control detects a bypass based on absent incoming metadata.
+`--effects` runs a separate connected 4x4x3 world with real barrel damage hooks,
+the real non-recursive vertical blast body and fire-quiescence checks. Its only
+damage-phase source adapter forces the dense-object RNG hit; one child-fire
+injection follows the actual burn body. The `chain-ownership`, `fire-boundary`
+and `late-fire` controls exercise named ownership/admission/commit failures.
 The runner records complete source hashes, dirty diff, runtime file hashes,
 compiler/runtime diagnostics and each case result in its printed temporary path.
 It does not use production saves. Normal startup is disabled; GC registration

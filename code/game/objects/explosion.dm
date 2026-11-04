@@ -13,6 +13,10 @@
 
 	var/datum/explosiondata/data = new
 	if(!event && processes.explosion) event = processes.explosion.nomads_event
+	// Damage hooks also enqueue blasts directly from delayed nuke/fire phases,
+	// outside the explosion processor. Conservatively join every blast while
+	// the map has an active event; avoid a mutable dynamic callback context.
+	if(!event && map) event = map.nomads_active_event
 	data.nomads_event = event
 	if(event) event.retain()
 	data.epicenter = epicenter

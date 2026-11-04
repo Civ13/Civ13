@@ -15,7 +15,8 @@
 /map_storage/proc/capture_durable_world()
 	durable_export = null
 	if(!map.uses_durable_metadata()) return null
-	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.durable_nomads_lava_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
+	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before saving")
+	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.nomads_active_event || map.nomads_recovery_required || map.durable_nomads_lava_active() || map.durable_nomads_transients_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
 		throw EXCEPTION("World metadata is transitioning; retry saving after it settles")
 	if(!processes.time_of_day || !processes.weather)
 		throw EXCEPTION("World metadata processes are unavailable")
@@ -172,7 +173,8 @@
 /map_storage/proc/require_durable_world_idle()
 	// A legacy incoming generation does not make active current-world work safe.
 	if(!durable_state && !map.uses_durable_metadata()) return
-	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.durable_nomads_lava_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
+	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before loading")
+	if(map.season_busy || map.season_queue.len || map.nomads_event_busy || map.nomads_active_event || map.nomads_recovery_required || map.durable_nomads_lava_active() || map.durable_nomads_transients_active() || environment_weather_running || (processes.time_of_day_change && processes.time_of_day_change.updating_lighting))
 		throw EXCEPTION("World metadata is transitioning; retry loading after it settles")
 
 /map_storage/proc/suspend_durable_world()

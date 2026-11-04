@@ -8,9 +8,22 @@
 	var/nomads_nuke_y = 0
 	var/nomads_nuke_z = 0
 	var/tmp/nomads_event_busy = FALSE
+	var/tmp/datum/durable_nomads_event/nomads_active_event
+	var/tmp/nomads_recovery_required = FALSE
 
 /obj/map_metadata/proc/durable_nomads_extension()
 	return uses_durable_metadata() && !(type in list(/obj/map_metadata/nomads/gaia, /obj/map_metadata/nomads/europe))
+
+/obj/map_metadata/proc/durable_nomads_fail(reason)
+	var/first_failure = !nomads_recovery_required
+	nomads_recovery_required = TRUE
+	nomads_event_busy = TRUE
+	if(first_failure)
+		try
+			message_admins("Persistence recovery required after [reason]. Restart recovery from the retained completed generation; waiting or clearing runtime flags does not recover this world.")
+		catch
+			// Notification failure never clears the recovery barrier.
+			return
 
 /obj/map_metadata/proc/durable_nomads_schema()
 	var/list/schema = list("hasnukes" = "flag", "is_zombie" = "flag", "is_wasteland" = "flag", "nomads_nuke_threshold" = "number", "nomads_nuke_x" = "number", "nomads_nuke_y" = "number", "nomads_nuke_z" = "number")
@@ -180,18 +193,24 @@
 	var/failed = FALSE
 /datum/durable_nomads_event/New(obj/map_metadata/target)
 	owner = target
-	if(owner.nomads_event_busy) throw EXCEPTION("Nomads event is already active")
+	if(owner.nomads_event_busy || owner.nomads_active_event || owner.nomads_recovery_required) throw EXCEPTION("Nomads event is already active or requires recovery")
 	owner.nomads_event_busy = TRUE
+	owner.nomads_active_event = src
 /datum/durable_nomads_event/proc/retain()
 	pending++
 /datum/durable_nomads_event/proc/release()
 	if(pending <= 0) throw EXCEPTION("Nomads event completion underflow")
 	pending--
+	if(owner && (failed || owner.nomads_recovery_required))
+		failed = TRUE
+		owner.durable_nomads_fail("mutating Nomads event failure")
 	if(!pending && !failed && owner && map == owner)
+		if(owner.nomads_active_event != src) throw EXCEPTION("Nomads event owner changed")
+		owner.nomads_active_event = null
 		owner.nomads_event_busy = FALSE
 		owner = null
 /datum/durable_nomads_event/proc/valid()
-	if(!owner || map != owner) failed = TRUE
+	if(!owner || map != owner || owner.nomads_recovery_required) failed = TRUE
 	return !failed
 /datum/durable_nomads_event/proc/defer_lava(delay, turf/floor/lava/target, method, list/arguments)
 	var/datum/identity = target.lava_callback_identity
@@ -212,10 +231,20 @@
 		if(L.dries || L.spreads) return TRUE
 	return FALSE
 
+/obj/map_metadata/proc/durable_nomads_transients_active()
+	// Ordinary fire is not a resumable snapshot. Wait for its tracked callbacks
+	// to finish or retire, including callbacks whose fire has been extinguished.
+	if(nomads_fire_callbacks.len) return TRUE
+	var/process/explosion/P = processes.explosion
+	if(!P) return FALSE
+	if(P.nomads_work_active || P.nomads_work_failed || length(P.work_queue)) return TRUE
+	if(processes.callproc && length(processes.callproc.by_object[P])) return TRUE
+	return FALSE
+
 // Reuse the existing serialized worker and its epoch/budget checks. Custom
 // calendars preserve their own cadence instead of invoking the temperate cycle.
 /obj/map_metadata/proc/durable_nomads_seasons(looping, force, advance_decay)
-	if(map != src || season_retired || persistence_save_in_progress || nomads_event_busy) return FALSE
+	if(map != src || season_retired || persistence_save_in_progress || nomads_event_busy || nomads_active_event || nomads_recovery_required) return FALSE
 	advance_decay = season_decay_requested(force, advance_decay)
 	if(force)
 		for(var/i = 1, i <= season_queue.len, i += 4)
@@ -244,8 +273,9 @@
 	catch(var/exception/E)
 		// season_run_queue retires its worker on failure; retain this separate
 		// recovery barrier so a partially changed calendar cannot be saved.
+		durable_nomads_fail("custom calendar transition failure")
 		throw E
-	nomads_event_busy = FALSE
+	nomads_event_busy = nomads_recovery_required || !!nomads_active_event
 
 /obj/map_metadata/proc/durable_nomads_apply_work(looping, advance_decay)
 	if(!(type in list(/obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/ice_age))) throw EXCEPTION("Unsupported Nomads custom calendar")

@@ -1280,7 +1280,8 @@ var/civmax_research = list(230,230,230)
 			else if (season_worker_valid(value))
 				call(src, kind)(value)
 	catch (var/exception/E)
-		if(type in list(/obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/ice_age)) nomads_event_busy = TRUE
+		if(uses_durable_metadata())
+			durable_nomads_fail("calendar phase failure")
 		season_queue = list()
 		season_busy = FALSE
 		throw E
@@ -1292,7 +1293,7 @@ var/civmax_research = list(230,230,230)
 	return
 
 /obj/map_metadata/persistence_runtime_var(var/key)
-	if(key == "nomads_event_busy") return TRUE
+	if(key == "nomads_event_busy" || key == "nomads_active_event" || key == "nomads_recovery_required") return TRUE
 	if (key in list("construction_last_season", "elevation_default_metres", "elevation_regions", "elevation_profile_cache", "season_duration_minutes", "season_cycle", "weather_timing", "weather_transitions", "durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)

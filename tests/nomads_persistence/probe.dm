@@ -3,7 +3,11 @@
 /world
 	maxx = 4
 	maxy = 4
+#ifdef NOMADS_EFFECTS_PROBE
+	maxz = 3
+#else
 	maxz = 2
+#endif
 	turf = /turf/floor
 	area = /area
 	sleep_offline = FALSE
@@ -24,6 +28,25 @@ var/nomads_fail_calendar = FALSE
 var/nomads_fail_explosion = FALSE
 var/nomads_child_explosion = FALSE
 var/nomads_lava_entries = 0
+var/nomads_inject_fire_child = FALSE
+var/obj/effect/fire/nomads_fire_child
+var/nomads_inject_late_fire = FALSE
+var/obj/effect/fire/nomads_late_fire
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder/nomads_dense
+	density = TRUE
+/obj/effect/fire/nomads_child_probe/burningproc_work()
+	..()
+	if(nomads_inject_fire_child)
+		nomads_inject_fire_child = FALSE
+		nomads_fire_child = new /obj/effect/fire(locate(4,4,1))
+/obj/effect/fire/nomads_failure/burningproc_work()
+	..()
+	throw EXCEPTION("Injected fire callback failure")
+/map_storage/nomads_late_fire/validate_captured_world_save(list/candidate)
+	. = ..()
+	if(. && nomads_inject_late_fire)
+		nomads_inject_late_fire = FALSE
+		nomads_late_fire = new /obj/effect/fire(locate(2,2,1))
 var/datum/durable_nomads_event/nomads_test_event
 /obj/map_metadata/nomads/wasteland/durable_nomads_nuke_effect(turf/epicenter, datum/durable_nomads_event/event)
 	if(nomads_inject_nuke_failure) throw EXCEPTION("Injected mutating-event failure")
@@ -355,6 +378,23 @@ var/datum/durable_nomads_event/nomads_test_event
 	map_storage.durable_state = null
 	nomads_assert(rejected, message + " import")
 
+/proc/nomads_assert_transient_barrier(message)
+	var/rejected = FALSE
+	try
+		nomads_capture()
+	catch
+		rejected = TRUE
+	nomads_assert(rejected, message + " admitted metadata save")
+	for(var/durable in list(FALSE, TRUE))
+		map_storage.durable_state = durable ? list("fixture" = TRUE) : null
+		rejected = FALSE
+		try
+			map_storage.require_durable_world_idle()
+		catch
+			rejected = TRUE
+		nomads_assert(rejected, message + " admitted import")
+	map_storage.durable_state = null
+
 /proc/nomads_event_tests()
 	nomads_event_fixture = TRUE
 	var/turf/floor/lava/permanent/compat = new(locate(4,4,2), /decl/flooring/grass)
@@ -366,6 +406,7 @@ var/datum/durable_nomads_event/nomads_test_event
 	persistence_save_in_progress = TRUE
 	map = new /obj/map_metadata/nomads/wasteland(locate(1,1,2))
 	map.durable_timer_queue().cancel_all()
+	persistence_save_in_progress = FALSE
 	var/datum/durable_nomads_event/identity_event = new /datum/durable_nomads_event/fast_lava(map)
 	new /turf/floor/lava/nomads_identity_probe(locate(4,4,2), null, identity_event)
 	new /turf/floor/lava/nomads_identity_probe(locate(4,4,2), null, identity_event)
@@ -444,11 +485,15 @@ var/datum/durable_nomads_event/nomads_test_event
 	processes.explosion.fire()
 	nomads_assert_event_barrier("failed explosion requires recovery")
 	// Fresh metadata is explicit recovery; the failed original is never cleared.
+	// Independent cases also reset the failed explosion processor.
+	processes.explosion = new /process/explosion/nomads_fixture
+	processes.explosion.setup()
 	del(map)
 	map = new /obj/map_metadata/nomads/africa(locate(1,1,2))
 	map.durable_timer_queue().cancel_all()
 	var/datum/durable_nomads_event/event = new /datum/durable_nomads_event/fast_lava(map)
 	var/area/lava_area = new /area/caribbean/nomads/forest/Jungle/lava_east
+	lava_area.weather = WEATHER_NONE
 	for(var/turf/T in block(locate(1,1,1), locate(4,4,1))) ChangeArea(T, lava_area)
 	var/turf/wall/rockwall/lavaspawner/source = new(locate(1,1,1))
 	map.volcano_eruption(event)
@@ -464,6 +509,11 @@ var/datum/durable_nomads_event/nomads_test_event
 	nomads_assert(spread_seen, "production lava descendants did not spread")
 	nomads_assert(!event.pending && !event.failed && !map.nomads_event_busy, "lava drying did not complete ownership")
 	nomads_assert(istype(locate(4,4,1), /turf/floor/dirt/dry_lava), "lava descendant did not dry")
+	nomads_assert(nomads_fire_callbacks.len, "eruption did not retain ordinary fire continuation")
+	nomads_assert_transient_barrier("eruption fire continuation")
+	deadline = world.time + 250
+	while(nomads_fire_callbacks.len && world.time < deadline) sleep(1)
+	nomads_assert(!nomads_fire_callbacks.len, "eruption fire callbacks never settled")
 	nomads_capture()
 	nomads_assert(map_storage.durable_export, "completed eruption could not capture")
 	nomads_assert(source, "lava source lost unexpectedly")
@@ -477,6 +527,8 @@ var/datum/durable_nomads_event/nomads_test_event
 	// Reset synthetic terrain before the independent calendar assertions so lava
 	// admission cannot account for their save/import rejection.
 	for(var/turf/floor/lava/L in world) L.ChangeTurf(/turf/floor/dirt/dry_lava)
+	for(var/obj/effect/fire/F in world) qdel(F)
+	nomads_assert(!nomads_fire_callbacks.len, "calendar test retained fire callbacks")
 	// Actual terrain mutation precedes the injected error in both profiles.
 	for(var/profile in list(/obj/map_metadata/nomads/mountain, /obj/map_metadata/nomads/ice_age))
 		del(map)
@@ -505,6 +557,146 @@ var/datum/durable_nomads_event/nomads_test_event
 		nomads_assert_event_barrier("partial calendar transition")
 		nomads_assert(!map.durable_nomads_seasons(TRUE, TRUE, TRUE), "failed transition reentered")
 	text2file("PASS: [nomads_checks] assertions; owned nuke/lava descendants and failed calendar recovery barriers", "result.txt")
+/proc/nomads_effects_tests()
+	processes.callproc = new
+	persistence_save_in_progress = FALSE
+	for(var/failure in list(FALSE, TRUE))
+		if(map) del(map)
+		map = new /obj/map_metadata/nomads/wasteland(locate(4,4,1))
+		map.durable_timer_queue().cancel_all()
+		processes.explosion = new /process/explosion/nomads_fixture
+		processes.explosion.setup()
+		var/datum/durable_nomads_event/event = new(map)
+		new /obj/item/weapon/reagent_containers/glass/barrel/gunpowder/nomads_dense(locate(2,2,2))
+		// The runner forces only the 20% dense-object hit. This is the actual
+		// phase-26 body and real barrel ex_act/explode constructor and hooks.
+		nuke_map_phase(26, locate(2,2,2), 1, 0, world.time, event)
+		var/list/helpers = processes.callproc.by_object[processes.explosion]
+		nomads_assert(length(helpers) == 1, "direct damage did not enqueue actual barrel explosion")
+		var/callproc_helper/helper = helpers[1]
+		var/datum/explosiondata/child = helper.args[1]
+		nomads_assert(child.nomads_event == event && !processes.explosion.nomads_event, "direct nuke damage lost child explosion ownership")
+		event.release()
+		sleep(10)
+		nomads_assert(!processes.explosion.work_queue.len && event.pending == 1, "delayed direct child handoff released barrier")
+		nomads_assert_event_barrier("direct damage queued child")
+		processes.callproc.fire()
+		nomads_fail_explosion = failure
+		var/caught = FALSE
+		try
+			processes.explosion.fire()
+		catch
+			caught = TRUE
+		nomads_fail_explosion = FALSE
+		nomads_assert(caught == failure && event.failed == failure && !event.pending, "direct child completion or failure was lost")
+		if(failure)
+			nomads_assert_event_barrier("direct child failure")
+			var/message = ""
+			try
+				nomads_capture()
+			catch(var/exception/E)
+				message = "[E]"
+			nomads_assert(findtext(message, "restart recovery"), "failed event suggested merely waiting")
+		else
+			nomads_assert(!map.nomads_event_busy && !map.nomads_active_event && !map.nomads_recovery_required, "direct child success retained barrier")
+			nomads_capture()
+	// A separate actual processor and fresh metadata isolate the next case from
+	// the deliberately failed processor; this is not cold-start recovery proof.
+	del(map)
+	map = new /obj/map_metadata/nomads(locate(4,4,1))
+	map.durable_timer_queue().cancel_all()
+	processes.explosion = new /process/explosion
+	processes.explosion.setup()
+	config.use_recursive_explosions = FALSE
+	var/old_connections = z_levels
+	z_levels = 3 // Connect levels 1-2 and 2-3 in this synthetic world only.
+	var/datum/durable_nomads_event/vertical = new(map)
+	call(/proc/explosion)(locate(2,2,2), 3, 0, 0, 0, FALSE, UP|DOWN, FALSE, null, FALSE, vertical)
+	vertical.release()
+	sleep(2)
+	processes.callproc.fire()
+	processes.explosion.fire() // Real non-recursive body, not the blast adapter.
+	var/list/children = processes.callproc.by_object[processes.explosion]
+	var/list/targets = list()
+	for(var/callproc_helper/H in children)
+		var/datum/explosiondata/D = H.args[1]
+		nomads_assert(D.nomads_event == vertical && !D.is_rec, "vertical child lost event or blast mode")
+		targets += D.epicenter.z
+	nomads_assert(length(children) == 2 && (1 in targets) && (3 in targets) && vertical.pending == 2, "real vertical blast dispatched wrong children")
+	nomads_assert_event_barrier("real vertical blast handoffs")
+	sleep(2)
+	processes.callproc.fire()
+	processes.explosion.fire()
+	var/vertical_deadline = world.time + 100
+	while(vertical.pending && world.time < vertical_deadline)
+		sleep(2)
+		processes.callproc.fire()
+		processes.explosion.fire()
+	nomads_assert(!vertical.pending && !vertical.failed && !map.nomads_event_busy && !map.nomads_active_event, "real vertical blast never released barrier: pending=[vertical.pending] failed=[vertical.failed] queue=[length(processes.explosion.work_queue)] handoffs=[length(processes.callproc.by_object[processes.explosion])]")
+	z_levels = old_connections
+	for(var/obj/effect/fire/F in world) qdel(F)
+	nomads_assert(!nomads_fire_callbacks.len, "blast fire retirement retained pending callbacks")
+	nomads_capture()
+	// Inject a fire only after the real candidate's spatial validation. The
+	// completion marker must still be withheld and the prior backup preserved.
+	map.persistence = TRUE
+	map_storage = new /map_storage/nomads_late_fire
+	nomads_assert(map_storage.Save_World(), "late-fire baseline save failed: [map_storage.last_error]")
+	var/original_marker = file2text("map_saves/save_complete.txt")
+	var/original_round = file2text("map_saves/round.json")
+	nomads_inject_late_fire = TRUE
+	var/late_saved = FALSE
+	var/late_message = ""
+	try
+		late_saved = map_storage.Save_World()
+	catch(var/exception/late_error)
+		late_message = "[late_error]"
+	nomads_assert(!late_saved, "late fire published a completed generation")
+	nomads_assert(findtext(late_message, "World effects changed during capture"), "late fire missed the completion-marker guard")
+	nomads_assert(nomads_late_fire && !fexists("map_saves/save_complete.txt") && file2text("map_backups/save_complete.txt") == original_marker && file2text("map_backups/round.json") == original_round, "late fire damaged prior completed generation")
+	qdel(nomads_late_fire)
+	nomads_assert(!nomads_fire_callbacks.len && map_storage.Save_World(), "quiescent retry lost requested save")
+	// Ordinary fire is intentionally not serialized mid-lifecycle. Production
+	// burning/expiry bodies run; one deterministic child injection tests spread.
+	var/area/A = get_area(locate(2,2,1))
+	A.weather = WEATHER_NONE
+	var/turf/burning_turf = locate(2,2,1)
+	burning_turf.ChangeTurf(/turf/floor/grass)
+	nomads_inject_fire_child = TRUE
+	var/obj/effect/fire/parent = new /obj/effect/fire/nomads_child_probe(locate(2,2,1))
+	nomads_assert(nomads_fire_callbacks.len && !map.nomads_event_busy, "ordinary fire continuation was not registered")
+	nomads_assert_transient_barrier("fire continuation")
+	var/rejected = FALSE
+	try
+		parent.get_saved_vars()
+	catch
+		rejected = TRUE
+	nomads_assert(rejected, "ordinary fire had an incomplete durable field snapshot")
+	var/deadline = world.time + 60
+	while(!nomads_fire_child && world.time < deadline) sleep(1)
+	nomads_assert(nomads_fire_child && istype(locate(2,2,1), /turf/floor/dirt/burned), "actual fire body or deterministic child did not execute")
+	qdel(parent)
+	nomads_assert_transient_barrier("child fire outlived parent")
+	qdel(nomads_fire_child)
+	sleep(60)
+	var/live_fires = 0
+	for(var/obj/effect/fire/F in world)
+		if(!isDeleted(F)) live_fires++
+	nomads_assert(!nomads_fire_callbacks.len && !live_fires, "retired fire callback resumed or leaked: callbacks=[nomads_fire_callbacks.len] live=[live_fires]")
+	nomads_capture()
+	var/obj/effect/fire/expiry = new(locate(2,2,1))
+	deadline = world.time + 220
+	while(nomads_fire_callbacks.len && world.time < deadline) sleep(1)
+	nomads_assert(!nomads_fire_callbacks.len && isDeleted(expiry), "real fire expiry did not release quiescence")
+	nomads_capture()
+	new /obj/effect/fire/nomads_failure(locate(2,2,1))
+	deadline = world.time + 60
+	while(!map.nomads_recovery_required && world.time < deadline) sleep(1)
+	for(var/obj/effect/fire/F in world) qdel(F)
+	nomads_assert(map.nomads_recovery_required && nomads_fire_callbacks.len, "retirement cleared failed fire continuation")
+	nomads_assert_transient_barrier("failed fire continuation")
+	text2file("PASS: [nomads_checks] assertions; direct damage chains, real connected vertical blast and fire quiescence", "result.txt")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -522,6 +714,10 @@ var/datum/durable_nomads_event/nomads_test_event
 		times_of_day = list("Morning")
 		game_hour = 9
 		global.game_id = "nomads-synthetic-fixture"
+		if(text2num(world.params["effects"]))
+			nomads_effects_tests()
+			del(world)
+			return
 		if(text2num(world.params["events"]))
 			nomads_event_tests()
 			del(world)

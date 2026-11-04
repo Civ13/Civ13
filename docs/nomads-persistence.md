@@ -34,10 +34,23 @@ spread, drying and delayed lava casualties. Each child registers before scheduli
 elapsed time and an empty queue alone do not release the barrier. Any child failure
 latches it even after other children drain. Failed Mountain/Ice Age transitions and
 delayed phases also latch a separate barrier when the season worker retires.
-Recovery means reloading a validated prior generation with fresh metadata; clearing
-the flag on a partially mutated world is not recovery. Unowned transient lava from
+Recovery means restarting from a retained validated generation in a fresh process;
+clearing flags on a partially mutated world is not recovery. The first failure
+notifies admins, and save/import errors distinguish recovery from a temporary
+transition. Unowned transient lava from
 older or map-authored sources conservatively blocks save/import until it dries.
 Current-world barriers also apply when the incoming save is legacy spatial-only.
+
+Ordinary fire has no complete durable continuation codec. Its constructor,
+startup, repeated burn, blood-cleanup and expiry callbacks use a runtime registry.
+Pending callbacks become inert before retirement removes their guards; running
+or failed callbacks keep their guard even after their fire retires. Durable saves
+and imports wait for this registry to settle. Fire frames are rejected on export,
+callbacks pause under save/load ownership, and the completion-marker path rechecks
+effects created after initial capture. A rejected late candidate retains the prior
+completed backup. Explosion handoffs, queued/running work and processor failure
+also block admission. Every explosion created while a map event is active joins
+its token, including dense-object damage hooks outside the processor context.
 
 The 132-field shared inventory and its existing 131-field `faction_renames`
 migration remain unchanged. Gaia/Europe keep their existing envelope. Newly
@@ -79,6 +92,16 @@ negative controls must fail the corresponding named ownership assertions.
 The `legacy-import` control proves incoming legacy metadata cannot bypass a
 current-world event barrier. Lava constructors retain their inherited flooring
 argument; the runtime event owner is passed separately and excluded from saves.
+`--effects` uses a 4x4x3 connected synthetic world, the actual gunpowder-barrel
+constructor/damage hooks and the real non-recursive vertical blast body. It forces
+only the dense-object hit probability for a deterministic phase-26 regression.
+Checks cover delayed child failure, UP/DOWN routing and token release, ordinary
+fire retirement/expiry/failure, and a fire injected after spatial validation that
+must not publish a completion marker. One deterministic child-fire injection runs
+after the production burning body. The `chain-ownership`, `fire-boundary` and
+`late-fire` controls remove the corresponding protection and must reach their
+named assertions. Connections are synthetic; reachability on authored maps is not
+established by this regression.
 
 The daemon uses loopback and closes/refuses its port, but may briefly listen and
 attempt BYOND pager login before `World/New`. This synthetic runner does not
@@ -90,7 +113,7 @@ Wasteland III has metadata but no authored DMM: its runtime profile can roundtri
 but the updater refuses that ID until a reviewed source binding exists. WIP/custom
 map files are not inferred from a shared ID; add an explicit reviewed binding.
 Tiny fixtures do not establish authored-map capacity, cold-start recovery,
-connected-client behavior, visual weather/lighting fidelity, full blast damage or
+connected-client behavior, visual weather/lighting fidelity, production-scale blast damage or
 long-run memory stability. Spatial save/import occurs within each daemon. The
 event fixture covers the named direct descendants, not arbitrary gameplay scripts
 spawned by every possible damage hook. Existing dimension, roof/topology and host-growth admission

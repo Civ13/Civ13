@@ -136,6 +136,49 @@
 	return
 
 
+// Fire has no durable continuation codec. Save/import requires quiescence of
+// these actual callback rows, including an executing or failed row whose fire
+// was retired. Retirement makes pending rows inert before removing the guard.
+var/global/list/nomads_fire_callbacks = list()
+/datum/nomads_fire_callback
+	should_save = FALSE
+	var/obj/effect/fire/owner
+	var/running = FALSE
+	var/cancelled = FALSE
+	var/failed = FALSE
+/datum/nomads_fire_callback/New(obj/effect/fire/target)
+	owner = target
+	nomads_fire_callbacks[src] = TRUE
+	owner.nomads_pending_callbacks[src] = TRUE
+/datum/nomads_fire_callback/proc/complete()
+	if(failed) return
+	nomads_fire_callbacks -= src
+	if(owner) owner.nomads_pending_callbacks -= src
+	owner = null
+/datum/nomads_fire_callback/proc/cancel()
+	cancelled = TRUE
+	if(!running && !failed) complete()
+/datum/nomads_fire_callback/proc/schedule(delay, method, list/arguments)
+	spawn(delay) invoke(method, arguments)
+/datum/nomads_fire_callback/proc/invoke(method, list/arguments)
+	if(failed) return
+	while(!cancelled && owner && !isDeleted(owner) && persistence_save_in_progress && map && map.uses_durable_metadata())
+		sleep(1)
+	if(cancelled || !owner || isDeleted(owner))
+		complete()
+		return
+	running = TRUE
+	try
+		call(owner, method)(arglist(arguments))
+	catch(var/exception/E)
+		running = FALSE
+		failed = TRUE
+		if(map && map.uses_durable_metadata()) map.durable_nomads_fail("fire callback failure")
+		log_debug("Fire callback [method] requires recovery: [E]")
+		return // Retain the failed row after retirement; do not admit a partial save.
+	running = FALSE
+	complete()
+
 /obj/effect/fire
 	name = "fire"
 	icon = 'icons/effects/effects.dmi'
@@ -145,20 +188,47 @@
 	density = FALSE
 	var/timer = 180
 	var/runonce = FALSE
+	var/tmp/list/nomads_pending_callbacks = list()
 /obj/effect/fire/New()
-	..()
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "burning_fire2"
-	alpha = 230
-	spawn(30)
-		if (runonce == FALSE)
-			burningproc()
-			runonce = TRUE
-	set_light(3)
-	light_color = "#FF9900"
-	spawn(timer)
-		set_light(0)
-		qdel(src)
+	var/datum/nomads_fire_callback/construction = new(src)
+	construction.running = TRUE
+	try
+		..()
+		icon = 'icons/effects/effects.dmi'
+		icon_state = "burning_fire2"
+		alpha = 230
+		fire_defer(30, "fire_start_burning")
+		set_light(3)
+		light_color = "#FF9900"
+		fire_defer(timer, "fire_expire")
+	catch(var/exception/E)
+		construction.failed = TRUE
+		construction.running = FALSE
+		if(map && map.uses_durable_metadata()) map.durable_nomads_fail("fire construction failure")
+		throw E
+	construction.running = FALSE
+	construction.complete()
+/obj/effect/fire/persistence_runtime_var(key)
+	return key == "nomads_pending_callbacks" || ..()
+/obj/effect/fire/get_saved_vars()
+	if(map && map.uses_durable_metadata()) throw EXCEPTION("Fire requires quiescence before durable export")
+	return ..()
+/obj/effect/fire/Destroy()
+	for(var/datum/nomads_fire_callback/C in nomads_pending_callbacks.Copy()) C.cancel()
+	return ..()
+/obj/effect/fire/proc/fire_defer(delay, method, list/arguments = list())
+	if(isDeleted(src) || !loc) return
+	var/datum/nomads_fire_callback/C = new(src)
+	C.schedule(delay, method, arguments)
+/obj/effect/fire/proc/fire_start_burning()
+	if(!runonce)
+		burningproc_work()
+		runonce = TRUE
+/obj/effect/fire/proc/fire_expire()
+	set_light(0)
+	qdel(src)
+/obj/effect/fire/proc/fire_blood_cleanup(obj/effect/decal/cleanable/blood/O)
+	if(O) qdel(O)
 
 /obj/effect/fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
@@ -172,6 +242,10 @@
 				CT.reagents.clear_reagents()
 
 /obj/effect/fire/proc/burningproc()
+	if(isDeleted(src) || !loc) return
+	var/datum/nomads_fire_callback/C = new(src)
+	C.invoke("burningproc_work", list())
+/obj/effect/fire/proc/burningproc_work()
 //this tile
 	if (prob(3))
 		new/obj/effect/effect/smoke(loc)
@@ -184,6 +258,7 @@
 				qdel(src)
 	if (A.weather == WEATHER_EXTREME)
 		qdel(src)
+	if(isDeleted(src) || !loc) return
 
 	for (var/mob/living/L in src.loc)
 		L.adjustBurnLoss(rand(20, 40))
@@ -192,8 +267,7 @@
 		L.IgniteMob()
 
 	for (var/obj/effect/decal/cleanable/blood/O in src.loc)
-		spawn(50)
-			qdel(O)
+		fire_defer(50, "fire_blood_cleanup", list(O))
 
 	for (var/obj/OB in src.loc)
 		if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood) && OB.flammable)
@@ -250,8 +324,7 @@
 	for (var/obj/effect/fire/OTH in src.loc)
 		if (OTH != src)
 			qdel(OTH)
-	spawn(50)
-		burningproc()
+	fire_defer(50, "burningproc_work")
 	return
 
 /obj/effect/decal/cleanable/blood/oil
