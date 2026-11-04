@@ -29,8 +29,9 @@ checks establish room-function or native acceptance.
 | Maintenance alcove | 7 x 7 | ALCOVE/OFFICE | S | Authored optional detour holding discovery site |
 | Extraction airlock | 9 x 9 | EXIT/EGRESS | W | Safe terminal extraction anchor |
 
-The current canonical catalog is liminal-authored-rooms/0.1.0, SHA-256
-`7ee6647de885a921746f9ac9d0ec5fa9e5140a30a8c06294cd4ff16c3d37c95b`.
+The current canonical catalog is liminal-authored-rooms/0.2.0, SHA-256
+`04f558b58af836b4586d4c017a437397f8fab73bb5e0e8071a331f8d9f609fab`
+(version 0.1.0, `7ee6647d...`, is historical).
 Changing any geometry, socket, anchor or intent requires a new content version
 and reviewed goldens. Rarity is a positive bounded integer selection weight,
 not a promise of exact percentages in one small chapter.

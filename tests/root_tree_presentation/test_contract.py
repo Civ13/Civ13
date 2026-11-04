@@ -329,7 +329,7 @@ class OwnershipAndComposition(unittest.TestCase):
         self.assertIn('update_hover_name(object)',client)
         self.assertIn('label = H.get_visible_name()',hover)
         self.assertIn('los_read_allowed(parentmob, target, "hover")',hover)
-        self.assertIn('usr.ClickOn(src, params)',click)
+        self.assertIn('usr.ClickOn(los_click_target(usr, src), params)',click)
         self.assertIn('I.mouse_opacity = 0',P.fragment(TREE,'/datum/root_tree_presenter/proc/withdraw_tree('))
 
     def test_default_activation_has_owned_lifecycle(self):
