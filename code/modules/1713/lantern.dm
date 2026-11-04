@@ -203,6 +203,12 @@
 
 	return
 
+// Global so the refresh still runs after the burnt-out light is deleted.
+/proc/refresh_light_holder_later(obj/item/weapon/storage/internal/holder)
+	spawn(1)
+		if (holder && !holder.gcDestroyed)
+			holder.update_icon()
+
 /obj/item/flashlight/proc/do_torch()
 	spawn(10)
 		if (fuel == 50 && on)
@@ -215,6 +221,9 @@
 		else if (fuel <= 0 && on)
 			visible_message("\The [src] goes off.")
 			if (istype(src, /obj/item/flashlight/torch) || istype(src, /obj/item/flashlight/tiki_torch))
+				// A torch burning out in a mount must not leave the mount lit.
+				if (istype(loc, /obj/item/weapon/storage/internal))
+					refresh_light_holder_later(loc)
 				qdel(src)
 				return
 			else

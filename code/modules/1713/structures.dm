@@ -1681,8 +1681,23 @@
 				set_light(0)
 				return
 
-	else
-		icon_state = "torch_stand"
+	// Empty mount (or a burnt-out torch was just deleted): drop the lit sprite and its light.
+	icon_state = "torch_stand"
+	set_light(0)
+	light_color = null
+	light_range = 0
+
+// The mount's storage changes through the storage HUD, which never calls back into the
+// mount, so refresh the mount whenever its internal storage updates.
+/obj/item/weapon/storage/internal/update_icon()
+	..()
+	if (istype(master_item, /obj/structure/torch_stand))
+		var/obj/structure/torch_stand/TS = master_item
+		TS.update_icon()
+
+/obj/structure/torch_stand/after_load()
+	..()
+	update_icon()
 
 /obj/structure/torch_stand/New()
 	..()
