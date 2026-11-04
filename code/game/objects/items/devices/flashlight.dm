@@ -29,6 +29,10 @@
 	else
 		icon_state = off_state
 		set_light(0)
+	// A light held by a torch mount: let the mount match the lit/unlit state.
+	if (istype(loc, /obj/item/weapon/storage/internal))
+		var/obj/item/weapon/storage/internal/holder = loc
+		holder.update_icon()
 
 /obj/item/flashlight/attack_self(mob/user)
 	if (!isturf(user.loc))

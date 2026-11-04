@@ -24,6 +24,7 @@ def environment(source=SOURCE):
  # DM missing associative keys yield null. Python dicts need an explicit get.
  for key in ('operation','lease'):decoder=decoder.replace('request["'+key+'"]','request_value(request,"'+key+'")')
  env['paper_editor_request']=vm.project(decoder,'/proc/paper_editor_request','payload',env)
+ env['editor_source']=source
  env['paper_editor_modern_supported']=vm.project(source,'/proc/paper_editor_modern_supported','data',env)
  State.can_use_topic=vm.project('/state()\n'+vm.body(source,'/datum/topic_state/paper_editor/can_use_topic').replace('session','self.session'),'/state','self,src_object,user',env)
  class UI(ParentUI):
@@ -182,27 +183,39 @@ class Editor(unittest.TestCase):
   topic=NANO.split('/datum/nanoui/Topic(href, href_list)',1)[1].split('/datum/nanoui/proc/process(',1)[0]
   self.assertLess(topic.index('status != STATUS_INTERACTIVE || user != usr'),topic.index('consume_topic(href, href_list)'))
   self.assertLess(topic.index('consume_topic(href, href_list)'),topic.index('src_object.Topic(href, href_list, state)'))
- def test_factory_and_fallback_source_contracts_keep_inactive_scope(self):
+ def test_factory_and_fallback_source_contracts_enable_pen_route(self):
   factory=vm.body(SOURCE,'/proc/paper_editor_open')
   self.assertLess(factory.index('session.bind_ui('),factory.index('ui.open()'))
   self.assertIn('paper_editor_[session.session_lease]',factory);self.assertIn('session.retire()',factory)
   self.assertIn('ui.close()',factory);self.assertIn('catch (var/exception/e)',factory)
   self.assertNotIn('paper_editor_open',(vm.ROOT/'code/game/objects/items/paper/paper.dm').read_text(encoding='utf-8'))
   self.assertEqual(SOURCE.count('paper_editor_open('),2)
-  self.assertIn('#define PAPER_EDITOR_ENTRYPOINT_ENABLED FALSE', SOURCE)
+  self.assertIn('#define PAPER_EDITOR_ENTRYPOINT_ENABLED TRUE', SOURCE)
   self.assertIn('if (editor_closed || legacy_renderer)',vm.body(SOURCE,'/datum/nanoui/tgui/paper_editor/Topic'))
   for forbidden in ('hear_say(', 'add_language(', 'partial_languages','update_uis('):
    if forbidden=='update_uis(':continue # Comment explicitly says not to broadcast.
    self.assertNotIn(forbidden,SOURCE)
- def test_whole_legacy_and_crayon_views_select_readonly_fallback_before_open(self):
-  for mode in ('legacy','crayon'):
+ def test_legacy_and_crayon_views_use_modern_editor_and_oversize_falls_back(self):
+  for mode in ('legacy','crayon','oversize'):
    with self.subTest(mode=mode):
     self.setUp()
     if mode=='legacy':self.paper.info='<table><tr><td>Old</td></tr></table>';self.session.capture_state()
-    else:self.pen.kind='crayon'
-    self.ui.open();self.assertTrue(self.ui.legacy_renderer)
-    self.dispatch(self.request());self.assertIsNone(self.paper.document_record)
-    self.assertIn('read-only',self.ui.get_html())
+    elif mode=='crayon':self.pen.kind='crayon'
+    else:self.paper.info='x'*65537;self.session.capture_state()
+    self.ui.open()
+    if mode=='oversize':
+     self.assertTrue(self.ui.legacy_renderer)
+     self.dispatch(self.request());self.assertIsNone(self.paper.document_record)
+     self.assertIn('read-only',self.ui.get_html());continue
+    self.assertFalse(self.ui.legacy_renderer)
+    data=self.ui.editor_data()
+    # The authored bytes, never the legacy href cache, reach the client.
+    self.assertEqual(data['view']['legacy_body_html'],self.paper.info)
+    self.assertEqual(data['draft_tool'],'crayon' if mode=='crayon' else 'pen')
+    self.dispatch(self.request());record=self.paper.document_record
+    self.assertIsNotNone(record);section=record['sections'][0]
+    self.assertEqual(section['tool'],'crayon' if mode=='crayon' else 'pen');self.assertEqual(section['text'],'WRITTEN')
+    self.assertEqual(record['legacy']['info'],self.paper.info)
  def test_complete_factory_binds_before_open_and_reuses_owned_view(self):
   self.session.retire()
   ui=self.env['paper_editor_open'](self.paper,self.actor,self.pen)
@@ -229,25 +242,30 @@ class Editor(unittest.TestCase):
     self.assertTrue(all(e.count()==0 for e in self.events))
     self.assertTrue(all(ui.opens==0 for ui in self.env['native_factory']['uis']))
     self.assertEqual(self.actor.open_uis,[]);self.assertIsNone(self.paper.document_record)
- def test_dormant_entrypoint_admission_and_classic_failure_never_downgrades(self):
+ def test_enabled_entrypoint_opens_editor_and_only_unclassified_papers_fall_back(self):
   self.session.retire()
   messages=[]
   self.env.update(entrypoint_enabled=False,to_chat=lambda actor,msg:messages.append((actor,msg)),SPAN_WARNING=lambda msg:msg)
   vm.ALLOWED |= {'to_chat','SPAN_WARNING','paper_editor_open'}
-  route=vm.project(SOURCE.replace('PAPER_EDITOR_ENTRYPOINT_ENABLED','entrypoint_enabled'),'/proc/paper_editor_try_entrypoint','P,actor,pen',self.env)
+  route=vm.project(self.env['editor_source'].replace('PAPER_EDITOR_ENTRYPOINT_ENABLED','entrypoint_enabled'),'/proc/paper_editor_try_entrypoint','P,actor,pen',self.env)
   self.assertFalse(route(self.paper,self.actor,self.pen));self.assertEqual(self.actor.open_uis,[])
   self.env['entrypoint_enabled']=True
+  # An unclassified paper the editor cannot take keeps the guarded legacy route.
   self.actor.active=None
-  self.assertTrue(route(self.paper,self.actor,self.pen));self.assertEqual(self.actor.open_uis,[]);self.assertEqual(len(messages),1)
+  self.assertFalse(route(self.paper,self.actor,self.pen));self.assertEqual(self.actor.open_uis,[]);self.assertEqual(messages,[])
   self.assertIsNone(self.paper.document_record)
   self.actor.active=self.pen
   self.paper.info='<table><tr><td>Legacy text</td></tr></table>'
   self.assertTrue(route(self.paper,self.actor,self.pen))
-  ui=self.actor.open_uis[0];self.assertTrue(ui.legacy_renderer)
-  self.assertIn('Legacy text',ui.get_html());self.assertIn('read-only',ui.get_html())
-  ui.consume_topic('',{'paper_edit':json.dumps({'operation':'refresh','lease':ui.editor_data()['lease']})})
-  self.assertIsNone(self.paper.document_record);ui.close()
+  ui=self.actor.open_uis[0];self.assertFalse(ui.legacy_renderer)
+  self.assertEqual(ui.editor_data()['view']['legacy_body_html'],self.paper.info)
+  ui.consume_topic('',{'paper_edit':json.dumps({'operation':'append','lease':ui.editor_data()['lease'],'document_id':None,'revision':0,'language_id':EN,'kind':'body','value':'NEW'})})
+  self.assertIsNotNone(self.paper.document_record);ui.close()
   self.assertTrue(all(e.count()==0 for e in self.events))
+  # A classified paper never falls through to the unclassified legacy writer.
+  self.actor.active=None
+  self.assertTrue(route(self.paper,self.actor,self.pen));self.assertEqual(len(messages),1)
+  self.assertEqual(self.actor.open_uis,[])
  def test_written_icon_source_and_refresh_only_after_successful_write(self):
   paper_source=(vm.ROOT/'code/game/objects/items/paper/paper.dm').read_text(encoding='utf-8')
   helper=vm.body(paper_source,'/obj/item/weapon/paper/proc/has_document_writing')

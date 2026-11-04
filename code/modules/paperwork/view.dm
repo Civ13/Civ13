@@ -117,11 +117,26 @@
 		if (section["kind"] == "signature")
 			font = P.signfont
 			text = "<i>" + text + "</i>"
+		else
+			text = paper_document_section_pencode(text)
 		if (section["tool"] == "crayon")
 			text = "<b>" + text + "</b>"
 		text = replacetext(text, "\n", "<BR>")
 		result += "<BR><font face=\"" + html_encode(font) + "\" color=\"" + html_encode(section["ink"]) + "\">" + text + "</font>"
 	return result
+
+// The editor's only render-time pencode, applied to already encoded section
+// text. Trailing closers stop an unbalanced tag from styling later sections;
+// browsers ignore the extra closers.
+/proc/paper_document_section_pencode(text)
+	if (!findtext(text, "\[b\]") && !findtext(text, "\[i\]") && !findtext(text, "\[br\]"))
+		return text
+	text = replacetext(text, "\[b\]", "<b>")
+	text = replacetext(text, "\[/b\]", "</b>")
+	text = replacetext(text, "\[i\]", "<i>")
+	text = replacetext(text, "\[/i\]", "</i>")
+	text = replacetext(text, "\[br\]", "\n")
+	return text + "</i></b>"
 
 /proc/paper_document_view_title(value)
 	// sanitizeSafe already encodes renamed labels. Decode once, then escape for

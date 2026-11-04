@@ -1,43 +1,47 @@
-# Inactive Paper editor slice
+# Paper editor
 
-This is a local integration candidate on the accepted #3502 tree. No player verb,
-attack handler or Topic constructs the editor factory. No switch activates it.
-
-The owned session uses the existing current-client, pen, custody, document
-identity/revision/lease and spoken-language checks. It accepts only finite append,
-refresh and cancel messages. Signatures come from the actual held pen. A committed
-append rotates the lease; an unconfirmed response is never replayed automatically.
-The UI retains an invalid or oversized unsent draft for correction.
+The pen/crayon route in [the entrypoint](paperwork-entrypoint.md) constructs this
+editor. It accepts only finite append, refresh and cancel messages, using the
+existing current-client, pen, custody, document identity/revision/lease and
+spoken-language checks. Signatures come from the actual held pen. A committed
+append rotates the lease; an unconfirmed response is never replayed. The UI
+keeps an invalid or oversized unsent draft for correction.
 
 Every sent snapshot is re-projected for the current viewer. Unsupported or stale
-sessions close rather than send cached data. Unknown-language original section text
-is never supplied by this UI; the existing server projection supplies placeholders.
-Existing unclassified legacy text retains its existing reading policy, without
-inventing a language or changing stored bytes. No reading or study XP is awarded.
+sessions close rather than send cached data. Unknown-language section text is
+never supplied by this UI; the server projection supplies placeholders. Existing
+unclassified legacy text keeps its reading policy and stored bytes. No reading
+or study XP is awarded.
 
-The minimal modern view supports plain pen sections and an empty legacy body. It
-reuses the guarded Book renderer for the document, including opaque white paper,
-ink and ordinary selection/accessibility. Unsupported content, crayon fonts,
-classic/forced-color rendering failure or oversized metadata fall back as a whole
-to an authorized, freshly projected classic preview. The preview adds no writing
-controls or legacy href cache and its owned UI rejects actions. Stored legacy HTML
-retains the same rendering and authored-link boundary as the existing classic
-reader; this does not make historical HTML inert. Existing unclassified legacy
-writing paths remain in place until a separately reviewed activation plan replaces
-them, so this slice is not end-to-end language-aware authoring for all papers.
+## Rendering
 
-The shared NanoUI hook consumes only this owned editor's fixed action. Its default
-returns false; the original guarded src_object.Topic path remains in place for all
-other UIs. Session/UI/listener state is runtime-only. Factory construction binds
-before opening, uses a unique window key, and retires authority on failed or early
-construction. Ordinary status checks use physical bindings; snapshots and mutations
-still use the full canonical/current-state checks.
+The document uses the guarded Book page: opaque white paper, ink colours and
+ordinary selection/accessibility.
 
-Before activation: review and compile/CI this source; integrate the final #3502
-merge; decide and implement supported editing for rich legacy content/crayons and
-the unclassified legacy writing paths; verify native client Topic/ready/ack,
-close/logout/body transfer, owner/custody/pen changes, live observer iteration,
-fallback, language/white-ink behavior, signatures, Unicode and save/reload with
-an admitted isolated executor. Confirm icon/link refresh for canonical writing.
-Study, forms/templates, stamp repair and filing remain separate work. No live
-activation, native game run or deployment is included in this local candidate.
+- Existing legacy writing (pencode HTML in `info` plus `stamps`) is sent as the
+  authored bytes, never the `info_links` write cache. The client parses it in an
+  inert `DOMParser` document and keeps only text, line breaks, bold/italic, font
+  colour and font face (Verdana, Times New Roman, Comic Sans MS). Block tags,
+  list items and table cells become line breaks or separators, images show as
+  `[stamp]`, and script/style/frame content is dropped. Nothing is inserted as
+  HTML. Classic examine/readers still show the full original HTML.
+- Pen sections use Verdana; crayon sections use bold Comic Sans MS; signatures
+  use italic Times New Roman (bold too for crayon), matching the classic reader.
+- New sections are plain text. Line breaks are kept, and `[b]`, `[/b]`, `[i]`,
+  `[/i]` and `[br]` are applied when shown, both here and in the classic reader.
+  `[sign]`, `[date]` and `[time]` are replaced once on the server when written.
+  Other pencode (`[center]`, `[field]`, tables, lists) stays literal text.
+- Legacy `[field]` blanks show as empty and cannot be filled from this editor.
+
+A legacy body over 65536 characters, a parse/budget failure, forced-colors or
+print rendering, or a rendering check failure falls back as a whole to an
+authorized, freshly projected read-only classic preview. That preview adds no
+writing controls or legacy href cache, and its owned UI rejects actions.
+
+The shared NanoUI hook consumes only this owned editor's fixed action; other UIs
+keep the original guarded `src_object.Topic` path. Session/UI/listener state is
+runtime-only. Construction binds before opening, uses a unique window key and
+retires authority on failed or early construction.
+
+Study, forms/templates, field answers, stamp repair and filing remain separate
+work.
