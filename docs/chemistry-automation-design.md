@@ -40,7 +40,7 @@ option for every decision below on 2026-11-04.
 | --- | --- | --- |
 | 0. Container ports (done) | Barrel ports on the oil well, petroleum and biofuel refineries and internal combustion engines; barrel station; reagent gate. | Machines keep their gates; station at Factories; reagent gate at Automation |
 | 1. Pipes and tanks (done) | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
-| 2. Reaction vessel | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
+| 2. Reaction vessel (done) | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
 | 3. Packaging and tiers | Bottler and automated tablet press fed by belts; faster vessel tiers; piped reagents as fabricator inputs. | Pharmacology, Automation, Digital Computing |
 | 4. Monitoring and hazards | Network rows on the factory panel; optional leak spills (decided after playtesting). | Automation |
 
@@ -110,3 +110,34 @@ seconds by the factory process:
 
 Verification: `tests/factory_automation/pipes_probe.dm`. Not verified: a full
 disk save/load round trip, in-game play and how the pipe sprites look in game.
+
+## Phase 2 as built
+
+`code/modules/1713/factory_vessel.dm` adds the **reaction vessel** (14 steel,
+200 units, 4 PU, Factories). It is inert, joins a pipe network like any
+machine, and runs one recipe chosen by hand from the reaction bench's list
+(`controlled_reaction_paths()` in `code/modules/reagents/laboratory.dm`, which
+both now share):
+
+- **Filling:** as a sink it takes only the recipe's inputs, in ratio, up to
+  as many whole batches as fit beside the catalysts, plus each catalyst's
+  required amount.
+- **Reacting:** once the batch is complete it needs cable power for three
+  steps (six seconds), then reacts the whole batch at once and releases its
+  power. A batch that cannot react, such as a fibre recipe before its year,
+  consumes nothing and waits.
+- **Emptying:** as a source it lets out the product and any leftovers;
+  catalysts stay for the next batch. Holding tank filters sort product from
+  leftovers, so an unfiltered tank serves as the waste output. When only
+  catalysts remain it fills again.
+- Choosing another recipe, or none, first flushes everything, catalysts
+  included.
+
+Heated recipes (polypropylene) and bench-only recipes (gelatin foam, rayon and
+lyocell fibre) now ask `controlled_reaction_site()`, which accepts a secured
+bench beaker (heated by its burner when needed) or a powered vessel. Item
+products such as cloth and plastic sheets stay on the bench until phase 3.
+
+Verification: `tests/factory_automation/vessel_probe.dm`. Not verified: a full
+disk save/load round trip and in-game play.
+

@@ -150,7 +150,7 @@ var/global/fluid_step_serial = 0
 	return found
 
 /proc/fluid_has_role(obj/O)
-	return O.fluid_supply_tier() || O.fluid_demand_tier() || istype(O, /obj/structure/fluid_pump)
+	return O.fluid_supply_tier() || O.fluid_demand_tier() || istype(O, /obj/structure/fluid_pump) || istype(O, /obj/structure/fluid_vessel)
 
 /proc/fluid_rebuild_networks()
 	fluid_networks = list()
@@ -202,6 +202,11 @@ var/global/fluid_step_serial = 0
 			fluid_pumps -= P
 			continue
 		P.pump_step()
+	for (var/obj/structure/fluid_vessel/V in fluid_vessels.Copy())
+		if (QDELETED(V))
+			fluid_vessels -= V
+			continue
+		V.vessel_step()
 	for (var/datum/fluid_network/N in fluid_networks)
 		if (N.idle_steps && N.idle_steps % FLUID_IDLE_RECHECK)
 			N.idle_steps++

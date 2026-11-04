@@ -7,6 +7,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/machines_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/chemistry_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/pipes_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/vessel_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -74,3 +75,13 @@ Removing the station's `NOREACT` flag makes the inert-tank check fail.
 - Catalog: research gates, the five global recipes and the reused sprites.
 
 Letting a network move reagents without a powered pump makes four checks fail.
+
+`vessel_probe.dm` (chemistry phase 2) calls the network and vessel steps directly and checks:
+
+- Network: an idle vessel joins its network and takes nothing without a recipe; with one it wants whole batches of the recipe's inputs and nothing else; it draws a full batch in ratio from filtered tanks; the full batch waits unreacted and takes no more until the vessel has power; a cabled vessel draws power while it reacts, reacts the whole batch after three powered steps and releases its power; the product leaves through the pipes and the next batch starts filling.
+- Catalysts: batches leave room for catalysts; a batch one unit short never reacts; catalysts stay in the vessel and are never offered; once the product is out the vessel refills inputs only; a new recipe flushes old catalysts; the vessel is inert.
+- Reaction sites: a heated recipe runs only in a powered vessel; the reaction bench still needs its burner; bench-only recipes still do not run in a loose beaker; the bench and vessel share one recipe list.
+- Saving: recipe and stage are saved, power and reaction time are not; a reloaded vessel restarts its reaction time unpowered and rejoins the networks.
+- Catalog: the Factories gate, the global recipe and the reused sprites.
+
+Letting catalysts leave the vessel makes two checks fail; letting heated recipes run in an unpowered vessel makes one fail.

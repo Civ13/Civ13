@@ -1,4 +1,32 @@
 // Controlled game reactions avoid ambiguous automatic elemental mixtures.
+// The reaction bench and the factory reaction vessel offer these recipes.
+/proc/controlled_reaction_paths()
+	return list(/datum/chemical_reaction/ethanoic_acid, /datum/chemical_reaction/calcium_carbonate, /datum/chemical_reaction/calcium_chloride, /datum/chemical_reaction/gluconic_acid, /datum/chemical_reaction/calcium_gluconate, /datum/chemical_reaction/sodium_sulfide, /datum/chemical_reaction/sodium_hydroxide, /datum/chemical_reaction/sulfurous_acid, /datum/chemical_reaction/hydrogen_sulfites, /datum/chemical_reaction/n_methylmorpholine_n_oxide, /datum/chemical_reaction/isobutylene, /datum/chemical_reaction/butylrubber, /datum/chemical_reaction/titaniumchloride, /datum/chemical_reaction/titaniumtrichloride, /datum/chemical_reaction/aluminumchloride, /datum/chemical_reaction/borontrifluoride, /datum/chemical_reaction/ethylene, /datum/chemical_reaction/propylene, /datum/chemical_reaction/polyethylene, /datum/chemical_reaction/octane, /datum/chemical_reaction/cyclopentane, /datum/chemical_reaction/toluene, /datum/chemical_reaction/butene, /datum/chemical_reaction/gasoline, /datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/gelatin_mixed_solvent, /datum/chemical_reaction/gelatin_foam, /datum/chemical_reaction/enginefuel, /datum/chemical_reaction/rayon_fiber, /datum/chemical_reaction/lyocell_fiber)
+
+var/global/list/controlled_reactions_by_id = null
+
+// One shared reaction datum per controlled recipe id.
+/proc/controlled_reaction(id)
+	if (!controlled_reactions_by_id)
+		controlled_reactions_by_id = list()
+		for (var/path in controlled_reaction_paths())
+			var/datum/chemical_reaction/R = new path()
+			controlled_reactions_by_id[R.id] = R
+	return controlled_reactions_by_id[id]
+
+// Whether holder sits where a controlled reaction may run: the secured beaker
+// of a reaction bench, or a powered factory reaction vessel. Heat comes from
+// the bench's burner or the vessel's power.
+/proc/controlled_reaction_site(datum/reagents/holder, needs_heat = FALSE)
+	var/atom/A = holder ? holder.my_atom : null
+	if (!A)
+		return FALSE
+	if (istype(A, /obj/structure/fluid_vessel))
+		var/obj/structure/fluid_vessel/V = A
+		return V.powered
+	var/obj/structure/reaction_bench/bench = A.loc
+	return istype(bench) && bench.collector == A && (!needs_heat || bench.is_heated())
+
 /obj/structure/reaction_bench
 	name = "laboratory reaction bench"
 	desc = "Holds a beaker inert while you choose a game laboratory recipe. These conversions are not real synthesis instructions."
@@ -9,7 +37,7 @@
 	var/obj/item/weapon/reagent_containers/glass/collector = null
 	var/collector_was_inert = FALSE
 	var/heated_until = 0
-	var/list/reaction_paths = list(/datum/chemical_reaction/ethanoic_acid, /datum/chemical_reaction/calcium_carbonate, /datum/chemical_reaction/calcium_chloride, /datum/chemical_reaction/gluconic_acid, /datum/chemical_reaction/calcium_gluconate, /datum/chemical_reaction/sodium_sulfide, /datum/chemical_reaction/sodium_hydroxide, /datum/chemical_reaction/sulfurous_acid, /datum/chemical_reaction/hydrogen_sulfites, /datum/chemical_reaction/n_methylmorpholine_n_oxide, /datum/chemical_reaction/isobutylene, /datum/chemical_reaction/butylrubber, /datum/chemical_reaction/titaniumchloride, /datum/chemical_reaction/titaniumtrichloride, /datum/chemical_reaction/aluminumchloride, /datum/chemical_reaction/borontrifluoride, /datum/chemical_reaction/ethylene, /datum/chemical_reaction/propylene, /datum/chemical_reaction/polyethylene, /datum/chemical_reaction/octane, /datum/chemical_reaction/cyclopentane, /datum/chemical_reaction/toluene, /datum/chemical_reaction/butene, /datum/chemical_reaction/gasoline)
+	var/list/reaction_paths = null
 
 /obj/structure/reaction_bench/proc/install_beaker(obj/item/weapon/reagent_containers/glass/B, mob/user)
 	if(collector || !B || !B.reagents)
@@ -272,7 +300,7 @@
 
 /obj/structure/reaction_bench/New()
 	..()
-	reaction_paths += list(/datum/chemical_reaction/hydrogen_chloride, /datum/chemical_reaction/hclacid, /datum/chemical_reaction/polypropylene, /datum/chemical_reaction/gelatin_acid, /datum/chemical_reaction/gelatin_enzyme, /datum/chemical_reaction/gelatin_fruit, /datum/chemical_reaction/gelatin_water, /datum/chemical_reaction/gelatin_ethanol, /datum/chemical_reaction/gelatin_mixed_solvent, /datum/chemical_reaction/gelatin_foam, /datum/chemical_reaction/enginefuel, /datum/chemical_reaction/rayon_fiber, /datum/chemical_reaction/lyocell_fiber)
+	reaction_paths = controlled_reaction_paths()
 
 /obj/item/weapon/laboratory_burner
 	name = "laboratory burner"
