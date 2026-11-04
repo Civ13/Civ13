@@ -1170,6 +1170,7 @@
 #include "code\modules\persistence\admin.dm"
 #include "code\modules\persistence\variable_observability.dm"
 #include "code\modules\persistence\functions.dm"
+#include "code\modules\persistence\world_time_stamps.dm"
 #include "code\modules\persistence\debug_lossy.dm"
 #include "code\modules\persistence\derived_assets.dm"
 #include "code\modules\persistence\admission_contract.dm"
