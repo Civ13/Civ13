@@ -1170,6 +1170,7 @@
 #include "code\modules\persistence\admin.dm"
 #include "code\modules\persistence\variable_observability.dm"
 #include "code\modules\persistence\functions.dm"
+#include "code\modules\persistence\world_time_stamps.dm"
 #include "code\modules\persistence\debug_lossy.dm"
 #include "code\modules\persistence\derived_assets.dm"
 #include "code\modules\persistence\admission_contract.dm"
@@ -1392,3 +1393,5 @@
 #include "code\modules\1713\modern_telephone.dm"
 #include "code\modules\1713\modern_terminal.dm"
 #include "code\modules\1713\backrooms\gateway_core.dm"
+// Must stay last: global_init needs every other global initialized first.
+#include "code\global_init_last.dm"
