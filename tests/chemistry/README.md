@@ -115,3 +115,5 @@ It also checks paid polypropylene cloth and comb production and insufficient-inp
 Polyethylene play-ball production is checked for payment and insufficient input.
 It checks that dismantling a decorative plastic pipe returns one plastic sheet.
 It checks butyl tape payment, missing feedstock, and paid copper insulation.
+
+The biochemistry probe checks butyl stopper payment, vial sealing and rejection of a beaker.

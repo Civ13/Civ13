@@ -26,6 +26,7 @@
 	biochemistry_mixed_gelatin_checks()
 	biochemistry_plastic_pipe_checks()
 	biochemistry_butyl_tape_checks()
+	biochemistry_butyl_stopper_checks()
 	return TRUE
 
 /proc/biochemistry_plastic_pipe_checks()
@@ -35,6 +36,20 @@
 	var/obj/item/stack/material/plastic/plastic = locate() in site
 	chemistry_assert(plastic && plastic.amount == 1, "Plastic pipe did not return one sheet")
 	qdel(plastic)
+
+/proc/biochemistry_butyl_stopper_checks()
+	var/obj/structure/reaction_bench/bench = processing_new_bench()
+	chemistry_assert(!bench.finish_polymer_product("butyl_stopper"), "Stopper without rubber succeeded")
+	processing_add(bench, "butylrubber", 1)
+	chemistry_assert(bench.finish_polymer_product("butyl_stopper") && !bench.collector.reagents.get_reagent_amount("butylrubber"), "Stopper payment failed")
+	var/obj/item/butyl_stopper/stopper = locate() in get_turf(bench)
+	var/obj/item/weapon/reagent_containers/glass/bottle/vial = new(get_turf(bench))
+	var/obj/item/weapon/reagent_containers/glass/beaker/beaker = new(get_turf(bench))
+	chemistry_assert(stopper && !stopper.seal_bottle(beaker), "Stopper accepted a beaker")
+	chemistry_assert(stopper.seal_bottle(vial) && !vial.is_open_container(), "Stopper failed to seal vial")
+	qdel(vial)
+	qdel(beaker)
+	qdel(bench)
 
 /proc/biochemistry_butyl_tape_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench()
