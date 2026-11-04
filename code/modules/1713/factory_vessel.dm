@@ -132,10 +132,12 @@ var/global/list/fluid_vessels = list()
 		powersource.update_power(-powerneeded, 1, src)
 	powered = FALSE
 
-/obj/structure/fluid_vessel/proc/set_stage(new_stage)
+// A finished batch keeps its power reservation until the next step, so one
+// grid's capacity runs only one batch per step.
+/obj/structure/fluid_vessel/proc/set_stage(new_stage, keep_power = FALSE)
 	stage = new_stage
 	react_steps = 0
-	if (stage != VESSEL_REACTING)
+	if (stage != VESSEL_REACTING && !keep_power)
 		vessel_release_power()
 	var/datum/fluid_network/N = fluid_network_of(src)
 	if (N)
@@ -167,11 +169,13 @@ var/global/list/fluid_vessels = list()
 			if (++react_steps < react_time)
 				return
 			if (react_batch())
-				set_stage(VESSEL_EMPTYING)
+				set_stage(VESSEL_EMPTYING, TRUE)
 			else
 				// Inputs stay put; examining the vessel says why it waits.
 				react_steps = 0
 		if (VESSEL_EMPTYING)
+			if (powered)
+				vessel_release_power()
 			if (emptied())
 				flushing = FALSE
 				set_stage(VESSEL_FILLING)

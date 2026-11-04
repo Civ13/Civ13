@@ -41,7 +41,7 @@ option for every decision below on 2026-11-04.
 | 0. Container ports (done) | Barrel ports on the oil well, petroleum and biofuel refineries and internal combustion engines; barrel station; reagent gate. | Machines keep their gates; station at Factories; reagent gate at Automation |
 | 1. Pipes and tanks (done) | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
 | 2. Reaction vessel (done) | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
-| 3. Packaging and tiers (done) | Bottler and automated tablet press fed by belts; faster vessel tiers; piped reagents as fabricator inputs. | Pharmacology, Automation, Digital Computing |
+| 3. Packaging and tiers (done) | Bottler and automated tablet press fed by belts; faster vessel tiers. Piped reagents as fabricator inputs were deferred (see Phase 3 as built). | Pharmacology, Automation, Digital Computing |
 | 4. Monitoring and hazards | Network rows on the factory panel; optional leak spills (decided after playtesting). | Automation |
 
 ## Phase 0 as built

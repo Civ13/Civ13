@@ -67,14 +67,19 @@
 		N.idle_steps = 0
 	return 1
 
+// Full, or no longer fillable (its reagent was changed or it was closed), so a
+// belt line never stalls on a container the bottler cannot finish.
+/obj/structure/fluid_bottler/proc/releasable(obj/item/weapon/reagent_containers/C)
+	return C && (is_full(C) || !fillable(C))
+
 /obj/structure/fluid_bottler/factory_offer(to_dir = 0, filter_type = null)
 	var/obj/item/weapon/reagent_containers/C = held_container()
-	if (C && is_full(C) && (!filter_type || istype(C, filter_type)))
+	if (releasable(C) && (!filter_type || istype(C, filter_type)))
 		return C
 	return null
 
 /obj/structure/fluid_bottler/factory_take(obj/item/I, atom/destination)
-	if (!destination || I != held_container() || !is_full(I))
+	if (!destination || I != held_container() || !releasable(I))
 		return FALSE
 	I.forceMove(destination)
 	return I.loc == destination

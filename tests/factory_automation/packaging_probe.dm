@@ -110,6 +110,11 @@ var/pipe_runtime_error = FALSE
 	B.filter_reagent = "water"
 	var/obj/item/weapon/reagent_containers/glass/beaker/half = new(locate(10, 10, 1))
 	B.factory_insert(half)
+	factory_fluids_step()
+	pipe_check(half.reagents.total_volume > 0 && !B.factory_offer(), "a part-filled container stays while it can still be filled")
+	B.filter_reagent = "gasoline"
+	pipe_check(B.factory_offer() == half && !B.fluid_demand("gasoline"), "a container the bottler can no longer fill is offered so the line keeps moving")
+	B.filter_reagent = "water"
 	qdel(B)
 	pipe_check(half.loc == locate(6, 3, 1), "a removed bottler drops its container")
 	for (var/obj/O in pipes + list(T, P, empty, oily, closed, pill, half) + power)
