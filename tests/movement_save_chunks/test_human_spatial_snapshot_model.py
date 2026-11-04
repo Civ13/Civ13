@@ -492,10 +492,12 @@ class SourceConstraints(unittest.TestCase):
     def test_experimental_save_motion_keeps_recovery_holds_and_pull_fallback(self):
         human = (self.root / "code/game/mob/living/carbon/human/subtile_movement.dm").read_text()
         gate = human.split("/proc/human_subtile_save_motion_allowed()", 1)[1].split("\n/mob/", 1)[0]
-        for required in ("#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL", 'operation.current(storage, "save")',
+        # Ordinary builds keep players moving during saves; holds still apply.
+        self.assertNotIn("#ifdef", gate)
+        self.assertNotIn("return FALSE", gate)
+        for required in ('operation.current(storage, "save")',
                          "!persistence_load_recovery_required", "!storage.dimension_recovery_required",
-                         "!storage.dimension_budget_hold", "!persistence_restart.startup_hold", "!persistence_restart.busy", "operation.restart_transaction == persistence_restart",
-                         "#else\n\treturn FALSE"):
+                         "!storage.dimension_budget_hold", "!persistence_restart.startup_hold", "!persistence_restart.busy", "operation.restart_transaction == persistence_restart"):
             self.assertIn(required, gate)
         valid = human.split("/datum/human_subtile_transaction/proc/valid(direction)", 1)[1].split("\n/datum/", 1)[0]
         self.assertIn("persistence_save_in_progress && !human_subtile_save_motion_allowed()", valid)
@@ -505,7 +507,8 @@ class SourceConstraints(unittest.TestCase):
         self.assertLess(admission.index("transaction != persistence_restart"), admission.index("operation.restart_transaction = transaction"))
         pull = (self.root / "code/game/mob/living/carbon/human/pull_pair_producer.dm").read_text()
         ready = pull.split("/mob/living/human/proc/human_subtile_pull_ready(direct)", 1)[1].split("\n/mob/", 1)[0]
-        self.assertLess(ready.index("if (P)"), ready.index("#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL"))
+        self.assertLess(ready.index("if (P)"), ready.index("if (persistence_save_in_progress && human_subtile_save_motion_allowed())"))
+        self.assertNotIn("#ifdef", ready)
         self.assertIn("if (persistence_save_in_progress && human_subtile_save_motion_allowed())\n\t\treturn FALSE", ready)
         move = human.split("/mob/living/human/SelfMove(", 1)[1].split("\n/mob/", 1)[0]
         self.assertLess(move.index("human_subtile_pull_ready(direct)"), move.index("human_subtile_travel("))

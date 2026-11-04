@@ -43,6 +43,16 @@ var/frontier_delete_attempted = FALSE
 			for(var/i = 1, i <= 70, i++) deep = list(deep)
 			payload = deep
 		return ..()
+// A walking body outside the animal cohort, like a player who keeps moving
+// during a save. Only the post-walk sweep can give it a saved tile parent.
+/mob/living/chunk_walker
+	New()
+		..()
+		mob_list += src
+	Del()
+		mob_list -= src
+		..()
+var/mob/living/chunk_walker/walker
 /mob/living/simple_animal/chunk_fixture/optional_cuff
 	var/handcuffed = TRUE
 // A missed animal that saves a reference to another missed animal.
@@ -123,6 +133,12 @@ var/peak_capture_tick_usage = 0
 				else if(world.params["scenario"] == "sweep-cross-z")
 					subject.loc = locate(2,1,2)
 					mutations++
+		else if(world.params["scenario"] == "walker-backstep")
+			// The walker steps back onto an already-saved tile before its own.
+			var/datum/save_export_frame/top = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+			if(!mutations && !top && walker && saving_references["\ref[locate(2,1,1)]"] && !saving_references["\ref[walker]"])
+				walker.loc = locate(2,1,1)
+				mutations++
 		else if(world.params["scenario"] == "uncaptured-delete")
 			// An admitted animal is deleted before traversal reaches its turf.
 			if(!mutations && record && !record["ref"])
@@ -198,6 +214,9 @@ var/peak_capture_tick_usage = 0
 				companion.companion = subject
 				mob_list += subject
 			if(map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Origin-linked animal was admitted")
+		if(world.params["scenario"] == "walker-backstep")
+			walker = new(locate(4,1,1))
+			walker.name = "walking player"
 		subject.name = "admitted animal"
 		subject.payload = list("literal", "key" = 17)
 		if(world.params["scenario"] == "reference")
@@ -262,6 +281,16 @@ var/peak_capture_tick_usage = 0
 					for(var/ref in map_storage.saved_content_refs(F["[map_storage.entry_path(F, F["/map/1/1/[x]"])]/content"], 3))
 						if(F["[map_storage.entry_path(F, ref)]/type"] == /mob/living/simple_animal/chunk_fixture/companion) companion_owners++
 				if(companion_owners != 1) throw EXCEPTION("SWEEP_COMPANION: companion missing or multiply owned")
+			if(world.params["scenario"] == "walker-backstep")
+				var/walker_owners = 0
+				var/walker_x
+				for(var/x = 1, x <= world.maxx, x++)
+					for(var/ref in map_storage.saved_content_refs(F["[map_storage.entry_path(F, F["/map/1/1/[x]"])]/content"], 3))
+						if(F["[map_storage.entry_path(F, ref)]/type"] == /mob/living/chunk_walker)
+							walker_owners++
+							walker_x = x
+				if(walker_owners != 1) throw EXCEPTION("WALKER_BACKSTEP: walking body missing or multiply owned")
+				if(walker_x != 2) throw EXCEPTION("WALKER_BACKSTEP: walking body was not saved on its new tile")
 			if(world.params["scenario"] == "legacy-backstep" && found_x != 2) throw EXCEPTION("LEGACY_BACKSTEP: animal was not saved on its new tile")
 			if(world.params["scenario"] == "legacy-step" && found_x != 2) throw EXCEPTION("LEGACY_STEP: saved owner is not the captured origin")
 			if(world.params["scenario"] == "reference")

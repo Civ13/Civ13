@@ -173,8 +173,11 @@ class ExistingSourceBoundaryTests(unittest.TestCase):
     def test_actual_human_handoff_cannot_finish_inside_capture(self):
         source = (self.root / "code/game/mob/living/carbon/human/subtile_movement.dm").read_text()
         before = source.split("/mob/living/human/before_save()", 1)[1].split("\n/mob/", 1)[0]
-        self.assertIn("if (human_subtile_pulse)", before)
-        self.assertIn("human_subtile_transaction.cancelled = TRUE", before)
+        # Tile-only saves let a walking body finish its step: the ordinary
+        # hook neither cancels the transaction nor refuses an in-flight pulse.
+        self.assertNotIn("if (human_subtile_pulse)", before)
+        self.assertNotIn("human_subtile_transaction.cancelled = TRUE", before)
+        self.assertIn("human_subtile_position = null", before)
         paid = source.split("/datum/human_subtile_transaction/proc/wait_paid_interval()", 1)[1].split("\n/datum/", 1)[0]
         self.assertIn("sleep(world.tick_lag)", paid)
         finish = source.split("/datum/human_subtile_transaction/proc/finish()", 1)[1].split("\n/mob/", 1)[0]

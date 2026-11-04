@@ -111,7 +111,8 @@ class PullProducerContracts(unittest.TestCase):
         self.assertIn('throw EXCEPTION("Pull pair requires an aligned save checkpoint")',save)
         self.assertIn('return ..()',save)
         human=read('code/game/mob/living/carbon/human/subtile_movement.dm')
-        self.assertIn('if (!human_subtile_shape() || !human_subtile_unlinked())',human)
+        # Human saves are tile-only: movement offsets are never exported.
+        self.assertIn('\tif (key == "step_x" || key == "step_y") return TRUE\n',human)
 
     def test_stop_and_handoff_revoke_old_work_without_borrowing_authority(self):
         living=read('code/game/mob/living/living.dm')

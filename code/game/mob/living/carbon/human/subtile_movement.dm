@@ -169,17 +169,15 @@
 			return FALSE
 	return TRUE
 
-// The experimental save path never releases load, dimension or startup holds.
-// A busy restart may move only under its own currently admitted save operation.
-// This branch is absent from ordinary builds until reviewed and enabled.
+// Players keep walking during a world save. Saves are tile-only for humans:
+// a body is saved on the tile it occupies when its entry is written, with no
+// movement offset, and the tile walk/sweep keep exactly one saved parent.
+// Motion never releases load, dimension or startup holds. A busy restart may
+// move only under its own currently admitted save operation.
 /proc/human_subtile_save_motion_allowed()
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	var/datum/persistence_world_operation/operation = persistence_active_operation
 	var/map_storage/storage = operation ? operation.storage : null
 	return operation && storage && operation.current(storage, "save") && !persistence_load_recovery_required && !storage.dimension_recovery_required && !storage.dimension_budget_hold && !persistence_restart.startup_hold && ((!persistence_restart.busy && !operation.restart_transaction) || (persistence_restart.busy && operation.restart_transaction == persistence_restart))
-#else
-	return FALSE
-#endif
 
 /mob/living/human/proc/human_subtile_shape()
 	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= 0 && step_x < 32 && step_y >= 0 && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
@@ -188,10 +186,8 @@
 	return human_subtile_enabled && human_subtile_ready(direction)
 
 /mob/living/human/proc/human_subtile_ready(direction)
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if (persistence_save_in_progress && pulling && subtile_pull_ownership.owners[pulling])
 		return FALSE
-#endif
 	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
 
 // Fine input never falls back to tile movement or takes ownership of a link.
@@ -229,12 +225,10 @@
 
 /mob/living/human/proc/human_subtile_input_supported(direction)
 	human_subtile_initialize_default(direction)
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	// Never let the tile-aligned legacy fallback move a member of an owned pair
 	// while save admission settles it, including an owned pulled follower.
 	if (persistence_save_in_progress && (subtile_pull_ownership.owners[src] || (pulling && subtile_pull_ownership.owners[pulling])))
 		return FALSE
-#endif
 	// Unsupported transitions keep the legacy path only when tile-aligned.
 	// A restored capsule also owns a physical offset while the opt-in is off.
 	if (!human_subtile_enabled && !human_subtile_offset_owned)
@@ -549,14 +543,10 @@
 /mob/living/human/persistence_runtime_var(key)
 	if (key == "human_subtile_pull_enabled")
 		return TRUE
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	// Tile-only persistence treats native sub-tile movement as transient.
 	// Pixel offsets are unrelated artwork and continue through normal saving.
 	if (key == "step_x" || key == "step_y") return TRUE
-#endif
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
-		return TRUE
-	if ((key == "step_x" || key == "step_y") && ((human_subtile_import_owned || human_subtile_position) || human_subtile_save_aligned))
 		return TRUE
 	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner")) || ..()
 
@@ -623,25 +613,12 @@
 		if (!frame.active || frame.source != src || !request || request.actor != src || human_subtile_save_request != request || !request.captured || !request.operation || !request.operation.current(frame.exporter, "save"))
 			throw EXCEPTION("Human save hook owner changed")
 		return .
-	if (human_subtile_pulse)
-		throw EXCEPTION("Cannot snapshot an in-flight sub-tile pulse")
-	if (human_subtile_transaction)
-		human_subtile_transaction.cancelled = TRUE
+	// Tile-only save: the body is written on the tile it occupies now, with no
+	// movement offset, so a walking player is never stopped or cancelled here.
+	// An unfinished step loads at the centre of its anchor tile, like a body
+	// that was standing still. Offsets, transactions and pulses stay runtime.
 	human_subtile_save_aligned = FALSE
-	if ((human_subtile_enabled || human_subtile_offset_owned) && (step_x || step_y))
-		if (!human_subtile_shape() || !human_subtile_unlinked())
-			throw EXCEPTION("Unsupported sub-tile save geometry")
-		human_subtile_position = human_subtile_snapshot()
-		// after_load rejects a capsule whose footprint is obstructed, and that
-		// fails the whole level. A door can close over a standing body, a noose,
-		// gallows or cross turns dense around its occupant, and a climbed crate
-		// or barricade stays dense. Save such a body tile-aligned at its anchor
-		// instead: no capsule and no raw step offsets, as an unmoved body saves.
-		if (!human_subtile_destination_clear(human_subtile_position))
-			human_subtile_position = null
-			human_subtile_save_aligned = TRUE
-	else
-		human_subtile_position = null
+	human_subtile_position = null
 
 /mob/living/human/proc/human_subtile_destination_clear(list/S)
 	for (var/tx = S["x"], tx <= S["x"] + (S["sx"] > 0), tx++)
