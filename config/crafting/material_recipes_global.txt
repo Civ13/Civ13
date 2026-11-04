@@ -1886,6 +1886,11 @@ RECIPE: /material/steel/,conveyor belt,/obj/item/conveyor_construct,5,250,1,1,pr
 RECIPE: /material/steel/,conveyor switch,/obj/item/conveyor_switch_construct,5,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,factory belt,/obj/item/factory_belt_assembly,4,150,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,parts bin,/obj/structure/closet/crate/factory_bin,6,150,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,belt drive,/obj/structure/factory_drive,8,200,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,sorting gate,/obj/item/factory_belt_assembly/gate,6,150,1,1,production,125,0,0,8,null
+RECIPE: /material/steel/,belt splitter,/obj/item/factory_belt_assembly/splitter,6,150,1,1,production,125,0,0,8,null
+RECIPE: /material/steel/,belt tunnel entrance,/obj/item/factory_belt_assembly/tunnel,8,150,1,1,production,125,0,0,8,null
+RECIPE: /material/steel/,belt tunnel exit,/obj/item/factory_belt_assembly/tunnel_exit,8,150,1,1,production,125,0,0,8,null
 
 RECIPE: /material/steel/,IV drip,/obj/structure/iv_drip,6,140,0,1,production,95,0,95,8,null
 

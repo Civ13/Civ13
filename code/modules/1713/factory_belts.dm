@@ -1,11 +1,13 @@
-// Factory belts (phase 1 of docs/factory-automation-design.md).
+// Factory belts (phases 1 and 2 of docs/factory-automation-design.md).
 //
 // Cargo stays an ordinary item on the belt's turf, so picking it up, examining
 // it, hover names, saving and rendering all behave as they do for any floor
 // item. A belt tracks up to FACTORY_BELT_SLOTS items in fixed positions along
 // its travel direction and moves them with raw location writes, so no turf
-// Entered hooks run per step. Belts only run while they hold cargo; empty belts
-// leave the process and blocked belts poll slowly.
+// Entered hooks run per step. Belts only run while they hold cargo and a
+// powered belt drive is in range; idle or unpowered belts leave the process and
+// blocked belts poll slowly. Routing belts (factory_routing.dm) only change
+// where the exit item goes.
 
 #define FACTORY_BELT_SLOTS 4
 #define FACTORY_BELT_TICK 10 // deciseconds between belt steps
@@ -20,6 +22,8 @@ var/global/list/factory_belt_moved = list()
 /proc/factory_belts_begin_step()
 	factory_belt_tick++
 	factory_belt_moved.Cut()
+	// Drives settle first, so belts see this step's power.
+	factory_drives_step()
 
 // One whole step outside the scheduler, for fixtures and admin tools.
 /proc/factory_belts_step()
@@ -32,7 +36,7 @@ var/global/list/factory_belt_moved = list()
 
 /obj/structure/factory_belt
 	name = "factory belt"
-	desc = "A powered roller belt. It carries loose items toward the arrow and hands them to the next belt, a machine or a crate in front of it. Use a wrench to turn it."
+	desc = "A roller belt. It carries loose items toward the arrow and hands them to the next belt, a machine or a crate in front of it. It needs a powered belt drive nearby. Use a wrench to turn it."
 	icon = 'icons/obj/recycling.dmi'
 	icon_state = "conveyor1"
 	layer = 2.9
@@ -44,6 +48,8 @@ var/global/list/factory_belt_moved = list()
 	var/tmp/list/cargo = null
 	var/tmp/belt_active = FALSE
 	var/tmp/next_poll = 0
+	var/tmp/obj/structure/factory_drive/drive = null // the powered drive that last ran this belt
+	var/assembly_type = /obj/item/factory_belt_assembly
 
 /obj/structure/factory_belt/New()
 	..()
@@ -58,7 +64,7 @@ var/global/list/factory_belt_moved = list()
 	return ..()
 
 /obj/structure/factory_belt/persistence_runtime_var(key)
-	if (key == "cargo" || key == "belt_active" || key == "next_poll")
+	if (key == "cargo" || key == "belt_active" || key == "next_poll" || key == "drive")
 		return TRUE
 	return ..()
 
@@ -73,6 +79,8 @@ var/global/list/factory_belt_moved = list()
 	for (var/obj/item/I in cargo)
 		count++
 	to_chat(user, SPAN_NOTICE("It runs [dir2text(dir)] and carries [count] of [FACTORY_BELT_SLOTS] items."))
+	if (!belt_powered())
+		to_chat(user, SPAN_WARNING("No powered belt drive is in range, so it is stopped."))
 
 /obj/structure/factory_belt/Crossed(atom/movable/AM)
 	..()
@@ -92,7 +100,7 @@ var/global/list/factory_belt_moved = list()
 	if (istype(W, /obj/item/weapon/crowbar))
 		playsound(src, 'sound/items/Crowbar.ogg', 50, TRUE)
 		to_chat(user, SPAN_NOTICE("You pry up \the [src]."))
-		new /obj/item/factory_belt_assembly(get_turf(src))
+		new assembly_type(get_turf(src))
 		qdel(src)
 		return
 	// Anything else is dropped onto the belt like onto the floor.
@@ -110,6 +118,18 @@ var/global/list/factory_belt_moved = list()
 /obj/structure/factory_belt/proc/belt_sleep()
 	belt_active = FALSE
 	factory_active_belts -= src
+
+// A belt runs while a powered drive on its level is within the drive's range.
+// The last drive is cached; only a lost drive searches the powered drives.
+/obj/structure/factory_belt/proc/belt_powered()
+	if (drive && drive.drive_covers(src))
+		return TRUE
+	drive = null
+	for (var/obj/structure/factory_drive/D in factory_powered_drives)
+		if (D.drive_covers(src))
+			drive = D
+			return TRUE
+	return FALSE
 
 // Pixel offset of a slot along the travel direction: entry -12, exit +12.
 /proc/factory_slot_offset(slot)
@@ -219,30 +239,51 @@ var/global/list/factory_belt_moved = list()
 		return I.forceMove(T)
 	return I.persistence_set_loc(T)
 
-// Hand the exit item to whatever is in front: a belt, or a factory port.
+// Directions to try for the exit item, in order. Routing belts override this.
+/obj/structure/factory_belt/proc/export_dirs(obj/item/I)
+	return list(dir)
+
+// Called after the exit item left toward d.
+/obj/structure/factory_belt/proc/exported(obj/item/I, d)
+	return
+
+// Hand the exit item to the first output that takes it.
 /obj/structure/factory_belt/proc/export_front()
 	var/obj/item/I = cargo[FACTORY_BELT_SLOTS]
 	if (!I || factory_belt_moved[I])
 		return FALSE
-	var/turf/T = get_step(src, dir)
+	for (var/d in export_dirs(I))
+		if (export_to(I, d))
+			exported(I, d)
+			return TRUE
+	return FALSE
+
+// Hand I to whatever is on the tile toward d: a belt, or a factory port.
+/obj/structure/factory_belt/proc/export_to(obj/item/I, d)
+	var/turf/T = get_step(src, d)
 	if (!T)
 		return FALSE
 	var/obj/structure/factory_belt/next = locate() in T
 	if (next)
-		if (next.dir == turn(dir, 180))
-			return FALSE
-		if (next.belt_receive(I, get_dir(next, src)))
-			cargo[FACTORY_BELT_SLOTS] = null
-			return TRUE
-		return FALSE
+		return hand_to_belt(I, next, turn(d, 180))
 	for (var/obj/O in T)
-		if (istype(O, /obj/item) || O.factory_accepts(I, turn(dir, 180)) <= 0)
+		if (istype(O, /obj/item) || O.factory_accepts(I, turn(d, 180)) <= 0)
 			continue
-		if (O.factory_insert(I, turn(dir, 180)) <= 0)
+		if (O.factory_insert(I, turn(d, 180)) <= 0)
 			continue
 		if (QDELETED(I) || I.loc != loc)
 			cargo[FACTORY_BELT_SLOTS] = null
 			factory_reset_cargo_offset(I)
+		return TRUE
+	return FALSE
+
+// Pass the exit item to next, which it enters from from_dir. A belt facing
+// back toward that side never takes it.
+/obj/structure/factory_belt/proc/hand_to_belt(obj/item/I, obj/structure/factory_belt/next, from_dir)
+	if (next.dir == from_dir)
+		return FALSE
+	if (next.belt_receive(I, from_dir))
+		cargo[FACTORY_BELT_SLOTS] = null
 		return TRUE
 	return FALSE
 
@@ -251,6 +292,10 @@ var/global/list/factory_belt_moved = list()
 		belt_sleep()
 		return
 	if (next_poll > factory_belt_tick)
+		return
+	if (!belt_powered())
+		// A drive that gains power wakes the belts in its range.
+		belt_sleep()
 		return
 	belt_scan()
 	var/moved = FALSE
@@ -351,6 +396,7 @@ var/global/list/factory_belt_moved = list()
 	icon = 'icons/obj/recycling.dmi'
 	icon_state = "conveyor0"
 	w_class = ITEM_SIZE_LARGE
+	var/belt_type = /obj/structure/factory_belt
 
 /obj/item/factory_belt_assembly/afterattack(atom/A, mob/user, proximity)
 	if (!proximity || user.incapacitated())
@@ -365,7 +411,7 @@ var/global/list/factory_belt_moved = list()
 	if (locate(/obj/structure/factory_belt) in T)
 		to_chat(user, SPAN_WARNING("There is already a belt there."))
 		return
-	var/obj/structure/factory_belt/B = new(T)
+	var/obj/structure/factory_belt/B = new belt_type(T)
 	B.set_dir(travel)
 	B.add_fingerprint(user)
 	qdel(src)
