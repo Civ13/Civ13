@@ -451,9 +451,33 @@
 		var/turf/T = value
 		return list("kind" = "turf", "x" = T.x, "y" = T.y, "z" = T.z)
 	if(istype(value, /datum))
+		if(istype(value, /atom/movable) && drop_cross_level_reference(value))
+			return list("kind" = "entry", "ref" = 0)
 		var/id = BuildVarDirectory(F, value, 1)
 		return list("kind" = "entry", "ref" = id)
 	return list("kind" = "value", "value" = value)
+
+// A field or list member naming a movable that lives on another level, or one
+// already captured by another level's file, cannot be represented in this
+// per-level file. Such pointers are almost always combat, AI or bookkeeping
+// memory (attack logs, stale targets, pulls broken by a level change). One of
+// them must not abort the whole world save, so it is saved as null, which the
+// loader restores as the field's empty value, and logged. Declared level links
+// use their own codec before reaching here; contents traversal keeps the
+// strict guard in BuildVarDirectory.
+/map_storage/proc/drop_cross_level_reference(atom/movable/target)
+	var/target_z = target.z
+	if(!target_z || target_z == saving_z)
+		var/list/previous = saving_world_movables["\ref[target]"]
+		if(!previous || previous["atom"] != target || previous["z"] == saving_z)
+			return FALSE
+		target_z = previous["z"]
+	var/datum/save_export_frame/owner = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+	var/valid_owner = istype(owner, /datum/save_export_frame)
+	var/source_type = valid_owner && owner.source ? "[owner.source.type]" : "none"
+	var/source_field = valid_owner && istext(owner.current_field) ? copytext("[owner.current_field]", 1, 81) : "list"
+	world.log << "Map save stored a cross-level reference as null: [source_type].[source_field] -> [target.type] saved_z=[saving_z] target_z=[target_z]"
+	return TRUE
 
 // Version 3 advertises dense chunks so version-2 readers reject before import.
 // Direct callers writing version 2 retain the historical small-record format.

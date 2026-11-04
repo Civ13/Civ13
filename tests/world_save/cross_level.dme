@@ -11,6 +11,7 @@
 #define fdel(path) delete_file_adapter(path)
 #include "world_z_budget.dm"
 #include "functions.dm"
+#include "debug_lossy.dm"
 #include "player_reclaim.dm"
 #include "saving.dm"
 #include "loading.dm"
