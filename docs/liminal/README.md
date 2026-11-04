@@ -5,7 +5,8 @@ and [source, export and acceptance plan](SOURCE-AND-ACCEPTANCE.md).
 The [early-1990s and shared-level policy](ERA-AND-SCENARIOS.md) separates the
 escape scenario from the independently designed powered-gateway expedition.
 The [version-1 previews](ROOM-PREVIEWS.md) are rejected historical evidence,
-not accepted room designs. The separate [renderer fidelity study](RENDERER-FIDELITY-STUDY.md)
+not accepted room designs. The [version-2 furnished layouts](ROOM-PREVIEWS-V2.md) are the
+current proposal for review. The separate [renderer fidelity study](RENDERER-FIDELITY-STUDY.md)
 audits connected walls, open hall context and semantic furniture without revising
 the catalog or claiming native acceptance.
 The original [room catalog](room-archetypes-v1.json) and
