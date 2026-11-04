@@ -22,6 +22,7 @@
 	biochemistry_clean_bone_checks()
 	biochemistry_gelatin_bandage_checks()
 	biochemistry_polymer_product_checks()
+	biochemistry_insulated_cable_checks()
 	return TRUE
 
 /proc/biochemistry_polymer_product_checks()
@@ -43,6 +44,18 @@
 	var/obj/item/stack/material/plastic/sheets = locate() in get_turf(bench)
 	chemistry_assert(sheets && sheets.amount == 2, "Plastic sheets missing")
 	qdel(bench)
+
+/proc/biochemistry_insulated_cable_checks()
+	var/turf/site = locate(28, 20, 1)
+	var/obj/item/stack/material/plastic/plastic = new(site, 2, FALSE)
+	var/obj/item/stack/material/copper/copper = new(site, 2, FALSE)
+	chemistry_assert(!plastic.make_insulated_cable(null) && plastic.amount == 2, "Missing conductor consumed plastic")
+	chemistry_assert(plastic.make_insulated_cable(copper) && plastic.amount == 1 && copper.amount == 1, "Cable inputs not consumed")
+	var/obj/item/stack/cable_coil/cable = locate() in site
+	chemistry_assert(cable && cable.amount == 1, "Insulated cable missing")
+	qdel(plastic)
+	qdel(copper)
+	qdel(cable)
 
 /proc/biochemistry_wood_fiber_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench()

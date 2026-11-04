@@ -109,3 +109,4 @@ propylene for ethylene to verify that it does not produce polyethylene.
 
 The biochemistry probe also checks gelatin foam, paid drying batches, stale callback rejection, knife-cut sheets and bandage conversion.
 The biochemistry probe checks paid polymer container production, a missing-stopper rejection and unknown product rejection.
+The biochemistry probe checks insulated cable production pays both plastic and copper and rejects a missing conductor.
