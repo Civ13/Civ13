@@ -10,7 +10,7 @@ BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
 MASTER = "e30ecf95b0cef8fe223f1075418bdc96b1ce3428"
 import sys
 sys.path.insert(0, str(ROOT / "tests/snowfall_ground"))
-from source_contract import without_season_snow
+from source_contract import without_season_snow, without_later_master_changes
 sys.path.insert(0, str(ROOT / "tests/seasonal_construction"))
 from construction_contract import without_construction_hook
 
@@ -139,13 +139,14 @@ class FlowTests(unittest.TestCase):
         before = subprocess.check_output(["git", "show", MASTER + ":" + META], cwd=ROOT, text=True)
         for signature in ("/obj/map_metadata/proc/season_schedule_loop()",
                           "/obj/map_metadata/proc/seasons(var/looping = TRUE, var/force = FALSE, var/advance_decay = null)"):
-            self.assertEqual(body(self.source, signature), body(before, signature))
+            current = without_later_master_changes(body(self.source, signature))
+            self.assertEqual(current, body(before, signature))
         for relative in ("code/modules/admin/verbs/weather.dm", "code/processes/abandoned_items.dm",
                          "code/game/objects/map_metadata/nomads/nomads_mountain.dm",
                          "code/game/objects/map_metadata/nomads/nomads_ice_age.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
             before = subprocess.check_output(["git", "show", MASTER + ":" + relative], cwd=ROOT, text=True)
-            current = (ROOT / relative).read_text()
+            current = without_later_master_changes((ROOT / relative).read_text())
             if relative == "code/processes/abandoned_items.dm":
                 current = without_construction_hook(current)
             self.assertEqual(current, without_season_snow(before)[0])

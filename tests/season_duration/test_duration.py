@@ -10,7 +10,7 @@ META = "code/game/objects/map_metadata/_map_metadata.dm"
 BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
 import sys
 sys.path.insert(0, str(ROOT / "tests/snowfall_ground"))
-from source_contract import without_season_snow
+from source_contract import without_season_snow, without_later_master_changes
 sys.path.insert(0, str(ROOT / "tests/seasonal_construction"))
 from construction_contract import without_construction_hook
 
@@ -82,13 +82,16 @@ class DurationTests(unittest.TestCase):
         old = subprocess.check_output(["git", "show", BASE + ":" + META], cwd=ROOT, text=True)
         # Flow owns default destination/queue parity; duration owns request cadence.
         signature = "/obj/map_metadata/proc/seasons(var/looping = TRUE, var/force = FALSE, var/advance_decay = null)"
-        self.assertEqual(body(self.source, signature), body(old, signature))
+        self.assertEqual(without_later_master_changes(body(self.source, signature)), body(old, signature))
+        # Durable persistence grew per-map profiles and callback holds (#3577);
+        # duration must still stay out of it rather than freeze its bytes.
+        for relative in ("code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm"):
+            self.assertNotIn("season_duration", (ROOT / relative).read_text(), relative)
         for relative in ("code/modules/admin/verbs/weather.dm", "code/processes/abandoned_items.dm",
-                         "code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm",
                          "code/game/objects/map_metadata/nomads/nomads.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT)
-            current = (ROOT / relative).read_text()
+            current = without_later_master_changes((ROOT / relative).read_text())
             if relative == "code/processes/abandoned_items.dm":
                 current = without_construction_hook(current)
             self.assertEqual(current, without_season_snow(before.decode())[0], relative)
@@ -112,7 +115,7 @@ class DurationTests(unittest.TestCase):
             current = (ROOT / relative).read_text()
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
             self.assertIn("season_duration_minutes = 30", current)
-            projected = re.sub(r'^\tseason_duration_minutes = 30[^\n]*\n', "", current, flags=re.M)
+            projected = re.sub(r'^\tseason_duration_minutes = 30[^\n]*\n', "", without_later_master_changes(current), flags=re.M)
             self.assertEqual(projected, without_season_snow(before)[0])
 
     def test_duration_is_author_policy_and_old_pending_remainders_are_untouched(self):
