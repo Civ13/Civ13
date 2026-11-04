@@ -80,6 +80,15 @@ and queues it in `delayed_garbage`; it does not set the newer `gc_destroyed` fla
 checked by `QDELETED`. Fixture disposal assertions must reflect that actual
 queue and must not claim that production garbage collection has drained it.
 
+<!-- 2026-11-04: plain datums use the garbage queue -->
+`/datum/finalize_qdel` queues plain datums like atoms instead of calling native
+`del()`, whose world-wide reference scan cost 18 ms per call on Gaia (mostly
+reagent holders of destroyed items; 11 s per world load). Mobs keep immediate
+deletion because the reviewed mount fixture observes their disappearance
+synchronously. In native fixtures, drop a queued datum inside a helper proc
+before checking collection: a stale stack temporary in a sleeping proc keeps a
+refcounted datum alive until overwritten. See docs/gc-triage.md.
+
 <!-- 2026-10-11: memory ownership contract -->
 GC synchronizes gcDestroyed/gc_destroyed after cleanup and guards recursive qdel
 with the modern in-progress marker. Callproc retires helpers before invocation;

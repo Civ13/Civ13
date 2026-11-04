@@ -61,23 +61,38 @@
 		throw "controlled direct-delete failure"
 	return ..()
 
-/proc/triage_age(process/garbage/G, obj/probe/A)
+/proc/triage_age(process/garbage/G, datum/A)
 	A.gcDestroyed = world.time - 1000
 	G.destroyed["\ref[A]"] = A.gcDestroyed
+
+// The queued datum must leave this frame with no local, argument or
+// expression temporary still naming it: on pinned BYOND a stale stack
+// temporary in a sleeping proc keeps a refcounted datum alive, so the caller
+// receives only the ref string. Atoms do not show this retention.
+/proc/triage_queue_unreferenced_datum(process/garbage/G)
+	var/datum/triage_direct/direct = new
+	qdel(direct)
+	var/list/row = G.profile_row("/datum/triage_direct")
+	check(row["enqueued"] == 1 && !row["direct_deleted"] && direct.gc_destroyed == direct.gcDestroyed, "plain datum finalization queues without claiming deletion")
+	triage_age(G, direct)
+	return "\ref[direct]"
 
 /proc/triage_outcome_checks()
 	var/process/garbage/G = new
 	processes.garbage = G
+	// Plain datums share the atom queue: an unreferenced one is collected
+	// natively, a retained one is force-deleted after the grace period.
+	var/direct_ref = triage_queue_unreferenced_datum(G)
+	sleep(1)
+	check(!locate(direct_ref), "unpinned queued datum disappears on pinned BYOND")
+	var/list/direct_row = G.profile_row("/datum/triage_direct")
+	G.fire()
+	check(direct_row["queue_absent"] == 1 && !direct_row["collection_failed"] && !direct_row["forced_deleted"], "collected datum never records a forced deletion")
 	var/datum/triage_direct/direct = new
 	qdel(direct)
-	var/list/direct_row = G.profile_row("/datum/triage_direct")
-	check(!direct && direct_row["direct_deleted"] == 1 && !direct_row["enqueued"], "direct datum deletion is physically complete and not a queue result")
-	var/datum/triage_direct_abort/direct_abort = new
-	qdel(direct_abort)
-	var/list/abort_row = G.profile_row("/datum/triage_direct_abort")
-	check(direct_abort && abort_row["direct_incomplete"] == 1 && !abort_row["direct_deleted"], "aborted direct Del never claims physical deletion")
-	direct_abort.reject_delete = FALSE
-	del(direct_abort)
+	triage_age(G, direct)
+	G.fire()
+	check(!direct && direct_row["collection_failed"] == 1 && direct_row["forced_deleted"] == 1, "retained queued datum is force-deleted after the grace period")
 	var/obj/probe/immediate = new /obj/probe/triage_requested
 	immediate.hint = QDEL_HINT_HARDDEL_NOW
 	qdel(immediate)
@@ -150,6 +165,15 @@
 	if (failing)
 		failing.reject_delete = FALSE
 		del(failing)
+	var/datum/triage_direct_abort/direct_abort = new
+	qdel(direct_abort)
+	var/list/abort_row = G.profile_row("/datum/triage_direct_abort")
+	check(abort_row["enqueued"] == 1 && !abort_row["direct_incomplete"] && !abort_row["direct_deleted"] && !isnull(direct_abort), "queued datum finalization never calls Del directly")
+	triage_age(G, direct_abort)
+	G.fire()
+	check(abort_row["forced_incomplete"] == 1 && !abort_row["forced_deleted"] && !isnull(direct_abort), "aborted forced datum Del never claims physical deletion")
+	direct_abort.reject_delete = FALSE
+	del(direct_abort)
 	G.destroyed.Cut()
 	G = new
 	processes.garbage = G
