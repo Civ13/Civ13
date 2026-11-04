@@ -65,6 +65,8 @@ var/belt_runtime_error = FALSE
 			for (var/y in 1 to 16)
 				belt_floor(x, y)
 		belt_check(!world.port, "fixture has no listening port")
+		// Phase 2 belts need a powered drive; one drive covers the whole fixture.
+		belt_drive(16, 16, 30)
 		belt_line_checks()
 		belt_corner_checks()
 		belt_capacity_checks()
@@ -183,6 +185,22 @@ var/belt_runtime_error = FALSE
 	C.connections = list(arm, E)
 	arm.powersource = C
 	return list(C, E)
+
+/proc/belt_drive(x, y, range)
+	var/obj/structure/factory_drive/D = new(locate(x, y, 1))
+	D.drive_range = range
+	var/obj/structure/cable/C = new(locate(x, y, 1))
+	var/obj/structure/engine/E = new(locate(x, y, 1))
+	E.on = TRUE
+	E.maxpower = 100
+	E.connections = list(C)
+	C.connections = list(D, E)
+	D.powersource = C
+	D.on = TRUE
+	D.drive_wake()
+	factory_drives_step()
+	belt_check(D.powered && (D in factory_powered_drives), "a cabled drive powers the fixture's belts")
+	return D
 
 /proc/belt_swing(obj/structure/factory_arm/arm)
 	arm.next_swing = 0

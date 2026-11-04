@@ -738,7 +738,7 @@ var/global/list/los_active_contexts
 
 // Fresh raw geometry on EACH information read covers direct opacity writers.
 /datum/los_context/proc/decision(mob/user, atom/target, operation)
-	if (operation != "hover" && operation != "examine" && operation != "observe")
+	if (operation != "hover" && operation != "examine" && operation != "observe" && operation != "click")
 		return LOS_DENY
 	if (retired || !owner || !body || owner.los_context != src || owner.mob != user || user != body || user.client != owner)
 		return LOS_DENY

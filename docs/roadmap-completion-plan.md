@@ -49,7 +49,7 @@ The page lags master. These should be refreshed when the page is next edited
 | Geographic layers and elevation | Layer/elevation foundation (#3301) | Temperature coupling, mountain profiles, precipitation consistency | Agent |
 | Snow shaped by local weather | Ground snow, shovelling, Gaia probe (#3300, #3593, #3595) | Real-client visual and footstep check | Val's hands (#3594) |
 | Persistent world editing and map authoring | Editing (#3304); offline save-to-map core for synthetic JSON (#3303) | Native `.sav` extraction, map metadata, playable-map validation, mapper guide | Agent |
-| Safe persistence and transfer foundations | Inert transfer policy/state DTOs (#3330) | Versioned records, stable IDs, migration/validation, transaction journal; backend choice | Decision (backend), then Agent |
+| Safe persistence and transfer foundations | Inert transfer policy/state DTOs (#3330); backend chosen 2026-11-04: SQLite per region plus coordinator ([design](../tools/server-management/TRANSFER-STORAGE-SQLITE.md)) | Region agent and coordinator store, save/load reconcile, DM bridge, two-region pilot | Agent |
 | Desktop launcher and connection core | Launcher, companion transport, read-only manager menu (#3325, #3335, #3536, #3538) | Safe Linux process ownership; compile, new game, resume, shutdown, update, restart flows; real process observations and log sources; GUI shard view | Agent (source), Val's hands (live host) |
 | Procedural worlds | Surface and oceanic generators (#3331, #3338) | Cavern generator; native playability, survival resources, save preservation | Agent (caverns), Val's hands (playability) |
 | Smooth movement and interaction | Players, vendors, pulling, animals opt-out (#3337-#3367, #3535) | Wildlife sub-tile movement (#3509, disabled) fails arrival timing; idle-guard fix not on master | Agent |
@@ -122,7 +122,8 @@ These block only the dependent step; everything else proceeds.
 - Hydroponics: nutrient product and recipe; fragile-crop list and shortage
   timing; poor-weather damage; research bench tier and study price; dismantling
   refund. Defaults are proposed in the hydroponics PR.
-- Sharding/transfer storage backend.
+- Sharding/transfer storage backend: decided 2026-11-04 (SQLite per region plus a
+  small coordinator).
 - Revised Liminal room layouts.
 - #888 digging mechanics; #3563 which items become craftable.
 - Discord SDK distribution terms.

@@ -31,7 +31,18 @@ class HarvestInputs(unittest.TestCase):
         self.assertNotIn(marker, prepared)
         self.assertNotIn('/world/New()\n', prepared)
         self.assertEqual(prepared.count('/world/proc/unused_harvest_startup()\n'), 1)
-        self.assertEqual(prepared.count('var/global/datum/global_init/init = new ()'), 1)
+        self.assertNotIn('var/global/datum/global_init/init = new ()', prepared)
+
+    def test_global_bootstrap_instance_is_created_after_every_other_global(self):
+        # BYOND runs global initializers in include order; created earlier,
+        # global_init filled catalogs that did not exist yet ("bad index").
+        instance = 'var/global/datum/global_init/init = new ()'
+        last = (ROOT/'code/global_init_last.dm').read_text(encoding='utf-8')
+        self.assertEqual(last.count(instance), 1)
+        self.assertNotIn(instance, (ROOT/'code/world.dm').read_text(encoding='utf-8'))
+        includes = re.findall(r'^#include "([^"]+)"', (ROOT/'civ13.dme').read_text(encoding='utf-8'), re.M)
+        self.assertEqual(includes[-1], 'code\\global_init_last.dm')
+        self.assertEqual(includes.count('code\\global_init_last.dm'), 1)
 
     def test_startup_isolation_drift_is_refused_without_a_native_launch(self):
         source = (ROOT/'code/world.dm').read_text(encoding='utf-8')

@@ -25,8 +25,10 @@ $procs = @(
     $recovery
 ) -join "`n`n"
 $harness = @"
+var/global/building_allocating_z = 0
 var/list/grass_turf_list = list()
 /datum/soil_recovery_token
+    var/started = FALSE
 var/global/recoveries = 0
 /turf/floor/dirt
     var/datum/soil_recovery_token/soil_recovery_token

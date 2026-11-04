@@ -3,6 +3,7 @@
 ```powershell
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/belts_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/routing_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -17,10 +18,21 @@ Production sources run in the shared resource-extraction constructor fixture wit
 
 Removing the belt load hook's direction rederivation makes three checks fail. Runtime fixture checks do not establish a full disk save and reload, graphical interaction or live balance.
 
-`belts_probe.dm` (phase 1) calls the belt and arm steps directly and checks:
+`belts_probe.dm` (phase 1) calls the belt and arm steps directly, with one cabled belt drive covering the fixture, and checks:
 
 - Belts: idle belts leave the process and dropped items wake them; cargo stays an ordinary floor item, advances up to eight slots a step and crosses to the next belt; the last belt fills a crate; picked-up cargo leaves the belt; a belt facing back blocks and the blocked belt polls slowly; corners enter from the side; a tile carries at most four items; a full crate blocks the line until it has room; runtime state is excluded from saves and a reloaded belt adopts cargo in its saved slot.
 - Arms: off or unpowered arms do nothing; a powered arm moves a crate item onto a belt entry and reserves 2 PU; switching off releases demand; a sorting arm without a filter moves nothing and with one moves only matching items into a parts bin; an arm leaves items a bin of another kind would refuse; drill output goes into the stamp mill with the remainder held until there is room; a reloaded running arm resumes without stored time; floor output stops at twelve items.
 - Catalog: research gates, the four global recipes and the reused sprite states.
 
 Without the end-of-step rescan, the blocked-belt resume check fails. A local benchmark on 1,922 belts with 2,356 moving items measured about 60 ms per one-second step; it is not checked in because its timing depends on the host.
+
+`routing_probe.dm` (phase 2) checks:
+
+- Belt drives: a belt with no powered drive in range stands still and sleeps; a drive that is off powers nothing; a cabled drive reserves 4 PU and wakes the belts within seven tiles while a farther belt stays still; belts stop when the drive's engine stops and resume when it restarts; switching the drive off releases its power.
+- Sorting gate: no filter sends everything straight on; a filter sends matching items to the side; the side output can be swapped and feeds a branch belt.
+- Splitter: alternates straight and side, and sends everything straight on while the side is blocked.
+- Tunnels: an entrance reaches the exit facing the same way up to six tiles ahead and carries cargo under a crossing belt; a missing or turned exit holds the cargo until it is back.
+- Saving: drive switch and gate filter and side are saved; drive power, cached drives and splitter alternation are runtime-only; a reloaded running drive regains power on its next step.
+- Catalog: research gates, the five global recipes and the reused sprite states.
+
+Removing the belt power check makes five drive checks fail.

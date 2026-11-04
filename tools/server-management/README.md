@@ -7,6 +7,9 @@ minimal current transfer state and per-peer sequences alongside inventory saves;
 real atomic storage/recovery integration remains unaccepted. No real transfer or
 cryptographic provider is implemented.
 
+The proposed storage backend (SQLite per region plus a small coordinator, chosen
+2026-11-04) is described in [TRANSFER-STORAGE-SQLITE.md](TRANSFER-STORAGE-SQLITE.md).
+
 This package is a .NET 8 library for an observe-only instance catalog, status
 projection and explicitly invoked local process facts. The core itself performs
 no host/config/save discovery, network operations, installation, scheduling or

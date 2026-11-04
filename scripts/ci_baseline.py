@@ -98,11 +98,13 @@ SUITES = {
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
+            'code/modules/persistence/world_time_stamps.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
     # Day/night sweep loop-shape contracts; no BYOND runtime.
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
-            'code/processes/time_of_day_change.dm',)},
+            'code/processes/time_of_day_change.dm',
+            'code/game/turfs/flooring/flooring_premade.dm')},
     # Nomads adoption source contracts and surname model; no BYOND runtime.
     'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
         'paths': ('tests/nomads_adoption/',), 'shared_paths': (
@@ -242,6 +244,7 @@ SUITES = {
         'tests/human_subtile/test_wild_handoff.py',
         'tests/human_subtile/test_wildlife_integration_reconcile.py',
         'tests/test_wildlife_ci_registration.py',
+        'tests/wildlife_arrival/test_check.py',
     ), 'paths': (), 'shared_paths': (
         'code/game/mob/living/simple_animal/', 'code/game/mob/living/living.dm',
         'code/game/mob/mob_movement.dm', 'code/game/atoms.dm',
@@ -254,7 +257,8 @@ SUITES = {
         'code/modules/1713/structures.dm', 'tests/save_movement/source_adapter.py',
         'tests/human_subtile/scheduler_core_draft.dm', 'tests/human_subtile/run-npc.py',
         'tests/human_subtile/run-diagonal.py', 'tests/human_subtile/run.py',
-        'tests/human_subtile/probe.dm', 'scripts/native_fixture.py')},
+        'tests/human_subtile/probe.dm', 'scripts/native_fixture.py',
+        'tests/wildlife_arrival/')},
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
                                          'tests/mount_lifecycle_native/test_runner.py',
@@ -469,7 +473,8 @@ SUITES = {
     'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',
                                     'tests/persistence_pointers/test_restore_dependents.py',
                                     'tests/persistence_pointers/test_action_reconnect.py',
-                                    'tests/persistence_pointers/test_level_links.py'),
+                                    'tests/persistence_pointers/test_level_links.py',
+                                    'tests/persistence_pointers/test_world_time_stamps.py'),
         'paths': ('tests/persistence_pointers/',),
         'shared_paths': ('code/modules/persistence/',
             'code/game/mob/living/simple_animal/',

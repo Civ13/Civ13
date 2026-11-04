@@ -34,7 +34,7 @@ class InsectCadenceCandidate(unittest.TestCase):
         self.assertNotIn('move_gen++',early)
         self.assertNotIn('W.due =',early)
         self.assertIn('move_gen++',start)
-        self.assertIn('W.due = world.time + interval',start)
+        self.assertIn('W.due = new_owner ? world.time : max(world.time, W.due)',start)
 
     def test_no_species_specific_empirical_period_override(self):
         # The old lag-3/half-tick multiplier was calibrated against an earlier
@@ -45,7 +45,7 @@ class InsectCadenceCandidate(unittest.TestCase):
             self.assertNotIn('/npc_subtile_wild_period(mode, interval)', text)
         movement=source('code/game/mob/living/simple_animal/subtile_movement.dm')
         convert=movement.split('/proc/npc_subtile_native_interval(lag)',1)[1].split('\n/',1)[0]
-        self.assertIn('return lag',convert)
-        self.assertNotIn('lag * world.tick_lag',convert)
+        self.assertIn('floor(lag / world.tick_lag + 0.001)) * world.tick_lag',convert)
+        self.assertNotIn('return lag * world.tick_lag',convert)
 
 if __name__=='__main__': unittest.main()

@@ -1,0 +1,532 @@
+{
+  "schema": "civ13-liminal-room-previews-v2/1",
+  "status": "PROPOSAL_FOR_REVIEW_NOT_NATIVE_APPROVED",
+  "catalog_version": "liminal-authored-rooms/0.2.0",
+  "layouts_sha256": "b9b845ae7897be77094722a72838c2e817e63a722749f621aa17f130208d1624",
+  "catalog_sha256": "6f394a10edf14bbc39615bd34b18fd1917bc77f25703f4522889818026d5ec82",
+  "renderer_sha256": "7ef590065568cf88856662ffa2d3e1c633ada8b830f6fbbd9fff02403f1b54c8",
+  "pillow": "12.3.0",
+  "assets": {
+    "wall": {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall",
+      "type": "/turf/wall/cement"
+    },
+    "carpet": {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet",
+      "type": "/turf/floor/carpet/tealcarpet"
+    },
+    "steel_tile": {
+      "icon": "icons/turf/floors.dmi",
+      "state": "floor",
+      "type": "/turf/floor/plating/steel"
+    },
+    "white_tile": {
+      "icon": "icons/turf/floors.dmi",
+      "state": "white",
+      "type": "/turf/floor/plating/white"
+    },
+    "dark_plating": {
+      "icon": "icons/turf/floors.dmi",
+      "state": "dark",
+      "type": "/turf/floor/plating/dark"
+    },
+    "hall_floor": {
+      "icon": "icons/turf/floors.dmi",
+      "state": "floor",
+      "type": "/turf/floor/plating/steel"
+    },
+    "desk": {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable",
+      "type": "/obj/structure/table/modern/table"
+    },
+    "chair": {
+      "icon": "icons/obj/bed_chair.dmi",
+      "state": "officechair_dark",
+      "type": "/obj/structure/bed/chair/office/dark"
+    },
+    "computer": {
+      "icon": "icons/obj/computers.dmi",
+      "state": "ibm",
+      "type": "/obj/structure/telecom/terminal"
+    },
+    "paper": {
+      "icon": "icons/obj/bureaucracy.dmi",
+      "state": "paper",
+      "type": "/obj/item/weapon/paper"
+    },
+    "cabinet": {
+      "icon": "icons/obj/bureaucracy.dmi",
+      "state": "filingcabinet",
+      "type": "/obj/structure/filingcabinet"
+    },
+    "shelf": {
+      "icon": "icons/obj/library.dmi",
+      "state": "book-0",
+      "type": "/obj/structure/bookcase"
+    },
+    "plant": {
+      "icon": "icons/obj/flora/filled_plantpots.dmi",
+      "state": "plant-05plastic4",
+      "type": "/obj/structure/plant_pot/clay/light/filled"
+    },
+    "noticeboard": {
+      "icon": "icons/obj/structures.dmi",
+      "state": "nboard00",
+      "type": "/obj/structure/noticeboard"
+    },
+    "locker": {
+      "icon": "icons/obj/closet.dmi",
+      "state": "closed",
+      "type": "/obj/structure/closet"
+    },
+    "rack": {
+      "icon": "icons/obj/objects.dmi",
+      "state": "rack",
+      "type": "/obj/structure/table/rack"
+    },
+    "vending_snack": {
+      "icon": "icons/obj/vending.dmi",
+      "state": "snack",
+      "type": "/obj/structure/vending/sales/food/snacks"
+    },
+    "vending_coffee": {
+      "icon": "icons/obj/vending.dmi",
+      "state": "coffee",
+      "type": "/obj/structure/vending/sales/drinks/hot"
+    },
+    "sink": {
+      "icon": "icons/obj/watercloset.dmi",
+      "state": "sink",
+      "type": "/obj/structure/sink"
+    }
+  },
+  "dmi_frames": [
+    {
+      "icon": "icons/obj/bed_chair.dmi",
+      "state": "officechair_dark",
+      "direction": 1,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "6111b3f0749f3b76535fa0f270ff344d3e27a7db9abe38de44f6974f3494551e"
+    },
+    {
+      "icon": "icons/obj/bed_chair.dmi",
+      "state": "officechair_dark",
+      "direction": 2,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "f5406f645ee868476560898126958cdd560c39bac42860516d4c26ac78414d22"
+    },
+    {
+      "icon": "icons/obj/bed_chair.dmi",
+      "state": "officechair_dark",
+      "direction": 8,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "4a10d222562f30dcbcd6188dbb62e4743eb5165c870070dd720d242d1ba3f87f"
+    },
+    {
+      "icon": "icons/obj/bureaucracy.dmi",
+      "state": "filingcabinet",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "5a949a7642d62755673ab8a1995e5c5889159fdfe5b17017a015209e0db7825c"
+    },
+    {
+      "icon": "icons/obj/bureaucracy.dmi",
+      "state": "paper",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "f837d880e008701b1f6a18549d9891f378bb140e38c5e28b99b5cbee4ad269d2"
+    },
+    {
+      "icon": "icons/obj/closet.dmi",
+      "state": "closed",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "47dcbce68ba2c4dae6d55cf982a3cce75a85e14868c8f56129f5e31d2e53a32a"
+    },
+    {
+      "icon": "icons/obj/computers.dmi",
+      "state": "ibm",
+      "direction": 2,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "76b37bcfb5881342e293794335db93f88f22d96aa7e1b78ef9b7538396ba4f46"
+    },
+    {
+      "icon": "icons/obj/flora/filled_plantpots.dmi",
+      "state": "plant-05plastic4",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "b5ba8e9138f9e11d1cbdb30905a46e3d921f3a3364916d8367c6118c2866ccf7"
+    },
+    {
+      "icon": "icons/obj/library.dmi",
+      "state": "book-0",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "9ba8256f3d0a3c33b9d541e6c0fa23c397b440d05afa2f19fa7f0b1abc44791d"
+    },
+    {
+      "icon": "icons/obj/objects.dmi",
+      "state": "rack",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "21c56de5f98308ee4891a160f762ae4ddcb9f459179b2e411be6761d184e0b63"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "nboard00",
+      "direction": 2,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "1e105223ef79865d32332253addeb6fb6bb884a3df348a743b5baa28895297a8"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable_1tileendtable",
+      "direction": 1,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "f98af8d081290f3b49d4d51e14f0b9e4c656f3565cee1e961fd44c0b589036bb"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable_1tileendtable",
+      "direction": 2,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "45b9302d84a8fb78c1118103d01d10720495fbbb185a1a45869dc370d29d2b62"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable_1tileendtable",
+      "direction": 4,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "4c5fa07300596a9ab5816c997f1b24c0c4dececa24f8aed897a04882fe19b0a5"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable_1tileendtable",
+      "direction": 8,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "00c164552a45f6daf8cb9228d8e0835d2c89e8515a019a411419ad248be3eccc"
+    },
+    {
+      "icon": "icons/obj/vending.dmi",
+      "state": "coffee",
+      "direction": 1,
+      "dirs": 4,
+      "frames": 5,
+      "rgba_sha256": "046c437b18fbbe1e22ed44df7e630985ae104f5270e460013ad997c35a022ced"
+    },
+    {
+      "icon": "icons/obj/vending.dmi",
+      "state": "coffee",
+      "direction": 8,
+      "dirs": 4,
+      "frames": 5,
+      "rgba_sha256": "478a60e6901de149f5e342cd79c59422445835421bc3c719ac4ae6d21b5ef26f"
+    },
+    {
+      "icon": "icons/obj/vending.dmi",
+      "state": "snack",
+      "direction": 1,
+      "dirs": 4,
+      "frames": 3,
+      "rgba_sha256": "69b43187ba258a9cf4bad076f9e16741e93ed55dc1130630ea74f71b150259e6"
+    },
+    {
+      "icon": "icons/obj/watercloset.dmi",
+      "state": "sink",
+      "direction": 2,
+      "dirs": 4,
+      "frames": 1,
+      "rgba_sha256": "7889fc2154fd29758d4f5f9c9df499b1dfdff4397bd68a66b0b8cf1bae6f73bf"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "618498def54751792f9e7ccdb74be09a771c61ff7c4b9a996743114ce730fba2"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 5,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "9148c0cc39dfed115ea4d786988f0e2df13e2de375632e8080ae192c36b36492"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 6,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "a4481ead72aa561db0320eb87cacdd9feef5c9579572ddcc7273a409672b557b"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 9,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "3bd86acafd90776985eeec89b9020db4543ff0b7fe6efadd3dd4b8a96c6596a5"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "abeb2545db4969e1cf1b474b38a90077d5a4bcbc95e733de93306cafcf97f893"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "4c9f3b3a91b6b89921b9325cf4dd61718a70676f7eff04ece654b7789926702d"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "6e0b36e1a02815af63d85d7ef544d5ea609d11bd7f0c392c4702f41fe2317a91"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 5,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "dba63be95a6c03e5ee270859222a84e1ed7cc901143e914b5efecf17f45da68f"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 6,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "bab1610d0401d84d4eb97bed096c34d31fa03a8652dab38833aa2c137fea3f23"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "62d6714cb8fa1ae99bcdf186cfe054da47ed6f5f154edcf163b644429f22f1fd"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 9,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "41aa1f16ddf6a8457527b4656055c19feedc12aa644c20584653b16d6c5e621a"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 10,
+      "dirs": 8,
+      "frames": 1,
+      "rgba_sha256": "d6755d60fb711d6a7bc72df2eb5ffb8b11fe11385c3b61a3b1a34c8edf0f895f"
+    },
+    {
+      "icon": "icons/turf/floors.dmi",
+      "state": "dark",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "31dc1f5a6a80c35131485125a54a7ac4e00fe8d8de3b0665832fd6d8e50c50e8"
+    },
+    {
+      "icon": "icons/turf/floors.dmi",
+      "state": "floor",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "3651833b283541a5c2a6a7e8583a4be67f88795e16f70801b7a78bbaba1a93d9"
+    },
+    {
+      "icon": "icons/turf/floors.dmi",
+      "state": "white",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "83a3a0017047121cf0a5cd5fe8f3040e98168346b6fa7d25fbfc88ab3970c48f"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall0",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "0f6092ad8113d24ad8d34301b19148f4290e004ebe2fdda7d41d6fe66347deb1"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall1",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "079fd3100508cd532349d79e87ec8756a0b55e46bbfe79a43ce65febdfe6ba21"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall10",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "b3585a97a58f525f6a0890ebfda309b1274677b6361a79e8e301cdf712078651"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall12",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "751fb7b96ff3d90b46fc4b87571dd946d12e0e04b7401d2b3d80d5bbd81e3242"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall13",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "f1a61d078ea483291e1c11e9aacb332f43e1413751050e946a314059ad8022fa"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall14",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "4c8ff6a8fe9430f31c10c031b1126e5f55a2c3aae4d42b999cc2cfeef55cda18"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall2",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "7270404090d82730494a0f8c0f96ad7c089412b98b45ded9f8f2327679df55f6"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall3",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "8dbde5e96655a4e65ba982606520e7df44f2aed375a5ac1bedd0654ad149953a"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall4",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "5499c9ffa064e00a583fae6bb348ebaff4f5b68c4c69f3fef7e26ddb4b9970d1"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall5",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "4ee74da5610d5dffd4fbf99c0df008701fe0f20189ef1d11240b74bd58457806"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall6",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "0d5ac290b5e64da89e5a851875fcf2af6ea66d3463edefff10b6cbd45071906f"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall8",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "263449a5158ad980bea9814d2c1b7fa34528168c4d63e6f84e83850638b9ab7c"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall9",
+      "direction": 2,
+      "dirs": 1,
+      "frames": 1,
+      "rgba_sha256": "db5f42d61396b3ae760e7f1bed222b7712777a0fcdc373846eea15110ab5dcea"
+    }
+  ],
+  "files": {
+    "acoustic_atrium.png": {
+      "sha256": "f1cc8ffd0f4c24204bdd2e902e8a9c2a363c30ac691bb9041ab88b4b7243bd03",
+      "bytes": 74864
+    },
+    "archive_stacks.png": {
+      "sha256": "eec93cd0c7e94b129bff9650e0f9b173030bda3c9333151d849401d03a375418",
+      "bytes": 79630
+    },
+    "arrival_vestibule.png": {
+      "sha256": "18ba9901117dce5cefba7b926644e58909a968e0bf97f0d0573d533ad682fa8f",
+      "bytes": 44220
+    },
+    "contact-sheet.png": {
+      "sha256": "a95a15e61e7145006539b5f9143b90e48acb0169a09f3bdcbaa5a971e6630a09",
+      "bytes": 297542
+    },
+    "cubicle_repetition.png": {
+      "sha256": "b4f98531cc476d91b6c74e4e02812f07b716ef0ee17bd90cb565082c97f10281",
+      "bytes": 74568
+    },
+    "extraction_airlock.png": {
+      "sha256": "c282b2c6089fc8c7a1df91258b1d03dd3bdac402b21169cc5215da7f691ffea7",
+      "bytes": 41199
+    },
+    "maintenance_alcove.png": {
+      "sha256": "73859a1a66d0271c50e0646bb1a1660c656fb48a8843545c26952b028cb4d3ed",
+      "bytes": 43461
+    },
+    "office_columns.png": {
+      "sha256": "3039769ca9d953c81a59989e7739f6d61e080eb166446e2e2c69b651f22b0b44",
+      "bytes": 69243
+    },
+    "offset_office.png": {
+      "sha256": "d25bb6dc5e5a8d38fc94235d58e48deb740529094f2eb6dba185090c6f368aa2",
+      "bytes": 73664
+    },
+    "threshold_buffer.png": {
+      "sha256": "c4ad18b3b854d02b0bb23efa295bb741dabd179b142f9e0aa7685797f0ef1ed4",
+      "bytes": 47670
+    },
+    "utility_gallery.png": {
+      "sha256": "34a014f94031c780f9c56c77e3eaa19eccaf7b52a1d92f09b343ea4c6363c9b8",
+      "bytes": 48480
+    }
+  },
+  "native_execution": false,
+  "credit": "Existing Civ13 and upstream SS13 asset contributors; retain root LICENSE."
+}

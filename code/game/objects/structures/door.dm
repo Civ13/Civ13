@@ -135,7 +135,10 @@
 	return locked
 
 // Shared cooldown so rattling, knocking and kicking can't be spammed.
+// A stamp further ahead than one cooldown came from before a reboot.
 /obj/structure/simple_door/proc/door_noise_ready()
+	if (next_attack_hand > world.time + 10)
+		next_attack_hand = -1
 	if (world.time < next_attack_hand)
 		return FALSE
 	next_attack_hand = world.time + 10
@@ -178,7 +181,10 @@
 	if (isSwitchingStates) return FALSE
 	if (ismob(user) && canOpen(user))
 		var/mob/M = user
-		if (world.time - user.last_bumped <= 60)
+		// A stamp in the future came from an older save, before world.time reset.
+		if (user.last_bumped > world.time)
+			user.last_bumped = FALSE
+		if (user.last_bumped && world.time - user.last_bumped <= 60)
 			return FALSE
 		if (M.client)
 			if (ishuman(M))

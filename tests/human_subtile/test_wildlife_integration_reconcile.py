@@ -1,3 +1,4 @@
+import math
 """Offline source/ownership contracts; not BYOND movement or save acceptance."""
 from pathlib import Path
 from types import SimpleNamespace
@@ -16,12 +17,14 @@ class IntegratedOwnership(unittest.TestCase):
  def test_native_lag_conversion_rejects_old_half_tick_multiplier(self):
   world=SimpleNamespace(tick_lag=.5)
   def compile_source(source):
-   return project(source,'/mob/living/simple_animal/proc/npc_subtile_native_interval','src, lag',{'world':world})
+   return project(source,'/mob/living/simple_animal/proc/npc_subtile_native_interval','src, lag',{'world':world,'floor':math.floor})
   convert=compile_source(self.npc)
   for tick in (.5,1):
    world.tick_lag=tick
    for lag in (3,4):self.assertEqual(convert(None,lag),lag)
-  mutant=self.npc.replace('return lag\n','return lag * world.tick_lag\n',1)
+  line='return max(1, floor(lag / world.tick_lag + 0.001)) * world.tick_lag\n'
+  self.assertIn(line,self.npc)
+  mutant=self.npc.replace(line,'return lag * world.tick_lag\n',1)
   world.tick_lag=.5
   self.assertNotEqual(compile_source(mutant)(None,4),4)
  def test_cardinal_diagonal_and_blocking_use_authorized_pulses(self):
