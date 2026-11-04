@@ -14,7 +14,7 @@
   "native_design_source_commit": "10d264e5896221b34949ee4b67c0fd2b94bde249",
   "schema": "civ13-authored-room-source-provenance/1",
   "design_commit": "474d900e454903001b1487707b49df7232b5f405",
-  "design_catalog_path": "docs/liminal/room-archetypes-v1.json",
+  "design_catalog_path": "docs/liminal/room-archetypes-v2.json",
   "assets_copied": [],
   "native_catalog_admission": "PENDING",
   "native_dmm_emitter_implemented": false,

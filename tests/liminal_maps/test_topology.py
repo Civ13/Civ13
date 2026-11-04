@@ -25,9 +25,9 @@ class IndoorTests(unittest.TestCase):
     def test_ten_original_families(self):
         self.assertEqual(10,len(CATALOG['archetypes']));self.assertEqual([],validate_catalog())
         self.assertTrue(all(a['authoring']=='ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY' and a['native_admission']=='PENDING' for a in CATALOG['archetypes'].values()))
-    def test_catalog_golden(self):self.assertEqual('7ee6647de885a921746f9ac9d0ec5fa9e5140a30a8c06294cd4ff16c3d37c95b',CATALOG_SHA256)
+    def test_catalog_golden(self):self.assertEqual('04f558b58af836b4586d4c017a437397f8fab73bb5e0e8071a331f8d9f609fab',CATALOG_SHA256)
     def test_design_catalog_mirror(self):
-        design=json.loads((ROOT/'docs/liminal/room-archetypes-v1.json').read_text())
+        design=json.loads((ROOT/'docs/liminal/room-archetypes-v2.json').read_text())
         self.assertEqual(CATALOG,design);self.assertEqual(CATALOG_SHA256,canonical_hash(design))
     def test_design_example_config(self):
         self.assertEqual(preset(),json.loads((ROOT/'tools/liminal_maps/example-config.json').read_text()))
@@ -49,7 +49,7 @@ class IndoorTests(unittest.TestCase):
     def test_existing_random_golden(self):self.assertEqual('588a81055b889362',f"{stable_u64('42','a/1','c/1','SURFACE/1','flora','SURFACE',0,0):016x}")
     def test_default_valid(self):
         p=validate(self.result['document']);self.assertTrue(p['accepted']);self.assertFalse(p['native_ready']);self.assertEqual([60],p['completed_exit_distances'])
-    def test_plan_golden(self):self.assertEqual('6e4e1946ee62525bad82681d6b7cb5b0d2b8d8c03472b8856009108a93bcad40',canonical_hash(self.result['document']))
+    def test_plan_golden(self):self.assertEqual('0e41c1827c7d39d5ccfe0574ab94c8eff7140d19329d621a5e79d09b103f5414',canonical_hash(self.result['document']))
     def test_reverse_materialization_and_immutable_input(self):
         c=preset();old=deepcopy(c);r=generate(c,traversal='reverse');self.assertEqual(self.result,r);self.assertEqual(old,c)
         d=self.result['document'];self.assertEqual(materialize(d)[0],materialize(d,iteration='reverse')[0])

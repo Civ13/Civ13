@@ -48,8 +48,8 @@ service requires it and grants SERVICE_DONE; the final door edge and exit requir
 service. These are monotone symbolic flags. Native interaction, locks, threat
 AI, extraction timing and player inventory are not evaluated by the tool.
 
-The original authored masks are in room-archetypes-v1.json and match the frozen
-design catalog. W/B cells are wall/solid-prop intentions; F is clear floor and
+The authored masks are in room-archetypes-v2.json (furnished set accepted
+2026-11-04) and match the design catalog in docs/liminal. W/B cells are wall/solid-prop intentions; F is clear floor and
 V is sealed void. Physical socket apertures must mate with matching facing/type/
 width; unused sockets seal. The stored blueprint must reconstruct exactly from
 the authored masks and links. The actor's full square footprint, not only a room
