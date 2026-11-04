@@ -84,7 +84,8 @@ var/intro_port
 		verbs -= fixture_verb
 	..()
 	view = "17x11"
-	fps = 20
+	// Render above the 20 Hz world tick so glides interpolate smoothly.
+	fps = 60
 	trailer_camera_attach(src)
 	text2file("guest=1;version=[byond_version];build=[byond_build]", "cloud-client.txt")
 	spawn(20)

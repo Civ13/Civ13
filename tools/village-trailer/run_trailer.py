@@ -21,7 +21,7 @@ import time
 
 TITLE = 'Civ13 village trailer'
 SIZE = (960, 576)
-FPS = 20
+FPS = 30
 SCENE_TIMEOUT = 420
 
 

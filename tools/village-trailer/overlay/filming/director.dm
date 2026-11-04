@@ -32,8 +32,9 @@ var/obj/item/weapon/reagent_containers/glass/bucket/trailer_bucket
 // ---------------------------------------------------------------- camera
 // A smoothed camera rig. The client looks through an invisible anchor; each
 // tick a critically damped spring moves the rig's pixel position toward its
-// target (a fixed point or a followed atom) and the remainder below one tile
-// is applied as client.pixel_x/y, so pans ease in and out with no hard steps.
+// target (a fixed point or a followed atom); the anchor steps one tile at a
+// time with a glide_size matched to the spring's speed, so the client's own
+// glide interpolation eases pans in and out with no hard steps.
 /obj/trailer_camera
 	name = ""
 	icon = null
@@ -100,18 +101,29 @@ var/trailer_cam_running = FALSE
 		trailer_camera_apply()
 		sleep(world.tick_lag)
 
-/proc/trailer_camera_apply()
+var/trailer_cam_next_step = 0
+
+// Move the eye anchor one tile at a time with a glide matched to the rig's
+// speed, so DreamSeeker interpolates the motion smoothly at its own frame rate.
+/proc/trailer_camera_apply(snap = FALSE)
 	var/ax = round(trailer_cam_px / 32 + 0.5)
 	var/ay = round(trailer_cam_py / 32 + 0.5)
 	var/turf/T = locate(ax, ay, 1)
-	if (T && trailer_cam && trailer_cam.loc != T)
-		// Re-anchor without a glide; the pixel offset below absorbs the jump.
+	if (!T || !trailer_cam)
+		return
+	if (snap)
 		trailer_cam.loc = null
 		trailer_cam.loc = T
-	if (intro_observer_client)
+		trailer_cam_next_step = world.time
+	else if (trailer_cam.loc != T && world.time >= trailer_cam_next_step)
+		var/speed = sqrt(trailer_cam_vx * trailer_cam_vx + trailer_cam_vy * trailer_cam_vy)
+		var/glide = trailer_clamp(speed * world.tick_lag / 10, 1, 32)
+		var/turf/next = get_step(trailer_cam, get_dir(trailer_cam, T))
+		trailer_cam.glide_size = glide
+		trailer_cam.loc = next
+		trailer_cam_next_step = world.time + (32 / glide) * world.tick_lag - 0.01
+	if (intro_observer_client && intro_observer_client.eye != trailer_cam)
 		intro_observer_client.eye = trailer_cam
-		intro_observer_client.pixel_x = round(trailer_cam_px - ax * 32)
-		intro_observer_client.pixel_y = round(trailer_cam_py - ay * 32)
 
 // Snap (only used before frame zero).
 /proc/trailer_camera_cut(tx, ty)
@@ -124,7 +136,7 @@ var/trailer_cam_running = FALSE
 	trailer_cam_vy = 0
 	if (!trailer_cam)
 		trailer_cam = new(locate(tx, ty, 1))
-	trailer_camera_apply()
+	trailer_camera_apply(TRUE)
 	if (!trailer_cam_running)
 		trailer_cam_running = TRUE
 		spawn(0)
