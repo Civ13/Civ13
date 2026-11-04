@@ -50,6 +50,14 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 			throw EXCEPTION(message)
 		sleep(5)
 
+// Gaia's own round-start season timer would otherwise turn WINTER into SPRING
+// part-way through accumulation. The probe forces each season it needs; the
+// season workers themselves still run unchanged.
+/datum/snowfall_game_probe/proc/hold_natural_seasons()
+	if(map.uses_durable_metadata())
+		map.durable_timer_queue().cancel("season_loop")
+	map.season_loop_scheduled = TRUE
+
 /datum/snowfall_game_probe/proc/game_playing()
 	return ticker && ticker.current_state == GAME_STATE_PLAYING
 
@@ -75,6 +83,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		check_registry("startup")
 		mark("seasons_to_winter")
 		reach_season("WINTER")
+		hold_natural_seasons()
 		// Controlled single-tile checks call the production check directly; the
 		// scheduled worker is paused until the scale phase re-enables it.
 		processes.snowfall_ground.disable()
@@ -554,6 +563,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	require(KB.type == KA.type && KB.location == AREA_OUTSIDE && !isnull(KB.persistence_zone_id) && (KB in area_list) && K.snowfall_ground_exposed(), "Zone topology or exposure changed across the round trip")
 	pass("disk_round_trip", list("save_ds" = save_ds, "load_ds" = load_ds, "zone_before" = zone_before, "zone_after" = KB.persistence_zone_id, "elevation" = get_elevation(K)))
 	check_registry("after_load")
+	hold_natural_seasons()
 	processes.snowfall_ground.enable()
 	map.elevation_regions = list()
 	map.elevation_profile_cache = null
