@@ -50,6 +50,14 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 			throw EXCEPTION(message)
 		sleep(5)
 
+// Gaia's own round-start season timer would otherwise turn WINTER into SPRING
+// part-way through accumulation. The probe forces each season it needs; the
+// season workers themselves still run unchanged.
+/datum/snowfall_game_probe/proc/hold_natural_seasons()
+	if(map.uses_durable_metadata())
+		map.durable_timer_queue().cancel("season_loop")
+	map.season_loop_scheduled = TRUE
+
 /datum/snowfall_game_probe/proc/game_playing()
 	return ticker && ticker.current_state == GAME_STATE_PLAYING
 
@@ -66,15 +74,17 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		if(ticker.pregame_timeleft > 1)
 			ticker.pregame_timeleft = 1
 		wait_for(src, "game_playing", 3000, "Round did not reach PLAYING")
-		// Keep random weather from changing the area under a controlled check.
-		// The weather process and every production weather proc still run.
+		// Keep the weather process from re-rolling the area under a controlled
+		// check (deferred deadlines alone still let it change mid-accumulation).
+		// The probe's explicit change_weather() calls and every production
+		// weather proc they reach still run.
 		if(processes.weather)
-			processes.weather.next_can_mod_weather = world.realtime + 864000
-			processes.weather.next_can_change_weather = world.realtime + 864000
+			processes.weather.disable()
 		metrics["map"] = list("id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "z_levels" = z_levels, "durable_metadata" = map.uses_durable_metadata(), "byond_version" = world.byond_version, "byond_build" = world.byond_build, "tested_commit" = world.params["tested_commit"])
 		check_registry("startup")
 		mark("seasons_to_winter")
 		reach_season("WINTER")
+		hold_natural_seasons()
 		// Controlled single-tile checks call the production check directly; the
 		// scheduled worker is paused until the scale phase re-enables it.
 		processes.snowfall_ground.disable()
@@ -554,6 +564,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	require(KB.type == KA.type && KB.location == AREA_OUTSIDE && !isnull(KB.persistence_zone_id) && (KB in area_list) && K.snowfall_ground_exposed(), "Zone topology or exposure changed across the round trip")
 	pass("disk_round_trip", list("save_ds" = save_ds, "load_ds" = load_ds, "zone_before" = zone_before, "zone_after" = KB.persistence_zone_id, "elevation" = get_elevation(K)))
 	check_registry("after_load")
+	hold_natural_seasons()
 	processes.snowfall_ground.enable()
 	map.elevation_regions = list()
 	map.elevation_profile_cache = null
@@ -615,7 +626,9 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	var/start_tod = world.timeofday
 	var/list/samples = list()
 	var/full_at = null
-	var/until = world.time + 12000
+	// Two units need two snowing samples per cell from a randomly ordered,
+	// tick-budgeted worker; observed fills took 11,600-12,100+ ds on Gaia.
+	var/until = world.time + 24000
 	while(world.time < until)
 		sleep(50)
 		var/list/c = census(expected)

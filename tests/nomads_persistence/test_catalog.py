@@ -110,6 +110,7 @@ class NomadsCatalogTests(unittest.TestCase):
         for bad in (source.replace('// END_SELECTED_MAP', ''),
                     source.replace('// BEGIN_SELECTED_MAP', '// BEGIN_SELECTED_MAP\n// BEGIN_SELECTED_MAP'),
                     source.replace('#ifdef EXTRACTION_MODERN_CITY_MAP', '#ifdef UNREVIEWED_MAP'),
+                    re.sub(r'#include "maps\\nomads\\[a-z_0-9]+\.dmm"', lambda m: '#include "maps\\other\\unreviewed.dmm"', source),
                     source+'\n#include "maps/other.dmm"\n',
                     '#include "one.dmm"\n#include "two.dmm"\n'):
             with self.subTest(input=bad[-70:]), self.assertRaises(RuntimeError):

@@ -66,8 +66,12 @@ def select_nomads_map(dme, identity):
             '#include "maps\\extraction\\modern_city_extraction.dmm"', '#else',
             '#ifdef EXTRACTION_SURVIVAL_MAP',
             '#include "maps\\extraction\\industrial_district.dmm"', '#else',
-            '#include "maps\\nomads\\nomads.dmm"', '#endif', '#endif']
-        if lines != conditional and not (len(lines) == 1 and re.fullmatch(include_pattern, lines[0])):
+            None, '#endif', '#endif']
+        # The default slot may name any reviewed Nomads map (Gaia is the default now).
+        reviewed = {'#include "maps\\nomads\\' + name + '"' for name in NOMADS_MAPS.values()}
+        default_ok = len(lines) == len(conditional) and lines[6] in reviewed and \
+            all(want is None or got == want for got, want in zip(lines, conditional))
+        if not default_ok and not (len(lines) == 1 and re.fullmatch(include_pattern, lines[0])):
             raise RuntimeError('Unsupported selected-map block')
         result = dme[:first]+replacement+'\n'+dme[last:]
     else:
