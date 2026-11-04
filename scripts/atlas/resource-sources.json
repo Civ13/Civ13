@@ -111,7 +111,8 @@
     "code/modules/reagents/reagent_containers/pill.dm",
     "code/modules/reagents/reagent_containers/pill_bottle.dm",
     "code/modules/reagents/reagent_containers/spray.dm",
-    "code/modules/reagents/reagent_containers/syringe.dm"
+    "code/modules/reagents/reagent_containers/syringe.dm",
+    "code/modules/1713/stone_crushing.dm"
   ],
   "plant_harvest_mappings": [
     {
@@ -14008,6 +14009,72 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Hand stone crusher",
+      "file": "code/modules/1713/stone_crushing.dm",
+      "line": 48,
+      "source_commit": "1e49db6ca1a7a9d288c808519a8446df65505b91",
+      "inputs": [
+        "/obj/item/stack/material/stone"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/glass",
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/diamond",
+        "/obj/item/stack/ore/iron",
+        "/obj/item/stack/ore/coal",
+        "/obj/item/stack/ore/lead",
+        "/obj/item/stack/ore/saltpeter",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "tools": [
+        "/obj/structure/stone_crusher"
+      ],
+      "steps": [
+        "Build a stone crusher from ten stone blocks after Resource Processing and keep it anchored.",
+        "Use stone blocks on it while adjacent; each worked roll spends one stone and leaves any sand, ore or mineral on the crusher's tile."
+      ],
+      "conditions": "Per stone: 20% sand, 3% copper, 2.5% tin, 0.6% silver, 0.3% gold, 0.1% diamond; iron 3% from age 1; coal 2%, lead 1.5%, saltpeter 1% and sulphur 1% from age 2; otherwise rubble. Full output refuses before stone is spent.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Recipe unlocks at Resource Processing; ore table widens with map age.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Powered stamp mill",
+      "file": "code/modules/1713/stone_crushing.dm",
+      "line": 124,
+      "source_commit": "1e49db6ca1a7a9d288c808519a8446df65505b91",
+      "inputs": [
+        "/obj/item/stack/material/stone"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/glass",
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/diamond",
+        "/obj/item/stack/ore/iron",
+        "/obj/item/stack/ore/coal",
+        "/obj/item/stack/ore/lead",
+        "/obj/item/stack/ore/saltpeter",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "tools": [
+        "/obj/structure/drill/stamp_mill"
+      ],
+      "steps": [
+        "Anchor a powered stamp mill, connect its power cable and load up to fifty stone blocks.",
+        "Run it and clear its output tile; it stamps one stone every four seconds until the hopper is empty."
+      ],
+      "conditions": "Requires 150 available cable power. Ore and mineral odds are 1.5 times the hand crusher's and sand is 25%; output accumulation is bounded.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Recipe unlocks at Electricity.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Cut grass fibres",
       "file": "code/game/turfs/floor_attackby.dm",
       "line": 13,
@@ -15261,6 +15328,24 @@
         "/obj/item/stack/ore/gold"
       ],
       "gate": "held wooden bowl; adjacent shallow freshwater; eligible dirt/sand; 1 unit/1200 ticks"
+    },
+    {
+      "name": "Stone crushing",
+      "file": "code/modules/1713/stone_crushing.dm",
+      "outputs": [
+        "/obj/item/stack/ore/glass",
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/silver",
+        "/obj/item/stack/ore/gold",
+        "/obj/item/stack/ore/diamond",
+        "/obj/item/stack/ore/iron",
+        "/obj/item/stack/ore/coal",
+        "/obj/item/stack/ore/lead",
+        "/obj/item/stack/ore/saltpeter",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "gate": "one stone per roll; 20% sand and 15% ore by age 2 by hand; stamp mill 25% sand and 1.5x ore; iron age>=1; coal/lead/saltpeter/sulphur age>=2"
     },
     {
       "name": "Finite mining",
