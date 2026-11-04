@@ -216,6 +216,11 @@
 			var/list/row = list("ref" = agent_ref(AM), "name" = AM.name, "type" = "[AM.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
 			if (AM.density)
 				row["dense"] = TRUE
+			if (istype(AM, /obj/structure/wild) && !istype(AM, /obj/structure/wild/rock))
+				var/obj/structure/wild/W = AM
+				// Trees and plants say whether harm intent can break a branch off them right now.
+				if (W.max_branches > 0 || istype(W, /obj/structure/wild/tree) || istype(W, /obj/structure/wild/palm) || istype(W, /obj/structure/wild/jungle))
+					row["branches"] = W.branches
 			if (ismob(AM))
 				var/mob/other = AM
 				row["mob"] = TRUE

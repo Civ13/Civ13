@@ -306,6 +306,8 @@ class AutopilotTests(unittest.TestCase):
         text, _ = autopilot.summarize(observation)
         self.assertIn('Ada says', text)
         self.assertEqual(text.count("burn your feet"), 1)
+        muted, _ = autopilot.summarize(observation, muted={"You feel the ground burn your feet."})
+        self.assertNotIn("burn your feet", muted)  # environment lines that keep coming back are muted
         self.assertNotIn("building a roof", text)  # other players' work lines
         self.assertIn("hands Bo a stick", text)  # but not lines about this character
 
@@ -330,12 +332,70 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(error, "")
         self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "intent", "intent": "grab"}, {"do": "click", "target": "[0x1]"}])
         steps, error = autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], holding)
-        self.assertEqual(steps, [{"do": "click", "target": "[0x1]"}] * 3)
+        self.assertEqual(steps, [{"do": "click", "target": "[0x1]"}] * 5)
         sharp = {"active_hand": "left", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "stick"}, "intent": "help"}
         self.assertIn("needs flint", autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], sharp)[1])
-        self.assertIn("equip or drop", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], sharp)[1])
+        # A free hand comes from dropping the spare item, never the tool.
+        steps, error = autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], sharp)
+        self.assertEqual(steps[:2], [{"do": "swap_hand"}, {"do": "drop"}])
+        spare = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint"}, "intent": "grab"}
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], spare)[0], [{"do": "drop"}, {"do": "click", "target": "[0x1]"}])
+        tools = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint hatchet"}, "intent": "grab"}
+        self.assertIn("equip or drop", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools)[1])
         steps, _ = autopilot.expand_plan([{"skill": "chop", "target": "[0x1]"}], {"active_hand": "left", "left_hand": None, "right_hand": {"name": "flint hatchet"}, "intent": "harm"})
         self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
+
+    def test_skills_walk_there_and_skip_bare_trees(self):
+        empty = {"active_hand": "right", "left_hand": None, "right_hand": None, "intent": "harm"}
+        rows = {"[0x1]": {"ref": "[0x1]", "name": "palm tree", "dx": 0, "dy": 2, "branches": 0},
+                "[0x2]": {"ref": "[0x2]", "name": "tree", "dx": 0, "dy": 3, "branches": 3},
+                "[0x3]": {"ref": "[0x3]", "name": "tree", "dx": 1, "dy": 1, "branches": 2}}
+        self.assertIn("no branches", autopilot.expand_plan([{"skill": "break_branch", "target": "[0x1]"}], empty, rows)[1])
+        steps, _ = autopilot.expand_plan([{"skill": "break_branch", "target": "[0x2]"}], empty, rows)
+        self.assertEqual(steps, [{"do": "go", "target": "[0x2]"}, {"do": "click", "target": "[0x2]"}])
+        steps, _ = autopilot.expand_plan([{"skill": "break_branch", "target": "[0x3]"}], empty, rows)
+        self.assertEqual(steps, [{"do": "click", "target": "[0x3]"}])
+        text, _ = autopilot.summarize({"self": {"ref": "[0x9]"}, "nearby": list(rows.values())})
+        self.assertIn("1. palm tree dx=0 dy=2 (no branches)", text)
+        self.assertIn("2. tree dx=0 dy=3 (has branches)", text)
+        self.assertEqual(autopilot.parse_decision('{"do": "go", "target": 2}', ["[0x9]", "[0x1]", "[0x2]"]), {"do": "go", "target": "[0x2]"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "go", "target": 0}', ["[0x9]", "[0x1]"]))
+        # A rock straight ahead (north blocked) makes the walk sidestep instead of bouncing.
+        self.assertEqual(autopilot.choose_step(0, 3), "north")
+        self.assertIn(autopilot.choose_step(0, 3, blocked={"north"}), ("northeast", "northwest"))
+        self.assertNotEqual(autopilot.choose_step(0, 3, blocked={"north", "northeast", "northwest"}, visited={(0, -1)}), "south")
+        source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('row["branches"] = W.branches', source)
+
+    def test_walking_goes_around_blocked_tiles(self):
+        class FakeClient:
+            def __init__(self):
+                self.pos = [0, 0]
+                self.queued = 0
+                self.moves = []
+
+            def request(self, action, args):
+                if action == "character_queue":
+                    direction = args["actions"][0]["dir"]
+                    self.moves.append(direction)
+                    sx, sy = autopilot.DIR_STEPS[direction]
+                    self.queued += 1
+                    blocked = (self.pos[0] + sx, self.pos[1] + sy) == (0, 1)  # a rock straight ahead
+                    if not blocked:
+                        self.pos = [self.pos[0] + sx, self.pos[1] + sy]
+                    self.last = {"id": self.queued, "do": "move", "ok": True, "detail": "blocked" if blocked else "done"}
+                    return {"ok": True}
+                results = [self.last] if args.get("queue_since", 0) < self.queued else []
+                around = {"north": {"blocked": self.pos == [0, 0]}}
+                return {"ok": True, "result": {"self": {"x": self.pos[0], "y": self.pos[1]}, "surroundings": around, "nearby": [{"ref": "[0x2]", "dx": 0 - self.pos[0], "dy": 3 - self.pos[1]}], "queue": {"results": results}}}
+
+        client = FakeClient()
+        ok, detail, _ = autopilot.approach(client, "[0x9]", "[0x2]", 0)
+        self.assertTrue(ok, detail)
+        self.assertNotIn("north", client.moves[:1])
+        self.assertLessEqual(len(client.moves), 4)
+        ok, detail, _ = autopilot.approach(client, "[0x9]", "turf:%d,%d,2" % (client.pos[0], client.pos[1] + 1), 0)
+        self.assertTrue(ok, detail)  # already next to it
 
     def test_ignored_targets_are_left_out(self):
         text, refs = autopilot.summarize(self.OBSERVATION, ignored={"[0x1]": 9})
