@@ -25,6 +25,12 @@
 	body_build = new /datum/body_build
 	defaultHUD = "1713Style"
 	create_HUDinventory()
+	// Hand-slot equips (put_in_any_hand_if_possible) require hand organs; these
+	// detached constructor-only adapters are kept out of contents and organ lists.
+	if (!organs_by_name)
+		organs_by_name = list()
+	organs_by_name["l_hand"] = new /obj/item/organ/external/flax_entry
+	organs_by_name["r_hand"] = new /obj/item/organ/external/flax_entry
 	stat = CONSCIOUS
 	lying = FALSE
 	sleeping = 0
@@ -96,7 +102,8 @@
 
 /proc/flax_entry_clean(mob/living/human/U, obj/item/I)
 	flax_entry_assert(!U.item_is_in_hands(I) && !I.screen_loc && I.plane == GAME_PLANE && I.layer == initial(I.layer), "production drop clears slots and HUD item state")
-	flax_entry_assert(!U.overlays_standing[L_HAND_LAYER] && !U.overlays_standing[R_HAND_LAYER], "production drop clears hand overlays")
+	// update_icons.dm undefines its layer macros; 23/24 are L_HAND_LAYER/R_HAND_LAYER there.
+	flax_entry_assert(!U.overlays_standing[23] && !U.overlays_standing[24], "production drop clears hand overlays")
 	if (U.client)
 		flax_entry_assert(!(I in U.client.screen), "connected drop clears actual client screen membership")
 
@@ -237,6 +244,9 @@
 		GLOB.stat_set_event = new
 		GLOB.name_set_event = new
 		makeDatumRefLists()
+		// Footstep timing reads the movement clock; construct it without starting its loop.
+		if (!movementMachine)
+			movementMachine = new
 		var/turf/site = locate(3,3,1)
 		var/turf/floor/beach/water/W = new(locate(4,3,1))
 		W.salty = FALSE
