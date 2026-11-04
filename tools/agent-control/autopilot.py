@@ -81,7 +81,7 @@ How to play:
   4. Hold the sharpened flint and click a stick to make a sharpened stick (a spear), or click grass to cut grass for twine.
   5. With an axe or hatchet, click a tree to chop it into logs. Hold logs, leaves or other stacks to craft from them.
 - Timed work (searching, chopping, sharpening, drinking) runs for several seconds; the game waits for it to finish before your next step.
-- Keep water and nutrition up. Drink from a river, lake or well: empty active hand, grab intent, click the water tile next to you. Eat food by holding it and clicking yourself (target 0).
+- Keep water and nutrition up; when NEEDS says you are thirsty or hungry, that comes first. Drink from a river, lake or well: empty active hand, grab intent, click the water tile next to you. Eat food by holding it and clicking yourself (target 0).
 - Craft: hold a stack of material (logs, planks, leaves, rope, stone, cloth...) in your active hand; its recipes are listed under "You can craft". Then {"do": "craft", "recipe": "<name>"}.
 - Hold an item and {"do": "equip"} to wear it or put it on your belt or back. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
@@ -147,6 +147,13 @@ def summarize(observation, note="", ignored=(), muted=()):
         "Wearing: " + (", ".join(map(str, self_state.get("worn") or [])) or "nothing"),
         "Carrying: " + (", ".join(map(str, self_state.get("carried") or [])) or "nothing else"),
     ]
+    needs = []
+    if isinstance(self_state.get("water"), (int, float)) and self_state["water"] < 250:
+        needs.append("thirsty: find water (explore if none is listed) and drink")
+    if isinstance(self_state.get("nutrition"), (int, float)) and self_state["nutrition"] < 250:
+        needs.append("hungry: find or make food and eat it")
+    if needs:
+        lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
     if self_state.get("craftable"):
         lines.append("You can craft (from the held stack): " + "; ".join(map(str, self_state["craftable"][:30])))
     if note:
@@ -286,9 +293,9 @@ def parse_decision(text, refs):
             index = int(data.get("target"))
         except (TypeError, ValueError):
             return None
-        if not 1 <= index < len(refs) or not refs[index]:
+        if not 0 <= index < len(refs) or not refs[index]:
             return None
-        return {"skill": action, "target": refs[index]}
+        return {"skill": action, "target": refs[index]}  # 0 (yourself) is resolved or refused when expanded
     if action not in ACTIONS or action == "wait":
         return None
     args = {"do": action}
@@ -405,6 +412,11 @@ def _is_tool(name):
     return any(word in name for word in TOOL_WORDS)
 
 
+def _is_plain_stick(name):
+    name = str(name or "").lower()
+    return name == "stick" or (name.endswith(" stick") and "sharpened" not in name and "cleared" not in name)
+
+
 def _is_junk(name):
     """A spare plain flint is easy to find again; anything else is worth stowing."""
     name = str(name or "").lower()
@@ -431,6 +443,15 @@ def expand_skill(step, self_state, rows=None):
     active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
     row = (rows or {}).get(step["target"])
     steps = []
+    if step["target"] == self_state.get("ref"):
+        held_stick = [hand for hand in ("left_hand", "right_hand") if _is_plain_stick(_name(self_state.get(hand)))]
+        if step["skill"] == "sharpen_stick" and held_stick and isinstance(self_state.get(held_stick[0]), dict) and self_state[held_stick[0]].get("ref"):
+            step = dict(step, target=self_state[held_stick[0]]["ref"])  # the stick in the other hand
+            row = None
+        else:
+            return [], f"{step['skill']} needs a target number from the lists, not yourself (0). If nothing suitable is listed, explore in some direction to find it"
+    if row is not None and step["skill"] == "sharpen_stick" and not _is_plain_stick(row.get("name")):
+        return [], f"sharpen_stick needs a stick (on the ground or in your other hand), not the {row.get('name')}"
     if row is not None and row.get("branch") in ("leafy", "cleared") and step["skill"] in ("pick_up", "pick_leaves", "make_stick"):
         # A fallen branch cannot be picked up; work it where it lies.
         skill = "pick_leaves" if row["branch"] == "leafy" else "make_stick"
@@ -455,9 +476,10 @@ def expand_skill(step, self_state, rows=None):
                 if spare_is_other:
                     steps.append({"do": "swap_hand"})
                 spare = other if spare_is_other else active
-                if not _is_junk(spare):
-                    steps.append({"do": "equip"})  # stow gathered materials when there is room
-                steps.append({"do": "drop"})  # does nothing when equip already freed the hand
+                if _is_junk(spare):
+                    steps.append({"do": "drop"})
+                else:
+                    steps.append({"do": "equip"})  # stow it; with no free slot the queue stops and the item stays in hand
             else:
                 steps.append({"do": "swap_hand"})
     elif not _holds(active, need):
@@ -482,8 +504,11 @@ def expand_plan(plan, self_state, rows=None):
         elif step.get("do") == "drop":
             held = _name(self_state.get("left_hand") if self_state.get("active_hand") == "left" else self_state.get("right_hand"))
             if held != "empty" and not _is_junk(held):
-                steps.append({"do": "equip"})  # keep what was gathered when there is room for it
-            steps.append(step)
+                # Keep what was gathered when there is room; a failed stow must not stop the drop.
+                steps.append({"do": "equip", "soft": True})
+                steps.append({"do": "drop", "soft": True})
+            else:
+                steps.append(step)
         else:
             steps.append(step)
     return steps, ""
@@ -608,6 +633,37 @@ def walk(client, character, queue_since, direction=None, away_from=None, moves=6
     return walked > 0, f"walked {walked} tiles", queue_since
 
 
+COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass"}
+
+
+def collect(client, character, queue_since, word):
+    """Pick up the item a skill dropped next to the character (leaves, a stick). Returns (detail, queue_since)."""
+    reply = client.request("character_observe", {"character": character, "radius": 1, "queue_since": queue_since})
+    if not reply.get("ok"):
+        return "", queue_since
+    observation = reply["result"]
+    me = observation.get("self", {})
+    found = [row for row in observation.get("nearby", []) if row.get("item") and word in str(row.get("name", "")).lower() and "sharpened" not in str(row.get("name", "")).lower() and adjacent(row)]
+    if not found:
+        return "", queue_since
+    left, right = _name(me.get("left_hand")), _name(me.get("right_hand"))
+    active, other = (left, right) if me.get("active_hand") == "left" else (right, left)
+    steps = []
+    if active != "empty":
+        if other != "empty":
+            return f"left the {found[0].get('name')} on the ground (hands full)", queue_since
+        steps.append({"do": "swap_hand"})
+    if me.get("intent") != "help":
+        steps.append({"do": "intent", "intent": "help"})
+    steps.append({"do": "click", "target": found[0]["ref"]})
+    if not client.request("character_queue", {"character": character, "actions": steps}).get("ok"):
+        return "", queue_since
+    results = wait_for_queue(client, character, queue_since)
+    if results:
+        queue_since = max(r.get("id", 0) for r in results)
+    return f"picked up the {found[0].get('name')}", queue_since
+
+
 def execute(client, character, steps, queue_since):
     """Run expanded steps: "go" walks in the autopilot, runs of other steps go to the queue. Returns (summary, queue_since)."""
     parts = []
@@ -616,7 +672,12 @@ def execute(client, character, steps, queue_since):
     def flush(queue_since):
         if not chunk:
             return queue_since
-        queued = client.request("character_queue", {"character": character, "actions": list(chunk)})
+        soft = any(item.get("soft") for item in chunk)
+        actions = [{k: v for k, v in item.items() if k != "soft"} for item in chunk]
+        request = {"character": character, "actions": actions}
+        if soft:
+            request["stop_on_failure"] = False
+        queued = client.request("character_queue", request)
         chunk.clear()
         if not queued.get("ok"):
             parts.append(f"refused ({queued.get('error')} {queued.get('detail', '')})")
@@ -629,6 +690,8 @@ def execute(client, character, steps, queue_since):
 
     for step in steps:
         if step.get("do") not in ("go", "flee", "explore"):
+            if chunk and bool(step.get("soft")) != bool(chunk[-1].get("soft")):
+                queue_since = flush(queue_since)
             chunk.append(step)
             continue
         queue_since = flush(queue_since)
@@ -819,6 +882,11 @@ def run(client, args, character, token):
                 time.sleep(args.interval)
                 continue
             summary, queue_since = execute(client, character, steps, queue_since)
+            word = next((COLLECT_AFTER[item["skill"]] for item in plan if item.get("skill") in COLLECT_AFTER), None)
+            if word and "failed" not in summary:
+                picked, queue_since = collect(client, character, queue_since, word)
+                if picked:
+                    summary += f"; {picked}"
             print(f"step {step}: {json.dumps(plan)} -> {summary}" + (f" | note: {note}" if note else ""))
             feedback = f"\nYou did: {summary}"
             problem = plan_problem(answer, refs)

@@ -390,6 +390,8 @@
 			var/mob/living/human/H = M
 			H.quick_equip()
 			C.next_action = world.time + 2
+			if (I.loc == M && (I == M.l_hand || I == M.r_hand))
+				agent_fail("no_slot", "there is nowhere free to put [I]")
 			detail = "[I]"
 		if ("examine")
 			var/atom/target = agent_resolve_target(req["target"])

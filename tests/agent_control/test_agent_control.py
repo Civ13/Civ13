@@ -326,7 +326,8 @@ class AutopilotTests(unittest.TestCase):
         refs = ["[0x9]", "[0x1]"]
         plan = autopilot.parse_plan('{"plan": [{"do": "find_flint", "target": 1}, {"do": "move", "dir": "north"}]}', refs)
         self.assertEqual(plan, [{"skill": "find_flint", "target": "[0x1]"}])  # a skill ends the plan
-        self.assertIsNone(autopilot.parse_decision('{"do": "find_flint", "target": 0}', refs))  # not on yourself
+        on_self = autopilot.parse_plan('{"do": "find_flint", "target": 0}', refs)
+        self.assertIn("not yourself", autopilot.expand_plan(on_self, {"ref": "[0x9]"})[1])  # refused with a reason
         holding = {"active_hand": "right", "right_hand": {"name": "flint"}, "left_hand": None, "intent": "help"}
         steps, error = autopilot.expand_plan(plan, holding)
         self.assertEqual(error, "")
@@ -337,13 +338,13 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("needs flint", autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], sharp)[1])
         # A free hand comes from dropping the spare item, never the tool.
         steps, error = autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], sharp)
-        self.assertEqual(steps[:3], [{"do": "swap_hand"}, {"do": "equip"}, {"do": "drop"}])  # stow the stick if there is room
+        self.assertEqual(steps[:3], [{"do": "swap_hand"}, {"do": "equip"}, {"do": "intent", "intent": "grab"}])  # stow the stick, never drop it
         spare = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint"}, "intent": "grab"}
         self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], spare)[0], [{"do": "drop"}, {"do": "click", "target": "[0x1]"}])
         tools = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint hatchet"}, "intent": "grab"}
         self.assertIn("both tools", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools)[1])
         leaves = {"active_hand": "left", "left_hand": {"name": "leaf bundles"}, "right_hand": {"name": "sharpened flint"}, "intent": "grab"}
-        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:2], [{"do": "equip"}, {"do": "drop"}])
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:1], [{"do": "equip"}])
         steps, _ = autopilot.expand_plan([{"skill": "chop", "target": "[0x1]"}], {"active_hand": "left", "left_hand": None, "right_hand": {"name": "flint hatchet"}, "intent": "harm"})
         self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
 
@@ -392,17 +393,49 @@ class AutopilotTests(unittest.TestCase):
 
     def test_bad_steps_explain_themselves(self):
         refs = ["[0x9]", "[0x1]"]
-        self.assertEqual(autopilot.parse_plan('{"plan": [{"do": "find_flint", "target": 0}]}', refs), [])
-        self.assertIn("explore", autopilot.plan_problem('{"plan": [{"do": "find_flint", "target": 0}]}', refs))
+        self.assertIn("explore", autopilot.plan_problem('{"plan": [{"do": "find_flint", "target": 7}]}', refs))
         self.assertIn("not a skill", autopilot.plan_problem('{"do": "teleport"}', refs))
         self.assertEqual(autopilot.plan_problem('{"plan": [{"do": "find_flint", "target": 1}, {"do": "fly"}]}', refs), "")
         self.assertIn("missing", autopilot.plan_problem('{"plan": [{"do": "say", "text": "hi"}, {"do": "move"}]}', refs))
         self.assertEqual(autopilot.parse_decision('{"do": "explore", "dir": "West"}', refs), {"do": "explore", "dir": "west"})
         self.assertEqual(autopilot.parse_decision('{"do": "flee", "target": 1}', refs), {"do": "flee", "target": "[0x1]"})
         holding = {"active_hand": "right", "right_hand": {"name": "stick"}, "left_hand": None, "intent": "help"}
-        self.assertEqual(autopilot.expand_plan([{"do": "drop"}], holding)[0], [{"do": "equip"}, {"do": "drop"}])
+        self.assertEqual(autopilot.expand_plan([{"do": "drop"}], holding)[0], [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}])
         self.assertEqual(autopilot.expand_plan([{"do": "drop"}], dict(holding, right_hand={"name": "flint"}))[0], [{"do": "drop"}])
         self.assertEqual(autopilot.expand_plan([{"skill": "attack", "target": "[0x1]"}], holding)[0], [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x1]"}] * 3)
+
+    def test_sticks_are_sharpened_and_drops_are_collected(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened flint", "ref": "[0xa]"}, "left_hand": {"name": "stick", "ref": "[0xb]"}, "intent": "help"}
+        rows = {"[0x1]": {"ref": "[0x1]", "name": "small vegetation", "dx": 1, "dy": 0}, "[0x2]": {"ref": "[0x2]", "name": "stick", "dx": 1, "dy": 1, "item": True}}
+        self.assertIn("needs a stick", autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x1]"}], me, rows)[1])
+        self.assertEqual(autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x2]"}], me, rows)[0], [{"do": "click", "target": "[0x2]"}])
+        self.assertEqual(autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x9]"}], me, rows)[0], [{"do": "click", "target": "[0xb]"}])  # the stick in the other hand
+        text, _ = autopilot.summarize({"self": {"ref": "[0x9]", "water": 120, "nutrition": 400}})
+        self.assertTrue(text.startswith("NEEDS: you are thirsty"))
+
+        class FakeClient:
+            def __init__(self):
+                self.sent = []
+
+            def request(self, action, args):
+                self.sent.append((action, args))
+                if action == "character_queue":
+                    return {"ok": True}
+                return {"ok": True, "result": {"self": {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm"},
+                                               "nearby": [{"ref": "[0x5]", "name": "leaf bundles", "dx": 0, "dy": 1, "item": True}], "queue": {"results": [{"id": 4}]}}}
+
+        client = FakeClient()
+        detail, since = autopilot.collect(client, "[0x9]", 0, "leaf")
+        self.assertEqual(detail, "picked up the leaf bundles")
+        self.assertEqual(since, 4)
+        self.assertIn(("character_queue", {"character": "[0x9]", "actions": [{"do": "swap_hand"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x5]"}]}), client.sent)
+        client.sent.clear()
+        autopilot.execute(client, "[0x9]", [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "say", "text": "hi"}], 0)
+        queued = [args for action, args in client.sent if action == "character_queue"]
+        self.assertEqual(queued[0], {"character": "[0x9]", "actions": [{"do": "equip"}, {"do": "drop"}], "stop_on_failure": False})
+        self.assertEqual(queued[1], {"character": "[0x9]", "actions": [{"do": "say", "text": "hi"}]})
+        source = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('agent_fail("no_slot"', source)
 
     def test_attacks_put_danger_first_and_downed_bodies_stop(self):
         observation = {"self": {"name": "Ada", "health": 77}, "messages": [{"text": "The grey she-wolf bites Ada!"}]}

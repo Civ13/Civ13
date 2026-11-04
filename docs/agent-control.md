@@ -197,7 +197,12 @@ branch where it lies (leaves, then stick) instead of trying to pick it up, and r
 tool is not in either hand or a branch skill on a tree with no branches. The
 model can also walk with `{"do": "go", "target": n}`, run from a target with
 `flee`, or `explore` a few tiles in a direction; `attack` hits a target on harm
-intent. A model `drop` of a gathered item tries to stow it first. A step the
+intent. A model `drop` of a gathered item tries to stow it first; a skill that needs a
+free hand stows the spare item and stops (keeping it in hand) when `equip`
+finds no free slot (`no_slot`). `sharpen_stick` only takes a stick, or with
+target 0 the stick in the other hand. After `pick_leaves`, `make_stick` or
+`cut_grass` the autopilot picks up what fell when a hand is free, and a
+`NEEDS` line leads the observation when water or nutrition drops below 250. A step the
 autopilot cannot accept is explained to the model next turn (for example a skill
 with no target listed: explore to find one). When something attacks the
 character, a danger line leads the next prompt, and the run stops once the
