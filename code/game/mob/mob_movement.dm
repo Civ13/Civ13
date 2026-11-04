@@ -868,10 +868,13 @@
 						. = H.SelfMove(n, direct, subtile_deadline, TRUE)
 					else
 						// Continue a held key from the previous step's deadline, not
-						// from the tick this Move happened to run in.
-						if (isnum(subtile_chain_time) && subtile_chain_time <= world.time && world.time - subtile_chain_time < world.tick_lag && !H.human_subtile_pull_ready(direct) && subtile_deadline - (world.time - subtile_chain_time) > world.time)
-							subtile_deadline -= world.time - subtile_chain_time
-							H.human_subtile_chain_start = subtile_chain_time
+						// from the tick this Move happened to run in. Held steps keep
+						// the pace players had before chaining (see human_subtile_held_pace).
+						if (isnum(subtile_chain_time) && subtile_chain_time <= world.time && world.time - subtile_chain_time < world.tick_lag && !H.human_subtile_pull_ready(direct))
+							var/held_deadline = subtile_chain_time + H.human_subtile_held_pace(subtile_deadline - world.time)
+							if (held_deadline > world.time)
+								subtile_deadline = held_deadline
+								H.human_subtile_chain_start = subtile_chain_time
 						. = H.SelfMove(n, direct, subtile_deadline)
 						H.human_subtile_chain_start = null
 				else if (!fine_step)
