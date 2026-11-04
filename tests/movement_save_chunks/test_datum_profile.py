@@ -53,7 +53,7 @@ class DatumProfileTests(unittest.TestCase):
         self.assertNotIn('if(!moving_save_chunk && istype(A, /atom/movable)', saver)
         self.assertIn('if(durable_export) durable_export.bind_entry', saver)
         self.assertNotIn('if(istype(A, /matrix)) return A', functions)
-        self.assertIn('save_entry_identity(frame.source)', functions)
+        self.assertIn('saving_reference_pins[frame.entry] != frame.source', functions)
         for name, text in ((saving_name, saver), (functions_name, functions)):
             profile.instrument_datum_references(name, text)
         with self.assertRaises(ValueError):
@@ -80,7 +80,7 @@ class DatumProfileTests(unittest.TestCase):
         source = (ROOT / name).read_text()
         mutated = profile.restore_matrix_reference_identity(source)
         self.assertEqual(mutated, source.replace('\tif(istype(A, /matrix)) return A\n', '', 1))
-        self.assertIn('save_entry_identity(frame.source)', mutated)
+        self.assertIn('saving_reference_pins[frame.entry] != frame.source', mutated)
         spec = importlib.util.spec_from_file_location('matrix_omission_correctness', HERE / 'correctness.py')
         correctness = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(correctness)

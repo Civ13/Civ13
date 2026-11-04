@@ -111,3 +111,25 @@ existing conservative all-suite fallback; they are not narrowed to this suite.
 The tests assert exact file registration and safe imports. Offline checks ran
 the actual registry impact function and unit entry point with 12 passing tests;
 this is not a hosted-CI result or exact committed-head aggregate receipt.
+
+## Ecology-driven spawning (2026-11-04)
+
+`code/modules/ecology/ecology_spawning.dm` is the first production owner of the
+heatmap. It is off by default; an R_DEBUG admin turns it on for the running
+round with Debug > **Toggle Ecology Spawning** and reads its last cycle with
+**Ecology Spawning Status**. Nothing is saved; a restart leaves it off.
+
+Every 60 seconds it samples the 8x8 cells of active players (living, not idle
+for five minutes; ghosts and the lobby do not count) as one complete snapshot.
+More than 256 distinct cells resets the epoch instead of truncating. After a
+ten-minute warm-up, each species below its target (deer 20, wolves 8, bears 4,
+under their breeding caps of 30, 20 and 12) gets at most one animal per cycle.
+The site is a random grass or dirt tile in an outdoor, unroofed, unoccupied
+area of a matching biome, in a cell whose decayed pressure is known and at most
+0.05, and more than 15 tiles from every client's body and eye. Up to 24 random
+candidates are tried; there is no world scan. Unknown coverage is never quiet.
+Animals register in their species lists in their own constructors, so deaths,
+breeding caps and saves are unchanged. Probe: `tests/ecology_spawning`.
+
+Not yet verified: a live round with players, real client visibility and the
+recovery rate on Gaia. Turning it on by default for a map is a separate decision.

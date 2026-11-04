@@ -234,6 +234,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered nomads-adoption'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_agent_ci_digest_offline_admission_is_exact(self):
+        path = 'tests/agent_ci_digest/test_ci_digest.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/agent_ci_digest/new_probe.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-ci-digest'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_agent_control_offline_admission_is_exact(self):
         path = 'tests/agent_control/test_agent_control.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):

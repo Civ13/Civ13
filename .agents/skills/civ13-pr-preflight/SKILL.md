@@ -94,6 +94,13 @@ head's run cannot establish that a specific hosted regression executed.
 
 ## 5. Known red jobs that are not your fault
 
+After pushing to a PR, wait for the `agent-ci-digest` comment for the new head
+instead of polling runs and logs. It gives the verdict (`green`, `infra-only`,
+`known-only`, `needs-fix`), the failed step and a log excerpt per job, and it
+has already rerun infrastructure-only failures once. If no digest for the head
+appears about 10 minutes after CI finishes, read CI directly as before. See
+[docs/agent-ci-digest.md](../../../docs/agent-ci-digest.md).
+
 - `isolated-native` / "Bounded moving-save correctness and memory"
   (`.github/workflows/moving-save-chunks.yml`). It runs when `code/predefines.dm`,
   persistence files or BYOND tooling change. `benchmark.py --run-native` fails

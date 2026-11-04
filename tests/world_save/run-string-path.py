@@ -16,7 +16,7 @@ DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|as
 PUBLICATION_FAILURE = 'Chunk transfer publication did not detect late movement'
 PUBLICATION_ANCHOR = (
     '\t\t\tdrain_save_transfers(frame)\n'
-    '\t\t\tsavefile.cd = entry_path(savefile, ref)\n'
+    '\t\t\tsavefile.cd = entry_dir\n'
     '\t\t\trecord_save_capture_path(savefile, "content")\n'
     '\t\t\tsavefile["content"] << content_value\n'
 )
