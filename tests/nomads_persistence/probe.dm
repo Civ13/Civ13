@@ -23,6 +23,7 @@ var/nomads_fail_radiation = FALSE
 var/nomads_fail_calendar = FALSE
 var/nomads_fail_explosion = FALSE
 var/nomads_child_explosion = FALSE
+var/nomads_lava_entries = 0
 var/datum/durable_nomads_event/nomads_test_event
 /obj/map_metadata/nomads/wasteland/durable_nomads_nuke_effect(turf/epicenter, datum/durable_nomads_event/event)
 	if(nomads_inject_nuke_failure) throw EXCEPTION("Injected mutating-event failure")
@@ -43,8 +44,13 @@ var/datum/durable_nomads_event/nomads_test_event
 	if(nomads_fail_explosion) throw EXCEPTION("Injected queued explosion failure")
 /process/explosion/nomads_fixture/explosion_rec(turf/epicenter, power, sound)
 	sleep(20)
-/datum/durable_nomads_event/fast_lava/defer(delay, datum/target, method, list/arguments)
+/datum/durable_nomads_event/fast_lava/defer_lava(delay, turf/floor/lava/target, method, list/arguments)
 	return ..(max(1, round(delay / 100)), target, method, arguments)
+/turf/floor/lava/nomads_identity_probe
+	dries = FALSE
+	spreads = FALSE
+/turf/floor/lava/nomads_identity_probe/lava_enter_contents()
+	nomads_lava_entries++
 /turf/floor/lava/nomads_failure/lava_dry_phase()
 	..()
 	throw EXCEPTION("Injected delayed lava drying failure")
@@ -360,6 +366,20 @@ var/datum/durable_nomads_event/nomads_test_event
 	persistence_save_in_progress = TRUE
 	map = new /obj/map_metadata/nomads/wasteland(locate(1,1,2))
 	map.durable_timer_queue().cancel_all()
+	var/datum/durable_nomads_event/identity_event = new /datum/durable_nomads_event/fast_lava(map)
+	new /turf/floor/lava/nomads_identity_probe(locate(4,4,2), null, identity_event)
+	new /turf/floor/lava/nomads_identity_probe(locate(4,4,2), null, identity_event)
+	identity_event.release()
+	var/identity_deadline = world.time + 10
+	while(identity_event.pending && world.time < identity_deadline) sleep(1)
+	nomads_assert(nomads_lava_entries == 1 && !identity_event.pending && !identity_event.failed && !map.nomads_event_busy, "owned lava callback crossed replacement identity")
+	new /turf/floor(locate(4,4,2))
+	nomads_lava_entries = 0
+	new /turf/floor/lava/nomads_identity_probe(locate(4,4,2))
+	new /turf/floor/lava/nomads_identity_probe(locate(4,4,2))
+	sleep(6)
+	nomads_assert(nomads_lava_entries == 1, "unowned lava callback crossed replacement identity")
+	new /turf/floor(locate(4,4,2))
 	map.nomads_nuke_x = 1
 	map.nomads_nuke_y = 1
 	map.nomads_nuke_z = 1

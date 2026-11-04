@@ -40,10 +40,12 @@
 	var/dries = TRUE
 	var/spreads = TRUE
 	var/tmp/datum/durable_nomads_event/nomads_event
+	var/tmp/datum/lava_callback_identity
 	light_power = 2
 	light_color = "#FFA500"
 	New(loc, floortype, datum/durable_nomads_event/event = null)
 		nomads_event = event
+		lava_callback_identity = new /datum
 		..(loc, floortype)
 		if (dries)
 			dryproc()
@@ -52,12 +54,15 @@
 			lava_defer(20, "lava_spread")
 			new/obj/effect/fire(src)
 /turf/floor/lava/persistence_runtime_var(key)
-	return key == "nomads_event" || ..()
+	return key == "nomads_event" || key == "lava_callback_identity" || ..()
 /turf/floor/lava/proc/lava_defer(delay, method, list/arguments = list())
 	if(nomads_event)
-		nomads_event.defer(delay, src, method, arguments)
+		nomads_event.defer_lava(delay, src, method, arguments)
 	else
-		spawn(delay) call(src, method)(arglist(arguments))
+		var/datum/identity = lava_callback_identity
+		spawn(delay)
+			if(istype(src, /turf/floor/lava) && lava_callback_identity == identity)
+				call(src, method)(arglist(arguments))
 /turf/floor/lava/proc/lava_enter_contents()
 	for(var/atom/movable/M in src) Entered(M)
 /turf/floor/lava/proc/lava_spread()

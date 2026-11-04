@@ -193,11 +193,13 @@
 /datum/durable_nomads_event/proc/valid()
 	if(!owner || map != owner) failed = TRUE
 	return !failed
-/datum/durable_nomads_event/proc/defer(delay, datum/target, method, list/arguments)
+/datum/durable_nomads_event/proc/defer_lava(delay, turf/floor/lava/target, method, list/arguments)
+	var/datum/identity = target.lava_callback_identity
 	retain()
 	spawn(delay)
 		try
-			if(valid() && target) call(target, method)(arglist(arguments))
+			if(valid() && istype(target, /turf/floor/lava) && target.lava_callback_identity == identity)
+				call(target, method)(arglist(arguments))
 		catch(var/exception/E)
 			failed = TRUE
 			log_debug("Nomads event child [method] failed: [E]")
