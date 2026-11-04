@@ -426,8 +426,17 @@ class SnowTests(unittest.TestCase):
         owners = [path for path in includes if '/turf/floor/grass/attackby(' in (ROOT / path).read_text(errors='replace')]
         self.assertEqual(owners[-1], 'code/modules/1713/trench.dm')
         grass = body((ROOT / owners[-1]).read_text(), '/turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)')
-        guard = grass.index('if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0)\n\t\treturn ..()')
+        guard = grass.index('if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0 && user.a_intent != I_HARM)\n\t\treturn ..()')
         self.assertLess(guard, grass.index('ChangeTurf('))
+        # Snow that lands during the grass-removal wait is not stripped with the grass.
+        recheck = grass.index('if (weather_snow > 0 && user.a_intent != I_HARM)\n\t\t\treturn', guard + 1)
+        self.assertLess(grass.index('do_after('), recheck)
+        self.assertLess(recheck, grass.index('ChangeTurf('))
+
+    def test_irrigated_floor_hands_snow_tools_to_the_snow_handler(self):
+        floor = body((ROOT / 'code/modules/1713/trench.dm').read_text(), '/turf/floor/attackby(obj/item/C as obj, mob/user as mob)')
+        self.assertIn('istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon)', floor)
+        self.assertIn('if (irrigation && irrigation_overlay && !(snow_tool && weather_snow > 0))', floor)
 
     def test_full_game_probe_is_test_only_and_checks_every_required_step(self):
         self.assertNotIn('full_game_probe', (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig'))

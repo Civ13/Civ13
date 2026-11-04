@@ -103,6 +103,7 @@ def runtime_errors(output):
             text += path.read_text(errors='replace') + '\n'
     rows = {}
     for message, proc, source, line in RUNTIME.findall(text):
+        source = source.replace('\\', '/')  # Windows daemons log backslash paths.
         key = f'{source}:{line}: {message.strip()} ({proc.strip()})'
         rows[key] = rows.get(key, 0) + 1
     return rows
@@ -122,11 +123,12 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     prefix = '.snowfall_game_' + uuid.uuid4().hex
     created = []
+    head = git(repo, 'rev-parse', 'HEAD').strip()
+    tree_status = git(repo, 'status', '--porcelain')  # Before the generated .dme exists.
     try:
         source = generate(repo, prefix)
         created += [source, source.with_suffix('.dmb'), source.with_suffix('.rsc'), source.with_suffix('.int')]
-        head = git(repo, 'rev-parse', 'HEAD').strip()
-        manifest = {'tested_commit': head, 'working_tree_status': git(repo, 'status', '--porcelain'),
+        manifest = {'tested_commit': head, 'working_tree_status': tree_status,
                     'map': 'maps/nomads/nomads_gaia.dmm',
                     'source_sha256': {name: hashlib.sha256((repo / name).read_bytes()).hexdigest() for name in SNOW_SOURCES + ('maps/nomads/nomads_gaia.dmm',)},
                     'adapters': ['map include swapped to Gaia', 'probe appended', 'Linux global_init initialisers completed by the probe before world/New',

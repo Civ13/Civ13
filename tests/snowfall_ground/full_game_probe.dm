@@ -44,9 +44,9 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		throw EXCEPTION(message)
 
 /datum/snowfall_game_probe/proc/wait_for(datum/target, proc_name, deadline_ds, message)
-	var/until = world.timeofday + deadline_ds
+	var/until = world.time + deadline_ds
 	while(!call(target, proc_name)())
-		if(world.timeofday > until)
+		if(world.time > until)
 			throw EXCEPTION(message)
 		sleep(5)
 
@@ -134,9 +134,9 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		var/from = season
 		spawn(0)
 			map.seasons(FALSE, TRUE, FALSE)
-		var/until = world.timeofday + 6000
+		var/until = world.time + 6000
 		while(season == from || map.season_busy)
-			require(world.timeofday < until, "Forced season change from [from] stalled")
+			require(world.time < until, "Forced season change from [from] stalled")
 			sleep(5)
 		path += "[from]->[season]"
 	pass("season_[target]", list("path" = path, "season" = season))
@@ -340,7 +340,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	return n
 
 /datum/snowfall_game_probe/proc/settle(list/humans, timeout_ds = 900)
-	var/until = world.timeofday + timeout_ds
+	var/until = world.time + timeout_ds
 	while(TRUE)
 		var/busy = FALSE
 		for(var/mob/living/human/H in humans)
@@ -348,7 +348,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 				busy = TRUE
 		if(!busy)
 			return
-		require(world.timeofday < until, "Action wait never finished")
+		require(world.time < until, "Action wait never finished")
 		sleep(2)
 
 /datum/snowfall_game_probe/proc/fill(turf/floor/T, units)
@@ -615,8 +615,8 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	var/start_tod = world.timeofday
 	var/list/samples = list()
 	var/full_at = null
-	var/until = world.timeofday + 12000
-	while(world.timeofday < until)
+	var/until = world.time + 12000
+	while(world.time < until)
 		sleep(50)
 		var/list/c = census(expected)
 		var/list/row = list("world_ds" = world.time - start, "wall_ds" = world.timeofday - start_tod, "cpu" = world.cpu, "tick_usage" = world.tick_usage, "map_cpu" = world.map_cpu) + c + process_stats()
@@ -643,20 +643,29 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 	var/start_tod
 	var/list/samples
 	var/until
+	var/list/snowed_before = list()
+	for(var/turf/floor/T in expected)
+		if(T.weather_snow)
+			snowed_before[T] = TRUE
 	reach_season("SPRING")
 	var/list/warm = list()
 	var/list/cold = list()
-	for(var/turf/T in expected)
+	var/warm_snowed = 0
+	for(var/turf/floor/T in expected)
 		if(get_temp(T) > SNOWFALL_MELT_C)
 			warm[T] = TRUE
+			if(snowed_before[T])
+				warm_snowed++
 		else
 			cold[T] = TRUE
+	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "cold" = cold.len)
+	require(warm_snowed > 0, "No warm candidate held generated snow when spring began")
 	start = world.time
 	start_tod = world.timeofday
 	samples = list()
 	var/melted_at = null
-	until = world.timeofday + 12000
-	while(world.timeofday < until)
+	until = world.time + 12000
+	while(world.time < until)
 		sleep(50)
 		var/remaining = 0
 		for(var/turf/floor/T in warm)
@@ -667,7 +676,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 		if(!remaining)
 			melted_at = world.time - start
 			break
-	metrics["melt"] = list("warm" = warm.len, "cold" = cold.len, "samples" = samples)
+	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "cold" = cold.len, "samples" = samples)
 	require(melted_at, "Spring did not melt generated snow on warm candidates")
 	var/cold_kept = 0
 	for(var/turf/floor/T in cold)
@@ -675,7 +684,7 @@ var/global/datum/snowfall_game_probe/snowfall_game_probe = new
 			cold_kept++
 	var/list/terrain_spring = snapshot_terrain()
 	require(terrain_spring["authored_snow"] == terrain_before["authored_snow"], "Spring transition changed authored permanent snow")
-	metrics["melt"] = list("warm" = warm.len, "cold" = cold.len, "cold_kept" = cold_kept, "melted_world_ds" = melted_at, "samples" = samples, "terrain_before" = terrain_before, "terrain_spring" = terrain_spring)
-	pass("seasonal_melt", list("warm" = warm.len, "melted_world_ds" = melted_at, "cold_kept" = cold_kept))
+	metrics["melt"] = list("warm" = warm.len, "warm_snowed" = warm_snowed, "cold" = cold.len, "cold_kept" = cold_kept, "melted_world_ds" = melted_at, "samples" = samples, "terrain_before" = terrain_before, "terrain_spring" = terrain_spring)
+	pass("seasonal_melt", list("warm" = warm.len, "warm_snowed" = warm_snowed, "melted_world_ds" = melted_at, "cold_kept" = cold_kept))
 	for(var/mob/M in actors)
 		qdel(M)

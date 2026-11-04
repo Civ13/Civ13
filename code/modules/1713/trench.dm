@@ -408,13 +408,15 @@ var/list/global/floor_cache = list()
 
 /turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
 	var/mob/living/human/H = user
-	if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0)
-		return ..() // Shovel generated snow into piles before the grass layer can be removed.
+	if (istype(C, /obj/item/weapon/material/shovel) && weather_snow > 0 && user.a_intent != I_HARM)
+		return ..() // Shovel generated snow into piles first; harm intent still removes the grass layer.
 	if (istype(C, /obj/item/weapon/material/shovel))
 		var/obj/item/weapon/material/shovel/trench/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
 		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed)))) //Think a DEFINE for the number being divided over S.dig_speed could be helpful, keeping it this for now
 			return
+		if (weather_snow > 0 && user.a_intent != I_HARM)
+			return // Snow fell during the wait; the next click shovels it.
 		user.visible_message(SPAN_NOTICE("[user] removes the grass layer."), SPAN_NOTICE("[user] removes the grass layer."), "You hear something being removed.")
 		H.adaptStat("strength", 1)
 		var/area/A = get_area(src)
@@ -596,7 +598,8 @@ var/list/global/floor_cache = list()
 		overlays += irrigation_overlay
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
-	if (irrigation && irrigation_overlay)
+	var/snow_tool = istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon)
+	if (irrigation && irrigation_overlay && !(snow_tool && weather_snow > 0))
 		if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 			var/choice = WWinput(user, "Do you want to fill up the irrigation channel with \the [C]?","Irrigation Channel","Yes",list("Yes","No"))
 			if (choice == "Yes")
