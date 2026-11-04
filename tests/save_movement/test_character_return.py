@@ -182,7 +182,7 @@ class ReturnFixture:
                   'local_character_bodies', 'character_return_turf', 'character_recovery_unready',
                   'character_return_pending', 'reclaim_saved_player', 'find_restored_player',
                   'return_player_eligible', 'finish_character_return', 'restored_bodies_destroyed',
-                  'dimension_recovery_required', 'dimension_budget_hold')
+                  'dimension_recovery_required', 'dimension_budget_hold', 'persistence_bed_owner_ckey')
         with patch.object(adapter, 'FIELDS', fields):
             return adapter.project(source, declaration, args, self.env, method)
 
@@ -622,6 +622,25 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertIsNone(old.persistence_bed_owner_ckey)
         self.assertTrue(f.body.inducedSSD)
         self.assertEqual(f.bed.persistence_bed_owner_ckey, 'account')
+
+    def test_assigned_bed_blocks_other_accounts_and_reports_previous_bed(self):
+        f = ReturnFixture()
+        f.body.loc, f.body.client = f.bed_turf, f.client
+        f.bed_turf.append(f.bed)
+        f.bed.assigned_to_other = MethodType(f.proc('/obj/structure/bed/proc/assigned_to_other', 'src, ckey', True), f.bed)
+        taken = MethodType(f.proc('/mob/living/human/proc/saved_bed_taken_here', 'src', True), f.body)
+        where = MethodType(f.proc('/mob/living/human/proc/saved_bed_assignment', 'src', True), f.body)
+        self.assertFalse(taken())
+        self.assertEqual(where(), 'here')
+        f.bed.persistence_bed_owner_ckey = None
+        self.assertFalse(taken())
+        self.assertIsNone(where())
+        f.world.append(NS(kind='/obj/structure/bed', loc=f.home, persistence_bed_owner_ckey='account'))
+        self.assertEqual(where(), 'elsewhere')
+        f.bed.persistence_bed_owner_ckey = 'other'
+        self.assertTrue(taken())
+        f.body.client = None
+        self.assertFalse(taken())
 
     def test_bed_sleep_refusal_does_not_claim_or_move(self):
         for case in ('save', 'guest', 'another_owner', 'dead'):
