@@ -38,6 +38,9 @@ var/global/list/root_tree_presenters
 	var/datum/los_context/context
 	var/list/images = list()
 	var/list/owned_images = list()
+	// Only validated resource-work producers may create these per-client FX.
+	// Keyed image -> root; bounded independently of the discovered forest.
+	var/list/work_images = list()
 	var/list/frame_keys = list()
 	var/list/frame_appearances = list()
 	var/list/frame_lights = list()
@@ -160,6 +163,7 @@ var/global/list/root_tree_presenters
 	if(retired || !owner)
 		return
 	owner.los_dirty = TRUE
+	clear_work_images()
 	// Only the non-yielding post-move refresh may retain an unchanged lease.
 	// Pre-write invalidation, opaque movers and unknown contexts still withdraw.
 	if(viewer_refresh && changed == context.body && !possible_opacity && !changed.opacity)
@@ -245,12 +249,14 @@ var/global/list/root_tree_presenters
 			frame_lights[T] = rgb
 			frame_dirs[T] = T.dir
 		if(frame_needs_publication(T, frame, source_appearance))
+			clear_work_images(T)
 			root_tree_set_frame(I, T, frame)
 			published_frames[T] = frame
 			source_appearances[T] = source_appearance
 	for(var/atom/old in images.Copy())
 		if(current[old])
 			continue
+		clear_work_images(old)
 		var/image/I = images[old]
 		owner.images -= I
 		owned_images -= I
@@ -283,6 +289,7 @@ var/global/list/root_tree_presenters
 	return frames[T] && frame_appearances[T] == source_appearance && frame_lights[T] == rgb && frame_dirs[T] == T.dir
 
 /datum/root_tree_presenter/proc/withdraw_tree(atom/T, image/I)
+	clear_work_images(T)
 	if(!I || !published_frames[T])
 		return FALSE
 	published_frames -= T
@@ -292,6 +299,20 @@ var/global/list/root_tree_presenters
 	I.maptext = ""
 	I.mouse_opacity = 0
 	return TRUE
+
+/datum/root_tree_presenter/proc/remove_work_image(image/I)
+	if(!work_images[I])
+		return
+	if(owner)
+		owner.images -= I
+	owned_images -= I
+	work_images -= I
+
+/datum/root_tree_presenter/proc/clear_work_images(atom/T)
+	for(var/image/I in work_images.Copy())
+		if(T && work_images[I] != T)
+			continue
+		remove_work_image(I)
 
 /datum/root_tree_presenter/proc/cached_light(obj/structure/wild/T)
 	var/turf/root = T.loc
@@ -431,6 +452,7 @@ var/global/list/root_tree_presenters
 		qdel(P)
 	images.Cut()
 	owned_images.Cut()
+	work_images.Cut()
 	frames.Cut()
 	published_frames.Cut()
 	frame_keys.Cut()

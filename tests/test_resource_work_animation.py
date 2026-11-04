@@ -163,6 +163,7 @@ class ResourceWorkAnimationTests(unittest.TestCase):
         stop = proc(text, '/datum/resource_work_animation/proc/stop()').split('\n', 1)[1].replace('FALSE', 'False').replace('null', 'None')
         def execute(body):
             exec('\n'.join(line[1:] for line in body.splitlines()), {}, scope)
+        scope['clear_projected_strikes'] = lambda: None
         scope['clear_strike'] = lambda: execute(clear)
         execute(stop)
         execute(stop)
