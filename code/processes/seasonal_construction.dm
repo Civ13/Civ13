@@ -1,7 +1,11 @@
-// Draft balance: fractions of the design's initial health per counted season.
-#define CONSTRUCTION_FIBRE_SEASONS 16
-#define CONSTRUCTION_EARTH_SEASONS 32
-#define CONSTRUCTION_TIMBER_SEASONS 64
+// Lifetimes count game years: four counted seasons per year. Fibre lasts 16
+// years, earth 32 and timber 64, so a 60-minute season cycle gives straw
+// buildings about 64 hours rather than 16.
+#define CONSTRUCTION_FIBRE_SEASONS 64
+#define CONSTRUCTION_EARTH_SEASONS 128
+#define CONSTRUCTION_TIMBER_SEASONS 256
+// Players are warned once a building has a year (four seasons) left.
+#define CONSTRUCTION_WARNING_SEASONS 4
 #define CONSTRUCTION_DECAY_BATCH 64
 
 // Process-local clock. before_save folds unserviced transitions into each
@@ -99,12 +103,59 @@ var/global/seasonal_construction_cursor = 1
 	if (health <= 0)
 		visible_message(SPAN_WARNING("The [name] falls apart from seasonal weathering!"))
 		qdel(src)
+	else
+		seasonal_construction_warn(damage)
 
 /obj/roof/damage_seasonal_construction(damage)
 	health -= damage
 	if (health <= 0)
 		visible_message(SPAN_WARNING("The [name] falls apart from seasonal weathering!"))
 		qdel(src)
+	else
+		seasonal_construction_warn(damage)
+
+// Counted seasons this building can still take, after its unpaid debt.
+/obj/proc/seasonal_construction_seasons_left()
+	var/lifetime = seasonal_construction_lifetime()
+	var/design = seasonal_construction_design_health()
+	if (!lifetime || design <= 0)
+		return null
+	return max(0, ceil(seasonal_construction_health() * lifetime / design - 0.001) - seasonal_construction_due)
+
+/obj/proc/seasonal_construction_warning(left)
+	return "\The [src] is badly weathered and will fall apart within [left] season[left == 1 ? "" : "s"] unless it is repaired."
+
+// Warn nearby players when a building enters its last year, and again on its last season.
+/obj/proc/seasonal_construction_warn(damage)
+	var/left = seasonal_construction_seasons_left()
+	if (isnull(left))
+		return
+	var/before = ceil((seasonal_construction_health() + damage) * seasonal_construction_lifetime() / seasonal_construction_design_health() - 0.001)
+	if ((before > CONSTRUCTION_WARNING_SEASONS && left <= CONSTRUCTION_WARNING_SEASONS) || (before > 1 && left <= 1))
+		visible_message(SPAN_WARNING(seasonal_construction_warning(left)))
+
+/obj/proc/seasonal_construction_repair_hint()
+	return null
+
+/obj/covers/seasonal_construction_repair_hint()
+	var/obj/item/I = buildstack
+	return ispath(I) ? "Repair it with [initial(I.name)]." : null
+
+/obj/roof/seasonal_construction_repair_hint()
+	return "Repair it by using matching roofing while facing it."
+
+// Examine text for weathering buildings; null when weathering does not apply.
+/obj/proc/seasonal_construction_condition()
+	if (!map || !map.persistence || !seasonal_construction_index)
+		return null
+	var/left = seasonal_construction_seasons_left()
+	if (isnull(left))
+		return null
+	var/hint = seasonal_construction_repair_hint()
+	if (left <= CONSTRUCTION_WARNING_SEASONS)
+		return SPAN_WARNING("[seasonal_construction_warning(left)][hint ? " [hint]" : ""]")
+	var/years = round(left / 4, 0.25)
+	return "<span class='notice'>Weathering: it should stand about [left] more seasons ([years] year[years == 1 ? "" : "s"]) unless it is repaired.</span>"
 
 /obj/proc/check_seasonal_construction()
 	if (persistence_save_in_progress)

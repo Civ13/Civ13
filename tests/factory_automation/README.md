@@ -50,10 +50,11 @@ Removing the belt power check makes five drive checks fail.
 
 `fabricators_probe.dm` (phase 3a) checks:
 
-- Recipe list: the five curated rows load with no errors and parse output, inputs, tier and node; every row names a real research node; a missing output, a zero input, a short row and a duplicate are reported and skipped.
+- Recipe list: the eight curated rows load with no errors and parse output, inputs, tier and node; every row names a real research node; a missing output, a zero input, a short row and a duplicate are reported and skipped.
 - Fabricators: no recipes without research, tier 1 lists only tier 1 recipes and tier 3 lists all; unknown recipes are refused; it takes only its recipe's inputs, up to two cycles each; nothing happens without power; powered steps add progress without spending inputs early; a finished cycle spends one cycle of inputs and leaves the output on the tile, which is offered (honouring arm filters) and can be taken; a power cut pauses the cycle without losing progress or inputs and restored power finishes it; an empty fabricator sleeps and new inputs wake it; a crowded tile makes it wait; the computerized tier runs at half time.
 - Lifecycle: every input buffers on its own; load clamps progress and resumes unpowered; the recipe and progress are saved and the active flag is not; load clears a recipe the list no longer has; changing the recipe or removing the fabricator drops its buffer.
-- Catalog: each fabricator tier is gated behind its research node.
+- Catalog: each fabricator tier and the stack arm are gated behind their research nodes.
+- Stack arm (phase 3b): draws five power units; with no filter it moves ten items of the first kind in one swing, never mixes kinds in a batch and takes only its filter when one is set; a sorting arm with no filter still moves nothing and a feeder arm still moves one item a swing.
 
 `chemistry_probe.dm` (phase 0 of `docs/chemistry-automation-design.md`) checks:
 

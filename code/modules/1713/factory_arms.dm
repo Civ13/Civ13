@@ -23,6 +23,8 @@ var/global/list/factory_active_arms = list()
 	var/swing_time = 20 // deciseconds per transfer
 	var/filter_type = null // only items of this type, when set
 	var/can_filter = FALSE
+	var/filter_optional = FALSE // a filterable arm that also runs with no filter
+	var/batch = 1 // items of one kind lifted per swing
 	var/tmp/next_swing = 0
 
 /obj/structure/factory_arm/sorting
@@ -31,6 +33,18 @@ var/global/list/factory_active_arms = list()
 	icon_state = "unloader0"
 	powerneeded = 3
 	can_filter = TRUE
+
+// Lifts up to ten items of one kind each swing: every item of the kind it took
+// first, or of its filter when one is set.
+/obj/structure/factory_arm/stack
+	name = "stack arm"
+	desc = "A heavy powered swing arm that moves up to ten items of one kind each swing. Hit it with an item to make it move only that kind; use the Clear Filter verb to let it move anything. Cable it, then switch it on. Turn it with a wrench while it is off."
+	icon_state = "unloader0"
+	color = "#9fc7ff"
+	powerneeded = 5
+	can_filter = TRUE
+	filter_optional = TRUE
+	batch = 10
 
 /obj/structure/factory_arm/New()
 	..()
@@ -74,10 +88,12 @@ var/global/list/factory_active_arms = list()
 	..(user, distance)
 	to_chat(user, SPAN_NOTICE("It moves items [dir2text(dir)] and is [on ? "on" : "off"][on && !powered ? ", without power" : ""]."))
 	if (can_filter)
-		to_chat(user, SPAN_NOTICE(filter_type ? "It only moves [factory_filter_name(filter_type)]." : "It has no filter set and moves nothing."))
-	var/obj/item/held = held_item()
-	if (held)
-		to_chat(user, SPAN_NOTICE("It is holding \a [held]."))
+		to_chat(user, SPAN_NOTICE(filter_type ? "It only moves [factory_filter_name(filter_type)]." : (filter_optional ? "It has no filter set and moves anything." : "It has no filter set and moves nothing.")))
+	var/held_count = 0
+	for (var/obj/item/I in contents)
+		held_count++
+	if (held_count)
+		to_chat(user, SPAN_NOTICE("It is holding [held_count == 1 ? "\a [held_item()]" : "[held_count] items"]."))
 
 /proc/factory_filter_name(type)
 	var/atom/A = type
@@ -119,6 +135,13 @@ var/global/list/factory_active_arms = list()
 		return
 	return ..()
 
+/obj/structure/factory_arm/stack/verb/clear_stack_filter()
+	set name = "Clear Filter"
+	set category = null
+	set src in oview(1)
+	filter_type = null
+	to_chat(usr, SPAN_NOTICE("You clear \the [src]'s filter."))
+
 /obj/structure/factory_arm/sorting/verb/clear_filter()
 	set name = "Clear Filter"
 	set category = null
@@ -145,8 +168,10 @@ var/global/list/factory_active_arms = list()
 /obj/structure/factory_arm/proc/target_turf()
 	return get_step(src, dir)
 
-/obj/structure/factory_arm/proc/wanted(obj/item/I)
-	if (can_filter && !filter_type)
+/obj/structure/factory_arm/proc/wanted(obj/item/I, kind = null)
+	if (can_filter && !filter_type && !filter_optional)
+		return FALSE
+	if (kind && I.type != kind)
 		return FALSE
 	return !filter_type || istype(I, filter_type)
 
@@ -169,18 +194,19 @@ var/global/list/factory_active_arms = list()
 	return loose < FACTORY_ARM_FLOOR_LIMIT ? T : null
 
 // Lift an item from behind into the arm. Ports come first, then loose items.
-/obj/structure/factory_arm/proc/pick_up()
+// kind limits it to one exact type, for the later lifts of a batch.
+/obj/structure/factory_arm/proc/pick_up(kind = null)
 	var/turf/T = source_turf()
 	if (!T)
 		return FALSE
 	for (var/obj/O in T)
 		if (istype(O, /obj/item) || istype(O, /obj/structure/factory_arm))
 			continue
-		var/obj/item/offered = O.factory_offer(dir, filter_type)
-		if (offered && wanted(offered) && find_target(offered))
+		var/obj/item/offered = O.factory_offer(dir, kind || filter_type)
+		if (offered && wanted(offered, kind) && find_target(offered))
 			return O.factory_take(offered, src)
 	for (var/obj/item/I in T)
-		if (!factory_belt_cargo_item(I) || !wanted(I) || !find_target(I))
+		if (!factory_belt_cargo_item(I) || !wanted(I, kind) || !find_target(I))
 			continue
 		I.forceMove(src)
 		animate(I)
@@ -216,12 +242,16 @@ var/global/list/factory_active_arms = list()
 	powered = TRUE
 	if (!was_powered)
 		update_icon()
-	var/obj/item/held = held_item()
-	if (!held)
+	if (!held_item())
 		pick_up()
-		held = held_item()
-	if (held)
-		put_down(held)
+		var/obj/item/first = held_item()
+		for (var/i in 2 to batch)
+			if (!first || !pick_up(first.type))
+				break
+	// Set down everything held, stopping at the first item with nowhere to go.
+	for (var/obj/item/held in contents)
+		if (!put_down(held) || held.loc == src)
+			break
 
 /proc/factory_arms_step()
 	for (var/obj/structure/factory_arm/A in factory_active_arms.Copy())

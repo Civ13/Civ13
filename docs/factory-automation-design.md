@@ -1,6 +1,6 @@
 # Modern factory automation: audit and phased design
 
-Status: **phases 0, 1, 2 and 3a implemented; later phases are design only.** Val chose the first slice on 2026-11-04: phase 0, then
+Status: **phases 0 to 3 implemented; phase 4 is design only.** Val chose the first slice on 2026-11-04: phase 0, then
 belts and transfer arms (phase 1), and asked threads to continue the phases.
 The other open decisions below are still pending. Each later phase lands with
 its own tests.
@@ -268,7 +268,7 @@ port in front of it. Variants:
 | --- | --- | --- | --- | --- |
 | Feeder arm | 1 item / 2 s | none | 2 PU | `automation` |
 | Sorting arm | 1 item / 2 s | one item type, set by hand | 3 PU | `automation` |
-| Stack arm (phase 3) | up to 10 of one stack / 2 s | optional | 5 PU | `digital_computing` |
+| Stack arm (phase 3b) | up to 10 items of one kind / 2 s | optional | 5 PU | `digital_computing` |
 
 Phase 1 implements the feeder and sorting arms (`code/modules/1713/factory_arms.dm`).
 An arm takes from a port behind it (belt exit, crate, parts bin, or the output
@@ -278,6 +278,11 @@ fewer than 12 items. A partial insert (a nearly full stamp mill hopper) keeps
 the rest held for the next swing. A wrench turns an arm while it is off; a
 direction arrow overlay shows where it sends items. A running arm saves its
 switch and resumes after a reload; stored time never pays out a swing.
+
+Every arm lifts a whole stack as one item. The stack arm (phase 3b) lifts up
+to ten items each swing, all of the exact type it took first (or of its filter,
+when one is set), so it clears crates of loose single stacks and finished goods
+ten times faster. Its Clear Filter verb lets it move anything.
 
 The **parts bin** (`/obj/structure/closet/crate/factory_bin`, steel, Assembly
 Line) is a crate that only accepts more of what it already holds.
@@ -427,7 +432,7 @@ BYOND, plus a native benchmark where noted.
 | 2a. Belt power and routing (done) | Belt drives; sorting gate, splitter, belt tunnel; recipes (drive at Assembly Line, routing at Automation). | `tests/factory_automation/routing_probe.dm`: drive range, power loss and recovery, gate filtering, splitter alternation and overflow, tunnels under a crossing, save exclusions. |
 | 2b. Smelting and wood ports (done) | Bloomery and blast furnace take ore and fuel and start a smelt once both are loaded; the powered saw mill gets a 20-log hopper and cuts one log into 12 planks a second while powered; both offer their output stacks on their tile. Clay kilns (mold casting) and the reagent grinder stay manual. | `tests/factory_automation/machines_probe.dm`: limits, refusals, automatic smelt start and restart, output offers, mill power, plank merging, hopper save and return. |
 | 3a. Fabricators (done) | Three fabricator tiers on the curated factory recipe list (five starting recipes: rolled steel, barbwire, cable coil, electronic circuits, electronic components); Atlas shows factory recipes; research gates. | `tests/factory_automation/fabricators_probe.dm`: recipe parsing and rejection, tier and research filtering, buffer limits, no work without power, a full cycle, pause on power loss without losing inputs, sleep and wake, output offers and limit, save clamping, buffer return. |
-| 3b. Stack arm and more recipes | Stack arm; extend the recipe list once lines are played. | A configured line produces one modern good from raw inputs unattended. |
+| 3b. Stack arm and more recipes (done) | Stack arm (`digital_computing`); factory recipes for bronze, glass and metal rods (eight in all). | `fabricators_probe.dm`: ten-item batches of one kind, no mixed batches, filter, feeder and sorting arms unchanged; recipe counts and tier lists. A complete unattended line in game is still unverified. |
 | 4. Scale and logistics | Factory panel; fast belt; train and vehicle loading ports; balance pass with live data. | Panel shows throughput and stalls; benchmark at ceiling numbers. |
 
 Phase 0 is useful even if the rest is reordered, and changes no gameplay

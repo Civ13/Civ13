@@ -1,5 +1,25 @@
 # Seasonal construction deterioration (draft balance)
 
+## Year-based lifetimes, warnings and repair (2026-11-04)
+
+With 60-minute seasons, the original 16/32/64-season lifetimes made straw
+buildings fall apart after about 16 hours, which players saw as random roof
+collapses. Lifetimes now count game years: 64, 128 and 256 counted seasons
+(16, 32 and 64 years). The rate tables below describe the earlier policy; scale
+their season counts by four. Damage already taken is kept on existing saves.
+
+Examining a weathering wall or roof shows how many seasons it has left. Once it
+has a year (four seasons) left, examine shows a warning with the repair item,
+and nearby players see a warning when it enters its last year and its last
+season. Walls repair with their build stack at the missing share of
+`buildstackamount` (at least one); this also fixes the old formula that charged
+more the healthier the wall was. Roofs repair with matching roofing, used on
+the roof or while facing it, which is used up. `config/tips.txt` explains
+weathering, repairs and support-loss collapses.
+
+`tests/construction_weathering_load` checks wear, unpaid season debt, warnings
+and repairs across a native whole-world save/load.
+
 This mechanic runs only while `map.persistence` is true. That flag is set by
 the configured `PERSISTENCE` mode or the existing admin Persistence toggle;
 map names, the display string, saving being available, and Persistent Chad Mode +
