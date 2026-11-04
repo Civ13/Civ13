@@ -82,7 +82,7 @@ def main():
     offset = take_seconds - FADE
     graph = (
         f"[0:v]trim=0:{take_seconds},setpts=PTS-STARTPTS,fps=30,"
-        f"scale=iw*2:ih*2:flags=neighbor,crop={W}:{H},{captions},format=yuv420p,setsar=1[game];"
+        f"scale={W}:-2:flags=neighbor,crop={W}:'min(ih,{H})',pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:black,{captions},format=yuv420p,setsar=1[game];"
         f"[1:v]scale=-1:{int(H * 0.72)}:flags=neighbor,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2-60:black,"
         f"drawtext=fontfile={FONT_SANS}:text='Play free at Civ13.com':fontsize=64:fontcolor=white:"
         f"x=(w-text_w)/2:y=h-150,fps=30,format=yuv420p,setsar=1,trim=0:{END_SECONDS + FADE},setpts=PTS-STARTPTS[end];"

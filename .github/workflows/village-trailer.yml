@@ -104,7 +104,7 @@ jobs:
           if [ -f "$RUNNER_TEMP/take/take.mkv" ]; then
             ffmpeg -hide_banner -loglevel error -y -i "$RUNNER_TEMP/take/take.mkv" -c:v libx264 -crf 14 -pix_fmt yuv420p "$RUNNER_TEMP/media/raw-take.mp4"
             if [ -f "$RUNNER_TEMP/take/trailer-timeline.json" ]; then
-              python3 tools/village-trailer/edit.py --take "$RUNNER_TEMP/take/take.mkv" --timeline "$RUNNER_TEMP/take/trailer-timeline.json" --title UI/images/civ13.png --out "$RUNNER_TEMP/media/village-trailer.mp4"
+              python3 tools/village-trailer/edit.py --take "$RUNNER_TEMP/take/take.mkv" --timeline "$RUNNER_TEMP/take/trailer-timeline.json" --title UI/images/civ13.png --out "$RUNNER_TEMP/media/village-trailer.mp4" || echo "::warning::trailer edit failed; publishing the raw take"
             fi
           fi
           ls -la "$RUNNER_TEMP/media"
