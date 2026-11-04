@@ -55,6 +55,10 @@
 	else
 		..(user)
 
+// Keys go in through attackby(), which also tracks them in keys.
+/obj/item/weapon/storage/belt/keychain/accepts_inventory_drag(obj/item/W, mob/user)
+	return FALSE
+
 /obj/item/weapon/storage/belt/keychain/attackby(obj/item/i as obj, mob/user as mob)
 	if (!istype(i, /obj/item/weapon/key))
 		return FALSE

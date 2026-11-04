@@ -17,6 +17,9 @@ CONTROLS = {
  'conservation': ('diet_reserves[group] + points * profile[group]', 'diet_reserves[group] + points', 'FAIL: nutrient reserves conserve the eaten nutrition'),
  'trace': ('if (share < DIET_TASTE_SHARE)', 'if (share <= 0)', 'FAIL: trace liked flavour neither rewards nor reveals'),
  'penalty': ('if (diet_penalties_enabled && diet_imbalance_ticks >= DIET_FATIGUE_TICKS', 'if (diet_imbalance_ticks >= DIET_FATIGUE_TICKS', 'FAIL: penalties stay off by default'),
+ 'lineage': ('for (var/datum/reagent/ingredient in holder.reagent_list)', 'for (var/datum/reagent/ingredient in list(diet_find_reagent(holder, "nutriment")))', 'FAIL: dish lineage weighs every nutritious ingredient, including meat'),
+ 'neutral': ('if (descriptor in diet_neutral_descriptors)', 'if (FALSE)', 'FAIL: texture and seasoning words do not count as carbohydrate'),
+ 'recovery': ('var/was_warned = diet_imbalance_ticks >= DIET_WARN_TICKS', 'var/was_warned = TRUE', 'FAIL: recovery is announced only after a warning'),
 }
 
 

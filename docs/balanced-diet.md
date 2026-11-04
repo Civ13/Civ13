@@ -21,7 +21,9 @@ can store and spend. Hunger, thirst and digestion work exactly as before.
   in **IC > Notes** under Discoveries. Neutral flavours reveal nothing.
 - **Better dishes.** A prepared meal (vegetable potage, hearty stew, seasoned
   hearty stew) whose ingredients include liked flavours earns extra enjoyment,
-  scaled by the meal's quality tier.
+  scaled by the meal's quality tier. The dish lineage covers every nutritious
+  reagent in the bowl, weighted by its nutrition, so meat and eggs (which are
+  their own reagents rather than nutriment flavours) count like vegetables.
 - **Check Diet** (IC tab) lists each group as depleted, low, adequate or plenty,
   whether it is rising or falling since the last check, capacity versus available
   stamina, active effects, and which foods would help each low group.
@@ -29,7 +31,9 @@ can store and spend. Hunger, thirst and digestion work exactly as before.
   some carbohydrate") and any tastes this character has already learned about
   its main flavours.
 - **Imbalance.** If two or more groups stay below adequate for about 15 minutes
-  the character is warned. The diet bonus fades as reserves fall. A mild
+  the character is warned. Once that warning is in effect, eating varied food
+  again announces the recovery; a brief dip that never reached the warning is
+  silent. The diet bonus fades as reserves fall. A mild
   fatigue penalty (stamina refills 25% slower after about 45 minutes of
   imbalance) exists but is **off** (`diet_penalties_enabled = FALSE`) until
   availability is shown in every supported map and season; see below.
@@ -58,6 +62,11 @@ here causes damage, disease or death.
   protein and half carbohydrate, `mushroom` half vitamins and half protein.
 - `diet_reagent_profiles`: reagents whose identity fixes the profile (`protein`,
   `egg`, `cornoil`, `honey`, flours, `coconutmilk`, `apricotjuice`).
+- `diet_neutral_descriptors`: texture and seasoning words (`jaw tension`,
+  `spices`, `salt`, `vinegar`, `sourness`) are not ingredients. They are left out
+  of the profile and the remaining flavours are rescaled, so jerky counts as meat
+  rather than mostly carbohydrate. Food carrying only such words counts as
+  carbohydrate.
 - Unknown flavours and plain nutriment count as carbohydrate.
 
 Each digested tick adds `nutrition points * share` to each group, where nutrition
@@ -148,7 +157,7 @@ proven in play, enabling penalties is tracked as separate follow-up work.
 ```sh
 python3 -I -B -m unittest discover -s tests/balanced_diet -p 'test_*.py' -v
 python3 tests/balanced_diet/run.py --byond-bin "$BYOND_BIN" --output <empty dir>
-for c in balance conservation trace penalty; do
+for c in balance conservation trace penalty lineage neutral recovery; do
   python3 tests/balanced_diet/run.py --byond-bin "$BYOND_BIN" --negative-control $c --output <empty dir>
 done
 ```
@@ -159,9 +168,14 @@ and serializer. It covers equal-intake comparisons (balanced versus single-group
 and liked versus neutral), usable stamina above the base ceiling, conservation
 across splitting and dilution, bounds, taste discovery and privacy, offsetting and
 trace flavours, prepared-dish credit and refill, taste generation and validation,
-legacy initialization, gradual imbalance and recovery, penalty gating and a
-native save and load of a detached character mind. Each negative control must
-fail the matching assertion.
+legacy initialization, gradual imbalance and recovery, penalty gating, a native
+save and load of a detached character mind, and a native save and load of an
+owned character body. The body round trip checks that reserves, enjoyment and
+the imbalance counter come back exactly, that the Check Diet trend snapshot does
+not, that the body's saved mind keeps its taste token, tastes and Notes without
+a reroll, and that the reclaimed body keeps eating and enjoying liked food. Each
+negative control must fail the matching assertion.
 
-Not verified here: live play with a connected client, a full saved-body reclaim
-round trip, and real per-map availability timing.
+Not verified here: live play with a connected client, a cold-start world load
+(the body round trip runs inside one daemon with a probe body that skips
+physiology setup), and real per-map availability timing.

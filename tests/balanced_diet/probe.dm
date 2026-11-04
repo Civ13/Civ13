@@ -20,6 +20,12 @@
 	reagents = new /datum/reagents(100, src)
 	stats = list("stamina" = list(100, 100))
 
+/mob/living/human/diet_tester
+	var/list/diet_heard = list()
+
+/mob/living/human/diet_tester/diet_notify(message)
+	diet_heard += message
+
 /mob/living/human/diet_tester/religion_check()
 	return "none"
 
@@ -47,6 +53,12 @@
 
 /proc/diet_eat(mob/living/human/H, id, amount, list/flavour)
 	H.ingested.add_reagent(id, amount, flavour ? flavour.Copy() : null)
+	for (var/i in 1 to 500)
+		if (H.ingested.total_volume <= 0)
+			break
+		H.ingested.metabolize()
+
+/proc/diet_metabolize(mob/living/human/H)
 	for (var/i in 1 to 500)
 		if (H.ingested.total_volume <= 0)
 			break
@@ -166,6 +178,36 @@
 		meal.take_food_bite(diner, 4)
 		diet_assert(diner.diet_enjoyment == after_dish, "refilled bowl cannot renew the dish bonus")
 
+		// Meat and eggs are their own reagents, not nutriment flavours. A stew made with a
+		// liked meat must still earn the dish bonus over the same stew eaten unprepared.
+		var/mob/living/human/stew_diner = diet_subject(site)
+		var/mob/living/human/plain_diner = diet_subject(site)
+		stew_diner.mind.diet_tastes = list("meat" = 1)
+		plain_diner.mind.diet_tastes = list("meat" = 1)
+		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/stew = new(site)
+		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/plain = new(site)
+		stew.meal_quality = 2
+		plain.meal_quality = 0
+		for (var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/bowl in list(stew, plain))
+			bowl.reagents.add_reagent("nutriment", 1, list("potato" = 1))
+			bowl.reagents.add_reagent("protein", 3)
+			bowl.meal_reward_food = 4
+		var/list/stew_lineage = diet_lineage_shares(stew.reagents)
+		diet_assert(diet_close(stew_lineage["meat"], 0.75) && diet_close(stew_lineage["potato"], 0.25), "dish lineage weighs every nutritious ingredient, including meat")
+		stew.take_food_bite(stew_diner, 4)
+		plain.take_food_bite(plain_diner, 4)
+		diet_metabolize(stew_diner)
+		diet_metabolize(plain_diner)
+		diet_assert(stew_diner.diet_enjoyment > plain_diner.diet_enjoyment, "a prepared stew with liked meat earns the dish bonus")
+
+		// Texture and seasoning words are not ingredients: jerky is meat, not mostly carbohydrate.
+		var/mob/living/human/jerky_eater = diet_subject(site)
+		diet_eat(jerky_eater, "nutriment", 4, list("meat" = 1, "jaw tension" = 2))
+		diet_assert(diet_close(jerky_eater.diet_reserves["carbohydrate"], 0) && diet_close(jerky_eater.diet_reserves["protein"], 84) && diet_close(diet_sum(jerky_eater), 120), "texture and seasoning words do not count as carbohydrate")
+		var/mob/living/human/pickle_eater = diet_subject(site)
+		diet_eat(pickle_eater, "nutriment", 2, list("vinegar" = 1))
+		diet_assert(diet_close(diet_sum(pickle_eater), 60), "food with only seasoning words still conserves its nutrition")
+
 		// Taste generation: one distinct like and dislike per valid category; bad categories fail validation.
 		var/list/categories = diet_taste_categories_valid()
 		diet_assert(categories.len == diet_taste_categories.len, "every shipped taste category validates")
@@ -206,6 +248,24 @@
 		for (var/i in 1 to 300)
 			drift.handle_diet()
 		diet_assert(drift.diet_adequate_groups() == 4 && drift.diet_imbalance_ticks == 0, "a missed meal does not cause imbalance")
+
+		// A brief dip below adequate is silent both ways; recovery is announced only after a warning.
+		var/mob/living/human/diet_tester/dip = diet_subject(site, 80)
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
+		for (var/i in 1 to 5)
+			dip.handle_diet()
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 120, "fat" = 120, "vitamins" = 120)
+		for (var/i in 1 to 5)
+			dip.handle_diet()
+		diet_assert(dip.diet_imbalance_ticks == 0 && !dip.diet_heard.len, "recovery is announced only after a warning")
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
+		for (var/i in 1 to DIET_WARN_TICKS)
+			dip.handle_diet()
+		diet_assert(dip.diet_heard.len == 1 && findtext(dip.diet_heard[1], "narrow"), "sustained imbalance warns once")
+		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 120, "fat" = 120, "vitamins" = 120)
+		for (var/i in 1 to 200)
+			dip.handle_diet()
+		diet_assert(dip.diet_imbalance_ticks == 0 && dip.diet_heard.len == 2 && findtext(dip.diet_heard[2], "restored"), "recovery after a warning is announced once")
 		drift.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
 		for (var/i in 1 to 1400)
 			drift.handle_diet()
@@ -246,6 +306,38 @@
 		diet_assert(istype(restored) && restored.diet_taste_token == liker.mind.diet_taste_token && restored.diet_tastes ~= liker.mind.diet_tastes && restored.diet_tastes_known["carrot"] == 1, "tastes survive a native save and load")
 		restored.diet_ensure_tastes()
 		diet_assert(restored.diet_taste_token == liker.mind.diet_taste_token && findtext(restored.discoveries_html(), "enjoy the taste of carrot"), "restored character keeps tastes and readable notes without a reroll")
+		// Full body round trip: the saved character body carries its diet state and its mind.
+		var/mob/living/human/diet_tester/saved_body = diet_subject(site)
+		saved_body.mind.diet_tastes = list("carrot" = 1, "cabbage" = -1)
+		diet_eat(saved_body, "nutriment", 4, list("carrot" = 1))
+		saved_body.diet_reserves = list("carbohydrate" = 12.5, "protein" = 61, "fat" = 7, "vitamins" = 140)
+		saved_body.diet_enjoyment = 37
+		saved_body.diet_imbalance_ticks = 512
+		saved_body.diet_status_text() // populates the runtime trend snapshot
+		saved_body.persistence_owner_ckey = "dietfixture" // an owned character body is reclaimed, not rejuvenated
+		var/saved_bonus = saved_body.diet_capacity_bonus()
+		var/saved_token = saved_body.mind.diet_taste_token
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 1
+		var/savefile/B = new("body.sav")
+		B["/format_version"] << 2
+		var/body_entry = map_storage.BuildVarDirectory(B, saved_body, 1)
+		B.Flush()
+		B = null
+		B = new("body.sav")
+		map_storage.clear_bookkeeping()
+		var/mob/living/human/diet_tester/reclaimed = map_storage.Load_Entry(B, body_entry, starting_loc = site)
+		diet_assert(istype(reclaimed) && reclaimed != saved_body, "saved body loads as a new body")
+		diet_assert(reclaimed.diet_reserves ~= saved_body.diet_reserves && reclaimed.diet_enjoyment == 37 && reclaimed.diet_imbalance_ticks == 512, "body diet reserves, enjoyment and imbalance survive a body save and load")
+		diet_assert(!reclaimed.diet_last_check, "runtime trend snapshot is not restored")
+		diet_assert(diet_close(reclaimed.diet_capacity_bonus(), saved_bonus), "reclaimed body keeps its diet capacity bonus")
+		diet_assert(istype(reclaimed.mind) && reclaimed.mind != saved_body.mind && reclaimed.mind.diet_taste_token == saved_token && reclaimed.mind.diet_tastes ~= saved_body.mind.diet_tastes && reclaimed.mind.diet_tastes_known["carrot"] == 1, "saved body carries its character tastes")
+		reclaimed.mind.current = reclaimed
+		reclaimed.mind.diet_ensure_tastes()
+		diet_assert(reclaimed.mind.diet_taste_token == saved_token && findtext(reclaimed.mind.discoveries_html(), "enjoy the taste of carrot"), "reclaimed character keeps notes without a taste reroll")
+		var/before_enjoyment = reclaimed.diet_enjoyment
+		diet_eat(reclaimed, "nutriment", 2, list("carrot" = 1))
+		diet_assert(reclaimed.diet_enjoyment > before_enjoyment && reclaimed.diet_reserves["vitamins"] > 140, "reclaimed body keeps eating and enjoying liked food")
 		text2file("PASS: balanced diet", "result.txt")
 	catch (var/exception/E)
 		world.log << "DIET exception: [E] at [E.file]:[E.line]"

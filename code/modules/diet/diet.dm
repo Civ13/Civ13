@@ -52,7 +52,12 @@ var/global/list/diet_descriptor_profiles = list(
 	"fish" = list("protein" = 0.8, "fat" = 0.2), "salmon" = list("protein" = 0.7, "fat" = 0.3),
 	"egg" = list("protein" = 0.6, "fat" = 0.4), "tofu" = list("protein" = 0.8, "fat" = 0.2),
 	"cheese" = list("fat" = 0.5, "protein" = 0.5), "cream" = list("fat" = 1),
-	"olive oil" = list("fat" = 1), "olives" = list("fat" = 0.7, "vitamins" = 0.3))
+	"olive oil" = list("fat" = 1), "olives" = list("fat" = 0.7, "vitamins" = 0.3),
+	"seafood" = list("protein" = 0.8, "fat" = 0.2))
+
+// Texture and seasoning words in flavour data are not ingredients. They are left out
+// of the nutrient profile, so jerky ("meat", "jaw tension") is not mostly carbohydrate.
+var/global/list/diet_neutral_descriptors = list("jaw tension", "spices", "salt", "vinegar", "sourness")
 
 // Reagents whose own identity fixes the profile, regardless of carried flavour.
 var/global/list/diet_reagent_profiles = list(
@@ -135,13 +140,43 @@ var/global/list/diet_validated_category_cache
 	if (!flavours.len)
 		profile["carbohydrate"] = 1
 		return profile
+	var/counted = 0
 	for (var/descriptor in flavours)
+		if (descriptor in diet_neutral_descriptors)
+			continue
+		counted += flavours[descriptor]
 		var/list/known = diet_descriptor_profiles[descriptor]
 		if (!islist(known))
 			known = list("carbohydrate" = 1)
 		for (var/group in known)
 			profile[group] = (profile[group] || 0) + known[group] * flavours[descriptor]
+	if (counted <= 0)
+		return list("carbohydrate" = 1)
+	for (var/group in profile)
+		profile[group] = profile[group] / counted
 	return profile
+
+// descriptor => share of a whole container's food lineage, weighted by the nutrition
+// each reagent carries. Meat and eggs are their own reagents rather than nutriment
+// flavours, so a dish's lineage must read every nutritious reagent, not just nutriment.
+/proc/diet_lineage_shares(datum/reagents/holder)
+	var/list/lineage = list()
+	if (!holder)
+		return lineage
+	var/total = 0
+	for (var/datum/reagent/ingredient in holder.reagent_list)
+		var/points = diet_reagent_points(ingredient, ingredient.volume)
+		if (points <= 0)
+			continue
+		total += points
+		var/list/shares = diet_flavor_shares(ingredient)
+		for (var/descriptor in shares)
+			lineage[descriptor] = (lineage[descriptor] || 0) + shares[descriptor] * points
+	if (total <= 0)
+		return list()
+	for (var/descriptor in lineage)
+		lineage[descriptor] = lineage[descriptor] / total
+	return lineage
 
 /proc/diet_find_reagent(datum/reagents/holder, id)
 	if (!holder)
@@ -316,6 +351,10 @@ var/global/list/diet_validated_category_cache
 	diet_ensure()
 	diet_enjoyment = clamp(diet_enjoyment + food * DIET_DISH_POINTS * net * DIET_ENJOY_RATE * DIET_DISH_BONUS * quality, 0, DIET_ENJOY_CAP)
 
+// Diet messages go through one proc so the native probe can observe them.
+/mob/living/human/proc/diet_notify(message)
+	to_chat(src, message)
+
 /mob/living/human/proc/handle_diet()
 	if (stat == DEAD)
 		return
@@ -326,13 +365,16 @@ var/global/list/diet_validated_category_cache
 	if (diet_adequate_groups() <= 2)
 		diet_imbalance_ticks = min(DIET_FATIGUE_TICKS * 2, diet_imbalance_ticks + 1)
 		if (diet_imbalance_ticks == DIET_WARN_TICKS)
-			to_chat(src, "<span class='warning'>Your meals have been narrow lately. A more varied diet would restore your energy; use Check Diet in the IC tab.</span>")
+			diet_notify("<span class='warning'>Your meals have been narrow lately. A more varied diet would restore your energy; use Check Diet in the IC tab.</span>")
 		else if (diet_imbalance_ticks == DIET_FATIGUE_TICKS && diet_penalties_enabled)
-			to_chat(src, "<span class='warning'>Your narrow diet leaves you tired; your stamina recovers more slowly until you eat more varied food.</span>")
+			diet_notify("<span class='warning'>Your narrow diet leaves you tired; your stamina recovers more slowly until you eat more varied food.</span>")
 	else if (diet_imbalance_ticks)
+		// Announce recovery only when the narrow-diet warning was actually in effect,
+		// so a brief dip below adequate never produces an unexplained message.
+		var/was_warned = diet_imbalance_ticks >= DIET_WARN_TICKS
 		diet_imbalance_ticks = max(0, diet_imbalance_ticks - 3)
-		if (!diet_imbalance_ticks)
-			to_chat(src, "<span class='notice'>Your varied meals have restored your usual energy.</span>")
+		if (was_warned && diet_imbalance_ticks < DIET_WARN_TICKS)
+			diet_notify("<span class='notice'>Your varied meals have restored your usual energy.</span>")
 
 /proc/diet_level_word(value)
 	if (value >= DIET_PLENTY)

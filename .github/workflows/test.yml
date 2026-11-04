@@ -1485,7 +1485,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/balanced_diet/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/balanced-diet/positive"
-          for control in balance conservation trace penalty; do
+          for control in balance conservation trace penalty lineage neutral recovery; do
             python3 tests/balanced_diet/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/balanced-diet/$control"
           done
       - name: Upload balanced diet evidence

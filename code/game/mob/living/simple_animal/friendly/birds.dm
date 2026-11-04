@@ -96,6 +96,7 @@
 	health = 10
 	maxHealth = 10
 	eggsleft = 5
+	lays_eggs = TRUE
 	var/roosting_icon = "brownhen_roosting"
 	var/body_color
 	var/egg_timer = FALSE
@@ -267,6 +268,7 @@
 	mob_size = MOB_MEDIUM
 	flying = TRUE
 	eggsleft = 5
+	lays_eggs = TRUE
 	var/egg_timer = FALSE
 	granivore = 1
 	behaviour = "wander"
