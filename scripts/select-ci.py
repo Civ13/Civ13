@@ -54,6 +54,7 @@ NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_ad
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
+GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
@@ -352,6 +353,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered well-smell executable test requires explicit CI review')
         if path in SHOWCASE_ROOMS_OFFLINE_TESTS:
             continue
+        if path in GAIA_HOST_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/gaia_host/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered gaia-host executable test requires explicit CI review')
         if path.startswith('tests/showcase_rooms/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered showcase-room executable test requires explicit CI review')
         if path in FARMERS_ALMANAC_OFFLINE_TESTS:
