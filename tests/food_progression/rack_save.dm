@@ -263,5 +263,43 @@
 	for (var/obj/item/weapon/reagent_containers/food/snacks/octopus/dried/candidate in restored_rack.storage.contents)
 		product_count++
 	rack_check(product_count == 1, "pending rack callbacks do not duplicate conversion")
+	// A live world save drops hung items to the turf; the rack must take them back
+	// and must not keep drawing items that already left.
+	var/turf/live_turf = locate(4,2,1)
+	var/obj/structure/dehydrator/live_rack = new(live_turf)
+	sleep(35) // constructor reinit settles first
+	var/obj/item/weapon/reagent_containers/food/snacks/octopus/live_input = new(live_turf)
+	rack_check(live_rack.hang_on(live_input), "live rack accepts input")
+	var/live_name = live_input.name
+	rack_check(live_rack.overlays.len == 1, "hung input is drawn on the rack")
+	var/savefile/live_file = new("rack_live_save.sav")
+	live_file["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	rack_check(map_storage.BuildVarDirectory(live_file, live_turf, 1), "live rack turf exports")
+	rack_check(live_input.loc == live_turf && !live_rack.overlays.len, "live save drops input and clears its drawing")
+	map_storage.clear_bookkeeping()
+	sleep(40) // re-adoption waits one second, then reinit's own 5-15 tick delay
+	rack_check(live_input.loc == live_rack.storage && live_input.name == live_name && live_rack.overlays.len == 1, "rack re-adopts its input after a live save")
+	// Items a player carried off before re-adoption lose the rack encoding.
+	var/turf/stray_turf = locate(6,2,1)
+	var/obj/item/weapon/reagent_containers/food/snacks/octopus/stray = new(stray_turf)
+	var/stray_decay = stray.decay
+	var/plain_name = stray.name
+	stray.name = "[plain_name]ON_DEHYDRATOR_STRAIGHT_DECAY_[num2text(stray_decay, 8, 10)]POS_1TIMER_00001201"
+	stray.decay = 0
+	rack_check(stray_decay > 0 && stray.dehydrator_marker_orphaned(), "encoded item away from a rack is orphaned")
+	stray.loc = live_turf
+	rack_check(!stray.dehydrator_marker_orphaned(), "encoded item on a rack turf waits for that rack")
+	stray.loc = stray_turf
+	stray.pickup(null)
+	rack_check(stray.name == plain_name && stray.decay == stray_decay, "picking up a stray rack item restores its name and decay")
+	stray.name = "[plain_name]ON_DEHYDRATOR_ROTATED_DECAY_[num2text(stray_decay, 8, 10)]POS_2TIMER_00000150"
+	stray.decay = 0
+	var/obj/item/weapon/storage/box/stray_box = new(stray_turf)
+	stray_box.handle_item_insertion(stray, TRUE)
+	rack_check(stray.loc == stray_box && stray.name == plain_name && stray.decay == stray_decay, "storing a stray rack item restores its name and decay")
+	qdel(stray_box)
+	qdel(live_rack)
 	text2file("PASS: native turf rack graph, runtime exclusions and single paid conversion", "food_result.txt")
 	del(world)
