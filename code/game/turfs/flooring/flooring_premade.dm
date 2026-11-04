@@ -254,6 +254,7 @@
 // Turf replacement preserves sleeping procs but resets instance vars.
 // Each new dirt turf must invalidate any recovery chain from its predecessor.
 /datum/soil_recovery_token
+	var/started = FALSE
 /turf/floor/dirt/var/datum/soil_recovery_token/soil_recovery_token
 
 /turf/floor/dirt/New()
@@ -269,7 +270,14 @@
 
 /turf/floor/dirt/proc/soil_nutrition_recover()
 	var/datum/soil_recovery_token/token = soil_recovery_token
-	spawn(rand(12000,12010)) // Every 20 minutes the soil will recover. Randomised values to prevent all the turfs from running it at the same time lagging the game
+	var/delay = rand(12000,12010) // Every 20 minutes the soil will recover.
+	// Spread each chain's first wait over a whole period. A shared first wait
+	// woke every dirt turf on the map in the same second, a 2 s server stall
+	// on Gaia every 20 minutes.
+	if (token && !token.started)
+		token.started = TRUE
+		delay = rand(1, delay)
+	spawn(delay)
 		if (!istype(src, /turf/floor/dirt) || soil_recovery_token != token)
 			return
 		if(soil_nutrition < max_soil_nutrition)

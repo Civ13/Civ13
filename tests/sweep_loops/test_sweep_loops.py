@@ -1,4 +1,4 @@
-"""Offline source contracts for long sleeping sweeps; no BYOND runtime.
+"""Offline source contracts for long sleeping sweeps and wake bursts; no BYOND runtime.
 
 A DM for-in loop over a large list that sleeps between batches pays a cost
 proportional to the whole list each time it resumes, and world.tick_usage
@@ -12,6 +12,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/processes/time_of_day_change.dm').read_text(encoding='utf-8')
+FLOORING = (ROOT / 'code/game/turfs/flooring/flooring_premade.dm').read_text(encoding='utf-8')
 
 
 def proc_body(text, header):
@@ -47,6 +48,26 @@ class DaylightSweep(unittest.TestCase):
         # typed for-in did, instead of raising mid-sweep.
         self.assertIn('if (!istype(T))', self.body)
         self.assertIn('if (LO)', self.body)
+
+
+class SoilRecoveryWake(unittest.TestCase):
+    # Gaia has ~134k dirt turfs. With a shared 12000-12010 ds first wait they
+    # all woke in the same second: a 2.2 s stall every 20 minutes.
+    def setUp(self):
+        self.body = proc_body(FLOORING, '/turf/floor/dirt/proc/soil_nutrition_recover()')
+
+    def test_first_wait_is_spread_over_a_whole_period(self):
+        self.assertIn('var/delay = rand(12000,12010)', self.body)
+        self.assertIn('if (token && !token.started)', self.body)
+        self.assertIn('delay = rand(1, delay)', self.body)
+        self.assertIn('spawn(delay)', self.body)
+        self.assertNotIn('spawn(rand(12000,12010))', self.body)
+        self.assertLess(self.body.index('token.started = TRUE'), self.body.index('spawn(delay)'))
+
+    def test_later_waits_keep_the_twenty_minute_period(self):
+        # The recursive call shares the token, so only the first wait is spread.
+        self.assertEqual(self.body.count('soil_nutrition_recover()'), 2)
+        self.assertIn('/datum/soil_recovery_token\n\tvar/started = FALSE\n', FLOORING)
 
 
 if __name__ == '__main__':
