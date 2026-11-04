@@ -22,13 +22,15 @@ class RackSaveReadoptionTests(unittest.TestCase):
         for guard in ('persistence_save_in_progress', 'persistence_save_active()', 'saving_export_stack', 'SAVE_REPAIR_REQUIRED'):
             self.assertIn(guard, wait)
         self.assertIn('reinit()', wait)
+        self.assertIn('while (!gcDestroyed && (persistence_save_in_progress', wait)
 
     def test_dropping_and_refilling_redraw_the_rack(self):
         self.assertIn('update_icon()', section('/obj/structure/dehydrator/before_save()'))
         refill = section('/obj/structure/dehydrator/proc/refill()')
         self.assertIn('for (var/obj/item/E in src.loc)', refill)
         self.assertIn('dehydrator_area_free(pos, sizeHV)', refill)
-        self.assertIn('E.clear_dehydrator_marker()', refill)
+        self.assertIn('E.clear_dehydrator_marker()\n\t\t\t\tdisplaced += E', refill)
+        self.assertIn('if (!(S in displaced))\n\t\t\tattackby(S, null)', refill)
         self.assertTrue(refill.rstrip().endswith('update_icon()'))
         hand = section('/obj/structure/dehydrator/attack_hand(')
         self.assertIn('else\n\t\tupdate_icon()', hand)

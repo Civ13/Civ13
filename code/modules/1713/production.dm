@@ -925,6 +925,7 @@
 	var/T
 	var/list/pos
 	var/list/sizeHV
+	var/list/displaced = list()
 	clean_drop_slots()
 	//place temporary dropped or saved items back in place
 	for (var/obj/item/E in src.loc)
@@ -937,10 +938,12 @@
 			if (!dehydrator_area_free(pos, sizeHV))
 				// The saved place is gone or already claimed: hand the item back as ordinary loose produce.
 				E.clear_dehydrator_marker()
+				displaced += E
 				continue
 			put_in_place(E, pos, sizeHV, is_rotated, TRUE)
 	for (S in src.loc) //On second pass we try to hang food/snacks items in location (from mapping)
-		attackby(S, null)
+		if (!(S in displaced))
+			attackby(S, null)
 	update_icon()
 
 /obj/structure/dehydrator/proc/dehydrator_area_free(list/pos, list/sizeHV)
@@ -959,10 +962,9 @@
 // players could walk off with "...ON_DEHYDRATOR..." items. Re-adopt once the save ends.
 /obj/structure/dehydrator/proc/readopt_after_save(map_storage/save_storage)
 	spawn(10)
-		for (var/wait = 0, wait < 600 && (persistence_save_in_progress || persistence_save_active() || (save_storage && length(save_storage.saving_export_stack))), wait++)
+		// No save-completion callback exists, so poll until this save ends, however long it takes.
+		while (!gcDestroyed && (persistence_save_in_progress || persistence_save_active() || (save_storage && length(save_storage.saving_export_stack))))
 			sleep(10)
-		if (persistence_save_in_progress || persistence_save_active() || (save_storage && length(save_storage.saving_export_stack)))
-			return // still saving after ten minutes; the next load's reinit re-adopts them
 		if (current_process_id == "SAVE_REPAIR_REQUIRED" || !isturf(loc) || gcDestroyed)
 			return
 		reinit()
