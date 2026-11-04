@@ -414,6 +414,8 @@ RECIPE: /material/electronics/,hydraulic fracturing rig,/obj/structure/drill/fra
 RECIPE: /material/electronics/,powered soil sifter,/obj/structure/drill/sifter,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,powered river concentrator,/obj/structure/drill/sifter/panner,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,powered stamp mill,/obj/structure/drill/stamp_mill,20,300,1,1,none,125,0,0,8,null
+RECIPE: /material/electronics/,feeder arm,/obj/structure/factory_arm,5,200,1,1,none,125,0,0,8,null
+RECIPE: /material/electronics/,sorting arm,/obj/structure/factory_arm/sorting,6,200,1,1,none,125,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
@@ -1882,6 +1884,8 @@ RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200
 RECIPE: /material/steel/,steam engine,/obj/structure/engine/external/steam,15,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,conveyor belt,/obj/item/conveyor_construct,5,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,conveyor switch,/obj/item/conveyor_switch_construct,5,250,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,factory belt,/obj/item/factory_belt_assembly,4,150,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,parts bin,/obj/structure/closet/crate/factory_bin,6,150,1,1,production,95,0,0,8,null
 
 RECIPE: /material/steel/,IV drip,/obj/structure/iv_drip,6,140,0,1,production,95,0,95,8,null
 

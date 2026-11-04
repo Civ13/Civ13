@@ -132,3 +132,24 @@
 		return FALSE
 	I.forceMove(destination)
 	return I.loc == destination
+
+//////////////////////////////////////////////////////////////////////////////
+// Drills, sifters and the stamp mill deposit their output on their own tile.
+// They offer those stacks, so an arm behind the machine can carry them off.
+
+/obj/structure/drill/factory_offer(to_dir = 0, filter_type = null)
+	var/turf/T = get_turf(src)
+	if (!T)
+		return null
+	for (var/obj/item/stack/S in T)
+		if (filter_type && !istype(S, filter_type))
+			continue
+		if (factory_movable_item(S))
+			return S
+	return null
+
+/obj/structure/drill/factory_take(obj/item/I, atom/destination)
+	if (!destination || I.loc != get_turf(src) || !factory_movable_item(I))
+		return FALSE
+	I.forceMove(destination)
+	return I.loc == destination
