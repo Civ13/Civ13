@@ -40,3 +40,4 @@ tools/hooks/*.sh        text eol=lf
 tools/UpdatePaths/*.sh  text eol=lf
 tools/hooks/*.bat       text eol=crlf
 tools/UpdatePaths/*.bat text eol=crlf
+scripts/windows/host/*.bat text eol=crlf

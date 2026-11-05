@@ -384,5 +384,133 @@ class ShardGroupTests(unittest.TestCase):
                 gaia_host.main(argv)
 
 
+    def test_the_live_group_may_use_the_live_port_and_list_one_region(self):
+        self.refuse_config('reserved for the live server', region_port=1714)
+        self.refuse_config('live must be', live='yes')
+        self.refuse_config('public must be', region_public='yes')
+        self.group['live'] = True
+        self.group['regions'][0]['port'] = 1714
+        self.group['regions'][0]['public'] = True
+        group = self.write_group()
+        gaia = shard_group.region_config(group, group['regions'][0])
+        deep = shard_group.region_config(group, group['regions'][1])
+        self.assertEqual((1714, True, True), (gaia['port'], gaia['public'], gaia['start_requires_byond_pager']))
+        self.assertEqual((False, False), (deep['public'], deep['start_requires_byond_pager']))
+
+    def test_overlays_are_copied_after_every_checkout(self):
+        shared, own = self.base / 'overlay-all', self.base / 'overlay-gaia'
+        (shared / 'config').mkdir(parents=True)
+        (own / 'config').mkdir(parents=True)
+        (shared / 'config' / 'host.txt').write_text('Everyone')
+        (own / 'config' / 'host.txt').write_text('Valzargaming')
+        (own / 'config' / 'config.txt').write_text('ALLOWED_GAMEMODES ALL\nWEBHOOK_CAN_FIRE\nSKIP_PERSISTENCE_SAVING\n')
+        (own / 'native.dll').write_bytes(b'dll')
+        self.group['overlay'] = str(shared)
+        self.group['regions'][0]['overlay'] = str(own)
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'gaia')
+        host.work('update', host.request('update')['operation'])
+        self.assertEqual('done', host.read_state()['phase'], host.read_state())
+        path = self.base / 'regions' / 'gaia'
+        self.assertEqual('Valzargaming', (path / 'config' / 'host.txt').read_text(), 'the region overlay wins')
+        self.assertEqual(b'dll', (path / 'native.dll').read_bytes())
+        self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'WEBHOOK_CAN_FIRE', '#SKIP_PERSISTENCE_SAVING'],
+                         (path / 'config' / 'config.txt').read_text().splitlines())
+        deep = self.host(group, 'deep')
+        deep.work('update', deep.request('update')['operation'])
+        self.assertEqual('Everyone', (self.base / 'regions' / 'deep' / 'config' / 'host.txt').read_text())
+        (own / 'config' / 'lifecycle-token.txt').write_text('a' * 32)
+        host.work('update', host.request('update')['operation'])
+        self.assertIn('must not contain config/lifecycle-token.txt', host.read_state()['error'])
+        self.refuse_config('overlay must be', overlay=5)
+
+    def test_fetch_runs_once_before_setup_and_update(self):
+        self.refuse_config('fetch must be', fetch='origin; rm')
+        group = self.write_group()
+        self.assertFalse(shard_group.fetch_remote(group, self.machine))
+        self.group['fetch'] = 'origin'
+        group = self.write_group()
+        self.assertTrue(shard_group.fetch_remote(group, self.machine))
+        self.assertIn((['git', 'fetch', 'origin'], str(self.base / 'repo')), self.machine.calls)
+
+    def make_standalone(self):
+        source = self.base / 'gaia-standalone'
+        saves = source / 'map_saves'
+        saves.mkdir(parents=True)
+        (saves / 'map.txt').write_text('nomads_gaia\n')
+        (saves / '1.sav').write_bytes(b'level')
+        marker = 'round-v2:' + 'a' * 32
+        (saves / 'save_complete.txt').write_text(marker)
+        state = {'generation': marker, 'version': 2, 'maxz': 1,
+                 'metadata': shard_group.gaia_host.byond_text_md5(saves / 'map.txt')}
+        (saves / 'round.json').write_text(json.dumps(state))
+        (source / 'SQL').mkdir()
+        (source / 'SQL' / 'bans.txt').write_text('griefer')
+        (source / 'data' / 'faction_symbols').mkdir(parents=True)
+        (source / 'data' / 'faction_symbols' / 'wolves.png').write_bytes(b'png')
+        (source / 'data' / 'scratch.log').write_text('not runtime state')
+        return source, marker
+
+    def test_adopt_moves_a_stopped_standalone_save_into_a_region(self):
+        group = self.write_group()
+        source, marker = self.make_standalone()
+        with self.assertRaisesRegex(shard_group.Refused, 'not set up'):
+            shard_group.adopt(group, 'gaia', source, self.machine)
+        shard_group.setup(group, self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'no region moon'):
+            shard_group.adopt(group, 'moon', source, self.machine)
+        self.machine.up = {1720}
+        with self.assertRaisesRegex(shard_group.Refused, 'stop it first'):
+            shard_group.adopt(group, 'gaia', source, self.machine)
+        self.machine.up = set()
+        (source / 'map_saves' / '1.sav.lk').write_text('')
+        with self.assertRaisesRegex(shard_group.Refused, 'locked'):
+            shard_group.adopt(group, 'gaia', source, self.machine)
+        (source / 'map_saves' / '1.sav.lk').unlink()
+        result = shard_group.adopt(group, 'gaia', source, self.machine)
+        path = self.base / 'regions' / 'gaia'
+        self.assertEqual((marker, ['SQL', 'data/faction_symbols']), (result['generation'], result['copied']))
+        self.assertEqual(b'level', (path / 'map_saves' / '1.sav').read_bytes())
+        self.assertFalse((path / 'map_saves' / 'backup-receipt.json').exists())
+        self.assertEqual('griefer', (path / 'SQL' / 'bans.txt').read_text())
+        self.assertFalse((path / 'data' / 'scratch.log').exists())
+        self.assertTrue((source / 'map_saves' / '1.sav').exists(), 'the source stays as a rollback')
+        with self.assertRaisesRegex(shard_group.Refused, 'already has a save'):
+            shard_group.adopt(group, 'gaia', source, self.machine)
+
+    def test_gaia_host_drives_a_region_host_json(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        config = shard_group.gaia_host.load_config(self.base / 'regions' / 'deep' / 'data' / 'shard-host' / 'host.json')
+        host = shard_group.gaia_host.region_host(config)
+        self.assertEqual('RegionHost', type(host).__name__)
+        self.assertTrue(str(host.script).endswith('shard_group.py'))
+
+
+    def test_check_update_reports_each_region_against_the_group_revision(self):
+        self.group['fetch'] = 'origin'
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        old = 'e' * 40
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800):
+            if argv[1:] == ['rev-parse', 'HEAD'] and str(cwd).endswith('deep'):
+                self.machine.calls.append((list(argv), str(cwd)))
+                return 0, old + '\n'
+            if argv[1:3] == ['rev-list', '--count']:
+                self.machine.calls.append((list(argv), str(cwd)))
+                return 0, ('2\n' if argv[3].startswith(old) else '0\n')
+            return real(argv, cwd, timeout)
+        self.machine.run = run
+        answer = shard_group.group_check_update(group, platform=self.machine)
+        self.assertEqual((2, True, None), (answer['behind'], answer['can_update'], answer['reason']))
+        self.assertEqual(('up to date', 2), (answer['regions']['gaia']['reason'], answer['regions']['deep']['behind']))
+        self.assertEqual(1, sum(1 for call, _ in self.machine.calls if call[1:2] == ['fetch']), 'one fetch for the group')
+        self.machine.up = {1721}
+        answer = shard_group.group_check_update(group, platform=self.machine)
+        self.assertEqual((False, 'stop the server before updating'), (answer['can_update'], answer['reason']))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -19,6 +19,7 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (optionally trimming its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
 | `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
+| `check-update` | Fetches `origin/<branch>` and prints `current`, `available`, `behind`, `can_update` and `reason` for the launcher's update panel. Never merges or touches the world; `can_update` is false while the server runs. |
 | `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and for every region of each `--group group.json`, and runs the doorman on `doorman_port`. Use it instead of `watch`. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
@@ -148,4 +149,9 @@ task's arguments. On Linux, see [civ13-host.service.example](civ13-host.service.
 `shard_group.py status` shows each region's `state` and never asks a frozen
 region for its view, and `shard_group.py freeze|thaw [--region ID]` does a
 one-off freeze or thaw.
+
+A region's own `data/shard-host/host.json` (written by `shard_group.py setup`)
+can be passed as `--config`: it is driven as that region (DreamDaemon started
+directly, its agent first). Point the bot's `gaia_host` option and the
+launcher's `control.config` at it once Gaia runs as a region.
 
