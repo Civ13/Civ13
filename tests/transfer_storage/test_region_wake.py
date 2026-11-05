@@ -47,6 +47,23 @@ class RegionWakeTests(unittest.TestCase):
         world = read('code/world.dm')
         self.assertIn('lasttimeaddr[addr] = world.time + 1200', world)
 
+    def test_regions_follow_the_mainland_epoch_forward_only(self):
+        # A fresh region started at the 1943 persistence floor while Gaia was
+        # in 2013 (2026-11-05); every region keeps the mainland's epoch.
+        self.assertIn('.["ordinal_age"] = map.ordinal_age', proc(GROUP, '/datum/shard_group/proc/describe'))
+        record = proc(GROUP, '/datum/shard_group/proc/record')
+        self.assertIn('if(id == mainland)\n\t\tfollow_mainland_epoch(reply["ordinal_age"])', record)
+        follow = proc(GROUP, '/datum/shard_group/proc/follow_mainland_epoch')
+        self.assertIn('region == mainland', follow)
+        self.assertIn('ordinal <= map.ordinal_age', follow)
+        self.assertIn('map.set_epoch(ordinal)', follow)
+        configure = proc(GROUP, '/datum/shard_group/proc/configure')
+        self.assertIn('mainland = first["id"]', configure)
+        self.assertIn('settings["mainland"] in found', configure)
+        epochs = read('code/modules/persistence/functions.dm')
+        self.assertIn('var/global/list/epoch_names = list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026")', epochs)
+        self.assertIn('map.set_epoch(epoch_names.Find(customage) - 1)', read('code/modules/admin/admin.dm'))
+
     def test_doorman_states_name_cold_worlds(self):
         body = proc(GROUP, '/datum/shard_group/proc/record_sleeping')
         self.assertIn('entry["cold"] ? "COLD" : "ASLEEP"', body)

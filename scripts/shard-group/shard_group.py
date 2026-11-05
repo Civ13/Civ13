@@ -501,7 +501,7 @@ def setup(group, platform=None):
         (path / 'map_saves').mkdir(exist_ok=True)
         config = path / 'config'
         config.mkdir(exist_ok=True)
-        settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group),
+        settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
                     'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] else 0,
                     'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
                     # The host service's doorman on this machine; regions ask it which peers
@@ -553,17 +553,9 @@ def region_view(port, timeout=10):
 
 
 def process_alive(pid):
-    if os.name == 'nt':
-        out = subprocess.run(['tasklist', '/FI', 'PID eq %d' % pid, '/NH'], capture_output=True, text=True,
-                             creationflags=gaia_host.NO_WINDOW).stdout
-        return str(pid) in out
-    try:
-        os.kill(pid, 0)
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True
-    return True
+    """Whether pid runs. Asks the OS directly: the host service calls this every
+    half minute, and a tasklist child flashed a console window on Windows."""
+    return Platform().alive(pid)
 
 
 def coordinator_pid(group):

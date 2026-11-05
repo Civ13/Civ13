@@ -27,6 +27,34 @@
 	age5_done = TRUE
 	age6_done = TRUE
 
+// The epoch names by ordinal age (0 = 5000 B.C. ... 9 = 2026), as the admin
+// Set Custom Age verb offers them.
+var/global/list/epoch_names = list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026")
+var/global/list/epoch_default_research = list(0, 25, 50, 80, 105, 120, 145, 175, 210, 240)
+
+// Sets the epoch to ordinal: its name, every earlier age marked done and the
+// epoch's default research. Shared by Set Custom Age and regions following
+// their mainland (shard_group.dm).
+/obj/map_metadata/proc/set_epoch(ordinal)
+	if (!isnum(ordinal) || ordinal < 0 || ordinal >= epoch_names.len)
+		return FALSE
+	ordinal_age = ordinal
+	age = epoch_names[ordinal + 1]
+	// Earlier ages count as done; a later age already done stays done, as the
+	// Set Custom Age verb always did.
+	if (ordinal >= 1) age1_done = TRUE
+	if (ordinal >= 2) age2_done = TRUE
+	if (ordinal >= 3) age3_done = TRUE
+	if (ordinal >= 4) age4_done = TRUE
+	if (ordinal >= 5) age5_done = TRUE
+	if (ordinal >= 6) age6_done = TRUE
+	if (ordinal >= 7) age7_done = TRUE
+	if (ordinal >= 8) age8_done = TRUE
+	if (ordinal >= 9) age9_done = TRUE
+	if (ordinal >= 1)
+		default_research = epoch_default_research[ordinal + 1]
+	return TRUE
+
 //needs to be defined for some atoms
 /datum/proc/after_load()
 	return
