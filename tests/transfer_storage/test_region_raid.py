@@ -34,7 +34,7 @@ class RegionRaidTests(unittest.TestCase):
         payload = proc(TRAVEL, '/mob/living/human/proc/region_travel_payload')
         self.assertIn('else if(raid)\n\t\tP["from"] = shard_group.region', payload)
         depart = proc(TRAVEL, '/obj/structure/region_gate/proc/depart')
-        self.assertIn('H.region_travel_payload(items, travel_party(H), region_raid_peer(destination))', depart)
+        self.assertIn('H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))', depart)
         self.assertIn('region_raid_note_origin(H, P)', proc(TRAVEL, '/proc/region_travel_build'))
 
     def test_origin_is_only_kept_in_a_raid_world_and_never_another_raid(self):
