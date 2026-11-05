@@ -23,7 +23,7 @@ GATHER_HINTS = (
     ("pelt", "hunt an animal and butcher it"),
     ("snacks/meat", "hunt an animal and butcher it"),
     ("/material/stone", "mine underground rock with a pickaxe"),
-    (re.compile(r"^/obj/item/stack/ore/[a-z]+$"), "mine underground rock with a pickaxe, or sift dirt and sand"),
+    (re.compile(r"^/obj/item/stack/ore/(?!charcoal$|glass$)[a-z]+$"), "mine underground rock with a pickaxe, or sift dirt and sand"),  # charcoal and glass are made
     (re.compile(r"^/material/(copper|tin|gold|silver|lead)$"), "mine or sift the ore, then smelt it in a kiln or furnace"),
     ("/material/clay", "dig clay with a shovel at a riverbank or clay ground"),
     ("/material/sandstone", "mine sandstone with a pickaxe"),
@@ -214,7 +214,12 @@ class TechTree:
         if not want:
             return []
         scores = {}
-        for key, routes in self.routes.items():
+        # Raw materials nothing crafts (clay, copper ore) are answers too: the plan says how to gather them.
+        candidates = dict(self.routes)
+        for key in self.names:
+            if key not in candidates and self.gather_hint(key):
+                candidates[key] = []
+        for key, routes in candidates.items():
             labels = {self.names.get(key, "")} | self.labels.get(key, set())
             for label in labels:
                 have = _words(label)
@@ -223,7 +228,7 @@ class TechTree:
                 hits = sum(1 for word in want if word in have or (word.endswith("s") and word[:-1] in have))
                 if hits < len(want):
                     continue
-                score = 100 - (len(have) - hits) * 5 - min(r["era"] for r in routes) / 10
+                score = 100 - (len(have) - hits) * 5 - min([r["era"] for r in routes] or [99]) / 10
                 score += 20 if " ".join(have) == " ".join(want) else 0
                 score += 10 if key.startswith("/material/") else 0  # "bronze" is the metal, not a bronze trinket
                 scores[key] = max(scores.get(key, 0), score)
@@ -300,8 +305,9 @@ class TechTree:
                 steps.append({"gather": name, "how": self.gather_hint(item_key) or "find it in the world or trade for it"})
                 return
             hint = self.gather_hint(item_key)
-            # A basic material is gathered, even where a reaction or a station could also make it.
-            if hint and depth and (route.get("from_world") or route["kind"] in LAST_RESORT_KINDS or route["kind"] == "Acquisition"):
+            # A basic material is gathered, even where a reaction or a station could also make it (asked for
+            # directly as well as as a part: "water" is fetched, not made from oxygen and hydrogen).
+            if hint and (route.get("from_world") or route["kind"] in LAST_RESORT_KINDS or route["kind"] == "Acquisition"):
                 seen.add(item_key)
                 steps.append({"gather": name, "how": hint})
                 return

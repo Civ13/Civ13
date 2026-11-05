@@ -878,6 +878,14 @@ class TechTreeTest(unittest.TestCase):
         self.assertIn("get bone: hunt an animal", text)
         self.assertIn("make bone pickaxe from 2 bone", text)
 
+    def test_basics_are_gathered_even_when_asked_for_directly(self):
+        self.assertEqual(self.tree.describe("water"), "get water: fill a container at a river, lake or well")  # not oxygen and hydrogen
+        self.assertEqual(self.tree.find("clay"), "/material/clay")  # a raw material nothing crafts is still an answer
+        self.assertEqual(self.tree.describe("clay"), "get clay: dig clay with a shovel at a riverbank or clay ground")
+        self.assertEqual(self.tree.find("furnace"), "/obj/structure/furnace")
+        self.assertEqual(self.tree.gather_hint("/obj/item/stack/ore/charcoal"), "")  # made at a fire, not mined
+        self.assertTrue(self.tree.gather_hint("/obj/item/stack/ore/copper"))
+
     def test_recipe_book_requests_and_goal_items(self):
         self.assertEqual(autopilot.recipe_request('{"plan": [{"do": "recipe", "item": "anvil"}]}'), "anvil")
         self.assertEqual(autopilot.recipe_request('{"do": "recipe", "item": "clay kiln"}'), "clay kiln")
