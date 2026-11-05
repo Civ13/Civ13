@@ -83,6 +83,19 @@ class PrimitiveSawmillContracts(unittest.TestCase):
         self.assertFalse(resumes(True))
         self.assertTrue(resumes(False), 'omitting transition invalidation must expose ABA')
 
+    def test_held_stack_loops_like_the_stone_crusher(self):
+        attack = body(SOURCE, '/obj/structure/sawmill/attackby(')
+        self.assertIn('cut_primitive_logs(W, H)', attack)
+        self.assertNotIn('cut_primitive_log(W, H)', attack)
+        loop = body(SOURCE, '/obj/structure/sawmill/proc/cut_primitive_logs(')
+        self.assertIn('while (cut_primitive_log(W, H, cut > 0))', loop)
+        for stop in ('QDELETED(W)', 'W.amount < 1', 'flint_blade_uses < 1'):
+            self.assertIn(stop, loop)
+        # Each loop step still runs the full single-cut gates and wait.
+        cut = body(SOURCE, '/obj/structure/sawmill/proc/cut_primitive_log(')
+        self.assertIn('continuing = FALSE', cut)
+        self.assertLess(cut.index('do_after('), cut.index('W.use(1)'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,7 +3,9 @@
 The existing Resource Processing recipe builds the primitive mill from 28 wood.
 Hold a sharpened flint and use it on the mill to install a blade. Use a held
 ordinary log stack on the anchored mill to cut one log into one plank and one
-bark; repeat for the rest of the stack. A blade breaks after 20 completed cuts
+bark. Like the stone crusher, the mill keeps cutting the held stack one log at a
+time until the stack runs out, the blade breaks, or the worker moves, swaps the
+stack out of hand or is interrupted; finished cuts are kept. A blade breaks after 20 completed cuts
 and another sharpened flint can be installed. The blade cannot be removed.
 
 The provisional cutting time is 20 deciseconds divided by strength coefficient,
@@ -17,7 +19,8 @@ before its original wait completes.
 Ordinary logs use the game's existing wood-to-woodplank mapping. The mill copies
 the log stack's custom appearance fields, and rejects other material identities
 because no corresponding plank material mapping is defined. Large and powered
-mills retain their existing processing behavior.
+mills retain their existing processing behavior: they already cut the whole held
+stack in one action.
 
 `tests/sawmill/test_contract.py` checks source ordering and gates offline. It
 does not execute DM, reproduce concurrency, or establish a native save/restore
