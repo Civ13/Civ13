@@ -2413,6 +2413,7 @@ RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switc
 RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/wood/,railway works office,/obj/structure/region_gate/railway_station,20,200,1,1,trains,93,0,0,8,null
 
 RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
 
