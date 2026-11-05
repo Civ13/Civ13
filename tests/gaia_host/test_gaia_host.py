@@ -32,13 +32,20 @@ class FakeMachine:
         self.pid = 4242
         self.suspended = 0
         self.peers = []
+        self.latest = REVISION  # origin/master after a fetch
+        self.merged = False  # HEAD follows origin/master once merged
 
     def run(self, argv, cwd=None, timeout=1800):
         self.calls.append(list(argv))
-        if argv[1:] == ['rev-parse', 'HEAD']:
-            return 0, REVISION + '\n'
+        if argv[1:] == ['rev-parse', 'HEAD'] or argv[1:] == ['rev-parse', 'origin/master']:
+            return 0, (self.latest if argv[-1] != 'HEAD' or self.merged else REVISION) + '\n'
+        if argv[1:3] == ['merge', '--ff-only']:
+            self.merged = True
         if argv[-1] == 'civ13.dme':
-            return (0 if '0 errors' in self.compile_output else 1), self.compile_output
+            ok = '0 errors' in self.compile_output
+            if ok and cwd:
+                (Path(cwd) / 'civ13.dmb').write_bytes(b'build %d' % len(self.calls))
+            return (0 if ok else 1), self.compile_output
         return 0, ''
 
     def listening(self, port):
@@ -154,6 +161,7 @@ class GaiaHostTests(unittest.TestCase):
                                                                         self.host.check_update()['reason']))
         self.machine.run = real
         self.machine.up = False
+        self.machine.latest = 'not a commit'
         with self.assertRaisesRegex(RuntimeError, 'could not read the commits'):
             self.host.check_update()  # origin/master did not resolve
 
@@ -258,6 +266,63 @@ class GaiaHostTests(unittest.TestCase):
         self.host.work('update', self.accept('update'))
         self.assertEqual(self.host.read_state()['phase'], 'failed')
         self.assertIn('compile failed', self.host.read_state()['error'])
+
+    def compiles(self):
+        return sum(1 for call in self.machine.calls if call[-1:] == ['civ13.dme'])
+
+    def test_start_pulls_and_compiles_before_running_a_stale_build(self):
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        calls = self.machine.calls
+        self.assertLess(calls.index(['git', 'merge', '--ff-only', 'origin/master']), calls.index(['dm.exe', 'civ13.dme']))
+        self.assertLess(calls.index(['dm.exe', 'civ13.dme']), calls.index(['schtasks', 'Civ13 Gaia On-Demand']))
+        self.assertEqual(json.loads((self.root / 'state' / 'build.json').read_text())['revision'], REVISION)
+
+    def test_start_skips_the_compile_only_while_the_build_is_of_the_latest_pull(self):
+        self.host.work('update', self.accept('update'))
+        self.assertEqual(self.compiles(), 1)
+        self.host.work('start', self.accept('start'))
+        self.assertEqual((self.host.read_state()['phase'], self.compiles()), ('done', 1))
+        self.assertIn(['git', 'fetch', 'origin', 'master'], self.machine.calls[-6:])
+        # master moved on: the next start pulls and compiles again
+        self.machine.up, self.machine.merged, self.machine.latest = False, False, 'e' * 40
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800):
+            if argv[1:] == ['rev-parse', 'HEAD'] and self.machine.merged:
+                self.machine.calls.append(list(argv))
+                return 0, self.machine.latest + '\n'
+            return real(argv, cwd, timeout)
+        self.machine.run = run
+        self.host.work('start', self.accept('start'))
+        self.assertEqual((self.host.read_state()['phase'], self.compiles()), ('done', 2))
+        # a hand compile since the last recorded build is not trusted either
+        self.machine.up = False
+        (self.repo / 'civ13.dmb').write_bytes(b'hand built')
+        self.host.work('start', self.accept('start'))
+        self.assertEqual((self.host.read_state()['phase'], self.compiles()), ('done', 3))
+
+    def test_a_failed_pull_or_compile_never_starts_the_server(self):
+        self.machine.compile_output = 'civ13.dmb - 2 errors, 0 warnings'
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'failed')
+        self.assertIn('compile failed', self.host.read_state()['error'])
+        self.assertNotIn(['schtasks', 'Civ13 Gaia On-Demand'], self.machine.calls)
+        real = self.machine.run
+        self.machine.run = lambda argv, cwd=None, timeout=1800: (1, 'could not resolve host') if argv[1:2] == ['fetch'] else real(argv, cwd, timeout)
+        self.machine.compile_output = 'civ13.dmb - 0 errors, 0 warnings'
+        self.host.work('start', self.accept('start'))
+        self.assertIn('git fetch failed', self.host.read_state()['error'])
+        self.assertNotIn(['schtasks', 'Civ13 Gaia On-Demand'], self.machine.calls)
+
+    def test_restart_pulls_and_compiles_between_save_and_start(self):
+        self.give_token()
+        self.machine.up = True
+        self.machine.on_save = lambda: write_save(self.repo / 'map_saves', intent=MARKER)
+        self.host.work('restart', self.accept('restart'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        actions = [c[1] if c[0] == 'query' else (c[-1] if c[0] == 'dm.exe' else c[0]) for c in self.machine.calls]
+        self.assertLess(actions.index('save_shutdown'), actions.index('civ13.dme'))
+        self.assertLess(actions.index('civ13.dme'), actions.index('schtasks'))
 
     def test_worker_ignores_a_stale_operation(self):
         operation = self.accept('start')
@@ -399,6 +464,24 @@ Active Connections
         self.assertIn(['suspend', 4242, False], self.machine.calls)
         self.machine.peers = ['203.0.113.9']
         self.assertEqual(self.host.watch_step(None), (None, 0.2))
+
+
+
+
+class NoConsoleWindowTests(unittest.TestCase):
+    def test_console_programs_run_without_a_window(self):
+        # The windowless host service (pythonw) would flash a console for every
+        # git/dm.exe/schtasks/tasklist/netstat call without CREATE_NO_WINDOW.
+        import subprocess
+        from unittest import mock
+        seen = []
+        def fake_run(argv, **kwargs):
+            seen.append(kwargs.get('creationflags'))
+            return subprocess.CompletedProcess(argv, 0, '', '')
+        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
+            gaia_host.Platform().run(['git', 'status'])
+        self.assertEqual(seen, [gaia_host.NO_WINDOW])
+        self.assertEqual(gaia_host.NO_WINDOW, 0x08000000 if gaia_host.os.name == 'nt' else 0)
 
 
 if __name__ == '__main__':

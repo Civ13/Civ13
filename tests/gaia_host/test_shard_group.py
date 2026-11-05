@@ -260,14 +260,41 @@ class ShardGroupTests(unittest.TestCase):
         host.work('update', host.request('update')['operation'])
         self.assertIn('not a file in the repository', host.read_state()['error'])
 
-    def test_start_needs_a_build(self):
+    def opens_port_on_start(self, port):
+        start = self.machine.start_task
+        def start_task(name):
+            self.machine.up.add(port)
+            return start(name)
+        self.machine.start_task = start_task
+
+    def test_start_builds_a_region_that_has_none(self):
+        group = self.write_group()
+        region = group['regions'][0]
+        config = shard_group.region_config(group, region)
+        host = shard_group.RegionHost(config, self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'not set up'):
+            host.request('start')
+        self.assertFalse(host.lock.exists())
+        shard_group.setup(group, self.machine)
+        host = shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
+        self.opens_port_on_start(config['port'])
+        host.work('start', host.request('start')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        commands = [call[0] for call in self.machine.calls]
+        self.assertLess(commands.index(['DreamMaker', 'region.dme']), commands.index(['start', config['task']]))
+        self.assertEqual(json.loads((Path(config['state_dir']) / 'build.json').read_text())['revision'], REVISION)
+
+    def test_start_skips_the_compile_when_the_build_is_current(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
         region = group['regions'][0]
-        host = shard_group.RegionHost(shard_group.region_config(group, region), shard_group.RegionPlatform(shard_group.region_config(group, region)))
-        with self.assertRaisesRegex(shard_group.Refused, 'no build yet'):
-            host.request('start')
-        self.assertFalse(host.lock.exists())
+        host = shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
+        host.work('update', host.request('update')['operation'])
+        compiles = sum(1 for call in self.machine.calls if call[0][-1] == 'region.dme')
+        self.opens_port_on_start(region['port'])
+        host.work('start', host.request('start')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertEqual(compiles, sum(1 for call in self.machine.calls if call[0][-1] == 'region.dme'))
 
     def test_region_platform_command_line(self):
         group = self.write_group()

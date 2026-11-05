@@ -34,6 +34,19 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('entry["state"] != "awake"', body)
         self.assertIn('record_sleeping(id, entry, world.time)\n\t\t\tcontinue', body)
 
+    def test_peers_on_this_host_are_polled_over_loopback(self):
+        # world/Topic bans a non-loopback caller that asks more than once every
+        # two minutes; the once-a-minute poll through the public host got the
+        # rail yard banned from Gaia for the round (2026-11-05).
+        body = proc(GROUP, '/datum/shard_group/proc/poll_peer')
+        self.assertIn('byond://[peer_address(peer)]?shard_region=1', body)
+        self.assertNotIn('byond://[peer["address"]]', body)
+        helper = proc(GROUP, '/datum/shard_group/proc/peer_address')
+        self.assertIn('"127.0.0.1:[shard_address_port(target)]"', helper)
+        self.assertIn('copytext(address, 1, findlasttext(address, ":"))', helper)
+        world = read('code/world.dm')
+        self.assertIn('lasttimeaddr[addr] = world.time + 1200', world)
+
     def test_doorman_states_name_cold_worlds(self):
         body = proc(GROUP, '/datum/shard_group/proc/record_sleeping')
         self.assertIn('entry["cold"] ? "COLD" : "ASLEEP"', body)

@@ -283,14 +283,38 @@ class RegionHost(Host):
         super().__init__(config, platform or RegionPlatform(config), script=Path(__file__).resolve())
 
     def request(self, action):
+        # Checked before the lock: taking it would create the folder setup needs empty.
+        if action in ('start', 'restart', 'update') and not (self.repo / '.git').exists():
+            raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
 
     def precheck(self, action):
-        if action == 'start' and not self.platform.task_ready(self.config['task']):
-            raise Refused('the region has no build yet; run update first')
+        # start compiles a missing or stale build itself (Host.do_refresh), so a
+        # region with no build yet is not refused.
         super().precheck(action)
+
+    def task_ready_for_start(self):
+        return True
+
+    def dmb(self):
+        return self.repo / 'region.dmb'
+
+    def latest_revision(self):
+        """Fetch the group's remote, then the group revision this region should run."""
+        group = load_group(self.config['group_config'])
+        # Regions starting together share the repository; a fetch that meets
+        # another region's ref lock is retried.
+        for attempt in range(3):
+            try:
+                fetch_remote(group, self.platform)
+                break
+            except Refused:
+                if attempt == 2:
+                    raise
+                self.platform.sleep(5)
+        return self.git_text(['rev-parse', group['revision']], group['repository'])
 
     def check_update(self):
         """Like Host.check_update, for this region: its worktree's HEAD against the
@@ -329,6 +353,7 @@ class RegionHost(Host):
         code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800)
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
+        self.record_build(revision)
         self.record(phase='compiled', revision=revision, map=region['map'])
 
 
@@ -529,7 +554,8 @@ def region_view(port, timeout=10):
 
 def process_alive(pid):
     if os.name == 'nt':
-        out = subprocess.run(['tasklist', '/FI', 'PID eq %d' % pid, '/NH'], capture_output=True, text=True).stdout
+        out = subprocess.run(['tasklist', '/FI', 'PID eq %d' % pid, '/NH'], capture_output=True, text=True,
+                             creationflags=gaia_host.NO_WINDOW).stdout
         return str(pid) in out
     try:
         os.kill(pid, 0)

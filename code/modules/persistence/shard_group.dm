@@ -224,6 +224,20 @@ var/global/datum/shard_group/shard_group = new
 			by_port["[entry["port"]]"] = entry
 	return by_port
 
+// Where this world reaches a peer. Regions of a group sharing this world's
+// public host run on the same machine, so they are asked over loopback: a call
+// to the public address arrives from the public address, and world/Topic bans
+// any non-loopback caller that asks more than once every two minutes, which a
+// once-a-minute poll always does.
+/datum/shard_group/proc/peer_address(list/peer)
+	var/target = peer ? peer["address"] : null
+	if(!istext(target) || !istext(address))
+		return target
+	var/host = copytext(address, 1, findlasttext(address, ":"))
+	if(host == copytext(target, 1, findlasttext(target, ":")))
+		return "127.0.0.1:[shard_address_port(target)]"
+	return target
+
 // Asks one peer directly; TRUE when it answered as itself.
 /datum/shard_group/proc/poll_peer(id)
 	var/list/peer = peers[id]
@@ -231,7 +245,7 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	var/answer = null
 	try
-		answer = world.Export("byond://[peer["address"]]?shard_region=1&format=json")
+		answer = world.Export("byond://[peer_address(peer)]?shard_region=1&format=json")
 	catch
 		answer = null
 	return record(id, answer, world.time)
