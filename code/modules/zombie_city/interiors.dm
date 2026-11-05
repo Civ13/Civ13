@@ -14,6 +14,7 @@
 	var/x2
 	var/y2
 	var/kind = "room"
+	var/level = 1
 	var/building_id = 0
 
 // Room kinds in the order they are handed out along a building's corridor.
@@ -89,6 +90,20 @@
 /datum/zombie_city_generator/proc/loot_room(kind)
 	return kind in list("bedroom", "kitchen", "storage", "stockroom", "armory", "pharmacy", "ward", "surgery", "office", "sales", "floor", "garage")
 
+/datum/zombie_city_generator/proc/two_storey_chance(kind)
+	if (!layout.upper_z)
+		return 0
+	switch (kind)
+		if ("hospital", "police")
+			return 100
+		if ("apartment")
+			return 80
+		if ("office")
+			return 70
+		if ("house")
+			return 35
+	return 0
+
 /datum/zombie_city_generator/proc/is_door(code)
 	return code == ZC_DOOR_HOUSE || code == ZC_DOOR_STORE || code == ZC_DOOR_INNER
 
@@ -117,6 +132,7 @@
 	R.x2 = max(x1, x2)
 	R.y2 = max(y1, y2)
 	R.kind = kind
+	R.level = planning_upper ? 2 : 1
 	R.building_id = D.id
 	D.rooms += R
 	layout.counts["rooms"] = (layout.counts["rooms"] || 0) + 1
@@ -142,8 +158,12 @@
 		else
 			layout_rooms(D, B, ix1, ix2, width, depth)
 	clear_door_approaches(D)
+	furnish_level(D, B)
+
+/datum/zombie_city_generator/proc/furnish_level(datum/zombie_city_building/D, datum/zombie_city_block/B)
 	for (var/datum/zombie_city_room/R in D.rooms)
-		furnish_room(R, D, B)
+		if (R.level == (planning_upper ? 2 : 1))
+			furnish_room(R, D, B)
 	dress_interior(D, B)
 
 // Houses, apartments, offices, the hospital and the police station: an
@@ -159,6 +179,13 @@
 	if (depth < 6 || width < 3)
 		add_room(D, ix1, depth_row(D, 0), ix2, depth_row(D, depth - 1), kinds[1])
 		return
+	if (planning_upper)
+		next_kind = D.rooms.len % kinds.len + 1
+	else if (width >= 5 && two_storey_chance(D.kind) && rng.chance(two_storey_chance(D.kind)))
+		D.floors = 2
+		// Stairs in the entrance hall corner farthest from the front door.
+		var/cx = D.front_door_x - ix1 > ix2 - D.front_door_x ? ix1 : ix2
+		stairs_cells += index(cx, depth_row(D, 1))
 	var/inner = (D.kind == "house" || D.kind == "apartment") ? ZC_WALL_INNER : wall_code(D.kind, B.district)
 	var/sx1 = min(D.front_door_x, ix2 - 1)
 	var/sx2 = sx1 + 1
@@ -345,7 +372,7 @@
 		for (var/y = D.y1 to D.y2)
 			var/code = cell(x, y)
 			if (code == ZC_WINDOW)
-				if (rng.chance(broken))
+				if (!planning_upper && rng.chance(broken))
 					set_cell(x, y, ZC_WINDOW_BROKEN)
 					layout.counts["broken_windows"] = (layout.counts["broken_windows"] || 0) + 1
 				continue
@@ -368,18 +395,22 @@
 		count = 6
 	else if (D.kind == "police")
 		count = 4
+	if (planning_upper)
+		count = D.kind == "hospital" || D.kind == "police" ? 3 : D.tier
 	var/list/first = list()
 	var/list/preferred = list()
 	var/list/other = list()
 	var/list/table_of = list()
 	for (var/datum/zombie_city_room/R in D.rooms)
+		if (R.level != (planning_upper ? 2 : 1))
+			continue
 		var/table = D.table
 		if (D.kind == "hospital" && R.kind == "pharmacy")
 			table = "pharmacy"
 		for (var/x = R.x1 to R.x2)
 			for (var/y = R.y1 to R.y2)
 				var/i = index(x, y)
-				if (props[i] || is_wall(cells[i]) || is_door(cells[i]) || beside_door(x, y))
+				if (props[i] || is_wall(cells[i]) || is_door(cells[i]) || beside_door(x, y) || (i in stairs_cells))
 					continue
 				var/free = 0
 				var/beside_something = FALSE
