@@ -142,13 +142,12 @@ How to play:
 - Timed work (searching, chopping, sharpening, drinking) runs for several seconds; the game waits for it to finish before your next step.
 - Keep water and nutrition up; when NEEDS says you are thirsty or hungry, that comes first. Drink from a river, lake or well: empty active hand, grab intent, click the water tile next to you. Eat food by holding it and clicking yourself (target 0).
 - Craft: {"do": "craft", "recipe": "<name>", "material": "<item you carry>"} holds that stack and crafts from it.
-  Recipes for the held stack are listed under "You can craft". Structures (walls, campfire) are built on the tile you face, so stand next to open ground.
+  Recipes for the held stack are listed under "You can craft". Structures (walls, campfire) are built on the tile you stand on, so stand where you want it.
   Useful early recipes: campfire (4 wooden planks), torch and wooden knife (planks), thatch roofing (leaves), stone pickaxe (2 stone),
   roof support (2 planks), thatch floor (planks), stone wall (8 stone).
-- Build: {"do": "build", "recipe": "<structure>", "material": "<stack>", "dir": north|south|east|west} builds on the tile next to you in that direction.
-  A small house: pick open ground away from other camps, stand on each tile along the inside edge of a 3x3 room and build walls facing outward
-  (stone wall from 8 stone; log wall when your era allows it), leave one gap and build a door there if you can, build roof supports inside,
-  then craft thatch roofing from leaves and {"do": "roof", "dir": ...} over each tile of the room.
+- Build: {"do": "build", "recipe": "<structure>", "material": "<stack>", "dir": north|south|east|west} builds on the tile you stand on,
+  facing dir. Roofing ({"do": "roof", "dir": ...}) covers the tile next to you in that direction.
+  A house is easiest with a blueprint (build_next): it walks to each tile and builds walls, a door, a roof support, the roof and furniture.
 - Water: rivers and lakes marked "(unclean)" can give you cholera. Prefer clean water; boil unclean water in a mug or pot on a lit campfire.
 - Underground: craft a bone shovel (2 bones), dig_down, climb down the ladder, build mine supports (2 planks) as you go so tunnels do not
   collapse, and mine the rock walls with a pickaxe.
@@ -1645,6 +1644,8 @@ def _run(client, args, character, token, model_pool):
             if not plan:
                 previous_self = self_state
                 feedback = "\n" + built_note
+                if memory is not None:
+                    memory.save()  # a plan just started or dropped must outlive a crash before the next turn
                 continue
         care, _ = treat_plan(self_state) if not reflex(observation, previous_self)[0] else ([], "")
         wound = worst_wound(self_state)
@@ -1669,7 +1670,7 @@ def _run(client, args, character, token, model_pool):
             if recent.count(ref) >= 5:
                 ignored[ref] = step + 6
         previous_self = self_state
-        feedback = ""
+        feedback = ("\n" + built_note) if built_note else ""  # a blueprint note after a say that still ran
         if not plan:
             print(f"step {step}: wait ({answer[:120]!r})")
             feedback = f"\nNothing happened: {plan_problem(answer, refs) or 'your reply had no valid step'}."
@@ -1681,7 +1682,7 @@ def _run(client, args, character, token, model_pool):
             facing = open_direction(observation)
             craft_at = next((index for index, item in enumerate(steps) if item.get("do") == "craft"), None)
             if facing and craft_at is not None and not (craft_at and steps[craft_at - 1].get("do") == "face"):
-                steps.insert(craft_at, {"do": "face", "dir": facing})  # structures are built on the faced tile
+                steps.insert(craft_at, {"do": "face", "dir": facing})  # built on her own tile; this sets which way it faces
             if error:
                 print(f"step {step}: {json.dumps(plan)} -> not possible: {error}")
                 feedback = f"\nThat was not possible: {error}"
@@ -1706,6 +1707,8 @@ def _run(client, args, character, token, model_pool):
             if "explore failed" in summary or "explore ok (walked 0" in summary:
                 explore_dir = {"north": "east", "east": "south", "south": "west", "west": "north"}[explore_dir]
             word = next((COLLECT_AFTER[item["skill"]] for item in plan if item.get("skill") in COLLECT_AFTER), None)
+            if not word and any(item.get("blueprint") and item.get("do") == "craft" for item in plan):
+                word = blueprints.ROOFING  # crafted roofing drops at her feet; roofing needs it in hand
             if word and "failed" not in summary:
                 picked, queue_since = collect(client, character, queue_since, word)
                 if picked:
@@ -1769,11 +1772,10 @@ def remember_results(memory, plan, summary, self_state, steps=(), rows=None):
         elif made:
             memory.event(f"made {made} at ({x},{y})")
             memory.made(made)
-            dx, dy = STEP_OFFSETS.get(item.get("dir") or faced or "", (0, 0))  # structures go on the faced tile
             if item.get("do") == "build" and isinstance(item.get("at"), list):
                 memory.built(made, *item["at"])  # a blueprint piece: she walked there first
             else:
-                memory.built(made, x + dx, y + dy, z)
+                memory.built(made, x, y, z)  # the game builds on her own tile (stack.dm produce_recipe: user.loc)
             if not memory.data.get("home") and any(word in made.lower() for word in HOME_RECIPES):
                 memory.set_home(x, y, z, made)
         elif item.get("do") == "roof":
@@ -1796,36 +1798,37 @@ def blueprint_plan(plan, observation, box, ledger=()):
 
     Returns (plan, feedback): the steps to run, or [] and what to tell the model.
     """
-    if not plan or plan[0].get("do") not in ("blueprint", "build_next"):
+    index = next((i for i, item in enumerate(plan) if item.get("do") in ("blueprint", "build_next")), None)
+    if index is None:
         return plan, ""
-    first = plan[0]
+    head, first = plan[:index], plan[index]  # steps before it (a say) still run
     project = box.get("project")
     if first["do"] == "blueprint":
         if first["name"] == "none":
             box["project"] = None
-            return [], "You dropped your building plan."
+            return head, "You dropped your building plan."
         if project and project.get("name") == first["name"]:
             first = {"do": "build_next"}  # already planned: carry on with it
         else:
             fresh = blueprints.start(first["name"], observation)
             if fresh is None:
-                return [], (f"There is no clear spot for a {first['name']} right here. Move a few tiles to open ground "
+                return head, (f"There is no clear spot for a {first['name']} right here. Move a few tiles to open ground "
                             "(no trees, rocks, water or other people's buildings) and try again.")
             box["project"] = fresh
-            return [], (f"You planned a {first['name']} ({blueprints.BLUEPRINTS[first['name']]['about']}) with its "
+            return head, (f"You planned a {first['name']} ({blueprints.BLUEPRINTS[first['name']]['about']}) with its "
                         f"north-west corner at ({fresh['x']},{fresh['y']}). Use build_next to build it piece by piece.")
     if project is None:
         project = blueprints.start("hut", observation)
         if project is None:
-            return [], "There is no clear spot for a hut right here. Move a few tiles to open ground and try again."
+            return head, "There is no clear spot for a hut right here. Move a few tiles to open ground and try again."
         box["project"] = project
     steps, piece, problem = blueprints.next_steps(project, observation, ledger)
     if steps:
-        return steps, ""
+        return head + steps, ""
     if piece is None:
         box["project"] = None
-        return [], f"Your {project['name']} is finished."
-    return [], f"The next piece of your {project['name']} ({piece['role']} at ({piece['x']},{piece['y']})) cannot be built yet: {problem}."
+        return head, f"Your {project['name']} is finished."
+    return head, f"The next piece of your {project['name']} ({piece['role']} at ({piece['x']},{piece['y']})) cannot be built yet: {problem}."
 
 
 def project_line(box, observation, ledger=()):

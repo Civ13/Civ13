@@ -976,14 +976,15 @@ class StructureAndHabitTest(unittest.TestCase):
         import shutil
         shutil.rmtree(self.dir, ignore_errors=True)
 
-    def test_built_structures_go_in_the_ledger_on_the_faced_tile(self):
+    def test_built_structures_go_in_the_ledger_on_her_own_tile(self):
+        # stack.dm produce_recipe creates the result at user.loc; facing only turns it.
         me = {"x": 10, "y": 10, "z": 2}
         autopilot.remember_results(self.memory, [{"do": "craft", "recipe": "roof support"}], "craft ok", me, [{"do": "face", "dir": "north"}])
         autopilot.remember_results(self.memory, [{"do": "build", "recipe": "stone wall", "dir": "east"}], "build ok", me)
         autopilot.remember_results(self.memory, [{"skill": "dig_down", "target": "[0x1]"}], "use ok", me)
         autopilot.remember_results(self.memory, [{"skill": "mine", "target": "turf:9,10,2"}], "click ok", me, rows={"turf:9,10,2": {"dx": -1, "dy": 0}})
         ledger = {(s["name"], s["x"], s["y"]) for s in self.memory.data["structures"]}
-        self.assertEqual(ledger, {("roof support", 10, 11), ("stone wall", 11, 10), ("mine shaft", 10, 10), ("tunnel", 9, 10)})
+        self.assertEqual(ledger, {("roof support", 10, 10), ("stone wall", 10, 10), ("mine shaft", 10, 10), ("tunnel", 9, 10)})
         self.assertEqual(self.memory.data["made"], {"roof support": 1, "stone wall": 1})
 
     def test_maintenance_flags_missing_supports_unsupported_roofs_and_tunnels(self):
@@ -1185,11 +1186,21 @@ class BlueprintTest(unittest.TestCase):
     def setUp(self):
         global blueprints
         import blueprints  # noqa: F401 - lives next to autopilot.py
+        # Stacks carry their in-game names: "wood logs", "stone blocks", "leaf bundles".
         self.me = {"x": 100, "y": 100, "z": 2, "ref": "[0x9]", "active_hand": "right", "intent": "help",
-                   "right_hand": {"name": "wooden planks"}, "left_hand": {"name": "flint hatchet"}, "carried": ["leaves (pocket)"]}
+                   "right_hand": {"name": "wood logs"}, "left_hand": {"name": "flint hatchet"}, "carried": ["leaf bundles (pocket)"]}
 
     def observe(self, nearby=(), **me):
         return {"self": dict(self.me, **me), "nearby": list(nearby), "terrain": []}
+
+    def project(self):
+        return {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+
+    def built(self, project, roles):
+        """Observation rows for the pieces of those roles, as the game names them."""
+        names = {"wall": "log wall", "roof support": "roof support", "roof": "thatch roof", "door": "rustic door", "bed": "bed", "table": "wooden table"}
+        return [{"ref": f"[0x{i}]", "name": names[p["role"]], "dx": p["x"] - 100, "dy": p["y"] - 100, "dense": p["role"] in blueprints.DENSE_ROLES}
+                for i, p in enumerate(blueprints.pieces(project)) if p["role"] in roles]
 
     def test_site_avoids_trees_water_and_other_buildings(self):
         tree = {"ref": "[0x1]", "name": "oak tree", "type": "/obj/structure/wild/tree", "dx": 0, "dy": 0}
@@ -1204,47 +1215,92 @@ class BlueprintTest(unittest.TestCase):
                  for dx in range(-4, 5) for dy in range(-4, 5)]
         self.assertIsNone(blueprints.start("hut", {"self": self.me, "nearby": [], "terrain": water}))
 
-    def test_walls_go_up_first_from_inside_and_the_door_last(self):
-        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+    def test_structures_are_built_standing_on_their_own_tile_and_the_door_last(self):
+        # stack.dm produce_recipe makes the structure at user.loc: she stands on the piece's tile, not next to it.
+        project = self.project()
         roles = [p["role"] for p in blueprints.pieces(project)]
-        self.assertEqual(roles[:4], ["wall"] * 4)  # the corners
+        self.assertEqual(roles[:10], ["wall"] * 10)
         self.assertEqual(roles[-1], "door")
         self.assertEqual(roles.count("roof"), 4)
         steps, piece, problem = blueprints.next_steps(project, self.observe())
         self.assertEqual(problem, "")
-        self.assertEqual(steps[0], {"do": "go", "target": "turf:99,103,2", "reach": 0, "blueprint": "99,102"})  # outside, north of the NW corner
+        self.assertEqual((piece["x"], piece["y"]), (99, 102))  # the north-west corner, north row first
+        self.assertEqual(steps[0], {"do": "go", "target": "turf:99,102,2", "reach": 0, "blueprint": "99,102"})
         self.assertEqual(steps[1]["do"], "build")
-        self.assertEqual((steps[1]["recipe"], steps[1]["material"], steps[1]["dir"]), ("log wall", "wooden planks", "south"))
-        # With the corners up, side walls are built standing inside the room, facing out.
-        corners = [{"ref": f"[0x{i}]", "name": "log wall", "dx": x - 100, "dy": y - 100} for i, (x, y) in enumerate([(99, 102), (102, 102), (99, 99), (102, 99)])]
-        steps, piece, _ = blueprints.next_steps(project, self.observe(corners))
-        self.assertEqual((piece["x"], piece["y"]), (100, 102))
-        self.assertEqual(steps[0]["target"], "turf:100,101,2")
-        self.assertEqual(steps[1]["dir"], "north")
+        self.assertEqual((steps[1]["recipe"], steps[1]["material"], steps[1]["at"]), ("log wall", "wood logs", [99, 102, 2]))
+        self.assertIn(steps[1]["dir"], blueprints.DIRS)
+        # Every wall, the support and the door are built from their own tile; roofs from a neighbour.
+        for p in blueprints.pieces(project):
+            stand = blueprints.stand_tile(p, project, [])
+            if p["role"] == "roof":
+                self.assertEqual(max(abs(stand[0] - p["x"]), abs(stand[1] - p["y"])), 1)
+                self.assertIn((stand[0], stand[1]), blueprints.interior(project))
+                dx, dy = blueprints.DIRS[stand[2]]
+                self.assertEqual((stand[0] + dx, stand[1] + dy), (p["x"], p["y"]))  # facing the roof tile
+            else:
+                self.assertEqual(stand[:2], (p["x"], p["y"]))
+        # With the walls, support and roof up, the door is built last, standing in the doorway.
+        rows = self.built(project, ("wall", "roof support", "roof", "bed"))
+        steps, piece, _ = blueprints.next_steps(project, self.observe(rows))
+        self.assertEqual(piece["role"], "door")
+        self.assertEqual(steps[0]["target"], "turf:101,99,2")
 
-    def test_roof_crafts_thatch_from_leaves_and_progress_counts_pieces(self):
-        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
-        built = [p for p in blueprints.pieces(project) if p["role"] in ("wall", "roof support")]
-        rows = [{"ref": f"[0x{i}]", "name": "log wall" if p["role"] == "wall" else "roof support", "dx": p["x"] - 100, "dy": p["y"] - 100}
-                for i, p in enumerate(built)]
+    def test_roof_is_crafted_picked_up_then_built_from_a_neighbour(self):
+        project = self.project()
+        rows = self.built(project, ("wall", "roof support"))
         steps, piece, _ = blueprints.next_steps(project, self.observe(rows))
         self.assertEqual(piece["role"], "roof")
-        self.assertEqual([s["do"] for s in steps], ["go", "craft", "roof"])
-        self.assertEqual(steps[1]["material"], "leaves")
+        # Crafting drops the roofing at her feet, so the craft is a turn of its own.
+        self.assertEqual(steps, [{"do": "craft", "recipe": "thatch roofing", "material": "leaf bundles", "blueprint": piece["key"]}])
+        loose = rows + [{"ref": "[0x77]", "name": "thatch roofing", "dx": 0, "dy": 0, "item": True}]
+        steps, _, _ = blueprints.next_steps(project, self.observe(loose))
+        self.assertEqual(steps, [{"skill": "pick_up", "target": "[0x77]", "blueprint": piece["key"]}])
+        steps, _, _ = blueprints.next_steps(project, self.observe(rows, left_hand={"name": "thatch roofing"}))
+        self.assertEqual([s["do"] for s in steps], ["go", "roof"])
+        self.assertEqual(steps[1]["material"], "thatch roofing")
+        self.assertEqual(steps[1]["at"], [piece["x"], piece["y"], 2])
         self.assertIn("pieces done", blueprints.describe(project, self.observe(rows)))
         nothing = self.observe(rows, right_hand=None, left_hand=None, carried=[])
-        self.assertIn("gather leaves", blueprints.next_steps(project, nothing)[2])
+        self.assertIn("gather leaf bundles", blueprints.next_steps(project, nothing)[2])
+
+    def test_materials_match_stacks_not_tools_or_leather(self):
+        project = self.project()
+        me = dict(self.me, right_hand={"name": "stone axe"}, left_hand={"name": "leather"}, carried=[])
+        self.assertIn("gather wood logs", blueprints.next_steps(project, {"self": me, "nearby": [], "terrain": []})[2])
+        rows = self.built(project, ("wall", "roof support"))
+        self.assertIn("gather leaf bundles", blueprints.next_steps(project, {"self": me, "nearby": rows, "terrain": []})[2])
+        me["right_hand"] = {"name": "stone blocks"}
+        project["unavailable"] = ["log wall", "straw wall"]
+        self.assertEqual(blueprints.next_steps(project, {"self": me, "nearby": [], "terrain": []})[0][1]["recipe"], "stone wall")
 
     def test_failures_skip_a_piece_and_missing_recipes_fall_back(self):
-        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+        project = self.project()
         steps, _, _ = blueprints.next_steps(project, self.observe())
-        blueprints.record_result(project, steps, "craft failed (not_found no recipe log wall for wooden planks)")
+        blueprints.record_result(project, steps, "craft failed (not_found no recipe log wall for wood logs; see craftable in character_observe)")
         self.assertEqual(project["unavailable"], ["log wall"])
         self.assertEqual(blueprints.next_steps(project, self.observe())[0][1]["recipe"], "straw wall")
+        # The game answers "craft ok" even when it refuses to build, so each placing attempt counts.
         for _ in range(blueprints.MAX_TRIES):
-            blueprints.record_result(project, steps, "go failed (still not there after walking); stopped there")
+            blueprints.record_result(project, steps, "go ok (there); face ok (south); craft ok (straw wall x1 from wood logs)")
         self.assertIn("99,102", project["skipped"])
         self.assertNotEqual(blueprints.next_steps(project, self.observe())[1]["key"], "99,102")
+        # A craft-only turn (roofing) is not a placing attempt.
+        craft = [{"do": "craft", "recipe": "thatch roofing", "material": "leaf bundles", "blueprint": "100,101:roof"}]
+        blueprints.record_result(project, craft, "craft ok (thatch roofing x1 from leaf bundles)")
+        self.assertNotIn("100,101:roof", project["tries"])
+
+    def test_a_piece_with_no_recipe_left_is_skipped_so_the_door_still_comes(self):
+        # Wood logs offer no plain "bed" (only /material/wood/soft does); the bed must not block the door.
+        project = self.project()
+        rows = self.built(project, ("wall", "roof support", "roof"))
+        steps, piece, _ = blueprints.next_steps(project, self.observe(rows))
+        self.assertEqual(piece["role"], "bed")
+        blueprints.record_result(project, steps, "go ok (there); craft failed (not_found no recipe bed for wood logs)")
+        steps, piece, problem = blueprints.next_steps(project, self.observe(rows))
+        self.assertEqual(problem, "")
+        self.assertEqual(piece["role"], "door")
+        self.assertIn("100,101", project["skipped"])
+        self.assertNotIn("bed", blueprints.describe(project, self.observe(rows)))
 
     def test_autopilot_turns_build_next_into_steps_and_keeps_the_project(self):
         self.assertEqual(autopilot.parse_plan('{"do": "build_next"}', ["[0x9]"]), [{"do": "build_next"}])
@@ -1276,6 +1332,38 @@ class BlueprintTest(unittest.TestCase):
 
         autopilot.execute(Client(), "[0x9]", [{"do": "face", "dir": "east", "blueprint": "1,2", "at": [1, 2, 3]}], 0)
         self.assertEqual(sent, [{"do": "face", "dir": "east"}])
+
+
+class BlueprintReviewTest(unittest.TestCase):
+    def setUp(self):
+        global blueprints
+        import blueprints  # noqa: F401
+        self.project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+
+    def test_a_say_before_build_next_still_runs(self):
+        me = {"x": 100, "y": 100, "z": 2, "ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "wood logs"}, "left_hand": None, "carried": []}
+        box = {"project": dict(self.project)}
+        plan, note = autopilot.blueprint_plan([{"do": "say", "text": "Building!"}, {"do": "build_next"}], {"self": me, "nearby": [], "terrain": []}, box)
+        self.assertEqual(plan[0], {"do": "say", "text": "Building!"})
+        self.assertTrue(any(step.get("blueprint") for step in plan[1:]))
+        plan, note = autopilot.blueprint_plan([{"do": "say", "text": "Bye"}, {"do": "blueprint", "name": "none"}], {"self": me, "nearby": [], "terrain": []}, box)
+        self.assertEqual(plan, [{"do": "say", "text": "Bye"}])
+        self.assertIn("dropped", note)
+
+    def test_ledger_support_is_not_the_roof_and_a_full_listing_trusts_the_ledger(self):
+        roof = next(p for p in blueprints.pieces(self.project) if p["role"] == "roof" and (p["x"], p["y"]) == (100, 100))
+        here = (100, 100, 2)
+        support = [{"name": "roof support", "x": 100, "y": 100, "z": 2}]
+        self.assertFalse(blueprints.is_built(roof, {}, support, (120, 120, 2)))  # out of view, but a support is not a roof
+        roofed = [{"name": "roof", "x": 100, "y": 100, "z": 2}]
+        self.assertFalse(blueprints.is_built(roof, {}, roofed, here))  # in view and not listed: missing
+        self.assertTrue(blueprints.is_built(roof, {}, roofed, here, listing_full=True))  # the listing was cut off
+
+    def test_material_is_matched_by_stack_name_not_a_word_inside_a_tool(self):
+        me = {"right_hand": {"name": "stone axe"}, "left_hand": {"name": "leather armor"}, "carried": ["stone blocks (pocket)"]}
+        self.assertEqual(blueprints._holding(me, ("stone block",)), "stone blocks")
+        self.assertEqual(blueprints._holding(me, ("leaf bundle", "leaves")), "")
+        self.assertEqual(blueprints._holding({"carried": ["thatch roofing (in bag)"]}, "roofing"), "thatch roofing")
 
 
 if __name__ == "__main__":

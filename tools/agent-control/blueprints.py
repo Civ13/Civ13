@@ -1,15 +1,21 @@
 """Blueprints: planned buildings the autopilot places piece by piece.
 
 A blueprint is a small grid drawn north-up. Each symbol is a piece; the planner picks the next missing
-piece, the tile to stand on (inside the room when it can, so walls go up around the character), the
-direction to face and the recipe to build it from what she carries. Progress is read from what the
-game shows at each tile, with the structure ledger in memory covering tiles out of view.
+piece, the tile to stand on, the direction to face and the recipe to build it from what she carries.
+Progress is read from what the game shows at each tile, with the structure ledger in memory covering
+tiles out of view.
+
+The game puts a crafted structure on the tile the crafter stands on (stack.dm produce_recipe: new
+result_type(user.loc)), so walls, doors, supports and furniture are built standing on their own tile.
+A roof is the exception: thatch roofing is "use"d and roofs get_step(user, user.dir), so it is built
+from a neighbouring tile. Crafted items, roofing included, drop at the crafter's feet.
 
 The project state is a plain dict, saved in the character's memory file:
     {"name", "x", "y", "z", "tries": {"x,y": n}, "skipped": ["x,y"], "unavailable": [recipe], "started"}
 x, y is the north-west corner of the grid.
 """
 
+import re
 import time
 
 # North-up grids: "#" wall, "D" door, "s" roof support, "b" bed, "t" table, "." open floor.
@@ -32,20 +38,29 @@ BLUEPRINTS = {
     },
 }
 
-# Symbol -> (role, the words that show it is built, recipe choices in order as (recipe, material)).
-PIECES = {
-    "#": ("wall", ("wall",), (("stone wall", "stone"), ("log wall", "wooden plank"), ("straw wall", "wooden plank"))),
-    "D": ("door", ("door",), (("rustic door", "wooden plank"), ("primitive wood fence door", "wooden plank"), ("roman door", "stone"))),
-    "s": ("roof support", ("roof support",), (("roof support", "wooden plank"),)),
-    "b": ("bed", ("bed",), (("bed", "wooden plank"),)),
-    "t": ("table", ("table",), (("table", "wooden plank"),)),
+# Material key -> (what to call it, words that match the stack's in-game name). The game names stacks
+# "wood logs", "stone blocks" and "leaf bundles" (material use_name + sheet name), singular when one is left.
+LISTING_CAP = 64  # character_observe lists at most this many nearby things
+MATERIALS = {
+    "wood": ("wood logs", ("wood log", "wooden plank")),
+    "stone": ("stone blocks", ("stone block",)),
+    "leaves": ("leaf bundles", ("leaf bundle", "leaves")),
 }
-ROOF = ("roof", ("roof",), (("thatch roofing", "lea"),))  # "lea" matches leaves and leaf bundles
+# Symbol -> (role, the words that show it is built, recipe choices in order as (recipe, material key)).
+# Log and straw walls come with the stone-age baseline (primitive_construction); stone walls need stone masonry.
+PIECES = {
+    "#": ("wall", ("wall",), (("log wall", "wood"), ("straw wall", "wood"), ("stone wall", "stone"))),
+    "D": ("door", ("door",), (("rustic door", "wood"), ("primitive wood fence door", "wood"), ("roman door", "stone"))),
+    "s": ("roof support", ("roof support",), (("roof support", "wood"),)),
+    "b": ("bed", ("bed",), (("bed", "wood"),)),
+    "t": ("table", ("table",), (("table", "wood"),)),
+}
+ROOF = ("roof", ("roof",), (("thatch roofing", "leaves"),))
+ROOFING = "roofing"  # the roofbuilder item: "thatch roofing"
 INTERIOR = "sbt."
-DENSE_ROLES = ("wall", "door", "table")  # what a character cannot stand on once built
-# Build order: corners first while the outside is open, then walls from inside, the support, the roof,
-# furniture, and the door last.
-ORDER = {"corner": 0, "wall": 1, "roof support": 2, "roof": 3, "bed": 4, "table": 5, "door": 6}
+DENSE_ROLES = ("wall", "door", "table")  # what a character cannot step onto once built
+# Build order: walls, the support, the roof, furniture, and the door last so the room stays open.
+ORDER = {"wall": 0, "roof support": 1, "roof": 2, "bed": 3, "table": 4, "door": 5}
 COST = {"stone wall": 8, "log wall": 6, "straw wall": 4, "rustic door": 4, "primitive wood fence door": 3,
         "roman door": 5, "roof support": 2, "bed": 4, "table": 4, "thatch roofing": 2}
 MAX_TRIES = 3
@@ -61,16 +76,14 @@ def pieces(project):
     """Every piece of a project: dicts with key, x, y, z, role, words, choices and order."""
     plan = BLUEPRINTS[project["name"]]
     grid = plan["grid"]
-    height, width = len(grid), len(grid[0])
     out = []
     for row, line in enumerate(grid):
         for col, symbol in enumerate(line):
             x, y = project["x"] + col, project["y"] - row
-            corner = row in (0, height - 1) and col in (0, width - 1)
             if symbol in PIECES:
                 role, words, choices = PIECES[symbol]
                 out.append({"key": f"{x},{y}", "x": x, "y": y, "z": project["z"], "role": role, "words": words,
-                            "choices": choices, "order": ORDER["corner" if corner and role == "wall" else role]})
+                            "choices": choices, "order": ORDER[role]})
             if symbol in INTERIOR:
                 role, words, choices = ROOF
                 out.append({"key": f"{x},{y}:roof", "x": x, "y": y, "z": project["z"], "role": role, "words": words,
@@ -103,20 +116,26 @@ def _rows_at(observation, here):
     return at
 
 
-def _matches(piece, row):
-    name = str(row.get("name", "")).lower()
+def _named(piece, name):
+    """True when a name is this piece's kind of structure (a roof is not a roof support or roofing)."""
+    name = str(name or "").lower()
     if piece["role"] == "roof":
-        return "roof" in name and "support" not in name and "roofing" not in name and not row.get("item")
-    return any(word in name for word in piece["words"]) and not row.get("item")
+        return "roof" in name and "support" not in name and "roofing" not in name
+    return any(word in name for word in piece["words"])
 
 
-def is_built(piece, at, ledger, here, radius=5):
-    """True when the game shows the piece at its tile, or the ledger has it and the tile is out of view."""
+def _matches(piece, row):
+    return _named(piece, row.get("name")) and not row.get("item")
+
+
+def is_built(piece, at, ledger, here, radius=5, listing_full=False):
+    """True when the game shows the piece at its tile, or the ledger has it and the tile may be unlisted:
+    out of view, or in view while the game's nearby listing hit its 64-entry cap."""
     if any(_matches(piece, row) for row in at.get((piece["x"], piece["y"]), [])):
         return True
-    far = max(abs(piece["x"] - here[0]), abs(piece["y"] - here[1])) > radius
-    return far and any(item.get("x") == piece["x"] and item.get("y") == piece["y"] and item.get("z") == piece["z"]
-                       and any(word in str(item.get("name", "")).lower() for word in piece["words"]) for item in ledger or [])
+    unlisted = listing_full or max(abs(piece["x"] - here[0]), abs(piece["y"] - here[1])) > radius
+    return unlisted and any(item.get("x") == piece["x"] and item.get("y") == piece["y"] and item.get("z") == piece["z"]
+                            and _named(piece, item.get("name")) for item in ledger or [])
 
 
 def progress(project, observation, ledger=()):
@@ -125,9 +144,10 @@ def progress(project, observation, ledger=()):
     if here is None:
         return [], []
     at = _rows_at(observation, here)
+    full = len(observation.get("nearby") or []) >= LISTING_CAP
     done, remaining = [], []
     for piece in pieces(project):
-        if is_built(piece, at, ledger, here):
+        if is_built(piece, at, ledger, here, listing_full=full):
             done.append(piece)
         elif piece["key"] not in project.get("skipped", []):
             remaining.append(piece)
@@ -188,51 +208,88 @@ def start(name, observation):
 def stand_tile(piece, project, done):
     """Where to stand to build a piece, and which way to face: (x, y, dir) or None.
 
-    Inside the room when a neighbour is an open interior tile, otherwise just outside the grid.
+    A structure is built on the tile she stands on, so that is the piece's own tile, facing any open
+    neighbour. A roof goes on the faced tile, so she stands on an open neighbour (inside the room when
+    one is free, otherwise just outside the grid) facing the roof tile.
     """
     inside = interior(project)
     whole = footprint(project)
     dense = {(p["x"], p["y"]) for p in done if p["role"] in DENSE_ROLES}
+    tile = (piece["x"], piece["y"])
+    if piece["role"] != "roof":
+        if tile in dense:
+            return None
+        for direction, (dx, dy) in DIRS.items():
+            if (tile[0] + dx, tile[1] + dy) not in dense:
+                return tile[0], tile[1], direction
+        return None
     choices = []
     for direction, (dx, dy) in DIRS.items():
-        tile = (piece["x"] - dx, piece["y"] - dy)  # stand here, facing direction
-        if tile in dense or tile == (piece["x"], piece["y"]):
+        stand = (tile[0] - dx, tile[1] - dy)  # stand here, facing direction
+        if stand in dense:
             continue
-        if tile in inside:
-            choices.append((0, tile, direction))
-        elif tile not in whole and piece["role"] != "roof":
-            choices.append((1, tile, direction))
+        if stand in inside:
+            choices.append((0, stand, direction))
+        elif stand not in whole:
+            choices.append((1, stand, direction))
     if not choices:
         return None
-    _, tile, direction = min(choices, key=lambda c: (c[0], list(DIRS).index(c[2])))
-    return tile[0], tile[1], direction
+    _, stand, direction = min(choices, key=lambda c: (c[0], list(DIRS).index(c[2])))
+    return stand[0], stand[1], direction
 
 
-def _holding(self_state, material):
+def _held_names(self_state):
     names = [str((self_state.get(hand) or {}).get("name", "")) if isinstance(self_state.get(hand), dict) else str(self_state.get(hand) or "")
              for hand in ("left_hand", "right_hand")]
-    names += [str(item).split(" (", 1)[0] for item in self_state.get("carried") or []]
-    return next((name for name in names if material in name.lower()), "")
+    return names + [str(item).split(" (", 1)[0] for item in self_state.get("carried") or []]
+
+
+def _stack_name(name):
+    """A name without counts, notes or plurals: "wood logs (5)" -> "wood log"."""
+    text = re.sub(r"\(.*?\)|\d+", " ", str(name or "").lower())
+    return " ".join(word[:-1] if word.endswith("s") and len(word) > 3 else word for word in text.split())
+
+
+def _holding(self_state, words):
+    """The name of a held or carried item that is one of words (the whole name, or its last words:
+    "thatch roofing" is roofing), or "". A stone axe is not stone and leather armor is not leaves."""
+    if isinstance(words, str):
+        words = (words,)
+    wanted = [_stack_name(word) for word in words]
+    for name in _held_names(self_state):
+        have = _stack_name(name)
+        if have and any(have == word or have.endswith(" " + word) for word in wanted):
+            return name
+    return ""
 
 
 def recipe_for(piece, project, self_state):
-    """(recipe, material name she carries) for a piece, or (None, what to gather)."""
+    """(recipe, material name she carries) for a piece, (None, what to gather) when she lacks it,
+    or (None, None) when the game offers none of its recipes."""
     choices = [c for c in piece["choices"] if c[0] not in project.get("unavailable", [])]
     for recipe, material in choices:
-        held = _holding(self_state, material)
+        held = _holding(self_state, MATERIALS[material][1])
         if held:
             return recipe, held
-    if piece["role"] == "roof" and _holding(self_state, "thatch roofing"):
-        return "thatch roofing", "thatch roofing"
     if not choices:
-        return None, f"no recipe left for the {piece['role']}"
+        return None, None
     recipe, material = choices[0]
-    return None, f"{'leaves' if material == 'lea' else material + 's'} for a {recipe}"
+    return None, f"{MATERIALS[material][0]} for a {recipe}"
+
+
+def _roofing_nearby(observation):
+    """The ref of thatch roofing lying on the ground in view, nearest first, or None."""
+    rows = [row for row in observation.get("nearby") or []
+            if isinstance(row, dict) and row.get("item") and row.get("ref") and ROOFING in str(row.get("name", "")).lower()
+            and isinstance(row.get("dx"), int) and isinstance(row.get("dy"), int)]
+    rows.sort(key=lambda row: max(abs(row["dx"]), abs(row["dy"])))
+    return rows[0]["ref"] if rows else None
 
 
 def next_steps(project, observation, ledger=()):
     """(steps, piece, problem) for the next missing piece. Steps are plan steps the autopilot expands:
-    walk onto the stand tile, then build (or craft roofing and roof). problem says what is missing."""
+    walk onto the stand tile, then build; for a roof, craft roofing, pick it up, or walk and roof.
+    problem says what is missing. Pieces the game offers no recipe for are skipped."""
     me = observation.get("self", {})
     done, remaining = progress(project, observation, ledger)
     for piece in remaining:
@@ -240,30 +297,39 @@ def next_steps(project, observation, ledger=()):
         if stand is None:
             continue
         recipe, material = recipe_for(piece, project, me)
-        if recipe is None:
-            return [], piece, f"gather {material}"
+        if recipe is None and material is None:
+            project.setdefault("skipped", []).append(piece["key"])
+            continue
         target = f"turf:{stand[0]},{stand[1]},{project['z']}"
         at = [piece["x"], piece["y"], piece["z"]]
-        steps = [{"do": "go", "target": target, "reach": 0, "blueprint": piece["key"]}]
         if piece["role"] == "roof":
-            if material != "thatch roofing":
-                steps.append({"do": "craft", "recipe": recipe, "material": material, "blueprint": piece["key"]})
-            steps.append({"do": "roof", "dir": stand[2], "material": "roofing", "blueprint": piece["key"], "at": at})
-        else:
-            steps.append({"do": "build", "recipe": recipe, "material": material, "dir": stand[2], "blueprint": piece["key"], "at": at})
-        return steps, piece, ""
-    if remaining:
+            roofing = _holding(me, ROOFING)
+            if roofing:
+                return [{"do": "go", "target": target, "reach": 0, "blueprint": piece["key"]},
+                        {"do": "roof", "dir": stand[2], "material": roofing, "blueprint": piece["key"], "at": at}], piece, ""
+            loose = _roofing_nearby(observation)
+            if loose:
+                return [{"skill": "pick_up", "target": loose, "blueprint": piece["key"]}], piece, ""
+            if recipe is None:
+                return [], piece, f"gather {material}"
+            # Crafting drops the roofing at her feet; the autopilot picks it up, and the next turn roofs with it.
+            return [{"do": "craft", "recipe": recipe, "material": material, "blueprint": piece["key"]}], piece, ""
+        if recipe is None:
+            return [], piece, f"gather {material}"
+        return [{"do": "go", "target": target, "reach": 0, "blueprint": piece["key"]},
+                {"do": "build", "recipe": recipe, "material": material, "dir": stand[2], "blueprint": piece["key"], "at": at}], piece, ""
+    if remaining and not all(p["key"] in project.get("skipped", []) for p in remaining):
         return [], remaining[0], "no free tile to stand on for the remaining pieces"
     return [], None, ""
 
 
 def bill(remaining, project):
-    """Materials still needed, by material word: {"wooden plank": 30, ...}."""
+    """Materials still needed, by material name: {"wood logs": 30, ...}."""
     need = {}
     for piece in remaining:
         choices = [c for c in piece["choices"] if c[0] not in project.get("unavailable", [])] or piece["choices"]
         recipe, material = choices[0]
-        word = "leaves" if material == "lea" else material
+        word = MATERIALS[material][0]
         need[word] = need.get(word, 0) + COST.get(recipe, 2)
     return need
 
@@ -285,7 +351,11 @@ def describe(project, observation, ledger=()):
 
 
 def record_result(project, steps, summary):
-    """Count a failed attempt at a piece; skip it after MAX_TRIES and drop recipes the game does not offer."""
+    """Count an attempt to place a piece; skip it after MAX_TRIES and drop recipes the game does not offer.
+
+    The game answers "craft ok" even when it refuses to build (another wall here, no support for the
+    roof), so every placing attempt counts: a piece that was placed leaves the remaining list anyway.
+    """
     key = next((s.get("blueprint") for s in steps if s.get("blueprint")), None)
     if not key:
         return
@@ -294,7 +364,8 @@ def record_result(project, steps, summary):
         if recipe and recipe not in project.setdefault("unavailable", []):
             project["unavailable"].append(recipe)
         return  # not the tile's fault; the next recipe choice is tried
-    if "failed" in summary or "stopped" in summary:
+    placing = any(s.get("do") in ("build", "roof") for s in steps)
+    if placing or "failed" in summary or "stopped" in summary:
         tries = project.setdefault("tries", {})
         tries[key] = tries.get(key, 0) + 1
         if tries[key] >= MAX_TRIES and key not in project.setdefault("skipped", []):
