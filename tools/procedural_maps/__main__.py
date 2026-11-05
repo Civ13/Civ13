@@ -33,6 +33,7 @@ def main(argv=None):
     p.add_argument('directory',type=Path);p.add_argument('--catalog-root',type=Path)
     p=commands.add_parser('playable',help='write a playable DMM (native supplies, ladders) from a verified bundle')
     p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
+    p.add_argument('--lapse',type=float,default=6.5,help='temperature drop in C per km of elevation, 0..10 (0 keeps the map flat-climate)')
     p=commands.add_parser('audit-source',help='read-only classic map/source audit')
     p.add_argument('--catalog-root',type=Path);p.add_argument('--reference-image',type=Path)
     p=commands.add_parser('annotate-reference',help='source components and uncertain hydrology proposals')
@@ -69,7 +70,7 @@ def main(argv=None):
         elif a.command=='verify':result=verify_bundle(a.directory,a.catalog_root)
         elif a.command=='playable':
             from .playable import write
-            result=write(a.directory,a.out,a.catalog_root)
+            result=write(a.directory,a.out,a.catalog_root,a.lapse)
         elif a.command=='audit-source':result=audit(a.catalog_root,a.reference_image)
         else:
             from .reference_annotation import build
