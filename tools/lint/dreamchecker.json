@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "tool": "dreamchecker",
+  "release": "suite-1.12",
+  "releasePage": "https://github.com/SpaceManiac/SpacemanDMM/releases/tag/suite-1.12",
+  "linux": {
+    "url": "https://github.com/SpaceManiac/SpacemanDMM/releases/download/suite-1.12/dreamchecker",
+    "sha256": "793f603c463bf2d10e618d1ab8934f1a9726e178b5636bee76cf64620e52282e",
+    "bytes": 2197680
+  },
+  "windows": {
+    "url": "https://github.com/SpaceManiac/SpacemanDMM/releases/download/suite-1.12/dreamchecker.exe",
+    "sha256": "bc17039e9e999bdedeb0aca55880bb3ee73fa75a9b3a18346beb2a6dadc123bf",
+    "bytes": 1950797
+  },
+  "integritySource": "Observed release downloads on 2026-11-05 (Linux in a cloud session, Windows on a maintainer machine); exact-byte reproducibility only, not an upstream-published checksum"
+}

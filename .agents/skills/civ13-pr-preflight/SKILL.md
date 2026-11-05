@@ -68,6 +68,21 @@ The same command keeps the CI digest's trigger list
 On a merge conflict in either file, never hand-merge JSON. Take either side,
 then rerun the command above on the merged tree and commit the result.
 
+## 3b. Keep the lint ratchets flat
+
+```bash
+python3 scripts/agent_preflight.py patterns          # forbidden patterns vs tools/lint/forbidden_patterns_baseline.json
+python3 scripts/agent_preflight.py patterns --write  # record a lowered count
+```
+
+A new `spawn(`, `in world` loop, untyped `WWinput()` result or merge marker in
+a file above its recorded count annotates the hosted `baseline` job (advisory
+for now). Use `addtimer(CALLBACK(...))` or a `/process` instead of `spawn()` in
+new code. The hosted `dreamchecker` job is advisory too: read its step summary
+when it warns, and lower `tools/lint/dreamchecker_baseline.json` with
+`python3 scripts/dreamchecker_lint.py check --receipt <ci-dreamchecker artifact>/dreamchecker.json --write`
+after fixing a category.
+
 ## 4. Run the offline suites exactly as CI does
 
 ```bash

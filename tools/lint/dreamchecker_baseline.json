@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "release": "suite-1.12",
+  "environment": "civ13.dme",
+  "head": "241cff16ca98015c20dd4e2fa017028db9f99156",
+  "total": 161,
+  "by_severity": {
+    "error": 34,
+    "warning": 127,
+    "hint": 0,
+    "info": 0,
+    "note": 0
+  },
+  "by_category": {
+    "warning: field access requires static type: \"len\"": 81,
+    "warning: returning a value in a spawn has no effect": 34,
+    "error: invalid list access on /obj/item": 25,
+    "warning: proc call requires static type: \"Copy\"": 6,
+    "error: if condition is always false": 4,
+    "warning: ambiguous `&&` on left side of an `in`": 3,
+    "error: possible unreachable code here": 2,
+    "error: bad keyword argument \"e_src\" to /world/proc/Error": 1,
+    "error: control flow condition is a static term": 1,
+    "error: if condition is always true": 1,
+    "warning: ambiguous `=` on left side of an `in`": 1,
+    "warning: proc call requires static type: \"cancel_all\"": 1,
+    "warning: proc call requires static type: \"restore\"": 1
+  },
+  "note": "Counts per dreamchecker message with numbers replaced by N. A count may only fall; regenerate with python3 scripts/dreamchecker_lint.py check --receipt <receipt> --write."
+}
