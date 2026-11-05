@@ -99,8 +99,11 @@ var/reserved_startup_waiting_turf = null
 		var/list/lums = list()
 		for (var/datum/lighting_corner/C in T.corners)
 			var/list/masters = list()
-			for (var/turf/master in C.masters)
-				masters += list(list(master.x,master.y,master.z,C.masters[master]))
+			for (var/mi = 1, mi <= 4, mi++)
+				var/turf/master = C.master_turf(mi)
+				if (!master)
+					continue
+				masters += list(list(master.x,master.y,master.z,C.master_direction(master)))
 			var/list/sources = list()
 			for (var/datum/light_source/L in C.affecting)
 				sources += list(reserved_source_signature(L))

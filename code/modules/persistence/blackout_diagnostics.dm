@@ -86,7 +86,7 @@
 	var/list/corners = list()
 	for(var/i = 1 to 4)
 		var/datum/lighting_corner/K = (T.corners && T.corners.len >= i) ? T.corners[i] : null
-		corners += list(K ? list("present" = TRUE, "ref" = "\ref[K]", "active" = K.active, "r" = K.lum_r, "g" = K.lum_g, "b" = K.lum_b, "window_coeff" = K.window_coeff, "owner_direction" = K.masters[T], "expected_owner_direction" = turn(LIGHTING_CORNER_DIAGONAL[i], 180), "master_count" = K.masters.len) : list("present" = FALSE))
+		corners += list(K ? list("present" = TRUE, "ref" = "\ref[K]", "active" = K.active, "r" = K.lum_r, "g" = K.lum_g, "b" = K.lum_b, "window_coeff" = K.window_coeff, "owner_direction" = K.master_direction(T), "expected_owner_direction" = turn(LIGHTING_CORNER_DIAGONAL[i], 180), "master_count" = K.master_count()) : list("present" = FALSE))
 	row["corners"] = corners
 	return row
 

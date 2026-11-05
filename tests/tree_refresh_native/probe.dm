@@ -371,7 +371,9 @@ var/global/obj/tree_native_opaque/tree_native_mover
 	if(!length(T.corners))
 		for(var/d in list(NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST))
 			var/datum/lighting_corner/C = new
-			C.masters[T] = d
+			C.x = T.x + ((d & EAST) ? 0.5 : -0.5)
+			C.y = T.y + ((d & NORTH) ? 0.5 : -0.5)
+			C.z = T.z
 			T.corners += C
 	for(var/datum/lighting_corner/C in T.corners)
 		C.lum_r = level

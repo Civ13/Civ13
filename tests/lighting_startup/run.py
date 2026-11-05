@@ -10,6 +10,7 @@ import tempfile
 import time
 
 BASELINE = "0e9b527ec492196b548d1cf92bc270c30ef30e67"
+PINNED_COMPILER = json.loads((Path(__file__).resolve().parents[2]/"tools/byond/version.json").read_text())["version"]
 SYSTEM = "code/modules/lighting/lighting_system.dm"
 CORNER = "code/modules/lighting/lighting_corner.dm"
 OVERLAY = "code/modules/lighting/lighting_overlay.dm"
@@ -22,7 +23,9 @@ def prepare(repo, mode, negative=False, bulk_order_control=False, inactive_corne
             return subprocess.check_output(["git", "show", BASELINE + ":" + path], cwd=repo, text=True)
         return (repo/path).read_text()
     originals = {path: read(path) for path in (SYSTEM, CORNER, OVERLAY, TURF)}
-    system = originals[SYSTEM].split("/proc/update_lighting(")[0]
+    # Daylight application procs follow the startup barrier and need the
+    # time-of-day process, which the probe does not build.
+    system = re.split(r"^/proc/(?:apply_restored_lighting|update_lighting)\(", originals[SYSTEM], maxsplit=1, flags=re.M)[0]
     corner = originals[CORNER].split("/datum/lighting_corner/proc/update_lumcount(")[0]
     overlay = re.search(r"^/atom/movable/lighting_overlay/New\([\s\S]*?(?=^/atom/movable/lighting_overlay/Destroy)", originals[OVERLAY], re.M).group()
     clear_overlay = re.search(r"^/turf/proc/lighting_clear_overlay\([\s\S]*?(?=// Builds)", originals[TURF], re.M).group()
@@ -42,6 +45,12 @@ def prepare(repo, mode, negative=False, bulk_order_control=False, inactive_corne
     marker = "create_startup_compatibility_overlays" if mode == "candidate" else "create_all_lighting_overlays"
     system = re.sub(r"^(\t+)"+marker+r"\(\)\n", lambda m: m[0]+m[1]+"probe_overlays_ready = TRUE\n", system, count=1, flags=re.M)
     if mode == "baseline": system += "\n/var/lighting_startup_in_progress = FALSE\n"
+    if mode == "baseline" and "proc/master_turf(" not in corner:
+        # The retained baseline keeps the per-corner masters list; the shared
+        # probe reads masters through the position helpers of the candidate.
+        corner += ("\n/datum/lighting_corner/proc/master_direction(var/turf/T)\n\treturn masters[T]\n"
+                   "\n/datum/lighting_corner/proc/master_turf(var/i)\n\tfor (var/turf/T in masters)\n"
+                   "\t\tif (masters[T] == LIGHTING_CORNER_DIAGONAL[i])\n\t\t\treturn T\n\treturn null\n")
     if negative:
         assert mode == "candidate"
         match = re.search(r"^(\t+)create_all_lighting_overlays\(\)\n",system,re.M)
@@ -114,7 +123,7 @@ def execute(repo, out, mode, negative, byond, bulk_order_control=False, inactive
     build=run_logged([str(compiler),"-max_errors","0","probe.dme"],out,"compile.log",120,flags)
     log=build.stdout+build.stderr
     (out/"compile.log").write_text(log)
-    assert build.returncode==0 and "516.1681" in log and "0 errors, 0 warnings" in log,log
+    assert build.returncode==0 and PINNED_COMPILER in log and "0 errors, 0 warnings" in log,log
     run=run_logged([str(daemon),"probe.dmb"]+(["-invisible"] if os.name=="nt" else [])+["-close","-trusted","-log","runtime.log"],out,"daemon-child.log",240,flags)
     log=(out/"runtime.log").read_text(errors="replace") if (out/"runtime.log").exists() else ""
     log+=run.stdout+run.stderr

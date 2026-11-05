@@ -285,8 +285,8 @@
 		if (!C.active)
 			continue
 
-		if (C.masters[1])
-			var/turf/T = C.masters[1]
+		var/turf/T = C.first_master()
+		if (T)
 			if (!T.affecting_lights)
 				T.affecting_lights = list()
 			T.affecting_lights += src
@@ -304,8 +304,8 @@
 		if (!C.active)
 			continue
 
-		if (C.masters[1])
-			var/turf/T = C.masters[1]
+		var/turf/T = C.first_master()
+		if (T)
 			if (T.affecting_lights)
 				T.affecting_lights -= src
 
