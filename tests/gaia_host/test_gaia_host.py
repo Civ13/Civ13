@@ -28,6 +28,10 @@ class FakeMachine:
         self.compile_output = 'civ13.dmb - 0 errors, 0 warnings'
         self.save_error = None
         self.on_save = None
+        self.clients = 2
+        self.pid = 4242
+        self.suspended = 0
+        self.peers = []
 
     def run(self, argv, cwd=None, timeout=1800):
         self.calls.append(list(argv))
@@ -49,7 +53,9 @@ class FakeMachine:
                 self.on_save()
             self.up = False
             return {'ok': True, 'operation': operation}
-        return {'ok': True, 'ready': True, 'busy': False, 'session': SESSION, 'clients': 2, 'map': 'NOMADS_GAIA',
+        if self.suspended:
+            raise RuntimeError('a frozen world never answers')
+        return {'ok': True, 'ready': True, 'busy': False, 'session': SESSION, 'clients': self.clients, 'map': 'NOMADS_GAIA',
                 'generation': MARKER, 'revision': REVISION, 'error': self.save_error}
 
     def start_task(self, name):
@@ -65,6 +71,23 @@ class FakeMachine:
 
     def sleep(self, seconds):
         self.clock += seconds
+
+    def server_pid(self, port):
+        return self.pid if self.up else None
+
+    def connections(self, port):
+        return list(self.peers)
+
+    def alive(self, pid):
+        return self.up and pid == self.pid
+
+    def suspend(self, pid, trim=True):
+        self.calls.append(['suspend', pid, trim])
+        self.suspended += 1
+
+    def resume(self, pid):
+        self.calls.append(['resume', pid])
+        self.suspended -= 1
 
     def now(self):
         return self.clock
@@ -233,6 +256,100 @@ class GaiaHostTests(unittest.TestCase):
         out = StringIO()
         with redirect_stdout(out):
             self.assertEqual(gaia_host.main(['--config', str(path), 'status']), 2)
+
+
+    # -- freezing ----------------------------------------------------------
+    def running(self, clients=0):
+        self.give_token()
+        self.machine.up = True
+        self.machine.clients = clients
+        self.host.log = lambda values: None
+
+    def test_freeze_refused_while_players_are_online(self):
+        self.running(clients=1)
+        with self.assertRaisesRegex(gaia_host.Refused, 'client'):
+            self.host.freeze()
+        self.assertEqual(self.machine.suspended, 0)
+
+    def test_freeze_refused_during_another_action(self):
+        self.running()
+        self.host.state_dir.mkdir(parents=True)
+        self.host.lock.write_text('x')
+        with self.assertRaises(gaia_host.Refused):
+            self.host.freeze()
+
+    def test_freeze_and_thaw_the_same_process_once(self):
+        self.running()
+        self.machine.clock = 100
+        self.assertEqual(self.host.freeze()['pid'], 4242)
+        self.assertEqual(self.machine.suspended, 1)
+        with self.assertRaisesRegex(gaia_host.Refused, 'already frozen'):
+            self.host.freeze()
+        status = self.host.status()
+        self.assertEqual(status['frozen']['pid'], 4242)
+        self.assertNotIn(['query', 'status', TOKEN], self.machine.calls[-1:])
+        self.machine.clock = 400
+        thawed = self.host.thaw()
+        self.assertEqual((thawed['frozen_seconds'], self.machine.suspended), (300, 0))
+        with self.assertRaisesRegex(gaia_host.Refused, 'not frozen'):
+            self.host.thaw()
+
+    def test_a_restarted_server_is_not_thawed(self):
+        self.running()
+        self.host.freeze()
+        self.machine.pid = 5555  # dd.exe was killed and started again
+        self.assertIsNone(self.host.frozen())
+        self.assertFalse(self.host.freeze_file.exists())
+
+    def test_stop_thaws_first(self):
+        self.running()
+        self.host.freeze()
+        self.accept('stop')
+        self.assertEqual(self.machine.suspended, 0)
+
+    def test_watch_freezes_after_idle_minutes_and_wakes_on_a_player(self):
+        self.running()
+        idle, wait = self.host.watch_step(None)
+        self.assertEqual(idle, 0)
+        self.machine.clock = 14 * 60
+        idle, wait = self.host.watch_step(idle)
+        self.assertEqual(self.machine.suspended, 0)
+        self.machine.clock = 15 * 60
+        idle, wait = self.host.watch_step(idle)
+        self.assertEqual((self.machine.suspended, wait), (1, 1))
+        self.machine.peers = ['127.0.0.1']  # the bot polling status does not wake it
+        self.host.watch_step(None)
+        self.assertEqual(self.machine.suspended, 1)
+        self.machine.peers = ['127.0.0.1', '203.0.113.9']
+        self.host.watch_step(None)
+        self.assertEqual(self.machine.suspended, 0)
+
+    def test_watch_resets_idle_time_when_someone_plays(self):
+        self.running()
+        idle, _ = self.host.watch_step(None)
+        self.machine.clients = 1
+        idle, _ = self.host.watch_step(idle)
+        self.assertIsNone(idle)
+
+    def test_parse_netstat(self):
+        text = """
+Active Connections
+
+  Proto  Local Address          Foreign Address        State           PID
+  TCP    0.0.0.0:1714           0.0.0.0:0              LISTENING       4242
+  TCP    192.168.1.5:1714       203.0.113.9:50112      ESTABLISHED     4242
+  TCP    [::1]:1714             [::1]:50113            ESTABLISHED     4242
+"""
+        self.assertEqual(gaia_host.parse_netstat(text), [(1714, '0.0.0.0', 'LISTENING', 4242),
+                                                        (1714, '203.0.113.9', 'ESTABLISHED', 4242),
+                                                        (1714, '::1', 'ESTABLISHED', 4242)])
+
+    def test_parse_proc_net(self):
+        text = ("  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode\n"
+                "   0: 00000000:06B2 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 111 1\n"
+                "   1: 0100007F:06B2 0971000A:C3C0 01 00000000:00000000 00:00000000 00000000     0        0 222 1\n")
+        self.assertEqual(gaia_host.parse_proc_net(text), [(1714, '0.0.0.0', 'LISTENING', 111),
+                                                         (1714, '10.0.113.9', 'ESTABLISHED', 222)])
 
 
 if __name__ == '__main__':

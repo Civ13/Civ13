@@ -8,5 +8,8 @@
   "state_dir": "D:/GitHub/Civ13/data/gaia-host",
   "save_timeout_seconds": 5400,
   "start_timeout_seconds": 120,
-  "backups_kept": 3
+  "backups_kept": 3,
+  "freeze_idle_minutes": 15,
+  "freeze_trim_memory": true,
+  "wake_ignore": ["127.0.0.1", "::1"]
 }
