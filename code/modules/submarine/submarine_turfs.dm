@@ -5,8 +5,9 @@
 
 // ============================================================
 // Submarine Turfs - hull walls, bulkheads, and deck floors
-// with water accumulation, atmospheric simulation, and
-// compartment-based flooding physics.
+// with water accumulation and compartment-based flooding physics.
+// Air is not stored per tile: each compartment shares one habitat
+// ledger held by the flooding controller.
 // ============================================================
 
 // ---- Hull Walls ----
@@ -149,7 +150,7 @@
 	..(newloc,"steel")
 
 // ============================================================
-// Deck Floor - the core of water/atmos simulation
+// Deck Floor - the core of the water simulation
 // ============================================================
 
 /turf/floor/sub_deck
@@ -165,14 +166,6 @@
 
 	// ---- Compartment System ----
 	var/compartment_id = ""        // Which compartment this tile belongs to (e.g. "forward_torpedo", "reactor_room")
-	var/compartment_pressure = 1   // Atmosphere: 1.0 = 1 atm (normal), <1 = vacuum/low, >1 = overpressure
-
-	// ---- Atmospheric Vars ----
-	var/oxygen_moles = 20.0        // Moles of O2 in this tile's air
-	var/co2_moles = 0.1            // Moles of CO2 (exhaled by mobs, produced by fires)
-	var/atmos_temperature = 293.15 // Kelvin (20 C = 293.15 K) -- avoids collision with turf.temperature
-	var/vent_active = FALSE        // Whether a ventilation duct is processing this tile
-	var/vent_id = ""               // Links vents to their duct network
 
 	// ---- Visual / Info ----
 	var/water_warning_sent = FALSE  // Prevents spamming "water rising!" messages
@@ -226,12 +219,8 @@
 	// 3. Drowning damage to mobs
 	if(water_depth >= 50)  // 50cm = ankle-deep, enough to start causing problems
 		apply_drowning_damage()
-
-	// 4. Atmospheric updates: significant water displaces oxygen
-	if(water_depth >= 30)
-		var/water_displacement = water_depth / max_water  // 0 to 1
-		oxygen_moles = max(0, oxygen_moles * (1 - water_displacement * 0.3))
-		compartment_pressure = max(0.3, 1.0 - (water_displacement * 0.7))
+	// Air is handled per compartment by the flooding controller: water
+	// shrinks the compartment's air pocket and inflow lets air escape.
 
 // Water flows to adjacent tiles with lower water depth
 /turf/floor/sub_deck/proc/spread_water()
@@ -428,63 +417,14 @@
 				overlays += corner_img
 
 // ============================================================
-// Atmospheric System
+// Air
 // ============================================================
 
-// Called by the flooding controller each tick
-/turf/floor/sub_deck/proc/atmos_tick()
-	// Oxygen depletion from mobs breathing
-	for(var/mob/living/L in src)
-		if(oxygen_moles > 0.5)
-			oxygen_moles -= 0.05  // Each mob consumes ~0.05 moles/tick
-			co2_moles += 0.03     // Produces CO2
-
-	// CO2 buildup: if too high, mobs start suffocating
-	if(co2_moles > SUB_ATMOS_DANGER_CO2)
-		for(var/mob/living/human/H in src)
-			H.losebreath = max(H.losebreath + 1, 1)
-			if(prob(3))
-				to_chat(H, "<span class='danger'>The air is thick with CO2!</span>")
-
-	// Low oxygen: damage and messages
-	if(oxygen_moles < 5)
-		for(var/mob/living/human/H in src)
-			H.losebreath = max(H.losebreath + 1, 1)
-			if(world.time - last_damage_tick > 10)
-				H.adjustOxyLoss(2)
-				last_damage_tick = world.time
-				if(prob(8))
-					to_chat(H, "<span class='danger'>You gasp for air — the oxygen is gone!</span>")
-
-	// Ventilation: if a vent is active, equalize with duct network
-	if(vent_active && vent_id)
-		process_ventilation()
-
-	// Recalculate pressure from gas moles
-	// PV = nRT, simplified: pressure in kPa from moles in a ~2m^3 tile
-	compartment_pressure = clamp((oxygen_moles + co2_moles) * 8.314 * atmos_temperature / 2000 / 101.325, 0, 2)
-
-/turf/floor/sub_deck/proc/process_ventilation()
-	if(!global.subcom_flooding) return
-	var/datum/flooding_controller/FC = global.subcom_flooding
-
-	// Find the duct network for this vent_id
-	if(FC.vent_networks[vent_id])
-		var/list/network_turfs = FC.vent_networks[vent_id]
-		// Average the oxygen across all connected turfs
-		var/total_o2 = 0
-		var/total_co2 = 0
-		var/tile_count = 0
-		for(var/turf/floor/sub_deck/T in network_turfs)
-			total_o2 += T.oxygen_moles
-			total_co2 += T.co2_moles
-			tile_count++
-		if(tile_count > 0)
-			var/avg_o2 = total_o2 / tile_count
-			var/avg_co2 = total_co2 / tile_count
-			// Gradually equalize (vents don't teleport air instantly)
-			oxygen_moles = mix_value(oxygen_moles, avg_o2, 0.3)
-			co2_moles = mix_value(co2_moles, avg_co2, 0.3)
+// The compartment air this tile shares, or null outside any compartment.
+/turf/floor/sub_deck/proc/compartment_air()
+	if(!global.subcom_flooding)
+		return null
+	return global.subcom_flooding.get_air(compartment_id)
 
 // ============================================================
 // Examine / Info
@@ -507,10 +447,12 @@
 				water_desc = "<span class='danger'>This compartment is completely submerged!</span>"
 		to_chat(user, water_desc)
 
-	if(oxygen_moles < 5)
-		to_chat(user, "<span class='warning'>The air smells stale and oxygen-depleted.</span>")
-	if(co2_moles > 3)
-		to_chat(user, "<span class='danger'>The CO2 concentration is dangerously high!</span>")
+	var/datum/habitat_ledger/air = compartment_air()
+	if(air)
+		if(air.oxygen_kpa() < HABITAT_MIN_OXYGEN_KPA)
+			to_chat(user, "<span class='warning'>The air smells stale and oxygen-depleted.</span>")
+		if(air.co2_kpa() > HABITAT_MAX_CO2_KPA)
+			to_chat(user, "<span class='danger'>The CO2 concentration is dangerously high!</span>")
 
 // ============================================================
 // Compartment Floor Subtypes - pre-configured for mapmaking

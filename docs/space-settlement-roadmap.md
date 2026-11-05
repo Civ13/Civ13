@@ -57,7 +57,7 @@ The genre's systems, and where each lands:
 | Research gating | Research tree nodes, Digital Age ordinal 9 (#3736), 3D printer (#3743), drones and consumer electronics (#3745) | No space branch |
 | Power | Cable grid and batteries (`code/modules/1713/machinery/`), renewables (#3603), nuclear generation | No storm/night coupling for solar off-world |
 | Food | Hydroponics design and trays ([design](hydroponics-design.md)) | Off-world nutrient and water supply |
-| Atmosphere | Inherited `xgm` gas mixtures and submarine compartments (`code/modules/submarine/`) | Not reused: Val asked (2026-11-05) for a streamlined, highly efficient system instead of SS13-style atmospherics. Habitats use their own module ledger (below) |
+| Atmosphere | Inherited `xgm` gas mixtures (`code/modules/xgm/`); submarine compartments now each hold one habitat air ledger (`code/modules/submarine/`) | `xgm` not reused: Val asked (2026-11-05) for a streamlined, highly efficient system instead of SS13-style atmospherics. Habitats and submarines use the module ledger (below) |
 | Vehicles | Modular vehicle frames and car workshop (`code/modules/1713/machinery/modular_vehicles/`) | No sealed cabin or battery drive |
 | Chemistry and fuel | Chemistry processing and automation ([design](chemistry-automation-design.md)), fracking, refining | No cryogenic propellant |
 | Mining | Resource extraction, dug underground (#3742) | No off-world ore or ice tables |
@@ -130,7 +130,8 @@ Val chose phase 0 then phase 1 on 2026-11-05.
 
 - Habitat air ledger (`code/modules/space/habitat_ledger.dm`), barren ground
   turfs and the barren outdoor area (`code/modules/space/barren_world.dm`), tested by
-  `tests/space_settlement/probe.dm`. Nothing places or creates them yet.
+  `tests/space_settlement/probe.dm`. Nothing places barren ground yet; submarine
+  compartments (SUBCOM13) are the first ledger users, one ledger per compartment.
 - The Spaceflight research branch moves to phase 1, where its first nodes
   unlock the probe recipes, so players never see empty nodes.
 - Barren region maps: `preset --barren` and `playable --skin barren` in
@@ -175,7 +176,10 @@ come with phase 3, when there is something to save.
   so no backlog after a restart). Photographs print a survey record; the drill
   takes up to 3 samples (regolith, rock beside ridges, sediment, ice); the
   ascent stage at the landing site drops the samples by the console and ends
-  the mission. The console analyses a sample into research notes on Planetary
+  the mission. The console keeps a survey record across missions (cells seen,
+  sites cored and photographed, landing sites) for phase 2 to pick landing
+  zones from; it resets only when the survey map changes. The console
+  analyses a sample into research notes on Planetary
   Survey, which unlocks the advanced probe (160 battery, 18-cell relay, wider
   camera, 5 samples). Planetary Survey is an ordinary node, not a prototype
   node, because prototype nodes are the era-changing capstones.

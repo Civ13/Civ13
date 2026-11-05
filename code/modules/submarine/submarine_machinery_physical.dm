@@ -382,8 +382,10 @@ var/global/list/sub_physical_machines = list()
 // ============================================================
 
 // --- 5c. VENT DUCT ---
-// Links deck turfs into a ventilation network. Air equalizes
-// across all turfs in the same vent_id network.
+// Connects its compartment to the central ventilation system. While the
+// duct is open and the compartment's ventilation is on (compartment
+// panel), its air is drawn toward the shared air of every other
+// ventilated compartment.
 
 /obj/structure/machinery/sub_physical/vent_duct
 	name = "ventilation duct"
@@ -393,8 +395,7 @@ var/global/list/sub_physical_machines = list()
 	health = 60
 	max_health = 60
 	density = FALSE
-	var/vent_id = "main"           // Network ID - all ducts with same vent_id are connected
-	var/flow_rate = 0.3            // Lerp factor for air equalization (0 = no flow, 1 = instant)
+	var/vent_id = "main"           // Label shown when inspected
 	var/active = TRUE
 
 // Predefined vent ducts - one per compartment, each with its own air network
@@ -434,21 +435,6 @@ var/global/list/sub_physical_machines = list()
 	name = "vent duct - engine room"
 	vent_id = "engine_room"
 
-/obj/structure/machinery/sub_physical/vent_duct/New()
-	..()
-	// Register with the flooding controller
-	if(global.subcom_flooding)
-		var/turf/floor/sub_deck/my_turf = get_turf(src)
-		if(my_turf && istype(my_turf))
-			global.subcom_flooding.register_vent(vent_id, my_turf)
-
-/obj/structure/machinery/sub_physical/vent_duct/Destroy()
-	if(global.subcom_flooding)
-		var/turf/floor/sub_deck/my_turf = get_turf(src)
-		if(my_turf && istype(my_turf))
-			global.subcom_flooding.unregister_vent(vent_id, my_turf)
-	..()
-
 /obj/structure/machinery/sub_physical/vent_duct/attack_hand(mob/user)
 	if(!can_use_sub(user)) return
 	active = !active
@@ -483,9 +469,9 @@ var/global/list/sub_physical_machines = list()
 	max_health = 70
 	var/active = FALSE
 	var/power_draw = 25            // kW per tick
-	var/scrub_rate = 0.5           // Moles of CO2 removed per tick
+	var/scrub_rate = SUB_AIR_SCRUB_RATE // kPa-tiles of CO2 removed per second
 	var/inject_o2 = FALSE          // If TRUE, also injects O2 (from electrolysis)
-	var/o2_inject_rate = 0.2       // Moles of O2 added per tick when inject_o2 is TRUE
+	var/o2_inject_rate = SUB_AIR_SCRUB_RATE // kPa-tiles of O2 added per second when inject_o2 is TRUE
 	var/scrub_channel = 0
 
 /obj/structure/machinery/sub_physical/scrubber/attack_hand(mob/user)
@@ -519,18 +505,15 @@ var/global/list/sub_physical_machines = list()
 
 	my_sub.battery_current -= power_draw
 
-	// Scrub CO2 from all turfs in the compartment
+	// Scrub CO2 from the compartment's shared air
 	var/turf/floor/sub_deck/my_turf = get_turf(src)
 	if(!my_turf || !istype(my_turf)) return
 	if(!my_turf.compartment_id) return
 
 	if(global.subcom_flooding)
-		var/list/comp_turfs = global.subcom_flooding.compartment_turfs[my_turf.compartment_id]
-		if(comp_turfs)
-			for(var/turf/floor/sub_deck/T in comp_turfs)
-				T.co2_moles = max(0, T.co2_moles - scrub_rate)
-				if(inject_o2)
-					T.oxygen_moles = min(30, T.oxygen_moles + o2_inject_rate)
+		global.subcom_flooding.scrub_co2(my_turf.compartment_id, scrub_rate)
+		if(inject_o2)
+			global.subcom_flooding.inject_oxygen(my_turf.compartment_id, o2_inject_rate)
 
 // --- 5e. HULL BREACH SEALANT SPRAYER ---
 // Emergency tool: sprays a fast-curing polymer to seal small hull breaches.

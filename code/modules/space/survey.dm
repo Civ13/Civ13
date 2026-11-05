@@ -304,10 +304,13 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	var/comms_range = 0
 	var/sample_capacity = 0
 	var/sight_range = 1
-	var/revealed = "" // one character per cell, "1" once seen
+	// The survey record outlives each mission (later phases read it to pick
+	// landing zones); it resets only when the survey map itself changes.
+	var/revealed = "" // one character per cell, "1" once any probe saw it
 	var/list/samples = list() // sample kinds aboard
-	var/list/sampled = list() // "x,y" cells already drilled
-	var/list/photographed = list() // "x,y" cells already recorded
+	var/list/sampled = list() // "x,y" cells already drilled, on any mission
+	var/list/photographed = list() // "x,y" cells already recorded, on any mission
+	var/list/landing_sites = list() // "x,y" of every probe landing
 	var/tmp/last_recharge = null
 
 /obj/structure/survey_console/proc/begin_mission(obj/item/space_probe/P, datum/survey_map/M, lx = null, ly = null)
@@ -319,11 +322,10 @@ var/global/datum/survey_map/space_survey_map_cache = null
 		ly = site[2]
 	if (M.cell(lx, ly) != SURVEY_PLAIN)
 		return FALSE
+	if (map_seed != M.seed || map_width != M.width || map_height != M.height || length(revealed) != M.width * M.height)
+		reset_survey(M)
 	mission = TRUE
 	probe_name = P.name
-	map_seed = M.seed
-	map_width = M.width
-	map_height = M.height
 	land_x = lx
 	land_y = ly
 	probe_x = lx
@@ -334,23 +336,30 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	sample_capacity = P.sample_capacity
 	sight_range = P.sight_range
 	samples = list()
-	sampled = list()
-	photographed = list()
-	var/list/zeros = list()
-	for (var/i = 1 to map_width * map_height)
-		zeros += "0"
-	revealed = jointext(zeros, "")
+	landing_sites |= "[lx],[ly]"
 	reveal_around(probe_x, probe_y)
 	last_recharge = world.time
 	return TRUE
 
+// Forgets the survey record: only when the survey map was replaced.
+/obj/structure/survey_console/proc/reset_survey(datum/survey_map/M)
+	map_seed = M.seed
+	map_width = M.width
+	map_height = M.height
+	var/list/zeros = list()
+	for (var/i = 1 to map_width * map_height)
+		zeros += "0"
+	revealed = jointext(zeros, "")
+	sampled = list()
+	photographed = list()
+	landing_sites = list()
+
+// Ends a flight. The survey record (revealed, sampled, photographed and
+// landing_sites) stays for the next probe.
 /obj/structure/survey_console/proc/end_mission()
 	mission = FALSE
 	probe_name = ""
-	revealed = ""
 	samples = list()
-	sampled = list()
-	photographed = list()
 	battery = 0
 	last_recharge = null
 
