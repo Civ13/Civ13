@@ -275,7 +275,9 @@ An arm takes from a port behind it (belt exit, crate, parts bin, or the output
 stacks on a drill, sifter or stamp mill tile) or a loose floor item, and only
 lifts an item it can set down in front: into a port, or onto a clear floor of
 fewer than 12 items. A partial insert (a nearly full stamp mill hopper) keeps
-the rest held for the next swing. A wrench turns an arm while it is off; a
+the rest held for the next swing. While it is off, the Rotate verbs turn an
+arm and a wrench fastens or unfastens it, like the other factory machines and
+fluid parts; unfastened parts do no work. A
 direction arrow overlay shows where it sends items. A running arm saves its
 switch and resumes after a reload; stored time never pays out a swing.
 

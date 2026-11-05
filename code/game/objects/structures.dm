@@ -45,6 +45,7 @@
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			to_chat(user, (src.anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
 			src.anchored = !src.anchored
+			anchor_changed()
 			return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -62,6 +63,10 @@
 				b.loc = (get_turf(src))
 			qdel(src)
 			return
+
+// Called after a wrench fastens or unfastens the structure.
+/obj/structure/proc/anchor_changed()
+	return
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))
