@@ -162,16 +162,22 @@ class CharacterMemory:
                 problems.append(f"the roof at ({x + row['dx']},{y + row['dy']}) has no support and can collapse: "
                                 "build a roof support within 3 tiles of it (or a wall within 2)")
                 break
-        for item in self.data.get("structures", []):
-            if item.get("z") != z or max(abs(item["x"] - x), abs(item["y"] - y)) > radius:
+        # The game lists what the character can see, at most 64 things: a piece behind a wall, in the dark or
+        # past that cap is out of view, not gone. Only the tiles next to the character are surely in view.
+        ledger = self.data.get("structures", [])
+        listing_full = len(observation.get("nearby", [])) >= 64
+        for item in list(ledger):
+            if item.get("z") != z or max(abs(item["x"] - x), abs(item["y"] - y)) > min(radius, 1):
                 continue
             name = item["name"].lower()
-            if not any(word in name for word in VISIBLE_STRUCTURES):
+            if listing_full or not any(word in name for word in VISIBLE_STRUCTURES):
                 continue
             present = any(max(abs(x + r["dx"] - item["x"]), abs(y + r["dy"] - item["y"])) <= 1
                           and _lower(r) and (name in _lower(r) or _lower(r) in name) for r in rows)
             if not present:
                 problems.append(f"your {item['name']} at ({item['x']},{item['y']}) is gone: rebuild it, or check what holds up the roof near it")
+                ledger.remove(item)  # said once; a rebuilt one goes back in the ledger
+                self.dirty = True
         return problems[:3]
 
     def set_home(self, x, y, z, why="home"):

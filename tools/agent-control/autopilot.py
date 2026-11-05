@@ -15,6 +15,7 @@ import argparse
 import concurrent.futures
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -1614,7 +1615,7 @@ def remember_results(memory, plan, summary, self_state, steps=(), rows=None):
 
 
 # How many of a recipe a camp can use in a while; past that, more of it is an old habit, not progress.
-HABIT_CAPS = (("wall", 12), ("roof", 12), ("floor", 9), ("support", 6), ("plank", 6), ("arrow", 20))
+HABIT_CAPS = (("wall", 12), ("roof", 12), ("floor", 9), ("support", 6), ("plank", 6), ("arrow", 20), ("fence", 16), ("palisade", 16))
 HABIT_WINDOW = 25  # steps
 HABIT_DEFAULT = 3
 
@@ -1623,7 +1624,11 @@ def habit_problem(plan, made_recent, step, goal):
     """Why a plan repeats a recipe the goal does not need ("" when it is fine)."""
     for item in plan:
         recipe = str(item.get("recipe") or "").lower() if item.get("do") in ("craft", "build") else ""
-        if not recipe or recipe in goal.lower():
+        if not recipe:
+            continue
+        # The goal names kinds, not materials: "walls" asks for a stone wall, and "(2 stone)" does not.
+        kind = recipe.split()[-1]
+        if recipe in goal.lower() or re.search(r"\b" + re.escape(kind), goal.lower()):
             continue
         cap = next((limit for word, limit in HABIT_CAPS if word in recipe), HABIT_DEFAULT)
         count = sum(1 for turn, name in made_recent if name == recipe and turn > step - HABIT_WINDOW)

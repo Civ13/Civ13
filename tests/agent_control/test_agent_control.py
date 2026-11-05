@@ -995,7 +995,28 @@ class StructureAndHabitTest(unittest.TestCase):
         observation["here"] = {}
         observation["nearby"][0]["supported"] = True
         self.assertEqual(self.memory.maintenance(observation), [])
+        self.memory.built("roof support", 11, 10, 2)  # a gone piece is said once and dropped, so put it back for recall
         self.assertIn("REPAIR", self.memory.recall({**observation, "nearby": []}))
+
+    def test_out_of_view_pieces_are_not_called_gone(self):
+        me = {"x": 10, "y": 10, "z": 2}
+        self.memory.built("wooden door", 13, 10, 2)  # 3 tiles off: may be behind a wall or in the dark
+        self.memory.built("campfire", 11, 10, 2)
+        crowd = [{"name": "stick", "dx": 2, "dy": 2} for _ in range(64)]  # the game lists at most 64 things
+        self.assertEqual(self.memory.maintenance({"self": me, "nearby": crowd, "terrain": []}), [])
+        problems = self.memory.maintenance({"self": me, "nearby": [], "terrain": []})
+        self.assertEqual(problems, ["your campfire at (11,10) is gone: rebuild it, or check what holds up the roof near it"])
+        self.assertEqual(self.memory.maintenance({"self": me, "nearby": [], "terrain": []}), [])  # said once, then forgotten
+        self.assertEqual([s["name"] for s in self.memory.data["structures"]], ["wooden door"])
+
+    def test_habit_guard_lets_the_goal_and_camp_fences_through(self):
+        walls = [(step, "stone wall") for step in range(1, 13)]
+        plan = [{"do": "build", "recipe": "stone wall", "dir": "north"}]
+        shelter = autopilot.current_goal({"self": {"water": 900, "nutrition": 900, "right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}}, "nearby": [{"name": "campfire"}]})[0]
+        self.assertEqual(autopilot.habit_problem(plan, walls, 13, shelter), "")  # "walls" in the goal covers a stone wall
+        self.assertIn("old habit", autopilot.habit_problem(plan, walls, 13, "make a pickaxe: a stone pickaxe (2 stone)"))  # a material word is not the goal
+        fences = [(step, "wooden fence") for step in range(1, 11)]
+        self.assertEqual(autopilot.habit_problem([{"do": "build", "recipe": "wooden fence", "dir": "north"}], fences, 11, "build a campfire"), "")
 
     def test_unsafe_rock_and_unsupported_places_take_priority(self):
         me = {"ref": "[0x1]", "x": 1, "y": 1, "left_hand": {"name": "bone pickaxe"}, "right_hand": None, "active_hand": "left"}
