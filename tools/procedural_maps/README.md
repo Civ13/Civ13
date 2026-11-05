@@ -24,10 +24,11 @@ versioned configuration. UNDERGROUND_CAVERN generates noise-grown chambers
 joined by winding tunnels, fresh spring pools cut into the rock, isolated fungus
 pillars and paired surface exits; use `preset --profile UNDERGROUND_CAVERN`.
 Legacy oceanic schema 1 rejects explicitly. Native resource, hydraulic,
-climate/elevation and persistence integration remain incomplete. FOOD/WOOD/STONE
+climate (beyond the playable map's elevation lapse rate) and persistence
+integration remain incomplete. FOOD/WOOD/STONE
 are abstract labels in the bundle; `playable BUNDLE --out FILE.dmm` writes a
-separate region map with native supplies, open cave floors and cave ladders
-(see docs/procedural-maps.md). No reference-matching seed
+separate region map with native supplies, open cave floors, cave ladders and
+an elevation profile with a temperature lapse rate (see docs/procedural-maps.md). No reference-matching seed
 has been demonstrated. A static parse-back check is not native gameplay or
 Dream Maker editor acceptance.
 

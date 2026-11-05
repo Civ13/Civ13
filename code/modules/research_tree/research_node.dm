@@ -279,6 +279,11 @@ var/global/list/node_grid_col_cache = null
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
+	// Furriery (fur coats, hats and caps from pelts) is survival clothing, so it
+	// lives in the Main tree: its era baseline reaches factionless players, who
+	// can never research the specialist Tailoring tree. Without it, any era past
+	// the Stone Age left them no warm coat at all.
+	register_research_node(new /datum/research_node("furriery", "Furriery", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 1))
 	// --- Industrial: Furniture ---
 	register_research_node(new /datum/research_node("basic_furniture", "Basic Furniture", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("fine_furniture", "Fine Furniture", "Industrial", 130, 1, RESEARCH_MODE_ANALYSIS, list("basic_furniture"), 2))
@@ -376,7 +381,6 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("public_health", "Public Health", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("germ_theory"), 7))
 	// --- Tailoring tree: Textiles (clothing by era, reachable via Weaving) ---
 	register_research_node(new /datum/research_node("classical_dress", "Classical Dress", "Textiles", 95, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 1, null, "Tailoring"))
-	register_research_node(new /datum/research_node("furriery", "Furriery", "Textiles", 95, 0, RESEARCH_MODE_ANALYSIS, list("weaving"), 1, null, "Tailoring"))
 	register_research_node(new /datum/research_node("tailoring", "Tailoring", "Textiles", 130, 1, RESEARCH_MODE_ANALYSIS, list("classical_dress"), 2, null, "Tailoring"))
 	register_research_node(new /datum/research_node("fine_garments", "Fine Garments", "Textiles", 165, 2, RESEARCH_MODE_ANALYSIS, list("tailoring"), 3, null, "Tailoring"))
 	register_research_node(new /datum/research_node("haberdashery", "Haberdashery", "Textiles", 165, 2, RESEARCH_MODE_ANALYSIS, list("tailoring"), 3, null, "Tailoring"))

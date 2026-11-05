@@ -17,6 +17,20 @@ BARK = '/obj/item/stack/bark'
 STATION = '/obj/structure/converter/tanning'
 
 
+def pelt_label(source, files):
+    """Player-facing hide name from the stack definition: 'black bear pelt', never a bare 'black'."""
+    for path in (LOGS, LEATHER):
+        block = re.search(r'^' + re.escape(source) + r'\s*\n((?:[ \t]+[^\n]*\n?)*)', files.get(path, ''), re.M)
+        if block:
+            name = re.search(r'^\s*name\s*=\s*"([^"]+)"', block[1], re.M)
+            if name:
+                return name[1].strip()
+    # Fall back to the type path: pelt/bearpelt/white -> white bear pelt.
+    parts = source.removeprefix(STACK).split('/')
+    parts = [part.replace('pelt', '').replace('_', ' ').strip() for part in reversed(parts)]
+    return ' '.join(part for part in parts if part) + ' pelt'
+
+
 def add_tanning(files, add, records, variants):
     audit = json.loads(Path(__file__).with_name('tanning-contracts.json').read_text())
     for path, expected in audit['sources'].items():
@@ -55,7 +69,7 @@ def add_tanning(files, add, records, variants):
                'Turkeys do not yield mammalian organs, bones, sinew or fat. One claim per corpse.'), ['Held sharp tool'])
     pelts = sorted(set(re.findall(r'new (/obj/item/stack/material/pelt[^\s(]*)\(site,', files[HARVEST])))
     for source in [STACK+'rawhide', STACK+'pelt', *pelts]:
-        name = source.rsplit('/', 1)[1].replace('_', ' ')
+        name = pelt_label(source, files)
         route('Scrape '+name+' into a prepared hide', [(source, 1)], [(STACK+'hairlesshide', 1)], LEATHER,
               '/obj/item/stack/material/proc/prepare_hide(',
               ('Apply a held sharp tool to a nearby raw hide or fur pelt; complete 50 ticks of scraping.',

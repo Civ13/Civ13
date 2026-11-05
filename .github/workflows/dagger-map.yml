@@ -5,6 +5,7 @@ on:
     paths:
       - tests/dagger_map/**
       - maps/WIP/dagger_train_home.*
+      - maps/WIP/dagger_raid_train.*
       - .github/workflows/dagger-map.yml
   workflow_dispatch:
 permissions:
@@ -28,4 +29,6 @@ jobs:
         run: |
           python3 tests/dagger_map/build_map.py --check
           python3 tests/dagger_map/validate_map.py
+          python3 tests/dagger_map/build_raid_train.py --check
+          python3 tests/dagger_map/validate_raid_train.py
           python3 -m unittest discover -s tests/dagger_map -p 'test_*.py' -v

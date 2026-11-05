@@ -176,13 +176,14 @@ def load(source=None, dimensions=(8, 6, 2), filesystem=None):
     class Map:
         def __init__(self, default=0, regions=None):
             self.elevation_default_metres, self.elevation_regions = default, regions
+            self.elevation_regions_text = None  # map-file form; generated maps only
             self.elevation_profile_cache = None
     for name, args in (
         ('effective_elevation_profile', ''), ('elevation_snapshot', ''),
         ('restore_elevation_snapshot', 'list/round_state, maxx, maxy, maxz'),
     ):
         setattr(Map, name, compile_proc(source, '/obj/map_metadata/proc/' + name + '(' + args + ')', env,
-                    fields=('elevation_default_metres', 'elevation_regions', 'elevation_profile_cache', 'effective_elevation_profile')))
+                    fields=('elevation_default_metres', 'elevation_regions', 'elevation_regions_text', 'elevation_profile_cache', 'effective_elevation_profile')))
     env['Map'] = Map
     def get_turf(value):
         while value is not None and not getattr(value, 'is_turf', False):
