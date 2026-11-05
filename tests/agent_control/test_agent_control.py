@@ -343,7 +343,8 @@ class AutopilotTests(unittest.TestCase):
         spare = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint"}, "intent": "grab"}
         self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], spare)[0], [{"do": "drop"}, {"do": "click", "target": "[0x1]"}])
         tools = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint hatchet"}, "intent": "grab"}
-        self.assertIn("both tools", autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools)[1])
+        # Two tools: the weaker weapon (the flint) is put away and the hatchet stays in hand; nothing is refused.
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], tools), ([{"do": "swap_hand"}, {"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "click", "target": "[0x1]"}], ""))
         leaves = {"active_hand": "left", "left_hand": {"name": "leaf bundles"}, "right_hand": {"name": "sharpened flint"}, "intent": "grab"}
         self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:1], [{"do": "drop"}])  # leaves may stay on the ground
         stick = dict(leaves, left_hand={"name": "stick"})
@@ -424,14 +425,24 @@ class AutopilotTests(unittest.TestCase):
                 self.sent.append((action, args))
                 if action == "character_queue":
                     return {"ok": True}
-                return {"ok": True, "result": {"self": {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm"},
-                                               "nearby": [{"ref": "[0x5]", "name": "leaf bundles", "dx": 0, "dy": 1, "item": True}], "queue": {"results": [{"id": 4}]}}}
+                return {"ok": True, "result": {"self": dict({"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm"}, **self.me),
+                                               "nearby": [{"ref": "[0x5]", "name": "leaf bundles", "dx": 0, "dy": 1, "item": True}], "queue": {"results": [{"id": 4, "do": "click", "ok": True, "detail": "done"}]}}}
 
         client = FakeClient()
+        client.me = {}
         detail, since = autopilot.collect(client, "[0x9]", 0, "leaf")
         self.assertEqual(detail, "picked up the leaf bundles")
         self.assertEqual(since, 4)
         self.assertIn(("character_queue", {"character": "[0x9]", "actions": [{"do": "swap_hand"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x5]"}]}), client.sent)
+        client.sent.clear()
+        # Both hands full: the spare (a stick, not the flint) is stowed or dropped first instead of leaving the find behind.
+        client.me = {"left_hand": {"name": "stick"}}
+        detail, _ = autopilot.collect(client, "[0x9]", 0, "leaf")
+        self.assertEqual(detail, "picked up the leaf bundles")
+        queued = [args for action, args in client.sent if action == "character_queue"]
+        self.assertEqual(queued[0], {"character": "[0x9]", "actions": [{"do": "swap_hand"}]})
+        self.assertEqual(queued[1], {"character": "[0x9]", "actions": [{"do": "equip"}, {"do": "drop"}], "stop_on_failure": False})  # a failed stow must not stop the pick-up
+        self.assertEqual(queued[2]["actions"][-1], {"do": "click", "target": "[0x5]"})
         client.sent.clear()
         autopilot.execute(client, "[0x9]", [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "say", "text": "hi"}], 0)
         queued = [args for action, args in client.sent if action == "character_queue"]
@@ -821,6 +832,9 @@ def _recipe(name, kind, inputs, outputs, era=0, conditions=""):
 TINY_CATALOG = {
     "recipes": [
         _recipe("bone pickaxe", "Material / global", [("/material/bone", "bone", "2")], [("/obj/item/weapon/material/pickaxe/bone", "bone")]),
+        _recipe("pickaxe", "Material / global", [("/material/sandstone", "sandstone", "2")], [("/obj/item/weapon/material/pickaxe/stone", "sandstone")]),
+        _recipe("stone pickaxe", "Material / global", [("/material/stone", "stone", "2")], [("/obj/item/weapon/material/pickaxe/stone", "stone")]),
+        _recipe("campfire", "Material / global", [("/material/wood", "wood", "4")], [("/obj/structure/oven/fireplace", "wood")]),
         _recipe("bone pickaxe", "Material / camp", [("/material/bone", "bone", "6")], [("/obj/item/weapon/material/pickaxe/camp", "bone")]),
         _recipe("stone anvil", "Material / global", [("/material/stone", "stone", "25")], [("/obj/structure/anvil/stone", "stone")]),
         _recipe("iron anvil", "Material / global", [("/material/iron", "iron", "20")], [("/obj/structure/anvil", "iron")], era=2),
@@ -889,7 +903,35 @@ class TechTreeTest(unittest.TestCase):
         self.assertEqual(self.tree.gather_hint("/obj/item/stack/ore/charcoal"), "")  # made at a fire, not mined
         self.assertTrue(self.tree.gather_hint("/obj/item/stack/ore/copper"))
 
+    def test_stone_pickaxe_is_not_made_with_a_pickaxe(self):
+        # The query's own words pick the stone route over the sandstone "pickaxe" recipe for the same item, and the
+        # way to get stone must not need the pickaxe being made.
+        text = self.tree.describe("stone pickaxe")
+        self.assertIn("make stone pickaxe from 2 stone", text)
+        self.assertNotIn("sandstone", text)
+        self.assertIn("bone pickaxe", text)
+        self.assertNotIn("mine underground rock with a pickaxe;", text)
+        self.assertEqual(self.tree.describe("stone"), "get stone: mine underground rock with a pickaxe")  # the plain way when nothing circular is planned
+        self.assertEqual(self.tree.gather_hint("/material/stone", ["stone wall"]), "mine underground rock with a pickaxe")
+        self.assertIn("bone pickaxe", self.tree.gather_hint("/material/stone", ["stone pickaxe"]))
+
+    def test_stone_age_chain_is_in_the_book(self):
+        self.assertEqual(self.tree.find("sharpened flint"), "/obj/item/weapon/flint/sharpened")
+        self.assertEqual(self.tree.find("stick"), "/obj/item/weapon/branch")
+        self.assertEqual(self.tree.find("spear"), "/obj/item/weapon/branch/sharpened")
+        self.assertEqual(self.tree.find("flint axe"), "/obj/item/weapon/material/hatchet/tribal/flint")
+        axe = self.tree.describe("flint hatchet", limit=8)
+        for phrase in ("break_branch", "sharpen_stick", "bind_axe", "crude twine"):
+            self.assertIn(phrase, axe)
+        self.assertIn("sharpen_flint", self.tree.describe("sharpened flint"))
+        self.assertEqual(self.tree.describe("flint hatchet", carried=["sharpened stick", "sharpened flint", "crude twine"], limit=8).count("; then"), 0)  # only the binding is left
+        self.assertIn("get wood logs: chop a tree", self.tree.describe("campfire"))  # what the stack is called in hand
+
     def test_recipe_book_requests_and_goal_items(self):
+        for goal in ("find flint at a rock and sharpen it", "sharpen your flint on a rock", "make a spear: break a branch", "make a flint axe: cut_grass",
+                     "chop a tree with your axe", "build a campfire: {}", "build a shelter next to your campfire", "mine ore: craft a bone shovel"):
+            self.assertTrue(autopilot.goal_item(goal), goal)  # every early ladder goal has a HOW line
+            self.assertTrue(self.tree.find(autopilot.goal_item(goal)) or goal.startswith(("build a shelter", "mine ore")), goal)
         self.assertEqual(autopilot.recipe_request('{"plan": [{"do": "recipe", "item": "anvil"}]}'), "anvil")
         self.assertEqual(autopilot.recipe_request('{"do": "recipe", "item": "clay kiln"}'), "clay kiln")
         self.assertIsNone(autopilot.recipe_request('{"do": "say", "text": "hi"}'))
@@ -1167,6 +1209,82 @@ class GreetingTest(unittest.TestCase):
         self.assertEqual(autopilot.trim_greetings(only, ["Bob"], greeted, 160.0), only)  # nothing else to say: leave it
         self.assertEqual(autopilot.trim_greetings([{"do": "say", "text": "Hey Bob I found flint by the river."}], ["Bob"], greeted, 160.0)[0]["text"],
                          "Hey Bob I found flint by the river.")  # no punctuation after the greeting: not trimmed
+
+
+class ReviewFixesTest(unittest.TestCase):
+    """Findings from in-game runs: hand churn, silent refusals, forgotten products, habit spelling, plank wording."""
+
+    def test_two_tools_free_a_hand_by_stowing_the_weaker_weapon(self):
+        self.assertEqual(autopilot._free_active("sharpened flint", "flint hatchet"), [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}])
+        self.assertEqual(autopilot._free_active("flint hatchet", "sharpened flint"), [{"do": "swap_hand"}, {"do": "equip", "soft": True}, {"do": "drop", "soft": True}])
+        self.assertEqual(autopilot._free_active("flint hatchet", "wood logs"), [{"do": "swap_hand"}, {"do": "equip", "soft": True}, {"do": "drop", "soft": True}])  # material before a tool
+        self.assertEqual(autopilot._free_active("sharpened stick", "leaf bundles"), [{"do": "swap_hand"}, {"do": "drop"}])
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": {"name": "flint hatchet"}, "intent": "harm"}
+        rows = {"[0x3]": {"ref": "[0x3]", "name": "sharpened stick", "dx": 0, "dy": 0, "item": True}}
+        steps, error = autopilot.expand_plan([{"skill": "pick_up", "target": "[0x3]"}], me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x3]"}])
+        self.assertNotIn("both tools", autopilot.expand_plan([{"skill": "find_flint", "target": "[0x3]"}], me, {"[0x3]": {"ref": "[0x3]", "name": "rock", "dx": 1, "dy": 0}})[1])
+
+    def test_crafting_with_full_hands_frees_one_for_the_material(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}, "intent": "help", "carried": ["wood logs (pocket)"]}
+        plan = autopilot.parse_plan('{"do": "craft", "recipe": "campfire", "material": "wood log"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(plan, me)[0], [{"do": "swap_hand"}, {"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "take", "item": "wood logs"}, {"do": "craft", "recipe": "campfire"}])
+        self.assertEqual(autopilot.COLLECT_AFTER["chop"], "log")
+
+    def test_refusals_name_target_zero(self):
+        refs = ["[0x9]", "[0x1]"]
+        self.assertIn("that is you", autopilot.plan_problem('{"do": "go", "target": 0}', refs))
+        self.assertIn("that is you", autopilot.plan_problem('{"plan": [{"do": "flee", "target": 0}]}', refs))
+        self.assertEqual(autopilot.plan_problem('{"plan": []}', refs), "your plan was empty")
+        self.assertIn("not yourself", autopilot.expand_plan(autopilot.parse_plan('{"do": "attack", "target": 0}', refs), {"ref": "[0x9]"})[1])
+        source = (ROOT / "tools/agent-control/autopilot.py").read_text(encoding="utf-8")
+        self.assertIn('print(f"step {step}: wait ({answer[:120]!r}) -> {problem}")', source)  # the reason reaches the run log too
+
+    def test_first_products_from_hand_changes_are_remembered(self):
+        import shutil
+        import tempfile
+        from memory import CharacterMemory
+        folder = tempfile.mkdtemp()
+        try:
+            memory = CharacterMemory.load("Ada", folder)
+            before = {"x": 3, "y": 4, "active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": {"name": "stick"}, "carried": ["crude twine (pocket)"]}
+            after = dict(before, left_hand={"name": "sharpened stick"})
+            self.assertEqual(autopilot.new_products(before, after), ["sharpened stick"])
+            self.assertEqual(autopilot.new_products(after, dict(after, left_hand=None, carried=["crude twine (pocket)", "sharpened stick (belt)"])), [])  # only moved to the belt
+            autopilot.remember_products(memory, before, after)
+            autopilot.remember_products(memory, after, dict(after, right_hand={"name": "flint hatchet"}, left_hand=None, carried=[]))
+            self.assertEqual(memory.data["made"], {"sharpened stick": 1, "flint hatchet": 1})
+            self.assertEqual([e["text"] for e in memory.data["events"]], ["got my first sharpened stick at (3,4)", "got my first flint hatchet at (3,4)"])
+            autopilot.remember_products(memory, before, after)
+            self.assertEqual(memory.data["made"]["sharpened stick"], 2)
+            self.assertEqual(len(memory.data["events"]), 2)  # only the first of a kind is an event
+        finally:
+            shutil.rmtree(folder, ignore_errors=True)
+
+    def test_habit_guard_counts_a_recipe_however_it_is_spelled(self):
+        self.assertEqual(autopilot.recipe_key("floors/Thatch floor (1)"), "thatch floor")
+        self.assertEqual(autopilot.recipe_key("thatch floor"), "thatch floor")
+        floors = [(step, "thatch floor") for step in range(1, 10)]
+        plan = [{"do": "craft", "recipe": "floors/thatch floor (1)"}]
+        self.assertIn("old habit", autopilot.habit_problem(plan, floors, 10, "build a campfire"))
+
+    def test_wood_is_called_logs_and_the_model_window_has_one_system_prompt(self):
+        axe = {"self": {"water": 900, "nutrition": 900, "right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}}, "nearby": []}
+        goal = autopilot.current_goal(axe)[0]
+        self.assertIn("wood logs", goal)
+        self.assertNotIn("plank", goal)
+        with_logs = dict(axe, self=dict(axe["self"], carried=["wood logs (pocket)"]))
+        self.assertIn('"material": "wood log"', autopilot.current_goal(with_logs)[0])
+        self.assertNotIn("wooden plank", autopilot.SYSTEM)
+        self.assertIn("wood logs", autopilot.SYSTEM)
+        short = [{"role": "system", "content": "s"}, {"role": "user", "content": "u1"}]
+        self.assertEqual(autopilot.model_window(short), short)
+        long = [{"role": "system", "content": "s"}] + [{"role": "user", "content": str(i)} for i in range(20)]
+        window = autopilot.model_window(long)
+        self.assertEqual(window[0]["content"], "s")
+        self.assertEqual(len(window), 8)
+        self.assertEqual(sum(1 for m in window if m["role"] == "system"), 1)
 
 
 class MiningGoalTest(unittest.TestCase):
