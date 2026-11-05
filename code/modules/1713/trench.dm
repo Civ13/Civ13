@@ -561,6 +561,10 @@ var/list/global/floor_cache = list()
 		if (scalar.len != 2 || scalar["kind"] != "value" || !("value" in scalar))
 			throw EXCEPTION("Invalid irrigation scalar envelope")
 		return scalar["value"]
+	// Format 3 fields are envelopes, or raw scalars under value format 2.
+	value = persistence_saved_scalar(value)
+	if (islist(value))
+		throw EXCEPTION("Invalid irrigation scalar envelope")
 	return value
 
 /proc/validate_saved_irrigation(savefile/F, version)
@@ -570,7 +574,9 @@ var/list/global/floor_cache = list()
 		// freshwater or salinity from a name, artwork or the live destination.
 		if (fields.Find("irrigation") || fields.Find("irrigation_overlay"))
 			throw EXCEPTION("Unversioned irrigation entry requires explicit review")
-		if (fields.Find("name"))
+		// Only legacy version-2 files can hold a named channel without flags; a
+		// filled-in channel in a current save keeps its name and is not one.
+		if (version == 2 && fields.Find("name"))
 			var/saved_name = irrigation_saved_scalar(F, "name", version)
 			if (list("irrigation channel", "flooded irrigation channel", "flooded saltwater irrigation channel").Find(saved_name))
 				throw EXCEPTION("Legacy named irrigation channel has no durable state")
@@ -606,6 +612,7 @@ var/list/global/floor_cache = list()
 				to_chat(user, SPAN_NOTICE("You shove some dirt into the irrigation channel."))
 				irrigation = 0
 				irrigation_overlay = null
+				name = initial(name)
 				update_icon()
 				qdel(C)
 				return

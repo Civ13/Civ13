@@ -242,9 +242,9 @@
 		var/carrier_ref = lighting_saved_ref(F, /obj/item/persistence_light_container)
 		var/opaque_ref = lighting_saved_ref(F, /obj/item/persistence_clear_fixture)
 		var/clear_ref = lighting_saved_ref(F, /obj/item/persistence_opaque_fixture)
-		var/list/opaque_saved = F["[map_storage.entry_path(F, opaque_ref)]/opacity"]
-		var/list/clear_saved = F["[map_storage.entry_path(F, clear_ref)]/opacity"]
-		durable_world_check(islist(opaque_saved) && islist(clear_saved) && opaque_saved["value"] && !clear_saved["value"], "obstruction fixture values not exported")
+		var/opaque_saved = persistence_saved_scalar(F["[map_storage.entry_path(F, opaque_ref)]/opacity"])
+		var/clear_saved = persistence_saved_scalar(F["[map_storage.entry_path(F, clear_ref)]/opacity"])
+		durable_world_check(isnum(opaque_saved) && isnum(clear_saved) && opaque_saved && !clear_saved, "obstruction fixture values not exported")
 		durable_world_check(lamp_ref && carrier_ref, "saved light or container missing")
 		F.cd = map_storage.entry_path(F, lamp_ref)
 		durable_world_check(!("light" in F.dir) && !("light_sources" in F.dir), "runtime atom lighting fields exported")

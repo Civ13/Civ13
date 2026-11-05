@@ -160,6 +160,17 @@ var/global/persistence_saved_atom_construction = 0
 /proc/persistence_default_scalar(value)
 	return isnull(value) || isnum(value) || istext(value) || ispath(value)
 
+// Value format 2 writes a scalar field raw instead of as a "value" envelope.
+// Readers accept both. Returns the scalar, or a non-scalar envelope unchanged
+// for the caller to reject; a raw non-scalar node is never valid.
+/proc/persistence_saved_scalar(value)
+	if(!islist(value))
+		if(!persistence_default_scalar(value)) throw EXCEPTION("Invalid raw saved value")
+		return value
+	var/list/envelope = value
+	if(envelope["kind"] != "value") return envelope
+	return envelope["value"]
+
 var/global/list/persistence_field_allowlists = list()
 
 // The parsed map_storage_saved_vars allowlist, or null for changed-field types.
