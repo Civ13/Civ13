@@ -237,9 +237,21 @@
 		for (var/obj/item/organ/external/E in H.organs)
 			var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
 			var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
-			if (!bleeding && !broken && E.get_damage() < 5)
+			var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
+			if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
 				continue
-			wounds += list(list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken))
+			var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
+			// Field-care state: a cut artery wants a bandage tied as a tourniquet
+			// (the first bandage click does it), a break wants a splint.
+			if (artery)
+				row["artery_cut"] = TRUE
+			if (E.tourniquet)
+				row["tourniquet"] = TRUE
+			if (E.status & ORGAN_SPLINTED)
+				row["splinted"] = TRUE
+			if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
+				row["infected"] = TRUE
+			wounds += list(row)
 		out["wounds"] = wounds
 		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out

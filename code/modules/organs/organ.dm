@@ -154,9 +154,22 @@ var/list/organ_cache = list()
 	if (status & ORGAN_DEAD)
 		to_chat(user, "<span class='notice'>The decay has set in.</span>")
 
+// Antibiotic strength per unit, so each era has an infection cure: penicillin
+// is the full-strength reference, prontosil (sulfa drug) and the chewed
+// herbal remedy are weaker. A dose of 5 halts infection; 30 stops necrosis.
+var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herbal_remedy" = 0.5)
+
+/mob/living/human/proc/get_antibiotic_dose()
+	. = 0
+	for (var/id in antibiotic_strengths)
+		var/units = reagents ? reagents.get_reagent_amount(id) : 0
+		if (ingested)
+			units += ingested.get_reagent_amount(id)
+		. += units * antibiotic_strengths[id]
+
 /obj/item/organ/proc/handle_germ_effects()
 	//** Handle the effects of infections
-	var/antibiotics = owner.reagents.get_reagent_amount("penicillin")
+	var/antibiotics = owner.get_antibiotic_dose()
 
 	if (germ_level > 0 && germ_level < INFECTION_LEVEL_ONE && prob(30))
 		germ_level--
@@ -219,7 +232,7 @@ var/list/organ_cache = list()
 /obj/item/organ/proc/handle_antibiotics()
 	var/antibiotics = FALSE
 	if (owner)
-		antibiotics = owner.reagents.get_reagent_amount("penicillin")
+		antibiotics = owner.get_antibiotic_dose()
 
 	if (!germ_level || antibiotics < 5)
 		return
