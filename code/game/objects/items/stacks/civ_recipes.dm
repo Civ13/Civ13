@@ -86,12 +86,22 @@
 							current_res = list(185,185,185)
 						if (8)
 							current_res = list(210,210,210)
+						if (9)
+							current_res = list(240,240,240)
 				else
 					current_res = map.custom_civs[user.civilization]
 			if (map && map.override_global_recipes != "global")
 				faction = map.override_global_recipes
 			generate_recipes_civs(current_res, faction, user ? user.civilization : null)
 	return recipes
+
+// Field 12 of a recipe row is the last age it can be crafted in. Rows at
+// RECIPE_OPEN_ENDED_AGE or later never retire, so 2013-era rows stay
+// craftable in the 2026 age.
+/proc/recipe_age_allowed(max_age)
+	if (!map || !isnum(max_age))
+		return FALSE
+	return max_age >= RECIPE_OPEN_ENDED_AGE || map.ordinal_age <= max_age
 
 /material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global", research_faction = null)
 
@@ -121,7 +131,7 @@
 			continue
 		if (!exercise_recipe_era(text2path(i[3])) || (civ_telecom_crafting_skill(text2path(i[3])) && !civ_telecom_era_allowed()))
 			continue
-		if (ispath(text2path(i[3]), /obj/item/weapon/gun_mount) && (!map || map.ordinal_age < 6 || map.ordinal_age > 8))
+		if (ispath(text2path(i[3]), /obj/item/weapon/gun_mount) && (!map || map.ordinal_age < 6 || map.ordinal_age > LATEST_ORDINAL_AGE))
 			continue
 		if (ispath(text2path(i[3]), /obj/item/blackpowder_part/stock) && (!map || map.ordinal_age < 3 || map.ordinal_age > 4))
 			continue
@@ -133,7 +143,7 @@
 			research_allowed = map.is_node_done(research_faction, node_req)
 		else
 			research_allowed = (current_res[1]>=text2num(i[9]) && current_res[2]>=text2num(i[10]) && current_res[3]>=text2num(i[11]))
-		if(i[1]== "[type]/" && research_allowed && map && map.ordinal_age <= text2num(i[12]))
+		if(i[1]== "[type]/" && research_allowed && map && recipe_age_allowed(text2num(i[12])))
 			var/supmat = i[13]
 			if (supmat == "null")
 				supmat = null
@@ -193,8 +203,8 @@ datum/admins/proc/print_crafting_recipes()
 							av_age = "the 2nd World War"
 						if ("7")
 							av_age = "the Cold War"
-						if ("8")
-							av_age = "the Modern Age"
+						if ("8", "9")
+							av_age = "the present day"
 					var/requirements = "Available from the start."
 					if (text2num(i[9]) != 0 || text2num(i[10]) != 0 || text2num(i[11]) != 0)
 						requirements = "Requires "
@@ -240,8 +250,8 @@ datum/admins/proc/print_crafting_recipes()
 					av_age = "the 2nd World War"
 				if ("7")
 					av_age = "the Cold War"
-				if ("8")
-					av_age = "the Modern Age"
+				if ("8", "9")
+					av_age = "the present day"
 			var/chemical_reactions_print_var = "- [i[2]]: made from [i[4]] [matname][subcategory]. Requires [i[9]] Industrial, [i[10]] Military, [i[11]] Medical points. Available until [av_age]."
 			recipe_list << chemical_reactions_print_var
 		world.log << "Finished saving all crafting recipes into \"recipes.txt\" with Plaintext format."

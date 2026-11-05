@@ -189,13 +189,21 @@
 		return complete_node(faction, node_id)
 	return FALSE
 
-// Human-readable name of an ordinal age (0-8), for era-change announcements.
+// Human-readable name of an ordinal age (0-9), for era-change announcements.
 /proc/ordinal_age_name(age)
-	var/static/list/age_names = list("Stone Age", "Classical Age", "Medieval Age", "Imperial Age", "Industrial Age", "WW1", "WW2", "Cold War", "Modern Age")
+	var/static/list/age_names = list("Stone Age", "Classical Age", "Medieval Age", "Imperial Age", "Industrial Age", "WW1", "WW2", "Cold War", "Modern Age", "Digital Age")
 	var/i = age + 1
 	if (i >= 1 && i <= age_names.len)
 		return age_names[i]
 	return "new age"
+
+// The map.age year string for an ordinal age (0-9), matching set_ordinal_age().
+/proc/ordinal_age_year(age)
+	var/static/list/age_years = list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026")
+	var/i = age + 1
+	if (i >= 1 && i <= age_years.len)
+		return age_years[i]
+	return null
 
 // TRUE if at least one research-authorised member of faction (Leader, Research
 // Director or Researcher) is currently connected. Benches only tick while this
@@ -224,6 +232,9 @@
 	// (world-wide shouts for every node x faction would be pure noise).
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.era_tier > ordinal_age)
 		ordinal_age = N.era_tier
+		var/new_year = ordinal_age_year(N.era_tier)
+		if (new_year)
+			age = new_year
 		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> by the [faction] sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 	else
 		for (var/mob/living/human/M in human_mob_list)

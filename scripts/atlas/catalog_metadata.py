@@ -2,7 +2,7 @@
 import re
 
 ERA_NAMES = ['Stone Age', 'Bronze Age', 'Middle Ages', 'Imperial Age',
-             'Industrial Age', 'Early Modern Age', 'WW2', 'Cold War', 'Modern Age']
+             'Industrial Age', 'Early Modern Age', 'WW2', 'Cold War', 'Modern Age', 'Digital Age']
 
 
 def add_tablet_press(files, add, records):

@@ -66,7 +66,7 @@
 	durable_enqueue_season_phase("season_phase_9")
 
 /obj/map_metadata/proc/durable_autoresearch_step()
-	if(!autoresearch || default_research >= 230) return
+	if(!autoresearch || default_research >= LEGACY_RESEARCH_MAX) return
 	autoresearch_step()
 
 /obj/map_metadata/proc/durable_weather_events()

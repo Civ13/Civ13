@@ -780,6 +780,8 @@ class AcquisitionProjection(Projection):
             locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
             civ_generation_can_build=lambda *_args: True,
+            # Mirrors /proc/recipe_age_allowed: max era 8 (RECIPE_OPEN_ENDED_AGE) never retires a row.
+            recipe_age_allowed=lambda max_age: max_age >= 8 or self.globals['map'].ordinal_age <= max_age,
             construct=self.construct, handReturnMap={})
 
     def expression(self, text, receiver, local):
@@ -841,7 +843,10 @@ class GrinderAcquisition(unittest.TestCase):
         self.assertEqual(p.globals['recipe_node_requirements'][CONSTRUCTED], 'electricity')
         self.assertTrue(p.menu(row, done=True, age=5))
         self.assertTrue(p.menu(row, done=True, age=8))
-        self.assertFalse(p.menu(row, done=True, age=9))
+        # Max era 8 is open-ended: the grinder stays craftable in the 2026 age.
+        self.assertTrue(p.menu(row, done=True, age=9))
+        row_until_cold_war = row[:11] + ['7'] + row[12:]
+        self.assertFalse(p.menu(row_until_cold_war, done=True, age=8))
         self.assertFalse(p.menu(row, done=False))
         self.assertFalse(p.menu(row, done=False, legacy=999))
         self.assertIn('352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil', RESEARCH_SOURCE)

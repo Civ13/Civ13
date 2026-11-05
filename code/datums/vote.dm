@@ -459,7 +459,8 @@ var/global/last_persistence_save_vote_time = 0
 							"Industrial Age (No Research)",
 							"Early Modern Age (No Research)",
 							"WW2 Age (No Research)",
-							"Modern Age (No Research)")
+							"Modern Age (No Research)",
+							"Digital Age (No Research)")
 						if (!default)
 							default = "Classic (Stone Age Start)"
 					choices.Add(options)

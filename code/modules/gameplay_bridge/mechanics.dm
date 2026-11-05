@@ -72,7 +72,7 @@
 	// Pure equivalent of the existing node check: do not lazily create/freeze a
 	// faction baseline or regenerate global material recipes inside do_after.
 	var/datum/research_node/N = research_nodes["weaving"]
-	if (!N || map.ordinal_age > 8)
+	if (!N)
 		return FALSE
 	if (N.tree == "Main")
 		var/baseline = (!actor.civilization || actor.civilization == "none") ? map.ordinal_age : map.faction_baseline_era[actor.civilization]
