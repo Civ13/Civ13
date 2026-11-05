@@ -64,7 +64,23 @@ class PlayableLayerTests(unittest.TestCase):
                 atoms = recipe.split(",")
                 if playable.SOLID_ROCK_TURF in atoms and playable.CAVE_FLOOR_TURF in parsed[key].split(","):
                     atoms[atoms.index(playable.SOLID_ROCK_TURF)] = playable.CAVE_FLOOR_TURF
+                if playable.METADATA in atoms:
+                    atoms[atoms.index(playable.METADATA)] = playable.metadata_atom(playable.elevation_profile(doc))
                 self.assertTrue(parsed[key].endswith(",".join(atoms)), (name, key))
+
+    def test_generated_maps_carry_their_relief(self):
+        for name, doc in self.docs.items():
+            profile = playable.elevation_profile(doc)
+            self.assertEqual(0, profile["dropped"], name)
+            self.assertLessEqual(len(profile["regions"]), playable.MAX_ELEVATION_REGIONS)
+            assert_profile_exact(self, doc, profile)
+            text, report = self.built[name]
+            self.assertEqual(len(profile["regions"]), report["elevation"]["regions"])
+            self.assertIn(playable.metadata_atom(profile), text)
+        surface = playable.elevation_profile(self.docs["surface"])
+        self.assertTrue(any(r["metres"] >= 400 for r in surface["regions"]), "mountains reach the profile")
+        cavern = playable.elevation_profile(self.docs["cavern"])
+        self.assertEqual([{"x1": 1, "x2": 64, "y1": 1, "y2": 80, "z": 1, "metres": -40}], cavern["regions"])
 
     def test_start_cells_stay_clear(self):
         for name, doc in self.docs.items():
@@ -176,3 +192,86 @@ class PlayableLayerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def flat_doc(width, height, surface, underground=None):
+    """A minimal IR with only elevations; rows are IR order (row zero south)."""
+    def level(z, grid):
+        return {"native_z": z, "cells": [[{"elevation_m": v} for v in row] for row in grid]}
+    underground = underground or [[0] * width for _ in range(height)]
+    return {"layers": {"SURFACE": level(2, surface), "UNDERGROUND": level(1, underground)}}
+
+
+def covered(profile, x, y, z):
+    hits = [r for r in profile["regions"] if r["z"] == z and r["x1"] <= x <= r["x2"] and r["y1"] <= y <= r["y2"]]
+    return hits
+
+
+def assert_profile_exact(case, doc, profile):
+    step = profile["step_m"]
+    for level in doc["layers"].values():
+        for y, row in enumerate(level["cells"]):
+            for x, c in enumerate(row):
+                hits = covered(profile, x + 1, y + 1, level["native_z"])
+                case.assertLessEqual(len(hits), 1)
+                want = int(round(c["elevation_m"] / step)) * step
+                case.assertEqual(want, hits[0]["metres"] if hits else profile["default_metres"], (x, y))
+
+
+class ElevationProfileTests(unittest.TestCase):
+    def assert_exact(self, doc, profile):
+        assert_profile_exact(self, doc, profile)
+
+    def test_rings_merge_into_rectangles(self):
+        grid = [[0] * 8 for _ in range(6)]
+        for y in range(1, 5):
+            for x in range(2, 6):
+                grid[y][x] = 100
+        grid[2][3] = grid[2][4] = grid[3][3] = grid[3][4] = 200
+        doc = flat_doc(8, 6, grid)
+        profile = playable.elevation_profile(doc)
+        self.assert_exact(doc, profile)
+        # Bottom row, top row, and the two middle rows merged as left edge, peak, right edge.
+        self.assertEqual(5, len(profile["regions"]))
+        self.assertEqual(0, profile["default_metres"])
+
+    def test_default_is_the_most_common_band(self):
+        doc = flat_doc(4, 4, [[300] * 4 for _ in range(4)], [[300] * 4 for _ in range(4)])
+        profile = playable.elevation_profile(doc)
+        self.assertEqual(300, profile["default_metres"])
+        self.assertEqual([], profile["regions"])
+        self.assertEqual("/obj/map_metadata/nomads{elevation_default_metres = 300; elevation_lapse_c_per_km = 6.5}",
+                         playable.metadata_atom(profile))
+
+    def test_coarser_bands_then_largest_rectangles_fit_the_cap(self):
+        # A 40x40 checkerboard of 0/20 m needs 800 single-tile regions at 1 m,
+        # but rounds to flat at 50 m bands.
+        board = [[20 * ((x + y) % 2) for x in range(40)] for y in range(40)]
+        profile = playable.elevation_profile(flat_doc(40, 40, board))
+        self.assertEqual(50, profile["step_m"])
+        self.assertEqual([], profile["regions"])
+        # 0/2000 m cannot be rounded away, so only the largest 256 are kept.
+        board = [[2000 * ((x + y) % 2) for x in range(40)] for y in range(40)]
+        profile = playable.elevation_profile(flat_doc(40, 40, board))
+        self.assertEqual(1000, profile["step_m"])
+        self.assertEqual(playable.MAX_ELEVATION_REGIONS, len(profile["regions"]))
+        self.assertEqual(800 - 256, profile["dropped"])
+
+    def test_text_form_stays_inside_one_tile_definition(self):
+        doc = flat_doc(5, 3, [[0, 120, 120, 0, -40]] * 3)
+        profile = playable.elevation_profile(doc)
+        text = playable.elevation_text(profile)
+        self.assertNotIn(",", text)
+        self.assertNotIn(";", text)
+        self.assertNotIn('"', text)
+        rows = [dict(zip(("x1", "x2", "y1", "y2", "z", "metres"), map(int, row.split(" ")))) for row in text.split("|")]
+        self.assertEqual(profile["regions"], rows)
+
+    def test_lapse_is_bounded_and_zero_leaves_climate_alone(self):
+        doc = flat_doc(3, 3, [[0, 500, 0]] * 3)
+        for bad in (-1, 10.5, True, "6.5"):
+            with self.assertRaises(ValueError):
+                playable.elevation_profile(doc, bad)
+        self.assertNotIn("lapse", playable.metadata_atom(playable.elevation_profile(doc, 0)))
+        self.assertIn("elevation_lapse_c_per_km = 6.5", playable.metadata_atom(playable.elevation_profile(doc)))
+        self.assertEqual("/obj/map_metadata/nomads", playable.metadata_atom(playable.elevation_profile(flat_doc(3, 3, [[0] * 3] * 3))))

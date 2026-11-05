@@ -91,6 +91,14 @@ the sticking point. Ground snowfall uses it. Weather visuals stay area-wide. No
 mountain biome, regional layering framework, admin editor or z allocation is
 introduced, and no shipped map opts in yet.
 
+Generated region maps do opt in. `python3 -m tools.procedural_maps playable`
+turns the generator's per-cell elevation into the metadata profile and sets
+the lapse rate (default 6.5, `--lapse 0` keeps the climate flat). A map file
+cannot hold nested lists, so the metadata carries the rows as
+`elevation_regions_text`: `"x1 x2 y1 y2 z metres"` rows joined by `|`. It is read
+only when `elevation_regions` is unset, and every row still passes the bounds
+and overlap checks above. See [procedural maps](procedural-maps.md#playable-region-maps).
+
 `tests/elevation_climate/probe.dm` runs the production procs on a 2000 m
 plateau fixture through `tests/resource_extraction/run.ps1`.
 

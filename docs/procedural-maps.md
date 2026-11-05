@@ -129,7 +129,17 @@ deterministic from the IR seed and coordinates:
 | Cavern exit pair | ladder down on the surface plane, ladder up below |
 
 Start cells stay clear. Every placed type is checked against the DM source
-before writing. Use the result as a region map with
+before writing.
+
+The map also keeps its relief. The IR's per-cell elevation becomes the Nomads
+metadata's [elevation profile](elevation.md) with a lapse rate of 6.5 C per km
+(`--lapse` sets 0 to 10; 0 keeps the climate flat). Equal heights merge into
+rectangles; if a map needs more than the 256 rectangles DM accepts, heights are
+rounded to coarser bands (50, 100, 200, 500 then 1000 m) until it fits, and at
+1000 m only the largest 256 are kept. The report's `elevation` entry gives the
+band, the rectangle count and any dropped. On the 64 x 80 pilot surface map,
+216 rectangles cover hills and mountains up to 1000 m; a native boot read 9 C at
+sea level, 8 C at 100 m, 6 C at 400 m and 2 C on the 1000 m peak. Use the result as a region map with
 [scripts/shard-group](../scripts/shard-group/README.md) (an absolute `map`
 path is copied into the region). It runs under the classic Nomads metadata.
 
@@ -361,7 +371,7 @@ the separate `playable` command above does.
 
 Full hydraulic bed/head/capacity simulation, arbitrary river graphs, naturalistic
 channel curvature, minimum ecotone width, native actor/resource behavior,
-runtime climate/elevation, persistence, native cavern fungus and exit types,
+runtime climate beyond the elevation lapse rate, persistence, native cavern fungus and exit types,
 and underground rivers remain future work. The prototype cannot approve production host capacity or a live
 map replacement. It never opens or overwrites saved player worlds.
 

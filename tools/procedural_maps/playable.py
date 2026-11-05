@@ -13,6 +13,9 @@ unchanged:
 - Cavern floors become open dirt (the offline layout leaves them as solid
   mineable rock) and get rocks, mushroom seeds, mushrooms on fungus cells and dead
   trees on WOOD sites; every surface exit pair becomes a ladder pair.
+- The IR's per-cell elevation becomes the map metadata's elevation profile
+  (docs/elevation.md) with a temperature lapse rate, so hills and mined
+  mountains are colder and rain over cold enough high ground settles as snow.
 
 Placement depends only on the IR seed and coordinates, never on Python's
 random state, so the same bundle always gives the same DMM. The types used are
@@ -30,6 +33,13 @@ from .repo_source import read_source
 from .source_audit import parse_classic
 
 SUPPLY_VERSION = "civ13-native-supplies/2"
+ELEVATION_VERSION = "civ13-region-elevation/1"
+METADATA = "/obj/map_metadata/nomads"
+# Standard atmosphere, the value docs/elevation.md suggests; 0..10 C per km.
+DEFAULT_LAPSE = 6.5
+MAX_ELEVATION_REGIONS = 256
+# Coarser bands are tried in turn until the profile fits the 256-rectangle cap.
+ELEVATION_STEPS = (1, 50, 100, 200, 500, 1000)
 ROCK = "/obj/structure/wild/rock"
 BUSH = "/obj/structure/wild/smallbush"
 # Stocked forage: starts with berries and regrows them (berries.dm).
@@ -182,6 +192,100 @@ def playable_layout(doc):
     return layout, counts
 
 
+def _number(value):
+    return str(int(value)) if value == int(value) else repr(float(value))
+
+
+def _rectangles(grid, default):
+    """Disjoint rectangles covering every non-default cell of one plane.
+
+    Equal runs in a row are merged with the identical run in the row above, so
+    a ring of bands around a peak costs a few rectangles per row, not per tile.
+    grid[y][x] is IR order (row zero is south); output is one-based DM x/y.
+    """
+    done, open_runs = [], {}
+    for y, row in enumerate(grid):
+        runs, x = {}, 0
+        while x < len(row):
+            value, start = row[x], x
+            while x < len(row) and row[x] == value:
+                x += 1
+            if value != default:
+                runs[(start, x - 1, value)] = True
+        for run, rect in list(open_runs.items()):
+            if run not in runs:
+                done.append(rect)
+                del open_runs[run]
+        for run in runs:
+            if run in open_runs:
+                open_runs[run][3] = y
+            else:
+                open_runs[run] = [run[0], run[1], y, y, run[2]]
+    done.extend(open_runs.values())
+    return [{"x1": a + 1, "x2": b + 1, "y1": c + 1, "y2": d + 1, "metres": m} for a, b, c, d, m in done]
+
+
+def elevation_profile(doc, lapse=DEFAULT_LAPSE):
+    """Return the metadata elevation profile for an IR document.
+
+    Elevations are rounded to the finest band that fits in the DM limit of 256
+    rectangles; the most common band becomes the default. At the coarsest band
+    the largest rectangles are kept and the rest fall back to the default.
+    """
+    if not isinstance(lapse, (int, float)) or isinstance(lapse, bool) or not 0 <= lapse <= 10:
+        raise ValueError("ELEVATION_LAPSE: 0..10 C per km")
+    for step in ELEVATION_STEPS:
+        planes, counts = {}, {}
+        for layer, level in doc["layers"].items():
+            grid = [[int(round(c["elevation_m"] / step)) * step for c in row] for row in level["cells"]]
+            planes[level["native_z"]] = grid
+            for row in grid:
+                for value in row:
+                    counts[value] = counts.get(value, 0) + 1
+        # Most common band; ties prefer the band nearest sea level, then the lower.
+        default = min(counts, key=lambda v: (-counts[v], abs(v), v))
+        regions = []
+        for z in sorted(planes):
+            regions.extend(dict(r, z=z) for r in _rectangles(planes[z], default))
+        if len(regions) <= MAX_ELEVATION_REGIONS:
+            break
+    dropped = max(0, len(regions) - MAX_ELEVATION_REGIONS)
+    if dropped:
+        regions.sort(key=lambda r: (-(r["x2"] - r["x1"] + 1) * (r["y2"] - r["y1"] + 1), r["z"], r["y1"], r["x1"]))
+        regions = regions[:MAX_ELEVATION_REGIONS]
+    regions.sort(key=lambda r: (r["z"], r["y1"], r["x1"]))
+    return {"version": ELEVATION_VERSION, "lapse_c_per_km": lapse, "default_metres": default,
+            "step_m": step, "regions": regions, "dropped": dropped}
+
+
+def elevation_text(profile):
+    """The profile as the metadata's elevation_regions_text: rows of
+    "x1 x2 y1 y2 z metres" joined by "|" (no commas or semicolons, so the DMM
+    tile definition and its comma-split readers stay intact)."""
+    return "|".join(" ".join(_number(r[k]) for k in ("x1", "x2", "y1", "y2", "z", "metres")) for r in profile["regions"])
+
+
+def metadata_atom(profile):
+    fields = []
+    if profile["default_metres"]:
+        fields.append("elevation_default_metres = " + _number(profile["default_metres"]))
+    if profile["regions"]:
+        fields.append('elevation_regions_text = "' + elevation_text(profile) + '"')
+    if profile["lapse_c_per_km"] and (profile["regions"] or profile["default_metres"]):
+        fields.append("elevation_lapse_c_per_km = " + _number(profile["lapse_c_per_km"]))
+    return METADATA + ("{" + "; ".join(fields) + "}" if fields else "")
+
+
+def apply_elevation(layout, profile):
+    keys = [k for k, recipe in layout.items() if METADATA in recipe.split(",")]
+    if len(keys) != 1:
+        raise ValueError("PLAYABLE_METADATA")
+    atoms = layout[keys[0]].split(",")
+    atoms[atoms.index(METADATA)] = metadata_atom(profile)
+    layout[keys[0]] = ",".join(atoms)
+    return keys[0]
+
+
 def write_text(doc, layout):
     recipes = sorted(set(layout.values()))
     alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -203,13 +307,15 @@ def write_text(doc, layout):
     return "\n".join(lines) + "\n"
 
 
-def build(folder, catalog_root=None):
+def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE):
     """Verify an offline bundle and return (dmm text, report) for its playable layout."""
     folder = Path(folder)
     verify_bundle(folder, catalog_root)
     verify_types(catalog_root)
     doc = read_json(folder / "map.ir.json")
     layout, counts = playable_layout(doc)
+    profile = elevation_profile(doc, lapse)
+    apply_elevation(layout, profile)
     text = write_text(doc, layout)
     _, parsed, dims = parse_classic(text)
     if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:
@@ -226,18 +332,20 @@ def build(folder, catalog_root=None):
         "starts": len(doc["starts"]),
         "ladder_pairs": len(doc.get("portals", [])),
         "supplies": dict(sorted(counts.items())),
+        "elevation": {k: profile[k] for k in ("version", "lapse_c_per_km", "default_metres", "step_m", "dropped")}
+                     | {"regions": len(profile["regions"])},
     }
     return text, report
 
 
-def write(folder, out, catalog_root=None):
+def write(folder, out, catalog_root=None, lapse=DEFAULT_LAPSE):
     out = Path(out)
     if out.suffix.lower() != ".dmm":
         raise ValueError("playable output must end in .dmm")
     report_path = out.with_suffix(".playable.json")
     if out.exists() or report_path.exists():
         raise ValueError("output exists: " + str(out))
-    text, report = build(folder, catalog_root)
+    text, report = build(folder, catalog_root, lapse)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(text, encoding="utf-8", newline="\n")
     report_path.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
