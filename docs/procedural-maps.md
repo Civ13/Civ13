@@ -149,6 +149,39 @@ loaded without runtime errors; a Nomad spawned at a start in each, found flint
 in a surface rock, and walked to a cave exit and climbed to the surface. No
 Windows client or long round was tested.
 
+### Barren worlds
+
+For the [space settlement roadmap](space-settlement-roadmap.md), a SURFACE
+bundle can be written as a barren world instead. `preset --barren` gives the
+port surface family a dry, cold and bare configuration (70% desert and 30%
+arid land, -50 to -10 C, no vegetation, one to three ranges, six starts), and
+`playable --skin barren` writes it as a barren region map:
+
+```sh
+python3 -m tools.procedural_maps preset --profile SURFACE --barren --width 200 --height 200 --out data/procedural_maps/barren.json
+python3 -m tools.procedural_maps generate --config data/procedural_maps/barren.json --out data/procedural_maps/barren
+python3 -m tools.procedural_maps playable data/procedural_maps/barren --skin barren --out data/procedural_maps/barren-playable.dmm
+```
+
+| Source | Barren result |
+| --- | --- |
+| Open ground, hills and beaches | regolith (`/turf/floor/dirt/dust/regolith`) |
+| Lakes and sea | ice (`/turf/floor/beach/water/ice`) |
+| Rivers and swamps | dry channels of crater floor (`/turf/floor/dirt/dust/regolith/crater`) |
+| Mountains | bare basalt ridges, as on the native skin |
+| STONE site | flint rock |
+| FOOD and WOOD sites, trees, grass, bushes, fish, game | nothing |
+| Surface area | `/area/caribbean/nomads/barren` (dry climate, dust storms) |
+
+Regolith has no breathable outside air and a -60 C ambient for the life-support
+work in later phases; until those land, the map plays like a cold, empty desert.
+The underground reserve plane and starts are unchanged, and the report records
+`"skin": "barren"`. The barren skin refuses OCEANIC and cavern bundles.
+
+To run one as a region, add it to a shard group like any other generated map,
+with `kind` `OTHER`. Keep it out of the first position, which is the mainland.
+Players should not be sent there until launch sites exist (phase 2).
+
 ## Configuration reference
 
 Use `preset` for seed, dimensions and N/S/E/W coast selection, then edit the new
