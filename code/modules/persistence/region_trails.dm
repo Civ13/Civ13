@@ -5,21 +5,23 @@
 // see waiting markers under OOC > Regions and in the admin log. Ferries and
 // other player-made routes can reuse the same approval later.
 
-#define REGION_TRAIL_REQUEST_COOLDOWN 6000 // deciseconds between requests at one marker
+#define REGION_TRAIL_REQUEST_COOLDOWN 6000 // deciseconds between one player's requests
+#define REGION_TRAIL_PENDING_MAX 3 // unanswered requests one player may have
+
+// ckey = world.time of that player's next allowed request. Runtime only.
+var/global/list/region_trail_next_request = list()
 
 /obj/structure/region_gate/trail_marker
 	name = "trail marker"
 	desc = "A post marking out a new trail toward distant lands."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "propstall1"
-	not_disassemblable = FALSE
 	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;destination;approved;requested_destination;requester_ckey;approved_by"
 	// Opens only after an admin approves it.
 	var/approved = FALSE
 	var/requested_destination = null
 	var/requester_ckey = null
 	var/approved_by = null
-	var/tmp/next_request = 0 // world.time; never saved
 
 /obj/structure/region_gate/trail_marker/proc/peer_choices()
 	var/list/choices = list()
@@ -36,6 +38,10 @@
 		return "The trail is only marked out. Use it to choose where it should lead; an admin must approve it before anyone can travel."
 	return ..()
 
+// An unapproved marker anyone built must not catch arriving travellers.
+/obj/structure/region_gate/trail_marker/accepts_arrivals()
+	return approved
+
 /obj/structure/region_gate/trail_marker/attack_hand(mob/living/human/user)
 	if(!istype(user) || !user.client) return
 	if(approved)
@@ -50,28 +56,56 @@
 	if(IsGuestKey(user.client.key))
 		to_chat(user, SPAN_WARNING("Only players with a BYOND account can mark out a trail."))
 		return
-	if(world.time < next_request)
-		to_chat(user, SPAN_NOTICE(closed_reason()))
+	var/reason = request_refusal(user.client.ckey)
+	if(reason)
+		to_chat(user, SPAN_NOTICE(reason))
 		return
 	var/list/choices = peer_choices()
 	if(!length(choices))
 		to_chat(user, SPAN_WARNING("No other lands are known from here."))
 		return
 	var/choice = input(user, "Which land should this trail lead to? An admin must approve it before it opens.", "Trail marker") as null|anything in choices
-	if(!choice || QDELETED(src) || approved || !user.client || !Adjacent(user)) return
+	if(!choice || QDELETED(src) || !user.client || !Adjacent(user)) return
+	// The prompt slept: someone else may have asked meanwhile.
+	reason = request_refusal(user.client.ckey)
+	if(reason)
+		to_chat(user, SPAN_NOTICE(reason))
+		return
 	requested_destination = choices[choice]
 	requester_ckey = user.client.ckey
-	next_request = world.time + REGION_TRAIL_REQUEST_COOLDOWN
+	region_trail_next_request[requester_ckey] = world.time + REGION_TRAIL_REQUEST_COOLDOWN
 	to_chat(user, SPAN_NOTICE("You mark out a trail toward [region_trail_name(requested_destination)]. It opens once an admin approves it."))
 	log_game("Region trail: [requester_ckey] asked for a trail at [x],[y],[z] to [requested_destination].")
 	message_admins("[key_name_admin(user)] asks for a trail at [x],[y],[z] to [html_encode(region_trail_name(requested_destination))]. [admin_links()]")
 
+// Null when ckey may ask for this marker now, otherwise why not. Only the
+// player who asked may change an unanswered request; each player waits between
+// requests and has only a few unanswered at once.
+/obj/structure/region_gate/trail_marker/proc/request_refusal(ckey)
+	if(approved) return "This trail is already open."
+	if(requested_destination && requester_ckey != ckey)
+		return closed_reason()
+	if(world.time < region_trail_next_request[ckey])
+		return "You marked out a trail recently. Wait a while before asking again."
+	var/pending = 0
+	for(var/obj/structure/region_gate/trail_marker/T in region_gates)
+		if(T != src && !T.approved && T.requested_destination && T.requester_ckey == ckey && !QDELETED(T))
+			pending++
+	if(pending >= REGION_TRAIL_PENDING_MAX)
+		return "You already have [pending] trails waiting for an admin."
+	return null
+
 /obj/structure/region_gate/trail_marker/proc/admin_links()
-	return "<a href='?src=\ref[src];trail=approve'>Approve</a> | <a href='?src=\ref[src];trail=reject'>Reject</a> | <a href='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>Jump</a>"
+	var/at = "trail_at=[x],[y],[z]"
+	return "<a href='?src=\ref[src];trail=approve;[at]'>Approve</a> | <a href='?src=\ref[src];trail=reject;[at]'>Reject</a> | <a href='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>Jump</a>"
 
 /obj/structure/region_gate/trail_marker/Topic(href, href_list)
 	if(!href_list["trail"]) return ..()
 	if(!check_rights(R_ADMIN)) return
+	// A link outlives its marker; a reused reference must not act elsewhere.
+	if(href_list["trail_at"] != "[x],[y],[z]")
+		to_chat(usr, SPAN_WARNING("That trail marker is gone."))
+		return
 	switch(href_list["trail"])
 		if("approve")
 			admin_approve(usr)
@@ -105,15 +139,15 @@
 	visible_message(SPAN_NOTICE("The trail toward [destination_name()] is cleared and ready to travel."))
 	return TRUE
 
+// Clears a request, or closes an approved trail again.
 /obj/structure/region_gate/trail_marker/proc/admin_reject(mob/admin)
-	if(QDELETED(src)) return
+	if(QDELETED(src) || !requested_destination && !approved) return
 	log_admin("[key_name(admin)] rejected the trail at [x],[y],[z] to [requested_destination || "nowhere"] (asked by [requester_ckey || "nobody"]).")
 	message_admins("[key_name_admin(admin)] rejected the trail at [x],[y],[z].")
 	approved = FALSE
 	destination = null
 	requested_destination = null
 	requester_ckey = null
-	next_request = 0
 	visible_message(SPAN_WARNING("The marked trail fades; nobody will clear it."))
 
 /proc/region_trail_name(id)
@@ -130,3 +164,4 @@
 	return "<p>Trails waiting for approval:</p><ul>[jointext(rows, "")]</ul>"
 
 #undef REGION_TRAIL_REQUEST_COOLDOWN
+#undef REGION_TRAIL_PENDING_MAX

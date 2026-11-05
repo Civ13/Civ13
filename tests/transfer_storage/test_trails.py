@@ -58,10 +58,32 @@ class TrailMarkerTests(unittest.TestCase):
         body = proc(TRAILS, MARKER + '/proc/approve')
         self.assertLess(body.index('in shard_group.peers'), body.index('approved = TRUE'))
 
-    def test_requests_are_rate_limited(self):
+    def test_requests_are_limited_per_player_and_rechecked_after_the_prompt(self):
         body = proc(TRAILS, MARKER + '/proc/request')
-        self.assertIn('world.time < next_request', body)
-        self.assertIn('next_request = world.time + REGION_TRAIL_REQUEST_COOLDOWN', body)
+        self.assertGreater(body.index('request_refusal(user.client.ckey)', body.index('input(')), body.index('input('))
+        self.assertIn('region_trail_next_request[requester_ckey] = world.time + REGION_TRAIL_REQUEST_COOLDOWN', body)
+        refusal = proc(TRAILS, MARKER + '/proc/request_refusal')
+        self.assertIn('requester_ckey != ckey', refusal)
+        self.assertIn('REGION_TRAIL_PENDING_MAX', refusal)
+        # The cooldown is runtime only, so a reload never inherits an old world.time.
+        self.assertIn('var/global/list/region_trail_next_request = list()', TRAILS)
+        self.assertNotIn('next_request', proc(TRAILS, MARKER + '/proc/admin_reject'))
+
+    def test_unapproved_markers_never_catch_arrivals(self):
+        self.assertIn(MARKER + '/accepts_arrivals()\n\treturn approved', TRAILS)
+        travel = read('code/modules/persistence/region_travel.dm')
+        body = proc(travel, '/proc/region_travel_arrival_turf')
+        self.assertLess(body.index('gate.type == /obj/structure/region_gate'), body.index('gate.accepts_arrivals()'))
+
+    def test_players_cannot_dismantle_a_gate_holding_a_traveller(self):
+        self.assertNotIn('not_disassemblable = FALSE', TRAILS)
+        travel = read('code/modules/persistence/region_travel.dm')
+        body = proc(travel, '/obj/structure/region_gate/Destroy')
+        self.assertLess(body.index('M.forceMove(T)'), body.index('return ..()'))
+
+    def test_stale_admin_links_do_nothing(self):
+        topic = proc(TRAILS, MARKER + '/Topic')
+        self.assertLess(topic.index('href_list["trail_at"] != "[x],[y],[z]"'), topic.index('admin_approve('))
 
     def test_admins_see_waiting_trails_in_the_regions_panel(self):
         panel = read('code/modules/persistence/shard_group.dm')

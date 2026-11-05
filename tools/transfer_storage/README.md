@@ -139,8 +139,10 @@ character lives, with a join link.
 Admins can still place `/obj/structure/region_gate` with a destination. Players
 can build a **trail marker** from 10 wood (construction). It starts closed:
 the first player to use it picks the land it should lead to, which notifies
-the admins (Approve, Reject and Jump links). At most one request per marker
-goes out every ten minutes. Admins also see waiting markers under OOC >
+the admins (Approve, Reject and Jump links). Each player may ask once every
+ten minutes and have three requests waiting at most; only the asker may
+change a waiting request. Unapproved markers never receive arriving
+travellers, and players cannot dismantle gates. Admins also see waiting markers under OOC >
 Regions. Approving confirms or changes the destination, and the marker then
 works like an admin gate. The approval is saved with the marker
 (`code/modules/persistence/region_trails.dm`). There is no ferry yet; a
