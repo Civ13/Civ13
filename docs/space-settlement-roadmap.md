@@ -83,21 +83,27 @@ mainland like any other region.
 - **Atmospherics.** Deliberately not SS13 atmospherics: no per-turf gas
   mixtures, no zone merging or tile-to-tile flow, no pipe gas networks and no
   dependence on `code/modules/xgm`. A whole base is a few ledgers of plain
-  numbers, each updated once per step only while someone is inside, so cost
-  scales with occupied modules, not tiles. Machines (electrolyser, scrubber,
-  heater, tanks) act on a ledger directly, and hatches mix two ledgers.
+  numbers, each updated once per step while the world has players, so cost
+  scales with modules, not tiles. Breaches vent and modules cool whether or
+  not anyone is inside (a leak does not stop because the crew went out to
+  patch it); only breathing counts the people in the module. Nothing ticks
+  while the world is empty. Machines (electrolyser, scrubber, heater, tanks)
+  act on a ledger directly, and hatches mix two ledgers.
 - **Inside air.** Each sealed habitat is a **module ledger**: one small datum per
   connected pressurised volume with oxygen, CO2, pressure and temperature as
-  plain numbers. Turfs ask their module for air. This avoids the unsolved
-  per-turf atmosphere save problem; the ledger saves as a few scalar fields on
-  the module's anchor structure and is rebuilt from placed modules on load.
+  plain numbers. Turfs ask their module for air through a module id stamped on
+  the turf, as submarine decks carry a compartment id, never a reference to
+  the ledger datum. This avoids the unsolved per-turf atmosphere save problem:
+  the ledger saves as a few scalar fields on the module's anchor structure, and
+  on load each anchor flood-fills the turfs it encloses and stamps them, so
+  turfs save nothing new.
 - **No saved world.time.** Life support, suit tanks and timers store remaining
   amounts, never `world.time` stamps (restored stamps have broken things before).
 - **Saves policy.** The barren world follows the project rule: autosave only when
   empty or host-only, otherwise admin save or a player vote at most every 30
   minutes. Because a crash loses up to that window, life support never ticks
-  while nobody is present, and a frozen or sleeping world (the freeze-dd.exe
-  plan) resumes without catching up on the clock gap.
+  while no player is connected, and a frozen or sleeping world (the
+  freeze-dd.exe plan) resumes without catching up on the clock gap.
 
 ## Travel rules
 
@@ -111,6 +117,15 @@ mainland like any other region.
 - **Landing.** The crew picks a landing zone from surveyed sites (phase 1 probes
   reveal sites). Unsurveyed landing has a higher chance of a rough landing that
   damages cargo.
+- **Home and death.** A settler's home moves to the barren world only through a
+  claimed bed (#3740). Because nobody can fly back before phase 6, a settler who
+  dies with no claimed bed there, or whose last bed is destroyed, respawns on the
+  mainland with no way back to the base. So the landed lander carries a
+  claimable bunk and counts as pressurised for bed claims: claiming home is the
+  first thing a crew can do after landing.
+- **Propellant.** Probes in phase 1 burn ordinary gasoline or diesel as a
+  placeholder. Phase 2 adds a propellant reagent from the chemistry line and
+  moves the launch rail and the crewed lander onto it.
 - **Return.** A return trip needs propellant at the landing site, produced
   locally from phase 6 on. Whether propellant carried as cargo may also allow
   earlier returns is decision D3; the recommendation is no, so early settlers
@@ -205,7 +220,9 @@ come with phase 3, when there is something to save.
   hold, propellant from the refinery and chemistry lines.
 - Crew and cargo transfer to the barren world with the travel rules above.
 - A landed lander is a small sealed shelter with a few hours of air and power:
-  enough to set up the first module, not to live in.
+  enough to set up the first module, not to live in. It holds one claimable
+  bunk so the crew can make the barren world home at once (see travel rules).
+- Propellant reagent and recipes replace the probe rail's gasoline.
 
 ### Phase 3: habitat and life support
 
@@ -218,14 +235,19 @@ come with phase 3, when there is something to save.
 - Water: melt mined ice, recycle grey water. Food: hydroponics trays inside the
   greenhouse, using the hydroponics design.
 - Beds inside a pressurised module can be claimed, which makes the barren world
-  the settler's home.
+  the settler's home. The greenhouse ledger ticks with nobody inside, so plants
+  breathe and the module cools like any other.
 
 ### Phase 4: EVA and hazards
 
 - Pressure suit, helmet, air tank and heater battery; suit integrity drops from
   hits and sharp terrain and is patched with a repair kit.
-- Exposure: no suit outside means rapid suffocation and cold; low tank and low
-  battery warnings on the HUD.
+- Exposure: no suit outside means suffocation and cold; low tank and low
+  battery warnings on the HUD. The exposure step already exists
+  (`code/modules/space/outside_exposure.dm`): the human life tick reads the
+  turf's `outside_air_breathable()` and `outside_ambient_c()`, and a suit
+  overrides `sealed_against_outside()`. Suffocation knocks a conscious person
+  out in about a minute (D4), so crewmates can drag them inside.
 - Hazards: dust storms (vision and solar loss), cold snaps, radiation events
   (shelter indoors), small meteor strikes that can breach modules.
 

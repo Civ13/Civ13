@@ -1291,6 +1291,7 @@
 #include "code\modules\research_tree\research_node.dm"
 #include "code\modules\space\barren_world.dm"
 #include "code\modules\space\habitat_ledger.dm"
+#include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\survey.dm"
 #include "code\modules\statpanel\statpanel.dm"
 #include "code\modules\submarine\enemy_types.dm"
