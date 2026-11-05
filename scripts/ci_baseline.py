@@ -449,7 +449,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/reagents/Chemistry-Reagents.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
-            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/organ.dm', 'code/modules/organs/internal/heart.dm',
+            'code/game/objects/items/stacks/medical.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm',
+            'code/modules/persistence/region_travel.dm')},
     # Exact stdlib/injected transport suite. test_bridge supplies inert setup/
     # teardown helpers; its tests are not discovered. No native runner or model.
     # All production/import inputs stay shared to preserve existing fallback.
@@ -475,7 +479,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/reagents/Chemistry-Reagents.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
-            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/organ.dm', 'code/modules/organs/internal/heart.dm',
+            'code/game/objects/items/stacks/medical.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm',
+            'code/modules/persistence/region_travel.dm')},
     # Injected transport and source-only contracts; no BYOND or network calls.
     'help_mood_history': {'files': ('tests/player_help/test_bridge.py',
                                    'tests/player_help/test_question_display_source.py'),
