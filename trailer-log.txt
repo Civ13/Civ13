@@ -1,0 +1,23 @@
+0 world start 100x20x1 headless=0
+56.5 prepare
+122.5 prepare done: 19 villagers going about their day
+158.5 beat start at 0s (camera 8,10.5)
+158.5 beat seeds at 0s (camera 8,10.5)
+198.5 beat plant at 4s (camera 13.4951,11.0773)
+215.5 gathered 1, planted 1
+227.5 beat harvest at 6.9s (camera 17.7608,9.8331)
+300.5 harvested 5 wheat
+300.5 beat deliver at 14.2s (camera 20.565,10.7853)
+372.5 beat bakery at 21.4s (camera 33.4113,10.9993)
+479.5 beat bake at 32.1s (camera 34.903,10.6837)
+566.5 beat serve at 40.8s (camera 35.5,10.8)
+580.5 beat carriage at 42.2s (camera 35.5,10.8)
+696.5 Villager blocked at 52,8 heading 51,8
+719.5 carriage at 60,6 speed 3
+761.5 customer off at 62,6
+761.5 beat station at 60.3s (camera 66.9904,5.50985)
+805.5 beat board at 64.7s (camera 74.56,5.33985)
+860.5 beat depart at 70.2s (camera 76.1356,5.49338)
+952.5 train at 91, customer at 89; milled 4, baked 4, planted 5
+952.5 beat gone at 79.4s (camera 75.9887,5.4324)
+967.5 beat end at 80.9s (camera 75.0743,5.49492)

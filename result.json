@@ -1,0 +1,15 @@
+{
+  "status": "CAPTURED",
+  "screen": [
+    1024,
+    768
+  ],
+  "window": {
+    "x": 0,
+    "y": 0,
+    "width": 960,
+    "height": 576
+  },
+  "client": "guest=1;version=516;build=1688",
+  "scene_seconds": 81.0
+}
