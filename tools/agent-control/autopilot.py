@@ -25,6 +25,7 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
 import techtree  # noqa: E402
+import blueprints  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -57,7 +58,10 @@ ATTACK_WORDS = ("bites", "attacks", "hits", "claws", "slashes", "punches", "kick
 TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword", "shovel", "hammer")
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
-ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait")
+ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
+           "blueprint", "build_next")
+# Plan-only keys the autopilot uses itself; the game's action queue never sees them.
+PLAN_KEYS = ("soft", "blueprint", "at", "reach")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
@@ -118,6 +122,9 @@ Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|exami
  "choose": "<option>" (click/use: the answer when it opens a menu)}.
 Recipe book: {"do": "recipe", "item": "<thing>"} answers what that thing needs and how to get each part, from the game's own
 recipes. It takes no game time; use it before working towards something you have not made before.
+Blueprints: {"do": "blueprint", "name": "hut"|"house"} plans a whole building on a clear spot next to you ("none" drops
+the plan), and {"do": "build_next"} walks to the right tile and builds its next piece (walls, door, roof support, roof,
+furniture) from what you carry. The PROJECT line says what is next and what material is still needed.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -419,9 +426,11 @@ def current_goal(observation):
         return 'build a campfire: {"do": "craft", "recipe": "campfire", "material": "wooden plank"}', "then gather food and build a shelter"
     walls = sum(1 for name in near if "wall" in name)
     if walls < 6:
-        return "build a shelter next to your campfire: a 3x3 room of walls (build), a door, roof supports and thatch roofing (roof)", "then furnish it"
+        return ('build a shelter, a hut next to your campfire: {"do": "build_next"} plans it on a clear spot and builds it piece by piece '
+                "(walls, door, roof support, thatch roof, bed); bring wooden planks or stone, and leaves for the roof"), "then furnish it"
     if not any("bed" in name for name in near) or not any("table" in name for name in near):
-        return "furnish your house: a bed and a table (4 planks each), a torch for light, and storage", "then secure your food supply"
+        return ('furnish your house: a bed and a table (4 planks each), a torch for light, and storage; or build a bigger house with '
+                '{"do": "blueprint", "name": "house"} and build_next'), "then secure your food supply"
     if not _has(me, lambda n: "seed" in n) and not any(word in name for name in near for word in ("crop", "plant", "farm", "field")):
         return "secure food: gather seeds from wild plants and plant a small field by your house; keep hunting and cooking meat", "then arm yourself"
     if not _has(me, lambda n: "armor" in n or "armour" in n) or not _has(me, lambda n: "bow" in n or "sword" in n or "mace" in n):
@@ -667,6 +676,13 @@ def parse_decision(text, refs):
     if action not in ACTIONS or action == "wait":
         return None
     args = {"do": action}
+    if action == "blueprint":
+        name = str(data.get("name", "")).strip().lower()
+        if name not in blueprints.BLUEPRINTS and name != "none":
+            return None
+        return {"do": "blueprint", "name": name}
+    if action == "build_next":
+        return args
     if action in ("build", "roof"):
         direction = str(data.get("dir", "")).lower()
         if direction not in ("north", "south", "east", "west"):
@@ -756,6 +772,8 @@ def plan_problem(text, refs):
             return f"{action} needs a target number from the lists (not 0). If nothing suitable is listed, explore in some direction to find it"
         if action not in ACTIONS and action not in SKILLS:
             return f'"{action}" is not a skill or action'
+        if action == "blueprint":
+            return f"blueprint needs a name: {', '.join(blueprints.names())} (or none)"
         return f"{action} was missing a valid dir, text, target, recipe or intent"
     return ""
 
@@ -784,7 +802,7 @@ def parse_plan(text, refs):
         if step is None:
             break  # keep the valid prefix; later steps may depend on the bad one
         plan.append(step)
-        if "skill" in step or step.get("material") or step.get("do") == "roof":
+        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next"):
             break  # the hands change; plan the next step after seeing the result
     return plan
 
@@ -1170,8 +1188,8 @@ def choose_step(dx, dy, blocked=(), visited=(), here=(0, 0)):
     return min(options)[3] if options else None
 
 
-def approach(client, character, ref, queue_since, limit=MAX_APPROACH):
-    """Walk next to ref, stepping around obstacles. Returns (ok, detail, queue_since)."""
+def approach(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
+    """Walk next to ref (onto it with reach 0), stepping around obstacles. Returns (ok, detail, queue_since)."""
     visited = set()
     blocked = {}
     for _ in range(limit):
@@ -1189,8 +1207,8 @@ def approach(client, character, ref, queue_since, limit=MAX_APPROACH):
             offset = (row.get("dx"), row.get("dy")) if row else None
         if offset is None:
             return False, "lost sight of the target", queue_since
-        if max(abs(offset[0]), abs(offset[1])) <= 1:
-            return True, "next to it", queue_since
+        if max(abs(offset[0]), abs(offset[1])) <= reach:
+            return True, "there" if reach == 0 else "next to it", queue_since
         if me.get("can_move") is False:
             return False, "you cannot move right now (hurt, stunned or held)", queue_since
         around = observation.get("surroundings", {})
@@ -1293,7 +1311,7 @@ def execute(client, character, steps, queue_since):
         if not chunk:
             return queue_since
         soft = any(item.get("soft") for item in chunk)
-        actions = [{k: v for k, v in item.items() if k != "soft"} for item in chunk]
+        actions = [{k: v for k, v in item.items() if k not in PLAN_KEYS} for item in chunk]
         request = {"character": character, "actions": actions}
         if soft:
             request["stop_on_failure"] = False
@@ -1316,7 +1334,7 @@ def execute(client, character, steps, queue_since):
             continue
         queue_since = flush(queue_since)
         if step["do"] == "go":
-            ok, detail, queue_since = approach(client, character, step["target"], queue_since)
+            ok, detail, queue_since = approach(client, character, step["target"], queue_since, reach=step.get("reach", 1))
         elif step["do"] == "flee":
             ok, detail, queue_since = walk(client, character, queue_since, away_from=step["target"])
         else:
@@ -1502,6 +1520,7 @@ def _run(client, args, character, token, model_pool):
     made_recent = []  # (step, recipe) for recent successful crafts and builds
     asked_recently = {}  # recipe-book item -> step it was last looked up
     memory = None  # loaded once the character's name is known
+    local_project = {"project": None}  # where the blueprint lives when memory is off
     tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
@@ -1565,7 +1584,11 @@ def _run(client, args, character, token, model_pool):
         item = goal_item(goal) if tree else ""
         how = tree.describe(item, carried(self_state), limit=4) if item else ""
         recalled = memory.recall(observation) if memory is not None else ""
+        box = memory.data if memory is not None else local_project
+        ledger = memory.data.get("structures", []) if memory is not None else []
+        building = project_line(box, observation, ledger)
         text = (f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "")
+                + (f"PROJECT: {building}\n" if building else "")
                 + text + (f"\nMEMORY:\n{recalled}" if recalled else ""))
         prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
@@ -1613,6 +1636,16 @@ def _run(client, args, character, token, model_pool):
             feedback = f"\nRecipe book, {asked}: {answer_text}"
             continue
         plan = parse_plan(answer, refs)
+        before = json.dumps(box.get("project"), sort_keys=True)
+        plan, built_note = blueprint_plan(plan, observation, box, ledger)
+        if memory is not None and json.dumps(box.get("project"), sort_keys=True) != before:
+            memory.dirty = True
+        if built_note:
+            print(f"step {step}: blueprint -> {built_note}")
+            if not plan:
+                previous_self = self_state
+                feedback = "\n" + built_note
+                continue
         care, _ = treat_plan(self_state) if not reflex(observation, previous_self)[0] else ([], "")
         wound = worst_wound(self_state)
         if care and wound and wound.get("bleeding") and not any(item.get("skill") == "treat" for item in plan):
@@ -1663,6 +1696,10 @@ def _run(client, args, character, token, model_pool):
                 if memory is not None and speakers and spoken:
                     memory.said(speakers, spoken)
             remember_results(memory, plan, summary, self_state, steps, rows_now)
+            if box.get("project") and any(item.get("blueprint") for item in plan):
+                blueprints.record_result(box["project"], plan, summary)
+                if memory is not None:
+                    memory.dirty = True
             if "failed" not in summary and "not possible" not in summary:
                 made_recent.extend((step, str(item.get("recipe")).lower()) for item in plan if item.get("do") in ("craft", "build") and item.get("recipe"))
                 del made_recent[:-100]
@@ -1727,16 +1764,21 @@ def remember_results(memory, plan, summary, self_state, steps=(), rows=None):
     faced = next((step.get("dir") for step in steps if step.get("do") == "face"), None)
     for item in plan:
         made = item.get("recipe") if item.get("do") in ("craft", "build") else None
-        if made:
+        if made and item.get("do") == "craft" and item.get("blueprint"):
+            memory.made(made)  # roofing for a blueprint piece: an item, not a structure
+        elif made:
             memory.event(f"made {made} at ({x},{y})")
             memory.made(made)
             dx, dy = STEP_OFFSETS.get(item.get("dir") or faced or "", (0, 0))  # structures go on the faced tile
-            memory.built(made, x + dx, y + dy, z)
+            if item.get("do") == "build" and isinstance(item.get("at"), list):
+                memory.built(made, *item["at"])  # a blueprint piece: she walked there first
+            else:
+                memory.built(made, x + dx, y + dy, z)
             if not memory.data.get("home") and any(word in made.lower() for word in HOME_RECIPES):
                 memory.set_home(x, y, z, made)
         elif item.get("do") == "roof":
             dx, dy = STEP_OFFSETS.get(item.get("dir"), (0, 0))
-            memory.built("roof", x + dx, y + dy, z)
+            memory.built("roof", *(item["at"] if isinstance(item.get("at"), list) else (x + dx, y + dy, z)))
         elif item.get("skill") == "dig_down":
             memory.built("mine shaft", x, y, z)
             memory.event(f"dug a mine shaft at ({x},{y})")
@@ -1749,6 +1791,48 @@ def remember_results(memory, plan, summary, self_state, steps=(), rows=None):
             memory.event(f"did {item['skill']} at ({x},{y})")
 
 
+def blueprint_plan(plan, observation, box, ledger=()):
+    """Turn a blueprint or build_next step into real steps. box holds "project" (memory data or a local dict).
+
+    Returns (plan, feedback): the steps to run, or [] and what to tell the model.
+    """
+    if not plan or plan[0].get("do") not in ("blueprint", "build_next"):
+        return plan, ""
+    first = plan[0]
+    project = box.get("project")
+    if first["do"] == "blueprint":
+        if first["name"] == "none":
+            box["project"] = None
+            return [], "You dropped your building plan."
+        if project and project.get("name") == first["name"]:
+            first = {"do": "build_next"}  # already planned: carry on with it
+        else:
+            fresh = blueprints.start(first["name"], observation)
+            if fresh is None:
+                return [], (f"There is no clear spot for a {first['name']} right here. Move a few tiles to open ground "
+                            "(no trees, rocks, water or other people's buildings) and try again.")
+            box["project"] = fresh
+            return [], (f"You planned a {first['name']} ({blueprints.BLUEPRINTS[first['name']]['about']}) with its "
+                        f"north-west corner at ({fresh['x']},{fresh['y']}). Use build_next to build it piece by piece.")
+    if project is None:
+        project = blueprints.start("hut", observation)
+        if project is None:
+            return [], "There is no clear spot for a hut right here. Move a few tiles to open ground and try again."
+        box["project"] = project
+    steps, piece, problem = blueprints.next_steps(project, observation, ledger)
+    if steps:
+        return steps, ""
+    if piece is None:
+        box["project"] = None
+        return [], f"Your {project['name']} is finished."
+    return [], f"The next piece of your {project['name']} ({piece['role']} at ({piece['x']},{piece['y']})) cannot be built yet: {problem}."
+
+
+def project_line(box, observation, ledger=()):
+    project = box.get("project") if box else None
+    return blueprints.describe(project, observation, ledger) if project else ""
+
+
 # How many of a recipe a camp can use in a while; past that, more of it is an old habit, not progress.
 HABIT_CAPS = (("wall", 12), ("roof", 12), ("floor", 9), ("support", 6), ("plank", 6), ("arrow", 20), ("fence", 16), ("palisade", 16))
 HABIT_WINDOW = 25  # steps
@@ -1759,8 +1843,8 @@ def habit_problem(plan, made_recent, step, goal):
     """Why a plan repeats a recipe the goal does not need ("" when it is fine)."""
     for item in plan:
         recipe = str(item.get("recipe") or "").lower() if item.get("do") in ("craft", "build") else ""
-        if not recipe:
-            continue
+        if not recipe or item.get("blueprint"):
+            continue  # a blueprint asks for exactly as many pieces as it needs
         # The goal names kinds, not materials: "walls" asks for a stone wall, and "(2 stone)" does not.
         kind = recipe.split()[-1]
         if recipe in goal.lower() or re.search(r"\b" + re.escape(kind), goal.lower()):

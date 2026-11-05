@@ -273,7 +273,20 @@ unsupported roofs and for ledger pieces that have gone missing.
 
 Habits: a craft or build the current goal does not ask for is refused once the character has made it
 more than a few times recently (3 by default, more for walls, roofing, floors and supports). The
-model is then sent back to its goal and the recipe book.
+model is then sent back to its goal and the recipe book. Pieces of a blueprint are exempt.
+
+Blueprints (`blueprints.py`): a blueprint is a small north-up grid of pieces (`#` wall, `D` door,
+`s` roof support, `b` bed, `t` table, `.` floor; every tile inside the walls is roofed). There are
+two: `hut` (2x2 room) and `house` (3x3 room). `{"do": "blueprint", "name": "hut"}` plans one on the
+nearest clear spot in view (no fixed objects, water or rock, and not next to someone else's
+building). `{"do": "build_next"}` builds the next missing piece; it starts a hut when nothing is
+planned. The autopilot picks the tile to stand on and the direction to face, walks onto that tile,
+and builds from what she carries. Corners go up first from outside, then the walls from inside, the
+support, the roof (crafting thatch roofing from leaves), the furniture and the door. Recipes fall back
+in order (stone wall, log wall, straw wall) when the game does not offer one. A piece that fails three
+times is skipped. Progress is read from what the game shows at each tile, with the structure ledger
+covering tiles out of view. The plan is saved as `project` in the memory file. The `PROJECT` line in
+the prompt gives the next piece and the materials still needed.
 
 Hands: when a step needs a free hand and both are full, the less useful item is stowed, or
 dropped at her feet when no pocket, belt or bag has room, so the step still runs. When a predator

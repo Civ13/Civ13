@@ -1181,5 +1181,102 @@ class MiningGoalTest(unittest.TestCase):
         self.assertIn("mine the underground rock next to you", autopilot._mining_goal(below, me))
 
 
+class BlueprintTest(unittest.TestCase):
+    def setUp(self):
+        global blueprints
+        import blueprints  # noqa: F401 - lives next to autopilot.py
+        self.me = {"x": 100, "y": 100, "z": 2, "ref": "[0x9]", "active_hand": "right", "intent": "help",
+                   "right_hand": {"name": "wooden planks"}, "left_hand": {"name": "flint hatchet"}, "carried": ["leaves (pocket)"]}
+
+    def observe(self, nearby=(), **me):
+        return {"self": dict(self.me, **me), "nearby": list(nearby), "terrain": []}
+
+    def test_site_avoids_trees_water_and_other_buildings(self):
+        tree = {"ref": "[0x1]", "name": "oak tree", "type": "/obj/structure/wild/tree", "dx": 0, "dy": 0}
+        project = blueprints.start("hut", self.observe([tree]))
+        tiles = blueprints.footprint(project)
+        self.assertNotIn((100, 100), tiles)
+        self.assertTrue(all(max(abs(x - 100), abs(y - 100)) <= 4 for x, y in tiles))
+        wall = {"ref": "[0x2]", "name": "log wall", "type": "/obj/covers/wood_wall/log", "dx": 2, "dy": 0}
+        fenced = blueprints.start("hut", self.observe([wall]))
+        self.assertFalse(any(abs(x - 102) <= 1 and abs(y - 100) <= 1 for x, y in blueprints.footprint(fenced)))
+        water = [{"ref": f"turf:{100 + dx},{100 + dy},2", "name": "river", "type": "/turf/floor/beach/water", "dx": dx, "dy": dy}
+                 for dx in range(-4, 5) for dy in range(-4, 5)]
+        self.assertIsNone(blueprints.start("hut", {"self": self.me, "nearby": [], "terrain": water}))
+
+    def test_walls_go_up_first_from_inside_and_the_door_last(self):
+        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+        roles = [p["role"] for p in blueprints.pieces(project)]
+        self.assertEqual(roles[:4], ["wall"] * 4)  # the corners
+        self.assertEqual(roles[-1], "door")
+        self.assertEqual(roles.count("roof"), 4)
+        steps, piece, problem = blueprints.next_steps(project, self.observe())
+        self.assertEqual(problem, "")
+        self.assertEqual(steps[0], {"do": "go", "target": "turf:99,103,2", "reach": 0, "blueprint": "99,102"})  # outside, north of the NW corner
+        self.assertEqual(steps[1]["do"], "build")
+        self.assertEqual((steps[1]["recipe"], steps[1]["material"], steps[1]["dir"]), ("log wall", "wooden planks", "south"))
+        # With the corners up, side walls are built standing inside the room, facing out.
+        corners = [{"ref": f"[0x{i}]", "name": "log wall", "dx": x - 100, "dy": y - 100} for i, (x, y) in enumerate([(99, 102), (102, 102), (99, 99), (102, 99)])]
+        steps, piece, _ = blueprints.next_steps(project, self.observe(corners))
+        self.assertEqual((piece["x"], piece["y"]), (100, 102))
+        self.assertEqual(steps[0]["target"], "turf:100,101,2")
+        self.assertEqual(steps[1]["dir"], "north")
+
+    def test_roof_crafts_thatch_from_leaves_and_progress_counts_pieces(self):
+        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+        built = [p for p in blueprints.pieces(project) if p["role"] in ("wall", "roof support")]
+        rows = [{"ref": f"[0x{i}]", "name": "log wall" if p["role"] == "wall" else "roof support", "dx": p["x"] - 100, "dy": p["y"] - 100}
+                for i, p in enumerate(built)]
+        steps, piece, _ = blueprints.next_steps(project, self.observe(rows))
+        self.assertEqual(piece["role"], "roof")
+        self.assertEqual([s["do"] for s in steps], ["go", "craft", "roof"])
+        self.assertEqual(steps[1]["material"], "leaves")
+        self.assertIn("pieces done", blueprints.describe(project, self.observe(rows)))
+        nothing = self.observe(rows, right_hand=None, left_hand=None, carried=[])
+        self.assertIn("gather leaves", blueprints.next_steps(project, nothing)[2])
+
+    def test_failures_skip_a_piece_and_missing_recipes_fall_back(self):
+        project = {"name": "hut", "x": 99, "y": 102, "z": 2, "tries": {}, "skipped": [], "unavailable": []}
+        steps, _, _ = blueprints.next_steps(project, self.observe())
+        blueprints.record_result(project, steps, "craft failed (not_found no recipe log wall for wooden planks)")
+        self.assertEqual(project["unavailable"], ["log wall"])
+        self.assertEqual(blueprints.next_steps(project, self.observe())[0][1]["recipe"], "straw wall")
+        for _ in range(blueprints.MAX_TRIES):
+            blueprints.record_result(project, steps, "go failed (still not there after walking); stopped there")
+        self.assertIn("99,102", project["skipped"])
+        self.assertNotEqual(blueprints.next_steps(project, self.observe())[1]["key"], "99,102")
+
+    def test_autopilot_turns_build_next_into_steps_and_keeps_the_project(self):
+        self.assertEqual(autopilot.parse_plan('{"do": "build_next"}', ["[0x9]"]), [{"do": "build_next"}])
+        self.assertEqual(autopilot.parse_plan('{"do": "blueprint", "name": "house"}', ["[0x9]"]), [{"do": "blueprint", "name": "house"}])
+        self.assertEqual(autopilot.parse_plan('{"do": "blueprint", "name": "castle"}', ["[0x9]"]), [])
+        box = {"project": None}
+        steps, note = autopilot.blueprint_plan([{"do": "build_next"}], self.observe(), box)
+        self.assertEqual(note, "")
+        self.assertEqual(box["project"]["name"], "hut")  # build_next starts a hut by itself
+        self.assertEqual(steps[0]["reach"], 0)
+        expanded, error = autopilot.expand_plan(steps, self.observe()["self"])
+        self.assertEqual(error, "")
+        self.assertEqual(expanded[-2:], [{"do": "face", "dir": steps[1]["dir"]}, {"do": "craft", "recipe": "log wall"}])
+        self.assertEqual(autopilot.habit_problem(steps, [(1, "log wall")] * 50, 2, "eat"), "")  # walls a blueprint needs are not a habit
+        self.assertIn("dropped", autopilot.blueprint_plan([{"do": "blueprint", "name": "none"}], self.observe(), box)[1])
+        self.assertIsNone(box["project"])
+        memory_dm = (ROOT / "tools/agent-control/memory.py").read_text(encoding="utf-8")
+        self.assertIn('"project": None', memory_dm)
+
+    def test_execute_keeps_plan_keys_out_of_the_game_queue(self):
+        sent = []
+
+        class Client:
+            def request(self, action, args=None):
+                if action == "character_queue":
+                    sent.extend(args["actions"])
+                    return {"ok": True}
+                return {"ok": True, "result": {"queue": {"results": []}, "self": {}}}
+
+        autopilot.execute(Client(), "[0x9]", [{"do": "face", "dir": "east", "blueprint": "1,2", "at": [1, 2, 3]}], 0)
+        self.assertEqual(sent, [{"do": "face", "dir": "east"}])
+
+
 if __name__ == "__main__":
     unittest.main()
