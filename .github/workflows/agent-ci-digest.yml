@@ -67,8 +67,10 @@ concurrency:
 jobs:
   digest:
     # Push-event runs count too: a branch's push CI can be the last check on a
-    # PR head. Without a PR the digest step is skipped.
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
+    # PR head. Without a PR the digest step is skipped. Runs from pushes to the
+    # default branch never belong to an open PR, so they skip before taking a
+    # runner (each started digest uses at least one runner minute).
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion != 'cancelled' && !(github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == github.event.repository.default_branch))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
