@@ -2,17 +2,18 @@
 //
 // A map charts one level of one world, chosen the first time it records
 // anything. Nothing is drawn while walking: the holder stops and sketches
-// (stands still for CARTOGRAPHY_SKETCH_TIME), and only the tiles they can see
-// at that moment, in line of sight and light enough to make out, go onto the
-// map. The chart is one character per cell of CARTOGRAPHY_CELL x
-// CARTOGRAPHY_CELL tiles (a few kilobytes of text for a whole level), so maps
-// stay cheap to keep, save and restore. Reading the map draws the chart
+// (stands still for CARTOGRAPHY_SKETCH_TIME, in ample light), and only the
+// tiles they can see at that moment, in line of sight and light enough to make
+// out (moonlight will do), go onto the map. The chart is one character per
+// cell of CARTOGRAPHY_CELL x CARTOGRAPHY_CELL tiles (a few kilobytes of text
+// for a whole level), so maps stay cheap to keep, save and restore. Reading the map draws the chart
 // client-side on a canvas.
 
 #define CARTOGRAPHY_CELL 4 // smallest cell edge, in tiles
 #define CARTOGRAPHY_MAX_CELLS 160 // largest chart edge, in cells
 #define CARTOGRAPHY_SKETCH_TIME 40 // deciseconds standing still per sketch
-#define CARTOGRAPHY_MIN_LIGHT 0.15 // darker tiles cannot be made out beyond arm's reach
+#define CARTOGRAPHY_MIN_LIGHT 0.05 // darker tiles cannot be made out beyond arm's reach (moonlight is enough)
+#define CARTOGRAPHY_SKETCH_LIGHT 0.3 // light needed where the sketcher stands to draw at all
 #define CARTOGRAPHY_UNKNOWN "0"
 
 /obj/item/weapon/cartography_map
@@ -203,12 +204,18 @@
 	if (chart_land && chart_land != cartography_land_key(here))
 		to_chat(user, SPAN_WARNING("This map shows [chart_label], not the land you are in."))
 		return
+	if (here.get_lumcount() < CARTOGRAPHY_SKETCH_LIGHT)
+		to_chat(user, SPAN_WARNING("It is too dark to draw. Find some light first."))
+		return
 	to_chat(user, SPAN_NOTICE("You stop and start sketching the land around you..."))
 	if (!do_after(user, CARTOGRAPHY_SKETCH_TIME, src))
 		to_chat(user, SPAN_WARNING("You stop sketching."))
 		return
 	here = get_turf(user)
 	if (!here || QDELETED(src) || loc != user)
+		return
+	if (here.get_lumcount() < CARTOGRAPHY_SKETCH_LIGHT)
+		to_chat(user, SPAN_WARNING("It grew too dark to draw."))
 		return
 	var/list/seen = cartography_visible_turfs(user)
 	if (length(seen) <= 9)
@@ -290,4 +297,5 @@
 #undef CARTOGRAPHY_MAX_CELLS
 #undef CARTOGRAPHY_SKETCH_TIME
 #undef CARTOGRAPHY_MIN_LIGHT
+#undef CARTOGRAPHY_SKETCH_LIGHT
 #undef CARTOGRAPHY_UNKNOWN
