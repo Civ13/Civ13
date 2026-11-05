@@ -28,6 +28,9 @@ internal sealed class LauncherWindow : Form {
         public GameServer Server { get; set; } = server;
         public string Status { get; set; } = status;
     }
+    // Instances the host reports asleep or waking, per provider. Display data and a
+    // wake target only; joining one wakes it and then verifies the game port directly.
+    private readonly Dictionary<string, Dictionary<GameTarget, DormantServer>> dormant = new();
     private GameServer? pending;
     private DateTime pendingReadyUtc;
     private bool startupDone;
@@ -345,6 +348,9 @@ internal sealed class LauncherWindow : Form {
         Populate();
         try {
             var snapshot = await discovery.Fetch(provider);
+            var sleeping = DormantFor(provider);
+            sleeping.Clear();
+            foreach (var server in snapshot.Dormant ?? []) sleeping[server.Target] = server;
             var answered = new HashSet<GameTarget>();
             foreach (var server in snapshot.Servers) {
                 var cached = ServerBrowser.CachedFor(snapshot, server);
@@ -354,7 +360,7 @@ internal sealed class LauncherWindow : Form {
                 answered.Add(server.Target);
             }
             foreach (var (target, entry) in servers) {
-                if (answered.Contains(target)) continue;
+                if (answered.Contains(target) || sleeping.ContainsKey(target)) continue;
                 var deferred = snapshot.Deferred?.FirstOrDefault(item => item.Target == target);
                 entry.Status = deferred != null ? $"Next check in {deferred.Seconds}s; {LastSeen(entry)}"
                     : snapshot.PacingPaused ? "Checks paused; " + LastSeen(entry)
@@ -378,21 +384,41 @@ internal sealed class LauncherWindow : Form {
         return servers;
     }
 
+    private Dictionary<GameTarget, DormantServer> DormantFor(string provider) {
+        if (!dormant.TryGetValue(provider, out var servers)) dormant[provider] = servers = new();
+        return servers;
+    }
+
+    internal static string DormantStatus(DormantServer server) {
+        var state = server.State == "waking" ? "Waking" : "Asleep";
+        var age = server.CachedAgeSeconds is { } seconds ? ", " + ServerBrowser.Age(seconds) + " ago" : "";
+        return $"{state}; wakes on join (~{server.WakeEstimateSeconds}s){age}";
+    }
+
     private static string LastSeen(KnownServer entry) => $"last seen {entry.Server.CheckedAt:HH:mm} UTC";
 
     private void Populate() {
-        var keep = Selected()?.Target;
+        var keep = Selected()?.Target ?? SelectedDormant()?.Target;
         serverList.BeginUpdate();
         serverList.Items.Clear();
-        if (Provider is { } provider)
-            foreach (var entry in KnownFor(provider).Values.OrderBy(entry => entry.Server.Port)) {
+        if (Provider is { } provider) {
+            var sleeping = DormantFor(provider);
+            var rows = new List<(int Port, ListViewItem Item, GameTarget Target)>();
+            foreach (var entry in KnownFor(provider).Values) {
                 var server = entry.Server;
-                var item = new ListViewItem([server.Name, server.Players.ToString(), ServerBrowser.Display(server.Map),
+                if (sleeping.ContainsKey(server.Target)) continue;
+                rows.Add((server.Port, new ListViewItem([server.Name, server.Players.ToString(), ServerBrowser.Display(server.Map),
                     ServerBrowser.Display(server.Mode), server.Epoch.Length == 0 ? "-" : server.Epoch, ServerBrowser.Display(server.RoundId),
-                    ServerBrowser.Elapsed(server), entry.Status]) { Tag = server };
-                serverList.Items.Add(item);
-                if (server.Target == keep) item.Selected = true;
+                    ServerBrowser.Elapsed(server), entry.Status]) { Tag = server }, server.Target));
             }
+            foreach (var server in sleeping.Values)
+                rows.Add((server.Target.Port, new ListViewItem([server.Name, server.Players.ToString(), ServerBrowser.Display(server.Map),
+                    ServerBrowser.Display(server.Mode), "-", "-", "-", DormantStatus(server)]) { Tag = server }, server.Target));
+            foreach (var row in rows.OrderBy(row => row.Port)) {
+                serverList.Items.Add(row.Item);
+                if (row.Target == keep) row.Item.Selected = true;
+            }
+        }
         if (serverList.SelectedItems.Count == 0 && serverList.Items.Count == 1) serverList.Items[0].Selected = true;
         serverList.EndUpdate();
         UpdateJoinButton();
@@ -411,8 +437,39 @@ internal sealed class LauncherWindow : Form {
     }
 
     private GameServer? Selected() => serverList.SelectedItems.Count == 1 ? serverList.SelectedItems[0].Tag as GameServer : null;
+    private DormantServer? SelectedDormant() => serverList.SelectedItems.Count == 1 ? serverList.SelectedItems[0].Tag as DormantServer : null;
+
+    // Wake and join: thaw through the host, then the same direct verification as Join.
+    private async Task WakeAndJoin(DormantServer selected) {
+        if (byond == null) return;
+        SetBusy(true);
+        try {
+            var verified = await discovery.WakeAndVerify(selected, message => joinStatus.Text = message);
+            DormantFor(selected.Provider).Remove(selected.Target);
+            KnownFor(selected.Provider)[selected.Target] = new KnownServer(verified.Status, $"Checked {verified.Status.CheckedAt:HH:mm:ss} UTC");
+            Populate();
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            WatchGame(game, DiscordPresence.ServerLine(verified.Status));
+            joinStatus.Text = $"Started BYOND for {selected.Name}.";
+        } catch (TopicWaitException wait) {
+            joinStatus.Text = "";
+            notesLabel.Text = $"{selected.Name} is waking. Wait {wait.Seconds} seconds, then Refresh and join. No automatic check will run.";
+        } catch (TopicPacingException) {
+            joinStatus.Text = "";
+            notesLabel.Text = "Public checks paused: shared request timing could not be verified. Local timing state needs review.";
+        } catch (IOException error) {
+            joinStatus.Text = "";
+            notesLabel.Text = error.Message;
+        } finally {
+            SetBusy(false);
+        }
+    }
 
     private async Task Join() {
+        if (pending == null && SelectedDormant() is { } sleeping) {
+            if (byond != null && joinButton.Enabled) await WakeAndJoin(sleeping);
+            return;
+        }
         var selected = pending ?? Selected();
         if (selected == null || byond == null || !joinButton.Enabled) return;
         SetBusy(true);
@@ -455,7 +512,7 @@ internal sealed class LauncherWindow : Form {
         if (pending == null) {
             waitTimer.Stop();
             cancelButton.Visible = false;
-            joinButton.Text = "Join";
+            joinButton.Text = SelectedDormant() != null ? "Wake and join" : "Join";
             UpdateJoinButton();
             return;
         }
@@ -479,7 +536,8 @@ internal sealed class LauncherWindow : Form {
 
     private void UpdateJoinButton() {
         var waiting = pending != null && DateTime.UtcNow < pendingReadyUtc;
-        joinButton.Enabled = byond != null && !busy && !waiting && (pending != null || Selected() != null);
+        joinButton.Enabled = byond != null && !busy && !waiting && (pending != null || Selected() != null || SelectedDormant() != null);
+        if (pending == null) joinButton.Text = SelectedDormant() != null ? "Wake and join" : "Join";
     }
 
     private void SetBusy(bool value) {

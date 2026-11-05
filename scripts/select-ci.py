@@ -59,7 +59,8 @@ AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
-GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py'})
+GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
+                                     'tests/gaia_host/test_doorman.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.

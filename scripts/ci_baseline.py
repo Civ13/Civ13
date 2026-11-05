@@ -80,7 +80,8 @@ SUITES = {
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
     # Windows scheduled-task host control with a fake machine; no BYOND runtime.
-    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py'),
+    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
+                           'tests/gaia_host/test_doorman.py'),
         'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/'),
         'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.
