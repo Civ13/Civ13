@@ -229,6 +229,10 @@ def danger(observation, previous=None):
     if not attackers and not hurt:
         return ""
     if not attackers:
+        bleeding = [row.get("limb") for row in me.get("injuries") or [] if isinstance(row, dict) and (row.get("bleeding") or row.get("artery_cut"))]
+        if bleeding:
+            return (f"WARNING: you lost health (now {me.get('health')}) and your {', '.join(bleeding[:3])} is bleeding. "
+                    "Aim at that limb, hold a bandage and click yourself; a cut artery needs the bandage tied as a tourniquet first.")
         return f"WARNING: you lost health (now {me.get('health')}). Check for attackers, thirst, hunger and bleeding."
     return f"DANGER: {attackers[-1]} is attacking you (health {me.get('health')}). Flee from it, or attack it if you hold a weapon. Do this before anything else."
 
