@@ -319,6 +319,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered savestream'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_local_ci_offline_admission_is_exact(self):
+        path = 'tests/local_ci/test_local_ci.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/local_ci/new_probe.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered local-ci'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_agent_ci_digest_offline_admission_is_exact(self):
         path = 'tests/agent_ci_digest/test_ci_digest.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
@@ -459,6 +468,17 @@ class SelectionTests(unittest.TestCase):
         self.assertFalse(selection.needs_game(['AGENTS.md', 'docs/api/search.js',
             'docs/api/search.css', 'scripts/build-api-docs.py',
             '.github/workflows/api-pages.yml']))
+    def test_repository_prose_and_metadata_avoid_game_compilation(self):
+        for path in ('tests/local_ci/README.md', 'tools/byond/README.md', '.claude/skills/x/SKILL.md',
+                     'LICENSE', '.gitattributes', '.gitignore'):
+            with self.subTest(path=path):
+                self.assertFalse(selection.needs_game([path]))
+        for path in ('code/notes.md', 'maps/README.md', 'config/x.md', 'wiki/x.md', 'html/x.md', 'UI/x.md',
+                     'tgui/README.md', '.agents/skills/civ13/README.md', 'tools/x.py', 'tests/../code/x.md',
+                     'LICENSE.txt', '.claude/settings.json'):
+            with self.subTest(path=path):
+                self.assertTrue(selection.needs_game([path]))
+
     def test_only_reviewed_skill_prose_avoids_game_compilation(self):
         prose = ['.agents/skills/civ13-compile/SKILL.md',
                  '.agents/skills/group/skill/SKILL.md',

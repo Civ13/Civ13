@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-05: local CI attestation -->
+`scripts/local_ci.py` lets an attester in `tools/ci/local_attesters.json` (read
+from the PR base) run selection, baseline and compile locally and post a
+`local-ci/attested` status; the `local-attestation` job in test.yml then skips
+the heavy jobs for that exact head. A `skip-ci:<head sha>` label waives non-game
+diffs. The gate fails open to hosted CI. See docs/local-ci-attestation.md.
+
 <!-- 2026-10-24: target BYOND version and historical fixture boundary -->
 tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
 bytes; it is embedded directly into source launcher 1.0.8 and consumed by the

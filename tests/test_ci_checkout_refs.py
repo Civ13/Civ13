@@ -629,7 +629,7 @@ class CheckoutRefsTests(unittest.TestCase):
     def test_failed_baseline_step_writes_verdict_and_fails(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         block = workflow.split('      - name: Record failed baseline verdict\n', 1)[1].split('\n      - ', 1)[0]
-        self.assertIn("if: always() && needs.changes.result == 'success' && needs.baseline.result != 'success'", block)
+        self.assertIn("if: always() && needs.changes.result == 'success' && needs.local-attestation.outputs.skip != 'true' && needs.baseline.result != 'success'", block)
         script = '\n'.join(line[10:] for line in block.split('        run: |\n', 1)[1].splitlines())
         bash = r'C:\Program Files\Git\bin\bash.exe' if os.name == 'nt' else shutil.which('bash')
         self.assertTrue(bash and Path(bash).is_file(), 'Git Bash or bash is required')
@@ -649,7 +649,7 @@ class CheckoutRefsTests(unittest.TestCase):
     def test_failed_build_step_writes_verdict_and_fails(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         block = workflow.split('      - name: Record failed build verdict\n', 1)[1].split('\n      - ', 1)[0]
-        self.assertIn("if: always() && needs.changes.result == 'success' && needs.baseline.result == 'success' && needs.build.result != 'success'", block)
+        self.assertIn("if: always() && needs.changes.result == 'success' && needs.local-attestation.outputs.skip != 'true' && needs.baseline.result == 'success' && needs.build.result != 'success'", block)
         script = '\n'.join(line[10:] for line in block.split('        run: |\n', 1)[1].splitlines())
         bash = r'C:\Program Files\Git\bin\bash.exe' if os.name == 'nt' else shutil.which('bash')
         self.assertTrue(bash and Path(bash).is_file(), 'Git Bash or bash is required')
@@ -680,7 +680,7 @@ class CheckoutRefsTests(unittest.TestCase):
         self.assertIn('exit 1', verdict)
         self.assertNotIn('fromJSON(needs.changes.outputs.new_tests)', workflow)
         build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
-        self.assertIn("    if: always() && !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", build)
+        self.assertIn("    if: always() && !cancelled() && needs.local-attestation.outputs.skip != 'true' && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", build)
         self.assertIn("if: always() && needs.changes.result == 'success'", build)
         self.assertIn('test "$SELECTION_RESULT" = success', build)
         self.assertNotIn('if: always()\n', build)

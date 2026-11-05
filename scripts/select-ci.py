@@ -58,6 +58,7 @@ SAVESTREAM_OFFLINE_TESTS = frozenset({'tests/savestream/test_helper.py', 'tests/
 SAVESTREAM_MANUAL_NATIVE = frozenset({'tests/savestream/run_native.py', 'tests/savestream/roundtrip/fixture.dm'})
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
+LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
@@ -266,8 +267,24 @@ def needs_game(paths):
     return any(PurePosixPath(path).suffix.lower() in {'.dm', '.dme', '.dmm', '.dmi', '.rsc'} or not (
         skill_prose(path) or path.startswith('docs/') or
         (len(PurePosixPath(path).parts) == 1 and path.endswith('.md')) or
-        path == 'scripts/build-api-docs.py' or path in DOC_WORKFLOWS
+        path == 'scripts/build-api-docs.py' or path in DOC_WORKFLOWS or non_game(path)
     ) for path in paths)
+
+
+# Prose and repository metadata that DreamMaker never reads. Markdown under the
+# game, map, config, UI and wiki trees keeps compiling in case runtime code reads
+# it; skill files outside the reviewed prose keep their conservative selection.
+NON_GAME_FILES = {'LICENSE', 'LICENSE.md', '.gitattributes', '.gitignore', '.editorconfig'}
+NON_GAME_MARKDOWN_EXCLUDED_ROOTS = {'.agents', 'code', 'maps', 'config', 'wiki', 'html', 'UI', 'tgui'}
+
+
+def non_game(path):
+    parts = PurePosixPath(path).parts
+    if not parts or any(part in ('', '.', '..') for part in parts):
+        return False
+    if path in NON_GAME_FILES or (parts[0] == '.claude' and path.endswith('.md')):
+        return True
+    return path.endswith('.md') and parts[0] not in NON_GAME_MARKDOWN_EXCLUDED_ROOTS
 
 def select(base, head):
     if not base or not head or set(base) == {'0'}:
@@ -427,6 +444,10 @@ def introduced_tests(base, head, event):
             continue
         if path in AGENT_CI_DIGEST_OFFLINE_TESTS:
             continue
+        if path in LOCAL_CI_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/local_ci/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered local-ci executable test requires explicit CI review')
         if path.startswith('tests/agent_ci_digest/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered agent-ci-digest executable test requires explicit CI review')
         if path.startswith('tests/agent_control/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

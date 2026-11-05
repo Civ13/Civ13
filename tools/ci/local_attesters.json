@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "note": "GitHub accounts whose local-ci/attested status or skip-ci:<sha> label lets hosted CI skip heavy jobs. Matched by numeric user id; the gate reads this file from the PR base, so a PR cannot add itself.",
+  "attesters": [
+    {"login": "valzargaming", "id": 7202504},
+    {"login": "taislin", "id": 14982498}
+  ]
+}
