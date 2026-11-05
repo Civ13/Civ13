@@ -1259,7 +1259,6 @@ var/global/datum/persistence_admission_identity
 	var/source_identity
 	var/current_field
 	var/entry
-	var/entry_key // "[entry]", built once instead of per exported field
 	var/accepts_children = FALSE
 	var/active = TRUE
 	var/list/content_refs = list()
@@ -1297,7 +1296,7 @@ var/global/datum/persistence_admission_identity
 // reference checks below reject any substituted source or key without building
 // a fresh native reference string per field.
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
-	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames[frame.entry_key] != frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	if(frame.human_spatial_request && (!frame.human_spatial_request.captured || !frame.human_spatial_request.actor || frame.human_spatial_request.actor != frame.source || frame.human_spatial_request.actor.human_subtile_save_request != frame.human_spatial_request || !frame.human_spatial_request.operation || !frame.human_spatial_request.operation.current(src, "save")))

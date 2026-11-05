@@ -264,7 +264,6 @@
 	frame.source = A
 	frame.source_identity = identity
 	frame.entry = ref
-	frame.entry_key = "[ref]"
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(ishuman(A))
 		var/list/human_root = human_save_roots[save_entry_identity(A)]
