@@ -115,7 +115,8 @@
 	)
 
 	if (do_after(M, 10, src))
-		var/turf/destination = locate(src.x, src.y, M.z + (istop ? -1 : 1))
+		var/destination_z = istop ? multiz_level_below(M.z) : multiz_level_above(M.z)
+		var/turf/destination = destination_z ? locate(src.x, src.y, destination_z) : null
 		if (!destination || !persistence_movement_allowed(M, destination) || (M.pulling && !persistence_movement_allowed(M.pulling, destination)))
 			return
 		M.visible_message(
@@ -127,10 +128,10 @@
 		// pulling/grabbing people with you
 		if (istop)
 			if (M.pulling != null)
-				M.pulling.persistence_set_z(M.pulling.z-1)
+				M.pulling.persistence_set_z(destination_z)
 				M.pulling.x = src.x
 				M.pulling.y = src.y
-			M.persistence_set_z(M.z-1)
+			M.persistence_set_z(destination_z)
 			M.x = src.x
 			M.y = src.y
 			for (var/obj/item/I in M)
@@ -138,10 +139,10 @@
 			return
 		else
 			if (M.pulling != null)
-				M.pulling.persistence_set_z(M.pulling.z+1)
+				M.pulling.persistence_set_z(destination_z)
 				M.pulling.x = src.x
 				M.pulling.y = src.y
-			M.persistence_set_z(M.z+1)
+			M.persistence_set_z(destination_z)
 			M.x = src.x
 			M.y = src.y
 			for (var/obj/item/I in M)
@@ -208,12 +209,12 @@
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
 			var/obj/item/I = AM
 			if (I.w_class <= ITEM_SIZE_SMALL) // fixes maxim bug and probably some others - Kachnov
-				if (!I.persistence_set_z(I.z-1))
+				if (!multiz_level_below(I.z) || !I.persistence_set_z(multiz_level_below(I.z)))
 					return
 				visible_message("\The [I] falls down the ladder.")
 		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
 			visible_message("\The [AM] falls down the ladder.")
-			if (!AM.persistence_set_z(AM.z-1))
+			if (!multiz_level_below(AM.z) || !AM.persistence_set_z(multiz_level_below(AM.z)))
 				return
 
 /obj/structure/multiz/ladder/ww2/find_target()
@@ -440,7 +441,7 @@
 		qdel(I)
 		if (filled >= 4)
 			visible_message("The hole gets covered.")
-			for (var/obj/structure/multiz/ladder/ww2/tunnelbottom/TB in locate(src.x, src.y, src.z-1))
+			for (var/obj/structure/multiz/ladder/ww2/tunnelbottom/TB in locate(src.x, src.y, multiz_level_below(src.z)))
 				qdel(TB)
 			qdel(src)
 	else

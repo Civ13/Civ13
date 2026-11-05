@@ -849,7 +849,10 @@
 		return
 	var/turf/T = get_turf(src)
 	var/area/area_above = null
-	if (z==1 && world.maxz>=2)
+	var/dug_z = dug_underground_z()
+	if (dug_z && z == dug_z)
+		area_above = get_area(locate(x, y, multiz_level_above(z)))
+	else if (z==1 && world.maxz>=2 && !dug_z)
 		area_above = get_area(get_turf(locate(x,y,z+1)))
 	// Independent ore rolls use the old table's marginal rates, not its conditional
 	// branch rates. Coal alone rises from 3% to 6%; see docs/mining-drop-balance.md.
@@ -1151,6 +1154,8 @@
 	else
 		return
 	var/turf/floor/TO = get_turf(src)
+	if (user.ant && dug_underground_tunnel(user))
+		return
 	if (TO && user.ant && (TO.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
 		if (user.z == 1)
 			var/turf/TB = locate(user.x,user.y,user.z+1)

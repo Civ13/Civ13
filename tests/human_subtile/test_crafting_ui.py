@@ -47,7 +47,7 @@ def restore_crafting_projection(path, source):
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != 'b7ca03e37e23238abe88c7ef8abb778c89eacfb721c31f2ca9c249eb1b2fe392':
+        if hashlib.sha256(mining.encode()).hexdigest() != '98d817b0cd9480b0a5a0efc5de60f3f250bf6763a57d5f180d4477a0dd5f2c9f':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
@@ -75,6 +75,8 @@ def restore_crafting_projection(path, source):
              '\t\t\t\tif (!TB.is_diggable)\n\t\t\t\t\treturn\n'),
             ('\t\t\t\tvar/turf/below = locate(user.x, user.y, user.z-1)\n\t\t\t\tif (!TO.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (below && (locate(/obj/structure/multiz) in below)))\n\t\t\t\t\treturn // another digger finished this entrance during the wait\n',
              '\t\t\t\tif (!TO.is_diggable)\n\t\t\t\t\treturn\n'),
+            # Dig-down maps hand tunnel digging to dug_underground_tunnel first.
+            ('\tif (user.ant && dug_underground_tunnel(user))\n\t\treturn\n', ''),
         )
     else:
         edits = ()

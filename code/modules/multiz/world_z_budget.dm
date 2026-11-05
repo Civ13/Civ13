@@ -2,6 +2,9 @@
 // Each new z allocates the full native world plane, including unused sky.
 #define NEW_Z_CELL_CEILING 1400000
 #define NEW_Z_ROOF_CEILING 1
+// Gaia's live world (500 x 350 x 2 cells) is the measured production profile
+// (memory probes and save loads, 2026-11-05). See underground_admitted.
+#define NEW_Z_MEASURED_CELLS 350000
 
 var/datum/world_z_budget/world_z_budget = new
 
@@ -12,7 +15,7 @@ var/datum/world_z_budget/world_z_budget = new
 /proc/new_z_grid_error(width, height, current_z, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, instance_used = 0, safehouse_used = 0)
 	if (!new_z_integer(width, NEW_Z_CELL_CEILING) || !width || !new_z_integer(height, NEW_Z_CELL_CEILING) || !height || !new_z_integer(current_z, BUILDING_MAX_Z) || !current_z || !new_z_integer(base_z, BUILDING_MAX_Z) || !base_z || base_z > current_z || !new_z_integer(target_z, BUILDING_MAX_Z) || target_z < current_z)
 		return "Invalid or unsupported world dimensions; no level was allocated."
-	if (!(purpose in list("roof", "restore", "instance", "safehouse")))
+	if (!(purpose in list("roof", "restore", "instance", "safehouse", "underground")))
 		return "Unknown level purpose; no level was allocated."
 	if (!new_z_integer(cell_limit, NEW_Z_CELL_CEILING) || !new_z_integer(roof_limit, NEW_Z_ROOF_CEILING) || !new_z_integer(instance_reserve, BUILDING_EXTRA_LEVELS) || !new_z_integer(safehouse_reserve, BUILDING_EXTRA_LEVELS) || !new_z_integer(instance_used, instance_reserve) || !new_z_integer(safehouse_used, safehouse_reserve))
 		return "Invalid level budget configuration; no level was allocated."
@@ -23,6 +26,8 @@ var/datum/world_z_budget/world_z_budget = new
 	if (purpose == "roof" && target_z > base_z + roof_limit)
 		return "This map permits at most [roof_limit] roof-added level(s); no level was allocated."
 	var/added = target_z - current_z
+	if (purpose == "underground" && added != 1)
+		return "A dug underground is exactly one level; no level was allocated."
 	if (purpose == "instance" && added > instance_reserve - instance_used)
 		return "No configured instance reservation covers these [added] whole level(s)."
 	if (purpose == "safehouse" && added > safehouse_reserve - safehouse_used)
@@ -76,10 +81,19 @@ var/datum/world_z_budget/world_z_budget = new
 		base_z = building_base_maxz()
 
 // Grid arithmetic is not a measurement of free heap or save/player headroom.
-// There is no calibrated production profile yet, and no config opt-out.
-// A future positive implementation requires separately reviewed evidence.
+// Only worlds no larger than the measured Gaia profile may grow, and only for
+// a dug cave level or a restore; roof and other growth stay refused until a
+// profile covers them. There is no config opt-out.
 /datum/world_z_budget/proc/memory_admission_error(target_z, purpose)
+	if ((purpose in list("underground", "restore")) && underground_admitted(target_z))
+		return null
 	return "UNMEASURED: new levels are disabled until this map has a validated memory/headroom profile. Existing planes remain usable. Preserve saves and request a reviewed profile; no level was allocated."
+
+// A map that opted into a dug cave level (multiz/dug_underground.dm) may add
+// that one level, or restore it, while the whole world stays within the
+// measured Gaia profile. Isolated fixtures and other maps admit nothing here.
+/datum/world_z_budget/proc/underground_admitted(target_z)
+	return FALSE
 
 // Config values are decimal integers and can lower, never raise, the ceiling.
 // While an admitted interval is initializing, its policy is immutable.

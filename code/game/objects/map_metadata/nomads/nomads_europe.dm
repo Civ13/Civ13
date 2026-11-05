@@ -4,3 +4,4 @@
 	title = "Nomads (Europe)"
 	description = "Battle on the Nomads (Europe) map."
 	research_active = TRUE
+	dig_down_underground = TRUE

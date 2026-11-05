@@ -60,7 +60,8 @@ var/building_compiled_maxz = 0
 		return
 	if (istype(A, /obj/effect) || istype(A, /obj/item/projectile))
 		return
-	var/turf/below = locate(x, y, z - 1)
+	var/below_z = multiz_level_below(z)
+	var/turf/below = below_z ? locate(x, y, below_z) : null
 	if (below)
 		A.forceMove(below)
 		if (isliving(A))
@@ -123,15 +124,20 @@ var/building_compiled_maxz = 0
 /obj/roof/persistence_runtime_var(key)
 	return key == "roof_overlay" || ..()
 
+// Building levels stack over the surface; a dug cave level is never one.
+/proc/building_upper_z(z)
+	var/dug = dug_underground_z()
+	return dug && z == dug ? 0 : multiz_level_above(z)
+
 /obj/roof/proc/building_floor()
-	if (!building_pair_id || building_floor_z != z + 1)
+	if (!building_pair_id || building_floor_z != building_upper_z(z))
 		return null
 	for (var/obj/covers/C in locate(x, y, building_floor_z))
 		if (C.building_pair_id == building_pair_id && C.building_roof_z == z && !C.gc_destroyed && !C.gcDestroyed)
 			return C
 
 /obj/covers/proc/building_roof()
-	if (!building_pair_id || building_roof_z != z - 1)
+	if (!building_pair_id || building_roof_z != multiz_level_below(z))
 		return null
 	for (var/obj/roof/R in locate(x, y, building_roof_z))
 		if (R.building_pair_id == building_pair_id && R.building_floor_z == z && !R.gc_destroyed && !R.gcDestroyed)
@@ -187,8 +193,9 @@ var/building_compiled_maxz = 0
 		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete six and metal eight."
 	// A roof does not require a new plane. Admission for optional upper-floor
 	// growth stays in building_allocate_level; existing upper turfs must be clear.
-	if (T.z < world.maxz)
-		var/turf/above = locate(T.x, T.y, T.z + 1)
+	var/upper_z = building_upper_z(T.z)
+	if (upper_z)
+		var/turf/above = locate(T.x, T.y, upper_z)
 		if (!building_open_turf(above) || (locate(/obj/covers) in above) || istype(get_area(above), /area/caribbean/no_mans_land))
 			return "There is already terrain or construction above this roof."
 	return null
@@ -198,15 +205,16 @@ var/building_compiled_maxz = 0
 		return "The target floor no longer exists."
 	if (!building_open_turf(T))
 		return null // Ground-level finishes do not create ceilings underground.
-	if (building_allocating_z || T.z <= 1 || (locate(/obj/covers) in T))
+	var/below_z = multiz_level_below(T.z)
+	if (building_allocating_z || !below_z || (locate(/obj/covers) in T))
 		return "You cannot build another floor here."
-	var/turf/below = locate(T.x, T.y, T.z - 1)
+	var/turf/below = locate(T.x, T.y, below_z)
 	var/error = building_roof_error(below)
 	// The target open turf is checked above by the common roof preflight.
 	return error
 
 /proc/building_link(obj/roof/R, obj/covers/C)
-	if (!R || !C || R.x != C.x || R.y != C.y || R.z + 1 != C.z)
+	if (!R || !C || R.x != C.x || R.y != C.y || !C.z || building_upper_z(R.z) != C.z)
 		return FALSE
 	var/id = md5("\ref[R]|\ref[C]|[world.realtime]|[world.time]")
 	R.building_pair_id = id
@@ -223,8 +231,8 @@ var/building_compiled_maxz = 0
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
 		return null
-	if (T.z == world.maxz)
-		building_allocate_level(T.z + 1)
+	if (!building_upper_z(T.z) && T.z == multiz_top_z())
+		building_allocate_level(world.maxz + 1)
 	// Allocation can yield: recheck both support and occupancy before placing.
 	error = building_roof_error(T)
 	if (error)
@@ -233,7 +241,8 @@ var/building_compiled_maxz = 0
 	if (source && (!building_item_usable(source, user) || user.z != T.z || get_dist(user, T) > 1))
 		return null
 	var/obj/roof/R = new roof_type(T)
-	var/turf/above = locate(T.x, T.y, T.z + 1)
+	var/upper_z = building_upper_z(T.z)
+	var/turf/above = upper_z ? locate(T.x, T.y, upper_z) : null
 	if (!above)
 		return R // Allocation was refused: the paid roof still provides shelter.
 	var/obj/covers/repairedfloor/C = new(above)
@@ -253,7 +262,8 @@ var/building_compiled_maxz = 0
 		return FALSE
 	if (!building_open_turf(T))
 		return TRUE
-	var/turf/below = locate(x, y, z - 1)
+	var/below_z = multiz_level_below(z)
+	var/turf/below = below_z ? locate(x, y, below_z) : null
 	if (!below || !building_supported_height(below) || (locate(/obj/roof) in below))
 		return FALSE
 	var/obj/roof/R = new /obj/roof/wood(below)

@@ -590,6 +590,10 @@
 	catch
 		transfer_round_state = null
 	transfer_loaded(transfer_round_state)
+	try
+		restore_dug_levels()
+	catch(var/exception/cave_error)
+		world.log << "Dug underground lighting was not rebuilt: [cave_error]"
 	log_startup_progress("Finished loading.")
 	return TRUE
 

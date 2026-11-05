@@ -244,7 +244,7 @@ var/global/redirect_all_players = null
 			client?.unload_pregame()
 			#endif
 			close_spawn_windows()
-			var/turf/T = get_turf(locate(1,1,world.maxz))
+			var/turf/T = get_turf(locate(1,1,multiz_top_z()))
 			if (T)
 				observer.loc = T
 			else

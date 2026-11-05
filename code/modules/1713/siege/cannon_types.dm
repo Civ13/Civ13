@@ -172,7 +172,7 @@
 			return
 		if (!loaded)
 			var/obj/item/cannon_ball/W
-			if (src.z == world.maxz)
+			if (src.z == multiz_top_z())
 				if (prob(25))
 					W = new/obj/item/cannon_ball/chainshot(src)
 				else
