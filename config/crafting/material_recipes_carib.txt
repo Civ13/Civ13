@@ -433,6 +433,7 @@ RECIPE: /material/electronics/,2-way radio,/obj/structure/radio/transmitter_rece
 RECIPE: /material/electronics/,loudspeaker,/obj/structure/radio/receiver/loudspeaker,3,80,1,1,none,135,0,0,8,null
 RECIPE: /material/electronics/,portable radio,/obj/item/weapon/radio,12,100,0,1,none,141,0,0,8,null
 RECIPE: /material/electronics/,walkie-talkie radio,/obj/item/weapon/radio/walkietalkie,16,100,0,1,none,178,0,0,8,null
+RECIPE: /material/electronics/,radio headset,/obj/item/weapon/radio/walkietalkie/headset,8,80,0,1,none,210,0,0,8,null
 RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
