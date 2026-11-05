@@ -4,8 +4,9 @@
 // destination is one of its peers.
 //
 // The character travels as a payload: identity, looks, skills, hunger and
-// thirst, and a list of items that can be rebuilt exactly (allowlisted material
-// stacks by kind and amount, empty clothing by type). Anything else must be
+// thirst, and a list of items that can be rebuilt exactly (allowlisted stacks
+// by kind and amount, untouched items of the carry families by type, magazines
+// by round count; see region_travel_item_kind). Anything else must be
 // left behind first, so nothing is lost or copied on the way. While the agent
 // records the escrow the body and its items wait inside the gate; once it is
 // recorded they are removed and the player is sent to the destination server.
@@ -37,8 +38,34 @@ var/global/list/region_travel_coins = list(
 
 var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_style", "r_facial", "g_facial", "b_facial", "f_style", "r_eyes", "g_eyes", "b_eyes", "s_tone", "r_skin", "g_skin", "b_skin")
 
-// How an item travels: "stack:<kind>" for an allowlisted material stack,
-// "type" for empty clothing, or null when it cannot travel.
+// Medical stacks travel by kind and amount, like materials. Exact types only.
+var/global/list/region_travel_stack_goods = list(
+	"bruise_pack" = /obj/item/stack/medical/bruise_pack,
+	"gauze" = /obj/item/stack/medical/bruise_pack/gauze,
+	"advanced_bruise_pack" = /obj/item/stack/medical/advanced/bruise_pack,
+	"advanced_ointment" = /obj/item/stack/medical/advanced/ointment,
+	"splint" = /obj/item/stack/medical/splint)
+
+// Item families that travel by type besides clothing: packaged food and
+// medicine (only untouched, see region_travel_item_pristine), common tools and
+// unloaded projectile guns. Magazines travel as "ammo:<type>" with a round count.
+var/global/list/region_travel_carry_types = list(
+	/obj/item/weapon/reagent_containers/food/snacks,
+	/obj/item/weapon/reagent_containers/food/drinks/can,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic,
+	/obj/item/weapon/reagent_containers/syringe,
+	/obj/item/weapon/reagent_containers/pill,
+	/obj/item/weapon/crowbar,
+	/obj/item/weapon/wrench,
+	/obj/item/weapon/screwdriver,
+	/obj/item/weapon/wirecutters,
+	/obj/item/weapon/weldingtool,
+	/obj/item/weapon/hammer,
+	/obj/item/weapon/gun/projectile)
+
+// How an item travels: "stack:<kind>" for an allowlisted stack, "ammo:<type>"
+// for a magazine of its own rounds, "type" for an empty item of an allowed
+// family, or null when it cannot travel.
 /proc/region_travel_item_kind(obj/item/I)
 	if(!istype(I)) return null
 	if(istype(I, /obj/item/stack))
@@ -46,16 +73,54 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		if(kind) return "stack:[kind]"
 		for(var/coin in region_travel_coins)
 			if(istype(I, region_travel_coins[coin])) return "stack:[coin]"
+		for(var/good in region_travel_stack_goods)
+			if(I.type == region_travel_stack_goods[good]) return "stack:[good]"
 		return null
-	if(region_travel_type_allowed(I.type) && !length(I.contents))
+	if(istype(I, /obj/item/ammo_magazine))
+		return isnull(region_travel_ammo_count(I)) ? null : "ammo:[I.type]"
+	if(region_travel_type_allowed(I.type) && !length(I.contents) && region_travel_item_pristine(I))
 		return "type"
 	return null
 
 /proc/region_travel_type_allowed(path)
-	if(!ispath(path, /obj/item/clothing)) return FALSE
-	// Clothing that stores things carries state that does not travel.
-	if(ispath(path, /obj/item/clothing/accessory/storage)) return FALSE
+	if(ispath(path, /obj/item/clothing))
+		// Clothing that stores things carries state that does not travel.
+		return !ispath(path, /obj/item/clothing/accessory/storage)
+	for(var/family in region_travel_carry_types)
+		if(ispath(path, family)) return TRUE
+	return FALSE
+
+// An item rebuilds from its type alone, so it must be as a new one would be:
+// food not bitten, and no reagent container holding more or less (or other
+// reagents) than a fresh one. Anything else of an allowed family keeps no
+// travelling state.
+/proc/region_travel_item_pristine(obj/item/I)
+	if(!istype(I, /obj/item/weapon/reagent_containers))
+		return TRUE
+	if(istype(I, /obj/item/weapon/reagent_containers/food/snacks))
+		var/obj/item/weapon/reagent_containers/food/snacks/F = I
+		if(F.bitecount) return FALSE
+	var/obj/item/fresh = new I.type(null)
+	. = region_travel_same_reagents(I.reagents, fresh.reagents)
+	qdel(fresh)
+
+/proc/region_travel_same_reagents(datum/reagents/A, datum/reagents/B)
+	if(!A || !B) return !A && !B
+	if(A.reagent_list.len != B.reagent_list.len) return FALSE
+	for(var/datum/reagent/R in A.reagent_list)
+		if(abs(R.volume - B.get_reagent_amount(R.id)) > 0.01) return FALSE
 	return TRUE
+
+// Rounds a magazine holds, or null when it holds anything but live rounds of
+// its own ammo type.
+/proc/region_travel_ammo_count(obj/item/ammo_magazine/M)
+	if(!istype(M) || !M.ammo_type) return null
+	. = 0
+	for(var/atom/movable/A in M.contents)
+		var/obj/item/ammo_casing/C = A
+		if(!istype(C) || C.type != M.ammo_type || !C.BB || length(C.contents) > 1) return null
+		.++
+	if(. != length(M.stored_ammo) || . > M.max_ammo) return null
 
 // Every item the character wears or holds, as list(slot name = item), or a
 // text reason when something cannot travel.
@@ -100,6 +165,8 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		var/kind = region_travel_item_kind(I)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
+		else if(copytext(kind, 1, 6) == "ammo:")
+			carried += list(list(slot_name, kind, region_travel_ammo_count(I)))
 		else
 			var/obj/item/stack/S = I
 			carried += list(list(slot_name, kind, S.amount))
@@ -157,9 +224,14 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 /proc/region_travel_item_path(kind, amount)
 	if(copytext(kind, 1, 7) == "stack:")
 		var/good = copytext(kind, 7)
-		var/obj/item/stack/path = transfer_trade_goods[good] || region_travel_coins[good]
+		var/obj/item/stack/path = transfer_trade_goods[good] || region_travel_coins[good] || region_travel_stack_goods[good]
 		if(!path || amount < 1 || amount != round(amount) || amount > min(2000, initial(path.max_amount))) return null
 		return path
+	if(copytext(kind, 1, 6) == "ammo:")
+		var/obj/item/ammo_magazine/magazine = text2path(copytext(kind, 6))
+		if(!ispath(magazine, /obj/item/ammo_magazine) || !initial(magazine.ammo_type)) return null
+		if(amount < 0 || amount != round(amount) || amount > initial(magazine.max_ammo)) return null
+		return magazine
 	var/path = text2path(kind)
 	if(!path || amount != 1 || !region_travel_type_allowed(path)) return null
 	return path
@@ -250,6 +322,10 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	for(var/list/entry in P["items"])
 		var/path = region_travel_item_path(entry[2], entry[3])
 		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
+		if(istype(I, /obj/item/ammo_magazine))
+			region_travel_fill_magazine(I, entry[3])
+		else if(istype(I, /obj/item/weapon/gun/projectile))
+			region_travel_unload_gun(I)
 		if(!H.equip_to_slot_if_possible(I, region_travel_slots[entry[1]], FALSE, TRUE))
 			I.forceMove(T)
 	// One durable body per account: an older clientless body here gives up its
@@ -268,6 +344,25 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	H.update_body(FALSE)
 	H.regenerate_icons()
 	return H
+
+// A rebuilt magazine holds exactly the rounds that travelled.
+/proc/region_travel_fill_magazine(obj/item/ammo_magazine/M, rounds)
+	while(M.stored_ammo.len > rounds)
+		var/obj/item/ammo_casing/C = M.stored_ammo[M.stored_ammo.len]
+		M.stored_ammo.len--
+		qdel(C)
+	while(M.stored_ammo.len < rounds)
+		M.stored_ammo += new M.ammo_type(M)
+	M.update_icon()
+
+// Guns travel unloaded; a new one comes preloaded, so empty it again.
+/proc/region_travel_unload_gun(obj/item/weapon/gun/projectile/G)
+	G.ammo_magazine = null
+	G.chambered = null
+	G.loaded.Cut()
+	for(var/atom/movable/A in G.contents)
+		qdel(A)
+	G.update_icon()
 
 // The account's arrived body, if exactly one is waiting.
 /proc/region_travel_waiting_body(account)

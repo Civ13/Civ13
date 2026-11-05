@@ -84,8 +84,11 @@ through the same agent. It uses the payload kind `"character"`: JSON with the
 identity, looks, skills, hunger and thirst, and up to 40 items.
 
 - Only items that can be rebuilt exactly may travel: allowlisted material
-  stacks and coins by kind and amount, and empty clothing by type. The gate
-  refuses until everything else is left behind.
+  and medical stacks and coins by kind and amount; empty clothing, untouched
+  packaged food and drink, syringes and pills, basic tools and unloaded
+  projectile guns by type; and magazines as `ammo:<type>` with a count of
+  their own live rounds. A gun is rebuilt unloaded. The gate refuses until
+  everything else is left behind.
 - The body waits inside the gate while the escrow is recorded. Then the body
   and items are removed and the player is sent to the destination server.
 - `status` reports `pending_kinds` for each pending transfer, so the world
