@@ -216,6 +216,14 @@ class Editor(unittest.TestCase):
     self.assertIsNotNone(record);section=record['sections'][0]
     self.assertEqual(section['tool'],'crayon' if mode=='crayon' else 'pen');self.assertEqual(section['text'],'WRITTEN')
     self.assertEqual(record['legacy']['info'],self.paper.info)
+ def test_signature_preview_comes_from_the_actual_pen_and_is_bounded(self):
+  self.assertEqual(self.ui.editor_data()['draft_signature'],'Forged fixture')
+  self.pen.signature='x'*300;self.assertEqual(self.ui.editor_data()['draft_signature'],'x'*256)
+  self.pen.signature=None;self.assertEqual(self.ui.editor_data()['draft_signature'],'')
+  # The getter runs before the snapshot, so authority lost inside it closes the data.
+  def retiring(actor):self.session.retire();return 'late'
+  self.pen.get_signature=retiring;self.assertIsNone(self.ui.editor_data())
+  self.assertLess(SOURCE.index('writing_pen.get_signature(user)'),SOURCE.index('editor_session.snapshot(user)'))
  def test_complete_factory_binds_before_open_and_reuses_owned_view(self):
   self.session.retire()
   ui=self.env['paper_editor_open'](self.paper,self.actor,self.pen)

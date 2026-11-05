@@ -119,6 +119,8 @@
 			text = "<i>" + text + "</i>"
 		else
 			text = paper_document_section_pencode(text)
+			if (section["kind"] == "title")
+				text = "<b>" + text + "</b>"
 		if (section["tool"] == "crayon")
 			text = "<b>" + text + "</b>"
 		text = replacetext(text, "\n", "<BR>")

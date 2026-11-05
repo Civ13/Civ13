@@ -79,6 +79,11 @@
 /datum/nanoui/tgui/paper_editor/proc/editor_data()
 	if (!editor_current())
 		return null
+	// The signature preview runs the actual pen getter first; the snapshot
+	// below rechecks state and authority after that callback.
+	var/draft_signature = editor_session.writing_pen.get_signature(user)
+	if (!editor_current())
+		return null
 	var/list/data = editor_session.snapshot(user)
 	if (!data)
 		return null
@@ -92,6 +97,7 @@
 		return null
 	data["draft_ink"] = editor_session.writing_pen.colour
 	data["draft_tool"] = istype(editor_session.writing_pen, /obj/item/weapon/pen/crayon) ? "crayon" : "pen"
+	data["draft_signature"] = istext(draft_signature) ? copytext(draft_signature, 1, 257) : ""
 	data["response_serial"] = response_serial
 	data["result"] = last_result
 	return data
