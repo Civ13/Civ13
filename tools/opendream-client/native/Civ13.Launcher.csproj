@@ -34,6 +34,7 @@
     <Compile Include="LocalDreamDaemon.cs" />
 
     <Compile Include="LocalHosting.cs" />
+    <Compile Include="LocalBot.cs" />
     <Compile Include="DiscordPresence.cs" />
     <Compile Include="Social/*.cs" />
     <Compile Include="Management/*.cs" />

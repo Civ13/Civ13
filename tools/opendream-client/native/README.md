@@ -189,6 +189,31 @@ and its phase) that refreshes every five seconds while an action runs. Only the
 action name reaches the script. `tests/LocalHostingTests.cs` injects process
 starts, update steps, control answers and port probes, so it launches nothing.
 
+### Civilizationbot tab and Updates
+
+When `bot` is present the window adds a **Civilizationbot** tab. It drives the
+bot through its own `scripts/windows/control.php`: **Start**, **Stop**, **Restart**
+and **Update**, a status line from `control.php status` (falling back to the bot's
+`http_port` for a bot checkout without that command), a live view of the bot's
+output and error logs, an **Open log folder** link, and **Clear old stop request**
+when a stop marker left by an exited bot blocks starting it. The window starts the
+supervisor itself, including when **Start server** brings the bot up, and closing
+the window first runs `control.php stop` and waits up to 90 seconds. A Windows job
+object with kill-on-close ends a launcher-started bot if the launcher exits any
+other way. A bot started outside the launcher is shown but left running on close.
+The console `H` option still starts the bot detached.
+
+An **Updates** tab appears with `control` or `bot`. It has one row each for the
+server (`gaia_host.py check-update`) and the bot (`control.php check-update`).
+Both commands only fetch and print one JSON line with `current`, `available`,
+`behind`, `can_update` and `reason`. The tab checks at startup, when opened and
+every 30 minutes, and its title shows how many updates are waiting. **Update** is
+enabled only when `can_update` is true: the server's runs its control `update`
+(the server must be stopped first), and the bot's stops the bot, runs
+`control.php update` (a fast-forward of a clean `main`) and starts it again.
+`tests/LocalBotTests.cs` covers the argv, answer parsing and log tail without
+starting anything.
+
 ## Discord activity
 
 When the Discord desktop app is running, the GUI shows "In the launcher" and,

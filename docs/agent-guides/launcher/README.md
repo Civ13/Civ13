@@ -11,6 +11,14 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-05: Civilizationbot tab and Updates -->
+Val chose that a bot started by the window stops when the launcher closes (control.php
+stop, 90 s wait, then a kill-on-close job object). A bot started elsewhere is left
+running. LocalBot.cs holds the control.php argv and parsers; check-update is a
+shared read-only JSON contract with gaia_host.py (Civ13 #3790) and control.php
+(Civilizationbot #66). Keep Gui/BotPage.cs and Gui/UpdatesPage.cs separate from the
+Host tab so region work there does not conflict.
+
 <!-- 2026-11-04: launcher window, OpenDream removed -->
 Civ13.exe opens a WinForms window by default; `--console` or redirected input keeps
 the numbered text menu, and every other option stays console-only. Only Build.ps1's
