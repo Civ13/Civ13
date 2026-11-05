@@ -92,7 +92,8 @@ var/load_construction_stop = 1e9
 	persistence_saved_atom_construction--
 	// A load with no saved fields applies the same omitted-field rules.
 	if(.)
-		persistence_reset_omitted_offsets(., list())
+		var/datum/built = .
+		built.persistence_reset_omitted_fields(list())
 // Builds the type a second time and reports drifted fields whose values differ.
 // The second copy stays: deleting it races the constructor's spawn callbacks.
 /proc/load_construction_record_drift(datum/D, T, turf/loc)

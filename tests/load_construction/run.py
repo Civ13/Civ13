@@ -34,7 +34,7 @@ CONTROLS = {
                       '\tif (FALSE)\n',
                       'new failure'),
     'restore-offsets': ('code/modules/persistence/restore_contract.dm',
-                        '\tif (!isatom(object) || object.persistence_uses_field_allowlist())\n',
+                        '\tif (persistence_uses_field_allowlist())\n',
                         '\tif (TRUE)\n',
                         'new drift'),
 }

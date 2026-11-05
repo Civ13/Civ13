@@ -34,15 +34,19 @@
 /atom/persistence_runtime_var(key)
 	return key == "restoring" || ..()
 
+/atom/persistence_restore_finished()
+	..()
+	restoring = FALSE
+
 // Many constructors scatter an item with a random pixel offset. The saver
 // omits an offset still at its default, so without this a restored item that
 // sat centred would land at a fresh random offset on every load. Allowlisted
 // types already restore every omitted field to its default.
-/proc/persistence_reset_omitted_offsets(datum/object, list/saved_fields)
-	if (!isatom(object) || object.persistence_uses_field_allowlist())
+/atom/persistence_reset_omitted_fields(list/saved_fields)
+	..()
+	if (persistence_uses_field_allowlist())
 		return
-	var/atom/A = object
-	if (!("pixel_x" in saved_fields) && A.pixel_x != initial(A.pixel_x))
-		A.pixel_x = initial(A.pixel_x)
-	if (!("pixel_y" in saved_fields) && A.pixel_y != initial(A.pixel_y))
-		A.pixel_y = initial(A.pixel_y)
+	if (!("pixel_x" in saved_fields) && pixel_x != initial(pixel_x))
+		pixel_x = initial(pixel_x)
+	if (!("pixel_y" in saved_fields) && pixel_y != initial(pixel_y))
+		pixel_y = initial(pixel_y)
