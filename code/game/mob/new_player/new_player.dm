@@ -1181,6 +1181,16 @@ var/global/redirect_all_players = null
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
 	lobby_join_trace("spawn_entered", "none")
+	// In a region group, only the account's home land may start or return it.
+	// One home check at a time: a second Join while it waits does nothing.
+	if(region_home_checking) return FALSE
+	region_home_checking = TRUE
+	var/admitted = region_home_admit(src)
+	region_home_checking = FALSE
+	if(!admitted || spawning) return FALSE
+	if(!client || client.mob != src) return FALSE
+	// A character that travelled here is waiting: take it instead of a new one.
+	if(region_home_enabled() && region_travel_claim(src)) return FALSE
 	if(!map_storage.allow_new_character(src)) return FALSE
 	if (!client || !client.prefs)
 		return FALSE
@@ -1464,6 +1474,7 @@ var/global/redirect_all_players = null
 					to_chat(H, "<big><b>Your squad leader is [map.faction2_squad_leaders[H.squad]].</b></big>")
 	if(!map.fob_spawns)
 		job_master.relocate(character)
+		region_home_bed_spawn(character)
 	if (map.ID == MAP_WIZARD_BOY && ishuman(character))
 		var/obj/map_metadata/wizard_boy/WB = map
 		WB.give_sticker_pack(character)

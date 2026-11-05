@@ -108,7 +108,9 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('public_host', public_host='http://x')
         self.refuse_config('1 to 16 regions', regions=[])
         self.refuse_config('group id', group='Europe!')
+        self.refuse_config('mainland', mainland='atlantis')
         group = self.write_group()
+        self.assertEqual('gaia', group['mainland'], 'the first region is the mainland by default')
         self.assertEqual(('HEAD', False), (group['revision'], group['public']))
 
     def test_setup_creates_worktrees_and_region_config_once(self):
@@ -177,6 +179,7 @@ class ShardGroupTests(unittest.TestCase):
             return 4242
         self.assertTrue(shard_group.ensure_coordinator(group, start))
         self.assertIn('deep=http://127.0.0.1:47202=%s' % (config / 'transfer-token.txt'), started[0])
+        self.assertEqual('gaia', started[0][started[0].index('--mainland') + 1])
         self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
         platform = shard_group.RegionPlatform(shard_group.region_config(group, group['regions'][1]))
         self.assertEqual(['gaia'], platform.config['peers'])

@@ -101,6 +101,39 @@ identity, looks, skills, hunger and thirst, and up to 40 items.
   the arrival, then lists them in its next save. Goods cannot be journaled,
   because a stack cannot be found again by owner.
 
+## Home worlds (one land per player)
+
+The coordinator also keeps the home ledger: the one region each account may
+play in. `code/modules/persistence/region_home.dm` asks the region's agent
+(`/account`) before an account starts a character, takes back a saved body or
+claims a travelling one; anywhere else the player is told where their
+character lives, with a join link.
+
+- With `--mainland REGION` (the shard group always passes it), a new account
+  starts only on the mainland. Elsewhere it is told to start there.
+- A trip moves the home: the gate records `depart` (the source refuses a new
+  character at once), and the arrival records `arrive`. A refused trip
+  rebuilt at the source records `arrive` there, so the home comes back.
+- A death records `release`, which sends the home back to the mainland unless
+  the account still has a living character in that region, or an assigned bed
+  there (Sleep in a bed assigns it). With a bed, nothing is recorded: the home
+  stays and the next character starts at that bed.
+- Each coordinator pass (`homes_once`, after the relay) reads every agent's
+  queued requests (`/accounts`), decides each region's requests in the order
+  it made them, with new claims after everything else, and sends each agent the
+  ledger rows it has not seen (`/homes`). An agent that misses a pass catches
+  up on the next; a request decided but not acknowledged is never decided
+  again.
+- Losing `coordinator.sqlite` starts a new ledger epoch: agents drop their
+  copies and accounts claim their homes again. A region holding a living
+  character of an unhomed account claims custody of it (`body` on the claim),
+  so that character stays where it is; other accounts start on the mainland.
+  Journal replays after a reload record nothing: the ledger already saw them.
+- A trip, departure or death note keeps retrying (backing off to every five
+  minutes) until the agent has it.
+- A world's agent unreachable means no character can start there (the player
+  is asked to retry). Guests are not tracked; they cannot travel.
+
 Group setup, autosave timing and agent startup are in
 [scripts/shard-group](../../scripts/shard-group/README.md#travel-between-regions).
 

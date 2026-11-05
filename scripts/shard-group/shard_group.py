@@ -85,6 +85,11 @@ def load_group(path):
         group['transfers'] = True
     else:
         group['transfers'] = False
+    # New characters, and players whose character died, start in the mainland
+    # region and reach the others only by travel.
+    mainland = group.setdefault('mainland', regions[0]['id'])
+    if mainland not in ids:
+        raise ValueError('mainland must be one of the region ids')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
@@ -366,7 +371,8 @@ def ensure_coordinator(group, start=detach):
     if not group['transfers'] or coordinator_pid(group):
         return False
     root = Path(group['root'])
-    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(root / 'coordinator.sqlite'), '--group', group['group']]
+    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(root / 'coordinator.sqlite'), '--group', group['group'],
+            '--mainland', group['mainland']]
     for region in group['regions']:
         token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]

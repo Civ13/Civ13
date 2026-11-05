@@ -12,6 +12,7 @@ lacks a journaled effect gets it back to replay, so a trip takes seconds rather
 than two world saves.
 """
 import hashlib
+import secrets
 import json
 import sqlite3
 
@@ -34,6 +35,14 @@ DESTINATION_ABORTED = 'DestinationAborted'  # TOMBSTONE in outbox
 
 REMOVE, CREDIT, RETURN = 'remove', 'credit', 'return'
 TENTATIVE, CONFIRMED, JOURNALED = 'tentative', 'confirmed', 'journaled'
+
+
+ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release')
+
+
+def account_key_valid(ckey):
+    """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters."""
+    return isinstance(ckey, str) and 0 < len(ckey) <= 32 and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
 
 
 class TransferError(Exception):
@@ -134,6 +143,18 @@ class RegionStore:
         db.execute('''CREATE TABLE IF NOT EXISTS outbox(
             direction TEXT NOT NULL, peer TEXT NOT NULL, step TEXT NOT NULL, body TEXT NOT NULL,
             PRIMARY KEY(direction, peer))''')
+        # Home worlds: this region's copy of the coordinator's account ledger,
+        # and the account requests waiting for the coordinator's next pass.
+        db.execute('''CREATE TABLE IF NOT EXISTS home(
+            ckey TEXT PRIMARY KEY, region TEXT NOT NULL)''')
+        db.execute('''CREATE TABLE IF NOT EXISTS account_request(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, ckey TEXT NOT NULL, op TEXT NOT NULL, region TEXT NOT NULL)''')
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_epoch', '')")
+        # Names this store's request ids, so a replaced store's ids are never
+        # mistaken for ones the coordinator already decided.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('store_id', ?)", (secrets.token_hex(8),))
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_rev', '0')")
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('mainland', '')")
 
     def _meta(self, key):
         return self.db.execute('SELECT value FROM meta WHERE key = ?', (key,)).fetchone()[0]
@@ -482,6 +503,79 @@ class RegionStore:
             pass  # crossed with our ABORT; the ABORT in the outbox answers it
         elif step == 'IMPORTED' and phase != COMMIT_DECIDED:
             raise TransferError('import evidence without a commit decision')
+
+    # -- home worlds --------------------------------------------------------
+
+    def account(self, ckey, op, region=None, body=False):
+        """One account question or request from DM.
+
+        claim: may this account play here? HOME, ELSEWHERE (with its home) or
+        PENDING while the coordinator decides. arrive: a character arrived here
+        through a recorded trip. depart: it left for region. release: its only
+        character here died (its home goes back to the mainland). Requests wait
+        for the coordinator's next pass. A claim with body (a living character of
+        the account is here) asks for custody when the account has no home, so a
+        lost coordinator ledger cannot strand a character off the mainland.
+        """
+        if not account_key_valid(ckey):
+            raise TransferError('bad account key')
+        if op not in ACCOUNT_OPS:
+            raise TransferError('unknown account operation')
+        target = self.region if op != 'depart' else region
+        if op == 'depart' and (not isinstance(region, str) or not region or region == self.region):
+            raise TransferError('depart needs another region')
+        with self._tx():
+            queued = [o for (o,) in self.db.execute('SELECT op FROM account_request WHERE ckey = ?', (ckey,))]
+            home = self.home_of(ckey)
+            if op == 'claim':
+                if not queued and home == self.region:
+                    return {'verdict': 'HOME', 'home': home}
+                if not queued and home is not None:
+                    return {'verdict': 'ELSEWHERE', 'home': home}
+                mainland = self._meta('mainland')
+                if body is True and home is None:
+                    op = 'custody'
+                elif not queued and home is None and mainland and mainland != self.region:
+                    # New characters start on the mainland and travel from there.
+                    return {'verdict': 'ELSEWHERE', 'home': mainland}
+                if op in queued or 'claim' in queued:
+                    return {'verdict': 'PENDING', 'home': home}
+            self.db.execute('INSERT INTO account_request(ckey, op, region) VALUES (?, ?, ?)', (ckey, op, target))
+        return {'verdict': 'PENDING', 'home': home}
+
+    def home_of(self, ckey):
+        row = self.db.execute('SELECT region FROM home WHERE ckey = ?', (ckey,)).fetchone()
+        return row[0] if row else None
+
+    def account_requests(self):
+        """For the coordinator: queued requests and how current our ledger copy is."""
+        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region'), r)) for r in self.db.execute(
+                    'SELECT id, ckey, op, region FROM account_request ORDER BY id')],
+                'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
+                'store': self._meta('store_id')}
+
+    def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None):
+        """The coordinator's answer: ledger rows newer than our copy (region
+        None removes a home) and the request ids it has decided."""
+        if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
+            raise TransferError('bad home ledger version')
+        with self._tx():
+            if reset or epoch != self._meta('homes_epoch'):
+                self.db.execute('DELETE FROM home')
+            for row in rows:
+                ckey, region = row['ckey'], row['region']
+                if not account_key_valid(ckey):
+                    raise TransferError('bad account key')
+                if region is None:
+                    self.db.execute('DELETE FROM home WHERE ckey = ?', (ckey,))
+                else:
+                    self.db.execute('INSERT OR REPLACE INTO home VALUES (?, ?)', (ckey, str(region)))
+            for request_id in done:
+                self.db.execute('DELETE FROM account_request WHERE id = ?', (int(request_id),))
+            self._set_meta('homes_epoch', epoch)
+            self._set_meta('homes_rev', rev)
+            self._set_meta('mainland', mainland if isinstance(mainland, str) else '')
+        return {'rev': rev}
 
     # -- inspection ---------------------------------------------------------
 

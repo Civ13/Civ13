@@ -49,6 +49,7 @@
 	water_overlay = FALSE
 	update_fire(1)
 	if (stat == DEAD) return
+	region_home_death(src)
 
 	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		var/obj/map_metadata/wizard_boy/WB = map
