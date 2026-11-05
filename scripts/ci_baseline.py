@@ -123,6 +123,14 @@ SUITES = {
                   'maps/WIP/extraction_safehouse.template.json'), 'shared_paths': (
             'code/modules/1713/extraction/instances.dm',
             'code/modules/1713/extraction/mode.dm')},
+    # Generated Train Raid map: DMM parse, shuttle/bridge/loot-pad geometry and
+    # route flood-fill projected from source; no BYOND runtime.
+    'train_raid': {'files': ('tests/train_raid/test_train_raid.py',),
+        'paths': ('tests/train_raid/', 'maps/EFT/train_raid.dmm', 'maps/EFT/train_raid.layout.json',
+                  'code/game/objects/map_metadata/train_raid.dm'), 'shared_paths': (
+            'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
+            'code/game/objects/random.dm',
+            'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (

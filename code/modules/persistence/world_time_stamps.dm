@@ -97,6 +97,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"stopped_rotation_time" = list(/obj/structure/turret),
 	"season_change_started" = list(/obj/map_metadata),
 	"season_change_due" = list(/obj/map_metadata),
+	"round_started" = list(/obj/map_metadata/train_raid),
+	"round_deadline" = list(/obj/map_metadata/train_raid),
 	"created" = list(/datum/wound)
 )
 
