@@ -5,6 +5,8 @@
 // yard world (shard_group kind RAILYARD); boarding travels there like a trail
 // (region_travel.dm), and only members of the party that built it may board.
 // A party is a player's faction, or the player alone when they have none.
+// The yard gives each party a berth with a walk-in train (tools/rail_yard
+// builds the yard map); a berth leads back to the land its party came from.
 
 #define PARTY_TRAIN_TRACK_MIN 8 // straight rails needed beside the office
 #define PARTY_TRAIN_TRACK_RANGE 2 // tiles from the office to that track
@@ -17,23 +19,59 @@ var/global/list/party_train_requirements = list(
 	"glass" = list(/obj/item/stack/material/glass, 30, "glass"),
 	"cloth" = list(/obj/item/stack/material/cloth, 40, "cloth"))
 
+// Saved: the party whose train brought this character here. Factions do not
+// travel between lands, so a member keeps their party this way.
+/mob/living/human/var/party_train_party = null
+
+// A faction's party is named with the land it was founded in, so factions of
+// the same name in different lands never share a train.
 /proc/party_train_party_of(mob/living/human/H)
 	if(!istype(H)) return null
-	if(H.civilization && H.civilization != "none") return "civ:[H.civilization]"
+	// In the yard, where factions do not travel, the party is the one whose
+	// train brought this character. At home it is the character's faction.
+	if(shard_group.enabled && shard_group.kind == "RAILYARD" && party_train_valid_party(H.party_train_party))
+		return H.party_train_party
+	if(H.civilization && H.civilization != "none")
+		return party_train_faction_party(H.civilization)
 	var/key = H.persistence_owner_ckey || (H.client && H.client.ckey)
 	return key ? "ckey:[key]" : null
 
+// A member coming home by train rejoins the faction that owns the train, if it
+// still exists in this land.
+/proc/party_train_restore_faction(mob/living/human/H, party)
+	if(!istype(H) || !shard_group.enabled || shard_group.kind == "RAILYARD" || !party_train_valid_party(party) || !map) return
+	var/prefix = "civ:[shard_group.region]:"
+	if(findtext(party, prefix) != 1) return
+	var/name = copytext(party, length(prefix) + 1)
+	if(name in map.custom_civs)
+		H.civilization = name
+
+/proc/party_train_faction_party(name)
+	return "civ:[shard_group.enabled ? shard_group.region : "local"]:[name]"
+
+/proc/party_train_valid_party(party)
+	if(!istext(party) || length(party) > 100) return FALSE
+	if(findtext(party, "ckey:") == 1) return length(party) > 5 && ckey(copytext(party, 6)) == copytext(party, 6)
+	return findtext(party, "civ:") == 1 && findtext(party, ":", 5) > 5 && findtext(party, ":", 5) < length(party)
+
 /proc/party_train_party_name(party)
 	if(!istext(party)) return "nobody"
-	if(findtext(party, "civ:") == 1) return copytext(party, 5)
+	if(findtext(party, "civ:") == 1) return copytext(party, findtext(party, ":", 5) + 1)
 	return "[copytext(party, 6)]'s party"
 
-// A renamed faction keeps its train project or train.
+// A renamed faction keeps its train project or train, and members back from
+// the yard keep their party. A berth in the yard keeps the old name until an
+// admin edits it (docs/party-train.md).
 /proc/party_train_rename_faction(old_name, new_name)
+	var/old_party = party_train_faction_party(old_name)
+	var/new_party = party_train_faction_party(new_name)
 	for(var/obj/structure/region_gate/railway_station/S in region_gates)
-		if(S.party == "civ:[old_name]")
-			S.party = "civ:[new_name]"
+		if(S.party == old_party)
+			S.party = new_party
 			log_game("Party train: the train at [S.x],[S.y],[S.z] follows its faction's rename from [old_name] to [new_name].")
+	for(var/mob/living/human/H in human_mob_list)
+		if(H.party_train_party == old_party)
+			H.party_train_party = new_party
 
 /proc/party_train_rail_at(turf/T)
 	return T && (locate(/obj/structure/rails) in T)
@@ -59,13 +97,15 @@ var/global/list/party_train_requirements = list(
 	density = TRUE
 	// Delivered materials live only in the office, so vehicles and blasts must not delete it.
 	crushable = FALSE
-	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded"
 	// The party building (and then owning) the train here.
 	var/party = null
 	// Material kind = amount delivered so far.
 	var/list/delivered = list()
 	var/completed = FALSE
 	var/completed_at = null // realtime text, for players and logs
+	// Someone has ridden this train, so the party holds a berth in the yard.
+	var/boarded = FALSE
 
 /obj/structure/region_gate/railway_station/New()
 	..()
@@ -112,7 +152,18 @@ var/global/list/party_train_requirements = list(
 		return party ? "[party_train_party_name(party)] is building a train here: [progress_text()]." : "No train is being built here yet."
 	destination = rail_yard()
 	if(!destination) return "No rail yard serves this land yet."
+	// A party without a berth must not be stranded in a full yard.
+	if(!boarded && shard_group.peers[destination]["free_berths"] == 0)
+		return "The rail yard has no free berth for another train. Ask an admin."
 	return ..()
+
+/obj/structure/region_gate/railway_station/depart(mob/living/human/H)
+	. = ..()
+	if(. == "departed")
+		boarded = TRUE
+
+/obj/structure/region_gate/railway_station/travel_party(mob/living/human/H)
+	return party
 
 /obj/structure/region_gate/railway_station/travel_refusal(mob/living/human/H)
 	. = ..()
@@ -139,6 +190,10 @@ var/global/list/party_train_requirements = list(
 	return null
 
 /obj/structure/region_gate/railway_station/proc/start(mob/living/human/user)
+	// A party's name depends on its land, which needs the region group.
+	if(!shard_group.enabled)
+		to_chat(user, SPAN_WARNING("No rail yard serves this land."))
+		return
 	var/problem = station_problem()
 	if(problem)
 		to_chat(user, SPAN_WARNING(problem))
@@ -196,6 +251,151 @@ var/global/list/party_train_requirements = list(
 	..()
 	if(completed && party)
 		to_chat(user, SPAN_NOTICE("It holds the finished train of [party_train_party_name(party)] (since [completed_at])."))
+
+// -- the rail yard -----------------------------------------------------------
+
+/area/caribbean/nomads/rail_yard
+	name = "Rail Yard"
+	icon_state = "green1"
+	climate = "temperate"
+
+/area/caribbean/nomads/rail_yard/train
+	name = "Party Train"
+	location = AREA_INSIDE
+
+// Carriage walls of the yard's trains: nobody breaks into another party's train.
+/turf/wall/indestructable/party_train
+	name = "carriage wall"
+	desc = "The riveted steel side of a railway carriage."
+	layer = TURF_LAYER + 0.02 // as other walls, not the black filler wall's 10
+
+// A party's berth: the platform beside its walk-in train. Free until a
+// party's first member arrives; from then on it belongs to that party and
+// leads back to the land its station is in.
+/obj/structure/region_gate/rail_berth
+	name = "train berth"
+	desc = "A numbered platform where a party keeps its train."
+	icon = 'icons/obj/vehicles/trains.dmi'
+	icon_state = "cabinroof"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;destination;berth;party;home_region;assigned_at"
+	var/berth = 0 // set by the yard map
+	var/party = null
+	var/home_region = null
+	var/assigned_at = null // realtime text
+
+/obj/structure/region_gate/rail_berth/accepts_arrivals()
+	return FALSE
+
+/obj/structure/region_gate/rail_berth/travel_party(mob/living/human/H)
+	return party
+
+/obj/structure/region_gate/rail_berth/closed_reason()
+	if(!party) return "Berth [berth] is free. A party's train is brought here when its first member arrives."
+	if(!home_region || !shard_group.enabled || !(home_region in shard_group.peers))
+		return "Nobody knows the way back from here."
+	destination = home_region
+	return ..()
+
+/obj/structure/region_gate/rail_berth/travel_refusal(mob/living/human/H)
+	. = ..()
+	if(.) return
+	if(party_train_party_of(H) != party)
+		return "This train belongs to [party_train_party_name(party)]."
+
+/obj/structure/region_gate/rail_berth/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE(party ? "Berth [berth] holds the train of [party_train_party_name(party)] (since [assigned_at])." : "Berth [berth] is free."))
+
+/proc/party_train_free_berths()
+	. = 0
+	for(var/obj/structure/region_gate/rail_berth/B in region_gates)
+		if(!B.party && B.berth > 0 && !QDELETED(B) && isturf(B.loc))
+			.++
+
+/proc/party_train_berth_of(party)
+	for(var/obj/structure/region_gate/rail_berth/B in region_gates)
+		if(B.party == party && !QDELETED(B)) return B
+	return null
+
+// The lowest free berth goes to party. Null when the yard is full.
+/proc/party_train_assign_berth(party)
+	var/obj/structure/region_gate/rail_berth/best = null
+	for(var/obj/structure/region_gate/rail_berth/B in region_gates)
+		if(!B.party && B.berth > 0 && !QDELETED(B) && isturf(B.loc) && (!best || B.berth < best.berth))
+			best = B
+	if(!best)
+		message_admins("Party train: the rail yard is full; [html_encode(party_train_party_name(party))] arrived at the platform without a berth.")
+		return null
+	best.party = party
+	best.assigned_at = time2text(world.realtime, "YYYY-MM-DD hh:mm")
+	log_game("Party train: berth [best.berth] at [best.x],[best.y],[best.z] assigned to [party].")
+	return best
+
+// Where a party train trip arrives: the party's berth in the yard, or back
+// home at the party's finished station. Null for any other trip. Never sleeps.
+/proc/party_train_arrival_turf(list/P)
+	var/party = P["party"]
+	if(!party_train_valid_party(party)) return null
+	if(shard_group.enabled && shard_group.kind == "RAILYARD")
+		var/obj/structure/region_gate/rail_berth/B = party_train_berth_of(party) || party_train_assign_berth(party)
+		if(!B) return null
+		// The way back leads to the land the party last came from.
+		var/from = P["from"]
+		if(istext(from) && (from in shard_group.peers))
+			B.home_region = from
+		return isturf(B.loc) ? B.loc : null
+	var/obj/structure/region_gate/railway_station/S = party_train_office_of(party)
+	if(S && S.completed && isturf(S.loc)) return S.loc
+	return null
+
+// A door of a party's train: opens only for that party, and cannot be forced.
+/obj/structure/simple_door/party_train
+	name = "train door"
+	desc = "A heavy carriage door. It opens only for the party that owns this train."
+	var/berth = 0 // the berth this train stands at
+
+/obj/structure/simple_door/party_train/New(newloc, material_name)
+	..(newloc, "steel")
+	name = initial(name)
+
+/obj/structure/simple_door/party_train/proc/party_member(mob/user)
+	for(var/obj/structure/region_gate/rail_berth/B in region_gates)
+		if(B.berth == berth)
+			return B.party && party_train_party_of(user) == B.party
+	return FALSE
+
+/obj/structure/simple_door/party_train/door_hand_locked(mob/user)
+	return !party_member(user)
+
+/obj/structure/simple_door/party_train/canOpen(mob/user)
+	return party_member(user)
+
+/obj/structure/simple_door/party_train/door_kick(mob/user)
+	return door_rattle(user)
+
+/obj/structure/simple_door/party_train/attackby(obj/item/weapon/W, mob/user)
+	if(!party_member(user))
+		door_rattle(user)
+		return
+	return door_intent_interact(user)
+
+/obj/structure/simple_door/party_train/bullet_act(obj/item/projectile/P)
+	return
+
+/obj/structure/simple_door/party_train/ex_act(severity)
+	return
+
+/obj/structure/simple_door/party_train/fire_act(temperature)
+	return
+
+/obj/structure/simple_door/party_train/TemperatureAct(temperature)
+	return
+
+/obj/structure/simple_door/party_train/CheckHardness()
+	return
+
+/obj/structure/simple_door/party_train/Dismantle(devastated = FALSE)
+	return
 
 #undef PARTY_TRAIN_TRACK_MIN
 #undef PARTY_TRAIN_TRACK_RANGE

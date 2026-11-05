@@ -28,9 +28,36 @@ own rail-yard world, large enough for many trains and parties.
 Code: `code/modules/persistence/party_train.dm`. Tests:
 `tests/transfer_storage/test_party_train.py`.
 
-## Next: the rail-yard world
+## The rail yard
 
-A generated yard region with many berths, each holding one party's walk-in
-train, assigned to the party on its first arrival and kept with that world's
-save; a way back to the station's land; and sizing for many parties within one
-32-bit world's memory.
+- Generate the yard map and point the group's `RAILYARD` region at it:
+  `python3 -m tools.rail_yard --berths 96 --columns 4 --out yard.dmm`.
+  The default 96 berths make a 151x227 map, about the size of a generated
+  surface region; up to 162 berths fit in 6 columns (225x254). The tool
+  refuses layouts over 255 tiles on a side.
+- Each **berth** is a numbered platform marker beside a three-car walk-in
+  train: a locomotive cab, a common car with tables and racks, and a sleeper
+  with ten beds and crates. Carriage walls are indestructible and the doors
+  open only for the berth's party and cannot be forced. Beds can be claimed
+  as usual, so a member who sleeps aboard keeps the yard as home.
+- The first member of a party to arrive gets the lowest free berth for the
+  party; later members arrive at the same berth. The berth is saved with the
+  yard world. When the yard is full, the arrival lands on the arrival
+  platform and the admins are told.
+- Using the berth marker travels back to the land the party last came from,
+  arriving at the party's finished station. Only party members may use it.
+- Party trips carry the party and the land they left from in the travel
+  payload. A faction's party is named with its land (`civ:<land>:<name>`),
+  so factions with the same name in two lands never share a train. Factions
+  do not travel: in the yard a member's party is kept on the body, and a
+  member coming home rejoins the faction if it still exists. At home only
+  the current faction counts, so someone who left the faction cannot board.
+- A party that has never ridden its train cannot board while the yard reports
+  no free berth, so nobody is stranded in a full yard. A solo party's trip is
+  refused unless the traveller is that player.
+- Starting a project needs the region group, since a party is named after
+  its land.
+
+Code: `code/modules/persistence/party_train.dm`, map generator
+`tools/rail_yard/`. Freeing a berth whose party is gone, or moving a berth to
+a faction's new name after a rename, is an admin edit for now.
