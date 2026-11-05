@@ -64,6 +64,11 @@ port, unique in the group, never 1714). Then:
 - `status` shows each region's `transfer_agent` and the group's
   `coordinator`.
 
+The same agents and coordinator carry cross-region radio once players build
+and key long-range radio relays on both sides; see
+[docs/cross-shard-radio.md](../../docs/cross-shard-radio.md). No extra
+service is needed.
+
 A character trip completes in seconds: each region's agent journals the
 departure and the arrival as soon as it records them. A region that reloads a
 save made before a trip replays that trip from its journal, so a crash can
