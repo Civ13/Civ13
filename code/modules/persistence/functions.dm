@@ -32,6 +32,10 @@
 	return
 /datum/proc/before_save()
 	return
+// Called on import after every saved field is applied. saved_fields lists the
+// field names the entry recorded, including runtime fields the loader skipped.
+/datum/proc/persistence_import_fields(list/saved_fields)
+	return
 
 // Geographic metres, independent of native areas, climate and z-level height.
 // Author fields are read once; the effective profile owns only copied scalars.
