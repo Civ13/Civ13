@@ -102,6 +102,42 @@ catalog; it has no runtime/server application command. The `data/` output area
 is ignored by Git. Do not commit large generated IR/sidecars or put output into
 live-server directories.
 
+## Playable region maps
+
+`map.dmm` is the offline terrain layout: it keeps cave floors as solid rock and
+leaves supplies and cave exits in the sidecar. `playable` turns a verified
+bundle into a separate DMM that a region world can run, without changing the
+bundle or its hashes:
+
+```sh
+python3 -m tools.procedural_maps playable data/procedural_maps/demo --out data/procedural_maps/demo-playable.dmm
+```
+
+It writes the DMM and `<name>.playable.json` (bundle and output hashes, starts,
+ladder pairs and supply counts). The native supply layer
+(`civ13-native-supplies/2`, `tools/procedural_maps/playable.py`) is
+deterministic from the IR seed and coordinates:
+
+| Source | Native result |
+| --- | --- |
+| STONE site | flint rock (`/obj/structure/wild/rock`) |
+| WOOD site | tree for the biome (broadleaf, pine on arid, palm on coast); dead tree in caverns (does not block passage) |
+| FOOD site | berry bush that starts stocked and regrows; about a third also get a turkey or boar spawner; mushroom spores in caverns |
+| Open grass | about 3% tall grass and 3% small bushes |
+| Water | a few fish (fresh water more than sea) |
+| Cavern floor | open dirt instead of solid rock; some fungus cells get mushrooms |
+| Cavern exit pair | ladder down on the surface plane, ladder up below |
+
+Start cells stay clear. Every placed type is checked against the DM source
+before writing. Use the result as a region map with
+[scripts/shard-group](../scripts/shard-group/README.md) (an absolute `map`
+path is copied into the region). It runs under the classic Nomads metadata.
+
+On 2026-11-05 a Linux run of the three example profiles as one region group
+loaded without runtime errors; a Nomad spawned at a start in each, found flint
+in a surface rock, and walked to a cave exit and climbed to the surface. No
+Windows client or long round was tested.
+
 ## Configuration reference
 
 Use `preset` for seed, dimensions and N/S/E/W coast selection, then edit the new
@@ -320,7 +356,8 @@ source-backed **proposal, not an admitted native catalog**. It records wood,
 flint and forage candidates with unresolved interaction/era/quantity/safety
 gates. Flint is not generic stone blocks; an edible flag is not proof of
 common-human nutrition. FOOD/WOOD/STONE remain abstract reachable labels in IR
-and sidecars, and the emitter adds no playable native supply objects.
+and sidecars, and the bundle emitter adds no playable native supply objects;
+the separate `playable` command above does.
 
 Full hydraulic bed/head/capacity simulation, arbitrary river graphs, naturalistic
 channel curvature, minimum ecotone width, native actor/resource behavior,
