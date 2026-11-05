@@ -138,7 +138,8 @@ Target-train compartment doors must be breachable without a boarding pass. A
 pass gates the entry transaction for its target section; it must not become an
 unbreakable lock on every target compartment. Those breachable doors are distinct
 from the invincible protected-boundary walls and airlock doors on the Dagger.
-The target train and its compartment doors are not built by this map draft.
+The target train and its compartment doors are not built by this map draft;
+the separate [Hauler raid station draft](dagger-raid-train.md) supplies them.
 
 The future extraction controller must expose explicit reservation, call, arrival,
 boarding and departure states, with completion and failure outcomes. A call is
