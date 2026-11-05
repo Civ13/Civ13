@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
 import techtree  # noqa: E402
 import blueprints  # noqa: E402
+import leatherwork  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -52,6 +53,15 @@ SKILLS = {
     "drink": ("empty", "grab", 1),
     "pick_up": ("empty", "help", 1),
     "attack": ("any", "harm", 3),
+    # Leatherwork (see leatherwork.py): hides and bark are worked where they lie, the tool or vessel in hand.
+    "scrape_hide": ("blade", "help", 1),
+    "fill_vessel": ("vessel", "help", 8),
+    "wash_hide": ("vessel", "help", 1),
+    "soak_bark": ("vessel", "help", 1),
+    "tan_hide": ("vessel", "help", 1),
+    "rack_hide": ("wet hide", "help", 1),
+    "unload_rack": ("empty", "help", 1),
+    "cut_logs": ("axe", "help", 1),
 }
 ATTACK_WORDS = ("bites", "attacks", "hits", "claws", "slashes", "punches", "kicks", "stabs", "mauls", "gores", "scratches")
 # Items worth keeping when a skill needs a free hand; anything else is dropped first.
@@ -59,9 +69,9 @@ TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
-           "blueprint", "build_next")
+           "blueprint", "build_next", "leather_next")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
-PLAN_KEYS = ("soft", "blueprint", "at", "reach")
+PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
@@ -130,6 +140,10 @@ recipes. It takes no game time; use it before working towards something you have
 Blueprints: {"do": "blueprint", "name": "hut"|"house"} plans a whole building on a clear spot next to you ("none" drops
 the plan), and {"do": "build_next"} walks to the right tile and builds its next piece (walls, door, roof support, roof,
 furniture) from what you carry. The PROJECT line says what is next and what material is still needed.
+Leather: {"do": "leather_next", "make": "belt"|"backpack"|"leather"} does the next leatherworking step: scrape a raw hide
+(sharpened flint or knife), wash it with water from a wood mug, dry it on a tanning rack (8 wood logs), cut logs with your
+hatchet for bark, soak the bark in the mug for tannin, tan the dry hide, then craft and wear the belt satchel (3 leather) or
+backpack (6 leather). Hides and bark are worked on the ground next to you.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -426,11 +440,12 @@ def current_goal(observation):
         return "find flint at a rock and sharpen it", "then make a spear"
     if not _has(me, lambda n: "sharpened flint" in n or "axe" in n or "hatchet" in n or "knife" in n):
         return "sharpen your flint on a rock", "then make a spear"
-    if not _has(me, lambda n: "sharpened stick" in n or "spear" in n):
+    has_axe = _has(me, lambda n: ("axe" in n or "hatchet" in n) and "pickaxe" not in n)
+    if not has_axe and not _has(me, lambda n: "sharpened stick" in n or "spear" in n):
         if _has(me, _is_plain_stick):
             return "make a spear: you carry a stick, so sharpen_stick it now with your sharpened flint", "then make an axe"
         return "make a spear: break a branch, make_stick, sharpen_stick", "then make an axe"
-    if not _has(me, lambda n: "axe" in n or "hatchet" in n):
+    if not has_axe:
         return _axe_goal(me), "then chop wood"
     if hungry:
         return "get food: hunt an animal with your spear and butcher it, then cook it on a campfire", "then build a camp"
@@ -447,6 +462,12 @@ def current_goal(observation):
                 'and storage; or build a bigger house with {"do": "blueprint", "name": "house"} and build_next'), "then secure your food supply"
     if not _has(me, lambda n: "seed" in n) and not any(word in name for name in near for word in ("crop", "plant", "farm", "field")):
         return "secure food: gather seeds from wild plants and plant a small field by your house; keep hunting and cooking meat", "then arm yourself"
+    worn = " ".join(str(item).lower() for item in me.get("worn") or [])
+    if "satchel" not in worn and "belt" not in worn:
+        return ('make leather and a leather belt satchel to carry more: {"do": "leather_next", "make": "belt"} scrapes, washes, '
+                "dries and tans hides step by step (hunt and butcher animals for raw hides; a wood mug carries water and tannin)"), "then a backpack"
+    if "backpack" not in worn:
+        return 'make a leather backpack (6 leather): {"do": "leather_next", "make": "backpack"}', "then arm yourself"
     if not _has(me, lambda n: "armor" in n or "armour" in n) or not _has(me, lambda n: "bow" in n or "sword" in n or "mace" in n):
         return "arm yourself: prepare hides into leather for leather armor (equip it), and make a longbow (12 planks) or better weapons", "then mine and smelt"
     if not _has(me, lambda n: "pickaxe" in n):
@@ -710,6 +731,8 @@ def parse_decision(text, refs):
         return {"do": "blueprint", "name": name}
     if action == "build_next":
         return args
+    if action == "leather_next":
+        return {"do": "leather_next", "make": leatherwork.product_name(data.get("make") or data.get("item") or data.get("name"))}
     if action in ("build", "roof"):
         direction = str(data.get("dir", "")).lower()
         if direction not in ("north", "south", "east", "west"):
@@ -777,6 +800,23 @@ def parse_decision(text, refs):
     return args
 
 
+def coerce_step(item):
+    """A plan step the model wrote as text ("find_flint on rock 5") as an object; other values pass through."""
+    if not isinstance(item, str):
+        return item
+    words = re.findall(r"[a-z_]+|\d+", item.lower())
+    if not words:
+        return item
+    step = {"do": words[0]}
+    numbers = [word for word in words[1:] if word.isdigit()]
+    if numbers:
+        step["target"] = int(numbers[-1])
+    directions = [word for word in words[1:] if word in DIRS]
+    if directions:
+        step["dir"] = directions[0]
+    return step
+
+
 def plan_problem(text, refs):
     """Why the first step of a reply was not accepted, in words the model can act on ("" if it was)."""
     try:
@@ -790,8 +830,10 @@ def plan_problem(text, refs):
     if not raw:
         return "your plan was empty"
     for item in raw[:MAX_PLAN]:
+        item = coerce_step(item)
         if not isinstance(item, dict):
-            return "each plan step must be an object"
+            return 'each plan step must be an object like {"do": "find_flint", "target": 5}, not text'
+
         if parse_decision(json.dumps(item), refs) is not None or str(item.get("do", "")).lower() == "wait":
             if str(item.get("do", "")).lower() in SKILLS:
                 return ""
@@ -827,6 +869,7 @@ def parse_plan(text, refs):
         raw = [data]  # a single step is still accepted
     plan = []
     for item in raw[:MAX_PLAN]:
+        item = coerce_step(item)
         if isinstance(item, dict) and str(item.get("do", "")).lower() == "wait":
             try:
                 ticks = int(item.get("ticks", 10))
@@ -838,7 +881,7 @@ def parse_plan(text, refs):
         if step is None:
             break  # keep the valid prefix; later steps may depend on the bad one
         plan.append(step)
-        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next"):
+        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next", "leather_next"):
             break  # the hands change; plan the next step after seeing the result
     return plan
 
@@ -853,6 +896,10 @@ def _holds(name, need):
         return _is_food(name)
     if need == "raw food":
         return _is_food(name) and "roasted" not in name and "cooked" not in name
+    if need == "blade":
+        return any(word in name for word in ("sharpened flint", "knife", "dagger", "machete"))
+    if need == "vessel":
+        return any(word in name.split() for word in leatherwork.VESSEL_WORDS)
     if need == "fuel":
         return any(word in name for word in FUEL_WORDS) and "sharpened" not in name
     return need in name
@@ -948,6 +995,9 @@ def cold_plan(observation, ignored=()):
         return {"do": "go", "target": fire.get("ref")}
     if _has(me, lambda n: "log" in n):
         return {"do": "craft", "recipe": "campfire", "material": "wood log"}
+    trees = [row for row in observation.get("nearby", []) if row.get("ref") not in ignored and "branches" in row]
+    if trees and _has(me, lambda n: ("axe" in n or "hatchet" in n) and "pickaxe" not in n):
+        return {"skill": "chop", "target": min(trees, key=lambda row: max(abs(_int(row.get("dx"), 9)), abs(_int(row.get("dy"), 9)))).get("ref")}
     return None
 
 
@@ -982,11 +1032,19 @@ SKILL_TARGETS = {
     "cook": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "light_fire": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "mine": (lambda row: "underground rock" in str(row.get("name", "")).lower() or "ore" in str(row.get("name", "")).lower().split() or str(row.get("type", "")).startswith(("/turf/floor/dirt/underground", "/turf/floor/mining")), "underground rock or ore"),
+    "scrape_hide": (lambda row: row.get("item") and any(w in str(row.get("name", "")).lower() for w in leatherwork.RAW_WORDS), "a raw hide or pelt on the ground"),
+    "wash_hide": (lambda row: row.get("item") and "hairless hide" in str(row.get("name", "")).lower(), "a hairless hide on the ground"),
+    "soak_bark": (lambda row: row.get("item") and "bark" in str(row.get("name", "")).lower(), "tree bark on the ground"),
+    "tan_hide": (lambda row: row.get("item") and "dry hide" in str(row.get("name", "")).lower(), "a dry hide on the ground"),
+    "rack_hide": (lambda row: "tanning rack" in str(row.get("name", "")).lower(), "a tanning rack"),
+    "unload_rack": (lambda row: "tanning rack" in str(row.get("name", "")).lower(), "a tanning rack"),
+    "cut_logs": (lambda row: row.get("item") and "log" in str(row.get("name", "")).lower(), "wood logs on the ground"),
+    "fill_vessel": (lambda row: not row.get("item") and not row.get("mob") and any(w in str(row.get("name", "")).lower() for w in WATER_WORDS), "water"),
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
 BINDING_WORDS = ("crude twine", "sinew", "rope")
 # Things that come in stacks the game merges when one is clicked with the other.
-STACK_WORDS = ("log", "plank", "stone", "leaves", "leaf", "grass", "bone", "hide", "pelt", "clay", "ore", "brick",
+STACK_WORDS = ("leather", "log", "plank", "stone", "leaves", "leaf", "grass", "bone", "hide", "pelt", "clay", "ore", "brick",
                "twine", "sinew", "rope", "cloth", "coin", "ingot", "sheet", "bark", "thatch", "seed", "arrow", "bandage")
 
 
@@ -1096,6 +1154,8 @@ def expand_skill(step, self_state, rows=None):
         else:
             stowed = next((item for item in _stowed(self_state) if _holds(item, need)), None)
             if not stowed:
+                if need == "sharpened flint":
+                    return [], f"{step['skill']} needs a sharpened flint and you have none (binding an axe uses it up): find_flint at a rock, then sharpen_flint"
                 return [], f"{step['skill']} needs {need} in a hand"
             if active != "empty":
                 steps += _free_active(active, other) if other != "empty" else [{"do": "swap_hand"}]
@@ -1201,7 +1261,7 @@ def expand_plan(plan, self_state, rows=None):
             if error:
                 return steps, error
             steps.extend(expanded)
-        elif step.get("do") in ("craft", "equip") and step.get("material"):
+        elif step.get("do") in ("craft", "equip", "drop") and step.get("material"):
             steps.extend(_expand_craft(step, self_state))
         elif step.get("do") == "build":
             held = _expand_craft({"do": "craft", "recipe": step["recipe"], "material": step.get("material", "")}, self_state)
@@ -1530,6 +1590,37 @@ def main(argv=None):
                 print(f"release failed: {exc}", file=sys.stderr)
 
 
+MODEL_GRACE = 30  # seconds past the model's own timeout before a hung call is given up
+
+
+def wait_for_model(future, args, deadline, tick, clock=time.monotonic, poll=REFLEX_POLL):
+    """Wait for the model's answer, running tick() (reflexes) every poll seconds. Returns (answer, stop_reason).
+
+    A model call that failed with its own timeout must not look like a poll timeout: concurrent.futures.TimeoutError
+    is the built-in TimeoutError, which a timed-out urlopen raises too, and catching it here once spun the reflex loop
+    on character_observe for hours. The wait also ends at the run deadline, when the call hangs past its timeout, and
+    when the character is dead or gone (tick returns a reason).
+    """
+    limit = clock() + float(getattr(args, "timeout", 120) or 120) + MODEL_GRACE
+    while True:
+        done, _ = concurrent.futures.wait([future], timeout=poll)
+        if done:
+            try:
+                return future.result(), ""
+            except Exception as exc:  # the call itself failed (timeout, refused, bad reply)
+                return None, f"model unavailable ({exc})"
+        if deadline and clock() > deadline:
+            future.cancel()
+            return None, "run time is up"
+        if clock() > limit:
+            future.cancel()
+            return None, "model unavailable (no answer in time)"
+        reason = tick()
+        if reason:
+            future.cancel()
+            return None, reason
+
+
 def run(client, args, character, token):
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as model_pool:
         return _run(client, args, character, token, model_pool)
@@ -1685,6 +1776,8 @@ def _run(client, args, character, token, model_pool):
         box = memory.data if memory is not None else local_project
         ledger = memory.data.get("structures", []) if memory is not None else []
         building = project_line(box, observation, ledger)
+        if box.get("leather"):
+            building = (building + "\n" if building else "") + leatherwork.describe(observation, box["leather"])
         text = (f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "")
                 + (f"PROJECT: {building}\n" if building else "")
                 + text + (f"\nMEMORY:\n{recalled}" if recalled else ""))
@@ -1694,23 +1787,30 @@ def _run(client, args, character, token, model_pool):
         # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
         reacted = []
         future = model_pool.submit(ask_ollama, args.ollama_url, args.model, model_window(history), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
-        steps_now, what = reflex(observation, previous_self)
-        while True:
-            if steps_now:
-                summary, queue_since = execute(client, character, steps_now, queue_since)
-                print(f"  reflex: {what} -> {summary}")
-                reacted.append(what)
-            try:
-                answer = future.result(timeout=REFLEX_POLL)
-                break
-            except concurrent.futures.TimeoutError:
-                pass
-            except (OSError, ValueError) as exc:
-                print(f"step {step}: model unavailable ({exc})", file=sys.stderr)
-                return 1
+        pending = dict(zip(("steps", "what"), reflex(observation, previous_self)))
+
+        def tick():
+            """One reflex poll while the model thinks: act on a threat, or say why the run should stop."""
+            nonlocal queue_since
+            if pending["steps"]:
+                summary, queue_since = execute(client, character, pending["steps"], queue_since)
+                print(f"  reflex: {pending['what']} -> {summary}")
+                reacted.append(pending["what"])
+                pending["steps"] = None
             look = client.request("character_observe", {"character": character, "radius": 5, "since": since})
             seen = look.get("result", {}) if look.get("ok") else {}
-            steps_now, what = reflex(seen, self_state) if seen and seen.get("self", {}).get("stat") in (None, 0) else (None, "")
+            stat = seen.get("self", {}).get("stat") if seen else None
+            if stat == 2:
+                return "the character is dead"
+            pending["steps"], pending["what"] = reflex(seen, self_state) if seen and stat in (None, 0) else (None, "")
+            return ""
+
+        if pending["steps"]:
+            tick()  # a threat already in view is met before the first poll
+        answer, stop = wait_for_model(future, args, deadline, tick)
+        if stop:
+            print(f"step {step}: {stop}; stopping", file=sys.stderr)
+            return 1 if "model" in stop else 0
         history.append({"role": "assistant", "content": answer})
         if reacted:
             # The plan was made before the attack; plan again from the new situation.
@@ -1738,6 +1838,12 @@ def _run(client, args, character, token, model_pool):
         plan, built_note = blueprint_plan(plan, observation, box, ledger)
         if memory is not None and json.dumps(box.get("project"), sort_keys=True) != before:
             memory.dirty = True
+        plan, leather_note = leather_plan(plan, observation, box)
+        if leather_note:
+            print(f"step {step}: leather -> {leather_note}")
+            built_note = (built_note + "\n" if built_note else "") + leather_note
+            if memory is not None:
+                memory.dirty = True
         if built_note:
             print(f"step {step}: blueprint -> {built_note}")
             if not plan:
@@ -1959,6 +2065,26 @@ def blueprint_plan(plan, observation, box, ledger=()):
     return head, f"The next piece of your {project['name']} ({piece['role']} at ({piece['x']},{piece['y']})) cannot be built yet: {problem}."
 
 
+def leather_plan(plan, observation, box):
+    """Turn a leather_next step into the next real leatherworking steps. Returns (plan, feedback)."""
+    index = next((i for i, item in enumerate(plan) if item.get("do") == "leather_next"), None)
+    if index is None:
+        return plan, ""
+    head, first = plan[:index], plan[index]
+    product = first.get("make") or box.get("leather") or "leather"
+    if product == "leather" and box.get("leather"):
+        product = box["leather"]  # a bare leather_next carries on with the chosen product
+    box["leather"] = product
+    steps, note = leatherwork.next_steps(observation, product)
+    if steps:
+        for item in steps:
+            item["leather"] = product
+        return head + steps, ""
+    if note.startswith("you already wear"):
+        box["leather"] = None
+    return head, f"Leatherwork ({product}): {note}."
+
+
 def project_line(box, observation, ledger=()):
     project = box.get("project") if box else None
     return blueprints.describe(project, observation, ledger) if project else ""
@@ -1980,7 +2106,7 @@ def habit_problem(plan, made_recent, step, goal):
     """Why a plan repeats a recipe the goal does not need ("" when it is fine)."""
     for item in plan:
         recipe = recipe_key(item.get("recipe")) if item.get("do") in ("craft", "build") else ""
-        if not recipe or item.get("blueprint"):
+        if not recipe or item.get("blueprint") or item.get("leather"):
             continue  # a blueprint asks for exactly as many pieces as it needs
         # The goal names kinds, not materials: "walls" asks for a stone wall, and "(2 stone)" does not.
         kind = recipe.split()[-1]
