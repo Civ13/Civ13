@@ -1,20 +1,23 @@
-// Player cartography: a blank map fills in with the land its holder explores.
+// Player cartography: a blank map that players fill in by surveying.
 //
 // A map charts one level of one world, chosen the first time it records
-// anything. The chart is one character per cell of CARTOGRAPHY_CELL x
+// anything. Nothing is drawn while walking: the holder stops and sketches
+// (stands still for CARTOGRAPHY_SKETCH_TIME), and only the tiles they can see
+// at that moment, in line of sight and light enough to make out, go onto the
+// map. The chart is one character per cell of CARTOGRAPHY_CELL x
 // CARTOGRAPHY_CELL tiles (a few kilobytes of text for a whole level), so maps
-// stay cheap to keep, save and restore. Charting runs on the object process
-// only while a living mob carries the map, and only when the holder reaches a
-// new cell. Reading the map draws the chart client-side on a canvas.
+// stay cheap to keep, save and restore. Reading the map draws the chart
+// client-side on a canvas.
 
 #define CARTOGRAPHY_CELL 4 // smallest cell edge, in tiles
 #define CARTOGRAPHY_MAX_CELLS 160 // largest chart edge, in cells
-#define CARTOGRAPHY_SIGHT 2 // cells charted around the holder, each way
+#define CARTOGRAPHY_SKETCH_TIME 40 // deciseconds standing still per sketch
+#define CARTOGRAPHY_MIN_LIGHT 0.15 // darker tiles cannot be made out beyond arm's reach
 #define CARTOGRAPHY_UNKNOWN "0"
 
 /obj/item/weapon/cartography_map
 	name = "blank map"
-	desc = "A sheet of paper ruled for map-making. Carry it while you explore and it fills in with the land you pass through."
+	desc = "A sheet of paper ruled for map-making. Stop and use it in hand to sketch the land you can see; read it with Read Map."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "portable_areamap"
 	item_state = "map"
@@ -29,30 +32,6 @@
 	var/chart_cell = 0 // tiles per cell edge
 	var/chart_cols = 0
 	var/chart_rows = 0
-	var/tmp/last_cell = 0 // cell index the holder was last charted from
-
-/obj/item/weapon/cartography_map/New()
-	..()
-	processing_objects |= src
-
-/obj/item/weapon/cartography_map/Destroy()
-	processing_objects -= src
-	return ..()
-
-/obj/item/weapon/cartography_map/persistence_runtime_var(key)
-	return key == "last_cell" || ..()
-
-/obj/item/weapon/cartography_map/pickup(mob/user)
-	..()
-	processing_objects |= src
-
-/obj/item/weapon/cartography_map/equipped(mob/user, slot)
-	..()
-	processing_objects |= src
-
-/obj/item/weapon/cartography_map/on_exit_storage(obj/item/weapon/storage/S)
-	..()
-	processing_objects |= src
 
 // The land a turf belongs to: this world (its region in a shard group, else
 // the map) and the level. Charts never mix two lands.
@@ -114,26 +93,32 @@
 		return "b"
 	return "d"
 
-// The character for one cell: a vote of four sample tiles. Built-up land and
-// roads count double so narrow tracks and huts still show.
-/obj/item/weapon/cartography_map/proc/sample_cell(cx, cy, z)
-	var/list/votes = list()
-	var/lo = max(1, round(chart_cell / 4))
-	var/hi = max(1, chart_cell - lo)
-	var/x0 = (cx - 1) * chart_cell
-	var/y0 = (cy - 1) * chart_cell
-	for (var/dy in list(lo, hi))
-		for (var/dx in list(lo, hi))
-			var/turf/T = locate(min(world.maxx, x0 + dx), min(world.maxy, y0 + dy), z)
-			var/c = cartography_terrain(T)
-			votes[c] = (votes[c] || 0) + ((c == "b" || c == "r") ? 2 : 1)
-	var/best = CARTOGRAPHY_UNKNOWN
-	var/best_votes = 0
-	for (var/c in votes)
-		if (votes[c] > best_votes)
-			best = c
-			best_votes = votes[c]
-	return best
+// The turfs user can make out right now: inside their screen, in line of
+// sight (view() respects opacity) and lit, except right beside them.
+/proc/cartography_visible_turfs(mob/user)
+	var/list/seen = list()
+	var/turf/here = get_turf(user)
+	if (!here)
+		return seen
+	var/half_x = world.view
+	var/half_y = world.view
+	if (user.client)
+		var/client_view = user.client.view
+		if (isnum(client_view))
+			half_x = client_view
+			half_y = client_view
+		else if (istext(client_view))
+			var/cross = findtext(client_view, "x")
+			if (cross)
+				half_x = round((text2num(copytext(client_view, 1, cross)) - 1) / 2)
+				half_y = round((text2num(copytext(client_view, cross + 1)) - 1) / 2)
+	for (var/turf/T in view(max(half_x, half_y), user))
+		if (T.z != here.z || abs(T.x - here.x) > half_x || abs(T.y - here.y) > half_y)
+			continue
+		if (get_dist(T, here) > 1 && T.get_lumcount() < CARTOGRAPHY_MIN_LIGHT)
+			continue
+		seen += T
+	return seen
 
 // Binds a blank (or stale) map to the land at T.
 /obj/item/weapon/cartography_map/proc/start_chart(turf/T)
@@ -152,60 +137,43 @@
 	chart_label = cartography_land_label(T)
 	if (name == initial(name))
 		name = "map of [chart_label]"
-	last_cell = 0
 
 /obj/item/weapon/cartography_map/proc/chart_valid()
 	return chart_cell > 0 && chart_cols > 0 && chart_rows > 0 && length(chart) == chart_cols * chart_rows
 
-// The living mob carrying this map, through bags and pockets.
-/obj/item/weapon/cartography_map/proc/chart_holder()
-	var/atom/A = loc
-	for (var/depth = 1 to 4)
-		if (!A || isturf(A))
-			return null
-		if (ismob(A))
-			var/mob/living/L = A
-			if (!istype(L) || L.stat == DEAD)
-				return null
-			return L
-		A = A.loc
-	return null
-
-/obj/item/weapon/cartography_map/process()
-	var/mob/living/L = chart_holder()
-	if (!L)
-		last_cell = 0
-		return PROCESS_KILL
-	var/turf/T = get_turf(L)
-	if (!T)
-		return
-	chart_around(T)
-
-// Charts the cells around T. Returns TRUE when anything changed.
-/obj/item/weapon/cartography_map/proc/chart_around(turf/T)
+// Draws the seen turfs onto the chart. Each touched cell becomes the most
+// common terrain among its seen tiles; built-up land and roads count double so
+// narrow tracks and huts still show. Returns the number of cells redrawn, or
+// -1 when the turfs belong to another land than this map.
+/obj/item/weapon/cartography_map/proc/record_turfs(turf/here, list/seen)
 	if (!chart_land)
-		start_chart(T)
-	else if (chart_land != cartography_land_key(T))
-		return FALSE // another world or level
+		start_chart(here)
+	else if (chart_land != cartography_land_key(here))
+		return -1
 	else if (!chart_valid())
-		start_chart(T) // the world was resized since this map was drawn
-	var/cx = CEILING(T.x / chart_cell, 1)
-	var/cy = CEILING(T.y / chart_cell, 1)
-	var/here = (cy - 1) * chart_cols + cx
-	if (here == last_cell)
-		return FALSE
-	last_cell = here
-	var/changed = FALSE
-	for (var/y = max(1, cy - CARTOGRAPHY_SIGHT) to min(chart_rows, cy + CARTOGRAPHY_SIGHT))
-		for (var/x = max(1, cx - CARTOGRAPHY_SIGHT) to min(chart_cols, cx + CARTOGRAPHY_SIGHT))
-			// Round off the corners of the sighted square.
-			if (abs(x - cx) == CARTOGRAPHY_SIGHT && abs(y - cy) == CARTOGRAPHY_SIGHT)
-				continue
-			var/i = (y - 1) * chart_cols + x
-			var/c = sample_cell(x, y, T.z)
-			if (copytext(chart, i, i + 1) != c)
-				chart = copytext(chart, 1, i) + c + copytext(chart, i + 1)
-				changed = TRUE
+		start_chart(here) // the world was resized since this map was drawn
+	var/list/votes = list() // cell index = list(terrain = votes)
+	for (var/turf/T in seen)
+		var/i = (CEILING(T.y / chart_cell, 1) - 1) * chart_cols + CEILING(T.x / chart_cell, 1)
+		var/c = cartography_terrain(T)
+		var/list/cell_votes = votes["[i]"]
+		if (!cell_votes)
+			cell_votes = list()
+			votes["[i]"] = cell_votes
+		cell_votes[c] = (cell_votes[c] || 0) + ((c == "b" || c == "r") ? 2 : 1)
+	var/changed = 0
+	for (var/key in votes)
+		var/list/cell_votes = votes[key]
+		var/best = CARTOGRAPHY_UNKNOWN
+		var/best_votes = 0
+		for (var/c in cell_votes)
+			if (cell_votes[c] > best_votes)
+				best = c
+				best_votes = cell_votes[c]
+		var/i = text2num(key)
+		if (copytext(chart, i, i + 1) != best)
+			chart = copytext(chart, 1, i) + best + copytext(chart, i + 1)
+			changed++
 	return changed
 
 /obj/item/weapon/cartography_map/proc/explored_percent()
@@ -224,8 +192,41 @@
 	else
 		to_chat(user, "It charts [chart_label]; about [explored_percent()]% of it is drawn in.")
 
+// Using the map in hand sketches what the holder can see, then shows it.
 /obj/item/weapon/cartography_map/attack_self(mob/user)
+	sketch(user)
+
+/obj/item/weapon/cartography_map/proc/sketch(mob/user)
+	var/turf/here = get_turf(user)
+	if (!user || !here || loc != user)
+		return
+	if (chart_land && chart_land != cartography_land_key(here))
+		to_chat(user, SPAN_WARNING("This map shows [chart_label], not the land you are in."))
+		return
+	to_chat(user, SPAN_NOTICE("You stop and start sketching the land around you..."))
+	if (!do_after(user, CARTOGRAPHY_SKETCH_TIME, src))
+		to_chat(user, SPAN_WARNING("You stop sketching."))
+		return
+	here = get_turf(user)
+	if (!here || QDELETED(src) || loc != user)
+		return
+	var/list/seen = cartography_visible_turfs(user)
+	if (length(seen) <= 9)
+		to_chat(user, SPAN_WARNING("You can hardly see anything here to draw."))
+		if (!chart_land)
+			return
+	var/changed = record_turfs(here, seen)
+	if (changed < 0)
+		to_chat(user, SPAN_WARNING("This map shows [chart_label], not the land you are in."))
+		return
+	to_chat(user, SPAN_NOTICE(changed ? "You sketch what you can see onto the map." : "The map already shows everything you can see from here."))
 	read_map(user)
+
+/obj/item/weapon/cartography_map/verb/read_map_verb()
+	set name = "Read Map"
+	set category = null
+	set src in usr
+	read_map(usr)
 
 /obj/item/weapon/cartography_map/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/weapon/pen))
@@ -241,13 +242,10 @@
 /obj/item/weapon/cartography_map/proc/read_map(mob/user)
 	if (!user || !user.client)
 		return
-	var/turf/T = get_turf(user)
-	if (T && chart_holder() == user)
-		chart_around(T)
 	if (!chart_valid())
-		to_chat(user, SPAN_NOTICE("The map is still blank. Carry it while you explore to fill it in."))
+		to_chat(user, SPAN_NOTICE("The map is still blank. Stop somewhere with a view and use it in hand to sketch."))
 		return
-	user << browse(map_html(T), "window=cartography_map;size=[min(900, chart_cols * map_scale() + 60)]x[min(900, chart_rows * map_scale() + 190)]")
+	user << browse(map_html(get_turf(user)), "window=cartography_map;size=[min(900, chart_cols * map_scale() + 60)]x[min(900, chart_rows * map_scale() + 190)]")
 
 /obj/item/weapon/cartography_map/proc/map_scale()
 	return clamp(round(640 / max(chart_cols, chart_rows)), 2, 8)
@@ -290,5 +288,6 @@
 
 #undef CARTOGRAPHY_CELL
 #undef CARTOGRAPHY_MAX_CELLS
-#undef CARTOGRAPHY_SIGHT
+#undef CARTOGRAPHY_SKETCH_TIME
+#undef CARTOGRAPHY_MIN_LIGHT
 #undef CARTOGRAPHY_UNKNOWN
