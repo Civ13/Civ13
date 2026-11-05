@@ -41,6 +41,10 @@ and launch only the verified BYOND client. Never add a permanent IP pin or reuse
 this query for OpenDream. Source merge does not activate the launcher feed;
 exact-head packaging/CI, independent review and a genuine public join gate release.
 See tools/opendream-client/native/SERVER-DISCOVERY.md.
+A host doorman on fixed TCP 1713 (scripts/gaia-host serve) may report instances
+asleep; those are listed from its cache, never queried directly, and Wake and
+join wakes, polls the doorman, then verifies the game port directly. The
+doorman's answer never becomes a GameServer, an address or join authority.
 Public Topic writes use the fixed per-account status-requests lock/state,
 independent of --root. Reserve before writing, retain failed reservations and
 correlate validated IP aliases plus configured port. Spacing defers locally;

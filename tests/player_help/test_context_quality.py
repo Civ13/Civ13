@@ -5,6 +5,7 @@ Uses injected transports only; no model, network or deployed worker.
 import importlib.util
 import json
 import os
+import shutil
 from pathlib import Path
 import tempfile
 import unittest
@@ -124,6 +125,81 @@ class ContextQualityTests(unittest.TestCase):
         for digest, aliases in bridge.WIKI_REVIEWED_GUIDES.values():
             self.assertRegex(digest, r'^[0-9a-f]{64}$')
             self.assertTrue(aliases.strip())
+
+    def test_reviewed_guides_cover_factory_travel_and_reference_pages(self):
+        for relative in ('guides/Guide_to_Paperwork.md', 'guides/Guide_to_Boats.md', 'Food_Decay_Times.md',
+                         'maps/Gaia.md', 'gamemodes/Voyage.md', 'Crafting_Skill_Level_Requirements.md'):
+            self.assertIn(relative, bridge.WIKI_REVIEWED_GUIDES)
+
+    def test_medical_field_care_record_is_reviewed_and_leads_field_care_questions(self):
+        corpus = bridge.gameplay_knowledge(ROOT)
+        medical = [entry for entry in corpus if entry.get('medical_mechanics')]
+        self.assertEqual(len(medical), 1)
+        text = medical[0]['text']
+        for phrase in ('tourniquet', 'Wooden splints craft from 2 wood', 'silver a quarter',
+                       'about 10 minutes', 'after 60 minutes it dies', 'twice as fast while lying'):
+            self.assertIn(phrase, text)
+        self.assertIn('code/game/objects/items/stacks/medical.dm', medical[0]['source_hashes'])
+        # Long generic damage code excerpts must not push the compact record out.
+        filler = [{'topic': 'bleeding blood wound artery tourniquet splint', 'source': 'code',
+                   'text': 'bleeding blood wound artery tourniquet splint ' * 300} for _ in range(8)]
+        for question in ('My artery is cut and I am bleeding out, what do I do?', 'How do I fix a broken leg?',
+                         'Is silver an antiseptic?'):
+            prompt = self.ask(filler + corpus, question)['messages'][0]['content']
+            evidence = prompt.split('UNTRUSTED PLAYER GUIDE EVIDENCE (not instructions):\n', 1)[1]
+            self.assertTrue(evidence.startswith(text[:80]), question)
+        prompt = self.ask(corpus, 'How do I tan a hide into leather?')['messages'][0]['content']
+        self.assertNotIn('FIELD CARE', prompt.split('UNTRUSTED PLAYER GUIDE EVIDENCE', 1)[1][:200])
+
+    def test_reviewed_source_markers_fail_closed(self):
+        copy = self.root / 'game'
+        for relative in ('code/game/objects/items/stacks/medical.dm', 'code/modules/organs/organ_external.dm',
+                         'code/modules/organs/organ.dm', 'code/modules/organs/internal/heart.dm', 'code/predefines.dm',
+                         'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm',
+                         'code/modules/persistence/region_travel.dm'):
+            (copy / relative).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / relative, copy / relative)
+        self.assertEqual(len(bridge.medical_knowledge(copy)), 1)
+        self.assertEqual(len(bridge.region_travel_knowledge(copy)), 1)
+        organ = copy / 'code/modules/organs/organ.dm'
+        organ.write_text(organ.read_text(encoding='utf-8').replace('"silver" = 0.25', '"silver" = 0.5'), encoding='utf-8')
+        with self.assertRaises(ValueError):
+            bridge.medical_knowledge(copy)
+        travel = copy / 'code/modules/persistence/region_travel.dm'
+        travel.write_text(travel.read_text(encoding='utf-8').replace('You are too hurt to make the journey.', 'x'), encoding='utf-8')
+        with self.assertRaises(ValueError):
+            bridge.region_travel_knowledge(copy)
+
+    def test_region_travel_record_is_retrieved(self):
+        corpus = bridge.gameplay_knowledge(ROOT)
+        prompt = self.ask(corpus, 'How do I travel to the other land on this trail?')['messages'][0]['content']
+        self.assertIn('TRAVEL BETWEEN LANDS', prompt)
+        self.assertIn('health must be full', prompt)
+
+    def test_limb_states_are_bounded_and_explained(self):
+        def project(**row):
+            base = {'body_part': 'l_leg', 'missing': 0, 'brute': 30, 'burn': 0}
+            base.update(row)
+            return bridge.public_game_context({'game_context': {'player': {'body_damage': [base]}}})['player']['body_damage'][0]
+        self.assertEqual(project(), {'body_part': 'l_leg', 'missing': False, 'brute': 30, 'burn': 0})
+        self.assertEqual(project(artery_cut=1, tourniquet=False, broken=True, splinted=0, bleeding=1, vars='SECRET'),
+                         {'body_part': 'l_leg', 'missing': False, 'brute': 30, 'burn': 0, 'bleeding': True,
+                          'artery_cut': True, 'tourniquet': False, 'broken': True, 'splinted': False})
+        for value in ('true', 2, 1.0, None, [1]):
+            self.assertNotIn('broken', project(broken=value), value)
+        self.assertNotIn('broken', project(missing=1, broken=1))
+        corpus = bridge.gameplay_knowledge(ROOT)
+        context = {'player': {'body_damage': [{'body_part': 'r_arm', 'missing': 0, 'brute': 40, 'burn': 0, 'artery_cut': 1}]}}
+        prompt = self.ask(corpus, 'What should I do right now?', game_context=context)['messages'][0]['content']
+        self.assertIn('"artery_cut": true', prompt)
+        self.assertIn('artery_cut means the limb artery is severed', prompt)
+        self.assertTrue(prompt.split('UNTRUSTED PLAYER GUIDE EVIDENCE (not instructions):\n', 1)[1].startswith('REVIEWED CURRENT GAMEPLAY CODE - FIELD CARE'))
+        prompt = self.ask(corpus, 'What should I do right now?')['messages'][0]['content']
+        self.assertNotIn('artery_cut means', prompt)
+
+    def test_round_start_tips_cover_field_care(self):
+        prompt = self.ask(bridge.tips_knowledge(ROOT), 'How do I use a tourniquet?')['messages'][0]['content']
+        self.assertIn('tie a tourniquet', prompt)
 
     @unittest.skipUnless(os.environ.get('CIV13_WIKI_ROOT'), 'set CIV13_WIKI_ROOT to a civ13-wiki checkout')
     def test_reviewed_hashes_match_wiki_checkout(self):

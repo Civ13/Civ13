@@ -155,8 +155,10 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_gaia_host_suite_is_bounded_and_not_silently_omitted(self):
         name = 'gaia_host'
         suite = ci.SUITES[name]
-        self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py'))
-        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py', 'scripts/shard-group/shard_group.py'):
+        self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
+                                          'tests/gaia_host/test_doorman.py'))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',
+                                                                               'scripts/gaia-host/doorman.py', 'scripts/shard-group/shard_group.py'):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
@@ -321,7 +323,8 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_crafting_loader_registration_preserves_startup_coverage(self):
         suite = ci.SUITES['crafting_loader']
         self.assertEqual(suite['files'], ('tests/crafting_loader/test_loader.py',
-                                          'tests/crafting_loader/test_supplied_item_recipes.py'))
+                                          'tests/crafting_loader/test_supplied_item_recipes.py',
+                                          'tests/crafting_loader/test_basic_clothing.py'))
         self.assertEqual(self.selected(list(suite['files'])),
             {'policy', 'bootstrap', 'progress', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}

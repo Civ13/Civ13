@@ -193,7 +193,7 @@ public static class ByondStatus {
         }
     }
 
-    private static string OptionalText(JsonElement root, string name, int maximum, bool integer = false) {
+    internal static string OptionalText(JsonElement root, string name, int maximum, bool integer = false) {
         if (!root.TryGetProperty(name, out var value)) return "";
         if (integer && value.ValueKind == JsonValueKind.Number && value.TryGetInt64(out var number))
             return number.ToString(CultureInfo.InvariantCulture);

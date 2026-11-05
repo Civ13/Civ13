@@ -80,7 +80,8 @@ SUITES = {
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
     # Windows scheduled-task host control with a fake machine; no BYOND runtime.
-    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py'),
+    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
+                           'tests/gaia_host/test_doorman.py'),
         'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/'),
         'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.
@@ -256,9 +257,12 @@ SUITES = {
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',
-                                'tests/crafting_loader/test_supplied_item_recipes.py'),
+                                'tests/crafting_loader/test_supplied_item_recipes.py',
+                                'tests/crafting_loader/test_basic_clothing.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
-            'code/setup.dm', 'tests/save_movement/source_adapter.py')},
+            'code/setup.dm', 'tests/save_movement/source_adapter.py',
+            'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt')},
 
     # Stdlib-only access-file framing and complete helper-body projection.
     'access_lists': {'files': ('tests/access_lists/test_access_lists.py',),
@@ -453,7 +457,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/reagents/Chemistry-Reagents.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
-            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/organ.dm', 'code/modules/organs/internal/heart.dm',
+            'code/game/objects/items/stacks/medical.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm',
+            'code/modules/persistence/region_travel.dm')},
     # Exact stdlib/injected transport suite. test_bridge supplies inert setup/
     # teardown helpers; its tests are not discovered. No native runner or model.
     # All production/import inputs stay shared to preserve existing fallback.
@@ -479,7 +487,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/reagents/Chemistry-Reagents.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
-            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm')},
+            'code/modules/organs/organ_internal.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/organ.dm', 'code/modules/organs/internal/heart.dm',
+            'code/game/objects/items/stacks/medical.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm',
+            'code/modules/persistence/region_travel.dm')},
     # Injected transport and source-only contracts; no BYOND or network calls.
     'help_mood_history': {'files': ('tests/player_help/test_bridge.py',
                                    'tests/player_help/test_question_display_source.py'),
