@@ -14,3 +14,10 @@ marks the round as live.
 
 `--negative-control no-import-rebuild` removes the casing import hook and must
 fail.
+
+Saves written before casings recorded `bullet_state_saved` cannot tell a fired
+casing from a round an older restore left without its bullet (Gaia's Risberg-700
+and Mp40 rounds, 2026-11-05). On such a load, a bulletless round held in a
+magazine, box, pouch or gun is rebuilt once; loose casings stay spent. The probe
+covers both, plus a recorded spent round in a magazine that must stay spent.
+`--negative-control no-unrecorded-repair` disables the repair and must fail.

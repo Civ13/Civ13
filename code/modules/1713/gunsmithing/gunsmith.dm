@@ -468,6 +468,10 @@ function pickAppearance(a) {
 		var/choice = href_list["choice"]
 		if (!choice)
 			return
+		// A stale window can still send later steps after the gun was cancelled.
+		if (step > 1 && !current_gun)
+			to_chat(H, "Start a new gun first.")
+			return
 
 		// Step 1: Stock
 		if (step == 1)

@@ -16,6 +16,13 @@
 	if (key == "BB")
 		return FALSE
 	return ..()
+// Pre-record save shape for a round spent by an older restore: no bullet type,
+// no BB field and no bullet_state_saved record.
+/obj/item/ammo_casing/a762x39/unrecorded_fixture
+/obj/item/ammo_casing/a762x39/unrecorded_fixture/before_save()
+	saved_bullet_type = null
+/obj/item/ammo_magazine/ammo_fixture/unrecorded
+	ammo_type = /obj/item/ammo_casing/a762x39/unrecorded_fixture
 /proc/ammo_check(condition, message)
 	if(!condition)
 		text2file("FAIL: [message]", "ammo_result.txt")
@@ -76,6 +83,20 @@
 	var/obj/item/ammo_casing/a762x39/legacy_fixture/legacy_live = new(locate(1,2,1))
 	var/obj/item/ammo_casing/a762x39/legacy_fixture/legacy_spent = new(locate(2,2,1))
 	qdel(legacy_spent.expend())
+	// Rounds an older restore left without bullets, in a magazine and a gun.
+	var/obj/item/ammo_magazine/ammo_fixture/unrecorded/lost_mag = new(locate(3,2,1))
+	for(var/obj/item/ammo_casing/C in lost_mag.stored_ammo)
+		qdel(C.expend())
+	var/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/lost_gun = new(locate(4,2,1))
+	var/obj/item/ammo_casing/a762x39/unrecorded_fixture/lost_loaded = new(lost_gun)
+	qdel(lost_loaded.expend())
+	lost_gun.loaded += lost_loaded
+	var/obj/item/ammo_casing/a762x39/unrecorded_fixture/lost_loose = new(locate(5,2,1))
+	qdel(lost_loose.expend())
+	// A round fired and put back into a magazine after the record exists.
+	var/obj/item/ammo_magazine/ammo_fixture/fired_mag = new(locate(6,2,1))
+	var/obj/item/ammo_casing/fired_round = fired_mag.stored_ammo[1]
+	qdel(fired_round.expend())
 	sleep(10)
 	ammo_check(mag.stored_ammo.len == 3, "fixture magazine is filled ([mag.stored_ammo.len])")
 	ammo_check(map_storage.Save_World(), "production whole-world export succeeds")
@@ -100,5 +121,19 @@
 	ammo_check(ammo_live(fire_arrow, /obj/item/projectile/arrow/arrow/fire), "fire arrow keeps its fire head")
 	ammo_check(ammo_live(legacy_live, /obj/item/projectile/bullet/rifle/a762x39) && ammo_bullets(legacy_live) == 1, "older-save loaded round is rebuilt")
 	ammo_check(!legacy_spent.BB && !ammo_bullets(legacy_spent), "older-save spent casing stays spent")
+	lost_mag = locate(/obj/item/ammo_magazine/ammo_fixture/unrecorded) in locate(3,2,1)
+	lost_gun = locate(/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103) in locate(4,2,1)
+	lost_loose = locate(/obj/item/ammo_casing/a762x39/unrecorded_fixture) in locate(5,2,1)
+	fired_mag = locate(/obj/item/ammo_magazine/ammo_fixture) in locate(6,2,1)
+	ammo_check(lost_mag && lost_gun && lost_loose && fired_mag, "unrecorded fixtures are restored")
+	ammo_check(lost_mag.stored_ammo.len == 3, "unrecorded magazine keeps three rounds")
+	for(var/obj/item/ammo_casing/C in lost_mag.stored_ammo)
+		ammo_check(ammo_live(C, /obj/item/projectile/bullet/rifle/a762x39) && ammo_bullets(C) == 1 && !C.abandonment_index, "unrecorded magazine round is repaired")
+	ammo_check(lost_gun.loaded.len == 1 && ammo_live(lost_gun.loaded[1], /obj/item/projectile/bullet/rifle/a762x39), "unrecorded round in a gun is repaired")
+	ammo_check(!lost_loose.BB && !ammo_bullets(lost_loose), "unrecorded loose casing stays spent")
+	fired_round = fired_mag.stored_ammo[1]
+	ammo_check(fired_mag.stored_ammo.len == 3 && !fired_round.BB && !ammo_bullets(fired_round), "recorded spent round in a magazine stays spent")
+	var/obj/item/projectile/shot = lost_gun.consume_next_projectile()
+	ammo_check(istype(shot, /obj/item/projectile/bullet/rifle/a762x39), "repaired gun has a round to fire")
 	text2file("PASS: loaded rounds stay loaded and spent casings stay spent across save/load", "ammo_result.txt")
 	del(world)
