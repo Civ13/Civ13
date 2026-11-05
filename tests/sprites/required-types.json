@@ -46,6 +46,7 @@
   "/obj/item/weapon/material/part",
   "/obj/item/weapon/material/part/axehead",
   "/obj/item/weapon/material/part/axehead/hatchet",
+  "/obj/item/weapon/material/hatchet/chainsaw",
   "/obj/item/weapon/material/part/axehead/battleaxe",
   "/obj/item/weapon/material/part/axehead/throwing",
   "/obj/item/weapon/material/part/shovel",
