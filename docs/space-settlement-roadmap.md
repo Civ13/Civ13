@@ -104,8 +104,10 @@ mainland like any other region.
 - **Landing.** The crew picks a landing zone from surveyed sites (phase 1 probes
   reveal sites). Unsurveyed landing has a higher chance of a rough landing that
   damages cargo.
-- **Return.** A return trip needs propellant at the landing site: carried as
-  cargo at first, produced locally in phase 6. Without it, settlers stay.
+- **Return.** A return trip needs propellant at the landing site, produced
+  locally from phase 6 on. Whether propellant carried as cargo may also allow
+  earlier returns is decision D3; the recommendation is no, so early settlers
+  stay. Without propellant, settlers stay.
 - **No default shuttle.** As with ferries, there is no free service between the
   mainland and the barren world; players build and fuel every trip.
 
