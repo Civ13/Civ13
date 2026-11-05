@@ -56,6 +56,56 @@ var/load_construction_stop = 1e9
 		load_construction_start = text2num(r[1])
 		load_construction_stop = text2num(r[2])
 	spawn(10) sweep()
+// The saver omits a field still at its compiled default, so a load keeps
+// whatever the constructor left there. A scalar that a restore constructor
+// sets to a different value each time (random looks, offsets, counters)
+// therefore changes on every load of an object that held its default.
+// Allowlisted types already restore omitted fields to their defaults.
+/proc/load_construction_drift_fields(datum/D)
+	. = list()
+	if(QDELETED(D) || D.persistence_uses_field_allowlist())
+		return
+	for(var/key in D.vars)
+		switch(key)
+			if("type", "parent_type", "vars", "loc", "locs", "pixloc", "contents", "x", "y", "z", "vis_locs", "client", "key", "ckey", "verbs", "group", "name", "tag", "override", "animate_movement")
+				continue
+		if(D.persistence_runtime_var(key))
+			continue
+		var/value = D.vars[key]
+		var/default_value = initial(D.vars[key])
+		if(value != default_value && persistence_default_scalar(value) && persistence_default_scalar(default_value))
+			. += key
+// Each type's builds start from seeds derived from its path, so the reviewed
+// drift list does not shift when another constructor's random calls change.
+/proc/load_construction_seed(T)
+	var/text = "[T]"
+	. = 7
+	for(var/i = 1, i <= length(text), i++)
+		. = (. * 31 + text2ascii(text, i)) % 1000003
+/proc/load_construction_restore(T, turf/loc)
+	persistence_saved_atom_construction++
+	try
+		. = new T(loc)
+	catch(var/exception/inner)
+		persistence_saved_atom_construction--
+		throw inner
+	persistence_saved_atom_construction--
+	// A load with no saved fields applies the same omitted-field rules.
+	if(.)
+		persistence_reset_omitted_offsets(., list())
+// Builds the type a second time and reports drifted fields whose values differ.
+// The second copy stays: deleting it races the constructor's spawn callbacks.
+/proc/load_construction_record_drift(datum/D, T, turf/loc)
+	var/list/fields = load_construction_drift_fields(D)
+	if(!fields.len)
+		return
+	rand_seed(load_construction_seed(T) + 1)
+	var/datum/again = load_construction_restore(T, loc)
+	if(QDELETED(again))
+		return
+	for(var/key in fields)
+		if(again.vars[key] != D.vars[key])
+			text2file("DRIFT\t[T]\t[key]", "construction_drift.txt")
 /proc/sweep()
 	var/n = 0
 	var/fails = 0
@@ -72,18 +122,15 @@ var/load_construction_stop = 1e9
 		try
 			var/datum/D
 			if(ispath(T, /atom))
-				persistence_saved_atom_construction++
-				try
-					D = new T(loc)
-				catch(var/exception/inner)
-					persistence_saved_atom_construction--
-					throw inner
-				persistence_saved_atom_construction--
+				rand_seed(load_construction_seed(T))
+				D = load_construction_restore(T, loc)
 			else
 				D = new T()
 			if(!D)
 				fails++
 				text2file("NULL\t[T]\n", "construction_failures.txt")
+			else if(ispath(T, /atom))
+				load_construction_record_drift(D, T, loc)
 		catch(var/exception/e)
 			fails++
 			persistence_saved_atom_construction = 0

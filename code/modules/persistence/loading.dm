@@ -361,7 +361,9 @@
 					object.vars[v] = default_value
 		// Let a type rebuild state its saved fields describe only by presence.
 		savefile.cd = entry_dir
-		object.persistence_import_fields(savefile.dir.Copy())
+		var/list/import_fields = savefile.dir.Copy()
+		persistence_reset_omitted_offsets(object, import_fields)
+		object.persistence_import_fields(import_fields)
 		if(istype(object, /datum/wound/lost_limb))
 			var/datum/wound/lost_limb/restored_wound = object
 			restored_wound.validate_restored_state()
@@ -526,6 +528,9 @@
 				if (ob)
 					ob.after_load()
 					register_restored_player(ob)
+					if (isatom(ob))
+						var/atom/restored_atom = ob
+						restored_atom.restoring = FALSE
 				if(istype(ob, /obj))
 					var/obj/obbie = ob
 					if(obbie.load_datums)
