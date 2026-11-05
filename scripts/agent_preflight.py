@@ -10,8 +10,9 @@ process and needs no network. It does not replace the hosted compiler or CI.
     python3 scripts/agent_preflight.py generated --write
     python3 scripts/agent_preflight.py suites          # every offline CI suite
     python3 scripts/agent_preflight.py suites --affected
+    python3 scripts/agent_preflight.py patterns [--write]  # forbidden-pattern ratchet
     python3 scripts/agent_preflight.py wiki-pins --wiki-root ../civ13-wiki [--write]
-    python3 scripts/agent_preflight.py all             # pins + generated + suites
+    python3 scripts/agent_preflight.py all             # pins + generated + patterns + suites
 """
 import argparse
 import hashlib
@@ -194,6 +195,14 @@ def wiki_pins(args):
     return 1 if (stale and not args.write) or missing else 0
 
 
+def patterns(args):
+    """Forbidden source patterns against tools/lint/forbidden_patterns_baseline.json."""
+    command = [sys.executable, '-B', str(ROOT / 'scripts/check_forbidden_patterns.py')]
+    if args.write:
+        command.append('--write')
+    return subprocess.run(command, cwd=ROOT).returncode
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--base', default='origin/master', help='Comparison ref (default origin/master)')
@@ -208,7 +217,9 @@ def main():
     p = sub.add_parser('wiki-pins', help='Compare player-help wiki guide pins to a civ13-wiki checkout')
     p.add_argument('--wiki-root', required=True)
     p.add_argument('--write', action='store_true')
-    p = sub.add_parser('all', help='pins, generated and all suites')
+    p = sub.add_parser('patterns', help='Forbidden source patterns (spawn, in world, untyped WWinput results)')
+    p.add_argument('--write', action='store_true', help='Record lowered counts in the baseline')
+    p = sub.add_parser('all', help='pins, generated, patterns and all suites')
     p.add_argument('--write', action='store_true')
     args = parser.parse_args()
     if args.command == 'all':
@@ -217,8 +228,11 @@ def main():
         print()
         status = generated(args)
         print()
+        status = patterns(args) or status
+        print()
         return suites(args) or status
-    return {'pins': pins, 'generated': generated, 'suites': suites, 'wiki-pins': wiki_pins}[args.command](args)
+    return {'pins': pins, 'generated': generated, 'patterns': patterns, 'suites': suites,
+            'wiki-pins': wiki_pins}[args.command](args)
 
 
 if __name__ == '__main__':

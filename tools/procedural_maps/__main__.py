@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import sys
 from .bundle import write_bundle,verify_bundle
-from .configuration import preset,port_surface_preset,oceanic_preset,validate_config
+from .configuration import preset,port_surface_preset,oceanic_preset,barren_surface_preset,validate_config
 from .io import read_json,new_output,json_text
 from .source_audit import audit
 from .generator import generate
@@ -17,6 +17,7 @@ def main(argv=None):
     p=commands.add_parser('preset',help='write a complete versioned config to a new JSON file')
     p.add_argument('--profile',choices=['SURFACE','OCEANIC','UNDERGROUND_CAVERN'],default='SURFACE')
     p.add_argument('--legacy',action='store_true');p.add_argument('--coast',choices=['N','S','E','W'])
+    p.add_argument('--barren',action='store_true',help='SURFACE only: dry, cold, bare variant for playable --skin barren')
     p.add_argument('--seed',default='ports-0');p.add_argument('--width',type=int,default=64);p.add_argument('--height',type=int,default=80)
     p.add_argument('--out',required=True,type=Path)
     p=commands.add_parser('generate',help='one candidate, with DMM and sidecar; rejects explicitly')
@@ -34,6 +35,7 @@ def main(argv=None):
     p=commands.add_parser('playable',help='write a playable DMM (native supplies, ladders) from a verified bundle')
     p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p.add_argument('--lapse',type=float,default=6.5,help='temperature drop in C per km of elevation, 0..10 (0 keeps the map flat-climate)')
+    p.add_argument('--skin',choices=['native','barren'],default='native',help='barren: regolith ground, frozen lakes and sea, dry channels, rocks only (SURFACE bundles)')
     p=commands.add_parser('audit-source',help='read-only classic map/source audit')
     p.add_argument('--catalog-root',type=Path);p.add_argument('--reference-image',type=Path)
     p=commands.add_parser('annotate-reference',help='source components and uncertain hydrology proposals')
@@ -43,7 +45,9 @@ def main(argv=None):
     try:
         if a.command=='preset':
             if a.profile!='SURFACE' and a.coast is not None:raise ValueError('--coast is a SURFACE-only control')
+            if a.barren and (a.profile!='SURFACE' or a.legacy):raise ValueError('--barren is a non-legacy SURFACE-only control')
             c=port_surface_preset(a.seed,a.width,a.height,sea_side=a.coast or 'S') if a.profile=='SURFACE' and not a.legacy else preset(a.profile,a.seed)
+            if a.barren:c=barren_surface_preset(a.seed,a.width,a.height,sea_side=a.coast or 'S')
             if a.profile=='OCEANIC' and not a.legacy:c=oceanic_preset(a.seed,a.width,a.height)
             if a.profile!='SURFACE' or a.legacy:c['dimensions'].update(width=a.width,height=a.height)
             errors=validate_config(c)
@@ -70,7 +74,7 @@ def main(argv=None):
         elif a.command=='verify':result=verify_bundle(a.directory,a.catalog_root)
         elif a.command=='playable':
             from .playable import write
-            result=write(a.directory,a.out,a.catalog_root,a.lapse)
+            result=write(a.directory,a.out,a.catalog_root,a.lapse,a.skin)
         elif a.command=='audit-source':result=audit(a.catalog_root,a.reference_image)
         else:
             from .reference_annotation import build

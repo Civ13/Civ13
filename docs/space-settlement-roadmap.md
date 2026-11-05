@@ -53,11 +53,11 @@ The genre's systems, and where each lands:
 | --- | --- | --- |
 | A separate world to settle | Shard groups (#3694), playable generated maps (#3697), procedural surface/oceanic/cavern profiles (#3331, #3338, #3617) | No barren-world generator profile |
 | Getting there | Region gates and character transfer (#3715), fast travel journal (#3720), goods via trade post (#3655) | Gates are admin-placed; player-built trail gates (admin-approved) are next on the sharding track |
-| Living there | One home world per account, mainland start, bed keeps the home (#3740, open) | Nothing specific to hostile worlds |
+| Living there | One home world per account, mainland start, bed keeps the home (#3740) | Nothing specific to hostile worlds |
 | Research gating | Research tree nodes, Digital Age ordinal 9 (#3736), 3D printer (#3743), drones and consumer electronics (#3745) | No space branch |
 | Power | Cable grid and batteries (`code/modules/1713/machinery/`), renewables (#3603), nuclear generation | No storm/night coupling for solar off-world |
 | Food | Hydroponics design and trays ([design](hydroponics-design.md)) | Off-world nutrient and water supply |
-| Atmosphere | `xgm` gas mixtures, submarine compartments with O2/CO2 and vents (`code/modules/submarine/`) | No durable atmosphere save contract ([readiness notes](atmosphere-persistence-readiness.md)) |
+| Atmosphere | Inherited `xgm` gas mixtures (`code/modules/xgm/`); submarine compartments now each hold one habitat air ledger (`code/modules/submarine/`) | `xgm` not reused: Val asked (2026-11-05) for a streamlined, highly efficient system instead of SS13-style atmospherics. Habitats and submarines use the module ledger (below) |
 | Vehicles | Modular vehicle frames and car workshop (`code/modules/1713/machinery/modular_vehicles/`) | No sealed cabin or battery drive |
 | Chemistry and fuel | Chemistry processing and automation ([design](chemistry-automation-design.md)), fracking, refining | No cryogenic propellant |
 | Mining | Resource extraction, dug underground (#3742) | No off-world ore or ice tables |
@@ -73,12 +73,19 @@ mainland like any other region.
 
 - **Size.** Start at about 200 x 200 x 2 (surface plus one dug level), roughly a
   quarter of Gaia's cells, and measure load peak before growing.
-- **Terrain.** A new `barren` profile for `tools/procedural_maps`: regolith
-  plains, craters, ridges, ice deposits under the surface, ore seams, no
-  vegetation, no wildlife. Turfs are cold and have no breathable air.
+- **Terrain.** A barren skin over the validated surface family of
+  `tools/procedural_maps`: regolith plains, dry channels, ridges and frozen
+  lakes, no vegetation, no wildlife. Ore seams and buried ice come with mining
+  in phase 5. Turfs are cold and have no breathable air.
 - **Outside air.** No per-turf gas simulation outdoors. "Outside" is a turf
-  property (`unbreathable`, ambient temperature from the existing climate
-  fields), so the outdoor world costs nothing per tick.
+  property (`outside_air_breathable()` and `outside_ambient_c()` on `/turf`),
+  so the outdoor world costs nothing per tick.
+- **Atmospherics.** Deliberately not SS13 atmospherics: no per-turf gas
+  mixtures, no zone merging or tile-to-tile flow, no pipe gas networks and no
+  dependence on `code/modules/xgm`. A whole base is a few ledgers of plain
+  numbers, each updated once per step only while someone is inside, so cost
+  scales with occupied modules, not tiles. Machines (electrolyser, scrubber,
+  heater, tanks) act on a ledger directly, and hatches mix two ledgers.
 - **Inside air.** Each sealed habitat is a **module ledger**: one small datum per
   connected pressurised volume with oxygen, CO2, pressure and temperature as
   plain numbers. Turfs ask their module for air. This avoids the unsolved
@@ -123,22 +130,46 @@ Val chose phase 0 then phase 1 on 2026-11-05.
 
 - Habitat air ledger (`code/modules/space/habitat_ledger.dm`), barren ground
   turfs and the barren outdoor area (`code/modules/space/barren_world.dm`), tested by
-  `tests/space_settlement/probe.dm`. Nothing places or creates them yet.
+  `tests/space_settlement/probe.dm`. Nothing places barren ground yet; submarine
+  compartments (SUBCOM13) are the first ledger users, one ledger per compartment.
 - The Spaceflight research branch moves to phase 1, where its first nodes
   unlock the probe recipes, so players never see empty nodes.
-- `barren` procedural profile and a playable export of it, plus a shard-group
-  example region that is not in any vote or mainland list.
-- Load-peak measurement of a 200 x 200 x 2 barren world on the pinned compiler.
+- Barren region maps: `preset --barren` and `playable --skin barren` in
+  `tools/procedural_maps` turn the validated surface family into regolith
+  plains, frozen lakes and sea, dry channels and bare ridges, with rocks only
+  ([procedural maps guide](procedural-maps.md#barren-worlds)). A region
+  runs one with `kind` `OTHER`, never as the mainland.
+- Memory measurement of a 200 x 200 x 2 barren world on the pinned compiler.
+
+Measured 2026-11-05 with the headless memory probe (fresh round, no save, no
+clients, pinned 516.1688 on Linux, same build for both maps):
+
+| Map | Turfs | Objects | Map loaded | Playing, +3 min |
+| --- | --- | --- | --- | --- |
+| Barren, 200 x 200 x 2 (`preset --barren`, seed `barren-0`) | 80,000 | 45,752 | 197 MB | 231 MB |
+| Gaia, 500 x 350 x 2 | 350,000 | 9,568 | 256 MB | 423 MB |
+
+The barren world adds about 86 MB to the 145 MB both runs used at global init,
+about a third of what Gaia adds (278 MB). Most of its objects
+are the dense basalt of the underground reserve plane. At the barren rate
+(about 1.1 KB per turf) a 350 x 350 x 2 barren world would reach roughly
+410 MB, still under Gaia, so steady-state memory does not limit the size. Save and
+load peaks were not measured, because the world has no saved state yet; they
+come with phase 3, when there is something to save.
 
 ### Phase 1: probes and surveys
 
-- Craft a small lander probe and a launch rail; the probe "departs" and becomes a
-  remote rover in a probe-only survey level.
-- A mission console shows the probe's view; the player drives it, photographs
-  sites and takes samples. Batteries and comms range limit each sortie.
+- Craft a small lander probe and a launch rail; the probe departs and lands
+  on the survey map.
+- A mission console shows a survey map of the barren world (drawn from a
+  barren bundle's terrain, no extra level); the player drives the probe across
+  it, photographs sites and takes samples. Batteries and comms range limit
+  each sortie.
 - Samples return as research material for the Spaceflight branch and mark
   landing sites as surveyed.
-- Open choice D1 below: where the survey level lives.
+- D1, decided 2026-11-05: a console survey map, not a real level. An extra
+  level costs Gaia about 150 MB on a server that peaks near the 32-bit limit
+  at load.
 
 ### Phase 2: launch and landing
 
@@ -186,8 +217,8 @@ Val chose phase 0 then phase 1 on 2026-11-05.
   nutrient.
 - Local propellant plant (water ice into fuel and oxidiser) enables return trips
   and supply runs to the mainland.
-- More bodies as further profiles (a small airless moon, an ice body), each its
-  own shard.
+- More bodies as further profiles (a small airless moon, an ice body), each on
+  its own shard.
 - Balance pass with live data.
 
 ## Research branch
@@ -208,13 +239,13 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 
 ## Decisions for Val
 
-1. **Which phase to start.** Recommended: phase 0, then phase 1. Probes give
+1. **Which phase to start.** Decided 2026-11-05: phase 0, then phase 1. Probes give
    players something to do before the hard life-support work, and phase 0's
    load measurement decides the world size.
-2. **D1 - where probes drive.** Recommended: a small survey level in the
-   launching world, reusing the instance level reserve, so remote control never
-   crosses shards. Alternative: probes drive on the real barren shard (true
-   persistence of probe tracks, but needs cross-shard remote control).
+2. **D1 - where probes drive.** Decided 2026-11-05: a console survey map with
+   no extra level (an extra level costs Gaia about 150 MB). Rejected: a
+   survey level in the launching world, and driving on the real barren shard
+   (needs cross-shard remote control).
 3. **D2 - which age.** Recommended: Spaceflight as a branch of the 2026 Digital
    Age (ordinal 9). Alternative: a new ordinal 10 "Space Age", which needs the
    same age-addition work as #3736.

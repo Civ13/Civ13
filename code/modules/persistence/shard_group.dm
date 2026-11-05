@@ -231,7 +231,7 @@ var/global/datum/shard_group/shard_group = new
 			var/join = state == "UP" ? "<a href='byond://[peer["address"]]'>Join</a>" : ""
 			lines += "<tr><td>[html_encode(peer["name"])]</td><td>[lowertext(peer["kind"])]</td><td>[state == "UP" ? "up" : (state == "UNKNOWN" ? "not checked yet" : (state == "MISMATCH" ? "wrong server" : "down"))]</td><td>[players]</td><td>[join]</td></tr>"
 		lines += "</table>"
-		lines += "<p>Joining another region starts a new character there. Characters and their belongings stay in the region where they live.</p>"
+		lines += "<p>Your character lives in one region. New characters start on the mainland and reach the others by travelling a trail.</p>"
 	return jointext(lines, "")
 
 /client/verb/view_regions()
@@ -240,7 +240,10 @@ var/global/datum/shard_group/shard_group = new
 	if(!shard_group.enabled)
 		to_chat(src, SPAN_NOTICE("This server is not part of a region group."))
 		return
-	src << browse(shard_group.panel_html(), "window=shard_regions;size=520x360")
+	var/html = shard_group.panel_html()
+	if(holder)
+		html += region_trail_pending_html()
+	src << browse(html, "window=shard_regions;size=520x420")
 
 #undef SHARD_POLL_INTERVAL
 #undef SHARD_MAX_REGIONS

@@ -28,7 +28,9 @@ climate (beyond the playable map's elevation lapse rate) and persistence
 integration remain incomplete. FOOD/WOOD/STONE
 are abstract labels in the bundle; `playable BUNDLE --out FILE.dmm` writes a
 separate region map with native supplies, open cave floors, cave ladders and
-an elevation profile with a temperature lapse rate (see docs/procedural-maps.md). No reference-matching seed
+an elevation profile with a temperature lapse rate (see docs/procedural-maps.md). `preset --barren` and
+`playable --skin barren` write a SURFACE bundle as a barren world (regolith,
+frozen lakes and sea, dry channels, rocks only) for the space settlement work. No reference-matching seed
 has been demonstrated. A static parse-back check is not native gameplay or
 Dream Maker editor acceptance.
 

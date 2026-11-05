@@ -73,6 +73,17 @@ var/extraction_runtime_error = FALSE
 		T = T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
 		var/obj/structure/drill/D = new(T)
 		D.anchored = TRUE
+		extraction_check(D.valid_drill_site(), "drill accepts uncovered dirt on z1")
+		var/turf/T2 = locate(5,5,2)
+		T2 = T2.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+		var/obj/structure/drill/D2 = new(T2)
+		D2.anchored = TRUE
+		extraction_check(D2.valid_drill_site(), "drill accepts uncovered dirt on another level")
+		new /obj/covers/wood(T2)
+		extraction_check(!D2.valid_drill_site(), "covered dirt still rejects the drill")
+		qdel(D2)
+		for (var/obj/covers/CV in T2)
+			qdel(CV)
 		for (var/type in D.ore_types)
 			extraction_check(ispath(type, /obj/item/stack), "ore pool contains stack [type]")
 		var/obj/item/stack/ore/iron/I = new(T,49,FALSE)

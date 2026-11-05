@@ -12,7 +12,8 @@
 // - a ledger never ticks while nobody is inside it;
 // - a late or delayed tick cannot replay a backlog (seconds are capped).
 //
-// Nothing creates a ledger yet; habitat modules arrive in phase 3.
+// Submarine compartments use one ledger each (submarine/flooding_controller.dm);
+// habitat modules arrive in phase 3.
 // ============================================================
 
 #define HABITAT_MAX_STEP_SECONDS 10

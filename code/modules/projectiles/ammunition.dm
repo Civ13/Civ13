@@ -49,13 +49,18 @@
 // restore as null and every loaded round would come back spent. Saves record
 // the bullet's type instead and the import rebuilds it.
 /obj/item/ammo_casing/var/saved_bullet_type = null
+// Set on every save, so a save that records it also says which rounds are
+// really spent. Saves made before it lost the bullet of every round restored
+// by an older build, so a spent round could not be told from a fired one.
+/obj/item/ammo_casing/var/bullet_state_saved = FALSE
 
 /obj/item/ammo_casing/persistence_runtime_var(key)
-	return key == "BB" || ..()
+	return key == "BB" || key == "bullet_state_unknown" || ..()
 
 /obj/item/ammo_casing/before_save()
 	. = ..()
 	saved_bullet_type = BB ? BB.type : null
+	bullet_state_saved = TRUE
 
 /obj/item/ammo_casing/persistence_import_fields(list/saved_fields)
 	..()
@@ -66,6 +71,7 @@
 		// Older saves wrote BB only while a round was loaded, as a null entry.
 		bullet_type = projectile_type
 	saved_bullet_type = null
+	bullet_state_unknown = !("bullet_state_saved" in saved_fields) && !bullet_type
 	// The constructor's bullet may have been replaced by the contents import.
 	for (var/obj/item/projectile/P in contents)
 		if (P != BB || P.type != bullet_type)
@@ -78,6 +84,41 @@
 		BB.checktype()
 	if (!BB)
 		register_abandoned_item()
+	// The holder may be imported after this round; it repairs it then.
+	if (bullet_state_unknown && (istype(loc, /obj/item/ammo_magazine) || istype(loc, /obj/item/weapon/gun)))
+		repair_unrecorded_bullet()
+
+// One-time repair for saves without the record: a round kept in a magazine,
+// box, pouch or gun was loaded ammunition, not fired brass.
+/obj/item/ammo_casing/var/tmp/bullet_state_unknown = FALSE
+
+/obj/item/ammo_casing/proc/repair_unrecorded_bullet()
+	if (!bullet_state_unknown)
+		return
+	bullet_state_unknown = FALSE
+	if (BB || !ispath(projectile_type, /obj/item/projectile))
+		return
+	BB = new projectile_type(src)
+	BB.btype = btype
+	BB.checktype()
+	unregister_abandoned_item()
+	if (spent_icon && icon_state == spent_icon)
+		icon_state = initial(icon_state)
+		name = initial(name)
+
+/obj/item/ammo_magazine/persistence_import_fields(list/saved_fields)
+	..()
+	for (var/obj/item/ammo_casing/C in stored_ammo)
+		if (C.loc == src)
+			C.repair_unrecorded_bullet()
+
+/obj/item/weapon/gun/projectile/persistence_import_fields(list/saved_fields)
+	..()
+	for (var/obj/item/ammo_casing/C in loaded)
+		if (C.loc == src)
+			C.repair_unrecorded_bullet()
+	if (chambered && chambered.loc == src)
+		chambered.repair_unrecorded_bullet()
 
 /obj/item/ammo_casing/proc/randomrotation()
 	transform = matrixangle(rand(1,360))
