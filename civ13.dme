@@ -1280,6 +1280,8 @@
 #include "code\modules\research_tree\research_faction.dm"
 #include "code\modules\research_tree\research_forge.dm"
 #include "code\modules\research_tree\research_node.dm"
+#include "code\modules\space\barren_world.dm"
+#include "code\modules\space\habitat_ledger.dm"
 #include "code\modules\statpanel\statpanel.dm"
 #include "code\modules\submarine\enemy_types.dm"
 #include "code\modules\submarine\flooding_controller.dm"

@@ -119,11 +119,15 @@ players can see it.
 
 ### Phase 0: foundations (inactive)
 
-- Research branch "Spaceflight" registered at era 9 with no recipes yet.
+Val chose phase 0 then phase 1 on 2026-11-05.
+
+- Habitat air ledger (`code/modules/space/habitat_ledger.dm`), barren ground
+  turfs and the barren outdoor area (`code/modules/space/barren_world.dm`), tested by
+  `tests/space_settlement/probe.dm`. Nothing places or creates them yet.
+- The Spaceflight research branch moves to phase 1, where its first nodes
+  unlock the probe recipes, so players never see empty nodes.
 - `barren` procedural profile and a playable export of it, plus a shard-group
   example region that is not in any vote or mainland list.
-- Module ledger datum and its offline tests: leaks, mixing two modules through an
-  open hatch, save/rebuild round trip, no ticking with nobody present.
 - Load-peak measurement of a 200 x 200 x 2 barren world on the pinned compiler.
 
 ### Phase 1: probes and surveys
