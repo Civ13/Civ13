@@ -176,8 +176,7 @@
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
 			if (affecting && affecting.open == FALSE)
 				if (affecting.is_bandaged() && affecting.is_disinfected())
-					affecting.wounds.Cut()
-					H_user.bad_external_organs -= affecting
+					affecting.clear_treated_external_wounds()
 
 /obj/item/stack/medical/advanced/herbs
 	name = "healing herbs"
@@ -217,6 +216,7 @@
 			
 		if (affecting.open)
 			to_chat(user,  SPAN_NOTICE("The [affecting.name] is cut open, you'll need more than some healing herbs!"))
+			return
 
 		if (affecting.is_salved() && affecting.is_disinfected())
 			to_chat(user, SPAN_WARNING("The wounds on [M]'s [affecting.name] have already been treated."))
@@ -255,8 +255,7 @@
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
 			if (affecting)
 				if (affecting.is_salved() && affecting.is_disinfected())
-					affecting.wounds.Cut()
-					H_user.bad_external_organs -= affecting
+					affecting.clear_treated_external_wounds()
 	return
 
 /obj/item/stack/medical/advanced/sulfa
@@ -280,6 +279,8 @@
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
+		if (!affecting)
+			return
 		if (affecting.is_disinfected())
 			to_chat(user, SPAN_WARNING("The wounds on [M]'s [affecting.name] have already been disinfected."))
 			return TRUE
@@ -329,7 +330,9 @@
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting && affecting.open == FALSE)
+		if (!affecting)
+			return
+		if (affecting.open == FALSE)
 			if (affecting.is_salved())
 				to_chat(user, SPAN_WARNING("The wounds on [M]'s [affecting.name] have already been salved."))
 				return TRUE
@@ -365,18 +368,18 @@
 	if (istype(M, /mob/living/human) && user.targeted_organ != "random")
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
-		var/limb = "chest"
-		if (affecting)
-			limb = affecting.name
-			if (!(affecting.limb_name in list("chest", "head", "groin", "l_arm","r_arm","l_leg","r_leg", "l_hand", "r_hand", "l_foot", "r_foot")))
-				to_chat(user, SPAN_WARNING("You can't apply a splint there!"))
-				return
-			else if (affecting.status & ORGAN_SPLINTED)
-				to_chat(user,  SPAN_WARNING("[M]'s [limb] is already splinted!"))
-				return
-			else if (affecting.status == 0)
-				to_chat(user,  SPAN_WARNING("[M]'s [limb] does not need splinting."))
-				return
+		if (!affecting)
+			return
+		var/limb = affecting.name
+		if (!(affecting.limb_name in list("chest", "head", "groin", "l_arm","r_arm","l_leg","r_leg", "l_hand", "r_hand", "l_foot", "r_foot")))
+			to_chat(user, SPAN_WARNING("You can't apply a splint there!"))
+			return
+		else if (affecting.status & ORGAN_SPLINTED)
+			to_chat(user,  SPAN_WARNING("[M]'s [limb] is already splinted!"))
+			return
+		else if (!(affecting.status & ORGAN_BROKEN) && !affecting.is_dislocated())
+			to_chat(user,  SPAN_WARNING("[M]'s [limb] does not need splinting."))
+			return
 		if (M != user)
 			user.visible_message(SPAN_NOTICE("[user] starts to apply \the [src] to [M]'s [limb]."), SPAN_DANGER("You start to apply \the [src] to [M]'s [limb]."), SPAN_DANGER("You hear something being wrapped."))
 		else

@@ -192,6 +192,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_medical_care_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'medical_care'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/medical_care/test_source.py',))
+        for path in suite['files'] + suite['paths'] + suite.get('shared_paths', ()):
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_held_movement_suite_is_bounded_and_not_silently_omitted(self):
         name = 'held_movement'
         suite = ci.SUITES[name]
