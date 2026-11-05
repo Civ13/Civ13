@@ -403,3 +403,62 @@ Active Connections
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class InterruptedSaveTests(GaiaHostTests):
+    """A crash during a save leaves map_saves/ without a marker; the completed
+    generation in map_backups/ is swapped back in before the start."""
+
+    def interrupt(self, backup_marker=MARKER):
+        saves = self.repo / 'map_saves'
+        write_save(self.repo / 'map_backups', marker=backup_marker)
+        (saves / 'map.txt').write_text('NOMADS_GAIA\n', encoding='utf-8')
+        (saves / '1.sav').write_bytes(b'half written')
+        return saves
+
+    def test_start_swaps_the_completed_backup_in(self):
+        saves = self.interrupt()
+        self.machine.clock = 86400.0
+        operation = self.accept('start')
+        self.host.work('start', operation)
+        self.assertEqual(self.host.read_state()['generation'], MARKER)
+        self.assertEqual((saves / 'save_complete.txt').read_text(encoding='utf-8'), MARKER)
+        self.assertEqual((saves / '2.sav').read_bytes(), b'level 2')
+        self.assertFalse((self.repo / 'map_backups').exists())
+        kept = list(self.repo.glob('map_saves.interrupted-*'))
+        self.assertEqual(len(kept), 1)
+        self.assertEqual((kept[0] / '1.sav').read_bytes(), b'half written')
+        self.assertFalse((kept[0] / 'save_complete.txt').exists())
+
+    def test_only_the_newest_interrupted_copy_is_kept(self):
+        older = self.repo / 'map_saves.interrupted-20260101-000000'
+        older.mkdir()
+        (older / '1.sav').write_bytes(b'old')
+        self.interrupt()
+        self.host.work('start', self.accept('start'))
+        self.assertFalse(older.exists())
+        self.assertEqual(len(list(self.repo.glob('map_saves.interrupted-*'))), 1)
+
+    def test_an_unusable_backup_leaves_the_interrupted_save_alone(self):
+        saves = self.interrupt()
+        (self.repo / 'map_backups' / '2.sav').write_bytes(b'')
+        with self.assertRaisesRegex(gaia_host.Refused, 'round.json and save_complete.txt'):
+            self.host.request('start')
+        self.assertEqual((saves / '1.sav').read_bytes(), b'half written')
+        self.assertTrue((self.repo / 'map_backups' / 'map.txt').exists())
+        self.assertEqual(list(self.repo.glob('map_saves.interrupted-*')), [])
+
+    def test_a_restart_intent_is_never_recovered_over(self):
+        saves = self.interrupt()
+        (saves / 'restart_intent.json').write_text(json.dumps({'version': 1, 'generation': MARKER}), encoding='utf-8')
+        with self.assertRaises(gaia_host.Refused):
+            self.host.request('start')
+        self.assertTrue((self.repo / 'map_backups' / 'save_complete.txt').exists())
+        self.assertEqual((saves / '1.sav').read_bytes(), b'half written')
+
+    def test_a_completed_save_is_not_touched(self):
+        write_save(self.repo / 'map_saves')
+        write_save(self.repo / 'map_backups', marker='round-v2:' + 'f' * 32)
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['generation'], MARKER)
+        self.assertTrue((self.repo / 'map_backups' / 'save_complete.txt').exists())

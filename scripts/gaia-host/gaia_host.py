@@ -437,6 +437,43 @@ def check_save(saves):
     return marker
 
 
+def recover_interrupted_save(repo, now=time.time):
+    """Put the last completed generation back after an interrupted save.
+
+    A save removes map_saves/save_complete.txt first and writes it last, so a
+    crash or power-down during the save leaves files without a marker, which
+    check_save refuses. The world copied the whole previous generation to
+    map_backups/ before replacing any level, so when that copy is complete and
+    marked it is swapped in (two renames, no copying) and the interrupted files
+    are kept beside it as map_saves.interrupted-<time> for inspection, the
+    newest one only. Returns (generation, interrupted path) or None when
+    nothing was done. A restart intent means the restart transaction owns the
+    recovery, so nothing is touched then.
+    """
+    saves = repo / 'map_saves'
+    backups = repo / 'map_backups'
+    if saves.is_symlink() or not saves.is_dir() or backups.is_symlink() or not backups.is_dir():
+        return None
+    names = {p.name for p in saves.iterdir()}
+    if 'save_complete.txt' in names or 'restart_intent.json' in names:
+        return None
+    if not any(name in ('map.txt', 'round.json') or name.endswith('.sav') for name in names):
+        return None
+    try:
+        generation = check_save(backups)
+    except Refused:
+        return None
+    if generation is None:
+        return None
+    interrupted = repo / ('map_saves.interrupted-' + time.strftime('%Y%m%d-%H%M%S', time.gmtime(now())))
+    for old in sorted(repo.glob('map_saves.interrupted-*')):
+        if old.is_dir() and not old.is_symlink():
+            shutil.rmtree(old)
+    os.replace(saves, interrupted)
+    os.replace(backups, saves)
+    return generation, interrupted
+
+
 def copy_save(saves, destination):
     """Copy map_saves and check every file's SHA-256 against the original."""
     destination.mkdir(parents=True)
@@ -553,6 +590,7 @@ class Host:
         if action == 'start':
             if listening:
                 raise Refused('the server is already running')
+            self.recover_interrupted_save()
             check_save(self.repo / 'map_saves')
             if not self.byond_signed_in():
                 raise Refused('BYOND is not signed in: start the BYOND pager and sign in first')
@@ -669,6 +707,14 @@ class Host:
         temporary = path.with_suffix('.tmp')
         temporary.write_text(json.dumps(value), encoding='utf-8')
         os.replace(temporary, path)
+
+    def recover_interrupted_save(self):
+        """Swap the completed generation back in after an interrupted save (see the module function)."""
+        recovered = recover_interrupted_save(self.repo, self.platform.now)
+        if recovered:
+            generation, interrupted = recovered
+            self.log({'interrupted_save_recovered': generation, 'interrupted_files': str(interrupted)})
+        return recovered
 
     def last_client(self):
         """Unix time a client was last seen on the world, or None."""
@@ -801,6 +847,7 @@ class Host:
 
     def do_start(self, operation):
         self.record(phase='checking save')
+        self.recover_interrupted_save()
         generation = check_save(self.repo / 'map_saves')
         code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
         revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''

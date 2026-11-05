@@ -195,12 +195,16 @@
 			throw EXCEPTION("World effects changed during capture; completed backup retained. [effects_quiescence_error]")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
-	// The record only speeds up later checks; without it they run in full.
-	if(candidate_validated && !debug_policy)
+	// The record only speeds up later checks; without it they run in full. An
+	// ordinary save's structural candidate check leaves the full walk to the
+	// next preflight, which writes the record itself (validate_world_save).
+	if(candidate_validated && last_validation_full && !debug_policy)
 		try
 			if(!write_validation_record(generation)) world.log << "Save validation record not written; the next load runs the full check."
 		catch(var/exception/record_error)
 			world.log << "Save validation record failed: [record_error]"
+	else if(candidate_validated && !debug_policy)
+		world.log << "World-save candidate: [last_validation_note]."
 	if(transfer_capture) transfer_saved(transfer_capture)
 	if(debug_policy)
 		try

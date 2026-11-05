@@ -396,7 +396,12 @@ var/global/roundtrip_capture_failure = FALSE
 	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "matching validation record did not skip the entry check")
 	map_storage.save_build_identity = "fixture-build-b"
 	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the validation record")
+	// A full preflight records its own build, so build b now skips and build a
+	// runs the full check again (and records itself).
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "full preflight did not record its build")
 	map_storage.save_build_identity = "fixture-build-a"
+	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the preflight record")
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "second full preflight did not record its build")
 	var/round_text = file2text("map_saves/round.json")
 	fdel("map_saves/round.json")
 	text2file("[round_text] ", "map_saves/round.json")

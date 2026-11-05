@@ -22,6 +22,23 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-05: interrupted saves, structural candidate check, host-requested save -->
+A save deletes `map_saves/save_complete.txt` first and writes it last, so a
+crash in between leaves files without a marker. `map_storage.recover_interrupted_save()`
+(startup, `code/setup.dm`) and `recover_interrupted_save` in
+`scripts/gaia-host/gaia_host.py` (before `start`) put the completed generation
+from `map_backups/` back when its marker, round.json, map.txt and levels agree;
+the host keeps the interrupted files as `map_saves.interrupted-<time>`. Nothing
+is restored while a restart intent exists. An ordinary save's candidate
+validation is structural (grid, entry set and types, owners, contents); field
+values are trusted from the export, `validated.json` is not written by the
+save, and the next full preflight on disk writes it instead, so the restart
+transaction's repeated identity checks and the next startup skip the walk.
+Debug recovery still walks the candidate in full. The lifecycle Topic action
+`save_idle` (token only, no session) runs the empty-world save the persistence
+loop would run, or answers `save = skipped:<reason>`; the host watches the
+marker as before. `tests/save_policy` and `tests/gaia_host` cover these.
+
 <!-- 2026-11-05: restore contract -->
 Restore contract (`code/modules/persistence/restore_contract.dm`): a load builds
 each saved atom with `new type(loc)` before its fields arrive, and the saver
