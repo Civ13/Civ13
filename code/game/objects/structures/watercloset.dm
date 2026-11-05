@@ -891,6 +891,7 @@
 						dirty = TRUE
 					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
+						RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
 						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))

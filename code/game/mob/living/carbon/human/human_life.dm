@@ -545,8 +545,14 @@
 	else if (temp_adj < 0)
 		temp_adj = max(temp_adj,-0.5)
 	else
+		// No exposure loss this step (comfortable air or enough clothing), so
+		// the body holds its own heat. Only freezing air keeps draining it;
+		// otherwise everyone settled at the air temperature whatever they wore.
 		if (loc_temp < bodytemperature)
-			temp_adj = -0.1
+			if (loc_temp < species.cold_level_1 || bodytemperature > species.body_temperature)
+				temp_adj = -0.1
+			else
+				temp_adj = 0.1
 		if (loc_temp > bodytemperature)
 			temp_adj = 0.1
 	if (map && (map.civilizations || map.ID == MAP_ANTARCTICA))

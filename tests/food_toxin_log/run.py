@@ -9,7 +9,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 PRODUCTION = ROOT / "code/modules/reagents/food_toxin_log.dm"
-EXPECTED_CHECKS = 15
+EXPECTED_CHECKS = 18
 
 
 def main():
