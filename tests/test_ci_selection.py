@@ -199,9 +199,9 @@ class SelectionTests(unittest.TestCase):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_crossroads_mall_offline_admission_is_exact(self):
-        path = 'tests/crossroads_mall/test_crossroads_mall.py'
-        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
-            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        for path in ('tests/crossroads_mall/test_crossroads_mall.py', 'tests/crossroads_mall/build.py'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/crossroads_mall/new_native_probe.dm'
         with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered crossroads-mall'):

@@ -86,6 +86,7 @@ OPTABLE = '/obj/structure/optable'
 SERVER = '/obj/structure/props/server'
 COMPUTER = '/obj/structure/props/computerprops/modern'
 LANDMARK = '/obj/effect/landmark'
+METADATA = '/obj/map_metadata/eft_factory/crossroads_mall'
 PAD = '/obj/effect/crossroads_loot_pad'
 SIGN = '/obj/structure/sign/crossroads'
 SIGN_STORE = '/obj/structure/sign/crossroads/store'
@@ -676,7 +677,7 @@ def loot_range(g):
     # Mechanics corner, west end of row C: keyed door, lockpick, breaching, extraction and grace wall.
     g.fill(60, 134, 66, 136, CONCRETE)
     g.box(60, 134, 66, 136, BLOCKS)
-    g.door(63, 134, KEYED_DOORS['test'], CONCRETE)
+    g.door(63, 136, KEYED_DOORS['test'], CONCRETE)
     g.put(61, 135, CRATE)
     g.put(65, 135, '/obj/random/accessories')
     g.put(58, 135, TABLE)
@@ -685,7 +686,7 @@ def loot_range(g):
     g.put(68, 135, TABLE)
     g.put(68, 135, '/obj/item/weapon/gun/projectile/shotgun/pump')
     g.put(68, 135, '/obj/item/ammo_magazine/shellbox')
-    g.put(63, 133, SIGN_SECURE, name='Key, lockpick and breaching test door')
+    g.put(63, 137, SIGN_SECURE, name='Key, lockpick and breaching test door')
     g.fill(72, 134, 74, 135, area=EXTRACTS['range'])
     g.put(75, 134, SIGN_EXTRACT, name='Extraction test: stand here ten seconds')
     g.fill(78, 134, 78, 136, area=GRACE)
@@ -712,6 +713,8 @@ def build():
     loading_yard(g)
     loot_range(g)
     g.box(1, 1, WIDTH, HEIGHT, BORDER)
+    # The mode metadata sits at the conventional bottom-left corner.
+    g.put(1, 1, METADATA)
     return g
 
 

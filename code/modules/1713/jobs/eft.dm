@@ -81,6 +81,7 @@
 	rank_abbreviation = ""
 	spawn_location = "JoinLateScav"
 	is_outlaw = TRUE
+	allowed_maps = list(MAP_EFT_FACTORY, MAP_CROSSROADS_MALL)
 
 	min_positions = 1
 	max_positions = 6

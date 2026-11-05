@@ -54,7 +54,8 @@ NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_ad
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
-CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py'})
+CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
+                                           'tests/crossroads_mall/build.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})

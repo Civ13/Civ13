@@ -311,6 +311,18 @@ class CrossroadsMallTests(unittest.TestCase):
                      build.OPTABLE, build.MEDBAG, build.SIGN_EXTRACT):
             self.assertIn(path, corner, path)
         self.assertTrue(any(atoms[-1] == build.GRACE for (x, y), atoms in self.map.cells.items() if 133 <= y <= 148))
+        # The test door, its key table and the breaching table are reachable once inside the range.
+        seen = self.map.reachable(self.map.walkable(keyed_open=True), (82, 83))
+        (door_x, door_y), = [(x, y) for x, y, _ in self.map.find(build.KEYED_DOORS['test'])]
+        self.assertTrue({(door_x, door_y + 1), (door_x, door_y - 1)} & seen, 'test door has no outside approach')
+        self.assertIn((door_x, door_y), seen)
+        for path in (build.KEYS['test'], '/obj/item/weapon/gun/projectile/shotgun/pump'):
+            (x, y), = [(x, y) for x, y, _ in self.map.find(path)]
+            self.assertTrue({(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)} & seen, path)
+
+    def test_mode_metadata_is_placed_once(self):
+        placed = [(x, y) for x, y, _ in self.map.find(build.METADATA)]
+        self.assertEqual(placed, [(1, 1)])
 
     def test_metadata_and_registration(self):
         metadata = METADATA.read_text(encoding='utf-8')

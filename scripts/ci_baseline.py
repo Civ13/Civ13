@@ -101,7 +101,7 @@ SUITES = {
                   'code/game/objects/map_metadata/crossroads_mall.dm'), 'shared_paths': (
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm',
-            'code/game/objects/map_metadata/eft_factory.dm')},
+            'code/game/objects/map_metadata/eft_factory.dm', 'civ13.dme')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
