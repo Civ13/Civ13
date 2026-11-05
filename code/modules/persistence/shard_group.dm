@@ -362,6 +362,10 @@ var/global/datum/shard_group/shard_group = new
 		nextsave = soon
 
 /hook/startup/proc/shard_group_startup()
+	// The generated rail yard map uses the plain Nomads metadata; name the
+	// world for what it is in the server list and the Regions verb.
+	if(shard_group.enabled && shard_group.kind == "RAILYARD" && map && map.type == /obj/map_metadata/nomads)
+		map.title = "Rail Yard"
 	shard_group.start_polling()
 	shard_group.start_saving()
 	return TRUE
