@@ -86,7 +86,7 @@ var/machine_runtime_error = FALSE
 
 /proc/machine_recipe_checks()
 	var/list/recipes = factory_load_recipes()
-	machine_check(recipes.len == 8 && !factory_recipe_errors.len, "the curated factory recipe list loads eight recipes without errors ([english_list(factory_recipe_errors)])")
+	machine_check(recipes.len == 18 && !factory_recipe_errors.len, "the curated factory recipe list loads eighteen recipes without errors ([english_list(factory_recipe_errors)])")
 	var/datum/factory_recipe/R = recipes["electronic circuits"]
 	machine_check(R && R.output_type == /obj/item/stack/material/electronics && R.output_amount == 3 && R.inputs[/obj/item/stack/material/copper] == 2 && R.inputs[/obj/item/stack/material/plastic] == 1 && R.tier == 2 && R.node == "automation", "recipe rows parse output, inputs, tier and node")
 	for (var/name in recipes)
@@ -96,7 +96,7 @@ var/machine_runtime_error = FALSE
 	var/list/bad = factory_load_recipes("bad_recipes.txt")
 	machine_check(bad.len == 1 && factory_recipe_errors.len == 4, "invalid and duplicate rows are reported and skipped")
 	factory_load_recipes()
-	machine_check(factory_get_recipes().len == 8, "the real list reloads")
+	machine_check(factory_get_recipes().len == 18, "the real list reloads")
 	var/list/node_map = recipe_node_requirements
 	var/list/tiers = list("/obj/structure/factory_arm/stack" = "digital_computing", "/obj/structure/factory_fabricator" = "assembly_line", "/obj/structure/factory_fabricator/automated" = "automation", "/obj/structure/factory_fabricator/computerized" = "digital_computing")
 	var/node_ok = TRUE
@@ -118,8 +118,8 @@ var/machine_runtime_error = FALSE
 	machine_done("probe_civ", "automation")
 	machine_done("probe_civ", "digital_computing")
 	var/list/basic = F.available_recipes("probe_civ")
-	machine_check(basic.len == 6 && ("barbwire" in basic) && ("bronze" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
-	machine_check(C.available_recipes("probe_civ").len == 8, "a tier 3 fabricator lists every researched recipe")
+	machine_check(basic.len == 15 && ("barbwire" in basic) && ("bronze" in basic) && ("wrench" in basic) && !("ammo belt" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
+	machine_check(C.available_recipes("probe_civ").len == 18, "a tier 3 fabricator lists every researched recipe")
 	machine_check(!F.set_recipe("no such recipe") && !F.recipe_name, "unknown recipes are refused")
 	var/obj/item/stack/material/iron/iron = new(locate(1, 2, 1), 10, FALSE)
 	machine_check(!F.factory_accepts(iron), "a fabricator without a recipe takes nothing")
@@ -161,6 +161,7 @@ var/machine_runtime_error = FALSE
 	machine_check(F.progress == 0, "a crowded output tile makes the fabricator wait")
 	for (var/obj/item/stack/material/stone/S in F.loc)
 		qdel(S)
+	machine_item_output_checks()
 	machine_check(C.cycle_time(factory_get_recipes()["electronic components"]) == 75, "a computerized fabricator runs at half the tier 1 time")
 	for (var/obj/O in power + list(iron, copper, crate, second, C))
 		qdel(O)
@@ -234,4 +235,25 @@ var/machine_runtime_error = FALSE
 	machine_arm_swing(F)
 	machine_check(belt_count(fdest, /obj/item/stack/material/steel) == 1, "a feeder arm still moves one item a swing")
 	for (var/obj/O in power + fpower + list(A, F, S, source, dest, fsource, fdest))
+		qdel(O)
+
+// Recipes whose output is a plain item make one item per unit of output.
+/proc/machine_item_output_checks()
+	var/obj/structure/factory_fabricator/T = new(locate(10, 2, 1))
+	var/list/power = machine_power(T, 10, 3)
+	T.set_recipe("screwdriver")
+	var/obj/item/stack/material/iron/iron = new(locate(11, 2, 1), 4, FALSE)
+	machine_check(T.factory_insert(iron) == 4, "a tool recipe buffers its iron")
+	for (var/i in 1 to 4)
+		T.fab_step()
+	var/obj/item/weapon/screwdriver/S = locate() in T.loc
+	machine_check(S && T.buffered(/obj/item/stack/material/iron) == 2 && T.factory_offer() == S, "a fabricator makes a screwdriver from two iron and offers it")
+	T.set_recipe("rifle casings")
+	var/obj/item/stack/material/copper/copper = new(locate(11, 2, 1), 2, FALSE)
+	T.factory_insert(copper)
+	T.fab_step()
+	T.fab_step()
+	var/obj/item/stack/ammopart/casing/rifle/casings = locate() in T.loc
+	machine_check(casings && casings.amount == 3, "a fabricator makes three rifle casings from one copper")
+	for (var/obj/O in power + list(T, S, casings))
 		qdel(O)

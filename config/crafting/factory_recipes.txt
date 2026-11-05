@@ -9,3 +9,13 @@ FACTORY: metal rods|/obj/item/stack/rods|2|/obj/item/stack/material/steel=1|30|1
 FACTORY: cable coil|/obj/item/stack/cable_coil|30|/obj/item/stack/material/copper=2|40|1|assembly_line
 FACTORY: electronic circuits|/obj/item/stack/material/electronics|3|/obj/item/stack/material/copper=2;/obj/item/stack/material/plastic=1|60|2|automation
 FACTORY: electronic components|/obj/item/stack/component|1|/obj/item/stack/material/electronics=3;/obj/item/stack/material/gold=1|150|3|digital_computing
+FACTORY: rifle casings|/obj/item/stack/ammopart/casing/rifle|3|/obj/item/stack/material/copper=1|20|1|assembly_line
+FACTORY: pistol casings|/obj/item/stack/ammopart/casing/pistol|3|/obj/item/stack/material/copper=1|20|1|assembly_line
+FACTORY: iron bullets|/obj/item/stack/ammopart/bullet|3|/obj/item/stack/material/iron=1|20|1|assembly_line
+FACTORY: ammo clips|/obj/item/ammo_magazine/emptyclip|1|/obj/item/stack/material/copper=1|30|1|assembly_line
+FACTORY: stone bricks|/obj/item/stack/material/stonebrick|2|/obj/item/stack/material/stone=2|20|1|assembly_line
+FACTORY: wrench|/obj/item/weapon/wrench|1|/obj/item/stack/material/iron=5|60|1|assembly_line
+FACTORY: screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/iron=2|40|1|assembly_line
+FACTORY: claw hammer|/obj/item/weapon/hammer/modern|1|/obj/item/stack/material/iron=3|50|1|assembly_line
+FACTORY: wirecutters|/obj/item/weapon/wirecutters|1|/obj/item/stack/material/steel=4|60|1|assembly_line
+FACTORY: ammo belt|/obj/item/ammo_magazine/emptybelt|1|/obj/item/stack/material/copper=7|100|2|automation
