@@ -658,7 +658,8 @@ var/global/list/research_benches = list()
 		if (N.mode == RESEARCH_MODE_BOOK)
 			to_chat(user, SPAN_WARNING("Notes only speed up ongoing study; <b>[N.name]</b> can't be advanced that way."))
 			return
-		var/boost = max(1, round(N.cost_ticks * RESEARCH_NOTE_BOOST_FRACTION))
+		var/scale = isnum(book.boost_scale) ? clamp(book.boost_scale, 0.25, 3) : 1
+		var/boost = max(1, round(N.cost_ticks * RESEARCH_NOTE_BOOST_FRACTION * scale))
 		var/completed = map.add_research_ticks(faction, assigned_node, boost)
 		qdel(W)
 		if (completed)

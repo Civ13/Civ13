@@ -159,6 +159,196 @@ var/space_runtime_error = FALSE
 	space_check(B.base_turf == /turf/floor/dirt/dust/regolith && B.climate == "desert", "the barren area rests on regolith with a dry climate")
 	space_check((B.icon_state in icon_states(B.icon)) && B.ambience[1] == "sound/ambience/desert.ogg", "the barren area reuses existing area art and sound")
 
+// Phase 1: survey map, launch rail, mission console and samples.
+/proc/space_test_map()
+	var/datum/survey_map/M = new
+	// Rows run south to north; the probe lands at 2,2.
+	var/list/rows = list("........", ".~*^....", "...^....", "........", "........", "........", "........", "........")
+	space_check(M.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "seed" = "t", "rows" = rows))), "a well-formed survey map loads")
+	return M
+
+/proc/space_survey_checks()
+	var/datum/survey_map/bad = new
+	space_check(!bad.load_text("not json") && !bad.load_text(json_encode(list("schema" = "x", "rows" = list()))), "a broken or foreign survey file is refused")
+	space_check(!bad.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "rows" = list("........", "........", "........", "........", "........", "........", "........", "....X...")))), "unknown cells are refused")
+	space_check(!bad.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "rows" = list("^^^^^^^^", "^^^^^^^^", "^^^^^^^^", "^^^^^^^^", "^^^^^^^^", "^^^^^^^^", "^^^^^^^^", "^^^^^^^^")))), "a map with nowhere to land is refused")
+
+	var/datum/survey_map/shipped = get_space_survey_map()
+	space_check(shipped && shipped.region == "barren" && length(shipped.ir_sha256) == 64, "the shipped survey map is keyed by region and records its bundle hash")
+	space_check(!get_space_survey_map("../barren") && !get_space_survey_map("Barren") && !get_space_survey_map("nowhere"), "bad or unknown region ids load nothing")
+	space_check(survey_map_matches_manifest(shipped, json_encode(list("generation_result" = list("ir_sha256" = uppertext(shipped.ir_sha256))))), "a manifest from the same bundle matches")
+	space_check(!survey_map_matches_manifest(shipped, json_encode(list("generation_result" = list("ir_sha256" = "00")))) && !survey_map_matches_manifest(shipped, "not json") && !survey_map_matches_manifest(shipped, json_encode(list("x" = 1))), "another bundle or a broken manifest does not match")
+	space_check(!survey_map_matches_bundle("barren", "no/such/bundle"), "a missing bundle does not match")
+	space_check(shipped && shipped.width == 40 && shipped.height == 40 && shipped.plain_cells().len > 100, "the shipped survey map loads at 40x40")
+	// A sample window on the shipped map, written out for a visual check.
+	var/obj/structure/survey_console/demo = new(locate(8, 8, 1))
+	space_check(demo.begin_mission(new /obj/item/space_probe/advanced(demo), shipped, 20, 20, 3), "a probe lands on the shipped map")
+	for (var/i = 1 to 6)
+		demo.try_move(EAST)
+		demo.try_move(NORTH)
+	text2file(demo.ui_html("Shipped map demo"), "survey_console_shipped.html")
+	qdel(demo)
+
+	var/datum/survey_map/M = space_test_map()
+	space_check(M.cell(1, 1) == "." && M.cell(4, 2) == "^" && M.cell(3, 2) == "*" && isnull(M.cell(0, 1)) && isnull(M.cell(9, 1)), "cells read south to north")
+	space_survey_maps["barren"] = M
+	M.region = "barren"
+
+	var/turf/T = locate(2, 2, 1)
+	var/obj/structure/launch_rail/R = new(T)
+	var/obj/structure/survey_console/C = new(locate(4, 2, 1))
+	space_check(R.launch() != null, "an empty rail does not launch")
+	R.loaded = new /obj/item/space_probe(R)
+	var/datum/reagents/fuel = new(200)
+	fuel.add_reagent("water", 50)
+	space_check(R.add_fuel(fuel) == 0 && R.fuel == 0, "the rail refuses fuel it cannot burn")
+	fuel.add_reagent("gasoline", 40)
+	fuel.add_reagent("diesel", 40)
+	space_check(R.add_fuel(fuel) == 60 && R.fuel == 60 && fuel.get_reagent_amount("diesel") == 20, "the rail takes exactly 60 units of gasoline and diesel")
+	space_check(R.launch(2, 2, 0) != null && R.loaded, "a landing site off the plains is refused and the probe stays loaded")
+	space_check(isnull(R.launch(2, 1, 0)) && !R.loaded && R.fuel == 0 && C.mission, "a fuelled rail launches to the console nearby")
+	space_check(C.dropout_chance == 8 && C.dust_chance == 3, "the basic probe's relay can drop commands")
+	C.dropout_chance = 0
+	C.dust_chance = 0
+	space_check(C.battery == 100 && C.is_revealed(1, 1) && C.is_revealed(3, 2) && !C.is_revealed(4, 4) && C.revealed_count() == 6, "the probe lands with a full battery and sees the cells around it")
+
+	// Terrain costs and limits.
+	space_check(findtext(C.try_move(WEST), "plain") && C.battery == 99 && C.probe_x == 1, "a plain costs 1")
+	space_check(findtext(C.try_move(WEST), "edge") && C.probe_x == 1, "the probe cannot leave the survey")
+	C.try_move(EAST)
+	C.try_move(NORTH)
+	space_check(C.probe_y == 2 && C.probe_x == 2 && C.battery == 96, "a channel costs 2")
+	C.try_move(EAST)
+	space_check(C.probe_x == 3 && C.battery == 93, "ice costs 3")
+	space_check(findtext(C.try_move(EAST), "steep") && C.probe_x == 3, "ridges block the probe")
+	C.comms_range = 1
+	space_check(findtext(C.try_move(NORTH), "relay") && C.probe_y == 2, "the probe stays inside relay range")
+	C.comms_range = 12
+
+	// Samples and records.
+	space_check(findtext(C.take_sample(), "ice") && C.samples ~= list("ice") && C.battery == 88, "ice yields an ice core")
+	space_check(findtext(C.take_sample(), "already") && C.samples.len == 1, "a site is cored once")
+	var/papers = 0
+	space_check(findtext(C.photograph(), "record") && C.battery == 86, "a photograph prints a record")
+	space_check(findtext(C.photograph(), "already"), "a site is recorded once")
+	for (var/obj/item/weapon/paper/P in C.loc)
+		papers++
+	space_check(papers == 1, "one survey record lies by the console")
+	C.try_move(WEST)
+	space_check(findtext(C.take_sample(), "sediment"), "a channel yields a sediment core")
+	C.try_move(SOUTH)
+	C.try_move(EAST)
+	space_check(findtext(C.take_sample(), "regolith"), "open plain yields regolith")
+	C.try_move(NORTH)
+	space_check(findtext(C.take_sample(), "full") && C.samples.len == 3, "the sample bay holds three")
+	C.battery = 0
+	space_check(findtext(C.try_move(SOUTH), "battery") && C.probe_y == 2, "a flat battery stops the probe")
+
+	// Recharge counts from a tmp clock and never replays a backlog after a restart.
+	C.last_recharge = null
+	C.recharge()
+	space_check(C.battery == 0 && C.last_recharge == world.time, "a missing clock starts afresh without credit")
+	C.last_recharge = world.time - 30 * 10
+	C.recharge()
+	space_check(C.battery == 10, "thirty seconds recharges 10 points")
+	C.last_recharge = world.time - 10000 * 10
+	C.recharge()
+	space_check(C.battery == 100, "recharge stops at a full battery")
+	var/list/tmp_vars = list()
+	for (var/v in C.vars)
+		if (issaved(C.vars[v]) == 0)
+			tmp_vars += v
+	space_check(("last_recharge" in tmp_vars), "the recharge clock is not saved")
+
+	// Ascent from the landing site only.
+	C.try_move(NORTH)
+	var/page = C.ui_html("hello")
+	space_check(findtext(page, "hello") && findtext(page, "survey=north") && findtext(page, "Battery") && findtext(page, ">P<") && findtext(page, ">L<") && findtext(page, ">?<"), "the console window shows the probe, landing site, fog and controls")
+	text2file(page, "survey_console.html")
+	space_check(findtext(C.ascend(), "landing site") && C.mission, "the ascent stage waits at the landing site")
+	C.try_move(SOUTH)
+	C.try_move(SOUTH)
+	C.try_move(WEST)
+	space_check(C.probe_x == 2 && C.probe_y == 1, "the probe drives home")
+	var/seen = C.revealed_count()
+	space_check(findtext(C.ascend(), "3 samples") && !C.mission && C.samples.len == 0, "the ascent ends the mission")
+	space_check(C.revealed_count() == seen && seen > 6 && C.sampled.len == 3 && C.photographed.len == 1 && C.landing_sites ~= list("2,1"), "the survey record outlives the mission")
+	var/list/kinds = list()
+	for (var/obj/item/space_sample/S in C.loc)
+		kinds += S.kind
+	space_check(kinds.len == 3 && ("ice" in kinds) && ("sediment" in kinds) && ("regolith" in kinds), "the samples land by the console as items")
+
+	// A replaced survey map loses contact instead of flying blind.
+	R.loaded = new /obj/item/space_probe/advanced(R)
+	R.fuel = 60
+	space_check(isnull(R.launch(2, 1, 0)) && C.dropout_chance == 0 && C.battery == 160 && C.sample_capacity == 5 && C.revealed_count() == seen && C.is_revealed(4, 3), "the advanced probe flies further with a wider camera over the old survey")
+	C.dust_chance = 0
+	C.try_move(EAST)
+	space_check(findtext(C.take_sample(), "already") && C.samples.len == 0, "a site cored on an earlier mission stays cored")
+	C.try_move(WEST)
+	var/datum/survey_map/other = new
+	other.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "seed" = "other", "rows" = M.rows)))
+	space_survey_maps["barren"] = other
+	other.region = "barren"
+	space_check(findtext(C.try_move(EAST), "No signal") && C.probe_x == 2, "a changed survey map loses the probe")
+	space_check(findtext(C.ui_html(), "Contact with") && findtext(C.ui_html(), "survey=abandon"), "the console window offers to close a lost mission")
+	C.abandon()
+	space_check(!C.mission && C.revealed_count() >= seen, "a lost mission can be closed and keeps its survey")
+	// A rebuilt map with the same seed and size but different terrain is a new map too.
+	var/list/rebuilt_rows = M.rows.Copy()
+	rebuilt_rows[8] = "^^^^^^^."
+	var/datum/survey_map/rebuilt = new
+	rebuilt.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "seed" = "t", "rows" = rebuilt_rows)))
+	space_check(rebuilt.seed == M.seed && rebuilt.digest() != M.digest() && M.digest() == md5(jointext(M.rows, "")), "the row digest tells a rebuilt map from the old one")
+	R.loaded = new /obj/item/space_probe/advanced(R)
+	R.fuel = 60
+	space_check(isnull(R.launch(2, 1, 0)) && C.revealed_count() == 12 && !C.sampled.len && !C.photographed.len && C.landing_sites ~= list("2,1"), "a new survey map starts a fresh survey record")
+	// Hazards: a dropped command costs 1 and leaves the probe; dust halves recharge.
+	C.dropout_chance = 100
+	var/before = C.battery
+	space_check(findtext(C.try_move(EAST), "dropped") && C.probe_x == 2 && C.battery == before - 1, "a relay dropout loses the command")
+	C.dropout_chance = 0
+	C.dust_chance = 100
+	space_check(findtext(C.try_move(WEST), "dust") && C.dusty, "a dust gust coats the panels")
+	space_check(findtext(C.ui_html(), "dusty panels"), "the window shows the dusty panels")
+	C.battery = 0
+	C.last_recharge = world.time - 30 * 10
+	C.recharge()
+	space_check(C.battery == 5, "dusty panels recharge at half speed")
+	C.abandon()
+	space_check(!C.dusty, "the dust clears with the sortie")
+
+	// Landing scatter: an aimed probe lands on a plain within two cells.
+	var/scatter_ok = TRUE
+	for (var/i = 1 to 20)
+		var/list/site = survey_landing_cell(other, 6, 6, SURVEY_LANDING_SCATTER)
+		if (!site || abs(site[1] - 6) > 2 || abs(site[2] - 6) > 2 || other.cell(site[1], site[2]) != ".")
+			scatter_ok = FALSE
+	space_check(scatter_ok, "an aimed landing scatters onto nearby flat ground")
+	space_check(isnull(survey_landing_cell(other, 4, 2, 0)) && survey_landing_cell(other, 4, 2, 1), "an exact landing needs a plain, a scattered one finds one")
+	R.loaded = new /obj/item/space_probe(R)
+	R.fuel = 60
+	R.target_x = 6
+	R.target_y = 6
+	space_check(isnull(R.launch()) && abs(C.land_x - 6) <= 2 && abs(C.land_y - 6) <= 2, "the rail's aim sets the landing area")
+	C.abandon()
+	space_survey_maps = list()
+
+	// Sample value by kind and novelty.
+	space_check(survey_sample_value("ice", TRUE) == 2.25 && survey_sample_value("ice", FALSE) == 1.5 && survey_sample_value("regolith", FALSE) == 0.75 && survey_sample_value("sediment", FALSE) == 1, "ice is worth most, regolith least, a first sample of a kind more")
+
+	// Research: nodes, recipes and sample analysis.
+	build_research_tree()
+	var/datum/research_node/rocketry = get_research_node("rocketry")
+	var/datum/research_node/survey = get_research_node("planetary_survey")
+	space_check(rocketry && rocketry.era_tier == 9 && ("digital_networks" in rocketry.prereqs) && ("missiles" in rocketry.prereqs), "Rocketry is an era 9 node after Digital Networks and Missiles")
+	space_check(survey && survey.mode == RESEARCH_MODE_ANALYSIS && survey.era_tier == 9 && ("rocketry" in survey.prereqs), "Planetary Survey follows Rocketry and is not an era capstone")
+	space_check(get_recipe_node_req("/obj/item/space_probe") == "rocketry" && get_recipe_node_req("/obj/structure/launch_rail") == "rocketry" && get_recipe_node_req("/obj/structure/survey_console") == "rocketry" && get_recipe_node_req("/obj/item/space_probe/advanced") == "planetary_survey", "probe recipes are gated on the spaceflight nodes")
+	var/obj/item/space_sample/rock/sample = new(C.loc)
+	var/obj/item/weapon/book/research/tree_book/book = C.analyse(sample, null)
+	space_check(book && book.subject == "planetary_survey" && book.transfer_type == "notes" && QDELETED(sample) && book.boost_scale == 1.88, "analysis turns a first rock sample into notes worth more")
+	var/obj/item/weapon/book/research/tree_book/again = C.analyse(new /obj/item/space_sample/rock(C.loc), null)
+	space_check(again && again.boost_scale == 1.25, "a second rock sample is worth its plain value")
 // A bare crew member: the full human constructor needs a running game.
 /mob/living/human/space_probe_crew/New(newloc)
 	loc = newloc
@@ -291,6 +481,7 @@ var/space_runtime_error = FALSE
 		space_ledger_checks()
 		space_save_checks()
 		space_turf_checks()
+		space_survey_checks()
 		space_submarine_checks()
 		space_exposure_checks()
 	catch(var/exception/e)
