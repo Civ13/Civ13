@@ -81,7 +81,7 @@
 			var/nodes = 0
 			var/index = 0
 			do
-				var/list/batch = S.iterate(index, 4096)
+				var/list/batch = S.iterate(index, 256)
 				nodes += batch.len / 2
 				index = S.next_index
 				if(!batch.len) break
@@ -105,7 +105,7 @@
 			var/nodes = 0
 			var/index = 0
 			do
-				var/list/batch = source.iterate(index, 4096)
+				var/list/batch = source.iterate(index, 256)
 				if(!batch.len) break
 				index = source.next_index
 				for(var/i = 1, i < batch.len, i += 2)

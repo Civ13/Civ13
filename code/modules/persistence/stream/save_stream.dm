@@ -158,11 +158,12 @@
 	var/list/cursor = list(1)
 	return decode(reply, cursor)
 
-// Reads up to `max` nodes in path order from index position `start`. Returns
+// Reads up to `max` nodes in path order from index position `start`. Keep
+// batches small: DM's positional text procs slow down on long replies. Returns
 // a flat list (path, value, path, value, ...); next_index is the next start
 // and equals node_count() once the stream is exhausted.
 /datum/save_stream/var/next_index = 0
-/datum/save_stream/proc/iterate(start, max = 2048)
+/datum/save_stream/proc/iterate(start, max = 256)
 	if(mode != "read") CRASH("save stream is not reading")
 	var/reply = lib_call("savestream_iter", list(id, "[start];[max]"))
 	if(failed(reply)) CRASH("stream iterate failed at [start]: [last_error]")
