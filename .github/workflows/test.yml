@@ -2060,7 +2060,7 @@ jobs:
           pwsh -NoProfile -File tests/native_grid/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated resource extraction regressions
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -2087,6 +2087,7 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/ecology_spawning/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/liminal_mode/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/space_settlement/probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/wildlife_spawner/probe.dm
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/boat_movement')
