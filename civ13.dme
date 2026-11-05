@@ -534,6 +534,7 @@
 #include "code\game\objects\map_metadata\east_los_santos.dm"
 #include "code\game\objects\map_metadata\eft_factory.dm"
 #include "code\game\objects\map_metadata\crossroads_mall.dm"
+#include "code\game\objects\map_metadata\train_raid.dm"
 #include "code\game\objects\map_metadata\elaia.dm"
 #include "code\game\objects\map_metadata\event_city.dm"
 #include "code\game\objects\map_metadata\fallujah.dm"

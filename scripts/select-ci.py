@@ -59,6 +59,8 @@ AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
+TRAIN_RAID_OFFLINE_TESTS = frozenset({'tests/train_raid/test_train_raid.py', 'tests/train_raid/build.py',
+                                      'tests/train_raid/native_probe.py', 'tests/train_raid/native_probe.dm'})
 SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
                                          'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
                                          'tests/safehouse_map/preview.py'})
@@ -379,6 +381,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered safehouse-map executable test requires explicit CI review')
         if path.startswith('tests/crossroads_mall/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered crossroads-mall executable test requires explicit CI review')
+        if path in TRAIN_RAID_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/train_raid/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered train-raid executable test requires explicit CI review')
         if path.startswith('tests/farmers_almanac/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered farmers-almanac executable test requires explicit CI review')
         if path in DOOR_INTENTS_OFFLINE_TESTS:
