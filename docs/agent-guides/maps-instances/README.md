@@ -56,6 +56,17 @@ Use the console `dm.exe`, not the GUI `dreammaker.exe`, for Windows compilation.
 
 ## Maps
 
+<!-- 2026-11-05: map merge drivers, UpdatePaths and maplint -->
+`python3 scripts/maplint.py --changed origin/master` lints edited maps (parse,
+conflict markers, turf/area order); the `map_tools` offline suite lints every
+map whenever one changes. Rename types across maps with
+`tools/UpdatePaths/Update_Paths.sh <rules.txt>`; it rewrites only maps that use
+the old path. The `.dmm`/`.dmi` merge drivers and pre-commit hook are opt-in
+(`tools/hooks/install.sh` or `Install.bat`, packages in
+`tools/hooks/requirements.txt`) and keep each map's DMM or TGM format.
+Generated maps with their own validators (Dagger, Liminal, safehouse) still
+run those validators; maplint is the shared floor, not a replacement.
+
 <!-- 2026-10-18: centralized level admission -->
 Dynamic z growth must reserve its complete target through world_z_budget before
 the first native resize. The uncalibrated hard ceiling is 1,400,000 total grid cells,

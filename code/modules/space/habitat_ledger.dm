@@ -9,7 +9,9 @@
 //
 // Rules from docs/space-settlement-roadmap.md:
 // - nothing here stores world.time; saved state is plain scalars;
-// - a ledger never ticks while nobody is inside it;
+// - a ledger ticks only while the world has players: leaks and cooling run
+//   whether or not anyone is inside, breathing only for the people inside,
+//   and nothing runs while the world is empty, frozen or asleep;
 // - a late or delayed tick cannot replay a backlog (seconds are capped).
 //
 // Submarine compartments use one ledger each (submarine/flooding_controller.dm);
@@ -29,6 +31,11 @@
 #define HABITAT_MIN_OXYGEN_KPA 16
 #define HABITAT_MAX_CO2_KPA 2
 #define HABITAT_MIN_PRESSURE_KPA 60
+// Oxygen damage per breath step for someone breathing unbreathable air
+// (outside without a suit, or in a module whose oxygen is gone). A conscious
+// human recovers 5 per life tick, so this takes about a minute to knock
+// someone out (decision D4), leaving time to drag them inside.
+#define HABITAT_SUFFOCATE_OXYLOSS 7
 
 /datum/habitat_ledger
 	var/volume = 1
@@ -99,18 +106,19 @@
 	other.temperature = t
 	return TRUE
 
-// One bounded step. occupants: living breathers inside. breaches: open holes
-// to the outside. ambient: outside temperature (C), or null for none.
-// Returns FALSE (and changes nothing) when nobody is inside.
-/datum/habitat_ledger/proc/advance(seconds, occupants, breaches = 0, ambient = null)
-	if (!isnum(occupants) || occupants <= 0)
-		return FALSE
+// One bounded step. occupants: living breathers inside (0 is fine: breaches
+// still vent and the module still cools). breaches: open holes to the
+// outside. ambient: outside temperature (C), or null for none. The caller
+// decides whether the world is awake; returns FALSE only for no time.
+/datum/habitat_ledger/proc/advance(seconds, occupants = 0, breaches = 0, ambient = null)
 	var/dt = habitat_clamp(seconds, 0, HABITAT_MAX_STEP_SECONDS)
 	if (dt <= 0)
 		return FALSE
-	var/breath = min(oxygen, HABITAT_BREATH_PER_SECOND * occupants * dt)
-	oxygen -= breath
-	co2 += breath
+	var/breathers = habitat_clamp(occupants, 0, 10000)
+	if (breathers > 0)
+		var/breath = min(oxygen, HABITAT_BREATH_PER_SECOND * breathers * dt)
+		oxygen -= breath
+		co2 += breath
 	var/holes = habitat_clamp(breaches, 0, 1000)
 	if (holes > 0)
 		var/keep = max(0, 1 - HABITAT_LEAK_FRACTION_PER_BREACH * holes * dt)

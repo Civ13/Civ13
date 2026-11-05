@@ -264,6 +264,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered door-intent'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_map_tools_offline_admission_is_exact(self):
+        path = 'tests/map_tools/test_map_tools.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/map_tools/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered map-tools'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_medical_care_offline_admission_is_exact(self):
         path = 'tests/medical_care/test_source.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
