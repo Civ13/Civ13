@@ -372,7 +372,7 @@
     },
     {
       "path": "code/modules/1713/modern_items.dm",
-      "sha256_normalized": "ef0c068bcc9e0f1b1a99b1eff6b03caa3c28634b2b8279a163fd148d58e2a034",
+      "sha256_normalized": "0bf43d750348470cb43efda9123a66f9f40ccd5c4c84da507cec8f16d4681037",
       "declarations": [
         {
           "line": 26,

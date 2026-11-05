@@ -36,7 +36,7 @@ ACTIONS = {
     "inspect": ("observe", "Describe one object: type, location, contents and mob state.", _schema({"target": TARGET}, ["target"])),
     "look": ("observe", "List turfs and visible objects around a target (radius 0-7).", _schema({"target": TARGET, "radius": {"type": "integer", "minimum": 0, "maximum": 7}}, ["target"])),
     "find": ("observe", "Find atoms of a type, optionally on one z-level or matching a name.", _schema({"type": {"type": "string"}, "z": {"type": "integer"}, "name": {"type": "string"}, "limit": {"type": "integer", "minimum": 1, "maximum": 200}}, ["type"])),
-    "logs": ("observe", "Recent admin log lines, including every agent action.", _schema({"count": {"type": "integer", "minimum": 1, "maximum": 200}})),
+    "logs": ("observe", "Recent admin log lines, including every agent action. kind \"food\" returns recent food toxin swallows with source, amounts and cause.", _schema({"count": {"type": "integer", "minimum": 1, "maximum": 200}, "kind": {"type": "string", "enum": ["admin", "food"]}})),
     "job": ("observe", "Result of a proc or verb call that was still running.", _schema({"job": {"type": "string"}}, ["job"])),
     "get_vars": ("vars_read", "Read variables of an object or global. Omit names for a summary of all.", _schema({"target": TARGET, "names": {"type": "array", "items": {"type": "string"}, "maxItems": 100}}, ["target"])),
     "set_var": ("vars_write", "Set one variable on an object or global (logged with old and new value).", _schema({"target": TARGET, "name": {"type": "string"}, "value": VALUE}, ["target", "name", "value"])),

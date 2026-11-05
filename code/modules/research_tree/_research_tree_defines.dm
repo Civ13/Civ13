@@ -57,3 +57,8 @@
 // quick notes -- that effort gap is what keeps notes worth trading.
 #define RESEARCH_NOTES_WRITE_TIME 60   // 6s
 #define RESEARCH_BOOK_WRITE_TIME  350  // 35s
+
+// Persistent worlds start in WW2 (apply_persistence_age_floor), skipping the
+// eras in which a normal round's factions research the specialist trees.
+// On those worlds a faction's specialist nodes up to this era count as done.
+#define PERSISTENT_SPECIALIST_BASELINE_ERA 6

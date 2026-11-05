@@ -237,7 +237,7 @@ var/global/fluid_step_serial = 0
 	density = FALSE
 	layer = 2.8
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/tmp/datum/fluid_network/network = null
 
@@ -269,8 +269,16 @@ var/global/fluid_step_serial = 0
 	fluid_pipes |= src
 	fluid_mark_dirty()
 
+// An unfastened pipe joins nothing until it is wrenched down again.
 /obj/structure/fluid_pipe/proc/fluid_open()
-	return TRUE
+	return anchored
+
+// Fastening or unfastening a pipe or fluid machine changes what networks
+// reach, so any wrenched structure asks for a rebuild while pipes exist.
+/obj/structure/anchor_changed()
+	..()
+	if (fluid_pipes.len)
+		fluid_mark_dirty()
 
 /obj/structure/fluid_pipe/proc/fluid_adjacent_turfs()
 	var/list/turfs = list()
@@ -345,7 +353,7 @@ var/global/fluid_step_serial = 0
 	color = open ? "#80c080" : "#c08080"
 
 /obj/structure/fluid_pipe/valve/fluid_open()
-	return open
+	return open && anchored
 
 /obj/structure/fluid_pipe/valve/after_load()
 	. = ..()
@@ -374,7 +382,7 @@ var/global/fluid_step_serial = 0
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	powerneeded = 3
 	var/on = FALSE
@@ -424,7 +432,7 @@ var/global/fluid_step_serial = 0
 	powered = FALSE
 
 /obj/structure/fluid_pump/proc/pump_step()
-	if (!on || !isturf(loc))
+	if (!on || !anchored || !isturf(loc))
 		if (powered)
 			pump_stop()
 		return
@@ -447,7 +455,7 @@ var/global/fluid_step_serial = 0
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	flags = OPENCONTAINER | NOREACT
 	var/filter_reagent = null
@@ -462,10 +470,10 @@ var/global/fluid_step_serial = 0
 	return ..()
 
 /obj/structure/fluid_tank/fluid_supply_tier()
-	return FLUID_TIER_BUFFER
+	return anchored ? FLUID_TIER_BUFFER : 0
 
 /obj/structure/fluid_tank/fluid_demand_tier()
-	return FLUID_TIER_BUFFER
+	return anchored ? FLUID_TIER_BUFFER : 0
 
 /obj/structure/fluid_tank/fluid_supply_holder()
 	return reagents
@@ -515,7 +523,7 @@ var/global/fluid_step_serial = 0
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/tmp/drawn_step = -1
 
@@ -552,7 +560,7 @@ var/global/fluid_step_serial = 0
 	reagents.add_reagent(W.radiation > 0 ? "irradiated_water" : "water", max(0, amount - other))
 
 /obj/structure/fluid_intake/fluid_supply_tier()
-	return FLUID_TIER_SOURCE
+	return anchored ? FLUID_TIER_SOURCE : 0
 
 // Draw once per network step, so an intake never supplies more than its rate.
 /obj/structure/fluid_intake/fluid_supply_holder()

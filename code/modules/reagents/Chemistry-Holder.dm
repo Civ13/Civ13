@@ -319,11 +319,20 @@
 	if (!amount)
 		return 0
 	var/part = amount / total_volume
+	var/carried_toxin = FALSE
 	for (var/datum/reagent/current in reagent_list)
 		var/amount_to_transfer = current.volume * part
+		if (istype(current, /datum/reagent/toxin))
+			carried_toxin = TRUE
 		target.add_reagent(current.id, amount_to_transfer * multiplier, current.get_data(), safety = TRUE) // We don't react until everything is in place
 		if (!copy)
 			remove_reagent(current.id, amount_to_transfer, TRUE)
+	// Carry the food toxin origin along so a later swallow can say where it came from.
+	if (carried_toxin && isobj(my_atom) && isobj(target.my_atom) && my_atom != target.my_atom)
+		var/cause = food_toxin_cause(my_atom, TRUE)
+		if (cause)
+			var/obj/to_obj = target.my_atom
+			to_obj.note_food_toxin("[cause], from [my_atom.name]")
 	if (!copy)
 		handle_reactions()
 	target.handle_reactions()

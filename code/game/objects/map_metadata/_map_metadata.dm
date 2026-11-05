@@ -528,14 +528,13 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 		update_win_condition()
 	check_events()
 	if (nomads)
+		sync_autoresearch_baselines()
 		if (!age1_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age1_lim && research_time() > 36000)
-					to_chat(world, "<big>The world has advanced into the Bronze Age!</big>")
-					age = "313 B.C."
-					set_ordinal_age()
+					legacy_age_advance(1, "313 B.C.", "<big>The world has advanced into the Bronze Age!</big>")
 					age1_done = TRUE
 					age2_timer = (research_time() + age2_timer)
 					if (!map.chad_mode && !map.chad_mode_plus)
@@ -547,9 +546,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age2_lim && research_time() >= age2_timer)
-					to_chat(world, "<big>The world has advanced into the Medieval Age!</big>")
-					age = "1013"
-					set_ordinal_age()
+					legacy_age_advance(2, "1013", "<big>The world has advanced into the Medieval Age!</big>")
 					age2_done = TRUE
 					age3_timer = (research_time() + age3_timer)
 					if (!map.chad_mode && !map.chad_mode_plus)
@@ -561,9 +558,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age3_lim && research_time() >= age3_timer)
-					to_chat(world, "<big>The world has advanced into the Imperial Age!</big>")
-					age = "1713"
-					set_ordinal_age()
+					legacy_age_advance(3, "1713", "<big>The world has advanced into the Imperial Age!</big>")
 					age3_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 80
@@ -574,9 +569,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age4_lim && research_time() >= age4_timer)
-					to_chat(world, "<big>The world has advanced into the Industrial Age!</big>")
-					age = "1873"
-					set_ordinal_age()
+					legacy_age_advance(4, "1873", "<big>The world has advanced into the Industrial Age!</big>")
 					age4_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 105
@@ -586,9 +579,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age5_lim && research_time() >= age5_timer)
-					to_chat(world, "<big>The world has advanced into the Early Modern Age!</big>")
-					age = "1903"
-					set_ordinal_age()
+					legacy_age_advance(5, "1903", "<big>The world has advanced into the Early Modern Age!</big>")
 					age5_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 120
@@ -598,9 +589,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age6_lim && research_time() >= age6_timer)
-					to_chat(world, "<big>The world has advanced into the Second World War!</big>")
-					age = "1943"
-					set_ordinal_age()
+					legacy_age_advance(6, "1943", "<big>The world has advanced into the Second World War!</big>")
 					age6_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 145
@@ -610,9 +599,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age7_lim && research_time() >= age7_timer)
-					to_chat(world, "<big>The world has advanced into the Cold War!</big>")
-					age = "1969"
-					set_ordinal_age()
+					legacy_age_advance(7, "1969", "<big>The world has advanced into the Cold War!</big>")
 					age7_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 175
@@ -622,9 +609,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age8_lim && research_time() >= age8_timer)
-					to_chat(world, "<big>The world has advanced into the Modern Age!</big>")
-					age = "2013"
-					set_ordinal_age()
+					legacy_age_advance(8, "2013", "<big>The world has advanced into the Modern Age!</big>")
 					age8_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 210
@@ -634,13 +619,22 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age9_lim && research_time() >= age9_timer)
-					to_chat(world, "<big>The world has advanced into the Digital Age!</big>")
-					age = "2026"
-					set_ordinal_age()
+					legacy_age_advance(9, "2026", "<big>The world has advanced into the Digital Age!</big>")
 					age9_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 240
 					break
+// Legacy pacing never moves the world backward. An era capstone (see
+// complete_node) can raise ordinal_age without setting the age flags, so a
+// later legacy step for an older age only marks that age done.
+/obj/map_metadata/proc/legacy_age_advance(new_ordinal, new_year, message)
+	if (ordinal_age >= new_ordinal)
+		return FALSE
+	to_chat(world, message)
+	age = new_year
+	set_ordinal_age()
+	return TRUE
+
 /obj/map_metadata/proc/check_events()
 	return TRUE
 

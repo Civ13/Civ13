@@ -37,6 +37,7 @@
 	if (reagents)
 		reagents.remove_reagent("protein", 2)
 		reagents.add_reagent("food_poisoning", 1)
+		note_food_toxin("rotted while decaying")
 	rotten = TRUE
 	disgusting = TRUE
 	satisfaction = -30

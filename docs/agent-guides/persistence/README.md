@@ -22,6 +22,24 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-05: restore contract -->
+Restore contract (`code/modules/persistence/restore_contract.dm`): a load builds
+each saved atom with `new type(loc)` before its fields arrive, and the saver
+omits fields still at their compiled default, so whatever a constructor sets
+under restore survives the load. `restoring` is TRUE from `/atom/New` until
+`after_load()` has run (code before `..()` reads `persistence_saved_atom_construction`).
+First-spawn work (random looks and offsets, serials, starting inventory, fuel)
+goes in `on_runtime_spawn()`, which `/atom/New` calls for every creation that is
+not a restore, map placement included. Anything derived from a saved field is
+rebuilt in `after_load()` (or `persistence_import_fields()` when it depends on
+which fields the save held), never in `New()` and never by a timer: verbs
+(#3649), language references (#3679) and loaded rounds (#3683, #3753) follow
+this; `world.time` stamps are excluded from saves instead (#3625, #3704).
+Omitted `pixel_x`/`pixel_y` return to their default on load.
+`tests/load_construction` builds each drifting type twice under restore and
+fails on a scalar field that differs between builds unless `known_drift.txt`
+lists it.
+
 <!-- 2026-11-05: stream save prototype -->
 `tools/savestream` and `code/modules/persistence/stream/save_stream.dm` stream a
 level's path/value tree through a 32-bit call_ext shim into a 64-bit helper, so

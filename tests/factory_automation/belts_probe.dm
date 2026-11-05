@@ -72,6 +72,7 @@ var/belt_runtime_error = FALSE
 		belt_capacity_checks()
 		belt_load_checks()
 		belt_arm_checks()
+		belt_wrench_checks()
 		belt_catalog_checks()
 	catch(var/exception/e)
 		belt_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -290,6 +291,37 @@ var/belt_runtime_error = FALSE
 	belt_check(piled == 12, "an arm stops piling on a bare floor at twelve items")
 	dropper.on = FALSE
 	belt_swing(dropper)
+
+// Factory parts are fastened and unfastened with a wrench like other machines;
+// arms turn by verb, and an unfastened arm or drive does no work.
+/proc/belt_wrench_checks()
+	var/list/fixed = list()
+	for (var/path in list(/obj/structure/factory_arm, /obj/structure/factory_arm/sorting, /obj/structure/factory_arm/stack, /obj/structure/factory_drive, /obj/structure/factory_fabricator, /obj/structure/factory_fabricator/automated, /obj/structure/factory_fabricator/computerized, /obj/structure/factory_fabricator/printer, /obj/structure/factory_monitor))
+		var/obj/structure/S = path
+		if (initial(S.not_movable))
+			fixed += "[path]"
+	belt_check(!fixed.len, "arms, drives, fabricators and the monitor can be unwrenched[fixed.len ? " (fixed: [english_list(fixed)])" : ""]")
+	var/mob/living/human/belt_probe/H = new(locate(2, 15, 1))
+	var/obj/structure/factory_arm/arm = new(locate(3, 15, 1))
+	arm.set_dir(EAST)
+	belt_check(arm.arm_turn(H, 90) && arm.dir == NORTH && arm.arm_turn(H, -90) && arm.dir == EAST, "an arm that is off turns both ways")
+	arm.on = TRUE
+	belt_check(!arm.arm_turn(H, 90) && arm.dir == EAST, "a running arm refuses to turn")
+	var/obj/item/weapon/wrench/wrench = new(H.loc)
+	arm.attackby(wrench, H)
+	belt_check(arm.anchored && arm.dir == EAST, "a running arm refuses the wrench")
+	arm.anchored = FALSE
+	arm.arm_wake()
+	arm.arm_step()
+	belt_check(!(arm in factory_active_arms) && arm.arm_status == "off", "an unfastened arm stops")
+	var/obj/structure/factory_drive/D = locate() in locate(16, 16, 1)
+	var/obj/structure/factory_belt/B = belt_make(14, 15, EAST)
+	belt_check(D && D.drive_covers(B), "a fastened drive covers a nearby belt")
+	D.anchored = FALSE
+	belt_check(!D.drive_covers(B), "an unfastened drive powers no belts")
+	D.anchored = TRUE
+	for (var/obj/O in list(arm, wrench, B, H))
+		qdel(O)
 
 /proc/belt_catalog_checks()
 	belt_check(get_recipe_node_req("/obj/item/factory_belt_assembly") == "assembly_line" && get_recipe_node_req("/obj/structure/closet/crate/factory_bin") == "assembly_line", "belts and parts bins unlock with Assembly Line")

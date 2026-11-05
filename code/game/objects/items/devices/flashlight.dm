@@ -124,8 +124,9 @@
 	var/flame_tint = "#ffcccc"
 	var/flame_base_tint = "#ff0000"
 
-/obj/item/flashlight/flare/New()
-	. = ..()
+// A restored flare keeps its saved fuel.
+/obj/item/flashlight/flare/on_runtime_spawn()
+	..()
 	fuel = rand(290, 450) // Sorry for changing this so much but I keep under-estimating how long X number of ticks last in seconds.
 
 /obj/item/flashlight/flare/update_icon()
