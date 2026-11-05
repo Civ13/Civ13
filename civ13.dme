@@ -1170,6 +1170,7 @@
 #include "code\modules\nano\interaction\zlevel.dm"
 #include "code\modules\nano\modules\appearance_changer.dm"
 #include "code\modules\nano\modules\nano_module.dm"
+#include "code\modules\nano\modules\prompt.dm"
 #include "code\modules\organs\blood.dm"
 #include "code\modules\organs\brain.dm"
 #include "code\modules\organs\helpers.dm"
