@@ -160,6 +160,17 @@ var/global/persistence_saved_atom_construction = 0
 /proc/persistence_default_scalar(value)
 	return isnull(value) || isnum(value) || istext(value) || ispath(value)
 
+// Value format 2 writes a scalar field raw instead of as a "value" envelope.
+// Readers accept both. Returns the scalar, or a non-scalar envelope unchanged
+// for the caller to reject; a raw non-scalar node is never valid.
+/proc/persistence_saved_scalar(value)
+	if(!islist(value))
+		if(!persistence_default_scalar(value)) throw EXCEPTION("Invalid raw saved value")
+		return value
+	var/list/envelope = value
+	if(envelope["kind"] != "value") return envelope
+	return envelope["value"]
+
 var/global/list/persistence_field_allowlists = list()
 
 // The parsed map_storage_saved_vars allowlist, or null for changed-field types.
@@ -1248,6 +1259,7 @@ var/global/datum/persistence_admission_identity
 	var/source_identity
 	var/current_field
 	var/entry
+	var/entry_key // "[entry]", built once instead of per exported field
 	var/accepts_children = FALSE
 	var/active = TRUE
 	var/list/content_refs = list()
@@ -1285,7 +1297,7 @@ var/global/datum/persistence_admission_identity
 // reference checks below reject any substituted source or key without building
 // a fresh native reference string per field.
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
-	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames[frame.entry_key] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	if(frame.human_spatial_request && (!frame.human_spatial_request.captured || !frame.human_spatial_request.actor || frame.human_spatial_request.actor != frame.source || frame.human_spatial_request.actor.human_subtile_save_request != frame.human_spatial_request || !frame.human_spatial_request.operation || !frame.human_spatial_request.operation.current(src, "save")))

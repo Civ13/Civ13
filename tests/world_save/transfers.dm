@@ -60,9 +60,9 @@
 		for(var/ref in refs)
 			if(ref == "[item_ref]") count++
 		check(P.dropped && I.loc == T && item_ref && count == 1, "Declared paid child must occur once in parent contents")
-		var/list/progress = F["[map_storage.entry_path(F,item_ref)]/progress"]
-		var/list/nutrition = F["[map_storage.entry_path(F,item_ref)]/nutrition"]
-		check(progress["value"] == 150 && nutrition["value"] == 37, "Transfer must preserve paid scalar state")
+		var/progress = persistence_saved_scalar(F["[map_storage.entry_path(F,item_ref)]/progress"])
+		var/nutrition = persistence_saved_scalar(F["[map_storage.entry_path(F,item_ref)]/nutrition"])
+		check(progress == 150 && nutrition == 37, "Transfer must preserve paid scalar state")
 		check(!map_storage.saving_export_frames.len && !map_storage.saving_export_stack.len, "Successful export retained active frames")
 		T.late_producer = null
 		del(P.origin)

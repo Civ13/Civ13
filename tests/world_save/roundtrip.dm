@@ -83,6 +83,7 @@ var/global/roundtrip_capture_failure = FALSE
 		check_datum_constructor()
 		check_save_transfers()
 		check_save_identity_and_snapshot()
+		check_value_format_2()
 		if(world.params["large"])
 			world.maxx = 500
 			world.maxy = 500
@@ -152,6 +153,9 @@ var/global/roundtrip_capture_failure = FALSE
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
 		check(map_storage.validate_world_save(), "valid export rejected")
+		var/savefile/marked = new("map_saves/1.sav")
+		check(marked["/value_format"] == 2, "level file lacks the value format 2 marker")
+		marked = null
 		// A full-file generation loaded in low-memory mode is split into
 		// segments first, then imported one segment at a time.
 		if(world.params["split"])
@@ -349,10 +353,42 @@ var/global/roundtrip_capture_failure = FALSE
 			F["/entries/[ref]/items"] << "**emptylist"
 			F["/entries/[ref]/pixloc"] << null
 
+// Value format 2: scalar lists are one node and both value shapes decode.
+/proc/check_value_format_2()
+	var/savefile/F = new
+	F["/format_version"] << 3
+	var/list/scalars = list("a" = 1, 2, /obj/item/test, "b" = /turf/test, null, "c")
+	var/list/encoded = map_storage.encode_saved_value(F, scalars)
+	check(encoded["kind"] == "list" && isnull(F["/lists/[encoded["ref"]]/length"]), "scalar list was not written as one node")
+	var/list/node = F["/lists/[encoded["ref"]]"]
+	check(islist(node) && node["kind"] == "scalars" && node["length"] == 6, "scalar list node shape changed")
+	map_storage.loaded_lists = list()
+	var/list/restored = map_storage.decode_saved_value(F, encoded)
+	check(restored.len == 6 && restored[1] == "a" && restored["a"] == 1 && restored[2] == 2 && restored[3] == /obj/item/test && restored["b"] == /turf/test && isnull(restored[5]) && restored[6] == "c" && isnull(restored["c"]), "scalar list round trip changed")
+	check(map_storage.validate_saved_value(F, encoded, list(), list()), "scalar list rejected")
+	check(map_storage.decode_saved_value(F, 5) == 5 && map_storage.decode_saved_value(F, "text") == "text" && isnull(map_storage.decode_saved_value(F, null)), "raw scalar did not decode")
+	check(map_storage.decode_saved_value(F, list("kind" = "value", "value" = 9)) == 9, "format 1 scalar envelope no longer decodes")
+	var/rejected = FALSE
+	try
+		map_storage.validate_saved_value(F, new /datum/test, list(), list())
+	catch
+		rejected = TRUE
+	check(rejected, "raw non-scalar value accepted")
+	F["/lists/77"] << list("kind" = "scalars", "length" = 2, "keys" = list("x"), "values" = list(1))
+	rejected = FALSE
+	try
+		map_storage.validate_saved_value(F, list("kind" = "list", "ref" = 77), list(), list())
+	catch
+		rejected = TRUE
+	check(rejected, "truncated scalar list accepted")
+	map_storage.clear_bookkeeping()
+
 /proc/check_save_identity_and_snapshot()
 	var/savefile/F = new
 	F["/format_version"] << 2
-	var/list/live = list("first", "second")
+	// A nested value keeps the per-edge encoder, which yields; all-scalar lists
+	// are written as one node without yielding (value format 2).
+	var/list/live = list("first", "second" = list())
 	mutate_on_tick = live
 	var/encoded = map_storage.encode_saved_value(F, live)
 	var/list/restored = map_storage.decode_saved_value(F, encoded)

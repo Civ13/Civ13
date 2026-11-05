@@ -70,16 +70,15 @@
 						continue
 					// These fields are explicitly emitted by /obj/roof/get_saved_vars.
 					// Do not guess missing legacy settings or decode an object graph here.
-					var/list/switch_value = level_entry_value(F, child, "switch_area")
-					var/list/base_value = level_entry_value(F, child, "current_area_type")
-					if(!islist(switch_value) || switch_value["kind"] != "value" || !isnum(switch_value["value"]) || !(switch_value["value"] in list(TRUE, FALSE)) || !islist(base_value) || base_value["kind"] != "value" || !ispath(base_value["value"], /area))
+					var/switch_value = persistence_saved_scalar(level_entry_value(F, child, "switch_area"))
+					var/base_type = persistence_saved_scalar(level_entry_value(F, child, "current_area_type"))
+					if(!isnum(switch_value) || !(switch_value in list(TRUE, FALSE)) || !ispath(base_type, /area))
 						throw EXCEPTION("Saved roof lacks scalar area metadata")
-					var/base_type = base_value["value"]
 					var/turf/T = z <= world.maxz ? locate(x, y, z) : null
 					var/current_type = T ? T.loc.type : world.area
 					var/target_type
 					var/underlying_type = current_type
-					if(switch_value["value"])
+					if(switch_value)
 						var/area/base = unique_saved_roof_area(base_type)
 						target_type = saved_roof_area_type(base.vars["climate"])
 						if(!ispath(target_type, /area)) throw EXCEPTION("Unsupported saved roof climate")
@@ -91,7 +90,7 @@
 						// turf's area. Preserve that saved field without treating it
 						// as evidence for a transformation which did not occur.
 						unique_saved_roof_area(current_type)
-					var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "unroofed" = underlying_type, "area" = target_type, "switch" = switch_value["value"])
+					var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "unroofed" = underlying_type, "area" = target_type, "switch" = switch_value)
 					validated_roof_areas[key] = row
 					validated_roof_entries["[z]:[child]"] = row
 					if(target_type) validated_roof_types["[target_type]"] = target_type
@@ -381,9 +380,24 @@
 	catch(var/exception/e)
 		throw e
 
+// Value format 2 stores a scalar list as one node; returns it once validated,
+// or null when the list uses the per-edge layout.
+/map_storage/proc/saved_scalar_list(savefile/LF, id)
+	var/list/node = LF["/lists/[id]"]
+	if(isnull(node)) return null
+	var/count = node["length"]
+	var/list/keys = node["keys"]
+	var/list/values = node["values"]
+	if(node["kind"] != "scalars" || !isnum(count) || count < 0 || count != round(count) || !islist(keys) || !islist(values) || keys.len != count || values.len != count)
+		throw EXCEPTION("Missing or invalid saved list [id]")
+	for(var/i = 1, i <= count, i++)
+		if(!persistence_default_scalar(keys[i]) || !persistence_default_scalar(values[i]))
+			throw EXCEPTION("Invalid saved scalar list [id]")
+	return node
+
 /map_storage/proc/decode_saved_value(savefile/F, list/value)
 	if(!islist(value))
-		throw EXCEPTION("Invalid typed saved value")
+		return persistence_saved_scalar(value)
 	switch(value["kind"])
 		if("map")
 			return map
@@ -416,6 +430,18 @@
 			loaded_lists["[id]"] = L
 			var/savefile/LF = level_list_file(F, id)
 			var/length = LF["/lists/[id]/length"]
+			if(isnull(length))
+				var/list/node = saved_scalar_list(LF, id)
+				if(!node) throw EXCEPTION("Missing or invalid saved list [id]")
+				var/list/keys = node["keys"]
+				var/list/values = node["values"]
+				L.len = keys.len
+				for(var/i = 1, i <= keys.len, i++)
+					var/key = keys[i]
+					L[i] = key
+					if(!isnum(key) && !isnull(key) && !isnull(values[i]))
+						L[key] = values[i]
+				return L
 			for(var/i = 1, i <= length, i++)
 				var/encoded_key = LF["/lists/[id]/[i]/key"]
 				var/encoded_value = LF["/lists/[id]/[i]/value"]
@@ -742,7 +768,8 @@
 
 /map_storage/proc/validate_saved_value(savefile/F, list/value, list/entries, list/visited)
 	if(!islist(value))
-		throw EXCEPTION("Invalid typed saved value")
+		persistence_saved_scalar(value) // Value format 2 raw scalar; rejects anything else.
+		return TRUE
 	switch(value["kind"])
 		if("map")
 			return TRUE
@@ -776,6 +803,8 @@
 			visited["[id]"] = TRUE
 			var/savefile/LF = level_list_file(F, id)
 			var/length = LF["/lists/[id]/length"]
+			if(isnull(length) && saved_scalar_list(LF, id))
+				return TRUE
 			if(!isnum(length) || length < 0 || length != round(length))
 				throw EXCEPTION("Missing or invalid saved list [id]")
 			for(var/i = 1, i <= length, i++)

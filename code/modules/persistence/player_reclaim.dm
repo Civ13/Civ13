@@ -147,9 +147,9 @@ var/global/list/persistence_player_claims = list()
 	var/value = F["[entry_path(F, ref)]/persistence_owner_ckey"]
 	if(isnull(value)) return
 	if((F["/format_version"] == 2 || F["/format_version"] == 3))
-		if(!islist(value) || value["kind"] != "value")
+		value = persistence_saved_scalar(value)
+		if(islist(value))
 			throw EXCEPTION("Invalid saved player ownership encoding")
-		value = value["value"]
 	if(isnull(value)) return
 	if(!istext(value) || !length(value) || ckey(value) != value || persistence_guest_account(value) || owners[value])
 		throw EXCEPTION("Invalid or duplicate saved player ownership")

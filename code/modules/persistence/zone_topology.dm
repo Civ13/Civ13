@@ -399,16 +399,16 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 	var/path = entry_path(F, child)
 	F.cd = path
 	if(!("switch_area" in F.dir) || !("current_area_type" in F.dir)) throw EXCEPTION("Missing saved roof settings")
-	var/list/switch_value = F["switch_area"]
-	var/list/base_value = F["current_area_type"]
-	if(!islist(switch_value) || switch_value["kind"] != "value" || !(switch_value["value"] in list(TRUE, FALSE)) || !isnum(switch_value["value"]) || !islist(base_value) || base_value["kind"] != "value" || !ispath(base_value["value"], /area)) throw EXCEPTION("Invalid zone roof settings")
+	var/switch_value = persistence_saved_scalar(F["switch_area"])
+	var/base_value = persistence_saved_scalar(F["current_area_type"])
+	if(!isnum(switch_value) || !(switch_value in list(TRUE, FALSE)) || !ispath(base_value, /area)) throw EXCEPTION("Invalid zone roof settings")
 	var/id = saved_zone_id(x, y, z)
 	var/list/zone = validated_zones[id]
-	if(switch_value["value"])
-		var/list/base = unique_saved_zone_type(base_value["value"])
+	if(switch_value)
+		var/list/base = unique_saved_zone_type(base_value)
 		var/list/fields = base["fields"]
 		if(zone["type"] != "[saved_roof_area_type(fields["climate"])]") throw EXCEPTION("Roof differs from saved zone")
-	var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_value["value"], "unroofed" = text2path(zone["type"]), "area" = null, "switch" = switch_value["value"], "zone" = id)
+	var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_value, "unroofed" = text2path(zone["type"]), "area" = null, "switch" = switch_value, "zone" = id)
 	validated_roof_areas["[x],[y],[z]"] = row
 	validated_roof_entries["[z]:[child]"] = row
 
