@@ -483,6 +483,12 @@
 		return
 
 	loc_temp = get_temp(src)
+	// Barren ground (space settlement) imposes its own air and temperature.
+	var/turf/exposure_turf = get_turf(src)
+	var/outside_c = outside_temperature_c(exposure_turf)
+	if (!isnull(outside_c))
+		loc_temp = outside_c
+	outside_exposure_step(exposure_turf)
 	cold_wetness = min(1, max(0, cold_wetness))
 	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.

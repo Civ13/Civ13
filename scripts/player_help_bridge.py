@@ -66,7 +66,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '99b8671ef1e2654e61bd74e61116c41507039f83'
+WIKI_REVIEWED_REVISION = 'a97e44ad15250664bcfbbb5220f5984594e6509e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
@@ -87,7 +87,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Ranching.md': ('379d90a29eb22e7c78803c1bc64cde1dddedc48a1109774bf871e4748c0b56f7', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('5c27e2104c93b4345782985060097ecf3e79bab7db71f20bc8633cc6dd6455d8', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('e2e31896df6e13d9c583c90f3b0c2088dcf735d35508bf124c9d4bd3dc70e6fa', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Resource_Extraction.md': ('8cc5fa4c63e62658b5be0f3bc64e66bbf3ab87cc6b61e56b8a78b770606cf3cf', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('d588af9a712f059f18f48202fdf9421c9dd7ebd7c27fab0ad63a211a095fc5fa', 'survival winter cold warm freezing hypothermia shelter debris'),
     'guides/Guide_to_Tanks.md': ('8c01b76dd7d41b22ccb94a9f1817ec20dd4583f5e428c137dee2bd7eecada1ac', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f53b8e81f94789c5b607bda6d65f00b597c71dda3e3628557f4d2494aec0a53b', 'train trains railway track locomotive station switcher rails wagon'),

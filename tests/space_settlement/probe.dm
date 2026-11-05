@@ -39,10 +39,12 @@ var/space_runtime_error = FALSE
 	space_check(!(new /datum/habitat_ledger(10)).breathable(), "an empty module is not breathable")
 	space_check((new /datum/habitat_ledger(0)).volume == 1 && (new /datum/habitat_ledger(1e9)).volume == HABITAT_MAX_VOLUME, "volume is clamped")
 
-	// Nobody inside: nothing ticks, not even leaks or cooling.
+	// Nobody inside: no breathing, but breaches still vent and the module still cools.
 	var/list/before = L.to_list()
-	space_check(!L.advance(10, 0, 5, -60) && json_encode(L.to_list()) == json_encode(before), "an empty module never ticks")
 	space_check(!L.advance(0, 1) && !L.advance(-5, 1) && json_encode(L.to_list()) == json_encode(before), "zero or negative time changes nothing")
+	var/datum/habitat_ledger/E = space_room()
+	space_check(E.advance(10, 0) && json_encode(E.to_list()) == json_encode(before), "an empty sealed module at the same temperature keeps its air")
+	space_check(E.advance(10, 0, 2, -60) && E.pressure_kpa() < 100 && E.co2 == 0 && E.temperature < 20, "an empty breached module still vents and cools")
 
 	// Breathing turns oxygen into CO2 and conserves gas.
 	var/total = L.oxygen + L.co2 + L.inert
@@ -164,9 +166,33 @@ var/space_runtime_error = FALSE
 /mob/living/human/space_probe_crew/adjustOxyLoss(amount)
 	oxyloss += amount
 
+// The fixture has no clients; the test says whether the world counts as awake.
+/datum/flooding_controller/space_probe_test
+	var/world_awake = TRUE
+/datum/flooding_controller/space_probe_test/air_may_tick()
+	return world_awake
+
+// Outside exposure: humans read the two turf hooks from their own life tick.
+/proc/space_exposure_checks()
+	var/turf/R = locate(2, 3, 1)
+	R = R.ChangeTurf(/turf/floor/dirt/dust/regolith, FALSE, FALSE)
+	var/turf/D = locate(3, 3, 1)
+	D = D.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/mob/living/human/space_probe_crew/H = new(D)
+	space_check(isnull(H.outside_temperature_c(D)) && !H.outside_exposure_step(D) && H.oxyloss == 0, "ordinary ground keeps the climate temperature and is breathable")
+	H.loc = R
+	space_check(H.outside_temperature_c(R) == BARREN_AMBIENT_C, "regolith imposes its cold on someone standing in the open")
+	space_check(H.outside_exposure_step(R) && H.oxyloss == HABITAT_SUFFOCATE_OXYLOSS && H.losebreath >= 1, "a person without a suit on regolith cannot breathe")
+	space_check(HABITAT_SUFFOCATE_OXYLOSS > 5, "exposure outpaces the conscious oxygen recovery of 5 per life tick")
+	space_check(!H.outside_exposure_step(null) && isnull(H.outside_temperature_c(null)), "no turf means no exposure")
+	H.stat = DEAD
+	space_check(!H.outside_exposure_step(R), "the dead do not breathe")
+	H.stat = CONSCIOUS
+	H.loc = null
+
 // Submarine compartments share one ledger each instead of per-tile air.
 /proc/space_submarine_checks()
-	var/datum/flooding_controller/F = new
+	var/datum/flooding_controller/space_probe_test/F = new
 	var/list/galley = list()
 	for (var/x in 2 to 4)
 		var/turf/T = locate(x, 5, 1)
@@ -192,10 +218,17 @@ var/space_runtime_error = FALSE
 		if (findtext(name, "time"))
 			space_check(FALSE, "the controller stores no time stamp ([name])")
 
-	// Nobody aboard: the air does not tick.
+	// Nobody connected: the air does not tick. Players connected, nobody aboard:
+	// a breached compartment still loses air.
 	var/before = json_encode(G.to_list())
+	F.world_awake = FALSE
 	F.air_tick(1, list(), list(SUB_COMP_GALLEY = 1))
-	space_check(json_encode(G.to_list()) == before, "an empty compartment's air does not tick, even with a breach")
+	space_check(json_encode(G.to_list()) == before, "an empty world's air does not tick, even with a breach")
+	F.world_awake = TRUE
+	F.air_tick(1, list(), list(SUB_COMP_GALLEY = 1))
+	space_check(G.pressure_kpa() < 100 && G.co2 == 0, "a breached compartment leaks while players are in the world, even with nobody aboard")
+	G.oxygen = 21 * 3
+	G.inert = 79 * 3
 
 	// Water shrinks the air pocket without destroying gas.
 	var/total = G.oxygen + G.co2 + G.inert
@@ -259,6 +292,7 @@ var/space_runtime_error = FALSE
 		space_save_checks()
 		space_turf_checks()
 		space_submarine_checks()
+		space_exposure_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

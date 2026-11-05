@@ -47,6 +47,11 @@
 			client = asked.client
 
 	var/client/C = client
+	// A plain notice opens a non-modal modern window when this client's browser
+	// supports it, and the player keeps moving. Otherwise it is BYOND's alert().
+	if (!toc1 && !toc2 && wwinput_prompt_notice(C, message, title))
+		return TRUE
+
 	if (C)
 		C.stopmovingup()
 		C.stopmovingdown()
