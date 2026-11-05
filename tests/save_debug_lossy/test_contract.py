@@ -93,7 +93,7 @@ class DebugLossySourceContracts(unittest.TestCase):
         self.saving = read('code/modules/persistence/saving.dm')
         self.admin = read('code/modules/persistence/admin.dm')
     def test_strict_default_and_explicit_admin_mode(self):
-        self.assertIn('/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy)', self.functions)
+        self.assertIn('/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy, shutdown = FALSE)', self.functions)
         self.assertIn('if(debug_policy)', body(self.functions, '/datum/controller/gameticker/proc/savemap('))
         self.assertIn('check_rights(R_SERVER, TRUE, requester)', self.admin)
         self.assertIn('Save Map (Debug Lossy)', self.admin)
