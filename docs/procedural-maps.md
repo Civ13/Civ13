@@ -115,14 +115,14 @@ python3 -m tools.procedural_maps playable data/procedural_maps/demo --out data/p
 
 It writes the DMM and `<name>.playable.json` (bundle and output hashes, starts,
 ladder pairs and supply counts). The native supply layer
-(`civ13-native-supplies/1`, `tools/procedural_maps/playable.py`) is
+(`civ13-native-supplies/2`, `tools/procedural_maps/playable.py`) is
 deterministic from the IR seed and coordinates:
 
 | Source | Native result |
 | --- | --- |
 | STONE site | flint rock (`/obj/structure/wild/rock`) |
-| WOOD site | tree for the biome (broadleaf, pine on arid, palm on coast); dead tree in caverns |
-| FOOD site | small bush (jungle bush on coast); about a third also get a turkey or boar spawner; mushroom spores in caverns |
+| WOOD site | tree for the biome (broadleaf, pine on arid, palm on coast); dead tree in caverns (does not block passage) |
+| FOOD site | berry bush that starts stocked and regrows; about a third also get a turkey or boar spawner; mushroom spores in caverns |
 | Open grass | about 3% tall grass and 3% small bushes |
 | Water | a few fish (fresh water more than sea) |
 | Cavern floor | open dirt instead of solid rock; some fungus cells get mushrooms |

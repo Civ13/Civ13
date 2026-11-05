@@ -6,7 +6,7 @@ This module adds one deterministic native supply layer on top of that layout
 and writes a separate DMM, so the bundle contract and its pinned hashes stay
 unchanged:
 
-- STONE sites become flint rocks, WOOD sites trees, FOOD sites forage bushes,
+- STONE sites become flint rocks, WOOD sites trees, FOOD sites berry bushes,
   and about a third of surface FOOD sites also get a small game spawner.
 - Open ground gets tall grass (twine) and small bushes (seeds); some water gets
   fish.
@@ -29,13 +29,17 @@ from .io import read_json
 from .repo_source import read_source
 from .source_audit import parse_classic
 
-SUPPLY_VERSION = "civ13-native-supplies/1"
+SUPPLY_VERSION = "civ13-native-supplies/2"
 ROCK = "/obj/structure/wild/rock"
 BUSH = "/obj/structure/wild/smallbush"
-JUNGLE_BUSH = "/obj/structure/wild/junglebush"
+# Stocked forage: starts with berries and regrows them (berries.dm).
+BERRY_BUSH = "/obj/structure/wild/berrybush/tinto"
 TALL_GRASS = "/obj/structure/wild/tallgrass"
 FISH = "/obj/structure/fish"
-DEAD_TREE = "/obj/structure/wild/burnedtree"
+# Drops wood when chopped. Cave WOOD sites can sit in narrow passages, so the
+# placed tree neither blocks movement nor sight.
+DEAD_TREE = "/obj/structure/wild/tree/dead_tree"
+DEAD_TREE_ATOM = DEAD_TREE + "{density = 0; opacity = 0}"
 MUSHROOM_SEEDS = "/obj/item/stack/farming/seeds/mushroom"
 MUSHROOM = "/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom"
 TURKEYS = "/obj/effect/spawner/mobspawner/turkeys"
@@ -54,7 +58,7 @@ BROADLEAF = "/obj/structure/wild/tree/live_tree"
 SOURCES = {
     ROCK: "code/game/objects/structures/rocks.dm",
     BUSH: "code/game/objects/structures/wild.dm",
-    JUNGLE_BUSH: "code/game/objects/structures/wild.dm",
+    BERRY_BUSH: "code/game/objects/structures/berries.dm",
     TALL_GRASS: "code/game/objects/structures/wild.dm",
     DEAD_TREE: "code/game/objects/structures/wild.dm",
     BROADLEAF: "code/game/objects/structures/wild.dm",
@@ -108,7 +112,7 @@ def surface_supply(c, value, game):
     if c["resource"] == "WOOD":
         return [TREE_BY_BIOME.get(c["biome"], BROADLEAF)]
     if c["resource"] == "FOOD":
-        atoms = [JUNGLE_BUSH if c["biome"] == "COAST" else BUSH]
+        atoms = [BERRY_BUSH]
         if game < GAME_SHARE:
             atoms.append(BOARS if c["biome"] in {"STEPPE", "ARID"} else TURKEYS)
         return atoms
@@ -129,7 +133,7 @@ def cavern_supply(c, value):
     if c["resource"] == "STONE":
         return [ROCK]
     if c["resource"] == "WOOD":
-        return [DEAD_TREE]
+        return [DEAD_TREE_ATOM]
     if c["resource"] == "FOOD":
         return [MUSHROOM_SEEDS]
     return []
@@ -140,6 +144,9 @@ def playable_layout(doc):
     starts = {tuple(p) for p in doc["starts"]}
     portals = {}
     for pair in doc.get("portals", []):
+        # Ladders pair by an id taken from the coordinates, so both ends must line up.
+        if pair["a"][:2] != pair["b"][:2]:
+            raise ValueError("PLAYABLE_PORTAL_ALIGNMENT")
         for end in (pair["a"], pair["b"]):
             portals[(end[0], end[1], end[2])] = pair
     counts = {}

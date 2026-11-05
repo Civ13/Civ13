@@ -104,6 +104,31 @@ class PlayableLayerTests(unittest.TestCase):
         self.assertEqual(len(doc["portals"]), self.built["cavern"][1]["ladder_pairs"])
         self.assertGreater(len(doc["portals"]), 0)
 
+    def test_food_sites_give_food_and_cave_trees_give_wood(self):
+        doc, parsed = self.docs["surface"], self.layout("surface")
+        food = [(x, y) for y, row in enumerate(doc["layers"]["SURFACE"]["cells"]) for x, c in enumerate(row)
+                if c["resource"] == "FOOD" and c["water"] == "NONE" and not c["blocked"] and c["tree"] == "NONE"
+                and c["terrain"] not in {"MOUNTAIN", "ROCK"} and [x, y, "SURFACE"] not in doc["starts"]]
+        self.assertTrue(food)
+        for x, y in food:
+            self.assertTrue(parsed[(x + 1, y + 1, 2)].startswith(playable.BERRY_BUSH + ","))
+        # Coastal FOOD sites too: the jungle bush gives herbs, not food.
+        self.assertEqual([playable.BERRY_BUSH], playable.surface_supply(
+            {"water": "NONE", "terrain": "BEACH", "blocked": False, "tree": "NONE",
+             "resource": "FOOD", "biome": "COAST", "soil": "SAND"}, 0.5, 0.9))
+        wood = playable.cavern_supply({"terrain": "CAVE_FLOOR", "water": "NONE", "tree": "NONE", "resource": "WOOD"}, 0.5)
+        self.assertEqual([playable.DEAD_TREE_ATOM], wood)
+        self.assertEqual("/obj/structure/wild/tree/dead_tree", playable.DEAD_TREE)
+        self.assertIn("density = 0", wood[0])
+
+    def test_misaligned_portal_pair_is_refused(self):
+        doc = dict(self.docs["cavern"])
+        pair = doc["portals"][0]
+        moved = dict(pair, b=[pair["b"][0] + 1] + list(pair["b"][1:]))
+        doc["portals"] = [moved] + doc["portals"][1:]
+        with self.assertRaisesRegex(ValueError, "PLAYABLE_PORTAL_ALIGNMENT"):
+            playable.playable_layout(doc)
+
     def test_water_and_blocked_cells_get_no_land_supplies(self):
         for name, doc in self.docs.items():
             parsed = self.layout(name)
