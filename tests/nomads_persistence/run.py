@@ -78,9 +78,9 @@ def main():
             assert module.count(anchor) == 1
             module = module.replace(anchor, '', 1)
         elif args.negative_control == 'fire-boundary':
-            anchor = ' || map.durable_nomads_transients_active()'
+            anchor = 'durable_world_transition(map.durable_nomads_transients_active())'
             assert module.count(anchor) == 2
-            module = module.replace(anchor, '', 1)
+            module = module.replace(anchor, 'durable_world_transition(FALSE)', 1)
         elif args.negative_control == 'late-fire':
             anchor = '\tif(world_state)\n\t\ttry\n\t\t\trequire_durable_world_idle()'
             assert module.count(anchor) == 1

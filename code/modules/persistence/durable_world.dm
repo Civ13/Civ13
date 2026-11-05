@@ -16,7 +16,7 @@
 	durable_export = null
 	if(!map.uses_durable_metadata()) return null
 	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before saving")
-	var/transition = durable_world_transition()
+	var/transition = durable_world_transition(map.durable_nomads_transients_active())
 	if(transition)
 		throw EXCEPTION("World metadata is transitioning ([transition]); retry saving after it settles")
 	if(!processes.time_of_day || !processes.weather)
@@ -172,7 +172,7 @@
 
 // What keeps world metadata from being captured or replaced, or null when idle.
 // Names every blocker so admins can tell a short wait from a stuck one.
-/map_storage/proc/durable_world_transition()
+/map_storage/proc/durable_world_transition(transients)
 	var/list/reasons = list()
 	if(map.season_busy) reasons += "season change"
 	if(map.season_queue.len) reasons += "queued season change"
@@ -180,17 +180,17 @@
 	else if(map.nomads_event_busy) reasons += "world event starting or ending"
 	if(map.nomads_recovery_required) reasons += "world event recovery required"
 	if(map.durable_nomads_lava_active()) reasons += "spreading or drying lava"
-	if(nomads_fire_callbacks.len)
+	// Callers pass the transient check so each boundary owns its own guard.
+	if(transients)
 		var/failed = 0
 		for(var/datum/nomads_fire_callback/C in nomads_fire_callbacks)
 			if(C.failed) failed++
-		reasons += "[nomads_fire_callbacks.len] fire callback\s[failed ? ", [failed] failed and stuck" : ""]"
-	var/process/explosion/P = processes.explosion
-	if(P && (P.nomads_work_active || P.nomads_work_failed || length(P.work_queue) || (processes.callproc && length(processes.callproc.by_object[P]))))
-		reasons += P.nomads_work_failed ? "failed explosion work" : "explosion work"
+		if(nomads_fire_callbacks.len) reasons += "[nomads_fire_callbacks.len] fire callback\s[failed ? ", [failed] failed and stuck" : ""]"
+		var/process/explosion/P = processes.explosion
+		if(P && P.nomads_work_failed) reasons += "failed explosion work"
+		else if(!nomads_fire_callbacks.len) reasons += "explosion work"
 	if(environment_weather_running) reasons += "weather sweep"
 	if(processes.time_of_day_change && processes.time_of_day_change.updating_lighting) reasons += "time-of-day lighting update"
-	if(!reasons.len && map.durable_nomads_transients_active()) reasons += "world transients"
 	return reasons.len ? jointext(reasons, ", ") : null
 
 // Read-only rejection before player ownership or timer state is changed.
@@ -198,7 +198,7 @@
 	// A legacy incoming generation does not make active current-world work safe.
 	if(!durable_state && !map.uses_durable_metadata()) return
 	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before loading")
-	var/transition = durable_world_transition()
+	var/transition = durable_world_transition(map.durable_nomads_transients_active())
 	if(transition)
 		throw EXCEPTION("World metadata is transitioning ([transition]); retry loading after it settles")
 
