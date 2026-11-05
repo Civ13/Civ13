@@ -888,5 +888,71 @@ class TechTreeTest(unittest.TestCase):
         self.assertEqual(autopilot.carried({"left_hand": {"name": "bone"}, "right_hand": None}), ["bone"])
 
 
+class CharacterMemoryTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from memory import CharacterMemory
+        self.dir = tempfile.mkdtemp()
+        self.Memory = CharacterMemory
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def observation(self, x=100, y=100, nearby=(), terrain=()):
+        return {"self": {"name": "Ada", "x": x, "y": y, "z": 2}, "nearby": list(nearby), "terrain": list(terrain), "messages": []}
+
+    def test_places_people_and_home_survive_a_restart(self):
+        memory = self.Memory.load("Ada", self.dir)
+        bob = {"name": "Bob", "mob": True, "stat": 0, "type": "/mob/living/human", "dx": 1, "dy": 0}
+        water = {"name": "river", "dx": 5, "dy": 0}
+        memory.observe(self.observation(nearby=[bob], terrain=[water]), speech=[("Bob", 'Bob says, "hello there"')])
+        memory.set_home(100, 100, 2, "campfire")
+        memory.remember("I promised Bob five logs")
+        memory.save()
+        again = self.Memory.load("Ada", self.dir)
+        self.assertEqual(again.data["home"]["why"], "campfire")
+        self.assertEqual(again.data["places"]["clean water"][0]["x"], 105)
+        self.assertEqual(again.data["people"]["Bob"]["they_said"], ['Bob says, "hello there"'])
+        text = again.recall(self.observation(x=120, y=100, nearby=[bob]))
+        self.assertIn("Home (campfire): 20 tiles west", text)
+        self.assertIn("Known clean water: river 15 tiles west", text)
+        self.assertIn("Bob: acquaintance, met 1 time(s)", text)
+        self.assertIn("I promised Bob five logs", text)
+
+    def test_attacks_make_a_person_hostile_but_animals_are_not_people(self):
+        memory = self.Memory.load("Ada", self.dir)
+        bob = {"name": "Bob", "mob": True, "stat": 0, "type": "/mob/living/human", "dx": 1, "dy": 0}
+        wolf = {"name": "wolf", "mob": True, "stat": 0, "type": "/mob/living/simple_animal/hostile/wolf", "dx": 0, "dy": 1}
+        memory.observe(self.observation(nearby=[bob, wolf]), attackers=["bob", "wolf"])
+        self.assertEqual(memory.data["people"]["Bob"]["trust"], -3)
+        self.assertNotIn("wolf", memory.data["people"])
+        self.assertIn("Bob: hostile", memory.recall(self.observation(nearby=[bob])))
+
+    def test_unclean_water_is_kept_apart_and_files_are_written_atomically(self):
+        memory = self.Memory.load("../evil name", self.dir)
+        self.assertEqual(memory.path.parent, Path(self.dir))  # the name cannot leave the memory folder
+        memory.observe(self.observation(terrain=[{"name": "river", "dx": 3, "dy": 3, "sickness": 1}]))
+        self.assertIn("unclean water", memory.data["places"])
+        self.assertNotIn("clean water", memory.data["places"])
+        memory.save()
+        self.assertFalse(memory.path.with_suffix(".tmp").exists())
+        self.assertTrue(memory.path.exists())
+
+    def test_replies_keep_facts_and_results_set_a_home(self):
+        self.assertEqual(autopilot.parse_remember('{"plan": [], "remember": "Bob owes me a spear"}'), "Bob owes me a spear")
+        self.assertEqual(autopilot.parse_remember('{"plan": []}'), "")
+        memory = self.Memory.load("Ada", self.dir)
+        autopilot.remember_results(memory, [{"do": "craft", "recipe": "campfire"}], "craft ok", {"x": 5, "y": 6, "z": 2})
+        self.assertEqual(memory.data["home"], {"x": 5, "y": 6, "z": 2, "why": "campfire"})
+        autopilot.remember_results(memory, [{"do": "craft", "recipe": "bed"}], "craft failed", {"x": 9, "y": 9, "z": 2})
+        self.assertEqual(memory.data["home"]["x"], 5)
+        self.assertIn("made campfire at (5,6)", [e["text"] for e in memory.data["events"]])
+
+    def test_attackers_of_reads_combat_lines_not_speech(self):
+        observation = {"self": {"name": "Ada"}, "messages": [{"text": "Bob hits Ada with a spear!"}, {"text": 'Carl says, "I hit Ada yesterday"'}]}
+        self.assertEqual(autopilot.attackers_of(observation), ["bob"])
+
+
 if __name__ == "__main__":
     unittest.main()

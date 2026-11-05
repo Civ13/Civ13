@@ -229,6 +229,38 @@ the window. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
 
+Recipe book (`techtree.py`): the autopilot plans crafting from the game's own
+recipes rather than trial and error. On first use it builds
+`data/agent-control/game-catalog.json` with
+`scripts/build-crafting-atlas.py --catalog-only`, and rebuilds it when
+`config/crafting/` changes. It reads the global material list (nomad maps), the
+processing routes (smelting, tanning, rope making) and a few hand-checked
+blacksmithing routes. For a ladder goal (pickaxe, smelting, armor, metal tools,
+furniture) a `HOW` line shows the cheapest route: basics are gathered, hand
+tools (a sharp tool, a container) are only named, and parts already carried are
+skipped. The model can ask `{"do": "recipe", "item": "..."}` at any time, which
+takes no game time. `--catalog PATH` uses another catalog, and `--catalog none`
+turns the book off. `python tools/agent-control/techtree.py "iron ingot"` prints
+a plan.
+
+Memory (`memory.py`): each character keeps a small JSON file in
+`data/agent-control/memory/`, named after the character. The file holds:
+
+- home, set by the first campfire or bed the character makes;
+- places worth finding again: clean and unclean water, ore, clay, rock and fires;
+- the people it has met, with how often, their last few lines, its answers,
+  and a trust level (talk raises it slowly, an attack drops it);
+- facts the model asked to keep (`"remember"` in a reply, such as a promise);
+- a short event log.
+
+Every prompt includes a `MEMORY` slice of the file: the way home, the nearest
+known places that are not already in view, the people in view, kept facts and
+recent events. People are remembered by the name the character sees. The file
+stores no ckeys or account data, stays on the host, and is only sent to the
+local model. Player lines are stored as game text and stay inside the untrusted
+observation. To reset a character, delete its file. `--memory DIR` moves the
+folder, and `--memory none` turns memory off.
+
 ## Tests
 
 ```text

@@ -24,6 +24,7 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
 import techtree  # noqa: E402
+from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 SKILLS = {
@@ -76,7 +77,10 @@ TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick"
 
 SYSTEM = """You control one character in Civ13, a multiplayer survival and civilization game. Play it like a real player.
 Reply with one JSON object and nothing else:
-{"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words"}
+{"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words",
+ "remember": "optional: a lasting fact to keep for days, like a promise you made or where you hid something"}
+MEMORY in the observation is what you remember from before: your home, places you found, and the people you know.
+Be warm to friends, keep your promises, and be careful around people who hurt you.
 Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent and hand for you, then clicks the target:
  find_flint (a rock: search it for flint), sharpen_flint (a rock: hit it with your flint until sharp),
  break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a cleared branch: strip it into a stick),
@@ -263,8 +267,8 @@ def target_rows(observation):
     return rows
 
 
-def danger(observation, previous=None):
-    """A first-line warning when something is attacking the character, or ""."""
+def attackers_of(observation):
+    """Names of whoever the game says is hitting the character, oldest first."""
     me = observation.get("self", {})
     own = str(me.get("name") or "").lower()
     attackers = []
@@ -276,6 +280,13 @@ def danger(observation, previous=None):
             marker = f" {word} "
             if own and marker in lowered and own in lowered.split(marker, 1)[1][:len(own) + 4]:
                 attackers.append(lowered.split(marker, 1)[0].strip().removeprefix("the ")[-40:])
+    return attackers
+
+
+def danger(observation, previous=None):
+    """A first-line warning when something is attacking the character, or ""."""
+    me = observation.get("self", {})
+    attackers = attackers_of(observation)
     hurt = previous is not None and isinstance(previous.get("health"), (int, float)) and isinstance(me.get("health"), (int, float)) and me["health"] <= previous["health"] - 5
     if not attackers and not hurt:
         return ""
@@ -1230,6 +1241,7 @@ def main(argv=None):
     # Matching Player Help's num_ctx keeps Ollama from reloading the shared model between the two.
     parser.add_argument("--num-ctx", type=int, default=_int(defaults.get("num_ctx"), 8192))
     parser.add_argument("--timeout", type=float, default=max(120.0, _float(defaults.get("timeout_seconds"), 0.0)), help="seconds to wait for each model reply")
+    parser.add_argument("--memory", default="", help='folder for the character\'s long-term memory (default data/agent-control/memory; "none" turns it off)')
     parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
@@ -1345,6 +1357,7 @@ def _run(client, args, character, token, model_pool):
     muted = set()
     replied = {}  # speaker -> monotonic time of the last answer to them
     asked_recently = {}  # recipe-book item -> step it was last looked up
+    memory = None  # loaded once the character's name is known
     tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
@@ -1358,9 +1371,17 @@ def _run(client, args, character, token, model_pool):
         observation = reply["result"]
         since = observation.get("last_message", since)
         self_state = observation.get("self", {})
+        if memory is None and getattr(args, "memory", "") != "none" and self_state.get("name"):
+            memory = CharacterMemory.load(self_state["name"], args.memory or None)
+            print(f"  memory: {memory.path} ({len(memory.data['people'])} people, {len(memory.data['events'])} events)")
         if self_state.get("stat") not in (None, 0):
             print(f"step {step}: {self_state.get('name')} is {'dead' if self_state.get('stat') == 2 else 'unconscious'}; stopping")
+            if memory is not None:
+                memory.event("died" if self_state.get("stat") == 2 else "fell unconscious")
+                memory.save()
             break
+        if memory is not None:
+            memory.observe(observation, speech_lines(observation.get("messages", []), self_state.get("name")), attackers_of(observation))
         alarm = danger(observation, previous_self)
         if alarm:
             print(f"  {alarm}")
@@ -1399,7 +1420,9 @@ def _run(client, args, character, token, model_pool):
         goal, after = current_goal(observation)
         item = goal_item(goal) if tree else ""
         how = tree.describe(item, carried(self_state), limit=4) if item else ""
-        text = f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "") + text
+        recalled = memory.recall(observation) if memory is not None else ""
+        text = (f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "")
+                + text + (f"\nMEMORY:\n{recalled}" if recalled else ""))
         prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
         forget_old(history, signatures, target_turns, seen_lines)
@@ -1431,6 +1454,9 @@ def _run(client, args, character, token, model_pool):
             time.sleep(args.interval)
             continue
         note = parse_note(answer) or note
+        fact = parse_remember(answer)
+        if fact and memory is not None:
+            memory.remember(fact)
         asked = recipe_request(answer)
         if asked:
             if asked_recently.get(asked.lower(), -99) > step - 10:
@@ -1486,6 +1512,10 @@ def _run(client, args, character, token, model_pool):
             if "say ok" in summary:
                 for who in speakers:
                     replied[who] = time.monotonic()  # only an answer that was actually said counts
+                spoken = next((item.get("text", "") for item in plan if item.get("do") == "say"), "")
+                if memory is not None and speakers and spoken:
+                    memory.said(speakers, spoken)
+            remember_results(memory, plan, summary, self_state)
             if "explore failed" in summary or "explore ok (walked 0" in summary:
                 explore_dir = {"north": "east", "east": "south", "south": "west", "west": "north"}[explore_dir]
             word = next((COLLECT_AFTER[item["skill"]] for item in plan if item.get("skill") in COLLECT_AFTER), None)
@@ -1498,7 +1528,11 @@ def _run(client, args, character, token, model_pool):
             problem = plan_problem(answer, refs)
             if problem:
                 feedback += f"\nA later step was skipped: {problem}."
+        if memory is not None:
+            memory.save()
         time.sleep(args.interval)
+    if memory is not None:
+        memory.save()
     return 0
 
 
@@ -1515,6 +1549,33 @@ def forget_old(history, signatures, target_turns, seen_lines):
     if len(seen_lines) > LINES_KEEP:
         for key in list(seen_lines)[:len(seen_lines) - LINES_KEEP]:
             del seen_lines[key]
+
+
+def parse_remember(text):
+    """The lasting fact a reply asked to keep, or ""."""
+    try:
+        data = json.loads(text)
+    except (TypeError, ValueError):
+        return ""
+    fact = data.get("remember") if isinstance(data, dict) else None
+    return str(fact).strip()[:120] if isinstance(fact, str) and fact.strip() else ""
+
+
+HOME_RECIPES = ("campfire", "bed")
+
+
+def remember_results(memory, plan, summary, self_state):
+    """Log what a plan made, and make the first campfire or bed home."""
+    if memory is None or "failed" in summary or "not possible" in summary:
+        return
+    for item in plan:
+        made = item.get("recipe") if item.get("do") in ("craft", "build") else None
+        if made:
+            memory.event(f"made {made} at ({self_state.get('x')},{self_state.get('y')})")
+            if not memory.data.get("home") and any(word in made.lower() for word in HOME_RECIPES):
+                memory.set_home(self_state.get("x"), self_state.get("y"), self_state.get("z"), made)
+        elif item.get("skill") in ("butcher", "bind_axe", "mine", "cook", "dig_down"):
+            memory.event(f"did {item['skill']} at ({self_state.get('x')},{self_state.get('y')})")
 
 
 def parse_note(text):
