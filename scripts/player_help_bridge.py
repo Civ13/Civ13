@@ -566,7 +566,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6c091a41175256b3caf0286ff4251dfa2cdb07fba5202cc762975c1bb71c3909'),
     ('code/modules/organs/organ_external.dm',
      '/obj/item/organ/external/proc/update_germs()', '/obj/item/organ/external/proc/update_wounds()',
-     '5ebcfe7c87af0431192995681036abf6f280604f83a1d76a97acb2b29d84a0ca'),
+     'f7bb5d5311c9b438550409ec84a0de519af52e455f7a5ffea5806542a259cdde'),
 )
 TOXIN_QUESTION = re.compile(r'\b(?:poison(?:ing|ed|s)?|toxin(?:s)?|toxic(?:ity)?|toxloss)\b', re.I)
 
