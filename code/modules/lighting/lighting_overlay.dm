@@ -19,7 +19,9 @@
 
 	var/needs_update = FALSE
 	var/TOD = "Midday"
-	var/list/last_color
+	// The committed matrix lives in the shared appearance (color); a private
+	// last_color copy per overlay cost about 500 bytes times ~350k Gaia turfs.
+	var/tmp/color_committed = FALSE
 	var/last_luminosity
 
 /atom/movable/lighting_overlay/pre_bullet_act(var/obj/item/projectile/P)
@@ -146,7 +148,8 @@
 
 	var/new_luminosity = (anylums > 0)
 
-	// Check against last values for early return
+	// Check against last values for early return (the committed matrix in color)
+	var/list/last_color = color_committed ? color : null
 	if (last_color && islist(last_color) && last_luminosity == new_luminosity)
 		var/identical = TRUE
 		if (L.len != last_color.len)
@@ -165,7 +168,7 @@
 	root_tree_light_changed(loc)
 	#endif
 	// Update last values and apply changes
-	last_color = L.Copy()
 	last_luminosity = new_luminosity
 	color = L.Copy()
+	color_committed = TRUE
 	luminosity = new_luminosity

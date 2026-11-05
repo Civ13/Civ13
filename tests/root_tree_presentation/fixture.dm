@@ -75,7 +75,7 @@
 	layer = 13
 	blend_mode = BLEND_OVERLAY
 	var/needs_update = FALSE
-	var/list/last_color
+	var/tmp/color_committed = FALSE
 	var/last_luminosity
 /atom/movable/lighting_fullbright
 /datum/lighting_corner

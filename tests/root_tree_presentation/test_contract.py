@@ -105,23 +105,23 @@ def tree():
 class Snapshot(unittest.TestCase):
     def setUp(self):
         self.env=environment();self.f=compile_proc(SNAP,'/proc/root_light_mask_snapshot(','root, allow_pending=False',self.env)
-        self.root=N();self.overlay=N(loc=self.root,needs_update=False,color=Values(range(20)),last_color=Values(range(20)))
+        self.root=N();self.overlay=N(loc=self.root,needs_update=False,color=Values(range(20)),color_committed=True)
         self.root.lighting_overlay=self.overlay
     def test_distinct_owners_and_no_alias(self):
-        a=self.f(self.root);other=N();other.lighting_overlay=N(loc=other,needs_update=False,color=Values([.2]*20),last_color=Values([.2]*20))
+        a=self.f(self.root);other=N();other.lighting_overlay=N(loc=other,needs_update=False,color=Values([.2]*20),color_committed=True)
         b=self.f(other);a[1]=99;self.assertEqual(self.overlay.color[1],0);self.assertEqual(b[1],.2)
     def test_stale_foreign_pending_startup_and_nonmatrix_rejected(self):
         for case in ['foreign','pending','changed','startup','nonmatrix','short']:
             self.setUp()
             if case=='foreign':self.overlay.loc=object()
             elif case=='pending':self.overlay.needs_update=True
-            elif case=='changed':self.overlay.color[1]=.8
+            elif case=='changed':self.overlay.color_committed=False
             elif case=='startup':self.env['lighting_startup_in_progress']=True
             elif case=='nonmatrix':self.overlay.color='#ffffff'
             else:self.overlay.color=Values([1])
             self.assertIsNone(self.f(self.root),case)
     def test_committed_update_is_read_fresh(self):
-        self.overlay.color=Values([.3]*20);self.overlay.last_color=Values([.3]*20)
+        self.overlay.color=Values([.3]*20);self.overlay.color_committed=True
         self.assertEqual(self.f(self.root),[.3]*20)
     def test_missing_owner_check_control(self):
         f=compile_proc(SNAP.replace(' || owner.loc != root',''),'/proc/root_light_mask_snapshot(','root, allow_pending=False',self.env)
@@ -174,7 +174,7 @@ class LightPolicy(unittest.TestCase):
         calls=[]
         mask=N(Width=lambda:32,Height=lambda:32,MapColors=lambda *a:calls.append(a),GetPixel=lambda x,y:'#194766' if (x,y)==(16,16) else None)
         self.env['icon']=lambda *a:mask
-        self.root.lighting_overlay=N(loc=self.root,needs_update=False,color=Values(range(20)),last_color=Values(range(20)),icon='mask',icon_state='',dir=2)
+        self.root.lighting_overlay=N(loc=self.root,needs_update=False,color=Values(range(20)),color_committed=True,icon='mask',icon_state='',dir=2)
         self.assertEqual(self.f(self.root,self.viewer),'#194766')
         self.assertEqual(calls,[tuple(range(20))])
     def test_disabled_or_pending_never_reads_texture(self):
@@ -374,7 +374,7 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/mob/mob_movement.dm','/atom/movable/Move(','. = ..('),
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
-            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','last_color = L.Copy()')]:
+            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','color = L.Copy()')]:
             source=(ROOT/path).read_text();check(source,signature,write)
             mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)').replace('los_invalidate_movement(src)','removed_invalidation(src)').replace('root_tree_light_changed(loc)','removed_notification(loc)')
             with self.assertRaises(ValueError):check(mutant,signature,write)

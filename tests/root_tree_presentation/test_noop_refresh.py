@@ -89,21 +89,24 @@ class NoOpRefresh(unittest.TestCase):
         if old_invalidation:
             tail=tail.replace('\troot_tree_light_changed(loc)\n','')
             tail='\troot_tree_light_changed(loc)\n'+tail
-        code='/proc/commit_light()\n'+tail+'\treturn list(last_color, last_luminosity, color, luminosity)\n'
+        code='/proc/commit_light()\n'+tail+'\treturn list(color_committed, last_luminosity, color, luminosity)\n'
         calls=[];env=environment();env.update(root_tree_light_changed=lambda loc:calls.append(loc),loc='root')
-        f=compile_proc(code,'/proc/commit_light(','L, new_luminosity, last_color, last_luminosity',env)
+        f=compile_proc(code,'/proc/commit_light(','L, new_luminosity, color_committed, color, last_luminosity',env)
         return f,calls
 
     def test_identical_light_does_not_invalidate_but_real_commit_does(self):
         f,calls=self.commit_tail()
         old=Values([0.25]*20)
-        self.assertIsNone(f(Values(old),True,old,True));self.assertEqual(calls,[])
-        result=f(Values([0.5]*20),True,old,True)
-        self.assertEqual(calls,['root']);self.assertEqual(result[1],[0.5]*20)
-        f,calls=self.commit_tail();f(Values(old),False,old,True)
+        self.assertIsNone(f(Values(old),True,True,old,True));self.assertEqual(calls,[])
+        result=f(Values([0.5]*20),True,True,old,True)
+        self.assertEqual(calls,['root']);self.assertEqual(result[3],[0.5]*20);self.assertTrue(result[1])
+        f,calls=self.commit_tail();f(Values(old),False,True,old,True)
+        self.assertEqual(calls,['root'])
+        # An overlay that has never committed (pool reset) always commits.
+        f,calls=self.commit_tail();f(Values(old),True,False,old,True)
         self.assertEqual(calls,['root'])
         mutant,calls=self.commit_tail(old_invalidation=True)
-        mutant(Values(old),True,old,True);self.assertEqual(calls,['root'])
+        mutant(Values(old),True,True,old,True);self.assertEqual(calls,['root'])
 
     def test_one_neighborhood_materialization_for_audit_and_roots(self):
         refresh=P.fragment(TREE,'/datum/root_tree_presenter/proc/refresh(')
@@ -137,7 +140,7 @@ class PendingLightPublication(unittest.TestCase):
         env=environment()
         f=compile_proc(_contract.SNAP,'/proc/root_light_mask_snapshot(','root, allow_pending=False',env)
         root=N(type='/turf/floor')
-        root.lighting_overlay=N(loc=root,needs_update=True,color=Values([.25]*20),last_color=Values([.25]*20))
+        root.lighting_overlay=N(loc=root,needs_update=True,color=Values([.25]*20),color_committed=True)
         return env,f,root
 
     def test_pending_queue_uses_only_still_displayed_committed_matrix(self):
@@ -148,8 +151,8 @@ class PendingLightPublication(unittest.TestCase):
             env,f,root=self.snapshot()
             if case=='foreign':root.lighting_overlay.loc=object()
             if case=='missing':root.lighting_overlay=None
-            if case=='partial':root.lighting_overlay.last_color=Values([.25])
-            if case=='changed':root.lighting_overlay.color[1]=.5
+            if case=='partial':root.lighting_overlay.color=Values([.25])
+            if case=='changed':root.lighting_overlay.color_committed=False
             if case=='startup':env['lighting_startup_in_progress']=True
             self.assertIsNone(f(root,True),case)
 
