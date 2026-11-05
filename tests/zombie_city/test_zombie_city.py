@@ -23,6 +23,7 @@ import check  # noqa: E402
 MODULE = ROOT / "code/modules/zombie_city"
 GENERATOR = MODULE / "generator.dm"
 INTERIORS = MODULE / "interiors.dm"
+LEVELS = MODULE / "levels.dm"
 DME = ROOT / "civ13.dme"
 TYPE_PATH = re.compile(r"(?<![\w/])(/(?:turf|obj|area)/[\w/]+)")
 DEFINITION_PREFIXES = ("/turf/", "/obj/", "/area/")
@@ -51,24 +52,29 @@ class BaseMapTest(unittest.TestCase):
         self.assertTrue(all(row[0] == row[-1] == "b" for row in rows[:-1]))
         self.assertEqual(rows[-1][0], "c")
         self.assertEqual(set(rows[0]), {"b"})
+        upper = text.split('(1,1,2) = {"\n')[1].split('"}')[0].split("\n")
+        upper = [row for row in upper if row]
+        self.assertEqual(len(upper), build_base.HEIGHT)
+        self.assertEqual(set("".join(upper)), {"d"})
+        self.assertNotIn('(1,1,3)', text)
 
 
 class SourceTest(unittest.TestCase):
     def test_generator_files_are_included(self):
         dme = DME.read_text(encoding="utf-8-sig")
-        for name in ("generator.dm", "interiors.dm", "map.dm", "markers.dm", "rng.dm", "horde.dm", "loot.dm"):
+        for name in ("generator.dm", "interiors.dm", "levels.dm", "map.dm", "markers.dm", "rng.dm", "horde.dm", "loot.dm"):
             self.assertIn(f'#include "code\\modules\\zombie_city\\{name}"', dme)
 
     def test_placed_types_exist(self):
         existing = defined_types()
-        source = GENERATOR.read_text(encoding="utf-8") + INTERIORS.read_text(encoding="utf-8")
+        source = GENERATOR.read_text(encoding="utf-8") + INTERIORS.read_text(encoding="utf-8") + LEVELS.read_text(encoding="utf-8")
         used = set(TYPE_PATH.findall(source))
         self.assertGreater(len(used), 50)
         missing = sorted(path for path in used if path not in existing)
         self.assertEqual(missing, [])
 
     def test_contract_names_match_consumers(self):
-        source = GENERATOR.read_text(encoding="utf-8") + INTERIORS.read_text(encoding="utf-8")
+        source = GENERATOR.read_text(encoding="utf-8") + INTERIORS.read_text(encoding="utf-8") + LEVELS.read_text(encoding="utf-8")
         horde = (MODULE / "horde.dm").read_text(encoding="utf-8")
         loot = (MODULE / "loot.dm").read_text(encoding="utf-8")
         for density in re.findall(r'"(sparse|normal|dense|infested)"', source):
@@ -153,6 +159,33 @@ class CheckerTest(unittest.TestCase):
         self.assertTrue(any("not in a room" in p for p in problems))
         building["rooms"][0]["x1"] = 10
         self.assertTrue(any("outside" in p for p in check.rooms({"buildings": [building]})))
+
+    def test_upper_level_reachable_from_stairs(self):
+        ground = [
+            "###########",
+            "#E==.WwWwW#",
+            "#===.DfSfW#",
+            "#===.WWWWW#",
+            "#=V=.......",
+            "###########",
+        ]
+        upper = [
+            "~~~~~~~~~~~",
+            "~~~~~WwWwW~",
+            "~~~~~WffDL~",
+            "~~~~~WWWWW~",
+            "~~~~~~~~~~~",
+            "~~~~~~~~~~~",
+        ]
+        self.assertEqual(check.reachability(ground)["unreachable"], {})
+        result = check.upper_reachability(ground, upper)
+        self.assertEqual(result["entries"], 1)
+        self.assertEqual(result["required"], 2)
+        self.assertEqual(result["unreachable"], {})
+        upper[2] = "~~~~~WffWL~"
+        self.assertEqual(check.upper_reachability(ground, upper)["unreachable"], {"all stairs": ["column 10 row 4"]})
+        with self.assertRaises(ValueError):
+            check.upper_reachability(ground, upper[:-1])
 
     def test_ragged_grid_rejected(self):
         with self.assertRaises(ValueError):

@@ -5,8 +5,10 @@ grid.txt, then verifies, independently of the in-game check:
 
 - determinism: runs of the same seed produced identical grids and manifests,
   runs of different seeds did not;
-- reachability: every insertion point, evacuation point, door and loot spot is
-  reachable from every insertion point over passable grid cells;
+- reachability: every insertion point, evacuation point, door, staircase and
+  loot spot is reachable from every insertion point over passable grid cells,
+  and on the upper level every door and loot spot is reachable from a
+  staircase;
 - counts: insertion, evacuation, block, building, room and loot numbers are
   within the plan's ranges and the four special lots exist;
 - rooms: every room is at least three cells each way (halls and corridors two)
@@ -29,7 +31,8 @@ from pathlib import Path
 import sys
 
 BLOCKED = set("#WwX")
-REQUIRED = set("EVDL")
+REQUIRED = set("EVDLS")
+UPPER_REQUIRED = set("DL")
 ENTRY_SPACING = 60
 EXIT_SPACING = 40
 MAX_GENERATION_DS = 300
@@ -41,7 +44,7 @@ COLORS = {
     "#": (30, 30, 30), "=": (70, 70, 75), "-": (200, 180, 40), ".": (150, 150, 150), ",": (80, 140, 60),
     "_": (110, 110, 115), " ": (120, 100, 70), "f": (200, 190, 160), "W": (60, 45, 40), "w": (120, 180, 220),
     "D": (170, 110, 50), "L": (230, 60, 200), "E": (40, 220, 60), "V": (40, 120, 255), "x": (90, 80, 70),
-    "X": (150, 40, 40), "o": (70, 110, 140),
+    "X": (150, 40, 40), "o": (70, 110, 140), "~": (20, 20, 28), "S": (255, 200, 60),
 }
 
 
@@ -52,17 +55,22 @@ def parse_grid(text: str) -> list[str]:
     return rows
 
 
-def reachability(rows: list[str]) -> dict:
-    """BFS from each insertion point; returns the unreachable required cells."""
+def reachability(rows: list[str], start: str = "E", required_chars: set[str] = REQUIRED, together: bool = False) -> dict:
+    """BFS from each start cell (or from all of them at once when together);
+    returns the unreachable required cells."""
     height = len(rows)
     width = len(rows[0])
-    entries = [(x, y) for y in range(height) for x in range(width) if rows[y][x] == "E"]
-    required = [(x, y) for y in range(height) for x in range(width) if rows[y][x] in REQUIRED]
+    entries = [(x, y) for y in range(height) for x in range(width) if rows[y][x] == start]
+    required = [(x, y) for y in range(height) for x in range(width) if rows[y][x] in required_chars]
     unreachable = {}
-    for start in entries:
+    for group in ([entries] if together else [[entry] for entry in entries]):
+        if not group:
+            continue
+        start = group[0]
         seen = [[False] * width for _ in range(height)]
-        queue = deque([start])
-        seen[start[1]][start[0]] = True
+        queue = deque(group)
+        for cell in group:
+            seen[cell[1]][cell[0]] = True
         while queue:
             x, y = queue.popleft()
             for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
@@ -71,8 +79,20 @@ def reachability(rows: list[str]) -> dict:
                     queue.append((nx, ny))
         missing = [cell for cell in required if not seen[cell[1]][cell[0]]]
         if missing:
-            unreachable[f"entry at column {start[0] + 1} row {height - start[1]}"] = len(missing)
+            label = "all stairs" if together else f"entry at column {start[0] + 1} row {height - start[1]}"
+            unreachable[label] = [f"column {x + 1} row {height - y}" for x, y in missing[:8]] if together else len(missing)
     return {"entries": len(entries), "required": len(required), "unreachable": unreachable}
+
+
+def upper_reachability(rows: list[str], upper_rows: list[str]) -> dict:
+    """Upper doors and loot must be reachable from the stairs, which sit at the
+    same x, y on both levels."""
+    if len(upper_rows) != len(rows) or any(len(a) != len(b) for a, b in zip(rows, upper_rows)):
+        raise ValueError("upper grid does not match the ground grid")
+    marked = []
+    for row, upper in zip(rows, upper_rows):
+        marked.append("".join("S" if c == "S" else u for c, u in zip(row, upper)))
+    return reachability(marked, "S", UPPER_REQUIRED, together=True)
 
 
 def spacing(manifest: dict) -> list[str]:
@@ -171,9 +191,18 @@ def check(evidence: Path) -> dict:
         reach = reachability(rows)
         if reach["unreachable"]:
             problems.append(f"seed {seed}: unreachable required cells {reach['unreachable']}")
+        upper_path = run_dir / "grid2.txt"
+        upper_rows = parse_grid(upper_path.read_text()) if upper_path.exists() else []
+        if upper_rows:
+            upper = upper_reachability(rows, upper_rows)
+            if upper["unreachable"]:
+                problems.append(f"seed {seed}: unreachable upper cells {upper['unreachable']}")
+            if not upper["entries"]:
+                problems.append(f"seed {seed}: an upper level without stairs")
+            render(upper_rows, evidence / "previews" / f"seed{seed}-upper.png")
         for problem in spacing(manifest) + counts(manifest) + rooms(manifest):
             problems.append(f"seed {seed}: {problem}")
-        signature = (stable_manifest(manifest), "\n".join(rows))
+        signature = (stable_manifest(manifest), "\n".join(rows) + "\n".join(upper_rows))
         if seed in per_seed and per_seed[seed] != signature:
             problems.append(f"seed {seed}: two runs produced different cities")
         per_seed.setdefault(seed, signature)

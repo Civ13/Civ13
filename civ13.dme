@@ -1330,6 +1330,7 @@
 #include "code\modules\zombie_city\generator.dm"
 #include "code\modules\zombie_city\horde.dm"
 #include "code\modules\zombie_city\interiors.dm"
+#include "code\modules\zombie_city\levels.dm"
 #include "code\modules\zombie_city\loot.dm"
 #include "code\modules\zombie_city\map.dm"
 #include "code\modules\zombie_city\markers.dm"

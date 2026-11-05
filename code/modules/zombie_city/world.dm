@@ -89,7 +89,7 @@ var/global/zombie_city_evac_turn = 0
 	if(!generate)
 		log_game("Zombie city: no generator in this build; the map stays as it is.")
 		return FALSE
-	var/datum/layout = call(generate)(zombie_city_seed, 1, 0)
+	var/datum/layout = call(generate)(zombie_city_seed, 1, world.maxz >= 2 ? 2 : 0)
 	if(!layout)
 		message_admins("Zombie city: the generator failed for seed [num2text(zombie_city_seed, 9)].")
 		return FALSE
