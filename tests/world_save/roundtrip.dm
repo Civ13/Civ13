@@ -553,14 +553,17 @@ var/global/roundtrip_capture_failure = FALSE
 	map_storage.drop_segment_reader()
 	// An entry shard evicted by later list blocks may still be held by an
 	// entry frame; the reader must keep recognising it.
+	// This file is shared with builds that do not compile the stream module.
 	var/savefile/index_file = new("map_saves/1.sav")
-	var/datum/level_segment_reader/stream/R = new(index_file, 1)
-	var/savefile/shard = R.entry_file(1)
+	var/stream_reader_type = text2path("/datum/level_segment_reader/stream")
+	var/datum/R = new stream_reader_type(index_file, 1)
+	var/savefile/shard = call(R, "entry_file")(1)
 	for(var/block = 0, block < 5, block++)
-		R.list_file(block * 512 + 1)
-	check(!R.open_files["e0"] && R.owns_file(shard), "evicted stream shard lost its reader routing")
-	R.close()
-	check(!R.owns_file(shard), "closed stream reader still claims its scratch files")
+		call(R, "list_file")(block * 512 + 1)
+	var/list/reader_files = R.vars["open_files"]
+	check(!reader_files["e0"] && call(R, "owns_file")(shard), "evicted stream shard lost its reader routing")
+	call(R, "close")()
+	check(!call(R, "owns_file")(shard), "closed stream reader still claims its scratch files")
 	R = null
 	shard = null
 	index_file = null
