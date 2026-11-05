@@ -117,9 +117,9 @@ Val's suggested order is used, skipping work another thread owns:
    procedural surface, oceanic and cavern worlds, then travel between them.
    Done 2026-11-05: region groups, playable generated worlds, travel, one
    home world per player and player-built trails.
-10. **A train home for your party** (Val left the pick to the agent on
-   2026-11-05): Train Raid shuttles keep each raider's locker between rounds,
-   then the rest of the persistent home.
+10. **A train home for your party** (Val, 2026-11-05): in Persistence, a
+   player's first party train becomes available once they complete a
+   construction project at a suitable train station.
 
 Each step is one or more PRs with a filled `Changelog:` line where players see
 a change, compiled and run through `scripts/agent_preflight.py all --write`.
