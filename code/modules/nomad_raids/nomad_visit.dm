@@ -33,6 +33,7 @@
 	var/tmp/last_seen_foe = 0
 	var/tmp/outcome = ""
 	var/tmp/list/last_health = list()
+	var/tmp/list/struck = list() // ckeys already marked for striking first
 	var/tmp/list/loot_target = list() // member = item or closet
 	var/tmp/list/done_looting = list()
 	var/tmp/stolen = 0
@@ -253,6 +254,7 @@
 			continue
 		if (M.health < last_health[M])
 			hurt = TRUE
+			note_attacker(M)
 		last_health[M] = M.health
 	var/list/alive = alive_members()
 	if (!alive.len)
@@ -287,6 +289,28 @@
 		if ("leave")
 			tick_leave(alive)
 
+// Striking a party that had not drawn weapons costs reputation, once a visit.
+/datum/nomad_raid/proc/note_attacker(mob/living/simple_animal/hostile/human/nomad_raider/M)
+	var/mob/living/human/H = M.lastattacker
+	if (hostile || !istype(H) || !H.ckey || (H.ckey in struck))
+		return
+	struck += H.ckey
+	nomad_rep_record(H.ckey, "attack")
+	event("reputation", "[H.ckey] struck first")
+
+// Raiders meeting a wanted player attack on sight. Returns TRUE if they did.
+/datum/nomad_raid/proc/wanted_check()
+	if (kind != "raid" || !leader_ok())
+		return FALSE
+	var/list/wanted = nomad_rep_wanted_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE)
+	if (!wanted.len)
+		return FALSE
+	var/mob/living/human/H = wanted[1]
+	focus = H
+	cue("[H.real_name]! The clans know you. Kill them!", "points their weapon straight at [H.real_name].")
+	start_assault("[H.ckey] is wanted by the clans")
+	return TRUE
+
 /datum/nomad_raid/proc/start_assault(reason)
 	set_state("assault", reason)
 	set_hostile(TRUE)
@@ -301,6 +325,8 @@
 		set_state("leave", "the march took too long")
 		return
 	if (decide)
+		if (wanted_check())
+			return
 		var/list/near = nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE)
 		if (near.len)
 			if (kind == "trade")
@@ -325,6 +351,11 @@
 	tribute_ignore = list()
 	for (var/obj/item/I in range(1, leader))
 		tribute_ignore += I
+	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE))
+		if (nomad_rep_score(H.ckey) >= NOMAD_REP_FRIEND)
+			tribute_demand = max(accept_floor(), round(tribute_demand / 2))
+			cue("[H.real_name] is a friend of the [clan]. For their sake, half the usual tribute - lay it at my feet.", "nods at [H.real_name].")
+			return
 	cue("We are the [clan]. Lay tribute at my feet - tools, metal, food - and we walk away. Refuse, and we take everything.", "points at the ground at their feet, then at your stores, and raises their weapon.")
 
 /datum/nomad_raid/proc/tribute_value()
@@ -341,6 +372,8 @@
 
 /datum/nomad_raid/proc/accept_tribute(reason)
 	outcome = "tribute paid"
+	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE))
+		nomad_rep_record(H.ckey, "tribute")
 	cue("Wise. The [clan] remembers its friends.")
 	set_state("loot", reason)
 
@@ -351,6 +384,8 @@
 		return
 	follow_leader(alive)
 	if (!decide)
+		return
+	if (wanted_check())
 		return
 	if (tribute_value() >= tribute_demand)
 		accept_tribute("tribute paid")
@@ -507,6 +542,11 @@
 /datum/nomad_raid/proc/member_fell(mob/living/simple_animal/hostile/human/nomad_raider/M)
 	fallen++
 	M.drop_carried()
+	// Killing traders or their guards is remembered; killing raiders is not.
+	var/mob/living/human/H = M.lastattacker
+	if (kind == "trade" && istype(H) && H.ckey)
+		nomad_rep_record(H.ckey, "kill")
+		event("reputation", "[H.ckey] killed [M.name]")
 	event("fell", "[M.name] fell")
 
 // Ends with everyone gone: survivors drop what they carry, so nothing is lost.

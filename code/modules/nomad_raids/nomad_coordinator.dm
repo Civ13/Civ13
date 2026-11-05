@@ -38,6 +38,9 @@
 			continue
 		var/obj/item/held = H.get_active_hand()
 		var/list/row = list("ref" = "\ref[H]", "name" = H.real_name, "ckey" = H.ckey, "distance" = get_dist(center, H), "awake" = H.stat == CONSCIOUS ? TRUE : FALSE, "holding" = held ? "[held.name]" : null)
+		var/rep = nomad_rep_score(H.ckey)
+		row["reputation"] = rep
+		row["standing"] = nomad_rep_standing(rep)
 		if (kind == "trade")
 			row["credit"] = credit[H.ckey] || 0
 		people += list(row)

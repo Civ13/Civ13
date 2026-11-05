@@ -40,6 +40,7 @@ var/raid_runtime_error = FALSE
 		raid_party_checks()
 		raid_coordinator_checks()
 		raid_trade_checks()
+		raid_reputation_checks()
 		raid_lifecycle_checks()
 	catch(var/exception/e)
 		raid_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -280,6 +281,65 @@ var/raid_runtime_error = FALSE
 		raid_check(!R.goods.len, "the stall is packed up")
 		raid_check(pay.loc == get_turf(R.leader), "unspent payments are handed back")
 	R.remove_all("probe")
+
+/proc/raid_reputation_checks()
+	nomad_reputation = list()
+	fdel(NOMAD_REP_FILE)
+	raid_check(nomad_rep_score("nobody") == 0 && nomad_rep_standing(0) == "stranger", "unknown players are strangers")
+	for (var/i = 1, i <= 5, i++)
+		nomad_rep_record("good", "trade")
+	raid_check(nomad_rep_score("good") == 5 && nomad_rep_standing(5) == "trusted", "steady trading earns trust")
+	raid_check(nomad_rep_price(20, "good") == 18 && nomad_rep_price(20, "nobody") == 20, "trusted buyers get better prices")
+	nomad_rep_record("bad", "theft")
+	raid_check(nomad_rep_price(20, "bad") == 25, "distrusted buyers pay more")
+	nomad_rep_record("bad", "theft")
+	raid_check(nomad_rep_standing(nomad_rep_score("bad")) == "wanted", "repeated theft makes a player wanted")
+	for (var/i = 1, i <= 20, i++)
+		nomad_rep_record("saint", "tribute")
+	raid_check(nomad_rep_score("saint") == NOMAD_REP_LIMIT && nomad_rep_price(20, "saint") == 15, "reputation is capped, and friends pay least")
+	raid_check(!nomad_rep_record("good", "nonsense"), "unknown deeds change nothing")
+	nomad_reputation["bad"]["at"] -= 3 * NOMAD_REP_DAY
+	raid_check(nomad_rep_score("bad") == -5, "reputation fades a point a day ([nomad_rep_score("bad")], at [nomad_reputation["bad"]["at"]], now [world.realtime])")
+	nomad_rep_save()
+	nomad_reputation = null
+	raid_check(nomad_rep_score("good") == 5 && nomad_rep_score("bad") == -5, "reputation survives a restart")
+	var/list/row = nomad_reputation["good"]
+	raid_check(row["trades"] == 5, "deeds are counted")
+
+	// A trader refuses a wanted player's payment, and sells at the buyer's price.
+	nomad_reputation["bad"]["score"] = -20
+	var/datum/nomad_raid/R = new
+	R.setup(locate(20, 26, 1), list(), 2, "probe", "trade")
+	nomad_raid = R
+	R.begin_trade()
+	var/obj/item/weapon/material/spear/dirty = new(get_turf(R.leader))
+	dirty.fingerprintslast = "Bad"
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!R.credit["bad"] && dirty.loc == get_turf(R.leader), "wanted players cannot trade")
+	var/obj/item/good = R.goods[1]
+	var/full = R.goods[good]
+	R.credit["good"] = nomad_rep_price(full, "good")
+	good.forceMove(locate(2, 2, 1))
+	good.fingerprintslast = "Good"
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!(good in R.goods) && R.credit["good"] == 0, "a trusted buyer pays the lower price ([nomad_rep_price(full, "good")] of [full])")
+	raid_check(nomad_rep_score("good") == 6, "a purchase raises reputation")
+
+	// Striking a peaceful party first, and killing a trader, are remembered.
+	var/mob/living/human/brute = new(locate(3, 3, 1))
+	brute.ckey = "brute"
+	var/mob/living/simple_animal/hostile/human/nomad_raider/guard = R.members[2]
+	guard.lastattacker = brute
+	guard.health -= 10
+	R.tick()
+	R.tick()
+	raid_check(nomad_rep_score("brute") == -3 && ("brute" in R.struck), "striking a peaceful party first costs reputation, once")
+	R.member_fell(guard)
+	raid_check(nomad_rep_score("brute") == -9, "killing a trader's guard costs more")
+	R.remove_all("probe")
+	qdel(brute)
+	nomad_reputation = list()
+	fdel(NOMAD_REP_FILE)
 
 // The real controller loop: with nobody home, the party marches in, turns
 // back and leaves the map on its own.

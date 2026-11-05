@@ -19,6 +19,7 @@ Visits are not started at random.
 | `nomad_raider.dm` | The NPC party member |
 | `nomad_visit.dm` | The party controller: march, parley, assault, loot, leave |
 | `nomad_trade.dm` | Trader caravans |
+| `nomad_reputation.dm` | What the clans think of each player |
 | `nomad_coordinator.dm` | What a coordinator sees and may order |
 | `nomad_admin.dm` | Admin verbs |
 
@@ -30,6 +31,8 @@ Visits are not started at random.
 - **End Nomad Visit** sends the party home or removes it at once. Removed
   members drop what they carry where they stand; unsold goods are packed away
   and unspent payments handed back.
+- **Nomad Reputation** lists players' standing with the clans and can clear
+  one player's record.
 - **Nomad Visit Status** shows the state, members standing, items taken or
   goods sold, and whether a coordinator is attached.
 
@@ -85,6 +88,33 @@ and an iron knife in later ages).
   trade and starts a fight.
 
 Laid-out goods are not saved until sold.
+
+## Reputation
+
+The clans share what they think of each player (by ckey), whichever clan
+visits:
+
+| Deed | Change |
+| --- | --- |
+| Buying from a caravan | +1 |
+| Paying a raid's tribute (each player near the chieftain) | +2 |
+| Keeping a stolen good past the warning | -4 |
+| Striking a party that had not drawn weapons (once a visit) | -3 |
+| Killing a trader or guard | -6 |
+
+Killing raiders who attacked is self-defence and costs nothing. The score is
+capped at 30 either way and fades toward zero by one point per real day.
+
+| Standing | Score | Effect |
+| --- | --- | --- |
+| Friend | 15 or more | Goods cost 25% less; a raid asks half the usual tribute when a friend is present |
+| Trusted | 5 or more | Goods cost 10% less |
+| Stranger | -3 to 4 | Normal prices |
+| Distrusted | -4 or less | Goods cost 25% more |
+| Wanted | -8 or less | Traders refuse their payments; raiders who see them attack on sight, going for them first |
+
+Reputation is stored with `world.realtime` in `data/nomad_reputation.json`.
+The coordinator sees each person's score and standing.
 
 ## Coordinator
 

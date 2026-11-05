@@ -1,7 +1,7 @@
 // Admin verbs (Fun). Added to the fun verb list at startup.
 
 /hook/startup/proc/nomad_raid_admin_verbs()
-	admin_verbs_fun |= list(/client/proc/start_nomad_raid_verb, /client/proc/end_nomad_raid_verb, /client/proc/nomad_raid_status_verb)
+	admin_verbs_fun |= list(/client/proc/start_nomad_raid_verb, /client/proc/end_nomad_raid_verb, /client/proc/nomad_raid_status_verb, /client/proc/nomad_reputation_verb)
 	return TRUE
 
 /client/proc/start_nomad_raid_verb()

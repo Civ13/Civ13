@@ -56,8 +56,8 @@ ORDER_HELP = {
 }
 
 GOALS = {
-    "raid": "You came to demand tribute: goods worth the demand laid at your feet. If they pay, you take it and leave in peace; if they refuse, stall too long or attack, your warriors take everything by force. Respect those who pay, remember those who cheat.",
-    "trade": "You came to trade. Customers lay payment at your feet and then take a good they paid for. Thieves are warned, then attacked. Haggle cheerfully, but never give goods away.",
+    "raid": "You came to demand tribute: goods worth the demand laid at your feet. If they pay, you take it and leave in peace; if they refuse, stall too long or attack, your warriors take everything by force. Respect those who pay, remember those who cheat. Friends of the clans pay half; wanted people are attacked on sight by the controller.",
+    "trade": "You came to trade. Customers lay payment at your feet and then take a good they paid for. Thieves are warned, then attacked. Haggle cheerfully, but never give goods away. Trusted customers already get a discount and distrusted ones pay more; wanted people are refused.",
 }
 
 
@@ -159,6 +159,8 @@ def brief(status, ledger, said=()):
             bits.append(f"holding {row['holding']}")
         if not row.get("awake"):
             bits.append("down")
+        if row.get("standing") and row["standing"] != "stranger":
+            bits.append(f"{row['standing']} of the clans (reputation {row.get('reputation')})")
         if "credit" in row:
             bits.append(f"credit {row['credit']}")
         notes = ledger.notes(row.get("ckey")) if ledger else []

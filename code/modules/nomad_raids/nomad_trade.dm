@@ -86,6 +86,11 @@
 		if (!worth)
 			continue
 		var/who = payer_of(I)
+		if (who && nomad_rep_score(who) <= NOMAD_REP_WANTED)
+			payment_ignore += I
+			event("refused", "[who] is wanted; refused [I.name]")
+			cue("I do not deal with thieves. Take that back.", "pushes the offering away with their foot.")
+			continue
 		if (!who || !leader.take_item(I))
 			payment_ignore += I
 			continue
@@ -109,7 +114,7 @@
 			continue
 		var/mob/holder = nomad_raid_holder(I)
 		var/who = holder ? holder.ckey : (I.fingerprintslast ? ckey(I.fingerprintslast) : null)
-		var/price = goods[I]
+		var/price = nomad_rep_price(goods[I], who)
 		if (who && (credit[who] || 0) >= price)
 			credit[who] -= price
 			goods -= I
@@ -117,6 +122,7 @@
 			sold++
 			spend_payments(who, price)
 			event("sold", "[who] bought [I.name] for [price]")
+			nomad_rep_record(who, "trade")
 			if (world.time >= next_speech)
 				cue("A fair trade.")
 		else if (who && !thieves[who])
@@ -130,6 +136,7 @@
 			continue
 		var/mob/living/thief = nomad_raid_holder(T[2])
 		focus = istype(thief, /mob/living) ? thief : null
+		nomad_rep_record(who, "theft")
 		cue("Thief! Guards, take it back!")
 		pack_up()
 		start_assault("[who] stole from the stall")

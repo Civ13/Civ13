@@ -161,7 +161,8 @@ Controlled characters are not treated as SSD.
 The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):
 
 - `visit_status` returns `{"active": false}` or the visit's kind, clan, state,
-  party, nearby people (by ref, with trade credit), tribute or goods, the
+  party, nearby people (by ref, with their reputation and standing with the
+  clans, and trade credit), tribute or goods, the
   orders allowed now, the cue the leader is about to say, and events since
   `since` (pass the last `last_event`). Reading it attaches the coordinator for
   10 seconds.
