@@ -8,6 +8,7 @@ ground_z, upper_z)` in `code/modules/zombie_city/generator.dm` fills it with
 streets, districts, lots, building shells, loot and the markers the city host
 reads. The host world (`world.dm`, the horde in `horde.dm` and the loot tables in
 `loot.dm`) decides what happens in the city; the generator only builds it.
+`interiors.dm` holds the room, furniture, loot spot and mess pass.
 
 The map is never in a vote list. The city host selects it by name and calls the
 generator from its round-start hook when `map.zombie_city` is set.
@@ -53,28 +54,53 @@ the items differ between runs even when the layout does not.
    workshops. Each building gets a door on its street side (a double steel
    store door for anything but houses, apartments and offices), windows every
    three tiles on that side and every four tiles on the sides of houses,
-   apartments and offices, and a back door on tier 3 lots. Interiors are open
-   floors in this phase; room stamps come later.
-7. Loot. Each building holds `1 + tier` loot spots (hospital six, police four)
-   on interior cells away from the doors. Each spot gets a
-   `/obj/effect/zombie_city/loot` marker with the building's loot table and tier
-   and `zombie_city_roll_loot` fills it. Tables: house, apartment and office
-   residential; grocery and big-box grocery; pharmacy; hardware shop, warehouse
-   and big-box hardware; workshop and garage garage; hospital medical and
-   pharmacy; police police; the checkpoint cache military. Tiers: houses 1,
+   apartments and offices, and a back door on tier 3 lots.
+7. Interiors (`interiors.dm`). Houses, apartments, offices, the hospital and
+   the police station get an entrance hall two rows deep, a two-cell corridor
+   running back from the front door and rooms three to five rows deep stacked
+   along both sides of it, each with a wooden privacy door onto the corridor
+   (wooden interior walls in homes, the shell's material elsewhere). A shell
+   too narrow for side rooms stacks its rooms straight back from the hall with
+   a door through each dividing wall; one too shallow stays a single room.
+   Room kinds cycle per building: living, kitchen, bedroom, bathroom for
+   homes; offices, meeting rooms and storage; wards, surgery, a pharmacy and
+   storage in the hospital; offices, the armory, cells and a locker room in
+   the police station. Shops keep the row inside the door free, put a counter
+   and register on the next row away from the door, run store-shelf aisles
+   with free ends behind that, and wall off a stockroom across the back when
+   there is depth for it. Warehouses get crate and pallet rows with free ends
+   and a small office in a back corner; workshops and the garage are open
+   floors with benches, tanks and barrels along the walls and a wreck or two
+   in the garage. Furniture only sits on cells along a room's walls, never
+   within two steps of a door, so a room's free cells always connect to its
+   door. Beds, chairs, toilets, sinks, drips and junk do not block movement.
+8. Mess. By block density (sparse, normal, dense, infested) 10, 25, 40 or 60
+   percent of windows are broken (frame only, passable) and 1, 3, 6 or 12
+   percent of interior floor cells get a blood decal, half as many junk.
+9. Loot. Each building holds `1 + tier` loot spots (hospital six, police four)
+   on free floor cells with at least two free neighbours, out of the doorways,
+   taking the police armory first, then rooms worth searching (bedrooms,
+   kitchens, storage, stockrooms, the pharmacy, wards, surgery, offices, sales
+   floors) on cells beside something to search, then anywhere else in a room.
+   Each spot gets a `/obj/effect/zombie_city/loot` marker with the building's
+   loot table and tier and `zombie_city_roll_loot` fills it. Tables: house,
+   apartment and office residential; grocery and big-box grocery; pharmacy;
+   hardware shop, warehouse and big-box hardware; workshop and garage garage;
+   hospital medical, with pharmacy in its pharmacy room and on every second
+   spot; police police; the checkpoint cache military. Tiers: houses 1,
    ordinary shops 2, special lots 3; downtown buildings have a 40 percent chance
    of one extra tier.
-8. Insertion and evacuation. Four to six insertion points sit on the ring
-   road's centre lane at a third and two thirds along each edge (jittered by two
-   tiles). Three or four evacuation points sit at the ring road's corners. The
-   first evacuation point is the checkpoint: Jersey barriers close the outer
-   lanes beside it and a military loot cache sits on the road. Insertion points
-   are at least 60 tiles apart and no evacuation point is within 40 tiles of an
-   insertion point, measured as BYOND's `get_dist` does.
-9. Dressing. Four percent of avenue and ring-road outer-lane cells get a car,
-   van or truck wreck or a dumpster, never within six tiles of an insertion or
-   evacuation point and never on a centre line.
-10. Check and commit. A breadth-first walk from the first insertion point over
+10. Insertion and evacuation. Four to six insertion points sit on the ring
+    road's centre lane at a third and two thirds along each edge (jittered by two
+    tiles). Three or four evacuation points sit at the ring road's corners. The
+    first evacuation point is the checkpoint: Jersey barriers close the outer
+    lanes beside it and a military loot cache sits on the road. Insertion points
+    are at least 60 tiles apart and no evacuation point is within 40 tiles of an
+    insertion point, measured as BYOND's `get_dist` does.
+11. Dressing. Four percent of avenue and ring-road outer-lane cells get a car,
+    van or truck wreck or a dumpster, never within six tiles of an insertion or
+    evacuation point and never on a centre line.
+12. Check and commit. A breadth-first walk from the first insertion point over
     passable cells must reach every insertion point, evacuation point, door and
     loot spot, or the plan is discarded and the next seed tried (three attempts).
     Only a valid plan touches the world: turfs row by row with `TICK_CHECK`,
@@ -88,12 +114,16 @@ the items differ between runs even when the layout does not.
 `zombie_city_generate` returns a `/datum/zombie_city_layout` and stores it in
 the global `zombie_city_layout`; a second call in the same world returns that
 layout. It holds the seed, size, blocks (bounds, district, density), buildings
-(bounds, kind, tier, table, doors, loot markers), the road list, the insertion
+(bounds, kind, tier, table, doors, rooms with their kind and bounds, loot
+markers), the road list, the insertion
 and evacuation turfs and markers, the special lots and generation counts and
 timings. `manifest()` and `to_json()` give the same data as a list or JSON, and
 `ascii_rows` is a text picture of the grid (`#` rim, `=` road, `-` centre line,
-`.` sidewalk, `,` grass, `_` paving, `W` wall, `w` window, `D` door, `f` floor,
-`L` loot, `E` insertion, `V` evacuation, `x` and `X` props).
+`.` sidewalk, `,` grass, `_` paving, `W` wall, `w` window, `o` broken window,
+`D` door, `f` floor, `L` loot, `E` insertion, `V` evacuation, `x` passable
+props and decals, `X` blocking props and furniture). A plan that fails the
+reachability check logs the unreachable cells and a grid excerpt around the
+first one.
 
 Markers (`markers.dm`) are invisible, anchored, never saved:
 `/obj/effect/zombie_city/loot` (table, tier, building id),
@@ -123,7 +153,5 @@ shells, and save or load of a generated city (the city world is never saved).
 
 ## Later phases
 
-- Interiors: room stamps per building kind, reachability-checked, with loot
-  spots that belong to rooms (pharmacy shelves, armoury lockers, garage benches).
 - Upper floors on z2 for two-storey lots, with stairs and paired roofs through
   the building-levels system.

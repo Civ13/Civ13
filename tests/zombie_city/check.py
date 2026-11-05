@@ -7,8 +7,11 @@ grid.txt, then verifies, independently of the in-game check:
   runs of different seeds did not;
 - reachability: every insertion point, evacuation point, door and loot spot is
   reachable from every insertion point over passable grid cells;
-- counts: insertion, evacuation, block, building and loot numbers are within
-  the plan's ranges and the four special lots exist;
+- counts: insertion, evacuation, block, building, room and loot numbers are
+  within the plan's ranges and the four special lots exist;
+- rooms: every room is at least three cells each way (halls and corridors two)
+  inside its building, and every building's loot spots lie inside one of its
+  rooms;
 - spacing: insertion points at least 60 tiles apart (Chebyshev) and no
   evacuation point within 40 tiles of an insertion point;
 - cost: generation under 30 s and no runtime error in code/modules/zombie_city.
@@ -30,13 +33,15 @@ REQUIRED = set("EVDL")
 ENTRY_SPACING = 60
 EXIT_SPACING = 40
 MAX_GENERATION_DS = 300
-COUNT_RANGES = {"entries": (4, 6), "exits": (3, 4), "blocks": (20, 400), "buildings": (40, 2000), "loot": (80, 8000)}
+COUNT_RANGES = {"entries": (4, 6), "exits": (3, 4), "blocks": (20, 400), "buildings": (40, 2000), "loot": (80, 8000), "rooms": (40, 8000)}
+MIN_ROOM = 3
+MIN_HALL = 2
 POIS = ("hospital", "police", "hardware", "garage")
 COLORS = {
     "#": (30, 30, 30), "=": (70, 70, 75), "-": (200, 180, 40), ".": (150, 150, 150), ",": (80, 140, 60),
     "_": (110, 110, 115), " ": (120, 100, 70), "f": (200, 190, 160), "W": (60, 45, 40), "w": (120, 180, 220),
     "D": (170, 110, 50), "L": (230, 60, 200), "E": (40, 220, 60), "V": (40, 120, 255), "x": (90, 80, 70),
-    "X": (150, 40, 40),
+    "X": (150, 40, 40), "o": (70, 110, 140),
 }
 
 
@@ -87,7 +92,8 @@ def spacing(manifest: dict) -> list[str]:
 def counts(manifest: dict) -> list[str]:
     problems = []
     found = {"entries": len(manifest["entries"]), "exits": len(manifest["exits"]), "blocks": len(manifest["blocks"]),
-             "buildings": len(manifest["buildings"]), "loot": sum(len(b["loot"]) for b in manifest["buildings"])}
+             "buildings": len(manifest["buildings"]), "loot": sum(len(b["loot"]) for b in manifest["buildings"]),
+             "rooms": sum(len(b.get("rooms", [])) for b in manifest["buildings"])}
     for key, (low, high) in COUNT_RANGES.items():
         if not low <= found[key] <= high:
             problems.append(f"{key}: {found[key]} outside {low}..{high}")
@@ -96,6 +102,24 @@ def counts(manifest: dict) -> list[str]:
             problems.append(f"missing special lot {poi}")
     if sum(1 for e in manifest["exits"] if e.get("checkpoint")) != 1:
         problems.append("exactly one evacuation point must be the checkpoint")
+    return problems
+
+
+def rooms(manifest: dict) -> list[str]:
+    """Rooms fit inside their building with room to stand, and loot sits in a room."""
+    problems = []
+    for building in manifest["buildings"]:
+        inside = []
+        for room in building.get("rooms", []):
+            least = MIN_HALL if room["kind"] == "hall" else MIN_ROOM
+            if room["x2"] - room["x1"] + 1 < least or room["y2"] - room["y1"] + 1 < least:
+                problems.append(f"building {building['id']}: {room['kind']} room smaller than {least}")
+            if not (building["x1"] < room["x1"] <= room["x2"] < building["x2"] and building["y1"] < room["y1"] <= room["y2"] < building["y2"]):
+                problems.append(f"building {building['id']}: {room['kind']} room outside the walls")
+            inside.append(room)
+        for loot in building["loot"]:
+            if not any(r["x1"] <= loot["x"] <= r["x2"] and r["y1"] <= loot["y"] <= r["y2"] for r in inside):
+                problems.append(f"building {building['id']}: loot at ({loot['x']}, {loot['y']}) is not in a room")
     return problems
 
 
@@ -147,7 +171,7 @@ def check(evidence: Path) -> dict:
         reach = reachability(rows)
         if reach["unreachable"]:
             problems.append(f"seed {seed}: unreachable required cells {reach['unreachable']}")
-        for problem in spacing(manifest) + counts(manifest):
+        for problem in spacing(manifest) + counts(manifest) + rooms(manifest):
             problems.append(f"seed {seed}: {problem}")
         signature = (stable_manifest(manifest), "\n".join(rows))
         if seed in per_seed and per_seed[seed] != signature:

@@ -19,9 +19,11 @@ python3 -I -B tests/zombie_city/check.py /fresh/dir
 
 The checker verifies determinism (a repeated seed gives the same city, different
 seeds differ), reachability of every insertion point, evacuation point, door and
-loot spot from every insertion point, marker counts, insertion and evacuation
-spacing, generation time under 30 s and the absence of runtime errors in the
-zombie city code. It writes `summary.json` and a PNG preview per seed under
+loot spot from every insertion point (broken windows count as passable, glass
+does not), marker and room counts, that every room is at least three cells each
+way inside its building and every building's loot spots lie in a room,
+insertion and evacuation spacing, generation time under 30 s and the absence of
+runtime errors in the zombie city code. It writes `summary.json` and a PNG preview per seed under
 `previews/`. Neither the suite nor the probe is real-client acceptance.
 
 ## Horde, loot and raid world probe
