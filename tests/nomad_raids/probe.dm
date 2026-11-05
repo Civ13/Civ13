@@ -42,6 +42,7 @@ var/raid_runtime_error = FALSE
 		raid_trade_checks()
 		raid_reputation_checks()
 		raid_lifecycle_checks()
+		raid_boat_checks()
 	catch(var/exception/e)
 		raid_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = raid_checks, "failures" = raid_failures, "runtime_error" = raid_runtime_error)), "result.json")
@@ -361,3 +362,54 @@ var/raid_runtime_error = FALSE
 	raid_check(saw_leave, "with nobody home the party turned back")
 	raid_check(R.state == "ended" && isnull(nomad_raid), "the raid ended by itself")
 	raid_check(R.escaped == R.initial_size && !R.members.len, "every raider left the map near home ([home.x],[home.y])")
+
+// An island target: the party cannot walk there, so it comes by raft and leaves the same way.
+/proc/raid_boat_checks()
+	for (var/turf/T in block(locate(1, 1, 1), locate(40, 40, 1)))
+		if (T.x >= 16 && T.x <= 24 && T.y >= 16 && T.y <= 24)
+			T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+		else
+			T.ChangeTurf(/turf/floor/beach/water/deep, FALSE, FALSE)
+	for (var/obj/O in block(locate(1, 1, 1), locate(40, 40, 1)))
+		qdel(O)
+	var/turf/target = locate(20, 20, 1)
+	raid_check(!nomad_raid_land_reachable(locate(2, 20, 1), target), "the island cannot be walked to")
+	var/datum/nomad_raid/R = new
+	var/error = R.setup(target, list(), 3, "probe")
+	raid_check(isnull(error) && R.sail_path && R.landing, "a party for an island target plans a water crossing ([error])")
+	if (!R.sail_path)
+		R.remove_all("probe")
+		return
+	raid_check(agent_deep_water(R.home) && !agent_deep_water(R.landing), "it starts on deep water and lands on dry ground")
+	raid_check(get_dist(R.landing, target) <= 4, "the landing is on the island")
+	R.launch_boats()
+	raid_check(R.state == "sail" && R.rafts.len == R.members.len, "each member sets off on a raft")
+	var/rafts_unsaved = TRUE
+	for (var/M in R.rafts)
+		var/obj/structure/vehicle/raft/raft = R.rafts[M]
+		if (raft.should_save)
+			rafts_unsaved = FALSE
+	raid_check(rafts_unsaved, "party rafts are never saved")
+	var/list/alive = R.alive_members()
+	for (var/i = 1, i <= 200 && R.state == "sail", i++)
+		R.next_sail = 0
+		R.tick_sail(alive)
+	raid_check(R.state == "march", "the party lands and marches")
+	var/ashore = TRUE
+	for (var/mob/living/M in alive)
+		if (agent_deep_water(get_turf(M)) || get_dist(M, R.landing) > 1)
+			ashore = FALSE
+	raid_check(ashore, "every member stands ashore at the landing")
+	R.set_state("leave", "probe")
+	for (var/i = 1, i <= 200 && R.alive_members().len, i++)
+		for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.alive_members())
+			R.leave_by_boat(M)
+		R.next_sail = 0
+		R.sail_step()
+	raid_check(!R.alive_members().len && R.escaped == alive.len, "the party paddles back out and leaves the map ([R.escaped] of [alive.len])")
+	R.finish("probe")
+	var/left = 0
+	for (var/obj/structure/vehicle/raft/raft in world)
+		if (!QDELETED(raft) && isturf(raft.loc))
+			left++
+	raid_check(!left && !R.rafts.len, "no party raft is left behind")

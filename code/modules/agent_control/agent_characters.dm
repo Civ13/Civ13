@@ -209,6 +209,10 @@
 	if (istype(held_stack) && held_stack.recipes)
 		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
+	var/obj/structure/vehicle/riding = agent_vehicle_of(M)
+	if (riding)
+		out["vehicle"] = agent_vehicle_row(riding, M)
+		out["can_steer"] = (riding.driver == M && M.stat == CONSCIOUS && !agent_vehicle_stalled(riding)) ? TRUE : FALSE
 	var/area/area = get_area(M)
 	if (area)
 		out["area"] = area.name
@@ -305,11 +309,23 @@
 				// What the rack holds: wet hides are still drying, dry hides are ready to take off by hand.
 				var/obj/item/stack/material/rack_hide = locate(/obj/item/stack/material) in AM.contents
 				row["holds"] = rack_hide ? "[rack_hide.name] x[rack_hide.amount]" : "nothing"
+			if (istype(AM, /obj/structure/vehicle))
+				// Boats: seats, cargo, fuel and engine, so one can be boarded, supplied or refuelled.
+				var/list/boat_row = agent_vehicle_row(AM, M)
+				for (var/key in boat_row)
+					if (!(key in list("ref", "name", "type", "x", "y", "z")))
+						row[key] = boat_row[key]
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
 			nearby += list(row)
 	var/list/surroundings = list()
+	var/obj/structure/vehicle/steering = null
+	var/lifejacket = FALSE
+	if (ishuman(M))
+		var/mob/living/human/HM = M
+		steering = HM.driver ? HM.driver_vehicle : null
+		lifejacket = istype(HM.wear_suit, /obj/item/clothing/suit/lifejacket)
 	if (here)
 		for (var/d in list(NORTH, SOUTH, EAST, WEST))
 			var/turf/T = get_step(here, d)
@@ -322,7 +338,16 @@
 					if (AM.density && AM != M)
 						blocked = TRUE
 						break
-			surroundings[dir2text(d)] = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
+			var/deep = agent_deep_water(T)
+			if (steering)
+				// Driving: open water is the way on, and land stops the boat.
+				blocked = blocked || !(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
+			else if (deep && !lifejacket)
+				blocked = TRUE // deep water stops a walker; it needs a boat
+			var/list/side = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
+			if (deep)
+				side["deep_water"] = TRUE
+			surroundings[dir2text(d)] = side
 	// The nearest tile of each kind of terrain, so water and the like can be clicked.
 	var/list/terrain = list()
 	if (here)
@@ -369,13 +394,13 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
@@ -409,6 +434,11 @@
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
+			// Driving a boat: the move steers it (docs/agent-control.md#boats).
+			if (ishuman(M))
+				var/mob/living/human/driving = M
+				if (driving.driver && driving.driver_vehicle)
+					return agent_drive_step(A, C, driving.driver_vehicle, d)
 			if (M.stat != CONSCIOUS || !M.canmove || M.restrained() || M.buckled)
 				agent_fail("cannot_move", "the character cannot move right now")
 			var/turf/old = get_turf(M)
@@ -535,6 +565,12 @@
 			detail = intent
 		if ("resist")
 			M.resist()
+		if ("board")
+			detail = agent_board(C, req, from_queue)
+		if ("disembark")
+			detail = agent_disembark(C, from_queue)
+		if ("drag")
+			detail = agent_drag(C, req, from_queue)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -645,15 +681,17 @@
 		agent_dir(step["dir"])
 	if (action in list("say", "emote"))
 		agent_text_arg(step, "text", 256)
-	if (action in list("click", "examine"))
+	if (action in list("click", "examine", "board", "drag"))
 		agent_resolve_target(step["target"])
+	if (action == "drag")
+		agent_resolve_target(step["onto"])
 	if (action == "craft")
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
 	if (!isnull(step["choose"]))
 		agent_text_arg(step, "choose", 64)
-	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

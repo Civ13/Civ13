@@ -17,9 +17,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "agent-control"))
 
 import autopilot  # noqa: E402
+import boats  # noqa: E402
+from memory import CharacterMemory as BoatMemory  # noqa: E402
 import visitor_voice  # noqa: E402
 import civ13_agent as agent  # noqa: E402
-from catalog import ACTIONS, SCOPES  # noqa: E402
+from catalog import ACTIONS, CHARACTER_ACTIONS, SCOPES  # noqa: E402
 
 DM = ROOT / "code" / "modules" / "agent_control"
 
@@ -156,7 +158,7 @@ class CatalogSyncTests(unittest.TestCase):
         scopes = re.search(r"/proc/agent_control_scopes\(\)\n\treturn list\(([^)]*)\)", source).group(1)
         self.assertEqual(tuple(re.findall(r'"([^"]+)"', scopes)), SCOPES)
         for name in ACTIONS:
-            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_visits.dm"), rf"/datum/agent_control/proc/act_{name}\(")
+            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_boats.dm") + dm_source("agent_visits.dm"), rf"/datum/agent_control/proc/act_{name}\(")
 
 
 class SecurityContractTests(unittest.TestCase):
@@ -1839,6 +1841,128 @@ class VisitorVoiceTests(unittest.TestCase):
         accepted = visitor_voice.voice_visit(Client(), broken, None, sleep=lambda s: None, log=lambda line: None)
         self.assertEqual(accepted, 0)
         self.assertEqual(replies, [])
+
+
+class BoatTravelTests(unittest.TestCase):
+    """Travel across deep water (tools/agent-control/boats.py) against scripted character_route replies."""
+
+    WALK = {"mode": "walk", "from": [10, 20], "moves": "eeeeeee", "to": [17, 20]}
+    BOAT = {"mode": "boat", "from": [17, 20], "moves": "eeeee", "to": [22, 20]}
+    ASHORE = {"mode": "walk", "from": [22, 20], "moves": "ee", "to": [24, 20]}
+
+    def test_character_actions_match_the_game(self):
+        source = dm_source("agent_characters.dm")
+        listed = re.search(r"/proc/agent_character_actions\(\)\n\treturn list\(([^)]*)\)", source).group(1)
+        self.assertEqual(re.findall(r'"(\w+)"', listed), CHARACTER_ACTIONS)
+        for action in ("board", "disembark", "drag"):
+            self.assertIn(f'if ("{action}")', source)
+
+    def test_parse_travel_and_boat_steps(self):
+        refs = ["[0x1]", "[0x2]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "travel", "x": 30, "y": "20"}', refs), {"do": "travel", "x": 30, "y": 20})
+        self.assertEqual(autopilot.parse_decision('{"do": "travel", "dir": "East", "tiles": 40}', refs), {"do": "travel", "dir": "east", "tiles": 40})
+        self.assertEqual(autopilot.parse_decision('{"do": "travel", "to": "Boat"}', refs), {"do": "travel", "to": "boat"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "travel"}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "board", "target": 1}', refs), {"do": "board", "target": "[0x2]"})
+        self.assertEqual(autopilot.parse_decision('{"do": "disembark"}', refs), {"do": "disembark"})
+        plan = autopilot.parse_plan('{"plan": [{"do": "travel", "dir": "north"}, {"do": "say", "text": "hi"}]}', refs)
+        self.assertEqual(plan, [{"do": "travel", "dir": "north"}])
+
+    def test_travel_targets(self):
+        me = {"x": 10, "y": 20, "z": 2}
+        self.assertEqual(boats.target_of({"dir": "north", "tiles": 500}, me)[:2], (10, 170))
+        places = {"boat": [{"name": "raft", "x": 50, "y": 20, "z": 2}, {"name": "raft", "x": 12, "y": 22, "z": 2}]}
+        self.assertEqual(boats.target_of({"to": "boat"}, me, places)[:2], (12, 22))
+        self.assertIn("no ore", boats.target_of({"to": "ore"}, me, places)[2])
+        self.assertIn("no home", boats.target_of({"to": "home"}, me)[2])
+        plan, note = autopilot.travel_plan([{"do": "travel", "to": "home"}], me, None)
+        self.assertEqual(plan, [])
+        self.assertIn("no home", note)
+
+    def _client(self, routes, me):
+        sent = []
+
+        class Client:
+            def request(self, action, args=None):
+                sent.append((action, args))
+                if action == "character_route":
+                    return {"ok": True, "result": routes.pop(0)}
+                return {"ok": True, "result": {"self": me, "nearby": [{"ref": "[0xraft]", "name": "raft", "boat": True, "dx": 0, "dy": 0}]}}
+
+        return Client(), sent
+
+    def test_builds_a_raft_crosses_and_moors_it(self):
+        me = {"x": 17, "y": 20, "z": 2, "items": [{"name": "wood logs", "amount": 12}], "left_hand": None, "right_hand": None, "active_hand": "left"}
+        aboard = {"ref": "[0xraft]", "name": "raft", "role": "driver", "x": 22, "y": 20, "z": 2}
+        routes = [
+            {"reachable": True, "needs_boat": True, "legs": [self.WALK, self.BOAT, self.ASHORE], "launch": [17, 20], "boats": []},
+            {"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "launch": [17, 20], "boats": []},
+            {"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "aboard": dict(aboard, x=18)},
+            {"reachable": True, "needs_boat": False, "legs": [self.ASHORE], "aboard": aboard},
+            {"reachable": True, "needs_boat": False, "legs": []},
+        ]
+        client, sent = self._client(routes, me)
+        ran = []
+
+        def run(steps, since):
+            ran.append([dict(step) for step in steps])
+            return "; ".join(f"{step['do']} ok (done)" for step in steps), since
+
+        ok, detail, _ = boats.travel(client, "[0xada]", {"x": 24, "y": 20}, 0, {"run": run, "craft_steps": autopilot._expand_craft})
+        self.assertTrue(ok, detail)
+        flat = [step["do"] for steps in ran for step in steps]
+        self.assertEqual(flat[:7], ["move"] * 7)
+        self.assertIn({"do": "craft", "recipe": "raft"}, [step for steps in ran for step in steps])
+        self.assertLess(flat.index("craft"), flat.index("board"))
+        self.assertLess(flat.index("board"), flat.index("disembark"))
+        self.assertIn("built a raft", detail)
+        self.assertEqual(boats.moored(detail), ("raft", 22, 20, 2))
+        self.assertEqual(sum(1 for action, _ in sent if action == "character_route"), 5)
+
+    def test_without_logs_says_what_a_raft_needs(self):
+        me = {"x": 17, "y": 20, "z": 2, "items": [{"name": "wood logs", "amount": 3}]}
+        routes = [{"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "launch": [17, 20], "boats": []}]
+        client, _ = self._client(routes, me)
+        ok, detail, _ = boats.travel(client, "[0xada]", {"x": 24, "y": 20}, 0, {"run": lambda steps, since: ("", since), "craft_steps": autopilot._expand_craft})
+        self.assertFalse(ok)
+        self.assertIn("10 wood logs", detail)
+        self.assertIn("have 3", detail)
+
+    def test_takes_a_moored_boat_and_refuels_a_stalled_one(self):
+        me = {"x": 17, "y": 20, "z": 2, "items": [{"name": "jerrycan", "liquids": {"gasoline": 40}}]}
+        boat = {"ref": "[0xrhib]", "name": "rigid hull inflatable boat", "board_from": [17, 20], "stalled": "the fuel tank is empty", "fuels": ["gasoline"]}
+        routes = [
+            {"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "launch": [17, 20], "boats": [boat]},
+            {"reachable": True, "needs_boat": False, "legs": []},
+        ]
+        client, _ = self._client(routes, me)
+        ran = []
+
+        def run(steps, since):
+            ran.extend(steps)
+            return "; ".join(f"{step['do']} ok (done)" for step in steps), since
+
+        ok, detail, _ = boats.travel(client, "[0xada]", {"x": 24, "y": 20}, 0, {"run": run, "craft_steps": autopilot._expand_craft})
+        self.assertTrue(ok, detail)
+        self.assertEqual([step["do"] for step in ran], ["take", "click", "board"])
+        self.assertEqual(ran[0]["item"], "jerrycan")
+        self.assertIn("refuelled", detail)
+
+    def test_memory_keeps_one_boat_per_mooring(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            memory = BoatMemory.load("Ada", tmp)
+            memory.boat("raft", 22, 20, 2)
+            memory.boat("raft", 23, 21, 2)
+            self.assertEqual(len(memory.data["places"]["boat"]), 1)
+            line = memory.recall({"self": {"x": 10, "y": 20, "z": 2}})
+            self.assertIn("Known boat: raft", line)
+
+    def test_boat_line(self):
+        observation = {"self": {"vehicle": {"name": "raft", "role": "driver"}}}
+        self.assertIn("move steers it", boats.describe(observation))
+        observation = {"self": {}, "nearby": [{"name": "diesel outrigger", "boat": True, "dx": 2, "dy": 0, "fuel": 0, "fuel_max": 125}]}
+        self.assertIn("fuel 0/125", boats.describe(observation))
 
 
 if __name__ == "__main__":
