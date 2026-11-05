@@ -29,7 +29,7 @@
 
 	var/radiation = 0
 
-	var/list/mergewith = list()
+	var/list/mergewith
 /atom/Destroy()
 	if (reagents)
 		qdel(reagents)
