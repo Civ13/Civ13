@@ -85,7 +85,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "OTHER")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "OTHER")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")

@@ -83,7 +83,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		return "You carry too much to travel."
 	return items
 
-/mob/living/human/proc/region_travel_payload(list/items, party = null)
+/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE)
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
@@ -109,6 +109,9 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	// A party train trip (party_train.dm) says whose train it is and where it left from.
 	if(party)
 		P["party"] = party
+		P["from"] = shard_group.region
+	// A raid trip (region_raid.dm) says where the raider goes home to.
+	else if(raid)
 		P["from"] = shard_group.region
 	return json_encode(P)
 
@@ -259,6 +262,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	if(istext(P["party"]))
 		H.party_train_party = P["party"]
 		party_train_restore_faction(H, P["party"])
+	region_raid_note_origin(H, P)
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
 	H.update_body(FALSE)
@@ -424,7 +428,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client
-	var/payload = H.region_travel_payload(items, travel_party(H))
+	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination))
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."

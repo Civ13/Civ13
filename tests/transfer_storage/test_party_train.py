@@ -95,7 +95,7 @@ class PartyTrainTests(unittest.TestCase):
 class RailYardTests(unittest.TestCase):
     def test_trips_through_a_train_carry_the_party_and_where_they_left(self):
         depart = proc(TRAVEL, '/obj/structure/region_gate/proc/depart')
-        self.assertIn('region_travel_payload(items, travel_party(H))', depart)
+        self.assertIn('region_travel_payload(items, travel_party(H), ', depart)
         payload = proc(TRAVEL, '/mob/living/human/proc/region_travel_payload')
         self.assertIn('P["from"] = shard_group.region', payload)
         decode = proc(TRAVEL, '/proc/region_travel_decode')
