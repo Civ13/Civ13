@@ -1050,6 +1050,12 @@
 // Resident set of this process in MiB, or null when it cannot be read. shell()
 // needs a trusted daemon; a probe failure only removes the resident term from
 // the projection, it never blocks a save or load.
+// The daily game log, when the full game is compiled (fixtures omit it).
+/proc/persistence_game_log(text)
+	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
+	var/game_log_proc = text2path("/proc/log_game")
+	if(settings && game_log_proc) call(game_log_proc)(text)
+
 /proc/persistence_process_memory_mb()
 	var/pid = world.process
 	if(!pid) return null
@@ -1133,6 +1139,9 @@
 	low_memory_active = forced || projected > limit
 	last_low_memory_plan = "[kind]: [low_memory_active ? "low-memory" : "full-file"] (resident=[isnum(resident) ? "[resident] MiB" : "unknown, assumed [PERSISTENCE_UNKNOWN_RESIDENT_MB] MiB"], largest level=[level_mb] MiB, projected=[projected] MiB, limit=[limit] MiB[forced ? ", forced" : ""])"
 	world.log << "World [last_low_memory_plan]"
+	// world.log is only the console on hosts started without -log; keep a copy
+	// in the daily game log so the memory reading can be checked afterwards.
+	persistence_game_log("World [last_low_memory_plan]")
 	return low_memory_active
 #endif
 
@@ -1141,6 +1150,7 @@
 /map_storage/proc/report_load_memory(z, seconds)
 	var/resident = persistence_process_memory_mb()
 	log_startup_progress("	Loaded z-level [z] in [seconds]s[isnum(resident) ? " (server memory [resident] MiB)" : ""].")
+	persistence_game_log("Loaded z-level [z] in [seconds]s; server memory [isnum(resident) ? "[resident] MiB" : "unreadable"].")
 	if(!isnum(resident)) return
 	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
 	var/limit = settings && ("persistence_memory_limit_mb" in settings.vars) ? settings.vars["persistence_memory_limit_mb"] : 0
