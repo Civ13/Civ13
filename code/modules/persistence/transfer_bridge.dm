@@ -163,8 +163,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 				// A save running now must neither list replayed effects it did
 				// not capture, nor capture replayed bodies under the loaded
 				// generation; it reports the old generation, which the agent
-				// ignores, and the replay waits for it.
-				while(persistence_save_active())
+				// ignores, and the replay waits for it. A load still restoring
+				// the world is waited for too.
+				while(persistence_active_operation || persistence_save_active())
 					sleep(10)
 				ledger_base = result["ledger_seq"]
 				replay(result["replay"])
@@ -181,7 +182,7 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 
 // Applies journaled character effects that the loaded save does not hold, in
 // the order they happened, and lists them for the next save. Called only when
-// no save is running, and never sleeps, so no save sees a half-replayed world.
+// no world operation is running, and never sleeps, so no save sees a half-replayed world.
 // Each effect is listed before its world change, like begin_effect, so a
 // runtime in one cannot make the next load build it a second time.
 /datum/transfer_bridge/proc/replay(list/entries)

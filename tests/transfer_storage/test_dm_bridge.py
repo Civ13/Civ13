@@ -180,7 +180,7 @@ class TradePost(unittest.TestCase):
         self.assertLess(body.index('applied += effect_id'), body.index('region_travel_replay_departure('))
         self.assertIn('catch(', body)
         # A running save must finish before the replay touches the world.
-        wait = loop.index('while(persistence_save_active())')
+        wait = loop.index('while(persistence_active_operation || persistence_save_active())')
         self.assertLess(wait, loop.index('ledger_base = result["ledger_seq"]'))
         self.assertNotIn('sleep(', loop[loop.index('ledger_base = result["ledger_seq"]'):loop.index('replay(result["replay"])')])
         self.assertIn('#define TRANSFER_CAPTURE_MAX 1024', FUNCTIONS)
