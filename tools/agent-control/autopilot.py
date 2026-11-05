@@ -348,7 +348,7 @@ def current_goal(observation):
         return "stop your bleeding: treat it with bandages, or make bandages or find healing herbs right away", "then rest and heal"
     if isinstance(me.get("water"), (int, float)) and me["water"] < 250:
         return "drink fresh water", "then keep working on your tools"
-    if hungry and _has(me, lambda n: _is_food(n) and ("roasted" in n or "berr" in n or "fruit" in n)):
+    if hungry and _has(me, lambda n: _is_food(n) and any(word in n for word in ("roasted", "cooked", "berr", "fruit", "bread"))):
         return "eat the food you carry", "then keep working"
     if hungry and fire and _has(me, lambda n: _is_food(n)):
         return "cook your raw food on the campfire (fuel_fire, cook, light_fire), then eat it", "then keep working"
@@ -666,7 +666,7 @@ def parse_plan(text, refs):
         if step is None:
             break  # keep the valid prefix; later steps may depend on the bad one
         plan.append(step)
-        if "skill" in step:
+        if "skill" in step or step.get("material") or step.get("do") == "roof":
             break  # the hands change; plan the next step after seeing the result
     return plan
 
@@ -870,14 +870,18 @@ def expand_skill(step, self_state, rows=None):
 def _expand_eat(active, other, self_state):
     """Hold food (roasted first) and click yourself to eat it."""
     me = self_state.get("ref")
+    ready = lambda name: any(word in str(name).lower() for word in ("roasted", "cooked"))
     held = [name for name in (active, other) if _is_food(name)]
-    held.sort(key=lambda name: "roasted" not in str(name).lower())
+    held.sort(key=lambda name: not ready(name))
+    stowed_ready = [item for item in _stowed(self_state) if _is_food(item) and ready(item)]
+    if held and not ready(held[0]) and stowed_ready and "empty" in (active, other):
+        held = []  # cooked food in a pocket beats raw food in hand, when a hand is free to take it
     steps = []
     if held:
         if held[0] != active:
             steps.append({"do": "swap_hand"})
     else:
-        stowed = sorted((item for item in _stowed(self_state) if _is_food(item)), key=lambda name: "roasted" not in str(name).lower())
+        stowed = sorted((item for item in _stowed(self_state) if _is_food(item)), key=lambda name: not ready(name))
         if not stowed:
             return [], "eat needs food in a hand or a pocket: hunt and butcher an animal, cook the meat, or gather berries"
         if active != "empty":
@@ -1400,9 +1404,6 @@ def _run(client, args, character, token, model_pool):
         else:
             signatures.extend(f"{self_state.get('x')},{self_state.get('y')}:{json.dumps(item, sort_keys=True)}" for item in plan)
             steps, error = expand_plan(plan, self_state, target_rows(observation))
-            if any(item.get("do") == "say" for item in plan):
-                for who in speakers:
-                    replied[who] = time.monotonic()
             facing = open_direction(observation)
             craft_at = next((index for index, item in enumerate(steps) if item.get("do") == "craft"), None)
             if facing and craft_at is not None and not (craft_at and steps[craft_at - 1].get("do") == "face"):
@@ -1413,6 +1414,9 @@ def _run(client, args, character, token, model_pool):
                 time.sleep(args.interval)
                 continue
             summary, queue_since = execute(client, character, steps, queue_since)
+            if "say ok" in summary:
+                for who in speakers:
+                    replied[who] = time.monotonic()  # only an answer that was actually said counts
             if "explore failed" in summary or "explore ok (walked 0" in summary:
                 explore_dir = {"north": "east", "east": "south", "south": "west", "west": "north"}[explore_dir]
             word = next((COLLECT_AFTER[item["skill"]] for item in plan if item.get("skill") in COLLECT_AFTER), None)

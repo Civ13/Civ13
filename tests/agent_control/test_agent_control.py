@@ -604,6 +604,16 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(autopilot.reflex({"self": armed, "nearby": [dict(wolf, stat=2)], "messages": []}), (None, ""))
         self.assertIn("(predator: dangerous)", autopilot.summarize({"self": {}, "nearby": [wolf]})[0])
 
+    def test_review_fixes_food_and_material_plans(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "meat"}, "left_hand": None, "intent": "help", "carried": ["roasted meat (pocket)"]}
+        self.assertEqual(autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], me)[0], [{"do": "swap_hand"}, {"do": "take", "item": "roasted meat"}, {"do": "click", "target": "[0x9]"}])
+        full = dict(me, left_hand={"name": "stick"})
+        self.assertEqual(autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], full)[0], [{"do": "click", "target": "[0x9]"}])  # raw food in hand as fallback
+        cooked = {"self": {"water": 900, "nutrition": 100, "right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}, "carried": ["cooked meat (pocket)"]}, "nearby": [{"name": "campfire"}]}
+        self.assertIn("eat the food", autopilot.current_goal(cooked)[0])
+        plan = autopilot.parse_plan('{"plan": [{"do": "build", "recipe": "a", "material": "planks", "dir": "north"}, {"do": "build", "recipe": "b", "material": "stone", "dir": "east"}]}', ["[0x9]"])
+        self.assertEqual(len(plan), 1)  # each material-dependent step is planned from a fresh look at the hands
+
     def test_bleeding_is_treated_first(self):
         me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "harm",
               "carried": ["healing herbs (pocket)", "bandages (pocket)"],
