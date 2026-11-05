@@ -1,4 +1,4 @@
-"""New-output-only indoor plan bundles; deliberately no native DMM emitter."""
+"""New-output-only indoor plan bundles and their static DMM export (no game mode)."""
 import argparse
 import hashlib
 from pathlib import Path
@@ -7,6 +7,7 @@ from .common import canonical_hash
 from .io import read_json,new_output,json_text
 from .prototype import preset,generate,validate,validate_config
 from .contracts import level_template,escape_scenario
+from .native import export,verify_export
 
 
 def read(path):
@@ -53,6 +54,8 @@ def main():
     q=s.add_parser('validate');q.add_argument('plan',type=Path)
     q=s.add_parser('verify');q.add_argument('directory',type=Path)
     q=s.add_parser('catalog');q.add_argument('--out',type=Path,required=True)
+    q=s.add_parser('export');q.add_argument('directory',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--z',type=int,default=1)
+    q=s.add_parser('verify-export');q.add_argument('directory',type=Path);q.add_argument('--chapter',type=Path)
     a=p.parse_args()
     try:
         if a.command in {'preset','catalog'}:
@@ -67,6 +70,12 @@ def main():
             answer=write_bundle(folder,result,a.scenario_year)
         elif a.command=='validate':
             answer=validate(read(a.plan));print(json_text(answer));return 0 if answer['accepted'] else 1
+        elif a.command=='export':
+            verify_bundle(a.directory);answer=export(read(a.directory/'plan.json'),a.out,a.z)
+        elif a.command=='verify-export':
+            doc=None
+            if a.chapter:verify_bundle(a.chapter);doc=read(a.chapter/'plan.json')
+            answer=verify_export(a.directory,doc)
         else:answer=verify_bundle(a.directory)
         print(json_text(answer));return 0
     except (OSError,ValueError,TypeError,KeyError,RecursionError) as e:

@@ -6,11 +6,11 @@ finite chapter from original room families, checks physical sockets, zones,
 footprint clearance and abstract objective/lock/exit reachability, then writes a
 reproducible JSON bundle. It is not a registered or playable Civ13 game mode.
 
-**Room-layout status:** This tool still uses the version-1 room catalog. Its
-corresponding [room-layout previews](../../docs/liminal/ROOM-PREVIEWS.md) were
-rejected as room designs. A successful topology check verifies the stated graph,
-clearance and progression rules; it does not approve the layouts for a mode.
-Revised room design and native integration remain separate work.
+**Room-layout status:** The tool uses the furnished version-2 catalog accepted on
+2026-11-04 ([previews](../../docs/liminal/ROOM-PREVIEWS-V2.md)). A successful
+topology check verifies the stated graph, clearance and progression rules. The
+`export` command below turns a verified chapter into a static Civ13 map; the
+finite game mode that gives it doors, objectives and an exit is separate work.
 
 Run from a complete repository checkout with Python **3.11+**. Only the standard
 library is used; no pip installation, engine, assets or native save is required:
@@ -84,13 +84,38 @@ The default semantic topology SHA-256 is
 `6e4e1946ee62525bad82681d6b7cb5b0d2b8d8c03472b8856009108a93bcad40`.
 This is a small authored topology fixture, not a seed matching a game/show scene.
 
+## Static DMM export
+
+`export` turns a verified chapter bundle into a static map that uses existing
+Civ13 types only, listed in [native-catalog-v2.json](native-catalog-v2.json):
+
+```sh
+python3 -m tools.liminal_maps export data/liminal/chapter --out data/liminal/map
+python3 -m tools.liminal_maps verify-export data/liminal/map --chapter data/liminal/chapter
+```
+
+The new folder holds `map.dmm`, `sidecar.json` (rooms, links, aperture tiles,
+spawn, objectives and exit in native x,y), `export-manifest.json` (plan, layout,
+catalog and exporter pins), `parse-back.json`, and `complete.json`, written last.
+The exporter reads the map back and refuses to finish unless it equals the
+intended layout. It also refuses unmapped assets, a dense object on a walkable
+tile, content on void or wall tiles (except wall-mounted notice boards), and an
+existing destination. Each blocking flag in the catalog records that type's
+density in code. A solid-prop tile may hold a non-dense asset such as the sink,
+which leaves it more open than planned and never less.
+
+Doors are open apertures, and the objectives, flags and exit exist only in the
+sidecar. Nothing is registered as a game mode or map choice. Wall and void tiles
+both use the cement wall. `tests/liminal_maps/native_compile.py` compiles Civ13
+with the exported default chapter as the selected map (local evidence, about a
+minute, needs the pinned compiler; the real `civ13.dme` is not changed). It does
+not boot the world, so in-game appearance and collision are still unverified.
+
 ## Native boundary and contributions
 
-No DMM, image, sprite, audio file, native game object or mode registration is
-created. Indoor native palette/DMM emission and the finite mode adapter are the
-next design slices; the Nomads terrain exporter is not reused as an indoor
-palette. Critical walls/props/gates require source-backed native mappings and
-must not be silently dropped into sidecar-only semantics.
+The finite mode adapter (slice 4) is the next step. It will add map metadata,
+start admission, native objective and door interactions and extraction. The
+Nomads terrain exporter is not reused as an indoor palette.
 
 No external assets are copied. Source/RNG/IO provenance is in SOURCE-PROVENANCE.json.
 Original code and room data use the repository license. Third-party art ports,
