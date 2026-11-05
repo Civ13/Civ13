@@ -185,6 +185,8 @@ var/list/global/wall_cache = list()
 	for (var/obj/O in src)
 		O.hide(1)
 
+var/global/wall_bulk_placement = FALSE
+
 /turf/wall/New(var/newloc, var/materialtype)
 	..(newloc)
 	if (!istype(src, /turf/wall/rockwall))
@@ -198,8 +200,11 @@ var/list/global/wall_cache = list()
 		icon = 'icons/turf/walls.dmi'
 		icon_state = "rock"
 
-	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
-		L.update_overlay()
+	// A bulk placer (the zombie city generator) refreshes the level's
+	// overlays once after placing thousands of walls instead of per wall.
+	if (!wall_bulk_placement)
+		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
+			L.update_overlay()
 
 /turf/wall/Del()
 	for (var/obj/roof/R in range(2, src))

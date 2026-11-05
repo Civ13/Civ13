@@ -178,6 +178,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_zombie_city_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'zombie_city'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/zombie_city/test_zombie_city.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_train_raid_suite_is_bounded_and_not_silently_omitted(self):
         name = 'train_raid'
         suite = ci.SUITES[name]
