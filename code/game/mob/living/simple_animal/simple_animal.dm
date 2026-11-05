@@ -155,7 +155,7 @@
 			dead_mob_list -= src
 			register_living_mob(src)
 			stat = CONSCIOUS
-			density = TRUE
+			density = initial(density)
 		return FALSE
 
 	if (health > maxHealth)
