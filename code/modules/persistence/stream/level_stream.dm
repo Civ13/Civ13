@@ -175,6 +175,7 @@
 /datum/level_segment_reader/stream/close()
 	if(stream) stream.close()
 	stream = null
+	scratch_names = list()
 
 /datum/level_segment_reader/stream/owns_file(savefile/F)
 	return F && scratch_names["[F.name]"]
@@ -194,8 +195,8 @@
 	while(open_order.len > limit)
 		var/oldest = open_order[1]
 		open_order.Cut(1, 2)
-		var/savefile/dropped = open_files[oldest]
-		if(dropped) scratch_names -= "[dropped.name]"
+		// Keep the evicted file's name: an entry frame may still hold it and
+		// must keep routing its list lookups through this reader.
 		open_files -= oldest
 	return S
 

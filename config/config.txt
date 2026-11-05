@@ -246,7 +246,8 @@ PERSISTENCE_MEMORY_LIMIT_MB 3072
 #world saves write each level's entries and lists through the 64-bit savestream
 #helper (savestream.dll and savestream_helper.exe beside civ13.dmb, needs -trusted),
 #so the level is never held in server memory. Without those files saves use
-#segmented savefiles. Uncomment to always use savefiles.
+#savefile levels: segmented (format 4) under the low-memory plan, otherwise one
+#full file per level (format 3). Uncomment to always use savefiles.
 #PERSISTENCE_NO_STREAM_SAVES
 
 #if uncommented, sends webhook events to Civilizationbot for processing

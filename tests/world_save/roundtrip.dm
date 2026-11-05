@@ -551,6 +551,19 @@ var/global/roundtrip_capture_failure = FALSE
 	check(ispath(map_storage.level_entry_value(backup, backup["/map/1/1/1"], "type"), /turf), "backup stream unreadable")
 	backup = null
 	map_storage.drop_segment_reader()
+	// An entry shard evicted by later list blocks may still be held by an
+	// entry frame; the reader must keep recognising it.
+	var/savefile/index_file = new("map_saves/1.sav")
+	var/datum/level_segment_reader/stream/R = new(index_file, 1)
+	var/savefile/shard = R.entry_file(1)
+	for(var/block = 0, block < 5, block++)
+		R.list_file(block * 512 + 1)
+	check(!R.open_files["e0"] && R.owns_file(shard), "evicted stream shard lost its reader routing")
+	R.close()
+	check(!R.owns_file(shard), "closed stream reader still claims its scratch files")
+	R = null
+	shard = null
+	index_file = null
 	roundtrip_capture_failure = TRUE
 	var/datum/controller/gameticker/failed_stream = new
 	check(!failed_stream.savemap(), "stream capture failure accepted")
