@@ -62,7 +62,10 @@ still comes only from a direct response. Choosing one runs Wake and join:
 `?wake=1&port=N`, then the doorman is polled every two seconds for up to 60
 seconds until it reports awake (stopped or the time limit ends it with a
 message; a host low on free memory refuses the wake and the player is told so), then one ordinary direct status query verifies the game port and its
-answer is joined exactly like a refreshed server. The doorman never proxies game
+answer is joined exactly like a refreshed server. A host that lost power since
+the freeze starts the world from its last save instead; it reports a longer
+`wake_estimate`, and the launcher waits up to that estimate plus 60 seconds
+(at most 11 minutes, since the estimate is capped at 600). The doorman never proxies game
 traffic, so the player's own address still reaches the world for bans and logs.
 
 ## Shared request spacing and responsive waiting

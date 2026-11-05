@@ -88,6 +88,7 @@ class Instance:
         self.status = None        # last {"players", "map_name", "map_gamemode"} the world reported
         self.status_at = None
         self.waking_since = None
+        self.waking_limit = WAKING_SECONDS
         self.idle_since = None
         self.next_watch = 0.0
         self.next_refresh = 0.0
@@ -130,9 +131,9 @@ class Doorman:
 
     def state(self, instance):
         now = self.clock()
-        if instance.waking_since is not None and now - instance.waking_since > WAKING_SECONDS:
+        if instance.waking_since is not None and now - instance.waking_since > instance.waking_limit:
             instance.waking_since = None
-        if instance.host.frozen():
+        if instance.host.frozen() or instance.host.cold():
             return 'waking' if instance.waking_since is not None else 'asleep'
         if instance.waking_since is not None:
             return 'waking'
@@ -140,31 +141,55 @@ class Doorman:
 
     def describe(self, instance):
         with self.lock:
-            entry = {'port': instance.port, 'state': self.state(instance),
-                     'wake_estimate': instance.host.config['wake_estimate_seconds']}
+            entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance)}
             if instance.status is not None:
                 entry.update(instance.status)
                 entry['cached_age'] = max(0, int(self.wall() - instance.status_at))
             return entry
 
+    def estimate(self, instance):
+        config = instance.host.config
+        cold = instance.host.cold() is not None or (instance.waking_limit > WAKING_SECONDS and instance.waking_since is not None)
+        return config['cold_start_estimate_seconds'] if cold else config['wake_estimate_seconds']
+
     def wake(self, instance, reason):
-        """Thaw a frozen instance and mark it waking until its status answers."""
+        """Thaw a frozen instance, or start a cold one from its last save, and mark
+        it waking until its status answers."""
         with self.lock:
-            if instance.host.frozen():
-                instance.host.log(instance.host.thaw(reason))
-                instance.waking_since = self.clock()
-                instance.idle_since = None
-                instance.next_refresh = 0.0
-                return True
-        return False
+            host = instance.host
+            if host.frozen():
+                host.log(host.thaw(reason))
+                limit = WAKING_SECONDS
+            elif host.cold():
+                try:
+                    host.log(host.start_cold(reason))
+                except Exception as refusal:  # gaia_host.Refused; that module may be __main__
+                    if type(refusal).__name__ != 'Refused':
+                        raise
+                    host.log({'cold_start_refused': str(refusal)})
+                    return False
+                limit = host.config['cold_start_estimate_seconds'] + WAKING_SECONDS
+            else:
+                return False
+            instance.waking_since = self.clock()
+            instance.waking_limit = limit
+            instance.idle_since = None
+            instance.next_refresh = 0.0
+            return True
 
     def low_memory(self, instance):
         """(free_mb, need_mb) when a frozen instance must not be woken for lack of memory.
 
         An awake instance needs nothing, and an unknown free amount does not block.
         """
-        need = instance.host.config['wake_min_free_mb']
-        if not need or not instance.host.frozen():
+        host = instance.host
+        if host.frozen():
+            need = host.config['wake_min_free_mb']
+        elif host.cold():
+            need = host.config['cold_start_min_free_mb']  # loading a save peaks far above a thaw
+        else:
+            return None
+        if not need:
             return None
         free = self.platform.free_memory_mb()
         if free is None or free >= need:
@@ -206,7 +231,7 @@ class Doorman:
             with self.lock:
                 last = self.wakes.get(address)
                 spaced = last is None or now - last >= WAKE_SPACING
-                if spaced and instance.host.frozen():
+                if spaced and (instance.host.frozen() or instance.host.cold()):
                     self.wakes[address] = now
             if spaced:
                 self.wake(instance, 'doorman wake request')
@@ -263,9 +288,10 @@ class Doorman:
                     host.log({'watch_error': str(error)[:300]})
                     instance.idle_since, wait = None, 5
                 instance.next_watch = now + wait
-                if frozen and host.frozen() is None:  # a direct connection thawed it
+                if frozen and host.frozen() is None and host.cold() is None:  # a direct connection thawed it
                     with self.lock:
                         instance.waking_since = self.clock()
+                        instance.waking_limit = WAKING_SECONDS
                         instance.next_refresh = 0.0
             if host.frozen() is None and now >= instance.next_refresh:
                 answered = self.platform.listening(instance.port) and self.refresh(instance)
