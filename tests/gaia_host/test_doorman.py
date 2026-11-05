@@ -66,6 +66,7 @@ class DoormanTests(base.GaiaHostTests):
         self.clock[0] += 120
         entry = self.ask('host_status=1')['instances'][0]
         self.assertEqual((entry['state'], entry['map_name'], entry['players'], entry['cached_age']), ('asleep', 'Gaia', 0, 120))
+        self.assertFalse(entry['cold'])  # frozen in memory: thaws at once
         self.assertEqual(self.machine.suspended, 1)
 
     def test_wake_thaws_once_and_reads_waking_until_the_world_answers(self):
@@ -133,7 +134,7 @@ class DoormanTests(base.GaiaHostTests):
         self.assertIsNone(self.host.frozen())
         self.assertIsNotNone(self.host.cold())
         entry = self.ask('host_status=1')['instances'][0]
-        self.assertEqual((entry['state'], entry['wake_estimate']), ('asleep', 300))
+        self.assertEqual((entry['state'], entry['wake_estimate'], entry['cold']), ('asleep', 300, True))
         self.machine.free_mb = 2000  # enough to thaw, not enough to load a save
         refused = self.ask('wake=1&port=1714')
         self.assertEqual((refused['ok'], refused['need_mb']), (False, 2560))

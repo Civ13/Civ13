@@ -485,7 +485,8 @@ var/global/list/region_travel_carry_types = list(
 	if(!destination || !transfer_bridge.ready() || !(destination in transfer_bridge.peers) || !shard_group.enabled)
 		return "The trail is overgrown. It leads nowhere for now."
 	var/list/peer = shard_group.peers[destination]
-	if(!peer || peer["state"] != "UP")
+	// A sleeping region is woken when someone sets off (travel()).
+	if(!peer || peer["state"] != "UP" && !shard_group.peer_wakeable(destination))
 		return "Nobody seems to be coming back from [destination_name()] right now."
 	if(busy || persistence_save_active())
 		return "The trail is busy. Try again in a moment."
@@ -527,6 +528,17 @@ var/global/list/region_travel_carry_types = list(
 	if(reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
+	// A sleeping destination is woken first; the wait can be minutes, so check again after.
+	if(shard_group.peers[destination]["state"] != "UP")
+		reason = shard_group.wake_peer(destination, H)
+		if(!reason)
+			reason = travel_refusal(H)
+		if(!reason)
+			items = H.region_travel_items()
+			if(istext(items)) reason = items
+		if(reason)
+			to_chat(H, SPAN_WARNING(reason))
+			return
 	H.record_persistence_owner()
 	var/result = depart(H)
 	if(result != "departed")
@@ -540,6 +552,9 @@ var/global/list/region_travel_carry_types = list(
 	if(reason) return reason
 	if(!istype(H) || QDELETED(H) || H.loc != loc && !Adjacent(H)) return "You are too far from the trail."
 	if(!H.persistence_owner_ckey) return "Only players with a BYOND account can travel."
+	// The traveller is sent to the destination at once, so it must be awake (travel() wakes it).
+	if(shard_group.peers[destination]["state"] != "UP" && !shard_group.poll_peer(destination))
+		return "[destination_name()] is asleep. Use the trail to wake it."
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client

@@ -147,7 +147,9 @@ class Doorman:
 
     def describe(self, instance):
         with self.lock:
-            entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance)}
+            entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance),
+                     # asleep after a power-down: a wake starts it from its save, which takes minutes
+                     'cold': instance.host.cold() is not None}
             if instance.status is not None:
                 entry.update(instance.status)
                 entry['cached_age'] = max(0, int(self.wall() - instance.status_at))
