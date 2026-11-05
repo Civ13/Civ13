@@ -865,6 +865,7 @@
 #include "code\modules\1713\snowfall_ground.dm"
 #include "code\modules\ecology\activity_heatmap.dm"
 #include "code\modules\ecology\ecology_spawning.dm"
+#include "code\modules\nomad_raids\nomad_raid.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"
