@@ -19,7 +19,8 @@ interrupt gathering. Panning also checks the original water tile at completion.
 Electricity unlocks the industrial drill. Construction costs 20 electronics and
 20 steel. Paved Infrastructure unlocks plain white cable, which supplies the
 Electricity prototype; colored cables remain locked until Electricity. Connect
-an anchored drill to cable power on uncovered dirt at z=1.
+an anchored drill to cable power on uncovered dirt on any level, surface or
+underground.
 It reserves 150 power and produces two randomly selected mineral units every
 two minutes. Starting or restarting waits a full interval. It stops when power,
 terrain, anchoring, or output space becomes invalid, and releases its power

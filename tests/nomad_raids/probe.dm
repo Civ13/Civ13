@@ -38,6 +38,9 @@ var/raid_runtime_error = FALSE
 		raid_ground()
 		raid_helper_checks()
 		raid_party_checks()
+		raid_coordinator_checks()
+		raid_trade_checks()
+		raid_reputation_checks()
 		raid_lifecycle_checks()
 	catch(var/exception/e)
 		raid_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -97,72 +100,246 @@ var/raid_runtime_error = FALSE
 	var/datum/nomad_raid/R = new
 	raid_check(isnull(R.setup(target, list("victim"), 9, "probe")), "a party sets up at the edge")
 	raid_check(R.members.len == NOMAD_RAID_MAX_MEMBERS, "party size is capped at [NOMAD_RAID_MAX_MEMBERS]")
-	raid_check(R.leader && (R.leader in R.members), "the party has a leader")
-	var/all_unsaved = TRUE
-	var/all_armed = TRUE
-	for (var/mob/living/human/H in R.members)
-		if (H.should_save)
-			all_unsaved = FALSE
-		var/obj/item/W = R.weapon[H]
-		if (!W || W.loc != H || !istype(H.back, /obj/item/weapon/storage/backpack))
-			all_armed = FALSE
-	raid_check(all_unsaved, "raiders are never saved")
-	raid_check(all_armed, "each raider holds a weapon and wears a bag")
+	raid_check(R.leader && (R.leader in R.members) && R.leader.is_leader, "the party has a leader")
+	var/all_npcs = TRUE
+	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.members)
+		if (M.should_save || M.party != R || M.faction != NOMAD_RAID_FACTION || M.weapon != /obj/item/weapon/material/spear)
+			all_npcs = FALSE
+	raid_check(all_npcs, "members are unsaved NPC raiders of the party, armed for the age")
 	raid_check(R.tribute_demand == NOMAD_RAID_TRIBUTE_PER_RAIDER * NOMAD_RAID_MAX_MEMBERS, "tribute scales with party size")
+	var/mob/living/simple_animal/hostile/human/nomad_raider/gunner = new(locate(2, 2, 1))
+	gunner.arm_for_age(6)
+	raid_check(gunner.ranged && gunner.gun && gunner.gun.loc == gunner && !gunner.gun.should_save, "late-age raiders carry an unsaved sidearm")
+	qdel(gunner)
 
-	// A second raid is refused while one runs.
 	nomad_raid = R
-	raid_check(start_nomad_raid(target, list(), 3, "probe") == "a raid is already running", "one raid at a time")
+	raid_check(start_nomad_raid(target, list(), 3, "probe") == "a visit is already running", "one visit at a time")
 
-	// Marching: a step brings the leader closer to the target.
-	var/before = get_dist(R.leader, target)
-	R.next_step[R.leader] = 0
-	R.step_toward(R.leader, target, 2)
-	raid_check(get_dist(R.leader, target) < before, "the leader marches toward the target")
-	raid_check(R.next_step[R.leader] > world.time, "marching respects the movement delay")
+	// The combat AI only picks fights while the party is hostile.
+	var/mob/living/simple_animal/hostile/human/nomad_raider/F = R.members[2]
+	var/mob/living/human/victim = new(get_step(F, get_dir(F, target)))
+	raid_check(R.foe_ok(victim) && !R.foe_ok(F), "people are foes, party members are not")
+	raid_check(isnull(F.FindTarget()), "peaceful raiders pick no fights")
+	R.set_hostile(TRUE)
+	raid_check(F.behaviour == "hostile" && F.FindTarget() == victim, "hostile raiders use the NPC AI to find a target")
+	R.set_hostile(FALSE)
+	raid_check(F.behaviour == "defends" && isnull(F.target_mob), "calling off the fight clears targets")
+	victim.stat = UNCONSCIOUS
+	raid_check(!R.foe_ok(victim), "downed people are left alone")
+	victim.stat = CONSCIOUS
+
+	// Marching uses the shared NPC pathfinding.
+	R.order_move(R.leader, target)
+	raid_check(R.leader.moving && R.leader.target_obj == target, "the leader is ordered to march by pathfinding")
+	R.order_halt(R.leader)
+	raid_check(!R.leader.moving, "the leader can be halted")
 
 	// Parley: tribute at the leader's feet ends the threat.
-	var/mob/living/human/L = R.leader
 	R.begin_parley()
 	raid_check(R.state == "parley", "parley begins")
-	var/turf/feet = get_turf(L)
+	var/turf/feet = get_turf(R.leader)
 	var/list/tribute = list()
 	for (var/i = 1, i <= 3, i++)
 		tribute += new /obj/item/weapon/material/spear(feet)
+	R.next_decide = 0
 	R.tick_parley(R.alive_members(), FALSE, TRUE)
 	raid_check(R.state == "loot" && R.outcome == "tribute paid", "enough tribute ends the parley peacefully")
-	raid_check(R.pick_loot(L) in tribute, "after tribute, raiders take only the tribute")
+	raid_check(R.pick_loot(R.leader) in tribute, "after tribute, raiders take only the tribute")
 
 	// Refusal: an attack during parley starts the assault.
 	R.state = "parley"
 	R.outcome = ""
 	R.tick_parley(R.alive_members(), TRUE, TRUE)
-	raid_check(R.state == "assault", "an attack during parley starts the assault")
+	raid_check(R.state == "assault" && R.hostile, "an attack during parley starts the assault")
 
-	// Carrying and a fallen raider's drop.
-	var/mob/living/human/H = R.members[2]
-	var/obj/item/weapon/material/spear/loot = new(get_turf(H))
-	raid_check(R.carry(H, loot), "a raider can carry loot")
-	R.stolen += loot
-	raid_check(nomad_raid_holder(loot) == H, "the loot is on the raider")
-	var/turf/fell_at = get_turf(H)
-	var/obj/item/W = R.weapon[H]
-	H.stat = DEAD
-	R.drop_loot(H)
-	raid_check(loot.loc == fell_at, "a fallen raider drops what they stole")
-	raid_check(W.loc == fell_at, "a fallen raider drops their weapon")
-	raid_check(!H.back, "a fallen raider drops their bag")
+	// Carrying, and a fallen raider drops what they took.
+	var/obj/item/weapon/material/spear/loot = new(get_turf(F))
+	raid_check(F.take_item(loot) && (loot in F.carried) && nomad_raid_holder(loot) == F, "a raider can carry loot")
+	var/turf/fell_at = get_turf(F)
+	R.member_fell(F)
+	raid_check(loot.loc == fell_at && !F.carried.len, "a fallen raider drops what they stole")
 
-	// Removal: survivors drop loot and the raid clears itself.
-	var/mob/living/human/K = R.members[3]
+	// Removal: survivors drop loot and the visit clears itself.
+	var/mob/living/simple_animal/hostile/human/nomad_raider/K = R.members[3]
 	var/obj/item/weapon/material/spear/carried = new(get_turf(K))
-	R.carry(K, carried)
-	R.stolen += carried
+	K.take_item(carried)
 	var/turf/K_at = get_turf(K)
 	R.remove_all("probe")
-	raid_check(R.state == "ended" && isnull(nomad_raid), "removing the raid ends it")
+	raid_check(R.state == "ended" && isnull(nomad_raid), "removing the visit ends it")
 	raid_check(carried.loc == K_at, "removed raiders leave their loot behind")
 	raid_check(!R.members.len, "no raiders remain")
+	qdel(victim)
+
+// What an agent-control coordinator may see and order.
+/proc/raid_coordinator_checks()
+	var/turf/target = locate(20, 26, 1)
+	var/datum/nomad_raid/R = new
+	R.setup(target, list(), 4, "probe")
+	nomad_raid = R
+	var/mob/living/human/bob = new(get_step(R.leader, get_dir(R.leader, target)))
+	bob.real_name = "Bob"
+	var/list/S = R.coordinator_status()
+	raid_check(S["active"] && S["state"] == "march" && S["party"]:len == 4, "status lists the party")
+	raid_check(R.voice_active(), "reading status attaches the voice")
+	var/list/allowed = S["allowed"]
+	raid_check(("say" in allowed) && ("retreat" in allowed) && !("tactic" in allowed), "marching allows only talk and retreat")
+	var/list/people = S["people"]
+	raid_check(people.len == 1 && people[1]["ref"] == "\ref[bob]", "status lists nearby people by ref")
+
+	R.begin_parley()
+	raid_check(R.pending_cue && R.leader_ok(), "with a voice attached, the controller's line waits as a cue")
+	var/list/O = R.order(list("order" = "say", "text" = "Pay, <b>Bob</b>.", "emote" = "glares."), "probe")
+	raid_check(O["ok"] && isnull(R.pending_cue), "the coordinator speaks for the leader and replaces the cue")
+	raid_check(!findtext(O["detail"], "<b>"), "coordinator speech is sanitized")
+	O = R.order(list("order" = "say", "text" = "Again."), "probe")
+	raid_check(!O["ok"], "speech is rate limited")
+	O = R.order(list("order" = "tactic", "tactic" = "flank"), "probe")
+	raid_check(!O["ok"], "fight orders are refused during parley")
+	O = R.order(list("order" = "bargain", "decision" = "refuse"), "probe")
+	raid_check(!O["ok"] && R.state == "parley", "defenders get time to answer before a refusal")
+	O = R.order(list("order" = "bargain", "decision" = "counter", "demand" = R.tribute_base * 3), "probe")
+	raid_check(!O["ok"], "a demand above the bound is refused")
+	O = R.order(list("order" = "bargain", "decision" = "counter", "demand" = R.accept_floor()), "probe")
+	raid_check(O["ok"] && R.tribute_demand == R.accept_floor(), "a demand within bounds is set")
+	O = R.order(list("order" = "bargain", "decision" = "accept"), "probe")
+	raid_check(!O["ok"] && R.state == "parley", "nothing offered cannot be accepted")
+	O = R.order(list("order" = "launch_nukes"), "probe")
+	raid_check(!O["ok"], "unknown orders are refused")
+
+	R.state_at -= NOMAD_RAID_EARLY_ASSAULT
+	O = R.order(list("order" = "bargain", "decision" = "refuse"), "probe")
+	raid_check(O["ok"] && R.state == "assault" && R.hostile, "after the grace time a refusal starts the assault")
+	O = R.order(list("order" = "focus", "target" = "\ref[bob]"), "probe")
+	raid_check(O["ok"] && R.focus == bob, "the coordinator can name a focus target")
+	O = R.order(list("order" = "focus", "target" = "\ref[R.leader]"), "probe")
+	raid_check(!O["ok"] && R.focus == bob, "party members cannot be the focus")
+	O = R.order(list("order" = "tactic", "tactic" = "hold"), "probe")
+	raid_check(O["ok"] && R.tactic == "hold", "the coordinator can set a tactic")
+	O = R.order(list("order" = "loot"), "probe")
+	raid_check(O["ok"] && R.state == "loot", "the coordinator can order looting")
+	O = R.order(list("order" = "retreat"), "probe")
+	raid_check(O["ok"] && R.state == "leave" && !R.hostile, "the coordinator can order a retreat")
+	S = R.coordinator_status(0)
+	var/list/kinds = list()
+	for (var/list/E in S["events"])
+		kinds |= E["kind"]
+	raid_check(("said" in kinds) && ("bargain" in kinds) && ("focus" in kinds), "events record what happened")
+	var/list/later = R.coordinator_status(S["last_event"])
+	raid_check(!later["events"]:len, "events can be read incrementally")
+	R.remove_all("probe")
+	qdel(bob)
+
+/proc/raid_trade_checks()
+	var/turf/target = locate(20, 26, 1)
+	var/datum/nomad_raid/R = new
+	raid_check(isnull(R.setup(target, list(), 2, "probe", "trade")) && R.kind == "trade", "a caravan sets up")
+	nomad_raid = R
+	raid_check(findtext(R.leader.name, "trader"), "the caravan has a trader")
+	R.begin_trade()
+	raid_check(R.state == "trade" && !R.hostile, "trading begins peacefully")
+	raid_check(R.goods.len >= 1 && R.goods.len <= NOMAD_TRADE_GOODS, "goods are laid out ([R.goods.len])")
+	var/goods_ok = TRUE
+	for (var/obj/item/I in R.goods)
+		if (I.should_save || !(I.loc in R.stall) || R.goods[I] < 3)
+			goods_ok = FALSE
+	raid_check(goods_ok, "goods lie on the stall, priced and unsaved")
+	var/list/S = R.coordinator_status()
+	raid_check(S["goods"]:len == R.goods.len && ("price" in S["allowed"]), "status lists goods and allows repricing")
+
+	var/obj/item/first = R.goods[1]
+	var/base = R.base_price[first]
+	var/list/O = R.order(list("order" = "price", "target" = "\ref[first]", "price" = base * 3), "probe")
+	raid_check(!O["ok"], "prices are bounded")
+	O = R.order(list("order" = "price", "target" = "\ref[first]", "price" = base * 2), "probe")
+	raid_check(O["ok"] && R.goods[first] == base * 2, "the coordinator can reprice a good")
+
+	// Paying: an item dropped at the trader's feet credits whoever last handled it.
+	var/obj/item/weapon/material/spear/pay = new(get_turf(R.leader))
+	pay.fingerprintslast = "Buyer"
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(R.credit["buyer"] == nomad_raid_worth(pay, TRUE) && (pay in R.leader.carried), "a payment is taken and credited")
+
+	// Buying: a good taken by someone with enough credit is sold.
+	R.credit["buyer"] = 1000
+	first.forceMove(locate(2, 2, 1))
+	first.fingerprintslast = "Buyer"
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!(first in R.goods) && R.sold == 1 && first.should_save, "a paid-for good is sold and becomes a normal item")
+	raid_check(R.credit["buyer"] == 1000 - base * 2, "the sale spends credit")
+
+	// Theft: taking a good without credit warns, then turns the guards on the thief.
+	if (R.goods.len)
+		var/obj/item/second = R.goods[1]
+		second.forceMove(locate(2, 3, 1))
+		second.fingerprintslast = "Thief"
+		R.tick_trade(R.alive_members(), FALSE, TRUE)
+		raid_check(R.thieves["thief"] && R.state == "trade", "a theft gets a warning first")
+		var/list/T = R.thieves["thief"]
+		T[1] -= NOMAD_TRADE_THEFT_GRACE
+		R.tick_trade(R.alive_members(), FALSE, TRUE)
+		raid_check(R.state == "assault" && R.hostile, "a thief who keeps the good is attacked")
+		raid_check(!R.goods.len, "the stall is packed up")
+		raid_check(pay.loc == get_turf(R.leader), "unspent payments are handed back")
+	R.remove_all("probe")
+
+/proc/raid_reputation_checks()
+	nomad_reputation = list()
+	fdel(NOMAD_REP_FILE)
+	raid_check(nomad_rep_score("nobody") == 0 && nomad_rep_standing(0) == "stranger", "unknown players are strangers")
+	for (var/i = 1, i <= 5, i++)
+		nomad_rep_record("good", "trade")
+	raid_check(nomad_rep_score("good") == 5 && nomad_rep_standing(5) == "trusted", "steady trading earns trust")
+	raid_check(nomad_rep_price(20, "good") == 18 && nomad_rep_price(20, "nobody") == 20, "trusted buyers get better prices")
+	nomad_rep_record("bad", "theft")
+	raid_check(nomad_rep_price(20, "bad") == 25, "distrusted buyers pay more")
+	nomad_rep_record("bad", "theft")
+	raid_check(nomad_rep_standing(nomad_rep_score("bad")) == "wanted", "repeated theft makes a player wanted")
+	for (var/i = 1, i <= 20, i++)
+		nomad_rep_record("saint", "tribute")
+	raid_check(nomad_rep_score("saint") == NOMAD_REP_LIMIT && nomad_rep_price(20, "saint") == 15, "reputation is capped, and friends pay least")
+	raid_check(!nomad_rep_record("good", "nonsense"), "unknown deeds change nothing")
+	nomad_reputation["bad"]["at"] -= 3 * NOMAD_REP_DAY
+	raid_check(nomad_rep_score("bad") == -5, "reputation fades a point a day ([nomad_rep_score("bad")], at [nomad_reputation["bad"]["at"]], now [world.realtime])")
+	nomad_rep_save()
+	nomad_reputation = null
+	raid_check(nomad_rep_score("good") == 5 && nomad_rep_score("bad") == -5, "reputation survives a restart")
+	var/list/row = nomad_reputation["good"]
+	raid_check(row["trades"] == 5, "deeds are counted")
+
+	// A trader refuses a wanted player's payment, and sells at the buyer's price.
+	nomad_reputation["bad"]["score"] = -20
+	var/datum/nomad_raid/R = new
+	R.setup(locate(20, 26, 1), list(), 2, "probe", "trade")
+	nomad_raid = R
+	R.begin_trade()
+	var/obj/item/weapon/material/spear/dirty = new(get_turf(R.leader))
+	dirty.fingerprintslast = "Bad"
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!R.credit["bad"] && dirty.loc == get_turf(R.leader), "wanted players cannot trade")
+	var/obj/item/good = R.goods[1]
+	var/full = R.goods[good]
+	R.credit["good"] = nomad_rep_price(full, "good")
+	good.forceMove(locate(2, 2, 1))
+	good.fingerprintslast = "Good"
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!(good in R.goods) && R.credit["good"] == 0, "a trusted buyer pays the lower price ([nomad_rep_price(full, "good")] of [full])")
+	raid_check(nomad_rep_score("good") == 6, "a purchase raises reputation")
+
+	// Striking a peaceful party first, and killing a trader, are remembered.
+	var/mob/living/human/brute = new(locate(3, 3, 1))
+	brute.ckey = "brute"
+	var/mob/living/simple_animal/hostile/human/nomad_raider/guard = R.members[2]
+	guard.lastattacker = brute
+	guard.health -= 10
+	R.tick()
+	R.tick()
+	raid_check(nomad_rep_score("brute") == -3 && ("brute" in R.struck), "striking a peaceful party first costs reputation, once")
+	R.member_fell(guard)
+	raid_check(nomad_rep_score("brute") == -9, "killing a trader's guard costs more")
+	R.remove_all("probe")
+	qdel(brute)
+	nomad_reputation = list()
+	fdel(NOMAD_REP_FILE)
 
 // The real controller loop: with nobody home, the party marches in, turns
 // back and leaves the map on its own.
@@ -174,7 +351,7 @@ var/raid_runtime_error = FALSE
 	var/start_distance = get_dist(R.leader, target)
 	var/closest = start_distance
 	var/saw_leave = FALSE
-	for (var/i = 1, i <= 600 && nomad_raid, i++)
+	for (var/i = 1, i <= 900 && nomad_raid, i++)
 		sleep(1)
 		if (R.leader && !QDELETED(R.leader))
 			closest = min(closest, get_dist(R.leader, target))
