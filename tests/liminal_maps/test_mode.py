@@ -84,7 +84,7 @@ class ModeTests(unittest.TestCase):
         self.assertTrue(issued);self.assertLessEqual(issued,equipment)
         self.assertNotIn('new /obj/item',META_DM.read_text())
     def test_mode_is_not_selectable_and_avoids_lights_out_hazards(self):
-        users=sorted(str(p.relative_to(ROOT)) for p in (ROOT/'code').rglob('*.dm') if 'MAP_LIMINAL_FACILITY' in p.read_text(encoding='utf-8',errors='ignore'))
+        users=sorted(p.relative_to(ROOT).as_posix() for p in (ROOT/'code').rglob('*.dm') if 'MAP_LIMINAL_FACILITY' in p.read_text(encoding='utf-8',errors='ignore'))
         self.assertEqual(['code/__defines/maps.dm','code/game/objects/map_metadata/liminal_facility.dm'],users)
         dme=(ROOT/'civ13.dme').read_text()
         selected=dme[dme.index('// BEGIN_SELECTED_MAP'):dme.index('// END_SELECTED_MAP')]
