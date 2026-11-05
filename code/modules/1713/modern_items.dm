@@ -351,6 +351,15 @@
 /obj/structure/lamp/lamp_big/alwayson/white
 	brightness_color = "#ffffff"
 
+// Digital Age (2026): an LED panel lights farther than a tube on a third of
+// the power and takes ordinary replacement tubes.
+/obj/structure/lamp/lamp_big/led
+	name = "LED panel"
+	desc = "A low-power LED light panel."
+	powerneeded = 0.4
+	light_amt = 5
+	brightness_color = "#f4f8ff"
+
 /obj/structure/refinery
 	name = "petroleum refinery"
 	desc = "A petroleum refinery."

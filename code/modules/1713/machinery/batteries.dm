@@ -42,6 +42,20 @@
 	charge_rate = 10
 	electrolyte_cost = 20
 
+// Digital Age (2026): a sealed lithium-ion bank ships commissioned, so it
+// needs no electrolyte, and it stores four times a lead-acid accumulator.
+/obj/structure/battery/lithium_ion
+	name = "lithium-ion battery bank"
+	desc = "A sealed, rechargeable lithium-ion storage bank. It arrives commissioned and empty; cable it, then select charge or discharge."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "smes2"
+	assembled = TRUE
+	commissioned = TRUE
+	rechargeable = TRUE
+	energy_capacity = 48000
+	discharge_rate = 40
+	charge_rate = 40
+
 /obj/structure/battery/New()
 	..()
 	spawn(10)
