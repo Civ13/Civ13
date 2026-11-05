@@ -107,12 +107,13 @@
 
 	if (language && ishuman(src))
 		var/mob/living/human/H = src
-		if (!H.languages.Find(language) && world.time >= src.next_language_learn)
+		// Compare by language type: a restored speaker's language is a saved copy,
+		// not the shared datum in the listener's languages list.
+		if (!H.knows_language(language) && world.time >= src.next_language_learn)
 			src.next_language_learn = world.time + 10 // Cooldown is 10 ticks seconds = 1 seconds
 			var/lname = capitalize(language.name)
 			H.partial_languages[lname] += 1
-			if (H.partial_languages[lname] >= language.difficulty)
-				H.add_language("[lname]", FALSE)
+			if (H.partial_languages[lname] >= language.difficulty && H.add_language("[lname]", FALSE))
 				H.add_note("Known Languages", "[language.name]")
 				to_chat(H, "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>")
 

@@ -878,7 +878,8 @@
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
-	if (!istype(new_language) || (new_language in languages))
+	new_language = canonical_language(new_language)
+	if (!istype(new_language) || knows_language(new_language))
 		return FALSE
 
 	// If they don't have a default language, set it
@@ -919,9 +920,50 @@
 				H.partial_languages[lname] = max((H.partial_languages[lname]-m_int[R.type]*R.difficulty/100), 0)
 	return ..()
 
+// Saved mobs decode their language datums as fresh copies, which never match
+// the shared all_languages entries by reference. Map any language to its shared
+// entry so known-language checks compare like with like.
+/proc/canonical_language(datum/language/L)
+	if (!istype(L))
+		return null
+	var/datum/language/shared = all_languages[L.name]
+	if (istype(shared, L.type))
+		return shared
+	for (var/lname in all_languages)
+		shared = all_languages[lname]
+		if (shared.type == L.type)
+			return shared
+	return L
+
+/mob/proc/knows_language(datum/language/L)
+	L = canonical_language(L)
+	if (!L)
+		return FALSE
+	for (var/datum/language/known in languages)
+		if (known == L || known.type == L.type)
+			return TRUE
+	return FALSE
+
+// Replace restored language copies with shared entries and drop duplicates.
+/mob/proc/canonicalize_languages()
+	var/list/fixed = list()
+	for (var/datum/language/known in languages)
+		var/datum/language/shared = canonical_language(known)
+		if (shared && !(shared in fixed))
+			fixed += shared
+	languages = fixed
+	if (isliving(src))
+		var/mob/living/living_self = src
+		if (living_self.default_language)
+			living_self.default_language = canonical_language(living_self.default_language)
+
+/mob/after_load()
+	. = ..()
+	canonicalize_languages()
+
 // Can we speak this language, as opposed to just understanding it?
 /mob/proc/can_speak(datum/language/speaking)
-	return (universal_speak || (speaking && speaking.flags & INNATE) || (speaking in languages))
+	return (universal_speak || (speaking && speaking.flags & INNATE) || knows_language(speaking))
 
 /mob/proc/get_language_prefix()
 	return config.language_prefixes[1]
