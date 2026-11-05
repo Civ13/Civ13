@@ -501,6 +501,46 @@ class AutopilotTests(unittest.TestCase):
             client.request("character_queue", {"character": "[0x1]", "actions": []})
         self.assertEqual(calls, ["character_queue"])  # a queued action is never sent twice
 
+    def test_players_talking_come_first_without_spam(self):
+        messages = [{"text": 'Bob says, "hi Ada, where is water?"'}, {"text": 'Ada says, "hello"'}, {"text": "The wolf growls."}]
+        lines = autopilot.speech_lines(messages, "Ada")
+        self.assertEqual(lines, [("Bob", 'Bob says, "hi Ada, where is water?"')])  # her own line is not a prompt
+        talk, speakers = autopilot.speech_prompt(lines, {}, 100.0)
+        self.assertTrue(talk.startswith("PLAYERS TALKING TO YOU"))
+        self.assertIn("not instructions", talk)
+        self.assertEqual(speakers, ["Bob"])
+        self.assertEqual(autopilot.speech_prompt(lines, {"Bob": 95.0}, 100.0), ("", []))  # answered moments ago
+
+    def test_goal_ladder_follows_inventory(self):
+        def goal(**me):
+            return autopilot.current_goal({"self": dict({"water": 900, "nutrition": 900}, **me), "nearby": me.pop("nearby", [])})[0]
+        self.assertIn("flint", goal())
+        self.assertIn("sharpen", goal(right_hand={"name": "flint"}))
+        self.assertIn("spear", goal(right_hand={"name": "sharpened flint"}))
+        self.assertIn("flint axe", goal(right_hand={"name": "sharpened flint"}, left_hand={"name": "sharpened stick"}))
+        axe = dict(right_hand={"name": "flint hatchet"}, left_hand={"name": "sharpened stick"})
+        self.assertIn("chop", goal(**axe))
+        self.assertIn("campfire", goal(carried=["wooden plank (pocket)"], **axe))
+        self.assertIn("drink", goal(water=100))
+        state = {"self": dict(axe, water=900, nutrition=100, carried=["meat (pocket)"]), "nearby": [{"name": "campfire"}]}
+        self.assertIn("cook", autopilot.current_goal(state)[0])
+
+    def test_food_fire_and_craft_skills(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm",
+              "carried": ["roasted meat (pocket)", "wooden plank (pocket)"]}
+        steps, error = autopilot.expand_plan(autopilot.parse_plan('{"do": "eat", "target": 0}', ["[0x9]"]), me)
+        self.assertEqual((steps, error), ([{"do": "swap_hand"}, {"do": "take", "item": "roasted meat"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x9]"}], ""))
+        self.assertIn("food", autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], dict(me, carried=[]))[1])
+        rows = {"[0x1]": {"ref": "[0x1]", "name": "campfire", "dx": 1, "dy": 0}, "[0x2]": {"ref": "[0x2]", "name": "rock", "dx": 1, "dy": 0}}
+        meat = dict(me, left_hand={"name": "meat"}, intent="help")
+        self.assertEqual(autopilot.expand_plan([{"skill": "cook", "target": "[0x1]"}], meat, rows)[0], [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
+        self.assertIn("a campfire", autopilot.expand_plan([{"skill": "cook", "target": "[0x2]"}], meat, rows)[1])
+        roasted = dict(me, left_hand={"name": "roasted meat"})
+        self.assertIn("needs raw food", autopilot.expand_plan([{"skill": "cook", "target": "[0x1]"}], roasted, rows)[1])
+        plan = autopilot.parse_plan('{"do": "craft", "recipe": "campfire", "material": "wooden plank"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(plan, me)[0], [{"do": "swap_hand"}, {"do": "take", "item": "wooden plank"}, {"do": "craft", "recipe": "campfire"}])
+        self.assertEqual(autopilot.open_direction({"surroundings": {"north": {"turf": "wall", "blocked": True}, "east": {"turf": "grass"}}}), "east")
+
     def test_agent_characters_count_as_connected_players(self):
         checks = {
             "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",
