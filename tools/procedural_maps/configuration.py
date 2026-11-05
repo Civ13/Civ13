@@ -136,6 +136,22 @@ def port_surface_preset(seed="ports-0",width=155,height=225,*,sea_side="S"):
     return d
 
 
+def barren_surface_preset(seed="barren-0",width=200,height=200,*,sea_side="S"):
+    """The surface port family made dry, cold and bare, for the barren-world skin.
+
+    Same validated graph family as port_surface_preset; only the biome mix,
+    climate, vegetation, ranges and start count change. Its water bodies are
+    frozen or dry once `playable --skin barren` writes the region map.
+    """
+    d=port_surface_preset(seed,width,height,sea_side=sea_side)
+    d["biome_mix_pct"]={"DESERT":70,"ARID":30}
+    d["climate"]=dict(moisture_range=[0,30],temperature_c_range=[-50,-10])
+    d["vegetation"]=dict(suitable_site_density_pct=[0,0])
+    d["mountains"]["range_count"]=[1,3]
+    d["starts"]["count"]=6
+    return d
+
+
 def _validate_config(d):
     if isinstance(d,dict) and d.get('schema')==OCEAN_CONFIG_VERSION:
         base=deepcopy(d);layout=base.pop('ocean_layout',None);base['schema']=CONFIG_VERSION

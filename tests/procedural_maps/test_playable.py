@@ -1,11 +1,12 @@
 import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from tools.procedural_maps import playable
 from tools.procedural_maps.bundle import write_bundle
-from tools.procedural_maps.configuration import oceanic_preset, port_surface_preset, preset
+from tools.procedural_maps.configuration import barren_surface_preset, oceanic_preset, port_surface_preset, preset, validate_config
 from tools.procedural_maps.dmm_export import project
 from tools.procedural_maps.generator import generate
 from tools.procedural_maps.source_audit import parse_classic
@@ -290,3 +291,115 @@ class ElevationProfileTests(unittest.TestCase):
         self.assertNotIn("lapse", playable.metadata_atom(playable.elevation_profile(doc, 0)))
         self.assertIn("elevation_lapse_c_per_km = 6.5", playable.metadata_atom(playable.elevation_profile(doc)))
         self.assertEqual("/obj/map_metadata/nomads", playable.metadata_atom(playable.elevation_profile(flat_doc(3, 3, [[0] * 3] * 3))))
+
+
+class BarrenSkinTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        root = Path(cls.tmp.name)
+        cls.folder = root / "barren"
+        cls.folder.mkdir()
+        cls.doc = bundle(barren_surface_preset("barren-t", 64, 80), cls.folder)
+        cls.text, cls.report = playable.build(cls.folder, skin="barren")
+        _, cls.parsed, _ = parse_classic(cls.text)
+        cls.cave = root / "cavern"
+        cls.cave.mkdir()
+        bundle(cavern_config(), cls.cave)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_barren_preset_is_dry_cold_and_bare(self):
+        c = barren_surface_preset("barren-t", 64, 80)
+        self.assertEqual([], validate_config(c))
+        self.assertEqual({"DESERT": 70, "ARID": 30}, c["biome_mix_pct"])
+        self.assertEqual([0, 0], c["vegetation"]["suitable_site_density_pct"])
+        self.assertLessEqual(c["climate"]["temperature_c_range"][1], -10)
+
+    def test_build_is_deterministic_and_reports_the_skin(self):
+        text, report = playable.build(self.folder, skin="barren")
+        self.assertEqual(self.text, text)
+        self.assertEqual("barren", report["skin"])
+        self.assertEqual("native", playable.build(self.folder)[1]["skin"])
+        self.assertNotEqual(self.text, playable.build(self.folder)[0])
+
+    def test_surface_cells_become_barren_ground(self):
+        cells = self.doc["layers"]["SURFACE"]["cells"]
+        seen = set()
+        for y, row in enumerate(cells):
+            for x, c in enumerate(row):
+                atoms = self.parsed[(x + 1, y + 1, 2)].split(",")
+                self.assertEqual(playable.BARREN_AREA, atoms[-1])
+                turf = [a for a in atoms if a.startswith("/turf/")]
+                self.assertEqual(1, len(turf))
+                if c["water"] in {"LAKE", "SEA"}:
+                    expected = playable.BARREN_ICE
+                elif c["water"] in {"RIVER", "SWAMP"}:
+                    expected = playable.BARREN_CHANNEL
+                elif c["terrain"] in {"MOUNTAIN", "ROCK"}:
+                    expected = "/turf/floor/dirt/underground"
+                    self.assertIn("/obj/structure/wild/rock/basalt", atoms)
+                else:
+                    expected = playable.BARREN_GROUND
+                self.assertEqual(expected, turf[0], (x, y, c))
+                seen.add(expected)
+        self.assertEqual({playable.BARREN_ICE, playable.BARREN_CHANNEL, playable.BARREN_GROUND,
+                          "/turf/floor/dirt/underground"}, seen)
+
+    def test_nothing_lives_or_grows_and_stone_sites_keep_rocks(self):
+        living = set(playable.SURFACE_TREES) | {playable.BUSH, playable.BERRY_BUSH, playable.TALL_GRASS,
+                                                playable.FISH, playable.TURKEYS, playable.BOARS,
+                                                playable.DEAD_TREE, playable.MUSHROOM, playable.MUSHROOM_SEEDS}
+        for recipe in set(self.parsed.values()):
+            for atom in recipe.split(","):
+                self.assertNotIn(atom.split("{")[0], living, recipe)
+        self.assertEqual({playable.ROCK}, set(self.report["supplies"]))
+        cells = self.doc["layers"]["SURFACE"]["cells"]
+        stone = [(x, y) for y, row in enumerate(cells) for x, c in enumerate(row)
+                 if c["resource"] == "STONE" and [x, y, "SURFACE"] not in self.doc["starts"]]
+        self.assertTrue(stone)
+        for x, y in stone:
+            self.assertTrue(self.parsed[(x + 1, y + 1, 2)].startswith(playable.ROCK + ","))
+        self.assertEqual(len(stone), self.report["supplies"][playable.ROCK])
+
+    def test_starts_and_reserve_plane_are_kept(self):
+        for x, y, layer in self.doc["starts"]:
+            self.assertIn('name = "JoinLateCiv"', self.parsed[(x + 1, y + 1, 2)])
+        for (x, y, z), recipe in self.parsed.items():
+            if z == 1:
+                self.assertTrue(recipe.endswith("/area/caribbean/void/caves"), recipe)
+
+    def test_barren_types_are_checked_and_bad_skins_refused(self):
+        self.assertTrue(playable.verify_types(skin="barren"))
+        with self.assertRaisesRegex(ValueError, "PLAYABLE_SKIN"):
+            playable.verify_types(skin="lunar")
+        with self.assertRaisesRegex(ValueError, "PLAYABLE_SKIN_PROFILE"):
+            playable.build(self.cave, skin="barren")
+        with self.assertRaisesRegex(ValueError, "PLAYABLE_SKIN"):
+            playable.build(self.folder, skin="lunar")
+        original = dict(playable.BARREN_SOURCES)
+        try:
+            playable.BARREN_SOURCES["/turf/floor/dirt/dust/regolith/not_real"] = "code/modules/space/barren_world.dm"
+            with self.assertRaisesRegex(ValueError, "SUPPLY_TYPE_MISSING"):
+                playable.verify_types(skin="barren")
+        finally:
+            playable.BARREN_SOURCES.clear()
+            playable.BARREN_SOURCES.update(original)
+
+    def test_cli_barren_preset_and_skin(self):
+        from tools.procedural_maps.__main__ import main
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "barren.json"
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(0, main(["preset", "--profile", "SURFACE", "--barren", "--seed", "barren-t",
+                                          "--width", "64", "--height", "80", "--out", str(out)]))
+                self.assertEqual(2, main(["preset", "--profile", "SURFACE", "--barren", "--legacy", "--out", str(Path(tmp) / "a.json")]))
+                self.assertEqual(2, main(["preset", "--profile", "OCEANIC", "--barren", "--out", str(Path(tmp) / "b.json")]))
+                self.assertEqual(0, main(["playable", str(self.folder), "--skin", "barren", "--out", str(Path(tmp) / "r.dmm")]))
+            self.assertEqual(barren_surface_preset("barren-t", 64, 80), json.loads(out.read_text(encoding="utf-8")))
+            self.assertEqual(self.text, (Path(tmp) / "r.dmm").read_text(encoding="utf-8"))
+            self.assertFalse((Path(tmp) / "a.json").exists() or (Path(tmp) / "b.json").exists())

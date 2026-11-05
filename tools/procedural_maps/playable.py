@@ -17,6 +17,10 @@ unchanged:
   (docs/elevation.md) with a temperature lapse rate, so hills and mined
   mountains are colder and rain over cold enough high ground settles as snow.
 
+With `skin="barren"` a SURFACE bundle instead becomes a barren world:
+regolith ground, frozen lakes and sea, dry channels and bare rock, with rocks
+on STONE sites and nothing else (see docs/space-settlement-roadmap.md).
+
 Placement depends only on the IR seed and coordinates, never on Python's
 random state, so the same bundle always gives the same DMM. The types used are
 checked against the DM source before writing. Nothing here launches the game.
@@ -27,7 +31,7 @@ import re
 from pathlib import Path
 
 from .bundle import verify_bundle
-from .dmm_export import project
+from .dmm_export import TREES, project
 from .io import read_json
 from .repo_source import read_source
 from .source_audit import parse_classic
@@ -84,6 +88,27 @@ SOURCES = {
     CAVE_FLOOR_TURF: "code/game/turfs/flooring/flooring_premade.dm",
 }
 
+# Barren-world skin (docs/space-settlement-roadmap.md): a SURFACE bundle
+# becomes regolith plains, frozen lakes and sea, dry channels where rivers and
+# swamps ran, and bare rock ridges. No plants, animals or wood; STONE sites
+# still become rocks. The turfs and area are declared in barren_world.dm.
+SKINS = ("native", "barren")
+SURFACE_AREA = "/area/caribbean/nomads/forest"
+BARREN_AREA = "/area/caribbean/nomads/barren"
+BARREN_GROUND = "/turf/floor/dirt/dust/regolith"
+BARREN_CHANNEL = "/turf/floor/dirt/dust/regolith/crater"
+BARREN_ICE = "/turf/floor/beach/water/ice"
+BARREN_SOURCES = {
+    BARREN_AREA: "code/modules/space/barren_world.dm",
+    BARREN_GROUND: "code/modules/space/barren_world.dm",
+    BARREN_CHANNEL: "code/modules/space/barren_world.dm",
+    BARREN_ICE: "code/game/turfs/floor_types.dm",
+    ROCK: "code/game/objects/structures/rocks.dm",
+}
+# Turfs the offline layout can put under a SURFACE cell.
+SURFACE_TURFS = ("/turf/floor/grass", "/turf/floor/dirt", "/turf/floor/beach/sand")
+SURFACE_TREES = tuple(TREES.values())
+
 # Shares of eligible cells, from the classic nomads map (about 3% each of tall
 # grass and small bushes over its land).
 GRASS_SHARE = 0.03
@@ -94,9 +119,11 @@ SEA_FISH_SHARE = 0.003
 MUSHROOM_SHARE = 0.25
 
 
-def verify_types(catalog_root=None):
+def verify_types(catalog_root=None, skin="native"):
+    if skin not in SKINS:
+        raise ValueError("PLAYABLE_SKIN: " + str(skin))
     texts = {}
-    for typename, path in SOURCES.items():
+    for typename, path in list(SOURCES.items()) + (list(BARREN_SOURCES.items()) if skin == "barren" else []):
         if path not in texts:
             texts[path] = read_source(path, catalog_root).decode("utf-8")
         if not re.search(r"^" + re.escape(typename) + r"\s*$", texts[path], re.M):
@@ -149,7 +176,38 @@ def cavern_supply(c, value):
     return []
 
 
-def playable_layout(doc):
+def barren_cell(c, atoms):
+    """Reskin one projected SURFACE cell; returns the new atom list."""
+    atoms = [a for a in atoms if a.split("{")[0] not in SURFACE_TREES]
+    if atoms.count(SURFACE_AREA) != 1:
+        raise ValueError("PLAYABLE_BARREN_AREA")
+    atoms[atoms.index(SURFACE_AREA)] = BARREN_AREA
+    if c["water"] in {"LAKE", "SEA"}:
+        turf = BARREN_ICE
+    elif c["water"] in {"RIVER", "SWAMP"}:
+        turf = BARREN_CHANNEL
+    elif c["terrain"] in {"MOUNTAIN", "ROCK"}:
+        return atoms # bare basalt ridge on its rock substrate
+    else:
+        turf = BARREN_GROUND
+    found = [i for i, a in enumerate(atoms) if a.startswith("/turf/")]
+    if len(found) != 1:
+        raise ValueError("PLAYABLE_BARREN_TURF")
+    atoms[found[0]] = turf
+    return atoms
+
+
+def barren_supply(c):
+    if c["water"] != "NONE" or c["terrain"] in {"MOUNTAIN", "ROCK"} or c["blocked"]:
+        return []
+    return [ROCK] if c["resource"] == "STONE" else []
+
+
+def playable_layout(doc, skin="native"):
+    if skin not in SKINS:
+        raise ValueError("PLAYABLE_SKIN: " + str(skin))
+    if skin == "barren" and doc["profile"] != "SURFACE":
+        raise ValueError("PLAYABLE_SKIN_PROFILE: the barren skin needs a SURFACE bundle")
     layout = project(doc)
     starts = {tuple(p) for p in doc["starts"]}
     portals = {}
@@ -173,6 +231,8 @@ def playable_layout(doc):
                     atoms[atoms.index(SOLID_ROCK_TURF)] = CAVE_FLOOR_TURF
                     layout[key] = ",".join(atoms)
                     counts["open cave floor"] = counts.get("open cave floor", 0) + 1
+                if skin == "barren" and layer == "SURFACE":
+                    layout[key] = ",".join(barren_cell(c, layout[key].split(",")))
                 pair = portals.get((x, y, layer))
                 if pair is not None:
                     # One area id per pair, so each top ladder finds exactly its own bottom.
@@ -180,7 +240,9 @@ def playable_layout(doc):
                     added.append((LADDER_DOWN if layer == "SURFACE" else LADDER_UP) + "{" + area + "}")
                 elif (x, y, layer) not in starts:
                     value = share(doc["seed"], x, y, z, "cell")
-                    if layer == "UNDERGROUND" and doc["profile"] == "UNDERGROUND_CAVERN":
+                    if skin == "barren":
+                        added = barren_supply(c) if layer == "SURFACE" else []
+                    elif layer == "UNDERGROUND" and doc["profile"] == "UNDERGROUND_CAVERN":
                         added = cavern_supply(c, value)
                     elif layer == "SURFACE":
                         added = surface_supply(c, value, share(doc["seed"], x, y, z, "game"))
@@ -314,13 +376,13 @@ def write_text(doc, layout):
     return "\n".join(lines) + "\n"
 
 
-def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE):
+def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE, skin="native"):
     """Verify an offline bundle and return (dmm text, report) for its playable layout."""
     folder = Path(folder)
     verify_bundle(folder, catalog_root)
-    verify_types(catalog_root)
+    verify_types(catalog_root, skin)
     doc = read_json(folder / "map.ir.json")
-    layout, counts = playable_layout(doc)
+    layout, counts = playable_layout(doc, skin)
     profile = elevation_profile(doc, lapse)
     apply_elevation(layout, profile)
     text = write_text(doc, layout)
@@ -330,6 +392,7 @@ def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE):
     report = {
         "schema": "civ13-playable-map/1",
         "supply_version": SUPPLY_VERSION,
+        "skin": skin,
         "profile": doc["profile"],
         "seed": doc["seed"],
         "width": doc["width"],
@@ -345,14 +408,14 @@ def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE):
     return text, report
 
 
-def write(folder, out, catalog_root=None, lapse=DEFAULT_LAPSE):
+def write(folder, out, catalog_root=None, lapse=DEFAULT_LAPSE, skin="native"):
     out = Path(out)
     if out.suffix.lower() != ".dmm":
         raise ValueError("playable output must end in .dmm")
     report_path = out.with_suffix(".playable.json")
     if out.exists() or report_path.exists():
         raise ValueError("output exists: " + str(out))
-    text, report = build(folder, catalog_root, lapse)
+    text, report = build(folder, catalog_root, lapse, skin)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(text, encoding="utf-8", newline="\n")
     report_path.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
