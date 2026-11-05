@@ -192,8 +192,21 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 				var/mob/new_player/lobby = new
 				lobby.key = C.key
 				to_chat(C, SPAN_NOTICE("Your character already left for another land. Join it there."))
-			for(var/obj/item/I in H.GetAllContents())
-				if(!istype(I, /obj/item/organ) && !QDELETED(I)) qdel(I)
+			// Only what the traveller took goes with them again. Anything else
+			// the reloaded body holds (picked up after the reload, before this
+			// replay) existed in the save elsewhere, so it is dropped here.
+			var/list/took = list()
+			for(var/list/entry in P["items"])
+				var/obj/item/I = H.get_equipped_item(region_travel_slots[entry[1]])
+				if(I && !(I in took) && (region_travel_item_kind(I) == "type" ? "[I.type]" == entry[2] : region_travel_item_kind(I) == entry[2]))
+					took += I
+			var/turf/T = get_turf(H)
+			for(var/obj/item/I in H.contents)
+				if(istype(I, /obj/item/organ) || QDELETED(I)) continue
+				if(I in took)
+					qdel(I)
+				else if(T)
+					H.drop_from_inventory(I, T)
 			qdel(H)
 
 /proc/region_travel_build(list/P, turf/T)

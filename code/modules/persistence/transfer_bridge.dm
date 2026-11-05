@@ -101,7 +101,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	return begin_effect("/return", list("transfer_id" = transfer_id, "fast" = fast ? 1 : 0))
 
 /datum/transfer_bridge/proc/begin_effect(path, list/body)
-	if(!ready() || persistence_save_active()) return null
+	// The save's capture holds at most TRANSFER_CAPTURE_MAX effect ids; keep
+	// room for a replay and wait for the next save to clear the list.
+	if(!ready() || persistence_save_active() || length(applied) >= TRANSFER_CAPTURE_MAX / 2) return null
 	var/list/answer = request(path, body)
 	if(!answer || !answer["ok"]) return null
 	var/list/result = answer["result"]
@@ -158,6 +160,12 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 			reconcile_pending = FALSE
 			var/list/result = answer["ok"] ? answer["result"] : null
 			if(islist(result) && isnum(result["ledger_seq"]))
+				// A save running now must neither list replayed effects it did
+				// not capture, nor capture replayed bodies under the loaded
+				// generation; it reports the old generation, which the agent
+				// ignores, and the replay waits for it.
+				while(persistence_save_active())
+					sleep(10)
 				ledger_base = result["ledger_seq"]
 				replay(result["replay"])
 				if(!polling)
@@ -172,25 +180,28 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	reconcile_pending = FALSE
 
 // Applies journaled character effects that the loaded save does not hold, in
-// the order they happened, and lists them for the next save. Never sleeps, so
-// no save can capture a half-replayed world.
+// the order they happened, and lists them for the next save. Called only when
+// no save is running, and never sleeps, so no save sees a half-replayed world.
+// Each effect is listed before its world change, like begin_effect, so a
+// runtime in one cannot make the next load build it a second time.
 /datum/transfer_bridge/proc/replay(list/entries)
 	if(!islist(entries)) return
 	var/count = 0
 	for(var/list/entry in entries)
 		var/effect_id = entry["effect_id"]
 		if(!istext(effect_id) || (effect_id in applied) || !islist(entry["payloads"])) continue
-		switch(entry["kind"])
-			if("remove")
-				region_travel_replay_departure(entry["payloads"])
-			if("credit")
-				region_travel_arrive(entry["payloads"], TRUE, region_travel_arrival_turf())
-			if("return")
-				region_travel_arrive(entry["payloads"], FALSE, region_travel_arrival_turf())
-			else
-				continue
+		var/kind = entry["kind"]
+		if(!(kind in list("remove", "credit", "return"))) continue
 		applied += effect_id
 		count++
+		try
+			if(kind == "remove")
+				region_travel_replay_departure(entry["payloads"])
+			else
+				region_travel_arrive(entry["payloads"], kind == "credit", region_travel_arrival_turf())
+		catch(var/exception/E)
+			message_admins("Transfer agent: replaying [effect_id] failed: [E]. Check the arrival point.")
+			log_game("Transfer agent: replaying [effect_id] failed: [E]")
 	if(count)
 		message_admins("Transfer agent: replayed [count] character trip effect\s the loaded save did not hold yet.")
 

@@ -1157,6 +1157,10 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/transfer_loaded(list/round_state)
 	return
 
+// Effect ids one save may list (transfer_bridge.dm keeps new effects to half,
+// leaving room for a load's replay).
+#define TRANSFER_CAPTURE_MAX 1024
+
 /proc/valid_transfer_capture(list/capture)
 	if(!islist(capture) || capture.len != 3 || !("generation" in capture) || !("effects" in capture) || !("ledger_seq" in capture)) return FALSE
 	var/generation = capture["generation"]
@@ -1164,7 +1168,7 @@ var/global/datum/persistence_admission_identity
 	var/seq = capture["ledger_seq"]
 	if(!isnum(seq) || seq < 0 || seq != round(seq) || seq > 1e12) return FALSE
 	var/list/effects = capture["effects"]
-	if(!islist(effects) || effects.len > 256) return FALSE
+	if(!islist(effects) || effects.len > TRANSFER_CAPTURE_MAX) return FALSE
 	for(var/effect in effects)
 		if(!istext(effect) || !length(effect) || length(effect) > 96) return FALSE
 	return TRUE
