@@ -22,6 +22,8 @@
 	var/tmp/initial_size = 0
 	var/tmp/turf/target
 	var/tmp/turf/home
+	var/tmp/list/walk_route // turfs from home to the target, when the party walks
+	var/tmp/list/waypoints = list() // member = the route turf they are walking to now
 	var/tmp/edge
 	var/tmp/list/target_ckeys = list()
 	var/tmp/started_at = 0
@@ -131,6 +133,12 @@
 		return "no open, unseen ground near a map edge on that level"
 	home = site["turf"]
 	edge = site["edge"]
+	// The NPC pathfinder gives up on long or winding walks (frozen sea with
+	// open holes, mountains), and the party then pushes straight at the
+	// target until it is stuck. Plan the whole walk once and hand it out in
+	// short legs instead.
+	if (!sail_path)
+		walk_route = agent_route_search(home, target, NOMAD_RAID_ROUTE_REACH, FALSE)
 	// The leader stands nearest the target so followers never block the march.
 	var/list/spots = sail_path ? list(home) : list()
 	for (var/turf/T in sail_path ? list() : range(2, home))
@@ -228,6 +236,34 @@
 	M.pathfind_target = T
 	if (get_dist(M, T) > 1 && (!M.moving || M.target_obj != T))
 		M.do_movement(T)
+
+// Walks M toward dest along walk_route, one short leg at a time. Off the
+// route (after a fight, or with no route) it paths to dest directly.
+/datum/nomad_raid/proc/route_move(mob/living/simple_animal/hostile/human/nomad_raider/M, turf/dest, homeward = FALSE)
+	var/turf/W = waypoints[M]
+	if (!W || get_dist(M, W) <= 2 || get_dist(M, W) > NOMAD_RAID_ROUTE_LEG * 2)
+		W = route_waypoint(M, dest, homeward)
+		waypoints[M] = W
+	order_move(M, W)
+
+// The route turf one leg ahead of the route turf nearest M, or dest itself.
+/datum/nomad_raid/proc/route_waypoint(mob/M, turf/dest, homeward = FALSE)
+	if (!islist(walk_route) || walk_route.len < 2 || !M)
+		return dest
+	var/turf/at = get_turf(M)
+	var/nearest = 0
+	var/nearest_dist = 0
+	for (var/i = 1, i <= walk_route.len, i++)
+		var/d = get_dist(at, walk_route[i])
+		if (!nearest || d < nearest_dist)
+			nearest = i
+			nearest_dist = d
+	if (nearest_dist > NOMAD_RAID_ROUTE_LEG)
+		return dest
+	var/i = homeward ? nearest - NOMAD_RAID_ROUTE_LEG : nearest + NOMAD_RAID_ROUTE_LEG
+	if (i <= 1 || i >= walk_route.len)
+		return dest
+	return walk_route[i]
 
 /datum/nomad_raid/proc/order_halt(mob/living/simple_animal/hostile/human/nomad_raider/M)
 	if (!M)
@@ -348,7 +384,7 @@
 		if (get_dist(leader, target) <= 3 && !nomad_raid_defenders_near(target).len)
 			set_state("leave", "nobody was home")
 			return
-	order_move(leader, target)
+	route_move(leader, target)
 	follow_leader(alive)
 
 // ---------------------------------------------------------------------------
@@ -548,7 +584,7 @@
 		if (leave_by_boat(M))
 			continue
 		if (!M.target_mob)
-			order_move(M, home)
+			route_move(M, home, TRUE)
 	sail_step()
 	if (!alive_members().len)
 		finish(outcome ? outcome : "the party left")
@@ -562,6 +598,7 @@
 			qdel(I)
 	M.carried.Cut()
 	members -= M
+	waypoints -= M
 	qdel(M)
 
 // A fallen member drops everything it carried.

@@ -102,6 +102,19 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list("victim"), 9, "probe")), "a party sets up at the edge")
 	raid_check(R.members.len == NOMAD_RAID_MAX_MEMBERS, "party size is capped at [NOMAD_RAID_MAX_MEMBERS]")
 	raid_check(R.leader && (R.leader in R.members) && R.leader.is_leader, "the party has a leader")
+	// The walk is planned once and handed out in short legs.
+	var/list/route = R.walk_route
+	raid_check(islist(route) && route[1] == R.home && get_dist(route[route.len], target) <= NOMAD_RAID_ROUTE_REACH, "the walk to the target is planned from home")
+	if (islist(route) && route.len > NOMAD_RAID_ROUTE_LEG + 2)
+		var/turf/leg = R.route_waypoint(R.leader, target)
+		raid_check(leg && (leg in route) && get_dist(R.leader, leg) <= NOMAD_RAID_ROUTE_LEG + 2, "the leader walks one short leg of the route at a time")
+		raid_check(R.route_waypoint(R.leader, R.home, TRUE) == R.home, "near home, the way home is home itself")
+	var/turf/far_off = locate(2, 2, 1)
+	var/mob/living/simple_animal/hostile/human/nomad_raider/stray = R.members[R.members.len]
+	var/turf/stray_was = get_turf(stray)
+	stray.loc = far_off
+	raid_check(R.route_waypoint(stray, target) == target || get_dist(far_off, route[1]) <= NOMAD_RAID_ROUTE_LEG, "a member far off the route paths straight to the target")
+	stray.loc = stray_was
 	var/all_npcs = TRUE
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.members)
 		if (M.should_save || M.party != R || M.faction != NOMAD_RAID_FACTION || M.weapon != /obj/item/weapon/material/spear)
