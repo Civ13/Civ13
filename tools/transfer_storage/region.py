@@ -317,17 +317,23 @@ class RegionStore:
             self._set_meta('confirmed_generation', generation)
             return current + 1
 
-    def reconcile_load(self, generation, effect_ids, ledger_seq):
+    def reconcile_load(self, generation, effect_ids, ledger_seq, fresh=False):
         """At world load: confirm what the loaded save lists, void the rest.
 
         Returns the ledger sequence DM must cache. Puts the region on hold when
         the loaded save is older than what the store already confirmed.
         Journaled effects the save does not list are kept; replay() returns them.
+
+        With fresh, the world never saves and starts from a new map every time
+        (a resetting raid world): it lists nothing and adopts the store's ledger
+        instead of being held for a rollback. Journaled arrivals still replay.
         """
         with self._tx():
             current = self.ledger_seq()
             if self._meta('hold_reason'):
                 raise RegionHeld(self._meta('hold_reason'))
+            if fresh:
+                effect_ids, ledger_seq = [], current
             if generation == self._meta('confirmed_generation'):
                 pass
             elif ledger_seq == current:

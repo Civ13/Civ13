@@ -697,6 +697,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
+		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
 		"/obj/structure/civ_generator/wind/turbine" = "digital_computing",
@@ -1319,6 +1320,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pot" = "pottery_storage",
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
+		"/obj/item/weapon/material/hatchet/chainsaw" = "power_tools",
 		"/obj/structure/drill" = "electricity",
 		"/obj/structure/drill/fracking" = "hydraulic_fracturing",
 		"/obj/structure/drill/sifter" = "electricity",

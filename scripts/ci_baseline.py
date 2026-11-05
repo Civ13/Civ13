@@ -131,6 +131,12 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
+    # Zombie city generator: base map regeneration, placed-type and contract
+    # name projection, checker fixtures; no BYOND runtime.
+    'zombie_city': {'files': ('tests/zombie_city/test_zombie_city.py',),
+        'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
+                  'code/modules/zombie_city/'), 'shared_paths': (
+            'code/__defines/maps.dm', 'civ13.dme')},
     # Research bench staff appointments and director title; no BYOND runtime.
     'research_staff': {'files': ('tests/research_staff/test_research_staff.py',),
         'paths': ('tests/research_staff/',), 'shared_paths': (
@@ -290,11 +296,13 @@ SUITES = {
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',
                                 'tests/crafting_loader/test_supplied_item_recipes.py',
                                 'tests/crafting_loader/test_basic_clothing.py',
-                                'tests/crafting_loader/test_production_machines.py'),
+                                'tests/crafting_loader/test_production_machines.py',
+                                'tests/crafting_loader/test_radio_headset.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
             'code/setup.dm', 'tests/save_movement/source_adapter.py',
             'code/modules/research_tree/research_node.dm',
-            'config/crafting/material_recipes_global.txt')},
+            'config/crafting/material_recipes_global.txt',
+            'code/modules/1713/radio.dm', 'icons/mob/ears.dmi')},
 
     # Stdlib-only access-file framing and complete helper-body projection.
     'access_lists': {'files': ('tests/access_lists/test_access_lists.py',),

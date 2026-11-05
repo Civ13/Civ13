@@ -64,3 +64,4 @@ __pycache__/
 showcase.dme
 config/agent-control.txt
 tools/savestream/bin/
+scripts/windows/host/settings.bat

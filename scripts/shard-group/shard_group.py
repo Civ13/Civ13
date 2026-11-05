@@ -1,4 +1,4 @@
-"""Build, start, save-and-stop, restart, update and watch a group of region worlds.
+"""Build, start, save-and-stop, restart, update, freeze and thaw a group of region worlds.
 
 A region group (sharded servers) is several Civ13 worlds on one host. Each
 region is its own git worktree of the repository with its own selected map,
@@ -8,6 +8,14 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json update    # check out and compile every region
     python shard_group.py --config group.json start|stop|restart [--region ID]
     python shard_group.py --config group.json status
+    python shard_group.py --config group.json freeze|thaw [--region ID]
+    python shard_group.py --config group.json adopt --region ID --from PATH
+    python shard_group.py --config group.json check-update [--region ID]
+
+Sleeping (freeze after idle, wake on a connection or a launcher request, cold
+start after a power-down) is done by the host service:
+`gaia_host.py [--config gaia.json] --group group.json serve`, which also keeps
+the group's transfer agents and coordinator running.
 
 Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
 (one detached worker per action, progress in operation.json, save-and-stop
@@ -36,7 +44,16 @@ sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
-GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update')
+GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update')
+# Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
+# player notes, faction symbols, ...). adopt copies whichever of these exist.
+ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.sav', 'data/memo2.sav',
+               'data/faction_symbols', 'data/nomad_reputation.json', 'data/nomad_raids.json', 'data/round_counter.txt',
+               'data/paintings', 'data/ToR_ban.bdb', 'data/extraction_accounts', 'data/extraction_world',
+               'data/extraction_surface', 'data/extraction_loot', 'data/vehicle_key_service', 'data/safehouse_spool')
+# Files setup writes for each region; an overlay must not replace them.
+GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
+             'config/transfer-token.txt', 'config/transfer_agent.json')
 KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'OTHER')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
@@ -48,6 +65,10 @@ MAX_REGIONS = 16
 
 def load_group(path):
     group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    # A live group hosts the live server itself, so it may use its port.
+    if type(group.setdefault('live', False)) is not bool:
+        raise ValueError('live must be true or false')
+    reserved = () if group['live'] else RESERVED_PORTS
     for key in ('group', 'repository', 'root', 'compiler', 'daemon', 'git', 'public_host'):
         if type(group.get(key)) is not str or not group[key]:
             raise ValueError('group config needs %s' % key)
@@ -69,8 +90,12 @@ def load_group(path):
         port = region.get('port')
         if type(port) is not int or not 1024 <= port <= 65535 or port in ports:
             raise ValueError('region %s needs a unique port from 1024 to 65535' % region['id'])
-        if port in RESERVED_PORTS:
-            raise ValueError('port %d is reserved for the live server' % port)
+        if port in reserved:
+            raise ValueError('port %d is reserved for the live server (set "live": true for the live group)' % port)
+        if region.get('public') is not None and type(region['public']) is not bool:
+            raise ValueError('region %s public must be true or false' % region['id'])
+        if region.get('overlay') is not None and (type(region['overlay']) is not str or not region['overlay']):
+            raise ValueError('region %s overlay must be a folder path' % region['id'])
         if type(region.get('map')) is not str or not region['map'].endswith('.dmm'):
             raise ValueError('region %s needs a map (.dmm)' % region['id'])
         ids.add(region['id'])
@@ -99,6 +124,14 @@ def load_group(path):
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
     if type(group.setdefault('persistent', True)) is not bool:
         raise ValueError('persistent must be true or false')
+    # A resetting raid world never saves; it reboots on a new map every
+    # reset_minutes and sends everyone still inside home without their gear.
+    for r in regions:
+        reset = r.setdefault('reset_minutes', 0)
+        if type(reset) is not int or not (reset == 0 or 30 <= reset <= 1440):
+            raise ValueError('region %s reset_minutes must be 0 or 30 to 1440' % r['id'])
+        if reset and r['kind'] != 'RAID':
+            raise ValueError('only a RAID region can reset (region %s)' % r['id'])
     if group.get('python') is not None and (type(group['python']) is not str or not group['python']):
         raise ValueError('python must be a path')
     group.setdefault('python', sys.executable)
@@ -109,9 +142,33 @@ def load_group(path):
         raise ValueError('root must be outside the repository (and not contain it)')
     group.setdefault('revision', 'HEAD')
     group.setdefault('public', False)
+    if type(group['public']) is not bool:
+        raise ValueError('public must be true or false')
+    if group.get('overlay') is not None and (type(group['overlay']) is not str or not group['overlay']):
+        raise ValueError('overlay must be a folder path')
+    # update fetches this remote in the repository first, so revision can name origin/master.
+    if group.get('fetch') is not None and (type(group['fetch']) is not str or not ID.match(group['fetch'])):
+        raise ValueError('fetch must be a remote name such as origin')
     group.setdefault('save_timeout_seconds', 5400)
     group.setdefault('start_timeout_seconds', 300)
     group.setdefault('backups_kept', 3)
+    # Sleep settings (gaia_host FREEZE_DEFAULTS) apply to every region of the group.
+    for key, default in gaia_host.FREEZE_DEFAULTS.items():
+        if key not in group:
+            continue
+        value = group[key]
+        if type(default) is bool or type(value) is bool:
+            ok = type(value) is type(default)
+        elif isinstance(default, list):
+            ok = type(value) is list and all(type(item) is str for item in value)
+        elif isinstance(default, str):
+            ok = type(value) is str and bool(value)
+        elif key == 'doorman_port':
+            ok = type(value) is int and 1 <= value <= 65535
+        else:
+            ok = type(value) in (int, float) and value >= 0
+        if not ok:
+            raise ValueError('%s has the wrong type' % key)
     group['_path'] = str(Path(path).resolve())
     return group
 
@@ -123,14 +180,21 @@ def region_dir(group, region_id):
 def region_config(group, region):
     """The gaia_host-shaped config one region's host and worker run with."""
     path = region_dir(group, region['id'])
-    return {'repository': str(path), 'port': region['port'], 'task': 'region:' + region['id'],
+    public = region.get('public', group['public'])
+    config = {'repository': str(path), 'port': region['port'], 'task': 'region:' + region['id'],
             'compiler': group['compiler'], 'daemon': group['daemon'], 'git': group['git'],
-            'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(group['public']),
+            'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(public),
             'save_timeout_seconds': group['save_timeout_seconds'], 'start_timeout_seconds': group['start_timeout_seconds'],
             'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
-            '_path': str(path / 'data' / 'shard-host' / 'host.json')}
+            '_path': str(path / 'data' / 'shard-host' / 'host.json'),
+            # Only a hub-listed (-public) world needs the host's BYOND account signed in.
+            'start_requires_byond_pager': bool(public)}
+    for key in gaia_host.FREEZE_DEFAULTS:
+        if key in group:
+            config[key] = group[key]
+    return config
 
 
 def directory(group):
@@ -210,6 +274,15 @@ class RegionHost(Host):
             raise Refused('the region has no build yet; run update first')
         super().precheck(action)
 
+    def check_update(self):
+        """Like Host.check_update, for this region: its worktree's HEAD against the
+        group's revision, after fetching the group's remote."""
+        group = self.config.get('_group') or load_group(self.config['group_config'])
+        fetch_remote(group, self.platform)
+        available = self.git_text(['rev-parse', group['revision']], group['repository'])
+        answer = self.update_answer(self.git_text(['rev-parse', 'HEAD'], self.repo), available, group['repository'])
+        return dict(answer, region=self.config['region'])
+
     def do_update(self, operation):
         """Check out the group's revision in this region's worktree and compile region.dme."""
         group = load_group(self.config['group_config'])
@@ -224,8 +297,9 @@ class RegionHost(Host):
         code, out = self.platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
         if code != 0:
             raise RuntimeError('checkout failed: ' + out.strip()[-300:])
+        apply_overlays(group, region, path)
         if group['persistent']:
-            persistent_config(path / 'config' / 'config.txt')
+            persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
         if group.get('rust_g'):
             shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
         include = place_map(group, region)
@@ -240,17 +314,102 @@ class RegionHost(Host):
         self.record(phase='compiled', revision=revision, map=region['map'])
 
 
-def persistent_config(path):
+def apply_overlays(group, region, path):
+    """Copy the group's overlay folder, then the region's, over the region's worktree.
+
+    An overlay holds what git does not: the live config/config.txt (webhook key),
+    config/host.txt, native DLLs and their settings. It is copied after every
+    checkout, so a forced checkout never loses it. Returns the copied paths.
+    """
+    copied = []
+    for source in (group.get('overlay'), region.get('overlay')):
+        if not source:
+            continue
+        source = Path(source)
+        if not source.is_absolute() or not source.is_dir():
+            raise RuntimeError('overlay %s is not an absolute folder' % source)
+        files = sorted(p for p in source.rglob('*') if p.is_file())
+        for item in files:
+            relative = item.relative_to(source).as_posix()
+            if relative in GENERATED or relative.split('/')[0] in ('map_saves', '.git', 'data'):
+                raise RuntimeError('overlay %s must not contain %s' % (source, relative))
+        for item in files:
+            relative = item.relative_to(source)
+            target = path / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target)
+            copied.append(relative.as_posix())
+    return copied
+
+
+def adopt(group, region_id, source, platform=None):
+    """Move a stopped standalone server (such as live Gaia's own checkout) into a region.
+
+    Copies its map_saves, checking every file's SHA-256, and the runtime state in
+    ADOPT_PATHS into the region's worktree. The source is left as it was, so it
+    stays a rollback. Refuses unless the source is stopped with a complete save,
+    the region is set up, not running and has no save of its own.
+    """
+    platform = platform or Platform()
+    region = next((r for r in group['regions'] if r['id'] == region_id), None)
+    if region is None:
+        raise Refused('no region %s in the group' % region_id)
+    source = Path(source)
+    target = region_dir(group, region_id)
+    if not (target / '.git').exists():
+        raise Refused('region %s is not set up; run setup first' % region_id)
+    if source.resolve() == target.resolve():
+        raise Refused('the source is the region itself')
+    if platform.listening(region['port']):
+        raise Refused('region %s is running; stop it first' % region_id)
+    saves = source / 'map_saves'
+    if not saves.is_dir() or any(p.name.endswith('.lk') for p in saves.iterdir()):
+        raise Refused('%s has no map_saves, or the save is still locked (is that server stopped?)' % source)
+    if gaia_host.check_save(saves) is None:
+        raise Refused('%s has an empty save; there is nothing to adopt' % source)
+    destination = target / 'map_saves'
+    if destination.exists() and any(destination.iterdir()):
+        raise Refused('region %s already has a save; it was not replaced' % region_id)
+    if destination.exists():
+        destination.rmdir()
+    receipt = gaia_host.copy_save(saves, destination)
+    (destination / 'backup-receipt.json').unlink()
+    copied = []
+    for name in ADOPT_PATHS:
+        item = source / name
+        if item.is_dir():
+            shutil.copytree(item, target / name, dirs_exist_ok=True)
+        elif item.is_file():
+            (target / name).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target / name)
+        else:
+            continue
+        copied.append(name)
+    return {'region': region_id, 'save': sorted(receipt), 'generation': gaia_host.check_save(destination), 'copied': copied}
+
+
+def fetch_remote(group, platform=None):
+    """git fetch the group's `fetch` remote in the repository, once, before setup or update."""
+    if not group.get('fetch'):
+        return False
+    platform = platform or Platform()
+    code, out = platform.run([group['git'], 'fetch', group['fetch']], cwd=group['repository'], timeout=600)
+    if code != 0:
+        raise Refused('git fetch %s failed: %s' % (group['fetch'], out.strip()[-300:]))
+    return True
+
+
+def persistent_config(path, saving=True):
     """Make a region world a persistent round that saves: ALLOWED_GAMEMODES
     PERSISTENCE, and SKIP_PERSISTENCE_SAVING (on in the repository's development
-    config) commented out."""
+    config) commented out. A resetting raid world keeps it on (saving=False)."""
     lines = path.read_text(encoding='utf-8').splitlines() if path.exists() else []
     out, found = [], False
     for line in lines:
         key = line.split(' ', 1)[0]
         if key == 'ALLOWED_GAMEMODES':
             line, found = 'ALLOWED_GAMEMODES PERSISTENCE', True
-        elif key == 'SKIP_PERSISTENCE_SAVING':
+        elif key == 'SKIP_PERSISTENCE_SAVING' and saving:
             line = '#' + line
         out.append(line)
     if not found:
@@ -300,8 +459,8 @@ def setup(group, platform=None):
         config = path / 'config'
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group),
-                    'save_minutes': group['save_minutes'] if group['persistent'] else 0,
-                    'travel_save_seconds': group['travel_save_seconds']}
+                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] else 0,
+                    'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes']}
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():
@@ -384,12 +543,52 @@ def ensure_coordinator(group, start=detach):
     return True
 
 
+def group_check_update(group, only=None, platform=None):
+    """One update line for the group (the launcher's server row), with each region's
+    own answer under "regions". Fetches once; never merges or touches a world."""
+    fetch_remote(group, platform)
+    group = dict(group, fetch=None)  # already fetched
+    regions = {}
+    for region, host in hosts(group, only, platform):
+        host.config['_group'] = group
+        regions[region['id']] = host.check_update()
+    first = next(iter(regions.values()))
+    behind = max(answer['behind'] for answer in regions.values())
+    reasons = sorted({answer['reason'] for answer in regions.values() if answer['reason'] and answer['behind']})
+    return {'component': 'server', 'current': first['current'], 'available': first['available'], 'behind': behind,
+            'can_update': bool(behind) and not reasons, 'reason': None if behind and not reasons else ('; '.join(reasons) or 'up to date'),
+            'regions': regions}
+
+
+def supervise(group, start=detach):
+    """Start any of the group's transfer agents or its coordinator that is not running.
+
+    The host service calls this every half minute. Agents run even while their world
+    sleeps or is cold, so travellers to it are journaled and handed over on wake.
+    Returns what was started (empty when everything was already running).
+    """
+    if not group['transfers']:
+        return {}
+    started = {}
+    for region in group['regions']:
+        # One region that cannot start its agent must not keep the others down.
+        try:
+            if RegionPlatform(region_config(group, region)).start_agent():
+                started.setdefault('agents', []).append(region['id'])
+        except OSError as error:
+            started.setdefault('errors', {})[region['id']] = str(error)[:300]
+    if ensure_coordinator(group, start):
+        started['coordinator'] = True
+    return started
+
+
 def group_status(group, only=None, view=region_view, platform=None):
     report = {}
     for region, host in hosts(group, only, platform):
         entry = host.status()
         entry.update(kind=region['kind'], name=region['name'], built=(region_dir(group, region['id']) / 'region.dmb').exists())
-        if entry.get('listening'):
+        # A frozen world cannot answer; asking it would only queue a connection.
+        if entry.get('listening') and entry.get('state') == 'awake':
             seen = view(region['port'])
             # A world that answers for another group or id is not this region.
             if not seen or seen.get('group') != group['group'] or seen.get('region') != region['id']:
@@ -410,6 +609,7 @@ def main(argv=None):
     parser.add_argument('--config', required=True)
     parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
     parser.add_argument('--region')
+    parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.worker:
@@ -425,10 +625,33 @@ def main(argv=None):
     if not args.action:
         parser.error('an action is required')
     try:
+        if args.action in ('setup', 'update'):
+            fetch_remote(group)
         if args.action == 'setup':
             result = setup(group)
         elif args.action == 'status':
             result = group_status(group, args.region)
+        elif args.action == 'check-update':
+            try:
+                result = group_check_update(group, args.region)
+            except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+                print(json.dumps({'ok': False, 'component': 'server', 'error': str(error)[:300]}))
+                return 1
+        elif args.action == 'adopt':
+            if not args.region or not args.source:
+                parser.error('adopt needs --region and --from')
+            result = adopt(group, args.region, args.source)
+        elif args.action in ('freeze', 'thaw'):
+            done, refused = {}, {}
+            for region, host in hosts(group, args.region):
+                try:
+                    done[region['id']] = host.freeze() if args.action == 'freeze' else host.thaw()
+                except Refused as refusal:
+                    refused[region['id']] = str(refusal)
+            if refused and not done:
+                print(json.dumps({'ok': False, 'refused': refused}))
+                return 1
+            result = {'done': done, 'refused': refused}
         else:
             accepted, refused = {}, {}
             for region, host in hosts(group, args.region):

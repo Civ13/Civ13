@@ -816,6 +816,31 @@ var/global/FREQM = rand(101,120)
 	slot_flags = SLOT_EARS | SLOT_TWOEARS
 	var/ear_safety = 2
 
+//////////////EAR-WORN RADIO HEADSETS///////////////////////////
+//Craftable from the 2013 (modern) age. Works like any portable radio: it hears
+//every radio on its frequency, and while worn you transmit by starting a
+//message with ";". Use "Tune Headset" to change the frequency without taking it off.
+/obj/item/weapon/radio/walkietalkie/headset
+	name = "radio headset"
+	desc = "A lightweight radio headset worn on one ear. Start a message with ; to talk on it. Set to 150kHz."
+	icon_state = "radio_headset"
+	item_state = "headset"
+	w_class = ITEM_SIZE_SMALL
+	slot_flags = SLOT_EARS
+	icon_override = null
+	force = 1.0
+	throwforce = 1.0
+
+/obj/item/weapon/radio/walkietalkie/headset/verb/tune_headset()
+	set category = "IC"
+	set name = "Tune Headset"
+	set desc = "Change your headset's frequency or switch its transmitter and receiver."
+	set src in usr
+
+	if (usr.stat || usr.restrained())
+		return
+	interact(usr)
+
 /obj/item/weapon/radio/walkietalkie/faction1/comlink
 	name = "comlink"
 	icon_state = "comlink"

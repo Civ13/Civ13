@@ -103,7 +103,7 @@ public static class LocalHosting {
         return (process.ExitCode, output + error.Result);
     }
 
-    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update"];
+    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update"];
 
     // Only the action name reaches the script; its config file names every path and command.
     public static ProcessStartInfo ControlStep(HostControl control, string action) {

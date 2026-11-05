@@ -178,6 +178,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_zombie_city_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'zombie_city'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/zombie_city/test_zombie_city.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_train_raid_suite_is_bounded_and_not_silently_omitted(self):
         name = 'train_raid'
         suite = ci.SUITES[name]
@@ -358,7 +366,8 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(suite['files'], ('tests/crafting_loader/test_loader.py',
                                           'tests/crafting_loader/test_supplied_item_recipes.py',
                                           'tests/crafting_loader/test_basic_clothing.py',
-                                          'tests/crafting_loader/test_production_machines.py'))
+                                          'tests/crafting_loader/test_production_machines.py',
+                                          'tests/crafting_loader/test_radio_headset.py'))
         self.assertEqual(self.selected(list(suite['files'])),
             {'policy', 'bootstrap', 'progress', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}

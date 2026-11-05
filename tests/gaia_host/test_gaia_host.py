@@ -132,6 +132,31 @@ class GaiaHostTests(unittest.TestCase):
         self.assertEqual(self.machine.detached[-1][-2:], [action, result['operation']])
         return result['operation']
 
+    def test_check_update_fetches_and_compares_without_touching_the_world(self):
+        newer = 'd' * 40
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800):
+            if argv[1:] == ['rev-parse', 'origin/master']:
+                self.machine.calls.append(list(argv))
+                return 0, newer + '\n'
+            if argv[1:3] == ['rev-list', '--count']:
+                self.machine.calls.append(list(argv))
+                return 0, '3\n'
+            return real(argv, cwd, timeout)
+        self.machine.run = run
+        answer = self.host.check_update()
+        self.assertEqual({'component': 'server', 'current': REVISION, 'available': newer, 'behind': 3,
+                          'can_update': True, 'reason': None}, answer)
+        self.assertIn(['git', 'fetch', 'origin', 'master'], self.machine.calls)
+        self.assertFalse(any(call[1:2] in (['merge'], ['checkout']) for call in self.machine.calls))
+        self.machine.up = True
+        self.assertEqual((False, 'stop the server before updating'), (self.host.check_update()['can_update'],
+                                                                        self.host.check_update()['reason']))
+        self.machine.run = real
+        self.machine.up = False
+        with self.assertRaisesRegex(RuntimeError, 'could not read the commits'):
+            self.host.check_update()  # origin/master did not resolve
+
     def test_status_changes_nothing(self):
         report = self.host.status()
         self.assertEqual((report['listening'], report['busy'], report['operation']), (False, False, None))
