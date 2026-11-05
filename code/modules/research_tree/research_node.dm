@@ -697,6 +697,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
+		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
 		"/obj/structure/civ_generator/wind/turbine" = "digital_computing",
