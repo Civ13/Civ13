@@ -24,7 +24,16 @@
 		if (!ismob(client))
 			return FALSE
 		else
-			client = client:client
+			var/mob/asked = client
+			// An agent-controlled character has no client to show a prompt to; it takes
+			// the offered default, as a player pressing Enter would. No default: no answer.
+			if (!asked.client && agent_character_for(asked))
+				if (!toc1 && !toc2)
+					return TRUE // a plain notice
+				if (islist(toc1) && !(default in toc1))
+					return FALSE
+				return default ? default : FALSE
+			client = asked.client
 
 	var/client/C = client
 	if (C)

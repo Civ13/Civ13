@@ -39,6 +39,7 @@ SKILLS = {
     "fuel_fire": ("fuel", "help", 1),
     "cook": ("raw food", "help", 1),
     "light_fire": ("empty", "help", 1),
+    "mine": ("pickaxe", "help", 1),
     "chop": ("axe", "harm", 1),
     "drink": ("empty", "grab", 1),
     "pick_up": ("empty", "help", 1),
@@ -49,7 +50,7 @@ ATTACK_WORDS = ("bites", "attacks", "hits", "claws", "slashes", "punches", "kick
 TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword", "shovel", "hammer")
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
-ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait")
+ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
@@ -75,7 +76,8 @@ Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent a
  attack (a creature or person attacking you, or an animal you hunt: hit it on harm intent with what you hold),
  eat (target 0: eat the food you hold or carry; roasted food is best, raw meat can make you sick),
  fuel_fire (a campfire: put wood, sticks or leaves you hold into it), cook (a campfire: put raw meat or fish you hold into it),
- light_fire (a campfire with fuel: light it; cooked food drops next to it when done, pick_up it).
+ light_fire (a campfire with fuel: light it; cooked food drops next to it when done, pick_up it),
+ mine (underground rock next to you: dig it with a pickaxe for stone and ore, which are picked up for you).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
@@ -110,6 +112,12 @@ How to play:
   Recipes for the held stack are listed under "You can craft". Structures (walls, campfire) are built on the tile you face, so stand next to open ground.
   Useful early recipes: campfire (4 wooden planks), torch and wooden knife (planks), thatch roofing (leaves), stone pickaxe (2 stone),
   roof support (2 planks), thatch floor (planks), stone wall (8 stone).
+- Build: {"do": "build", "recipe": "<structure>", "material": "<stack>", "dir": north|south|east|west} builds on the tile next to you in that direction.
+  A small house: pick open ground away from other camps, stand on each tile along the inside edge of a 3x3 room and build walls facing outward
+  (stone wall from 8 stone; log wall when your era allows it), leave one gap and build a door there if you can, build roof supports inside,
+  then craft thatch roofing from leaves and {"do": "roof", "dir": ...} over each tile of the room.
+- Mining: butcher a big animal for bones and craft a bone pickaxe (2 bones), or a stone pickaxe from 2 stone. Find underground rock
+  (mountains and caves) and mine it for stone and ore. Remember where your camp is in your notes.
 - Food: hunt an animal (attack it with a spear), butcher it, then build a campfire, fuel_fire it, cook the meat, light_fire,
   wait for the roasted meat, pick_up it and eat it.
 - When a player talks to you, answer first with a short in-character "say", then carry on. Greet people you meet and cooperate.
@@ -399,7 +407,20 @@ def parse_decision(text, refs):
     if action not in ACTIONS or action == "wait":
         return None
     args = {"do": action}
-    if action in ("move", "face"):
+    if action in ("build", "roof"):
+        direction = str(data.get("dir", "")).lower()
+        if direction not in ("north", "south", "east", "west"):
+            return None
+        args["dir"] = direction
+        material = str(data.get("material", "")).strip()
+        if material:
+            args["material"] = material[:64]
+        if action == "build":
+            recipe = str(data.get("recipe", "")).strip()
+            if not recipe:
+                return None
+            args["recipe"] = recipe[:128]
+    elif action in ("move", "face"):
         direction = str(data.get("dir", "")).lower()
         if direction not in DIRS:
             return None
@@ -579,6 +600,7 @@ SKILL_TARGETS = {
     "fuel_fire": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "cook": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "light_fire": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
+    "mine": (lambda row: "underground rock" in str(row.get("name", "")).lower() or str(row.get("type", "")).startswith("/turf/floor/dirt/underground"), "underground rock"),
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
 BINDING_WORDS = ("crude twine", "sinew", "rope")
@@ -778,6 +800,12 @@ def expand_plan(plan, self_state, rows=None):
             steps.extend(expanded)
         elif step.get("do") == "craft":
             steps.extend(_expand_craft(step, self_state))
+        elif step.get("do") == "build":
+            held = _expand_craft({"do": "craft", "recipe": step["recipe"], "material": step.get("material", "")}, self_state)
+            steps.extend(held[:-1] + [{"do": "face", "dir": step["dir"]}, held[-1]])
+        elif step.get("do") == "roof":
+            held = _expand_craft({"do": "use", "material": step.get("material") or "roof"}, self_state)
+            steps.extend(held[:-1] + [{"do": "face", "dir": step["dir"]}, held[-1]])
         elif step.get("do") == "drop":
             held = _name(self_state.get("left_hand") if self_state.get("active_hand") == "left" else self_state.get("right_hand"))
             if held != "empty" and not _is_junk(held):
@@ -910,7 +938,7 @@ def walk(client, character, queue_since, direction=None, away_from=None, moves=6
     return walked > 0, f"walked {walked} tiles", queue_since
 
 
-COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass", "butcher": "sinew"}
+COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass", "butcher": "sinew", "mine": "stone"}
 
 
 def collect(client, character, queue_since, word):
@@ -1194,7 +1222,7 @@ def run(client, args, character, token):
                     replied[who] = time.monotonic()
             facing = open_direction(observation)
             craft_at = next((index for index, item in enumerate(steps) if item.get("do") == "craft"), None)
-            if facing and craft_at is not None:
+            if facing and craft_at is not None and not (craft_at and steps[craft_at - 1].get("do") == "face"):
                 steps.insert(craft_at, {"do": "face", "dir": facing})  # structures are built on the faced tile
             if error:
                 print(f"step {step}: {json.dumps(plan)} -> not possible: {error}")

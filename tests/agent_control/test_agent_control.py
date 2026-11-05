@@ -541,6 +541,23 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(autopilot.expand_plan(plan, me)[0], [{"do": "swap_hand"}, {"do": "take", "item": "wooden plank"}, {"do": "craft", "recipe": "campfire"}])
         self.assertEqual(autopilot.open_direction({"surroundings": {"north": {"turf": "wall", "blocked": True}, "east": {"turf": "grass"}}}), "east")
 
+    def test_build_roof_and_mine(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "stone"}, "left_hand": {"name": "thatch roofing"}, "intent": "help", "carried": ["bone pickaxe (pocket)"]}
+        plan = autopilot.parse_plan('{"do": "build", "recipe": "stone wall", "material": "stone", "dir": "north"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(plan, me)[0], [{"do": "face", "dir": "north"}, {"do": "craft", "recipe": "stone wall"}])
+        self.assertEqual(autopilot.parse_plan('{"do": "build", "recipe": "stone wall", "dir": "up"}', ["[0x9]"]), [])
+        roof = autopilot.parse_plan('{"do": "roof", "dir": "east"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(roof, me)[0], [{"do": "swap_hand"}, {"do": "face", "dir": "east"}, {"do": "use"}])
+        rows = {"turf:1,2,1": {"ref": "turf:1,2,1", "name": "underground rock", "type": "/turf/floor/dirt/underground", "dx": 1, "dy": 0}}
+        empty = dict(me, right_hand=None, left_hand=None)
+        self.assertEqual(autopilot.expand_plan([{"skill": "mine", "target": "turf:1,2,1"}], empty, rows), ([{"do": "take", "item": "bone pickaxe"}, {"do": "click", "target": "turf:1,2,1"}], ""))
+        self.assertEqual(autopilot.COLLECT_AFTER["mine"], "stone")
+
+    def test_agent_characters_answer_prompts_with_the_default(self):
+        wrapper = (ROOT / "code/_helpers/WWinput.dm").read_text(encoding="utf-8")
+        self.assertIn("if (!asked.client && agent_character_for(asked))", wrapper)
+        self.assertIn("return default ? default : FALSE", wrapper)
+
     def test_agent_characters_count_as_connected_players(self):
         checks = {
             "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",
