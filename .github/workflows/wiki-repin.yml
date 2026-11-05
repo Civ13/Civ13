@@ -9,8 +9,10 @@ name: Player Help wiki re-pin
 # master (needs a token on the wiki side), a maintainer runs it by hand, or the
 # weekly schedule catches anything the dispatch missed. Set the WIKI_REPIN_TOKEN
 # secret (fine-grained PAT, Civ13 repository, contents + pull requests write)
-# so the pull request it opens also runs CI; with the default GITHUB_TOKEN,
-# GitHub does not start workflows on the created PR.
+# so the pull request it opens also runs CI the normal way. With the default
+# GITHUB_TOKEN GitHub starts no workflows on the created PR, so this workflow
+# instead dispatches test.yml on the PR branch itself; its check runs attach to
+# the same head commit and satisfy the required aggregate.
 
 on:
   repository_dispatch:
@@ -27,6 +29,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: wiki-repin
@@ -83,6 +86,7 @@ jobs:
             printf '## Optional changelog\n\nChangelog: In-game Help now answers from the latest reviewed wiki guides.\n'
           } > pr-body.md
       - name: Open or update the re-pin pull request
+        id: pr
         if: steps.pins.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
@@ -95,6 +99,19 @@ jobs:
           commit-message: 'Player Help: re-pin reviewed wiki guides to civ13-wiki ${{ steps.pins.outputs.wiki_sha }}'
           title: 'Player Help: re-pin reviewed wiki guides to civ13-wiki ${{ steps.pins.outputs.wiki_sha }}'
           body-path: pr-body.md
+      - name: Run CI on the pull request branch
+        if: steps.pins.outputs.changed == 'true' && steps.pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.pr.outputs.pull-request-head-sha }}
+        run: |
+          if [ -n "${{ secrets.WIKI_REPIN_TOKEN }}" ]; then
+            echo "WIKI_REPIN_TOKEN set; GitHub starts CI on the pull request itself." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          base="$(git rev-parse HEAD)"
+          gh workflow run test.yml --ref automation/wiki-repin -f "comparison_base=$base"
+          echo "Dispatched test.yml on automation/wiki-repin (head $HEAD_SHA, comparison base $base) for PR #${{ steps.pr.outputs.pull-request-number }}" >> "$GITHUB_STEP_SUMMARY"
       - name: Nothing to do
         if: steps.pins.outputs.changed != 'true'
         run: echo "All pinned guides match the wiki revision; no pull request needed." >> "$GITHUB_STEP_SUMMARY"
