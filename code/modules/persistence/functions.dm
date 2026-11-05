@@ -1192,6 +1192,11 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/transfer_loaded(list/round_state)
 	return
 
+// Dug cave levels (multiz/dug_underground.dm) rebuild their lighting after a
+// load; isolated fixtures keep this inert stub.
+/map_storage/proc/restore_dug_levels()
+	return
+
 // Effect ids one save may list (transfer_bridge.dm keeps new effects to half,
 // leaving room for a load's replay).
 #define TRANSFER_CAPTURE_MAX 1024

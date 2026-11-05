@@ -282,7 +282,7 @@
 						multiplier = 2
 					if (WEATHER_SMOG)
 						multiplier = 1
-		if (z == world.maxz)
+		if (z == multiz_top_z())
 			rad_act((global_radiation/1000)*multiplier)
 	if(radiation > 0)
 		radiation -= 0.05

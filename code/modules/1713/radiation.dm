@@ -173,7 +173,7 @@
 /obj/item/weapon/geiger_counter/rad_act(var/severity)
 	radiation_count = severity*100 //to convert to mSv
 	var/backgroundrad = 0
-	if (global_radiation > 0 && loc.z == world.maxz)
+	if (global_radiation > 0 && loc.z == multiz_top_z())
 		backgroundrad = global_radiation/1000
 	radiation_count = (radiation_count+backgroundrad)
 	update_icon()
@@ -222,7 +222,7 @@
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
 		var/backgroundrad = 0
-		if (global_radiation > 0 && loc.z == world.maxz)
+		if (global_radiation > 0 && loc.z == multiz_top_z())
 			backgroundrad = global_radiation/1000
 		if (backgroundrad > radiation_count)
 			radiation_count = (radiation_count+backgroundrad)

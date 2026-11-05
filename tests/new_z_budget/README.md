@@ -1,7 +1,10 @@
 # New-z admission verification
 
-Production has no calibrated memory profile and must reject new growth with
-`UNMEASURED` before allocation. Roof-only fallback can still consume its roofing
+Production has no calibrated memory profile for roof, instance or safehouse
+growth and must reject it with `UNMEASURED` before allocation. The only
+admitted growth is a dug cave level on a map that opts in
+(`underground_admitted`, overridden in `multiz/dug_underground.dm`); the
+fixtures do not include that override. Roof-only fallback can still consume its roofing
 item and provide shelter without growing the grid. Arithmetic alone does not
 admit a production request. Existing planes and matching-dimension imports
 remain available. The tests-only `fixture_admission` subclass is compiled only

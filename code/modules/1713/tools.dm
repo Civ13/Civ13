@@ -428,6 +428,8 @@
 	if (input == "Cancel")
 		return
 	else if (input == "Tunnel")
+		if (dug_underground_tunnel(user))
+			return
 		/*if (!(locate(/obj/roof/, (user.x,user.y,user.z-1)))
 			to_chat(user, "<span class='notice'>You try to dig, but something hard is underneath!</span>")
 			return*/ //TO DO TO STOP PEOPLE FROM DIGGING ITNO BUNKERS LATER, TAISLIN PLZ FIX K THX!

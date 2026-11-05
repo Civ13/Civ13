@@ -1,8 +1,12 @@
 # Dynamic level allocation budget
 
-Production currently refuses **all new native grid growth** with an explicit
-`UNMEASURED` reason: there is no validated incremental/player/save/address-space
-headroom profile. This happens before native allocation. Roof construction can
+Production refuses new native grid growth with an explicit `UNMEASURED`
+reason, before native allocation, with one exception: a map that opts into a
+dug underground (`dig_down_underground`, see `code/modules/multiz/dug_underground.dm`)
+may add, and restore, exactly one cave level below its single compiled level
+while the whole world stays within Gaia's measured live profile (500 x 350 x 2 =
+350,000 cells, `NEW_Z_MEASURED_CELLS`). Every other purpose still has no
+validated incremental/player/save/address-space headroom profile. Roof construction can
 still consume its roofing item and provide shelter without adding a plane or an
 upper floor. Existing planes remain usable. No host configuration can opt out.
 The arithmetic limits below are additional bounds, not memory-admission evidence.
