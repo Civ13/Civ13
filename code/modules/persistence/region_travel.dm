@@ -83,7 +83,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		return "You carry too much to travel."
 	return items
 
-/mob/living/human/proc/region_travel_payload(list/items)
+/mob/living/human/proc/region_travel_payload(list/items, party = null)
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
@@ -103,9 +103,14 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		else
 			var/obj/item/stack/S = I
 			carried += list(list(slot_name, kind, S.amount))
-	return json_encode(list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
+	var/list/P = list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
 		"gender" = gender, "age" = age, "look" = look, "skills" = skills,
-		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried))
+		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried)
+	// A party train trip (party_train.dm) says whose train it is and where it left from.
+	if(party)
+		P["party"] = party
+		P["from"] = shard_group.region
+	return json_encode(P)
 
 // Returns the decoded payload, or null when any field is out of bounds.
 /proc/region_travel_decode(payload)
@@ -139,6 +144,10 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	for(var/list/entry in P["items"])
 		if(!islist(entry) || entry.len != 3 || !(entry[1] in region_travel_slots) || !istext(entry[2]) || !isnum(entry[3])) return null
 		if(!region_travel_item_path(entry[2], entry[3])) return null
+	if(!isnull(P["party"]) && !party_train_valid_party(P["party"])) return null
+	// A solo party is only ever its own player's.
+	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
+	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
 	return P
 
 // The path an item entry rebuilds, or null when it is not allowed.
@@ -174,14 +183,16 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		if(!P)
 			message_admins("Region travel: an unreadable [incoming ? "arriving" : "returned"] character was dropped.")
 			continue
-		var/mob/living/human/H = region_travel_build(P, T)
+		// A party train trip arrives at the party's berth or station instead.
+		var/turf/at = party_train_arrival_turf(P) || T
+		var/mob/living/human/H = region_travel_build(P, at)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
 		if(!replayed)
 			spawn(0)
 				region_home_note(P["owner"], "arrive")
-		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [T.x],[T.y],[T.z].")
+		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [at.x],[at.y],[at.z].")
 		region_travel_offer(H)
 
 // Replays a departure the loaded save does not hold yet: the account's body
@@ -245,6 +256,9 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 			other.persistence_owner_ckey = null
 			log_game("Region travel: [P["owner"]]'s earlier body [other.real_name] gave up its claim to the arrival.")
 	H.persistence_owner_ckey = P["owner"]
+	if(istext(P["party"]))
+		H.party_train_party = P["party"]
+		party_train_restore_faction(H, P["party"])
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
 	H.update_body(FALSE)
@@ -339,6 +353,10 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 /obj/structure/region_gate/proc/accepts_arrivals()
 	return TRUE
 
+// The party train a trip through this gate belongs to (party_train.dm), if any.
+/obj/structure/region_gate/proc/travel_party(mob/living/human/H)
+	return null
+
 /obj/structure/region_gate/proc/destination_name()
 	var/list/peer = shard_group.enabled ? shard_group.peers[destination] : null
 	return peer ? peer["name"] : destination
@@ -406,7 +424,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client
-	var/payload = H.region_travel_payload(items)
+	var/payload = H.region_travel_payload(items, travel_party(H))
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."

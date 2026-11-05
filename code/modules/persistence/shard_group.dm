@@ -123,7 +123,10 @@ var/global/datum/shard_group/shard_group = new
 
 // What a peer, the host tool or a player sees of this region.
 /datum/shard_group/proc/describe()
-	return list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)
+	. = list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)
+	// Stations ask before sending a new party (party_train.dm).
+	if(kind == "RAILYARD")
+		.["free_berths"] = party_train_free_berths()
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -148,6 +151,7 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	peer["state"] = "UP"
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
+	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	return TRUE
 
