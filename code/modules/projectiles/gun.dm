@@ -398,6 +398,8 @@
 		playsound(user, silencer_fire_sound, 100-silencer.reduction, TRUE,100-silencer.reduction)
 	else
 		playsound(user, fire_sound, 100, TRUE,100)
+	if (zombie_horde)
+		zombie_horde_noise(get_turf(user), silencer ? 6 : 20)
 	if (muzzle_flash)
 		set_light(muzzle_flash)
 
