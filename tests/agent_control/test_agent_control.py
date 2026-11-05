@@ -558,6 +558,33 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("if (!asked.client && agent_character_for(asked))", wrapper)
         self.assertIn("return default ? default : FALSE", wrapper)
 
+    def test_dig_down_clean_water_and_later_goals(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": None, "left_hand": None, "intent": "help", "carried": ["bone shovel (pocket)"]}
+        self.assertEqual(autopilot.expand_plan([{"skill": "dig_down", "target": "[0x9]"}], me), ([{"do": "take", "item": "bone shovel"}, {"do": "use", "choose": "Tunnel"}], ""))
+        self.assertIn("bone shovel", autopilot.expand_plan([{"skill": "dig_down", "target": "[0x9]"}], dict(me, carried=[]))[1])
+        self.assertEqual(autopilot.parse_decision('{"do": "use", "choose": "Grave"}', ["[0x9]"]), {"do": "use", "choose": "Grave"})
+        terrain = [{"ref": "turf:1,1,1", "name": "river", "dx": 1, "dy": 0, "sickness": 2}, {"ref": "turf:2,2,1", "name": "river", "dx": 4, "dy": 0, "sickness": 0},
+                   {"ref": "turf:3,3,1", "name": "shallow water", "dx": 1, "dy": 1, "salty": True}]
+        self.assertEqual(autopilot.thirst_plan({"self": {"water": 100}, "terrain": terrain}), {"skill": "drink", "target": "turf:2,2,1"})
+        self.assertIn("(unclean)", autopilot.summarize({"self": {}, "terrain": terrain[:1]})[0])
+        base = {"right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}, "water": 900, "nutrition": 900}
+        goal = lambda near, carried=(): autopilot.current_goal({"self": dict(base, carried=list(carried)), "nearby": [{"name": n} for n in near]})[0]
+        self.assertIn("shelter", goal(["campfire"]))
+        house = ["campfire"] + ["stone wall"] * 8
+        self.assertIn("furnish", goal(house))
+        self.assertIn("seeds", goal(house + ["bed", "table"]))
+        self.assertIn("arm yourself", goal(house + ["bed", "table", "wheat crop"]))
+        armed = ["leather armor (pocket)", "longbow (pocket)"]
+        self.assertIn("pickaxe", goal(house + ["bed", "table", "wheat crop"], armed))
+        self.assertIn("smelt", goal(house + ["bed", "table", "wheat crop"], armed + ["stone pickaxe (pocket)", "iron ore (pocket)"]))
+
+    def test_agent_prompt_answers_come_from_the_step(self):
+        wrapper = (ROOT / "code/_helpers/WWinput.dm").read_text(encoding="utf-8")
+        self.assertIn("agent.pending_choice = null // one answer per step", wrapper)
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('C.pending_choice = req["choose"] ?', characters)
+        self.assertIn('kind = "[T.name] (unclean)"', characters)
+
     def test_agent_characters_count_as_connected_players(self):
         checks = {
             "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",

@@ -30,6 +30,11 @@
 			if (!asked.client && agent_character_for(asked))
 				if (!toc1 && !toc2)
 					return TRUE // a plain notice
+				var/datum/agent_character/agent = agent_character_for(asked)
+				if (agent.pending_choice && (!islist(toc1) || (agent.pending_choice in toc1)))
+					. = agent.pending_choice
+					agent.pending_choice = null // one answer per step
+					return .
 				if (islist(toc1) && !(default in toc1))
 					return FALSE
 				return default ? default : FALSE

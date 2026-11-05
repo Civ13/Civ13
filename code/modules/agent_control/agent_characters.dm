@@ -16,6 +16,7 @@
 	var/mob/living/body
 	var/owner_agent // spawned characters: the agent that owns them
 	var/handover_ckey // opted-in characters: the player who allowed it
+	var/pending_choice // answer for the next game prompt (WWinput) during one step
 	var/list/messages = list()
 	var/message_serial = 0
 	var/next_action = 0
@@ -287,14 +288,26 @@
 			if (T == here || !T.name)
 				continue
 			var/d = get_dist(here, T)
-			var/list/best = nearest[T.name]
+			// Clean and contaminated water look alike; list the nearest of each.
+			var/kind = T.name
+			if (istype(T, /turf/floor/beach/water))
+				var/turf/floor/beach/water/W = T
+				if (W.sickness > 0)
+					kind = "[T.name] (unclean)"
+			var/list/best = nearest[kind]
 			if (!best || d < best["d"])
-				nearest[T.name] = list("d" = d, "turf" = T)
+				nearest[kind] = list("d" = d, "turf" = T)
 		for (var/turf_name in nearest)
 			if (terrain.len >= 16)
 				break
 			var/turf/T = nearest[turf_name]["turf"]
-			terrain += list(list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y))
+			var/list/row = list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
+			if (istype(T, /turf/floor/beach/water))
+				var/turf/floor/beach/water/W = T
+				row["sickness"] = W.sickness
+				if (W.salty)
+					row["salty"] = TRUE
+			terrain += list(row)
 	var/list/heard = list()
 	for (var/list/message in C.messages)
 		if (message["id"] > since)
@@ -338,6 +351,8 @@
 	usr = M
 	var/action = lowertext("[req["do"]]")
 	var/detail = ""
+	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
+	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])

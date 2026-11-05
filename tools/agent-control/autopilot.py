@@ -40,6 +40,7 @@ SKILLS = {
     "cook": ("raw food", "help", 1),
     "light_fire": ("empty", "help", 1),
     "mine": ("pickaxe", "help", 1),
+    "dig_down": ("shovel", "help", 0),
     "chop": ("axe", "harm", 1),
     "drink": ("empty", "grab", 1),
     "pick_up": ("empty", "help", 1),
@@ -77,7 +78,8 @@ Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent a
  eat (target 0: eat the food you hold or carry; roasted food is best, raw meat can make you sick),
  fuel_fire (a campfire: put wood, sticks or leaves you hold into it), cook (a campfire: put raw meat or fish you hold into it),
  light_fire (a campfire with fuel: light it; cooked food drops next to it when done, pick_up it),
- mine (underground rock next to you: dig it with a pickaxe for stone and ore, which are picked up for you).
+ mine (underground rock or ore next to you: dig it with a pickaxe for stone and ore, which are picked up for you),
+ dig_down (target 0: dig a tunnel down where you stand with a shovel, to reach the underground and its ore).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
@@ -91,7 +93,8 @@ If something attacks you, deal with it first: flee if hurt or unarmed, or attack
 Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|examine|drop|swap_hand|intent|wait,
  "dir": north|south|east|west (move/face), "text": "..." (say/emote, short),
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
- "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second)}.
+ "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second),
+ "choose": "<option>" (click/use: the answer when it opens a menu)}.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -116,6 +119,9 @@ How to play:
   A small house: pick open ground away from other camps, stand on each tile along the inside edge of a 3x3 room and build walls facing outward
   (stone wall from 8 stone; log wall when your era allows it), leave one gap and build a door there if you can, build roof supports inside,
   then craft thatch roofing from leaves and {"do": "roof", "dir": ...} over each tile of the room.
+- Water: rivers and lakes marked "(unclean)" can give you cholera. Prefer clean water; boil unclean water in a mug or pot on a lit campfire.
+- Underground: craft a bone shovel (2 bones), dig_down, climb down the ladder, build mine supports (2 planks) as you go so tunnels do not
+  collapse, and mine the rock walls with a pickaxe.
 - Mining: butcher a big animal for bones and craft a bone pickaxe (2 bones), or a stone pickaxe from 2 stone. Find underground rock
   (mountains and caves) and mine it for stone and ore. Remember where your camp is in your notes.
 - Food: hunt an animal (attack it with a spear), butcher it, then build a campfire, fuel_fire it, cook the meat, light_fire,
@@ -210,7 +216,7 @@ def summarize(observation, note="", ignored=(), muted=()):
         lines.append("Nearest ground of each kind:")
         for row in terrain:
             refs.append(row.get("ref"))
-            lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}")
+            lines.append(f"  {len(refs) - 1}. {row.get('name')}{' (unclean)' if row.get('sickness') else ''} dx={row.get('dx')} dy={row.get('dy')}")
     texts = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
     if texts:
         lines.append("Recent messages:")
@@ -341,7 +347,22 @@ def current_goal(observation):
         return "chop a tree with your axe for wooden planks (pick them up)", "then build a campfire"
     if not fire:
         return 'build a campfire: {"do": "craft", "recipe": "campfire", "material": "wooden plank"}', "then gather food and build a shelter"
-    return "build a shelter next to your campfire: roof supports, walls and thatch roofing from planks, leaves and stone", "then make a stone pickaxe and mine"
+    walls = sum(1 for name in near if "wall" in name)
+    if walls < 6:
+        return "build a shelter next to your campfire: a 3x3 room of walls (build), a door, roof supports and thatch roofing (roof)", "then furnish it"
+    if not any("bed" in name for name in near) or not any("table" in name for name in near):
+        return "furnish your house: a bed and a table (4 planks each), a torch for light, and storage", "then secure your food supply"
+    if not _has(me, lambda n: "seed" in n) and not any(word in name for name in near for word in ("crop", "plant", "farm", "field")):
+        return "secure food: gather seeds from wild plants and plant a small field by your house; keep hunting and cooking meat", "then arm yourself"
+    if not _has(me, lambda n: "armor" in n or "armour" in n) or not _has(me, lambda n: "bow" in n or "sword" in n or "mace" in n):
+        return "arm yourself: prepare hides into leather for leather armor (equip it), and make a longbow (12 planks) or better weapons", "then mine and smelt"
+    if not _has(me, lambda n: "pickaxe" in n):
+        return "make a pickaxe: a bone pickaxe (2 bones) or a stone pickaxe (2 stone)", "then mine ore"
+    if not _has(me, lambda n: "ore" in n.split() or "ingot" in n or "bar" in n.split()):
+        return "mine ore: on rocky ground or underground (bone shovel, dig_down, mine supports), mine the walls", "then smelt it"
+    if not _has(me, lambda n: "ingot" in n or "bar" in n.split()):
+        return "smelt your ore: build a clay bloomery or furnace, fuel and light it, put the ore in, and cast ingots in a mold", "then craft metal tools"
+    return "craft metal tools, weapons and armor from your ingots, and improve your house", "then help other players and trade"
 
 
 def describe_change(before, after):
@@ -469,6 +490,8 @@ def parse_decision(text, refs):
         if intent not in INTENTS:
             return None
         args["intent"] = intent
+    if action in ("use", "click") and str(data.get("choose", "")).strip():
+        args["choose"] = str(data["choose"]).strip()[:64]  # the answer to a menu this step opens
     return args
 
 
@@ -564,9 +587,10 @@ def thirst_plan(observation, explore_dir="north", ignored=()):
     water = me.get("water")
     if not isinstance(water, (int, float)) or water >= 200:
         return None
-    for row in observation.get("terrain", []):
-        if row.get("ref") not in ignored and _is_drinkable(row):
-            return {"skill": "drink", "target": row.get("ref")}
+    # Clean water first; unclean water (cholera risk) only when nothing better is listed.
+    rows = sorted((row for row in observation.get("terrain", []) if row.get("ref") not in ignored and _is_drinkable(row)), key=lambda row: bool(row.get("sickness")))
+    if rows:
+        return {"skill": "drink", "target": rows[0].get("ref")}
     return {"do": "explore", "dir": explore_dir}
 
 
@@ -583,7 +607,7 @@ def _is_junk(name):
 
 def _is_drinkable(row):
     name, kind = str(row.get("name", "")).lower(), str(row.get("type", "")).lower()
-    return any(word in name for word in WATER_WORDS) and "salt" not in name and "salt" not in kind and "sea" not in name
+    return any(word in name for word in WATER_WORDS) and not row.get("salty") and "salt" not in name and "salt" not in kind and "sea" not in name
 
 
 SKILL_TARGETS = {
@@ -600,7 +624,7 @@ SKILL_TARGETS = {
     "fuel_fire": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "cook": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "light_fire": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
-    "mine": (lambda row: "underground rock" in str(row.get("name", "")).lower() or str(row.get("type", "")).startswith("/turf/floor/dirt/underground"), "underground rock"),
+    "mine": (lambda row: "underground rock" in str(row.get("name", "")).lower() or "ore" in str(row.get("name", "")).lower().split() or str(row.get("type", "")).startswith(("/turf/floor/dirt/underground", "/turf/floor/mining")), "underground rock or ore"),
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
 BINDING_WORDS = ("crude twine", "sinew", "rope")
@@ -642,6 +666,11 @@ def expand_skill(step, self_state, rows=None):
         return _expand_twist(active, other, self_state)
     if step["skill"] == "eat":
         return _expand_eat(active, other, self_state)
+    if step["skill"] == "dig_down":
+        held = _expand_craft({"do": "use", "choose": "Tunnel", "material": "shovel"}, self_state)
+        if held[-1].get("do") == "use" and not any("shovel" in str(name).lower() for name in [active, other] + _stowed(self_state)):
+            return [], "dig_down needs a shovel: craft a bone shovel from 2 bones"
+        return held, ""
     if step["skill"] == "bind_axe":
         if not _binding_at_hand(self_state, rows):
             return [], "bind_axe needs crude twine, sinew or rope in a pocket, a hand or under you: cut_grass twice, then twist_twine"
