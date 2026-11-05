@@ -115,7 +115,9 @@ character lives, with a join link.
   character at once), and the arrival records `arrive`. A refused trip
   rebuilt at the source records `arrive` there, so the home comes back.
 - A death records `release`, which sends the home back to the mainland unless
-  the account still has a living character in that region.
+  the account still has a living character in that region, or an assigned bed
+  there (Sleep in a bed assigns it). With a bed, nothing is recorded: the home
+  stays and the next character starts at that bed.
 - Each coordinator pass (`homes_once`, after the relay) reads every agent's
   queued requests (`/accounts`), decides them in a fixed order (arrivals,
   departures, releases, then claims, oldest first) and sends each agent the

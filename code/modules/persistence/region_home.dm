@@ -2,7 +2,9 @@
 // worlds"). The group coordinator keeps one home region per account; a player
 // may start or take back a character only in their home. Everyone starts on
 // the mainland region, travel moves the home with the character, and a death
-// sends it back to the mainland. Off unless this world is in a region group
+// sends it back to the mainland unless the player has an assigned bed in the
+// land they died in: then the home stays and the next character starts at that
+// bed. Off unless this world is in a region group
 // with travel (shard_region.json plus transfer_agent.json).
 
 #define REGION_HOME_WAIT 300 // deciseconds to wait for the coordinator's next pass
@@ -82,11 +84,30 @@
 			break
 	return !has_body || region_home_admit(lobby, FALSE)
 
+// The account's assigned bed in this land (Sleep in a bed assigns it), or null.
+/proc/region_home_bed(account)
+	if(!account) return null
+	for(var/obj/structure/bed/B in world)
+		if(B.persistence_bed_owner_ckey == account && !QDELETED(B) && B.anchored && isturf(B.loc))
+			return B
+	return null
+
+// A new character of an account with a bed here starts at that bed.
+/proc/region_home_bed_spawn(mob/living/human/H)
+	if(!istype(H) || !H.client || IsGuestKey(H.client.key) || !region_home_enabled()) return FALSE
+	var/obj/structure/bed/B = region_home_bed(H.client.ckey)
+	if(!B || !B.valid_character_bed(H)) return FALSE
+	H.forceMove(get_turf(B))
+	to_chat(H, SPAN_NOTICE("You start out beside your bed."))
+	return TRUE
+
 // A death sends the home back to the mainland, unless the account still has a
-// living character here (the coordinator ignores a release from elsewhere).
+// living character here or a bed here (the coordinator ignores a release from
+// elsewhere).
 /proc/region_home_death(mob/living/human/H)
 	var/account = H && H.persistence_owner_ckey
 	if(!account || !region_home_enabled()) return
+	if(region_home_bed(account)) return
 	for(var/mob/living/human/other in human_mob_list)
 		if(other != H && other.persistence_owner_ckey == account && other.stat != DEAD && !QDELETED(other))
 			return
