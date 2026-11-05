@@ -1,0 +1,317 @@
+"""Build, start, save-and-stop, restart, update and watch a group of region worlds.
+
+A region group (sharded servers) is several Civ13 worlds on one host. Each
+region is its own git worktree of the repository with its own selected map,
+build, config and map_saves, so regions never share a save or a lock:
+
+    python shard_group.py --config group.json setup     # worktrees and region config
+    python shard_group.py --config group.json update    # check out and compile every region
+    python shard_group.py --config group.json start|stop|restart [--region ID]
+    python shard_group.py --config group.json status
+
+Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
+(one detached worker per action, progress in operation.json, save-and-stop
+through the world's lifecycle topic, a verified backup of every save), except
+that DreamDaemon is started directly instead of through a scheduled task.
+Actions never take paths or commands from the caller; everything comes from
+the group config. setup never touches the source checkout's own files.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import secrets
+import shutil
+import socket
+import struct
+import subprocess
+import sys
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / 'gaia-host'))
+import gaia_host  # noqa: E402
+from gaia_host import Host, Platform, Refused  # noqa: E402
+
+GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update')
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'OTHER')
+ID = re.compile(r'^[a-z0-9_-]{1,32}$')
+HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
+HEX40 = re.compile(r'^[0-9a-f]{40}$')
+MAP_BLOCK = re.compile(r'// BEGIN_SELECTED_MAP\r?\n.*?// END_SELECTED_MAP', re.S)
+RESERVED_PORTS = (1714,)  # live Gaia
+MAX_REGIONS = 16
+
+
+def load_group(path):
+    group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    for key in ('group', 'repository', 'root', 'compiler', 'daemon', 'git', 'public_host'):
+        if type(group.get(key)) is not str or not group[key]:
+            raise ValueError('group config needs %s' % key)
+    if not ID.match(group['group']):
+        raise ValueError('group id must be 1-32 of a-z, 0-9, - and _')
+    if not HOST.match(group['public_host']):
+        raise ValueError('public_host must be a plain host name or IPv4 address')
+    regions = group.get('regions')
+    if type(regions) is not list or not 1 <= len(regions) <= MAX_REGIONS:
+        raise ValueError('a group has 1 to %d regions' % MAX_REGIONS)
+    ids, ports = set(), set()
+    for region in regions:
+        if type(region) is not dict or not ID.match(str(region.get('id', ''))) or region['id'] in ids:
+            raise ValueError('every region needs a unique id of 1-32 of a-z, 0-9, - and _')
+        if type(region.get('name')) is not str or not 1 <= len(region['name']) <= 64:
+            raise ValueError('region %s needs a name of 1 to 64 characters' % region['id'])
+        if region.get('kind') not in KINDS:
+            raise ValueError('region %s kind must be one of %s' % (region['id'], ', '.join(KINDS)))
+        port = region.get('port')
+        if type(port) is not int or not 1024 <= port <= 65535 or port in ports:
+            raise ValueError('region %s needs a unique port from 1024 to 65535' % region['id'])
+        if port in RESERVED_PORTS:
+            raise ValueError('port %d is reserved for the live server' % port)
+        if type(region.get('map')) is not str or not region['map'].endswith('.dmm'):
+            raise ValueError('region %s needs a map (.dmm)' % region['id'])
+        ids.add(region['id'])
+        ports.add(port)
+    root, repository = Path(group['root']).resolve(), Path(group['repository']).resolve()
+    if root == repository or repository in root.parents or root in repository.parents:
+        raise ValueError('root must be outside the repository (and not contain it)')
+    group.setdefault('revision', 'HEAD')
+    group.setdefault('public', False)
+    group.setdefault('save_timeout_seconds', 5400)
+    group.setdefault('start_timeout_seconds', 300)
+    group.setdefault('backups_kept', 3)
+    group['_path'] = str(Path(path).resolve())
+    return group
+
+
+def region_dir(group, region_id):
+    return Path(group['root']) / region_id
+
+
+def region_config(group, region):
+    """The gaia_host-shaped config one region's host and worker run with."""
+    path = region_dir(group, region['id'])
+    return {'repository': str(path), 'port': region['port'], 'task': 'region:' + region['id'],
+            'compiler': group['compiler'], 'daemon': group['daemon'], 'git': group['git'],
+            'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(group['public']),
+            'save_timeout_seconds': group['save_timeout_seconds'], 'start_timeout_seconds': group['start_timeout_seconds'],
+            'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
+            '_path': str(path / 'data' / 'shard-host' / 'host.json')}
+
+
+def directory(group):
+    """config/shard_region.json for one region: the whole group plus which region this is."""
+    return [{'id': r['id'], 'name': r['name'], 'kind': r['kind'], 'address': '%s:%d' % (group['public_host'], r['port'])}
+            for r in group['regions']]
+
+
+def selected_map_dme(dme_text, include):
+    if not MAP_BLOCK.search(dme_text):
+        raise RuntimeError('civ13.dme has no selected-map block')
+    newline = '\r\n' if '\r\n' in dme_text else '\n'
+    block = '// BEGIN_SELECTED_MAP' + newline + '#include "' + include + '"' + newline + '// END_SELECTED_MAP'
+    return MAP_BLOCK.sub(lambda _: block, dme_text, count=1)
+
+
+class RegionPlatform(Platform):
+    """Starts DreamDaemon for one region directly instead of a scheduled task."""
+
+    def __init__(self, config):
+        self.config = config
+
+    def start_task(self, name):
+        path = Path(self.config['repository'])
+        (path / 'logs').mkdir(exist_ok=True)
+        argv = [self.config['daemon'], 'region.dmb', str(self.config['port']), '-trusted', '-close',
+                '-public' if self.config['public'] else '-invisible', '-log', 'logs/world.log']
+        flags = 0x00000008 | 0x00000200 if os.name == 'nt' else 0
+        subprocess.Popen(argv, cwd=path, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                         creationflags=flags, start_new_session=os.name != 'nt', close_fds=True)
+        return 0, 'started'
+
+    def task_ready(self, name):
+        return (Path(self.config['repository']) / 'region.dmb').exists()
+
+
+class RegionHost(Host):
+    def __init__(self, config, platform=None):
+        super().__init__(config, platform or RegionPlatform(config), script=Path(__file__).resolve())
+
+    def request(self, action):
+        if action == 'update' and self.platform.listening(self.config['port']):
+            raise Refused('stop the region before updating')
+        return super().request(action)
+
+    def precheck(self, action):
+        if action == 'start' and not self.platform.task_ready(self.config['task']):
+            raise Refused('the region has no build yet; run update first')
+        super().precheck(action)
+
+    def do_update(self, operation):
+        """Check out the group's revision in this region's worktree and compile region.dme."""
+        group = load_group(self.config['group_config'])
+        region = next(r for r in group['regions'] if r['id'] == self.config['region'])
+        git, path = self.config['git'], self.repo
+        self.record(phase='checking out')
+        code, out = self.platform.run([git, 'rev-parse', group['revision']], cwd=group['repository'], timeout=60)
+        revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+        if not HEX40.match(revision):
+            raise RuntimeError('could not resolve the group revision')
+        code, out = self.platform.run([git, 'checkout', '--detach', revision], cwd=path, timeout=600)
+        if code != 0:
+            raise RuntimeError('checkout failed: ' + out.strip()[-300:])
+        include = place_map(group, region)
+        dme = (path / 'civ13.dme').read_text(encoding='utf-8')
+        (path / 'region.dme').write_text(selected_map_dme(dme, include), encoding='utf-8', newline='')
+        if self.platform.listening(self.config['port']):
+            raise RuntimeError('the region started during the update; not compiling')
+        self.record(phase='compiling', revision=revision)
+        code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800)
+        if code != 0 or '0 errors' not in out:
+            raise RuntimeError('compile failed: ' + out.strip()[-300:])
+        self.record(phase='compiled', revision=revision, map=region['map'])
+
+
+def place_map(group, region):
+    """Return the region.dme include for the region's map, copying an outside map into the worktree."""
+    path = region_dir(group, region['id'])
+    source = Path(region['map'])
+    if not source.is_absolute():
+        if '..' in source.parts or not (path / source).is_file():
+            raise RuntimeError('map %s is not a file in the repository' % region['map'])
+        return str(source).replace('/', '\\')
+    if not source.is_file():
+        raise RuntimeError('map %s does not exist' % region['map'])
+    target = path / 'maps' / 'regions' / (region['id'] + '.dmm')
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, target)
+    return 'maps\\regions\\%s.dmm' % region['id']
+
+
+def setup(group, platform=None):
+    """Create each region's worktree and write its config. Refuses while any region is running."""
+    platform = platform or Platform()
+    git, repository = group['git'], group['repository']
+    code, out = platform.run([git, 'rev-parse', group['revision']], cwd=repository, timeout=60)
+    revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+    if not HEX40.match(revision):
+        raise Refused('could not resolve the group revision')
+    for region in group['regions']:
+        if platform.listening(region['port']):
+            raise Refused('region %s is running; stop it before setup' % region['id'])
+    Path(group['root']).mkdir(parents=True, exist_ok=True)
+    made = []
+    for region in group['regions']:
+        path = region_dir(group, region['id'])
+        if not (path / '.git').exists():
+            if path.exists() and any(path.iterdir()):
+                raise Refused('%s exists and is not a region worktree' % path)
+            code, out = platform.run([git, 'worktree', 'add', '--detach', str(path), revision], cwd=repository, timeout=600)
+            if code != 0:
+                raise Refused('worktree for %s failed: %s' % (region['id'], out.strip()[-300:]))
+            made.append(region['id'])
+        (path / 'map_saves').mkdir(exist_ok=True)
+        config = path / 'config'
+        config.mkdir(exist_ok=True)
+        settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group)}
+        (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
+        token = config / 'lifecycle-token.txt'
+        if not token.exists():
+            token.write_text(secrets.token_hex(16) + '\n', encoding='utf-8')
+        host = region_config(group, region)
+        Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
+        Path(host['_path']).write_text(json.dumps(host, indent=1) + '\n', encoding='utf-8')
+    return {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
+
+
+def hosts(group, only=None, platform=None):
+    chosen = [r for r in group['regions'] if only in (None, r['id'])]
+    if not chosen:
+        raise Refused('no region %s in the group' % only)
+    return [(r, RegionHost(region_config(group, r), platform)) for r in chosen]
+
+
+def region_view(port, timeout=10):
+    """Ask a running region what it is and how it sees its peers (shard_region topic)."""
+    payload = b'\0' * 5 + b'shard_region=1&format=json&peers=1' + b'\0'
+    try:
+        with socket.create_connection(('127.0.0.1', port), timeout=timeout) as connection:
+            connection.sendall(b'\x00\x83' + struct.pack('>H', len(payload)) + payload)
+            data = b''
+            while len(data) < 4 or len(data) < 4 + struct.unpack('>H', data[2:4])[0]:
+                part = connection.recv(65536)
+                if not part:
+                    return None
+                data += part
+        body = data[4:4 + struct.unpack('>H', data[2:4])[0]]
+        if data[:2] != b'\x00\x83' or not body or body[0] != 6:
+            return None
+        answer = json.loads(body[1:].rstrip(b'\0').decode('utf-8'))
+    except (OSError, ValueError):
+        return None
+    return answer if isinstance(answer, dict) else None
+
+
+def group_status(group, only=None, view=region_view, platform=None):
+    report = {}
+    for region, host in hosts(group, only, platform):
+        entry = host.status()
+        entry.update(kind=region['kind'], name=region['name'], built=(region_dir(group, region['id']) / 'region.dmb').exists())
+        if entry.get('listening'):
+            seen = view(region['port'])
+            # A world that answers for another group or id is not this region.
+            if not seen or seen.get('group') != group['group'] or seen.get('region') != region['id']:
+                entry['region_view'] = {'error': 'no matching shard_region answer'}
+            else:
+                entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
+        report[region['id']] = entry
+    return {'group': group['group'], 'regions': report}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--config', required=True)
+    parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
+    parser.add_argument('--region')
+    parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
+    args = parser.parse_args(argv)
+    if args.worker:
+        # A detached worker is started with one region's own host.json.
+        config = json.loads(Path(args.config).read_text(encoding='utf-8'))
+        RegionHost(config).work(*args.worker)
+        return 0
+    try:
+        group = load_group(args.config)
+    except (OSError, ValueError) as error:
+        print(json.dumps({'ok': False, 'error': 'config: %s' % error}))
+        return 2
+    if not args.action:
+        parser.error('an action is required')
+    try:
+        if args.action == 'setup':
+            result = setup(group)
+        elif args.action == 'status':
+            result = group_status(group, args.region)
+        else:
+            accepted, refused = {}, {}
+            for region, host in hosts(group, args.region):
+                try:
+                    accepted[region['id']] = host.request(args.action)
+                except Refused as refusal:
+                    refused[region['id']] = str(refusal)
+            result = {'accepted': accepted, 'refused': refused}
+            if refused and not accepted:
+                print(json.dumps({'ok': False, 'refused': refused}))
+                return 1
+    except Refused as refusal:
+        print(json.dumps({'ok': False, 'refused': str(refusal)}))
+        return 1
+    print(json.dumps(dict(result, ok=True)))
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
