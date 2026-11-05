@@ -347,7 +347,7 @@
       "code/modules/multiz/structures.dm": 2,
       "code/modules/nano/_nanoui.dm": 1,
       "code/modules/nano/tgui.dm": 1,
-      "code/modules/nomad_raids/nomad_raid.dm": 3,
+      "code/modules/nomad_raids/nomad_visit.dm": 1,
       "code/modules/organs/blood.dm": 2,
       "code/modules/organs/organ.dm": 2,
       "code/modules/organs/organ_external.dm": 3,
