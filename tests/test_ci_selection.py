@@ -207,6 +207,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered farmers-almanac'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_crossroads_mall_offline_admission_is_exact(self):
+        for path in ('tests/crossroads_mall/test_crossroads_mall.py', 'tests/crossroads_mall/build.py'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/crossroads_mall/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered crossroads-mall'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_inventory_drag_offline_admission_is_exact(self):
         path = 'tests/inventory_drag/test_inventory_drag.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):

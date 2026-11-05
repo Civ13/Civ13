@@ -860,7 +860,7 @@ var/tsfsr_forceEnabled = FALSE
 	else if (map.ID == MAP_TADOJSVILLE)
 		fact3 = "UN Soldiers"
 		fact7 = "Mercenaries"
-	else if (map.ID == MAP_EFT_FACTORY)
+	else if (istype(map, /obj/map_metadata/eft_factory))
 		fact3 = "Scavs"
 		fact13 = "BEAR"
 		fact15 = "USEC"

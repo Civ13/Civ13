@@ -168,6 +168,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_crossroads_mall_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'crossroads_mall'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/crossroads_mall/test_crossroads_mall.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_inventory_drag_suite_is_bounded_and_not_silently_omitted(self):
         name = 'inventory_drag'
         suite = ci.SUITES[name]

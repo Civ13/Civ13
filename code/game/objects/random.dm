@@ -130,7 +130,7 @@ Example for later use:
 	name = "random funny"
 	icon_state = "funny"
 	spawn_nothing_percentage = 75
-/obj/random/gun/german_random/spawn_choices()
+/obj/random/gun/funny_random/spawn_choices()
 	return list(
 				/obj/item/weapon/gun/launcher/rocket/fatman/loaded = 15,
 				/obj/structure/payload/bomb/kg250 = 5,
