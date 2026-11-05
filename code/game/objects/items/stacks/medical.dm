@@ -55,6 +55,8 @@
 
 		if(!affecting)
 			return
+		if (try_tourniquet(H, affecting, user))
+			return TRUE
 		if (affecting.open)
 			to_chat(user, SPAN_NOTICE("The [affecting.name] is cut open, you'll need more than a bandage!"))
 			return
@@ -103,6 +105,31 @@
 			else
 				if (affecting)
 					to_chat(user,  SPAN_NOTICE("The [affecting.name] is cut open, you'll need more than a bandage!"))*/
+
+// Any bandage roll doubles as a tourniquet: tighten it above a severed limb
+// artery, or loosen an existing one once the artery has stopped bleeding.
+/obj/item/stack/medical/bruise_pack/proc/try_tourniquet(mob/living/human/H, obj/item/organ/external/affecting, mob/user)
+	if (affecting.tourniquet)
+		if (affecting.status & ORGAN_ARTERY_CUT)
+			return FALSE // keep it tight; bandage the wounds underneath instead
+		user.visible_message(SPAN_NOTICE("\The [user] starts loosening the tourniquet on [H]'s [affecting.name]."), \
+							SPAN_NOTICE("You start loosening the tourniquet on [H]'s [affecting.name]."))
+		if (!do_mob(user, H, 20) || !affecting.tourniquet)
+			return TRUE
+		affecting.remove_tourniquet()
+		user.visible_message(SPAN_NOTICE("\The [user] removes the tourniquet from [H]'s [affecting.name]."), \
+							SPAN_NOTICE("You remove the tourniquet from [H]'s [affecting.name]."))
+		return TRUE
+	if (!(affecting.status & ORGAN_ARTERY_CUT) || !affecting.can_take_tourniquet() || affecting.is_tourniqueted())
+		return FALSE
+	user.visible_message(SPAN_NOTICE("\The [user] starts tying \a [singular_name] tight above the wound on [H]'s [affecting.name]."), \
+						SPAN_NOTICE("You start tying \a [singular_name] tight above the wound on [H]'s [affecting.name]."))
+	if (!do_mob(user, H, 30) || affecting.is_tourniqueted() || !use(1))
+		return TRUE
+	affecting.apply_tourniquet()
+	user.visible_message(SPAN_NOTICE("\The [user] tightens a tourniquet on [H]'s [affecting.name]. The bleeding stops."), \
+						SPAN_NOTICE("You tighten a tourniquet on [H]'s [affecting.name]. The bleeding stops. Bandage the wound, then loosen it within half an hour."))
+	return TRUE
 
 /obj/item/stack/medical/advanced/bruise_pack
 	name = "trauma kit"

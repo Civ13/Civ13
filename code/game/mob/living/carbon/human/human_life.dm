@@ -337,7 +337,7 @@
 
 		// Stop processing organs that aren't bad
 		for (var/obj/item/organ/external/E in bad_external_organs)
-			if (E.brute_dam == 0 && E.burn_dam == 0)
+			if (E.brute_dam == 0 && E.burn_dam == 0 && !E.tourniquet && !(E.status & ORGAN_BROKEN))
 				E.wounds.Cut()
 				bad_external_organs -= E
 

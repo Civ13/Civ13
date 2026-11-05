@@ -682,7 +682,8 @@ SUITES = {
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
-        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm')},
+        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm'),
+        'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm')},
     # Inert skin/catalog/guard and account-wiring checks; no native runner import.
     # Existing shared inputs retain their conservative all-suite selection.
     'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),
