@@ -75,7 +75,8 @@ class CharacterMemory:
     def __init__(self, path, name=""):
         self.path = Path(path)
         self.data = {"version": VERSION, "character": name, "home": None, "places": {}, "people": {},
-                     "events": [], "facts": [], "steps": 0, "structures": [], "made": {}}
+                     "events": [], "facts": [], "steps": 0, "structures": [], "made": {},
+                     "project": None}  # the blueprint being built (see blueprints.py)
         self.dirty = False
 
     # --- persistence --------------------------------------------------------------------------
