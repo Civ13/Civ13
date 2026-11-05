@@ -90,6 +90,16 @@ SUITES = {
             'code/modules/1713/farmers_almanac.dm',
             'code/modules/1713/weather.dm',
             'code/game/objects/farming.dm')},
+    # Gun sprite-state fallback: reviewed gap list against the DMI files and the
+    # render paths that apply it. run.py (native sweep) is not part of this suite.
+    'gun_icon_states': {'files': ('tests/gun_icon_states/test_gun_icon_states.py',),
+        'paths': ('tests/gun_icon_states/', 'code/_helpers/sprite_states.dm'),
+        'shared_paths': (
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/modules/projectiles/gun.dm',
+            'code/modules/projectiles/guns/projectile.dm',
+            'icons/obj/guns/', 'icons/mob/items/lefthand_guns.dmi',
+            'icons/mob/items/righthand_guns.dmi', 'icons/mob/back.dmi', 'civ13.dme')},
     # Ploughed field sprite selection and load restore projected from production DM.
     'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
         'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (

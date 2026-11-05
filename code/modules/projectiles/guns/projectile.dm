@@ -144,6 +144,10 @@
 	update_attachment_icon()
 	update_held_icon()
 
+// base_icon names the gun's sprite family; "[base_icon]_open" and similar
+// unloaded states are missing from many icon files.
+/obj/item/weapon/gun/projectile/fallback_sprite_states()
+	return list(base_icon) + ..()
 
 /obj/item/weapon/gun/projectile/proc/cock_gun(mob/user)
 	set waitfor = FALSE

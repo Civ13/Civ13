@@ -1213,6 +1213,7 @@ var/global/list/damage_icon_parts = list()
 		var/overlay_state = back.icon_state
 		if (back.item_state_slots && back.item_state_slots[slot_back_str])
 			overlay_state = back.item_state_slots[slot_back_str]
+		overlay_state = back.sprite_state_for(overlay_icon, overlay_state)
 		//apply color
 		var/image/standing = image(icon = overlay_icon, icon_state = overlay_state, layer = layer+0.02)
 		standing.color = back.color
@@ -1240,7 +1241,8 @@ var/global/list/damage_icon_parts = list()
 		//determine state to use
 		var/overlay_state_shoulder = shoulder.icon_state
 		if (shoulder.item_state_slots && shoulder.item_state_slots[slot_shoulder_str])
-			overlay_state_shoulder = back.item_state_slots[slot_shoulder_str]
+			overlay_state_shoulder = shoulder.item_state_slots[slot_shoulder_str]
+		overlay_state_shoulder = shoulder.sprite_state_for(overlay_icon_shoulder, overlay_state_shoulder)
 
 
 		//apply color
@@ -1315,6 +1317,8 @@ var/global/list/damage_icon_parts = list()
 			t_icon = r_hand.icon_override
 		else
 			t_icon = INV_R_HAND_DEF_ICON
+		if (t_icon != r_hand.icon_override)
+			t_state = r_hand.sprite_state_for(t_icon, t_state)
 
 		//apply color
 		var/image/standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.02)
@@ -1359,6 +1363,8 @@ var/global/list/damage_icon_parts = list()
 			t_icon = l_hand.icon_override
 		else
 			t_icon = INV_L_HAND_DEF_ICON
+		if (t_icon != l_hand.icon_override)
+			t_state = l_hand.sprite_state_for(t_icon, t_state)
 
 		//apply color
 		var/image/standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.02)

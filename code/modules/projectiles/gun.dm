@@ -266,6 +266,7 @@
 
 // only update our in-hands icon if we aren't using a scope (invisible)
 /obj/item/weapon/gun/update_held_icon()
+	settle_icon_state()
 	if (loc && ismob(loc))
 		if (ishuman(loc))
 			var/mob/living/human/H = loc
