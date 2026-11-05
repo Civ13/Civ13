@@ -2675,7 +2675,9 @@ jobs:
         continue-on-error: true
         env:
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: python3 -B scripts/dreamchecker_lint.py check --receipt .ci/lint/dreamchecker.json | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          set -o pipefail
+          python3 -B scripts/dreamchecker_lint.py check --receipt .ci/lint/dreamchecker.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Explain the verdict
         if: always()
         env:
