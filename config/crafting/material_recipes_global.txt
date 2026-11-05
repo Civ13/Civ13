@@ -1720,6 +1720,7 @@ RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/k
 
 RECIPE: /material/silver/,silver crown,/obj/item/clothing/head/helmet/silver_crown,3,135,0,1,none,0,0,0,8,null
 RECIPE: /material/silver/,silver arm bangles,/obj/item/clothing/accessory/armband/armbangle/silver,2,95,0,1,none,0,0,0,8,null
+RECIPE: /material/silver/,silver dressings,/obj/item/stack/medical/bruise_pack/silver,1,60,0,1,medical,0,0,0,8,null
 RECIPE: /material/silver/,expensive watch,/obj/item/clothing/gloves/watch/specialwatch,6,200,0,1,none,110,60,0,8,null
 RECIPE: /material/silver/,silver medal,/obj/item/clothing/accessory/medal/silver,2,150,0,1,none,60,60,0,8,null
 

@@ -496,6 +496,15 @@
 	atomic_nr = 47
 	chemical_symbol = "ag"
 
+// Silver is an old antiseptic: on skin and objects it kills germs like a
+// weaker prontosil, and taken in it counts as a weak antibiotic (see
+// antibiotic_strengths in organ.dm).
+/datum/reagent/silver/affect_touch(var/mob/living/human/M, var/alien, var/removed)
+	M.germ_level -= min(removed*15, M.germ_level)
+
+/datum/reagent/silver/touch_obj(var/obj/O)
+	O.germ_level -= min(volume*10, O.germ_level)
+
 /datum/reagent/cadmium
 	name = "Cadmium"
 	id = "cadmium"
