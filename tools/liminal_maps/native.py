@@ -1,9 +1,11 @@
-"""Static DMM export of a verified chapter bundle using existing Civ13 types.
+"""DMM export of a verified chapter bundle using existing Civ13 types.
 
-Slice 3 of docs/liminal/SOURCE-AND-ACCEPTANCE.md. It writes map.dmm, a semantic
-sidecar, pins and a parse-back proof, with complete.json last. It registers no
-mode: doors are open apertures, and objectives, locks and the exit exist only in
-the sidecar until the mode adapter (slice 4) gives them native behaviour.
+Slice 3 of docs/liminal/SOURCE-AND-ACCEPTANCE.md writes a static map.dmm, a
+semantic sidecar, pins and a parse-back proof, with complete.json last; doors are
+open apertures and objectives exist only in the sidecar. With mode='escape'
+(slice 4) the same layout is bound to the Liminal Facility round: the map
+metadata, start landmarks, route marker, service panel, sealed egress gate and
+extraction area are placed from the plan's anchors and links.
 """
 import hashlib
 import importlib.util
@@ -20,6 +22,12 @@ LAYOUTS_MODULE=ROOT/'docs/liminal/room_layouts_v2.py'
 EXPORTER_VERSION='liminal-dmm-export/0.1.0'
 KEY_LETTERS='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 EXPORT_FILES=('map.dmm','sidecar.json','export-manifest.json','parse-back.json')
+MODE_VERSION='liminal-escape-mode/0.1.0'
+# Types defined in code/game/objects/map_metadata/liminal_facility.dm and
+# code/modules/1713/liminal/liminal_round.dm.
+ESCAPE_TYPES=dict(metadata='/obj/map_metadata/liminal_facility',spawn='/obj/effect/landmark{name = "JoinLateLiminal"}',
+                  area='/area/caribbean/liminal',extraction='/area/caribbean/liminal/extraction',gate='/obj/structure/liminal_gate',
+                  FOUND_MARKER='/obj/structure/liminal_marker',SERVICE_DONE='/obj/structure/liminal_marker/service')
 
 
 class ExportError(ValueError):
@@ -102,6 +110,48 @@ def build_cells(doc,catalog=None):
     return cells,dict(apertures=sorted(apertures),owner=owner)
 
 
+def gated_cells(doc,notes):
+    """Aperture cells on the far side of each flag-gated link: one sealed line per link."""
+    owner=notes['owner'];apertures=set(notes['apertures']);out={}
+    for link in doc['links']:
+        if not link['requires_flags']:continue
+        a,b=link['a']['room'],link['b']['room']
+        line=sorted(p for p in apertures if owner.get(p)==b and any(owner.get(q)==a and q in apertures
+                    for q in [(p[0]+1,p[1]),(p[0]-1,p[1]),(p[0],p[1]+1),(p[0],p[1]-1)]))
+        if len(line)!=link['width']:raise ExportError('GATE','gated link '+link['id']+' has no sealable aperture')
+        out[link['id']]=line
+    return out
+
+
+def escape_cells(doc,cells,notes):
+    """Bind the static cells to the Liminal Facility escape round."""
+    rows=doc['blueprint']['rows'];owner=notes['owner'];added={}
+    def place(p,what,label):
+        if rows[p[1]][p[0]]!='F':raise ExportError('ANCHOR',label+' not on walkable floor '+str(p))
+        if p in added and what!=ESCAPE_TYPES['spawn']:raise ExportError('ANCHOR',label+' shares a cell '+str(p))
+        added.setdefault(p,[]).append(what)
+    for s in doc['spawns']:
+        r=next(r for r in doc['rooms'] if r['id']==s['room']);place((r['origin'][0]+s['local_at'][0],r['origin'][1]+s['local_at'][1]),ESCAPE_TYPES['spawn'],s['id'])
+    flags=[o['grants_flag'] for o in doc['objectives']]
+    if sorted(flags)!=['FOUND_MARKER','SERVICE_DONE']:raise ExportError('OBJECTIVES','escape needs exactly one marker and one service objective')
+    for o in doc['objectives']:
+        r=next(r for r in doc['rooms'] if r['id']==o['room']);place((r['origin'][0]+o['local_at'][0],r['origin'][1]+o['local_at'][1]),ESCAPE_TYPES[o['grants_flag']],o['id'])
+    gates=gated_cells(doc,notes)
+    if [l['requires_flags'] for l in doc['links'] if l['requires_flags']]!=[['SERVICE_DONE']]:raise ExportError('GATE','escape needs one SERVICE_DONE gate')
+    for line in gates.values():
+        for p in line:
+            if len(cells[p])!=2:raise ExportError('GATE','gate cell is not clear '+str(p))
+            place(p,ESCAPE_TYPES['gate'],'gate')
+    if len(doc['exits'])!=1:raise ExportError('EXIT','escape needs one exit')
+    exit_room=doc['exits'][0]['room']
+    out={}
+    for p,entry in cells.items():
+        area=ESCAPE_TYPES['extraction'] if owner.get(p)==exit_room else ESCAPE_TYPES['area']
+        out[p]=(*added.get(p,[]),*entry[:-1],area)
+    out[(0,0)]=(ESCAPE_TYPES['metadata'],*out[(0,0)])
+    return out,dict(gates={k:[[x+1,y+1] for x,y in v] for k,v in gates.items()},extraction_room=exit_room)
+
+
 def dmm_text(cells,width,height):
     entries=sorted(set(cells.values()))
     size=1
@@ -164,16 +214,29 @@ def sidecar(doc,notes,z):
                 exits=[dict(id=e['id'],at=native(e['room'],e['local_at']),requires_flags=e['requires_flags'],native='PENDING_MODE_ADAPTER') for e in doc['exits']])
 
 
-def export(doc,folder,z=1,catalog=None):
+def mode_cells(doc,catalog=None,mode=None):
+    cells,notes=build_cells(doc,catalog)
+    if mode is None:return cells,notes,None
+    if mode!='escape':raise ExportError('MODE','unknown mode '+repr(mode))
+    cells,binding=escape_cells(doc,cells,notes)
+    return cells,notes,binding
+
+
+def export(doc,folder,z=1,catalog=None,mode=None):
     """Write the export into a new directory. doc must already be a verified plan."""
     if type(z) is not int or not 1<=z<=16:raise ExportError('Z','native z must be 1..16')
     native=catalog or native_catalog()
-    cells,notes=build_cells(doc,native)
+    cells,notes,binding=mode_cells(doc,native,mode)
     width,height=doc['blueprint']['width'],doc['blueprint']['height']
     text=dmm_text(cells,width,height)
     grid,pw,ph=parse_dmm(text)
     if (pw,ph)!=(width,height) or grid!=cells:raise ExportError('PARSE_BACK','parsed map differs from the intended layout')
     side=sidecar(doc,notes,z)
+    if binding:
+        side.update(status='ESCAPE_MODE_BOUND',mode=MODE_VERSION,gates=binding['gates'],extraction_room=binding['extraction_room'])
+        for item in side['links']:
+            if item['requires_flags']:item['native']='SEALED_UNTIL_FLAGS'
+        for item in side['objectives']+side['exits']:item['native']='MODE_OBJECT'
     for s in side['spawns']+side['objectives']+side['exits']:
         x,y=s['at']
         if doc['blueprint']['rows'][y-1][x-1]!='F':raise ExportError('ANCHOR','anchor not on walkable floor '+s['id'])
@@ -182,6 +245,7 @@ def export(doc,folder,z=1,catalog=None):
                   seed=doc['seed'],content_version=doc['content_version'],native_catalog_version=native['version'],
                   native_catalog_sha256=canonical_hash(native),room_layouts_sha256=layouts_hash,native_z=z,
                   width=width,height=height,mode_adapter='PENDING')
+    if binding:manifest.update(mode='escape',mode_version=MODE_VERSION,mode_adapter='LIMINAL_FACILITY')
     used=sorted({part.split('{')[0] for entry in cells.values() for part in entry})
     proof=dict(schema='civ13-liminal-parse-back/1',status='PARSED_BACK_EQUAL',tiles=width*height,distinct_entries=len(set(cells.values())),
                types_used=used,apertures=len(notes['apertures']),
@@ -191,7 +255,7 @@ def export(doc,folder,z=1,catalog=None):
     (folder/'map.dmm').write_text(text,encoding='utf-8',newline='\n')
     for name,value in [('sidecar.json',side),('export-manifest.json',manifest),('parse-back.json',proof)]:
         (folder/name).write_text(json_text(value),encoding='utf-8',newline='\n')
-    complete=dict(schema='civ13-liminal-export/1',status='STATIC_DMM_EXPORTED',native_ready=False,mode_registered=False,
+    complete=dict(schema='civ13-liminal-export/1',status='ESCAPE_DMM_EXPORTED' if binding else 'STATIC_DMM_EXPORTED',native_ready=False,mode_registered=False,
                   files={n:hashlib.sha256((folder/n).read_bytes()).hexdigest() for n in EXPORT_FILES})
     (folder/'complete.json').write_text(json_text(complete),encoding='utf-8',newline='\n')
     return complete
@@ -208,6 +272,6 @@ def verify_export(folder,doc=None):
     if (width,height)!=(manifest['width'],manifest['height']):raise ExportError('EXPORT_SIZE','map size')
     if doc is not None:
         if manifest['plan_sha256']!=canonical_hash(doc):raise ExportError('EXPORT_BINDING','plan')
-        cells,_=build_cells(doc)
+        cells,_,_=mode_cells(doc,None,manifest.get('mode'))
         if cells!=grid:raise ExportError('EXPORT_DRIFT','map no longer matches the plan')
-    return dict(status='VERIFIED_STATIC_DMM',native_ready=False,tiles=width*height,map_sha256=hashlib.sha256(text.encode()).hexdigest())
+    return dict(status='VERIFIED_ESCAPE_DMM' if manifest.get('mode') else 'VERIFIED_STATIC_DMM',native_ready=False,tiles=width*height,map_sha256=hashlib.sha256(text.encode()).hexdigest())

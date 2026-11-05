@@ -23,11 +23,14 @@ Abstract supplies and the frozen resource proposal are not native playability;
 no live map, saved world or native engine is read/applied/launched by this tool.
 
 <!-- Finite authored indoor preparation -->
-`tools/liminal_maps` assembles/validates original indoor topology only; run the
-explicit `tests/liminal_maps/run.py` offline suite. Preserve catalog/helper pins,
-typed sockets, clearance/progression guards and design docs. It does not emit
-native DMMs, register a mode or prove native lighting/audio/gameplay. Keep native
-catalog/mode integration and third-party asset ports separately reviewed.
+`tools/liminal_maps` assembles/validates original indoor topology and exports
+static or escape-bound DMMs; run the explicit `tests/liminal_maps/run.py` offline
+suite and the `tests/liminal_mode/probe.dm` native probe. Preserve catalog/helper
+pins, typed sockets, clearance/progression guards and design docs. The Liminal
+Facility round (MAP_LIMINAL_FACILITY) is reachable only by compiling an exported
+map as the selected map; no vote or map list offers it. Do not reuse the Lights
+Out constructor or its poll-count timer. Lighting/audio/threats and a world boot
+are unproven. Keep third-party asset ports separately reviewed.
 
 <!-- 2026-10-27: liminal static visual proposal -->
 Version-1 docs/liminal/ROOM-PREVIEWS.md images are rejected historical evidence,

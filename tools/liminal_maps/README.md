@@ -111,11 +111,42 @@ with the exported default chapter as the selected map (local evidence, about a
 minute, needs the pinned compiler; the real `civ13.dme` is not changed). It does
 not boot the world, so in-game appearance and collision are still unverified.
 
+## Escape round (slice 4)
+
+```sh
+python3 -m tools.liminal_maps export data/liminal/chapter --out data/liminal/escape --mode escape
+python3 -m tools.liminal_maps verify-export data/liminal/escape --chapter data/liminal/chapter
+```
+
+The escape export places the map metadata, a `JoinLateLiminal` start landmark at
+each spawn, the route marker and service panel at the objective anchors, a sealed
+egress gate on the far side of each SERVICE_DONE link and the extraction area over
+the exit room. Static exports are unchanged. The sidecar lists the gate tiles.
+
+In game (`code/game/objects/map_metadata/liminal_facility.dm` and
+`code/modules/1713/liminal/liminal_round.dm`) one round datum owns all state:
+PLANNED, VALIDATED, READY, EXPLORING, TASKS_DONE, EXTRACTING, then ESCAPED or
+FAILED. The first Facility Surveyor to spawn starts the clock; up to four join in
+the first 60 seconds and later arrivals cannot complete the escape. The marker
+grants FOUND_MARKER, the panel then grants SERVICE_DONE and opens the gate; both
+are shared and idempotent. A conscious participant holding the exit room for 20
+seconds of elapsed `world.time` escapes; the round fails after 15 minutes or when
+no participant is alive. Hold, deadline and team size are bounded tunables.
+
+The 1990 policy is enforced, not just labelled: the round only becomes READY if
+every object on the map is on its prop allowlist, the kit is issued only from its
+equipment allowlist (overalls, lace-up shoes, a flashlight), research is off and
+the `liminal` recipe list is empty, so material crafting offers only utensils.
+The Lights Out constructor and timer are not reused. Nothing registers the map
+for votes or rotation: it runs only when an exported map is compiled as the
+selected map (`native_compile.py --mode escape` checks that build).
+`tests/liminal_mode/probe.dm` runs the round, policy, objects and metadata in the
+shared resource-extraction fixture. A full world boot, threats, lighting, audio
+and group play are still unverified (slices 5-6).
+
 ## Native boundary and contributions
 
-The finite mode adapter (slice 4) is the next step. It will add map metadata,
-start admission, native objective and door interactions and extraction. The
-Nomads terrain exporter is not reused as an indoor palette.
+The Nomads terrain exporter is not reused as an indoor palette.
 
 No external assets are copied. Source/RNG/IO provenance is in SOURCE-PROVENANCE.json.
 Original code and room data use the repository license. Third-party art ports,
