@@ -168,6 +168,19 @@ The coordinator relays every five seconds (`--interval`). A pass that can't
 reach an agent is reported on stderr, and that agent's outbox waits for the
 next pass.
 
+## Cross-region radio
+
+The same agent carries radio between regions whose long-range relays share a
+network key (`docs/cross-shard-radio.md`). `radio.py` keeps an in-memory ring
+of 200 envelopes per direction, each deliverable for 30 seconds, and the relay
+heartbeats of this region and its peers. The world posts `/radio/send` and
+`/radio/heartbeat` and polls `/radio/inbox` and `/radio/status`; the
+coordinator drains `/radio/outbox` and fans each envelope out to every other
+region's `/radio/deliver` once a second (`--radio-interval`, never longer than
+`--interval`). Nothing touches the SQLite ledger: a restart loses what was in
+flight, duplicates, stale envelopes, wrong-group envelopes and envelopes from
+unknown or self regions are dropped and counted in `/radio/status`.
+
 ## Two-region pilot (phase 3)
 
 `tests/transfer_storage/pilot/run.py` runs two DreamDaemon regions built from

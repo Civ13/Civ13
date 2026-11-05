@@ -260,6 +260,7 @@ var/global/civ_telecom_cursor = 1
 
 /process/civ_telecom/fire()
 	civ_check_landlines()
+	civ_relay_tick()
 	var/checks = min(16, civ_telecom_devices.len)
 	while (checks-- > 0 && civ_telecom_devices.len)
 		if (civ_telecom_cursor > civ_telecom_devices.len)

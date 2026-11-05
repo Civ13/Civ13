@@ -358,6 +358,8 @@ var/global/FREQM = rand(101,120)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
+	// other lands, through a keyed relay station (radio_relay.dm)
+	civ_relay_outbound(freq, speaker, msg, verbage)
 
 //broadcasts an announcement on the Police/Emergency frequency
 /proc/global_broadcast(var/tfreq, var/msg)
@@ -755,6 +757,8 @@ var/global/FREQM = rand(101,120)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
+	// other lands, through a keyed relay station (radio_relay.dm)
+	civ_relay_outbound(freq, speaker, msg, verbage)
 
 /obj/item/weapon/radio/galacticbattles
 	name = "portable communications backpack"

@@ -759,6 +759,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/radio" = "factories",
         "/obj/structure/telecom" = "factories",
         "/obj/structure/telecom/station" = "factories",
+        "/obj/structure/telecom/relay" = "factories",
         "/obj/structure/telecom/antenna" = "factories",
         "/obj/structure/telecom/tv" = "assembly_line",
         "/obj/structure/telecom/station/tv" = "assembly_line",

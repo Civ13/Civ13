@@ -1445,6 +1445,7 @@
 // END_SELECTED_MAP
 // END_INCLUDE
 #include "code\modules\1713\modern_telecom.dm"
+#include "code\modules\1713\radio_relay.dm"
 #include "code\modules\1713\modern_telephone.dm"
 #include "code\modules\1713\modern_terminal.dm"
 #include "code\modules\1713\backrooms\gateway_core.dm"

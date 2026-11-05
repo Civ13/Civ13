@@ -151,6 +151,38 @@ class Coordinator:
                 continue
         return len(queue)
 
+    def relay_radio_once(self):
+        """Fan every region's radio envelopes and relay heartbeats out to every other region.
+
+        Radio is ephemeral: an agent that is down keeps nothing waiting, and a
+        pass that fails for one region still serves the others. Returns the
+        number of envelopes handed over.
+        """
+        regions = self.regions()
+        collected = {}
+        for name, (url, token) in regions.items():
+            try:
+                answer = call(url, token, '/radio/outbox', timeout=2)
+            except (OSError, ValueError):
+                continue
+            result = answer.get('result') if answer.get('ok') else None
+            if type(result) is dict:
+                collected[name] = (result.get('envelopes') or [], result.get('heartbeats') or {})
+        delivered = 0
+        for name, (url, token) in regions.items():
+            envelopes = [e for source, (batch, _) in collected.items() if source != name for e in batch
+                         if type(e) is dict and e.get('group') == self.group]
+            heartbeats = {source: beats for source, (_, beats) in collected.items() if source != name}
+            if not envelopes and not heartbeats:
+                continue
+            try:
+                answer = call(url, token, '/radio/deliver', {'envelopes': envelopes, 'heartbeats': heartbeats}, timeout=2)
+            except (OSError, ValueError):
+                continue
+            if answer.get('ok'):
+                delivered += (answer.get('result') or {}).get('queued', 0)
+        return delivered
+
     def relay_once(self):
         """Deliver every outbox envelope once. Returns the number delivered."""
         regions = self.regions()
@@ -178,6 +210,7 @@ def main(argv=None):
                         help='enroll a loopback agent; repeatable')
     parser.add_argument('--mainland', help='region where new and dead characters start')
     parser.add_argument('--interval', type=float, default=5.0, help='seconds between relay passes')
+    parser.add_argument('--radio-interval', type=float, default=1.0, help='seconds between radio passes')
     parser.add_argument('--once', action='store_true', help='relay one pass and exit')
     args = parser.parse_args(argv)
     enrollments = []
@@ -191,16 +224,22 @@ def main(argv=None):
     try:
         for name, url, token in enrollments:
             coordinator.enroll(name, url, token)
+        radio_interval = max(0.1, min(args.radio_interval, args.interval))
+        next_ledger = 0.0
         while True:
-            try:
-                coordinator.relay_once()
-                coordinator.homes_once()
-            except (OSError, ValueError) as e:
-                # An agent is down or answered garbage: its outbox waits for the next pass.
-                print('relay pass failed: %s' % e, file=sys.stderr)
+            now = time.monotonic()
+            if now >= next_ledger:
+                next_ledger = now + args.interval
+                try:
+                    coordinator.relay_once()
+                    coordinator.homes_once()
+                except (OSError, ValueError) as e:
+                    # An agent is down or answered garbage: its outbox waits for the next pass.
+                    print('relay pass failed: %s' % e, file=sys.stderr)
+            coordinator.relay_radio_once()
             if args.once:
                 return
-            time.sleep(args.interval)
+            time.sleep(radio_interval)
     finally:
         coordinator.close()
 
