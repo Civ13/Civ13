@@ -1083,6 +1083,9 @@ class ArmingTest(unittest.TestCase):
         self.assertEqual(autopilot.weapon_rank("bone pickaxe"), 1)  # not an axe
         self.assertEqual(autopilot.weapon_rank("copper axe head"), 0)
         self.assertEqual(autopilot.weapon_rank("empty"), 0)
+        # Real item names that only sound like weapons: a worn sheath or helm must not be drawn and fought with.
+        for name in ("sword sheath", "knife sheath", "orc spearman helm", "pickaxe mold", "crude pickaxe head"):
+            self.assertEqual(autopilot.weapon_rank(name), 0, name)
 
     def test_grabs_a_better_weapon_from_the_ground_before_fighting(self):
         me = {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm"}
@@ -1090,9 +1093,24 @@ class ArmingTest(unittest.TestCase):
         self.assertEqual(steps[:3], [{"do": "swap_hand"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x7]"}])
         self.assertEqual(steps[3:], [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x5]"}] * 3)
         full = dict(me, left_hand={"name": "wood logs"})
-        self.assertEqual(autopilot.arm_steps(full, [self.spear])[0], {"do": "drop"})  # no time to stow
+        # No time to stow: the logs go down (a swap is free), not the flint that was in the active hand.
+        self.assertEqual(autopilot.arm_steps(full, [self.spear])[:2], [{"do": "swap_hand"}, {"do": "drop"}])
+        logs_first = dict(full, active_hand="left")
+        self.assertEqual(autopilot.arm_steps(logs_first, [self.spear])[0], {"do": "drop"})
         far = dict(self.spear, dy=3)
         self.assertEqual(autopilot.arm_steps(me, [far]), [])  # out of reach
+
+    def test_hands_do_not_swap_back_and_forth_while_a_predator_hovers(self):
+        # A pickaxe matches a weapon word but ranks below a sharpened flint: the two rules must not disagree.
+        flint = {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": {"name": "bone pickaxe"}, "intent": "help"}
+        far_wolf = dict(self.wolf, dx=3)
+        self.assertEqual(autopilot.reflex({"self": flint, "nearby": [far_wolf], "messages": []}), (None, ""))
+        pick = dict(flint, active_hand="left")
+        self.assertEqual(autopilot.reflex({"self": pick, "nearby": [far_wolf], "messages": []})[0], [{"do": "swap_hand"}])
+        steps, _ = autopilot.reflex({"self": flint, "nearby": [self.wolf], "messages": []})
+        self.assertEqual(steps, [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x5]"}] * 3)  # fights with the flint
+        sheathed = {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "worn": ["sword sheath"]}
+        self.assertEqual(autopilot.arm_steps(sheathed), [])  # an empty sheath is not a sword
 
     def test_draws_from_the_other_hand_or_a_pocket(self):
         me = {"active_hand": "right", "right_hand": {"name": "wood log"}, "left_hand": {"name": "flint hatchet"}}
@@ -1156,6 +1174,8 @@ class MiningGoalTest(unittest.TestCase):
         self.assertIn('"dig_down"', autopilot._mining_goal({"here": {"type": "/turf/floor/grass"}}, me))
         self.assertIn("craft a bone shovel", autopilot._mining_goal({"here": {}}, {"right_hand": {"name": "bone pickaxe"}}))
         below = {"here": {"type": "/turf/floor/dirt/underground/empty", "cave_supported": True}}
+        self.assertIn("walk along the tunnel", autopilot._mining_goal(below, me))
+        below["terrain"] = [{"name": "rock debris", "type": "/turf/floor/dirt/underground/empty"}]  # dug-out floor is not a rock face
         self.assertIn("walk along the tunnel", autopilot._mining_goal(below, me))
         below["terrain"] = [{"name": "underground rock", "type": "/turf/floor/dirt/underground", "safe_to_mine": True}]
         self.assertIn("mine the underground rock next to you", autopilot._mining_goal(below, me))

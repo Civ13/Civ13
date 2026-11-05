@@ -439,7 +439,8 @@ def _mining_goal(observation, me):
     """Concrete next step toward ore: mine a listed rock face, or get underground with a shovel."""
     here = observation.get("here") or {}
     rows = [row for row in list(observation.get("nearby") or []) + list(observation.get("terrain") or []) if isinstance(row, dict)]
-    if any(SKILL_TARGETS["mine"][0](row) and row.get("safe_to_mine") is not False for row in rows):
+    rock = lambda row: SKILL_TARGETS["mine"][0](row) and "/underground/empty" not in str(row.get("type", ""))  # not dug-out tunnel floor
+    if any(rock(row) and row.get("safe_to_mine") is not False for row in rows):
         return "mine ore: mine the underground rock next to you with your pickaxe (build a mine support every few tiles)"
     if "cave_supported" in here or "underground" in str(here.get("type", "")).lower():
         return "mine ore: walk along the tunnel to a rock wall and mine it with your pickaxe; build mine supports as you go"
@@ -495,14 +496,12 @@ def reflex(observation, previous=None):
             return [{"do": "flee", "target": row["ref"]}], f"backed away from the {row.get('name')} before it reached you"
         if draw:
             return draw, f"grabbed your best weapon against the {row.get('name')}"
-        steps = [] if armed(active) else [{"do": "swap_hand"}]  # ready the weapon, let it come
-        return (steps or None), (f"readied your weapon against the {row.get('name')}" if steps else "")
+        return None, ""  # the best weapon at hand is already in the active hand: let it come
     if strong and dying:
         return [{"do": "flee", "target": row["ref"]}], f"ran from the {row.get('name')} (badly hurt)"
-    if draw:
-        steps = list(draw)
-    else:
-        steps = [] if armed(active) or not armed(other) else [{"do": "swap_hand"}]
+    # Only arm_steps decides which hand fights: a second rule (any weapon word) swapped back and forth
+    # between a sharpened flint and a pickaxe every poll while a predator hovered nearby.
+    steps = list(draw)
     intents = [step["intent"] for step in steps if step.get("do") == "intent"]
     if (intents[-1] if intents else me.get("intent")) != "harm":  # picking a weapon up switches to help
         steps.append({"do": "intent", "intent": "harm"})
@@ -515,10 +514,16 @@ WEAPON_RANKS = (("spear", 6), ("pike", 6), ("sword", 6), ("mace", 6), ("machete"
                 ("sharpened stick", 4), ("club", 4), ("knife", 3), ("dagger", 3), ("sharpened flint", 2))
 
 
+# Named after a weapon without being one: parts, molds, and the sheaths and helms worn with them.
+NOT_WEAPONS = ("head", "mold", "unfinished", "sheath", "scabbard", "holster", "helm")
+
+
 def weapon_rank(name):
     lowered = str(name or "").lower()
-    if any(word in lowered for word in ("pickaxe", "head", "mold", "unfinished")):
-        return 1 if "pickaxe" in lowered else 0  # a pickaxe beats bare hands; parts are not weapons
+    if any(word in lowered for word in NOT_WEAPONS):
+        return 0
+    if "pickaxe" in lowered:
+        return 1  # beats bare hands, but it is not an axe
     return next((rank for word, rank in WEAPON_RANKS if word in lowered), 0)
 
 
@@ -543,7 +548,10 @@ def arm_steps(me, nearby=()):
         if other == "empty":
             steps.append({"do": "swap_hand"})
         else:
-            steps.append({"do": "drop"})  # no time to stow in a fight; pick it up afterwards
+            # No time to stow in a fight: drop the less useful of the two (a swap is free) and pick it up afterwards.
+            if (weapon_rank(other), _is_tool(other)) < (weapon_rank(active), _is_tool(active)):
+                steps.append({"do": "swap_hand"})
+            steps.append({"do": "drop"})
     if where == "stowed":
         steps.append({"do": "take", "item": str(what).split(" (", 1)[0]})
     else:
