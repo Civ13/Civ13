@@ -19,6 +19,9 @@ commands or arguments from the caller; everything comes from the config file.
 
 The world must have config/lifecycle-token.txt (32 hex characters, git-ignored)
 for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD.
+start and restart first pull and recompile unless the last build (build.json in
+the state folder) is already of the fetched revision, so a server never runs a
+stale build; a failed fetch or compile leaves it stopped with the error.
 
 freeze suspends the running dd.exe while nobody is online, so it uses no CPU
 and its memory can go to the pagefile; thaw resumes the same process, with
@@ -52,6 +55,10 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
+
+# Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
+# service would each flash a console window on Windows.
+NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update')
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update')  # quick or long-running; no detached worker
@@ -198,7 +205,7 @@ class Platform:
     """Everything that touches the machine, so tests can replace it."""
 
     def run(self, argv, cwd=None, timeout=1800):
-        result = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+        result = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=timeout, creationflags=NO_WINDOW)
         return result.returncode, (result.stdout + result.stderr)[-4000:]
 
     def listening(self, port):
@@ -594,7 +601,7 @@ class Host:
             check_save(self.repo / 'map_saves')
             if not self.byond_signed_in():
                 raise Refused('BYOND is not signed in: start the BYOND pager and sign in first')
-            if not self.platform.task_ready(self.config['task']):
+            if not self.task_ready_for_start():
                 raise Refused('the scheduled task is not Ready')
         elif action in ('stop', 'restart'):
             if not listening:
@@ -681,6 +688,9 @@ class Host:
             self.cold_file.unlink(missing_ok=True)
             return None
         return state
+
+    def task_ready_for_start(self):
+        return self.platform.task_ready(self.config['task'])
 
     def byond_signed_in(self):
         """False only when the pager is known not to be running in this session."""
@@ -835,8 +845,11 @@ class Host:
         except OSError:
             return
         try:
-            steps = {'start': [self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_start]}[action]
+            # A server only ever runs a build of the latest pull (Val, 2026-11-05):
+            # start and restart pull and recompile first unless the last build is
+            # already of the fetched revision.
+            steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
+                     'restart': [self.do_stop, self.do_refresh, self.do_start]}[action]
             for step in steps:
                 step(operation)
             self.record(phase='done', error=None)
@@ -916,7 +929,62 @@ class Host:
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         code, out = self.platform.run([git, 'rev-parse', 'HEAD'], cwd=repo, timeout=60)
-        self.record(phase='compiled', revision=out.strip()[-40:])
+        revision = out.strip()[-40:]
+        self.record_build(revision)
+        self.record(phase='compiled', revision=revision)
+
+    # -- build record ----------------------------------------------------------
+    # build.json names the revision the current .dmb was compiled from, so start
+    # can tell whether the build is of the latest pull. A .dmb changed since
+    # (a hand compile) no longer matches and is rebuilt.
+    def dmb(self):
+        return self.repo / 'civ13.dmb'
+
+    def build_file(self):
+        return self.state_dir / 'build.json'
+
+    def dmb_stamp(self):
+        try:
+            stat = self.dmb().stat()
+        except OSError:
+            return None
+        return [stat.st_size, stat.st_mtime_ns]
+
+    def record_build(self, revision):
+        stamp = self.dmb_stamp()
+        if HEX40.match(revision or '') and stamp:
+            self.write_json(self.build_file(), {'revision': revision, 'dmb': stamp})
+        else:
+            self.build_file().unlink(missing_ok=True)
+
+    def built_revision(self):
+        """The revision the current .dmb was compiled from, or None when unknown."""
+        try:
+            record = json.loads(self.build_file().read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+        if not isinstance(record, dict) or record.get('dmb') != self.dmb_stamp():
+            return None
+        return record.get('revision') if HEX40.match(str(record.get('revision'))) else None
+
+    def latest_revision(self):
+        """Fetch, then the revision the server should run."""
+        branch = self.config['branch']
+        self.git_text(['fetch', 'origin', branch], self.repo)
+        return self.git_text(['rev-parse', 'origin/' + branch], self.repo)
+
+    def do_refresh(self, operation):
+        """Pull and recompile unless the current build is already of the latest revision."""
+        self.record(phase='checking for updates')
+        latest = self.latest_revision()
+        if not HEX40.match(latest):
+            raise RuntimeError('could not read the latest revision')
+        if self.built_revision() == latest:
+            self.record(phase='build is current', revision=latest)
+            return
+        self.do_update(operation)
+        if self.built_revision() != latest:
+            raise RuntimeError('the build is still not of %s; not starting' % latest[:12])
 
 
 def shard_group_module():

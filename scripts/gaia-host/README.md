@@ -12,9 +12,9 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | Action | What it does |
 | --- | --- |
 | `status` | Prints the port state, the last action's progress and, when the world answers, ready/busy/players/map/save. Changes nothing. |
-| `start` | Checks `map_saves` (empty for a fresh world, or a complete save whose marker, `round.json`, `map.txt` and level files agree; a restart intent must belong to that save), writes `config/lifecycle-revision.txt` from git HEAD and runs the scheduled task. |
+| `start` | Checks `map_saves` (empty for a fresh world, or a complete save whose marker, `round.json`, `map.txt` and level files agree; a restart intent must belong to that save), fetches `origin/<branch>` and runs `update` unless the last build (`<state_dir>/build.json`, the revision and the `.dmb` it produced) is already of that revision, writes `config/lifecycle-revision.txt` from git HEAD and runs the scheduled task. A failed fetch or compile leaves the server stopped with the error, so it never runs a stale build. |
 | `stop` | Asks the running world to save and shut down through its authenticated lifecycle topic, waits for the port to close, then copies `map_saves` to `<state_dir>/backups/<operation>` and checks every file's SHA-256. The newest `backups_kept` copies are kept. |
-| `restart` | `stop`, then `start`. |
+| `restart` | `stop`, then `start` (with its pull and compile). |
 | `update` | Only while stopped: `git fetch` and a fast-forward merge of the branch, then `dm.exe civ13.dme`, which must report 0 errors. |
 | `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (optionally trimming its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
@@ -115,7 +115,8 @@ If the frozen process is gone when `serve` next looks (the machine rebooted or
 dd.exe was killed) and nothing listens on the port, the instance becomes cold
 (`<state_dir>/cold.json`). It still shows as asleep in the launcher, with
 `cold_start_estimate_seconds` (300) as its wait, and the next wake request runs
-the ordinary `start` action, which loads that save. A cold start needs
+the ordinary `start` action, which loads that save (and pulls and compiles
+first when master has moved, so allow for a compile). A cold start needs
 `cold_start_min_free_mb` (2560) of free memory, since loading peaks far above a
 thaw, and an action lock left by the power-down is cleared first. A save that
 fails `start`'s checks keeps the server down, except an interrupted one: when

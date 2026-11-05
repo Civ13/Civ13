@@ -24,6 +24,10 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
   `region.dme` (civ13.dme with only the region's map selected) and compiles it.
   A map path inside the repository is used as is; an absolute path is copied to
   `maps/regions/<id>.dmm` in that region's worktree.
+- `start` and `restart` fetch the group's remote first and run the region's
+  `update` unless its last build (`data/shard-host/build.json`) is already of
+  the group revision, so a region never runs a stale build. A region that was
+  set up but never built is built by its first `start`.
 - `start`, `stop` and `restart` reuse the host logic of
   [gaia-host](../gaia-host/README.md): one detached worker per action, progress
   in `data/shard-host/operation.json`, save-and-stop through the lifecycle
