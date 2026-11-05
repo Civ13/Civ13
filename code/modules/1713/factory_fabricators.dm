@@ -83,6 +83,8 @@ var/global/list/factory_active_fabricators = list()
 	var/recipe_name = null
 	var/progress = 0 // powered deciseconds into the current cycle
 	var/tmp/fab_active = FALSE
+	var/tmp/fab_status = "idle" // for the factory monitor
+	var/tmp/datum/factory_rate/output_rate = null
 
 /obj/structure/factory_fabricator/automated
 	name = "automated fabricator"
@@ -281,22 +283,27 @@ var/global/list/factory_active_fabricators = list()
 /obj/structure/factory_fabricator/proc/fab_step()
 	var/datum/factory_recipe/R = current_recipe()
 	if (!R || !anchored || !isturf(loc))
+		fab_status = R ? "unanchored" : "no recipe"
 		fab_stop()
 		update_icon()
 		return
 	if (!inputs_ready(R))
+		fab_status = "starved"
 		fab_stop()
 		update_icon()
 		return
 	var/turf/T = get_turf(src)
 	if (factory_loose_items(T) >= FACTORY_FAB_OUTPUT_LIMIT)
+		fab_status = "blocked"
 		return
 	var/was_powered = powered
 	powered = draw_cable_power() ? TRUE : FALSE
 	if (powered != was_powered)
 		update_icon()
 	if (!powered)
+		fab_status = "no power"
 		return
+	fab_status = "running"
 	progress += FACTORY_FAB_STEP
 	if (progress < cycle_time(R))
 		return
@@ -319,6 +326,7 @@ var/global/list/factory_active_fabricators = list()
 	else
 		for (var/i in 1 to R.output_amount)
 			new R.output_type(T)
+	factory_rate_add(src, "output_rate", R.output_amount)
 
 /proc/factory_fabricators_step()
 	for (var/obj/structure/factory_fabricator/F in factory_active_fabricators.Copy())

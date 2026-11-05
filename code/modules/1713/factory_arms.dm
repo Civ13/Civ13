@@ -26,6 +26,8 @@ var/global/list/factory_active_arms = list()
 	var/filter_optional = FALSE // a filterable arm that also runs with no filter
 	var/batch = 1 // items of one kind lifted per swing
 	var/tmp/next_swing = 0
+	var/tmp/arm_status = "off" // for the factory monitor
+	var/tmp/datum/factory_rate/move_rate = null
 
 /obj/structure/factory_arm/sorting
 	name = "sorting arm"
@@ -227,6 +229,7 @@ var/global/list/factory_active_arms = list()
 
 /obj/structure/factory_arm/proc/arm_step()
 	if (!on || !anchored || !isturf(loc))
+		arm_status = "off"
 		arm_stop()
 		update_icon()
 		return
@@ -236,6 +239,7 @@ var/global/list/factory_active_arms = list()
 	var/was_powered = powered
 	if (!draw_cable_power())
 		powered = FALSE
+		arm_status = "no power"
 		if (was_powered)
 			update_icon()
 		return
@@ -249,9 +253,20 @@ var/global/list/factory_active_arms = list()
 			if (!first || !pick_up(first.type))
 				break
 	// Set down everything held, stopping at the first item with nowhere to go.
+	var/moved = 0
 	for (var/obj/item/held in contents)
-		if (!put_down(held) || held.loc == src)
+		var/amount = factory_item_amount(held)
+		if (!put_down(held))
 			break
+		if (held.loc == src)
+			moved += max(0, amount - factory_item_amount(held))
+			break
+		moved += amount
+	if (moved)
+		factory_rate_add(src, "move_rate", moved)
+		arm_status = "running"
+	else
+		arm_status = held_item() ? "blocked" : "waiting"
 
 /proc/factory_arms_step()
 	for (var/obj/structure/factory_arm/A in factory_active_arms.Copy())

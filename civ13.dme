@@ -787,6 +787,7 @@
 #include "code\modules\1713\factory_fabricators.dm"
 #include "code\modules\1713\factory_logistics.dm"
 #include "code\modules\1713\factory_machines.dm"
+#include "code\modules\1713\factory_monitor.dm"
 #include "code\modules\1713\factory_pipes.dm"
 #include "code\modules\1713\factory_vessel.dm"
 #include "code\modules\1713\factory_packaging.dm"
