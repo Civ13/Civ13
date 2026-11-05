@@ -202,6 +202,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_research_staff_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'research_staff'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/research_staff/test_research_staff.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_door_intents_suite_is_bounded_and_not_silently_omitted(self):
         name = 'door_intents'
         suite = ci.SUITES[name]
