@@ -24,7 +24,10 @@ zombie count (2, 5, 10, 18). Counts become mobs only near players:
 - a zombie appears 9 to 20 tiles from a player, out of sight, at most 3 per
   3-second tick, 15 near any one player and 60 in the world;
 - a zombie with no player within 20 tiles for 60 seconds folds back into its
-  block count; a kill lowers the count, so cleared blocks stay cleared;
+  block count; a kill lowers the count, so cleared blocks stay cleared. A
+  player one floor up or down still counts as near, so climbing to an upper
+  floor does not make the chase vanish (zombies stay on the ground floor and
+  do not spawn while nobody is on it);
 - gunfire calls `zombie_horde_noise` (20 tiles, 6 with a silencer) and idle
   zombies walk toward it for 30 seconds;
 - a zombie notices people within 7 tiles in line of sight, day or night

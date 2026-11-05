@@ -54,6 +54,14 @@ var/global/list/zombie_horde_density_counts = list(
 	var/count = 0
 	var/list/live = list()
 
+// Within range across the map, on the same level or one floor up or down: a
+// player upstairs keeps the zombies below them, so climbing a floor does not
+// fold the chase away.
+/proc/zombie_horde_near(atom/A, atom/B, range)
+	if (!A || !B || abs(A.z - B.z) > 1)
+		return FALSE
+	return max(abs(A.x - B.x), abs(A.y - B.y)) <= range
+
 /datum/zombie_horde_block/proc/distance_to(turf/T)
 	if (T.z != z)
 		return INFINITY
@@ -123,7 +131,7 @@ var/global/list/zombie_horde_density_counts = list(
 			continue
 		var/near = FALSE
 		for (var/mob/living/human/H in people)
-			if (H.z == Z.z && get_dist(H, Z) <= ZOMBIE_HORDE_ACTIVE_RANGE)
+			if (zombie_horde_near(H, Z, ZOMBIE_HORDE_ACTIVE_RANGE))
 				near = TRUE
 				break
 		if (near)
@@ -141,7 +149,7 @@ var/global/list/zombie_horde_density_counts = list(
 			break
 		var/nearby = 0
 		for (var/mob/living/simple_animal/hostile/human/zombie/horde/Z in live)
-			if (Z.z == H.z && get_dist(Z, H) <= ZOMBIE_HORDE_ACTIVE_RANGE)
+			if (zombie_horde_near(Z, H, ZOMBIE_HORDE_ACTIVE_RANGE))
 				nearby++
 		if (nearby >= ZOMBIE_HORDE_PLAYER_CAP)
 			continue
