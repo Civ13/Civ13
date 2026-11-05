@@ -178,6 +178,10 @@ SUITES = {
             'code/_helpers/admin.dm', 'code/world.dm', '.gitignore')},
     # CI digest classifier/renderer and workflow contract; fake GitHub API only,
     # no network or BYOND runtime.
+    # Offline forgery checks for the local CI attestation gate; no network.
+    'local_ci': {'files': ('tests/local_ci/test_local_ci.py',),
+        'paths': ('tests/local_ci/', 'scripts/local_ci.py', 'tools/ci/'), 'shared_paths': (
+            '.github/workflows/',)},
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
