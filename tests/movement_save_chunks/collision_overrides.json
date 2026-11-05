@@ -270,10 +270,10 @@
     },
     {
       "path": "code/game/objects/structures.dm",
-      "sha256_normalized": "4a936a28bd9a1e95cd24f8d2877abb6f05e234bd5af0c2832e5cc6ce20f4e178",
+      "sha256_normalized": "ca6d1a73368fed4ba467d4c02bd25b00e57e87801d2f08a622d0fdea9fcabef2",
       "declarations": [
         {
-          "line": 66,
+          "line": 71,
           "declaration": "/obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
         }
       ]
