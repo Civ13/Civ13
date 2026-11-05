@@ -21,6 +21,7 @@ HELPERS = 'code/modules/projectiles/ammunition.dm'
 CONTROLS = {
     'no-import-rebuild': ('\t..()\n\tvar/bullet_type = null\n',
                           '\treturn ..()\n\tvar/bullet_type = null\n', 'FAIL:'),
+    'no-unrecorded-repair': ('\tbullet_state_unknown = !(', '\tbullet_state_unknown = FALSE && !(', 'FAIL:'),
 }
 
 
