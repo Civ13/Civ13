@@ -48,7 +48,7 @@ Evidence: `tests/zombie_city/horde_probe.py` (see its README).
 
 - At round start, a map whose metadata declares `zombie_city = TRUE` calls the
   generator: `zombie_city_generate(seed, 1, 0)`, looked up by name, with
-  seed = `world.realtime`. The seed is written to the game log and world log.
+  a random seed from 1 to 16777215. The seed is written to the game log and world log.
 - The generator calls `zombie_city_add_insertion(turf)` and
   `zombie_city_add_evacuation(turf, ordinal)`. Until it does, the hook reads
   the returned layout's `entries` and `exits`.

@@ -82,16 +82,16 @@ var/global/zombie_city_evac_turn = 0
 
 /proc/zombie_city_start()
 	if(!zombie_city_map() || zombie_city_seed) return FALSE
-	zombie_city_seed = world.realtime
-	log_game("Zombie city: generating with seed [zombie_city_seed].")
-	world.log << "Zombie city: seed [zombie_city_seed]"
+	zombie_city_seed = rand(1, 16777215) // exact in a BYOND number, so the logged seed rebuilds the city
+	log_game("Zombie city: generating with seed [num2text(zombie_city_seed, 9)].")
+	world.log << "Zombie city: seed [num2text(zombie_city_seed, 9)]"
 	var/generate = text2path("/proc/zombie_city_generate")
 	if(!generate)
 		log_game("Zombie city: no generator in this build; the map stays as it is.")
 		return FALSE
 	var/datum/layout = call(generate)(zombie_city_seed, 1, 0)
 	if(!layout)
-		message_admins("Zombie city: the generator failed for seed [zombie_city_seed].")
+		message_admins("Zombie city: the generator failed for seed [num2text(zombie_city_seed, 9)].")
 		return FALSE
 	// Until the generator calls the add procs itself, read its layout.
 	if(!zombie_city_insertions.len && ("entries" in layout.vars))
