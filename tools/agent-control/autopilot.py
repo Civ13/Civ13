@@ -834,6 +834,30 @@ def ask_ollama(url, model, messages, token=None, timeout=120, num_ctx=8192, thin
         return json.loads(response.read().decode("utf-8")).get("message", {}).get("content", "")
 
 
+# Requests that are safe to repeat after a timeout; queued actions are never resent.
+RETRY_ACTIONS = ("character_observe", "character_release", "character_list")
+RETRY_DELAYS = (2, 4, 8, 16)
+
+
+class RetryingClient:
+    """Rides out a briefly stalled server (a save or tick spike) instead of crashing and orphaning the character."""
+
+    def __init__(self, client, delays=RETRY_DELAYS, sleep=time.sleep):
+        self.client, self.delays, self.sleep = client, delays, sleep
+
+    def request(self, action, args=None):
+        delays = list(self.delays) if action in RETRY_ACTIONS else []
+        while True:
+            try:
+                return self.client.request(action, args)
+            except (OSError, AgentError) as exc:
+                if not delays:
+                    raise
+                delay = delays.pop(0)
+                print(f"{action} failed ({exc}); retrying in {delay}s", file=sys.stderr)
+                self.sleep(delay)
+
+
 def main(argv=None):
     early = argparse.ArgumentParser(add_help=False)
     early.add_argument("--player-help-config")
@@ -865,7 +889,7 @@ def main(argv=None):
         parser.error(str(exc))
     args.think = defaults.get("think") is True
     token = os.environ.get(defaults.get("auth_token_env") or "CIV13_OLLAMA_TOKEN")
-    client = AgentClient.from_env()
+    client = RetryingClient(AgentClient.from_env())
 
     if args.spawn:
         spawn_args = {"target": args.spawn}

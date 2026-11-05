@@ -482,6 +482,25 @@ class AutopilotTests(unittest.TestCase):
         shake = (ROOT / "code/game/mob/living/carbon/carbon.dm").read_text(encoding="utf-8")
         self.assertIn("if (show_ssd && !client && !teleop && !agent_character_for(src))", shake)
 
+    def test_stalled_server_is_retried_but_actions_are_not_resent(self):
+        calls = []
+
+        class Flaky:
+            def request(self, action, args=None):
+                calls.append(action)
+                if len(calls) < 3:
+                    raise TimeoutError("timed out")
+                return {"ok": 1}
+
+        waits = []
+        client = autopilot.RetryingClient(Flaky(), sleep=waits.append)
+        self.assertEqual(client.request("character_release", {"character": "[0x1]"}), {"ok": 1})
+        self.assertEqual((calls, waits), (["character_release"] * 3, [2, 4]))
+        calls.clear()
+        with self.assertRaises(TimeoutError):
+            client.request("character_queue", {"character": "[0x1]", "actions": []})
+        self.assertEqual(calls, ["character_queue"])  # a queued action is never sent twice
+
     def test_agent_characters_count_as_connected_players(self):
         checks = {
             "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",
