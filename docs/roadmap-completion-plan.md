@@ -71,7 +71,7 @@ The page lags master. These should be refreshed when the page is next edited
 | Player-built crossings and rail routes | Durable-transit design for offline intermediaries | Decision after pilot |
 | Ocean voyages and offshore industry | Route and depth definitions | Decision (design only) |
 | Submarines and underwater habitats | Depth model design | Decision (design only) |
-| Advanced-era space mode | Altitude/orbital model design | Decision (design only) |
+| Advanced-era space mode | Phased plan for probes, launch, habitats, life support, EVA, rovers and mining on a barren-world shard ([roadmap](space-settlement-roadmap.md)) | Decision (Val picks a phase) |
 | Player-owned expedition regions | Offline migration design | Decision (design only) |
 | Recovery when regions go offline | Needs authoritative custody and fenced ownership first | Agent after foundations |
 | Map capability profiles | Measure build profiles before design | Agent (measurement tooling) |
@@ -130,5 +130,7 @@ These block only the dependent step; everything else proceeds.
 - Revised Liminal room layouts.
 - #888 digging mechanics; #3563 which items become craftable.
 - Discord SDK distribution terms.
-- Design-only goals (ocean, submarines, space, expedition regions, JIT):
+- Design-only goals (ocean, submarines, expedition regions, JIT):
   whether to schedule any design work now.
+- Space settlement: which phase to start and decisions D1-D4 in the
+  [space roadmap](space-settlement-roadmap.md).

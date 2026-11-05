@@ -1,0 +1,221 @@
+# Space travel and off-world settlement: phased roadmap
+
+Status: **design only, nothing implemented.** Written 2026-11-05 against master
+`e069aae` (after #3745). Val asked (2026-11-05) for the roadmap to include going
+to space, building a base and living there, with the feature set of a
+Mars-colony simulator such as Bohemia Interactive's *Take On Mars*. No phase
+starts until Val picks one. This document does not authorize merging,
+deployment, live-server work or feature activation.
+
+It replaces the "Advanced-era space mode" row of the
+[roadmap completion plan](roadmap-completion-plan.md), which was waiting on an
+altitude/orbital model design.
+
+## Ground rules
+
+- **Mechanics only.** The reference game is a checklist of systems, not a source.
+  Civ13 uses its own names, rules, numbers, maps, sprites and sounds. No names,
+  vehicles, mission text, UI layout, art or audio from that game or its studio.
+  New art is drawn with graphic tools or reuses Civ13 art; no image generation.
+- **Civ13's identity stays.** Things are physical items with material, quality
+  and condition. Bases can be raided, sabotaged and starved. Power comes from
+  fuel, weather and reactors. Nothing is solved by a menu that a structure could
+  do instead.
+- **Fictional destination.** The settled world is an original, unnamed-in-code
+  "barren world" profile (cold, thin unbreathable air, dust, ice under the
+  regolith). A Mars-like look is fine; real NASA/ESA hardware names are not used.
+- **Default off.** Every phase lands behind a config flag or an inactive map
+  entry until Val turns it on.
+
+## Feature checklist
+
+The genre's systems, and where each lands:
+
+| System | What players do | Phase |
+| --- | --- | --- |
+| Uncrewed probes | Build a probe, launch it, drive it remotely, photograph and sample sites | 1 |
+| Science from samples | Analyse samples for research progress and site knowledge | 1 |
+| Launch and landing | Build a launch site and a crewed lander, fuel it, choose a landing site | 2 |
+| Habitat modules | Place pressurised modules: living quarters, airlock, greenhouse, workshop, store | 3 |
+| Life support | Keep oxygen, CO2, pressure, heat, power, water and food in balance | 3 |
+| Power | Solar panels, battery banks, an isotope generator for night and storms | 3 |
+| EVA suits | Pressure suit with air tank, heater battery, suit integrity and repair | 4 |
+| Surface hazards | Dust storms, extreme cold, radiation events, small meteor strikes | 4 |
+| Rovers and drones | Pressurised and open rovers, survey drones, trailers | 5 |
+| Mining and refining | Drill regolith, ice and ore; refine into water, gases, metals | 5 |
+| On-site fabrication | Print parts and modules from local feedstock | 5 |
+| Self-sufficiency | Closed-loop recycling, local propellant, return trips, more bodies | 6 |
+| Co-operative colony | Several players share and defend one base | All (Civ13 is multiplayer by default) |
+
+## What Civ13 already has
+
+| Need | Existing source | Gap |
+| --- | --- | --- |
+| A separate world to settle | Shard groups (#3694), playable generated maps (#3697), procedural surface/oceanic/cavern profiles (#3331, #3338, #3617) | No barren-world generator profile |
+| Getting there | Region gates and character transfer (#3715), fast travel journal (#3720), goods via trade post (#3655) | Gates are admin-placed; player-built trail gates (admin-approved) are next on the sharding track |
+| Living there | One home world per account, mainland start, bed keeps the home (#3740, open) | Nothing specific to hostile worlds |
+| Research gating | Research tree nodes, Digital Age ordinal 9 (#3736), 3D printer (#3743), drones and consumer electronics (#3745) | No space branch |
+| Power | Cable grid and batteries (`code/modules/1713/machinery/`), renewables (#3603), nuclear generation | No storm/night coupling for solar off-world |
+| Food | Hydroponics design and trays ([design](hydroponics-design.md)) | Off-world nutrient and water supply |
+| Atmosphere | `xgm` gas mixtures, submarine compartments with O2/CO2 and vents (`code/modules/submarine/`) | No durable atmosphere save contract ([readiness notes](atmosphere-persistence-readiness.md)) |
+| Vehicles | Modular vehicle frames and car workshop (`code/modules/1713/machinery/modular_vehicles/`) | No sealed cabin or battery drive |
+| Chemistry and fuel | Chemistry processing and automation ([design](chemistry-automation-design.md)), fracking, refining | No cryogenic propellant |
+| Mining | Resource extraction, dug underground (#3742) | No off-world ore or ice tables |
+
+## World model
+
+**The barren world is its own shard.** It is a region in a shard group with a new
+generated-map profile, not extra levels on Gaia. This keeps Gaia's 32-bit load
+peak unchanged (currently ~1.9 GB at worst) and fits the one-home-world-per-account
+rule: a settler's home becomes the barren world only when they claim a bed in a
+pressurised habitat there; with no claimed bed, death sends them back to the
+mainland like any other region.
+
+- **Size.** Start at about 200 x 200 x 2 (surface plus one dug level), roughly a
+  quarter of Gaia's cells, and measure load peak before growing.
+- **Terrain.** A new `barren` profile for `tools/procedural_maps`: regolith
+  plains, craters, ridges, ice deposits under the surface, ore seams, no
+  vegetation, no wildlife. Turfs are cold and have no breathable air.
+- **Outside air.** No per-turf gas simulation outdoors. "Outside" is a turf
+  property (`unbreathable`, ambient temperature from the existing climate
+  fields), so the outdoor world costs nothing per tick.
+- **Inside air.** Each sealed habitat is a **module ledger**: one small datum per
+  connected pressurised volume with oxygen, CO2, pressure and temperature as
+  plain numbers. Turfs ask their module for air. This avoids the unsolved
+  per-turf atmosphere save problem; the ledger saves as a few scalar fields on
+  the module's anchor structure and is rebuilt from placed modules on load.
+- **No saved world.time.** Life support, suit tanks and timers store remaining
+  amounts, never `world.time` stamps (restored stamps have broken things before).
+- **Saves policy.** The barren world follows the project rule: autosave only when
+  empty or host-only, otherwise admin save or a player vote at most every 30
+  minutes. Because a crash loses up to that window, life support never ticks
+  while nobody is present, and a frozen or sleeping world (the freeze-dd.exe
+  plan) resumes without catching up on the clock gap.
+
+## Travel rules
+
+- **Launch sites are trail gates with rockets.** A launch site is a player-built
+  structure that stays inactive until an admin approves it, exactly like the
+  planned trail gates. The destination is fixed per approved site.
+- **Departures are region travel.** A launch sends the crew as character
+  payloads through the existing transfer agent and journal; cargo goes through
+  the goods path with a mass limit per lander. The vehicle itself does not
+  travel; a matching landed-lander structure is placed at the destination.
+- **Landing.** The crew picks a landing zone from surveyed sites (phase 1 probes
+  reveal sites). Unsurveyed landing has a higher chance of a rough landing that
+  damages cargo.
+- **Return.** A return trip needs propellant at the landing site, produced
+  locally from phase 6 on. Whether propellant carried as cargo may also allow
+  earlier returns is decision D3; the recommendation is no, so early settlers
+  stay. Without propellant, settlers stay.
+- **No default shuttle.** As with ferries, there is no free service between the
+  mainland and the barren world; players build and fuel every trip.
+
+## Phases
+
+Each phase is one or more PRs with its own tests, compiled and run through
+`scripts/agent_preflight.py all --write`, with a filled `Changelog:` line once
+players can see it.
+
+### Phase 0: foundations (inactive)
+
+- Research branch "Spaceflight" registered at era 9 with no recipes yet.
+- `barren` procedural profile and a playable export of it, plus a shard-group
+  example region that is not in any vote or mainland list.
+- Module ledger datum and its offline tests: leaks, mixing two modules through an
+  open hatch, save/rebuild round trip, no ticking with nobody present.
+- Load-peak measurement of a 200 x 200 x 2 barren world on the pinned compiler.
+
+### Phase 1: probes and surveys
+
+- Craft a small lander probe and a launch rail; the probe "departs" and becomes a
+  remote rover in a probe-only survey level.
+- A mission console shows the probe's view; the player drives it, photographs
+  sites and takes samples. Batteries and comms range limit each sortie.
+- Samples return as research material for the Spaceflight branch and mark
+  landing sites as surveyed.
+- Open choice D1 below: where the survey level lives.
+
+### Phase 2: launch and landing
+
+- Launch site construction (admin-approved), crewed lander with seats and a cargo
+  hold, propellant from the refinery and chemistry lines.
+- Crew and cargo transfer to the barren world with the travel rules above.
+- A landed lander is a small sealed shelter with a few hours of air and power:
+  enough to set up the first module, not to live in.
+
+### Phase 3: habitat and life support
+
+- Habitat modules built from prefabricated kits: quarters, airlock, greenhouse,
+  workshop, storage. Modules connect through hatches and share a ledger when open.
+- Oxygen from electrolysis of water, CO2 scrubbers, heaters, leak sealing and
+  breach repair.
+- Power: solar panels, battery banks and an isotope generator from the nuclear
+  line. Night and dust storms cut solar output.
+- Water: melt mined ice, recycle grey water. Food: hydroponics trays inside the
+  greenhouse, using the hydroponics design.
+- Beds inside a pressurised module can be claimed, which makes the barren world
+  the settler's home.
+
+### Phase 4: EVA and hazards
+
+- Pressure suit, helmet, air tank and heater battery; suit integrity drops from
+  hits and sharp terrain and is patched with a repair kit.
+- Exposure: no suit outside means rapid suffocation and cold; low tank and low
+  battery warnings on the HUD.
+- Hazards: dust storms (vision and solar loss), cold snaps, radiation events
+  (shelter indoors), small meteor strikes that can breach modules.
+
+### Phase 5: rovers, mining and fabrication
+
+- Rovers from the modular vehicle frames: an open rover and a sealed rover with a
+  small ledger cabin and battery drive; cargo trailers.
+- Survey drones reuse the Digital Age drone controller.
+- Drill rigs for regolith, ice and ore; refining into water, oxygen, metals and
+  glass; off-world ore tables.
+- The 3D printer prints spare parts and module kits from local feedstock, so
+  settlers stop depending on mainland cargo.
+
+### Phase 6: self-sufficiency and expansion
+
+- Closed loops: water and air recycling efficiency, composting into greenhouse
+  nutrient.
+- Local propellant plant (water ice into fuel and oxidiser) enables return trips
+  and supply runs to the mainland.
+- More bodies as further profiles (a small airless moon, an ice body), each its
+  own shard.
+- Balance pass with live data.
+
+## Research branch
+
+Original node names, all era 9 unless Val chooses a later age (D2):
+
+| Node | Unlocks | Phase |
+| --- | --- | --- |
+| Rocketry | Launch rail, survey probe, propellant recipes | 1 |
+| Planetary Survey | Mission console, sample analyser, site maps | 1 |
+| Crewed Flight | Launch site, crewed lander | 2 |
+| Sealed Habitats | Habitat module kits, hatches, airlock | 3 |
+| Life Support | Electrolyser, scrubber, heater, water recycler | 3 |
+| Pressure Suits | Suit, helmet, air tank, repair kit | 4 |
+| Surface Vehicles | Open and sealed rovers, trailers | 5 |
+| Off-world Mining | Drill rigs, ice melter, regolith refinery | 5 |
+| Local Resources | Propellant plant, printed module kits | 6 |
+
+## Decisions for Val
+
+1. **Which phase to start.** Recommended: phase 0, then phase 1. Probes give
+   players something to do before the hard life-support work, and phase 0's
+   load measurement decides the world size.
+2. **D1 - where probes drive.** Recommended: a small survey level in the
+   launching world, reusing the instance level reserve, so remote control never
+   crosses shards. Alternative: probes drive on the real barren shard (true
+   persistence of probe tracks, but needs cross-shard remote control).
+3. **D2 - which age.** Recommended: Spaceflight as a branch of the 2026 Digital
+   Age (ordinal 9). Alternative: a new ordinal 10 "Space Age", which needs the
+   same age-addition work as #3736.
+4. **D3 - one-way or return trips first.** Recommended: return trips only after
+   phase 6 local propellant, so early settlers commit to living there.
+5. **D4 - how deadly suit failure is.** Recommended: unconsciousness and heavy
+   damage over about a minute, giving crewmates time to drag someone inside,
+   rather than instant death.
