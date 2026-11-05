@@ -141,6 +141,50 @@ class HelperTest(unittest.TestCase):
         finally:
             r.close()
 
+    def test_scalar_list_node_defines_the_list(self):
+        # Value format 2 writes an all-scalar list as the one node /lists/<id>.
+        batch = record("/entries/0/1/type", Path_("/obj"))
+        batch += record("/entries/0/1/tags", {"kind": "list", "ref": 4})
+        batch += record("/lists/4", {"kind": "scalars", "length": 1, "keys": ["a"], "values": [None]})
+        _, summary = self.write("scalars.stream", [batch])
+        self.assertTrue(summary["valid"], summary)
+        self.assertEqual(summary["missing_lists"], 0)
+
+    def test_write_mode_reads_back_the_last_value(self):
+        out = self.tmp / "late.stream"
+        h = Helper(self.exe, "write", out)
+        try:
+            self.assertEqual(h.request("W", record("/entries/0/1/type", Path_("/turf")) + record("/entries/0/1/content", ["1"])), b"OK")
+            v, _ = parse_token(h.request("G", "/entries/0/1/content"))
+            self.assertEqual(v, [("1",)])
+            self.assertEqual(h.request("W", record("/entries/0/1/content", ["1", "2"])), b"OK")
+            v, _ = parse_token(h.request("G", "/entries/0/1/content"))
+            self.assertEqual(v, [("1",), ("2",)])
+            self.assertEqual(h.request("G", "/entries/0/2/content"), b"?")
+            summary = json.loads(h.request("F", ""))
+        finally:
+            h.close()
+        self.assertTrue(summary["published"], summary)
+        r = Helper(self.exe, "read", out)
+        try:
+            v, _ = parse_token(r.request("G", "/entries/0/1/content"))
+            self.assertEqual(v, [("1",), ("2",)])
+        finally:
+            r.close()
+
+    def test_seek_finds_a_subtree_start(self):
+        batch = "".join(record(p, 1) for p in ("/lists/12", "/lists/12/1/key", "/lists/120", "/lists/2/length", "/entries/1/600/type"))
+        out, _ = self.write("seek.stream", [batch], force=True)
+        r = Helper(self.exe, "read", out)
+        try:
+            order = ["/entries/1/600/type", "/lists/12", "/lists/12/1/key", "/lists/120", "/lists/2/length"]
+            self.assertEqual(int(r.request("K", "/lists/12")), order.index("/lists/12"))
+            self.assertEqual(int(r.request("K", "/lists/12/")), order.index("/lists/12/1/key"))
+            self.assertEqual(int(r.request("K", "/lists/3")), len(order))
+            self.assertEqual(int(r.request("K", "/entries/1/")), 0)
+        finally:
+            r.close()
+
     def test_incomplete_file_is_rejected(self):
         out = self.tmp / "partial.stream"
         h = Helper(self.exe, "write", out)
@@ -162,6 +206,42 @@ class HelperTest(unittest.TestCase):
         h.request("A")
         h.close()
         self.assertFalse(out.exists())
+
+
+class ShippedBinariesTest(unittest.TestCase):
+    """The Windows shim and helper ship at the repository root for Gaia."""
+
+    ROOT = Path(__file__).resolve().parents[2]
+
+    def manifest(self) -> dict:
+        return json.loads((self.ROOT / "tools/savestream/shipped.json").read_text())
+
+    def test_root_binaries_match_the_manifest(self):
+        import hashlib
+        for name, digest in self.manifest()["files"].items():
+            data = (self.ROOT / name).read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest, name)
+
+    def test_sources_match_the_shipped_build(self):
+        import hashlib
+        for name, digest in self.manifest()["sources"].items():
+            data = (self.ROOT / "tools/savestream/src" / name).read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest,
+                             f"{name} changed: rebuild with build.sh windows, re-ship the root binaries and update shipped.json")
+
+    def test_rebuild_reproduces_the_shipped_binaries(self):
+        # Without mingw-w64 this only checks the manifest above; with it, a
+        # source change that was not rebuilt and re-shipped fails here.
+        import hashlib
+        import shutil
+        import subprocess
+        if not (shutil.which("i686-w64-mingw32-gcc") and shutil.which("x86_64-w64-mingw32-gcc")):
+            self.skipTest("mingw-w64 is not installed")
+        subprocess.run(["bash", str(self.ROOT / "tools/savestream/build.sh"), "windows"], check=True, stdout=subprocess.DEVNULL)
+        built = self.ROOT / "tools/savestream/bin/windows"
+        for name, digest in self.manifest()["files"].items():
+            self.assertEqual(hashlib.sha256((built / name).read_bytes()).hexdigest(), digest,
+                             f"{name}: rebuild differs; copy bin/windows/{name} to the root and update shipped.json")
 
 
 if __name__ == "__main__":

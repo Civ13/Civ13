@@ -19,6 +19,11 @@ on:
       - 'tests/world_save/roundtrip.dm'
       - 'tests/world_save/roundtrip.dme'
       - 'tests/world_save/run.sh'
+      - 'tests/world_save/run-stream.sh'
+      - 'tests/world_save/stream_roundtrip.dme'
+      - 'tests/world_save/stream_stubs.dm'
+      - 'code/modules/persistence/stream/**'
+      - 'tools/savestream/**'
       - 'code/modules/persistence/zone_topology.dm'
       - 'tests/zone_persistence/**'
       - 'code/modules/persistence/durable_world.dm'
@@ -165,6 +170,20 @@ jobs:
           bash tests/world_save/run.sh
           bash tests/world_save/run.sh 'low_memory=1&segment=1'
           bash tests/world_save/run.sh 'split=1'
+      - name: Stream-backed (format 5) world-save round trip
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The i386 call_ext shim needs a 32-bit C toolchain.
+          sudo apt-get update -q
+          sudo apt-get install -y -q gcc-multilib
+          export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+          export MANPATH="${MANPATH:-}"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          export TMPDIR="$RUNNER_TEMP/moving-save-evidence/world-save-stream"
+          mkdir -p "$TMPDIR"
+          bash tests/world_save/run-stream.sh
       - name: Retain all exact-head evidence including failed attempts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

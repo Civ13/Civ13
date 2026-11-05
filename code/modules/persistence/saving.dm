@@ -65,6 +65,10 @@
 	// section of loading.dm. Builds before it reject format 4, so the last
 	// full-file generation is kept in map_rollback/ before the first one.
 	var/low_memory = plan_low_memory("save")
+	// Stream-backed levels (format 5) keep entries and lists in a helper-written
+	// stream; without the shim and helper the save stays on /savefile levels.
+	var/stream_writer = stream_level_writer_type()
+	if(stream_writer) low_memory = TRUE
 	if(low_memory) preserve_full_file_rollback()
 	var/backup_dir = "map_backups/"
 	// Back up the whole previous completed generation before overwriting any
@@ -116,7 +120,7 @@
 		delete_level_segment_files("map_saves/", A)
 		var/savefile/savefile = new("map_saves/[A].sav")
 		savefile["/format_version"] << 3
-		if(low_memory) savefile["/format_version"] << 4
+		if(low_memory) savefile["/format_version"] << (stream_writer ? 5 : 4)
 		// Value format 2: raw scalar fields and single-node scalar lists.
 		// Readers accept format 1 envelopes too; the marker is for tools.
 		savefile["/value_format"] << 2
@@ -124,7 +128,10 @@
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
 		savefile["/maxz"] << world.maxz
-		saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
+		if(stream_writer)
+			saving_segments = new stream_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget())
+		else
+			saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)

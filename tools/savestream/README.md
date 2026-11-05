@@ -1,10 +1,11 @@
-# Stream saves (prototype)
+# Stream saves
 
-Prototype of the save offload recommended by the 64-bit Dream Daemon
-feasibility study: world-save serialization leaves the 32-bit Dream Daemon
-process and goes to a 64-bit helper. **Off by default.** Nothing in the game
-calls it yet; `Save_World` and `Load_World` still use `/savefile` (formats 3
-and 4). It is tested on save copies only.
+World-save serialization runs in a 64-bit helper instead of the 32-bit Dream
+Daemon process. Since level format 5, `Save_World` writes every level's
+entries and lists through it (`code/modules/persistence/stream/level_stream.dm`)
+whenever the shim and helper sit beside `civ13.dmb` and `call_ext` works
+(`-trusted`). Otherwise saves fall back to `/savefile` levels (format 3 or 4)
+on their own; `PERSISTENCE_NO_STREAM_SAVES` in `config.txt` forces that.
 
 ## Why
 
@@ -23,7 +24,9 @@ address space.
 | `src/savestream_shim.c` | 32-bit library loaded with `call_ext` (classic string interface). Spawns the helper and forwards framed requests over a pipe. Holds no save data. |
 | `src/savestream_helper.c` | 64-bit helper: `write` (stream writer, blob deduplication, structural validation), `read` (index lookups, directory listing, ordered iteration), `dump`. |
 | `src/savestream_format.h` | File format, wire tokens and pipe protocol. |
-| `code/modules/persistence/stream/save_stream.dm` | DM API: `/datum/save_stream` with `open_write`/`put`/`put_text`/`finish` and `open_read`/`get`/`dir`/`iterate`. |
+| `code/modules/persistence/stream/save_stream.dm` | DM API: `/datum/save_stream` with `open_write`/`put`/`put_text`/`finish` and `open_read`/`get`/`dir`/`iterate`/`seek`/`subtree`. |
+| `code/modules/persistence/stream/level_stream.dm` | Level format 5: the stream writer and reader behind the format-4 segment seams. |
+| `../../savestream.dll`, `../../savestream_helper.exe` | Windows builds shipped at the repository root (like `rust_g.dll`); `shipped.json` pins their bytes and sources. |
 | `bench/` | Converter and benchmark modes (one Dream Daemon process per mode). |
 | `diagnosis/address_space.py` | Scriptable VMMap summary for a running Dream Daemon (Windows `VirtualQueryEx`, Linux `/proc`). |
 | `diagnosis/run_bench.py` | Runs the benchmark modes and samples each process. |
@@ -67,9 +70,36 @@ helper. `convert` turns a format-3 level into a stream (the converter itself
 materializes the source savefile) and `verify` compares every leaf both ways.
 Never point it at a live server's `map_saves/`.
 
-## Not done yet
+## Level format 5
 
-- Wiring into `Save_World`/`Load_World` behind a config flag, after the
-  compact save format lands (the persistence work owns the format number).
-- Format 4 segment files as converter input (format 3 only today).
-- A rollback copy and migration step before any live use, as format 4 did.
+`map_saves/<z>.sav` stays a small savefile index (`/format_version` 5, turf
+grid, zone capture, header, `/stream/file`), so every tool that checks for
+`<z>.sav` keeps working. Entries and lists go to `map_saves/<z>.stream.sav`.
+The save still fills one small scratch savefile per segment
+(`PERSISTENCE_SEGMENT_SIZE`) and hands it to the helper when it closes; the
+few late appends to an earlier turf's contents (roster drain, animal sweep)
+read that node back from the helper. On load, `level_entry_file()` and
+`level_list_file()` materialise one entry shard (512 entries) or list block
+at a time from the stream. Backups, rollback, the validation record and the
+completion marker treat the stream like a segment file.
+
+Formats 3 and 4 still load. Builds before format 5 refuse a format-5 save, so
+the first stream save keeps the last full-file generation in `map_rollback/`
+as format 4 did.
+
+## Shipping the Windows binaries
+
+```bash
+bash tools/savestream/build.sh windows      # mingw-w64, no link timestamp: same bytes every build
+cp tools/savestream/bin/windows/* .         # then update tools/savestream/shipped.json
+python3 -m unittest tests/savestream/test_helper.py
+```
+
+The test fails when a source file changed without updating `shipped.json`, and
+with mingw-w64 installed it rebuilds and compares the shipped bytes.
+
+## Native check
+
+`bash tests/world_save/run-stream.sh` runs the world-save fixture with stream
+levels through the real `Save_World`/`Load_World` (needs gcc-multilib and the
+pinned BYOND).

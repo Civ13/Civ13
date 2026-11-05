@@ -1218,6 +1218,7 @@
 #include "code\modules\persistence\persistence.dm"
 #include "code\modules\persistence\saving.dm"
 #include "code\modules\persistence\shard_group.dm"
+#include "code\modules\persistence\stream\level_stream.dm"
 #include "code\modules\persistence\stream\save_stream.dm"
 #include "code\modules\persistence\transfer_bridge.dm"
 #include "code\modules\persistence\transfer_trade_post.dm"

@@ -40,14 +40,22 @@ Omitted `pixel_x`/`pixel_y` return to their default on load.
 fails on a scalar field that differs between builds unless `known_drift.txt`
 lists it.
 
-<!-- 2026-11-05: stream save prototype -->
-`tools/savestream` and `code/modules/persistence/stream/save_stream.dm` stream a
-level's path/value tree through a 32-bit call_ext shim into a 64-bit helper, so
-Dream Daemon never builds the /savefile tree. Off by default with no game callers;
-`Save_World`/`Load_World` are unchanged. Keep its paths identical to the savefile
-paths so wiring it in stays a sink swap at `record_save_capture_path` writes.
-Offline: `python3 -m unittest tests/savestream/test_helper.py`; native:
-`python3 tests/savestream/run_native.py`. Benchmarks run on save copies only.
+<!-- 2026-11-05: stream-backed levels (format 5) -->
+`tools/savestream` streams a level's path/value tree through a 32-bit call_ext
+shim into a 64-bit helper. Since format 5 (`stream/level_stream.dm`) every save
+uses it when `savestream.dll`/`savestream_helper.exe` (Linux: `libsavestream.so`,
+`savestream_helper`) sit beside the .dmb and call_ext works; otherwise the save
+falls back to formats 3/4 by itself. Format 5 is a format-4 index
+(`/format_version` 5, `/stream/file`) plus `<z>.stream.sav`, which
+`level_segment_files` lists so backups, rollback and the validation record carry
+it. Writes still go to a scratch savefile per segment, drained to the helper on
+rotation; readers get scratch files per 512-entry shard or list block, matched by
+name in `owns_file` because reading an absent savefile key creates it. Keep stream
+paths identical to savefile paths. Close handles through `drop_segment_reader`/
+`drop_segment_writer`: an open helper keeps the file locked on Windows. Offline:
+`python3 -m unittest tests/savestream/test_helper.py` (also pins the shipped
+Windows binaries); native: `bash tests/world_save/run-stream.sh`. Benchmarks run
+on save copies only.
 
 <!-- 2026-11-04: default allowlist fields -->
 Allowlisted types (turfs, wild plants, plain objects; `persistence_field_allowlist()`)

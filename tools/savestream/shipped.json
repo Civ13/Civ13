@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "note": "Windows shim and helper shipped at the repository root beside rust_g.dll, so Gaia's game directory has them. Rebuild with: bash tools/savestream/build.sh windows (mingw-w64, no link timestamp) and copy bin/windows/* to the root.",
+  "toolchain": "i686-w64-mingw32-gcc (GCC) 13-win32 / x86_64-w64-mingw32-gcc (GCC) 13-win32, Ubuntu mingw-w64 11.0.1-3build1",
+  "files": {
+    "savestream.dll": "9f75c8302c9b79ff7f43b6a286bf1adc735a56bc7eeb2aa14e464e033e0e7cc8",
+    "savestream_helper.exe": "544a85680a912ff28dcd6ddf2654b17176efd8b7afdfe4a0a2e62da4f96573e1"
+  },
+  "sources": {
+    "savestream_format.h": "eb2cb5c814b10c88574eea1ca6ac76c3e473f6ed598725bf5b7c7bfab87f29df",
+    "savestream_helper.c": "6101343bbedb8407bbbfeedf8f6c3110c189c45a959b52f8f76baf18075f0d2d",
+    "savestream_shim.c": "f72d25259eaa550cd0e2e2a16799797edf897a306d526dcb3dded4be632d7b8d"
+  }
+}

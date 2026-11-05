@@ -525,6 +525,9 @@ map_storage
 /map_storage/proc/clear_bookkeeping()
 	// Release low-memory segment handles (loading.dm). Isolated fixtures that
 	// compile this file without the loader have no such fields.
+	// Stream-backed handles also stop their helper process.
+	if(hascall(src, "drop_segment_writer")) call(src, "drop_segment_writer")()
+	if(hascall(src, "drop_segment_reader")) call(src, "drop_segment_reader")()
 	if("saving_segments" in vars) vars["saving_segments"] = null
 	if("segment_reader" in vars) vars["segment_reader"] = null
 	moving_save_roots = list()

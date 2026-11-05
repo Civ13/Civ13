@@ -290,6 +290,8 @@ EXPORT char *savestream_abort(int argc, char **argv) {
 static char *query(int argc, char **argv, char op) {
 	session_t *s = session_arg(argc, argv);
 	if (!s || argc < 2) return ret_str("ERR:bad session");
+	/* A write-mode read must not take the reply owed to the last write. */
+	if (!drain_pending(s)) return ret_str(s->pending_error);
 	if (!send_request(s, op, argv[1], strlen(argv[1]))) return helper_gone(s);
 	char *r = read_reply(s);
 	return r ? r : helper_gone(s);
@@ -297,6 +299,7 @@ static char *query(int argc, char **argv, char op) {
 EXPORT char *savestream_get(int argc, char **argv) { return query(argc, argv, OP_GET); }
 EXPORT char *savestream_dir(int argc, char **argv) { return query(argc, argv, OP_DIR); }
 EXPORT char *savestream_iter(int argc, char **argv) { return query(argc, argv, OP_ITER); }
+EXPORT char *savestream_seek(int argc, char **argv) { return query(argc, argv, OP_SEEK); }
 
 EXPORT char *savestream_stats(int argc, char **argv) {
 	session_t *s = session_arg(argc, argv);
