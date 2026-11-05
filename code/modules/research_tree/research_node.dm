@@ -275,6 +275,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity"), 8, /obj/item/camera/coldwar))
 	// Capstone into the Digital Age (2026). Prototype: a mobile phone (gated on
 	// digital_computing, era8, so it is always buildable before this node).
+	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","automation"), 9))
 	register_research_node(new /datum/research_node("digital_networks", "Digital Networks", "Industrial", 560, 8, RESEARCH_MODE_PROTOTYPE, list("digital_computing"), 9, /obj/item/weapon/telephone/mobile))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
@@ -676,6 +677,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fluid_vessel/industrial" = "digital_computing",
 		"/obj/structure/factory_arm/stack" = "digital_computing",
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
+		// --- additive_manufacturing (9) ---
+		"/obj/structure/factory_fabricator/printer" = "additive_manufacturing",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",

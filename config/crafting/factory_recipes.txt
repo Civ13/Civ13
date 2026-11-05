@@ -19,3 +19,16 @@ FACTORY: screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/iro
 FACTORY: claw hammer|/obj/item/weapon/hammer/modern|1|/obj/item/stack/material/iron=3|50|1|assembly_line
 FACTORY: wirecutters|/obj/item/weapon/wirecutters|1|/obj/item/stack/material/steel=4|60|1|assembly_line
 FACTORY: ammo belt|/obj/item/ammo_magazine/emptybelt|1|/obj/item/stack/material/copper=7|100|2|automation
+// Tier 4 is the 3D printer (Digital Age), which prints only these rows.
+FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing
+FACTORY: printed dice|/obj/item/weapon/dice/d20|2|/obj/item/stack/material/plastic=1|20|4|additive_manufacturing
+FACTORY: printed bug swatter|/obj/item/weapon/swatter/modern|1|/obj/item/stack/material/plastic=1|20|4|additive_manufacturing
+FACTORY: printed bottle|/obj/item/weapon/reagent_containers/food/drinks/plastic/cola|2|/obj/item/stack/material/plastic=1|20|4|additive_manufacturing
+FACTORY: printed gallon jug|/obj/item/weapon/reagent_containers/food/drinks/plastic/gallonjug|1|/obj/item/stack/material/plastic=2|30|4|additive_manufacturing
+FACTORY: printed pill pack|/obj/item/weapon/pill_pack|2|/obj/item/stack/material/plastic=1|20|4|additive_manufacturing
+FACTORY: printed blood bag|/obj/item/weapon/reagent_containers/blood/empty|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing
+FACTORY: printed surgical mask|/obj/item/clothing/mask/sterile|2|/obj/item/stack/material/plastic=1|20|4|additive_manufacturing
+FACTORY: printed bag valve mask|/obj/item/bag_valve_mask|1|/obj/item/stack/material/plastic=2|60|4|additive_manufacturing
+FACTORY: printed hardhat|/obj/item/clothing/head/helmet/modern/hardhat|1|/obj/item/stack/material/plastic=3|60|4|additive_manufacturing
+FACTORY: printed gas mask|/obj/item/clothing/mask/gas/modern|1|/obj/item/stack/material/plastic=3;/obj/item/stack/material/glass=1|90|4|additive_manufacturing
+FACTORY: printed traffic cone|/obj/item/weapon/trafficcone|1|/obj/item/stack/material/plastic=2|40|4|additive_manufacturing

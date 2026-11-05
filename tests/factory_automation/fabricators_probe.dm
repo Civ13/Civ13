@@ -86,7 +86,7 @@ var/machine_runtime_error = FALSE
 
 /proc/machine_recipe_checks()
 	var/list/recipes = factory_load_recipes()
-	machine_check(recipes.len == 18 && !factory_recipe_errors.len, "the curated factory recipe list loads eighteen recipes without errors ([english_list(factory_recipe_errors)])")
+	machine_check(recipes.len == 30 && !factory_recipe_errors.len, "the curated factory recipe list loads thirty recipes without errors ([english_list(factory_recipe_errors)])")
 	var/datum/factory_recipe/R = recipes["electronic circuits"]
 	machine_check(R && R.output_type == /obj/item/stack/material/electronics && R.output_amount == 3 && R.inputs[/obj/item/stack/material/copper] == 2 && R.inputs[/obj/item/stack/material/plastic] == 1 && R.tier == 2 && R.node == "automation", "recipe rows parse output, inputs, tier and node")
 	for (var/name in recipes)
@@ -96,9 +96,9 @@ var/machine_runtime_error = FALSE
 	var/list/bad = factory_load_recipes("bad_recipes.txt")
 	machine_check(bad.len == 1 && factory_recipe_errors.len == 4, "invalid and duplicate rows are reported and skipped")
 	factory_load_recipes()
-	machine_check(factory_get_recipes().len == 18, "the real list reloads")
+	machine_check(factory_get_recipes().len == 30, "the real list reloads")
 	var/list/node_map = recipe_node_requirements
-	var/list/tiers = list("/obj/structure/factory_arm/stack" = "digital_computing", "/obj/structure/factory_fabricator" = "assembly_line", "/obj/structure/factory_fabricator/automated" = "automation", "/obj/structure/factory_fabricator/computerized" = "digital_computing")
+	var/list/tiers = list("/obj/structure/factory_arm/stack" = "digital_computing", "/obj/structure/factory_fabricator" = "assembly_line", "/obj/structure/factory_fabricator/automated" = "automation", "/obj/structure/factory_fabricator/computerized" = "digital_computing", "/obj/structure/factory_fabricator/printer" = "additive_manufacturing")
 	var/node_ok = TRUE
 	for (var/path in tiers)
 		if (node_map[path] != tiers[path])
@@ -119,7 +119,8 @@ var/machine_runtime_error = FALSE
 	machine_done("probe_civ", "digital_computing")
 	var/list/basic = F.available_recipes("probe_civ")
 	machine_check(basic.len == 15 && ("barbwire" in basic) && ("bronze" in basic) && ("wrench" in basic) && !("ammo belt" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
-	machine_check(C.available_recipes("probe_civ").len == 18, "a tier 3 fabricator lists every researched recipe")
+	machine_check(C.available_recipes("probe_civ").len == 18, "a tier 3 fabricator lists every researched non-printing recipe")
+	machine_printer_checks()
 	machine_check(!F.set_recipe("no such recipe") && !F.recipe_name, "unknown recipes are refused")
 	var/obj/item/stack/material/iron/iron = new(locate(1, 2, 1), 10, FALSE)
 	machine_check(!F.factory_accepts(iron), "a fabricator without a recipe takes nothing")
@@ -256,4 +257,29 @@ var/machine_runtime_error = FALSE
 	var/obj/item/stack/ammopart/casing/rifle/casings = locate() in T.loc
 	machine_check(casings && casings.amount == 3, "a fabricator makes three rifle casings from one copper")
 	for (var/obj/O in power + list(T, S, casings))
+		qdel(O)
+
+// Digital Age 3D printer: prints only the tier 4 rows, from plastic.
+/proc/machine_printer_checks()
+	var/obj/structure/factory_fabricator/printer/P = new(locate(12, 5, 1))
+	machine_check(!P.available_recipes("probe_civ").len, "a 3D printer lists nothing before 3D Printing is researched")
+	machine_done("probe_civ", "additive_manufacturing")
+	var/list/prints = P.available_recipes("probe_civ")
+	var/only_prints = prints.len == 12
+	for (var/name in prints)
+		var/datum/factory_recipe/R = factory_recipes[name]
+		if (R.tier != 4 || R.node != "additive_manufacturing")
+			only_prints = FALSE
+	machine_check(only_prints && !("barbwire" in prints), "a 3D printer lists only the twelve printing recipes")
+	var/obj/structure/factory_fabricator/computerized/C = new(locate(14, 5, 1))
+	machine_check(!("printed hardhat" in C.available_recipes("probe_civ")), "older fabricators cannot run printing recipes")
+	machine_check(P.set_recipe("printed hardhat"), "a 3D printer takes a printing recipe")
+	var/obj/item/stack/material/plastic/plastic = new(locate(13, 5, 1), 10, FALSE)
+	machine_check(P.factory_insert(plastic) == 6 && plastic.amount == 4, "a 3D printer buffers two cycles of plastic")
+	var/list/power = machine_power(P, 12, 6)
+	for (var/i in 1 to 3)
+		P.fab_step()
+	var/obj/item/clothing/head/helmet/modern/hardhat/H = locate() in P.loc
+	machine_check(H && P.buffered(/obj/item/stack/material/plastic) == 3 && P.icon_state == "autoclaveb", "a powered 3D printer prints a hardhat from three plastic in three seconds")
+	for (var/obj/O in power + list(P, C, plastic, H))
 		qdel(O)
