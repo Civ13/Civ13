@@ -11,10 +11,19 @@ record did on Gaia on 2026-11-05 (#3681). A constructor that keeps
 rescheduling itself in the same tick, such as a spawner with `timer = 0`,
 stalls the server.
 
+Each atom type whose constructor moves a scalar field off its default is built a
+second time, both builds seeded from the type path, after the loader's
+omitted-offset reset. A field that differs between the two builds is restore
+drift: the saver omits a field at its default, so that object would come back
+with a fresh random value on every load. Move the work into
+`on_runtime_spawn()` (see `code/modules/persistence/restore_contract.dm`).
+
 The run fails in any of these cases:
 
 - a type fails that `known_failures.txt` does not list;
 - a listed type now constructs cleanly (remove it from the list);
+- a type/field pair drifts that `known_drift.txt` does not list, or a listed
+  pair no longer drifts (remove it);
 - the sweep does not finish within `--timeout` seconds.
 
 Progress lines in the evidence `runtime.log` (one every 200 types) narrow a
@@ -24,6 +33,8 @@ Negative controls each revert one fix and must fail:
 
 - `--negative-control zero-timer` stalls on the Professor Snip spawner.
 - `--negative-control vehicle-names` runs out of Soviet vehicle names.
+- `--negative-control restore-offsets` disables the loader's offset reset and
+  reports new drift.
 
 The sweep takes about a minute after compilation. It only covers construction.
 Field restoration and `after_load` are covered by the world save tests and the

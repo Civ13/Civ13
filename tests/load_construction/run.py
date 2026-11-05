@@ -8,6 +8,9 @@ reschedules itself without yielding stalls the server.
 
 The run fails on a failure that known_failures.txt does not list, on a listed
 entry that no longer fails, and on a stall (no completion within --timeout).
+It also builds each drifting type twice and fails on a scalar field that the
+restore constructor sets differently each time (the saver omits defaults, so
+such a field changes on every load) unless known_drift.txt lists it.
 Prints the evidence directory.
 """
 import argparse
@@ -30,6 +33,10 @@ CONTROLS = {
                       '\tif (persistence_saved_atom_construction || !length(names))\n',
                       '\tif (FALSE)\n',
                       'new failure'),
+    'restore-offsets': ('code/modules/persistence/restore_contract.dm',
+                        '\tif (persistence_uses_field_allowlist())\n',
+                        '\tif (TRUE)\n',
+                        'new drift'),
 }
 
 
@@ -39,13 +46,17 @@ def compiler_matches(text, returncode, version):
             re.search(r'\b0 errors,\s*0 warnings\b', text) is not None)
 
 
-def known_failures():
+def listed(name):
     known = set()
-    for line in (HERE / 'known_failures.txt').read_text(encoding='utf-8').splitlines():
+    for line in (HERE / name).read_text(encoding='utf-8').splitlines():
         line = line.split('#', 1)[0].strip()
         if line:
-            known.add(line)
+            known.add(' '.join(line.split()))
     return known
+
+
+def known_failures():
+    return listed('known_failures.txt')
 
 
 def main():
@@ -145,6 +156,19 @@ def main():
             if not args.range:
                 for path in sorted(known - failures):
                     problems.append(f'listed in known_failures.txt but constructs cleanly now: {path}')
+            drift = set()
+            drift_file = output / 'construction_drift.txt'
+            if drift_file.exists():
+                for line in drift_file.read_text(encoding='utf-8').splitlines():
+                    parts = line.split('\t')
+                    if len(parts) == 3 and parts[0] == 'DRIFT':
+                        drift.add(f'{parts[1]} {parts[2]}')
+            known_drift = listed('known_drift.txt')
+            for pair in sorted(drift - known_drift):
+                problems.append(f'new drift: {pair} (skip it under restore; see code/modules/persistence/restore_contract.dm)')
+            if not args.range:
+                for pair in sorted(known_drift - drift):
+                    problems.append(f'listed in known_drift.txt but no longer drifts: {pair}')
             result = output / 'construction_result.txt'
             print(result.read_text(encoding='utf-8') if result.exists() else 'no construction_result.txt', flush=True)
             if not result.exists() or process.returncode:

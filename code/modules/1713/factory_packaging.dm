@@ -19,7 +19,7 @@
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/filter_reagent = null
 
@@ -85,7 +85,7 @@
 	return I.loc == destination
 
 /obj/structure/fluid_bottler/fluid_demand_tier()
-	return FLUID_TIER_SINK
+	return anchored ? FLUID_TIER_SINK : 0
 
 /obj/structure/fluid_bottler/fluid_demand(id)
 	if (!filter_reagent || id != filter_reagent)
@@ -148,7 +148,7 @@ var/global/list/fluid_tablet_cost = list("calcium_carbonate" = 1, "aspirin" = 4)
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	flags = NOREACT
 	powerneeded = 2
@@ -207,7 +207,7 @@ var/global/list/fluid_tablet_cost = list("calcium_carbonate" = 1, "aspirin" = 4)
 	return TRUE
 
 /obj/structure/fluid_tablet_press/fluid_demand_tier()
-	return FLUID_TIER_SINK
+	return anchored ? FLUID_TIER_SINK : 0
 
 // Keep the buffer in the tablet ratio, so neither input can crowd out the other.
 /obj/structure/fluid_tablet_press/fluid_demand(id)

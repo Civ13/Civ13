@@ -372,7 +372,7 @@
     },
     {
       "path": "code/modules/1713/modern_items.dm",
-      "sha256_normalized": "7398269ded5a801fbb8bfba7f85f1f617b477875caa0ead585fcdfa80802d21b",
+      "sha256_normalized": "0bf43d750348470cb43efda9123a66f9f40ccd5c4c84da507cec8f16d4681037",
       "declarations": [
         {
           "line": 26,
@@ -416,7 +416,7 @@
     },
     {
       "path": "code/modules/client/client_defines.dm",
-      "sha256_normalized": "aa79f9673dfec4c3629c5930baf319da71bc93ea53a1dfbca726665cf0613270",
+      "sha256_normalized": "8c4e4762bb4c027705198b2025cae77b1c85ebcf9b0abec73ca90871dd9c99f1",
       "declarations": [
         {
           "line": 4,
@@ -510,7 +510,7 @@
     },
     {
       "path": "code/modules/paperwork/view.dm",
-      "sha256_normalized": "8fc5c3461bc989bde8858b326ebf70cb8f7fb2c7819c0869ac2917171e24249b",
+      "sha256_normalized": "1f3e388727c7276271bc8eb5f20dee3dd776eb858763150383b63f2582f3a89c",
       "declarations": [
         {
           "line": 61,

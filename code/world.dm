@@ -108,6 +108,8 @@ var/world_is_open = TRUE
 	// Build the shared research-tree node registry (faction-agnostic).
 	build_research_tree()
 	processScheduler = new
+	// SStimer: addtimer() callbacks such as full-auto fire.
+	Master.start_timer_loop()
 
 	var/datum/persistence_area_startup/area_startup = new
 	persistence_area_startup_token = area_startup
