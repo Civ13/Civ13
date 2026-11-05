@@ -212,6 +212,7 @@
 			icon_state = "[initial(icon_state)]_open"
 	else
 		icon_state = "[initial(icon_state)]"
+	settle_icon_state()
 
 /obj/item/weapon/gun/launcher/flaregun/attack_self(mob/living/user as mob)
 	if (world.time >= recentpump + 5)
