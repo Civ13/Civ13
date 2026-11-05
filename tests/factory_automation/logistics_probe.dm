@@ -1,4 +1,5 @@
-// Factory automation phase 4a: fast belts and train wagon / cart ports. Runs
+// Factory automation phase 4: fast belts, train wagon / cart ports and the
+// factory monitor. Runs
 // the production sources through the shared resource-extraction fixture with
 // ordinary game startup disabled; belt and arm steps are called directly.
 /world
@@ -67,6 +68,7 @@ var/machine_runtime_error = FALSE
 		machine_drive()
 		machine_fast_belt_checks()
 		machine_wagon_checks()
+		machine_monitor_checks()
 	catch(var/exception/e)
 		machine_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = machine_failures, "runtime_error" = machine_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -182,3 +184,37 @@ var/machine_runtime_error = FALSE
 	machine_check(cart.factory_insert(loose) == 3 && loose.loc == cart.storage, "a shopping cart loads from automation")
 	var/obj/structure/closet/crate/out = belt_closed_crate(locate(8, 13, 1))
 	machine_check(cart.factory_offer() == loose && cart.factory_take(loose, out) && loose.loc == out, "a shopping cart unloads to automation")
+
+/proc/machine_monitor_row(list/rows, kind, x, y)
+	for (var/list/row in rows)
+		if (row[2] == kind && row[3] == x && row[4] == y)
+			return row
+	return null
+
+/proc/machine_monitor_checks()
+	var/datum/factory_rate/R = new
+	R.add(10)
+	machine_check(R.per_minute() == 10, "a fresh rate counts what it has seen")
+	R.start = world.time - 700
+	var/rate = R.per_minute()
+	machine_check(rate > 8 && rate < 9 && R.current == 0 && R.previous == 10, "a rate rolls into the previous minute and averages over the window ([rate])")
+	R.start = world.time - 1300
+	machine_check(!R.per_minute(), "a rate idle for two minutes reads zero")
+	var/obj/structure/factory_fabricator/F = new(locate(12, 12, 1))
+	F.set_recipe("barbwire")
+	F.fab_step()
+	var/obj/structure/factory_monitor/M = new(locate(9, 9, 1))
+	var/list/rows = M.report_rows()
+	var/list/arm_row = machine_monitor_row(rows, "arm", 2, 10)
+	machine_check(arm_row && arm_row[5] == "waiting" && arm_row[6] == 8, "the monitor lists the loading arm, its state and the eight items it moved this minute ([arm_row ? "[arm_row[5]] [arm_row[6]]" : "missing"])")
+	var/list/fab_row = machine_monitor_row(rows, "fabricator", 12, 12)
+	machine_check(fab_row && fab_row[5] == "starved" && findtext(fab_row[7], "barbwire"), "the monitor shows a fabricator without inputs as starved")
+	var/list/drive_row = machine_monitor_row(rows, "drive", 16, 16)
+	machine_check(drive_row && drive_row[5] == "running", "the monitor lists the belt drive")
+	var/list/belt_row = machine_monitor_row(rows, "belts", null, null)
+	machine_check(belt_row && findtext(belt_row[7], " belts"), "the monitor sums up the belts in range")
+	var/html = M.report_html()
+	machine_check(findtext(html, "Items/min") && findtext(html, "feeder arm") && findtext(html, "starved"), "the monitor page shows the table")
+	machine_check(recipe_node_requirements["/obj/structure/factory_monitor"] == "automation", "the monitor is gated behind Automation")
+	qdel(F)
+	qdel(M)

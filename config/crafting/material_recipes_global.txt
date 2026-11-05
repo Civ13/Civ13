@@ -415,6 +415,7 @@ RECIPE: /material/electronics/,powered soil sifter,/obj/structure/drill/sifter,2
 RECIPE: /material/electronics/,powered river concentrator,/obj/structure/drill/sifter/panner,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,powered stamp mill,/obj/structure/drill/stamp_mill,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,feeder arm,/obj/structure/factory_arm,5,200,1,1,none,125,0,0,8,null
+RECIPE: /material/electronics/,factory monitor,/obj/structure/factory_monitor,5,150,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,sorting arm,/obj/structure/factory_arm/sorting,6,200,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,automated fabricator,/obj/structure/factory_fabricator/automated,10,250,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,stack arm,/obj/structure/factory_arm/stack,10,200,1,1,none,180,0,0,8,null
