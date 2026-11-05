@@ -32,13 +32,12 @@ codex --version          # must be >= 0.159.0
 codex login status       # reports the saved sign-in without printing secrets
 ```
 
-Authentication: `codex exec` reuses the CLI's saved sign-in in `CODEX_HOME`
-(default `~/.codex`), which is either a ChatGPT account sign-in or an API key
-saved with `codex login --with-api-key` (the key is piped on stdin, never put
-on the command line). For a single run, `CODEX_API_KEY=<key> codex exec ...`
-overrides it. If status says it is not signed in, or Terra is refused for the
-account, stop and ask Val; do not sign in yourself. `~/.codex/auth.json` is a
-password-equivalent file.
+Authentication: always use the sign-in saved by `codex login` (Val's rule).
+`codex exec` reuses it from `CODEX_HOME` (default `~/.codex`). Never set
+`CODEX_API_KEY` or `OPENAI_API_KEY` for a run, and never pass a key on the
+command line. If `codex login status` says it is not signed in, or Terra is
+refused for the account, stop and ask Val to run `codex login`; do not sign in
+yourself. `~/.codex/auth.json` is a password-equivalent file.
 
 ## 2. Make an isolated workspace
 
