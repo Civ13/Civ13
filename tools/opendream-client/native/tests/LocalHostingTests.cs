@@ -128,6 +128,8 @@ static class LocalHostingTests {
         Require(status.Message == "Server port is open. World ready. 2 players.\nRegions: Gaia: awake, 2 players; The Deep: asleep.", "region line: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": false, \"state\": \"cold\", \"busy\": false}");
         Require(status.Message.StartsWith("Server is asleep (stopped"), "cold line: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"regions\": [{\"name\": \"\u0915\u0940" + string.Concat(Enumerable.Repeat("\u5317", 70)) + " <@&1>\", \"state\": \"awake\"}]}");
+        Require(status.Message.EndsWith("Regions: \u0915\u0940" + string.Concat(Enumerable.Repeat("\u5317", 62)) + ": awake."), "unicode region name: " + status.Message);
         Require(!LocalHosting.ParseControl("stop", 0, "{\"ok\": true, \"accepted\": true, \"action\": \"start\"}").Ok, "acceptance for another action counted");
         Require(LocalHosting.ParseControl("update", 1, "Traceback (most recent call last)") is { Ok: false, Busy: false } garbage && garbage.Message.Contains("no answer"), "garbage output accepted");
         Require(LocalHosting.ParseControl("restart", 0, "warning: x\n{\"ok\": true, \"accepted\": true, \"action\": \"restart\"}") is { Ok: true, Busy: true }, "answer after a warning line not found");
