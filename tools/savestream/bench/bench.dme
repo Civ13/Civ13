@@ -1,0 +1,4 @@
+// Stream save benchmark (see bench.dm). Not part of civ13.dme.
+#define DEBUG
+#include "bench.dm"
+#include "../../../code/modules/persistence/stream/save_stream.dm"

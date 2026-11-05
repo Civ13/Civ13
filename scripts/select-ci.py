@@ -51,6 +51,9 @@ SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
 HELD_MOVEMENT_OFFLINE_TESTS = frozenset({'tests/held_movement/test_held_movement.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
+SAVESTREAM_OFFLINE_TESTS = frozenset({'tests/savestream/test_helper.py', 'tests/savestream/helper_client.py'})
+# The native round trip needs gcc-multilib and BYOND; it is run by hand, not admitted to CI.
+SAVESTREAM_MANUAL_NATIVE = frozenset({'tests/savestream/run_native.py', 'tests/savestream/roundtrip/fixture.dm'})
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
@@ -392,6 +395,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered door-intent executable test requires explicit CI review')
         if path in NOMADS_ADOPTION_OFFLINE_TESTS:
             continue
+        if path in SAVESTREAM_OFFLINE_TESTS or path in SAVESTREAM_MANUAL_NATIVE:
+            continue
+        if path.startswith('tests/savestream/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered savestream executable test requires explicit CI review')
         if path in AGENT_CONTROL_OFFLINE_TESTS:
             continue
         if path in AGENT_CI_DIGEST_OFFLINE_TESTS:

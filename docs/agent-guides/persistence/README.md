@@ -22,6 +22,15 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-05: stream save prototype -->
+`tools/savestream` and `code/modules/persistence/stream/save_stream.dm` stream a
+level's path/value tree through a 32-bit call_ext shim into a 64-bit helper, so
+Dream Daemon never builds the /savefile tree. Off by default with no game callers;
+`Save_World`/`Load_World` are unchanged. Keep its paths identical to the savefile
+paths so wiring it in stays a sink swap at `record_save_capture_path` writes.
+Offline: `python3 -m unittest tests/savestream/test_helper.py`; native:
+`python3 tests/savestream/run_native.py`. Benchmarks run on save copies only.
+
 <!-- 2026-11-04: default allowlist fields -->
 Allowlisted types (turfs, wild plants, plain objects; `persistence_field_allowlist()`)
 omit `map_storage_saved_vars` scalars equal to `initial()`, and `Load_Entry`

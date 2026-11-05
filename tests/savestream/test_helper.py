@@ -1,0 +1,168 @@
+"""Offline tests for the 64-bit stream save helper (tools/savestream).
+
+They compile the helper with the host compiler and drive it over the same
+pipe protocol the call_ext shim uses. No BYOND install is needed.
+
+    python3 -m unittest tests/savestream/test_helper.py
+"""
+from __future__ import annotations
+
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from helper_client import Helper, Path_, Raw, build_helper, parse_token, record, subtree  # noqa: E402
+
+ICON_TEXT = (
+    'filedata("name=t.dmi;length=4;crc32=0x0;encoding=base64",{"\n'
+    'AAECAw==\n"})'
+)
+
+
+class HelperTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = Path(tempfile.mkdtemp(prefix="savestream-test-"))
+        cls.exe = build_helper(cls.tmp)
+
+    def write(self, name: str, batches: list[str], force: bool = False) -> tuple[Path, dict]:
+        out = self.tmp / name
+        h = Helper(self.exe, "write", out)
+        for batch in batches:
+            self.assertEqual(h.request("W", batch), b"OK")
+        summary = json.loads(h.request("F", "force" if force else ""))
+        h.close()
+        return out, summary
+
+    def test_round_trip_values(self):
+        values = {
+            "/format_version": 3,
+            "/generation": "round-v2:abc",
+            "/entries/0/1/type": Path_("/turf/floor/grass"),
+            "/entries/0/1/name": {"kind": "value", "value": 'he said "hi"\nnew ü'},
+            "/entries/0/1/n": {"kind": "value", "value": 1.12345684},
+            "/entries/0/1/neg": -0.5,
+            "/entries/0/1/content": ["1;2;3", "4"],
+            "/entries/0/1/nested": [None, Path_("/datum"), {"x": []}],
+            "/map/1/1/1": 1,
+        }
+        records = [record(p, v) for p, v in values.items()]
+        # Records may arrive across several batches.
+        out, summary = self.write("values.stream", ["".join(records[:4]), "".join(records[4:])])
+        self.assertTrue(summary["valid"], summary)
+        self.assertTrue(summary["published"])
+        self.assertEqual(summary["nodes"], len(values))
+        r = Helper(self.exe, "read", out)
+        try:
+            v, _ = parse_token(r.request("G", "/entries/0/1/name"))
+            self.assertEqual(v, [("kind", "value"), ("value", 'he said "hi"\nnew ü')])
+            v, _ = parse_token(r.request("G", "/entries/0/1/n"))
+            self.assertAlmostEqual(v[1][1], 1.12345684, places=7)
+            v, _ = parse_token(r.request("G", "/entries/0/1/type"))
+            self.assertEqual(v.path, "/turf/floor/grass")
+            self.assertEqual(r.request("G", "/missing"), b"?")
+            names, _ = parse_token(r.request("D", "/entries/0/1"))
+            self.assertEqual(sorted(n[0] for n in names), ["content", "n", "name", "neg", "nested", "type"])
+            names, _ = parse_token(r.request("D", "/"))
+            self.assertEqual(sorted(n[0] for n in names), ["entries", "format_version", "generation", "map"])
+            v, _ = parse_token(r.request("G", "/entries/0/1/nested"))
+            self.assertIsNone(v[0][0])
+            self.assertEqual(v[1][0].path, "/datum")
+        finally:
+            r.close()
+
+    def test_last_write_wins_and_dir_grouping(self):
+        batch = record("/a/1", 1) + record("/a/1-x/b", 2) + record("/a/1/c", 3) + record("/a/1", 4)
+        out, summary = self.write("dup.stream", [batch])
+        self.assertEqual(summary["nodes"], 3)
+        r = Helper(self.exe, "read", out)
+        try:
+            v, _ = parse_token(r.request("G", "/a/1"))
+            self.assertEqual(v, 4.0)
+            names, _ = parse_token(r.request("D", "/a"))
+            self.assertEqual(sorted(n[0] for n in names), ["1", "1-x"])
+        finally:
+            r.close()
+
+    def test_blobs_are_deduplicated(self):
+        batch = "".join(record(f"/entries/0/{i}/icon", {"kind": "value", "value": Raw(ICON_TEXT)}) for i in range(1, 6))
+        batch += "".join(record(f"/entries/0/{i}/type", Path_("/obj")) for i in range(1, 6))
+        out, summary = self.write("blobs.stream", [batch])
+        self.assertEqual(summary["blobs"], 1)
+        self.assertEqual(summary["blob_refs"], 5)
+        r = Helper(self.exe, "read", out)
+        try:
+            v, _ = parse_token(r.request("G", "/entries/0/3/icon"))
+            text = v[1][1].text
+            self.assertTrue(text.startswith('filedata("name=t.dmi;length=4;crc32=0x0;encoding=base64",{"'), text)
+            self.assertIn("AAECAw==", text)
+        finally:
+            r.close()
+
+    def test_validation_reports_missing_references(self):
+        batch = record("/entries/0/1/type", Path_("/obj"))
+        batch += record("/entries/0/1/owner", {"kind": "entry", "ref": 7})
+        batch += record("/entries/0/1/items", {"kind": "list", "ref": 3})
+        batch += record("/map/1/1/1", 2)
+        out, summary = self.write("broken.stream", [batch])
+        self.assertFalse(summary["valid"])
+        self.assertFalse(summary["published"])
+        self.assertFalse(out.exists())
+        self.assertEqual(summary["missing_entry_refs"], 2)
+        self.assertEqual(summary["missing_lists"], 1)
+        _, forced = self.write("broken.stream", [batch], force=True)
+        self.assertTrue(forced["published"])
+
+    def test_savefile_subtree_text(self):
+        text = (
+            "\ntype = /obj/item\nname = list(\"kind\" = \"value\",\"value\" = \"knife\")\n"
+            "icon = list(\"kind\" = \"value\",\"value\" = " + ICON_TEXT + ")\n"
+            "app = list(\"kind\" = \"value\",\"value\" = appearance(,,3,,,,\"o\"))\n"
+            "thing = object(\".0\")\n\t.0\n\t\ttype = /datum/thing\n\t\ta = 5\n"
+            "sub\n\tdeep = -9.9999997473787516355514526367188e-06\n"
+        )
+        out, summary = self.write("subtree.stream", [subtree("/entries/0/9", text)])
+        self.assertTrue(summary["published"], summary)
+        self.assertEqual(summary["blobs"], 1)
+        r = Helper(self.exe, "read", out)
+        try:
+            v, _ = parse_token(r.request("G", "/entries/0/9/type"))
+            self.assertEqual(v.path, "/obj/item")
+            v, _ = parse_token(r.request("G", "/entries/0/9/app"))
+            self.assertEqual(v[1][1].text, 'appearance(,,3,,,,"o")')
+            v, _ = parse_token(r.request("G", "/entries/0/9/thing"))
+            self.assertEqual(v.text, 'object(".0")\n.0\n\ttype = /datum/thing\n\ta = 5\n')
+            v, _ = parse_token(r.request("G", "/entries/0/9/sub/deep"))
+            self.assertAlmostEqual(v, -1e-5, places=9)
+            self.assertEqual(r.request("G", "/entries/0/9/thing/.0/type"), b"?")
+        finally:
+            r.close()
+
+    def test_incomplete_file_is_rejected(self):
+        out = self.tmp / "partial.stream"
+        h = Helper(self.exe, "write", out)
+        self.assertEqual(h.request("W", record("/a", 1)), b"OK")
+        h.proc.kill()
+        h.proc.wait()
+        h.proc.stdin.close()
+        h.proc.stdout.close()
+        self.assertFalse(out.exists())
+        r = Helper(self.exe, "read", Path(str(out) + ".tmp"))
+        reply = r.request("S")
+        self.assertTrue(reply.startswith(b"ERR:"), reply)
+
+    def test_bad_record_reports_error(self):
+        out = self.tmp / "bad.stream"
+        h = Helper(self.exe, "write", out)
+        reply = h.request("W", "W2:/aZ")
+        self.assertTrue(reply.startswith(b"ERR:"), reply)
+        h.request("A")
+        h.close()
+        self.assertFalse(out.exists())
+
+
+if __name__ == "__main__":
+    unittest.main()

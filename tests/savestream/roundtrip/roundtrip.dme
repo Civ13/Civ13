@@ -1,0 +1,4 @@
+// Native round trip for code/modules/persistence/stream (run by tests/savestream/run_native.py).
+#define DEBUG
+#include "fixture.dm"
+#include "../../../code/modules/persistence/stream/save_stream.dm"

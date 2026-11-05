@@ -137,6 +137,11 @@ SUITES = {
         'paths': ('tests/nomads_adoption/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/nomads_adoption.dm',
             'code/_helpers/unsorted.dm', 'civ13.dme')},
+    # Stream save helper (tools/savestream): compiles the 64-bit helper with the
+    # host C compiler and drives its pipe protocol; no BYOND runtime.
+    'savestream': {'files': ('tests/savestream/test_helper.py',),
+        'paths': ('tests/savestream/', 'tools/savestream/'), 'shared_paths': (
+            'code/modules/persistence/stream/save_stream.dm',)},
     # Agent control client/MCP/catalog and DM source contracts; loopback fake
     # Topic server only, no BYOND runtime.
     'agent_control': {'files': ('tests/agent_control/test_agent_control.py',),
