@@ -769,6 +769,10 @@ SUITES = {
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
 TIMEOUT = 30  # per reviewed suite; enclosing job also has a wall-clock limit
+# scripts/local_ci.py raises this on slower workstations (git is slow on Windows);
+# hosted CI never sets it. Bounded so a typo cannot disable the deadline.
+if os.environ.get('CIV13_LOCAL_SUITE_TIMEOUT', '').isdigit():
+    TIMEOUT = min(600, max(TIMEOUT, int(os.environ['CIV13_LOCAL_SUITE_TIMEOUT'])))
 # Reviewed prose/presentation formats only. Script/config suffixes deliberately
 # fall back even below docs/; compilation retains its separate existing policy.
 DOC_SUFFIXES = {'.md', '.rst', '.html', '.css', '.png', '.jpg', '.jpeg', '.gif',

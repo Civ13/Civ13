@@ -307,7 +307,8 @@ def local_run(args):
     event_path = out / 'event.json'
     event_path.write_text(json.dumps(event), encoding='utf-8')
     env = {k: v for k, v in os.environ.items() if not k.startswith('GITHUB_')}
-    env.update(GITHUB_EVENT_PATH=str(event_path), GITHUB_EVENT_NAME='pull_request', PYTHONDONTWRITEBYTECODE='1')
+    env.update(GITHUB_EVENT_PATH=str(event_path), GITHUB_EVENT_NAME='pull_request', PYTHONDONTWRITEBYTECODE='1',
+               CIV13_LOCAL_SUITE_TIMEOUT=str(args.suite_timeout))
     python = sys.executable
 
     selection = out / 'selection.json'
@@ -528,6 +529,7 @@ def main(argv=None):
     run.add_argument('--force-run', action='store_true', help='run checks even when hosted CI is required (never attests)')
     run.add_argument('--output', default=str(ROOT / '.ci/local'))
     run.add_argument('--remote-wait', type=int, default=20, help='seconds to retry while GitHub learns a new push')
+    run.add_argument('--suite-timeout', type=int, default=180, help='per-suite deadline in seconds (hosted uses 30)')
     publish_parser = sub.add_parser('attest', help='publish an existing passed receipt')
     publish_parser.add_argument('--receipt', default=str(ROOT / '.ci/local/receipt.json'))
     publish_parser.add_argument('--remote-wait', type=int, default=20)
