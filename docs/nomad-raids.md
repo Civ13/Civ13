@@ -65,7 +65,9 @@ online admins.
    group); the others follow. Being attacked by people starts the fight; an
    animal's bite does not. The whole walk is planned when the party
    appears (around open water holes in sea ice, cliffs and buildings) and
-   walked in legs of about 10 tiles, both there and home. After 10 minutes,
+   walked in legs of about 10 tiles; the walk home is planned from wherever
+   the party turns back. If the players it came for move more than 10 tiles
+   away, the march follows them. After 10 minutes,
    or if nobody is home, the party turns back.
 3. **Parley.** When an active player is within 10 tiles, the chieftain halts
    faces the nearest awake player, names them and demands tribute at their

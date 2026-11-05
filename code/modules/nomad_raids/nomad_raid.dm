@@ -30,6 +30,7 @@
 #define NOMAD_RAID_EDGE_SPREAD 30
 #define NOMAD_RAID_ROUTE_LEG 10 // route tiles per walking leg; the NPC pathfinder plans short hops well
 #define NOMAD_RAID_ROUTE_REACH 3 // the planned walk ends this close to the target, as a boat landing does
+#define NOMAD_RAID_RETARGET (5 SECONDS) // how often a march checks where its target players went
 #define NOMAD_RAID_VIEW_MARGIN 12
 #define NOMAD_RAID_PARLEY_TIME (90 SECONDS)
 #define NOMAD_RAID_MARCH_LIMIT (10 MINUTES)

@@ -12,7 +12,8 @@ BYOND build. It needs every assertion to pass and no runtime errors.
 Covered: spawn-site rules (roofed, occupied), nearest-edge choice and skipping
 edges too close to hide behind, loot worth, cooldown expiry and reload from
 the file, the walk to the target planned from home and handed out in short
-legs, party size cap, unsaved raiders with weapon and bag, loose gear already lying
+legs, the march following players who moved away, the walk home planned
+from where the party stands, party size cap, unsaved raiders with weapon and bag, loose gear already lying
 near the leader not counting as tribute until it is laid at their feet (or as
 a trader's payment), tribute ending
 the parley and limiting loot to the tribute, an attack starting the assault,

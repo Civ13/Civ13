@@ -24,6 +24,8 @@
 	var/tmp/turf/home
 	var/tmp/list/walk_route // turfs from home to the target, when the party walks
 	var/tmp/list/waypoints = list() // member = the route turf they are walking to now
+	var/tmp/leave_planned = FALSE // walk_route now leads home
+	var/tmp/next_retarget = 0
 	var/tmp/edge
 	var/tmp/list/target_ckeys = list()
 	var/tmp/started_at = 0
@@ -137,8 +139,7 @@
 	// open holes, mountains), and the party then pushes straight at the
 	// target until it is stuck. Plan the whole walk once and hand it out in
 	// short legs instead.
-	if (!sail_path)
-		walk_route = agent_route_search(home, target, NOMAD_RAID_ROUTE_REACH, FALSE)
+	plan_walk(home, target)
 	// The leader stands nearest the target so followers never block the march.
 	var/list/spots = sail_path ? list(home) : list()
 	for (var/turf/T in sail_path ? list() : range(2, home))
@@ -237,17 +238,46 @@
 	if (get_dist(M, T) > 1 && (!M.moving || M.target_obj != T))
 		M.do_movement(T)
 
+// The players a visit was aimed at may have moved on; the march follows the
+// nearest of them who is still active on this level. Never sleeps.
+/datum/nomad_raid/proc/retarget()
+	if (!target_ckeys.len || sail_path || !leader_ok() || world.time < next_retarget)
+		return
+	next_retarget = world.time + NOMAD_RAID_RETARGET
+	var/turf/best = null
+	for (var/client/C in clients)
+		if (!(C.ckey in target_ckeys) || !nomad_raid_defender(C.mob))
+			continue
+		var/turf/at = get_turf(C.mob)
+		if (at.z == target.z && (!best || get_dist(at, leader) < get_dist(best, leader)))
+			best = at
+	retarget_to(best)
+
+// Moves the target to where the players are now, when they have left it.
+/datum/nomad_raid/proc/retarget_to(turf/now_at)
+	if (!now_at || !target || now_at.z != target.z || get_dist(now_at, target) <= NOMAD_RAID_PARLEY_RANGE)
+		return FALSE
+	target = now_at
+	plan_walk(get_turf(leader), target)
+	event("retarget", "following [jointext(target_ckeys, ", ")] to [target.x],[target.y]")
+	return TRUE
+
+// Plans the walk from start to dest, or clears it (then members path straight there).
+/datum/nomad_raid/proc/plan_walk(turf/start, turf/dest)
+	walk_route = (start && dest && !sail_path) ? agent_route_search(start, dest, NOMAD_RAID_ROUTE_REACH, FALSE) : null
+	waypoints = list()
+
 // Walks M toward dest along walk_route, one short leg at a time. Off the
 // route (after a fight, or with no route) it paths to dest directly.
-/datum/nomad_raid/proc/route_move(mob/living/simple_animal/hostile/human/nomad_raider/M, turf/dest, homeward = FALSE)
+/datum/nomad_raid/proc/route_move(mob/living/simple_animal/hostile/human/nomad_raider/M, turf/dest)
 	var/turf/W = waypoints[M]
 	if (!W || get_dist(M, W) <= 2 || get_dist(M, W) > NOMAD_RAID_ROUTE_LEG * 2)
-		W = route_waypoint(M, dest, homeward)
+		W = route_waypoint(M, dest)
 		waypoints[M] = W
 	order_move(M, W)
 
 // The route turf one leg ahead of the route turf nearest M, or dest itself.
-/datum/nomad_raid/proc/route_waypoint(mob/M, turf/dest, homeward = FALSE)
+/datum/nomad_raid/proc/route_waypoint(mob/M, turf/dest)
 	if (!islist(walk_route) || walk_route.len < 2 || !M)
 		return dest
 	var/turf/at = get_turf(M)
@@ -260,8 +290,8 @@
 			nearest_dist = d
 	if (nearest_dist > NOMAD_RAID_ROUTE_LEG)
 		return dest
-	var/i = homeward ? nearest - NOMAD_RAID_ROUTE_LEG : nearest + NOMAD_RAID_ROUTE_LEG
-	if (i <= 1 || i >= walk_route.len)
+	var/i = nearest + NOMAD_RAID_ROUTE_LEG
+	if (i >= walk_route.len)
 		return dest
 	return walk_route[i]
 
@@ -381,6 +411,7 @@
 			else
 				begin_parley()
 			return
+		retarget()
 		if (get_dist(leader, target) <= 3 && !nomad_raid_defenders_near(target).len)
 			set_state("leave", "nobody was home")
 			return
@@ -584,7 +615,10 @@
 		if (leave_by_boat(M))
 			continue
 		if (!M.target_mob)
-			route_move(M, home, TRUE)
+			if (!leave_planned)
+				plan_walk(get_turf(M), home)
+				leave_planned = TRUE
+			route_move(M, home)
 	sail_step()
 	if (!alive_members().len)
 		finish(outcome ? outcome : "the party left")

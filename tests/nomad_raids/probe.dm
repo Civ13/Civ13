@@ -108,13 +108,23 @@ var/raid_runtime_error = FALSE
 	if (islist(route) && route.len > NOMAD_RAID_ROUTE_LEG + 2)
 		var/turf/leg = R.route_waypoint(R.leader, target)
 		raid_check(leg && (leg in route) && get_dist(R.leader, leg) <= NOMAD_RAID_ROUTE_LEG + 2, "the leader walks one short leg of the route at a time")
-		raid_check(R.route_waypoint(R.leader, R.home, TRUE) == R.home, "near home, the way home is home itself")
 	var/turf/far_off = locate(2, 2, 1)
 	var/mob/living/simple_animal/hostile/human/nomad_raider/stray = R.members[R.members.len]
 	var/turf/stray_was = get_turf(stray)
 	stray.loc = far_off
 	raid_check(R.route_waypoint(stray, target) == target || get_dist(far_off, route[1]) <= NOMAD_RAID_ROUTE_LEG, "a member far off the route paths straight to the target")
 	stray.loc = stray_was
+	// Players who moved away are followed; a short move is not.
+	var/turf/first_target = R.target
+	raid_check(!R.retarget_to(get_step(target, WEST)) && R.target == first_target, "a target that barely moved is kept")
+	var/turf/moved = locate(target.x - 12, target.y - 4, 1)
+	raid_check(R.retarget_to(moved) && R.target == moved && islist(R.walk_route) && get_dist(R.walk_route[R.walk_route.len], moved) <= NOMAD_RAID_ROUTE_REACH, "the march follows players who moved away")
+	R.target = first_target
+	R.plan_walk(R.home, first_target)
+	// Leaving plans the walk home from where the party stands.
+	R.plan_walk(get_turf(R.leader), R.home)
+	raid_check(islist(R.walk_route) && get_dist(R.walk_route[R.walk_route.len], R.home) <= NOMAD_RAID_ROUTE_REACH, "the walk home is planned from where the party stands")
+	R.plan_walk(R.home, first_target)
 	var/all_npcs = TRUE
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.members)
 		if (M.should_save || M.party != R || M.faction != NOMAD_RAID_FACTION || M.weapon != /obj/item/weapon/material/spear)
