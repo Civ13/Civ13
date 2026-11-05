@@ -39,6 +39,25 @@ class PartyTrainTests(unittest.TestCase):
         self.assertLess(start.index('party_train_office_of(new_party, src)'), prompt)
         self.assertGreater(start.index('party_train_office_of(new_party, src)', prompt), prompt)
 
+    def test_the_party_and_track_are_rechecked_after_the_prompt(self):
+        start = proc(TRAIN, OFFICE + '/proc/start')
+        prompt = start.index('alert(')
+        self.assertGreater(start.index('party_train_party_of(user) != new_party', prompt), prompt)
+        self.assertGreater(start.index('station_problem()', prompt), prompt)
+
+    def test_a_renamed_faction_keeps_its_train(self):
+        rename = proc(read('code/game/mob/groups/faction_rename.dm'), '/obj/map_metadata/proc/rename_faction')
+        self.assertIn('party_train_rename_faction(old_name, new_name)', rename)
+        self.assertIn('S.party = "civ:[new_name]"', proc(TRAIN, '/proc/party_train_rename_faction'))
+
+    def test_the_office_survives_vehicles_and_blasts(self):
+        self.assertIn('crushable = FALSE', TRAIN)
+        self.assertIn(OFFICE + '/ex_act(severity)\n\treturn', TRAIN)
+
+    def test_trails_never_lead_to_the_rail_yard(self):
+        choices = proc(read('code/modules/persistence/region_trails.dm'), '/obj/structure/region_gate/trail_marker/proc/peer_choices')
+        self.assertIn('if(peer["kind"] == "RAILYARD") continue', choices)
+
     def test_closed_until_every_material_is_delivered(self):
         closed = proc(TRAIN, OFFICE + '/closed_reason')
         self.assertLess(closed.index('if(!completed)'), closed.index('return ..()'))

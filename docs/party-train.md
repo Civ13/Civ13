@@ -16,6 +16,10 @@ own rail-yard world, large enough for many trains and parties.
 - Anyone can hand over materials until the project has 200 iron, 60 steel,
   150 wood, 30 glass and 40 cloth. Only the missing amount of a stack is taken.
   Progress and the finished train are saved with the office.
+- The office cannot be crushed by vehicles or blown up, since it holds the
+  delivered materials. A renamed faction keeps its project or train.
+- The party is the player's current faction: a solo player who finishes a
+  train and then joins a faction boards as that faction, not as themselves.
 - When the last material is in, the office opens boarding. Members of the
   party board the train there; it travels to the first region of kind
   `RAILYARD` in the group, like a trail (`region_travel.dm`). The trip moves

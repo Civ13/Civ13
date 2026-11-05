@@ -28,6 +28,13 @@ var/global/list/party_train_requirements = list(
 	if(findtext(party, "civ:") == 1) return copytext(party, 5)
 	return "[copytext(party, 6)]'s party"
 
+// A renamed faction keeps its train project or train.
+/proc/party_train_rename_faction(old_name, new_name)
+	for(var/obj/structure/region_gate/railway_station/S in region_gates)
+		if(S.party == "civ:[old_name]")
+			S.party = "civ:[new_name]"
+			log_game("Party train: the train at [S.x],[S.y],[S.z] follows its faction's rename from [old_name] to [new_name].")
+
 /proc/party_train_rail_at(turf/T)
 	return T && (locate(/obj/structure/rails) in T)
 
@@ -50,6 +57,8 @@ var/global/list/party_train_requirements = list(
 	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "cabinroof"
 	density = TRUE
+	// Delivered materials live only in the office, so vehicles and blasts must not delete it.
+	crushable = FALSE
 	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at"
 	// The party building (and then owning) the train here.
 	var/party = null
@@ -61,6 +70,9 @@ var/global/list/party_train_requirements = list(
 /obj/structure/region_gate/railway_station/New()
 	..()
 	if(!islist(delivered)) delivered = list()
+
+/obj/structure/region_gate/railway_station/ex_act(severity)
+	return
 
 /obj/structure/region_gate/railway_station/accepts_arrivals()
 	return FALSE
@@ -110,6 +122,9 @@ var/global/list/party_train_requirements = list(
 
 /obj/structure/region_gate/railway_station/attack_hand(mob/living/human/user)
 	if(!istype(user) || !user.client) return
+	// Covers requirements lowered after materials were delivered.
+	if(party && !completed && !length(remaining()))
+		complete(user)
 	if(completed)
 		return ..()
 	if(!party)
@@ -139,8 +154,13 @@ var/global/list/party_train_requirements = list(
 		return
 	if(alert(user, "Start building [party_train_party_name(new_party)]'s train here? Bring [progress_text()] to finish it.", "Party train", "Start", "Cancel") != "Start")
 		return
+	// The prompt slept: the player's party, the track and other offices may have changed.
 	if(QDELETED(src) || party || !user.client || !Adjacent(user)) return
-	if(party_train_office_of(new_party, src)) return
+	if(party_train_party_of(user) != new_party || party_train_office_of(new_party, src)) return
+	problem = station_problem()
+	if(problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return
 	party = new_party
 	log_game("Party train: [key_name(user)] started a train for [party] at [x],[y],[z].")
 	visible_message(SPAN_NOTICE("[user] starts a train project for [party_train_party_name(party)]."))
