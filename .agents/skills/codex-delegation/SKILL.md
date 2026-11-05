@@ -1,12 +1,22 @@
 ---
 name: codex-delegation
-description: Delegate a well-scoped Civ13 subtask to OpenAI's GPT-6.1 Terra model through the Codex CLI (`codex exec`) on Val's PC, then collect and verify its output. Use when Claude wants a parallel worker, a second opinion or a review from Terra; not for work that needs Claude's own judgment on merging, deployment or live servers.
+description: Delegate a well-scoped Civ13 subtask to OpenAI's GPT-6.1 Terra model through the Codex CLI (`codex exec`) on Val's PC, then collect and verify its output. Use only when Val explicitly asks for Codex or Terra in the task; never on Claude's own initiative, and not for work that needs Claude's own judgment on merging, deployment or live servers.
 ---
 
 # Delegate a task to GPT-6.1 Terra with `codex exec`
 
 This skill is for Claude sessions. A Codex session reading it should not
 delegate to itself.
+
+## When to use it (Val's rule)
+
+- Use Codex only when Val explicitly says to, in the current task. Do not
+  delegate to it on your own initiative, for speed, for a second opinion or
+  because a task looks parallelizable.
+- The Claude session Val tasked is the primary coordinator for every Codex
+  assignment: it decides what to hand over, writes the prompt, runs
+  `codex exec`, reviews the result and reports to Val. Codex never assigns
+  work, talks to Val or publishes anything itself.
 
 The delegating session stays the owner of the branch, PR and CI follow-up
 (CODEX.md ownership rules). Terra produces a diff or a report; the owner
