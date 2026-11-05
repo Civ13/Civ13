@@ -10,13 +10,13 @@ var/global/list/factory_active_arms = list()
 
 /obj/structure/factory_arm
 	name = "feeder arm"
-	desc = "A powered swing arm. It lifts one item at a time from the tile behind it and sets it down on the tile in front: onto a belt, into a crate or machine, or onto the floor. Cable it, then switch it on. Turn it with a wrench while it is off."
+	desc = "A powered swing arm. It lifts one item at a time from the tile behind it and sets it down on the tile in front: onto a belt, into a crate or machine, or onto the floor. Cable it, then switch it on. While it is off, use the Rotate verbs to turn it, or a wrench to fasten or unfasten it."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "loader0"
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	powerneeded = 2
 	var/on = FALSE
@@ -31,7 +31,7 @@ var/global/list/factory_active_arms = list()
 
 /obj/structure/factory_arm/sorting
 	name = "sorting arm"
-	desc = "A powered swing arm that only moves one kind of item. Hit it with an item to set its filter; use the Clear Filter verb to reset it. Cable it, then switch it on. Turn it with a wrench while it is off."
+	desc = "A powered swing arm that only moves one kind of item. Hit it with an item to set its filter; use the Clear Filter verb to reset it. Cable it, then switch it on. While it is off, use the Rotate verbs to turn it, or a wrench to fasten or unfasten it."
 	icon_state = "unloader0"
 	powerneeded = 3
 	can_filter = TRUE
@@ -40,7 +40,7 @@ var/global/list/factory_active_arms = list()
 // first, or of its filter when one is set.
 /obj/structure/factory_arm/stack
 	name = "stack arm"
-	desc = "A heavy powered swing arm that moves up to ten items of one kind each swing. Hit it with an item to make it move only that kind; use the Clear Filter verb to let it move anything. Cable it, then switch it on. Turn it with a wrench while it is off."
+	desc = "A heavy powered swing arm that moves up to ten items of one kind each swing. Hit it with an item to make it move only that kind; use the Clear Filter verb to let it move anything. Cable it, then switch it on. While it is off, use the Rotate verbs to turn it, or a wrench to fasten or unfasten it."
 	icon_state = "unloader0"
 	color = "#9fc7ff"
 	powerneeded = 5
@@ -120,13 +120,9 @@ var/global/list/factory_active_arms = list()
 	to_chat(user, SPAN_NOTICE("You switch \the [src] [on ? "on" : "off"]."))
 
 /obj/structure/factory_arm/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
-		if (on)
-			to_chat(user, SPAN_WARNING("Switch \the [src] off first."))
-			return
-		set_dir(turn(dir, -90))
-		playsound(src, 'sound/items/Ratchet.ogg', 50, TRUE)
-		to_chat(user, SPAN_NOTICE("You turn \the [src] to move items [dir2text(dir)]."))
+	// A wrench fastens or unfastens the arm through /obj/structure.
+	if (istype(W, /obj/item/weapon/wrench) && on)
+		to_chat(user, SPAN_WARNING("Switch \the [src] off first."))
 		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(user, W)
@@ -136,6 +132,29 @@ var/global/list/factory_active_arms = list()
 		to_chat(user, SPAN_NOTICE("\The [src] will now only move [factory_filter_name(filter_type)]."))
 		return
 	return ..()
+
+/obj/structure/factory_arm/verb/rotate_left()
+	set name = "Rotate Left"
+	set category = null
+	set src in oview(1)
+	arm_turn(usr, 90)
+
+/obj/structure/factory_arm/verb/rotate_right()
+	set name = "Rotate Right"
+	set category = null
+	set src in oview(1)
+	arm_turn(usr, -90)
+
+/obj/structure/factory_arm/proc/arm_turn(mob/user, angle)
+	if (!isliving(user) || user.incapacitated())
+		return FALSE
+	if (on)
+		to_chat(user, SPAN_WARNING("Switch \the [src] off first."))
+		return FALSE
+	set_dir(turn(dir, angle))
+	playsound(src, 'sound/items/Ratchet.ogg', 50, TRUE)
+	to_chat(user, SPAN_NOTICE("You turn \the [src] to move items [dir2text(dir)]."))
+	return TRUE
 
 /obj/structure/factory_arm/stack/verb/clear_stack_filter()
 	set name = "Clear Filter"

@@ -20,7 +20,7 @@ var/global/list/fluid_vessels = list()
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	flags = NOREACT
 	powerneeded = 4
@@ -152,7 +152,7 @@ var/global/list/fluid_vessels = list()
 	return R.process(reagents) > 0
 
 /obj/structure/fluid_vessel/proc/vessel_step()
-	if (!isturf(loc))
+	if (!anchored || !isturf(loc))
 		vessel_release_power()
 		return
 	switch (stage)
@@ -181,10 +181,10 @@ var/global/list/fluid_vessels = list()
 				set_stage(VESSEL_FILLING)
 
 /obj/structure/fluid_vessel/fluid_supply_tier()
-	return stage == VESSEL_EMPTYING ? FLUID_TIER_SOURCE : 0
+	return anchored && stage == VESSEL_EMPTYING ? FLUID_TIER_SOURCE : 0
 
 /obj/structure/fluid_vessel/fluid_demand_tier()
-	return stage == VESSEL_FILLING && recipe_id ? FLUID_TIER_SINK : 0
+	return anchored && stage == VESSEL_FILLING && recipe_id ? FLUID_TIER_SINK : 0
 
 /obj/structure/fluid_vessel/fluid_supply_holder()
 	return stage == VESSEL_EMPTYING ? reagents : null

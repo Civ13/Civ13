@@ -18,7 +18,7 @@ var/global/list/factory_powered_drives = list()
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 	powerneeded = 4
 	var/on = FALSE
@@ -71,7 +71,7 @@ var/global/list/factory_powered_drives = list()
 	return ..()
 
 /obj/structure/factory_drive/proc/drive_covers(obj/structure/factory_belt/B)
-	return on && powered && !QDELETED(src) && isturf(loc) && B.z == z && get_dist(src, B) <= drive_range
+	return on && powered && anchored && !QDELETED(src) && isturf(loc) && B.z == z && get_dist(src, B) <= drive_range
 
 /obj/structure/factory_drive/proc/drive_wake()
 	if (!QDELETED(src))
@@ -85,7 +85,7 @@ var/global/list/factory_powered_drives = list()
 	powered = FALSE
 
 /obj/structure/factory_drive/proc/drive_step()
-	if (!on || !isturf(loc))
+	if (!on || !anchored || !isturf(loc))
 		drive_stop()
 		update_icon()
 		return
