@@ -12,6 +12,11 @@ public delegate Task<ReadOnlyMemory<byte>> StatusProbe(IPAddress address, int po
 // BYOND-specific availability selection.
 public static class ByondStatus {
     public static readonly TimeSpan TotalTimeout = TimeSpan.FromSeconds(3);
+    // After the request is written, a host that froze its idle server accepts the
+    // connection at once but answers only once it has thawed it. Waiting longer for
+    // that one reply wakes the server in a single check instead of failing and
+    // spending the 130 s request spacing. Default-deadline queries only.
+    public static readonly TimeSpan ReplyTimeout = TimeSpan.FromSeconds(12);
     public const int MaxBytes = 65536;
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
     public static async Task<VerifiedGameServer> Query(GameTarget target, Func<string, Task<IPAddress[]>>? resolver = null,
@@ -49,7 +54,10 @@ public static class ByondStatus {
                     // Production Fetch honors cancellation and disposes its socket before
                     // this task settles; await settlement before starting the next address.
                     var packet = await (probe ?? Fetch)(addresses[index], target.Port,
-                        () => { requestId = spacing?.Reserve(target, addresses); reserved = true; }, attempt.Token);
+                        () => {
+                            requestId = spacing?.Reserve(target, addresses); reserved = true;
+                            if (timeout == null) { deadline.CancelAfter(ReplyTimeout); attempt.CancelAfter(ReplyTimeout); }
+                        }, attempt.Token);
                     var status = ParsePacket(packet, target, clock());
                     if (expected != null && !expected.Matches(status))
                         throw new IOException("Game identity changed. Refresh and choose again.");

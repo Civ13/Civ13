@@ -340,7 +340,7 @@ internal sealed class LauncherWindow : Form {
         if (Provider is not { } provider) return;
         CancelPending();
         SetBusy(true);
-        notesLabel.Text = $"Checking {provider} servers...";
+        notesLabel.Text = $"Checking {provider} servers... A sleeping server can take up to 15 seconds to wake.";
         var servers = KnownFor(provider);
         Populate();
         try {

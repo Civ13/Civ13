@@ -16,9 +16,9 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `stop` | Asks the running world to save and shut down through its authenticated lifecycle topic, waits for the port to close, then copies `map_saves` to `<state_dir>/backups/<operation>` and checks every file's SHA-256. The newest `backups_kept` copies are kept. |
 | `restart` | `stop`, then `start`. |
 | `update` | Only while stopped: `git fetch` and a fast-forward merge of the branch, then `dm.exe civ13.dme`, which must report 0 errors. |
-| `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (and trims its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
+| `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (optionally trimming its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
-| `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within about a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
+| `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
 seconds and continues in a detached worker. Its progress (`phase`, `error`,
@@ -61,6 +61,11 @@ watcher thaws it, then logs in normally. Things to know before running `watch`:
   topics wait or time out while it is frozen; `status` here reports `frozen`.
 - Run `watch` as the same Windows user as dd.exe, without less privilege than
   it (a non-elevated watcher cannot suspend an elevated dd.exe).
+- While frozen, `watch` reads the TCP table (GetExtendedTcpTable, with
+  `netstat` as a fallback) every `wake_poll_seconds`. The launcher waits up to
+  12 seconds for a status reply once connected, so a wake must finish within
+  that. `freeze_trim_memory` hands the frozen process's memory to the pagefile;
+  it stays off by default because paging Gaia back in can outlast that wait.
 - Optional config keys: `freeze_idle_minutes` (15), `freeze_trim_memory`
-  (true), `wake_ignore` (`["127.0.0.1", "::1"]`).
+  (false), `wake_ignore` (`["127.0.0.1", "::1"]`), `wake_poll_seconds` (0.2).
 

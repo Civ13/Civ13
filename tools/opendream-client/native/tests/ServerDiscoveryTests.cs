@@ -56,6 +56,18 @@ internal static class ServerDiscoveryTests {
             await Reject(() => Query(target, changed, server), "prejoin identity changed/disappeared");
         var newer = await Query(target, "{\"players\":2,\"map_name\":\"Europe\",\"map_gamemode\":\"Nomads\",\"game_id\":\"round-27\",\"round_duration_in_ticks\":100}", server);
         Require(newer.Status.Players == 2, "Natural player/time changes blocked recheck");
+        // A host that froze its idle server accepts at once and answers after thawing it.
+        StatusProbe Waking(TimeSpan beforeWrite, TimeSpan afterWrite) => async (_, _, write, token) => {
+            await Task.Delay(beforeWrite, token); write(); await Task.Delay(afterWrite, token);
+            return ByondStatusTests.Packet();
+        };
+        var woke = await ByondStatus.Query(target, _ => Task.FromResult(new[] { ip }),
+            Waking(TimeSpan.Zero, TimeSpan.FromSeconds(4.5)), () => now);
+        Require(woke.Status.Players == 0, "A reply after the 3 s connect budget, from a waking server, was rejected");
+        await Reject(() => ByondStatus.Query(target, _ => Task.FromResult(new[] { ip }),
+            Waking(TimeSpan.FromSeconds(3.5), TimeSpan.Zero), () => now), "connect phase outgrew the 3 s budget");
+        await Reject(() => ByondStatus.Query(target, _ => Task.FromResult(new[] { ip }),
+            Waking(TimeSpan.Zero, TimeSpan.FromSeconds(1.5)), () => now, TimeSpan.FromSeconds(1)), "an explicit deadline was extended");
         var start = ServerCatalog.NativeStart(newer, root, Civ13.Launcher.Program.RequiredByond(), _ => true, now);
         Require(start.ArgumentList.Single() == "byond://72.218.249.221:1714" && !start.UseShellExecute, "Rechecked literal/port lost at dispatch");
         await Reject(() => Task.Run(() => ServerCatalog.NativeStart(newer, root, Civ13.Launcher.Program.RequiredByond(), _ => false, now)), "unverified client");

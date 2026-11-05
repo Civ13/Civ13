@@ -352,5 +352,29 @@ Active Connections
                                                          (1714, '10.0.113.9', 'ESTABLISHED', 222)])
 
 
+    def test_parse_tcp_table(self):
+        import socket
+        import struct
+        v4 = struct.pack('<I', 2)
+        v4 += struct.pack('<IIIIII', 2, 0, socket.htons(1714), 0, 0, 4242)
+        v4 += struct.pack('<IIIIII', 5, 0, socket.htons(1714),
+                          struct.unpack('<I', socket.inet_aton('203.0.113.9'))[0], socket.htons(50112), 4242)
+        self.assertEqual(gaia_host.parse_tcp_table(v4), [(1714, '0.0.0.0', 'LISTENING', 4242),
+                                                         (1714, '203.0.113.9', 'ESTABLISHED', 4242)])
+        mapped = socket.inet_pton(socket.AF_INET6, '::ffff:198.51.100.7')
+        v6 = struct.pack('<I', 1) + b'\0' * 16 + struct.pack('<II', 0, socket.htons(1714)) + mapped
+        v6 += struct.pack('<IIII', 0, socket.htons(40000), 5, 4242)
+        self.assertEqual(gaia_host.parse_tcp_table(v6, ipv6=True), [(1714, '198.51.100.7', 'ESTABLISHED', 4242)])
+        with self.assertRaises(ValueError):
+            gaia_host.parse_tcp_table(struct.pack('<I', 3) + v4[4:])
+
+    def test_freeze_keeps_memory_resident_by_default(self):
+        self.running()
+        self.host.freeze()
+        self.assertIn(['suspend', 4242, False], self.machine.calls)
+        self.machine.peers = ['203.0.113.9']
+        self.assertEqual(self.host.watch_step(None), (None, 0.2))
+
+
 if __name__ == '__main__':
     unittest.main()
