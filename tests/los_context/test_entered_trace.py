@@ -87,6 +87,7 @@ class IdentityTrace:
             get_turf=lambda a: a if a.type.startswith('/turf/') else a.loc,
             ishuman=lambda a: a.type.startswith('/mob/living/human'),
             ismob=lambda a: a.type.startswith('/mob/'),
+            isturf=lambda a: a.type.startswith('/turf/'),
             istype=lambda a, kind: a.type.startswith(kind),
             los_active_contexts=P.List([m.V for m in self.models]))
         invalidate = A.project(LIFE, '/proc/los_invalidate',
@@ -305,6 +306,25 @@ class EnteredIdentityRegression(unittest.TestCase):
         scene.env['omitted_postmove'] = lambda *_: None
         rows = scene.run()
         self.assertFalse(rows['returned']['own']['allowed'])
+
+    def test_item_leaving_viewer_inventory_keeps_viewer_trees(self):
+        # Taking a hatchet out of a pocket drops it from the body to the body's
+        # tile, then picks it up. Entered(turf, old_loc=body) must not treat the
+        # unchanged viewer body as a changed blocker and withdraw its trees.
+        legacy = ENTERED.replace('if(old_loc && isturf(old_loc))', 'if(old_loc)')
+        self.assertNotEqual(legacy, ENTERED)
+        for mode in ('fallback', 'root'):
+            for source, kept in ((ENTERED, True), (legacy, False)):
+                scene = IdentityTrace(mode=mode, entered_source=source)
+                item = EngineMover(type='/obj/item/weapon/material/hatchet',
+                                   opacity=0, loc=scene.mover.loc)
+                scene.entered(item, scene.mover)
+                scene.record('item_dropped')
+                row = scene.trace[-1]
+                self.assertEqual(row['own']['allowed'], kept, (mode, source is ENTERED))
+                if kept:
+                    self.assertIs(row['own']['image'], scene.trace[0]['own']['image'])
+                self.assertTrue(row['other']['allowed'])
 
 
 def write_trace(destination):
