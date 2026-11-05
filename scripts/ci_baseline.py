@@ -79,6 +79,10 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # Windows scheduled-task host control with a fake machine; no BYOND runtime.
+    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py',),
+        'paths': ('tests/gaia_host/', 'scripts/gaia-host/'),
+        'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.
     'farmers_almanac': {'files': ('tests/farmers_almanac/test_farmers_almanac.py',),
         'paths': ('tests/farmers_almanac/',), 'shared_paths': (
@@ -331,6 +335,8 @@ SUITES = {
     'mount_lifecycle': {'files': ('tests/mount_lifecycle/test_death.py',),
         'paths': ('tests/mount_lifecycle/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/damage_procs.dm',
             'code/game/mob/living/carbon/human/subtile_movement.dm',
             'code/modules/persistence/bed_return.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only complete destruction-layer projection; frozen source is data.
@@ -492,7 +498,8 @@ SUITES = {
                                     'tests/persistence_pointers/test_restore_dependents.py',
                                     'tests/persistence_pointers/test_action_reconnect.py',
                                     'tests/persistence_pointers/test_level_links.py',
-                                    'tests/persistence_pointers/test_world_time_stamps.py'),
+                                    'tests/persistence_pointers/test_world_time_stamps.py',
+                                    'tests/persistence_pointers/test_restored_languages.py'),
         'paths': ('tests/persistence_pointers/',),
         'shared_paths': ('code/modules/persistence/',
             'code/game/mob/living/simple_animal/',
@@ -508,6 +515,7 @@ SUITES = {
             'code/modules/1713/gunsmithing/gun_configuration.dm',
             'code/modules/1713/machinery/modular_vehicles/wheels.dm',
             'code/game/mob/living/living_defense.dm',
+            'code/game/mob/hear_say.dm', 'code/game/mob/language/language.dm',
             'code/game/mob/living/living_hud.dm',
             'code/game/mob/living/carbon/human/human_hud.dm',
             'code/game/objects/items/weapons/swords_axes_etc.dm')},

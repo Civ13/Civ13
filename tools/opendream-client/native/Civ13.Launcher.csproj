@@ -33,6 +33,7 @@
     <Compile Include="LocalDreamDaemon.cs" />
 
     <Compile Include="LocalHosting.cs" />
+    <Compile Include="DiscordPresence.cs" />
     <Compile Include="Social/*.cs" />
     <Compile Include="Management/*.cs" />
     <Compile Include="Gui/*.cs" Condition="'$(Civ13Gui)' == 'true'" />

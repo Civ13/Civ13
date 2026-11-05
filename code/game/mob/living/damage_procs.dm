@@ -84,6 +84,8 @@
     else
         health = maxHealth - getOxyLoss() - getToxLoss() - getBurnLoss() - getBruteLoss() - getCloneLoss() - halloss
     
-    if (health <= 0) // experimental block
+    // An already dead mob never re-runs death(): simple animal overrides do their
+    // own work before the parent's guard, so each repeat scheduled another decay.
+    if (health <= 0 && stat != DEAD) // experimental block
         if (!istype(src, /mob/living/human))
             death()

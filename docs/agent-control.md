@@ -107,19 +107,35 @@ cooldown, combat and crafting rules apply.
 - **Host characters without a ckey.** `character_spawn` creates a mob (default
   `/mob/living/human`) owned by that agent, up to `max_characters` (default 4).
   Humans still get their usual map identity; a `name` is applied after it.
+  With `job` (a late-join title on the current map, such as `Nomad`), the
+  character joins like a late joiner instead: that job's clothes, kit, name
+  and spawn point through the normal `EquipRank` path. An unknown job is
+  refused with the list of open ones. Spawned characters get a mind (key
+  `agent_<name>`, never active) so job notes have somewhere to go.
 - **Player handover.** With `allow_handover` in the config, players get a
   **Toggle AI Control** verb (OOC). After they confirm, any agent with the
   `characters` scope can drive that character until the player uses the verb
   again or an agent releases it. The player's own input keeps working.
 
 `character_observe` returns the character's state (health, hands, intent,
-nutrition, water, worn items), the four neighbouring turfs, up to 64 visible
-objects with `dx`/`dy` offsets and refs, and the messages the character saw or
+nutrition, water, worn and carried items, and `craftable` recipes when the
+active hand holds a material stack), the nearest tile of each kind of terrain
+(`terrain`, clickable as `turf:x,y,z`), the four neighbouring turfs, up to 64 visible
+objects with `dx`/`dy` offsets and refs (trees and plants add `branches`, the
+branches harm intent can break off now; fallen branches add `branch` as
+`leafy` or `cleared`; loose items that can be picked up add `item`), and the messages the character saw or
 heard (after normal language scrambling) since the `since` id.
 `character_act` takes `do`: `move` and `face` (`dir`), `say` and `emote`
 (`text`), `click` (`target` ref the character can see, optional `modifier`),
-`use` (the held item), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`,
-`harm`) and `resist`. Actions run with `usr` set to the character.
+`use` (the held item), `craft` (`recipe` from the held stack, optional
+`amount`), `equip` (the held item, as the quick-equip key does; `no_slot`
+when nothing can take it), `take` (`item`: a stowed item's name, into the
+empty active hand), `examine`
+(`target`), `drop`, `swap_hand`, `intent` (`help`, `disarm`, `grab`, `harm`)
+and `resist`. Crafting goes through the stack's own recipe handler, so costs,
+tools and research gates apply. Click, use and craft can start timed work; a
+direct call returns at once and the work continues in the game, while a queued
+step waits for it. Actions run with `usr` set to the character.
 A direct `character_act` that is still cooling down fails with `cooldown` and
 the ticks to wait. Cooldowns are the character's movement delay, the mob's own
 click cooldowns (`next_move`, `next_click`) and one second between `say` or
@@ -170,8 +186,46 @@ python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal 
 python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help my tribe build a hut"
 ```
 
-The model answers with a plan of up to five steps, which the autopilot sends
-through `character_queue` and reports back after the queue drains. It shows the
+A spawned character joins as `--job` (default `Nomad`). The model gets a short
+survival primer (including the stone-age start: flint from rocks on grab
+intent, sharpening, branches, sticks and leaves), matching lines from
+`config/tips.txt`, and a rule not to take
+from other players' camps. It answers with one to three steps and a note to
+itself. Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
+target; the autopilot walks next to the target (stepping around blocked
+tiles), swaps to the right hand and intent before the click, stows (or drops) a
+spare item rather than a tool when it needs a free hand, works a fallen
+branch where it lies (leaves, then stick) instead of trying to pick it up, and refuses a skill whose
+tool is not in either hand or a branch skill on a tree with no branches. The
+model can also walk with `{"do": "go", "target": n}`, run from a target with
+`flee`, or `explore` a few tiles in a direction; `attack` hits a target on harm
+intent. A model `drop` of a gathered item tries to stow it first; a skill that needs a
+free hand stows the spare item and stops (keeping it in hand) when `equip`
+finds no free slot (`no_slot`). Each skill checks its target kind (a rock for flint, a tree for branches, a
+fallen branch for leaves and sticks, fresh rather than salt water for
+drinking), and loose leaves or grass are dropped rather than juggled when a
+hand is needed. `sharpen_stick` only takes a stick, or with
+target 0 the stick in the other hand. After `pick_leaves`, `make_stick` or
+`cut_grass` the autopilot picks up what fell when a hand is free, and a
+`NEEDS` line leads the observation when water or nutrition drops below 250;
+below 200 water the autopilot replaces the plan with drinking at listed water,
+or exploring for it. `take` (`item`: a carried or worn item's name) moves a
+stowed item into the empty active hand, and skills take a stowed tool they need. A step the
+autopilot cannot accept is explained to the model next turn (for example a skill
+with no target listed: explore to find one). When something attacks the
+character, a danger line leads the next prompt, and the run stops once the
+character is unconscious or dead. The autopilot runs the
+steps through `character_queue` and shows the next
+turn what changed (position, hands, clothes, carried items, water, nutrition)
+and warns when the same action keeps repeating. It waits while the character
+is busy with timed work (`self.busy`), and leaves a target out of the lists
+for a while after three clicks on it changed nothing and drew no message, or
+after five turns on it within eight steps, and hides every target of a name
+after four turns on it in a row without progress. Each turn's changes and messages are
+printed to the run log. Only speech and lines about
+the character reach the model, lines that keep recurring (heat, weather) are
+muted after four turns, so other players' work messages do not crowd
+the window. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
 

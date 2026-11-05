@@ -9,7 +9,11 @@ namespace Civ13.Launcher;
 // Civilizationbot portable supervisor unless it is already running.
 public sealed record HostBot(string Php, string Root, string Profile, int HttpPort);
 public sealed record HostUpdate(string Git, string Branch);
-public sealed record HostProfile(string GameDirectory, string World, int Port, HostBot? Bot, HostUpdate? Update = null);
+// Civ13's scripts/gaia-host/gaia_host.py: the same start/save-and-stop/restart/update path the bot uses.
+public sealed record HostControl(string Python, string Script, string Config);
+public sealed record HostProfile(string GameDirectory, string World, int Port, HostBot? Bot, HostUpdate? Update = null, HostControl? Control = null);
+// One answer from the control script. Busy means an action is still running in its worker.
+public sealed record ControlAnswer(bool Ok, string Message, bool Busy);
 
 public static class LocalHosting {
     public const string MenuKey = "H";
@@ -38,6 +42,12 @@ public static class LocalHosting {
                 throw new InvalidDataException("host.json update requires the world's .dme beside it in game_directory.");
             update = new HostUpdate(git, branch);
         }
+        HostControl? control = null;
+        if (json.TryGetProperty("control", out var controlJson) && controlJson.ValueKind != JsonValueKind.Null) {
+            if (update != null) throw new InvalidDataException("host.json control already updates the server; remove the update section.");
+            control = new HostControl(AbsoluteFile(Text(controlJson, "python"), "control.python"),
+                AbsoluteFile(Text(controlJson, "script"), "control.script"), AbsoluteFile(Text(controlJson, "config"), "control.config"));
+        }
         HostBot? bot = null;
         if (json.TryGetProperty("bot", out var botJson) && botJson.ValueKind != JsonValueKind.Null) {
             var php = AbsoluteFile(Text(botJson, "php"), "bot.php");
@@ -49,7 +59,7 @@ public static class LocalHosting {
             using var botProfile = JsonDocument.Parse(File.ReadAllText(profile));
             bot = new HostBot(php, botRoot, profile, Port(botProfile.RootElement, "http_port"));
         }
-        return new HostProfile(game, world, port, bot, update);
+        return new HostProfile(game, world, port, bot, update, control);
     }
 
     // The hosted world is always listed publicly on the BYOND hub.
@@ -93,12 +103,77 @@ public static class LocalHosting {
         return (process.ExitCode, output + error.Result);
     }
 
+    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update"];
+
+    // Only the action name reaches the script; its config file names every path and command.
+    public static ProcessStartInfo ControlStep(HostControl control, string action) {
+        if (!ControlActions.Contains(action)) throw new ArgumentException("Unsupported control action.", nameof(action));
+        var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
+            WorkingDirectory = Path.GetDirectoryName(control.Script)!, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "-I", "-B", control.Script, "--config", control.Config, action }) step.ArgumentList.Add(argument);
+        return step;
+    }
+
+    public static ControlAnswer RunControl(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
+        var (exit, output) = (run ?? RunCaptured)(ControlStep(control, action));
+        return ParseControl(action, exit, output);
+    }
+
+    public static ControlAnswer ParseControl(string action, int exit, string output) {
+        var line = output.Split('\n').Select(text => text.Trim()).LastOrDefault(text => text.StartsWith('{')) ?? "";
+        JsonDocument document;
+        try { document = JsonDocument.Parse(line); }
+        catch (JsonException) { return new ControlAnswer(false, $"The host script gave no answer (exit {exit}).", false); }
+        using (document) {
+            var json = document.RootElement;
+            if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("ok", out var ok) || ok.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                return new ControlAnswer(false, $"The host script gave no answer (exit {exit}).", false);
+            if (!ok.GetBoolean())
+                return new ControlAnswer(false, "Refused: " + (Str(json, "refused") ?? Str(json, "error") ?? "no reason given"), false);
+            if (action == "status") return new ControlAnswer(true, Describe(json), Bool(json, "busy"));
+            if (!Bool(json, "accepted") || Str(json, "action") != action)
+                return new ControlAnswer(false, "The host script did not accept " + action + ".", false);
+            return new ControlAnswer(true, action switch {
+                "start" => "Starting the server...",
+                "stop" => "Saving the world, then stopping the server...",
+                "restart" => "Saving the world, then restarting the server...",
+                _ => "Pulling and compiling master...",
+            }, true);
+        }
+    }
+
+    // Same wording as the bot's hoststatus line.
+    public static string Describe(JsonElement status) {
+        var parts = new List<string> { Bool(status, "listening") ? "Server port is open." : "Server is not running." };
+        if (status.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object) {
+            parts.Add(Bool(world, "ready") ? "World ready." : "World not ready.");
+            if (world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number) parts.Add($"{clients.GetInt32()} players.");
+            if (Str(world, "error") is { Length: > 0 } error) parts.Add("Error: " + error + ".");
+        }
+        if (status.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
+                && Str(operation, "action") is { } last && Str(operation, "phase") is { } phase) {
+            var text = $"Last action: {last} ({phase})";
+            if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
+            parts.Add(text + ".");
+        }
+        return string.Join(" ", parts);
+    }
+
+    private static string? Str(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+    private static bool Bool(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.True;
+
     // Starts whatever is not already listening; returns one line per component for the console.
     public static IReadOnlyList<string> Run(HostProfile host, string byondBin, Func<int, bool> listening, Action<ProcessStartInfo> start,
             Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
         var report = new List<string>();
         if (listening(host.Port)) report.Add($"DreamDaemon is already running on port {host.Port}; not updating a live world.");
-        else {
+        else if (host.Control is { } control) {
+            var answer = RunControl(control, "start", run);
+            report.Add(answer.Message);
+            if (!answer.Ok) return report;
+        } else {
             if (host.Update != null) {
                 foreach (var step in UpdateSteps(host, byondBin)) {
                     var name = Path.GetFileName(step.FileName) + " " + step.ArgumentList[0];

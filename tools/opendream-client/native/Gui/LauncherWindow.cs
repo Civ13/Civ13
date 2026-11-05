@@ -57,6 +57,12 @@ internal sealed class LauncherWindow : Form {
     private Label? hostState;
     private Button? hostStart;
     private TextBox? hostOutput;
+    private DiscordPresence? presence;
+    private PresenceSettings presenceSettings = new(false, null);
+    private readonly CheckBox discordBox = new() { Text = "Show on Discord", AutoSize = true, Visible = false, Margin = new Padding(0, 1, 14, 0) };
+    private readonly List<Button> hostActions = [];
+    private System.Windows.Forms.Timer? hostPoll;
+    private bool hostControlBusy;
 
     public static int Run(string root, Version version) {
         var thread = new Thread(() => {
@@ -103,7 +109,7 @@ internal sealed class LauncherWindow : Form {
             body.SplitterDistance = Math.Max(body.Panel1MinSize, body.Height - LogicalToDeviceUnits(150));
         };
         Shown += async (_, _) => await Startup();
-        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); };
+        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); presence?.Clear(); presence?.Dispose(); };
         waitTimer.Tick += (_, _) => UpdatePendingWait();
     }
 
@@ -190,6 +196,8 @@ internal sealed class LauncherWindow : Form {
         }
         // Operator tools stay out of the main view.
         var tools = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0), Anchor = AnchorStyles.Right };
+        discordBox.CheckedChanged += (_, _) => SetDiscordPresence(discordBox.Checked, true);
+        tools.Controls.Add(discordBox);
         var dataFolder = new LinkLabel { Text = "Launcher data folder", AutoSize = true, Margin = new Padding(0, 3, 14, 0) };
         dataFolder.LinkClicked += (_, _) => Open(new ProcessStartInfo(root) { UseShellExecute = true }, "the launcher data folder");
         manageLink.Margin = new Padding(0, 3, 0, 0);
@@ -212,7 +220,8 @@ internal sealed class LauncherWindow : Form {
         }
         Row("Game folder", profile.GameDirectory);
         Row("World", profile.World + " on port " + profile.Port + " (listed publicly on the BYOND hub)");
-        Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
+        if (profile.Control is { } control) Row("Control", "Save-safe start, stop, restart and update through " + Path.GetFileName(control.Script));
+        else Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
         Row("Civilizationbot", profile.Bot is { } bot ? $"Start the supervisor if port {bot.HttpPort} is not listening" : "Not configured");
         hostState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6) };
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
@@ -221,6 +230,19 @@ internal sealed class LauncherWindow : Form {
         refresh.Click += async (_, _) => await RefreshHostState();
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         buttons.Controls.Add(hostStart);
+        if (profile.Control != null) {
+            foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update") }) {
+                var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+                button.Click += async (_, _) => await HostAction(action, text);
+                hostActions.Add(button);
+                buttons.Controls.Add(button);
+            }
+            var worldLog = new LinkLabel { Text = "Open world log", AutoSize = true, Margin = new Padding(12, 11, 0, 6) };
+            worldLog.LinkClicked += (_, _) => Open(new ProcessStartInfo(Path.Combine(profile.GameDirectory, "logs", "world.log")) { UseShellExecute = true }, "the world log");
+            buttons.Controls.Add(worldLog);
+            hostPoll = new System.Windows.Forms.Timer { Interval = 5000 };
+            hostPoll.Tick += async (_, _) => await RefreshHostState();
+        }
         buttons.Controls.Add(refresh);
         layout.Controls.Add(hostState);
         layout.SetColumnSpan(hostState, 2);
@@ -261,6 +283,12 @@ internal sealed class LauncherWindow : Form {
         try { host = LocalHosting.Load(root); }
         catch (Exception e) when (e is InvalidDataException or JsonException or IOException) { Console.WriteLine("Local hosting disabled: " + e.Message); }
         if (host != null) tabs.TabPages.Add(hostPage = BuildHostPage(host));
+        presenceSettings = PresenceSettings.Load(root);
+        if (presenceSettings.ApplicationId != null) {
+            discordBox.Checked = presenceSettings.ShowActivity;
+            discordBox.Visible = true;
+            SetDiscordPresence(presenceSettings.ShowActivity, false);
+        }
         startupDone = true;
         manageLink.Enabled = true;
         UpdateReadiness();
@@ -391,7 +419,8 @@ internal sealed class LauncherWindow : Form {
         joinStatus.Text = $"Verifying {selected.Name}...";
         try {
             var verified = await discovery.Recheck(selected);
-            Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            WatchGame(game, DiscordPresence.ServerLine(verified.Status));
             pending = null;
             if (KnownFor(selected.Provider).TryGetValue(selected.Target, out var entry)) {
                 entry.Server = verified.Status;
@@ -464,6 +493,14 @@ internal sealed class LauncherWindow : Form {
 
     private async Task RefreshHostState() {
         if (host == null || hostState == null) return;
+        if (host.Control is { } control) {
+            ControlAnswer answer;
+            try { answer = await Task.Run(() => LocalHosting.RunControl(control, "status")); }
+            catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { answer = new ControlAnswer(false, "Status unavailable: " + e.Message, false); }
+            hostState.Text = answer.Message;
+            SetHostBusy(answer.Busy);
+            return;
+        }
         var port = host.Port;
         var running = await Task.Run(() => LocalHosting.Listening(port));
         hostState.Text = running ? $"DreamDaemon is running on port {port}." : $"DreamDaemon is not running on port {port}.";
@@ -485,6 +522,56 @@ internal sealed class LauncherWindow : Form {
             hostStart.Enabled = byond != null;
             await RefreshHostState();
         }
+    }
+
+    // Accepted actions finish in the script's worker; the timer follows them until they settle.
+    private async Task HostAction(string action, string label) {
+        if (host?.Control is not { } control) return;
+        if (action != "update" && MessageBox.Show(this, label + " the server? Players are saved and can rejoin when it is back.", "Civ13 Launcher",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        SetHostBusy(true);
+        try {
+            var answer = await Task.Run(() => LocalHosting.RunControl(control, action));
+            HostLine(answer.Message);
+            if (!answer.Ok) SetHostBusy(false);
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine(label + " failed: " + e.Message);
+            SetHostBusy(false);
+        }
+    }
+
+    private void SetHostBusy(bool value) {
+        if (hostControlBusy && !value && hostState != null) HostLine(hostState.Text);
+        hostControlBusy = value;
+        foreach (var button in hostActions) button.Enabled = !value;
+        if (hostStart != null) hostStart.Enabled = !value && byond != null;
+        if (hostPoll != null) hostPoll.Enabled = value;
+    }
+
+    // Turning it off clears the activity at once; the choice is kept in discord.json.
+    private void SetDiscordPresence(bool show, bool save) {
+        if (save) {
+            try { PresenceSettings.SaveShowActivity(root, show); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException) { Console.WriteLine("Could not save the Discord setting: " + e.Message); }
+        }
+        if (!show || presenceSettings.ApplicationId == null) {
+            presence?.Clear();
+            presence?.Dispose();
+            presence = null;
+            return;
+        }
+        presence ??= new DiscordPresence(presenceSettings.ApplicationId);
+        presence.Browsing();
+    }
+
+    // "Playing" lasts while that DreamSeeker runs, then the launcher goes back to browsing.
+    private async void WatchGame(Process game, string server) {
+        using (game) {
+            presence?.Playing(server, DateTimeOffset.UtcNow);
+            try { await game.WaitForExitAsync(); }
+            catch (InvalidOperationException) { return; }
+        }
+        if (!IsDisposed) presence?.Browsing();
     }
 
     private void HostLine(string line) {

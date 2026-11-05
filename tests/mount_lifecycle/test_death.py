@@ -12,6 +12,8 @@ from source_adapter import extract, project
 
 DEATH = '/mob/living/simple_animal/death'
 RIDING = ROOT / 'code/game/mob/living/simple_animal/riding.dm'
+ANIMAL = ROOT / 'code/game/mob/living/simple_animal/simple_animal.dm'
+DAMAGE = ROOT / 'code/game/mob/living/damage_procs.dm'
 BEFORE = Path(__file__).with_name('fixtures') / 'death_before.txt'
 SUBTILE = ROOT / 'code/game/mob/living/carbon/human/subtile_movement.dm'
 RETURN = ROOT / 'code/modules/persistence/bed_return.dm'
@@ -239,6 +241,83 @@ class DeathTests(unittest.TestCase):
         world.run()
         self.assertIs(world.human.riding_mob, world.other)
         self.assertEqual(next(row for row in world.trace if row[0] == 'forceMove')[3], 'mount')
+
+
+class CorpseTests(unittest.TestCase):
+    """The base simple-animal death runs its own work before the parent's
+    stat guard, so every repeat on a corpse scheduled another delayed decay
+    (one more Destroy() 300 s later holding the corpse alive meanwhile)."""
+
+    DEAD = 2
+
+    def animal_death(self, stat, trace, source=None):
+        body = qualify(extract(source or ANIMAL.read_text(encoding='utf-8'), DEATH),
+                       ('npc_subtile_pending_intent', 'stat', 'icon_state', 'icon_dead', 'density',
+                        'unregisterSpawner', 'lastattacker', 'name'))
+        body = body.replace('return ..(gibbed,deathmessage)', 'return parent(src)')
+        body = body.replace('istype(src, /mob/living/simple_animal/hostile)', 'istype(src, HOSTILE)')
+        body = body.replace('istype(map, /obj/map_metadata/wizard_boy)', 'istype(map, WIZARD_MAP)')
+        animal = N(stat=stat, icon_state='alive', icon_dead='dead', density=True,
+                   npc_subtile_pending_intent=object(), lastattacker=None, name='deer',
+                   unregisterSpawner=lambda: trace.append('unregister'))
+
+        def parent(src):
+            trace.append('parent')
+            if src.stat == self.DEAD:
+                return False
+            src.stat = self.DEAD
+            return True
+
+        env = dict(parent=parent, DEAD=self.DEAD, HOSTILE=object(), WIZARD_MAP=object(), map=None,
+                   istype=lambda value, kind: False, ishuman=lambda value: False,
+                   walk=lambda target, direction: trace.append(('walk', direction)),
+                   delayed_decay=lambda target, timer: trace.append(('decay', timer)))
+        return animal, project('/death()\n' + body + '\n', '/death', 'src', env)
+
+    def test_first_death_schedules_one_decay(self):
+        trace = []
+        animal, invoke = self.animal_death(0, trace)
+        self.assertTrue(invoke(animal))
+        self.assertEqual(trace, [('walk', 0), 'unregister', ('decay', 3000), 'parent'])
+        self.assertEqual((animal.stat, animal.icon_state, animal.density), (self.DEAD, 'dead', False))
+        self.assertIsNone(animal.npc_subtile_pending_intent)
+
+    def test_death_on_a_corpse_schedules_nothing(self):
+        trace = []
+        animal, invoke = self.animal_death(self.DEAD, trace)
+        self.assertFalse(invoke(animal))
+        self.assertEqual(trace, [])
+        self.assertEqual((animal.icon_state, animal.density), ('alive', True))
+        self.assertIsNone(animal.npc_subtile_pending_intent)
+
+    def test_repeated_death_decays_once(self):
+        trace = []
+        animal, invoke = self.animal_death(0, trace)
+        for _ in range(3):
+            invoke(animal)
+        self.assertEqual(trace.count(('decay', 3000)), 1)
+        self.assertEqual(trace.count('parent'), 1)
+
+    def test_control_unguarded_death_decays_on_every_call(self):
+        trace = []
+        animal, invoke = self.animal_death(0, trace)
+        source = ANIMAL.read_text(encoding='utf-8')
+        guard = '\tif (stat == DEAD)\n\t\treturn FALSE'
+        self.assertEqual(extract(source, DEATH).count(guard), 1)
+        mutant = source.replace(guard, '\tif (FALSE)\n\t\treturn FALSE', 1)
+        animal, invoke = self.animal_death(0, trace, mutant)
+        for _ in range(3):
+            invoke(animal)
+        self.assertEqual(trace.count(('decay', 3000)), 3)
+
+    def test_updatehealth_never_kills_a_dead_mob_again(self):
+        # updatehealth is space-indented, so slice it rather than extract() it.
+        source = DAMAGE.read_text(encoding='utf-8')
+        body = source.split('/mob/living/proc/updatehealth()\n', 1)[1].split('\n/', 1)[0]
+        code = '\n'.join(line.split('//', 1)[0] for line in body.splitlines())
+        self.assertEqual(code.count('death()'), 1)
+        self.assertIn('if (health <= 0 && stat != DEAD)', code)
+        self.assertLess(code.index('stat != DEAD'), code.index('death()'))
 
 
 if __name__ == '__main__':

@@ -716,6 +716,8 @@
 
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
 	npc_subtile_pending_intent = null
+	if (stat == DEAD)
+		return FALSE // Matches the parent guard; a corpse never schedules a second decay.
 	icon_state = icon_dead
 	density = FALSE
 

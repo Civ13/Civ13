@@ -189,6 +189,15 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered showcase-room'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_gaia_host_offline_admission_is_exact(self):
+        path = 'tests/gaia_host/test_gaia_host.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/gaia_host/new_native_probe.ps1'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered gaia-host'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_farmers_almanac_offline_admission_is_exact(self):
         path = 'tests/farmers_almanac/test_farmers_almanac.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):

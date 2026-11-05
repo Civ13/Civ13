@@ -1,0 +1,12 @@
+{
+  "repository": "D:/GitHub/Civ13",
+  "port": 1714,
+  "task": "Civ13 Gaia On-Demand",
+  "compiler": "C:/Program Files (x86)/BYOND/bin/dm.exe",
+  "git": "C:/Program Files/Git/cmd/git.exe",
+  "branch": "master",
+  "state_dir": "D:/GitHub/Civ13/data/gaia-host",
+  "save_timeout_seconds": 5400,
+  "start_timeout_seconds": 120,
+  "backups_kept": 3
+}
