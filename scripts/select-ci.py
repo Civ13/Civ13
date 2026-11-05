@@ -59,6 +59,9 @@ AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
+SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
+                                         'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
+                                         'tests/safehouse_map/preview.py'})
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
                                      'tests/gaia_host/test_doorman.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
@@ -370,6 +373,10 @@ def introduced_tests(base, head, event):
             continue
         if path in CROSSROADS_MALL_OFFLINE_TESTS:
             continue
+        if path in SAFEHOUSE_MAP_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/safehouse_map/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered safehouse-map executable test requires explicit CI review')
         if path.startswith('tests/crossroads_mall/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered crossroads-mall executable test requires explicit CI review')
         if path.startswith('tests/farmers_almanac/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
