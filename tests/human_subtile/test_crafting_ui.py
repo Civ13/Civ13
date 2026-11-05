@@ -55,6 +55,9 @@ def restore_crafting_projection(path, source):
         # image around the same wait, with release cleanup and unchanged reward.
         wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
         edits = (
+            # #3685: agent-controlled characters count as connected grass cutters.
+            ('\t// An agent-controlled character has no client but is driven like a player.\n\treturn user && (user.client || agent_character_for(user))\n',
+             '\treturn user && user.client\n'),
             ('\tif (!user || !user.may_do_after)\n\t\treturn\n\tif (has_snow_cover() || busy', '\tif (has_snow_cover() || busy'),
             ('\tvar/datum/progressbar/progressbar\n\tvar/datum/resource_work_animation/work_animation\n', '\tvar/datum/progressbar/progressbar\n'),
             ('/datum/pickaxe_mining_action/proc/release()\n\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '/datum/pickaxe_mining_action/proc/release()\n'),

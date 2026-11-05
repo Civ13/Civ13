@@ -204,7 +204,7 @@
 	if (!faction || faction == "none")
 		return FALSE
 	for (var/mob/living/human/H in human_mob_list)
-		if (!H.client || H.civilization != faction)
+		if ((!H.client && !agent_character_for(H)) || H.civilization != faction)
 			continue
 		if (is_faction_leader(H, faction) || is_research_director(H, faction) || H.research_role == "researcher")
 			return TRUE

@@ -849,7 +849,8 @@ var/list/seed_list_jungle
 	return !QDELETED(tool) && tool.sharp && !istype(tool, /obj/item/weapon/reagent_containers) && !istype(tool, /obj/item/weapon/macuahuitl)
 
 /obj/structure/wild/proc/grass_cutting_actor_connected(mob/user)
-	return user && user.client
+	// An agent-controlled character has no client but is driven like a player.
+	return user && (user.client || agent_character_for(user))
 
 /obj/structure/wild/proc/grass_cutting_valid(mob/user, obj/item/tool, turf/site)
 	return !QDELETED(src) && (istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/tallgrass2)) && isturf(loc) && loc == site && !QDELETED(user) && grass_cutting_actor_connected(user) && user.stat == CONSCIOUS && !user.incapacitated() && isturf(user.loc) && grass_cutting_tool(tool) && tool.loc == user && user.get_active_hand() == tool && get_dist(user, src) <= 1

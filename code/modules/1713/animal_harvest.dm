@@ -104,7 +104,7 @@
 	return ..()
 
 /mob/living/simple_animal/proc/harvest_valid(mob/user, obj/item/tool, turf/site, require_client = TRUE)
-	return !QDELETED(src) && !harvested && stat == DEAD && isturf(loc) && loc == site && !QDELETED(user) && (!require_client || user.client) && !QDELETED(tool) && tool.loc == user && tool.sharp && !istype(tool, /obj/item/weapon/reagent_containers) && !istype(tool, /obj/item/weapon/macuahuitl) && user.stat == CONSCIOUS && get_dist(user, src) <= 1
+	return !QDELETED(src) && !harvested && stat == DEAD && isturf(loc) && loc == site && !QDELETED(user) && (!require_client || user.client || agent_character_for(user)) && !QDELETED(tool) && tool.loc == user && tool.sharp && !istype(tool, /obj/item/weapon/reagent_containers) && !istype(tool, /obj/item/weapon/macuahuitl) && user.stat == CONSCIOUS && get_dist(user, src) <= 1
 
 /mob/living/simple_animal/proc/harvest_wait(mob/user, delay)
 	return do_after(user, delay, src)

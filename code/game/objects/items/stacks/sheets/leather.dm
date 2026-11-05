@@ -7,7 +7,7 @@
 	return key == "preparing_hide" || ..()
 
 /mob/proc/hide_worker_connected()
-	return client != null
+	return client != null || agent_character_for(src)
 
 /mob/proc/hide_preparation_wait(atom/target)
 	return do_after(src, 50, target)
