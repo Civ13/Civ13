@@ -1,0 +1,23 @@
+# Linux host service for Civ13: Gaia and/or region groups, with sleep and the doorman.
+# Copy to /etc/systemd/system/civ13-host.service, set the user and paths, then
+#   systemctl daemon-reload && systemctl enable --now civ13-host.service
+# Run it as the same user as the worlds (SIGSTOP/SIGCONT need it).
+[Unit]
+Description=Civ13 host service (sleep, wake and cold start of every world on this machine)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=civ13
+WorkingDirectory=/home/civ13/Civ13
+ExecStart=/usr/bin/python3 -I -B scripts/gaia-host/gaia_host.py --group /home/civ13/regions/europe.json serve
+Restart=on-failure
+RestartSec=10
+# Worlds, transfer agents and the coordinator are started by this service but
+# must outlive it: restarting the service must never stop a game. Only the
+# service's own process is stopped; it adopts the running worlds again on start.
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

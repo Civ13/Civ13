@@ -1,7 +1,8 @@
 """Always-on doorman for one host's frozen-on-idle game servers.
 
 `gaia_host.py serve` runs this. It does the `watch` work for every configured
-instance (freeze after idle, thaw on a direct connection) and also listens on
+instance (Gaia and, with --group, every region of a region group: freeze
+after idle, thaw on a direct connection) and also listens on
 one extra TCP port (doorman_port, 1713 by default) that speaks the same BYOND
 Topic framing as a game port. The launcher asks it two things:
 
@@ -34,6 +35,7 @@ WAKING_SECONDS = 60
 WAKE_SPACING = 30            # one wake per address per this many seconds
 REQUESTS_PER_MINUTE = 40     # per address, all requests
 MAX_CONNECTIONS = 16
+SUPERVISE_SECONDS = 30       # how often helper processes (transfer agents, coordinators) are checked
 
 
 def frame(text):
@@ -95,8 +97,12 @@ class Instance:
 
 
 class Doorman:
-    def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time):
+    def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time, supervisors=()):
         self.instances = {}
+        # Callables that restart a group's helper processes if they died; each
+        # returns a dict of what it started (empty when everything was running).
+        self.supervisors = list(supervisors)
+        self.next_supervise = 0.0
         for host in hosts:
             if host.config['port'] in self.instances:
                 raise ValueError('two configs use port %d' % host.config['port'])
@@ -281,6 +287,16 @@ class Doorman:
         """One pass over every instance; returns seconds until the next pass."""
         now = self.clock()
         soonest = 30.0
+        if self.supervisors and now >= self.next_supervise:
+            self.next_supervise = now + SUPERVISE_SECONDS
+            for supervise in self.supervisors:
+                try:
+                    started = supervise()
+                except Exception as error:  # keep serving the worlds even if a helper cannot start
+                    print(json.dumps({'supervise_error': str(error)[:300], 'time': int(self.wall())}), flush=True)
+                    continue
+                if started:
+                    print(json.dumps({'supervise_started': started, 'time': int(self.wall())}), flush=True)
         for instance in self.instances.values():
             host = instance.host
             frozen = host.frozen() is not None

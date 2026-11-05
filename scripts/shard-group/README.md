@@ -50,6 +50,18 @@ land they died in, start in the `mainland` region
 travelling. Joining any other region shows where the character lives instead
 of starting a new one.
 
+## Sleeping regions
+
+Regions sleep like Gaia: run the host service
+`gaia_host.py --group group.json serve` (see
+[gaia-host](../gaia-host/README.md#one-host-service-for-gaia-and-region-groups)).
+It freezes an empty region once it has saved, wakes it on a connection or a
+launcher request, cold-starts it from its save after a power-down, and keeps
+the transfer agents and coordinator running. `status` shows each region's
+`state` (`awake`, `asleep`, `cold` or `stopped`); `freeze` and `thaw` do it
+by hand. Sleep settings such as `freeze_idle_minutes` can be set once in the
+group config.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback

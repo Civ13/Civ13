@@ -19,13 +19,17 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (optionally trimming its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
 | `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
-| `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and runs the doorman on `doorman_port`. Use it instead of `watch`. |
+| `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and for every region of each `--group group.json`, and runs the doorman on `doorman_port`. Use it instead of `watch`. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
 seconds and continues in a detached worker. Its progress (`phase`, `error`,
 `generation`, `backup`) is in `<state_dir>/operation.json`; `status` shows it.
 One action runs at a time. A refused action prints `{"ok": false, "refused": ...}`,
 exits 1 and changes nothing.
+
+`status` reports a `state`: `awake` (running), `asleep` (frozen in memory),
+`cold` (down after a power-down, starts from its save when woken) or `stopped`
+(down on purpose; wakes are refused).
 
 ## Setup
 
@@ -117,4 +121,31 @@ it wakes the server, waits until the doorman reports it awake, then checks the
 game port directly and joins. The doorman never forwards game traffic, so bans
 and logs still see each player's own address. Without the doorman (plain
 `watch`), the launcher still works: its direct status check wakes the server.
+
+## One host service for Gaia and region groups
+
+`serve` is the host service: run one per machine, and give it every world on
+that machine. `--group` takes a [region group](../shard-group/README.md) config
+and serves each of its regions like Gaia: freeze after idle and a save, thaw on
+a connection or a launcher wake, and a cold start from the save after a
+power-down. A region starts DreamDaemon directly (agent first), so it needs no
+scheduled task; only a hub-listed (`public`) group needs the BYOND pager. Sleep
+settings set in the group config (`freeze_idle_minutes`, `wake_min_free_mb`,
+`cold_start_estimate_seconds` and the other keys above) apply to all its
+regions; with only `--group` and no `--config`, the doorman port and bind come
+from the first group.
+
+Every 30 seconds the service also starts any of the group's transfer agents or
+its coordinator that is not running. They stay up while their region sleeps or
+is cold, so travellers to it are journaled and handed over when it wakes.
+
+```powershell
+py -3 scripts/gaia-host/gaia_host.py --config D:/Civ13-host/gaia-host.json --group D:/Civ13Regions/europe.json serve
+```
+
+On Windows, add `--group ...` to the existing `Civ13 Gaia Doorman` scheduled
+task's arguments. On Linux, see [civ13-host.service.example](civ13-host.service.example).
+`shard_group.py status` shows each region's `state` and never asks a frozen
+region for its view, and `shard_group.py freeze|thaw [--region ID]` does a
+one-off freeze or thaw.
 
