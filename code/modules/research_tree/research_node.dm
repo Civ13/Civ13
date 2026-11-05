@@ -641,7 +641,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/pharaoh2" = "classical_dress",
 		"/obj/item/clothing/under/sari/blue" = "classical_dress",
 		"/obj/item/clothing/under/sari/red" = "classical_dress",
-		// --- combustion (15) ---
+		// --- combustion (16) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25" = "combustion",
@@ -657,6 +657,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/oilwell" = "combustion",
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
+		// The bakelizer turns crude petroleum into plastic, so it belongs with the
+		// refineries in the Main tree. Under the specialist Tailoring tree
+		// (Synthetic Fabrics) factionless players could never unlock it.
+		"/obj/structure/bakelizer" = "combustion",
 		// --- cooperage (14) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
 		"/obj/item/weapon/storage/backpack" = "cooperage",
@@ -1617,7 +1621,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/surgicaldrill" = "surgical_theory",
 		"/obj/structure/bed/chair/wheelchair" = "surgical_theory",
 		"/obj/structure/iv_drip" = "surgical_theory",
-		// --- synthetics (22) ---
+		// --- synthetics (21) ---
 		"/obj/item/clothing/glasses/univisorcyan" = "synthetics",
 		"/obj/item/clothing/glasses/univisorflashy" = "synthetics",
 		"/obj/item/clothing/glasses/univisorgreen" = "synthetics",
@@ -1639,7 +1643,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/gorillasuit" = "synthetics",
 		"/obj/item/clothing/suit/storage/coat/oldyjacket" = "synthetics",
 		"/obj/item/weapon/storage/bag/plasticbag" = "synthetics",
-		"/obj/structure/bakelizer" = "synthetics",
 		// --- tailoring (57) ---
 		"/obj/item/clothing/accessory/ruffle/neck" = "tailoring",
 		"/obj/item/clothing/head/artisan" = "tailoring",
