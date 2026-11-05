@@ -774,6 +774,9 @@ SKILL_TARGETS = {
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
 BINDING_WORDS = ("crude twine", "sinew", "rope")
+# Things that come in stacks the game merges when one is clicked with the other.
+STACK_WORDS = ("log", "plank", "stone", "leaves", "leaf", "grass", "bone", "hide", "pelt", "clay", "ore", "brick",
+               "twine", "sinew", "rope", "cloth", "coin", "ingot", "sheet", "bark", "thatch", "seed", "arrow", "bandage")
 
 
 def _underfoot(row):
@@ -858,6 +861,15 @@ def expand_skill(step, self_state, rows=None):
             return [], f"the {row.get('name')} has no branches; pick a tree marked (has branches)"
         if not adjacent(row):
             steps.append({"do": "go", "target": step["target"]})
+    if step["skill"] == "pick_up" and row is not None and row.get("item"):
+        # The same stack already in a hand: click the pile with it and the piles merge, no free hand needed.
+        if _same_stack(active, row.get("name")) or _same_stack(other, row.get("name")):
+            if not _same_stack(active, row.get("name")):
+                steps.append({"do": "swap_hand"})
+            if self_state.get("intent") != intent:
+                steps.append({"do": "intent", "intent": intent})
+            steps.append({"do": "click", "target": step["target"]})
+            return steps, ""
     if need == "any":
         pass
     elif need == "empty":
@@ -892,6 +904,19 @@ def expand_skill(step, self_state, rows=None):
         steps.append({"do": "intent", "intent": intent})
     steps.extend({"do": "click", "target": step["target"]} for _ in range(clicks))
     return steps, ""
+
+
+def _stack_words(name):
+    """A stack's name without its count or plural ("wood logs (5)" -> "wood log")."""
+    text = re.sub(r"\(.*?\)|\d+", " ", str(name or "").lower())
+    return " ".join(word[:-1] if word.endswith("s") and len(word) > 3 else word for word in text.split())
+
+
+def _same_stack(held, ground):
+    """True when a held item and a loose item look like the same kind of stack."""
+    if not held or held == "empty" or not ground:
+        return False
+    return _stack_words(held) == _stack_words(ground) and any(word in _stack_words(held) for word in STACK_WORDS)
 
 
 def _expand_eat(active, other, self_state):

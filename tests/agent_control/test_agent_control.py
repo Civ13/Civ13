@@ -1052,5 +1052,24 @@ class StructureAndHabitTest(unittest.TestCase):
         self.assertIn("var/supportfound = mine_supported()", floor)
 
 
+class HaulingTest(unittest.TestCase):
+    def test_picking_up_a_pile_merges_it_into_the_same_stack_in_hand(self):
+        me = {"ref": "[0x1]", "left_hand": {"name": "flint hatchet"}, "right_hand": {"name": "wood logs"}, "active_hand": "left", "intent": "help"}
+        rows = {"[0x9]": {"ref": "[0x9]", "name": "wood log", "item": True, "dx": 1, "dy": 0}}
+        steps, error = autopilot.expand_skill({"skill": "pick_up", "target": "[0x9]"}, me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x9]"}])  # no stowing, no free hand needed
+        me["active_hand"] = "right"
+        self.assertEqual(autopilot.expand_skill({"skill": "pick_up", "target": "[0x9]"}, me, rows)[0], [{"do": "click", "target": "[0x9]"}])
+        rows["[0x9]"]["dx"] = 3
+        self.assertEqual(autopilot.expand_skill({"skill": "pick_up", "target": "[0x9]"}, me, rows)[0][0], {"do": "go", "target": "[0x9]"})
+
+    def test_different_items_are_not_merged(self):
+        self.assertFalse(autopilot._same_stack("flint hatchet", "wood log"))
+        self.assertFalse(autopilot._same_stack("empty", "wood log"))
+        self.assertFalse(autopilot._same_stack("spear", "spear"))  # not a stack
+        self.assertTrue(autopilot._same_stack("wooden planks (8)", "wooden plank"))
+
+
 if __name__ == "__main__":
     unittest.main()
