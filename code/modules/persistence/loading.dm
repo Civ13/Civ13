@@ -464,7 +464,7 @@
 		loading_z = B
 		try
 			var/watch = start_watch()
-			existing_references = list()
+			existing_references = alist()
 			all_loaded = list()
 			loaded_lists = list()
 			if(!fexists("map_saves/[B].sav"))
@@ -789,11 +789,19 @@
 
 // Large flat savefile directories make repeated entry navigation expensive.
 // Legacy files remain flat; new files cap each entry directory at 512 children.
+/map_storage/var/tmp/entry_path_key
 /map_storage/proc/entry_path(savefile/F, ref)
-	var/format_version = F["/format_version"]
-	if(format_version == 2 || format_version == 3 || format_version == 4)
-		return "/entries/[round((text2num("[ref]") - 1) / 512)]/[ref]"
-	return "/entries/[ref]"
+	// Validation and loads call this millions of times per level; reading
+	// /format_version each time dominated it. Cache per open handle by text
+	// key only: holding the handle itself would keep a whole level in memory.
+	var/key = "\ref[F]|[F.name]"
+	if(key != entry_path_key)
+		var/format_version = F["/format_version"]
+		if(!(format_version == 2 || format_version == 3 || format_version == 4))
+			// Legacy flat files are only read during upgrades; never cache them.
+			return "/entries/[ref]"
+		entry_path_key = key
+	return "/entries/[round((text2num("[ref]") - 1) / 512)]/[ref]"
 
 // Restores the world-level state written at the top of Save_World(). Load_World()
 // only rebuilds turfs (see the /turf/ check in Load_Entry()), so without this the
