@@ -312,6 +312,7 @@ var/list/mutate_on_tick = null
 	var/age6_done
 	var/age7_done
 	var/age8_done
+	var/age9_done
 // Ordinary-map fixture only. Surface admission is tested by extraction probes;
 // accidental activation here must fail instead of supplying synthetic success.
 /obj/map_metadata/extraction_survival
