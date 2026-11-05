@@ -1,0 +1,44 @@
+# Saveable types whose constructor fails in this fixture, with the reason it is
+# safe. A world load only constructs types that are actually in a save; each
+# entry here is transient, abstract, or depends on startup state this fixture
+# skips. Remove an entry when its type starts constructing cleanly.
+
+# Transient runtime datums: built with arguments by live code and never
+# reachable from a saved atom.
+/datum/timedevent
+/datum/category_group/player_setup_category/general_preferences
+/datum/category_group/player_setup_category/global_preferences
+/datum/category_item/player_setup_item
+/datum/category_item/player_setup_item/general
+/datum/category_item/player_setup_item/general/basic
+/datum/category_item/player_setup_item/general/body
+/datum/category_item/player_setup_item/general/test
+/datum/category_item/player_setup_item/player_global
+/datum/category_item/player_setup_item/player_global/settings
+/datum/topic_state/book_reader
+/datum/extension            # nothing attaches extensions to saved atoms
+/datum/extension/labels
+/datum/nano_module/faction_symbol_editor
+/datum/stone_mold_carving   # proc-local during a craft
+/datum/error_viewer/error_entry
+/dmm_suite/preloader
+
+# Persistence's own bookkeeping, built by the save/load code with arguments.
+/datum/wound/lost_limb      # the loader constructs it with its shell argument
+/datum/durable_timer_queue
+/datum/durable_nomads_event
+/datum/level_segment_reader
+/datum/level_segment_writer
+/datum/extraction_insurance_returns
+/datum/extraction_mail_store
+/datum/extraction_npc_journal
+
+# Abstract parent never placed or spawned.
+/mob/living/simple_animal/pepelsibirsk_trader
+
+# Needs processes.ticker, which this fixture does not start.
+/obj/effect/landmark/npctarget/squad_spawner
+/obj/effect/landmark/npctarget/squad_spawner/american
+/obj/effect/landmark/npctarget/squad_spawner/german
+/obj/effect/landmark/npctarget/squad_spawner/japanese
+/obj/effect/landmark/npctarget/squad_spawner/soviet

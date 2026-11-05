@@ -79,6 +79,14 @@ level file is replaced only after every node verifies. Unreadable resident
 memory now counts as 1024 MiB in the plan, and each loaded level logs server
 memory. `tests/world_save/run.sh 'split=1'` is the native check.
 
+<!-- 2026-11-05: constructors during a load -->
+A load builds atoms with `new type(loc)` (with `persistence_saved_atom_construction`
+set) and datums with no arguments, then restores fields. A constructor that
+throws aborts the import, and one that consumes per-round state (name lists,
+spawner populations) should skip that work while the flag is set.
+`tests/load_construction/run.py` builds every saveable type this way and
+compares failures with its `known_failures.txt`.
+
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired

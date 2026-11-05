@@ -4,6 +4,18 @@ var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "
 var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader","Iron Maiden","Thunderbolt","Hellcat","Black Baron","Raging Bull","Bulldog","Whiskey","Fury","Warthog","Sentinel","Cobra","Raptor","Steel Phantom")
 var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu", "Avalanche", "Bandit", "Cyclone", "Defender", "Eagle", "Falcon", "Guardian", "Havoc", "Ironclad", "Jaguar", "Kodiak", "Lightning", "Maverick", "Nomad", "Panther", "Phantom", "Quicksilver", "Renegade", "Specter", "Sentinel", "Thunderbolt", "Viper", "Warlock", "Xenoh", "Yeti", "Zephyr")
 
+
+// Gives a vehicle a crew nickname from a per-round list. A restored vehicle
+// keeps its saved name, and an exhausted list leaves the name plain instead of
+// failing the constructor (which would abort a world load).
+/proc/vehicle_crew_name(base_name, list/names, consume = TRUE)
+	if (persistence_saved_atom_construction || !length(names))
+		return base_name
+	var/picked = pick(names)
+	if (consume)
+		names -= picked
+	return "[base_name] \'[picked]\'"
+
 ////////AXIS: MOVEMENT LOOP/////////
 /obj/structure/vehicleparts/axis
 	var/maxdist = 5 //the highest of length and width

@@ -80,6 +80,11 @@
 	..()
 	invisibility = 101
 	icon_state = "invisible"
+	// A restored spawner already has its saved population; wait one cycle.
+	if (persistence_saved_atom_construction)
+		spawn(spawner_delay(timer))
+			spawnerproc()
+		return
 	spawnerproc()
 
 /obj/effect/spawner/mobspawner/proc/buff()
@@ -88,6 +93,10 @@
 			max_number *= 2
 		if (istype(src, /obj/effect/spawner/mobspawner/velociraptor))
 			activated = 1
+
+// A zero timer would reschedule within the same tick forever and stall the server.
+/proc/spawner_delay(timer)
+	return max(10, rand(timer, timer * 1.5))
 
 /obj/effect/spawner/proc/getEmptyTurf()
 	var/list/turf/emptyTurfs = new
@@ -130,7 +139,7 @@
 			spawning = FALSE
 			spawnTarget()
 
-	spawn(rand(timer,timer*1.5))
+	spawn(spawner_delay(timer))
 		spawnerproc()
 
 /obj/effect/spawner/mobspawner/skeletons
@@ -776,7 +785,7 @@
 			if (spawning == TRUE)
 				spawning = FALSE
 				spawnTarget()
-	spawn(rand(timer,timer*1.5))
+	spawn(spawner_delay(timer))
 		spawnerproc()
 
 /obj/effect/spawner/mobspawner/zombies
@@ -922,6 +931,11 @@
 	..()
 	invisibility = 101
 	icon_state = "invisible"
+	// A restored spawner already has its saved population; wait one cycle.
+	if (persistence_saved_atom_construction)
+		spawn(spawner_delay(timer))
+			spawnerproc()
+		return
 	spawnerproc()
 
 /obj/effect/spawner/objspawner/proc/getCurrent()
@@ -947,7 +961,7 @@
 			spawning = FALSE
 			spawnTarget()
 
-	spawn(rand(timer,timer*1.5))
+	spawn(spawner_delay(timer))
 		spawnerproc()
 
 

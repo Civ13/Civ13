@@ -461,6 +461,8 @@ var/global/list/agent_characters = list()
 
 /mob/agent_proxy
 	name = "agent"
+	// Lives in nullspace for one agent session; never part of a world save.
+	should_save = FALSE
 	invisibility = 101
 	density = FALSE
 	anchored = TRUE

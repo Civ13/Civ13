@@ -382,7 +382,8 @@
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/New()
 	..()
-	rockets += new rocket_path(src)
+	if (rocket_path)
+		rockets += new rocket_path(src)
 	update_icon()
 
 /obj/item/weapon/gun/launcher/rocket/single_shot/attackby(obj/item/I as obj, mob/user as mob)
