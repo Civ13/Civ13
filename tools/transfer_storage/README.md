@@ -134,6 +134,18 @@ character lives, with a join link.
 - A world's agent unreachable means no character can start there (the player
   is asked to retry). Guests are not tracked; they cannot travel.
 
+## Player-built trails
+
+Admins can still place `/obj/structure/region_gate` with a destination. Players
+can build a **trail marker** from 10 wood (construction). It starts closed:
+the first player to use it picks the land it should lead to, which notifies
+the admins (Approve, Reject and Jump links). At most one request per marker
+goes out every ten minutes. Admins also see waiting markers under OOC >
+Regions. Approving confirms or changes the destination, and the marker then
+works like an admin gate. The approval is saved with the marker
+(`code/modules/persistence/region_trails.dm`). There is no ferry yet; a
+player-made ferry can reuse the same approval later.
+
 Group setup, autosave timing and agent startup are in
 [scripts/shard-group](../../scripts/shard-group/README.md#travel-between-regions).
 

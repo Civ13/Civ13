@@ -28,6 +28,7 @@ REVIEWED = {
     'move_delay': 'assigned on client, not on the saved gun',
     'last_action': 'grabs are never saved (should_save = FALSE)',
     'stopped_until': 'football map mode is not persistent',
+    'next_request': 'trail marker request cooldown is var/tmp and not in its map_storage_saved_vars',
     'round_deadline': 'extraction raid instances are not persistent',
     'next_checkpoint': 'extraction raid instances are not persistent',
     'npc_corpses': 'extraction raid instances are not persistent',
