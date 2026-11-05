@@ -226,6 +226,18 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered train-raid'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_zombie_city_offline_admission_is_exact(self):
+        for path in ('tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
+                     'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
+                     'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                     'tests/zombie_city/horde_probe.dm'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/zombie_city/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered zombie-city'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_safehouse_map_offline_admission_is_exact(self):
         for path in ('tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
                      'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
@@ -262,6 +274,15 @@ class SelectionTests(unittest.TestCase):
         other = 'tests/door_intents/new_native_probe.dm'
         with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered door-intent'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_map_tools_offline_admission_is_exact(self):
+        path = 'tests/map_tools/test_map_tools.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/map_tools/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered map-tools'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_medical_care_offline_admission_is_exact(self):
@@ -308,6 +329,15 @@ class SelectionTests(unittest.TestCase):
         other = 'tests/savestream/new_probe.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered savestream'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_local_ci_offline_admission_is_exact(self):
+        path = 'tests/local_ci/test_local_ci.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/local_ci/new_probe.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered local-ci'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_agent_ci_digest_offline_admission_is_exact(self):
@@ -450,6 +480,17 @@ class SelectionTests(unittest.TestCase):
         self.assertFalse(selection.needs_game(['AGENTS.md', 'docs/api/search.js',
             'docs/api/search.css', 'scripts/build-api-docs.py',
             '.github/workflows/api-pages.yml']))
+    def test_repository_prose_and_metadata_avoid_game_compilation(self):
+        for path in ('tests/local_ci/README.md', 'tools/byond/README.md', '.claude/skills/x/SKILL.md',
+                     'LICENSE', '.gitattributes', '.gitignore'):
+            with self.subTest(path=path):
+                self.assertFalse(selection.needs_game([path]))
+        for path in ('code/notes.md', 'maps/README.md', 'config/x.md', 'wiki/x.md', 'html/x.md', 'UI/x.md',
+                     'tgui/README.md', '.agents/skills/civ13/README.md', 'tools/x.py', 'tests/../code/x.md',
+                     'LICENSE.txt', '.claude/settings.json'):
+            with self.subTest(path=path):
+                self.assertTrue(selection.needs_game([path]))
+
     def test_only_reviewed_skill_prose_avoids_game_compilation(self):
         prose = ['.agents/skills/civ13-compile/SKILL.md',
                  '.agents/skills/group/skill/SKILL.md',

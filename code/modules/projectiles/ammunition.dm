@@ -19,11 +19,16 @@
 
 /obj/item/ammo_casing/New()
 	..()
+	bullet_casings += src
+
+// A restored casing keeps its saved offsets and rotation, and
+// persistence_import_fields rebuilds its bullet and abandonment entry.
+/obj/item/ammo_casing/on_runtime_spawn()
+	..()
 	if (ispath(projectile_type))
 		BB = new projectile_type(src)
 	pixel_x = rand(-10, 10)
 	pixel_y = rand(-10, 10)
-	bullet_casings += src
 	randomrotation()
 	register_abandoned_item()
 

@@ -48,6 +48,7 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
 DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
 RESEARCH_STAFF_OFFLINE_TESTS = frozenset({'tests/research_staff/test_research_staff.py'})
+MAP_TOOLS_OFFLINE_TESTS = frozenset({'tests/map_tools/test_map_tools.py'})
 SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
 HELD_MOVEMENT_OFFLINE_TESTS = frozenset({'tests/held_movement/test_held_movement.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
@@ -57,11 +58,16 @@ SAVESTREAM_OFFLINE_TESTS = frozenset({'tests/savestream/test_helper.py', 'tests/
 SAVESTREAM_MANUAL_NATIVE = frozenset({'tests/savestream/run_native.py', 'tests/savestream/roundtrip/fixture.dm'})
 AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
+LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
 TRAIN_RAID_OFFLINE_TESTS = frozenset({'tests/train_raid/test_train_raid.py', 'tests/train_raid/build.py',
                                       'tests/train_raid/native_probe.py', 'tests/train_raid/native_probe.dm'})
+ZOMBIE_CITY_OFFLINE_TESTS = frozenset({'tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
+                                       'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
+                                       'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                                       'tests/zombie_city/horde_probe.dm'})
 SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
                                          'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
                                          'tests/safehouse_map/preview.py'})
@@ -265,8 +271,24 @@ def needs_game(paths):
     return any(PurePosixPath(path).suffix.lower() in {'.dm', '.dme', '.dmm', '.dmi', '.rsc'} or not (
         skill_prose(path) or path.startswith('docs/') or
         (len(PurePosixPath(path).parts) == 1 and path.endswith('.md')) or
-        path == 'scripts/build-api-docs.py' or path in DOC_WORKFLOWS
+        path == 'scripts/build-api-docs.py' or path in DOC_WORKFLOWS or non_game(path)
     ) for path in paths)
+
+
+# Prose and repository metadata that DreamMaker never reads. Markdown under the
+# game, map, config, UI and wiki trees keeps compiling in case runtime code reads
+# it; skill files outside the reviewed prose keep their conservative selection.
+NON_GAME_FILES = {'LICENSE', 'LICENSE.md', '.gitattributes', '.gitignore', '.editorconfig'}
+NON_GAME_MARKDOWN_EXCLUDED_ROOTS = {'.agents', 'code', 'maps', 'config', 'wiki', 'html', 'UI', 'tgui'}
+
+
+def non_game(path):
+    parts = PurePosixPath(path).parts
+    if not parts or any(part in ('', '.', '..') for part in parts):
+        return False
+    if path in NON_GAME_FILES or (parts[0] == '.claude' and path.endswith('.md')):
+        return True
+    return path.endswith('.md') and parts[0] not in NON_GAME_MARKDOWN_EXCLUDED_ROOTS
 
 def select(base, head):
     if not base or not head or set(base) == {'0'}:
@@ -386,10 +408,18 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/train_raid/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered train-raid executable test requires explicit CI review')
+        if path in ZOMBIE_CITY_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/zombie_city/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered zombie-city executable test requires explicit CI review')
         if path.startswith('tests/farmers_almanac/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered farmers-almanac executable test requires explicit CI review')
         if path in DOOR_INTENTS_OFFLINE_TESTS:
             continue
+        if path in MAP_TOOLS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/map_tools/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered map-tools executable test requires explicit CI review')
         if path in RESEARCH_STAFF_OFFLINE_TESTS:
             continue
         if path.startswith('tests/research_staff/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
@@ -422,6 +452,10 @@ def introduced_tests(base, head, event):
             continue
         if path in AGENT_CI_DIGEST_OFFLINE_TESTS:
             continue
+        if path in LOCAL_CI_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/local_ci/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered local-ci executable test requires explicit CI review')
         if path.startswith('tests/agent_ci_digest/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered agent-ci-digest executable test requires explicit CI review')
         if path.startswith('tests/agent_control/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

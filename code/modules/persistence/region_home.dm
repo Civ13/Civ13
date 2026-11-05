@@ -123,11 +123,14 @@
 /proc/region_home_death(mob/living/human/H)
 	var/account = H && H.persistence_owner_ckey
 	if(!account || !region_home_enabled()) return
-	if(region_home_bed(account)) return
-	for(var/mob/living/human/other in human_mob_list)
-		if(other != H && other.persistence_owner_ckey == account && other.stat != DEAD && !QDELETED(other))
-			return
+	// A raider who dies in a raid world goes home, not to the mainland.
+	var/origin = region_raid_death_origin(H)
+	if(!origin)
+		if(region_home_bed(account)) return
+		for(var/mob/living/human/other in human_mob_list)
+			if(other != H && other.persistence_owner_ckey == account && other.stat != DEAD && !QDELETED(other))
+				return
 	spawn(0)
-		region_home_note(account, "release")
+		region_home_note(account, origin ? "depart" : "release", origin)
 
 #undef REGION_HOME_WAIT

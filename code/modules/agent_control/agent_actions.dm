@@ -156,11 +156,15 @@
 
 /datum/agent_control/proc/act_logs(datum/agent_identity/A, list/req)
 	var/count = clamp(round(text2num("[req["count"]]") || 50), 1, 200)
-	audit_read(A, "logs", "[count]")
-	var/start = max(1, admin_log.len - count + 1)
+	var/kind = req["kind"] == "food" ? "food" : "admin"
+	audit_read(A, "logs", "[kind] [count]")
+	var/list/source = kind == "food" ? food_toxin_log : admin_log
+	var/start = max(1, source.len - count + 1)
 	var/list/out = list()
-	for (var/i = start, i <= admin_log.len, i++)
-		out += agent_plain_text(admin_log[i])
+	for (var/i = start, i <= source.len, i++)
+		out += agent_plain_text(source[i])
+	if (kind == "food")
+		return list("food_toxin_log" = out)
 	return list("admin_log" = out)
 
 /datum/agent_control/proc/act_job(datum/agent_identity/A, list/req)

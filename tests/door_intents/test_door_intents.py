@@ -108,3 +108,21 @@ class DoorRebootTimers(unittest.TestCase):
         reset = body.index('if (next_attack_hand > world.time + 10)')
         self.assertEqual(body[reset + 1], 'next_attack_hand = -1')
         self.assertLess(reset, body.index('if (world.time < next_attack_hand)'))
+
+
+class FactionDoorLockpick(unittest.TestCase):
+    """A faction door ignores its keyslot, so a picked lock must open the door itself."""
+
+    def test_lockpick_goes_to_the_faction_pick(self):
+        body = [line.strip() for line in proc_body(KEY_DOOR, '/obj/structure/simple_door/key_door/faction_door/attackby') if line.strip()]
+        self.assertEqual(body[:3], ['if (istype(W, /obj/item/weapon/lockpick))', 'faction_door_pick(W, user)', 'return'])
+        self.assertEqual(body[-1], 'return ..()')
+
+    def test_successful_pick_opens_the_door_after_rechecking(self):
+        body = [line.strip() for line in proc_body(KEY_DOOR, '/obj/structure/simple_door/key_door/faction_door/proc/faction_door_pick')]
+        recheck = body.index('if (QDELETED(src) || QDELETED(W) || state || isSwitchingStates || !H.Adjacent(src))')
+        self.assertLess(body.index('if (!do_after(H, 35*H.getStatCoeff("dexterity"), src))'), recheck)
+        opened = body.index('Open()')
+        self.assertLess(recheck, opened)
+        self.assertEqual(body[opened - 3], 'if (prob(H.getStatCoeff("dexterity")*35))')
+        self.assertNotIn('keyslot.locked = FALSE', body)

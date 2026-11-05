@@ -51,6 +51,8 @@ var/global/datum/shard_group/shard_group = new
 	// left has saved without them.
 	var/save_minutes = 0
 	var/travel_save_seconds = 60
+	// A resetting raid world (region_raid_reset.dm): minutes between resets, 0 = never.
+	var/reset_minutes = 0
 	var/saving_loop = FALSE
 
 /datum/shard_group/New()
@@ -85,7 +87,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "OTHER")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -105,6 +107,13 @@ var/global/datum/shard_group/shard_group = new
 		if(!isnum(settings["travel_save_seconds"]) || settings["travel_save_seconds"] < 10 || settings["travel_save_seconds"] > 3600)
 			return refuse("travel_save_seconds must be 10 to 3600")
 		travel_save_seconds = round(settings["travel_save_seconds"])
+	reset_minutes = 0
+	if(!isnull(settings["reset_minutes"]) && settings["reset_minutes"] != 0)
+		if(!isnum(settings["reset_minutes"]) || settings["reset_minutes"] < 30 || settings["reset_minutes"] > 1440)
+			return refuse("reset_minutes must be 0 or 30 to 1440")
+		if(self["kind"] != "RAID")
+			return refuse("only a RAID region can reset")
+		reset_minutes = round(settings["reset_minutes"])
 	group = settings["group"]
 	region = self["id"]
 	name = self["name"]
@@ -123,7 +132,10 @@ var/global/datum/shard_group/shard_group = new
 
 // What a peer, the host tool or a player sees of this region.
 /datum/shard_group/proc/describe()
-	return list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)
+	. = list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)
+	// Stations ask before sending a new party (party_train.dm).
+	if(kind == "RAILYARD")
+		.["free_berths"] = party_train_free_berths()
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -148,6 +160,7 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	peer["state"] = "UP"
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
+	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	return TRUE
 

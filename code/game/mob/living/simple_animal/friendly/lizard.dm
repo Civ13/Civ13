@@ -49,6 +49,7 @@
 	icon_living = "frog"
 	icon_dead = "frog-dead"
 	speak_emote = list("croaks")
+	density = FALSE // tiny critter: players and larger animals walk over it
 	health = 5
 	maxHealth = 5
 	attacktext = "bitten"

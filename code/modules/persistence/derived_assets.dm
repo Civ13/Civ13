@@ -13,6 +13,10 @@
 	. = ..()
 	// New() built this from the type's icon; icon and icon_riding may be restored.
 	cover_overlay = image("icon" = icon, "icon_state" = icon_riding, "layer" = 4.15)
+	// Spawners do not save their head count; restored animals rebuild it.
+	if (istype(origin, /obj/effect/spawner/mobspawner))
+		var/obj/effect/spawner/mobspawner/O = origin
+		O.register_spawned(src)
 
 /mob/living/simple_animal/goat/after_load()
 	. = ..()

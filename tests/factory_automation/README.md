@@ -28,6 +28,7 @@ Removing the belt load hook's direction rederivation makes three checks fail. Ru
 
 - Belts: idle belts leave the process and dropped items wake them; cargo stays an ordinary floor item, advances up to eight slots a step and crosses to the next belt; the last belt fills a crate; picked-up cargo leaves the belt; a belt facing back blocks and the blocked belt polls slowly; corners enter from the side; a tile carries at most four items; a full crate blocks the line until it has room; runtime state is excluded from saves and a reloaded belt adopts cargo in its saved slot.
 - Arms: off or unpowered arms do nothing; a powered arm moves a crate item onto a belt entry and reserves 2 PU; switching off releases demand; a sorting arm without a filter moves nothing and with one moves only matching items into a parts bin; an arm leaves items a bin of another kind would refuse; drill output goes into the stamp mill with the remainder held until there is room; a reloaded running arm resumes without stored time; floor output stops at twelve items.
+- Wrenching: arms, drives, fabricators and the monitor can be unwrenched; an arm that is off turns both ways by verb, a running arm refuses to turn or be wrenched, and an unfastened arm or drive does no work.
 - Catalog: research gates, the four global recipes and the reused sprite states.
 
 Without the end-of-step rescan, the blocked-belt resume check fails. A local benchmark on 1,922 belts with 2,356 moving items measured about 60 ms per one-second step; it is not checked in because its timing depends on the host.
@@ -73,6 +74,7 @@ Removing the station's `NOREACT` flag makes the inert-tank check fail.
 `pipes_probe.dm` (chemistry phase 1) calls the network step directly and checks:
 
 - Networks: a line of pipes joins the station, tank, engine and pump next to it into one network, and pipes draw straight runs and junctions; nothing moves without a running pump; a cabled pump draws its power and moves twenty units a step, sinks before buffers; a full sink lets the holding tank fill; a filtered tank refuses other reagents and the network goes idle, then looks again within five steps; a sink draws from a holding tank; a closed valve splits the network and an open one rejoins it; a filling barrel station draws from the network; a switched-off pump releases its power.
+- Wrenching: pipes and fluid machines can be unwrenched; an unfastened tank and pipe have no role, ask for a rebuild and leave the network, and fastening them again rejoins it.
 - Water intake: beside open water it supplies the same mix a person filling a container there gets; away from water it supplies nothing.
 - Refinery: draws petroleum from an oil well's barrel through pipes; a full refinery's output barrel feeds a gasoline-filtered tank while petroleum stays in the well.
 - Saving: a pipe's network is runtime-only; valve, pump switch and tank filter are saved and pump power is not; reloaded pumps and pipes rebuild the networks; holding tanks are inert.

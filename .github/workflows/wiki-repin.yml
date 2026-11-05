@@ -1,0 +1,117 @@
+name: Player Help wiki re-pin
+
+# Player Help only serves wiki guides whose SHA-256 matches the pin in
+# scripts/player_help_bridge.py, so every edit to a pinned guide silently drops
+# it from in-game Help until the pins are refreshed. This workflow refreshes
+# them and opens (or updates) one rolling pull request.
+#
+# Triggers: the wiki repository dispatches `wiki-updated` after a push to its
+# master (needs a token on the wiki side), a maintainer runs it by hand, or the
+# weekly schedule catches anything the dispatch missed. Set the WIKI_REPIN_TOKEN
+# secret (fine-grained PAT, Civ13 repository, contents + pull requests write)
+# so the pull request it opens also runs CI the normal way. With the default
+# GITHUB_TOKEN GitHub starts no workflows on the created PR, so this workflow
+# instead dispatches test.yml on the PR branch itself; its check runs attach to
+# the same head commit and satisfy the required aggregate.
+
+on:
+  repository_dispatch:
+    types: [wiki-updated]
+  workflow_dispatch:
+    inputs:
+      wiki_ref:
+        description: civ13-wiki ref to pin (branch, tag or commit)
+        default: master
+        required: false
+  schedule:
+    - cron: '23 6 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: wiki-repin
+  cancel-in-progress: false
+
+jobs:
+  repin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check out the wiki
+        uses: actions/checkout@v7
+        with:
+          repository: civ13/civ13-wiki
+          ref: ${{ github.event.inputs.wiki_ref || github.event.client_payload.sha || 'master' }}
+          path: civ13-wiki
+      - name: Refresh pins
+        id: pins
+        run: |
+          set -o pipefail
+          sha="$(git -C civ13-wiki rev-parse HEAD)"
+          echo "wiki_sha=$sha" >> "$GITHUB_OUTPUT"
+          python3 scripts/agent_preflight.py wiki-pins --wiki-root civ13-wiki --write | tee pins.log
+          {
+            echo "## Player Help wiki pins"
+            echo
+            echo "Wiki revision: \`$sha\`"
+            echo
+            echo '```'
+            cat pins.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if git diff --quiet -- scripts/player_help_bridge.py tests/player_help/test_wiki_guides.py; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            grep '^  changed:' pins.log | sed 's/^  changed: /- /' > changed.md || true
+          fi
+      - name: Focused tests
+        if: steps.pins.outputs.changed == 'true'
+        run: python3 -m unittest tests.player_help.test_wiki_guides tests.player_help.test_bridge
+      - name: Compose the pull request body
+        if: steps.pins.outputs.changed == 'true'
+        env:
+          WIKI_SHA: ${{ steps.pins.outputs.wiki_sha }}
+        run: |
+          {
+            printf '## Change\n\n'
+            printf 'Refreshes the Player Help wiki guide pins to civ13-wiki `%s` (https://github.com/civ13/civ13-wiki/commit/%s) so in-game Help serves the current text of these guides:\n\n' "$WIKI_SHA" "$WIKI_SHA"
+            cat changed.md
+            printf '\nOpened by the wiki-repin workflow; it is updated in place on every later wiki change until merged.\n\n'
+            printf '## Verification\n\n'
+            printf '`python3 scripts/agent_preflight.py wiki-pins --wiki-root civ13-wiki --write`, then `python3 -m unittest tests.player_help.test_wiki_guides tests.player_help.test_bridge` passed in %s/%s/actions/runs/%s.\n\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+            printf '## Optional changelog\n\nChangelog: In-game Help now answers from the latest reviewed wiki guides.\n'
+          } > pr-body.md
+      - name: Open or update the re-pin pull request
+        id: pr
+        if: steps.pins.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.WIKI_REPIN_TOKEN || github.token }}
+          branch: automation/wiki-repin
+          delete-branch: true
+          add-paths: |
+            scripts/player_help_bridge.py
+            tests/player_help/test_wiki_guides.py
+          commit-message: 'Player Help: re-pin reviewed wiki guides to civ13-wiki ${{ steps.pins.outputs.wiki_sha }}'
+          title: 'Player Help: re-pin reviewed wiki guides to civ13-wiki ${{ steps.pins.outputs.wiki_sha }}'
+          body-path: pr-body.md
+      - name: Run CI on the pull request branch
+        if: steps.pins.outputs.changed == 'true' && steps.pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.pr.outputs.pull-request-head-sha }}
+        run: |
+          if [ -n "${{ secrets.WIKI_REPIN_TOKEN }}" ]; then
+            echo "WIKI_REPIN_TOKEN set; GitHub starts CI on the pull request itself." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          base="$(git rev-parse HEAD)"
+          gh workflow run test.yml --ref automation/wiki-repin -f "comparison_base=$base"
+          echo "Dispatched test.yml on automation/wiki-repin (head $HEAD_SHA, comparison base $base) for PR #${{ steps.pr.outputs.pull-request-number }}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Nothing to do
+        if: steps.pins.outputs.changed != 'true'
+        run: echo "All pinned guides match the wiki revision; no pull request needed." >> "$GITHUB_STEP_SUMMARY"

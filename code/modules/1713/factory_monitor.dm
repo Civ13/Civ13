@@ -59,7 +59,7 @@
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 
 // One row per machine: list(name, kind, x, y, state, rate, detail).

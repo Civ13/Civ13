@@ -178,6 +178,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_zombie_city_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'zombie_city'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/zombie_city/test_zombie_city.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_train_raid_suite_is_bounded_and_not_silently_omitted(self):
         name = 'train_raid'
         suite = ci.SUITES[name]
@@ -218,6 +226,15 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_map_tools_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'map_tools'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/map_tools/test_map_tools.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertIn(name, self.selected(['maps/1713/bridge.dmm']))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_medical_care_suite_is_bounded_and_not_silently_omitted(self):
         name = 'medical_care'
         suite = ci.SUITES[name]
@@ -254,6 +271,14 @@ class BaselinePolicyTests(unittest.TestCase):
         name = 'savestream'
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/savestream/test_helper.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
+    def test_local_ci_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'local_ci'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/local_ci/test_local_ci.py',))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
@@ -340,7 +365,9 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['crafting_loader']
         self.assertEqual(suite['files'], ('tests/crafting_loader/test_loader.py',
                                           'tests/crafting_loader/test_supplied_item_recipes.py',
-                                          'tests/crafting_loader/test_basic_clothing.py'))
+                                          'tests/crafting_loader/test_basic_clothing.py',
+                                          'tests/crafting_loader/test_production_machines.py',
+                                          'tests/crafting_loader/test_radio_headset.py'))
         self.assertEqual(self.selected(list(suite['files'])),
             {'policy', 'bootstrap', 'progress', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}
@@ -1778,7 +1805,7 @@ class AggregateTests(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         aggregate = workflow.split('\n  ci-required:\n')[1]
         self.assertIn('if: always()', aggregate)
-        self.assertIn('needs: [changes, baseline, evidence-checker, build, extraction-instances]', aggregate)
+        self.assertIn('needs: [changes, local-attestation, baseline, evidence-checker, build, extraction-instances]', aggregate)
         self.assertIn('CI_NEEDS: ${{ toJSON(needs) }}', aggregate)
         self.assertIn('--compile-receipt .ci/compile/compile.json', aggregate)
         self.assertIn('include-hidden-files: true', aggregate)

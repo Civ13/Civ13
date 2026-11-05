@@ -4,8 +4,9 @@
 // destination is one of its peers.
 //
 // The character travels as a payload: identity, looks, skills, hunger and
-// thirst, and a list of items that can be rebuilt exactly (allowlisted material
-// stacks by kind and amount, empty clothing by type). Anything else must be
+// thirst, and a list of items that can be rebuilt exactly (allowlisted stacks
+// by kind and amount, untouched items of the carry families by type, magazines
+// by round count; see region_travel_item_kind). Anything else must be
 // left behind first, so nothing is lost or copied on the way. While the agent
 // records the escrow the body and its items wait inside the gate; once it is
 // recorded they are removed and the player is sent to the destination server.
@@ -37,8 +38,34 @@ var/global/list/region_travel_coins = list(
 
 var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_style", "r_facial", "g_facial", "b_facial", "f_style", "r_eyes", "g_eyes", "b_eyes", "s_tone", "r_skin", "g_skin", "b_skin")
 
-// How an item travels: "stack:<kind>" for an allowlisted material stack,
-// "type" for empty clothing, or null when it cannot travel.
+// Medical stacks travel by kind and amount, like materials. Exact types only.
+var/global/list/region_travel_stack_goods = list(
+	"bruise_pack" = /obj/item/stack/medical/bruise_pack,
+	"gauze" = /obj/item/stack/medical/bruise_pack/gauze,
+	"advanced_bruise_pack" = /obj/item/stack/medical/advanced/bruise_pack,
+	"advanced_ointment" = /obj/item/stack/medical/advanced/ointment,
+	"splint" = /obj/item/stack/medical/splint)
+
+// Item families that travel by type besides clothing: packaged food and
+// medicine (only untouched, see region_travel_item_pristine), common tools and
+// unloaded projectile guns. Magazines travel as "ammo:<type>" with a round count.
+var/global/list/region_travel_carry_types = list(
+	/obj/item/weapon/reagent_containers/food/snacks,
+	/obj/item/weapon/reagent_containers/food/drinks/can,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic,
+	/obj/item/weapon/reagent_containers/syringe,
+	/obj/item/weapon/reagent_containers/pill,
+	/obj/item/weapon/crowbar,
+	/obj/item/weapon/wrench,
+	/obj/item/weapon/screwdriver,
+	/obj/item/weapon/wirecutters,
+	/obj/item/weapon/weldingtool,
+	/obj/item/weapon/hammer,
+	/obj/item/weapon/gun/projectile)
+
+// How an item travels: "stack:<kind>" for an allowlisted stack, "ammo:<type>"
+// for a magazine of its own rounds, "type" for an empty item of an allowed
+// family, or null when it cannot travel.
 /proc/region_travel_item_kind(obj/item/I)
 	if(!istype(I)) return null
 	if(istype(I, /obj/item/stack))
@@ -46,16 +73,54 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		if(kind) return "stack:[kind]"
 		for(var/coin in region_travel_coins)
 			if(istype(I, region_travel_coins[coin])) return "stack:[coin]"
+		for(var/good in region_travel_stack_goods)
+			if(I.type == region_travel_stack_goods[good]) return "stack:[good]"
 		return null
-	if(region_travel_type_allowed(I.type) && !length(I.contents))
+	if(istype(I, /obj/item/ammo_magazine))
+		return isnull(region_travel_ammo_count(I)) ? null : "ammo:[I.type]"
+	if(region_travel_type_allowed(I.type) && !length(I.contents) && region_travel_item_pristine(I))
 		return "type"
 	return null
 
 /proc/region_travel_type_allowed(path)
-	if(!ispath(path, /obj/item/clothing)) return FALSE
-	// Clothing that stores things carries state that does not travel.
-	if(ispath(path, /obj/item/clothing/accessory/storage)) return FALSE
+	if(ispath(path, /obj/item/clothing))
+		// Clothing that stores things carries state that does not travel.
+		return !ispath(path, /obj/item/clothing/accessory/storage)
+	for(var/family in region_travel_carry_types)
+		if(ispath(path, family)) return TRUE
+	return FALSE
+
+// An item rebuilds from its type alone, so it must be as a new one would be:
+// food not bitten, and no reagent container holding more or less (or other
+// reagents) than a fresh one. Anything else of an allowed family keeps no
+// travelling state.
+/proc/region_travel_item_pristine(obj/item/I)
+	if(!istype(I, /obj/item/weapon/reagent_containers))
+		return TRUE
+	if(istype(I, /obj/item/weapon/reagent_containers/food/snacks))
+		var/obj/item/weapon/reagent_containers/food/snacks/F = I
+		if(F.bitecount) return FALSE
+	var/obj/item/fresh = new I.type(null)
+	. = region_travel_same_reagents(I.reagents, fresh.reagents)
+	qdel(fresh)
+
+/proc/region_travel_same_reagents(datum/reagents/A, datum/reagents/B)
+	if(!A || !B) return !A && !B
+	if(A.reagent_list.len != B.reagent_list.len) return FALSE
+	for(var/datum/reagent/R in A.reagent_list)
+		if(abs(R.volume - B.get_reagent_amount(R.id)) > 0.01) return FALSE
 	return TRUE
+
+// Rounds a magazine holds, or null when it holds anything but live rounds of
+// its own ammo type.
+/proc/region_travel_ammo_count(obj/item/ammo_magazine/M)
+	if(!istype(M) || !M.ammo_type) return null
+	. = 0
+	for(var/atom/movable/A in M.contents)
+		var/obj/item/ammo_casing/C = A
+		if(!istype(C) || C.type != M.ammo_type || !C.BB || length(C.contents) > 1) return null
+		.++
+	if(. != length(M.stored_ammo) || . > M.max_ammo) return null
 
 // Every item the character wears or holds, as list(slot name = item), or a
 // text reason when something cannot travel.
@@ -83,7 +148,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		return "You carry too much to travel."
 	return items
 
-/mob/living/human/proc/region_travel_payload(list/items)
+/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE)
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
@@ -100,12 +165,28 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		var/kind = region_travel_item_kind(I)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
+		else if(copytext(kind, 1, 6) == "ammo:")
+			carried += list(list(slot_name, kind, region_travel_ammo_count(I)))
 		else
 			var/obj/item/stack/S = I
 			carried += list(list(slot_name, kind, S.amount))
-	return json_encode(list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
+	var/list/P = list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
 		"gender" = gender, "age" = age, "look" = look, "skills" = skills,
-		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried))
+		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried)
+	// Wounds travel as overall damage, so a trip never heals (raid exits let
+	// hurt raiders leave; other gates still ask for full health).
+	var/brute = clamp(round(getBruteLoss()), 0, 200)
+	var/burn = clamp(round(getBurnLoss()), 0, 200)
+	if(brute) P["brute"] = brute
+	if(burn) P["burn"] = burn
+	// A party train trip (party_train.dm) says whose train it is and where it left from.
+	if(party)
+		P["party"] = party
+		P["from"] = shard_group.region
+	// A raid trip (region_raid.dm) says where the raider goes home to.
+	else if(raid)
+		P["from"] = shard_group.region
+	return json_encode(P)
 
 // Returns the decoded payload, or null when any field is out of bounds.
 /proc/region_travel_decode(payload)
@@ -121,6 +202,8 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
 	if(!(P["gender"] in list(MALE, FEMALE, PLURAL, NEUTER))) return null
 	if(!isnum(P["age"]) || P["age"] < 1 || P["age"] > 200) return null
+	for(var/field in list("brute", "burn"))
+		if(!isnull(P[field]) && (!isnum(P[field]) || P[field] < 0 || P[field] > 200)) return null
 	for(var/field in list("nutrition", "water"))
 		if(!isnum(P[field]) || P[field] < 0 || P[field] > 1000) return null
 	if(!islist(P["look"]) || !islist(P["skills"]) || !islist(P["items"]) || length(P["items"]) > REGION_TRAVEL_ITEMS_MAX) return null
@@ -139,20 +222,32 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	for(var/list/entry in P["items"])
 		if(!islist(entry) || entry.len != 3 || !(entry[1] in region_travel_slots) || !istext(entry[2]) || !isnum(entry[3])) return null
 		if(!region_travel_item_path(entry[2], entry[3])) return null
+	if(!isnull(P["party"]) && !party_train_valid_party(P["party"])) return null
+	// A solo party is only ever its own player's.
+	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
+	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
 	return P
 
 // The path an item entry rebuilds, or null when it is not allowed.
 /proc/region_travel_item_path(kind, amount)
 	if(copytext(kind, 1, 7) == "stack:")
 		var/good = copytext(kind, 7)
-		var/obj/item/stack/path = transfer_trade_goods[good] || region_travel_coins[good]
+		var/obj/item/stack/path = transfer_trade_goods[good] || region_travel_coins[good] || region_travel_stack_goods[good]
 		if(!path || amount < 1 || amount != round(amount) || amount > min(2000, initial(path.max_amount))) return null
 		return path
+	if(copytext(kind, 1, 6) == "ammo:")
+		var/obj/item/ammo_magazine/magazine = text2path(copytext(kind, 6))
+		if(!ispath(magazine, /obj/item/ammo_magazine) || !initial(magazine.ammo_type)) return null
+		if(amount < 0 || amount != round(amount) || amount > initial(magazine.max_ammo)) return null
+		return magazine
 	var/path = text2path(kind)
 	if(!path || amount != 1 || !region_travel_type_allowed(path)) return null
 	return path
 
 /proc/region_travel_arrival_turf()
+	// A generated zombie city has its own entry points (zombie_city/world.dm).
+	var/turf/city = zombie_city_arrival_turf()
+	if(city) return city
 	// Admin gates first, then other gates that take arrivals (approved trails).
 	for(var/obj/structure/region_gate/gate in region_gates)
 		if(gate.type == /obj/structure/region_gate && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
@@ -174,14 +269,16 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		if(!P)
 			message_admins("Region travel: an unreadable [incoming ? "arriving" : "returned"] character was dropped.")
 			continue
-		var/mob/living/human/H = region_travel_build(P, T)
+		// A party train trip arrives at the party's berth or station instead.
+		var/turf/at = party_train_arrival_turf(P) || T
+		var/mob/living/human/H = region_travel_build(P, at)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
 		if(!replayed)
 			spawn(0)
 				region_home_note(P["owner"], "arrive")
-		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [T.x],[T.y],[T.z].")
+		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [at.x],[at.y],[at.z].")
 		region_travel_offer(H)
 
 // Replays a departure the loaded save does not hold yet: the account's body
@@ -233,9 +330,22 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 			H.stats[stat] = pair.Copy()
 	H.nutrition = P["nutrition"]
 	H.water = P["water"]
+	var/brute = P["brute"] || 0
+	var/burn = P["burn"] || 0
+	// Spread over the body differently than before, so never let it kill.
+	if(brute + burn > 90)
+		var/scale = 90 / (brute + burn)
+		brute = round(brute * scale)
+		burn = round(burn * scale)
+	if(brute || burn)
+		H.take_overall_damage(brute, burn, "travel")
 	for(var/list/entry in P["items"])
 		var/path = region_travel_item_path(entry[2], entry[3])
 		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
+		if(istype(I, /obj/item/ammo_magazine))
+			region_travel_fill_magazine(I, entry[3])
+		else if(istype(I, /obj/item/weapon/gun/projectile))
+			region_travel_unload_gun(I)
 		if(!H.equip_to_slot_if_possible(I, region_travel_slots[entry[1]], FALSE, TRUE))
 			I.forceMove(T)
 	// One durable body per account: an older clientless body here gives up its
@@ -245,11 +355,34 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 			other.persistence_owner_ckey = null
 			log_game("Region travel: [P["owner"]]'s earlier body [other.real_name] gave up its claim to the arrival.")
 	H.persistence_owner_ckey = P["owner"]
+	if(istext(P["party"]))
+		H.party_train_party = P["party"]
+		party_train_restore_faction(H, P["party"])
+	region_raid_note_origin(H, P)
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
 	H.update_body(FALSE)
 	H.regenerate_icons()
 	return H
+
+// A rebuilt magazine holds exactly the rounds that travelled.
+/proc/region_travel_fill_magazine(obj/item/ammo_magazine/M, rounds)
+	while(M.stored_ammo.len > rounds)
+		var/obj/item/ammo_casing/C = M.stored_ammo[M.stored_ammo.len]
+		M.stored_ammo.len--
+		qdel(C)
+	while(M.stored_ammo.len < rounds)
+		M.stored_ammo += new M.ammo_type(M)
+	M.update_icon()
+
+// Guns travel unloaded; a new one comes preloaded, so empty it again.
+/proc/region_travel_unload_gun(obj/item/weapon/gun/projectile/G)
+	G.ammo_magazine = null
+	G.chambered = null
+	G.loaded.Cut()
+	for(var/atom/movable/A in G.contents)
+		qdel(A)
+	G.update_icon()
 
 // The account's arrived body, if exactly one is waiting.
 /proc/region_travel_waiting_body(account)
@@ -339,6 +472,10 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 /obj/structure/region_gate/proc/accepts_arrivals()
 	return TRUE
 
+// The party train a trip through this gate belongs to (party_train.dm), if any.
+/obj/structure/region_gate/proc/travel_party(mob/living/human/H)
+	return null
+
 /obj/structure/region_gate/proc/destination_name()
 	var/list/peer = shard_group.enabled ? shard_group.peers[destination] : null
 	return peer ? peer["name"] : destination
@@ -406,7 +543,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client
-	var/payload = H.region_travel_payload(items)
+	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination))
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."

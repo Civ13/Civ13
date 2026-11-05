@@ -155,7 +155,7 @@
 			dead_mob_list -= src
 			register_living_mob(src)
 			stat = CONSCIOUS
-			density = TRUE
+			density = initial(density)
 		return FALSE
 
 	if (health > maxHealth)
@@ -688,10 +688,8 @@
 	if (origin != null)
 		if (istype(origin, /obj/effect/spawner/mobspawner))
 			var/obj/effect/spawner/mobspawner/O = origin
-			O.current_number--
-			if (O.current_number < 0)
-				O.current_number = 0
 			origin = null
+			O.unregister_spawned(src)
 		else if (istype(origin, /obj/structure/sink))
 			var/obj/structure/sink/O = origin
 			O.mosquito_count--

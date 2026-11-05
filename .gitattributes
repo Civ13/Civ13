@@ -5,7 +5,8 @@
 .gitignore      text    eol=lf
 *.dm            text    eol=lf
 *.dme           text    eol=lf
-*.dmm           text    eol=lf
+*.dmm           text    eol=lf merge=dmm
+*.dmi           binary  merge=dmi
 *.md            text    eol=lf
 *.html          text    eol=lf
 tests/ping_scheduler/historical-ping.txt text eol=lf
@@ -29,3 +30,14 @@ scripts/setup-local-wsl.sh text eol=lf
 
 # Preserve exact bytes in the synthetic custody snapshot on all checkout platforms.
 tools/custody-fixture/snapshot/** text eol=lf
+
+# Map/icon merge drivers and hooks (opt-in, see tools/hooks/README.md).
+# Git ignores merge=dmm/dmi until tools/hooks/install.sh or Install.bat runs.
+tools/hooks/python      text eol=lf
+tools/hooks/*.merge     text eol=lf
+tools/hooks/*.hook      text eol=lf
+tools/hooks/*.sh        text eol=lf
+tools/UpdatePaths/*.sh  text eol=lf
+tools/hooks/*.bat       text eol=crlf
+tools/UpdatePaths/*.bat text eol=crlf
+scripts/windows/host/*.bat text eol=crlf

@@ -68,8 +68,12 @@
 
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;chambered;ammo_magazine"
 
-/obj/item/weapon/gun/projectile/New()
+// A restored gun keeps its saved serial, including one filed out to "".
+/obj/item/weapon/gun/projectile/on_runtime_spawn()
+	..()
 	serial = "[pick(alphabet_uppercase)][pick(alphabet_uppercase)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)][rand(0,9)]"
+
+/obj/item/weapon/gun/projectile/New()
 	..()
 	if (map && map.civilizations)
 		loaded = list()

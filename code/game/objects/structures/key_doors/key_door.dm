@@ -34,6 +34,39 @@ var/list/nonbreaking_types = list(
 /obj/structure/simple_door/key_door/faction_door/door_takes_kick_damage()
 	return FALSE
 
+// A faction door has no keyslot of its own: membership is its lock. A picked
+// lock opens it once for anyone; it locks again for outsiders once closed.
+/obj/structure/simple_door/key_door/faction_door/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/lockpick))
+		faction_door_pick(W, user)
+		return
+	return ..()
+
+/obj/structure/simple_door/key_door/faction_door/proc/faction_door_pick(obj/item/weapon/lockpick/W, mob/living/human/H)
+	if (!istype(H) || state || isSwitchingStates)
+		return
+	if (!door_hand_locked(H))
+		to_chat(H, SPAN_NOTICE("This is your faction's door; it opens for you."))
+		return
+	if (H.getStatCoeff("dexterity") < 1.7)
+		to_chat(H, SPAN_WARNING("You don't have the skills to use this."))
+		return
+	visible_message(SPAN_DANGER("[H] starts picking the [name]'s lock with the [W]!"))
+	if (!do_after(H, 35*H.getStatCoeff("dexterity"), src))
+		return
+	// The pick took time: the door may have been opened, broken or left.
+	if (QDELETED(src) || QDELETED(W) || state || isSwitchingStates || !H.Adjacent(src))
+		return
+	if (prob(H.getStatCoeff("dexterity")*35))
+		to_chat(H, SPAN_NOTICE("You pick the lock."))
+		log_game("Faction door: [key_name(H)] picked [faction]'s door at [x],[y],[z].")
+		Open()
+	else if (prob(60))
+		qdel(W)
+		to_chat(H, SPAN_WARNING("Your lockpick broke!"))
+	else
+		to_chat(H, SPAN_WARNING("You failed to pick the lock!"))
+
 /obj/structure/simple_door/key_door/faction_door/Bumped(atom/user)
 	if(istype(user, /mob/living/human))
 		var/mob/living/human/H = user

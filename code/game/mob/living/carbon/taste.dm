@@ -51,3 +51,6 @@ calculate text size per text.
 	if (!smoked || prob(2)) //to prevent spam of "You taste X" every second
 		to_chat(src, "<span class='notice'>You can taste [english_list(out,"something indescribable")].</span>") //no taste means there are too many tastes and not enough flavor.)
 	from.trans_to_holder(target,amount,multiplier,copy) //complete transfer
+	var/list/toxins = food_toxin_amounts(temp)
+	if (toxins.len)
+		log_food_toxin(src, from.my_atom, toxins, food_toxin_cause(from.my_atom), smoked ? "smoke" : "swallowing")

@@ -7,6 +7,7 @@ import struct
 import sys
 import threading
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import test_gaia_host as base  # noqa: E402
@@ -196,6 +197,22 @@ class DoormanTests(base.GaiaHostTests):
         self.machine.pager = True
         self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
         self.assertEqual(self.machine.detached[-1][-2], 'start')
+
+    def test_supervisors_run_every_half_minute_and_never_stop_the_doorman(self):
+        calls = []
+        def broken():
+            calls.append('broken')
+            raise OSError('cannot start the agent')
+        door = doorman.Doorman([self.host], self.machine, clock=lambda: self.clock[0], wall=lambda: self.clock[0],
+                               supervisors=[broken, lambda: calls.append('ok') or {}])
+        with mock.patch('builtins.print'):
+            door.step()
+            self.clock[0] += 10
+            door.step()
+            self.assertEqual(['broken', 'ok'], calls)
+            self.clock[0] += doorman.SUPERVISE_SECONDS
+            door.step()
+        self.assertEqual(['broken', 'ok', 'broken', 'ok'], calls)
 
     def test_meminfo(self):
         self.assertEqual(gaia_host.parse_meminfo('MemTotal: 16000000 kB\nMemAvailable:    2097152 kB\n'), 2048)

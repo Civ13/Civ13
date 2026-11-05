@@ -8,7 +8,8 @@ copy of that save, and pull and compile master while the server is stopped.
     python gaia_host.py --config gaia-host.json status
     python gaia_host.py --config gaia-host.json start|stop|restart|update
     python gaia_host.py --config gaia-host.json freeze|thaw|watch
-    python gaia_host.py --config gaia.json [--config other.json ...] serve
+    python gaia_host.py --config gaia-host.json check-update
+    python gaia_host.py --config gaia.json [--config other.json ...] [--group group.json ...] serve
 
 status prints one JSON object and never changes anything. The other actions
 take a lock, record their progress in <state_dir>/operation.json and run in a
@@ -25,6 +26,11 @@ every object exactly as it was. watch does both: it freezes the server after
 freeze_idle_minutes with no clients and thaws it as soon as a player's TCP
 connection reaches the port. The world notices the jump in wall-clock time
 itself (code/_helpers/wall_clock.dm).
+
+serve does watch for every instance on this host and runs the doorman. With
+--group it also takes every region of a region group (scripts/shard-group), so
+one service sleeps, wakes and cold-starts Gaia and all regions alike, and keeps
+each group's transfer agents and coordinator running.
 """
 from __future__ import annotations
 
@@ -47,8 +53,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
 
-ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve')
-DIRECT = ('freeze', 'thaw', 'watch', 'serve')  # quick or long-running; no detached worker
+ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update')
+DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update')  # quick or long-running; no detached worker
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
 # Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
@@ -481,13 +487,20 @@ class Host:
     def status(self):
         frozen = self.frozen()
         if frozen:  # a frozen world cannot answer, and probing it only queues a connection
-            return {'port': self.config['port'], 'listening': True, 'frozen': frozen,
+            return {'port': self.config['port'], 'listening': True, 'state': 'asleep', 'frozen': frozen,
                     'operation': self.read_state() or None, 'busy': self.lock.exists(),
                     'lifecycle_token': self.token() is not None}
         listening = self.platform.listening(self.config['port'])
         world = self.world() if listening else None
-        report = {'port': self.config['port'], 'listening': listening, 'operation': self.read_state() or None,
-                  'busy': self.lock.exists(), 'lifecycle_token': self.token() is not None}
+        cold = None if listening else self.cold()
+        # awake: running; asleep: frozen in memory; cold: down, starts from its save
+        # when woken; stopped: down on purpose, wakes are refused.
+        report = {'port': self.config['port'], 'listening': listening,
+                  'state': 'awake' if listening else ('cold' if cold else 'stopped'),
+                  'operation': self.read_state() or None, 'busy': self.lock.exists(),
+                  'lifecycle_token': self.token() is not None}
+        if cold:
+            report['cold'] = cold
         if world:
             report['world'] = {key: world.get(key) for key in
                                ('ready', 'busy', 'clients', 'map', 'generation', 'revision', 'error')}
@@ -542,6 +555,38 @@ class Host:
         elif action == 'update':
             if listening:
                 raise Refused('stop the server before updating')
+
+    # -- update check --------------------------------------------------------
+    def git_text(self, argv, cwd):
+        code, out = self.platform.run([self.config['git']] + argv, cwd=cwd, timeout=600)
+        if code != 0:
+            raise RuntimeError('git %s failed: %s' % (argv[0], out.strip()[-200:]))
+        return out.strip().splitlines()[-1] if out.strip() else ''
+
+    def check_update(self):
+        """Whether a newer build is available: fetches, never merges or touches the world.
+
+        One JSON line for the launcher's Updates panel: component, current and
+        available commits, how many commits behind, and whether update can run now.
+        """
+        remote = 'origin/' + self.config['branch']
+        self.git_text(['fetch', 'origin', self.config['branch']], self.repo)
+        return self.update_answer(self.git_text(['rev-parse', 'HEAD'], self.repo),
+                                  self.git_text(['rev-parse', remote], self.repo), self.repo)
+
+    def update_answer(self, current, available, repo):
+        if not HEX40.match(current) or not HEX40.match(available):
+            raise RuntimeError('could not read the commits')
+        behind = int(self.git_text(['rev-list', '--count', current + '..' + available], repo) or 0)
+        reason = None
+        if not behind:
+            reason = 'up to date'
+        elif self.platform.listening(self.config['port']):
+            reason = 'stop the server before updating'
+        elif self.lock.exists():
+            reason = 'another action is still running'
+        return {'component': 'server', 'current': current, 'available': available, 'behind': behind,
+                'can_update': reason is None, 'reason': reason}
 
     # -- freezing ----------------------------------------------------------
     def booted_since(self, moment):
@@ -795,15 +840,46 @@ class Host:
         self.record(phase='compiled', revision=out.strip()[-40:])
 
 
+def shard_group_module():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'shard-group'))
+    import shard_group
+    return shard_group
+
+
+def region_host(config):
+    """A region's own host.json (written by shard_group.py setup) is driven as that
+    region: DreamDaemon starts directly, its agent first, with no scheduled task. So
+    the bot and the launcher can point their gaia_host config at a region."""
+    return shard_group_module().RegionHost(config)
+
+
+def group_hosts(paths):
+    """The region hosts of every group config, and one supervisor per group that keeps
+    its transfer agents and coordinator running (they never sleep with their world)."""
+    shard_group = shard_group_module()
+    hosts, supervisors = [], []
+    for path in paths:
+        group = shard_group.load_group(path)
+        hosts += [host for _, host in shard_group.hosts(group)]
+        supervisors.append(lambda group=group: shard_group.supervise(group))
+    return hosts, supervisors
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--config', required=True, action='append',
+    parser.add_argument('--config', action='append', default=[],
                         help='config file; serve accepts one per instance on this host')
     parser.add_argument('action', nargs='?', choices=ACTIONS)
+    parser.add_argument('--group', action='append', default=[],
+                        help='serve only: a region group config (scripts/shard-group); every region is served too')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if not args.config and not (args.group and args.action == 'serve'):
+        parser.error('--config is required (serve may take only --group)')
     if len(args.config) > 1 and args.action != 'serve':
         parser.error('only serve takes more than one --config')
+    if args.group and args.action != 'serve':
+        parser.error('only serve takes --group')
     try:
         configs = [load_config(path) for path in args.config]
     except (OSError, ValueError) as error:
@@ -811,7 +887,15 @@ def main(argv=None):
         return 2
     for config, path in zip(configs, args.config):
         config['_path'] = str(Path(path).resolve())
-    hosts = [Host(config) for config in configs]
+    hosts = [region_host(config) if config.get('group_config') else Host(config) for config in configs]
+    supervisors = []
+    if args.group:
+        try:
+            region_hosts, supervisors = group_hosts(args.group)
+        except (OSError, ValueError) as error:
+            print(json.dumps({'ok': False, 'error': 'group config: %s' % error}))
+            return 2
+        hosts += region_hosts
     host = hosts[0]
     if args.worker:
         host.work(*args.worker)
@@ -824,7 +908,7 @@ def main(argv=None):
     if args.action == 'serve':
         from doorman import Doorman
         try:
-            Doorman(hosts, host.platform).run()
+            Doorman(hosts, host.platform, supervisors=supervisors).run()
         except (OSError, ValueError) as error:
             print(json.dumps({'ok': False, 'error': 'doorman: %s' % error}))
             return 2
@@ -836,6 +920,12 @@ def main(argv=None):
             result = host.freeze()
         elif args.action == 'thaw':
             result = host.thaw()
+        elif args.action == 'check-update':
+            try:
+                result = host.check_update()
+            except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+                print(json.dumps({'ok': False, 'component': 'server', 'error': str(error)[:300]}))
+                return 1
         else:
             result = host.request(args.action)
     except Refused as refusal:

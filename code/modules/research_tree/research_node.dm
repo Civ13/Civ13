@@ -346,7 +346,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("law_order", "Law & Order", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	// Field Defenses era 0: wood palisades/barricades were free at a stone-age
 	// start before the rebalance and must stay so; sandbags and dressed-stone
-	// walls moved up to trench_warfare/fortifications respectively.
+	// walls moved up to fortifications. Sandbags were briefly in the Tailoring
+	// tree's trench_warfare, which factionless players can never research.
 	register_research_node(new /datum/research_node("field_defenses", "Field Defenses", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// Fortifications moved to the Main tree's Military layer in the rebalance:
 	// crenelated walls, castle gates and barbwire are siegecraft, not tailoring.
@@ -646,7 +647,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/pharaoh2" = "classical_dress",
 		"/obj/item/clothing/under/sari/blue" = "classical_dress",
 		"/obj/item/clothing/under/sari/red" = "classical_dress",
-		// --- combustion (15) ---
+		// --- combustion (16) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25" = "combustion",
@@ -662,6 +663,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/oilwell" = "combustion",
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
+		// The bakelizer turns crude petroleum into plastic, so it belongs with the
+		// refineries in the Main tree. Under the specialist Tailoring tree
+		// (Synthetic Fabrics) factionless players could never unlock it.
+		"/obj/structure/bakelizer" = "combustion",
 		// --- cooperage (14) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
 		"/obj/item/weapon/storage/backpack" = "cooperage",
@@ -702,6 +707,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/space_probe/advanced" = "planetary_survey",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
+		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
 		"/obj/structure/civ_generator/wind/turbine" = "digital_computing",
@@ -718,7 +724,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (12) ---
+		// --- electricity (13) ---
+		"/obj/item/connector" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
@@ -930,8 +937,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/belt/gator_belt" = "fine_garments",
 		"/obj/item/weapon/storage/belt/lizard_belt" = "fine_garments",
 		"/obj/item/weapon/storage/briefcase" = "fine_garments",
-		// --- fortifications (18) ---
+		// --- fortifications (19) ---
 		"/obj/item/stack/material/barbwire" = "fortifications",
+		"/obj/item/weapon/barrier/sandbag/empty" = "fortifications",
 		"/obj/structure/barbwire" = "fortifications",
 		"/obj/structure/barricade/jap_h" = "fortifications",
 		"/obj/structure/barricade/jap_h_l" = "fortifications",
@@ -1321,6 +1329,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pot" = "pottery_storage",
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
+		"/obj/item/weapon/material/hatchet/chainsaw" = "power_tools",
 		"/obj/structure/drill" = "electricity",
 		"/obj/structure/drill/fracking" = "hydraulic_fracturing",
 		"/obj/structure/drill/sifter" = "electricity",
@@ -1627,7 +1636,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/surgicaldrill" = "surgical_theory",
 		"/obj/structure/bed/chair/wheelchair" = "surgical_theory",
 		"/obj/structure/iv_drip" = "surgical_theory",
-		// --- synthetics (22) ---
+		// --- synthetics (21) ---
 		"/obj/item/clothing/glasses/univisorcyan" = "synthetics",
 		"/obj/item/clothing/glasses/univisorflashy" = "synthetics",
 		"/obj/item/clothing/glasses/univisorgreen" = "synthetics",
@@ -1649,7 +1658,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/gorillasuit" = "synthetics",
 		"/obj/item/clothing/suit/storage/coat/oldyjacket" = "synthetics",
 		"/obj/item/weapon/storage/bag/plasticbag" = "synthetics",
-		"/obj/structure/bakelizer" = "synthetics",
 		// --- tailoring (57) ---
 		"/obj/item/clothing/accessory/ruffle/neck" = "tailoring",
 		"/obj/item/clothing/head/artisan" = "tailoring",
@@ -1776,14 +1784,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/backpack/satchel" = "textile_mills",
 		"/obj/item/weapon/storage/backpack/satchel/gator_satchel" = "textile_mills",
 		"/obj/item/weapon/storage/backpack/satchel/lizard_satchel" = "textile_mills",
-		// --- trench_warfare (7) ---
+		// --- trench_warfare (6) ---
 		"/obj/item/clothing/accessory/storage/webbing/green_webbing" = "trench_warfare",
 		"/obj/item/clothing/accessory/storage/webbing/khaki_webbing" = "trench_warfare",
 		"/obj/item/clothing/accessory/storage/webbing/light" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/british" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/german" = "trench_warfare",
 		"/obj/item/clothing/suit/b3" = "trench_warfare",
-		"/obj/item/weapon/barrier/sandbag/empty" = "trench_warfare",
 		// --- utilities (7) ---
 		"/obj/item/lightbulb" = "utilities",
 		"/obj/item/lightbulb/tube" = "utilities",

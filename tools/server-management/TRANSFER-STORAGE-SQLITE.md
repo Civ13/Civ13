@@ -148,7 +148,9 @@ account owns at most one durable body in a region.
 The one gap: if a traveller picked up an item after the last save and that
 item was elsewhere in the saved world, a crash before the next save leaves it
 there and also sends it with the traveller. Travel only allows allowlisted
-stacks, coins and empty clothing, up to 40 items, so the gap is bounded.
+stacks, coins, empty clothing and the untouched carry families (packaged food,
+medicine, tools, unloaded guns, magazines by round count), up to 40 items, so
+the gap is bounded.
 
 ## Coordinator
 

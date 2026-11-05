@@ -431,6 +431,7 @@ RECIPE: /material/electronics/,2-way radio,/obj/structure/radio/transmitter_rece
 RECIPE: /material/electronics/,loudspeaker,/obj/structure/radio/receiver/loudspeaker,3,80,1,1,none,135,0,0,8,null
 RECIPE: /material/electronics/,portable radio,/obj/item/weapon/radio,12,100,0,1,none,141,0,0,8,null
 RECIPE: /material/electronics/,walkie-talkie radio,/obj/item/weapon/radio/walkietalkie,16,100,0,1,none,178,0,0,8,null
+RECIPE: /material/electronics/,radio headset,/obj/item/weapon/radio/walkietalkie/headset,8,80,0,1,none,210,0,0,8,null
 RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
 RECIPE: /material/electronics/,smartphone,/obj/item/weapon/telephone/mobile/smartphone,15,100,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,LED panel,/obj/structure/lamp/lamp_big/led,2,55,0,1,electrical,235,0,0,8,null
@@ -1807,6 +1808,7 @@ RECIPE: /material/copper/,green cable coil (10m),/obj/item/stack/cable_coil/gree
 RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/orange,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 
@@ -1837,6 +1839,7 @@ RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,chainsaw,/obj/item/weapon/material/hatchet/chainsaw,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,fire extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty,7,90,0,1,tools,99,0,0,8,null
 
 //*********************| STEEL SIEGE WEAPONS |**************************
@@ -2295,6 +2298,7 @@ RECIPE: /material/wood/soft/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper &
 RECIPE: /material/wood/soft/,passport,/obj/item/clothing/accessory/storage/passport,3,150,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/soft/,blank map,/obj/item/weapon/cartography_map,2,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/soft/,envelope seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
@@ -2417,6 +2421,7 @@ RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switc
 RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,train lever,/obj/structure/train_lever,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/wood/,railway works office,/obj/structure/region_gate/railway_station,20,200,1,1,trains,93,0,0,8,null
 
 RECIPE: /material/iron/,steam locomotive,/obj/structure/trains/locomotive/coal,18,250,1,1,trains,101,0,0,8,null
 

@@ -80,6 +80,16 @@ return_location()
 	// calculate the angle
 	angle = Atan2(dx, dy) + angle_offset
 
+	// An undeviated shot steps one whole tile along the major axis and the exact
+	// ratio along the other, so step max(|dx|, |dy|) lands on the target tile.
+	// The whole-degree rounding below drifts up to a tile at 15-20 tiles, so about
+	// one shot in ten hit a bystander beside the line (tests/perf_probes probe).
+	if (!angle_offset)
+		var/steps = max(abs(dx), abs(dy))
+		offset_x = dx / steps * world.icon_size
+		offset_y = dy / steps * world.icon_size
+		return
+
 	// and some rounding to stop the increments jumping whole turfs - because byond favours certain angles
 	if (angle > -135 && angle < 45)
 		angle = ceil(angle)

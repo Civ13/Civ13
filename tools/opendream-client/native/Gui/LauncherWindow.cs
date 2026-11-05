@@ -9,7 +9,7 @@ namespace Civ13.Launcher.Gui;
 // Window front-end for the same launcher steps as the text menu (--console):
 // launcher update check, BYOND setup, public server status and joining, BYOND sign in,
 // community links, optional local hosting and read-only server management.
-internal sealed class LauncherWindow : Form {
+internal sealed partial class LauncherWindow : Form {
     private static readonly Color HeaderBack = Color.FromArgb(32, 38, 46);
     private static readonly Color HeaderText = Color.FromArgb(236, 239, 243);
     private static readonly Color HeaderMuted = Color.FromArgb(160, 170, 184);
@@ -112,7 +112,8 @@ internal sealed class LauncherWindow : Form {
             body.SplitterDistance = Math.Max(body.Panel1MinSize, body.Height - LogicalToDeviceUnits(150));
         };
         Shown += async (_, _) => await Startup();
-        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); presence?.Clear(); presence?.Dispose(); };
+        FormClosing += async (_, e) => await StopBotBeforeClosing(e);
+        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); presence?.Clear(); presence?.Dispose(); ownedBot.Dispose(); };
         waitTimer.Tick += (_, _) => UpdatePendingWait();
     }
 
@@ -225,7 +226,7 @@ internal sealed class LauncherWindow : Form {
         Row("World", profile.World + " on port " + profile.Port + " (listed publicly on the BYOND hub)");
         if (profile.Control is { } control) Row("Control", "Save-safe start, stop, restart and update through " + Path.GetFileName(control.Script));
         else Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
-        Row("Civilizationbot", profile.Bot is { } bot ? $"Start the supervisor if port {bot.HttpPort} is not listening" : "Not configured");
+        Row("Civilizationbot", profile.Bot != null ? "Started with the server if it is not running; see the Civilizationbot tab" : "Not configured");
         hostState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6) };
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
         hostStart.Click += async (_, _) => await StartHosting();
@@ -285,7 +286,14 @@ internal sealed class LauncherWindow : Form {
         } finally { owner?.Dispose(); }
         try { host = LocalHosting.Load(root); }
         catch (Exception e) when (e is InvalidDataException or JsonException or IOException) { Console.WriteLine("Local hosting disabled: " + e.Message); }
-        if (host != null) tabs.TabPages.Add(hostPage = BuildHostPage(host));
+        if (host != null) {
+            tabs.TabPages.Add(hostPage = BuildHostPage(host));
+            if (host.Bot is { } bot) tabs.TabPages.Add(BuildBotPage(bot));
+            if (host.Control != null || host.Bot != null) {
+                tabs.TabPages.Add(BuildUpdatesPage(host));
+                _ = CheckAllUpdates();
+            }
+        }
         presenceSettings = PresenceSettings.Load(root);
         if (presenceSettings.ApplicationId != null) {
             discordBox.Checked = presenceSettings.ShowActivity;
@@ -572,8 +580,14 @@ internal sealed class LauncherWindow : Form {
         try {
             if (profile.Update != null && !await Task.Run(() => LocalHosting.Listening(profile.Port)))
                 HostLine($"Updating to origin/{profile.Update.Branch} and rebuilding {profile.World}; this can take a few minutes...");
-            var lines = await Task.Run(() => LocalHosting.Run(profile, bin, LocalHosting.Listening, start => { using var process = Process.Start(start); }));
+            // The bot supervisor is started by this window, not detached, so it stops when the launcher closes.
+            var botWanted = false;
+            var lines = await Task.Run(() => LocalHosting.Run(profile, bin, LocalHosting.Listening, start => {
+                if (profile.Bot is { } bot && start.FileName == bot.Php) botWanted = true;
+                else { using var process = Process.Start(start); }
+            }));
             foreach (var line in lines) HostLine(line);
+            if (botWanted) await StartBot();
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine("Local hosting failed: " + e.Message);
         } finally {

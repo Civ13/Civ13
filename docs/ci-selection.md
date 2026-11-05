@@ -10,6 +10,12 @@ and compile selection; mixed changes, missing comparisons and explicit `build:`
 requests retain existing checks. Mandatory policy/bootstrap/progress and aggregate
 validation still run for skill prose.
 
+A trusted maintainer's local pass or `skip-ci:<head sha>` label can skip the
+heavy jobs for one exact head; see [Local CI attestation](local-ci-attestation.md).
+Markdown outside the game, map, config, UI, wiki and skill trees, `.claude/`
+pointers and repository metadata (`LICENSE`, `.gitattributes`, `.gitignore`)
+also skip compilation.
+
 Workflow syntax, security analysis, documentation builds and publication validation
 remain automatic. Compilation and publication validation are not regression suites.
 

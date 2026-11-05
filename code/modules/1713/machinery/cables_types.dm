@@ -36,7 +36,7 @@
 
 /obj/item/connector
 	name = "cable connector"
-	desc = "A cable connector, used to merge or split cables."
+	desc = "A cable connector. Secure it on a tile (use it in hand there, or wrench it down) to join every cable on that tile, including corners, crossings and different colours."
 	w_class = ITEM_SIZE_TINY
 	layer = 3.92
 	icon = 'icons/obj/machines/power.dmi'

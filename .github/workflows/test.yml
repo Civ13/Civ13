@@ -104,8 +104,8 @@ jobs:
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
   baseline:
-    needs: changes
-    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
+    needs: [changes, local-attestation]
+    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch') && needs.local-attestation.outputs.skip != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     # Reused by a re-run of failed jobs, a job keeps its original attempt and
@@ -164,8 +164,8 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   evidence-checker:
-    needs: changes
-    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
+    needs: [changes, local-attestation]
+    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch') && needs.local-attestation.outputs.skip != 'true'
     runs-on: ubuntu-latest
     outputs:
       coverage: ${{ steps.no_evidence.outputs.coverage || 'selected_or_unknown' }}
@@ -214,6 +214,9 @@ jobs:
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+      - name: Test chainsaw tree-felling declarations offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_chainsaw.py')
+        run: python3 -B -m unittest discover -s tests -p test_chainsaw.py -v
       - name: Test wolf cave ownership source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wolf_cave_ownership')
         run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
@@ -385,8 +388,8 @@ jobs:
     env:
       BYOND_MAJOR: "516"
       BYOND_MINOR: "1681"
-    needs: changes
-    if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)
+    needs: [changes, local-attestation]
+    if: needs.local-attestation.outputs.skip != 'true' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions))
     runs-on: ubuntu-22.04
     timeout-minutes: 12
     steps:
@@ -433,8 +436,8 @@ jobs:
   # Existing game compilation gate.
   build:
     name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational build' || 'build' }}
-    needs: changes
-    if: always() && !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))
+    needs: [changes, local-attestation]
+    if: always() && !cancelled() && needs.local-attestation.outputs.skip != 'true' && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))
     # Only the dedicated mall request uses this shorter total setup/compile/native budget.
     timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && inputs.mall_regressions && !inputs.extensive_regressions && !inputs.dagger_map_compile && !inputs.rack_save_regressions && !inputs.persistence_integration_regressions && !inputs.restart_transaction_regressions && !inputs.world_save_regressions && !inputs.protected_sleep_regressions && !inputs.world_save_profile_regressions && !inputs.world_save_operation_regressions && !inputs.lighting_recovery_regressions && !inputs.extraction_instance_regressions && 45 || 360 }}
     # The type of runner that the job will run on
@@ -2060,7 +2063,7 @@ jobs:
           pwsh -NoProfile -File tests/native_grid/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated resource extraction regressions
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -2087,6 +2090,7 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/ecology_spawning/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/liminal_mode/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/space_settlement/probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/wildlife_spawner/probe.dm
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/boat_movement')
@@ -2319,6 +2323,14 @@ jobs:
           for control in rights target refresh; do
             python3 tests/admin_clean/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/admin-clean/$control" --control "$control"
           done
+      - name: Verify food toxin logging
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/food_toxin_log')
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/food_toxin_log -p 'test_*.py' -v
+          python3 tests/food_toxin_log/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/food-toxin-log"
       - name: Retain admin item cleaning evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_clean'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -2464,6 +2476,15 @@ jobs:
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control duplicate
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control kenobi
 
+      - name: Verify mount gunfire (horse health and riders' own shots)
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mount_bullets')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control health
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control rider
+
       - name: Verify continuous persistence rounds and negative controls
         id: persistence_round
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_round') || inputs.persistence_integration_regressions == true
@@ -2561,7 +2582,7 @@ jobs:
   ci-required:
     name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}
     if: always() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))
-    needs: [changes, baseline, evidence-checker, build, extraction-instances]
+    needs: [changes, local-attestation, baseline, evidence-checker, build, extraction-instances]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -2594,7 +2615,7 @@ jobs:
           printf '%s\n' '{"status":"failed","reason":"selection job did not succeed"}' > .ci/aggregate/selection-failed.json
           exit 1
       - name: Record failed baseline verdict
-        if: always() && needs.changes.result == 'success' && needs.baseline.result != 'success'
+        if: always() && needs.changes.result == 'success' && needs.local-attestation.outputs.skip != 'true' && needs.baseline.result != 'success'
         env:
           BASELINE_RESULT: ${{ needs.baseline.result }}
         run: |
@@ -2603,7 +2624,7 @@ jobs:
           printf '{"status":"failed","reason":"baseline job did not succeed","result":"%s"}\n' "$BASELINE_RESULT" > .ci/aggregate/baseline-failed.json
           exit 1
       - name: Record failed build verdict
-        if: always() && needs.changes.result == 'success' && needs.baseline.result == 'success' && needs.build.result != 'success'
+        if: always() && needs.changes.result == 'success' && needs.local-attestation.outputs.skip != 'true' && needs.baseline.result == 'success' && needs.build.result != 'success'
         env:
           BUILD_RESULT: ${{ needs.build.result }}
         run: |
@@ -2616,14 +2637,23 @@ jobs:
           name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
           path: .ci/selection
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: needs.local-attestation.outputs.skip != 'true'
         with:
           name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}
           path: .ci/baseline
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: needs.local-attestation.outputs.skip != 'true'
         with:
           name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}
           path: .ci/compile
+      - name: Accept a trusted local pass or maintainer waiver for this exact head
+        if: needs.changes.result == 'success' && needs.local-attestation.outputs.skip == 'true'
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: python3 -B scripts/local_ci.py aggregate --head "$CI_HEAD" --output .ci/aggregate/aggregate.json
       - name: Require selected jobs and exact-source execution receipts
+        if: needs.local-attestation.outputs.skip != 'true'
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
@@ -2653,8 +2683,8 @@ jobs:
     # not in ci-required and never gates a merge; read its summary and artifact.
     # Runs only when the selector admits a game compile, so documentation-only
     # changes and unprefixed feature pushes spend no minutes here.
-    needs: changes
-    if: needs.changes.outputs.skip_duplicate != 'true' && needs.changes.outputs.game == 'true'
+    needs: [changes, local-attestation]
+    if: needs.changes.outputs.skip_duplicate != 'true' && needs.changes.outputs.game == 'true' && needs.local-attestation.outputs.skip_dreamchecker != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -2698,3 +2728,69 @@ jobs:
             .ci/lint/dreamchecker.json
           retention-days: 7
           if-no-files-found: error
+  local-attestation:
+    # Decides whether a trusted local pass (scripts/local_ci.py) or a maintainer's
+    # skip-ci:<head sha> label covers this exact head. The verifier and the
+    # attester list come from the PR base, never the head. Any doubt or error
+    # outputs skip=false and the hosted jobs run as before.
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      statuses: read
+      issues: read
+      pull-requests: read
+    outputs:
+      skip: ${{ steps.verify.outputs.skip || 'false' }}
+      skip_dreamchecker: ${{ steps.verify.outputs.skip_dreamchecker || 'false' }}
+      mode: ${{ steps.verify.outputs.mode || 'hosted' }}
+    steps:
+      - name: Explain hosted scope
+        if: github.event_name != 'pull_request' || needs.changes.outputs.gating != '1' || needs.changes.outputs.skip_duplicate == 'true'
+        run: echo 'Local CI gate applies to ordinary pull_request runs only; hosted jobs keep their usual selection.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Check out the trusted gate from the PR base
+        id: trusted
+        if: github.event_name == 'pull_request' && needs.changes.outputs.gating == '1' && needs.changes.outputs.skip_duplicate != 'true'
+        continue-on-error: true
+        timeout-minutes: 2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/local_ci.py
+            tools/ci/local_attesters.json
+          sparse-checkout-cone-mode: false
+      - name: Check out the exact head
+        id: head
+        if: steps.trusted.outcome == 'success' && hashFiles('trusted/scripts/local_ci.py') != ''
+        continue-on-error: true
+        timeout-minutes: 2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/byond/version.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        id: selection
+        if: steps.head.outcome == 'success'
+        continue-on-error: true
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
+          path: .ci/selection
+      - name: Verify local pass or waiver for this exact head
+        id: verify
+        if: steps.selection.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 -I -B trusted/scripts/local_ci.py verify --head "$HEAD_SHA" --checkout head --selection .ci/selection/selection.json --attesters trusted/tools/ci/local_attesters.json --verdict .ci/attestation/verdict.json

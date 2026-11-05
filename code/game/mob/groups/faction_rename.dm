@@ -148,6 +148,8 @@ var/global/list/faction_rename_text_vars = list("faction", "tgtcmp")
 			O.name = replacetext(O.name, old_name, new_name)
 			if (istext(O.desc))
 				O.desc = replacetext(O.desc, old_name, new_name)
+	// Party trains (party_train.dm) belong to the faction, not its old name.
+	party_train_rename_faction(old_name, new_name)
 	return TRUE
 
 /mob/living/human/proc/rename_own_faction()

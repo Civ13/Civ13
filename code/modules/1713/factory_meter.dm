@@ -14,7 +14,7 @@ var/global/list/fluid_meters = list()
 	density = FALSE
 	layer = 2.9
 	flammable = FALSE
-	not_movable = TRUE
+	not_movable = FALSE
 	not_disassemblable = FALSE
 
 /obj/structure/fluid_meter/New()
