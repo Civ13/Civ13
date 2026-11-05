@@ -121,11 +121,14 @@ Keep design changes separate from implementation commits and drafts.
 2. **Small independent authored-room tool:** source-backed deterministic catalog,
    config/topology validators, bounded chapter assembly and reproducible offline
    fixtures. Public-safe tests/commands; no native mode activation or copied art.
-3. **Indoor static native catalog and DMM exporter:** verify chosen existing
+3. **Indoor static native catalog and DMM exporter** (implemented 2026-11-05 as
+   `tools/liminal_maps/native.py`; see its README): verify chosen existing
    floors/walls/props/doors/areas, emit correct DMM with sidecar and parse-back,
    reject unsupported semantics, test deterministic small layout. Remain explicit
    that abstract progression is not yet native door/interaction behavior.
-4. **Finite mode adapter:** separate map metadata, 1-4 participant start admission,
+4. **Finite mode adapter** (implemented 2026-11-05 as
+   `code/modules/1713/liminal/` and `liminal_facility.dm`; see tools/liminal_maps/README.md):
+   separate map metadata, 1-4 participant start admission,
    original marker/service interactions, shared idempotent progress, gate/escape
    registry and elapsed-time extraction/failure state. Do not inherit Lights Out
    jungle constructor hazards or unreviewed timing. Keep live map selection off.

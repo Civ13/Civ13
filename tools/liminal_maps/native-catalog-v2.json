@@ -1,0 +1,33 @@
+{
+  "schema": "civ13-liminal-native-catalog/1",
+  "version": "liminal-indoor-native/0.1.0",
+  "layouts_version": "liminal-authored-rooms/0.2.0",
+  "status": "STATIC_EXPORT_ONLY_NO_MODE",
+  "note": "Existing Civ13 types only. blocks records the type's density in code; a solid-prop cell may hold a non-blocking asset (more open than planned), but a walkable cell never holds a blocking one.",
+  "area": "/area/caribbean/roofed",
+  "turfs": {
+    "wall": "/turf/wall/cement",
+    "void": "/turf/wall/cement",
+    "hall_floor": "/turf/floor/plating/steel",
+    "carpet": "/turf/floor/carpet/tealcarpet",
+    "steel_tile": "/turf/floor/plating/steel",
+    "white_tile": "/turf/floor/plating/white",
+    "dark_plating": "/turf/floor/plating/dark"
+  },
+  "objects": {
+    "column": {"type": null, "blocks": true, "turf": "wall"},
+    "desk": {"type": "/obj/structure/table/modern/table", "blocks": true},
+    "chair": {"type": "/obj/structure/bed/chair/office/dark", "blocks": false},
+    "computer": {"type": "/obj/structure/telecom/terminal", "blocks": false},
+    "paper": {"type": "/obj/item/weapon/paper", "blocks": false},
+    "cabinet": {"type": "/obj/structure/filingcabinet", "blocks": true},
+    "shelf": {"type": "/obj/structure/bookcase", "blocks": true},
+    "plant": {"type": "/obj/structure/plant_pot/clay/light/filled", "blocks": true},
+    "noticeboard": {"type": "/obj/structure/noticeboard", "blocks": false, "wall_mounted": true},
+    "locker": {"type": "/obj/structure/closet", "blocks": true},
+    "rack": {"type": "/obj/structure/table/rack", "blocks": true},
+    "vending_snack": {"type": "/obj/structure/vending/sales/food/snacks", "blocks": true},
+    "vending_coffee": {"type": "/obj/structure/vending/sales/drinks/hot", "blocks": true},
+    "sink": {"type": "/obj/structure/sink", "blocks": false}
+  }
+}

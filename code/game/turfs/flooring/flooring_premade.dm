@@ -505,6 +505,15 @@
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
 	initial_flooring = /decl/flooring/dirt/ploughed
+	// The ploughed flooring shares the dirt edge sprites (icon_base "dirt").
+	// Without this the floor icon update draws plain dirt over the furrows.
+	overrided_icon_state = "dirt_ploughed"
+
+// Saves made while the furrows were hidden recorded icon_state "dirt".
+/turf/floor/dirt/ploughed/after_load()
+	..()
+	if (overrided_icon_state)
+		icon_state = overrided_icon_state
 
 /turf/floor/dirt/ploughed/fertile
 	soil_nutrition = 150
@@ -521,6 +530,7 @@
 	icon_state = "flood_dirt_ploughed"
 	is_plowed = TRUE
 	initial_flooring = /decl/flooring/dirt/ploughed
+	overrided_icon_state = "flood_dirt_ploughed"
 
 /turf/floor/dirt/dust
 	name = "dry dirt"
