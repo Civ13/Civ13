@@ -244,8 +244,15 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list(), 2, "probe", "trade")) && R.kind == "trade", "a caravan sets up")
 	nomad_raid = R
 	raid_check(findtext(R.leader.name, "trader"), "the caravan has a trader")
+	var/turf/yard = get_step(get_step(R.leader, SOUTH), SOUTH)
+	var/obj/item/weapon/material/spear/lying = new(yard)
+	lying.fingerprintslast = "Neighbour"
 	R.begin_trade()
 	raid_check(R.state == "trade" && !R.hostile, "trading begins peacefully")
+	// Gear already lying near the stall is not payment when the trader steps onto it.
+	R.leader.loc = yard
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!R.credit["neighbour"] && lying.loc == yard, "loose gear near the stall is not taken as payment")
 	raid_check(R.goods.len >= 1 && R.goods.len <= NOMAD_TRADE_GOODS, "goods are laid out ([R.goods.len])")
 	var/goods_ok = TRUE
 	for (var/obj/item/I in R.goods)

@@ -56,9 +56,11 @@
 		I.should_save = FALSE // laid out goods vanish if the server restarts mid-visit
 		goods[I] = nomad_trade_price(I)
 		base_price[I] = goods[I]
+	// As with tribute: loose gear already lying near the stall is not payment,
+	// even if the trader shuffles onto it; each item is keyed to its turf.
 	payment_ignore = list()
-	for (var/obj/item/I in get_turf(leader))
-		payment_ignore += I
+	for (var/obj/item/I in range(NOMAD_RAID_PARLEY_RANGE, leader))
+		payment_ignore[I] = I.loc
 	cue("Traders of the [clan]! Lay payment at my feet, then take what you paid for. Fair prices, no thieves.", "spreads their wares on the ground and gestures at them.")
 
 // Price list for the coordinator and status.
@@ -80,19 +82,19 @@
 	var/turf/feet = get_turf(leader)
 	// Payments.
 	for (var/obj/item/I in feet)
-		if ((I in payment_ignore) || (I in goods))
+		if (payment_ignore[I] == I.loc || (I in goods))
 			continue
 		var/worth = nomad_raid_worth(I)
 		if (!worth)
 			continue
 		var/who = payer_of(I)
 		if (who && nomad_rep_score(who) <= NOMAD_REP_WANTED)
-			payment_ignore += I
+			payment_ignore[I] = I.loc
 			event("refused", "[who] is wanted; refused [I.name]")
 			cue("I do not deal with thieves. Take that back.", "pushes the offering away with their foot.")
 			continue
 		if (!who || !leader.take_item(I))
-			payment_ignore += I
+			payment_ignore[I] = I.loc
 			continue
 		credit[who] = (credit[who] || 0) + worth
 		if (!islist(payments[who]))
