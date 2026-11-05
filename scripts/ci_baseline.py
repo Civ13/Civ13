@@ -129,7 +129,9 @@ SUITES = {
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
             'code/processes/time_of_day_change.dm',
-            'code/game/turfs/flooring/flooring_premade.dm')},
+            'code/game/turfs/flooring/flooring_premade.dm',
+            'code/processes/soil_recovery.dm', 'code/processes/__processes.dm',
+            'code/game/objects/farming.dm', 'civ13.dme')},
     # Nomads adoption source contracts and surname model; no BYOND runtime.
     'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
         'paths': ('tests/nomads_adoption/',), 'shared_paths': (

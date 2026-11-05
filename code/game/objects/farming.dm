@@ -1223,6 +1223,8 @@
 	D.soil_nutrition -= nutrition_consumed // Plant eats nutrition from the soil
 	if(D.soil_nutrition < D.min_soil_nutrition)
 		D.soil_nutrition = D.min_soil_nutrition // Cap soil nutrition at mininum possible
+	if (!D.soil_recovery_index)
+		D.soil_recovery_schedule() // Depleted soil joins the shared recovery registry
 	src.plant_nutrition = D.soil_nutrition
 
 // Helper function to set plant to dead
