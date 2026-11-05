@@ -593,6 +593,76 @@
 	log_startup_progress("Finished loading.")
 	return TRUE
 
+// Validation record. A save that passed its candidate validation writes
+// map_saves/validated.json: the running build and a checksum of every file
+// of that generation. A later preflight on the same build whose files still
+// match skips the per-entry walk, which only repeats what the save already
+// proved; metadata, zones, roofs and level links are still prepared. A
+// different build, a changed or damaged file, or a missing record falls back
+// to the full check.
+var/global/persistence_boot_build_identity = persistence_build_identity()
+
+// Hashed at boot: a binary recompiled while the world runs must not vouch for
+// files the old binary wrote.
+/proc/persistence_build_identity()
+	if(!fexists("civ13.dmb")) return null
+	var/digest = md5(file("civ13.dmb"))
+	return digest ? "[world.byond_version].[world.byond_build]:[digest]" : null
+
+/map_storage
+	var/save_build_identity = null // Fixtures pin a build identity here.
+	var/last_validation_note
+
+/map_storage/proc/current_build_identity()
+	return save_build_identity ? save_build_identity : persistence_boot_build_identity
+
+/map_storage/proc/validation_record_checksums(maxz)
+	var/list/names = list("map.txt", "round.json")
+	for(var/z = 1, z <= maxz, z++)
+		names += "[z].sav"
+		names += level_segment_files("map_saves/", z)
+	var/list/sums = list()
+	for(var/name in names)
+		if(!fexists("map_saves/[name]")) return null
+		var/digest = md5(file("map_saves/[name]"))
+		if(!digest) return null
+		sums[name] = digest
+	return sums
+
+/map_storage/proc/clear_validation_record()
+	if(fexists("map_saves/validated.json") && !fdel("map_saves/validated.json"))
+		throw EXCEPTION("Could not remove the previous validation record")
+
+// Called after the completion marker, only for a candidate that validated.
+/map_storage/proc/write_validation_record(generation)
+	var/build = current_build_identity()
+	if(!build) return FALSE
+	var/list/sums = validation_record_checksums(world.maxz)
+	if(!sums) return FALSE
+	var/list/record = list("version" = 1, "build" = build, "generation" = generation, "maxz" = world.maxz, "files" = sums)
+	clear_validation_record() // text2file appends.
+	return !!text2file(json_encode(record), "map_saves/validated.json")
+
+/map_storage/proc/validation_record_matches(generation, maxz)
+	var/build = current_build_identity()
+	if(!build) return "no build identity"
+	if(!fexists("map_saves/validated.json")) return "no validation record"
+	var/list/record
+	try
+		record = json_decode(file2text("map_saves/validated.json"))
+	catch
+		return "unreadable validation record"
+	if(!islist(record) || record["version"] != 1) return "unreadable validation record"
+	if(record["build"] != build) return "saved by a different build"
+	if(!generation || record["generation"] != generation || record["maxz"] != maxz) return "record is for another generation"
+	if(!fexists("map_saves/save_complete.txt") || trim(file2text("map_saves/save_complete.txt")) != generation) return "record is for another generation"
+	var/list/expected = record["files"]
+	var/list/current = validation_record_checksums(maxz)
+	if(!islist(expected) || !current || expected.len != current.len) return "saved files changed"
+	for(var/name in current)
+		if(expected[name] != current[name]) return "[name] changed since it was validated"
+	return null
+
 // A failed preflight must leave the running world untouched. Historical saves
 // use the same grid; the completion marker is required by the startup contract.
 /map_storage/proc/validate_world_save()
@@ -621,9 +691,23 @@
 			throw EXCEPTION("Save round-mode metadata is malformed")
 		prepare_saved_zones(round_state["world_state"], round_state["generation"])
 		prepare_saved_roof_areas(round_state["generation"])
+		// The per-entry walk below is what the validation record can stand in for.
+		var/trusted = FALSE
+		last_validation_note = null
+		if(!candidate)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			last_validation_note = "full check (human spatial prototype)"
+#else
+			var/mismatch = validation_record_matches(round_state["generation"], save_validation_maxz())
+			trusted = !mismatch
+			last_validation_note = trusted ? "skipped the entry check: files match the save this build validated" : "full check ([mismatch])"
+#endif
+			world.log << "World-save preflight: [last_validation_note]."
+			persistence_game_log("World-save preflight: [last_validation_note].")
 		for(var/z = 1, z <= save_validation_maxz(), z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
+			if(trusted) continue
 			var/savefile/F = new("map_saves/[z].sav")
 			if(round_state.len && F["/generation"] != round_state["generation"])
 				throw EXCEPTION("Saved level belongs to another round generation")
@@ -1056,27 +1140,43 @@
 	var/game_log_proc = text2path("/proc/log_game")
 	if(settings && game_log_proc) call(game_log_proc)(text)
 
+// Why the last reading failed, for the game log; null after a good reading.
+var/global/persistence_memory_probe_error
+
 /proc/persistence_process_memory_mb()
+	persistence_memory_probe_error = null
 	var/pid = world.process
-	if(!pid) return null
-	var/path = "data/persistence_memory_probe.txt"
+	if(!pid)
+		persistence_memory_probe_error = "no process id"
+		return null
+	var/windows = world.system_type != UNIX
+	// On Windows the command shell may not start in the world's directory, so
+	// the probe writes to an absolute path in the temp folder both sides agree on.
+	var/temp = windows ? world.GetConfig("env", "TEMP") : null
+	var/path = length(temp) ? "[temp]\\civ13_memory_[pid].txt" : "data/persistence_memory_probe.txt"
 	var/result
 	try
 		if(fexists(path)) fdel(path)
-		if(world.system_type == UNIX)
-			shell("grep VmRSS /proc/[pid]/status > [path]")
+		var/status
+		if(windows)
+			status = shell("cmd /c tasklist /FI \"PID eq [pid]\" /FO CSV /NH > \"[path]\"")
 		else
-			shell("tasklist /FI \"PID eq [pid]\" /FO CSV /NH > [path]")
+			status = shell("grep VmRSS /proc/[pid]/status > [path]")
 		var/text = fexists(path) ? file2text(path) : null
 		fdel(path)
-		if(!istext(text) || !length(text)) return null
-		if(world.system_type == UNIX)
-			result = persistence_digits(copytext(text, findtext(text, ":") + 1))
-		else
+		if(!istext(text) || !length(text))
+			persistence_memory_probe_error = isnull(status) ? "shell unavailable" : "no output (exit [status], [path])"
+			return null
+		if(windows)
 			result = persistence_parse_tasklist_kib(text)
-	catch
+		else
+			result = persistence_digits(copytext(text, findtext(text, ":") + 1))
+		if(!isnum(result) || result <= 0)
+			persistence_memory_probe_error = "unparsed output: [copytext(text, 1, 121)]"
+			return null
+	catch(var/exception/e)
+		persistence_memory_probe_error = "[e]"
 		return null
-	if(!isnum(result) || result <= 0) return null
 	return round(result / 1024) // Both sources report KiB.
 
 // tasklist /FO CSV row: "image","pid","session","number","memory K". The
@@ -1141,7 +1241,7 @@
 	world.log << "World [last_low_memory_plan]"
 	// world.log is only the console on hosts started without -log; keep a copy
 	// in the daily game log so the memory reading can be checked afterwards.
-	persistence_game_log("World [last_low_memory_plan]")
+	persistence_game_log("World [last_low_memory_plan][isnum(resident) ? "" : "; memory reading failed: [persistence_memory_probe_error]"]")
 	return low_memory_active
 #endif
 
@@ -1150,7 +1250,7 @@
 /map_storage/proc/report_load_memory(z, seconds)
 	var/resident = persistence_process_memory_mb()
 	log_startup_progress("	Loaded z-level [z] in [seconds]s[isnum(resident) ? " (server memory [resident] MiB)" : ""].")
-	persistence_game_log("Loaded z-level [z] in [seconds]s; server memory [isnum(resident) ? "[resident] MiB" : "unreadable"].")
+	persistence_game_log("Loaded z-level [z] in [seconds]s; server memory [isnum(resident) ? "[resident] MiB" : "unreadable ([persistence_memory_probe_error])"].")
 	if(!isnum(resident)) return
 	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
 	var/limit = settings && ("persistence_memory_limit_mb" in settings.vars) ? settings.vars["persistence_memory_limit_mb"] : 0

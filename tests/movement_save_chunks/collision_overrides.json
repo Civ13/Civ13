@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "code/game/atoms.dm",
-      "sha256_normalized": "8a14138b61750f240b1869f73fe6c6d1d5325100c79f22a13ad3822590eb7bb8",
+      "sha256_normalized": "bcbe6109bb4b7f4bd642849b5c923c133cbbd2c52024b726b969d73aaa637a9a",
       "declarations": [
         {
           "line": 44,
@@ -94,7 +94,7 @@
     },
     {
       "path": "code/game/objects/farming.dm",
-      "sha256_normalized": "bd8124747ef8dfa7986f0bd3e3932bda972186795826de0d43354b782be37678",
+      "sha256_normalized": "0ea5144295004435038dc6160aac09aa417cbf135b74b4660dbb79d0d75e61cc",
       "declarations": [
         {
           "line": 699,

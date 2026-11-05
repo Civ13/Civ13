@@ -32,6 +32,7 @@
 /map_storage/proc/save_world_contents(datum/persistence_world_operation/operation)
 	if(!operation || !operation.enter_contents(src, "save")) return FALSE
 	var/datum/save_debug_recovery/debug_policy = operation.debug_recovery
+	var/candidate_validated = FALSE
 	// Debug recovery starts only after a failed capture has removed the current
 	// marker. Never let its retry path replace an existing completed backup.
 	if(debug_policy && (fexists("map_saves/save_complete.txt") || !debug_backup_identity_valid() || !operation.current(src, "save"))) throw EXCEPTION("Debug recovery requires an unchanged failed capture and retained backup")
@@ -88,6 +89,7 @@
 	if (fexists("map_saves/save_complete.txt"))
 		if(!fdel("map_saves/save_complete.txt"))
 			throw EXCEPTION("Could not invalidate completion marker; existing save retained")
+	clear_validation_record()
 	var/F0 = "map_saves/map.txt"
 	if (fexists(F0))
 		if(!fdel(F0))
@@ -157,6 +159,7 @@
 			if(debug_policy) round_state["debug_recovery"] = debug_policy.audit(generation, operation)
 			operation.diagnostic_phase = "candidate_validation"
 			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained: [last_error]")
+			candidate_validated = TRUE
 			clear_saved_zones()
 			release_durable_world()
 			clear_zone_export()
@@ -192,6 +195,12 @@
 			throw EXCEPTION("World effects changed during capture; completed backup retained. [effects_quiescence_error]")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
+	// The record only speeds up later checks; without it they run in full.
+	if(candidate_validated && !debug_policy)
+		try
+			if(!write_validation_record(generation)) world.log << "Save validation record not written; the next load runs the full check."
+		catch(var/exception/record_error)
+			world.log << "Save validation record failed: [record_error]"
 	if(transfer_capture) transfer_saved(transfer_capture)
 	if(debug_policy)
 		try
