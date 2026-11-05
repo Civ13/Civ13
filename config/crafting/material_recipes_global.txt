@@ -2292,6 +2292,7 @@ RECIPE: /material/wood/soft/,visa (empty),/obj/item/weapon/visa,1,40,0,1,paper &
 RECIPE: /material/wood/soft/,passport,/obj/item/clothing/accessory/storage/passport,3,150,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,pen,/obj/item/weapon/pen,1,50,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,paper sheet,/obj/item/weapon/paper,1,25,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/wood/soft/,blank map,/obj/item/weapon/cartography_map,2,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,official faction paper,/obj/item/weapon/paper/official,1,25,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/wood/soft/,envelope,/obj/item/weapon/storage/envelope,2,35,0,1,paper & printing,40,0,0,8,null
 RECIPE: /material/wood/soft/,envelope seal stamp,/obj/item/weapon/stamp/mail,1,30,0,1,paper & printing,40,0,0,8,null
