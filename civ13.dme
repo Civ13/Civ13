@@ -99,6 +99,7 @@
 #include "code\_helpers\unsorted.dm"
 #include "code\_helpers\vector.dm"
 #include "code\_helpers\view.dm"
+#include "code\_helpers\wall_clock.dm"
 #include "code\_helpers\WWinput.dm"
 #include "code\_onclick\adjacent.dm"
 #include "code\_onclick\click.dm"

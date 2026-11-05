@@ -3,15 +3,22 @@
 
 var/midnight_rollovers = 0
 var/rollovercheck_last_timeofday = 0
+var/rollovercheck_last_realtime = 0
 
 #define REALTIMEOFDAY (world.timeofday + (864000 * MIDNIGHT_ROLLOVER_CHECK))
 #define MIDNIGHT_ROLLOVER_CHECK ( rollovercheck_last_timeofday != world.timeofday ? update_midnight_rollover() : midnight_rollovers )
 
-/proc/update_midnight_rollover()
-	if(world.timeofday < rollovercheck_last_timeofday)
+// Counts every midnight passed since the last check, including several at once
+// after the host froze the server for hours or days (see wall_clock.dm).
+/proc/update_midnight_rollover(now_timeofday = world.timeofday, now_realtime = world.realtime)
+	if(rollovercheck_last_realtime)
+		var/elapsed = wall_clock_elapsed(rollovercheck_last_timeofday, rollovercheck_last_realtime, now_timeofday, now_realtime)
+		midnight_rollovers += max(0, round((rollovercheck_last_timeofday + elapsed) / 864000))
+	else if(now_timeofday < rollovercheck_last_timeofday)
 		midnight_rollovers++
 
-	rollovercheck_last_timeofday = world.timeofday
+	rollovercheck_last_timeofday = now_timeofday
+	rollovercheck_last_realtime = now_realtime
 	return midnight_rollovers
 
 var/global/cached_game_time
