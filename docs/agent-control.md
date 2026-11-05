@@ -214,7 +214,13 @@ and tops the goal ladder; below 270 K the autopilot replaces the plan with
 putting on carried warm clothes, going to or lighting a listed fire, or
 building a campfire from carried logs. Goals follow what she carries (with
 twine or sinew, a sharpened stick and sharpened flint the axe goal is
-`bind_axe` now). `take` (`item`: a carried or worn item's name) moves a
+`bind_axe` now). Leatherwork (`tools/agent-control/leatherwork.py`): after food
+is secure the ladder asks for a leather belt satchel, then a leather backpack,
+and `{"do": "leather_next", "make": "belt"|"backpack"}` runs one stage per turn
+(scrape a raw hide, fill a wood mug, wash, dry on a tanning rack, cut logs for
+bark, soak bark for tannin, tan, craft and equip). The observation's `items`
+gives stack counts and open containers' liquids for what she holds and carries,
+and a tanning rack row says what it `holds`. `take` (`item`: a carried or worn item's name) moves a
 stowed item into the empty active hand, and skills take a stowed tool they need. A step the
 autopilot cannot accept is explained to the model next turn (for example a skill
 with no target listed: explore to find one). When something attacks the

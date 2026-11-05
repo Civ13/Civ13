@@ -230,6 +230,15 @@
 			if (carried.len < 24)
 				carried += "[I.name] (pocket)"
 		out["carried"] = carried
+		// Stack counts and container contents for what she holds and carries (recipes and tanning need amounts).
+		var/list/details = list()
+		for (var/obj/item/I in list(H.l_hand, H.r_hand, H.l_store, H.r_store))
+			details += agent_item_detail(I)
+		for (var/obj/item/weapon/storage/S in H.get_equipped_items())
+			for (var/obj/item/I in S.contents)
+				if (details.len < 24)
+					details += agent_item_detail(I)
+		out["items"] = details
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
 		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
@@ -289,6 +298,13 @@
 				var/mob/other = AM
 				row["mob"] = TRUE
 				row["stat"] = other.stat
+			if (istype(AM, /obj/item/stack))
+				var/obj/item/stack/ST = AM
+				row["amount"] = ST.amount
+			if (istype(AM, /obj/structure/converter/tanning))
+				// What the rack holds: wet hides are still drying, dry hides are ready to take off by hand.
+				var/obj/item/stack/material/rack_hide = locate(/obj/item/stack/material) in AM.contents
+				row["holds"] = rack_hide ? "[rack_hide.name] x[rack_hide.amount]" : "nothing"
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
@@ -761,3 +777,18 @@
 	return TRUE
 
 #undef AGENT_CHARACTER_MESSAGES
+
+/proc/agent_item_detail(obj/item/I)
+	if (!istype(I))
+		return list()
+	var/list/row = list("name" = I.name)
+	if (istype(I, /obj/item/stack))
+		var/obj/item/stack/ST = I
+		row["amount"] = ST.amount
+	if (I.reagents && I.is_open_container())
+		var/list/liquids = list()
+		for (var/datum/reagent/R in I.reagents.reagent_list)
+			liquids[R.id] = round(R.volume, 0.1)
+		row["liquids"] = liquids
+		row["volume"] = I.reagents.maximum_volume
+	return list(row)

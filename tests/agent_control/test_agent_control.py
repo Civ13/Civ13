@@ -588,6 +588,10 @@ class AutopilotTests(unittest.TestCase):
         house = ["campfire"] + ["stone wall"] * 8
         self.assertIn("furnish", goal(house))
         self.assertIn("seeds", goal(house + ["bed", "table"]))
+        self.assertIn('"make": "belt"', goal(house + ["bed", "table", "wheat crop"]))
+        base["worn"] = ["leather belt satchel"]
+        self.assertIn('"make": "backpack"', goal(house + ["bed", "table", "wheat crop"]))
+        base["worn"] = ["leather belt satchel", "leather backpack"]
         self.assertIn("arm yourself", goal(house + ["bed", "table", "wheat crop"]))
         armed = ["leather armor (pocket)", "longbow (pocket)"]
         self.assertIn("pickaxe", goal(house + ["bed", "table", "wheat crop"], armed))
@@ -1541,6 +1545,159 @@ class LiveRunFixesTest(unittest.TestCase):
             memory.data["people"]["Ada"] = {}
             memory.forget_non_people("Ada")
             self.assertEqual(list(memory.data["people"]), ["Bob"])
+
+
+class LeatherworkTest(unittest.TestCase):
+    """Raw hide to leather to a belt satchel and backpack, one stage per turn."""
+
+    def setUp(self):
+        import leatherwork
+        self.lw = leatherwork
+
+    def obs(self, items=(), nearby=(), terrain=(), worn=()):
+        me = {"ref": "[0x1]", "active_hand": "right", "right_hand": {"name": "sharpened flint", "ref": "[0x2]"}, "left_hand": None,
+              "items": [{"name": "sharpened flint"}] + list(items), "worn": list(worn), "carried": []}
+        return {"self": me, "nearby": list(nearby), "terrain": list(terrain)}
+
+    def test_each_stage_picks_the_next_step(self):
+        hide = {"ref": "[0xa]", "name": "raw hide", "item": True, "amount": 4, "dx": 1, "dy": 0}
+        steps, _ = self.lw.next_steps(self.obs(nearby=[hide]), "belt")
+        self.assertEqual(steps, [{"skill": "scrape_hide", "target": "[0xa]"}])
+        steps, _ = self.lw.next_steps(self.obs(items=[{"name": "raw hide", "amount": 4}]), "belt")
+        self.assertEqual(steps, [{"do": "drop", "material": "raw hide"}])  # hides are worked on the ground
+        bare = {"ref": "[0xb]", "name": "hairless hide", "item": True, "dx": 0, "dy": 0}
+        water = {"ref": "turf:5,5,1", "name": "river", "dx": 3, "dy": 0}
+        steps, note = self.lw.next_steps(self.obs(nearby=[bare]), "belt")
+        self.assertEqual(steps, [])
+        self.assertIn("wood mug", note)
+        empty_mug = {"name": "wood mug", "liquids": {}, "volume": 40}
+        steps, _ = self.lw.next_steps(self.obs(items=[empty_mug], nearby=[bare], terrain=[water]), "belt")
+        self.assertEqual(steps, [{"skill": "fill_vessel", "target": "turf:5,5,1"}])
+        full = dict(empty_mug, liquids={"water": 40})
+        steps, _ = self.lw.next_steps(self.obs(items=[full], nearby=[bare]), "belt")
+        self.assertEqual(steps, [{"skill": "wash_hide", "target": "[0xb]"}])
+        wet = {"ref": "[0xc]", "name": "wet hide", "item": True, "dx": 1, "dy": 1}
+        self.assertEqual(self.lw.next_steps(self.obs(nearby=[wet]), "belt")[0], [{"skill": "pick_up", "target": "[0xc]"}])
+        carrying_wet = [{"name": "wet hide", "amount": 3}]
+        self.assertIn("8 wood logs", self.lw.next_steps(self.obs(items=carrying_wet), "belt")[1])
+        logs = {"name": "wood logs", "amount": 9}
+        self.assertEqual(self.lw.next_steps(self.obs(items=carrying_wet + [logs]), "belt")[0][0]["recipe"], "tanning rack")
+        rack = {"ref": "[0xd]", "name": "tanning rack", "holds": "nothing", "dx": 1, "dy": 0}
+        self.assertEqual(self.lw.next_steps(self.obs(items=carrying_wet, nearby=[rack]), "belt")[0], [{"skill": "rack_hide", "target": "[0xd]"}])
+        drying = dict(rack, holds="wet hide x3")
+        self.assertEqual(self.lw.next_steps(self.obs(nearby=[drying]), "belt")[0][0]["do"], "wait")
+        dried = dict(rack, holds="dry hide x3")
+        self.assertEqual(self.lw.next_steps(self.obs(nearby=[dried]), "belt")[0], [{"skill": "unload_rack", "target": "[0xd]"}])
+
+    def test_tannin_comes_from_bark_cut_from_logs(self):
+        dry = {"ref": "[0xe]", "name": "dry hide", "item": True, "amount": 3, "dx": 0, "dy": 1}
+        mug = {"name": "wood mug", "liquids": {"water": 30}, "volume": 40}
+        axe = {"name": "flint hatchet"}
+        ground_logs = {"ref": "[0xf]", "name": "wood logs", "item": True, "amount": 4, "dx": 0, "dy": 0}
+        steps, _ = self.lw.next_steps(self.obs(items=[mug, axe, {"name": "wood logs", "amount": 4}], nearby=[dry]), "belt")
+        self.assertEqual(steps, [{"do": "drop", "material": "wood log"}])
+        steps, _ = self.lw.next_steps(self.obs(items=[mug, axe], nearby=[dry, ground_logs]), "belt")
+        self.assertEqual(steps, [{"skill": "cut_logs", "target": "[0xf]"}])
+        bark = {"ref": "[0x10]", "name": "tree bark", "item": True, "amount": 2, "dx": 0, "dy": 0}
+        steps, _ = self.lw.next_steps(self.obs(items=[mug], nearby=[dry, bark]), "belt")
+        self.assertEqual(steps, [{"skill": "soak_bark", "target": "[0x10]"}])
+        tannin = dict(mug, liquids={"water": 20, "tannin": 10})
+        steps, _ = self.lw.next_steps(self.obs(items=[tannin], nearby=[dry]), "belt")
+        self.assertEqual(steps, [{"skill": "tan_hide", "target": "[0xe]"}])
+
+    def test_leather_becomes_the_product_and_she_wears_it(self):
+        loose = {"ref": "[0x11]", "name": "leather", "item": True, "amount": 1, "dx": 1, "dy": 0}
+        self.assertEqual(self.lw.next_steps(self.obs(nearby=[loose]), "belt")[0], [{"skill": "pick_up", "target": "[0x11]"}])
+        three = [{"name": "leather", "amount": 3}]
+        self.assertEqual(self.lw.next_steps(self.obs(items=three), "belt")[0], [{"do": "craft", "recipe": "leather belt satchel", "material": "leather"}])
+        self.assertIn("raw hide", self.lw.next_steps(self.obs(items=three), "backpack")[1])  # 6 needed for a backpack
+        made = [{"name": "leather belt satchel"}]
+        self.assertEqual(self.lw.next_steps(self.obs(items=made), "belt")[0], [{"do": "equip", "material": "leather belt satchel"}])
+        self.assertIn("already wear", self.lw.next_steps(self.obs(items=made, worn=["leather belt satchel"]), "belt")[1])
+
+    def test_autopilot_parses_expands_and_remembers_the_product(self):
+        refs = ["[0x1]"]
+        self.assertEqual(autopilot.parse_plan('{"do": "leather_next", "make": "backpack"}', refs), [{"do": "leather_next", "make": "leather backpack"}])
+        box = {}
+        hide = {"ref": "[0xa]", "name": "raw hide", "item": True, "dx": 1, "dy": 0}
+        plan, note = autopilot.leather_plan([{"do": "leather_next", "make": "leather belt satchel"}], self.obs(nearby=[hide]), box)
+        self.assertEqual((plan, note), ([{"skill": "scrape_hide", "target": "[0xa]", "leather": "leather belt satchel"}], ""))
+        self.assertEqual(box["leather"], "leather belt satchel")
+        plan, _ = autopilot.leather_plan([{"do": "leather_next", "make": "leather"}], self.obs(nearby=[hide]), box)
+        self.assertEqual(plan[0]["leather"], "leather belt satchel")  # a bare leather_next keeps the chosen product
+        me = {"ref": "[0x1]", "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None,
+              "carried": ["knife (pocket)", "wood mug (pocket)"], "intent": "harm"}
+        rows = {"[0xa]": hide, "turf:5,5,1": {"ref": "turf:5,5,1", "name": "river", "dx": 3, "dy": 0}}
+        steps, error = autopilot.expand_skill({"skill": "scrape_hide", "target": "[0xa]"}, me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps[-3:], [{"do": "take", "item": "knife"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0xa]"}])
+        steps, _ = autopilot.expand_skill({"skill": "fill_vessel", "target": "turf:5,5,1"}, me, rows)
+        self.assertEqual(steps[0], {"do": "go", "target": "turf:5,5,1"})
+        self.assertEqual(sum(1 for item in steps if item.get("do") == "click"), 8)
+        self.assertIn("a raw hide or pelt", autopilot.expand_skill({"skill": "scrape_hide", "target": "turf:5,5,1"}, me, rows)[1])
+        held = dict(me, right_hand={"name": "raw hide"})
+        steps, _ = autopilot.expand_plan([{"do": "drop", "material": "raw hide"}], held)
+        self.assertEqual(steps, [{"do": "drop"}])  # a deliberate drop, not stowed away
+        self.assertEqual([k for k in autopilot.PLAN_KEYS if k == "leather"], ["leather"])
+
+    def test_observation_reports_counts_liquids_and_rack_contents(self):
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('out["items"] = details', characters)
+        self.assertIn('row["liquids"] = liquids', characters)
+        self.assertIn('row["holds"] = rack_hide ?', characters)
+
+
+class IsolatedRunFixesTest(unittest.TestCase):
+    """From the isolated run: a timed-out model call spun the reflex loop for hours; the spear blocked the axe."""
+
+    def test_a_failed_model_call_stops_the_wait_instead_of_spinning(self):
+        import concurrent.futures
+        future = concurrent.futures.Future()
+        future.set_exception(TimeoutError("timed out"))  # what urlopen raises; the same class as a poll timeout
+        ticks = []
+        answer, stop = autopilot.wait_for_model(future, type("A", (), {"timeout": 1})(), None, lambda: ticks.append(1) or "", poll=0.01)
+        self.assertIsNone(answer)
+        self.assertIn("model unavailable", stop)
+        self.assertEqual(ticks, [])
+
+    def test_the_wait_ends_at_the_deadline_on_death_and_after_a_hang(self):
+        import concurrent.futures
+        args = type("A", (), {"timeout": 1})()
+        now = [0.0]
+        clock = lambda: now[0]
+        def tick(reason=""):
+            now[0] += 1
+            return reason
+        self.assertEqual(autopilot.wait_for_model(concurrent.futures.Future(), args, 2.5, tick, clock=clock, poll=0.001), (None, "run time is up"))
+        now[0] = 0.0
+        self.assertEqual(autopilot.wait_for_model(concurrent.futures.Future(), args, None, lambda: "the character is dead", clock=clock, poll=0.001),
+                         (None, "the character is dead"))
+        now[0] = 0.0
+        stop = autopilot.wait_for_model(concurrent.futures.Future(), args, None, tick, clock=clock, poll=0.001)[1]
+        self.assertIn("no answer in time", stop)
+        done = concurrent.futures.Future()
+        done.set_result('{"do": "wait"}')
+        self.assertEqual(autopilot.wait_for_model(done, args, None, tick, poll=0.001), ('{"do": "wait"}', ""))
+
+    def test_text_plan_steps_are_read_as_objects(self):
+        refs = ["[0x1]", "[0x2]", "[0x3]", "[0x4]", "[0x5]", "[0x6]"]
+        self.assertEqual(autopilot.parse_plan('{"plan": ["find_flint on rock 5"]}', refs), [{"skill": "find_flint", "target": "[0x6]"}])
+        self.assertEqual(autopilot.coerce_step("explore north"), {"do": "explore", "dir": "north"})
+        self.assertEqual(autopilot.plan_problem('{"plan": ["find_flint on rock 5"]}', refs), "")
+
+    def test_an_axe_makes_the_spear_optional_and_a_missing_flint_is_explained(self):
+        me = {"water": 900, "nutrition": 900, "right_hand": {"name": "flint hatchet"}}
+        self.assertIn("chop a tree", autopilot.current_goal({"self": me, "nearby": []})[0])
+        steps, error = autopilot.expand_skill({"skill": "sharpen_stick", "target": "[0x9]"},
+                                              {"ref": "[0x1]", "active_hand": "right", "right_hand": {"name": "flint hatchet"}, "left_hand": None},
+                                              {"[0x9]": {"ref": "[0x9]", "name": "stick", "item": True, "dx": 1, "dy": 0}})
+        self.assertIn("find_flint", error)
+
+    def test_freezing_with_nothing_warm_chops_a_tree_for_logs(self):
+        me = {"bodytemperature": 250, "right_hand": {"name": "flint hatchet"}, "worn": [], "carried": []}
+        tree = {"ref": "[0x7]", "name": "oak tree", "branches": 2, "dx": 2, "dy": 1}
+        self.assertEqual(autopilot.cold_plan({"self": me, "nearby": [tree]}), {"skill": "chop", "target": "[0x7]"})
+        self.assertIsNone(autopilot.cold_plan({"self": dict(me, right_hand=None), "nearby": [tree]}))
 
 
 if __name__ == "__main__":
