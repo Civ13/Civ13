@@ -859,11 +859,16 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	trailer_errand_actor(61, 9, "Villager", /obj/item/clothing/under/civf3, list(
 		list("walk", 55, 8), list("face", WEST), list("wait", 20), list("chat", 20), list("wait", 15),
 		list("chat", 10), list("walk", 61, 9), list("face", NORTH), list("wait", 40)))
-	// Children playing tag around the meadow.
-	var/list/loop = list(list("walk", 2, 7, 2), list("walk", 12, 7, 2), list("walk", 12, 14, 2), list("walk", 2, 14, 2))
-	trailer_errand_actor(2, 14, "Child", /obj/item/clothing/under/civ5, loop)
-	var/mob/living/human/kid = trailer_errand_actor(12, 7, "Child", /obj/item/clothing/under/civf1, loop)
-	trailer_errand_step[kid] = 3
+	// A herder and a milkmaid tend the pasture animals over the fence.
+	trailer_errand_actor(4, 14, "Herder", /obj/item/clothing/under/farmer_outfit, list(
+		list("face", NORTH), list("work", 4, 15, 3), list("wait", 20), list("walk", 7, 14, 6), list("face", NORTH),
+		list("work", 7, 15, 2), list("face", EAST), list("chat", 20), list("wait", 25), list("walk", 4, 14, 6),
+		list("face", NORTH), list("wait", 30)))
+	trailer_errand_actor(10, 14, "Milkmaid", /obj/item/clothing/under/civf1, list(
+		list("face", NORTH), list("wait", 25), list("walk", 8, 14, 6), list("face", WEST), list("wait", 15),
+		list("chat", 20), list("face", NORTH), list("work", 8, 15, 3), list("walk", 11, 14, 6), list("face", NORTH),
+		list("work", 11, 15, 2), list("wait", 30)),
+		list(/obj/item/weapon/reagent_containers/glass/bucket))
 	// The smith at the anvil, the woodcutter splitting logs.
 	trailer_errand_actor(32, 3, "Smith", /obj/item/clothing/under/medieval/leather, list(
 		list("walk", 32, 3), list("work", 31, 3, 8), list("walk", 32, 4), list("walk", 34, 4), list("walk", 34, 3),
