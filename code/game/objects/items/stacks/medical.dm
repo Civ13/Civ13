@@ -105,6 +105,9 @@
 		if (heals_wounds)
 			W.heal_damage(W.damage_type == BURN ? heal_burn : heal_brute)
 		used++
+	// Cleaning the wounds also knocks back an infection that has not spread yet.
+	if (used && (treat_flags & MED_DISINFECT) && affecting.germ_level < INFECTION_LEVEL_TWO)
+		affecting.germ_level = max(0, affecting.germ_level - 100)
 	affecting.update_damages()
 	if (used >= amount && limb_needs(affecting))
 		to_chat(user, SPAN_WARNING("\The [src] is used up, but there are more wounds to treat on \the [affecting.name]."))

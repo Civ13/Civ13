@@ -10,6 +10,7 @@ SURGERY = (ROOT / "code/modules/surgery/other.dm").read_text(encoding="utf-8")
 HANDBOOK = (ROOT / "code/modules/1713/doctor_handbook.dm").read_text(encoding="utf-8")
 HEART = (ROOT / "code/modules/organs/internal/heart.dm").read_text(encoding="utf-8")
 DEFINES = (ROOT / "code/predefines.dm").read_text(encoding="utf-8")
+BASE_ORGAN = (ROOT / "code/modules/organs/organ.dm").read_text(encoding="utf-8")
 LIFE = (ROOT / "code/game/mob/living/carbon/human/human_life.dm").read_text(encoding="utf-8")
 
 
@@ -124,6 +125,24 @@ class MedicalCare(unittest.TestCase):
         regen = HEART[HEART.index("//Blood regeneration"):HEART.index("if(pulse != PULSE_NONE)")]
         self.assertIn("owner.nutrition >= 150 && owner.water >= 150", regen)
         self.assertEqual(regen.count("B.volume += 0.1"), 2)
+
+    def test_every_era_has_an_antibiotic(self):
+        self.assertNotIn('get_reagent_amount("penicillin")', ORGAN + BASE_ORGAN)
+        self.assertEqual((ORGAN + BASE_ORGAN).count("owner.get_antibiotic_dose()"), 4)
+        table = re.search(r"var/list/antibiotic_strengths = list\(([^)]*)\)", BASE_ORGAN).group(1)
+        for reagent in ('"penicillin" = 1', '"prontosil"', '"herbal_remedy"'):
+            self.assertIn(reagent, table)
+        dose = block(BASE_ORGAN, "/mob/living/human/proc/get_antibiotic_dose")
+        self.assertIn("ingested.get_reagent_amount(id)", dose)
+        treat = block(MEDICAL, "/obj/item/stack/medical/proc/treat(")
+        self.assertIn("affecting.germ_level < INFECTION_LEVEL_TWO", treat)
+
+    def test_herb_dose_reaches_the_antibiotic_threshold(self):
+        # One chewed herb adds 10 units; the organ code needs a dose of 5.
+        herbs = block(MEDICAL, "/obj/item/stack/medical/advanced/herbs/attack_self")
+        self.assertIn('H.ingested.add_reagent("herbal_remedy", 10)', herbs)
+        weight = float(re.search(r'"herbal_remedy" = ([0-9.]+)', BASE_ORGAN).group(1))
+        self.assertGreaterEqual(10 * weight, 5)
 
 
 if __name__ == "__main__":
