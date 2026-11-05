@@ -696,9 +696,7 @@
 	color = "#3d5931"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/car/t20komsomoletstractor
 	name = "T-20 Komsomolets tractor"
@@ -713,9 +711,7 @@
 	color = "#3d5931"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/car/unattr
 	name = "UN Attack Vehicle"
@@ -730,9 +726,7 @@
 	color = "#ffffff"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/car/kamaz
 	name = "KamAZ-4350 Truck"

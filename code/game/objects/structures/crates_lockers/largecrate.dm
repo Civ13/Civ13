@@ -31,6 +31,8 @@
 
 /obj/structure/largecrate/animal/New()
 	..()
+	if (!held_type)
+		return
 	for (var/i = TRUE;i<=held_count;i++)
 		new held_type(src)
 

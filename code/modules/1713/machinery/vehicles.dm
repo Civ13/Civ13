@@ -99,9 +99,7 @@
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/is2
 	name = "IS-2"
@@ -112,9 +110,7 @@
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/is3
 	name = "IS-3"
@@ -125,9 +121,7 @@
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t34
 	name = "T-34"
@@ -138,9 +132,7 @@
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t34/t3485
 	name = "T-34-85"
@@ -155,9 +147,7 @@
 	broken_icon = 'icons/obj/vehicles/tankparts96x96_damaged.dmi'
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/su100/su85m
 	name = "SU-85M"
@@ -170,9 +160,7 @@
 	color = "#5c784f"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/su85
 	name = "SU-85"
@@ -182,9 +170,7 @@
 	color = "#506945"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/kv1a
 	name = "KV-1A"
@@ -194,9 +180,7 @@
 	color = "#3d5931"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/mtlb
 	name = "MT-LB"
@@ -207,9 +191,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/m113
 	name = "M113 APC"
@@ -220,9 +202,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_usa -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/m41
 	name = "M41"
@@ -232,9 +212,7 @@
 	color = "#494224"
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_usa -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/bmd1
 	name = "BMD-1"
@@ -246,9 +224,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/bmd2
 	name = "BMD-2"
@@ -260,9 +236,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/btr80
 	name = "BTR-80"
@@ -274,9 +248,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/btr80/atgm
 
@@ -289,9 +261,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_usa -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/cv90
 	name = "CV-90"
@@ -302,9 +272,7 @@
 	vehicle_type = "apc"
 	New()
 		..()
-		var/pickedname = pick(tank_names_nato)
-		tank_names_nato -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_nato)
 
 /obj/structure/vehicleparts/axis/heavy/t80u
 	name = "T-80U"
@@ -314,9 +282,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t80uk
 	name = "T-80UK"
@@ -326,9 +292,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t72
 	name = "T-72"
@@ -338,9 +302,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t72m1
 	name = "T-72M1"
@@ -350,9 +312,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t72b3
 	name = "T-72B3"
@@ -362,9 +322,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t64bm
 	name = "T-64BM"
@@ -374,9 +332,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t64bv
 	name = "T-64BV"
@@ -386,9 +342,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t62a
 	name = "T-62A"
@@ -398,9 +352,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t62m
 	name = "T-62M"
@@ -410,9 +362,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t62mv
 	name = "T-62MV"
@@ -422,9 +372,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/t55
 	name = "T-55"
@@ -434,9 +382,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/panzeriv
 	name = "Panzer IV"
@@ -446,9 +392,7 @@
 	color = "#585A5C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_german)
-		tank_names_german -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_german)
 
 /obj/structure/vehicleparts/axis/heavy/panzervi
 	name = "Panzer VI Tiger"
@@ -458,9 +402,7 @@
 	color = "#3B3F41"
 	New()
 		..()
-		var/pickedname = pick(tank_names_german)
-		tank_names_german -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_german)
 
 /obj/structure/vehicleparts/axis/heavy/l3
 	name = "L3/33"
@@ -505,9 +447,7 @@
 	color = "#5C5C4C"
 	New()
 		..()
-		var/pickedname = pick(tank_names_soviet)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_soviet)
 
 /obj/structure/vehicleparts/axis/heavy/leopard
 	name = "Leopard 2A6"
@@ -531,9 +471,7 @@
 	color = "#58564a"
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_usa -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/i_go
 	name = "Type 89 I-Go"
@@ -543,9 +481,7 @@
 	reg_number = ""
 	New()
 		..()
-		var/pickedname = pick(tank_names_japanese)
-		tank_names_japanese -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_japanese)
 
 /obj/structure/vehicleparts/axis/heavy/chi_ha
 	name = "Type 97 Chi-Ha"
@@ -555,9 +491,7 @@
 	reg_number = ""
 	New()
 		..()
-		var/pickedname = pick(tank_names_japanese)
-		tank_names_japanese -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_japanese)
 
 /obj/structure/vehicleparts/axis/heavy/hago
 	name = "Type 95 Ha-Go"
@@ -567,9 +501,7 @@
 	reg_number = ""
 	New()
 		..()
-		var/pickedname = pick(tank_names_japanese)
-		tank_names_japanese -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_japanese)
 
 /obj/structure/vehicleparts/axis/heavy/m4
 	name = "M-4 Sherman"
@@ -579,9 +511,7 @@
 	reg_number = ""
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/m48a1
 	name = "M-48A1 Patton"
@@ -591,9 +521,7 @@
 	reg_number = ""
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/m60a3
 	name = "M60A3 Patton"
@@ -603,9 +531,7 @@
 	reg_number = ""
 	New()
 		..()
-		var/pickedname = pick(tank_names_usa)
-		tank_names_soviet -= pickedname
-		name = "[name] \'[pickedname]\'"
+		name = vehicle_crew_name(name, tank_names_usa)
 
 /obj/structure/vehicleparts/axis/heavy/bmv1_1
 	name = "BMV-1 mk. I"

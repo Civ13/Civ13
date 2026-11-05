@@ -6,7 +6,7 @@
 	var/loot_spawn
 /obj/effect/spawner/lootdrop/New()
 	..()
-	for (var/i = 1, i<=nr, i++)
+	for (var/i = 1, i<=nr && length(loot), i++)
 		loot_spawn = pick(loot)
 		new loot_spawn(get_turf(src))
 	qdel(src)
