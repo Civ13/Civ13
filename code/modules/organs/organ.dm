@@ -157,7 +157,7 @@ var/list/organ_cache = list()
 // Antibiotic strength per unit, so each era has an infection cure: penicillin
 // is the full-strength reference, prontosil (sulfa drug) and the chewed
 // herbal remedy are weaker. A dose of 5 halts infection; 30 stops necrosis.
-var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herbal_remedy" = 0.5)
+var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herbal_remedy" = 0.5, "silver" = 0.25)
 
 /mob/living/human/proc/get_antibiotic_dose()
 	. = 0

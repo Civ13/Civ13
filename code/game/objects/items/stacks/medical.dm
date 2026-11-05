@@ -313,6 +313,19 @@
 	heal_brute = 6 // for healing dogs and other animals
 	amount = 6
 
+// Cloth woven with silver thread: dresses and disinfects each wound, the
+// antiseptic dressing of eras before sulfa drugs. Still ties a tourniquet.
+/obj/item/stack/medical/bruise_pack/silver
+	name = "silver dressings"
+	singular_name = "silver dressing"
+	desc = "Bandages woven with silver thread. Silver keeps the wound clean while it heals."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "gauze"
+	amount = 5
+	treat_flags = MED_BANDAGE|MED_DISINFECT
+	treat_verb = "dresses and cleans"
+	treat_verb_self = "dress and clean"
+
 /obj/item/stack/medical/bruise_pack/gauze
 	name = "roll of gauze"
 	singular_name = "gauze length"
