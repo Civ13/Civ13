@@ -149,16 +149,30 @@ var/list/lighting_overlay_list = list()
 				continue
 			var/list/masters = list()
 			var/expected_active = FALSE
-			for (var/turf/M in C.masters)
-				masters += "[coord(M)]:[C.masters[M]]"
-				var/opposite = LIGHTING_CORNER_DIAGONAL.Find(turn(C.masters[M],180))
+			for (var/mi = 1, mi <= 4, mi++)
+				var/turf/M = C.master_turf(mi)
+				if (!M)
+					continue
+				masters += "[coord(M)]:[C.master_direction(M)]"
+				var/opposite = LIGHTING_CORNER_DIAGONAL.Find(turn(C.master_direction(M),180))
 				if (M.corners[opposite] != C)
 					probe_identity++
 				if (M.lighting_overlay)
 					expected_active = TRUE
 			if (C.active != expected_active)
 				probe_identity++
-			slots += "[C.x],[C.y]:[C.active]:[jointext(masters,";")]"
+			// Masters are reported in text order so the retained baseline's
+			// insertion-ordered list and the position-derived walk compare equal.
+			var/list/sorted_masters = list()
+			for (var/m in masters)
+				var/pos = 1
+				while (pos <= sorted_masters.len && sorttext(sorted_masters[pos], m) != -1)
+					pos++
+				if (pos > sorted_masters.len)
+					sorted_masters += m
+				else
+					sorted_masters.Insert(pos, m)
+			slots += "[C.x],[C.y]:[C.active]:[jointext(sorted_masters,";")]"
 		var/queued = !!lighting_overlay_list.Find(T.lighting_overlay)
 		var/render_calls = T.lighting_overlay ? T.lighting_overlay.probe_render_calls : 0
 		if (probe_expected_compatibility_order.Find(coord(T)) && (!queued || render_calls != 1))

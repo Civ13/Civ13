@@ -72,7 +72,7 @@ def audit(lifecycle, source):
                     'row["overlay_last_luminosity"] = O.last_luminosity',
                     'row["overlay_last_color"] = O.color_committed ? blackout_diagnostic_color(O.color) : null',
                     '"unknown beyond prefix"', '"loc_is_sample_turf" = O.loc == T',
-                    '"owner_direction" = K.masters[T]', '"master_count" = K.masters.len',
+                    '"owner_direction" = K.master_direction(T)', '"master_count" = K.master_count()',
                     '"season" = blackout_diagnostic_scalar(season)',
                     '"roof_count" = roof_count', '"cover_count" = cover_count',
                     '"local atom sample truncated at 64 per turf"'):
@@ -140,7 +140,7 @@ class SourceBoundary(unittest.TestCase):
         lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
         source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
         for field in ('if(scanned >= 64)', 'min(lighting_overlay_list.len + 1, 257)',
-                      '"unknown beyond prefix"', '"owner_direction" = K.masters[T]',
+                      '"unknown beyond prefix"', '"owner_direction" = K.master_direction(T)',
                       '"season" = blackout_diagnostic_scalar(season)'):
             with self.subTest(field=field):
                 self.assertTrue(audit(lifecycle, source.replace(field, 'null')))

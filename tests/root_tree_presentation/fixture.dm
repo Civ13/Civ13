@@ -82,7 +82,10 @@
 	var/lum_r
 	var/lum_g
 	var/lum_b
-	var/list/masters = list()
+	var/x = 0
+	var/y = 0
+/datum/lighting_corner/proc/master_direction(turf/T)
+	return ((T.x > x) ? EAST : WEST) | ((T.y > y) ? NORTH : SOUTH)
 /obj/screen
 	plane = HUD_PLANE
 /obj/screen/fov
@@ -237,7 +240,8 @@ var/global/list/fixture_identity_controls = list()
 		C.lum_r = red
 		C.lum_g = green
 		C.lum_b = blue
-		C.masters[T] = d
+		C.x = T.x + ((d & EAST) ? 0.5 : -0.5)
+		C.y = T.y + ((d & NORTH) ? 0.5 : -0.5)
 		T.corners += C
 	T.lighting_overlay.update_overlay()
 

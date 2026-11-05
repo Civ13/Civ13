@@ -123,7 +123,7 @@
 		var/adjusted_b = C.lum_b + TOD_lum
 
 		// Huge switch to determine i based on D.
-		switch(turn(C.masters[T], 180))
+		switch(turn(C.master_direction(T), 180))
 			if (NORTHEAST)
 				i = AR
 
