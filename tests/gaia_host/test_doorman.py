@@ -18,6 +18,10 @@ class Machine(base.FakeMachine):
     def __init__(self):
         super().__init__()
         self.status_calls = 0
+        self.free_mb = 8192
+
+    def free_memory_mb(self):
+        return self.free_mb
 
     def status_topic(self, port):
         if self.suspended:
@@ -63,6 +67,35 @@ class DoormanTests(base.GaiaHostTests):
         self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
         self.door.step()
         self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'awake')
+
+    def test_wake_is_refused_without_memory_headroom(self):
+        self.running()
+        self.host.freeze()
+        self.machine.free_mb = 700
+        reply = self.ask('wake=1&port=1714')
+        self.assertEqual(reply, {'schema': 1, 'ok': False, 'error': 'low memory', 'port': 1714, 'free_mb': 700, 'need_mb': 1024})
+        self.assertEqual(self.machine.suspended, 1)
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'asleep')
+        # A refusal does not use up the address's wake spacing.
+        self.machine.free_mb = 1024
+        self.assertEqual(self.ask('wake=1&port=1714')['state'], 'waking')
+        self.assertEqual(self.machine.suspended, 0)
+
+    def test_memory_check_is_configurable_and_unknown_does_not_block(self):
+        self.running()
+        self.host.freeze()
+        self.machine.free_mb = None
+        self.assertTrue(self.ask('wake=1&port=1714')['ok'])
+        self.door.step()
+        self.host.freeze()
+        self.machine.free_mb = 10
+        self.host.config['wake_min_free_mb'] = 0
+        self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
+        self.assertEqual(self.machine.suspended, 0)
+
+    def test_meminfo(self):
+        self.assertEqual(gaia_host.parse_meminfo('MemTotal: 16000000 kB\nMemAvailable:    2097152 kB\n'), 2048)
+        self.assertIsNone(gaia_host.parse_meminfo('MemTotal: 16000000 kB\n'))
 
     def test_wake_requests_are_spaced_per_address(self):
         self.running()

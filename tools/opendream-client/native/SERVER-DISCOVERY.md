@@ -61,7 +61,7 @@ browsing never wakes a frozen world or spends its Topic spacing. They appear as
 still comes only from a direct response. Choosing one runs Wake and join:
 `?wake=1&port=N`, then the doorman is polled every two seconds for up to 60
 seconds until it reports awake (stopped or the time limit ends it with a
-message), then one ordinary direct status query verifies the game port and its
+message; a host low on free memory refuses the wake and the player is told so), then one ordinary direct status query verifies the game port and its
 answer is joined exactly like a refreshed server. The doorman never proxies game
 traffic, so the player's own address still reaches the world for bans and logs.
 

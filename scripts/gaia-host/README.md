@@ -81,8 +81,11 @@ ports. It speaks BYOND Topic framing and answers only:
   `stopped`), `wake_estimate_seconds`, and the players, map and mode the world
   last reported with their age. Awake worlds are asked for `status` from
   127.0.0.1 every 30 seconds, which does not keep them awake.
-- `?wake=1&port=1714`: thaws that instance. One wake per address every 30
-  seconds; all requests are limited to 40 per address per minute and 16 open
+- `?wake=1&port=1714`: thaws that instance, unless the machine has less than
+  `wake_min_free_mb` (1024) of physical memory free; then it stays asleep and
+  the launcher tells the player the host is low on memory (0 turns the check
+  off; a direct connection to the game port still thaws it). One wake per
+  address every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
 
 The launcher lists asleep servers from this cache and offers "Wake and join":

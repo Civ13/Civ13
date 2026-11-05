@@ -112,6 +112,15 @@ public static class HostStatus {
     internal static string ParseWake(ReadOnlyMemory<byte> json, GameTarget target) {
         string state = "";
         Parse(json, root => {
+            if (root.TryGetProperty("schema", out var refusedSchema) && refusedSchema.TryGetInt32(out var refusedVersion) && refusedVersion == 1 &&
+                root.TryGetProperty("ok", out var refused) && refused.ValueKind == JsonValueKind.False &&
+                root.TryGetProperty("error", out var error) && error.ValueKind == JsonValueKind.String && error.GetString() == "low memory") {
+                // The host keeps a server asleep rather than wake it without memory headroom.
+                var free = Int(root, "free_mb", 0, int.MaxValue);
+                var need = Int(root, "need_mb", 0, int.MaxValue);
+                throw new IOException(target.Name + " cannot wake right now: its host is low on free memory" +
+                    (free is { } have && need is { } wanted ? $" ({have} MB free, {wanted} MB needed)" : "") + ". Try again later.");
+            }
             if (!root.TryGetProperty("schema", out var schema) || !schema.TryGetInt32(out var version) || version != 1 ||
                 !root.TryGetProperty("ok", out var ok) || ok.ValueKind != JsonValueKind.True ||
                 Int(root, "port", 1, 65535) != target.Port)

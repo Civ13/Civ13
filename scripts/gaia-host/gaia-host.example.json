@@ -15,5 +15,6 @@
   "wake_poll_seconds": 0.2,
   "doorman_port": 1713,
   "doorman_bind": "0.0.0.0",
-  "wake_estimate_seconds": 5
+  "wake_estimate_seconds": 5,
+  "wake_min_free_mb": 1024
 }

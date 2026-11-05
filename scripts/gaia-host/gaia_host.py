@@ -56,7 +56,9 @@ DIRECT = ('freeze', 'thaw', 'watch', 'serve')  # quick or long-running; no detac
 FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake_ignore': ['127.0.0.1', '::1'],
                    'wake_poll_seconds': 0.2,
                    # serve: the doorman port the launcher asks before touching a game port
-                   'doorman_port': 1713, 'doorman_bind': '0.0.0.0', 'wake_estimate_seconds': 5}
+                   'doorman_port': 1713, 'doorman_bind': '0.0.0.0', 'wake_estimate_seconds': 5,
+                   # serve: refuse a doorman wake while less physical memory than this is free (0 = never refuse)
+                   'wake_min_free_mb': 1024}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -81,6 +83,15 @@ def load_config(path):
     for key, value in FREEZE_DEFAULTS.items():
         config.setdefault(key, value)
     return config
+
+
+def parse_meminfo(text):
+    """MemAvailable from Linux /proc/meminfo, in MB, or None."""
+    for line in text.splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and parts[0] == 'MemAvailable:' and parts[1].isdigit():
+            return int(parts[1]) // 1024
+    return None
 
 
 def parse_netstat(text):
@@ -236,6 +247,25 @@ class Platform:
         """The world's public status JSON text, asked from this machine."""
         from doorman import topic
         return topic(port, 'status=1&format=json')
+
+    def free_memory_mb(self):
+        """Physical memory available to a new demand, in MB, or None if unknown."""
+        try:
+            if os.name == 'nt':
+                class MemoryStatus(ctypes.Structure):
+                    _fields_ = [('dwLength', ctypes.c_ulong), ('dwMemoryLoad', ctypes.c_ulong),
+                                ('ullTotalPhys', ctypes.c_ulonglong), ('ullAvailPhys', ctypes.c_ulonglong),
+                                ('ullTotalPageFile', ctypes.c_ulonglong), ('ullAvailPageFile', ctypes.c_ulonglong),
+                                ('ullTotalVirtual', ctypes.c_ulonglong), ('ullAvailVirtual', ctypes.c_ulonglong),
+                                ('ullAvailExtendedVirtual', ctypes.c_ulonglong)]
+                status = MemoryStatus()
+                status.dwLength = ctypes.sizeof(MemoryStatus)
+                if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
+                    return None
+                return status.ullAvailPhys // (1024 * 1024)
+            return parse_meminfo(Path('/proc/meminfo').read_text())
+        except (OSError, AttributeError, ValueError):
+            return None
 
     def connections(self, port):
         """Remote addresses with an established connection to the port."""

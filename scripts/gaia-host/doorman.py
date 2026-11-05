@@ -6,7 +6,8 @@ one extra TCP port (doorman_port, 1713 by default) that speaks the same BYOND
 Topic framing as a game port. The launcher asks it two things:
 
     ?host_status=1          every instance's state and cached status
-    ?wake=1&port=1714       thaw that instance now
+    ?wake=1&port=1714       thaw that instance now (refused while the machine has
+                            less than wake_min_free_mb of physical memory free)
 
 so browsing reads the cache and never wakes a frozen world; only joining does.
 Answers are display data and a wake trigger. They carry no addresses and no
@@ -157,6 +158,19 @@ class Doorman:
                 return True
         return False
 
+    def low_memory(self, instance):
+        """(free_mb, need_mb) when a frozen instance must not be woken for lack of memory.
+
+        An awake instance needs nothing, and an unknown free amount does not block.
+        """
+        need = instance.host.config['wake_min_free_mb']
+        if not need or not instance.host.frozen():
+            return None
+        free = self.platform.free_memory_mb()
+        if free is None or free >= need:
+            return None
+        return free, need
+
     # -- requests ------------------------------------------------------------
     def allowed(self, address, now):
         with self.lock:
@@ -184,6 +198,11 @@ class Doorman:
             instance = self.instances.get(int(port)) if port.isdigit() and len(port) <= 5 else None
             if instance is None:
                 return {'schema': SCHEMA, 'ok': False, 'error': 'unknown port'}
+            low = self.low_memory(instance)
+            if low is not None:
+                instance.host.log({'wake_refused': 'low memory', 'port': instance.port, 'free_mb': low[0], 'need_mb': low[1]})
+                return {'schema': SCHEMA, 'ok': False, 'error': 'low memory', 'port': instance.port,
+                        'free_mb': low[0], 'need_mb': low[1]}
             with self.lock:
                 last = self.wakes.get(address)
                 spaced = last is None or now - last >= WAKE_SPACING

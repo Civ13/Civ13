@@ -78,6 +78,14 @@ internal static class HostStatusTests {
         foreach (var bad in new[] { "{\"schema\":1,\"ok\":false,\"error\":\"unknown port\"}", "{\"schema\":1,\"ok\":true,\"port\":1715,\"state\":\"awake\"}",
             "{\"schema\":1,\"ok\":true,\"port\":1714}" })
             await Reject(() => HostStatus.Wake(gaia, resolver, (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(Frame(bad))), "bad wake " + bad);
+        try {
+            await HostStatus.Wake(gaia, resolver, (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(
+                Frame("{\"schema\":1,\"ok\":false,\"error\":\"low memory\",\"port\":1714,\"free_mb\":700,\"need_mb\":1024}")));
+            throw new Exception("Low-memory wake refusal accepted");
+        } catch (IOException refusal) {
+            Require(refusal.Message == gaia.Name + " cannot wake right now: its host is low on free memory (700 MB free, 1024 MB needed). Try again later.",
+                "Low-memory refusal message changed: " + refusal.Message);
+        }
         await Reject(() => HostStatus.Wake(new GameTarget("ValZarGaming", 1716), resolver,
             (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(wakeReply)), "unconfigured wake target");
 
