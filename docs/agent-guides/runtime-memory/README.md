@@ -83,9 +83,14 @@ queue and must not claim that production garbage collection has drained it.
 <!-- 2026-11-04: plain datums use the garbage queue -->
 `/datum/finalize_qdel` queues plain datums like atoms instead of calling native
 `del()`, whose world-wide reference scan cost 18 ms per call on Gaia (mostly
-reagent holders of destroyed items; 11 s per world load). Mobs keep immediate
-deletion because the reviewed mount fixture observes their disappearance
-synchronously. In native fixtures, drop a queued datum inside a helper proc
+reagent holders of destroyed items; 11 s per world load).
+
+<!-- 2026-11-05: mobs use the garbage queue -->
+Mobs take the same queue (67 ms per mob `del()` on Gaia). A fixture without a
+collector sees a qdel'd mob parked in `delayed_garbage` with a null loc and
+`QDELETED` true; `tests/mount_lifecycle_native/probe.dm` asserts that retired
+state (`mount_native_retired`) instead of synchronous disappearance, and
+`tests/gc_triage/probe.dm` covers collected and retained queued mobs. In native fixtures, drop a queued datum inside a helper proc
 before checking collection: a stale stack temporary in a sleeping proc keeps a
 refcounted datum alive until overwritten. See docs/gc-triage.md.
 

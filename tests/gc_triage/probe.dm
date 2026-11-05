@@ -54,6 +54,7 @@
 /obj/probe/triage_self_delete/Destroy()
 	del(src)
 /datum/triage_direct
+/mob/triage_mob
 /datum/triage_direct_abort
 	var/reject_delete = TRUE
 /datum/triage_direct_abort/Del()
@@ -77,9 +78,32 @@
 	triage_age(G, direct)
 	return "\ref[direct]"
 
+/proc/triage_queue_unreferenced_mob(process/garbage/G)
+	var/mob/triage_mob/M = new
+	qdel(M)
+	var/list/row = G.profile_row("/mob/triage_mob")
+	check(row["enqueued"] == 1 && !row["direct_deleted"] && M.gc_destroyed == M.gcDestroyed, "mob finalization queues without claiming deletion")
+	triage_age(G, M)
+	return "\ref[M]"
+
+/proc/triage_mob_checks(process/garbage/G)
+	// Mobs share the queue since 2026-11-05: a mob del() cost 67 ms on Gaia.
+	var/mob_ref = triage_queue_unreferenced_mob(G)
+	sleep(1)
+	check(!locate(mob_ref), "unpinned queued mob disappears on pinned BYOND")
+	var/list/mob_row = G.profile_row("/mob/triage_mob")
+	G.fire()
+	check(mob_row["queue_absent"] == 1 && !mob_row["collection_failed"] && !mob_row["forced_deleted"], "collected mob never records a forced deletion")
+	var/mob/triage_mob/retained = new
+	qdel(retained)
+	triage_age(G, retained)
+	G.fire()
+	check(!retained && mob_row["collection_failed"] == 1 && mob_row["forced_deleted"] == 1, "retained queued mob is force-deleted after the grace period")
+
 /proc/triage_outcome_checks()
 	var/process/garbage/G = new
 	processes.garbage = G
+	triage_mob_checks(G)
 	// Plain datums share the atom queue: an unreferenced one is collected
 	// natively, a retained one is force-deleted after the grace period.
 	var/direct_ref = triage_queue_unreferenced_datum(G)

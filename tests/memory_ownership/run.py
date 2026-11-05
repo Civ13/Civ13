@@ -47,7 +47,7 @@ def main():
             'triage-lists': ('code/processes/gc_reference_triage.dm', '#define GC_TRIAGE_REFERENCE_LISTS 32', '#define GC_TRIAGE_REFERENCE_LISTS 100000', 'targeted inspection stops at its list cap'),
             'triage-metadata': ('code/processes/gc_outcome_triage.dm', '#define GC_TRIAGE_PENDING_LIMIT 1024', '#define GC_TRIAGE_PENDING_LIMIT 100000', 'pending outcome metadata stops at exact cap'),
             'triage-delete-result': ('code/processes/gc_outcome_triage.dm', 'var/datum/remaining = locate(ref_id)', 'var/datum/remaining = A', 'aborted native Del is incomplete even though its local argument clears'),
-            'triage-requested': ('code/processes/garbage.dm', '(refID in hard_references) ? "forced_requested" : "collection_failed"', '"forced_requested"', 'retained queued datum is force-deleted after the grace period'),
+            'triage-requested': ('code/processes/garbage.dm', '(refID in hard_references) ? "forced_requested" : "collection_failed"', '"forced_requested"', 'retained queued mob is force-deleted after the grace period'),
             'gc-soft-budget': ('code/processes/garbage.dm', '\t\tvar/refID = destroyed[1]', '\t\tif (remaining_force_dels <= 0)\n\t\t\tbreak\n\t\tvar/refID = destroyed[1]', 'soft records drain after forced budget without exceeding candidate cap'),
             'gc-hard-budget': ('code/processes/garbage.dm', 'if (remaining_force_dels <= 0)', 'if (remaining_force_dels <= -100000)', 'next forced target waits after the hard-delete cap'),
             'cancel-retention': ('code/processes/callproc.dm', 'C.args = null', '// C.args deliberately retained', 'cancel clears helper target and arguments'),

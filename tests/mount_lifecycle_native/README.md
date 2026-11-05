@@ -44,6 +44,12 @@ limits remain the safety bounds. Offline clock regressions project the actual
 fixture declaration/predicate with synthetic float32 readings; they establish
 boundary arithmetic, not corrected native behavior.
 
+Since 2026-11-05 `/mob/finalize_qdel` queues mobs instead of calling native
+`del()`. With normal startup disabled there is no collector, so the fixture's
+retirement checks (`mount_native_retired`) accept a mob that qdel marked,
+removed from the map and parked in `delayed_garbage`; they no longer require
+synchronous disappearance. This corrected contract has not had a native attempt yet.
+
 Production qdel, finalize_qdel, both human Destroy layers, the animal/mob/atom/
 datum parent chain, destroyed-event dispatcher and human/horse constructors are
 compiled from the full source. They are not replaced by Python models or fake

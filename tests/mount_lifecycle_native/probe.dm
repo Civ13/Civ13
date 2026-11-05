@@ -46,7 +46,7 @@ var/list/mount_native_observations = list()
 			C.injected = TRUE
 			if (C.operation == "mount_qdel")
 				qdel(C.A)
-				C.retirement_window = riding && isnull(riding_mob) && isnull(locate(C.a_ref))
+				C.retirement_window = riding && isnull(riding_mob) && mount_native_retired(C.a_ref)
 			else if (C.operation == "death")
 				C.A.death()
 				C.retirement_window = !riding && isnull(riding_mob) && QDELETED(src)
@@ -73,7 +73,7 @@ var/list/mount_native_observations = list()
 			C.injected = TRUE
 			if (C.operation == "rider_qdel")
 				qdel(C.H)
-				C.retirement_window = ride && isnull(rider) && stop_automated_movement && isnull(locate(C.h_ref))
+				C.retirement_window = ride && isnull(rider) && stop_automated_movement && mount_native_retired(C.h_ref)
 			else if (C.operation == "separation")
 				C.H.mount_native_separation()
 				C.retirement_window = ride && rider == C.H && stop_automated_movement && QDELETED(src)
@@ -218,7 +218,7 @@ var/list/mount_native_observations = list()
 	if (operation == "death")
 		state_ok = A && A.stat == DEAD && !A.ride && isnull(A.rider)
 		if (kind == "retiring")
-			state_ok = state_ok && isnull(locate(h_ref)) && retirement_window
+			state_ok = state_ok && mount_native_retired(h_ref) && retirement_window
 			ownership_ok = human_retiring_entry && human_destroy_calls == 1
 		else if (kind == "foreign")
 			// Legacy death still clears riding; only its foreign pointer is preserved.
@@ -235,7 +235,7 @@ var/list/mount_native_observations = list()
 			callback_ok = callback_ok && teardown_force_calls == 1
 	else if (operation == "separation")
 		if (kind == "retiring")
-			state_ok = isnull(locate(a_ref)) && H && !H.riding && isnull(H.riding_mob)
+			state_ok = mount_native_retired(a_ref) && H && !H.riding && isnull(H.riding_mob)
 			ownership_ok = retirement_window && mount_retiring_entry && mount_destroy_calls == 1
 		else if (kind == "foreign" || kind == "icon_reassignment")
 			state_ok = !H.riding && isnull(H.riding_mob) && A.ride && A.rider == J && A.stop_automated_movement
@@ -249,10 +249,10 @@ var/list/mount_native_observations = list()
 		callback_ok = force_calls == 1 && !before_force_riding && isnull(before_force_mount) && H.loc == locate(6, 6, 1)
 		callback_ok = callback_ok && ((kind == "foreign" || kind == "retiring") ? icon_calls == 0 : icon_calls == 1)
 	else if (operation == "mount_qdel")
-		state_ok = isnull(locate(a_ref)) && mount_retiring_entry && mount_destroy_calls == 1
+		state_ok = mount_native_retired(a_ref) && mount_retiring_entry && mount_destroy_calls == 1
 		callback_ok = events == 1
 		if (kind == "retiring")
-			state_ok = state_ok && isnull(locate(h_ref))
+			state_ok = state_ok && mount_native_retired(h_ref)
 			ownership_ok = retirement_window && human_retiring_entry
 		else if (kind == "foreign" || kind == "reassignment")
 			state_ok = state_ok && H.riding && H.riding_mob == B
@@ -263,10 +263,10 @@ var/list/mount_native_observations = list()
 			state_ok = state_ok && H && !H.riding && isnull(H.riding_mob)
 			ownership_ok = H.loc == locate(2, 2, 1) && !J.riding
 	else
-		state_ok = isnull(locate(h_ref)) && human_retiring_entry && human_destroy_calls == 1
+		state_ok = mount_native_retired(h_ref) && human_retiring_entry && human_destroy_calls == 1
 		callback_ok = events == 1
 		if (kind == "retiring")
-			state_ok = state_ok && isnull(locate(a_ref))
+			state_ok = state_ok && mount_native_retired(a_ref)
 			ownership_ok = retirement_window && mount_retiring_entry
 		else if (kind == "foreign" || kind == "reassignment")
 			state_ok = state_ok && A.ride && A.rider == J && A.stop_automated_movement
@@ -291,11 +291,19 @@ var/list/mount_native_observations = list()
 			qdel(M)
 	var/gone = TRUE
 	for (var/ref_id in owned_refs)
-		if (locate(ref_id))
+		if (!mount_native_retired(ref_id))
 			gone = FALSE
 	if (record)
 		mount_native_check(gone, "[id].cleanup")
 	return gone
+
+// Mobs take the garbage queue since 2026-11-05 instead of an immediate native
+// del(). With normal startup disabled there is no collector, so a retired mob
+// is one that qdel marked, removed from the map and parked in delayed_garbage;
+// a reused ref or an untouched mob fails this check.
+/proc/mount_native_retired(ref_id)
+	var/mob/M = locate(ref_id)
+	return isnull(M) || (QDELETED(M) && M.gcDestroyed == GC_QUEUED_FOR_QUEUING && isnull(M.loc) && (M in delayed_garbage))
 
 /proc/mount_native_run_case(operation, kind)
 	var/datum/mount_native_case/C = new
