@@ -53,12 +53,14 @@ var/global/list/all_submarines = list()
 			oxygen_status = "Drowning"
 		else if(T.water_depth >= SUB_WATER_DROWNING_MOD)
 			oxygen_status = "Drowning"
-		else if(T.oxygen_moles < 5)
-			oxygen_status = "Suffocating"
-		else if(T.oxygen_moles < SUB_ATMOS_NORMAL_O2 * 0.5)
-			oxygen_status = "Low O2"
 		else
-			oxygen_status = "Nominal"
+			var/datum/habitat_ledger/air = T.compartment_air()
+			if(air && air.oxygen_kpa() < SUB_AIR_SUFFOCATE_O2_KPA)
+				oxygen_status = "Suffocating"
+			else if(air && (air.oxygen_kpa() < HABITAT_MIN_OXYGEN_KPA || air.co2_kpa() > HABITAT_MAX_CO2_KPA))
+				oxygen_status = "Low O2"
+			else
+				oxygen_status = "Nominal"
 	else
 		oxygen_status = "Unknown"
 
@@ -602,7 +604,7 @@ var/global/list/all_submarines = list()
 	// Inject oxygen into all compartments via the flooding controller
 	if(global.subcom_flooding)
 		for(var/cid in global.subcom_flooding.compartment_turfs)
-			global.subcom_flooding.inject_oxygen(cid, 2.0)  // 2 moles per tick per compartment
+			global.subcom_flooding.inject_oxygen(cid, SUB_AIR_ELECTROLYSIS_O2)
 
 /datum/submarine/proc/battery_shutdown()
 	radar_active = FALSE

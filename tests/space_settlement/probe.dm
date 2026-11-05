@@ -157,6 +157,94 @@ var/space_runtime_error = FALSE
 	space_check(B.base_turf == /turf/floor/dirt/dust/regolith && B.climate == "desert", "the barren area rests on regolith with a dry climate")
 	space_check((B.icon_state in icon_states(B.icon)) && B.ambience[1] == "sound/ambience/desert.ogg", "the barren area reuses existing area art and sound")
 
+// A bare crew member: the full human constructor needs a running game.
+/mob/living/human/space_probe_crew/New(newloc)
+	loc = newloc
+	human_mob_list |= src
+/mob/living/human/space_probe_crew/adjustOxyLoss(amount)
+	oxyloss += amount
+
+// Submarine compartments share one ledger each instead of per-tile air.
+/proc/space_submarine_checks()
+	var/datum/flooding_controller/F = new
+	var/list/galley = list()
+	for (var/x in 2 to 4)
+		var/turf/T = locate(x, 5, 1)
+		galley += T.ChangeTurf(/turf/floor/sub_deck/galley, FALSE, FALSE)
+	var/turf/S = locate(6, 5, 1)
+	S = S.ChangeTurf(/turf/floor/sub_deck/storage, FALSE, FALSE)
+	var/datum/habitat_ledger/G = F.get_air(SUB_COMP_GALLEY)
+	var/datum/habitat_ledger/St = F.get_air(SUB_COMP_STORAGE)
+	space_check(istype(G) && G.volume == 3 && space_near(G.pressure_kpa(), 100) && space_near(G.oxygen_kpa(), 21), "a three-tile compartment holds one ledger of sea-level air")
+	space_check(istype(St) && St != G && F.compartment_air.len == 2, "each compartment gets its own ledger")
+	var/turf/floor/sub_deck/D = galley[1]
+	space_check(D.compartment_air() == G && G.breathable(), "deck tiles read their compartment's air")
+	var/datum/base = new
+	var/turf/floor/sub_deck/plain = locate(6, 7, 1)
+	plain = plain.ChangeTurf(/turf/floor/sub_deck, FALSE, FALSE)
+	for (var/name in plain.vars)
+		if (findtext(name, "oxygen") || findtext(name, "co2") || findtext(name, "atmos") || findtext(name, "vent"))
+			space_check(FALSE, "deck tiles carry no air of their own ([name])")
+	space_check(plain.map_storage_saved_vars == "icon_state;name" && !plain.compartment_air(), "deck tiles save only their look, and a tile outside any compartment has no ledger")
+	for (var/name in F.vars)
+		if (name in base.vars)
+			continue
+		if (findtext(name, "time"))
+			space_check(FALSE, "the controller stores no time stamp ([name])")
+
+	// Nobody aboard: the air does not tick.
+	var/before = json_encode(G.to_list())
+	F.air_tick(1, list(), list(SUB_COMP_GALLEY = 1))
+	space_check(json_encode(G.to_list()) == before, "an empty compartment's air does not tick, even with a breach")
+
+	// Water shrinks the air pocket without destroying gas.
+	var/total = G.oxygen + G.co2 + G.inert
+	F.air_tick(1, list(SUB_COMP_GALLEY = 1.5), list())
+	space_check(space_near(G.volume, 1.5) && space_near(G.pressure_kpa(), 200), "half-flooding the compartment compresses its air")
+	F.air_tick(1, list(SUB_COMP_GALLEY = 3), list())
+	space_check(space_near(G.volume, 1) && space_near(G.oxygen + G.co2 + G.inert, total), "a fully flooded compartment keeps an air pocket and all its gas")
+	F.air_tick(1, list(), list())
+	space_check(G.volume == 3 && space_near(G.pressure_kpa(), 100), "draining restores the original pressure")
+
+	// Electrolysis and scrubbers.
+	space_check(space_near(F.inject_oxygen(SUB_COMP_GALLEY, 1000), (SUB_AIR_MAX_O2_KPA - 21) * 3) && space_near(G.oxygen_kpa(), SUB_AIR_MAX_O2_KPA), "electrolysis stops at the oxygen cap")
+	space_check(F.inject_oxygen(SUB_COMP_GALLEY, 5) == 0 && F.inject_oxygen("nowhere", 5) == 0, "a full or unknown compartment takes no oxygen")
+	G.add_gas(0, 9, 0)
+	space_check(space_near(F.get_compartment_co2(SUB_COMP_GALLEY), 3) && !G.breathable(), "the panel reads CO2 partial pressure")
+	space_check(space_near(F.scrub_co2(SUB_COMP_GALLEY, 100), 9) && G.co2 == 0, "a scrubber removes only the CO2 that is there")
+
+	// Ventilation draws open compartments toward shared air and conserves gas.
+	G.add_gas(0, 6, 0)
+	new /obj/structure/machinery/sub_physical/vent_duct/galley(D)
+	new /obj/structure/machinery/sub_physical/vent_duct/storage(S)
+	var/co2 = G.co2 + St.co2
+	F.ventilate()
+	space_check(St.co2 > 0 && G.co2 < 6 && space_near(G.co2 + St.co2, co2), "ventilation shares CO2 between compartments and conserves it")
+	F.ventilation_off |= SUB_COMP_STORAGE
+	var/held = St.co2
+	F.ventilate()
+	space_check(St.co2 == held && !F.is_ventilated(SUB_COMP_STORAGE) && F.is_ventilated(SUB_COMP_GALLEY), "a compartment with ventilation shut off keeps its air")
+	space_check(F.get_compartment_oxygen("nowhere") == 0 && !F.get_air(""), "unknown compartments have no air")
+
+	// A crew member breathes the compartment's air.
+	F.ventilation_off |= SUB_COMP_GALLEY
+	var/mob/living/human/space_probe_crew/H = new(galley[2])
+	var/list/counted = F.count_breathers()
+	space_check(counted[SUB_COMP_GALLEY] == 1 && !counted[SUB_COMP_STORAGE], "the crew member is counted in the galley only")
+	var/o2 = G.oxygen
+	var/gas = G.oxygen + G.co2 + G.inert
+	F.air_tick(1, list(), list())
+	space_check(space_near(G.oxygen, o2 - HABITAT_BREATH_PER_SECOND) && space_near(G.oxygen + G.co2 + G.inert, gas), "an occupied compartment breathes and conserves gas")
+	var/stored = json_encode(St.to_list())
+	F.air_tick(1, list(), list())
+	space_check(json_encode(St.to_list()) == stored, "the empty storage compartment does not tick meanwhile")
+	G.scrub_co2(G.co2)
+	G.oxygen = 0
+	var/lost = H.losebreath
+	F.air_tick(1, list(), list())
+	space_check(H.losebreath > lost && F.get_compartment_oxygen(SUB_COMP_GALLEY) < SUB_AIR_SUFFOCATE_O2_KPA, "a crew member without oxygen suffocates")
+	space_check(F.is_compartment_vacuum(SUB_COMP_GALLEY), "the panel reports an oxygen-free compartment")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -170,6 +258,7 @@ var/space_runtime_error = FALSE
 		space_ledger_checks()
 		space_save_checks()
 		space_turf_checks()
+		space_submarine_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

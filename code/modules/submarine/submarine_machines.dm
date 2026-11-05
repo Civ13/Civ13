@@ -1372,8 +1372,8 @@
 	dat += "<tr>"
 	dat += "<th style='width:22%;'>COMPARTMENT</th>"
 	dat += "<th style='width:12%; text-align:right;'>WATER</th>"
-	dat += "<th style='width:12%; text-align:right;'>O<sub>2</sub></th>"
-	dat += "<th style='width:12%; text-align:right;'>CO<sub>2</sub></th>"
+	dat += "<th style='width:12%; text-align:right;'>O<sub>2</sub> kPa</th>"
+	dat += "<th style='width:12%; text-align:right;'>CO<sub>2</sub> kPa</th>"
 	dat += "<th style='width:16%; text-align:center;'>STATUS</th>"
 	dat += "<th style='width:12%; text-align:center;'>VENT</th>"
 	dat += "</tr>"
@@ -1418,13 +1418,13 @@
 
 			// O2 color
 			var/o2_color = "#0f0"
-			if(o2 < 5) o2_color = "#f00"
-			else if(o2 < 12) o2_color = "#f80"
+			if(o2 < SUB_AIR_SUFFOCATE_O2_KPA) o2_color = "#f00"
+			else if(o2 < HABITAT_MIN_OXYGEN_KPA) o2_color = "#f80"
 
 			// CO2 color
 			var/co2_color = "#0f0"
-			if(co2 > 5) co2_color = "#f00"
-			else if(co2 > 2) co2_color = "#f80"
+			if(co2 > SUB_AIR_DANGER_CO2_KPA) co2_color = "#f00"
+			else if(co2 > HABITAT_MAX_CO2_KPA) co2_color = "#f80"
 
 			// Water color
 			var/water_color = "#0f0"
@@ -1432,7 +1432,7 @@
 			else if(water > 10) water_color = "#ff0"
 
 			// Vent state
-			var/vent_on = (cid in global.subcom_flooding.vent_networks)
+			var/vent_on = global.subcom_flooding.is_ventilated(cid)
 
 			dat += "<tr>"
 			dat += "<td style='font-weight:bold;'>[display_name]</td>"
@@ -1512,20 +1512,12 @@
 	if(href_list["toggle_vent"])
 		var/cid = href_list["toggle_vent"]
 		if(global.subcom_flooding)
-			if(cid in global.subcom_flooding.vent_networks)
-				var/list/vents = global.subcom_flooding.vent_networks[cid]
-				for(var/turf/floor/sub_deck/T in vents)
-					T.vent_active = FALSE
-				global.subcom_flooding.vent_networks -= cid
+			if(global.subcom_flooding.is_ventilated(cid))
+				global.subcom_flooding.ventilation_off |= cid
 				to_chat(usr, "<span class='notice'>Ventilation shut down for [cid].</span>")
-			else
-				if(cid in global.subcom_flooding.compartment_turfs)
-					global.subcom_flooding.vent_networks[cid] = list()
-					for(var/turf/floor/sub_deck/T in global.subcom_flooding.compartment_turfs[cid])
-						T.vent_active = TRUE
-						T.vent_id = cid
-						global.subcom_flooding.vent_networks[cid] += T
-					to_chat(usr, "<span class='notice'>Ventilation restored for [cid].</span>")
+			else if(cid in global.subcom_flooding.compartment_air)
+				global.subcom_flooding.ventilation_off -= cid
+				to_chat(usr, "<span class='notice'>Ventilation restored for [cid].</span>")
 
 	interact(usr)
 
