@@ -284,6 +284,8 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('freeze_idle_minutes', freeze_idle_minutes='soon')
         self.refuse_config('wake_ignore', wake_ignore=[1])
         self.refuse_config('freeze_requires_save', freeze_requires_save=1)
+        self.refuse_config('doorman_port', doorman_port=1713.0)
+        self.refuse_config('doorman_port', doorman_port=70000)
         self.group.update(freeze_idle_minutes=5, cold_start_estimate_seconds=90)
         group = self.write_group()
         config = shard_group.region_config(group, group['regions'][1])
@@ -352,6 +354,18 @@ class ShardGroupTests(unittest.TestCase):
             self.assertEqual({}, shard_group.supervise(group, start))
             listening.discard(47202)
             self.assertEqual({'agents': ['deep']}, shard_group.supervise(group, start))
+            # One region failing to start its agent does not keep the others or the coordinator down.
+            listening.clear()
+            alive.clear()
+            real = shard_group.RegionPlatform.start_agent
+            def flaky(platform):
+                if platform.config['region'] == 'gaia':
+                    raise OSError('state_dir is not writable')
+                return real(platform)
+            with mock.patch.object(shard_group.RegionPlatform, 'start_agent', flaky):
+                result = shard_group.supervise(group, start)
+            self.assertEqual((['deep'], True), (result['agents'], result['coordinator']))
+            self.assertIn('not writable', result['errors']['gaia'])
         self.group['regions'][0].pop('transfer_port')
         self.group['regions'][1].pop('transfer_port')
         self.assertEqual({}, shard_group.supervise(self.write_group()))

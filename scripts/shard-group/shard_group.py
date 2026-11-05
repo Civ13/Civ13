@@ -129,6 +129,8 @@ def load_group(path):
             ok = type(value) is list and all(type(item) is str for item in value)
         elif isinstance(default, str):
             ok = type(value) is str and bool(value)
+        elif key == 'doorman_port':
+            ok = type(value) is int and 1 <= value <= 65535
         else:
             ok = type(value) in (int, float) and value >= 0
         if not ok:
@@ -422,8 +424,12 @@ def supervise(group, start=detach):
         return {}
     started = {}
     for region in group['regions']:
-        if RegionPlatform(region_config(group, region)).start_agent():
-            started.setdefault('agents', []).append(region['id'])
+        # One region that cannot start its agent must not keep the others down.
+        try:
+            if RegionPlatform(region_config(group, region)).start_agent():
+                started.setdefault('agents', []).append(region['id'])
+        except OSError as error:
+            started.setdefault('errors', {})[region['id']] = str(error)[:300]
     if ensure_coordinator(group, start):
         started['coordinator'] = True
     return started
