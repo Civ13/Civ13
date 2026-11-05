@@ -111,7 +111,7 @@ var/global/list/agent_characters = list()
 		update_handover_verbs(C)
 
 /proc/agent_control_scopes()
-	return list("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters")
+	return list("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits")
 
 /proc/agent_control_valid_name(name)
 	if (!istext(name) || length(name) < 1 || length(name) > 32)
@@ -277,6 +277,9 @@ var/global/list/agent_characters = list()
 		"character_act" = list("scope" = "characters"),
 		"character_queue" = list("scope" = "characters"),
 		"character_release" = list("scope" = "characters"),
+		"visit_status" = list("scope" = "visits"),
+		"visit_order" = list("scope" = "visits"),
+		"visit_start" = list("scope" = "visits"),
 	)
 	return actions
 
@@ -313,6 +316,9 @@ var/global/list/agent_characters = list()
 		if ("character_act") return act_character_act(A, req)
 		if ("character_queue") return act_character_queue(A, req)
 		if ("character_release") return act_character_release(A, req)
+		if ("visit_status") return act_visit_status(A, req)
+		if ("visit_order") return act_visit_order(A, req)
+		if ("visit_start") return act_visit_start(A, req)
 	agent_fail("unknown_action")
 
 // ---------------------------------------------------------------------------

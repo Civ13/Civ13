@@ -93,6 +93,18 @@ ACTIONS = {
         "stop_on_failure": {"type": "boolean", "description": "skip the rest when a step fails (default true)"},
     }, ["character"])),
     "character_release": ("characters", "Stop controlling a character; spawned ones can be deleted.", _schema({"character": CHARACTER, "delete": {"type": "boolean"}}, ["character"])),
+    "visit_status": ("visits", "The running nomad visit (raid or trade): state, party, nearby people, new events since an id, the cue the leader is about to say, and the orders allowed now.", _schema({"since": {"type": "integer"}})),
+    "visit_order": ("visits", "Order the running nomad visit: say, retreat, assault, bargain, tactic, focus, loot or price. The party controller checks every order against the current state and bounds.", _schema({
+        "order": {"type": "string", "enum": ["say", "retreat", "assault", "bargain", "tactic", "focus", "loot", "price"]},
+        "text": {"type": "string", "description": "say: up to 200 characters"},
+        "emote": {"type": "string", "description": "say: optional emote, up to 120 characters"},
+        "decision": {"type": "string", "enum": ["accept", "counter", "refuse"]},
+        "demand": {"type": "integer", "description": "bargain counter: new tribute demand within min_demand..max_demand"},
+        "tactic": {"type": "string", "enum": ["advance", "hold", "flank"]},
+        "target": TARGET,
+        "price": {"type": "integer", "description": "price: half to double the good's base price"},
+    }, ["order"])),
+    "visit_start": ("visits", "Start a nomad visit (raiders or traders) at the busiest settlement, or near a target.", _schema({"kind": {"type": "string", "enum": ["raid", "trade"]}, "target": TARGET, "size": {"type": "integer", "minimum": 2, "maximum": 6}})),
 }
 
-SCOPES = ("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters")
+SCOPES = ("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits")

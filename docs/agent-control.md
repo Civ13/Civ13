@@ -36,6 +36,7 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   | `server` | `start_round`, `restart` |
   | `spawn` | `spawn_atom`, `delete_atom` |
   | `characters` | `character_spawn`, `character_list`, `character_observe`, `character_act`, `character_queue`, `character_release` |
+  | `visits` | `visit_status`, `visit_order`, `visit_start` |
   | `*` | everything |
 
 - **Audit.** Every mutating action is written to the admin log as
@@ -154,6 +155,24 @@ its agent from the config, stops its queue. Movement waits for the mob's
 movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
+
+## Nomad visits
+
+The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):
+
+- `visit_status` returns `{"active": false}` or the visit's kind, clan, state,
+  party, nearby people (by ref, with trade credit), tribute or goods, the
+  orders allowed now, the cue the leader is about to say, and events since
+  `since` (pass the last `last_event`). Reading it attaches the coordinator for
+  10 seconds.
+- `visit_order` sends one order (`say`, `retreat`, `assault`, `bargain`,
+  `tactic`, `focus`, `loot` or `price`). The party controller checks it against
+  the state and bounds and fails with `refused` and the reason otherwise.
+- `visit_start` starts raiders or traders (`kind`) at the busiest settlement,
+  or near `target`, with an optional `size`.
+
+Orders and starts go to the admin log. `visitor_voice.py` (see Tools) is a
+ready-made coordinator.
 
 ## Tools
 
@@ -324,6 +343,16 @@ the model and printed to the run log. A second greeting to someone greeted in th
 is trimmed from what she says. The mining goal names the next concrete step, such as `dig_down`
 when she already carries a shovel. The primer and the goal ladder call the chopped stack `wood logs`
 (the game's name for it; only beds and doors take finished planks cut from logs with a hatchet).
+
+`visitor_voice.py` voices nomad visits with the same Ollama settings. It
+waits for a visit (or starts one with `--start raid|trade`), and when the
+leader has a cue, players speak or the state changes, it asks the model for a
+line and up to a few orders, which the server checks:
+
+```text
+python tools/agent-control/visitor_voice.py --start raid --size 4
+python tools/agent-control/visitor_voice.py --once
+```
 
 ## Tests
 
