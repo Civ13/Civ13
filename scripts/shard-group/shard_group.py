@@ -581,6 +581,22 @@ def group_check_update(group, only=None, platform=None):
             'regions': regions}
 
 
+def region_summary(group, platform=None):
+    """Every region's state and player count, for the bot's status line. Never asks a
+    sleeping world anything (that would queue a connection and wake it)."""
+    summary = []
+    for region, host in hosts(group, None, platform):
+        try:
+            entry = host.status()
+        except (OSError, RuntimeError, ValueError) as error:
+            entry = {'state': 'unknown', 'error': str(error)[:120]}
+        world = entry.get('world') or {}
+        summary.append({'id': region['id'], 'name': region['name'], 'kind': region['kind'], 'port': region['port'],
+                        'state': entry.get('state', 'unknown'),
+                        'players': world.get('clients') if type(world.get('clients')) is int else None})
+    return summary
+
+
 def supervise(group, start=detach):
     """Start any of the group's transfer agents or its coordinator that is not running.
 

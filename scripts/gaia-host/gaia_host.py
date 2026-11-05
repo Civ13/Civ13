@@ -948,6 +948,12 @@ def main(argv=None):
     try:
         if args.action == 'status':
             result = host.status()
+            if host.config.get('group_config'):  # a region: the bot also shows its peers
+                try:
+                    shard_group = shard_group_module()
+                    result['regions'] = shard_group.region_summary(shard_group.load_group(host.config['group_config']))
+                except (OSError, ValueError) as error:
+                    result['regions_error'] = str(error)[:200]
         elif args.action == 'freeze':
             result = host.freeze()
         elif args.action == 'thaw':

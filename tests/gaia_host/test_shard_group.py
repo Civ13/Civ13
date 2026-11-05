@@ -339,6 +339,19 @@ class ShardGroupTests(unittest.TestCase):
         status = shard_group.group_status(group, 'deep', platform=self.machine)
         self.assertEqual('stopped', status['regions']['deep']['state'])
 
+    def test_region_summary_lists_every_region_without_waking_a_sleeper(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        state = self.base / 'regions' / 'deep' / 'data' / 'shard-host'
+        (state / 'freeze.json').write_text(json.dumps({'pid': 77, 'frozen_at': 0}))
+        self.machine.up.add(1721)
+        self.machine.pids.add(77)
+        summary = shard_group.region_summary(group, platform=self.machine)
+        self.assertEqual([r['id'] for r in group['regions']], [entry['id'] for entry in summary])
+        deep = next(entry for entry in summary if entry['id'] == 'deep')
+        self.assertEqual(('asleep', None, 1721), (deep['state'], deep['players'], deep['port']))
+        self.assertEqual('stopped', summary[0]['state'])
+
     def test_a_cold_region_starts_through_its_own_worker(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
