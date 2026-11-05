@@ -16,6 +16,13 @@ public static class ServerBrowser {
             output.WriteLine($"   Round: {Display(server.RoundId)} | Elapsed: {Elapsed(server)}");
             output.WriteLine($"   {server.Host}:{server.Port} | Checked: {server.CheckedAt:HH:mm:ss} UTC");
         }
+        var dormant = snapshot.Dormant ?? [];
+        for (var index = 0; index < dormant.Count; index++) {
+            var server = dormant[index];
+            output.WriteLine($"{snapshot.Servers.Count + index + 1}: {server.Name} | {(server.State == "waking" ? "Waking" : "Asleep")}; choosing it wakes the server (~{server.WakeEstimateSeconds}s)");
+            output.WriteLine($"   Last seen: {server.Players} players | Map: {Display(server.Map)} | Mode: {Display(server.Mode)}" +
+                (server.CachedAgeSeconds is { } age ? $" | {Age(age)} ago" : ""));
+        }
         output.WriteLine("R: Refresh   B: Back");
     }
 
@@ -32,7 +39,7 @@ public static class ServerBrowser {
                 output.WriteLine("   Current status unknown; no cached result is available.");
         }
         if (snapshot.Unverified > 0) output.WriteLine($"{snapshot.Unverified} configured endpoint(s) unreachable or not returning valid BYOND status.");
-        if (snapshot.Servers.Count == 0) {
+        if (snapshot.Servers.Count == 0 && !(snapshot.Dormant?.Count > 0)) {
             if (snapshot.PacingPaused || snapshot.Deferred?.Count > 0)
                 output.WriteLine("No selectable status yet. Deferred or paused checks do not mean the servers are offline.");
             else output.WriteLine("No configured endpoint returned valid BYOND status.");
@@ -46,6 +53,8 @@ public static class ServerBrowser {
         var elapsed = TimeSpan.FromSeconds(seconds);
         return $"{(int)elapsed.TotalHours}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
     }
+    public static string Age(int seconds) =>
+        seconds < 120 ? $"{seconds}s" : seconds < 7200 ? $"{seconds / 60}m" : $"{seconds / 3600}h";
     public static string Display(string value) => value.Length == 0 ? "unavailable" : value;
     public static async Task Run(string provider, IServerDiscovery discovery, TextReader input,
         TextWriter output, Func<VerifiedGameServer, Task> launch) {
@@ -63,29 +72,37 @@ public static class ServerBrowser {
                 var choice = input.ReadLine()?.Trim();
                 if (choice == null || choice.Equals("B", StringComparison.OrdinalIgnoreCase)) return;
                 if (choice.Equals("R", StringComparison.OrdinalIgnoreCase)) break;
-                GameServer selected;
+                GameServer? selected = null;
+                DormantServer? sleeping = null;
                 if (pending != null && choice.Equals("J", StringComparison.OrdinalIgnoreCase)) selected = pending;
                 else {
+                    var dormant = snapshot?.Dormant ?? [];
                     if (snapshot == null || !int.TryParse(choice, NumberStyles.None, CultureInfo.InvariantCulture, out var number) ||
-                        number < 1 || number > snapshot.Servers.Count) {
+                        number < 1 || number > snapshot.Servers.Count + dormant.Count) {
                         output.WriteLine("Choose a listed server, R or B.");
                         continue;
                     }
-                    selected = snapshot.Servers[number - 1];
+                    if (number <= snapshot.Servers.Count) selected = snapshot.Servers[number - 1];
+                    else sleeping = dormant[number - snapshot.Servers.Count - 1];
                 }
+                var name = selected?.Name ?? sleeping!.Name;
                 try {
-                    var verified = await discovery.Recheck(selected);
+                    var verified = sleeping != null ? await discovery.WakeAndVerify(sleeping, output.WriteLine)
+                        : await discovery.Recheck(selected!);
                     await launch(verified);
                     return;
+                } catch (TopicWaitException wait) when (selected == null) {
+                    snapshot = null;
+                    output.WriteLine($"{name} is waking. Wait {wait.Seconds} seconds, then R to refresh. No automatic check will run.");
                 } catch (TopicWaitException wait) {
                     pending = selected;
-                    output.WriteLine($"Wait {wait.Seconds} seconds before rechecking {selected.Name}. Press J when ready, or B to cancel.");
+                    output.WriteLine($"Wait {wait.Seconds} seconds before rechecking {name}. Press J when ready, or B to cancel.");
                     output.WriteLine("No automatic check will run. Wall-clock spacing cannot prove server game time advanced or clear a ban.");
                 } catch (TopicPacingException) {
                     pending = null; snapshot = null;
                     output.WriteLine("Public checks paused: shared request timing could not be verified. Local timing state needs review. B: Back");
-                } catch (IOException) {
-                    output.WriteLine("The selected server could not be verified or started. Refresh and choose again.");
+                } catch (IOException error) {
+                    output.WriteLine(sleeping != null ? error.Message : "The selected server could not be verified or started. Refresh and choose again.");
                     // Do not turn a failed recheck into another immediate status sweep.
                     // Some servers rate-limit Topic queries; only explicit Refresh probes again.
                     snapshot = null;

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "template_id": "safehouse_draft_v1",
+  "revision": 1,
+  "width": 40,
+  "height": 48,
+  "decks": [
+    {
+      "layer": 1,
+      "id": "ground"
+    },
+    {
+      "layer": 2,
+      "id": "upper"
+    }
+  ],
+  "berths": []
+}

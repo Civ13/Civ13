@@ -54,6 +54,7 @@ try {
     if (args.SequenceEqual(new[] { "--discovery-only" })) {
         await CachedJoinTests.Run(root);
         await ServerDiscoveryTests.Run(root);
+        await HostStatusTests.Run(root);
         await TopicPacingTests.Run(root);
         return 0;
     }
@@ -61,6 +62,7 @@ try {
     assertions += await TransportRetryTests.Run(root);
     assertions += await CachedJoinTests.Run(root);
     assertions += await ServerDiscoveryTests.Run(root);
+    assertions += await HostStatusTests.Run(root);
     assertions += await TopicPacingTests.Run(root);
     assertions += LocalHostingTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);

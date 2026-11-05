@@ -62,3 +62,31 @@ var/climate_runtime_error = FALSE
 	climate_check(isnull(local_precipitation(high)), "dry weather has no precipitation")
 	map.elevation_lapse_c_per_km = 50
 	climate_check(elevation_temperature_drop(high) == 0, "an invalid lapse rate is ignored")
+	map.elevation_lapse_c_per_km = 6.5
+	climate_text_checks(high, low)
+
+// Generated region maps carry their profile as text on the map metadata.
+/proc/climate_text_checks(turf/high, turf/low)
+	var/list/authored = map.elevation_regions
+	map.elevation_regions = null
+	map.elevation_regions_text = "1 5 1 10 1 1000|6 10 1 2 1 -40"
+	map.elevation_profile_cache = null
+	climate_check(get_elevation(high) == 1000 && get_elevation(low) == 0 && get_elevation(locate(8, 1, 1)) == -40, "text profile gives the same heights as authored rows")
+	climate_check(elevation_temperature_drop(high) == 6.5, "text profile feeds the lapse rate")
+	map.elevation_regions = authored
+	map.elevation_profile_cache = null
+	climate_check(get_elevation(high) == 2000, "authored rows win over the text form")
+	climate_check(!length(elevation_regions_from_text("")), "empty text is a flat profile")
+	for (var/bad in list("1 5 1 10 1", "1 5 1 10 1 20x", "1,5,1,10,1,20", "1 5 1 10 1 1e3", "1  5 1 10 1 20"))
+		var/refused = FALSE
+		try
+			elevation_regions_from_text(bad)
+		catch
+			refused = TRUE
+		climate_check(refused, "malformed text '[bad]' is refused")
+	var/refused_overlap = FALSE
+	try
+		build_elevation_profile(0, elevation_regions_from_text("1 5 1 5 1 100|5 6 5 6 1 200"), 10, 10, 1)
+	catch
+		refused_overlap = TRUE
+	climate_check(refused_overlap, "text rows still get the overlap check")

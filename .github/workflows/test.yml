@@ -721,7 +721,8 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/dagger_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/dagger-compile"
+          python3 tests/dagger_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/dagger-compile/home" --map home
+          python3 tests/dagger_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/dagger-compile/raid" --map raid
       - name: Retain Dagger native compile evidence
         if: always() && needs.changes.result == 'success' && steps.dagger_compile.outcome != 'skipped'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

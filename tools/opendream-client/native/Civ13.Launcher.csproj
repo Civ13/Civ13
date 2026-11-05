@@ -28,6 +28,7 @@
     <Compile Include="Connection.cs" />
     <Compile Include="ServerCatalog.cs" />
     <Compile Include="ServerStatus.cs" />
+    <Compile Include="HostStatus.cs" />
     <Compile Include="ServerBrowser.cs" />
     <Compile Include="CommunityLinks.cs" />
     <Compile Include="LocalDreamDaemon.cs" />

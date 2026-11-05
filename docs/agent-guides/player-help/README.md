@@ -45,3 +45,15 @@ silently dropped from Help. After a civ13-wiki merge that edits a pinned guide,
 run `python3 scripts/agent_preflight.py wiki-pins --wiki-root <wiki checkout> --write`,
 review the changed pages and open a re-pin PR. Deployment also needs the
 worker's wiki_root updated and a worker restart.
+
+<!-- 2026-11-05: field care, trails and limb states -->
+`medical_knowledge()` and `region_travel_knowledge()` in scripts/player_help_bridge.py
+are compact reviewed records with marker checks over medical.dm, organ_external.dm,
+organ.dm, heart.dm, predefines.dm, the silver reagent and region_travel.dm; a
+changed marker fails the worker at startup, so re-review the record when those
+files change. The server snapshot's body_damage rows now carry the limb states a
+player sees on self-examine (bleeding, artery_cut, tourniquet, broken, splinted);
+either a field-care question or a reported state puts the medical record first.
+`agent_preflight.py wiki-pins` also lists guide and game-mode pages that are not
+pinned yet. The Factory Automation guide from civ13-wiki#138 is not pinned until
+that PR merges; add it with aliases during the re-pin.

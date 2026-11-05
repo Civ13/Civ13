@@ -19,6 +19,7 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (optionally trimming its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
 | `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
+| `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and runs the doorman on `doorman_port`. Use it instead of `watch`. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
 seconds and continues in a detached worker. Its progress (`phase`, `error`,
@@ -68,4 +69,28 @@ watcher thaws it, then logs in normally. Things to know before running `watch`:
   it stays off by default because paging Gaia back in can outlast that wait.
 - Optional config keys: `freeze_idle_minutes` (15), `freeze_trim_memory`
   (false), `wake_ignore` (`["127.0.0.1", "::1"]`), `wake_poll_seconds` (0.2).
+
+## The doorman (`serve`)
+
+`serve` adds a small always-on status service so the Civ13 launcher can list a
+frozen server without waking it. It listens on TCP `doorman_port` (1713) on
+`doorman_bind` (`0.0.0.0`); forward that port on the router like the game
+ports. It speaks BYOND Topic framing and answers only:
+
+- `?host_status=1`: every instance's port, state (`awake`, `asleep`, `waking`,
+  `stopped`), `wake_estimate_seconds`, and the players, map and mode the world
+  last reported with their age. Awake worlds are asked for `status` from
+  127.0.0.1 every 30 seconds, which does not keep them awake.
+- `?wake=1&port=1714`: thaws that instance, unless the machine has less than
+  `wake_min_free_mb` (1024) of physical memory free; then it stays asleep and
+  the launcher tells the player the host is low on memory (0 turns the check
+  off; a direct connection to the game port still thaws it). One wake per
+  address every 30 seconds; all requests are limited to 40 per address per minute and 16 open
+  connections.
+
+The launcher lists asleep servers from this cache and offers "Wake and join":
+it wakes the server, waits until the doorman reports it awake, then checks the
+game port directly and joins. The doorman never forwards game traffic, so bans
+and logs still see each player's own address. Without the doorman (plain
+`watch`), the launcher still works: its direct status check wakes the server.
 

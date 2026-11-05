@@ -65,21 +65,49 @@ public sealed record CachedStatus(GameServer? Server, DateTimeOffset CheckedAt, 
     internal RecentGameStatus? Recent { get; init; }
 }
 public sealed record DeferredTarget(GameTarget Target, int Seconds, CachedStatus? Cached = null);
-public sealed record ServerSnapshot(IReadOnlyList<GameServer> Servers, int Unverified, IReadOnlyList<DeferredTarget>? Deferred = null, bool PacingPaused = false);
+// Dormant: instances the host's doorman reports asleep or waking. They were not
+// queried directly, so browsing does not wake them.
+public sealed record ServerSnapshot(IReadOnlyList<GameServer> Servers, int Unverified, IReadOnlyList<DeferredTarget>? Deferred = null,
+    bool PacingPaused = false, IReadOnlyList<DormantServer>? Dormant = null);
 
 public interface IServerDiscovery {
     Task<ServerSnapshot> Fetch(string provider);
     Task<VerifiedGameServer> Recheck(GameServer selected);
+    // Thaw a dormant instance through its host, wait until it reports awake, then
+    // verify the game port directly exactly as a normal refresh would.
+    Task<VerifiedGameServer> WakeAndVerify(DormantServer server, Action<string> progress, CancellationToken token = default) =>
+        throw new IOException("This server list cannot wake servers.");
 }
 
 public sealed class ServerDiscovery : IServerDiscovery {
     private readonly Func<GameTarget, Task<VerifiedGameServer>> query;
-    public ServerDiscovery(Func<GameTarget, Task<VerifiedGameServer>>? query = null) {
+    private readonly Func<string, Task<IReadOnlyDictionary<GameTarget, DormantServer>>>? doorman;
+    private readonly Func<GameTarget, Task<string>> wake;
+    private readonly Func<TimeSpan, CancellationToken, Task> delay;
+    private readonly Func<TimeSpan> elapsed;
+    // Production asks each host's doorman first; an injected query alone keeps the direct-only behavior.
+    public ServerDiscovery(Func<GameTarget, Task<VerifiedGameServer>>? query = null,
+        Func<string, Task<IReadOnlyDictionary<GameTarget, DormantServer>>>? doorman = null,
+        Func<GameTarget, Task<string>>? wake = null, Func<TimeSpan, CancellationToken, Task>? delay = null,
+        Func<TimeSpan>? elapsed = null) {
         this.query = query ?? (target => ByondStatus.Query(target));
+        this.doorman = doorman ?? (query == null ? provider => HostStatus.Query(provider) : null);
+        this.wake = wake ?? (target => HostStatus.Wake(target));
+        this.delay = delay ?? Task.Delay;
+        var started = System.Diagnostics.Stopwatch.StartNew();
+        this.elapsed = elapsed ?? (() => started.Elapsed);
     }
     public async Task<ServerSnapshot> Fetch(string provider) {
+        // A missing or failing doorman just means every candidate is checked directly.
+        IReadOnlyDictionary<GameTarget, DormantServer> hosted = new Dictionary<GameTarget, DormantServer>();
+        if (doorman != null) {
+            try { hosted = await doorman(provider); }
+            catch (IOException) { }
+        }
+        var dormant = hosted.Values.Where(server => server.State is "asleep" or "waking").OrderBy(server => server.Target.Port).ToArray();
         // Exactly two configured endpoints per provider, at most two active sockets.
-        var results = await Task.WhenAll(ServerCatalog.Candidates(provider).Select(async target => {
+        var results = await Task.WhenAll(ServerCatalog.Candidates(provider)
+            .Where(target => !dormant.Any(server => server.Target == target)).Select(async target => {
             try { return (Server: (GameServer?)(await query(target)).Status, Wait: (DeferredTarget?)null, Paused: false); }
             catch (TopicWaitException wait) { return (Server: wait.Cached?.Server, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds, wait.Cached), Paused: false); }
             catch (TopicPacingException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: true); }
@@ -87,7 +115,26 @@ public sealed class ServerDiscovery : IServerDiscovery {
         }));
         return new ServerSnapshot(Array.AsReadOnly(results.Select(item => item.Server).OfType<GameServer>().ToArray()),
             results.Count(item => item.Server == null && item.Wait == null && !item.Paused),
-            Array.AsReadOnly(results.Select(item => item.Wait).OfType<DeferredTarget>().ToArray()), results.Any(item => item.Paused));
+            Array.AsReadOnly(results.Select(item => item.Wait).OfType<DeferredTarget>().ToArray()), results.Any(item => item.Paused),
+            Array.AsReadOnly(dormant));
     }
     public Task<VerifiedGameServer> Recheck(GameServer selected) => ServerCatalog.NativeEndpoint(selected);
+    public async Task<VerifiedGameServer> WakeAndVerify(DormantServer server, Action<string> progress, CancellationToken token = default) {
+        server.Target.Validate();
+        if (doorman == null) throw new IOException("This server list cannot wake servers.");
+        progress($"Waking {server.Name}...");
+        var started = elapsed();
+        var state = await wake(server.Target);
+        while (state != "awake") {
+            if (state == "stopped") throw new IOException(server.Name + " is not running. Refresh later.");
+            var waited = elapsed() - started;
+            if (waited > HostStatus.WakeLimit) throw new IOException(server.Name + " did not wake in time. Refresh and try again.");
+            progress($"Waking {server.Name}... {(int)waited.TotalSeconds}s");
+            await delay(HostStatus.PollInterval, token);
+            var current = await doorman(server.Provider);
+            state = current.TryGetValue(server.Target, out var latest) ? latest.State : "stopped";
+        }
+        progress($"Verifying {server.Name}...");
+        return await query(server.Target);
+    }
 }
