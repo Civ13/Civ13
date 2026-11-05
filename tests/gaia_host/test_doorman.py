@@ -33,6 +33,11 @@ class Machine(base.FakeMachine):
     def byond_pager_running(self):
         return self.pager
 
+    def terminate(self, pid):
+        self.calls.append(['terminate', pid])
+        self.up = False
+        self.suspended = 0
+
     def status_topic(self, port):
         if self.suspended:
             raise OSError('frozen')
@@ -66,6 +71,7 @@ class DoormanTests(base.GaiaHostTests):
         self.clock[0] += 120
         entry = self.ask('host_status=1')['instances'][0]
         self.assertEqual((entry['state'], entry['map_name'], entry['players'], entry['cached_age']), ('asleep', 'Gaia', 0, 120))
+        self.assertFalse(entry['cold'])  # frozen in memory: thaws at once
         self.assertEqual(self.machine.suspended, 1)
 
     def test_wake_thaws_once_and_reads_waking_until_the_world_answers(self):
@@ -103,6 +109,72 @@ class DoormanTests(base.GaiaHostTests):
         self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
         self.assertEqual(self.machine.suspended, 0)
 
+    # -- low-memory eviction -------------------------------------------------
+    def test_low_memory_stops_a_frozen_world_which_then_starts_from_its_save(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.machine.free_mb = 500
+        self.door.step()
+        self.assertIn(['terminate', 4242], self.machine.calls)
+        self.assertEqual(self.host.cold()['evicted'], 'low memory: 500 MB free')
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['cold']), ('asleep', True))
+        self.door.step()  # spaced: nothing left to stop, and no second attempt yet
+        self.assertEqual(self.machine.calls.count(['terminate', 4242]), 1)
+
+    def test_eviction_needs_a_save_before_freezing_and_can_be_turned_off(self):
+        self.running()
+        self.host.config['freeze_requires_save'] = False
+        self.host.freeze()
+        self.machine.free_mb = 500
+        self.door.step()
+        self.assertNotIn(['terminate', 4242], self.machine.calls)
+        with self.assertRaisesRegex(gaia_host.Refused, 'saved before freezing'):
+            self.host.evict()
+        self.host.config['freeze_requires_save'] = True
+        self.host.config['evict_below_free_mb'] = 0
+        self.clock[0] += 120
+        self.door.step()
+        self.assertNotIn(['terminate', 4242], self.machine.calls)
+
+    def test_a_wake_stops_the_longest_asleep_other_world_to_make_room(self):
+        class Sleeper:
+            def __init__(self, port, frozen_at, machine):
+                self.config = dict(gaia_host.FREEZE_DEFAULTS, port=port)
+                self.state = {'pid': port, 'frozen_at': frozen_at}
+                self.cold_state = None
+                self.machine = machine
+                self.log = lambda values: None
+
+            def frozen(self):
+                return self.state
+
+            def cold(self):
+                return self.cold_state
+
+            def byond_signed_in(self):
+                return True
+
+            def evict(self, reason):
+                self.cold_state, self.state = {'evicted': reason}, None
+                self.machine.free_mb += 1000
+                return {'evicted': True}
+
+            def thaw(self, reason):
+                self.state = None
+                return {'thawed': True}
+
+        machine = Machine()
+        machine.free_mb = 300
+        old, newer, wanted = Sleeper(1801, 10, machine), Sleeper(1802, 20, machine), Sleeper(1803, 5, machine)
+        door = doorman.Doorman([old, newer, wanted], machine, clock=lambda: self.clock[0], wall=lambda: self.clock[0])
+        reply = door.handle('wake=1&port=1803', '203.0.113.9')
+        self.assertEqual((reply['ok'], reply['state']), (True, 'waking'))
+        # 1803 itself froze first but is the one being woken; 1801 is the longest-asleep other world.
+        self.assertEqual((old.cold_state, newer.cold_state), ({'evicted': 'memory for waking port 1803'}, None))
+        self.assertIsNone(wanted.state)
+
     # -- surviving a power-down ---------------------------------------------
     def saved_at(self, moment):
         base.write_save(self.repo / 'map_saves')
@@ -133,7 +205,7 @@ class DoormanTests(base.GaiaHostTests):
         self.assertIsNone(self.host.frozen())
         self.assertIsNotNone(self.host.cold())
         entry = self.ask('host_status=1')['instances'][0]
-        self.assertEqual((entry['state'], entry['wake_estimate']), ('asleep', 300))
+        self.assertEqual((entry['state'], entry['wake_estimate'], entry['cold']), ('asleep', 300, True))
         self.machine.free_mb = 2000  # enough to thaw, not enough to load a save
         refused = self.ask('wake=1&port=1714')
         self.assertEqual((refused['ok'], refused['need_mb']), (False, 2560))

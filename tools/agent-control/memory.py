@@ -190,6 +190,13 @@ class CharacterMemory:
                 self.dirty = True
         return problems[:3]
 
+    def boat(self, name, x, y, z):
+        """Where she left a boat moored, so travel can take it back (the "boat" place)."""
+        places = self.data["places"].setdefault("boat", [])
+        places[:] = [p for p in places if max(abs(p["x"] - x), abs(p["y"] - y)) > 3 or p.get("z") != z]
+        self._place("boat", name, x, y, z)
+        self.event(f"left my {_clip(name, 30)} moored at ({x},{y})")
+
     def set_home(self, x, y, z, why="home"):
         self.data["home"] = {"x": x, "y": y, "z": z, "why": _clip(why, 60)}
         self.event(f"made {why} my home at ({x},{y})")
@@ -305,7 +312,7 @@ class CharacterMemory:
             dx, dy = home["x"] - x, home["y"] - y
             far = max(abs(dx), abs(dy))
             lines.append(f"Home ({home.get('why')}): " + ("you are there" if far <= 3 else f"{far} tiles {_direction(dx, dy)}"))
-        for kind in ("clean water", "ore", "clay", "rock", "fire"):
+        for kind in ("clean water", "ore", "clay", "rock", "fire", "boat"):
             known = [p for p in self.data["places"].get(kind, []) if p.get("z") == z]
             if not known:
                 continue

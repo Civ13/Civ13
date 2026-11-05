@@ -70,6 +70,9 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
                    'cold_start_min_free_mb': 2560,
+                   # serve: while less physical memory than this is free, stop the longest-frozen
+                   # world (it has saved, so it starts from that save on its next wake). 0 = never.
+                   'evict_below_free_mb': 1024,
                    # dd.exe -public needs the host's BYOND account signed in, which on Windows
                    # lives in the BYOND pager (byond.exe) of the same logon session
                    'start_requires_byond_pager': True}
@@ -354,6 +357,19 @@ class Platform:
         finally:
             ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
 
+    def terminate(self, pid):
+        if os.name != 'nt':
+            os.kill(pid, 9)  # SIGKILL also ends a stopped process
+            return
+        handle = self._open(pid, 0x0001)  # PROCESS_TERMINATE
+        if not handle:
+            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
+        try:
+            if not ctypes.windll.kernel32.TerminateProcess(ctypes.c_void_p(handle), 1):
+                raise RuntimeError('TerminateProcess failed (WinError %d)' % ctypes.GetLastError())
+        finally:
+            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+
     def resume(self, pid):
         if os.name != 'nt':
             os.kill(pid, 18)  # SIGCONT
@@ -419,6 +435,43 @@ def check_save(saves):
         if intent.get('generation') != marker:
             raise Refused('restart_intent.json belongs to another save')
     return marker
+
+
+def recover_interrupted_save(repo, now=time.time):
+    """Put the last completed generation back after an interrupted save.
+
+    A save removes map_saves/save_complete.txt first and writes it last, so a
+    crash or power-down during the save leaves files without a marker, which
+    check_save refuses. The world copied the whole previous generation to
+    map_backups/ before replacing any level, so when that copy is complete and
+    marked it is swapped in (two renames, no copying) and the interrupted files
+    are kept beside it as map_saves.interrupted-<time> for inspection, the
+    newest one only. Returns (generation, interrupted path) or None when
+    nothing was done. A restart intent means the restart transaction owns the
+    recovery, so nothing is touched then.
+    """
+    saves = repo / 'map_saves'
+    backups = repo / 'map_backups'
+    if saves.is_symlink() or not saves.is_dir() or backups.is_symlink() or not backups.is_dir():
+        return None
+    names = {p.name for p in saves.iterdir()}
+    if 'save_complete.txt' in names or 'restart_intent.json' in names:
+        return None
+    if not any(name in ('map.txt', 'round.json') or name.endswith('.sav') for name in names):
+        return None
+    try:
+        generation = check_save(backups)
+    except Refused:
+        return None
+    if generation is None:
+        return None
+    interrupted = repo / ('map_saves.interrupted-' + time.strftime('%Y%m%d-%H%M%S', time.gmtime(now())))
+    for old in sorted(repo.glob('map_saves.interrupted-*')):
+        if old.is_dir() and not old.is_symlink():
+            shutil.rmtree(old)
+    os.replace(saves, interrupted)
+    os.replace(backups, saves)
+    return generation, interrupted
 
 
 def copy_save(saves, destination):
@@ -537,6 +590,7 @@ class Host:
         if action == 'start':
             if listening:
                 raise Refused('the server is already running')
+            self.recover_interrupted_save()
             check_save(self.repo / 'map_saves')
             if not self.byond_signed_in():
                 raise Refused('BYOND is not signed in: start the BYOND pager and sign in first')
@@ -654,6 +708,14 @@ class Host:
         temporary.write_text(json.dumps(value), encoding='utf-8')
         os.replace(temporary, path)
 
+    def recover_interrupted_save(self):
+        """Swap the completed generation back in after an interrupted save (see the module function)."""
+        recovered = recover_interrupted_save(self.repo, self.platform.now)
+        if recovered:
+            generation, interrupted = recovered
+            self.log({'interrupted_save_recovered': generation, 'interrupted_files': str(interrupted)})
+        return recovered
+
     def last_client(self):
         """Unix time a client was last seen on the world, or None."""
         try:
@@ -673,6 +735,22 @@ class Host:
         seen = self.last_client()
         saved = self.last_save()
         return seen is None or (saved is not None and saved >= seen)
+
+    def evict(self, reason='low memory'):
+        """Stop a frozen server to free its memory. It saved before it froze, so the
+        next wake starts it from that save, like after a power-down."""
+        state = self.frozen()
+        if not state:
+            raise Refused('the server is not frozen')
+        if not self.config['freeze_requires_save']:
+            raise Refused('only a server that saved before freezing can be stopped while asleep')
+        if self.lock.exists():
+            raise Refused('another action is still running: %s' % self.read_state().get('action'))
+        self.platform.terminate(state['pid'])
+        self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state['pid'],
+                                         'detected_at': int(self.platform.now()), 'evicted': reason})
+        self.freeze_file.unlink(missing_ok=True)
+        return {'evicted': True, 'pid': state['pid'], 'reason': reason}
 
     def freeze(self):
         if self.lock.exists():
@@ -769,6 +847,7 @@ class Host:
 
     def do_start(self, operation):
         self.record(phase='checking save')
+        self.recover_interrupted_save()
         generation = check_save(self.repo / 'map_saves')
         code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
         revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
@@ -916,6 +995,12 @@ def main(argv=None):
     try:
         if args.action == 'status':
             result = host.status()
+            if host.config.get('group_config'):  # a region: the bot also shows its peers
+                try:
+                    shard_group = shard_group_module()
+                    result['regions'] = shard_group.region_summary(shard_group.load_group(host.config['group_config']))
+                except (OSError, ValueError) as error:
+                    result['regions_error'] = str(error)[:200]
         elif args.action == 'freeze':
             result = host.freeze()
         elif args.action == 'thaw':

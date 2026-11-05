@@ -14,13 +14,14 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 if __package__ in (None, ''):
     import os
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from tools.transfer_storage.radio import RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError  # noqa: E402
 
 MAX_BODY = 1 << 20  # 1 MiB per request
 
 
 def _load(store, body):
-    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'])
+    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'], body.get('fresh') in (True, 1))
     if seq is None:
         # reconcile_load just put the region on hold; say so like other refusals.
         raise RegionHeld(store.status().get('hold_reason') or 'rollback')
@@ -33,8 +34,15 @@ def _fast(body):
     return body.get('fast') in (True, 1)
 
 
-def _routes(store):
+def _routes(store, radio):
     return {
+        # Cross-region radio: ephemeral, never in the ledger (radio.py).
+        '/radio/send': lambda body: {'id': radio.send(body.get('envelope'))},
+        '/radio/heartbeat': lambda body: {'relays': radio.heartbeat(body.get('relays', []))},
+        '/radio/inbox': lambda body: {'envelopes': radio.inbox()},
+        '/radio/status': lambda body: radio.status(),
+        '/radio/outbox': lambda body: radio.outbox(),
+        '/radio/deliver': lambda body: {'queued': radio.deliver(body.get('envelopes', []), body.get('heartbeats'))},
         '/status': lambda body: store.status(),
         '/outbox': lambda body: {'envelopes': store.outbox()},
         '/receive': lambda body: {'reply': store.receive(body['envelope'])},
@@ -54,10 +62,10 @@ def _routes(store):
     }
 
 
-def make_server(store, token, port=0):
+def make_server(store, token, port=0, radio=None):
     if not isinstance(token, str) or len(token) < 32:
         raise ValueError('the agent token must be at least 32 characters')
-    routes = _routes(store)
+    routes = _routes(store, radio or RadioRelay(store.region, store.group))
 
     class Handler(BaseHTTPRequestHandler):
         server_version = 'civ13-transfer-agent/1'
@@ -94,7 +102,7 @@ def make_server(store, token, port=0):
                 return self._answer(200, {'ok': True, 'result': route(body)})
             except RegionHeld as e:
                 return self._answer(409, {'ok': False, 'held': True, 'error': str(e)})
-            except (TransferError, KeyError, TypeError, ValueError) as e:
+            except (TransferError, RadioError, KeyError, TypeError, ValueError) as e:
                 return self._answer(409, {'ok': False, 'error': str(e)})
 
         def do_GET(self):

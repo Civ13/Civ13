@@ -439,6 +439,10 @@ RECIPE: /material/electronics/,lithium-ion battery bank,/obj/structure/battery/l
 RECIPE: /material/electronics/,drone controller,/obj/item/drone_controller,10,100,0,1,drones,0,235,0,8,null
 RECIPE: /material/electronics/,quadcopter drone,/obj/structure/drone/flying,15,150,1,1,drones,0,235,0,8,null
 RECIPE: /material/electronics/,payload drone,/obj/structure/drone/flying/grenade,20,150,1,1,drones,0,235,0,8,null
+RECIPE: /material/electronics/,launch rail,/obj/structure/launch_rail,30,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,survey probe,/obj/item/space_probe,25,150,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,mission console,/obj/structure/survey_console,20,150,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,advanced survey probe,/obj/item/space_probe/advanced,35,200,0,1,spaceflight,235,0,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
 
@@ -1835,6 +1839,7 @@ RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,chainsaw,/obj/item/weapon/material/hatchet/chainsaw,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,fire extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty,7,90,0,1,tools,99,0,0,8,null
 
 //*********************| STEEL SIEGE WEAPONS |**************************
@@ -2671,6 +2676,7 @@ RECIPE: /material/electronics/,television program desk,/obj/structure/telecom/st
 RECIPE: /material/electronics/,network landline telephone,/obj/item/weapon/telephone/landline,2,120,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,cable network terminal,/obj/structure/telecom/terminal,8,150,1,1,none,160,0,0,8,null
 RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,long-range radio relay,/obj/structure/telecom/relay,12,150,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,solar array controller,/obj/structure/civ_generator/solar,20,200,1,1,none,105,0,0,8,null
 RECIPE: /material/electronics/,photovoltaic panel,/obj/structure/civ_generator/solar/panel,10,150,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,wind charger,/obj/structure/civ_generator/wind/charger,15,200,1,1,none,105,0,0,8,null

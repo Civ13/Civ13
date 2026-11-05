@@ -179,6 +179,8 @@ class ShardGroupTests(unittest.TestCase):
         self.assertGreaterEqual(len((config / 'transfer-token.txt').read_text().strip()), 32)
         settings = json.loads((config / 'shard_region.json').read_text())
         self.assertEqual((15, 60), (settings['save_minutes'], settings['travel_save_seconds']))
+        # Regions ask the local doorman which peers sleep instead of polling (and waking) them.
+        self.assertEqual('127.0.0.1:1713', settings['doorman'])
         started = []
         def start(argv, cwd, log):
             started.append(argv)
@@ -220,6 +222,24 @@ class ShardGroupTests(unittest.TestCase):
         path.write_text('A 1\nALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n#SKIP_PERSISTENCE_SAVING\n')
         shard_group.persistent_config(path)
         self.assertEqual(['A 1', 'ALLOWED_GAMEMODES PERSISTENCE', '#SKIP_PERSISTENCE_SAVING', '#SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
+
+    def test_resetting_raid_region(self):
+        self.refuse_config('only a RAID region can reset', region_reset_minutes=60)
+        self.refuse_config('reset_minutes', region_kind='RAID', region_reset_minutes=10)
+        self.refuse_config('reset_minutes', region_kind='RAID', region_reset_minutes=True)
+        self.group['regions'][1].update(kind='RAID', reset_minutes=180)
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual((0, 180), (settings['save_minutes'], settings['reset_minutes']), 'a resetting raid world never saves')
+        gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual((15, 0), (gaia['save_minutes'], gaia['reset_minutes']))
+
+    def test_persistent_config_without_saving(self):
+        path = self.base / 'config.txt'
+        path.write_text('ALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n')
+        shard_group.persistent_config(path, saving=False)
+        self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
 
     def test_update_failures_are_reported(self):
         group = self.write_group()
@@ -318,6 +338,19 @@ class ShardGroupTests(unittest.TestCase):
         (state / 'cold.json').unlink()
         status = shard_group.group_status(group, 'deep', platform=self.machine)
         self.assertEqual('stopped', status['regions']['deep']['state'])
+
+    def test_region_summary_lists_every_region_without_waking_a_sleeper(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        state = self.base / 'regions' / 'deep' / 'data' / 'shard-host'
+        (state / 'freeze.json').write_text(json.dumps({'pid': 77, 'frozen_at': 0}))
+        self.machine.up.add(1721)
+        self.machine.pids.add(77)
+        summary = shard_group.region_summary(group, platform=self.machine)
+        self.assertEqual([r['id'] for r in group['regions']], [entry['id'] for entry in summary])
+        deep = next(entry for entry in summary if entry['id'] == 'deep')
+        self.assertEqual(('asleep', None, 1721), (deep['state'], deep['players'], deep['port']))
+        self.assertEqual('stopped', summary[0]['state'])
 
     def test_a_cold_region_starts_through_its_own_worker(self):
         group = self.write_group()
@@ -510,6 +543,22 @@ class ShardGroupTests(unittest.TestCase):
         self.machine.up = {1721}
         answer = shard_group.group_check_update(group, platform=self.machine)
         self.assertEqual((False, 'stop the server before updating'), (answer['can_update'], answer['reason']))
+
+
+    def test_linux_regions_can_run_in_their_own_systemd_scope(self):
+        self.refuse_config('systemd_scope', systemd_scope='yes')
+        group = self.write_group()
+        argv = ['DreamDaemon', 'region.dmb', '1715']
+        config = shard_group.region_config(group, group['regions'][1])
+        self.assertEqual('', config['systemd_scope'])
+        self.assertEqual(argv, shard_group.scoped(argv, config))
+        config['systemd_scope'] = 'user'
+        with mock.patch.object(shard_group.os, 'name', 'posix'):
+            wrapped = shard_group.scoped(argv, config)
+        unit = 'civ13-%s-%s' % (group['group'], group['regions'][1]['id'])
+        self.assertEqual(['systemd-run', '--user', '--scope', '--quiet', '--collect', '--unit', unit, '--'] + argv, wrapped)
+        with mock.patch.object(shard_group.os, 'name', 'nt'):
+            self.assertEqual(argv, shard_group.scoped(argv, config))  # Windows has no scopes
 
 
 if __name__ == '__main__':

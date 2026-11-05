@@ -125,14 +125,15 @@
 	target_ckeys = ckeys ? ckeys.Copy() : list()
 	started_by = by
 	clan = pick(nomad_raid_clans())
-	var/list/site = nomad_raid_edge_site(target)
+	// A target the party cannot walk to (an island) is reached by raft (nomad_boats.dm).
+	var/list/site = plan_crossing(nomad_raid_edge_site(target))
 	if (!site)
 		return "no open, unseen ground near a map edge on that level"
 	home = site["turf"]
 	edge = site["edge"]
 	// The leader stands nearest the target so followers never block the march.
-	var/list/spots = list()
-	for (var/turf/T in range(2, home))
+	var/list/spots = sail_path ? list(home) : list()
+	for (var/turf/T in sail_path ? list() : range(2, home))
 		if (T == home || !nomad_raid_spawn_error(T))
 			var/i = 1
 			while (i <= spots.len && get_dist(spots[i], target) <= get_dist(T, target))
@@ -175,6 +176,9 @@
 	var/warning = kind == "trade" ? "Caravan bells sound in the distance to the [edge]. Someone is coming." : "War horns sound in the distance to the [edge]. Someone is coming."
 	for (var/mob/living/human/H in nomad_raid_defenders_near(target))
 		to_chat(H, SPAN_DANGER(warning))
+	if (sail_path)
+		log_event("crossing by raft from [home.x],[home.y] to land at [landing.x],[landing.y]")
+		launch_boats()
 	spawn(0)
 		run_loop()
 
@@ -253,7 +257,10 @@
 		if (M.stat == DEAD)
 			continue
 		if (M.health < last_health[M])
-			hurt = TRUE
+			// A wolf bite is not the settlement's answer; people, thrown
+			// things and anything unattributed still count.
+			if (!M.lastattacker || ishuman(M.lastattacker) || !ismob(M.lastattacker))
+				hurt = TRUE
 			note_attacker(M)
 		last_health[M] = M.health
 	var/list/alive = alive_members()
@@ -276,6 +283,8 @@
 		set_state("leave", leader_ok() ? "half the party is down" : "the leader is down")
 		set_hostile(FALSE)
 	switch (state)
+		if ("sail")
+			tick_sail(alive)
 		if ("march")
 			tick_march(alive, hurt, decide)
 		if ("parley")
@@ -312,6 +321,8 @@
 	return TRUE
 
 /datum/nomad_raid/proc/start_assault(reason)
+	tribute_ignore = list()
+	payment_ignore = list()
 	set_state("assault", reason)
 	set_hostile(TRUE)
 	last_seen_foe = world.time
@@ -348,21 +359,32 @@
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in alive_members())
 		order_halt(M)
 	warned_short = FALSE
+	// Loose items already lying nearby are not tribute, even if the leader
+	// shuffles next to them; each is remembered with the turf it lies on, so
+	// one a defender picks up and lays at the leader's feet still counts.
 	tribute_ignore = list()
-	for (var/obj/item/I in range(1, leader))
-		tribute_ignore += I
+	for (var/obj/item/I in range(NOMAD_RAID_PARLEY_RANGE, leader))
+		tribute_ignore[I] = I.loc
 	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE))
 		if (nomad_rep_score(H.ckey) >= NOMAD_REP_FRIEND)
 			tribute_demand = max(accept_floor(), round(tribute_demand / 2))
 			cue("[H.real_name] is a friend of the [clan]. For their sake, half the usual tribute - lay it at my feet.", "nods at [H.real_name].")
 			return
-	cue("We are the [clan]. Lay tribute at my feet - tools, metal, food - and we walk away. Refuse, and we take everything.", "points at the ground at their feet, then at your stores, and raises their weapon.")
+	// Speak to the nearest awake defender, so the demand is not aimed at
+	// whoever happens to lie nearest the target.
+	var/mob/living/human/who = null
+	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE))
+		if (!who || get_dist(leader, H) < get_dist(leader, who))
+			who = H
+	if (who)
+		leader.set_dir(get_dir(leader, who))
+	cue("[who ? "[who.real_name]! " : ""]We are the [clan]. Lay tribute at my feet - tools, metal, food - and we walk away. Refuse, and we take everything.", "points at [who ? who.real_name : "the defenders"], then at the ground at their own feet, and raises their weapon.")
 
 /datum/nomad_raid/proc/tribute_value()
 	var/total = 0
 	tribute_items = list()
 	for (var/obj/item/I in range(1, leader))
-		if (I in tribute_ignore)
+		if (tribute_ignore[I] == I.loc)
 			continue
 		var/worth = nomad_raid_worth(I)
 		if (worth)
@@ -372,6 +394,7 @@
 
 /datum/nomad_raid/proc/accept_tribute(reason)
 	outcome = "tribute paid"
+	tribute_ignore = list()
 	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE))
 		nomad_rep_record(H.ckey, "tribute")
 	cue("Wise. The [clan] remembers its friends.")
@@ -522,8 +545,11 @@
 		if ((get_dist(at, home) <= 3 || get_dist(at, target) > 40) && !ecology_visible_to_players(at, NOMAD_RAID_VIEW_MARGIN))
 			escape(M)
 			continue
+		if (leave_by_boat(M))
+			continue
 		if (!M.target_mob)
 			order_move(M, home)
+	sail_step()
 	if (!alive_members().len)
 		finish(outcome ? outcome : "the party left")
 
@@ -572,6 +598,7 @@
 	if (state == "ended")
 		return
 	state = "ended"
+	clear_boats()
 	log_event("ended - [reason]. [escaped] of [initial_size] left the map with [escaped_items] items; [fallen] fell; [stolen] items taken; [sold] goods sold.")
 	if (nomad_raid == src)
 		nomad_raid = null

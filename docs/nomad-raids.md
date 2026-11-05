@@ -23,6 +23,21 @@ Visits are not started at random.
 | `nomad_coordinator.dm` | What a coordinator sees and may order |
 | `nomad_admin.dm` | Admin verbs |
 
+## Crossing water
+
+A party first checks that it can walk from its map-edge spawn to the target.
+When it cannot (an island, a river with no ford), it comes by water instead
+(`nomad_boats.dm`): it starts on unseen deep water at the nearest edge that
+has a route with a single water crossing, each member on their own raft, and
+paddles in single file at a raft's speed to the first dry tile by the target
+(state `sail`, then `march`). The rafts stay moored at the landing. When the
+party leaves, members walk back to the landing, board (a fresh raft replaces
+a lost one) and paddle out, leaving the map where they came from. Party rafts
+are never saved and are removed when the visit ends. A target with no route
+by land or by one crossing gets the old behaviour: the party walks as far as
+it can and the march limit sends it home. A coordinator may order a retreat
+while the party is still afloat.
+
 ## Admin verbs (Fun, R_FUN)
 
 - **Start Nomad Visit** asks for raiders or traders, a target (the busiest
@@ -46,12 +61,16 @@ online admins.
    If that edge is more than 120 tiles away, it appears 120 tiles out on that
    heading. Edges too close to the target to hide behind are skipped. Players
    near the target hear distant war horns.
-2. **March.** The chieftain walks to the target; the others follow. Being
-   attacked starts the fight. After 10 minutes, or if nobody is home, the
+2. **March.** The chieftain walks to the target (the middle of the targeted
+   group); the others follow. Being attacked by people starts the fight; an
+   animal's bite does not. After 10 minutes, or if nobody is home, the
    party turns back.
 3. **Parley.** When an active player is within 10 tiles, the chieftain halts
-   and demands tribute at their feet (5 worth per raider, at least 8). Paying
+   faces the nearest awake player, names them and demands tribute at their
+   feet (5 worth per raider, at least 8). Paying
    in 90 seconds ends the threat: the raiders take only the tribute and leave.
+   Only items laid down during the parley count; gear already lying nearby
+   does not, unless someone picks it up and lays it at the chieftain's feet.
    Attacking them, or letting the time run out, starts the fight.
 4. **Assault.** Raiders fight awake people near the target, preferring anyone
    holding a weapon. Downed people are left alone, and animals only when they
@@ -79,7 +98,8 @@ a player is near, the trader lays up to six goods on the tiles around them
 and an iron knife in later ages).
 
 - **Paying.** Drop items at the trader's feet. Their worth is credited to
-  whoever last handled them.
+  whoever last handled them. Gear already lying near the stall when trading
+  starts is not payment unless someone moves it.
 - **Buying.** Pick up a good. If your credit covers its price, it is yours.
 - **Theft.** Taking a good without enough credit gets a warning. Put it back
   or pay within 15 seconds, or the guards attack the thief.

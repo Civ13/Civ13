@@ -276,6 +276,7 @@ var/global/list/agent_characters = list()
 		"character_observe" = list("scope" = "characters"),
 		"character_act" = list("scope" = "characters"),
 		"character_queue" = list("scope" = "characters"),
+		"character_route" = list("scope" = "characters"),
 		"character_release" = list("scope" = "characters"),
 		"visit_status" = list("scope" = "visits"),
 		"visit_order" = list("scope" = "visits"),
@@ -315,6 +316,7 @@ var/global/list/agent_characters = list()
 		if ("character_observe") return act_character_observe(A, req)
 		if ("character_act") return act_character_act(A, req)
 		if ("character_queue") return act_character_queue(A, req)
+		if ("character_route") return act_character_route(A, req)
 		if ("character_release") return act_character_release(A, req)
 		if ("visit_status") return act_visit_status(A, req)
 		if ("visit_order") return act_visit_order(A, req)

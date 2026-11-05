@@ -229,7 +229,8 @@ class SelectionTests(unittest.TestCase):
     def test_zombie_city_offline_admission_is_exact(self):
         for path in ('tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
                      'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
-                     'tests/zombie_city/native_probe.dm'):
+                     'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                     'tests/zombie_city/horde_probe.dm'):
             with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/zombie_city/new_native_probe.dm'

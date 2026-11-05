@@ -76,4 +76,5 @@ var/datum/process_list/processes = new
 	else
 		return last_num_processes
 /datum/process_list/var/process/civ_telecom/civ_telecom = null
+/datum/process_list/var/process/civ_radio_relay/civ_radio_relay = null
 /datum/process_list/var/process/civ_generation/civ_generation = null

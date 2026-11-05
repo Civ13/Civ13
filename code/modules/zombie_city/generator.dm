@@ -9,11 +9,14 @@
 // three times at most. The result is stored in zombie_city_layout; a second
 // call in the same world returns that layout instead of generating again.
 //
-// Interiors (room stamps) and upper floors are later phases; this pass makes
-// open shells with doors and windows, loot inside them, and the street mess.
+// interiors.dm partitions each shell into rooms, furnishes them, picks the
+// loot spots and adds the mess; levels.dm plans the upper floor of two-storey
+// buildings on upper_z, the stairs between the floors and the roofs.
 //
-// The horde registers each block through zombie_horde_add_block and loot is
-// rolled at each loot marker through zombie_city_roll_loot (horde.dm, loot.dm).
+// The horde registers each block through zombie_horde_add_block, loot is
+// rolled at each loot marker through zombie_city_roll_loot (horde.dm, loot.dm)
+// and the city world takes its arrival and evacuation points through
+// zombie_city_add_insertion and zombie_city_add_evacuation (world.dm).
 
 #define ZC_RIM 1
 #define ZC_ROAD 2
@@ -36,6 +39,10 @@
 #define ZC_PARKING 19
 #define ZC_VACANT 20
 #define ZC_ALLEY 21
+#define ZC_WALL_INNER 22
+#define ZC_DOOR_INNER 23
+#define ZC_WINDOW_BROKEN 24
+#define ZC_SKY 25
 
 #define ZC_MIN_SIZE 64
 #define ZC_RING_INNER 4
@@ -70,6 +77,9 @@ var/global/zombie_city_generating = FALSE
 	var/facing = SOUTH
 	var/block_id = 0
 	var/floors = 1
+	var/front_door_x = 0
+	var/list/door_cells = list()
+	var/list/rooms = list()
 	var/list/doors = list()
 	var/list/loot = list()
 
@@ -92,9 +102,11 @@ var/global/zombie_city_generating = FALSE
 	var/list/entry_markers = list()
 	var/list/exit_markers = list()
 	var/list/loot_markers = list()
+	var/list/stairs = list()
 	var/list/pois = list()
 	var/list/counts = list()
 	var/list/ascii_rows = list()
+	var/list/ascii_upper = list()
 
 /datum/zombie_city_layout/proc/turf_xy(turf/T)
 	return T ? list(T.x, T.y) : null
@@ -108,10 +120,16 @@ var/global/zombie_city_generating = FALSE
 		var/list/door_rows = list()
 		for (var/turf/T in D.doors)
 			door_rows += list(turf_xy(T))
+		if (!door_rows.len)
+			for (var/i in D.door_cells)
+				door_rows += list(list(i - round((i - 1) / width) * width, round((i - 1) / width) + 1))
 		var/list/loot_rows = list()
 		for (var/obj/effect/zombie_city/loot/L in D.loot)
-			loot_rows += list(list("x" = L.x, "y" = L.y, "table" = L.table, "tier" = L.tier))
-		building_rows += list(list("id" = D.id, "x1" = D.x1, "y1" = D.y1, "x2" = D.x2, "y2" = D.y2, "kind" = D.kind, "tier" = D.tier, "table" = D.table, "floors" = D.floors, "block" = D.block_id, "doors" = door_rows, "loot" = loot_rows))
+			loot_rows += list(list("x" = L.x, "y" = L.y, "level" = L.z == upper_z && upper_z ? 2 : 1, "table" = L.table, "tier" = L.tier))
+		var/list/room_rows = list()
+		for (var/datum/zombie_city_room/R in D.rooms)
+			room_rows += list(list("kind" = R.kind, "level" = R.level, "x1" = R.x1, "y1" = R.y1, "x2" = R.x2, "y2" = R.y2))
+		building_rows += list(list("id" = D.id, "x1" = D.x1, "y1" = D.y1, "x2" = D.x2, "y2" = D.y2, "kind" = D.kind, "tier" = D.tier, "table" = D.table, "floors" = D.floors, "block" = D.block_id, "doors" = door_rows, "rooms" = room_rows, "loot" = loot_rows))
 	var/list/entry_rows = list()
 	for (var/obj/effect/zombie_city/entry/E in entry_markers)
 		entry_rows += list(list("x" = E.x, "y" = E.y, "edge" = E.side, "ordinal" = E.ordinal))
@@ -122,7 +140,10 @@ var/global/zombie_city_generating = FALSE
 	for (var/kind in pois)
 		var/datum/zombie_city_building/D = pois[kind]
 		poi_rows[kind] = D.id
-	return list("schema" = 1, "seed" = seed, "attempt" = attempt, "width" = width, "height" = height, "ground_z" = ground_z, "upper_z" = upper_z, "generation_ds" = generation_ds, "center" = list(center_x, center_y), "industrial_edge" = industrial_edge, "blocks" = block_rows, "buildings" = building_rows, "roads" = roads, "entries" = entry_rows, "exits" = exit_rows, "pois" = poi_rows, "counts" = counts)
+	var/list/stair_rows = list()
+	for (var/turf/T in stairs)
+		stair_rows += list(turf_xy(T))
+	return list("schema" = 3, "seed" = seed, "stairs" = stair_rows, "attempt" = attempt, "width" = width, "height" = height, "ground_z" = ground_z, "upper_z" = upper_z, "generation_ds" = generation_ds, "center" = list(center_x, center_y), "industrial_edge" = industrial_edge, "blocks" = block_rows, "buildings" = building_rows, "roads" = roads, "entries" = entry_rows, "exits" = exit_rows, "pois" = poi_rows, "counts" = counts)
 
 /datum/zombie_city_layout/proc/to_json()
 	return json_encode(manifest())
@@ -145,6 +166,15 @@ var/global/zombie_city_generating = FALSE
 	var/list/exit_cells = list()
 	var/list/loot_cells = list()
 	var/list/door_cells = list()
+	var/list/stairs_cells = list()
+	// The upper floor is planned in the same procs on a second grid; these
+	// hold whichever level is not current (see use_level in levels.dm).
+	var/list/other_cells
+	var/list/other_props
+	var/list/other_blocked
+	var/list/other_loot_cells = list()
+	var/list/other_door_cells = list()
+	var/planning_upper = FALSE
 	var/failure = null
 
 /datum/zombie_city_generator/New(seed, attempt, ground_z, upper_z)
@@ -185,7 +215,7 @@ var/global/zombie_city_generating = FALSE
 	return code == ZC_ROAD || code == ZC_ROAD_CENTER || code == ZC_PARKING
 
 /datum/zombie_city_generator/proc/passable(code)
-	return !(code == ZC_RIM || code == ZC_WALL_CEMENT || code == ZC_WALL_BLOCKS || code == ZC_WINDOW)
+	return !(code == ZC_RIM || code == ZC_WALL_CEMENT || code == ZC_WALL_BLOCKS || code == ZC_WALL_INNER || code == ZC_WINDOW)
 
 // ---------------------------------------------------------------- planning
 
@@ -199,6 +229,12 @@ var/global/zombie_city_generating = FALSE
 	owner = new/list(w * h)
 	for (var/i = 1 to w * h)
 		cells[i] = ZC_VACANT
+	if (layout.upper_z)
+		other_cells = new/list(w * h)
+		other_props = new/list(w * h)
+		other_blocked = new/list(w * h)
+		for (var/i = 1 to w * h)
+			other_cells[i] = ZC_SKY
 	plan_center()
 	plan_cuts()
 	paint_ring()
@@ -620,11 +656,10 @@ var/global/zombie_city_generating = FALSE
 	var/wide = !(D.kind in list("house", "apartment", "office"))
 	var/door_x = rng.between(D.x1 + 1, D.x2 - (wide ? 2 : 1))
 	var/door = wide ? ZC_DOOR_STORE : ZC_DOOR_HOUSE
-	set_cell(door_x, front_y, door)
-	door_cells += index(door_x, front_y)
+	add_door(D, door_x, front_y, door)
+	D.front_door_x = door_x
 	if (wide)
-		set_cell(door_x + 1, front_y, door)
-		door_cells += index(door_x + 1, front_y)
+		add_door(D, door_x + 1, front_y, door)
 	for (var/x = D.x1 + 2, x <= D.x2 - 2, x += 3)
 		if (cell(x, front_y) == wall)
 			set_cell(x, front_y, ZC_WINDOW)
@@ -638,35 +673,12 @@ var/global/zombie_city_generating = FALSE
 	if (D.tier >= 3 && D.kind != "house")
 		var/back_y = D.facing == NORTH ? D.y1 : D.y2
 		var/back_x = rng.between(D.x1 + 1, D.x2 - 2)
-		set_cell(back_x, back_y, ZC_DOOR_STORE)
-		set_cell(back_x + 1, back_y, ZC_DOOR_STORE)
-		door_cells += index(back_x, back_y)
-		door_cells += index(back_x + 1, back_y)
+		add_door(D, back_x, back_y, ZC_DOOR_STORE)
+		add_door(D, back_x + 1, back_y, ZC_DOOR_STORE)
+	furnish_building(D, B)
 	place_loot(D)
-
-/datum/zombie_city_generator/proc/place_loot(datum/zombie_city_building/D)
-	var/count = 1 + D.tier
-	if (D.kind == "hospital")
-		count = 6
-	else if (D.kind == "police")
-		count = 4
-	var/list/candidates = list()
-	for (var/x = D.x1 + 1 to D.x2 - 1)
-		for (var/y = D.y1 + 1 to D.y2 - 1)
-			if (cell(x, y - 1) == ZC_DOOR_HOUSE || cell(x, y - 1) == ZC_DOOR_STORE || cell(x, y + 1) == ZC_DOOR_HOUSE || cell(x, y + 1) == ZC_DOOR_STORE)
-				continue
-			candidates += index(x, y)
-	rng.shuffle(candidates)
-	var/placed = 0
-	for (var/i in candidates)
-		if (placed >= count)
-			break
-		var/table = D.table
-		// Hospitals keep a pharmacy; police keep a little of everything.
-		if (D.kind == "hospital" && placed % 2)
-			table = "pharmacy"
-		loot_cells["[i]"] = list(D, table, D.tier)
-		placed++
+	if (D.floors == 2)
+		plan_upper_floor(D, B)
 
 // ---------------------------------------------------------------- markers
 
@@ -788,24 +800,36 @@ var/global/zombie_city_generating = FALSE
 				continue
 			reached[k] = TRUE
 			queue += k
-	var/unreachable = 0
+	var/list/unreachable = list()
 	for (var/list/p in entry_cells)
 		if (!reached[index(p[1], p[2])])
-			unreachable++
+			unreachable += "insertion [p[1]],[p[2]]"
 	for (var/list/p in exit_cells)
 		if (!reached[index(p[1], p[2])])
-			unreachable++
+			unreachable += "evacuation [p[1]],[p[2]]"
 	for (var/i in door_cells)
 		if (!reached[i])
-			unreachable++
+			unreachable += "door [i - (round((i - 1) / w)) * w],[round((i - 1) / w) + 1]"
+	for (var/i in stairs_cells)
+		if (!reached[i])
+			unreachable += "stairs [i - (round((i - 1) / w)) * w],[round((i - 1) / w) + 1]"
 	for (var/key in loot_cells)
-		if (!reached[text2num(key)])
-			unreachable++
-	if (unreachable)
-		failure = "[unreachable] required cells unreachable from the first insertion point"
+		var/i = text2num(key)
+		if (!reached[i])
+			unreachable += "loot [i - (round((i - 1) / w)) * w],[round((i - 1) / w) + 1]"
+	if (unreachable.len)
+		failure = "[unreachable.len] required cells unreachable from the first insertion point: [jointext(unreachable, "; ", 1, min(unreachable.len, 6) + 1)]"
+		var/list/first = splittext(copytext(unreachable[1], findtext(unreachable[1], " ") + 1), ",")
+		var/fx = text2num(first[1])
+		var/fy = text2num(first[2])
+		var/list/rows = ascii_rows()
+		for (var/y = min(h, fy + 6), y >= max(1, fy - 6), y--)
+			failure += "\n" + copytext(rows[h - y + 1], max(1, fx - 8), min(w, fx + 8) + 1)
 		return FALSE
-	layout.counts = list("reachable_cells" = queue.len, "blocks" = layout.blocks.len, "buildings" = layout.buildings.len, "doors" = door_cells.len, "loot" = loot_cells.len, "entries" = entry_cells.len, "exits" = exit_cells.len)
-	return TRUE
+	var/list/totals = list("reachable_cells" = queue.len, "blocks" = layout.blocks.len, "buildings" = layout.buildings.len, "doors" = door_cells.len, "loot" = loot_cells.len, "entries" = entry_cells.len, "exits" = exit_cells.len, "stairs" = stairs_cells.len)
+	for (var/key in totals)
+		layout.counts[key] = totals[key]
+	return validate_upper()
 
 // ---------------------------------------------------------------- commit
 
@@ -825,7 +849,7 @@ var/global/zombie_city_generating = FALSE
 			return /turf/floor/plating/dark
 		if (ZC_FLOOR_WOOD)
 			return /turf/floor/wood
-		if (ZC_FLOOR_TILE, ZC_WINDOW, ZC_DOOR_STORE)
+		if (ZC_FLOOR_TILE, ZC_WINDOW, ZC_WINDOW_BROKEN, ZC_DOOR_STORE)
 			return /turf/floor/plating/tiled
 		if (ZC_FLOOR_CONCRETE)
 			return /turf/floor/plating/concrete
@@ -837,8 +861,12 @@ var/global/zombie_city_generating = FALSE
 			return /turf/wall/cement
 		if (ZC_WALL_BLOCKS)
 			return /turf/wall/concrete_blocks
-		if (ZC_DOOR_HOUSE)
+		if (ZC_WALL_INNER)
+			return /turf/wall/wood
+		if (ZC_DOOR_HOUSE, ZC_DOOR_INNER)
 			return /turf/floor/wood
+		if (ZC_SKY)
+			return /turf/sky
 	return /turf/floor/dirt
 
 /datum/zombie_city_generator/proc/ascii_char(code)
@@ -857,12 +885,16 @@ var/global/zombie_city_generating = FALSE
 			return "_"
 		if (ZC_YARD_DIRT, ZC_VACANT)
 			return " "
-		if (ZC_WALL_CEMENT, ZC_WALL_BLOCKS)
+		if (ZC_WALL_CEMENT, ZC_WALL_BLOCKS, ZC_WALL_INNER)
 			return "W"
-		if (ZC_DOOR_HOUSE, ZC_DOOR_STORE)
+		if (ZC_DOOR_HOUSE, ZC_DOOR_STORE, ZC_DOOR_INNER)
 			return "D"
 		if (ZC_WINDOW)
 			return "w"
+		if (ZC_WINDOW_BROKEN)
+			return "o"
+		if (ZC_SKY)
+			return "~"
 	return "f"
 
 /datum/zombie_city_generator/proc/ascii_rows()
@@ -874,6 +906,8 @@ var/global/zombie_city_generating = FALSE
 			var/c = ascii_char(cells[i])
 			if (loot_cells["[i]"])
 				c = "L"
+			else if (i in stairs_cells)
+				c = "S"
 			else if (props[i] && blocked[i] && c != "W")
 				c = "X"
 			else if (props[i] && c != "W")
@@ -895,25 +929,41 @@ var/global/zombie_city_generating = FALSE
 	wall_bulk_placement = TRUE
 	try
 		commit_turfs()
+		if (layout.upper_z)
+			use_level(TRUE)
+			commit_turfs()
+			use_level(FALSE)
 	catch (var/exception/placement_error)
+		use_level(FALSE)
 		wall_bulk_placement = FALSE
 		throw placement_error
 	wall_bulk_placement = FALSE
 	layout.counts["turf_ds"] = world.timeofday - phase_started
 	phase_started = world.timeofday
-	for (var/y = 1 to h)
-		for (var/x = 1 to w)
-			var/turf/T = locate(x, y, z)
-			if (T?.lighting_overlay)
-				T.lighting_overlay.update_overlay()
-		TICK_CHECK
+	commit_areas()
+	refresh_lighting(z)
+	if (layout.upper_z)
+		refresh_lighting(layout.upper_z)
 	layout.counts["lighting_ds"] = world.timeofday - phase_started
 	phase_started = world.timeofday
 	commit_objects()
+	if (layout.upper_z)
+		use_level(TRUE)
+		commit_objects()
+		use_level(FALSE)
+	commit_levels()
 	layout.counts["object_ds"] = world.timeofday - phase_started
 	phase_started = world.timeofday
 	place_markers()
 	layout.counts["marker_ds"] = world.timeofday - phase_started
+
+/datum/zombie_city_generator/proc/refresh_lighting(level_z)
+	for (var/y = 1 to h)
+		for (var/x = 1 to w)
+			var/turf/T = locate(x, y, level_z)
+			if (T?.lighting_overlay)
+				T.lighting_overlay.update_overlay()
+		TICK_CHECK
 
 /datum/zombie_city_generator/proc/commit_turfs()
 	var/replaced = 0
@@ -928,7 +978,7 @@ var/global/zombie_city_generating = FALSE
 				new path(T)
 				replaced++
 		TICK_CHECK
-	layout.counts["turfs_replaced"] = replaced
+	layout.counts["turfs_replaced"] = (layout.counts["turfs_replaced"] || 0) + replaced
 
 /datum/zombie_city_generator/proc/commit_objects()
 	for (var/y = 1 to h)
@@ -943,9 +993,13 @@ var/global/zombie_city_generating = FALSE
 					new /obj/structure/simple_door/key_door/anyone/singledoor/housedoor(T)
 				if (ZC_DOOR_STORE)
 					new /obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door(T)
+				if (ZC_DOOR_INNER)
+					new /obj/structure/simple_door/key_door/anyone/singledoor/privacy(T)
 				if (ZC_WINDOW)
 					new /obj/structure/window_frame/metal(T)
 					new /obj/structure/window/classic/metal(T)
+				if (ZC_WINDOW_BROKEN)
+					new /obj/structure/window_frame/metal(T)
 			if (props[i])
 				var/path = props[i]
 				new path(T)
@@ -961,6 +1015,7 @@ var/global/zombie_city_generating = FALSE
 		E.layout_id = layout.seed
 		layout.entries += T
 		layout.entry_markers += E
+		zombie_city_add_insertion(T)
 	ordinal = 0
 	for (var/list/p in exit_cells)
 		var/turf/T = locate(p[1], p[2], z)
@@ -971,6 +1026,22 @@ var/global/zombie_city_generating = FALSE
 		X.layout_id = layout.seed
 		layout.exits += T
 		layout.exit_markers += X
+		zombie_city_add_evacuation(T, X.ordinal)
+	var/rolled = place_loot_markers()
+	if (layout.upper_z)
+		use_level(TRUE)
+		rolled += place_loot_markers()
+		use_level(FALSE)
+	layout.counts["loot_items"] = rolled
+	var/registered = 0
+	for (var/datum/zombie_city_block/B in layout.blocks)
+		if (B.special == "irregular")
+			continue
+		if (zombie_horde_add_block(B.id, locate(B.x1, B.y1, z), locate(B.x2, B.y2, z), B.density))
+			registered++
+	layout.counts["horde_blocks"] = registered
+
+/datum/zombie_city_generator/proc/place_loot_markers()
 	var/rolled = 0
 	for (var/key in loot_cells)
 		var/list/spec = loot_cells[key]
@@ -991,14 +1062,7 @@ var/global/zombie_city_generating = FALSE
 		if (islist(made))
 			rolled += made.len
 		TICK_CHECK
-	layout.counts["loot_items"] = rolled
-	var/registered = 0
-	for (var/datum/zombie_city_block/B in layout.blocks)
-		if (B.special == "irregular")
-			continue
-		if (zombie_horde_add_block(B.id, locate(B.x1, B.y1, z), locate(B.x2, B.y2, z), B.density))
-			registered++
-	layout.counts["horde_blocks"] = registered
+	return rolled
 
 // ---------------------------------------------------------------- entry
 
@@ -1007,6 +1071,8 @@ var/global/zombie_city_generating = FALSE
 		return zombie_city_layout
 	if (zombie_city_generating)
 		return null
+	if (upper_z && (upper_z > world.maxz || upper_z == ground_z))
+		upper_z = 0
 	if (!isnum(seed))
 		seed = world.realtime
 	seed = abs(round(seed))
@@ -1021,6 +1087,10 @@ var/global/zombie_city_generating = FALSE
 		G.commit()
 		result = G.layout
 		result.ascii_rows = G.ascii_rows()
+		if (upper_z)
+			G.use_level(TRUE)
+			result.ascii_upper = G.ascii_rows()
+			G.use_level(FALSE)
 		break
 	if (result)
 		result.generation_ds = world.timeofday - started

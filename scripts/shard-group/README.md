@@ -15,8 +15,10 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 ```
 
 - `setup` creates `<root>/<id>` as a detached worktree for every region and
-  writes `config/shard_region.json` (the whole group plus which region this
-  is), `config/lifecycle-token.txt` and the region's host config. It refuses
+  writes `config/shard_region.json` (the whole group, which region this is,
+  and the local doorman's address: regions ask the doorman which peers sleep,
+  because any connection to a frozen world wakes it, and a trail asks it to
+  wake its destination before sending a traveller), `config/lifecycle-token.txt` and the region's host config. It refuses
   while any region is listening.
 - `update` checks every region out at the group's `revision`, writes
   `region.dme` (civ13.dme with only the region's map selected) and compiles it.
@@ -100,6 +102,11 @@ port, unique in the group, never 1714). Then:
 - `status` shows each region's `transfer_agent` and the group's
   `coordinator`.
 
+The same agents and coordinator carry cross-region radio once players build
+and key long-range radio relays on both sides; see
+[docs/cross-shard-radio.md](../../docs/cross-shard-radio.md). No extra
+service is needed.
+
 A character trip completes in seconds: each region's agent journals the
 departure and the arrival as soon as it records them. A region that reloads a
 save made before a trip replays that trip from its journal, so a crash can
@@ -115,6 +122,12 @@ clears it from the journal, so the group still keeps saves regular:
   through trade posts (which still wait for saves) never arrive.
 - A save of a 155x225 map takes over a minute, so keep `save_minutes` at 5 or
   more. Gates refuse travel while their region is saving.
+- A `RAID` region may set `reset_minutes` (0 = never, or 30 to 1440). It
+  never saves (`SKIP_PERSISTENCE_SAVING` stays on, `save_minutes` 0). Each
+  boot loads a fresh map and adopts the agent's ledger. Before each reset
+  the world confirms the cycle's trips and removes everyone still inside,
+  whose home goes back to the land they came from. See
+  `docs/persistence-raids.md`.
 
 Other optional keys:
 
@@ -122,6 +135,12 @@ Other optional keys:
   the one running the script).
 - `rust_g` is a rust_g library copied into each region on `update` (needed on
   Linux).
+- `systemd_scope` (Linux, `""` by default) set to `"user"` or `"system"` starts
+  each region's DreamDaemon through `systemd-run --scope` as unit
+  `civ13-<group>-<region>`, so every world has its own cgroup: `systemctl
+  status` and memory accounting per world, and a world can be stopped alone.
+  Use `"user"` when the host service runs as a user unit, `"system"` when it
+  runs as a system unit with the right to create scopes.
 
 Players travel through an admin-placed `/obj/structure/region_gate`, with its
 `destination` set to a peer's region id; see

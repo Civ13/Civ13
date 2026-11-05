@@ -131,6 +131,29 @@ class Journal(unittest.TestCase):
         self.assertIn(c, self.a.live)
         self.assertEqual([], self.a.store.status()['active'])
 
+    def test_resetting_raid_world_boots_fresh(self):
+        """A raid world that never saves adopts the store's ledger on each new
+        map instead of being held for a rollback. A crash replays its journal;
+        a reset first confirms the journal, so the next map replays nothing."""
+        c = character('a0')
+        self.a.start_transfer('beta', {c})
+        run(self.a, self.b)
+        self.b.store.close()
+        self.b.store = RegionStore(self.b.path, self.b.name, self.b.group)
+        # An ordinary unsaved load would now be refused as a rollback.
+        seq = self.b.store.reconcile_load('raid-1', [], 0, fresh=True)
+        self.assertIsNotNone(seq)
+        self.assertFalse(self.b.store.status().get('hold_reason'))
+        replay = self.b.store.replay()
+        self.assertEqual([[c]], [e['payloads'] for e in replay], 'a crash rebuilds the raider on the new map')
+        # The reset settles every applied effect before rebooting.
+        seq = self.b.store.report_save('raid-reset-1', [e['effect_id'] for e in replay], seq)
+        self.b.store.close()
+        self.b.store = RegionStore(self.b.path, self.b.name, self.b.group)
+        self.assertIsNotNone(self.b.store.reconcile_load('raid-2', ['ignored'], 99, fresh=True))
+        self.assertEqual([], self.b.store.replay(), 'nobody comes back after a reset')
+        self.assertFalse(self.b.store.status().get('hold_reason'))
+
     def test_goods_cannot_travel_fast(self):
         for payloads in (['plain'], [json.dumps({'kind': 'goods'})], [character('x'), 'plain']):
             with self.assertRaises(TransferError):

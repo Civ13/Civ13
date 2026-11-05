@@ -66,7 +66,8 @@ TRAIN_RAID_OFFLINE_TESTS = frozenset({'tests/train_raid/test_train_raid.py', 'te
                                       'tests/train_raid/native_probe.py', 'tests/train_raid/native_probe.dm'})
 ZOMBIE_CITY_OFFLINE_TESTS = frozenset({'tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
                                        'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
-                                       'tests/zombie_city/native_probe.dm'})
+                                       'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                                       'tests/zombie_city/horde_probe.dm'})
 SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
                                          'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
                                          'tests/safehouse_map/preview.py'})

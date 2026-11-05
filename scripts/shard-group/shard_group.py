@@ -124,6 +124,14 @@ def load_group(path):
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
     if type(group.setdefault('persistent', True)) is not bool:
         raise ValueError('persistent must be true or false')
+    # A resetting raid world never saves; it reboots on a new map every
+    # reset_minutes and sends everyone still inside home without their gear.
+    for r in regions:
+        reset = r.setdefault('reset_minutes', 0)
+        if type(reset) is not int or not (reset == 0 or 30 <= reset <= 1440):
+            raise ValueError('region %s reset_minutes must be 0 or 30 to 1440' % r['id'])
+        if reset and r['kind'] != 'RAID':
+            raise ValueError('only a RAID region can reset (region %s)' % r['id'])
     if group.get('python') is not None and (type(group['python']) is not str or not group['python']):
         raise ValueError('python must be a path')
     group.setdefault('python', sys.executable)
@@ -144,6 +152,11 @@ def load_group(path):
     group.setdefault('save_timeout_seconds', 5400)
     group.setdefault('start_timeout_seconds', 300)
     group.setdefault('backups_kept', 3)
+    # Linux: run each region's DreamDaemon in its own systemd scope ("user" or "system"),
+    # so every world has its own cgroup for memory accounting and can be stopped alone.
+    group.setdefault('systemd_scope', '')
+    if group['systemd_scope'] not in ('', 'user', 'system'):
+        raise ValueError('systemd_scope must be "", "user" or "system"')
     # Sleep settings (gaia_host FREEZE_DEFAULTS) apply to every region of the group.
     for key, default in gaia_host.FREEZE_DEFAULTS.items():
         if key not in group:
@@ -180,6 +193,7 @@ def region_config(group, region):
             'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
+            'systemd_scope': group.get('systemd_scope', ''),
             '_path': str(path / 'data' / 'shard-host' / 'host.json'),
             # Only a hub-listed (-public) world needs the host's BYOND account signed in.
             'start_requires_byond_pager': bool(public)}
@@ -218,6 +232,18 @@ def detach(argv, cwd, log):
             out.close()
 
 
+def scoped(argv, config):
+    """argv wrapped in its own systemd scope when the group asks for one (Linux only)."""
+    kind = config.get('systemd_scope') or ''
+    if not kind or os.name == 'nt':
+        return argv
+    unit = 'civ13-%s-%s' % (config['group'], config['region'])
+    wrapper = ['systemd-run', '--scope', '--quiet', '--collect', '--unit', unit]
+    if kind == 'user':
+        wrapper.insert(1, '--user')
+    return wrapper + ['--'] + argv
+
+
 class RegionPlatform(Platform):
     """Starts DreamDaemon for one region directly instead of a scheduled task."""
 
@@ -231,7 +257,7 @@ class RegionPlatform(Platform):
         self.start_agent()
         argv = [self.config['daemon'], 'region.dmb', str(self.config['port']), '-trusted', '-close',
                 '-public' if self.config['public'] else '-invisible', '-log', 'logs/world.log']
-        detach(argv, path, None)
+        detach(scoped(argv, self.config), path, None)
         return 0, 'started'
 
     def task_ready(self, name):
@@ -291,7 +317,7 @@ class RegionHost(Host):
             raise RuntimeError('checkout failed: ' + out.strip()[-300:])
         apply_overlays(group, region, path)
         if group['persistent']:
-            persistent_config(path / 'config' / 'config.txt')
+            persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
         if group.get('rust_g'):
             shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
         include = place_map(group, region)
@@ -391,17 +417,17 @@ def fetch_remote(group, platform=None):
     return True
 
 
-def persistent_config(path):
+def persistent_config(path, saving=True):
     """Make a region world a persistent round that saves: ALLOWED_GAMEMODES
     PERSISTENCE, and SKIP_PERSISTENCE_SAVING (on in the repository's development
-    config) commented out."""
+    config) commented out. A resetting raid world keeps it on (saving=False)."""
     lines = path.read_text(encoding='utf-8').splitlines() if path.exists() else []
     out, found = [], False
     for line in lines:
         key = line.split(' ', 1)[0]
         if key == 'ALLOWED_GAMEMODES':
             line, found = 'ALLOWED_GAMEMODES PERSISTENCE', True
-        elif key == 'SKIP_PERSISTENCE_SAVING':
+        elif key == 'SKIP_PERSISTENCE_SAVING' and saving:
             line = '#' + line
         out.append(line)
     if not found:
@@ -451,8 +477,11 @@ def setup(group, platform=None):
         config = path / 'config'
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group),
-                    'save_minutes': group['save_minutes'] if group['persistent'] else 0,
-                    'travel_save_seconds': group['travel_save_seconds']}
+                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] else 0,
+                    'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
+                    # The host service's doorman on this machine; regions ask it which peers
+                    # sleep (a direct poll would wake them) and to wake one for a traveller.
+                    'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():
@@ -550,6 +579,22 @@ def group_check_update(group, only=None, platform=None):
     return {'component': 'server', 'current': first['current'], 'available': first['available'], 'behind': behind,
             'can_update': bool(behind) and not reasons, 'reason': None if behind and not reasons else ('; '.join(reasons) or 'up to date'),
             'regions': regions}
+
+
+def region_summary(group, platform=None):
+    """Every region's state and player count, for the bot's status line. Never asks a
+    sleeping world anything (that would queue a connection and wake it)."""
+    summary = []
+    for region, host in hosts(group, None, platform):
+        try:
+            entry = host.status()
+        except (OSError, RuntimeError, ValueError) as error:
+            entry = {'state': 'unknown', 'error': str(error)[:120]}
+        world = entry.get('world') or {}
+        summary.append({'id': region['id'], 'name': region['name'], 'kind': region['kind'], 'port': region['port'],
+                        'state': entry.get('state', 'unknown'),
+                        'players': world.get('clients') if type(world.get('clients')) is int else None})
+    return summary
 
 
 def supervise(group, start=detach):

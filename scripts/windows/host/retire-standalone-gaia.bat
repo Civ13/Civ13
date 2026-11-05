@@ -11,6 +11,10 @@ if not exist "%CIV13_OLD_CONFIG%" (
     exit /b 0
 )
 %CIV13_PYTHON% -I -B "%CIV13_HOST%" --config "%CIV13_OLD_CONFIG%" stop
+if errorlevel 1 (
+    echo Standalone Gaia was not stopped by this script; if it said "not running", it is already off.
+    exit /b 0
+)
 echo Saving and stopping standalone Gaia in the background. Follow it with:
 echo   %CIV13_PYTHON% "%CIV13_HOST%" --config "%CIV13_OLD_CONFIG%" status
 echo and wait until "phase" is "stopped" before adopt-gaia.bat.

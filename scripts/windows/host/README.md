@@ -14,7 +14,7 @@ and [region groups](../../shard-group/README.md). They only call
 | `freeze.bat`, `thaw.bat [REGION]` | Put an empty, saved region to sleep now, or wake it. The host service does this on its own. |
 | `setup.bat` | Create or refresh each region's worktree and config. Safe to run again. |
 | `serve.bat` | Run the host service in this window, for testing. |
-| `install-host-task.bat` | Register the host service as the `Civ13 Host` logon task and start it. |
+| `install-host-task.bat` | Register the host service as the `Civ13 Host` logon task and start it. Needs an administrator terminal. |
 | `make-gaia-overlay.bat` | Copy live Gaia's local-only files (config with the webhook key, host.txt, Kestrel DLL and settings) into its overlay folder. |
 | `retire-standalone-gaia.bat` | Disable the old doorman and Gaia tasks and save-and-stop standalone Gaia. |
 | `adopt-gaia.bat` | Copy the stopped standalone Gaia's save, SQL and runtime data into the Gaia region. The originals are not touched. |
@@ -41,6 +41,12 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
    edits to it can go: `git checkout -- config/config.txt config/host.txt`
    (and `maps/nomads/nomads_europe.dmm` too, if that change was not on
    purpose), then `git pull --ff-only`. Gaia keeps running from its compiled build.
+   From now on Gaia reads its config only from the region folder
+   (`D:\Civ13Regions\earth\gaia\config`, refreshed from the overlay on every
+   update), so `D:\GitHub\Civ13\config` going back to the repository's
+   defaults (for example `host.txt` saying Tais) does not affect it. Change
+   live settings in the overlay, then run `update.bat`, or edit the region's
+   copy for a quick fix that the next update replaces.
 4. **Stop standalone Gaia.** Run `retire-standalone-gaia.bat`, then follow it
    with the status command it prints until `phase` is `stopped` (a Gaia save
    takes about ten minutes).
@@ -50,9 +56,13 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
    is stopped with a complete save, and it checks every copied save file.
 7. **Start.** Make sure the BYOND pager is signed in, then run `start.bat`
    and `status.bat` until gaia is `awake`. Join and check your character.
-8. **Host service.** Run `install-host-task.bat`. It replaces the old doorman
+8. **Host service.** Run `install-host-task.bat` from an administrator
+   terminal (Windows requires admin rights to register a logon task; the
+   task itself still runs as you with normal rights). It replaces the old doorman
    on TCP 1713, so the router forward still works.
-9. **Bot and launcher.** In the bot's `profile.json`, point the `test1714`
+9. **Bot and launcher.** The bot reads Gaia's status files (`serverdata.txt`,
+   `SQL/`) from the server's folder, so until this step it shows the old,
+   stopped checkout. In the bot's `profile.json`, point the `test1714`
    server's `basedir` at `D:/Civ13Regions/earth/gaia` and its `gaia_host`
    config at `D:/Civ13Regions/earth/gaia/data/shard-host/host.json`, then
    restart the bot. In the launcher's `host.json`, point `control.config` at

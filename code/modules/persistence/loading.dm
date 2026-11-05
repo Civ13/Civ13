@@ -628,6 +628,14 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 /map_storage
 	var/save_build_identity = null // Fixtures pin a build identity here.
 	var/last_validation_note
+	// TRUE after a validate_world_save() that walked every saved field; the
+	// validation record may only vouch for files after such a walk.
+	var/tmp/last_validation_full = FALSE
+	// Candidate validation during a save checks the files' structure (grid,
+	// entry set and types, owners, contents) and trusts the field values, which
+	// the export just wrote from objects still pinned in memory. Debug recovery
+	// sets this so the candidate gets the full walk.
+	var/tmp/candidate_full_walk = FALSE
 
 /map_storage/proc/current_build_identity()
 	return save_build_identity ? save_build_identity : persistence_boot_build_identity
@@ -650,12 +658,12 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		throw EXCEPTION("Could not remove the previous validation record")
 
 // Called after the completion marker, only for a candidate that validated.
-/map_storage/proc/write_validation_record(generation)
+/map_storage/proc/write_validation_record(generation, maxz = world.maxz)
 	var/build = current_build_identity()
 	if(!build) return FALSE
-	var/list/sums = validation_record_checksums(world.maxz)
+	var/list/sums = validation_record_checksums(maxz)
 	if(!sums) return FALSE
-	var/list/record = list("version" = 1, "build" = build, "generation" = generation, "maxz" = world.maxz, "files" = sums)
+	var/list/record = list("version" = 1, "build" = build, "generation" = generation, "maxz" = maxz, "files" = sums)
 	clear_validation_record() // text2file appends.
 	return !!text2file(json_encode(record), "map_saves/validated.json")
 
@@ -678,6 +686,53 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	for(var/name in current)
 		if(expected[name] != current[name]) return "[name] changed since it was validated"
 	return null
+
+// An interrupted save: a crash or power-down after the save removed the
+// completion marker and before it wrote the new one leaves map_saves/ with
+// files but no marker, so startup refuses it. The whole previous generation was
+// copied to map_backups/ before any level was replaced (save_world_contents),
+// so when that copy is complete and marked it is put back and startup goes on.
+// scripts/gaia-host does the same swap before starting the process; this is
+// the path for a world started by hand. Nothing is restored while a restart
+// intent exists: the restart transaction owns that recovery.
+/map_storage/proc/recover_interrupted_save()
+	if(fexists("map_saves/save_complete.txt") || fexists("map_saves/restart_intent.json")) return FALSE
+	var/interrupted = FALSE
+	for(var/name in flist("map_saves/"))
+		if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
+			interrupted = TRUE
+			break
+	if(!interrupted) return FALSE
+	if(!fexists("map_backups/save_complete.txt") || !fexists("map_backups/round.json") || !fexists("map_backups/map.txt"))
+		world.log << "Interrupted save found and map_backups/ holds no completed generation; map_saves/ left as it is."
+		return FALSE
+	var/generation = trim(file2text("map_backups/save_complete.txt"))
+	var/list/round_state
+	try
+		round_state = json_decode(file2text("map_backups/round.json"))
+	catch
+		round_state = null
+	var/metadata_text = file2text("map_backups/map.txt")
+	var/list/meta = istext(metadata_text) ? splittext(metadata_text, "\n") : list()
+	var/maxz = islist(round_state) ? round_state["maxz"] : null
+	if(!islist(round_state) || round_state["generation"] != generation || copytext(generation, 1, 7) != "round-" || !isnum(maxz) || maxz < 1 || maxz > 255 || round_state["metadata"] != md5(metadata_text) || meta.len < 9 || meta[1] != map.ID)
+		world.log << "Interrupted save found but map_backups/ is not a complete generation for this map; map_saves/ left as it is."
+		return FALSE
+	for(var/z = 1, z <= maxz, z++)
+		if(!fexists("map_backups/[z].sav"))
+			world.log << "Interrupted save found but map_backups/ lacks level [z]; map_saves/ left as it is."
+			return FALSE
+	world.log << "Interrupted save in map_saves/ (no completion marker); restoring the completed generation [generation] from map_backups/."
+	// The marker goes last, so a second interruption here still reads as interrupted.
+	for(var/name in flist("map_saves/"))
+		if(name == "map.txt" || name == "round.json" || name == "validated.json" || copytext(name, max(1, length(name)-3)) == ".sav")
+			if(!fdel("map_saves/[name]")) throw EXCEPTION("Could not remove interrupted file map_saves/[name]")
+	for(var/name in flist("map_backups/"))
+		if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
+			if(!fcopy("map_backups/[name]", "map_saves/[name]")) throw EXCEPTION("Could not restore map_backups/[name]")
+	if(!fcopy("map_backups/save_complete.txt", "map_saves/save_complete.txt")) throw EXCEPTION("Could not restore the completion marker")
+	persistence_game_log("Restored generation [generation] from map_backups/ after an interrupted save.")
+	return TRUE
 
 // A failed preflight must leave the running world untouched. Historical saves
 // use the same grid; the completion marker is required by the startup contract.
@@ -709,7 +764,14 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		prepare_saved_roof_areas(round_state["generation"])
 		// The per-entry walk below is what the validation record can stand in for.
 		var/trusted = FALSE
+		// A save's candidate check reads each entry's type, owner and contents
+		// but not its other fields: the export wrote them moments ago from the
+		// live objects, and the next preflight on disk walks them in full.
+		var/walk_fields = !candidate || candidate_full_walk
 		last_validation_note = null
+		last_validation_full = FALSE
+		if(candidate)
+			last_validation_note = walk_fields ? "candidate full check" : "candidate structural check (field values trusted from the export; the next preflight walks them)"
 		if(!candidate)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			last_validation_note = "full check (human spatial prototype)"
@@ -803,10 +865,12 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 					throw EXCEPTION("Human direct restore schema is unavailable")
 #endif
 				for(var/field in fields)
-					E.cd = entry_dir
-					var/value = E[field]
 					if(field == "type")
 						continue
+					if(!walk_fields && field != "content")
+						continue
+					E.cd = entry_dir
+					var/value = E[field]
 					if(field == "content")
 						for(var/content_ref in saved_content_refs(value, version))
 							if(!entry_set["[content_ref]"])
@@ -843,11 +907,21 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 #endif
 		if(level_links) validate_level_link_targets(level_links, round_state["generation"])
 		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
+		last_validation_full = walk_fields && !trusted
 		// Candidate validation during export never authorizes a later import.
 		if(!candidate)
 			validated_level_links = level_links ? level_links.Copy() : list()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			if(persistence_active_operation && persistence_active_operation.current(src, "load")) persistence_active_operation.human_direct_preflight_generation = round_state["generation"]
+#else
+			// A full preflight proved these files on this build: record it so the
+			// restart transaction's repeated identity checks and the next startup
+			// skip the walk. The record only speeds up later checks.
+			if(last_validation_full && istext(round_state["generation"]) && current_build_identity())
+				try
+					if(!write_validation_record(round_state["generation"], save_validation_maxz())) world.log << "Validation record not written after the full preflight; later checks run in full."
+				catch(var/exception/record_error)
+					world.log << "Validation record failed after the full preflight: [record_error]"
 #endif
 		drop_segment_reader() // Preflight keeps no segment handles open.
 		return TRUE

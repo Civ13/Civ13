@@ -59,3 +59,26 @@ class SavePolicy(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class HostRequestedSave(unittest.TestCase):
+    """The host may ask for the empty-world save through the lifecycle Topic
+    (action save_idle); it runs only the save the persistence loop would run."""
+
+    def setUp(self):
+        self.lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text(encoding='utf-8')
+        self.body = proc_body(self.lifecycle, '/datum/nomads_lifecycle_control/proc/save_idle()')
+
+    def test_save_idle_keeps_the_no_autosave_rule(self):
+        self.assertIn('persistence_active_players()) skip = "players_online"', self.body)
+        self.assertIn('!persistence_played_since_save) skip = "nothing_played"', self.body)
+        self.assertIn('persistence_save_in_progress', self.body)
+        self.assertIn('persistence_restart.exists()', self.body)
+        self.assertEqual(self.body.count('ticker.savemap()'), 1)
+        self.assertLess(self.body.index('if(skip)'), self.body.index('ticker.savemap()'))
+
+    def test_save_idle_needs_only_the_token(self):
+        handler = proc_body(self.lifecycle, '/datum/nomads_lifecycle_control/proc/handle(list/input, addr)')
+        self.assertIn('(action == "status" || action == "save_idle") ? list("nomads_lifecycle", "token", "action")', handler)
+        self.assertLess(handler.index('if(action == "save_idle") return json_encode(save_idle())'),
+                        handler.index('input["session"] != boot_session()'))

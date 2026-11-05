@@ -214,6 +214,9 @@ jobs:
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+      - name: Test chainsaw tree-felling declarations offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_chainsaw.py')
+        run: python3 -B -m unittest discover -s tests -p test_chainsaw.py -v
       - name: Test wolf cave ownership source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wolf_cave_ownership')
         run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
@@ -2472,6 +2475,15 @@ jobs:
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control chick
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control duplicate
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control kenobi
+
+      - name: Verify mount gunfire (horse health and riders' own shots)
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mount_bullets')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control health
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control rider
 
       - name: Verify continuous persistence rounds and negative controls
         id: persistence_round

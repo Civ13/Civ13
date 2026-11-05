@@ -36,6 +36,11 @@ def main(argv=None):
     p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p.add_argument('--lapse',type=float,default=6.5,help='temperature drop in C per km of elevation, 0..10 (0 keeps the map flat-climate)')
     p.add_argument('--skin',choices=['native','barren'],default='native',help='barren: regolith ground, frozen lakes and sea, dry channels, rocks only (SURFACE bundles)')
+    p=commands.add_parser('survey',help='write the coarse survey map a mission console shows, from a SURFACE bundle')
+    p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
+    p.add_argument('--cell-tiles',type=int,default=5,help='tiles per survey cell, 1..16')
+    p=commands.add_parser('survey-check',help='exit 0 when a survey map was drawn from this bundle, 1 when not')
+    p.add_argument('directory',type=Path);p.add_argument('--survey',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p=commands.add_parser('audit-source',help='read-only classic map/source audit')
     p.add_argument('--catalog-root',type=Path);p.add_argument('--reference-image',type=Path)
     p=commands.add_parser('annotate-reference',help='source components and uncertain hydrology proposals')
@@ -75,6 +80,13 @@ def main(argv=None):
         elif a.command=='playable':
             from .playable import write
             result=write(a.directory,a.out,a.catalog_root,a.lapse,a.skin)
+        elif a.command=='survey':
+            from .survey import write as survey_write
+            result=survey_write(a.directory,a.out,a.catalog_root,a.cell_tiles)
+        elif a.command=='survey-check':
+            from .survey import check as survey_check
+            result=survey_check(a.directory,a.survey,a.catalog_root)
+            print(json_text(result));return 0 if result['matches'] else 1
         elif a.command=='audit-source':result=audit(a.catalog_root,a.reference_image)
         else:
             from .reference_annotation import build
