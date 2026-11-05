@@ -104,7 +104,12 @@ dd.exe was killed) and nothing listens on the port, the instance becomes cold
 the ordinary `start` action, which loads that save. A cold start needs
 `cold_start_min_free_mb` (2560) of free memory, since loading peaks far above a
 thaw, and an action lock left by the power-down is cleared first. A save that
-fails `start`'s checks keeps the server down. Run `serve` from a scheduled task
+fails `start`'s checks keeps the server down. On Windows, `start` (and so a
+cold start) also refuses while the BYOND pager (byond.exe) is not running in the
+same logon session, since `-public` needs the host's BYOND account signed in
+(`start_requires_byond_pager`, on by default); the launcher tells the player the
+host is not signed in. Put the BYOND pager in the Startup folder with "remember
+me" so it signs in at logon. Run `serve` from a scheduled task
 that starts at boot so the launcher can see and wake the instance.
 
 The launcher lists asleep servers from this cache and offers "Wake and join":

@@ -86,6 +86,14 @@ internal static class HostStatusTests {
             Require(refusal.Message == gaia.Name + " cannot wake right now: its host is low on free memory (700 MB free, 1024 MB needed). Try again later.",
                 "Low-memory refusal message changed: " + refusal.Message);
         }
+        try {
+            await HostStatus.Wake(gaia, resolver, (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(
+                Frame("{\"schema\":1,\"ok\":false,\"error\":\"byond signed out\",\"port\":1714}")));
+            throw new Exception("Signed-out wake refusal accepted");
+        } catch (IOException refusal) {
+            Require(refusal.Message == gaia.Name + " cannot start right now: its host is not signed in to BYOND. Try again later.",
+                "Signed-out refusal message changed: " + refusal.Message);
+        }
         await Reject(() => HostStatus.Wake(new GameTarget("ValZarGaming", 1716), resolver,
             (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(wakeReply)), "unconfigured wake target");
 

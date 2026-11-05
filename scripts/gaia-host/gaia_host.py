@@ -63,7 +63,10 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # map_saves holds a save newer than the last player; after a reboot the
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
-                   'cold_start_min_free_mb': 2560}
+                   'cold_start_min_free_mb': 2560,
+                   # dd.exe -public needs the host's BYOND account signed in, which on Windows
+                   # lives in the BYOND pager (byond.exe) of the same logon session
+                   'start_requires_byond_pager': True}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -201,6 +204,22 @@ class Platform:
 
     def start_task(self, name):
         return self.run(['schtasks', '/Run', '/TN', name], timeout=60)
+
+    def byond_pager_running(self):
+        """True/False whether byond.exe runs in this logon session; None off Windows or unknown."""
+        if os.name != 'nt':
+            return None
+        try:
+            session = ctypes.c_ulong()
+            if not ctypes.windll.kernel32.ProcessIdToSessionId(os.getpid(), ctypes.byref(session)):
+                return None
+        except (OSError, AttributeError):
+            return None
+        code, out = self.run(['tasklist', '/FI', 'IMAGENAME eq byond.exe', '/FI', 'SESSION eq %d' % session.value,
+                              '/FO', 'CSV', '/NH'], timeout=30)
+        if code != 0:
+            return None
+        return '"byond.exe"' in out.lower()
 
     def task_ready(self, name):
         code, out = self.run(['schtasks', '/Query', '/TN', name, '/FO', 'LIST'], timeout=60)
@@ -506,6 +525,8 @@ class Host:
             if listening:
                 raise Refused('the server is already running')
             check_save(self.repo / 'map_saves')
+            if not self.byond_signed_in():
+                raise Refused('BYOND is not signed in: start the BYOND pager and sign in first')
             if not self.platform.task_ready(self.config['task']):
                 raise Refused('the scheduled task is not Ready')
         elif action in ('stop', 'restart'):
@@ -561,6 +582,12 @@ class Host:
             self.cold_file.unlink(missing_ok=True)
             return None
         return state
+
+    def byond_signed_in(self):
+        """False only when the pager is known not to be running in this session."""
+        if not self.config['start_requires_byond_pager']:
+            return True
+        return getattr(self.platform, 'byond_pager_running', lambda: None)() is not False
 
     def start_cold(self, reason):
         """Start a cold server from its last save through the ordinary start action."""
