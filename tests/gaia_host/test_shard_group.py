@@ -150,6 +150,40 @@ class ShardGroupTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             shard_group.selected_map_dme('no block', 'x.dmm')
 
+    def test_transfer_and_save_options(self):
+        group = self.write_group()
+        self.assertEqual((False, 15, 60, True), (group['transfers'], group['save_minutes'], group['travel_save_seconds'], group['persistent']))
+        self.refuse_config('transfer_port', region_transfer_port=1720)
+        self.group['regions'][0]['transfer_port'] = 47201
+        self.refuse_config('transfer_port')  # every region needs one once any has one
+        self.group['regions'][1]['transfer_port'] = 47201
+        self.refuse_config('transfer_port')
+        self.group['regions'][1]['transfer_port'] = 47202
+        self.refuse_config('save_minutes', save_minutes=-1)
+        self.refuse_config('travel_save_seconds', travel_save_seconds=5)
+        self.refuse_config('persistent', persistent='yes')
+        group = self.write_group()
+        self.assertTrue(group['transfers'])
+        shard_group.setup(group, self.machine)
+        config = self.base / 'regions' / 'deep' / 'config'
+        agent = json.loads((config / 'transfer_agent.json').read_text())
+        self.assertEqual({'port': 47202, 'token_file': 'config/transfer-token.txt', 'peers': ['gaia'], 'poll_seconds': 5}, agent)
+        self.assertGreaterEqual(len((config / 'transfer-token.txt').read_text().strip()), 32)
+        settings = json.loads((config / 'shard_region.json').read_text())
+        self.assertEqual((15, 60), (settings['save_minutes'], settings['travel_save_seconds']))
+        started = []
+        def start(argv, cwd, log):
+            started.append(argv)
+            return 4242
+        self.assertTrue(shard_group.ensure_coordinator(group, start))
+        self.assertIn('deep=http://127.0.0.1:47202=%s' % (config / 'transfer-token.txt'), started[0])
+        self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
+        platform = shard_group.RegionPlatform(shard_group.region_config(group, group['regions'][1]))
+        self.assertEqual(['gaia'], platform.config['peers'])
+        self.group['persistent'] = False
+        shard_group.setup(self.write_group(), self.machine)
+        self.assertEqual(0, json.loads((config / 'shard_region.json').read_text())['save_minutes'])
+
     def host(self, group, region_id):
         region = next(r for r in group['regions'] if r['id'] == region_id)
         return shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
@@ -167,8 +201,16 @@ class ShardGroupTests(unittest.TestCase):
             path = self.base / 'regions' / region_id
             self.assertIn('#include "%s"' % include, (path / 'region.dme').read_text())
             self.assertTrue((path / 'region.dmb').exists())
-            self.assertIn((['git', 'checkout', '--detach', REVISION], str(path)), self.machine.calls)
+            self.assertIn((['git', 'checkout', '--force', '--detach', REVISION], str(path)), self.machine.calls)
+            # Regions are persistent rounds unless the group says otherwise.
+            self.assertIn('ALLOWED_GAMEMODES PERSISTENCE', (path / 'config' / 'config.txt').read_text())
         self.assertEqual(self.outside.read_text(), (self.base / 'regions/deep/maps/regions/deep.dmm').read_text())
+
+    def test_persistent_config_saves(self):
+        path = self.base / 'config.txt'
+        path.write_text('A 1\nALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n#SKIP_PERSISTENCE_SAVING\n')
+        shard_group.persistent_config(path)
+        self.assertEqual(['A 1', 'ALLOWED_GAMEMODES PERSISTENCE', '#SKIP_PERSISTENCE_SAVING', '#SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
 
     def test_update_failures_are_reported(self):
         group = self.write_group()

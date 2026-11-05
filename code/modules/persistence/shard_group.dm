@@ -46,6 +46,12 @@ var/global/datum/shard_group/shard_group = new
 	var/list/order = list()
 	var/polling = FALSE
 	var/last_error = null
+	// Periodic world saves (minutes, 0 = off) and how soon a save follows a
+	// departure (seconds). A traveller can only arrive after the region they
+	// left has saved without them.
+	var/save_minutes = 0
+	var/travel_save_seconds = 60
+	var/saving_loop = FALSE
 
 /datum/shard_group/New()
 	..()
@@ -89,6 +95,16 @@ var/global/datum/shard_group/shard_group = new
 			self = entry
 	if(!self)
 		return refuse("this region is not in its own region list")
+	save_minutes = 0
+	if(!isnull(settings["save_minutes"]))
+		if(!isnum(settings["save_minutes"]) || settings["save_minutes"] < 0 || settings["save_minutes"] > 1440)
+			return refuse("save_minutes must be 0 to 1440")
+		save_minutes = round(settings["save_minutes"])
+	travel_save_seconds = 60
+	if(!isnull(settings["travel_save_seconds"]))
+		if(!isnum(settings["travel_save_seconds"]) || settings["travel_save_seconds"] < 10 || settings["travel_save_seconds"] > 3600)
+			return refuse("travel_save_seconds must be 10 to 3600")
+		travel_save_seconds = round(settings["travel_save_seconds"])
 	group = settings["group"]
 	region = self["id"]
 	name = self["name"]
@@ -157,8 +173,32 @@ var/global/datum/shard_group/shard_group = new
 			sleep(SHARD_POLL_INTERVAL)
 		polling = FALSE
 
+// Region saves use the world's own persistence save loop (start_persistence_loop
+// in world.dm), only sooner: at most save_minutes apart, and travel_save_seconds
+// after a departure. A traveller can only arrive after the region they left has
+// saved without them.
+/datum/shard_group/proc/start_saving()
+	if(!enabled || saving_loop || !save_minutes)
+		return
+	saving_loop = TRUE
+	spawn(0)
+		while(enabled && save_minutes)
+			if(nextsave && nextsave - world.realtime > save_minutes * 600)
+				nextsave = world.realtime + save_minutes * 600
+			sleep(100)
+		saving_loop = FALSE
+
+// Moves the next save closer after a departure, never later than planned.
+/datum/shard_group/proc/request_save_soon()
+	if(!enabled || !save_minutes)
+		return
+	var/soon = world.realtime + travel_save_seconds * 10
+	if(!nextsave || nextsave > soon)
+		nextsave = soon
+
 /hook/startup/proc/shard_group_startup()
 	shard_group.start_polling()
+	shard_group.start_saving()
 	return TRUE
 
 /datum/world_topic/shard_region

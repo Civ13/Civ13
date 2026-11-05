@@ -77,6 +77,26 @@ It stays closed while the bridge is off or `peers` is empty in the config:
 Only the kind and amount travel, never the object, so no other field of a stack
 crosses regions.
 
+## Region travel (characters)
+
+`code/modules/persistence/region_travel.dm` moves a player's character
+through the same agent. It uses the payload kind `"character"`: JSON with the
+identity, looks, skills, hunger and thirst, and up to 40 items.
+
+- Only items that can be rebuilt exactly may travel: allowlisted material
+  stacks and coins by kind and amount, and empty clothing by type. The gate
+  refuses until everything else is left behind.
+- The body waits inside the gate while the escrow is recorded. Then the body
+  and items are removed and the player is sent to the destination server.
+- `status` reports `pending_kinds` for each pending transfer, so the world
+  can route a character to a gate or late-join point, not to a trade post.
+- The arrived body keeps `region_arrival_pending` and the owner's key. It is
+  saved with the world and handed over when that key joins. A refused trip
+  rebuilds the character at the source the same way.
+
+Group setup, autosave timing and agent startup are in
+[scripts/shard-group](../../scripts/shard-group/README.md#travel-between-regions).
+
 ## Pilot command lines
 
 ```

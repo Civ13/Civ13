@@ -45,6 +45,19 @@ def transfer_id(group, source, destination, epoch, seq):
     return hashlib.sha256(text.encode('ascii')).hexdigest()
 
 
+def payload_kinds(manifest):
+    """The sorted payload kinds ("kind" of each JSON object item) of a manifest."""
+    kinds = set()
+    for item in json.loads(manifest).get('items', []):
+        try:
+            value = json.loads(item) if isinstance(item, str) else None
+        except ValueError:
+            value = None
+        kind = value.get('kind') if isinstance(value, dict) else None
+        kinds.add(kind if isinstance(kind, str) and len(kind) <= 32 else '')
+    return sorted(kinds)
+
+
 class RegionStore:
     def __init__(self, path, region_id, group_id):
         self.region = region_id
@@ -423,6 +436,11 @@ class RegionStore:
             'pending_transfers': [tid for (tid,) in self.db.execute(
                 "SELECT transfer_id FROM active WHERE (direction = 'in' AND phase = ?) OR (direction = 'out' AND phase = ?)",
                 (COMMIT_RECEIVED, RETURNING))],
+            # What each pending transfer carries, so DM can pick where it lands
+            # before it records the effect.
+            'pending_kinds': {tid: payload_kinds(manifest) for (tid, manifest) in self.db.execute(
+                "SELECT transfer_id, manifest FROM active WHERE (direction = 'in' AND phase = ?) OR (direction = 'out' AND phase = ?)",
+                (COMMIT_RECEIVED, RETURNING))},
         }
 
     def clear_hold(self, reason):

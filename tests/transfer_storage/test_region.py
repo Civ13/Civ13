@@ -9,7 +9,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sim import Node, deliver  # noqa: E402
 from tools.transfer_storage.region import (  # noqa: E402
-    IN, OUT, RegionHeld, RegionStore, TransferError)
+    IN, OUT, RegionHeld, RegionStore, TransferError, payload_kinds)
 
 
 def pair(folder):
@@ -59,6 +59,25 @@ class Basics(unittest.TestCase):
             self.assertEqual([], n.store.outbox())
         self.assertEqual(1, [f for f in self.a.store.status()['fences'] if f['direction'] == OUT][0]['settled_seq'])
         self.assertEqual(1, [f for f in self.b.store.status()['fences'] if f['direction'] == IN][0]['settled_seq'])
+
+    def test_pending_transfers_report_payload_kinds(self):
+        tid = self.a.start_transfer('beta', {'a0'})
+        self.a.save()
+        for _ in range(3):  # ESCROW -> PREPARE -> COMMIT -> received
+            deliver([self.a, self.b])
+        st = self.b.store.status()
+        self.assertEqual([tid], st['pending_transfers'])
+        # Simulated items are plain ids, not JSON objects, so their kind is ''.
+        self.assertEqual({tid: ['']}, st['pending_kinds'])
+        settle(self.a, self.b)
+        self.assertEqual({}, self.b.store.status()['pending_kinds'])
+
+    def test_payload_kinds_reads_json_object_kinds(self):
+        import json
+        items = [json.dumps({'v': 1, 'kind': 'character'}), json.dumps({'kind': 'goods'}),
+                 'not json', json.dumps(['kind']), json.dumps({'kind': 'x' * 33}), json.dumps({'kind': 7})]
+        self.assertEqual(['', 'character', 'goods'], payload_kinds(json.dumps({'items': items})))
+        self.assertEqual([], payload_kinds(json.dumps({})))
 
     def test_crash_before_save_voids_escrow(self):
         self.a.start_transfer('beta', {'a0'})

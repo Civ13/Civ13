@@ -41,9 +41,51 @@ with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND` or
 
 In game, every region polls its peers once a minute and players see the group
 with the OOC verb **Regions**, with join links for regions that are up.
-Joining another region starts a new character there; moving a character and
-their belongings between regions is not implemented yet.
+Joining another region this way starts a new character there.
+
+## Travel between regions
+
+Travel is off unless every region has a `transfer_port` (a free loopback
+port, unique in the group, never 1714). Then:
+
+- `setup` writes each region's `config/transfer-token.txt` and
+  `config/transfer_agent.json`, with every other region as a peer.
+- `start` launches the region's transfer agent
+  ([tools/transfer_storage](../../tools/transfer_storage/README.md)) before
+  DreamDaemon, enrolled both ways with every peer, and starts one
+  coordinator for the group (`<root>/coordinator.pid`).
+- `status` shows each region's `transfer_agent` and the group's
+  `coordinator`.
+
+A trip is only final once both regions have saved, so the group keeps saves
+frequent:
+
+- `save_minutes` (default 15, 1 to 1440) is the longest gap between autosaves.
+- `travel_save_seconds` (default 60) is how soon a region saves after
+  someone leaves through a gate.
+- `persistent` (default true) makes `update` set `ALLOWED_GAMEMODES
+  PERSISTENCE` and comment out `SKIP_PERSISTENCE_SAVING` in each region's
+  `config/config.txt`. Without saves, no trip ever completes.
+- A save of a 155x225 map takes over a minute, so keep `save_minutes` at 5 or
+  more. Gates refuse travel while their region is saving.
+
+Other optional keys:
+
+- `python` is the interpreter for the agents and the coordinator (default:
+  the one running the script).
+- `rust_g` is a rust_g library copied into each region on `update` (needed on
+  Linux).
+
+Players travel through an admin-placed `/obj/structure/region_gate`, with its
+`destination` set to a peer's region id; see
+[region_travel.dm](../../code/modules/persistence/region_travel.dm). The
+character arrives at a gate in the destination, or at a late-join point when
+the destination has no gate. Its owner gets it back on joining that server.
 
 Tests: `python3 -m unittest tests/gaia_host/test_shard_group.py` (fake
 machine, no BYOND). A Linux smoke run with the pinned compiler on two test
 maps (setup, update, start, status with both peers `UP`) passed on 2026-11-05.
+A two-region travel run passed on 2026-11-05 on two generated playable maps.
+A Nomad left through a gate and arrived in the other region about 2.5 minutes
+later, with name, owner, clothes and coins. The transfer settled on both agents
+after the destination saved, and there were no runtime errors.
