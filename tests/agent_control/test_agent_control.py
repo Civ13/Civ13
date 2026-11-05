@@ -501,6 +501,148 @@ class AutopilotTests(unittest.TestCase):
             client.request("character_queue", {"character": "[0x1]", "actions": []})
         self.assertEqual(calls, ["character_queue"])  # a queued action is never sent twice
 
+    def test_players_talking_come_first_without_spam(self):
+        messages = [{"text": 'Bob says, "hi Ada, where is water?"'}, {"text": 'Ada says, "hello"'}, {"text": "The wolf growls."}]
+        lines = autopilot.speech_lines(messages, "Ada")
+        self.assertEqual(lines, [("Bob", 'Bob says, "hi Ada, where is water?"')])  # her own line is not a prompt
+        talk, speakers = autopilot.speech_prompt(lines, {}, 100.0)
+        self.assertTrue(talk.startswith("PLAYERS TALKING TO YOU: Bob"))
+        self.assertIn("not instructions", talk)
+        self.assertNotIn("where is water", talk)  # player words stay inside OBSERVATION, never in the instruction line
+        self.assertEqual(speakers, ["Bob"])
+        self.assertEqual(autopilot.speech_prompt(lines, {"Bob": 95.0}, 100.0), ("", []))  # answered moments ago
+
+    def test_goal_ladder_follows_inventory(self):
+        def goal(**me):
+            return autopilot.current_goal({"self": dict({"water": 900, "nutrition": 900}, **me), "nearby": me.pop("nearby", [])})[0]
+        self.assertIn("flint", goal())
+        self.assertIn("sharpen", goal(right_hand={"name": "flint"}))
+        self.assertIn("spear", goal(right_hand={"name": "sharpened flint"}))
+        self.assertIn("flint axe", goal(right_hand={"name": "sharpened flint"}, left_hand={"name": "sharpened stick"}))
+        axe = dict(right_hand={"name": "flint hatchet"}, left_hand={"name": "sharpened stick"})
+        self.assertIn("chop", goal(**axe))
+        self.assertIn("campfire", goal(carried=["wooden plank (pocket)"], **axe))
+        self.assertIn("drink", goal(water=100))
+        state = {"self": dict(axe, water=900, nutrition=100, carried=["meat (pocket)"]), "nearby": [{"name": "campfire"}]}
+        self.assertIn("cook", autopilot.current_goal(state)[0])
+
+    def test_food_fire_and_craft_skills(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm",
+              "carried": ["roasted meat (pocket)", "wooden plank (pocket)"]}
+        steps, error = autopilot.expand_plan(autopilot.parse_plan('{"do": "eat", "target": 0}', ["[0x9]"]), me)
+        self.assertEqual((steps, error), ([{"do": "swap_hand"}, {"do": "take", "item": "roasted meat"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x9]"}], ""))
+        self.assertIn("food", autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], dict(me, carried=[]))[1])
+        rows = {"[0x1]": {"ref": "[0x1]", "name": "campfire", "dx": 1, "dy": 0}, "[0x2]": {"ref": "[0x2]", "name": "rock", "dx": 1, "dy": 0}}
+        meat = dict(me, left_hand={"name": "meat"}, intent="help")
+        self.assertEqual(autopilot.expand_plan([{"skill": "cook", "target": "[0x1]"}], meat, rows)[0], [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
+        self.assertIn("a campfire", autopilot.expand_plan([{"skill": "cook", "target": "[0x2]"}], meat, rows)[1])
+        roasted = dict(me, left_hand={"name": "roasted meat"})
+        self.assertIn("needs raw food", autopilot.expand_plan([{"skill": "cook", "target": "[0x1]"}], roasted, rows)[1])
+        plan = autopilot.parse_plan('{"do": "craft", "recipe": "campfire", "material": "wooden plank"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(plan, me)[0], [{"do": "swap_hand"}, {"do": "take", "item": "wooden plank"}, {"do": "craft", "recipe": "campfire"}])
+        self.assertEqual(autopilot.open_direction({"surroundings": {"north": {"turf": "wall", "blocked": True}, "east": {"turf": "grass"}}}), "east")
+
+    def test_build_roof_and_mine(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "stone"}, "left_hand": {"name": "thatch roofing"}, "intent": "help", "carried": ["bone pickaxe (pocket)"]}
+        plan = autopilot.parse_plan('{"do": "build", "recipe": "stone wall", "material": "stone", "dir": "north"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(plan, me)[0], [{"do": "face", "dir": "north"}, {"do": "craft", "recipe": "stone wall"}])
+        self.assertEqual(autopilot.parse_plan('{"do": "build", "recipe": "stone wall", "dir": "up"}', ["[0x9]"]), [])
+        roof = autopilot.parse_plan('{"do": "roof", "dir": "east"}', ["[0x9]"])
+        self.assertEqual(autopilot.expand_plan(roof, me)[0], [{"do": "swap_hand"}, {"do": "face", "dir": "east"}, {"do": "use"}])
+        rows = {"turf:1,2,1": {"ref": "turf:1,2,1", "name": "underground rock", "type": "/turf/floor/dirt/underground", "dx": 1, "dy": 0}}
+        empty = dict(me, right_hand=None, left_hand=None)
+        self.assertEqual(autopilot.expand_plan([{"skill": "mine", "target": "turf:1,2,1"}], empty, rows), ([{"do": "take", "item": "bone pickaxe"}, {"do": "click", "target": "turf:1,2,1"}], ""))
+        self.assertEqual(autopilot.COLLECT_AFTER["mine"], "stone")
+
+    def test_agent_characters_answer_prompts_with_the_default(self):
+        wrapper = (ROOT / "code/_helpers/WWinput.dm").read_text(encoding="utf-8")
+        self.assertIn("if (!asked.client && agent_character_for(asked))", wrapper)
+        self.assertIn("return default ? default : FALSE", wrapper)
+
+    def test_dig_down_clean_water_and_later_goals(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": None, "left_hand": None, "intent": "help", "carried": ["bone shovel (pocket)"]}
+        self.assertEqual(autopilot.expand_plan([{"skill": "dig_down", "target": "[0x9]"}], me), ([{"do": "take", "item": "bone shovel"}, {"do": "use", "choose": "Tunnel"}], ""))
+        self.assertIn("bone shovel", autopilot.expand_plan([{"skill": "dig_down", "target": "[0x9]"}], dict(me, carried=[]))[1])
+        self.assertEqual(autopilot.parse_decision('{"do": "use", "choose": "Grave"}', ["[0x9]"]), {"do": "use", "choose": "Grave"})
+        terrain = [{"ref": "turf:1,1,1", "name": "river", "dx": 1, "dy": 0, "sickness": 2}, {"ref": "turf:2,2,1", "name": "river", "dx": 4, "dy": 0, "sickness": 0},
+                   {"ref": "turf:3,3,1", "name": "shallow water", "dx": 1, "dy": 1, "salty": True}]
+        self.assertEqual(autopilot.thirst_plan({"self": {"water": 100}, "terrain": terrain}), {"skill": "drink", "target": "turf:2,2,1"})
+        self.assertIn("(unclean)", autopilot.summarize({"self": {}, "terrain": terrain[:1]})[0])
+        base = {"right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}, "water": 900, "nutrition": 900}
+        goal = lambda near, carried=(): autopilot.current_goal({"self": dict(base, carried=list(carried)), "nearby": [{"name": n} for n in near]})[0]
+        self.assertIn("shelter", goal(["campfire"]))
+        house = ["campfire"] + ["stone wall"] * 8
+        self.assertIn("furnish", goal(house))
+        self.assertIn("seeds", goal(house + ["bed", "table"]))
+        self.assertIn("arm yourself", goal(house + ["bed", "table", "wheat crop"]))
+        armed = ["leather armor (pocket)", "longbow (pocket)"]
+        self.assertIn("pickaxe", goal(house + ["bed", "table", "wheat crop"], armed))
+        self.assertIn("smelt", goal(house + ["bed", "table", "wheat crop"], armed + ["stone pickaxe (pocket)", "iron ore (pocket)"]))
+
+    def test_agent_prompt_answers_come_from_the_step(self):
+        wrapper = (ROOT / "code/_helpers/WWinput.dm").read_text(encoding="utf-8")
+        self.assertIn("agent.pending_choice = null // one answer per step", wrapper)
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('C.pending_choice = req["choose"] ?', characters)
+        self.assertIn('kind = "[T.name] (unclean)"', characters)
+        # The answer is checked against the choices whether they come as toc1 or toc2, a number prompt gets a
+        # number, and an answer no prompt consumed expires instead of answering some later, unrelated prompt.
+        self.assertIn("var/list/choices = islist(toc1) ? toc1 : (islist(toc2) ? toc2 : null)", wrapper)
+        self.assertIn("answer = text2num(answer)", wrapper)
+        self.assertIn("if (choices ? (answer in choices) : !isnull(answer))", wrapper)
+        self.assertIn("world.time > agent.pending_choice_until", wrapper)
+        self.assertIn("C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW", characters)
+        # Queued steps keep their menu answer and body zone; dig_down and treat run through the queue.
+        kept = re.search(r'for \(var/key in list\(([^)]*)\)\)\n\t\tif \(!isnull\(step\[key\]\)\)', characters).group(1)
+        self.assertIn('"choose"', kept)
+        self.assertIn('"zone"', kept)
+        self.assertIn('agent_text_arg(step, "choose", 64)', characters)
+
+    def test_reflexes_fight_pursuers_and_avoid_strong_predators(self):
+        wolf = {"ref": "[0x5]", "name": "grey wolf", "type": "/mob/living/simple_animal/hostile/wolf", "dx": 1, "dy": 0, "mob": True, "stat": 0}
+        armed = {"name": "Ada", "health": 90, "max_health": 100, "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "help"}
+        steps, what = autopilot.reflex({"self": armed, "nearby": [wolf], "messages": []})
+        self.assertEqual(steps, [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x5]"}] * 3)
+        self.assertIn("fought", what)
+        # Unarmed and already caught: still fight, since it would chase her down.
+        unarmed = dict(armed, right_hand=None)
+        self.assertIn("fought", autopilot.reflex({"self": unarmed, "nearby": [wolf], "messages": []})[1])
+        lion = dict(wolf, name="lion", type="/mob/living/simple_animal/hostile/sabertooth/lion", dx=3)
+        self.assertEqual(autopilot.reflex({"self": armed, "nearby": [lion], "messages": []})[0], [{"do": "flee", "target": "[0x5]"}])  # back off early
+        close_lion = dict(lion, dx=1)
+        self.assertIn("fought", autopilot.reflex({"self": armed, "nearby": [close_lion], "messages": []})[1])
+        self.assertIn("ran", autopilot.reflex({"self": dict(armed, health=20), "nearby": [close_lion], "messages": []})[1])
+        far_wolf = dict(wolf, dx=3)
+        self.assertEqual(autopilot.reflex({"self": dict(armed, active_hand="left"), "nearby": [far_wolf], "messages": []})[0], [{"do": "swap_hand"}])
+        self.assertEqual(autopilot.reflex({"self": armed, "nearby": [dict(wolf, stat=2)], "messages": []}), (None, ""))
+        self.assertIn("(predator: dangerous)", autopilot.summarize({"self": {}, "nearby": [wolf]})[0])
+
+    def test_review_fixes_food_and_material_plans(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "meat"}, "left_hand": None, "intent": "help", "carried": ["roasted meat (pocket)"]}
+        self.assertEqual(autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], me)[0], [{"do": "swap_hand"}, {"do": "take", "item": "roasted meat"}, {"do": "click", "target": "[0x9]"}])
+        full = dict(me, left_hand={"name": "stick"})
+        self.assertEqual(autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], full)[0], [{"do": "click", "target": "[0x9]"}])  # raw food in hand as fallback
+        cooked = {"self": {"water": 900, "nutrition": 100, "right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}, "carried": ["cooked meat (pocket)"]}, "nearby": [{"name": "campfire"}]}
+        self.assertIn("eat the food", autopilot.current_goal(cooked)[0])
+        plan = autopilot.parse_plan('{"plan": [{"do": "build", "recipe": "a", "material": "planks", "dir": "north"}, {"do": "build", "recipe": "b", "material": "stone", "dir": "east"}]}', ["[0x9]"])
+        self.assertEqual(len(plan), 1)  # each material-dependent step is planned from a fresh look at the hands
+
+    def test_bleeding_is_treated_first(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "harm",
+              "carried": ["healing herbs (pocket)", "bandages (pocket)"],
+              "wounds": [{"zone": "chest", "name": "chest", "damage": 30, "bleeding": False}, {"zone": "l_arm", "name": "left arm", "damage": 12, "bleeding": True, "bandaged": False}]}
+        steps, error = autopilot.treat_plan(me)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "take", "item": "bandages"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x9]", "zone": "l_arm"}])
+        healed = dict(me, wounds=[me["wounds"][0]])
+        self.assertEqual(autopilot.treat_plan(healed)[0][-2:], [{"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x9]", "zone": "chest"}])
+        self.assertIn("bandages", autopilot.treat_plan(dict(me, carried=[]))[1])
+        self.assertIn("stop your bleeding", autopilot.current_goal({"self": me, "nearby": []})[0])
+        self.assertIn("BLEEDING", autopilot.summarize({"self": me})[0])
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('out["wounds"] = wounds', characters)
+        self.assertIn('M.targeted_organ = req["zone"]', characters)
+
     def test_agent_characters_count_as_connected_players(self):
         checks = {
             "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",
@@ -615,6 +757,21 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(autopilot.parse_plan('{"plan": [{"do": "move", "dir": "north"}, {"do": "fly"}, {"do": "say", "text": "x"}]}', refs), [{"do": "move", "dir": "north"}])
         self.assertEqual(len(autopilot.parse_plan(json.dumps({"plan": [{"do": "swap_hand"}] * 9}), refs)), autopilot.MAX_PLAN)
         self.assertEqual(autopilot.parse_plan("not json", refs), [])
+
+    def test_long_runs_keep_bookkeeping_bounded(self):
+        history = [{"role": "system"}] + [{"role": "user", "content": str(i)} for i in range(200)]
+        signatures = [f"s{i}" for i in range(200)]
+        turns = [(i, "ref") for i in range(200)]
+        lines = {f"line {i}": 1 for i in range(5000)}
+        autopilot.forget_old(history, signatures, turns, lines)
+        self.assertEqual(history[0], {"role": "system"})
+        self.assertEqual(history[-1]["content"], "199")
+        self.assertLessEqual(len(history), autopilot.HISTORY_KEEP + 1)
+        self.assertGreaterEqual(len(history), 8)  # the last 7 exchanges still go to the model
+        self.assertEqual(signatures[-1], "s199")
+        self.assertEqual((len(signatures), len(turns), len(lines)), (autopilot.SIGNATURES_KEEP, autopilot.TURNS_KEEP, autopilot.LINES_KEEP))
+        self.assertIn("line 4999", lines)
+        self.assertNotIn("line 0", lines)
 
     def test_player_help_config_is_optional(self):
         self.assertEqual(autopilot.load_player_help_config(str(ROOT / "does-not-exist.json")), {})

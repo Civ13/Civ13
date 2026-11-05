@@ -16,6 +16,9 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `stop` | Asks the running world to save and shut down through its authenticated lifecycle topic, waits for the port to close, then copies `map_saves` to `<state_dir>/backups/<operation>` and checks every file's SHA-256. The newest `backups_kept` copies are kept. |
 | `restart` | `stop`, then `start`. |
 | `update` | Only while stopped: `git fetch` and a fast-forward merge of the branch, then `dm.exe civ13.dme`, which must report 0 errors. |
+| `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (and trims its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
+| `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
+| `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within about a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
 seconds and continues in a detached worker. Its progress (`phase`, `error`,
@@ -36,3 +39,28 @@ exits 1 and changes nothing.
 
 Callers pass only the action name. Paths, commands and the task come from the
 config file. Tests: `python3 -I -B -m unittest discover -s tests/gaia_host -p 'test_*.py'`.
+
+## Freezing while nobody plays
+
+While frozen, BYOND's world.time stops, so the world does not age: crops,
+seasons and animals pause until someone connects. The wall clock keeps
+running, and the world shifts its own wall-clock schedules when it wakes
+(`code/_helpers/wall_clock.dm`): the periodic save moves forward by the frozen
+time, so the first player does not land in a save, and the timer subsystem's
+midnight count stays right after a freeze of any length. Real-world cooldowns
+such as bans, respawn and faction timers keep counting.
+
+A player who connects to a frozen server waits in the TCP backlog until the
+watcher thaws it, then logs in normally. Things to know before running `watch`:
+
+- The BYOND hub drops the server from its list while it is frozen, so players
+  who browse the hub will not see it. Direct `byond://` links, the launcher's
+  saved server and Discord links still work and wake it.
+- Status pollers on this machine (the Discord bot) connect from 127.0.0.1 and
+  are in `wake_ignore`, so they do not keep the server awake. Their status
+  topics wait or time out while it is frozen; `status` here reports `frozen`.
+- Run `watch` as the same Windows user as dd.exe, without less privilege than
+  it (a non-elevated watcher cannot suspend an elevated dd.exe).
+- Optional config keys: `freeze_idle_minutes` (15), `freeze_trim_memory`
+  (true), `wake_ignore` (`["127.0.0.1", "::1"]`).
+

@@ -344,7 +344,7 @@ The explicit test list retains the prior generator/validator/config, source
 annotation, source-backed resource proposal, golden/hash, negative-control and
 DMM round-trip tests. Public CLI tests exercise the commands above, output
 preservation, strict JSON, catalog drift and complete bundle binding. GitHub
-Actions runs this suite on Ubuntu/Windows with Python 3.11/3.13; ordinary repo CI
+Actions runs this suite on Ubuntu/Windows with Python 3.13 (master's supported version only); ordinary repo CI
 retains its own selection and compile policy. Tests do not launch a native game.
 
 When contributing, keep old algorithm versions/golden vectors stable or add a

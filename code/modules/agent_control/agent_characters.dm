@@ -11,11 +11,14 @@
 #define AGENT_CHARACTER_QUEUE_MAX 64
 #define AGENT_CHARACTER_QUEUE_BATCH 32
 #define AGENT_CHARACTER_SPEECH_DELAY 10
+#define AGENT_CHOICE_WINDOW 300 // ticks a step's prompt answer stays valid
 
 /datum/agent_character
 	var/mob/living/body
 	var/owner_agent // spawned characters: the agent that owns them
 	var/handover_ckey // opted-in characters: the player who allowed it
+	var/pending_choice // answer for the next game prompt (WWinput) during one step
+	var/pending_choice_until = 0 // world.time after which that answer is stale
 	var/list/messages = list()
 	var/message_serial = 0
 	var/next_action = 0
@@ -229,56 +232,29 @@
 		out["carried"] = carried
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
-		out["aim"] = H.targeted_organ
-		if (H.vessel && H.species && !(H.species.flags & NO_BLOOD))
-			out["blood"] = H.get_blood_volume()
-		out["injuries"] = agent_injuries(H)
-	return out
-
-// What a character can feel or see on its own limbs, so an agent can triage:
-// aim at the limb, hold the right item and click itself. Internal bleeding is
-// left out because the character cannot see it.
-/proc/agent_injuries(mob/living/human/H)
-	var/list/out = list()
-	for (var/obj/item/organ/external/E in H.organs)
-		var/list/row = list()
-		if (E.brute_dam)
-			row["brute"] = round(E.brute_dam, 0.1)
-		if (E.burn_dam)
-			row["burn"] = round(E.burn_dam, 0.1)
-		if (E.status & ORGAN_BLEEDING)
-			row["bleeding"] = TRUE
-		if (E.status & ORGAN_ARTERY_CUT)
-			row["artery_cut"] = TRUE
-		if (E.status & ORGAN_BROKEN)
-			row["broken"] = TRUE
-		if (E.status & ORGAN_SPLINTED)
-			row["splinted"] = TRUE
-		if (E.is_dislocated())
-			row["dislocated"] = TRUE
-		if (E.tourniquet)
-			row["tourniquet"] = TRUE
-		if (E.status & ORGAN_DEAD)
-			row["dead"] = TRUE
-		if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
-			row["infected"] = TRUE
-		if (E.implants.len)
-			row["embedded"] = E.implants.len
-		var/untreated = 0
-		for (var/datum/wound/W in E.wounds)
-			if (W.internal)
+		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
+		var/list/wounds = list()
+		for (var/obj/item/organ/external/E in H.organs)
+			var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
+			var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
+			var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
+			if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
 				continue
-			if (!W.is_treated())
-				untreated++
-		if (untreated)
-			row["untreated_wounds"] = untreated
-		if (row.len)
-			row["limb"] = E.limb_name
-			out += list(row)
+			var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
+			// Field-care state: a cut artery wants a bandage tied as a tourniquet
+			// (the first bandage click does it), a break wants a splint.
+			if (artery)
+				row["artery_cut"] = TRUE
+			if (E.tourniquet)
+				row["tourniquet"] = TRUE
+			if (E.status & ORGAN_SPLINTED)
+				row["splinted"] = TRUE
+			if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
+				row["infected"] = TRUE
+			wounds += list(row)
+		out["wounds"] = wounds
+		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out
-
-/proc/agent_limb_names()
-	return list("head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot")
 
 /datum/agent_control/proc/act_character_observe(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
@@ -336,14 +312,26 @@
 			if (T == here || !T.name)
 				continue
 			var/d = get_dist(here, T)
-			var/list/best = nearest[T.name]
+			// Clean and contaminated water look alike; list the nearest of each.
+			var/kind = T.name
+			if (istype(T, /turf/floor/beach/water))
+				var/turf/floor/beach/water/W = T
+				if (W.sickness > 0)
+					kind = "[T.name] (unclean)"
+			var/list/best = nearest[kind]
 			if (!best || d < best["d"])
-				nearest[T.name] = list("d" = d, "turf" = T)
+				nearest[kind] = list("d" = d, "turf" = T)
 		for (var/turf_name in nearest)
 			if (terrain.len >= 16)
 				break
 			var/turf/T = nearest[turf_name]["turf"]
-			terrain += list(list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y))
+			var/list/row = list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
+			if (istype(T, /turf/floor/beach/water))
+				var/turf/floor/beach/water/W = T
+				row["sickness"] = W.sickness
+				if (W.salty)
+					row["salty"] = TRUE
+			terrain += list(row)
 	var/list/heard = list()
 	for (var/list/message in C.messages)
 		if (message["id"] > since)
@@ -353,7 +341,7 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "aim")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
@@ -387,6 +375,9 @@
 	usr = M
 	var/action = lowertext("[req["do"]]")
 	var/detail = ""
+	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
+	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
+	C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
@@ -420,6 +411,9 @@
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
 				params = "[req["modifier"]]=1"
+			// The body part a click aims at (the zone selector): bandages and attacks use it.
+			if (req["zone"] in list("head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"))
+				M.targeted_organ = req["zone"]
 			C.next_action = world.time + 2
 			detail = "[target] ([agent_ref(target)]) [params]"
 			if (from_queue)
@@ -513,18 +507,7 @@
 			detail = intent
 		if ("resist")
 			M.resist()
-		if ("aim")
-			// Pick the body part the next click works on: an item clicked on
-			// a person (yourself included) treats or hits that limb.
-			var/limb = lowertext("[req["limb"]]")
-			if (!(limb in agent_limb_names()))
-				agent_fail("bad_args", "limb must be one of [jointext(agent_limb_names(), ", ")]")
-			M.targeted_organ = limb
-			if (M.HUDneed)
-				var/obj/screen/zone = M.HUDneed["damage zone"]
-				if (istype(zone))
-					zone.update_icon()
-			detail = limb
+		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
 	return list("done" = action, "self" = character_state(C))
@@ -640,9 +623,9 @@
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
-	if (action == "aim" && !(lowertext("[step["limb"]]") in agent_limb_names()))
-		agent_fail("bad_args", "aim needs a limb: [jointext(agent_limb_names(), ", ")]")
-	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item", "limb"))
+	if (!isnull(step["choose"]))
+		agent_text_arg(step, "choose", 64)
+	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

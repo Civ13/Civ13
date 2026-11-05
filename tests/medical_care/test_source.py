@@ -145,30 +145,11 @@ class MedicalCare(unittest.TestCase):
         weight = float(re.search(r'"herbal_remedy" = ([0-9.]+)', BASE_ORGAN).group(1))
         self.assertGreaterEqual(10 * weight, 5)
 
-    def test_agent_sees_injuries_and_can_aim(self):
-        injuries = block(AGENT, "/proc/agent_injuries")
-        for key in ('"bleeding"', '"artery_cut"', '"broken"', '"splinted"', '"tourniquet"', '"infected"',
-                    '"untreated_wounds"', '"limb"'):
-            self.assertIn(key, injuries)
-        self.assertIn("if (W.internal)", injuries)
+    def test_agent_wounds_report_field_care_state(self):
         state = block(AGENT, "/datum/agent_control/proc/character_state")
-        self.assertIn('out["injuries"] = agent_injuries(H)', state)
-        self.assertIn('out["aim"] = H.targeted_organ', state)
-        self.assertIn('"aim")', block(AGENT, "/proc/agent_character_actions"))
-        step = block(AGENT, "/datum/agent_control/proc/perform_step")
-        self.assertIn("M.targeted_organ = limb", step)
-        self.assertIn('"limb"', block(AGENT, "/datum/agent_control/proc/check_step"))
-
-    def test_autopilot_points_a_bleeding_agent_at_the_limb(self):
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("agent_catalog", ROOT / "tools/agent-control/catalog.py")
-        catalog = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(catalog)
-        self.assertIn("aim", catalog.CHARACTER_ACTIONS)
-        self.assertIn("l_arm", catalog.LIMB["enum"])
-        source = (ROOT / "tools/agent-control/autopilot.py").read_text(encoding="utf-8")
-        self.assertIn('row.get("bleeding") or row.get("artery_cut")', source)
-        self.assertIn("tourniquet", source)
+        for key in ('row["artery_cut"]', 'row["tourniquet"]', 'row["splinted"]', 'row["infected"]'):
+            self.assertIn(key, state)
+        self.assertIn("!artery && !E.tourniquet", state)
 
     def test_every_era_can_splint_a_break(self):
         recipes = (ROOT / "config/crafting/material_recipes_global.txt").read_text(encoding="utf-8")
