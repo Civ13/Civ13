@@ -1027,7 +1027,7 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	sleep(8)
 	reins.attack_self(trailer_customer)
 	// Lead the team so it stays framed at full gallop.
-	trailer_follow(trailer_carriage, 2, 1, 12, 0.9, 32)
+	trailer_follow(trailer_carriage, 2.5, 1, 12, 0.9, 40)
 	sleep(10)
 	reins.attack_self(trailer_customer)
 	sleep(10)
@@ -1080,7 +1080,7 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	trailer_customer.dir = SOUTH
 	trailer_beat("board")
 	// Creep along the train toward the engine while the traveller climbs in.
-	trailer_camera_pan(trailer_locomotive.x + 2.5, 5.5, 0.3, FALSE)
+	trailer_camera_pan(trailer_locomotive.x + 3.2, 5.5, 0.3, FALSE)
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_customer.loc == trailer_cabin.loc, "customer climbed into the cabin")
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
@@ -1098,7 +1098,7 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 		trailer_train_glide()
 	// Ride along with the train as it pulls out, then let it go: the camera
 	// eases back toward the station while the train steams out of shot.
-	trailer_follow(trailer_locomotive, 1.5, 1.5, 3, 1, 64)
+	trailer_follow(trailer_locomotive, 2.2, 1.5, 3, 1, 64)
 	sleep(40)
 	trailer_camera_pan(75, 5.5, 1.2, FALSE)
 	var/obj/structure/trains/last_car = trailer_extra_cars[trailer_extra_cars.len]
