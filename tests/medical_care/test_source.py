@@ -8,6 +8,9 @@ MEDICAL = (ROOT / "code/game/objects/items/stacks/medical.dm").read_text(encodin
 ORGAN = (ROOT / "code/modules/organs/organ_external.dm").read_text(encoding="utf-8")
 SURGERY = (ROOT / "code/modules/surgery/other.dm").read_text(encoding="utf-8")
 HANDBOOK = (ROOT / "code/modules/1713/doctor_handbook.dm").read_text(encoding="utf-8")
+HEART = (ROOT / "code/modules/organs/internal/heart.dm").read_text(encoding="utf-8")
+DEFINES = (ROOT / "code/predefines.dm").read_text(encoding="utf-8")
+LIFE = (ROOT / "code/game/mob/living/carbon/human/human_life.dm").read_text(encoding="utf-8")
 
 
 def block(source, path):
@@ -55,6 +58,52 @@ class MedicalCare(unittest.TestCase):
     def test_handbook_lists_every_unsplinted_limb(self):
         self.assertIn('(e.limb_name in list("l_arm", "r_arm", "l_leg", "r_leg")) && !(e.status & ORGAN_SPLINTED)',
                       HANDBOOK)
+
+    def test_tourniquet_stops_limb_bleeding_and_times_out(self):
+        bleed = HEART[HEART.index("//Bleeding out"):]
+        loop = bleed.index("for(var/obj/item/organ/external/temp in owner.organs)")
+        skip = bleed.index("if(temp.is_tourniqueted())", loop)
+        self.assertLess(skip, bleed.index("temp.status & ORGAN_BLEEDING", loop))
+        self.assertLess(skip, bleed.index("temp.status & ORGAN_ARTERY_CUT", loop))
+        self.assertIn("temp.has_bandaged_wound()", bleed)
+        tq = block(ORGAN, "/obj/item/organ/external/proc/handle_tourniquet")
+        for term in ("tourniquet_ticks++", "TOURNIQUET_CLOT_TICKS", "arterial_bleed_severity <= 1",
+                     "has_bandaged_wound()", "status &= ~ORGAN_ARTERY_CUT", "TOURNIQUET_NUMB_TICKS * 2",
+                     "status |= ORGAN_DEAD"):
+            self.assertIn(term, tq)
+        self.assertNotIn("world.time", tq)
+        process = block(ORGAN, "/obj/item/organ/external/process")
+        self.assertIn("handle_tourniquet()", process)
+        need = block(ORGAN, "/obj/item/organ/external/proc/need_process")
+        self.assertIn("if (tourniquet)", need)
+        apply = block(ORGAN, "/obj/item/organ/external/proc/apply_tourniquet")
+        self.assertIn("owner.bad_external_organs |= src", apply)
+
+    def test_bandage_roll_applies_and_loosens_tourniquet(self):
+        attack = block(MEDICAL, "/obj/item/stack/medical/bruise_pack/attack(")
+        self.assertLess(attack.index("try_tourniquet("), attack.index("if (affecting.open)"))
+        tq = block(MEDICAL, "/obj/item/stack/medical/bruise_pack/proc/try_tourniquet")
+        for term in ("affecting.remove_tourniquet()", "affecting.apply_tourniquet()",
+                     "affecting.can_take_tourniquet()", "affecting.is_tourniqueted()", "use(1)"):
+            self.assertIn(term, tq)
+        self.assertLess(tq.index("do_mob(user, H, 30)"), tq.index("affecting.apply_tourniquet()"))
+        self.assertIn("affected.remove_tourniquet()", block(SURGERY, "/datum/surgery_step/fix_vein"))
+
+    def test_splinted_fracture_heals_over_time(self):
+        heal = block(ORGAN, "/obj/item/organ/external/proc/handle_fracture_healing")
+        for term in ("ORGAN_BROKEN", "ORGAN_SPLINTED", "owner.lying ? 2 : 1", "FRACTURE_HEAL_TICKS",
+                     "mend_fracture()", "status &= ~ORGAN_SPLINTED", "/obj/item/stack/medical/splint/small"):
+            self.assertIn(term, heal)
+        self.assertIn("fracture_heal_ticks = 0", block(ORGAN, "/obj/item/organ/external/proc/fracture"))
+        self.assertIn("handle_fracture_healing()", block(ORGAN, "/obj/item/organ/external/process"))
+        self.assertIn("!E.tourniquet && !(E.status & ORGAN_BROKEN)", LIFE)
+        for name in ("TOURNIQUET_CLOT_TICKS", "TOURNIQUET_NUMB_TICKS", "FRACTURE_HEAL_TICKS"):
+            self.assertRegex(DEFINES, rf"#define {name} \d+")
+
+    def test_fed_bodies_regenerate_blood_faster(self):
+        regen = HEART[HEART.index("//Blood regeneration"):HEART.index("if(pulse != PULSE_NONE)")]
+        self.assertIn("owner.nutrition >= 150 && owner.water >= 150", regen)
+        self.assertEqual(regen.count("B.volume += 0.1"), 2)
 
 
 if __name__ == "__main__":

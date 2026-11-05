@@ -48,6 +48,7 @@
 			affected.wounds -= W
 		// A severed artery is repaired by the same step; nothing else clears it.
 		affected.status &= ~ORGAN_ARTERY_CUT
+		affected.remove_tourniquet()
 		affected.update_damages()
 		if (ishuman(user) && prob(40)) user:bloody_hands(target, FALSE)
 
