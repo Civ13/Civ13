@@ -14,6 +14,11 @@
 /datum/data/vending_product/New(var/_vending_machine, var/path, var/name = null, var/_amount = 1, var/_price = 0, var/_color = null, var/_icon = null, var/_icon_state = null, var/atom/movable/M = null)
 	..()
 
+	// A world load constructs saved datums without arguments, then restores
+	// their fields; after_load rebuilds the listing image.
+	if (!path)
+		return
+
 	product_path = path
 
 	if (!name)
@@ -40,6 +45,13 @@
 		product_image = image(icon=NI.icon, icon_state = NI.icon_state)
 		product_image.color = NI.color
 		qdel(NI)
+
+/datum/data/vending_product/after_load()
+	. = ..()
+	if (!product_image && ispath(product_path, /atom))
+		var/atom/A = product_path
+		product_image = image(icon = initial(A.icon), icon_state = initial(A.icon_state))
+		product_image.color = display_color
 
 /datum/data/vending_product/Destroy()
 	vending_machine = null

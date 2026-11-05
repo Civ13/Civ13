@@ -62,7 +62,9 @@
 		if (product_ads)
 			ads_list += splittext(product_ads, ";")
 
-		build_inventory()
+		// A loaded machine already has its saved records.
+		if (!product_records.len)
+			build_inventory()
 //		power_change()
 
 		return
