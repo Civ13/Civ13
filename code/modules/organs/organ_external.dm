@@ -920,6 +920,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 			return FALSE
 	return TRUE
 
+// Expert field treatment: closes every treated external wound at once.
+// Internal wounds (internal bleeding) still need surgery, so they stay.
+/obj/item/organ/external/proc/clear_treated_external_wounds()
+	for (var/datum/wound/W in wounds)
+		if (W.internal)
+			continue
+		wounds -= W
+	update_damages()
+	if (owner)
+		owner.UpdateDamageIcon()
+		owner.updatehealth()
+
 /obj/item/organ/external/proc/bandage()
 	var/rval = FALSE
 	status &= ~ORGAN_BLEEDING
