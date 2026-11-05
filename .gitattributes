@@ -38,3 +38,5 @@ tools/hooks/*.merge     text eol=lf
 tools/hooks/*.hook      text eol=lf
 tools/hooks/*.sh        text eol=lf
 tools/UpdatePaths/*.sh  text eol=lf
+tools/hooks/*.bat       text eol=crlf
+tools/UpdatePaths/*.bat text eol=crlf
