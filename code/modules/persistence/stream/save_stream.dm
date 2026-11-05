@@ -79,9 +79,9 @@
 
 /datum/save_stream/proc/put(path, value)
 	if(mode != "write") CRASH("save stream is not writing")
-	var/token = "W[length(path)]:[path][encode(value)]"
-	batch += token
-	batch_bytes += length(token)
+	var/head = "W[length(path)]:[path]"
+	batch += head
+	batch_bytes += length(head) + encode_into(batch, value)
 	records++
 	if(batch_bytes >= batch_limit) return flush()
 	return TRUE
@@ -101,10 +101,13 @@
 // is reported by the next flush or by finish().
 /datum/save_stream/proc/flush()
 	if(!batch.len) return TRUE
-	var/payload = jointext(batch, "")
+	// Each fragment goes as its own call_ext argument and the shim joins them:
+	// jointext() and "[]" embedding drop text macros (\improper and friends)
+	// from saved names, so user text is never joined in DM.
+	var/list/arguments = list(id) + batch
 	batch.Cut()
 	batch_bytes = 0
-	return !failed(lib_call("savestream_write", list(id, payload)))
+	return !failed(lib_call("savestream_write", arguments))
 
 // Publishes the file when its structure validates (or force is set) and closes
 // the session. Returns the helper's summary, or null with last_error set.
@@ -181,26 +184,50 @@
 		nodes += list(decode(reply, cursor))
 	return nodes
 
+// One value as a wire token. Uses + rather than "[]" or jointext() so text
+// macros inside saved text survive.
 /datum/save_stream/proc/encode(value)
-	if(isnull(value)) return "N"
-	if(isnum(value)) return "F[num2text(value, 9)];"
-	if(istext(value)) return "S[length(value)]:[value]"
+	var/list/parts = list()
+	encode_into(parts, value)
+	. = ""
+	for(var/part in parts)
+		. += part
+
+// Appends the wire token fragments for value to out; returns their byte count.
+/datum/save_stream/proc/encode_into(list/out, value)
+	if(isnull(value))
+		out += "N"
+		return 1
+	if(isnum(value))
+		var/number = "F[num2text(value, 9)];"
+		out += number
+		return length(number)
+	if(istext(value))
+		var/text_head = "S[length(value)]:"
+		out += text_head
+		out += value
+		return length(text_head) + length(value)
 	if(ispath(value))
 		var/path_text = "[value]"
-		return "P[length(path_text)]:[path_text]"
+		var/path_token = "P[length(path_text)]:[path_text]"
+		out += path_token
+		return length(path_token)
 	if(islist(value))
 		var/list/L = value
-		var/list/parts = list("L[L.len];")
+		var/list_head = "L[L.len];"
+		out += list_head
+		var/bytes = length(list_head)
 		for(var/i = 1, i <= L.len, i++)
 			var/key = L[i]
-			parts += encode(key)
+			bytes += encode_into(out, key)
 			var/assoc = (isnum(key) || isnull(key)) ? null : L[key]
 			if(isnull(assoc))
-				parts += "."
+				out += "."
+				bytes++
 			else
-				parts += "="
-				parts += encode(assoc)
-		return jointext(parts, "")
+				out += "="
+				bytes += 1 + encode_into(out, assoc)
+		return bytes
 	// Icons, sounds, appearances: BYOND's own savefile text for the value.
 	if(!scratch) scratch = new /savefile()
 	scratch["v"] << value
@@ -214,10 +241,14 @@
 		var/savefile/value_file = new(file_name)
 		value_file["v"] << value
 		del(value_file)
-		return "Y[length(file_name)]:[file_name]"
+		var/file_token = "Y[length(file_name)]:[file_name]"
+		out += file_token
+		return length(file_token)
 	if(copytext(text, 1, 5) == ". = ") text = copytext(text, 5)
 	while(length(text) && copytext(text, length(text)) == "\n") text = copytext(text, 1, length(text))
-	return "X[length(text)]:[text]"
+	var/raw_token = "X[length(text)]:[text]"
+	out += raw_token
+	return length(raw_token)
 
 // cursor is a one-element list holding the next byte position.
 /datum/save_stream/proc/decode(text, list/cursor)

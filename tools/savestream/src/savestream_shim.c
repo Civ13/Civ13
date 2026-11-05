@@ -8,7 +8,7 @@
  * and returns text that stays valid until the next call.
  *
  *   savestream_open(mode, file, helper)  -> "<id>" or "ERR:..."   mode = write|read
- *   savestream_write(id, batch)          -> "OK" or "ERR:..."  (one batch in flight)
+ *   savestream_write(id, part...)        -> "OK" or "ERR:..."  (parts joined; one batch in flight)
  *   savestream_finish(id, force)         -> JSON summary from the helper
  *   savestream_abort(id)                 -> "OK"
  *   savestream_get(id, path)             -> wire token, "?" if absent
@@ -250,7 +250,18 @@ EXPORT char *savestream_write(int argc, char **argv) {
 	if (!s || argc < 2) return ret_str("ERR:bad session");
 	if (s->pending_error[0]) return ret_str(s->pending_error);
 	if (!drain_pending(s)) return ret_str(s->pending_error);
-	if (!send_request(s, OP_WRITE, argv[1], strlen(argv[1]))) return helper_gone(s);
+	/* The game passes a batch as several fragments (DM cannot join text that
+	 * holds text macros without dropping them); join them here. */
+	size_t total = 0;
+	for (int i = 1; i < argc; i++) total += strlen(argv[i]);
+	char *payload = malloc(total + 1);
+	if (!payload) return ret_str("ERR:out of memory");
+	size_t at = 0;
+	for (int i = 1; i < argc; i++) { size_t n = strlen(argv[i]); memcpy(payload + at, argv[i], n); at += n; }
+	payload[at] = 0;
+	int sent = send_request(s, OP_WRITE, payload, total);
+	free(payload);
+	if (!sent) return helper_gone(s);
 	s->pending = 1;
 	return ret_str("OK");
 }

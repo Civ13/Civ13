@@ -44,6 +44,8 @@
 		"/entries/0/1/overlays" = list("kind" = "value", "value" = o.overlays.Copy()),
 		"/entries/0/1/owner" = list("kind" = "entry", "ref" = 1),
 		"/entries/0/1/mutable" = list("kind" = "value", "value" = M),
+		"/entries/0/1/proper" = list("kind" = "value", "value" = "\improper turkey"),
+		"/entries/0/2/name" = "\proper Bob and \the axe",
 		"/map/1/1/1" = 1,
 	)
 
@@ -73,6 +75,8 @@
 		F["a"] << normalized
 		F["b"] << b
 		return F.ExportText("a") == F.ExportText("b")
+	// Text macros (\improper) are bytes of the text; compare lengths too.
+	if(istext(a) && istext(b) && length(a) != length(b)) return FALSE
 	return a == b
 
 /proc/run_roundtrip()
@@ -102,7 +106,7 @@
 
 	if(!isnull(S.get("/missing")) || S.found) mismatches += "/missing"
 	var/list/names = S.dir("/entries/0/1")
-	if(names.len != 16) mismatches += "dir:[names.len]"
+	if(names.len != 17) mismatches += "dir:[names.len]"
 	S.close()
 	// A truncated stream is never readable.
 	var/datum/save_stream/broken = new

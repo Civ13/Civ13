@@ -67,7 +67,7 @@
 			bench_verify(result, src_file, dst_file)
 		if("read_savefile")
 			var/savefile/F = new(src_file)
-			var/list/counts = list("nodes" = 0)
+			var/list/counts = list("nodes" = 0, "text_values" = 0)
 			walk_savefile(F, "", 0, counts, null, null)
 			result["nodes"] = counts["nodes"]
 			phase("read_complete")
@@ -129,49 +129,62 @@
 			throw EXCEPTION("unknown mode [mode]")
 	result["ok"] = TRUE
 
-// Visits every node. With a stream, sends each subtree at depth 3 (one entry,
-// map row or list item) or each leaf as BYOND savefile text.
+// Visits every node and reads each value natively. With a stream, every leaf
+// (and any node that holds a value besides its children) goes through put(),
+// the same path a live save uses. ExportText is not used: it drops text macros
+// such as \improper and BYOND cannot import its own mutable_appearance
+// or object(".0") text. The one exception is a value that reads back holding
+// null: the bench does not define the game's types, so an unknown type path
+// reads as null natively, and only the node's savefile text keeps it.
 /proc/walk_savefile(savefile/F, path, depth, list/counts, datum/save_stream/S, list/result)
 	F.cd = path || "/"
 	var/list/children = F.dir.Copy()
-	if(!children.len || (S && depth >= 3))
-		counts["nodes"]++
-		if(S)
-			send_subtree(F, path, S, counts)
-		else
-			var/value
-			F[path] >> value
-		return
+	if(path && (!children.len || S))
+		var/value
+		F[path] >> value
+		if(!children.len || !isnull(value))
+			counts["nodes"]++
+			if(S)
+				if(holds_null(value) || (null_assoc(value) && names_type_path(F.ExportText(path))))
+					counts["text_values"]++
+					if(!S.put_text(path, F.ExportText(path))) throw EXCEPTION(S.last_error)
+				else if(!S.put(path, value))
+					throw EXCEPTION(S.last_error)
 	for(var/name in children)
 		walk_savefile(F, "[path]/[name]", depth + 1, counts, S, result)
 
-// BYOND cannot import its own mutable_appearance or object(".0") text, so those leaves are read
-// natively and sent with put() (the stream stores them as savefile bytes).
-/proc/send_subtree(savefile/F, path, datum/save_stream/S, list/counts)
-	var/text = F.ExportText(path || "/")
-	if(!findtext(text, "mutable_appearance(") && !findtext(text, "object(\""))
-		if(!S.put_text(path, text)) throw EXCEPTION(S.last_error)
-		return
-	F.cd = path
-	var/list/children = F.dir.Copy()
-	if(children.len)
-		for(var/name in children)
-			send_subtree(F, "[path]/[name]", S, counts)
-		return
-	var/value
-	F[path] >> value
-	counts["native_values"]++
-	if(!S.put(path, value)) throw EXCEPTION(S.last_error)
+/proc/holds_null(value)
+	if(isnull(value)) return TRUE
+	if(!islist(value)) return FALSE
+	var/list/L = value
+	for(var/key in L)
+		if(holds_null(key)) return TRUE
+		if(!isnum(key) && islist(L[key]) && holds_null(L[key])) return TRUE
+	return FALSE
+
+// An association that reads as null may be an unknown type path.
+/proc/null_assoc(value)
+	if(!islist(value)) return FALSE
+	var/list/L = value
+	for(var/key in L)
+		if(isnum(key)) continue
+		var/assoc = L[key]
+		if(isnull(assoc) || (islist(assoc) && null_assoc(assoc))) return TRUE
+	return FALSE
+
+/proc/names_type_path(text)
+	return findtext(text, "= /") || findtext(text, "(/") || findtext(text, ",/")
 
 /proc/bench_convert(list/result, src_file, dst_file)
 	var/savefile/F = new(src_file)
 	result["format_version"] = F["/format_version"]
 	var/datum/save_stream/S = new
 	if(!S.open_write(dst_file)) throw EXCEPTION(S.last_error)
-	var/list/counts = list("nodes" = 0, "native_values" = 0)
+	var/list/counts = list("nodes" = 0, "text_values" = 0)
 	walk_savefile(F, "", 0, counts, S, result)
-	result["subtrees"] = counts["nodes"]
-	result["native_values"] = counts["native_values"]
+	result["values"] = counts["nodes"]
+	result["text_values"] = counts["text_values"]
+	result["value_files"] = S.value_files
 	phase("converted")
 	result["memory_peak_phase"] = proc_memory()
 	result["summary"] = S.finish(TRUE)
