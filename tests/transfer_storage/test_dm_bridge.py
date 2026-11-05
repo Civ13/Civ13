@@ -169,6 +169,23 @@ class TradePost(unittest.TestCase):
         self.assertIn('incoming ? P["to"] : P["from"]', credit_proc)
         self.assertNotIn('return FALSE', credit_proc)
 
+    def test_journaled_trips_replay_after_reconcile_without_sleeping(self):
+        loop = proc(BRIDGE, '/datum/transfer_bridge/proc/reconcile_loop')
+        self.assertLess(loop.index('ledger_base = result["ledger_seq"]'), loop.index('replay(result["replay"])'))
+        body = proc(BRIDGE, '/datum/transfer_bridge/proc/replay')
+        self.assertNotIn('sleep(', body)
+        self.assertNotIn('request(', body)
+        self.assertIn('(effect_id in applied)', body)
+        self.assertIn('applied += effect_id', body)
+        # Only characters travel fast; goods at trade posts keep the save-confirmed path.
+        self.assertIn('begin_import(transfer_id, TRUE) : begin_return(transfer_id, TRUE)',
+                      proc(BRIDGE, '/datum/transfer_bridge/proc/poll_character'))
+        self.assertIn('begin_import(transfer_id) : begin_return(transfer_id)',
+                      proc(BRIDGE, '/datum/transfer_bridge/proc/poll_once'))
+        travel = read('code/modules/persistence/region_travel.dm')
+        self.assertIn('transfer_bridge.begin_escrow(destination, list(payload), TRUE)', travel)
+        self.assertNotIn('begin_escrow(peer, list(payload), TRUE)', POST)
+
     def test_polling_starts_only_after_reconcile(self):
         body = proc(BRIDGE, '/datum/transfer_bridge/proc/reconcile_loop')
         self.assertLess(body.index('ledger_base = result["ledger_seq"]'), body.index('poll_loop()'))

@@ -93,6 +93,13 @@ identity, looks, skills, hunger and thirst, and up to 40 items.
 - The arrived body keeps `region_arrival_pending` and the owner's key. It is
   saved with the world and handed over when that key joins. A refused trip
   rebuilds the character at the source the same way.
+- Character effects are journaled (`fast`): the agent confirms them at once
+  and sends the next step, so a trip takes seconds, not two world saves. The
+  journal keeps each effect's payloads until a world save lists it. `/load`
+  returns `replay`, the journaled effects the loaded save lacks; the world
+  removes the departed body again (one durable body per account) or rebuilds
+  the arrival, then lists them in its next save. Goods cannot be journaled,
+  because a stack cannot be found again by owner.
 
 Group setup, autosave timing and agent startup are in
 [scripts/shard-group](../../scripts/shard-group/README.md#travel-between-regions).
