@@ -476,6 +476,12 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn('var/obj/item/I = agent_find_carried(H, req["item"])', source)
         self.assertIn("S.remove_from_storage(I, get_turf(H))", source)
 
+    def test_agent_characters_do_not_look_asleep(self):
+        examine = (ROOT / "code/game/mob/living/carbon/human/examine.dm").read_text(encoding="utf-8")
+        self.assertIn("stat != DEAD && !agent_character_for(src))", examine)
+        shake = (ROOT / "code/game/mob/living/carbon/carbon.dm").read_text(encoding="utf-8")
+        self.assertIn("if (show_ssd && !client && !teleop && !agent_character_for(src))", shake)
+
     def test_attacks_put_danger_first_and_downed_bodies_stop(self):
         observation = {"self": {"name": "Ada", "health": 77}, "messages": [{"text": "The grey she-wolf bites Ada!"}]}
         alarm = autopilot.danger(observation, {"health": 100})

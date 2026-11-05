@@ -190,7 +190,8 @@
 
 	msg += "</span>"
 
-	if (species.show_ssd && (!species.has_organ["brain"] || has_brain()) && stat != DEAD)
+	// An agent-controlled character has no key or client but is awake and acting.
+	if (species.show_ssd && (!species.has_organ["brain"] || has_brain()) && stat != DEAD && !agent_character_for(src))
 		if (!key)
 			msg += "<span class='deadsay'>[T.He] [T.is] [species.show_ssd]. It doesn't look like [T.he] [T.is] waking up anytime soon.</span>\n"
 		else if (!client)

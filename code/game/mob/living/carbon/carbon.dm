@@ -202,7 +202,7 @@
 			var/show_ssd
 			var/mob/living/human/H = src
 			if (istype(H)) show_ssd = H.species.show_ssd
-			if (show_ssd && !client && !teleop)
+			if (show_ssd && !client && !teleop && !agent_character_for(src))
 				M.visible_message("<span class='notice'>[M] shakes \the [src] trying to wake [t_him] up!</span>", \
 									"<span class='notice'>You shake \the [src], but they do not respond... Maybe they have shell shock?</span>")
 			else if (lying || sleeping)
