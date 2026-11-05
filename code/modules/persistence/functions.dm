@@ -987,7 +987,8 @@ var/global/datum/persistence_admission_identity
 		return FALSE
 	last_persistence_save_time = world.time
 	// Players still online mark the session unsaved again on the next loop.
-	persistence_played_since_save = FALSE
+	// Read through vars: persistence fixtures compile without world.dm.
+	if("persistence_played_since_save" in global.vars) global.vars["persistence_played_since_save"] = FALSE
 	return 1
 
 /map_storage

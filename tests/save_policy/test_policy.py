@@ -44,7 +44,8 @@ class SavePolicy(unittest.TestCase):
         self.assertIn('#define PERSISTENCE_EMPTY_SAVE_DELAY 3000', self.world)
         self.assertIn('persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY', self.loop)
         functions = (ROOT / 'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
-        self.assertIn('last_persistence_save_time = world.time\n\t// Players still online mark the session unsaved again on the next loop.\n\tpersistence_played_since_save = FALSE', functions)
+        self.assertIn('last_persistence_save_time = world.time\n\t// Players still online mark the session unsaved again on the next loop.', functions)
+        self.assertIn('global.vars["persistence_played_since_save"] = FALSE', functions)
 
     def test_maintenance_reboot_waits_for_empty_server(self):
         self.assertIn('persistence_reboot_due = TRUE', self.loop)
