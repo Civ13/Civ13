@@ -275,6 +275,13 @@ Habits: a craft or build the current goal does not ask for is refused once the c
 more than a few times recently (3 by default, more for walls, roofing, floors and supports). The
 model is then sent back to its goal and the recipe book.
 
+Hands: when a step needs a free hand and both are full, the less useful item is stowed, or
+dropped at her feet when no pocket, belt or bag has room, so the step still runs. When a predator
+is close, the reflex first takes the best weapon within reach (other hand, a pocket or belt, or the
+ground next to her), then fights. A plain click that would swing an axe at rock is refused.
+A second greeting to someone greeted in the last 10 minutes is trimmed from what she says. The
+mining goal names the next concrete step, such as `dig_down` when she already carries a shovel.
+
 ## Tests
 
 ```text

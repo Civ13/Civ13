@@ -338,7 +338,8 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("needs flint", autopilot.expand_plan([{"skill": "sharpen_flint", "target": "[0x1]"}], sharp)[1])
         # A free hand comes from dropping the spare item, never the tool.
         steps, error = autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], sharp)
-        self.assertEqual(steps[:3], [{"do": "swap_hand"}, {"do": "equip"}, {"do": "intent", "intent": "grab"}])  # stow the stick, never drop it
+        # Stow the stick; only when no pocket, belt or bag has room is it dropped, so the drink still happens.
+        self.assertEqual(steps[:4], [{"do": "swap_hand"}, {"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "intent", "intent": "grab"}])
         spare = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint"}, "intent": "grab"}
         self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], spare)[0], [{"do": "drop"}, {"do": "click", "target": "[0x1]"}])
         tools = {"active_hand": "right", "left_hand": {"name": "sharpened flint"}, "right_hand": {"name": "flint hatchet"}, "intent": "grab"}
@@ -346,7 +347,7 @@ class AutopilotTests(unittest.TestCase):
         leaves = {"active_hand": "left", "left_hand": {"name": "leaf bundles"}, "right_hand": {"name": "sharpened flint"}, "intent": "grab"}
         self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], leaves)[0][:1], [{"do": "drop"}])  # leaves may stay on the ground
         stick = dict(leaves, left_hand={"name": "stick"})
-        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], stick)[0][:1], [{"do": "equip"}])  # a made item is stowed
+        self.assertEqual(autopilot.expand_plan([{"skill": "drink", "target": "[0x1]"}], stick)[0][:2], [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}])  # a made item is stowed if there is room
         steps, _ = autopilot.expand_plan([{"skill": "chop", "target": "[0x1]"}], {"active_hand": "left", "left_hand": None, "right_hand": {"name": "flint hatchet"}, "intent": "harm"})
         self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x1]"}])
 
@@ -465,7 +466,9 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(error, "")
         self.assertEqual(steps, [{"do": "take", "item": "sharpened flint"}, {"do": "click", "target": "[0x2]"}])
         full = dict(me, right_hand={"name": "stick"})
-        self.assertIn("both hands are full", autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x2]"}], full, rows)[1])
+        # Both hands full: the loose leaves go down, the stick stays, and the flint comes out.
+        self.assertEqual(autopilot.expand_plan([{"skill": "sharpen_stick", "target": "[0x2]"}], full, rows),
+                         ([{"do": "swap_hand"}, {"do": "drop"}, {"do": "take", "item": "sharpened flint"}, {"do": "click", "target": "[0x2]"}], ""))
         self.assertEqual(autopilot.parse_decision('{"do": "take", "item": "sharpened flint"}', ["[0x9]"]), {"do": "take", "item": "sharpened flint"})
         self.assertIsNone(autopilot.parse_decision('{"do": "take"}', ["[0x9]"]))
         thirsty = {"self": {"water": 150}, "terrain": [{"ref": "turf:1,2,2", "name": "river", "dx": 4, "dy": 0}]}
@@ -1069,6 +1072,113 @@ class HaulingTest(unittest.TestCase):
         self.assertFalse(autopilot._same_stack("empty", "wood log"))
         self.assertFalse(autopilot._same_stack("spear", "spear"))  # not a stack
         self.assertTrue(autopilot._same_stack("wooden planks (8)", "wooden plank"))
+
+
+class ArmingTest(unittest.TestCase):
+    wolf = {"ref": "[0x5]", "name": "grey wolf", "type": "/mob/living/simple_animal/hostile/wolf", "dx": 1, "dy": 0, "mob": True, "stat": 0}
+    spear = {"ref": "[0x7]", "name": "sharpened spear", "item": True, "dx": 0, "dy": 1}
+
+    def test_weapon_ranks(self):
+        self.assertGreater(autopilot.weapon_rank("sharpened spear"), autopilot.weapon_rank("sharpened flint"))
+        self.assertEqual(autopilot.weapon_rank("bone pickaxe"), 1)  # not an axe
+        self.assertEqual(autopilot.weapon_rank("copper axe head"), 0)
+        self.assertEqual(autopilot.weapon_rank("empty"), 0)
+        # Real item names that only sound like weapons: a worn sheath or helm must not be drawn and fought with.
+        for name in ("sword sheath", "knife sheath", "orc spearman helm", "pickaxe mold", "crude pickaxe head"):
+            self.assertEqual(autopilot.weapon_rank(name), 0, name)
+
+    def test_grabs_a_better_weapon_from_the_ground_before_fighting(self):
+        me = {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "intent": "harm"}
+        steps, what = autopilot.reflex({"self": me, "nearby": [self.wolf, self.spear], "messages": []})
+        self.assertEqual(steps[:3], [{"do": "swap_hand"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x7]"}])
+        self.assertEqual(steps[3:], [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x5]"}] * 3)
+        full = dict(me, left_hand={"name": "wood logs"})
+        # No time to stow: the logs go down (a swap is free), not the flint that was in the active hand.
+        self.assertEqual(autopilot.arm_steps(full, [self.spear])[:2], [{"do": "swap_hand"}, {"do": "drop"}])
+        logs_first = dict(full, active_hand="left")
+        self.assertEqual(autopilot.arm_steps(logs_first, [self.spear])[0], {"do": "drop"})
+        far = dict(self.spear, dy=3)
+        self.assertEqual(autopilot.arm_steps(me, [far]), [])  # out of reach
+
+    def test_hands_do_not_swap_back_and_forth_while_a_predator_hovers(self):
+        # A pickaxe matches a weapon word but ranks below a sharpened flint: the two rules must not disagree.
+        flint = {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": {"name": "bone pickaxe"}, "intent": "help"}
+        far_wolf = dict(self.wolf, dx=3)
+        self.assertEqual(autopilot.reflex({"self": flint, "nearby": [far_wolf], "messages": []}), (None, ""))
+        pick = dict(flint, active_hand="left")
+        self.assertEqual(autopilot.reflex({"self": pick, "nearby": [far_wolf], "messages": []})[0], [{"do": "swap_hand"}])
+        steps, _ = autopilot.reflex({"self": flint, "nearby": [self.wolf], "messages": []})
+        self.assertEqual(steps, [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x5]"}] * 3)  # fights with the flint
+        sheathed = {"active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None, "worn": ["sword sheath"]}
+        self.assertEqual(autopilot.arm_steps(sheathed), [])  # an empty sheath is not a sword
+
+    def test_draws_from_the_other_hand_or_a_pocket(self):
+        me = {"active_hand": "right", "right_hand": {"name": "wood log"}, "left_hand": {"name": "flint hatchet"}}
+        self.assertEqual(autopilot.arm_steps(me), [{"do": "swap_hand"}])
+        stowed = {"active_hand": "right", "right_hand": None, "left_hand": None, "carried": ["sharpened stick (belt)"]}
+        self.assertEqual(autopilot.arm_steps(stowed), [{"do": "take", "item": "sharpened stick"}])
+        best = {"active_hand": "right", "right_hand": {"name": "sharpened spear"}, "left_hand": None, "carried": ["knife (pocket)"]}
+        self.assertEqual(autopilot.arm_steps(best, [self.spear]), [])  # already holding the best
+        far_wolf = dict(self.wolf, dx=3)
+        steps, what = autopilot.reflex({"self": stowed, "nearby": [far_wolf], "messages": []})
+        self.assertEqual(steps, [{"do": "take", "item": "sharpened stick"}])
+        self.assertIn("grabbed", what)  # armed now, so she does not flee
+
+
+class HandChurnTest(unittest.TestCase):
+    def test_axe_is_not_swung_at_rock(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "flint hatchet"}, "left_hand": None, "intent": "harm"}
+        rows = {"[0x3]": {"ref": "[0x3]", "name": "rock", "type": "/obj/structure/rock", "dx": 1, "dy": 0},
+                "[0x4]": {"ref": "[0x4]", "name": "oak tree", "type": "/obj/structure/wild/tree", "dx": 0, "dy": 1, "branches": 2}}
+        steps, error = autopilot.expand_plan([{"do": "click", "target": "[0x3]"}], me, rows)
+        self.assertIn("axe does nothing to rock", error)
+        self.assertEqual(autopilot.expand_plan([{"do": "click", "target": "[0x4]"}], me, rows), ([{"do": "click", "target": "[0x4]"}], ""))
+        pick = dict(me, right_hand={"name": "bone pickaxe"})
+        self.assertEqual(autopilot.expand_plan([{"do": "click", "target": "[0x3]"}], pick, rows)[1], "")
+        swapped = autopilot.expand_plan([{"do": "swap_hand"}, {"do": "click", "target": "[0x3]"}], me, rows)
+        self.assertEqual(swapped[1], "")  # the hands changed first, so the click is not with the axe
+
+    def test_full_hands_free_one_instead_of_refusing(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "wood logs"}, "left_hand": {"name": "sinew"},
+              "intent": "help", "carried": ["cloth bandages (pocket)"],
+              "wounds": [{"zone": "chest", "name": "chest", "damage": 20, "bleeding": True, "bandaged": False}]}
+        steps, error = autopilot.treat_plan(me)
+        self.assertEqual(error, "")
+        self.assertEqual(steps[:3], [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "take", "item": "cloth bandages"}])
+        food = dict(me, carried=["roasted meat (pocket)"], left_hand={"name": "flint hatchet"})
+        self.assertEqual(autopilot.expand_plan([{"skill": "eat", "target": "[0x9]"}], food)[0][:3],
+                         [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "take", "item": "roasted meat"}])
+
+
+class GreetingTest(unittest.TestCase):
+    def test_a_second_hello_to_the_same_person_is_trimmed(self):
+        greeted = {}
+        first = [{"do": "say", "text": "Hello Bob!"}]
+        self.assertEqual(autopilot.trim_greetings(first, ["Bob"], greeted, 100.0), first)
+        autopilot.note_greetings(first, ["Bob"], greeted, 100.0)
+        again = [{"do": "say", "text": "Hello Bob! I'm not sure yet, let's look together."}, {"do": "explore", "dir": "north"}]
+        trimmed = autopilot.trim_greetings(again, ["Bob"], greeted, 160.0)
+        self.assertEqual(trimmed[0]["text"], "I'm not sure yet, let's look together.")
+        self.assertEqual(trimmed[1], again[1])
+        self.assertEqual(autopilot.trim_greetings(again, ["Cy"], greeted, 160.0), again)  # Cy was not greeted yet
+        self.assertEqual(autopilot.trim_greetings(again, ["Bob"], greeted, 100.0 + autopilot.GREETING_GAP), again)  # long ago
+        only = [{"do": "say", "text": "Hi Bob!"}]
+        self.assertEqual(autopilot.trim_greetings(only, ["Bob"], greeted, 160.0), only)  # nothing else to say: leave it
+        self.assertEqual(autopilot.trim_greetings([{"do": "say", "text": "Hey Bob I found flint by the river."}], ["Bob"], greeted, 160.0)[0]["text"],
+                         "Hey Bob I found flint by the river.")  # no punctuation after the greeting: not trimmed
+
+
+class MiningGoalTest(unittest.TestCase):
+    def test_mining_goal_names_the_next_concrete_step(self):
+        me = {"right_hand": {"name": "bone pickaxe"}, "carried": ["bone shovel (in leather bag)"]}
+        self.assertIn('"dig_down"', autopilot._mining_goal({"here": {"type": "/turf/floor/grass"}}, me))
+        self.assertIn("craft a bone shovel", autopilot._mining_goal({"here": {}}, {"right_hand": {"name": "bone pickaxe"}}))
+        below = {"here": {"type": "/turf/floor/dirt/underground/empty", "cave_supported": True}}
+        self.assertIn("walk along the tunnel", autopilot._mining_goal(below, me))
+        below["terrain"] = [{"name": "rock debris", "type": "/turf/floor/dirt/underground/empty"}]  # dug-out floor is not a rock face
+        self.assertIn("walk along the tunnel", autopilot._mining_goal(below, me))
+        below["terrain"] = [{"name": "underground rock", "type": "/turf/floor/dirt/underground", "safe_to_mine": True}]
+        self.assertIn("mine the underground rock next to you", autopilot._mining_goal(below, me))
 
 
 if __name__ == "__main__":
