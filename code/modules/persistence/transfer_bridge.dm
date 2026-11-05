@@ -199,7 +199,7 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 			if(kind == "remove")
 				region_travel_replay_departure(entry["payloads"])
 			else
-				region_travel_arrive(entry["payloads"], kind == "credit", region_travel_arrival_turf())
+				region_travel_arrive(entry["payloads"], kind == "credit", region_travel_arrival_turf(), TRUE)
 		catch(var/exception/E)
 			message_admins("Transfer agent: replaying [effect_id] failed: [E]. Check the arrival point.")
 			log_game("Transfer agent: replaying [effect_id] failed: [E]")

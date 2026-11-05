@@ -119,13 +119,18 @@ character lives, with a join link.
   there (Sleep in a bed assigns it). With a bed, nothing is recorded: the home
   stays and the next character starts at that bed.
 - Each coordinator pass (`homes_once`, after the relay) reads every agent's
-  queued requests (`/accounts`), decides them in a fixed order (arrivals,
-  departures, releases, then claims, oldest first) and sends each agent the
+  queued requests (`/accounts`), decides each region's requests in the order
+  it made them, with new claims after everything else, and sends each agent the
   ledger rows it has not seen (`/homes`). An agent that misses a pass catches
   up on the next; a request decided but not acknowledged is never decided
   again.
 - Losing `coordinator.sqlite` starts a new ledger epoch: agents drop their
-  copies and accounts claim their homes again.
+  copies and accounts claim their homes again. A region holding a living
+  character of an unhomed account claims custody of it (`body` on the claim),
+  so that character stays where it is; other accounts start on the mainland.
+  Journal replays after a reload record nothing: the ledger already saw them.
+- A trip, departure or death note keeps retrying (backing off to every five
+  minutes) until the agent has it.
 - A world's agent unreachable means no character can start there (the player
   is asked to retry). Guests are not tracked; they cannot travel.
 

@@ -46,10 +46,12 @@ class HomeTests(unittest.TestCase):
         self.coordinator.close()
         self.tmp.cleanup()
 
-    def ask(self, region, ckey, op='claim', dest=None):
+    def ask(self, region, ckey, op='claim', dest=None, body_here=False):
         body = {'ckey': ckey, 'op': op}
         if dest:
             body['region'] = dest
+        if body_here:
+            body['body'] = True
         answer = call(self.urls[region], TOKENS[region], '/account', body)
         self.assertTrue(answer.get('ok'), answer)
         return answer['result']['verdict'] if op == 'claim' else answer['result']
@@ -89,6 +91,47 @@ class HomeTests(unittest.TestCase):
         self.coordinator.homes_once()
         self.assertEqual('HOME', self.ask('alpha', 'val'))
         self.assertEqual('ELSEWHERE', self.ask('beta', 'val'))
+
+    def test_a_refused_trip_decided_in_one_pass_stays_home(self):
+        self.ask('alpha', 'val')
+        self.coordinator.homes_once()
+        # The depart and the refused trip's return land in the same pass.
+        self.ask('alpha', 'val', 'depart', 'beta')
+        self.ask('alpha', 'val', 'arrive')
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'alpha'}, self.coordinator.homes())
+        self.assertEqual('HOME', self.ask('alpha', 'val'))
+        self.assertEqual('ELSEWHERE', self.ask('beta', 'val'))
+
+    def test_a_lost_ledger_keeps_a_living_character_where_it_is(self):
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'm1.sqlite'), 'g', 'alpha')
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.ask('alpha', 'val', 'depart', 'beta')
+        self.ask('beta', 'val', 'arrive')
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'beta'}, self.coordinator.homes())
+        # coordinator.sqlite is lost: every agent drops its copy.
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'm2.sqlite'), 'g', 'alpha')
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.coordinator.homes_once()
+        self.assertEqual('ELSEWHERE', self.ask('beta', 'val'), 'without a body here it is a new start')
+        self.assertEqual('PENDING', self.ask('beta', 'val', body_here=True))
+        self.assertEqual('PENDING', self.ask('alpha', 'val'))
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'beta'}, self.coordinator.homes(), 'the living body beats a fresh claim')
+        self.assertEqual('HOME', self.ask('beta', 'val'))
+        self.assertEqual('ELSEWHERE', self.ask('alpha', 'val'))
+
+    def test_a_body_claim_does_not_override_a_home(self):
+        self.ask('alpha', 'val')
+        self.coordinator.homes_once()
+        self.assertEqual('ELSEWHERE', self.ask('beta', 'val', body_here=True))
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'alpha'}, self.coordinator.homes())
 
     def test_departure_from_a_region_that_is_not_home_changes_nothing(self):
         self.ask('alpha', 'val')

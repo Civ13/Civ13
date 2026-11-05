@@ -137,8 +137,11 @@ var/global/list/persistence_player_claims = list()
 		return FALSE
 	persistence_player_restore_ready = TRUE
 	for(var/client/C in clients)
-		if(istype(C.mob, /mob/new_player) && region_home_reclaim_ok(C.mob))
-			reclaim_saved_player(C.mob)
+		var/mob/new_player/waiting = C.mob
+		if(!istype(waiting)) continue
+		// The region home check can wait on the network; the client may leave.
+		if(!region_home_reclaim_ok(waiting) || !waiting || !waiting.client || waiting.client.mob != waiting) continue
+		reclaim_saved_player(waiting)
 	return TRUE
 
 /map_storage/proc/validate_saved_player_owner(savefile/F, ref, list/owners)

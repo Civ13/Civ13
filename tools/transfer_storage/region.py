@@ -506,14 +506,16 @@ class RegionStore:
 
     # -- home worlds --------------------------------------------------------
 
-    def account(self, ckey, op, region=None):
+    def account(self, ckey, op, region=None, body=False):
         """One account question or request from DM.
 
         claim: may this account play here? HOME, ELSEWHERE (with its home) or
         PENDING while the coordinator decides. arrive: a character arrived here
         through a recorded trip. depart: it left for region. release: its only
         character here died (its home goes back to the mainland). Requests wait
-        for the coordinator's next pass.
+        for the coordinator's next pass. A claim with body (a living character of
+        the account is here) asks for custody when the account has no home, so a
+        lost coordinator ledger cannot strand a character off the mainland.
         """
         if not account_key_valid(ckey):
             raise TransferError('bad account key')
@@ -531,10 +533,12 @@ class RegionStore:
                 if not queued and home is not None:
                     return {'verdict': 'ELSEWHERE', 'home': home}
                 mainland = self._meta('mainland')
-                if not queued and home is None and mainland and mainland != self.region:
+                if body is True and home is None:
+                    op = 'custody'
+                elif not queued and home is None and mainland and mainland != self.region:
                     # New characters start on the mainland and travel from there.
                     return {'verdict': 'ELSEWHERE', 'home': mainland}
-                if 'claim' in queued:
+                if op in queued or 'claim' in queued:
                     return {'verdict': 'PENDING', 'home': home}
             self.db.execute('INSERT INTO account_request(ckey, op, region) VALUES (?, ?, ?)', (ckey, op, target))
         return {'verdict': 'PENDING', 'home': home}

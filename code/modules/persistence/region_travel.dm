@@ -162,7 +162,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 // Builds recorded characters at T: arrivals at the destination, or travellers
 // a peer refused back at the source. Callers have already recorded the effect,
 // so this never refuses; an unreadable payload is reported and dropped.
-/proc/region_travel_arrive(list/payloads, incoming, turf/T)
+/proc/region_travel_arrive(list/payloads, incoming, turf/T, replayed = FALSE)
 	if(!islist(payloads)) return
 	if(!isturf(T) || QDELETED(T)) T = region_travel_arrival_turf()
 	if(!isturf(T)) T = locate(1, 1, 1)
@@ -173,8 +173,11 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 			continue
 		var/mob/living/human/H = region_travel_build(P, T)
 		// A recorded trip (or a refused one coming back) makes this land the home.
-		spawn(0)
-			region_home_note(P["owner"], "arrive")
+		// A journal replay after a reload already told the coordinator once;
+		// saying it again could pull the home back from a later trip.
+		if(!replayed)
+			spawn(0)
+				region_home_note(P["owner"], "arrive")
 		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [T.x],[T.y],[T.z].")
 		region_travel_offer(H)
 

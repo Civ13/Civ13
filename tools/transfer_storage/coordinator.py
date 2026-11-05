@@ -96,6 +96,10 @@ class Coordinator:
                 self._set_home(ckey, self.mainland)
         elif op == 'claim' and home is None and region == source and self.mainland in (None, source):
             self._set_home(ckey, source)
+        elif op == 'custody' and home is None and region == source:
+            # A living character of an unhomed account is here (a lost ledger
+            # forgot it); it stays where it lives.
+            self._set_home(ckey, source)
 
     def homes_once(self):
         """Decide every queued account request and bring each agent's ledger copy
@@ -110,9 +114,9 @@ class Coordinator:
                 continue  # down: its requests and rows wait for a later pass
             if answer.get('ok'):
                 asked[name] = answer['result']
-        # Trips first (they record where a character already is), then
-        # departures, releases and finally new claims; oldest first within each.
-        order = {'arrive': 0, 'depart': 1, 'release': 2, 'claim': 3}
+        # Each region's requests in the order it made them (a refused trip's
+        # depart then arrive must not swap). Across regions only claims wait
+        # for everything else, so an arrival or a living body beats a new start.
         self.db.execute('BEGIN IMMEDIATE')
         try:
             queue = []
@@ -122,7 +126,7 @@ class Coordinator:
                 old = {i for (i,) in self.db.execute('SELECT id FROM decided WHERE store = ?', (store,))}
                 for i in old - set(ids):
                     self.db.execute('DELETE FROM decided WHERE store = ? AND id = ?', (store, i))
-                queue.extend((order.get(r.get('op'), 9), name, r['id'], store, r)
+                queue.extend((r.get('op') == 'claim', name, r['id'], store, r)
                              for r in a.get('requests', []) if r['id'] not in old)
             queue.sort(key=lambda t: t[:3])
             for _, name, request_id, store, request in queue:

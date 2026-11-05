@@ -9,6 +9,8 @@
 
 #define REGION_HOME_WAIT 300 // deciseconds to wait for the coordinator's next pass
 
+/mob/new_player/var/region_home_checking = FALSE // a Join is waiting on region_home_admit
+
 /proc/region_home_enabled()
 	return shard_group && shard_group.enabled && transfer_bridge && transfer_bridge.enabled()
 
@@ -17,19 +19,30 @@
 /proc/region_home_ask(account, op = "claim", region = null)
 	var/list/body = list("ckey" = account, "op" = op)
 	if(region) body["region"] = region
+	// A claim for an account with a living character here asks the coordinator
+	// to keep it here if it has no home (a lost ledger), never to start fresh.
+	if(op == "claim" && region_home_living_body(account)) body["body"] = TRUE
 	var/list/answer = transfer_bridge.request("/account", body)
 	if(!answer || !answer["ok"] || !islist(answer["result"])) return null
 	return answer["result"]
 
-// Records a trip, departure or death for the coordinator. Retries for about a
-// minute; the agent keeps the request once it has it.
+/proc/region_home_living_body(account)
+	for(var/mob/living/human/H in human_mob_list)
+		if(H.persistence_owner_ckey == account && H.stat != DEAD && !QDELETED(H))
+			return H
+	return null
+
+// Records a trip, departure or death for the coordinator. Keeps trying, less
+// often over time, until the agent has it (the agent keeps it from then on).
 /proc/region_home_note(account, op, region = null)
 	if(!region_home_enabled() || !istext(account) || !length(account)) return FALSE
-	for(var/attempt = 1 to 6)
+	var/delay = 100
+	for(var/attempt = 1, TRUE, attempt++)
 		if(region_home_ask(account, op, region)) return TRUE
-		sleep(100)
-	log_game("Region home: could not record [op] for [account]; the coordinator keeps its old home.")
-	return FALSE
+		if(attempt == 6)
+			log_game("Region home: still cannot record [op] for [account]; retrying every few minutes.")
+		sleep(delay)
+		delay = min(delay * 2, 3000)
 
 /proc/region_home_tell(mob/new_player/lobby, home)
 	var/list/peer = home ? shard_group.peers[home] : null
