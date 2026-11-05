@@ -48,35 +48,34 @@
 	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
 	to_chat(user, SPAN_NOTICE("You gather two portions of grass cuttings."))
 
+// Read-only: whether an opened tile here stays up (a mine support within 2, a wall
+// or open sky next to it, or rock on three sides). collapse_check and agent
+// characters' observations share it.
+/turf/floor/dirt/underground/proc/mine_supported()
+	for (var/obj/structure/mine_support/RS in range(2, src))
+		return TRUE
+	for (var/turf/wall/W in range(1, src))
+		return TRUE
+	for (var/turf/TT in range(1, src))
+		var/area/AA = get_area(TT)
+		if (AA.location == AREA_OUTSIDE)
+			return TRUE
+	var/supportcount = 0
+	for (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))
+		supportcount++
+	for (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))
+		supportcount++
+	for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))
+		supportcount++
+	for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))
+		supportcount++
+	return supportcount >= 3
+
 /turf/floor/dirt/underground/collapse_check()
 	spawn(50)
 		var/area/A = get_area(src)
 		if (A.location == AREA_INSIDE)
-			//check for supports
-			var/supportfound = FALSE
-			var/supportcount = 0
-
-			for (var/obj/structure/mine_support/RS in range(2))
-				supportfound = TRUE
-
-			for (var/turf/wall/W in range(1))
-				supportfound = TRUE
-
-			for (var/turf/TT in range(1))
-				var/area/AA = get_area(TT)
-				if (AA.location == AREA_OUTSIDE)
-					supportfound = TRUE
-
-			for (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))
-				supportcount++
-			for (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))
-				supportcount++
-			for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))
-				supportcount++
-			for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))
-				supportcount++
-			if (supportcount >= 3 && !supportfound)
-				supportfound = TRUE
+			var/supportfound = mine_supported()
 
 			//if no support >> cave starts to fall
 			if (!supportfound)

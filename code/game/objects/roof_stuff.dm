@@ -284,6 +284,27 @@
 	roofs_list -= roof_overlay
 	..()
 
+// Read-only: whether something holds this roof up. collapse_check and agent
+// characters' observations share it.
+/obj/roof/proc/is_supported()
+	if (building_pair_id)
+		return building_supported_height(get_turf(src)) > 0
+	if (istype(src, /obj/roof/canopy))
+		for (var/obj/structure/tent/TT in loc)
+			return TRUE
+	for (var/obj/structure/roof_support/RS in range(3, src))
+		return TRUE
+	for (var/obj/structure/mine_support/stone/SS in range(2, src))
+		return TRUE
+	for (var/turf/wall/W in range(2, src))
+		return TRUE
+	for (var/obj/structure/simple_door/SD in loc)
+		return TRUE
+	for (var/obj/covers/C in range(1, src))
+		if (C.wall == TRUE)
+			return TRUE
+	return FALSE
+
 /obj/roof/proc/collapse_check()
 	spawn(50)
 		if (!src || gcDestroyed || gc_destroyed)
@@ -291,23 +312,7 @@
 		if (persistence_save_in_progress)
 			collapse_check()
 			return
-		var/supportfound = FALSE
-		if (istype(src, /obj/roof/canopy))
-			for (var/obj/structure/tent/TT in loc)
-				supportfound = TRUE
-		for (var/obj/structure/roof_support/RS in range(3, src))
-			supportfound = TRUE
-		for (var/obj/structure/mine_support/stone/SS in range(2, src))
-			supportfound = TRUE
-		for (var/turf/wall/W in range(2, src))
-			supportfound = TRUE
-		for (var/obj/structure/simple_door/SD in loc)
-			supportfound = TRUE
-		for (var/obj/covers/C in range(1, src))
-			if (C.wall == TRUE)
-				supportfound = TRUE
-		if (building_pair_id)
-			supportfound = building_supported_height(get_turf(src)) > 0
+		var/supportfound = is_supported()
 	//if no support >> roof falls down
 		if (!supportfound)
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)

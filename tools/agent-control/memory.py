@@ -23,6 +23,13 @@ MAX_FACTS = 20
 MAX_PEOPLE = 60
 MAX_PLACES = 8  # per kind
 MAX_LINES = 4  # remembered lines per person, each way
+MAX_STRUCTURES = 200
+# Structures worth maintaining: what holds a roof or a tunnel up, and what the character lives in.
+STRUCTURE_WORDS = ("wall", "door", "roof", "support", "fence", "campfire", "bed", "table", "furnace", "bloomery",
+                   "kiln", "anvil", "rack", "chest", "shelf", "palisade", "ladder", "tunnel", "shaft", "floor")
+# Ones the game keeps as objects in view (floors and most walls are turfs, which the observation lists only by kind).
+VISIBLE_STRUCTURES = ("door", "roof support", "mine support", "fence", "campfire", "bed", "table", "furnace",
+                      "bloomery", "kiln", "anvil", "rack", "chest", "shelf", "ladder")
 TRUST_MIN, TRUST_MAX = -5, 5
 
 # What a nearby or terrain row is, for the places worth finding again.
@@ -68,7 +75,7 @@ class CharacterMemory:
     def __init__(self, path, name=""):
         self.path = Path(path)
         self.data = {"version": VERSION, "character": name, "home": None, "places": {}, "people": {},
-                     "events": [], "facts": [], "steps": 0}
+                     "events": [], "facts": [], "steps": 0, "structures": [], "made": {}}
         self.dirty = False
 
     # --- persistence --------------------------------------------------------------------------
@@ -113,6 +120,59 @@ class CharacterMemory:
         self.data["facts"].append(fact)
         del self.data["facts"][:-MAX_FACTS]
         self.dirty = True
+
+    def made(self, recipe):
+        """Count one more of something made; returns the new count."""
+        key = _clip(recipe, 60).lower()
+        made = self.data.setdefault("made", {})
+        made[key] = made.get(key, 0) + 1
+        if len(made) > 300:
+            del made[min(made, key=made.get)]
+        self.dirty = True
+        return made[key]
+
+    def built(self, name, x, y, z):
+        """Record a structure the character placed, so it can be checked and kept up later."""
+        if not all(isinstance(v, int) for v in (x, y)) or not any(word in str(name).lower() for word in STRUCTURE_WORDS):
+            return
+        ledger = self.data.setdefault("structures", [])
+        for item in ledger:
+            if item["x"] == x and item["y"] == y and item.get("z") == z and item["name"] == _clip(name, 40):
+                item["built"] = int(time.time())
+                self.dirty = True
+                return
+        ledger.append({"name": _clip(name, 40), "x": x, "y": y, "z": z, "built": int(time.time())})
+        del ledger[:-MAX_STRUCTURES]
+        self.dirty = True
+
+    def maintenance(self, observation, radius=4):
+        """Problems with the character's own structures in view: unsupported roofs, missing pieces, unsafe tunnels."""
+        me = observation.get("self", {})
+        x, y, z = me.get("x"), me.get("y"), me.get("z")
+        if not all(isinstance(v, int) for v in (x, y)):
+            return []
+        problems = []
+        here = observation.get("here") or {}
+        if here.get("cave_supported") is False:
+            problems.append("the tunnel where you stand has no support and can cave in: build a mine support here now, or climb out")
+        rows = [r for r in observation.get("nearby", []) + observation.get("terrain", []) if isinstance(r, dict)
+                and isinstance(r.get("dx"), int) and isinstance(r.get("dy"), int)]
+        for row in rows:
+            if "roof" in _lower(row) and row.get("supported") is False and max(abs(row["dx"]), abs(row["dy"])) <= 3:
+                problems.append(f"the roof at ({x + row['dx']},{y + row['dy']}) has no support and can collapse: "
+                                "build a roof support within 3 tiles of it (or a wall within 2)")
+                break
+        for item in self.data.get("structures", []):
+            if item.get("z") != z or max(abs(item["x"] - x), abs(item["y"] - y)) > radius:
+                continue
+            name = item["name"].lower()
+            if not any(word in name for word in VISIBLE_STRUCTURES):
+                continue
+            present = any(max(abs(x + r["dx"] - item["x"]), abs(y + r["dy"] - item["y"])) <= 1
+                          and _lower(r) and (name in _lower(r) or _lower(r) in name) for r in rows)
+            if not present:
+                problems.append(f"your {item['name']} at ({item['x']},{item['y']}) is gone: rebuild it, or check what holds up the roof near it")
+        return problems[:3]
 
     def set_home(self, x, y, z, why="home"):
         self.data["home"] = {"x": x, "y": y, "z": z, "why": _clip(why, 60)}
@@ -239,6 +299,18 @@ class CharacterMemory:
             if who.get("i_said"):
                 text += f"; you told them: {who['i_said'][-1][:80]}"
             lines.append(text)
+        for problem in self.maintenance(observation):
+            lines.append("REPAIR: " + problem)
+        own = [s for s in self.data.get("structures", []) if s.get("z") == z and max(abs(s["x"] - x), abs(s["y"] - y)) <= 8]
+        if own:
+            counts = {}
+            for item in own:
+                counts[item["name"]] = counts.get(item["name"], 0) + 1
+            lines.append("Your structures here: " + ", ".join(f"{n} x{c}" if c > 1 else n for n, c in list(counts.items())[:8]))
+        made = self.data.get("made") or {}
+        if made:
+            top = sorted(made.items(), key=lambda pair: -pair[1])[:5]
+            lines.append("Already made: " + ", ".join(f"{count} {name}" for name, count in top))
         if self.data["facts"]:
             lines.append("Things you decided to remember: " + " | ".join(self.data["facts"][-5:]))
         recent = [e["text"] for e in self.data["events"][-3:]]

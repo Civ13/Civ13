@@ -962,5 +962,74 @@ class CharacterMemoryTest(unittest.TestCase):
         self.assertEqual(autopilot.attackers_of(observation), ["bob"])
 
 
+class StructureAndHabitTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from memory import CharacterMemory
+        self.dir = tempfile.mkdtemp()
+        self.memory = CharacterMemory.load("Ada", self.dir)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def test_built_structures_go_in_the_ledger_on_the_faced_tile(self):
+        me = {"x": 10, "y": 10, "z": 2}
+        autopilot.remember_results(self.memory, [{"do": "craft", "recipe": "roof support"}], "craft ok", me, [{"do": "face", "dir": "north"}])
+        autopilot.remember_results(self.memory, [{"do": "build", "recipe": "stone wall", "dir": "east"}], "build ok", me)
+        autopilot.remember_results(self.memory, [{"skill": "dig_down", "target": "[0x1]"}], "use ok", me)
+        autopilot.remember_results(self.memory, [{"skill": "mine", "target": "turf:9,10,2"}], "click ok", me, rows={"turf:9,10,2": {"dx": -1, "dy": 0}})
+        ledger = {(s["name"], s["x"], s["y"]) for s in self.memory.data["structures"]}
+        self.assertEqual(ledger, {("roof support", 10, 11), ("stone wall", 11, 10), ("mine shaft", 10, 10), ("tunnel", 9, 10)})
+        self.assertEqual(self.memory.data["made"], {"roof support": 1, "stone wall": 1})
+
+    def test_maintenance_flags_missing_supports_unsupported_roofs_and_tunnels(self):
+        self.memory.built("roof support", 11, 10, 2)
+        observation = {"self": {"x": 10, "y": 10, "z": 2}, "here": {"cave_supported": False},
+                       "nearby": [{"name": "thatch roof", "dx": 1, "dy": 1, "supported": False}], "terrain": []}
+        problems = self.memory.maintenance(observation)
+        self.assertTrue(any("tunnel where you stand has no support" in p for p in problems))
+        self.assertTrue(any("roof at (11,11) has no support" in p for p in problems))
+        self.assertTrue(any("roof support at (11,10) is gone" in p for p in problems))
+        observation["nearby"].append({"name": "roof support", "dx": 1, "dy": 0})
+        observation["here"] = {}
+        observation["nearby"][0]["supported"] = True
+        self.assertEqual(self.memory.maintenance(observation), [])
+        self.assertIn("REPAIR", self.memory.recall({**observation, "nearby": []}))
+
+    def test_unsafe_rock_and_unsupported_places_take_priority(self):
+        me = {"ref": "[0x1]", "x": 1, "y": 1, "left_hand": {"name": "bone pickaxe"}, "right_hand": None, "active_hand": "left"}
+        rows = {"turf:2,1,2": {"ref": "turf:2,1,2", "name": "underground rock", "type": "/turf/floor/dirt/underground", "dx": 1, "dy": 0, "safe_to_mine": False}}
+        steps, error = autopilot.expand_skill({"skill": "mine", "target": "turf:2,1,2"}, me, rows)
+        self.assertIn("cave the tunnel in", error)
+        rows["turf:2,1,2"]["safe_to_mine"] = True
+        self.assertEqual(autopilot.expand_skill({"skill": "mine", "target": "turf:2,1,2"}, me, rows)[1], "")
+        goal, _ = autopilot.current_goal({"self": {"water": 400, "nutrition": 400}, "here": {"cave_supported": False}, "nearby": []})
+        self.assertIn("mine support", goal)
+        goal, _ = autopilot.current_goal({"self": {"water": 400, "nutrition": 400}, "nearby": [{"name": "thatch roof", "dx": 2, "dy": 0, "supported": False}]})
+        self.assertIn("roof support", goal)
+
+    def test_habit_guard_refuses_repeats_the_goal_does_not_need(self):
+        floors = [(step, "thatch floor") for step in range(1, 10)]
+        plan = [{"do": "craft", "recipe": "thatch floor"}]
+        self.assertIn("old habit", autopilot.habit_problem(plan, floors, 10, "build a campfire"))
+        self.assertEqual(autopilot.habit_problem(plan, floors[:5], 10, "build a campfire"), "")  # floors may run to 9
+        self.assertEqual(autopilot.habit_problem(plan, floors, 40, "build a campfire"), "")  # long ago
+        self.assertEqual(autopilot.habit_problem(plan, floors, 10, "lay a thatch floor in your house"), "")  # the goal asks for it
+        torches = [(1, "torch"), (2, "torch"), (3, "torch")]
+        self.assertIn("ambitious", autopilot.habit_problem([{"do": "craft", "recipe": "torch"}], torches, 4, "make a pickaxe"))
+        self.assertIn("Be ambitious", autopilot.SYSTEM)
+
+    def test_character_observation_reports_support_with_the_game_rules(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn('row["supported"] = R.is_supported()', characters)
+        self.assertIn('row["safe_to_mine"] = U.mine_supported()', characters)
+        self.assertIn('here_row["cave_supported"] = U.mine_supported()', characters)
+        roof = (ROOT / "code/game/objects/roof_stuff.dm").read_text(encoding="utf-8")
+        floor = (ROOT / "code/game/turfs/floor_attackby.dm").read_text(encoding="utf-8")
+        self.assertIn("var/supportfound = is_supported()", roof)  # collapse_check uses the same proc
+        self.assertIn("var/supportfound = mine_supported()", floor)
+
+
 if __name__ == "__main__":
     unittest.main()

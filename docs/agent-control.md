@@ -253,6 +253,9 @@ Memory (`memory.py`): each character keeps a small JSON file in
 - facts the model asked to keep (`"remember"` in a reply, such as a promise);
 - a short event log.
 
+- a ledger of the structures it placed (walls, doors, roofs, supports, mine shafts and tunnels, furniture)
+  and counts of what it has made.
+
 Every prompt includes a `MEMORY` slice of the file: the way home, the nearest
 known places that are not already in view, the people in view, kept facts and
 recent events. People are remembered by the name the character sees. The file
@@ -260,6 +263,17 @@ stores no ckeys or account data, stays on the host, and is only sent to the
 local model. Player lines are stored as game text and stay inside the untrusted
 observation. To reset a character, delete its file. `--memory DIR` moves the
 folder, and `--memory none` turns memory off.
+
+Structures and supports: `character_observe` marks each roof in view `supported` and the nearest
+underground rock `safe_to_mine`. If the character stands in an underground tunnel, `here` also says
+`cave_supported`. These use the same procs as the game's collapse checks: `/obj/roof/proc/is_supported`
+and `/turf/floor/dirt/underground/proc/mine_supported`. An unsupported tunnel or roof becomes the
+current goal, `mine` is refused on rock that would cave in, and `MEMORY` lists `REPAIR` lines for
+unsupported roofs and for ledger pieces that have gone missing.
+
+Habits: a craft or build the current goal does not ask for is refused once the character has made it
+more than a few times recently (3 by default, more for walls, roofing, floors and supports). The
+model is then sent back to its goal and the recipe book.
 
 ## Tests
 
