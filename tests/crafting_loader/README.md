@@ -37,3 +37,9 @@ carriage-return escape. Filename sanitization now uses the existing
 ascii2text(13) idiom; the offline fixture supplies that character-code boundary
 and checks both the supported source syntax and escaped CR output. Failed
 compiler evidence is preserved separately from the corrected head.
+
+`test_basic_clothing.py` models the global recipe list for a factionless player
+in every era (Main-tree era baseline plus legacy thresholds) and checks that a
+warm coat, headwear, footwear and gloves stay craftable. Factionless players
+cannot research the specialist Tailoring tree, so survival furs must stay in
+the Main tree.
