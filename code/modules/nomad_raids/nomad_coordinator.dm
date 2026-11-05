@@ -10,7 +10,7 @@
 /datum/nomad_raid/proc/allowed_orders()
 	var/list/out = list("say")
 	switch (state)
-		if ("march")
+		if ("march", "sail")
 			out += "retreat"
 		if ("parley")
 			out += list("bargain", "retreat")

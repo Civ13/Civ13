@@ -157,6 +157,42 @@ movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
 
+### Boats
+
+Characters use the same boats players do (`code/modules/agent_control/agent_boats.dm`):
+a raft (10 wood logs, crafted where the character stands, research-gated like
+any recipe), and outrigger, sail and motor boats.
+
+- `board` (`target`: a raft or boat within one tile) climbs on, as dragging
+  yourself onto it does. The first one aboard drives; a boat with a rudder
+  needs a free hand for it.
+- While driving, `move` steers one tile at the vehicle's own speed: rafts are
+  paddled, sail boats sail, and motor boats need fuel and a running engine
+  (`use` the rudder once to start it; a second `use` puts it in gear and it
+  then moves by itself, with `move` only turning it). A boat stops at land.
+  A stalled boat fails with `no_propulsion` and says why.
+- `disembark` gets off onto the boat's tile; the next `move` steps ashore.
+- `drag` (`target` dragged `onto` another thing, both next to the character)
+  is the mouse drag: a crate onto a boat's deck, an engine onto a frame, or
+  the character's own ref onto a boat.
+- Refuelling is a `click` on the boat holding a container of its fuel.
+- `board`, `disembark` and `drag` are timed, so they run only from
+  `character_queue`; a direct `character_act` is refused with `use_queue`.
+
+`character_state` adds `vehicle` (name, role, seats, cargo and cargo space,
+fuel and accepted fuels, engine, sails, `stalled` reason) and `can_steer`;
+nearby boats carry the same details, and `surroundings` marks `deep_water`,
+which is `blocked` for a walker without a lifejacket and open for a driver.
+
+`character_route` (`x`, `y` or `target` on the character's level, at most 150
+tiles away, optional `reach`) plans a route over dry and shallow ground first.
+When only deep water connects the two, it plans across it, with as few
+crossings as it can, and returns `needs_boat`, `legs` (`walk` and `boat` legs
+as strings of `n`/`s`/`e`/`w` moves), the `launch` tile (last dry tile), the
+`landing` tile, up to five free `boats` near the launch with a `board_from`
+tile each, and the raft recipe. A boat leg starts on the launch tile and
+includes the shallows on either side, so a raft built there can take it.
+
 ## Nomad visits
 
 The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):
@@ -257,7 +293,14 @@ after four turns on it in a row without progress. Each turn's changes and messag
 printed to the run log. Only speech and lines about
 the character reach the model, lines that keep recurring (heat, weather) are
 muted after four turns, so other players' work messages do not crowd
-the window. `--minutes` caps the run time. It shows the
+the window. Travel (`tools/agent-control/boats.py`): `{"do": "travel", "x", "y"}`
+(or `dir` and `tiles`, or `to` a remembered place such as `home` or `boat`)
+follows `character_route`. On a boat leg it boards a free boat near the
+launch, or crafts a raft there from 10 carried wood logs, refuels a motor
+boat from a carried fuel container and starts its engine, paddles across,
+disembarks and walks on. The boat it leaves moored is remembered as the
+`boat` place, so the way back takes it again. A `BOAT` line in the prompt
+says what boat she is on or sees and what it needs. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
 

@@ -125,14 +125,15 @@
 	target_ckeys = ckeys ? ckeys.Copy() : list()
 	started_by = by
 	clan = pick(nomad_raid_clans())
-	var/list/site = nomad_raid_edge_site(target)
+	// A target the party cannot walk to (an island) is reached by raft (nomad_boats.dm).
+	var/list/site = plan_crossing(nomad_raid_edge_site(target))
 	if (!site)
 		return "no open, unseen ground near a map edge on that level"
 	home = site["turf"]
 	edge = site["edge"]
 	// The leader stands nearest the target so followers never block the march.
-	var/list/spots = list()
-	for (var/turf/T in range(2, home))
+	var/list/spots = sail_path ? list(home) : list()
+	for (var/turf/T in sail_path ? list() : range(2, home))
 		if (T == home || !nomad_raid_spawn_error(T))
 			var/i = 1
 			while (i <= spots.len && get_dist(spots[i], target) <= get_dist(T, target))
@@ -175,6 +176,9 @@
 	var/warning = kind == "trade" ? "Caravan bells sound in the distance to the [edge]. Someone is coming." : "War horns sound in the distance to the [edge]. Someone is coming."
 	for (var/mob/living/human/H in nomad_raid_defenders_near(target))
 		to_chat(H, SPAN_DANGER(warning))
+	if (sail_path)
+		log_event("crossing by raft from [home.x],[home.y] to land at [landing.x],[landing.y]")
+		launch_boats()
 	spawn(0)
 		run_loop()
 
@@ -276,6 +280,8 @@
 		set_state("leave", leader_ok() ? "half the party is down" : "the leader is down")
 		set_hostile(FALSE)
 	switch (state)
+		if ("sail")
+			tick_sail(alive)
 		if ("march")
 			tick_march(alive, hurt, decide)
 		if ("parley")
@@ -522,8 +528,11 @@
 		if ((get_dist(at, home) <= 3 || get_dist(at, target) > 40) && !ecology_visible_to_players(at, NOMAD_RAID_VIEW_MARGIN))
 			escape(M)
 			continue
+		if (leave_by_boat(M))
+			continue
 		if (!M.target_mob)
 			order_move(M, home)
+	sail_step()
 	if (!alive_members().len)
 		finish(outcome ? outcome : "the party left")
 
@@ -572,6 +581,7 @@
 	if (state == "ended")
 		return
 	state = "ended"
+	clear_boats()
 	log_event("ended - [reason]. [escaped] of [initial_size] left the map with [escaped_items] items; [fallen] fell; [stolen] items taken; [sold] goods sold.")
 	if (nomad_raid == src)
 		nomad_raid = null
