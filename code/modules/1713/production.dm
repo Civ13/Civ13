@@ -2379,6 +2379,11 @@
 	P.customcolor1 = wood_customcolor1
 	P.customcolor2 = wood_customcolor2
 	P.customname = wood_customname
+	// Looped cuts pile onto one matching plank stack instead of one stack per log.
+	for (var/obj/item/stack/material/woodplank/existing in site)
+		if (existing != P && existing.type == P.type && existing.amount < existing.max_amount && existing.color == P.color && existing.customcolor == P.customcolor && existing.customcolor1 == P.customcolor1 && existing.customcolor2 == P.customcolor2 && existing.customname == P.customname)
+			P.merge(existing)
+			break
 	new /obj/item/stack/bark(site, 1)
 	playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 	if (flint_blade_uses == 0)

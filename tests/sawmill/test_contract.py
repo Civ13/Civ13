@@ -95,6 +95,11 @@ class PrimitiveSawmillContracts(unittest.TestCase):
         cut = body(SOURCE, '/obj/structure/sawmill/proc/cut_primitive_log(')
         self.assertIn('continuing = FALSE', cut)
         self.assertLess(cut.index('do_after('), cut.index('W.use(1)'))
+        # Planks from a loop merge into one stack with matching appearance.
+        merge = cut.index('P.merge(existing)')
+        self.assertLess(cut.index('P.customname = wood_customname'), merge)
+        for field in ('color', 'customcolor', 'customcolor1', 'customcolor2', 'customname'):
+            self.assertIn('existing.%s == P.%s' % (field, field), cut)
 
 
 if __name__ == '__main__':
