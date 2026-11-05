@@ -360,6 +360,9 @@
 				var/default_value = initial(object.vars[v])
 				if(persistence_default_scalar(default_value) && object.vars[v] != default_value)
 					object.vars[v] = default_value
+		// Let a type rebuild state its saved fields describe only by presence.
+		savefile.cd = entry_dir
+		object.persistence_import_fields(savefile.dir.Copy())
 		if(istype(object, /datum/wound/lost_limb))
 			var/datum/wound/lost_limb/restored_wound = object
 			restored_wound.validate_restored_state()

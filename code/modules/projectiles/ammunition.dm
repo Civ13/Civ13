@@ -40,6 +40,40 @@
 	BB = null
 	..()
 
+// Projectiles are never saved (should_save = 0), so a saved BB reference would
+// restore as null and every loaded round would come back spent. Saves record
+// the bullet's type instead and the import rebuilds it.
+/obj/item/ammo_casing/var/saved_bullet_type = null
+
+/obj/item/ammo_casing/persistence_runtime_var(key)
+	return key == "BB" || ..()
+
+/obj/item/ammo_casing/before_save()
+	. = ..()
+	saved_bullet_type = BB ? BB.type : null
+
+/obj/item/ammo_casing/persistence_import_fields(list/saved_fields)
+	..()
+	var/bullet_type = null
+	if (ispath(saved_bullet_type, /obj/item/projectile))
+		bullet_type = saved_bullet_type
+	else if ("BB" in saved_fields)
+		// Older saves wrote BB only while a round was loaded, as a null entry.
+		bullet_type = projectile_type
+	saved_bullet_type = null
+	// The constructor's bullet may have been replaced by the contents import.
+	for (var/obj/item/projectile/P in contents)
+		if (P != BB || P.type != bullet_type)
+			qdel(P)
+	if (BB && (BB.loc != src || BB.type != bullet_type))
+		BB = null
+	if (!BB && ispath(bullet_type, /obj/item/projectile))
+		BB = new bullet_type(src)
+		BB.btype = btype
+		BB.checktype()
+	if (!BB)
+		register_abandoned_item()
+
 /obj/item/ammo_casing/proc/randomrotation()
 	transform = matrixangle(rand(1,360))
 	spawn(1)
