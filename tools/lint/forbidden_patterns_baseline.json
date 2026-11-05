@@ -7,7 +7,6 @@
       "code/_helpers/memory_lifetime_telemetry.dm": 1,
       "code/_helpers/spawn_sync.dm": 1,
       "code/_helpers/unsorted.dm": 1,
-      "code/_onclick/click.dm": 3,
       "code/_onclick/drag_drop.dm": 1,
       "code/_onclick/hud/base_screen_objects.dm": 1,
       "code/datums/vote.dm": 1,
@@ -347,7 +346,7 @@
       "code/modules/multiz/structures.dm": 2,
       "code/modules/nano/_nanoui.dm": 1,
       "code/modules/nano/tgui.dm": 1,
-      "code/modules/nomad_raids/nomad_raid.dm": 3,
+      "code/modules/nomad_raids/nomad_visit.dm": 1,
       "code/modules/organs/blood.dm": 2,
       "code/modules/organs/organ.dm": 2,
       "code/modules/organs/organ_external.dm": 3,
@@ -468,8 +467,7 @@
       "code/setup.dm": 1
     },
     "wwinput_untyped_result": {
-      "code/_helpers/WWinput.dm": 1,
-      "code/modules/1713/computers/programs.dm": 1
+      "code/_helpers/WWinput.dm": 1
     },
     "merge_marker": {}
   }

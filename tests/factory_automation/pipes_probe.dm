@@ -63,6 +63,7 @@ var/pipe_runtime_error = FALSE
 				pipe_floor(x, y)
 		pipe_check(!world.port, "fixture has no listening port")
 		pipe_network_checks()
+		pipe_wrench_checks()
 		pipe_intake_checks()
 		pipe_refinery_checks()
 		pipe_save_checks()
@@ -143,6 +144,40 @@ var/pipe_runtime_error = FALSE
 	for (var/obj/O in pipes + list(S, T, E, tank, P, V) + power)
 		if (!QDELETED(O))
 			qdel(O)
+	fluid_mark_dirty()
+
+// Pipes and fluid machines can be unwrenched; while unfastened they join no
+// network and supply or take nothing.
+/proc/pipe_wrench_checks()
+	var/list/fixed = list()
+	for (var/path in list(/obj/structure/fluid_pipe, /obj/structure/fluid_pipe/valve, /obj/structure/fluid_pump, /obj/structure/fluid_tank, /obj/structure/fluid_intake, /obj/structure/fluid_vessel, /obj/structure/fluid_bottler, /obj/structure/fluid_tablet_press, /obj/structure/fluid_meter))
+		var/obj/structure/S = path
+		if (initial(S.not_movable))
+			fixed += "[path]"
+	pipe_check(!fixed.len, "pipes and fluid machines can be unwrenched[fixed.len ? " (fixed: [english_list(fixed)])" : ""]")
+	var/list/pipes = pipe_line(3, 5, 18)
+	var/obj/structure/fluid_tank/T = new(locate(4, 19, 1))
+	factory_fluids_step()
+	var/obj/structure/fluid_pipe/end = pipes[3]
+	var/datum/fluid_network/N = end.network
+	pipe_check(N && N.pipes.len == 3 && (T in N.members), "a fastened tank joins its pipe run")
+	T.anchored = FALSE
+	T.anchor_changed()
+	end.anchored = FALSE
+	end.anchor_changed()
+	pipe_check(fluid_networks_dirty && !T.fluid_supply_tier() && !T.fluid_demand_tier() && !end.fluid_open(), "unfastening asks for a rebuild and leaves the tank and pipe without a role")
+	factory_fluids_step()
+	N = fluid_network_of(T)
+	var/obj/structure/fluid_pipe/first = pipes[1]
+	pipe_check(!N && !end.network && first.network && first.network.pipes.len == 2, "an unfastened tank and pipe leave the network")
+	T.anchored = TRUE
+	T.anchor_changed()
+	end.anchored = TRUE
+	end.anchor_changed()
+	factory_fluids_step()
+	pipe_check(end.network && end.network.pipes.len == 3 && (T in end.network.members), "fastening them again rejoins the network")
+	for (var/obj/O in pipes + list(T))
+		qdel(O)
 	fluid_mark_dirty()
 
 /proc/pipe_intake_checks()

@@ -1,0 +1,5 @@
+# Needed only for the optional git hooks and merge drivers (tools/hooks/README.md).
+# scripts/maplint.py and the map parser need the standard library only.
+pygit2==1.19.0
+bidict==0.23.1
+Pillow==13.0.0

@@ -111,6 +111,15 @@ test/job outcomes for the new head and run attempt. Record what ran and why
 other jobs skipped. A local pass, green aggregate, pending job or another
 head's run cannot establish that a specific hosted regression executed.
 
+### Skip hosted CI with a trusted local pass
+
+On a maintainer's machine (Val or taislin), `py -3 scripts/local_ci.py run --push`
+reruns selection, the offline baseline and the compile for the exact head,
+then posts a `local-ci/attested` status that lets hosted CI skip its heavy
+jobs. Agents cannot attest: their token is not on `tools/ci/local_attesters.json`.
+Native/introduced suites and CI-control paths always run hosted. See
+`docs/local-ci-attestation.md`; the CI digest shows the skipped jobs as skipped.
+
 ## 5. Known red jobs that are not your fault
 
 After pushing to a PR, wait for the `agent-ci-digest` comment for the new head

@@ -66,6 +66,8 @@
 			if (I.reagents.total_volume >= reagents.maximum_volume)
 				to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
 			else
+				if (food_toxin_amounts(I.reagents).len)
+					note_food_toxin("[food_toxin_cause(I)], poured from [I.name]")
 				for (var/datum/reagent/RR in I.reagents.reagent_list)
 					reagents.add_reagent(RR.id, RR.volume)
 				I.reagents.clear_reagents()
@@ -90,6 +92,8 @@
 					if (I.reagents.total_volume >= reagents.maximum_volume)
 						to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
 					else
+						if (food_toxin_amounts(I.reagents).len)
+							note_food_toxin("[food_toxin_cause(I)], poured from [I.name]")
 						for (var/datum/reagent/R in I.reagents.reagent_list)
 							reagents.add_reagent(R.id, R.volume)
 						I.reagents.clear_reagents()
@@ -136,6 +140,8 @@
 			var/amt = ceil(R.volume/initial_bowls)
 			w_stew.reagents.maximum_volume += amt
 			w_stew.reagents.add_reagent(R.id, amt)
+		if (food_toxin_amounts(w_stew.reagents).len)
+			w_stew.note_food_toxin("[food_toxin_cause(src)], ladled from [name]")
 
 		if (H.l_hand == I)
 			H.remove_from_mob(I)
@@ -150,6 +156,7 @@
 
 		if (bowls <= 0)
 			state = STATE_EMPTY
+			food_toxin_origin = null
 			stew_desc = ""
 			stew_nutriment_desc.Cut()
 			stew_nutriment = 0
@@ -276,6 +283,7 @@
 	if (do_after(usr, 100, src) && !meal_cooking)
 		visible_message("<span class = 'warning'>[usr] finishes emptying the pot.</span>")
 		state = STATE_EMPTY
+		food_toxin_origin = null
 		if (meal_portions)
 			reagents.clear_reagents()
 			meal_portions = 0

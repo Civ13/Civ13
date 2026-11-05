@@ -206,6 +206,7 @@
 								if (meat.reagents)
 									meat.reagents.remove_reagent("protein", 2)
 									meat.reagents.add_reagent("food_poisoning", 1)
+									meat.note_food_toxin("zombie meat")
 								meat.rotten = TRUE
 								meat.satisfaction = -30
 						else

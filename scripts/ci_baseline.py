@@ -143,6 +143,12 @@ SUITES = {
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
+    # Map merge/lint tooling ported from CM-SS13 and scripts/maplint.py over
+    # every map; standard library only, no BYOND runtime.
+    'map_tools': {'files': ('tests/map_tools/test_map_tools.py',),
+        'paths': ('tests/map_tools/', 'tools/mapmerge2/', 'tools/UpdatePaths/',
+                  'tools/hooks/', 'tools/dmi/', 'scripts/maplint.py'), 'shared_paths': (
+            'maps/', '.gitattributes')},
     # Day/night sweep loop-shape contracts; no BYOND runtime.
     # Held-key smooth movement continuation contracts; no BYOND runtime.
     'held_movement': {'files': ('tests/held_movement/test_held_movement.py',),
@@ -172,6 +178,10 @@ SUITES = {
             'code/_helpers/admin.dm', 'code/world.dm', '.gitignore')},
     # CI digest classifier/renderer and workflow contract; fake GitHub API only,
     # no network or BYOND runtime.
+    # Offline forgery checks for the local CI attestation gate; no network.
+    'local_ci': {'files': ('tests/local_ci/test_local_ci.py',),
+        'paths': ('tests/local_ci/', 'scripts/local_ci.py', 'tools/ci/'), 'shared_paths': (
+            '.github/workflows/',)},
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
@@ -760,6 +770,13 @@ SUITES = {
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
 TIMEOUT = 30  # per reviewed suite; enclosing job also has a wall-clock limit
+
+
+def suite_deadline():
+    """scripts/local_ci.py raises the deadline on slower workstations (git is
+    slow on Windows); hosted CI never sets it. Bounded so a typo cannot disable it."""
+    value = os.environ.get('CIV13_LOCAL_SUITE_TIMEOUT', '')
+    return min(600, max(TIMEOUT, int(value))) if value.isdigit() else TIMEOUT
 # Reviewed prose/presentation formats only. Script/config suffixes deliberately
 # fall back even below docs/; compilation retains its separate existing policy.
 DOC_SUFFIXES = {'.md', '.rst', '.html', '.css', '.png', '.jpg', '.jpeg', '.gif',
@@ -969,6 +986,7 @@ def run_unit(name, output):
 
 def suite_environment(name, plan):
     environment = os.environ.copy()
+    environment.pop('CIV13_LOCAL_SUITE_TIMEOUT', None)
     if name == 'los_context':
         validate_source_comparison(plan)
         proof = plan.get('source_comparison')
@@ -1001,12 +1019,13 @@ def execute(plan, output):
             counts.unlink(missing_ok=True)
             command = [sys.executable, '-B', str(Path(__file__).resolve()), 'unit',
                        '--suite', name, '--output', str(counts.resolve())]
-            row.update(command=command, timeout_seconds=TIMEOUT, files=list(SUITES[name]['files']))
+            deadline = suite_deadline()
+            row.update(command=command, timeout_seconds=deadline, files=list(SUITES[name]['files']))
             started = time.monotonic()
             with (output / (name + '.log')).open('wb') as log:
                 try:
                     result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
-                                            timeout=TIMEOUT, env=suite_environment(name, plan))
+                                            timeout=deadline, env=suite_environment(name, plan))
                     row['exit_code'] = result.returncode
                     row['status'] = 'failed'
                     if counts.is_file():

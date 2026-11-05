@@ -53,6 +53,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	var/map_loading = FALSE	//Are we loading in a new map?
 
 	var/current_runlevel	//for scheduling different subsystems for different stages of the round
+	var/timer_loop_started = FALSE
 	var/sleep_offline_after_initializations = TRUE
 
 	var/static/restart_clear = 0
@@ -233,6 +234,24 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	current_runlevel = log(2, new_runlevel) + 1
 	if(current_runlevel < 1)
 		CRASH("Attempted to set invalid runlevel: [new_runlevel]")
+
+// Civ13 runs only SStimer on the MC; the process scheduler runs everything else.
+// Initialize() would also force world.fps to 20, so start the loop directly and
+// keep the configured tick rate. Without this no addtimer() callback ever runs.
+/datum/controller/master/proc/start_timer_loop()
+	if (iteration || timer_loop_started)
+		return
+	timer_loop_started = TRUE
+	// The SStimer global and the subsystem list can hold different instances,
+	// depending on which global was built first. Fire the one addtimer() uses.
+	for (var/datum/controller/subsystem/timer/T in subsystems)
+		if (T != SStimer)
+			subsystems -= T
+	if (!(SStimer in subsystems))
+		subsystems += SStimer
+	if (!current_runlevel)
+		SetRunLevel(1)
+	StartProcessing(0)
 
 // Starts the mc, and sticks around to restart it if the loop ever ends.
 /datum/controller/master/proc/StartProcessing(delay)

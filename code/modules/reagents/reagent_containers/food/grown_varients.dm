@@ -1,6 +1,7 @@
 //Rad stuff and special grown goes here.
 //food.dmi
 /obj/item/weapon/reagent_containers/food/snacks/grown/greenpotato
+	food_toxin_origin = "green potato (solanine)"
 	name = "green potato"
 	icon_state = "green_potato"
 	desc = "Left in the sun too long, looks weird."

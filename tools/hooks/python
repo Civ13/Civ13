@@ -1,0 +1,15 @@
+#!/bin/sh
+# Civ13 launcher for the map and icon tools (replaces CM-SS13's tools/bootstrap).
+# Runs Python with tools/ on the import path. On Windows it prefers `py -3`,
+# because a bare `python` can be the Microsoft Store alias.
+root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+PYTHONPATH="$root/tools${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH
+if command -v py >/dev/null 2>&1 && py -3 -c "" >/dev/null 2>&1; then
+	exec py -3 "$@"
+elif command -v python3 >/dev/null 2>&1; then
+	exec python3 "$@"
+else
+	echo "tools/hooks/python: no Python 3 found (install Python 3 or the py launcher)" >&2
+	exit 1
+fi

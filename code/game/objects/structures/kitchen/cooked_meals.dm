@@ -121,6 +121,7 @@
 	meal_portions--
 	if (!meal_portions)
 		state = STATE_EMPTY
+		food_toxin_origin = null
 		meal_quality = 0
 		meal_has_meat = FALSE
 		stew_ticks = 0

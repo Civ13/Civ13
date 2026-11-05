@@ -11,9 +11,8 @@
 // are treated as LOCKED/AVAILABLE computed on the fly.
 //
 // Persistence: bench objects persist their own vars automatically
-// via the map object saver. This faction-level table is round-scoped
-// for now, matching how custom_civs research already behaves; a
-// dedicated save/load pass is deferred to a later phase.
+// via the map object saver. These faction tables are part of the durable
+// map metadata (durable_metadata_map_schema), so they survive a restart.
 // ============================================================
 
 /obj/map_metadata
@@ -144,8 +143,42 @@
 				faction_baseline_era[faction] = snapshot_era
 			if (N.era_tier <= snapshot_era)
 				return TRUE
+	else if (N && persistence && faction && faction != "none" && N.era_tier <= PERSISTENT_SPECIALIST_BASELINE_ERA)
+		// A persistent world starts in WW2, past the eras in which a normal
+		// round's factions research the specialist trees, so a faction gets
+		// those nodes. Later nodes are still earned; factionless players
+		// still never get specialist trees.
+		return TRUE
 	var/list/entry = get_node_entry(faction, node_id)
 	return entry && entry[RNODE_ENTRY_STATUS] == RNODE_DONE
+
+// The highest age the legacy research clock has reached, from the age flags.
+// ordinal_age is not used: an era capstone (complete_node) raises it without
+// setting the flags. Flags are set in order, so the first unset one ends it.
+/obj/map_metadata/proc/legacy_age_reached()
+	var/list/flags = list(age1_done, age2_done, age3_done, age4_done, age5_done, age6_done, age7_done, age8_done, age9_done)
+	var/reached = 0
+	for (var/i = 1, i <= flags.len, i++)
+		if (!flags[i])
+			break
+		reached = i
+	return reached
+
+// In Auto-Research mode (every persistent world) all factions' research
+// totals rise together on one clock, so an age reached that way is nobody's
+// own achievement. Raise each faction's main-tree baseline to it; otherwise a
+// faction founded before the advance loses unlocks that factionless players
+// get for free. An age reached through one faction's capstone still has to
+// be researched by everyone else. Baselines are saved, so a raised baseline
+// survives a restart even though age9_done is not saved.
+/obj/map_metadata/proc/sync_autoresearch_baselines()
+	if (!autoresearch)
+		return
+	var/reached = legacy_age_reached()
+	for (var/faction in faction_baseline_era)
+		var/era = faction_baseline_era[faction]
+		if (isnum(era) && era < reached)
+			faction_baseline_era[faction] = reached
 
 // All prereqs of node_id must be DONE for this faction.
 /obj/map_metadata/proc/node_prereqs_met(faction, node_id)

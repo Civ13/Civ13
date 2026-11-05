@@ -207,6 +207,7 @@ RECIPE: /material/copper/,green cable coil (10m),/obj/item/stack/cable_coil/gree
 RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/orange,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
 
 RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null

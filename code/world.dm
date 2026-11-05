@@ -108,6 +108,8 @@ var/world_is_open = TRUE
 	// Build the shared research-tree node registry (faction-agnostic).
 	build_research_tree()
 	processScheduler = new
+	// SStimer: addtimer() callbacks such as full-auto fire.
+	Master.start_timer_loop()
 
 	var/datum/persistence_area_startup/area_startup = new
 	persistence_area_startup_token = area_startup
@@ -583,9 +585,18 @@ var/global/persistence_reboot_due = FALSE
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
-					var/dmsg =  "<IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[tempmsg[1]]: [tempmsg[2]]</font></b>"
-					to_chat(world, dmsg)
+					// Discord text is untrusted: escape it like in-game OOC (45/1024 chars; the length defines load after world.dm).
+					var/dsender = sanitize(copytext_char(tempmsg[1], 1, 46), 0)
+					var/dtext = sanitize(copytext_char(tempmsg[2], 1, 1025), 0)
+					if (!dsender || !dtext)
+						continue
+					var/dmsg =  "<IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[dsender]: [dtext]</font></b>"
 					log_discord(dmsg)
+					if (!config.ooc_allowed)
+						continue // OOC is globally muted
+					for (var/client/C in clients)
+						if (C.is_preference_enabled(/datum/client_preference/show_ooc))
+							to_chat(C, dmsg)
 					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
 			fdel(F)
 			to_chat(F, "")

@@ -28,6 +28,8 @@ var/global/list/region_trail_next_request = list()
 	if(!shard_group.enabled) return choices
 	for(var/id in shard_group.peers)
 		var/list/peer = shard_group.peers[id]
+		// The rail yard is reached only by a party's own train (party_train.dm).
+		if(peer["kind"] == "RAILYARD") continue
 		choices["[peer["name"]] ([id])"] = id
 	return choices
 
