@@ -154,7 +154,16 @@ var/global/list/nomad_raid_cooldowns = null // ckey = world.realtime of the last
 				cooling = TRUE
 		if (cooling)
 			continue
-		out += list(list("turf" = T, "ckeys" = ckeys, "score" = nomad_raid_score(T, group.len)))
+		// March on the middle of the group, not on whichever member was found first.
+		var/sx = 0
+		var/sy = 0
+		for (var/mob/M in group)
+			sx += M.x
+			sy += M.y
+		var/turf/mid = locate(round(sx / group.len), round(sy / group.len), T.z)
+		if (!mid || mid.density || istype(mid, /turf/floor/beach/water/deep))
+			mid = T
+		out += list(list("turf" = mid, "ckeys" = ckeys, "score" = nomad_raid_score(mid, group.len)))
 	return out
 
 // Weighted by score: the busiest settlement is likelier, not certain.
