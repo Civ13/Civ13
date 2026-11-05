@@ -140,8 +140,13 @@ var/global/list/persistence_player_claims = list()
 		var/mob/new_player/waiting = C.mob
 		if(!istype(waiting)) continue
 		// The region home check can wait on the network; the client may leave.
-		if(!region_home_reclaim_ok(waiting) || !waiting || !waiting.client || waiting.client.mob != waiting) continue
+		if(!reclaim_allowed(waiting) || !waiting || !waiting.client || waiting.client.mob != waiting) continue
 		reclaim_saved_player(waiting)
+	return TRUE
+
+// Whether this lobby may take back a saved body here; a region group narrows
+// it to the account's home land (region_home.dm).
+/map_storage/proc/reclaim_allowed(mob/new_player/lobby)
 	return TRUE
 
 /map_storage/proc/validate_saved_player_owner(savefile/F, ref, list/owners)

@@ -97,6 +97,9 @@
 			break
 	return !has_body || region_home_admit(lobby, FALSE)
 
+/map_storage/reclaim_allowed(mob/new_player/lobby)
+	return region_home_reclaim_ok(lobby)
+
 // The account's assigned bed in this land (Sleep in a bed assigns it), or null.
 /proc/region_home_bed(account)
 	if(!account) return null
