@@ -289,18 +289,19 @@
 
 	//Poo in the loo.
 	var/obj/structure/toilet/T = locate() in src.loc
-	var/mob/living/M = locate() in src.loc
-	if ((T && T.open) || (M.crap_inside))
-		if (M.crap_inside)
+	var/mob/living/M = excrement_target_mob()
+	var/in_outhouse = istype(loc, /obj/structure/toilet/outhouse)
+	if ((T && T.open) || in_outhouse)
+		if (in_outhouse)
 			message = "<B>[src]</B> defecates into the hole."
 		else
 			message = "<B>[src]</B> defecates into \the [T]."
 		var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 		if(reagents)
 			reagents.trans_to(V, rand(1,5))
-		if (T && !M.crap_inside && T.is_plumbed())
+		if (!in_outhouse && T.is_plumbed())
 			qdel(V) // Flushed away, so it cannot be fished back out of the cistern.
-		else
+		else if (!in_outhouse)
 			V.forceMove(T)
 
 	else if(w_uniform)
@@ -314,7 +315,7 @@
 		update_icons()
 
 	//Poo on the face.
-	else if(M != src && M.lying) //Can only shit on them if they're lying down.
+	else if(M && M.lying) //Can only shit on them if they're lying down.
 		message = "<span class='danger'><b>[src]</b> shits right on <b>[M]</b>'s face!</span>"
 		if (M && M.reagents)
 			M.reagents.add_reagent("poo", 10)
@@ -329,6 +330,15 @@
 	bowels -= rand(120,150)
 	visible_message("<span class='warning'>[message]</span>")
 
+// Another living mob on this tile, or null. The outhouse is checked by loc,
+// not crap_inside: that flag is only set for mobs with a client and can stay
+// TRUE after a logout or restart, which sent every later poo into nullspace.
+/mob/living/human/proc/excrement_target_mob()
+	for (var/mob/living/L in loc)
+		if (L != src)
+			return L
+	return null
+
 //Peeing
 /mob/living/human/proc/handle_piss()
 	var/message = null
@@ -336,9 +346,8 @@
 		to_chat(src, "You don't have to piss.")
 		return
 
-	var/mob/living/M = locate() in src.loc
+	var/in_outhouse = istype(loc, /obj/structure/toilet/outhouse)
 	var/obj/structure/toilet/T = locate() in src.loc
-	var/obj/structure/toilet/T2 = locate() in src.loc
 	var/obj/structure/sink/S = locate() in src.loc
 	var/obj/item/weapon/reagent_containers/RC = locate() in src.loc
 
@@ -346,22 +355,21 @@
 		message = "<B>[src]</B> urinates into \the [S]."
 		reagents.remove_any(rand(5,10))
 
-	else if( (T && T.open) || (T2 && T2.open) )//In the toilet.
+	else if(T && T.open)//In the toilet.
 		message = "<B>[src]</B> urinates into \the [T]."
 		reagents.remove_any(rand(5,10))
 
-	else if (M.crap_inside) //Into the hole inside the outhouse.
+	else if (in_outhouse) //Into the hole inside the outhouse.
 		message = "<B>[src]</B> urinates into the hole."
 		reagents.remove_any(rand(5,10))
 
-	else if(RC && (istype(RC,/obj/item/weapon/reagent_containers/food/drinks || istype(RC,/obj/item/weapon/reagent_containers/glass))))
-		if(RC.is_open_container())
-			//Inside a beaker, glass, drink, etc.
-			message = "<B>[src]</B> urinates into \the [RC]."
-			var/amount = rand(5,10)
-			RC.reagents.add_reagent("urine", amount)
-			if(reagents)
-				reagents.trans_to(RC, amount)
+	else if(RC && (istype(RC, /obj/item/weapon/reagent_containers/food/drinks) || istype(RC, /obj/item/weapon/reagent_containers/glass)) && RC.is_open_container())
+		//Inside a beaker, glass, drink, etc.
+		message = "<B>[src]</B> urinates into \the [RC]."
+		var/amount = rand(5,10)
+		RC.reagents.add_reagent("urine", amount)
+		if(reagents)
+			reagents.trans_to(RC, amount)
 
 	else if(w_uniform)//In your pants.
 		message = "<B>[src]</B> pisses \his pants."

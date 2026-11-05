@@ -30,6 +30,8 @@ REVIEWED = {
     'stopped_until': 'football map mode is not persistent',
     'round_deadline': 'extraction raid instances are not persistent',
     'next_checkpoint': 'extraction raid instances are not persistent',
+    'npc_corpses': 'extraction raid instances are not persistent',
+    'raid_items': 'extraction raid instances are not persistent',
     'next_population': 'extraction raid instances are not persistent',
     'next_win': 'map metadata restores it as an offset through the durable schema (durable_contract.dm)',
     'gcDestroyed': 'deleted atoms are never saved',
@@ -38,7 +40,8 @@ REVIEWED = {
     'data': 'reagent message throttles share the generic data field with blood and dose data',
 }
 
-ASSIGN = re.compile(r'^(?:[A-Za-z_]\w*\.)*([A-Za-z_]\w*)\s*(?:=|\+=)\s*(.*)$')
+# An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
+ASSIGN = re.compile(r'^(?:[A-Za-z_]\w*\.)*([A-Za-z_]\w*)(?:\[[^\]]*\])?\s*(?:=|\+=)\s*(.*)$')
 
 
 def dm_files():
@@ -129,6 +132,12 @@ class WorldTimeStampRegistry(unittest.TestCase):
         self.assertEqual(ENTRIES['last_bumped'], ['/atom'])
         self.assertEqual(ENTRIES['next_attack_hand'], ['/obj/structure/simple_door'])
         self.assertGreater(len(ENTRIES), 50)
+
+    def test_keyed_list_stamps_are_registered(self):
+        # Emote cooldowns live in a keyed list. A restored list blocked *pee and
+        # *poop on Gaia until world.time caught up with the saved round.
+        self.assertIn(('next_emote', '/mob/living/human'), ASSIGNED)
+        self.assertEqual(ENTRIES['next_emote'], ['/mob/living/human'])
 
     def test_every_entry_names_a_declared_var(self):
         for name in ENTRIES:
