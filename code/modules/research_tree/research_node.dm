@@ -280,6 +280,11 @@ var/global/list/node_grid_col_cache = null
 	// Digital Age consumer hardware: smartphones, LED lighting, lithium-ion storage.
 	register_research_node(new /datum/research_node("consumer_electronics", "Consumer Electronics", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks"), 9))
 	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","missiles"), 9))
+	// Spaceflight (space settlement phase 1): probes fly over a survey map of a
+	// barren world. Samples a probe brings home are analysed into notes on
+	// Planetary Survey. Not PROTOTYPE mode: that marks an era-changing capstone.
+	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","missiles"), 9))
+	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -690,6 +695,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
+		// --- rocketry / planetary_survey (9) ---
+		"/obj/structure/launch_rail" = "rocketry",
+		"/obj/item/space_probe" = "rocketry",
+		"/obj/structure/survey_console" = "rocketry",
+		"/obj/item/space_probe/advanced" = "planetary_survey",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",

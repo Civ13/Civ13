@@ -166,6 +166,19 @@ come with phase 3, when there is something to save.
   each sortie.
 - Samples return as research material for the Spaceflight branch and mark
   landing sites as surveyed.
+- Built (phase 1): Rocketry unlocks the launch rail, survey probe and mission
+  console. A rail takes a probe and 60 units of gasoline or diesel and launches
+  it to an idle console within 7 tiles; the probe lands on a random plain of
+  `config/space/survey_map.json`. Moves cost 1 battery on plains, 2 in channels
+  and 3 on ice, ridges block, and the probe must stay within 12 cells of the
+  landing site. Solar panels give back one point every 3 seconds (a tmp clock,
+  so no backlog after a restart). Photographs print a survey record; the drill
+  takes up to 3 samples (regolith, rock beside ridges, sediment, ice); the
+  ascent stage at the landing site drops the samples by the console and ends
+  the mission. The console analyses a sample into research notes on Planetary
+  Survey, which unlocks the advanced probe (160 battery, 18-cell relay, wider
+  camera, 5 samples). Planetary Survey is an ordinary node, not a prototype
+  node, because prototype nodes are the era-changing capstones.
 - D1, decided 2026-11-05: a console survey map, not a real level. An extra
   level costs Gaia about 150 MB on a server that peaks near the 32-bit limit
   at load.
@@ -226,8 +239,8 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 
 | Node | Unlocks | Phase |
 | --- | --- | --- |
-| Rocketry | Launch rail, survey probe, propellant recipes | 1 |
-| Planetary Survey | Mission console, sample analyser, site maps | 1 |
+| Rocketry | Launch rail, survey probe, mission console | 1 |
+| Planetary Survey | Advanced survey probe | 1 |
 | Crewed Flight | Launch site, crewed lander | 2 |
 | Sealed Habitats | Habitat module kits, hatches, airlock | 3 |
 | Life Support | Electrolyser, scrubber, heater, water recycler | 3 |

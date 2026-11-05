@@ -4,9 +4,11 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/space_settlement/probe.dm
 ```
 
-Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. The probe covers phase 0 of the [space settlement roadmap](../../docs/space-settlement-roadmap.md):
+Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. The probe covers phases 0 and 1 of the [space settlement roadmap](../../docs/space-settlement-roadmap.md):
 
 - **Habitat air ledger** (`code/modules/space/habitat_ledger.dm`): sea-level fill, breathable thresholds, no ticking with nobody inside, capped steps so a long gap cannot replay a backlog, breathing that conserves gas, breach venting that never goes negative, cooling toward the outside, CO2 scrubbing, hatch mixing that conserves gas and weights temperature by volume, resizing, clamped fills, and a saved form of five plain numbers with no time stamps that refuses bad, missing and NaN values.
 - **Barren ground and area** (`code/modules/space/barren_world.dm`): the barren area rests on regolith with a dry climate and reuses existing area art and sound; regolith and crater floor have no breathable outside air, a cold ambient temperature, no soil nutrition, no mud and no snow, and reuse the dry-dirt sprite; ordinary ground keeps breathable air and the usual climate.
 
-Nothing in the game creates a ledger or places barren ground yet, so these checks do not establish gameplay, graphics or full-world persistence.
+- **Survey probes** (`code/modules/space/survey.dm`, phase 1): survey files with a bad schema, unknown cells or nowhere to land are refused and the shipped 40x40 map loads; the launch rail burns exactly 60 units of gasoline or diesel, refuses other fuel and off-plain landing sites, and hands the probe to a console in range; terrain move costs, the survey edge, ridges, relay range and a flat battery stop the probe; each site is cored and recorded once, samples follow the terrain and the bay holds three; recharge uses a tmp clock that grants nothing after a restart and stops at full; the ascent only leaves from the landing site and drops the samples as items; the advanced probe's battery, bay and camera; a replaced survey map loses the probe; the Rocketry and Planetary Survey nodes and recipe gates; and analysis turns a sample into notes on Planetary Survey.
+
+Nothing in the game creates a ledger or places barren ground yet. The probe checks the survey console's logic, not its browser window, graphics, crafting in play or full-world persistence.

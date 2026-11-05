@@ -182,6 +182,30 @@ To run one as a region, add it to a shard group like any other generated map,
 with `kind` `OTHER`. Keep it out of the first position, which is the mainland.
 Players should not be sent there until launch sites exist (phase 2).
 
+#### Survey maps
+
+The mission console that flies survey probes reads a coarse map of a barren
+world from `config/space/survey_map.json` instead of loading a level. `survey`
+writes it from a verified SURFACE bundle; each cell covers 5x5 tiles (change it
+with `--cell-tiles`) and takes the most common class among them, with ties going
+to ridge, then ice, then channel, so hazards are never hidden:
+
+```sh
+python3 -m tools.procedural_maps survey data/procedural_maps/barren --out config/space/survey_map.json
+```
+
+| Source tiles | Survey cell |
+| --- | --- |
+| Open ground | `.` plain (costs the probe 1 battery) |
+| Rivers and swamps | `~` dry channel (2) |
+| Lakes and sea | `*` ice (3) |
+| Mountains and rock | `^` ridge (blocks the probe) |
+
+Rows run south to north and the map must be 8 to 64 cells a side with at least
+one plain to land on. The shipped map is the 200x200 `barren-0` preset at 40x40;
+a test regenerates it, so rebuild it with the command above after a generator
+change. Replacing the file while a probe is flying loses that probe.
+
 ## Configuration reference
 
 Use `preset` for seed, dimensions and N/S/E/W coast selection, then edit the new
