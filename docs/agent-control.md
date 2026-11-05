@@ -43,7 +43,8 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   `AGENT <name>: ...` (with old and new values for `set_var`, and arguments for
   procs and verbs) and shown to online admins, except announcements and
   individual character steps. Reads and character movement go to the game
-  log. Agents can read the admin log back with `logs`.
+  log. Agents can read the admin log back with `logs`; `logs` with `kind` `food`
+  returns recent food toxin swallows (source item, amounts and recorded cause).
 - **Protected state.** Agent control's own objects (the controller, agent
   identities, proxies and their admin holders, jobs) cannot be read, edited or
   have procs called on them, and `get_vars`/`set_var` never touch the globals

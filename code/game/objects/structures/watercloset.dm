@@ -872,6 +872,7 @@
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(10))
 						RG.reagents.add_reagent("food_poisoning", 1)
+						RG.note_food_toxin("puddle water (1 in 10 fill roll)")
 						RG.reagents.add_reagent(watertype, volume-1)
 					else
 						RG.reagents.add_reagent(watertype, volume)

@@ -180,7 +180,10 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			H.adjust_mood(ceil(satisfaction/biteamount)) //standard humans and other human-races reactions
 		if (raw)
 			if (!H.orc && !H.crab && !H.wolfman && !H.lizard)
-				H.reagents.add_reagent("food_poisoning", pick(0,0,1)) //1/3 chance to be poisoned if you are not orc, crab, wolfman or lizard
+				var/raw_poison = pick(0,0,1) //1/3 chance per bite to be poisoned if you are not orc, crab, wolfman or lizard
+				if (raw_poison)
+					H.reagents.add_reagent("food_poisoning", raw_poison)
+					log_food_toxin(H, src, list("food_poisoning" = raw_poison), "raw food bite roll (1 in 3 per bite; orcs, crabs, wolfmen and lizards are exempt)", "raw-food roll")
 	M.rad_act(radiation) //need be before qdel(src) may happens
 	if (!reagents.total_volume)
 		M.visible_message("<span class='notice'>[M] finishes eating \the [src].</span>","<span class='notice'>You finish eating \the [src].</span>")
@@ -625,6 +628,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	decay = 25*600
 
 /obj/item/weapon/reagent_containers/food/snacks/fishfillet
+	food_toxin_origin = "raw fish fillet, may be cut contaminated"
 	name = "fish fillet"
 	desc = "A fillet of fish."
 	icon_state = "fishfillet"
@@ -642,6 +646,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		reagents.add_reagent("food_poisoning", pick(0,0,0,0,0,0,0,1,1,2)) //most fish may be eat fresh, ask the japanese about it
 
 /obj/item/weapon/reagent_containers/food/snacks/pink_squid
+	food_toxin_origin = "raw squid, may be caught contaminated"
 	name = "squid"
 	desc = "A living squid."
 	icon_state = "pink_squid"
@@ -681,6 +686,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		reagents.add_reagent("nutriment", 3, list("seafood"=2))
 
 /obj/item/weapon/reagent_containers/food/snacks/salmonfillet
+	food_toxin_origin = "raw salmon fillet, may be cut contaminated"
 	name = "salmon fillet"
 	desc = "A fillet of salmon."
 	icon_state = "salmonfillet"

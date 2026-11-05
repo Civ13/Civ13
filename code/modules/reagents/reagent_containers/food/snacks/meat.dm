@@ -94,6 +94,7 @@
 	desc = "Tastes like... something."
 
 /obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog
+	food_toxin_origin = "poisonous frog meat"
 	name = "poisonous frog meat"
 	desc = "Probably not a good idea to put it in the stew."
 	disgusting = TRUE
@@ -133,6 +134,7 @@
 	else
 		return
 /obj/item/weapon/reagent_containers/food/snacks/rawfish
+	food_toxin_origin = "raw fish, may be caught contaminated"
 	name = "raw fish"
 	desc = "A fresh fish. Should probably cook it first."
 	icon_state = "rawfish"
@@ -197,6 +199,7 @@
 		..()
 
 /obj/item/weapon/reagent_containers/food/snacks/rawcrab
+	food_toxin_origin = "raw crab, may be caught contaminated"
 	name = "crab meat"
 	desc = "Fresh crab meat. Looks tasty."
 	icon_state = "raw_crabmeat"
@@ -215,6 +218,7 @@
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/rawlobster
+	food_toxin_origin = "raw lobster, may be caught contaminated"
 	name = "lobster"
 	desc = "A fresh lobster. Yum!"
 	icon_state = "lobster_raw"
@@ -249,6 +253,7 @@
 		reagents.remove_reagent("food_poisoning")
 
 /obj/item/weapon/reagent_containers/food/snacks/cockroach
+	food_toxin_origin = "cockroach"
 	name = "cockroach"
 	desc = "A dead cockroach. No, please don't make me eat it..."
 	icon_state = "cockroach"
@@ -266,6 +271,7 @@
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/octopus
+	food_toxin_origin = "raw octopus, may be caught contaminated"
 	name = "octopus"
 	desc = "A fresh octopus. Yum!"
 	icon_state = "purple_octopus"
@@ -303,6 +309,7 @@
 		decay *= SEAFOOD_DRY_MODIFIER
 
 /obj/item/weapon/reagent_containers/food/snacks/cracked_shellfish
+	food_toxin_origin = "raw shellfish, may be caught contaminated"
 	name = "cracked shellfish"
 	desc = "Fresh shellfish, cracked open with a knife."
 	icon_state = "cracked_shellfish"

@@ -2319,6 +2319,14 @@ jobs:
           for control in rights target refresh; do
             python3 tests/admin_clean/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/admin-clean/$control" --control "$control"
           done
+      - name: Verify food toxin logging
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/food_toxin_log')
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/food_toxin_log -p 'test_*.py' -v
+          python3 tests/food_toxin_log/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/food-toxin-log"
       - name: Retain admin item cleaning evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_clean'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
