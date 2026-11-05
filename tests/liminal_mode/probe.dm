@@ -37,7 +37,9 @@ var/liminal_runtime_error = FALSE
 	liminal_runtime_error = TRUE
 	world.log << "runtime error [e] [e.file]:[e.line]"
 /proc/liminal_body(x, y)
-	return new /mob/living/human/liminal_probe(locate(x, y, 1))
+	var/mob/living/human/H = new /mob/living/human/liminal_probe(locate(x, y, 1))
+	human_mob_list += H // the probe body skips the ordinary New()
+	return H
 /world/New()
 	OpenPort("none")
 	try
@@ -58,6 +60,8 @@ var/liminal_runtime_error = FALSE
 		liminal_timer_checks()
 		liminal_policy_checks()
 		liminal_object_checks()
+		liminal_threat_checks()
+		liminal_scene_checks()
 	catch(var/exception/e)
 		liminal_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = liminal_failures, "runtime_error" = liminal_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -217,3 +221,106 @@ var/liminal_runtime_error = FALSE
 	qdel(C)
 	F.advance(F.liminal.started_at + 10)
 	liminal_check(F.liminal.state == "FAILED" && F.liminal.end_reason == "NO_SURVIVORS" && F.finished_calls == 1, "a deleted last body fails the round")
+
+// Slice 5: one sound-hunting threat after the arrival grace, placed out of
+// sight, at most once; it hears sounds, cannot pass the sealed gate.
+/proc/liminal_threat_checks()
+	var/datum/liminal_round/R = liminal_new_round()
+	liminal_check(!R.threat_due(1000), "no threat before the round starts")
+	var/mob/living/human/A = liminal_body(1, 4)
+	R.admit(A, 100)
+	liminal_check(!R.threat_due(399), "no threat during the 30 s arrival grace")
+	liminal_check(R.threat_due(400), "the threat is due once the grace has passed")
+	liminal_check(R.threat_placed(TRUE) && R.threat_state == "SPAWNED" && !R.threat_due(5000) && !R.threat_placed(TRUE), "the threat is placed at most once")
+	var/datum/liminal_round/N = liminal_new_round()
+	N.admit(A, 0)
+	liminal_check(N.threat_placed(FALSE) && N.threat_state == "NONE" && !N.threat_due(1000), "a map without a site never gets a threat")
+	var/datum/liminal_round/T = liminal_new_round()
+	T.admit(A, 0)
+	T.fail("TEST")
+	liminal_check(!T.threat_due(1000), "a finished round places no threat")
+
+	var/obj/map_metadata/liminal_facility/probe/M = new(locate(3, 12, 1))
+	map = M
+	latejoin_turfs["LiminalThreat"] = null
+	var/mob/living/human/B = liminal_body(1, 1)
+	M.prepare()
+	M.join(B)
+	var/start = M.liminal.started_at
+	liminal_check(!M.place_threat(start + 400) && M.liminal.threat_state == "NONE" && !M.threat, "with no exported site the round records NONE")
+	var/obj/map_metadata/liminal_facility/probe/S = new(locate(4, 12, 1))
+	map = S
+	human_mob_list = list() // only the bodies placed below
+	new /obj/effect/landmark{name = "LiminalThreat"}(locate(12, 10, 1))
+	liminal_check(S.threat_site() == locate(12, 10, 1), "the LiminalThreat landmark names the site")
+	var/mob/living/human/C = liminal_body(11, 9)
+	S.prepare()
+	S.join(C)
+	start = S.liminal.started_at
+	liminal_check(!S.place_threat(start + 299) && !S.threat, "the site stays empty during the grace")
+	liminal_check(!S.place_threat(start + 400) && !S.threat && S.liminal.threat_state == "WAITING", "a participant near the site defers the threat")
+	C.loc = locate(12, 3, 1)
+	S.threat_clearance = 3
+	liminal_check(!S.place_threat(start + 410) && !S.threat, "a participant with a clear line to the site defers the threat")
+	for (var/x in 1 to 12)
+		var/turf/W = locate(x, 6, 1)
+		W.ChangeTurf(/turf/wall/cement, FALSE, FALSE)
+	liminal_check(!(C in hearers(world.view, locate(12, 10, 1))), "a wall row blocks the line to the site")
+	var/mob/living/human/V = liminal_body(10, 10)
+	liminal_check(!S.place_threat(start + 415) && !S.threat, "a late explorer who is not a participant also defers the threat")
+	var/obj/structure/closet/K = new(locate(10, 9, 1))
+	V.loc = K
+	liminal_check(!S.place_threat(start + 416) && !S.threat, "someone hiding in a locker near the site defers it too")
+	V.stat = DEAD
+	liminal_check(S.place_threat(start + 420) && istype(S.threat, /mob/living/simple_animal/hostile/echofiend) && get_turf(S.threat) == locate(12, 10, 1), "with nobody near or in line one echofiend appears at the site")
+	for (var/x in 1 to 12)
+		var/turf/W = locate(x, 6, 1)
+		W.ChangeTurf(/turf/floor/plating/steel, FALSE, FALSE)
+	C.loc = null
+	var/mob/living/simple_animal/hostile/echofiend/E = S.threat
+	liminal_check(!S.place_threat(start + 900) && S.liminal.threat_state == "SPAWNED", "no second threat is placed")
+	var/n = 0
+	for (var/mob/living/simple_animal/hostile/echofiend/X in world)
+		n++
+	liminal_check(n == 1, "exactly one threat exists")
+	playsound(locate(8, 10, 1), 'sound/effects/footsteps/tile1-2.ogg', 50, TRUE)
+	liminal_check(E.investigate_turf == locate(8, 10, 1), "a sound within earshot sends the threat to investigate it")
+	playsound(E.loc, 'sound/animals/monsters/growl1.ogg', 100, TRUE)
+	liminal_check(E.investigate_turf == locate(8, 10, 1), "its own growl does not cancel an investigation")
+	E.set_investigate_turf(null)
+	playsound(locate(1, 1, 1), 'sound/effects/footsteps/tile1-2.ogg', 50, TRUE)
+	liminal_check(E.investigate_turf == locate(1, 1, 1), "the 15-tile earshot covers the fixture")
+	var/obj/structure/liminal_gate/G = new(locate(11, 10, 1))
+	var/turf/here = get_turf(E)
+	E.Move(locate(11, 10, 1), WEST)
+	liminal_check(get_turf(E) == here, "the sealed gate stops the threat")
+	G.release()
+	E.Move(locate(11, 10, 1), WEST)
+	liminal_check(get_turf(E) == locate(11, 10, 1), "an open gate lets it through")
+	var/obj/map_metadata/liminal_facility/probe/Q = new(locate(7, 12, 1))
+	map = Q
+	var/mob/living/human/Y = liminal_body(1, 3)
+	Q.prepare()
+	Q.join(Y)
+	Y.loc = null
+	liminal_check(!Q.place_threat(Q.liminal.started_at + 400) && Q.threat == E && Q.liminal.threat_state == "SPAWNED", "a restored world that already holds the threat does not get a second one")
+	var/obj/map_metadata/liminal_facility/probe/O = new(locate(5, 12, 1))
+	map = O
+	O.threat_enabled = FALSE
+	var/mob/living/human/F = liminal_body(1, 2)
+	O.prepare()
+	O.join(F)
+	liminal_check(!O.place_threat(O.liminal.started_at + 400) && O.liminal.threat_state == "NONE", "threats can be switched off per map")
+
+/proc/liminal_scene_checks()
+	var/area/caribbean/liminal/L = new
+	liminal_check(L.location == AREA_INSIDE && L.sound_env == 11 && !L.ambience.len, "the facility is indoors, with hallway reverb and no looping ambience")
+	var/obj/map_metadata/liminal_facility/probe/M = new(locate(6, 12, 1))
+	liminal_check(M.times_of_day.len == 1 && M.times_of_day[1] == "Night" && M.no_time_of_day_cycle && !M.ambience.len, "the round keeps one dim time of day")
+	var/obj/structure/lamp/lamp_big/alwayson/white/T = new(locate(2, 6, 1))
+	var/obj/structure/lamp/lamp_small/alwayson/white/B = new(locate(3, 6, 1))
+	liminal_check(T.on && !T.powerneeded && T.light_range == 4 && B.on && !B.powerneeded && B.light_range == 3, "tubes and bulbs light steadily without power")
+	var/datum/liminal_era_policy/P = new
+	liminal_check(P.permits_prop(T.type) && P.permits_prop(B.type) && !P.permits_prop(/obj/structure/lamp/lamp_big), "only the unpowered lights are on the prop list")
+	var/obj/item/flashlight/flashlight/FL = new(locate(4, 6, 1))
+	liminal_check(P.permits_equipment(FL.type), "the issued flashlight is the handheld light")

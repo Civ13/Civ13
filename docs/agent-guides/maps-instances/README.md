@@ -29,8 +29,12 @@ suite and the `tests/liminal_mode/probe.dm` native probe. Preserve catalog/helpe
 pins, typed sockets, clearance/progression guards and design docs. The Liminal
 Facility round (MAP_LIMINAL_FACILITY) is reachable only by compiling an exported
 map as the selected map; no vote or map list offers it. Do not reuse the Lights
-Out constructor or its poll-count timer. Lighting/audio/threats and a world boot
-are unproven. Keep third-party asset ports separately reviewed.
+Out constructor or its poll-count timer. Slice 5 (lights, one echofiend threat,
+indoor sound) was booted natively without a client; attacks, what clients see
+and hear, and group play are unproven (slice 6). To boot an export, swap the
+selected map like `tests/liminal_maps/native_compile.py` and drive it with
+agent control (`character_spawn` with job "Facility Surveyor"). Keep
+third-party asset ports separately reviewed.
 
 <!-- 2026-10-27: liminal static visual proposal -->
 Version-1 docs/liminal/ROOM-PREVIEWS.md images are rejected historical evidence,

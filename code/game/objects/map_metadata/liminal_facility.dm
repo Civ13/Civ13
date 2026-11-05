@@ -23,7 +23,8 @@
 	respawn_delay = 36000
 	valid_weather_types = list(WEATHER_NONE)
 	no_time_of_day_cycle = TRUE
-	times_of_day = list("Midday")
+	times_of_day = list("Night")
+	ambience = list()
 	research_active = FALSE
 	override_global_recipes = "liminal" // no recipe list: only the utensil fallback
 	// Tunables, validated by /datum/liminal_round/proc/configure.
@@ -31,6 +32,10 @@
 	var/deadline_minutes = 15
 	var/team_cap = 4
 	var/scenario_year = 1990
+	var/threat_enabled = TRUE
+	var/threat_type = /mob/living/simple_animal/hostile/echofiend
+	var/threat_clearance = 7 // no participant this close to the site, or seeing it
+	var/mob/living/threat
 	var/datum/liminal_round/liminal
 	var/datum/liminal_era_policy/era_policy
 	var/announced = FALSE
@@ -84,6 +89,55 @@
 	if (liminal.terminal())
 		finish()
 
+// The exported threat site, or null. The exporter places at most one
+// LiminalThreat landmark; like other named landmarks it leaves only its turf.
+/obj/map_metadata/liminal_facility/proc/threat_site()
+	var/list/sites = latejoin_turfs["LiminalThreat"]
+	if (!islist(sites))
+		return null
+	for (var/turf/T in sites)
+		if (T.z == z)
+			return T
+	return null
+
+// Clear when no living human (participant or late explorer, wherever they
+// stand, even inside a locker) is within threat_clearance tiles or has an
+// unblocked line to the site within a screen. hearers() checks opacity only,
+// so a dark corridor does not count as hiding the site.
+/obj/map_metadata/liminal_facility/proc/threat_site_clear(turf/site)
+	var/list/sightline = hearers(world.view, site)
+	for (var/mob/living/human/H in human_mob_list)
+		if (QDELETED(H) || H.stat == DEAD)
+			continue
+		var/turf/T = get_turf(H)
+		if (!T || T.z != site.z)
+			continue
+		if (get_dist(T, site) <= threat_clearance || (H in sightline))
+			return FALSE
+	return TRUE
+
+// Places the single threat once its grace has passed and its site is out of
+// sight; a map without a site, or with threats disabled, never gets one.
+/obj/map_metadata/liminal_facility/proc/place_threat(now)
+	if (!liminal.threat_due(now))
+		return FALSE
+	var/turf/site = threat_enabled ? threat_site() : null
+	if (!site)
+		liminal.threat_placed(FALSE)
+		return FALSE
+	// A restored world restarts the round datum, but not its mobs.
+	for (var/mob/living/M in mob_list)
+		if (istype(M, threat_type) && M.z == site.z)
+			threat = M
+			liminal.threat_placed(TRUE)
+			return FALSE
+	if (!threat_site_clear(site))
+		return FALSE
+	threat = new threat_type(site)
+	liminal.threat_placed(TRUE)
+	log_game("Liminal threat [threat] placed at [site.x],[site.y],[site.z]")
+	return TRUE
+
 /obj/map_metadata/liminal_facility/proc/finish()
 	if (announced)
 		return
@@ -98,6 +152,7 @@
 		sleep(10)
 		if (ticker && ticker.current_state == GAME_STATE_PLAYING)
 			prepare()
+			place_threat(world.time)
 			advance(world.time)
 	finish()
 

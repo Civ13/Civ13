@@ -24,6 +24,9 @@ var/global/list/liminal_gates = list()
 	var/hold_started = null
 	var/end_reason = null
 	var/list/history = list()
+	// Slice 5: at most one sound-hunting threat, never before the arrival grace.
+	var/threat_grace = 300 // 30 s after the clock starts
+	var/threat_state = "WAITING" // WAITING, SPAWNED or NONE (no site); never reverts
 
 /datum/liminal_round/proc/terminal()
 	return state == "ESCAPED" || state == "FAILED"
@@ -128,6 +131,20 @@ var/global/list/liminal_gates = list()
 		note("EXTRACTING")
 	return state
 
+// True once the arrival grace has passed in a live round and no threat was
+// placed yet. The caller still checks the site is out of everyone's sight.
+/datum/liminal_round/proc/threat_due(now)
+	if (threat_state != "WAITING" || terminal() || !isnum(now) || !(state in list("EXPLORING", "TASKS_DONE", "EXTRACTING")))
+		return FALSE
+	return now - started_at >= threat_grace
+
+/datum/liminal_round/proc/threat_placed(spawned)
+	if (threat_state != "WAITING")
+		return FALSE
+	threat_state = spawned ? "SPAWNED" : "NONE"
+	note(spawned ? "THREAT" : "THREAT_NONE")
+	return TRUE
+
 // Explicit early-1990s policy. Only listed types may be issued to participants
 // or stand on the map; recipes and research are closed by the map metadata.
 /datum/liminal_era_policy
@@ -152,6 +169,8 @@ var/global/list/liminal_gates = list()
 		/obj/structure/vending/sales/food/snacks,
 		/obj/structure/vending/sales/drinks/hot,
 		/obj/structure/sink,
+		/obj/structure/lamp/lamp_big/alwayson/white,
+		/obj/structure/lamp/lamp_small/alwayson/white,
 		/obj/structure/liminal_marker,
 		/obj/structure/liminal_marker/service,
 		/obj/structure/liminal_gate)
@@ -190,9 +209,15 @@ var/global/list/liminal_gates = list()
 	var/obj/item/I = new path(H)
 	return H.equip_to_slot_or_del(I, slot)
 
+// Indoors: half the (night) daylight reaches the floor, so the exported steady
+// tubes and the issued flashlights carry the light. No looping ambience; the
+// carpeted-hallway reverb preset is BYOND's environment 11.
 /area/caribbean/liminal
 	name = "facility"
 	icon_state = "red2"
+	location = AREA_INSIDE
+	sound_env = 11
+	ambience = list()
 
 /area/caribbean/liminal/extraction
 	name = "facility egress"

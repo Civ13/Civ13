@@ -6,12 +6,12 @@ import re
 import tempfile
 import unittest
 from tools.liminal_maps.prototype import preset,generate
-from tools.liminal_maps.native import (ESCAPE_TYPES,ExportError,build_cells,escape_cells,export,gated_cells,native_catalog,
-                                       parse_dmm,verify_export)
+from tools.liminal_maps.native import (BULB,ESCAPE_TYPES,LIGHT_PLAN,THREAT_MIN_DISTANCE,TUBE,ExportError,build_cells,escape_cells,
+                                       export,furnishing,gated_cells,native_catalog,parse_dmm,room_lights,threat_site,verify_export)
 from test_export import DEFAULT_MAP_SHA256,ROOT,defined_types
 
 # Update together with an intended change to the layouts, native catalog, exporter or escape binding.
-ESCAPE_MAP_SHA256='5e5981d11788278c7dd4ec1269d0da42a7923ab34c20c5d637ae3f9ad84f39f6'
+ESCAPE_MAP_SHA256='707347bbbcd4ff2a0b8fe4dd1c19b0901b3911ad704e1960093bc9f43a4d4740'
 ROUND_DM=ROOT/'code/modules/1713/liminal/liminal_round.dm'
 META_DM=ROOT/'code/game/objects/map_metadata/liminal_facility.dm'
 
@@ -76,7 +76,7 @@ class ModeTests(unittest.TestCase):
         props=set(dm_list(text,'props'))
         used={part.split('{')[0] for entry in self.grid.values() for part in entry[:-2]}-{ESCAPE_TYPES['metadata'],ESCAPE_TYPES['spawn'].split('{')[0]}
         catalog={o['type'] for o in native_catalog()['objects'].values() if o['type']}
-        self.assertEqual(props,catalog|{ESCAPE_TYPES['FOUND_MARKER'],ESCAPE_TYPES['SERVICE_DONE'],ESCAPE_TYPES['gate']})
+        self.assertEqual(props,catalog|{ESCAPE_TYPES['FOUND_MARKER'],ESCAPE_TYPES['SERVICE_DONE'],ESCAPE_TYPES['gate'],TUBE,BULB})
         self.assertLessEqual(used,props)
     def test_issued_kit_is_on_the_equipment_allowlist(self):
         equipment=set(dm_list(ROUND_DM.read_text(),'equipment'))
@@ -114,3 +114,69 @@ class ModeTests(unittest.TestCase):
         p=gated_cells(self.doc,notes)['service--exit'][0];cells[p]=('/obj/structure/closet',*cells[p])
         with self.assertRaises(ExportError) as caught:escape_cells(self.doc,cells,notes)
         self.assertIn('GATE',str(caught.exception))
+    # Slice 5: one threat site and steady room lights.
+    def test_threat_site_is_one_safe_landmark(self):
+        sites=[p for p,e in self.grid.items() if ESCAPE_TYPES['threat'] in e]
+        self.assertEqual(1,len(sites))
+        self.assertEqual([sites[0][0]+1,sites[0][1]+1],self.side['threat']['at'])
+        room=self.side['threat']['room']
+        reserved={s['room'] for s in self.doc['spawns']}|{o['room'] for o in self.doc['objectives']}|{e['room'] for e in self.doc['exits']}
+        self.assertNotIn(room,reserved)
+        _,derived,_=furnishing()
+        self.assertIn(derived['archetypes'][next(r for r in self.doc['rooms'] if r['id']==room)['archetype']]['role'],('HUB','TRANSITION'))
+        self.assertEqual('threshold',room)  # the reachable eligible room farthest from the arrival
+        for s in self.side['spawns']:
+            self.assertGreaterEqual(abs(s['at'][0]-sites[0][0]-1)+abs(s['at'][1]-sites[0][1]-1),THREAT_MIN_DISTANCE)
+        self.assertEqual('F',self.doc['blueprint']['rows'][sites[0][1]][sites[0][0]])
+        self.assertEqual(3,len(self.grid[sites[0]]))  # landmark, turf, area: nothing else on the site
+        self.assertTrue(ESCAPE_TYPES['threat'].startswith('/obj/effect/landmark'))  # never on the era-policy prop list
+    def test_threat_site_is_dropped_when_no_room_qualifies(self):
+        doc=deepcopy(self.doc);cells,notes=build_cells(doc)
+        doc['spawns']=doc['spawns']+[dict(id='spawn-x',room='threshold',local_at=[2,2])]
+        self.assertEqual('hub',threat_site(doc,cells,notes,{})[1])  # the next eligible room
+        doc['spawns']=doc['spawns']+[dict(id='spawn-y',room='hub',local_at=[2,2])]
+        self.assertEqual((None,None),threat_site(doc,cells,notes,{}))
+    def test_every_room_gets_its_intended_light(self):
+        _,notes=build_cells(self.doc)
+        _,derived,_=furnishing()
+        lit={}
+        for p,entry in self.grid.items():
+            for e in entry:
+                if e.split('{')[0] in (TUBE,BULB):lit.setdefault(notes['owner'][p],[]).append(e.split('{')[0])
+        for room in self.doc['rooms']:
+            intent=derived['archetypes'][room['archetype']]['tags']['light_intent']
+            self.assertIn(room['id'],lit,room['id'])
+            self.assertEqual({LIGHT_PLAN[intent][0]},set(lit[room['id']]),room['id'])
+        self.assertEqual(sum(len(v) for v in lit.values()),len(self.side['lights']))
+    def test_lights_stay_off_walkways_anchors_and_apertures(self):
+        _,notes=build_cells(self.doc);apertures=set(notes['apertures'])
+        anchors={tuple(a['at']) for a in self.side['spawns']+self.side['objectives']+self.side['exits']}
+        for x,y in self.side['lights']:
+            entry=self.grid[(x-1,y-1)]
+            self.assertEqual('F',self.doc['blueprint']['rows'][y-1][x-1])
+            self.assertNotIn((x-1,y-1),apertures);self.assertNotIn((x,y),anchors)
+            self.assertEqual(3,len(entry),entry)  # light, turf, area: nothing else shares the cell
+        text=ROUND_DM.read_text()
+        self.assertIn('location = AREA_INSIDE',text.split('/area/caribbean/liminal\n')[1].split('\n\n')[0])
+        self.assertIn('times_of_day = list("Night")',META_DM.read_text())
+    def test_lamp_types_need_no_power(self):
+        text=(ROOT/'code/modules/1713/modern_items.dm').read_text()
+        for path in (TUBE,BULB):
+            parent=path.rsplit('/',1)[0]
+            self.assertIn(parent+'\n\tpowerneeded = 0\n\ton = TRUE',text,path)
+            self.assertIn(path+'\n',text)
+    def test_threat_site_is_never_behind_a_gate(self):
+        doc=deepcopy(self.doc);cells,notes=build_cells(doc)
+        for l in doc['links']:
+            if l['id']=='threshold--service':l['requires_flags']=['SERVICE_DONE']
+        # threshold is now reachable only through the hub; nothing past the gate qualifies
+        self.assertEqual('threshold',threat_site(doc,cells,notes,{})[1])
+        for l in doc['links']:
+            if l['id']=='hub--threshold':l['requires_flags']=['SERVICE_DONE']
+        self.assertEqual('hub',threat_site(doc,cells,notes,{})[1])
+    def test_room_without_free_floor_refuses_its_light(self):
+        cells,notes=build_cells(self.doc)
+        added={p:['/obj/x'] for p,o in notes['owner'].items() if o=='alcove'}
+        with self.assertRaises(ExportError) as caught:room_lights(self.doc,cells,notes,added)
+        self.assertIn('LIGHT',str(caught.exception))
+
