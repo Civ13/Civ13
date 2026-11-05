@@ -11,12 +11,14 @@
 #define AGENT_CHARACTER_QUEUE_MAX 64
 #define AGENT_CHARACTER_QUEUE_BATCH 32
 #define AGENT_CHARACTER_SPEECH_DELAY 10
+#define AGENT_CHOICE_WINDOW 300 // ticks a step's prompt answer stays valid
 
 /datum/agent_character
 	var/mob/living/body
 	var/owner_agent // spawned characters: the agent that owns them
 	var/handover_ckey // opted-in characters: the player who allowed it
 	var/pending_choice // answer for the next game prompt (WWinput) during one step
+	var/pending_choice_until = 0 // world.time after which that answer is stale
 	var/list/messages = list()
 	var/message_serial = 0
 	var/next_action = 0
@@ -363,6 +365,7 @@
 	var/detail = ""
 	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
 	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
+	C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
@@ -608,7 +611,9 @@
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
-	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item"))
+	if (!isnull(step["choose"]))
+		agent_text_arg(step, "choose", 64)
+	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

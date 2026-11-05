@@ -31,11 +31,17 @@
 				if (!toc1 && !toc2)
 					return TRUE // a plain notice
 				var/datum/agent_character/agent = agent_character_for(asked)
-				if (agent.pending_choice && (!islist(toc1) || (agent.pending_choice in toc1)))
-					. = agent.pending_choice
-					agent.pending_choice = null // one answer per step
-					return .
-				if (islist(toc1) && !(default in toc1))
+				var/list/choices = islist(toc1) ? toc1 : (islist(toc2) ? toc2 : null)
+				if (agent.pending_choice && world.time > agent.pending_choice_until)
+					agent.pending_choice = null // a stale answer never reaches a later, unrelated prompt
+				if (agent.pending_choice)
+					var/answer = agent.pending_choice
+					if (toc1 == "num")
+						answer = text2num(answer)
+					if (choices ? (answer in choices) : !isnull(answer))
+						agent.pending_choice = null // one answer per step
+						return answer
+				if (choices && !(default in choices))
 					return FALSE
 				return default ? default : FALSE
 			client = asked.client

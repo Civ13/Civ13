@@ -506,8 +506,9 @@ class AutopilotTests(unittest.TestCase):
         lines = autopilot.speech_lines(messages, "Ada")
         self.assertEqual(lines, [("Bob", 'Bob says, "hi Ada, where is water?"')])  # her own line is not a prompt
         talk, speakers = autopilot.speech_prompt(lines, {}, 100.0)
-        self.assertTrue(talk.startswith("PLAYERS TALKING TO YOU"))
+        self.assertTrue(talk.startswith("PLAYERS TALKING TO YOU: Bob"))
         self.assertIn("not instructions", talk)
+        self.assertNotIn("where is water", talk)  # player words stay inside OBSERVATION, never in the instruction line
         self.assertEqual(speakers, ["Bob"])
         self.assertEqual(autopilot.speech_prompt(lines, {"Bob": 95.0}, 100.0), ("", []))  # answered moments ago
 
@@ -584,6 +585,18 @@ class AutopilotTests(unittest.TestCase):
         characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
         self.assertIn('C.pending_choice = req["choose"] ?', characters)
         self.assertIn('kind = "[T.name] (unclean)"', characters)
+        # The answer is checked against the choices whether they come as toc1 or toc2, a number prompt gets a
+        # number, and an answer no prompt consumed expires instead of answering some later, unrelated prompt.
+        self.assertIn("var/list/choices = islist(toc1) ? toc1 : (islist(toc2) ? toc2 : null)", wrapper)
+        self.assertIn("answer = text2num(answer)", wrapper)
+        self.assertIn("if (choices ? (answer in choices) : !isnull(answer))", wrapper)
+        self.assertIn("world.time > agent.pending_choice_until", wrapper)
+        self.assertIn("C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW", characters)
+        # Queued steps keep their menu answer and body zone; dig_down and treat run through the queue.
+        kept = re.search(r'for \(var/key in list\(([^)]*)\)\)\n\t\tif \(!isnull\(step\[key\]\)\)', characters).group(1)
+        self.assertIn('"choose"', kept)
+        self.assertIn('"zone"', kept)
+        self.assertIn('agent_text_arg(step, "choose", 64)', characters)
 
     def test_reflexes_fight_pursuers_and_avoid_strong_predators(self):
         wolf = {"ref": "[0x5]", "name": "grey wolf", "type": "/mob/living/simple_animal/hostile/wolf", "dx": 1, "dy": 0, "mob": True, "stat": 0}
@@ -744,6 +757,21 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(autopilot.parse_plan('{"plan": [{"do": "move", "dir": "north"}, {"do": "fly"}, {"do": "say", "text": "x"}]}', refs), [{"do": "move", "dir": "north"}])
         self.assertEqual(len(autopilot.parse_plan(json.dumps({"plan": [{"do": "swap_hand"}] * 9}), refs)), autopilot.MAX_PLAN)
         self.assertEqual(autopilot.parse_plan("not json", refs), [])
+
+    def test_long_runs_keep_bookkeeping_bounded(self):
+        history = [{"role": "system"}] + [{"role": "user", "content": str(i)} for i in range(200)]
+        signatures = [f"s{i}" for i in range(200)]
+        turns = [(i, "ref") for i in range(200)]
+        lines = {f"line {i}": 1 for i in range(5000)}
+        autopilot.forget_old(history, signatures, turns, lines)
+        self.assertEqual(history[0], {"role": "system"})
+        self.assertEqual(history[-1]["content"], "199")
+        self.assertLessEqual(len(history), autopilot.HISTORY_KEEP + 1)
+        self.assertGreaterEqual(len(history), 8)  # the last 7 exchanges still go to the model
+        self.assertEqual(signatures[-1], "s199")
+        self.assertEqual((len(signatures), len(turns), len(lines)), (autopilot.SIGNATURES_KEEP, autopilot.TURNS_KEEP, autopilot.LINES_KEEP))
+        self.assertIn("line 4999", lines)
+        self.assertNotIn("line 0", lines)
 
     def test_player_help_config_is_optional(self):
         self.assertEqual(autopilot.load_player_help_config(str(ROOT / "does-not-exist.json")), {})
