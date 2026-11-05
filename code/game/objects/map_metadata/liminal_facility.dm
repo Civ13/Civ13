@@ -100,11 +100,19 @@
 			return T
 	return null
 
+// Clear when no living human (participant or late explorer, wherever they
+// stand, even inside a locker) is within threat_clearance tiles or has an
+// unblocked line to the site within a screen. hearers() checks opacity only,
+// so a dark corridor does not count as hiding the site.
 /obj/map_metadata/liminal_facility/proc/threat_site_clear(turf/site)
-	for (var/mob/living/human/H in liminal.participants)
-		if (QDELETED(H) || H.stat == DEAD || H.z != site.z)
+	var/list/sightline = hearers(world.view, site)
+	for (var/mob/living/human/H in human_mob_list)
+		if (QDELETED(H) || H.stat == DEAD)
 			continue
-		if (get_dist(H, site) <= threat_clearance || (site in view(world.view, H)))
+		var/turf/T = get_turf(H)
+		if (!T || T.z != site.z)
+			continue
+		if (get_dist(T, site) <= threat_clearance || (H in sightline))
 			return FALSE
 	return TRUE
 
@@ -117,6 +125,12 @@
 	if (!site)
 		liminal.threat_placed(FALSE)
 		return FALSE
+	// A restored world restarts the round datum, but not its mobs.
+	for (var/mob/living/M in mob_list)
+		if (istype(M, threat_type) && M.z == site.z)
+			threat = M
+			liminal.threat_placed(TRUE)
+			return FALSE
 	if (!threat_site_clear(site))
 		return FALSE
 	threat = new threat_type(site)

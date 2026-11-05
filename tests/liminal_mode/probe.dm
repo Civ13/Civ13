@@ -37,7 +37,9 @@ var/liminal_runtime_error = FALSE
 	liminal_runtime_error = TRUE
 	world.log << "runtime error [e] [e.file]:[e.line]"
 /proc/liminal_body(x, y)
-	return new /mob/living/human/liminal_probe(locate(x, y, 1))
+	var/mob/living/human/H = new /mob/living/human/liminal_probe(locate(x, y, 1))
+	human_mob_list += H // the probe body skips the ordinary New()
+	return H
 /world/New()
 	OpenPort("none")
 	try
@@ -248,6 +250,7 @@ var/liminal_runtime_error = FALSE
 	liminal_check(!M.place_threat(start + 400) && M.liminal.threat_state == "NONE" && !M.threat, "with no exported site the round records NONE")
 	var/obj/map_metadata/liminal_facility/probe/S = new(locate(4, 12, 1))
 	map = S
+	human_mob_list = list() // only the bodies placed below
 	new /obj/effect/landmark{name = "LiminalThreat"}(locate(12, 10, 1))
 	liminal_check(S.threat_site() == locate(12, 10, 1), "the LiminalThreat landmark names the site")
 	var/mob/living/human/C = liminal_body(11, 9)
@@ -258,12 +261,22 @@ var/liminal_runtime_error = FALSE
 	liminal_check(!S.place_threat(start + 400) && !S.threat && S.liminal.threat_state == "WAITING", "a participant near the site defers the threat")
 	C.loc = locate(12, 3, 1)
 	S.threat_clearance = 3
-	liminal_check(!S.place_threat(start + 410) && !S.threat, "a participant who can see the site defers the threat")
+	liminal_check(!S.place_threat(start + 410) && !S.threat, "a participant with a clear line to the site defers the threat")
+	for (var/x in 1 to 12)
+		var/turf/W = locate(x, 6, 1)
+		W.ChangeTurf(/turf/wall/cement, FALSE, FALSE)
+	liminal_check(!(C in hearers(world.view, locate(12, 10, 1))), "a wall row blocks the line to the site")
+	var/mob/living/human/V = liminal_body(10, 10)
+	liminal_check(!S.place_threat(start + 415) && !S.threat, "a late explorer who is not a participant also defers the threat")
+	var/obj/structure/closet/K = new(locate(10, 9, 1))
+	V.loc = K
+	liminal_check(!S.place_threat(start + 416) && !S.threat, "someone hiding in a locker near the site defers it too")
+	V.stat = DEAD
+	liminal_check(S.place_threat(start + 420) && istype(S.threat, /mob/living/simple_animal/hostile/echofiend) && get_turf(S.threat) == locate(12, 10, 1), "with nobody near or in line one echofiend appears at the site")
+	for (var/x in 1 to 12)
+		var/turf/W = locate(x, 6, 1)
+		W.ChangeTurf(/turf/floor/plating/steel, FALSE, FALSE)
 	C.loc = null
-	var/mob/living/human/D = liminal_body(1, 1)
-	S.liminal.participants = list(D)
-	D.stat = DEAD
-	liminal_check(S.place_threat(start + 420) && istype(S.threat, /mob/living/simple_animal/hostile/echofiend) && get_turf(S.threat) == locate(12, 10, 1), "with nobody watching one echofiend appears at the site")
 	var/mob/living/simple_animal/hostile/echofiend/E = S.threat
 	liminal_check(!S.place_threat(start + 900) && S.liminal.threat_state == "SPAWNED", "no second threat is placed")
 	var/n = 0
@@ -284,7 +297,13 @@ var/liminal_runtime_error = FALSE
 	G.release()
 	E.Move(locate(11, 10, 1), WEST)
 	liminal_check(get_turf(E) == locate(11, 10, 1), "an open gate lets it through")
-	S.threat_enabled = FALSE
+	var/obj/map_metadata/liminal_facility/probe/Q = new(locate(7, 12, 1))
+	map = Q
+	var/mob/living/human/Y = liminal_body(1, 3)
+	Q.prepare()
+	Q.join(Y)
+	Y.loc = null
+	liminal_check(!Q.place_threat(Q.liminal.started_at + 400) && Q.threat == E && Q.liminal.threat_state == "SPAWNED", "a restored world that already holds the threat does not get a second one")
 	var/obj/map_metadata/liminal_facility/probe/O = new(locate(5, 12, 1))
 	map = O
 	O.threat_enabled = FALSE

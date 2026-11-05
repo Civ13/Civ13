@@ -177,11 +177,13 @@ def room_lights(doc,cells,notes,added):
 
 
 def room_distances(doc,start_rooms):
-    """Link hops from any start room, through every link (gates included)."""
+    """Link hops from any start room through ungated links: a room reached only
+    through a flag-gated link is not reachable before the tasks are done."""
     dist={r:0 for r in start_rooms};todo=list(start_rooms)
     while todo:
         r=todo.pop(0)
         for l in doc['links']:
+            if l['requires_flags']:continue
             for a,b in ((l['a']['room'],l['b']['room']),(l['b']['room'],l['a']['room'])):
                 if a==r and b not in dist:dist[b]=dist[r]+1;todo.append(b)
     return dist

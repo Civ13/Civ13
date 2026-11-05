@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from tools.liminal_maps.prototype import preset,generate
 from tools.liminal_maps.native import (BULB,ESCAPE_TYPES,LIGHT_PLAN,THREAT_MIN_DISTANCE,TUBE,ExportError,build_cells,escape_cells,
-                                       export,furnishing,gated_cells,native_catalog,parse_dmm,threat_site,verify_export)
+                                       export,furnishing,gated_cells,native_catalog,parse_dmm,room_lights,threat_site,verify_export)
 from test_export import DEFAULT_MAP_SHA256,ROOT,defined_types
 
 # Update together with an intended change to the layouts, native catalog, exporter or escape binding.
@@ -128,6 +128,7 @@ class ModeTests(unittest.TestCase):
         for s in self.side['spawns']:
             self.assertGreaterEqual(abs(s['at'][0]-sites[0][0]-1)+abs(s['at'][1]-sites[0][1]-1),THREAT_MIN_DISTANCE)
         self.assertEqual('F',self.doc['blueprint']['rows'][sites[0][1]][sites[0][0]])
+        self.assertEqual(3,len(self.grid[sites[0]]))  # landmark, turf, area: nothing else on the site
         self.assertTrue(ESCAPE_TYPES['threat'].startswith('/obj/effect/landmark'))  # never on the era-policy prop list
     def test_threat_site_is_dropped_when_no_room_qualifies(self):
         doc=deepcopy(self.doc);cells,notes=build_cells(doc)
@@ -164,4 +165,18 @@ class ModeTests(unittest.TestCase):
             parent=path.rsplit('/',1)[0]
             self.assertIn(parent+'\n\tpowerneeded = 0\n\ton = TRUE',text,path)
             self.assertIn(path+'\n',text)
+    def test_threat_site_is_never_behind_a_gate(self):
+        doc=deepcopy(self.doc);cells,notes=build_cells(doc)
+        for l in doc['links']:
+            if l['id']=='threshold--service':l['requires_flags']=['SERVICE_DONE']
+        # threshold is now reachable only through the hub; nothing past the gate qualifies
+        self.assertEqual('threshold',threat_site(doc,cells,notes,{})[1])
+        for l in doc['links']:
+            if l['id']=='hub--threshold':l['requires_flags']=['SERVICE_DONE']
+        self.assertEqual('hub',threat_site(doc,cells,notes,{})[1])
+    def test_room_without_free_floor_refuses_its_light(self):
+        cells,notes=build_cells(self.doc)
+        added={p:['/obj/x'] for p,o in notes['owner'].items() if o=='alcove'}
+        with self.assertRaises(ExportError) as caught:room_lights(self.doc,cells,notes,added)
+        self.assertIn('LIGHT',str(caught.exception))
 

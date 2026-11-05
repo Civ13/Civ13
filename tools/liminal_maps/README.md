@@ -154,17 +154,20 @@ The escape export also places, from the room archetypes:
   range 3) in threshold, alcove and low-light rooms. Lights stand on free floor
   next to a wall or column, at least 4 tiles apart, never on an anchor, aperture
   or furniture. The sidecar lists them under `lights`.
-- **Threat site.** One `LiminalThreat` landmark in the reachable HUB or TRANSITION
-  room farthest (in link hops) from the spawns that holds no spawn, objective or
-  exit, at least 12 tiles from every spawn. The sidecar records it as `threat`;
+- **Threat site.** One `LiminalThreat` landmark in the HUB or TRANSITION
+  room farthest (in link hops, never through a flag-gated link) from the spawns
+  that holds no spawn, objective or exit, at least 12 tiles from every spawn. The sidecar records it as `threat`;
   a plan with no such room gets no site and no threat.
 
 In game the facility area is indoors (half of the night light reaches the floor),
 has BYOND's carpeted-hallway reverb and no looping ambience, and the round keeps a
 single `Night` time of day, so the tubes and the issued flashlights carry the
 light. After a 30 s arrival grace the round places one existing echofiend at the
-site, but only while no participant is within 7 tiles of it or can see it; it is
-placed at most once and never comes back. The echofiend hunts by sound: footsteps
+site, but only while no living human (participant, late explorer or someone in a
+locker) is within 7 tiles of it or has an unblocked line to it within a screen
+(opacity only, so darkness does not hide it); it is placed at most once, a world
+that already holds the threat (after a restore) never gets a second, and it never
+comes back. The echofiend hunts by sound: footsteps
 and other sounds within 15 tiles send it to investigate, and the stealth intent
 makes no footsteps. Its own growls no longer cancel an investigation (a fix to the
 shared monster). `threat_enabled = FALSE` on the map metadata turns it off.
