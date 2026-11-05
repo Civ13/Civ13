@@ -11,7 +11,7 @@ from tools.procedural_maps.generator import generate
 from tools.procedural_maps.bundle import write_bundle
 
 ROOT = Path(__file__).resolve().parents[2]
-SHIPPED = ROOT / "config" / "space" / "survey_map.json"
+SHIPPED = ROOT / "config" / "space" / "survey" / "barren.json"
 
 
 def bundle(config, folder):
@@ -91,6 +91,26 @@ class SurveyMapTests(unittest.TestCase):
                 self.assertEqual(2, main(["survey", str(self.folder), "--out", str(out)]))
             self.assertEqual(survey.build(self.folder), json.loads(out.read_text(encoding="utf-8")))
 
+    def test_check_matches_only_its_own_bundle(self):
+        from tools.procedural_maps.__main__ import main
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "barren.json"
+            survey.write(self.folder, out)
+            self.assertTrue(survey.check(self.folder, out)["matches"])
+            data = json.loads(out.read_text(encoding="utf-8"))
+            data["ir_sha256"] = "0" * 64
+            other = Path(tmp) / "other.json"
+            other.write_text(json.dumps(data), encoding="utf-8")
+            self.assertFalse(survey.check(self.folder, other)["matches"])
+            junk = Path(tmp) / "junk.json"
+            junk.write_text("{}", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "SURVEY_SCHEMA"):
+                survey.check(self.folder, junk)
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(0, main(["survey-check", str(self.folder), "--survey", str(out)]))
+                self.assertEqual(1, main(["survey-check", str(self.folder), "--survey", str(other)]))
+                self.assertEqual(2, main(["survey-check", str(self.folder), "--survey", str(junk)]))
+
     def test_cavern_bundles_are_refused(self):
         c = preset("UNDERGROUND_CAVERN", "cave-s")
         c["dimensions"].update(width=64, height=80)
@@ -104,7 +124,7 @@ class SurveyMapTests(unittest.TestCase):
 
 
 class ShippedSurveyMapTests(unittest.TestCase):
-    """config/space/survey_map.json is what the mission console reads."""
+    """config/space/survey/barren.json is what the mission console reads."""
 
     def test_shipped_map_is_well_formed(self):
         data = json.loads(SHIPPED.read_text(encoding="utf-8"))
@@ -124,6 +144,7 @@ class ShippedSurveyMapTests(unittest.TestCase):
             folder.mkdir()
             bundle(barren_surface_preset(data["seed"]), folder)
             self.assertEqual(data, survey.build(folder))
+            self.assertTrue(survey.check(folder, SHIPPED)["matches"])
 
 
 if __name__ == "__main__":

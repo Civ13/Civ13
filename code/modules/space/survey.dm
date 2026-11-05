@@ -2,7 +2,10 @@
 //
 // A probe never visits a real level (decision D1): the mission console shows a
 // coarse survey map of the barren world, generated offline by
-// `python3 -m tools.procedural_maps survey` into config/space/survey_map.json.
+// `python3 -m tools.procedural_maps survey` into config/space/survey/<region>.json.
+// Each file is keyed by the destination region and records the ir_sha256 of
+// the bundle it came from, so a later crewed launch can check that the
+// surveyed sites match the real region (survey_map_matches_bundle).
 // The player drives the probe across that map, photographs sites and takes
 // samples; the ascent stage brings the samples home as real items.
 //
@@ -10,7 +13,8 @@
 // revealed cells, carried samples). The only clock is a tmp var, so a restart
 // never replays recharge for the time the server was down.
 
-#define SURVEY_MAP_FILE "config/space/survey_map.json"
+#define SURVEY_MAP_DIR "config/space/survey/"
+#define SURVEY_DEFAULT_REGION "barren"
 #define SURVEY_MAP_SCHEMA "civ13-survey-map/1"
 #define SURVEY_PLAIN "."
 #define SURVEY_CHANNEL "~"
@@ -24,6 +28,8 @@
 #define SURVEY_SAMPLE_COST 5
 #define SURVEY_ANALYSIS_TIME 50
 #define SURVEY_NOTES_NODE "planetary_survey"
+// A probe aimed at a cell lands on a plain within this many cells of it.
+#define SURVEY_LANDING_SCATTER 2
 
 /proc/survey_move_cost(cell)
 	switch (cell)
@@ -53,6 +59,8 @@
 	var/width = 0
 	var/height = 0
 	var/seed = ""
+	var/region = ""
+	var/ir_sha256 = "" // the source bundle's IR hash, for survey_map_matches_bundle
 	var/list/rows = list() // rows[1] is the southern edge
 	var/error = null
 
@@ -92,6 +100,7 @@
 	height = R.len
 	rows = R.Copy()
 	seed = "[data["seed"]]"
+	ir_sha256 = istext(data["ir_sha256"]) ? lowertext(data["ir_sha256"]) : ""
 	error = null
 	return TRUE
 
@@ -107,19 +116,50 @@
 			if (cell(x, y) == SURVEY_PLAIN)
 				. += list(list(x, y))
 
-var/global/datum/survey_map/space_survey_map_cache = null
+// Loaded survey maps by region id.
+var/global/list/space_survey_maps = list()
 
-/proc/get_space_survey_map()
-	if (space_survey_map_cache)
-		return space_survey_map_cache
-	if (!fexists(SURVEY_MAP_FILE))
+// Region ids name files, so only lowercase letters and digits pass.
+/proc/survey_region_ok(region)
+	return istext(region) && length(region) >= 1 && length(region) <= 32 && ckey(region) == region
+
+/proc/get_space_survey_map(region = SURVEY_DEFAULT_REGION)
+	if (!survey_region_ok(region))
+		return null
+	if (space_survey_maps[region])
+		return space_survey_maps[region]
+	var/path = "[SURVEY_MAP_DIR][region].json"
+	if (!fexists(path))
 		return null
 	var/datum/survey_map/M = new
-	if (!M.load_text(file2text(SURVEY_MAP_FILE)))
-		log_debug("space survey: [SURVEY_MAP_FILE] rejected ([M.error])")
+	if (!M.load_text(file2text(path)))
+		log_debug("space survey: [path] rejected ([M.error])")
 		return null
-	space_survey_map_cache = M
+	M.region = region
+	space_survey_maps[region] = M
 	return M
+
+// TRUE when a bundle manifest (seed.manifest.json text) is the bundle the
+// survey map was drawn from. Phase 2 refuses a crewed launch otherwise.
+/proc/survey_map_matches_manifest(datum/survey_map/M, manifest_text)
+	if (!M || !length(M.ir_sha256) || !istext(manifest_text))
+		return FALSE
+	var/list/data = null
+	try
+		data = json_decode(manifest_text)
+	catch
+		return FALSE
+	if (!islist(data) || !islist(data["generation_result"]))
+		return FALSE
+	var/list/result = data["generation_result"]
+	return istext(result["ir_sha256"]) && lowertext(result["ir_sha256"]) == M.ir_sha256
+
+/proc/survey_map_matches_bundle(region, bundle_dir)
+	var/datum/survey_map/M = get_space_survey_map(region)
+	var/path = "[bundle_dir]/seed.manifest.json"
+	if (!M || !fexists(path))
+		return FALSE
+	return survey_map_matches_manifest(M, file2text(path))
 
 // ---------------------------------------------------------------- items
 
@@ -134,6 +174,8 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	var/comms_range = 12
 	var/sample_capacity = 3
 	var/sight_range = 1
+	var/dropout_chance = 8 // percent per move that the relay drops a command
+	var/dust_chance = 3 // percent per move that dust halves recharge for the sortie
 
 /obj/item/space_probe/advanced
 	name = "advanced survey probe"
@@ -143,6 +185,7 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	comms_range = 18
 	sample_capacity = 5
 	sight_range = 2
+	dropout_chance = 0 // the hardened relay never drops a command
 
 /obj/item/space_sample
 	name = "regolith sample"
@@ -190,10 +233,13 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	density = TRUE
 	var/obj/item/space_probe/loaded = null
 	var/fuel = 0
+	var/destination = SURVEY_DEFAULT_REGION // survey region id; admins may change it
+	var/target_x = null // aimed landing cell, or null for anywhere flat
+	var/target_y = null
 
 /obj/structure/launch_rail/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Probe: [loaded ? loaded.name : "none"]. Fuel: [fuel]/[SURVEY_FUEL_UNITS]."))
+	to_chat(user, SPAN_NOTICE("Probe: [loaded ? loaded.name : "none"]. Fuel: [fuel]/[SURVEY_FUEL_UNITS]. Target: [isnum(target_x) ? "[target_x],[target_y] (lands within [SURVEY_LANDING_SCATTER] cells)" : "anywhere flat"]."))
 
 /obj/structure/launch_rail/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/space_probe))
@@ -247,9 +293,13 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	if (!find_console())
 		to_chat(user, SPAN_WARNING("No idle mission console within [SURVEY_RAIL_CONSOLE_RANGE] tiles to fly the probe."))
 		return
-	if (WWinput(user, "Launch \the [loaded]?", "Launch rail", "Cancel", list("Launch", "Cancel")) != "Launch")
+	var/choice = WWinput(user, "Launch \the [loaded]?", "Launch rail", "Cancel", list("Launch", "Aim", "Cancel"))
+	if (!in_range(src, user) || user.incapacitated())
 		return
-	if (!in_range(src, user))
+	if (choice == "Aim")
+		aim(user)
+		return
+	if (choice != "Launch")
 		return
 	var/result = launch()
 	if (result)
@@ -257,19 +307,46 @@ var/global/datum/survey_map/space_survey_map_cache = null
 		return
 	visible_message(SPAN_DANGER("\The [src] roars as a probe climbs away on a column of smoke!"))
 
-// Returns null on success, or the reason the launch failed.
-/obj/structure/launch_rail/proc/launch(lx = null, ly = null)
+/obj/structure/launch_rail/proc/aim(mob/user)
+	var/datum/survey_map/M = get_space_survey_map(destination)
+	if (!M)
+		to_chat(user, SPAN_WARNING("There is no survey map of the destination to aim at."))
+		return
+	var/x = input(user, "Landing cell, west to east (1-[M.width]). Cancel to clear the aim.", "Aim the probe") as null|num
+	if (isnull(x))
+		target_x = null
+		target_y = null
+		to_chat(user, SPAN_NOTICE("The probe will land anywhere flat."))
+		return
+	var/y = input(user, "Landing cell, south to north (1-[M.height]).", "Aim the probe") as null|num
+	if (isnull(y) || !in_range(src, user))
+		return
+	x = round(x)
+	y = round(y)
+	if (!M.cell(x, y))
+		to_chat(user, SPAN_WARNING("That cell is off the survey map."))
+		return
+	target_x = x
+	target_y = y
+	to_chat(user, SPAN_NOTICE("Aimed at [x],[y]; the probe lands on flat ground within [SURVEY_LANDING_SCATTER] cells."))
+
+// Returns null on success, or the reason the launch failed. With no cell given
+// the rail's aim is used, scattered by up to `scatter` cells.
+/obj/structure/launch_rail/proc/launch(lx = null, ly = null, scatter = SURVEY_LANDING_SCATTER)
 	if (!loaded || fuel < SURVEY_FUEL_UNITS)
 		return "The rail is not ready."
 	var/obj/structure/survey_console/C = find_console()
 	if (!C)
 		return "No idle mission console in range."
-	var/datum/survey_map/M = get_space_survey_map()
+	var/datum/survey_map/M = get_space_survey_map(destination)
 	if (!M)
 		return "The console has no survey map of the target world."
+	if (isnull(lx) && isnum(target_x))
+		lx = target_x
+		ly = target_y
 	var/obj/item/space_probe/P = loaded
-	if (!C.begin_mission(P, M, lx, ly))
-		return "The console refused the mission."
+	if (!C.begin_mission(P, M, lx, ly, scatter))
+		return "There is no flat ground to land on near the aimed cell."
 	loaded = null
 	fuel = 0
 	qdel(P)
@@ -311,18 +388,36 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	var/list/sampled = list() // "x,y" cells already drilled, on any mission
 	var/list/photographed = list() // "x,y" cells already recorded, on any mission
 	var/list/landing_sites = list() // "x,y" of every probe landing
+	var/list/analysed_kinds = list() // sample kinds this console has analysed
+	var/map_region = ""
+	var/dropout_chance = 0
+	var/dust_chance = 0
+	var/dusty = FALSE // dust on the panels halves recharge for this sortie
 	var/tmp/last_recharge = null
 
-/obj/structure/survey_console/proc/begin_mission(obj/item/space_probe/P, datum/survey_map/M, lx = null, ly = null)
+// Picks the landing cell: anywhere flat with no aim, else a plain within
+// `scatter` cells of the aim (the aim itself only when scatter is 0).
+/proc/survey_landing_cell(datum/survey_map/M, lx, ly, scatter)
+	if (isnull(lx) || isnull(ly))
+		return pick(M.plain_cells())
+	if (scatter <= 0)
+		return M.cell(lx, ly) == SURVEY_PLAIN ? list(lx, ly) : null
+	var/list/options = list()
+	for (var/y = ly - scatter to ly + scatter)
+		for (var/x = lx - scatter to lx + scatter)
+			if (M.cell(x, y) == SURVEY_PLAIN)
+				options += list(list(x, y))
+	return options.len ? pick(options) : null
+
+/obj/structure/survey_console/proc/begin_mission(obj/item/space_probe/P, datum/survey_map/M, lx = null, ly = null, scatter = 0)
 	if (mission || !istype(P) || !M)
 		return FALSE
-	if (lx == null || ly == null)
-		var/list/site = pick(M.plain_cells())
-		lx = site[1]
-		ly = site[2]
-	if (M.cell(lx, ly) != SURVEY_PLAIN)
+	var/list/site = survey_landing_cell(M, lx, ly, scatter)
+	if (!site)
 		return FALSE
-	if (map_seed != M.seed || map_width != M.width || map_height != M.height || length(revealed) != M.width * M.height)
+	lx = site[1]
+	ly = site[2]
+	if (map_region != M.region || map_seed != M.seed || map_width != M.width || map_height != M.height || length(revealed) != M.width * M.height)
 		reset_survey(M)
 	mission = TRUE
 	probe_name = P.name
@@ -335,6 +430,9 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	comms_range = P.comms_range
 	sample_capacity = P.sample_capacity
 	sight_range = P.sight_range
+	dropout_chance = P.dropout_chance
+	dust_chance = P.dust_chance
+	dusty = FALSE
 	samples = list()
 	landing_sites |= "[lx],[ly]"
 	reveal_around(probe_x, probe_y)
@@ -343,6 +441,7 @@ var/global/datum/survey_map/space_survey_map_cache = null
 
 // Forgets the survey record: only when the survey map was replaced.
 /obj/structure/survey_console/proc/reset_survey(datum/survey_map/M)
+	map_region = M.region
 	map_seed = M.seed
 	map_width = M.width
 	map_height = M.height
@@ -361,12 +460,13 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	probe_name = ""
 	samples = list()
 	battery = 0
+	dusty = FALSE
 	last_recharge = null
 
 // The map the mission flies over; null (and the mission is lost) when the
 // survey map was replaced since launch.
 /obj/structure/survey_console/proc/mission_map()
-	var/datum/survey_map/M = get_space_survey_map()
+	var/datum/survey_map/M = get_space_survey_map(map_region)
 	if (!M || M.seed != map_seed || M.width != map_width || M.height != map_height || length(revealed) != map_width * map_height)
 		return null
 	return M
@@ -399,7 +499,7 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	if (!isnum(last_recharge) || last_recharge > world.time)
 		last_recharge = world.time
 		return
-	var/step = SURVEY_RECHARGE_SECONDS * 10
+	var/step = SURVEY_RECHARGE_SECONDS * 10 * (dusty ? 2 : 1)
 	var/gained = round((world.time - last_recharge) / step)
 	if (gained <= 0)
 		return
@@ -435,11 +535,17 @@ var/global/datum/survey_map/space_survey_map_cache = null
 		return "The relay at the landing site would lose the probe out there."
 	if (battery < cost)
 		return "The battery is too low; wait for the panels to charge it."
+	if (prob(dropout_chance))
+		battery -= 1
+		return "Static: the relay dropped the command. Try again."
 	battery -= cost
 	probe_x = nx
 	probe_y = ny
 	reveal_around(nx, ny)
-	return "The probe crosses onto [survey_cell_name(cell)]."
+	. = "The probe crosses onto [survey_cell_name(cell)]."
+	if (!dusty && prob(dust_chance))
+		dusty = TRUE
+		. += " A dust gust coats the solar panels: recharge is halved for the rest of this sortie."
 
 /obj/structure/survey_console/proc/sample_kind_here(datum/survey_map/M)
 	var/cell = M.cell(probe_x, probe_y)
@@ -514,6 +620,20 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	end_mission()
 	return "The probe is left to the dust. The mission is over."
 
+// How much a sample is worth as notes (a multiple of ordinary notes): ice
+// tells most about the world, loose regolith least, and the first sample of
+// each kind a console analyses counts half again, so players explore.
+/proc/survey_sample_value(kind, first)
+	var/value = 1
+	switch (kind)
+		if ("ice")
+			value = 1.5
+		if ("rock")
+			value = 1.25
+		if ("regolith")
+			value = 0.75
+	return round(value * (first ? 1.5 : 1), 0.01)
+
 // Turns a sample into research notes on Planetary Survey.
 /obj/structure/survey_console/proc/analyse(obj/item/space_sample/S, mob/living/human/H)
 	var/datum/research_node/N = get_research_node(SURVEY_NOTES_NODE)
@@ -524,9 +644,12 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	book.written_by_faction = H ? H.civilization : null
 	book.written_by = H ? H.real_name : "a mission console"
 	book.transfer_type = "notes"
+	var/first = !(S.kind in analysed_kinds)
+	analysed_kinds |= S.kind
+	book.boost_scale = survey_sample_value(S.kind, first)
 	book.name = "research notes: [N.name]"
 	book.title = "Notes on a [S.kind] sample"
-	book.desc = "Console analysis of a [S.kind] sample from another world. A research bench studying [N.name] can use them to speed up its work."
+	book.desc = "Console analysis of a [first ? "first " : ""][S.kind] sample from another world, worth [book.boost_scale]x ordinary notes. A research bench studying [N.name] can use them to speed up its work."
 	qdel(S)
 	return book
 
@@ -583,7 +706,7 @@ var/global/datum/survey_map/space_survey_map_cache = null
 			html += "<p>Contact with [probe_name] is lost: the survey map changed.</p><p><a href='?src=\ref[src];survey=abandon'>Close the mission</a></p>"
 		else
 			recharge()
-			html += "<p>[probe_name] at [probe_x],[probe_y] ([survey_cell_name(M.cell(probe_x, probe_y))]). Battery [battery]/[battery_max]. Samples [samples.len]/[sample_capacity]. Relay range [comms_range] cells from L.</p>"
+			html += "<p>[probe_name] at [probe_x],[probe_y] ([survey_cell_name(M.cell(probe_x, probe_y))]). Battery [battery]/[battery_max][dusty ? " (dusty panels)" : ""]. Samples [samples.len]/[sample_capacity]. Relay range [comms_range] cells from L.</p>"
 			html += "<p><a href='?src=\ref[src];survey=north'>North</a> <a href='?src=\ref[src];survey=south'>South</a> <a href='?src=\ref[src];survey=west'>West</a> <a href='?src=\ref[src];survey=east'>East</a> | <a href='?src=\ref[src];survey=photo'>Photograph</a> <a href='?src=\ref[src];survey=sample'>Sample</a> | <a href='?src=\ref[src];survey=ascend'>Ascend</a> <a href='?src=\ref[src];survey=abandon'>Abandon</a></p>"
 			html += map_html(M)
 			html += "<p>Moves cost 1 on plains, 2 in channels and 3 on ice; ridges block. P probe, L landing site.</p>"

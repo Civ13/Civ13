@@ -91,3 +91,17 @@ def write(folder, out, catalog_root=None, cell_tiles=CELL_TILES):
     out.write_text(text, encoding="utf-8", newline="\n")
     return {"schema": SCHEMA, "path": str(out), "width": data["width"], "height": data["height"],
             "sha256": hashlib.sha256(text.encode()).hexdigest()}
+
+
+def check(folder, survey_path, catalog_root=None):
+    """Does a survey map belong to this bundle? The game asks the same question
+    (survey_map_matches_bundle) before a crewed launch to that region."""
+    folder = Path(folder)
+    verify_bundle(folder, catalog_root)
+    data = read_json(Path(survey_path))
+    if not isinstance(data, dict) or data.get("schema") != SCHEMA:
+        raise ValueError("SURVEY_SCHEMA: not a survey map: " + str(survey_path))
+    bundle_sha = read_json(folder / "seed.manifest.json")["generation_result"]["ir_sha256"]
+    survey_sha = str(data.get("ir_sha256", ""))
+    return {"schema": SCHEMA, "matches": survey_sha.lower() == bundle_sha.lower(),
+            "survey_ir_sha256": survey_sha, "bundle_ir_sha256": bundle_sha}

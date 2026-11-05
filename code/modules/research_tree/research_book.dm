@@ -19,6 +19,7 @@
 	var/written_by_faction = null
 	var/written_by = null         // real name of the researcher who authored it
 	var/transfer_type = "book"    // "book" (completes) or "notes" (tick boost)
+	var/boost_scale = 1           // notes only: multiple of the usual boost (survey samples vary)
 
 /obj/item/weapon/book/research/tree_book/attack_self(mob/user as mob)
 	to_chat(user, SPAN_NOTICE("This can only be studied at a research bench assigned to its subject."))

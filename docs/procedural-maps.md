@@ -185,13 +185,13 @@ Players should not be sent there until launch sites exist (phase 2).
 #### Survey maps
 
 The mission console that flies survey probes reads a coarse map of a barren
-world from `config/space/survey_map.json` instead of loading a level. `survey`
+world from `config/space/survey/<region>.json` instead of loading a level. `survey`
 writes it from a verified SURFACE bundle; each cell covers 5x5 tiles (change it
 with `--cell-tiles`) and takes the most common class among them, with ties going
 to ridge, then ice, then channel, so hazards are never hidden:
 
 ```sh
-python3 -m tools.procedural_maps survey data/procedural_maps/barren --out config/space/survey_map.json
+python3 -m tools.procedural_maps survey data/procedural_maps/barren --out config/space/survey/barren.json
 ```
 
 | Source tiles | Survey cell |
@@ -205,6 +205,16 @@ Rows run south to north and the map must be 8 to 64 cells a side with at least
 one plain to land on. The shipped map is the 200x200 `barren-0` preset at 40x40;
 a test regenerates it, so rebuild it with the command above after a generator
 change. Replacing the file while a probe is flying loses that probe.
+
+Files are keyed by destination region (`config/space/survey/<region>.json`,
+lowercase letters and digits only) and record the source bundle's
+`ir_sha256`. `survey-check` exits 0 when a survey map was drawn from a
+bundle and 1 when it was not; generate each region's survey map from that
+region's own bundle:
+
+```sh
+python3 -m tools.procedural_maps survey-check data/procedural_maps/barren --survey config/space/survey/barren.json
+```
 
 ## Configuration reference
 

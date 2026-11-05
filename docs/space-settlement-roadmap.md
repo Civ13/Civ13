@@ -168,21 +168,33 @@ come with phase 3, when there is something to save.
 - Samples return as research material for the Spaceflight branch and mark
   landing sites as surveyed.
 - Built (phase 1): Rocketry unlocks the launch rail, survey probe and mission
-  console. A rail takes a probe and 60 units of gasoline or diesel and launches
-  it to an idle console within 7 tiles; the probe lands on a random plain of
-  `config/space/survey_map.json`. Moves cost 1 battery on plains, 2 in channels
-  and 3 on ice, ridges block, and the probe must stay within 12 cells of the
-  landing site. Solar panels give back one point every 3 seconds (a tmp clock,
-  so no backlog after a restart). Photographs print a survey record; the drill
-  takes up to 3 samples (regolith, rock beside ridges, sediment, ice); the
-  ascent stage at the landing site drops the samples by the console and ends
-  the mission. The console keeps a survey record across missions (cells seen,
-  sites cored and photographed, landing sites) for phase 2 to pick landing
-  zones from; it resets only when the survey map changes. The console
-  analyses a sample into research notes on Planetary
-  Survey, which unlocks the advanced probe (160 battery, 18-cell relay, wider
-  camera, 5 samples). Planetary Survey is an ordinary node, not a prototype
-  node, because prototype nodes are the era-changing capstones.
+  console. A rail takes a probe and 60 units of gasoline or diesel (a
+  placeholder until phase 2 propellant) and launches it to an idle console
+  within 7 tiles. It lands anywhere flat, or, when the rail is aimed, on a plain
+  within 2 cells of the aimed cell. Survey maps are keyed by destination region
+  (`config/space/survey/<region>.json`, `barren` for now; the rail's
+  `destination` var picks one) and record the source bundle's `ir_sha256`;
+  `survey_map_matches_bundle()` and `survey-check` compare it with a region
+  bundle, which phase 2 uses to refuse a crewed launch to an unmatched map.
+- Driving: moves cost 1 battery on plains, 2 in channels and 3 on ice, ridges
+  block, and the probe stays within 12 cells of its landing site. Solar panels
+  give back one point every 3 seconds (a tmp clock, so no backlog after a
+  restart). Each move risks an 8% relay dropout that loses the command and 1
+  battery, and a 3% dust gust that halves recharge for the rest of the sortie;
+  the advanced probe's hardened relay never drops commands.
+- Photographs print a survey record; the drill takes up to 3 samples
+  (regolith, rock beside ridges, sediment, ice); the ascent stage at the
+  landing site drops the samples by the console and ends the mission. The
+  console keeps a survey record across missions (cells seen, sites cored and
+  photographed, landing sites) for phase 2 to pick landing zones from; it
+  resets only when the survey map changes, and a cored site stays cored.
+- The console analyses a sample into research notes on Planetary Survey,
+  worth 1.5x ordinary notes for ice, 1.25x for rock, 1x for sediment and 0.75x
+  for regolith, and half again for the first sample of each kind. Planetary
+  Survey unlocks the advanced probe (160 battery, 18-cell hardened relay, wider
+  camera, 5 samples). It is an ordinary node, not a prototype node, because
+  prototype nodes are the era-changing capstones. Later phases can ask for a
+  sample kind as a recipe gate (an ice core for the ice melter).
 - D1, decided 2026-11-05: a console survey map, not a real level. An extra
   level costs Gaia about 150 MB on a server that peaks near the 32-bit limit
   at load.
