@@ -133,6 +133,7 @@ class BuildPrefixTests(unittest.TestCase):
             self.assertIn("needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", block)
             expression = next(line.strip()[4:] for line in block.splitlines() if line.startswith('    if: '))
             for before, after in (('always()', 'True'), ('!cancelled()', 'True'),
+                                  ('needs.local-attestation.outputs.skip', 'attested'),
                                   ('needs.changes.result', 'result'),
                                   ('needs.changes.outputs.skip_duplicate', 'duplicate'),
                                   ('needs.changes.outputs.gating', 'gating'),
@@ -145,7 +146,7 @@ class BuildPrefixTests(unittest.TestCase):
                                              ast.Compare, ast.Eq, ast.NotEq, ast.Name,
                                              ast.Load, ast.Constant))
                 if isinstance(node, ast.Name):
-                    self.assertIn(node.id, ('result', 'duplicate', 'gating', 'game', 'event'))
+                    self.assertIn(node.id, ('result', 'duplicate', 'gating', 'game', 'event', 'attested'))
             for result, duplicate, gating, game, event, expected in (
                     ('failure', '', '', '', 'pull_request', True),
                     ('skipped', '', '', '', 'pull_request', True),
@@ -156,8 +157,15 @@ class BuildPrefixTests(unittest.TestCase):
                     ('success', 'false', '0', 'false', 'workflow_dispatch', True)):
                 with self.subTest(job=name, result=result, event=event):
                     actual = eval(compile(parsed, '<job admission>', 'eval'), {'__builtins__': {}},
-                                  dict(result=result, duplicate=duplicate, gating=gating, game=game, event=event))
+                                  dict(result=result, duplicate=duplicate, gating=gating, game=game, event=event,
+                                       attested=''))
                     self.assertEqual(actual, expected)
+            if name == 'build':
+                # A verified local pass or waiver skips the hosted build, whatever else holds.
+                skipped = eval(compile(parsed, '<job admission>', 'eval'), {'__builtins__': {}},
+                               dict(result='success', duplicate='false', gating='1', game='true',
+                                    event='pull_request', attested='true'))
+                self.assertFalse(skipped)
         for name in ('baseline', 'evidence-checker'):
             block = workflow.split('\n  ' + name + ':\n', 1)[1]
             self.assertIn("needs.changes.outputs.skip_duplicate != 'true' &&", block)
