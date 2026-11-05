@@ -18,7 +18,7 @@ function data(): Data {
   return { lease: 'a'.repeat(32), document_id: null, revision: 0, free_space: 3072,
     languages: [{ id: EN, name: 'English' },{ id: RU, name: 'Russian' }], default_language_id: EN,
     view: { legacy_name: 'Public item', legacy_body_html: '', sections: [] },
-    draft_ink: 'white', draft_tool: 'pen', response_serial: 0, result: 'ready' };
+    draft_ink: 'white', draft_tool: 'pen', draft_signature: 'Fixture Name', response_serial: 0, result: 'ready' };
 }
 function committed(original: Data, text = 'Saved', result = 'saved'): Data {
   return { ...original, lease: 'c'.repeat(32), document_id: 'b'.repeat(32), revision: 1, response_serial: 1, result,
@@ -40,6 +40,8 @@ it('requires a complete finite model and rejects unsupported metadata', () => {
     (d: Data) => d.languages.push(d.languages[0]),
     (d: Data) => d.revision = 0.5,
     (d: Data) => d.draft_ink = 'transparent',
+    (d: Data) => d.draft_signature = 7,
+    (d: Data) => d.draft_signature = 'x'.repeat(257),
     (d: Data) => d.view.sections = [{ id: 'x', kind:'body', language_id:EN, text:'x',ink:'white',tool:'pen',original:'SECRET' }],
   ]) { const d = data(); mutate(d); expect(() => paperEditorModel(d)).toThrow(); }
 });
@@ -94,6 +96,8 @@ it('signs with no client-supplied signature text and keeps cancel finite', () =>
   const ui=props();render(<PaperEditor {...ui} />);
   fireEvent.change(screen.getByLabelText('Writing section'),{target:{value:'signature'}});
   expect(screen.queryByLabelText('Writing text')).toBeNull();
+  const preview=screen.getByLabelText('Draft preview').querySelector('article')!;
+  expect(preview.textContent).toBe('Fixture Name');expect(preview.querySelector('span')!.style.fontStyle).toBe('italic');
   fireEvent.click(screen.getByRole('button',{name:'Sign'}));
   expect(sent(ui).kind).toBe('signature');expect(sent(ui).value).toBe('');
   expect(paperEditParams(paperEditorModel(data()),'cancel')).toEqual({paper_edit:JSON.stringify({operation:'cancel',lease:'a'.repeat(32)})});
@@ -169,4 +173,41 @@ it('keeps line breaks and applies only [b], [i] and [br] to new writing', () => 
   expect(pieces.map(p => p.br ? '|' : `${p.text}${p.bold ? '!' : ''}${p.italic ? '/' : ''}`).join(',')).toBe('|,a,|,b!,|,c/, [u]d[/u]');
   const signature = sectionPieces({ text: '[b]Name', kind: 'signature', ink: '#000000', tool: 'pen' });
   expect(signature[1]).toEqual({ text: '[b]Name', ink: '#000000', face: 'times', bold: false, italic: true });
+});
+
+it('wraps the selection with formatting tags, inserts stamps at the caret and counts remaining space', () => {
+  const ui=props({...data(),free_space:40});render(<PaperEditor {...ui} />);
+  const area=screen.getByLabelText('Writing text') as HTMLTextAreaElement;
+  expect(screen.getByText('40 of 40 characters remaining after this writing.')).toBeTruthy();
+  expect(screen.queryByLabelText('Draft preview')).toBeNull();
+  fireEvent.change(area,{target:{value:'make this bold'}});
+  area.setSelectionRange(10,14);fireEvent.click(screen.getByRole('button',{name:'Bold'}));
+  expect(area.value).toBe('make this [b]bold[/b]');expect([area.selectionStart,area.selectionEnd]).toEqual([13,17]);
+  expect(screen.getByText('19 of 40 characters remaining after this writing.')).toBeTruthy();
+  const preview=screen.getByLabelText('Draft preview').querySelector('article')!;
+  expect(preview.textContent).toBe('make this bold');expect(preview.querySelectorAll('span')[1].style.fontWeight).toBe('700');
+  area.setSelectionRange(area.value.length,area.value.length);fireEvent.click(screen.getByRole('button',{name:'Insert the date'}));
+  expect(area.value).toBe('make this [b]bold[/b][date]');expect(area.selectionStart).toBe(27);
+  fireEvent.change(area,{target:{value:'x'.repeat(41)}});
+  expect(screen.getByText('1 characters over the remaining space.')).toBeTruthy();
+  expect((screen.getByRole('button',{name:'Write'}) as HTMLButtonElement).disabled).toBe(true);
+  expect(ui.act).not.toHaveBeenCalled();
+});
+it('writes with Ctrl+Enter, closes through the cancel operation and reports a full paper', () => {
+  const ui=props();render(<PaperEditor {...ui} />);
+  fireEvent.change(screen.getByLabelText('Writing text'),{target:{value:'Quick note'}});
+  fireEvent.keyDown(screen.getByLabelText('Writing text'),{key:'Enter'});expect(ui.act).not.toHaveBeenCalled();
+  fireEvent.keyDown(screen.getByLabelText('Writing text'),{key:'Enter',ctrlKey:true});
+  expect(sent(ui).value).toBe('Quick note');expect(screen.getByText('Sending to the paper...')).toBeTruthy();
+  expect((screen.getByRole('button',{name:'Bold'}) as HTMLButtonElement).disabled).toBe(true);
+  cleanup();const closing=props();render(<PaperEditor {...closing} />);
+  fireEvent.click(screen.getByRole('button',{name:'Close'}));expect(sent(closing)).toEqual({operation:'cancel',lease:'a'.repeat(32)});
+  cleanup();render(<PaperEditor {...props({...data(),free_space:0})} />);
+  expect(screen.getByText('This paper is full.')).toBeTruthy();expect(screen.getByText('Nothing is written on this paper yet.')).toBeTruthy();
+});
+it('renders written titles bold and keeps body text regular', () => {
+  const title=sectionPieces({ text: 'Heading [b]x[/b] y', kind: 'title', ink: '#000000', tool: 'pen' });
+  expect(title.slice(1).map(p=>`${p.text}${p.bold?'!':''}`)).toEqual(['Heading !','x!',' y!']);
+  const body=sectionPieces({ text: 'plain', kind: 'body', ink: '#000000', tool: 'pen' });
+  expect(body[1]).toEqual({ text: 'plain', ink: '#000000', face: 'verdana', bold: false, italic: false });
 });

@@ -56,3 +56,19 @@ progress { width: 100%; height: 10px; accent-color: #b58d47; }
 .character-notes section { margin: 16px 0; }
 .photo-viewer { text-align: center; overflow-wrap: anywhere; }
 .photo-viewer img { max-width: 100%; height: auto; image-rendering: pixelated; }
+
+.paper-editor form { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.paper-editor .paper-controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.paper-editor label { display: flex; flex-direction: column; gap: 4px; }
+.paper-editor select, .paper-editor textarea { font: inherit; color: #eee5d3; background: #211c16; border: 1px solid #66513b; border-radius: 3px; padding: 4px 6px; }
+.paper-editor select:focus-visible, .paper-editor textarea:focus-visible { outline: 2px solid #ffd985; outline-offset: 2px; }
+.paper-editor textarea { width: 100%; min-height: 120px; resize: vertical; line-height: 1.4; }
+.paper-editor .paper-tools, .paper-editor .paper-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+.paper-editor button { padding: 4px 10px; min-width: 36px; }
+.paper-editor .paper-tools button { font-weight: bold; }
+.paper-editor .paper-write { background: #b48c4d; color: #211c16; font-weight: bold; }
+.paper-editor .paper-write:disabled { opacity: .5; }
+.paper-editor .paper-hint, .paper-editor .paper-space { margin: 0; color: #bfae96; font-size: 13px; }
+.paper-editor .paper-over { color: #ff9d8a; }
+.paper-editor h3 { margin: 4px 0 0; }
+.paper-editor .NoticeBox { margin: 0; }

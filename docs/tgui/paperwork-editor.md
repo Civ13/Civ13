@@ -43,5 +43,19 @@ keep the original guarded `src_object.Topic` path. Session/UI/listener state is
 runtime-only. Construction binds before opening, uses a unique window key and
 retires authority on failed or early construction.
 
+## Writing controls
+
+The form shows the language and section choices, a formatting toolbar (bold,
+italic, `[sign]`, `[date]`, `[time]`) that wraps or inserts at the textarea
+selection without sending anything, a multi-line text box (Enter for a new
+line, Ctrl+Enter to write), a live count of the characters left after the
+draft, and a preview page that appears once there is a draft. The signature
+section previews the name the held pen will actually sign; the server sends it
+as `draft_signature` by running the pen getter before the snapshot rechecks
+authority, and the client never sends signature text. Written titles render
+bold in both the editor and the classic reader. Saved, refreshed, rejected,
+pending and unconfirmed states use distinct notices; a full paper says so. The
+Close button sends the existing cancel operation.
+
 Study, forms/templates, field answers, stamp repair and filing remain separate
 work.

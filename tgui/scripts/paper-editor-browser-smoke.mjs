@@ -23,7 +23,7 @@ export async function paperEditorSmoke(browser, js, css) {
   const data = () => ({ lease:'a'.repeat(32),document_id:null,revision:0,free_space:3072,
     languages:[{id:EN,name:'English'}],default_language_id:EN,
     view:{legacy_name:'Synthetic paper',legacy_body_html:'',sections:[]},
-    draft_ink:'white',draft_tool:'pen',response_serial:0,result:'ready' });
+    draft_ink:'white',draft_tool:'pen',draft_signature:'Fixture Name',response_serial:0,result:'ready' });
   const update = async (page,value) => page.evaluate(value => window.receiveUpdateData(JSON.stringify({
     config:{template:'paper_editor.tmpl',title:'Paper fixture',status:2},data:value })),value);
   try {
