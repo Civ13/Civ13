@@ -115,6 +115,14 @@ SUITES = {
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm',
             'code/game/objects/map_metadata/eft_factory.dm', 'civ13.dme')},
+    # Generated inactive Extraction party safehouse template: DMM parse, airlock
+    # topology, room routes, account markers and descriptor; no BYOND runtime.
+    'safehouse_map': {'files': ('tests/safehouse_map/test_layout.py',),
+        'paths': ('tests/safehouse_map/', 'maps/WIP/extraction_safehouse.dmm',
+                  'maps/WIP/extraction_safehouse.layout.json',
+                  'maps/WIP/extraction_safehouse.template.json'), 'shared_paths': (
+            'code/modules/1713/extraction/instances.dm',
+            'code/modules/1713/extraction/mode.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
@@ -245,6 +253,13 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/modules/1713/modern_telecom.dm',
             'tests/save_movement/source_adapter.py')},
+
+    # Razor grooming guard and hygiene-gated razor recipes; source checks only.
+    'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
+        'paths': ('tests/razor_grooming/',), 'shared_paths': (
+            'code/game/objects/items/weapons/material/kitchen.dm',
+            'config/crafting/material_recipes_global.txt',
+            'code/modules/research_tree/research_node.dm')},
 
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
@@ -698,6 +713,10 @@ SUITES = {
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
+    # Save policy: no automatic saves while players are online; 30 minute save votes.
+    'save_policy': {'files': ('tests/save_policy/test_policy.py',), 'paths': (
+        'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
+        'code/modules/persistence/functions.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',

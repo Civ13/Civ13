@@ -58,7 +58,12 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # serve: the doorman port the launcher asks before touching a game port
                    'doorman_port': 1713, 'doorman_bind': '0.0.0.0', 'wake_estimate_seconds': 5,
                    # serve: refuse a doorman wake while less physical memory than this is free (0 = never refuse)
-                   'wake_min_free_mb': 1024}
+                   'wake_min_free_mb': 1024,
+                   # A frozen process does not survive a power-down, so it is only frozen once
+                   # map_saves holds a save newer than the last player; after a reboot the
+                   # doorman starts the world from that save on the next wake request.
+                   'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
+                   'cold_start_min_free_mb': 2560}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -248,6 +253,20 @@ class Platform:
         from doorman import topic
         return topic(port, 'status=1&format=json')
 
+    def boot_time(self):
+        """Unix time the machine booted, or None if unknown."""
+        try:
+            if os.name == 'nt':
+                kernel32 = ctypes.windll.kernel32
+                kernel32.GetTickCount64.restype = ctypes.c_ulonglong
+                return time.time() - kernel32.GetTickCount64() / 1000
+            for line in Path('/proc/stat').read_text().splitlines():
+                if line.startswith('btime '):
+                    return float(line.split()[1])
+        except (OSError, AttributeError, ValueError):
+            pass
+        return None
+
     def free_memory_mb(self):
         """Physical memory available to a new demand, in MB, or None if unknown."""
         try:
@@ -403,6 +422,8 @@ class Host:
         self.state_file = self.state_dir / 'operation.json'
         self.lock = self.state_dir / 'action.lock'
         self.freeze_file = self.state_dir / 'freeze.json'
+        self.cold_file = self.state_dir / 'cold.json'
+        self.activity_file = self.state_dir / 'activity.json'
 
     # -- state -------------------------------------------------------------
     def record(self, **values):
@@ -502,16 +523,84 @@ class Host:
                 raise Refused('stop the server before updating')
 
     # -- freezing ----------------------------------------------------------
+    def booted_since(self, moment):
+        """True when the machine has restarted since the unix time `moment`."""
+        boot = getattr(self.platform, 'boot_time', lambda: None)()
+        return boot is not None and moment is not None and boot > moment + 60
+
     def frozen(self):
-        """The freeze record while the frozen process still exists, else None."""
+        """The freeze record while the frozen process still exists, else None.
+
+        A frozen process that is gone (the machine was powered down or it was killed)
+        while nothing else serves the port leaves a cold record: the world is resumed
+        from its last save the next time someone asks the doorman to wake it.
+        """
         try:
             state = json.loads(self.freeze_file.read_text(encoding='utf-8'))
         except (OSError, ValueError):
             return None
-        if not isinstance(state, dict) or type(state.get('pid')) is not int or not self.platform.alive(state['pid']):
-            self.freeze_file.unlink(missing_ok=True)
+        if (isinstance(state, dict) and type(state.get('pid')) is int and self.platform.alive(state['pid'])
+                and not self.booted_since(state.get('frozen_at'))):
+            return state
+        if isinstance(state, dict) and not self.platform.listening(self.config['port']):
+            self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state.get('pid'),
+                                             'detected_at': int(self.platform.now())})
+            self.log({'cold': 'the frozen server is gone; it will start from its last save when woken'})
+        self.freeze_file.unlink(missing_ok=True)
+        return None
+
+    def cold(self):
+        """The cold record while nothing serves the port, else None."""
+        try:
+            state = json.loads(self.cold_file.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+        if not isinstance(state, dict):
+            return None
+        if self.platform.listening(self.config['port']):
+            self.cold_file.unlink(missing_ok=True)
             return None
         return state
+
+    def start_cold(self, reason):
+        """Start a cold server from its last save through the ordinary start action."""
+        if not self.cold():
+            raise Refused('the server is not waiting for a cold start')
+        try:  # an action that was running when the machine went down never finished
+            if self.lock.exists() and self.booted_since(self.lock.stat().st_mtime):
+                self.lock.unlink()
+                self.log({'stale_lock_removed': self.read_state().get('action')})
+        except OSError:
+            pass
+        accepted = self.request('start')
+        self.cold_file.unlink(missing_ok=True)
+        return dict(accepted, cold_start=True, reason=reason)
+
+    def write_json(self, path, value):
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix('.tmp')
+        temporary.write_text(json.dumps(value), encoding='utf-8')
+        os.replace(temporary, path)
+
+    def last_client(self):
+        """Unix time a client was last seen on the world, or None."""
+        try:
+            value = json.loads(self.activity_file.read_text(encoding='utf-8')).get('last_client')
+        except (OSError, ValueError, AttributeError):
+            return None
+        return value if type(value) in (int, float) else None
+
+    def last_save(self):
+        """Unix time map_saves last completed a save, or None."""
+        try:
+            return (self.repo / 'map_saves' / 'save_complete.txt').stat().st_mtime
+        except OSError:
+            return None
+
+    def saved_since_last_client(self):
+        seen = self.last_client()
+        saved = self.last_save()
+        return seen is None or (saved is not None and saved >= seen)
 
     def freeze(self):
         if self.lock.exists():
@@ -527,15 +616,16 @@ class Host:
             raise Refused('the world is busy or not ready')
         if world.get('clients'):
             raise Refused('%s client(s) are connected' % world['clients'])
+        if self.config['freeze_requires_save'] and not self.saved_since_last_client():
+            raise Refused('waiting for a save newer than the last player (a frozen world must survive a power-down)')
         pid = self.platform.server_pid(self.config['port'])
         if not pid:
             raise Refused('could not find the process listening on the port')
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.platform.suspend(pid, self.config['freeze_trim_memory'])
         state = {'pid': pid, 'frozen_at': int(self.platform.now())}
-        temporary = self.freeze_file.with_suffix('.tmp')
-        temporary.write_text(json.dumps(state), encoding='utf-8')
-        os.replace(temporary, self.freeze_file)
+        self.write_json(self.freeze_file, state)
+        self.cold_file.unlink(missing_ok=True)
         return dict(state, frozen=True)
 
     def thaw(self, reason='requested'):
@@ -557,6 +647,8 @@ class Host:
         if self.lock.exists() or not self.platform.listening(self.config['port']):
             return None, 30
         world = self.world()
+        if world and world.get('clients'):
+            self.write_json(self.activity_file, {'last_client': int(self.platform.now())})
         if not world or world.get('busy') or not world.get('ready') or world.get('clients'):
             return None, 30
         now = self.platform.now()
@@ -564,6 +656,8 @@ class Host:
             return now, 30
         if now - idle_since < self.config['freeze_idle_minutes'] * 60:
             return idle_since, 30
+        if self.config['freeze_requires_save'] and not self.saved_since_last_client():
+            return idle_since, 60  # the world saves itself once it is empty; freeze after that
         try:
             self.log(self.freeze())
         except Refused as refusal:

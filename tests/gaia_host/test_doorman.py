@@ -1,5 +1,6 @@
 """Offline tests for scripts/gaia-host/doorman.py with the fake machine from test_gaia_host."""
 import json
+import os
 from pathlib import Path
 import socket
 import struct
@@ -19,9 +20,13 @@ class Machine(base.FakeMachine):
         super().__init__()
         self.status_calls = 0
         self.free_mb = 8192
+        self.boot = None
 
     def free_memory_mb(self):
         return self.free_mb
+
+    def boot_time(self):
+        return self.boot
 
     def status_topic(self, port):
         if self.suspended:
@@ -92,6 +97,85 @@ class DoormanTests(base.GaiaHostTests):
         self.host.config['wake_min_free_mb'] = 0
         self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
         self.assertEqual(self.machine.suspended, 0)
+
+    # -- surviving a power-down ---------------------------------------------
+    def saved_at(self, moment):
+        base.write_save(self.repo / 'map_saves')
+        os.utime(self.repo / 'map_saves' / 'save_complete.txt', (moment, moment))
+
+    def test_freeze_waits_for_a_save_newer_than_the_last_player(self):
+        self.running(clients=1)
+        self.saved_at(50)
+        self.machine.clock = 100
+        self.assertEqual(self.host.watch_step(None), (None, 30))  # remembers the player
+        self.machine.clients = 0
+        idle, _ = self.host.watch_step(None)
+        self.machine.clock = 100 + 15 * 60
+        self.assertEqual(self.host.watch_step(idle), (idle, 60))
+        with self.assertRaisesRegex(gaia_host.Refused, 'save newer than the last player'):
+            self.host.freeze()
+        self.assertEqual(self.machine.suspended, 0)
+        self.saved_at(200)  # the world saved itself once it was empty
+        self.host.watch_step(idle)
+        self.assertEqual(self.machine.suspended, 1)
+
+    def test_a_power_down_leaves_a_cold_server_that_starts_from_its_save_on_wake(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.machine.up = False  # the machine went down; nothing listens after the reboot
+        self.machine.suspended = 0
+        self.assertIsNone(self.host.frozen())
+        self.assertIsNotNone(self.host.cold())
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['wake_estimate']), ('asleep', 300))
+        self.machine.free_mb = 2000  # enough to thaw, not enough to load a save
+        refused = self.ask('wake=1&port=1714')
+        self.assertEqual((refused['ok'], refused['need_mb']), (False, 2560))
+        self.machine.free_mb = 8192
+        reply = self.ask('wake=1&port=1714')
+        self.assertEqual((reply['ok'], reply['state'], reply['eta']), (True, 'waking', 300))
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
+        self.assertIsNone(self.host.cold())
+        self.clock[0] += 200  # a cold start reads waking for much longer than a thaw
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
+        self.machine.up = True
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
+        self.door.step()
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'awake')
+
+    def test_a_reused_pid_after_a_reboot_is_not_thawed(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.machine.boot = 10_000  # rebooted after the freeze; the old pid now names another process
+        self.machine.up = False
+        self.machine.alive = lambda pid: True
+        self.assertIsNone(self.host.frozen())
+        self.assertIsNotNone(self.host.cold())
+
+    def test_a_cold_start_clears_an_action_lock_left_by_the_power_down(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.host.lock.write_text('x')
+        os.utime(self.host.lock, (100, 100))
+        self.machine.up = False
+        self.machine.boot = 5_000
+        self.host.frozen()
+        self.assertTrue(self.ask('wake=1&port=1714')['ok'])
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
+
+    def test_a_cold_server_without_a_valid_save_stays_down(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.machine.up = False
+        self.host.frozen()
+        (self.repo / 'map_saves' / 'save_complete.txt').unlink()
+        reply = self.ask('wake=1&port=1714')
+        self.assertEqual((reply['ok'], reply['state']), (True, 'asleep'))
+        self.assertEqual(self.machine.detached, [])
 
     def test_meminfo(self):
         self.assertEqual(gaia_host.parse_meminfo('MemTotal: 16000000 kB\nMemAvailable:    2097152 kB\n'), 2048)

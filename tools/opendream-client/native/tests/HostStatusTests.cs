@@ -128,6 +128,18 @@ internal static class HostStatusTests {
             new Dictionary<GameTarget, DormantServer> { [gaia] = sleeping with { State = "waking" } })).WakeAndVerify(sleeping, _ => { }), "never woke");
         Require(clock > HostStatus.WakeLimit && queried.Count == 0, "A server that never woke was queried or the limit was not enforced");
         await Reject(() => Waker(Poll, "stopped").WakeAndVerify(sleeping, _ => { }), "stopped on wake");
+        // A cold host (powered down since the freeze) starts from its save and gets a longer limit.
+        clock = TimeSpan.Zero;
+        polls = new Queue<string>(Enumerable.Repeat("waking", 100).Append("awake"));
+        progress.Clear();
+        verified = await Waker(Poll).WakeAndVerify(sleeping with { WakeEstimateSeconds = 300 }, progress.Add);
+        Require(verified.Status.Target == gaia && clock == TimeSpan.FromSeconds(202) && progress[0] == $"Starting {gaia.Name}...",
+            "A cold start was cut off at the thaw limit or mislabeled");
+        clock = TimeSpan.Zero;
+        polls = new Queue<string>(Enumerable.Repeat("waking", 200));
+        await Reject(() => Waker(Poll).WakeAndVerify(sleeping with { WakeEstimateSeconds = 300 }, _ => { }), "cold start never finished");
+        Require(clock > TimeSpan.FromSeconds(360) && clock < TimeSpan.FromSeconds(370), "Cold start limit is not estimate + 60 s");
+        queried.Clear();
         await Reject(() => new ServerDiscovery(Direct).WakeAndVerify(sleeping, _ => { }), "no doorman configured");
         Require(queried.Count == 0, "A failed wake reached the game port");
         // Console menu: the asleep server is listed after the live one and choosing it wakes it.

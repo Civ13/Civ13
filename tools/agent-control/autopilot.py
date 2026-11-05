@@ -897,7 +897,7 @@ def _holds(name, need):
     if need == "raw food":
         return _is_food(name) and "roasted" not in name and "cooked" not in name
     if need == "blade":
-        return any(word in name for word in ("sharpened flint", "knife", "dagger", "machete"))
+        return leatherwork.is_blade(name)
     if need == "vessel":
         return any(word in name.split() for word in leatherwork.VESSEL_WORDS)
     if need == "fuel":
@@ -1032,7 +1032,7 @@ SKILL_TARGETS = {
     "cook": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "light_fire": (lambda row: any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS), "a campfire"),
     "mine": (lambda row: "underground rock" in str(row.get("name", "")).lower() or "ore" in str(row.get("name", "")).lower().split() or str(row.get("type", "")).startswith(("/turf/floor/dirt/underground", "/turf/floor/mining")), "underground rock or ore"),
-    "scrape_hide": (lambda row: row.get("item") and any(w in str(row.get("name", "")).lower() for w in leatherwork.RAW_WORDS), "a raw hide or pelt on the ground"),
+    "scrape_hide": (lambda row: row.get("item") and leatherwork.is_raw(row.get("name")), "a raw hide or pelt on the ground"),
     "wash_hide": (lambda row: row.get("item") and "hairless hide" in str(row.get("name", "")).lower(), "a hairless hide on the ground"),
     "soak_bark": (lambda row: row.get("item") and "bark" in str(row.get("name", "")).lower(), "tree bark on the ground"),
     "tan_hide": (lambda row: row.get("item") and "dry hide" in str(row.get("name", "")).lower(), "a dry hide on the ground"),
@@ -1550,6 +1550,7 @@ def main(argv=None):
     parser.add_argument("--timeout", type=float, default=max(120.0, _float(defaults.get("timeout_seconds"), 0.0)), help="seconds to wait for each model reply")
     parser.add_argument("--memory", default="", help='folder for the character\'s long-term memory (default data/agent-control/memory; "none" turns it off)')
     parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
+    parser.add_argument("--leather", default="", help='pin a leather project from the start: belt, backpack or leather')
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
     if not args.model:
@@ -1707,6 +1708,7 @@ def _run(client, args, character, token, model_pool):
     asked_recently = {}  # recipe-book item -> step it was last looked up
     memory = None  # loaded once the character's name is known
     local_project = {"project": None}  # where the blueprint lives when memory is off
+    pinned_leather = leatherwork.product_name(args.leather) if getattr(args, "leather", "") else ""
     tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
@@ -1724,6 +1726,9 @@ def _run(client, args, character, token, model_pool):
             memory = CharacterMemory.load(self_state["name"], args.memory or None)
             memory.forget_non_people(self_state["name"])
             print(f"  memory: {memory.path} ({len(memory.data['people'])} people, {len(memory.data['events'])} events)")
+        if pinned_leather:
+            box_for_goal(memory, local_project)["leather"] = pinned_leather
+            pinned_leather = ""
         if self_state.get("stat") not in (None, 0):
             print(f"step {step}: {self_state.get('name')} is {'dead' if self_state.get('stat') == 2 else 'unconscious'}; stopping")
             if memory is not None:
@@ -1770,6 +1775,9 @@ def _run(client, args, character, token, model_pool):
         text, refs = summarize(observation, note, ignored, muted)
         talk, speakers = speech_prompt(speech_lines(observation.get("messages", []), self_state.get("name")), replied, time.monotonic())
         goal, after = current_goal(observation)
+        if box_for_goal(memory, local_project).get("leather") and not goal.startswith(SURVIVAL_GOALS):
+            product = box_for_goal(memory, local_project)["leather"]
+            goal, after = (f'finish your {product}: use {{"do": "leather_next"}} every turn until it is made and worn', "then carry on")
         item = goal_item(goal) if tree else ""
         how = tree.describe(item, carried(self_state), limit=4) if item else ""
         recalled = memory.recall(observation) if memory is not None else ""
@@ -2065,6 +2073,14 @@ def blueprint_plan(plan, observation, box, ledger=()):
     return head, f"The next piece of your {project['name']} ({piece['role']} at ({piece['x']},{piece['y']})) cannot be built yet: {problem}."
 
 
+# Goals that outrank a pinned project (leatherwork): staying alive comes first.
+SURVIVAL_GOALS = ("stop your bleeding", "warm up", "cool down", "your tunnel", "a roof near you", "drink", "eat the food", "cook your raw food", "get food")
+
+
+def box_for_goal(memory, local_project):
+    return memory.data if memory is not None else local_project
+
+
 def leather_plan(plan, observation, box):
     """Turn a leather_next step into the next real leatherworking steps. Returns (plan, feedback)."""
     index = next((i for i, item in enumerate(plan) if item.get("do") == "leather_next"), None)
@@ -2080,8 +2096,8 @@ def leather_plan(plan, observation, box):
         for item in steps:
             item["leather"] = product
         return head + steps, ""
-    if note.startswith("you already wear"):
-        box["leather"] = None
+    if note.startswith("you already wear") or "not available yet" in note:
+        box["leather"] = None  # finished, or locked behind research: stop pinning the goal
     return head, f"Leatherwork ({product}): {note}."
 
 

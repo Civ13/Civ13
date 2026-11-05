@@ -43,12 +43,24 @@ def _details(me):
     return [{"name": name} for name in names]
 
 
+def is_leather(name):
+    """A leather stack ("leather sheet", "dark leather sheets"), not something made of leather."""
+    name = str(name or "").lower().strip()
+    return name in ("leather", "dark leather") or (name.endswith(("leather sheet", "leather sheets")))
+
+
+def is_raw(name):
+    """An untreated hide: "raw hide pieces" or a pelt ("wolf pelts"); "hairless hide pelts" is already scraped."""
+    name = str(name or "").lower()
+    return "raw hide" in name or ("pelt" in name and "hide" not in name)
+
+
 def _is(name, word):
     name = str(name or "").lower()
     if word == "leather":
-        return name == "leather" or name == "leathers"
+        return is_leather(name)
     if word == "raw":
-        return any(w in name for w in RAW_WORDS)
+        return is_raw(name)
     return word in name
 
 
@@ -92,9 +104,38 @@ def _rack(observation):
     return min(rows, key=_distance) if rows else None
 
 
+BLADE_WORDS = ("sharpened flint", "knife", "dagger", "machete", "sword", "hatchet", "axe")
+
+
+def is_blade(name):
+    """A sharp tool that scrapes a hide (the game asks for any sharp item); a pickaxe is not one."""
+    name = str(name or "").lower()
+    return any(word in name for word in BLADE_WORDS) and "pickaxe" not in name and not any(w in name for w in ("head", "mold", "sheath"))
+
+
 def _has_blade(me):
-    return any(any(word in str(row.get("name", "")).lower() for word in ("sharpened flint", "knife", "dagger", "machete", "sword", "hatchet", "axe"))
-               and "pickaxe" not in str(row.get("name", "")).lower() for row in _details(me))
+    return any(is_blade(row.get("name")) for row in _details(me))
+
+
+def _tool_nearby(observation, test, reach=3):
+    """A loose tool she needs lying close by (a hand freed for work can leave one on the ground)."""
+    rows = [row for row in observation.get("nearby", []) if isinstance(row, dict) and row.get("item") and test(row.get("name")) and _distance(row) <= reach]
+    return min(rows, key=_distance) if rows else None
+
+
+def _is_axe(name):
+    name = str(name or "").lower()
+    return ("axe" in name or "hatchet" in name) and "pickaxe" not in name and "head" not in name
+
+
+def _locked(me, material, recipe):
+    """True when she holds the material stack and the game's craft list for it lacks the recipe (research gate)."""
+    active = me.get("left_hand") if me.get("active_hand") == "left" else me.get("right_hand")
+    held = str(active.get("name", "")) if isinstance(active, dict) else ""
+    craftable = me.get("craftable")
+    if not craftable or not _is(held, material):
+        return False
+    return not any(recipe in str(entry).lower() for entry in craftable)
 
 
 def _has_axe(me):
@@ -132,6 +173,9 @@ def _tannin(me, observation, vessel):
     logs = _ground(observation, "log", reach=3)
     if logs is not None and int(logs.get("amount") or 2) >= 2:
         if not _has_axe(me):
+            axe = _tool_nearby(observation, _is_axe)
+            if axe is not None:
+                return [{"skill": "pick_up", "target": axe.get("ref")}], ""
             return [], "cutting logs for bark needs a hatchet or axe"
         return [{"skill": "cut_logs", "target": logs.get("ref")}], ""
     if _count(me, "log") >= 2:
@@ -161,6 +205,8 @@ def next_steps(observation, product="leather"):
     if leather >= need:
         if product == "leather":
             return [], "you have leather"
+        if _locked(me, "leather", product):
+            return [], f"the {product} recipe is not available yet (it needs more research); keep the leather for other leather recipes"
         return [{"do": "craft", "recipe": product, "material": "leather"}], ""
     rack = _rack(observation)
     if rack is not None and "dry hide" in str(rack.get("holds", "")):
@@ -182,6 +228,8 @@ def next_steps(observation, product="leather"):
         return [{"skill": "pick_up", "target": wet.get("ref")}], ""
     if _count(me, "wet hide"):
         if rack is None:
+            if _locked(me, "log", "tanning rack"):
+                return [], "the tanning rack recipe is not available yet (it needs more research); keep the wet hides"
             if _count(me, "log") >= RACK_LOGS:
                 return [{"do": "craft", "recipe": "tanning rack", "material": "wood log"}], ""
             return [], f"a tanning rack needs {RACK_LOGS} wood logs: chop a tree"
@@ -205,6 +253,9 @@ def next_steps(observation, product="leather"):
             held = next(str(row["name"]) for row in _details(me) if _is(row.get("name"), "raw"))
             return [{"do": "drop", "material": held}], ""
         if not _has_blade(me):
+            blade = _tool_nearby(observation, is_blade)
+            if blade is not None:
+                return [{"skill": "pick_up", "target": blade.get("ref")}], ""
             return [], "scraping a hide needs a sharpened flint or a knife"
         return [{"skill": "scrape_hide", "target": raw.get("ref")}], ""
     if rack is not None and "wet hide" in str(rack.get("holds", "")):

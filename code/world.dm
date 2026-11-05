@@ -502,6 +502,23 @@ var/world_topic_spam_protect_time = world.timeofday
 
 var/global/nextsave = 0
 var/global/persistence_reboot_scheduled = FALSE
+// Automatic saves never run during active play (Val, 2026-11-05). They wait
+// until no one but the host is online; admins can still save by hand, and
+// players can vote for a save (see persistence_save_vote_block_reason()).
+var/global/persistence_played_since_save = FALSE
+var/global/persistence_empty_since = 0
+var/global/persistence_reboot_due = FALSE
+#define PERSISTENCE_EMPTY_SAVE_DELAY 3000 // 5 minutes empty before the catch-up save
+
+// Clients other than the host (config/host.txt or the hosting key).
+/proc/persistence_active_players()
+	var/host = fexists("config/host.txt") ? ckey(file2text("config/host.txt")) : null
+	var/count = 0
+	for (var/client/C in clients)
+		if (C.ckey && C.ckey != host && C.key != world.host)
+			count++
+	return count
+
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
@@ -509,21 +526,33 @@ var/global/persistence_reboot_scheduled = FALSE
 				// First save is one full interval after the round starts, not at round start.
 				if (!nextsave)
 					nextsave = world.realtime + 216000
-				// Warn from the actual schedule during its last two minutes.
-				var/save_in = round((nextsave - world.realtime) / 10)
-				if (save_in > 0 && save_in <= 120)
-					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[round(save_in / 60)] minutes</b> and <b>[save_in % 60] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
-				if (nextsave <= world.realtime)
-					nextsave = world.realtime + 216000
-					spawn(0)
-						ticker.savemap()
+				if (persistence_active_players())
+					// Hold every automatic save while people are playing.
+					persistence_played_since_save = TRUE
+					persistence_empty_since = 0
+				else
+					if (!persistence_empty_since)
+						persistence_empty_since = world.realtime
+					// Save the session soon after the last player leaves.
+					if (persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY)
+						nextsave = min(nextsave, world.realtime)
+					// Only the host can be online here; warn from the actual schedule.
+					var/save_in = round((nextsave - world.realtime) / 10)
+					if (save_in > 0 && save_in <= 120)
+						to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[round(save_in / 60)] minutes</b> and <b>[save_in % 60] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
+					if (nextsave <= world.realtime && !persistence_save_active())
+						nextsave = world.realtime + 216000
+						spawn(0)
+							ticker.savemap()
 				// BYOND never returns freed memory to the OS, so a world that runs for days
 				// eventually hits the process memory ceiling and crashes. Once a day, save the
 				// map and reboot; setup_everything() restores the save on startup.
 				// The world.time check keeps a freshly restarted server from rebooting again
-				// within the same clock hour.
+				// within the same clock hour. Like the periodic save, it waits for an empty server.
 				if (config.persistence_reboot_hour >= 0 && !persistence_reboot_scheduled)
 					if (text2num(time2text(world.realtime,"hh")) == config.persistence_reboot_hour && world.time > 36000)
+						persistence_reboot_due = TRUE
+					if (persistence_reboot_due && !persistence_active_players())
 						persistence_reboot_scheduled = TRUE
 						spawn(0)
 							persistence_maintenance_reboot()

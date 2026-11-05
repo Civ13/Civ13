@@ -178,6 +178,14 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_safehouse_map_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'safehouse_map'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/safehouse_map/test_layout.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_inventory_drag_suite_is_bounded_and_not_silently_omitted(self):
         name = 'inventory_drag'
         suite = ci.SUITES[name]
@@ -1268,6 +1276,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     expected.add('access_lists')
                     expected.add('game_ready')
                     expected.add('agent_control')
+                    expected.add('save_policy')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 
