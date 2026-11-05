@@ -114,6 +114,10 @@ public static class HostStatus {
         Parse(json, root => {
             if (root.TryGetProperty("schema", out var refusedSchema) && refusedSchema.TryGetInt32(out var refusedVersion) && refusedVersion == 1 &&
                 root.TryGetProperty("ok", out var refused) && refused.ValueKind == JsonValueKind.False &&
+                root.TryGetProperty("error", out var signedOut) && signedOut.ValueKind == JsonValueKind.String && signedOut.GetString() == "byond signed out")
+                throw new IOException(target.Name + " cannot start right now: its host is not signed in to BYOND. Try again later.");
+            if (root.TryGetProperty("schema", out refusedSchema) && refusedSchema.TryGetInt32(out refusedVersion) && refusedVersion == 1 &&
+                root.TryGetProperty("ok", out refused) && refused.ValueKind == JsonValueKind.False &&
                 root.TryGetProperty("error", out var error) && error.ValueKind == JsonValueKind.String && error.GetString() == "low memory") {
                 // The host keeps a server asleep rather than wake it without memory headroom.
                 var free = Int(root, "free_mb", 0, int.MaxValue);

@@ -223,6 +223,9 @@ class Doorman:
             instance = self.instances.get(int(port)) if port.isdigit() and len(port) <= 5 else None
             if instance is None:
                 return {'schema': SCHEMA, 'ok': False, 'error': 'unknown port'}
+            if instance.host.cold() and not instance.host.byond_signed_in():
+                instance.host.log({'wake_refused': 'byond signed out', 'port': instance.port})
+                return {'schema': SCHEMA, 'ok': False, 'error': 'byond signed out', 'port': instance.port}
             low = self.low_memory(instance)
             if low is not None:
                 instance.host.log({'wake_refused': 'low memory', 'port': instance.port, 'free_mb': low[0], 'need_mb': low[1]})

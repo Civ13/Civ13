@@ -21,12 +21,16 @@ class Machine(base.FakeMachine):
         self.status_calls = 0
         self.free_mb = 8192
         self.boot = None
+        self.pager = None
 
     def free_memory_mb(self):
         return self.free_mb
 
     def boot_time(self):
         return self.boot
+
+    def byond_pager_running(self):
+        return self.pager
 
     def status_topic(self, port):
         if self.suspended:
@@ -176,6 +180,22 @@ class DoormanTests(base.GaiaHostTests):
         reply = self.ask('wake=1&port=1714')
         self.assertEqual((reply['ok'], reply['state']), (True, 'asleep'))
         self.assertEqual(self.machine.detached, [])
+
+    def test_a_cold_start_waits_for_the_byond_pager(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.machine.up = False
+        self.host.frozen()
+        self.machine.pager = False
+        self.assertEqual(self.ask('wake=1&port=1714'), {'schema': 1, 'ok': False, 'error': 'byond signed out', 'port': 1714})
+        self.assertEqual(self.machine.detached, [])
+        with self.assertRaisesRegex(gaia_host.Refused, 'BYOND is not signed in'):
+            self.host.request('start')
+        self.assertIsNotNone(self.host.cold())
+        self.machine.pager = True
+        self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
 
     def test_meminfo(self):
         self.assertEqual(gaia_host.parse_meminfo('MemTotal: 16000000 kB\nMemAvailable:    2097152 kB\n'), 2048)

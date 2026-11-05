@@ -19,5 +19,6 @@
   "wake_min_free_mb": 1024,
   "freeze_requires_save": true,
   "cold_start_estimate_seconds": 300,
-  "cold_start_min_free_mb": 2560
+  "cold_start_min_free_mb": 2560,
+  "start_requires_byond_pager": true
 }
