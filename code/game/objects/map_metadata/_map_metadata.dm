@@ -629,7 +629,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 210
 					break
-		else if (!age9_done)
+		else if (!age9_done && ordinal_age < 9) // age9_done is not saved; a restored 2026 world keeps its ordinal age
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
