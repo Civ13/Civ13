@@ -114,6 +114,14 @@ SUITES = {
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm',
             'code/game/objects/map_metadata/eft_factory.dm', 'civ13.dme')},
+    # Generated inactive Extraction party safehouse template: DMM parse, airlock
+    # topology, room routes, account markers and descriptor; no BYOND runtime.
+    'safehouse_map': {'files': ('tests/safehouse_map/test_layout.py',),
+        'paths': ('tests/safehouse_map/', 'maps/WIP/extraction_safehouse.dmm',
+                  'maps/WIP/extraction_safehouse.layout.json',
+                  'maps/WIP/extraction_safehouse.template.json'), 'shared_paths': (
+            'code/modules/1713/extraction/instances.dm',
+            'code/modules/1713/extraction/mode.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
