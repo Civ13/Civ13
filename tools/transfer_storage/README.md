@@ -151,6 +151,14 @@ works like an admin gate. The approval is saved with the marker
 (`code/modules/persistence/region_trails.dm`). There is no ferry yet; a
 player-made ferry can reuse the same approval later.
 
+A **launch pad** (`code/modules/space/lander.dm`) is a trail marker that can
+only lead to a region with a survey map in `config/space/survey/`, approved
+the same way. Crew launch together from a crewed lander beside it; each
+travels as an ordinary character payload with three extra fields (`lander`,
+`landing` as a survey cell and the `surveyed`/`rough` flags), which the
+decoder checks. The destination builds the landed lander for the first
+arrival of a flight and puts the rest of the crew in it.
+
 Group setup, autosave timing and agent startup are in
 [scripts/shard-group](../../scripts/shard-group/README.md#travel-between-regions).
 

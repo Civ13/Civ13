@@ -123,9 +123,10 @@ mainland like any other region.
   mainland with no way back to the base. So the landed lander carries a
   claimable bunk and counts as pressurised for bed claims: claiming home is the
   first thing a crew can do after landing.
-- **Propellant.** Probes in phase 1 burn ordinary gasoline or diesel as a
-  placeholder. Phase 2 adds a propellant reagent from the chemistry line and
-  moves the launch rail and the crewed lander onto it.
+- **Propellant.** Rocket propellant is mixed from hydrazine and nitric acid
+  (2:1, both from the chemistry line). Since phase 2 the launch rail and the
+  crewed lander burn only propellant; phase 1 probes burned gasoline or diesel
+  as a placeholder.
 - **Return.** A return trip needs propellant at the landing site, produced
   locally from phase 6 on. Whether propellant carried as cargo may also allow
   earlier returns is decision D3; the recommendation is no, so early settlers
@@ -183,14 +184,16 @@ come with phase 3, when there is something to save.
 - Samples return as research material for the Spaceflight branch and mark
   landing sites as surveyed.
 - Built (phase 1): Rocketry unlocks the launch rail, survey probe and mission
-  console. A rail takes a probe and 60 units of gasoline or diesel (a
-  placeholder until phase 2 propellant) and launches it to an idle console
+  console. A rail takes a probe and 60 units of fuel (gasoline or diesel in
+  phase 1, rocket propellant since phase 2) and launches it to an idle console
   within 7 tiles. It lands anywhere flat, or, when the rail is aimed, on a plain
   within 2 cells of the aimed cell. Survey maps are keyed by destination region
   (`config/space/survey/<region>.json`, `barren` for now; the rail's
   `destination` var picks one) and record the source bundle's `ir_sha256`;
   `survey_map_matches_bundle()` and `survey-check` compare it with a region
-  bundle, which phase 2 uses to refuse a crewed launch to an unmatched map.
+  bundle. Region groups ship `.dmm` maps, not bundles, so the game cannot see
+  the bundle; whoever generates a barren region runs `survey-check` on its
+  bundle before admins approve launch pads to it.
 - Driving: moves cost 1 battery on plains, 2 in channels and 3 on ice, ridges
   block, and the probe stays within 12 cells of its landing site. Solar panels
   give back one point every 3 seconds (a tmp clock, so no backlog after a
@@ -223,6 +226,29 @@ come with phase 3, when there is something to save.
   enough to set up the first module, not to live in. It holds one claimable
   bunk so the crew can make the barren world home at once (see travel rules).
 - Propellant reagent and recipes replace the probe rail's gasoline.
+- Built (phase 2, `code/modules/space/lander.dm`): Crewed Flight (after
+  Planetary Survey) unlocks the launch pad and the crewed lander. A launch pad
+  is a trail marker that can only lead to a region with a survey map
+  (`config/space/survey/<region>.json`); the first player to use it asks for
+  a destination and an admin approves it, as with trails. A crewed lander built
+  beside an approved pad takes 300 units of rocket propellant and seats four:
+  crew strap in on its tile and any of them launches, choosing a probe landing
+  site from a mission console within 7 tiles or "anywhere flat". Each crew
+  member then travels as an ordinary region traveller (what they wear and
+  carry, under the usual travel rules), and the payload adds the lander id,
+  the landing survey cell and whether the site was surveyed. A rough landing
+  (5% on a surveyed site, 50% unsurveyed) costs each crew member 15 brute.
+  The cargo hold is left for a later PR: crew carry what region travel allows.
+- The first arrival of a flight builds the landed lander in its survey cell
+  (one cell is 5x5 tiles; the first spot in the cell with a clear 3x3, else
+  its middle) on the top barren level; later arrivals join it. It lays a 3x3
+  sealed deck with a bunk that can be claimed as a home bed. The deck turfs
+  answer the outside-air hooks from the core's cabin ledger (volume 9), so
+  there is no per-tile air. The core holds three hours of power and enough
+  oxygen and scrubber reserve for four people over that time; with power it
+  tops the oxygen back to 21 kPa, scrubs CO2 below 0.4 kPa and holds 20 C.
+  Without power the cabin goes stale and cools toward -60 C. The cabin saves
+  as plain numbers on the core and ticks only while someone is connected.
 
 ### Phase 3: habitat and life support
 
@@ -279,7 +305,7 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 | --- | --- | --- |
 | Rocketry | Launch rail, survey probe, mission console | 1 |
 | Planetary Survey | Advanced survey probe | 1 |
-| Crewed Flight | Launch site, crewed lander | 2 |
+| Crewed Flight | Launch pad, crewed lander | 2 |
 | Sealed Habitats | Habitat module kits, hatches, airlock | 3 |
 | Life Support | Electrolyser, scrubber, heater, water recycler | 3 |
 | Pressure Suits | Suit, helmet, air tank, repair kit | 4 |

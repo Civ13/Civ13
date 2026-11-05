@@ -233,7 +233,7 @@ var/global/list/space_survey_maps = list()
 
 /obj/structure/launch_rail
 	name = "launch rail"
-	desc = "A lattice tower that sends a survey probe on its way. Load a probe, fill it with 60 units of gasoline or diesel, and fly it from a mission console nearby."
+	desc = "A lattice tower that sends a survey probe on its way. Load a probe, fill it with 60 units of rocket propellant, and fly it from a mission console nearby."
 	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "radio_powered"
 	anchored = TRUE
@@ -265,22 +265,17 @@ var/global/list/space_survey_maps = list()
 		else if (fuel >= SURVEY_FUEL_UNITS)
 			to_chat(user, SPAN_WARNING("\The [src] is already fuelled."))
 		else
-			to_chat(user, SPAN_WARNING("\The [src] burns gasoline or diesel."))
+			to_chat(user, SPAN_WARNING("\The [src] burns only rocket propellant."))
 		return
 	return ..()
 
 /obj/structure/launch_rail/proc/add_fuel(datum/reagents/R)
-	var/took = 0
-	for (var/id in list("gasoline", "diesel"))
-		var/need = SURVEY_FUEL_UNITS - fuel
-		if (need <= 0)
-			break
-		var/amount = min(need, R.get_reagent_amount(id))
-		if (amount > 0)
-			R.remove_reagent(id, amount)
-			fuel += amount
-			took += amount
-	return took
+	var/amount = min(SURVEY_FUEL_UNITS - fuel, R.get_reagent_amount("rocket_propellant"))
+	if (amount <= 0)
+		return 0
+	R.remove_reagent("rocket_propellant", amount)
+	fuel += amount
+	return amount
 
 /obj/structure/launch_rail/proc/find_console()
 	for (var/obj/structure/survey_console/C in range(SURVEY_RAIL_CONSOLE_RANGE, src))
