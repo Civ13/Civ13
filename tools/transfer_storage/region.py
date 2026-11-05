@@ -45,6 +45,20 @@ def transfer_id(group, source, destination, epoch, seq):
     return hashlib.sha256(text.encode('ascii')).hexdigest()
 
 
+def payload_kinds(manifest):
+    """The sorted payload kinds ("kind" of each JSON object item) of a manifest."""
+    kinds = set()
+    items = json.loads(manifest).get('items', [])
+    for item in (items if isinstance(items, list) else []):
+        try:
+            value = json.loads(item) if isinstance(item, str) else None
+        except ValueError:
+            value = None
+        kind = value.get('kind') if isinstance(value, dict) else None
+        kinds.add(kind if isinstance(kind, str) and len(kind) <= 32 else '')
+    return sorted(kinds)
+
+
 class RegionStore:
     def __init__(self, path, region_id, group_id):
         self.region = region_id
@@ -351,8 +365,13 @@ class RegionStore:
                 self._send(IN, peer, 'TOMBSTONE', {'transfer_id': tid, 'seq': seq})
                 return None
             manifest = envelope['manifest']
-            if manifest.get('epoch') != epoch or manifest.get('seq') != seq:
+            if not isinstance(manifest, dict) or manifest.get('epoch') != epoch or manifest.get('seq') != seq:
                 raise TransferError('manifest does not match the channel')
+            items = manifest.get('items')
+            # Same rule as begin_escrow: a peer may not store a manifest that
+            # status() or the world cannot read.
+            if not isinstance(items, list) or not items or any(type(p) is not str for p in items):
+                raise TransferError('manifest needs a non-empty list of serialized items')
             self.db.execute('INSERT INTO active VALUES (?, ?, ?, ?, ?, ?)',
                             (IN, peer, seq, tid, json.dumps(manifest, sort_keys=True), PREPARED))
             self._send(IN, peer, 'PREPARE', {'transfer_id': tid, 'seq': seq})
@@ -423,6 +442,11 @@ class RegionStore:
             'pending_transfers': [tid for (tid,) in self.db.execute(
                 "SELECT transfer_id FROM active WHERE (direction = 'in' AND phase = ?) OR (direction = 'out' AND phase = ?)",
                 (COMMIT_RECEIVED, RETURNING))],
+            # What each pending transfer carries, so DM can pick where it lands
+            # before it records the effect.
+            'pending_kinds': {tid: payload_kinds(manifest) for (tid, manifest) in self.db.execute(
+                "SELECT transfer_id, manifest FROM active WHERE (direction = 'in' AND phase = ?) OR (direction = 'out' AND phase = ?)",
+                (COMMIT_RECEIVED, RETURNING))},
         }
 
     def clear_hold(self, reason):

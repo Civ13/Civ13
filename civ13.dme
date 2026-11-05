@@ -1208,6 +1208,7 @@
 #include "code\modules\persistence\shard_group.dm"
 #include "code\modules\persistence\transfer_bridge.dm"
 #include "code\modules\persistence\transfer_trade_post.dm"
+#include "code\modules\persistence\region_travel.dm"
 #include "code\modules\projectiles\__projectiles.dm"
 #include "code\modules\projectiles\_ammo_casing.dm"
 #include "code\modules\projectiles\ammo_crafting.dm"

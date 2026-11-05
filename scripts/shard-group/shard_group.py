@@ -75,6 +75,27 @@ def load_group(path):
             raise ValueError('region %s needs a map (.dmm)' % region['id'])
         ids.add(region['id'])
         ports.add(port)
+    # Transfers (character travel and trade) need an agent port on every region.
+    transfer_ports = [r.get('transfer_port') for r in regions]
+    if any(p is not None for p in transfer_ports):
+        for region, port in zip(regions, transfer_ports):
+            if type(port) is not int or not 1024 <= port <= 65535 or port in ports or port in RESERVED_PORTS:
+                raise ValueError('region %s needs a unique transfer_port from 1024 to 65535' % region['id'])
+            ports.add(port)
+        group['transfers'] = True
+    else:
+        group['transfers'] = False
+    for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
+        value = group.setdefault(key, default)
+        if type(value) is not int or not low <= value <= high:
+            raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
+    if type(group.setdefault('persistent', True)) is not bool:
+        raise ValueError('persistent must be true or false')
+    if group.get('python') is not None and (type(group['python']) is not str or not group['python']):
+        raise ValueError('python must be a path')
+    group.setdefault('python', sys.executable)
+    if group.get('rust_g') is not None and (type(group['rust_g']) is not str or not group['rust_g']):
+        raise ValueError('rust_g must be a path')
     root, repository = Path(group['root']).resolve(), Path(group['repository']).resolve()
     if root == repository or repository in root.parents or root in repository.parents:
         raise ValueError('root must be outside the repository (and not contain it)')
@@ -99,6 +120,8 @@ def region_config(group, region):
             'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(group['public']),
             'save_timeout_seconds': group['save_timeout_seconds'], 'start_timeout_seconds': group['start_timeout_seconds'],
             'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
+            'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
+            'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
             '_path': str(path / 'data' / 'shard-host' / 'host.json')}
 
 
@@ -116,6 +139,21 @@ def selected_map_dme(dme_text, include):
     return MAP_BLOCK.sub(lambda _: block, dme_text, count=1)
 
 
+TRANSFER_TOOLS = Path(__file__).resolve().parents[2] / 'tools' / 'transfer_storage'
+
+
+def detach(argv, cwd, log):
+    """Start a process that outlives this one, with its output in log (or discarded)."""
+    flags = 0x00000008 | 0x00000200 if os.name == 'nt' else 0
+    out = open(log, 'ab') if log else subprocess.DEVNULL
+    try:
+        return subprocess.Popen(argv, cwd=cwd, stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT if log else subprocess.DEVNULL,
+                                creationflags=flags, start_new_session=os.name != 'nt', close_fds=True).pid
+    finally:
+        if log:
+            out.close()
+
+
 class RegionPlatform(Platform):
     """Starts DreamDaemon for one region directly instead of a scheduled task."""
 
@@ -125,15 +163,29 @@ class RegionPlatform(Platform):
     def start_task(self, name):
         path = Path(self.config['repository'])
         (path / 'logs').mkdir(exist_ok=True)
+        # The world must find its agent when it loads, so the agent starts first.
+        self.start_agent()
         argv = [self.config['daemon'], 'region.dmb', str(self.config['port']), '-trusted', '-close',
                 '-public' if self.config['public'] else '-invisible', '-log', 'logs/world.log']
-        flags = 0x00000008 | 0x00000200 if os.name == 'nt' else 0
-        subprocess.Popen(argv, cwd=path, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                         creationflags=flags, start_new_session=os.name != 'nt', close_fds=True)
+        detach(argv, path, None)
         return 0, 'started'
 
     def task_ready(self, name):
         return (Path(self.config['repository']) / 'region.dmb').exists()
+
+    def start_agent(self):
+        """Start this region's transfer agent unless it already listens."""
+        port = self.config.get('transfer_port')
+        if not port or self.listening(port):
+            return False
+        path = Path(self.config['repository'])
+        argv = [self.config['python'], str(TRANSFER_TOOLS / 'agent.py'), '--db', str(Path(self.config['state_dir']) / 'transfers.sqlite'),
+                '--region', self.config['region'], '--group', self.config['group'], '--port', str(port),
+                '--token-file', str(path / 'config' / 'transfer-token.txt')]
+        for peer in self.config['peers']:
+            argv += ['--enroll', peer + ':out', '--enroll', peer + ':in']
+        detach(argv, path, Path(self.config['state_dir']) / 'agent.log')
+        return True
 
 
 class RegionHost(Host):
@@ -160,9 +212,14 @@ class RegionHost(Host):
         revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
         if not HEX40.match(revision):
             raise RuntimeError('could not resolve the group revision')
-        code, out = self.platform.run([git, 'checkout', '--detach', revision], cwd=path, timeout=600)
+        # --force: the region's config/config.txt override below is rewritten every update.
+        code, out = self.platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
         if code != 0:
             raise RuntimeError('checkout failed: ' + out.strip()[-300:])
+        if group['persistent']:
+            persistent_config(path / 'config' / 'config.txt')
+        if group.get('rust_g'):
+            shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
         include = place_map(group, region)
         dme = (path / 'civ13.dme').read_text(encoding='utf-8')
         (path / 'region.dme').write_text(selected_map_dme(dme, include), encoding='utf-8', newline='')
@@ -173,6 +230,24 @@ class RegionHost(Host):
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         self.record(phase='compiled', revision=revision, map=region['map'])
+
+
+def persistent_config(path):
+    """Make a region world a persistent round that saves: ALLOWED_GAMEMODES
+    PERSISTENCE, and SKIP_PERSISTENCE_SAVING (on in the repository's development
+    config) commented out."""
+    lines = path.read_text(encoding='utf-8').splitlines() if path.exists() else []
+    out, found = [], False
+    for line in lines:
+        key = line.split(' ', 1)[0]
+        if key == 'ALLOWED_GAMEMODES':
+            line, found = 'ALLOWED_GAMEMODES PERSISTENCE', True
+        elif key == 'SKIP_PERSISTENCE_SAVING':
+            line = '#' + line
+        out.append(line)
+    if not found:
+        out.append('ALLOWED_GAMEMODES PERSISTENCE')
+    path.write_text('\n'.join(out) + '\n', encoding='utf-8')
 
 
 def place_map(group, region):
@@ -216,11 +291,20 @@ def setup(group, platform=None):
         (path / 'map_saves').mkdir(exist_ok=True)
         config = path / 'config'
         config.mkdir(exist_ok=True)
-        settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group)}
+        settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group),
+                    'save_minutes': group['save_minutes'] if group['persistent'] else 0,
+                    'travel_save_seconds': group['travel_save_seconds']}
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():
             token.write_text(secrets.token_hex(16) + '\n', encoding='utf-8')
+        if group['transfers']:
+            secret = config / 'transfer-token.txt'
+            if not secret.exists():
+                secret.write_text(secrets.token_hex(24) + '\n', encoding='utf-8')
+            peers = [r['id'] for r in group['regions'] if r['id'] != region['id']]
+            agent = {'port': region['transfer_port'], 'token_file': 'config/transfer-token.txt', 'peers': peers, 'poll_seconds': 5}
+            (config / 'transfer_agent.json').write_text(json.dumps(agent, indent=1) + '\n', encoding='utf-8')
         host = region_config(group, region)
         Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
         Path(host['_path']).write_text(json.dumps(host, indent=1) + '\n', encoding='utf-8')
@@ -255,6 +339,42 @@ def region_view(port, timeout=10):
     return answer if isinstance(answer, dict) else None
 
 
+def process_alive(pid):
+    if os.name == 'nt':
+        out = subprocess.run(['tasklist', '/FI', 'PID eq %d' % pid, '/NH'], capture_output=True, text=True).stdout
+        return str(pid) in out
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def coordinator_pid(group):
+    """The running coordinator's pid, or None."""
+    try:
+        pid = int((Path(group['root']) / 'coordinator.pid').read_text(encoding='utf-8').strip())
+    except (OSError, ValueError):
+        return None
+    return pid if process_alive(pid) else None
+
+
+def ensure_coordinator(group, start=detach):
+    """Start the group's relay between region agents unless it already runs."""
+    if not group['transfers'] or coordinator_pid(group):
+        return False
+    root = Path(group['root'])
+    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(root / 'coordinator.sqlite'), '--group', group['group']]
+    for region in group['regions']:
+        token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
+        argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]
+    pid = start(argv, root, root / 'coordinator.log')
+    (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
+    return True
+
+
 def group_status(group, only=None, view=region_view, platform=None):
     report = {}
     for region, host in hosts(group, only, platform):
@@ -267,8 +387,13 @@ def group_status(group, only=None, view=region_view, platform=None):
                 entry['region_view'] = {'error': 'no matching shard_region answer'}
             else:
                 entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
+        if group['transfers']:
+            entry['transfer_agent'] = (platform or RegionPlatform(region_config(group, region))).listening(region['transfer_port'])
         report[region['id']] = entry
-    return {'group': group['group'], 'regions': report}
+    result = {'group': group['group'], 'regions': report}
+    if group['transfers']:
+        result['coordinator'] = coordinator_pid(group) is not None
+    return result
 
 
 def main(argv=None):
@@ -303,6 +428,8 @@ def main(argv=None):
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
             result = {'accepted': accepted, 'refused': refused}
+            if args.action in ('start', 'restart') and accepted:
+                result['coordinator_started'] = ensure_coordinator(group)
             if refused and not accepted:
                 print(json.dumps({'ok': False, 'refused': refused}))
                 return 1

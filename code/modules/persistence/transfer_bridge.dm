@@ -184,8 +184,13 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	var/list/directions = list()
 	for(var/list/row in state["active"])
 		if(istext(row["transfer_id"])) directions[row["transfer_id"]] = row["direction"]
+	var/list/kinds = islist(state["pending_kinds"]) ? state["pending_kinds"] : list()
 	for(var/transfer_id in state["pending_transfers"])
 		if(!istext(transfer_id)) continue
+		var/list/transfer_kinds = kinds[transfer_id]
+		if(islist(transfer_kinds) && ("character" in transfer_kinds))
+			poll_character(transfer_id, directions[transfer_id] == "in")
+			continue
 		var/obj/structure/transfer_trade_post/post = transfer_trade_arrival_post()
 		if(!post) return
 		var/turf/post_turf = get_turf(post)
@@ -196,6 +201,18 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		// The effect is recorded; credit it now, without sleeping.
 		if(QDELETED(post)) post = transfer_trade_arrival_post() || new /obj/structure/transfer_trade_post(post_turf)
 		transfer_trade_credit(post, result["payloads"], incoming)
+
+// Travellers (region_travel.dm) arrive at a gate or a late-join point rather
+// than a trade post. Nothing is imported while the world has neither.
+/datum/transfer_bridge/proc/poll_character(transfer_id, incoming)
+	if(("[transfer_id]:[incoming ? "credit" : "return"]") in applied) return
+	var/turf/T = region_travel_arrival_turf()
+	if(!T) return
+	var/list/result = incoming ? begin_import(transfer_id) : begin_return(transfer_id)
+	if(!result) return
+	// The effect is recorded; build the character now, without sleeping. If the
+	// arrival point went away during the request, the build picks another.
+	region_travel_arrive(result["payloads"], incoming, T)
 
 /map_storage/transfer_capture(generation)
 	return transfer_bridge.capture(generation)
