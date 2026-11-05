@@ -76,6 +76,11 @@ PREDATOR_WORDS = STRONG_PREDATORS + ("wolf", "fox", "snake", "boar", "hyena", "j
 WEAPON_WORDS = ("spear", "sharpened stick", "axe", "hatchet", "sword", "knife", "club", "mace", "pike", "dagger", "machete")
 BANDAGE_WORDS = ("bandage", "gauze", "trauma kit")
 HEAL_WORDS = BANDAGE_WORDS + ("healing herb", "herbs", "poultice", "ointment", "burn kit", "sulfa")
+# Body temperature in kelvin (normal is about 310): the game starts cold damage below 260 and heat damage above 315.
+COLD_NEED = 290
+COLD_DANGER = 270
+HOT_NEED = 316
+WARM_CLOTHES = ("coat", "cloak", "jacket", "parka", "poncho", "robe", "sweater", "fur", "hood", "cape", "mittens", "gloves", "boots", "hat")
 REFLEX_POLL = 0.7  # seconds between threat checks while the model thinks
 SPEECH_GAP = 10.0  # seconds between replies to the same speaker
 TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick", "craft", "food", "cook", "meat", "skill", "rope", "bandage")
@@ -230,6 +235,9 @@ def summarize(observation, note="", ignored=(), muted=()):
         needs.append("thirsty: find water (explore if none is listed) and drink")
     if isinstance(self_state.get("nutrition"), (int, float)) and self_state["nutrition"] < 250:
         needs.append("hungry: find or make food and eat it")
+    temperature = temperature_need(self_state)
+    if temperature:
+        needs.insert(0, temperature)
     if needs:
         lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
     if self_state.get("craftable"):
@@ -400,6 +408,9 @@ def current_goal(observation):
     wound = worst_wound(me)
     if wound and wound.get("bleeding"):
         return "stop your bleeding: treat it with bandages, or make bandages or find healing herbs right away", "then rest and heal"
+    temperature = temperature_need(me)
+    if temperature:
+        return "warm up, you are " + temperature if temperature.startswith("freezing") else "cool down, you are " + temperature, "then carry on"
     if (observation.get("here") or {}).get("cave_supported") is False:
         return "your tunnel has no support here and can cave in: build a mine support (2 wood logs) right here now, or climb out", "then keep mining safely"
     if any("roof" in str(row.get("name", "")).lower() and row.get("supported") is False and isinstance(row.get("dx"), int) and isinstance(row.get("dy"), int)
@@ -416,9 +427,11 @@ def current_goal(observation):
     if not _has(me, lambda n: "sharpened flint" in n or "axe" in n or "hatchet" in n or "knife" in n):
         return "sharpen your flint on a rock", "then make a spear"
     if not _has(me, lambda n: "sharpened stick" in n or "spear" in n):
+        if _has(me, _is_plain_stick):
+            return "make a spear: you carry a stick, so sharpen_stick it now with your sharpened flint", "then make an axe"
         return "make a spear: break a branch, make_stick, sharpen_stick", "then make an axe"
     if not _has(me, lambda n: "axe" in n or "hatchet" in n):
-        return "make a flint axe: cut_grass twice and twist_twine (or butcher an animal for sinew), then bind_axe", "then chop wood"
+        return _axe_goal(me), "then chop wood"
     if hungry:
         return "get food: hunt an animal with your spear and butcher it, then cook it on a campfire", "then build a camp"
     if not wood and not fire:
@@ -443,6 +456,19 @@ def current_goal(observation):
     if not _has(me, lambda n: "ingot" in n or "bar" in n.split()):
         return "smelt your ore: build a clay bloomery or furnace, fuel and light it, put the ore in, and cast ingots in a mold", "then craft metal tools"
     return "craft metal tools, weapons and armor from your ingots, and improve your house", "then help other players and trade"
+
+
+def _axe_goal(me):
+    """The next axe step from what she already carries, so she never cuts grass she no longer needs."""
+    if _has(me, lambda n: any(word in n for word in BINDING_WORDS)):
+        if not _has(me, lambda n: "sharpened flint" in n):
+            return "make a flint axe: you have the binding and the stick; sharpen_flint a flint on a rock, then bind_axe"
+        return ('make a flint axe: you already carry the binding, a sharpened stick and sharpened flint, so bind_axe now '
+                '({"skill": "bind_axe", "target": 0}: flint in your active hand, the stick in your other hand)')
+    if _has(me, lambda n: "grass cutting" in n):
+        return "make a flint axe: twist_twine your grass cuttings into crude twine (cut_grass once more if it needs two), then bind_axe"
+    return ("make a flint axe: cut_grass twice on tall grass or a grass tile (not loose cuttings) and twist_twine "
+            "(or butcher an animal for sinew), then bind_axe")
 
 
 def _mining_goal(observation, me):
@@ -879,6 +905,52 @@ def thirst_plan(observation, explore_dir="north", ignored=()):
     return {"do": "explore", "dir": explore_dir}
 
 
+def temperature_need(self_state):
+    """A NEEDS phrase when her body is too cold or too hot, else ""."""
+    body = self_state.get("bodytemperature")
+    if not isinstance(body, (int, float)) or isinstance(body, bool):
+        return ""
+    if body < COLD_NEED:
+        return (f"freezing (body {round(body)} K, normal 310): stand next to a lit campfire (build one from 4 wood logs, "
+                "fuel_fire, light_fire), get under a roof, or equip warm clothes you carry")
+    if body > HOT_NEED:
+        return f"overheating (body {round(body)} K, normal 310): get into shade or under a roof, drink, and take off heavy clothes"
+    return ""
+
+
+def _warm_clothes(self_state):
+    """A carried, unworn piece of warm clothing, or None."""
+    worn = [str(item).lower() for item in self_state.get("worn") or []]
+    held = [_name(self_state.get("left_hand")), _name(self_state.get("right_hand"))]
+    carried = [str(item).split(" (", 1)[0] for item in self_state.get("carried") or []]
+    for name in held + carried:
+        lowered = str(name).lower()
+        if lowered != "empty" and lowered not in worn and any(word in lowered.split() for word in WARM_CLOTHES):
+            return str(name)
+    return None
+
+
+def cold_plan(observation, ignored=()):
+    """When dangerously cold, the step that warms her: put on warm clothes, go to a fire, or build one. None when not needed."""
+    me = observation.get("self", {})
+    body = me.get("bodytemperature")
+    if not isinstance(body, (int, float)) or isinstance(body, bool) or body >= COLD_DANGER:
+        return None
+    clothes = _warm_clothes(me)
+    if clothes:
+        return {"do": "equip", "material": clothes}
+    fires = [row for row in observation.get("nearby", []) if row.get("ref") not in ignored and not row.get("item")
+             and any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS)]
+    if fires:
+        fire = min(fires, key=lambda row: max(abs(_int(row.get("dx"), 9)), abs(_int(row.get("dy"), 9))))
+        if adjacent(fire):
+            return {"skill": "light_fire", "target": fire.get("ref")}
+        return {"do": "go", "target": fire.get("ref")}
+    if _has(me, lambda n: "log" in n):
+        return {"do": "craft", "recipe": "campfire", "material": "wood log"}
+    return None
+
+
 def _is_plain_stick(name):
     name = str(name or "").lower()
     return name == "stick" or (name.endswith(" stick") and "sharpened" not in name and "cleared" not in name)
@@ -1129,7 +1201,7 @@ def expand_plan(plan, self_state, rows=None):
             if error:
                 return steps, error
             steps.extend(expanded)
-        elif step.get("do") == "craft":
+        elif step.get("do") in ("craft", "equip") and step.get("material"):
             steps.extend(_expand_craft(step, self_state))
         elif step.get("do") == "build":
             held = _expand_craft({"do": "craft", "recipe": step["recipe"], "material": step.get("material", "")}, self_state)
@@ -1559,6 +1631,7 @@ def _run(client, args, character, token, model_pool):
         self_state = observation.get("self", {})
         if memory is None and getattr(args, "memory", "") != "none" and self_state.get("name"):
             memory = CharacterMemory.load(self_state["name"], args.memory or None)
+            memory.forget_non_people(self_state["name"])
             print(f"  memory: {memory.path} ({len(memory.data['people'])} people, {len(memory.data['events'])} events)")
         if self_state.get("stat") not in (None, 0):
             print(f"step {step}: {self_state.get('name')} is {'dead' if self_state.get('stat') == 2 else 'unconscious'}; stopping")
@@ -1678,8 +1751,13 @@ def _run(client, args, character, token, model_pool):
         if care and wound and wound.get("bleeding") and not any(item.get("skill") == "treat" for item in plan):
             print(f"  bleeding from the {wound.get('name')}: treating it instead")
             plan = [{"skill": "treat", "target": refs[0]}]
+        cold = cold_plan(observation, ignored)
         thirsty = thirst_plan(observation, explore_dir, ignored)
-        if thirsty and not any(item.get("skill") in ("drink", "treat") or item.get("do") == "explore" for item in plan):
+        if cold and not care and not any(item.get("skill") in ("treat", "light_fire", "fuel_fire") or item.get("recipe") == "campfire" for item in plan):
+            print(f"  freezing (body {self_state.get('bodytemperature')} K): warming up instead")
+            plan = [cold]
+            feedback_extra = "You were freezing, so you warmed up instead of your plan."
+        elif thirsty and not any(item.get("skill") in ("drink", "treat") or item.get("do") == "explore" for item in plan):
             print(f"  very thirsty (water {self_state.get('water')}): going for water instead")
             plan = [thirsty]
             feedback_extra = "You were very thirsty, so you went for water instead of your plan."
