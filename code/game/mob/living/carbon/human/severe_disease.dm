@@ -9,6 +9,10 @@
 	return disease && (disease_type in list("plague", "typhus", "malaria", "cholera"))
 
 /mob/living/human/proc/clear_disease()
+	// A cure ends the illness ache too: drop any pain it piled up back to the
+	// illness ceiling, and normal recovery (1-3 a second) clears the rest.
+	if (disease && is_severe_disease())
+		halloss = min(halloss, SEVERE_DISEASE_PAIN_CRITICAL)
 	disease = FALSE
 	disease_type = "none"
 	disease_progression = 0
