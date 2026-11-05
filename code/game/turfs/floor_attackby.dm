@@ -13,7 +13,8 @@
 #endif
 
 /turf/floor/grass/proc/grass_cutting_actor_connected(mob/user)
-	return user && user.client
+	// An agent-controlled character has no client but is driven like a player.
+	return user && (user.client || agent_character_for(user))
 
 #ifdef CIV13_GAMEPLAY_BRIDGE
 /turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool, datum/gameplay_action_lease/gameplay_context = null)

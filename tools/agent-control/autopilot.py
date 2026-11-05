@@ -32,6 +32,9 @@ SKILLS = {
     "make_stick": ("empty", "harm", 1),
     "sharpen_stick": ("sharpened flint", "help", 1),
     "cut_grass": ("sharpened flint", "help", 1),
+    "twist_twine": ("grass cuttings", "help", 0),
+    "bind_axe": ("sharpened flint", "help", 1),
+    "butcher": ("sharpened flint", "harm", 1),
     "chop": ("axe", "harm", 1),
     "drink": ("empty", "grab", 1),
     "pick_up": ("empty", "help", 1),
@@ -56,9 +59,12 @@ Reply with one JSON object and nothing else:
 Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent and hand for you, then clicks the target:
  find_flint (a rock: search it for flint), sharpen_flint (a rock: hit it with your flint until sharp),
  break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a cleared branch: strip it into a stick),
- sharpen_stick (a stick: sharpen it with sharpened flint), cut_grass (a grass tile: cut grass with sharpened flint),
+ sharpen_stick (a stick: sharpen it with sharpened flint), cut_grass (tall grass or a grass tile: cut grass cuttings with sharpened flint),
+ twist_twine (target 0: twist two grass cuttings you carry into crude twine),
+ bind_axe (a sharpened stick you hold or stand on: bind your sharpened flint to it with twine or sinew, making a flint axe),
+ butcher (a dead animal: butcher it with sharpened flint for meat and, from goat-sized or bigger animals, sinew),
  chop (a tree: chop it with an axe or hatchet), drink (a water tile: drink), pick_up (a loose item: pick it up),
- attack (a creature or person attacking you: hit it on harm intent with what you hold).
+ attack (a creature or person attacking you, or an animal you hunt: hit it on harm intent with what you hold).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
@@ -81,8 +87,12 @@ How to play:
   1. Flint: set intent to grab, empty active hand, click a rock next to you and stay still; after about 5 seconds a flint is in your hand.
   2. Sharpen it: hold the flint and click the rock again a few times until it becomes "sharpened flint".
   3. Branches: set intent to harm, empty hand, click a tree next to you; after about 8 seconds a branch falls. Grab intent on the branch picks leaves; harm intent on a bare branch makes a stick.
-  4. Hold the sharpened flint and click a stick to make a sharpened stick (a spear), or click grass to cut grass for twine.
-  5. With an axe or hatchet, click a tree to chop it into logs. Hold logs, leaves or other stacks to craft from them.
+  4. Hold the sharpened flint and click a stick to make a sharpened stick (a spear).
+  5. Axe: cut_grass twice (tall grass or grass) for grass cuttings, twist_twine to make crude twine, then bind_axe:
+     sharpened flint in hand, the sharpened stick in your other hand or under you, and the twine in a pocket or under you.
+     Sinew makes a much stronger axe than grass twine: kill a goat, deer, pig or similar animal with a sharpened stick,
+     butcher it, and the sinew is picked up for you. Rope also works. The flint is used up, so sharpen another afterwards.
+  6. With an axe or hatchet, click a tree to chop it into logs. Hold logs, leaves or other stacks to craft from them.
 - Timed work (searching, chopping, sharpening, drinking) runs for several seconds; the game waits for it to finish before your next step.
 - Keep water and nutrition up; when NEEDS says you are thirsty or hungry, that comes first. Drink from a river, lake or well: empty active hand, grab intent, click the water tile next to you. Eat food by holding it and clicking yourself (target 0).
 - Craft: hold a stack of material (logs, planks, leaves, rope, stone, cloth...) in your active hand; its recipes are listed under "You can craft". Then {"do": "craft", "recipe": "<name>"}.
@@ -466,8 +476,23 @@ SKILL_TARGETS = {
     "pick_leaves": (lambda row: row.get("branch") == "leafy", "a leafy fallen branch"),
     "make_stick": (lambda row: row.get("branch") == "cleared", "a cleared fallen branch"),
     "drink": (_is_drinkable, "fresh water (not salt water)"),
-    "cut_grass": (lambda row: "grass" in str(row.get("name", "")).lower(), "grass"),
+    "cut_grass": (lambda row: "grass" in str(row.get("name", "")).lower() and not row.get("item"), "tall grass or a grass tile"),
+    "bind_axe": (lambda row: "sharpened stick" in str(row.get("name", "")).lower(), "a sharpened stick"),
+    "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
+BINDING_WORDS = ("crude twine", "sinew", "rope")
+
+
+def _underfoot(row):
+    return row.get("dx") == 0 and row.get("dy") == 0
+
+
+def _binding_at_hand(self_state, rows=None):
+    """True when twine, sinew or rope is in a hand, a pocket or under the character (where the axe binding looks)."""
+    names = [_name(self_state.get("left_hand")), _name(self_state.get("right_hand"))]
+    names += [str(item).split(" (", 1)[0] for item in self_state.get("carried") or [] if str(item).endswith("(pocket)")]
+    names += [str(row.get("name", "")) for row in (rows or {}).values() if _underfoot(row)]
+    return any(word in str(name).lower() for name in names for word in BINDING_WORDS)
 
 
 def progressed(change):
@@ -490,6 +515,19 @@ def expand_skill(step, self_state, rows=None):
     active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
     row = (rows or {}).get(step["target"])
     steps = []
+    if step["skill"] == "twist_twine":
+        return _expand_twist(active, other, self_state)
+    if step["skill"] == "bind_axe":
+        if not _binding_at_hand(self_state, rows):
+            return [], "bind_axe needs crude twine, sinew or rope in a pocket, a hand or under you: cut_grass twice, then twist_twine"
+        if step["target"] == self_state.get("ref") or row is None:
+            held = [hand for hand in ("left_hand", "right_hand") if "sharpened stick" in str(_name(self_state.get(hand))).lower()]
+            if not held or not isinstance(self_state.get(held[0]), dict) or not self_state[held[0]].get("ref"):
+                return [], "bind_axe needs a sharpened stick in your other hand or under you"
+            step = dict(step, target=self_state[held[0]]["ref"])
+            row = None
+        elif not _underfoot(row) and "sharpened stick" in str(row.get("name", "")).lower():
+            return [], "bind_axe needs the sharpened stick in your other hand or under you: pick_up it first"
     if step["target"] == self_state.get("ref"):
         held_stick = [hand for hand in ("left_hand", "right_hand") if _is_plain_stick(_name(self_state.get(hand)))]
         if step["skill"] == "sharpen_stick" and held_stick and isinstance(self_state.get(held_stick[0]), dict) and self_state[held_stick[0]].get("ref"):
@@ -549,6 +587,24 @@ def expand_skill(step, self_state, rows=None):
     if self_state.get("intent") != intent:
         steps.append({"do": "intent", "intent": intent})
     steps.extend({"do": "click", "target": step["target"]} for _ in range(clicks))
+    return steps, ""
+
+
+def _expand_twist(active, other, self_state):
+    """Hold the grass cuttings and use them in hand."""
+    steps = []
+    if not _holds(active, "grass cuttings"):
+        if _holds(other, "grass cuttings"):
+            steps.append({"do": "swap_hand"})
+        elif any(_holds(item, "grass cuttings") for item in _stowed(self_state)):
+            if active != "empty":
+                if other != "empty":
+                    return [], "twist_twine needs your grass cuttings, but both hands are full: put one item down first"
+                steps.append({"do": "swap_hand"})
+            steps.append({"do": "take", "item": "grass cuttings"})
+        else:
+            return [], "twist_twine needs grass cuttings: cut_grass on tall grass or a grass tile first"
+    steps.append({"do": "use"})
     return steps, ""
 
 
@@ -693,7 +749,7 @@ def walk(client, character, queue_since, direction=None, away_from=None, moves=6
     return walked > 0, f"walked {walked} tiles", queue_since
 
 
-COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass"}
+COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass", "butcher": "sinew"}
 
 
 def collect(client, character, queue_since, word):

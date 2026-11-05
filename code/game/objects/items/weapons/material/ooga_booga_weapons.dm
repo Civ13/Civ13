@@ -95,7 +95,8 @@
 	return do_after(user, 100, src)
 
 /obj/item/weapon/branch/proc/axe_actor_connected(mob/user)
-	return user && user.client
+	// An agent-controlled character has no client but is driven like a player.
+	return user && (user.client || agent_character_for(user))
 
 // Keep the original ground output if the actor cannot take it immediately.
 /proc/offer_crafted_axe_to_active_hand(mob/user, obj/item/axe)

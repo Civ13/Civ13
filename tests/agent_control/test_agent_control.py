@@ -482,6 +482,48 @@ class AutopilotTests(unittest.TestCase):
         shake = (ROOT / "code/game/mob/living/carbon/carbon.dm").read_text(encoding="utf-8")
         self.assertIn("if (show_ssd && !client && !teleop && !agent_character_for(src))", shake)
 
+    def test_agent_characters_count_as_connected_players(self):
+        checks = {
+            "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",
+            "code/game/turfs/floor_attackby.dm": "return user && (user.client || agent_character_for(user))",
+            "code/game/objects/items/weapons/material/ooga_booga_weapons.dm": "return user && (user.client || agent_character_for(user))",
+            "code/modules/1713/animal_harvest.dm": "(!require_client || user.client || agent_character_for(user))",
+            "code/game/objects/items/stacks/sheets/leather.dm": "return client != null || agent_character_for(src)",
+            "code/modules/research_tree/research_faction.dm": "if ((!H.client && !agent_character_for(H)) || H.civilization != faction)",
+        }
+        for path, line in checks.items():
+            self.assertIn(line, (ROOT / path).read_text(encoding="utf-8"), path)
+
+    def test_twine_and_axe_skills(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened flint", "ref": "[0x5]"},
+              "left_hand": {"name": "grass cuttings", "ref": "[0x6]"}, "intent": "help", "carried": []}
+        steps, error = autopilot.expand_plan(autopilot.parse_plan('{"do": "twist_twine", "target": 0}', ["[0x9]"]), me)
+        self.assertEqual((steps, error), ([{"do": "swap_hand"}, {"do": "use"}], ""))
+        bare = dict(me, left_hand=None)
+        self.assertIn("cut_grass", autopilot.expand_plan([{"skill": "twist_twine", "target": "[0x9]"}], bare)[1])
+        rows = {"[0x1]": {"ref": "[0x1]", "name": "tall grass", "type": "/obj/structure/wild/tallgrass", "dx": 1, "dy": 0},
+                "[0x2]": {"ref": "[0x2]", "name": "grass cuttings", "dx": 1, "dy": 0, "item": True},
+                "[0x3]": {"ref": "[0x3]", "name": "sharpened stick", "dx": 1, "dy": 1, "item": True},
+                "[0x4]": {"ref": "[0x4]", "name": "crude twine", "dx": 0, "dy": 0, "item": True}}
+        self.assertEqual(autopilot.expand_plan([{"skill": "cut_grass", "target": "[0x1]"}], me, rows)[1], "")
+        self.assertIn("tall grass", autopilot.expand_plan([{"skill": "cut_grass", "target": "[0x2]"}], me, rows)[1])
+        # Binding needs twine where the game looks, and the stick in hand or underfoot.
+        holding = dict(me, left_hand={"name": "sharpened stick", "ref": "[0x7]"})
+        self.assertIn("twist_twine", autopilot.expand_plan([{"skill": "bind_axe", "target": "[0x9]"}], holding)[1])
+        pocket = dict(holding, carried=["crude twine (pocket)"])
+        self.assertEqual(autopilot.expand_plan([{"skill": "bind_axe", "target": "[0x9]"}], pocket), ([{"do": "click", "target": "[0x7]"}], ""))
+        self.assertIn("pick_up", autopilot.expand_plan([{"skill": "bind_axe", "target": "[0x3]"}], me, rows)[1])
+        bagged = dict(holding, carried=["crude twine (in satchel)"])
+        self.assertIn("twist_twine", autopilot.expand_plan([{"skill": "bind_axe", "target": "[0x9]"}], bagged)[1])
+        self.assertEqual(autopilot.expand_plan([{"skill": "bind_axe", "target": "[0x9]"}], holding, rows)[1], "")  # twine underfoot
+        sinew = dict(holding, carried=["sinew (pocket)"])
+        self.assertEqual(autopilot.expand_plan([{"skill": "bind_axe", "target": "[0x9]"}], sinew)[1], "")
+        animals = {"[0x8]": {"ref": "[0x8]", "name": "goat", "type": "/mob/living/simple_animal/goat", "dx": 1, "dy": 0, "mob": True, "stat": 2},
+                   "[0xa]": {"ref": "[0xa]", "name": "goat", "type": "/mob/living/simple_animal/goat", "dx": 1, "dy": 0, "mob": True, "stat": 0}}
+        self.assertEqual(autopilot.expand_plan([{"skill": "butcher", "target": "[0x8]"}], me, animals), ([{"do": "intent", "intent": "harm"}, {"do": "click", "target": "[0x8]"}], ""))
+        self.assertIn("a dead animal", autopilot.expand_plan([{"skill": "butcher", "target": "[0xa]"}], me, animals)[1])
+        self.assertEqual(autopilot.COLLECT_AFTER["butcher"], "sinew")
+
     def test_attacks_put_danger_first_and_downed_bodies_stop(self):
         observation = {"self": {"name": "Ada", "health": 77}, "messages": [{"text": "The grey she-wolf bites Ada!"}]}
         alarm = autopilot.danger(observation, {"health": 100})
