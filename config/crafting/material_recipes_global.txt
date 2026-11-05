@@ -443,6 +443,8 @@ RECIPE: /material/electronics/,launch rail,/obj/structure/launch_rail,30,200,1,1
 RECIPE: /material/electronics/,survey probe,/obj/item/space_probe,25,150,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,mission console,/obj/structure/survey_console,20,150,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,advanced survey probe,/obj/item/space_probe/advanced,35,200,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,launch pad,/obj/structure/region_gate/trail_marker/launch_pad,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,crewed lander,/obj/structure/crewed_lander,60,400,1,1,spaceflight,235,0,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
 

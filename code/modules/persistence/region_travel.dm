@@ -148,7 +148,7 @@ var/global/list/region_travel_carry_types = list(
 		return "You carry too much to travel."
 	return items
 
-/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE)
+/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE, list/extra = null)
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
@@ -186,6 +186,10 @@ var/global/list/region_travel_carry_types = list(
 	// A raid trip (region_raid.dm) says where the raider goes home to.
 	else if(raid)
 		P["from"] = shard_group.region
+	// A crewed flight (space/lander.dm) says which lander and where it lands.
+	for(var/key in extra)
+		if(key in list("lander", "landing", "surveyed", "rough"))
+			P[key] = extra[key]
 	return json_encode(P)
 
 // Returns the decoded payload, or null when any field is out of bounds.
@@ -226,6 +230,7 @@ var/global/list/region_travel_carry_types = list(
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
 	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
+	if(!space_flight_payload_ok(P)) return null
 	return P
 
 // The path an item entry rebuilds, or null when it is not allowed.
@@ -270,8 +275,10 @@ var/global/list/region_travel_carry_types = list(
 			message_admins("Region travel: an unreadable [incoming ? "arriving" : "returned"] character was dropped.")
 			continue
 		// A party train trip arrives at the party's berth or station instead.
-		var/turf/at = party_train_arrival_turf(P) || T
+		// A crewed flight arrives in its landed lander (space/lander.dm).
+		var/turf/at = space_flight_arrival_turf(P, incoming) || party_train_arrival_turf(P) || T
 		var/mob/living/human/H = region_travel_build(P, at)
+		space_flight_arrived(H, P, incoming)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
@@ -476,6 +483,10 @@ var/global/list/region_travel_carry_types = list(
 /obj/structure/region_gate/proc/travel_party(mob/living/human/H)
 	return null
 
+// Extra payload fields for a trip through this gate (a crewed flight), or null.
+/obj/structure/region_gate/proc/travel_extra(mob/living/human/H)
+	return null
+
 /obj/structure/region_gate/proc/destination_name()
 	var/list/peer = shard_group.enabled ? shard_group.peers[destination] : null
 	return peer ? peer["name"] : destination
@@ -558,7 +569,7 @@ var/global/list/region_travel_carry_types = list(
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client
-	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination))
+	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."

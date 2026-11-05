@@ -285,6 +285,7 @@ var/global/list/node_grid_col_cache = null
 	// Planetary Survey. Not PROTOTYPE mode: that marks an era-changing capstone.
 	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","missiles"), 9))
 	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
+	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 8, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -700,11 +701,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
-		// --- rocketry / planetary_survey (9) ---
+		// --- rocketry / planetary_survey / crewed_flight (9) ---
 		"/obj/structure/launch_rail" = "rocketry",
 		"/obj/item/space_probe" = "rocketry",
 		"/obj/structure/survey_console" = "rocketry",
 		"/obj/item/space_probe/advanced" = "planetary_survey",
+		"/obj/structure/region_gate/trail_marker/launch_pad" = "crewed_flight",
+		"/obj/structure/crewed_lander" = "crewed_flight",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",

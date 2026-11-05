@@ -203,8 +203,9 @@ var/space_runtime_error = FALSE
 	fuel.add_reagent("water", 50)
 	space_check(R.add_fuel(fuel) == 0 && R.fuel == 0, "the rail refuses fuel it cannot burn")
 	fuel.add_reagent("gasoline", 40)
-	fuel.add_reagent("diesel", 40)
-	space_check(R.add_fuel(fuel) == 60 && R.fuel == 60 && fuel.get_reagent_amount("diesel") == 20, "the rail takes exactly 60 units of gasoline and diesel")
+	space_check(R.add_fuel(fuel) == 0 && R.fuel == 0, "the rail no longer burns gasoline")
+	fuel.add_reagent("rocket_propellant", 80)
+	space_check(R.add_fuel(fuel) == 60 && R.fuel == 60 && fuel.get_reagent_amount("rocket_propellant") == 20, "the rail takes exactly 60 units of rocket propellant")
 	space_check(R.launch(2, 2, 0) != null && R.loaded, "a landing site off the plains is refused and the probe stays loaded")
 	space_check(isnull(R.launch(2, 1, 0)) && !R.loaded && R.fuel == 0 && C.mission, "a fuelled rail launches to the console nearby")
 	space_check(C.dropout_chance == 8 && C.dust_chance == 3, "the basic probe's relay can drop commands")
@@ -468,6 +469,94 @@ var/space_runtime_error = FALSE
 	space_check(H.losebreath > lost && F.get_compartment_oxygen(SUB_COMP_GALLEY) < SUB_AIR_SUFFOCATE_O2_KPA, "a crew member without oxygen suffocates")
 	space_check(F.is_compartment_vacuum(SUB_COMP_GALLEY), "the panel reports an oxygen-free compartment")
 
+// Phase 2: propellant, launch pad, crewed lander and the landed lander.
+/proc/space_flight_payload(list/flight = null)
+	var/list/P = list("v" = 1, "kind" = "character", "owner" = "spacetester", "name" = "Test Crew", "gender" = MALE, "age" = 30,
+		"look" = list(), "skills" = list(), "nutrition" = 100, "water" = 100, "items" = list())
+	for (var/key in flight)
+		P[key] = flight[key]
+	return P
+
+/proc/space_flight_checks()
+	var/datum/chemical_reaction/rocket_propellant/mix = new
+	space_check(mix.result == "rocket_propellant" && mix.required_reagents["hydrazine"] == 2 && mix.required_reagents["nitric_acid"] == 1 && mix.result_amount == 3, "propellant mixes from hydrazine and nitric acid")
+	space_check(!!get_space_survey_map("barren") && space_flight_destination_ok("barren") && !space_flight_destination_ok("gaia") && !space_flight_destination_ok("../barren"), "only worlds with a survey map can be flown to")
+
+	var/turf/T = locate(7, 7, 1)
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(T)
+	space_check(!pad.approved && !pad.accepts_arrivals() && findtext(pad.closed_reason(), "admin"), "a new launch pad waits for an admin and never takes arrivals")
+	space_check(!length(pad.peer_choices()) && !pad.approve("barren", "admin"), "outside a region group a pad can lead nowhere")
+	space_check(isnull(new /obj/structure/region_gate(T).travel_extra(null)) && isnull(pad.travel_extra(null)), "ordinary trips carry no flight")
+	var/obj/structure/crewed_lander/L = new(locate(7, 6, 1))
+	space_check(L.find_pad() == pad, "a lander beside the pad finds it")
+	var/datum/reagents/fuel = new(500)
+	fuel.add_reagent("gasoline", 100)
+	space_check(L.add_propellant(fuel) == 0 && L.propellant == 0, "the lander refuses gasoline")
+	fuel.add_reagent("rocket_propellant", 350)
+	space_check(L.add_propellant(fuel) == 300 && L.propellant == 300 && fuel.get_reagent_amount("rocket_propellant") == 50, "the lander takes exactly 300 units of propellant")
+	var/mob/living/human/space_probe_crew/H = new(L.loc)
+	space_check(!length(L.crew()) && findtext(L.launch_refusal(H), "admin"), "an unapproved pad keeps the lander grounded")
+	qdel(L)
+
+	var/list/flight = list("lander" = "gaia-1-1234", "landing" = list(1, 1), "surveyed" = 1, "rough" = 0)
+	space_check(space_flight_payload_ok(space_flight_payload()) && space_flight_payload_ok(space_flight_payload(flight)), "payloads with and without a flight are accepted")
+	space_check(region_travel_decode(json_encode(space_flight_payload(flight))) && region_travel_decode(json_encode(space_flight_payload())), "a flight payload survives the travel decoder")
+	var/list/bad_cell = flight.Copy()
+	bad_cell["landing"] = list(0, 3)
+	var/list/bad_flag = flight.Copy()
+	bad_flag["rough"] = 2
+	var/list/long_id = flight.Copy()
+	var/long = ""
+	for (var/i in 1 to 65)
+		long += "a"
+	long_id["lander"] = long
+	var/list/stray = space_flight_payload()
+	stray["landing"] = list(1, 1)
+	space_check(!space_flight_payload_ok(space_flight_payload(bad_cell)) && !space_flight_payload_ok(space_flight_payload(bad_flag)) && !space_flight_payload_ok(space_flight_payload(long_id)) && !space_flight_payload_ok(stray), "malformed flights are refused")
+	space_check(!region_travel_decode(json_encode(space_flight_payload(bad_cell))), "the travel decoder drops a malformed flight")
+
+	var/list/P = space_flight_payload(flight)
+	space_check(isnull(space_flight_arrival_turf(space_flight_payload(), TRUE)) && isnull(space_flight_arrival_turf(P, FALSE)), "only arriving flights build a lander")
+	var/turf/at = space_flight_arrival_turf(P, TRUE)
+	var/obj/structure/landed_lander/LL = space_landed_lander("gaia-1-1234")
+	space_check(at && LL && get_turf(LL) == at && at.x <= 5 && at.y <= 5, "the first arrival sets the lander down in its survey cell")
+	space_check(space_flight_arrival_turf(P, TRUE) == at && landed_landers.len == 1, "the rest of the crew join the same lander")
+	var/decks = 0
+	for (var/turf/floor/lander_deck/D in range(1, at))
+		decks++
+	var/obj/structure/bed/lander_bunk/bunk = locate() in range(1, at)
+	space_check(decks == 9 && bunk && bunk.anchored && bunk.loc != at, "the lander lays a 3x3 deck with a bunk beside its core")
+	space_check(bunk && bunk.valid_character_bed(H), "the bunk can be claimed as a home bed")
+	var/turf/floor/lander_deck/deck = locate(at.x + 1, at.y + 1, 1)
+	space_check(deck.outside_air_breathable() && deck.outside_ambient_c() == 20, "the cabin starts sealed, breathable and warm")
+	space_check(space_near(LL.oxygen_reserve, 432) && LL.power_seconds == 10800, "the reserves last a full crew three hours")
+	space_check(issaved(LL.cabin_oxygen) && issaved(LL.power_seconds) && !issaved(LL.air), "the cabin saves as plain numbers, not its ledger datum")
+	var/before = json_encode(LL.cabin().to_list())
+	LL.process()
+	space_check(json_encode(LL.cabin().to_list()) == before && LL.power_seconds == 10800, "the cabin does not tick while nobody is connected")
+	space_check(LL.life_support(10, 4) && space_near(LL.cabin().oxygen_kpa(), 21) && LL.power_seconds == 10790 && space_near(LL.oxygen_reserve, 432 - 0.4), "with power the core tops up the oxygen a crew breathes")
+	LL.life_support(10, 4)
+	space_check(LL.cabin().co2_kpa() <= 0.4 + 0.0001 && LL.cabin().temperature == 20, "with power the core scrubs CO2 and holds the heat")
+	space_check(LL.life_support(1e6, 4) && LL.power_seconds == 10770, "a long gap counts as one capped step")
+	H.loc = deck
+	space_check(LL.breathers() == 1, "people on the deck count as breathers")
+	H.stat = DEAD
+	space_check(LL.breathers() == 0, "the dead do not breathe")
+	H.loc = null
+	LL.power_seconds = 0
+	for (var/i in 1 to 200)
+		LL.life_support(10, 4)
+	space_check(!deck.outside_air_breathable() && deck.outside_ambient_c() < 20, "without power the cabin goes cold and stale")
+	LL.air = null
+	space_check(!LL.cabin().breathable() && LL.cabin().temperature < 20, "the cabin rebuilds from its saved numbers")
+	var/turf/regolith = locate(8, 8, 1)
+	regolith = regolith.ChangeTurf(/turf/floor/dirt/dust/regolith, FALSE, FALSE)
+	space_check(space_landing_z(8, 8) == 1, "a lander sets down on the only level")
+
+	var/datum/research_node/flight_node = get_research_node("crewed_flight")
+	space_check(flight_node && flight_node.mode == RESEARCH_MODE_ANALYSIS && flight_node.era_tier == 9 && ("planetary_survey" in flight_node.prereqs), "Crewed Flight follows Planetary Survey and is not an era capstone")
+	space_check(get_recipe_node_req("/obj/structure/region_gate/trail_marker/launch_pad") == "crewed_flight" && get_recipe_node_req("/obj/structure/crewed_lander") == "crewed_flight", "the pad and the lander are gated on Crewed Flight")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -484,6 +573,7 @@ var/space_runtime_error = FALSE
 		space_survey_checks()
 		space_submarine_checks()
 		space_exposure_checks()
+		space_flight_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
