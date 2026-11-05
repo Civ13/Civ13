@@ -281,6 +281,15 @@
 
 /obj/item/stack/medical/splint/small
 	amount = 1
+
+// Sticks lashed to a broken limb: the splint every era can make from wood.
+/obj/item/stack/medical/splint/wooden
+	name = "wooden splints"
+	singular_name = "wooden splint"
+	desc = "Straight sticks for lashing a broken limb still while it heals."
+	amount = 1
+	flags = 0
+	flammable = TRUE
 /obj/item/stack/medical/bruise_pack/bint
 	name = "cloth bandages"
 	singular_name = "cloth bandage"

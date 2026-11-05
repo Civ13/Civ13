@@ -170,6 +170,15 @@ class MedicalCare(unittest.TestCase):
         self.assertIn('row.get("bleeding") or row.get("artery_cut")', source)
         self.assertIn("tourniquet", source)
 
+    def test_every_era_can_splint_a_break(self):
+        recipes = (ROOT / "config/crafting/material_recipes_global.txt").read_text(encoding="utf-8")
+        line = next(l for l in recipes.splitlines() if "/obj/item/stack/medical/splint/wooden," in l)
+        fields = line.replace("RECIPE: ", "").split(",")
+        self.assertEqual(len(fields), 13)
+        self.assertEqual(fields[0], "/material/wood/")
+        self.assertEqual(fields[10], "0")  # no research needed, unlike iron splints
+        self.assertIn("/obj/item/stack/medical/splint/wooden\n", MEDICAL)
+
 
 if __name__ == "__main__":
     unittest.main()
