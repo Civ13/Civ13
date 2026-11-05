@@ -1,4 +1,4 @@
-"""New-output-only indoor plan bundles and their static DMM export (no game mode)."""
+"""New-output-only indoor plan bundles and their DMM export (static, or bound to the escape round)."""
 import argparse
 import hashlib
 from pathlib import Path
@@ -54,7 +54,7 @@ def main():
     q=s.add_parser('validate');q.add_argument('plan',type=Path)
     q=s.add_parser('verify');q.add_argument('directory',type=Path)
     q=s.add_parser('catalog');q.add_argument('--out',type=Path,required=True)
-    q=s.add_parser('export');q.add_argument('directory',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--z',type=int,default=1)
+    q=s.add_parser('export');q.add_argument('directory',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--z',type=int,default=1);q.add_argument('--mode',choices=['escape'])
     q=s.add_parser('verify-export');q.add_argument('directory',type=Path);q.add_argument('--chapter',type=Path)
     a=p.parse_args()
     try:
@@ -71,7 +71,7 @@ def main():
         elif a.command=='validate':
             answer=validate(read(a.plan));print(json_text(answer));return 0 if answer['accepted'] else 1
         elif a.command=='export':
-            verify_bundle(a.directory);answer=export(read(a.directory/'plan.json'),a.out,a.z)
+            verify_bundle(a.directory);answer=export(read(a.directory/'plan.json'),a.out,a.z,mode=a.mode)
         elif a.command=='verify-export':
             doc=None
             if a.chapter:verify_bundle(a.chapter);doc=read(a.chapter/'plan.json')
