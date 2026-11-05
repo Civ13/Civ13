@@ -131,6 +131,12 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
+    # Research bench staff appointments and director title; no BYOND runtime.
+    'research_staff': {'files': ('tests/research_staff/test_research_staff.py',),
+        'paths': ('tests/research_staff/',), 'shared_paths': (
+            'code/modules/research_tree/research_bench.dm',
+            'code/modules/research_tree/research_faction.dm',
+            'code/_helpers/WWinput.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (

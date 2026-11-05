@@ -54,7 +54,8 @@
 	return H.leader
 
 /obj/map_metadata/proc/is_research_director(mob/living/human/H, faction)
-	return H && faction && faction_research_director[faction] == H
+	// A stale entry (the director left the faction some other way) grants nothing.
+	return H && faction && H.civilization == faction && faction_research_director[faction] == H
 
 // Who may change what a faction's benches research: the Leader, the Research
 // Director, or an appointed Researcher -- and only within their own faction.
@@ -73,7 +74,9 @@
 
 /obj/map_metadata/proc/get_director_title(faction)
 	var/t = faction_director_title[faction]
-	return t ? t : "Research Director"
+	// Only real text counts: the old prompt bug stored the number 1, which
+	// saved worlds may still carry.
+	return (istext(t) && t != "") ? t : "Research Director"
 
 // Returns the stored list(status, ticks) for a node, creating none.
 /obj/map_metadata/proc/get_node_entry(faction, node_id)

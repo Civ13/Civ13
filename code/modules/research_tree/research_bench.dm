@@ -225,21 +225,49 @@ var/global/list/research_benches = list()
 		return null
 	return choice
 
+// Asks the leader for a director title. WWinput needs the "text" type here:
+// without it the call is a plain alert() that returns TRUE, which used to
+// rename the role to "1". The current title is the default, and a blank,
+// cancelled or fully stripped answer returns null so callers keep it.
+/obj/structure/research_bench/proc/prompt_director_title(mob/living/human/H, prompt)
+	var/raw = WWinput(H, prompt, "Research Director", map.get_director_title(faction), "text")
+	if (!istext(raw))
+		return null
+	var/newtitle = sanitize(raw, MAX_NAME_LEN, FALSE)
+	if (!newtitle || newtitle == "")
+		return null
+	return newtitle
+
 /obj/structure/research_bench/proc/appoint_director(mob/living/human/H)
 	if (!map)
 		return
 	if (!map.is_faction_leader(H, faction))
 		return
+	var/mob/living/human/old_director = map.faction_research_director[faction]
 	var/mob/living/human/target = pick_faction_member(H, "Who will be your faction's Research Director?")
 	if (!target)
 		return
-	var/newtitle = WWinput(H, "Choose a title for this role:", "Research Director", "Research Director")
-	if (!newtitle || newtitle == "")
-		newtitle = "Research Director"
+	// The pick prompt blocks: re-check that both people still qualify.
+	if (!map.is_faction_leader(H, faction) || QDELETED(target) || target.civilization != faction)
+		return
+	if (target == map.faction_research_director[faction])
+		to_chat(H, SPAN_WARNING("[target] is already your [map.get_director_title(faction)]."))
+		return
+	// Reassigning keeps the role's chosen title ("Rename role" changes it).
+	// Only a first appointment asks for one, defaulting to the current title.
+	if (!old_director)
+		var/newtitle = prompt_director_title(H, "Choose a title for this role:")
+		if (!map.is_faction_leader(H, faction) || QDELETED(target) || target.civilization != faction)
+			return
+		if (newtitle)
+			map.faction_director_title[faction] = newtitle
+	old_director = map.faction_research_director[faction]
 	map.faction_research_director[faction] = target
-	map.faction_director_title[faction] = newtitle
-	to_chat(target, SPAN_NOTICE("You have been appointed <b>[newtitle]</b> of the [faction]!"))
-	to_chat(H, SPAN_NOTICE("[target] is now your [newtitle]."))
+	var/role_title = map.get_director_title(faction)
+	if (old_director && old_director != target)
+		to_chat(old_director, SPAN_WARNING("You have been replaced as [role_title] of the [faction]."))
+	to_chat(target, SPAN_NOTICE("You have been appointed <b>[role_title]</b> of the [faction]!"))
+	to_chat(H, SPAN_NOTICE("[target] is now your [role_title]."))
 
 /obj/structure/research_bench/proc/dismiss_director(mob/living/human/H)
 	if (!map)
@@ -247,9 +275,11 @@ var/global/list/research_benches = list()
 	if (!map.is_faction_leader(H, faction))
 		return
 	var/mob/living/human/D = map.faction_research_director[faction]
+	if (!D)
+		to_chat(H, SPAN_WARNING("Your faction has no [map.get_director_title(faction)] to dismiss."))
+		return
 	map.faction_research_director[faction] = null
-	if (D)
-		to_chat(D, SPAN_WARNING("You have been removed as [map.get_director_title(faction)] of the [faction]."))
+	to_chat(D, SPAN_WARNING("You have been removed as [map.get_director_title(faction)] of the [faction]."))
 	to_chat(H, SPAN_NOTICE("You dismiss your faction's [map.get_director_title(faction)]."))
 
 /obj/structure/research_bench/proc/set_director_title(mob/living/human/H)
@@ -257,11 +287,14 @@ var/global/list/research_benches = list()
 		return
 	if (!map.is_faction_leader(H, faction))
 		return
-	var/newtitle = WWinput(H, "New title for your Research Director role:", "Research Director", map.get_director_title(faction))
-	if (!newtitle || newtitle == "")
+	var/newtitle = prompt_director_title(H, "New title for your Research Director role:")
+	if (!newtitle || !map.is_faction_leader(H, faction))
 		return
 	map.faction_director_title[faction] = newtitle
 	to_chat(H, SPAN_NOTICE("The role is now titled [newtitle]."))
+	var/mob/living/human/D = map.faction_research_director[faction]
+	if (D && D != H)
+		to_chat(D, SPAN_NOTICE("Your role is now titled <b>[newtitle]</b>."))
 
 /obj/structure/research_bench/proc/appoint_researcher(mob/living/human/H)
 	if (!map)
