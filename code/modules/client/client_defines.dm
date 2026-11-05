@@ -55,7 +55,8 @@
 
 	var/saved_slot = 1
 
-	var/list/selected_target[2]
+	// Hold-to-fire for full-auto guns and machine guns (see _onclick/click.dm).
+	var/datum/autofire/autofire = null
 
 	var/is_active_non_observer = TRUE
 

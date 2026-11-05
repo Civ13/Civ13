@@ -117,8 +117,7 @@
 					if(dt > CFM.burst_delay)
 						GN.Fire(A,H,params)
 					else
-						spawn(GN.last_shot_time + CFM.burst_delay - world.time)
-							GN.Fire(A,H,params)
+						addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(autofire_delayed_shot), H, GN, A, FALSE, params, TRUE), GN.last_shot_time + CFM.burst_delay - world.time)
 		if (istype(H.buckled, /obj/structure/bed/chair/commander)) //TO DO TODO: move it to wheels.dm
 			var/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/P
 			if (istype(H.l_hand,/obj/item/weapon/attachment/scope/adjustable/binoculars/periscope))
@@ -187,8 +186,7 @@
 		var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
 		if (HMG.full_auto)
 			var/datum/firemode/F = HMG.firemodes[HMG.sel_mode]
-			spawn(F.burst_delay)
-				HMG.afterattack(A, src, FALSE, params)
+			addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(autofire_delayed_shot), src, HMG, A, FALSE, params, FALSE), F.burst_delay)
 		else
 			HMG.afterattack(A, src, FALSE, params)
 		return TRUE
@@ -241,8 +239,7 @@
 					var/obj/item/weapon/gun/G = W
 					if (G.full_auto)
 						var/datum/firemode/F = G.firemodes[G.sel_mode]
-						spawn(F.burst_delay)
-							W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
+						addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(autofire_delayed_shot), src, G, A, TRUE, params, FALSE), F.burst_delay) // TRUE indicates adjacency
 					else
 						W.afterattack(A, src, TRUE, params) // TRUE indicates adjacency
 				else
@@ -569,32 +566,106 @@
 ///////////////////////////
 /////AUTOMATIC CLICKS//////
 ///////////////////////////
+// Holding the mouse on a full-auto gun or a manned machine gun repeats the
+// click on SStimer, one cycle per burst_delay, until the button comes up or the
+// shooter can no longer fire. Each client owns one /datum/autofire.
 /client/MouseDown(object, location, control, params)
 	if (object == mob)
 		return ..(object, location, control, params)
 	var/delay = mob.CanMobAutoclick(object, location, params)
 	if (delay)
-		selected_target[1] = object
-		selected_target[2] = params
-		while (selected_target[1] && mob && !mob.lying && mob.stat == CONSCIOUS)
-			if (mob.using_object && istype(mob.using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
-				Click(selected_target[1], location, control, selected_target[2])
-			else
-				var/obj/item/weapon/gun/G = mob.get_active_hand()
-				if (G && istype(G))
-					G.next_fire_time = 0 // no 'you can't fire' spam
-					Click(selected_target[1], location, control, selected_target[2])
-			sleep(delay)
+		if (!autofire)
+			autofire = new(src)
+		autofire.start(object, location, control, params)
 	else
 		return ..(object, location, control, params)
 
 /client/MouseUp(object, location, control, params)
-	selected_target[1] = null
+	if (autofire)
+		autofire.stop()
 
 /client/MouseDrag(src_object,atom/over_object,src_location,over_location,src_control,over_control,params)
-	if (selected_target[1] && over_object && over_object.IsAutoclickable())
-		selected_target[1] = over_object
-		selected_target[2] = params
+	if (autofire && over_object && over_object.IsAutoclickable())
+		autofire.retarget(over_object, params)
+
+/datum/autofire
+	var/client/owner
+	var/atom/target
+	var/location
+	var/control
+	var/params
+	var/timer_id
+	// Bumped on every start and stop, so a cycle that slept inside Click()
+	// cannot schedule a second chain after the button was released or pressed again.
+	var/generation = 0
+
+/datum/autofire/New(client/C)
+	owner = C
+
+/datum/autofire/Destroy()
+	stop()
+	owner = null
+	return ..()
+
+/datum/autofire/proc/start(atom/object, location, control, params)
+	stop()
+	target = object
+	src.location = location
+	src.control = control
+	src.params = params
+	cycle(generation)
+
+/datum/autofire/proc/stop()
+	generation++
+	target = null
+	location = null
+	params = null
+	if (timer_id)
+		deltimer(timer_id)
+		timer_id = null
+
+/datum/autofire/proc/retarget(atom/object, params)
+	if (!target)
+		return
+	target = object
+	src.params = params
+
+/datum/autofire/proc/cycle(expected_generation)
+	if (expected_generation != generation)
+		return
+	timer_id = null
+	var/mob/M = owner ? owner.mob : null
+	if (!target || QDELETED(target) || !M || M.lying || M.stat != CONSCIOUS)
+		stop()
+		return
+	// Asked again each cycle: dropping the gun, switching off full auto or
+	// leaving the machine gun ends the hold.
+	var/delay = M.CanMobAutoclick(target, location, params)
+	if (!delay)
+		stop()
+		return
+	if (!(M.using_object && istype(M.using_object, /obj/item/weapon/gun/projectile/automatic/stationary)))
+		var/obj/item/weapon/gun/G = M.get_active_hand()
+		if (istype(G))
+			G.next_fire_time = 0 // no 'you can't fire' spam
+	// A timer runs with no usr; Click() and ClickOn() need the shooter.
+	usr = M
+	owner.Click(target, location, control, params)
+	if (expected_generation != generation || !target)
+		return
+	timer_id = addtimer(CALLBACK(src, PROC_REF(cycle), expected_generation), delay, TIMER_STOPPABLE)
+
+// The delayed shot of a full-auto click. The gun must still be in the
+// shooter's hand (or still manned) and the shooter still able to fire.
+/proc/autofire_delayed_shot(mob/living/user, obj/item/weapon/gun/G, atom/A, adjacent, params, vehicle_fire)
+	if (QDELETED(user) || QDELETED(G) || QDELETED(A) || user.stat != CONSCIOUS)
+		return
+	if (G != user.get_active_hand() && G != user.using_object)
+		return
+	if (vehicle_fire)
+		G.Fire(A, user, params)
+	else
+		G.afterattack(A, user, adjacent, params)
 
 /mob/proc/CanMobAutoclick(object, location, params)
 	return
