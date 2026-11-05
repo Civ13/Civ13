@@ -532,5 +532,21 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((False, 'stop the server before updating'), (answer['can_update'], answer['reason']))
 
 
+    def test_linux_regions_can_run_in_their_own_systemd_scope(self):
+        self.refuse_config('systemd_scope', systemd_scope='yes')
+        group = self.write_group()
+        argv = ['DreamDaemon', 'region.dmb', '1715']
+        config = shard_group.region_config(group, group['regions'][1])
+        self.assertEqual('', config['systemd_scope'])
+        self.assertEqual(argv, shard_group.scoped(argv, config))
+        config['systemd_scope'] = 'user'
+        with mock.patch.object(shard_group.os, 'name', 'posix'):
+            wrapped = shard_group.scoped(argv, config)
+        unit = 'civ13-%s-%s' % (group['group'], group['regions'][1]['id'])
+        self.assertEqual(['systemd-run', '--user', '--scope', '--quiet', '--collect', '--unit', unit, '--'] + argv, wrapped)
+        with mock.patch.object(shard_group.os, 'name', 'nt'):
+            self.assertEqual(argv, shard_group.scoped(argv, config))  # Windows has no scopes
+
+
 if __name__ == '__main__':
     unittest.main()

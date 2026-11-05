@@ -152,6 +152,11 @@ def load_group(path):
     group.setdefault('save_timeout_seconds', 5400)
     group.setdefault('start_timeout_seconds', 300)
     group.setdefault('backups_kept', 3)
+    # Linux: run each region's DreamDaemon in its own systemd scope ("user" or "system"),
+    # so every world has its own cgroup for memory accounting and can be stopped alone.
+    group.setdefault('systemd_scope', '')
+    if group['systemd_scope'] not in ('', 'user', 'system'):
+        raise ValueError('systemd_scope must be "", "user" or "system"')
     # Sleep settings (gaia_host FREEZE_DEFAULTS) apply to every region of the group.
     for key, default in gaia_host.FREEZE_DEFAULTS.items():
         if key not in group:
@@ -188,6 +193,7 @@ def region_config(group, region):
             'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
+            'systemd_scope': group.get('systemd_scope', ''),
             '_path': str(path / 'data' / 'shard-host' / 'host.json'),
             # Only a hub-listed (-public) world needs the host's BYOND account signed in.
             'start_requires_byond_pager': bool(public)}
@@ -226,6 +232,18 @@ def detach(argv, cwd, log):
             out.close()
 
 
+def scoped(argv, config):
+    """argv wrapped in its own systemd scope when the group asks for one (Linux only)."""
+    kind = config.get('systemd_scope') or ''
+    if not kind or os.name == 'nt':
+        return argv
+    unit = 'civ13-%s-%s' % (config['group'], config['region'])
+    wrapper = ['systemd-run', '--scope', '--quiet', '--collect', '--unit', unit]
+    if kind == 'user':
+        wrapper.insert(1, '--user')
+    return wrapper + ['--'] + argv
+
+
 class RegionPlatform(Platform):
     """Starts DreamDaemon for one region directly instead of a scheduled task."""
 
@@ -239,7 +257,7 @@ class RegionPlatform(Platform):
         self.start_agent()
         argv = [self.config['daemon'], 'region.dmb', str(self.config['port']), '-trusted', '-close',
                 '-public' if self.config['public'] else '-invisible', '-log', 'logs/world.log']
-        detach(argv, path, None)
+        detach(scoped(argv, self.config), path, None)
         return 0, 'started'
 
     def task_ready(self, name):

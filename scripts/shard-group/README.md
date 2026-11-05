@@ -135,6 +135,12 @@ Other optional keys:
   the one running the script).
 - `rust_g` is a rust_g library copied into each region on `update` (needed on
   Linux).
+- `systemd_scope` (Linux, `""` by default) set to `"user"` or `"system"` starts
+  each region's DreamDaemon through `systemd-run --scope` as unit
+  `civ13-<group>-<region>`, so every world has its own cgroup: `systemctl
+  status` and memory accounting per world, and a world can be stopped alone.
+  Use `"user"` when the host service runs as a user unit, `"system"` when it
+  runs as a system unit with the right to create scopes.
 
 Players travel through an admin-placed `/obj/structure/region_gate`, with its
 `destination` set to a peer's region id; see

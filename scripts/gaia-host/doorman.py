@@ -36,6 +36,7 @@ WAKE_SPACING = 30            # one wake per address per this many seconds
 REQUESTS_PER_MINUTE = 40     # per address, all requests
 MAX_CONNECTIONS = 16
 SUPERVISE_SECONDS = 30       # how often helper processes (transfer agents, coordinators) are checked
+EVICT_SECONDS = 60           # at most one low-memory eviction per this many seconds, so freed memory shows
 
 
 def frame(text):
@@ -103,6 +104,7 @@ class Doorman:
         # returns a dict of what it started (empty when everything was running).
         self.supervisors = list(supervisors)
         self.next_supervise = 0.0
+        self.next_evict = 0.0
         for host in hosts:
             if host.config['port'] in self.instances:
                 raise ValueError('two configs use port %d' % host.config['port'])
@@ -204,6 +206,37 @@ class Doorman:
             return None
         return free, need
 
+    def evict_one(self, reason, keep=None):
+        """Stop the longest-frozen world except keep, so its memory is freed. It saved
+        before freezing, so it reads as cold and starts from that save on its next
+        wake. Returns the evicted instance or None."""
+        with self.lock:
+            frozen = []
+            for instance in self.instances.values():
+                if instance is keep or not instance.host.config.get('freeze_requires_save', True):
+                    continue
+                state = instance.host.frozen()
+                if state:
+                    frozen.append((state.get('frozen_at') or 0, instance.port, instance))
+            for _, _, instance in sorted(frozen, key=lambda item: item[:2]):
+                try:
+                    instance.host.log(instance.host.evict(reason))
+                except Exception as refusal:  # Refused, or the process could not be stopped
+                    instance.host.log({'evict_refused': str(refusal)[:300]})
+                    continue
+                instance.waking_since = None
+                return instance
+            return None
+
+    def free_memory_for(self, instance, need):
+        """Evict other frozen worlds until need MB is free; True when it is (or unknown)."""
+        while True:
+            free = self.platform.free_memory_mb()
+            if free is None or free >= need:
+                return True
+            if self.evict_one('memory for waking port %d' % instance.port, keep=instance) is None:
+                return False
+
     # -- requests ------------------------------------------------------------
     def allowed(self, address, now):
         with self.lock:
@@ -235,6 +268,9 @@ class Doorman:
                 instance.host.log({'wake_refused': 'byond signed out', 'port': instance.port})
                 return {'schema': SCHEMA, 'ok': False, 'error': 'byond signed out', 'port': instance.port}
             low = self.low_memory(instance)
+            # Make room by stopping the longest-asleep other world before refusing.
+            if low is not None and self.free_memory_for(instance, low[1]):
+                low = self.low_memory(instance)
             if low is not None:
                 instance.host.log({'wake_refused': 'low memory', 'port': instance.port, 'free_mb': low[0], 'need_mb': low[1]})
                 return {'schema': SCHEMA, 'ok': False, 'error': 'low memory', 'port': instance.port,
@@ -299,6 +335,12 @@ class Doorman:
                     continue
                 if started:
                     print(json.dumps({'supervise_started': started, 'time': int(self.wall())}), flush=True)
+        limit = max(i.host.config.get('evict_below_free_mb', 0) for i in self.instances.values())
+        if limit and now >= self.next_evict:
+            self.next_evict = now + EVICT_SECONDS
+            free = self.platform.free_memory_mb()
+            if free is not None and free < limit and self.evict_one('low memory: %d MB free' % free) is not None:
+                print(json.dumps({'evicted_for_memory': free, 'time': int(self.wall())}), flush=True)
         for instance in self.instances.values():
             host = instance.host
             frozen = host.frozen() is not None
