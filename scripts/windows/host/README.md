@@ -41,6 +41,12 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
    edits to it can go: `git checkout -- config/config.txt config/host.txt`
    (and `maps/nomads/nomads_europe.dmm` too, if that change was not on
    purpose), then `git pull --ff-only`. Gaia keeps running from its compiled build.
+   From now on Gaia reads its config only from the region folder
+   (`D:\Civ13Regions\earth\gaia\config`, refreshed from the overlay on every
+   update), so `D:\GitHub\Civ13\config` going back to the repository's
+   defaults (for example `host.txt` saying Tais) does not affect it. Change
+   live settings in the overlay, then run `update.bat`, or edit the region's
+   copy for a quick fix that the next update replaces.
 4. **Stop standalone Gaia.** Run `retire-standalone-gaia.bat`, then follow it
    with the status command it prints until `phase` is `stopped` (a Gaia save
    takes about ten minutes).
@@ -52,7 +58,9 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
    and `status.bat` until gaia is `awake`. Join and check your character.
 8. **Host service.** Run `install-host-task.bat`. It replaces the old doorman
    on TCP 1713, so the router forward still works.
-9. **Bot and launcher.** In the bot's `profile.json`, point the `test1714`
+9. **Bot and launcher.** The bot reads Gaia's status files (`serverdata.txt`,
+   `SQL/`) from the server's folder, so until this step it shows the old,
+   stopped checkout. In the bot's `profile.json`, point the `test1714`
    server's `basedir` at `D:/Civ13Regions/earth/gaia` and its `gaia_host`
    config at `D:/Civ13Regions/earth/gaia/data/shard-host/host.json`, then
    restart the bot. In the launcher's `host.json`, point `control.config` at
