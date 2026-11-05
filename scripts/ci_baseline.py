@@ -254,6 +254,13 @@ SUITES = {
             'code/modules/1713/modern_telecom.dm',
             'tests/save_movement/source_adapter.py')},
 
+    # Razor grooming guard and hygiene-gated razor recipes; source checks only.
+    'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
+        'paths': ('tests/razor_grooming/',), 'shared_paths': (
+            'code/game/objects/items/weapons/material/kitchen.dm',
+            'config/crafting/material_recipes_global.txt',
+            'code/modules/research_tree/research_node.dm')},
+
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',
