@@ -168,7 +168,7 @@ var/global/list/party_train_requirements = list(
 /obj/structure/region_gate/railway_station/travel_refusal(mob/living/human/H)
 	. = ..()
 	if(.) return
-	if(party_train_party_of(H) != party)
+	if(!party_train_may_board(H, party))
 		return "This train belongs to [party_train_party_name(party)]."
 
 /obj/structure/region_gate/railway_station/attack_hand(mob/living/human/user)
@@ -299,7 +299,7 @@ var/global/list/party_train_requirements = list(
 /obj/structure/region_gate/rail_berth/travel_refusal(mob/living/human/H)
 	. = ..()
 	if(.) return
-	if(party_train_party_of(H) != party)
+	if(!party_train_may_board(H, party))
 		return "This train belongs to [party_train_party_name(party)]."
 
 /obj/structure/region_gate/rail_berth/examine(mob/user)
@@ -348,42 +348,118 @@ var/global/list/party_train_requirements = list(
 	if(S && S.completed && isturf(S.loc)) return S.loc
 	return null
 
-// A door of a party's train: opens only for that party, and cannot be forced.
+// -- boarding another party's train ------------------------------------------
+
+#define PARTY_TRAIN_DOOR_STRENGTH 300 // weapon force (or half bullet damage) to force a door
+
+// Whether user may use party's train freely: its doors and its berth.
+/proc/party_train_may_board(mob/user, party)
+	return party && party_train_party_of(user) == party
+
+// Whether any member of party is playing in this world now.
+/proc/party_members_online(party)
+	if(!party_train_valid_party(party)) return FALSE
+	for(var/mob/living/human/H in human_mob_list)
+		if(H.client && H.stat != DEAD && party_train_party_of(H) == party)
+			return TRUE
+	return FALSE
+
+// Whether other factions may force their way into party's train now. Raids
+// happen only while the owners are here to defend it.
+/proc/party_train_breachable(party)
+	return party_members_online(party)
+
+// A door of a party's train. It opens for that party. Others can force it open
+// while a member of the party is in this world; the party secures it again by
+// hand. It is never destroyed, so the train always keeps its doors.
 /obj/structure/simple_door/party_train
 	name = "train door"
-	desc = "A heavy carriage door. It opens only for the party that owns this train."
+	desc = "A heavy carriage door. It opens for the party that owns this train; raiders can force it while the owners are aboard the yard."
 	var/berth = 0 // the berth this train stands at
+	var/forced = FALSE
+	var/breach_left = PARTY_TRAIN_DOOR_STRENGTH
 
 /obj/structure/simple_door/party_train/New(newloc, material_name)
 	..(newloc, "steel")
 	name = initial(name)
 
-/obj/structure/simple_door/party_train/proc/party_member(mob/user)
+/obj/structure/simple_door/party_train/proc/owner_party()
 	for(var/obj/structure/region_gate/rail_berth/B in region_gates)
 		if(B.berth == berth)
-			return B.party && party_train_party_of(user) == B.party
-	return FALSE
+			return B.party
+	return null
+
+/obj/structure/simple_door/party_train/proc/party_member(mob/user)
+	return party_train_may_board(user, owner_party())
 
 /obj/structure/simple_door/party_train/door_hand_locked(mob/user)
-	return !party_member(user)
+	return !canOpen(user)
 
 /obj/structure/simple_door/party_train/canOpen(mob/user)
-	return party_member(user)
+	return forced || party_member(user)
+
+/obj/structure/simple_door/party_train/attack_hand(mob/user)
+	if(forced && party_member(user))
+		secure(user)
+		return TRUE
+	return ..()
+
+/obj/structure/simple_door/party_train/proc/secure(mob/user)
+	forced = FALSE
+	breach_left = PARTY_TRAIN_DOOR_STRENGTH
+	user.visible_message(SPAN_NOTICE("[user] secures the forced train door again."), SPAN_NOTICE("You secure the forced door again."))
+
+// Damage from someone forcing the door. Returns TRUE when it took the damage.
+/obj/structure/simple_door/party_train/proc/breach(amount, mob/user)
+	if(forced || amount <= 0) return FALSE
+	var/party = owner_party()
+	if(!party || !party_train_breachable(party))
+		if(user)
+			to_chat(user, SPAN_WARNING("The door is sealed while its owners are away."))
+		return FALSE
+	breach_left -= amount
+	if(breach_left > 0)
+		visible_message(SPAN_DANGER("\The [src] buckles under the blow."))
+		return TRUE
+	forced = TRUE
+	visible_message(SPAN_DANGER("\The [src] is forced open!"))
+	log_game("Party train: the door of berth [berth] ([party]) at [x],[y],[z] was forced[user ? " by [key_name(user)]" : ""].")
+	// Open() animates and sleeps; breach() is called from attacks and blasts.
+	if(!state)
+		addtimer(CALLBACK(src, PROC_REF(swing_open)), 1)
+	return TRUE
+
+/obj/structure/simple_door/party_train/proc/swing_open()
+	if(!QDELETED(src) && forced && !state && !isSwitchingStates)
+		Open()
 
 /obj/structure/simple_door/party_train/door_kick(mob/user)
-	return door_rattle(user)
+	if(party_member(user)) return ..()
+	if(!door_noise_ready()) return FALSE
+	user.visible_message(SPAN_DANGER("[user] kicks the train door!"), SPAN_DANGER("You kick the train door!"))
+	playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
+	breach(10, user)
+	return TRUE
 
 /obj/structure/simple_door/party_train/attackby(obj/item/weapon/W, mob/user)
-	if(!party_member(user))
-		door_rattle(user)
+	if(party_member(user))
+		if(forced)
+			secure(user)
+			return
+		return door_intent_interact(user)
+	if(istype(W) && W.force > 0)
+		user.do_attack_animation(src)
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if(!breach(W.force, user))
+			door_rattle(user)
 		return
-	return door_intent_interact(user)
+	door_rattle(user)
 
 /obj/structure/simple_door/party_train/bullet_act(obj/item/projectile/P)
-	return
+	breach(P.damage / 2)
 
 /obj/structure/simple_door/party_train/ex_act(severity)
-	return
+	breach(severity == 1 ? PARTY_TRAIN_DOOR_STRENGTH : (severity == 2 ? 150 : 50))
 
 /obj/structure/simple_door/party_train/fire_act(temperature)
 	return
@@ -397,5 +473,6 @@ var/global/list/party_train_requirements = list(
 /obj/structure/simple_door/party_train/Dismantle(devastated = FALSE)
 	return
 
+#undef PARTY_TRAIN_DOOR_STRENGTH
 #undef PARTY_TRAIN_TRACK_MIN
 #undef PARTY_TRAIN_TRACK_RANGE

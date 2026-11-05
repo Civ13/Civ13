@@ -50,6 +50,42 @@ land they died in, start in the `mainland` region
 travelling. Joining any other region shows where the character lives instead
 of starting a new one.
 
+## The live group (Gaia)
+
+Gaia itself can be a region: set `"live": true` on its group, which allows
+port 1714, and give that region `"public": true` so only it is listed on the
+hub (a region's `public` overrides the group's). Optional keys for it:
+
+- `overlay` (group or region, an absolute folder): copied over the region's
+  worktree after every checkout, region last. It holds what git does not, such
+  as the live `config/config.txt` with the webhook key, `config/host.txt` and
+  native DLLs. It must not contain `map_saves`, `data` or the files `setup`
+  writes into `config/`.
+- `fetch` (a remote name such as `origin`): `setup`, `update` and
+  `check-update` run `git fetch` there once first, so `revision` can be
+  `origin/master`.
+
+`adopt --region gaia --from D:/GitHub/Civ13` moves a stopped standalone server
+into a region that has no save yet: it copies `map_saves` (checking each
+file's SHA-256) and the runtime state outside it (`SQL/`, player notes, memos,
+faction symbols, reputation and extraction data). The source is not changed.
+`check-update [--region ID]` prints one JSON line for the launcher's update
+panel (`component`, `current`, `available`, `behind`, `can_update`, `reason`,
+plus `regions`); it fetches but never merges or touches a world. The Windows
+walkthrough is in [scripts/windows/host](../windows/host/README.md).
+
+## Sleeping regions
+
+Regions sleep like Gaia: run the host service
+`gaia_host.py --group group.json serve` (see
+[gaia-host](../gaia-host/README.md#one-host-service-for-gaia-and-region-groups)).
+It freezes an empty region once it has saved, wakes it on a connection or a
+launcher request, cold-starts it from its save after a power-down, and keeps
+the transfer agents and coordinator running. `status` shows each region's
+`state` (`awake`, `asleep`, `cold` or `stopped`); `freeze` and `thaw` do it
+by hand. Sleep settings such as `freeze_idle_minutes` can be set once in the
+group config.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback

@@ -163,7 +163,7 @@ def wiki_pins(args):
     spec = importlib.util.spec_from_file_location('player_help_bridge_for_preflight', bridge)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    stale, missing = [], []
+    stale, missing, digests = [], [], {}
     for relative, (expected, _aliases) in module.WIKI_REVIEWED_GUIDES.items():
         path = wiki / 'src' / relative
         if not path.exists():
@@ -173,6 +173,7 @@ def wiki_pins(args):
         digest = hashlib.sha256(text.encode('utf-8')).hexdigest()
         if digest != expected:
             stale.append(relative)
+            digests[relative] = digest
             source = source.replace(expected, digest)
     print(f'Wiki checkout {revision or "(unknown)"}; pinned revision {module.WIKI_REVIEWED_REVISION}')
     print(f'{len(module.WIKI_REVIEWED_GUIDES) - len(stale) - len(missing)} current, {len(stale)} changed, {len(missing)} missing')
@@ -191,7 +192,16 @@ def wiki_pins(args):
         if revision:
             source = source.replace(module.WIKI_REVIEWED_REVISION, revision)
         bridge.write_text(source, encoding='utf-8')
-        print('Updated hashes and revision in scripts/player_help_bridge.py. Review the changed guides before committing.')
+        # The wiki guide tests freeze the same revision and a few hashes as literals.
+        tests = ROOT / 'tests/player_help/test_wiki_guides.py'
+        text = tests.read_text(encoding='utf-8')
+        for relative in stale:
+            text = text.replace(module.WIKI_REVIEWED_GUIDES[relative][0], digests[relative])
+        if revision:
+            text = text.replace(module.WIKI_REVIEWED_REVISION, revision)
+        tests.write_text(text, encoding='utf-8')
+        print('Updated hashes and revision in scripts/player_help_bridge.py and tests/player_help/test_wiki_guides.py. '
+              'Review the changed guides before committing.')
     return 1 if (stale and not args.write) or missing else 0
 
 

@@ -40,6 +40,13 @@ Code: `code/modules/persistence/party_train.dm`. Tests:
   with ten beds and crates. Carriage walls are indestructible and the doors
   open only for the berth's party and cannot be forced. Beds can be claimed
   as usual, so a member who sleeps aboard keeps the yard as home.
+- **Raids:** other factions can force a train's doors with weapons, kicks,
+  gunfire or explosives, but only while a member of the owning party is
+  playing in the yard world. A door takes 300 weapon force to force
+  (gunfire counts half). A forced door stays open and is never destroyed;
+  a party member secures it again by hand. Boarding is decided by
+  `party_train_may_board()` and raids by `party_train_breachable()`;
+  `party_members_online()` is shared with safe houses.
 - The first member of a party to arrive gets the lowest free berth for the
   party; later members arrive at the same berth. The berth is saved with the
   yard world. When the yard is full, the arrival lands on the arrival

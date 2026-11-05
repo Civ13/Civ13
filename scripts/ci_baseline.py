@@ -290,11 +290,13 @@ SUITES = {
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',
                                 'tests/crafting_loader/test_supplied_item_recipes.py',
                                 'tests/crafting_loader/test_basic_clothing.py',
-                                'tests/crafting_loader/test_production_machines.py'),
+                                'tests/crafting_loader/test_production_machines.py',
+                                'tests/crafting_loader/test_radio_headset.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
             'code/setup.dm', 'tests/save_movement/source_adapter.py',
             'code/modules/research_tree/research_node.dm',
-            'config/crafting/material_recipes_global.txt')},
+            'config/crafting/material_recipes_global.txt',
+            'code/modules/1713/radio.dm', 'icons/mob/ears.dmi')},
 
     # Stdlib-only access-file framing and complete helper-body projection.
     'access_lists': {'files': ('tests/access_lists/test_access_lists.py',),

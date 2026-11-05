@@ -46,6 +46,17 @@ run `python3 scripts/agent_preflight.py wiki-pins --wiki-root <wiki checkout> --
 review the changed pages and open a re-pin PR. Deployment also needs the
 worker's wiki_root updated and a worker restart.
 
+<!-- 2026-11-05: automated re-pins -->
+`.github/workflows/wiki-repin.yml` does that refresh automatically: the wiki's
+master push dispatches `wiki-updated` (civ13-wiki `.github/workflows/repin-dispatch.yml`,
+needs the wiki secret CIV13_DISPATCH_TOKEN), a weekly schedule and manual
+dispatch are the fallbacks. It runs `wiki-pins --write` (which now also updates
+the revision and hash literals in tests/player_help/test_wiki_guides.py), the
+focused tests, and opens or updates the rolling PR from branch
+`automation/wiki-repin`. Set WIKI_REPIN_TOKEN in Civ13 so that PR gets CI; with
+the default token GitHub does not run workflows on it, and the run summary holds
+the test result instead.
+
 <!-- 2026-11-05: field care, trails and limb states -->
 `medical_knowledge()` and `region_travel_knowledge()` in scripts/player_help_bridge.py
 are compact reviewed records with marker checks over medical.dm, organ_external.dm,
