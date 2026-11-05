@@ -160,6 +160,18 @@ class MedicalCare(unittest.TestCase):
         self.assertEqual(fields[10], "0")  # no research needed, unlike iron splints
         self.assertIn("/obj/item/stack/medical/splint/wooden\n", MEDICAL)
 
+    def test_silver_is_an_antiseptic(self):
+        elements = (ROOT / "code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm").read_text(encoding="utf-8")
+        self.assertIn("M.germ_level -= min(removed*15, M.germ_level)", block(elements, "/datum/reagent/silver/affect_touch"))
+        self.assertIn("O.germ_level", block(elements, "/datum/reagent/silver/touch_obj"))
+        self.assertRegex(BASE_ORGAN, r'"silver" = 0\.25')
+        dressing = block(MEDICAL, "/obj/item/stack/medical/bruise_pack/silver\n")
+        self.assertIn("treat_flags = MED_BANDAGE|MED_DISINFECT", dressing)
+        recipes = (ROOT / "config/crafting/material_recipes_global.txt").read_text(encoding="utf-8")
+        line = next(l for l in recipes.splitlines() if "/obj/item/stack/medical/bruise_pack/silver," in l)
+        self.assertEqual(len(line.replace("RECIPE: ", "").split(",")), 13)
+        self.assertTrue(line.startswith("RECIPE: /material/silver/,"))
+
 
 if __name__ == "__main__":
     unittest.main()
