@@ -37,6 +37,7 @@ import re
 import secrets
 import shutil
 import socket
+import struct
 import subprocess
 import sys
 import time
@@ -48,7 +49,10 @@ ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'wa
 DIRECT = ('freeze', 'thaw', 'watch')  # quick or long-running; no detached worker
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
-FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': True, 'wake_ignore': ['127.0.0.1', '::1']}
+# Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
+# in slows the wake past the launcher's patience, so it is opt-in.
+FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake_ignore': ['127.0.0.1', '::1'],
+                   'wake_poll_seconds': 0.2}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -86,6 +90,52 @@ def parse_netstat(text):
         if len(local) != 2 or len(remote) != 2 or not local[1].isdigit():
             continue
         rows.append((int(local[1]), remote[0].strip('[]'), parts[3], int(parts[4])))
+    return rows
+
+
+TCP_STATES = {2: 'LISTENING', 5: 'ESTABLISHED'}
+
+
+def parse_tcp_table(buffer, ipv6=False):
+    """Rows of (local_port, remote_address, state, pid) from a GetExtendedTcpTable
+    TCP_TABLE_OWNER_PID_ALL buffer (MIB_TCPTABLE_OWNER_PID or MIB_TCP6TABLE_OWNER_PID)."""
+    count = struct.unpack_from('<I', buffer, 0)[0]
+    size = 56 if ipv6 else 24
+    if 4 + count * size > len(buffer):
+        raise ValueError('truncated TCP table')
+    rows = []
+    for index in range(count):
+        offset = 4 + index * size
+        if ipv6:
+            local_port, = struct.unpack_from('<I', buffer, offset + 20)
+            remote = socket.inet_ntop(socket.AF_INET6, bytes(buffer[offset + 24:offset + 40]))
+            remote_port, state, pid = struct.unpack_from('<III', buffer, offset + 44)
+            if remote.startswith('::ffff:') and '.' in remote:
+                remote = remote[7:]
+        else:
+            state, _, local_port, remote_raw, remote_port, pid = struct.unpack_from('<IIIIII', buffer, offset)
+            remote = socket.inet_ntop(socket.AF_INET, struct.pack('<I', remote_raw))
+        port = socket.ntohs(local_port & 0xffff)
+        rows.append((port, remote, TCP_STATES.get(state, str(state)), pid))
+    return rows
+
+
+def windows_tcp_rows():
+    """Read both TCP tables through iphlpapi; much cheaper than running netstat."""
+    iphlpapi = ctypes.windll.iphlpapi
+    rows = []
+    for family, ipv6 in ((2, False), (23, True)):  # AF_INET, AF_INET6
+        size = ctypes.c_ulong(0)
+        for _ in range(4):  # the table can grow between the size query and the read
+            buffer = ctypes.create_string_buffer(max(size.value, 4))
+            result = iphlpapi.GetExtendedTcpTable(buffer, ctypes.byref(size), False, family, 5, 0)  # OWNER_PID_ALL
+            if result == 0:
+                rows += parse_tcp_table(buffer.raw[:size.value], ipv6)
+                break
+            if result != 122:  # ERROR_INSUFFICIENT_BUFFER
+                raise OSError('GetExtendedTcpTable failed: %d' % result)
+        else:
+            raise OSError('GetExtendedTcpTable kept growing')
     return rows
 
 
@@ -147,8 +197,11 @@ class Platform:
     # -- freezing ----------------------------------------------------------
     def tcp_rows(self):
         if os.name == 'nt':
-            code, out = self.run(['netstat', '-ano', '-p', 'TCP'], timeout=60)
-            return parse_netstat(out) if code == 0 else []
+            try:
+                return windows_tcp_rows()
+            except (OSError, ValueError, AttributeError):
+                code, out = self.run(['netstat', '-ano', '-p', 'TCP'], timeout=60)
+                return parse_netstat(out) if code == 0 else []
         rows = []
         for name, ipv6 in (('tcp', False), ('tcp6', True)):
             try:
@@ -461,7 +514,7 @@ class Host:
             ignore = set(self.config['wake_ignore'])
             if any(address not in ignore for address in self.platform.connections(self.config['port'])):
                 self.log(self.thaw('player connection'))
-            return None, 1
+            return None, self.config['wake_poll_seconds']
         if self.lock.exists() or not self.platform.listening(self.config['port']):
             return None, 30
         world = self.world()
