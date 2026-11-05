@@ -420,6 +420,7 @@
 		"Early Modern Age (No Research)" = "The game starts in the Early Modern Age. Research is disabled.",
 		"WW2 Age (No Research)"          = "The game starts in the World War II era. Research is disabled.",
 		"Modern Age (No Research)"       = "The game starts in the Modern Age. Research is disabled.",
+		"Digital Age (No Research)"      = "The game starts in the Digital Age (2026). Research is disabled.",
 		"Siege"                          = "Defend a strategic objective against an attacking force within a time limit.",
 		"Protect the VIP"                = "Defenders must protect a High-Value Target from attackers.",
 		"Area Capture"                   = "Teams compete to control strategic areas and gain points.",
@@ -461,7 +462,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Early Modern Age (No Research)", "WW2 Age (No Research)", "Modern Age (No Research)", "Digital Age (No Research)")
 
 	map.gamemode = vote.voted_gamemode
 	switch (vote.voted_gamemode)
@@ -700,6 +701,30 @@
 			map.age8_done = TRUE
 			map.research_active = FALSE
 			var/customresearch = 230
+			map.default_research = customresearch
+			map.civa_research = list(customresearch,customresearch,customresearch,null)
+			map.civb_research = list(customresearch,customresearch,customresearch,null)
+			map.civc_research = list(customresearch,customresearch,customresearch,null)
+			map.civd_research = list(customresearch,customresearch,customresearch,null)
+			map.cive_research = list(customresearch,customresearch,customresearch,null)
+			map.civf_research = list(customresearch,customresearch,customresearch,null)
+			return
+
+		if ("Digital Age (No Research)")
+			to_chat(world, "<big>Starting <b>Digital Age</b> mode. Game Epoch is the Digital Age (2026), research inactive.</big>")
+			map.ordinal_age = 9
+			map.age = "2026"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			map.age5_done = TRUE
+			map.age6_done = TRUE
+			map.age7_done = TRUE
+			map.age8_done = TRUE
+			map.age9_done = TRUE
+			map.research_active = FALSE
+			var/customresearch = LEGACY_RESEARCH_MAX
 			map.default_research = customresearch
 			map.civa_research = list(customresearch,customresearch,customresearch,null)
 			map.civb_research = list(customresearch,customresearch,customresearch,null)

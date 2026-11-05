@@ -115,6 +115,10 @@
 		if (world.time < map.age8_timer && sum >= (map.age7_top*3))
 			to_chat(user, msg)
 			return
+	if (map.age8_done == TRUE && map.age9_done == FALSE)
+		if (world.time < map.age9_timer && sum >= (map.age8_top*3))
+			to_chat(user, msg)
+			return
 	return FALSE
 
 /obj/structure/bookcase/proc/check_research()
@@ -194,6 +198,10 @@
 			if (map.age7_done == TRUE && map.age8_done == FALSE)
 				if (world.time < map.age8_timer && ( (map.custom_civs[user.civilization][1] >= map.age7_top) || (map.custom_civs[user.civilization][2] >= map.age7_top) || (map.custom_civs[user.civilization][3] >= map.age7_top)) )
 					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age8_timer-world.time)/600] minutes.")
+					return
+			if (map.age8_done == TRUE && map.age9_done == FALSE)
+				if (world.time < map.age9_timer && ( (map.custom_civs[user.civilization][1] >= map.age8_top) || (map.custom_civs[user.civilization][2] >= map.age8_top) || (map.custom_civs[user.civilization][3] >= map.age8_top)) )
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age9_timer-world.time)/600] minutes.")
 					return
 
 		var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)

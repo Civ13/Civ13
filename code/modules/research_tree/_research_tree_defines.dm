@@ -25,7 +25,7 @@
 #define RNODE_ENTRY_PROTOTYPE 3
 
 // Phase 3: bench tiers, faction bench cap, resource forge.
-#define MAX_BENCH_TIER 7 // matches the highest min_bench_tier used in the tree
+#define MAX_BENCH_TIER 8 // matches the highest min_bench_tier used in the tree
 
 // Silver-equivalent coin value (copper 0.1 / silver 1 / gold 4, summed across
 // coins fed in) needed to push a bench from tier T to tier T+1. Escalates so

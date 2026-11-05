@@ -16,6 +16,7 @@ STACK = 'code/game/objects/items/stacks/stack.dm'
 WAIT = 'code/_helpers/mobs.dm'
 FLOOR = 'code/game/turfs/floor_attackby.dm'
 BRIDGE = 'code/modules/gameplay_bridge/bridge.dm'
+MECHANICS = 'code/modules/gameplay_bridge/mechanics.dm'
 
 
 def replace_reviewed_once(source, current, previous):
@@ -33,6 +34,12 @@ def restore_crafting_projection(path, source):
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
+        )
+    elif path == MECHANICS:
+        # 2026 age: recipe max-era 8 is open-ended, so the canopy gate no
+        # longer refuses ages after the Modern Age.
+        edits = (
+            ('\tif (!N)\n\t\treturn FALSE\n\tif (N.tree == "Main")', '\tif (!N || map.ordinal_age > 8)\n\t\treturn FALSE\n\tif (N.tree == "Main")'),
         )
     elif path == BRIDGE:
         # #3233: agent observations share the geometric line-of-sight gate.

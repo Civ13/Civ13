@@ -192,6 +192,8 @@
 	for(var/key in encoded_fields) fields[key] = values[encoded_fields[key]]
 	fields = durable_metadata_default_map_fields(fields, durable_state)
 	durable_metadata_restore_fields(map, fields, durable_metadata_map_schema())
+	// The 2026 age flag is derived, not part of the versioned field inventory.
+	map.age9_done = (map.ordinal_age >= 9)
 	restore_durable_nomads(durable_state, values)
 	var/list/E = durable_state["environment"]
 	season = E["season"]

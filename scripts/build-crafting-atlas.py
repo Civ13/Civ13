@@ -262,7 +262,7 @@ for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d
     name,node,era,result,inputs=match.groups()
     ingredients=[(p,int(cost)) for p,cost in re.findall(r'(/\w[\w/]+) = list\((\d+)',inputs)]
     add(name,'Armor assembly',ingredients,[(result,1)],armor_path,armor[:match.start()].count('\n')+1,
-        f'Armor assembly workbench; {node} research; era {era}-8; 100 ticks per stage. Stage complete held inputs; exact costs, no bulk discount. Cancellation retains inputs; excess stock returned on retrieval.',match[0])
+        f'Armor assembly workbench; {node} research; era {era} and later; 100 ticks per stage. Stage complete held inputs; exact costs, no bulk discount. Cancellation retains inputs; excess stock returned on retrieval.',match[0])
 
 tanning_routes=add_tanning(files, add, records, sprite_variants)
 rope_routes=add_rope_making(files, add, records)

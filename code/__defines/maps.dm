@@ -203,3 +203,12 @@
 #define MAP_EXTRACTION_SURVIVAL "INDUSTRIAL_DISTRICT"
 #define MAP_EXTRACTION_CITY "MODERN_CITY_EXTRACTION"
 #define MAP_EXTRACTION_MALL "INTERCHANGE_MALL"
+
+// Ages (map.ordinal_age): 0 Stone (5000 B.C.) ... 8 Modern (2013), 9 Digital (2026).
+#define LATEST_ORDINAL_AGE 9
+// Crafting recipes list the last age they are available in (field 12). Rows
+// written before the 2026 age use 8 to mean "available to the end", so 8 and
+// above never retire a recipe.
+#define RECIPE_OPEN_ENDED_AGE 8
+// Legacy research points cap per category (industrial/military/health).
+#define LEGACY_RESEARCH_MAX 260

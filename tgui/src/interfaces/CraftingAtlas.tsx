@@ -7,7 +7,7 @@ type Navigation = { route: 'open' | 'page' | 'resource' | 'reset'; query?: strin
 const navigate = (ui: ScreenProps, params: Navigation) => {
   if (ui.interactive) ui.act('atlas_navigate', { atlas_navigate: JSON.stringify(params) });
 };
-const eras = ['Stone Age', 'Bronze Age', 'Middle Ages', 'Imperial Age', 'Industrial Age', 'Early Modern Age', 'WW2', 'Cold War', 'Modern Age'];
+const eras = ['Stone Age', 'Bronze Age', 'Middle Ages', 'Imperial Age', 'Industrial Age', 'Early Modern Age', 'WW2', 'Cold War', 'Modern Age', 'Digital Age'];
 function Source({ file, line, revision = 'master' }: Data) {
   const ref = String(revision ?? '');
   if (!file || !line || !(ref === 'master' || /^[0-9a-f]{40}$/.test(ref))) return null;

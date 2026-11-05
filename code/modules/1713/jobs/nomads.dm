@@ -331,7 +331,7 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
-		if (8)
+		if (8, 9)
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
 				spawn(5)

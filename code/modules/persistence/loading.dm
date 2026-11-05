@@ -959,6 +959,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	map.age6_done = (map.ordinal_age >= 6)
 	map.age7_done = (map.ordinal_age >= 7)
 	map.age8_done = (map.ordinal_age >= 8)
+	map.age9_done = (map.ordinal_age >= 9)
 	log_startup_progress("	Restored world metadata (epoch: [map.age], research: [map.default_research]).")
 	return TRUE
 

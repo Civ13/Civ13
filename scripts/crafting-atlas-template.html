@@ -20,7 +20,7 @@ const familyKey=r=>r.family_id||('recipe_'+r.id);
 let filteredRecipes=[];
 function matchingVariants(r){const q=searchText($('search').value),k=$('kind').value;return variants(r).filter(v=>(!k||v.kind===k)&&searchText(JSON.stringify({...r,...v,variants:undefined,family_id:undefined})).includes(q))}
 for(const k of [...new Set(D.recipes.flatMap(r=>variants(r).map(v=>v.kind)))].sort()){const o=el('option',k,$('kind'));o.value=k}
-for(const [i,name] of ['Stone Age','Bronze Age','Middle Ages','Imperial Age','Industrial Age','Early Modern Age','WW2','Cold War','Modern Age'].entries()){const o=el('option',i+': '+name,$('era'));o.value=String(i)}
+for(const [i,name] of ['Stone Age','Bronze Age','Middle Ages','Imperial Age','Industrial Age','Early Modern Age','WW2','Cold War','Modern Age','Digital Age'].entries()){const o=el('option',i+': '+name,$('era'));o.value=String(i)}
 for(const [value,label] of [['multiple','Multiple eras'],['unknown','Unknown / context dependent']]){const o=el('option',label,$('era'));o.value=value}
 for(const [value,label] of new Map(D.recipes.filter(r=>r.processor).map(r=>[r.processor,r.processor_name]))){const o=el('option',label,$('processor'));o.value=value}
 for(const l of D.limitations)el('li',l,$('limits'));$('commit').textContent='Source snapshot: '+D.sha;

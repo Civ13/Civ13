@@ -254,7 +254,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 			selected_matches = matches
 		if (matched <= 150)
 			index += "<p data-result-type='recipe'><a href='?src=\ref[src];atlas_open=1;atlas_recipe=[url_encode("[choice["id"]]")];atlas_query=[url_encode(query)];atlas_era=[url_encode(era)];atlas_processor=[url_encode(processor)]'>[html_encode("[recipe["name"]]")]</a><br><small>Recipe: [html_encode("[recipe["era_label"]]")]</small></p>"
-	var/list/era_names = list("0: Stone Age", "1: Bronze Age", "2: Middle Ages", "3: Imperial Age", "4: Industrial Age", "5: Early Modern Age", "6: WW2", "7: Cold War", "8: Modern Age")
+	var/list/era_names = list("0: Stone Age", "1: Bronze Age", "2: Middle Ages", "3: Imperial Age", "4: Industrial Age", "5: Early Modern Age", "6: WW2", "7: Cold War", "8: Modern Age", "9: Digital Age")
 	var/query_html = replacetext(html_encode(query), "'", "&#39;")
 	var/controls = "<form action='byond://?' method='get'><input type='hidden' name='src' value='\ref[src]'><input type='hidden' name='atlas_open' value='1'><input name='atlas_query' maxlength='64' value='[query_html]' aria-label='Search'><select name='atlas_era' aria-label='Unlock era'><option value=''>All unlock eras</option>"
 	for (var/i in 1 to era_names.len)

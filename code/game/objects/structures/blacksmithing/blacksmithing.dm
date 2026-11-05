@@ -99,7 +99,7 @@
 				var/valid_recipes = FALSE // Tracking if any valid recipes are found
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][6] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
@@ -138,7 +138,7 @@
 					optlist = list("cancel","helmets")
 				else if (map.ordinal_age == 5)
 					optlist = list("cancel","helmets")
-				else if (map.ordinal_age == 8)
+				else if (map.ordinal_age >= 8)
 					optlist = list("cancel","armor")
 				if (blackpowder_part_options(P, H).len > 1)
 					optlist += "flintlock parts"
@@ -151,7 +151,7 @@
 				var/valid_recipes = FALSE // Tracking if any valid recipes are found
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][6] > 0)
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][6] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes
@@ -195,7 +195,7 @@
 				var/valid_recipes = FALSE // Tracking if any valid recipes are found
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][5] > 0)
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][5] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
@@ -236,7 +236,7 @@
 					optlist = list("cancel","helmets")
 				else if (map.ordinal_age == 7)
 					optlist = list("cancel","helmets","ussr heavy visored helmets","guns")
-				else if (map.ordinal_age == 8)
+				else if (map.ordinal_age >= 8)
 					optlist = list("cancel","helmets","guns")
 
 				if (blackpowder_part_options(P, H).len > 1)
@@ -250,7 +250,7 @@
 				var/valid_recipes = FALSE // Tracking if any valid recipes are found
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][5] > 0)
+						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][5] > 0)
 							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
@@ -292,7 +292,7 @@
 			var/valid_recipes = FALSE // Tracking if any valid recipes are found
 			for(var/i in anvil_recipes)
 				if (anvil_recipes[i])
-					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][8] > 0)
+					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][8] > 0)
 						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar"
 						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
@@ -336,7 +336,7 @@
 			var/valid_recipes = FALSE // Tracking if any valid recipes are found
 			for(var/i in anvil_recipes)
 				if (anvil_recipes[i])
-					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && anvil_recipes[i][7] > 0)
+					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][7] > 0)
 						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze"
 						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
@@ -470,7 +470,7 @@
 									mat = anvil_recipes[i][6]
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == "knives" && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+								if (anvil_recipes[i][2] == "knives" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
 									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
@@ -535,7 +535,7 @@
 									mat = anvil_recipes[i][6]
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == "axes" && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+								if (anvil_recipes[i][2] == "axes" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
 									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
@@ -605,7 +605,7 @@
 									mat = anvil_recipes[i][6]
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+								if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
 									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
 									valid_recipes = TRUE // At least one valid recipe found
 						if (!valid_recipes) // No valid recipes found
@@ -758,7 +758,7 @@
 									mat = anvil_recipes[i][6]
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
-								if (anvil_recipes[i][2] == "keys" && map.ordinal_age >= anvil_recipes[i][3] && map.ordinal_age <= anvil_recipes[i][4] && mat > 0)
+								if (anvil_recipes[i][2] == "keys" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
 									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")

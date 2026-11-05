@@ -603,8 +603,8 @@ proc/admin_notice(var/message, var/rights)
 			return
 		if (customresearchsp < 0)
 			customresearchsp = 0
-		if (customresearchsp > 230)
-			customresearchsp = 230
+		if (customresearchsp > LEGACY_RESEARCH_MAX)
+			customresearchsp = LEGACY_RESEARCH_MAX
 		map.autoresearch_mult = customresearchsp
 		to_chat(world, "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>")
 		log_admin("[key_name(usr)] has changed the research modifier to [map.autoresearch_mult].")
@@ -644,7 +644,7 @@ proc/admin_notice(var/message, var/rights)
 		to_chat(usr, "<font color='red'>Error: This is only available on Civ/Nomads modes.</font>")
 		return
 	else
-		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903","1943","1969","2013", "Cancel"))
+		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903","1943","1969","2013","2026", "Cancel"))
 		switch (customage)
 			if ("Cancel")
 				return
@@ -719,6 +719,19 @@ proc/admin_notice(var/message, var/rights)
 				map.age7_done = TRUE
 				map.age8_done = TRUE
 				map.default_research = 210
+			if ("2026")
+				map.ordinal_age = 9
+				map.age = "2026"
+				map.age1_done = TRUE
+				map.age2_done = TRUE
+				map.age3_done = TRUE
+				map.age4_done = TRUE
+				map.age5_done = TRUE
+				map.age6_done = TRUE
+				map.age7_done = TRUE
+				map.age8_done = TRUE
+				map.age9_done = TRUE
+				map.default_research = 240
 
 		to_chat(world, "<big>The Epoch has been changed to <b>[map.age]</b></big>")
 		log_admin("[key_name(usr)] changed the map's epoch to [map.age].")

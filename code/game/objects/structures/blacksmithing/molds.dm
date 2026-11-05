@@ -448,7 +448,7 @@
 	if (!actual || actual.type != /material/sandstone || !stock.can_use(recipe.req_amount))
 		return FALSE
 	var/node = get_recipe_node_req("[recipe.result_type]")
-	if (!map || !node || !map.is_node_done(actor.civilization, node) || map.ordinal_age > 8)
+	if (!map || !node || !map.is_node_done(actor.civilization, node))
 		return FALSE
 	for (var/role in list("chisel", "hammer"))
 		if (!stone_mold_tool_available(actor, tools[role], role))

@@ -16,7 +16,7 @@ var/global/list/map_id_to_desc = list()
 				map_id_to_desc[id] = desc
 	return TRUE
 //Max levels showing players how far to advance, appears on the Character tab
-var/civmax_research = list(230,230,230)
+var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX)
 
 /obj/map_metadata
 	var/tmp/season_retired = FALSE
@@ -225,6 +225,11 @@ var/civmax_research = list(230,230,230)
 	var/age8_lim = 620
 	var/age8_done = 0
 	var/age8_timer = 7*24*36000
+	var/age8_top = 225
+
+	var/age9_lim = 700
+	var/age9_done = 0
+	var/age9_timer = 8*24*36000
 	var/orespawners = 0
 
 	var/list/list/globalmarketplace = list()
@@ -450,11 +455,13 @@ var/civmax_research = list(230,230,230)
 		ordinal_age = 7
 	else if (age == "2013")
 		ordinal_age = 8
+	else if (age == "2026")
+		ordinal_age = 9
 	return
 
 
 /obj/map_metadata/proc/autoresearch_proc()
-	if (autoresearch && default_research < 230)
+	if (autoresearch && default_research < LEGACY_RESEARCH_MAX)
 		if(durable_schedule("autoresearch", 600)) return
 		spawn(600) //1 minute = 0.03 points (by default)
 			autoresearch_step()
@@ -621,6 +628,18 @@ var/civmax_research = list(230,230,230)
 					age8_done = TRUE
 					if (!map.chad_mode && !map.chad_mode_plus)
 						default_research = 210
+					break
+		else if (!age9_done)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age9_lim && research_time() >= age9_timer)
+					to_chat(world, "<big>The world has advanced into the Digital Age!</big>")
+					age = "2026"
+					set_ordinal_age()
+					age9_done = TRUE
+					if (!map.chad_mode && !map.chad_mode_plus)
+						default_research = 240
 					break
 /obj/map_metadata/proc/check_events()
 	return TRUE

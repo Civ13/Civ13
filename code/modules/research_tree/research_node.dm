@@ -106,7 +106,7 @@ var/global/list/node_grid_col_cache = null
 	for (var/tree_name in trees)
 		var/col_cursor = 1
 		var/list/tree_node_ids = list()   // this tree's nodes, for the normalize pass
-		for (var/era = 0, era <= 8, era++)
+		for (var/era = 0, era <= LATEST_ORDINAL_AGE, era++)
 			// This tree's regular (non-capstone) nodes for this era.
 			var/list/regular_ids = list()
 			for (var/node_id in research_nodes)
@@ -273,6 +273,9 @@ var/global/list/node_grid_col_cache = null
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
 	// before this node's era8 -- assembly_line is baseline-granted by then).
 	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity"), 8, /obj/item/camera/coldwar))
+	// Capstone into the Digital Age (2026). Prototype: a mobile phone (gated on
+	// digital_computing, era8, so it is always buildable before this node).
+	register_research_node(new /datum/research_node("digital_networks", "Digital Networks", "Industrial", 560, 8, RESEARCH_MODE_PROTOTYPE, list("digital_computing"), 9, /obj/item/weapon/telephone/mobile))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
