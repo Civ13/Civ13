@@ -540,7 +540,7 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	show_ui(user)
 
 /obj/structure/survey_console/proc/map_html(datum/survey_map/M)
-	var/list/out = list("<pre style='font-size:11px;line-height:11px;background:#111;padding:4px'>")
+	var/list/out = list("<pre style='font-size:12px;line-height:12px;background:#111;padding:4px;display:inline-block'>")
 	for (var/y = map_height to 1 step -1)
 		var/list/line = list()
 		for (var/x = 1 to map_width)
@@ -559,7 +559,10 @@ var/global/datum/survey_map/space_survey_map_cache = null
 	return jointext(out, "\n")
 
 /obj/structure/survey_console/proc/show_ui(mob/user, message = null)
-	var/list/html = list("<html><head><title>Mission console</title></head><body style='background:#1b1b1b;color:#ddd;font-family:monospace'>")
+	user << browse(ui_html(message), "window=survey_console;size=560x680")
+
+/obj/structure/survey_console/proc/ui_html(message = null)
+	var/list/html = list("<html><head><title>Mission console</title><style>a{color:#8cc8ff;margin-right:4px}a:hover{color:#fff}</style></head><body style='background:#1b1b1b;color:#ddd;font-family:monospace'>")
 	if (message)
 		html += "<p><b>[message]</b></p>"
 	var/datum/survey_map/M = null
@@ -576,7 +579,7 @@ var/global/datum/survey_map/space_survey_map_cache = null
 			html += map_html(M)
 			html += "<p>Moves cost 1 on plains, 2 in channels and 3 on ice; ridges block. P probe, L landing site.</p>"
 	html += "</body></html>"
-	user << browse(jointext(html, ""), "window=survey_console;size=560x680")
+	return jointext(html, "")
 
 /obj/structure/survey_console/Topic(href, href_list)
 	if (!ishuman(usr))

@@ -173,6 +173,14 @@ var/space_runtime_error = FALSE
 
 	var/datum/survey_map/shipped = get_space_survey_map()
 	space_check(shipped && shipped.width == 40 && shipped.height == 40 && shipped.plain_cells().len > 100, "the shipped survey map loads at 40x40")
+	// A sample window on the shipped map, written out for a visual check.
+	var/obj/structure/survey_console/demo = new(locate(8, 8, 1))
+	space_check(demo.begin_mission(new /obj/item/space_probe/advanced(demo), shipped, 20, 20) || demo.begin_mission(new /obj/item/space_probe/advanced(demo), shipped), "a probe lands on the shipped map")
+	for (var/i = 1 to 6)
+		demo.try_move(EAST)
+		demo.try_move(NORTH)
+	text2file(demo.ui_html("Shipped map demo"), "survey_console_shipped.html")
+	qdel(demo)
 
 	var/datum/survey_map/M = space_test_map()
 	space_check(M.cell(1, 1) == "." && M.cell(4, 2) == "^" && M.cell(3, 2) == "*" && isnull(M.cell(0, 1)) && isnull(M.cell(9, 1)), "cells read south to north")
@@ -243,6 +251,9 @@ var/space_runtime_error = FALSE
 
 	// Ascent from the landing site only.
 	C.try_move(NORTH)
+	var/page = C.ui_html("hello")
+	space_check(findtext(page, "hello") && findtext(page, "survey=north") && findtext(page, "Battery") && findtext(page, ">P<") && findtext(page, ">L<") && findtext(page, ">?<"), "the console window shows the probe, landing site, fog and controls")
+	text2file(page, "survey_console.html")
 	space_check(findtext(C.ascend(), "landing site") && C.mission, "the ascent stage waits at the landing site")
 	C.try_move(SOUTH)
 	C.try_move(SOUTH)
@@ -262,6 +273,7 @@ var/space_runtime_error = FALSE
 	other.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "seed" = "other", "rows" = M.rows)))
 	space_survey_map_cache = other
 	space_check(findtext(C.try_move(EAST), "No signal") && C.probe_x == 2, "a changed survey map loses the probe")
+	space_check(findtext(C.ui_html(), "Contact with") && findtext(C.ui_html(), "survey=abandon"), "the console window offers to close a lost mission")
 	C.abandon()
 	space_check(!C.mission, "a lost mission can be closed")
 	space_survey_map_cache = null
