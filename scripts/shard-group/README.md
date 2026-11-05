@@ -79,6 +79,12 @@ clears it from the journal, so the group still keeps saves regular:
   through trade posts (which still wait for saves) never arrive.
 - A save of a 155x225 map takes over a minute, so keep `save_minutes` at 5 or
   more. Gates refuse travel while their region is saving.
+- A `RAID` region may set `reset_minutes` (0 = never, or 30 to 1440). It
+  never saves (`SKIP_PERSISTENCE_SAVING` stays on, `save_minutes` 0). Each
+  boot loads a fresh map and adopts the agent's ledger. Before each reset
+  the world confirms the cycle's trips and removes everyone still inside,
+  whose home goes back to the land they came from. See
+  `docs/persistence-raids.md`.
 
 Other optional keys:
 

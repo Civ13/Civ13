@@ -51,6 +51,8 @@ var/global/datum/shard_group/shard_group = new
 	// left has saved without them.
 	var/save_minutes = 0
 	var/travel_save_seconds = 60
+	// A resetting raid world (region_raid_reset.dm): minutes between resets, 0 = never.
+	var/reset_minutes = 0
 	var/saving_loop = FALSE
 
 /datum/shard_group/New()
@@ -105,6 +107,13 @@ var/global/datum/shard_group/shard_group = new
 		if(!isnum(settings["travel_save_seconds"]) || settings["travel_save_seconds"] < 10 || settings["travel_save_seconds"] > 3600)
 			return refuse("travel_save_seconds must be 10 to 3600")
 		travel_save_seconds = round(settings["travel_save_seconds"])
+	reset_minutes = 0
+	if(!isnull(settings["reset_minutes"]) && settings["reset_minutes"] != 0)
+		if(!isnum(settings["reset_minutes"]) || settings["reset_minutes"] < 30 || settings["reset_minutes"] > 1440)
+			return refuse("reset_minutes must be 0 or 30 to 1440")
+		if(self["kind"] != "RAID")
+			return refuse("only a RAID region can reset")
+		reset_minutes = round(settings["reset_minutes"])
 	group = settings["group"]
 	region = self["id"]
 	name = self["name"]

@@ -34,11 +34,33 @@ A faction door opens for members of its faction. Outsiders can smash it, breach
 it with a shotgun or pick its lock. A picked lock opens the door once; when the
 door closes, it is locked to outsiders again.
 
+## Resetting raid worlds
+
+A `RAID` region with `reset_minutes` (`scripts/shard-group`) never saves. Each
+boot is a new map (`code/modules/persistence/region_raid_reset.dm`).
+
+- The Status tab counts down. Warnings go out at 15, 5 and 1 minutes.
+- At the collapse, everyone still inside loses their body and everything
+  they carry. Their home goes back to the land they came from, through a
+  `depart` note to the coordinator. The world then confirms the cycle's trips
+  with the transfer agent and reboots.
+- The next boot sends `fresh` with its `/load`. The agent adopts its ledger
+  instead of holding the region for a rollback, and voids anything still
+  tentative.
+- A crash before the reset skips the confirmation, so the next boot replays
+  the journal and rebuilds raiders who were inside, with their gear, at the
+  new map's entry.
+- Wounds now travel with a character as overall damage, capped so they never
+  kill on arrival. A raid exit may therefore let hurt raiders leave without
+  healing them on the way.
+
+The travel allow-list also covers untouched packaged food and drink, medicine,
+basic tools, unloaded guns and magazines (#3783).
+
 ## Not built yet
 
 - A shared rule for when another party's train or base can be forced (owners
   online, any time, or only in raids). The rail-yard train doors follow the
   answer to that question.
-- Turning the extraction maps (such as the zombie city) into raid-world maps
-  with a timed reset that sends everyone still inside home without their loot.
-- Adding more loot types to the travel allow-list.
+- Other extraction maps as raid worlds. The zombie city is the first
+  (`docs/zombie-city.md`).

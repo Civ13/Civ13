@@ -72,7 +72,7 @@ var/global/datum/zombie_city_probe/zombie_city_probe = new
 		for (var/turf/N in range(12, T))
 			if (!N.density)
 				open++
-		if (open >= 450)
+		if (open >= 560) // nearly all open, so walls and doors do not hide the anchor
 			return T
 	return null
 
@@ -150,7 +150,14 @@ var/global/datum/zombie_city_probe/zombie_city_probe = new
 
 		mark("pursuit")
 		anchor.status_flags &= ~GODMODE
-		wait_for(src, "anchor_hurt", 1200, "no zombie reached and bit the anchor")
+		var/hurt_until = world.time + 1200
+		while (!anchor_hurt())
+			if (world.time > hurt_until)
+				var/list/seen = list()
+				for (var/mob/living/simple_animal/hostile/human/zombie/horde/Z in zombie_horde.live)
+					seen += "d[get_dist(Z, anchor)] s[Z.stat] t[Z.target_mob ? 1 : 0] st[Z.stance] mv[Z.move_to_delay] at [Z.x],[Z.y]"
+				throw EXCEPTION("no zombie reached and bit the anchor at [anchor.x],[anchor.y]: [jointext(seen, "; ")]")
+			sleep(5)
 		anchor.status_flags |= GODMODE
 		anchor.revive()
 		pass("pursuit_and_bite")
@@ -186,6 +193,59 @@ var/global/datum/zombie_city_probe/zombie_city_probe = new
 		require(live_total() == total, "folding changed the total ([total] -> [live_total()])")
 		require(zombie_horde.blocks["probe"].count == total, "block count [zombie_horde.blocks["probe"].count], expected [total]")
 		pass("fold_back", list("folded" = zombie_horde.folded_total))
+
+		mark("city_world")
+		require(!zombie_city_map() && !zombie_city_start(), "zombie city started on a map without the flag")
+		var/list/exits = list()
+		for (var/ordinal in list(3, 1, 5, 2, 4))
+			exits += zombie_city_add_evacuation(locate(10 + ordinal * 2, 10, 1), ordinal)
+		for (var/i in 1 to 5)
+			var/obj/structure/region_gate/raid_exit/zombie_city/E = zombie_city_evacuations[i]
+			require(E.ordinal == i, "evacuation points out of order at [i]: [E.ordinal]")
+		var/list/open_before = list()
+		for (var/obj/structure/region_gate/raid_exit/zombie_city/E in zombie_city_evacuations)
+			if (zombie_city_evac_open(E))
+				open_before += E.ordinal
+		require(open_before.len == 2, "[open_before.len] evacuation points open")
+		zombie_city_next_turn()
+		var/list/open_after = list()
+		for (var/obj/structure/region_gate/raid_exit/zombie_city/E in zombie_city_evacuations)
+			if (zombie_city_evac_open(E))
+				open_after += E.ordinal
+		require(open_after.len == 2 && !length(open_after & open_before), "turn did not move the open points: [json_encode(open_before)] -> [json_encode(open_after)]")
+		var/obj/structure/region_gate/raid_exit/zombie_city/closed = zombie_city_evacuations[open_before[1]]
+		require(findtext(closed.travel_refusal(anchor), "closed"), "closed point did not refuse: [closed.travel_refusal(anchor)]")
+		var/turf/entry = locate(30, 30, 1)
+		zombie_city_add_insertion(entry)
+		require(region_travel_arrival_turf() == entry, "arrivals do not use the city entry point")
+		pass("evacuation_points", list("open_before" = open_before, "open_after" = open_after))
+
+		mark("wounds")
+		var/mob/living/human/hurt = new(locate(40, 40, 1))
+		hurt.persistence_owner_ckey = "woundprobe"
+		hurt.take_overall_damage(40, 10)
+		var/list/WP = region_travel_decode(hurt.region_travel_payload(list()))
+		require(WP && WP["brute"] > 0 && WP["burn"] > 0, "wounds missing from payload")
+		var/mob/living/human/rebuilt = region_travel_build(WP, locate(42, 40, 1))
+		require(rebuilt.getBruteLoss() > 0 && rebuilt.getBurnLoss() > 0 && rebuilt.stat != DEAD, "wounds did not travel")
+		WP["brute"] = 500
+		require(!region_travel_decode(json_encode(WP)), "impossible wounds decoded")
+		pass("wounds_travel", list("brute" = rebuilt.getBruteLoss(), "burn" = rebuilt.getBurnLoss()))
+
+		mark("collapse")
+		region_raid_reset.reboot = FALSE
+		var/mob/living/human/stayed = new(locate(44, 40, 1))
+		stayed.persistence_owner_ckey = "stayedprobe"
+		var/obj/item/weapon/crowbar/carried = new(stayed)
+		var/mob/living/human/corpse = new(locate(46, 40, 1))
+		corpse.persistence_owner_ckey = "corpseprobe"
+		corpse.death()
+		anchor.persistence_owner_ckey = null
+		region_raid_reset.collapse()
+		require(QDELETED(stayed) && QDELETED(carried), "a raider and their gear survived the collapse")
+		require(!QDELETED(corpse), "the collapse removed a corpse")
+		require(region_raid_reset.lost_last >= 1, "collapse counted [region_raid_reset.lost_last]")
+		pass("raid_collapse", list("lost" = region_raid_reset.lost_last))
 	catch (var/exception/e)
 		failure = "[e.name] ([e.file]:[e.line])"
 		failed_phase = phase

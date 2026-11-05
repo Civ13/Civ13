@@ -99,6 +99,14 @@ def load_group(path):
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
     if type(group.setdefault('persistent', True)) is not bool:
         raise ValueError('persistent must be true or false')
+    # A resetting raid world never saves; it reboots on a new map every
+    # reset_minutes and sends everyone still inside home without their gear.
+    for r in regions:
+        reset = r.setdefault('reset_minutes', 0)
+        if type(reset) is not int or not (reset == 0 or 30 <= reset <= 1440):
+            raise ValueError('region %s reset_minutes must be 0 or 30 to 1440' % r['id'])
+        if reset and r['kind'] != 'RAID':
+            raise ValueError('only a RAID region can reset (region %s)' % r['id'])
     if group.get('python') is not None and (type(group['python']) is not str or not group['python']):
         raise ValueError('python must be a path')
     group.setdefault('python', sys.executable)
@@ -225,7 +233,7 @@ class RegionHost(Host):
         if code != 0:
             raise RuntimeError('checkout failed: ' + out.strip()[-300:])
         if group['persistent']:
-            persistent_config(path / 'config' / 'config.txt')
+            persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
         if group.get('rust_g'):
             shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
         include = place_map(group, region)
@@ -240,17 +248,17 @@ class RegionHost(Host):
         self.record(phase='compiled', revision=revision, map=region['map'])
 
 
-def persistent_config(path):
+def persistent_config(path, saving=True):
     """Make a region world a persistent round that saves: ALLOWED_GAMEMODES
     PERSISTENCE, and SKIP_PERSISTENCE_SAVING (on in the repository's development
-    config) commented out."""
+    config) commented out. A resetting raid world keeps it on (saving=False)."""
     lines = path.read_text(encoding='utf-8').splitlines() if path.exists() else []
     out, found = [], False
     for line in lines:
         key = line.split(' ', 1)[0]
         if key == 'ALLOWED_GAMEMODES':
             line, found = 'ALLOWED_GAMEMODES PERSISTENCE', True
-        elif key == 'SKIP_PERSISTENCE_SAVING':
+        elif key == 'SKIP_PERSISTENCE_SAVING' and saving:
             line = '#' + line
         out.append(line)
     if not found:
@@ -300,8 +308,8 @@ def setup(group, platform=None):
         config = path / 'config'
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group),
-                    'save_minutes': group['save_minutes'] if group['persistent'] else 0,
-                    'travel_save_seconds': group['travel_save_seconds']}
+                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] else 0,
+                    'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes']}
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():

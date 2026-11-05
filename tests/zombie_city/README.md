@@ -11,7 +11,11 @@ temporary copy of `civ13.dme` with `maps/EFT/crossroads_mall.dmm` selected and
 - zombies appear around a clientless anchor body, out of its sight;
 - they chase and bite it, a kill lowers the block's total, gunfire noise turns
   idle zombies toward the sound, and with no anchor left they fold back into
-  the block count.
+  the block count;
+- evacuation points sort by ordinal, two are open at a time and the next turn
+  opens two others, a closed one refuses, and arrivals use the city entry;
+- wounds travel in a payload, impossible wounds are refused;
+- a raid collapse removes living raiders and their gear and leaves corpses.
 
 ```sh
 source ~/byond-516.1688/byond/bin/byondsetup

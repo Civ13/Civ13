@@ -216,6 +216,24 @@ class ShardGroupTests(unittest.TestCase):
         shard_group.persistent_config(path)
         self.assertEqual(['A 1', 'ALLOWED_GAMEMODES PERSISTENCE', '#SKIP_PERSISTENCE_SAVING', '#SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
 
+    def test_resetting_raid_region(self):
+        self.refuse_config('only a RAID region can reset', region_reset_minutes=60)
+        self.refuse_config('reset_minutes', region_kind='RAID', region_reset_minutes=10)
+        self.refuse_config('reset_minutes', region_kind='RAID', region_reset_minutes=True)
+        self.group['regions'][1].update(kind='RAID', reset_minutes=180)
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual((0, 180), (settings['save_minutes'], settings['reset_minutes']), 'a resetting raid world never saves')
+        gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual((15, 0), (gaia['save_minutes'], gaia['reset_minutes']))
+
+    def test_persistent_config_without_saving(self):
+        path = self.base / 'config.txt'
+        path.write_text('ALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n')
+        shard_group.persistent_config(path, saving=False)
+        self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
+
     def test_update_failures_are_reported(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
