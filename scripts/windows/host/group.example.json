@@ -1,0 +1,30 @@
+{
+  "group": "earth",
+  "live": true,
+  "repository": "D:/GitHub/Civ13",
+  "root": "D:/Civ13Regions/earth",
+  "revision": "origin/master",
+  "fetch": "origin",
+  "compiler": "C:/Program Files (x86)/BYOND/bin/dm.exe",
+  "daemon": "C:/Program Files (x86)/BYOND/bin/dd.exe",
+  "git": "C:/Program Files/Git/cmd/git.exe",
+  "public_host": "your.public.host",
+  "persistent": true,
+  "save_minutes": 0,
+  "save_timeout_seconds": 5400,
+  "start_timeout_seconds": 300,
+  "backups_kept": 3,
+  "freeze_idle_minutes": 15,
+  "doorman_port": 1713,
+  "regions": [
+    {
+      "id": "gaia",
+      "name": "Gaia",
+      "kind": "SURFACE",
+      "port": 1714,
+      "map": "maps/nomads/nomads_gaia.dmm",
+      "public": true,
+      "overlay": "D:/Civ13Regions/overlay/gaia"
+    }
+  ]
+}
