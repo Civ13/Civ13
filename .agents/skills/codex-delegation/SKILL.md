@@ -19,9 +19,14 @@ reviews it, verifies it and decides what to keep.
 - Do not install, update or log in to Codex, and do not read, print, copy or
   move credentials, without Val's explicit go-ahead in the thread.
 - Terra's model ID is `gpt-6.1-terra` and needs Codex CLI 0.159.0 or later.
-  The PC had the standalone install 0.162.1 under
-  `%USERPROFILE%\.codex\packages\standalone\releases\` on 2026-11-05. If
-  `codex` is not on PATH in the shell you got, look for `codex.exe` there.
+  Older CLIs fail with HTTP 400 `model_not_found` ("not supported when using
+  Codex with a ChatGPT account").
+- On 2026-11-05 the `codex` on PATH was an old npm copy (0.151.0,
+  `C:\ProgramData\npm\npm\codex`) that cannot run Terra. The working copy is
+  the standalone 0.162.1 at
+  `%USERPROFILE%\.codex\packages\standalone\releases\0.162.1-x86_64-pc-windows-msvc\bin\codex.exe`.
+  Always check `codex --version` and call that standalone `codex.exe` by full
+  path (or the newest release folder there) when PATH gives an older one.
 - Never work in `D:\GitHub\Civ13` itself: that checkout must stay on master for
   the live server. Give Codex its own worktree.
 
@@ -106,6 +111,12 @@ Flag notes:
 - Follow-ups reuse the session: `codex exec resume --last "<next instruction>"`
   run from the same worktree (omit `--ephemeral` if you plan to resume).
 - `--skip-git-repo-check` is only needed outside a Git checkout.
+- When the prompt is a command-line argument and stdin is not a terminal,
+  Codex also reads stdin as extra context ("Reading additional input from
+  stdin..."). Pass the prompt on stdin with `-` as above, or redirect stdin
+  from `/dev/null` (`NUL` in cmd) so it does not wait.
+- The model name is not reported in the JSON events; a `turn.completed` with
+  no `turn.failed` or `error` event is the success signal.
 
 Long runs can exceed a single tool-call timeout. Start the command in the
 background and wait for it to exit instead of polling in a loop.
