@@ -89,6 +89,14 @@ SUITES = {
             'code/modules/1713/farmers_almanac.dm',
             'code/modules/1713/weather.dm',
             'code/game/objects/farming.dm')},
+    # Ploughed field sprite selection and load restore projected from production DM.
+    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
+        'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (
+            'code/game/turfs/flooring/flooring_premade.dm',
+            'code/game/turfs/flooring/flooring.dm',
+            'code/game/turfs/floor_icon.dm',
+            'code/game/turfs/floor.dm',
+            'icons/turf/floors.dmi')},
     # Inventory drag-and-drop transfer source contracts; no BYOND runtime.
     'inventory_drag': {'files': ('tests/inventory_drag/test_inventory_drag.py',),
         'paths': ('tests/inventory_drag/',), 'shared_paths': (
