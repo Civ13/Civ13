@@ -109,6 +109,7 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('1 to 16 regions', regions=[])
         self.refuse_config('group id', group='Europe!')
         self.refuse_config('mainland', mainland='atlantis')
+        self.refuse_config('mainland cannot be a RAID', mainland='deep', region_kind='RAID')
         group = self.write_group()
         self.assertEqual('gaia', group['mainland'], 'the first region is the mainland by default')
         self.assertEqual(('HEAD', False), (group['revision'], group['public']))

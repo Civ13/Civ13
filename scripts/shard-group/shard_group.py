@@ -37,7 +37,7 @@ import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update')
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'OTHER')
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'OTHER')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -90,6 +90,9 @@ def load_group(path):
     mainland = group.setdefault('mainland', regions[0]['id'])
     if mainland not in ids:
         raise ValueError('mainland must be one of the region ids')
+    # Raid worlds reset and send everyone home; nobody can live in one.
+    if any(r['id'] == mainland and r['kind'] == 'RAID' for r in regions):
+        raise ValueError('the mainland cannot be a RAID region')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:

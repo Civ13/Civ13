@@ -229,6 +229,30 @@ class HomeTests(unittest.TestCase):
         self.coordinator.homes_once()
         self.assertEqual({'val': 'alpha'}, self.coordinator.homes())
 
+    def test_a_raid_death_sends_the_home_back_where_the_raider_came_from(self):
+        # region_raid.dm: a raid world notes a death as a depart to the origin.
+        self.coordinator.close()
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'main.sqlite'), 'g', 'alpha')
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.coordinator.homes_once()
+        self.ask('alpha', 'val')
+        self.coordinator.homes_once()
+        self.ask('alpha', 'val', 'depart', 'gamma')
+        self.ask('gamma', 'val', 'arrive')
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'gamma'}, self.coordinator.homes())
+        # gamma -> raid world beta, then death there.
+        self.ask('gamma', 'val', 'depart', 'beta')
+        self.ask('beta', 'val', 'arrive')
+        self.coordinator.homes_once()
+        self.assertEqual('HOME', self.ask('beta', 'val'))
+        self.ask('beta', 'val', 'depart', 'gamma')
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'gamma'}, self.coordinator.homes(), 'home, not the mainland')
+        self.assertEqual('HOME', self.ask('gamma', 'val'))
+        self.assertEqual('ELSEWHERE', self.ask('beta', 'val'))
+
     def test_bad_requests_are_refused(self):
         store = self.stores['alpha']
         for ckey, op, region in (('Val', 'claim', None), ('', 'claim', None), ('x' * 33, 'claim', None),
