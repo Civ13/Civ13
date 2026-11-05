@@ -77,6 +77,8 @@ class SourceTest(unittest.TestCase):
             self.assertIn(f'"{table}"', source)
         self.assertIn("zombie_horde_add_block(", source)
         self.assertIn("zombie_city_roll_loot(", source)
+        self.assertIn("zombie_city_add_insertion(", source)
+        self.assertIn("zombie_city_add_evacuation(", source)
         code = "\n".join(line.split("//")[0] for line in source.splitlines())
         self.assertEqual(re.findall(r"(?<![\w.])(?:rand|prob|pick|shuffle)\(", code), [])
 

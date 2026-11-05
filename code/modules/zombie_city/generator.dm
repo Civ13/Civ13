@@ -12,8 +12,10 @@
 // Interiors (room stamps) and upper floors are later phases; this pass makes
 // open shells with doors and windows, loot inside them, and the street mess.
 //
-// The horde registers each block through zombie_horde_add_block and loot is
-// rolled at each loot marker through zombie_city_roll_loot (horde.dm, loot.dm).
+// The horde registers each block through zombie_horde_add_block, loot is
+// rolled at each loot marker through zombie_city_roll_loot (horde.dm, loot.dm)
+// and the city world takes its arrival and evacuation points through
+// zombie_city_add_insertion and zombie_city_add_evacuation (world.dm).
 
 #define ZC_RIM 1
 #define ZC_ROAD 2
@@ -961,6 +963,7 @@ var/global/zombie_city_generating = FALSE
 		E.layout_id = layout.seed
 		layout.entries += T
 		layout.entry_markers += E
+		zombie_city_add_insertion(T)
 	ordinal = 0
 	for (var/list/p in exit_cells)
 		var/turf/T = locate(p[1], p[2], z)
@@ -971,6 +974,7 @@ var/global/zombie_city_generating = FALSE
 		X.layout_id = layout.seed
 		layout.exits += T
 		layout.exit_markers += X
+		zombie_city_add_evacuation(T, X.ordinal)
 	var/rolled = 0
 	for (var/key in loot_cells)
 		var/list/spec = loot_cells[key]
