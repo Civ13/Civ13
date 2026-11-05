@@ -156,6 +156,7 @@ var/global/roundtrip_capture_failure = FALSE
 		var/savefile/marked = new("map_saves/1.sav")
 		check(marked["/value_format"] == 2, "level file lacks the value format 2 marker")
 		marked = null
+		check_validation_record()
 		// A full-file generation loaded in low-memory mode is split into
 		// segments first, then imported one segment at a time.
 		if(world.params["split"])
@@ -382,6 +383,28 @@ var/global/roundtrip_capture_failure = FALSE
 		rejected = TRUE
 	check(rejected, "truncated scalar list accepted")
 	map_storage.clear_bookkeeping()
+
+// A save that passed candidate validation lets a same-build preflight skip
+// the entry walk; any other build or a changed file runs the full check.
+/proc/check_validation_record()
+	check(!fexists("map_saves/validated.json"), "save without candidate validation wrote a validation record")
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "full check") == 1, "unrecorded save skipped the full check")
+	var/generation = trim(file2text("map_saves/save_complete.txt"))
+	check(!map_storage.write_validation_record(generation), "validation record written without a build identity")
+	map_storage.save_build_identity = "fixture-build-a"
+	check(map_storage.write_validation_record(generation) && fexists("map_saves/validated.json"), "validation record not written")
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "matching validation record did not skip the entry check")
+	map_storage.save_build_identity = "fixture-build-b"
+	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the validation record")
+	map_storage.save_build_identity = "fixture-build-a"
+	var/round_text = file2text("map_saves/round.json")
+	fdel("map_saves/round.json")
+	text2file("[round_text] ", "map_saves/round.json")
+	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (round.json changed since it was validated)", "changed file trusted the validation record")
+	check(map_storage.write_validation_record(generation) && map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "rewritten record did not match its files")
+	map_storage.clear_validation_record()
+	map_storage.save_build_identity = null
+	check(!fexists("map_saves/validated.json"), "validation record not removed")
 
 /proc/check_save_identity_and_snapshot()
 	var/savefile/F = new
