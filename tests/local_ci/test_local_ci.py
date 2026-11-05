@@ -119,6 +119,12 @@ class AttestationTests(unittest.TestCase):
             with self.subTest(change=change):
                 self.assertFalse(decide(selection, *published(receipt(selection, **change)))['skip'])
 
+    def test_crlf_comment_body_still_verifies(self):
+        selection = plan()
+        statuses, comments = published(receipt(selection))
+        comments[42]['body'] = comments[42]['body'].replace('\n', '\r\n')
+        self.assertTrue(decide(selection, statuses, comments)['skip'])
+
     def test_link_to_another_repository_runs_hosted(self):
         selection = plan()
         statuses, comments = published(receipt(selection))

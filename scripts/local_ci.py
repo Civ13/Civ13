@@ -126,11 +126,11 @@ def check_attestation(*, head, tree, plan, statuses, get_comment, attesters, ver
         return None, ['Receipt comment missing or written by someone else']
     if comment.get('commit_id') != head:
         return None, ['Receipt comment is on another commit']
-    body = comment.get('body') or ''
+    body = (comment.get('body') or '').replace('\r\n', '\n')
     block = RECEIPT_BLOCK.search(body)
     if not body.startswith(MARKER) or not block:
         return None, ['Receipt comment has no receipt block']
-    text = block.group(1).replace('\r\n', '\n')
+    text = block.group(1)
     if sha256_text(text) != match.group(1):
         return None, ['Receipt differs from the digest in the status']
     receipt = json.loads(text)
