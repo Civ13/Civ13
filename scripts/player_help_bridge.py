@@ -66,13 +66,13 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '9ae6134b741d4144d8ed44378ed9ed698fb3910b'
+WIKI_REVIEWED_REVISION = '4862bc0b49383660694e71b808b904f5c6610f7c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('8e911052635f458944f9d5e9727093538cfccbcf458c953378b0741d769c8dfb', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('e05d6184abff269f8e1e266530e7408944481ec94b0d5e8a4d4d9166a7d10124', 'combat fight fighting intent aim shoot melee grenade cover'),
-    'guides/Guide_to_Communications.md': ('4779cb6547ecc2505caaf8e2f858c775e8dd7d6e92e69945188201276d080ac2', 'communications radio transmit'),
+    'guides/Guide_to_Communications.md': ('f572f4d29c14aea24cbd771e2eb3a171247aeedd71406cf75a0055b7f507e133', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('2ab598407a49337d05f700c3b9cbc7b3636334ee82bdde4949dffc1e4e58576d', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('f3353d7e6f27bf19d3c6be488007c516d95cf20f04676beb3ae550ccab0a3fb9', 'exercise training strength weights running fatigue'),
@@ -113,13 +113,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Paperwork.md': ('7eb57d56e7a8ab8ea9c281a348193566af6a5efc3fd9cf9b56f60b6d7998daee', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
-    'Food_Decay_Times.md': ('78a788eecd195f1e5868b72f5b3b5052040eb7aa5d93bf1062be4de15319d4b1', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
+    'Food_Decay_Times.md': ('03b3afea69d820d77f094cde10e321cd7ff8ada2490304ce46f05594a410c65d', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
     'maps/Gaia.md': ('a0e1bb3e593b3e301dbaa2d470aa61d6a221ec120155f81d81e3bae6170a49d5', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fadee870fd64b48811211d6d498016817100f4878d2ab17e2b92f39ade30de50', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('0026c6e6cb55ec1f12839380b2fca7deeece3ab885b4d9d03b4efccdd60e91da', 'guides overview list of guides index'),
+    'guides_overview.md': ('7630fc952ee4de8c4f8964c042f7c615396bcd58c14dbee97630a76fe2d58c43', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
