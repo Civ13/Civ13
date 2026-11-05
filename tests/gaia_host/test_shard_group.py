@@ -179,6 +179,8 @@ class ShardGroupTests(unittest.TestCase):
         self.assertGreaterEqual(len((config / 'transfer-token.txt').read_text().strip()), 32)
         settings = json.loads((config / 'shard_region.json').read_text())
         self.assertEqual((15, 60), (settings['save_minutes'], settings['travel_save_seconds']))
+        # Regions ask the local doorman which peers sleep instead of polling (and waking) them.
+        self.assertEqual('127.0.0.1:1713', settings['doorman'])
         started = []
         def start(argv, cwd, log):
             started.append(argv)

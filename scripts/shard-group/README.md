@@ -15,8 +15,10 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 ```
 
 - `setup` creates `<root>/<id>` as a detached worktree for every region and
-  writes `config/shard_region.json` (the whole group plus which region this
-  is), `config/lifecycle-token.txt` and the region's host config. It refuses
+  writes `config/shard_region.json` (the whole group, which region this is,
+  and the local doorman's address: regions ask the doorman which peers sleep,
+  because any connection to a frozen world wakes it, and a trail asks it to
+  wake its destination before sending a traveller), `config/lifecycle-token.txt` and the region's host config. It refuses
   while any region is listening.
 - `update` checks every region out at the group's `revision`, writes
   `region.dme` (civ13.dme with only the region's map selected) and compiles it.

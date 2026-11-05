@@ -34,6 +34,10 @@ var/global/datum/shard_group/shard_group = new
 			return FALSE
 	return TRUE
 
+// The port of a host:port address.
+/proc/shard_address_port(address)
+	return text2num(copytext(address, findlasttext(address, ":") + 1))
+
 /datum/shard_group
 	var/enabled = FALSE
 	var/group = null
@@ -54,6 +58,10 @@ var/global/datum/shard_group/shard_group = new
 	// A resetting raid world (region_raid_reset.dm): minutes between resets, 0 = never.
 	var/reset_minutes = 0
 	var/saving_loop = FALSE
+	// host:port of the host's doorman (scripts/gaia-host/doorman.py), which knows
+	// which regions are asleep. Null when the host runs none. A sleeping peer is
+	// never polled directly, because a connection to it wakes it.
+	var/doorman = null
 
 /datum/shard_group/New()
 	..()
@@ -114,6 +122,11 @@ var/global/datum/shard_group/shard_group = new
 		if(self["kind"] != "RAID")
 			return refuse("only a RAID region can reset")
 		reset_minutes = round(settings["reset_minutes"])
+	doorman = null
+	if(!isnull(settings["doorman"]))
+		if(!shard_address_valid(settings["doorman"]))
+			return refuse("doorman must be a host:port address")
+		doorman = settings["doorman"]
 	group = settings["group"]
 	region = self["id"]
 	name = self["name"]
@@ -164,17 +177,113 @@ var/global/datum/shard_group/shard_group = new
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	return TRUE
 
+// A peer the doorman reports as not awake: ASLEEP (frozen), COLD (stopped
+// after a power-down, started from its save on wake), WAKING or DOWN.
+/datum/shard_group/proc/record_sleeping(id, list/entry, now)
+	var/list/peer = peers[id]
+	if(!peer)
+		return FALSE
+	peer["checked"] = now
+	peer["players"] = 0
+	switch(entry["state"])
+		if("asleep")
+			peer["state"] = entry["cold"] ? "COLD" : "ASLEEP"
+		if("waking")
+			peer["state"] = "WAKING"
+		else
+			peer["state"] = "DOWN"
+			peer["players"] = null
+	return TRUE
+
+// The doorman's answer as a list, or null when there is none.
+/datum/shard_group/proc/ask_doorman(query)
+	if(!doorman)
+		return null
+	var/answer = null
+	try
+		answer = world.Export("byond://[doorman]?[query]")
+	catch
+		answer = null
+	if(!istext(answer))
+		return null
+	var/list/reply = null
+	try
+		reply = json_decode(answer)
+	catch
+		reply = null
+	return islist(reply) ? reply : null
+
+// "port" -> the doorman's entry for every world it hosts, or null.
+/datum/shard_group/proc/doorman_states()
+	var/list/reply = ask_doorman("host_status=1")
+	if(!reply || !islist(reply["instances"]))
+		return null
+	var/list/by_port = list()
+	for(var/list/entry in reply["instances"])
+		if(isnum(entry["port"]))
+			by_port["[entry["port"]]"] = entry
+	return by_port
+
+// Asks one peer directly; TRUE when it answered as itself.
+/datum/shard_group/proc/poll_peer(id)
+	var/list/peer = peers[id]
+	if(!peer)
+		return FALSE
+	var/answer = null
+	try
+		answer = world.Export("byond://[peer["address"]]?shard_region=1&format=json")
+	catch
+		answer = null
+	return record(id, answer, world.time)
+
 /datum/shard_group/proc/poll_once()
+	var/list/hosted = doorman_states()
 	for(var/id in order.Copy())
 		var/list/peer = peers[id]
 		if(!peer)
 			continue
-		var/answer = null
-		try
-			answer = world.Export("byond://[peer["address"]]?shard_region=1&format=json")
-		catch
-			answer = null
-		record(id, answer, world.time)
+		var/list/entry = hosted ? hosted["[shard_address_port(peer["address"])]"] : null
+		// Asleep or stopped: a direct poll would wake it. A waking world is
+		// asked directly, so it reads as up as soon as it answers.
+		if(islist(entry) && entry["state"] != "awake" && (entry["state"] != "waking" || !poll_peer(id)))
+			record_sleeping(id, entry, world.time)
+			continue
+		if(!islist(entry) || entry["state"] == "awake")
+			poll_peer(id)
+
+// A peer that is asleep but can be woken through the doorman.
+/datum/shard_group/proc/peer_wakeable(id)
+	var/list/peer = peers[id]
+	return doorman && peer && (peer["state"] in list("ASLEEP", "COLD", "WAKING"))
+
+// Wakes a sleeping peer through the doorman and waits until it answers.
+// Null once it is up, otherwise why not. Sleeps; notify hears how long.
+/datum/shard_group/proc/wake_peer(id, mob/notify = null)
+	var/list/peer = peers[id]
+	if(!peer)
+		return "That land is not known here."
+	if(peer["state"] == "UP")
+		return null
+	if(!peer_wakeable(id))
+		return "Nobody seems to be coming back from [peer["name"]] right now."
+	var/list/reply = ask_doorman("wake=1&port=[shard_address_port(peer["address"])]")
+	if(!reply)
+		return "Nobody answers the call to [peer["name"]] right now. Try again in a while."
+	if(!reply["ok"])
+		log_game("Region travel: waking [id] was refused: [reply["error"]].")
+		if(reply["error"] == "low memory")
+			return "[peer["name"]] cannot be reached while this land's host is short of memory. Try again later."
+		return "[peer["name"]] cannot be woken right now. Ask an admin."
+	var/eta = isnum(reply["eta"]) ? Clamp(reply["eta"], 0, 900) : 60
+	if(notify)
+		to_chat(notify, SPAN_NOTICE(eta >= 60 ? "[peer["name"]] lies quiet. Word is sent ahead; it may take [round(eta / 60) + 1] minutes. Stay by the trail." : "[peer["name"]] lies quiet. Word is sent ahead; stay by the trail."))
+	peer["state"] = "WAKING"
+	var/deadline = world.time + (eta + 60) * 10
+	while(world.time < deadline)
+		sleep(20)
+		if(poll_peer(id))
+			return null
+	return "[peer["name"]] did not answer in time. Try again in a while."
 
 /datum/shard_group/proc/start_polling()
 	if(!enabled || polling)
@@ -241,11 +350,22 @@ var/global/datum/shard_group/shard_group = new
 			var/list/peer = peers[id]
 			var/state = peer["state"]
 			var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
-			var/join = state == "UP" ? "<a href='byond://[peer["address"]]'>Join</a>" : ""
-			lines += "<tr><td>[html_encode(peer["name"])]</td><td>[lowertext(peer["kind"])]</td><td>[state == "UP" ? "up" : (state == "UNKNOWN" ? "not checked yet" : (state == "MISMATCH" ? "wrong server" : "down"))]</td><td>[players]</td><td>[join]</td></tr>"
+			// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
+			var/join = (state == "UP" || state == "ASLEEP") ? "<a href='byond://[peer["address"]]'>Join</a>" : ""
+			lines += "<tr><td>[html_encode(peer["name"])]</td><td>[lowertext(peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
 		lines += "</table>"
 		lines += "<p>Your character lives in one region. New characters start on the mainland and reach the others by travelling a trail.</p>"
 	return jointext(lines, "")
+
+/proc/shard_state_text(state)
+	switch(state)
+		if("UP") return "up"
+		if("ASLEEP") return "asleep, wakes when someone arrives"
+		if("COLD") return "asleep, slow to wake"
+		if("WAKING") return "waking up"
+		if("UNKNOWN") return "not checked yet"
+		if("MISMATCH") return "wrong server"
+	return "down"
 
 /client/verb/view_regions()
 	set name = "Regions"

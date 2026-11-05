@@ -460,7 +460,10 @@ def setup(group, platform=None):
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group),
                     'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] else 0,
-                    'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes']}
+                    'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
+                    # The host service's doorman on this machine; regions ask it which peers
+                    # sleep (a direct poll would wake them) and to wake one for a traveller.
+                    'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():
