@@ -209,7 +209,12 @@ target 0 the stick in the other hand. After `pick_leaves`, `make_stick` or
 `cut_grass` the autopilot picks up what fell when a hand is free, and a
 `NEEDS` line leads the observation when water or nutrition drops below 250;
 below 200 water the autopilot replaces the plan with drinking at listed water,
-or exploring for it. `take` (`item`: a carried or worn item's name) moves a
+or exploring for it. Body temperature below 290 K or above 316 K is a need too
+and tops the goal ladder; below 270 K the autopilot replaces the plan with
+putting on carried warm clothes, going to or lighting a listed fire, or
+building a campfire from carried logs. Goals follow what she carries (with
+twine or sinew, a sharpened stick and sharpened flint the axe goal is
+`bind_axe` now). `take` (`item`: a carried or worn item's name) moves a
 stowed item into the empty active hand, and skills take a stowed tool they need. A step the
 autopilot cannot accept is explained to the model next turn (for example a skill
 with no target listed: explore to find one). When something attacks the

@@ -1484,5 +1484,64 @@ class BlueprintReviewTest(unittest.TestCase):
         self.assertEqual(blueprints._holding({"carried": ["thatch roofing (in bag)"]}, "roofing"), "thatch roofing")
 
 
+class LiveRunFixesTest(unittest.TestCase):
+    """Fixes from the live run where she cut grass for 50 minutes while carrying an axe kit, and froze."""
+
+    def goal(self, **me):
+        return autopilot.current_goal({"self": dict({"water": 900, "nutrition": 900}, **me), "nearby": []})[0]
+
+    def test_the_axe_goal_follows_what_she_carries(self):
+        kit = dict(right_hand={"name": "sharpened flint"}, left_hand={"name": "sharpened stick"})
+        self.assertIn("cut_grass twice", self.goal(**kit))
+        self.assertIn("twist_twine your grass cuttings", self.goal(carried=["grass cuttings (pocket)"], **kit))
+        ready = self.goal(carried=["crude twine (pocket)"], **kit)
+        self.assertIn("bind_axe now", ready)
+        self.assertNotIn("cut_grass", ready)
+        self.assertIn("bind_axe now", self.goal(carried=["sinew (pocket)"], **kit))
+        self.assertEqual(autopilot.goal_item(ready), "flint hatchet")  # the recipe book still answers
+        self.assertIn("sharpen_stick it now", self.goal(right_hand={"name": "sharpened flint"}, left_hand={"name": "stick"}))
+
+    def test_cold_and_heat_are_needs_and_come_first_on_the_ladder(self):
+        cold = self.goal(bodytemperature=213, right_hand={"name": "sharpened flint"})
+        self.assertTrue(cold.startswith("warm up, you are freezing (body 213 K"), cold)
+        self.assertTrue(self.goal(bodytemperature=320).startswith("cool down"))
+        self.assertIn("find flint", self.goal(bodytemperature=310))
+        text, _ = autopilot.summarize({"self": {"name": "Ada", "bodytemperature": 280.4}, "nearby": [], "terrain": []})
+        self.assertTrue(text.startswith("NEEDS: you are freezing (body 280 K"), text)
+        self.assertEqual(autopilot.temperature_need({"bodytemperature": True}), "")
+
+    def test_freezing_puts_on_clothes_then_goes_to_a_fire_then_builds_one(self):
+        me = {"bodytemperature": 250, "active_hand": "right", "right_hand": {"name": "sharpened flint"}, "left_hand": None,
+              "carried": ["fur coat (in bag)"], "worn": ["loincloth"]}
+        step = autopilot.cold_plan({"self": me, "nearby": []})
+        self.assertEqual(step, {"do": "equip", "material": "fur coat"})
+        steps, error = autopilot.expand_plan([step], me)
+        self.assertEqual(error, "")
+        self.assertEqual(steps[-2:], [{"do": "take", "item": "fur coat"}, {"do": "equip"}])
+        bare = dict(me, carried=[], worn=["fur coat"])
+        far = {"ref": "[0xf]", "name": "campfire", "dx": 4, "dy": 0}
+        self.assertEqual(autopilot.cold_plan({"self": bare, "nearby": [far]}), {"do": "go", "target": "[0xf]"})
+        self.assertEqual(autopilot.cold_plan({"self": bare, "nearby": [dict(far, dx=1)]})["skill"], "light_fire")
+        logs = dict(bare, carried=["wood logs (pocket)"])
+        self.assertEqual(autopilot.cold_plan({"self": logs, "nearby": []})["recipe"], "campfire")
+        self.assertIsNone(autopilot.cold_plan({"self": dict(logs, bodytemperature=285), "nearby": []}))  # cold, not dangerous yet
+
+    def test_memory_skips_herself_and_animals(self):
+        import tempfile
+        from memory import CharacterMemory
+        with tempfile.TemporaryDirectory() as folder:
+            memory = CharacterMemory.load("Ada", folder)
+            me = {"name": "Ada", "ref": "[0x1]", "x": 10, "y": 10, "z": 2}
+            rows = [{"name": "Ada", "ref": "[0x1]", "mob": True, "stat": 0, "type": "/mob/living/human", "dx": 0, "dy": 0},
+                    {"name": "horse", "ref": "[0x2]", "mob": True, "stat": 0, "type": "/mob/living/simple_animal/horse", "dx": 1, "dy": 0},
+                    {"name": "Bob", "ref": "[0x3]", "mob": True, "stat": 0, "type": "/mob/living/human", "dx": 2, "dy": 0}]
+            memory.observe({"self": me, "nearby": rows, "terrain": []}, speech=[("horse", 'The horse screams, "!"'), ("Ada", 'Ada says, "hi"')])
+            self.assertEqual(list(memory.data["people"]), ["Bob"])
+            memory.data["people"]["horse"] = {}
+            memory.data["people"]["Ada"] = {}
+            memory.forget_non_people("Ada")
+            self.assertEqual(list(memory.data["people"]), ["Bob"])
+
+
 if __name__ == "__main__":
     unittest.main()

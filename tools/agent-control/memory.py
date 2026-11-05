@@ -71,6 +71,15 @@ def _direction(dx, dy):
     return (ns + ew) or "here"
 
 
+def _is_person(row, me):
+    """A living human other than herself (animals, corpses and her own row are not people)."""
+    if not row.get("mob") or row.get("stat") == 2 or not str(row.get("type", "")).startswith("/mob/living/human"):
+        return False
+    if me.get("ref") and row.get("ref") == me.get("ref"):
+        return False
+    return not (row.get("dx") == 0 and row.get("dy") == 0 and str(row.get("name", "")) == str(me.get("name", "")))
+
+
 class CharacterMemory:
     def __init__(self, path, name=""):
         self.path = Path(path)
@@ -195,6 +204,15 @@ class CharacterMemory:
         del places[:-MAX_PLACES]
         self.dirty = True
 
+    def forget_non_people(self, own_name, animal_words=("horse", "cow", "goat", "sheep", "pig", "chicken", "dog", "cat", "deer", "wolf", "bear")):
+        """Drop people records that were really herself or an animal (older memory files had both)."""
+        own = str(own_name or "").lower()
+        for name in list(self.data["people"]):
+            lowered = name.lower()
+            if lowered == own or lowered in animal_words:
+                del self.data["people"][name]
+                self.dirty = True
+
     def person(self, name):
         people = self.data["people"]
         key = _clip(name, 40)
@@ -231,7 +249,7 @@ class CharacterMemory:
                 if test(row):
                     self._place(kind, row.get("name", kind), x + row["dx"], y + row["dy"], z)
                     break
-            if row.get("mob") and row.get("stat") != 2 and not str(row.get("type", "")).startswith("/mob/living/simple_animal"):
+            if _is_person(row, me):
                 who = self.person(row.get("name", "someone"))
                 if now - who.get("last_seen", 0) > 600:  # a new meeting after ten minutes apart
                     who["times_met"] = who.get("times_met", 0) + 1
@@ -239,7 +257,10 @@ class CharacterMemory:
                     if who["times_met"] == 1:
                         self.event(f"met {row.get('name')} at ({x},{y})")
                 who["last_seen"] = now
+        animals = {str(row.get("name", "")).lower() for row in observation.get("nearby", []) if row.get("mob") and not _is_person(row, me)}
         for speaker, line in speech:
+            if str(speaker).lower() in animals or str(speaker).lower() == str(me.get("name", "")).lower():
+                continue  # a horse "screams", and her own words are not someone else's
             who = self.person(speaker)
             who["last_seen"] = now
             if _clip(line) not in who["they_said"]:
@@ -248,8 +269,7 @@ class CharacterMemory:
                 who["talks"] = who.get("talks", 0) + 1
                 if who["talks"] % 3 == 0 and who.get("trust", 0) < 2:  # talk makes someone familiar, not a friend
                     who["trust"] = who.get("trust", 0) + 1
-        people = {str(row.get("name", "")).lower(): str(row.get("name", "")) for row in observation.get("nearby", [])
-                  if row.get("mob") and not str(row.get("type", "")).startswith("/mob/living/simple_animal")}
+        people = {str(row.get("name", "")).lower(): str(row.get("name", "")) for row in observation.get("nearby", []) if _is_person(row, me)}
         for name in dict.fromkeys(str(n).lower() for n in attackers if n):
             if name in people:  # a person, not an animal, hit her
                 self.adjust_trust(people[name], -3, "attacked me")
