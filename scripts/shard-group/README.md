@@ -34,7 +34,7 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
 `public_host` (the address players use to join) and 1 to 16 `regions`, each
-with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND` or
+with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD` or
 `OTHER`), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
 `save_timeout_seconds`, `start_timeout_seconds` and `backups_kept`.
