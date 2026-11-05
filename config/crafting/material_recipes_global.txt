@@ -432,6 +432,12 @@ RECIPE: /material/electronics/,loudspeaker,/obj/structure/radio/receiver/loudspe
 RECIPE: /material/electronics/,portable radio,/obj/item/weapon/radio,12,100,0,1,none,141,0,0,8,null
 RECIPE: /material/electronics/,walkie-talkie radio,/obj/item/weapon/radio/walkietalkie,16,100,0,1,none,178,0,0,8,null
 RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
+RECIPE: /material/electronics/,smartphone,/obj/item/weapon/telephone/mobile/smartphone,15,100,0,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,LED panel,/obj/structure/lamp/lamp_big/led,2,55,0,1,electrical,235,0,0,8,null
+RECIPE: /material/electronics/,lithium-ion battery bank,/obj/structure/battery/lithium_ion,25,200,1,1,electrical,235,0,0,8,null
+RECIPE: /material/electronics/,drone controller,/obj/item/drone_controller,10,100,0,1,drones,0,235,0,8,null
+RECIPE: /material/electronics/,quadcopter drone,/obj/structure/drone/flying,15,150,1,1,drones,0,235,0,8,null
+RECIPE: /material/electronics/,payload drone,/obj/structure/drone/flying/grenade,20,150,1,1,drones,0,235,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
 

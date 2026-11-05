@@ -277,6 +277,9 @@ var/global/list/node_grid_col_cache = null
 	// digital_computing, era8, so it is always buildable before this node).
 	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","automation"), 9))
 	register_research_node(new /datum/research_node("digital_networks", "Digital Networks", "Industrial", 560, 8, RESEARCH_MODE_PROTOTYPE, list("digital_computing"), 9, /obj/item/weapon/telephone/mobile))
+	// Digital Age consumer hardware: smartphones, LED lighting, lithium-ion storage.
+	register_research_node(new /datum/research_node("consumer_electronics", "Consumer Electronics", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks"), 9))
+	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","missiles"), 9))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -679,6 +682,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
 		// --- additive_manufacturing (9) ---
 		"/obj/structure/factory_fabricator/printer" = "additive_manufacturing",
+		// --- consumer_electronics (9) ---
+		"/obj/item/weapon/telephone/mobile/smartphone" = "consumer_electronics",
+		"/obj/structure/lamp/lamp_big/led" = "consumer_electronics",
+		"/obj/structure/battery/lithium_ion" = "consumer_electronics",
+		// --- uav_drones (9) ---
+		"/obj/item/drone_controller" = "uav_drones",
+		"/obj/structure/drone/flying" = "uav_drones",
+		"/obj/structure/drone/flying/grenade" = "uav_drones",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",

@@ -315,6 +315,27 @@ var/list/global/phone_numbers = list()
 					return
 	else
 		..()
+/////////////////////////////SMARTPHONE/////////////////////////////////////
+// Digital Age (2026) phone: twice the cellphone's range and a built-in torch.
+/obj/item/weapon/telephone/mobile/smartphone
+	name = "smartphone"
+	desc = "A touchscreen mobile phone. Use it in hand to call; use its secondary action to toggle the flashlight."
+	maxrange = 80
+	secondary_action = TRUE
+	var/tmp/torch_on = FALSE
+
+/obj/item/weapon/telephone/mobile/smartphone/secondary_attack_self(mob/user)
+	if (!isturf(user.loc))
+		to_chat(user, "You cannot turn the flashlight on while in this [user.loc].")
+		return
+	torch_on = !torch_on
+	set_light(torch_on ? 4 : 0)
+	to_chat(user, "<span class='notice'>You turn \the [src]'s flashlight [torch_on ? "on" : "off"].</span>")
+
+/obj/item/weapon/telephone/mobile/smartphone/Destroy()
+	torch_on = FALSE
+	set_light(0)
+	return ..()
 /////////////////////////////CELLPHONE TOWER/////////////////////////////////////
 /obj/structure/cell_tower
 	name = "cell tower"
