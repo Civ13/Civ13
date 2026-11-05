@@ -42,6 +42,10 @@
 /obj/map_metadata
 	var/elevation_default_metres = 0
 	var/list/elevation_regions = null
+	// Map-file form of elevation_regions for generated region maps, which
+	// cannot carry nested lists: "x1 x2 y1 y2 z metres" rows joined by "|".
+	// Used only when elevation_regions is unset.
+	var/elevation_regions_text = null
 	var/tmp/datum/elevation_profile/elevation_profile_cache
 
 /proc/elevation_metres_valid(value)
@@ -76,6 +80,29 @@
 		profile.regions += list(row.Copy())
 	return profile
 
+// Rows for build_elevation_profile, which still validates every bound.
+/proc/elevation_regions_from_text(text)
+	if(!istext(text))
+		throw EXCEPTION("Invalid elevation region text")
+	var/list/rows = list()
+	if(!length(text))
+		return rows
+	var/list/records = splittext(text, "|")
+	if(records.len > 256)
+		throw EXCEPTION("Invalid elevation profile")
+	for(var/record in records)
+		var/list/fields = splittext(record, " ")
+		if(fields.len != 6)
+			throw EXCEPTION("Invalid elevation region fields")
+		var/list/values = list()
+		for(var/field in fields)
+			var/value = text2num(field)
+			if(!isnum(value) || "[value]" != field)
+				throw EXCEPTION("Invalid elevation region number")
+			values += value
+		rows += list(list("x1" = values[1], "x2" = values[2], "y1" = values[3], "y2" = values[4], "z" = values[5], "metres" = values[6]))
+	return rows
+
 /datum/elevation_profile
 	var/default_metres = 0
 	var/list/regions = list()
@@ -90,7 +117,12 @@
 
 /obj/map_metadata/proc/effective_elevation_profile()
 	if(!elevation_profile_cache)
-		elevation_profile_cache = build_elevation_profile(elevation_default_metres, isnull(elevation_regions) ? list() : elevation_regions, world.maxx, world.maxy, world.maxz)
+		var/list/source = elevation_regions
+		if(isnull(source))
+			source = list()
+			if(!isnull(elevation_regions_text))
+				source = elevation_regions_from_text(elevation_regions_text)
+		elevation_profile_cache = build_elevation_profile(elevation_default_metres, source, world.maxx, world.maxy, world.maxz)
 	return elevation_profile_cache
 
 /proc/get_elevation(atom/location)

@@ -353,7 +353,21 @@ var/global/datum/player_help_service/player_help_service = new
 	for (var/part in injury_body_parts())
 		var/obj/item/organ/external/O = H.get_organ(part)
 		var/present = O && O.owner == H
-		results += list(list("body_part" = part, "missing" = present ? FALSE : TRUE, "brute" = present ? round(max(0, min(1000, O.brute_dam))) : 0, "burn" = present ? round(max(0, min(1000, O.burn_dam))) : 0))
+		var/list/row = list("body_part" = part, "missing" = present ? FALSE : TRUE, "brute" = present ? round(max(0, min(1000, O.brute_dam))) : 0, "burn" = present ? round(max(0, min(1000, O.burn_dam))) : 0)
+		if (present)
+			// Limb states the character already sees when examining themselves;
+			// they let Help give tourniquet, splint and bandage steps directly.
+			var/bleeding = FALSE
+			for (var/datum/wound/W in O.wounds)
+				if (!W.internal && W.bleeding())
+					bleeding = TRUE
+					break
+			row["bleeding"] = bleeding
+			row["artery_cut"] = (O.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
+			row["tourniquet"] = O.tourniquet ? TRUE : FALSE
+			row["broken"] = (O.status & ORGAN_BROKEN) ? TRUE : FALSE
+			row["splinted"] = (O.status & ORGAN_SPLINTED) ? TRUE : FALSE
+		results += list(row)
 	return results
 
 // Match the categories shown to the character by print_mood(), not raw mood.
