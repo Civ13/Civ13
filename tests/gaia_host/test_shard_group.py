@@ -1,6 +1,7 @@
 """Offline tests for scripts/shard-group/shard_group.py with a fake machine."""
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -125,7 +126,7 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((REVISION, ['gaia', 'deep']), (result['revision'], result['created']))
         deep = self.base / 'regions' / 'deep'
         settings = json.loads((deep / 'config' / 'shard_region.json').read_text())
-        self.assertEqual(('europe', 'deep'), (settings['group'], settings['region']))
+        self.assertEqual(('europe', 'deep', 'gaia'), (settings['group'], settings['region'], settings['mainland']))
         self.assertEqual(['203.0.113.5:1720', '203.0.113.5:1721'], [r['address'] for r in settings['regions']])
         self.assertTrue((deep / 'map_saves').is_dir())
         token = (deep / 'config' / 'lifecycle-token.txt').read_text().strip()
@@ -295,6 +296,26 @@ class ShardGroupTests(unittest.TestCase):
         host.work('start', host.request('start')['operation'])
         self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
         self.assertEqual(compiles, sum(1 for call in self.machine.calls if call[0][-1] == 'region.dme'))
+
+    def test_process_alive_runs_no_console_program(self):
+        # Called every 30 s by the host service; a tasklist child flashed a window.
+        from unittest import mock
+        with mock.patch.object(shard_group.subprocess, 'run', side_effect=AssertionError('no subprocess')), \
+                mock.patch.object(shard_group.subprocess, 'Popen', side_effect=AssertionError('no subprocess')):
+            self.assertTrue(shard_group.process_alive(os.getpid()))
+            self.assertFalse(shard_group.process_alive(2 ** 22 + 12345))
+
+    def test_windows_access_denied_counts_as_alive(self):
+        # A live coordinator we may not query must not look stopped, or a
+        # second one would start; a missing process still reads as stopped.
+        import types
+        gh = shard_group.gaia_host
+        for error, expected in ((5, True), (87, False)):
+            kernel32 = types.SimpleNamespace(OpenProcess=mock.Mock(return_value=None))
+            with mock.patch.object(gh, 'os', types.SimpleNamespace(name='nt')), \
+                    mock.patch.object(gh.ctypes, 'WinDLL', return_value=kernel32, create=True), \
+                    mock.patch.object(gh.ctypes, 'get_last_error', return_value=error, create=True):
+                self.assertIs(shard_group.Platform().alive(4242), expected)
 
     def test_region_platform_command_line(self):
         group = self.write_group()

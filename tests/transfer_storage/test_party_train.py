@@ -29,6 +29,13 @@ TRAVEL = read('code/modules/persistence/region_travel.dm')
 
 
 class PartyTrainTests(unittest.TestCase):
+    def test_the_yard_world_is_named_rail_yard(self):
+        # The yard map uses plain Nomads metadata ("Nomads (Temperate)").
+        group = read('code/modules/persistence/shard_group.dm')
+        hook = group[group.index('/hook/startup/proc/shard_group_startup()'):]
+        self.assertIn('shard_group.kind == "RAILYARD" && map && map.type == /obj/map_metadata/nomads', hook)
+        self.assertIn('map.title = "Rail Yard"', hook)
+
     def test_built_from_the_crafting_menu_and_included_after_the_gate(self):
         recipes = read('config/crafting/material_recipes_global.txt')
         self.assertRegex(recipes, r'(?m)^RECIPE: /material/wood/,railway works office,' + re.escape(OFFICE) + ',')

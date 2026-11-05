@@ -645,93 +645,9 @@ proc/admin_notice(var/message, var/rights)
 		return
 	else
 		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903","1943","1969","2013","2026", "Cancel"))
-		switch (customage)
-			if ("Cancel")
-				return
-			if ("5000 B.C.")
-				map.ordinal_age = 0
-				map.age = "5000 B.C."
-			if ("313 B.C.")
-				map.ordinal_age = 1
-				map.age = "313 B.C."
-				map.age1_done = TRUE
-				map.default_research = 25
-			if ("1013")
-				map.ordinal_age = 2
-				map.age = "1013"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.default_research = 50
-			if ("1713")
-				map.ordinal_age = 3
-				map.age = "1713"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.default_research = 80
-			if ("1873")
-				map.ordinal_age = 4
-				map.age = "1873"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.age4_done = TRUE
-				map.default_research = 105
-			if ("1903")
-				map.ordinal_age = 5
-				map.age = "1903"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.age4_done = TRUE
-				map.age5_done = TRUE
-				map.default_research = 120
-			if ("1943")
-				map.ordinal_age = 6
-				map.age = "1943"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.age4_done = TRUE
-				map.age5_done = TRUE
-				map.age6_done = TRUE
-				map.default_research = 145
-			if ("1969")
-				map.ordinal_age = 7
-				map.age = "1969"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.age4_done = TRUE
-				map.age5_done = TRUE
-				map.age6_done = TRUE
-				map.age7_done = TRUE
-				map.default_research = 175
-			if ("2013")
-				map.ordinal_age = 8
-				map.age = "2013"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.age4_done = TRUE
-				map.age5_done = TRUE
-				map.age6_done = TRUE
-				map.age7_done = TRUE
-				map.age8_done = TRUE
-				map.default_research = 210
-			if ("2026")
-				map.ordinal_age = 9
-				map.age = "2026"
-				map.age1_done = TRUE
-				map.age2_done = TRUE
-				map.age3_done = TRUE
-				map.age4_done = TRUE
-				map.age5_done = TRUE
-				map.age6_done = TRUE
-				map.age7_done = TRUE
-				map.age8_done = TRUE
-				map.age9_done = TRUE
-				map.default_research = 240
+		if (customage == "Cancel" || !(customage in epoch_names))
+			return
+		map.set_epoch(epoch_names.Find(customage) - 1)
 
 		to_chat(world, "<big>The Epoch has been changed to <b>[map.age]</b></big>")
 		log_admin("[key_name(usr)] changed the map's epoch to [map.age].")

@@ -45,6 +45,8 @@ var/global/datum/shard_group/shard_group = new
 	var/name = null
 	var/kind = null
 	var/address = null
+	// The region new characters start in. Every other region follows its epoch.
+	var/mainland = null
 	// id -> list(name, kind, address, state, players, map, checked)
 	var/list/peers = list()
 	var/list/order = list()
@@ -127,6 +129,13 @@ var/global/datum/shard_group/shard_group = new
 		if(!shard_address_valid(settings["doorman"]))
 			return refuse("doorman must be a host:port address")
 		doorman = settings["doorman"]
+	// The mainland defaults to the first region, as shard_group.py does.
+	var/list/first = regions[1]
+	mainland = first["id"]
+	if(!isnull(settings["mainland"]))
+		if(!(settings["mainland"] in found))
+			return refuse("mainland must be one of the region ids")
+		mainland = settings["mainland"]
 	group = settings["group"]
 	region = self["id"]
 	name = self["name"]
@@ -146,6 +155,9 @@ var/global/datum/shard_group/shard_group = new
 // What a peer, the host tool or a player sees of this region.
 /datum/shard_group/proc/describe()
 	. = list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)
+	// Other regions follow the mainland's epoch (follow_mainland_epoch).
+	if(map)
+		.["ordinal_age"] = map.ordinal_age
 	// Stations ask before sending a new party (party_train.dm).
 	if(kind == "RAILYARD")
 		.["free_berths"] = party_train_free_berths()
@@ -175,6 +187,22 @@ var/global/datum/shard_group/shard_group = new
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
+	if(id == mainland)
+		follow_mainland_epoch(reply["ordinal_age"])
+	return TRUE
+
+// Every region keeps the mainland's epoch (Val, 2026-11-05): a fresh region
+// would otherwise start at the persistence floor (1943) while the mainland is
+// further on. The epoch only moves forward, and the region's own save keeps it.
+/datum/shard_group/proc/follow_mainland_epoch(ordinal)
+	if(!map || region == mainland || !isnum(ordinal) || ordinal != round(ordinal))
+		return FALSE
+	if(ordinal <= map.ordinal_age || ordinal >= epoch_names.len)
+		return FALSE
+	if(!map.set_epoch(ordinal))
+		return FALSE
+	log_game("Region group: following the mainland [mainland] to the epoch [map.age].")
+	to_chat(world, "<big>The Epoch has been changed to <b>[map.age]</b>, as on the mainland.</big>")
 	return TRUE
 
 // A peer the doorman reports as not awake: ASLEEP (frozen), COLD (stopped
@@ -334,6 +362,10 @@ var/global/datum/shard_group/shard_group = new
 		nextsave = soon
 
 /hook/startup/proc/shard_group_startup()
+	// The generated rail yard map uses the plain Nomads metadata; name the
+	// world for what it is in the server list and the Regions verb.
+	if(shard_group.enabled && shard_group.kind == "RAILYARD" && map && map.type == /obj/map_metadata/nomads)
+		map.title = "Rail Yard"
 	shard_group.start_polling()
 	shard_group.start_saving()
 	return TRUE
