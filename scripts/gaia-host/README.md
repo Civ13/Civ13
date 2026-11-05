@@ -109,7 +109,15 @@ dd.exe was killed) and nothing listens on the port, the instance becomes cold
 the ordinary `start` action, which loads that save. A cold start needs
 `cold_start_min_free_mb` (2560) of free memory, since loading peaks far above a
 thaw, and an action lock left by the power-down is cleared first. A save that
-fails `start`'s checks keeps the server down. On Windows, `start` (and so a
+fails `start`'s checks keeps the server down, except an interrupted one: when
+`map_saves/` has files but no `save_complete.txt` (the machine went down during
+a save) and `map_backups/` holds the complete previous generation, `start`
+swaps that generation back in first and keeps the interrupted files as
+`map_saves.interrupted-<time>` (newest only). The world can also be asked to
+save as soon as it empties with the lifecycle action `save_idle` (token only);
+it answers `save: started` or `save: skipped:<reason>` such as
+`players_online`, `nothing_played` or `busy`, and never saves while anyone
+but the host is online. On Windows, `start` (and so a
 cold start) also refuses while the BYOND pager (byond.exe) is not running in the
 same logon session, since `-public` needs the host's BYOND account signed in
 (`start_requires_byond_pager`, on by default); the launcher tells the player the

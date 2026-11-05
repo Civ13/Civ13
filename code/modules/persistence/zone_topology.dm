@@ -281,13 +281,18 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 /map_storage/proc/validate_captured_world_save(list/candidate)
 	if(zone_candidate_validation || !persistence_active_operation || !persistence_active_operation.current(src, "save") || candidate["generation"] != zone_export_generation) throw EXCEPTION("Unowned candidate validation")
 	zone_candidate_validation = candidate
+	// Debug recovery audits the candidate's fields; an ordinary save trusts the
+	// values it just wrote and leaves the full walk to the next preflight.
+	candidate_full_walk = !!persistence_active_operation.debug_recovery
 	var/success
 	try
 		success = validate_world_save()
 	catch(var/exception/candidate_error)
 		zone_candidate_validation = null
+		candidate_full_walk = FALSE
 		throw candidate_error
 	zone_candidate_validation = null
+	candidate_full_walk = FALSE
 	return success
 
 /map_storage/proc/validate_zone_spawns(list/source, named = FALSE)

@@ -154,6 +154,14 @@
 		// Resume from the last completed save for this map, if any. The daily
 		// save+reboot cycle (see start_persistence_loop()) relies on this to
 		// carry the world across restarts.
+		// A save interrupted by a crash left files without a marker; put the
+		// completed generation from map_backups/ back before deciding.
+		if (!persistence_restart.startup_hold && !fexists("map_saves/save_complete.txt"))
+			try
+				if (map_storage.recover_interrupted_save())
+					admin_notice("<span class='danger'>An interrupted save was replaced by the last completed generation from map_backups/.</span>", R_DEBUG)
+			catch(var/exception/recovery_error)
+				world.log << "Interrupted-save recovery failed: [recovery_error]"
 		if (!persistence_restart.startup_hold && fexists("map_saves/map.txt"))
 			// Any existing save needs resolution, even if its header is unreadable
 			// or for another map. Do not announce a provisional fresh identity.
