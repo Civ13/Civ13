@@ -2257,7 +2257,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/sawmill
 	name = "Primitive Saw Mill"
-	desc = "A small saw mill. Insert sharpened flint as a blade, then use logs on it to cut one plank per log. The blade wears out."
+	desc = "A small saw mill. Insert sharpened flint as a blade, then use a log stack on it to keep cutting one plank per log until the stack runs out or you stop. The blade wears out."
 	icon = 'icons/obj/plankage.dmi'
 	icon_state = "primitive_sawmill"
 	anchored = TRUE
@@ -2324,21 +2324,38 @@
 	to_chat(H, SPAN_NOTICE("You fit the sharpened flint blade into the saw mill."))
 	return TRUE
 
-/obj/structure/sawmill/proc/cut_primitive_log(obj/item/stack/material/wood/W, mob/living/human/H)
+// Like the stone crusher, keep cutting the held stack one log at a time until
+// it runs out, the blade breaks, or the worker moves away or stops.
+/obj/structure/sawmill/proc/cut_primitive_logs(obj/item/stack/material/wood/W, mob/living/human/H)
+	var/cut = 0
+	while (cut_primitive_log(W, H, cut > 0))
+		cut++
+		if (QDELETED(W) || W.amount < 1 || flint_blade_uses < 1)
+			break
+	if (cut > 1)
+		to_chat(H, SPAN_NOTICE("You stop after cutting [cut] logs."))
+	return cut
+
+// continuing is set for the second and later logs of a loop: the loop ends
+// quietly instead of repeating the refusal warning.
+/obj/structure/sawmill/proc/cut_primitive_log(obj/item/stack/material/wood/W, mob/living/human/H, continuing = FALSE)
 	// The only defined log-to-plank material mapping is wood -> woodplank.
 	// Refuse unknown material variants instead of silently changing their type.
 	if (QDELETED(W) || W.default_type != "wood" || !W.material || W.material.name != "wood")
-		to_chat(H, SPAN_WARNING("This mill cannot process that kind of wood."))
+		if (!continuing)
+			to_chat(H, SPAN_WARNING("This mill cannot process that kind of wood."))
 		return FALSE
 	if (primitive_busy || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || W.onfire || W.amount < 1 || !H.in_mood() || H.getStatCoeff("strength") <= 0)
-		to_chat(H, SPAN_WARNING("The mill must be anchored and idle, with a usable flint blade and a held log."))
+		if (!continuing)
+			to_chat(H, SPAN_WARNING("The mill must be anchored and idle, with a usable flint blade and a held log."))
 		return FALSE
 	primitive_busy = TRUE
 	primitive_epoch++
 	var/token = primitive_epoch
 	var/atom/mill_location = loc
 	icon_state = "primitive_sawmill1"
-	H.visible_message(SPAN_NOTICE("[H] starts cutting a log on [src]."))
+	if (!continuing)
+		H.visible_message(SPAN_NOTICE("[H] starts cutting logs on [src]."))
 	// Provisional balance: 20 ds at coefficient 1, versus the axe's 80 ds.
 	var/completed = do_after(H, 20 / H.getStatCoeff("strength"), src)
 	if (QDELETED(src) || token != primitive_epoch)
@@ -2362,11 +2379,16 @@
 	P.customcolor1 = wood_customcolor1
 	P.customcolor2 = wood_customcolor2
 	P.customname = wood_customname
+	// Looped cuts pile onto one matching plank stack instead of one stack per log.
+	for (var/obj/item/stack/material/woodplank/existing in site)
+		if (existing != P && existing.type == P.type && existing.amount < existing.max_amount && existing.color == P.color && existing.customcolor == P.customcolor && existing.customcolor1 == P.customcolor1 && existing.customcolor2 == P.customcolor2 && existing.customname == P.customname)
+			P.merge(existing)
+			break
 	new /obj/item/stack/bark(site, 1)
 	playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 	if (flint_blade_uses == 0)
 		to_chat(H, SPAN_WARNING("The flint blade breaks. Fit another sharpened flint to continue."))
-	else
+	else if (!continuing)
 		to_chat(H, SPAN_NOTICE("You cut the log into a plank and collect its bark."))
 	return TRUE
 
@@ -2528,7 +2550,7 @@
 		install_flint(W, H)
 		return
 	if (is_primitive_mill() && istype(W, /obj/item/stack/material/wood))
-		cut_primitive_log(W, H)
+		cut_primitive_logs(W, H)
 		return
 	check_power()
 	if (istype(W, /obj/item/stack/material/wood))
