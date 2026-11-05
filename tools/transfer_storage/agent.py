@@ -45,6 +45,11 @@ def _routes(store):
         '/abort': lambda body: store.abort(body['transfer_id']) or {},
         '/save': lambda body: {'ledger_seq': store.report_save(body['generation'], body['effects'], body['ledger_seq'])},
         '/load': lambda body: _load(store, body),
+        # Home worlds: DM asks /account; the coordinator reads /accounts and answers /homes.
+        '/account': lambda body: store.account(body['ckey'], body['op'], body.get('region')),
+        '/accounts': lambda body: store.account_requests(),
+        '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
+                                                 body.get('reset') in (True, 1), body.get('mainland')),
     }
 
 

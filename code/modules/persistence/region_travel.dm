@@ -172,6 +172,9 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 			message_admins("Region travel: an unreadable [incoming ? "arriving" : "returned"] character was dropped.")
 			continue
 		var/mob/living/human/H = region_travel_build(P, T)
+		// A recorded trip (or a refused one coming back) makes this land the home.
+		spawn(0)
+			region_home_note(P["owner"], "arrive")
 		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [T.x],[T.y],[T.z].")
 		region_travel_offer(H)
 
@@ -256,15 +259,20 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 /proc/region_travel_offer(mob/living/human/H)
 	for(var/client/C in clients)
 		if(C.ckey == H.persistence_owner_ckey && istype(C.mob, /mob/new_player))
-			region_travel_claim(C.mob)
+			var/mob/new_player/lobby = C.mob
+			spawn(0) // the claim may wait for the home world decision
+				region_travel_claim(lobby)
 			return
 
-/proc/region_travel_claim(mob/new_player/lobby)
+/proc/region_travel_claim(mob/new_player/lobby, wait = TRUE)
 	if(!lobby || !lobby.client || lobby.client.mob != lobby || IsGuestKey(lobby.client.key)) return FALSE
 	var/client/C = lobby.client
 	if(C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server")) return FALSE
 	var/mob/living/human/H = region_travel_waiting_body(C.ckey)
 	if(!H) return FALSE
+	// The arrival was recorded as this land becoming the home; wait for the
+	// coordinator's next pass to decide it.
+	if(!region_home_admit(lobby, wait) || lobby.client != C || C.mob != lobby || H != region_travel_waiting_body(C.ckey)) return FALSE
 	lobby.spawning = TRUE
 	lobby.close_spawn_windows()
 	H.region_arrival_pending = FALSE
@@ -281,7 +289,9 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 /mob/new_player/Login()
 	. = ..()
 	if(!QDELETED(src) && client && client.mob == src)
-		region_travel_claim(src)
+		spawn(0)
+			if(!QDELETED(src) && client && client.mob == src)
+				region_travel_claim(src)
 
 // A world that starts with no save at all never runs the load hook, so the
 // bridge reconciles it as an empty, unsaved world here. A world with any save
@@ -414,8 +424,11 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		lobby.key = C.key
 		to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
 		C << link("byond://[address]")
+	var/account = H.persistence_owner_ckey
 	qdel(H)
 	shard_group.request_save_soon()
+	spawn(0)
+		region_home_note(account, "depart", destination)
 	return "departed"
 
 /obj/structure/region_gate/attack_ghost(mob/user)

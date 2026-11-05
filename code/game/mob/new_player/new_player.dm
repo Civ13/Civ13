@@ -1181,6 +1181,11 @@ var/global/redirect_all_players = null
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
 	lobby_join_trace("spawn_entered", "none")
+	// In a region group, only the account's home land may start or return it.
+	if(!region_home_admit(src)) return FALSE
+	if(!client || client.mob != src) return FALSE
+	// A character that travelled here is waiting: take it instead of a new one.
+	if(region_home_enabled() && region_travel_claim(src)) return FALSE
 	if(!map_storage.allow_new_character(src)) return FALSE
 	if (!client || !client.prefs)
 		return FALSE

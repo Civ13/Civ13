@@ -137,7 +137,7 @@ var/global/list/persistence_player_claims = list()
 		return FALSE
 	persistence_player_restore_ready = TRUE
 	for(var/client/C in clients)
-		if(istype(C.mob, /mob/new_player))
+		if(istype(C.mob, /mob/new_player) && region_home_reclaim_ok(C.mob))
 			reclaim_saved_player(C.mob)
 	return TRUE
 
