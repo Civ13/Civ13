@@ -35,20 +35,40 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("continue", helper)
         self.assertIn("update_damages()", helper)
         self.assertNotIn("wounds.Cut()", MEDICAL)
-        self.assertNotIn("H_user.bad_external_organs", MEDICAL)
-        self.assertEqual(MEDICAL.count("affecting.clear_treated_external_wounds()"), 2)
+        self.assertNotIn("bad_external_organs", MEDICAL)
+        close = block(MEDICAL, "/obj/item/stack/medical/proc/try_expert_close")
+        self.assertIn("affecting.clear_treated_external_wounds()", close)
+        self.assertIn("limb_needs(affecting)", close)
 
-    def test_missing_limb_and_open_wound_guards(self):
-        for path in ("/obj/item/stack/medical/advanced/sulfa/attack",
-                     "/obj/item/stack/medical/advanced/ointment/attack",
-                     "/obj/item/stack/medical/splint/attack"):
-            body = block(MEDICAL, path)
-            lookup = body.index("H.get_organ(user.targeted_organ)")
-            guard = body.index("if (!affecting)", lookup)
-            self.assertLess(guard, body.index("affecting.", lookup + 40), path)
-        herbs = block(MEDICAL, "/obj/item/stack/medical/advanced/herbs/attack(")
-        open_check = herbs.index("if (affecting.open)")
-        self.assertIn("\n\t\t\treturn\n", herbs[open_check:herbs.index("is_salved()", open_check)])
+    def test_shared_treatment_guards(self):
+        treat = block(MEDICAL, "/obj/item/stack/medical/proc/treat(")
+        lookup = treat.index("H.get_organ(user.targeted_organ)")
+        guard = treat.index("if (!affecting)", lookup)
+        self.assertLess(guard, treat.index("affecting.", guard + 20))
+        open_check = treat.index("if (affecting.open)")
+        self.assertIn("\n\t\treturn\n", treat[open_check:treat.index("limb_needs(affecting)", open_check)])
+        self.assertLess(treat.index("pre_treat("), open_check)
+        # internal wounds are never touched by field treatment
+        needs = block(MEDICAL, "/obj/item/stack/medical/proc/wound_needs")
+        self.assertLess(needs.index("if (W.internal)"), needs.index("MED_BANDAGE"))
+        # the expert close and the stack use come after the loop, and use is last
+        self.assertLess(treat.index("try_expert_close(affecting, user)", open_check + 200), treat.index("use(min(used, amount))"))
+        splint = block(MEDICAL, "/obj/item/stack/medical/splint/attack")
+        lookup = splint.index("H.get_organ(user.targeted_organ)")
+        self.assertLess(splint.index("if (!affecting)", lookup), splint.index("affecting.", lookup + 40))
+
+    def test_every_treatment_item_uses_the_shared_proc(self):
+        expected = {
+            "/obj/item/stack/medical/bruise_pack\n": "MED_BANDAGE",
+            "/obj/item/stack/medical/advanced/bruise_pack\n": "MED_BANDAGE|MED_DISINFECT",
+            "/obj/item/stack/medical/advanced/herbs\n": "MED_DISINFECT|MED_SALVE",
+            "/obj/item/stack/medical/advanced/sulfa\n": "MED_DISINFECT",
+            "/obj/item/stack/medical/advanced/ointment\n": "MED_SALVE",
+        }
+        for path, flags in expected.items():
+            self.assertIn(f"treat_flags = {flags}", block(MEDICAL, path), path)
+        for path in ("bruise_pack", "advanced/bruise_pack", "advanced/herbs", "advanced/sulfa", "advanced/ointment"):
+            self.assertNotIn(f"/obj/item/stack/medical/{path}/attack(", MEDICAL)
 
     def test_splint_needs_break_or_dislocation(self):
         splint = block(MEDICAL, "/obj/item/stack/medical/splint/attack")
@@ -80,8 +100,8 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("owner.bad_external_organs |= src", apply)
 
     def test_bandage_roll_applies_and_loosens_tourniquet(self):
-        attack = block(MEDICAL, "/obj/item/stack/medical/bruise_pack/attack(")
-        self.assertLess(attack.index("try_tourniquet("), attack.index("if (affecting.open)"))
+        self.assertIn("return try_tourniquet(H, affecting, user)",
+                      block(MEDICAL, "/obj/item/stack/medical/bruise_pack/pre_treat"))
         tq = block(MEDICAL, "/obj/item/stack/medical/bruise_pack/proc/try_tourniquet")
         for term in ("affecting.remove_tourniquet()", "affecting.apply_tourniquet()",
                      "affecting.can_take_tourniquet()", "affecting.is_tourniqueted()", "use(1)"):
