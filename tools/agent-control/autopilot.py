@@ -12,6 +12,7 @@ come from the environment exactly as for civ13_agent.py.
 """
 
 import argparse
+import concurrent.futures
 import json
 import os
 import sys
@@ -41,6 +42,7 @@ SKILLS = {
     "light_fire": ("empty", "help", 1),
     "mine": ("pickaxe", "help", 1),
     "dig_down": ("shovel", "help", 0),
+    "treat": ("medicine", "help", 0),
     "chop": ("axe", "harm", 1),
     "drink": ("empty", "grab", 1),
     "pick_up": ("empty", "help", 1),
@@ -60,6 +62,13 @@ MAX_PLAN = 3
 FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushroom", "egg", "potato", "carrot", "corn", "nut", "organ", "offal", "stew", "soup")
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
 FIRE_WORDS = ("campfire", "fireplace", "oven", "stove", "furnace")
+# Reflexes: predators are handled by the autopilot itself, without waiting 10-15 s for the model.
+STRONG_PREDATORS = ("lion", "sabertooth", "bear", "mammoth", "alligator", "crocodile", "troll", "gorilla", "panther", "tiger", "buffalo", "wendigo", "groundsloth")
+PREDATOR_WORDS = STRONG_PREDATORS + ("wolf", "fox", "snake", "boar", "hyena", "jackal", "spider", "scorpion")
+WEAPON_WORDS = ("spear", "sharpened stick", "axe", "hatchet", "sword", "knife", "club", "mace", "pike", "dagger", "machete")
+BANDAGE_WORDS = ("bandage", "gauze", "trauma kit")
+HEAL_WORDS = BANDAGE_WORDS + ("healing herb", "herbs", "poultice", "ointment", "burn kit", "sulfa")
+REFLEX_POLL = 0.7  # seconds between threat checks while the model thinks
 SPEECH_GAP = 10.0  # seconds between replies to the same speaker
 TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick", "craft", "food", "cook", "meat", "skill", "rope", "bandage")
 
@@ -79,7 +88,8 @@ Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent a
  fuel_fire (a campfire: put wood, sticks or leaves you hold into it), cook (a campfire: put raw meat or fish you hold into it),
  light_fire (a campfire with fuel: light it; cooked food drops next to it when done, pick_up it),
  mine (underground rock or ore next to you: dig it with a pickaxe for stone and ore, which are picked up for you),
- dig_down (target 0: dig a tunnel down where you stand with a shovel, to reach the underground and its ore).
+ dig_down (target 0: dig a tunnel down where you stand with a shovel, to reach the underground and its ore),
+ treat (target 0: bandage your worst bleeding wound, or put healing herbs on your worst injury).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
@@ -89,7 +99,9 @@ Every skill needs a target from the lists. If what you need (a rock, a tree, wat
 {"do": "take", "item": "name"} takes a carried or worn item (pocket, belt, bag) into your empty active hand; skills take the tool they need by themselves.
 Material you cannot stow (like leaf bundles) can stay on the ground where you work; pick it up again only to craft with it.
 Hands are limited. Do not drop what you gathered or made: skills free a hand themselves (stowing items first), and dropped items are left behind.
-If something attacks you, deal with it first: flee if hurt or unarmed, or attack it with a weapon.
+If something attacks you, deal with it first. Animals chase you, so running rarely works once they reach you: fight with your best weapon.
+Your reflexes fight by themselves while you think. Keep a weapon (spear or axe) in hand when not working, keep away from predators,
+wear armor, stay near fire at night, and build walls or fences around your camp.
 Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|examine|drop|swap_hand|intent|wait,
  "dir": north|south|east|west (move/face), "text": "..." (say/emote, short),
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
@@ -191,6 +203,9 @@ def summarize(observation, note="", ignored=(), muted=()):
         "Wearing: " + (", ".join(map(str, self_state.get("worn") or [])) or "nothing"),
         "Carrying: " + (", ".join(map(str, self_state.get("carried") or [])) or "nothing else"),
     ]
+    injuries = [w for w in self_state.get("wounds") or [] if isinstance(w, dict)]
+    if injuries:
+        lines.append("Injuries: " + ", ".join(f"{w.get('name')} {w.get('damage')} damage" + (" BLEEDING" if w.get("bleeding") and not w.get("bandaged") else "") + (" (bandaged)" if w.get("bandaged") else "") + (" broken" if w.get("broken") else "") for w in injuries[:8]))
     needs = []
     if isinstance(self_state.get("water"), (int, float)) and self_state["water"] < 250:
         needs.append("thirsty: find water (explore if none is listed) and drink")
@@ -207,7 +222,8 @@ def summarize(observation, note="", ignored=(), muted=()):
     lines.append("Nearby things (0 = yourself):")
     for row in nearby:
         refs.append(row.get("ref"))
-        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{' (person)' if row.get('mob') else ''}{_branch_mark(row)}")
+        kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
+        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_branch_mark(row)}")
     if not nearby:
         lines.append("  nothing")
     if skipped:
@@ -327,6 +343,9 @@ def current_goal(observation):
     fire = any(any(word in name for word in FIRE_WORDS) for name in near)
     wood = _has(me, lambda n: "plank" in n or "log" in n)
     hungry = isinstance(me.get("nutrition"), (int, float)) and me["nutrition"] < 250
+    wound = worst_wound(me)
+    if wound and wound.get("bleeding"):
+        return "stop your bleeding: treat it with bandages, or make bandages or find healing herbs right away", "then rest and heal"
     if isinstance(me.get("water"), (int, float)) and me["water"] < 250:
         return "drink fresh water", "then keep working on your tools"
     if hungry and _has(me, lambda n: _is_food(n) and ("roasted" in n or "berr" in n or "fruit" in n)):
@@ -363,6 +382,108 @@ def current_goal(observation):
     if not _has(me, lambda n: "ingot" in n or "bar" in n.split()):
         return "smelt your ore: build a clay bloomery or furnace, fuel and light it, put the ore in, and cast ingots in a mold", "then craft metal tools"
     return "craft metal tools, weapons and armor from your ingots, and improve your house", "then help other players and trade"
+
+
+def is_predator(row):
+    """A living wild predator in an observation row."""
+    if not row.get("mob") or row.get("stat") not in (None, 0):
+        return False
+    kind, name = str(row.get("type", "")), str(row.get("name", "")).lower()
+    if kind.startswith("/mob/living/human") or "/commanded" in kind:
+        return False
+    return kind.startswith("/mob/living/simple_animal/hostile") or any(word in name for word in PREDATOR_WORDS)
+
+
+def reflex(observation, previous=None):
+    """An immediate plan when a predator threatens the character: (steps, what) or (None, "").
+
+    Animals pursue, so once one is on her she fights with her best weapon; she runs only from a strong
+    predator when nearly dead. A predator a few tiles off that is not attacking yet is avoided early.
+    """
+    me = observation.get("self", {})
+    alarm = danger(observation, previous)
+    attacker = alarm.split(" is attacking", 1)[0].removeprefix("DANGER: ") if alarm.startswith("DANGER: ") else ""
+    threats = []
+    for row in observation.get("nearby", []):
+        if not is_predator(row):
+            continue
+        try:
+            distance = max(abs(int(row.get("dx"))), abs(int(row.get("dy"))))
+        except (TypeError, ValueError):
+            continue
+        named = bool(attacker) and attacker in str(row.get("name", "")).lower()
+        if distance <= 4 or named:
+            threats.append((0 if named else 1, distance, named, row))
+    if not threats:
+        return None, ""
+    _, distance, named, row = min(threats, key=lambda item: item[:2])
+    name = str(row.get("name", "")).lower()
+    left, right = _name(me.get("left_hand")), _name(me.get("right_hand"))
+    active, other = (left, right) if me.get("active_hand") == "left" else (right, left)
+    armed = lambda held: any(word in str(held).lower() for word in WEAPON_WORDS)
+    health, most = me.get("health"), me.get("max_health") or 100
+    dying = isinstance(health, (int, float)) and health < 0.25 * most
+    strong = any(word in name for word in STRONG_PREDATORS)
+    engaged = named or distance <= 1
+    if not engaged:
+        if strong or not (armed(active) or armed(other)):
+            return [{"do": "flee", "target": row["ref"]}], f"backed away from the {row.get('name')} before it reached you"
+        steps = [] if armed(active) else [{"do": "swap_hand"}]  # ready the weapon, let it come
+        return (steps or None), (f"readied your weapon against the {row.get('name')}" if steps else "")
+    if strong and dying:
+        return [{"do": "flee", "target": row["ref"]}], f"ran from the {row.get('name')} (badly hurt)"
+    steps = [] if armed(active) or not armed(other) else [{"do": "swap_hand"}]
+    if me.get("intent") != "harm":
+        steps.append({"do": "intent", "intent": "harm"})
+    steps += [{"do": "click", "target": row["ref"]}] * 3
+    return steps, f"fought the {row.get('name')}"
+
+
+def worst_wound(self_state):
+    """The injury to treat first: unbandaged bleeding, then the most damaged limb. None when unhurt."""
+    wounds = [w for w in self_state.get("wounds") or [] if isinstance(w, dict) and w.get("zone")]
+    bleeding = [w for w in wounds if w.get("bleeding") and not w.get("bandaged")]
+    if bleeding:
+        return max(bleeding, key=lambda w: w.get("damage") or 0)
+    hurt = [w for w in wounds if (w.get("damage") or 0) >= 10]
+    return max(hurt, key=lambda w: w.get("damage") or 0) if hurt else None
+
+
+def _medicine_for(wound, names):
+    """The best carried item for a wound: bandages for bleeding, herbs or kits otherwise."""
+    wanted = BANDAGE_WORDS if wound.get("bleeding") and not wound.get("bandaged") else HEAL_WORDS
+    for word in wanted:
+        for name in names:
+            if word in str(name).lower():
+                return name
+    return None
+
+
+def treat_plan(self_state):
+    """Steps that treat the worst wound with carried medicine: (steps, error)."""
+    wound = worst_wound(self_state)
+    if not wound:
+        return [], "you have no wound that needs treating"
+    left, right = _name(self_state.get("left_hand")), _name(self_state.get("right_hand"))
+    active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
+    item = _medicine_for(wound, [active, other] + _stowed(self_state))
+    if not item:
+        need = "bandages (cloth, rags or leather) or healing herbs" if wound.get("bleeding") else "healing herbs or bandages"
+        return [], f"treat needs {need}; craft bandages from cloth, rags or leather, or cut healing herbs from jungle bushes with a knife"
+    steps = []
+    if item != active:
+        if item == other:
+            steps.append({"do": "swap_hand"})
+        else:
+            if active != "empty":
+                if other != "empty":
+                    return [], f"treat needs your {item}, but both hands are full: put one item down first"
+                steps.append({"do": "swap_hand"})
+            steps.append({"do": "take", "item": item})
+    if self_state.get("intent") != "help":
+        steps.append({"do": "intent", "intent": "help"})
+    steps.append({"do": "click", "target": self_state.get("ref"), "zone": wound["zone"]})
+    return steps, ""
 
 
 def describe_change(before, after):
@@ -666,6 +787,8 @@ def expand_skill(step, self_state, rows=None):
         return _expand_twist(active, other, self_state)
     if step["skill"] == "eat":
         return _expand_eat(active, other, self_state)
+    if step["skill"] == "treat":
+        return treat_plan(self_state)
     if step["skill"] == "dig_down":
         held = _expand_craft({"do": "use", "choose": "Tunnel", "material": "shovel"}, self_state)
         if held[-1].get("do") == "use" and not any("shovel" in str(name).lower() for name in [active, other] + _stowed(self_state)):
@@ -1138,6 +1261,11 @@ def main(argv=None):
 
 
 def run(client, args, character, token):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as model_pool:
+        return _run(client, args, character, token, model_pool)
+
+
+def _run(client, args, character, token, model_pool):
     system = SYSTEM + f"\nYour goal: {args.goal}"
     tips = load_tips()
     if tips:
@@ -1213,16 +1341,42 @@ def run(client, args, character, token):
         text = f"CURRENT GOAL: {goal} ({after}).\n" + text
         prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
-        try:
-            answer = ask_ollama(args.ollama_url, args.model, history[:1] + history[-7:], token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
-        except (OSError, ValueError) as exc:
-            print(f"step {step}: model unavailable ({exc})", file=sys.stderr)
-            return 1
+        # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
+        reacted = []
+        future = model_pool.submit(ask_ollama, args.ollama_url, args.model, history[:1] + history[-7:], token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
+        steps_now, what = reflex(observation, previous_self)
+        while True:
+            if steps_now:
+                summary, queue_since = execute(client, character, steps_now, queue_since)
+                print(f"  reflex: {what} -> {summary}")
+                reacted.append(what)
+            try:
+                answer = future.result(timeout=REFLEX_POLL)
+                break
+            except concurrent.futures.TimeoutError:
+                pass
+            except (OSError, ValueError) as exc:
+                print(f"step {step}: model unavailable ({exc})", file=sys.stderr)
+                return 1
+            look = client.request("character_observe", {"character": character, "radius": 5, "since": since})
+            seen = look.get("result", {}) if look.get("ok") else {}
+            steps_now, what = reflex(seen, self_state) if seen and seen.get("self", {}).get("stat") in (None, 0) else (None, "")
         history.append({"role": "assistant", "content": answer})
+        if reacted:
+            # The plan was made before the attack; plan again from the new situation.
+            previous_self = self_state
+            feedback = "\nWhile you were deciding, you " + " and ".join(dict.fromkeys(reacted)) + " by reflex. Plan again from where you are now."
+            time.sleep(args.interval)
+            continue
         note = parse_note(answer) or note
         plan = parse_plan(answer, refs)
+        care, _ = treat_plan(self_state) if not reflex(observation, previous_self)[0] else ([], "")
+        wound = worst_wound(self_state)
+        if care and wound and wound.get("bleeding") and not any(item.get("skill") == "treat" for item in plan):
+            print(f"  bleeding from the {wound.get('name')}: treating it instead")
+            plan = [{"skill": "treat", "target": refs[0]}]
         thirsty = thirst_plan(observation, explore_dir, ignored)
-        if thirsty and not any(item.get("skill") == "drink" or item.get("do") == "explore" for item in plan):
+        if thirsty and not any(item.get("skill") in ("drink", "treat") or item.get("do") == "explore" for item in plan):
             print(f"  very thirsty (water {self_state.get('water')}): going for water instead")
             plan = [thirsty]
             feedback_extra = "You were very thirsty, so you went for water instead of your plan."

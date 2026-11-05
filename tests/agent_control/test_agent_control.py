@@ -585,6 +585,41 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn('C.pending_choice = req["choose"] ?', characters)
         self.assertIn('kind = "[T.name] (unclean)"', characters)
 
+    def test_reflexes_fight_pursuers_and_avoid_strong_predators(self):
+        wolf = {"ref": "[0x5]", "name": "grey wolf", "type": "/mob/living/simple_animal/hostile/wolf", "dx": 1, "dy": 0, "mob": True, "stat": 0}
+        armed = {"name": "Ada", "health": 90, "max_health": 100, "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "help"}
+        steps, what = autopilot.reflex({"self": armed, "nearby": [wolf], "messages": []})
+        self.assertEqual(steps, [{"do": "intent", "intent": "harm"}] + [{"do": "click", "target": "[0x5]"}] * 3)
+        self.assertIn("fought", what)
+        # Unarmed and already caught: still fight, since it would chase her down.
+        unarmed = dict(armed, right_hand=None)
+        self.assertIn("fought", autopilot.reflex({"self": unarmed, "nearby": [wolf], "messages": []})[1])
+        lion = dict(wolf, name="lion", type="/mob/living/simple_animal/hostile/sabertooth/lion", dx=3)
+        self.assertEqual(autopilot.reflex({"self": armed, "nearby": [lion], "messages": []})[0], [{"do": "flee", "target": "[0x5]"}])  # back off early
+        close_lion = dict(lion, dx=1)
+        self.assertIn("fought", autopilot.reflex({"self": armed, "nearby": [close_lion], "messages": []})[1])
+        self.assertIn("ran", autopilot.reflex({"self": dict(armed, health=20), "nearby": [close_lion], "messages": []})[1])
+        far_wolf = dict(wolf, dx=3)
+        self.assertEqual(autopilot.reflex({"self": dict(armed, active_hand="left"), "nearby": [far_wolf], "messages": []})[0], [{"do": "swap_hand"}])
+        self.assertEqual(autopilot.reflex({"self": armed, "nearby": [dict(wolf, stat=2)], "messages": []}), (None, ""))
+        self.assertIn("(predator: dangerous)", autopilot.summarize({"self": {}, "nearby": [wolf]})[0])
+
+    def test_bleeding_is_treated_first(self):
+        me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "harm",
+              "carried": ["healing herbs (pocket)", "bandages (pocket)"],
+              "wounds": [{"zone": "chest", "name": "chest", "damage": 30, "bleeding": False}, {"zone": "l_arm", "name": "left arm", "damage": 12, "bleeding": True, "bandaged": False}]}
+        steps, error = autopilot.treat_plan(me)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "take", "item": "bandages"}, {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x9]", "zone": "l_arm"}])
+        healed = dict(me, wounds=[me["wounds"][0]])
+        self.assertEqual(autopilot.treat_plan(healed)[0][-2:], [{"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x9]", "zone": "chest"}])
+        self.assertIn("bandages", autopilot.treat_plan(dict(me, carried=[]))[1])
+        self.assertIn("stop your bleeding", autopilot.current_goal({"self": me, "nearby": []})[0])
+        self.assertIn("BLEEDING", autopilot.summarize({"self": me})[0])
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('out["wounds"] = wounds', characters)
+        self.assertIn('M.targeted_organ = req["zone"]', characters)
+
     def test_agent_characters_count_as_connected_players(self):
         checks = {
             "code/game/objects/structures/wild.dm": "return user && (user.client || agent_character_for(user))",

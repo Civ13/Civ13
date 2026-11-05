@@ -230,6 +230,16 @@
 		out["carried"] = carried
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
+		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
+		var/list/wounds = list()
+		for (var/obj/item/organ/external/E in H.organs)
+			var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
+			var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
+			if (!bleeding && !broken && E.get_damage() < 5)
+				continue
+			wounds += list(list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken))
+		out["wounds"] = wounds
+		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out
 
 /datum/agent_control/proc/act_character_observe(datum/agent_identity/A, list/req)
@@ -386,6 +396,9 @@
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
 				params = "[req["modifier"]]=1"
+			// The body part a click aims at (the zone selector): bandages and attacks use it.
+			if (req["zone"] in list("head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"))
+				M.targeted_organ = req["zone"]
 			C.next_action = world.time + 2
 			detail = "[target] ([agent_ref(target)]) [params]"
 			if (from_queue)
