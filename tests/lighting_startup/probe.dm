@@ -56,8 +56,50 @@ var/list/lighting_overlay_list = list()
 /area/test
 /turf
 	var/has_opaque_atom = FALSE
+	// The retained baseline keeps a sized corners list; the candidate keeps
+	// four corner vars behind get_corner()/set_corner(). The probe reads
+	// both through probe_corner()/probe_set_corner().
 	var/list/corners = list(null,null,null,null)
+	var/datum/lighting_corner/corner_ne
+	var/datum/lighting_corner/corner_se
+	var/datum/lighting_corner/corner_sw
+	var/datum/lighting_corner/corner_nw
 	var/atom/movable/lighting_overlay/lighting_overlay
+/turf/proc/get_corner(i)
+	switch(i)
+		if (1)
+			return corner_ne
+		if (2)
+			return corner_se
+		if (3)
+			return corner_sw
+		if (4)
+			return corner_nw
+	return null
+/turf/proc/set_corner(i, datum/lighting_corner/C)
+	switch(i)
+		if (1)
+			corner_ne = C
+		if (2)
+			corner_se = C
+		if (3)
+			corner_sw = C
+		if (4)
+			corner_nw = C
+/turf/proc/has_all_corners()
+	return corner_ne && corner_se && corner_sw && corner_nw
+/proc/probe_corner(turf/T, i)
+#ifdef PROBE_CANDIDATE
+	return T.get_corner(i)
+#else
+	return T.corners[i]
+#endif
+/proc/probe_set_corner(turf/T, i, datum/lighting_corner/C)
+#ifdef PROBE_CANDIDATE
+	T.set_corner(i, C)
+#else
+	T.corners[i] = C
+#endif
 /turf/test
 /turf/test/replacement
 /turf/wall
@@ -80,14 +122,15 @@ var/list/lighting_overlay_list = list()
 			// Revisit a position already passed by the overlay sweep. Native turf
 			// refs retarget; preserve corners exactly as ChangeTurf does.
 			var/turf/old = locate(1,1,1)
-			var/list/saved_corners = old.corners
+			var/list/saved_corners = list(probe_corner(old,1), probe_corner(old,2), probe_corner(old,3), probe_corner(old,4))
 			if (old.lighting_overlay)
 				del(old.lighting_overlay)
 			var/turf/replacement = new /turf/test/replacement(old)
-			replacement.corners = saved_corners
+			for (var/i = 1 to 4)
+				probe_set_corner(replacement, i, saved_corners[i])
 		spawn()
 			var/turf/activity_turf = locate(2,2,1)
-			var/datum/lighting_corner/C = activity_turf.corners[1]
+			var/datum/lighting_corner/C = probe_corner(activity_turf, 1)
 			if (lighting_startup_in_progress)
 				probe_activity_waiters++
 			C.update_active()
@@ -139,11 +182,11 @@ var/list/lighting_overlay_list = list()
 			if (T.z != 4 && (overlay_count != 1 || !T.lighting_overlay))
 				probe_identity++
 			for (var/j = 1 to 4)
-				if (!T.corners[j])
+				if (!probe_corner(T, j))
 					probe_identity++
 		var/list/slots = list()
 		for (var/i = 1 to 4)
-			var/datum/lighting_corner/C = T.corners[i]
+			var/datum/lighting_corner/C = probe_corner(T, i)
 			if (!C)
 				slots += "none"
 				continue
@@ -155,7 +198,7 @@ var/list/lighting_overlay_list = list()
 					continue
 				masters += "[coord(M)]:[C.master_direction(M)]"
 				var/opposite = LIGHTING_CORNER_DIAGONAL.Find(turn(C.master_direction(M),180))
-				if (M.corners[opposite] != C)
+				if (probe_corner(M, opposite) != C)
 					probe_identity++
 				if (M.lighting_overlay)
 					expected_active = TRUE
@@ -277,7 +320,7 @@ var/list/lighting_overlay_list = list()
 		probe_snapshot("idempotent")
 		probe_repeat_idempotent = probe_owner_activations == repeat_owner_count && probe_overlay_order.len == repeat_overlay_count && json_encode(probe_snapshots["idempotent"]) == json_encode(concurrent_snapshot)
 		var/turf/failure_turf = locate(2,2,1)
-		var/datum/lighting_corner/failure_corner = failure_turf.corners[1]
+		var/datum/lighting_corner/failure_corner = probe_corner(failure_turf, 1)
 		failure_corner.active = FALSE
 		probe_inject_error = TRUE
 		var/caught = FALSE
@@ -291,7 +334,7 @@ var/list/lighting_overlay_list = list()
 		// Both direct APIs still work when startup has never begun (or is idle).
 		var/turf/prestartup_turf = locate(40,32,4)
 		var/datum/lighting_corner/prestartup_corner = new(prestartup_turf,NORTHEAST)
-		prestartup_turf.corners[1] = prestartup_corner
+		probe_set_corner(prestartup_turf, 1, prestartup_corner)
 		prestartup_turf.lighting_build_overlay()
 		sleep(2)
 		probe_prestartup_contract = !!prestartup_turf.lighting_overlay && prestartup_corner.active

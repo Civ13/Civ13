@@ -97,7 +97,7 @@ var/reserved_startup_waiting_turf = null
 			activated_rows++
 		reserved_assert(T.lighting_overlay, "snapshot requires expected overlay [T.x],[T.y]")
 		var/list/lums = list()
-		for (var/datum/lighting_corner/C in T.corners)
+		for (var/datum/lighting_corner/C in T.corner_list())
 			var/list/masters = list()
 			for (var/mi = 1, mi <= 4, mi++)
 				var/turf/master = C.master_turf(mi)
@@ -145,7 +145,7 @@ var/reserved_startup_waiting_turf = null
 		for (var/turf/T in world)
 			if (T.lighting_overlay)
 				overlays++
-			for (var/datum/lighting_corner/C in T.corners)
+			for (var/datum/lighting_corner/C in T.corner_list())
 				unique_corners |= C
 		reserved_assert(overlays == (candidate ? 220 : 256), "overlay allocation count")
 		reserved_assert(unique_corners.len == 289, "unchanged full corner grid")
@@ -157,16 +157,14 @@ var/reserved_startup_waiting_turf = null
 		ordinary_site.lighting_overlay = ordinary_owner
 		if (candidate)
 			var/turf/semantic_site = locate(11,6,1)
-			var/list/saved_corners = semantic_site.corners
-			semantic_site.corners = null
-			reserved_assert(semantic_site.get_lumcount() == 0.5, "missing omitted corner list fallback")
-			semantic_site.corners = list(saved_corners[1],saved_corners[2],saved_corners[3])
-			reserved_assert(semantic_site.get_lumcount() == 0.5, "short omitted corner list fallback")
-			semantic_site.corners = saved_corners
-			var/datum/lighting_corner/saved_corner = semantic_site.corners[1]
-			semantic_site.corners[1] = null
+			var/datum/lighting_corner/saved_corner = semantic_site.corner_ne
+			semantic_site.corner_ne = null
+			reserved_assert(semantic_site.get_lumcount() == 0.5, "missing omitted corner fallback")
+			semantic_site.corner_ne = saved_corner
+			saved_corner = semantic_site.corner_nw
+			semantic_site.corner_nw = null
 			reserved_assert(semantic_site.get_lumcount() == 0.5, "incomplete omitted corner fallback")
-			semantic_site.corners[1] = saved_corner
+			semantic_site.corner_nw = saved_corner
 			fixture_area.lighting_reserved_clearance_enabled = FALSE
 			reserved_assert(semantic_site.get_lumcount() == 0.5, "disabled omission lumcount fallback")
 			fixture_area.lighting_reserved_clearance_enabled = TRUE
@@ -270,7 +268,7 @@ var/reserved_startup_waiting_turf = null
 		target.adjust_lighting_overlay_to_daylight()
 		reserved_assert(target.lighting_overlay == ice_owner, "ice repair restores actual owner")
 		for (var/i = 1 to 4)
-			reserved_assert(target.corners[i], "ice repair retains every corner")
+			reserved_assert(target.get_corner(i), "ice repair retains every corner")
 		// Actual production entry save/import, no live or existing saves.
 		var/map_storage/storage = new
 		var/savefile/F = new("reserved-roundtrip.sav")

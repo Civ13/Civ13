@@ -368,14 +368,15 @@ var/global/obj/tree_native_opaque/tree_native_mover
 /proc/tree_native_light(turf/T, level)
 	if(!T.lighting_overlay)
 		new /atom/movable/lighting_overlay(T, TRUE)
-	if(!length(T.corners))
-		for(var/d in list(NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST))
+	if(!T.has_all_corners())
+		for(var/i = 1 to 4)
+			var/d = LIGHTING_CORNER_DIAGONAL[i]
 			var/datum/lighting_corner/C = new
 			C.x = T.x + ((d & EAST) ? 0.5 : -0.5)
 			C.y = T.y + ((d & NORTH) ? 0.5 : -0.5)
 			C.z = T.z
-			T.corners += C
-	for(var/datum/lighting_corner/C in T.corners)
+			T.set_corner(i, C)
+	for(var/datum/lighting_corner/C in T.corner_list())
 		C.lum_r = level
 		C.lum_g = level
 		C.lum_b = level

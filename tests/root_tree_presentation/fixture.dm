@@ -50,7 +50,31 @@
 	var/dynamic_lighting = TRUE
 /turf
 	var/atom/movable/lighting_overlay/lighting_overlay
-	var/list/corners = list()
+	var/datum/lighting_corner/corner_ne
+	var/datum/lighting_corner/corner_se
+	var/datum/lighting_corner/corner_sw
+	var/datum/lighting_corner/corner_nw
+	proc/get_corner(i)
+		switch(i)
+			if(1)
+				return corner_ne
+			if(2)
+				return corner_se
+			if(3)
+				return corner_sw
+			if(4)
+				return corner_nw
+		return null
+	proc/set_corner(i, datum/lighting_corner/C)
+		switch(i)
+			if(1)
+				corner_ne = C
+			if(2)
+				corner_se = C
+			if(3)
+				corner_sw = C
+			if(4)
+				corner_nw = C
 	proc/get_window_coeff()
 		return 1
 /turf/floor/plating
@@ -234,15 +258,16 @@ var/global/list/fixture_identity_controls = list()
 	if(!T.lighting_overlay)
 		var/atom/movable/lighting_overlay/L = new(T)
 		T.lighting_overlay = L
-	T.corners.Cut()
-	for(var/d in list(NORTHEAST,SOUTHEAST,SOUTHWEST,NORTHWEST))
+	var/list/diagonals = list(NORTHEAST,SOUTHEAST,SOUTHWEST,NORTHWEST)
+	for(var/i = 1 to 4)
+		var/d = diagonals[i]
 		var/datum/lighting_corner/C = new
 		C.lum_r = red
 		C.lum_g = green
 		C.lum_b = blue
 		C.x = T.x + ((d & EAST) ? 0.5 : -0.5)
 		C.y = T.y + ((d & NORTH) ? 0.5 : -0.5)
-		T.corners += C
+		T.set_corner(i, C)
 	T.lighting_overlay.update_overlay()
 
 /world/New()
