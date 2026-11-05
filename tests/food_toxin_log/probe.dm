@@ -36,6 +36,8 @@ var/list/game_lines = list()
 	id = "food_poisoning"
 /datum/reagent/toxin/cyanide
 	id = "cyanide"
+/datum/reagent/toxin/cholera
+	id = "cholera"
 
 /datum/reagents
 	var/list/reagent_list = list()
@@ -44,6 +46,15 @@ var/list/game_lines = list()
 	var/datum/reagent/R = new path
 	R.volume = amount
 	reagent_list += R
+
+/datum/reagents/proc/has_reagent(id)
+	for (var/datum/reagent/R in reagent_list)
+		if (R.id == id && R.volume > 0)
+			return TRUE
+	return FALSE
+
+/obj
+	var/datum/reagents/reagents
 
 /mob
 	var/list/attack_log = list()
@@ -105,6 +116,16 @@ var/list/game_lines = list()
 	F.raw = TRUE
 	check("type default origin is used and raw is not repeated", food_toxin_cause(F) == "raw fish, may be caught contaminated")
 	check("non-objects have no recorded cause", isnull(food_toxin_cause(T, TRUE)))
+
+	var/obj/item/weapon/reagent_containers/food/mug = new(T)
+	mug.name = "wood mug"
+	mug.reagents = new
+	mug.reagents.put(/datum/reagent/water, 9.75)
+	mug.reagents.put(/datum/reagent/toxin/cholera, 0.25)
+	check("unrecorded cholera names untreated water", findtext(food_toxin_cause(mug), "cholera from unboiled water") && !findtext(food_toxin_cause(mug), "origin not recorded"))
+	check("cholera fallback also carries through transfers", findtext(food_toxin_cause(mug, TRUE), "cholera from unboiled water"))
+	mug.note_food_toxin("unboiled river water at (5,5,1)")
+	check("a recorded water source wins over the cholera fallback", food_toxin_cause(mug) == "unboiled river water at (5,5,1)")
 
 	var/obj/O = new(T)
 	O.note_food_toxin("puddle water")

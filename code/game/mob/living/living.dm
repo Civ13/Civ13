@@ -480,7 +480,8 @@ default behaviour is:
 	SetParalysis(0)
 	SetStunned(0)
 	SetWeakened(0)
-	setHalLoss(0)
+	// setHalLoss() only heals brute damage, so clear the pain var itself.
+	halloss = 0
 
 	// shut down ongoing problems
 	radiation = FALSE
@@ -491,9 +492,9 @@ default behaviour is:
 	// fix all disseases
 	if (ishuman(src))
 		var/mob/living/human/H = src
-		H.disease = FALSE
-		H.disease_progression = 0
-		H.disease_type = "none"
+		H.clear_disease()
+		if (H.species)
+			H.bodytemperature = H.species.body_temperature
 
 	// fix blindness and deafness
 	blinded = FALSE
