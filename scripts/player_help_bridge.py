@@ -76,6 +76,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Construction.md': ('2ab598407a49337d05f700c3b9cbc7b3636334ee82bdde4949dffc1e4e58576d', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('f3353d7e6f27bf19d3c6be488007c516d95cf20f04676beb3ae550ccab0a3fb9', 'exercise training strength weights running fatigue'),
+    'guides/Guide_to_Factory_Automation.md': ('b747287aabdcd677d40140a830c5622755dd7c0fb4d3aecd11c249f4612dfbec', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('a94ca172349d144215a94ade72fff09304cae9e556c0c9d6445aa6522f284267', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('51122e7eed5799b35279e3d32e49b45147d4349342b8a61730b00f859f5671d5', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('51bbdb510e76a957b74ce2e13288d9a32132bcf95aaaa77bd050238f2de85f04', 'hygiene clean washing soap'),
