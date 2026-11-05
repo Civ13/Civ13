@@ -9,11 +9,11 @@
 	var/wax = 1000
 	flammable = TRUE
 
-/obj/item/weapon/flame/candle/New()
+/obj/item/weapon/flame/candle/on_runtime_spawn()
+	..()
 	wax = rand(900, 1050) //30-40 minutes on average.
 	pixel_x = rand(-8, 8)
 	pixel_y = rand(-8, 8)
-	..()
 
 /obj/item/weapon/flame/candle/on
 	New()
