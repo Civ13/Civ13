@@ -1,0 +1,15 @@
+{
+  "group": "nomads",
+  "repository": "D:/GitHub/Civ13",
+  "root": "D:/Civ13Regions/nomads",
+  "revision": "master",
+  "compiler": "C:/Program Files (x86)/BYOND/bin/dm.exe",
+  "daemon": "C:/Program Files (x86)/BYOND/bin/dreamdaemon.exe",
+  "git": "git",
+  "public_host": "127.0.0.1",
+  "public": false,
+  "regions": [
+    {"id": "surface", "name": "Highlands", "kind": "SURFACE", "port": 1731, "map": "maps/nomads/nomads_gaia.dmm"},
+    {"id": "caves", "name": "Deep Caverns", "kind": "UNDERGROUND", "port": 1732, "map": "D:/Civ13Regions/maps/caves.dmm"}
+  ]
+}
