@@ -143,6 +143,12 @@ SUITES = {
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
             'code/game/objects/structures/key_doors/key_door.dm')},
+    # Map merge/lint tooling ported from CM-SS13 and scripts/maplint.py over
+    # every map; standard library only, no BYOND runtime.
+    'map_tools': {'files': ('tests/map_tools/test_map_tools.py',),
+        'paths': ('tests/map_tools/', 'tools/mapmerge2/', 'tools/UpdatePaths/',
+                  'tools/hooks/', 'tools/dmi/', 'scripts/maplint.py'), 'shared_paths': (
+            'maps/', '.gitattributes')},
     # Day/night sweep loop-shape contracts; no BYOND runtime.
     # Held-key smooth movement continuation contracts; no BYOND runtime.
     'held_movement': {'files': ('tests/held_movement/test_held_movement.py',),

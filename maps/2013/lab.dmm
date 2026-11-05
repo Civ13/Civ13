@@ -525,7 +525,7 @@
 "ke" = (/obj/structure/table/modern/retable,/obj/item/weapon/storage/pill_bottle/pervitin,/turf/floor/plating/concrete,/area/caribbean/roofed/temperate)
 "kf" = (/obj/structure/table/modern/retable,/obj/structure/railing{dir = 4; icon_state = "railing0"},/obj/item/weapon/telephone/wireless,/obj/item/weapon/key/american{name = "Facility key"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "kg" = (/obj/covers/cobblestone/stairs{dir = 4},/obj/structure/simple_door/key_door/american{health = 200; initial_health = 200; name = "Secure door"; unique_door_name = "locked door"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
-"kh" = (/obj/structure/simple_door/key_door/american{health = 200; initial_health ="200; name = "Secure door"; unique_door_name = "locked door"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
+"kh" = (/obj/structure/simple_door/key_door/american{health = 200; initial_health = 200; name = "Secure door"; unique_door_name = "locked door"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "ki" = (/obj/structure/window/barrier/railing/stone,/obj/structure/window/barrier/railing/stone{dir = 1; icon_state = "stone"},/turf/wall/iron/low{desc = "A huge chunk of concrete, you can shoot over this one."; icon_state = "cement_wall0"; name = "Concrete Half-wall"},/area/caribbean/roofed/temperate)
 "kj" = (/obj/structure/window/barrier/railing/stone,/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/three)
 "kk" = (/obj/structure/window/barrier/railing/stone,/obj/structure/window/barrier/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/concrete,/area/caribbean/no_mans_land/capturable/three)
