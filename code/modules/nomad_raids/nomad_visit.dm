@@ -348,9 +348,12 @@
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in alive_members())
 		order_halt(M)
 	warned_short = FALSE
+	// Loose items already lying nearby are not tribute, even if the leader
+	// shuffles next to them; each is remembered with the turf it lies on, so
+	// one a defender picks up and lays at the leader's feet still counts.
 	tribute_ignore = list()
-	for (var/obj/item/I in range(1, leader))
-		tribute_ignore += I
+	for (var/obj/item/I in range(NOMAD_RAID_PARLEY_RANGE, leader))
+		tribute_ignore[I] = I.loc
 	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE))
 		if (nomad_rep_score(H.ckey) >= NOMAD_REP_FRIEND)
 			tribute_demand = max(accept_floor(), round(tribute_demand / 2))
@@ -362,7 +365,7 @@
 	var/total = 0
 	tribute_items = list()
 	for (var/obj/item/I in range(1, leader))
-		if (I in tribute_ignore)
+		if (tribute_ignore[I] == I.loc)
 			continue
 		var/worth = nomad_raid_worth(I)
 		if (worth)

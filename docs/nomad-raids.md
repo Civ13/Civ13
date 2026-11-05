@@ -52,6 +52,8 @@ online admins.
 3. **Parley.** When an active player is within 10 tiles, the chieftain halts
    and demands tribute at their feet (5 worth per raider, at least 8). Paying
    in 90 seconds ends the threat: the raiders take only the tribute and leave.
+   Only items laid down during the parley count; gear already lying nearby
+   does not, unless someone picks it up and lays it at the chieftain's feet.
    Attacking them, or letting the time run out, starts the fight.
 4. **Assault.** Raiders fight awake people near the target, preferring anyone
    holding a weapon. Downed people are left alone, and animals only when they

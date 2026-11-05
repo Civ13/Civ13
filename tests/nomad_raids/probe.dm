@@ -134,13 +134,22 @@ var/raid_runtime_error = FALSE
 	R.order_halt(R.leader)
 	raid_check(!R.leader.moving, "the leader can be halted")
 
-	// Parley: tribute at the leader's feet ends the threat.
+	// Parley: tribute at the leader's feet ends the threat. Gear already
+	// lying nearby is not tribute, even once the leader steps beside it.
+	var/turf/stash = get_step(get_step(R.leader, SOUTH), SOUTH)
+	var/list/tribute = list()
+	for (var/i = 1, i <= NOMAD_RAID_MAX_MEMBERS, i++)
+		tribute += new /obj/item/weapon/material/spear(stash)
 	R.begin_parley()
 	raid_check(R.state == "parley", "parley begins")
+	R.leader.loc = get_step(R.leader, SOUTH)
+	R.next_decide = 0
+	R.tick_parley(R.alive_members(), FALSE, TRUE)
+	raid_check(R.state == "parley" && !R.outcome, "loose gear lying nearby is not taken as tribute")
+	// The same gear laid at the leader's feet is.
 	var/turf/feet = get_turf(R.leader)
-	var/list/tribute = list()
-	for (var/i = 1, i <= 3, i++)
-		tribute += new /obj/item/weapon/material/spear(feet)
+	for (var/obj/item/I in tribute)
+		I.loc = feet
 	R.next_decide = 0
 	R.tick_parley(R.alive_members(), FALSE, TRUE)
 	raid_check(R.state == "loot" && R.outcome == "tribute paid", "enough tribute ends the parley peacefully")
