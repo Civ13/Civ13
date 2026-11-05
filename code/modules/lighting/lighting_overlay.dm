@@ -115,7 +115,10 @@
 
 	var/anylums = FALSE
 
-	for (var/datum/lighting_corner/C in T.corners)
+	for (var/ci = 1 to 4)
+		var/datum/lighting_corner/C = T.get_corner(ci)
+		if (!C)
+			continue
 		var/i = 0
 
 		var/adjusted_r = C.lum_r + TOD_lum

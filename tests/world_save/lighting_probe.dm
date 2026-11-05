@@ -44,7 +44,7 @@
 /proc/lighting_graph_snapshot(datum/light_source/custom, datum/light_source/default_source)
 	var/list/result = list()
 	for(var/turf/T in block(locate(1,1,1), locate(8,8,1)))
-		for(var/datum/lighting_corner/C in T.corners)
+		for(var/datum/lighting_corner/C in T.corner_list())
 			if(!C) continue
 			var/key = "[C.x],[C.y],1"
 			// Owners are the custom and default fixture lights, independent of refs.
@@ -61,9 +61,9 @@
 	var/list/corners = list()
 	for(var/turf/T in block(locate(1,1,2), locate(8,8,2)))
 		for(var/i = 1, i <= 4, i++)
-			if(!T.corners[i])
-				T.corners[i] = new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i], TRUE)
-			var/datum/lighting_corner/C = T.corners[i]
+			if(!T.get_corner(i))
+				T.set_corner(i, new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i], TRUE))
+			var/datum/lighting_corner/C = T.get_corner(i)
 			C.active = FALSE
 			corners |= C
 	var/initial_lists = 0
@@ -202,10 +202,10 @@
 		lighting_corner_allocation_probe()
 		for(var/turf/T in block(locate(1,1,1), locate(8,8,1)))
 			for(var/i = 1, i <= 4, i++)
-				if(!T.corners[i])
-					T.corners[i] = new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i], TRUE)
+				if(!T.get_corner(i))
+					T.set_corner(i, new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i], TRUE))
 			if(!T.lighting_overlay) new /atom/movable/lighting_overlay(T, TRUE)
-			for(var/datum/lighting_corner/C in T.corners)
+			for(var/datum/lighting_corner/C in T.corner_list())
 				C.active = TRUE
 		var/obj/item/persistence_light_container/carrier = new(locate(3,3,1))
 		var/obj/item/persistence_custom_light/lamp = new(carrier)
@@ -226,7 +226,7 @@
 		durable_world_check(default_lamp.light && default_lamp.light.source_atom == default_lamp, "real default light constructor failed")
 		durable_world_check(carrier.light_sources.len == 1 && lamp.light_sources.len == 1, "initial source registered more than once")
 		var/turf/graph_turf = locate(3,3,1)
-		var/datum/lighting_corner/corner = graph_turf.corners[1]
+		var/datum/lighting_corner/corner = graph_turf.corner_ne
 		var/atom/movable/lighting_overlay/overlay = graph_turf.lighting_overlay
 		carrier.indirect_source = original_source
 		carrier.indirect_corner = corner

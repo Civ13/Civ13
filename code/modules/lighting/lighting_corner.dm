@@ -80,19 +80,19 @@
 	T = get_step(new_turf, diagonal)
 	if (T) // In case we're on the map's border.
 		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(diagonal, 180))
-		T.corners[i] = src
+		T.set_corner(i, src)
 
 	// Now the horizontal one.
 	T = get_step(new_turf, horizontal)
 	if (T) // Ditto.
 		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(master_direction(T), 180))
-		T.corners[i] = src
+		T.set_corner(i, src)
 
 	// And finally the vertical one.
 	T = get_step(new_turf, vertical)
 	if (T)
 		i			= LIGHTING_CORNER_DIAGONAL.Find(turn(master_direction(T), 180))
-		T.corners[i] = src
+		T.set_corner(i, src)
 
 	// Ordinary runtime construction keeps its deferred callback. Startup owns
 	// activation explicitly after the overlay barrier, because discovery yields.

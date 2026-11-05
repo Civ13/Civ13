@@ -63,7 +63,8 @@
 	var/work = 0
 	for (var/turf/T in world)
 		if (T.lighting_overlay)
-			for (var/datum/lighting_corner/C in T.corners)
+			for (var/i = 1 to 4)
+				var/datum/lighting_corner/C = T.get_corner(i)
 				if (C && !C.active)
 					C.update_active(TRUE)
 		if (environment_sweep_pause(++work))
@@ -83,11 +84,11 @@
 			continue
 
 		for (var/i = 1 to 4)
-			if (T.corners[i]) // Already have a corner on this direction.
+			if (T.get_corner(i)) // Already have a corner on this direction.
 				continue
 
 			var/datum/lighting_corner/C = new(T, LIGHTING_CORNER_DIAGONAL[i], defer_activity)
-			T.corners[i] = C
+			T.set_corner(i, C)
 			fresh_corners += C
 	return fresh_corners
 

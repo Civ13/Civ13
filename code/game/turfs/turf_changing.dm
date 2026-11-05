@@ -13,7 +13,12 @@
 	var/old_dynamic_lighting = dynamic_lighting
 	var/list/old_affecting_lights = affecting_lights
 	var/old_lighting_overlay = lighting_overlay
-	var/list/old_lighting_corners = corners
+	// Turf refs are positional: after the replacement src is the new turf, so
+	// the shared corners are saved by value and put back on it.
+	var/datum/lighting_corner/old_corner_ne = corner_ne
+	var/datum/lighting_corner/old_corner_se = corner_se
+	var/datum/lighting_corner/old_corner_sw = corner_sw
+	var/datum/lighting_corner/old_corner_nw = corner_nw
 	var/old_radiation = radiation
 	var/turf/W
 	if(nomads_event && ispath(path, /turf/floor/lava))
@@ -26,7 +31,10 @@
 //end of else
 	lighting_overlay = old_lighting_overlay
 	affecting_lights = old_affecting_lights
-	corners = old_lighting_corners
+	corner_ne = old_corner_ne
+	corner_se = old_corner_se
+	corner_sw = old_corner_sw
+	corner_nw = old_corner_nw
 	// A replacement subtype may itself have a map-authored reservation default.
 	// Restore graph ownership before activation can build any missing overlay.
 	W.activate_reserved_lighting()
@@ -37,9 +45,9 @@
 			A.light.force_update = TRUE
 
 	for (var/i = TRUE to 4)//Generate more light corners when needed. If removed - pitch black shuttles will come for your soul!
-		if (corners[i]) // Already have a corner on this direction.
+		if (get_corner(i)) // Already have a corner on this direction.
 			continue
-		corners[i] = new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i])
+		set_corner(i, new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i]))
 
 	if ((old_opacity != opacity) || (dynamic_lighting != old_dynamic_lighting) || force_lighting_update)
 		reconsider_lights()

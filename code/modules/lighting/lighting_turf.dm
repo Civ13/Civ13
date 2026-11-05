@@ -15,11 +15,48 @@
 
 	var/list/affecting_lights	   // List of light sources affecting this turf.
 	var/tmp/atom/movable/lighting_overlay/lighting_overlay // Our lighting overlay.
-	var/tmp/list/datum/lighting_corner/corners[4]
+	// The four shared corners in LIGHTING_CORNER_DIAGONAL order (NE, SE, SW,
+	// NW). Four vars instead of a sized list: Gaia has 350k turfs and a
+	// four-entry list cost about 200 bytes each. Use get_corner()/set_corner()
+	// with the diagonal index, or corner_list() for a fresh ordered list.
+	var/tmp/datum/lighting_corner/corner_ne
+	var/tmp/datum/lighting_corner/corner_se
+	var/tmp/datum/lighting_corner/corner_sw
+	var/tmp/datum/lighting_corner/corner_nw
 	var/tmp/has_opaque_atom = FALSE // Not to be confused with opacity, this will be TRUE if there's any opaque atom on the tile.
 
 	// misc
 	var/next_calculate_window_coeff = -1
+
+/turf/proc/get_corner(var/i)
+	switch(i)
+		if (1)
+			return corner_ne
+		if (2)
+			return corner_se
+		if (3)
+			return corner_sw
+		if (4)
+			return corner_nw
+	return null
+
+/turf/proc/set_corner(var/i, var/datum/lighting_corner/C)
+	switch(i)
+		if (1)
+			corner_ne = C
+		if (2)
+			corner_se = C
+		if (3)
+			corner_sw = C
+		if (4)
+			corner_nw = C
+
+// A fresh list in diagonal order; missing corners stay null.
+/turf/proc/corner_list()
+	return list(corner_ne, corner_se, corner_sw, corner_nw)
+
+/turf/proc/has_all_corners()
+	return corner_ne && corner_se && corner_sw && corner_nw
 
 /turf/New()
 	. = ..()
@@ -57,11 +94,10 @@
 		#endif
 	sync_fullbright_coverage()
 
-	for (var/A in corners)
-		if (!A)
+	for (var/i = 1 to 4)
+		var/datum/lighting_corner/C = get_corner(i)
+		if (!C)
 			continue
-
-		var/datum/lighting_corner/C = A
 		C.update_active()
 
 // Builds a lighting overlay for us, but only if our area is dynamic.
@@ -81,11 +117,10 @@
 		if (A && A.dynamic_lighting)
 			PoolOrNew(/atom/movable/lighting_overlay, src)
 
-			for (var/LC in corners)
-				if (!LC)
+			for (var/i = 1 to 4)
+				var/datum/lighting_corner/C = get_corner(i)
+				if (!C)
 					continue
-
-				var/datum/lighting_corner/C = LC
 				if (!C.active) // We would activate the corner, calculate the lighting for it.
 					for (var/L in C.affecting)
 						var/datum/light_source/S = L
@@ -112,10 +147,10 @@
 
 /turf/proc/fix_corners_and_lighting_overlay() // workaround for broken ice corners
 	for (var/i = 1 to 4)
-		if (corners[i]) // Already have a corner on this direction.
+		if (get_corner(i)) // Already have a corner on this direction.
 			continue
 
-		corners[i] = new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i])
+		set_corner(i, new/datum/lighting_corner(src, LIGHTING_CORNER_DIAGONAL[i]))
 	for (var/atom/movable/lighting_overlay/LO in contents)
 		lighting_overlay = LO
 		break
@@ -127,18 +162,17 @@
 		// Ordinary mask-free cells and incomplete startup keep their fallback.
 		if (lighting_startup_in_progress || !created_lighting_corners_and_overlays || !omit_reserved_lighting_overlay())
 			return 0.5
-		if (!corners || corners.len != 4)
+		if (!has_all_corners())
 			return 0.5
-		for (var/i = 1 to 4)
-			if (!corners[i])
-				return 0.5
 		// An omitted overlay cannot refresh its turf's daylight coefficient.
 		get_window_coeff()
 
 	var/TOD_lum = time_of_day2luminosity[time_of_day] * window_coeff
 	var/totallums = 0
-	for (var/LL in corners)
-		var/datum/lighting_corner/L = LL
+	for (var/i = 1 to 4)
+		var/datum/lighting_corner/L = get_corner(i)
+		if (!L)
+			continue
 		totallums += L.lum_r + L.lum_g + L.lum_b + TOD_lum*3
 
 	totallums /= 12 // 4 corners, each with 3 channels, get the average.
@@ -186,7 +220,7 @@
 	if (has_opaque_atom)
 		return null // Since this proc gets used in a for loop, null won't be looped though.
 
-	return corners
+	return corner_list()
 
 /turf/proc/calculate_window_coeff()
 	var/area/src_area = loc
@@ -197,8 +231,10 @@
 	else
 		window_coeff = 0.5
 
-	for (var/datum/lighting_corner/C in corners)
-		C.window_coeff = window_coeff
+	for (var/i = 1 to 4)
+		var/datum/lighting_corner/C = get_corner(i)
+		if (C)
+			C.window_coeff = window_coeff
 
 	window_coeff_dirty = FALSE
 

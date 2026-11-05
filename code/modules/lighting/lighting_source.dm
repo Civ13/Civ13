@@ -230,8 +230,8 @@
 			if (!T.affecting_lights)
 				T.affecting_lights = list()
 
-			if (T.corners[1])
-				var/datum/lighting_corner/C = T.corners[1]
+			if (T.corner_ne)
+				var/datum/lighting_corner/C = T.corner_ne
 				if (!C.active)
 					END_FOR_DVIEW
 					return

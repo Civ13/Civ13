@@ -131,8 +131,8 @@ var/environment_max_weather_workers = 0
 			target_area.contents += T
 			turfs += T
 			for (var/i=1 to 4)
-				if (!T.corners[i])
-					T.corners[i] = new/datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i])
+				if (!T.get_corner(i))
+					T.set_corner(i, new/datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i]))
 			new/atom/movable/lighting_overlay(T)
 			if (n%1024 == 0)
 				sleep(world.tick_lag)

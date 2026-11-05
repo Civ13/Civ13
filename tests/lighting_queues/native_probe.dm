@@ -65,8 +65,8 @@ var/native_beat_gap = 0
 		var/light_count = text2num(world.params["lights"])
 		for(var/turf/T in world)
 			for(var/i in 1 to 4)
-				if(!T.corners[i])
-					T.corners[i] = new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i])
+				if(!T.get_corner(i))
+					T.set_corner(i, new /datum/lighting_corner(T, LIGHTING_CORNER_DIAGONAL[i]))
 			new /atom/movable/lighting_overlay(T)
 		created_lighting_corners_and_overlays = TRUE
 		lighting_corners_initialised = TRUE
