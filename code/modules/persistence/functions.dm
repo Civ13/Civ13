@@ -986,6 +986,8 @@ var/global/datum/persistence_admission_identity
 		debug_policy.stop_reason = "commit_outcome_unknown_owner_lost"
 		return FALSE
 	last_persistence_save_time = world.time
+	// Players still online mark the session unsaved again on the next loop.
+	persistence_played_since_save = FALSE
 	return 1
 
 /map_storage

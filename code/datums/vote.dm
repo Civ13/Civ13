@@ -38,6 +38,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 // world.time of the last successful persistence save in this process.
 var/global/last_persistence_save_time = 0
+var/global/last_persistence_save_vote_time = 0
 
 // Returns why players cannot start (or complete) a save vote, or null if they can.
 /proc/persistence_save_vote_block_reason()
@@ -51,9 +52,10 @@ var/global/last_persistence_save_time = 0
 		return "The world is busy with a save or restart."
 	if (clients.len < 3)
 		return "At least 3 players must be online."
-	var/wait = max(last_persistence_save_time, round_start_time) + 6000 - world.time
+	// Player-called saves are at most one per 30 minutes (Val, 2026-11-05).
+	var/wait = max(last_persistence_save_time, last_persistence_save_vote_time, round_start_time) + 18000 - world.time
 	if (wait > 0)
-		return "The world was saved less than 10 minutes ago ([round((wait + 599) / 600)] minutes left)."
+		return "A save or save vote happened less than 30 minutes ago ([round((wait + 599) / 600)] minutes left)."
 	return null
 
 /datum/vote
@@ -658,7 +660,8 @@ var/global/last_persistence_save_time = 0
 				if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
 					to_chat(usr, "You can't start save votes if you are not playing.")
 					return FALSE
-				initiate_vote("save",usr.key)
+				if (initiate_vote("save",usr.key))
+					last_persistence_save_vote_time = world.time
 			if ("custom")
 				if (usr.client.holder)
 					initiate_vote("custom",usr.key)
