@@ -89,6 +89,14 @@ SUITES = {
             'code/modules/1713/farmers_almanac.dm',
             'code/modules/1713/weather.dm',
             'code/game/objects/farming.dm')},
+    # Ploughed field sprite selection and load restore projected from production DM.
+    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
+        'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (
+            'code/game/turfs/flooring/flooring_premade.dm',
+            'code/game/turfs/flooring/flooring.dm',
+            'code/game/turfs/floor_icon.dm',
+            'code/game/turfs/floor.dm',
+            'icons/turf/floors.dmi')},
     # Inventory drag-and-drop transfer source contracts; no BYOND runtime.
     'inventory_drag': {'files': ('tests/inventory_drag/test_inventory_drag.py',),
         'paths': ('tests/inventory_drag/',), 'shared_paths': (
@@ -671,6 +679,10 @@ SUITES = {
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
+    # Offline source contracts for field treatment and artery repair.
+    'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
+        'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
+        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm')},
     # Inert skin/catalog/guard and account-wiring checks; no native runner import.
     # Existing shared inputs retain their conservative all-suite selection.
     'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),

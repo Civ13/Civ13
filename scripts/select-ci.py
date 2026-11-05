@@ -57,6 +57,7 @@ FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_a
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py'})
+MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
@@ -371,6 +372,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered farmers-almanac executable test requires explicit CI review')
         if path in DOOR_INTENTS_OFFLINE_TESTS:
             continue
+        if path in MEDICAL_CARE_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/medical_care/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered medical-care executable test requires explicit CI review')
         if path in SWEEP_LOOPS_OFFLINE_TESTS:
             continue
         if path.startswith('tests/sweep_loops/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

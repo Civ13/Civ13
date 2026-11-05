@@ -14,7 +14,7 @@ class FixtureSchemaTests(unittest.TestCase):
         required = set(re.findall(r'"([a-z_]+)"', '\n'.join(groups)))
         self.assertEqual(len(required), 16)
         human_only = {'handcuffed', 'legcuffed'}
-        self.assertIn('A.vars.Find(key)', body, 'Optional human-only fields need a presence guard')
+        self.assertIn('(key in A.vars)', body, 'Optional human-only fields need a presence guard')
         for filename, subtype in (('probe.dm', 'chunk_fixture'), ('benchmark.dm', 'memory_benchmark')):
             with self.subTest(filename=filename):
                 text = (ROOT / 'tests/movement_save_chunks' / filename).read_text()

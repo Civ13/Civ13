@@ -4,7 +4,7 @@ Local evidence for the static export, not a CI job: it needs the pinned BYOND
 compiler (`bash scripts/cloud_byond_setup.sh` on Linux) and about a minute.
 It writes only temporary files and removes them; the real civ13.dme is not changed.
 
-    python3 tests/liminal_maps/native_compile.py [--dreammaker PATH]
+    python3 tests/liminal_maps/native_compile.py [--dreammaker PATH] [--mode escape]
 """
 import argparse
 from pathlib import Path
@@ -20,9 +20,9 @@ from tools.liminal_maps.native import export
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--dreammaker',default=shutil.which('DreamMaker') or shutil.which('dm.exe') or 'DreamMaker')
-    a=p.parse_args()
+    p.add_argument('--mode',choices=['escape']);a=p.parse_args()
     with tempfile.TemporaryDirectory(dir=ROOT/'data' if (ROOT/'data').is_dir() else None) as tmp:
-        folder=Path(tmp)/'export';export(generate(preset())['document'],folder)
+        folder=Path(tmp)/'export';export(generate(preset())['document'],folder,mode=a.mode)
         dme=ROOT/'civ13.dme';text=dme.read_text(encoding='utf-8')
         start=text.index('// BEGIN_SELECTED_MAP');end=text.index('// END_SELECTED_MAP')
         relative=(folder/'map.dmm').relative_to(ROOT) if (folder/'map.dmm').is_relative_to(ROOT) else folder/'map.dmm'
