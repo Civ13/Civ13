@@ -186,6 +186,19 @@ var/global/datum/zombie_city_probe/zombie_city_probe = new
 		require(listeners && heard == listeners, "noise reached [heard] of [listeners]")
 		pass("noise_attracts", list("heard" = heard))
 
+		mark("upstairs")
+		var/live_before = zombie_horde.live.len
+		require(live_before > 0, "no live zombies before the upstairs check")
+		if (world.maxz < 2)
+			world.maxz = 2
+		var/turf/ground = get_turf(anchor)
+		anchor.forceMove(locate(ground.x, ground.y, 2))
+		sleep(800) // past the 60 s fold delay
+		var/upstairs_live = zombie_horde.live.len
+		anchor.forceMove(ground)
+		require(upstairs_live >= live_before, "zombies folded away while the player was one floor up ([live_before] -> [upstairs_live])")
+		pass("upstairs_keeps_chase", list("live" = upstairs_live))
+
 		mark("fold")
 		var/total = live_total()
 		anchor.zombie_horde_anchor = FALSE

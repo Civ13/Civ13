@@ -37,8 +37,8 @@ runtime errors in the zombie city code. It writes `summary.json` and a PNG previ
 - the horde stays inert until a block is registered and rejects unknown densities;
 - zombies appear around a clientless anchor body, out of its sight;
 - they chase and bite it, a kill lowers the block's total, gunfire noise turns
-  idle zombies toward the sound, and with no anchor left they fold back into
-  the block count;
+  idle zombies toward the sound, an anchor one floor up keeps them from folding
+  away, and with no anchor left they fold back into the block count;
 - evacuation points sort by ordinal, two are open at a time and the next turn
   opens two others, a closed one refuses, and arrivals use the city entry;
 - wounds travel in a payload, impossible wounds are refused;

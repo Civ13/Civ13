@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BEGIN, END = "// BEGIN_SELECTED_MAP", "// END_SELECTED_MAP"
 RUNTIME = re.compile(r"runtime error: (.*)\nproc name: (.*)\n\s*source file: ([^,\n]+),(\d+)")
 REQUIRED_CHECKS = ("loot_tables", "inert_until_block", "spawn_near_anchor", "pursuit_and_bite", "kill_lowers_count",
-                   "noise_attracts", "fold_back",
+                   "noise_attracts", "upstairs_keeps_chase", "fold_back",
                    "evacuation_points", "wounds_travel", "raid_collapse")
 
 
