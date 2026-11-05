@@ -294,6 +294,12 @@ var/space_runtime_error = FALSE
 	space_check(findtext(C.ui_html(), "Contact with") && findtext(C.ui_html(), "survey=abandon"), "the console window offers to close a lost mission")
 	C.abandon()
 	space_check(!C.mission && C.revealed_count() >= seen, "a lost mission can be closed and keeps its survey")
+	// A rebuilt map with the same seed and size but different terrain is a new map too.
+	var/list/rebuilt_rows = M.rows.Copy()
+	rebuilt_rows[8] = "^^^^^^^."
+	var/datum/survey_map/rebuilt = new
+	rebuilt.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "seed" = "t", "rows" = rebuilt_rows)))
+	space_check(rebuilt.seed == M.seed && rebuilt.digest() != M.digest() && M.digest() == md5(jointext(M.rows, "")), "the row digest tells a rebuilt map from the old one")
 	R.loaded = new /obj/item/space_probe/advanced(R)
 	R.fuel = 60
 	space_check(isnull(R.launch(2, 1, 0)) && C.revealed_count() == 12 && !C.sampled.len && !C.photographed.len && C.landing_sites ~= list("2,1"), "a new survey map starts a fresh survey record")

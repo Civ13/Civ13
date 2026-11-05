@@ -62,6 +62,7 @@
 	var/region = ""
 	var/ir_sha256 = "" // the source bundle's IR hash, for survey_map_matches_bundle
 	var/list/rows = list() // rows[1] is the southern edge
+	var/rows_digest = null
 	var/error = null
 
 /datum/survey_map/proc/load_text(text)
@@ -103,6 +104,12 @@
 	ir_sha256 = istext(data["ir_sha256"]) ? lowertext(data["ir_sha256"]) : ""
 	error = null
 	return TRUE
+
+// Identifies the terrain itself; cached because rows never change after load.
+/datum/survey_map/proc/digest()
+	if (!rows_digest)
+		rows_digest = md5(jointext(rows, ""))
+	return rows_digest
 
 /datum/survey_map/proc/cell(x, y)
 	if (!isnum(x) || !isnum(y) || x < 1 || y < 1 || x > width || y > height)
@@ -390,6 +397,7 @@ var/global/list/space_survey_maps = list()
 	var/list/landing_sites = list() // "x,y" of every probe landing
 	var/list/analysed_kinds = list() // sample kinds this console has analysed
 	var/map_region = ""
+	var/map_digest = "" // md5 of the rows the record was made from: a rebuilt map with the same seed still differs
 	var/dropout_chance = 0
 	var/dust_chance = 0
 	var/dusty = FALSE // dust on the panels halves recharge for this sortie
@@ -417,7 +425,7 @@ var/global/list/space_survey_maps = list()
 		return FALSE
 	lx = site[1]
 	ly = site[2]
-	if (map_region != M.region || map_seed != M.seed || map_width != M.width || map_height != M.height || length(revealed) != M.width * M.height)
+	if (map_region != M.region || map_seed != M.seed || map_digest != M.digest() || map_width != M.width || map_height != M.height || length(revealed) != M.width * M.height)
 		reset_survey(M)
 	mission = TRUE
 	probe_name = P.name
@@ -442,6 +450,7 @@ var/global/list/space_survey_maps = list()
 // Forgets the survey record: only when the survey map was replaced.
 /obj/structure/survey_console/proc/reset_survey(datum/survey_map/M)
 	map_region = M.region
+	map_digest = M.digest()
 	map_seed = M.seed
 	map_width = M.width
 	map_height = M.height
@@ -467,7 +476,7 @@ var/global/list/space_survey_maps = list()
 // survey map was replaced since launch.
 /obj/structure/survey_console/proc/mission_map()
 	var/datum/survey_map/M = get_space_survey_map(map_region)
-	if (!M || M.seed != map_seed || M.width != map_width || M.height != map_height || length(revealed) != map_width * map_height)
+	if (!M || M.seed != map_seed || M.digest() != map_digest || M.width != map_width || M.height != map_height || length(revealed) != map_width * map_height)
 		return null
 	return M
 
