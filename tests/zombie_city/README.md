@@ -23,3 +23,25 @@ loot spot from every insertion point, marker counts, insertion and evacuation
 spacing, generation time under 30 s and the absence of runtime errors in the
 zombie city code. It writes `summary.json` and a PNG preview per seed under
 `previews/`. Neither the suite nor the probe is real-client acceptance.
+
+## Horde, loot and raid world probe
+
+`horde_probe.py` appends `horde_probe.dm` to a temporary DME with
+`maps/EFT/crossroads_mall.dmm` selected, runs it once headless and checks
+`result.json`. It is developer evidence, not CI, and takes about three minutes:
+
+- every loot table and tier at research ages 0, 5 and 9 (no guns at age 0,
+  only age- and tier-allowed items, nothing saved);
+- the horde stays inert until a block is registered and rejects unknown densities;
+- zombies appear around a clientless anchor body, out of its sight;
+- they chase and bite it, a kill lowers the block's total, gunfire noise turns
+  idle zombies toward the sound, and with no anchor left they fold back into
+  the block count;
+- evacuation points sort by ordinal, two are open at a time and the next turn
+  opens two others, a closed one refuses, and arrivals use the city entry;
+- wounds travel in a payload, impossible wounds are refused;
+- a raid collapse removes living raiders and their gear and leaves corpses.
+
+```text
+python3 tests/zombie_city/horde_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir
+```

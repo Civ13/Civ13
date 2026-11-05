@@ -146,6 +146,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	if(!valid_transfer_capture(capture))
 		var/generation = islist(round_state) && istext(round_state["generation"]) ? round_state["generation"] : "unsaved"
 		capture = list("generation" = generation, "effects" = list(), "ledger_seq" = 0)
+	// A resetting raid world never saves: each boot is a new map that adopts
+	// the agent's ledger (region_raid_reset.dm).
+	if(region_raid_resets())
+		capture = list("generation" = "raid-[world.realtime]-[rand(1, 999999)]", "effects" = list(), "ledger_seq" = 0, "fresh" = 1)
 	loaded_capture = capture
 	if(!reconcile_pending)
 		reconcile_pending = TRUE

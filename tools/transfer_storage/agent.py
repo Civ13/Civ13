@@ -20,7 +20,7 @@ MAX_BODY = 1 << 20  # 1 MiB per request
 
 
 def _load(store, body):
-    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'])
+    seq = store.reconcile_load(body['generation'], body['effects'], body['ledger_seq'], body.get('fresh') in (True, 1))
     if seq is None:
         # reconcile_load just put the region on hold; say so like other refusals.
         raise RegionHeld(store.status().get('hold_reason') or 'rollback')
