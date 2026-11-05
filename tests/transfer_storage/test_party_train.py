@@ -78,7 +78,7 @@ class PartyTrainTests(unittest.TestCase):
 
     def test_only_the_party_boards_and_only_to_the_rail_yard(self):
         refusal = proc(TRAIN, OFFICE + '/travel_refusal')
-        self.assertIn('party_train_party_of(H) != party', refusal)
+        self.assertIn('if(!party_train_may_board(H, party))', refusal)
         self.assertIn('peer["kind"] == "RAILYARD"', proc(TRAIN, OFFICE + '/proc/rail_yard'))
         self.assertIn(OFFICE + '/accepts_arrivals()\n\treturn FALSE', TRAIN)
 
@@ -117,11 +117,31 @@ class RailYardTests(unittest.TestCase):
         self.assertIn('"civ:[shard_group.enabled ? shard_group.region : "local"]:[name]"', proc(TRAIN, '/proc/party_train_faction_party'))
 
     def test_only_the_party_boards_its_train_or_opens_its_doors(self):
-        self.assertIn('party_train_party_of(H) != party', proc(TRAIN, BERTH + '/travel_refusal'))
+        self.assertIn('if(!party_train_may_board(H, party))', proc(TRAIN, BERTH + '/travel_refusal'))
         self.assertIn(BERTH + '/accepts_arrivals()\n\treturn FALSE', TRAIN)
-        self.assertIn('B.party && party_train_party_of(user) == B.party', proc(TRAIN, DOOR + '/proc/party_member'))
-        self.assertIn(DOOR + '/canOpen(mob/user)\n\treturn party_member(user)', TRAIN)
+        self.assertIn('return party && party_train_party_of(user) == party', proc(TRAIN, '/proc/party_train_may_board'))
+        self.assertIn('party_train_may_board(user, owner_party())', proc(TRAIN, DOOR + '/proc/party_member'))
+        self.assertIn(DOOR + '/canOpen(mob/user)\n\treturn forced || party_member(user)', TRAIN)
         self.assertIn(DOOR + '/Dismantle(devastated = FALSE)\n\treturn', TRAIN)
+
+    def test_raiders_force_doors_only_while_the_owners_are_here(self):
+        self.assertIn('return party_members_online(party)', proc(TRAIN, '/proc/party_train_breachable'))
+        online = proc(TRAIN, '/proc/party_members_online')
+        self.assertIn('H.client && H.stat != DEAD && party_train_party_of(H) == party', online)
+        breach = proc(TRAIN, DOOR + '/proc/breach')
+        self.assertLess(breach.index('party_train_breachable(party)'), breach.index('breach_left -= amount'))
+        self.assertLess(breach.index('breach_left -= amount'), breach.index('forced = TRUE'))
+        self.assertNotIn('qdel', breach)
+        attack = proc(TRAIN, DOOR + '/attackby')
+        self.assertLess(attack.index('if(party_member(user))'), attack.index('breach(W.force, user)'))
+        for hook in ('/bullet_act', '/ex_act', '/door_kick'):
+            self.assertIn('breach(', proc(TRAIN, DOOR + hook))
+
+    def test_the_party_secures_a_forced_door(self):
+        secure = proc(TRAIN, DOOR + '/proc/secure')
+        self.assertIn('forced = FALSE', secure)
+        self.assertIn('breach_left = PARTY_TRAIN_DOOR_STRENGTH', secure)
+        self.assertIn('if(forced && party_member(user))', proc(TRAIN, DOOR + '/attack_hand'))
 
     def test_the_saved_party_counts_only_in_the_yard(self):
         party_of = proc(TRAIN, '/proc/party_train_party_of')
