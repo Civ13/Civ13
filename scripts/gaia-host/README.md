@@ -88,6 +88,25 @@ ports. It speaks BYOND Topic framing and answers only:
   address every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
 
+### Surviving a power-down
+
+A frozen process does not survive the machine shutting down, so `serve` and
+`watch` only freeze a server once `map_saves/save_complete.txt` is newer than
+the last time a client was seen (`freeze_requires_save`, on by default). The
+world saves itself when it empties; until that save completes the server stays
+awake, and a refused or failed save just keeps it awake until a later save
+lands. The time of the last client is kept in `<state_dir>/activity.json`.
+
+If the frozen process is gone when `serve` next looks (the machine rebooted or
+dd.exe was killed) and nothing listens on the port, the instance becomes cold
+(`<state_dir>/cold.json`). It still shows as asleep in the launcher, with
+`cold_start_estimate_seconds` (300) as its wait, and the next wake request runs
+the ordinary `start` action, which loads that save. A cold start needs
+`cold_start_min_free_mb` (2560) of free memory, since loading peaks far above a
+thaw, and an action lock left by the power-down is cleared first. A save that
+fails `start`'s checks keeps the server down. Run `serve` from a scheduled task
+that starts at boot so the launcher can see and wake the instance.
+
 The launcher lists asleep servers from this cache and offers "Wake and join":
 it wakes the server, waits until the doorman reports it awake, then checks the
 game port directly and joins. The doorman never forwards game traffic, so bans

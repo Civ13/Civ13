@@ -391,8 +391,8 @@ internal sealed class LauncherWindow : Form {
 
     internal static string DormantStatus(DormantServer server) {
         var state = server.State == "waking" ? "Waking" : "Asleep";
-        var age = server.CachedAgeSeconds is { } seconds ? ", " + ServerBrowser.Age(seconds) + " ago" : "";
-        return $"{state}; wakes on join (~{server.WakeEstimateSeconds}s){age}";
+        var age = server.CachedAgeSeconds is { } seconds ? ", last seen " + ServerBrowser.Age(seconds) + " ago" : "";
+        return $"{state}; wakes on join (~{ServerBrowser.Age(server.WakeEstimateSeconds)}){age}";
     }
 
     private static string LastSeen(KnownServer entry) => $"last seen {entry.Server.CheckedAt:HH:mm} UTC";

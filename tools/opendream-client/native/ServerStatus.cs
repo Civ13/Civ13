@@ -122,14 +122,17 @@ public sealed class ServerDiscovery : IServerDiscovery {
     public async Task<VerifiedGameServer> WakeAndVerify(DormantServer server, Action<string> progress, CancellationToken token = default) {
         server.Target.Validate();
         if (doorman == null) throw new IOException("This server list cannot wake servers.");
-        progress($"Waking {server.Name}...");
+        // A host that lost power starts the world from its last save, which takes minutes, not seconds.
+        var limit = TimeSpan.FromSeconds(Math.Max(HostStatus.WakeLimit.TotalSeconds, server.WakeEstimateSeconds + 60));
+        var verb = server.WakeEstimateSeconds > HostStatus.WakeLimit.TotalSeconds ? "Starting" : "Waking";
+        progress($"{verb} {server.Name}...");
         var started = elapsed();
         var state = await wake(server.Target);
         while (state != "awake") {
             if (state == "stopped") throw new IOException(server.Name + " is not running. Refresh later.");
             var waited = elapsed() - started;
-            if (waited > HostStatus.WakeLimit) throw new IOException(server.Name + " did not wake in time. Refresh and try again.");
-            progress($"Waking {server.Name}... {(int)waited.TotalSeconds}s");
+            if (waited > limit) throw new IOException(server.Name + " did not wake in time. Refresh and try again.");
+            progress($"{verb} {server.Name}... {(int)waited.TotalSeconds}s of about {server.WakeEstimateSeconds}s");
             await delay(HostStatus.PollInterval, token);
             var current = await doorman(server.Provider);
             state = current.TryGetValue(server.Target, out var latest) ? latest.State : "stopped";
