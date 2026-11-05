@@ -229,7 +229,8 @@ def elevation_profile(doc, lapse=DEFAULT_LAPSE):
     """Return the metadata elevation profile for an IR document.
 
     Elevations are rounded to the finest band that fits in the DM limit of 256
-    rectangles; the most common band becomes the default. At the coarsest band
+    rectangles; of the three most common bands, the one needing the fewest
+    rectangles becomes the default. At the coarsest band
     the largest rectangles are kept and the rest fall back to the default.
     """
     if not isinstance(lapse, (int, float)) or isinstance(lapse, bool) or not 0 <= lapse <= 10:
@@ -242,11 +243,17 @@ def elevation_profile(doc, lapse=DEFAULT_LAPSE):
             for row in grid:
                 for value in row:
                     counts[value] = counts.get(value, 0) + 1
-        # Most common band; ties prefer the band nearest sea level, then the lower.
-        default = min(counts, key=lambda v: (-counts[v], abs(v), v))
-        regions = []
-        for z in sorted(planes):
-            regions.extend(dict(r, z=z) for r in _rectangles(planes[z], default))
+        # Try the three most common bands as the default and keep the one that
+        # needs the fewest rectangles (a uniform cave plane can outnumber the
+        # surface's sea level); ties prefer the band nearest sea level.
+        best = None
+        for default in sorted(counts, key=lambda v: (-counts[v], abs(v), v))[:3]:
+            found = []
+            for z in sorted(planes):
+                found.extend(dict(r, z=z) for r in _rectangles(planes[z], default))
+            if best is None or len(found) < len(best[1]):
+                best = (default, found)
+        default, regions = best
         if len(regions) <= MAX_ELEVATION_REGIONS:
             break
     dropped = max(0, len(regions) - MAX_ELEVATION_REGIONS)

@@ -97,7 +97,10 @@ the lapse rate (default 6.5, `--lapse 0` keeps the climate flat). A map file
 cannot hold nested lists, so the metadata carries the rows as
 `elevation_regions_text`: `"x1 x2 y1 y2 z metres"` rows joined by `|`. It is read
 only when `elevation_regions` is unset, and every row still passes the bounds
-and overlap checks above. See [procedural maps](procedural-maps.md#playable-region-maps).
+and overlap checks above. A region world whose save predates this keeps the
+flat profile that save restores (legacy saves always restore flat), so only a
+region started fresh from a regenerated map gets its relief. See
+[procedural maps](procedural-maps.md#playable-region-maps).
 
 `tests/elevation_climate/probe.dm` runs the production procs on a 2000 m
 plateau fixture through `tests/resource_extraction/run.ps1`.

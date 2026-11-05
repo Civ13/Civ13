@@ -243,6 +243,21 @@ class ElevationProfileTests(unittest.TestCase):
         self.assertEqual("/obj/map_metadata/nomads{elevation_default_metres = 300; elevation_lapse_c_per_km = 6.5}",
                          playable.metadata_atom(profile))
 
+    def test_default_band_needs_fewest_rectangles(self):
+        # A uniform -40 m cave plane outnumbers the surface's sea level, but
+        # choosing it would need a rectangle per surface row; sea level does not.
+        surface = [[0, 150, 0, 150] if y % 2 else [150, 0, 150, 0] for y in range(8)]
+        surface[0] = [0, 0, 0, 0]
+        cave = [[-40] * 4 for _ in range(8)]
+        for row in surface[1:]:
+            row[:] = [0, 0, 150, 0]
+        doc = flat_doc(4, 8, surface, cave)
+        profile = playable.elevation_profile(doc)
+        self.assertEqual(1, profile["step_m"])
+        self.assertEqual(0, profile["default_metres"])
+        self.assertEqual(2, len(profile["regions"]))
+        self.assert_exact(doc, profile)
+
     def test_coarser_bands_then_largest_rectangles_fit_the_cap(self):
         # A 40x40 checkerboard of 0/20 m needs 800 single-tile regions at 1 m,
         # but rounds to flat at 50 m bands.

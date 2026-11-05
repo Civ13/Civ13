@@ -134,7 +134,8 @@ before writing.
 The map also keeps its relief. The IR's per-cell elevation becomes the Nomads
 metadata's [elevation profile](elevation.md) with a lapse rate of 6.5 C per km
 (`--lapse` sets 0 to 10; 0 keeps the climate flat). Equal heights merge into
-rectangles; if a map needs more than the 256 rectangles DM accepts, heights are
+rectangles, and the default is whichever of the three most common heights needs
+the fewest; if a map needs more than the 256 rectangles DM accepts, heights are
 rounded to coarser bands (50, 100, 200, 500 then 1000 m) until it fits, and at
 1000 m only the largest 256 are kept. The report's `elevation` entry gives the
 band, the rectangle count and any dropped. On the 64 x 80 pilot surface map,
