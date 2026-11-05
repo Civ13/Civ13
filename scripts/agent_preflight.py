@@ -179,6 +179,13 @@ def wiki_pins(args):
         print('  changed:', relative)
     for relative in missing:
         print('  missing:', relative)
+    # New player guides are never pinned by accident: list the ones Help does not read yet.
+    pinned = set(module.WIKI_REVIEWED_GUIDES) | set(module.WIKI_LEGACY_GUIDES)
+    unpinned = sorted(str(path.relative_to(wiki / 'src')).replace(os.sep, '/')
+                      for folder in ('guides', 'gamemodes') for path in (wiki / 'src' / folder).glob('*.md'))
+    unpinned = [relative for relative in unpinned if relative not in pinned]
+    for relative in unpinned:
+        print('  unpinned (add a hash and aliases to WIKI_REVIEWED_GUIDES if players should get it):', relative)
     if stale and args.write:
         if revision:
             source = source.replace(module.WIKI_REVIEWED_REVISION, revision)

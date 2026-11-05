@@ -34,3 +34,9 @@ New to the game or stuck? Press F2 to ask a mentor, or F1 to contact an admin. N
 On persistent maps, straw walls and thatch or palm roofs weather away in about 16 game years, dirt walls in about 32 and wooden walls and roofs in about 64. Examine a wall or roof to see how long it has left.
 A weathered wall or roof gives a warning once it has a year left. Repair walls by hitting them with their building material, and roofs by using matching roofing while facing them.
 Roofs collapse when they lose all support, even with people underneath. Keep pillars or walls close by, and repair the walls holding a roof up before they fall apart.
+A severed artery bleeds fast. Use any bandage roll on that arm or leg to tie a tourniquet, bandage the wound under it, then loosen it with another bandage once the bleeding has clotted. Never leave a tourniquet on for more than half an hour.
+Broke a bone and no surgeon around? Craft wooden splints from 2 wood in any era and splint the limb. A splinted fracture mends on its own in about 20 minutes, twice as fast while you lie down.
+Every era has an antibiotic for infected wounds: penicillin is strongest, then prontosil, then chewed healing herbs, then silver. Cleaning a wound early with herbs, sulfa, a trauma kit or a silver dressing knocks the infection back.
+Silver dressings, made from 1 silver, bandage and disinfect a wound at once. They are the antiseptic bandage of the ages before sulfa drugs.
+Fabricators turn belt-fed parts into goods on their own once your faction has Assembly Line research. Wrench one down, cable it, click it to pick a recipe, and let feeder arms and belts keep it supplied.
+Lost blood comes back twice as fast while you are well fed and watered, so eat and drink after a bad wound.

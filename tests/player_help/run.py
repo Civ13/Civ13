@@ -22,6 +22,9 @@ PRELUDE = '''
 #define PROCESS_PRIORITY_LOW 1
 #define AREA_OUTSIDE 1
 #define WEATHER_NONE 1
+#define ORGAN_BROKEN 32
+#define ORGAN_SPLINTED 256
+#define ORGAN_ARTERY_CUT 8192
 #define WEATHER_WET 2
 #define WEATHER_EXTREME 3
 #define WEATHER_SMOG 4
@@ -123,6 +126,14 @@ var/list/probe_clients = list()
     var/mob/living/human/owner
     var/brute_dam = 0
     var/burn_dam = 0
+    var/status = 0
+    var/tourniquet = FALSE
+    var/list/wounds = list()
+/datum/wound
+    var/internal = FALSE
+    var/probe_bleeding = FALSE
+    proc/bleeding()
+        return probe_bleeding
 /mob/living/human
     var/list/probe_organs = list()
     proc/get_organ(part)

@@ -104,11 +104,24 @@
     injury_hand.brute_dam = 20
     injury_hand.burn_dam = 2000
     injury_second.probe_organs["l_hand"] = injury_hand
+    injury_hand.status = ORGAN_BROKEN | ORGAN_ARTERY_CUT
+    injury_hand.tourniquet = TRUE
+    var/datum/wound/injury_wound = new
+    injury_wound.probe_bleeding = TRUE
+    injury_hand.wounds += injury_wound
     var/list/body_rows = D.body_damage_context(injury_second)
     check(body_rows.len == 11, "body projection has fixed bounded parts")
     for (var/list/body_row in body_rows)
         if (body_row["body_part"] == "l_hand")
             check(!body_row["missing"] && body_row["brute"] == 20 && body_row["burn"] == 1000, "own external damage is bounded")
+            check(body_row["bleeding"] && body_row["artery_cut"] && body_row["tourniquet"] && body_row["broken"] && !body_row["splinted"], "visible limb states are reported")
+        else
+            check(!body_row["missing"] || isnull(body_row["bleeding"]), "absent limbs report no states")
+    injury_wound.internal = TRUE
+    body_rows = D.body_damage_context(injury_second)
+    for (var/list/body_row in body_rows)
+        if (body_row["body_part"] == "l_hand")
+            check(!body_row["bleeding"], "internal wounds are not visible bleeding")
     injury_hand.owner = null
     body_rows = D.body_damage_context(injury_second)
     for (var/list/body_row in body_rows)
