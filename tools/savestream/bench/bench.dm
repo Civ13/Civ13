@@ -30,6 +30,10 @@
 		phase("exit")
 		shutdown()
 
+// Saved ghost appearances name this game type; an undefined type inside a
+// mutable appearance does not read back the same, so the bench defines it.
+/mob/observer/ghost
+
 /datum/proc/Destroy()
 	return
 
