@@ -15,7 +15,9 @@ the file, party size cap, unsaved raiders with weapon and bag, tribute ending
 the parley and limiting loot to the tribute, an attack starting the assault,
 carrying loot, a fallen raider dropping loot, weapon and bag, removal dropping
 loot, and the real controller loop marching to an empty target, turning back
-and despawning every raider.
+and despawning every raider; and an island target: no walking route, a
+water start, every member on an unsaved raft, landing ashore, paddling back
+out and leaving no raft behind.
 
 Not covered: fights with real players (clicks need a started round and a
 client), crate opening, and visibility to real clients.

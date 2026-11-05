@@ -24,6 +24,12 @@ var/telecom_failures = 0
 	vessel = new /datum/reagents(1000, src)
 /mob/living/human/telecom_fixture/broadcast_online()
 	return online
+/mob/living/human/telecom_fixture
+	var/relayed_heard = 0
+	var/relayed_last = ""
+/mob/living/human/telecom_fixture/hear_relayed_radio(message, verbage, datum/remote_speaker/speaker, obj/destination)
+	relayed_heard++
+	relayed_last = "[speaker.real_name]@[speaker.region]/[speaker.relay]: [message]"
 /proc/telecom_check(condition, label)
 	if (!condition)
 		telecom_failures++
@@ -33,6 +39,7 @@ var/telecom_failures = 0
 	world.log << "runtime error: [e] [e.file]:[e.line]"
 /world/New()
 	OpenPort("none")
+	generate_gameid()
 	GLOB.all_observable_events = list()
 	GLOB.moved_event = new /decl/observ/moved
 	GLOB.dir_set_event = new /decl/observ/dir_set
@@ -113,10 +120,15 @@ var/telecom_failures = 0
 		telecom_check(P.dial(Q.phonenumber) && Q.answer(), "reciprocal cable bridge routes calls")
 		C.connections -= D
 		D.connections -= C
+		// A cut cable republishes both halves at once (cables.dm disconnect()).
+		C.rebuild_supply()
+		D.rebuild_supply()
 		civ_check_landlines()
 		telecom_check(P.draw_cable_power() && Q.draw_cable_power() && !P.origincall && !Q.origincall && !P.dial(Q.phonenumber), "powered split ends call and blocks dialing")
 		C.connections |= D
 		D.connections |= C
+		C.rebuild_supply()
+		D.rebuild_supply()
 		telecom_check(P.dial(Q.phonenumber) && Q.answer(), "reconnecting cable restores route")
 		P.hang_up()
 		// Larger than the former 128-cable route cap, with power at both ends.
@@ -159,6 +171,65 @@ var/telecom_failures = 0
 		telecom_check(T.send_network_message("local test") == 1 && !T.send_network_message("rate limited"), "terminals share power cable and rate limit")
 		var/p_number = P.phonenumber
 		var/q_number = Q.phonenumber
+		// Cross-region relay (radio_relay.dm): keyed, powered, worn and repaired; heard through local receivers.
+		var/fixture_group = json_encode(list("group" = "g", "region" = "alpha", "regions" = list(list("id" = "alpha", "name" = "Alpha Land", "kind" = "SURFACE", "address" = "127.0.0.1:1731"), list("id" = "beta", "name" = "Beta Land", "kind" = "SURFACE", "address" = "127.0.0.1:1732"))))
+		telecom_check(shard_group.configure(fixture_group) && ("beta" in shard_group.peers), "fixture region group with one peer")
+		var/obj/structure/telecom/relay/relay = new(locate(2,4,1))
+		relay.enabled = TRUE
+		relay.powersource = C
+		C.connections |= relay
+		telecom_check(civ_relay_key_valid("village-1") && !civ_relay_key_valid("Village") && !civ_relay_key_valid("") && !civ_relay_key_valid("abcdefghijklmnopq"), "network key charset and length")
+		telecom_check(relay.running() && !relay.on_air(), "powered relay with antenna runs but is off the air without a key")
+		relay.network_key = "village"
+		telecom_check(relay.on_air() && civ_relay_on_air_list().len == 1, "keyed relay is on the air")
+		E.on = FALSE
+		other_supply.on = FALSE
+		telecom_check(!relay.running() && !relay.on_air() && !civ_relay_on_air_list().len, "unpowered relay is off the air")
+		E.on = TRUE
+		other_supply.on = TRUE
+		relay.wear(3)
+		telecom_check(relay.condition == 97, "wear takes condition while running")
+		E.on = FALSE
+		other_supply.on = FALSE
+		relay.wear(3)
+		E.on = TRUE
+		other_supply.on = TRUE
+		telecom_check(relay.condition == 97, "no wear while unpowered")
+		telecom_check(relay.garble("steady") == "steady", "no garbling above the threshold")
+		var/sends = 0
+		for (var/i = 1, i <= 12, i++)
+			if (relay.allow_send())
+				sends++
+		telecom_check(sends == 10, "ten outbound messages per window")
+		var/mob/living/human/telecom_fixture/far_listener = new(locate(6,3,1))
+		human_mob_list |= far_listener
+		var/obj/item/weapon/radio/handset = new(far_listener)
+		handset.freq = 150
+		var/list/envelope = list("key" = "village", "frequency" = 150, "name" = "Bea", "message" = "hello alpha", "language" = "-", "verb" = "says", "relay" = "south mast", "condition" = 90, "source" = "beta", "ckey" = "bea")
+		telecom_check(civ_relay_receive(envelope) && far_listener.relayed_heard == 1 && far_listener.relayed_last == "Bea@Beta Land/south mast: hello alpha", "arrival on the key is heard through a receiver on the frequency")
+		envelope["frequency"] = 151
+		telecom_check(!civ_relay_receive(envelope) || far_listener.relayed_heard == 1, "wrong frequency is not heard")
+		envelope["frequency"] = 150
+		envelope["key"] = "raiders"
+		telecom_check(!civ_relay_receive(envelope) && far_listener.relayed_heard == 1, "no relay on that key drops the arrival")
+		envelope["key"] = "village"
+		envelope["source"] = "gamma"
+		telecom_check(!civ_relay_receive(envelope), "unknown source region is dropped")
+		envelope["source"] = "beta"
+		envelope["message"] = ""
+		telecom_check(!civ_relay_receive(envelope), "empty message is dropped")
+		envelope["message"] = "<b>bold</b> hi"
+		telecom_check(civ_relay_receive(envelope) && findtext(far_listener.relayed_last, "&lt;b&gt;"), "arrival text is html-encoded")
+		relay.network_key = ""
+		telecom_check(!civ_relay_receive(envelope) && far_listener.relayed_heard == 2, "relay with no key hears nothing")
+		relay.network_key = "village"
+		relay.condition = 0
+		telecom_check(!relay.on_air() && !civ_relay_receive(envelope), "worn-out relay is silent")
+		relay.condition = 97
+		var/relay_x = relay.x
+		var/relay_y = relay.y
+		qdel(far_listener)
+		qdel(handset)
 		qdel(antenna)
 		var/mob/living/human/telecom_fixture/H = new(locate(2,2,1))
 		H.stats["crafting"] = list(100,100)
@@ -214,6 +285,8 @@ var/telecom_failures = 0
 				Q = phone
 		telecom_check(P && Q && P.phonenumber == p_number && Q.phonenumber == q_number && !P.origincall && !Q.origincall && !P.connected && !Q.connected, "phone numbers survive; runtime calls do not")
 		telecom_check(P && Q && P.dial(Q.phonenumber) && Q.answer(), "restored phones route over restored cable")
+		var/obj/structure/telecom/relay/restored_relay = locate(/obj/structure/telecom/relay) in locate(relay_x,relay_y,1)
+		telecom_check(restored_relay && restored_relay.network_key == "village" && restored_relay.condition == 97, "relay key and condition survive a save")
 	catch (var/exception/e)
 		telecom_check(FALSE,"exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit"=world.params["tested_commit"],"failures"=telecom_failures,"byond_build"=world.byond_build)),"result.json")

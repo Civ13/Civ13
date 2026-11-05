@@ -27,6 +27,7 @@ from civ13_agent import AgentClient, AgentError  # noqa: E402
 import techtree  # noqa: E402
 import blueprints  # noqa: E402
 import leatherwork  # noqa: E402
+import boats  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -69,7 +70,7 @@ TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
-           "blueprint", "build_next", "leather_next")
+           "blueprint", "build_next", "leather_next", "travel", "board", "disembark")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
@@ -144,6 +145,13 @@ Leather: {"do": "leather_next", "make": "belt"|"backpack"|"leather"} does the ne
 (sharpened flint or knife), wash it with water from a wood mug, dry it on a tanning rack (8 wood logs), cut logs with your
 hatchet for bark, soak the bark in the mug for tannin, tan the dry hide, then craft and wear the belt satchel (3 leather) or
 backpack (6 leather). Hides and bark are worked on the ground next to you.
+Travel: {"do": "travel", "x": X, "y": Y} (or "dir": north|south|east|west with "tiles": 1-150, or "to": "home"|"boat"|
+"ore"|"clean water"|... a place you remember) walks there by a planned route. When deep water is in the way it crosses by
+boat by itself: it boards a free boat near the shore, or builds a raft there from 10 wood logs you carry, paddles across,
+and leaves the boat moored on the far shore (you remember where). Carry 10 wood logs when you go exploring past rivers.
+Boats: {"do": "board", "target": number} gets on a raft or boat next to you; while you drive one, "move" steers it a tile
+over water; {"do": "disembark"} gets off at a shore. A motor boat needs fuel (hold fuel and click the boat) and its
+engine started (use the rudder in your hand once). The BOAT line says what a boat needs.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -274,6 +282,9 @@ def summarize(observation, note="", ignored=(), muted=()):
         for row in terrain:
             refs.append(row.get("ref"))
             lines.append(f"  {len(refs) - 1}. {row.get('name')}{' (unclean)' if row.get('sickness') else ''} dx={row.get('dx')} dy={row.get('dy')}")
+    boat_line = boats.describe(observation)
+    if boat_line:
+        lines.append("BOAT: " + boat_line)
     texts = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
     if texts:
         lines.append("Recent messages:")
@@ -733,6 +744,23 @@ def parse_decision(text, refs):
         return args
     if action == "leather_next":
         return {"do": "leather_next", "make": leatherwork.product_name(data.get("make") or data.get("item") or data.get("name"))}
+    if action == "travel":
+        out = {"do": "travel"}
+        for key in ("x", "y", "tiles"):
+            if data.get(key) is not None:
+                try:
+                    out[key] = int(data[key])
+                except (TypeError, ValueError):
+                    return None
+        if str(data.get("dir", "")).lower() in ("north", "south", "east", "west"):
+            out["dir"] = str(data["dir"]).lower()
+        if str(data.get("to", "")).strip():
+            out["to"] = str(data["to"]).strip().lower()[:40]
+        if not (("x" in out and "y" in out) or "dir" in out or "to" in out):
+            return None
+        return out
+    if action == "disembark":
+        return args
     if action in ("build", "roof"):
         direction = str(data.get("dir", "")).lower()
         if direction not in ("north", "south", "east", "west"):
@@ -769,7 +797,7 @@ def parse_decision(text, refs):
         if not 1 <= index < len(refs) or not refs[index]:
             return None
         args["target"] = refs[index]
-    elif action in ("click", "examine"):
+    elif action in ("click", "examine", "board"):
         try:
             index = int(data.get("target"))
         except (TypeError, ValueError):
@@ -881,7 +909,7 @@ def parse_plan(text, refs):
         if step is None:
             break  # keep the valid prefix; later steps may depend on the bad one
         plan.append(step)
-        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next", "leather_next"):
+        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next", "leather_next", "travel"):
             break  # the hands change; plan the next step after seeing the result
     return plan
 
@@ -1474,6 +1502,14 @@ def execute(client, character, steps, queue_since):
         return queue_since
 
     for step in steps:
+        if step.get("do") == "travel":
+            queue_since = flush(queue_since)
+            hooks = {"run": lambda more, since: execute(client, character, more, since), "craft_steps": _expand_craft}
+            ok, detail, queue_since = boats.travel(client, character, step, queue_since, hooks)
+            parts.append(f"travel {'ok' if ok else 'failed'} ({detail})")
+            if not ok:
+                return "; ".join(parts) + "; stopped there", queue_since
+            continue
         if step.get("do") not in ("go", "flee", "explore"):
             if chunk and bool(step.get("soft")) != bool(chunk[-1].get("soft")):
                 queue_since = flush(queue_since)
@@ -1847,6 +1883,9 @@ def _run(client, args, character, token, model_pool):
         if memory is not None and json.dumps(box.get("project"), sort_keys=True) != before:
             memory.dirty = True
         plan, leather_note = leather_plan(plan, observation, box)
+        plan, travel_note = travel_plan(plan, self_state, memory)
+        if travel_note:
+            built_note = (built_note + "\n" if built_note else "") + travel_note
         if leather_note:
             print(f"step {step}: leather -> {leather_note}")
             built_note = (built_note + "\n" if built_note else "") + leather_note
@@ -1916,6 +1955,9 @@ def _run(client, args, character, token, model_pool):
                 if memory is not None and speakers and spoken:
                     memory.said(speakers, spoken)
             remember_results(memory, plan, summary, self_state, steps, rows_now)
+            left = boats.moored(summary)
+            if left and memory is not None:
+                memory.boat(*left)
             if box.get("project") and any(item.get("blueprint") for item in plan):
                 blueprints.record_result(box["project"], plan, summary)
                 if memory is not None:
@@ -2079,6 +2121,18 @@ SURVIVAL_GOALS = ("stop your bleeding", "warm up", "cool down", "your tunnel", "
 
 def box_for_goal(memory, local_project):
     return memory.data if memory is not None else local_project
+
+
+def travel_plan(plan, self_state, memory):
+    """Resolve a travel step's "to" or "dir" into x/y. Returns (plan, feedback when it cannot be resolved)."""
+    index = next((i for i, item in enumerate(plan) if item.get("do") == "travel"), None)
+    if index is None:
+        return plan, ""
+    data = memory.data if memory is not None else {}
+    x, y, problem = boats.target_of(plan[index], self_state, data.get("places"), data.get("home"))
+    if problem:
+        return plan[:index], f"Travel: {problem}."
+    return plan[:index] + [{"do": "travel", "x": x, "y": y}], ""
 
 
 def leather_plan(plan, observation, box):

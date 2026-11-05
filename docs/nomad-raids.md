@@ -23,6 +23,21 @@ Visits are not started at random.
 | `nomad_coordinator.dm` | What a coordinator sees and may order |
 | `nomad_admin.dm` | Admin verbs |
 
+## Crossing water
+
+A party first checks that it can walk from its map-edge spawn to the target.
+When it cannot (an island, a river with no ford), it comes by water instead
+(`nomad_boats.dm`): it starts on unseen deep water at the nearest edge that
+has a route with a single water crossing, each member on their own raft, and
+paddles in single file at a raft's speed to the first dry tile by the target
+(state `sail`, then `march`). The rafts stay moored at the landing. When the
+party leaves, members walk back to the landing, board (a fresh raft replaces
+a lost one) and paddle out, leaving the map where they came from. Party rafts
+are never saved and are removed when the visit ends. A target with no route
+by land or by one crossing gets the old behaviour: the party walks as far as
+it can and the march limit sends it home. A coordinator may order a retreat
+while the party is still afloat.
+
 ## Admin verbs (Fun, R_FUN)
 
 - **Start Nomad Visit** asks for raiders or traders, a target (the busiest
