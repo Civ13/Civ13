@@ -56,6 +56,10 @@ var/list/sleep_visibility_events = list()
 	var/inducedSSD = FALSE
 	var/fixture_drop_calls = 0
 	var/fixture_sleep_calls = 0
+	// The production helper closes open storage; the fixture never opens any.
+	var/datum/sleep_fixture_storage/s_active
+/datum/sleep_fixture_storage/proc/close(mob/user)
+	return
 /mob/living/human/proc/drop_item()
 	fixture_drop_calls++
 /mob/living/human/proc/sleep_update()
