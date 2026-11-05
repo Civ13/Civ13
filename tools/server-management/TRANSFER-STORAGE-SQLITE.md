@@ -125,6 +125,31 @@ The arrival point shows a "busy" state instead.
      a settled fence or resurrect consumed escrow, so the agent never clears
      the fence on its own.
 
+### Journaled character trips
+
+Waiting for two world saves (over a minute each on a large map) makes a trip
+slow. Characters can skip that wait, because the world can find one again: an
+account owns at most one durable body in a region.
+
+- `begin_escrow`, `begin_import` and `begin_return` take `fast`, which is only
+  allowed when every payload is a character. The effect is stored as
+  `journaled` and its protocol step (Escrow, Import receipt or Finalize) is
+  sent at once. Its payloads go into the `journal` table.
+- A world save that lists the effect deletes its journal row; nothing else
+  changes, because its step was already taken.
+- `reconcile_load` keeps journal rows the loaded save does not list, and
+  `/load` returns them as `replay`, oldest first. The world applies them
+  without sleeping: a replayed `remove` deletes the account's body and what it
+  carries; a replayed `credit` or `return` builds the character. It then lists
+  them in its next save.
+- Rollback detection is unchanged: an older backup still puts the region on
+  hold, and nothing is replayed.
+
+The one gap: if a traveller picked up an item after the last save and that
+item was elsewhere in the saved world, a crash before the next save leaves it
+there and also sends it with the traveller. Travel only allows allowlisted
+stacks, coins and empty clothing, up to 40 items, so the gap is bounded.
+
 ## Coordinator
 
 The coordinator is deliberately small:
@@ -159,6 +184,9 @@ item is ever playable in two places:
   voided and redone; the source still holds the commit decision.
 - Restoring an older source or destination backup: the region holds.
 - Coordinator down at any point: transfers wait; nothing is lost.
+- Journaled character trips: a crash on either side before its save replays
+  the trip from the journal (tests/transfer_storage/test_journal.py, including
+  random crash and message-fault interleavings).
 
 ## Phases
 

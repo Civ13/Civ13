@@ -57,15 +57,19 @@ port, unique in the group, never 1714). Then:
 - `status` shows each region's `transfer_agent` and the group's
   `coordinator`.
 
-A trip is only final once both regions have saved, so the group keeps saves
-frequent:
+A character trip completes in seconds: each region's agent journals the
+departure and the arrival as soon as it records them. A region that reloads a
+save made before a trip replays that trip from its journal, so a crash can
+neither bring the traveller back nor lose them. A world save that lists a trip
+clears it from the journal, so the group still keeps saves regular:
 
 - `save_minutes` (default 15, 1 to 1440) is the longest gap between autosaves.
 - `travel_save_seconds` (default 60) is how soon a region saves after
   someone leaves through a gate.
 - `persistent` (default true) makes `update` set `ALLOWED_GAMEMODES
   PERSISTENCE` and comment out `SKIP_PERSISTENCE_SAVING` in each region's
-  `config/config.txt`. Without saves, no trip ever completes.
+  `config/config.txt`. Without saves the journal only grows, and goods sent
+  through trade posts (which still wait for saves) never arrive.
 - A save of a 155x225 map takes over a minute, so keep `save_minutes` at 5 or
   more. Gates refuse travel while their region is saving.
 
@@ -85,7 +89,8 @@ the destination has no gate. Its owner gets it back on joining that server.
 Tests: `python3 -m unittest tests/gaia_host/test_shard_group.py` (fake
 machine, no BYOND). A Linux smoke run with the pinned compiler on two test
 maps (setup, update, start, status with both peers `UP`) passed on 2026-11-05.
-A two-region travel run passed on 2026-11-05 on two generated playable maps.
+A two-region travel run passed on 2026-11-05 on two generated playable maps
+(before trips were journaled).
 A Nomad left through a gate and arrived in the other region about 2.5 minutes
 later, with name, owner, clothes and coins. The transfer settled on both agents
 after the destination saved, and there were no runtime errors.

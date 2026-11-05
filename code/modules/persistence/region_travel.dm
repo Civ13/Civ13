@@ -11,7 +11,8 @@
 // recorded they are removed and the player is sent to the destination server.
 // The destination builds the body at a gate or a late-join point, owned by the
 // player's key, and hands it over when that key logs in. A refused transfer
-// comes back the same way at the source.
+// comes back the same way at the source. Trips are journaled by the agent, so
+// they complete in seconds; a world that reloads an older save replays them.
 
 #define REGION_TRAVEL_PAYLOAD_MAX 8192
 #define REGION_TRAVEL_ITEMS_MAX 40
@@ -173,6 +174,40 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		var/mob/living/human/H = region_travel_build(P, T)
 		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [T.x],[T.y],[T.z].")
 		region_travel_offer(H)
+
+// Replays a departure the loaded save does not hold yet: the account's body
+// here is the one that left (one durable body per account), so it goes again,
+// with what it carries. A player already back in it is sent to the lobby.
+/proc/region_travel_replay_departure(list/payloads)
+	for(var/payload in payloads)
+		var/list/P = region_travel_decode(payload)
+		if(!P)
+			message_admins("Region travel: an unreadable departure could not be replayed.")
+			continue
+		for(var/mob/living/human/H in human_mob_list.Copy())
+			if(H.persistence_owner_ckey != P["owner"] || QDELETED(H)) continue
+			log_game("Region travel: replayed [P["owner"]]'s departure; [H.real_name] leaves again.")
+			if(H.client)
+				var/client/C = H.client
+				var/mob/new_player/lobby = new
+				lobby.key = C.key
+				to_chat(C, SPAN_NOTICE("Your character already left for another land. Join it there."))
+			// Only what the traveller took goes with them again. Anything else
+			// the reloaded body holds (picked up after the reload, before this
+			// replay) existed in the save elsewhere, so it is dropped here.
+			var/list/took = list()
+			for(var/list/entry in P["items"])
+				var/obj/item/I = H.get_equipped_item(region_travel_slots[entry[1]])
+				if(I && !(I in took) && (region_travel_item_kind(I) == "type" ? "[I.type]" == entry[2] : region_travel_item_kind(I) == entry[2]))
+					took += I
+			var/turf/T = get_turf(H)
+			for(var/obj/item/I in H.contents)
+				if(istype(I, /obj/item/organ) || QDELETED(I)) continue
+				if(I in took)
+					qdel(I)
+				else if(T)
+					H.drop_from_inventory(I, T)
+			qdel(H)
 
 /proc/region_travel_build(list/P, turf/T)
 	var/mob/living/human/H = new /mob/living/human(T)
@@ -358,7 +393,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	busy = TRUE
 	var/turf/start = get_turf(src)
 	H.forceMove(src)
-	var/list/result = transfer_bridge.begin_escrow(destination, list(payload))
+	var/list/result = transfer_bridge.begin_escrow(destination, list(payload), TRUE)
 	busy = FALSE
 	if(!result)
 		H.forceMove(start)

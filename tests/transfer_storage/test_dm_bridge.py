@@ -64,7 +64,7 @@ class RoundState(unittest.TestCase):
     def test_validator_bounds(self):
         body = proc(FUNCTIONS, '/proc/valid_transfer_capture')
         for needle in ('capture.len != 3', '"generation" in capture', '"effects" in capture', '"ledger_seq" in capture',
-                       'length(generation) > 128', 'seq != round(seq)', 'seq > 1e12', 'effects.len > 256',
+                       'length(generation) > 128', 'seq != round(seq)', 'seq > 1e12', 'effects.len > TRANSFER_CAPTURE_MAX',
                        'length(effect) > 96'):
             self.assertIn(needle, body)
 
@@ -95,7 +95,7 @@ class Bridge(unittest.TestCase):
 
     def test_effects_refused_during_saves_and_before_reconcile(self):
         body = proc(BRIDGE, '/datum/transfer_bridge/proc/begin_effect')
-        self.assertIn('if(!ready() || persistence_save_active()) return null', body)
+        self.assertIn('if(!ready() || persistence_save_active() || length(applied) >= TRANSFER_CAPTURE_MAX / 2) return null', body)
         # Checked again after the request returns, before the effect is recorded.
         self.assertEqual(body.count('persistence_save_active()'), 2)
         self.assertLess(body.rindex('persistence_save_active()'), body.index('applied += result["effect_id"]'))
@@ -168,6 +168,30 @@ class TradePost(unittest.TestCase):
         credit_proc = proc(POST, '/proc/transfer_trade_credit')
         self.assertIn('incoming ? P["to"] : P["from"]', credit_proc)
         self.assertNotIn('return FALSE', credit_proc)
+
+    def test_journaled_trips_replay_after_reconcile_without_sleeping(self):
+        loop = proc(BRIDGE, '/datum/transfer_bridge/proc/reconcile_loop')
+        self.assertLess(loop.index('ledger_base = result["ledger_seq"]'), loop.index('replay(result["replay"])'))
+        body = proc(BRIDGE, '/datum/transfer_bridge/proc/replay')
+        self.assertNotIn('sleep(', body)
+        self.assertNotIn('request(', body)
+        self.assertIn('(effect_id in applied)', body)
+        # Listed before the world change, so a runtime cannot make it build twice.
+        self.assertLess(body.index('applied += effect_id'), body.index('region_travel_replay_departure('))
+        self.assertIn('catch(', body)
+        # A running save must finish before the replay touches the world.
+        wait = loop.index('while(persistence_active_operation || persistence_save_active())')
+        self.assertLess(wait, loop.index('ledger_base = result["ledger_seq"]'))
+        self.assertNotIn('sleep(', loop[loop.index('ledger_base = result["ledger_seq"]'):loop.index('replay(result["replay"])')])
+        self.assertIn('#define TRANSFER_CAPTURE_MAX 1024', FUNCTIONS)
+        # Only characters travel fast; goods at trade posts keep the save-confirmed path.
+        self.assertIn('begin_import(transfer_id, TRUE) : begin_return(transfer_id, TRUE)',
+                      proc(BRIDGE, '/datum/transfer_bridge/proc/poll_character'))
+        self.assertIn('begin_import(transfer_id) : begin_return(transfer_id)',
+                      proc(BRIDGE, '/datum/transfer_bridge/proc/poll_once'))
+        travel = read('code/modules/persistence/region_travel.dm')
+        self.assertIn('transfer_bridge.begin_escrow(destination, list(payload), TRUE)', travel)
+        self.assertNotIn('begin_escrow(peer, list(payload), TRUE)', POST)
 
     def test_polling_starts_only_after_reconcile(self):
         body = proc(BRIDGE, '/datum/transfer_bridge/proc/reconcile_loop')

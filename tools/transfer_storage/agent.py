@@ -24,7 +24,13 @@ def _load(store, body):
     if seq is None:
         # reconcile_load just put the region on hold; say so like other refusals.
         raise RegionHeld(store.status().get('hold_reason') or 'rollback')
-    return {'ledger_seq': seq}
+    # Journaled effects the loaded save lacks; the world applies them again.
+    return {'ledger_seq': seq, 'replay': store.replay()}
+
+
+def _fast(body):
+    """DM's json_encode writes TRUE as 1."""
+    return body.get('fast') in (True, 1)
 
 
 def _routes(store):
@@ -32,9 +38,10 @@ def _routes(store):
         '/status': lambda body: store.status(),
         '/outbox': lambda body: {'envelopes': store.outbox()},
         '/receive': lambda body: {'reply': store.receive(body['envelope'])},
-        '/escrow': lambda body: dict(zip(('transfer_id', 'effect_id'), store.begin_escrow(body['peer'], body['payloads']))),
-        '/import': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_import(body['transfer_id']))),
-        '/return': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_return(body['transfer_id']))),
+        '/escrow': lambda body: dict(zip(('transfer_id', 'effect_id'), store.begin_escrow(
+            body['peer'], body['payloads'], _fast(body)))),
+        '/import': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_import(body['transfer_id'], _fast(body)))),
+        '/return': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_return(body['transfer_id'], _fast(body)))),
         '/abort': lambda body: store.abort(body['transfer_id']) or {},
         '/save': lambda body: {'ledger_seq': store.report_save(body['generation'], body['effects'], body['ledger_seq'])},
         '/load': lambda body: _load(store, body),

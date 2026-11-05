@@ -5,6 +5,11 @@ world effects are recorded as tentative before the world applies them, and are
 confirmed only by a committed world save that lists them. Envelopes for a step
 are written to the outbox only after the effects behind that step are
 confirmed. Standard library only.
+
+Character effects may instead be journaled: confirmed at once, with their
+payloads kept in the journal until a world save lists them. A load whose save
+lacks a journaled effect gets it back to replay, so a trip takes seconds rather
+than two world saves.
 """
 import hashlib
 import json
@@ -28,7 +33,7 @@ IMPORTED = 'Imported'              # credit confirmed, IMPORTED in outbox
 DESTINATION_ABORTED = 'DestinationAborted'  # TOMBSTONE in outbox
 
 REMOVE, CREDIT, RETURN = 'remove', 'credit', 'return'
-TENTATIVE, CONFIRMED = 'tentative', 'confirmed'
+TENTATIVE, CONFIRMED, JOURNALED = 'tentative', 'confirmed', 'journaled'
 
 
 class TransferError(Exception):
@@ -57,6 +62,13 @@ def payload_kinds(manifest):
         kind = value.get('kind') if isinstance(value, dict) else None
         kinds.add(kind if isinstance(kind, str) and len(kind) <= 32 else '')
     return sorted(kinds)
+
+
+def _require_characters(payloads):
+    """Only character payloads can be journaled: the world can find and remove a
+    character again by its owner, but not an arbitrary stack of goods."""
+    if not payloads or payload_kinds(json.dumps({'items': payloads})) != ['character']:
+        raise TransferError('only character payloads can travel fast')
 
 
 class RegionStore:
@@ -115,6 +127,10 @@ class RegionStore:
             PRIMARY KEY(transfer_id, idx))''')
         db.execute('''CREATE TABLE IF NOT EXISTS effect(
             effect_id TEXT PRIMARY KEY, transfer_id TEXT NOT NULL, kind TEXT NOT NULL, state TEXT NOT NULL)''')
+        # Journaled effects not yet listed by a world save, in the order applied.
+        db.execute('''CREATE TABLE IF NOT EXISTS journal(
+            seq INTEGER PRIMARY KEY AUTOINCREMENT, effect_id TEXT NOT NULL UNIQUE, kind TEXT NOT NULL,
+            payloads TEXT NOT NULL)''')
         db.execute('''CREATE TABLE IF NOT EXISTS outbox(
             direction TEXT NOT NULL, peer TEXT NOT NULL, step TEXT NOT NULL, body TEXT NOT NULL,
             PRIMARY KEY(direction, peer))''')
@@ -170,14 +186,17 @@ class RegionStore:
 
     # -- world effects (called by DM before it changes the world) --------
 
-    def begin_escrow(self, peer, payloads):
+    def begin_escrow(self, peer, payloads, fast=False):
         """Source: record the tentative removal of items, before DM removes them.
 
         Returns (transfer_id, effect_id). DM removes the items only after this
-        returns, and lists effect_id in the next world save.
+        returns, and lists effect_id in the next world save. With fast, the
+        removal is journaled and the escrow is sent at once (characters only).
         """
         if not payloads or any(type(p) is not str for p in payloads):
             raise TransferError('escrow needs a non-empty list of serialized items')
+        if fast:
+            _require_characters(payloads)
         with self._tx():
             self._require_open()
             epoch, settled = self._fence(OUT, peer)
@@ -193,12 +212,15 @@ class RegionStore:
                 self.db.execute('INSERT INTO escrow VALUES (?, ?, ?)', (tid, idx, payload))
             effect_id = tid + ':' + REMOVE
             self.db.execute('INSERT INTO effect VALUES (?, ?, ?, ?)', (effect_id, tid, REMOVE, TENTATIVE))
+            if fast:
+                self._journal(effect_id, tid, REMOVE, payloads)
             return tid, effect_id
 
-    def begin_import(self, tid):
+    def begin_import(self, tid, fast=False):
         """Destination: record the tentative credit, before DM creates the items.
 
-        Returns (effect_id, payloads).
+        Returns (effect_id, payloads). With fast, the credit is journaled and the
+        receipt is sent at once (characters only).
         """
         with self._tx():
             self._require_open()
@@ -208,10 +230,15 @@ class RegionStore:
             effect_id = tid + ':' + CREDIT
             if self.db.execute('SELECT 1 FROM effect WHERE effect_id = ?', (effect_id,)).fetchone():
                 raise TransferError('import is already applied and waiting for a world save')
+            payloads = json.loads(row[3])['items']
+            if fast:
+                _require_characters(payloads)
             self.db.execute('INSERT INTO effect VALUES (?, ?, ?, ?)', (effect_id, tid, CREDIT, TENTATIVE))
-            return effect_id, json.loads(row[3])['items']
+            if fast:
+                self._journal(effect_id, tid, CREDIT, payloads)
+            return effect_id, payloads
 
-    def begin_return(self, tid):
+    def begin_return(self, tid, fast=False):
         """Source, after a destination tombstone: record the tentative return."""
         with self._tx():
             self._require_open()
@@ -221,9 +248,13 @@ class RegionStore:
             effect_id = tid + ':' + RETURN
             if self.db.execute('SELECT 1 FROM effect WHERE effect_id = ?', (effect_id,)).fetchone():
                 raise TransferError('return is already applied and waiting for a world save')
-            self.db.execute('INSERT INTO effect VALUES (?, ?, ?, ?)', (effect_id, tid, RETURN, TENTATIVE))
             payloads = [p for (p,) in self.db.execute('SELECT payload FROM escrow WHERE transfer_id = ? ORDER BY idx',
                                                       (tid,))]
+            if fast:
+                _require_characters(payloads)
+            self.db.execute('INSERT INTO effect VALUES (?, ?, ?, ?)', (effect_id, tid, RETURN, TENTATIVE))
+            if fast:
+                self._journal(effect_id, tid, RETURN, payloads)
             return effect_id, payloads
 
     def abort(self, tid):
@@ -270,6 +301,7 @@ class RegionStore:
 
         Returns the ledger sequence DM must cache. Puts the region on hold when
         the loaded save is older than what the store already confirmed.
+        Journaled effects the save does not list are kept; replay() returns them.
         """
         with self._tx():
             current = self.ledger_seq()
@@ -286,6 +318,8 @@ class RegionStore:
                 self._set_meta('hold_reason', 'rollback: loaded save ledger %s, store ledger %s' % (ledger_seq, current))
                 return None
             listed = set(effect_ids)
+            for effect_id in listed:
+                self.db.execute('DELETE FROM journal WHERE effect_id = ?', (effect_id,))
             for effect_id, tid, kind in list(self.db.execute(
                     'SELECT effect_id, transfer_id, kind FROM effect WHERE state = ?', (TENTATIVE,))):
                 if effect_id in listed:
@@ -293,25 +327,47 @@ class RegionStore:
                 self._void(effect_id, tid, kind)
             return current
 
+    def replay(self):
+        """Journaled effects no world save has listed yet, oldest first.
+
+        After a load, the world applies these again (they happened after the
+        save it loaded) and lists them in its next save.
+        """
+        return [{'effect_id': e, 'kind': k, 'payloads': json.loads(p)} for (e, k, p) in self.db.execute(
+            'SELECT effect_id, kind, payloads FROM journal ORDER BY seq')]
+
+    def _journal(self, effect_id, tid, kind, payloads):
+        self.db.execute('INSERT INTO journal(effect_id, kind, payloads) VALUES (?, ?, ?)',
+                        (effect_id, kind, json.dumps(payloads)))
+        self._step_for(tid, kind)
+        self.db.execute('UPDATE effect SET state = ? WHERE effect_id = ?', (JOURNALED, effect_id))
+
     def _confirm(self, effect_ids):
         for effect_id in effect_ids:
+            # A save that lists a journaled effect makes the journal entry redundant.
+            self.db.execute('DELETE FROM journal WHERE effect_id = ?', (effect_id,))
             row = self.db.execute('SELECT transfer_id, kind, state FROM effect WHERE effect_id = ?',
                                   (effect_id,)).fetchone()
             if row is None or row[2] == CONFIRMED:
                 # Already settled, or confirmed by an earlier report of the same save.
                 continue
-            tid, kind = row[0], row[1]
             self.db.execute('UPDATE effect SET state = ? WHERE effect_id = ?', (CONFIRMED, effect_id))
-            direction, peer, seq, manifest, phase = self._active_by_id(tid)
-            if kind == REMOVE:
-                self._set_phase(tid, ESCROWED)
-                self._send(OUT, peer, 'ESCROW', {'transfer_id': tid, 'seq': seq, 'manifest': json.loads(manifest)})
-            elif kind == CREDIT:
-                self._set_phase(tid, IMPORTED)
-                self._send(IN, peer, 'IMPORTED', {'transfer_id': tid, 'seq': seq})
-            elif kind == RETURN:
-                self._settle(OUT, peer, seq, tid)
-                self._send(OUT, peer, 'FINALIZE', {'transfer_id': tid, 'seq': seq, 'outcome': 'returned'})
+            if row[2] == JOURNALED:
+                continue  # its protocol step was taken when it was journaled
+            self._step_for(row[0], row[1])
+
+    def _step_for(self, tid, kind):
+        """The protocol step that follows a confirmed effect."""
+        direction, peer, seq, manifest, phase = self._active_by_id(tid)
+        if kind == REMOVE:
+            self._set_phase(tid, ESCROWED)
+            self._send(OUT, peer, 'ESCROW', {'transfer_id': tid, 'seq': seq, 'manifest': json.loads(manifest)})
+        elif kind == CREDIT:
+            self._set_phase(tid, IMPORTED)
+            self._send(IN, peer, 'IMPORTED', {'transfer_id': tid, 'seq': seq})
+        elif kind == RETURN:
+            self._settle(OUT, peer, seq, tid)
+            self._send(OUT, peer, 'FINALIZE', {'transfer_id': tid, 'seq': seq, 'outcome': 'returned'})
 
     def _void(self, effect_id, tid, kind):
         self.db.execute('DELETE FROM effect WHERE effect_id = ?', (effect_id,))
@@ -439,6 +495,7 @@ class RegionStore:
                        self.db.execute('SELECT direction, peer, seq, transfer_id, phase FROM active ORDER BY direction, peer')],
             'fences': [dict(zip(('direction', 'peer', 'epoch', 'settled_seq'), r)) for r in
                        self.db.execute('SELECT direction, peer, epoch, settled_seq FROM fence ORDER BY direction, peer')],
+            'journal': self.db.execute('SELECT COUNT(*) FROM journal').fetchone()[0],
             'pending_transfers': [tid for (tid,) in self.db.execute(
                 "SELECT transfer_id FROM active WHERE (direction = 'in' AND phase = ?) OR (direction = 'out' AND phase = ?)",
                 (COMMIT_RECEIVED, RETURNING))],
