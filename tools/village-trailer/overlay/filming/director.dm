@@ -8,7 +8,7 @@
 #define TRAILER_MAP_H 20
 #define TRAILER_TIMEOUT 3600
 #define TRAILER_OPENING_X 8
-#define TRAILER_OPENING_Y 11
+#define TRAILER_OPENING_Y 10.5
 #define TRAILER_STEP 4
 
 var/list/trailer_living = list()
@@ -31,11 +31,15 @@ var/obj/item/weapon/material/scythe/trailer_scythe
 var/obj/item/weapon/reagent_containers/glass/bucket/trailer_bucket
 
 // ---------------------------------------------------------------- camera
-// A smoothed camera rig. The client looks through an invisible anchor; each
-// tick a critically damped spring moves the rig's pixel position toward its
-// target (a fixed point or a followed atom); the anchor steps one tile at a
-// time with a glide_size matched to the spring's speed, so the client's own
-// glide interpolation eases pans in and out with no hard steps.
+// A pixel-precise smoothed camera rig. The rig keeps a floating-point
+// position in world pixels and moves it every tick with a critically damped
+// spring toward its target (a fixed point, or a followed atom plus a lead
+// computed from the atom's measured velocity, so the camera travels ahead of
+// a walker or vehicle instead of trailing it). The client looks through an
+// invisible eye that snaps from tile to tile; the sub-tile remainder goes to
+// client.pixel_x/pixel_y through a one-tick animate() so DreamSeeker
+// interpolates the motion at its own frame rate. Tile crossings are
+// compensated in the same animation sequence, so there is never a hard step.
 /obj/trailer_camera
 	name = ""
 	icon = null
@@ -43,6 +47,7 @@ var/obj/item/weapon/reagent_containers/glass/bucket/trailer_bucket
 	anchored = TRUE
 	density = FALSE
 	mouse_opacity = 0
+	glide_size = 1024 // the eye jumps; the client offset carries the motion
 
 var/obj/trailer_camera/trailer_cam
 var/trailer_cam_px = TRAILER_OPENING_X * 32
@@ -54,13 +59,24 @@ var/trailer_cam_ty = TRAILER_OPENING_Y * 32
 var/atom/trailer_cam_follow
 var/trailer_cam_fox = 0
 var/trailer_cam_foy = 0
-var/trailer_cam_omega = 3.2       // spring stiffness (rad/s): ~1.2 s to settle
+var/trailer_cam_lead = 1          // fraction of the steady-state lag fed forward
+var/trailer_cam_omega = 2.6       // spring stiffness (rad/s): ~1.5 s to settle
 var/trailer_cam_max_speed = 320   // pixels per second
 var/trailer_cam_running = FALSE
+// Followed-atom motion model: last tile, when it stepped, the step interval
+// and a smoothed velocity in pixels per second.
+var/trailer_cam_flx = 0
+var/trailer_cam_fly = 0
+var/trailer_cam_flt = 0
+var/trailer_cam_fdx = 0
+var/trailer_cam_fdy = 0
+var/trailer_cam_fperiod = 0
+var/trailer_cam_fvx = 0
+var/trailer_cam_fvy = 0
 
 /proc/trailer_camera_attach(client/C)
 	if (!trailer_cam)
-		trailer_cam = new(locate(TRAILER_OPENING_X, TRAILER_OPENING_Y, 1))
+		trailer_cam = new(locate(TRAILER_OPENING_X, round(TRAILER_OPENING_Y + 0.5), 1))
 	C.perspective = EYE_PERSPECTIVE
 	C.eye = trailer_cam
 	if (!trailer_cam_running)
@@ -71,17 +87,51 @@ var/trailer_cam_running = FALSE
 /proc/trailer_clamp(v, lo, hi)
 	return v < lo ? lo : (v > hi ? hi : v)
 
+// Where the followed atom is drawn right now: its tile, pulled back along
+// its last step by the part of the glide the client has not finished yet.
+/proc/trailer_follow_visual(turf/T)
+	var/now = world.time
+	if (T.x != trailer_cam_flx || T.y != trailer_cam_fly)
+		if (trailer_cam_flt)
+			var/dt = max(world.tick_lag, now - trailer_cam_flt) / 10
+			var/dx = T.x - trailer_cam_flx
+			var/dy = T.y - trailer_cam_fly
+			if (abs(dx) <= 2 && abs(dy) <= 2)
+				trailer_cam_fdx = dx
+				trailer_cam_fdy = dy
+				trailer_cam_fperiod = dt
+				trailer_cam_fvx = trailer_cam_fvx * 0.5 + (32 * dx / dt) * 0.5
+				trailer_cam_fvy = trailer_cam_fvy * 0.5 + (32 * dy / dt) * 0.5
+			else
+				// A teleport (boarding a vehicle): no velocity from it.
+				trailer_cam_fdx = 0
+				trailer_cam_fdy = 0
+				trailer_cam_fvx = 0
+				trailer_cam_fvy = 0
+		trailer_cam_flx = T.x
+		trailer_cam_fly = T.y
+		trailer_cam_flt = now
+	var/since = (now - trailer_cam_flt) / 10
+	if (trailer_cam_fperiod && since > trailer_cam_fperiod * 2.5)
+		// Stopped: let the lead fade out.
+		trailer_cam_fvx *= 0.85
+		trailer_cam_fvy *= 0.85
+	var/remaining = trailer_cam_fperiod ? max(0, 1 - since / trailer_cam_fperiod) : 0
+	return list(T.x * 32 - trailer_cam_fdx * 32 * remaining, T.y * 32 - trailer_cam_fdy * 32 * remaining)
+
 /proc/trailer_camera_target()
 	var/tx = trailer_cam_tx
 	var/ty = trailer_cam_ty
 	if (trailer_cam_follow && !QDELETED(trailer_cam_follow))
 		var/turf/T = get_turf(trailer_cam_follow)
 		if (T)
-			tx = (T.x + trailer_cam_fox) * 32
-			ty = (T.y + trailer_cam_foy) * 32
+			var/list/v = trailer_follow_visual(T)
+			var/lead = trailer_cam_lead * 2 / trailer_cam_omega
+			tx = v[1] + trailer_cam_fox * 32 + trailer_clamp(trailer_cam_fvx * lead, -96, 96)
+			ty = v[2] + trailer_cam_foy * 32 + trailer_clamp(trailer_cam_fvy * lead, -96, 96)
 			trailer_cam_tx = tx
 			trailer_cam_ty = ty
-	// Keep the 15x9 view inside the authored map.
+	// Keep the 15x9 view (plus the client's one-tile margin) inside the map.
 	tx = trailer_clamp(tx, 8 * 32, (TRAILER_MAP_W - 7) * 32)
 	ty = trailer_clamp(ty, 5 * 32, (TRAILER_MAP_H - 4) * 32)
 	return list(tx, ty)
@@ -102,29 +152,49 @@ var/trailer_cam_running = FALSE
 		trailer_camera_apply()
 		sleep(world.tick_lag)
 
-var/trailer_cam_next_step = 0
+var/trailer_cam_shown_x = 0
+var/trailer_cam_shown_y = 0
 
-// Move the eye anchor one tile at a time with a glide matched to the rig's
-// speed, so DreamSeeker interpolates the motion smoothly at its own frame rate.
+// Put the eye on the nearest tile and animate the client's pixel offset to
+// the remainder. On a tile change the sequence first re-expresses the
+// previous offset relative to the new tile (instantly, together with the eye
+// move), then eases to the new offset over the tick.
 /proc/trailer_camera_apply(snap = FALSE)
 	var/ax = round(trailer_cam_px / 32 + 0.5)
 	var/ay = round(trailer_cam_py / 32 + 0.5)
 	var/turf/T = locate(ax, ay, 1)
 	if (!T || !trailer_cam)
 		return
-	if (snap)
-		trailer_cam.loc = null
+	var/client/C = intro_observer_client
+	var/ox = trailer_cam_px - ax * 32
+	var/oy = trailer_cam_py - ay * 32
+	if (C && C.eye != trailer_cam)
+		C.eye = trailer_cam
+	if (snap || !C)
 		trailer_cam.loc = T
-		trailer_cam_next_step = world.time
-	else if (trailer_cam.loc != T && world.time >= trailer_cam_next_step)
-		var/speed = sqrt(trailer_cam_vx * trailer_cam_vx + trailer_cam_vy * trailer_cam_vy)
-		var/glide = trailer_clamp(speed * world.tick_lag / 10, 1, 32)
-		var/turf/next = get_step(trailer_cam, get_dir(trailer_cam, T))
-		trailer_cam.glide_size = glide
-		trailer_cam.loc = next
-		trailer_cam_next_step = world.time + (32 / glide) * world.tick_lag - 0.01
-	if (intro_observer_client && intro_observer_client.eye != trailer_cam)
-		intro_observer_client.eye = trailer_cam
+		if (C)
+			animate(C, pixel_x = ox, pixel_y = oy, time = 0)
+	else if (trailer_cam.loc != T)
+		var/turf/old = trailer_cam.loc
+		trailer_cam.loc = T
+		var/prev_x = old ? trailer_cam_shown_x - (T.x - old.x) * 32 : ox
+		var/prev_y = old ? trailer_cam_shown_y - (T.y - old.y) * 32 : oy
+		animate(C, pixel_x = prev_x, pixel_y = prev_y, time = 0)
+		animate(pixel_x = ox, pixel_y = oy, time = world.tick_lag)
+	else
+		animate(C, pixel_x = ox, pixel_y = oy, time = world.tick_lag)
+	trailer_cam_shown_x = ox
+	trailer_cam_shown_y = oy
+
+/proc/trailer_camera_reset_follow()
+	trailer_cam_flx = 0
+	trailer_cam_fly = 0
+	trailer_cam_flt = 0
+	trailer_cam_fdx = 0
+	trailer_cam_fdy = 0
+	trailer_cam_fperiod = 0
+	trailer_cam_fvx = 0
+	trailer_cam_fvy = 0
 
 // Snap (only used before frame zero).
 /proc/trailer_camera_cut(tx, ty)
@@ -136,40 +206,55 @@ var/trailer_cam_next_step = 0
 	trailer_cam_vx = 0
 	trailer_cam_vy = 0
 	if (!trailer_cam)
-		trailer_cam = new(locate(tx, ty, 1))
+		trailer_cam = new(locate(round(tx + 0.5), round(ty + 0.5), 1))
 	trailer_camera_apply(TRUE)
 	if (!trailer_cam_running)
 		trailer_cam_running = TRUE
 		spawn(0)
 			trailer_camera_loop()
 
-// Ease toward a fixed point; optionally wait until the camera has settled.
-/proc/trailer_camera_pan(tx, ty, ticks_per_tile = 4, wait = TRUE)
+// Ease toward a fixed point (tile coordinates, fractions allowed) at up to
+// tiles_per_second; optionally wait until the camera has settled.
+/proc/trailer_camera_pan(tx, ty, tiles_per_second = 5, wait = TRUE)
 	trailer_cam_follow = null
 	trailer_cam_tx = tx * 32
 	trailer_cam_ty = ty * 32
-	trailer_cam_max_speed = 32 / max(1, ticks_per_tile * world.tick_lag / 10)
+	trailer_cam_max_speed = tiles_per_second * 32
 	if (!wait)
 		return
 	var/deadline = world.time + 150
 	while (world.time < deadline)
 		var/list/t = trailer_camera_target()
-		if (abs(t[1] - trailer_cam_px) < 6 && abs(t[2] - trailer_cam_py) < 6)
+		if (abs(t[1] - trailer_cam_px) < 3 && abs(t[2] - trailer_cam_py) < 3)
 			break
 		sleep(world.tick_lag)
 
-// Ease onto a moving atom and keep tracking it.
-/proc/trailer_follow(atom/A, ox = 0, oy = 0, max_tiles_per_second = 10)
+/proc/trailer_camera_settled(tolerance = 3)
+	var/list/t = trailer_camera_target()
+	return abs(t[1] - trailer_cam_px) < tolerance && abs(t[2] - trailer_cam_py) < tolerance
+
+// Ease onto a moving atom and keep tracking it, framed ox,oy tiles off its
+// position and leading it by `lead` times the spring's steady-state lag.
+/proc/trailer_follow(atom/A, ox = 0, oy = 0, max_tiles_per_second = 10, lead = 1)
+	if (trailer_cam_follow != A)
+		trailer_camera_reset_follow()
 	trailer_cam_follow = A
 	trailer_cam_fox = ox
 	trailer_cam_foy = oy
+	trailer_cam_lead = lead
 	trailer_cam_max_speed = max_tiles_per_second * 32
+
+/proc/trailer_cam_right_edge()
+	return trailer_cam_px + 7.5 * 32
+
+/proc/trailer_cam_left_edge()
+	return trailer_cam_px - 7.5 * 32
 
 // ---------------------------------------------------------------- timeline
 /proc/trailer_beat(label)
 	var/elapsed = world.time - trailer_timeline_origin
 	trailer_timeline += list(list("t" = elapsed / 10, "beat" = label))
-	trailer_log("beat [label] at [elapsed / 10]s")
+	trailer_log("beat [label] at [elapsed / 10]s (camera [trailer_cam_px / 32],[trailer_cam_py / 32])")
 	fdel("trailer-timeline.json")
 	text2file(json_encode(trailer_timeline), "trailer-timeline.json")
 
@@ -234,8 +319,8 @@ var/trailer_cam_next_step = 0
 // ---------------------------------------------------------------- staging
 /proc/trailer_prepare()
 	trailer_log("prepare")
-	// Seed gatherer with a knife in the meadow.
-	trailer_gatherer = trailer_actor(7, 10, "Gatherer", /obj/item/clothing/under/civ1, EAST)
+	// Seed gatherer with a knife in the meadow, beside the bush nearest the field.
+	trailer_gatherer = trailer_actor(9, 10, "Gatherer", /obj/item/clothing/under/civ1, EAST)
 	trailer_knife = new(trailer_gatherer.loc)
 	trailer_pickup(trailer_gatherer, trailer_knife)
 	// Farmer with a scythe beside the mature wheat.
@@ -265,8 +350,11 @@ var/trailer_cam_next_step = 0
 	trailer_bucket.reagents.add_reagent("water", 60)
 	trailer_walk(trailer_baker, 33, 10, 1)
 	trailer_baker.dir = SOUTH
-	// Customer waits at the counter; carriage, horse and train wait outside.
-	trailer_customer = trailer_actor(34, 7, "Traveller", /obj/item/clothing/under/civ1, NORTH)
+	// The customer browses the market until the bread is in the oven;
+	// carriage, horses and train wait outside.
+	trailer_customer = trailer_errand_actor(40, 9, "Traveller", /obj/item/clothing/under/civ1, list(
+		list("face", EAST), list("wait", 30), list("chat", 15), list("face", SOUTH), list("wait", 20),
+		list("face", EAST), list("wait", 25)))
 	trailer_carriage = new(locate(43, 6, 1))
 	trailer_carriage.dir = EAST
 	trailer_horse = new(locate(42, 5, 1))
@@ -320,8 +408,10 @@ var/trailer_bread_served = 0
 var/list/trailer_counter_bread = list()
 var/trailer_baker_idle_spot = 0
 var/trailer_engineer_spot = 0
+var/trailer_customer_waiting = FALSE
+var/trailer_passenger_boarded = FALSE
 
-#define TRAILER_FARMER_BATCH 10
+#define TRAILER_FARMER_BATCH 5
 
 /proc/trailer_job_live(mob/H, token)
 	return !intro_stopping && trailer_job_token[H] == token
@@ -418,7 +508,7 @@ var/trailer_engineer_spot = 0
 	if (!B)
 		return FALSE
 	var/turf/stand
-	for (var/d in list(SOUTH, EAST, WEST, NORTH))
+	for (var/d in list(EAST, SOUTH, WEST, NORTH))
 		var/turf/T = get_step(B, d)
 		if (trailer_open(T))
 			stand = T
@@ -593,7 +683,7 @@ var/trailer_engineer_spot = 0
 // The engineer walks the platform until the train is due out.
 /proc/trailer_job_engineer(mob/living/human/H, token)
 	trailer_engineer_spot = !trailer_engineer_spot
-	trailer_walk(H, trailer_engineer_spot ? 79 : 74, 4, 6, token)
+	trailer_walk(H, trailer_engineer_spot ? 77 : 74, 4, 6, token)
 	H.dir = SOUTH
 	sleep(20)
 	return TRUE
@@ -604,8 +694,9 @@ var/trailer_engineer_spot = 0
 // carriage (or train cars) slide at different rates and snap together every
 // tile. Give the whole group one glide matched to the vehicle's step period.
 /proc/trailer_glide_group(list/atoms, period)
-	// Steps land on server ticks, so round the period to whole ticks.
-	period = max(1, round(period / world.tick_lag)) * world.tick_lag
+	// Steps land on server ticks: a spawn() of a fractional delay fires on
+	// the next whole tick, so round the period up.
+	period = max(1, -round(-period / world.tick_lag)) * world.tick_lag
 	var/glide = 32 * world.tick_lag / period
 	for (var/atom/movable/A in atoms)
 		A.glide_size = glide
@@ -754,14 +845,15 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 		list("walk", 53, 9), list("wait", 25)))
 	trailer_errand_actor(42, 9, "Neighbour", /obj/item/clothing/under/civf2, list(
 		list("wait", 20), list("walk", 42, 10), list("face", NORTH), list("chat", 12, 5),
-		list("take", 42, 11, pumpkin), list("walk", 48, 9), list("walk", 49, 8), list("face", EAST),
-		list("wait", 30), list("walk", 42, 9), list("wait", 15)))
-	// Two friends meet between the north cottages for a chat.
+		list("take", 42, 11, pumpkin), list("walk", 48, 10), list("walk", 48, 8), list("face", EAST),
+		list("wait", 30), list("walk", 48, 10), list("walk", 42, 9), list("wait", 15)))
+	// Two friends meet between the north cottages for a chat (rows 6 and 7
+	// are the carriage's lane and its collision rows, so they stay on y 8).
 	trailer_errand_actor(51, 8, "Villager", /obj/item/clothing/under/civ3, list(
-		list("walk", 55, 8), list("face", EAST), list("chat", 20), list("wait", 20), list("chat", 15),
+		list("walk", 54, 8), list("face", EAST), list("chat", 20), list("wait", 20), list("chat", 15),
 		list("wait", 10), list("walk", 51, 8), list("face", NORTH), list("wait", 40)))
 	trailer_errand_actor(61, 9, "Villager", /obj/item/clothing/under/civf3, list(
-		list("walk", 56, 8), list("face", WEST), list("wait", 20), list("chat", 20), list("wait", 15),
+		list("walk", 55, 8), list("face", WEST), list("wait", 20), list("chat", 20), list("wait", 15),
 		list("chat", 10), list("walk", 61, 9), list("face", NORTH), list("wait", 40)))
 	// Children playing tag around the meadow.
 	var/list/loop = list(list("walk", 2, 7, 2), list("walk", 12, 7, 2), list("walk", 12, 14, 2), list("walk", 2, 14, 2))
@@ -834,8 +926,6 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 
 // ---------------------------------------------------------------- the take
 /proc/trailer_run()
-	trailer_start_job(trailer_gatherer, /proc/trailer_job_gatherer)
-	trailer_start_job(trailer_farmer, /proc/trailer_job_farmer)
 	trailer_start_job(trailer_baker, /proc/trailer_job_baker)
 	trailer_start_job(trailer_engineer, /proc/trailer_job_engineer)
 	trailer_start_errands()
@@ -848,55 +938,78 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 // 1. A villager gathers wild seeds and plants them in the farm.
 /proc/trailer_scene_seeds()
 	trailer_beat("seeds")
-	sleep(15)
-	trailer_follow(trailer_gatherer, 1, 1, 6)
+	// Open on the gatherer at the bush, drifting gently toward the field.
+	trailer_follow(trailer_gatherer, 1.5, 0, 3, 1)
+	sleep(10)
+	trailer_start_job(trailer_gatherer, /proc/trailer_job_gatherer)
 	trailer_wait_for("trailer_gatherer_planting", 1, 400, "gatherer heads to the field")
-	sleep(20)
+	// The farmer starts cutting now, so the harvest is under way when the
+	// camera gets there.
+	trailer_start_job(trailer_farmer, /proc/trailer_job_farmer)
+	sleep(15)
 	trailer_beat("plant")
-	trailer_wait_for("trailer_seeds_planted", 2, 400, "seeds planted through the ploughed-field handler")
+	trailer_wait_for("trailer_seeds_planted", 1, 400, "seeds planted through the ploughed-field handler")
 	trailer_log("gathered [trailer_seeds_gathered], planted [trailer_seeds_planted]")
+	// Keep drifting toward the field rather than turning back with the
+	// gatherer, so the move into the harvest is one continuous pan.
+	trailer_camera_pan(trailer_gatherer.x + 3, 10, 1, FALSE)
 	sleep(12)
 
 // 2. The farmer harvests ready wheat and carries it to the mill.
 /proc/trailer_scene_harvest()
 	trailer_beat("harvest")
-	trailer_follow(trailer_farmer, 0, 1, 8)
+	trailer_follow(trailer_farmer, 0.5, 0.5, 6, 1)
 	// Show a couple of plants coming down before the walk to the mill.
 	var/until = trailer_wheat_harvested + 2
 	var/deadline = world.time + 100
-	while (trailer_wheat_harvested < until && trailer_farmer_batch && world.time < deadline)
+	while (trailer_wheat_harvested < until && trailer_farmer_batch < TRAILER_FARMER_BATCH && world.time < deadline)
 		sleep(1)
 	trailer_wait_for("trailer_farmer_delivering", 1, 600, "farmer carries wheat to the mill")
 	trailer_log("harvested [trailer_wheat_harvested] wheat")
 	trailer_beat("deliver")
+	trailer_follow(trailer_farmer, 1, 0.5, 6, 1.2)
 	trailer_wait_for("trailer_wheat_milled", 1, 400, "mill accepted the harvested wheat")
 
 // 3. The mill grinds flour, the baker bakes bread and serves the customer.
 /proc/trailer_scene_bakery()
 	trailer_beat("bakery")
-	trailer_camera_pan(34, 10, 3, FALSE)
+	// Settle on the bakery, then creep across it while the batch is made.
+	trailer_camera_pan(34, 10.5, 3, FALSE)
+	spawn(30)
+		trailer_camera_pan(35.5, 10.8, 0.12, FALSE)
 	trailer_wait_for("trailer_oven_lit", 1, 400, "baker lit the oven")
 	trailer_beat("bake")
+	// The customer leaves the market and comes to the counter for the bread.
+	spawn(0)
+		trailer_take(trailer_customer)
+		sleep(10)
+		trailer_walk(trailer_customer, 37, 8)
+		trailer_walk(trailer_customer, 34, 8)
+		trailer_customer.dir = NORTH
+		trailer_customer_waiting = TRUE
 	trailer_wait_for("trailer_bread_served", 1, 300, "bread on the counter")
+	trailer_wait_for("trailer_customer_waiting", 1, 150, "customer reached the counter")
 	trailer_beat("serve")
 	var/obj/item/weapon/reagent_containers/food/snacks/flatbread/bread = trailer_counter_bread[1]
-	sleep(8)
-	trailer_walk(trailer_customer, bread.x, 8)
+	if (trailer_customer.x != bread.x || trailer_customer.y != 8)
+		trailer_walk(trailer_customer, bread.x, 8)
 	trailer_customer.dir = NORTH
+	sleep(6)
 	trailer_pickup(trailer_customer, bread)
-	sleep(10)
+	sleep(8)
 
 // 4. The customer rides the horse carriage to the station.
 /proc/trailer_scene_carriage()
 	trailer_beat("carriage")
-	trailer_follow(trailer_customer, 2, 1, 6)
-	// Hitch the waiting horse, then take the driver's seat with a free hand.
+	// Walk out to the carriage; the camera drifts after the customer and
+	// arrives on the team while they climb up.
+	trailer_follow(trailer_customer, 2.5, 0, 3, 1.5)
 	trailer_walk(trailer_customer, 41, 6)
 	trailer_face(trailer_customer, trailer_carriage)
 	var/hand_bread = trailer_customer.get_active_hand()
 	if (hand_bread)
 		trailer_customer.swap_hand()
-	sleep(5)
+	trailer_follow(trailer_carriage, 1.5, 1, 3, 1)
 	trailer_carriage.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_carriage.driver == trailer_customer, "customer took the reins")
 	// Ride with the carriage's own glide: the walking pace trailer_walk set
@@ -906,42 +1019,29 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	var/obj/item/vehicleparts/wheel/rope/reins = trailer_customer.get_active_hand()
 	intro_check(istype(reins), "reins in hand")
 	trailer_customer.dir = EAST
+	sleep(8)
+	reins.attack_self(trailer_customer)
+	// Lead the team so it stays framed at full gallop.
+	trailer_follow(trailer_carriage, 1.5, 1, 12, 1.1)
 	sleep(10)
 	reins.attack_self(trailer_customer)
-	sleep(15)
+	sleep(10)
 	reins.attack_self(trailer_customer)
-	sleep(15)
-	reins.attack_self(trailer_customer)
-	// Lead the carriage so it stays in frame at full gallop.
-	trailer_follow(trailer_carriage, 4, 1, 12)
 	var/deadline = world.time + 400
-	while (trailer_carriage.x < 58 && world.time < deadline)
+	while (trailer_carriage.x < 60 && world.time < deadline)
 		sleep(1)
 	trailer_log("carriage at [trailer_carriage.x],[trailer_carriage.y] speed [trailer_carriage.axis.currentspeed]")
 	while (trailer_carriage.axis.currentspeed > 0 && world.time < deadline)
 		reins.secondary_attack_self(trailer_customer)
-		sleep(5)
+		sleep(4)
 	intro_check(trailer_carriage.axis.currentspeed == 0, "carriage stopped at the station")
-	sleep(10)
-	trailer_follow(trailer_customer, 2, 1)
+	// While the traveller climbs down, ease on to reveal the platform.
+	trailer_camera_pan(trailer_carriage.x + 5, 5.5, 2, FALSE)
 	trailer_carriage.attack_hand(trailer_customer)
 	intro_check(trailer_carriage.driver != trailer_customer, "customer left the carriage")
 	trailer_log("customer off at [trailer_customer.x],[trailer_customer.y]")
 
-// 5. The customer boards the train and it steams off east.
-/proc/trailer_scene_train()
-	trailer_beat("station")
-	// Ease along the platform ahead of the traveller, framed on the rails.
-	trailer_follow(trailer_customer, 3, 1, 6)
-	var/turf/board = locate(trailer_cabin.x, trailer_cabin.y + 1, 1)
-	trailer_walk(trailer_customer, board.x, board.y)
-	trailer_customer.dir = SOUTH
-	trailer_beat("board")
-	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
-	intro_check(trailer_customer.loc == trailer_cabin.loc, "customer climbed into the cabin")
-	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
-	trailer_customer.dir = EAST
-	// A second traveller climbs into the cabin behind.
+/proc/trailer_board_passenger()
 	trailer_take(trailer_passenger)
 	if (trailer_passenger.buckled)
 		trailer_passenger.buckled.user_unbuckle_mob(trailer_passenger)
@@ -953,26 +1053,53 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 		trailer_passenger.dir = EAST
 	else
 		trailer_log("passenger could not board the second cabin")
-	// The engineer finishes their round and heads for the footplate.
+	trailer_passenger_boarded = TRUE
+
+/proc/trailer_engineer_to_footplate()
 	trailer_take(trailer_engineer)
-	spawn(0)
-		trailer_camera_pan(trailer_locomotive.x, 5, 4)
 	trailer_walk(trailer_engineer, 74, 4, TRAILER_STEP)
 	trailer_engineer.dir = SOUTH
+
+// 5. The customer boards the train and it steams off east.
+/proc/trailer_scene_train()
+	trailer_beat("station")
+	// The other traveller and the engineer get moving at the same time.
+	spawn(0)
+		trailer_board_passenger()
+	spawn(0)
+		trailer_engineer_to_footplate()
+	// Ease along the platform ahead of the traveller, framed on the rails.
+	trailer_follow(trailer_customer, 2.5, 0.5, 4, 1.3)
+	var/turf/board = locate(trailer_cabin.x, trailer_cabin.y + 1, 1)
+	trailer_walk(trailer_customer, board.x, board.y)
+	trailer_customer.dir = SOUTH
+	trailer_beat("board")
+	// Settle on the train while the traveller climbs in.
+	trailer_camera_pan(trailer_locomotive.x + 1.5, 5.5, 1.5, FALSE)
+	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
+	intro_check(trailer_customer.loc == trailer_cabin.loc, "customer climbed into the cabin")
+	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
+	trailer_customer.dir = EAST
+	// Wait for the other traveller, the engineer at the footplate and the
+	// camera to settle.
+	var/deadline = world.time + 100
+	while ((!trailer_passenger_boarded || trailer_engineer.x != 74 || trailer_engineer.y != 4 || !trailer_camera_settled(8)) && world.time < deadline)
+		sleep(1)
 	sleep(5)
 	trailer_locomotive.attack_hand(trailer_engineer)
 	intro_check(trailer_locomotive.on, "engineer started the locomotive")
 	trailer_beat("depart")
 	spawn(0)
 		trailer_train_glide()
-	sleep(10)
-	// Ride along with the train for a moment, then let it steam out of shot.
-	trailer_follow(trailer_locomotive, 2, 2, 3)
-	sleep(25)
-	trailer_camera_pan(trailer_locomotive.x + 3, 5, 8, FALSE)
-	var/deadline = world.time + 200
-	while (trailer_locomotive.automovement && trailer_cabin.x <= 90 && world.time < deadline)
+	// Ride along with the train as it pulls out, then let it go: the camera
+	// eases back toward the station while the train steams out of shot.
+	trailer_follow(trailer_locomotive, 1, 1.5, 3, 1)
+	sleep(40)
+	trailer_camera_pan(75, 5.5, 1.2, FALSE)
+	var/obj/structure/trains/last_car = trailer_extra_cars[trailer_extra_cars.len]
+	deadline = world.time + 250
+	while (trailer_locomotive.automovement && (last_car.x - 0.5) * 32 <= trailer_cam_right_edge() + 32 && world.time < deadline)
 		sleep(1)
 	trailer_log("train at [trailer_locomotive.x], customer at [trailer_customer.x]; milled [trailer_wheat_milled], baked [trailer_bread_served], planted [trailer_seeds_planted]")
 	trailer_beat("gone")
-	sleep(10)
+	sleep(15)
