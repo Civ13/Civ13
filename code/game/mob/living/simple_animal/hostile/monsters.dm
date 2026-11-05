@@ -488,6 +488,10 @@
 /mob/living/simple_animal/hostile/echofiend/proc/hear_sound(var/turf/T)
 	if (stat != CONSCIOUS || target_mob)
 		return
+	// Its own growls and clicks come from its own tile; hearing them would
+	// cancel whatever it was investigating.
+	if (!T || T == get_turf(src))
+		return
 	set_investigate_turf(T)
 	if (sound_spam_timer <= 10)
 		sound_spam_timer++

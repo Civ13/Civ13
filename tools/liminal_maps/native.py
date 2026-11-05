@@ -22,12 +22,24 @@ LAYOUTS_MODULE=ROOT/'docs/liminal/room_layouts_v2.py'
 EXPORTER_VERSION='liminal-dmm-export/0.1.0'
 KEY_LETTERS='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 EXPORT_FILES=('map.dmm','sidecar.json','export-manifest.json','parse-back.json')
-MODE_VERSION='liminal-escape-mode/0.1.0'
+MODE_VERSION='liminal-escape-mode/0.2.0'
 # Types defined in code/game/objects/map_metadata/liminal_facility.dm and
 # code/modules/1713/liminal/liminal_round.dm.
 ESCAPE_TYPES=dict(metadata='/obj/map_metadata/liminal_facility',spawn='/obj/effect/landmark{name = "JoinLateLiminal"}',
                   area='/area/caribbean/liminal',extraction='/area/caribbean/liminal/extraction',gate='/obj/structure/liminal_gate',
-                  FOUND_MARKER='/obj/structure/liminal_marker',SERVICE_DONE='/obj/structure/liminal_marker/service')
+                  FOUND_MARKER='/obj/structure/liminal_marker',SERVICE_DONE='/obj/structure/liminal_marker/service',
+                  threat='/obj/effect/landmark{name = "LiminalThreat"}')
+# Slice 5: steady, unpowered existing lights chosen by each room's light intent.
+# A tube serves about LIGHT_TILES walkable tiles; a bulb is one local light.
+TUBE='/obj/structure/lamp/lamp_big/alwayson/white'
+BULB='/obj/structure/lamp/lamp_small/alwayson/white'
+LIGHT_PLAN={'SAFE_UNIFORM':(TUBE,16),'REPEATED_UNIFORM':(TUBE,16),'SERVICE_INTENT':(TUBE,16),'SAFE_TERMINAL_INTENT':(TUBE,16),
+            'PATCHY_INTENT':(TUBE,40),'HIGH_VOID_INTENT':(TUBE,0),'CONTRAST_INTENT':(BULB,0),'LOCAL_TASK_INTENT':(BULB,0),
+            'LOW_AMBIENT_INTENT':(BULB,0)}
+MIN_SPACING=4  # tiles between two lights of one room
+THREAT_ROLES=('HUB','TRANSITION')
+THREAT_MIN_DISTANCE=12  # tiles from every spawn to the threat site
+DIRS=((0,1,1),(0,-1,2),(1,0,4),(-1,0,8))  # dx, dy, BYOND dir; a light faces its wall
 
 
 class ExportError(ValueError):
@@ -123,6 +135,80 @@ def gated_cells(doc,notes):
     return out
 
 
+def _free_floor(doc,cells,notes,added,room_id):
+    """Walkable cells of a room with no object, anchor or aperture, sorted."""
+    rows=doc['blueprint']['rows'];apertures=set(notes['apertures'])
+    return sorted(p for p,owner in notes['owner'].items() if owner==room_id and rows[p[1]][p[0]]=='F'
+                  and len(cells[p])==2 and p not in added and p not in apertures)
+
+
+def _spread(candidates,count,start):
+    """Deterministic farthest-point pick: first the candidate nearest start."""
+    if not candidates or count<1:return []
+    def d2(a,b):return (a[0]-b[0])**2+(a[1]-b[1])**2
+    picked=[min(candidates,key=lambda p:(d2(p,start),p))]
+    while len(picked)<min(count,len(candidates)):
+        p=max((p for p in candidates if p not in picked),key=lambda p:(min(d2(p,q) for q in picked),(-p[0],-p[1])))
+        if min(d2(p,q) for q in picked)<MIN_SPACING**2:break
+        picked.append(p)
+    return picked
+
+
+def room_lights(doc,cells,notes,added):
+    """{cell: light text} for every room, from its light intent; lights sit against a wall."""
+    _,derived,_=furnishing();rows=doc['blueprint']['rows'];out={};wall=native_catalog()['turfs']['wall']
+    for room in doc['rooms']:
+        a=derived['archetypes'][room['archetype']];intent=a['tags']['light_intent']
+        if intent not in LIGHT_PLAN:raise ExportError('LIGHT','no light plan for '+intent)
+        kind,tiles=LIGHT_PLAN[intent]
+        free=_free_floor(doc,cells,notes,added,room['id'])
+        def solid(q):  # a wall or a wall-turf column, which a light can be fixed to
+            return 0<=q[1]<len(rows) and 0<=q[0]<len(rows[0]) and (rows[q[1]][q[0]]=='W' or (rows[q[1]][q[0]]=='B' and cells[q][-2]==wall))
+        walled=[p for p in free if any(solid((p[0]+dx,p[1]+dy)) for dx,dy,_ in DIRS)]
+        if not walled:walled=free  # a cramped room: the light hangs free (dir south)
+        if not walled:raise ExportError('LIGHT','no free cell for a light in '+room['id'])
+        floor=sum(1 for p,o in notes['owner'].items() if o==room['id'] and rows[p[1]][p[0]]=='F')
+        count=max(1,round(floor/tiles)) if tiles else 1
+        ox,oy=room['origin']
+        for p in _spread(walled,count,(ox+a['width']/2,oy+a['height']/2)):
+            d=next((d for dx,dy,d in DIRS if solid((p[0]+dx,p[1]+dy))),2)
+            out[p]=kind+('' if d==2 else '{dir = %d}'%d)
+    return out
+
+
+def room_distances(doc,start_rooms):
+    """Link hops from any start room, through every link (gates included)."""
+    dist={r:0 for r in start_rooms};todo=list(start_rooms)
+    while todo:
+        r=todo.pop(0)
+        for l in doc['links']:
+            for a,b in ((l['a']['room'],l['b']['room']),(l['b']['room'],l['a']['room'])):
+                if a==r and b not in dist:dist[b]=dist[r]+1;todo.append(b)
+    return dist
+
+
+def threat_site(doc,cells,notes,added):
+    """One cell in the reachable HUB/TRANSITION room farthest from the spawns that
+    holds no spawn, objective or exit, at least THREAT_MIN_DISTANCE tiles from
+    every spawn; None when no room qualifies."""
+    _,derived,_=furnishing()
+    reserved={s['room'] for s in doc['spawns']}|{o['room'] for o in doc['objectives']}|{e['room'] for e in doc['exits']}
+    spawns=[]
+    for s in doc['spawns']:
+        r=next(r for r in doc['rooms'] if r['id']==s['room']);spawns.append((r['origin'][0]+s['local_at'][0],r['origin'][1]+s['local_at'][1]))
+    dist=room_distances(doc,sorted({s['room'] for s in doc['spawns']}))
+    best=None
+    for room in sorted(doc['rooms'],key=lambda r:r['id']):
+        a=derived['archetypes'][room['archetype']]
+        if a['role'] not in THREAT_ROLES or room['id'] in reserved or room['id'] not in dist:continue
+        far=[p for p in _free_floor(doc,cells,notes,added,room['id']) if all(abs(p[0]-q[0])+abs(p[1]-q[1])>=THREAT_MIN_DISTANCE for q in spawns)]
+        if not far:continue
+        ox,oy=room['origin'];p=_spread(far,1,(ox+a['width']/2,oy+a['height']/2))[0]
+        key=(dist[room['id']],room['id'])
+        if best is None or key[0]>best[0][0]:best=(key,p,room['id'])
+    return (best[1],best[2]) if best else (None,None)
+
+
 def escape_cells(doc,cells,notes):
     """Bind the static cells to the Liminal Facility escape round."""
     rows=doc['blueprint']['rows'];owner=notes['owner'];added={}
@@ -144,12 +230,17 @@ def escape_cells(doc,cells,notes):
             place(p,ESCAPE_TYPES['gate'],'gate')
     if len(doc['exits'])!=1:raise ExportError('EXIT','escape needs one exit')
     exit_room=doc['exits'][0]['room']
+    site,site_room=threat_site(doc,cells,notes,added)
+    if site:place(site,ESCAPE_TYPES['threat'],'threat')
+    for p,light in sorted(room_lights(doc,cells,notes,added).items()):place(p,light,'light')
     out={}
     for p,entry in cells.items():
         area=ESCAPE_TYPES['extraction'] if owner.get(p)==exit_room else ESCAPE_TYPES['area']
         out[p]=(*added.get(p,[]),*entry[:-1],area)
     out[(0,0)]=(ESCAPE_TYPES['metadata'],*out[(0,0)])
-    return out,dict(gates={k:[[x+1,y+1] for x,y in v] for k,v in gates.items()},extraction_room=exit_room)
+    lights=sorted([x+1,y+1] for (x,y),entry in added.items() for e in entry if e.split('{')[0] in (TUBE,BULB))
+    return out,dict(gates={k:[[x+1,y+1] for x,y in v] for k,v in gates.items()},extraction_room=exit_room,
+                    threat=dict(at=[site[0]+1,site[1]+1],room=site_room) if site else None,lights=lights)
 
 
 def dmm_text(cells,width,height):
@@ -233,7 +324,8 @@ def export(doc,folder,z=1,catalog=None,mode=None):
     if (pw,ph)!=(width,height) or grid!=cells:raise ExportError('PARSE_BACK','parsed map differs from the intended layout')
     side=sidecar(doc,notes,z)
     if binding:
-        side.update(status='ESCAPE_MODE_BOUND',mode=MODE_VERSION,gates=binding['gates'],extraction_room=binding['extraction_room'])
+        side.update(status='ESCAPE_MODE_BOUND',mode=MODE_VERSION,gates=binding['gates'],extraction_room=binding['extraction_room'],
+                    threat=binding['threat'],lights=binding['lights'])
         for item in side['links']:
             if item['requires_flags']:item['native']='SEALED_UNTIL_FLAGS'
         for item in side['objectives']+side['exits']:item['native']='MODE_OBJECT'

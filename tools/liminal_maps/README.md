@@ -141,8 +141,42 @@ The Lights Out constructor and timer are not reused. Nothing registers the map
 for votes or rotation: it runs only when an exported map is compiled as the
 selected map (`native_compile.py --mode escape` checks that build).
 `tests/liminal_mode/probe.dm` runs the round, policy, objects and metadata in the
-shared resource-extraction fixture. A full world boot, threats, lighting, audio
-and group play are still unverified (slices 5-6).
+shared resource-extraction fixture.
+
+## Threat, light and sound (slice 5)
+
+The escape export also places, from the room archetypes:
+
+- **Lights.** Every room gets steady, unpowered existing lights chosen by its
+  `light_intent`: light tubes (`lamp_big/alwayson/white`, range 4) about one per
+  16 walkable tiles in uniform, service and egress rooms and one per 40 in patchy
+  rooms; one tube in the high atrium; one small bulb (`lamp_small/alwayson/white`,
+  range 3) in threshold, alcove and low-light rooms. Lights stand on free floor
+  next to a wall or column, at least 4 tiles apart, never on an anchor, aperture
+  or furniture. The sidecar lists them under `lights`.
+- **Threat site.** One `LiminalThreat` landmark in the reachable HUB or TRANSITION
+  room farthest (in link hops) from the spawns that holds no spawn, objective or
+  exit, at least 12 tiles from every spawn. The sidecar records it as `threat`;
+  a plan with no such room gets no site and no threat.
+
+In game the facility area is indoors (half of the night light reaches the floor),
+has BYOND's carpeted-hallway reverb and no looping ambience, and the round keeps a
+single `Night` time of day, so the tubes and the issued flashlights carry the
+light. After a 30 s arrival grace the round places one existing echofiend at the
+site, but only while no participant is within 7 tiles of it or can see it; it is
+placed at most once and never comes back. The echofiend hunts by sound: footsteps
+and other sounds within 15 tiles send it to investigate, and the stealth intent
+makes no footsteps. Its own growls no longer cancel an investigation (a fix to the
+shared monster). `threat_enabled = FALSE` on the map metadata turns it off.
+
+Native boot of the exported escape map (pinned 516.1688, Linux, agent control,
+no client): the threat appeared at the site 30 s after the first Surveyor joined;
+measured floor light was about 0.3-0.5 near lights and 0.07 in an unlit corridor;
+a walking Surveyor 13 tiles away drew it through two room apertures in about 4 s,
+one in stealth went unnoticed 3 tiles away; the sealed egress gate stopped it and
+the opened gate let it through; no runtime errors. Simple-animal attacks only run
+while a client is connected, so damage, pacing against real players, what a
+client sees and hears, and group play are still unverified (slice 6).
 
 ## Native boundary and contributions
 
