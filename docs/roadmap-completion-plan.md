@@ -1,7 +1,8 @@
 # Roadmap completion plan
 
-Status: working plan, checked on 2026-11-04 against master `ff0a643`
-(after #3610) and the merged/open pull requests. It covers every goal on the
+Status: working plan, first checked on 2026-11-04 against master `ff0a643`
+(after #3610); rows refreshed on 2026-11-05 against master `837e205` (after
+#3751). It covers every goal on the
 [public roadmap](https://civ13.github.io/roadmap.html) plus Val's 2026-11-04
 remaining-work summary. Goals are not release promises. This document does not
 authorize merging, deployment, live-server work or feature activation.
@@ -45,17 +46,17 @@ The page lags master. These should be refreshed when the page is next edited
 | --- | --- | --- | --- |
 | Smoother saves | Chunked moving saves, pointer exclusion, failure reports, move-during-save (#3147, #3192, #3194, #3409, #3607) | Smaller save batches; complete interruption recovery; #3590 real-save and late-join measurement | Agent (batches/recovery), Val's hands (#3590) |
 | Extraction survival | Safe houses and mall raid merged (#3082, #3118) | Combined persistence, transport and recovery acceptance on a real run | Val's hands |
-| A train home for your party | Dagger four-level home map (#3193), train crafting re-enabled (#3532) | Expanded compartments, airlock/survival rules, working transport, instanced saves, raid travel | Agent after sharding foundations; map review by Val |
-| Geographic layers and elevation | Layer/elevation foundation (#3301), opt-in lapse rate and local snow (#3616), generated maps carry their relief (mountain profiles) | Natural shipped maps opting in; real-client snow and temperature check | Val's hands |
+| A train home for your party | Dagger four-level home map (#3193), train crafting re-enabled (#3532), Hauler raid target (#3734), party safehouse template (#3728), Train Raid round mode with docked shuttles, crew-only rooms, recall, lift balloons and lives (#3744) | A shuttle that stays the party's between rounds (instanced saves), fuel and boarding passes, survival rules in the safe rooms, real-client acceptance | Agent (persistence), Val's hands (acceptance) |
+| Geographic layers and elevation | Layer/elevation foundation (#3301), opt-in lapse rate and local snow (#3616), generated maps carry their relief (#3726) | Natural shipped maps opting in; real-client snow and temperature check | Val's hands |
 | Snow shaped by local weather | Ground snow, shovelling, Gaia probe (#3300, #3593, #3595) | Real-client visual and footstep check | Val's hands (#3594) |
 | Persistent world editing and map authoring | Editing (#3304); offline save-to-map core for synthetic JSON (#3303) | Native `.sav` extraction, map metadata, playable-map validation, mapper guide | Agent |
-| Safe persistence and transfer foundations | Inert transfer policy/state DTOs (#3330); backend chosen 2026-11-04: SQLite per region plus coordinator ([design](../tools/server-management/TRANSFER-STORAGE-SQLITE.md)) | Region agent and coordinator store, save/load reconcile, DM bridge, two-region pilot | Agent |
+| Safe persistence and transfer foundations | SQLite store, region agent, coordinator and DM save/load bridge (#3642, #3645), trade post (#3655), two-region pilot (#3659), region groups on one host (#3694), character travel with a fast journal (#3715, #3720), one home world per player with mainland start and bed rule (#3740) | Real-client acceptance on a live group; groups spanning hosts | Val's hands |
 | Desktop launcher and connection core | Launcher, companion transport, read-only manager menu (#3325, #3335, #3536, #3538) | Safe Linux process ownership; compile, new game, resume, shutdown, update, restart flows; real process observations and log sources; GUI shard view | Agent (source), Val's hands (live host) |
-| Procedural worlds | Surface, oceanic and cavern generators (#3331, #3338, #3617), playable region maps (#3697), region elevation and climate | Long-round native playability and save preservation | Val's hands |
+| Procedural worlds | Surface, oceanic and cavern generators (#3331, #3338, #3617), playable region maps (#3697), region elevation and climate (#3726), barren worlds for space settlement (#3752) | Long-round native playability and save preservation | Val's hands |
 | Smooth movement and interaction | Players, vendors, pulling, animals opt-out (#3337-#3367, #3535) | Wildlife sub-tile movement (#3509, disabled) fails arrival timing; idle-guard fix not on master | Agent |
 | Authoritative line of sight | Geometric LOS, wall faces, opacity refresh (#3340, #3579) | Gameplay adapters, hidden-information protection, reconnect/save restoration; cost profile | Agent (adapters), Val's hands (#3582) |
 | Lighting for oversized sprites | #3225 | General rendering issues; connected-client acceptance | Val's hands |
-| Authored-room escape mode (Liminal) | Topology and scenario manifests (#3346, #3348, #3349); v2 layouts (#3634), DMM export (#3690), escape round (#3691), threat/light/sound pass (slice 5) | Playable acceptance with real clients: attacks, pacing, what players see and hear, group play (slice 6) | Val's hands, then Agent tuning |
+| Authored-room escape mode (Liminal) | Topology and scenario manifests (#3346, #3348, #3349); v2 layouts (#3634), DMM export (#3690), escape round (#3691), threat/light/sound pass (#3722) | Playable acceptance with real clients: attacks, pacing, what players see and hear, group play (slice 6) | Val's hands, then Agent tuning |
 | Powered-gateway exploration (Backrooms) | Design and default-off power-state foundation (#3350, #3351) | Physical gateways, transfers, paid supplies, rescue, paired-world saves | Agent after sharding/transfer foundations |
 | Diet, preferences and food discovery | Balanced diet, hidden tastes (#3314, #3315, #3345, #3597) | Diet source-review fixes; penalties after per-map food access (#3598); food art (#3599) | Owned (diet thread) |
 | Windows server bot integration | Draft lives outside this repository | Review, activation, live Windows server check | Val's hands (chat relay bot thread covers the relay fix) |
@@ -66,14 +67,14 @@ The page lags master. These should be refreshed when the page is next edited
 | Goal | Remaining work | Track |
 | --- | --- | --- |
 | Industrialization: pipes, pumps, foundries | Phased design #3609 awaiting Val; power sources (#3603) and stamp mill (#3601) merged | Owned (factory thread) |
-| Real-time travel between servers | Depends on transfer foundations and two-region pilot | Decision, then Agent |
-| Small USA regional persistence pilot | Manual discovery/wake/readiness path, on-demand start, idle shutdown, measured recovery | Agent (manager flows) + Val's hands |
-| Player-built crossings and rail routes | Durable-transit design for offline intermediaries | Decision after pilot |
+| Real-time travel between servers | Done within one host's region group (#3694, #3715, #3720, #3740); groups spanning hosts remain | Decision (cross-host), Val's hands (live group) |
+| Small USA regional persistence pilot | Manual discovery/wake/readiness path, on-demand start, idle shutdown, measured recovery; host doorman and freezing (#3700, #3725, #3730) | Agent (manager flows) + Val's hands |
+| Player-built crossings and rail routes | Trail markers that players build and admins approve (#3755); player-made ferries later (Val, 2026-11-05: no default ferry); durable transit for offline intermediaries | Decision (ferry design) |
 | Ocean voyages and offshore industry | Route and depth definitions | Decision (design only) |
-| Submarines and underwater habitats | Depth model design | Decision (design only) |
-| Advanced-era space mode | Phased plan for probes, launch, habitats, life support, EVA, rovers and mining on a barren-world shard ([roadmap](space-settlement-roadmap.md)) | Decision (Val picks a phase) |
+| Submarines and underwater habitats | Compartments share one habitat air ledger (#3754); depth model design | Owned (space/habitat thread) |
+| Advanced-era space mode | Phased plan ([roadmap](space-settlement-roadmap.md), #3746); habitat air ledger and barren ground (#3750, #3752) | Owned (space thread) |
 | Player-owned expedition regions | Offline migration design | Decision (design only) |
-| Recovery when regions go offline | Needs authoritative custody and fenced ownership first | Agent after foundations |
+| Recovery when regions go offline | The home ledger (#3740) now records which region owns each player; fenced ownership of goods and a recovery path remain | Agent |
 | Map capability profiles | Measure build profiles before design | Agent (measurement tooling) |
 | Compatible runtime and JIT research | Research only | Decision |
 
@@ -114,6 +115,11 @@ Val's suggested order is used, skipping work another thread owns:
    Val's 2026-11-05 order: sharded servers first (region groups on one host,
    [scripts/shard-group](../scripts/shard-group/README.md)), then playable
    procedural surface, oceanic and cavern worlds, then travel between them.
+   Done 2026-11-05: region groups, playable generated worlds, travel, one
+   home world per player and player-built trails.
+10. **A train home for your party** (Val, 2026-11-05): in Persistence, a
+   player's first party train becomes available once they complete a
+   construction project at a suitable train station.
 
 Each step is one or more PRs with a filled `Changelog:` line where players see
 a change, compiled and run through `scripts/agent_preflight.py all --write`.
