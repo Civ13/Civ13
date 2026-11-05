@@ -183,7 +183,8 @@ var/global/datum/shard_group/shard_group = new
 	saving_loop = TRUE
 	spawn(0)
 		while(enabled && save_minutes)
-			if(nextsave && nextsave - world.realtime > save_minutes * 600)
+			// A restart transaction or a running save sets its own schedule.
+			if(nextsave && !persistence_restart.busy && !persistence_save_active() && nextsave - world.realtime > save_minutes * 600)
 				nextsave = world.realtime + save_minutes * 600
 			sleep(100)
 		saving_loop = FALSE

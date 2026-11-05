@@ -48,7 +48,8 @@ def transfer_id(group, source, destination, epoch, seq):
 def payload_kinds(manifest):
     """The sorted payload kinds ("kind" of each JSON object item) of a manifest."""
     kinds = set()
-    for item in json.loads(manifest).get('items', []):
+    items = json.loads(manifest).get('items', [])
+    for item in (items if isinstance(items, list) else []):
         try:
             value = json.loads(item) if isinstance(item, str) else None
         except ValueError:
@@ -364,8 +365,13 @@ class RegionStore:
                 self._send(IN, peer, 'TOMBSTONE', {'transfer_id': tid, 'seq': seq})
                 return None
             manifest = envelope['manifest']
-            if manifest.get('epoch') != epoch or manifest.get('seq') != seq:
+            if not isinstance(manifest, dict) or manifest.get('epoch') != epoch or manifest.get('seq') != seq:
                 raise TransferError('manifest does not match the channel')
+            items = manifest.get('items')
+            # Same rule as begin_escrow: a peer may not store a manifest that
+            # status() or the world cannot read.
+            if not isinstance(items, list) or not items or any(type(p) is not str for p in items):
+                raise TransferError('manifest needs a non-empty list of serialized items')
             self.db.execute('INSERT INTO active VALUES (?, ?, ?, ?, ?, ?)',
                             (IN, peer, seq, tid, json.dumps(manifest, sort_keys=True), PREPARED))
             self._send(IN, peer, 'PREPARE', {'transfer_id': tid, 'seq': seq})

@@ -206,11 +206,12 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // than a trade post. Nothing is imported while the world has neither.
 /datum/transfer_bridge/proc/poll_character(transfer_id, incoming)
 	if(("[transfer_id]:[incoming ? "credit" : "return"]") in applied) return
-	if(!region_travel_arrival_turf()) return
+	var/turf/T = region_travel_arrival_turf()
+	if(!T) return
 	var/list/result = incoming ? begin_import(transfer_id) : begin_return(transfer_id)
 	if(!result) return
-	// The effect is recorded; build the character now, without sleeping.
-	var/turf/T = region_travel_arrival_turf()
+	// The effect is recorded; build the character now, without sleeping. If the
+	// arrival point went away during the request, the build picks another.
 	region_travel_arrive(result["payloads"], incoming, T)
 
 /map_storage/transfer_capture(generation)

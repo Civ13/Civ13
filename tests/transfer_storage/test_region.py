@@ -78,6 +78,21 @@ class Basics(unittest.TestCase):
                  'not json', json.dumps(['kind']), json.dumps({'kind': 'x' * 33}), json.dumps({'kind': 7})]
         self.assertEqual(['', 'character', 'goods'], payload_kinds(json.dumps({'items': items})))
         self.assertEqual([], payload_kinds(json.dumps({})))
+        self.assertEqual([], payload_kinds(json.dumps({'items': 5})))
+
+    def test_destination_refuses_unreadable_manifest_items(self):
+        import json
+        self.a.start_transfer('beta', {'a0'})
+        self.a.save()
+        env = [e for e in self.a.store.outbox() if e['step'] == 'ESCROW'][0]
+        for bad in (5, [], [7], 'x'):
+            forged = json.loads(json.dumps(env))
+            forged['manifest']['items'] = bad
+            with self.assertRaises(TransferError):
+                self.b.store.receive(forged)
+        self.assertEqual([], self.b.store.status()['active'])
+        settle(self.a, self.b)  # the real envelope still goes through
+        self.assertIn('a0', self.b.live)
 
     def test_crash_before_save_voids_escrow(self):
         self.a.start_transfer('beta', {'a0'})

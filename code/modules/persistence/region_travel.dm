@@ -86,6 +86,9 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
+	// A style the destination cannot name is left out; the body keeps its default.
+	if(!(look["h_style"] in hair_styles_list)) look -= "h_style"
+	if(!(look["f_style"] in facial_hair_styles_list)) look -= "f_style"
 	var/list/skills = list()
 	for(var/stat in stats)
 		var/list/pair = stats[stat]
@@ -101,7 +104,7 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 			carried += list(list(slot_name, kind, S.amount))
 	return json_encode(list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
 		"gender" = gender, "age" = age, "look" = look, "skills" = skills,
-		"nutrition" = round(nutrition), "water" = round(water), "items" = carried))
+		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried))
 
 // Returns the decoded payload, or null when any field is out of bounds.
 /proc/region_travel_decode(payload)
@@ -123,7 +126,12 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	for(var/name in P["look"])
 		if(!(name in region_travel_look_vars)) return null
 		var/value = P["look"][name]
-		if(!(isnum(value) && value >= -255 && value <= 255) && !(istext(value) && length(value) <= 64)) return null
+		if(name == "h_style")
+			if(!istext(value) || !(value in hair_styles_list)) return null
+		else if(name == "f_style")
+			if(!istext(value) || !(value in facial_hair_styles_list)) return null
+		else if(!isnum(value) || value < -255 || value > 255)
+			return null
 	for(var/stat in P["skills"])
 		var/list/pair = P["skills"][stat]
 		if(!istext(stat) || length(stat) > 32 || !islist(pair) || pair.len != 2 || !isnum(pair[1]) || !isnum(pair[2]) || pair[1] < 0 || pair[2] < 0 || pair[1] > 1000 || pair[2] > 1000) return null
@@ -155,6 +163,8 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 // so this never refuses; an unreadable payload is reported and dropped.
 /proc/region_travel_arrive(list/payloads, incoming, turf/T)
 	if(!islist(payloads)) return
+	if(!isturf(T) || QDELETED(T)) T = region_travel_arrival_turf()
+	if(!isturf(T)) T = locate(1, 1, 1)
 	for(var/payload in payloads)
 		var/list/P = region_travel_decode(payload)
 		if(!P)
@@ -184,6 +194,12 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
 		if(!H.equip_to_slot_if_possible(I, region_travel_slots[entry[1]], FALSE, TRUE))
 			I.forceMove(T)
+	// One durable body per account: an older clientless body here gives up its
+	// claim, as record_persistence_owner() does, or every save would refuse.
+	for(var/mob/living/human/other in human_mob_list)
+		if(other != H && !other.client && other.persistence_owner_ckey == P["owner"])
+			other.persistence_owner_ckey = null
+			log_game("Region travel: [P["owner"]]'s earlier body [other.real_name] gave up its claim to the arrival.")
 	H.persistence_owner_ckey = P["owner"]
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
@@ -334,6 +350,8 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	var/client/C = H.client
 	var/payload = H.region_travel_payload(items)
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
+	// The destination decodes with the same rules; never escrow what it would drop.
+	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
 	var/address = shard_group.peers[destination]["address"]
 	// Hold the body and its items while the agent records the escrow, so
 	// neither can change.
@@ -347,8 +365,15 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 		return "The trail is busy. Try again in a moment."
 	// Recorded: remove the traveller now, without sleeping.
 	log_game("Region travel: [H.persistence_owner_ckey]'s character [H.real_name] left for [destination].")
+	// Delete everything the traveller holds now, not only what was listed: the
+	// payload carries the full amounts, so a stack split during the request
+	// must not survive.
 	for(var/slot_name in items)
 		qdel(items[slot_name])
+	for(var/obj/item/I in H.GetAllContents())
+		if(!istype(I, /obj/item/organ) && !QDELETED(I)) qdel(I)
+	for(var/obj/item/I in contents)
+		qdel(I)
 	if(C)
 		var/mob/new_player/lobby = new
 		lobby.key = C.key
