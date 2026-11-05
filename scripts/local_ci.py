@@ -247,6 +247,7 @@ def find_compiler(explicit=None):
     else:
         candidates += [shutil.which('DreamMaker')]
         candidates += sorted(str(p) for p in Path('/opt').glob('civ13-byond-*/byond/bin/DreamMaker'))
+        candidates += sorted(str(p) for p in Path.home().glob('byond-*/byond/bin/DreamMaker'))
     for candidate in candidates:
         if candidate and Path(candidate).is_file():
             return candidate
