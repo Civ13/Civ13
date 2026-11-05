@@ -305,6 +305,18 @@ class ShardGroupTests(unittest.TestCase):
             self.assertTrue(shard_group.process_alive(os.getpid()))
             self.assertFalse(shard_group.process_alive(2 ** 22 + 12345))
 
+    def test_windows_access_denied_counts_as_alive(self):
+        # A live coordinator we may not query must not look stopped, or a
+        # second one would start; a missing process still reads as stopped.
+        import types
+        gh = shard_group.gaia_host
+        for error, expected in ((5, True), (87, False)):
+            kernel32 = types.SimpleNamespace(OpenProcess=mock.Mock(return_value=None))
+            with mock.patch.object(gh, 'os', types.SimpleNamespace(name='nt')), \
+                    mock.patch.object(gh.ctypes, 'WinDLL', return_value=kernel32, create=True), \
+                    mock.patch.object(gh.ctypes, 'get_last_error', return_value=error, create=True):
+                self.assertIs(shard_group.Platform().alive(4242), expected)
+
     def test_region_platform_command_line(self):
         group = self.write_group()
         config = shard_group.region_config(group, group['regions'][1])

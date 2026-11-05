@@ -327,9 +327,12 @@ class Platform:
 
     def alive(self, pid):
         if os.name == 'nt':
-            handle = self._open(pid, 0x1000)  # PROCESS_QUERY_LIMITED_INFORMATION
+            kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel32.OpenProcess.restype = ctypes.c_void_p
+            handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
             if not handle:
-                return False
+                # A process we may not query still exists, as on POSIX.
+                return ctypes.get_last_error() == 5  # ERROR_ACCESS_DENIED
             code = ctypes.c_ulong()
             ok = ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(code))
             ctypes.windll.kernel32.CloseHandle(handle)
