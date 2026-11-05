@@ -20,6 +20,8 @@ VALUE = {
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
 CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
+ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
+CHOOSE = {"type": "string", "description": "answer to a menu the step opens, e.g. \"Tunnel\" for a shovel"}
 ITEM = {"type": "string", "description": 'take: the name of a carried or worn item to take into the empty active hand, e.g. "sharpened flint".'}
 
 
@@ -64,6 +66,8 @@ ACTIONS = {
         "target": TARGET,
         "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
         "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
+        "choose": CHOOSE,
+        "zone": ZONE,
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -80,6 +84,8 @@ ACTIONS = {
                 "target": TARGET,
                 "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
                 "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
+                "choose": CHOOSE,
+                "zone": ZONE,
             },
             "required": ["do"],
         }},
