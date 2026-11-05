@@ -57,7 +57,7 @@ The genre's systems, and where each lands:
 | Research gating | Research tree nodes, Digital Age ordinal 9 (#3736), 3D printer (#3743), drones and consumer electronics (#3745) | No space branch |
 | Power | Cable grid and batteries (`code/modules/1713/machinery/`), renewables (#3603), nuclear generation | No storm/night coupling for solar off-world |
 | Food | Hydroponics design and trays ([design](hydroponics-design.md)) | Off-world nutrient and water supply |
-| Atmosphere | `xgm` gas mixtures, submarine compartments with O2/CO2 and vents (`code/modules/submarine/`) | No durable atmosphere save contract ([readiness notes](atmosphere-persistence-readiness.md)) |
+| Atmosphere | `xgm` gas mixtures; submarine compartments each hold one habitat air ledger (`code/modules/submarine/`) | No durable atmosphere save contract ([readiness notes](atmosphere-persistence-readiness.md)) |
 | Vehicles | Modular vehicle frames and car workshop (`code/modules/1713/machinery/modular_vehicles/`) | No sealed cabin or battery drive |
 | Chemistry and fuel | Chemistry processing and automation ([design](chemistry-automation-design.md)), fracking, refining | No cryogenic propellant |
 | Mining | Resource extraction, dug underground (#3742) | No off-world ore or ice tables |
@@ -123,7 +123,8 @@ Val chose phase 0 then phase 1 on 2026-11-05.
 
 - Habitat air ledger (`code/modules/space/habitat_ledger.dm`), barren ground
   turfs and the barren outdoor area (`code/modules/space/barren_world.dm`), tested by
-  `tests/space_settlement/probe.dm`. Nothing places or creates them yet.
+  `tests/space_settlement/probe.dm`. Nothing places barren ground yet; submarine
+  compartments (SUBCOM13) are the first ledger users, one ledger per compartment.
 - The Spaceflight research branch moves to phase 1, where its first nodes
   unlock the probe recipes, so players never see empty nodes.
 - `barren` procedural profile and a playable export of it, plus a shard-group
