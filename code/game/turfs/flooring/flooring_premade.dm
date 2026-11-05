@@ -251,44 +251,79 @@
 	var/min_soil_nutrition = 0
 	initial_flooring = /decl/flooring/dirt
 
-// Turf replacement preserves sleeping procs but resets instance vars.
-// Each new dirt turf must invalidate any recovery chain from its predecessor.
-/datum/soil_recovery_token
-	var/started = FALSE
-/turf/floor/dirt/var/datum/soil_recovery_token/soil_recovery_token
+// Recovery runs from the shared soil_recovery process (code/processes/soil_recovery.dm)
+// instead of one sleeping spawn chain per dirt turf: Gaia has ~134k dirt turfs
+// and each chain held about 400 bytes of closure and token for the whole round.
+// A turf is only registered while its nutrition is below the maximum.
+/turf/floor/dirt/var/tmp/soil_recovery_index = 0
+/turf/floor/dirt/var/tmp/soil_recovery_deadline = null
 
 /turf/floor/dirt/New()
 	if (building_allocating_z && z == building_allocating_z)
 		return ..()
-	soil_recovery_token = new
-	soil_nutrition_recover() // Starts soil nutrition recover
+	soil_recovery_schedule() // Starts soil nutrition recovery for depleted soil
 	return ..()
 
 /turf/floor/dirt/Del()
-	soil_recovery_token = null
+	soil_recovery_unregister()
 	..()
 
-/turf/floor/dirt/proc/soil_nutrition_recover()
-	var/datum/soil_recovery_token/token = soil_recovery_token
-	var/delay = rand(12000,12010) // Every 20 minutes the soil will recover.
-	// Spread each chain's first wait over a whole period. A shared first wait
-	// woke every dirt turf on the map in the same second, a 2 s server stall
-	// on Gaia every 20 minutes.
-	if (token && !token.started)
-		token.started = TRUE
-		delay = rand(1, delay)
-	spawn(delay)
-		if (!istype(src, /turf/floor/dirt) || soil_recovery_token != token)
-			return
-		if(soil_nutrition < max_soil_nutrition)
-			if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants
-				var/nutrition_to_be_recovered = rand(20, 40)
-				if(soil_nutrition + nutrition_to_be_recovered > max_soil_nutrition)
-					soil_nutrition = max_soil_nutrition
-				else
-					soil_nutrition += nutrition_to_be_recovered
-		soil_nutrition_recover()
+/turf/floor/dirt/Destroy()
+	soil_recovery_unregister()
+	..()
+
+/turf/floor/dirt/after_load()
+	..()
+	soil_recovery_unregister()
+	soil_recovery_schedule()
+
+/turf/floor/dirt/persistence_runtime_var(key)
+	if (key == "soil_recovery_index" || key == "soil_recovery_deadline")
+		return TRUE
+	return ..()
+
+// Queue a recovery step; depleted soil recovers every 20 minutes. The first
+// wait is spread over a whole period so turfs registered together do not all
+// wake in the same second.
+/turf/floor/dirt/proc/soil_recovery_schedule(delay)
+	if (soil_nutrition >= max_soil_nutrition)
 		return
+	if (isnull(delay))
+		delay = rand(1, rand(12000,12010))
+	soil_recovery_deadline = world.time + delay
+	if (!soil_recovery_index)
+		soil_recovery_pending += src
+		soil_recovery_index = soil_recovery_pending.len
+
+// Swap-remove avoids a linear search through the pending registry.
+/turf/floor/dirt/proc/soil_recovery_unregister()
+	if (!soil_recovery_index)
+		return
+	var/last_index = soil_recovery_pending.len
+	if (soil_recovery_index <= last_index && soil_recovery_pending[soil_recovery_index] == src)
+		var/turf/floor/dirt/last_dirt = soil_recovery_pending[last_index]
+		soil_recovery_pending[soil_recovery_index] = last_dirt
+		if (istype(last_dirt))
+			last_dirt.soil_recovery_index = soil_recovery_index
+		soil_recovery_pending.Cut(last_index, last_index + 1)
+	else
+		soil_recovery_pending -= src
+	soil_recovery_index = 0
+	soil_recovery_deadline = null
+
+// One recovery step, called by the process once the deadline has passed.
+/turf/floor/dirt/proc/soil_nutrition_recover()
+	if(soil_nutrition < max_soil_nutrition)
+		if (!locate(/obj/structure/farming/plant) in src) // Soil recovers when no farming plants
+			var/nutrition_to_be_recovered = rand(20, 40)
+			if(soil_nutrition + nutrition_to_be_recovered > max_soil_nutrition)
+				soil_nutrition = max_soil_nutrition
+			else
+				soil_nutrition += nutrition_to_be_recovered
+	if (soil_nutrition >= max_soil_nutrition)
+		soil_recovery_unregister()
+	else
+		soil_recovery_schedule(rand(12000,12010)) // Every 20 minutes the soil will recover.
 
 /turf/floor/dirt/examine(mob/user)
 	if (get_dist(src, user) <= 1)
