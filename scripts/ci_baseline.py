@@ -249,9 +249,12 @@ SUITES = {
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
     'crafting_loader': {'files': ('tests/crafting_loader/test_loader.py',
-                                'tests/crafting_loader/test_supplied_item_recipes.py'),
+                                'tests/crafting_loader/test_supplied_item_recipes.py',
+                                'tests/crafting_loader/test_basic_clothing.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
-            'code/setup.dm', 'tests/save_movement/source_adapter.py')},
+            'code/setup.dm', 'tests/save_movement/source_adapter.py',
+            'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt')},
 
     # Stdlib-only access-file framing and complete helper-body projection.
     'access_lists': {'files': ('tests/access_lists/test_access_lists.py',),

@@ -315,7 +315,8 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_crafting_loader_registration_preserves_startup_coverage(self):
         suite = ci.SUITES['crafting_loader']
         self.assertEqual(suite['files'], ('tests/crafting_loader/test_loader.py',
-                                          'tests/crafting_loader/test_supplied_item_recipes.py'))
+                                          'tests/crafting_loader/test_supplied_item_recipes.py',
+                                          'tests/crafting_loader/test_basic_clothing.py'))
         self.assertEqual(self.selected(list(suite['files'])),
             {'policy', 'bootstrap', 'progress', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}
