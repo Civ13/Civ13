@@ -70,7 +70,7 @@ def audit(lifecycle, source):
             errors.append('missing raw appearance field')
     for literal in ('if(scanned >= 64)', 'min(lighting_overlay_list.len + 1, 257)',
                     'row["overlay_last_luminosity"] = O.last_luminosity',
-                    'row["overlay_last_color"] = blackout_diagnostic_color(O.last_color)',
+                    'row["overlay_last_color"] = O.color_committed ? blackout_diagnostic_color(O.color) : null',
                     '"unknown beyond prefix"', '"loc_is_sample_turf" = O.loc == T',
                     '"owner_direction" = K.masters[T]', '"master_count" = K.masters.len',
                     '"season" = blackout_diagnostic_scalar(season)',

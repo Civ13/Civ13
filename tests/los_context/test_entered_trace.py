@@ -171,7 +171,7 @@ class IdentityTrace:
                                 'root, allow_pending=False', env)
         turf = self.tree.loc
         turf.lighting_overlay = N(loc=turf, needs_update=False,
-                                  color=R.Values([.25]*20), last_color=R.Values([.25]*20))
+                                  color=R.Values([.25]*20), color_committed=True)
         def refresh(snapshot):
             # Geometry/capture and baking are existing fixture boundaries;
             # invalidation, strict committed-mask checks, publication guard and

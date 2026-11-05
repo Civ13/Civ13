@@ -21,7 +21,7 @@
 /proc/roof_lighting_state(turf/T)
 	var/list/renderers = list()
 	for (var/atom/movable/lighting_overlay/O in T)
-		renderers += list(list("canonical"=(T.lighting_overlay == O), "z"=O.z, "color"=O.color, "last_color"=O.last_color, "luminosity"=O.luminosity))
+		renderers += list(list("canonical"=(T.lighting_overlay == O), "z"=O.z, "color"=O.color, "last_color"=(O.color_committed ? O.color : null), "luminosity"=O.luminosity))
 	var/corner_count = 0
 	for (var/datum/lighting_corner/C in T.corners)
 		corner_count++

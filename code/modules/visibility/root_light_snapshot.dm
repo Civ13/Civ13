@@ -5,15 +5,14 @@
 	var/atom/movable/lighting_overlay/owner = root.lighting_overlay
 	if(!owner || owner.loc != root || (owner.needs_update && !allow_pending))
 		return null
-	if(!islist(owner.color) || !islist(owner.last_color))
+	if(!owner.color_committed || !islist(owner.color))
 		return null
 	var/list/current = owner.color
-	var/list/previous = owner.last_color
-	if(current.len != 20 || previous.len != 20)
+	if(current.len != 20)
 		return null
 	var/list/result = list()
 	for(var/i = 1, i <= 20, i++)
-		if(!isnum(current[i]) || current[i] != previous[i])
+		if(!isnum(current[i]))
 			return null
 		result += current[i]
 	return result

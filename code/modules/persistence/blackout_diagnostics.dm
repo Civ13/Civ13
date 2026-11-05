@@ -77,7 +77,7 @@
 	if(O)
 		row["overlay_luminosity"] = O.luminosity
 		row["overlay_last_luminosity"] = O.last_luminosity
-		row["overlay_last_color"] = blackout_diagnostic_color(O.last_color)
+		row["overlay_last_color"] = O.color_committed ? blackout_diagnostic_color(O.color) : null
 		var/turf/overlay_turf = blackout_diagnostic_turf(O)
 		var/registry_index = lighting_overlay_list.Find(O, 1, min(lighting_overlay_list.len + 1, 257))
 		row["overlay_owner"] = list("ref" = "\ref[O]", "loc_ref" = O.loc ? "\ref[O.loc]" : null, "loc_type" = O.loc ? "[O.loc.type]" : null, "loc_is_sample_turf" = O.loc == T, "x" = overlay_turf ? overlay_turf.x : null, "y" = overlay_turf ? overlay_turf.y : null, "z" = overlay_turf ? overlay_turf.z : null, "registry_prefix_scanned" = min(lighting_overlay_list.len, 256), "registry_total" = lighting_overlay_list.len, "registry_membership" = registry_index ? "present in prefix" : (lighting_overlay_list.len <= 256 ? "absent" : "unknown beyond prefix"))
