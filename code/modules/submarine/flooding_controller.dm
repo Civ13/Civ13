@@ -146,10 +146,13 @@ var/global/list/sub_blast_doors = list()
 
 // One air step for every compartment. Water takes up room (the air pocket
 // shrinks and its pressure rises); a compartment with seawater pouring in
-// counts as one breach that lets air escape. A compartment with nobody alive inside does
-// not tick (the ledger refuses), and ventilation only runs while someone is
-// aboard.
+// counts as one breach that lets air escape. Every compartment ticks while
+// the world has players, so a breached compartment keeps losing air after the
+// crew leaves it; only breathing depends on who is inside. Nothing ticks
+// while the world is empty.
 /datum/flooding_controller/proc/air_tick(var/seconds, var/list/water_by_compartment, var/list/inflow_by_compartment)
+	if(!air_may_tick())
+		return
 	var/list/occupants = count_breathers()
 	var/anyone = FALSE
 	for(var/cid in compartment_air)
@@ -163,10 +166,15 @@ var/global/list/sub_blast_doors = list()
 		var/n = occupants[cid]
 		if(n > 0)
 			anyone = TRUE
-			L.advance(seconds, n, inflow_by_compartment ? inflow_by_compartment[cid] : 0)
+		L.advance(seconds, n, inflow_by_compartment ? inflow_by_compartment[cid] : 0)
 	if(anyone)
 		ventilate()
 		apply_air_effects()
+
+// Air runs only while someone is connected to the world; an empty world
+// never catches up on the time it spent idle.
+/datum/flooding_controller/proc/air_may_tick()
+	return clients.len > 0
 
 // Living humans on each compartment's deck (compartment_id -> count).
 /datum/flooding_controller/proc/count_breathers()
@@ -226,7 +234,7 @@ var/global/list/sub_blast_doors = list()
 				to_chat(H, "<span class='danger'>The air is thick with CO2!</span>")
 		if(o2 < SUB_AIR_SUFFOCATE_O2_KPA)
 			H.losebreath = max(H.losebreath + 1, 1)
-			H.adjustOxyLoss(2)
+			H.adjustOxyLoss(HABITAT_SUFFOCATE_OXYLOSS)
 			if(prob(8))
 				to_chat(H, "<span class='danger'>You gasp for air - the oxygen is gone!</span>")
 		else if(o2 < HABITAT_MIN_OXYGEN_KPA && prob(3))
