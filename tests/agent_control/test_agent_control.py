@@ -1700,5 +1700,61 @@ class IsolatedRunFixesTest(unittest.TestCase):
         self.assertIsNone(autopilot.cold_plan({"self": dict(me, right_hand=None), "nearby": [tree]}))
 
 
+class LeatherIsolatedRunTest(unittest.TestCase):
+    """From the isolated leather run: real stack names, hatchet as blade, tools on the ground, research gates, pinning."""
+
+    def setUp(self):
+        import leatherwork
+        self.lw = leatherwork
+
+    def obs(self, items=(), nearby=(), **me):
+        base = {"ref": "[0x1]", "active_hand": "right", "right_hand": None, "left_hand": None, "items": list(items), "worn": [], "carried": []}
+        base.update(me)
+        return {"self": base, "nearby": list(nearby), "terrain": []}
+
+    def test_the_games_stack_names(self):
+        self.assertTrue(self.lw.is_leather("leather sheets"))
+        self.assertTrue(self.lw.is_leather("leather sheet"))
+        self.assertFalse(self.lw.is_leather("leather belt satchel"))
+        self.assertTrue(self.lw.is_raw("raw hide pieces"))
+        self.assertTrue(self.lw.is_raw("wolf pelts"))
+        self.assertFalse(self.lw.is_raw("hairless hide pelts"))  # already scraped
+        hairless = {"ref": "[0xb]", "name": "hairless hide pelts", "item": True, "dx": 0, "dy": 0}
+        mug = {"name": "wood mug", "liquids": {"water": 20}, "volume": 40}
+        self.assertEqual(self.lw.next_steps(self.obs([mug], [hairless]), "belt")[0], [{"skill": "wash_hide", "target": "[0xb]"}])
+        sheets = [{"name": "leather sheets", "amount": 3}]
+        self.assertEqual(self.lw.next_steps(self.obs(sheets), "belt")[0][0]["recipe"], "leather belt satchel")
+
+    def test_a_hatchet_scrapes_and_dropped_tools_are_picked_up(self):
+        self.assertTrue(autopilot._holds("flint hatchet", "blade"))
+        self.assertFalse(autopilot._holds("bone pickaxe", "blade"))
+        raw = {"ref": "[0xa]", "name": "raw hide pieces", "item": True, "dx": 1, "dy": 0}
+        flint = {"ref": "[0xc]", "name": "sharpened flint", "item": True, "dx": 0, "dy": 0}
+        self.assertEqual(self.lw.next_steps(self.obs(nearby=[raw, flint]), "belt")[0], [{"skill": "pick_up", "target": "[0xc]"}])
+        dry = {"ref": "[0xe]", "name": "dry hide pieces", "item": True, "dx": 0, "dy": 1}
+        logs = {"ref": "[0xf]", "name": "wood logs", "item": True, "amount": 4, "dx": 0, "dy": 0}
+        axe = {"ref": "[0x12]", "name": "flint hatchet", "item": True, "dx": 1, "dy": 1}
+        mug = {"name": "wood mug", "liquids": {"water": 30}, "volume": 40}
+        self.assertEqual(self.lw.next_steps(self.obs([mug], [dry, logs, axe]), "belt")[0], [{"skill": "pick_up", "target": "[0x12]"}])
+
+    def test_research_gated_recipes_are_reported_not_retried(self):
+        sheets = [{"name": "leather sheets", "amount": 6}]
+        held = {"name": "leather sheets", "ref": "[0x3]"}
+        steps, note = self.lw.next_steps(self.obs(sheets, right_hand=held, craftable=["quiver (3)", "leather armor (8)"]), "belt")
+        self.assertEqual(steps, [])
+        self.assertIn("not available yet", note)
+        logs = {"name": "wood logs", "ref": "[0x4]"}
+        steps, note = self.lw.next_steps(self.obs([{"name": "wet hide pieces", "amount": 2}, {"name": "wood logs", "amount": 9}],
+                                                  right_hand=logs, craftable=["campfire (4)", "wood mug (1)"]), "belt")
+        self.assertIn("tanning rack recipe is not available", note)
+
+    def test_a_pinned_leather_project_outranks_the_ladder_but_not_survival(self):
+        self.assertTrue("drink fresh water".startswith(autopilot.SURVIVAL_GOALS))
+        self.assertFalse("make a spear: break a branch".startswith(autopilot.SURVIVAL_GOALS))
+        self.assertEqual(autopilot.box_for_goal(None, {"leather": "leather backpack"})["leather"], "leather backpack")
+        source = (ROOT / "tools/agent-control/autopilot.py").read_text(encoding="utf-8")
+        self.assertIn('parser.add_argument("--leather"', source)
+
+
 if __name__ == "__main__":
     unittest.main()
