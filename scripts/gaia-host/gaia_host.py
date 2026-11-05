@@ -8,7 +8,7 @@ copy of that save, and pull and compile master while the server is stopped.
     python gaia_host.py --config gaia-host.json status
     python gaia_host.py --config gaia-host.json start|stop|restart|update
     python gaia_host.py --config gaia-host.json freeze|thaw|watch
-    python gaia_host.py --config gaia.json [--config other.json ...] serve
+    python gaia_host.py --config gaia.json [--config other.json ...] [--group group.json ...] serve
 
 status prints one JSON object and never changes anything. The other actions
 take a lock, record their progress in <state_dir>/operation.json and run in a
@@ -25,6 +25,11 @@ every object exactly as it was. watch does both: it freezes the server after
 freeze_idle_minutes with no clients and thaws it as soon as a player's TCP
 connection reaches the port. The world notices the jump in wall-clock time
 itself (code/_helpers/wall_clock.dm).
+
+serve does watch for every instance on this host and runs the doorman. With
+--group it also takes every region of a region group (scripts/shard-group), so
+one service sleeps, wakes and cold-starts Gaia and all regions alike, and keeps
+each group's transfer agents and coordinator running.
 """
 from __future__ import annotations
 
@@ -481,13 +486,20 @@ class Host:
     def status(self):
         frozen = self.frozen()
         if frozen:  # a frozen world cannot answer, and probing it only queues a connection
-            return {'port': self.config['port'], 'listening': True, 'frozen': frozen,
+            return {'port': self.config['port'], 'listening': True, 'state': 'asleep', 'frozen': frozen,
                     'operation': self.read_state() or None, 'busy': self.lock.exists(),
                     'lifecycle_token': self.token() is not None}
         listening = self.platform.listening(self.config['port'])
         world = self.world() if listening else None
-        report = {'port': self.config['port'], 'listening': listening, 'operation': self.read_state() or None,
-                  'busy': self.lock.exists(), 'lifecycle_token': self.token() is not None}
+        cold = None if listening else self.cold()
+        # awake: running; asleep: frozen in memory; cold: down, starts from its save
+        # when woken; stopped: down on purpose, wakes are refused.
+        report = {'port': self.config['port'], 'listening': listening,
+                  'state': 'awake' if listening else ('cold' if cold else 'stopped'),
+                  'operation': self.read_state() or None, 'busy': self.lock.exists(),
+                  'lifecycle_token': self.token() is not None}
+        if cold:
+            report['cold'] = cold
         if world:
             report['world'] = {key: world.get(key) for key in
                                ('ready', 'busy', 'clients', 'map', 'generation', 'revision', 'error')}
@@ -795,15 +807,34 @@ class Host:
         self.record(phase='compiled', revision=out.strip()[-40:])
 
 
+def group_hosts(paths):
+    """The region hosts of every group config, and one supervisor per group that keeps
+    its transfer agents and coordinator running (they never sleep with their world)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'shard-group'))
+    import shard_group
+    hosts, supervisors = [], []
+    for path in paths:
+        group = shard_group.load_group(path)
+        hosts += [host for _, host in shard_group.hosts(group)]
+        supervisors.append(lambda group=group: shard_group.supervise(group))
+    return hosts, supervisors
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--config', required=True, action='append',
+    parser.add_argument('--config', action='append', default=[],
                         help='config file; serve accepts one per instance on this host')
     parser.add_argument('action', nargs='?', choices=ACTIONS)
+    parser.add_argument('--group', action='append', default=[],
+                        help='serve only: a region group config (scripts/shard-group); every region is served too')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if not args.config and not (args.group and args.action == 'serve'):
+        parser.error('--config is required (serve may take only --group)')
     if len(args.config) > 1 and args.action != 'serve':
         parser.error('only serve takes more than one --config')
+    if args.group and args.action != 'serve':
+        parser.error('only serve takes --group')
     try:
         configs = [load_config(path) for path in args.config]
     except (OSError, ValueError) as error:
@@ -812,6 +843,14 @@ def main(argv=None):
     for config, path in zip(configs, args.config):
         config['_path'] = str(Path(path).resolve())
     hosts = [Host(config) for config in configs]
+    supervisors = []
+    if args.group:
+        try:
+            region_hosts, supervisors = group_hosts(args.group)
+        except (OSError, ValueError) as error:
+            print(json.dumps({'ok': False, 'error': 'group config: %s' % error}))
+            return 2
+        hosts += region_hosts
     host = hosts[0]
     if args.worker:
         host.work(*args.worker)
@@ -824,7 +863,7 @@ def main(argv=None):
     if args.action == 'serve':
         from doorman import Doorman
         try:
-            Doorman(hosts, host.platform).run()
+            Doorman(hosts, host.platform, supervisors=supervisors).run()
         except (OSError, ValueError) as error:
             print(json.dumps({'ok': False, 'error': 'doorman: %s' % error}))
             return 2

@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts/gaia-host'))
@@ -23,6 +24,10 @@ class FakeMachine:
         self.detached = []
         self.compile_output = 'region.dmb - 0 errors, 0 warnings'
         self.clock = 0.0
+        self.pids = set()
+
+    def alive(self, pid):
+        return pid in self.pids
 
     def run(self, argv, cwd=None, timeout=1800):
         self.calls.append((list(argv), str(cwd)))
@@ -273,6 +278,110 @@ class ShardGroupTests(unittest.TestCase):
         answers[1721] = dict(answers[1721], region='gaia')
         status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
         self.assertIn('error', status['regions']['deep']['region_view'])
+
+
+    def test_sleep_settings_reach_every_region(self):
+        self.refuse_config('freeze_idle_minutes', freeze_idle_minutes='soon')
+        self.refuse_config('wake_ignore', wake_ignore=[1])
+        self.refuse_config('freeze_requires_save', freeze_requires_save=1)
+        self.refuse_config('doorman_port', doorman_port=1713.0)
+        self.refuse_config('doorman_port', doorman_port=70000)
+        self.group.update(freeze_idle_minutes=5, cold_start_estimate_seconds=90)
+        group = self.write_group()
+        config = shard_group.region_config(group, group['regions'][1])
+        self.assertEqual((5, 90, False), (config['freeze_idle_minutes'], config['cold_start_estimate_seconds'],
+                                          config['start_requires_byond_pager']))
+        self.assertNotIn('wake_min_free_mb', config, 'unset keys keep the host defaults')
+        self.group['public'] = True
+        group = self.write_group()
+        self.assertTrue(shard_group.region_config(group, group['regions'][1])['start_requires_byond_pager'],
+                        'a hub-listed region needs the BYOND pager like Gaia')
+
+    def test_status_reports_asleep_and_cold_without_asking_a_frozen_world(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        state = self.base / 'regions' / 'deep' / 'data' / 'shard-host'
+        (state / 'freeze.json').write_text(json.dumps({'pid': 77, 'frozen_at': 0}))
+        self.machine.up.add(1721)
+        self.machine.pids.add(77)
+        asked = []
+        status = shard_group.group_status(group, 'deep', view=lambda port: asked.append(port), platform=self.machine)
+        self.assertEqual(('asleep', []), (status['regions']['deep']['state'], asked))
+        self.assertNotIn('region_view', status['regions']['deep'])
+        # The machine went down: the frozen process is gone and nothing listens.
+        self.machine.up.clear()
+        self.machine.pids.clear()
+        with mock.patch('builtins.print'):
+            status = shard_group.group_status(group, 'deep', view=lambda port: asked.append(port), platform=self.machine)
+        self.assertEqual('cold', status['regions']['deep']['state'])
+        self.assertTrue((state / 'cold.json').exists())
+        (state / 'cold.json').unlink()
+        status = shard_group.group_status(group, 'deep', platform=self.machine)
+        self.assertEqual('stopped', status['regions']['deep']['state'])
+
+    def test_a_cold_region_starts_through_its_own_worker(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        path = self.base / 'regions' / 'deep'
+        (path / 'region.dmb').write_bytes(b'dmb')
+        (path / 'data' / 'shard-host' / 'cold.json').write_text(json.dumps({'frozen_at': 0}))
+        host = self.host(group, 'deep')
+        self.assertEqual('cold', host.status()['state'])
+        accepted = host.start_cold('doorman wake request')
+        self.assertTrue(accepted['cold_start'])
+        argv = self.machine.detached[-1]
+        self.assertTrue(argv[3].endswith('shard_group.py'), argv)
+        self.assertEqual([str(path / 'data' / 'shard-host' / 'host.json'), '--worker', 'start'], argv[-4:-1])
+        host.work('start', accepted['operation'])
+        self.assertIn((['start', 'region:deep'], None), self.machine.calls)
+
+    def test_supervise_restarts_missing_agents_and_the_coordinator(self):
+        self.group['regions'][0]['transfer_port'] = 47201
+        self.group['regions'][1]['transfer_port'] = 47202
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        listening, started, alive = set(), [], set()
+        def start(argv, cwd, log):
+            started.append(argv)
+            return 4242
+        with mock.patch.object(shard_group.RegionPlatform, 'listening', lambda self, port: port in listening), \
+                mock.patch.object(shard_group, 'detach', start), \
+                mock.patch.object(shard_group, 'process_alive', lambda pid: pid in alive):
+            self.assertEqual({'agents': ['gaia', 'deep'], 'coordinator': True}, shard_group.supervise(group, start))
+            self.assertEqual(3, len(started))
+            listening.update({47201, 47202})
+            alive.add(4242)
+            self.assertEqual({}, shard_group.supervise(group, start))
+            listening.discard(47202)
+            self.assertEqual({'agents': ['deep']}, shard_group.supervise(group, start))
+            # One region failing to start its agent does not keep the others or the coordinator down.
+            listening.clear()
+            alive.clear()
+            real = shard_group.RegionPlatform.start_agent
+            def flaky(platform):
+                if platform.config['region'] == 'gaia':
+                    raise OSError('state_dir is not writable')
+                return real(platform)
+            with mock.patch.object(shard_group.RegionPlatform, 'start_agent', flaky):
+                result = shard_group.supervise(group, start)
+            self.assertEqual((['deep'], True), (result['agents'], result['coordinator']))
+            self.assertIn('not writable', result['errors']['gaia'])
+        self.group['regions'][0].pop('transfer_port')
+        self.group['regions'][1].pop('transfer_port')
+        self.assertEqual({}, shard_group.supervise(self.write_group()))
+
+    def test_the_host_service_serves_every_region_of_a_group(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        gaia_host = shard_group.gaia_host
+        hosts, supervisors = gaia_host.group_hosts([str(self.path)])
+        self.assertEqual([1720, 1721], [host.config['port'] for host in hosts])
+        self.assertEqual(['region:gaia', 'region:deep'], [host.config['task'] for host in hosts])
+        self.assertEqual(1, len(supervisors))
+        self.assertEqual({}, supervisors[0](), 'a group without travel has no helpers')
+        for argv in (['--group', str(self.path), 'status'], ['serve']):
+            with self.assertRaises(SystemExit), mock.patch('sys.stderr'):
+                gaia_host.main(argv)
 
 
 if __name__ == '__main__':

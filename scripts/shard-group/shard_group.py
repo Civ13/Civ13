@@ -1,4 +1,4 @@
-"""Build, start, save-and-stop, restart, update and watch a group of region worlds.
+"""Build, start, save-and-stop, restart, update, freeze and thaw a group of region worlds.
 
 A region group (sharded servers) is several Civ13 worlds on one host. Each
 region is its own git worktree of the repository with its own selected map,
@@ -8,6 +8,12 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json update    # check out and compile every region
     python shard_group.py --config group.json start|stop|restart [--region ID]
     python shard_group.py --config group.json status
+    python shard_group.py --config group.json freeze|thaw [--region ID]
+
+Sleeping (freeze after idle, wake on a connection or a launcher request, cold
+start after a power-down) is done by the host service:
+`gaia_host.py [--config gaia.json] --group group.json serve`, which also keeps
+the group's transfer agents and coordinator running.
 
 Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
 (one detached worker per action, progress in operation.json, save-and-stop
@@ -36,7 +42,7 @@ sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
-GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update')
+GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw')
 KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'OTHER')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
@@ -112,6 +118,23 @@ def load_group(path):
     group.setdefault('save_timeout_seconds', 5400)
     group.setdefault('start_timeout_seconds', 300)
     group.setdefault('backups_kept', 3)
+    # Sleep settings (gaia_host FREEZE_DEFAULTS) apply to every region of the group.
+    for key, default in gaia_host.FREEZE_DEFAULTS.items():
+        if key not in group:
+            continue
+        value = group[key]
+        if type(default) is bool or type(value) is bool:
+            ok = type(value) is type(default)
+        elif isinstance(default, list):
+            ok = type(value) is list and all(type(item) is str for item in value)
+        elif isinstance(default, str):
+            ok = type(value) is str and bool(value)
+        elif key == 'doorman_port':
+            ok = type(value) is int and 1 <= value <= 65535
+        else:
+            ok = type(value) in (int, float) and value >= 0
+        if not ok:
+            raise ValueError('%s has the wrong type' % key)
     group['_path'] = str(Path(path).resolve())
     return group
 
@@ -123,14 +146,20 @@ def region_dir(group, region_id):
 def region_config(group, region):
     """The gaia_host-shaped config one region's host and worker run with."""
     path = region_dir(group, region['id'])
-    return {'repository': str(path), 'port': region['port'], 'task': 'region:' + region['id'],
+    config = {'repository': str(path), 'port': region['port'], 'task': 'region:' + region['id'],
             'compiler': group['compiler'], 'daemon': group['daemon'], 'git': group['git'],
             'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(group['public']),
             'save_timeout_seconds': group['save_timeout_seconds'], 'start_timeout_seconds': group['start_timeout_seconds'],
             'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
-            '_path': str(path / 'data' / 'shard-host' / 'host.json')}
+            '_path': str(path / 'data' / 'shard-host' / 'host.json'),
+            # Only a hub-listed (-public) world needs the host's BYOND account signed in.
+            'start_requires_byond_pager': bool(group['public'])}
+    for key in gaia_host.FREEZE_DEFAULTS:
+        if key in group:
+            config[key] = group[key]
+    return config
 
 
 def directory(group):
@@ -384,12 +413,35 @@ def ensure_coordinator(group, start=detach):
     return True
 
 
+def supervise(group, start=detach):
+    """Start any of the group's transfer agents or its coordinator that is not running.
+
+    The host service calls this every half minute. Agents run even while their world
+    sleeps or is cold, so travellers to it are journaled and handed over on wake.
+    Returns what was started (empty when everything was already running).
+    """
+    if not group['transfers']:
+        return {}
+    started = {}
+    for region in group['regions']:
+        # One region that cannot start its agent must not keep the others down.
+        try:
+            if RegionPlatform(region_config(group, region)).start_agent():
+                started.setdefault('agents', []).append(region['id'])
+        except OSError as error:
+            started.setdefault('errors', {})[region['id']] = str(error)[:300]
+    if ensure_coordinator(group, start):
+        started['coordinator'] = True
+    return started
+
+
 def group_status(group, only=None, view=region_view, platform=None):
     report = {}
     for region, host in hosts(group, only, platform):
         entry = host.status()
         entry.update(kind=region['kind'], name=region['name'], built=(region_dir(group, region['id']) / 'region.dmb').exists())
-        if entry.get('listening'):
+        # A frozen world cannot answer; asking it would only queue a connection.
+        if entry.get('listening') and entry.get('state') == 'awake':
             seen = view(region['port'])
             # A world that answers for another group or id is not this region.
             if not seen or seen.get('group') != group['group'] or seen.get('region') != region['id']:
@@ -429,6 +481,17 @@ def main(argv=None):
             result = setup(group)
         elif args.action == 'status':
             result = group_status(group, args.region)
+        elif args.action in ('freeze', 'thaw'):
+            done, refused = {}, {}
+            for region, host in hosts(group, args.region):
+                try:
+                    done[region['id']] = host.freeze() if args.action == 'freeze' else host.thaw()
+                except Refused as refusal:
+                    refused[region['id']] = str(refusal)
+            if refused and not done:
+                print(json.dumps({'ok': False, 'refused': refused}))
+                return 1
+            result = {'done': done, 'refused': refused}
         else:
             accepted, refused = {}, {}
             for region, host in hosts(group, args.region):
