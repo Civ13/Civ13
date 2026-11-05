@@ -87,11 +87,20 @@ ports. It speaks BYOND Topic framing and answers only:
   last reported with their age. Awake worlds are asked for `status` from
   127.0.0.1 every 30 seconds, which does not keep them awake.
 - `?wake=1&port=1714`: thaws that instance, unless the machine has less than
-  `wake_min_free_mb` (1024) of physical memory free; then it stays asleep and
+  `wake_min_free_mb` (1024) of physical memory free, after first stopping the
+  longest-asleep other world to make room (see below); then it stays asleep and
   the launcher tells the player the host is low on memory (0 turns the check
   off; a direct connection to the game port still thaws it). One wake per
   address every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
+
+### Low-memory eviction
+
+While less than `evict_below_free_mb` (1024; 0 turns it off) of physical memory
+is free, `serve` stops the longest-frozen world, at most one a minute. A wake
+that is short of memory does the same for the other worlds first. Only a world
+that saved before it froze (`freeze_requires_save`) is stopped; it becomes cold
+(below) and starts from that save on its next wake.
 
 ### Surviving a power-down
 

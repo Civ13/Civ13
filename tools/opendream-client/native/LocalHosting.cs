@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Net.Sockets;
+using System.Text;
 using System.Text.Json;
 
 namespace Civ13.Launcher;
@@ -144,7 +146,11 @@ public static class LocalHosting {
 
     // Same wording as the bot's hoststatus line.
     public static string Describe(JsonElement status) {
-        var parts = new List<string> { Bool(status, "listening") ? "Server port is open." : "Server is not running." };
+        var parts = new List<string> { Str(status, "state") switch {
+            "asleep" => "Server is asleep (frozen in memory; a join or travel wakes it).",
+            "cold" => "Server is asleep (stopped after its last save; a launcher wake or travel starts it).",
+            _ => Bool(status, "listening") ? "Server port is open." : "Server is not running.",
+        } };
         if (status.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object) {
             parts.Add(Bool(world, "ready") ? "World ready." : "World not ready.");
             if (world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number) parts.Add($"{clients.GetInt32()} players.");
@@ -156,7 +162,21 @@ public static class LocalHosting {
             if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
             parts.Add(text + ".");
         }
-        return string.Join(" ", parts);
+        var line = string.Join(" ", parts);
+        // A region host (Civ13 scripts/shard-group) also lists every region of its group.
+        var regions = new List<string>();
+        if (status.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Array) {
+            foreach (var region in list.EnumerateArray().Take(16)) {
+                if (region.ValueKind != JsonValueKind.Object || Str(region, "name") is not { } name || Str(region, "state") is not { } state) continue;
+                // Letters, marks and digits in any script, cut to 64 characters (runes), never mid-character.
+                var clean = string.Concat(name.EnumerateRunes().Where(r => Rune.IsLetterOrDigit(r)
+                    || Rune.GetUnicodeCategory(r) is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark
+                    || (r.IsAscii && " -'().".Contains((char)r.Value))).Take(64).Select(r => r.ToString()));
+                var players = region.TryGetProperty("players", out var count) && count.ValueKind == JsonValueKind.Number ? $", {count.GetInt32()} players" : "";
+                regions.Add($"{clean}: {new string(state.Where(char.IsAsciiLetterLower).ToArray())}{players}");
+            }
+        }
+        return regions.Count == 0 ? line : line + "\nRegions: " + string.Join("; ", regions) + ".";
     }
 
     private static string? Str(JsonElement json, string name) =>

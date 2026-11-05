@@ -70,6 +70,9 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
                    'cold_start_min_free_mb': 2560,
+                   # serve: while less physical memory than this is free, stop the longest-frozen
+                   # world (it has saved, so it starts from that save on its next wake). 0 = never.
+                   'evict_below_free_mb': 1024,
                    # dd.exe -public needs the host's BYOND account signed in, which on Windows
                    # lives in the BYOND pager (byond.exe) of the same logon session
                    'start_requires_byond_pager': True}
@@ -351,6 +354,19 @@ class Platform:
                 raise RuntimeError('NtSuspendProcess failed: 0x%08x' % (status & 0xffffffff))
             if trim:  # hand the frozen process's pages to the pagefile
                 ctypes.windll.kernel32.K32EmptyWorkingSet(ctypes.c_void_p(handle))
+        finally:
+            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+
+    def terminate(self, pid):
+        if os.name != 'nt':
+            os.kill(pid, 9)  # SIGKILL also ends a stopped process
+            return
+        handle = self._open(pid, 0x0001)  # PROCESS_TERMINATE
+        if not handle:
+            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
+        try:
+            if not ctypes.windll.kernel32.TerminateProcess(ctypes.c_void_p(handle), 1):
+                raise RuntimeError('TerminateProcess failed (WinError %d)' % ctypes.GetLastError())
         finally:
             ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
 
@@ -674,6 +690,22 @@ class Host:
         saved = self.last_save()
         return seen is None or (saved is not None and saved >= seen)
 
+    def evict(self, reason='low memory'):
+        """Stop a frozen server to free its memory. It saved before it froze, so the
+        next wake starts it from that save, like after a power-down."""
+        state = self.frozen()
+        if not state:
+            raise Refused('the server is not frozen')
+        if not self.config['freeze_requires_save']:
+            raise Refused('only a server that saved before freezing can be stopped while asleep')
+        if self.lock.exists():
+            raise Refused('another action is still running: %s' % self.read_state().get('action'))
+        self.platform.terminate(state['pid'])
+        self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state['pid'],
+                                         'detected_at': int(self.platform.now()), 'evicted': reason})
+        self.freeze_file.unlink(missing_ok=True)
+        return {'evicted': True, 'pid': state['pid'], 'reason': reason}
+
     def freeze(self):
         if self.lock.exists():
             raise Refused('another action is still running: %s' % self.read_state().get('action'))
@@ -916,6 +948,12 @@ def main(argv=None):
     try:
         if args.action == 'status':
             result = host.status()
+            if host.config.get('group_config'):  # a region: the bot also shows its peers
+                try:
+                    shard_group = shard_group_module()
+                    result['regions'] = shard_group.region_summary(shard_group.load_group(host.config['group_config']))
+                except (OSError, ValueError) as error:
+                    result['regions_error'] = str(error)[:200]
         elif args.action == 'freeze':
             result = host.freeze()
         elif args.action == 'thaw':
