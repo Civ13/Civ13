@@ -72,3 +72,5 @@ progress { width: 100%; height: 10px; accent-color: #b58d47; }
 .paper-editor .paper-over { color: #ff9d8a; }
 .paper-editor h3 { margin: 4px 0 0; }
 .paper-editor .NoticeBox { margin: 0; }
+.civ13-prompt-message { white-space: pre-wrap; overflow-wrap: anywhere; }
+.civ13-prompt-choices { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }

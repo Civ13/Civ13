@@ -176,6 +176,15 @@
 		if(count != 1) throw EXCEPTION("Restored roof owner missing or duplicated")
 		TICK_CHECK
 
+// Restore contract hooks (restore_contract.dm overrides them for atoms).
+// Called after an entry's saved fields are applied, before
+// persistence_import_fields; saved_fields lists the field names it recorded.
+/datum/proc/persistence_reset_omitted_fields(list/saved_fields)
+	return
+// Called once after after_load() for every entry of the level.
+/datum/proc/persistence_restore_finished()
+	return
+
 /map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
 	try
 		TICK_CHECK
@@ -361,7 +370,9 @@
 					object.vars[v] = default_value
 		// Let a type rebuild state its saved fields describe only by presence.
 		savefile.cd = entry_dir
-		object.persistence_import_fields(savefile.dir.Copy())
+		var/list/import_fields = savefile.dir.Copy()
+		object.persistence_reset_omitted_fields(import_fields)
+		object.persistence_import_fields(import_fields)
 		if(istype(object, /datum/wound/lost_limb))
 			var/datum/wound/lost_limb/restored_wound = object
 			restored_wound.validate_restored_state()
@@ -526,6 +537,7 @@
 				if (ob)
 					ob.after_load()
 					register_restored_player(ob)
+					ob.persistence_restore_finished()
 				if(istype(ob, /obj))
 					var/obj/obbie = ob
 					if(obbie.load_datums)
