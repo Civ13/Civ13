@@ -127,7 +127,7 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade
 	name = "razor blade"
-	desc = "A folding blade, used to cut beard and hairs."
+	desc = "A folding blade, used to cut beard and hairs. Aim at the head or face on any intent but harm to groom."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "razorblade"
 	item_state = "knife"
@@ -154,33 +154,38 @@
 		sharp = TRUE
 		return
 
+// Any intent but harm on the head or face grooms; harm still cuts.
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/human/M as mob, mob/living/user as mob)
-	if (user.a_intent == I_DISARM && user.targeted_organ == "head" && ((M in range(user,1)) || M == user) && ishuman(M) && ishuman(user))
-		visible_message("[user] starts cutting [M]'s hair...","You start cutting [M]'s hair...")
-		if (do_after(user, 80, M))
-			var/list/hairlist = M.generate_valid_hairstyles(1,1)
-			var/new_hstyle = WWinput(usr, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
-			if (new_hstyle)
-				M.h_style = new_hstyle
-				for (var/hairstyle in hair_styles_list)
-					var/datum/sprite_accessory/S = hair_styles_list[hairstyle]
-					if (S.name == M.h_style)
-						M.h_growth = S.growth
-			if (M.gender == MALE)
-				var/list/fhairlist = M.generate_valid_facial_hairstyles(1,1)
-				var/new_fstyle = WWinput(usr, "Please select a facial hair style.", "Grooming", WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
-				if (new_fstyle)
-					M.f_style = new_fstyle
-					for (var/hairstyle in facial_hair_styles_list)
-						var/datum/sprite_accessory/S = facial_hair_styles_list[hairstyle]
-						if (S.name == M.f_style)
-							M.f_growth = S.growth
-			M.update_hair()
-			M.update_body()
-			visible_message("[user] finishes cutting [M]'s hair.","You finish cutting [M]'s hair.")
-			return
+	if (user.a_intent != I_HARM && (user.targeted_organ in list("head", "eyes", "mouth")) && ishuman(M) && ishuman(user) && ((M in range(user,1)) || M == user))
+		groom(M, user)
+		return TRUE
+	return ..()
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom(mob/living/human/M, mob/living/human/user)
+	if (M == user)
+		user.visible_message("[user] starts cutting their own hair...", "You start cutting your hair...")
 	else
-		return ..()
+		user.visible_message("[user] starts cutting [M]'s hair...", "You start cutting [M]'s hair...")
+	if (!do_after(user, 80, M))
+		return
+	var/list/hairlist = M.generate_valid_hairstyles(1,1)
+	var/new_hstyle = WWinput(user, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
+	if (new_hstyle && (new_hstyle in hairlist))
+		M.h_style = new_hstyle
+		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
+		if (S)
+			M.h_growth = S.growth
+	if (M.gender == MALE)
+		var/list/fhairlist = M.generate_valid_facial_hairstyles(1)
+		var/new_fstyle = WWinput(user, "Please select a facial hair style.", "Grooming", WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
+		if (new_fstyle && (new_fstyle in fhairlist))
+			M.f_style = new_fstyle
+			var/datum/sprite_accessory/F = facial_hair_styles_list[new_fstyle]
+			if (F)
+				M.f_growth = F.growth
+	M.update_hair()
+	M.update_body()
+	user.visible_message("[user] finishes cutting [M == user ? "their own" : "[M]'s"] hair.", "You finish cutting [M == user ? "your" : "[M]'s"] hair.")
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank
 	name = "shank"

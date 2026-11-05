@@ -1682,6 +1682,15 @@ RECIPE: /material/bronze/,bronze public bathtub,/obj/structure/shower/bathtub/bi
 RECIPE: /material/steel/,steel public bathtub,/obj/structure/shower/bathtub/big/steel,50,620,1,1,hygiene,175,0,80,9,null
 //COLD WAR//
 
+//**************************************************************
+//***************************RAZORS*****************************
+//**************************************************************
+
+RECIPE: /material/copper/,copper razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,hygiene,0,0,0,8,copper
+RECIPE: /material/bronze/,bronze razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,hygiene,0,0,0,8,bronze
+RECIPE: /material/iron/,iron razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,hygiene,0,0,0,8,iron
+RECIPE: /material/steel/,steel razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,hygiene,0,0,0,8,steel
+
 //************************************************************
 //*********************| GOLD |*******************************
 //************************************************************
