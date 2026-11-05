@@ -112,7 +112,7 @@
 					return "Police Department"
 				if ("LONG_MARCH")
 					return "Red Army"
-				if ("EFT_FACTORY")
+				if ("EFT_FACTORY", "CROSSROADS_MALL")
 					return "Scavs"
 				else
 					if (age >= 6)
@@ -178,7 +178,7 @@
 					return "Robbers"
 				if ("DRUG_BUST")
 					return "Rednikov Mobsters"
-				if ("EFT_FACTORY")
+				if ("EFT_FACTORY", "CROSSROADS_MALL")
 					return "BEAR"
 				else
 					switch(age)
@@ -257,7 +257,7 @@
 					return "Imperials"
 				if ("EAST_LOS_SANTOS")
 					return "Grove Street Families"
-				if ("EFT_FACTORY")
+				if ("EFT_FACTORY", "CROSSROADS_MALL")
 					return "USEC"
 				if ("SYRIA")
 					return "Free Syrian Army"

@@ -94,6 +94,14 @@ SUITES = {
             'code/game/objects/items/clothing/clothing_accessories.dm',
             'code/game/objects/structures/key_doors/keychain.dm',
             'code/game/objects/structures/mail.dm')},
+    # Generated Crossroads Mall raid/loot-range map: DMM parse, route flood-fill
+    # and loot-table pad coverage projected from source; no BYOND runtime.
+    'crossroads_mall': {'files': ('tests/crossroads_mall/test_crossroads_mall.py',),
+        'paths': ('tests/crossroads_mall/', 'maps/EFT/crossroads_mall.dmm',
+                  'code/game/objects/map_metadata/crossroads_mall.dm'), 'shared_paths': (
+            'code/game/objects/random.dm',
+            'code/game/objects/effects/spawners/loot.dm',
+            'code/game/objects/map_metadata/eft_factory.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (

@@ -1,0 +1,413 @@
+"aa" = (/turf/wall/indestructable,/area/caribbean)
+"ab" = (/turf/floor/grass,/area/caribbean)
+"ac" = (/turf/floor/plating/concrete,/area/caribbean)
+"ad" = (/turf/floor/plating/road,/area/caribbean)
+"ae" = (/turf/floor/plating/road/whiteline,/area/caribbean)
+"af" = (/turf/floor/plating/road/yellowline_center,/area/caribbean)
+"ag" = (/turf/wall/indestructable,/area/caribbean/crossroads_mall/range)
+"ah" = (/turf/floor/plating/road,/area/caribbean/extract/crossroads/northbound)
+"ai" = (/turf/floor/plating/road/whiteline,/area/caribbean/extract/crossroads/northbound)
+"aj" = (/turf/floor/plating/road/yellowline_center,/area/caribbean/extract/crossroads/northbound)
+"ak" = (/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"al" = (/obj/structure/sign/crossroads/range{name = "Row A: lootdrop spawners"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"am" = (/obj/effect/crossroads_loot_pad{name = "loot pad: guns"; table = "/obj/effect/spawner/lootdrop/guns"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"an" = (/obj/effect/crossroads_loot_pad{name = "loot pad: guns industrial"; table = "/obj/effect/spawner/lootdrop/guns/industrial"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ao" = (/obj/effect/crossroads_loot_pad{name = "loot pad: guns medieval"; table = "/obj/effect/spawner/lootdrop/guns/medieval"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ap" = (/obj/effect/crossroads_loot_pad{name = "loot pad: melee"; table = "/obj/effect/spawner/lootdrop/melee"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"aq" = (/obj/effect/crossroads_loot_pad{name = "loot pad: melee medieval"; table = "/obj/effect/spawner/lootdrop/melee/medieval"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ar" = (/obj/effect/crossroads_loot_pad{name = "loot pad: melee clash"; table = "/obj/effect/spawner/lootdrop/melee/medieval/clash"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"as" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ammo"; table = "/obj/effect/spawner/lootdrop/ammo"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"at" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ammo industrial"; table = "/obj/effect/spawner/lootdrop/ammo/industrial"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"au" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ammo medieval"; table = "/obj/effect/spawner/lootdrop/ammo/medieval"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"av" = (/obj/effect/crossroads_loot_pad{name = "loot pad: armor"; table = "/obj/effect/spawner/lootdrop/armor"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"aw" = (/obj/effect/crossroads_loot_pad{name = "loot pad: armor industrial"; table = "/obj/effect/spawner/lootdrop/armor/industrial"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ax" = (/obj/effect/crossroads_loot_pad{name = "loot pad: armor medieval"; table = "/obj/effect/spawner/lootdrop/armor/medieval"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ay" = (/obj/effect/crossroads_loot_pad{name = "loot pad: accessories"; table = "/obj/effect/spawner/lootdrop/accessories"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"az" = (/obj/effect/crossroads_loot_pad{name = "loot pad: explosives"; table = "/obj/effect/spawner/lootdrop/explosives"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ba" = (/obj/structure/sign/crossroads/range{name = "Row B: random weapon tables"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bb" = (/obj/effect/crossroads_loot_pad{name = "loot pad: random ak"; table = "/obj/random/gun/random_ak"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bc" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ak47"; table = "/obj/random/gun/ak47"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bd" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ak74"; table = "/obj/random/gun/ak74"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"be" = (/obj/effect/crossroads_loot_pad{name = "loot pad: modern ak"; table = "/obj/random/gun/ak_modern"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bf" = (/obj/effect/crossroads_loot_pad{name = "loot pad: western gun"; table = "/obj/random/gun/western_random"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bg" = (/obj/effect/crossroads_loot_pad{name = "loot pad: german gun"; table = "/obj/random/gun/german_random"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bh" = (/obj/effect/crossroads_loot_pad{name = "loot pad: funny gun"; table = "/obj/random/gun/funny_random"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bi" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ak47 magazine"; table = "/obj/random/magazine/ak47"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bj" = (/obj/effect/crossroads_loot_pad{name = "loot pad: ak74 magazine"; table = "/obj/random/magazine/ak74"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bk" = (/obj/effect/crossroads_loot_pad{name = "loot pad: western magazine"; table = "/obj/random/magazine/western_random"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bl" = (/obj/effect/crossroads_loot_pad{name = "loot pad: german magazine"; table = "/obj/random/magazine/german"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bm" = (/obj/effect/crossroads_loot_pad{name = "loot pad: random melee"; table = "/obj/random/melee"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bn" = (/obj/effect/crossroads_loot_pad{name = "loot pad: random armor"; table = "/obj/random/armor"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bo" = (/obj/effect/crossroads_loot_pad{name = "loot pad: random accessories"; table = "/obj/random/accessories"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bp" = (/obj/structure/sign/crossroads/extract{name = "Northbound ramp extraction"},/turf/floor/plating/road,/area/caribbean)
+"bq" = (/obj/structure/sign/crossroads/range{name = "Row C: random support tables and hazards"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"br" = (/obj/effect/crossroads_loot_pad{name = "loot pad: random explosives"; table = "/obj/random/explosives"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bs" = (/obj/effect/crossroads_loot_pad{name = "loot pad: bandages"; table = "/obj/random/medical/bandage"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bt" = (/obj/effect/crossroads_loot_pad{name = "loot pad: drugs"; table = "/obj/random/medical/drugs"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bu" = (/obj/effect/crossroads_loot_pad{name = "loot pad: medical bag"; table = "/obj/item/weapon/storage/eft/medical"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bv" = (/obj/effect/crossroads_loot_pad{name = "loot pad: barricade"; table = "/obj/random/barricade/random"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bw" = (/obj/effect/crossroads_loot_pad{name = "loot pad: tree"; table = "/obj/random/plants/tree"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bx" = (/obj/effect/crossroads_loot_pad{name = "loot pad: tree low chance"; table = "/obj/random/plants/tree_lowchance"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"by" = (/obj/effect/crossroads_loot_pad{name = "loot pad: snowy tree"; table = "/obj/random/plants/tree_snow"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"bz" = (/obj/effect/crossroads_loot_pad{name = "loot pad: snowy tree low chance"; table = "/obj/random/plants/tree_snow_lowchance"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ca" = (/obj/effect/crossroads_loot_pad{name = "loot pad: AP mine"; table = "/obj/random/mine/ap"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cb" = (/obj/effect/crossroads_loot_pad{name = "loot pad: booby trap"; table = "/obj/random/mine/booby"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cc" = (/turf/wall/concrete_blocks,/area/caribbean/crossroads_mall/range)
+"cd" = (/turf/floor/plating/concrete,/area/caribbean/no_mans_land/invisible_wall)
+"ce" = (/obj/item/weapon/storage/eft/medical,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cf" = (/obj/structure/sign/crossroads/warning{name = "Armed mine pads ahead"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cg" = (/obj/structure/table/modern/table,/obj/item/weapon/key/modern/crossroads/test,/obj/item/weapon/lockpick,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ch" = (/obj/structure/closet/crate/empty,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ci" = (/obj/random/accessories,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cj" = (/obj/structure/table/modern/table,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/ammo_magazine/shellbox,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ck" = (/turf/floor/plating/concrete,/area/caribbean/extract/crossroads/range)
+"cl" = (/obj/structure/optable,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cm" = (/obj/structure/sign/crossroads{name = "Medical test bench"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cn" = (/obj/structure/simple_door/key_door/crossroads/test,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"co" = (/obj/structure/sign/crossroads/extract{name = "Extraction test: stand here ten seconds"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cp" = (/obj/structure/sign/crossroads{name = "Grace wall test strip"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"cq" = (/obj/structure/window/barrier/jersey,/turf/floor/plating/road/yellowline_center,/area/caribbean)
+"cr" = (/obj/structure/sign/crossroads/secure{name = "Key, lockpick and breaching test door"},/turf/wall/indestructable,/area/caribbean/crossroads_mall/range)
+"cs" = (/obj/structure/simple_door/key_door/crossroads/range,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall/range)
+"ct" = (/obj/structure/grille/chainlinkfence,/turf/floor/grass,/area/caribbean)
+"cu" = (/obj/structure/sign/crossroads/range{name = "Loot test range gate"},/turf/floor/grass,/area/caribbean)
+"cv" = (/obj/structure/props/barrel,/turf/floor/plating/concrete,/area/caribbean)
+"cw" = (/obj/structure/closet/crate/dumpster,/turf/floor/plating/concrete,/area/caribbean)
+"cx" = (/obj/structure/props/fueltank,/turf/floor/plating/concrete,/area/caribbean)
+"cy" = (/turf/floor/dirt,/area/caribbean/extract/crossroads/delivery)
+"cz" = (/obj/structure/props/car_wreck/alt,/turf/floor/plating/concrete,/area/caribbean)
+"da" = (/obj/structure/props/junk,/turf/floor/plating/concrete,/area/caribbean)
+"db" = (/obj/structure/props/car_wreck/van,/turf/floor/plating/concrete,/area/caribbean)
+"dc" = (/obj/structure/sign/crossroads/extract{name = "Delivery gate extraction"},/turf/floor/grass,/area/caribbean)
+"dd" = (/obj/structure/sign/crossroads{name = "Delivery gate"},/turf/floor/grass,/area/caribbean)
+"de" = (/obj/structure/grille/chainlinkfence/door/opened,/turf/floor/grass,/area/caribbean)
+"df" = (/obj/structure/sign/crossroads{name = "Service gate"},/turf/floor/plating/concrete,/area/caribbean)
+"dg" = (/obj/structure/shelf/palette,/turf/floor/plating/concrete,/area/caribbean)
+"dh" = (/obj/structure/props/car_wreck/truck,/turf/floor/plating/concrete,/area/caribbean)
+"di" = (/obj/random/accessories,/turf/floor/plating/concrete,/area/caribbean)
+"dj" = (/obj/structure/props/car_wreck/vertical,/turf/floor/plating/road,/area/caribbean)
+"dk" = (/turf/wall/cement,/area/caribbean/crossroads_mall)
+"dl" = (/obj/structure/simple_door/key_door/crossroads/management,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dm" = (/obj/structure/gate/blast/garage/open,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dn" = (/obj/structure/gate/blast/garage,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"do" = (/obj/structure/simple_door/key_door/anyone/singledoor/housedoor,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dp" = (/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dq" = (/turf/wall/tiles,/area/caribbean/crossroads_mall)
+"dr" = (/obj/item/weapon/key/modern/crossroads/cage,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ds" = (/obj/structure/closet/safe,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dt" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"du" = (/obj/structure/table/rack/shelf,/obj/random/gun/ak_modern,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dv" = (/obj/structure/table/rack/shelf,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dw" = (/obj/structure/table/rack/shelf,/obj/random/magazine/ak74,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dx" = (/obj/structure/table/rack/shelf,/obj/random/armor,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dy" = (/obj/structure/table/rack/shelf,/obj/random/gun/western_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"dz" = (/obj/structure/table/rack/shelf,/obj/random/magazine/western_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ea" = (/obj/structure/table/modern,/obj/random/medical/drugs,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"eb" = (/obj/structure/table/modern,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ec" = (/obj/structure/closet/crate/empty,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ed" = (/obj/random/accessories,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ee" = (/obj/structure/shelf/palette,/obj/random/melee,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ef" = (/obj/structure/shelf/palette,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"eg" = (/obj/structure/largecrate,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"eh" = (/obj/structure/shelf/palette,/obj/random/gun/western_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ei" = (/obj/structure/shelf/palette,/obj/random/magazine/western_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ej" = (/obj/structure/shelf/palette,/obj/random/gun/german_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ek" = (/obj/structure/shelf/palette,/obj/random/magazine/german,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"el" = (/obj/structure/shelf/palette,/obj/effect/spawner/lootdrop/explosives,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"em" = (/obj/structure/shelf/palette,/obj/random/armor,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"en" = (/obj/structure/table/modern/table,/obj/random/accessories,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"eo" = (/obj/structure/bed/chair/office/light,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ep" = (/obj/structure/props/barrel,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"eq" = (/obj/random/barricade/random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"er" = (/obj/random/magazine/ak47,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"es" = (/obj/structure/table/modern/table,/obj/random/explosives,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"et" = (/obj/structure/table/modern/table,/obj/item/weapon/storage/eft/medical,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"eu" = (/obj/effect/spawner/lootdrop/ammo,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ev" = (/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"ew" = (/obj/structure/table/rack/shelf/store,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"ex" = (/obj/structure/sign/crossroads{name = "Bakery"},/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"ey" = (/obj/structure/table/rack/shelf/store,/obj/structure/sign/crossroads{name = "Cold storage"},/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"ez" = (/obj/structure/sign/crossroads{name = "Receiving"},/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fa" = (/obj/structure/table/rack/shelf/store,/obj/structure/sign/crossroads{name = "Staff and accounts"},/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fb" = (/obj/structure/props/junk,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fc" = (/obj/structure/props/junk,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fd" = (/obj/random/plants/tree,/turf/floor/grass,/area/caribbean)
+"fe" = (/obj/structure/props/junk,/turf/floor/grass,/area/caribbean)
+"ff" = (/obj/random/medical/bandage,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fg" = (/obj/random/accessories,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fh" = (/obj/random/melee,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fi" = (/obj/structure/bed/chair/comfy/fancy_sofa/l,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fj" = (/obj/structure/bed/chair/comfy/fancy_sofa/r,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fk" = (/obj/structure/table/modern/table,/obj/random/medical/drugs,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fl" = (/obj/structure/props/computerprops/terminal,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fm" = (/obj/effect/landmark{name = "JoinLateScav"},/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fn" = (/obj/structure/simple_door/key_door/crossroads/security,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fo" = (/obj/structure/simple_door/key_door/crossroads/cage,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"fp" = (/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"fq" = (/obj/structure/sign/crossroads/secure{name = "Mall management suite"},/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"fr" = (/obj/structure/sign/crossroads/secure{name = "Security office"},/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"fs" = (/obj/structure/table/modern,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"ft" = (/obj/structure/vending/sales/moneycounter,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"fu" = (/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"fv" = (/obj/structure/sign/crossroads/secure{name = "Ironbark stock cage"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"fw" = (/obj/structure/sign/crossroads{name = "Dock office"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"fx" = (/obj/structure/props/computerprops/modern,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"fy" = (/obj/structure/grille/ironfence,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"fz" = (/obj/structure/window_frame/metal,/obj/structure/window/classic/metal,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"ga" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,/turf/floor/plating/white,/area/caribbean/crossroads_mall)
+"gb" = (/obj/random/plants/tree,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"gc" = (/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gd" = (/obj/structure/sign/crossroads/food{name = "The Crossing Food Hall"},/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"ge" = (/obj/structure/vending/sales/food/snacks,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gf" = (/obj/item/weapon/key/modern/crossroads/management,/obj/structure/table/modern/table,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gg" = (/obj/structure/sign/crossroads/food{name = "Granary Market"},/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gh" = (/obj/structure/table/modern,/obj/structure/vending/sales/moneycounter,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gi" = (/obj/structure/vending/sales/drinks/cola,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gj" = (/obj/structure/table/modern,/obj/random/accessories,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"gk" = (/obj/structure/table/modern,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"gl" = (/obj/structure/grille/chainlinkfence/door/opened,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"gm" = (/obj/structure/vending/sales/menu/pizza,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gn" = (/obj/structure/vending/sales/drinks/hot,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"go" = (/obj/structure/table/modern,/obj/random/accessories,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"gp" = (/obj/structure/table/modern,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"gq" = (/obj/structure/props/server,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"gr" = (/obj/structure/props/computerprops/terminal,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"gs" = (/obj/structure/sign/crossroads/food{name = "Pepper and Pie pizza counter"},/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gt" = (/obj/structure/sign/crossroads/food{name = "Kettle Corner coffee"},/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gu" = (/obj/structure/props/junk,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"gv" = (/obj/structure/props/barrel,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"gw" = (/obj/structure/bed/chair/office/light,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gx" = (/obj/structure/table/modern/table,/turf/floor/plating/tiled/woodh,/area/caribbean/crossroads_mall)
+"gy" = (/obj/structure/props/junk,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"gz" = (/obj/structure/window_frame/metal,/obj/structure/window/classic/metal,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"ha" = (/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hb" = (/obj/structure/props/junk,/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hc" = (/obj/structure/window_frame/metal,/obj/structure/window/classic/metal,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"hd" = (/turf/floor/broken_floor,/area/caribbean/crossroads_mall)
+"he" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"hf" = (/obj/structure/table/rack/shelf/store,/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hg" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"hh" = (/obj/effect/landmark{name = "JoinLateScav"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hi" = (/obj/structure/sign/crossroads/store{name = "Northlight Electronics"},/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"hj" = (/obj/structure/sign/crossroads/store{name = "Shade Stand sunglasses kiosk"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hk" = (/obj/random/accessories,/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hl" = (/obj/structure/sign/crossroads/store{name = "Keycut and Repair kiosk"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hm" = (/obj/structure/sign/crossroads/store{name = "Pocket Charms phone cases kiosk"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hn" = (/obj/structure/sign/crossroads/store{name = "Pretzel Point kiosk"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"ho" = (/obj/structure/sign/crossroads/hardware{name = "Ironbark Hardware and Garden"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"hp" = (/obj/structure/sign/crossroads/pharmacy{name = "Willowbrook Pharmacy"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hq" = (/obj/structure/sign/crossroads/store{name = "Pagecount Books"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hr" = (/obj/structure/sign/crossroads/store{name = "Stride Footwear"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hs" = (/obj/structure/sign/crossroads/store{name = "Lumen Mobile"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"ht" = (/obj/structure/sign/crossroads/store{name = "Threadline Apparel"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hu" = (/obj/structure/sign/crossroads/store{name = "Brightside Toys"},/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"hv" = (/obj/structure/window_frame/metal,/obj/structure/window/classic/metal,/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"hw" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"hx" = (/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"hy" = (/obj/effect/landmark{name = "JoinLateScav"},/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"hz" = (/obj/structure/props/junk,/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"ia" = (/obj/effect/landmark{name = "JoinLateScav"},/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"ib" = (/obj/structure/table/rack/shelf/store,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"ic" = (/obj/structure/table/rack/shelf/store,/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"id" = (/obj/structure/table/rack/shelf/store,/turf/wall/tiles,/area/caribbean/crossroads_mall)
+"ie" = (/obj/structure/table/rack/shelf/store,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"if" = (/obj/effect/landmark{name = "JoinLateScav"},/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"ig" = (/turf/floor/dirt,/area/caribbean/extract/crossroads/culvert)
+"ih" = (/obj/structure/sign/crossroads/extract{name = "Storm culvert extraction"},/turf/floor/grass,/area/caribbean)
+"ii" = (/obj/structure/simple_door/key_door/anyone/singledoor/housedoor,/turf/floor/plating/tiled,/area/caribbean/crossroads_mall)
+"ij" = (/obj/random/magazine/ak74,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"ik" = (/obj/random/gun/ak74,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"il" = (/obj/structure/closet/crate/empty,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"im" = (/obj/random/accessories,/turf/floor/plating/tiled/dark,/area/caribbean/crossroads_mall)
+"in" = (/obj/random/medical/bandage,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"io" = (/obj/random/medical/drugs,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ip" = (/obj/item/weapon/storage/eft/medical,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"iq" = (/obj/random/armor,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"ir" = (/obj/random/magazine/western_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"is" = (/obj/random/gun/funny_random,/turf/floor/plating/dark,/area/caribbean/crossroads_mall)
+"it" = (/obj/random/melee,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"iu" = (/obj/random/barricade/random,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"iv" = (/obj/structure/largecrate,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"iw" = (/obj/random/explosives,/turf/floor/plating/concrete,/area/caribbean/crossroads_mall)
+"ix" = (/obj/structure/window_frame/metal,/obj/structure/window/classic/metal,/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"iy" = (/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door,/turf/floor/plating/marble/tile,/area/caribbean/crossroads_mall)
+"iz" = (/turf/wall/concrete_blocks,/area/caribbean)
+"ja" = (/obj/structure/window/barrier/concrete,/turf/floor/plating/concrete,/area/caribbean)
+"jb" = (/obj/structure/sign/crossroads{name = "Crossroads Mall"},/turf/floor/plating/concrete,/area/caribbean)
+"jc" = (/turf/floor/plating/dark,/area/caribbean)
+"jd" = (/obj/structure/table/modern,/obj/item/weapon/key/modern/crossroads/security,/turf/floor/plating/dark,/area/caribbean)
+"je" = (/obj/structure/table/modern,/obj/random/medical/bandage,/turf/floor/plating/dark,/area/caribbean)
+"jf" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/plating/dark,/area/caribbean)
+"jg" = (/obj/structure/bed/chair/office/light,/turf/floor/plating/dark,/area/caribbean)
+"jh" = (/obj/structure/grille/ironfence,/turf/floor/plating/concrete,/area/caribbean)
+"ji" = (/obj/structure/sign/crossroads/secure{name = "Parking security booth"},/turf/floor/plating/dark,/area/caribbean)
+"jj" = (/obj/structure/simple_door/key_door/anyone/singledoor/housedoor,/turf/floor/plating/dark,/area/caribbean)
+"jk" = (/obj/structure/window/barrier/concrete,/turf/floor/plating/road,/area/caribbean)
+"jl" = (/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
+"jm" = (/obj/structure/window/barrier/concrete,/turf/floor/plating/road,/area/caribbean/no_mans_land/invisible_wall)
+"jn" = (/obj/structure/props/junk,/turf/floor/plating/road,/area/caribbean)
+"jo" = (/obj/effect/landmark{name = "JoinLatePMC"},/turf/floor/plating/road,/area/caribbean)
+"jp" = (/turf/floor/plating/road/whiteline,/area/caribbean/no_mans_land/invisible_wall)
+"jq" = (/obj/structure/props/car_wreck,/turf/floor/plating/road,/area/caribbean)
+"jr" = (/obj/structure/props/car_wreck/van,/turf/floor/plating/road,/area/caribbean)
+"js" = (/obj/structure/props/car_wreck/alt,/turf/floor/plating/road,/area/caribbean)
+"jt" = (/obj/structure/props/car_wreck/truck,/turf/floor/plating/road,/area/caribbean)
+"ju" = (/obj/structure/props/car_wreck/van/alt,/turf/floor/plating/road,/area/caribbean)
+"jv" = (/obj/structure/window/barrier/concrete,/turf/floor/grass,/area/caribbean)
+"jw" = (/turf/floor/plating/road,/area/caribbean/extract/crossroads/westbound)
+"jx" = (/turf/floor/plating/road/whiteline,/area/caribbean/extract/crossroads/westbound)
+"jy" = (/turf/floor/plating/road/yellowline_center,/area/caribbean/extract/crossroads/westbound)
+"jz" = (/obj/structure/sign/crossroads/extract{name = "Westbound shoulder extraction"},/turf/floor/plating/road/yellowline_center,/area/caribbean)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagababababababacahahaiahajahaiahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacahahahahajahahahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacahahahahajahahahahacababaa
+aaababababababababababababababababababababababagalakakamakakakakakakakanakakakakakakakaoakakakakakakakapakakakakakakakaqakakakakakakakarakakakakakakakasakakakakakakakatakakakakakakakauakakakakakakakavakakakakakakakawakakakakakakakaxakakakakakakakayakakakakakakakazakakakakakakakagababababababacahahaiahajahaiahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacahahaiahajahaiahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacahahahahajahahahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacahahahahajahahahahacababaa
+aaababababababababababababababababababababababagbaakakbbakakakakakakakbcakakakakakakakbdakakakakakakakbeakakakakakakakbfakakakakakakakbgakakakakakakakbhakakakakakakakbiakakakakakakakbjakakakakakakakbkakakakakakakakblakakakakakakakbmakakakakakakakbnakakakakakakakboakakakakakakakagababababababacahahaiahajahaiahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacahahaiahajahaiahahacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacadadbpadafadadadadacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababagbqakakbrakakakakakakakbsakakakakakakakbtakakakakakakakbuakakakakakakakbvakakakakakakakbwakakakakakakakbxakakakakakakakbyakakakakakakakbzakakakakakakakcaakakakakakakakcbakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakccccccccccccccakakakakakakakakakakakcdakakakakakceakakakakakakakakakakakakakakakcfakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakcgakccchakakakciccakcjakakakckckckakakakcdakakakakakclcmakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababagakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakcccccccnccccccakakakakakckckckcoakakcdcpakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakakagababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagcragagagagagagagagagagagagagagagagagagcsagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctabcuabctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadafadadadadacababaa
+aaababababababababababababababababababababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadcqadadadadacababaa
+aaababababababababababababababababababababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaccvacacacacacacacacacacacacacacacacacctacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaccwacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaccwacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaccxacacacacacctacadadaeadcqadaeadadacababaa
+aaababababababababababababcycycycycycyababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadafadadadadacababaa
+aaababababababababababababcycycycycycyababctacacacacacacacacacacacacacczacacacacacacacacacacacacacacacacacdaacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadcqadadadadacababaa
+aaababababababababababababcycycycycycyababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaccvaccvacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdbacacacacacacacacacacacacacacacacacacacacacacacacacctacadadaeadafadaeadadacababaa
+aaababababababababababababcycycycycycydcdddeacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdedfadadaeadcqadaeadadacababaa
+aaababababababababababababcycycycycycyababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdgacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadafadadadadacababaa
+aaababababababababababababcycycycycycyababctacacacacacacacacacacacacacacacacacacacacacacacdgacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadcqadadadadacababaa
+aaababababababababababababcycycycycycyababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdhacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdhacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdaacacacacacacacacacctacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdgdidgacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadaeadcqadaedjadacababaa
+aaababababababababababababababababababababctacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacctacadadadadafadadadadacababaa
+aaababababababababababababababababababababctacdkdkdkdkdkdkdldkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdmdmdkdkdndndkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdodkdkdkdkdkdkdkdkacacacacacctacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdrdsdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkdpdtdtdpdpdpdpdpdpdpdpdpdpdqdpdudvdwdvdxdvdydvdzdpdpdqdpdpeaebdpdpdpdpdpdpdpdpdpdpdpdqdpdpecdpecdpeddpdpdpdpdpdpdpdqdpdpeedpefdpdpdpdpdpegdpdpdpdqdpdpdtdtdpdpdpdpdpdpdpdpdpdpdqdpehefeiefejefekefelefemdpdqdpdpdpdpdpdpdpdpdpdpdtdtdpdkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpeneodpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpepdpdpdqdpdpdpdpdpdpdpdpdpdpeqdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdperdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpeseodpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpeteodpdpdpdpdpdpdpdpdkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqdqdqdqdqdqdqdqdodqdqdqdqdqdqdqdqdqdqdqdqdqdqdodqdqdqdqdqdqdqdqdqdqdqdqdqdqdodqdqdqdqdqdqdqdqdqdqdqdqdqdqdodqdqdqdqdqdqdqdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpeudpdpdpdpdpdpdqevevevevewewevexeveveweweveveveveweweveveveveyewevevevevewewevevevevewewevezevevewewevevevevewewevevevevfaewevevevevevevdqdpdpdpfbdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevfcewewevevevevewewevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadafadaeadadacababaa
+aaababfdababababfdababababfdabfeabababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevevevffevfcevevevevevevevevevevevevevevevfgevevevevevevevfcevevevevevevevevevfhevevevevevevevfcevevevevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpfbdpdpdpdpdkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpfifjdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevevevdqdpdpegdpegdpdpdpeddpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpfbdpdpdpdpdqdpdpfkeodpdpdpdpfldpdpdpdqevevevevewewevevevevewewevevevevewewevevevfcewewevevevevewewfmevevevewewevevevevewewevevevevewewevevevevewewevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpeddpdpdpdpdpdpdpdpdpdpdkababababababacaddjaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevewewevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadafadadadadacababaa
+aaababfdababababfdababababfdabababababababababdkdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdqevevevevevevevevevevevevevfcevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevdqdpdpdpdpdpdpdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdpdpdpdpdpdkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkdqdqdqdqdqdqdqdldqdqdqdqdqdqdqdqdqdqdqfndqdqdqdqdqdqdqevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevdqdqdqdqdqdqdqfodqdqdqdqdqdqdqdqdqdqdqdqdqdodqdqdqdqdqdqdkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfqfpfpfpfpfpfpfpfpfpfpfpfrfpfpfpfpfpfpdqevevevevfsfsftevevevfsfsftevevevfsfsftevevevfsfsftevevevfsfsftevevevfsfsftevevevfsfsftevevevfsfsftevevevfsfsftevevevevevdqfufufufufufufvfufufufufufufufufufufufufufwfufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfxfpfpfxfpfpfxfpfpfxfpfpfxfpfpfxfpfpfxfpfpfxfpfpdqevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevdqfufufufufufufufufufufufufufufufyfufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevevdqfufufufufufufufufufufufufufufufyfufufufufufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqfzfzfzdqgagagadqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqgagagadqfzfzfzdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqdqfufufufufufufufufufufufufufufufyfufufufufufugbfufufufudkababababababacadadaeadafadaeadadacababaa
+aaababfdababababfdababababfdabababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqgcgcgdgcgcgcgcgcgcgcgcgcgcgcgegcgcgcgcgcgfgcgcgcgcgcgcgcgcgggcgcgcgcgcgcghgcgcgcgcgcgcgcgigcgcgcgcgcgcgcgcgcgcgcgcgcgcgcdqfugjgkfufufufufufufufufufufufuglfufufufufufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqgcgmgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgngcdqfufufufufufufufufufufufufufufufyfufugbfufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababfeabababababababababababababababababdkfpfpfpgogpfpfpfpgqgqgrfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqgcgsgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgtgcdqfufufufufufufugufufufufufufufufyfufufufugvfufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqgcgcgcgwgxgwgcgcgcgcgcgwgxgwgcgcgcgcgcgwgxgwgcgcgcgcgcgwgxgwgcgcgcgcgcgwgxgwgcgcgcgcgcgwgxgwgcgcgcgcgcgwgxgwgcgcgcgcgcgcdqfufufufufufufufufufufufufufufufyfufufufufufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpgyfpfpfpfpfpfpfpfpfpfpdqgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcdqfufufufufufufufufufufufufufufufyfyfyfyfyfyfyfyfyfyfyfudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababfdababababfdababababfdabababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpgzhahahahahahahbhahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahcfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpgzhahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahbhdhahahahahahahahahahahahahahcfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfphehahahahahahahahahahahfhfhahahahahahahahahahahahahfhfhahahahahahahahahahahahahfhfhahahahahahahahahahahahahfhfhahahahahahahgfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfphehahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahhhahahahahahahahahahahahahahahahahahahahahahahahahahahahahahgfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfphihehahahahahahahahahahahjhkhahahahahahahahahahahahahlhahahahahahahahahahahahahahmhkhahahahahahahahahahahahahnhahahahahahahahghofufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfphehahahahahahahahahahahfhfhahahahahahahahahahahahahfhfhahahahahahahahahahahahahfhfhahahahahahahahahahahahahfhfhahahahahahahgfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaababfdababababfdababababfdabababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfphehahahahahahahahahahahahahdhahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahgfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpgzhahahahahahahahahahahahahahahahahahahbhahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahbhahahahcfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpgyfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpgzhahahahphahahahahahahahqhahahahahahahahrhahahahahahahahahahahahahahahahahahahahshahahahahahahahthahahahahahahahuhahahahahcfufufufufufufufufufufufugufufufufufufufufufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqdqhvdqhwdqhvdqdqdqhvdqhwdqhvdqdqdqhvdqhwdqhvdqdqdqhahahahahahahahahahadqdqhvdqhwdqhvdqdqdqhvdqhwdqhvdqdqdqhvdqhwdqhvdqdqdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxhxdqhahahahahahahahahahadqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxhxdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfphyfpfpfpfpfpfpfpfpfpfpdqhxhzhxhxhxhxhxdqhxhzhxhxhxhxhxdqhxhzhxhxhxhxhxhxdqhahahahahahahahahahadqhxhzhxhxhxhxhxdqhxhzhxhxhxhxhxdqhxhzhxhxhxhxhxhxdqfufufufufufufufufufufufuiafufufufufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababfdababababfdababababfdabababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxifhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahbhahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxicicicichxidichxicicicichxidichxicicicichxicdqhahahahahahdhahahahadqichxicicicichxidichxicicicichxidichxicicicichxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadcqadaddjadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadafadadadadacababaa
+aaabigigigigabababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhdhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhdhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaabigigigigabababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqhahahahahahahahahahadqichxhxhxhxhxhxidichxhxhxhxhxhxidichxhxhxhxhxhxicdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaabigigigigabababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxhxdqhahahahahahahahahahadqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxhxdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaabigigigigihababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxhxdqhahahahahahahahahahadqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxdqhxhxhxhxhxhxhxhxdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadafadadadadacababaa
+aaabigigigigabababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqdqdqdqdqdqdqiidqdqdqdqdqdqdqiidqdqdqdqdqdqdqiidqdqhahahahahahahahahahadqdqdqdqdqdqdqiidqdqdqdqdqdqdqiidqdqdqdqdqdqdqiidqdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaabigigigigabababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqhahahahahahbhahahahadqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadafadaeadadacababaa
+aaabigigigigabababababababababababababababababdkfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpibibfpfpfpfpfpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqhahahahahahahahahahadqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqfufufufuieiefufufufufuieiefufufufufuieiefufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqdpecdpdpdpdpdvdqdpecdpdpdpdpdvdqdpecdpdpdpdpdvdpdqhahahahahahahahahahadqdpecdpdpdpdpdvdqdpecdpdpdpdpdvdqdpecdpdpdpdpdvdpdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkfpfpijfpikfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpilimfpfpfpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqhahahahahahahahahahadqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqdpindpiodpipdpdqdpfbdpeddpdpdpdqdpiqdpdpdpdpdpdpdqhahahahahahahahahahadqdpeddpirdpdpdpdqdpiqdpeddpdpdpdqdpisdpfbdpdpdpdpdqfufufuitfuiufufufufufufufuitfufufufufufufuivfuiwfufufudkababababababacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqhahahahahahahahahahadqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababababdkfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpfpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqhahahahahahahahahahadqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdqdpdpdpdpdpdpdpdpdqfufufufufufufufufufufufufufufufufufufufufufufufufufufudkababababababacadadadadafadadadadacababaa
+aaababababababababababababababababababababababdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkixixixixixixiyiyiyiyixixixixixixdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkdkababababababacadadadadcqadadadadacababaa
+aaababababababababababababababababababababacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacizizizizizizizacacacacacacacacacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacjajajajajaacacacacacacacacacacacacacacacacacjbacacacacacacacacacacacacacacacacacacacacacjajajajajaacacacacacacacacacacacacacacacacacacacacacacacizjcjdjcjejcizacacacacacacacacacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacdaacacacacacacacacacacacacacizjfjcjcjcjgizacacacacacacacacacadadadadafadadadadacababaa
+aaababfdababababfdababababfdabababababababacacacacacacacacacacacacacacacacacacjhjhjhjhacdaacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacjhjhjhjhacacacacacacacacacacacacacacacacacacacacacacacacacacacacizjcjcjijcjcizacacacacacacacacacaddjadadcqadadadadacababaa
+aaababababababababababababababababababababacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacizizizjjizizizacacacacacacacacacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjljljljljljljljljljljmacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjladadadadadadadadadjmacadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjnadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjladadjoadadadadadadjmacadadadadcqadadadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadjpadadadaeadadadadadjmacadadaeadafadaeadadacababaa
+aaababfdababababfdababababfdabababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaejqadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaejradadaeadadadaeadadadaeadadadaeadadadadadadadaejsadadaeadadadaeadadadaeadadadaeadadadjpadadadaeadadjoadadjmacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjladadadadadadadadadjmacadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjladadadadadadadadadjmacadadadadcqadadadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjnadadadadadadadadadadadadadadadadadadadadadadadadadadadjladadadadadadadadadjmacadadaeadafadaeadadacababaa
+aaabababababababababfeababababababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadjpjljljljpjljljljljljmacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaeadadadaeadadadaejtadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaejuadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaejsadadaeadadadadadjkacadadadadafadadadadacababaa
+aaababfdababababfdababababfdabababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadadadcqadadadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadjkacadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadaeadadadaejsadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaejtadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaejqadadaeadadadaeadadadadadjkacadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadaeadafadaeadadacababaa
+aaababfdababababfdababababfdabababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjnadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaejqadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaejqadadaeadadadaeadadadadadadadaeadadadaejradadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadadadafadadadadacababaa
+aaababfdababababfdababababfdabababababababjkadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjnadadadadadjkacadadadadcqadadadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadjkacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadaeadadadaeadadadaejradadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaejuadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaejsadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadjkacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababjkadjljljljljljljljljljljljljljljladadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadjladadadadadadadadadadadadadjladadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadadadcqadadadadacababaa
+aaababababababababababababababababababababjkadjladadadadadadadadadadadjnadjladadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjnadadadadadadadadadadadadadadadadadadadadadjkacadadaeadafadaeadadacababaa
+aaababfdababababfdababababfdabababababababjkadjpadadadaeadadadaeadadadaeadjladaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadaeadadadadadjkacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababjkadjpjqadadaeadadadaeadadadaeadjladaeadadadaeadadadadadadadaeadadadaejsadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaejqadadaeadadadaeadadadaeadadadaeadadadaeadadadadadadadaeadadadaeadadadaeadadadaejqadadaeadadadaeadadadaeadadadadadjkacadadadadafadadadadacababaa
+aaababababababababababababababababababababjkadjladadadadadadadadadadadadadjladadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadadadcqadadadadacababaa
+aaababababababababababababababababababababjkadjladadadjoadadadadadjoadadadjladadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadaeadafadaeadadacababaa
+aaababababababababababababababababababababjkadjljljljljljljljljljljljljljljladadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjkacadadaeadcqadaeadadacababaa
+aaababababababababababababababababababababjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvadadadadadadadadjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvacadadadadafadadadadacababaa
+aaababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababadadadadadadadadabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababacadadadadafadadadadacababaa
+aaacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacadadadadadadadadadadadacacaa
+aaadjwjwjwjwjwjwadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaadjwjwjwjwjwjwadadadadadadadadadadadadadadadadadadadadadadjradadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjsadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjqadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaadjwjxjxjwjwjxaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadadadadadadadadadadadadadaa
+aaadjwjwjwjwjwjwadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaafjyjyjyjyjyjyjzafafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafafafafafafafafafafafafafafafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafcqafafafafadadadadadadadadadadadafafaa
+aaadjwjwjwjwjwjwadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaadjwjxjxjwjwjxaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadaeaeadadadadadadadadadadadadadadaa
+aaadjwjwjwjwjwjwadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjuadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaadjwjwjwjwjwjwadadadadadadadadadadadjqadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadjtadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacadadadadadadadadadadadacacaa
+aaabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababacadadadadafadadadadacababaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}
