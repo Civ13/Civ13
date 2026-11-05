@@ -277,6 +277,9 @@
 				var/mob/other = AM
 				row["mob"] = TRUE
 				row["stat"] = other.stat
+			if (istype(AM, /obj/roof))
+				var/obj/roof/R = AM
+				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
 			nearby += list(row)
 	var/list/surroundings = list()
 	if (here)
@@ -319,13 +322,22 @@
 				row["sickness"] = W.sickness
 				if (W.salty)
 					row["salty"] = TRUE
+			if (istype(T, /turf/floor/dirt/underground) && !istype(T, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/U = T
+				row["safe_to_mine"] = U.mine_supported() ? TRUE : FALSE // would the opened tile stay up
 			terrain += list(row)
 	var/list/heard = list()
 	for (var/list/message in C.messages)
 		if (message["id"] > since)
 			heard += list(message)
 	var/queue_since = text2num("[req["queue_since"]]") || 0
-	return list("self" = character_state(C), "here" = here ? list("turf" = here.name, "type" = "[here.type]") : null, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
+	var/list/here_row = here ? list("turf" = here.name, "type" = "[here.type]") : null
+	if (istype(here, /turf/floor/dirt/underground))
+		var/turf/floor/dirt/underground/U = here
+		var/area/HA = get_area(U)
+		if (HA && HA.location == AREA_INSIDE)
+			here_row["cave_supported"] = U.mine_supported() ? TRUE : FALSE
+	return list("self" = character_state(C), "here" = here_row, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()

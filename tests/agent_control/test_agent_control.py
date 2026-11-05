@@ -809,5 +809,267 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(sent["body"]["options"]["num_ctx"], 32768)
 
 
+def _recipe(name, kind, inputs, outputs, era=0, conditions=""):
+    return {"name": name, "kind": kind, "era_sort": era, "conditions": conditions,
+            "inputs": [{"id": i, "name": n, "quantity": q} for i, n, q in inputs],
+            "outputs": [{"id": o, "name": n, "quantity": "1"} for o, n in outputs]}
+
+
+TINY_CATALOG = {
+    "recipes": [
+        _recipe("bone pickaxe", "Material / global", [("/material/bone", "bone", "2")], [("/obj/item/weapon/material/pickaxe/bone", "bone")]),
+        _recipe("bone pickaxe", "Material / camp", [("/material/bone", "bone", "6")], [("/obj/item/weapon/material/pickaxe/camp", "bone")]),
+        _recipe("stone anvil", "Material / global", [("/material/stone", "stone", "25")], [("/obj/structure/anvil/stone", "stone")]),
+        _recipe("iron anvil", "Material / global", [("/material/iron", "iron", "20")], [("/obj/structure/anvil", "iron")], era=2),
+        _recipe("iron altar", "Material / global", [("/material/iron", "iron", "12")], [("/obj/structure/altar", "iron")]),
+        _recipe("clay brick bloomery", "Material / global", [("/material/clay", "clay", "10")], [("/obj/structure/furnace", "clay")], era=2,
+                conditions="Explicit research node: iron_smithing."),
+        _recipe("Water", "Chemistry", [("oxygen", "oxygen", "1"), ("hydrogen", "hydrogen", "2")], [("water", "water")]),
+        _recipe("Scrape rawhide", "Leather tanning", [("/material/rawhide", "raw hide", "1")], [("/material/hairlesshide", "prepared hide")]),
+    ],
+    "acquisition": {
+        "/obj/item/stack/ore/iron_sponge": [{"name": "Bloomery", "inputs": ["/obj/item/stack/ore/iron"], "tools": ["furnace"],
+                                             "steps": ["Load iron ore and fuel into a bloomery, then turn it on."]}],
+        "/material/hairlesshide": [{"name": "Scrape rawhide", "inputs": ["/material/rawhide"], "tools": ["Held sharp tool"],
+                                    "steps": ["Apply a held sharp tool to a nearby raw hide."]}],
+        "/material/stone": [{"name": "Mine finite deposits", "inputs": ["/turf/floor/dirt/underground"], "tools": ["pickaxe"], "steps": ["Mine it."]}],
+    },
+    "resources": {"/obj/structure/anvil": {"name": "anvil"}, "/obj/structure/furnace": {"name": "furnace"}},
+}
+
+
+class TechTreeTest(unittest.TestCase):
+    def setUp(self):
+        import techtree
+        self.tree = techtree.TechTree(TINY_CATALOG)
+
+    def test_find_matches_names_not_material_labels(self):
+        self.assertEqual(self.tree.find("bone pickaxe"), "/obj/item/weapon/material/pickaxe/bone")
+        self.assertEqual(self.tree.find("furnace"), "/obj/structure/furnace")  # the bloomery's in-game name
+        self.assertEqual(self.tree.find("iron ingot"), "/material/iron")  # form words fall back to the material
+        self.assertIsNone(self.tree.find("laser rifle"))
+
+    def test_only_the_global_list_counts_for_nomads(self):
+        self.assertNotIn("/obj/item/weapon/material/pickaxe/camp", self.tree.routes)
+
+    def test_plan_gathers_first_and_skips_what_is_carried(self):
+        steps, problem = self.tree.plan("bone pickaxe")
+        self.assertEqual(problem, "")
+        self.assertEqual(steps[0], {"gather": "bone", "how": "hunt an animal and butcher it"})
+        self.assertEqual(steps[-1]["make"], "bone pickaxe")
+        self.assertEqual(steps[-1]["from"], ["2 bone"])
+        steps, _ = self.tree.plan("bone pickaxe", carried=["bones"])
+        self.assertEqual([s.get("make") for s in steps], ["bone pickaxe"])
+
+    def test_wrought_iron_uses_the_cheapest_anvil_and_a_bloomery(self):
+        steps, _ = self.tree.plan("iron ingot")
+        made = [s.get("make") for s in steps if "make" in s]
+        self.assertIn("stone anvil", made)
+        self.assertNotIn("iron anvil", made)  # an iron anvil would need the iron it is meant to make
+        self.assertIn("clay brick bloomery", made)
+        self.assertEqual(made[-1], "wrought iron")
+        self.assertLess(made.index("clay brick bloomery"), made.index("sponge iron") if "sponge iron" in made else len(made))
+
+    def test_hand_tools_are_named_not_built_and_basics_are_gathered(self):
+        steps, _ = self.tree.plan("prepared hide")
+        self.assertEqual(steps[-1]["tools"], ["a sharpened flint or a knife"])
+        self.assertFalse(any(s.get("make") == "Water" for s in steps))
+        text = self.tree.describe("bone pickaxe")
+        self.assertIn("get bone: hunt an animal", text)
+        self.assertIn("make bone pickaxe from 2 bone", text)
+
+    def test_basics_are_gathered_even_when_asked_for_directly(self):
+        self.assertEqual(self.tree.describe("water"), "get water: fill a container at a river, lake or well")  # not oxygen and hydrogen
+        self.assertEqual(self.tree.find("clay"), "/material/clay")  # a raw material nothing crafts is still an answer
+        self.assertEqual(self.tree.describe("clay"), "get clay: dig clay with a shovel at a riverbank or clay ground")
+        self.assertEqual(self.tree.find("furnace"), "/obj/structure/furnace")
+        self.assertEqual(self.tree.gather_hint("/obj/item/stack/ore/charcoal"), "")  # made at a fire, not mined
+        self.assertTrue(self.tree.gather_hint("/obj/item/stack/ore/copper"))
+
+    def test_recipe_book_requests_and_goal_items(self):
+        self.assertEqual(autopilot.recipe_request('{"plan": [{"do": "recipe", "item": "anvil"}]}'), "anvil")
+        self.assertEqual(autopilot.recipe_request('{"do": "recipe", "item": "clay kiln"}'), "clay kiln")
+        self.assertIsNone(autopilot.recipe_request('{"do": "say", "text": "hi"}'))
+        self.assertIsNone(autopilot.recipe_request("not json"))
+        self.assertEqual(autopilot.goal_item("smelt your ore: build a clay bloomery"), "iron ingot")
+        self.assertEqual(autopilot.goal_item("drink fresh water"), "")
+        self.assertEqual(autopilot.carried({"left_hand": {"name": "bone"}, "right_hand": None}), ["bone"])
+
+
+class CharacterMemoryTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from memory import CharacterMemory
+        self.dir = tempfile.mkdtemp()
+        self.Memory = CharacterMemory
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def observation(self, x=100, y=100, nearby=(), terrain=()):
+        return {"self": {"name": "Ada", "x": x, "y": y, "z": 2}, "nearby": list(nearby), "terrain": list(terrain), "messages": []}
+
+    def test_places_people_and_home_survive_a_restart(self):
+        memory = self.Memory.load("Ada", self.dir)
+        bob = {"name": "Bob", "mob": True, "stat": 0, "type": "/mob/living/human", "dx": 1, "dy": 0}
+        water = {"name": "river", "dx": 5, "dy": 0}
+        memory.observe(self.observation(nearby=[bob], terrain=[water]), speech=[("Bob", 'Bob says, "hello there"')])
+        memory.set_home(100, 100, 2, "campfire")
+        memory.remember("I promised Bob five logs")
+        memory.save()
+        again = self.Memory.load("Ada", self.dir)
+        self.assertEqual(again.data["home"]["why"], "campfire")
+        self.assertEqual(again.data["places"]["clean water"][0]["x"], 105)
+        self.assertEqual(again.data["people"]["Bob"]["they_said"], ['Bob says, "hello there"'])
+        text = again.recall(self.observation(x=120, y=100, nearby=[bob]))
+        self.assertIn("Home (campfire): 20 tiles west", text)
+        self.assertIn("Known clean water: river 15 tiles west", text)
+        self.assertIn("Bob: acquaintance, met 1 time(s)", text)
+        self.assertIn("I promised Bob five logs", text)
+
+    def test_attacks_make_a_person_hostile_but_animals_are_not_people(self):
+        memory = self.Memory.load("Ada", self.dir)
+        bob = {"name": "Bob", "mob": True, "stat": 0, "type": "/mob/living/human", "dx": 1, "dy": 0}
+        wolf = {"name": "wolf", "mob": True, "stat": 0, "type": "/mob/living/simple_animal/hostile/wolf", "dx": 0, "dy": 1}
+        memory.observe(self.observation(nearby=[bob, wolf]), attackers=["bob", "wolf"])
+        self.assertEqual(memory.data["people"]["Bob"]["trust"], -3)
+        self.assertNotIn("wolf", memory.data["people"])
+        self.assertIn("Bob: hostile", memory.recall(self.observation(nearby=[bob])))
+
+    def test_unclean_water_is_kept_apart_and_files_are_written_atomically(self):
+        memory = self.Memory.load("../evil name", self.dir)
+        self.assertEqual(memory.path.parent, Path(self.dir))  # the name cannot leave the memory folder
+        memory.observe(self.observation(terrain=[{"name": "river", "dx": 3, "dy": 3, "sickness": 1}]))
+        self.assertIn("unclean water", memory.data["places"])
+        self.assertNotIn("clean water", memory.data["places"])
+        memory.save()
+        self.assertFalse(memory.path.with_suffix(".tmp").exists())
+        self.assertTrue(memory.path.exists())
+
+    def test_replies_keep_facts_and_results_set_a_home(self):
+        self.assertEqual(autopilot.parse_remember('{"plan": [], "remember": "Bob owes me a spear"}'), "Bob owes me a spear")
+        self.assertEqual(autopilot.parse_remember('{"plan": []}'), "")
+        memory = self.Memory.load("Ada", self.dir)
+        autopilot.remember_results(memory, [{"do": "craft", "recipe": "campfire"}], "craft ok", {"x": 5, "y": 6, "z": 2})
+        self.assertEqual(memory.data["home"], {"x": 5, "y": 6, "z": 2, "why": "campfire"})
+        autopilot.remember_results(memory, [{"do": "craft", "recipe": "bed"}], "craft failed", {"x": 9, "y": 9, "z": 2})
+        self.assertEqual(memory.data["home"]["x"], 5)
+        self.assertIn("made campfire at (5,6)", [e["text"] for e in memory.data["events"]])
+
+    def test_attackers_of_reads_combat_lines_not_speech(self):
+        observation = {"self": {"name": "Ada"}, "messages": [{"text": "Bob hits Ada with a spear!"}, {"text": 'Carl says, "I hit Ada yesterday"'}]}
+        self.assertEqual(autopilot.attackers_of(observation), ["bob"])
+
+
+class StructureAndHabitTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from memory import CharacterMemory
+        self.dir = tempfile.mkdtemp()
+        self.memory = CharacterMemory.load("Ada", self.dir)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def test_built_structures_go_in_the_ledger_on_the_faced_tile(self):
+        me = {"x": 10, "y": 10, "z": 2}
+        autopilot.remember_results(self.memory, [{"do": "craft", "recipe": "roof support"}], "craft ok", me, [{"do": "face", "dir": "north"}])
+        autopilot.remember_results(self.memory, [{"do": "build", "recipe": "stone wall", "dir": "east"}], "build ok", me)
+        autopilot.remember_results(self.memory, [{"skill": "dig_down", "target": "[0x1]"}], "use ok", me)
+        autopilot.remember_results(self.memory, [{"skill": "mine", "target": "turf:9,10,2"}], "click ok", me, rows={"turf:9,10,2": {"dx": -1, "dy": 0}})
+        ledger = {(s["name"], s["x"], s["y"]) for s in self.memory.data["structures"]}
+        self.assertEqual(ledger, {("roof support", 10, 11), ("stone wall", 11, 10), ("mine shaft", 10, 10), ("tunnel", 9, 10)})
+        self.assertEqual(self.memory.data["made"], {"roof support": 1, "stone wall": 1})
+
+    def test_maintenance_flags_missing_supports_unsupported_roofs_and_tunnels(self):
+        self.memory.built("roof support", 11, 10, 2)
+        observation = {"self": {"x": 10, "y": 10, "z": 2}, "here": {"cave_supported": False},
+                       "nearby": [{"name": "thatch roof", "dx": 1, "dy": 1, "supported": False}], "terrain": []}
+        problems = self.memory.maintenance(observation)
+        self.assertTrue(any("tunnel where you stand has no support" in p for p in problems))
+        self.assertTrue(any("roof at (11,11) has no support" in p for p in problems))
+        self.assertTrue(any("roof support at (11,10) is gone" in p for p in problems))
+        observation["nearby"].append({"name": "roof support", "dx": 1, "dy": 0})
+        observation["here"] = {}
+        observation["nearby"][0]["supported"] = True
+        self.assertEqual(self.memory.maintenance(observation), [])
+        self.memory.built("roof support", 11, 10, 2)  # a gone piece is said once and dropped, so put it back for recall
+        self.assertIn("REPAIR", self.memory.recall({**observation, "nearby": []}))
+
+    def test_out_of_view_pieces_are_not_called_gone(self):
+        me = {"x": 10, "y": 10, "z": 2}
+        self.memory.built("wooden door", 13, 10, 2)  # 3 tiles off: may be behind a wall or in the dark
+        self.memory.built("campfire", 11, 10, 2)
+        crowd = [{"name": "stick", "dx": 2, "dy": 2} for _ in range(64)]  # the game lists at most 64 things
+        self.assertEqual(self.memory.maintenance({"self": me, "nearby": crowd, "terrain": []}), [])
+        problems = self.memory.maintenance({"self": me, "nearby": [], "terrain": []})
+        self.assertEqual(problems, ["your campfire at (11,10) is gone: rebuild it, or check what holds up the roof near it"])
+        self.assertEqual(self.memory.maintenance({"self": me, "nearby": [], "terrain": []}), [])  # said once, then forgotten
+        self.assertEqual([s["name"] for s in self.memory.data["structures"]], ["wooden door"])
+
+    def test_habit_guard_lets_the_goal_and_camp_fences_through(self):
+        walls = [(step, "stone wall") for step in range(1, 13)]
+        plan = [{"do": "build", "recipe": "stone wall", "dir": "north"}]
+        shelter = autopilot.current_goal({"self": {"water": 900, "nutrition": 900, "right_hand": {"name": "flint hatchet"}, "left_hand": {"name": "sharpened stick"}}, "nearby": [{"name": "campfire"}]})[0]
+        self.assertEqual(autopilot.habit_problem(plan, walls, 13, shelter), "")  # "walls" in the goal covers a stone wall
+        self.assertIn("old habit", autopilot.habit_problem(plan, walls, 13, "make a pickaxe: a stone pickaxe (2 stone)"))  # a material word is not the goal
+        fences = [(step, "wooden fence") for step in range(1, 11)]
+        self.assertEqual(autopilot.habit_problem([{"do": "build", "recipe": "wooden fence", "dir": "north"}], fences, 11, "build a campfire"), "")
+
+    def test_unsafe_rock_and_unsupported_places_take_priority(self):
+        me = {"ref": "[0x1]", "x": 1, "y": 1, "left_hand": {"name": "bone pickaxe"}, "right_hand": None, "active_hand": "left"}
+        rows = {"turf:2,1,2": {"ref": "turf:2,1,2", "name": "underground rock", "type": "/turf/floor/dirt/underground", "dx": 1, "dy": 0, "safe_to_mine": False}}
+        steps, error = autopilot.expand_skill({"skill": "mine", "target": "turf:2,1,2"}, me, rows)
+        self.assertIn("cave the tunnel in", error)
+        rows["turf:2,1,2"]["safe_to_mine"] = True
+        self.assertEqual(autopilot.expand_skill({"skill": "mine", "target": "turf:2,1,2"}, me, rows)[1], "")
+        goal, _ = autopilot.current_goal({"self": {"water": 400, "nutrition": 400}, "here": {"cave_supported": False}, "nearby": []})
+        self.assertIn("mine support", goal)
+        goal, _ = autopilot.current_goal({"self": {"water": 400, "nutrition": 400}, "nearby": [{"name": "thatch roof", "dx": 2, "dy": 0, "supported": False}]})
+        self.assertIn("roof support", goal)
+
+    def test_habit_guard_refuses_repeats_the_goal_does_not_need(self):
+        floors = [(step, "thatch floor") for step in range(1, 10)]
+        plan = [{"do": "craft", "recipe": "thatch floor"}]
+        self.assertIn("old habit", autopilot.habit_problem(plan, floors, 10, "build a campfire"))
+        self.assertEqual(autopilot.habit_problem(plan, floors[:5], 10, "build a campfire"), "")  # floors may run to 9
+        self.assertEqual(autopilot.habit_problem(plan, floors, 40, "build a campfire"), "")  # long ago
+        self.assertEqual(autopilot.habit_problem(plan, floors, 10, "lay a thatch floor in your house"), "")  # the goal asks for it
+        torches = [(1, "torch"), (2, "torch"), (3, "torch")]
+        self.assertIn("ambitious", autopilot.habit_problem([{"do": "craft", "recipe": "torch"}], torches, 4, "make a pickaxe"))
+        self.assertIn("Be ambitious", autopilot.SYSTEM)
+
+    def test_character_observation_reports_support_with_the_game_rules(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn('row["supported"] = R.is_supported()', characters)
+        self.assertIn('row["safe_to_mine"] = U.mine_supported()', characters)
+        self.assertIn('here_row["cave_supported"] = U.mine_supported()', characters)
+        roof = (ROOT / "code/game/objects/roof_stuff.dm").read_text(encoding="utf-8")
+        floor = (ROOT / "code/game/turfs/floor_attackby.dm").read_text(encoding="utf-8")
+        self.assertIn("var/supportfound = is_supported()", roof)  # collapse_check uses the same proc
+        self.assertIn("var/supportfound = mine_supported()", floor)
+
+
+class HaulingTest(unittest.TestCase):
+    def test_picking_up_a_pile_merges_it_into_the_same_stack_in_hand(self):
+        me = {"ref": "[0x1]", "left_hand": {"name": "flint hatchet"}, "right_hand": {"name": "wood logs"}, "active_hand": "left", "intent": "help"}
+        rows = {"[0x9]": {"ref": "[0x9]", "name": "wood log", "item": True, "dx": 1, "dy": 0}}
+        steps, error = autopilot.expand_skill({"skill": "pick_up", "target": "[0x9]"}, me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "swap_hand"}, {"do": "click", "target": "[0x9]"}])  # no stowing, no free hand needed
+        me["active_hand"] = "right"
+        self.assertEqual(autopilot.expand_skill({"skill": "pick_up", "target": "[0x9]"}, me, rows)[0], [{"do": "click", "target": "[0x9]"}])
+        rows["[0x9]"]["dx"] = 3
+        self.assertEqual(autopilot.expand_skill({"skill": "pick_up", "target": "[0x9]"}, me, rows)[0][0], {"do": "go", "target": "[0x9]"})
+
+    def test_different_items_are_not_merged(self):
+        self.assertFalse(autopilot._same_stack("flint hatchet", "wood log"))
+        self.assertFalse(autopilot._same_stack("empty", "wood log"))
+        self.assertFalse(autopilot._same_stack("spear", "spear"))  # not a stack
+        self.assertTrue(autopilot._same_stack("wooden planks (8)", "wooden plank"))
+
+
 if __name__ == "__main__":
     unittest.main()

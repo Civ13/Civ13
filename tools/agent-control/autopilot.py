@@ -15,6 +15,8 @@ import argparse
 import concurrent.futures
 import json
 import os
+import re
+import subprocess
 import sys
 import time
 import urllib.parse
@@ -22,6 +24,8 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
+import techtree  # noqa: E402
+from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 SKILLS = {
@@ -74,7 +78,10 @@ TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick"
 
 SYSTEM = """You control one character in Civ13, a multiplayer survival and civilization game. Play it like a real player.
 Reply with one JSON object and nothing else:
-{"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words"}
+{"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words",
+ "remember": "optional: a lasting fact to keep for days, like a promise you made or where you hid something"}
+MEMORY in the observation is what you remember from before: your home, places you found, and the people you know.
+Be warm to friends, keep your promises, and be careful around people who hurt you.
 Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent and hand for you, then clicks the target:
  find_flint (a rock: search it for flint), sharpen_flint (a rock: hit it with your flint until sharp),
  break_branch (a tree: break a branch off), pick_leaves (a leafy branch: take its leaves), make_stick (a cleared branch: strip it into a stick),
@@ -99,6 +106,8 @@ Every skill needs a target from the lists. If what you need (a rock, a tree, wat
 {"do": "take", "item": "name"} takes a carried or worn item (pocket, belt, bag) into your empty active hand; skills take the tool they need by themselves.
 Material you cannot stow (like leaf bundles) can stay on the ground where you work; pick it up again only to craft with it.
 Hands are limited. Do not drop what you gathered or made: skills free a hand themselves (stowing items first), and dropped items are left behind.
+Be ambitious: when you are fed, watered and safe, work on the hardest next step of your goal and try things you have
+never made (ask the recipe book how). Do not keep repeating a recipe that already gave you enough.
 If something attacks you, deal with it first. Animals chase you, so running rarely works once they reach you: fight with your best weapon.
 Your reflexes fight by themselves while you think. Keep a weapon (spear or axe) in hand when not working, keep away from predators,
 wear armor, stay near fire at night, and build walls or fences around your camp.
@@ -107,6 +116,8 @@ Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|exami
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
  "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second),
  "choose": "<option>" (click/use: the answer when it opens a menu)}.
+Recipe book: {"do": "recipe", "item": "<thing>"} answers what that thing needs and how to get each part, from the game's own
+recipes. It takes no game time; use it before working towards something you have not made before.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -259,8 +270,8 @@ def target_rows(observation):
     return rows
 
 
-def danger(observation, previous=None):
-    """A first-line warning when something is attacking the character, or ""."""
+def attackers_of(observation):
+    """Names of whoever the game says is hitting the character, oldest first."""
     me = observation.get("self", {})
     own = str(me.get("name") or "").lower()
     attackers = []
@@ -272,6 +283,13 @@ def danger(observation, previous=None):
             marker = f" {word} "
             if own and marker in lowered and own in lowered.split(marker, 1)[1][:len(own) + 4]:
                 attackers.append(lowered.split(marker, 1)[0].strip().removeprefix("the ")[-40:])
+    return attackers
+
+
+def danger(observation, previous=None):
+    """A first-line warning when something is attacking the character, or ""."""
+    me = observation.get("self", {})
+    attackers = attackers_of(observation)
     hurt = previous is not None and isinstance(previous.get("health"), (int, float)) and isinstance(me.get("health"), (int, float)) and me["health"] <= previous["health"] - 5
     if not attackers and not hurt:
         return ""
@@ -348,6 +366,11 @@ def current_goal(observation):
     wound = worst_wound(me)
     if wound and wound.get("bleeding"):
         return "stop your bleeding: treat it with bandages, or make bandages or find healing herbs right away", "then rest and heal"
+    if (observation.get("here") or {}).get("cave_supported") is False:
+        return "your tunnel has no support here and can cave in: build a mine support (2 wooden planks) right here now, or climb out", "then keep mining safely"
+    if any("roof" in str(row.get("name", "")).lower() and row.get("supported") is False and isinstance(row.get("dx"), int) and isinstance(row.get("dy"), int)
+           and max(abs(row["dx"]), abs(row["dy"])) <= 3 for row in observation.get("nearby", [])):
+        return "a roof near you has no support and can collapse: build a roof support (2 wooden planks) within 3 tiles of it, or a wall within 2", "then carry on"
     if isinstance(me.get("water"), (int, float)) and me["water"] < 250:
         return "drink fresh water", "then keep working on your tools"
     if hungry and _has(me, lambda n: _is_food(n) and any(word in n for word in ("roasted", "cooked", "berr", "fruit", "bread"))):
@@ -751,6 +774,9 @@ SKILL_TARGETS = {
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
 BINDING_WORDS = ("crude twine", "sinew", "rope")
+# Things that come in stacks the game merges when one is clicked with the other.
+STACK_WORDS = ("log", "plank", "stone", "leaves", "leaf", "grass", "bone", "hide", "pelt", "clay", "ore", "brick",
+               "twine", "sinew", "rope", "cloth", "coin", "ingot", "sheet", "bark", "thatch", "seed", "arrow", "bandage")
 
 
 def _underfoot(row):
@@ -814,6 +840,8 @@ def expand_skill(step, self_state, rows=None):
             row = None
         else:
             return [], f"{step['skill']} needs a target number from the lists, not yourself (0). If nothing suitable is listed, explore in some direction to find it"
+    if row is not None and step["skill"] == "mine" and row.get("safe_to_mine") is False:
+        return [], "mining that rock would cave the tunnel in on you: build a mine support (2 wooden planks) within 2 tiles of it first"
     if row is not None and step["skill"] == "sharpen_stick" and not _is_plain_stick(row.get("name")):
         return [], f"sharpen_stick needs a stick (on the ground or in your other hand), not the {row.get('name')}"
     redirect = row is not None and row.get("branch") in ("leafy", "cleared") and step["skill"] in ("pick_up", "pick_leaves", "make_stick")
@@ -833,6 +861,15 @@ def expand_skill(step, self_state, rows=None):
             return [], f"the {row.get('name')} has no branches; pick a tree marked (has branches)"
         if not adjacent(row):
             steps.append({"do": "go", "target": step["target"]})
+    if step["skill"] == "pick_up" and row is not None and row.get("item"):
+        # The same stack already in a hand: click the pile with it and the piles merge, no free hand needed.
+        if _same_stack(active, row.get("name")) or _same_stack(other, row.get("name")):
+            if not _same_stack(active, row.get("name")):
+                steps.append({"do": "swap_hand"})
+            if self_state.get("intent") != intent:
+                steps.append({"do": "intent", "intent": intent})
+            steps.append({"do": "click", "target": step["target"]})
+            return steps, ""
     if need == "any":
         pass
     elif need == "empty":
@@ -867,6 +904,19 @@ def expand_skill(step, self_state, rows=None):
         steps.append({"do": "intent", "intent": intent})
     steps.extend({"do": "click", "target": step["target"]} for _ in range(clicks))
     return steps, ""
+
+
+def _stack_words(name):
+    """A stack's name without its count or plural ("wood logs (5)" -> "wood log")."""
+    text = re.sub(r"\(.*?\)|\d+", " ", str(name or "").lower())
+    return " ".join(word[:-1] if word.endswith("s") and len(word) > 3 else word for word in text.split())
+
+
+def _same_stack(held, ground):
+    """True when a held item and a loose item look like the same kind of stack."""
+    if not held or held == "empty" or not ground:
+        return False
+    return _stack_words(held) == _stack_words(ground) and any(word in _stack_words(held) for word in STACK_WORDS)
 
 
 def _expand_eat(active, other, self_state):
@@ -1226,6 +1276,8 @@ def main(argv=None):
     # Matching Player Help's num_ctx keeps Ollama from reloading the shared model between the two.
     parser.add_argument("--num-ctx", type=int, default=_int(defaults.get("num_ctx"), 8192))
     parser.add_argument("--timeout", type=float, default=max(120.0, _float(defaults.get("timeout_seconds"), 0.0)), help="seconds to wait for each model reply")
+    parser.add_argument("--memory", default="", help='folder for the character\'s long-term memory (default data/agent-control/memory; "none" turns it off)')
+    parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
     if not args.model:
@@ -1271,6 +1323,52 @@ def run(client, args, character, token):
         return _run(client, args, character, token, model_pool)
 
 
+# What the recipe book is asked about for a ladder goal (matched on the goal's opening words).
+GOAL_ITEMS = (
+    ("make a pickaxe", "bone pickaxe"),
+    ("smelt your ore", "iron ingot"),
+    ("arm yourself", "leather armor"),
+    ("craft metal tools", "pickaxe head"),
+    ("furnish your house", "bed"),
+)
+
+
+def goal_item(goal):
+    """The item the current ladder goal is about, for the recipe book ("" when none)."""
+    return next((item for start, item in GOAL_ITEMS if goal.startswith(start)), "")
+
+
+def carried(self_state):
+    """Names of everything in hand or stowed."""
+    names = [_name(self_state.get("left_hand")), _name(self_state.get("right_hand"))] + _stowed(self_state)
+    return [str(name) for name in names if name and name != "empty"]
+
+
+def recipe_request(text):
+    """The item a {"do": "recipe"} reply asks about, or None."""
+    try:
+        data = json.loads(text)
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    raw = data.get("plan")
+    first = raw[0] if isinstance(raw, list) and raw else data
+    if not isinstance(first, dict) or str(first.get("do", "")).lower() != "recipe":
+        return None
+    item = str(first.get("item") or first.get("recipe") or first.get("name") or "").strip()
+    return item[:64] or None
+
+
+def load_tree(path):
+    """The recipe planner, or None when the catalog cannot be read or built."""
+    try:
+        return techtree.load(path)
+    except (OSError, ValueError, subprocess.CalledProcessError) as exc:
+        print(f"recipe book unavailable: {exc}", file=sys.stderr)
+        return None
+
+
 def _run(client, args, character, token, model_pool):
     system = SYSTEM + f"\nYour goal: {args.goal}"
     tips = load_tips()
@@ -1293,6 +1391,10 @@ def _run(client, args, character, token, model_pool):
     seen_lines = {}  # message text -> steps it showed up in; ones that keep coming back (heat, weather) are muted
     muted = set()
     replied = {}  # speaker -> monotonic time of the last answer to them
+    made_recent = []  # (step, recipe) for recent successful crafts and builds
+    asked_recently = {}  # recipe-book item -> step it was last looked up
+    memory = None  # loaded once the character's name is known
+    tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
         if deadline and time.monotonic() > deadline:
@@ -1305,9 +1407,17 @@ def _run(client, args, character, token, model_pool):
         observation = reply["result"]
         since = observation.get("last_message", since)
         self_state = observation.get("self", {})
+        if memory is None and getattr(args, "memory", "") != "none" and self_state.get("name"):
+            memory = CharacterMemory.load(self_state["name"], args.memory or None)
+            print(f"  memory: {memory.path} ({len(memory.data['people'])} people, {len(memory.data['events'])} events)")
         if self_state.get("stat") not in (None, 0):
             print(f"step {step}: {self_state.get('name')} is {'dead' if self_state.get('stat') == 2 else 'unconscious'}; stopping")
+            if memory is not None:
+                memory.event("died" if self_state.get("stat") == 2 else "fell unconscious")
+                memory.save()
             break
+        if memory is not None:
+            memory.observe(observation, speech_lines(observation.get("messages", []), self_state.get("name")), attackers_of(observation))
         alarm = danger(observation, previous_self)
         if alarm:
             print(f"  {alarm}")
@@ -1344,7 +1454,11 @@ def _run(client, args, character, token, model_pool):
         text, refs = summarize(observation, note, ignored, muted)
         talk, speakers = speech_prompt(speech_lines(observation.get("messages", []), self_state.get("name")), replied, time.monotonic())
         goal, after = current_goal(observation)
-        text = f"CURRENT GOAL: {goal} ({after}).\n" + text
+        item = goal_item(goal) if tree else ""
+        how = tree.describe(item, carried(self_state), limit=4) if item else ""
+        recalled = memory.recall(observation) if memory is not None else ""
+        text = (f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "")
+                + text + (f"\nMEMORY:\n{recalled}" if recalled else ""))
         prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
         forget_old(history, signatures, target_turns, seen_lines)
@@ -1376,6 +1490,20 @@ def _run(client, args, character, token, model_pool):
             time.sleep(args.interval)
             continue
         note = parse_note(answer) or note
+        fact = parse_remember(answer)
+        if fact and memory is not None:
+            memory.remember(fact)
+        asked = recipe_request(answer)
+        if asked:
+            if asked_recently.get(asked.lower(), -99) > step - 10:
+                answer_text = "you looked this up a moment ago; act on it now"
+            else:
+                answer_text = tree.describe(asked, carried(self_state), limit=8) if tree else "the recipe book is not available"
+            asked_recently[asked.lower()] = step
+            print(f"step {step}: recipe {asked!r} -> {answer_text[:200]}")
+            previous_self = self_state
+            feedback = f"\nRecipe book, {asked}: {answer_text}"
+            continue
         plan = parse_plan(answer, refs)
         care, _ = treat_plan(self_state) if not reflex(observation, previous_self)[0] else ([], "")
         wound = worst_wound(self_state)
@@ -1407,6 +1535,7 @@ def _run(client, args, character, token, model_pool):
         else:
             signatures.extend(f"{self_state.get('x')},{self_state.get('y')}:{json.dumps(item, sort_keys=True)}" for item in plan)
             steps, error = expand_plan(plan, self_state, target_rows(observation))
+            error = error or habit_problem(plan, made_recent, step, goal)
             facing = open_direction(observation)
             craft_at = next((index for index, item in enumerate(steps) if item.get("do") == "craft"), None)
             if facing and craft_at is not None and not (craft_at and steps[craft_at - 1].get("do") == "face"):
@@ -1420,6 +1549,13 @@ def _run(client, args, character, token, model_pool):
             if "say ok" in summary:
                 for who in speakers:
                     replied[who] = time.monotonic()  # only an answer that was actually said counts
+                spoken = next((item.get("text", "") for item in plan if item.get("do") == "say"), "")
+                if memory is not None and speakers and spoken:
+                    memory.said(speakers, spoken)
+            remember_results(memory, plan, summary, self_state, steps, rows_now)
+            if "failed" not in summary and "not possible" not in summary:
+                made_recent.extend((step, str(item.get("recipe")).lower()) for item in plan if item.get("do") in ("craft", "build") and item.get("recipe"))
+                del made_recent[:-100]
             if "explore failed" in summary or "explore ok (walked 0" in summary:
                 explore_dir = {"north": "east", "east": "south", "south": "west", "west": "north"}[explore_dir]
             word = next((COLLECT_AFTER[item["skill"]] for item in plan if item.get("skill") in COLLECT_AFTER), None)
@@ -1432,7 +1568,11 @@ def _run(client, args, character, token, model_pool):
             problem = plan_problem(answer, refs)
             if problem:
                 feedback += f"\nA later step was skipped: {problem}."
+        if memory is not None:
+            memory.save()
         time.sleep(args.interval)
+    if memory is not None:
+        memory.save()
     return 0
 
 
@@ -1449,6 +1589,78 @@ def forget_old(history, signatures, target_turns, seen_lines):
     if len(seen_lines) > LINES_KEEP:
         for key in list(seen_lines)[:len(seen_lines) - LINES_KEEP]:
             del seen_lines[key]
+
+
+def parse_remember(text):
+    """The lasting fact a reply asked to keep, or ""."""
+    try:
+        data = json.loads(text)
+    except (TypeError, ValueError):
+        return ""
+    fact = data.get("remember") if isinstance(data, dict) else None
+    return str(fact).strip()[:120] if isinstance(fact, str) and fact.strip() else ""
+
+
+HOME_RECIPES = ("campfire", "bed")
+
+
+STEP_OFFSETS = {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+
+
+def remember_results(memory, plan, summary, self_state, steps=(), rows=None):
+    """Log what a plan made, count it, ledger the structures it placed, and make the first campfire or bed home."""
+    if memory is None or "failed" in summary or "not possible" in summary:
+        return
+    x, y, z = self_state.get("x"), self_state.get("y"), self_state.get("z")
+    if not isinstance(x, int) or not isinstance(y, int):
+        return
+    faced = next((step.get("dir") for step in steps if step.get("do") == "face"), None)
+    for item in plan:
+        made = item.get("recipe") if item.get("do") in ("craft", "build") else None
+        if made:
+            memory.event(f"made {made} at ({x},{y})")
+            memory.made(made)
+            dx, dy = STEP_OFFSETS.get(item.get("dir") or faced or "", (0, 0))  # structures go on the faced tile
+            memory.built(made, x + dx, y + dy, z)
+            if not memory.data.get("home") and any(word in made.lower() for word in HOME_RECIPES):
+                memory.set_home(x, y, z, made)
+        elif item.get("do") == "roof":
+            dx, dy = STEP_OFFSETS.get(item.get("dir"), (0, 0))
+            memory.built("roof", x + dx, y + dy, z)
+        elif item.get("skill") == "dig_down":
+            memory.built("mine shaft", x, y, z)
+            memory.event(f"dug a mine shaft at ({x},{y})")
+        elif item.get("skill") == "mine":
+            row = (rows or {}).get(item.get("target")) or {}
+            if isinstance(row.get("dx"), int) and isinstance(row.get("dy"), int):
+                memory.built("tunnel", x + row["dx"], y + row["dy"], z)
+            memory.event(f"mined at ({x},{y})")
+        elif item.get("skill") in ("butcher", "bind_axe", "cook"):
+            memory.event(f"did {item['skill']} at ({x},{y})")
+
+
+# How many of a recipe a camp can use in a while; past that, more of it is an old habit, not progress.
+HABIT_CAPS = (("wall", 12), ("roof", 12), ("floor", 9), ("support", 6), ("plank", 6), ("arrow", 20), ("fence", 16), ("palisade", 16))
+HABIT_WINDOW = 25  # steps
+HABIT_DEFAULT = 3
+
+
+def habit_problem(plan, made_recent, step, goal):
+    """Why a plan repeats a recipe the goal does not need ("" when it is fine)."""
+    for item in plan:
+        recipe = str(item.get("recipe") or "").lower() if item.get("do") in ("craft", "build") else ""
+        if not recipe:
+            continue
+        # The goal names kinds, not materials: "walls" asks for a stone wall, and "(2 stone)" does not.
+        kind = recipe.split()[-1]
+        if recipe in goal.lower() or re.search(r"\b" + re.escape(kind), goal.lower()):
+            continue
+        cap = next((limit for word, limit in HABIT_CAPS if word in recipe), HABIT_DEFAULT)
+        count = sum(1 for turn, name in made_recent if name == recipe and turn > step - HABIT_WINDOW)
+        if count >= cap:
+            return (f"you have made {recipe} {count} times recently, which is plenty; repeating it is an old habit, not progress. "
+                    f"Be ambitious: work on your goal ({goal}) and ask the recipe book how")
+    return ""
 
 
 def parse_note(text):
