@@ -103,6 +103,44 @@ var/global/list/factory_active_fabricators = list()
 	work_speed = 0.5
 	powerneeded = 15
 
+// Digital Age (2026). Prints only the tier-4 printing recipes, from plastic
+// feedstock. Unlike the other fabricators it also takes feedstock by hand, so
+// a workshop without belts or arms can still run one.
+#define FACTORY_PRINTER_TIER 4
+/obj/structure/factory_fabricator/printer
+	name = "3D printer"
+	desc = "An additive manufacturing printer that builds plastic goods layer by layer. Set what it prints by hand, then load plastic by hand or with arms and belts. Cable it to run; prints are left in front of it."
+	icon_state = "autoclaveb"
+	base_state = "autoclaveb"
+	tier = FACTORY_PRINTER_TIER
+	work_speed = 0.5
+	powerneeded = 8
+
+/obj/structure/factory_fabricator/printer/update_icon()
+	icon_state = base_state
+
+/obj/structure/factory_fabricator/printer/available_recipes(faction)
+	var/list/result = list()
+	for (var/name in ..())
+		var/datum/factory_recipe/R = factory_recipes[name]
+		if (R.tier == FACTORY_PRINTER_TIER)
+			result += name
+	return result
+
+/obj/structure/factory_fabricator/printer/attackby(obj/item/W, mob/user)
+	var/datum/factory_recipe/R = current_recipe()
+	if (R && ishuman(user) && recipe_input_for(W, R))
+		var/amount = factory_accepts(W)
+		if (amount <= 0)
+			to_chat(user, SPAN_WARNING("\The [src] is already loaded with enough [W.name]."))
+			return
+		if (amount >= factory_item_amount(W))
+			user.remove_from_mob(W)
+		if (factory_insert(W) > 0)
+			to_chat(user, SPAN_NOTICE("You load [amount] [W.name] into \the [src]."))
+		return
+	return ..()
+
 /obj/structure/factory_fabricator/New()
 	..()
 	update_icon()
@@ -338,3 +376,4 @@ var/global/list/factory_active_fabricators = list()
 #undef FACTORY_FAB_BUFFER_CYCLES
 #undef FACTORY_FAB_OUTPUT_LIMIT
 #undef FACTORY_FAB_STEP
+#undef FACTORY_PRINTER_TIER
