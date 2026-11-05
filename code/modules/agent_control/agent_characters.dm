@@ -11,11 +11,14 @@
 #define AGENT_CHARACTER_QUEUE_MAX 64
 #define AGENT_CHARACTER_QUEUE_BATCH 32
 #define AGENT_CHARACTER_SPEECH_DELAY 10
+#define AGENT_CHOICE_WINDOW 300 // ticks a step's prompt answer stays valid
 
 /datum/agent_character
 	var/mob/living/body
 	var/owner_agent // spawned characters: the agent that owns them
 	var/handover_ckey // opted-in characters: the player who allowed it
+	var/pending_choice // answer for the next game prompt (WWinput) during one step
+	var/pending_choice_until = 0 // world.time after which that answer is stale
 	var/list/messages = list()
 	var/message_serial = 0
 	var/next_action = 0
@@ -229,6 +232,28 @@
 		out["carried"] = carried
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
+		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
+		var/list/wounds = list()
+		for (var/obj/item/organ/external/E in H.organs)
+			var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
+			var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
+			var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
+			if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
+				continue
+			var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
+			// Field-care state: a cut artery wants a bandage tied as a tourniquet
+			// (the first bandage click does it), a break wants a splint.
+			if (artery)
+				row["artery_cut"] = TRUE
+			if (E.tourniquet)
+				row["tourniquet"] = TRUE
+			if (E.status & ORGAN_SPLINTED)
+				row["splinted"] = TRUE
+			if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
+				row["infected"] = TRUE
+			wounds += list(row)
+		out["wounds"] = wounds
+		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out
 
 /datum/agent_control/proc/act_character_observe(datum/agent_identity/A, list/req)
@@ -264,6 +289,9 @@
 				var/mob/other = AM
 				row["mob"] = TRUE
 				row["stat"] = other.stat
+			if (istype(AM, /obj/roof))
+				var/obj/roof/R = AM
+				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
 			nearby += list(row)
 	var/list/surroundings = list()
 	if (here)
@@ -287,20 +315,41 @@
 			if (T == here || !T.name)
 				continue
 			var/d = get_dist(here, T)
-			var/list/best = nearest[T.name]
+			// Clean and contaminated water look alike; list the nearest of each.
+			var/kind = T.name
+			if (istype(T, /turf/floor/beach/water))
+				var/turf/floor/beach/water/W = T
+				if (W.sickness > 0)
+					kind = "[T.name] (unclean)"
+			var/list/best = nearest[kind]
 			if (!best || d < best["d"])
-				nearest[T.name] = list("d" = d, "turf" = T)
+				nearest[kind] = list("d" = d, "turf" = T)
 		for (var/turf_name in nearest)
 			if (terrain.len >= 16)
 				break
 			var/turf/T = nearest[turf_name]["turf"]
-			terrain += list(list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y))
+			var/list/row = list("ref" = "turf:[T.x],[T.y],[T.z]", "name" = T.name, "type" = "[T.type]", "dx" = T.x - here.x, "dy" = T.y - here.y)
+			if (istype(T, /turf/floor/beach/water))
+				var/turf/floor/beach/water/W = T
+				row["sickness"] = W.sickness
+				if (W.salty)
+					row["salty"] = TRUE
+			if (istype(T, /turf/floor/dirt/underground) && !istype(T, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/U = T
+				row["safe_to_mine"] = U.mine_supported() ? TRUE : FALSE // would the opened tile stay up
+			terrain += list(row)
 	var/list/heard = list()
 	for (var/list/message in C.messages)
 		if (message["id"] > since)
 			heard += list(message)
 	var/queue_since = text2num("[req["queue_since"]]") || 0
-	return list("self" = character_state(C), "here" = here ? list("turf" = here.name, "type" = "[here.type]") : null, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
+	var/list/here_row = here ? list("turf" = here.name, "type" = "[here.type]") : null
+	if (istype(here, /turf/floor/dirt/underground))
+		var/turf/floor/dirt/underground/U = here
+		var/area/HA = get_area(U)
+		if (HA && HA.location == AREA_INSIDE)
+			here_row["cave_supported"] = U.mine_supported() ? TRUE : FALSE
+	return list("self" = character_state(C), "here" = here_row, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
@@ -338,6 +387,9 @@
 	usr = M
 	var/action = lowertext("[req["do"]]")
 	var/detail = ""
+	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
+	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
+	C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
@@ -371,6 +423,9 @@
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
 				params = "[req["modifier"]]=1"
+			// The body part a click aims at (the zone selector): bandages and attacks use it.
+			if (req["zone"] in list("head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"))
+				M.targeted_organ = req["zone"]
 			C.next_action = world.time + 2
 			detail = "[target] ([agent_ref(target)]) [params]"
 			if (from_queue)
@@ -580,7 +635,9 @@
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
-	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item"))
+	if (!isnull(step["choose"]))
+		agent_text_arg(step, "choose", 64)
+	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

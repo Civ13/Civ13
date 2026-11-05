@@ -64,6 +64,9 @@
 	var/fracturetimer = 0
 	var/artery_name = "artery"		 	// Flavour text for carotid artery, aorta, etc.
 	var/arterial_bleed_severity = 2		// Multiplier for bleeding in a limb.
+	var/tourniquet = FALSE				// A tourniquet is tightened on this limb.
+	var/tourniquet_ticks = 0			// Life ticks the tourniquet has been on (not world.time, so it survives saves).
+	var/fracture_heal_ticks = 0			// Life ticks of splinted healing toward a mended fracture.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
@@ -420,6 +423,9 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/rejuvenate()
 	damage_state = "00"
 	status = FALSE
+	tourniquet = FALSE
+	tourniquet_ticks = 0
+	fracture_heal_ticks = 0
 	perma_injury = FALSE
 	brute_dam = FALSE
 	burn_dam = FALSE
@@ -506,6 +512,8 @@ This function completely restores a damaged organ to perfect condition.
 		last_dam = brute_dam + burn_dam
 	if (germ_level)
 		return TRUE
+	if (tourniquet)
+		return TRUE
 	return FALSE
 
 /obj/item/organ/external/process()
@@ -529,6 +537,9 @@ This function completely restores a damaged organ to perfect condition.
 
 		if (!(status & ORGAN_BROKEN))
 			perma_injury = FALSE
+
+		handle_tourniquet()
+		handle_fracture_healing()
 
 		//Infections
 		update_germs()
@@ -567,7 +578,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		handle_germ_effects()
 
 /obj/item/organ/external/proc/handle_germ_sync()
-	var/antibiotics = owner.reagents.get_reagent_amount("penicillin")
+	var/antibiotics = owner.get_antibiotic_dose()
 	for (var/datum/wound/W in wounds)
 		//Open wounds can become infected
 		if (owner.germ_level > W.germ_level && W.infection_check())
@@ -585,7 +596,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (germ_level < INFECTION_LEVEL_TWO)
 		return ..()
 
-	var/antibiotics = owner.reagents.get_reagent_amount("penicillin")
+	var/antibiotics = owner.get_antibiotic_dose()
 
 	if (germ_level >= INFECTION_LEVEL_TWO)
 		//spread the infection to internal organs
@@ -920,6 +931,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 			return FALSE
 	return TRUE
 
+// Expert field treatment: closes every treated external wound at once.
+// Internal wounds (internal bleeding) still need surgery, so they stay.
+/obj/item/organ/external/proc/clear_treated_external_wounds()
+	for (var/datum/wound/W in wounds)
+		if (W.internal)
+			continue
+		wounds -= W
+	update_damages()
+	if (owner)
+		owner.UpdateDamageIcon()
+		owner.updatehealth()
+
 /obj/item/organ/external/proc/bandage()
 	var/rval = FALSE
 	status &= ~ORGAN_BLEEDING
@@ -966,6 +989,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			owner.emote("painscream")
 
 	status |= ORGAN_BROKEN
+	fracture_heal_ticks = 0
 	broken_description = "broken"//pick("broken","fracture","hairline fracture")
 	perma_injury = brute_dam
 
@@ -976,7 +1000,72 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/proc/mend_fracture()
 	status &= ~ORGAN_BROKEN
+	fracture_heal_ticks = 0
 	return TRUE
+
+// A splinted break slowly knits back together; resting doubles the pace.
+// Bone surgery remains the fast path.
+/obj/item/organ/external/proc/handle_fracture_healing()
+	if (!owner || !(status & ORGAN_BROKEN) || !(status & ORGAN_SPLINTED) || (status & ORGAN_DEAD))
+		return
+	fracture_heal_ticks += owner.lying ? 2 : 1
+	if (fracture_heal_ticks < FRACTURE_HEAL_TICKS)
+		return
+	mend_fracture()
+	perma_injury = 0
+	status &= ~ORGAN_SPLINTED
+	new /obj/item/stack/medical/splint/small(get_turf(owner))
+	to_chat(owner, SPAN_NOTICE("The bone in your [name] has knit back together. You take off the splint."))
+
+/obj/item/organ/external/proc/can_take_tourniquet()
+	return limb_name in list("l_arm", "r_arm", "l_leg", "r_leg", "l_hand", "r_hand", "l_foot", "r_foot")
+
+// TRUE when this limb, or a limb above it, is under a tourniquet.
+/obj/item/organ/external/proc/is_tourniqueted()
+	var/obj/item/organ/external/E = src
+	while (E)
+		if (E.tourniquet)
+			return TRUE
+		E = E.parent
+	return FALSE
+
+// TRUE when any outer wound on the limb is bandaged (pressure on the bleed).
+/obj/item/organ/external/proc/has_bandaged_wound()
+	for (var/datum/wound/W in wounds)
+		if (!W.internal && W.bandaged)
+			return TRUE
+	return FALSE
+
+/obj/item/organ/external/proc/apply_tourniquet()
+	tourniquet = TRUE
+	tourniquet_ticks = 0
+	if (owner)
+		owner.bad_external_organs |= src
+
+/obj/item/organ/external/proc/remove_tourniquet()
+	tourniquet = FALSE
+	tourniquet_ticks = 0
+
+// A tourniquet stops all bleeding below it. A small (severity 1) artery under
+// a tourniquet and a bandage clots closed after a while. Left on too long the
+// limb goes numb and finally dies (debridement surgery treats necrosis).
+/obj/item/organ/external/proc/handle_tourniquet()
+	if (!tourniquet || !owner)
+		return
+	tourniquet_ticks++
+	if ((status & ORGAN_ARTERY_CUT) && arterial_bleed_severity <= 1 && tourniquet_ticks >= TOURNIQUET_CLOT_TICKS && has_bandaged_wound())
+		status &= ~ORGAN_ARTERY_CUT
+		to_chat(owner, SPAN_NOTICE("The bleeding from your [artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
+	if (tourniquet_ticks < TOURNIQUET_NUMB_TICKS)
+		return
+	if (tourniquet_ticks >= TOURNIQUET_NUMB_TICKS * 2)
+		if (!(status & ORGAN_DEAD))
+			status |= ORGAN_DEAD
+			to_chat(owner, SPAN_DANGER("You can't feel your [name] anymore. The tourniquet was left on too long."))
+			owner.update_body(1)
+		return
+	if (tourniquet_ticks % 60 == 0)
+		owner.custom_pain("Your [name] throbs and tingles under the tourniquet!", 30, affecting = src)
 
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage

@@ -25,7 +25,7 @@
 
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		if (!affected) return
-		var/internal_bleeding = FALSE
+		var/internal_bleeding = (affected.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
 		for (var/datum/wound/W in affected.wounds) if (W.internal)
 			internal_bleeding = TRUE
 			break
@@ -46,7 +46,10 @@
 
 		for (var/datum/wound/W in affected.wounds) if (W.internal)
 			affected.wounds -= W
-			affected.update_damages()
+		// A severed artery is repaired by the same step; nothing else clears it.
+		affected.status &= ~ORGAN_ARTERY_CUT
+		affected.remove_tourniquet()
+		affected.update_damages()
 		if (ishuman(user) && prob(40)) user:bloody_hands(target, FALSE)
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)

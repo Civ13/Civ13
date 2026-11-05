@@ -7,6 +7,7 @@ copy of that save, and pull and compile master while the server is stopped.
 
     python gaia_host.py --config gaia-host.json status
     python gaia_host.py --config gaia-host.json start|stop|restart|update
+    python gaia_host.py --config gaia-host.json freeze|thaw|watch
 
 status prints one JSON object and never changes anything. The other actions
 take a lock, record their progress in <state_dir>/operation.json and run in a
@@ -16,10 +17,18 @@ commands or arguments from the caller; everything comes from the config file.
 
 The world must have config/lifecycle-token.txt (32 hex characters, git-ignored)
 for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD.
+
+freeze suspends the running dd.exe while nobody is online, so it uses no CPU
+and its memory can go to the pagefile; thaw resumes the same process, with
+every object exactly as it was. watch does both: it freezes the server after
+freeze_idle_minutes with no clients and thaws it as soon as a player's TCP
+connection reaches the port. The world notices the jump in wall-clock time
+itself (code/_helpers/wall_clock.dm).
 """
 from __future__ import annotations
 
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -28,6 +37,7 @@ import re
 import secrets
 import shutil
 import socket
+import struct
 import subprocess
 import sys
 import time
@@ -35,7 +45,14 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
 
-ACTIONS = ('status', 'start', 'stop', 'restart', 'update')
+ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch')
+DIRECT = ('freeze', 'thaw', 'watch')  # quick or long-running; no detached worker
+# Status pollers such as the Discord bot connect from this machine, so by
+# default only other addresses wake a frozen server.
+# Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
+# in slows the wake past the launcher's patience, so it is opt-in.
+FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake_ignore': ['127.0.0.1', '::1'],
+                   'wake_poll_seconds': 0.2}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -57,7 +74,92 @@ def load_config(path):
     config.setdefault('start_timeout_seconds', 120)
     config.setdefault('backups_kept', 3)
     config.setdefault('branch', 'master')
+    for key, value in FREEZE_DEFAULTS.items():
+        config.setdefault(key, value)
     return config
+
+
+def parse_netstat(text):
+    """Rows of (local_port, remote_address, state, pid) from Windows `netstat -ano -p TCP`."""
+    rows = []
+    for line in text.splitlines():
+        parts = line.split()
+        if len(parts) != 5 or parts[0] != 'TCP' or not parts[4].isdigit():
+            continue
+        local, remote = parts[1].rsplit(':', 1), parts[2].rsplit(':', 1)
+        if len(local) != 2 or len(remote) != 2 or not local[1].isdigit():
+            continue
+        rows.append((int(local[1]), remote[0].strip('[]'), parts[3], int(parts[4])))
+    return rows
+
+
+TCP_STATES = {2: 'LISTENING', 5: 'ESTABLISHED'}
+
+
+def parse_tcp_table(buffer, ipv6=False):
+    """Rows of (local_port, remote_address, state, pid) from a GetExtendedTcpTable
+    TCP_TABLE_OWNER_PID_ALL buffer (MIB_TCPTABLE_OWNER_PID or MIB_TCP6TABLE_OWNER_PID)."""
+    count = struct.unpack_from('<I', buffer, 0)[0]
+    size = 56 if ipv6 else 24
+    if 4 + count * size > len(buffer):
+        raise ValueError('truncated TCP table')
+    rows = []
+    for index in range(count):
+        offset = 4 + index * size
+        if ipv6:
+            local_port, = struct.unpack_from('<I', buffer, offset + 20)
+            remote = socket.inet_ntop(socket.AF_INET6, bytes(buffer[offset + 24:offset + 40]))
+            remote_port, state, pid = struct.unpack_from('<III', buffer, offset + 44)
+            if remote.startswith('::ffff:') and '.' in remote:
+                remote = remote[7:]
+        else:
+            state, _, local_port, remote_raw, remote_port, pid = struct.unpack_from('<IIIIII', buffer, offset)
+            remote = socket.inet_ntop(socket.AF_INET, struct.pack('<I', remote_raw))
+        port = socket.ntohs(local_port & 0xffff)
+        rows.append((port, remote, TCP_STATES.get(state, str(state)), pid))
+    return rows
+
+
+def windows_tcp_rows():
+    """Read both TCP tables through iphlpapi; much cheaper than running netstat."""
+    iphlpapi = ctypes.windll.iphlpapi
+    rows = []
+    for family, ipv6 in ((2, False), (23, True)):  # AF_INET, AF_INET6
+        size = ctypes.c_ulong(0)
+        for _ in range(4):  # the table can grow between the size query and the read
+            buffer = ctypes.create_string_buffer(max(size.value, 4))
+            result = iphlpapi.GetExtendedTcpTable(buffer, ctypes.byref(size), False, family, 5, 0)  # OWNER_PID_ALL
+            if result == 0:
+                rows += parse_tcp_table(buffer.raw[:size.value], ipv6)
+                break
+            if result != 122:  # ERROR_INSUFFICIENT_BUFFER
+                raise OSError('GetExtendedTcpTable failed: %d' % result)
+        else:
+            raise OSError('GetExtendedTcpTable kept growing')
+    return rows
+
+
+def parse_proc_net(text, ipv6=False):
+    """Rows of (local_port, remote_address, state, inode) from Linux /proc/net/tcp{,6}."""
+    states = {'01': 'ESTABLISHED', '0A': 'LISTENING'}
+    rows = []
+    for line in text.splitlines()[1:]:
+        parts = line.split()
+        if len(parts) < 10:
+            continue
+        port = int(parts[1].rsplit(':', 1)[1], 16)
+        address = parts[2].rsplit(':', 1)[0]
+        raw = bytes.fromhex(address)
+        if ipv6:
+            words = b''.join(raw[i:i + 4][::-1] for i in range(0, 16, 4))
+            if words[:12] == b'\0' * 10 + b'\xff\xff':
+                remote = socket.inet_ntop(socket.AF_INET, words[12:])
+            else:
+                remote = socket.inet_ntop(socket.AF_INET6, words)
+        else:
+            remote = socket.inet_ntop(socket.AF_INET, raw[::-1])
+        rows.append((port, remote, states.get(parts[3], parts[3]), int(parts[9])))
+    return rows
 
 
 class Platform:
@@ -91,6 +193,97 @@ class Platform:
 
     def sleep(self, seconds):
         time.sleep(seconds)
+
+    # -- freezing ----------------------------------------------------------
+    def tcp_rows(self):
+        if os.name == 'nt':
+            try:
+                return windows_tcp_rows()
+            except (OSError, ValueError, AttributeError):
+                code, out = self.run(['netstat', '-ano', '-p', 'TCP'], timeout=60)
+                return parse_netstat(out) if code == 0 else []
+        rows = []
+        for name, ipv6 in (('tcp', False), ('tcp6', True)):
+            try:
+                rows += parse_proc_net(Path('/proc/net/' + name).read_text(), ipv6)
+            except OSError:
+                pass
+        return rows
+
+    def server_pid(self, port):
+        """The process listening on the port, or None."""
+        rows = [row for row in self.tcp_rows() if row[0] == port and row[2] == 'LISTENING']
+        if not rows:
+            return None
+        if os.name == 'nt':
+            return rows[0][3]
+        inodes = {'socket:[%d]' % row[3] for row in rows}
+        for entry in Path('/proc').iterdir():
+            if not entry.name.isdigit():
+                continue
+            try:
+                if any(os.readlink(fd) in inodes for fd in (entry / 'fd').iterdir()):
+                    return int(entry.name)
+            except OSError:
+                continue
+        return None
+
+    def connections(self, port):
+        """Remote addresses with an established connection to the port."""
+        return [row[1] for row in self.tcp_rows() if row[0] == port and row[2] == 'ESTABLISHED']
+
+    def alive(self, pid):
+        if os.name == 'nt':
+            handle = self._open(pid, 0x1000)  # PROCESS_QUERY_LIMITED_INFORMATION
+            if not handle:
+                return False
+            code = ctypes.c_ulong()
+            ok = ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(code))
+            ctypes.windll.kernel32.CloseHandle(handle)
+            return bool(ok) and code.value == 259  # STILL_ACTIVE
+        try:
+            os.kill(pid, 0)
+            return True
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
+
+    def _open(self, pid, access):
+        kernel32 = ctypes.windll.kernel32
+        kernel32.OpenProcess.restype = ctypes.c_void_p
+        return kernel32.OpenProcess(access, False, pid)
+
+    def suspend(self, pid, trim=True):
+        if os.name != 'nt':
+            os.kill(pid, 19)  # SIGSTOP
+            return
+        # PROCESS_SUSPEND_RESUME | PROCESS_SET_QUOTA | PROCESS_QUERY_INFORMATION
+        handle = self._open(pid, 0x0800 | 0x0100 | 0x0400)
+        if not handle:
+            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
+        try:
+            status = ctypes.windll.ntdll.NtSuspendProcess(ctypes.c_void_p(handle))
+            if status:
+                raise RuntimeError('NtSuspendProcess failed: 0x%08x' % (status & 0xffffffff))
+            if trim:  # hand the frozen process's pages to the pagefile
+                ctypes.windll.kernel32.K32EmptyWorkingSet(ctypes.c_void_p(handle))
+        finally:
+            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+
+    def resume(self, pid):
+        if os.name != 'nt':
+            os.kill(pid, 18)  # SIGCONT
+            return
+        handle = self._open(pid, 0x0800)
+        if not handle:
+            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
+        try:
+            status = ctypes.windll.ntdll.NtResumeProcess(ctypes.c_void_p(handle))
+            if status:
+                raise RuntimeError('NtResumeProcess failed: 0x%08x' % (status & 0xffffffff))
+        finally:
+            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
 
     def now(self):
         return time.time()
@@ -162,12 +355,15 @@ def copy_save(saves, destination):
 class Host:
     def __init__(self, config, platform=None, script=None):
         self.config = config
+        for key, value in FREEZE_DEFAULTS.items():
+            config.setdefault(key, value)
         self.platform = platform or Platform()
         self.script = script or Path(__file__).resolve()
         self.repo = Path(config['repository'])
         self.state_dir = Path(config['state_dir'])
         self.state_file = self.state_dir / 'operation.json'
         self.lock = self.state_dir / 'action.lock'
+        self.freeze_file = self.state_dir / 'freeze.json'
 
     # -- state -------------------------------------------------------------
     def record(self, **values):
@@ -204,6 +400,11 @@ class Host:
             return None
 
     def status(self):
+        frozen = self.frozen()
+        if frozen:  # a frozen world cannot answer, and probing it only queues a connection
+            return {'port': self.config['port'], 'listening': True, 'frozen': frozen,
+                    'operation': self.read_state() or None, 'busy': self.lock.exists(),
+                    'lifecycle_token': self.token() is not None}
         listening = self.platform.listening(self.config['port'])
         world = self.world() if listening else None
         report = {'port': self.config['port'], 'listening': listening, 'operation': self.read_state() or None,
@@ -216,9 +417,11 @@ class Host:
     # -- requests from callers ---------------------------------------------
     def request(self, action):
         """Check and accept an action, then hand it to a detached worker."""
-        if action not in ACTIONS or action == 'status':
+        if action not in ACTIONS or action == 'status' or action in DIRECT:
             raise Refused('unknown action')
         self.state_dir.mkdir(parents=True, exist_ok=True)
+        if action in ('stop', 'restart', 'update') and self.frozen():
+            self.thaw('before ' + action)
         try:
             descriptor = os.open(self.lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
@@ -258,6 +461,88 @@ class Host:
         elif action == 'update':
             if listening:
                 raise Refused('stop the server before updating')
+
+    # -- freezing ----------------------------------------------------------
+    def frozen(self):
+        """The freeze record while the frozen process still exists, else None."""
+        try:
+            state = json.loads(self.freeze_file.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+        if not isinstance(state, dict) or type(state.get('pid')) is not int or not self.platform.alive(state['pid']):
+            self.freeze_file.unlink(missing_ok=True)
+            return None
+        return state
+
+    def freeze(self):
+        if self.lock.exists():
+            raise Refused('another action is still running: %s' % self.read_state().get('action'))
+        if self.frozen():
+            raise Refused('the server is already frozen')
+        if not self.platform.listening(self.config['port']):
+            raise Refused('the server is not running')
+        world = self.world()
+        if not world:
+            raise Refused('the world does not answer lifecycle status')
+        if world.get('busy') or not world.get('ready'):
+            raise Refused('the world is busy or not ready')
+        if world.get('clients'):
+            raise Refused('%s client(s) are connected' % world['clients'])
+        pid = self.platform.server_pid(self.config['port'])
+        if not pid:
+            raise Refused('could not find the process listening on the port')
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        self.platform.suspend(pid, self.config['freeze_trim_memory'])
+        state = {'pid': pid, 'frozen_at': int(self.platform.now())}
+        temporary = self.freeze_file.with_suffix('.tmp')
+        temporary.write_text(json.dumps(state), encoding='utf-8')
+        os.replace(temporary, self.freeze_file)
+        return dict(state, frozen=True)
+
+    def thaw(self, reason='requested'):
+        state = self.frozen()
+        if not state:
+            raise Refused('the server is not frozen')
+        self.platform.resume(state['pid'])
+        self.freeze_file.unlink(missing_ok=True)
+        return {'thawed': True, 'pid': state['pid'], 'reason': reason,
+                'frozen_seconds': int(self.platform.now()) - state.get('frozen_at', 0)}
+
+    def watch_step(self, idle_since):
+        """One pass of the watch loop; returns (idle_since, seconds until the next pass)."""
+        if self.frozen():
+            ignore = set(self.config['wake_ignore'])
+            if any(address not in ignore for address in self.platform.connections(self.config['port'])):
+                self.log(self.thaw('player connection'))
+            return None, self.config['wake_poll_seconds']
+        if self.lock.exists() or not self.platform.listening(self.config['port']):
+            return None, 30
+        world = self.world()
+        if not world or world.get('busy') or not world.get('ready') or world.get('clients'):
+            return None, 30
+        now = self.platform.now()
+        if idle_since is None:
+            return now, 30
+        if now - idle_since < self.config['freeze_idle_minutes'] * 60:
+            return idle_since, 30
+        try:
+            self.log(self.freeze())
+        except Refused as refusal:
+            self.log({'freeze_refused': str(refusal)})
+        return None, 1
+
+    def watch(self):
+        idle_since = None
+        while True:
+            try:
+                idle_since, wait = self.watch_step(idle_since)
+            except Exception as error:  # keep watching; a stuck freeze is worse than a missed one
+                self.log({'watch_error': str(error)[:300]})
+                idle_since, wait = None, 5
+            self.platform.sleep(wait)
+
+    def log(self, values):
+        print(json.dumps(dict(values, time=int(self.platform.now()))), flush=True)
 
     # -- worker ------------------------------------------------------------
     def work(self, action, operation):
@@ -368,8 +653,18 @@ def main(argv=None):
         return 0
     if not args.action:
         parser.error('an action is required')
+    if args.action == 'watch':
+        host.watch()
+        return 0
     try:
-        result = host.status() if args.action == 'status' else host.request(args.action)
+        if args.action == 'status':
+            result = host.status()
+        elif args.action == 'freeze':
+            result = host.freeze()
+        elif args.action == 'thaw':
+            result = host.thaw()
+        else:
+            result = host.request(args.action)
     except Refused as refusal:
         print(json.dumps({'ok': False, 'refused': str(refusal)}))
         return 1

@@ -27,9 +27,13 @@ launcher update and prerequisite downloads keep their normal trust checks.
 `ServerDiscovery` queries only the selected provider's two candidates concurrently
 (maximum two active sockets). `ByondStatus` resolves the approved hostname's A
 records anew for each candidate, validates every answer before opening a socket,
-and tries deduplicated public IPv4 literals sequentially. DNS/connect/write/read
-share one three-second deadline per eligible candidate, so two parallel eligible
-candidates take roughly three seconds plus local scheduling/parsing overhead. Each remaining
+and tries deduplicated public IPv4 literals sequentially. DNS/connect/write
+share one three-second deadline per eligible candidate. Once the Topic is written,
+the reply may take up to 12 seconds (`ByondStatus.ReplyTimeout`): a host that
+freezes its idle server (`scripts/gaia-host` `watch`) accepts the connection at
+once but answers only after thawing it, and failing that one check would spend
+the 130-second spacing below. A responsive pair of candidates still settles in
+roughly three seconds plus local scheduling/parsing overhead. Each remaining
 address receives a fair share of the remaining time; sockets close before the
 next attempt. No application DNS cache, startup IP pin or unchecked second DNS
 lookup is used. Back/Refresh are offered after the bounded sweep settles.

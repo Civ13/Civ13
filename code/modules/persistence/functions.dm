@@ -160,6 +160,17 @@ var/global/persistence_saved_atom_construction = 0
 /proc/persistence_default_scalar(value)
 	return isnull(value) || isnum(value) || istext(value) || ispath(value)
 
+// Value format 2 writes a scalar field raw instead of as a "value" envelope.
+// Readers accept both. Returns the scalar, or a non-scalar envelope unchanged
+// for the caller to reject; a raw non-scalar node is never valid.
+/proc/persistence_saved_scalar(value)
+	if(!islist(value))
+		if(!persistence_default_scalar(value)) throw EXCEPTION("Invalid raw saved value")
+		return value
+	var/list/envelope = value
+	if(envelope["kind"] != "value") return envelope
+	return envelope["value"]
+
 var/global/list/persistence_field_allowlists = list()
 
 // The parsed map_storage_saved_vars allowlist, or null for changed-field types.
@@ -364,12 +375,15 @@ map_storage
 		// List of object types. This will be converted to params and encrypted when saved.
 		list/object_reference = list()
 		list/obj_references = list()
-		list/existing_references = list()
-		list/saving_references = list()
-		list/saving_export_frames = list()
+		// Keyed tables that grow to one entry per saved object use alist: a plain
+		// assoc list slows each insert as it grows (400k inserts 50 s vs 11 s,
+		// lookups 9.4 s vs 0.2 s on 516). Positional pin lists stay plain lists.
+		list/existing_references = alist()
+		list/saving_references = alist()
+		list/saving_export_frames = alist()
 		list/saving_export_stack = list()
-		list/saving_content_owners = list()
-		list/saving_world_movables = list()
+		list/saving_content_owners = alist()
+		list/saving_world_movables = alist()
 		// Cross-level links: export rows pin their target until it is bound to
 		// its own level entry. Import rows come from the validated round state.
 		list/saving_level_links = list()
@@ -383,7 +397,7 @@ map_storage
 		list/all_loaded = list()
 		list/found_types = list()
 		list/saved_turfs = list()
-		list/saving_lists = list()
+		list/saving_lists = alist()
 		list/saving_reference_pins = list()
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
@@ -488,10 +502,10 @@ map_storage
 #endif
 	for(var/datum/save_export_frame/frame in saving_export_stack.Copy())
 		release_export_frame(frame)
-	saving_export_frames = list()
+	saving_export_frames = alist()
 	saving_export_stack = list()
-	saving_content_owners = list()
-	saving_world_movables = list()
+	saving_content_owners = alist()
+	saving_world_movables = alist()
 	saving_level_links = list()
 	saving_level_link_ids = list()
 	loading_level_links = null
@@ -499,11 +513,11 @@ map_storage
 	loading_level_link_fields = list()
 	saving_work = 0
 	saving_slice_start = world.tick_usage
-	saving_references = list()
-	existing_references = list()
+	saving_references = alist()
+	existing_references = alist()
 	found_types = list()
 	all_loaded = list()
-	saving_lists = list()
+	saving_lists = alist()
 	saving_reference_pins = list()
 	saving_list_pins = list()
 	loaded_lists = list()
@@ -645,6 +659,7 @@ var/global/datum/persistence_admission_identity
 /datum/persistence_world_operation
 	should_save = FALSE
 	var/datum/admission_identity
+	var/shutdown_save = FALSE // set by savemap() for restart-time saves
 	var/map_storage/storage
 	var/kind
 	var/backend_started = FALSE
@@ -927,12 +942,15 @@ var/global/datum/persistence_admission_identity
 	var/area/A = locate(world.area)
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
-/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy)
+// shutdown: the server stops right after this save (players were warned), so
+// the export yields only to queued work instead of sleeping whole ticks.
+/datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction, datum/save_debug_recovery/debug_policy, shutdown = FALSE)
 	// A lobby/setting-up world has no round to persist; restored rounds are PLAYING.
 	if(current_state < GAME_STATE_PLAYING)
 		return FALSE
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
 	if(!operation) return FALSE
+	operation.shutdown_save = shutdown || !!transaction
 	if(debug_policy)
 		if(transaction || !debug_policy.bind(operation))
 			operation.withdraw()

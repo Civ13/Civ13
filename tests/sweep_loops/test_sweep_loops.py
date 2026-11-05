@@ -51,23 +51,43 @@ class DaylightSweep(unittest.TestCase):
 
 
 class SoilRecoveryWake(unittest.TestCase):
-    # Gaia has ~134k dirt turfs. With a shared 12000-12010 ds first wait they
-    # all woke in the same second: a 2.2 s stall every 20 minutes.
+    # Gaia has ~134k dirt turfs. One sleeping spawn chain per turf cost about
+    # 50 MB of closures and tokens for the whole round, and with a shared
+    # 12000-12010 ds first wait they all woke in the same second (a 2.2 s stall
+    # every 20 minutes). Depleted turfs now register with the shared
+    # soil_recovery process; full turfs hold no recovery state at all.
     def setUp(self):
-        self.body = proc_body(FLOORING, '/turf/floor/dirt/proc/soil_nutrition_recover()')
+        self.recover = proc_body(FLOORING, '/turf/floor/dirt/proc/soil_nutrition_recover()')
+        self.schedule = proc_body(FLOORING, '/turf/floor/dirt/proc/soil_recovery_schedule(delay)')
+        self.process = (ROOT / 'code/processes/soil_recovery.dm').read_text(encoding='utf-8')
 
-    def test_first_wait_is_spread_over_a_whole_period(self):
-        self.assertIn('var/delay = rand(12000,12010)', self.body)
-        self.assertIn('if (token && !token.started)', self.body)
-        self.assertIn('delay = rand(1, delay)', self.body)
-        self.assertIn('spawn(delay)', self.body)
-        self.assertNotIn('spawn(rand(12000,12010))', self.body)
-        self.assertLess(self.body.index('token.started = TRUE'), self.body.index('spawn(delay)'))
+    def test_dirt_turfs_hold_no_sleeping_chain_or_token(self):
+        self.assertNotIn('spawn(', self.recover)
+        self.assertNotIn('spawn(', self.schedule)
+        self.assertNotIn('/datum/soil_recovery_token', FLOORING)
+        self.assertNotIn('soil_nutrition_recover()', proc_body(FLOORING, '/turf/floor/dirt/New()'))
+        self.assertIn('soil_recovery_schedule()', proc_body(FLOORING, '/turf/floor/dirt/New()'))
 
-    def test_later_waits_keep_the_twenty_minute_period(self):
-        # The recursive call shares the token, so only the first wait is spread.
-        self.assertEqual(self.body.count('soil_nutrition_recover()'), 2)
-        self.assertIn('/datum/soil_recovery_token\n\tvar/started = FALSE\n', FLOORING)
+    def test_only_depleted_soil_is_registered(self):
+        self.assertIn('if (soil_nutrition >= max_soil_nutrition)\n\t\treturn', self.schedule)
+        self.assertIn('soil_recovery_pending += src', self.schedule)
+        self.assertIn('if (soil_nutrition >= max_soil_nutrition)\n\t\tsoil_recovery_unregister()', self.recover)
+
+    def test_first_wait_is_spread_and_later_waits_keep_the_period(self):
+        self.assertIn('delay = rand(1, rand(12000,12010))', self.schedule)
+        self.assertIn('soil_recovery_schedule(rand(12000,12010))', self.recover)
+
+    def test_process_drives_recovery_from_the_registry(self):
+        self.assertIn('/process/soil_recovery/fire()', self.process)
+        self.assertIn('world.time >= D.soil_recovery_deadline', self.process)
+        self.assertIn('D.soil_nutrition_recover()', self.process)
+        self.assertIn('var/process/soil_recovery/soil_recovery = null', (ROOT / 'code/processes/__processes.dm').read_text(encoding='utf-8'))
+        self.assertIn('code\\processes\\soil_recovery.dm', (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig'))
+
+    def test_load_and_consumption_register_depleted_turfs(self):
+        self.assertIn('soil_recovery_schedule()', proc_body(FLOORING, '/turf/floor/dirt/after_load()'))
+        farming = (ROOT / 'code/game/objects/farming.dm').read_text(encoding='utf-8')
+        self.assertIn('D.soil_recovery_schedule()', proc_body(farming, '/obj/structure/farming/plant/proc/soil_nutrition_proc()'))
 
 
 if __name__ == '__main__':

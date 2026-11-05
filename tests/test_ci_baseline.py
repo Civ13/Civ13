@@ -155,8 +155,8 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_gaia_host_suite_is_bounded_and_not_silently_omitted(self):
         name = 'gaia_host'
         suite = ci.SUITES[name]
-        self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py',))
-        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',):
+        self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py'))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py', 'scripts/shard-group/shard_group.py'):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
@@ -189,6 +189,14 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/door_intents/test_door_intents.py',))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
+    def test_medical_care_suite_is_bounded_and_not_silently_omitted(self):
+        name = 'medical_care'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/medical_care/test_source.py',))
+        for path in suite['files'] + suite['paths'] + suite.get('shared_paths', ()):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 

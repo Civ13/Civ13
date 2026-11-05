@@ -98,7 +98,7 @@
 				continue
 			if (e.status & ORGAN_BROKEN)
 				broken = TRUE
-				if (e.limb_name == "l_arm" || e.limb_name == "r_arm" || e.limb_name == "l_leg" || e.limb_name == "r_leg" && !(e.status & ORGAN_SPLINTED))
+				if ((e.limb_name in list("l_arm", "r_arm", "l_leg", "r_leg")) && !(e.status & ORGAN_SPLINTED))
 					unsplinted_limbs.Add(e.name)
 			if (e.has_infected_wound())
 				infected = TRUE

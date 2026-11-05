@@ -23,6 +23,7 @@
 		start_serverdata_loop()
 		start_messaging_loop()
 		start_persistence_loop()
+		start_wall_clock_watch()
 	processes.ticker = src
 
 /process/ticker/fire()

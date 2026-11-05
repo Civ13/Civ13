@@ -535,7 +535,7 @@ var/global/persistence_reboot_scheduled = FALSE
 	to_chat(world, "<font color='yellow' size=4><b>Attention - Saving and restarting in 1 minute. The world will resume from this save after the restart.</b></font>")
 	sleep(600)
 	nextsave = world.realtime + 216000 // suppress the periodic save around the reboot
-	if (ticker && ticker.savemap() && fexists("map_saves/save_complete.txt"))
+	if (ticker && ticker.savemap(null, null, TRUE) && fexists("map_saves/save_complete.txt"))
 		to_chat(world, "<font color='yellow' size=4><b>Save complete. Rebooting - you can reconnect in a minute or two.</b></font>")
 		sleep(100)
 		world.Reboot("Scheduled persistence maintenance reboot.")

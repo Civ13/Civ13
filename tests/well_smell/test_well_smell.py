@@ -96,8 +96,16 @@ class PlumbedToiletContract(unittest.TestCase):
 
     def test_plumbed_toilet_flushes_waste(self):
         loo = WASTE.split("//Poo in the loo.", 1)[1].split("else if(w_uniform)", 1)[0]
-        self.assertIn("if (T && !M.crap_inside && T.is_plumbed())\n\t\t\tqdel(V)", loo)
-        self.assertIn("else\n\t\t\tV.forceMove(T)", loo)
+        self.assertIn("if (!in_outhouse && T.is_plumbed())\n\t\t\tqdel(V)", loo)
+        self.assertIn("else if (!in_outhouse)\n\t\t\tV.forceMove(T)", loo)
+
+    def test_outhouse_is_detected_by_location(self):
+        # crap_inside is set only for mobs with a client and can go stale, and
+        # a null tile mob used to runtime here, so emotes must not depend on it.
+        for proc in ("/mob/living/human/proc/handle_shit()", "/mob/living/human/proc/handle_piss()"):
+            code = body(WASTE, proc)
+            self.assertIn("var/in_outhouse = istype(loc, /obj/structure/toilet/outhouse)", code)
+            self.assertNotIn("crap_inside", code)
 
 
 if __name__ == "__main__":

@@ -86,10 +86,11 @@
 	var/dry_path = map_storage.entry_path(irrigation_file, dry_ref)
 	var/fresh_ref = irrigation_file["/map/1/4/5"]
 	var/fresh_path = map_storage.entry_path(irrigation_file, fresh_ref)
-	var/list/saved_dry = irrigation_file["[dry_path]/flooded"]
-	var/list/saved_fresh_salt = irrigation_file["[fresh_path]/salty"]
-	trench_check(islist(saved_dry) && saved_dry["kind"] == "value" && saved_dry["value"] == FALSE, "dry channel writes an explicit zero flooded flag")
-	trench_check(islist(saved_fresh_salt) && saved_fresh_salt["kind"] == "value" && saved_fresh_salt["value"] == FALSE, "fresh channel writes an explicit zero salt flag")
+	// Value format 2 writes these scalars raw.
+	var/saved_dry = irrigation_file["[dry_path]/flooded"]
+	var/saved_fresh_salt = irrigation_file["[fresh_path]/salty"]
+	trench_check(isnum(saved_dry) && saved_dry == FALSE, "dry channel writes an explicit zero flooded flag")
+	trench_check(isnum(saved_fresh_salt) && saved_fresh_salt == FALSE, "fresh channel writes an explicit zero salt flag")
 	for(var/list/channel_case in ordinary_irrigation)
 		var/turf/floor/plot = locate(channel_case[1],channel_case[2],1)
 		plot.ChangeTurf(/turf/floor/beach/sand, FALSE, FALSE)

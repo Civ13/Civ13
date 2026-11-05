@@ -80,8 +80,8 @@ SUITES = {
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
     # Windows scheduled-task host control with a fake machine; no BYOND runtime.
-    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py',),
-        'paths': ('tests/gaia_host/', 'scripts/gaia-host/'),
+    'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py'),
+        'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/'),
         'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.
     'farmers_almanac': {'files': ('tests/farmers_almanac/test_farmers_almanac.py',),
@@ -129,7 +129,9 @@ SUITES = {
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
             'code/processes/time_of_day_change.dm',
-            'code/game/turfs/flooring/flooring_premade.dm')},
+            'code/game/turfs/flooring/flooring_premade.dm',
+            'code/processes/soil_recovery.dm', 'code/processes/__processes.dm',
+            'code/game/objects/farming.dm', 'civ13.dme')},
     # Nomads adoption source contracts and surname model; no BYOND runtime.
     'nomads_adoption': {'files': ('tests/nomads_adoption/test_nomads_adoption.py',),
         'paths': ('tests/nomads_adoption/',), 'shared_paths': (
@@ -684,6 +686,13 @@ SUITES = {
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
+    # Offline source contracts for field treatment and artery repair.
+    'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
+        'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
+        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm'),
+        'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
+            'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
     # Inert skin/catalog/guard and account-wiring checks; no native runner import.
     # Existing shared inputs retain their conservative all-suite selection.
     'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),

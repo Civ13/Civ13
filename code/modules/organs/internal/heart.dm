@@ -94,6 +94,8 @@
 	if (blood_volume_raw < species.blood_volume)
 		var/datum/reagent/blood/B = owner.get_blood(owner.vessel)
 		B.volume += 0.1 // regenerate blood VERY slowly
+		if (owner.nutrition >= 150 && owner.water >= 150)
+			B.volume += 0.1 // well fed and watered bodies rebuild blood twice as fast
 		if (CE_BLOODRESTORE in owner.chem_effects)
 			B.volume += owner.chem_effects[CE_BLOODRESTORE]
 
@@ -102,6 +104,8 @@
 		var/blood_max = 0
 		var/list/do_spray = list()
 		for(var/obj/item/organ/external/temp in owner.organs)
+			if(temp.is_tourniqueted())
+				continue // nothing bleeds below a tourniquet
 
 			var/open_wound
 			if(temp.status & ORGAN_BLEEDING)
@@ -125,6 +129,8 @@
 
 			if(temp.status & ORGAN_ARTERY_CUT)
 				var/bleed_amount = Floor((owner.vessel.total_volume / (temp.applied_pressure ? 500 : 250))*temp.arterial_bleed_severity)
+				if(bleed_amount && temp.has_bandaged_wound())
+					bleed_amount = max(1, Floor(bleed_amount / 2)) // pressure bandage
 				if(bleed_amount)
 					var/dmod = 1
 					if (owner.find_trait("Hemophilia"))

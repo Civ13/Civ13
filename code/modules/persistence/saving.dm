@@ -13,9 +13,14 @@
 		moving_save_chunk.check()
 		return
 	saving_work++
-	if(saving_work >= 8192 || world.tick_usage - saving_slice_start >= 20 || world.tick_usage >= 80)
+	// Shutdown save: the server stops right after it and players were warned,
+	// so yield only to queued work instead of giving up whole ticks (about
+	// 20-40% faster on Gaia's busiest level).
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	var/shutdown = operation && operation.shutdown_save
+	if(saving_work >= 8192 || (!shutdown && (world.tick_usage - saving_slice_start >= 20 || world.tick_usage >= 80)))
 		saving_work = 0
-		if(world.tick_usage >= 80)
+		if(!shutdown && world.tick_usage >= 80)
 			sleep(world.tick_lag)
 		else
 			sleep(0)
@@ -96,12 +101,12 @@
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
-		saving_content_owners = list()
-		saving_lists = list()
+		saving_content_owners = alist()
+		saving_lists = alist()
 		saving_reference_pins = list()
 		saving_list_pins = list()
-		saving_references = list()
-		existing_references = list()
+		saving_references = alist()
+		existing_references = alist()
 		found_types = list()
 		if(fexists("map_saves/[A].sav"))
 			if(!fdel("map_saves/[A].sav"))
@@ -110,6 +115,9 @@
 		var/savefile/savefile = new("map_saves/[A].sav")
 		savefile["/format_version"] << 3
 		if(low_memory) savefile["/format_version"] << 4
+		// Value format 2: raw scalar fields and single-node scalar lists.
+		// Readers accept format 1 envelopes too; the marker is for tools.
+		savefile["/value_format"] << 2
 		savefile["/generation"] << generation
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
@@ -361,7 +369,7 @@
 			switch(v)
 				if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 					continue
-			if(A.vars.Find(v))
+			if(v in A.vars)
 				if(default_fields && (v in default_fields) && persistence_default_scalar(A.vars[v]) && A.vars[v] == initial(A.vars[v]))
 					continue
 				frame.current_field = v
@@ -370,6 +378,9 @@
 					value = encode_level_link(A.vars[v])
 				else
 					value = encode_saved_value(savefile, A.vars[v])
+				// Value format 2: a scalar field is written raw, not enveloped.
+				if(islist(value) && value["kind"] == "value" && persistence_default_scalar(value["value"]))
+					value = value["value"]
 				frame.current_field = null
 				require_export_frame(frame)
 				savefile.cd = entry_dir
@@ -416,6 +427,14 @@
 	if(chunk) chunk.encoding_depth--
 	if(debug_policy) debug_policy.encoding_depth--
 
+// TRUE when every key and associated value is a scalar (null, number, text, path).
+/proc/persistence_scalar_list(list/L)
+	for(var/i = 1, i <= L.len, i++)
+		var/key = L[i]
+		if(!persistence_default_scalar(key)) return FALSE
+		if(!isnum(key) && !isnull(key) && !persistence_default_scalar(L[key])) return FALSE
+	return TRUE
+
 /map_storage/proc/encode_saved_value_contents(savefile/F, value)
 	if(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * length(value))
 	if(istype(value, /obj/map_metadata))
@@ -440,6 +459,21 @@
 				moving_save_chunk.reserve_node()
 				moving_save_chunk.reserve_edges(L.len)
 			var/list/snapshot = L.Copy()
+			// Value format 2: a list of only scalar keys and values is one node
+			// instead of a length node plus a key and value envelope per edge.
+			// Debug recovery and moving chunks keep per-edge accounting.
+			if(!policy && !moving_save_chunk && persistence_scalar_list(snapshot))
+				var/list/keys = list()
+				var/list/values = list()
+				keys.len = snapshot.len
+				values.len = snapshot.len
+				for(var/i = 1, i <= snapshot.len, i++)
+					var/key = snapshot[i]
+					keys[i] = key
+					if(!isnum(key) && !isnull(key)) values[i] = snapshot[key]
+				record_save_capture_path(F, "/lists/[id]")
+				F["/lists/[id]"] << list("kind" = "scalars", "length" = snapshot.len, "keys" = keys, "values" = values)
+				return list("kind" = "list", "ref" = id)
 			record_save_capture_path(F, "/lists/[id]/length")
 			F["/lists/[id]/length"] << snapshot.len
 			for(var/i = 1, i <= snapshot.len, i++)
@@ -592,9 +626,9 @@
 	if(subtile_pull_ownership.owners[A]) return FALSE
 	#endif
 	for(var/key in list("corpse_decay_record", "pulling", "pulledby", "buckled", "npc_subtile_pulse", "ride", "rider", "control_object", "handcuffed", "legcuffed", "following_mob", "origin"))
-		if(A.vars.Find(key) && A.vars[key]) return FALSE
+		if((key in A.vars) && A.vars[key]) return FALSE
 	for(var/key in list("grab_list", "grabbed_by", "pinned", "friends"))
-		if(A.vars.Find(key) && length(A.vars[key])) return FALSE
+		if((key in A.vars) && length(A.vars[key])) return FALSE
 	return TRUE
 
 /map_storage/proc/prepare_moving_save_roster()
@@ -750,7 +784,7 @@
 		if(istype(D, /atom/movable) && D:load_datums) fields |= "reagents"
 		for(var/field in fields)
 			if(D.persistence_runtime_var(field) || (field in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))) continue
-			if(D.vars.Find(field) && !accept(D.vars[field], depth + 1)) return FALSE
+			if((field in D.vars) && !accept(D.vars[field], depth + 1)) return FALSE
 		return world.time == start_tick && world.tick_usage - start_usage <= 5
 
 /datum/moving_save_capture
@@ -979,7 +1013,7 @@
 	return F.dir.Copy()
 
 /proc/human_candidate_scalar(value)
-	if(!islist(value)) throw EXCEPTION("Human candidate scalar envelope is invalid")
+	if(!islist(value)) return persistence_saved_scalar(value) // value format 2
 	var/list/envelope = value
 	if(envelope["kind"] == "entry" && ("ref" in envelope) && isnum(envelope["ref"]) && envelope["ref"] == 0) return null
 	if(envelope["kind"] != "value" || !("value" in envelope)) throw EXCEPTION("Human candidate field is not a scalar")
@@ -994,6 +1028,7 @@
 // treated as physical ownership. Unknown encodings and cross-level physical
 // links are refused, not decoded into live objects.
 /map_storage/proc/human_candidate_mentions(savefile/F, value, list/targets, datum/human_candidate_reference_budget/budget, depth = 0)
+	if(!islist(value) && budget && persistence_default_scalar(value)) return FALSE // value format 2 raw scalar
 	if(!islist(value) || !budget || ++budget.work > 10000 || depth > 32) throw EXCEPTION("Human reciprocal reference budget or envelope is invalid")
 	var/list/envelope = value
 	switch(envelope["kind"])
@@ -1012,7 +1047,9 @@
 			F.cd = "/lists"
 			if(!("[id]" in F.dir)) throw EXCEPTION("Human reciprocal list is missing")
 			F.cd = "/lists/[id]"
-			if(!("length" in F.dir)) throw EXCEPTION("Human reciprocal list length is missing")
+			if(!("length" in F.dir))
+				if(saved_scalar_list(F, id)) return FALSE // Scalars name no entries.
+				throw EXCEPTION("Human reciprocal list length is missing")
 			var/count = F["length"]
 			if(!isnum(count) || count < 0 || count != round(count) || count > 4096) throw EXCEPTION("Human reciprocal list length is invalid")
 			for(var/i = 1, i <= count, i++)
@@ -1056,8 +1093,17 @@
 	F.cd = "/lists"
 	if(!("[id]" in F.dir)) throw EXCEPTION("Human saved position list is missing")
 	F.cd = "/lists/[id]"
-	if(!("length" in F.dir) || F["length"] != 5) throw EXCEPTION("Human saved position length is invalid")
 	var/list/position = list()
+	if(!("length" in F.dir))
+		var/list/node = saved_scalar_list(F, id)
+		if(!node || node["length"] != 5) throw EXCEPTION("Human saved position length is invalid")
+		var/list/keys = node["keys"]
+		var/list/values = node["values"]
+		for(var/i = 1, i <= 5, i++)
+			if(!(keys[i] in list("x", "y", "z", "sx", "sy")) || (keys[i] in position) || !isnum(values[i]) || values[i] != round(values[i])) throw EXCEPTION("Human saved position field is invalid")
+			position[keys[i]] = values[i]
+		return position
+	if(F["length"] != 5) throw EXCEPTION("Human saved position length is invalid")
 	for(var/i = 1, i <= 5, i++)
 		F.cd = "/lists/[id]"
 		if(!("[i]" in F.dir)) throw EXCEPTION("Human saved position entry is missing")
@@ -1440,6 +1486,7 @@
 			if(!(key in fields)) throw EXCEPTION("Human saved slot field is missing")
 			F.cd = entry_path(F, human_ref)
 			var/list/value = F[key]
+			if(isnull(value)) continue // value format 2 raw null
 			if(!islist(value)) throw EXCEPTION("Human saved slot encoding is invalid")
 			if(value["kind"] == "value" && isnull(value["value"])) continue
 			if(value["kind"] != "entry" || !isnum(value["ref"]) || value["ref"] < 0 || value["ref"] != round(value["ref"]))

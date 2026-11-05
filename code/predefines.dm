@@ -286,6 +286,11 @@
 #define ORGAN_ASSISTED   4096
 #define ORGAN_ARTERY_CUT 8192
 
+// Field care timings, in owner life ticks (nominally one second each).
+#define TOURNIQUET_CLOT_TICKS 600	// small artery clots under tourniquet + bandage (10 min)
+#define TOURNIQUET_NUMB_TICKS 1800	// limb hurts after 30 min; dies at twice this
+#define FRACTURE_HEAL_TICKS 1200	// splinted break mends (20 min, 10 min resting)
+
 // Preference toggles: these are no longer bitflags, but list items
 #define SOUND_ADMINHELP 1
 #define SOUND_MIDI	  2

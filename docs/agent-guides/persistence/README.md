@@ -88,6 +88,15 @@ level file is replaced only after every node verifies. Unreadable resident
 memory now counts as 1024 MiB in the plan, and each loaded level logs server
 memory. `tests/world_save/run.sh 'split=1'` is the native check.
 
+<!-- 2026-11-05: value format 2 -->
+Level files carry `/value_format` 2: a field whose value is a null, number,
+text or type path is written raw instead of as a `"kind" = "value"` envelope,
+and a list of only such keys and values is one `/lists/<id>` node
+(`"kind" = "scalars"`, `length`, `keys`, `values`). Readers accept both shapes,
+so a format-1 save loads once and the next save converts it. Read a saved
+scalar with `persistence_saved_scalar()`, never by indexing `["value"]`.
+Debug recovery and moving chunks keep the per-edge list layout.
+
 <!-- 2026-11-05: constructors during a load -->
 A load builds atoms with `new type(loc)` (with `persistence_saved_atom_construction`
 set) and datums with no arguments, then restores fields. A constructor that

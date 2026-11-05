@@ -111,6 +111,9 @@ Val's suggested order is used, skipping work another thread owns:
 8. **Line-of-sight adapters** and hidden-information protection.
 9. **Liminal and Backrooms**, then **sharding/transfer**, in dependency order once
    Val has accepted room layouts and chosen a transfer backend.
+   Val's 2026-11-05 order: sharded servers first (region groups on one host,
+   [scripts/shard-group](../scripts/shard-group/README.md)), then playable
+   procedural surface, oceanic and cavern worlds, then travel between them.
 
 Each step is one or more PRs with a filled `Changelog:` line where players see
 a change, compiled and run through `scripts/agent_preflight.py all --write`.

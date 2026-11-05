@@ -31,6 +31,8 @@ def main(argv=None):
     p.add_argument('--catalog-version',choices=['civ13-static-layout/1','civ13-static-layout/2','civ13-static-layout/3','civ13-static-layout/4'],help='explicit catalog for a historical unbound manifest')
     p=commands.add_parser('verify',help='verify bundle hashes, sidecar binding, layout and catalog')
     p.add_argument('directory',type=Path);p.add_argument('--catalog-root',type=Path)
+    p=commands.add_parser('playable',help='write a playable DMM (native supplies, ladders) from a verified bundle')
+    p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p=commands.add_parser('audit-source',help='read-only classic map/source audit')
     p.add_argument('--catalog-root',type=Path);p.add_argument('--reference-image',type=Path)
     p=commands.add_parser('annotate-reference',help='source components and uncertain hydrology proposals')
@@ -65,6 +67,9 @@ def main(argv=None):
             doc=read_json(a.ir);manifest=read_json(a.manifest);folder=new_output(a.out,True)
             result=write_bundle(folder,doc,manifest,a.catalog_root,not a.no_preview,a.catalog_version)
         elif a.command=='verify':result=verify_bundle(a.directory,a.catalog_root)
+        elif a.command=='playable':
+            from .playable import write
+            result=write(a.directory,a.out,a.catalog_root)
         elif a.command=='audit-source':result=audit(a.catalog_root,a.reference_image)
         else:
             from .reference_annotation import build
