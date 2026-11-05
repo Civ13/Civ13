@@ -79,8 +79,9 @@ the items differ between runs even when the layout does not.
     loot spot, or the plan is discarded and the next seed tried (three attempts).
     Only a valid plan touches the world: turfs row by row with `TICK_CHECK`,
     then one lighting overlay refresh for the level, then doors, windows and
-    props, then markers, loot rolls and `zombie_horde_add_block` for every
-    block.
+    props, then markers, loot rolls, `zombie_horde_add_block` for every block
+    and `zombie_city_add_insertion` / `zombie_city_add_evacuation` for every
+    insertion and evacuation point.
 
 ## Output
 
@@ -126,5 +127,3 @@ shells, and save or load of a generated city (the city world is never saved).
   spots that belong to rooms (pharmacy shelves, armoury lockers, garage benches).
 - Upper floors on z2 for two-storey lots, with stairs and paired roofs through
   the building-levels system.
-- Calls to `zombie_city_add_insertion` and `zombie_city_add_evacuation` once the
-  city host's `world.dm` is on master.

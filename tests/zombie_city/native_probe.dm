@@ -65,7 +65,9 @@ var/global/datum/zombie_city_probe/zombie_city_probe = new
 		var/blocks = 0
 		if (zombie_horde)
 			blocks = zombie_horde.blocks.len
-		result = list("seed" = seed, "attempt" = L.attempt, "generation_ds" = L.generation_ds, "probe_elapsed_ds" = elapsed, "markers_in_world" = markers, "horde_blocks" = blocks, "counts" = L.counts)
+		if (zombie_city_insertions.len != L.entries.len || zombie_city_evacuations.len != L.exits.len)
+			throw EXCEPTION("city host has [zombie_city_insertions.len] insertions and [zombie_city_evacuations.len] evacuations for [L.entries.len] entries and [L.exits.len] exits")
+		result = list("seed" = seed, "attempt" = L.attempt, "generation_ds" = L.generation_ds, "probe_elapsed_ds" = elapsed, "markers_in_world" = markers, "horde_blocks" = blocks, "host_insertions" = zombie_city_insertions.len, "host_evacuations" = zombie_city_evacuations.len, "counts" = L.counts)
 	catch (var/exception/e)
 		failure = "[e.name] ([e.file]:[e.line])"
 	result["passed"] = isnull(failure)
