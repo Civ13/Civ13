@@ -568,7 +568,7 @@
 							visible_message(SPAN_DANGER("\The [name] penetrates \the [penloc] wall!"))
 
 
-		if (isliving(AM) && AM != firer)
+		if (isliving(AM) && AM != firer && !is_firer_mount(AM))
 			var/mob/living/L = AM
 			if ((!L.lying || T == get_turf(original) || execution))
 				var/obj/item/weapon/grab/G = locate() in L
@@ -816,6 +816,13 @@
 		else if (!bumped && loc)
 			tracer_effect()
 		#endif
+// A rider's own shots leave from the mount's tile; the mount must not catch them.
+/obj/item/projectile/proc/is_firer_mount(var/atom/movable/AM)
+	if (!ishuman(firer))
+		return FALSE
+	var/mob/living/human/H = firer
+	return H.riding && H.riding_mob == AM
+
 /obj/item/projectile/proc/do_bullet_act(var/atom/A, var/zone)
 	if (A && A != firer && A != firedfrom)
 		A.pre_bullet_act(src)
