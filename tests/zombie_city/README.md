@@ -1,9 +1,34 @@
-# Zombie city probe
+# Zombie city offline suite and probe
 
-`native_probe.py` is developer evidence, not a CI suite. It compiles a
-temporary copy of `civ13.dme` with `maps/EFT/crossroads_mall.dmm` selected and
-`native_probe.dm` appended, runs it once headless in DreamDaemon and checks
-`result.json`:
+`build_base.py` generates `maps/zombie_city/zombie_city.dmm`, the blank 200 x 200
+plain the generator fills at round start (see
+[docs/zombie-city-generator.md](../../docs/zombie-city-generator.md)).
+`test_zombie_city.py` regenerates the base map, checks the generator's type
+names and contract names against the source tree, and tests the checker's grid
+functions on small fixtures. `native_probe.py` appends `native_probe.dm` to a
+temporary DME with the base map selected, compiles once, runs DreamDaemon once
+per seed and then runs `check.py` over the evidence; it is developer evidence,
+not CI.
+
+```text
+python3 -I -B tests/zombie_city/build_base.py --check
+python3 -I -B -m unittest tests/zombie_city/test_zombie_city.py
+python3 tests/zombie_city/native_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir --seeds 1 1 2
+python3 -I -B tests/zombie_city/check.py /fresh/dir
+```
+
+The checker verifies determinism (a repeated seed gives the same city, different
+seeds differ), reachability of every insertion point, evacuation point, door and
+loot spot from every insertion point, marker counts, insertion and evacuation
+spacing, generation time under 30 s and the absence of runtime errors in the
+zombie city code. It writes `summary.json` and a PNG preview per seed under
+`previews/`. Neither the suite nor the probe is real-client acceptance.
+
+## Horde, loot and raid world probe
+
+`horde_probe.py` appends `horde_probe.dm` to a temporary DME with
+`maps/EFT/crossroads_mall.dmm` selected, runs it once headless and checks
+`result.json`. It is developer evidence, not CI, and takes about three minutes:
 
 - every loot table and tier at research ages 0, 5 and 9 (no guns at age 0,
   only age- and tier-allowed items, nothing saved);
@@ -17,9 +42,6 @@ temporary copy of `civ13.dme` with `maps/EFT/crossroads_mall.dmm` selected and
 - wounds travel in a payload, impossible wounds are refused;
 - a raid collapse removes living raiders and their gear and leaves corpses.
 
-```sh
-source ~/byond-516.1688/byond/bin/byondsetup
-python3 tests/zombie_city/native_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir
+```text
+python3 tests/zombie_city/horde_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir
 ```
-
-A run takes about three minutes.

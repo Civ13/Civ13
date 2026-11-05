@@ -131,6 +131,12 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
+    # Zombie city generator: base map regeneration, placed-type and contract
+    # name projection, checker fixtures; no BYOND runtime.
+    'zombie_city': {'files': ('tests/zombie_city/test_zombie_city.py',),
+        'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
+                  'code/modules/zombie_city/'), 'shared_paths': (
+            'code/__defines/maps.dm', 'civ13.dme')},
     # Research bench staff appointments and director title; no BYOND runtime.
     'research_staff': {'files': ('tests/research_staff/test_research_staff.py',),
         'paths': ('tests/research_staff/',), 'shared_paths': (

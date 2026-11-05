@@ -53,9 +53,10 @@ needs the wiki secret CIV13_DISPATCH_TOKEN), a weekly schedule and manual
 dispatch are the fallbacks. It runs `wiki-pins --write` (which now also updates
 the revision and hash literals in tests/player_help/test_wiki_guides.py), the
 focused tests, and opens or updates the rolling PR from branch
-`automation/wiki-repin`. Set WIKI_REPIN_TOKEN in Civ13 so that PR gets CI; with
-the default token GitHub does not run workflows on it, and the run summary holds
-the test result instead.
+`automation/wiki-repin`. Without the optional WIKI_REPIN_TOKEN secret GitHub
+starts no workflows on that PR, so the workflow dispatches test.yml on the
+branch itself (comparison_base = master head); those check runs attach to the
+PR head and satisfy the required aggregate.
 
 <!-- 2026-11-05: field care, trails and limb states -->
 `medical_knowledge()` and `region_travel_knowledge()` in scripts/player_help_bridge.py

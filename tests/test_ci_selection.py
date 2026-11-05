@@ -226,6 +226,18 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered train-raid'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_zombie_city_offline_admission_is_exact(self):
+        for path in ('tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
+                     'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
+                     'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                     'tests/zombie_city/horde_probe.dm'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/zombie_city/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered zombie-city'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_safehouse_map_offline_admission_is_exact(self):
         for path in ('tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
                      'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',

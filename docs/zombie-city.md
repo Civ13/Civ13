@@ -42,7 +42,7 @@ The generator calls `zombie_city_roll_loot(turf, table, tier)` with table
 (`map.ordinal_age`) and a minimum tier; salvage materials have no age. A tier
 rolls 1-2, 2-3 or 3-4 items; guns may come with one magazine of their own type.
 
-Evidence: `tests/zombie_city/native_probe.py` (see its README).
+Evidence: `tests/zombie_city/horde_probe.py` (see its README).
 
 ## City world (`code/modules/zombie_city/world.dm`)
 
