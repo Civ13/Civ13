@@ -235,9 +235,13 @@ var/trailer_cam_shown_y = 0
 
 // Ease onto a moving atom and keep tracking it, framed ox,oy tiles off its
 // position and leading it by `lead` times the spring's steady-state lag.
-/proc/trailer_follow(atom/A, ox = 0, oy = 0, max_tiles_per_second = 10, lead = 1)
+// vx_hint seeds the lead with the velocity (pixels per second) the atom is
+// about to have, so a shot that starts on a standing actor who is about to
+// walk east does not first drift back toward them.
+/proc/trailer_follow(atom/A, ox = 0, oy = 0, max_tiles_per_second = 10, lead = 1, vx_hint = 0)
 	if (trailer_cam_follow != A)
 		trailer_camera_reset_follow()
+		trailer_cam_fvx = vx_hint
 	trailer_cam_follow = A
 	trailer_cam_fox = ox
 	trailer_cam_foy = oy
@@ -1009,7 +1013,8 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	var/hand_bread = trailer_customer.get_active_hand()
 	if (hand_bread)
 		trailer_customer.swap_hand()
-	trailer_follow(trailer_carriage, 1.5, 1, 3, 1)
+	// Creep on along the road while they climb up, anticipating the ride.
+	trailer_camera_pan(trailer_carriage.x + 3.5, 7, 0.35, FALSE)
 	trailer_carriage.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_carriage.driver == trailer_customer, "customer took the reins")
 	// Ride with the carriage's own glide: the walking pace trailer_walk set
@@ -1022,7 +1027,7 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	sleep(8)
 	reins.attack_self(trailer_customer)
 	// Lead the team so it stays framed at full gallop.
-	trailer_follow(trailer_carriage, 1.5, 1, 12, 1.1)
+	trailer_follow(trailer_carriage, 2, 1, 12, 0.9, 32)
 	sleep(10)
 	reins.attack_self(trailer_customer)
 	sleep(10)
@@ -1069,13 +1074,13 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 	spawn(0)
 		trailer_engineer_to_footplate()
 	// Ease along the platform ahead of the traveller, framed on the rails.
-	trailer_follow(trailer_customer, 2.5, 0.5, 4, 1.3)
+	trailer_follow(trailer_customer, 2.5, 0.5, 4, 1.3, 80)
 	var/turf/board = locate(trailer_cabin.x, trailer_cabin.y + 1, 1)
 	trailer_walk(trailer_customer, board.x, board.y)
 	trailer_customer.dir = SOUTH
 	trailer_beat("board")
-	// Settle on the train while the traveller climbs in.
-	trailer_camera_pan(trailer_locomotive.x + 1.5, 5.5, 1.5, FALSE)
+	// Creep along the train toward the engine while the traveller climbs in.
+	trailer_camera_pan(trailer_locomotive.x + 2.5, 5.5, 0.3, FALSE)
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
 	intro_check(trailer_customer.loc == trailer_cabin.loc, "customer climbed into the cabin")
 	trailer_cabin.MouseDrop_T(trailer_customer, trailer_customer)
@@ -1093,7 +1098,7 @@ var/obj/structure/trains/transport/cabin/trailer_cabin2
 		trailer_train_glide()
 	// Ride along with the train as it pulls out, then let it go: the camera
 	// eases back toward the station while the train steams out of shot.
-	trailer_follow(trailer_locomotive, 1, 1.5, 3, 1)
+	trailer_follow(trailer_locomotive, 1.5, 1.5, 3, 1, 64)
 	sleep(40)
 	trailer_camera_pan(75, 5.5, 1.2, FALSE)
 	var/obj/structure/trains/last_car = trailer_extra_cars[trailer_extra_cars.len]
