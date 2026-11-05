@@ -196,10 +196,11 @@ after a join, "Playing Civ13" with `MAP on host` and the elapsed time on the
 player's Discord profile, then returns to "In the launcher" when DreamSeeker
 exits. It writes to Discord's local RPC pipe (`\\.\pipe\discord-ipc-N`) with
 only a public application ID: no Discord SDK, login, OAuth or token. The BYOND
-key, character and location are never sent. The feature stays off until an ID
-is set in `PresenceSettings.BuiltInApplicationId` or in `discord.json` beside the
-launcher (`{"application_id": "...", "show_activity": true}`); the footer's
-**Show on Discord** box then saves the player's choice there.
+key, character and location are never sent. The built-in ID is
+VZGCivilizationBot's (`PresenceSettings.BuiltInApplicationId`), so Discord shows
+that application's name; `discord.json` beside the launcher
+(`{"application_id": "...", "show_activity": true}`) can override it. The footer's
+**Show on Discord** box saves the player's choice there.
 `tests/DiscordPresenceTests.cs` replaces the pipe with an in-memory stream.
 
 ## Release deployment

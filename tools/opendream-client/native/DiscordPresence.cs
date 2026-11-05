@@ -14,8 +14,8 @@ namespace Civ13.Launcher;
 // Presence names the server, never the BYOND key, character or location.
 public sealed record PresenceSettings(bool ShowActivity, string? ApplicationId) {
     public const string FileName = "discord.json";
-    // Set once the Civ13 Discord application exists; discord.json can override it.
-    public const string BuiltInApplicationId = "";
+    // VZGCivilizationBot's public application ID; discord.json can override it.
+    public const string BuiltInApplicationId = "1562126764849897544";
 
     public static PresenceSettings Load(string root) {
         var id = ValidId(BuiltInApplicationId);
