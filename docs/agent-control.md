@@ -234,14 +234,20 @@ recipes rather than trial and error. On first use it builds
 `data/agent-control/game-catalog.json` with
 `scripts/build-crafting-atlas.py --catalog-only`, and rebuilds it when
 `config/crafting/` changes. It reads the global material list (nomad maps), the
-processing routes (smelting, tanning, rope making) and a few hand-checked
-blacksmithing routes. For a ladder goal (pickaxe, smelting, armor, metal tools,
-furniture) a `HOW` line shows the cheapest route: basics are gathered, hand
+processing routes (smelting, tanning, rope making), a few hand-checked
+blacksmithing routes and the stone-age chain that lives in DM procs rather than
+recipe files (flint, sharpened flint, stick, sharpened stick, flint hatchet),
+named with the autopilot's own skills. Every ladder goal from flint to metal
+tools gets a `HOW` line with the cheapest route: basics are gathered, hand
 tools (a sharp tool, a container) are only named, and parts already carried are
-skipped. The model can ask `{"do": "recipe", "item": "..."}` at any time, which
-takes no game time. `--catalog PATH` uses another catalog, and `--catalog none`
-turns the book off. `python tools/agent-control/techtree.py "iron ingot"` prints
-a plan.
+skipped. The route named like the query wins a tie (a stone pickaxe is made from
+stone, not the sandstone "pickaxe" recipe for the same item), a way that needs
+the thing being planned is not offered for it (stone for a stone pickaxe says to
+make a bone pickaxe first instead of mining with a pickaxe), and stacks are
+called what the character sees in hand (`wood logs`, not `wood`). The model can
+ask `{"do": "recipe", "item": "..."}` at any time, which takes no game time.
+`--catalog PATH` uses another catalog, and `--catalog none` turns the book off.
+`python tools/agent-control/techtree.py "iron ingot"` prints a plan.
 
 Memory (`memory.py`): each character keeps a small JSON file in
 `data/agent-control/memory/`, named after the character. The file holds:
@@ -254,7 +260,9 @@ Memory (`memory.py`): each character keeps a small JSON file in
 - a short event log.
 
 - a ledger of the structures it placed (walls, doors, roofs, supports, mine shafts and tunnels, furniture)
-  and counts of what it has made.
+  and counts of what it has made or come by. Things skills make without a recipe (sticks, twine, a spear,
+  an axe, logs) are noticed from the change in its hands and pockets between turns; the first of each kind
+  is an event ("got my first flint hatchet at (x,y)").
 
 Every prompt includes a `MEMORY` slice of the file: the way home, the nearest
 known places that are not already in view, the people in view, kept facts and
@@ -273,14 +281,21 @@ unsupported roofs and for ledger pieces that have gone missing.
 
 Habits: a craft or build the current goal does not ask for is refused once the character has made it
 more than a few times recently (3 by default, more for walls, roofing, floors and supports). The
-model is then sent back to its goal and the recipe book.
+model is then sent back to its goal and the recipe book. A recipe counts the same however the model
+spells it (`thatch floor`, `floors/thatch floor (1)`).
 
 Hands: when a step needs a free hand and both are full, the less useful item is stowed, or
-dropped at her feet when no pocket, belt or bag has room, so the step still runs. When a predator
+dropped at her feet when no pocket, belt or bag has room, so the step still runs: material before
+a tool, and of two tools the weaker weapon (a sharpened stick fits a belt; the hatchet stays in
+hand). The same applies when a craft needs a stowed stack and when a skill's product (leaves, a
+stick, grass, sinew, stone, logs after `chop`) is picked up afterwards. When a predator
 is close, the reflex first takes the best weapon within reach (other hand, a pocket or belt, or the
 ground next to her), then fights. A plain click that would swing an axe at rock is refused.
-A second greeting to someone greeted in the last 10 minutes is trimmed from what she says. The
-mining goal names the next concrete step, such as `dig_down` when she already carries a shovel.
+A step the autopilot cannot accept, including `go` or a skill aimed at 0 (herself), is explained to
+the model and printed to the run log. A second greeting to someone greeted in the last 10 minutes
+is trimmed from what she says. The mining goal names the next concrete step, such as `dig_down`
+when she already carries a shovel. The primer and the goal ladder call the chopped stack `wood logs`
+(the game's name for it; only beds and doors take finished planks cut from logs with a hatchet).
 
 ## Tests
 

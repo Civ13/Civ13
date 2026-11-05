@@ -131,19 +131,21 @@ How to play:
      sharpened flint in hand, the sharpened stick in your other hand or under you, and the twine in a pocket or under you.
      Sinew makes a much stronger axe than grass twine: kill a goat, deer, pig or similar animal with a sharpened stick,
      butcher it, and the sinew is picked up for you. Rope also works. The flint is used up, so sharpen another afterwards.
-  6. With an axe or hatchet, click a tree to chop it into logs. Hold logs, leaves or other stacks to craft from them.
+  6. With an axe or hatchet, click a tree to chop it into wood logs (they are picked up for you). Hold logs, leaves or other
+     stacks to craft from them. Most early recipes take wood logs; a bed or a door takes finished planks, which you cut by
+     clicking logs with your hatchet.
 - Timed work (searching, chopping, sharpening, drinking) runs for several seconds; the game waits for it to finish before your next step.
 - Keep water and nutrition up; when NEEDS says you are thirsty or hungry, that comes first. Drink from a river, lake or well: empty active hand, grab intent, click the water tile next to you. Eat food by holding it and clicking yourself (target 0).
 - Craft: {"do": "craft", "recipe": "<name>", "material": "<item you carry>"} holds that stack and crafts from it.
   Recipes for the held stack are listed under "You can craft". Structures (walls, campfire) are built on the tile you face, so stand next to open ground.
-  Useful early recipes: campfire (4 wooden planks), torch and wooden knife (planks), thatch roofing (leaves), stone pickaxe (2 stone),
-  roof support (2 planks), thatch floor (planks), stone wall (8 stone).
+  Useful early recipes from wood logs: campfire (4), torch and wooden knife (2), roof support and mine support (2), table (4),
+  log wall (6), thatch floor; from leaves: thatch roofing; from stone: stone pickaxe (2), stone wall (8); from bones: bone pickaxe and bone shovel (2).
 - Build: {"do": "build", "recipe": "<structure>", "material": "<stack>", "dir": north|south|east|west} builds on the tile next to you in that direction.
   A small house: pick open ground away from other camps, stand on each tile along the inside edge of a 3x3 room and build walls facing outward
   (stone wall from 8 stone; log wall when your era allows it), leave one gap and build a door there if you can, build roof supports inside,
   then craft thatch roofing from leaves and {"do": "roof", "dir": ...} over each tile of the room.
 - Water: rivers and lakes marked "(unclean)" can give you cholera. Prefer clean water; boil unclean water in a mug or pot on a lit campfire.
-- Underground: craft a bone shovel (2 bones), dig_down, climb down the ladder, build mine supports (2 planks) as you go so tunnels do not
+- Underground: craft a bone shovel (2 bones), dig_down, climb down the ladder, build mine supports (2 wood logs) as you go so tunnels do not
   collapse, and mine the rock walls with a pickaxe.
 - Mining: butcher a big animal for bones and craft a bone pickaxe (2 bones), or a stone pickaxe from 2 stone. Find underground rock
   (mountains and caves) and mine it for stone and ore. Remember where your camp is in your notes.
@@ -393,10 +395,10 @@ def current_goal(observation):
     if wound and wound.get("bleeding"):
         return "stop your bleeding: treat it with bandages, or make bandages or find healing herbs right away", "then rest and heal"
     if (observation.get("here") or {}).get("cave_supported") is False:
-        return "your tunnel has no support here and can cave in: build a mine support (2 wooden planks) right here now, or climb out", "then keep mining safely"
+        return "your tunnel has no support here and can cave in: build a mine support (2 wood logs) right here now, or climb out", "then keep mining safely"
     if any("roof" in str(row.get("name", "")).lower() and row.get("supported") is False and isinstance(row.get("dx"), int) and isinstance(row.get("dy"), int)
            and max(abs(row["dx"]), abs(row["dy"])) <= 3 for row in observation.get("nearby", [])):
-        return "a roof near you has no support and can collapse: build a roof support (2 wooden planks) within 3 tiles of it, or a wall within 2", "then carry on"
+        return "a roof near you has no support and can collapse: build a roof support (2 wood logs) within 3 tiles of it, or a wall within 2", "then carry on"
     if isinstance(me.get("water"), (int, float)) and me["water"] < 250:
         return "drink fresh water", "then keep working on your tools"
     if hungry and _has(me, lambda n: _is_food(n) and any(word in n for word in ("roasted", "cooked", "berr", "fruit", "bread"))):
@@ -414,14 +416,14 @@ def current_goal(observation):
     if hungry:
         return "get food: hunt an animal with your spear and butcher it, then cook it on a campfire", "then build a camp"
     if not wood and not fire:
-        return "chop a tree with your axe for wooden planks (pick them up)", "then build a campfire"
+        return "chop a tree with your axe for wood logs (they are picked up for you)", "then build a campfire"
     if not fire:
-        return 'build a campfire: {"do": "craft", "recipe": "campfire", "material": "wooden plank"}', "then gather food and build a shelter"
+        return 'build a campfire: {"do": "craft", "recipe": "campfire", "material": "wood log"}', "then gather food and build a shelter"
     walls = sum(1 for name in near if "wall" in name)
     if walls < 6:
-        return "build a shelter next to your campfire: a 3x3 room of walls (build), a door, roof supports and thatch roofing (roof)", "then furnish it"
+        return "build a shelter next to your campfire: a 3x3 room of walls (build; log wall from 6 wood logs), a door, roof supports and thatch roofing (roof)", "then furnish it"
     if not any("bed" in name for name in near) or not any("table" in name for name in near):
-        return "furnish your house: a bed and a table (4 planks each), a torch for light, and storage", "then secure your food supply"
+        return "furnish your house: a table (4 wood logs), a bed (4 finished planks: cut logs with your hatchet), a torch for light, and storage", "then secure your food supply"
     if not _has(me, lambda n: "seed" in n) and not any(word in name for name in near for word in ("crop", "plant", "farm", "field")):
         return "secure food: gather seeds from wild plants and plant a small field by your house; keep hunting and cooking meat", "then arm yourself"
     if not _has(me, lambda n: "armor" in n or "armour" in n) or not _has(me, lambda n: "bow" in n or "sword" in n or "mace" in n):
@@ -744,6 +746,8 @@ def plan_problem(text, refs):
         return "your reply was not a JSON object"
     raw = data.get("plan")
     raw = raw if isinstance(raw, list) else [data]
+    if not raw:
+        return "your plan was empty"
     for item in raw[:MAX_PLAN]:
         if not isinstance(item, dict):
             return "each plan step must be an object"
@@ -753,11 +757,18 @@ def plan_problem(text, refs):
             continue
         action = str(item.get("do", "")).lower()
         if action in SKILLS or action in ("go", "flee"):
+            if str(item.get("target", "")).strip() == "0":
+                return f"{action} cannot target 0 (that is you): give the number of a listed thing, or explore in some direction to find one"
             return f"{action} needs a target number from the lists (not 0). If nothing suitable is listed, explore in some direction to find it"
         if action not in ACTIONS and action not in SKILLS:
             return f'"{action}" is not a skill or action'
         return f"{action} was missing a valid dir, text, target, recipe or intent"
     return ""
+
+
+def model_window(history, recent=7):
+    """The system prompt plus the last few exchanges, without repeating the system prompt in a short history."""
+    return history[:1] + history[max(1, len(history) - recent):]
 
 
 def parse_plan(text, refs):
@@ -813,9 +824,14 @@ def _free_active(active, other):
     """Steps that empty the active hand when both hands are full, keeping the more useful item in hand.
 
     The spare is stowed; when no pocket, belt or bag has room it is dropped instead, so the step that needed
-    the hand still runs (a failed stow used to stop the whole plan and cost a turn).
+    the hand still runs (a failed stow used to stop the whole plan and cost a turn). Material goes before a
+    tool, loose leaves and grass go straight to the ground, and of two tools the weaker weapon is put away
+    (a sharpened stick fits a belt; a flint hatchet does not).
     """
-    spare_is_other = (_is_tool(active) and not _is_tool(other)) or (_is_junk(other) and not _is_junk(active))
+    if _is_tool(active) and _is_tool(other):
+        spare_is_other = (weapon_rank(other), other) < (weapon_rank(active), active)
+    else:
+        spare_is_other = (_is_tool(active) and not _is_tool(other)) or (_is_junk(other) and not _is_junk(active))
     steps = [{"do": "swap_hand"}] if spare_is_other else []
     if _is_junk(other if spare_is_other else active):
         return steps + [{"do": "drop"}]
@@ -981,9 +997,7 @@ def expand_skill(step, self_state, rows=None):
     elif need == "empty":
         if active != "empty":
             if other != "empty":
-                # Free a hand by putting away the spare item and keeping the tool.
-                if _is_tool(active) and _is_tool(other):
-                    return [], f"{step['skill']} needs an empty hand, but you hold {left} and {right} (both tools): equip one first"
+                # Free a hand by putting away the spare item (the weaker tool when both are tools) and keeping the other.
                 steps += _free_active(active, other)
             else:
                 steps.append({"do": "swap_hand"})
@@ -1059,9 +1073,8 @@ def _expand_craft(step, self_state):
             if not stowed:
                 return steps + [clean]  # the game explains what is missing
             if active != "empty":
-                if other != "empty":
-                    return steps + [clean]
-                steps.append({"do": "swap_hand"})
+                # Both hands full: put the spare away (or down) rather than crafting from the wrong stack.
+                steps += _free_active(active, other) if other != "empty" else [{"do": "swap_hand"}]
             steps.append({"do": "take", "item": stowed})
     return steps + [clean]
 
@@ -1253,11 +1266,15 @@ def walk(client, character, queue_since, direction=None, away_from=None, moves=6
     return walked > 0, f"walked {walked} tiles", queue_since
 
 
-COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass", "butcher": "sinew", "mine": "stone"}
+COLLECT_AFTER = {"pick_leaves": "leaf", "make_stick": "stick", "cut_grass": "grass", "butcher": "sinew", "mine": "stone", "chop": "log"}
 
 
 def collect(client, character, queue_since, word):
-    """Pick up the item a skill dropped next to the character (leaves, a stick). Returns (detail, queue_since)."""
+    """Pick up the item a skill dropped next to the character (leaves, a stick, logs). Returns (detail, queue_since).
+
+    With both hands full the spare item is stowed (or dropped) first, the same way a skill frees a hand, so
+    the model is not left to juggle hands for a turn after every chop.
+    """
     reply = client.request("character_observe", {"character": character, "radius": 1, "queue_since": queue_since})
     if not reply.get("ok"):
         return "", queue_since
@@ -1269,18 +1286,17 @@ def collect(client, character, queue_since, word):
     left, right = _name(me.get("left_hand")), _name(me.get("right_hand"))
     active, other = (left, right) if me.get("active_hand") == "left" else (right, left)
     steps = []
-    if active != "empty":
-        if other != "empty":
-            return f"left the {found[0].get('name')} on the ground (hands full)", queue_since
-        steps.append({"do": "swap_hand"})
+    if _same_stack(active, found[0].get("name")) or _same_stack(other, found[0].get("name")):
+        if not _same_stack(active, found[0].get("name")):
+            steps.append({"do": "swap_hand"})  # the piles merge into the stack already in hand
+    elif active != "empty":
+        steps += _free_active(active, other) if other != "empty" else [{"do": "swap_hand"}]
     if me.get("intent") != "help":
         steps.append({"do": "intent", "intent": "help"})
     steps.append({"do": "click", "target": found[0]["ref"]})
-    if not client.request("character_queue", {"character": character, "actions": steps}).get("ok"):
-        return "", queue_since
-    results = wait_for_queue(client, character, queue_since)
-    if results:
-        queue_since = max(r.get("id", 0) for r in results)
+    summary, queue_since = execute(client, character, steps, queue_since)
+    if "click ok" not in summary:
+        return f"left the {found[0].get('name')} on the ground ({summary})", queue_since
     return f"picked up the {found[0].get('name')}", queue_since
 
 
@@ -1432,11 +1448,19 @@ def run(client, args, character, token):
 
 # What the recipe book is asked about for a ladder goal (matched on the goal's opening words).
 GOAL_ITEMS = (
+    ("find flint", "sharpened flint"),
+    ("sharpen your flint", "sharpened flint"),
+    ("make a spear", "sharpened stick"),
+    ("make a flint axe", "flint hatchet"),
+    ("chop a tree", "campfire"),
+    ("build a campfire", "campfire"),
+    ("build a shelter", "log wall"),
+    ("furnish your house", "bed"),
     ("make a pickaxe", "bone pickaxe"),
+    ("mine ore", "bone shovel"),
     ("smelt your ore", "iron ingot"),
     ("arm yourself", "leather armor"),
     ("craft metal tools", "pickaxe head"),
-    ("furnish your house", "bed"),
 )
 
 
@@ -1536,6 +1560,8 @@ def _run(client, args, character, token, model_pool):
         if previous_self is not None:
             change = describe_change(previous_self, self_state)
             feedback += f"\nWhat changed: {change}"
+            if memory is not None:
+                remember_products(memory, previous_self, self_state)
             heard = relevant_messages(observation.get("messages", []), self_state.get("name"), limit=4, muted=muted)
             print(f"  changed: {change}" + (f" | heard: {' / '.join(heard)}" if heard else ""))
             # A click counts as useless only when nothing changed and the game said nothing to us.
@@ -1572,7 +1598,7 @@ def _run(client, args, character, token, model_pool):
         forget_old(history, signatures, target_turns, seen_lines)
         # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
         reacted = []
-        future = model_pool.submit(ask_ollama, args.ollama_url, args.model, history[:1] + history[-7:], token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
+        future = model_pool.submit(ask_ollama, args.ollama_url, args.model, model_window(history), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
         steps_now, what = reflex(observation, previous_self)
         while True:
             if steps_now:
@@ -1638,8 +1664,9 @@ def _run(client, args, character, token, model_pool):
         previous_self = self_state
         feedback = ""
         if not plan:
-            print(f"step {step}: wait ({answer[:120]!r})")
-            feedback = f"\nNothing happened: {plan_problem(answer, refs) or 'your reply had no valid step'}."
+            problem = plan_problem(answer, refs) or "your reply had no valid step"
+            print(f"step {step}: wait ({answer[:120]!r}) -> {problem}")
+            feedback = f"\nNothing happened: {problem}."
         else:
             signatures.extend(f"{self_state.get('x')},{self_state.get('y')}:{json.dumps(item, sort_keys=True)}" for item in plan)
             plan = trim_greetings(plan, speakers, greeted, time.monotonic())
@@ -1664,7 +1691,7 @@ def _run(client, args, character, token, model_pool):
                     memory.said(speakers, spoken)
             remember_results(memory, plan, summary, self_state, steps, rows_now)
             if "failed" not in summary and "not possible" not in summary:
-                made_recent.extend((step, str(item.get("recipe")).lower()) for item in plan if item.get("do") in ("craft", "build") and item.get("recipe"))
+                made_recent.extend((step, recipe_key(item.get("recipe"))) for item in plan if item.get("do") in ("craft", "build") and item.get("recipe"))
                 del made_recent[:-100]
             if "explore failed" in summary or "explore ok (walked 0" in summary:
                 explore_dir = {"north": "east", "east": "south", "south": "west", "west": "north"}[explore_dir]
@@ -1749,16 +1776,45 @@ def remember_results(memory, plan, summary, self_state, steps=(), rows=None):
             memory.event(f"did {item['skill']} at ({x},{y})")
 
 
+def new_products(before, after):
+    """Names that appeared in the hands or the pockets between two looks at the character, not counting
+    things that only moved between a hand and a pocket (what a skill made, found or picked up)."""
+    def held(state):
+        names = [_name(state.get("left_hand")), _name(state.get("right_hand"))] + _stowed(state)
+        return {str(name).lower() for name in names if name and name != "empty"}
+    return sorted(held(after) - held(before))
+
+
+def remember_products(memory, before, after):
+    """Count what the character came by since the last look and log the first of each kind: skills that
+    make sticks, twine, spears and axes go through hand changes, not recipes, so this is where they show."""
+    if memory is None:
+        return
+    x, y = after.get("x"), after.get("y")
+    for name in new_products(before, after):
+        if name in (memory.data.get("made") or {}):
+            memory.made(name)
+            continue
+        memory.made(name)
+        memory.event(f"got my first {name} at ({x},{y})" if isinstance(x, int) and isinstance(y, int) else f"got my first {name}")
+
+
 # How many of a recipe a camp can use in a while; past that, more of it is an old habit, not progress.
 HABIT_CAPS = (("wall", 12), ("roof", 12), ("floor", 9), ("support", 6), ("plank", 6), ("arrow", 20), ("fence", 16), ("palisade", 16))
 HABIT_WINDOW = 25  # steps
 HABIT_DEFAULT = 3
 
 
+def recipe_key(recipe):
+    """One name for a recipe however the model spells it: "floors/thatch floor (1)" and "Thatch floor" both count as thatch floor."""
+    text = re.sub(r"\s*\(\d+\)\s*$", "", str(recipe or "").strip().lower())
+    return text.rsplit("/", 1)[-1].strip()
+
+
 def habit_problem(plan, made_recent, step, goal):
     """Why a plan repeats a recipe the goal does not need ("" when it is fine)."""
     for item in plan:
-        recipe = str(item.get("recipe") or "").lower() if item.get("do") in ("craft", "build") else ""
+        recipe = recipe_key(item.get("recipe")) if item.get("do") in ("craft", "build") else ""
         if not recipe:
             continue
         # The goal names kinds, not materials: "walls" asks for a stone wall, and "(2 stone)" does not.

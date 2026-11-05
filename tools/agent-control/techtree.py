@@ -15,24 +15,33 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CACHE = ROOT / "data" / "agent-control" / "game-catalog.json"
 
 # How a raw resource (one nothing crafts) is gathered, in the words the autopilot's skills use.
+# An entry may name the tool its way needs and a way without it, for when that tool is the very
+# thing being planned (stone for a stone pickaxe is not mined with the pickaxe).
 GATHER_HINTS = (
     ("/material/wood", "chop a tree with an axe"),
-    ("/material/leaves", "pick leaves off a branch (grab intent)"),
+    ("/material/leaf", "pick leaves off a fallen branch (pick_leaves)"),
     ("/material/bone", "hunt an animal and butcher it"),
     ("/material/rawhide", "hunt an animal and butcher it"),
     ("pelt", "hunt an animal and butcher it"),
     ("snacks/meat", "hunt an animal and butcher it"),
-    ("/material/stone", "mine underground rock with a pickaxe"),
-    (re.compile(r"^/obj/item/stack/ore/(?!charcoal$|glass$)[a-z]+$"), "mine underground rock with a pickaxe, or sift dirt and sand"),  # charcoal and glass are made
+    ("/material/stone", "mine underground rock with a pickaxe", "pickaxe",
+     "mining needs a pickaxe, so make a bone pickaxe (2 bones from a butchered animal) first, then mine underground rock"),
+    (re.compile(r"^/obj/item/stack/ore/(?!charcoal$|glass$)[a-z]+$"), "mine underground rock with a pickaxe, or sift dirt and sand", "pickaxe",
+     "sift dirt or sand for it, or make a bone pickaxe (2 bones) and mine underground rock"),  # charcoal and glass are made
     (re.compile(r"^/material/(copper|tin|gold|silver|lead)$"), "mine or sift the ore, then smelt it in a kiln or furnace"),
     ("/material/clay", "dig clay with a shovel at a riverbank or clay ground"),
-    ("/material/sandstone", "mine sandstone with a pickaxe"),
+    ("/material/sandstone", "mine sandstone with a pickaxe", "pickaxe",
+     "mining needs a pickaxe, so make a bone pickaxe (2 bones) first, then mine sandstone underground in desert"),
     ("/obj/item/stack/grass_cuttings", "cut_grass on grass"),
     ("grown/", "harvest a crop or a wild plant"),
     ("/obj/item/stack/farming/seeds", "gather seeds from wild plants"),
     ("/material/flint", "search a rock for flint (grab intent)"),
     ("water", "fill a container at a river, lake or well"),
 )
+# Catalog names that differ from what the character sees in hand.
+DISPLAY_NAMES = {"/material/wood": "wood logs", "/material/wood/soft": "finished planks (cut logs with a hatchet)", "/material/leaf": "leaf bundles",
+                 "/obj/item/weapon/flint/sharpened": "sharpened flint", "/obj/item/weapon/branch": "stick",
+                 "/obj/item/weapon/branch/sharpened": "sharpened stick", "/obj/item/weapon/material/hatchet/tribal/flint": "flint hatchet"}
 MAX_DEPTH = 6
 # Tools that any suitable held item satisfies; they are named, never planned as things to build.
 HAND_TOOLS = {
@@ -52,6 +61,18 @@ _HEADS = (("pickaxe", "/obj/item/weapon/material/part/pickaxe"),
           ("shovel", "/obj/item/weapon/material/part/shovel"),
           ("axehead", "/obj/item/weapon/material/part/axehead/hatchet"))
 SUPPLEMENT = [
+    # The stone-age start lives in DM procs (rocks.dm, ooga_booga_weapons.dm), not the recipe files, in the
+    # words of the autopilot's skills. Without these, "sharpened flint" found a gunlock part and "stick" dynamite.
+    ("/obj/item/weapon/flint/sharpened", {"name": "sharpened flint", "era": 0, "inputs": [("/obj/item/weapon/flint", "flint", "1")], "tools": [],
+                                          "how": "sharpen_flint: hold the flint and hit a rock with it until it becomes sharpened flint"}),
+    ("/obj/item/weapon/branch", {"name": "stick", "era": 0, "inputs": [], "tools": [], "from_world": True,
+                                 "how": "break_branch on a tree marked (has branches), pick_leaves the fallen branch, make_stick it, then pick_up the stick"}),
+    ("/obj/item/weapon/branch/sharpened", {"name": "sharpened stick", "era": 0, "labels": ["spear"], "inputs": [("/obj/item/weapon/branch", "stick", "1")],
+                                           "tools": ["held sharp tool"], "how": "sharpen_stick: hold the sharpened flint and click the stick"}),
+    ("/obj/item/weapon/material/hatchet/tribal/flint", {"name": "flint hatchet", "era": 0, "labels": ["flint axe", "hatchet", "axe"],
+                                                        "inputs": [("/obj/item/weapon/branch/sharpened", "sharpened stick", "1"), ("/obj/item/weapon/flint/sharpened", "sharpened flint", "1"),
+                                                                   ("/obj/item/stack/crude_twine", "crude twine", "1")], "tools": [],
+                                                        "how": "bind_axe: hold the sharpened flint, keep the sharpened stick in your other hand or under you and the twine (sinew or rope also bind) in a pocket or under you"}),
     ("/material/iron", {"name": "wrought iron", "inputs": [("/obj/item/stack/ore/iron_sponge", "sponge iron", "")], "tools": ["anvil"],
                         "how": "click the anvil while holding the sponge iron to hammer it into wrought iron"}),
     ("/material/steel", {"name": "steel", "inputs": [("/obj/item/stack/ore/iron_pig", "pig iron", "")], "tools": ["anvil"],
@@ -170,15 +191,20 @@ class TechTree:
                 self.labels.setdefault(key, set()).add(item.get("name", ""))
             self.names.setdefault(key, output.rsplit("/", 1)[-1])
         for key, extra in SUPPLEMENT:
-            route = {"kind": "Supplement", "era": 99, "research": "", **extra}
+            route = {"kind": "Supplement", "era": 99, "research": "", **{k: v for k, v in extra.items() if k != "labels"}}
             self.routes.setdefault(key, []).append(route)
             self.names.setdefault(key, extra["name"])
-            self.labels.setdefault(key, set()).add(extra["name"])
+            self.labels.setdefault(key, set()).update([extra["name"]] + list(extra.get("labels", [])))
+            for input_key, input_name, _ in extra["inputs"]:
+                self.names.setdefault(input_key, input_name)
         for key, rows in catalog.get("resources", {}).items():
             name = rows.get("name", key) if isinstance(rows, dict) else key
             self.names.setdefault(_key(key), name)
             if _key(key) in self.labels and not _key(key).startswith("/material/"):
                 self.labels[_key(key)].add(name)  # the object's in-game name ("furnace" for the bloomery)
+        for key, name in DISPLAY_NAMES.items():
+            if key in self.names:
+                self.names[key] = name
         for key, routes in self.routes.items():
             # A route that needs its own output (re-forging iron into iron) never helps to get it first.
             routes[:] = [r for r in routes if key not in {k for k, _, _ in r["inputs"]}] or routes
@@ -231,12 +257,38 @@ class TechTree:
                 score = 100 - (len(have) - hits) * 5 - min([r["era"] for r in routes] or [99]) / 10
                 score += 20 if " ".join(have) == " ".join(want) else 0
                 score += 10 if key.startswith("/material/") else 0  # "bronze" is the metal, not a bronze trinket
+                score -= 1 if "/mold/" in key or "/part/" in key else 0  # "pickaxe" is the tool, not its mold or head
                 scores[key] = max(scores.get(key, 0), score)
         return sorted(((score, key) for key, score in scores.items()), key=lambda pair: (-pair[0], pair[1]))
 
-    def best_route(self, key, max_era=None):
+    def best_route(self, key, max_era=None, prefer=(), visiting=frozenset()):
+        """The cheapest route to `key`. A route named with every word of `prefer` (the query) wins a tie, and a
+        route whose tool or part is something higher up the plan (a pickaxe to make the pickaxe) is used only
+        when nothing else makes it."""
         routes = self._routes(key, max_era)
-        return min(routes, key=lambda route: self._route_cost(route, max_era, frozenset({key}))) if routes else None
+        if not routes:
+            return None
+        chain = visiting | {key}
+        straight = [route for route in routes if not self._needs_any(route, chain, max_era)]
+        routes = straight or routes
+        wanted = set(prefer)
+
+        def rank(route):
+            named = wanted and wanted <= set(_words(route["name"]))
+            return (self._route_cost(route, max_era, frozenset({key})), not named)
+
+        return min(routes, key=rank)
+
+    def _needs_any(self, route, keys, max_era):
+        """True when a route's parts or tools resolve to one of `keys`."""
+        if any(part in keys for part, _, _ in route["inputs"]):
+            return True
+        for tool in route["tools"]:
+            if tool.lower() in HAND_TOOLS:
+                continue
+            if self.tool_key(tool, max_era, keys) in keys:
+                return True
+        return False
 
     def _routes(self, key, max_era):
         routes = self.routes.get(key, [])
@@ -272,9 +324,13 @@ class TechTree:
             total += self._cost(tool_key, max_era, visiting) if tool_key else 3
         return total
 
-    def gather_hint(self, key):
-        for marker, hint in GATHER_HINTS:
+    def gather_hint(self, key, avoid=()):
+        """How to gather a raw material; `avoid` names things the plan is making, so a way that needs one of
+        them (mining stone with the pickaxe being made) gives way to the entry's other way."""
+        for marker, hint, *rest in GATHER_HINTS:
             if (marker.search(key) if hasattr(marker, "search") else marker in key):
+                if rest and any(rest[0] in str(name).lower() for name in avoid):
+                    return rest[1]
                 return hint
         return ""
 
@@ -290,6 +346,7 @@ class TechTree:
             return [], f'no recipe makes "{query}"'
         have = [str(name).lower() for name in carried]
         steps, seen = [], set()
+        prefer = _words(query)
 
         def carrying(name):
             words = _words(name)
@@ -299,12 +356,14 @@ class TechTree:
             name = self.names.get(item_key, item_key.rsplit("/", 1)[-1])
             if item_key in seen or (depth and carrying(name)):
                 return
-            route = self.best_route(item_key, max_era)
+            # Ways that need what this plan is making (the goal or any part above this one) are not ways to get it.
+            making = [query] + [self.names.get(k, k) for k in visiting]
+            route = self.best_route(item_key, max_era, prefer if depth == 0 else (), visiting)
             if route is None or depth >= MAX_DEPTH or item_key in visiting:
                 seen.add(item_key)
-                steps.append({"gather": name, "how": self.gather_hint(item_key) or "find it in the world or trade for it"})
+                steps.append({"gather": name, "how": self.gather_hint(item_key, making) or "find it in the world or trade for it"})
                 return
-            hint = self.gather_hint(item_key)
+            hint = self.gather_hint(item_key, making)
             # A basic material is gathered, even where a reaction or a station could also make it (asked for
             # directly as well as as a part: "water" is fetched, not made from oxygen and hydrogen).
             if hint and (route.get("from_world") or route["kind"] in LAST_RESORT_KINDS or route["kind"] == "Acquisition"):
