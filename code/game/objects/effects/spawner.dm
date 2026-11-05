@@ -75,6 +75,13 @@
 	var/spawning = FALSE
 	invisibility = 101
 	var/hostile = FALSE
+	// Living animals this spawner made. Spawners save only their field
+	// allowlist, so current_number never survived a load and every restart
+	// refilled each spawner on top of its restored animals. Restored animals
+	// re-register here from their saved origin in after_load().
+	var/tmp/list/spawned_mobs = null
+	// Set by a restore; the first cycle after the load culls the excess.
+	var/tmp/cull_restored_excess = FALSE
 
 /obj/effect/spawner/mobspawner/New()
 	..()
@@ -82,10 +89,105 @@
 	icon_state = "invisible"
 	// A restored spawner already has its saved population; wait one cycle.
 	if (persistence_saved_atom_construction)
+		cull_restored_excess = TRUE
 		spawn(spawner_delay(timer))
 			spawnerproc()
 		return
 	spawnerproc()
+
+/obj/effect/spawner/mobspawner/persistence_runtime_var(key)
+	return key == "spawned_mobs" || key == "cull_restored_excess" || ..()
+
+/obj/effect/spawner/mobspawner/proc/register_spawned(mob/living/simple_animal/A)
+	if (!istype(A) || A.stat == DEAD || QDELETED(A))
+		return
+	if (!spawned_mobs)
+		spawned_mobs = list()
+	spawned_mobs |= A
+	current_number = spawned_mobs.len
+
+/obj/effect/spawner/mobspawner/proc/unregister_spawned(mob/living/simple_animal/A)
+	if (spawned_mobs)
+		spawned_mobs -= A
+	living_spawned_count()
+
+// Living animals this spawner still owns. Drops dead, deleted and reassigned
+// entries and keeps current_number in step for admin views.
+/obj/effect/spawner/mobspawner/proc/living_spawned_count()
+	if (!spawned_mobs)
+		current_number = 0
+		return 0
+	for (var/entry in spawned_mobs.Copy())
+		var/mob/living/simple_animal/A = entry
+		if (!istype(A) || QDELETED(A) || A.stat == DEAD || A.origin != src)
+			spawned_mobs -= entry
+	current_number = spawned_mobs.len
+	return current_number
+
+// Wild animals of this spawner's kind near it, whoever made them: restored
+// animals whose owner link was lost, offspring, and other spawners' animals.
+// The spawner stays quiet while its area already holds its quota.
+/obj/effect/spawner/mobspawner/proc/density_radius()
+	return max(max_range * 2, 10)
+
+/obj/effect/spawner/mobspawner/proc/nearby_population()
+	var/turf/T = get_turf(src)
+	if (!T)
+		return 0
+	var/radius = density_radius()
+	var/total = 0
+	for (var/mob/living/simple_animal/A in living_mob_list)
+		if (A.stat == DEAD || A.z != T.z || !istype(A, create_path))
+			continue
+		if (get_dist(A, T) <= radius)
+			total++
+	return total
+
+// An animal that a player has a hand on, rides, leads or tamed is never culled.
+/proc/spawner_cull_allowed(mob/living/simple_animal/A)
+	if (!istype(A) || QDELETED(A) || A.stat == DEAD || A.client || A.key)
+		return FALSE
+	if (A.buckled || A.pulledby || A.following_mob || A.rider || length(A.friends))
+		return FALSE
+	if (!isturf(A.loc))
+		return FALSE
+	return TRUE
+
+// Once per load: removes this spawner's restored animals above its quota.
+// Earlier builds refilled every spawner on each restart, so long-lived worlds
+// carry many times the intended population. Returns how many were removed.
+/obj/effect/spawner/mobspawner/proc/cull_excess()
+	cull_restored_excess = FALSE
+	var/excess = living_spawned_count() - max_number
+	if (excess <= 0)
+		return 0
+	var/turf/T = get_turf(src)
+	var/radius = density_radius()
+	var/removed = 0
+	// Keep the animals closest to the spawner; remove the rest first.
+	var/list/candidates = spawned_mobs.Copy()
+	while (excess > 0 && candidates.len)
+		var/mob/living/simple_animal/far = null
+		var/far_dist = -1
+		for (var/mob/living/simple_animal/A in candidates)
+			var/d = (T && A.z == T.z) ? get_dist(A, T) : 1000
+			if (d > far_dist)
+				far = A
+				far_dist = d
+		candidates -= far
+		if (!far || !spawner_cull_allowed(far) || far_dist > radius * 3)
+			continue
+		if (ecology_visible_to_players(get_turf(far), 9))
+			continue
+		spawned_mobs -= far
+		far.origin = null
+		qdel(far)
+		removed++
+		excess--
+	current_number = spawned_mobs.len
+	if (removed)
+		log_game("Wildlife cull: [name] at ([x],[y],[z]) removed [removed] restored [create_path] above its quota of [max_number].")
+	return removed
 
 /obj/effect/spawner/mobspawner/proc/buff()
 	if (map.chad_mode)
@@ -118,6 +220,7 @@
 	if (emptyTurf)
 		var/mob/living/simple_animal/spawnedMob = new create_path(emptyTurf)
 		spawnedMob.origin = src
+		register_spawned(spawnedMob)
 		if (istype(spawnedMob, /mob/living/simple_animal/hostile/bear))
 			var/mob/living/simple_animal/hostile/bear/B = spawnedMob
 			if (prob(50))
@@ -126,18 +229,18 @@
 			var/mob/living/simple_animal/hostile/wolf/W = spawnedMob
 			if (prob(50))
 				W.female = TRUE
-		current_number++
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
-
-	if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
-		spawning = TRUE
-	if (current_number < 0)
-		current_number = 0
-	if (activated)
-		if (spawning == TRUE)
-			spawning = FALSE
-			spawnTarget()
+	// Restored animals register only once their level has finished loading.
+	if (!persistence_active_operation)
+		if (cull_restored_excess)
+			cull_excess()
+		if ((living_spawned_count() < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))) && nearby_population() < max_number)
+			spawning = TRUE
+		if (activated)
+			if (spawning == TRUE)
+				spawning = FALSE
+				spawnTarget()
 
 	spawn(spawner_delay(timer))
 		spawnerproc()
