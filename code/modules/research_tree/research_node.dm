@@ -341,7 +341,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("law_order", "Law & Order", "Military", 95, 0, RESEARCH_MODE_ANALYSIS, null, 1))
 	// Field Defenses era 0: wood palisades/barricades were free at a stone-age
 	// start before the rebalance and must stay so; sandbags and dressed-stone
-	// walls moved up to trench_warfare/fortifications respectively.
+	// walls moved up to fortifications. Sandbags were briefly in the Tailoring
+	// tree's trench_warfare, which factionless players can never research.
 	register_research_node(new /datum/research_node("field_defenses", "Field Defenses", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// Fortifications moved to the Main tree's Military layer in the rebalance:
 	// crenelated walls, castle gates and barbwire are siegecraft, not tailoring.
@@ -920,8 +921,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/belt/gator_belt" = "fine_garments",
 		"/obj/item/weapon/storage/belt/lizard_belt" = "fine_garments",
 		"/obj/item/weapon/storage/briefcase" = "fine_garments",
-		// --- fortifications (18) ---
+		// --- fortifications (19) ---
 		"/obj/item/stack/material/barbwire" = "fortifications",
+		"/obj/item/weapon/barrier/sandbag/empty" = "fortifications",
 		"/obj/structure/barbwire" = "fortifications",
 		"/obj/structure/barricade/jap_h" = "fortifications",
 		"/obj/structure/barricade/jap_h_l" = "fortifications",
@@ -1766,14 +1768,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/backpack/satchel" = "textile_mills",
 		"/obj/item/weapon/storage/backpack/satchel/gator_satchel" = "textile_mills",
 		"/obj/item/weapon/storage/backpack/satchel/lizard_satchel" = "textile_mills",
-		// --- trench_warfare (7) ---
+		// --- trench_warfare (6) ---
 		"/obj/item/clothing/accessory/storage/webbing/green_webbing" = "trench_warfare",
 		"/obj/item/clothing/accessory/storage/webbing/khaki_webbing" = "trench_warfare",
 		"/obj/item/clothing/accessory/storage/webbing/light" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/british" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/german" = "trench_warfare",
 		"/obj/item/clothing/suit/b3" = "trench_warfare",
-		"/obj/item/weapon/barrier/sandbag/empty" = "trench_warfare",
 		// --- utilities (7) ---
 		"/obj/item/lightbulb" = "utilities",
 		"/obj/item/lightbulb/tube" = "utilities",
