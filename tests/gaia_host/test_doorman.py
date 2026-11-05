@@ -1,0 +1,140 @@
+"""Offline tests for scripts/gaia-host/doorman.py with the fake machine from test_gaia_host."""
+import json
+from pathlib import Path
+import socket
+import struct
+import sys
+import threading
+import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import test_gaia_host as base  # noqa: E402
+
+gaia_host = base.gaia_host
+import doorman  # noqa: E402  (gaia_host put scripts/gaia-host on sys.path)
+
+
+class Machine(base.FakeMachine):
+    def __init__(self):
+        super().__init__()
+        self.status_calls = 0
+
+    def status_topic(self, port):
+        if self.suspended:
+            raise OSError('frozen')
+        self.status_calls += 1
+        return json.dumps({'players': self.clients, 'map_name': 'Gaia', 'map_gamemode': 'Nomads'})
+
+
+def request(query):
+    payload = b'\0' * 5 + query.encode('ascii') + b'\0'
+    return b'\x00\x83' + struct.pack('>H', len(payload)) + payload
+
+
+class DoormanTests(base.GaiaHostTests):
+    def setUp(self):
+        super().setUp()
+        self.machine = Machine()
+        self.host = gaia_host.Host(self.config, self.machine, script=Path('gaia_host.py'))
+        self.host.log = lambda values: None
+        self.clock = [1000.0]
+        self.door = doorman.Doorman([self.host], self.machine, clock=lambda: self.clock[0], wall=lambda: self.clock[0])
+        self.instance = self.door.instances[1714]
+
+    def ask(self, query, address='203.0.113.9'):
+        return self.door.handle(query, address)
+
+    def test_status_shows_the_cache_and_asleep_without_waking(self):
+        self.running()
+        self.door.step()
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'awake')
+        self.host.freeze()
+        self.clock[0] += 120
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['map_name'], entry['players'], entry['cached_age']), ('asleep', 'Gaia', 0, 120))
+        self.assertEqual(self.machine.suspended, 1)
+
+    def test_wake_thaws_once_and_reads_waking_until_the_world_answers(self):
+        self.running()
+        self.door.step()
+        self.host.freeze()
+        reply = self.ask('wake=1&port=1714')
+        self.assertEqual((reply['ok'], reply['state'], self.machine.suspended), (True, 'waking', 0))
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
+        self.door.step()
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'awake')
+
+    def test_wake_requests_are_spaced_per_address(self):
+        self.running()
+        self.host.freeze()
+        self.ask('wake=1&port=1714')
+        self.door.step()
+        self.host.freeze()
+        self.clock[0] += 5
+        self.ask('wake=1&port=1714')
+        self.assertEqual(self.machine.suspended, 1)  # the same address cannot keep it awake every few seconds
+        self.ask('wake=1&port=1714', address='198.51.100.7')
+        self.assertEqual(self.machine.suspended, 0)
+
+    def test_stopped_and_unknown(self):
+        self.give_token()
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'stopped')
+        self.assertEqual(self.ask('wake=1&port=1715'), {'schema': 1, 'ok': False, 'error': 'unknown port'})
+        for bad in ('status=1', 'wake=1', 'host_status=1&extra=2', 'host_status', '%%%'):
+            self.assertIsNone(self.ask(bad), bad)
+
+    def test_requests_are_rate_limited_per_address(self):
+        self.give_token()
+        for _ in range(doorman.REQUESTS_PER_MINUTE):
+            self.assertIsNotNone(self.ask('host_status=1'))
+        self.assertIsNone(self.ask('host_status=1'))
+        self.assertIsNotNone(self.ask('host_status=1', address='198.51.100.7'))
+        self.clock[0] += 61
+        self.assertIsNotNone(self.ask('host_status=1'))
+
+    def test_a_direct_connection_wake_also_reads_waking(self):
+        self.running()
+        self.host.freeze()
+        self.instance.next_watch = 0
+        self.machine.peers = ['203.0.113.9']
+        status_topic = self.machine.status_topic
+        self.machine.status_topic = lambda port: (_ for _ in ()).throw(OSError('still paging in'))
+        self.door.step()
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
+        self.machine.status_topic = status_topic
+        self.instance.next_refresh = 0
+        self.door.step()
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'awake')
+
+    def test_framing_round_trip_over_a_socket(self):
+        self.running()
+        self.config['doorman_port'] = 0
+        self.config['doorman_bind'] = '127.0.0.1'
+        self.door = doorman.Doorman([self.host], self.machine)
+        server = self.door.listen()
+        port = server.getsockname()[1]
+        threading.Thread(target=self.door.accept_forever, args=(server,), daemon=True).start()
+        with socket.create_connection(('127.0.0.1', port), timeout=5) as connection:
+            connection.sendall(request('?host_status=1'))
+            header = doorman._read(connection, 4)
+            body = doorman._read(connection, struct.unpack('>H', header[2:])[0])
+        self.assertEqual((header[:2], body[:1], body[-1:]), (b'\x00\x83', b'\x06', b'\x00'))
+        self.assertEqual(json.loads(body[1:-1])['instances'][0]['port'], 1714)
+        with socket.create_connection(('127.0.0.1', port), timeout=5) as connection:
+            connection.sendall(b'\x00\x83\xff\xff')  # oversized request is dropped unanswered
+            self.assertEqual(connection.recv(10), b'')
+        server.close()
+
+    def test_parse_request(self):
+        self.assertEqual(doorman.parse_request(request('?wake=1&port=1714')), 'wake=1&port=1714')
+        self.assertIsNone(doorman.parse_request(request('x')[:-1]))
+        self.assertIsNone(doorman.parse_request(b'\x00\x84' + request('x')[2:]))
+
+
+# The inherited GaiaHostTests cases already run in test_gaia_host.
+for name in [name for name in dir(base.GaiaHostTests) if name.startswith('test_')]:
+    if name not in DoormanTests.__dict__:
+        setattr(DoormanTests, name, None)
+
+if __name__ == '__main__':
+    unittest.main()

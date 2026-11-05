@@ -41,6 +41,30 @@ Connection failure before a Topic write can try the next address. Once a Topic
 has been reserved/written, a failed or invalid response cannot cause another
 immediate Topic write to an alternative address.
 
+## Sleeping servers and Wake and join
+
+A host that freezes idle servers can run one doorman per host
+(`scripts/gaia-host/gaia_host.py serve`) on TCP 1713 of the same approved
+hostname. It speaks the same BYOND Topic framing and answers two queries:
+`?host_status=1` (schema 1: each instance's port, `state` of awake, asleep,
+waking or stopped, `wake_estimate` and the last cached players, map and mode
+with `cached_age`) and `?wake=1&port=N`. `HostStatus` asks it first, under its
+own two-second deadline, before the direct sweep. The port is fixed in source
+like the game candidates, and the doorman supplies no address: entries whose
+port is not a configured candidate are ignored, and the answer is display data
+and a wake target only. A missing, failing or malformed doorman reply means
+every candidate is checked directly as before.
+
+Candidates the doorman reports asleep or waking are not queried directly, so
+browsing never wakes a frozen world or spends its Topic spacing. They appear as
+`DormantServer` rows ("Asleep; wakes on join") instead of `GameServer`, which
+still comes only from a direct response. Choosing one runs Wake and join:
+`?wake=1&port=N`, then the doorman is polled every two seconds for up to 60
+seconds until it reports awake (stopped or the time limit ends it with a
+message), then one ordinary direct status query verifies the game port and its
+answer is joined exactly like a refreshed server. The doorman never proxies game
+traffic, so the player's own address still reaches the world for bans and logs.
+
 ## Shared request spacing and responsive waiting
 
 Real network probes use `TopicPacer.Shared` at the fixed per-account directory

@@ -12,5 +12,8 @@
   "freeze_idle_minutes": 15,
   "freeze_trim_memory": false,
   "wake_ignore": ["127.0.0.1", "::1"],
-  "wake_poll_seconds": 0.2
+  "wake_poll_seconds": 0.2,
+  "doorman_port": 1713,
+  "doorman_bind": "0.0.0.0",
+  "wake_estimate_seconds": 5
 }

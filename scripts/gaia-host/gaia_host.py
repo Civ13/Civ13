@@ -8,6 +8,7 @@ copy of that save, and pull and compile master while the server is stopped.
     python gaia_host.py --config gaia-host.json status
     python gaia_host.py --config gaia-host.json start|stop|restart|update
     python gaia_host.py --config gaia-host.json freeze|thaw|watch
+    python gaia_host.py --config gaia.json [--config other.json ...] serve
 
 status prints one JSON object and never changes anything. The other actions
 take a lock, record their progress in <state_dir>/operation.json and run in a
@@ -42,17 +43,20 @@ import subprocess
 import sys
 import time
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
 
-ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch')
-DIRECT = ('freeze', 'thaw', 'watch')  # quick or long-running; no detached worker
+ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve')
+DIRECT = ('freeze', 'thaw', 'watch', 'serve')  # quick or long-running; no detached worker
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
 # Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
 # in slows the wake past the launcher's patience, so it is opt-in.
 FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake_ignore': ['127.0.0.1', '::1'],
-                   'wake_poll_seconds': 0.2}
+                   'wake_poll_seconds': 0.2,
+                   # serve: the doorman port the launcher asks before touching a game port
+                   'doorman_port': 1713, 'doorman_bind': '0.0.0.0', 'wake_estimate_seconds': 5}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -227,6 +231,11 @@ class Platform:
             except OSError:
                 continue
         return None
+
+    def status_topic(self, port):
+        """The world's public status JSON text, asked from this machine."""
+        from doorman import topic
+        return topic(port, 'status=1&format=json')
 
     def connections(self, port):
         """Remote addresses with an established connection to the port."""
@@ -637,17 +646,22 @@ class Host:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--config', required=True)
+    parser.add_argument('--config', required=True, action='append',
+                        help='config file; serve accepts one per instance on this host')
     parser.add_argument('action', nargs='?', choices=ACTIONS)
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if len(args.config) > 1 and args.action != 'serve':
+        parser.error('only serve takes more than one --config')
     try:
-        config = load_config(args.config)
+        configs = [load_config(path) for path in args.config]
     except (OSError, ValueError) as error:
         print(json.dumps({'ok': False, 'error': 'config: %s' % error}))
         return 2
-    config['_path'] = str(Path(args.config).resolve())
-    host = Host(config)
+    for config, path in zip(configs, args.config):
+        config['_path'] = str(Path(path).resolve())
+    hosts = [Host(config) for config in configs]
+    host = hosts[0]
     if args.worker:
         host.work(*args.worker)
         return 0
@@ -655,6 +669,14 @@ def main(argv=None):
         parser.error('an action is required')
     if args.action == 'watch':
         host.watch()
+        return 0
+    if args.action == 'serve':
+        from doorman import Doorman
+        try:
+            Doorman(hosts, host.platform).run()
+        except (OSError, ValueError) as error:
+            print(json.dumps({'ok': False, 'error': 'doorman: %s' % error}))
+            return 2
         return 0
     try:
         if args.action == 'status':
