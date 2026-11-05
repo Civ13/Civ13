@@ -153,8 +153,11 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 	return path
 
 /proc/region_travel_arrival_turf()
+	// Admin gates first, then other gates that take arrivals (approved trails).
 	for(var/obj/structure/region_gate/gate in region_gates)
-		if(!QDELETED(gate) && isturf(gate.loc)) return gate.loc
+		if(gate.type == /obj/structure/region_gate && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
+	for(var/obj/structure/region_gate/gate in region_gates)
+		if(gate.accepts_arrivals() && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
 	var/list/starts = latejoin_turfs ? latejoin_turfs["JoinLateCiv"] : null
 	if(length(starts)) return pick(starts)
 	return null
@@ -327,7 +330,14 @@ var/global/list/region_travel_look_vars = list("r_hair", "g_hair", "b_hair", "h_
 
 /obj/structure/region_gate/Destroy()
 	region_gates -= src
+	// A traveller waiting inside during an escrow must not be deleted with it.
+	var/turf/T = get_turf(src)
+	for(var/mob/M in contents)
+		M.forceMove(T)
 	return ..()
+
+/obj/structure/region_gate/proc/accepts_arrivals()
+	return TRUE
 
 /obj/structure/region_gate/proc/destination_name()
 	var/list/peer = shard_group.enabled ? shard_group.peers[destination] : null

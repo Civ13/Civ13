@@ -96,10 +96,15 @@
 #define SUB_COMP_MANEUVERING         "maneuvering"
 #define SUB_COMP_AFT_TORPEDO         "aft_torpedo"
 
-// Atmospheric Constants
-#define SUB_ATMOS_NORMAL_O2    20.0   // Moles of O2 in a normal compartment
-#define SUB_ATMOS_NORMAL_CO2   0.1    // Moles of CO2 in a normal compartment
-#define SUB_ATMOS_DANGER_CO2   5.0    // CO2 level where suffocation begins
-#define SUB_ATMOS_VENT_OXYGEN  2.0    // Minimum O2 before vent equalization kicks in
-#define SUB_ATMOS_TEMP_NORMAL  293.15 // Kelvin (20 C)
-#define SUB_ATMOS_PRESSURE_NORMAL 101.325 // kPa (1 atm)
+// Compartment air (one habitat ledger per compartment). Partial pressures
+// are kPa; amounts are kPa-tiles (kPa times tiles of air).
+#define SUB_AIR_SEA_O2_KPA        21     // Fresh air per tile: oxygen
+#define SUB_AIR_SEA_INERT_KPA     79     // Fresh air per tile: nitrogen
+#define SUB_AIR_MAX_O2_KPA        30     // Electrolysis stops here
+#define SUB_AIR_SUFFOCATE_O2_KPA  6      // Below this, crew suffocate
+#define SUB_AIR_DANGER_CO2_KPA    5      // Above this, CO2 chokes the crew
+#define SUB_AIR_VACUUM_O2_KPA     2      // Panel reports VACUUM below this
+#define SUB_AIR_MIN_POCKET        0.1    // A flooded compartment keeps this fraction of its tiles as an air pocket
+#define SUB_AIR_VENT_FLOW         0.3    // Fraction ventilation moves toward the shared air each second
+#define SUB_AIR_ELECTROLYSIS_O2   0.02   // kPa-tiles of oxygen per compartment per second
+#define SUB_AIR_SCRUB_RATE        0.05   // kPa-tiles of CO2 a scrubber removes per second

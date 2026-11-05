@@ -15,15 +15,16 @@ existing work owners and current offline-test limitations.
 | `code/modules/persistence/durable_world.dm:17-45,49-153` | Versioned world metadata, explicit schemas, graph and area coverage validation | Gas inventories, network endpoint schemas or conservation acceptance |
 | `code/modules/persistence/durable_graph.dm:17-72,112-169` | Typed bounded graph, aliases and generation-bound `(z, ref)` world-atom links | Arbitrary zone/gas datum metadata; unsupported datum values reject |
 | `code/modules/xgm/xgm_gas_mixture.dm:1-18,182-195` | Species-to-moles map, Kelvin temperature, volume, group multiplier; total_moles/graphics caches; pressure derived from cached totals | A versioned atmosphere persistence policy or proven room solver |
-| `code/modules/submarine/submarine_turfs.dm:156-194,434-487` | Per-turf compartment/vent labels, O2/CO2, thermal/pressure fields and simplified ventilation | Stable dynamic-zone IDs or a general cross-z network contract |
-| `code/modules/submarine/flooding_controller.dm:15-19,27-68` | Runtime turf, compartment and vent registries | Durable registry identity or complete post-import rebuild/activation barrier |
+| `code/modules/submarine/submarine_turfs.dm` | Per-turf compartment labels and water; no per-turf gas since compartments moved to habitat ledgers | Stable dynamic-zone IDs or a general cross-z network contract |
+| `code/modules/submarine/flooding_controller.dm` | Runtime turf and compartment registries, one habitat ledger of O2/CO2/inert gas per compartment, ventilation shut-off list | Durable registry identity or complete post-import rebuild/activation barrier |
 | `code/processes/submarine.dm:15-25` | A registered process calls flooding/atmos and machinery | An atmosphere save/load barrier in this local fire body; review the complete scheduler path before claiming one |
 | `code/modules/persistence/durable_timers.dm:18-65` | Generation/revision-owned named callbacks, remaining delays and blocking during persistence | Atmosphere worker topology epochs or a gas-transfer transaction protocol |
 | `code/game/atoms.dm:56-66` | Base air delegation/removal interfaces, with null defaults | A populated persistent atmosphere for ordinary Gaia turfs |
 
 Submarine floor vars are not by themselves a save contract: the generic turf
-partial-save path uses `map_storage_saved_vars`, and this baseline has no
-sub_deck saved-field override for those atmospheric quantities. Generic object
+partial-save path uses `map_storage_saved_vars`, and sub_deck saves only
+its look. Compartment air lives in runtime ledgers on the flooding controller,
+whose `to_list()` form is plain scalars, but nothing saves it yet. Generic object
 serialization might retain changed gas-datum fields; that would still not define
 which quantities are authoritative, rebuild caches, or prove conservation.
 The current explicit durable area schema has no atmosphere inventory. Existing

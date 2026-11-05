@@ -1039,7 +1039,7 @@
 
 /obj/structure/drill
 	name = "industrial drill"
-	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. Requires 150 cable power and uncovered dirt on z-level 1. Produces 2 minerals every two minutes. Clear the output tile before it reaches 12 stacks."
+	desc = "A heavy industrial deep drill used to collect minerals that are hidden far underground. Requires 150 cable power and uncovered dirt, on the surface or underground. Produces 2 minerals every two minutes. Clear the output tile before it reaches 12 stacks."
 	icon = 'icons/obj/machines/mining_drill.dmi'
 	icon_state = "mining_drill"
 	flammable = FALSE
@@ -1137,12 +1137,16 @@
 	var/turf/T = get_turf(src)
 	return T && T.deposit_small_resource(ore_type, quantity, output_stack_limit)
 
+// Any z-level: the surface and cave floors on every map both qualify.
+/obj/structure/drill/proc/valid_drill_site()
+	return anchored && istype(loc, /turf/floor/dirt) && !(locate(/obj/covers) in loc)
+
 /obj/structure/drill/proc/process_machine()
 	if (!active || process_pending)
 		return
-	if (!anchored || !istype(loc, /turf/floor/dirt) || z != 1 || (locate(/obj/covers) in loc))
+	if (!valid_drill_site())
 		stop_drilling()
-		visible_message(SPAN_WARNING("\The [src] requires anchored, uncovered dirt on z-level 1."))
+		visible_message(SPAN_WARNING("\The [src] requires anchored, uncovered dirt."))
 		return
 	if (!check_power())
 		stop_drilling()
