@@ -584,6 +584,16 @@ SUITES = {
     # Inert source checks; shared living movement retains all-suite fallback.
     'ordinary_animal_swap': {'files': ('tests/test_ordinary_animal_swap.py',),
         'paths': (), 'shared_paths': ('code/game/mob/living/living.dm',)},
+    # Matcher and ratchet contracts for scripts/check_forbidden_patterns.py; stdlib only.
+    # The repository-wide check itself is a step of the baseline job, so game
+    # source changes do not select this suite.
+    'forbidden_patterns': {'files': ('tests/forbidden_patterns/test_forbidden_patterns.py',),
+        'paths': ('tests/forbidden_patterns/', 'scripts/check_forbidden_patterns.py',
+                  'tools/lint/forbidden_patterns_baseline.json'), 'shared_paths': ()},
+    # Dreamchecker output parsing and baseline ratchet; synthetic log, no download.
+    'dreamchecker_lint': {'files': ('tests/dreamchecker_lint/test_dreamchecker_lint.py',),
+        'paths': ('tests/dreamchecker_lint/', 'scripts/dreamchecker_lint.py', 'tools/lint/dreamchecker.json',
+                  'tools/lint/dreamchecker_baseline.json'), 'shared_paths': ('SpacemanDMM.toml',)},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},

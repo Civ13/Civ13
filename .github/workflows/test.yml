@@ -140,6 +140,20 @@ jobs:
           mkdir -p .ci/baseline
           printf '%s\n' '{"status":"failed","reason":"Baseline execution did not complete"}' > .ci/baseline/baseline.json
           python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/baseline
+      - name: Report forbidden source patterns above the recorded baseline
+        # Advisory ratchet (spawn, in world, untyped WWinput results, merge
+        # markers); a new occurrence annotates the run and never fails it yet.
+        if: always() && steps.baseline.outcome != 'skipped' && steps.baseline.outcome != ''
+        continue-on-error: true
+        run: |
+          mkdir -p .ci/baseline
+          python3 -B scripts/check_forbidden_patterns.py | tee .ci/baseline/forbidden_patterns.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" != "0" ]; then
+            echo '::warning title=forbidden patterns::New forbidden source patterns against tools/lint/forbidden_patterns_baseline.json; see .ci/baseline/forbidden_patterns.log in the ci-baseline artifact.'
+          fi
+          tail -n 3 .ci/baseline/forbidden_patterns.log >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
       - name: Retain offline commands, counts, logs and skips
         if: always() && steps.baseline.outcome != 'skipped' && steps.baseline.outcome != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -2631,5 +2645,56 @@ jobs:
           name: ci-aggregate-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           include-hidden-files: true
           path: .ci/aggregate/
+          retention-days: 7
+          if-no-files-found: error
+  dreamchecker:
+    # Static analysis with the pinned SpacemanDMM dreamchecker, ratcheted
+    # against tools/lint/dreamchecker_baseline.json. Non-blocking for now: it is
+    # not in ci-required and never gates a merge; read its summary and artifact.
+    # Runs only when the selector admits a game compile, so documentation-only
+    # changes and unprefixed feature pushes spend no minutes here.
+    needs: changes
+    if: needs.changes.outputs.skip_duplicate != 'true' && needs.changes.outputs.game == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Download the pinned dreamchecker
+        timeout-minutes: 3
+        run: python3 -B scripts/dreamchecker_lint.py download --output .ci/lint/dreamchecker
+      - name: Run dreamchecker on civ13.dme
+        timeout-minutes: 5
+        run: python3 -B scripts/dreamchecker_lint.py run --binary .ci/lint/dreamchecker --output .ci/lint
+      - name: Compare with the recorded baseline
+        id: ratchet
+        continue-on-error: true
+        env:
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -o pipefail
+          python3 -B scripts/dreamchecker_lint.py check --receipt .ci/lint/dreamchecker.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Explain the verdict
+        if: always()
+        env:
+          RATCHET: ${{ steps.ratchet.outcome }}
+        run: |
+          if [ "$RATCHET" = "failure" ]; then
+            echo '::warning title=dreamchecker::New dreamchecker diagnostics against tools/lint/dreamchecker_baseline.json. This job is advisory; see the summary above and the ci-dreamchecker artifact.'
+          fi
+          echo 'dreamchecker is advisory: it reports diagnostics above the recorded baseline and does not gate ci-required.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain dreamchecker log and receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-dreamchecker-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: |
+            .ci/lint/dreamchecker.log
+            .ci/lint/dreamchecker.json
           retention-days: 7
           if-no-files-found: error
