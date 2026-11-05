@@ -1204,6 +1204,7 @@
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"
 #include "code\modules\persistence\saving.dm"
+#include "code\modules\persistence\stream\save_stream.dm"
 #include "code\modules\persistence\transfer_bridge.dm"
 #include "code\modules\persistence\transfer_trade_post.dm"
 #include "code\modules\projectiles\__projectiles.dm"

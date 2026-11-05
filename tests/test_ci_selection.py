@@ -261,6 +261,16 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered nomads-adoption'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_savestream_admission_is_exact(self):
+        for path in ('tests/savestream/test_helper.py', 'tests/savestream/helper_client.py',
+                     'tests/savestream/run_native.py', 'tests/savestream/roundtrip/fixture.dm'):
+            with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/savestream/new_probe.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered savestream'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_agent_ci_digest_offline_admission_is_exact(self):
         path = 'tests/agent_ci_digest/test_ci_digest.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
