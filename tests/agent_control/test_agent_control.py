@@ -809,5 +809,84 @@ class AutopilotTests(unittest.TestCase):
         self.assertEqual(sent["body"]["options"]["num_ctx"], 32768)
 
 
+def _recipe(name, kind, inputs, outputs, era=0, conditions=""):
+    return {"name": name, "kind": kind, "era_sort": era, "conditions": conditions,
+            "inputs": [{"id": i, "name": n, "quantity": q} for i, n, q in inputs],
+            "outputs": [{"id": o, "name": n, "quantity": "1"} for o, n in outputs]}
+
+
+TINY_CATALOG = {
+    "recipes": [
+        _recipe("bone pickaxe", "Material / global", [("/material/bone", "bone", "2")], [("/obj/item/weapon/material/pickaxe/bone", "bone")]),
+        _recipe("bone pickaxe", "Material / camp", [("/material/bone", "bone", "6")], [("/obj/item/weapon/material/pickaxe/camp", "bone")]),
+        _recipe("stone anvil", "Material / global", [("/material/stone", "stone", "25")], [("/obj/structure/anvil/stone", "stone")]),
+        _recipe("iron anvil", "Material / global", [("/material/iron", "iron", "20")], [("/obj/structure/anvil", "iron")], era=2),
+        _recipe("iron altar", "Material / global", [("/material/iron", "iron", "12")], [("/obj/structure/altar", "iron")]),
+        _recipe("clay brick bloomery", "Material / global", [("/material/clay", "clay", "10")], [("/obj/structure/furnace", "clay")], era=2,
+                conditions="Explicit research node: iron_smithing."),
+        _recipe("Water", "Chemistry", [("oxygen", "oxygen", "1"), ("hydrogen", "hydrogen", "2")], [("water", "water")]),
+        _recipe("Scrape rawhide", "Leather tanning", [("/material/rawhide", "raw hide", "1")], [("/material/hairlesshide", "prepared hide")]),
+    ],
+    "acquisition": {
+        "/obj/item/stack/ore/iron_sponge": [{"name": "Bloomery", "inputs": ["/obj/item/stack/ore/iron"], "tools": ["furnace"],
+                                             "steps": ["Load iron ore and fuel into a bloomery, then turn it on."]}],
+        "/material/hairlesshide": [{"name": "Scrape rawhide", "inputs": ["/material/rawhide"], "tools": ["Held sharp tool"],
+                                    "steps": ["Apply a held sharp tool to a nearby raw hide."]}],
+        "/material/stone": [{"name": "Mine finite deposits", "inputs": ["/turf/floor/dirt/underground"], "tools": ["pickaxe"], "steps": ["Mine it."]}],
+    },
+    "resources": {"/obj/structure/anvil": {"name": "anvil"}, "/obj/structure/furnace": {"name": "furnace"}},
+}
+
+
+class TechTreeTest(unittest.TestCase):
+    def setUp(self):
+        import techtree
+        self.tree = techtree.TechTree(TINY_CATALOG)
+
+    def test_find_matches_names_not_material_labels(self):
+        self.assertEqual(self.tree.find("bone pickaxe"), "/obj/item/weapon/material/pickaxe/bone")
+        self.assertEqual(self.tree.find("furnace"), "/obj/structure/furnace")  # the bloomery's in-game name
+        self.assertEqual(self.tree.find("iron ingot"), "/material/iron")  # form words fall back to the material
+        self.assertIsNone(self.tree.find("laser rifle"))
+
+    def test_only_the_global_list_counts_for_nomads(self):
+        self.assertNotIn("/obj/item/weapon/material/pickaxe/camp", self.tree.routes)
+
+    def test_plan_gathers_first_and_skips_what_is_carried(self):
+        steps, problem = self.tree.plan("bone pickaxe")
+        self.assertEqual(problem, "")
+        self.assertEqual(steps[0], {"gather": "bone", "how": "hunt an animal and butcher it"})
+        self.assertEqual(steps[-1]["make"], "bone pickaxe")
+        self.assertEqual(steps[-1]["from"], ["2 bone"])
+        steps, _ = self.tree.plan("bone pickaxe", carried=["bones"])
+        self.assertEqual([s.get("make") for s in steps], ["bone pickaxe"])
+
+    def test_wrought_iron_uses_the_cheapest_anvil_and_a_bloomery(self):
+        steps, _ = self.tree.plan("iron ingot")
+        made = [s.get("make") for s in steps if "make" in s]
+        self.assertIn("stone anvil", made)
+        self.assertNotIn("iron anvil", made)  # an iron anvil would need the iron it is meant to make
+        self.assertIn("clay brick bloomery", made)
+        self.assertEqual(made[-1], "wrought iron")
+        self.assertLess(made.index("clay brick bloomery"), made.index("sponge iron") if "sponge iron" in made else len(made))
+
+    def test_hand_tools_are_named_not_built_and_basics_are_gathered(self):
+        steps, _ = self.tree.plan("prepared hide")
+        self.assertEqual(steps[-1]["tools"], ["a sharpened flint or a knife"])
+        self.assertFalse(any(s.get("make") == "Water" for s in steps))
+        text = self.tree.describe("bone pickaxe")
+        self.assertIn("get bone: hunt an animal", text)
+        self.assertIn("make bone pickaxe from 2 bone", text)
+
+    def test_recipe_book_requests_and_goal_items(self):
+        self.assertEqual(autopilot.recipe_request('{"plan": [{"do": "recipe", "item": "anvil"}]}'), "anvil")
+        self.assertEqual(autopilot.recipe_request('{"do": "recipe", "item": "clay kiln"}'), "clay kiln")
+        self.assertIsNone(autopilot.recipe_request('{"do": "say", "text": "hi"}'))
+        self.assertIsNone(autopilot.recipe_request("not json"))
+        self.assertEqual(autopilot.goal_item("smelt your ore: build a clay bloomery"), "iron ingot")
+        self.assertEqual(autopilot.goal_item("drink fresh water"), "")
+        self.assertEqual(autopilot.carried({"left_hand": {"name": "bone"}, "right_hand": None}), ["bone"])
+
+
 if __name__ == "__main__":
     unittest.main()

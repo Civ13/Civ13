@@ -15,6 +15,7 @@ import argparse
 import concurrent.futures
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.parse
@@ -22,6 +23,7 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
+import techtree  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 SKILLS = {
@@ -107,6 +109,8 @@ Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|exami
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
  "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second),
  "choose": "<option>" (click/use: the answer when it opens a menu)}.
+Recipe book: {"do": "recipe", "item": "<thing>"} answers what that thing needs and how to get each part, from the game's own
+recipes. It takes no game time; use it before working towards something you have not made before.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -1226,6 +1230,7 @@ def main(argv=None):
     # Matching Player Help's num_ctx keeps Ollama from reloading the shared model between the two.
     parser.add_argument("--num-ctx", type=int, default=_int(defaults.get("num_ctx"), 8192))
     parser.add_argument("--timeout", type=float, default=max(120.0, _float(defaults.get("timeout_seconds"), 0.0)), help="seconds to wait for each model reply")
+    parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
     if not args.model:
@@ -1271,6 +1276,52 @@ def run(client, args, character, token):
         return _run(client, args, character, token, model_pool)
 
 
+# What the recipe book is asked about for a ladder goal (matched on the goal's opening words).
+GOAL_ITEMS = (
+    ("make a pickaxe", "bone pickaxe"),
+    ("smelt your ore", "iron ingot"),
+    ("arm yourself", "leather armor"),
+    ("craft metal tools", "pickaxe head"),
+    ("furnish your house", "bed"),
+)
+
+
+def goal_item(goal):
+    """The item the current ladder goal is about, for the recipe book ("" when none)."""
+    return next((item for start, item in GOAL_ITEMS if goal.startswith(start)), "")
+
+
+def carried(self_state):
+    """Names of everything in hand or stowed."""
+    names = [_name(self_state.get("left_hand")), _name(self_state.get("right_hand"))] + _stowed(self_state)
+    return [str(name) for name in names if name and name != "empty"]
+
+
+def recipe_request(text):
+    """The item a {"do": "recipe"} reply asks about, or None."""
+    try:
+        data = json.loads(text)
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    raw = data.get("plan")
+    first = raw[0] if isinstance(raw, list) and raw else data
+    if not isinstance(first, dict) or str(first.get("do", "")).lower() != "recipe":
+        return None
+    item = str(first.get("item") or first.get("recipe") or first.get("name") or "").strip()
+    return item[:64] or None
+
+
+def load_tree(path):
+    """The recipe planner, or None when the catalog cannot be read or built."""
+    try:
+        return techtree.load(path)
+    except (OSError, ValueError, subprocess.CalledProcessError) as exc:
+        print(f"recipe book unavailable: {exc}", file=sys.stderr)
+        return None
+
+
 def _run(client, args, character, token, model_pool):
     system = SYSTEM + f"\nYour goal: {args.goal}"
     tips = load_tips()
@@ -1293,6 +1344,8 @@ def _run(client, args, character, token, model_pool):
     seen_lines = {}  # message text -> steps it showed up in; ones that keep coming back (heat, weather) are muted
     muted = set()
     replied = {}  # speaker -> monotonic time of the last answer to them
+    asked_recently = {}  # recipe-book item -> step it was last looked up
+    tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     for step in range(1, args.steps + 1):
         if deadline and time.monotonic() > deadline:
@@ -1344,7 +1397,9 @@ def _run(client, args, character, token, model_pool):
         text, refs = summarize(observation, note, ignored, muted)
         talk, speakers = speech_prompt(speech_lines(observation.get("messages", []), self_state.get("name")), replied, time.monotonic())
         goal, after = current_goal(observation)
-        text = f"CURRENT GOAL: {goal} ({after}).\n" + text
+        item = goal_item(goal) if tree else ""
+        how = tree.describe(item, carried(self_state), limit=4) if item else ""
+        text = f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "") + text
         prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
         forget_old(history, signatures, target_turns, seen_lines)
@@ -1376,6 +1431,17 @@ def _run(client, args, character, token, model_pool):
             time.sleep(args.interval)
             continue
         note = parse_note(answer) or note
+        asked = recipe_request(answer)
+        if asked:
+            if asked_recently.get(asked.lower(), -99) > step - 10:
+                answer_text = "you looked this up a moment ago; act on it now"
+            else:
+                answer_text = tree.describe(asked, carried(self_state), limit=8) if tree else "the recipe book is not available"
+            asked_recently[asked.lower()] = step
+            print(f"step {step}: recipe {asked!r} -> {answer_text[:200]}")
+            previous_self = self_state
+            feedback = f"\nRecipe book, {asked}: {answer_text}"
+            continue
         plan = parse_plan(answer, refs)
         care, _ = treat_plan(self_state) if not reflex(observation, previous_self)[0] else ([], "")
         wound = worst_wound(self_state)
