@@ -159,6 +159,8 @@
 	if (message_type == "ack")
 		if (frontend_ready)
 			frontend_acknowledged = TRUE
+			// This browser runs the modern frontend, so WWinput may use modern prompts.
+			user.client.modern_ui_acknowledged = TRUE
 		return
 	if (status != STATUS_INTERACTIVE || !frontend_ready || !frontend_acknowledged || copytext(message_type, 1, 5) != "act/")
 		return

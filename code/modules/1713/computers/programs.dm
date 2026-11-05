@@ -1974,8 +1974,8 @@
 		if (findtext(href_list["bank"],"s"))
 			var/tcode = replacetext(href_list["bank"],"s","")
 			var/cost = (map.globalmarketplace[tcode][4])
-			var/choice1 = WWinput("Are you sure you want to sell [map.globalmarketplace[tcode][1]] stocks for [map.globalmarketplace[tcode][4]/4] dollars?","Selling Stocks","No", list("Yes","No"))
-			if (choice1 == "No")
+			var/choice1 = WWinput(user, "Are you sure you want to sell [map.globalmarketplace[tcode][1]] stocks for [map.globalmarketplace[tcode][4]/4] dollars?","Selling Stocks","No", list("Yes","No"))
+			if (choice1 != "Yes")
 				sleep(0.5)
 				do_html(user)
 				return
