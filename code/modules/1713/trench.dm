@@ -179,6 +179,35 @@ var/list/global/floor_cache = list()
 	map_storage_saved_vars = "icon_state;name;trench_stage"
 	var/trench_stage = 0
 	available_dirt = 2
+// Ground level a climbing mob stands at on this turf: a bare trench is 1, and
+// open ground, a bridge or a frame over a trench is 0. Smooth movement leaves a
+// step between levels to the tile path, since the climb waits in Enter/Exit.
+/turf/proc/trench_climb_level()
+	return 0
+
+/turf/floor/trench/trench_climb_level()
+	if (locate(/obj/covers/repairedfloor) in contents)
+		return 0
+	if (locate(/obj/structure/vehicleparts/frame) in contents)
+		return 0
+	return 1
+
+// A climb settles the mob squarely on its tile before moving it. Moving by loc
+// keeps any smooth-movement offset, and a body still straddling the edge is
+// refused by the next tile's Enter, so it would never leave the trench.
+/proc/trench_climb_align(mob/living/L)
+	if (!L.step_x && !L.step_y)
+		return
+	L.step_x = 0
+	L.step_y = 0
+	if (ishuman(L))
+		var/mob/living/human/H = L
+		H.human_subtile_offset_owned = FALSE
+
+/proc/trench_climb_place(mob/living/L, atom/destination)
+	trench_climb_align(L)
+	. = L.forceMove(destination)
+
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
 	if(locate(/obj/structure/vehicleparts/frame) in contents)
 		return ..()
@@ -192,11 +221,11 @@ var/list/global/floor_cache = list()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
-			L.forceMove(src)
+			trench_climb_place(L, src)
 			return 1
 		if(!istype(oldloc, /turf/floor/trench))
 			if(locate(/obj/covers/repairedfloor) in contents)
-				L.forceMove(src)
+				trench_climb_place(L, src)
 				return 1
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
@@ -205,7 +234,7 @@ var/list/global/floor_cache = list()
 					return FALSE
 				if(..())
 					visible_message("<span class = 'notice'>[L2] pulls [L] out of trench.</span>")
-					L.forceMove(src)
+					trench_climb_place(L, src)
 					return TRUE
 				return FALSE
 			if(world.time > message_cooldown + 30)
@@ -215,7 +244,7 @@ var/list/global/floor_cache = list()
 				return FALSE
 			if(..())
 				visible_message("<span class = 'notice'>[L] enters a trench.</span>")
-				L.forceMove(src)
+				trench_climb_place(L, src)
 				if (L.pulling && !isliving(L.pulling))
 					L.pulling.forceMove(src)
 				return 1
@@ -228,7 +257,7 @@ var/list/global/floor_cache = list()
 					return FALSE
 				if(..())
 					visible_message("<span class = 'notice'>[L] climbs down from a bridge.</span>")
-					L.forceMove(src)
+					trench_climb_place(L, src)
 					return TRUE
 		if(istype(oldloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, usr.loc))
 			if(!locate(/obj/structure/vehicleparts/frame) in contents)
@@ -239,7 +268,7 @@ var/list/global/floor_cache = list()
 					return FALSE
 				if(..())
 					visible_message("<span class = 'notice'>[L] climbs down.</span>")
-					L.forceMove(src)
+					trench_climb_place(L, src)
 					return TRUE
 
 	return ..()
@@ -252,20 +281,23 @@ var/list/global/floor_cache = list()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
+			trench_climb_align(L)
 			var/turf/T = newloc
 			if(T.Enter(O, src))
-				L.forceMove(newloc)
+				trench_climb_place(L, newloc)
 			return TRUE
 		if(!istype(newloc, /turf/floor/trench))
 			if(locate(/obj/covers/repairedfloor) in contents)
+				trench_climb_align(L)
 				var/turf/T = newloc
 				if(T.Enter(O, src))
-					L.forceMove(newloc)
+					trench_climb_place(L, newloc)
 				return TRUE
 			if(locate(/obj/structure/vehicleparts/frame) in contents)
+				trench_climb_align(L)
 				var/turf/T = newloc
 				if(T.Enter(O, src))
-					L.forceMove(newloc)
+					trench_climb_place(L, newloc)
 				return TRUE
 			if(L.grabbed_by && L.grabbed_by.len)
 				var/mob/living/L2 = L.grabbed_by[1].assailant
@@ -274,14 +306,15 @@ var/list/global/floor_cache = list()
 					return FALSE
 				if(..())
 					visible_message("<span class = 'notice'>[L2] pulls [L] out of trench.</span>")
-					L.forceMove(newloc)
+					trench_climb_place(L, newloc)
 					return TRUE
 				return FALSE
 			var/atom/newlocation = get_step(L,L.dir)
 			if (newlocation.density)
 				return FALSE
 			for (var/atom/A in newlocation)
-				if (A.density)
+				// With smooth movement the climber already overlaps that tile.
+				if (A.density && A != L)
 					return FALSE
 			if(world.time > message_cooldown + 30)
 				visible_message("<span class = 'notice'>[L] starts to exit a trench.</span>")
@@ -290,9 +323,10 @@ var/list/global/floor_cache = list()
 				return FALSE
 			if(..())
 				visible_message("<span class = 'notice'>[L] exits a trench.</span>")
+				trench_climb_align(L)
 				var/turf/T = newloc
 				if(T.Enter(O, src))
-					L.forceMove(newloc)
+					trench_climb_place(L, newloc)
 					if (L.pulling && !isliving(L.pulling))
 						L.pulling.forceMove(newloc)
 				return TRUE
@@ -304,9 +338,10 @@ var/list/global/floor_cache = list()
 				return FALSE
 			if(..())
 				visible_message("<span class = 'notice'>[L] climbs on a bridge.</span>")
+				trench_climb_align(L)
 				var/turf/T = newloc
 				if(T.Enter(O, src))
-					L.forceMove(newloc)
+					trench_climb_place(L, newloc)
 				return TRUE
 		if(istype(newloc, /turf/floor/trench) && locate(/obj/structure/vehicleparts/frame, newloc) && !locate(/obj/structure/vehicleparts/frame, usr.loc))
 			for(var/obj/structure/vehicleparts/frame/F in newloc)
@@ -318,10 +353,11 @@ var/list/global/floor_cache = list()
 			if (!do_after(L, 20, src, needhand = FALSE))
 				return FALSE
 			if(..())
+				trench_climb_align(L)
 				var/turf/T = newloc
 				if(T.Enter(O, src))
 					visible_message("<span class = 'notice'>[L] climbs on a frame.</span>")
-					L.forceMove(newloc)
+					trench_climb_place(L, newloc)
 				return TRUE
 	return ..()
 
