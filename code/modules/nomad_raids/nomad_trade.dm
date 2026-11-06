@@ -31,13 +31,24 @@
 		base = I.value * max(1, S.amount)
 	return max(3, round(base) + 2)
 
-// Who paid with an item: the last key that handled it, else the nearest player.
+// Who paid with an item: the last key that handled it when that player is at
+// the stall, else the nearest player there. Gloves leave no prints, so an item
+// a gloved player drops still carries whoever touched it before; on Gaia that
+// credited a dead player instead of the one standing at the stall.
 /datum/nomad_raid/proc/payer_of(obj/item/I)
-	if (I.fingerprintslast)
-		return ckey(I.fingerprintslast)
-	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), 2))
-		return H.ckey
-	return null
+	var/list/near = nomad_raid_defenders_near(get_turf(leader), 3)
+	var/printed = I.fingerprintslast ? ckey(I.fingerprintslast) : null
+	if (printed)
+		for (var/mob/living/human/H in near)
+			if (H.ckey == printed)
+				return printed
+	var/mob/living/human/nearest = null
+	for (var/mob/living/human/H in near)
+		if (!nearest || get_dist(H, leader) < get_dist(nearest, leader))
+			nearest = H
+	if (nearest)
+		return nearest.ckey
+	return printed
 
 /datum/nomad_raid/proc/begin_trade()
 	set_state("trade", "customers in sight")
