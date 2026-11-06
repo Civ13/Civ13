@@ -977,9 +977,25 @@ def plan_problem(text, refs):
     return ""
 
 
-def model_window(history, recent=7):
-    """The system prompt plus the last few exchanges, without repeating the system prompt in a short history."""
-    return history[:1] + history[max(1, len(history) - recent):]
+WINDOW_MAX, WINDOW_MIN = 10, 5  # exchanges (one user turn plus one answer) kept for the model
+
+
+def trim_history(history, most=WINDOW_MAX, least=WINDOW_MIN):
+    """Drop the oldest exchanges in one block once more than `most` are kept, leaving `least`.
+
+    Ollama reuses the cached prompt only while a request starts with the exact text of the previous one.
+    Trimming one exchange per turn moved the start of the history every turn, so the model re-read the whole
+    window (not only the new observation) each step. A block trim keeps the prefix identical for several turns
+    in a row, so each step usually only reads the newest observation. history[0] is the system prompt.
+    """
+    if len(history) > 1 + 2 * most:
+        del history[1:len(history) - 2 * least]
+    return history
+
+
+def model_window(history):
+    """The messages sent to the model: the system prompt and the kept exchanges, trimmed in blocks."""
+    return trim_history(history)
 
 
 def parse_plan(text, refs):
@@ -1631,14 +1647,50 @@ def execute(client, character, steps, queue_since):
     return "; ".join(parts), queue_since
 
 
-def ask_ollama(url, model, messages, token=None, timeout=120, num_ctx=8192, think=False):
+DEFAULT_KEEP_ALIVE = "30m"  # Ollama unloads an idle model after 5 minutes by default; reloading costs 10-30 s
+
+
+def ask_ollama(url, model, messages, token=None, timeout=120, num_ctx=8192, think=False, keep_alive=None, stats=None):
     # think defaults to false: thinking models otherwise spend num_predict on reasoning and return no content.
     payload = {"model": model, "stream": False, "format": "json", "think": bool(think), "messages": messages, "options": {"temperature": 0.6, "num_ctx": num_ctx, "num_predict": 200}}
+    if keep_alive is not None:
+        payload["keep_alive"] = keep_alive
     request = urllib.request.Request(chat_endpoint(url), data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json"})
     if token:
         request.add_header("Authorization", f"Bearer {token}")
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8")).get("message", {}).get("content", "")
+        reply = json.loads(response.read().decode("utf-8"))
+    if stats is not None:
+        stats.update(model_timing(reply))
+    return reply.get("message", {}).get("content", "")
+
+
+def model_timing(reply):
+    """Ollama's own timing for one reply: seconds per phase and token counts (fields it did not send are left out)."""
+    timing = {}
+    for key in ("total_duration", "load_duration", "prompt_eval_duration", "eval_duration"):
+        if isinstance(reply.get(key), (int, float)):
+            timing[key[:-len("_duration")]] = reply[key] / 1e9
+    for key in ("prompt_eval_count", "eval_count"):
+        if isinstance(reply.get(key), int):
+            timing[key] = reply[key]
+    return timing
+
+
+def timing_line(stats, wall):
+    """One log line saying where a model turn's time went.
+
+    prompt_eval_count is only what Ollama had to read anew: a turn that reads thousands of tokens again did not
+    get a prompt-cache hit (another client used the model in between, or the history prefix changed).
+    """
+    parts = [f"model {wall:.1f}s"]
+    if "prompt_eval_count" in stats:
+        parts.append(f"read {stats['prompt_eval_count']} new tokens in {stats.get('prompt_eval', 0.0):.1f}s")
+    if "eval_count" in stats:
+        parts.append(f"wrote {stats['eval_count']} tokens in {stats.get('eval', 0.0):.1f}s")
+    if stats.get("load", 0.0) > 0.5:
+        parts.append(f"loaded the model in {stats['load']:.1f}s (num_ctx or keep_alive differs from another client, or it was unloaded)")
+    return ", ".join(parts)
 
 
 # Requests that are safe to repeat after a timeout; queued actions are never resent.
@@ -1686,6 +1738,7 @@ def main(argv=None):
     # Matching Player Help's num_ctx keeps Ollama from reloading the shared model between the two.
     parser.add_argument("--num-ctx", type=int, default=_int(defaults.get("num_ctx"), 8192))
     parser.add_argument("--timeout", type=float, default=max(120.0, _float(defaults.get("timeout_seconds"), 0.0)), help="seconds to wait for each model reply")
+    parser.add_argument("--keep-alive", default=str(defaults.get("keep_alive", DEFAULT_KEEP_ALIVE)), help="how long Ollama keeps the model loaded after a reply (e.g. 30m, 1h, -1 for always)")
     parser.add_argument("--memory", default="", help='folder for the character\'s long-term memory (default data/agent-control/memory; "none" turns it off)')
     parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
     parser.add_argument("--leather", default="", help='pin a leather project from the start: belt, backpack or leather')
@@ -1963,7 +2016,8 @@ def _run(client, args, character, token, model_pool):
         forget_old(history, signatures, target_turns, seen_lines)
         # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
         reacted = []
-        future = model_pool.submit(ask_ollama, args.ollama_url, args.model, model_window(history), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think)
+        stats, asked_at = {}, time.monotonic()
+        future = model_pool.submit(ask_ollama, args.ollama_url, args.model, list(model_window(history)), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think, keep_alive=getattr(args, "keep_alive", DEFAULT_KEEP_ALIVE), stats=stats)
         pending = dict(zip(("steps", "what"), reflex(observation, previous_self)))
 
         def tick():
@@ -1988,6 +2042,7 @@ def _run(client, args, character, token, model_pool):
         if stop:
             print(f"step {step}: {stop}; stopping", file=sys.stderr)
             return 1 if "model" in stop else 0
+        print(f"  {timing_line(stats, time.monotonic() - asked_at)}")
         history.append({"role": "assistant", "content": answer})
         if reacted:
             # The plan was made before the attack; plan again from the new situation.
@@ -2128,14 +2183,14 @@ def _run(client, args, character, token, model_pool):
     return 0
 
 
-# A run may last days: bookkeeping lists keep only what the loop reads back (the last 7 exchanges, 6 signatures,
+# A run may last days: bookkeeping lists keep only what the loop reads back (WINDOW_MIN..WINDOW_MAX exchanges, 6 signatures,
 # 8 turns of targets) plus some slack, and the seen-line counter keeps a bounded number of distinct lines.
-HISTORY_KEEP, SIGNATURES_KEEP, TURNS_KEEP, LINES_KEEP = 16, 24, 64, 2000
+SIGNATURES_KEEP, TURNS_KEEP, LINES_KEEP = 24, 64, 2000
 
 
 def forget_old(history, signatures, target_turns, seen_lines):
     """Trim the loop's bookkeeping so a long run does not grow without bound."""
-    del history[1:max(1, len(history) - HISTORY_KEEP)]  # history[0] is the system prompt
+    trim_history(history)  # in blocks, so the model's prompt cache keeps matching; history[0] is the system prompt
     del signatures[:-SIGNATURES_KEEP]
     del target_turns[:-TURNS_KEEP]
     if len(seen_lines) > LINES_KEEP:

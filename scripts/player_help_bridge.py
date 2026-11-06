@@ -25,6 +25,9 @@ HISTORY_PAIRS = 3
 NUM_PREDICT = 650
 DEFAULT_NUM_CTX = 8192
 MIN_NUM_CTX = 4096
+# Ollama unloads an idle model after five minutes by default; the next question then waits 10-30 s for a reload.
+DEFAULT_KEEP_ALIVE = '30m'
+KEEP_ALIVE_PATTERN = re.compile(r'-?[0-9]{1,6}(?:\.[0-9]{1,3})?(?:ms|s|m|h)?')
 # Generic question words match nearly every page and only add retrieval noise.
 RETRIEVAL_STOPWORDS = frozenset({
     'how', 'the', 'get', 'craft', 'can', 'make', 'with', 'and', 'nomads', 'gaia',
@@ -1015,6 +1018,11 @@ def load_config(path):
         raise ValueError('num_ctx must be an integer in 4096..32768')
     if type(config['think']) is not bool:
         raise ValueError('think must be true or false')
+    config['keep_alive'] = config.get('keep_alive', DEFAULT_KEEP_ALIVE)
+    if type(config['keep_alive']) is int and -1 <= config['keep_alive'] <= 86400 * 30:
+        config['keep_alive'] = str(config['keep_alive'])
+    if not isinstance(config['keep_alive'], str) or not KEEP_ALIVE_PATTERN.fullmatch(config['keep_alive']):
+        raise ValueError('keep_alive must be a duration such as 30m, 1h or -1')
     token_env = config.get('auth_token_env', '')
     if not isinstance(token_env, str) or (token_env and not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,100}', token_env)):
         raise ValueError('Invalid auth_token_env name')
@@ -1305,6 +1313,7 @@ class Bridge:
                        'State uncertainty and consult the wiki or Crafting Atlas when evidence is insufficient.')
             payload = {'model': self.config['model'], 'stream': False, 'messages': [{'role': 'system', 'content': system}] + previous + [{'role': 'user', 'content': question}], 'options': {'num_predict': NUM_PREDICT, 'num_ctx': self.config.get('num_ctx', DEFAULT_NUM_CTX), 'temperature': 0.2}}
             payload['think'] = self.config.get('think', False)
+            payload['keep_alive'] = self.config.get('keep_alive', DEFAULT_KEEP_ALIVE)
             prompt_chars = len(system) + len(question) + sum(len(turn['content']) for turn in previous)
             if (prompt_chars <= prompt_cap and
                     len(json.dumps([self.config['endpoint'], payload, headers, self.config['timeout_seconds']])) <= envelope_cap):

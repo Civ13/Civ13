@@ -57,7 +57,8 @@ class BridgeTests(unittest.TestCase):
         self.assertIn('lost blood', calls[0][1]['messages'][0]['content'])
         self.assertFalse(calls[0][1]['stream'])
         self.assertNotIn('tools', calls[0][1])
-        self.assertEqual(set(calls[0][1]), {'model', 'stream', 'messages', 'options', 'think'})
+        self.assertEqual(set(calls[0][1]), {'model', 'stream', 'messages', 'options', 'think', 'keep_alive'})
+        self.assertEqual(calls[0][1]['keep_alive'], bridge.DEFAULT_KEEP_ALIVE)
         self.assertEqual(len(calls), 1)
         for _ in range(4):
             instance.tick()
@@ -83,9 +84,22 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(endpoint, 'http://192.168.0.188:11434/api/chat')
         self.assertEqual(payload['options']['num_ctx'], 32768)
         self.assertIs(payload['think'], False)
+        self.assertEqual(payload['keep_alive'], '30m')
         self.assertEqual(timeout, 120)
         health = bridge.bounded_json(self.root / 'health.json', 256)
         self.assertGreater(health['request_timeout_seconds'], timeout)
+
+    def test_keep_alive_is_validated_and_sent(self):
+        base = {'enabled': True, 'ollama_url': 'http://h:11434', 'model': 'm', 'timeout_seconds': 20, 'workers': 1}
+        path = self.root / 'config.json'
+        path.write_text(json.dumps(dict(base, keep_alive='1h')))
+        self.assertEqual(bridge.load_config(path)['keep_alive'], '1h')
+        path.write_text(json.dumps(dict(base, keep_alive=-1)))
+        self.assertEqual(bridge.load_config(path)['keep_alive'], '-1')
+        for bad in ('forever', '30 minutes', '', [], '30m; rm'):
+            path.write_text(json.dumps(dict(base, keep_alive=bad)))
+            with self.assertRaises(ValueError, msg=repr(bad)):
+                bridge.load_config(path)
 
     def test_reviewed_code_and_wiki_retrieval(self):
         wiki = self.root / 'wiki'

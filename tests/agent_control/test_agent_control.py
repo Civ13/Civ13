@@ -823,8 +823,8 @@ class AutopilotTests(unittest.TestCase):
         autopilot.forget_old(history, signatures, turns, lines)
         self.assertEqual(history[0], {"role": "system"})
         self.assertEqual(history[-1]["content"], "199")
-        self.assertLessEqual(len(history), autopilot.HISTORY_KEEP + 1)
-        self.assertGreaterEqual(len(history), 8)  # the last 7 exchanges still go to the model
+        self.assertLessEqual(len(history), 2 * autopilot.WINDOW_MAX + 1)
+        self.assertGreaterEqual(len(history), 2 * autopilot.WINDOW_MIN + 1)  # the last exchanges still go to the model
         self.assertEqual(signatures[-1], "s199")
         self.assertEqual((len(signatures), len(turns), len(lines)), (autopilot.SIGNATURES_KEEP, autopilot.TURNS_KEEP, autopilot.LINES_KEEP))
         self.assertIn("line 4999", lines)
@@ -858,12 +858,30 @@ class AutopilotTests(unittest.TestCase):
         autopilot.urllib.request.urlopen = fake_urlopen
         try:
             autopilot.ask_ollama("http://h:11434/v1", "m", [], timeout=90, num_ctx=32768)
+            self.assertNotIn("keep_alive", sent["body"])
+            stats = {}
+            autopilot.ask_ollama("http://h:11434/v1", "m", [], timeout=90, num_ctx=32768, keep_alive="30m", stats=stats)
         finally:
             autopilot.urllib.request.urlopen = original
         self.assertEqual(sent["url"], "http://h:11434/api/chat")
         self.assertEqual(sent["timeout"], 90)
         self.assertIs(sent["body"]["think"], False)
         self.assertEqual(sent["body"]["options"]["num_ctx"], 32768)
+        self.assertEqual(sent["body"]["keep_alive"], "30m")
+        self.assertEqual(stats, {})  # the fake reply carried no timing
+
+    def test_model_timing_reports_where_a_turn_went(self):
+        reply = {"message": {"content": "{}"}, "total_duration": 6_500_000_000, "load_duration": 12_000_000,
+                 "prompt_eval_count": 812, "prompt_eval_duration": 900_000_000, "eval_count": 140, "eval_duration": 5_400_000_000}
+        stats = autopilot.model_timing(reply)
+        self.assertEqual(stats["prompt_eval_count"], 812)
+        self.assertAlmostEqual(stats["eval"], 5.4)
+        line = autopilot.timing_line(stats, 6.6)
+        self.assertIn("read 812 new tokens in 0.9s", line)
+        self.assertIn("wrote 140 tokens in 5.4s", line)
+        self.assertNotIn("loaded the model", line)
+        self.assertIn("loaded the model in 18.0s", autopilot.timing_line(dict(stats, load=18.0), 25.0))
+        self.assertEqual(autopilot.timing_line({}, 3.0), "model 3.0s")
 
 
 def _recipe(name, kind, inputs, outputs, era=0, conditions=""):
@@ -1323,11 +1341,28 @@ class ReviewFixesTest(unittest.TestCase):
         self.assertIn("wood logs", autopilot.SYSTEM)
         short = [{"role": "system", "content": "s"}, {"role": "user", "content": "u1"}]
         self.assertEqual(autopilot.model_window(short), short)
-        long = [{"role": "system", "content": "s"}] + [{"role": "user", "content": str(i)} for i in range(20)]
+        long = [{"role": "system", "content": "s"}] + [{"role": "user", "content": str(i)} for i in range(30)]
         window = autopilot.model_window(long)
         self.assertEqual(window[0]["content"], "s")
-        self.assertEqual(len(window), 8)
+        self.assertEqual(len(window), 2 * autopilot.WINDOW_MIN + 1)
+        self.assertEqual(window[-1]["content"], "29")
         self.assertEqual(sum(1 for m in window if m["role"] == "system"), 1)
+
+    def test_history_is_trimmed_in_blocks_so_the_prompt_cache_keeps_matching(self):
+        history = [{"role": "system", "content": "s"}]
+        prefixes = []
+        for turn in range(40):
+            history.append({"role": "user", "content": f"u{turn}"})
+            autopilot.trim_history(history)
+            prefixes.append(tuple(m["content"] for m in history[:3]))
+            history.append({"role": "assistant", "content": f"a{turn}"})
+            self.assertLessEqual(len(history), 2 * autopilot.WINDOW_MAX + 2)  # the answer lands after the trim
+        # A sliding window changes the start of the history every turn; a block trim keeps it for several turns.
+        changes = sum(1 for before, after in zip(prefixes, prefixes[1:]) if before != after)
+        self.assertLessEqual(changes, 40 // (autopilot.WINDOW_MAX - autopilot.WINDOW_MIN) + 1)
+        self.assertEqual(history[0]["content"], "s")
+        self.assertEqual(history[-1]["content"], "a39")
+        self.assertGreaterEqual(len(history), 2 * autopilot.WINDOW_MIN + 1)
 
 
 class MiningGoalTest(unittest.TestCase):

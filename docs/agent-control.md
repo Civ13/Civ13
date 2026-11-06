@@ -238,8 +238,9 @@ a JSON schema (from `tools/agent-control/catalog.py`). An MCP client entry:
 `autopilot.py` lets an Ollama model play one character. It reuses the Player
 Help bridge config (`--player-help-config`, else `data/player-help-config.json`,
 else `config/player-help.json`): `ollama_url` (origin, `/v1` or `/api/chat`),
-`model`, `auth_token_env`, `num_ctx` and `think` (off unless `true`). Using the
-same `num_ctx` keeps Ollama from reloading a model shared with Player Help:
+`model`, `auth_token_env`, `num_ctx`, `think` (off unless `true`) and
+`keep_alive` (default `30m`, see [Latency](#latency)). Using the same
+`num_ctx` keeps Ollama from reloading a model shared with Player Help:
 
 ```text
 python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal "Gather food and greet people" --steps 30 --release
@@ -409,6 +410,48 @@ line and up to a few orders, which the server checks:
 python tools/agent-control/visitor_voice.py --start raid --size 4
 python tools/agent-control/visitor_voice.py --once
 ```
+
+## Latency
+
+Every model turn prints where its time went, from Ollama's own counters:
+
+```text
+  model 6.6s, read 812 new tokens in 0.9s, wrote 140 tokens in 5.4s
+```
+
+`read` is only what Ollama had to process anew. The autopilot keeps the
+system prompt and the kept exchanges byte-identical from one turn to the next
+(the history is trimmed in blocks of `WINDOW_MAX - WINDOW_MIN` turns rather
+than one exchange per turn), so a turn normally reads the newest observation
+only, a few hundred to a thousand tokens. A turn that reads thousands of
+tokens did not get a prompt-cache hit: another client (Player Help, a second
+autopilot) used the model in between, or the prefix changed. `loaded the
+model in N s` means the model was unloaded or was reloaded with other
+settings. Both tools send `keep_alive` (default `30m`) so an idle model stays
+loaded between questions; set it in the Player Help config or with
+`--keep-alive` (`-1` keeps the model loaded until Ollama stops).
+
+What else moves the numbers, on the Ollama host rather than in this repo:
+
+- `wrote` dominates once the cache hits: it is the model's generation speed
+  times the reply length. The reply is capped at 200 tokens; a smaller or
+  lower-quantized model (for example a Qwen3 8B or 14B instruct model at
+  `Q4_K_M`) writes several times faster than a 27B one on the same GPU. Keep
+  `think` off for Qwen3 and gemma: a thinking model spends the whole budget
+  on reasoning and returns no plan.
+- The model must sit entirely in VRAM. `ollama ps` shows `100% GPU`; any CPU
+  share slows every phase. The 32768 context Player Help uses costs KV memory;
+  `OLLAMA_FLASH_ATTENTION=1` with `OLLAMA_KV_CACHE_TYPE=q8_0` roughly halves
+  it with no visible quality change, and a Modelfile alias with a smaller
+  `num_ctx` for the autopilot (around 12288 is enough for its window) is the
+  next lever when memory is short. A different `num_ctx` on the same model
+  name makes Ollama reload it on every switch between clients, which is why
+  the autopilot reads Player Help's `num_ctx` by default.
+- `OLLAMA_NUM_PARALLEL=1` keeps one prompt cache per model; with more slots
+  Ollama multiplies the context memory by the slot count. Two clients then
+  take turns and evict each other's prefix only when they really overlap.
+- The step loop itself waits `--interval` (default 2 s) between actions and
+  for timed game work; that is game pacing, not model latency.
 
 ## Tests
 
