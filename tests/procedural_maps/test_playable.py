@@ -325,6 +325,11 @@ class BarrenSkinTests(unittest.TestCase):
         self.assertEqual("native", playable.build(self.folder)[1]["skin"])
         self.assertNotEqual(self.text, playable.build(self.folder)[0])
 
+    def test_barren_skin_names_the_planet(self):
+        self.assertIn(playable.BARREN_METADATA + "{", self.text)
+        self.assertNotIn(playable.METADATA + "{", self.text)
+        self.assertIn(playable.METADATA + "{", playable.build(self.folder)[0])
+
     def test_surface_cells_become_barren_ground(self):
         cells = self.doc["layers"]["SURFACE"]["cells"]
         seen = set()

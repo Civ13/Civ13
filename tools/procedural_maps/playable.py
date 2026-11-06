@@ -98,7 +98,9 @@ BARREN_AREA = "/area/caribbean/nomads/barren"
 BARREN_GROUND = "/turf/floor/dirt/dust/regolith"
 BARREN_CHANNEL = "/turf/floor/dirt/dust/regolith/crater"
 BARREN_ICE = "/turf/floor/beach/water/ice"
+BARREN_METADATA = "/obj/map_metadata/nomads/barren"
 BARREN_SOURCES = {
+    BARREN_METADATA: "code/modules/space/barren_world.dm",
     BARREN_AREA: "code/modules/space/barren_world.dm",
     BARREN_GROUND: "code/modules/space/barren_world.dm",
     BARREN_CHANNEL: "code/modules/space/barren_world.dm",
@@ -334,7 +336,7 @@ def elevation_text(profile):
     return "|".join(" ".join(_number(r[k]) for k in ("x1", "x2", "y1", "y2", "z", "metres")) for r in profile["regions"])
 
 
-def metadata_atom(profile):
+def metadata_atom(profile, metadata=METADATA):
     fields = []
     if profile["default_metres"]:
         fields.append("elevation_default_metres = " + _number(profile["default_metres"]))
@@ -342,15 +344,15 @@ def metadata_atom(profile):
         fields.append('elevation_regions_text = "' + elevation_text(profile) + '"')
     if profile["lapse_c_per_km"] and (profile["regions"] or profile["default_metres"]):
         fields.append("elevation_lapse_c_per_km = " + _number(profile["lapse_c_per_km"]))
-    return METADATA + ("{" + "; ".join(fields) + "}" if fields else "")
+    return metadata + ("{" + "; ".join(fields) + "}" if fields else "")
 
 
-def apply_elevation(layout, profile):
+def apply_elevation(layout, profile, metadata=METADATA):
     keys = [k for k, recipe in layout.items() if METADATA in recipe.split(",")]
     if len(keys) != 1:
         raise ValueError("PLAYABLE_METADATA")
     atoms = layout[keys[0]].split(",")
-    atoms[atoms.index(METADATA)] = metadata_atom(profile)
+    atoms[atoms.index(METADATA)] = metadata_atom(profile, metadata)
     layout[keys[0]] = ",".join(atoms)
     return keys[0]
 
@@ -384,7 +386,7 @@ def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE, skin="native"):
     doc = read_json(folder / "map.ir.json")
     layout, counts = playable_layout(doc, skin)
     profile = elevation_profile(doc, lapse)
-    apply_elevation(layout, profile)
+    apply_elevation(layout, profile, BARREN_METADATA if skin == "barren" else METADATA)
     text = write_text(doc, layout)
     _, parsed, dims = parse_classic(text)
     if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:

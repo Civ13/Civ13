@@ -62,3 +62,13 @@
 	icon_state = "red3"
 	ambience = list("sound/ambience/desert.ogg")
 	climate = "desert"
+
+// Map settings for a barren-world region (maps/space/barren.dmm). A nomads
+// world in every rule; only the name and the arrival text differ, so the
+// server list and lobby name the planet instead of "Nomads (Temperate)".
+/obj/map_metadata/nomads/barren
+	title = "Barren Planet"
+	description = "A cold, airless world. Settlers live in sealed habitats and walk the surface in pressure suits."
+	battle_name = "settlement of the barren planet"
+	mission_start_message = "<big>A cold, airless world. Settlers who land here live in sealed habitats and walk the surface in pressure suits.</big>"
+	ambience = list()
