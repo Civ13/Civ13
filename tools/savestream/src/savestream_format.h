@@ -60,6 +60,9 @@
 #define OP_DIR 'D'    /* payload: path; reply: L token of child names */
 #define OP_ITER 'I'   /* payload: "<start>;<max>"; reply: "<next>;" then W records in index order */
 #define OP_SEEK 'K'   /* read: payload path; reply: decimal index of the first node at or after it */
+#define OP_TEXT 'T'   /* read: payload "<base>" or "<base>\n<first>\n<last>" (numeric children
+                       * of base); reply "<n>;", n x W<len>:<path> for nodes with no exact
+                       * text form, then the rest as BYOND savefile text relative to base */
 #define OP_STATS 'S'  /* reply: JSON */
 #define OP_QUIT 'Q'
 

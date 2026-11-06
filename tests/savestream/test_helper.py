@@ -14,7 +14,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from helper_client import Helper, Path_, Raw, build_helper, parse_token, record, subtree  # noqa: E402
+from helper_client import Helper, Path_, Raw, build_helper, parse_token, record, subtree, tok_str  # noqa: E402
 
 ICON_TEXT = (
     'filedata("name=t.dmi;length=4;crc32=0x0;encoding=base64",{"\n'
@@ -71,6 +71,58 @@ class HelperTest(unittest.TestCase):
             v, _ = parse_token(r.request("G", "/entries/0/1/nested"))
             self.assertIsNone(v[0][0])
             self.assertEqual(v[1][0].path, "/datum")
+        finally:
+            r.close()
+
+    def test_text_request_renders_savefile_text(self):
+        batch = record("/entries/0/1/type", Path_("/obj/item"))
+        batch += record("/entries/0/1/name", 'q"uo\\te [b] {"x"}\nnl\ttab é')
+        batch += record("/entries/0/1/items", {"a": [1.5, -2, None], "b": Path_("/datum")})
+        batch += record("/entries/0/1/icon", {"kind": "value", "value": Raw(ICON_TEXT)})
+        batch += record("/entries/0/1/far", float("inf"))
+        batch += record("/entries/0/1/odd-name", 7)
+        batch += record("/entries/0/1/sub/deep", 8)
+        batch += record("/entries/0/2/type", Path_("/obj"))
+        batch += record("/entries/1/513/type", Path_("/obj"))
+        for i in (1, 2, 10, 513):
+            batch += record(f"/lists/{i}", {"kind": "scalars", "length": i})
+        batch += record("/lists/2/1/key", "k")
+        raw = batch.encode() + tok_str("W", "/entries/0/2/name").encode() + b"S3:\xff\x01x"
+        out = self.tmp / "text.stream"
+        h = Helper(self.exe, "write", out)
+        self.assertEqual(h.request("W", raw), b"OK")
+        self.assertTrue(json.loads(h.request("F", "force"))["published"])
+        h.close()
+        r = Helper(self.exe, "read", out)
+        try:
+            reply = r.request("T", "/entries/0")
+            count, rest = reply.split(b";", 1)
+            # inf, a text macro and a name with no savefile text form come back by path.
+            self.assertEqual(int(count), 3)
+            missing = []
+            for _ in range(int(count)):
+                head, rest = rest[1:].split(b":", 1)
+                missing.append(rest[:int(head)].decode())
+                rest = rest[int(head):]
+            self.assertEqual(sorted(missing), ["/entries/0/1/far", "/entries/0/1/odd-name", "/entries/0/2/name"])
+            text = rest.decode()
+            self.assertEqual(text.splitlines()[0], "1")
+            self.assertIn('\tname = "q\\"uo\\\\te \\[b\\] {\\"x\\"}\\nnl\ttab é"\n', text)
+            self.assertIn('\titems = list("a" = list(1.5,-2,null),"b" = /datum)\n', text)
+            self.assertIn('\ticon = list("kind" = "value","value" = filedata("name=t.dmi;length=4;crc32=0x0;encoding=base64",{"\nAAECAw==\n"}))\n', text)
+            self.assertIn("\tsub\n\t\tdeep = 8\n", text)
+            # A handed-back node keeps its name line; the game writes its value.
+            self.assertIn("\tfar\n", text)
+            self.assertIn("2\n\tname\n\ttype = /obj\n", text)
+            self.assertNotIn("513", text)
+            reply = r.request("T", "/lists\n1\n512")
+            self.assertTrue(reply.startswith(b"0;"))
+            lists = reply[2:].decode()
+            self.assertEqual(lists, '1 = list("kind" = "scalars","length" = 1)\n'
+                                    '2 = list("kind" = "scalars","length" = 2)\n\t1\n\t\tkey = "k"\n'
+                                    '10 = list("kind" = "scalars","length" = 10)\n')
+            self.assertTrue(r.request("T", "/lists\n5\n1").startswith(b"ERR:"))
+            self.assertEqual(r.request("T", "/nothing"), b"0;")
         finally:
             r.close()
 

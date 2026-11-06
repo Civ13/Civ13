@@ -244,6 +244,41 @@
 		batch_size = min(batch_size * 2, 512)
 	return found_nodes
 
+// Builds the subtree at base (or, with first and last, base's numeric
+// children first..last) inside S with one native ImportText() call. The
+// helper renders the nodes as savefile text and names the few with no exact
+// text form (text macros, value files, inf/nan), which are fetched one by one.
+// Decoding every wire token in DM instead made a Gaia-sized load take tens of
+// minutes. Returns the number of nodes, or null when the shim or helper
+// predates the text request; the caller then falls back to subtree().
+/datum/save_stream/var/text_supported = TRUE
+/datum/save_stream/proc/import_text(savefile/S, base, first, last)
+	if(mode != "read") CRASH("save stream is not reading")
+	if(!text_supported) return null
+	var/request = isnull(first) ? "[base]" : "[base]\n[first]\n[last]"
+	var/reply = lib_call("savestream_text", list(id, request))
+	if(failed(reply))
+		// An older shim has no savestream_text export, an older helper no OP_TEXT.
+		if(findtext(last_error, "call_ext savestream_text failed") == 1 || last_error == "unknown op")
+			text_supported = FALSE
+			return null
+		CRASH("stream text read failed at [base]: [last_error]")
+	var/semi = findtext(reply, ";")
+	var/missing_count = text2num(copytext(reply, 1, semi))
+	var/position = semi + 1
+	var/list/missing = list()
+	for(var/i = 1, i <= missing_count, i++)
+		var/colon = findtext(reply, ":", position)
+		var/path_length = text2num(copytext(reply, position + 1, colon))
+		missing += copytext(reply, colon + 1, colon + 1 + path_length)
+		position = colon + 1 + path_length
+	if(position <= length(reply))
+		S.ImportText(base, copytext(reply, position))
+	for(var/path in missing)
+		var/value = get(path)
+		if(found) S[path] << value
+	return missing_count
+
 // One value as a wire token. DM's jointext() and "[]" embedding drop text
 // macros (\improper and friends) from saved names, so text that holds one is
 // joined with + instead and sets encoded_macros.

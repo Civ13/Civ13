@@ -67,12 +67,18 @@ falls back to formats 3/4 by itself. Format 5 is a format-4 index
 `level_segment_files` lists so backups, rollback and the validation record carry
 it. Writes still go to a scratch savefile per segment, drained to the helper on
 rotation; readers get scratch files per 512-entry shard or list block, matched by
-name in `owns_file` because reading an absent savefile key creates it. Keep stream
+name in `owns_file` because reading an absent savefile key creates it. Each shard
+or block is one `savestream_text` request: the helper renders it as savefile text
+for one native `ImportText()` and hands back by path the nodes text cannot carry
+(text macros, inf/nan, value files). Never decode wire tokens per node in DM on a
+load path: DM's positional text procs made a Gaia load take ~30 minutes. Keep stream
 paths identical to savefile paths. Close handles through `drop_segment_reader`/
 `drop_segment_writer`: an open helper keeps the file locked on Windows. Offline:
 `python3 -m unittest tests/savestream/test_helper.py` (also pins the shipped
-Windows binaries); native: `bash tests/world_save/run-stream.sh`. Benchmarks run
-on save copies only.
+Windows binaries); native: `bash tests/world_save/run-stream.sh` (also checks the
+text read against the wire read). Timing: `bash tools/savestream/bench/run_level_bench.sh`
+(formats 3/4/5) and bench modes `read_text`/`read_wire`/`compare_text` on a real
+stream. Benchmarks run on save copies only.
 
 <!-- 2026-11-04: default allowlist fields -->
 Allowlisted types (turfs, wild plants, plain objects; `persistence_field_allowlist()`)

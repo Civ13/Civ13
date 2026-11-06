@@ -14,6 +14,7 @@
  *   savestream_get(id, path)             -> wire token, "?" if absent
  *   savestream_dir(id, path)             -> L token of child names
  *   savestream_iter(id, "start;max")     -> "<next>;" then W records in path order
+ *   savestream_text(id, base[\nfirst\nlast]) -> subtree as savefile text (see OP_TEXT)
  *   savestream_stats(id)                 -> JSON
  *   savestream_close(id)                 -> "OK"
  *   savestream_version()                 -> identity string
@@ -37,7 +38,7 @@
 #endif
 #include "savestream_format.h"
 
-#define SHIM_IDENTITY "civ13-savestream-shim;format=1;protocol=1"
+#define SHIM_IDENTITY "civ13-savestream-shim;format=1;protocol=2"
 #define MAX_SESSIONS 8
 
 typedef struct {
@@ -300,6 +301,7 @@ EXPORT char *savestream_get(int argc, char **argv) { return query(argc, argv, OP
 EXPORT char *savestream_dir(int argc, char **argv) { return query(argc, argv, OP_DIR); }
 EXPORT char *savestream_iter(int argc, char **argv) { return query(argc, argv, OP_ITER); }
 EXPORT char *savestream_seek(int argc, char **argv) { return query(argc, argv, OP_SEEK); }
+EXPORT char *savestream_text(int argc, char **argv) { return query(argc, argv, OP_TEXT); }
 
 EXPORT char *savestream_stats(int argc, char **argv) {
 	session_t *s = session_arg(argc, argv);

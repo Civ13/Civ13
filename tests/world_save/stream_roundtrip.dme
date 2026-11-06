@@ -23,3 +23,4 @@
 #include "stream_stubs.dm"
 #include "../../code/modules/persistence/stream/save_stream.dm"
 #include "../../code/modules/persistence/stream/level_stream.dm"
+#include "stream_text_check.dm"
