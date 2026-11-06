@@ -493,7 +493,8 @@
 	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
-	if (istype(get_turf(src), /turf/floor/beach/water))
+	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
+	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered())
 		cold_wetness = 1
 	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon"))
 		cold_wetness = min(1, cold_wetness + 0.01)

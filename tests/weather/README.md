@@ -1,6 +1,6 @@
 # Winter survival regression
 
-Run with BYOND 516.1681 and a verified Python interpreter:
+Run with the BYOND version pinned in `tools/byond/version.json` and a verified Python interpreter:
 
 ```
 python tests/weather/run.py --byond-bin <BYOND-bin>
@@ -18,7 +18,7 @@ No production save, restart, player connection or external action is involved.
 
 Results are in an ignored unique `data/weather-*` directory: compiler/runtime
 logs, metadata, tested patch and CSV. Generated DME/DM/DMB/RSC files are unique
-and removed even after failures. The daemon has a 60-second wall limit. Any
+and removed even after failures. The daemon has a 300-second wall limit (override with `WEATHER_TIMEOUT`). Any
 runtime error or missing completion invalidates a passing result. An OS sandbox
 can terminate native DreamDaemon before world startup; do not count that as a
 successful run. On Windows these tests were run outside that process sandbox.

@@ -1,5 +1,6 @@
 """Bounded production weather probe, without normal world startup."""
 import argparse
+import json
 import os
 from pathlib import Path
 import shutil
@@ -63,6 +64,7 @@ def main():
         generated[0].write_text(source, encoding='utf-8')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         (logs / 'tested.patch').write_text(subprocess.check_output(['git', 'diff'], cwd=root, text=True), encoding='utf-8')
+        pin = json.loads((root / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
         compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])], cwd=root,
@@ -70,15 +72,15 @@ def main():
         output = build.stdout + build.stderr
         (logs / 'compile.log').write_text(output, encoding='utf-8')
         print(output, flush=True)
-        if build.returncode or '0 errors, 0 warnings' not in output or '516.1681' not in output:
+        if build.returncode or '0 errors, 0 warnings' not in output or pin not in output:
             raise RuntimeError('Pinned probe compilation failed')
         for path in generated[2:4]:
             shutil.copy2(path, logs / path.name)
         shutil.copytree(root / 'config', logs / 'config')
         result = subprocess.run([str(daemon), str(logs / generated[2].name),
                                  *(['-invisible', '-close'] if os.name == 'nt' else []),
-                                 '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'], cwd=logs,
-                                capture_output=True, text=True, timeout=60, creationflags=flags)
+                                 '-trusted', '-params', f'tested_commit={commit}&byond_pin={pin}', '-log', 'runtime.log'], cwd=logs,
+                                capture_output=True, text=True, timeout=int(os.environ.get("WEATHER_TIMEOUT", "300")), creationflags=flags)
         runtime = (logs / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         print(f'Daemon exit={result.returncode}; stdout={result.stdout}; stderr={result.stderr}', flush=True)
         print(runtime, flush=True)
