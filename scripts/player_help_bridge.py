@@ -683,7 +683,7 @@ TOXIN_SOURCE_SECTIONS = (
      'dbdd6e3ade876c92ff74dc569875cecf09e52569707ad311b9ccd1bfe40b8796'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
-     '930698bc0e211d84d73d65ab43637442eb1dff32b3b7a05481de2fa61132ccc6'),
+     '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),
     ('code/modules/organs/organ_internal.dm',
      '/obj/item/organ/kidneys/process()', '/obj/item/organ/eyes\n',
      'd12d56376622fa9df0f44c1979ccfe7b9db96199fc3ed74e7aa34831c8ad3dbe'),
@@ -728,6 +728,8 @@ def toxin_knowledge(root):
             'Check the hunger and thirst warnings your character has actually received; '
             'a snapshot alone cannot prove which process caused damage or whether it is still increasing. '
             'Reagent metabolism removes chemicals separately from healing existing toxin damage. '
+            'Repeated exposure to the same poison builds tolerance that fades with time, '
+            'so later doses do less damage, down to about half, but never none. '
             'Liver and kidney processing is not a general automatic cure for toxin damage; '
             'the liver has special alcohol handling, and coffee with damaged kidneys can add toxin damage. '
             'None of this reveals this character\'s internal organs or chemical contents. '
