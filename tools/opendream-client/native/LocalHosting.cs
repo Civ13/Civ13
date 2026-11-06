@@ -336,12 +336,10 @@ public static class LocalHosting {
         }
     }
 
-    // {"removed": [names moved to quarantine], "in_use": [names], "forced", "server_running", "save": generation | "save_refused": reason}
+    // {"removed": [names], "forced", "server_running", "save": generation | "save_refused": reason}
     public static string DescribeUnlock(JsonElement json) {
         var removed = json.TryGetProperty("removed", out var list) && list.ValueKind == JsonValueKind.Array ? list.GetArrayLength() : 0;
-        var text = removed == 0 ? "no lock files moved." : $"moved {removed} lock file{(removed == 1 ? "" : "s")} to the quarantine folder.";
-        var inUse = json.TryGetProperty("in_use", out var held) && held.ValueKind == JsonValueKind.Array ? held.GetArrayLength() : 0;
-        if (inUse > 0) text += $" {inUse} {(inUse == 1 ? "is" : "are")} still held open by a running process.";
+        var text = removed == 0 ? "no lock files." : $"removed {removed} lock file{(removed == 1 ? "" : "s")}.";
         if (Str(json, "save_refused") is { Length: > 0 } refusal) text += " The save still does not load: " + refusal + ".";
         else if (json.TryGetProperty("save", out _)) text += " The save is ready to load.";
         return text;

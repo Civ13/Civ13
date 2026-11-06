@@ -218,10 +218,10 @@ static class LocalHostingTests {
         Require(groupKill is { Ok: true, Busy: false } && groupKill.Message.StartsWith("Force-stopped gaia without saving") && groupKill.Message.Contains("railyard: the server is not running"), "group kill: " + groupKill.Message);
         // Lock files a killed world left: unlock reports what it removed and whether the save loads.
         var unlocked = LocalHosting.ParseControl("unlock", 0, "{\"removed\": [\"1.sav.lk\"], \"forced\": false, \"server_running\": false, \"save\": \"round-v2:x\", \"ok\": true}");
-        Require(unlocked is { Ok: true, Busy: false } && unlocked.Message == "moved 1 lock file to the quarantine folder. The save is ready to load.", "unlock answer: " + unlocked.Message);
+        Require(unlocked is { Ok: true, Busy: false } && unlocked.Message == "removed 1 lock file. The save is ready to load.", "unlock answer: " + unlocked.Message);
         Require(LocalHosting.ParseControl("unlock", 1, "{\"ok\": false, \"refused\": \"the server is running\"}").Message == "Refused: the server is running", "unlock refusal");
         var groupUnlock = LocalHosting.ParseGroup("force-unlock", 0, "{\"done\": {\"gaia\": {\"removed\": [], \"save_refused\": \"level 2 of the save is missing\"}}, \"refused\": {}, \"ok\": true}");
-        Require(groupUnlock is { Ok: true } && groupUnlock.Message == "gaia: no lock files moved. The save still does not load: level 2 of the save is missing.", "group unlock: " + groupUnlock.Message);
+        Require(groupUnlock is { Ok: true } && groupUnlock.Message == "gaia: no lock files. The save still does not load: level 2 of the save is missing.", "group unlock: " + groupUnlock.Message);
         Require(LocalHosting.GroupStep(host.Control!, "unlock", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "unlock", "--region", "gaia" }), "one-region unlock argv");
         var groupForce = LocalHosting.ParseGroup("force-restart", 0, "{\"accepted\": {\"gaia\": {}, \"railyard\": {}}, \"refused\": {}, \"ok\": true}");
         Require(groupForce is { Ok: true, Busy: true } && groupForce.Message.EndsWith("gaia, railyard..."), "group force-restart: " + groupForce.Message);

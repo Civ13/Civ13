@@ -443,12 +443,11 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def check_save(saves, ignore_locks=False):
+def check_save(saves):
     """Return the saved generation, or raise Refused if the save cannot be loaded.
 
     An empty folder is a fresh world. A restart intent left by save-and-stop
-    must belong to the saved generation. ignore_locks skips only the BYOND lock
-    file check, so unlock can tell a sound save with stale locks from a broken one.
+    must belong to the saved generation.
     """
     if saves.is_symlink() or not saves.is_dir():
         raise Refused('map_saves is missing or is a link')
@@ -472,7 +471,7 @@ def check_save(saves, ignore_locks=False):
         level = saves / ('%d.sav' % z)
         if not (level.is_file() and level.stat().st_size):
             raise Refused('level %d of the save is missing' % z)
-    if not ignore_locks and any(name.endswith('.lk') for name in names):
+    if any(name.endswith('.lk') for name in names):
         raise Refused('the save still has BYOND lock files')
     intent_path = saves / 'restart_intent.json'
     if intent_path.exists():
@@ -846,20 +845,19 @@ class Host:
         return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
 
     def release_save_locks(self, pid, wait_seconds=30):
-        """Set aside the BYOND lock files a killed server left in map_saves.
+        """Remove the BYOND lock files a killed server left in map_saves.
 
         A forced stop leaves each open savefile's .lk behind, and check_save then
         refuses every start. They belong to the dead process only, so they are
-        moved to the quarantine once it has ended; while it still runs they are
-        left alone. Returns the names moved.
+        removed once it has ended; while it still runs they are left alone.
+        Returns the names removed.
         """
         deadline = self.platform.now() + wait_seconds
         while self.platform.alive(pid):
             if self.platform.now() > deadline:
                 return []
             self.platform.sleep(1)
-        moved, _, _ = self.quarantine_save_locks(self.save_locks())
-        return moved
+        return self.remove_save_locks(self.save_locks())
 
     def save_locks(self):
         """The BYOND lock files (*.lk) in map_saves, as paths."""
@@ -868,60 +866,33 @@ class Host:
             return []
         return [item for item in sorted(saves.iterdir()) if item.name.endswith('.lk') and item.is_file() and not item.is_symlink()]
 
-    def quarantine_save_locks(self, locks):
-        """Move lock files to <state_dir>/lk-quarantine/<time>/ (never delete them).
-
-        Returns (moved names, names that could not be moved because a process
-        still holds them open, the quarantine folder or None).
-        """
-        if not locks:
-            return [], [], None
-        quarantine = self.state_dir / 'lk-quarantine' / time.strftime('%Y%m%d-%H%M%S', time.gmtime(self.platform.now()))
-        quarantine.mkdir(parents=True, exist_ok=True)
-        moved, in_use = [], []
+    @staticmethod
+    def remove_save_locks(locks):
         for item in locks:
-            try:
-                os.replace(item, quarantine / item.name)
-                moved.append(item.name)
-            except OSError:
-                in_use.append(item.name)
-        return moved, in_use, quarantine
+            item.unlink(missing_ok=True)
+        return [item.name for item in locks]
 
     def unlock(self, force=False):
-        """Check map_saves for BYOND lock files and set them aside.
+        """Check map_saves for BYOND lock files and remove them.
 
-        Safe (the default) refuses while the server runs, is frozen or an action
+        Safe (the default): refused while the server runs, is frozen or an action
         (a start, save or update) is in progress, because the files may then be in
-        use, and while the save fails any check besides its lock files. Force skips
-        those checks and names each one it skipped, for a lock left by a server
-        whose process is gone but still looks alive. Either way the files are moved
-        to <state_dir>/lk-quarantine/<time>/, never deleted; one a process still
-        holds open cannot be moved and is reported as in use. Afterwards the save
-        is checked and the answer says whether it loads.
+        use. Force skips those checks, for a lock left by a server whose process is
+        gone but still looks alive; removing a lock a live server holds can corrupt
+        its save. Afterwards the save is checked and the answer says if it loads.
         """
-        saves = self.repo / 'map_saves'
         locks = self.save_locks()
         running = bool(self.frozen() or self.platform.listening(self.config['port']) or self.platform.server_pid(self.config['port']))
-        reasons = []
-        if locks:
+        busy = self.read_state().get('action') if self.lock.exists() else None
+        if locks and not force:
             if running:
-                reasons.append('the server is running or asleep; its lock files may be in use')
-            if self.lock.exists():
-                reasons.append('an action is still running: %s' % self.read_state().get('action'))
-            try:
-                check_save(saves, ignore_locks=True)
-            except Refused as refusal:
-                reasons.append(str(refusal))
-            if reasons and not force:
-                raise Refused('; '.join(reasons) + ' (force-unlock skips these checks)')
-        moved, in_use, quarantine = self.quarantine_save_locks(locks)
-        answer = {'removed': moved, 'forced': bool(force), 'skipped_checks': reasons if force else [], 'server_running': running}
-        if quarantine:
-            answer['quarantine'] = str(quarantine)
-        if in_use:
-            answer['in_use'] = in_use
+                raise Refused('the server is running; its lock files may be in use (force-unlock removes them anyway)')
+            if busy:
+                raise Refused('an action is still running: %s' % busy)
+        removed = self.remove_save_locks(locks)
+        answer = {'removed': removed, 'forced': bool(force), 'server_running': running}
         try:
-            answer['save'] = check_save(saves) or 'empty'
+            answer['save'] = check_save(self.repo / 'map_saves') or 'empty'
         except Refused as refusal:
             answer['save_refused'] = str(refusal)
         return answer
