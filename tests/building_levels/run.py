@@ -14,6 +14,7 @@ import tempfile
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
+PINNED = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 CORE = 'code/game/objects/building_levels.dm'
 CONTROLS = {
     'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),
@@ -134,7 +135,7 @@ def main():
                                cwd=ROOT, capture_output=True, text=True, timeout=180, creationflags=flags)
         output = build.stdout + build.stderr
         (args.output / 'compile.log').write_text(output, encoding='utf-8')
-        if build.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
+        if build.returncode or 'DM compiler version ' + PINNED not in output or '0 errors, 0 warnings' not in output:
             raise RuntimeError('Pinned compile failed: ' + output[-4000:])
         with tempfile.TemporaryDirectory(prefix='civ13-building-runtime-') as temporary:
             work = Path(temporary)
