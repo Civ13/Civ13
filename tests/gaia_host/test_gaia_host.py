@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('gaia_host', ROOT / 'scripts/gaia-host/gaia_host.py')
@@ -585,7 +586,31 @@ class ForcedStopTests(GaiaHostTests):
         self.assertEqual(['1.sav.lk'], answer['removed'])
         self.assertFalse(answer['server_running'])
         self.assertNotIn('save_refused', answer)
-        self.assertEqual({'removed': [], 'forced': False, 'server_running': False, 'save': answer['save']}, self.host.unlock())
+        self.assertEqual({'removed': [], 'forced': False, 'skipped_checks': [], 'server_running': False, 'save': answer['save']}, self.host.unlock())
+        # Set aside, never deleted.
+        self.assertTrue((Path(answer['quarantine']) / '1.sav.lk').is_file())
+        self.assertEqual(self.host.state_dir / 'lk-quarantine', Path(answer['quarantine']).parent)
+
+    def test_unlock_refuses_a_broken_save_unless_forced(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav').unlink()
+        (saves / '1.sav.lk').write_bytes(b'')
+        with self.assertRaisesRegex(gaia_host.Refused, 'level 1 of the save is missing'):
+            self.host.unlock()
+        self.assertTrue((saves / '1.sav.lk').exists())
+        answer = self.host.unlock(force=True)
+        self.assertEqual(['level 1 of the save is missing'], answer['skipped_checks'])
+        self.assertIn('level 1', answer['save_refused'])
+
+    def test_unlock_reports_a_lock_still_held_open(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        with mock.patch.object(gaia_host.os, 'replace', side_effect=PermissionError('in use')):
+            answer = self.host.unlock()
+        self.assertEqual((['1.sav.lk'], []), (answer['in_use'], answer['removed']))
+        self.assertIn('lock files', answer['save_refused'])
 
     def test_unlock_refuses_a_running_server_unless_forced(self):
         saves = self.repo / 'map_saves'
