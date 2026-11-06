@@ -898,6 +898,16 @@ var/space_runtime_error = FALSE
 /obj/structure/reagent_dispensers/propellant_plant/space_test/has_power()
 	return TRUE
 
+// A trail whose only check is the destination, and a poll that repoints it.
+/obj/structure/region_gate/space_test/closed_reason()
+	return null
+var/global/obj/structure/region_gate/space_poll_repoint = null
+/datum/shard_group/poll_peer(id)
+	if (space_poll_repoint)
+		space_poll_repoint.destination = "elsewhere"
+		return TRUE
+	return ..()
+
 /proc/space_selfsuff_checks()
 	var/obj/structure/habitat_core/Q = locate() in locate(10, 12, 1)
 	var/obj/structure/life_support/electrolyser/E = locate() in locate(9, 13, 1)
@@ -995,6 +1005,21 @@ var/space_runtime_error = FALSE
 	var/list/sent = json_decode(pilot.region_travel_payload(list(), null, FALSE, home))
 	space_check(sent["return"] == 1 && sent["lander"] == "barren-1-1234" && isnull(sent["landing"]), "the travel payload carries the flight home")
 	qdel(pilot)
+
+	var/turf/G = locate(18, 18, 1)
+	var/obj/structure/region_gate/space_test/gate = new(G)
+	gate.destination = "gaia"
+	var/list/old_peers = shard_group.peers
+	shard_group.peers = list("gaia" = list("state" = "ASLEEP"))
+	var/mob/living/human/space_probe_crew/walker = new(G)
+	walker.persistence_owner_ckey = "spacetester"
+	space_poll_repoint = gate
+	var/result = gate.depart(walker)
+	space_poll_repoint = null
+	space_check(result == "The trail changed. Try again." && walker.loc == G && !gate.busy, "a trail repointed while its destination wakes sends nobody")
+	shard_group.peers = old_peers
+	qdel(walker)
+	qdel(gate)
 
 	var/datum/research_node/local = get_research_node("local_resources")
 	space_check(local && ("surface_vehicles" in local.prereqs) && local.era_tier == 9 && local.mode == RESEARCH_MODE_ANALYSIS, "Local Resources follows Surface Vehicles as an ordinary node")
