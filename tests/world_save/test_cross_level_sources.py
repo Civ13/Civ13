@@ -41,10 +41,13 @@ class CrossLevelSourceTests(unittest.TestCase):
             self.assertEqual(native.call_args.args[4], expected)
             self.assertFalse(native.call_args.args[3]['characterization_only'])
 
-    def test_direct_field_case_checks_owning_field_context(self):
+    def test_field_case_saves_stale_cross_level_reference_as_null(self):
         source = (ROOT / 'tests/world_save/cross_level_probe.dm').read_text()
-        self.assertIn('if(!nested && !backward)', source)
-        self.assertIn('saved_z=1 native_z=2 turf_z=2 source_type=/obj/cross_holder source_field=payload', source)
+        self.assertIn('cross_check(!reason, "stale cross-level field aborted the save: [reason]")', source)
+        self.assertIn('cross_check(live == cross_target, "save changed the live cross-level field")', source)
+        saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+        self.assertIn('if(istype(value, /atom/movable) && drop_cross_level_reference(value))\n'
+                      '\t\t\treturn list("kind" = "entry", "ref" = 0)', saving)
 
     def test_staging_preserves_all_production_sources_and_is_relocatable(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -135,7 +138,10 @@ class CrossLevelSourceTests(unittest.TestCase):
         self.assertIn('frame_snapshot["entry"] = valid_frame ? frame.entry : 0', record)
         for forbidden in ('.name', '.ckey', '.key', '.client', '.vars'):
             self.assertNotIn(forbidden, snapshot + record)
-        self.assertIn('if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE', source)
+        runtime_keys = next(line for line in source.splitlines() if 'if(key in list("last_save_reference_failure"' in line)
+        for key in ('last_save_reference_failure', 'restore_policy', 'restore_cleanup_error'):
+            self.assertIn(f'"{key}"', runtime_keys)
+        self.assertTrue(runtime_keys.rstrip().endswith(') return TRUE'))
 
     def test_record_reset_follows_save_admission_and_precedes_contents(self):
         source = (ROOT / 'code/modules/persistence/functions.dm').read_text()

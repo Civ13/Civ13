@@ -25,7 +25,7 @@ MINIMUM_CHECKS = dict(zip(CASES, (14, 7, 10, 10, 10, 9, 7, 9, 7, 7, 7, 8, 11, 16
 RECORD_PROC = '/map_storage/proc/record_save_reference_failure'
 PRESENTATION_DEFAULT = '#ifndef CIV13_ROOT_TREE_PRESENTATION\n#define CIV13_ROOT_TREE_PRESENTATION 1\n#endif\n'
 CONTROLS = {
-    'old-bed': ('disk', 'FAIL: protected sleeper/bed export rejected: Cross-level object reference cannot be represented in per-level save files: /obj/structure/bed/sleep_fixture saved_z=1 native_z=2 turf_z=2 source_type=/mob/living/human/sleep_fixture source_field=buckled'),
+    'old-bed': ('disk', 'FAIL: protected sleeper kept its distant bed link'),
     'persistence-gate': ('busy', 'FAIL: entry moved during persistence'),
     'other-occupant': ('unrelated-occupant', 'FAIL: stale sleep pointer unbuckled a different occupant'),
     'wake-actor': ('normal', 'FAIL: wake helper moved the wrong actor'),
@@ -151,7 +151,7 @@ def main():
         cases, expected = (case,), {case: result}
     minimum = MINIMUM_CHECKS.copy()
     if args.negative_control:
-        minimum[cases[0]] = {'old-bed': 6, 'persistence-gate': 5, 'other-occupant': 7,
+        minimum[cases[0]] = {'old-bed': 4, 'persistence-gate': 5, 'other-occupant': 7,
                              'wake-actor': 12, 'move-rollback': 5, 'inventory-gate': 5,
                              'diagnostic-record': 9}[args.negative_control]
     receipt.update(cases=list(cases), expected_results=expected, minimum_checks=minimum)
