@@ -20,6 +20,7 @@ WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contra
 WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
 WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
 HERE = ROOT/'tests/world_save'
+FIXTURE = HERE/'current_matrix_fixture'
 
 
 def load(path):
@@ -40,6 +41,7 @@ IDENTITY = dict(version='516.1688', archive=dict(sha256='a'*64),
 STEPS = ('Verify protected sleep transfers and bounded save compatibility',
          'Offline world-save round-trip regression',
          'Verify bounded admitted save traversal and backup recovery')
+STEP_GUARDS = ('        id: protected_sleep','        id: world_save','        id: save_latency')
 DRIVERS = ('run-sleep-transfer.py','run-cross-level.py','inspect-partial-save.py',
            'run-dimension-bootstrap.py','run-durable-world.py','run-durable-graph.py',
            'run-string-path.py','tests/save_latency/run.py')
@@ -76,21 +78,17 @@ def selected_calls(workflow):
 class CurrentMatrix(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Immutable source reads only, before all launch prohibitions.
-        def old(path): return subprocess.check_output(['git','show','5b004d68:'+path],cwd=ROOT).decode()
-        cls.old_workflow = old('.github/workflows/test.yml')
+        # Sources at 5b004d68 (and the old reader at 75890d88), frozen as
+        # checked-in fixtures so the test never reads Git history.
+        def old(path):
+            name = 'save-latency-run.py' if path == 'tests/save_latency/run.py' else Path(path).name
+            return (FIXTURE/(name+'.txt')).read_text(encoding='utf-8')
         cls.old_graph = old('tests/world_save/run-durable-graph.py')
         cls.old_dimension_probe = old('tests/world_save/dimension_bootstrap_probe.dm')
         cls.old_sources = {path: old(path) for path in (
             'tests/world_save/run-durable-world.py','tests/world_save/run-string-path.py',
             'tests/save_latency/run.py','tests/world_save/partial_save_inspector/inspect-partial-save.py')}
-        cls.historical = {path: subprocess.check_output(['git','show','d0ffbfb2335eb735756b998f3f2ff617c28f144b:'+path],cwd=ROOT)
-                          for path in ('code/modules/persistence/loading.dm','code/modules/organs/wound.dm')}
-        cls.old_reader = subprocess.check_output(['git','show','75890d883190355e430f9958fd102864ee88429a:code/modules/persistence/loading.dm'],cwd=ROOT)
-        cls.master_workflow = subprocess.check_output(['git','show',
-            'eedc9862fcb7b2b7c3617c6972965fafa650e51a:.github/workflows/test.yml'],cwd=ROOT,text=True)
-        cls.feature_durable = subprocess.check_output(['git','show',
-            'f97c2940b0b1202ed97f5f413bd1a4a6f24e0962:tests/world_save/run-durable-world.py'],cwd=ROOT,text=True)
+        cls.old_reader = (FIXTURE/'old-reader-loading.dm.txt').read_bytes()
 
     def setUp(self):
         self.enterContext(patch.object(socket,'socket',side_effect=AssertionError('Socket forbidden')))
@@ -105,9 +103,9 @@ class CurrentMatrix(unittest.TestCase):
     def git(self, command, **kwargs):
         self.assertEqual(command[0],'git')
         if command[1] == 'show':
-            path = command[2].split(':',1)[1]
-            data = self.old_reader if command[2].startswith('75890d') else self.historical[path]
-            return data.decode() if kwargs.get('text') else data
+            # Only the save-latency runner still reads its frozen old reader.
+            self.assertEqual(command[2], '75890d883190355e430f9958fd102864ee88429a:code/modules/persistence/loading.dm')
+            return self.old_reader.decode() if kwargs.get('text') else self.old_reader
         return 'a'*40+'\n' if kwargs.get('text') else b''
 
     def tools(self, root):
@@ -127,11 +125,9 @@ class CurrentMatrix(unittest.TestCase):
     def test_workflow_only_threads_identity_and_every_selected_case_reaches_identity_gate(self):
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
         WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
-        master = self.master_workflow
-        for step in STEPS:
+        for step,guard in zip(STEPS,STEP_GUARDS):
             marker='      - name: '+step+'\n'
-            self.assertEqual(workflow.split(marker,1)[1].split('\n',1)[0],
-                             master.split(marker,1)[1].split('\n',1)[0])
+            self.assertEqual(workflow.split(marker,1)[1].split('\n',1)[0],guard)
         calls=selected_calls(workflow)
         self.assertEqual(len(calls),58)
         for path,args in calls:
@@ -282,10 +278,10 @@ class CurrentMatrix(unittest.TestCase):
                     result=dict(done=1,checks=20)
                     if '--startup-only' in flags: (output/'startup-result.json').write_text('{"startup_only":1}')
                     if '--wounds' in flags:
-                        result=dict(done=1,checks=142,roundtrips=18)
+                        result=dict(done=1,checks=165,roundtrips=18)
                         if control:
                             receipt=json.loads((output/'receipt.json').read_text())
-                            result=dict(done=0,checks=5,error='Cannot read null.max_damage',source=receipt['wound_control_source'],line=394)
+                            result=dict(done=0,checks=5,error='Cannot read null.max_damage',source=receipt['wound_control_source'],line=receipt['wound_control_line'])
                     elif '--lifecycle-shutdown' in flags:
                         result.update(intent_hash=hashlib.md5((saves/'restart_intent.json').read_bytes()).hexdigest(),generation='fixture')
                         if control: (saves/'restart_intent.json').unlink()
@@ -436,21 +432,23 @@ class CurrentMatrix(unittest.TestCase):
         for path,marker in markers.items():
             reference = self.old_sources[path]
             if path.endswith('run-durable-world.py'):
-                # Master and feature differ only by the added offline-client
-                # check in these result counts; preserve every other oracle.
-                master_tail = reference.split(marker,1)[1]
+                # Reviewed result-check changes since the frozen source: the
+                # offline-client startup check, then the wound count growth
+                # and the #3845 reverted-fix wound control.
+                tail = reference.split(marker,1)[1]
                 changes = (
-                    ("        if args.wounds and not args.negative_control:\n", "        # 141 wound assertions plus the generated offline-client startup check.\n        if args.wounds and not args.negative_control:\n"),
-                    ("result.get('checks') != 141", "result.get('checks') != 142"),
+                    ("        if args.wounds and not args.negative_control:\n", "        # 159 wound assertions (18 round trips also check the world.time stamp)\n        # plus the generated offline-client startup check.\n        if args.wounds and not args.negative_control:\n"),
+                    ("result.get('checks') != 141", "result.get('checks') != 165"),
                     ("result.get('checks') != 4:", "result.get('checks') != 5:"),
                     ("# Four operation-admission checks precede the malformed-wire guard.\n            if args.negative_control == 'preflight' and result.get('checks') != 11:", "# Includes four operation-admission checks and the offline startup check.\n            if args.negative_control == 'preflight' and result.get('checks') != 12:"),
                     ("# Includes the export operation-release assertion before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:", "# Includes export operation-release and offline startup checks before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:"),
+                    ("result.get('line') != 394", "result.get('line') != receipt['wound_control_line']"),
+                    ("'Historical wound source did not reproduce the constructor failure: '", "'Reverted wound fix did not reproduce the constructor failure: '"),
                 )
                 for before, after in changes:
-                    self.assertEqual(master_tail.count(before), 1)
-                    master_tail = master_tail.replace(before, after, 1)
-                self.assertEqual(master_tail, self.feature_durable.split(marker,1)[1])
-                reference = self.feature_durable
+                    self.assertEqual(tail.count(before), 1, before)
+                    tail = tail.replace(before, after, 1)
+                reference = marker + tail
             self.assertEqual(reference.split(marker,1)[1],(ROOT/path).read_text().split(marker,1)[1])
         def function(source,name):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name==name))

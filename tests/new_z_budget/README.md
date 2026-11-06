@@ -23,20 +23,20 @@ py -3 tests/world_save/run-dimension-bootstrap.py --prepare-only
 After exact source review, the authorized sole native executor runs sequentially:
 
 ```text
-py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1681-bin> --output <new-positive-directory>
-py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1681-bin> --control memory-admission --output <new-control-directory>
-py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1681-bin> --control cell-limit --output <new-control-directory>
-py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1681-bin> --control roof-ceiling --output <new-control-directory>
-py -3 tests/world_save/run-dimension-bootstrap.py --byond-bin <516.1681-bin>
-py -3 tests/world_save/run-dimension-bootstrap.py --negative-control memory-admission --byond-bin <516.1681-bin>
-py -3 tests/world_save/run-dimension-bootstrap.py --negative-control budget-hold --byond-bin <516.1681-bin>
-py -3 tests/world_save/run-durable-world.py --dimension-bootstrap --profile europe --byond-bin <516.1681-bin>
+py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1688-bin> --output <new-positive-directory>
+py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1688-bin> --control memory-admission --output <new-control-directory>
+py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1688-bin> --control cell-limit --output <new-control-directory>
+py -3 tests/new_z_budget/run.py --expected-commit <full-commit> --byond-bin <516.1688-bin> --control roof-ceiling --output <new-control-directory>
+py -3 tests/world_save/run-dimension-bootstrap.py --byond-bin <516.1688-bin>
+py -3 tests/world_save/run-dimension-bootstrap.py --negative-control memory-admission --byond-bin <516.1688-bin>
+py -3 tests/world_save/run-dimension-bootstrap.py --negative-control budget-hold --byond-bin <516.1688-bin>
+py -3 tests/world_save/run-durable-world.py --dimension-bootstrap --profile europe --byond-bin <516.1688-bin>
 ```
 
 The prepared full-production DME disables ordinary world/global startup using
 the existing fixture adapter. Sources, generated controls and executable hashes
 are recorded. The native launcher requires the exact commit with clean tracked
-source, pinned 516.1681 compiler and runtime, closed fixture port, zero exit,
+source, pinned 516.1688 compiler and runtime, closed fixture port, zero exit,
 no engine diagnostics, complete result flags and a final positive 10x10x9 grid.
 Expected control failures are explicit and cannot mask a nonzero exit or an
 unrelated diagnostic. All runtime storage is fresh and outside production.
@@ -63,7 +63,7 @@ compilation/assertions, client behavior, production memory headroom or OOM safet
 See `docs/new-z-budget.md` for the separate calibrated-profile prerequisite.
 
 The new-z, standalone dimension and full durable runners share the pure
-`z_budget_evidence.py` compiler parser. Compiler evidence requires one exact `DM compiler version 516.1681` line and
+`z_budget_evidence.py` compiler parser. Compiler evidence requires one exact `DM compiler version 516.1688` line and
 one exact `probe.dmb - 0 errors, 0 warnings` result (with the bounded native
 date/time suffix allowed), in that order, within a 1 MiB log. Prefix/suffix
 bait, longer versions, duplicate banners/results, contaminated summaries,

@@ -9,14 +9,16 @@ import subprocess
 
 from prepare import CONTROLS, ROOT, prepare
 
-from z_budget_evidence import DIAGNOSTIC, MAX_COMPILE_LOG, validate_compile
+from z_budget_evidence import DIAGNOSTIC, MAX_COMPILE_LOG, PINNED, validate_compile
+
+PINNED_MAJOR, PINNED_BUILD = (int(part) for part in PINNED.split('.'))
 
 
 def validate_native(exit_code, diagnostics, result, receipt, control):
     if exit_code != 0 or DIAGNOSTIC.search(diagnostics):
         raise RuntimeError('Native exit/diagnostics invalidated evidence')
-    if receipt.get('byond_version') != 516 or receipt.get('byond_build') != 1681 or receipt.get('port') != 0:
-        raise RuntimeError('Pinned 516.1681 runtime and closed port required')
+    if receipt.get('byond_version') != PINNED_MAJOR or receipt.get('byond_build') != PINNED_BUILD or receipt.get('port') != 0:
+        raise RuntimeError(f'Pinned {PINNED} runtime and closed port required')
     expected = 'FAIL: ' + CONTROLS[control][2] if control else 'PASS: new-z budget'
     if result != expected or not isinstance(receipt.get('checks'), int) or receipt['checks'] <= 0:
         raise RuntimeError(f'Incomplete or unintended result: {result!r}; expected {expected!r}')

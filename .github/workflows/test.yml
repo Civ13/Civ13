@@ -302,6 +302,7 @@ jobs:
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_round_metadata_toolchain.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_current_matrix.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_graph_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_wound_compatibility.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_wound_diagnostics.py -v
