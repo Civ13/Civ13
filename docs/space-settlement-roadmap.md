@@ -263,6 +263,33 @@ come with phase 3, when there is something to save.
 - Beds inside a pressurised module can be claimed, which makes the barren world
   the settler's home. The greenhouse ledger ticks with nobody inside, so plants
   breathe and the module cools like any other.
+- Built (phase 3, `code/modules/space/habitat_modules.dm`): Sealed Habitats
+  (after Crewed Flight) unlocks module kits (quarters with two bunks,
+  greenhouse with two hydroponics trays, workshop with a bench, storage with
+  two crates, airlock) and the hull patch kit; Life Support unlocks the
+  electrolyser, CO2 scrubber and heater. A kit used where you stand unfolds a
+  5x5 module around you: a 16-tile hull around a 3x3 floor with a core in the
+  middle, pressurised with sea-level air. Within 6 tiles of a module it snaps
+  to dock beside it; docked modules share a wall with a hatch in its middle.
+  An airlock's outer hatch faces away from the module it docks to.
+- Each module is one ledger saved as plain numbers on its core; floor tiles
+  ask the core beside them (hatch tiles a neighbouring core), so no tile
+  carries gas and nothing is stamped on load. Every core ticks while players
+  are connected. A hull tile that is not wall or a closed hatch is a breach;
+  an open hatch into a docked module mixes the two ledgers. The airlock core's
+  hand pump moves its air into the module next door (pump down) and back
+  (pressurise), keeping 95% each way, and needs every hatch shut. A hull patch
+  kit closes a breach.
+- Life support machines inside a module draw cable power (cable comes in
+  through an open hatch): the electrolyser makes 0.1 kPa-tiles of oxygen a
+  second from 0.5 units of water each, up to 21 kPa; the scrubber removes 0.1
+  of CO2 a second down to 0.4 kPa; the heater warms 0.5 C a second up to
+  20 C. Each growing plant in a module turns 0.005 of CO2 into oxygen a
+  second, half a person's breathing. Power comes from the existing grid, and
+  the existing solar controllers already lose output at night and in dust
+  storms (extreme weather in the barren desert climate). Not built yet: water
+  from ice (phase 5), grey water recycling, an isotope generator, and roofs
+  over modules.
 
 ### Phase 4: EVA and hazards
 
@@ -306,7 +333,7 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 | Rocketry | Launch rail, survey probe, mission console | 1 |
 | Planetary Survey | Advanced survey probe | 1 |
 | Crewed Flight | Launch pad, crewed lander | 2 |
-| Sealed Habitats | Habitat module kits, hatches, airlock | 3 |
+| Sealed Habitats | Habitat module kits (hatches come with docking), airlock, hull patch kit | 3 |
 | Life Support | Electrolyser, scrubber, heater, water recycler | 3 |
 | Pressure Suits | Suit, helmet, air tank, repair kit | 4 |
 | Surface Vehicles | Open and sealed rovers, trailers | 5 |
