@@ -12,6 +12,7 @@ HEART = (ROOT / "code/modules/organs/internal/heart.dm").read_text(encoding="utf
 DEFINES = (ROOT / "code/predefines.dm").read_text(encoding="utf-8")
 BASE_ORGAN = (ROOT / "code/modules/organs/organ.dm").read_text(encoding="utf-8")
 AGENT = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+BLOOD = (ROOT / "code/modules/organs/blood.dm").read_text(encoding="utf-8")
 LIFE = (ROOT / "code/game/mob/living/carbon/human/human_life.dm").read_text(encoding="utf-8")
 
 
@@ -196,6 +197,24 @@ class MedicalCare(unittest.TestCase):
         self.assertEqual(len(line.replace("RECIPE: ", "").split(",")), 13)
         self.assertTrue(line.startswith("RECIPE: /material/silver/,"))
 
+
+    def test_restored_species_copy_is_not_rejected(self):
+        # A restored body holds a saved copy of its species datum, while organs
+        # rebuilt by an admin heal hold the global one: compare names, or every
+        # organ rejects and pours toxin into a cured patient.
+        check = block(BLOOD, "proc/blood_incompatible(")
+        self.assertIn("blood_species_name(donor_species) != blood_species_name(receiver_species)", check)
+        self.assertNotIn("donor_species != receiver_species", check)
+        name = block(BLOOD, "proc/blood_species_name(")
+        self.assertIn("istype(species, /datum/species)", name)
+        self.assertIn("return S.name", name)
+
+    def test_false_rejection_stops(self):
+        body = block(BASE_ORGAN, "/obj/item/organ/proc/handle_rejection()")
+        check = body.index("if (!blood_incompatible(")
+        self.assertLess(check, body.index("rejecting = null"))
+        self.assertLess(body.index("rejecting = null"), body.index("rejecting++"))
+        self.assertLess(check, body.index('add_reagent("toxin"'))
 
 if __name__ == "__main__":
     unittest.main()

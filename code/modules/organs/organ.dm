@@ -196,9 +196,12 @@ var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herb
 	// Process unsuitable transplants. TODO: consider some kind of
 	// immunosuppressant that changes transplant data to make it match.
 	if (dna)
-		if (!rejecting)
-			if (blood_incompatible(dna.b_type, owner.dna.b_type, species, owner.species))
-				rejecting = TRUE
+		// Re-check every tick, so a rejection started by a false mismatch
+		// (such as a restored species copy) stops instead of poisoning forever.
+		if (!blood_incompatible(dna.b_type, owner.dna.b_type, species, owner.species))
+			rejecting = null
+		else if (!rejecting)
+			rejecting = TRUE
 		else
 			rejecting++ //Rejection severity increases over time.
 			if (rejecting % 10 == FALSE) //Only fire every ten rejection ticks.
