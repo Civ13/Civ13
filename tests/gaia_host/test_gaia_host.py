@@ -510,6 +510,19 @@ class NoConsoleWindowTests(unittest.TestCase):
         else:
             self.assertTrue(callable(seen[0]['preexec_fn']))
 
+    def test_console_programs_never_inherit_stdin(self):
+        # Started by the launcher, this script inherits the launcher's console input; subprocess
+        # duplicated that handle for git and check-update failed with WinError 50.
+        import subprocess
+        from unittest import mock
+        seen = []
+        def fake_run(argv, **kwargs):
+            seen.append(kwargs.get('stdin', 'inherited'))
+            return subprocess.CompletedProcess(argv, 0, '', '')
+        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
+            gaia_host.Platform().run(['git', 'fetch'])
+        self.assertEqual(seen, [subprocess.DEVNULL])
+
     def test_detached_children_keep_a_hidden_console(self):
         # DETACHED_PROCESS left DreamDaemon without a console, so every shell() it ran
         # (the save memory probe's cmd /c tasklist) opened a visible window.

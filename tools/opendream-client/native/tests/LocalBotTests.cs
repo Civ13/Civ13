@@ -17,7 +17,7 @@ static class LocalBotTests {
             var step = LocalBot.Control(bot, action);
             Require(step.FileName == bot.Php && step.WorkingDirectory == bot.Root && !step.UseShellExecute && step.CreateNoWindow &&
                 step.ArgumentList.SequenceEqual(new[] { "scripts/windows/control.php", action, bot.Profile }), action + " argv changed");
-            Require(step.RedirectStandardError && step.RedirectStandardOutput == (action != "start"), action + " capture changed");
+            Require(step.RedirectStandardError && step.RedirectStandardOutput == (action != "start") && step.RedirectStandardInput == (action != "start"), action + " capture changed");
         }
         try { LocalBot.Control(bot, "reloadconfig"); throw new Exception("unsupported bot action accepted"); } catch (ArgumentException) { assertions++; }
         Require(LocalHosting.ControlActions.Contains("check-update"), "server check-update action missing");
