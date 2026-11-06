@@ -154,6 +154,13 @@ SUITES = {
             'code/modules/research_tree/research_faction.dm',
             'code/_helpers/WWinput.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
+    # Stdlib source check: stance transforms keep the trait size scale.
+    'stance_size_transform': {'files': ('tests/stance_size_transform/test_stance_scale.py',),
+        'paths': ('tests/stance_size_transform/',), 'shared_paths': (
+            'code/_onclick/hud/base_screen_objects.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/mob/living/carbon/human/inventory.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

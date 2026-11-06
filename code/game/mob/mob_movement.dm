@@ -1128,12 +1128,14 @@
 					mob.dir = WEST
 					var/matrix/M = matrix()
 					M.Turn(-90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 				else
 					mob.dir = EAST
 					var/matrix/M = matrix()
 					M.Turn(90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 
@@ -1172,12 +1174,14 @@
 					mob.dir = WEST
 					var/matrix/M = matrix()
 					M.Turn(-90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 				else
 					mob.dir = EAST
 					var/matrix/M = matrix()
 					M.Turn(90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 /client/verb/startmovingright()
@@ -1216,12 +1220,14 @@
 					mob.dir = WEST
 					var/matrix/M = matrix()
 					M.Turn(-90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 				else
 					mob.dir = EAST
 					var/matrix/M = matrix()
 					M.Turn(90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 /client/verb/startmovingleft()
@@ -1259,12 +1265,14 @@
 					mob.dir = WEST
 					var/matrix/M = matrix()
 					M.Turn(-90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 				else
 					mob.dir = EAST
 					var/matrix/M = matrix()
 					M.Turn(90)
+					M.Scale(H.size_multiplier)
 					M.Translate(1,-6)
 					mob.transform = M
 /client/verb/stopmovingup()
