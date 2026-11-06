@@ -25,10 +25,10 @@
 /turf/proc/barren_open_ground()
 	return FALSE
 
-// The barren surface temperature now: a cold snap (surface_hazards.dm)
-// drives it lower for a while.
+// The barren surface temperature now: the world's base (colder on the Moon,
+// moon_world.dm), driven lower for a while by a cold snap (surface_hazards.dm).
 /proc/barren_ambient_c()
-	return BARREN_AMBIENT_C - (barren_cold_seconds > 0 ? BARREN_COLD_SNAP_DROP_C : 0)
+	return space_world_base_ambient_c() - (barren_cold_seconds > 0 ? BARREN_COLD_SNAP_DROP_C : 0)
 
 /turf/floor/dirt/dust/regolith
 	name = "regolith"

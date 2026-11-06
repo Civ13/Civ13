@@ -191,6 +191,56 @@ class PlayableLayerTests(unittest.TestCase):
                 playable.build(folder)
 
 
+class MoonSkinTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.folder = Path(cls.tmp.name) / "moon"
+        cls.folder.mkdir()
+        cls.doc = bundle(barren_surface_preset("moon-t", 64, 80), cls.folder)
+        cls.text, cls.report = playable.build(cls.folder, skin="moon")
+        _, cls.parsed, _ = parse_classic(cls.text)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_moon_skin_uses_lunar_ground_area_and_settings(self):
+        self.assertEqual("moon", self.report["skin"])
+        self.assertTrue(playable.verify_types(skin="moon"))
+        self.assertIn(playable.MOON_METADATA + "{", self.text)
+        self.assertNotIn(playable.BARREN_METADATA + "{", self.text)
+        cells = self.doc["layers"]["SURFACE"]["cells"]
+        seen = set()
+        for y, row in enumerate(cells):
+            for x, c in enumerate(row):
+                atoms = self.parsed[(x + 1, y + 1, 2)].split(",")
+                self.assertEqual(playable.MOON_AREA, atoms[-1])
+                turf = [a for a in atoms if a.startswith("/turf/")][0]
+                if c["water"] in {"LAKE", "SEA"}:
+                    expected = playable.BARREN_ICE
+                elif c["water"] in {"RIVER", "SWAMP"}:
+                    expected = playable.MOON_CHANNEL
+                elif c["terrain"] in {"MOUNTAIN", "ROCK"}:
+                    expected = "/turf/floor/dirt/underground"
+                else:
+                    expected = playable.MOON_GROUND
+                self.assertEqual(expected, turf, (x, y, c))
+                seen.add(expected)
+        self.assertIn(playable.MOON_GROUND, seen)
+        self.assertNotIn(playable.BARREN_GROUND, seen)
+        self.assertEqual({playable.ROCK}, set(self.report["supplies"]))
+
+    def test_shipped_moon_map_is_the_moon_0_world(self):
+        shipped = Path(__file__).resolve().parents[2] / "maps" / "space" / "moon.dmm"
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "moon"
+            folder.mkdir()
+            bundle(barren_surface_preset("moon-0"), folder)
+            text, _ = playable.build(folder, skin="moon")
+        self.assertEqual(text, shipped.read_text(encoding="utf-8"))
+
+
 if __name__ == "__main__":
     unittest.main()
 

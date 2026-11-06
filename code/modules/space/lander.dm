@@ -80,10 +80,12 @@
 	// The lander's hold, sent with the next crew member to depart.
 	var/tmp/list/pending_cargo = null
 
-// TRUE when a survey map of region id ships with the game, or when id is
-// the mainland and this world is one a lander can reach (a flight home).
+// TRUE when a survey map of region id ships with the game and the epoch has
+// reached that world (survey_region_open: the Moon from 1969, Mars from
+// 2026), or when id is the mainland and this world is one a lander can reach
+// (a flight home, never closed by the epoch).
 /proc/space_flight_destination_ok(id)
-	return (survey_region_ok(id) && !!get_space_survey_map(id)) || space_flight_return_ok(id)
+	return (survey_region_ok(id) && !!get_space_survey_map(id) && survey_region_open(id)) || space_flight_return_ok(id)
 
 // TRUE when a pad here may fly back to region id: the mainland, from a
 // mapped world that is not the mainland itself.
@@ -359,6 +361,10 @@ var/global/list/space_cargo_stacks = list(
 		return "Strap in before you launch."
 	if (!space_flight_return_ok(pad.destination) && !get_space_survey_map(pad.destination))
 		return "There is no survey map of [pad.destination_name()] to land by."
+	if (!space_flight_return_ok(pad.destination))
+		var/closed = survey_region_closed_reason(pad.destination)
+		if (closed)
+			return closed
 	return null
 
 // Surveyed landing sites a nearby mission console holds for region, as
@@ -369,9 +375,7 @@ var/global/list/space_cargo_stacks = list(
 	if (!M)
 		return sites
 	for (var/obj/structure/survey_console/C in range(LANDER_CONSOLE_RANGE, src))
-		if (C.map_region != region)
-			continue
-		for (var/site in C.landing_sites)
+		for (var/site in C.landing_sites_for(region))
 			var/list/parts = splittext(site, ",")
 			if (parts.len != 2)
 				continue

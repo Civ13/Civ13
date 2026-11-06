@@ -20,6 +20,8 @@ unchanged:
 With `skin="barren"` a SURFACE bundle instead becomes a barren world:
 regolith ground, frozen lakes and sea, dry channels and bare rock, with rocks
 on STONE sites and nothing else (see docs/space-settlement-roadmap.md).
+`skin="moon"` is the same with grey lunar ground and the Moon's area and map
+settings (code/modules/space/moon_world.dm).
 
 Placement depends only on the IR seed and coordinates, never on Python's
 random state, so the same bundle always gives the same DMM. The types used are
@@ -92,7 +94,7 @@ SOURCES = {
 # becomes regolith plains, frozen lakes and sea, dry channels where rivers and
 # swamps ran, and bare rock ridges. No plants, animals or wood; STONE sites
 # still become rocks. The turfs and area are declared in barren_world.dm.
-SKINS = ("native", "barren")
+SKINS = ("native", "barren", "moon")
 SURFACE_AREA = "/area/caribbean/nomads/forest"
 BARREN_AREA = "/area/caribbean/nomads/barren"
 BARREN_GROUND = "/turf/floor/dirt/dust/regolith"
@@ -106,6 +108,24 @@ BARREN_SOURCES = {
     BARREN_CHANNEL: "code/modules/space/barren_world.dm",
     BARREN_ICE: "code/game/turfs/floor_types.dm",
     ROCK: "code/game/objects/structures/rocks.dm",
+}
+# The Moon skin: the barren skin with the Moon's ground, area and map settings.
+MOON_AREA = "/area/caribbean/nomads/barren/moon"
+MOON_GROUND = "/turf/floor/dirt/dust/regolith/lunar"
+MOON_CHANNEL = "/turf/floor/dirt/dust/regolith/lunar/crater"
+MOON_METADATA = "/obj/map_metadata/nomads/barren/moon"
+MOON_SOURCES = {
+    MOON_METADATA: "code/modules/space/moon_world.dm",
+    MOON_AREA: "code/modules/space/moon_world.dm",
+    MOON_GROUND: "code/modules/space/moon_world.dm",
+    MOON_CHANNEL: "code/modules/space/moon_world.dm",
+    BARREN_ICE: "code/game/turfs/floor_types.dm",
+    ROCK: "code/game/objects/structures/rocks.dm",
+}
+# Per barren-family skin: (area, ground, channel, ice, metadata, sources).
+BARREN_FAMILY = {
+    "barren": (BARREN_AREA, BARREN_GROUND, BARREN_CHANNEL, BARREN_ICE, BARREN_METADATA, BARREN_SOURCES),
+    "moon": (MOON_AREA, MOON_GROUND, MOON_CHANNEL, BARREN_ICE, MOON_METADATA, MOON_SOURCES),
 }
 # Turfs the offline layout can put under a SURFACE cell.
 SURFACE_TURFS = ("/turf/floor/grass", "/turf/floor/dirt", "/turf/floor/beach/sand")
@@ -125,7 +145,8 @@ def verify_types(catalog_root=None, skin="native"):
     if skin not in SKINS:
         raise ValueError("PLAYABLE_SKIN: " + str(skin))
     texts = {}
-    for typename, path in list(SOURCES.items()) + (list(BARREN_SOURCES.items()) if skin == "barren" else []):
+    extra = list(BARREN_FAMILY[skin][5].items()) if skin in BARREN_FAMILY else []
+    for typename, path in list(SOURCES.items()) + extra:
         if path not in texts:
             texts[path] = read_source(path, catalog_root).decode("utf-8")
         if not re.search(r"^" + re.escape(typename) + r"\s*$", texts[path], re.M):
@@ -178,20 +199,21 @@ def cavern_supply(c, value):
     return []
 
 
-def barren_cell(c, atoms):
+def barren_cell(c, atoms, skin="barren"):
     """Reskin one projected SURFACE cell; returns the new atom list."""
+    area, ground, channel, ice = BARREN_FAMILY[skin][:4]
     atoms = [a for a in atoms if a.split("{")[0] not in SURFACE_TREES]
     if atoms.count(SURFACE_AREA) != 1:
         raise ValueError("PLAYABLE_BARREN_AREA")
-    atoms[atoms.index(SURFACE_AREA)] = BARREN_AREA
+    atoms[atoms.index(SURFACE_AREA)] = area
     if c["water"] in {"LAKE", "SEA"}:
-        turf = BARREN_ICE
+        turf = ice
     elif c["water"] in {"RIVER", "SWAMP"}:
-        turf = BARREN_CHANNEL
+        turf = channel
     elif c["terrain"] in {"MOUNTAIN", "ROCK"}:
         return atoms # bare basalt ridge on its rock substrate
     else:
-        turf = BARREN_GROUND
+        turf = ground
     found = [i for i, a in enumerate(atoms) if a.startswith("/turf/")]
     if len(found) != 1:
         raise ValueError("PLAYABLE_BARREN_TURF")
@@ -208,8 +230,8 @@ def barren_supply(c):
 def playable_layout(doc, skin="native"):
     if skin not in SKINS:
         raise ValueError("PLAYABLE_SKIN: " + str(skin))
-    if skin == "barren" and doc["profile"] != "SURFACE":
-        raise ValueError("PLAYABLE_SKIN_PROFILE: the barren skin needs a SURFACE bundle")
+    if skin in BARREN_FAMILY and doc["profile"] != "SURFACE":
+        raise ValueError("PLAYABLE_SKIN_PROFILE: the %s skin needs a SURFACE bundle" % skin)
     layout = project(doc)
     starts = {tuple(p) for p in doc["starts"]}
     portals = {}
@@ -233,8 +255,8 @@ def playable_layout(doc, skin="native"):
                     atoms[atoms.index(SOLID_ROCK_TURF)] = CAVE_FLOOR_TURF
                     layout[key] = ",".join(atoms)
                     counts["open cave floor"] = counts.get("open cave floor", 0) + 1
-                if skin == "barren" and layer == "SURFACE":
-                    layout[key] = ",".join(barren_cell(c, layout[key].split(",")))
+                if skin in BARREN_FAMILY and layer == "SURFACE":
+                    layout[key] = ",".join(barren_cell(c, layout[key].split(","), skin))
                 pair = portals.get((x, y, layer))
                 if pair is not None:
                     # One area id per pair, so each top ladder finds exactly its own bottom.
@@ -242,7 +264,7 @@ def playable_layout(doc, skin="native"):
                     added.append((LADDER_DOWN if layer == "SURFACE" else LADDER_UP) + "{" + area + "}")
                 elif (x, y, layer) not in starts:
                     value = share(doc["seed"], x, y, z, "cell")
-                    if skin == "barren":
+                    if skin in BARREN_FAMILY:
                         added = barren_supply(c) if layer == "SURFACE" else []
                     elif layer == "UNDERGROUND" and doc["profile"] == "UNDERGROUND_CAVERN":
                         added = cavern_supply(c, value)
@@ -386,7 +408,7 @@ def build(folder, catalog_root=None, lapse=DEFAULT_LAPSE, skin="native"):
     doc = read_json(folder / "map.ir.json")
     layout, counts = playable_layout(doc, skin)
     profile = elevation_profile(doc, lapse)
-    apply_elevation(layout, profile, BARREN_METADATA if skin == "barren" else METADATA)
+    apply_elevation(layout, profile, BARREN_FAMILY[skin][4] if skin in BARREN_FAMILY else METADATA)
     text = write_text(doc, layout)
     _, parsed, dims = parse_classic(text)
     if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:

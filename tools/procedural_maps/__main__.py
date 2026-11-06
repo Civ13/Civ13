@@ -35,7 +35,7 @@ def main(argv=None):
     p=commands.add_parser('playable',help='write a playable DMM (native supplies, ladders) from a verified bundle')
     p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p.add_argument('--lapse',type=float,default=6.5,help='temperature drop in C per km of elevation, 0..10 (0 keeps the map flat-climate)')
-    p.add_argument('--skin',choices=['native','barren'],default='native',help='barren: regolith ground, frozen lakes and sea, dry channels, rocks only (SURFACE bundles)')
+    p.add_argument('--skin',choices=['native','barren','moon'],default='native',help='barren (Mars): regolith ground, frozen lakes and sea, dry channels, rocks only; moon: the same with grey lunar ground (SURFACE bundles)')
     p=commands.add_parser('survey',help='write the coarse survey map a mission console shows, from a SURFACE bundle')
     p.add_argument('directory',type=Path);p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path)
     p.add_argument('--cell-tiles',type=int,default=5,help='tiles per survey cell, 1..16')

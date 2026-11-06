@@ -283,15 +283,18 @@ var/global/list/node_grid_col_cache = null
 	// Spaceflight (space settlement phase 1): probes fly over a survey map of a
 	// barren world. Samples a probe brings home are analysed into notes on
 	// Planetary Survey. Not PROTOTYPE mode: that marks an era-changing capstone.
-	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks","missiles"), 9))
-	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
-	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 8, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
-	register_research_node(new /datum/research_node("sealed_habitats", "Sealed Habitats", "Industrial", 600, 8, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
-	register_research_node(new /datum/research_node("life_support", "Life Support", "Industrial", 560, 8, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
-	register_research_node(new /datum/research_node("pressure_suits", "Pressure Suits", "Industrial", 560, 8, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
-	register_research_node(new /datum/research_node("off_world_mining", "Off-world Mining", "Industrial", 600, 8, RESEARCH_MODE_ANALYSIS, list("pressure_suits"), 9))
-	register_research_node(new /datum/research_node("surface_vehicles", "Surface Vehicles", "Industrial", 600, 8, RESEARCH_MODE_ANALYSIS, list("off_world_mining"), 9))
-	register_research_node(new /datum/research_node("local_resources", "Local Resources", "Industrial", 600, 8, RESEARCH_MODE_ANALYSIS, list("surface_vehicles"), 9))
+	// The Moon opens in 1969 (Val, 2026-11-06), so the chain follows Missiles and
+	// a Cold War bench (tier 7) can research it; era 9 keeps it from being
+	// granted for free before 2026. Mars waits for 2026 (survey_region_open).
+	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("missiles"), 9))
+	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 7, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
+	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
+	register_research_node(new /datum/research_node("sealed_habitats", "Sealed Habitats", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
+	register_research_node(new /datum/research_node("life_support", "Life Support", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
+	register_research_node(new /datum/research_node("pressure_suits", "Pressure Suits", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
+	register_research_node(new /datum/research_node("off_world_mining", "Off-world Mining", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("pressure_suits"), 9))
+	register_research_node(new /datum/research_node("surface_vehicles", "Surface Vehicles", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("off_world_mining"), 9))
+	register_research_node(new /datum/research_node("local_resources", "Local Resources", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("surface_vehicles"), 9))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
