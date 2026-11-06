@@ -522,6 +522,30 @@ class CharacterReturnTests(unittest.TestCase):
                 self.assertTrue(f.store.allow_new_character(f.lobby))
                 self.assertIsNone(f.registered['account'])
 
+    def test_new_character_owner_drops_stale_restored_registration(self):
+        # Gaia 2026-11-05 (Chasha): the restored body was dead, so a new
+        # character spawned and took ownership on Login. The old registration
+        # stayed and held Join forever once the new character died too.
+        f = ReturnFixture()
+        f.body.stat = 2
+        self.assertTrue(f.store.allow_new_character(f.lobby))
+        fresh = Body(f, f.home)
+        fresh.persistence_owner_ckey, fresh.persistence_restored = None, False
+        fresh.client = f.client
+        f.world.append(fresh)
+        fresh.record_persistence_owner = MethodType(f.proc('/mob/living/human/proc/record_persistence_owner', 'src', True), fresh)
+        fresh.record_persistence_owner()
+        self.assertIsNone(f.body.persistence_owner_ckey)
+        self.assertIsNone(f.registered['account'])
+        fresh.client, fresh.stat = None, 2
+        self.assertTrue(f.store.allow_new_character(f.lobby))
+        # The registered body itself logging in keeps its own registration.
+        f = ReturnFixture()
+        f.body.client = f.client
+        f.body.record_persistence_owner = MethodType(f.proc('/mob/living/human/proc/record_persistence_owner', 'src', True), f.body)
+        f.body.record_persistence_owner()
+        self.assertIs(f.registered['account'][1], f.body)
+
     def test_live_or_missing_registered_body_still_holds_join(self):
         # Only a fully destroyed registration is released; a body that still
         # exists (even outside the world list) or an extra live owner keeps the hold.
