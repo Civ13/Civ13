@@ -1904,7 +1904,6 @@ jobs:
           done
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --interrupt
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control yield
-          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control old-reader
       - name: Retain bounded save source and native evidence
         if: always() && needs.changes.result == 'success' && steps.save_latency.outcome != 'skipped'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

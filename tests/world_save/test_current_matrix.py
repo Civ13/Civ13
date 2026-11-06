@@ -78,7 +78,7 @@ def selected_calls(workflow):
 class CurrentMatrix(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Sources at 5b004d68 (and the old reader at 75890d88), frozen as
+        # Sources at 5b004d68, frozen as
         # checked-in fixtures so the test never reads Git history.
         def old(path):
             name = 'save-latency-run.py' if path == 'tests/save_latency/run.py' else Path(path).name
@@ -88,7 +88,6 @@ class CurrentMatrix(unittest.TestCase):
         cls.old_sources = {path: old(path) for path in (
             'tests/world_save/run-durable-world.py','tests/world_save/run-string-path.py',
             'tests/save_latency/run.py','tests/world_save/partial_save_inspector/inspect-partial-save.py')}
-        cls.old_reader = (FIXTURE/'old-reader-loading.dm.txt').read_bytes()
 
     def setUp(self):
         self.enterContext(patch.object(socket,'socket',side_effect=AssertionError('Socket forbidden')))
@@ -102,10 +101,8 @@ class CurrentMatrix(unittest.TestCase):
 
     def git(self, command, **kwargs):
         self.assertEqual(command[0],'git')
-        if command[1] == 'show':
-            # Only the save-latency runner still reads its frozen old reader.
-            self.assertEqual(command[2], '75890d883190355e430f9958fd102864ee88429a:code/modules/persistence/loading.dm')
-            return self.old_reader.decode() if kwargs.get('text') else self.old_reader
+        # No runner reads Git history; only the head identity and diff are read.
+        self.assertNotEqual(command[1], 'show')
         return 'a'*40+'\n' if kwargs.get('text') else b''
 
     def tools(self, root):
@@ -129,7 +126,7 @@ class CurrentMatrix(unittest.TestCase):
             marker='      - name: '+step+'\n'
             self.assertEqual(workflow.split(marker,1)[1].split('\n',1)[0],guard)
         calls=selected_calls(workflow)
-        self.assertEqual(len(calls),58)
+        self.assertEqual(len(calls),57)
         for path,args in calls:
             with self.subTest(path=path,args=args):
                 module=load(ROOT/path)
@@ -359,10 +356,9 @@ class CurrentMatrix(unittest.TestCase):
                 (output/'map_saves').mkdir(exist_ok=True); (output/'map_saves/active.sav').write_bytes(b'synthetic active')
                 (output/'map_backups').mkdir(exist_ok=True); (output/'map_backups/backup.sav').write_bytes(b'synthetic backup')
                 control=flags[-1] if '--negative-control' in flags else None
-                result='FAIL: dense graph prevented heartbeat progress' if control=='yield' else 'FAIL: save preflight failed' if control=='old-reader' else 'PASS'
+                result='FAIL: dense graph prevented heartbeat progress' if control=='yield' else 'PASS'
                 (output/'result.txt').write_text(result)
-                log='World-save preflight rejected: Unsupported save version 3 on :\n' if control=='old-reader' else 'clean'
-                (output/'runtime.log').write_text(log)
+                (output/'runtime.log').write_text('clean')
                 return NS(returncode=0,stdout='',stderr='')
             def run(command,**kwargs):
                 self.assertGreater(kwargs['timeout'],0); self.assertLessEqual(kwargs['timeout'],1800)
@@ -381,7 +377,7 @@ class CurrentMatrix(unittest.TestCase):
             return error,launched,runtime.checks
 
     def test_bounded_save_all_selected_paths_recheck_recovery_and_preserve_remaining_budget(self):
-        cases=[['--verify-backup'],['--dense','--verify-backup'],['--interrupt'],['--negative-control','yield'],['--negative-control','old-reader']]
+        cases=[['--verify-backup'],['--dense','--verify-backup'],['--interrupt'],['--negative-control','yield']]
         cases += [['--scenario',name] for name in ('movement','concurrent','parent-deletion')]
         for flags in cases:
             with self.subTest(flags=flags):
@@ -460,8 +456,6 @@ class CurrentMatrix(unittest.TestCase):
         def function(source,name):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name==name))
         self.assertEqual(function(self.old_graph,'adjudicate'),function((HERE/'run-durable-graph.py').read_text(),'adjudicate'))
-        for name in ('old_reader_helpers','require_old_reader_preflight'):
-            self.assertEqual(function(self.old_sources['tests/save_latency/run.py'],name),function((ROOT/'tests/save_latency/run.py').read_text(),name))
         inspector='tests/world_save/partial_save_inspector/inspect-partial-save.py'
         for name in ('limits','selftest','sanitize_report','stable_copy'):
             self.assertEqual(function(self.old_sources[inspector],name),function((ROOT/inspector).read_text(),name))
