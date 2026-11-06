@@ -22,7 +22,7 @@ MAX_RESPONSE = 65536
 MAX_REQUEST_ID = 100
 HISTORY_BYTES = 4096
 HISTORY_PAIRS = 3
-NUM_PREDICT = 650
+NUM_PREDICT = 450  # ~1800 characters: concise answers finish ~7 s sooner at 27 tokens/s, well under the 4000-char display cap
 DEFAULT_NUM_CTX = 8192
 MIN_NUM_CTX = 4096
 # Ollama unloads an idle model after five minutes by default; the next question then waits 10-30 s for a reload.
@@ -1026,6 +1026,13 @@ def load_config(path):
     token_env = config.get('auth_token_env', '')
     if not isinstance(token_env, str) or (token_env and not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,100}', token_env)):
         raise ValueError('Invalid auth_token_env name')
+    # Optional: fewer evidence characters per question. The model reads the
+    # whole evidence block for every new question (it changes with the
+    # question, so the prompt cache rarely helps), and prompt reading is the
+    # bulk of an answer's latency on a partly CPU-bound host.
+    evidence_chars = config.get('evidence_chars')
+    if evidence_chars is not None and (type(evidence_chars) is not int or not 4000 <= evidence_chars <= 32000):
+        raise ValueError('evidence_chars must be an integer in 4000..32000')
     return config
 
 
@@ -1210,6 +1217,8 @@ class Bridge:
         hint_text = ' '.join([game_context.get('gamemode', ''), game_context.get('player', {}).get('role', '')])
         hints = retrieval_terms(hint_text, RETRIEVAL_STOPWORDS | {'unknown'})
         entries, context_cap, envelope_cap, prompt_cap = evidence_budget(self.config.get('num_ctx', DEFAULT_NUM_CTX))
+        if self.config.get('evidence_chars'):
+            context_cap = min(context_cap, self.config['evidence_chars'])
         nomads = game_context.get('civilizations') is True or bool(re.search(r'\b(nomads|gaia)\b', question.lower() + ' ' + game_context.get('map', '').lower()))
         candidates = [entry for entry in self.corpus if not (nomads and entry.get('source') == 'recipe' and entry.get('catalog', '').startswith('Material / ') and entry.get('catalog') != 'Material / global')]
         scores = {}
