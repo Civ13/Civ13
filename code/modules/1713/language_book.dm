@@ -19,13 +19,10 @@
 		if (choice == "No")
 			return
 		else
-			var/known1 = FALSE
-			var/known2 = FALSE
-			for (var/datum/language/i in H.languages)
-				if (i == lang1)
-					known1 = TRUE
-				if (i == lang2)
-					known2 = TRUE
+			// Compare by language type: a book restored from a save holds language
+			// copies, not the shared datums in the reader's languages list.
+			var/known1 = H.knows_language(lang1)
+			var/known2 = H.knows_language(lang2)
 			if(!known1 && !known2)
 				to_chat(user, "<span class = 'warning'>You can't read a language book without knowing one of the languages!</span>")
 				return
@@ -52,16 +49,22 @@
 			to_chat(user, "<span class = 'warning'>You can't write a language book that has already been written in!</span>")
 			return
 		var/list/langcopy = user.languages.Copy() + "Cancel"
-		var/datum/language/language1 = WWinput(user, "What will your 1st language to translate be?", "Writing Translations", "text", langcopy)
+		var/datum/language/language1 = WWinput(user, "What will your 1st language to translate be?", "Writing Translations", "Cancel", langcopy)
+		if (!istype(language1))
+			return
 		langcopy.Remove(language1)
-		var/datum/language/language2 = WWinput(user, "What will your 2nd language to translate be?", "Writing Translations", "text", langcopy)
+		var/datum/language/language2 = WWinput(user, "What will your 2nd language to translate be?", "Writing Translations", "Cancel", langcopy)
+		if (!istype(language2))
+			return
 		user.visible_message("<span class='notice'>[user] begins to write in the [src].</span>", "<span class='notice'>You begin writing translations in the [src]. This will take around 2 minutes, and you need to stand or sit still.</span>")
 		if(do_after(user, 1200, src))
+			if (written)
+				return
 			user.visible_message("<span class='notice'>[user] finishes writing in the [src].</span>", "<span class='notice'>You finish writing translations in the [src].</span>")
 			src.name = "[language1.name] to [language2.name] language book"
 			src.desc = "A book that allows translation between two languages. It looks like it translates between [language1] and [language2]."
 			src.written = TRUE
-			src.lang1 = language1
-			src.lang2 = language2
+			src.lang1 = canonical_language(language1)
+			src.lang2 = canonical_language(language2)
 	else
 		..()
