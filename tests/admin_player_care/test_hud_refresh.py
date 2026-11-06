@@ -189,7 +189,9 @@ class OwnedHUD(unittest.TestCase):
             m.client.screen |= m.action
         m.update_action_buttons = actions
         env = dict(qdel=lambda obj: setattr(obj, 'deleted', True), new_hud=new_hud,
-                   log_debug=lambda value: None, to_chat=lambda *args: None)
+                   log_debug=lambda value: None, to_chat=lambda *args: None,
+                   # Slot realignment has its own test (persistence_pointers).
+                   sync_inventory_screen_locs=lambda: None)
         methods = [(LIVING, living_source, 'remove_HUD_element', 'self, HUDelement'),
                    (LIVING, living_source, 'destroy_HUD', 'self'),
                    (LIVING, living_source, 'show_HUD', 'self'),

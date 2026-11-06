@@ -62,6 +62,9 @@
 		if (client.prefs && client.prefs.cursor && client.prefs.cursor != client.mouse_pointer_icon)
 			client.mouse_pointer_icon = client.prefs.cursor
 		var/rebuilt_controls = check_HUD()
+		// Items equipped or redrawn while the HUD was missing (restore, spawn
+		// before login) carry a stale slot position; realign before showing.
+		sync_inventory_screen_locs()
 		client.screen |= contents
 		// Reconnect rebuilds clear screen; restored actions can already have
 		// this owner, so Grant() intentionally returns before adding buttons.
@@ -70,6 +73,20 @@
 			// New controls must obey an active scope; renderer/camera leases
 			// stay client-owned and are reconciled after the new members exist.
 			handle_ui_visibility()
+
+// Places every equipped item on its current HUD slot. Hidden slots and
+// slots this HUD style lacks get no position, so they are never drawn.
+/mob/living/human/proc/sync_inventory_screen_locs()
+	for (var/obj/screen/inventory/HUDinv in HUDinventory)
+		if (!HUDinv.slot_id)
+			continue
+		var/obj/item/I = get_equipped_item(HUDinv.slot_id)
+		if (!I || I.loc != src)
+			continue
+		if (HUDinv.invisibility == 101)
+			I.screen_loc = null
+		else
+			I.screen_loc = HUDinv.screen_loc
 
 /mob/living/human/create_HUD()
 
