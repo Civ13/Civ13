@@ -141,6 +141,55 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(2, len(adds))
         self.assertTrue(all(cwd == str(self.base / 'repo') for c, cwd in self.machine.calls if c[1:3] == ['worktree', 'add']))
 
+    def test_relay_is_off_by_default_and_validated(self):
+        group = self.write_group()
+        self.assertEqual(0, group['relay_port'])
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertNotIn('relay', settings)
+        self.assertFalse((self.base / 'regions' / 'deep' / 'config' / 'relay-token.txt').exists())
+        self.refuse_config('relay_port must be', relay_port=1721)
+        self.refuse_config('relay_port must be', relay_port='1730')
+        self.refuse_config('relay_control_port', relay_port=1730, relay_control_port=1720)
+        self.refuse_config('gate must be', relay_port=1730, gate='atlantis')
+        self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='RAID')
+
+    def test_setup_writes_relay_settings_and_one_shared_token(self):
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        self.assertEqual((1731, 'gaia'), (group['relay_control_port'], group['gate']))
+        shard_group.setup(group, self.machine)
+        tokens = set()
+        for region in ('gaia', 'deep'):
+            config = self.base / 'regions' / region / 'config'
+            settings = json.loads((config / 'shard_region.json').read_text())
+            self.assertEqual(('203.0.113.5:1730', '127.0.0.1:1731', 'gaia'),
+                             (settings['relay'], settings['relay_control'], settings['gate']))
+            # Region addresses stay the internal game ports: peers are polled and woken by them.
+            self.assertEqual(['203.0.113.5:1720', '203.0.113.5:1721'], [r['address'] for r in settings['regions']])
+            tokens.add((config / 'relay-token.txt').read_text().strip())
+        self.assertEqual({(self.base / 'regions' / 'relay-token.txt').read_text().strip()}, tokens)
+        self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
+
+    def test_supervise_starts_the_relay_once(self):
+        self.group['relay_port'] = 1730
+        self.group['relay_capture'] = True
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        started, alive = [], set()
+        def start(argv, cwd, log):
+            started.append(argv)
+            return 5151
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid in alive):
+            self.assertEqual({'relay': True}, shard_group.supervise(group, start))
+            alive.add(5151)
+            self.assertEqual({}, shard_group.supervise(group, start))
+        argv = started[0]
+        self.assertTrue(argv[1].endswith('relay.py'))
+        self.assertEqual(['--region-port', '1720', '--region-port', '1721', '--capture'], argv[-5:])
+        self.assertEqual('1731', argv[argv.index('--control-port') + 1])
+        self.assertEqual('1713', argv[argv.index('--doorman-port') + 1])
+
     def test_setup_refusals(self):
         group = self.write_group()
         self.machine.up = {1721}

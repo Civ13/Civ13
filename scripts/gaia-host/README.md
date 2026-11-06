@@ -91,7 +91,7 @@ ports. It speaks BYOND Topic framing and answers only:
   longest-asleep other world to make room (see below); then it stays asleep and
   the launcher tells the player the host is low on memory (0 turns the check
   off; a direct connection to the game port still thaws it). One wake per
-  address every 30 seconds; all requests are limited to 40 per address per minute and 16 open
+  address and port every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
 
 ### Low-memory eviction
@@ -173,3 +173,31 @@ can be passed as `--config`: it is driven as that region (DreamDaemon started
 directly, its agent first). Point the bot's `gaia_host` option and the
 launcher's `control.config` at it once Gaia runs as a region.
 
+## Routing relay (`relay.py`)
+
+`relay.py` lets a region group publish one extra port instead of one router
+port per region. It only forwards: the gate world (the group's mainland, which
+players join directly) decides each player's region, writes a route for their
+IP on the loopback control port, and links them to the relay. The relay then
+pipes that IP's next connections to the routed region on 127.0.0.1. It is off
+until a group sets `relay_port`; until then nothing changes.
+
+- Public port: player logins only. A BYOND Topic frame is dropped, never
+  forwarded, so nothing from the internet reaches a world as loopback (worlds
+  trust loopback for Topics and agent control). An unrouted address is closed.
+- Control port (127.0.0.1 only, token required): `?route=1&ip=A&ckey=K&port=P&token=T`,
+  `?lookup=1&ckey=K&token=T`, `?relay_status=1&token=T`. A route may name only
+  the `--region-port` values it was started with, never an agent port.
+- Routes are last-write-wins per address. An unused route expires after 60
+  seconds; a used one sticks for 6 hours after its last use, so the reconnect
+  after a world reboot lands in the same world.
+- Before piping, the relay asks the doorman (`--doorman-port`) to wake the
+  region and holds the player up to 20 seconds until it reports `awake`. A
+  frozen world still accepts TCP and the freeze watcher ignores loopback, so it
+  never relies on a connection to thaw it.
+- `--capture` logs the first 64 bytes of every public connection as hex, to
+  measure the real client login on the host. It may contain the player's key.
+
+```powershell
+py -3 scripts/gaia-host/relay.py --port 1730 --control-port 1731 --token-file D:/Civ13Regions/relay-token.txt --region-port 1714 --region-port 1716 --doorman-port 1713 --capture
+```

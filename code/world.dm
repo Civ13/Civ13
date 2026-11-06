@@ -277,7 +277,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(persistence_restart.busy || persistence_restart.startup_hold) return
 
 		var/sleeptime = 0
-		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b>"))
+		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		// sleep(0) yields too. A transaction can acquire ownership while the

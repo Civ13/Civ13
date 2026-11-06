@@ -62,7 +62,7 @@ var/global/datum/region_raid_reset/region_raid_reset = new
 			to_chat(C, SPAN_DANGER("You were caught in the collapse and lost everything you carried."))
 			if(peer && peer["address"])
 				to_chat(C, SPAN_NOTICE("Your next character starts at home in [peer["name"]]."))
-				C << link("byond://[peer["address"]]")
+				shard_group.send_player_soon(C, origin)
 		for(var/obj/item/I in H.GetAllContents())
 			if(!QDELETED(I)) qdel(I)
 		qdel(H)

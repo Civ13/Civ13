@@ -92,6 +92,43 @@ the transfer agents and coordinator running. `status` shows each region's
 by hand. Sleep settings such as `freeze_idle_minutes` can be set once in the
 group config.
 
+Regions ask the doorman which peers sleep, and ask it to wake one, over HTTP
+(`GET /?host_status=1`) through rust_g. `world.Export("byond://...")` cannot
+reach the doorman: it opens a BYOND world handshake that only DreamDaemon
+answers.
+
+## Two public ports (routing relay)
+
+Set `relay_port` (0 = off) to put every region behind two public ports: the
+gate region's own port (`gate`, the mainland by default) and the relay port.
+Forward only those two on the router; the other region ports and every agent
+port stay closed. `relay_control_port` (default `relay_port + 1`) is loopback
+only; `relay_bind` (`0.0.0.0`) and `relay_capture` (false) are optional. Setup
+writes `relay`, `relay_control` and `gate` into each region's
+`shard_region.json` and the group token into `config/relay-token.txt`; the host
+service starts `relay.py` with the other helpers.
+
+- A player joins the gate directly, so it sees their real address. If the
+  coordinator says their character lives elsewhere, the gate wakes that region,
+  writes a route for the player's address on the relay and links them to the
+  relay port. Admins stay at the gate with a Go there link.
+- A trail, a raid reset, the Regions panel and the home notice route the player
+  the same way from whichever region they are in.
+- A region reached through the relay sees no client address; it asks the relay
+  for the address it routed for that key, and bans, login logs and the alt
+  check use it (`client.public_address()`). Local-only admin verbs use
+  `client.local_connection()`, which is false for a relayed player.
+- A player behind the same address as someone heading elsewhere at the same
+  moment can land in the wrong region (routes are per address, last write
+  wins); the region's Join check then offers the way to their home.
+
+Not yet measured on a real host: whether Dream Seeker reconnects through the
+relay after `link()` and a world reboot, and what its first packet looks like
+(`relay_capture` logs it). A routed player who connects with DreamDaemon instead
+of Dream Seeker reaches a region as a loopback Topic caller; token-checked
+Topics (agent control, lifecycle) stay closed, but the Topic rate limit does
+not apply to them.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback

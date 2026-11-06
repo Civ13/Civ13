@@ -165,7 +165,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 			return
 		fields["ckey"] = C.ckey
 		fields["cID"] = C.computer_id
-		fields["ip"] = C.address
+		fields["ip"] = C.public_address()
 		fields["ckey"] = ckey(fields["ckey"])
 
 	if (trying_to_quickBan_admin(fields["ckey"], fields["cID"], fields["ip"]))
@@ -327,7 +327,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 			for(var/i=1,i<=details_lines.len,i++)
 				if (findtext(details_lines[i], ";"))
 					var/list/details2 = splittext(details_lines[i], ";")
-					if ((ckey == details2[9] || computer_id == details2[11] || address == details2[10]) && details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
+					if ((ckey == details2[9] || computer_id == details2[11] || public_address() == details2[10]) && details2[1] == ban_type && details2[2] == type_specific_info && text2num(details2[7])>world.realtime)
 						return TRUE
 	return FALSE
 /* check if we're banned and tell us why we're banned */
@@ -341,7 +341,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 		for(var/i=1,i<=details_lines.len,i++)
 			if (findtext(details_lines[i], ";"))
 				var/list/details2 = splittext(details_lines[i], ";")
-				if ((ckey == details2[9] || computer_id == details2[11] || address == details2[10]) && details2[1] == bantype && text2num(details2[7])>world.realtime)
+				if ((ckey == details2[9] || computer_id == details2[11] || public_address() == details2[10]) && details2[1] == bantype && text2num(details2[7])>world.realtime)
 					fields = details2
 	if (isemptylist(fields))
 		return FALSE

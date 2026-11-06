@@ -191,7 +191,7 @@ class SelectionTests(unittest.TestCase):
 
     def test_gaia_host_offline_admission_is_exact(self):
         for path in ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py', 'tests/gaia_host/test_doorman.py',
-                     'tests/gaia_host/test_wait_group.py'):
+                     'tests/gaia_host/test_wait_group.py', 'tests/gaia_host/test_relay.py'):
             with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/gaia_host/new_native_probe.ps1'

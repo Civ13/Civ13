@@ -47,6 +47,12 @@ def restore_crafting_projection(path, source):
             ('\t// Same geometric line-of-sight authority as hover and examine: an entity\n'
              '\t// masked on the actor\'s screen is not reported to the agent either.\n'
              '\tif (!los_read_allowed(actor, A, "observe"))\n\t\treturn FALSE\n', ''),
+            # Routing relay: a relayed client also has no address, so local-only
+            # verbs ask client.local_connection() (region_relay.dm).
+            ('\tset category = "Admin"\n\tif (!holder || !check_rights(R_ADMIN, 0, mob) || !local_connection())',
+             '\tset category = "Admin"\n\tif (!holder || !check_rights(R_ADMIN, 0, mob) || (address && address != "127.0.0.1" && address != "::1"))'),
+            ('below.\n\tif (!holder || !check_rights(R_ADMIN, 0, mob) || !local_connection())',
+             'below.\n\tif (!holder || !check_rights(R_ADMIN, 0, mob) || (address && address != "127.0.0.1" && address != "::1"))'),
         )
     elif path == FLOOR:
         # Mining balance is a separately checked production change. Invert only
