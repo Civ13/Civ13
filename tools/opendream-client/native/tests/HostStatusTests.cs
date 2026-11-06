@@ -119,7 +119,11 @@ internal static class HostStatusTests {
             "A routed world was listed or queried directly");
         queried.Clear();
         snapshot = await new ServerDiscovery(Direct, _ => throw new IOException("no doorman")).Fetch("ValZarGaming");
-        Require(queried.Count == 2 && snapshot.Servers.Count == 2 && snapshot.Dormant?.Count == 0, "A missing doorman blocked direct discovery");
+        Require(queried.SequenceEqual(new[] { gaia }) && snapshot.Servers.Count == 1 && snapshot.Dormant?.Count == 0,
+            "A missing doorman blocked the gate or listed a routed world directly");
+        queried.Clear();
+        snapshot = await new ServerDiscovery(Direct, _ => throw new IOException("no doorman")).Fetch("Civ13.com");
+        Require(queried.Count == 2 && snapshot.Servers.Count == 2, "A missing doorman blocked direct discovery on a host without a gate");
         queried.Clear();
         snapshot = await new ServerDiscovery(Direct).Fetch("ValZarGaming");
         Require(queried.Count == 2, "An injected query alone stopped checking every candidate");

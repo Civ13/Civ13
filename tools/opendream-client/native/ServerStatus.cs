@@ -100,12 +100,18 @@ public sealed class ServerDiscovery : IServerDiscovery {
     public async Task<ServerSnapshot> Fetch(string provider) {
         // A missing or failing doorman just means every candidate is checked directly.
         IReadOnlyDictionary<GameTarget, DormantServer> hosted = new Dictionary<GameTarget, DormantServer>();
+        var unanswered = false;
         if (doorman != null) {
             try { hosted = await doorman(provider); }
-            catch (IOException) { }
+            catch (IOException) { unanswered = true; }
         }
         // A routed world is reached through the gate world only: never listed or queried.
         var routed = hosted.Values.Where(server => server.Routed).Select(server => server.Target).ToHashSet();
+        // Without the doorman's answer a host with a gate still lists only the gate, so
+        // a routed world is never offered while the gate is down (it would send its
+        // players back to the gate).
+        if (unanswered && ServerCatalog.GatePort(provider) is int gate)
+            routed.UnionWith(ServerCatalog.Candidates(provider).Where(target => target.Port != gate));
         var dormant = hosted.Values.Where(server => !server.Routed && server.State is "asleep" or "waking").OrderBy(server => server.Target.Port).ToArray();
         // Exactly two configured endpoints per provider, at most two active sockets.
         var results = await Task.WhenAll(ServerCatalog.Candidates(provider)
