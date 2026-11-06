@@ -28,7 +28,7 @@ var/global/list/research_benches = list()
 	density = TRUE
 	anchored = TRUE
 	not_movable = FALSE
-	not_disassemblable = TRUE
+	not_disassemblable = FALSE
 	var/assigned_node = null   // node id this bench researches (persists)
 	var/tier = 0               // bench tier; gates high min_bench_tier nodes (persists)
 	var/faction = null         // owning faction, set on assignment (persists)
@@ -616,14 +616,20 @@ var/global/list/research_benches = list()
 // prototypes (complete a PROTOTYPE-mode node outright), or copper/silver/
 // gold coins (their value feeds this bench's tier-upgrade progress).
 /obj/structure/research_bench/attackby(obj/item/W as obj, mob/living/human/user as mob)
+	// Do not delegate tools from non-humans to the ungated structure handler.
 	if (!istype(W) || !ishuman(user))
-		return ..()
+		return
 	if (!map)
 		return
 	// You can only interact with a bench your own faction owns.
-	if (!user.civilization || user.civilization != faction)
+	if (!user.civilization || user.civilization == "none" || user.civilization != faction)
 		to_chat(user, SPAN_WARNING("This research bench belongs to the [faction || "no-one"], not your faction."))
 		return
+	// Harm reserves maintenance tools for the bench itself. Help (and the other
+	// non-Harm intents) still submits tools as ordinary research samples.
+	if (user.a_intent == I_HARM && (istype(W, /obj/item/weapon/wrench) || istype(W, /obj/item/weapon/hammer)))
+		maintain_bench(W, user)
+		return TRUE
 	// Coins upgrade the bench and never depend on its subject, so take them
 	// before the subject check: a fresh tier-0 bench whose remaining nodes all
 	// need a higher tier could otherwise never be assigned OR upgraded.
@@ -740,6 +746,42 @@ var/global/list/research_benches = list()
 	// Fallback: feeding coins counts toward the bench's tier upgrade.
 	try_feed_coins(W, user)
 
+// Match ordinary structure maintenance timings and salvage, but retain this
+// bench's ownership boundary across the wait. Research submission never enters
+// this path, even when the sample happens to be a wrench or hammer.
+/obj/structure/research_bench/proc/maintain_bench(obj/item/W, mob/living/human/user)
+	var/using_wrench = istype(W, /obj/item/weapon/wrench)
+	if ((using_wrench && (not_movable || powersource)) || (!using_wrench && not_disassemblable))
+		return
+	var/owning_faction = faction
+	var/was_anchored = anchored
+	if (!using_wrench)
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
+	if (!do_after(user, using_wrench ? 15 : 25, src))
+		return
+	if (QDELETED(src) || QDELETED(W) || QDELETED(user) || !map)
+		return
+	if (!faction || faction == "none" || faction != owning_faction || user.civilization != faction)
+		return
+	if (user.a_intent != I_HARM || user.get_active_hand() != W || !in_range(src, user))
+		return
+	if (using_wrench)
+		if (not_movable || powersource || anchored != was_anchored)
+			return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		to_chat(user, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
+		anchored = !anchored
+		anchor_changed()
+		return
+	if (not_disassemblable)
+		return
+	to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
+	new /obj/item/stack/material/wood(get_turf(src))
+	for (var/obj/item/weapon/book/B in contents)
+		B.loc = get_turf(src)
+	qdel(src) // Destroy removes this bench from research_benches and frees its slot.
+
 // Only the three metal coin types (and their subtypes) -- NOT the money base,
 // which also covers rubles/francs/euros/pounds/etc -- matching the resource
 // forge's own coin check.
@@ -795,6 +837,7 @@ var/global/list/research_benches = list()
 
 /obj/structure/research_bench/examine(mob/user, distance = -1)
 	..()
+	to_chat(user, "Use Help intent to submit research samples, including tools. Use Harm intent with a wrench to fasten or unfasten the bench, or with a hammer to dismantle it. Only members of the owning faction can maintain it.")
 	if (tier >= MAX_BENCH_TIER)
 		to_chat(user, "It is tier [tier] (maximum).")
 	else if (tier >= era_max_tier())
