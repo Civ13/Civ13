@@ -115,6 +115,23 @@ class PregamePersistenceContracts(unittest.TestCase):
         self.assertLess(after.index('if (pregame_autostart_blocked()) return FALSE'), after.index('current_state = GAME_STATE_PLAYING'))
         self.assertTrue(before.lstrip().startswith('if(persistence_restart.startup_hold)'))
 
+    def test_regions_start_their_round_after_loading(self):
+        body = procedure('pregame')
+        auto = body.index('var/region_autostart = text2path("/proc/region_round_autostart")')
+        self.assertLess(body.index('while(persistence_restart.startup_hold) sleep(10)'), auto)
+        self.assertLess(body.index('if(map_storage.round_restored) return'), auto)
+        self.assertLess(body.index('call(region_autostart)(src)'), body.index('current_state = GAME_STATE_PREGAME'))
+        world = (ROOT / 'code/world.dm').read_text()
+        self.assertLess(world.index('area_startup.close()\n\t\tworld_setup_finished = TRUE'), world.index('"initialization_complete"'))
+        group = (ROOT / 'code/modules/persistence/shard_group.dm').read_text()
+        hook = group.split('/proc/region_round_autostart(datum/controller/gameticker/T)', 1)[1].split('\n/', 1)[0]
+        self.assertEqual(hook.count('shard_group.autostarts_round()'), 2)
+        self.assertLess(hook.index('while(!world_setup_finished)'), hook.index('T.admin_started = TRUE'))
+        check = group.split('/datum/shard_group/proc/autostarts_round()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('region == mainland', check)
+        self.assertIn('persistence_restart.startup_hold || map_storage.round_restored', check)
+        for name in ('map.txt', 'round.json', 'save_complete.txt'):
+            self.assertIn('fexists("map_saves/' + name + '")', check)
 
 if __name__ == '__main__':
     unittest.main()

@@ -205,6 +205,34 @@ var/global/datum/shard_group/shard_group = new
 	to_chat(world, "<big>The Epoch has been changed to <b>[map.age]</b>, as on the mainland.</big>")
 	return TRUE
 
+// Whether this world starts its round on its own instead of waiting in the
+// lobby for an admin: every region except the mainland does, but only after
+// any save load has finished. A world holding a save it did not restore waits
+// for an admin rather than starting a fresh round over it.
+/datum/shard_group/proc/autostarts_round()
+	if(!enabled || !region || region == mainland)
+		return FALSE
+	if(persistence_restart.startup_hold || map_storage.round_restored)
+		return FALSE
+	if(fexists("map_saves/map.txt") || fexists("map_saves/round.json") || fexists("map_saves/save_complete.txt"))
+		log_game("Region group: a save is present but was not restored, so the round waits for an admin.")
+		return FALSE
+	return TRUE
+
+// Called by the lobby once any restart load has finished. Waits for world
+// setup, then lets the round start on the ordinary countdown as if an admin
+// had pressed Start Now.
+/proc/region_round_autostart(datum/controller/gameticker/T)
+	if(!T || !shard_group.autostarts_round())
+		return FALSE
+	while(!world_setup_finished)
+		sleep(10)
+	if(!shard_group.autostarts_round())
+		return FALSE
+	T.admin_started = TRUE
+	log_game("Region group: [shard_group.region] starts its round on its own.")
+	return TRUE
+
 // A peer the doorman reports as not awake: ASLEEP (frozen), COLD (stopped
 // after a power-down, started from its save on wake), WAKING or DOWN.
 /datum/shard_group/proc/record_sleeping(id, list/entry, now)
