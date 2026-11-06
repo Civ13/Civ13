@@ -56,12 +56,13 @@ name to its game port. Run the service as described in
 
 ## Launcher sign-in
 
-The launcher shows "Sign in with Discord" in its footer only when the player's
-`discord.json` (in the launcher data folder) names the sign-in service's HTTPS
-address:
+The launcher shows "Sign in with Discord" in its footer. It uses the Civ13
+sign-in service at `https://signin.valzargaming.com/signin` (a Cloudflare
+Tunnel that exposes only `/signin`). A player's `discord.json` in the launcher
+data folder can point elsewhere or turn the link off:
 
 ```json
-{"signin_url": "https://<front>/signin"}
+{"signin_url": ""}
 ```
 
 It signs in as a Discord public client with PKCE, using the presence
