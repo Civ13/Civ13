@@ -36,7 +36,10 @@ public sealed class ReleaseTransport : ITransport, IDisposable {
     private readonly Func<TimeSpan, CancellationToken, Task> _delay;
     private readonly TimeSpan _textBudget;
     private readonly TimeSpan _downloadBudget;
-    private const int Attempts = 3;
+    // A connection reset during the TLS handshake (10054) usually clears within seconds; retries
+    // that came 250 ms apart all landed inside the same outage, so the waits now double from one second.
+    public const int Attempts = 5;
+    public static TimeSpan Backoff(int failedAttempt) => TimeSpan.FromSeconds(1 << Math.Clamp(failedAttempt - 1, 0, 3));
     public ReleaseTransport() : this(new HttpClientHandler { AllowAutoRedirect = false }) { }
     public ReleaseTransport(HttpMessageHandler handler, Action<string>? report = null,
         Func<TimeSpan, CancellationToken, Task>? delay = null, TimeSpan? textBudget = null,
@@ -44,7 +47,8 @@ public sealed class ReleaseTransport : ITransport, IDisposable {
         _http = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
         _report = report;
         _delay = delay ?? ((time, token) => Task.Delay(time, token));
-        _textBudget = textBudget ?? TimeSpan.FromSeconds(20);
+        // Five six-second attempts plus 1 + 2 + 4 + 8 seconds of waiting.
+        _textBudget = textBudget ?? TimeSpan.FromSeconds(60);
         _downloadBudget = downloadBudget ?? TimeSpan.FromMinutes(10);
         if (_textBudget <= TimeSpan.Zero || _downloadBudget <= TimeSpan.Zero)
             throw new ArgumentOutOfRangeException(nameof(textBudget), "Update budgets must be positive.");
@@ -77,8 +81,9 @@ public sealed class ReleaseTransport : ITransport, IDisposable {
             try { return await action(deadline.Token); }
             catch (Exception e) when (attempt < Attempts && !overall.IsCancellationRequested &&
                 (IsTransient(e) || (e is OperationCanceledException && deadline.IsCancellationRequested))) {
-                _report?.Invoke($"{stage} connection interrupted; retrying ({attempt + 1}/{Attempts})...");
-                await _delay(TimeSpan.FromMilliseconds(attempt == 1 ? 250 : 750), overall.Token);
+                var wait = Backoff(attempt);
+                _report?.Invoke($"{stage} connection interrupted; retrying in {wait.TotalSeconds:0} s ({attempt + 1}/{Attempts})...");
+                await _delay(wait, overall.Token);
             }
         }
     }

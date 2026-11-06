@@ -126,8 +126,9 @@ launcher. Only newer semantic versions update; the candidate PE product version
 must match its manifest. Never point this channel at an unaccepted candidate.
 
 Startup reports the installed/latest versions and check/download/restart stage.
-Transport resets and timeouts get at most three attempts, with 250 ms then 750 ms
-backoff. The manifest has a 20-second total budget (six seconds per attempt).
+Transport resets and timeouts get at most five attempts, waiting 1, 2, 4 then 8
+seconds between them (250 ms apart was too quick to outlast a reset during the
+TLS handshake). The manifest has a 60-second total budget (six seconds per attempt).
 Downloads retain a ten-minute total budget, including the body, with 20-second
 response-header deadlines. Each retry starts from the original URL and a new
 empty staged file; only the failed attempt's own file is removed. Certificate
