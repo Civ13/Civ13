@@ -87,6 +87,9 @@ PREDATOR_WORDS = STRONG_PREDATORS + ("wolf", "fox", "snake", "boar", "hyena", "j
 WEAPON_WORDS = ("spear", "sharpened stick", "axe", "hatchet", "sword", "knife", "club", "mace", "pike", "dagger", "machete")
 BANDAGE_WORDS = ("bandage", "gauze", "trauma kit")
 HEAL_WORDS = BANDAGE_WORDS + ("healing herb", "herbs", "poultice", "ointment", "burn kit", "sulfa")
+# First aid for someone else: herbs are chewed by whoever takes them, so only bandages and splints work on others.
+SPLINT_WORDS = ("splint",)
+AID_GAP = 60.0  # seconds between offers of help to the same person
 # Body temperature in kelvin (normal is about 310): the game starts cold damage below 260 and heat damage above 315.
 COLD_NEED = 290
 COLD_DANGER = 270
@@ -116,7 +119,8 @@ Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent a
  light_fire (a campfire with fuel: light it; cooked food drops next to it when done, pick_up it),
  mine (underground rock or ore next to you: dig it with a pickaxe for stone and ore, which are picked up for you),
  dig_down (target 0: dig a tunnel down where you stand with a shovel, to reach the underground and its ore),
- treat (target 0: bandage your worst bleeding wound, or put healing herbs on your worst injury).
+ treat (target 0: bandage your worst bleeding wound, or put healing herbs on your worst injury;
+  or a hurt person's number: walk to them and bandage their bleeding wound or splint their broken limb).
 A fallen branch cannot be picked up: pick_leaves it, then make_stick it where it lies, then pick_up the stick.
 A skill walks next to its target first, ends the plan, and you see the result next turn.
 Only break_branch on a tree marked "(has branches)"; trees marked "(no branches)" give nothing.
@@ -184,6 +188,8 @@ How to play:
   (mountains and caves) and mine it for stone and ore. Remember where your camp is in your notes.
 - Food: hunt an animal (attack it with a spear), butcher it, then build a campfire, fuel_fire it, cook the meat, light_fire,
   wait for the roasted meat, pick_up it and eat it.
+- Help people in need: when a HELP line names someone hurt, offer help with a short "say" and treat them with your bandages
+  (unconscious people cannot answer: just treat them). Never treat someone who is attacking you.
 - When a player talks to you, answer first with a short in-character "say", then carry on. Greet people you meet and cooperate.
 - Hold an item and {"do": "equip"} to wear it or put it on your belt or back. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
@@ -272,7 +278,7 @@ def summarize(observation, note="", ignored=(), muted=()):
     for row in nearby:
         refs.append(row.get("ref"))
         kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
-        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_branch_mark(row)}")
+        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}")
     if not nearby:
         lines.append("  nothing")
     if skipped:
@@ -290,6 +296,19 @@ def summarize(observation, note="", ignored=(), muted=()):
         lines.append("Recent messages:")
         lines.extend("  " + text for text in texts)
     return "\n".join(lines), refs
+
+
+def _hurt_mark(row):
+    """What a player sees on a hurt person: unconscious, bleeding or broken limbs."""
+    if not row.get("mob") or row.get("stat") == 2 or str(row.get("type", "")).startswith("/mob/living/simple_animal"):
+        return ""
+    marks = ["unconscious"] if row.get("stat") == 1 else []
+    for wound in [w for w in row.get("wounds") or [] if isinstance(w, dict)][:4]:
+        if wound.get("bleeding") and not wound.get("bandaged"):
+            marks.append(f"bleeding {wound.get('name')}")
+        elif wound.get("broken") and not wound.get("splinted"):
+            marks.append(f"broken {wound.get('name')}")
+    return f" (hurt: {', '.join(marks)})" if marks else ""
 
 
 def _branch_mark(row):
@@ -647,6 +666,80 @@ def _medicine_for(wound, names):
     return None
 
 
+def patient_wound(row):
+    """The injury to treat first on someone else: unbandaged bleeding (a cut artery first), then an unsplinted break."""
+    wounds = [w for w in row.get("wounds") or [] if isinstance(w, dict) and w.get("zone")]
+    bleeding = [w for w in wounds if w.get("bleeding") and not w.get("bandaged")]
+    if bleeding:
+        return max(bleeding, key=lambda w: (bool(w.get("artery_cut")), w.get("damage") or 0))
+    broken = [w for w in wounds if w.get("broken") and not w.get("splinted")]
+    return max(broken, key=lambda w: w.get("damage") or 0) if broken else None
+
+
+def _aid_for(wound, names):
+    """A carried item that treats this wound on someone else (bandage for bleeding, splint for a break)."""
+    wanted = BANDAGE_WORDS if wound.get("bleeding") and not wound.get("bandaged") else SPLINT_WORDS
+    return next((name for word in wanted for name in names if word in str(name).lower()), None)
+
+
+def people_in_need(observation, avoid=()):
+    """Hurt people in view that first aid can help, unconscious and bleeding first: [(row, wound)]."""
+    avoid = {str(name).lower() for name in avoid}
+    found = []
+    for row in observation.get("nearby", []):
+        if not isinstance(row, dict) or not row.get("mob") or row.get("stat") not in (0, 1):
+            continue
+        if str(row.get("type", "")).startswith("/mob/living/simple_animal") or str(row.get("name", "")).lower() in avoid:
+            continue
+        wound = patient_wound(row)
+        if wound:
+            found.append((row, wound))
+    found.sort(key=lambda pair: (pair[0].get("stat") != 1, not pair[1].get("bleeding"), _distance(pair[0])))
+    return found
+
+
+def _distance(row):
+    """Tiles to a nearby row (99 when its offset is unknown)."""
+    try:
+        return max(abs(int(row.get("dx"))), abs(int(row.get("dy"))))
+    except (TypeError, ValueError):
+        return 99
+
+
+def help_line(observation, refs, avoid=()):
+    """A HELP line for the prompt naming the person most in need, and what to treat them with, or ""."""
+    needy = people_in_need(observation, avoid)
+    if not needy:
+        return ""
+    row, wound = needy[0]
+    if row.get("ref") not in refs:
+        return ""
+    me = observation.get("self", {})
+    state = ("unconscious and " if row.get("stat") == 1 else "") + (("bleeding from the " if wound.get("bleeding") else "hurt: a broken ") + str(wound.get("name")))
+    item = _aid_for(wound, carried(me))
+    number = refs.index(row["ref"])
+    if item:
+        offer = "treat them" if row.get("stat") == 1 else "offer help with a short say, then treat them"
+        return f"HELP: {row.get('name')} ({number}) is {state}. You carry {item}: {offer} with {{\"do\": \"treat\", \"target\": {number}}}."
+    need = "bandages (from cloth, rags or leather)" if wound.get("bleeding") else "a splint"
+    return f"HELP: {row.get('name')} ({number}) is {state}. You have no {need} to treat them; make some if you can, or ask who can help."
+
+
+def aid_plan(self_state, row):
+    """Steps that walk to a hurt person and treat their worst wound: (steps, error)."""
+    wound = patient_wound(row)
+    if not wound:
+        return [], f"{row.get('name')} has no bleeding or broken limb you can treat"
+    left, right = _name(self_state.get("left_hand")), _name(self_state.get("right_hand"))
+    active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
+    item = _aid_for(wound, [active, other] + _stowed(self_state))
+    if not item:
+        need = "bandages (craft them from cloth, rags or leather)" if wound.get("bleeding") else "a splint"
+        return [], f"treating {row.get('name')} needs {need}"
+    steps = [] if adjacent(row) else [{"do": "go", "target": row["ref"]}]
+    return steps + _medicine_steps(item, active, other, self_state, row["ref"], wound["zone"]), ""
+
+
 def treat_plan(self_state):
     """Steps that treat the worst wound with carried medicine: (steps, error)."""
     wound = worst_wound(self_state)
@@ -658,6 +751,11 @@ def treat_plan(self_state):
     if not item:
         need = "bandages (cloth, rags or leather) or healing herbs" if wound.get("bleeding") else "healing herbs or bandages"
         return [], f"treat needs {need}; craft bandages from cloth, rags or leather, or cut healing herbs from jungle bushes with a knife"
+    return _medicine_steps(item, active, other, self_state, self_state.get("ref"), wound["zone"]), ""
+
+
+def _medicine_steps(item, active, other, self_state, target, zone):
+    """Get item into the active hand, set help intent and click target's zone with it."""
     steps = []
     if item != active:
         if item == other:
@@ -668,8 +766,8 @@ def treat_plan(self_state):
             steps.append({"do": "take", "item": item})
     if self_state.get("intent") != "help":
         steps.append({"do": "intent", "intent": "help"})
-    steps.append({"do": "click", "target": self_state.get("ref"), "zone": wound["zone"]})
-    return steps, ""
+    steps.append({"do": "click", "target": target, "zone": zone})
+    return steps
 
 
 def describe_change(before, after):
@@ -1113,6 +1211,10 @@ def expand_skill(step, self_state, rows=None):
     if step["skill"] == "eat":
         return _expand_eat(active, other, self_state)
     if step["skill"] == "treat":
+        if row is not None and row.get("mob") and step["target"] != self_state.get("ref"):
+            return aid_plan(self_state, row)
+        if row is not None and step["target"] != self_state.get("ref"):
+            return [], f"treat needs yourself (0) or a hurt person, not the {row.get('name')}"
         return treat_plan(self_state)
     if step["skill"] == "dig_down":
         held = _expand_craft({"do": "use", "choose": "Tunnel", "material": "shovel"}, self_state)
@@ -1587,6 +1689,7 @@ def main(argv=None):
     parser.add_argument("--memory", default="", help='folder for the character\'s long-term memory (default data/agent-control/memory; "none" turns it off)')
     parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
     parser.add_argument("--leather", default="", help='pin a leather project from the start: belt, backpack or leather')
+    parser.add_argument("--stay", action="store_true", help="with --job: start at the --spawn target rather than the job's spawn point")
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
     if not args.model:
@@ -1603,6 +1706,8 @@ def main(argv=None):
         spawn_args = {"target": args.spawn}
         if args.job:
             spawn_args["job"] = args.job
+            if args.stay:
+                spawn_args["stay"] = True
         if args.name:
             spawn_args["name"] = args.name
         reply = client.request("character_spawn", spawn_args)
@@ -1681,6 +1786,31 @@ GOAL_ITEMS = (
 )
 
 
+def shunned(observation, memory=None):
+    """People not to help: whoever is attacking the character, and people its memory distrusts."""
+    names = list(attackers_of(observation))
+    if memory is not None:
+        names += [name for name, who in memory.data.get("people", {}).items() if who.get("trust", 0) <= -2]
+    return names
+
+
+def first_aid(observation, self_state, avoid=(), plan=()):
+    """(row, offer line) for a hurt person who is bleeding and whom carried bandages can treat now, or None.
+
+    Bleeding kills while the model thinks about other things, so this runs before the plan; a break waits for the model.
+    """
+    if any(item.get("skill") == "treat" for item in plan):
+        return None
+    for row, wound in people_in_need(observation, avoid):
+        if not wound.get("bleeding") or not _aid_for(wound, carried(self_state)):
+            continue
+        if _distance(row) > 5:
+            continue
+        offer = "" if row.get("stat") == 1 else f"You're bleeding! Hold still, let me bandage your {wound.get('name')}."
+        return row, offer[:120]
+    return None
+
+
 def goal_item(goal):
     """The item the current ladder goal is about, for the recipe book ("" when none)."""
     return next((item for start, item in GOAL_ITEMS if goal.startswith(start)), "")
@@ -1740,6 +1870,7 @@ def _run(client, args, character, token, model_pool):
     muted = set()
     replied = {}  # speaker -> monotonic time of the last answer to them
     greeted = {}  # speaker ("*" for anyone) -> monotonic time of the last greeting
+    offered = {}  # hurt person -> monotonic time help was last offered to them
     made_recent = []  # (step, recipe) for recent successful crafts and builds
     asked_recently = {}  # recipe-book item -> step it was last looked up
     memory = None  # loaded once the character's name is known
@@ -1819,11 +1950,13 @@ def _run(client, args, character, token, model_pool):
         recalled = memory.recall(observation) if memory is not None else ""
         box = memory.data if memory is not None else local_project
         ledger = memory.data.get("structures", []) if memory is not None else []
+        avoid = shunned(observation, memory)
+        aid = help_line(observation, refs, avoid)
         building = project_line(box, observation, ledger)
         if box.get("leather"):
             building = (building + "\n" if building else "") + leatherwork.describe(observation, box["leather"])
         text = (f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "")
-                + (f"PROJECT: {building}\n" if building else "")
+                + (f"PROJECT: {building}\n" if building else "") + (aid + "\n" if aid else "")
                 + text + (f"\nMEMORY:\n{recalled}" if recalled else ""))
         prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
         history.append({"role": "user", "content": prompt})
@@ -1904,7 +2037,15 @@ def _run(client, args, character, token, model_pool):
         if care and wound and wound.get("bleeding") and not any(item.get("skill") == "treat" for item in plan):
             print(f"  bleeding from the {wound.get('name')}: treating it instead")
             plan = [{"skill": "treat", "target": refs[0]}]
-        cold = cold_plan(observation, ignored)
+        patient = None if (wound and wound.get("bleeding")) or alarm else first_aid(observation, self_state, avoid, plan)
+        if patient:
+            row, offer = patient
+            plan = [{"skill": "treat", "target": row["ref"]}]
+            if offer and time.monotonic() - offered.get(row.get("name"), -AID_GAP) >= AID_GAP:
+                plan.insert(0, {"do": "say", "text": offer})
+                offered[row.get("name")] = time.monotonic()
+            print(f"  {row.get('name')} is hurt: giving first aid instead")
+        cold = cold_plan(observation, ignored) if not patient else None
         thirsty = thirst_plan(observation, explore_dir, ignored)
         if cold and not care and not any(item.get("skill") in ("treat", "light_fire", "fuel_fire") or item.get("recipe") == "campfire" for item in plan):
             print(f"  freezing (body {self_state.get('bodytemperature')} K): warming up instead")

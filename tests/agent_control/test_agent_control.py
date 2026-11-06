@@ -648,6 +648,42 @@ class AutopilotTests(unittest.TestCase):
         plan = autopilot.parse_plan('{"plan": [{"do": "build", "recipe": "a", "material": "planks", "dir": "north"}, {"do": "build", "recipe": "b", "material": "stone", "dir": "east"}]}', ["[0x9]"])
         self.assertEqual(len(plan), 1)  # each material-dependent step is planned from a fresh look at the hands
 
+    def test_first_aid_for_others(self):
+        me = {"ref": "[0x9]", "name": "Ada", "active_hand": "right", "right_hand": {"name": "flint hatchet"}, "left_hand": None, "intent": "harm",
+              "carried": ["gauze (pocket)", "healing herbs (pocket)"]}
+        petra = {"ref": "[0x20]", "name": "Petra Herenus", "type": "/mob/living/human", "mob": True, "stat": 1, "dx": 3, "dy": 0,
+                 "wounds": [{"zone": "chest", "name": "chest", "damage": 40, "bleeding": True, "bandaged": False},
+                            {"zone": "l_leg", "name": "left leg", "damage": 20, "bleeding": False, "broken": True}]}
+        wolf = {"ref": "[0x21]", "name": "wolf", "type": "/mob/living/simple_animal/hostile/wolf", "mob": True, "stat": 0, "dx": 1, "dy": 1,
+                "wounds": [{"zone": "chest", "name": "chest", "bleeding": True}]}
+        observation = {"self": me, "nearby": [wolf, petra]}
+        rows = autopilot.target_rows(observation)
+        steps, error = autopilot.expand_plan([{"skill": "treat", "target": "[0x20]"}], me, rows)
+        self.assertEqual(error, "")
+        # Walk over, take a bandage (herbs only work on whoever chews them), help intent, aim at the bleeding chest.
+        self.assertEqual(steps, [{"do": "go", "target": "[0x20]"}, {"do": "swap_hand"}, {"do": "take", "item": "gauze"},
+                                 {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x20]", "zone": "chest"}])
+        self.assertIn("not the wolf", autopilot.expand_plan([{"skill": "treat", "target": "[0x21]"}], me, dict(rows, **{"[0x21]": dict(wolf, mob=False)}))[1])
+        self.assertEqual([row["name"] for row, _ in autopilot.people_in_need(observation)], ["Petra Herenus"])
+        text, refs = autopilot.summarize(observation)
+        self.assertIn("(hurt: unconscious, bleeding chest, broken left leg)", text)
+        line = autopilot.help_line(observation, refs)
+        self.assertIn("Petra Herenus", line)
+        self.assertIn('"treat", "target": 2', line)
+        row, offer = autopilot.first_aid(observation, me)
+        self.assertEqual((row["name"], offer), ("Petra Herenus", ""))  # unconscious: no one to ask
+        awake = dict(petra, stat=0)
+        self.assertIn("bandage your chest", autopilot.first_aid({"self": me, "nearby": [awake]}, me)[1])
+        self.assertIsNone(autopilot.first_aid({"self": me, "nearby": [awake]}, me, avoid=["petra herenus"]))
+        self.assertIsNone(autopilot.first_aid({"self": dict(me, carried=[]), "nearby": [awake]}, dict(me, carried=[])))
+        self.assertIn("no bandages", autopilot.help_line({"self": dict(me, carried=[]), "nearby": [awake]}, refs))
+        bandaged = dict(petra, wounds=[dict(petra["wounds"][0], bandaged=True), petra["wounds"][1]])
+        self.assertEqual(autopilot.patient_wound(bandaged)["zone"], "l_leg")  # then the break, which wants a splint
+        self.assertIn("splint", autopilot.aid_plan(dict(me, carried=["gauze (pocket)"]), bandaged)[1])
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('row["wounds"] = hurt', characters)
+        self.assertIn('req["stay"]', characters)
+
     def test_bleeding_is_treated_first(self):
         me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "harm",
               "carried": ["healing herbs (pocket)", "bandages (pocket)"],

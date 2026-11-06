@@ -151,6 +151,9 @@
 			agent_mind.transfer_to(M)
 		if (job_title && !job_master.EquipRank(M, job_title, TRUE))
 			agent_fail("bad_job", "[job_title] could not be equipped")
+		// "stay": keep the job's kit but start at the target rather than the job's spawn point.
+		if (job_title && req["stay"] && get_turf(M) != T)
+			M.forceMove(T)
 		if (istext(req["name"]) && length(trim(req["name"])))
 			var/new_name = sanitize(copytext(req["name"], 1, 33))
 			M.fully_replace_character_name(M.real_name, new_name)
@@ -246,28 +249,34 @@
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
 		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
-		var/list/wounds = list()
-		for (var/obj/item/organ/external/E in H.organs)
-			var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
-			var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
-			var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
-			if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
-				continue
-			var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
-			// Field-care state: a cut artery wants a bandage tied as a tourniquet
-			// (the first bandage click does it), a break wants a splint.
-			if (artery)
-				row["artery_cut"] = TRUE
-			if (E.tourniquet)
-				row["tourniquet"] = TRUE
-			if (E.status & ORGAN_SPLINTED)
-				row["splinted"] = TRUE
-			if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
-				row["infected"] = TRUE
-			wounds += list(row)
+		var/list/wounds = agent_wound_rows(H)
 		out["wounds"] = wounds
 		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out
+
+// Injured limbs of a human, as an agent sees them: on itself from the health doll, on
+// someone next to it from what examining them shows (bleeding, breaks, bandages).
+/proc/agent_wound_rows(mob/living/human/H)
+	var/list/wounds = list()
+	for (var/obj/item/organ/external/E in H.organs)
+		var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
+		var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
+		var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
+		if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
+			continue
+		var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
+		// Field-care state: a cut artery wants a bandage tied as a tourniquet
+		// (the first bandage click does it), a break wants a splint.
+		if (artery)
+			row["artery_cut"] = TRUE
+		if (E.tourniquet)
+			row["tourniquet"] = TRUE
+		if (E.status & ORGAN_SPLINTED)
+			row["splinted"] = TRUE
+		if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
+			row["infected"] = TRUE
+		wounds += list(row)
+	return wounds
 
 /datum/agent_control/proc/act_character_observe(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
@@ -302,6 +311,11 @@
 				var/mob/other = AM
 				row["mob"] = TRUE
 				row["stat"] = other.stat
+				// Someone hurt nearby: what a player sees on them, so the agent can offer first aid.
+				if (ishuman(other) && other.stat != DEAD)
+					var/list/hurt = agent_wound_rows(other)
+					if (hurt.len)
+						row["wounds"] = hurt
 			if (istype(AM, /obj/item/stack))
 				var/obj/item/stack/ST = AM
 				row["amount"] = ST.amount

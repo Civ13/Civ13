@@ -113,7 +113,8 @@ cooldown, combat and crafting rules apply.
   Humans still get their usual map identity; a `name` is applied after it.
   With `job` (a late-join title on the current map, such as `Nomad`), the
   character joins like a late joiner instead: that job's clothes, kit, name
-  and spawn point through the normal `EquipRank` path. An unknown job is
+  and spawn point through the normal `EquipRank` path; `stay: true` keeps the
+  kit but starts the character at `target`. An unknown job is
   refused with the list of open ones. Spawned characters get a mind (key
   `agent_<name>`, never active) so job notes have somewhere to go.
 - **Player handover.** With `allow_handover` in the config, players get a
@@ -243,6 +244,7 @@ same `num_ctx` keeps Ollama from reloading a model shared with Player Help:
 ```text
 python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal "Gather food and greet people" --steps 30 --release
 python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help my tribe build a hut"
+python tools/agent-control/autopilot.py --spawn turf:332,242,2 --stay --name Ada --goal "Help people in need"
 ```
 
 A spawned character joins as `--job` (default `Nomad`). The model gets a short
@@ -282,7 +284,14 @@ gives stack counts and open containers' liquids for what she holds and carries,
 and a tanning rack row says what it `holds`. `take` (`item`: a carried or worn item's name) moves a
 stowed item into the empty active hand, and skills take a stowed tool they need. A step the
 autopilot cannot accept is explained to the model next turn (for example a skill
-with no target listed: explore to find one). When something attacks the
+with no target listed: explore to find one). First aid for others: a hurt person in view is marked
+`(hurt: unconscious, bleeding chest, broken left leg)` from what a player sees on them (the
+observation row's `wounds`), and a `HELP` line names the one most in need and what to treat them
+with. `{"skill": "treat", "target": n}` on a person walks over, takes a bandage (or a splint for a
+break; herbs only work on whoever chews them) and clicks the wound's body part on help intent. A
+bleeding person within 5 tiles is treated before the model's plan when she carries a bandage and is
+not bleeding or under attack herself; she offers help first when they are awake. Whoever is
+attacking her, and people her memory distrusts, are not helped. When something attacks the
 character, a danger line leads the next prompt, and the run stops once the
 character is unconscious or dead. The autopilot runs the
 steps through `character_queue` and shows the next

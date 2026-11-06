@@ -168,7 +168,9 @@ class MedicalCare(unittest.TestCase):
         self.assertGreaterEqual(10 * weight, 5)
 
     def test_agent_wounds_report_field_care_state(self):
-        state = block(AGENT, "/datum/agent_control/proc/character_state")
+        # The wound rows are built once for the agent itself and for hurt people it sees.
+        self.assertIn("agent_wound_rows(H)", block(AGENT, "/datum/agent_control/proc/character_state"))
+        state = block(AGENT, "/proc/agent_wound_rows")
         for key in ('row["artery_cut"]', 'row["tourniquet"]', 'row["splinted"]', 'row["infected"]'):
             self.assertIn(key, state)
         self.assertIn("!artery && !E.tourniquet", state)
