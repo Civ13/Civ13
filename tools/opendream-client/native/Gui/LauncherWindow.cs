@@ -316,6 +316,7 @@ internal sealed partial class LauncherWindow : Form {
         if (host != null) {
             tabs.TabPages.Add(hostPage = BuildHostPage(host));
             if (host.Bot is { } bot) tabs.TabPages.Add(BuildBotPage(bot));
+            if (host.Control is { Group: not null } helpControl) tabs.TabPages.Add(BuildHelpPage(helpControl));
             if (host.Control != null || host.Bot != null) {
                 tabs.TabPages.Add(BuildUpdatesPage(host));
                 _ = CheckAllUpdates();
