@@ -314,7 +314,8 @@
 	var/list/refusals = list()
 	pad.pending_flight = flight
 	for (var/mob/living/human/H in crew())
-		var/reason = pad.travel_refusal(H)
+		// Departures can wait on escrow, so the pad is checked for each one.
+		var/reason = (QDELETED(pad) || pad.destination != destination || !pad.approved) ? "The launch pad changed." : pad.travel_refusal(H)
 		if (!reason)
 			var/list/items = H.region_travel_items()
 			if (istext(items))
