@@ -23,6 +23,10 @@ public static class ServerCatalog {
         // Explicit pre-existing native game ports. No ranges or arbitrary overrides.
         return Array.AsReadOnly(new[] { new GameTarget(provider, 1714), new GameTarget(provider, 1715) });
     }
+    // The port of a provider's gate world, for hosts that route their other worlds
+    // through it. ValZarGaming's mainland (Gaia) is the gate on 1714; Rail Yard and
+    // the other regions are joined through it, never directly.
+    public static int? GatePort(string provider) => provider == "ValZarGaming" ? 1714 : null;
 
     public static async Task<VerifiedGameServer> NativeEndpoint(GameServer server,
         Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null,

@@ -16,6 +16,11 @@ third-party hosts, server-supplied endpoints, automatic port scans or public
 Adding/changing ports requires a reviewed catalog update. This discovers which
 known endpoints answer; it cannot discover arbitrary hosts or unknown ports.
 
+`ServerCatalog.GatePort` names a provider's gate world (ValZarGaming: 1714).
+Worlds the host's doorman marks `routed` are never listed. When the doorman
+does not answer, a provider with a gate lists only the gate, so a routed world
+such as Rail Yard is not offered while the gate is down.
+
 There is no HTTP/HTTPS server-list request in discovery or joining. The earlier
 PR design's civ13.com well-known directory and companion Civilizationbot PR #20
 are unnecessary for this launcher path. Neither that backend nor the prepared
