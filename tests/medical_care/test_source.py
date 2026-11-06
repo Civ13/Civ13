@@ -81,6 +81,22 @@ class MedicalCare(unittest.TestCase):
         self.assertIn('(e.limb_name in list("l_arm", "r_arm", "l_leg", "r_leg")) && !(e.status & ORGAN_SPLINTED)',
                       HANDBOOK)
 
+    def test_handbook_names_diseases_and_poisons(self):
+        attack = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/attack")
+        self.assertIn("diagnose_disease(H)", attack)
+        self.assertIn("diagnose_poisons(H)", attack)
+        disease = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/diagnose_disease")
+        for name in ("flu", "zombie", "plague", "typhus", "malaria", "cholera"):
+            self.assertIn(f'"{name}" =', disease)
+        self.assertIn("H.is_severe_disease()", disease)
+        self.assertIn("H.disease_course", disease)
+        poisons = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/diagnose_poisons")
+        # both the bloodstream and the stomach are read, so swallowed poison shows before it absorbs
+        self.assertIn("list(H.reagents, H.ingested)", poisons)
+        self.assertIn("is_handbook_poison(A)", poisons)
+        self.assertIn("istype(A, /datum/reagent/toxin)",
+                      block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/is_handbook_poison"))
+
     def test_tourniquet_stops_limb_bleeding_and_times_out(self):
         bleed = HEART[HEART.index("//Bleeding out"):]
         loop = bleed.index("for(var/obj/item/organ/external/temp in owner.organs)")
