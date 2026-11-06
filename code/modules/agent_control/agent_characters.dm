@@ -251,10 +251,14 @@
 		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
 		var/list/wounds = agent_wound_rows(H)
 		out["wounds"] = wounds
+		// Verbs a player has in the right-click menu and verb panels (lie down, give, point, an item's own verbs).
+		out["verbs"] = agent_verb_names(H)
+		out["item_verbs"] = agent_item_verbs(H)
 		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out
 
-// Injured limbs of a human, as an agent sees them: on itself from the health doll, on
+// Injured limbs of a human, as an agent sees them (zone is the zone selector's name,
+// limb_name; organ_tag is "limb" for every external organ): on itself from the health doll, on
 // someone next to it from what examining them shows (bleeding, breaks, bandages).
 /proc/agent_wound_rows(mob/living/human/H)
 	var/list/wounds = list()
@@ -264,7 +268,7 @@
 		var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
 		if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
 			continue
-		var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
+		var/list/row = list("zone" = E.limb_name || E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
 		// Field-care state: a cut artery wants a bandage tied as a tourniquet
 		// (the first bandage click does it), a break wants a splint.
 		if (artery)
@@ -329,6 +333,10 @@
 				for (var/key in boat_row)
 					if (!(key in list("ref", "name", "type", "x", "y", "z")))
 						row[key] = boat_row[key]
+			if (!ismob(AM) && get_dist(M, AM) <= 1)
+				var/list/near_verbs = agent_verb_names(AM, 8)
+				if (near_verbs.len)
+					row["verbs"] = near_verbs
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
@@ -408,7 +416,7 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
@@ -419,7 +427,7 @@
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
 			ready = max(ready, world.time + 2)
-	if (action in list("click", "use", "craft"))
+	if (action in list("click", "use", "craft", "verb", "throw"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote"))
 		ready = max(ready, next_speech)
@@ -585,6 +593,10 @@
 			detail = agent_disembark(C, from_queue)
 		if ("drag")
 			detail = agent_drag(C, req, from_queue)
+		if ("verb")
+			detail = agent_run_verb(C, req, from_queue)
+		if ("throw")
+			detail = agent_throw(C, req, from_queue)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -695,8 +707,14 @@
 		agent_dir(step["dir"])
 	if (action in list("say", "emote"))
 		agent_text_arg(step, "text", 256)
-	if (action in list("click", "examine", "board", "drag"))
+	if (action in list("click", "examine", "board", "drag", "throw"))
 		agent_resolve_target(step["target"])
+	if (action == "verb")
+		agent_text_arg(step, "name", 64)
+		if (!isnull(step["target"]))
+			agent_resolve_target(step["target"])
+		if (!isnull(step["onto"]))
+			agent_resolve_target(step["onto"])
 	if (action == "drag")
 		agent_resolve_target(step["onto"])
 	if (action == "craft")
@@ -705,7 +723,7 @@
 		agent_text_arg(step, "item", 64)
 	if (!isnull(step["choose"]))
 		agent_text_arg(step, "choose", 64)
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

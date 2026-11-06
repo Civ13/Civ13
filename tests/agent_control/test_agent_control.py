@@ -648,6 +648,25 @@ class AutopilotTests(unittest.TestCase):
         plan = autopilot.parse_plan('{"plan": [{"do": "build", "recipe": "a", "material": "planks", "dir": "north"}, {"do": "build", "recipe": "b", "material": "stone", "dir": "east"}]}', ["[0x9]"])
         self.assertEqual(len(plan), 1)  # each material-dependent step is planned from a fresh look at the hands
 
+    def test_verbs_and_throwing(self):
+        refs = ["[0x9]", "[0x20]", "[0x21]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Rest"}', refs), {"do": "verb", "name": "Rest"})
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Give", "onto": 1}', refs), {"do": "verb", "name": "Give", "onto": "[0x20]"})
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Rotate", "target": 2}', refs), {"do": "verb", "name": "Rotate", "target": "[0x21]"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "verb"}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "verb", "name": "Give", "onto": 9}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "throw", "target": 2}', refs), {"do": "throw", "target": "[0x21]"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "throw", "target": 0}', refs))
+        me = {"ref": "[0x9]", "name": "Ada", "verbs": ["Rest", "Sleep", "Give"], "item_verbs": ["pistol: Eject magazine"]}
+        text, _ = autopilot.summarize({"self": me, "nearby": [{"ref": "[0x20]", "name": "chair", "dx": 1, "dy": 0, "verbs": ["Rotate"]}]})
+        self.assertIn("Your verbs: Rest, Sleep, Give", text)
+        self.assertIn("Item verbs: pistol: Eject magazine", text)
+        self.assertIn("chair dx=1 dy=0 (verbs: Rotate)", text)
+        self.assertIn('"verb"', autopilot.SYSTEM)
+        self.assertEqual(set(autopilot.ACTIONS) & {"verb", "throw"}, {"verb", "throw"})
+        self.assertIn("verb", CHARACTER_ACTIONS)
+        self.assertIn("throw", CHARACTER_ACTIONS)
+
     def test_first_aid_for_others(self):
         me = {"ref": "[0x9]", "name": "Ada", "active_hand": "right", "right_hand": {"name": "flint hatchet"}, "left_hand": None, "intent": "harm",
               "carried": ["gauze (pocket)", "healing herbs (pocket)"]}

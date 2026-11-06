@@ -70,7 +70,7 @@ TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
-           "blueprint", "build_next", "leather_next", "travel", "board", "disembark")
+           "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
@@ -156,6 +156,10 @@ and leaves the boat moored on the far shore (you remember where). Carry 10 wood 
 Boats: {"do": "board", "target": number} gets on a raft or boat next to you; while you drive one, "move" steers it a tile
 over water; {"do": "disembark"} gets off at a shore. A motor boat needs fuel (hold fuel and click the boat) and its
 engine started (use the rudder in your hand once). The BOAT line says what a boat needs.
+Verbs: {"do": "verb", "name": "<verb>"} uses anything a player has in the right-click menu or verb panels: your own verbs
+("Your verbs", e.g. Rest, Sleep, Check Pulse, Give with "onto": a person, Point To with "onto"), a held or worn item's verbs
+("Item verbs": add "target": 0), or a thing next to you marked (verbs: ...) with "target": its number. "text" is the argument
+for verbs that take words. {"do": "throw", "target": n} throws what you hold at a target (a spear at prey, a rock).
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -268,6 +272,10 @@ def summarize(observation, note="", ignored=(), muted=()):
         needs.insert(0, temperature)
     if needs:
         lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
+    if self_state.get("verbs"):
+        lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:60])))
+    if self_state.get("item_verbs"):
+        lines.append("Item verbs: " + "; ".join(map(str, self_state["item_verbs"][:20])))
     if self_state.get("craftable"):
         lines.append("You can craft (from the held stack): " + "; ".join(map(str, self_state["craftable"][:30])))
     if note:
@@ -278,7 +286,7 @@ def summarize(observation, note="", ignored=(), muted=()):
     for row in nearby:
         refs.append(row.get("ref"))
         kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
-        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}")
+        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}{_verb_mark(row)}")
     if not nearby:
         lines.append("  nothing")
     if skipped:
@@ -296,6 +304,11 @@ def summarize(observation, note="", ignored=(), muted=()):
         lines.append("Recent messages:")
         lines.extend("  " + text for text in texts)
     return "\n".join(lines), refs
+
+
+def _verb_mark(row):
+    verbs = [str(name) for name in row.get("verbs") or []][:8]
+    return f" (verbs: {', '.join(verbs)})" if verbs else ""
 
 
 def _hurt_mark(row):
@@ -901,6 +914,31 @@ def parse_decision(text, refs):
         except (TypeError, ValueError):
             return None
         if not 0 <= index < len(refs) or not refs[index]:
+            return None
+        args["target"] = refs[index]
+    elif action == "verb":
+        name = str(data.get("name", "")).strip()
+        if not name:
+            return None
+        args["name"] = name[:64]
+        for key in ("target", "onto"):
+            if data.get(key) is None:
+                continue
+            try:
+                index = int(data.get(key))
+            except (TypeError, ValueError):
+                return None
+            if not 0 <= index < len(refs) or not refs[index]:
+                return None
+            args[key] = refs[index]
+        if "onto" not in args and str(data.get("text", "")).strip():
+            args["text"] = str(data["text"]).strip()[:200]
+    elif action == "throw":
+        try:
+            index = int(data.get("target"))
+        except (TypeError, ValueError):
+            return None
+        if not 1 <= index < len(refs) or not refs[index]:
             return None
         args["target"] = refs[index]
     elif action == "take":

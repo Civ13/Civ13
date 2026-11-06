@@ -108,6 +108,19 @@ file and line. `list_verbs` lists what the agent's rights allow.
 Agents can play characters through ordinary mob actions, so normal range,
 cooldown, combat and crafting rules apply.
 
+- **Verbs and throwing.** `verb` runs what a player reaches through the
+  right-click menu, verb panels or command bar: `name` is a verb from the
+  observation's `self.verbs` (the character's own, such as Rest, Sleep, Give or
+  Point To; emotes are left out of the list but still work), `self.item_verbs`
+  (held and worn items, listed and accepted as `item: verb`) or a nearby
+  row's `verbs` (things on a tile next to the character, with `target`).
+  `onto` is the verb's argument when it takes someone or something, and `text`
+  when it takes words. Out-of-character, admin and preference verbs, and verbs
+  that end the character (Succumb, Ghost), are never offered. `throw` throws the
+  held item at `target`. Both run only from `character_queue`. Wound rows
+  (`self.wounds` and nearby people's `wounds`) name the limb by its
+  zone-selector name (`l_arm`), so `click` with that `zone` aims at it.
+
 - **Host characters without a ckey.** `character_spawn` creates a mob (default
   `/mob/living/human`) owned by that agent, up to `max_characters` (default 4).
   Humans still get their usual map identity; a `name` is applied after it.
