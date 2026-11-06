@@ -35,6 +35,14 @@ static class DiscordSignInTests {
         Require(DiscordSignInSettings.Load(folder)?.SigninUrl.AbsoluteUri == DiscordSignInSettings.BuiltInSigninUrl, "built-in service lost");
         Settings("{\"signin_url\": \"\"}");
         Require(DiscordSignInSettings.Load(folder) == null, "empty signin_url did not turn sign-in off");
+        // Toggling "Show on Discord" must not drop the sign-in settings.
+        Settings("{\"signin_url\": \"\", \"signin_client_id\": \"223456789012345678\", \"show_activity\": true}");
+        PresenceSettings.SaveShowActivity(folder, false);
+        Require(DiscordSignInSettings.Load(folder) == null && !PresenceSettings.Load(folder).ShowActivity, "saving presence dropped the sign-in opt-out");
+        Settings("{\"signin_url\": \"https://other.example.test/signin\", \"signin_client_id\": \"223456789012345678\"}");
+        PresenceSettings.SaveShowActivity(folder, true);
+        var kept = DiscordSignInSettings.Load(folder)!;
+        Require(kept.SigninUrl.AbsoluteUri == "https://other.example.test/signin" && kept.ClientId == "223456789012345678", "saving presence dropped a custom sign-in");
         Settings("{not json");
         Require(DiscordSignInSettings.Load(folder)?.SigninUrl.AbsoluteUri == DiscordSignInSettings.BuiltInSigninUrl, "broken discord.json dropped the built-in service");
         foreach (var bad in new[] { "http://example.test/signin", "https://user:pw@example.test/signin", "https://example.test/signin?x=1", "not a url" }) {
