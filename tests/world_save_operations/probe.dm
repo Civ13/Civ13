@@ -34,8 +34,23 @@ var/environment_weather_running = FALSE
 /obj/map_metadata
 	var/season_busy = FALSE
 	var/list/season_queue = list()
+	var/nomads_event_busy = FALSE
+	var/datum/nomads_active_event = null
+	var/nomads_recovery_required = FALSE
+// No Nomads world effects run in this fixture; the production predicate still
+// reads their state, so it sees the idle values.
+/obj/map_metadata/proc/durable_nomads_lava_active()
+	return FALSE
+/obj/map_metadata/proc/durable_nomads_transients_active()
+	return FALSE
+var/list/nomads_fire_callbacks = list()
+/datum/nomads_fire_callback
+	var/failed = FALSE
+/process/explosion
+	var/nomads_work_failed = FALSE
 /datum/fixture_processes
 	var/datum/operation_lighting_adapter/time_of_day_change = new
+	var/process/explosion/explosion = null
 /datum/operation_lighting_adapter
 	var/updating_lighting = FALSE
 /map_storage
@@ -123,6 +138,8 @@ var/environment_weather_running = FALSE
 
 /proc/run_probe()
 	ticker = new
+	// The production idle predicate reads the map before any durable state.
+	map = new
 	var/map_storage/operation_probe/S = fresh_probe()
 	// The real wrapper sleeps before calling its backend. Race all public paths.
 	// spawn copies scalar locals; use a shared list for completion handoff.
