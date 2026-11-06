@@ -205,7 +205,8 @@ class DiscoveryTests(unittest.TestCase):
 
     def test_context_is_versioned_configuration_not_a_display_field(self):
         context = body(BERRIES, '/proc/berry_discovery_context()')
-        self.assertIn('list("berry-smell-v1", "[map.type]", map.berryeffects)', context)
+        self.assertIn('for (var/list/row in map.berryeffects)', context)
+        self.assertIn('list("berry-smell-v1", "[map.type]", rows)', context)
         schema = (ROOT / 'code/modules/persistence/durable_contract.dm').read_text()
         self.assertIn('"berryeffects"', schema)
 
