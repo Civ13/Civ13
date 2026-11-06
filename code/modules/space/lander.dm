@@ -250,7 +250,7 @@
 		if (home != "Launch" || QDELETED(src) || !H.client || !in_range(src, H))
 			return
 		reason = launch_refusal(H)
-		if (!reason && find_pad() != pad)
+		if (!reason && (find_pad() != pad || pad.destination != region))
 			reason = "The launch pad changed."
 		if (!reason)
 			reason = launch(pad, null, null, H)
@@ -268,7 +268,7 @@
 		return
 	// The prompt slept: check everything again.
 	reason = launch_refusal(H)
-	if (!reason && find_pad() != pad)
+	if (!reason && (find_pad() != pad || pad.destination != region))
 		reason = "The launch pad changed."
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
@@ -282,7 +282,8 @@
 // cell lx,ly (or any flat cell when null). Returns null once anyone left, or
 // the reason nobody did.
 /obj/structure/crewed_lander/proc/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)
-	var/homeward = space_flight_return_ok(pad.destination)
+	var/destination = pad.destination
+	var/homeward = space_flight_return_ok(destination)
 	var/surveyed = !isnull(lx)
 	var/list/cell = null
 	if (!homeward)
@@ -297,7 +298,7 @@
 		var/woke = shard_group.wake_peer(pad.destination, notify)
 		if (woke)
 			return woke
-		if (QDELETED(src) || QDELETED(pad))
+		if (QDELETED(src) || QDELETED(pad) || pad.destination != destination || !pad.approved)
 			return "The launch was called off."
 	var/lander_id = "[shard_group.region || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]"
 	var/list/flight

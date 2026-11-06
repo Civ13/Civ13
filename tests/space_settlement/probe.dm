@@ -951,9 +951,20 @@ var/space_runtime_error = FALSE
 	var/obj/item/stack/ore/ice/more = new(D)
 	more.amount = 100
 	space_check(P.load_ice(more) == SPACE_PLANT_ICE_MAX - 29 && P.ice == SPACE_PLANT_ICE_MAX && more.amount == 29, "the plant holds no more than its hopper")
-	while (P.crack())
-		continue
+	for (var/i in 1 to SPACE_PLANT_ICE_MAX)
+		if (!P.crack())
+			break
 	space_check(P.reagents.get_reagent_amount("rocket_propellant") == SPACE_PLANT_CAPACITY && P.ice == SPACE_PLANT_ICE_MAX - SPACE_PLANT_CAPACITY / SPACE_PLANT_PROPELLANT_PER_ICE + 1, "the plant stops when its tank is full")
+	var/obj/structure/cable/wire = new(D)
+	P.powersource = wire
+	wire.connections |= P
+	wire.power_consumers[P] = P.powerneeded
+	space_check(!P.crack() && !(P in wire.power_consumers), "an idle plant gives its power back to the grid")
+	wire.power_consumers[P] = P.powerneeded
+	P.process()
+	space_check(!(P in wire.power_consumers), "the plant gives its power back while nobody is connected")
+	P.powersource = null
+	qdel(wire)
 	var/obj/structure/crewed_lander/lander = new(locate(16, 3, 1))
 	space_check(lander.add_propellant(P.reagents) == LANDER_PROPELLANT && lander.propellant == LANDER_PROPELLANT, "a full plant fuels a lander")
 	qdel(lander)

@@ -125,9 +125,17 @@
 	I.use(pieces)
 	return pieces
 
+// Gives the plant's power back to the grid while it has nothing to do.
+/obj/structure/reagent_dispensers/propellant_plant/proc/release_power()
+	if (powersource && powersource.power_consumers[src])
+		powersource.update_power(0, 1, src)
+
 // Cracks one piece of ice while powered and with room. Returns TRUE if it did.
 /obj/structure/reagent_dispensers/propellant_plant/proc/crack()
-	if (ice <= 0 || !reagents || max_capacity - reagents.total_volume < SPACE_PLANT_PROPELLANT_PER_ICE || !has_power())
+	if (ice <= 0 || !reagents || max_capacity - reagents.total_volume < SPACE_PLANT_PROPELLANT_PER_ICE)
+		release_power()
+		return FALSE
+	if (!has_power())
 		return FALSE
 	ice--
 	reagents.add_reagent("rocket_propellant", SPACE_PLANT_PROPELLANT_PER_ICE)
@@ -135,6 +143,7 @@
 
 /obj/structure/reagent_dispensers/propellant_plant/process()
 	if (!clients.len)
+		release_power()
 		return
 	crack()
 
