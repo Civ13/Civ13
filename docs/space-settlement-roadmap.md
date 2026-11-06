@@ -333,6 +333,17 @@ come with phase 3, when there is something to save.
   glass; off-world ore tables.
 - The 3D printer prints spare parts and module kits from local feedstock, so
   settlers stop depending on mainland cargo.
+- Built (phase 5 mining, `code/modules/space/surface_mining.dm`): any
+  industrial drill on regolith uses the barren ore table (iron, water ice,
+  sand, stone, copper, sulphur; no gold, silver, tin, coal or lead).
+  Off-world Mining (after Pressure Suits) unlocks a regolith drill rig (60
+  power, open regolith only) and an ice melter (5 power, one piece of ice
+  makes 20 units of water, 400 unit tank, draw with an open container). The
+  electrolyser also takes ice directly. Local iron smelts into steel and sand
+  into glass with the usual chains, and the 3D printer prints hull and suit
+  patch kits (plastic), suit air tanks (steel) and habitat, greenhouse and
+  airlock module kits (steel and glass, after Off-world Mining). Rovers and
+  survey drones are not built yet.
 
 ### Phase 6: self-sufficiency and expansion
 
@@ -357,7 +368,7 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 | Life Support | Electrolyser, scrubber, heater, water recycler | 3 |
 | Pressure Suits | Suit, helmet, air tank, repair kit | 4 |
 | Surface Vehicles | Open and sealed rovers, trailers | 5 |
-| Off-world Mining | Drill rigs, ice melter, regolith refinery | 5 |
+| Off-world Mining | Regolith drill rig, ice melter, printed module kits | 5 |
 | Local Resources | Propellant plant, printed module kits | 6 |
 
 ## Decisions for Val
