@@ -70,7 +70,7 @@
 		return FALSE
 	return Shoot(target)
 
-/mob/living/simple_animal/hostile/human/nomad_raider/Shoot(target)
+/mob/living/simple_animal/hostile/human/nomad_raider/Shoot(atom/target)
 	if (QDELETED(src) || stat != CONSCIOUS || !ranged || !gun || QDELETED(gun) || gun.loc != src)
 		return FALSE
 	if (!party || !party.hostile || QDELETED(target) || target != target_mob || !party.foe_ok(target))
