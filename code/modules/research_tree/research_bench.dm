@@ -624,6 +624,12 @@ var/global/list/research_benches = list()
 	if (!user.civilization || user.civilization != faction)
 		to_chat(user, SPAN_WARNING("This research bench belongs to the [faction || "no-one"], not your faction."))
 		return
+	// Coins upgrade the bench and never depend on its subject, so take them
+	// before the subject check: a fresh tier-0 bench whose remaining nodes all
+	// need a higher tier could otherwise never be assigned OR upgraded.
+	if (!assigned_node && is_upgrade_coin(W))
+		try_feed_coins(W, user)
+		return
 	if (!assigned_node || !faction)
 		to_chat(user, SPAN_WARNING("Assign this bench a research subject first."))
 		return
@@ -731,17 +737,25 @@ var/global/list/research_benches = list()
 		try_advance_queue()
 		return
 
-	// Fallback: feeding coins counts toward the bench's tier upgrade. Only
-	// the three metal coin types (and their subtypes) -- NOT the money base,
-	// which also covers rubles/francs/euros/pounds/etc -- matching the
-	// resource forge's own coin check.
+	// Fallback: feeding coins counts toward the bench's tier upgrade.
+	try_feed_coins(W, user)
+
+// Only the three metal coin types (and their subtypes) -- NOT the money base,
+// which also covers rubles/francs/euros/pounds/etc -- matching the resource
+// forge's own coin check.
+/obj/structure/research_bench/proc/is_upgrade_coin(obj/item/W)
+	return istype(W, /obj/item/stack/money/coppercoin) || istype(W, /obj/item/stack/money/silvercoin) || istype(W, /obj/item/stack/money/goldcoin)
+
+// Feed coins toward the bench's next tier. Works with or without an assigned
+// subject (see attackby()).
+/obj/structure/research_bench/proc/try_feed_coins(obj/item/W, mob/living/human/user)
 	if (tier >= MAX_BENCH_TIER)
 		to_chat(user, SPAN_WARNING("This bench is already at maximum tier."))
 		return
 	if (tier >= era_max_tier())
 		to_chat(user, SPAN_WARNING("This bench can't be upgraded past tier [era_max_tier()] until your civilization advances to the next era."))
 		return
-	if (!istype(W, /obj/item/stack/money/coppercoin) && !istype(W, /obj/item/stack/money/silvercoin) && !istype(W, /obj/item/stack/money/goldcoin))
+	if (!is_upgrade_coin(W))
 		to_chat(user, SPAN_WARNING("This bench only accepts copper, silver or gold coins to upgrade."))
 		return
 	var/obj/item/stack/money/coins = W
