@@ -41,6 +41,20 @@ var/failures = 0
 /map_storage
 	var/last_error
 	var/dimension_recovery_required = FALSE
+	var/save_refused_for_world_effects = FALSE
+// World effects (explosions, fire) seen by the save wait; null when settled.
+var/fixture_effects = null
+var/fixture_effects_stuck = FALSE
+/map_storage/proc/durable_world_transition(transients)
+	return transients ? fixture_effects : null
+/map_storage/proc/durable_world_effects_stuck()
+	return fixture_effects_stuck
+/obj/map_metadata/proc/durable_nomads_transients_active()
+	return TRUE
+/proc/fixture_settle_effects()
+	set waitfor = FALSE
+	sleep(5)
+	fixture_effects = null
 /map_storage/proc/validate_world_save()
 	return TRUE
 /map_storage/proc/prepare_saved_dimensions(list/expected_intent)
@@ -85,11 +99,22 @@ var/failures = 0
 	var/change_mode_during_save = FALSE
 	var/aba_mode_during_save = FALSE
 	var/identity_calls = 0
+	var/effects_refusals = 0
+	var/saved_during_effects = 0
 	var/list/identity = list("version" = 1, "generation" = "round-v2:probe", "metadata" = "metadata-digest", "round" = "round-digest")
 /datum/persistence_restart_transaction/probe/supported()
 	return TRUE
 /datum/persistence_restart_transaction/probe/save_generation()
 	saves++
+	if(fixture_effects) saved_during_effects++
+	map_storage.save_refused_for_world_effects = FALSE
+	if(effects_refusals)
+		// An explosion queued during the save: refused, then it settles.
+		effects_refusals--
+		fixture_effects = "explosion work"
+		map_storage.save_refused_for_world_effects = TRUE
+		fixture_settle_effects()
+		return FALSE
 	if(concurrent) check(!execute(), "concurrent transaction admitted")
 	if(save_ok)
 		fdel("map_saves/save_complete.txt")
@@ -207,5 +232,31 @@ var/failures = 0
 		world.Reboot(0)
 		sleep(3)
 		check(native_calls == before + 1 && ordinary_calls == 1, "ordinary reboot adapter did not exercise deferred shutdown")
+		// Explosion work during the save: wait for it to settle and save again.
+		T = new_transaction()
+		T.effects_poll_interval = 1
+		T.effects_refusals = 1
+		before = native_calls
+		check(!T.execute() && T.saves == 2 && !T.saved_during_effects && T.restarts == 1 && native_calls == before + 1 && !T.busy, "save refused for world effects was not retried")
+		T = new_transaction()
+		T.effects_poll_interval = 1
+		T.effects_refusals = 10
+		check(!T.execute() && T.saves == T.effects_save_attempts && !T.restarts && !T.busy && !T.exists(), "world-effects retries were unbounded or restarted unsaved")
+		// Effects active before the save: wait first, give up after the timeout.
+		T = new_transaction()
+		T.effects_poll_interval = 1
+		fixture_effects = "explosion work"
+		fixture_settle_effects()
+		check(!T.execute() && T.saves == 1 && !T.saved_during_effects && T.restarts == 1, "save did not wait for active world effects")
+		T = new_transaction()
+		T.effects_poll_interval = 1
+		T.effects_settle_timeout = 3
+		fixture_effects = "explosion work"
+		check(!T.execute() && !T.saves && !T.restarts && !T.busy && findtext(T.last_error, "did not settle"), "unsettled world effects were saved")
+		fixture_effects_stuck = TRUE
+		T = new_transaction()
+		check(!T.execute() && !T.saves && findtext(T.last_error, "stuck"), "stuck world effects were waited on")
+		fixture_effects = null
+		fixture_effects_stuck = FALSE
 		text2file(json_encode(list("done" = TRUE, "checks" = checks, "failures" = failures)), "result.json")
 		shutdown()

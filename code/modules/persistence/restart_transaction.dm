@@ -16,6 +16,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	var/players_ready = FALSE
 	var/expected_generation
 	var/last_error
+	// The last attempt failed but left no intent and the server running, so a
+	// new save/restart may be accepted despite last_error.
+	var/save_failure_retryable = FALSE
 	var/intent_path = "map_saves/restart_intent.json"
 	var/lifecycle_operation
 	var/lifecycle_session
@@ -76,6 +79,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	world.log << "World restart transaction: [message]"
 	message_admins("World restart transaction: [message]")
 
+/datum/persistence_restart_transaction/proc/notify(message)
+	world.log << "World restart transaction: [message]"
+	message_admins("World restart transaction: [message]")
+
 /datum/persistence_restart_transaction/proc/supported()
 #ifdef OPENDREAM
 	return FALSE
@@ -85,6 +92,43 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 
 /datum/persistence_restart_transaction/proc/save_generation()
 	return ticker.savemap(src)
+
+// Explosions, fire and weather sweeps pause while the world saves, and any
+// that start during the save make it refuse to publish (their continuation is
+// not recorded). Wait for them to settle before each attempt and retry such a
+// refusal a few times instead of abandoning the whole restart.
+/datum/persistence_restart_transaction/var/effects_save_attempts = 3
+/datum/persistence_restart_transaction/var/effects_settle_timeout = 1800 // 3 minutes
+/datum/persistence_restart_transaction/var/effects_poll_interval = 10 // 1 second
+
+/datum/persistence_restart_transaction/proc/world_effects_transition()
+	return map_storage.durable_world_transition(map.durable_nomads_transients_active())
+
+/datum/persistence_restart_transaction/proc/wait_for_world_effects()
+	var/transition = world_effects_transition()
+	if(!transition) return
+	if(map_storage.durable_world_effects_stuck())
+		throw EXCEPTION("World effects are stuck ([transition]); server remains running")
+	// Progress only: report() sets last_error, which a supervisor reads as failure.
+	notify("Waiting for world effects to settle before saving ([transition])")
+	var/deadline = world.time + effects_settle_timeout
+	while(transition)
+		if(world.time >= deadline)
+			throw EXCEPTION("World effects did not settle within [round(effects_settle_timeout / 600, 0.1)] minutes ([transition]); server remains running")
+		sleep(effects_poll_interval)
+		transition = world_effects_transition()
+		if(transition && map_storage.durable_world_effects_stuck())
+			throw EXCEPTION("World effects are stuck ([transition]); server remains running")
+
+/datum/persistence_restart_transaction/proc/save_generation_settled()
+	for(var/attempt = 1, attempt <= effects_save_attempts, attempt++)
+		wait_for_world_effects()
+		diagnostic_phase = "save"
+		if(save_generation()) return TRUE
+		if(!map_storage.save_refused_for_world_effects || attempt >= effects_save_attempts) return FALSE
+		notify("World effects changed during save attempt [attempt]; waiting for them to settle and saving again")
+		to_chat(world, "<font color='yellow' size=4><b>Something exploded or caught fire during the save. The server will save again once it settles, then restart.</b></font>")
+	return FALSE
 
 /datum/persistence_restart_transaction/proc/saved_persistence_mode()
 	// Validate the mode actually serialized, not just samples of live state.
@@ -137,6 +181,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		return FALSE
 	busy = TRUE
 	diagnostic_phase = "notice"
+	// A new attempt owns the outcome; an earlier failure's message is stale.
+	last_error = null
+	save_failure_retryable = FALSE
+	map_storage.last_error = null
 	lifecycle_operation = shutdown ? operation : null
 	lifecycle_session = shutdown ? session : null
 	var/list/published
@@ -151,7 +199,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	try
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
 		diagnostic_phase = "save"
-		if(!save_generation()) throw EXCEPTION("World save failed; server remains running")
+		if(!save_generation_settled()) throw EXCEPTION("World save failed; server remains running")
 		diagnostic_phase = "post_save_validation"
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed during save")
 		if(!isnull(expected_persistence) && expected_persistence != saved_persistence_mode()) throw EXCEPTION("Saved persistence mode differs from the accepted mode")
@@ -183,6 +231,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 			catch(var/exception/cleanup_error)
 				cleanup = " Intent cleanup FAILED: [cleanup_error]. Further saves are blocked until the intent is resolved."
 		report("[e].[cleanup]")
+		save_failure_retryable = !exists()
 	busy = FALSE
 	diagnostic_phase = "failed"
 	expected_generation = null
