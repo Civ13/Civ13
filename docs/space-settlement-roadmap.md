@@ -303,6 +303,26 @@ come with phase 3, when there is something to save.
   out in about a minute (D4), so crewmates can drag them inside.
 - Hazards: dust storms (vision and solar loss), cold snaps, radiation events
   (shelter indoors), small meteor strikes that can breach modules.
+- Built (phase 4, `code/modules/space/pressure_suits.dm` and
+  `surface_hazards.dm`): Pressure Suits (after Sealed Habitats) unlocks the
+  pressure suit, pressure helmet, suit air tank and suit patch kit. Suit,
+  helmet and a tank with air on the back seal the wearer: each life tick on
+  unbreathable ground draws 2 seconds from a 30-minute tank, and the suit's
+  two-hour heater battery holds 20 C (a flat heater still insulates 30 C).
+  Hits of 3 or more brute or burn take half their damage off the suit's
+  integrity, and crater rubble sometimes scrapes it; at 25% the suit leaks
+  (the tank empties three times as fast) and at 0 it no longer seals. A patch
+  kit restores 50%. The tank refills from a module core (only the oxygen
+  above the breathable minimum) or a landed lander's reserve; the heater
+  recharges at a powered habitat heater. Warnings come at 5 and 1 minute of
+  air and at 10 minutes of heater, and the Status panel shows integrity,
+  heater and air. Hazards roll once a minute while a module or lander is
+  ticking: dust storms (10 min) blur sight on open ground and cut barren
+  solar to a fifth, cold snaps (15 min) drop the surface 35 C, solar flares
+  (4 min) irradiate people on open ground (the suit blocks 60%, a module or
+  lander all of it), and meteorites hole a barren-area module's hull with a
+  patchable breach. Hazard timers are not saved; a restart ends them. The
+  suits reuse the existing astronaut sprites and the tank has no worn sprite.
 
 ### Phase 5: rovers, mining and fabrication
 

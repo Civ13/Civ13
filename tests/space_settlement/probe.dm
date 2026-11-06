@@ -667,6 +667,94 @@ var/space_runtime_error = FALSE
 	space_check(sealed && support && ("crewed_flight" in sealed.prereqs) && ("sealed_habitats" in support.prereqs) && sealed.mode == RESEARCH_MODE_ANALYSIS && support.mode == RESEARCH_MODE_ANALYSIS, "Sealed Habitats and Life Support follow Crewed Flight as ordinary nodes")
 	space_check(get_recipe_node_req("/obj/item/habitat_kit/airlock") == "sealed_habitats" && get_recipe_node_req("/obj/item/habitat_sealant") == "sealed_habitats" && get_recipe_node_req("/obj/structure/life_support/electrolyser") == "life_support", "module kits and machines are gated on their nodes")
 
+// Phase 4: pressure suits and surface hazards.
+/mob/living/human/space_probe_crew/rad_act(amount)
+	radiation += amount
+
+/proc/space_eva_checks()
+	var/turf/R = locate(2, 3, 1)
+	R = R.ChangeTurf(/turf/floor/dirt/dust/regolith, FALSE, FALSE)
+	var/mob/living/human/space_probe_crew/H = new(R)
+	var/obj/item/clothing/suit/pressure_suit/S = new(H)
+	var/obj/item/clothing/head/pressure_helmet/M = new(H)
+	var/obj/item/pressure_tank/A = new(H)
+	H.wear_suit = S
+	H.back = A
+	space_check(!H.sealed_against_outside(), "a suit without its helmet does not seal")
+	H.head = M
+	space_check(H.sealed_against_outside() && A.air_seconds == SUIT_TANK_SECONDS && S.integrity == SUIT_INTEGRITY_MAX, "suit, helmet and a full tank seal the wearer")
+	space_check(!H.outside_exposure_step(R) && H.oxyloss == 0 && A.air_seconds == SUIT_TANK_SECONDS - SUIT_LIFE_SECONDS, "a sealed wearer breathes from the tank on regolith")
+	space_check(H.outside_temperature_c(R) == SUIT_ROOM_C && S.heater_charge == SUIT_HEATER_SECONDS - SUIT_LIFE_SECONDS, "the suit heater holds room temperature and drains its battery")
+	S.heater_charge = 0
+	space_check(H.outside_temperature_c(R) == BARREN_AMBIENT_C + SUIT_UNHEATED_INSULATION_C, "a flat heater leaves only the suit's insulation")
+	S.heater_charge = SUIT_HEATER_SECONDS
+	space_check(pressure_crossed(301, 299, SUIT_LOW_TANK_SECONDS) && !pressure_crossed(299, 297, SUIT_LOW_TANK_SECONDS), "low-air warnings fire once, as the tank crosses the line")
+
+	H.handle_suit_punctures(BRUTE, 2, "chest")
+	space_check(S.integrity == SUIT_INTEGRITY_MAX, "a graze does not wear the suit")
+	H.handle_suit_punctures(BRUTE, 10, "chest")
+	space_check(S.integrity == SUIT_INTEGRITY_MAX - 5, "hits wear down the suit's integrity")
+	S.integrity = SUIT_LEAKY_INTEGRITY
+	var/air = A.air_seconds
+	H.outside_exposure_step(R)
+	space_check(A.air_seconds == air - SUIT_LIFE_SECONDS * SUIT_LEAK_MULTIPLIER, "a badly worn suit leaks and empties the tank faster")
+	space_check(S.wear_down(SUIT_LEAKY_INTEGRITY) && !H.sealed_against_outside(), "a torn suit no longer seals")
+	space_check(H.outside_exposure_step(R) && H.oxyloss == HABITAT_SUFFOCATE_OXYLOSS, "a torn suit leaves the wearer suffocating")
+	H.oxyloss = 0
+	S.integrity = SUIT_INTEGRITY_MAX
+	A.air_seconds = 0
+	space_check(!H.sealed_against_outside(), "an empty tank does not seal")
+	var/obj/item/pressure_suit_patch/P = new(R)
+	space_check(!P.patch(S, null) && !QDELETED(P), "a patch kit is kept when the suit needs no patching")
+
+	var/obj/structure/habitat_core/Q = habitat_unfold(locate(5, 15, 1), "storage")
+	var/datum/habitat_ledger/L = Q.air()
+	var/oxygen = L.oxygen
+	var/used = pressure_tank_refill_from_ledger(A, L, null, Q)
+	space_check(A.air_seconds == SUIT_TANK_SECONDS && space_near(used, SUIT_TANK_SECONDS * HABITAT_BREATH_PER_SECOND) && space_near(L.oxygen, oxygen - used), "a tank refills from a module's oxygen")
+	A.air_seconds = 0
+	L.oxygen = HABITAT_MIN_OXYGEN_KPA * L.volume + 1
+	pressure_tank_refill_from_ledger(A, L, null, Q)
+	space_check(space_near(L.oxygen, HABITAT_MIN_OXYGEN_KPA * L.volume) && space_near(A.air_seconds, 1 / HABITAT_BREATH_PER_SECOND), "refilling never leaves the module unbreathable")
+	space_check(issaved(S.integrity) && issaved(S.heater_charge) && issaved(A.air_seconds), "suit and tank keep what is left as saved numbers")
+
+	// Hazards.
+	space_check(barren_ambient_c() == BARREN_AMBIENT_C && barren_hazard_start("cold") && barren_ambient_c() == BARREN_AMBIENT_C - BARREN_COLD_SNAP_DROP_C && R.outside_ambient_c() == barren_ambient_c(), "a cold snap drives the surface temperature down")
+	barren_hazards_step(BARREN_COLD_SECONDS, FALSE)
+	space_check(barren_ambient_c() == BARREN_AMBIENT_C && !barren_cold_seconds, "a cold snap ends on its timer")
+	H.radiation = 0
+	barren_hazard_start("flare")
+	H.barren_hazard_exposure(R)
+	space_check(H.radiation == BARREN_FLARE_DOSE, "a solar flare irradiates people on open ground")
+	var/turf/floor/habitat/F = locate(5, 15, 1)
+	H.loc = F
+	H.radiation = 0
+	H.outside_exposure_step(F)
+	space_check(H.radiation == 0 && !F.barren_open_ground() && R.barren_open_ground(), "a module shelters its occupants from a flare")
+	H.loc = R
+	barren_hazards_step(BARREN_FLARE_SECONDS, FALSE)
+	space_check(!barren_flare_seconds && !barren_hazard_start("nonsense"), "a flare passes and unknown hazards are refused")
+	var/area/caribbean/nomads/barren/plain = new
+	var/area/elsewhere = new /area/caribbean/nomads
+	space_check(barren_solar_factor(plain) == 1, "clear skies leave solar output alone")
+	barren_hazard_start("dust")
+	H.eye_blurry = 0
+	H.barren_hazard_exposure(R)
+	space_check(H.eye_blurry >= BARREN_DUST_BLUR && barren_solar_factor(plain) == BARREN_DUST_SOLAR_FACTOR && barren_solar_factor(elsewhere) == 1, "a dust storm blurs sight outside and chokes barren solar arrays")
+	barren_hazards_step(BARREN_DUST_SECONDS, FALSE)
+	space_check(!barren_dust_seconds, "a dust storm blows out on its timer")
+	H.loc = null
+
+	var/turf/hit = barren_meteor_strike(Q)
+	space_check(istype(hit, /turf/floor/dirt/dust/regolith/crater) && Q.breaches() == 1 && habitat_patchable(hit), "a meteorite holes a module's hull with a patchable breach")
+	space_check(isnull(barren_meteor_strike()), "meteorites only strike modules in the barren area")
+	barren_hazard_last_pulse = -1
+	space_check(!barren_hazards_pulse() && !barren_hazards_pulse(), "hazards roll at most once a minute")
+
+	var/datum/research_node/suits = get_research_node("pressure_suits")
+	space_check(suits && ("sealed_habitats" in suits.prereqs) && suits.mode == RESEARCH_MODE_ANALYSIS, "Pressure Suits follows Sealed Habitats as an ordinary node")
+	space_check(get_recipe_node_req("/obj/item/clothing/suit/pressure_suit") == "pressure_suits" && get_recipe_node_req("/obj/item/pressure_tank") == "pressure_suits" && get_recipe_node_req("/obj/item/pressure_suit_patch") == "pressure_suits", "suits, tanks and patches are gated on Pressure Suits")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -685,6 +773,7 @@ var/space_runtime_error = FALSE
 		space_exposure_checks()
 		space_flight_checks()
 		space_habitat_checks()
+		space_eva_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

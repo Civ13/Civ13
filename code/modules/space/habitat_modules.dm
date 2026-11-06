@@ -74,7 +74,7 @@ var/global/list/habitat_cores = list()
 
 /turf/floor/habitat/outside_ambient_c()
 	var/obj/structure/habitat_core/C = habitat_core()
-	return C ? C.air().temperature : BARREN_AMBIENT_C
+	return C ? C.air().temperature : barren_ambient_c()
 
 // ---------------------------------------------------------------- hatch
 
@@ -222,13 +222,14 @@ var/global/list/habitat_cores = list()
 /obj/structure/habitat_core/process()
 	if (!clients.len)
 		return
+	barren_hazards_pulse()
 	step_air(HABITAT_TICK_SECONDS, breathers())
 
 // One bounded step: breathing, leaks and cooling, then plants and machines,
 // then mixing through open hatches.
 /obj/structure/habitat_core/proc/step_air(seconds, occupants)
 	var/datum/habitat_ledger/L = air()
-	if (!L.advance(seconds, occupants, breaches(), BARREN_AMBIENT_C))
+	if (!L.advance(seconds, occupants, breaches(), barren_ambient_c()))
 		return FALSE
 	var/dt = habitat_clamp(seconds, 0, HABITAT_MAX_STEP_SECONDS)
 	for (var/turf/T in interior())
