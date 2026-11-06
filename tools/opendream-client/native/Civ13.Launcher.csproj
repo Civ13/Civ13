@@ -35,6 +35,7 @@
 
     <Compile Include="LocalHosting.cs" />
     <Compile Include="LocalBot.cs" />
+    <Compile Include="LocalHelp.cs" />
     <Compile Include="DiscordPresence.cs" />
     <Compile Include="DiscordSignIn.cs" />
     <Compile Include="Social/*.cs" />

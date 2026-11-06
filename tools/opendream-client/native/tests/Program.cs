@@ -50,6 +50,7 @@ try {
     if (args.SequenceEqual(new[] { "--hosting-only" })) {
         LocalHostingTests.Run(root);
         LocalBotTests.Run(root);
+        LocalHelpTests.Run(root);
         return 0;
     }
     if (args.SequenceEqual(new[] { "--presence-only" })) {
@@ -72,6 +73,7 @@ try {
     assertions += await TopicPacingTests.Run(root);
     assertions += LocalHostingTests.Run(root);
     assertions += LocalBotTests.Run(root);
+    assertions += LocalHelpTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);
     assertions += await DiscordSignInTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";

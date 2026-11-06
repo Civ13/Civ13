@@ -171,7 +171,7 @@ public static class LocalHosting {
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update"];
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
