@@ -496,6 +496,30 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['gaia', 'deep'], sorted(json.loads(out.getvalue())['accepted'], reverse=True))
         self.assertEqual([('kill', 'gaia'), ('kill', 'deep'), ('force-restart', 'gaia'), ('force-restart', 'deep')], calls)
 
+    def test_unlock_and_force_unlock_reach_every_region(self):
+        self.write_group()
+        calls = []
+
+        class Region:
+            def __init__(self, name, running):
+                self.name, self.running = name, running
+
+            def unlock(self, force=False):
+                calls.append((self.name, force))
+                if self.running and not force:
+                    raise shard_group.Refused('the server is running')
+                return {'removed': ['1.sav.lk'], 'forced': force}
+
+        regions = [({'id': 'gaia'}, Region('gaia', True)), ({'id': 'deep'}, Region('deep', False))]
+        for action, force in (('unlock', False), ('force-unlock', True)):
+            out = io.StringIO()
+            with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch('sys.stdout', out):
+                self.assertEqual(0, shard_group.main(['--config', str(self.path), action]))
+            answer = json.loads(out.getvalue())
+            self.assertIn('deep', answer['done'])
+            self.assertEqual(force, 'gaia' in answer['done'])
+        self.assertEqual([('gaia', False), ('deep', False), ('gaia', True), ('deep', True)], calls)
+
     def test_status_checks_the_answering_world_is_the_region(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)

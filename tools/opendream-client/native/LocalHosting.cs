@@ -127,7 +127,8 @@ public static class LocalHosting {
     }
 
     // kill is a forced stop without a save; force-restart kills if running, then starts from the last completed save.
-    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart"];
+    // unlock removes stale BYOND lock files from a stopped server's save; force-unlock even if it looks running.
+    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart", "unlock", "force-unlock"];
 
     // Only the action name reaches the script; its config file names every path and command.
     public static ProcessStartInfo ControlStep(HostControl control, string action) {
@@ -155,6 +156,7 @@ public static class LocalHosting {
             if (!ok.GetBoolean())
                 return new ControlAnswer(false, "Refused: " + (Str(json, "refused") ?? Str(json, "error") ?? "no reason given"), false);
             if (action == "status") return new ControlAnswer(true, Describe(json), Bool(json, "busy"));
+            if (action is "unlock" or "force-unlock") return new ControlAnswer(true, DescribeUnlock(json), false);
             if (action == "kill")
                 return Bool(json, "killed") ? new ControlAnswer(true, "Server force-stopped without saving. The next start loads the last completed save.", false)
                     : new ControlAnswer(false, "The host script did not stop the server.", false);
@@ -171,7 +173,7 @@ public static class LocalHosting {
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop"];
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
@@ -305,6 +307,14 @@ public static class LocalHosting {
                 }
                 return new ControlAnswer(true, regions.Count == 0 ? "The group has no regions." : "Group: " + string.Join("; ", regions) + ".", busy);
             }
+            if (action is "unlock" or "force-unlock") {
+                var lines = new List<string>();
+                if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
+                    foreach (var region in done.EnumerateObject().Take(16))
+                        if (region.Value.ValueKind == JsonValueKind.Object) lines.Add(Clean(region.Name) + ": " + DescribeUnlock(region.Value));
+                if (refused != null) lines.Add("Refused: " + refused + ".");
+                return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script did not check any region." : string.Join(" ", lines), false);
+            }
             // kill finishes at once and lists the regions it stopped under "done"; the others hand off to a worker.
             var acceptedName = action == "kill" ? "done" : "accepted";
             var accepted = json.TryGetProperty(acceptedName, out var acceptedJson) && acceptedJson.ValueKind == JsonValueKind.Object
@@ -324,6 +334,15 @@ public static class LocalHosting {
             if (refused != null) message += " Refused: " + refused + ".";
             return new ControlAnswer(true, message, true);
         }
+    }
+
+    // {"removed": [names], "forced", "server_running", "save": generation | "save_refused": reason}
+    public static string DescribeUnlock(JsonElement json) {
+        var removed = json.TryGetProperty("removed", out var list) && list.ValueKind == JsonValueKind.Array ? list.GetArrayLength() : 0;
+        var text = removed == 0 ? "no lock files." : $"removed {removed} lock file{(removed == 1 ? "" : "s")}.";
+        if (Str(json, "save_refused") is { Length: > 0 } refusal) text += " The save still does not load: " + refusal + ".";
+        else if (json.TryGetProperty("save", out _)) text += " The save is ready to load.";
+        return text;
     }
 
     private static string? Refusals(JsonElement json) {
