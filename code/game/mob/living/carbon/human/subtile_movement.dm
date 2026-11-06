@@ -192,7 +192,26 @@
 /mob/living/human/proc/human_subtile_ready(direction)
 	if (persistence_save_in_progress && pulling && subtile_pull_ownership.owners[pulling])
 		return FALSE
-	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
+	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked() && !human_subtile_trench_crossing(direction)
+
+// Climbing into or out of a trench (or onto a bridge or frame over one) waits
+// inside turf Enter/Exit. A sleeping Enter/Exit fails the native pixel Move at
+// once, so a smooth step would stall at the edge. From a tile-aligned position,
+// such a crossing takes the ordinary tile path, which owns that climb.
+/mob/living/human/proc/human_subtile_trench_crossing(direction)
+	if (step_x || step_y || !isturf(loc))
+		return FALSE
+	var/turf/origin = loc
+	var/level = origin.trench_climb_level()
+	var/list/fronts = list(direction)
+	if (direction & (direction - 1))
+		fronts += direction & (NORTH | SOUTH)
+		fronts += direction & (EAST | WEST)
+	for (var/front_direction in fronts)
+		var/turf/front = get_step(origin, front_direction)
+		if (front && front.trench_climb_level() != level)
+			return TRUE
+	return FALSE
 
 // Fine input never falls back to tile movement or takes ownership of a link.
 /mob/living/human/proc/human_subtile_fine_ready(direction)
@@ -266,7 +285,7 @@
 	return owner && client == owner && owner.mob == src && owner.canmove
 
 /mob/living/human/proc/human_subtile_crawl_ready(direction)
-	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned)
+	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned) && !human_subtile_trench_crossing(direction)
 
 /mob/living/human/proc/human_subtile_crawl_move(turf/n, duration, posture)
 	var/direct = get_dir(src, n)
