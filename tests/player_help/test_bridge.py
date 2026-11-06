@@ -100,6 +100,12 @@ class BridgeTests(unittest.TestCase):
             path.write_text(json.dumps(dict(base, keep_alive=bad)))
             with self.assertRaises(ValueError, msg=repr(bad)):
                 bridge.load_config(path)
+        path.write_text(json.dumps(dict(base, evidence_chars=16000)))
+        self.assertEqual(bridge.load_config(path)['evidence_chars'], 16000)
+        for bad in (100, 64000, '16000', 16000.5):
+            path.write_text(json.dumps(dict(base, evidence_chars=bad)))
+            with self.assertRaises(ValueError, msg=repr(bad)):
+                bridge.load_config(path)
 
     def test_reviewed_code_and_wiki_retrieval(self):
         wiki = self.root / 'wiki'

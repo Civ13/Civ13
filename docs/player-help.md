@@ -147,6 +147,11 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    (default `30m`) tells Ollama how long to keep the model loaded after an
    answer; its own default of five minutes makes the first question after a
    quiet spell wait for a model reload. `-1` keeps it loaded until Ollama stops.
+   `evidence_chars` (optional, 4000..32000) caps the retrieved evidence sent
+   with each question. A 32768 window sends up to 32000 characters, about
+   9000 tokens, and the model reads all of it for every new question, so on a
+   host that reads prompts at under 1000 tokens/s this is most of the answer
+   time; 16000 roughly halves it at the cost of fewer evidence excerpts.
    Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
    outstanding questions, one per account, and a 30-second per-account cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
