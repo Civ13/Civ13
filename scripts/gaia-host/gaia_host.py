@@ -850,9 +850,9 @@ class Host:
         Safe (the default) refuses while the world is running, frozen or has an
         action in progress, and while the save is unusable for any reason besides
         its lock files. force skips those checks and names each one it skipped.
-        Either way the files are moved into <state_dir>/lk-quarantine/<time>/, never
-        deleted, and the save is checked again afterwards. A lock file DreamDaemon
-        still holds open cannot be moved and is reported as in use.
+        Either way the lock files are deleted and the save is checked again
+        afterwards. A lock file DreamDaemon still holds open cannot be deleted and
+        is reported as in use.
         """
         saves = self.repo / 'map_saves'
         locks = sorted(p for p in saves.glob('*.lk') if p.is_file()) if saves.is_dir() else []
@@ -871,16 +871,14 @@ class Host:
             reasons.append(str(refusal))
         if reasons and not force:
             raise Refused('; '.join(reasons) + ' (unlock force skips these checks)')
-        quarantine = self.state_dir / 'lk-quarantine' / str(int(self.platform.now()))
-        quarantine.mkdir(parents=True, exist_ok=True)
-        moved, in_use = [], []
+        removed, in_use = [], []
         for path in locks:
             try:
-                shutil.move(str(path), str(quarantine / path.name))
-                moved.append(path.name)
+                path.unlink()
+                removed.append(path.name)
             except OSError:
                 in_use.append(path.name)
-        answer = {'unlocked': moved, 'quarantine': str(quarantine), 'forced': reasons if force else []}
+        answer = {'unlocked': removed, 'forced': reasons if force else []}
         if in_use:
             answer['in_use'] = in_use
         return dict(answer, **self.save_answer(saves))

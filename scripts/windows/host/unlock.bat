@@ -1,9 +1,9 @@
 @echo off
-rem unlock.bat [REGION] [force] - move the stale BYOND lock files (*.lk) a forced stop or crash left in
-rem a region's map_saves into <region>\data\shard-host\lk-quarantine\<time>\, then check the save again.
+rem unlock.bat [REGION] [force] - delete the stale BYOND lock files (*.lk) a forced stop or crash left in
+rem a region's map_saves, then check the save again.
 rem Safe by default: a region that is running, asleep or mid-action, or whose save is broken for any
-rem other reason, is refused and left alone. "force" moves the files anyway and lists what it skipped.
-rem Nothing is ever deleted. Run status.bat first; start.bat afterwards.
+rem other reason, is refused and left alone. "force" deletes the files anyway and lists what it skipped.
+rem Only *.lk files are touched. Run status.bat first; start.bat afterwards.
 setlocal
 call "%~dp0_env.bat" || exit /b 2
 set "REGION_ARG="

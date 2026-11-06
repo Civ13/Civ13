@@ -596,8 +596,8 @@ class ForcedStopTests(GaiaHostTests):
 
 
 class UnlockTests(GaiaHostTests):
-    """unlock moves the BYOND lock files a kill during a load or save leaves behind,
-    so the next start is not refused. It never deletes them."""
+    """unlock deletes the BYOND lock files a kill during a load or save leaves behind,
+    so the next start is not refused."""
 
     def locked_save(self, names=('2.sav.lk',)):
         saves = self.repo / 'map_saves'
@@ -608,23 +608,21 @@ class UnlockTests(GaiaHostTests):
             gaia_host.check_save(saves)
         return saves
 
-    def test_unlock_moves_stale_locks_and_the_save_then_loads(self):
+    def test_unlock_deletes_stale_locks_and_the_save_then_loads(self):
         saves = self.locked_save(('1.sav.lk', '2.sav.lk'))
+        before = sorted(p.name for p in saves.iterdir() if p.suffix != '.lk')
         result = self.host.unlock()
-        self.assertEqual(['1.sav.lk', '2.sav.lk'], result['unlocked'])
-        self.assertEqual(MARKER, result['generation'])
-        self.assertEqual([], result['forced'])
-        self.assertFalse(list(saves.glob('*.lk')))
-        quarantine = Path(result['quarantine'])
-        self.assertEqual(self.host.state_dir / 'lk-quarantine', quarantine.parent)
-        self.assertEqual(['1.sav.lk', '2.sav.lk'], sorted(p.name for p in quarantine.iterdir()))
+        self.assertEqual({'unlocked': ['1.sav.lk', '2.sav.lk'], 'forced': [], 'generation': MARKER}, result)
+        self.assertEqual(before, sorted(p.name for p in saves.iterdir()))  # only the locks went
         self.assertEqual(MARKER, gaia_host.check_save(saves))
 
     def test_unlock_with_no_locks_changes_nothing(self):
-        write_save(self.repo / 'map_saves')
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        before = sorted(p.name for p in saves.iterdir())
         result = self.host.unlock()
         self.assertEqual({'unlocked': [], 'forced': [], 'generation': MARKER}, result)
-        self.assertFalse((self.host.state_dir / 'lk-quarantine').exists())
+        self.assertEqual(before, sorted(p.name for p in saves.iterdir()))
 
     def test_unlock_refuses_a_running_world_unless_forced(self):
         saves = self.locked_save()
@@ -658,12 +656,12 @@ class UnlockTests(GaiaHostTests):
 
     def test_unlock_reports_a_lock_still_held_open(self):
         saves = self.locked_save(('1.sav.lk', '2.sav.lk'))
-        real_move = gaia_host.shutil.move
-        def move(source, destination):
-            if source.endswith('2.sav.lk'):
+        real_unlink = Path.unlink
+        def unlink(path, missing_ok=False):
+            if path.name == '2.sav.lk':
                 raise PermissionError('in use')
-            return real_move(source, destination)
-        with unittest.mock.patch.object(gaia_host.shutil, 'move', move):
+            return real_unlink(path, missing_ok=missing_ok)
+        with unittest.mock.patch.object(Path, 'unlink', unlink):
             result = self.host.unlock()
         self.assertEqual(['1.sav.lk'], result['unlocked'])
         self.assertEqual(['2.sav.lk'], result['in_use'])
