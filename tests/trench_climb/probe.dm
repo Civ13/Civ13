@@ -67,6 +67,18 @@ var/trench_climb_probe_checks = 0
 	for (var/tx in 2 to 10)
 		new /turf/floor/trench(locate(tx, 5, 1))
 
+	// A body already left at the trench edge by a smooth step can still climb
+	// out: its own overlap no longer blocks the exit, and it lands aligned.
+	var/mob/living/human/trench_climb_probe/E = trench_climb_probe_actor(7, 5)
+	E.human_subtile_position = list("x" = 7, "y" = 5, "z" = 1, "sx" = 0, "sy" = 30)
+	E.human_subtile_import_owned = TRUE
+	E.after_load()
+	trench_climb_probe_assert(E.y == 5 && E.step_y == 30 && E.human_subtile_eligible(NORTH), "edge_offset_fixture")
+	E.dir = NORTH
+	E.SelfMove(get_step(E, NORTH), NORTH, world.time + 4)
+	sleep(25)
+	trench_climb_probe_assert(trench_climb_probe_at(E, 7, 6) && !E.human_subtile_offset_owned, "edge_offset_climbs_out_aligned")
+
 	// Leaving a trench from the tile centre takes the tile path and its climb.
 	var/mob/living/human/trench_climb_probe/A = trench_climb_probe_actor(3, 5)
 	trench_climb_probe_assert(!A.human_subtile_eligible(NORTH) && !A.human_subtile_eligible(NORTHEAST), "climb_out_uses_tile_path")
@@ -89,17 +101,6 @@ var/trench_climb_probe_checks = 0
 	C.SelfMove(get_step(C, EAST), EAST, world.time + 4)
 	trench_climb_probe_assert(trench_climb_probe_at(C, 9, 5), "smooth_walk_along_trench")
 
-	// A body already left at the trench edge by a smooth step can still climb
-	// out: its own overlap no longer blocks the exit, and it lands aligned.
-	var/mob/living/human/trench_climb_probe/E = trench_climb_probe_actor(7, 5)
-	E.human_subtile_position = list("x" = 7, "y" = 5, "z" = 1, "sx" = 0, "sy" = 30)
-	E.human_subtile_import_owned = TRUE
-	E.after_load()
-	trench_climb_probe_assert(E.y == 5 && E.step_y == 30 && E.human_subtile_eligible(NORTH), "edge_offset_fixture")
-	E.dir = NORTH
-	E.SelfMove(get_step(E, NORTH), NORTH, world.time + 4)
-	sleep(25)
-	trench_climb_probe_assert(trench_climb_probe_at(E, 7, 6) && !E.human_subtile_offset_owned, "edge_offset_climbs_out_aligned")
 
 /world/New()
 	OpenPort("none")

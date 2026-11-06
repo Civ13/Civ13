@@ -17,5 +17,5 @@ bash scripts/cloud_byond_setup.sh
 python3 tests/trench_climb/run.py --byond-bin "$HOME/byond-516.1688/byond/bin"
 ```
 
-On master before the fix the probe fails at `climb_out_uses_tile_path`; with
-only the eligibility check removed it fails at `edge_offset_climbs_out_aligned`.
+On master before the fix the probe fails at `edge_offset_climbs_out_aligned`:
+the body stays at the trench edge, 30px into its tile.
