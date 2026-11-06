@@ -29,7 +29,7 @@ class CurrentRoundMetadata(unittest.TestCase):
     def exercise(self, *, control=None, compiler_log=None, identity_error_at=None,
                  actual=None, expected_error=None, launches=2, current_mode=True, archive_mode=False):
         if compiler_log is None:
-            compiler_log = CLEAN if current_mode else CLEAN.replace('516.1688', '516.1681')
+            compiler_log = CLEAN
         with tempfile.TemporaryDirectory(prefix='round-metadata-injected-') as directory:
             root = Path(directory)
             binary, output = root / 'bin', root / 'evidence'
@@ -119,7 +119,7 @@ class CurrentRoundMetadata(unittest.TestCase):
                 self.assertTrue(all(row['exit'] == 0 for row in summary['processes']))
                 self.assertFalse(summary['opendream_verified'])
                 self.assertFalse(summary['rpo_verified'])
-                self.assertEqual(summary['toolchain_mode'], 'current-archive' if archive_mode else ('current-linux' if current_mode else 'historical-516.1681'))
+                self.assertEqual(summary['toolchain_mode'], 'current-archive' if archive_mode else ('current-linux' if current_mode else 'windows-pinned'))
                 self.assertEqual(summary['archive_identity_verified'], current_mode)
                 for row in summary['processes']:
                     self.assertEqual('runtime_identity' in row, current_mode and not archive_mode)
@@ -145,11 +145,13 @@ class CurrentRoundMetadata(unittest.TestCase):
             with self.assertRaises(SystemExit): RUNNER.main()
         create.assert_not_called(); select.assert_not_called(); launch.assert_not_called()
 
-    def test_default_windows_mode_retains_exact_historical_runner_without_archive(self):
+    def test_default_windows_mode_accepts_only_the_pinned_compiler(self):
+        # The Windows runner checks the banner against tools/byond/version.json;
+        # the pin advanced past 516.1681, so that banner is now refused.
         for control in EXPECTED:
             with self.subTest(control=control):
                 self.exercise(control=control, current_mode=False)
-        self.exercise(current_mode=False, compiler_log=CLEAN,
+        self.exercise(current_mode=False, compiler_log=CLEAN.replace('516.1688', '516.1681'),
                       expected_error='full pinned compiler banner', launches=1)
 
     def test_current_linux_mode_refuses_windows_before_any_effect(self):

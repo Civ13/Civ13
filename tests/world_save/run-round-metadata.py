@@ -140,7 +140,7 @@ def main():
         raise RuntimeError(f'Unexpected round metadata result: {actual!r}; expected {expected!r}')
     (output / 'summary.json').write_text(json.dumps({'scope': __doc__, 'result': actual,
         'negative_control': args.negative_control, 'sources_sha256': hashes, 'processes': processes,
-        'toolchain_mode': 'current-archive' if runtime else ('current-linux' if args.current_linux_toolchain else 'historical-516.1681'),
+        'toolchain_mode': 'current-archive' if runtime else ('current-linux' if args.current_linux_toolchain else 'windows-pinned'),
         'archive_identity_verified': bool(runtime or args.current_linux_toolchain),
         'opendream_verified': False, 'rpo_verified': False}, indent=2), encoding='utf-8')
     print(f'PASS: ordinary round metadata {args.negative_control or "positive"}')
