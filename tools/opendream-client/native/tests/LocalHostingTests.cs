@@ -157,6 +157,43 @@ static class LocalHostingTests {
         Require(deployStep.FileName.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) && deployStep.CreateNoWindow && deployStep.RedirectStandardOutput && deployStep.RedirectStandardInput &&
             deployStep.ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy }), "deploy step changed");
         Require(LocalHosting.GroupScriptStep(host.Control!, "restart-host").ArgumentList.Last() == restartHost, "restart-host step changed");
+        Require(LocalHosting.GroupScriptStep(host.Control!, "deploy", resume: true).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "continue" }), "deploy continue step changed");
+        try { LocalHosting.GroupScriptStep(host.Control!, "restart-host", resume: true); throw new Exception("restart-host continue accepted"); } catch (ArgumentException) { assertions++; }
+        Require(LocalHosting.GroupScriptStep(host.Control!, "deploy", true, ["gaia", "mars"]).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "continue", "gaia", "mars" })
+            && LocalHosting.GroupScriptStep(host.Control!, "deploy", regions: ["gaia"]).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "gaia" }), "deploy for chosen regions");
+        foreach (var bad in new[] { "&calc", "Gaia", "-x x" }) {
+            try { LocalHosting.GroupScriptStep(host.Control!, "deploy", regions: [bad]); throw new Exception("bad deploy region accepted: " + bad); } catch (ArgumentException) { assertions++; }
+        }
+        try { LocalHosting.GroupScriptStep(host.Control!, "restart-host", regions: ["gaia"]); throw new Exception("restart-host regions accepted"); } catch (ArgumentException) { assertions++; }
+        File.WriteAllText(groupConfig, "{\"group\": \"earth\", \"mainland\": \"gaia\", \"regions\": [{\"id\": \"railyard\", \"name\": \"Rail Yard\"}, {\"id\": \"gaia\", \"name\": \"Gaia\"}, {\"id\": \"Bad Id\", \"name\": \"x\"}, {\"id\": \"mars\", \"name\": \"Mars\"}]}");
+        var listed = LocalHosting.GroupRegions(host.Control!.Group!);
+        Require(listed.SequenceEqual(new[] { new LocalHosting.GroupRegion("railyard", "Rail Yard", false), new LocalHosting.GroupRegion("gaia", "Gaia", true), new LocalHosting.GroupRegion("mars", "Mars", false) }),
+            "group regions: " + string.Join(" | ", listed));
+        File.WriteAllText(groupConfig, "{\"regions\": [{\"id\": \"gaia\", \"name\": \"Gaia\"}, {\"id\": \"mars\", \"name\": \"Mars\"}]}");
+        Require(LocalHosting.GroupRegions(host.Control!.Group!)[0].Mainland, "the first region is the default mainland");
+        File.WriteAllText(groupConfig, "{\"regions\": []}");
+        Reject(() => LocalHosting.GroupRegions(host.Control!.Group!), "a group with no regions");
+        File.WriteAllText(groupConfig, "");
+        Require(LocalHosting.GroupStep(host.Control!, "kill", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "kill", "--region", "gaia" }), "one-region kill argv");
+        Require(LocalHosting.GroupStep(host.Control!, "check-update").ArgumentList.Last() == "check-update", "group check-update not allowed");
+        foreach (var bad in new[] { "--all", "Gaia", "", "a b", @"..\x", new string('a', 33) }) {
+            try { LocalHosting.GroupStep(host.Control!, "kill", bad); throw new Exception("bad region id accepted: " + bad); } catch (ArgumentException) { assertions++; }
+        }
+        // deploy.bat exit 3: which regions did not save (still running, nothing under way) and why.
+        var deployOutput = "[2/6] Saving and stopping every region...\n{\"accepted\": {\"railyard\": {\"accepted\": true}, \"mars\": {\"accepted\": true}}, \"refused\": {\"gaia\": \"the world is busy or not ready, so it cannot save now\", \"moon\": \"the server is not running\"}, \"ok\": true}\n" +
+            "gaia failed: it is still running and not saving\n";
+        var afterStop = "{\"group\": \"earth\", \"regions\": {" +
+            "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"listening\": true, \"busy\": false, \"operation\": {\"action\": \"start\", \"phase\": \"done\", \"error\": null}}, " +
+            "\"railyard\": {\"name\": \"Rail Yard\", \"state\": \"stopped\", \"listening\": false, \"busy\": false, \"operation\": {\"action\": \"stop\", \"phase\": \"stopped\", \"error\": null}}, " +
+            "\"mars\": {\"name\": \"Mars\", \"state\": \"awake\", \"listening\": true, \"busy\": false, \"operation\": {\"action\": \"stop\", \"phase\": \"failed\", \"error\": \"the world reported a save error: disk full\"}}, " +
+            "\"moon\": {\"name\": \"Moon\", \"state\": \"cold\", \"listening\": false, \"busy\": false}, " +
+            "\"barren\": {\"name\": \"Still saving\", \"state\": \"awake\", \"listening\": true, \"busy\": true}}, \"ok\": true}";
+        var unsaved = LocalHosting.UnsavedRegions(afterStop, deployOutput);
+        Require(unsaved.Count == 2 && unsaved[0] == new LocalHosting.UnsavedRegion("gaia", "Gaia", "its save was refused: the world is busy or not ready, so it cannot save now")
+            && unsaved[1] == new LocalHosting.UnsavedRegion("mars", "Mars", "the world reported a save error: disk full"),
+            "unsaved regions: " + string.Join(" | ", unsaved));
+        Require(LocalHosting.UnsavedRegions("Traceback", deployOutput).Count == 0 && LocalHosting.UnsavedRegions(afterStop, "").Count == 2, "unsaved garbage");
+        Require(LocalHosting.UnsavedRegions("{\"regions\": {\"../x\": {\"listening\": true}}}", "").Count == 0, "unsafe region id offered for a kill");
         try { LocalHosting.GroupScriptStep(host.Control!, @"..\evil"); throw new Exception("unknown group script accepted"); } catch (ArgumentException) { assertions++; }
         File.Delete(deploy);
         Reject(() => LocalHosting.Load(launcher), "control.group without deploy.bat in the checkout");

@@ -13,13 +13,15 @@ public sealed record BotStatus(bool Ok, bool Running, bool StopPending, string? 
 // One component's answer to check-update: the server (gaia_host.py) and the bot (control.php) share this shape.
 public sealed record UpdateCheck(bool Ok, string Component, string Current, string Available, int Behind, bool CanUpdate, string? Reason, string? Error) {
     public bool HasUpdate => Ok && Behind > 0;
+    // The only thing in the way is a running server: a save, update and restart (deploy) can still run.
+    public bool OnlyNeedsStop => HasUpdate && !CanUpdate && Reason is "stop the server before updating" or "stop the region before updating";
 
-    public string Describe() {
+    public string Describe(bool withReason = true) {
         if (!Ok) return "Check failed: " + (Error ?? "no answer");
         var at = Short(Current);
         if (Behind <= 0) return $"Up to date ({at}).";
         var line = $"Update available: {Behind} new commit{(Behind == 1 ? "" : "s")} ({at} -> {Short(Available)}).";
-        return CanUpdate || string.IsNullOrEmpty(Reason) ? line : line + " " + Capital(Reason) + ".";
+        return !withReason || CanUpdate || string.IsNullOrEmpty(Reason) ? line : line + " " + Capital(Reason) + ".";
     }
 
     private static string Short(string sha) => sha.Length >= 7 ? sha[..7] : (sha.Length > 0 ? sha : "unknown");
