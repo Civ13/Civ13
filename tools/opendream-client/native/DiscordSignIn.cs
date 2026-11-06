@@ -16,21 +16,25 @@ public sealed record DiscordSignInSettings(string ClientId, Uri SigninUrl) {
     public const int RedirectPort = 53134;
     public static readonly string RedirectUri = $"http://127.0.0.1:{RedirectPort}/discord";
 
-    // Off unless discord.json names the sign-in service: {"signin_url": "https://.../signin"}.
+    // The Civ13 sign-in service. discord.json can point elsewhere with "signin_url",
+    // or turn the sign-in link off with "signin_url": "".
+    public const string BuiltInSigninUrl = "https://signin.valzargaming.com/signin";
+
     // The client ID is the presence application's unless discord.json overrides it.
     public static DiscordSignInSettings? Load(string root) {
         var clientId = PresenceSettings.ValidId(PresenceSettings.BuiltInApplicationId);
-        Uri? url = null;
+        var url = ValidUrl(BuiltInSigninUrl);
         try {
             var path = Path.Combine(root, PresenceSettings.FileName);
-            if (!File.Exists(path)) return null;
-            using var document = JsonDocument.Parse(File.ReadAllText(path));
-            var json = document.RootElement;
-            if (json.TryGetProperty("signin_client_id", out var id) && id.ValueKind == JsonValueKind.String)
-                clientId = PresenceSettings.ValidId(id.GetString()) ?? clientId;
-            if (json.TryGetProperty("signin_url", out var value) && value.ValueKind == JsonValueKind.String)
-                url = ValidUrl(value.GetString());
-        } catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException) { return null; }
+            if (File.Exists(path)) {
+                using var document = JsonDocument.Parse(File.ReadAllText(path));
+                var json = document.RootElement;
+                if (json.TryGetProperty("signin_client_id", out var id) && id.ValueKind == JsonValueKind.String)
+                    clientId = PresenceSettings.ValidId(id.GetString()) ?? clientId;
+                if (json.TryGetProperty("signin_url", out var value) && value.ValueKind == JsonValueKind.String)
+                    url = ValidUrl(value.GetString());
+            }
+        } catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException) { }
         return clientId != null && url != null ? new DiscordSignInSettings(clientId, url) : null;
     }
 

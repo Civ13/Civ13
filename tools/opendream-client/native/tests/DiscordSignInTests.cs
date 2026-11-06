@@ -29,10 +29,14 @@ static class DiscordSignInTests {
         Directory.CreateDirectory(folder);
         void Settings(string json) => File.WriteAllText(Path.Combine(folder, PresenceSettings.FileName), json);
 
-        // Off unless discord.json names an HTTPS sign-in service.
-        Require(DiscordSignInSettings.Load(folder) == null, "on without discord.json");
+        // On by default with the Civ13 service; discord.json can repoint it or turn it off.
+        Require(DiscordSignInSettings.Load(folder)?.SigninUrl.AbsoluteUri == DiscordSignInSettings.BuiltInSigninUrl, "built-in service missing");
         Settings("{\"show_activity\": true}");
-        Require(DiscordSignInSettings.Load(folder) == null, "on without signin_url");
+        Require(DiscordSignInSettings.Load(folder)?.SigninUrl.AbsoluteUri == DiscordSignInSettings.BuiltInSigninUrl, "built-in service lost");
+        Settings("{\"signin_url\": \"\"}");
+        Require(DiscordSignInSettings.Load(folder) == null, "empty signin_url did not turn sign-in off");
+        Settings("{not json");
+        Require(DiscordSignInSettings.Load(folder)?.SigninUrl.AbsoluteUri == DiscordSignInSettings.BuiltInSigninUrl, "broken discord.json dropped the built-in service");
         foreach (var bad in new[] { "http://example.test/signin", "https://user:pw@example.test/signin", "https://example.test/signin?x=1", "not a url" }) {
             Settings(JsonSerializer.Serialize(new { signin_url = bad }));
             Require(DiscordSignInSettings.Load(folder) == null, "accepted sign-in URL " + bad);
