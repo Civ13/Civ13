@@ -69,9 +69,9 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage')
+           'kill', 'force-restart', 'stage', 'unlock')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
-DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage')
+DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
@@ -443,11 +443,12 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def check_save(saves):
+def check_save(saves, ignore_locks=False):
     """Return the saved generation, or raise Refused if the save cannot be loaded.
 
     An empty folder is a fresh world. A restart intent left by save-and-stop
-    must belong to the saved generation.
+    must belong to the saved generation. ignore_locks skips only the BYOND lock
+    file check, so unlock can tell a sound save with stale locks from a broken one.
     """
     if saves.is_symlink() or not saves.is_dir():
         raise Refused('map_saves is missing or is a link')
@@ -471,7 +472,7 @@ def check_save(saves):
         level = saves / ('%d.sav' % z)
         if not (level.is_file() and level.stat().st_size):
             raise Refused('level %d of the save is missing' % z)
-    if any(name.endswith('.lk') for name in names):
+    if not ignore_locks and any(name.endswith('.lk') for name in names):
         raise Refused('the save still has BYOND lock files')
     intent_path = saves / 'restart_intent.json'
     if intent_path.exists():
@@ -842,6 +843,53 @@ class Host:
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
         return {'killed': True, 'pid': pid, 'reason': reason}
+
+    def unlock(self, force=False):
+        """Clear the BYOND lock files (*.lk) a forced stop or crash left in map_saves.
+
+        Safe (the default) refuses while the world is running, frozen or has an
+        action in progress, and while the save is unusable for any reason besides
+        its lock files. force skips those checks and names each one it skipped.
+        Either way the files are moved into <state_dir>/lk-quarantine/<time>/, never
+        deleted, and the save is checked again afterwards. A lock file DreamDaemon
+        still holds open cannot be moved and is reported as in use.
+        """
+        saves = self.repo / 'map_saves'
+        locks = sorted(p for p in saves.glob('*.lk') if p.is_file()) if saves.is_dir() else []
+        if not locks:
+            return dict({'unlocked': [], 'forced': []}, **self.save_answer(saves))
+        reasons = []
+        if self.frozen():
+            reasons.append('the server is frozen (asleep)')
+        elif self.platform.listening(self.config['port']):
+            reasons.append('the server is running')
+        if self.lock.exists():
+            reasons.append('another action is still running: %s' % self.read_state().get('action'))
+        try:
+            check_save(saves, ignore_locks=True)
+        except Refused as refusal:
+            reasons.append(str(refusal))
+        if reasons and not force:
+            raise Refused('; '.join(reasons) + ' (unlock force skips these checks)')
+        quarantine = self.state_dir / 'lk-quarantine' / str(int(self.platform.now()))
+        quarantine.mkdir(parents=True, exist_ok=True)
+        moved, in_use = [], []
+        for path in locks:
+            try:
+                shutil.move(str(path), str(quarantine / path.name))
+                moved.append(path.name)
+            except OSError:
+                in_use.append(path.name)
+        answer = {'unlocked': moved, 'quarantine': str(quarantine), 'forced': reasons if force else []}
+        if in_use:
+            answer['in_use'] = in_use
+        return dict(answer, **self.save_answer(saves))
+
+    def save_answer(self, saves):
+        try:
+            return {'generation': check_save(saves)}
+        except Refused as refusal:
+            return {'generation': None, 'save_refused': str(refusal)}
 
     def force_restart(self, lock_wait_seconds=180):
         """Forced stop if it is running, then a normal start from the last completed save."""
@@ -1268,8 +1316,12 @@ def main(argv=None):
     parser.add_argument('action', nargs='?', choices=ACTIONS)
     parser.add_argument('--group', action='append', default=[],
                         help='serve only: a region group config (scripts/shard-group); every region is served too')
+    parser.add_argument('--force', action='store_true',
+                        help='unlock only: move the lock files even if the world looks running or the save is unusable')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if args.force and args.action != 'unlock':
+        parser.error('only unlock takes --force')
     if not args.config and not (args.group and args.action == 'serve'):
         parser.error('--config is required (serve may take only --group)')
     if len(args.config) > 1 and args.action != 'serve':
@@ -1326,6 +1378,8 @@ def main(argv=None):
             result = host.kill()
         elif args.action == 'force-restart':
             result = host.force_restart()
+        elif args.action == 'unlock':
+            result = host.unlock(force=args.force)
         elif args.action == 'stage':
             result = host.request_stage()
         elif args.action == 'check-update':

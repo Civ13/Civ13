@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+import unittest.mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('gaia_host', ROOT / 'scripts/gaia-host/gaia_host.py')
@@ -592,6 +593,89 @@ class ForcedStopTests(GaiaHostTests):
         self.host.lock.write_text('stuck', encoding='utf-8')
         with self.assertRaisesRegex(gaia_host.Refused, 'still has an action running'):
             self.host.force_restart(lock_wait_seconds=10)
+
+
+class UnlockTests(GaiaHostTests):
+    """unlock moves the BYOND lock files a kill during a load or save leaves behind,
+    so the next start is not refused. It never deletes them."""
+
+    def locked_save(self, names=('2.sav.lk',)):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        for name in names:
+            (saves / name).write_bytes(b'')
+        with self.assertRaisesRegex(gaia_host.Refused, 'BYOND lock files'):
+            gaia_host.check_save(saves)
+        return saves
+
+    def test_unlock_moves_stale_locks_and_the_save_then_loads(self):
+        saves = self.locked_save(('1.sav.lk', '2.sav.lk'))
+        result = self.host.unlock()
+        self.assertEqual(['1.sav.lk', '2.sav.lk'], result['unlocked'])
+        self.assertEqual(MARKER, result['generation'])
+        self.assertEqual([], result['forced'])
+        self.assertFalse(list(saves.glob('*.lk')))
+        quarantine = Path(result['quarantine'])
+        self.assertEqual(self.host.state_dir / 'lk-quarantine', quarantine.parent)
+        self.assertEqual(['1.sav.lk', '2.sav.lk'], sorted(p.name for p in quarantine.iterdir()))
+        self.assertEqual(MARKER, gaia_host.check_save(saves))
+
+    def test_unlock_with_no_locks_changes_nothing(self):
+        write_save(self.repo / 'map_saves')
+        result = self.host.unlock()
+        self.assertEqual({'unlocked': [], 'forced': [], 'generation': MARKER}, result)
+        self.assertFalse((self.host.state_dir / 'lk-quarantine').exists())
+
+    def test_unlock_refuses_a_running_world_unless_forced(self):
+        saves = self.locked_save()
+        self.machine.up = True
+        with self.assertRaisesRegex(gaia_host.Refused, 'the server is running'):
+            self.host.unlock()
+        self.assertTrue((saves / '2.sav.lk').exists())
+        result = self.host.unlock(force=True)
+        self.assertEqual(['the server is running'], result['forced'])
+        self.assertEqual(['2.sav.lk'], result['unlocked'])
+
+    def test_unlock_refuses_while_an_action_runs(self):
+        saves = self.locked_save()
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('busy', encoding='utf-8')
+        self.host.record(action='start', phase='loading')
+        with self.assertRaisesRegex(gaia_host.Refused, 'another action is still running: start'):
+            self.host.unlock()
+        self.assertTrue((saves / '2.sav.lk').exists())
+
+    def test_unlock_refuses_a_broken_save_and_force_still_reports_it(self):
+        saves = self.locked_save()
+        (saves / 'save_complete.txt').unlink()
+        with self.assertRaisesRegex(gaia_host.Refused, 'no readable round.json'):
+            self.host.unlock()
+        self.assertTrue((saves / '2.sav.lk').exists())
+        result = self.host.unlock(force=True)
+        self.assertEqual(['2.sav.lk'], result['unlocked'])
+        self.assertIsNone(result['generation'])
+        self.assertIn('no readable round.json', result['save_refused'])
+
+    def test_unlock_reports_a_lock_still_held_open(self):
+        saves = self.locked_save(('1.sav.lk', '2.sav.lk'))
+        real_move = gaia_host.shutil.move
+        def move(source, destination):
+            if source.endswith('2.sav.lk'):
+                raise PermissionError('in use')
+            return real_move(source, destination)
+        with unittest.mock.patch.object(gaia_host.shutil, 'move', move):
+            result = self.host.unlock()
+        self.assertEqual(['1.sav.lk'], result['unlocked'])
+        self.assertEqual(['2.sav.lk'], result['in_use'])
+        self.assertTrue((saves / '2.sav.lk').exists())
+        self.assertIn('BYOND lock files', result['save_refused'])
+
+    def test_only_unlock_takes_force(self):
+        with self.assertRaises(SystemExit), unittest.mock.patch('sys.stderr', open(self.root / 'err.txt', 'w')) as err:
+            try:
+                gaia_host.main(['--config', str(self.root / 'gaia-host.json'), 'kill', '--force'])
+            finally:
+                err.close()
 
 
 class InterruptedSaveTests(GaiaHostTests):

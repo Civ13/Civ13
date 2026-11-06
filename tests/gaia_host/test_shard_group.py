@@ -496,6 +496,35 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['gaia', 'deep'], sorted(json.loads(out.getvalue())['accepted'], reverse=True))
         self.assertEqual([('kill', 'gaia'), ('kill', 'deep'), ('force-restart', 'gaia'), ('force-restart', 'deep')], calls)
 
+    def test_unlock_reaches_every_region_and_passes_force(self):
+        group = self.write_group()
+        calls = []
+
+        class Region:
+            def __init__(self, name, running):
+                self.name, self.running = name, running
+
+            def unlock(self, force=False):
+                calls.append((self.name, force))
+                if self.running and not force:
+                    raise shard_group.Refused('the server is running')
+                return {'unlocked': ['2.sav.lk'], 'forced': ['the server is running'] if self.running else []}
+
+        regions = [({'id': 'gaia'}, Region('gaia', True)), ({'id': 'deep'}, Region('deep', False))]
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch('sys.stdout', out):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'unlock']))
+        answer = json.loads(out.getvalue())
+        self.assertEqual(['deep'], list(answer['done']))
+        self.assertEqual({'gaia': 'the server is running'}, answer['refused'])
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch('sys.stdout', out):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'unlock', '--force']))
+        self.assertEqual(['deep', 'gaia'], sorted(json.loads(out.getvalue())['done']))
+        self.assertEqual([('gaia', False), ('deep', False), ('gaia', True), ('deep', True)], calls)
+        with self.assertRaises(SystemExit), mock.patch('sys.stderr', io.StringIO()):
+            shard_group.main(['--config', str(self.path), 'kill', '--force'])
+
     def test_status_checks_the_answering_world_is_the_region(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)

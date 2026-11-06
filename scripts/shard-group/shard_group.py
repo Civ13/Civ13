@@ -49,7 +49,7 @@ import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
-                 'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop')
+                 'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
@@ -1148,8 +1148,12 @@ def main(argv=None):
     parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
     parser.add_argument('--region')
     parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
+    parser.add_argument('--force', action='store_true',
+                        help='unlock only: move the lock files even if the world looks running or the save is unusable')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if args.force and args.action != 'unlock':
+        parser.error('only unlock takes --force')
     if args.worker:
         # A detached worker is started with one region's own host.json.
         config = json.loads(Path(args.config).read_text(encoding='utf-8'))
@@ -1189,12 +1193,16 @@ def main(argv=None):
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
             result = adopt(group, args.region, args.source)
-        elif args.action in ('freeze', 'thaw', 'kill'):
+        elif args.action in ('freeze', 'thaw', 'kill', 'unlock'):
             # kill: forced stop without saving; the next start restores the last completed save.
+            # unlock: move stale BYOND lock files out of a stopped region's save (--force: any region).
             done, refused = {}, {}
             for region, host in hosts(group, args.region):
                 try:
-                    done[region['id']] = getattr(host, args.action)()  # freeze, thaw or kill
+                    if args.action == 'unlock':
+                        done[region['id']] = host.unlock(force=args.force)
+                    else:
+                        done[region['id']] = getattr(host, args.action)()  # freeze, thaw or kill
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
             if refused and not done:
