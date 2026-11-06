@@ -803,6 +803,93 @@ var/space_runtime_error = FALSE
 	space_check(mining && ("pressure_suits" in mining.prereqs) && mining.mode == RESEARCH_MODE_ANALYSIS, "Off-world Mining follows Pressure Suits as an ordinary node")
 	space_check(get_recipe_node_req("/obj/structure/drill/regolith_rig") == "off_world_mining" && get_recipe_node_req("/obj/structure/reagent_dispensers/ice_melter") == "off_world_mining", "the rig and the melter are gated on Off-world Mining")
 
+// Phase 5: rovers.
+/obj/structure/rover_charger/space_test/has_power()
+	return TRUE
+
+/proc/space_rover_checks()
+	var/turf/R = locate(2, 3, 1)
+	R = R.ChangeTurf(/turf/floor/dirt/dust/regolith, FALSE, FALSE)
+	var/turf/D = locate(3, 3, 1)
+	D = D.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/obj/structure/engine/internal/diesel/diesel = new(D)
+	space_check(diesel.engine_has_air(), "a combustion engine runs where there is air")
+	diesel.loc = R
+	space_check(!diesel.engine_has_air(), "a combustion engine cannot run on barren ground")
+	qdel(diesel)
+	var/obj/structure/engine/internal/electric_drive/drive = new(R)
+	space_check(drive.engine_has_air() && ("rover_charge" in drive.fuels) && drive.name == "electric drive", "the electric drive runs anywhere on battery charge")
+
+	// A sealed rover laid out by hand on regolith.
+	var/obj/structure/vehicleparts/axis/car/rover_sealed/A = new(R)
+	A.engine = drive
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/rover_battery/charged/B = new(R)
+	drive.fueltank = B
+	var/list/frames = list()
+	for (var/dx = 0, dx <= 1, dx++)
+		var/turf/T = locate(2 + dx, 5, 1)
+		T = T.ChangeTurf(/turf/floor/dirt/dust/regolith, FALSE, FALSE)
+		var/obj/structure/vehicleparts/frame/car/wyoming/lfc/rover/F = new(T)
+		F.axis = A
+		A.components += F
+		frames += F
+	A.fill_cabin()
+	var/datum/habitat_ledger/L = A.cabin()
+	space_check(A.cabin_volume() == 2 && L.breathable() && L.temperature == ROVER_CABIN_C && A.oxygen_reserve > 0 && issaved(A.cabin_oxygen) && !issaved(A.cabin_air), "a new sealed rover cabin is breathable and saves plain numbers")
+	space_check(A.cabin_breaches() == 0, "closed doors keep the cabin sealed")
+	var/obj/structure/vehicleparts/frame/F1 = frames[1]
+	F1.w_left[7] = TRUE
+	space_check(A.cabin_breaches() == 1, "an open door is a breach")
+	F1.w_left[7] = FALSE
+
+	var/aboard = A.cabin_occupants()
+	var/mob/living/human/space_probe_crew/H = new(F1.loc)
+	space_check(H.rover_cabin() == L && A.cabin_occupants() == aboard + 1, "a person on the rover is in its cabin")
+	barren_hazard_start("flare")
+	H.radiation = 0
+	space_check(!H.outside_exposure_step(F1.loc) && H.oxyloss == 0 && H.radiation == 0 && H.outside_temperature_c(F1.loc) == ROVER_CABIN_C, "the cabin lets its crew breathe, keeps them warm and shelters them from a flare")
+	barren_hazards_step(BARREN_FLARE_SECONDS, FALSE)
+	var/charge = A.battery_charge()
+	L.oxygen = 0
+	A.cabin_step(2, 1)
+	space_check(L.oxygen > 0 && A.battery_charge() < charge, "the cabin panel tops oxygen up from the reserve on battery charge")
+	B.reagents.clear_reagents()
+	L.oxygen = 0
+	L.temperature = 0
+	A.cabin_step(2, 1)
+	space_check(L.oxygen == 0 && L.temperature < 0, "a flat battery leaves the cabin unrefreshed and cooling")
+	space_check(H.outside_exposure_step(F1.loc) && H.oxyloss == HABITAT_SUFFOCATE_OXYLOSS, "a stale cabin suffocates its crew")
+	H.oxyloss = 0
+
+	var/obj/structure/rover_cabin_panel/P = new(F1.loc)
+	var/obj/item/pressure_tank/T2 = new(F1.loc)
+	var/reserve = A.oxygen_reserve
+	P.attackby(T2, null)
+	space_check(P.rover() == A && T2.air_seconds == 0 && space_near(A.oxygen_reserve, reserve + SUIT_TANK_SECONDS * HABITAT_BREATH_PER_SECOND), "a suit tank empties into the cabin's oxygen reserve")
+
+	var/obj/structure/rover_charger/space_test/C = new(locate(4, 6, 1))
+	space_check(C.rover_battery() == B && C.charge(B) == ROVER_CHARGE_PER_USE && B.reagents.get_reagent_amount("rover_charge") == ROVER_CHARGE_PER_USE, "a powered charger charges a parked rover's battery")
+	B.reagents.add_reagent("rover_charge", ROVER_BATTERY_UNITS)
+	space_check(!C.charge(B), "a full battery takes no more charge")
+	H.loc = D
+	space_check(isnull(H.rover_cabin()), "off the rover there is no cabin")
+	H.loc = null
+
+	var/obj/structure/car_workshop/rover_bay/bay = new(locate(15, 3, 1))
+	space_check(bay.model_size("Sealed rover") == 4 && bay.costs("Sealed rover")["steel"] == 70 && bay.costs("Open rover")["steel"] == 50 && !bay.costs("SMC Falcon") && !bay.allowed(null), "the rover bay builds only rovers, after Surface Vehicles")
+	var/obj/effects/premadevehicles/rover/sealed/plan = new(null, TRUE)
+	var/has_drive = FALSE
+	var/has_panel = FALSE
+	for (var/coords in plan.tocreate)
+		if (/obj/structure/engine/internal/electric_drive in plan.tocreate[coords])
+			has_drive = TRUE
+		if (/obj/structure/rover_cabin_panel in plan.tocreate[coords])
+			has_panel = TRUE
+	space_check(has_drive && has_panel && plan.axis == /obj/structure/vehicleparts/axis/car/rover_sealed, "the sealed rover template has an electric drive and a cabin panel")
+	qdel(plan)
+	var/datum/research_node/vehicles = get_research_node("surface_vehicles")
+	space_check(vehicles && ("off_world_mining" in vehicles.prereqs) && get_recipe_node_req("/obj/structure/car_workshop/rover_bay") == "surface_vehicles" && get_recipe_node_req("/obj/structure/rover_charger") == "surface_vehicles", "Surface Vehicles gates the rover bay and charger")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -823,6 +910,7 @@ var/space_runtime_error = FALSE
 		space_habitat_checks()
 		space_eva_checks()
 		space_mining_checks()
+		space_rover_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

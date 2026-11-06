@@ -11,7 +11,8 @@
 // Anyone else on unbreathable ground suffocates at HABITAT_SUFFOCATE_OXYLOSS
 // per tick, which knocks a conscious person out in about a minute (decision
 // D4) rather than killing them at once, so crewmates can drag them inside.
-// Surface hazards (surface_hazards.dm) act on people on open ground here.
+// Surface hazards (surface_hazards.dm) act on people on open ground here, and
+// a sealed rover cabin (surface_rovers.dm) stands in for the ground's air.
 // ============================================================
 
 // TRUE while a sealed suit with air keeps the outside out.
@@ -24,7 +25,14 @@
 	if (!istype(T))
 		return null
 	var/ambient = T.outside_ambient_c()
-	if (isnull(ambient) || !sealed_against_outside())
+	if (isnull(ambient))
+		return null
+	var/datum/habitat_ledger/cabin = T.outside_air_breathable() ? null : rover_cabin()
+	if (cabin)
+		if (cabin.breathable())
+			return cabin.temperature
+		ambient = cabin.temperature
+	if (!sealed_against_outside())
 		return ambient
 	return pressure_suit_temperature_c(ambient)
 
@@ -32,10 +40,16 @@
 /mob/living/human/proc/outside_exposure_step(turf/T)
 	if (!istype(T) || stat == DEAD)
 		return FALSE
-	if (T.barren_open_ground())
-		barren_hazard_exposure(T)
-	if (T.outside_air_breathable())
-		return FALSE
+	// A sealed rover cabin (surface_rovers.dm) shelters and holds its own air.
+	var/datum/habitat_ledger/cabin = T.outside_air_breathable() ? null : rover_cabin()
+	if (cabin)
+		if (cabin.breathable())
+			return FALSE
+	else
+		if (T.barren_open_ground())
+			barren_hazard_exposure(T)
+		if (T.outside_air_breathable())
+			return FALSE
 	if (sealed_against_outside())
 		pressure_suit_breathe()
 		return FALSE
