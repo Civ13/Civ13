@@ -920,6 +920,7 @@
 			C.dir = EAST
 		var/matrix/M = matrix()
 		M.Turn(90)
+		M.Scale(C.size_multiplier)
 		M.Translate(1,-6)
 		update_icon()
 		C.transform = M
@@ -927,6 +928,7 @@
 	else
 		C.prone = FALSE
 		var/matrix/M = matrix()
+		M.Scale(C.size_multiplier)
 		M.Translate(0, 16*(C.size_multiplier-1))
 		C.transform = M
 		update_icon()
