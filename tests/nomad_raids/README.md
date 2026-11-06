@@ -13,7 +13,8 @@ Covered: spawn-site rules (roofed, occupied), nearest-edge choice and skipping
 edges too close to hide behind, loot worth, cooldown expiry and reload from
 the file, the walk to the target planned from home and handed out in short
 legs, the march following players who moved away, the walk home planned
-from where the party stands, party size cap, unsaved raiders with weapon and bag, loose gear already lying
+from where the party stands, the party halting only once a player 6 tiles
+off has a clear view of it (or anyone in parley range at the target), party size cap, unsaved raiders with weapon and bag, loose gear already lying
 near the leader not counting as tribute until it is laid at their feet (or as
 a trader's payment), tribute ending
 the parley and limiting loot to the tribute, an attack starting the assault,

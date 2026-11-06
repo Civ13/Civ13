@@ -377,11 +377,32 @@
 	nomad_rep_record(H.ckey, "attack")
 	event("reputation", "[H.ckey] struck first")
 
-// Raiders meeting a wanted player attack on sight. Returns TRUE if they did.
-/datum/nomad_raid/proc/wanted_check()
+// Players who can plainly see the party coming: within NOMAD_RAID_SIGHTED_RANGE
+// of the leader with a clear view of them. Standing at the target, anyone in
+// parley range counts, so a settlement behind walls is still met.
+/datum/nomad_raid/proc/sighted_by(list/candidates = null)
+	var/list/out = list()
+	if (!leader_ok())
+		return out
+	if (!candidates)
+		candidates = nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE)
+	var/at_target = target && get_dist(leader, target) <= 3
+	for (var/mob/living/human/H in candidates)
+		if (at_target || (get_dist(H, leader) <= NOMAD_RAID_SIGHTED_RANGE && ai_check_los(H, leader)))
+			out += H
+	return out
+
+// Raiders meeting a wanted player attack once that player can see them.
+// Returns TRUE if they did.
+/datum/nomad_raid/proc/wanted_check(list/seen = null)
 	if (kind != "raid" || !leader_ok())
 		return FALSE
-	var/list/wanted = nomad_rep_wanted_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE)
+	if (!seen)
+		seen = sighted_by()
+	var/list/wanted = list()
+	for (var/mob/living/human/W in seen)
+		if (nomad_rep_score(W.ckey) <= NOMAD_REP_WANTED)
+			wanted += W
 	if (!wanted.len)
 		return FALSE
 	var/mob/living/human/H = wanted[1]
@@ -406,9 +427,11 @@
 		set_state("leave", "the march took too long")
 		return
 	if (decide)
-		if (wanted_check())
+		// Walk on until someone can plainly see the party coming, so a raid
+		// or caravan never stops (or strikes) out of the players' sight.
+		var/list/near = sighted_by()
+		if (wanted_check(near))
 			return
-		var/list/near = nomad_raid_defenders_near(get_turf(leader), NOMAD_RAID_PARLEY_RANGE)
 		if (near.len)
 			if (kind == "trade")
 				begin_trade()
