@@ -33,6 +33,7 @@
 
 /obj/structure/life_support/water_recycler/examine(mob/user)
 	..()
+	pipe_settle()
 	to_chat(user, SPAN_NOTICE("Reclaimed water: [round(water, 0.1)]/[SPACE_RECYCLER_CAPACITY] units."))
 
 /obj/structure/life_support/water_recycler/proc/module_core()
@@ -40,6 +41,7 @@
 	return istype(F) ? F.habitat_core() : null
 
 /obj/structure/life_support/water_recycler/work(datum/habitat_ledger/L, seconds)
+	pipe_settle()
 	var/obj/structure/habitat_core/C = module_core()
 	if (!C || !has_power())
 		return FALSE
@@ -62,6 +64,7 @@
 				. += give
 
 /obj/structure/life_support/water_recycler/attackby(obj/item/W as obj, mob/user as mob)
+	pipe_settle()
 	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && W.is_open_container())
 		var/amount = min(water, W.reagents.maximum_volume - W.reagents.total_volume)
 		if (amount <= 0)
@@ -162,3 +165,57 @@
 		connect_cable(user, W)
 		return
 	return ..()
+
+// ---------------------------------------------------------------- pipes
+// A water recycler is a pipe source for the water it holds once its own
+// module's electrolysers are full, and an electrolyser is a pipe sink, so one
+// recycler, an intake or a tank of melted ice can keep several modules
+// breathing. The recycler keeps its water as a number; the network draws
+// from a holder refilled from it each step, and what the network took is
+// settled back into the number before the water is used again.
+
+/obj/structure/life_support/water_recycler
+	var/tmp/datum/reagents/pipe_out = null
+	var/tmp/pipe_offered = 0
+
+/obj/structure/life_support/water_recycler/persistence_runtime_var(key)
+	return key == "pipe_out" || key == "pipe_offered" || ..()
+
+/obj/structure/life_support/water_recycler/proc/pipe_settle()
+	if (pipe_out && pipe_offered > 0)
+		var/taken = pipe_offered - pipe_out.get_reagent_amount("water")
+		if (taken > 0)
+			water = max(0, water - taken)
+	pipe_offered = 0
+	if (pipe_out)
+		pipe_out.clear_reagents()
+
+/obj/structure/life_support/water_recycler/fluid_supply_tier()
+	return anchored ? FLUID_TIER_SOURCE : 0
+
+/obj/structure/life_support/water_recycler/fluid_supplies(id)
+	return id == "water"
+
+/obj/structure/life_support/water_recycler/fluid_supply_holder()
+	pipe_settle()
+	if (!pipe_out)
+		pipe_out = new /datum/reagents(SPACE_RECYCLER_CAPACITY, src)
+	if (water > 0)
+		pipe_out.add_reagent("water", water)
+	pipe_offered = water
+	return pipe_out
+
+/obj/structure/life_support/electrolyser/fluid_demand_tier()
+	return anchored ? FLUID_TIER_SINK : 0
+
+/obj/structure/life_support/electrolyser/fluid_demand(id)
+	if (!anchored || id != "water")
+		return 0
+	return max(0, water_max - water)
+
+/obj/structure/life_support/electrolyser/fluid_receive(id, amount, data)
+	var/taken = min(amount, fluid_demand(id))
+	if (taken <= 0)
+		return 0
+	water += taken
+	return taken

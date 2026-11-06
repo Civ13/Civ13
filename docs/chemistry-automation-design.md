@@ -111,6 +111,16 @@ seconds by the factory process:
 Verification: `tests/factory_automation/pipes_probe.dm`. Not verified: a full
 disk save/load round trip, in-game play and how the pipe sprites look in game.
 
+Plumbing (`code/modules/1713/factory_plumbing.dm`, also at Factories): a
+**water tap** (3 steel) and a **piped shower** (5 steel) are pipe sinks. A tap
+holds up to 100 units of whatever the pipes bring it, so unboiled intake water
+is still unboiled: fill a container, drink with a grab, or wash hands with
+clean water. A piped shower holds 200 units of water only and uses 5 each
+process tick while running, turning itself off when it runs dry. The ordinary
+sink and shower still never run out. In space settlements the water recycler
+is a pipe source and the electrolyser a pipe sink, so modules can share water
+(`code/modules/space/self_sufficiency.dm`).
+
 ## Phase 2 as built
 
 `code/modules/1713/factory_vessel.dm` adds the **reaction vessel** (14 steel,

@@ -67,6 +67,8 @@ var/pipe_runtime_error = FALSE
 		pipe_intake_checks()
 		pipe_refinery_checks()
 		pipe_save_checks()
+		pipe_plumbing_checks()
+		pipe_habitat_checks()
 		pipe_catalog_checks()
 	catch(var/exception/e)
 		pipe_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -252,6 +254,70 @@ var/pipe_runtime_error = FALSE
 	for (var/obj/O in list(P, V, pump, T))
 		qdel(O)
 
+// Holding tank (buffer) -> water tap and piped shower (sinks).
+/proc/pipe_plumbing_checks()
+	var/list/pipes = pipe_line(3, 6, 4)
+	var/obj/structure/fluid_tank/T = new(locate(2, 4, 1))
+	T.reagents.add_reagent("water", 45)
+	T.reagents.add_reagent("cholera", 5)
+	var/obj/structure/water_tap/tap = new(locate(4, 5, 1))
+	var/obj/structure/shower/piped/shower = new(locate(6, 5, 1))
+	pipe_check(!tap.reagents.total_volume && !shower.water_stored, "a new tap and piped shower start dry")
+	shower.attack_hand(null)
+	pipe_check(!shower.on, "a dry piped shower will not turn on")
+	var/obj/structure/fluid_pump/P = new(locate(5, 3, 1))
+	var/list/power = pipe_power(P, 5, 2)
+	P.on = TRUE
+	for (var/i in 1 to 4)
+		factory_fluids_step()
+	pipe_check(tap.reagents.get_reagent_amount("water") == 45 && tap.reagents.get_reagent_amount("cholera") == 5, "a tap holds what the pipes bring it, sickness included")
+	T.reagents.add_reagent("water", 100)
+	fluid_mark_dirty() // wake the idle network
+	for (var/i in 1 to 6)
+		factory_fluids_step()
+	pipe_check(shower.water_stored > 0 && !shower.fluid_demand("cholera"), "a piped shower fills with water and refuses anything else")
+	pipe_check(tap.reagents.total_volume + shower.water_stored + T.reagents.total_volume == 150, "plumbing moves water without making any")
+	P.on = FALSE
+	var/obj/item/weapon/reagent_containers/glass/beaker/B = new(locate(4, 6, 1))
+	var/before = tap.reagents.total_volume
+	tap.reagents.trans_to_obj(B, 10)
+	pipe_check(B.reagents.total_volume == 10 && tap.reagents.total_volume == before - 10, "filling a container at a tap empties the tap by as much")
+	shower.water_stored = 7
+	shower.on = TRUE
+	shower.process()
+	pipe_check(shower.on && shower.water_stored == 2, "a running piped shower uses its water")
+	shower.process()
+	pipe_check(!shower.on && shower.water_stored == 2, "a piped shower turns itself off when its water runs out")
+	pipe_check(tap.flags & NOREACT, "taps are inert")
+	for (var/obj/O in pipes + list(T, tap, shower, P, B) + power)
+		if (!QDELETED(O))
+			qdel(O)
+	fluid_mark_dirty()
+
+// Water recycler (source) -> electrolyser (sink), as between two habitat modules.
+/proc/pipe_habitat_checks()
+	var/list/pipes = pipe_line(3, 6, 8)
+	var/obj/structure/life_support/water_recycler/R = new(locate(2, 8, 1))
+	R.water = 50
+	var/obj/structure/life_support/electrolyser/E = new(locate(7, 8, 1))
+	E.water = E.water_max - 5
+	var/obj/structure/fluid_pump/P = new(locate(5, 9, 1))
+	var/list/power = pipe_power(P, 5, 10)
+	P.on = TRUE
+	factory_fluids_step()
+	R.pipe_settle()
+	pipe_check(E.water == E.water_max && R.water == 45, "an electrolyser takes only what it has room for from a recycler through pipes")
+	E.water = 0
+	factory_fluids_step()
+	R.pipe_settle()
+	pipe_check(E.water == 20 && R.water == 25, "a recycler's water feeds an electrolyser at the pump's rate")
+	pipe_check(!E.fluid_demand("cholera") && !R.fluid_supplies("cholera"), "habitat machines pipe only water")
+	pipe_check(R.persistence_runtime_var("pipe_out") && R.persistence_runtime_var("pipe_offered") && ("water" in R.get_saved_vars()), "the recycler saves its water, not its pipe holder")
+	for (var/obj/O in pipes + list(R, E, P) + power)
+		if (!QDELETED(O))
+			qdel(O)
+	fluid_mark_dirty()
+
 /proc/pipe_catalog_checks()
 	var/list/paths = list("/obj/structure/fluid_pipe", "/obj/structure/fluid_pipe/valve", "/obj/structure/fluid_pump", "/obj/structure/fluid_tank", "/obj/structure/fluid_intake")
 	var/gated = 0
@@ -259,6 +325,7 @@ var/pipe_runtime_error = FALSE
 		if (get_recipe_node_req(path) == "factories")
 			gated++
 	pipe_check(gated == 5, "pipes, valves, pumps, tanks and intakes unlock with Factories")
+	pipe_check(get_recipe_node_req("/obj/structure/water_tap") == "factories" && get_recipe_node_req("/obj/structure/shower/piped") == "factories", "taps and piped showers unlock with Factories")
 	var/list/states = icon_states('icons/obj/machines/pipes.dmi')
 	pipe_check(("intact" in states) && ("manifold" in states) && ("compressor" in states) && ("inlet" in states) && ("air" in icon_states('icons/obj/barrel.dmi')), "the parts reuse existing sprites")
 	var/list/found = list()
