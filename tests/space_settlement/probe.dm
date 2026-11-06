@@ -755,6 +755,54 @@ var/space_runtime_error = FALSE
 	space_check(suits && ("sealed_habitats" in suits.prereqs) && suits.mode == RESEARCH_MODE_ANALYSIS, "Pressure Suits follows Sealed Habitats as an ordinary node")
 	space_check(get_recipe_node_req("/obj/item/clothing/suit/pressure_suit") == "pressure_suits" && get_recipe_node_req("/obj/item/pressure_tank") == "pressure_suits" && get_recipe_node_req("/obj/item/pressure_suit_patch") == "pressure_suits", "suits, tanks and patches are gated on Pressure Suits")
 
+// Phase 5: surface mining, ice and printed kits.
+/obj/structure/reagent_dispensers/ice_melter/space_test/has_power()
+	return TRUE
+
+/proc/space_mining_checks()
+	var/turf/R = locate(2, 3, 1)
+	R = R.ChangeTurf(/turf/floor/dirt/dust/regolith, FALSE, FALSE)
+	var/turf/D = locate(3, 3, 1)
+	D = D.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/obj/structure/drill/regolith_rig/rig = new(R)
+	rig.anchored = TRUE
+	var/list/table = R.drill_ore_table()
+	var/only_table = TRUE
+	var/saw_ice = FALSE
+	for (var/i = 1, i <= 200, i++)
+		var/ore = rig.drill_ore()
+		if (!(ore in table))
+			only_table = FALSE
+		if (ore == /obj/item/stack/ore/ice)
+			saw_ice = TRUE
+	space_check(only_table && saw_ice && !(/obj/item/stack/ore/gold in table), "a drill on regolith brings up the barren ore table, ice included")
+	space_check(rig.valid_drill_site(), "the regolith rig drills open regolith")
+	rig.loc = D
+	space_check(!rig.valid_drill_site() && isnull(D.drill_ore_table()) && (rig.drill_ore() in rig.ore_types), "the rig refuses ordinary dirt, where drills keep the mainland table")
+	qdel(rig)
+
+	var/obj/structure/reagent_dispensers/ice_melter/unpowered = new(D)
+	var/obj/item/stack/ore/ice/I = new(D)
+	I.amount = 30
+	space_check(!unpowered.melt_ice(I) && I.amount == 30, "an uncabled ice melter melts nothing")
+	qdel(unpowered)
+	var/obj/structure/reagent_dispensers/ice_melter/space_test/M = new(D)
+	space_check(M.melt_ice(I) == SURFACE_MELTER_CAPACITY / SURFACE_ICE_WATER && M.reagents.get_reagent_amount("water") == SURFACE_MELTER_CAPACITY && I.amount == 30 - SURFACE_MELTER_CAPACITY / SURFACE_ICE_WATER, "the ice melter turns ice into water up to its capacity")
+	space_check(!M.melt_ice(I) && I.amount == 10, "a full melter takes no more ice")
+	var/obj/structure/life_support/electrolyser/E = new(D)
+	E.water = E.water_max - 50
+	space_check(E.melt_ice(I) == 2 && E.water == E.water_max - 10 && I.amount == 8, "the electrolyser melts ice into its own water tank")
+
+	factory_load_recipes()
+	var/datum/factory_recipe/kit = factory_recipes["printed habitat module kit"]
+	var/datum/factory_recipe/tank = factory_recipes["printed suit air tank"]
+	var/datum/factory_recipe/patch = factory_recipes["printed hull patch kit"]
+	space_check(!factory_recipe_errors.len && kit && kit.tier == 4 && kit.node == "off_world_mining" && kit.output_type == /obj/item/habitat_kit && kit.inputs[/obj/item/stack/material/glass] == 10, "the 3D printer prints module kits from steel and glass after Off-world Mining")
+	space_check(tank && tank.tier == 4 && tank.node == "pressure_suits" && patch && patch.node == "sealed_habitats", "the 3D printer prints suit tanks and hull patches")
+	var/datum/research_node/mining = get_research_node("off_world_mining")
+	space_check(mining && ("pressure_suits" in mining.prereqs) && mining.mode == RESEARCH_MODE_ANALYSIS, "Off-world Mining follows Pressure Suits as an ordinary node")
+	space_check(get_recipe_node_req("/obj/structure/drill/regolith_rig") == "off_world_mining" && get_recipe_node_req("/obj/structure/reagent_dispensers/ice_melter") == "off_world_mining", "the rig and the melter are gated on Off-world Mining")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -774,6 +822,7 @@ var/space_runtime_error = FALSE
 		space_flight_checks()
 		space_habitat_checks()
 		space_eva_checks()
+		space_mining_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

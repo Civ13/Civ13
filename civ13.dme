@@ -1308,6 +1308,7 @@
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"
 #include "code\modules\space\surface_hazards.dm"
+#include "code\modules\space\surface_mining.dm"
 #include "code\modules\space\survey.dm"
 #include "code\modules\statpanel\statpanel.dm"
 #include "code\modules\submarine\enemy_types.dm"

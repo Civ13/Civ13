@@ -458,6 +458,8 @@ RECIPE: /material/plastic/,pressure suit,/obj/item/clothing/suit/pressure_suit,3
 RECIPE: /material/plastic/,pressure helmet,/obj/item/clothing/head/pressure_helmet,15,200,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,suit air tank,/obj/item/pressure_tank,10,150,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/plastic/,suit patch kit,/obj/item/pressure_suit_patch,3,100,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,regolith drill rig,/obj/structure/drill/regolith_rig,30,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,ice melter,/obj/structure/reagent_dispensers/ice_melter,15,200,1,1,spaceflight,235,0,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
 
