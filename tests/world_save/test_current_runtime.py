@@ -15,6 +15,7 @@ from unittest.mock import Mock, patch
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+FIXTURE = HERE/'current_runtime_fixture'
 
 
 def load(name, path):
@@ -32,10 +33,10 @@ IDENTITY = dict(version='516.1688', platform='linux', archive=dict(sha256='a'*64
 class CurrentRuntimeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Harmless immutable Git reads before process/socket prohibitions.
-        cls.old_durable = subprocess.check_output(['git','show','1572e6c:tests/world_save/run-durable-world.py'],cwd=ROOT,text=True)
-        cls.feature_durable = subprocess.check_output(['git','show',
-            'f97c2940b0b1202ed97f5f413bd1a4a6f24e0962:tests/world_save/run-durable-world.py'],cwd=ROOT,text=True)
+        # Reviewed copies of the held durable-runner paths, checked in so the
+        # test does not read Git history. Refresh them only with a reviewed change.
+        cls.held_lighting = (FIXTURE/'run_lighting.py.txt').read_text(encoding='utf-8')
+        cls.held_result_tail = (FIXTURE/'durable_result_tail.py.txt').read_text(encoding='utf-8')
 
     def setUp(self):
         self.spawn=self.enterContext(patch.object(subprocess,'Popen',side_effect=AssertionError('Native process forbidden')))
@@ -147,9 +148,9 @@ class CurrentRuntimeTests(unittest.TestCase):
         runner=load('durable_identity_test',HERE/'run-durable-world.py')
         def function(source,name):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name==name))
-        self.assertEqual(function(self.old_durable,'run_lighting'),function((HERE/'run-durable-world.py').read_text(),'run_lighting'))
+        self.assertEqual(function(self.held_lighting,'run_lighting'),function((HERE/'run-durable-world.py').read_text(),'run_lighting'))
         marker = "        result_path = output / 'metadata-result.json'"
-        self.assertEqual(self.feature_durable.split(marker,1)[1],(HERE/'run-durable-world.py').read_text().split(marker,1)[1])
+        self.assertEqual(self.held_result_tail,(HERE/'run-durable-world.py').read_text().split(marker,1)[1])
         for flags in (['--roof-areas'],['--zone-topology'],['--prepare-only'],['--persistence-year']):
             with self.subTest(flags=flags), patch.object(sys,'argv',['durable','--byond-bin','unused','--byond-archive','unused.zip',*flags]), \
                     patch.object(runner,'selected_runtime') as selected, patch('sys.stderr'), self.assertRaises(SystemExit):
@@ -200,7 +201,9 @@ class CurrentRuntimeTests(unittest.TestCase):
             else:
                 self.assertIn('--byond-archive "$PWD/BYOND/pinned.zip"', line)
         self.assertIn('for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view lighting-eager lighting-shared;',block)
-        self.assertIn('DM compiler version 516.1681',(ROOT/'tests/new_z_budget/z_budget_evidence.py').read_text())
+        # The compile contract follows the canonical pin instead of a hard-coded engine.
+        self.assertEqual(compile_contract.PINNED,json.loads((ROOT/'tools/byond/version.json').read_text())['version'])
+        self.assertNotIn('516.1681',(ROOT/'tests/new_z_budget/z_budget_evidence.py').read_text())
 
 
 if __name__=='__main__': unittest.main()
