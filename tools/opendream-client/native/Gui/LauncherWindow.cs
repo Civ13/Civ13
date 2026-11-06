@@ -683,6 +683,7 @@ internal sealed partial class LauncherWindow : Form {
             try {
                 var exit = await Task.Run(() => {
                     using var process = Process.Start(LocalHosting.GroupScriptStep(control, action)) ?? throw new IOException("Could not start cmd.exe.");
+                    process.StandardInput.Close();
                     void Line(object _, DataReceivedEventArgs e) { if (e.Data is { Length: > 0 } text) BeginInvoke(() => HostLine(text)); }
                     process.OutputDataReceived += Line;
                     process.ErrorDataReceived += Line;

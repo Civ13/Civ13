@@ -51,7 +51,7 @@ public static class LocalBot {
     public static ProcessStartInfo Control(HostBot bot, string action) {
         if (!Actions.Contains(action)) throw new ArgumentException("Unsupported bot action.", nameof(action));
         var step = new ProcessStartInfo(bot.Php) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = bot.Root,
-            RedirectStandardOutput = action != "start", RedirectStandardError = true };
+            RedirectStandardInput = action != "start", RedirectStandardOutput = action != "start", RedirectStandardError = true };
         foreach (var argument in new[] { "scripts/windows/control.php", action, bot.Profile }) step.ArgumentList.Add(argument);
         return step;
     }

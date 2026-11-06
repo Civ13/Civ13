@@ -210,7 +210,10 @@ class Platform:
     """Everything that touches the machine, so tests can replace it."""
 
     def run(self, argv, cwd=None, timeout=1800):
-        result = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=timeout, creationflags=NO_WINDOW)
+        # stdin is DEVNULL so Windows never duplicates an inherited console handle: a host started by the
+        # launcher gets the launcher's console input, and duplicating it fails with WinError 50.
+        result = subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout,
+                                creationflags=NO_WINDOW)
         return result.returncode, (result.stdout + result.stderr)[-4000:]
 
     def listening(self, port):
