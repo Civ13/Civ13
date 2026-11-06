@@ -397,7 +397,10 @@ come with phase 3, when there is something to save.
   its destination among the shipped survey maps, and a mission console keeps
   a survey record per world. Epochs (Val, 2026-11-06): the Moon is reachable
   from 1969 and Mars from 2026, for probes and crewed flights alike; flights
-  home are never closed. Several Moon colonies linked by trains and paths
+  home are never closed. So that the Moon is reachable in 1969, the space
+  research chain (Rocketry to Local Resources) follows Missiles instead of
+  Digital Networks and needs a tier 7 (Cold War) bench; it stays era 9, so it
+  is researched, never granted for free, before 2026. Several Moon colonies linked by trains and paths
   are planned in [connected regions](connected-regions-plan.md).
 
 ## Research branch

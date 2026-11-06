@@ -344,7 +344,7 @@ var/space_runtime_error = FALSE
 	build_research_tree()
 	var/datum/research_node/rocketry = get_research_node("rocketry")
 	var/datum/research_node/survey = get_research_node("planetary_survey")
-	space_check(rocketry && rocketry.era_tier == 9 && ("digital_networks" in rocketry.prereqs) && ("missiles" in rocketry.prereqs), "Rocketry is an era 9 node after Digital Networks and Missiles")
+	space_check(rocketry && rocketry.era_tier == 9 && rocketry.prereqs ~= list("missiles") && rocketry.min_bench_tier == 7, "Rocketry follows Missiles and a Cold War bench can research it")
 	space_check(survey && survey.mode == RESEARCH_MODE_ANALYSIS && survey.era_tier == 9 && ("rocketry" in survey.prereqs), "Planetary Survey follows Rocketry and is not an era capstone")
 	space_check(get_recipe_node_req("/obj/item/space_probe") == "rocketry" && get_recipe_node_req("/obj/structure/launch_rail") == "rocketry" && get_recipe_node_req("/obj/structure/survey_console") == "rocketry" && get_recipe_node_req("/obj/item/space_probe/advanced") == "planetary_survey", "probe recipes are gated on the spaceflight nodes")
 	var/obj/item/space_sample/rock/sample = new(C.loc)
@@ -1186,6 +1186,17 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 	space_check(survey_cell_name(SURVEY_CHANNEL, "moon") == "rille" && survey_cell_name(SURVEY_ICE, "moon") == "shadowed ice" && survey_cell_name(SURVEY_CHANNEL, "barren") == "dry channel", "Moon terrain has its own names")
 
 	// Epoch gates (Val, 2026-11-06): the Moon from 1969, Mars from 2026.
+	var/space_chain_ok = TRUE
+	for (var/id in list("rocketry", "planetary_survey", "crewed_flight", "sealed_habitats", "life_support", "pressure_suits", "off_world_mining", "surface_vehicles", "local_resources"))
+		var/datum/research_node/N = get_research_node(id)
+		if (!N || N.min_bench_tier > 7 || N.era_tier != 9)
+			space_chain_ok = FALSE
+		else
+			for (var/pre in N.prereqs)
+				var/datum/research_node/P = get_research_node(pre)
+				if (!P || (P.era_tier > 7 && !(pre in list("rocketry", "planetary_survey", "crewed_flight", "sealed_habitats", "pressure_suits", "off_world_mining", "surface_vehicles"))))
+					space_chain_ok = FALSE
+	space_check(space_chain_ok, "the whole space chain can be researched in 1969 but is never granted free before 2026")
 	space_check(("moon" in space_survey_regions()) && ("barren" in space_survey_regions()), "the Moon and Mars both ship survey maps")
 	var/datum/survey_map/shipped_moon = get_space_survey_map("moon")
 	space_check(shipped_moon && shipped_moon.width == 40 && shipped_moon.seed == "moon-0", "the shipped Moon survey map loads")
