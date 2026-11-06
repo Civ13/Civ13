@@ -7,7 +7,7 @@ Source: https://github.com/Civ13/Civ13/tree/fa363b8a01ed7d936c10a6303ce1be4c26d8
 
 Launcher: .NET 8 Windows-x64 console, source 1.0.7; README released 1.0.6. No release-readiness claim. Program.Main dispatches DreamSeeker then returns to its menu; the local-receipt path exits. No login/travel acknowledgement exists; Process.Start proves dispatch only.
 
-Native seam: ServerBrowser.Run -> IServerDiscovery.Recheck -> ServerCatalog.NativeStart. Connection.Start is dormant OpenDream. Targets: civ13.com/valzargaming.com on 1714/1715, without mode/online assumptions. Preserve full-answer public IPv4 checks, selected identity, original 60-second status proof, DNS freshness, shared pacing and explicit J/Back. Display cache cannot authorize launch.
+Native seam: ServerBrowser.Run -> IServerDiscovery.Recheck -> ServerCatalog.NativeStart. Connection.Start is dormant OpenDream. Targets: civ13.com/play.valzargaming.com on 1714/1715, without mode/online assumptions. Preserve full-answer public IPv4 checks, selected identity, original 60-second status proof, DNS freshness, shared pacing and explicit J/Back. Display cache cannot authorize launch.
 
 Root AGENTS.md/workflow read; no versioned .agents or nested guide in scope. Reuse CachedJoinTests/ServerDiscoveryTests/TopicPacingTests fixtures. Keep social tests separate from the updater executable-replacement runner.
 

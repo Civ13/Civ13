@@ -8,7 +8,7 @@ native catalog, without assuming a game mode or online state from a port:
 | Menu | Host | Candidate TCP game ports |
 | --- | --- | --- |
 | Civ13.com | civ13.com | 1714, 1715 |
-| ValZarGaming | valzargaming.com | 1714, 1715 |
+| ValZarGaming | play.valzargaming.com | 1714 (gate), 1715 |
 
 `ServerCatalog.Candidates` owns this finite configuration. No port ranges,
 third-party hosts, server-supplied endpoints, automatic port scans or public

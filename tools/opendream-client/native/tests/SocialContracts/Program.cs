@@ -90,7 +90,7 @@ internal static class Program {
             var intent = Parse("{\"v\":1,\"target\":\"" + key + "\"}");
             intent.Target.Validate();
             Require(intent.Target.Port.ToString() == key[^4..], "Catalog port mapping.");
-            Require(intent.Target.Host == (key.StartsWith("vzg") ? "valzargaming.com" : "civ13.com"), "Catalog host mapping.");
+            Require(intent.Target.Host == (key.StartsWith("vzg") ? "play.valzargaming.com" : "civ13.com"), "Catalog host mapping.");
         }
         foreach (var json in new[] {
             "", "null", "[]", "{}", "{\"v\":1}", "{\"target\":\"official-1714\"}",
