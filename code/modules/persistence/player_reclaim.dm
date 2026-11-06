@@ -18,6 +18,23 @@ var/global/list/persistence_player_claims = list()
 		if(character < 48 || character > 57) return FALSE
 	return TRUE
 
+// Discord account keys (code/modules/accounts/discord_accounts.dm): "d:" and a
+// Discord user ID. A ckey holds only a-z and 0-9, so the two never collide.
+/proc/is_discord_id(id)
+	if(!istext(id)) return FALSE
+	var/static/regex/snowflake = regex(@"^[1-9][0-9]{16,19}$")
+	if(!snowflake.Find(id)) return FALSE
+	return TRUE
+
+/proc/is_account_key(account)
+	return istext(account) && copytext(account, 1, 3) == "d:" && is_discord_id(copytext(account, 3))
+
+// A durable character owner: a non-guest ckey (legacy) or an account key.
+/proc/persistence_owner_valid(account)
+	if(!istext(account) || !length(account)) return FALSE
+	if(is_account_key(account)) return TRUE
+	return ckey(account) == account && !persistence_guest_account(account)
+
 /mob/living/human/proc/record_persistence_owner()
 	if(!client || !client.ckey)
 		return
@@ -52,7 +69,7 @@ var/global/list/persistence_player_claims = list()
 	for(var/mob/living/human/H in world)
 		var/account = H.persistence_owner_ckey
 		if(isnull(account)) continue
-		if(!istext(account) || !length(account) || ckey(account) != account || persistence_guest_account(account) || owners[account])
+		if(!persistence_owner_valid(account) || owners[account])
 			throw EXCEPTION("Invalid or duplicate durable player ownership")
 		owners[account] = H
 
@@ -65,7 +82,7 @@ var/global/list/persistence_player_claims = list()
 	var/mob/living/human/H = D
 	var/account = H.persistence_owner_ckey
 	if(isnull(account)) return
-	if(!istext(account) || !length(account) || ckey(account) != account || persistence_guest_account(account))
+	if(!persistence_owner_valid(account))
 		throw EXCEPTION("Invalid restored player ownership")
 	var/list/bodies = persistence_restored_bodies[account]
 	if(!bodies)
@@ -76,7 +93,7 @@ var/global/list/persistence_player_claims = list()
 /map_storage/proc/find_restored_player(account)
 	if(!persistence_player_restore_ready || player_restoration_blocked())
 		return null
-	if(!istext(account) || !length(account) || ckey(account) != account || persistence_guest_account(account))
+	if(!persistence_owner_valid(account))
 		return null
 	var/list/bodies = persistence_restored_bodies[account]
 	// Ambiguous ownership never falls back to a name, position or iteration order.
@@ -164,6 +181,6 @@ var/global/list/persistence_player_claims = list()
 		if(islist(value))
 			throw EXCEPTION("Invalid saved player ownership encoding")
 	if(isnull(value)) return
-	if(!istext(value) || !length(value) || ckey(value) != value || persistence_guest_account(value) || owners[value])
+	if(!persistence_owner_valid(value) || owners[value])
 		throw EXCEPTION("Invalid or duplicate saved player ownership")
 	owners[value] = TRUE

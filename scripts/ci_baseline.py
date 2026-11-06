@@ -329,6 +329,15 @@ SUITES = {
                    'code/modules/admin/admin.dm', 'code/game/mob/new_player/new_player.dm',
                    'civ13.dme', 'tests/save_movement/source_adapter.py')},
 
+    # Discord account keys (source projection) and the stdlib sign-in service
+    # against a fake Discord; the HTTP test binds an ephemeral loopback port.
+    'account_signin': {'files': ('tests/account_signin/test_signin.py',
+                                 'tests/account_signin/test_account_keys.py'),
+        'paths': ('tests/account_signin/', 'tools/account_signin/'),
+        'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/client_procs.dm',
+                         'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
+                         'tests/save_movement/source_adapter.py')},
+
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (

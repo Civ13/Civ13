@@ -1,3 +1,7 @@
+// Verified ckey -> Discord ID (text), from the approved list. Accounts use it
+// (code/modules/accounts/discord_accounts.dm); empty until approved.txt loads.
+var/global/list/approved_discord_ids = list()
+
 // Stage the entire independent file before publishing membership. IDs stay text.
 /proc/parse_verified_access_text(access_text)
 	if (!istext(access_text) || !length(access_text))
@@ -43,8 +47,10 @@
 	if (!fexists(access_filename))
 		return FALSE
 	var/list/staged_keys = null
+	var/access_text = null
 	try
-		staged_keys = parse_verified_access_text(file2text(access_filename))
+		access_text = file2text(access_filename)
+		staged_keys = parse_verified_access_text(access_text)
 	catch
 		return FALSE
 	if (isnull(staged_keys))
@@ -52,6 +58,7 @@
 	if (access_kind == "approved")
 		approved_list = staged_keys
 		approved_list_ready = TRUE
+		approved_discord_ids = verified_access_discord_ids(access_text, staged_keys)
 	else
 		whitelist_list = staged_keys
 		whitelist_list_ready = TRUE
@@ -63,3 +70,28 @@
 	if (access_kind == "whitelist")
 		return whitelist_list_ready && (candidate_key in whitelist_list)
 	return FALSE
+
+// The Discord IDs of a file that parse_verified_access_text() already accepted
+// as staged_keys. A file that changed in between (different keys) yields none.
+/proc/verified_access_discord_ids(access_text, list/staged_keys)
+	var/list/ids = list()
+	if (!istext(access_text) || !islist(staged_keys))
+		return ids
+	for (var/access_row in splittext(replacetext(access_text, ascii2text(13) + "\n", "\n"), "\n"))
+		var/separator = findtext(access_row, "=")
+		if (!separator)
+			continue
+		var/canonical_key = ckey(copytext(access_row, 1, separator))
+		if (canonical_key in staged_keys)
+			ids[canonical_key] = trim(copytext(access_row, separator + 1))
+	if (ids.len != staged_keys.len)
+		return list()
+	return ids
+
+/proc/verified_discord_id(candidate_key)
+	if (!approved_list_ready || !istext(candidate_key))
+		return null
+	var/id = approved_discord_ids[candidate_key]
+	if (!istext(id))
+		return null
+	return id

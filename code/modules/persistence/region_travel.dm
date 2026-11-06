@@ -202,7 +202,7 @@ var/global/list/region_travel_carry_types = list(
 		return null
 	if(!islist(P) || P["v"] != 1 || P["kind"] != "character") return null
 	var/owner = P["owner"]
-	if(!istext(owner) || !length(owner) || length(owner) > 32 || ckey(owner) != owner || persistence_guest_account(owner)) return null
+	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
 	if(!(P["gender"] in list(MALE, FEMALE, PLURAL, NEUTER))) return null
 	if(!isnum(P["age"]) || P["age"] < 1 || P["age"] > 200) return null

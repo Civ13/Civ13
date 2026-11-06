@@ -26,7 +26,7 @@
   "procedure_sha256": {
     "code/modules/persistence/player_reclaim.dm": {
       "/map_storage/proc/reclaim_saved_player": "d2343cf9da0066ad7a032faa1715b80c22c57736f7a03d905a3b1be23b0b4b69",
-      "/map_storage/proc/find_restored_player": "200b424a972af26c02427201b4ac19b55f7cbb70de45cb7ad9d86fa8f4778ad5"
+      "/map_storage/proc/find_restored_player": "aae3ded618b308c82ad1ab66197a1b00d1bb275dc9ca810595d5c5edddc85106"
     },
     "code/modules/persistence/bed_return.dm": {
       "/map_storage/proc/prepare_character_return": "e46f80998f36b8eaf01ff66ca6cccc4a77133fed7405f9544243c1c1b7d574ea",
