@@ -259,12 +259,16 @@ var/global/list/persistence_field_allowlists = list()
 		to_save |= params2list(map_storage_saved_vars)
 	else
 		for (var/key in src.vars)
-			if (persistence_runtime_var(key))
 #ifdef CIV13_VARIABLE_OBSERVABILITY
+			if (persistence_runtime_var(key))
 				variable_observability_skipped(src.vars[key])
-#endif
 				continue
+#endif
+			// Most fields still hold their compiled default: compare first, and
+			// ask the per-type runtime-field filter only about changed ones.
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
+				if (persistence_runtime_var(key))
+					continue
 				to_save |= key
 			to_save |= "name"
 	return to_save
@@ -461,6 +465,16 @@ map_storage
 		list/saving_reference_pins = list()
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
+		// Stream level saves (level_stream.dm) hand each scratch segment to the
+		// helper as savefile text. While a segment is open this maps the
+		// absolute path of each node whose value does not survive that text
+		// (text macros, infinities, resources) to that value; the writer
+		// rewrites them natively. Null otherwise.
+		list/saving_stream_native_paths
+		// Per-level structural summaries of a stream save (saving.dm,
+		// record_candidate_level_structure), keyed by "[z]". Candidate
+		// validation reads these instead of walking the files back.
+		list/saving_candidate_structure
 		var/saving_z = 0
 		var/last_error = null
 		// Admin VV diagnostic snapshots only. Never retain live objects here.

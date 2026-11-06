@@ -290,9 +290,11 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 	catch(var/exception/candidate_error)
 		zone_candidate_validation = null
 		candidate_full_walk = FALSE
+		saving_candidate_structure = null
 		throw candidate_error
 	zone_candidate_validation = null
 	candidate_full_walk = FALSE
+	saving_candidate_structure = null
 	return success
 
 /map_storage/proc/validate_zone_spawns(list/source, named = FALSE)
@@ -400,12 +402,15 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 
 // Authoritative topology already contains roof membership. Validate the roof's
 // direct owner and scalar settings against it, without constructing any area.
-/map_storage/proc/prepare_zone_roof(savefile/F, x, y, z, child, type)
-	var/path = entry_path(F, child)
-	F.cd = path
-	if(!("switch_area" in F.dir) || !("current_area_type" in F.dir)) throw EXCEPTION("Missing saved roof settings")
-	var/switch_value = persistence_saved_scalar(F["switch_area"])
-	var/base_value = persistence_saved_scalar(F["current_area_type"])
+// Without a file (a stream save's candidate check) the saved values come from
+// the live roof the save just wrote, in switch_value and base_value.
+/map_storage/proc/prepare_zone_roof(savefile/F, x, y, z, child, type, switch_value, base_value)
+	if(F)
+		var/path = entry_path(F, child)
+		F.cd = path
+		if(!("switch_area" in F.dir) || !("current_area_type" in F.dir)) throw EXCEPTION("Missing saved roof settings")
+		switch_value = persistence_saved_scalar(F["switch_area"])
+		base_value = persistence_saved_scalar(F["current_area_type"])
 	if(!isnum(switch_value) || !(switch_value in list(TRUE, FALSE)) || !ispath(base_value, /area)) throw EXCEPTION("Invalid zone roof settings")
 	var/id = saved_zone_id(x, y, z)
 	var/list/zone = validated_zones[id]

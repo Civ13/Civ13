@@ -38,6 +38,8 @@
 	if(debug_policy && (fexists("map_saves/save_complete.txt") || !debug_backup_identity_valid() || !operation.current(src, "save"))) throw EXCEPTION("Debug recovery requires an unchanged failed capture and retained backup")
 	if(debug_policy && fexists("map_saves/save_complete.txt")) throw EXCEPTION("Debug recovery refuses a newly completed generation")
 	operation.diagnostic_phase = "capture"
+	var/save_started = world.timeofday
+	var/save_phase_started = save_started
 	if(building_allocating_z || dimension_recovery_required)
 		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
 	prepare_player_ownership()
@@ -60,6 +62,7 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	prepare_human_save_roster(operation)
 #endif
+	saving_candidate_structure = null
 	// ***** MAP SECTION *****
 	// Segmented levels bound the resident savefile tree; see the low-memory
 	// section of loading.dm. Builds before it reject format 4, so the last
@@ -105,6 +108,7 @@
 		throw EXCEPTION("Could not write world-save metadata")
 	round_state["metadata"] = md5(file2text(F0))
 	log_startup_progress("	Saved metadata.")
+	save_phase_started = persistence_save_phase_log("metadata and backup", save_phase_started)
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
 		saving_content_owners = alist()
@@ -147,6 +151,9 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		drain_human_save_roster(savefile, operation)
 #endif
+		// A stream level's candidate check reads this summary of the pinned
+		// objects instead of walking the published file back (loading.dm).
+		if(stream_writer && !debug_policy && !candidate_readback_required()) record_candidate_level_structure(A)
 		if(saving_segments)
 			saving_segments.finish()
 			saving_segments = null
@@ -154,6 +161,7 @@
 		savefile = null // Close the candidate level before consistency validation.
 		sleep(world.tick_lag)
 		log_startup_progress("	Saved z-level [A].")
+		save_phase_started = persistence_save_phase_log("level [A]", save_phase_started)
 	// Bind every cross-level link before candidate validation reads round state.
 	var/list/level_links = finish_level_links()
 	if(level_links.len) round_state["level_links"] = level_links
@@ -162,11 +170,14 @@
 		if(zone_export_state) finalize_zone_export(world_state)
 		world_state["nodes"] = durable_export.finish_export()
 		durable_export = null
+		save_phase_started = persistence_save_phase_log("links and durable metadata", save_phase_started)
 		if(zone_export_state)
 			if(debug_policy) round_state["debug_recovery"] = debug_policy.audit(generation, operation)
 			operation.diagnostic_phase = "candidate_validation"
+			log_startup_progress("	Checking the saved levels.")
 			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained: [last_error]")
 			candidate_validated = TRUE
+			save_phase_started = persistence_save_phase_log("candidate check", save_phase_started)
 			clear_saved_zones()
 			release_durable_world()
 			clear_zone_export()
@@ -202,6 +213,7 @@
 			throw EXCEPTION("World effects changed during capture; completed backup retained. [effects_quiescence_error]")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
+	save_phase_started = persistence_save_phase_log("round state and marker", save_phase_started)
 	// The record only speeds up later checks; without it they run in full. An
 	// ordinary save's structural candidate check leaves the full walk to the
 	// next preflight, which writes the record itself (validate_world_save).
@@ -220,7 +232,20 @@
 			// The completion marker is already durable; logging cannot undo it.
 			debug_policy.stop_reason = "commit_log_unavailable"
 	log_startup_progress("Finished saving.")
+	persistence_save_phase_log("total", save_started)
 	return 1
+
+// Wall time of one save phase, for the server and game logs: the save runs
+// across ticks, so world.timeofday, not world.cpu, measures what admins wait.
+// Returns the start of the next phase.
+/proc/persistence_save_phase_log(phase, started)
+	var/now = world.timeofday
+	var/elapsed = now - started
+	if(elapsed < 0) elapsed += 864000 // midnight wrap
+	var/text = "World save: [phase] took [round(elapsed / 10, 0.1)] s."
+	world.log << text
+	persistence_game_log(text)
+	return now
 
 /map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0, traversal = FALSE, datum/human_request = null)
 	// A segmented level's index holds only its grid; fields go to the open segment.
@@ -405,6 +430,7 @@
 				require_export_frame(frame)
 				savefile.cd = entry_dir
 				record_save_capture_path(savefile, v)
+				if(saving_stream_native_paths) value = note_stream_native_value(savefile, v, value)
 				savefile[v] << value
 		// Saved-variable recursion can declare a sibling after direct traversal.
 		drain_save_transfers(frame)
@@ -492,7 +518,9 @@
 					keys[i] = key
 					if(!isnum(key) && !isnull(key)) values[i] = snapshot[key]
 				record_save_capture_path(F, "/lists/[id]")
-				F["/lists/[id]"] << list("kind" = "scalars", "length" = snapshot.len, "keys" = keys, "values" = values)
+				var/list/scalars = list("kind" = "scalars", "length" = snapshot.len, "keys" = keys, "values" = values)
+				if(saving_stream_native_paths) scalars = note_stream_native_value(F, "/lists/[id]", scalars)
+				F["/lists/[id]"] << scalars
 				return list("kind" = "list", "ref" = id)
 			record_save_capture_path(F, "/lists/[id]/length")
 			F["/lists/[id]/length"] << snapshot.len
@@ -512,8 +540,10 @@
 					encoded_key = encode_saved_value(F, key)
 					encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : snapshot[key])
 				record_save_capture_path(F, "/lists/[id]/[i]/key")
+				if(saving_stream_native_paths) encoded_key = note_stream_native_value(F, "/lists/[id]/[i]/key", encoded_key)
 				F["/lists/[id]/[i]/key"] << encoded_key
 				record_save_capture_path(F, "/lists/[id]/[i]/value")
+				if(saving_stream_native_paths) encoded_value = note_stream_native_value(F, "/lists/[id]/[i]/value", encoded_value)
 				F["/lists/[id]/[i]/value"] << encoded_value
 		return list("kind" = "list", "ref" = id)
 	if(isturf(value))
@@ -847,6 +877,114 @@
 		var/absolute = copytext(path, 1, 2) == "/" ? path : "[F.cd]/[path]"
 		moving_save_chunk.paths += absolute
 
+// Stream level saves hand each scratch segment to the helper as savefile text
+// (level_stream.dm). Note the absolute path of every node whose value does not
+// survive that text (persistence_stream_text_unsafe), so the writer rewrites
+// those nodes natively after the text. Only scalars and the lists written raw
+// or as envelopes reach here.
+// Returns the value to write into the scratch savefile: the value itself, or
+// null for a resource or appearance, whose savefile text (multi-line file
+// data, saved objects) the helper's text parser does not take; the stashed
+// value reaches the stream natively and replaces the placeholder.
+/map_storage/proc/note_stream_native_value(savefile/F, path, value)
+	if(!persistence_stream_text_unsafe(value)) return value
+	saving_stream_native_paths[copytext(path, 1, 2) == "/" ? path : "[F.cd]/[path]"] = value
+	if(istext(value) || isnum(value)) return value
+	return null
+
+// TRUE for a value, or a value inside a saved list, that BYOND savefile text
+// does not carry exactly: text with a text macro such as \improper
+// (interpolating a string strips its macro bytes, so the lengths differ), an
+// infinite or NaN number (rendered as 1.#INF), and anything that is neither a
+// scalar nor a list (icons, sounds, appearances), which the stream's own
+// encoder sends as a native token or value file. Saved lists reach a level
+// file as typed envelopes: "value" wraps one scalar, "scalars" holds flat key
+// and value lists, and the reference kinds hold only ids, coordinates and
+// type paths. Other lists are walked a few levels deep.
+/proc/persistence_stream_text_unsafe(value, depth = 0)
+	if(isnull(value) || ispath(value)) return FALSE
+	if(istext(value)) return length("[value]") != length(value)
+	if(isnum(value)) return value != value || value == 1.#INF || value == -1.#INF
+	if(!islist(value)) return TRUE
+	var/list/L = value
+	switch(L["kind"])
+		if("value")
+			return persistence_stream_text_unsafe(L["value"], depth + 1)
+		if("scalars")
+			return persistence_scalars_text_unsafe(L["keys"]) || persistence_scalars_text_unsafe(L["values"])
+		if("entry", "list", "turf", "area", "map", "zone")
+			return FALSE
+	if(depth > 3) return FALSE
+	for(var/i = 1, i <= L.len, i++)
+		var/key = L[i]
+		if(persistence_stream_text_unsafe(key, depth + 1)) return TRUE
+		if(!isnum(key) && !isnull(key) && persistence_stream_text_unsafe(L[key], depth + 1)) return TRUE
+	return FALSE
+
+// The flat key or value list of a "scalars" envelope: scalars only, checked
+// in one loop.
+/proc/persistence_scalars_text_unsafe(list/L)
+	if(!islist(L)) return FALSE
+	for(var/i = 1, i <= L.len, i++)
+		var/item = L[i]
+		if(istext(item))
+			if(length("[item]") != length(item)) return TRUE
+		else if(isnum(item))
+			if(item != item || item == 1.#INF || item == -1.#INF) return TRUE
+	return FALSE
+
+// PERSISTENCE_CANDIDATE_READBACK keeps the file read-back for stream
+// candidates (validate_world_save walks the published files).
+/map_storage/proc/candidate_readback_required()
+	var/datum/settings = ("config" in global.vars) ? global.vars["config"] : null
+	return settings && ("persistence_candidate_readback" in settings.vars) && settings.vars["persistence_candidate_readback"]
+
+// Structural summary of the level just written, from the objects still pinned
+// in memory, for the candidate check of a stream save (validate_world_save
+// reads it instead of walking the published file back, which cost about as
+// much as writing the level). It proves what the read-back proved: every entry
+// is a datum that is not an area, turf entries are placed on this level, every
+// content edge joins a movable to its container, player ownership is valid and
+// unique across levels, and roofs sit once on a turf of this level. The helper
+// proved on publish that every entry and list the file references exists, and
+// the next preflight on disk walks the values in full.
+/map_storage/proc/record_candidate_level_structure(z)
+	if(!saving_candidate_structure) saving_candidate_structure = list("player_owners" = list())
+	var/list/player_owners = saving_candidate_structure["player_owners"]
+	var/roof_root = text2path("/obj/roof")
+	var/human_root = text2path("/mob/living/human")
+	var/list/roofs = list()
+	var/list/roof_turfs = list()
+	var/count = saving_reference_pins.len
+	for(var/ref = 1, ref <= count, ref++)
+		var/datum/A = saving_reference_pins[ref]
+		if(!istype(A, /datum) || isarea(A)) throw EXCEPTION("Unsupported saved entry [ref] on z=[z]")
+		if(isturf(A))
+			var/turf/T = A
+			if(T.z != z) throw EXCEPTION("Unplaced saved turf entry [ref] on z=[z]")
+		else if(human_root && istype(A, human_root))
+			var/owner = ("persistence_owner_ckey" in A.vars) ? A.vars["persistence_owner_ckey"] : null
+			if(!isnull(owner))
+				if(!persistence_owner_valid(owner) || player_owners[owner]) throw EXCEPTION("Invalid or duplicate saved player ownership")
+				player_owners[owner] = TRUE
+		else if(roof_root && istype(A, roof_root))
+			// Roofs are found through their turf's contents, as the read-back does.
+			var/parent = saving_content_owners["[ref]"]
+			var/turf/T = parent ? saving_reference_pins[parent] : null
+			if(!isturf(T)) continue
+			if(T.z != z) throw EXCEPTION("Saved roof is not placed on its level")
+			var/key = "[T.x],[T.y],[z]"
+			if(roof_turfs[key]) throw EXCEPTION("Ambiguous or multiply placed saved roof")
+			roof_turfs[key] = TRUE
+			roofs += list(list("x" = T.x, "y" = T.y, "entry" = ref, "type" = A.type, "switch" = A.vars["switch_area"], "base" = A.vars["current_area_type"]))
+		if(ref % 4096 == 0) save_work_check()
+	for(var/key in saving_content_owners)
+		var/child = text2num(key)
+		var/parent = saving_content_owners[key]
+		if(!isnum(child) || child < 1 || child > count || !isnum(parent) || parent < 1 || parent > count) throw EXCEPTION("Saved content edge leaves the level z=[z]")
+		if(!istype(saving_reference_pins[child], /atom/movable)) throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
+	saving_candidate_structure["[z]"] = list("entries" = count, "roofs" = roofs)
+
 /map_storage/proc/capture_moving_save_root(savefile/destination, list/record)
 	var/mob/living/simple_animal/A = record["atom"]
 	// Reserve tick headroom before allocating a stage or any root identities.
@@ -893,6 +1031,9 @@
 	// chunk, retaining typed envelopes and global per-level entry/list IDs.
 	for(var/path in chunk.paths)
 		var/value = staged[path]
+		// Values noted while the chunk was staged are already stashed for the
+		// stream; the staged placeholder (null) copies over as it is.
+		if(saving_stream_native_paths) value = note_stream_native_value(destination, path, value)
 		destination[path] << value
 		save_work_check()
 	return ref

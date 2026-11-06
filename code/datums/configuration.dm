@@ -147,6 +147,7 @@ var/list/gamemode_cache = list()
 	var/persistence_low_memory_always = FALSE
 	var/persistence_segment_size = 4096 // saved entries plus lists per low-memory level segment.
 	var/persistence_stream_saves = TRUE // write levels through the savestream helper when its files are present.
+	var/persistence_candidate_readback = FALSE // walk every stream level back from disk during a save's candidate check instead of checking the pinned objects.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
 	var/new_z_cell_budget = 1400000
 	var/new_z_roof_levels = 1
@@ -476,6 +477,9 @@ var/list/gamemode_cache = list()
 
 				if ("persistence_no_stream_saves")
 					config.persistence_stream_saves = FALSE
+
+				if ("persistence_candidate_readback")
+					config.persistence_candidate_readback = TRUE
 
 				if ("persistence_segment_size")
 					var/segment_size = text2num(value)
