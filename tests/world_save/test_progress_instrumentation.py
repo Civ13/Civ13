@@ -19,7 +19,14 @@ class ProgressInstrumentationTests(unittest.TestCase):
         body = generated[generated.index(start):generated.index(end)]
         self.assertEqual(body.replace('world_save_progress_sleep(', 'sleep('),
                          original[original.index(start):original.index(end)])
-        expected = 6 if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in original else 4
+        # Three serializer sleeps plus the moving-capture headroom wait, plus the
+        # human handoff waits: one in the tile saver, two in the older roster saver.
+        if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' not in original:
+            expected = 4
+        elif '/map_storage/proc/inspect_human_saved_tile_and_links(' in original:
+            expected = 5
+        else:
+            expected = 6
         self.assertEqual(generated.count('world_save_progress_sleep('), expected)
         capture = '/map_storage/proc/capture_moving_save_root('
         edge = '/map_storage/proc/moving_save_root_edge('

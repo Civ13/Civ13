@@ -1,0 +1,143 @@
+
+        if not result_path.is_file():
+            raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
+        result = json.loads(result_path.read_text(encoding='utf-8'))
+        # 159 wound assertions (18 round trips also check the world.time stamp)
+        # plus the generated offline-client startup check.
+        if args.wounds and not args.negative_control:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 165:
+                raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
+        if args.lifecycle_shutdown:
+            # The DM receipt is written before native deletion. Acceptance must
+            # inspect disk after the process exits, including delayed cleanup.
+            if not result.get('done') or result.get('checks', 0) < 7:
+                raise RuntimeError('Native shutdown assertions incomplete: ' + str(result))
+            intent_path = output / 'map_saves/restart_intent.json'
+            if args.negative_control == 'shutdown-return':
+                if intent_path.exists() or 'Native shutdown returned without closing the world' not in log:
+                    raise RuntimeError('Shutdown return control did not reproduce intent cleanup')
+                receipt['post_exit_intent_preserved'] = False
+                receipt['expected_failure_caught'] = True
+            else:
+                intent_text = intent_path.read_text(encoding='utf-8-sig')
+                intent = json.loads(intent_text)
+                marker = (output / 'map_saves/save_complete.txt').read_text().strip()
+                if (hashlib.md5(intent_text.encode('utf-8')).hexdigest() != result.get('intent_hash') or
+                        intent.get('generation') != result.get('generation') or marker != intent['generation']):
+                    raise RuntimeError('Native shutdown changed the published recovery intent')
+                receipt['post_exit_intent_preserved'] = True
+                receipt['expected_failure_caught'] = False
+            receipt['result'] = result
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print(json.dumps(receipt, indent=2))
+            return
+        if args.persistence_year:
+            expected_date_failure = {'year-helper': 'earlier date not raised', 'year-load': 'saved date floor lost', 'year-order': 'saved date floor lost'}
+            if args.negative_control:
+                if result.get('done') or result.get('error') != expected_date_failure[args.negative_control]:
+                    raise RuntimeError('Date control did not reach its named assertion: ' + str(result))
+            elif not result.get('done') or result.get('imports') != 24 or result.get('checks') != 333:
+                raise RuntimeError('Native date/import coverage incomplete: ' + str(result))
+            receipt['result'] = result
+            receipt['expected_failure_caught'] = bool(args.negative_control)
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print(json.dumps(receipt, indent=2))
+            return
+        expected = {'season': 'environment phase reset', 'preflight': 'malformed artillery sentinel mutated world',
+                    'reachability': 'orphan metadata reference accepted', 'callback': 'restored callback duplicated',
+                    'timer-restore': 'persisted callback was not restored',
+                    'reclaim-order': 'waiting authenticated client not reclaimed after recovery',
+                    'lighting-export': 'runtime atom lighting fields exported',
+                    'lighting-legacy': 'legacy lighting graph prevented import',
+                    'lighting-rebuild': 'restored custom light not rebuilt',
+                    'lighting-opacity': 'restored obstruction caches stale',
+                    'lighting-view': 'map clearing retired runtime view helper',
+                    'lighting-eager': 'untouched corners allocated affecting lists',
+                    'lighting-shared': 'corners share mutable affecting list'}
+        if args.negative_control:
+            if args.negative_control == 'wound-restore':
+                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != receipt['wound_control_line'] or result.get('checks') != 5:
+                    raise RuntimeError('Reverted wound fix did not reproduce the constructor failure: ' + str(result))
+                receipt['result'] = result
+                receipt['expected_failure_caught'] = True
+                (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+                print(json.dumps(receipt, indent=2))
+                return
+            if result.get('done') or result.get('error') != expected[args.negative_control]:
+                raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
+            # Includes four operation-admission checks and the offline startup check.
+            if args.negative_control == 'preflight' and result.get('checks') != 12:
+                raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
+            # Includes export operation-release and offline startup checks before recovery.
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:
+                raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
+            if args.negative_control == 'lighting-legacy':
+                import_error = result.get('import_error') or ''
+                if 'Cannot read null.light_sources' not in import_error or 'lighting_source.dm:35' not in import_error:
+                    raise RuntimeError('Legacy lighting control did not reproduce the ownerless source constructor: ' + import_error)
+        elif not result.get('done') or result.get('checks', 0) < (7 if args.lifecycle_shutdown else 19):
+            raise RuntimeError('Native integration fixture incomplete: ' + str(result))
+        receipt['result'] = result
+        receipt['expected_failure_caught'] = bool(args.negative_control)
+        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+        print(json.dumps(receipt, indent=2))
+    finally:
+        for path in [dme, dme.with_suffix('.dmb'), dme.with_suffix('.rsc'), *generated]:
+            path.unlink(missing_ok=True)
+
+
+def run_lighting(command, output, flags):
+    """Check the live fixture's OS sockets during its deliberate entry hold."""
+    child = subprocess.Popen(command, cwd=output, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, text=True, creationflags=flags)
+    try:
+        ready = output / 'lighting-port-ready.json'
+        deadline = time.monotonic() + 30
+        while not ready.is_file():
+            if child.poll() is not None or time.monotonic() > deadline:
+                raise RuntimeError('Lighting fixture exited or timed out before closed-port census')
+            time.sleep(0.02)
+        state = json.loads(ready.read_text(encoding='utf-8'))
+        if state.get('port'):
+            raise RuntimeError('Lighting fixture reports an open native port')
+        if os.name == 'nt':
+            script = (f'$L=@(Get-NetTCPConnection -State Listen -ErrorAction Stop | '
+                      f'Where-Object OwningProcess -eq {child.pid}); $L.Count')
+            census = subprocess.run(['powershell', '-NoProfile', '-Command', script],
+                                    capture_output=True, text=True, timeout=20, check=True)
+            listeners = int(census.stdout.strip())
+        else:
+            sockets = set()
+            for fd in Path(f'/proc/{child.pid}/fd').iterdir():
+                try:
+                    link = os.readlink(fd)
+                except FileNotFoundError:
+                    continue
+                if link.startswith('socket:['):
+                    sockets.add(link[8:-1])
+            listeners = 0
+            for table in ('tcp', 'tcp6'):
+                # A host without IPv6 has no tcp6 table, so it holds no listeners.
+                path = Path(f'/proc/{child.pid}/net/{table}')
+                if table == 'tcp6' and not path.exists():
+                    continue
+                for row in path.read_text().splitlines()[1:]:
+                    fields = row.split()
+                    if fields[3] == '0A' and fields[9] in sockets:
+                        listeners += 1
+        if child.poll() is not None or listeners:
+            raise RuntimeError('Lighting fixture not alive with zero listeners at census')
+        (output / 'listener-census.json').write_text(json.dumps(
+            {'pid': child.pid, 'listeners': listeners, 'native_port': state['port']}), encoding='utf-8')
+        stdout, stderr = child.communicate(timeout=90)
+        return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait(timeout=10)
+        (output / 'lighting-process-exit.json').write_text(json.dumps(
+            {'pid': child.pid, 'exit_code': child.returncode}), encoding='utf-8')
+
+
+if __name__ == '__main__':
+    main()
