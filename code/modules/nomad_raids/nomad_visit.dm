@@ -14,6 +14,8 @@
 /datum/nomad_raid
 	should_save = FALSE
 	var/tmp/kind = "raid" // raid or trade
+	var/tmp/list/visited = list() // ckeys who came to the stall
+	var/tmp/wants = null // a kind of goods asked for by telegraph (nomad_requests.dm)
 	var/tmp/state = "march" // march, parley, trade, assault, loot, leave, ended
 	var/tmp/clan
 	var/tmp/started_by
@@ -22,6 +24,10 @@
 	var/tmp/initial_size = 0
 	var/tmp/turf/target
 	var/tmp/turf/home
+	var/tmp/list/walk_route // turfs from home to the target, when the party walks
+	var/tmp/list/waypoints = list() // member = the route turf they are walking to now
+	var/tmp/leave_planned = FALSE // walk_route now leads home
+	var/tmp/next_retarget = 0
 	var/tmp/edge
 	var/tmp/list/target_ckeys = list()
 	var/tmp/started_at = 0
@@ -131,6 +137,11 @@
 		return "no open, unseen ground near a map edge on that level"
 	home = site["turf"]
 	edge = site["edge"]
+	// The NPC pathfinder gives up on long or winding walks (frozen sea with
+	// open holes, mountains), and the party then pushes straight at the
+	// target until it is stuck. Plan the whole walk once and hand it out in
+	// short legs instead.
+	plan_walk(home, target)
 	// The leader stands nearest the target so followers never block the march.
 	var/list/spots = sail_path ? list(home) : list()
 	for (var/turf/T in sail_path ? list() : range(2, home))
@@ -162,6 +173,8 @@
 	else
 		M.name = is_leader ? "[clan] chieftain" : "[clan] raider"
 	M.real_name = M.name
+	if (kind == "raid" && prob(NOMAD_RAID_CUFF_CHANCE))
+		M.give_cuffs(map ? map.ordinal_age : 0)
 	members += M
 	last_health[M] = M.health
 	if (is_leader)
@@ -206,7 +219,7 @@
 	if (!istype(L) || L.stat != CONSCIOUS || (L in members) || istype(L, /mob/living/simple_animal/hostile/human/nomad_raider))
 		return FALSE
 	if (ishuman(L))
-		return TRUE
+		return !nomad_raid_bound(L) // a bound prisoner is no longer fought
 	// Animals only when they are already fighting a member.
 	if (istype(L, /mob/living/simple_animal))
 		var/mob/living/simple_animal/SA = L
@@ -228,6 +241,63 @@
 	M.pathfind_target = T
 	if (get_dist(M, T) > 1 && (!M.moving || M.target_obj != T))
 		M.do_movement(T)
+
+// The players a visit was aimed at may have moved on; the march follows the
+// nearest of them who is still active on this level. Never sleeps.
+/datum/nomad_raid/proc/retarget()
+	if (!target_ckeys.len || sail_path || !leader_ok() || world.time < next_retarget)
+		return
+	next_retarget = world.time + NOMAD_RAID_RETARGET
+	var/turf/best = null
+	for (var/client/C in clients)
+		if (!(C.ckey in target_ckeys) || !nomad_raid_defender(C.mob))
+			continue
+		var/turf/at = get_turf(C.mob)
+		if (at.z == target.z && (!best || get_dist(at, leader) < get_dist(best, leader)))
+			best = at
+	retarget_to(best)
+
+// Moves the target to where the players are now, when they have left it.
+/datum/nomad_raid/proc/retarget_to(turf/now_at)
+	if (!now_at || !target || now_at.z != target.z || get_dist(now_at, target) <= NOMAD_RAID_PARLEY_RANGE)
+		return FALSE
+	target = now_at
+	plan_walk(get_turf(leader), target)
+	event("retarget", "following [jointext(target_ckeys, ", ")] to [target.x],[target.y]")
+	return TRUE
+
+// Plans the walk from start to dest, or clears it (then members path straight there).
+/datum/nomad_raid/proc/plan_walk(turf/start, turf/dest)
+	walk_route = (start && dest && !sail_path) ? agent_route_search(start, dest, NOMAD_RAID_ROUTE_REACH, FALSE) : null
+	waypoints = list()
+
+// Walks M toward dest along walk_route, one short leg at a time. Off the
+// route (after a fight, or with no route) it paths to dest directly.
+/datum/nomad_raid/proc/route_move(mob/living/simple_animal/hostile/human/nomad_raider/M, turf/dest)
+	var/turf/W = waypoints[M]
+	if (!W || get_dist(M, W) <= 2 || get_dist(M, W) > NOMAD_RAID_ROUTE_LEG * 2)
+		W = route_waypoint(M, dest)
+		waypoints[M] = W
+	order_move(M, W)
+
+// The route turf one leg ahead of the route turf nearest M, or dest itself.
+/datum/nomad_raid/proc/route_waypoint(mob/M, turf/dest)
+	if (!islist(walk_route) || walk_route.len < 2 || !M)
+		return dest
+	var/turf/at = get_turf(M)
+	var/nearest = 0
+	var/nearest_dist = 0
+	for (var/i = 1, i <= walk_route.len, i++)
+		var/d = get_dist(at, walk_route[i])
+		if (!nearest || d < nearest_dist)
+			nearest = i
+			nearest_dist = d
+	if (nearest_dist > NOMAD_RAID_ROUTE_LEG)
+		return dest
+	var/i = nearest + NOMAD_RAID_ROUTE_LEG
+	if (i >= walk_route.len)
+		return dest
+	return walk_route[i]
 
 /datum/nomad_raid/proc/order_halt(mob/living/simple_animal/hostile/human/nomad_raider/M)
 	if (!M)
@@ -267,7 +337,7 @@
 	if (!alive.len)
 		finish("every member fell")
 		return
-	if (world.time - started_at > NOMAD_RAID_TOTAL_LIMIT)
+	if (world.time - started_at > (kind == "trade" ? NOMAD_TRADE_TOTAL_LIMIT : NOMAD_RAID_TOTAL_LIMIT))
 		remove_all("time limit")
 		return
 	if (pending_cue && world.time >= pending_cue[3])
@@ -345,10 +415,11 @@
 			else
 				begin_parley()
 			return
+		retarget()
 		if (get_dist(leader, target) <= 3 && !nomad_raid_defenders_near(target).len)
 			set_state("leave", "nobody was home")
 			return
-	order_move(leader, target)
+	route_move(leader, target)
 	follow_leader(alive)
 
 // ---------------------------------------------------------------------------
@@ -441,7 +512,13 @@
 		return
 	var/side = 1
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in alive)
+		if (capture_step(M))
+			continue
 		if (M.target_mob && foe_ok(M.target_mob))
+			if (ishuman(M.target_mob))
+				quarry[M] = M.target_mob
+			continue
+		if (chase_step(M))
 			continue
 		switch (tactic)
 			if ("hold")
@@ -455,7 +532,7 @@
 				order_move(M, T ? T : target)
 			else
 				order_move(M, focus ? focus : target)
-	if (foes_near())
+	if (foes_near() || quarry_left())
 		last_seen_foe = world.time
 	else if (world.time - last_seen_foe > NOMAD_RAID_QUIET_LIMIT)
 		end_fight("no one left standing to fight")
@@ -508,6 +585,9 @@
 		set_hostile(FALSE)
 	var/working = FALSE
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in alive)
+		if (captives[M] && capture_step(M))
+			working = TRUE // finish stripping a prisoner before looting
+			continue
 		if (M in done_looting)
 			continue
 		if (M.target_mob && foe_ok(M.target_mob))
@@ -548,7 +628,10 @@
 		if (leave_by_boat(M))
 			continue
 		if (!M.target_mob)
-			order_move(M, home)
+			if (!leave_planned)
+				plan_walk(get_turf(M), home)
+				leave_planned = TRUE
+			route_move(M, home)
 	sail_step()
 	if (!alive_members().len)
 		finish(outcome ? outcome : "the party left")
@@ -562,12 +645,18 @@
 			qdel(I)
 	M.carried.Cut()
 	members -= M
+	waypoints -= M
+	captives -= M
+	quarry -= M
 	qdel(M)
 
 // A fallen member drops everything it carried.
 /datum/nomad_raid/proc/member_fell(mob/living/simple_animal/hostile/human/nomad_raider/M)
 	fallen++
 	M.drop_carried()
+	M.lose_cuffs()
+	captives -= M
+	quarry -= M
 	// Killing traders or their guards is remembered; killing raiders is not.
 	var/mob/living/human/H = M.lastattacker
 	if (kind == "trade" && istype(H) && H.ckey)
@@ -609,7 +698,7 @@
 	return "[clan] [kind]: [state] for [round((world.time - state_at) / 10)] s, [alive.len] of [initial_size] standing[extra], target [target.x],[target.y],[target.z][voice_active() ? ", coordinator attached" : ""]."
 
 // Starts a visit on a turf. Returns null on success, else why not.
-/proc/start_nomad_raid(turf/target, list/ckeys, size, by, kind = "raid")
+/proc/start_nomad_raid(turf/target, list/ckeys, size, by, kind = "raid", wants = null)
 	if (nomad_raid)
 		return "a visit is already running"
 	if (!target)
@@ -623,6 +712,7 @@
 		R.remove_all("could not start: [error]")
 		qdel(R)
 		return error
+	R.wants = wants
 	nomad_raid = R
 	R.begin()
 	return null

@@ -28,6 +28,10 @@
 #define NOMAD_RAID_LOOT_RANGE 8
 #define NOMAD_RAID_EDGE_LIMIT 120 // farthest spawn distance from the target
 #define NOMAD_RAID_EDGE_SPREAD 30
+#define NOMAD_RAID_ROUTE_LEG 10 // route tiles per walking leg; the NPC pathfinder plans short hops well
+#define NOMAD_RAID_ROUTE_REACH 3 // the planned walk ends this close to the target, as a boat landing does
+#define NOMAD_RAID_RETARGET (5 SECONDS) // how often a march checks where its target players went
+#define NOMAD_RAID_CUFF_CHANCE 35 // percent of raiders who carry restraints (nomad_capture.dm)
 #define NOMAD_RAID_VIEW_MARGIN 12
 #define NOMAD_RAID_PARLEY_TIME (90 SECONDS)
 #define NOMAD_RAID_MARCH_LIMIT (10 MINUTES)
@@ -46,6 +50,8 @@
 #define NOMAD_RAID_VOICE_SEEN (10 SECONDS) // a coordinator counts as attached this long after its last status read
 #define NOMAD_RAID_LOG_MAX 40
 #define NOMAD_TRADE_TIME (12 MINUTES)
+#define NOMAD_TRADE_WAIT (25 MINUTES) // longest a caravan waits at its stall for the players it came for
+#define NOMAD_TRADE_TOTAL_LIMIT (45 MINUTES)
 #define NOMAD_TRADE_THEFT_GRACE (15 SECONDS)
 #define NOMAD_TRADE_GOODS 6
 

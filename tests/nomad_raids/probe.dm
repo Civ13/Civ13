@@ -41,6 +41,8 @@ var/raid_runtime_error = FALSE
 		raid_coordinator_checks()
 		raid_trade_checks()
 		raid_reputation_checks()
+		raid_capture_checks()
+		raid_request_checks()
 		raid_lifecycle_checks()
 		raid_boat_checks()
 	catch(var/exception/e)
@@ -102,6 +104,29 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list("victim"), 9, "probe")), "a party sets up at the edge")
 	raid_check(R.members.len == NOMAD_RAID_MAX_MEMBERS, "party size is capped at [NOMAD_RAID_MAX_MEMBERS]")
 	raid_check(R.leader && (R.leader in R.members) && R.leader.is_leader, "the party has a leader")
+	// The walk is planned once and handed out in short legs.
+	var/list/route = R.walk_route
+	raid_check(islist(route) && route[1] == R.home && get_dist(route[route.len], target) <= NOMAD_RAID_ROUTE_REACH, "the walk to the target is planned from home")
+	if (islist(route) && route.len > NOMAD_RAID_ROUTE_LEG + 2)
+		var/turf/leg = R.route_waypoint(R.leader, target)
+		raid_check(leg && (leg in route) && get_dist(R.leader, leg) <= NOMAD_RAID_ROUTE_LEG + 2, "the leader walks one short leg of the route at a time")
+	var/turf/far_off = locate(2, 2, 1)
+	var/mob/living/simple_animal/hostile/human/nomad_raider/stray = R.members[R.members.len]
+	var/turf/stray_was = get_turf(stray)
+	stray.loc = far_off
+	raid_check(R.route_waypoint(stray, target) == target || get_dist(far_off, route[1]) <= NOMAD_RAID_ROUTE_LEG, "a member far off the route paths straight to the target")
+	stray.loc = stray_was
+	// Players who moved away are followed; a short move is not.
+	var/turf/first_target = R.target
+	raid_check(!R.retarget_to(get_step(target, WEST)) && R.target == first_target, "a target that barely moved is kept")
+	var/turf/moved = locate(target.x - 12, target.y - 4, 1)
+	raid_check(R.retarget_to(moved) && R.target == moved && islist(R.walk_route) && get_dist(R.walk_route[R.walk_route.len], moved) <= NOMAD_RAID_ROUTE_REACH, "the march follows players who moved away")
+	R.target = first_target
+	R.plan_walk(R.home, first_target)
+	// Leaving plans the walk home from where the party stands.
+	R.plan_walk(get_turf(R.leader), R.home)
+	raid_check(islist(R.walk_route) && get_dist(R.walk_route[R.walk_route.len], R.home) <= NOMAD_RAID_ROUTE_REACH, "the walk home is planned from where the party stands")
+	R.plan_walk(R.home, first_target)
 	var/all_npcs = TRUE
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.members)
 		if (M.should_save || M.party != R || M.faction != NOMAD_RAID_FACTION || M.weapon != /obj/item/weapon/material/spear)
@@ -245,6 +270,7 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list(), 2, "probe", "trade")) && R.kind == "trade", "a caravan sets up")
 	nomad_raid = R
 	raid_check(findtext(R.leader.name, "trader"), "the caravan has a trader")
+	raid_check((/obj/item/stack/farming/seeds/tea in nomad_trade_goods(0)) && !(/obj/item/weapon/reagent_containers/pill/penicillin in nomad_trade_goods(5)) && (/obj/item/weapon/reagent_containers/pill/penicillin in nomad_trade_goods(6)), "caravans carry tea seeds, and medicine pills from the sixth age")
 	var/turf/yard = get_step(get_step(R.leader, SOUTH), SOUTH)
 	var/obj/item/weapon/material/spear/lying = new(yard)
 	lying.fingerprintslast = "Neighbour"
@@ -254,6 +280,19 @@ var/raid_runtime_error = FALSE
 	R.leader.loc = yard
 	R.tick_trade(R.alive_members(), FALSE, TRUE)
 	raid_check(!R.credit["neighbour"] && lying.loc == yard, "loose gear near the stall is not taken as payment")
+	// A caravan aimed at players waits past its usual time until one has come by.
+	R.target_ckeys = list("guest")
+	var/opened_at = R.state_at
+	R.state_at = world.time - NOMAD_TRADE_TIME - 10
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(R.state == "trade" && R.waiting_for_guests(), "the caravan waits for the players it came for")
+	R.visited += "guest"
+	raid_check(!R.waiting_for_guests(), "once they have come by, the caravan keeps its usual hours")
+	R.state_at = world.time - NOMAD_TRADE_WAIT - 10
+	R.visited -= "guest"
+	raid_check(!R.waiting_for_guests(), "nobody waits forever")
+	R.state_at = opened_at
+	R.target_ckeys = list()
 	raid_check(R.goods.len >= 1 && R.goods.len <= NOMAD_TRADE_GOODS, "goods are laid out ([R.goods.len])")
 	var/goods_ok = TRUE
 	for (var/obj/item/I in R.goods)
@@ -429,3 +468,80 @@ var/raid_runtime_error = FALSE
 		if (!QDELETED(raft) && isturf(raft.loc))
 			left++
 	raid_check(!left && !R.rafts.len, "no party raft is left behind")
+
+// Raiders with restraints disarm, knock down, bind and strip a foe; others chase.
+/proc/raid_capture_checks()
+	raid_check(nomad_raid_cuff_type(0) == /obj/item/weapon/handcuffs/rope && nomad_raid_cuff_type(4) == /obj/item/weapon/handcuffs/old && nomad_raid_cuff_type(6) == /obj/item/weapon/handcuffs, "restraints suit the age")
+	var/turf/target = locate(20, 26, 1)
+	var/datum/nomad_raid/R = new
+	R.setup(target, list(), 2, "probe")
+	nomad_raid = R
+	var/mob/living/simple_animal/hostile/human/nomad_raider/M = R.leader
+	var/obj/item/weapon/handcuffs/C = M.give_cuffs(0)
+	raid_check(C && C.loc == M && !C.should_save, "a raider can carry unsaved rope restraints")
+	var/turf/at = get_step(M, SOUTH)
+	var/mob/living/human/V = new(at)
+	var/obj/item/weapon/material/spear/held = new(at)
+	V.put_in_hands(held)
+	var/obj/item/clothing/shoes/S = new /obj/item/clothing/shoes/leather(at)
+	V.equip_to_slot(S, slot_shoes)
+	R.state = "assault"
+	R.set_hostile(TRUE)
+	M.target_mob = V
+	var/steps = 0
+	while (steps < 60 && V.get_active_hand() == held)
+		R.capture_step(M)
+		steps++
+	raid_check(held.loc == at, "the raider wrenches the weapon out of their hands")
+	steps = 0
+	while (steps < 60 && !V.lying)
+		R.capture_step(M)
+		steps++
+	raid_check(V.lying, "the raider knocks them down")
+	R.capture_step(M)
+	raid_check(V.handcuffed == C && !M.cuffs && C.should_save && R.captives[M] == V, "a downed foe is bound with the raider's restraints")
+	raid_check(!R.foe_ok(V), "a bound prisoner is no longer fought")
+	steps = 0
+	while (steps < 20 && R.captives[M])
+		R.capture_step(M)
+		steps++
+	raid_check(!V.shoes && (S in M.carried) && R.stripped == 1 && V.handcuffed == C, "the prisoner is stripped and stays bound")
+	// A foe who runs is chased while near the target, and let go when far.
+	var/mob/living/simple_animal/hostile/human/nomad_raider/F = R.members[2]
+	var/mob/living/human/runner = new(locate(target.x + 8, target.y, 1))
+	R.quarry[F] = runner
+	raid_check(R.chase_step(F) && F.pathfind_target == get_turf(runner), "a raider chases a foe who ran")
+	raid_check(R.quarry_left(), "a fleeing foe near the target keeps the fight going")
+	runner.stat = UNCONSCIOUS
+	raid_check(!R.chase_step(F) && !R.quarry_left(), "a foe who is down is no longer chased")
+	R.remove_all("probe")
+	qdel(runner)
+	qdel(V)
+
+// Calling a caravan by telegraph.
+/proc/raid_request_checks()
+	var/turf/T = locate(20, 26, 1)
+	raid_check(isnull(nomad_caravan_request(T, "caller", "CARAVAN")), "outside a nomads map the clans do not answer")
+	map.nomads = TRUE
+	raid_check(isnull(nomad_caravan_request(T, "caller", "HELLO")), "an ordinary word is not a request")
+	raid_check((/obj/item/weapon/reagent_containers/pill/penicillin in nomad_request_goods("medicine", 6)) && !length(nomad_request_goods("any", 6)) && (/obj/item/stack/farming/seeds/tea in nomad_request_goods("seeds", 0)), "requests name kinds of goods")
+	raid_check(nomad_caravan_request(T, "caller", "medicine") == "COMING" && nomad_request_pending, "a request is answered and a visit is on its way")
+	raid_check(nomad_caravan_request(T, "other", "SEEDS") == "BUSY", "only one called visit at a time")
+	nomad_request_pending = FALSE
+	raid_check(nomad_caravan_request(T, "caller", "SEEDS") == "LATER", "each caller waits an hour between calls")
+	nomad_rep_record("thief", "theft")
+	nomad_rep_record("thief", "theft")
+	raid_check(nomad_request_raid_roll("thief"), "a caller the clans want gets raiders")
+	// Arrival: a trade visit for the asked kind, at least half its stall of that kind.
+	raid_check(isnull(nomad_request_arrive(T, "caller", "medicine", FALSE)) && nomad_raid && nomad_raid.kind == "trade" && nomad_raid.wants == "medicine" && ("caller" in nomad_raid.target_ckeys), "the called caravan sets off for the telegraph")
+	var/datum/nomad_raid/R = nomad_raid
+	if (R)
+		R.begin_trade()
+		var/asked = 0
+		var/list/kinds = nomad_request_goods("medicine", map.ordinal_age)
+		for (var/obj/item/I in R.goods)
+			if (I.type in kinds)
+				asked++
+		raid_check(R.goods.len && asked * 2 >= R.goods.len, "at least half the stall is what was asked for ([asked] of [R.goods.len])")
+		R.remove_all("probe")
+	map.nomads = FALSE

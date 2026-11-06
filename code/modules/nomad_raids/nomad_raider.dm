@@ -95,6 +95,7 @@
 			party.leader = null
 	party = null
 	carried = null
+	lose_cuffs()
 	return ..()
 
 // The leader hears players for the coordinator. Player text is data only.
