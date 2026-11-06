@@ -12,7 +12,12 @@ namespace Civ13.Launcher;
 public sealed record HostBot(string Php, string Root, string Profile, int HttpPort);
 public sealed record HostUpdate(string Git, string Branch);
 // Civ13's scripts/gaia-host/gaia_host.py: the same start/save-and-stop/restart/update path the bot uses.
-public sealed record HostControl(string Python, string Script, string Config);
+public sealed record HostControl(string Python, string Script, string Config, HostGroup? Group = null);
+// The region group the server belongs to (control.group in host.json): scripts/shard-group/shard_group.py
+// acts on every region at once, and scripts/windows/host's deploy.bat and restart-host.bat run the
+// whole save, pull, compile and start sequence and restart the host service. All three come from the
+// same checkout as control.script, so host.json names only the group config.
+public sealed record HostGroup(string Config, string ShardScript, string Deploy, string RestartHost);
 public sealed record HostProfile(string GameDirectory, string World, int Port, HostBot? Bot, HostUpdate? Update = null, HostControl? Control = null);
 // One answer from the control script. Busy means an action is still running in its worker.
 public sealed record ControlAnswer(bool Ok, string Message, bool Busy);
@@ -47,8 +52,21 @@ public static class LocalHosting {
         HostControl? control = null;
         if (json.TryGetProperty("control", out var controlJson) && controlJson.ValueKind != JsonValueKind.Null) {
             if (update != null) throw new InvalidDataException("host.json control already updates the server; remove the update section.");
-            control = new HostControl(AbsoluteFile(Text(controlJson, "python"), "control.python"),
-                AbsoluteFile(Text(controlJson, "script"), "control.script"), AbsoluteFile(Text(controlJson, "config"), "control.config"));
+            var script = AbsoluteFile(Text(controlJson, "script"), "control.script");
+            HostGroup? group = null;
+            if (controlJson.TryGetProperty("group", out var groupJson) && groupJson.ValueKind != JsonValueKind.Null) {
+                var repository = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(script)!, "..", ".."));
+                string Beside(string relative) {
+                    var path = Path.Combine(repository, relative);
+                    return File.Exists(path) ? path : throw new InvalidDataException($"host.json control.group needs {relative} in the checkout of control.script.");
+                }
+                group = new HostGroup(AbsoluteFile(Text(controlJson, "group"), "control.group"),
+                    Beside(Path.Combine("scripts", "shard-group", "shard_group.py")),
+                    Beside(Path.Combine("scripts", "windows", "host", "deploy.bat")),
+                    Beside(Path.Combine("scripts", "windows", "host", "restart-host.bat")));
+            }
+            control = new HostControl(AbsoluteFile(Text(controlJson, "python"), "control.python"), script,
+                AbsoluteFile(Text(controlJson, "config"), "control.config"), group);
         }
         HostBot? bot = null;
         if (json.TryGetProperty("bot", out var botJson) && botJson.ValueKind != JsonValueKind.Null) {
@@ -144,6 +162,103 @@ public static class LocalHosting {
         }
     }
 
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update"];
+
+    // shard_group.py for every region of the group; again only the action name comes from the caller.
+    public static ProcessStartInfo GroupStep(HostControl control, string action) {
+        var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
+        if (!GroupActions.Contains(action)) throw new ArgumentException("Unsupported group action.", nameof(action));
+        var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
+            WorkingDirectory = Path.GetDirectoryName(group.ShardScript)!, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "-I", "-B", group.ShardScript, "--config", group.Config, action }) step.ArgumentList.Add(argument);
+        return step;
+    }
+
+    // deploy.bat or restart-host.bat, run by cmd.exe with its output read line by line.
+    public static ProcessStartInfo GroupScriptStep(HostControl control, string script) {
+        var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
+        var path = script switch {
+            "deploy" => group.Deploy,
+            "restart-host" => group.RestartHost,
+            _ => throw new ArgumentException("Unsupported group script.", nameof(script)),
+        };
+        var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe")) { UseShellExecute = false, CreateNoWindow = true,
+            WorkingDirectory = Path.GetDirectoryName(path)!, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "/d", "/c", path }) step.ArgumentList.Add(argument);
+        return step;
+    }
+
+    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
+        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action));
+        return ParseGroup(action, exit, output);
+    }
+
+    // shard_group.py answers {"ok", "regions": {id: status}} for status, and {"ok", "accepted": {id: ...},
+    // "refused": {id: reason}} (or "refused": "reason" for the whole group) for an action.
+    public static ControlAnswer ParseGroup(string action, int exit, string output) {
+        var line = output.Split('\n').Select(text => text.Trim()).LastOrDefault(text => text.StartsWith('{')) ?? "";
+        JsonDocument document;
+        try { document = JsonDocument.Parse(line); }
+        catch (JsonException) { return new ControlAnswer(false, $"The group script gave no answer (exit {exit}).", false); }
+        using (document) {
+            var json = document.RootElement;
+            if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("ok", out var ok) || ok.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                return new ControlAnswer(false, $"The group script gave no answer (exit {exit}).", false);
+            var refused = Refusals(json);
+            if (!ok.GetBoolean())
+                return new ControlAnswer(false, "Refused: " + (refused ?? Str(json, "error") ?? "no reason given"), false);
+            if (action == "status") {
+                var busy = false;
+                var regions = new List<string>();
+                if (json.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Object) {
+                    foreach (var region in list.EnumerateObject().Take(16)) {
+                        if (region.Value.ValueKind != JsonValueKind.Object) continue;
+                        var entry = region.Value;
+                        busy |= Bool(entry, "busy");
+                        var text = Clean(Str(entry, "name") ?? region.Name) + ": " + Lower(Str(entry, "state") ?? "unknown");
+                        if (entry.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object
+                                && world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number)
+                            text += $", {clients.GetInt32()} players";
+                        if (entry.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
+                                && Str(operation, "action") is { } last && Str(operation, "phase") is { } phase) {
+                            text += $", last {Lower(last)} ({Lower(phase)})";
+                            if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
+                        }
+                        regions.Add(text);
+                    }
+                }
+                return new ControlAnswer(true, regions.Count == 0 ? "The group has no regions." : "Group: " + string.Join("; ", regions) + ".", busy);
+            }
+            var accepted = json.TryGetProperty("accepted", out var acceptedJson) && acceptedJson.ValueKind == JsonValueKind.Object
+                ? acceptedJson.EnumerateObject().Select(entry => Clean(entry.Name)).ToList() : [];
+            if (accepted.Count == 0) return new ControlAnswer(false, "The group script did not accept " + action + ".", false);
+            var message = action switch {
+                "start" => "Starting",
+                "stop" => "Saving, then stopping",
+                "restart" => "Saving, then restarting",
+                _ => "Checking out and compiling",
+            } + " " + string.Join(", ", accepted) + "...";
+            if (refused != null) message += " Refused: " + refused + ".";
+            return new ControlAnswer(true, message, true);
+        }
+    }
+
+    private static string? Refusals(JsonElement json) {
+        if (!json.TryGetProperty("refused", out var refused)) return null;
+        if (refused.ValueKind == JsonValueKind.String) return refused.GetString();
+        if (refused.ValueKind != JsonValueKind.Object) return null;
+        var reasons = refused.EnumerateObject()
+            .Select(entry => Clean(entry.Name) + ": " + (entry.Value.ValueKind == JsonValueKind.String ? entry.Value.GetString() : "refused")).ToList();
+        return reasons.Count == 0 ? null : string.Join("; ", reasons);
+    }
+
+    private static string Lower(string text) => new(text.Where(char.IsAsciiLetterLower).ToArray());
+
+    // Letters, marks and digits in any script, cut to 64 characters (runes), never mid-character.
+    private static string Clean(string name) => string.Concat(name.EnumerateRunes().Where(r => Rune.IsLetterOrDigit(r)
+        || Rune.GetUnicodeCategory(r) is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark
+        || (r.IsAscii && " -'().".Contains((char)r.Value))).Take(64).Select(r => r.ToString()));
+
     // Same wording as the bot's hoststatus line.
     public static string Describe(JsonElement status) {
         var parts = new List<string> { Str(status, "state") switch {
@@ -168,12 +283,9 @@ public static class LocalHosting {
         if (status.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Array) {
             foreach (var region in list.EnumerateArray().Take(16)) {
                 if (region.ValueKind != JsonValueKind.Object || Str(region, "name") is not { } name || Str(region, "state") is not { } state) continue;
-                // Letters, marks and digits in any script, cut to 64 characters (runes), never mid-character.
-                var clean = string.Concat(name.EnumerateRunes().Where(r => Rune.IsLetterOrDigit(r)
-                    || Rune.GetUnicodeCategory(r) is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark
-                    || (r.IsAscii && " -'().".Contains((char)r.Value))).Take(64).Select(r => r.ToString()));
+                var clean = Clean(name);
                 var players = region.TryGetProperty("players", out var count) && count.ValueKind == JsonValueKind.Number ? $", {count.GetInt32()} players" : "";
-                regions.Add($"{clean}: {new string(state.Where(char.IsAsciiLetterLower).ToArray())}{players}");
+                regions.Add($"{clean}: {Lower(state)}{players}");
             }
         }
         return regions.Count == 0 ? line : line + "\nRegions: " + string.Join("; ", regions) + ".";

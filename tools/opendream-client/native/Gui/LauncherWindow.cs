@@ -8,7 +8,7 @@ namespace Civ13.Launcher.Gui;
 
 // Window front-end for the same launcher steps as the text menu (--console):
 // launcher update check, BYOND setup, public server status and joining, BYOND sign in,
-// community links, optional local hosting and read-only server management.
+// community links, optional local hosting and server management (the Host server tab).
 internal sealed partial class LauncherWindow : Form {
     private static readonly Color HeaderBack = Color.FromArgb(32, 38, 46);
     private static readonly Color HeaderText = Color.FromArgb(236, 239, 243);
@@ -55,7 +55,8 @@ internal sealed partial class LauncherWindow : Form {
         Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
         Font = new Font(FontFamily.GenericMonospace, 9f), BorderStyle = BorderStyle.None
     };
-    private readonly LinkLabel manageLink = new() { Text = "Server management (read-only)", AutoSize = true, Enabled = false };
+    // Opens the Host server tab when host.json configures it, else the read-only registered-instances view.
+    private readonly LinkLabel manageLink = new() { Text = "Registered instances (read-only)", AutoSize = true, Enabled = false };
     private TabPage? hostPage;
     private Label? hostState;
     private Button? hostStart;
@@ -66,6 +67,7 @@ internal sealed partial class LauncherWindow : Form {
     private readonly List<Button> hostActions = [];
     private System.Windows.Forms.Timer? hostPoll;
     private bool hostControlBusy;
+    private bool groupScriptRunning;
 
     public static int Run(string root, Version version) {
         var thread = new Thread(() => {
@@ -205,7 +207,11 @@ internal sealed partial class LauncherWindow : Form {
         var dataFolder = new LinkLabel { Text = "Launcher data folder", AutoSize = true, Margin = new Padding(0, 3, 14, 0) };
         dataFolder.LinkClicked += (_, _) => Open(new ProcessStartInfo(root) { UseShellExecute = true }, "the launcher data folder");
         manageLink.Margin = new Padding(0, 3, 0, 0);
-        manageLink.LinkClicked += (_, _) => { using var dialog = new ManagementDialog(); dialog.ShowDialog(this); };
+        manageLink.LinkClicked += (_, _) => {
+            if (hostPage != null) { tabs.SelectedTab = hostPage; return; }
+            using var dialog = new ManagementDialog();
+            dialog.ShowDialog(this);
+        };
         tools.Controls.Add(dataFolder);
         tools.Controls.Add(manageLink);
         footer.Controls.Add(community, 0, 0);
@@ -225,6 +231,7 @@ internal sealed partial class LauncherWindow : Form {
         Row("Game folder", profile.GameDirectory);
         Row("World", profile.World + " on port " + profile.Port + " (listed publicly on the BYOND hub)");
         if (profile.Control is { } control) Row("Control", "Save-safe start, stop, restart and update through " + Path.GetFileName(control.Script));
+        if (profile.Control?.Group is { } group) Row("Region group", group.Config + " (every region, deploy and the host service)");
         else Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
         Row("Civilizationbot", profile.Bot != null ? "Started with the server if it is not running; see the Civilizationbot tab" : "Not configured");
         hostState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6) };
@@ -252,10 +259,23 @@ internal sealed partial class LauncherWindow : Form {
         layout.SetColumnSpan(hostState, 2);
         layout.Controls.Add(buttons);
         layout.SetColumnSpan(buttons, 2);
+        var groupButtons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
+        if (profile.Control?.Group != null) {
+            groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
+            foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+                    ("Deploy latest master", "deploy"), ("Restart host service", "restart-host") }) {
+                var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+                button.Click += async (_, _) => await GroupAction(action, text);
+                hostActions.Add(button);
+                groupButtons.Controls.Add(button);
+            }
+        }
+        layout.Controls.Add(groupButtons);
+        layout.SetColumnSpan(groupButtons, 2);
         hostOutput = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
         layout.Controls.Add(hostOutput);
         layout.SetColumnSpan(hostOutput, 2);
-        for (var row = 0; row < 6; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        for (var row = 0; row < 8; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         page.Controls.Add(layout);
         page.Enter += async (_, _) => await RefreshHostState();
@@ -301,6 +321,7 @@ internal sealed partial class LauncherWindow : Form {
             SetDiscordPresence(presenceSettings.ShowActivity, false);
         }
         startupDone = true;
+        if (hostPage != null) manageLink.Text = "Server management";
         manageLink.Enabled = true;
         UpdateReadiness();
     }
@@ -563,8 +584,17 @@ internal sealed partial class LauncherWindow : Form {
             ControlAnswer answer;
             try { answer = await Task.Run(() => LocalHosting.RunControl(control, "status")); }
             catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { answer = new ControlAnswer(false, "Status unavailable: " + e.Message, false); }
-            hostState.Text = answer.Message;
-            SetHostBusy(answer.Busy);
+            var busy = answer.Busy;
+            var text = answer.Message;
+            if (control.Group != null) {
+                ControlAnswer group;
+                try { group = await Task.Run(() => LocalHosting.RunGroup(control, "status")); }
+                catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { group = new ControlAnswer(false, "Group status unavailable: " + e.Message, false); }
+                text += Environment.NewLine + group.Message;
+                busy |= group.Busy;
+            }
+            hostState.Text = text;
+            SetHostBusy(busy || groupScriptRunning);
             return;
         }
         var port = host.Port;
@@ -604,6 +634,51 @@ internal sealed partial class LauncherWindow : Form {
         SetHostBusy(true);
         try {
             var answer = await Task.Run(() => LocalHosting.RunControl(control, action));
+            HostLine(answer.Message);
+            if (!answer.Ok) SetHostBusy(false);
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine(label + " failed: " + e.Message);
+            SetHostBusy(false);
+        }
+    }
+
+    // Group actions run shard_group.py for every region; deploy and restart-host run their .bat in a
+    // hidden cmd.exe and stream its lines here. Nothing opens a console window or takes focus.
+    private async Task GroupAction(string action, string label) {
+        if (host?.Control is not { } control || control.Group == null || hostOutput == null) return;
+        var question = action switch {
+            "update" => "Check out and compile the group's revision in every stopped region?",
+            "deploy" => "Deploy latest master? Every region is saved and stopped, the checkout is pulled, compiled and started again, and the host service restarts. Players are saved and can rejoin when it is back; this takes about 15 minutes.",
+            "restart-host" => "Restart the host service? The worlds keep running.",
+            _ => label + " every region? Players are saved and can rejoin when it is back.",
+        };
+        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        SetHostBusy(true);
+        if (action is "deploy" or "restart-host") {
+            groupScriptRunning = true;
+            HostLine(label + "...");
+            try {
+                var exit = await Task.Run(() => {
+                    using var process = Process.Start(LocalHosting.GroupScriptStep(control, action)) ?? throw new IOException("Could not start cmd.exe.");
+                    void Line(object _, DataReceivedEventArgs e) { if (e.Data is { Length: > 0 } text) BeginInvoke(() => HostLine(text)); }
+                    process.OutputDataReceived += Line;
+                    process.ErrorDataReceived += Line;
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                    process.WaitForExit();
+                    return process.ExitCode;
+                });
+                HostLine(exit == 0 ? label + " finished." : $"{label} stopped with exit code {exit}; see the lines above.");
+            } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+                HostLine(label + " failed: " + e.Message);
+            } finally {
+                groupScriptRunning = false;
+                await RefreshHostState();
+            }
+            return;
+        }
+        try {
+            var answer = await Task.Run(() => LocalHosting.RunGroup(control, action));
             HostLine(answer.Message);
             if (!answer.Ok) SetHostBusy(false);
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
