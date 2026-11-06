@@ -141,7 +141,7 @@
 	var/icon/customoverlay = null
 	color = "#FFFFFF"
 	var/setd = FALSE
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			if (!setd)
