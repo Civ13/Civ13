@@ -52,6 +52,13 @@ internal static class CachedJoinTests {
             var menu = new DiscoveryFixture(discovery.Fetch, selected => scene.Query(selected));
             await ServerBrowser.Run("ValZarGaming", menu, input, TextWriter.Null, verified => {
                 Require(scene.Start(verified) == "byond://72.218.249.221:1714", "Cached join changed actual respondent or configured port");
+                const string ticket = "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789-_ab";
+                Require(ServerCatalog.NativeStart(verified, scene.Directory, Civ13.Launcher.Program.RequiredByond(), _ => true, scene.Now, ticket)
+                    .ArgumentList.Single() == "byond://72.218.249.221:1714?civ13_ticket=" + ticket, "Discord ticket missing from the join link");
+                try {
+                    ServerCatalog.NativeStart(verified, scene.Directory, Civ13.Launcher.Program.RequiredByond(), _ => true, scene.Now, "x&admin=1");
+                    throw new Exception("Malformed Discord ticket reached the join link");
+                } catch (IOException) { assertions++; }
                 launches++; return Task.CompletedTask;
             });
             return launches;

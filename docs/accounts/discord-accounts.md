@@ -50,7 +50,26 @@ It is off unless `config/account_signin.json` exists:
 {"port": 47301, "token_file": "config/account-signin-token.txt", "server": "gaia"}
 ```
 
-`server` must match one of the service's `servers`. Run the service as
-described in [tools/account_signin/README.md](../../tools/account_signin/README.md).
+`server` must match one of the service's `servers`, which maps each world's
+name to its game port. Run the service as described in
+[tools/account_signin/README.md](../../tools/account_signin/README.md).
+
+## Launcher sign-in
+
+The launcher shows "Sign in with Discord" in its footer only when the player's
+`discord.json` (in the launcher data folder) names the sign-in service's HTTPS
+address:
+
+```json
+{"signin_url": "https://<front>/signin"}
+```
+
+It signs in as a Discord public client with PKCE, using the presence
+application's ID unless `signin_client_id` names another. That application
+needs **Public Client** turned on and the redirect
+`http://127.0.0.1:53134/discord`. The refresh token is kept in
+`discord-signin.json` in the launcher data folder. Before each join the
+launcher refreshes it and asks the service for a ticket for that world's game
+port. If anything fails, the launcher joins with the BYOND key alone.
 
 The panic bunker still bans every guest key while it is on, signed in or not.

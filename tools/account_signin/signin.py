@@ -2,11 +2,12 @@
 
 The launcher signs the player in with Discord (OAuth2 public client + PKCE) and
 POSTs the access token here over HTTPS. The service asks Discord who the token
-belongs to, revokes the token at once, and hands back a single-use ticket bound
-to that Discord ID, the target server and the caller's address. Only the ticket
-goes into the byond:// join link; the world redeems it with /redeem.
+belongs to and hands back a single-use ticket bound to that Discord ID, the
+target server and the caller's address. Only the ticket goes into the byond://
+join link; the world redeems it with /redeem. The launcher names the server by
+its game port, since that is all a join link knows; a name works too.
 
-    POST /signin  {"access_token": "...", "server": "gaia"}  -> {"ticket", "expires_in"}
+    POST /signin  {"access_token": "...", "port": 1714}  -> {"ticket", "expires_in"}
     POST /redeem  {"ticket": "...", "server": "gaia", "address": "1.2.3.4"}
                   header X-Account-Token  -> {"discord_id"}
 
@@ -78,9 +79,11 @@ class Discord:
 
 
 class SigninService:
-    def __init__(self, discord, servers, clock=time.monotonic, ttl=TICKET_TTL, bind_address=True):
+    def __init__(self, discord, servers, clock=time.monotonic, ttl=TICKET_TTL, bind_address=True, revoke=False):
+        # servers: a list of names, or {name: game port} so the launcher can name a port.
         self.discord = discord
-        self.servers = frozenset(servers)
+        self.servers = dict(servers) if isinstance(servers, dict) else dict.fromkeys(servers)
+        self.revoke = revoke
         self.clock = clock
         self.ttl = ttl
         self.bind_address = bind_address
@@ -94,10 +97,20 @@ class SigninService:
         for address in [a for a, times in self.attempts.items() if not [t for t in times if t > now - 60]]:
             del self.attempts[address]
 
-    def signin(self, access_token, server, address):
+    def server_for(self, server=None, port=None):
+        if isinstance(server, str) and server in self.servers:
+            return server
+        if isinstance(port, int) and not isinstance(port, bool):
+            for name, game_port in self.servers.items():
+                if game_port == port:
+                    return name
+        return None
+
+    def signin(self, access_token, server, address, port=None):
         if not isinstance(access_token, str) or not 1 <= len(access_token) <= 512:
             raise Refused('missing access token')
-        if server not in self.servers:
+        server = self.server_for(server, port)
+        if server is None:
             raise Refused('unknown server')
         now = self.clock()
         with self.lock:
@@ -110,8 +123,10 @@ class SigninService:
             if len(self.tickets) >= MAX_TICKETS:
                 raise Refused('busy; try again shortly')
         discord_id = self.discord.identify(access_token)
-        # The token is only ever needed for that one call.
-        self.discord.revoke(access_token)
+        # Off by default: revoking ends the whole authorization, refresh token included,
+        # so the launcher would have to ask Discord for consent before every join.
+        if self.revoke:
+            self.discord.revoke(access_token)
         if not is_discord_id(discord_id):
             raise Refused('Discord did not accept the sign-in')
         ticket = secrets.token_urlsafe(32)
@@ -175,7 +190,7 @@ def make_server(service, token, port=0, forwarded_header=None):
                 return self._answer(400, {'ok': False, 'error': 'body must be an object'})
             try:
                 if self.path == '/signin':
-                    result = service.signin(body.get('access_token'), body.get('server'), self._address())
+                    result = service.signin(body.get('access_token'), body.get('server'), self._address(), body.get('port'))
                 elif self.path == '/redeem':
                     if not hmac.compare_digest(self.headers.get('X-Account-Token', ''), token):
                         return self._answer(403, {'ok': False, 'error': 'bad token'})
@@ -194,7 +209,7 @@ def make_server(service, token, port=0, forwarded_header=None):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    parser.add_argument('--config', required=True, help='JSON: port, token_file, client_id, servers, forwarded_header?')
+    parser.add_argument('--config', required=True, help='JSON: port, token_file, client_id, servers, forwarded_header?, revoke?')
     args = parser.parse_args(argv)
     with open(args.config, encoding='utf-8') as handle:
         config = json.load(handle)
@@ -203,11 +218,16 @@ def main(argv=None):
     if len(token) < 32:
         sys.exit('the token file must hold at least 32 characters')
     servers = config.get('servers')
-    if not isinstance(servers, list) or not servers or not all(server_name(s) for s in servers):
-        sys.exit('servers must be a list of lowercase names, such as ["gaia"]')
+    if isinstance(servers, dict):
+        ports = list(servers.values())
+        if not servers or not all(server_name(s) for s in servers) or len(set(ports)) != len(ports) or \
+                not all(isinstance(p, int) and not isinstance(p, bool) and 0 < p < 65536 for p in ports):
+            sys.exit('servers must map lowercase names to distinct game ports, such as {"gaia": 1714}')
+    elif not isinstance(servers, list) or not servers or not all(server_name(s) for s in servers):
+        sys.exit('servers must be {"gaia": 1714, ...} or a list of lowercase names')
     if not is_discord_id(str(config.get('client_id', ''))):
         sys.exit('client_id must be the login Discord application ID')
-    service = SigninService(Discord(str(config['client_id'])), servers)
+    service = SigninService(Discord(str(config['client_id'])), servers, revoke=config.get('revoke') is True)
     httpd = make_server(service, token, int(config['port']), config.get('forwarded_header'))
     print(json.dumps({'ok': True, 'listening': httpd.server_address[1]}), flush=True)
     httpd.serve_forever()

@@ -35,7 +35,7 @@ public static class ServerCatalog {
     }
 
     public static ProcessStartInfo NativeStart(VerifiedGameServer verified, string bin,
-        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null) {
+        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null, string? ticket = null) {
         var server = verified.Status;
         server.Target.Validate();
         requirement.Validate();
@@ -50,7 +50,9 @@ public static class ServerCatalog {
         var start = new ProcessStartInfo(Path.Combine(bin, "dreamseeker.exe")) {
             UseShellExecute = false, WorkingDirectory = bin
         };
-        start.ArgumentList.Add($"byond://{address}:{server.Port}");
+        // An optional Discord sign-in ticket: single use, two minutes, never the Discord token.
+        if (ticket != null && !DiscordSignIn.ValidTicket(ticket)) throw new IOException("Discord sign-in ticket is malformed.");
+        start.ArgumentList.Add(ticket == null ? $"byond://{address}:{server.Port}" : $"byond://{address}:{server.Port}?civ13_ticket={ticket}");
         return start;
     }
 }
