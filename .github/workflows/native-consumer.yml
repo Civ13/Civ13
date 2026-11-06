@@ -5,11 +5,33 @@ on:
       - scripts/nomads-lifecycle/**
       - tests/nomads_lifecycle/**
       - .github/workflows/native-consumer.yml
+      # Game sources the offline contracts hash-pin or read, so a PR that
+      # changes one runs these checks before merge instead of after it.
+      - civ13.dme
+      - code/_onclick/click.dm
+      - code/_helpers/text.dm
+      - code/datums/vote.dm
+      - code/game/atoms_movable.dm
+      - code/modules/lighting/lighting_system.dm
+      - code/modules/persistence/**
+      - tests/world_save/**
+      - tests/new_z_budget/**
   pull_request:
     paths:
       - scripts/nomads-lifecycle/**
       - tests/nomads_lifecycle/**
       - .github/workflows/native-consumer.yml
+      # Game sources the offline contracts hash-pin or read, so a PR that
+      # changes one runs these checks before merge instead of after it.
+      - civ13.dme
+      - code/_onclick/click.dm
+      - code/_helpers/text.dm
+      - code/datums/vote.dm
+      - code/game/atoms_movable.dm
+      - code/modules/lighting/lighting_system.dm
+      - code/modules/persistence/**
+      - tests/world_save/**
+      - tests/new_z_budget/**
 permissions:
   contents: read
 jobs:
