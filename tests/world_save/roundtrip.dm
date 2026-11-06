@@ -423,6 +423,21 @@ var/global/roundtrip_capture_failure = FALSE
 	map_storage.clear_validation_record()
 	map_storage.save_build_identity = null
 	check(!fexists("map_saves/validated.json"), "validation record not removed")
+	// Shard regions run region.dmb: its binary must identify the build too.
+	var/list/binaries = list("identity_a.dmb", "identity_b.dmb")
+	for(var/name in binaries) fdel(name)
+	check(isnull(persistence_build_identity(binaries)), "build identity without any binary")
+	text2file("region build", "identity_b.dmb")
+	var/region_only = persistence_build_identity(binaries)
+	check(istext(region_only) && findtext(region_only, "identity_b.dmb="), "second binary name gave no build identity")
+	check(persistence_build_identity(binaries) == region_only, "unchanged binary changed the build identity")
+	text2file("standalone build", "identity_a.dmb")
+	var/both = persistence_build_identity(binaries)
+	check(both != region_only, "another binary present kept the build identity")
+	fdel("identity_b.dmb")
+	text2file("region build, rebuilt", "identity_b.dmb")
+	check(persistence_build_identity(binaries) != both, "rebuilt binary kept the build identity")
+	for(var/name in binaries) fdel(name)
 
 /proc/check_save_identity_and_snapshot()
 	var/savefile/F = new

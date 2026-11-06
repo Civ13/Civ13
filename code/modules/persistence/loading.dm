@@ -619,11 +619,19 @@
 var/global/persistence_boot_build_identity = persistence_build_identity()
 
 // Hashed at boot: a binary recompiled while the world runs must not vouch for
-// files the old binary wrote.
-/proc/persistence_build_identity()
-	if(!fexists("civ13.dmb")) return null
-	var/digest = md5(file("civ13.dmb"))
-	return digest ? "[world.byond_version].[world.byond_build]:[digest]" : null
+// files the old binary wrote. Shard regions run region.dmb, the standalone
+// server civ13.dmb; DM cannot name the running binary, so every one present is
+// hashed and a rebuild of either changes the identity. DreamMaker output is
+// byte-identical for identical source, so the per-start recompile keeps it.
+/proc/persistence_build_identity(list/names = list("civ13.dmb", "region.dmb"))
+	var/list/parts = list()
+	for(var/name in names)
+		if(!fexists(name)) continue
+		var/digest = md5(file(name))
+		if(!digest) return null
+		parts += "[name]=[digest]"
+	if(!parts.len) return null
+	return "[world.byond_version].[world.byond_build]:[jointext(parts, ",")]"
 
 /map_storage
 	var/save_build_identity = null // Fixtures pin a build identity here.
