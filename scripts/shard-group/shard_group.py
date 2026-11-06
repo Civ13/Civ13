@@ -51,6 +51,11 @@ ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.s
                'data/faction_symbols', 'data/nomad_reputation.json', 'data/nomad_raids.json', 'data/round_counter.txt',
                'data/paintings', 'data/ToR_ban.bdb', 'data/extraction_accounts', 'data/extraction_world',
                'data/extraction_surface', 'data/extraction_loot', 'data/vehicle_key_service', 'data/safehouse_spool')
+# Live process state inside ADOPT_PATHS that adopt must not copy: the Player Help
+# bridge's spool belongs to the worker serving the source folder. A copied
+# worker.lock and health.json make the region's own bridge refuse to start (or
+# its game read a frozen heartbeat and report help unavailable).
+ADOPT_SKIP = {'SQL': ('player-help',)}
 # Files setup writes for each region; an overlay must not replace them.
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json')
@@ -421,7 +426,9 @@ def adopt(group, region_id, source, platform=None):
     for name in ADOPT_PATHS:
         item = source / name
         if item.is_dir():
-            shutil.copytree(item, target / name, dirs_exist_ok=True)
+            skip = ADOPT_SKIP.get(name, ())
+            shutil.copytree(item, target / name, dirs_exist_ok=True,
+                            ignore=lambda folder, names: [n for n in names if Path(folder) == item and n in skip])
         elif item.is_file():
             (target / name).parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(item, target / name)

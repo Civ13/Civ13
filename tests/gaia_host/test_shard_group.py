@@ -528,6 +528,9 @@ class ShardGroupTests(unittest.TestCase):
         (saves / 'round.json').write_text(json.dumps(state))
         (source / 'SQL').mkdir()
         (source / 'SQL' / 'bans.txt').write_text('griefer')
+        (source / 'SQL' / 'player-help' / 'worker.lock').mkdir(parents=True)
+        (source / 'SQL' / 'player-help' / 'worker.lock' / 'pid').write_text('7528')
+        (source / 'SQL' / 'player-help' / 'health.json').write_text('{"enabled": true}')
         (source / 'data' / 'faction_symbols').mkdir(parents=True)
         (source / 'data' / 'faction_symbols' / 'wolves.png').write_bytes(b'png')
         (source / 'data' / 'scratch.log').write_text('not runtime state')
@@ -555,6 +558,7 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(b'level', (path / 'map_saves' / '1.sav').read_bytes())
         self.assertFalse((path / 'map_saves' / 'backup-receipt.json').exists())
         self.assertEqual('griefer', (path / 'SQL' / 'bans.txt').read_text())
+        self.assertFalse((path / 'SQL' / 'player-help').exists(), 'the help bridge spool belongs to the source worker')
         self.assertFalse((path / 'data' / 'scratch.log').exists())
         self.assertTrue((source / 'map_saves' / '1.sav').exists(), 'the source stays as a rollback')
         with self.assertRaisesRegex(shard_group.Refused, 'already has a save'):
