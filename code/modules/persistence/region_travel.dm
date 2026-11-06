@@ -564,8 +564,12 @@ var/global/list/region_travel_carry_types = list(
 	if(!istype(H) || QDELETED(H) || H.loc != loc && !Adjacent(H)) return "You are too far from the trail."
 	if(!H.persistence_owner_ckey) return "Only players with a BYOND account can travel."
 	// The traveller is sent to the destination at once, so it must be awake (travel() wakes it).
+	var/expected = destination
 	if(shard_group.peers[destination]["state"] != "UP" && !shard_group.poll_peer(destination))
 		return "[destination_name()] is asleep. Use the trail to wake it."
+	// The poll can wait; an admin may have repointed or closed the trail meanwhile.
+	if(QDELETED(src) || destination != expected || closed_reason())
+		return "The trail changed. Try again."
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client
