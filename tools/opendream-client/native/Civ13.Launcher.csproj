@@ -36,6 +36,7 @@
     <Compile Include="LocalHosting.cs" />
     <Compile Include="LocalBot.cs" />
     <Compile Include="DiscordPresence.cs" />
+    <Compile Include="DiscordSignIn.cs" />
     <Compile Include="Social/*.cs" />
     <Compile Include="Management/*.cs" />
     <Compile Include="Gui/*.cs" Condition="'$(Civ13Gui)' == 'true'" />

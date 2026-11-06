@@ -49,11 +49,26 @@ class ServiceTests(unittest.TestCase):
         with self.assertRaises(signin.Refused):
             self.service.redeem(issued['ticket'], 'gaia', '1.2.3.4')
 
-    def test_token_is_revoked_after_one_check_even_when_refused(self):
+    def test_token_is_kept_unless_revoke_is_on(self):
+        # The launcher's refresh token dies with a revoke, so it is opt-in.
         self.service.signin('good-token', 'gaia', '1.2.3.4')
+        self.assertEqual(self.discord.revoked, [])
+        strict = signin.SigninService(self.discord, ['gaia'], clock=self.clock, revoke=True)
+        strict.signin('good-token', 'gaia', '1.2.3.4')
         with self.assertRaises(signin.Refused):
-            self.service.signin('stolen-or-expired', 'gaia', '1.2.3.4')
+            strict.signin('stolen-or-expired', 'gaia', '1.2.3.4')
         self.assertEqual(self.discord.revoked, ['good-token', 'stolen-or-expired'])
+
+    def test_launcher_names_the_server_by_game_port(self):
+        ports = signin.SigninService(self.discord, {'gaia': 1714, 'railyard': 1716}, clock=self.clock)
+        ticket = ports.signin('good-token', None, '1.2.3.4', port=1716)['ticket']
+        with self.assertRaises(signin.Refused):
+            ports.redeem(ticket, 'gaia', '1.2.3.4')
+        ticket = ports.signin('good-token', None, '1.2.3.4', port=1716)['ticket']
+        self.assertEqual(ports.redeem(ticket, 'railyard', '1.2.3.4'), {'discord_id': PLAYER})
+        for bad in (1799, '1714', True, None):
+            with self.subTest(bad=bad), self.assertRaises(signin.Refused):
+                ports.signin('good-token', None, '1.2.3.4', port=bad)
 
     def test_ticket_expires_after_two_minutes(self):
         ticket = self.service.signin('good-token', 'gaia', '1.2.3.4')['ticket']
@@ -95,7 +110,7 @@ class ServiceTests(unittest.TestCase):
 
 class HttpTests(unittest.TestCase):
     def setUp(self):
-        self.service = signin.SigninService(FakeDiscord(), ['gaia'])
+        self.service = signin.SigninService(FakeDiscord(), {'gaia': 1714})
         self.httpd = signin.make_server(self.service, WORLD_TOKEN, 0, forwarded_header='CF-Connecting-IP')
         self.port = self.httpd.server_address[1]
         threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
@@ -113,7 +128,7 @@ class HttpTests(unittest.TestCase):
         return response.status, answer
 
     def test_signin_and_redeem_over_http(self):
-        status, answer = self.post('/signin', {'access_token': 'good-token', 'server': 'gaia'},
+        status, answer = self.post('/signin', {'access_token': 'good-token', 'port': 1714},
                                    {'CF-Connecting-IP': '203.0.113.7'})
         self.assertEqual((status, answer['ok']), (200, True))
         ticket = answer['result']['ticket']

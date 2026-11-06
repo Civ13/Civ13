@@ -64,6 +64,10 @@ internal sealed partial class LauncherWindow : Form {
     private DiscordPresence? presence;
     private PresenceSettings presenceSettings = new(false, null);
     private readonly CheckBox discordBox = new() { Text = "Show on Discord", AutoSize = true, Visible = false, Margin = new Padding(0, 1, 14, 0) };
+    // Optional Discord sign-in for Civ13 accounts; shown only when discord.json names the sign-in service.
+    private DiscordSignIn? signIn;
+    private HttpClient? signInHttp;
+    private readonly LinkLabel signInLink = new() { AutoSize = true, Visible = false, Margin = new Padding(0, 3, 14, 0) };
     private readonly List<Button> hostActions = [];
     private System.Windows.Forms.Timer? hostPoll;
     private bool hostControlBusy;
@@ -115,7 +119,7 @@ internal sealed partial class LauncherWindow : Form {
         };
         Shown += async (_, _) => await Startup();
         FormClosing += async (_, e) => await StopBotBeforeClosing(e);
-        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); presence?.Clear(); presence?.Dispose(); ownedBot.Dispose(); };
+        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); signInHttp?.Dispose(); presence?.Clear(); presence?.Dispose(); ownedBot.Dispose(); };
         waitTimer.Tick += (_, _) => UpdatePendingWait();
     }
 
@@ -204,6 +208,8 @@ internal sealed partial class LauncherWindow : Form {
         var tools = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0), Anchor = AnchorStyles.Right };
         discordBox.CheckedChanged += (_, _) => SetDiscordPresence(discordBox.Checked, true);
         tools.Controls.Add(discordBox);
+        signInLink.LinkClicked += async (_, _) => await ToggleSignIn();
+        tools.Controls.Add(signInLink);
         var dataFolder = new LinkLabel { Text = "Launcher data folder", AutoSize = true, Margin = new Padding(0, 3, 14, 0) };
         dataFolder.LinkClicked += (_, _) => Open(new ProcessStartInfo(root) { UseShellExecute = true }, "the launcher data folder");
         manageLink.Margin = new Padding(0, 3, 0, 0);
@@ -320,6 +326,15 @@ internal sealed partial class LauncherWindow : Form {
             discordBox.Checked = presenceSettings.ShowActivity;
             discordBox.Visible = true;
             SetDiscordPresence(presenceSettings.ShowActivity, false);
+        }
+        if (DiscordSignInSettings.Load(root) is { } signInSettings) {
+            signInHttp = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+            signIn = new DiscordSignIn(signInSettings, root, signInHttp, url => {
+                try { using var browser = Process.Start(new ProcessStartInfo(url.AbsoluteUri) { UseShellExecute = true }); return true; }
+                catch (Exception e) when (e is System.ComponentModel.Win32Exception or InvalidOperationException) { return false; }
+            });
+            signInLink.Visible = true;
+            UpdateSignInLink();
         }
         startupDone = true;
         if (hostPage != null) manageLink.Text = "Server management";
@@ -478,7 +493,8 @@ internal sealed partial class LauncherWindow : Form {
             DormantFor(selected.Provider).Remove(selected.Target);
             KnownFor(selected.Provider)[selected.Target] = new KnownServer(verified.Status, $"Checked {verified.Status.CheckedAt:HH:mm:ss} UTC");
             Populate();
-            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            var ticket = await JoinTicket(verified.Status.Port);
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out, ticket);
             WatchGame(game, DiscordPresence.ServerLine(verified.Status));
             joinStatus.Text = $"Started BYOND for {selected.Name}.";
         } catch (TopicWaitException wait) {
@@ -505,8 +521,10 @@ internal sealed partial class LauncherWindow : Form {
         SetBusy(true);
         joinStatus.Text = $"Verifying {selected.Name}...";
         try {
+            // The ticket comes first: the recheck's answer is only fresh for a short while.
+            var ticket = await JoinTicket(selected.Target.Port);
             var verified = await discovery.Recheck(selected);
-            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out, ticket);
             WatchGame(game, DiscordPresence.ServerLine(verified.Status));
             pending = null;
             if (KnownFor(selected.Provider).TryGetValue(selected.Target, out var entry)) {
@@ -731,6 +749,39 @@ internal sealed partial class LauncherWindow : Form {
         if (hostOutput == null) return;
         if (hostOutput.TextLength > 0) hostOutput.AppendText(Environment.NewLine);
         hostOutput.AppendText(line);
+    }
+
+    private void UpdateSignInLink() {
+        signInLink.Text = signIn?.SignedIn == true ? "Signed in with Discord (sign out)" : "Sign in with Discord";
+    }
+
+    private async Task ToggleSignIn() {
+        if (signIn == null) return;
+        if (signIn.SignedIn) {
+            signIn.SignOut();
+            Console.WriteLine("Signed out of Discord. Joins use your BYOND key only.");
+        } else {
+            signInLink.Enabled = false;
+            Console.WriteLine("Opening Discord sign-in in your browser...");
+            try {
+                await signIn.SignInInteractive();
+                Console.WriteLine("Signed in with Discord. Joins now carry a one-time sign-in ticket.");
+            } catch (DiscordSignInException e) {
+                Console.WriteLine("Discord sign-in failed: " + e.Message);
+            } finally { signInLink.Enabled = true; }
+        }
+        UpdateSignInLink();
+    }
+
+    // Discord is optional: any sign-in failure joins with the BYOND key alone.
+    private async Task<string?> JoinTicket(int port) {
+        if (signIn?.SignedIn != true) return null;
+        try { return await signIn.JoinTicket(port); }
+        catch (DiscordSignInException e) {
+            Console.WriteLine("Joining without Discord sign-in: " + e.Message);
+            UpdateSignInLink();
+            return null;
+        }
     }
 
     private void Open(ProcessStartInfo start, string what) => Open(() => { using var process = Process.Start(start); }, what);

@@ -54,6 +54,7 @@ try {
     }
     if (args.SequenceEqual(new[] { "--presence-only" })) {
         Console.WriteLine("Discord presence assertions: " + DiscordPresenceTests.Run(root));
+        Console.WriteLine("Discord sign-in assertions: " + await DiscordSignInTests.Run(root));
         return 0;
     }
     if (args.SequenceEqual(new[] { "--discovery-only" })) {
@@ -72,6 +73,7 @@ try {
     assertions += LocalHostingTests.Run(root);
     assertions += LocalBotTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);
+    assertions += await DiscordSignInTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
     var reset = new System.Net.Sockets.SocketException(10054);
     var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);
