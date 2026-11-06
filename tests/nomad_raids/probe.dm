@@ -42,6 +42,7 @@ var/raid_runtime_error = FALSE
 		raid_trade_checks()
 		raid_reputation_checks()
 		raid_capture_checks()
+		raid_sight_checks()
 		raid_request_checks()
 		raid_lifecycle_checks()
 		raid_boat_checks()
@@ -545,3 +546,28 @@ var/raid_runtime_error = FALSE
 		raid_check(R.goods.len && asked * 2 >= R.goods.len, "at least half the stall is what was asked for ([asked] of [R.goods.len])")
 		R.remove_all("probe")
 	map.nomads = FALSE
+
+// The party halts only once a player can plainly see it coming.
+/proc/raid_sight_checks()
+	var/turf/target = locate(20, 5, 1)
+	var/datum/nomad_raid/R = new
+	R.setup(target, list(), 2, "probe")
+	nomad_raid = R
+	var/mob/living/simple_animal/hostile/human/nomad_raider/L = R.leader
+	L.loc = locate(20, 25, 1)
+	var/mob/living/human/watcher = new(locate(20, 34, 1))
+	raid_check(!(watcher in R.sighted_by(list(watcher))), "a player 9 tiles off has not plainly seen the party")
+	watcher.loc = locate(20, 31, 1)
+	raid_check(watcher in R.sighted_by(list(watcher)), "a player 6 tiles off with a clear view has")
+	for (var/dx = -3, dx <= 3, dx++)
+		var/turf/W = locate(20 + dx, 28, 1)
+		W.ChangeTurf(/turf/wall/rockwall, FALSE, FALSE)
+	raid_check(!(watcher in R.sighted_by(list(watcher))), "a wall between them hides the party")
+	L.loc = locate(target.x, target.y + 2, 1)
+	watcher.loc = locate(target.x, target.y + 11, 1)
+	raid_check(watcher in R.sighted_by(list(watcher)), "at the target, anyone in parley range counts")
+	for (var/dx = -3, dx <= 3, dx++)
+		var/turf/G = locate(20 + dx, 28, 1)
+		G.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+	R.remove_all("probe")
+	qdel(watcher)

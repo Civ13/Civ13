@@ -24,6 +24,7 @@
 #define NOMAD_RAID_MIN_DEFENDERS 2 // automatic targeting skips smaller groups
 #define NOMAD_RAID_GROUP_RANGE 20
 #define NOMAD_RAID_PARLEY_RANGE 10
+#define NOMAD_RAID_SIGHTED_RANGE 6 // the party halts only once a player is this close and can see it coming
 #define NOMAD_RAID_FIGHT_RANGE 12
 #define NOMAD_RAID_LOOT_RANGE 8
 #define NOMAD_RAID_EDGE_LIMIT 120 // farthest spawn distance from the target

@@ -71,7 +71,10 @@ online admins.
    the party turns back. If the players it came for move more than 10 tiles
    away, the march follows them. After 10 minutes,
    or if nobody is home, the party turns back.
-3. **Parley.** When an active player is within 10 tiles, the chieftain halts
+3. **Parley.** The party keeps walking until an active player is within 6
+   tiles of the chieftain with nothing opaque between them, so it is plainly
+   seen coming (at the target itself, anyone within 10 tiles counts, so a
+   settlement behind walls is still met). Then the chieftain halts,
    faces the nearest awake player, names them and demands tribute at their
    feet (5 worth per raider, at least 8). Paying
    in 90 seconds ends the threat: the raiders take only the tribute and leave.
@@ -105,7 +108,7 @@ age 6 a revolver.
 ## Trader caravans
 
 The caravan marches in like a raid, with caravan bells instead of horns. When
-a player is near, the trader lays up to six goods on the tiles around them
+a player can plainly see them (as for a raid's parley), the trader lays up to six goods on the tiles around them
 (leather, pelts, bone, rope, bandages, meat and tea seeds; bronze and cloth,
 then iron and an iron knife in later ages, and penicillin and paracetamol pills
 from the sixth age).
