@@ -53,6 +53,18 @@
 		if(version != 2 && version != 3) continue
 		if((generation && F["/generation"] != generation) || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz())
 			throw EXCEPTION("Saved roof generation or dimensions differ")
+		// A stream save's candidate check takes the roofs it just wrote from
+		// its structural record (saving.dm) instead of reading every turf back.
+		var/list/structure = candidate_structure_record(z)
+		if(structure)
+			var/list/rows = structure["roofs"]
+			for(var/list/roof in rows)
+				var/key = "[roof["x"]],[roof["y"]],[z]"
+				if(validated_roof_areas[key] || validated_roof_entries["[z]:[roof["entry"]]"])
+					throw EXCEPTION("Ambiguous or multiply placed saved roof")
+				prepare_saved_roof(null, roof["x"], roof["y"], z, roof["entry"], roof["type"], roof["switch"], roof["base"])
+				TICK_CHECK
+			continue
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/ref = F["/map/[z]/[y]/[x]"]
@@ -70,30 +82,7 @@
 						continue
 					// These fields are explicitly emitted by /obj/roof/get_saved_vars.
 					// Do not guess missing legacy settings or decode an object graph here.
-					var/switch_value = persistence_saved_scalar(level_entry_value(F, child, "switch_area"))
-					var/base_type = persistence_saved_scalar(level_entry_value(F, child, "current_area_type"))
-					if(!isnum(switch_value) || !(switch_value in list(TRUE, FALSE)) || !ispath(base_type, /area))
-						throw EXCEPTION("Saved roof lacks scalar area metadata")
-					var/turf/T = z <= world.maxz ? locate(x, y, z) : null
-					var/current_type = T ? T.loc.type : world.area
-					var/target_type
-					var/underlying_type = current_type
-					if(switch_value)
-						var/area/base = unique_saved_roof_area(base_type)
-						target_type = saved_roof_area_type(base.vars["climate"])
-						if(!ispath(target_type, /area)) throw EXCEPTION("Unsupported saved roof climate")
-						if(current_type != base_type && current_type != target_type)
-							throw EXCEPTION("Saved roof base area differs from the current map")
-						underlying_type = base_type
-					else
-						// Disabled roofs never used current_area_type to choose their
-						// turf's area. Preserve that saved field without treating it
-						// as evidence for a transformation which did not occur.
-						unique_saved_roof_area(current_type)
-					var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "unroofed" = underlying_type, "area" = target_type, "switch" = switch_value)
-					validated_roof_areas[key] = row
-					validated_roof_entries["[z]:[child]"] = row
-					if(target_type) validated_roof_types["[target_type]"] = target_type
+					prepare_saved_roof(F, x, y, z, child, type, persistence_saved_scalar(level_entry_value(F, child, "switch_area")), persistence_saved_scalar(level_entry_value(F, child, "current_area_type")))
 				TICK_CHECK
 	for(var/key in validated_roof_types)
 		var/type = validated_roof_types[key]
@@ -104,6 +93,43 @@
 			// Only the destination derived from a proven saved roof may be
 			// prospective. Base areas above remain required exact instances.
 			validated_roof_absent[key] = type
+
+// One saved roof's area metadata, from its saved fields (the read-back) or the
+// live object a stream save just wrote (F is null then; prepare_zone_roof
+// gets the values instead of a file).
+/map_storage/proc/prepare_saved_roof(savefile/F, x, y, z, child, type, switch_value, base_type)
+	var/key = "[x],[y],[z]"
+	if(!F && validated_zone_state)
+		prepare_zone_roof(null, x, y, z, child, type, switch_value, base_type)
+		return
+	if(!isnum(switch_value) || !(switch_value in list(TRUE, FALSE)) || !ispath(base_type, /area))
+		throw EXCEPTION("Saved roof lacks scalar area metadata")
+	var/turf/T = z <= world.maxz ? locate(x, y, z) : null
+	var/current_type = T ? T.loc.type : world.area
+	var/target_type
+	var/underlying_type = current_type
+	if(switch_value)
+		var/area/base = unique_saved_roof_area(base_type)
+		target_type = saved_roof_area_type(base.vars["climate"])
+		if(!ispath(target_type, /area)) throw EXCEPTION("Unsupported saved roof climate")
+		if(current_type != base_type && current_type != target_type)
+			throw EXCEPTION("Saved roof base area differs from the current map")
+		underlying_type = base_type
+	else
+		// Disabled roofs never used current_area_type to choose their
+		// turf's area. Preserve that saved field without treating it
+		// as evidence for a transformation which did not occur.
+		unique_saved_roof_area(current_type)
+	var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "unroofed" = underlying_type, "area" = target_type, "switch" = switch_value)
+	validated_roof_areas[key] = row
+	validated_roof_entries["[z]:[child]"] = row
+	if(target_type) validated_roof_types["[target_type]"] = target_type
+
+// The structural record a stream save kept for level z while it is the
+// candidate under validation, or null (read-back path).
+/map_storage/proc/candidate_structure_record(z)
+	if(!zone_candidate_validation || !saving_candidate_structure) return null
+	return saving_candidate_structure["[z]"]
 
 /map_storage/proc/materialize_saved_roof_areas()
 	if(validated_zone_state)
@@ -802,6 +828,16 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				throw EXCEPTION("Unsupported save version [version]")
 			if((version == 2 || version == 3) && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()))
 				throw EXCEPTION("Saved world dimensions differ from the current world")
+			// A stream save checked this level's structure from the pinned
+			// objects as it wrote it (record_candidate_level_structure): entry
+			// types, turf placement, content edges, player owners and roofs.
+			// The helper proved every referenced entry and list exists when it
+			// published the stream, and prepare_saved_zones proved the grid
+			// above. The next preflight on disk walks the values in full.
+			var/list/structure = candidate_structure_record(z)
+			if(structure)
+				if(F["/format_version"] != 5 || !isnum(structure["entries"])) throw EXCEPTION("Candidate structure record does not match the saved level")
+				continue
 			var/list/validated_lists = list()
 			var/list/turf_refs = list()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL

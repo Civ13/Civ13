@@ -81,18 +81,47 @@
 	number++
 	current = new /savefile
 	current["/format_version"] << 3
+	// The exporter notes nodes whose value does not survive savefile text while this segment is open.
+	owner.saving_stream_native_paths = list()
 	start_nodes = owner.saving_reference_pins.len + owner.saving_list_pins.len
 
 /datum/level_segment_writer/stream/close_current()
 	if(!current) return
 	entry_last += owner.saving_reference_pins.len
 	list_last += owner.saving_list_pins.len
-	drain(current)
+	drain(current, owner.saving_stream_native_paths)
+	owner.saving_stream_native_paths = null
 	current = null
 
 // Hands every node of a scratch segment to the helper. The helper keeps the
 // last value written to a path, so a late rewrite of a node replaces it.
-/datum/level_segment_writer/stream/proc/drain(savefile/S)
+//
+// Each top-level subtree goes as one piece of BYOND savefile text
+// (ExportText), which the helper parses natively: one call per subtree
+// instead of a cd, directory copy, read, encode and put per node, which cost
+// about a third of a level's save. The text drops text macros such as
+// \improper (rare: a few dozen names on a Gaia level) and renders infinities
+// and resources in forms the helper does not take, so the nodes the exporter
+// noted while the segment was open (persistence_stream_text_unsafe) are
+// rewritten natively after the text; the helper keeps the last value written
+// to a path. Finite numbers are rendered at full precision, strings escaped,
+// and type paths and lists in the syntax the converter path (put_text) has
+// always used.
+/datum/level_segment_writer/stream/proc/drain(savefile/S, list/native_paths)
+	S.cd = "/"
+	var/list/top = S.dir.Copy()
+	for(var/key in top)
+		if(key == "format_version") continue
+		if(!stream.put_text("/[key]", S.ExportText("/[key]"))) throw EXCEPTION("Stream save of level [z] failed: [stream.last_error]")
+		S.cd = "/"
+		if(!owner.moving_save_chunk) owner.save_work_check()
+	for(var/path in native_paths)
+		if(!stream.put(path, native_paths[path])) throw EXCEPTION("Stream save of level [z] failed: [stream.last_error]")
+	S.cd = "/"
+	if(!stream.flush()) throw EXCEPTION("Stream save of level [z] failed: [stream.last_error]")
+
+// Node-by-node drain (the previous path): kept for the converter and tests.
+/datum/level_segment_writer/stream/proc/drain_nodes(savefile/S)
 	S.cd = "/"
 	var/list/top = S.dir.Copy()
 	for(var/key in top)
@@ -131,7 +160,7 @@
 
 /datum/level_segment_writer/stream/finish()
 	close_current()
-	if(late_file) drain(late_file)
+	if(late_file) drain(late_file, list()) // Late writes rewrite content lists: no text.
 	late_file = null
 	late_loaded = list()
 	var/list/summary = stream.finish()
@@ -148,6 +177,7 @@
 	stream = null
 	current = null
 	late_file = null
+	owner.saving_stream_native_paths = null
 
 /datum/level_segment_reader/stream
 	var/datum/save_stream/stream

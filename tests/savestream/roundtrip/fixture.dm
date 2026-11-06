@@ -121,5 +121,86 @@
 		result["bad_error"] = bad.last_error
 	if(fexists("bad.stream")) mismatches += "bad.stream exists"
 	result["mismatches"] = mismatches
+	var/list/text_mismatches = run_text_roundtrip()
+	result["text_mismatches"] = text_mismatches
+	mismatches += text_mismatches
 	result["ok"] = !mismatches.len
 	return result
+
+// The level writer's drain (level_stream.dm): a scratch savefile goes to the
+// helper as one piece of savefile text per top-level subtree, and the nodes
+// whose values do not survive that text are rewritten natively. Mirrors
+// persistence_stream_text_unsafe in saving.dm, which this fixture does not
+// compile; keep the two in step.
+/proc/text_unsafe(value, depth = 0)
+	if(isnull(value) || ispath(value)) return FALSE
+	if(istext(value)) return length("[value]") != length(value)
+	if(isnum(value)) return value != value || value == 1.#INF || value == -1.#INF
+	if(!islist(value)) return TRUE
+	var/list/L = value
+	switch(L["kind"])
+		if("value")
+			return text_unsafe(L["value"], depth + 1)
+		if("scalars")
+			return scalars_text_unsafe(L["keys"]) || scalars_text_unsafe(L["values"])
+		if("entry", "list", "turf", "area", "map", "zone")
+			return FALSE
+	if(depth > 3) return FALSE
+	for(var/i = 1, i <= L.len, i++)
+		var/key = L[i]
+		if(text_unsafe(key, depth + 1)) return TRUE
+		if(!isnum(key) && !isnull(key) && text_unsafe(L[key], depth + 1)) return TRUE
+	return FALSE
+
+/proc/scalars_text_unsafe(list/L)
+	if(!islist(L)) return FALSE
+	for(var/i = 1, i <= L.len, i++)
+		var/item = L[i]
+		if(istext(item))
+			if(length("[item]") != length(item)) return TRUE
+		else if(isnum(item))
+			if(item != item || item == 1.#INF || item == -1.#INF) return TRUE
+	return FALSE
+
+/proc/run_text_roundtrip()
+	var/list/mismatches = list()
+	var/list/values = sample_values()
+	values["/entries/0/3/nan"] = 1.#INF - 1.#INF
+	values["/entries/0/3/scalars"] = list("kind" = "scalars", "length" = 3, "keys" = list("a", 2, "\improper c"), "values" = list(1.#INF, null, "x"))
+	values["/entries/0/3/precise"] = 1234567.875
+	values["/entries/0/3/quoted"] = "tab\tquote\" back\\ end"
+	var/savefile/scratch = new
+	var/list/native = list()
+	for(var/path in values)
+		if(path == "/format_version") continue
+		var/value = values[path]
+		// note_stream_native_value: resources and appearances leave a null
+		// placeholder in the text and reach the stream natively.
+		if(text_unsafe(value))
+			native[path] = value
+			if(!istext(value) && !isnum(value)) value = null
+		scratch[path] << value
+	var/datum/save_stream/S = new
+	if(!S.open_write("text.stream"))
+		return list("text open_write: [S.last_error]")
+	scratch.cd = "/"
+	for(var/key in scratch.dir.Copy())
+		if(!S.put_text("/[key]", scratch.ExportText("/[key]")))
+			return list("put_text /[key]: [S.last_error]")
+		scratch.cd = "/"
+	for(var/path in native)
+		if(!S.put(path, native[path]))
+			return list("native put [path]: [S.last_error]")
+	var/list/summary = S.finish()
+	if(!summary || !summary["published"])
+		return list("text finish: [S.last_error]")
+	if(!S.open_read("text.stream"))
+		return list("text open_read: [S.last_error]")
+	for(var/path in values)
+		if(path == "/format_version") continue
+		var/value = S.get(path)
+		if(!S.found || !same(values[path], value))
+			mismatches += "text:[path]"
+	if(native.len < 6) mismatches += "text:native paths [native.len]"
+	S.close()
+	return mismatches

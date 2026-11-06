@@ -250,6 +250,10 @@ PERSISTENCE_MEMORY_LIMIT_MB 3072
 #full file per level (format 3). Uncomment to always use savefiles.
 #PERSISTENCE_NO_STREAM_SAVES
 
+#if uncommented, a save's candidate check re-reads every stream level from disk
+#(several minutes on a large world) instead of checking the objects it just wrote.
+#PERSISTENCE_CANDIDATE_READBACK
+
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE
 #WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads

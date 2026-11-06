@@ -50,7 +50,10 @@
 					count++
 		result["objects"] = count
 		var/started = world.timeofday
+		if(world.params["profile"]) world.Profile(PROFILE_START | PROFILE_CLEAR)
 		check(map_storage.Save_World(), "export failed")
+		if(world.params["profile"])
+			text2file(world.Profile(PROFILE_STOP | PROFILE_REFRESH, "json"), "profile_save.json")
 		result["save_s"] = (world.timeofday - started) / 10
 		var/bytes = 0
 		for(var/name in flist("map_saves/"))
