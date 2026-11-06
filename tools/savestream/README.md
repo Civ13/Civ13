@@ -71,7 +71,12 @@ materializes the source savefile) and `verify` compares every leaf both ways.
 `read_text` and `read_wire` time the level reader's two ways to build every
 entry shard and list block of a stream (`src=<z>.stream.sav`); `compare_text`
 builds each both ways and fails on any difference. Never point it at a live
-server's `map_saves/`.
+server's `map_saves/`. `run_bench.py --modes read_text,read_wire,compare_text`
+runs them with a fresh `bench.dyn.rsc` per mode; a stale one corrupts cached
+icons and slows reads. On copies of Gaia's saves (Windows, 2026-11-06), level 2
+(50 MB stream) took 29 s with `read_text` and 78 s with `read_wire`, level 1
+17 s and 36 s, with no `compare_text` differences. The first run after a build
+is slower while BYOND warms its cache.
 
 `bench/run_level_bench.sh [size]` times save, full preflight and import of a
 generated size x size x 2 world in formats 3, 4 and 5 through the real

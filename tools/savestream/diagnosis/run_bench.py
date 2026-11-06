@@ -13,6 +13,9 @@ helper for the platform, and COPIES of the level saves. Nothing outside
 Writes <work>/report_z<level>.json: per mode, the bench result (time, node
 counts, helper summary) and the sampled peaks (private committed memory,
 peak working set, smallest largest-free-block).
+
+read_text, read_wire and compare_text (not in the default list) read a copied
+level-format-5 stream, <level>.stream.sav, as the level reader does.
 """
 from __future__ import annotations
 
@@ -40,9 +43,16 @@ def run_mode(args, mode: str, level: int) -> dict:
         "read_stream": f"mode=read_stream&src={stream}",
         "write_savefile": f"mode=write_savefile&src={stream}&dst=z{level}.replay.sav",
         "write_stream": f"mode=write_stream&src={stream}&dst=z{level}.replay.stream",
+        "read_text": f"mode=read_text&src={level}.stream.sav",
+        "read_wire": f"mode=read_wire&src={level}.stream.sav",
+        "compare_text": f"mode=compare_text&src={level}.stream.sav",
     }[mode]
     result_file = work / f"bench_{mode}.json"
     result_file.unlink(missing_ok=True)
+    # Each mode starts with a fresh dynamic resource cache: one left by an
+    # earlier mode logs "Crc mismatch" BUG lines, slows reads and makes cached
+    # icons compare unequal.
+    (work / "bench.dyn.rsc").unlink(missing_ok=True)
     cmd = [args.dd, "bench.dmb", "-trusted", "-invisible", "-params", params]
     started = time.time()
     proc = subprocess.Popen(cmd, cwd=work, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
