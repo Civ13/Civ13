@@ -27,6 +27,7 @@ the group config. setup never touches the source checkout's own files.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import os
@@ -45,7 +46,9 @@ import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
-                 'kill', 'force-restart')
+                 'kill', 'force-restart', 'stage')
+STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
+STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
 ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.sav', 'data/memo2.sav',
@@ -306,6 +309,169 @@ class RegionPlatform(Platform):
 class RegionHost(Host):
     def __init__(self, config, platform=None):
         super().__init__(config, platform or RegionPlatform(config), script=Path(__file__).resolve())
+        self.stage_lock = self.state_dir / 'stage.lock'
+        self.stage_file = self.state_dir / 'stage.json'
+        self.staged_file = self.state_dir / 'staged.json'
+
+    def status(self):
+        report = super().status()
+        stage = self.read_json(self.stage_file)
+        if stage:
+            report['stage'] = dict(stage, pending=self.update_pending())
+        return report
+
+    def work(self, action, operation):
+        if action == 'stage':
+            return self.stage_work(operation)
+        return super().work(action, operation)
+
+    # -- staged builds -----------------------------------------------------------
+    # stage builds the group revision in <root>/.staging/<id>, a second worktree, at
+    # low priority while the region keeps running. The build is installed (two file
+    # copies instead of a compile) by the next update of that revision: the host
+    # service runs it as a restart once the world is empty and saved, or into a
+    # sleeping world, which wakes on the new build.
+    def stage_dir(self):
+        return self.repo.parent / '.staging' / self.config['region']
+
+    def stage_record(self, **values):
+        state = self.read_json(self.stage_file) or {}
+        state.update(values, updated=int(self.platform.now()))
+        self.write_json(self.stage_file, state)
+
+    def request_stage(self):
+        if not (self.repo / '.git').exists():
+            raise Refused('the region is not set up; run setup first')
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            if self.platform.now() - self.stage_lock.stat().st_mtime > STAGE_LOCK_HOURS * 3600:
+                self.stage_lock.unlink()
+        except OSError:
+            pass
+        try:
+            descriptor = os.open(self.stage_lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            raise Refused('a build is already being staged')
+        operation = secrets.token_hex(16)
+        with os.fdopen(descriptor, 'w') as handle:
+            handle.write(operation)
+        self.write_json(self.stage_file, {'operation': operation, 'phase': 'accepted', 'error': None,
+                                          'updated': int(self.platform.now())})
+        self.platform.detach([sys.executable, '-I', '-B', str(self.script), '--config', self.config['_path'],
+                              '--worker', 'stage', operation])
+        return {'accepted': True, 'action': 'stage', 'operation': operation}
+
+    def staged_revision(self):
+        """The revision of the ready staged build, or None (none, or its files changed since)."""
+        record = self.read_json(self.staged_file)
+        if not record or not HEX40.match(str(record.get('revision'))):
+            return None
+        try:
+            stat = (self.stage_dir() / 'region.dmb').stat()
+        except OSError:
+            return None
+        return record['revision'] if record.get('dmb') == [stat.st_size, stat.st_mtime_ns] else None
+
+    def update_pending(self):
+        staged = self.staged_revision()
+        if not staged:
+            return False
+        built = self.built_revision()
+        if staged == built:
+            return False
+        if built is None:
+            return True
+        # Never go back: a build updated by hand past the staged one leaves it unused.
+        code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', built, staged],
+                                    cwd=self.repo, timeout=60)
+        return code == 0
+
+    @contextlib.contextmanager
+    def compile_slot(self, wait_seconds=7200):
+        """One staged compile per group at a time, so a deploy never compiles every region at once."""
+        lock = self.repo.parent / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        deadline = self.platform.now() + wait_seconds
+        while True:
+            try:
+                descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                break
+            except FileExistsError:
+                try:
+                    holder = int(lock.read_text(encoding='utf-8').strip() or 0)
+                except (OSError, ValueError):
+                    holder = 0
+                if not holder or not self.platform.alive(holder):
+                    lock.unlink(missing_ok=True)
+                    continue
+                if self.platform.now() > deadline:
+                    raise RuntimeError('another region kept the staging compiler busy too long')
+                self.stage_record(phase='waiting for another region\'s compile')
+                self.platform.sleep(10)
+        with os.fdopen(descriptor, 'w') as handle:
+            handle.write(str(os.getpid()))
+        try:
+            yield
+        finally:
+            lock.unlink(missing_ok=True)
+
+    def stage_work(self, operation):
+        try:
+            if self.stage_lock.read_text().strip() != operation:
+                return
+        except OSError:
+            return
+        try:
+            self.stage_record(phase='checking for updates', error=None)
+            latest = self.latest_revision()
+            if not HEX40.match(latest):
+                raise RuntimeError('could not read the latest revision')
+            if self.built_revision() == latest:
+                self.stage_record(phase='current', revision=latest)
+                return
+            if self.staged_revision() == latest:
+                self.stage_record(phase='ready', revision=latest)
+                return
+            group = load_group(self.config['group_config'])
+            region = next(r for r in group['regions'] if r['id'] == self.config['region'])
+            path = self.stage_dir()
+            with self.compile_slot():
+                if not (path / '.git').exists():
+                    if path.exists() and any(path.iterdir()):
+                        raise RuntimeError('%s exists and is not a staging worktree' % path)
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    code, out = self.platform.run([self.config['git'], 'worktree', 'add', '--detach', str(path), latest],
+                                                  cwd=group['repository'], timeout=600)
+                    if code != 0:
+                        raise RuntimeError('staging worktree failed: ' + out.strip()[-300:])
+                self.stage_record(phase='preparing', revision=latest)
+                self.staged_file.unlink(missing_ok=True)
+                prepare_tree(group, region, path, latest, self.platform, self.config['git'])
+                self.stage_record(phase='compiling')
+                code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800,
+                                              low_priority=True)
+                if code != 0 or '0 errors' not in out:
+                    raise RuntimeError('compile failed: ' + out.strip()[-300:])
+                stat = (path / 'region.dmb').stat()
+                self.write_json(self.staged_file, {'revision': latest, 'dmb': [stat.st_size, stat.st_mtime_ns],
+                                                   'staged_at': int(self.platform.now())})
+            self.stage_record(phase='ready', revision=latest)
+        except Exception as error:  # stage.json is the only place a detached worker can report
+            self.stage_record(phase='failed', error=str(error)[:500])
+        finally:
+            self.stage_lock.unlink(missing_ok=True)
+
+    def install_staged(self, revision):
+        """Copy the staged build of revision into the region; False when there is none."""
+        if self.staged_revision() != revision:
+            return False
+        source = self.stage_dir()
+        for name in STAGED_OUTPUTS:
+            if (source / name).is_file():
+                temporary = self.repo / (name + '.staged')
+                shutil.copy2(source / name, temporary)
+                os.replace(temporary, self.repo / name)
+        return True
 
     def request(self, action):
         # Checked before the lock: taking it would create the folder setup needs empty.
@@ -360,26 +526,37 @@ class RegionHost(Host):
         revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
         if not HEX40.match(revision):
             raise RuntimeError('could not resolve the group revision')
-        # --force: the region's config/config.txt override below is rewritten every update.
-        code, out = self.platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
-        if code != 0:
-            raise RuntimeError('checkout failed: ' + out.strip()[-300:])
-        apply_overlays(group, region, path)
-        if group['persistent']:
-            persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
-        if group.get('rust_g'):
-            shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
-        include = place_map(group, region)
-        dme = (path / 'civ13.dme').read_text(encoding='utf-8')
-        (path / 'region.dme').write_text(selected_map_dme(dme, include), encoding='utf-8', newline='')
+        prepare_tree(group, region, path, revision, self.platform, git)
         if self.platform.listening(self.config['port']):
             raise RuntimeError('the region started during the update; not compiling')
+        if self.install_staged(revision):
+            self.record_build(revision)
+            self.record(phase='compiled', revision=revision, map=region['map'], staged=True)
+            return
         self.record(phase='compiling', revision=revision)
         code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800)
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         self.record_build(revision)
         self.record(phase='compiled', revision=revision, map=region['map'])
+
+
+def prepare_tree(group, region, path, revision, platform, git):
+    """Check a region's worktree (or its staging worktree) out at revision and write
+    everything its compile needs: overlays, the persistent config, rust_g and region.dme."""
+    # --force: the region's config/config.txt override below is rewritten every update.
+    code, out = platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
+    if code != 0:
+        raise RuntimeError('checkout failed: ' + out.strip()[-300:])
+    apply_overlays(group, region, path)
+    (path / 'config').mkdir(exist_ok=True)
+    if group['persistent']:
+        persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
+    if group.get('rust_g'):
+        shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
+    include = place_map(group, region, path)
+    dme = (path / 'civ13.dme').read_text(encoding='utf-8')
+    (path / 'region.dme').write_text(selected_map_dme(dme, include), encoding='utf-8', newline='')
 
 
 def apply_overlays(group, region, path):
@@ -487,9 +664,9 @@ def persistent_config(path, saving=True):
     path.write_text('\n'.join(out) + '\n', encoding='utf-8')
 
 
-def place_map(group, region):
+def place_map(group, region, path=None):
     """Return the region.dme include for the region's map, copying an outside map into the worktree."""
-    path = region_dir(group, region['id'])
+    path = path or region_dir(group, region['id'])
     source = Path(region['map'])
     if not source.is_absolute():
         if '..' in source.parts or not (path / source).is_file():
@@ -790,7 +967,12 @@ def main(argv=None):
             accepted, refused = {}, {}
             for region, host in hosts(group, args.region):
                 try:
-                    accepted[region['id']] = host.force_restart() if args.action == 'force-restart' else host.request(args.action)
+                    if args.action == 'force-restart':
+                        accepted[region['id']] = host.force_restart()
+                    elif args.action == 'stage':
+                        accepted[region['id']] = host.request_stage()
+                    else:
+                        accepted[region['id']] = host.request(args.action)
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
             result = {'accepted': accepted, 'refused': refused}

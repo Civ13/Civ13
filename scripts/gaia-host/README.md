@@ -20,6 +20,7 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
 | `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
 | `check-update` | Fetches `origin/<branch>` and prints `current`, `available`, `behind`, `can_update` and `reason` for the launcher's update panel. Never merges or touches the world; `can_update` is false while the server runs. |
+| `stage` | Region hosts only: builds the group revision beside the running world (see [staged builds](../shard-group/README.md#staged-builds)). Answers at once; progress is in `<state_dir>/stage.json`. |
 | `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and for every region of each `--group group.json`, and runs the doorman on `doorman_port`. Use it instead of `watch`. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
@@ -93,6 +94,32 @@ ports. It speaks BYOND Topic framing and answers only:
   off; a direct connection to the game port still thaws it). One wake per
   address and port every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
+
+### Watchdog
+
+`watch` and `serve` also keep each world running. A world should be running once
+a `start` finished or it was seen answering its lifecycle status; `stop` and a
+forced stop (`kill`) clear that (`<state_dir>/running.json`), so a world stopped
+on purpose stays down.
+
+- **Crash.** When the port of such a world stays closed for
+  `crash_grace_seconds` (120) and it is not asleep or cold, the watchdog runs
+  the ordinary `start`, which loads the last completed save (and pulls and
+  compiles first if master moved). A start that is refused (BYOND signed out,
+  a broken save) is tried again every five minutes. With less than
+  `cold_start_min_free_mb` free it becomes cold instead and starts on its next
+  wake.
+- **Hang.** When a world that answered in this watch stops answering for
+  `hang_minutes` (10; the `save_timeout_seconds` when its last answer said it
+  was busy saving), the watchdog ends it without saving, as `kill` does, and
+  starts it from its last completed save. A world that never answered (still
+  loading, or lifecycle status off) is left alone.
+- After `watchdog_max_restarts` (3) restarts in an hour it gives up and leaves
+  the world for a person (`force-restart`); the next successful start watches
+  it again. `watchdog: false` turns all of this off.
+
+Each event is kept in `<state_dir>/watchdog.json` (`last_event`, `last_detail`,
+`restarts`, `gave_up`) and shown by `status` under `watchdog`.
 
 ### Low-memory eviction
 
