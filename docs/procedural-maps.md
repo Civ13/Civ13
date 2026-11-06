@@ -180,7 +180,14 @@ The underground reserve plane and starts are unchanged, and the report records
 
 To run one as a region, add it to a shard group like any other generated map,
 with `kind` `OTHER`. Keep it out of the first position, which is the mainland.
-Players should not be sent there until launch sites exist (phase 2).
+The repository ships the `barren-0` world (200x200, `--seed barren-0`) as
+`maps/space/barren.dmm`, the map the shipped survey map was drawn from. Give
+its region the id `barren` so launch pads and the mission console find
+`config/space/survey/barren.json`:
+
+```json
+{"id": "barren", "name": "Barren", "kind": "OTHER", "port": 1716, "map": "maps/space/barren.dmm"}
+```
 
 #### Survey maps
 
