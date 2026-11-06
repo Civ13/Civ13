@@ -77,7 +77,8 @@
 	// put us out before we check fire stuff
 	if (istype(loc, /turf/floor/beach/water))
 		var/turf/floor/beach/water/W = loc
-		W.Extinguish(src)
+		if (!W.iscovered())
+			W.Extinguish(src)
 
 	//Check if we're on fire
 	handle_fire()
