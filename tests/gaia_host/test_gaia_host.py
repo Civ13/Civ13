@@ -96,6 +96,11 @@ class FakeMachine:
         self.calls.append(['resume', pid])
         self.suspended -= 1
 
+    def kill_tree(self, pid):
+        self.calls.append(['kill_tree', pid])
+        self.up = False
+        self.suspended = 0
+
     def now(self):
         return self.clock
 
@@ -498,6 +503,60 @@ class NoConsoleWindowTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ForcedStopTests(GaiaHostTests):
+    """kill ends a hung world without saving; force-restart then starts it from the
+    last completed save. Neither writes to map_saves."""
+
+    def test_kill_ends_the_server_without_a_save(self):
+        self.machine.up = True
+        write_save(self.repo / 'map_saves')
+        before = sorted(p.name for p in (self.repo / 'map_saves').iterdir())
+        result = self.host.kill()
+        self.assertEqual(result, {'killed': True, 'pid': 4242, 'reason': 'forced stop'})
+        self.assertIn(['kill_tree', 4242], self.machine.calls)
+        self.assertFalse(any(call[:2] == ['query', 'save_shutdown'] for call in self.machine.calls))
+        self.assertEqual(sorted(p.name for p in (self.repo / 'map_saves').iterdir()), before)
+        self.assertEqual(self.host.read_state()['phase'], 'killed')
+        self.assertEqual(self.host.status()['state'], 'stopped')
+
+    def test_kill_refuses_a_stopped_server(self):
+        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
+            self.host.kill()
+
+    def test_kill_leaves_a_stuck_save_worker_its_record(self):
+        self.give_token()
+        self.machine.up = True
+        operation = self.accept('stop')
+        self.host.kill()
+        self.assertEqual(self.host.read_state()['operation'], operation)
+        self.assertTrue(self.host.lock.exists())
+
+    def test_force_restart_waits_for_the_stuck_worker_then_starts(self):
+        self.machine.up = True
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('stuck', encoding='utf-8')
+        real_sleep = self.machine.sleep
+        def sleep(seconds):
+            real_sleep(seconds)
+            self.host.lock.unlink(missing_ok=True)  # the worker sees the port close and fails
+        self.machine.sleep = sleep
+        result = self.host.force_restart()
+        self.assertTrue(result['accepted'] and result['killed'])
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
+
+    def test_force_restart_of_a_stopped_server_is_a_start(self):
+        result = self.host.force_restart()
+        self.assertTrue(result['accepted'])
+        self.assertFalse(result['killed'])
+        self.assertNotIn(['kill_tree', 4242], self.machine.calls)
+
+    def test_force_restart_gives_up_on_a_lock_that_never_clears(self):
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('stuck', encoding='utf-8')
+        with self.assertRaisesRegex(gaia_host.Refused, 'still has an action running'):
+            self.host.force_restart(lock_wait_seconds=10)
 
 
 class InterruptedSaveTests(GaiaHostTests):

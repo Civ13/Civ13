@@ -242,7 +242,8 @@ internal sealed partial class LauncherWindow : Form {
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         buttons.Controls.Add(hostStart);
         if (profile.Control != null) {
-            foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update") }) {
+            foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+                    ("Force stop", "kill"), ("Force restart", "force-restart") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await HostAction(action, text);
                 hostActions.Add(button);
@@ -263,7 +264,7 @@ internal sealed partial class LauncherWindow : Form {
         if (profile.Control?.Group != null) {
             groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
             foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
-                    ("Deploy latest master", "deploy"), ("Restart host service", "restart-host") }) {
+                    ("Deploy latest master", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await GroupAction(action, text);
                 hostActions.Add(button);
@@ -629,8 +630,11 @@ internal sealed partial class LauncherWindow : Form {
     // Accepted actions finish in the script's worker; the timer follows them until they settle.
     private async Task HostAction(string action, string label) {
         if (host?.Control is not { } control) return;
-        if (action != "update" && MessageBox.Show(this, label + " the server? Players are saved and can rejoin when it is back.", "Civ13 Launcher",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        var forced = action is "kill" or "force-restart";
+        var question = forced ? label + " the server? It is ended at once WITHOUT saving: anything since the last completed save is lost. Use this only for a server that hangs."
+            : label + " the server? Players are saved and can rejoin when it is back.";
+        if (action != "update" && MessageBox.Show(this, question, "Civ13 Launcher",
+                MessageBoxButtons.OKCancel, forced ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
         try {
             var answer = await Task.Run(() => LocalHosting.RunControl(control, action));
@@ -650,6 +654,7 @@ internal sealed partial class LauncherWindow : Form {
             "update" => "Check out and compile the group's revision in every stopped region?",
             "deploy" => "Deploy latest master? Every region is saved and stopped, the checkout is pulled, compiled and started again, and the host service restarts. Players are saved and can rejoin when it is back; this takes about 15 minutes.",
             "restart-host" => "Restart the host service? The worlds keep running.",
+            "kill" or "force-restart" => label + " every region? Each is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for servers that hang.",
             _ => label + " every region? Players are saved and can rejoin when it is back.",
         };
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;

@@ -64,8 +64,9 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 # then shares that hidden console instead of opening a window that takes focus.
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
-ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update')
-DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update')  # quick or long-running; no detached worker
+ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
+           'kill', 'force-restart')
+DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart')  # quick or long-running; no detached worker
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
 # Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
@@ -383,6 +384,15 @@ class Platform:
                 raise RuntimeError('TerminateProcess failed (WinError %d)' % ctypes.GetLastError())
         finally:
             ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+
+    def kill_tree(self, pid):
+        """End a process and everything it started (a stream save helper, a shell() child)."""
+        if os.name != 'nt':
+            os.kill(pid, 9)
+            return
+        code, out = self.run(['taskkill', '/F', '/T', '/PID', str(pid)], timeout=60)
+        if code != 0 and self.alive(pid):
+            self.terminate(pid)
 
     def resume(self, pid):
         if os.name != 'nt':
@@ -769,6 +779,37 @@ class Host:
         self.freeze_file.unlink(missing_ok=True)
         return {'evicted': True, 'pid': state['pid'], 'reason': reason}
 
+    def kill(self, reason='forced stop'):
+        """Forced stop: end the server process without saving, for a world that hangs.
+
+        Nothing is written to map_saves. The next start restores the last completed
+        save: a save that was cut off leaves no marker, and recover_interrupted_save
+        swaps the generation in map_backups back in. A worker still waiting on this
+        server (a stuck save-and-stop) sees the port close, fails and frees the lock.
+        """
+        state = self.frozen()
+        pid = state['pid'] if state else self.platform.server_pid(self.config['port'])
+        if not pid:
+            raise Refused('the server is not running')
+        self.platform.kill_tree(pid)
+        self.freeze_file.unlink(missing_ok=True)
+        self.cold_file.unlink(missing_ok=True)
+        if not self.lock.exists():
+            self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
+        return {'killed': True, 'pid': pid, 'reason': reason}
+
+    def force_restart(self, lock_wait_seconds=180):
+        """Forced stop if it is running, then a normal start from the last completed save."""
+        killed = None
+        if self.frozen() or self.platform.listening(self.config['port']):
+            killed = self.kill('forced restart')
+        deadline = self.platform.now() + lock_wait_seconds
+        while self.lock.exists():
+            if self.platform.now() > deadline:
+                raise Refused('the stopped server still has an action running: %s' % self.read_state().get('action'))
+            self.platform.sleep(2)
+        return dict(self.request('start'), killed=bool(killed))
+
     def freeze(self):
         if self.lock.exists():
             raise Refused('another action is still running: %s' % self.read_state().get('action'))
@@ -1080,6 +1121,10 @@ def main(argv=None):
             result = host.freeze()
         elif args.action == 'thaw':
             result = host.thaw()
+        elif args.action == 'kill':
+            result = host.kill()
+        elif args.action == 'force-restart':
+            result = host.force_restart()
         elif args.action == 'check-update':
             try:
                 result = host.check_update()

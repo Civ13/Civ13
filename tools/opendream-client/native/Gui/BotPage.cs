@@ -17,6 +17,7 @@ internal sealed partial class LauncherWindow {
     private ComboBox? botLogChoice;
     private Button? botClearStop;
     private readonly List<Button> botButtons = [];
+    private readonly List<Button> botForceButtons = [];
     private System.Windows.Forms.Timer? botPoll;
     private BotStatus? botStatus;
     private bool botBusy;
@@ -42,6 +43,12 @@ internal sealed partial class LauncherWindow {
             var button = new Button { Text = text, AutoSize = true, Enabled = false, Margin = new Padding(botButtons.Count == 0 ? 0 : 8, 6, 0, 6) };
             button.Click += async (_, _) => await action();
             botButtons.Add(button);
+            buttons.Controls.Add(button);
+        }
+        foreach (var (text, action) in new (string, Func<Task>)[] { ("Force stop", () => ForceStopBot(false)), ("Force restart", () => ForceStopBot(true)) }) {
+            var button = new Button { Text = text, AutoSize = true, Enabled = false, Margin = new Padding(8, 6, 0, 6) };
+            button.Click += async (_, _) => await action();
+            botForceButtons.Add(button);
             buttons.Controls.Add(button);
         }
         botClearStop = new Button { Text = "Clear old stop request", AutoSize = true, Visible = false, Margin = new Padding(8, 6, 0, 6) };
@@ -127,6 +134,7 @@ internal sealed partial class LauncherWindow {
         botButtons[2].Enabled = !botBusy && running && !pending;
         botButtons[3].Enabled = !botBusy && !pending;
         if (botClearStop != null) botClearStop.Enabled = !botBusy;
+        foreach (var button in botForceButtons) button.Enabled = !botBusy;
     }
 
     private void RefreshBotLog(bool force) {
@@ -217,6 +225,33 @@ internal sealed partial class LauncherWindow {
             await StartBot();
         }
         await CheckBotUpdate();
+    });
+
+    // Forced stop: ends the bot's supervisor and bot.php process trees at once, whoever started them, and
+    // removes a stop request the bot never acted on. With restart, it is then started from this window.
+    private Task ForceStopBot(bool restart) => WithBotBusy(async () => {
+        if (botProfile is not { } bot) return;
+        var question = (restart ? "Force restart" : "Force stop") + " Civilizationbot? It is ended at once without a clean shutdown" +
+            (restart ? ", then started again." : ". Discord relays and commands pause until it is started again.");
+        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK) return;
+        BotLine("Force-stopping Civilizationbot...");
+        var (_, listing) = await Task.Run(() => LocalHosting.RunCaptured(LocalBot.ListPhpProcesses()));
+        var pids = LocalBot.ParseBotProcesses(bot, listing);
+        foreach (var pid in pids) await Task.Run(() => LocalHosting.RunCaptured(LocalBot.KillTree(pid)));
+        if (ownedBot.Running) await ownedBot.WaitForExit(TimeSpan.FromSeconds(10));
+        await Task.Delay(1000);
+        await RefreshBot();
+        if (botStatus is { Running: false, StopPending: true, StdoutLog: { } stdout } && Path.GetDirectoryName(stdout) is { } state)
+            File.Delete(Path.Combine(state, "stop.request"));
+        if (botStatus is { Running: true }) {
+            BotLine("Civilizationbot is still running after the forced stop; end php.exe in Task Manager.");
+            return;
+        }
+        BotLine(pids.Count == 0 ? "No Civilizationbot process was running." : $"Civilizationbot force-stopped ({pids.Count} process{(pids.Count == 1 ? "" : "es")}).");
+        if (restart) {
+            botBusy = false;
+            await StartBot();
+        }
     });
 
     // A stop marker left by a bot that is no longer running blocks every start until someone removes it.

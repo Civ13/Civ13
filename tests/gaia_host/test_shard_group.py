@@ -1,5 +1,6 @@
 """Offline tests for scripts/shard-group/shard_group.py with a fake machine."""
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -335,6 +336,38 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['deep'], list(status['regions']))
         self.assertEqual(('UNDERGROUND', False, False), (status['regions']['deep']['kind'], status['regions']['deep']['built'], status['regions']['deep']['listening']))
         self.assertNotIn('region_view', status['regions']['deep'])
+
+    def test_kill_and_force_restart_reach_every_region(self):
+        group = self.write_group()
+        calls = []
+
+        class Region:
+            def __init__(self, name, running):
+                self.name, self.running = name, running
+
+            def kill(self):
+                calls.append(('kill', self.name))
+                if not self.running:
+                    raise shard_group.Refused('the server is not running')
+                return {'killed': True, 'pid': 1}
+
+            def force_restart(self):
+                calls.append(('force-restart', self.name))
+                return {'accepted': True, 'action': 'start', 'operation': 'x', 'killed': self.running}
+
+        regions = [({'id': 'gaia'}, Region('gaia', True)), ({'id': 'deep'}, Region('deep', False))]
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch('sys.stdout', out):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'kill']))
+        answer = json.loads(out.getvalue())
+        self.assertEqual({'gaia': {'killed': True, 'pid': 1}}, answer['done'])
+        self.assertEqual({'deep': 'the server is not running'}, answer['refused'])
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch.object(shard_group, 'ensure_coordinator', return_value=False), \
+                mock.patch('sys.stdout', out):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'force-restart']))
+        self.assertEqual(['gaia', 'deep'], sorted(json.loads(out.getvalue())['accepted'], reverse=True))
+        self.assertEqual([('kill', 'gaia'), ('kill', 'deep'), ('force-restart', 'gaia'), ('force-restart', 'deep')], calls)
 
     def test_status_checks_the_answering_world_is_the_region(self):
         group = self.write_group()

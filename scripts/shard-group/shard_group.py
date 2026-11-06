@@ -44,7 +44,8 @@ sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
-GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update')
+GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
+                 'kill', 'force-restart')
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
 ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.sav', 'data/memo2.sav',
@@ -696,11 +697,12 @@ def main(argv=None):
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
             result = adopt(group, args.region, args.source)
-        elif args.action in ('freeze', 'thaw'):
+        elif args.action in ('freeze', 'thaw', 'kill'):
+            # kill: forced stop without saving; the next start restores the last completed save.
             done, refused = {}, {}
             for region, host in hosts(group, args.region):
                 try:
-                    done[region['id']] = host.freeze() if args.action == 'freeze' else host.thaw()
+                    done[region['id']] = getattr(host, args.action)()  # freeze, thaw or kill
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
             if refused and not done:
@@ -711,11 +713,11 @@ def main(argv=None):
             accepted, refused = {}, {}
             for region, host in hosts(group, args.region):
                 try:
-                    accepted[region['id']] = host.request(args.action)
+                    accepted[region['id']] = host.force_restart() if args.action == 'force-restart' else host.request(args.action)
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
             result = {'accepted': accepted, 'refused': refused}
-            if args.action in ('start', 'restart') and accepted:
+            if args.action in ('start', 'restart', 'force-restart') and accepted:
                 result['coordinator_started'] = ensure_coordinator(group)
             if refused and not accepted:
                 print(json.dumps({'ok': False, 'refused': refused}))
