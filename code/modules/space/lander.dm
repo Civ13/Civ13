@@ -349,7 +349,7 @@ var/global/list/landed_landers = list()
 
 /turf/floor/lander_deck/outside_ambient_c()
 	var/obj/structure/landed_lander/L = lander()
-	return L ? L.cabin().temperature : BARREN_AMBIENT_C
+	return L ? L.cabin().temperature : barren_ambient_c()
 
 /obj/structure/bed/lander_bunk
 	name = "lander bunk"
@@ -431,13 +431,14 @@ var/global/list/landed_landers = list()
 /obj/structure/landed_lander/process()
 	if (!clients.len)
 		return
+	barren_hazards_pulse()
 	life_support(LANDER_TICK_SECONDS, breathers())
 
 // One bounded step: the crew breathe and the cabin cools, then, while there
 // is power, the core tops the oxygen back up, scrubs CO2 and heats the cabin.
 /obj/structure/landed_lander/proc/life_support(seconds, occupants)
 	var/datum/habitat_ledger/L = cabin()
-	if (!L.advance(seconds, occupants, 0, BARREN_AMBIENT_C))
+	if (!L.advance(seconds, occupants, 0, barren_ambient_c()))
 		return FALSE
 	if (power_seconds > 0)
 		power_seconds = max(0, power_seconds - habitat_clamp(seconds, 0, HABITAT_MAX_STEP_SECONDS))
