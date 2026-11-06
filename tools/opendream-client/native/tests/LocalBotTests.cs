@@ -61,6 +61,19 @@ static class LocalBotTests {
             Require(lines.Length > 0 && lines.All(line => line.StartsWith("line ")) && lines[^1] == "line 199", "tail did not start on a whole line: " + tail);
             Require(LocalBot.Tail(log).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length == 200, "short log not read whole");
         }
+        // Forced stop finds only this bot's supervisor and bot.php, by command line, whatever the slashes or case.
+        var listing = "[" +
+            "{\"ProcessId\":11,\"CommandLine\":\"\\\"C:\\\\php\\\\php.exe\\\" scripts/windows/control.php start " + bot.Profile.Replace("\\", "/").Replace("\"", "") + "\"}," +
+            "{\"ProcessId\":12,\"CommandLine\":\"\\\"C:\\\\php\\\\php.exe\\\" \\\"" + Path.Combine(bot.Root, "BOT.php").Replace("\\", "/") + "\\\"\"}," +
+            "{\"ProcessId\":13,\"CommandLine\":\"php.exe scripts/windows/control.php start D:/other/profile.json\"}," +
+            "{\"ProcessId\":14,\"CommandLine\":\"php.exe scripts/windows/control.php status " + bot.Profile.Replace("\\", "/") + "\"}," +
+            "{\"ProcessId\":15,\"CommandLine\":null},{\"ProcessId\":0,\"CommandLine\":\"x/bot.php\"}]";
+        Require(LocalBot.ParseBotProcesses(bot, listing).SequenceEqual(new[] { 11, 12 }), "bot processes: " + string.Join(",", LocalBot.ParseBotProcesses(bot, listing)));
+        Require(LocalBot.ParseBotProcesses(bot, "{\"ProcessId\":7,\"CommandLine\":\"php " + Path.Combine(bot.Root, "bot.php").Replace("\\", "\\\\") + "\"}").SequenceEqual(new[] { 7 }), "single process object");
+        Require(LocalBot.ParseBotProcesses(bot, "").Count == 0 && LocalBot.ParseBotProcesses(bot, "garbage").Count == 0, "empty listing");
+        var kill = LocalBot.KillTree(11);
+        Require(kill.FileName.EndsWith("taskkill.exe", StringComparison.OrdinalIgnoreCase) && kill.CreateNoWindow && kill.ArgumentList.SequenceEqual(new[] { "/F", "/T", "/PID", "11" }), "kill argv");
+        Require(LocalBot.ListPhpProcesses() is { CreateNoWindow: true, RedirectStandardOutput: true } list && list.ArgumentList.Last().Contains("Name='php.exe'"), "process listing");
         Console.WriteLine($"PASS local bot: {assertions} assertions; control.php argv per action, status/check-update parsing for old and new bots, shared server/bot update check, open-log tail.");
         return assertions;
     }

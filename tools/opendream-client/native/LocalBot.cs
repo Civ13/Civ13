@@ -95,6 +95,46 @@ public static class LocalBot {
         return text.Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
     }
 
+    // Forced stop for a bot that ignores stop.request: list every php.exe with its command line
+    // (hidden PowerShell, CIM), keep this bot's supervisor and child, and end each process tree.
+    public static ProcessStartInfo ListPhpProcesses() {
+        var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe")) {
+            UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "-NoProfile", "-NonInteractive", "-Command",
+                "Get-CimInstance Win32_Process -Filter \"Name='php.exe'\" | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress" })
+            step.ArgumentList.Add(argument);
+        return step;
+    }
+
+    // The supervisor runs "control.php start PROFILE" and the bot runs "ROOT/bot.php"; nothing else matches.
+    public static IReadOnlyList<int> ParseBotProcesses(HostBot bot, string output) {
+        static string Norm(string text) => text.Replace('\\', '/').ToLowerInvariant();
+        var profile = Norm(bot.Profile);
+        var child = Norm(bot.Root).TrimEnd('/') + "/bot.php";
+        var found = new List<int>();
+        var line = output.Trim();
+        if (line.Length == 0) return found;
+        try {
+            using var document = JsonDocument.Parse(line);
+            var root = document.RootElement;
+            var items = root.ValueKind == JsonValueKind.Array ? root.EnumerateArray().ToList() : [root];
+            foreach (var item in items) {
+                if (item.ValueKind != JsonValueKind.Object || !item.TryGetProperty("ProcessId", out var id) || !id.TryGetInt32(out var pid) || pid <= 0) continue;
+                if (Str(item, "CommandLine") is not { } command) continue;
+                var text = Norm(command);
+                if ((text.Contains("control.php") && text.Contains(" start ") && text.Contains(profile)) || text.Contains(child)) found.Add(pid);
+            }
+        } catch (JsonException) { }
+        return found;
+    }
+
+    public static ProcessStartInfo KillTree(int pid) {
+        var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "taskkill.exe")) {
+            UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "/F", "/T", "/PID", pid.ToString() }) step.ArgumentList.Add(argument);
+        return step;
+    }
+
     internal static string? Str(JsonElement json, string name) =>
         json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
     internal static bool Bool(JsonElement json, string name) =>

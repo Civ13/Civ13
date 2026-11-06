@@ -123,7 +123,8 @@ public static class LocalHosting {
         return (process.ExitCode, output + error.Result);
     }
 
-    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update"];
+    // kill is a forced stop without a save; force-restart kills if running, then starts from the last completed save.
+    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart"];
 
     // Only the action name reaches the script; its config file names every path and command.
     public static ProcessStartInfo ControlStep(HostControl control, string action) {
@@ -151,18 +152,23 @@ public static class LocalHosting {
             if (!ok.GetBoolean())
                 return new ControlAnswer(false, "Refused: " + (Str(json, "refused") ?? Str(json, "error") ?? "no reason given"), false);
             if (action == "status") return new ControlAnswer(true, Describe(json), Bool(json, "busy"));
-            if (!Bool(json, "accepted") || Str(json, "action") != action)
+            if (action == "kill")
+                return Bool(json, "killed") ? new ControlAnswer(true, "Server force-stopped without saving. The next start loads the last completed save.", false)
+                    : new ControlAnswer(false, "The host script did not stop the server.", false);
+            // force-restart answers with the start it requested.
+            if (!Bool(json, "accepted") || Str(json, "action") != (action == "force-restart" ? "start" : action))
                 return new ControlAnswer(false, "The host script did not accept " + action + ".", false);
             return new ControlAnswer(true, action switch {
                 "start" => "Starting the server...",
                 "stop" => "Saving the world, then stopping the server...",
                 "restart" => "Saving the world, then restarting the server...",
+                "force-restart" => (Bool(json, "killed") ? "Server force-stopped without saving; s" : "S") + "tarting it from the last completed save...",
                 _ => "Pulling and compiling master...",
             }, true);
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update"];
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart"];
 
     // shard_group.py for every region of the group; again only the action name comes from the caller.
     public static ProcessStartInfo GroupStep(HostControl control, string action) {
@@ -229,10 +235,17 @@ public static class LocalHosting {
                 }
                 return new ControlAnswer(true, regions.Count == 0 ? "The group has no regions." : "Group: " + string.Join("; ", regions) + ".", busy);
             }
-            var accepted = json.TryGetProperty("accepted", out var acceptedJson) && acceptedJson.ValueKind == JsonValueKind.Object
+            // kill finishes at once and lists the regions it stopped under "done"; the others hand off to a worker.
+            var acceptedName = action == "kill" ? "done" : "accepted";
+            var accepted = json.TryGetProperty(acceptedName, out var acceptedJson) && acceptedJson.ValueKind == JsonValueKind.Object
                 ? acceptedJson.EnumerateObject().Select(entry => Clean(entry.Name)).ToList() : [];
             if (accepted.Count == 0) return new ControlAnswer(false, "The group script did not accept " + action + ".", false);
+            if (action == "kill") {
+                var stopped = "Force-stopped " + string.Join(", ", accepted) + " without saving; the next start loads the last completed save.";
+                return new ControlAnswer(true, refused != null ? stopped + " Refused: " + refused + "." : stopped, false);
+            }
             var message = action switch {
+                "force-restart" => "Force-restarting (no save) and starting from the last completed save:",
                 "start" => "Starting",
                 "stop" => "Saving, then stopping",
                 "restart" => "Saving, then restarting",

@@ -170,6 +170,17 @@ static class LocalHostingTests {
         Require(LocalHosting.ParseGroup("update", 1, "{\"ok\": false, \"refused\": \"git fetch origin failed\"}").Message == "Refused: git fetch origin failed", "whole-group refusal");
         Require(!LocalHosting.ParseGroup("restart", 0, "{\"ok\": true, \"accepted\": {}, \"refused\": {}}").Ok, "an empty acceptance counted");
         Require(!LocalHosting.ParseGroup("status", 1, "Traceback").Ok, "group garbage accepted");
+        // Forced stop and restart: no save, the next start loads the last completed one.
+        Require(LocalHosting.ParseControl("kill", 0, "{\"killed\": true, \"pid\": 4, \"reason\": \"forced stop\", \"ok\": true}") is { Ok: true, Busy: false } killed
+            && killed.Message.Contains("without saving"), "kill answer");
+        Require(LocalHosting.ParseControl("kill", 1, "{\"ok\": false, \"refused\": \"the server is not running\"}").Message == "Refused: the server is not running", "kill refusal");
+        Require(LocalHosting.ParseControl("force-restart", 0, "{\"accepted\": true, \"action\": \"start\", \"operation\": \"x\", \"killed\": true, \"ok\": true}") is { Ok: true, Busy: true } forced
+            && forced.Message.StartsWith("Server force-stopped without saving; starting"), "force-restart answer");
+        Require(LocalHosting.ControlStep(host.Control!, "kill").ArgumentList.Last() == "kill" && LocalHosting.GroupStep(host.Control!, "force-restart").ArgumentList.Last() == "force-restart", "force actions not allowed");
+        var groupKill = LocalHosting.ParseGroup("kill", 0, "{\"done\": {\"gaia\": {\"killed\": true}}, \"refused\": {\"railyard\": \"the server is not running\"}, \"ok\": true}");
+        Require(groupKill is { Ok: true, Busy: false } && groupKill.Message.StartsWith("Force-stopped gaia without saving") && groupKill.Message.Contains("railyard: the server is not running"), "group kill: " + groupKill.Message);
+        var groupForce = LocalHosting.ParseGroup("force-restart", 0, "{\"accepted\": {\"gaia\": {}, \"railyard\": {}}, \"refused\": {}, \"ok\": true}");
+        Require(groupForce is { Ok: true, Busy: true } && groupForce.Message.EndsWith("gaia, railyard..."), "group force-restart: " + groupForce.Message);
 
         Reject(() => { Write(new { schema = 2, game_directory = game, world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "future schema");
         Reject(() => { Write(new { schema = 1, game_directory = "relative", world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "relative game folder");
