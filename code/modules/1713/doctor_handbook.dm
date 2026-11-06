@@ -73,6 +73,18 @@
 		if (!is_bad)
 			user.show_message("<span class='notice'>* No general health issues.</span>")
 
+		// DISEASES AND POISONS
+		var/illness = diagnose_disease(H)
+		if (illness)
+			user.show_message("<span class='warning'><b>* [illness]</b></span>")
+		else
+			user.show_message("<span class='notice'>* No signs of disease.</span>")
+		var/list/poisons = diagnose_poisons(H)
+		for (var/line in poisons)
+			user.show_message("<span class='warning'><b>* [line]</b></span>")
+		if (!poisons.len)
+			user.show_message("<span class='notice'>* No poison found in the blood or stomach.</span>")
+
 		var/ecount = 0 // external organs count
 		var/icount = 0 // internal organs count
 
@@ -207,3 +219,56 @@
 	if (!sev_factor)
 		sev_factor = 100/severity_adj.len
 	return sev_factor
+
+// Names the illness the patient carries and how far along it is, or null.
+/obj/item/weapon/doctor_handbook/proc/diagnose_disease(mob/living/human/H)
+	if (!H.disease || !H.disease_type || H.disease_type == "none")
+		return null
+	var/list/names = list("flu" = "Influenza", "zombie" = "Zombie infection", "plague" = "Plague", "typhus" = "Typhus", "malaria" = "Malaria", "cholera" = "Cholera")
+	var/illness = names[H.disease_type] || capitalize(H.disease_type)
+	if (H.is_severe_disease())
+		var/stage = "early stage"
+		if (H.disease_progression >= 900)
+			stage = "critical stage, fatal without treatment"
+		else if (H.disease_progression >= 180)
+			stage = "worsening stage"
+		illness += " ([stage]). It will not clear on its own; it needs a full medicine course"
+		if (H.disease_course > 0)
+			illness += ", currently [round(min(100, H.disease_course / 1.8))]% done"
+		return illness + "."
+	if (H.disease_type == "flu")
+		var/stage = "early stage"
+		if (H.disease_progression >= 180)
+			stage = "recovering"
+		else if (H.disease_progression >= 60)
+			stage = "high fever"
+		return "[illness] ([stage])."
+	return "[illness]."
+
+// Poisons in the blood and stomach, one line each, by reagent name.
+/obj/item/weapon/doctor_handbook/proc/diagnose_poisons(mob/living/human/H)
+	. = list()
+	var/list/blood = list()
+	var/list/stomach = list()
+	var/list/order = list()
+	var/list/holders = list(H.reagents, H.ingested)
+	for (var/i in 1 to holders.len)
+		var/datum/reagents/R = holders[i]
+		if (!R)
+			continue
+		for (var/datum/reagent/A in R.reagent_list)
+			if (A.volume <= 0 || !is_handbook_poison(A))
+				continue
+			var/list/into = i == 1 ? blood : stomach
+			into[A.name] = (into[A.name] || 0) + A.volume
+			order |= A.name
+	for (var/poison in order)
+		var/list/where = list()
+		if (blood[poison])
+			where += "[round(blood[poison], 0.1)]u in the blood"
+		if (stomach[poison])
+			where += "[round(stomach[poison], 0.1)]u in the stomach"
+		. += "Poisoned with [poison] ([jointext(where, ", ")])."
+
+/obj/item/weapon/doctor_handbook/proc/is_handbook_poison(datum/reagent/A)
+	return istype(A, /datum/reagent/toxin) || (A.id in list("lexorin", "stoxin", "chloralhydrate", "pacid"))
