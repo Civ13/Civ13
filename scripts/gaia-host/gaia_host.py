@@ -69,9 +69,9 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage')
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
-DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage')
+DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
@@ -835,13 +835,67 @@ class Host:
         if not pid:
             raise Refused('the server is not running')
         self.platform.kill_tree(pid)
+        released = self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
         if not keep_running:  # stopped on purpose: the watchdog leaves it down
             self.running_file.unlink(missing_ok=True)
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
-        return {'killed': True, 'pid': pid, 'reason': reason}
+        return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
+
+    def release_save_locks(self, pid, wait_seconds=30):
+        """Remove the BYOND lock files a killed server left in map_saves.
+
+        A forced stop leaves each open savefile's .lk behind, and check_save then
+        refuses every start. They belong to the dead process only, so they are
+        removed once it has ended; while it still runs they are left alone.
+        Returns the names removed.
+        """
+        deadline = self.platform.now() + wait_seconds
+        while self.platform.alive(pid):
+            if self.platform.now() > deadline:
+                return []
+            self.platform.sleep(1)
+        return self.remove_save_locks(self.save_locks())
+
+    def save_locks(self):
+        """The BYOND lock files (*.lk) in map_saves, as paths."""
+        saves = self.repo / 'map_saves'
+        if saves.is_symlink() or not saves.is_dir():
+            return []
+        return [item for item in sorted(saves.iterdir()) if item.name.endswith('.lk') and item.is_file() and not item.is_symlink()]
+
+    @staticmethod
+    def remove_save_locks(locks):
+        for item in locks:
+            item.unlink(missing_ok=True)
+        return [item.name for item in locks]
+
+    def unlock(self, force=False):
+        """Check map_saves for BYOND lock files and remove them.
+
+        Safe (the default): refused while the server runs, is frozen or an action
+        (a start, save or update) is in progress, because the files may then be in
+        use. Force skips those checks, for a lock left by a server whose process is
+        gone but still looks alive; removing a lock a live server holds can corrupt
+        its save. Afterwards the save is checked and the answer says if it loads.
+        """
+        locks = self.save_locks()
+        running = bool(self.frozen() or self.platform.listening(self.config['port']) or self.platform.server_pid(self.config['port']))
+        busy = self.read_state().get('action') if self.lock.exists() else None
+        if locks and not force:
+            if running:
+                raise Refused('the server is running; its lock files may be in use (force-unlock removes them anyway)')
+            if busy:
+                raise Refused('an action is still running: %s' % busy)
+        removed = self.remove_save_locks(locks)
+        answer = {'removed': removed, 'forced': bool(force), 'server_running': running}
+        try:
+            answer['save'] = check_save(self.repo / 'map_saves') or 'empty'
+        except Refused as refusal:
+            answer['save_refused'] = str(refusal)
+        return answer
 
     def force_restart(self, lock_wait_seconds=180):
         """Forced stop if it is running, then a normal start from the last completed save."""
@@ -1326,6 +1380,8 @@ def main(argv=None):
             result = host.kill()
         elif args.action == 'force-restart':
             result = host.force_restart()
+        elif args.action in ('unlock', 'force-unlock'):
+            result = host.unlock(force=args.action == 'force-unlock')
         elif args.action == 'stage':
             result = host.request_stage()
         elif args.action == 'check-update':

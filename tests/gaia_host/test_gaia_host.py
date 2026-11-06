@@ -549,12 +549,64 @@ class ForcedStopTests(GaiaHostTests):
         write_save(self.repo / 'map_saves')
         before = sorted(p.name for p in (self.repo / 'map_saves').iterdir())
         result = self.host.kill()
-        self.assertEqual(result, {'killed': True, 'pid': 4242, 'reason': 'forced stop'})
+        self.assertEqual(result, {'killed': True, 'pid': 4242, 'reason': 'forced stop', 'released_locks': []})
         self.assertIn(['kill_tree', 4242], self.machine.calls)
         self.assertFalse(any(call[:2] == ['query', 'save_shutdown'] for call in self.machine.calls))
         self.assertEqual(sorted(p.name for p in (self.repo / 'map_saves').iterdir()), before)
         self.assertEqual(self.host.read_state()['phase'], 'killed')
         self.assertEqual(self.host.status()['state'], 'stopped')
+
+    def test_kill_releases_the_dead_servers_lock_files(self):
+        # A world killed mid-load leaves BYOND's .lk files; start must not refuse on them.
+        self.machine.up = True
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '2.sav.lk').write_bytes(b'')
+        with self.assertRaisesRegex(gaia_host.Refused, 'lock files'):
+            gaia_host.check_save(saves)
+        result = self.host.kill()
+        self.assertEqual(['2.sav.lk'], result['released_locks'])
+        gaia_host.check_save(saves)
+
+    def test_kill_keeps_lock_files_while_the_server_lives(self):
+        self.machine.up = True
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        self.machine.kill_tree = lambda pid: self.machine.calls.append(['kill_tree', pid])  # it survives
+        self.assertEqual([], self.host.kill()['released_locks'])
+        self.assertTrue((saves / '1.sav.lk').exists())
+
+    def test_unlock_clears_a_stopped_servers_locks_and_checks_the_save(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        answer = self.host.unlock()
+        self.assertEqual(['1.sav.lk'], answer['removed'])
+        self.assertFalse(answer['server_running'])
+        self.assertNotIn('save_refused', answer)
+        self.assertEqual({'removed': [], 'forced': False, 'server_running': False, 'save': answer['save']}, self.host.unlock())
+
+    def test_unlock_refuses_a_running_server_unless_forced(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '2.sav.lk').write_bytes(b'')
+        self.machine.up = True
+        with self.assertRaisesRegex(gaia_host.Refused, 'running'):
+            self.host.unlock()
+        self.assertTrue((saves / '2.sav.lk').exists())
+        answer = self.host.unlock(force=True)
+        self.assertEqual((['2.sav.lk'], True, True), (answer['removed'], answer['forced'], answer['server_running']))
+
+    def test_unlock_refuses_while_an_action_runs(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('busy', encoding='utf-8')
+        self.host.record(action='start', operation='x', phase='loading')
+        with self.assertRaisesRegex(gaia_host.Refused, 'action is still running: start'):
+            self.host.unlock()
 
     def test_kill_refuses_a_stopped_server(self):
         with self.assertRaisesRegex(gaia_host.Refused, 'not running'):

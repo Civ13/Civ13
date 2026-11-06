@@ -49,7 +49,7 @@ import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
-                 'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop')
+                 'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
@@ -1189,12 +1189,16 @@ def main(argv=None):
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
             result = adopt(group, args.region, args.source)
-        elif args.action in ('freeze', 'thaw', 'kill'):
+        elif args.action in ('freeze', 'thaw', 'kill', 'unlock', 'force-unlock'):
             # kill: forced stop without saving; the next start restores the last completed save.
+            # unlock: remove stale BYOND lock files from stopped regions; force-unlock from any.
             done, refused = {}, {}
             for region, host in hosts(group, args.region):
                 try:
-                    done[region['id']] = getattr(host, args.action)()  # freeze, thaw or kill
+                    if args.action in ('unlock', 'force-unlock'):
+                        done[region['id']] = host.unlock(force=args.action == 'force-unlock')
+                    else:
+                        done[region['id']] = getattr(host, args.action)()  # freeze, thaw or kill
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
             if refused and not done:

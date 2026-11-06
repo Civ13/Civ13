@@ -249,7 +249,7 @@ internal sealed partial class LauncherWindow : Form {
         buttons.Controls.Add(hostStart);
         if (profile.Control != null) {
             foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
-                    ("Force stop", "kill"), ("Force restart", "force-restart") }) {
+                    ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await HostAction(action, text);
                 hostActions.Add(button);
@@ -270,7 +270,8 @@ internal sealed partial class LauncherWindow : Form {
         if (profile.Control?.Group != null) {
             groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
             foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
-                    ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart") }) {
+                    ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart"),
+                    ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await GroupAction(action, text);
                 hostActions.Add(button);
@@ -646,12 +647,21 @@ internal sealed partial class LauncherWindow : Form {
         }
     }
 
+    private const string UnlockQuestion = "Check the save for BYOND lock files (left when a world is killed) and remove them? "
+        + "Only worlds that are stopped with no action running are touched.";
+    private const string ForceUnlockQuestion = "Remove BYOND lock files even from a world that looks running? Use this only when its "
+        + "dd.exe is gone. Removing a lock a running world holds can corrupt its save.";
+
     // Accepted actions finish in the script's worker; the timer follows them until they settle.
     private async Task HostAction(string action, string label) {
         if (host?.Control is not { } control) return;
-        var forced = action is "kill" or "force-restart";
-        var question = forced ? label + " the server? It is ended at once WITHOUT saving: anything since the last completed save is lost. Use this only for a server that hangs."
-            : label + " the server? Players are saved and can rejoin when it is back.";
+        var forced = action is "kill" or "force-restart" or "force-unlock";
+        var question = action switch {
+            "unlock" => UnlockQuestion,
+            "force-unlock" => ForceUnlockQuestion,
+            _ => forced ? label + " the server? It is ended at once WITHOUT saving: anything since the last completed save is lost. Use this only for a server that hangs."
+                : label + " the server? Players are saved and can rejoin when it is back.",
+        };
         if (action != "update" && MessageBox.Show(this, question, "Civ13 Launcher",
                 MessageBoxButtons.OKCancel, forced ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
@@ -672,11 +682,14 @@ internal sealed partial class LauncherWindow : Form {
         var question = action switch {
             "update" => "Check out and compile the group's revision in every stopped region?",
             "restart-host" => "Restart the host service? The worlds keep running.",
+            "unlock" => UnlockQuestion,
+            "force-unlock" => ForceUnlockQuestion,
             "kill" or "force-restart" => label + " every region? Each is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for servers that hang.",
             _ => label + " every region? Players are saved and can rejoin when it is back.",
         };
         if (action == "deploy") { await ChooseAndDeploy(label); return; }
-        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
+                action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
         if (action == "restart-host") {
             groupScriptRunning = true;
