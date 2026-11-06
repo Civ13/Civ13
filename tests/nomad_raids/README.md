@@ -17,6 +17,9 @@ from where the party stands, party size cap, unsaved raiders with weapon and bag
 near the leader not counting as tribute until it is laid at their feet (or as
 a trader's payment), tribute ending
 the parley and limiting loot to the tribute, an attack starting the assault,
+restraints by age, a raider with restraints disarming, knocking down, binding
+and stripping a foe (a bound prisoner is no longer fought), chasing a foe who
+ran and letting go of one who is down,
 carrying loot, a fallen raider dropping loot, weapon and bag, removal dropping
 loot, and the real controller loop marching to an empty target, turning back
 and despawning every raider; and an island target: no walking route, a

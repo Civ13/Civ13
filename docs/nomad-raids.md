@@ -18,6 +18,7 @@ Visits are not started at random.
 | `nomad_raid.dm` | Settings, targeting, edge spawn sites, cooldowns, item worth |
 | `nomad_raider.dm` | The NPC party member |
 | `nomad_visit.dm` | The party controller: march, parley, assault, loot, leave |
+| `nomad_capture.dm` | Raiders binding and stripping prisoners, and chasing foes who run |
 | `nomad_trade.dm` | Trader caravans |
 | `nomad_reputation.dm` | What the clans think of each player |
 | `nomad_coordinator.dm` | What a coordinator sees and may order |
@@ -77,8 +78,14 @@ online admins.
    does not, unless someone picks it up and lays it at the chieftain's feet.
    Attacking them, or letting the time run out, starts the fight.
 4. **Assault.** Raiders fight awake people near the target, preferring anyone
-   holding a weapon. Downed people are left alone, and animals only when they
-   attack first. The fight ends after 15 quiet seconds or 5 minutes.
+   holding a weapon. Downed and bound people are left alone, and animals only
+   when they attack first. A raider whose foe runs chases them while they stay
+   within 30 tiles of the target. About a third of raiders carry restraints
+   (rope, then iron cuffs from the fourth age, handcuffs from the sixth); one
+   next to their foe wrenches weapons from their hands, knocks them down,
+   binds their wrists, and strips everything they wear and carry, packing
+   what fits. The fight ends after 15 quiet seconds or 5 minutes; a raider
+   still stripping a prisoner finishes before looting.
 5. **Loot.** Raiders take loose items near the target (best value first) and
    open unlocked, unwelded crates and closets. They do not take worn clothing,
    items in hands, or anything locked, and do not damage buildings.

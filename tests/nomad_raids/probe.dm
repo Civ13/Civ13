@@ -41,6 +41,7 @@ var/raid_runtime_error = FALSE
 		raid_coordinator_checks()
 		raid_trade_checks()
 		raid_reputation_checks()
+		raid_capture_checks()
 		raid_lifecycle_checks()
 		raid_boat_checks()
 	catch(var/exception/e)
@@ -452,3 +453,52 @@ var/raid_runtime_error = FALSE
 		if (!QDELETED(raft) && isturf(raft.loc))
 			left++
 	raid_check(!left && !R.rafts.len, "no party raft is left behind")
+
+// Raiders with restraints disarm, knock down, bind and strip a foe; others chase.
+/proc/raid_capture_checks()
+	raid_check(nomad_raid_cuff_type(0) == /obj/item/weapon/handcuffs/rope && nomad_raid_cuff_type(4) == /obj/item/weapon/handcuffs/old && nomad_raid_cuff_type(6) == /obj/item/weapon/handcuffs, "restraints suit the age")
+	var/turf/target = locate(20, 26, 1)
+	var/datum/nomad_raid/R = new
+	R.setup(target, list(), 2, "probe")
+	nomad_raid = R
+	var/mob/living/simple_animal/hostile/human/nomad_raider/M = R.leader
+	var/obj/item/weapon/handcuffs/C = M.give_cuffs(0)
+	raid_check(C && C.loc == M && !C.should_save, "a raider can carry unsaved rope restraints")
+	var/turf/at = get_step(M, SOUTH)
+	var/mob/living/human/V = new(at)
+	var/obj/item/weapon/material/spear/held = new(at)
+	V.put_in_hands(held)
+	var/obj/item/clothing/shoes/S = new /obj/item/clothing/shoes/leather(at)
+	V.equip_to_slot(S, slot_shoes)
+	R.state = "assault"
+	R.set_hostile(TRUE)
+	M.target_mob = V
+	var/steps = 0
+	while (steps < 60 && V.get_active_hand() == held)
+		R.capture_step(M)
+		steps++
+	raid_check(held.loc == at, "the raider wrenches the weapon out of their hands")
+	steps = 0
+	while (steps < 60 && !V.lying)
+		R.capture_step(M)
+		steps++
+	raid_check(V.lying, "the raider knocks them down")
+	R.capture_step(M)
+	raid_check(V.handcuffed == C && !M.cuffs && C.should_save && R.captives[M] == V, "a downed foe is bound with the raider's restraints")
+	raid_check(!R.foe_ok(V), "a bound prisoner is no longer fought")
+	steps = 0
+	while (steps < 20 && R.captives[M])
+		R.capture_step(M)
+		steps++
+	raid_check(!V.shoes && (S in M.carried) && R.stripped == 1 && V.handcuffed == C, "the prisoner is stripped and stays bound")
+	// A foe who runs is chased while near the target, and let go when far.
+	var/mob/living/simple_animal/hostile/human/nomad_raider/F = R.members[2]
+	var/mob/living/human/runner = new(locate(target.x + 8, target.y, 1))
+	R.quarry[F] = runner
+	raid_check(R.chase_step(F) && F.pathfind_target == get_turf(runner), "a raider chases a foe who ran")
+	raid_check(R.quarry_left(), "a fleeing foe near the target keeps the fight going")
+	runner.stat = UNCONSCIOUS
+	raid_check(!R.chase_step(F) && !R.quarry_left(), "a foe who is down is no longer chased")
+	R.remove_all("probe")
+	qdel(runner)
+	qdel(V)

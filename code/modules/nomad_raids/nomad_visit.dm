@@ -171,6 +171,8 @@
 	else
 		M.name = is_leader ? "[clan] chieftain" : "[clan] raider"
 	M.real_name = M.name
+	if (kind == "raid" && prob(NOMAD_RAID_CUFF_CHANCE))
+		M.give_cuffs(map ? map.ordinal_age : 0)
 	members += M
 	last_health[M] = M.health
 	if (is_leader)
@@ -215,7 +217,7 @@
 	if (!istype(L) || L.stat != CONSCIOUS || (L in members) || istype(L, /mob/living/simple_animal/hostile/human/nomad_raider))
 		return FALSE
 	if (ishuman(L))
-		return TRUE
+		return !nomad_raid_bound(L) // a bound prisoner is no longer fought
 	// Animals only when they are already fighting a member.
 	if (istype(L, /mob/living/simple_animal))
 		var/mob/living/simple_animal/SA = L
@@ -508,7 +510,13 @@
 		return
 	var/side = 1
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in alive)
+		if (capture_step(M))
+			continue
 		if (M.target_mob && foe_ok(M.target_mob))
+			if (ishuman(M.target_mob))
+				quarry[M] = M.target_mob
+			continue
+		if (chase_step(M))
 			continue
 		switch (tactic)
 			if ("hold")
@@ -522,7 +530,7 @@
 				order_move(M, T ? T : target)
 			else
 				order_move(M, focus ? focus : target)
-	if (foes_near())
+	if (foes_near() || quarry_left())
 		last_seen_foe = world.time
 	else if (world.time - last_seen_foe > NOMAD_RAID_QUIET_LIMIT)
 		end_fight("no one left standing to fight")
@@ -575,6 +583,9 @@
 		set_hostile(FALSE)
 	var/working = FALSE
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in alive)
+		if (captives[M] && capture_step(M))
+			working = TRUE // finish stripping a prisoner before looting
+			continue
 		if (M in done_looting)
 			continue
 		if (M.target_mob && foe_ok(M.target_mob))
@@ -633,12 +644,17 @@
 	M.carried.Cut()
 	members -= M
 	waypoints -= M
+	captives -= M
+	quarry -= M
 	qdel(M)
 
 // A fallen member drops everything it carried.
 /datum/nomad_raid/proc/member_fell(mob/living/simple_animal/hostile/human/nomad_raider/M)
 	fallen++
 	M.drop_carried()
+	M.lose_cuffs()
+	captives -= M
+	quarry -= M
 	// Killing traders or their guards is remembered; killing raiders is not.
 	var/mob/living/human/H = M.lastattacker
 	if (kind == "trade" && istype(H) && H.ckey)
