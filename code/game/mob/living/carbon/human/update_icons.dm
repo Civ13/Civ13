@@ -522,7 +522,10 @@ var/global/list/damage_icon_parts = list()
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
 //	world.log << "DEBUG: [src] tried to find_inv_position for [slot_id], but does not have that slot!"
 //	to_chat(src, "Some problem has occurred, change UI style or notify the devs.")
-	return "7,7"
+	// No HUD yet (restored or not logged in): stay off screen. A placeholder
+	// such as "7,7" drew the item in the middle of the map view. update_hud()
+	// realigns equipped items once the HUD exists.
+	return null
 
 
 /mob/living/human/update_inv_w_uniform(var/update_icons=1)
