@@ -22,7 +22,7 @@ MAX_RESPONSE = 65536
 MAX_REQUEST_ID = 100
 HISTORY_BYTES = 4096
 HISTORY_PAIRS = 3
-NUM_PREDICT = 650
+NUM_PREDICT = 450  # ~1800 characters: concise answers finish ~7 s sooner at 27 tokens/s, well under the 4000-char display cap
 DEFAULT_NUM_CTX = 8192
 MIN_NUM_CTX = 4096
 # Ollama unloads an idle model after five minutes by default; the next question then waits 10-30 s for a reload.
