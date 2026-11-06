@@ -238,7 +238,13 @@ come with phase 3, when there is something to save.
   carry, under the usual travel rules), and the payload adds the lander id,
   the landing survey cell and whether the site was surveyed. A rough landing
   (5% on a surveyed site, 50% unsurveyed) costs each crew member 15 brute.
-  The cargo hold is left for a later PR: crew carry what region travel allows.
+  The cargo hold takes up to 20 stowed items (use an item on the lander;
+  Unload hold sets them down): anything region travel allows, plus glass,
+  plastic, electronics and water ice stacks, module kits, hull and suit patch
+  kits, suit air tanks, survey probes and rover batteries. The hold rides in
+  the first departing crew member's payload as `cargo` entries and is
+  unpacked in a crate beside them on arrival (or back at the pad if the trip
+  is refused). Anything that can no longer fly is left on the pad.
 - The first arrival of a flight builds the landed lander in its survey cell
   (one cell is 5x5 tiles; the first spot in the cell with a clear 3x3, else
   its middle) on the top barren level; later arrivals join it. It lays a 3x3
@@ -354,9 +360,11 @@ come with phase 3, when there is something to save.
   frame tiles, with open doors counted as breaches. While the battery has
   charge the cabin panel tops oxygen up from a reserve (four person-hours
   when built, refilled by emptying suit air tanks into the panel), scrubs
-  CO2 and holds 20 C. On breathable ground the cabin is ignored. Not built:
-  trailers (the vehicle system has no towing) and dedicated survey drones
-  (the existing drone controller works on any map).
+  CO2 and holds 20 C. On breathable ground the cabin is ignored. A cargo
+  trailer (Surface Vehicles, 20 steel) is a 40-capacity crate that hitches
+  to any car or rover beside it and closes up a tile behind after each move;
+  it comes loose if it falls more than 3 tiles behind. Not built: dedicated
+  survey drones (the existing drone controller works on any map).
 
 ### Phase 6: self-sufficiency and expansion
 

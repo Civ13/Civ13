@@ -381,3 +381,109 @@
 	if (istype(R))
 		R.fill_cabin()
 	return A
+
+// ---------------------------------------------------------------- trailers
+
+// A cargo trailer is a crate on wheels. Hitched to a car or rover, it follows
+// the vehicle a tile behind after every move; it comes loose when it is left
+// more than a few tiles behind or blocked. The hitch is a plain saved
+// reference, so a parked rig stays hitched across a restart.
+#define ROVER_TRAILER_SLACK 3
+
+var/global/list/rover_trailers = list()
+
+/obj/structure/closet/crate/rover_trailer
+	name = "cargo trailer"
+	desc = "A wheeled cargo bed with a hitch. Load it like a crate, then hitch it to a rover or car beside it to tow it."
+	color = "#c8b08a"
+	storage_capacity = 40
+	var/obj/structure/vehicleparts/axis/hitch = null
+
+/obj/structure/closet/crate/rover_trailer/New()
+	..()
+	rover_trailers |= src
+
+/obj/structure/closet/crate/rover_trailer/Destroy()
+	rover_trailers -= src
+	hitch = null
+	return ..()
+
+/obj/structure/closet/crate/rover_trailer/examine(mob/user)
+	..()
+	to_chat(user, SPAN_NOTICE(hitch ? "It is hitched to a vehicle." : "It is not hitched. Use Hitch trailer beside a rover or car."))
+
+// The vehicle frame nearest the trailer, and how far it is.
+/obj/structure/closet/crate/rover_trailer/proc/nearest_frame(obj/structure/vehicleparts/axis/A)
+	var/obj/structure/vehicleparts/frame/best = null
+	var/best_dist = 1000
+	for (var/obj/structure/vehicleparts/frame/F in A.components)
+		if (QDELETED(F) || F.axis != A || F.z != z)
+			continue
+		var/d = get_dist(src, F)
+		if (d < best_dist)
+			best = F
+			best_dist = d
+	return best
+
+// A car axis with a frame next to the trailer, or null.
+/obj/structure/closet/crate/rover_trailer/proc/vehicle_beside()
+	for (var/obj/structure/vehicleparts/frame/F in range(1, src))
+		if (F.axis && istype(F.axis, /obj/structure/vehicleparts/axis/car) && !QDELETED(F.axis))
+			return F.axis
+	return null
+
+/obj/structure/closet/crate/rover_trailer/proc/hitch_to(obj/structure/vehicleparts/axis/A)
+	if (!A || !isturf(loc))
+		return FALSE
+	hitch = A
+	anchored = FALSE
+	return TRUE
+
+/obj/structure/closet/crate/rover_trailer/proc/unhitch(reason = null)
+	if (!hitch)
+		return FALSE
+	hitch = null
+	if (reason)
+		visible_message(SPAN_WARNING(reason))
+	return TRUE
+
+// Called after the hitched vehicle moves: close up to a tile behind it.
+/obj/structure/closet/crate/rover_trailer/proc/follow()
+	if (!hitch || QDELETED(hitch) || !isturf(loc))
+		hitch = null
+		return FALSE
+	var/obj/structure/vehicleparts/frame/F = nearest_frame(hitch)
+	if (!F)
+		unhitch("\The [src]'s hitch comes loose.")
+		return FALSE
+	if (get_dist(src, F) <= 1)
+		return TRUE
+	step_to(src, F, 1)
+	if (get_dist(src, F) > ROVER_TRAILER_SLACK)
+		unhitch("\The [src]'s hitch snaps loose and it rolls to a stop.")
+		return FALSE
+	return TRUE
+
+/obj/structure/closet/crate/rover_trailer/verb/hitch_trailer()
+	set name = "Hitch trailer"
+	set category = null
+	set src in view(1)
+	var/mob/living/human/H = usr
+	if (!istype(H) || H.incapacitated() || !in_range(src, H))
+		return
+	if (hitch)
+		unhitch()
+		to_chat(H, SPAN_NOTICE("You unhitch \the [src]."))
+		return
+	var/obj/structure/vehicleparts/axis/A = vehicle_beside()
+	if (!A)
+		to_chat(H, SPAN_WARNING("Move \the [src] beside a rover or car first."))
+		return
+	hitch_to(A)
+	to_chat(H, SPAN_NOTICE("You hitch \the [src] to the vehicle."))
+
+// Every trailer hitched to A follows it (called from axis/do_move()).
+/proc/rover_trailers_follow(obj/structure/vehicleparts/axis/A)
+	for (var/obj/structure/closet/crate/rover_trailer/T in rover_trailers)
+		if (T.hitch == A)
+			T.follow()

@@ -159,7 +159,10 @@ travels as an ordinary character payload with three extra fields (`lander`,
 decoder checks. The destination builds the landed lander for the first
 arrival of a flight and puts the rest of the crew in it. A pad on a mapped
 world may also lead home to the mainland: that flight carries only `lander`
-and `"return": 1`, builds no lander and arrives like any traveller.
+and `"return": 1`, builds no lander and arrives like any traveller. The
+first crew member to depart also carries the lander's hold as `cargo`, a list
+of up to 20 `[kind, amount]` entries checked like carried items, unpacked in
+a crate beside them on arrival.
 
 Group setup, autosave timing and agent startup are in
 [scripts/shard-group](../../scripts/shard-group/README.md#travel-between-regions).

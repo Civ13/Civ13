@@ -25,6 +25,8 @@
 
 #define LANDER_PROPELLANT 300
 #define LANDER_SEATS 4
+// Item entries the cargo hold carries on one flight.
+#define LANDER_CARGO_MAX 20
 #define LANDER_CONSOLE_RANGE 7
 #define LANDER_DECK_RADIUS 1
 #define LANDER_TICK_SECONDS 2
@@ -75,6 +77,8 @@
 	layer = TURF_LAYER + 0.1
 	// The flight being sent, while its crew depart (see travel_extra()).
 	var/tmp/list/pending_flight = null
+	// The lander's hold, sent with the next crew member to depart.
+	var/tmp/list/pending_cargo = null
 
 // TRUE when a survey map of region id ships with the game, or when id is
 // the mainland and this world is one a lander can reach (a flight home).
@@ -118,7 +122,11 @@
 	to_chat(user, SPAN_NOTICE("Build a crewed lander beside the pad, fill it with propellant and strap in to fly to [destination_name()]."))
 
 /obj/structure/region_gate/trail_marker/launch_pad/travel_extra(mob/living/human/H)
-	return pending_flight
+	if (!pending_flight || !length(pending_cargo))
+		return pending_flight
+	var/list/flight = pending_flight.Copy()
+	flight["cargo"] = pending_cargo
+	return flight
 
 // ---------------------------------------------------------------- crewed lander
 
@@ -137,10 +145,10 @@
 
 /obj/structure/crewed_lander/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Propellant: [propellant]/[LANDER_PROPELLANT]. Crew strapped in: [length(crew())]/[LANDER_SEATS]."))
+	to_chat(user, SPAN_NOTICE("Propellant: [propellant]/[LANDER_PROPELLANT]. Crew strapped in: [length(crew())]/[LANDER_SEATS]. Cargo hold: [length(hold())]/[LANDER_CARGO_MAX]."))
 
 /obj/structure/crewed_lander/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents)
+	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && W.reagents.get_reagent_amount("rocket_propellant") > 0)
 		var/took = add_propellant(W.reagents)
 		if (took > 0)
 			to_chat(user, SPAN_NOTICE("You fill \the [src] ([propellant]/[LANDER_PROPELLANT])."))
@@ -149,7 +157,137 @@
 		else
 			to_chat(user, SPAN_WARNING("\The [src] burns only rocket propellant."))
 		return
+	if (istype(W))
+		var/reason = stow_refusal(W)
+		if (reason)
+			to_chat(user, SPAN_WARNING(reason))
+			return
+		if (!user.drop_from_inventory(W, src))
+			return
+		to_chat(user, SPAN_NOTICE("You stow \the [W] in the cargo hold ([length(hold())]/[LANDER_CARGO_MAX])."))
+		return
 	return ..()
+
+// ---------------------------------------------------------------- cargo hold
+
+// Space gear the hold carries besides what any traveller may (region_travel.dm).
+var/global/list/space_cargo_types = list(
+	/obj/item/habitat_kit,
+	/obj/item/habitat_sealant,
+	/obj/item/pressure_tank,
+	/obj/item/pressure_suit_patch,
+	/obj/item/space_probe,
+	/obj/item/weapon/reagent_containers/glass/barrel/fueltank/rover_battery)
+
+// Building stacks the hold carries by kind and amount. Exact types only.
+var/global/list/space_cargo_stacks = list(
+	"glass" = /obj/item/stack/material/glass,
+	"plastic" = /obj/item/stack/material/plastic,
+	"electronics" = /obj/item/stack/material/electronics,
+	"water_ice" = /obj/item/stack/ore/ice)
+
+// How an item flies in the hold, as region_travel_item_kind(), or null.
+/proc/space_cargo_kind(obj/item/I)
+	if (!istype(I))
+		return null
+	var/kind = region_travel_item_kind(I)
+	if (kind)
+		return kind
+	if (istype(I, /obj/item/stack))
+		for (var/good in space_cargo_stacks)
+			if (I.type == space_cargo_stacks[good])
+				return "stack:[good]"
+		return null
+	if (!length(I.contents) && space_cargo_type_allowed(I.type))
+		return "type"
+	return null
+
+/proc/space_cargo_type_allowed(path)
+	for (var/family in space_cargo_types)
+		if (ispath(path, family))
+			return TRUE
+	return FALSE
+
+// The path a cargo entry rebuilds, or null when it is not allowed.
+/proc/space_cargo_path(kind, amount)
+	if (!istext(kind) || !isnum(amount))
+		return null
+	var/path = region_travel_item_path(kind, amount)
+	if (path)
+		return path
+	if (copytext(kind, 1, 7) == "stack:")
+		var/obj/item/stack/S = space_cargo_stacks[copytext(kind, 7)]
+		if (!S || amount < 1 || amount != round(amount) || amount > initial(S.max_amount))
+			return null
+		return S
+	path = text2path(kind)
+	if (!path || amount != 1 || !space_cargo_type_allowed(path))
+		return null
+	return path
+
+// One cargo entry, list(kind, amount), for an item, or null.
+/proc/space_cargo_entry(obj/item/I)
+	var/kind = space_cargo_kind(I)
+	if (!kind)
+		return null
+	if (kind == "type")
+		return list("[I.type]", 1)
+	if (copytext(kind, 1, 6) == "ammo:")
+		return list(kind, region_travel_ammo_count(I))
+	var/obj/item/stack/S = I
+	return list(kind, S.amount)
+
+// Rebuilds cargo entries in a crate at T. Returns the crate, or null.
+/proc/space_cargo_unpack(list/cargo, turf/T)
+	if (!length(cargo) || !isturf(T))
+		return null
+	var/obj/structure/closet/crate/C = new /obj/structure/closet/crate(T)
+	C.name = "lander cargo"
+	for (var/list/entry in cargo)
+		var/path = space_cargo_path(entry[1], entry[2])
+		if (!path)
+			continue
+		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(C, entry[2]) : new path(C)
+		if (istype(I, /obj/item/ammo_magazine))
+			region_travel_fill_magazine(I, entry[2])
+		else if (istype(I, /obj/item/weapon/gun/projectile))
+			region_travel_unload_gun(I)
+	return C
+
+/obj/structure/crewed_lander/proc/hold()
+	var/list/found = list()
+	for (var/obj/item/I in contents)
+		found += I
+	return found
+
+// Null when W can go in the hold, otherwise why not.
+/obj/structure/crewed_lander/proc/stow_refusal(obj/item/W)
+	if (length(hold()) >= LANDER_CARGO_MAX)
+		return "The cargo hold is full."
+	if (!space_cargo_kind(W))
+		return "\The [W] will not survive the flight. The hold takes building materials, space gear, tools, packaged food and medicine, and empty containers."
+	return null
+
+/obj/structure/crewed_lander/proc/unload(mob/user)
+	var/turf/T = get_turf(src)
+	var/count = 0
+	for (var/obj/item/I in hold())
+		I.forceMove(T)
+		count++
+	if (user)
+		to_chat(user, SPAN_NOTICE(count ? "You unload [count] item\s from the cargo hold." : "The cargo hold is empty."))
+	return count
+
+// The hold as cargo entries; anything that can no longer fly is set down.
+/obj/structure/crewed_lander/proc/pack_cargo()
+	var/list/cargo = list()
+	for (var/obj/item/I in hold())
+		var/list/entry = space_cargo_entry(I)
+		if (entry && space_cargo_path(entry[1], entry[2]))
+			cargo += list(entry)
+		else
+			I.forceMove(get_turf(src))
+	return cargo
 
 /obj/structure/crewed_lander/proc/add_propellant(datum/reagents/R)
 	var/amount = min(LANDER_PROPELLANT - propellant, R.get_reagent_amount("rocket_propellant"))
@@ -178,7 +316,11 @@
 	if (!istype(H) || !H.client)
 		return
 	var/strapped_in = (H.client.ckey in strapped) && get_turf(H) == get_turf(src)
-	var/choice = WWinput(H, "Propellant [propellant]/[LANDER_PROPELLANT], crew [length(crew())]/[LANDER_SEATS].", "Crewed lander", "Cancel", list(strapped_in ? "Unstrap" : "Strap in", "Launch", "Cancel"))
+	var/list/options = list(strapped_in ? "Unstrap" : "Strap in", "Launch")
+	if (length(hold()))
+		options += "Unload hold"
+	options += "Cancel"
+	var/choice = WWinput(H, "Propellant [propellant]/[LANDER_PROPELLANT], crew [length(crew())]/[LANDER_SEATS], cargo [length(hold())]/[LANDER_CARGO_MAX]. Use an item on the lander to stow it in the hold.", "Crewed lander", "Cancel", options)
 	if (QDELETED(src) || !H.client || !in_range(src, H) || H.incapacitated())
 		return
 	switch (choice)
@@ -189,6 +331,8 @@
 			to_chat(H, SPAN_NOTICE("You unstrap from \the [src]."))
 		if ("Launch")
 			launch_prompt(H)
+		if ("Unload hold")
+			unload(H)
 
 /obj/structure/crewed_lander/proc/strap_in(mob/living/human/H)
 	if (get_turf(H) != get_turf(src))
@@ -313,7 +457,11 @@
 	var/departed = 0
 	var/list/refusals = list()
 	pad.pending_flight = flight
+	// The hold flies with the first crew member who departs.
+	var/list/cargo = pack_cargo()
+	var/cargo_sent = 0
 	for (var/mob/living/human/H in crew())
+		pad.pending_cargo = (length(cargo) && !cargo_sent) ? cargo : null
 		// Departures can wait on escrow, so the pad is checked for each one.
 		var/reason = (QDELETED(pad) || pad.destination != destination || !pad.approved) ? "The launch pad changed." : pad.travel_refusal(H)
 		if (!reason)
@@ -325,16 +473,25 @@
 			reason = pad.depart(H)
 		if (reason == "departed")
 			departed++
+			if (pad.pending_cargo)
+				cargo_sent = length(cargo)
+				for (var/obj/item/I in hold())
+					qdel(I)
 		else
 			refusals += "[H.real_name]: [reason]"
 			to_chat(H, SPAN_WARNING("You stay behind: [reason]"))
 	pad.pending_flight = null
+	pad.pending_cargo = null
 	if (!departed)
 		return refusals.len ? "Nobody could fly. [jointext(refusals, " ")]" : "Nobody is strapped in."
 	if (homeward)
 		log_game("Crewed flight: [departed] crew left [x],[y],[z] for home at [pad.destination] (lander [flight["lander"]]).")
 	else
 		log_game("Crewed flight: [departed] crew left [x],[y],[z] for [pad.destination] (lander [flight["lander"]], cell [cell[1]],[cell[2]], [surveyed ? "surveyed" : "unsurveyed"][flight["rough"] ? ", rough" : ""]).")
+	if (cargo_sent)
+		log_game("Crewed flight: lander [flight["lander"]] carried [cargo_sent] cargo item\s.")
+	// Whatever did not fly stays on the pad.
+	unload()
 	visible_message(SPAN_DANGER("\The [src] roars off the pad on a column of fire!"))
 	qdel(src)
 	return null
@@ -344,10 +501,20 @@
 // TRUE when a travel payload's flight fields are absent or well formed.
 /proc/space_flight_payload_ok(list/P)
 	if (isnull(P["lander"]))
-		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"])
+		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["cargo"])
 	var/id = P["lander"]
 	if (!istext(id) || !length(id) || length(id) > 64)
 		return FALSE
+	if (!isnull(P["cargo"]))
+		var/list/cargo = P["cargo"]
+		if (!islist(cargo) || !cargo.len || cargo.len > LANDER_CARGO_MAX)
+			return FALSE
+		for (var/list/entry in cargo)
+			if (entry.len != 2 || !space_cargo_path(entry[1], entry[2]))
+				return FALSE
+		for (var/entry in cargo)
+			if (!islist(entry))
+				return FALSE
 	// A flight home carries no landing: the crew arrive like any traveller.
 	if (!isnull(P["return"]))
 		return P["return"] == 1 && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"])
@@ -571,8 +738,23 @@ var/global/list/landed_landers = list()
 		log_game("Crewed flight: lander [L.lander_id] set down at [T.x],[T.y],[T.z] (survey cell [cell[1]],[cell[2]]).")
 	return get_turf(L)
 
-// A rough landing shakes up the crew.
+// The hold is unpacked beside whoever carried it (in the landed lander, at
+// the mainland's arrival point, or back at the pad for a refused flight),
+// and a rough landing shakes up the crew.
 /proc/space_flight_arrived(mob/living/human/H, list/P, incoming)
-	if (!incoming || !istype(H) || !islist(P) || !istext(P["lander"]) || !P["rough"])
+	if (!istype(H) || !islist(P) || !istext(P["lander"]))
 		return
-	H.take_overall_damage(LANDER_ROUGH_BRUTE, 0, "rough landing")
+	if (length(P["cargo"]))
+		space_cargo_unpack(P["cargo"], get_turf(H))
+	if (incoming && P["rough"])
+		H.take_overall_damage(LANDER_ROUGH_BRUTE, 0, "rough landing")
+
+// A departure replayed after a reload: the save still holds the lander with
+// the hold that flew, so the carrier's lander goes too.
+/proc/space_flight_replayed(mob/living/human/H, list/P)
+	if (!istype(H) || !islist(P) || !length(P["cargo"]))
+		return
+	for (var/obj/structure/crewed_lander/L in get_turf(H))
+		for (var/obj/item/I in L.hold())
+			qdel(I)
+		qdel(L)

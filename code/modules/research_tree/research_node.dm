@@ -733,6 +733,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/reagent_dispensers/ice_melter" = "off_world_mining",
 		"/obj/structure/car_workshop/rover_bay" = "surface_vehicles",
 		"/obj/structure/rover_charger" = "surface_vehicles",
+		"/obj/structure/closet/crate/rover_trailer" = "surface_vehicles",
 		"/obj/structure/reagent_dispensers/propellant_plant" = "local_resources",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",

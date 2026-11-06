@@ -1025,6 +1025,89 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 	space_check(local && ("surface_vehicles" in local.prereqs) && local.era_tier == 9 && local.mode == RESEARCH_MODE_ANALYSIS, "Local Resources follows Surface Vehicles as an ordinary node")
 	space_check(get_recipe_node_req("/obj/structure/reagent_dispensers/propellant_plant") == "local_resources" && get_recipe_node_req("/obj/structure/life_support/water_recycler") == "life_support" && get_recipe_node_req("/obj/structure/life_support/oxygen_reclaimer") == "life_support", "the plant is gated on Local Resources and the recyclers on Life Support")
 
+// Cargo hold and trailers.
+/proc/space_cargo_checks()
+	var/turf/T = locate(12, 19, 1)
+	var/obj/structure/crewed_lander/L = new(T)
+	var/obj/item/stack/material/steel/steel = new(T, 30)
+	var/obj/item/stack/material/glass/glass = new(T, 10)
+	var/obj/item/habitat_kit/kit = new(T)
+	var/obj/item/weapon/reagent_containers/glass/beaker/beaker = new(T)
+	space_check(space_cargo_kind(steel) == "stack:steel" && space_cargo_kind(glass) == "stack:glass" && space_cargo_kind(kit) == "type" && isnull(space_cargo_kind(beaker)), "the hold takes materials and space gear but not open containers")
+	space_check(findtext(L.stow_refusal(beaker), "will not survive") && isnull(L.stow_refusal(kit)), "the lander refuses what cannot fly")
+	steel.forceMove(L)
+	glass.forceMove(L)
+	kit.forceMove(L)
+	space_check(length(L.hold()) == 3, "stowed items sit in the hold")
+	var/list/cargo = L.pack_cargo()
+	space_check(cargo.len == 3 && cargo[1][1] == "stack:steel" && cargo[1][2] == 30 && cargo[3][1] == "[/obj/item/habitat_kit]" && cargo[3][2] == 1, "the hold packs into cargo entries")
+	var/count = L.unload()
+	space_check(count == 3 && !length(L.hold()) && steel.loc == T, "the hold unloads onto the lander's tile")
+	for (var/i in 1 to LANDER_CARGO_MAX)
+		new /obj/item/habitat_sealant(L)
+	space_check(findtext(L.stow_refusal(kit), "full"), "a full hold takes no more")
+	L.unload()
+
+	var/list/flight = list("lander" = "gaia-1-5678", "landing" = list(1, 1), "surveyed" = 1, "rough" = 0, "cargo" = cargo)
+	space_check(space_flight_payload_ok(space_flight_payload(flight)) && region_travel_decode(json_encode(space_flight_payload(flight))), "a flight with cargo passes the travel decoder")
+	var/list/bad_kind = flight.Copy()
+	bad_kind["cargo"] = list(list("[/obj/item/weapon/reagent_containers/glass/beaker]", 1))
+	var/list/bad_amount = flight.Copy()
+	bad_amount["cargo"] = list(list("stack:steel", 0))
+	var/list/too_many = flight.Copy()
+	var/list/many = list()
+	for (var/i in 1 to LANDER_CARGO_MAX + 1)
+		many += list(list("[/obj/item/habitat_sealant]", 1))
+	too_many["cargo"] = many
+	var/list/not_lists = flight.Copy()
+	not_lists["cargo"] = list("stack:steel")
+	var/list/stray = space_flight_payload()
+	stray["cargo"] = cargo
+	space_check(!space_flight_payload_ok(space_flight_payload(bad_kind)) && !space_flight_payload_ok(space_flight_payload(bad_amount)) && !space_flight_payload_ok(space_flight_payload(too_many)) && !space_flight_payload_ok(space_flight_payload(not_lists)) && !space_flight_payload_ok(stray), "malformed cargo is refused")
+
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(13, 19, 1))
+	pad.pending_flight = list("lander" = "gaia-1-5678", "landing" = list(1, 1), "surveyed" = 1, "rough" = 0)
+	space_check(isnull(pad.travel_extra(null)["cargo"]), "a flight with an empty hold carries no cargo")
+	pad.pending_cargo = cargo
+	var/list/extra = pad.travel_extra(null)
+	space_check(extra["cargo"] == cargo && isnull(pad.pending_flight["cargo"]), "the hold rides with one crew member's payload")
+	var/mob/living/human/space_probe_crew/carrier = new(locate(14, 19, 1))
+	var/list/sent = json_decode(carrier.region_travel_payload(list(), null, FALSE, extra))
+	space_check(length(sent["cargo"]) == 3, "the travel payload carries the cargo")
+	pad.pending_flight = null
+	pad.pending_cargo = null
+	qdel(pad)
+
+	var/list/arrived = space_flight_payload(list("lander" = "barren-1-1", "return" = 1, "cargo" = cargo))
+	space_flight_arrived(carrier, arrived, TRUE)
+	var/obj/structure/closet/crate/C = locate() in get_turf(carrier)
+	var/obj/item/stack/material/steel/got_steel = C ? locate() in C : null
+	var/obj/item/habitat_kit/got_kit = C ? locate() in C : null
+	space_check(C && got_steel && got_steel.amount == 30 && got_kit && carrier.getBruteLoss() == 0, "the cargo is unpacked in a crate beside its carrier")
+	var/obj/structure/crewed_lander/old = new(get_turf(carrier))
+	new /obj/item/habitat_kit(old)
+	space_flight_replayed(carrier, arrived)
+	space_check(QDELETED(old), "a replayed departure takes the lander that flew the hold")
+	qdel(carrier)
+	qdel(L)
+
+	// A trailer hitched to a car follows it.
+	var/obj/structure/vehicleparts/axis/car/wyoming/A = new(locate(6, 19, 1))
+	var/obj/structure/vehicleparts/frame/car/wyoming/lfc/F = new(locate(5, 19, 1))
+	F.axis = A
+	A.components += F
+	var/obj/structure/closet/crate/rover_trailer/trailer = new(locate(4, 19, 1))
+	space_check((trailer in rover_trailers) && trailer.vehicle_beside() == A, "a trailer beside a car finds it")
+	trailer.hitch_to(A)
+	F.forceMove(locate(6, 19, 1))
+	rover_trailers_follow(A)
+	space_check(trailer.hitch == A && get_dist(trailer, F) <= 1, "a hitched trailer closes up behind its vehicle")
+	F.forceMove(locate(15, 19, 1))
+	rover_trailers_follow(A)
+	space_check(isnull(trailer.hitch), "a trailer left far behind comes loose")
+	space_check(get_recipe_node_req("/obj/structure/closet/crate/rover_trailer") == "surface_vehicles", "the trailer is gated on Surface Vehicles")
+	qdel(trailer)
+
 /world/New()
 	OpenPort("none")
 	try
@@ -1047,6 +1130,7 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 		space_mining_checks()
 		space_rover_checks()
 		space_selfsuff_checks()
+		space_cargo_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
