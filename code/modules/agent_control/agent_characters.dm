@@ -251,6 +251,15 @@
 		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
 		var/list/wounds = agent_wound_rows(H)
 		out["wounds"] = wounds
+		// A serious illness kills within about 20 minutes unless a medicine course (herbs, antibiotics) runs.
+		if (H.disease && H.disease_type && H.disease_type != "none")
+			var/list/illness = list("type" = H.disease_type, "severe" = H.is_severe_disease() ? TRUE : FALSE, "progression" = H.disease_progression, "course" = round(H.disease_course))
+			if (H.is_severe_disease())
+				illness["stage"] = H.disease_progression >= 900 ? "critical" : (H.disease_progression >= 180 ? "worsening" : "early")
+				illness["treated"] = H.disease_course > 0 ? TRUE : FALSE
+			if (H.ingested)
+				illness["remedy"] = round(H.ingested.get_reagent_amount("herbal_remedy"), 0.1)
+			out["illness"] = illness
 		// Verbs a player has in the right-click menu and verb panels (lie down, give, point, an item's own verbs).
 		out["verbs"] = agent_verb_names(H)
 		out["item_verbs"] = agent_item_verbs(H)
@@ -333,6 +342,15 @@
 				for (var/key in boat_row)
 					if (!(key in list("ref", "name", "type", "x", "y", "z")))
 						row[key] = boat_row[key]
+			if (istype(AM, /obj/structure/oven))
+				// Cooking and stone-boiling need a lit fire with fuel left.
+				var/obj/structure/oven/O = AM
+				row["lit"] = O.on ? TRUE : FALSE
+				row["fuel"] = round(O.fuel, 0.1)
+			if (istype(AM, /obj/structure/sink))
+				// Puddles and dirty wells carry cholera; a clean well does not.
+				var/obj/structure/sink/SK = AM
+				row["sickness"] = (istype(SK, /obj/structure/sink/puddle) || SK.dirty) ? 1 : 0
 			if (!ismob(AM) && get_dist(M, AM) <= 1)
 				var/list/near_verbs = agent_verb_names(AM, 8)
 				if (near_verbs.len)
@@ -422,7 +440,7 @@
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)

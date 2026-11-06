@@ -49,6 +49,8 @@ def _lower(row):
 
 def _is_water(row):
     name = _lower(row)
+    if any(re.search(rf"\b{word}\b", name) for word in ("oil", "petroleum", "tar", "fuel", "acid")):
+        return False  # an oil well is not water
     return any(word in name for word in ("river", "lake", "water", "pond", "sea", "ocean", "well"))
 
 

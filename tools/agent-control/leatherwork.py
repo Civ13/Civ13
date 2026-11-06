@@ -13,6 +13,8 @@ next_steps(observation, product) returns (plan steps, note). Steps use autopilot
 set the hand and intent. One stage per turn: what a step makes appears on the ground and is picked up later.
 """
 
+import re
+
 PRODUCTS = {"leather belt satchel": 3, "leather backpack": 6, "leather": 1}
 ALIASES = {"belt": "leather belt satchel", "leather belt": "leather belt satchel", "belt satchel": "leather belt satchel",
            "backpack": "leather backpack", "bag": "leather backpack"}
@@ -95,7 +97,8 @@ def _vessel(me):
 def _water(observation):
     rows = [row for row in observation.get("terrain", []) + observation.get("nearby", [])
             if isinstance(row, dict) and not row.get("item") and not row.get("mob")
-            and any(word in str(row.get("name", "")).lower() for word in WATER_WORDS)]
+            and any(word in str(row.get("name", "")).lower() for word in WATER_WORDS)
+            and not any(re.search(rf"\b{word}\b", str(row.get("name", "")).lower()) for word in ("oil", "petroleum", "tar", "fuel", "acid"))]
     return min(rows, key=_distance) if rows else None
 
 

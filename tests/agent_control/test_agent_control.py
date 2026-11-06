@@ -463,7 +463,7 @@ class AutopilotTests(unittest.TestCase):
         rows = {"[0x1]": {"ref": "[0x1]", "name": "rock", "type": "/obj/structure/wild/rock", "dx": 1, "dy": 0},
                 "[0x2]": {"ref": "[0x2]", "name": "tree", "type": "/obj/structure/wild/tree/live_tree", "dx": 0, "dy": 1, "branches": 3},
                 "turf:1,1,2": {"ref": "turf:1,1,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallowsaltwater", "dx": 1, "dy": 1},
-                "turf:2,2,2": {"ref": "turf:2,2,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallow", "dx": -1, "dy": 1}}
+                "turf:2,2,2": {"ref": "turf:2,2,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallow", "dx": -1, "dy": 1, "sickness": 0}}
         expand = lambda skill, ref: autopilot.expand_plan([{"skill": skill, "target": ref}], empty, rows)
         self.assertIn("needs a cleared fallen branch, not the rock", expand("make_stick", "[0x1]")[1])
         self.assertIn("needs a tree", expand("break_branch", "[0x1]")[1])
@@ -485,7 +485,7 @@ class AutopilotTests(unittest.TestCase):
                          ([{"do": "swap_hand"}, {"do": "drop"}, {"do": "take", "item": "sharpened flint"}, {"do": "click", "target": "[0x2]"}], ""))
         self.assertEqual(autopilot.parse_decision('{"do": "take", "item": "sharpened flint"}', ["[0x9]"]), {"do": "take", "item": "sharpened flint"})
         self.assertIsNone(autopilot.parse_decision('{"do": "take"}', ["[0x9]"]))
-        thirsty = {"self": {"water": 150}, "terrain": [{"ref": "turf:1,2,2", "name": "river", "dx": 4, "dy": 0}]}
+        thirsty = {"self": {"water": 150}, "terrain": [{"ref": "turf:1,2,2", "name": "river", "dx": 4, "dy": 0, "sickness": 0}]}
         self.assertEqual(autopilot.thirst_plan(thirsty), {"skill": "drink", "target": "turf:1,2,2"})
         self.assertEqual(autopilot.thirst_plan(thirsty, "west", ignored={"turf:1,2,2": 9}), {"do": "explore", "dir": "west"})
         self.assertIsNone(autopilot.thirst_plan({"self": {"water": 300}}))
@@ -647,6 +647,91 @@ class AutopilotTests(unittest.TestCase):
         self.assertIn("eat the food", autopilot.current_goal(cooked)[0])
         plan = autopilot.parse_plan('{"plan": [{"do": "build", "recipe": "a", "material": "planks", "dir": "north"}, {"do": "build", "recipe": "b", "material": "stone", "dir": "east"}]}', ["[0x9]"])
         self.assertEqual(len(plan), 1)  # each material-dependent step is planned from a fresh look at the hands
+
+    def test_oil_well_is_not_water(self):
+        well = {"ref": "[0x30]", "name": "wooden oil well", "dx": 1, "dy": 0}
+        spring = {"ref": "[0x31]", "name": "petroleum spring", "dx": 1, "dy": 1}
+        water = {"ref": "[0x32]", "name": "water well", "dx": 2, "dy": 0}
+        self.assertFalse(autopilot._is_drinkable(well))
+        self.assertFalse(autopilot._is_drinkable(spring))
+        self.assertTrue(autopilot._is_drinkable(water))
+        self.assertTrue(autopilot._is_drinkable({"name": "river"}))
+        self.assertFalse(autopilot.SKILL_TARGETS["fill_vessel"][0](well))
+        import leatherwork
+        from memory import _is_water
+        self.assertEqual(leatherwork._water({"nearby": [well, water]})["name"], "water well")
+        self.assertFalse(_is_water({"name": "wooden oil well"}))
+
+    def test_boiling_unclean_water(self):
+        import water
+        puddle = {"ref": "[0x40]", "name": "puddle", "dx": 1, "dy": 0, "sickness": 1}
+        river = {"ref": "turf:5,5,1", "name": "river", "dx": 2, "dy": 0, "sickness": 1}
+        clean = {"ref": "[0x41]", "name": "water well", "dx": 4, "dy": 0, "sickness": 0}
+        fire = {"ref": "[0x42]", "name": "campfire", "dx": 1, "dy": 1, "lit": True, "fuel": 3}
+        stone = {"ref": "[0x43]", "name": "stone blocks", "dx": 1, "dy": 1, "item": True}
+        me = {"ref": "[0x9]", "name": "Ada", "water": 150, "left_hand": None, "right_hand": None, "active_hand": "right", "carried": []}
+        obs = {"self": me, "nearby": [puddle], "terrain": [river]}
+        # Thirsty with only unclean water: boil it, starting with a mug from a log.
+        self.assertEqual(autopilot.thirst_plan(obs), {"do": "boil_water"})
+        self.assertEqual(water.next_steps(obs), ([], water.next_steps(obs)[1]))
+        self.assertIn("wood mug", water.next_steps(obs)[1])
+        me["carried"] = ["wood log (pocket)"]
+        self.assertEqual(water.next_steps(obs)[0], [{"do": "craft", "recipe": "wood mug", "material": "wood log"}])
+        # Close to dying of thirst, raw unclean water is still better than nothing; a clean well always wins.
+        self.assertEqual(autopilot.thirst_plan({"self": dict(me, water=50), "nearby": [puddle], "terrain": [river]}), {"skill": "drink", "target": "[0x40]"})
+        self.assertEqual(autopilot.thirst_plan({"self": me, "nearby": [puddle, clean], "terrain": [river]}), {"skill": "drink", "target": "[0x41]"})
+        rows = {row["ref"]: row for row in (puddle, river, fire, stone)}
+        self.assertIn("boil_water", autopilot.expand_skill({"skill": "drink", "target": "[0x40]"}, me, rows)[1])
+        # Mug of river water with cholera: fill, then put a stone on the fire, then boil with a stick.
+        me.update(left_hand=None, right_hand={"name": "wood mug"}, items=[{"name": "wood mug", "liquids": {}}], carried=["stone block (pocket)", "stick (pocket)"])
+        self.assertEqual(water.next_steps(obs)[0], [{"skill": "fill_vessel", "target": "[0x40]"}])
+        me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5, "cholera": 0.5}}]
+        self.assertIn("campfire", water.next_steps(obs)[1])
+        obs["nearby"] = [puddle, fire]
+        steps = water.next_steps(obs)[0]
+        self.assertEqual(steps, [{"do": "place_stone", "target": "[0x42]"}])
+        expanded, error = autopilot.expand_plan([{"do": "place_stone", "fire": "[0x42]"}], me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(expanded[-1], {"do": "throw", "target": "[0x42]"})
+        self.assertIn({"do": "take", "item": "stone block"}, expanded)
+        obs["nearby"] = [puddle, fire, stone]
+        steps = water.next_steps(obs)[0]
+        self.assertEqual(steps, [{"do": "boil_mug", "item": "wood mug", "stick": "stick", "fire": "[0x42]"}])
+        expanded, error = autopilot.expand_plan(steps, me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(expanded, [{"do": "swap_hand"}, {"do": "take", "item": "stick"}, {"do": "swap_hand"}, {"do": "verb", "name": water.BOIL_VERB}])
+        # Boiled: drink from the mug.
+        me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5}}]
+        steps = water.next_steps(obs)[0]
+        self.assertEqual(steps, [{"do": "drink_mug", "item": "wood mug"}])
+        expanded, _ = autopilot.expand_plan(steps, dict(me, intent="help"), rows)
+        self.assertEqual(expanded[-1], {"do": "click", "target": "[0x9]"})
+        # An unlit fire is lit first; the nearby list marks it and the puddle.
+        obs["nearby"] = [puddle, dict(fire, lit=False)]
+        me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5, "cholera": 0.5}}]
+        self.assertEqual(water.next_steps(obs)[0], [{"skill": "light_fire", "target": "[0x42]"}])
+        text, _ = autopilot.summarize(obs)
+        self.assertIn("puddle dx=1 dy=0 (unclean)", text)
+        self.assertIn("campfire dx=1 dy=1 (unlit)", text)
+        self.assertEqual(autopilot.parse_decision('{"do": "boil_water"}', ["[0x9]"]), {"do": "boil_water"})
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Sift soil for resources", "choose": "Stone"}', ["[0x9]"]),
+                         {"do": "verb", "name": "Sift soil for resources", "choose": "Stone"})
+
+    def test_serious_illness_comes_first(self):
+        sick = {"type": "cholera", "severe": True, "stage": "worsening", "progression": 300, "course": 0, "treated": False, "remedy": 0}
+        me = {"ref": "[0x9]", "name": "Ada", "water": 300, "nutrition": 300, "illness": sick,
+              "left_hand": {"name": "sharpened flint"}, "right_hand": None, "active_hand": "left", "carried": ["healing herbs (pocket)"]}
+        steps, error = autopilot.illness_plan(me)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "take", "item": "healing herbs"}, {"do": "use"}])
+        self.assertTrue(autopilot.current_goal({"self": me})[0].startswith("treat your cholera"))
+        text, _ = autopilot.summarize({"self": me})
+        self.assertIn("ILLNESS: cholera, worsening, NOT being treated.", text)
+        self.assertIn("seriously ill with cholera", text.splitlines()[0])
+        # A herb still working: nothing to do yet. No herbs: say where they come from.
+        self.assertEqual(autopilot.illness_plan(dict(me, illness=dict(sick, remedy=8)))[0], [])
+        self.assertIn("jungle bushes", autopilot.illness_plan(dict(me, carried=[]))[1])
+        self.assertEqual(autopilot.illness_plan(dict(me, illness=dict(sick, severe=False))), ([], ""))
 
     def test_verbs_and_throwing(self):
         refs = ["[0x9]", "[0x20]", "[0x21]"]

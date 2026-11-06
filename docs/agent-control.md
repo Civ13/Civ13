@@ -305,8 +305,16 @@ break; herbs only work on whoever chews them) and clicks the wound's body part o
 bleeding person within 5 tiles is treated before the model's plan when she carries a bandage and is
 not bleeding or under attack herself; she offers help first when they are awake. Whoever is
 attacking her, and people her memory distrusts, are not helped. When something attacks the
-character, a danger line leads the next prompt, and the run stops once the
-character is unconscious or dead. The autopilot runs the
+character, a danger line leads the next prompt. While the character is
+unconscious the run waits for them to come round (checking every 10 seconds,
+with no model calls), and it stops once the character is dead. A target the
+character cannot walk to is hidden for a while instead of retried. Water marked
+`(unclean)` (rivers, puddles, dirty wells) gives cholera, so `{"do": "boil_water"}`
+crafts a wood mug, fills it, throws a stone onto a lit campfire, boils the mug with
+the hot stone (mug in the active hand, a stick in the other) and drinks it; the
+thirst override uses it unless the character is close to dying of thirst. A
+serious illness (the `illness` field of `self`) comes before the plan: the
+character chews a healing herb whenever the herb remedy runs low. The autopilot runs the
 steps through `character_queue` and shows the next
 turn what changed (position, hands, clothes, carried items, water, nutrition)
 and warns when the same action keeps repeating. It waits while the character

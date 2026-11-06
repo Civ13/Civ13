@@ -248,6 +248,29 @@ var/boat_runtime_error = FALSE
 			if (wound["zone"] == "l_arm" && wound["bleeding"])
 				found = TRUE
 		boat_check(found, "the wound rows name the bleeding arm ([json_encode(seen["wounds"])])")
+	// A serious illness, a campfire and a puddle carry what boiling and treatment need.
+	H.disease = TRUE
+	H.disease_type = "cholera"
+	H.disease_progression = 300
+	state = agent_control.character_state(C)
+	var/list/illness = state["illness"]
+	boat_check(islist(illness) && illness["type"] == "cholera" && illness["severe"] && illness["stage"] == "worsening" && !illness["treated"], "a serious illness is in the state ([json_encode(illness)])")
+	H.disease = FALSE
+	H.disease_type = "none"
+	var/obj/structure/oven/fireplace/fire = new(locate(29, 30, 1))
+	var/obj/structure/sink/puddle/puddle = new(locate(30, 31, 1))
+	look = agent_control.act_character_observe(boat_identity(), list("character" = agent_ref(H), "radius" = 3))
+	var/list/fire_row = null
+	var/list/puddle_row = null
+	for (var/list/row in look["nearby"])
+		if (row["ref"] == agent_ref(fire))
+			fire_row = row
+		if (row["ref"] == agent_ref(puddle))
+			puddle_row = row
+	boat_check(islist(fire_row) && fire_row["lit"] == FALSE && fire_row["fuel"] == 4, "a campfire row says whether it is lit and its fuel ([json_encode(fire_row)])")
+	boat_check(islist(puddle_row) && puddle_row["sickness"] == 1, "a puddle is marked unclean ([json_encode(puddle_row)])")
+	qdel(fire)
+	qdel(puddle)
 	agent_characters -= patient
 	qdel(patient)
 	agent_characters -= H
