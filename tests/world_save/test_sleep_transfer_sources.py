@@ -142,14 +142,17 @@ class SleepTransferSourceTests(unittest.TestCase):
                 with self.subTest(control=control), self.assertRaises(RuntimeError):
                     RUNNER.mutate(source, control)
 
-    def test_old_bed_control_reaches_real_export_with_original_reciprocal_link(self):
+    def test_old_bed_control_is_caught_before_the_tolerant_export(self):
         changed = RUNNER.mutate(self.helpers, 'old-bed')
         self.assertIn(RUNNER.HELPERS[0] + '()\n\treturn TRUE', changed)
         self.assertNotIn('inducedSSD || buckled ||', changed)
         case, expected = RUNNER.CONTROLS['old-bed']
         self.assertEqual(case, 'disk')
-        self.assertIn('saved_z=1 native_z=2 turf_z=2', expected)
-        self.assertTrue(expected.endswith('source_type=/mob/living/human/sleep_fixture source_field=buckled'))
+        # The save stores a stale distant bed link as null, so the disk case
+        # checks the live edge right after entry instead of relying on export.
+        self.assertEqual(expected, 'FAIL: protected sleeper kept its distant bed link')
+        probe = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
+        self.assertIn('"protected sleeper kept its distant bed link")', probe)
 
     def test_other_occupant_control_exercises_normal_unbuckle(self):
         changed = RUNNER.mutate(self.helpers, 'other-occupant')
@@ -203,7 +206,7 @@ class SleepTransferSourceTests(unittest.TestCase):
             self.assertGreaterEqual(RUNNER.MINIMUM_CHECKS[case], 7)
         for marker in ('sleep_bed.buckle_mob(sleep_actor)', 'map_storage.validate_world_save()',
                        'map_storage.Load_World()', 'roots[1] == roots[2]',
-                       'source_field=buckled', 'inventory callback refusal committed protected state'):
+                       'old distant bed link aborted the save', 'inventory callback refusal committed protected state'):
             self.assertIn(marker, source)
 
     def test_each_negative_control_requires_its_exact_failure(self):
