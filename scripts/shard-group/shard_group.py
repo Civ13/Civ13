@@ -49,7 +49,7 @@ import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
-                 'kill', 'force-restart', 'stage', 'help-status', 'help-start', 'help-stop')
+                 'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
@@ -694,21 +694,35 @@ def place_map(group, region, path=None):
     return 'maps\\regions\\%s.dmm' % region['id']
 
 
-def setup(group, platform=None):
-    """Create each region's worktree and write its config. Refuses while any region is running."""
+def setup(group, platform=None, region_id=None):
+    """Create each region's worktree and write its config. Refuses while any region is running.
+
+    With region_id, adds or refreshes that one region while the others keep
+    running: only it must be stopped and only it gets a new worktree. Every set-up
+    region's config is rewritten so it lists the new peer, and existing transfer
+    agents and the coordinator enrol it in their stores (see enrol_region). A running
+    world reads its config only at startup, so it learns the new region on its next start.
+    """
     platform = platform or Platform()
+    if region_id is not None and not any(r['id'] == region_id for r in group['regions']):
+        raise Refused('no region %s in the group' % region_id)
     git, repository = group['git'], group['repository']
     code, out = platform.run([git, 'rev-parse', group['revision']], cwd=repository, timeout=60)
     revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
     if not HEX40.match(revision):
         raise Refused('could not resolve the group revision')
+    running = []
     for region in group['regions']:
         if platform.listening(region['port']):
-            raise Refused('region %s is running; stop it before setup' % region['id'])
+            if region_id is None or region['id'] == region_id:
+                raise Refused('region %s is running; stop it before setup' % region['id'])
+            running.append(region['id'])
     Path(group['root']).mkdir(parents=True, exist_ok=True)
     made = []
     for region in group['regions']:
         path = region_dir(group, region['id'])
+        if region_id is not None and region['id'] != region_id and not (path / '.git').exists():
+            continue  # another region not set up yet: left for a full setup
         if not (path / '.git').exists():
             if path.exists() and any(path.iterdir()):
                 raise Refused('%s exists and is not a region worktree' % path)
@@ -741,8 +755,74 @@ def setup(group, platform=None):
             (config / 'transfer_agent.json').write_text(json.dumps(agent, indent=1) + '\n', encoding='utf-8')
         host = region_config(group, region)
         Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
-        Path(host['_path']).write_text(json.dumps(host, indent=1) + '\n', encoding='utf-8')
-    return {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
+        write_json_atomic(Path(host['_path']), host)
+    result = {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
+    if region_id is not None:
+        result['region'] = region_id
+        result['running'] = running  # their worlds pick up the new peer list on their next start
+        result['enrolled'] = enrol_region(group, region_id) if group['transfers'] else []
+    return result
+
+
+def write_json_atomic(path, value):
+    """Write value as JSON through a temporary file, so a reader never sees half a file."""
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(json.dumps(value, indent=1) + '\n', encoding='utf-8')
+    os.replace(temporary, path)
+
+
+def enrol(group, region_id):
+    """Enrol an already set-up region with the existing agents and coordinator.
+
+    For a region added while the agents and coordinator kept running, before setup
+    enrolled new regions itself. Safe while everything runs, and safe to repeat.
+    """
+    if not any(r['id'] == region_id for r in group['regions']):
+        raise Refused('no region %s in the group' % region_id)
+    if not group['transfers']:
+        raise Refused('this group has no transfers')
+    if not (region_dir(group, region_id) / 'config' / 'transfer-token.txt').exists():
+        raise Refused('region %s is not set up; run setup first' % region_id)
+    return {'region': region_id, 'enrolled': enrol_region(group, region_id)}
+
+
+def enrol_region(group, region_id):
+    """Enrol region_id in the stores of agents and the coordinator that already exist.
+
+    Running agents and the coordinator read their enrolments from SQLite on every
+    transfer and relay pass, so writing to their stores lets them carry the new
+    region's transfers without a restart. Stores not made yet enrol it when their
+    process first starts. Returns the stores written, as region ids and "coordinator".
+    """
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.transfer_storage.coordinator import Coordinator
+    from tools.transfer_storage.region import RegionStore
+    enrolled = []
+    for region in group['regions']:
+        if region['id'] == region_id:
+            continue
+        store_path = Path(region_config(group, region)['state_dir']) / 'transfers.sqlite'
+        if not store_path.exists():
+            continue
+        store = RegionStore(str(store_path), region['id'], group['group'])
+        try:
+            store.enroll(region_id, 'out')
+            store.enroll(region_id, 'in')
+        finally:
+            store.close()
+        enrolled.append(region['id'])
+    coordinator_path = Path(group['root']) / 'coordinator.sqlite'
+    if coordinator_path.exists():
+        region = next(r for r in group['regions'] if r['id'] == region_id)
+        token = (region_dir(group, region_id) / 'config' / 'transfer-token.txt').read_text(encoding='utf-8').strip()
+        coordinator = Coordinator(str(coordinator_path), group['group'], group['mainland'])
+        try:
+            coordinator.enroll(region_id, 'http://127.0.0.1:%d' % region['transfer_port'], token)
+        finally:
+            coordinator.close()
+        enrolled.append('coordinator')
+    return enrolled
 
 
 def relay_token(group):
@@ -1086,7 +1166,11 @@ def main(argv=None):
         if args.action in ('setup', 'update'):
             fetch_remote(group)
         if args.action == 'setup':
-            result = setup(group)
+            result = setup(group, region_id=args.region)
+        elif args.action == 'enrol':
+            if not args.region:
+                parser.error('enrol needs --region')
+            result = enrol(group, args.region)
         elif args.action == 'status':
             result = group_status(group, args.region)
         elif args.action == 'check-update':

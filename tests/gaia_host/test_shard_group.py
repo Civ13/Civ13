@@ -219,6 +219,67 @@ class ShardGroupTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'not a region worktree'):
             shard_group.setup(group, self.machine)
 
+    def test_setup_one_region_while_the_others_run(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.group['regions'].append(dict(self.group['regions'][1], id='moon', port=1722, name='Moon'))
+        group = self.write_group()
+        self.machine.up = {1720, 1721}
+        with self.assertRaisesRegex(shard_group.Refused, 'gaia is running'):
+            shard_group.setup(group, self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'no region atlantis'):
+            shard_group.setup(group, self.machine, 'atlantis')
+        result = shard_group.setup(group, self.machine, 'moon')
+        self.assertEqual((['moon'], 'moon', ['gaia', 'deep']), (result['created'], result['region'], result['running']))
+        self.assertTrue((self.base / 'regions' / 'moon' / 'config' / 'shard_region.json').exists())
+        # The running regions' config lists the new peer for their next start.
+        settings = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertIn('moon', [r['id'] for r in settings['regions']])
+        self.machine.up = {1722}
+        with self.assertRaisesRegex(shard_group.Refused, 'moon is running'):
+            shard_group.setup(group, self.machine, 'moon')
+        adds = [c for c, _ in self.machine.calls if c[1:3] == ['worktree', 'add']]
+        self.assertEqual(3, len(adds))
+
+    def test_setup_one_region_enrols_it_with_running_agents(self):
+        sys.path.insert(0, str(ROOT))
+        from tools.transfer_storage.coordinator import Coordinator
+        from tools.transfer_storage.region import RegionStore
+        self.group['regions'][0]['transfer_port'] = 47201
+        self.group['regions'][1]['transfer_port'] = 47202
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        # Gaia's agent and the coordinator have run, so their stores exist; Deep's has not.
+        gaia_store = Path(shard_group.region_config(group, group['regions'][0])['state_dir']) / 'transfers.sqlite'
+        RegionStore(str(gaia_store), 'gaia', 'europe').close()
+        Coordinator(str(self.base / 'regions' / 'coordinator.sqlite'), 'europe', 'gaia').close()
+        self.group['regions'].append(dict(self.group['regions'][1], id='moon', port=1722, transfer_port=47203, name='Moon'))
+        group = self.write_group()
+        self.machine.up = {1720, 1721}
+        result = shard_group.setup(group, self.machine, 'moon')
+        self.assertEqual(['gaia', 'coordinator'], result['enrolled'])
+        store = RegionStore(str(gaia_store), 'gaia', 'europe')
+        try:
+            fences = {(d, p) for d, p, _, _ in store.db.execute('SELECT direction, peer, epoch, settled_seq FROM fence')}
+        finally:
+            store.close()
+        self.assertTrue({('out', 'moon'), ('in', 'moon')} <= fences)
+        coordinator = Coordinator(str(self.base / 'regions' / 'coordinator.sqlite'), 'europe', 'gaia')
+        try:
+            url, token = coordinator.regions()['moon']
+        finally:
+            coordinator.close()
+        self.assertEqual('http://127.0.0.1:47203', url)
+        self.assertEqual((self.base / 'regions' / 'moon' / 'config' / 'transfer-token.txt').read_text().strip(), token)
+        # enrol repeats the same step for a region added before setup did it, and is idempotent.
+        self.assertEqual({'region': 'moon', 'enrolled': ['gaia', 'coordinator']}, shard_group.enrol(group, 'moon'))
+        with self.assertRaisesRegex(shard_group.Refused, 'no region atlantis'):
+            shard_group.enrol(group, 'atlantis')
+        # host.json is replaced whole, never left half-written beside a temporary file.
+        state = Path(shard_group.region_config(group, group['regions'][2])['state_dir'])
+        self.assertTrue((state / 'host.json').exists())
+        self.assertFalse((state / 'host.json.tmp').exists())
+
     def test_selected_map_dme(self):
         text = shard_group.selected_map_dme(DME, 'maps\\regions\\deep.dmm')
         self.assertIn('// BEGIN_SELECTED_MAP\r\n#include "maps\\regions\\deep.dmm"\r\n// END_SELECTED_MAP\r\ntail', text)

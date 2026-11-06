@@ -16,7 +16,8 @@ and [region groups](../../shard-group/README.md). They only call
 | `force-stop.bat`, `force-restart.bat [REGION]` | For a world that hangs (a save that never finishes): end it at once **without saving**, or end it and start it again. The start loads the last completed save (an interrupted save is swapped for the copy in `map_backups`). The launcher's Force stop and Force restart buttons do the same. |
 | `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. |
 | `freeze.bat`, `thaw.bat [REGION]` | Put an empty, saved region to sleep now, or wake it. The host service does this on its own. |
-| `setup.bat` | Create or refresh each region's worktree and config. Safe to run again. |
+| `setup.bat [REGION]` | Create or refresh each region's worktree and config. Safe to run again. With a region, adds or refreshes only that one while the others keep running. |
+| `enrol.bat REGION` | Enrol a set-up region with the transfer agents and coordinator while they run. `setup.bat REGION` already does this; use it for a region added before it did. Safe to repeat. |
 | `serve.bat` | Run the host service in this window, for testing. |
 | `install-host-task.bat` | Register the host service as the `Civ13 Host` logon task and start it. Needs an administrator terminal. |
 | `make-gaia-overlay.bat` | Copy live Gaia's local-only files (config with the webhook key, host.txt, Kestrel DLL and settings) into its overlay folder. |
@@ -80,7 +81,10 @@ played on the region since step 7 is only in the region's save
 (`D:\Civ13Regions\earth\gaia\map_saves`). Copy that back first if you need it.
 
 Adding regions later: add them to `earth.json` (with `transfer_port` on every
-region for travel), run `setup.bat` and `update.bat`, then `start.bat REGION`.
+region for travel), run `setup.bat REGION` and `update.bat REGION`, then
+`start.bat REGION` and `restart-host.bat`. Nothing else stops: setup enrols the
+new region with the running transfer agents and coordinator at once, and the
+running worlds get the new peer in their config and use it from their next restart.
 The host service picks them up when restarted with `restart-host.bat`.
 
 ## Deploying a new master
