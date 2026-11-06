@@ -680,21 +680,34 @@ def place_map(group, region, path=None):
     return 'maps\\regions\\%s.dmm' % region['id']
 
 
-def setup(group, platform=None):
-    """Create each region's worktree and write its config. Refuses while any region is running."""
+def setup(group, platform=None, region_id=None):
+    """Create each region's worktree and write its config. Refuses while any region is running.
+
+    With region_id, adds or refreshes that one region while the others keep
+    running: only it must be stopped and only it gets a new worktree. Every set-up
+    region's config is rewritten so it lists the new peer; a running world reads
+    its config only at startup, so it learns the new region on its next start.
+    """
     platform = platform or Platform()
+    if region_id is not None and not any(r['id'] == region_id for r in group['regions']):
+        raise Refused('no region %s in the group' % region_id)
     git, repository = group['git'], group['repository']
     code, out = platform.run([git, 'rev-parse', group['revision']], cwd=repository, timeout=60)
     revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
     if not HEX40.match(revision):
         raise Refused('could not resolve the group revision')
+    running = []
     for region in group['regions']:
         if platform.listening(region['port']):
-            raise Refused('region %s is running; stop it before setup' % region['id'])
+            if region_id is None or region['id'] == region_id:
+                raise Refused('region %s is running; stop it before setup' % region['id'])
+            running.append(region['id'])
     Path(group['root']).mkdir(parents=True, exist_ok=True)
     made = []
     for region in group['regions']:
         path = region_dir(group, region['id'])
+        if region_id is not None and region['id'] != region_id and not (path / '.git').exists():
+            continue  # another region not set up yet: left for a full setup
         if not (path / '.git').exists():
             if path.exists() and any(path.iterdir()):
                 raise Refused('%s exists and is not a region worktree' % path)
@@ -728,7 +741,11 @@ def setup(group, platform=None):
         host = region_config(group, region)
         Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
         Path(host['_path']).write_text(json.dumps(host, indent=1) + '\n', encoding='utf-8')
-    return {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
+    result = {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
+    if region_id is not None:
+        result['region'] = region_id
+        result['running'] = running  # these pick up the new peer list on their next start
+    return result
 
 
 def relay_token(group):
@@ -938,7 +955,7 @@ def main(argv=None):
         if args.action in ('setup', 'update'):
             fetch_remote(group)
         if args.action == 'setup':
-            result = setup(group)
+            result = setup(group, region_id=args.region)
         elif args.action == 'status':
             result = group_status(group, args.region)
         elif args.action == 'check-update':

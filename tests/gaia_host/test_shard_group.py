@@ -219,6 +219,28 @@ class ShardGroupTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'not a region worktree'):
             shard_group.setup(group, self.machine)
 
+    def test_setup_one_region_while_the_others_run(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.group['regions'].append(dict(self.group['regions'][1], id='moon', port=1722, name='Moon'))
+        group = self.write_group()
+        self.machine.up = {1720, 1721}
+        with self.assertRaisesRegex(shard_group.Refused, 'gaia is running'):
+            shard_group.setup(group, self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'no region atlantis'):
+            shard_group.setup(group, self.machine, 'atlantis')
+        result = shard_group.setup(group, self.machine, 'moon')
+        self.assertEqual((['moon'], 'moon', ['gaia', 'deep']), (result['created'], result['region'], result['running']))
+        self.assertTrue((self.base / 'regions' / 'moon' / 'config' / 'shard_region.json').exists())
+        # The running regions' config lists the new peer for their next start.
+        settings = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertIn('moon', [r['id'] for r in settings['regions']])
+        self.machine.up = {1722}
+        with self.assertRaisesRegex(shard_group.Refused, 'moon is running'):
+            shard_group.setup(group, self.machine, 'moon')
+        adds = [c for c, _ in self.machine.calls if c[1:3] == ['worktree', 'add']]
+        self.assertEqual(3, len(adds))
+
     def test_selected_map_dme(self):
         text = shard_group.selected_map_dme(DME, 'maps\\regions\\deep.dmm')
         self.assertIn('// BEGIN_SELECTED_MAP\r\n#include "maps\\regions\\deep.dmm"\r\n// END_SELECTED_MAP\r\ntail', text)
