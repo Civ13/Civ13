@@ -391,7 +391,8 @@ SUITES = {
                                   'tests/paper_documents/test_copying.py',
                                   'tests/paper_documents/test_authoring.py',
                                   'tests/paper_documents/test_lifecycle.py',
-                                  'tests/paper_documents/test_editor.py'),
+                                  'tests/paper_documents/test_editor.py',
+                                  'tests/paper_documents/test_study.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),

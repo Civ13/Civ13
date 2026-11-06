@@ -255,6 +255,7 @@
 	..()
 	if (in_range(user, src) || isghost(user))
 		show_content(user)
+		paper_study_examine_hint(user, src)
 	else
 		to_chat(user, SPAN_NOTICE("You have to go closer if you want to read it."))
 	return

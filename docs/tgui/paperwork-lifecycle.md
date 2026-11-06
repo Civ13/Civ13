@@ -69,6 +69,5 @@ Arbitrary direct loc/hand/record writes that bypass the audited movement,
 inventory and paper mutation APIs are not a universal interception guarantee.
 Per-request fingerprints still refuse drift. Debug/admin writes or future
 subtypes/producers require an adapter/audit before their activation.
-Study remains a separate unimplemented dependency: durable character/text/version
-progress, paced cancellable work and server-only earned reveals, without language
-XP. Forms, stamp repair/templates and filing do not gate basic authoring.
+Study is implemented separately in `code/modules/paperwork/study.dm`; see
+the foundation notes. Forms, stamp repair/templates and filing do not gate basic authoring.
