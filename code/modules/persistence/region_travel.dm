@@ -578,7 +578,6 @@ var/global/list/region_travel_carry_types = list(
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
-	var/address = shard_group.peers[destination]["address"]
 	// Hold the body and its items while the agent records the escrow, so
 	// neither can change.
 	busy = TRUE
@@ -604,7 +603,7 @@ var/global/list/region_travel_carry_types = list(
 		var/mob/new_player/lobby = new
 		lobby.key = C.key
 		to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
-		C << link("byond://[address]")
+		shard_group.send_player_soon(C, destination)
 	var/account = H.persistence_owner_ckey
 	qdel(H)
 	shard_group.request_save_soon()

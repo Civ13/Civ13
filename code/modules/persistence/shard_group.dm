@@ -148,6 +148,8 @@ var/global/datum/shard_group/shard_group = new
 			continue
 		order += entry["id"]
 		peers[entry["id"]] = list("name" = entry["name"], "kind" = entry["kind"], "address" = entry["address"], "state" = "UNKNOWN", "players" = null, "map" = null, "checked" = null)
+	// The routing relay (region_relay.dm) is optional; a bad setting turns only it off.
+	configure_relay(settings)
 	enabled = TRUE
 	last_error = null
 	return TRUE
@@ -223,23 +225,36 @@ var/global/datum/shard_group/shard_group = new
 			peer["players"] = null
 	return TRUE
 
+// One GET of a host helper on this machine (the doorman or the routing relay)
+// as a list, or null. Over HTTP with rust_g: world.Export("byond://...") opens a
+// BYOND world handshake that these Python helpers cannot answer. Sleeps; gives
+// up after five seconds.
+/proc/shard_local_query(address, query)
+	if(!istext(address) || copytext(address, 1, 11) != "127.0.0.1:")
+		return null
+	var/datum/http_request/R = new
+	R.prepare(RUSTG_HTTP_METHOD_GET, "http://[address]/?[query]", "", list())
+	R.begin_async()
+	var/deadline = world.timeofday + 50
+	while(!R.is_complete())
+		if(world.timeofday > deadline || world.timeofday < deadline - 100)
+			return null
+		sleep(1)
+	var/datum/http_response/response = R.into_response()
+	if(response.error || !istext(response.body))
+		return null
+	var/list/reply = null
+	try
+		reply = json_decode(response.body)
+	catch
+		reply = null
+	return islist(reply) ? reply : null
+
 // The doorman's answer as a list, or null when there is none.
 /datum/shard_group/proc/ask_doorman(query)
 	if(!doorman)
 		return null
-	var/answer = null
-	try
-		answer = world.Export("byond://[doorman]?[query]")
-	catch
-		answer = null
-	if(!istext(answer))
-		return null
-	var/list/reply = null
-	try
-		reply = json_decode(answer)
-	catch
-		reply = null
-	return islist(reply) ? reply : null
+	return shard_local_query(doorman, query)
 
 // "port" -> the doorman's entry for every world it hosts, or null.
 /datum/shard_group/proc/doorman_states()
@@ -397,7 +412,7 @@ var/global/datum/shard_group/shard_group = new
 			var/state = peer["state"]
 			var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
 			// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
-			var/join = (state == "UP" || state == "ASLEEP") ? "<a href='byond://[peer["address"]]'>Join</a>" : ""
+			var/join = (state == "UP" || state == "ASLEEP") ? "<a href='[player_href(id)]'>Join</a>" : ""
 			lines += "<tr><td>[html_encode(peer["name"])]</td><td>[lowertext(peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
 		lines += "</table>"
 		lines += "<p>Your character lives in one region. New characters start on the mainland and reach the others by travelling a trail.</p>"

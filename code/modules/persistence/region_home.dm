@@ -49,7 +49,7 @@
 	if(!peer)
 		to_chat(lobby, SPAN_WARNING("Your character belongs to another land in this world group. Join that server to play."))
 		return
-	var/link = peer["address"] ? " <a href='byond://[peer["address"]]'>Go there</a>" : ""
+	var/link = peer["address"] ? " <a href='[shard_group.player_href(home)]'>Go there</a>" : ""
 	to_chat(lobby, SPAN_WARNING("Your character belongs to [html_encode(peer["name"])]. New and fallen characters start there, and reach other lands only by travelling.[link]"))
 
 // TRUE when this lobby's account may play here. With wait, a first-time

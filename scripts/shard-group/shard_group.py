@@ -59,7 +59,7 @@ ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.s
 ADOPT_SKIP = {'SQL': ('player-help',)}
 # Files setup writes for each region; an overlay must not replace them.
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
-             'config/transfer-token.txt', 'config/transfer_agent.json')
+             'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt')
 KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'OTHER')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
@@ -128,6 +128,23 @@ def load_group(path):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
+    # Routing relay (scripts/gaia-host/relay.py): one public port for every region.
+    # Players join the gate region directly; it (or any region sending a traveller)
+    # writes a route for the player's address and links them to relay_port.
+    relay = group.setdefault('relay_port', 0)
+    if relay:
+        if type(relay) is not int or not 1024 <= relay <= 65535 or relay in ports or relay in RESERVED_PORTS:
+            raise ValueError('relay_port must be a free port from 1024 to 65535 (0 = off)')
+        control = group.setdefault('relay_control_port', relay + 1)
+        if type(control) is not int or not 1024 <= control <= 65535 or control in ports or control == relay:
+            raise ValueError('relay_control_port must be a free port from 1024 to 65535')
+        gate = group.setdefault('gate', mainland)
+        if gate not in ids or any(r['id'] == gate and r['kind'] == 'RAID' for r in regions):
+            raise ValueError('gate must be one of the region ids and not a RAID region')
+        if type(group.setdefault('relay_bind', '0.0.0.0')) is not str or not group['relay_bind']:
+            raise ValueError('relay_bind must be an address')
+        if type(group.setdefault('relay_capture', False)) is not bool:
+            raise ValueError('relay_capture must be true or false')
     if type(group.setdefault('persistent', True)) is not bool:
         raise ValueError('persistent must be true or false')
     # A resetting raid world never saves; it reboots on a new map every
@@ -200,6 +217,8 @@ def region_config(group, region):
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
             'systemd_scope': group.get('systemd_scope', ''),
+            # Behind the routing relay: the launcher offers only the gate region.
+            'routed': bool(group.get('relay_port')) and region['id'] != group.get('gate'),
             '_path': str(path / 'data' / 'shard-host' / 'host.json'),
             # Only a hub-listed (-public) world needs the host's BYOND account signed in.
             'start_requires_byond_pager': bool(public)}
@@ -515,6 +534,9 @@ def setup(group, platform=None):
                     # The host service's doorman on this machine; regions ask it which peers
                     # sleep (a direct poll would wake them) and to wake one for a traveller.
                     'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
+        if group['relay_port']:
+            settings.update(relay_settings(group))
+            (config / 'relay-token.txt').write_text(relay_token(group) + '\n', encoding='utf-8')
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():
@@ -530,6 +552,48 @@ def setup(group, platform=None):
         Path(host['state_dir']).mkdir(parents=True, exist_ok=True)
         Path(host['_path']).write_text(json.dumps(host, indent=1) + '\n', encoding='utf-8')
     return {'revision': revision, 'created': made, 'regions': [r['id'] for r in group['regions']]}
+
+
+def relay_token(group):
+    """The group's relay control token (root/relay-token.txt), made on first use."""
+    path = Path(group['root']) / 'relay-token.txt'
+    if not path.exists():
+        Path(group['root']).mkdir(parents=True, exist_ok=True)
+        path.write_text(secrets.token_hex(24) + '\n', encoding='utf-8')
+    return path.read_text(encoding='utf-8').strip()
+
+
+def relay_settings(group):
+    """The shard_region.json keys a region needs to send players through the relay."""
+    return {'relay': '%s:%d' % (group['public_host'], group['relay_port']),
+            'relay_control': '127.0.0.1:%d' % group['relay_control_port'], 'gate': group['gate']}
+
+
+def relay_pid(group):
+    try:
+        pid = int((Path(group['root']) / 'relay.pid').read_text(encoding='utf-8').strip())
+    except (OSError, ValueError):
+        return None
+    return pid if process_alive(pid) else None
+
+
+def ensure_relay(group, start=detach):
+    """Start the group's routing relay unless it is off or already runs."""
+    if not group.get('relay_port') or relay_pid(group):
+        return False
+    root = Path(group['root'])
+    relay_token(group)
+    argv = [group['python'], str(HERE.parent / 'gaia-host' / 'relay.py'), '--port', str(group['relay_port']),
+            '--bind', group['relay_bind'], '--control-port', str(group['relay_control_port']),
+            '--token-file', str(root / 'relay-token.txt'),
+            '--doorman-port', str(group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port']))]
+    for region in group['regions']:
+        argv += ['--region-port', str(region['port'])]
+    if group['relay_capture']:
+        argv.append('--capture')
+    pid = start(argv, root, root / 'relay.log')
+    (root / 'relay.pid').write_text('%d\n' % pid, encoding='utf-8')
+    return True
 
 
 def hosts(group, only=None, platform=None):
@@ -624,15 +688,21 @@ def region_summary(group, platform=None):
 
 
 def supervise(group, start=detach):
-    """Start any of the group's transfer agents or its coordinator that is not running.
+    """Start the group's routing relay, transfer agents or coordinator if any is not running.
 
     The host service calls this every half minute. Agents run even while their world
     sleeps or is cold, so travellers to it are journaled and handed over on wake.
     Returns what was started (empty when everything was already running).
     """
-    if not group['transfers']:
-        return {}
     started = {}
+    # A relay that cannot start must not keep the agents and the coordinator down.
+    try:
+        if ensure_relay(group, start):
+            started['relay'] = True
+    except OSError as error:
+        started['relay_error'] = str(error)[:300]
+    if not group['transfers']:
+        return started
     for region in group['regions']:
         # One region that cannot start its agent must not keep the others down.
         try:

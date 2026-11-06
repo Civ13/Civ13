@@ -11,6 +11,9 @@ Topic framing as a game port. The launcher asks it two things:
                             less than wake_min_free_mb of physical memory free)
 
 so browsing reads the cache and never wakes a frozen world; only joining does.
+The same two queries also answer plain HTTP (`GET /?host_status=1`): a DM world
+cannot ask with world.Export, which opens a world-to-world BYOND handshake
+rather than sending a bare Topic frame, so regions ask over HTTP (rust_g).
 Answers are display data and a wake trigger. They carry no addresses and no
 join authority: the launcher still verifies the game port itself before
 joining. The doorman never proxies game traffic, so players keep their own
@@ -18,6 +21,7 @@ address for bans and logs.
 """
 from __future__ import annotations
 
+import ipaddress
 import json
 import socket
 import struct
@@ -32,7 +36,7 @@ REFRESH_SECONDS = 30
 # Seconds after a wake request during which an instance that has not answered
 # its status topic yet still reads as waking rather than asleep or stopped.
 WAKING_SECONDS = 60
-WAKE_SPACING = 30            # one wake per address per this many seconds
+WAKE_SPACING = 30            # one wake per address and port per this many seconds
 REQUESTS_PER_MINUTE = 40     # per address, all requests
 MAX_CONNECTIONS = 16
 SUPERVISE_SECONDS = 30       # how often helper processes (transfer agents, coordinators) are checked
@@ -58,6 +62,43 @@ def parse_request(data):
     except UnicodeDecodeError:
         return None
     return text[1:] if text.startswith('?') else text
+
+
+MAX_HTTP_HEAD = 2048
+
+
+def is_http(first):
+    """True when the first four bytes of a connection start an HTTP GET."""
+    return first[:4] == b'GET '
+
+
+def read_http_query(connection, first):
+    """The query string of `GET /?query HTTP/1.x` whose first bytes were already read, or None."""
+    head = bytearray(first)
+    while b'\r\n\r\n' not in head:
+        if len(head) > MAX_HTTP_HEAD:
+            return None
+        part = connection.recv(512)
+        if not part:
+            return None
+        head.extend(part)
+    try:
+        line = bytes(head).split(b'\r\n', 1)[0].decode('ascii')
+    except UnicodeDecodeError:
+        return None
+    parts = line.split(' ')
+    if len(parts) != 3 or parts[0] != 'GET' or not parts[2].startswith('HTTP/1.') or not parts[1].startswith('/?'):
+        return None
+    return parts[1][2:]
+
+
+def http_reply(value):
+    """An HTTP/1.1 answer carrying value as JSON, or a 404 when value is None."""
+    if value is None:
+        return b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+    body = json.dumps(value, separators=(',', ':')).encode('utf-8')
+    return (b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: ' + str(len(body)).encode()
+            + b'\r\nConnection: close\r\n\r\n' + body)
 
 
 def topic(port, query, timeout=5):
@@ -97,6 +138,16 @@ class Instance:
         self.next_refresh = 0.0
 
 
+
+def is_loopback(address):
+    """True for a loopback peer (IPv4, IPv6 or IPv4-mapped); False when unparseable."""
+    try:
+        ip = ipaddress.ip_address(str(address).split('%')[0])
+    except ValueError:
+        return False
+    mapped = getattr(ip, 'ipv4_mapped', None)
+    return (mapped or ip).is_loopback
+
 class Doorman:
     def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time, supervisors=()):
         self.instances = {}
@@ -117,7 +168,7 @@ class Doorman:
         self.wall = wall
         self.lock = threading.RLock()
         self.requests = {}       # address -> recent request times
-        self.wakes = {}          # address -> last wake time
+        self.wakes = {}          # (address, port) -> last wake time
         self.slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
 
     # -- state ---------------------------------------------------------------
@@ -152,6 +203,9 @@ class Doorman:
             entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance),
                      # asleep after a power-down: a wake starts it from its save, which takes minutes
                      'cold': instance.host.cold() is not None}
+            if instance.host.config.get('routed'):
+                # Behind the routing relay: players join through the gate world, never this port.
+                entry['routed'] = True
             if instance.status is not None:
                 entry.update(instance.status)
                 entry['cached_age'] = max(0, int(self.wall() - instance.status_at))
@@ -239,6 +293,9 @@ class Doorman:
 
     # -- requests ------------------------------------------------------------
     def allowed(self, address, now):
+        # Regions and the routing relay on this machine ask often; only remote callers are limited.
+        if is_loopback(address):
+            return True
         with self.lock:
             recent = [moment for moment in self.requests.get(address, []) if now - moment < 60]
             recent.append(now)
@@ -276,10 +333,10 @@ class Doorman:
                 return {'schema': SCHEMA, 'ok': False, 'error': 'low memory', 'port': instance.port,
                         'free_mb': low[0], 'need_mb': low[1]}
             with self.lock:
-                last = self.wakes.get(address)
+                last = self.wakes.get((address, instance.port))
                 spaced = last is None or now - last >= WAKE_SPACING
                 if spaced and (instance.host.frozen() or instance.host.cold()):
-                    self.wakes[address] = now
+                    self.wakes[(address, instance.port)] = now
             if spaced:
                 self.wake(instance, 'doorman wake request')
             entry = self.describe(instance)
@@ -291,6 +348,10 @@ class Doorman:
         try:
             connection.settimeout(REQUEST_TIMEOUT)
             header = _read(connection, 4)
+            if is_http(header):
+                query = read_http_query(connection, header)
+                connection.sendall(http_reply(self.handle(query, address) if query is not None else None))
+                return
             length = struct.unpack('>H', header[2:])[0]
             if header[:2] != b'\x00\x83' or length > MAX_REQUEST:
                 return

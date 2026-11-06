@@ -11,8 +11,10 @@ public delegate Task<ReadOnlyMemory<byte>> DoormanProbe(IPAddress address, int p
 // each instance's state and last cached status. This is display data and a wake
 // target only: it never becomes a GameServer, supplies no address and grants no
 // join. Joining still needs a fresh direct status from the configured game port.
+// Routed: the world sits behind the host's routing relay (scripts/gaia-host/relay.py);
+// its port is closed to players, who join through the gate world instead.
 public sealed record DormantServer(GameTarget Target, string State, int Players, string Map, string Mode,
-    int? CachedAgeSeconds, int WakeEstimateSeconds) {
+    int? CachedAgeSeconds, int WakeEstimateSeconds, bool Routed = false) {
     public string Name => Target.Name;
     public string Provider => Target.Provider;
 }
@@ -102,7 +104,8 @@ public static class HostStatus {
                 var state = State(item, "state");
                 var entry = new DormantServer(target, state, Int(item, "players", 0, 10000) ?? 0,
                     ByondStatus.OptionalText(item, "map_name", 128), ByondStatus.OptionalText(item, "map_gamemode", 80),
-                    Int(item, "cached_age", 0, int.MaxValue), Int(item, "wake_estimate", 0, 600) ?? 0);
+                    Int(item, "cached_age", 0, int.MaxValue), Int(item, "wake_estimate", 0, 600) ?? 0,
+                    item.TryGetProperty("routed", out var routed) && routed.ValueKind == JsonValueKind.True);
                 if (!result.TryAdd(target, entry)) throw new IOException("Duplicate host status entry.");
             }
         });

@@ -55,6 +55,11 @@ port is not a configured candidate are ignored, and the answer is display data
 and a wake target only. A missing, failing or malformed doorman reply means
 every candidate is checked directly as before.
 
+An entry marked `"routed": true` sits behind the host's routing relay
+(`scripts/gaia-host/relay.py`): its port is closed to players, who join the
+group's gate world and are sent on from there. Such a candidate is neither listed
+nor queried directly.
+
 Candidates the doorman reports asleep or waking are not queried directly, so
 browsing never wakes a frozen world or spends its Topic spacing. They appear as
 `DormantServer` rows ("Asleep; wakes on join") instead of `GameServer`, which

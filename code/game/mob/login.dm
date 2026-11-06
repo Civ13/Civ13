@@ -1,7 +1,7 @@
 //handles setting lastKnownIP and computer_id for use by the ban systems as well as checking for multikeying
 /mob/proc/update_Login_details()
 	//Multikey checks and logging
-	lastKnownIP = client.address
+	lastKnownIP = client.public_address()
 
 	// these two are new and only exist for making admins' lives easier - Kachnov
 	lastKnownCID = client.computer_id
@@ -17,8 +17,8 @@
 					continue
 				if ( M.key && (M.key != key) )
 					var/matches
-					if ( (M.lastKnownIP == client.address) )
-						matches += "IP ([client.address])"
+					if ( lastKnownIP && (M.lastKnownIP == lastKnownIP) )
+						matches += "IP ([lastKnownIP])"
 					if ( (client.connection != "web") && (M.computer_id == client.computer_id) )
 						if (matches)	matches += " and "
 						matches += "ID ([client.computer_id])"
