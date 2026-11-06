@@ -1250,6 +1250,12 @@ jobs:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
         run: |
+          # The reviewed extraction and release commits never reached master, so a
+          # full checkout lacks them. Fetch exactly those objects by SHA; the
+          # ancestry checks still fail closed if any of them is unavailable.
+          for sha in c4585fabaf81e1357054b4527d71d4f3a2d8a0b2 b2f6845438391f9874834d4c59cc1115f35c04b5 4f2868cd58e89ed99eda715b3241ff980d2de41d; do
+            git cat-file -e "$sha^{commit}" 2>/dev/null || git fetch --no-tags --quiet "https://github.com/${{ github.repository }}" "$sha"
+          done
           python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
           python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
       - name: Verify Linux exclusion dispatch parity and mutation controls
