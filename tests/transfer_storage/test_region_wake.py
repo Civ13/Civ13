@@ -87,6 +87,15 @@ class RegionWakeTests(unittest.TestCase):
         body = proc(TRAVEL, GATE + '/proc/depart')
         self.assertLess(body.index('shard_group.poll_peer(destination)'), body.index('begin_escrow'))
 
+    def test_departure_rechecks_the_trail_after_the_poll(self):
+        body = proc(TRAVEL, GATE + '/proc/depart')
+        expected = body.index('var/expected = destination')
+        poll = body.index('shard_group.poll_peer(destination)')
+        recheck = body.index('destination != expected || closed_reason()', poll)
+        self.assertLess(expected, poll)
+        self.assertLess(recheck, body.index('region_travel_payload('))
+        self.assertLess(recheck, body.index('begin_escrow'))
+
     def test_waking_is_bounded(self):
         body = proc(GROUP, '/datum/shard_group/proc/wake_peer')
         self.assertIn('Clamp(reply["eta"], 0, 900)', body)

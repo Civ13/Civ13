@@ -890,6 +890,141 @@ var/space_runtime_error = FALSE
 	var/datum/research_node/vehicles = get_research_node("surface_vehicles")
 	space_check(vehicles && ("off_world_mining" in vehicles.prereqs) && get_recipe_node_req("/obj/structure/car_workshop/rover_bay") == "surface_vehicles" && get_recipe_node_req("/obj/structure/rover_charger") == "surface_vehicles", "Surface Vehicles gates the rover bay and charger")
 
+// Phase 6: closed loops, the propellant plant and flights home.
+/obj/structure/life_support/water_recycler/space_test/has_power()
+	return TRUE
+/obj/structure/life_support/oxygen_reclaimer/space_test/has_power()
+	return TRUE
+/obj/structure/reagent_dispensers/propellant_plant/space_test/has_power()
+	return TRUE
+
+// A trail whose only check is the destination, and a poll that repoints it.
+/obj/structure/region_gate/space_test/closed_reason()
+	return null
+var/global/obj/structure/region_gate/space_poll_repoint = null
+/datum/shard_group/poll_peer(id)
+	if (space_poll_repoint)
+		space_poll_repoint.destination = "elsewhere"
+		return TRUE
+	return ..()
+
+/proc/space_selfsuff_checks()
+	var/obj/structure/habitat_core/Q = locate() in locate(10, 12, 1)
+	var/obj/structure/life_support/electrolyser/E = locate() in locate(9, 13, 1)
+	space_check(Q && E, "the quarters module from the habitat checks is still there")
+	if (!Q || !E)
+		return
+	var/datum/habitat_ledger/L = Q.air()
+	var/obj/structure/life_support/water_recycler/unpowered = new(locate(10, 11, 1))
+	var/mob/living/human/space_probe_crew/crew = new(locate(9, 11, 1))
+	space_check(!unpowered.work(L, 10) && unpowered.water == 0, "an uncabled water recycler reclaims nothing")
+	qdel(unpowered)
+	var/obj/structure/life_support/water_recycler/space_test/R = new(locate(10, 11, 1))
+	E.water = 0
+	space_check(R.work(L, 10) && space_near(E.water, Q.breathers() * SPACE_RECYCLE_WATER_PER_SECOND * 10) && R.water == 0, "the recycler reclaims the crew's water and feeds the electrolyser first")
+	E.water = E.water_max
+	R.work(L, 10)
+	space_check(space_near(R.water, Q.breathers() * SPACE_RECYCLE_WATER_PER_SECOND * 10), "with the electrolyser full the recycler keeps the water")
+	R.water = SPACE_RECYCLER_CAPACITY - 0.01
+	R.work(L, 100)
+	space_check(R.water == SPACE_RECYCLER_CAPACITY, "the recycler holds no more than its tank")
+	var/obj/item/weapon/reagent_containers/glass/beaker/cup = new(locate(10, 11, 1))
+	var/room = cup.reagents.maximum_volume
+	R.attackby(cup, crew)
+	space_check(cup.reagents.get_reagent_amount("water") == room && space_near(R.water, SPACE_RECYCLER_CAPACITY - room), "water is drawn from the recycler with a container")
+	crew.loc = null
+	R.water = 0
+	space_check(!R.work(L, 10) && R.water == 0, "an empty module reclaims no water")
+	qdel(cup)
+	qdel(R)
+
+	var/obj/structure/life_support/oxygen_reclaimer/space_test/O = new(locate(10, 11, 1))
+	L.co2 = 9
+	var/oxygen = L.oxygen
+	space_check(O.work(L, 2) && space_near(L.co2, 8.8) && space_near(L.oxygen, oxygen + 0.1), "the reclaimer scrubs CO2 and returns half of it as oxygen")
+	L.co2 = 0.1
+	space_check(!O.work(L, 2) && L.co2 == 0.1, "the reclaimer leaves CO2 below its target")
+	qdel(O)
+
+	var/turf/D = locate(15, 3, 1)
+	var/obj/structure/reagent_dispensers/propellant_plant/cold = new(D)
+	cold.ice = 5
+	space_check(!cold.crack() && cold.ice == 5, "an uncabled propellant plant cracks nothing")
+	qdel(cold)
+	var/obj/structure/reagent_dispensers/propellant_plant/space_test/P = new(D)
+	var/obj/item/stack/ore/ice/I = new(D)
+	I.amount = 30
+	space_check(P.load_ice(I) == 30 && P.ice == 30 && QDELETED(I), "the plant takes ice")
+	space_check(P.crack() && P.ice == 29 && P.reagents.get_reagent_amount("rocket_propellant") == SPACE_PLANT_PROPELLANT_PER_ICE, "one piece of ice cracks into propellant")
+	P.process()
+	space_check(P.ice == 29, "the plant does not run while nobody is connected")
+	var/obj/item/stack/ore/ice/more = new(D)
+	more.amount = 100
+	space_check(P.load_ice(more) == SPACE_PLANT_ICE_MAX - 29 && P.ice == SPACE_PLANT_ICE_MAX && more.amount == 29, "the plant holds no more than its hopper")
+	for (var/i in 1 to SPACE_PLANT_ICE_MAX)
+		if (!P.crack())
+			break
+	space_check(P.reagents.get_reagent_amount("rocket_propellant") == SPACE_PLANT_CAPACITY && P.ice == SPACE_PLANT_ICE_MAX - SPACE_PLANT_CAPACITY / SPACE_PLANT_PROPELLANT_PER_ICE + 1, "the plant stops when its tank is full")
+	var/obj/structure/cable/wire = new(D)
+	P.powersource = wire
+	wire.connections |= P
+	wire.power_consumers[P] = P.powerneeded
+	space_check(!P.crack() && !(P in wire.power_consumers), "an idle plant gives its power back to the grid")
+	wire.power_consumers[P] = P.powerneeded
+	P.process()
+	space_check(!(P in wire.power_consumers), "the plant gives its power back while nobody is connected")
+	P.powersource = null
+	qdel(wire)
+	var/obj/structure/crewed_lander/lander = new(locate(16, 3, 1))
+	space_check(lander.add_propellant(P.reagents) == LANDER_PROPELLANT && lander.propellant == LANDER_PROPELLANT, "a full plant fuels a lander")
+	qdel(lander)
+	qdel(P)
+	qdel(more)
+
+	var/old_mainland = shard_group.mainland
+	var/old_region = shard_group.region
+	shard_group.mainland = "gaia"
+	shard_group.region = "barren"
+	space_check(space_flight_destination_ok("gaia") && space_flight_return_ok("gaia") && !space_flight_return_ok("barren"), "a mapped world can fly home to the mainland")
+	shard_group.region = "gaia"
+	space_check(!space_flight_destination_ok("gaia") && !space_flight_return_ok("gaia"), "the mainland cannot fly to itself")
+	shard_group.mainland = old_mainland
+	shard_group.region = old_region
+	var/list/home = list("lander" = "barren-1-1234", "return" = 1)
+	space_check(space_flight_payload_ok(space_flight_payload(home)) && region_travel_decode(json_encode(space_flight_payload(home))), "a flight home survives the travel decoder")
+	var/list/bad_return = home.Copy()
+	bad_return["return"] = 2
+	var/list/landing_home = home.Copy()
+	landing_home["landing"] = list(1, 1)
+	var/list/stray_return = space_flight_payload()
+	stray_return["return"] = 1
+	space_check(!space_flight_payload_ok(space_flight_payload(bad_return)) && !space_flight_payload_ok(space_flight_payload(landing_home)) && !space_flight_payload_ok(stray_return), "malformed flights home are refused")
+	var/before = landed_landers.len
+	space_check(isnull(space_flight_arrival_turf(space_flight_payload(home), TRUE)) && landed_landers.len == before, "a flight home builds no lander and arrives like any traveller")
+	var/mob/living/human/space_probe_crew/pilot = new(D)
+	var/list/sent = json_decode(pilot.region_travel_payload(list(), null, FALSE, home))
+	space_check(sent["return"] == 1 && sent["lander"] == "barren-1-1234" && isnull(sent["landing"]), "the travel payload carries the flight home")
+	qdel(pilot)
+
+	var/turf/G = locate(18, 18, 1)
+	var/obj/structure/region_gate/space_test/gate = new(G)
+	gate.destination = "gaia"
+	var/list/old_peers = shard_group.peers
+	shard_group.peers = list("gaia" = list("state" = "ASLEEP"))
+	var/mob/living/human/space_probe_crew/walker = new(G)
+	walker.persistence_owner_ckey = "spacetester"
+	space_poll_repoint = gate
+	var/result = gate.depart(walker)
+	space_poll_repoint = null
+	space_check(result == "The trail changed. Try again." && walker.loc == G && !gate.busy, "a trail repointed while its destination wakes sends nobody")
+	shard_group.peers = old_peers
+	qdel(walker)
+	qdel(gate)
+
+	var/datum/research_node/local = get_research_node("local_resources")
+	space_check(local && ("surface_vehicles" in local.prereqs) && local.era_tier == 9 && local.mode == RESEARCH_MODE_ANALYSIS, "Local Resources follows Surface Vehicles as an ordinary node")
+	space_check(get_recipe_node_req("/obj/structure/reagent_dispensers/propellant_plant") == "local_resources" && get_recipe_node_req("/obj/structure/life_support/water_recycler") == "life_support" && get_recipe_node_req("/obj/structure/life_support/oxygen_reclaimer") == "life_support", "the plant is gated on Local Resources and the recyclers on Life Support")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -911,6 +1046,7 @@ var/space_runtime_error = FALSE
 		space_eva_checks()
 		space_mining_checks()
 		space_rover_checks()
+		space_selfsuff_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

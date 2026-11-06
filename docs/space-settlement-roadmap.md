@@ -367,6 +367,19 @@ come with phase 3, when there is something to save.
 - More bodies as further profiles (a small airless moon, an ice body), each on
   its own shard.
 - Balance pass with live data.
+- Built (phase 6 loops and propellant, `code/modules/space/self_sufficiency.dm`):
+  Life Support adds a water recycler (5 power) that reclaims 0.02 units of
+  water per occupant per second into a 200-unit tank, tops up the module's
+  electrolysers first and gives the rest to an open container, and an oxygen
+  reclaimer (15 power) that scrubs CO2 like the scrubber and returns half of
+  it as oxygen. Composting into greenhouse nutrient already worked in module
+  trays. Local Resources (after Surface Vehicles) unlocks a propellant plant
+  (30 power) that holds 100 pieces of water ice and cracks one piece into 5
+  units of rocket propellant per tick while someone is playing, into a
+  300-unit tank, enough for one lander. A launch pad on a mapped world can be
+  pointed home at the mainland region; that flight needs no survey map and
+  lands like any traveller at the mainland's arrival point. Not built: more
+  bodies and the balance pass, which need Val.
 
 ## Research branch
 
@@ -378,11 +391,11 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 | Planetary Survey | Advanced survey probe | 1 |
 | Crewed Flight | Launch pad, crewed lander | 2 |
 | Sealed Habitats | Habitat module kits (hatches come with docking), airlock, hull patch kit | 3 |
-| Life Support | Electrolyser, scrubber, heater, water recycler | 3 |
+| Life Support | Electrolyser, scrubber, heater, water recycler, oxygen reclaimer | 3, 6 |
 | Pressure Suits | Suit, helmet, air tank, repair kit | 4 |
 | Surface Vehicles | Open and sealed rovers, rover charger | 5 |
 | Off-world Mining | Regolith drill rig, ice melter, printed module kits | 5 |
-| Local Resources | Propellant plant, printed module kits | 6 |
+| Local Resources | Propellant plant | 6 |
 
 ## Decisions for Val
 

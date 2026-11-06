@@ -69,16 +69,22 @@
 
 /obj/structure/region_gate/trail_marker/launch_pad
 	name = "launch pad"
-	desc = "A blast-scarred steel apron for a crewed lander. It can only lead to a world a probe has mapped, and an admin must approve it."
+	desc = "A blast-scarred steel apron for a crewed lander. It can only lead to a world a probe has mapped, or home to the mainland from one, and an admin must approve it."
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "steel_grid"
 	layer = TURF_LAYER + 0.1
 	// The flight being sent, while its crew depart (see travel_extra()).
 	var/tmp/list/pending_flight = null
 
-// TRUE when a survey map of region id ships with the game.
+// TRUE when a survey map of region id ships with the game, or when id is
+// the mainland and this world is one a lander can reach (a flight home).
 /proc/space_flight_destination_ok(id)
-	return survey_region_ok(id) && !!get_space_survey_map(id)
+	return (survey_region_ok(id) && !!get_space_survey_map(id)) || space_flight_return_ok(id)
+
+// TRUE when a pad here may fly back to region id: the mainland, from a
+// mapped world that is not the mainland itself.
+/proc/space_flight_return_ok(id)
+	return istext(id) && istext(shard_group.mainland) && id == shard_group.mainland && istext(shard_group.region) && shard_group.region != id && !!get_space_survey_map(shard_group.region)
 
 /obj/structure/region_gate/trail_marker/launch_pad/peer_choices()
 	var/list/choices = ..()
@@ -207,7 +213,7 @@
 		return "\The [src] needs [LANDER_PROPELLANT] units of rocket propellant ([propellant] loaded)."
 	if (!(H in crew()))
 		return "Strap in before you launch."
-	if (!get_space_survey_map(pad.destination))
+	if (!space_flight_return_ok(pad.destination) && !get_space_survey_map(pad.destination))
 		return "There is no survey map of [pad.destination_name()] to land by."
 	return null
 
@@ -238,6 +244,19 @@
 		return
 	var/obj/structure/region_gate/trail_marker/launch_pad/pad = find_pad()
 	var/region = pad.destination
+	// A flight home lands at the mainland's usual arrival point.
+	if (space_flight_return_ok(region))
+		var/home = WWinput(H, "Fly everyone strapped in home to [pad.destination_name()], with what they wear and carry?", "Launch", "Cancel", list("Launch", "Cancel"))
+		if (home != "Launch" || QDELETED(src) || !H.client || !in_range(src, H))
+			return
+		reason = launch_refusal(H)
+		if (!reason && (find_pad() != pad || pad.destination != region))
+			reason = "The launch pad changed."
+		if (!reason)
+			reason = launch(pad, null, null, H)
+		if (reason)
+			to_chat(H, SPAN_WARNING(reason))
+		return
 	var/list/sites = surveyed_sites(region)
 	var/unsurveyed = "Anywhere flat (unsurveyed, rough landings likely)"
 	var/list/options = list()
@@ -249,7 +268,7 @@
 		return
 	// The prompt slept: check everything again.
 	reason = launch_refusal(H)
-	if (!reason && find_pad() != pad)
+	if (!reason && (find_pad() != pad || pad.destination != region))
 		reason = "The launch pad changed."
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
@@ -263,30 +282,40 @@
 // cell lx,ly (or any flat cell when null). Returns null once anyone left, or
 // the reason nobody did.
 /obj/structure/crewed_lander/proc/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)
-	var/datum/survey_map/M = get_space_survey_map(pad.destination)
-	if (!M)
-		return "There is no survey map of [pad.destination_name()] to land by."
+	var/destination = pad.destination
+	var/homeward = space_flight_return_ok(destination)
 	var/surveyed = !isnull(lx)
-	var/list/cell = surveyed ? survey_landing_cell(M, lx, ly, 0) : survey_landing_cell(M, null, null, 0)
-	if (!cell)
-		return "There is no flat ground to land on there."
+	var/list/cell = null
+	if (!homeward)
+		var/datum/survey_map/M = get_space_survey_map(pad.destination)
+		if (!M)
+			return "There is no survey map of [pad.destination_name()] to land by."
+		cell = surveyed ? survey_landing_cell(M, lx, ly, 0) : survey_landing_cell(M, null, null, 0)
+		if (!cell)
+			return "There is no flat ground to land on there."
 	// A sleeping world is woken first; that can take a while.
 	if (shard_group.enabled && shard_group.peers[pad.destination] && shard_group.peers[pad.destination]["state"] != "UP")
 		var/woke = shard_group.wake_peer(pad.destination, notify)
 		if (woke)
 			return woke
-		if (QDELETED(src) || QDELETED(pad))
+		if (QDELETED(src) || QDELETED(pad) || pad.destination != destination || !pad.approved)
 			return "The launch was called off."
-	var/list/flight = list(
-		"lander" = "[shard_group.region || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]",
-		"landing" = list(cell[1], cell[2]),
-		"surveyed" = surveyed ? 1 : 0,
-		"rough" = prob(surveyed ? LANDER_ROUGH_SURVEYED : LANDER_ROUGH_UNSURVEYED) ? 1 : 0)
+	var/lander_id = "[shard_group.region || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]"
+	var/list/flight
+	if (homeward)
+		flight = list("lander" = lander_id, "return" = 1)
+	else
+		flight = list(
+			"lander" = lander_id,
+			"landing" = list(cell[1], cell[2]),
+			"surveyed" = surveyed ? 1 : 0,
+			"rough" = prob(surveyed ? LANDER_ROUGH_SURVEYED : LANDER_ROUGH_UNSURVEYED) ? 1 : 0)
 	var/departed = 0
 	var/list/refusals = list()
 	pad.pending_flight = flight
 	for (var/mob/living/human/H in crew())
-		var/reason = pad.travel_refusal(H)
+		// Departures can wait on escrow, so the pad is checked for each one.
+		var/reason = (QDELETED(pad) || pad.destination != destination || !pad.approved) ? "The launch pad changed." : pad.travel_refusal(H)
 		if (!reason)
 			var/list/items = H.region_travel_items()
 			if (istext(items))
@@ -302,7 +331,10 @@
 	pad.pending_flight = null
 	if (!departed)
 		return refusals.len ? "Nobody could fly. [jointext(refusals, " ")]" : "Nobody is strapped in."
-	log_game("Crewed flight: [departed] crew left [x],[y],[z] for [pad.destination] (lander [flight["lander"]], cell [cell[1]],[cell[2]], [surveyed ? "surveyed" : "unsurveyed"][flight["rough"] ? ", rough" : ""]).")
+	if (homeward)
+		log_game("Crewed flight: [departed] crew left [x],[y],[z] for home at [pad.destination] (lander [flight["lander"]]).")
+	else
+		log_game("Crewed flight: [departed] crew left [x],[y],[z] for [pad.destination] (lander [flight["lander"]], cell [cell[1]],[cell[2]], [surveyed ? "surveyed" : "unsurveyed"][flight["rough"] ? ", rough" : ""]).")
 	visible_message(SPAN_DANGER("\The [src] roars off the pad on a column of fire!"))
 	qdel(src)
 	return null
@@ -312,10 +344,13 @@
 // TRUE when a travel payload's flight fields are absent or well formed.
 /proc/space_flight_payload_ok(list/P)
 	if (isnull(P["lander"]))
-		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"])
+		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"])
 	var/id = P["lander"]
 	if (!istext(id) || !length(id) || length(id) > 64)
 		return FALSE
+	// A flight home carries no landing: the crew arrive like any traveller.
+	if (!isnull(P["return"]))
+		return P["return"] == 1 && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"])
 	var/list/cell = P["landing"]
 	if (!islist(cell) || cell.len != 2)
 		return FALSE
@@ -522,7 +557,7 @@ var/global/list/landed_landers = list()
 // built by the first arrival. Null for any other traveller, and for a flight
 // refused back at its source (it comes back at the pad).
 /proc/space_flight_arrival_turf(list/P, incoming)
-	if (!incoming || !islist(P) || !istext(P["lander"]))
+	if (!incoming || !islist(P) || !istext(P["lander"]) || P["return"])
 		return null
 	var/obj/structure/landed_lander/L = space_landed_lander(P["lander"])
 	if (!L)
