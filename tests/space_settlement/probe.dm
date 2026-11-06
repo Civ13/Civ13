@@ -196,6 +196,8 @@ var/space_runtime_error = FALSE
 
 	var/turf/T = locate(2, 2, 1)
 	var/obj/structure/launch_rail/R = new(T)
+	space_check(R.destination == "moon", "a new rail is set for the Moon")
+	R.destination = "barren"
 	var/obj/structure/survey_console/C = new(locate(4, 2, 1))
 	space_check(R.launch() != null, "an empty rail does not launch")
 	R.loaded = new /obj/item/space_probe(R)
@@ -1117,6 +1119,7 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 		GLOB.destroyed_event = new
 		movementMachine = new
 		map = new /obj/map_metadata/space_probe
+		map.ordinal_age = 9 // 2026: every world is open unless a check says otherwise
 		space_check(!world.port, "fixture has no listening port")
 		space_ledger_checks()
 		space_save_checks()
@@ -1131,7 +1134,113 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 		space_rover_checks()
 		space_selfsuff_checks()
 		space_cargo_checks()
+		space_moon_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
 	del(world)
+
+// The Moon: lunar ground, its epoch gates and a console that keeps one
+// survey record per world.
+/proc/space_moon_map(seed)
+	var/datum/survey_map/M = new
+	M.load_text(json_encode(list("schema" = SURVEY_MAP_SCHEMA, "seed" = seed, "rows" = list("........", ".~*^....", "...^....", "........", "........", "........", "........", "........"))))
+	return M
+
+/proc/space_moon_checks()
+	var/obj/map_metadata/fixture = map
+	var/obj/map_metadata/nomads/barren/moon/moon = new // New() claims the global map
+	map = fixture
+	space_check(!moon_world() && space_world_base_ambient_c() == BARREN_AMBIENT_C && space_world_has_dust_storms(), "other worlds keep the Mars surface")
+	space_check(moon.valid_weather_types ~= list(WEATHER_NONE) && moon.title == "The Moon", "the Moon has no weather and names itself")
+	space_check(/obj/map_metadata/nomads/barren/moon in durable_nomads_profiles(), "the Moon's map settings may save")
+	var/turf/T = locate(5, 2, 1)
+	T = T.ChangeTurf(/turf/floor/dirt/dust/regolith/lunar, FALSE, FALSE)
+	var/turf/C = locate(6, 2, 1)
+	C = C.ChangeTurf(/turf/floor/dirt/dust/regolith/lunar/crater, FALSE, FALSE)
+	var/area/caribbean/nomads/barren/moon/A = new
+	space_check(A.base_turf == /turf/floor/dirt/dust/regolith/lunar && istype(A, /area/caribbean/nomads/barren), "the Moon area is barren ground resting on lunar regolith")
+	map = moon
+	space_check(moon_world() && !T.outside_air_breathable() && T.outside_ambient_c() == MOON_AMBIENT_C && T.barren_open_ground() && C.color != T.color, "lunar regolith is airless, colder than Mars and darker in craters")
+	barren_dust_seconds = 0
+	barren_cold_seconds = 0
+	barren_flare_seconds = 0
+	var/dust = FALSE
+	for (var/i = 1 to 3000)
+		barren_hazards_step(0, TRUE)
+		if (barren_dust_seconds)
+			dust = TRUE
+	space_check(!dust && !space_world_has_dust_storms(), "the airless Moon never raises a dust storm")
+	map = fixture
+	for (var/i = 1 to 3000)
+		barren_hazards_step(0, TRUE)
+		if (barren_dust_seconds)
+			dust = TRUE
+	space_check(dust, "Mars still raises dust storms")
+	barren_dust_seconds = 0
+	barren_cold_seconds = 0
+	barren_flare_seconds = 0
+
+	// Names.
+	space_check(survey_world_name("barren") == "Mars" && survey_world_name("moon") == "the Moon" && survey_world_name("moon2") == "the Moon (moon2)", "survey destinations are named Mars and the Moon")
+	space_check(survey_cell_name(SURVEY_CHANNEL, "moon") == "rille" && survey_cell_name(SURVEY_ICE, "moon") == "shadowed ice" && survey_cell_name(SURVEY_CHANNEL, "barren") == "dry channel", "Moon terrain has its own names")
+
+	// Epoch gates (Val, 2026-11-06): the Moon from 1969, Mars from 2026.
+	space_check(("moon" in space_survey_regions()) && ("barren" in space_survey_regions()), "the Moon and Mars both ship survey maps")
+	var/datum/survey_map/shipped_moon = get_space_survey_map("moon")
+	space_check(shipped_moon && shipped_moon.width == 40 && shipped_moon.seed == "moon-0", "the shipped Moon survey map loads")
+	fixture.ordinal_age = 6
+	space_check(!survey_region_open("moon") && !survey_region_open("barren") && findtext(survey_region_closed_reason("moon"), "1969"), "before 1969 neither world is in reach")
+	fixture.ordinal_age = 7
+	space_check(survey_region_open("moon") && survey_region_open("moon2") && !survey_region_open("barren") && findtext(survey_region_closed_reason("barren"), "2026"), "from 1969 the Moon is in reach but Mars is not")
+	space_check(space_flight_destination_ok("moon") && !space_flight_destination_ok("barren"), "crewed flights follow the same epochs")
+	fixture.ordinal_age = 9
+	space_check(survey_region_open("barren") && space_flight_destination_ok("barren"), "from 2026 Mars is in reach")
+
+	// The rail picks a destination; the console keeps a record per world.
+	var/datum/survey_map/MB = space_moon_map("mars-t")
+	MB.region = "barren"
+	var/datum/survey_map/MM = space_moon_map("moon-t")
+	MM.region = "moon"
+	space_survey_maps = list("barren" = MB, "moon" = MM)
+	var/obj/structure/launch_rail/R = new(locate(12, 12, 1))
+	var/obj/structure/survey_console/K = new(locate(13, 12, 1))
+	fixture.ordinal_age = 8
+	var/list/choices = R.destination_choices()
+	space_check(choices.len == 1 && choices["The Moon"] == "moon", "in 2013 the rail offers only the Moon")
+	R.target_x = 3
+	R.target_y = 3
+	space_check(!R.set_destination("barren") && R.destination == "moon" && R.target_x == 3, "the rail refuses Mars before 2026")
+	R.destination = "barren"
+	R.loaded = new /obj/item/space_probe(R)
+	R.fuel = 60
+	space_check(findtext(R.launch(1, 1, 0), "2026") && R.loaded && R.fuel == 60, "a rail left set for Mars will not launch before 2026")
+	fixture.ordinal_age = 9
+	space_check(R.set_destination("moon") && isnull(R.target_x) && R.set_destination("barren") && R.destination_choices().len == 2, "changing world clears the aim; from 2026 both worlds are offered")
+	K.dust_chance = 0
+	space_check(isnull(R.launch(1, 1, 0)) && K.map_region == "barren", "a probe flies to Mars")
+	K.dropout_chance = 0
+	K.dust_chance = 0
+	K.try_move(NORTH)
+	K.try_move(SOUTH)
+	var/mars_seen = K.revealed_count()
+	K.ascend()
+	R.set_destination("moon")
+	R.loaded = new /obj/item/space_probe(R)
+	R.fuel = 60
+	space_check(isnull(R.launch(8, 8, 0)) && K.map_region == "moon" && K.landing_sites ~= list("8,8") && K.revealed_count() < mars_seen && istext(K.survey_archive["barren"]), "flying to the Moon starts its own record and files the Mars one")
+	K.dust_chance = 100
+	K.dropout_chance = 0
+	K.try_move(WEST)
+	space_check(!K.dusty, "a probe on the Moon meets no dust")
+	space_check(findtext(K.ui_html(), "the Moon") && findtext(K.ui_html(), "rille"), "the console window names the Moon and its terrain")
+	space_check(K.landing_sites_for("barren") ~= list("1,1") && K.landing_sites_for("moon") ~= list("8,8"), "landing sites stay with their world")
+	K.abandon()
+	R.set_destination("barren")
+	R.loaded = new /obj/item/space_probe(R)
+	R.fuel = 60
+	space_check(isnull(R.launch(1, 1, 0)) && K.map_region == "barren" && K.revealed_count() == mars_seen && K.landing_sites ~= list("1,1") && istext(K.survey_archive["moon"]) && !("barren" in K.survey_archive), "back to Mars, the old record returns")
+	K.abandon()
+	qdel(R)
+	qdel(K)
+	space_survey_maps = list()

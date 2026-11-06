@@ -147,5 +147,21 @@ class ShippedSurveyMapTests(unittest.TestCase):
             self.assertTrue(survey.check(folder, SHIPPED)["matches"])
 
 
+class ShippedMoonSurveyMapTests(unittest.TestCase):
+    """config/space/survey/moon.json is the Moon the mission console flies to."""
+
+    def test_shipped_moon_map_matches_the_moon_0_world(self):
+        shipped = ROOT / "config" / "space" / "survey" / "moon.json"
+        data = json.loads(shipped.read_text(encoding="utf-8"))
+        self.assertEqual("moon-0", data["seed"])
+        self.assertEqual((40, 40), (data["width"], data["height"]))
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "moon"
+            folder.mkdir()
+            bundle(barren_surface_preset(data["seed"]), folder)
+            self.assertEqual(data, survey.build(folder))
+            self.assertTrue(survey.check(folder, shipped)["matches"])
+
+
 if __name__ == "__main__":
     unittest.main()

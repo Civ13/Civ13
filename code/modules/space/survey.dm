@@ -8,6 +8,9 @@
 // surveyed sites match the real region (survey_map_matches_bundle).
 // The player drives the probe across that map, photographs sites and takes
 // samples; the ascent stage brings the samples home as real items.
+// Every shipped survey map is a destination: the launch rail picks one
+// (Mars is region "barren", the Moon is "moon"), and a console keeps a
+// separate survey record for each world it has flown to.
 //
 // Saves: the mission lives in the console's ordinary vars (position, battery,
 // revealed cells, carried samples). The only clock is a tmp var, so a restart
@@ -41,17 +44,33 @@
 			return 3
 	return 0 // ridges and off-map cells are impassable
 
-/proc/survey_cell_name(cell)
+// Moon regions have ids starting "moon" (the Moon itself is "moon"; later
+// colonies get their own ids, see docs/connected-regions-plan.md).
+/proc/survey_region_lunar(region)
+	return istext(region) && copytext(region, 1, 5) == "moon"
+
+/proc/survey_cell_name(cell, region = null)
+	var/lunar = survey_region_lunar(region)
 	switch (cell)
 		if (SURVEY_PLAIN)
 			return "plain"
 		if (SURVEY_CHANNEL)
-			return "dry channel"
+			return lunar ? "rille" : "dry channel"
 		if (SURVEY_ICE)
-			return "ice sheet"
+			return lunar ? "shadowed ice" : "ice sheet"
 		if (SURVEY_RIDGE)
 			return "ridge"
 	return "unknown"
+
+// The name players see for a survey destination.
+/proc/survey_world_name(region)
+	if (region == SURVEY_DEFAULT_REGION)
+		return "Mars"
+	if (region == "moon")
+		return "the Moon"
+	if (survey_region_lunar(region))
+		return "the Moon ([region])"
+	return capitalize(region)
 
 // ---------------------------------------------------------------- survey map
 
@@ -129,6 +148,35 @@ var/global/list/space_survey_maps = list()
 // Region ids name files, so only lowercase letters and digits pass.
 /proc/survey_region_ok(region)
 	return istext(region) && length(region) >= 1 && length(region) <= 32 && ckey(region) == region
+
+// The epoch (map.ordinal_age) a world opens in (Val, 2026-11-06): the Moon
+// from 1969 (Cold War, 7), Mars from 2026 (Digital Age, 9).
+/proc/survey_region_min_age(region)
+	if (region == SURVEY_DEFAULT_REGION)
+		return 9
+	if (survey_region_lunar(region))
+		return 7
+	return 0
+
+// TRUE when this world's epoch has reached region's opening year.
+/proc/survey_region_open(region)
+	return map && map.ordinal_age >= survey_region_min_age(region)
+
+// Why region cannot be reached yet, or null.
+/proc/survey_region_closed_reason(region)
+	if (survey_region_open(region))
+		return null
+	return "[capitalize(survey_world_name(region))] is out of reach until [ordinal_age_year(survey_region_min_age(region))]."
+
+// Region ids of every survey map that ships with the game and loads.
+/proc/space_survey_regions()
+	. = list()
+	for (var/name in flist(SURVEY_MAP_DIR))
+		if (length(name) <= 5 || copytext(name, -5) != ".json")
+			continue
+		var/region = copytext(name, 1, -5)
+		if (get_space_survey_map(region))
+			. += region
 
 /proc/get_space_survey_map(region = SURVEY_DEFAULT_REGION)
 	if (!survey_region_ok(region))
@@ -240,13 +288,13 @@ var/global/list/space_survey_maps = list()
 	density = TRUE
 	var/obj/item/space_probe/loaded = null
 	var/fuel = 0
-	var/destination = SURVEY_DEFAULT_REGION // survey region id; admins may change it
+	var/destination = "moon" // survey region id, chosen at the rail
 	var/target_x = null // aimed landing cell, or null for anywhere flat
 	var/target_y = null
 
 /obj/structure/launch_rail/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Probe: [loaded ? loaded.name : "none"]. Fuel: [fuel]/[SURVEY_FUEL_UNITS]. Target: [isnum(target_x) ? "[target_x],[target_y] (lands within [SURVEY_LANDING_SCATTER] cells)" : "anywhere flat"]."))
+	to_chat(user, SPAN_NOTICE("Probe: [loaded ? loaded.name : "none"]. Fuel: [fuel]/[SURVEY_FUEL_UNITS]. Destination: [survey_world_name(destination)]. Target: [isnum(target_x) ? "[target_x],[target_y] (lands within [SURVEY_LANDING_SCATTER] cells)" : "anywhere flat"]."))
 
 /obj/structure/launch_rail/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/space_probe))
@@ -295,11 +343,14 @@ var/global/list/space_survey_maps = list()
 	if (!find_console())
 		to_chat(user, SPAN_WARNING("No idle mission console within [SURVEY_RAIL_CONSOLE_RANGE] tiles to fly the probe."))
 		return
-	var/choice = WWinput(user, "Launch \the [loaded]?", "Launch rail", "Cancel", list("Launch", "Aim", "Cancel"))
+	var/choice = WWinput(user, "Launch \the [loaded] to [survey_world_name(destination)]?", "Launch rail", "Cancel", list("Launch", "Aim", "Destination", "Cancel"))
 	if (!in_range(src, user) || user.incapacitated())
 		return
 	if (choice == "Aim")
 		aim(user)
+		return
+	if (choice == "Destination")
+		choose_destination(user)
 		return
 	if (choice != "Launch")
 		return
@@ -308,6 +359,37 @@ var/global/list/space_survey_maps = list()
 		to_chat(user, SPAN_WARNING(result))
 		return
 	visible_message(SPAN_DANGER("\The [src] roars as a probe climbs away on a column of smoke!"))
+
+// Worlds a probe from here can fly to: every shipped survey map except the
+// world the rail stands on.
+/obj/structure/launch_rail/proc/destination_choices()
+	. = list()
+	for (var/region in space_survey_regions())
+		if ((istext(shard_group.region) && region == shard_group.region) || !survey_region_open(region))
+			continue
+		.[capitalize(survey_world_name(region))] = region
+
+/obj/structure/launch_rail/proc/choose_destination(mob/user)
+	var/list/choices = destination_choices()
+	if (!choices.len)
+		to_chat(user, SPAN_WARNING("There is no other surveyed world within reach yet."))
+		return
+	var/label = input(user, "Which world should the probe fly to?", "Launch rail") as null|anything in choices
+	if (!label || !in_range(src, user) || user.incapacitated())
+		return
+	if (set_destination(choices[label]))
+		to_chat(user, SPAN_NOTICE("The rail is set for [survey_world_name(destination)]. The probe will land anywhere flat until you aim it."))
+
+// Points the rail at another surveyed world and clears the aim, which
+// belonged to the old world's map.
+/obj/structure/launch_rail/proc/set_destination(region)
+	if (!survey_region_ok(region) || !get_space_survey_map(region) || !survey_region_open(region))
+		return FALSE
+	if (region != destination)
+		target_x = null
+		target_y = null
+	destination = region
+	return TRUE
 
 /obj/structure/launch_rail/proc/aim(mob/user)
 	var/datum/survey_map/M = get_space_survey_map(destination)
@@ -340,6 +422,9 @@ var/global/list/space_survey_maps = list()
 	var/obj/structure/survey_console/C = find_console()
 	if (!C)
 		return "No idle mission console in range."
+	var/closed = survey_region_closed_reason(destination)
+	if (closed)
+		return "[closed] Choose another destination."
 	var/datum/survey_map/M = get_space_survey_map(destination)
 	if (!M)
 		return "The console has no survey map of the target world."
@@ -393,6 +478,9 @@ var/global/list/space_survey_maps = list()
 	var/list/analysed_kinds = list() // sample kinds this console has analysed
 	var/map_region = ""
 	var/map_digest = "" // md5 of the rows the record was made from: a rebuilt map with the same seed still differs
+	// The survey records of the other worlds this console has flown to, as
+	// region id = JSON text, so flying to the Moon keeps the Mars record.
+	var/list/survey_archive = list()
 	var/dropout_chance = 0
 	var/dust_chance = 0
 	var/dusty = FALSE // dust on the panels halves recharge for this sortie
@@ -420,6 +508,7 @@ var/global/list/space_survey_maps = list()
 		return FALSE
 	lx = site[1]
 	ly = site[2]
+	switch_record(M.region)
 	if (map_region != M.region || map_seed != M.seed || map_digest != M.digest() || map_width != M.width || map_height != M.height || length(revealed) != M.width * M.height)
 		reset_survey(M)
 	mission = TRUE
@@ -441,6 +530,55 @@ var/global/list/space_survey_maps = list()
 	reveal_around(probe_x, probe_y)
 	last_recharge = world.time
 	return TRUE
+
+// The active survey record as plain data.
+/obj/structure/survey_console/proc/record_data()
+	return list("seed" = map_seed, "digest" = map_digest, "width" = map_width, "height" = map_height, "revealed" = revealed, "sampled" = sampled.Copy(), "photographed" = photographed.Copy(), "landing_sites" = landing_sites.Copy())
+
+// An archived record for region, or null.
+/obj/structure/survey_console/proc/archived_record(region)
+	if (!islist(survey_archive) || !istext(survey_archive[region]))
+		return null
+	var/list/data = null
+	try
+		data = json_decode(survey_archive[region])
+	catch
+		data = null
+	return islist(data) ? data : null
+
+/proc/survey_text_list(list/L)
+	. = list()
+	if (islist(L))
+		for (var/entry in L)
+			if (istext(entry))
+				. += entry
+
+// Makes region's record the active one, archiving the current world's.
+/obj/structure/survey_console/proc/switch_record(region)
+	if (region == map_region)
+		return
+	if (!islist(survey_archive))
+		survey_archive = list()
+	if (length(map_region))
+		survey_archive[map_region] = json_encode(record_data())
+	var/list/data = archived_record(region)
+	survey_archive -= region
+	map_region = region
+	map_seed = data && istext(data["seed"]) ? data["seed"] : ""
+	map_digest = data && istext(data["digest"]) ? data["digest"] : ""
+	map_width = data && isnum(data["width"]) ? data["width"] : 0
+	map_height = data && isnum(data["height"]) ? data["height"] : 0
+	revealed = data && istext(data["revealed"]) ? data["revealed"] : ""
+	sampled = survey_text_list(data ? data["sampled"] : null)
+	photographed = survey_text_list(data ? data["photographed"] : null)
+	landing_sites = survey_text_list(data ? data["landing_sites"] : null)
+
+// Landing sites this console has recorded on region, active or archived.
+/obj/structure/survey_console/proc/landing_sites_for(region)
+	if (region == map_region)
+		return landing_sites.Copy()
+	var/list/data = archived_record(region)
+	return survey_text_list(data ? data["landing_sites"] : null)
 
 // Forgets the survey record: only when the survey map was replaced.
 /obj/structure/survey_console/proc/reset_survey(datum/survey_map/M)
@@ -534,7 +672,7 @@ var/global/list/space_survey_maps = list()
 		return "That is past the edge of the survey."
 	var/cost = survey_move_cost(cell)
 	if (!cost)
-		return "The [survey_cell_name(cell)] is too steep to drive."
+		return "The [survey_cell_name(cell, map_region)] is too steep to drive."
 	if (max(abs(nx - land_x), abs(ny - land_y)) > comms_range)
 		return "The relay at the landing site would lose the probe out there."
 	if (battery < cost)
@@ -546,8 +684,8 @@ var/global/list/space_survey_maps = list()
 	probe_x = nx
 	probe_y = ny
 	reveal_around(nx, ny)
-	. = "The probe crosses onto [survey_cell_name(cell)]."
-	if (!dusty && prob(dust_chance))
+	. = "The probe crosses onto [survey_cell_name(cell, map_region)]."
+	if (!dusty && !survey_region_lunar(map_region) && prob(dust_chance)) // no wind on the Moon
 		dusty = TRUE
 		. += " A dust gust coats the solar panels: recharge is halved for the rest of this sortie."
 
@@ -602,8 +740,8 @@ var/global/list/space_survey_maps = list()
 			line += (x == probe_x && y == probe_y) ? "P" : (c ? c : " ")
 		lines += line
 	var/obj/item/weapon/paper/record = new(get_turf(src))
-	record.name = "survey record ([probe_x],[probe_y])"
-	record.info = "<b>Survey record</b><br>Probe: [probe_name]<br>Site: [probe_x],[probe_y] ([survey_cell_name(M.cell(probe_x, probe_y))])<br>Landing site: [land_x],[land_y]<br><tt>[jointext(lines, "<br>")]</tt><br>Key: . plain, ~ dry channel, * ice, ^ ridge, P probe."
+	record.name = "survey record ([survey_world_name(map_region)], [probe_x],[probe_y])"
+	record.info = "<b>Survey record: [survey_world_name(map_region)]</b><br>Probe: [probe_name]<br>Site: [probe_x],[probe_y] ([survey_cell_name(M.cell(probe_x, probe_y), map_region)])<br>Landing site: [land_x],[land_y]<br><tt>[jointext(lines, "<br>")]</tt><br>Key: . plain, ~ [survey_cell_name(SURVEY_CHANNEL, map_region)], * [survey_cell_name(SURVEY_ICE, map_region)], ^ ridge, P probe."
 	return "The console prints a survey record."
 
 // The ascent stage waits at the landing site and carries the samples home.
@@ -710,10 +848,10 @@ var/global/list/space_survey_maps = list()
 			html += "<p>Contact with [probe_name] is lost: the survey map changed.</p><p><a href='?src=\ref[src];survey=abandon'>Close the mission</a></p>"
 		else
 			recharge()
-			html += "<p>[probe_name] at [probe_x],[probe_y] ([survey_cell_name(M.cell(probe_x, probe_y))]). Battery [battery]/[battery_max][dusty ? " (dusty panels)" : ""]. Samples [samples.len]/[sample_capacity]. Relay range [comms_range] cells from L.</p>"
+			html += "<p>[probe_name] on [survey_world_name(map_region)] at [probe_x],[probe_y] ([survey_cell_name(M.cell(probe_x, probe_y), map_region)]). Battery [battery]/[battery_max][dusty ? " (dusty panels)" : ""]. Samples [samples.len]/[sample_capacity]. Relay range [comms_range] cells from L.</p>"
 			html += "<p><a href='?src=\ref[src];survey=north'>North</a> <a href='?src=\ref[src];survey=south'>South</a> <a href='?src=\ref[src];survey=west'>West</a> <a href='?src=\ref[src];survey=east'>East</a> | <a href='?src=\ref[src];survey=photo'>Photograph</a> <a href='?src=\ref[src];survey=sample'>Sample</a> | <a href='?src=\ref[src];survey=ascend'>Ascend</a> <a href='?src=\ref[src];survey=abandon'>Abandon</a></p>"
 			html += map_html(M)
-			html += "<p>Moves cost 1 on plains, 2 in channels and 3 on ice; ridges block. P probe, L landing site.</p>"
+			html += "<p>Moves cost 1 on plains, 2 in [survey_cell_name(SURVEY_CHANNEL, map_region)]s and 3 on [survey_cell_name(SURVEY_ICE, map_region)]; ridges block. P probe, L landing site.</p>"
 	html += "</body></html>"
 	return jointext(html, "")
 

@@ -387,8 +387,18 @@ come with phase 3, when there is something to save.
   units of rocket propellant per tick while someone is playing, into a
   300-unit tank, enough for one lander. A launch pad on a mapped world can be
   pointed home at the mainland region; that flight needs no survey map and
-  lands like any traveller at the mainland's arrival point. Not built: more
-  bodies and the balance pass, which need Val.
+  lands like any traveller at the mainland's arrival point. Not built: the
+  balance pass, which needs Val.
+- Built (second body): the barren region is Mars, and the Moon is its own
+  world (`code/modules/space/moon_world.dm`, region id `moon`,
+  `maps/space/moon.dmm`): grey lunar regolith at -100 C, no weather and no
+  dust storms, with every phase 1-6 system working there unchanged because
+  its ground, area and map settings are barren subtypes. A launch rail picks
+  its destination among the shipped survey maps, and a mission console keeps
+  a survey record per world. Epochs (Val, 2026-11-06): the Moon is reachable
+  from 1969 and Mars from 2026, for probes and crewed flights alike; flights
+  home are never closed. Several Moon colonies linked by trains and paths
+  are planned in [connected regions](connected-regions-plan.md).
 
 ## Research branch
 

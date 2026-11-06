@@ -24,9 +24,9 @@ class NomadsCatalogTests(unittest.TestCase):
         source = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text().split('/obj/map_metadata\n', 1)[0]
         admitted = set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', source))
         # Region-only profiles declared outside the Nomads catalog folder.
-        regions = {'/obj/map_metadata/nomads/barren'}
+        regions = {'/obj/map_metadata/nomads/barren', '/obj/map_metadata/nomads/barren/moon'}
         self.assertEqual(set(declarations) | regions, admitted)
-        self.assertEqual(len(admitted), 27)
+        self.assertEqual(len(admitted), 28)
         dme = (ROOT/'civ13.dme').read_text().replace('\\', '/')
         for _, path in declarations.values():
             self.assertIn(str(path.relative_to(ROOT)).replace('\\', '/'), dme)

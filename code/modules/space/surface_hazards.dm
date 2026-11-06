@@ -5,7 +5,7 @@
 // is playing and a habitat module or landed lander is ticking there:
 //
 // - Dust storms blur the view of anyone on open ground and choke solar
-//   arrays in the barren area.
+//   arrays in the barren area. The airless Moon never rolls them.
 // - Cold snaps drive the surface temperature down, so modules, landers and
 //   unheated suits lose heat faster.
 // - Solar flares irradiate anyone on open ground; a pressure suit blocks
@@ -67,7 +67,7 @@ var/global/barren_hazard_last_pulse = -1
 			barren_hazard_announce(SPAN_NOTICE("The solar flare has passed. It is safe to go outside."))
 	if (!roll)
 		return
-	if (!barren_dust_seconds && prob(BARREN_DUST_CHANCE))
+	if (!barren_dust_seconds && space_world_has_dust_storms() && prob(BARREN_DUST_CHANCE))
 		barren_hazard_start("dust")
 	if (!barren_cold_seconds && prob(BARREN_COLD_CHANCE))
 		barren_hazard_start("cold")
