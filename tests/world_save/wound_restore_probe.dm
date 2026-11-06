@@ -16,7 +16,10 @@
 /proc/wound_restore_snapshot(datum/wound/W)
 	var/list/state = list()
 	for(var/key in wound_restore_fields())
-		state[key] = W.vars[key]
+		// created is a world.time stamp (persistence/world_time_stamps.dm):
+		// neither saved nor imported, so a restored wound starts its own clock.
+		if(key != "created")
+			state[key] = W.vars[key]
 	return json_encode(state)
 
 /proc/wound_restore_case(method, clean, encoding)
@@ -78,6 +81,7 @@
 	F = new(path)
 	var/datum/wound/lost_limb/R = map_storage.Load_Entry(F, ref)
 	durable_world_check(R && R != W && wound_restore_snapshot(R) == snapshot, "saved wound state changed")
+	durable_world_check(R.created != 717, "saved wound world.time stamp was restored")
 	durable_world_check(R.parent_organ && R.parent_organ != O && R.parent_organ.wounds.len == 1 && R.parent_organ.wounds[1] == R, "saved organ/wound identity cycle changed")
 	if(encoding == "roundtrip")
 		durable_world_check(R.embedded_objects.len == 1 && istype(R.embedded_objects[1], /obj/item/wound_restore_probe), "embedded object lost")
