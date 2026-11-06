@@ -874,6 +874,7 @@
 #include "code\modules\nomad_raids\nomad_boats.dm"
 #include "code\modules\nomad_raids\nomad_capture.dm"
 #include "code\modules\nomad_raids\nomad_trade.dm"
+#include "code\modules\nomad_raids\nomad_requests.dm"
 #include "code\modules\nomad_raids\nomad_coordinator.dm"
 #include "code\modules\nomad_raids\nomad_admin.dm"
 #include "code\modules\1713\barriers\cover.dm"

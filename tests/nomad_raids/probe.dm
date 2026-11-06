@@ -42,6 +42,7 @@ var/raid_runtime_error = FALSE
 		raid_trade_checks()
 		raid_reputation_checks()
 		raid_capture_checks()
+		raid_request_checks()
 		raid_lifecycle_checks()
 		raid_boat_checks()
 	catch(var/exception/e)
@@ -503,3 +504,31 @@ var/raid_runtime_error = FALSE
 	R.remove_all("probe")
 	qdel(runner)
 	qdel(V)
+
+// Calling a caravan by telegraph.
+/proc/raid_request_checks()
+	var/turf/T = locate(20, 26, 1)
+	raid_check(isnull(nomad_caravan_request(T, "caller", "CARAVAN")), "outside a nomads map the clans do not answer")
+	map.nomads = TRUE
+	raid_check(isnull(nomad_caravan_request(T, "caller", "HELLO")), "an ordinary word is not a request")
+	raid_check((/obj/item/weapon/reagent_containers/pill/penicillin in nomad_request_goods("medicine", 6)) && !length(nomad_request_goods("any", 6)) && (/obj/item/stack/farming/seeds/tea in nomad_request_goods("seeds", 0)), "requests name kinds of goods")
+	raid_check(nomad_caravan_request(T, "caller", "medicine") == "COMING" && nomad_request_pending, "a request is answered and a visit is on its way")
+	raid_check(nomad_caravan_request(T, "other", "SEEDS") == "BUSY", "only one called visit at a time")
+	nomad_request_pending = FALSE
+	raid_check(nomad_caravan_request(T, "caller", "SEEDS") == "LATER", "each caller waits an hour between calls")
+	nomad_rep_record("thief", "theft")
+	nomad_rep_record("thief", "theft")
+	raid_check(nomad_request_raid_roll("thief"), "a caller the clans want gets raiders")
+	// Arrival: a trade visit for the asked kind, at least half its stall of that kind.
+	raid_check(isnull(nomad_request_arrive(T, "caller", "medicine", FALSE)) && nomad_raid && nomad_raid.kind == "trade" && nomad_raid.wants == "medicine" && ("caller" in nomad_raid.target_ckeys), "the called caravan sets off for the telegraph")
+	var/datum/nomad_raid/R = nomad_raid
+	if (R)
+		R.begin_trade()
+		var/asked = 0
+		var/list/kinds = nomad_request_goods("medicine", map.ordinal_age)
+		for (var/obj/item/I in R.goods)
+			if (I.type in kinds)
+				asked++
+		raid_check(R.goods.len && asked * 2 >= R.goods.len, "at least half the stall is what was asked for ([asked] of [R.goods.len])")
+		R.remove_all("probe")
+	map.nomads = FALSE

@@ -61,6 +61,7 @@
 		var/stripmsg = message
 		currmsg = "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [name]:</b></font> \"...[message]...\""
 		transmit(currmsg,stripmsg)
+		nomad_request(user, stripmsg) // CARAVAN, MEDICINE and the like call the nomad clans
 		playsound(loc, 'sound/machines/telegraph.ogg', 65)
 		icon_state = "telegraph_active"
 		update_icon()

@@ -209,7 +209,8 @@ The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):
   `tactic`, `focus`, `loot` or `price`). The party controller checks it against
   the state and bounds and fails with `refused` and the reason otherwise.
 - `visit_start` starts raiders or traders (`kind`) at the busiest settlement,
-  or near `target`, with an optional `size`.
+  or near `target`, with an optional `size` and `wants` (a kind of goods for
+  traders: `medicine`, `seeds`, `food`, `metal`, `cloth` or `tools`).
 
 Orders and starts go to the admin log. `visitor_voice.py` (see Tools) is a
 ready-made coordinator.

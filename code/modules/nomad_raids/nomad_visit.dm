@@ -14,6 +14,7 @@
 /datum/nomad_raid
 	should_save = FALSE
 	var/tmp/kind = "raid" // raid or trade
+	var/tmp/wants = null // a kind of goods asked for by telegraph (nomad_requests.dm)
 	var/tmp/state = "march" // march, parley, trade, assault, loot, leave, ended
 	var/tmp/clan
 	var/tmp/started_by
@@ -696,7 +697,7 @@
 	return "[clan] [kind]: [state] for [round((world.time - state_at) / 10)] s, [alive.len] of [initial_size] standing[extra], target [target.x],[target.y],[target.z][voice_active() ? ", coordinator attached" : ""]."
 
 // Starts a visit on a turf. Returns null on success, else why not.
-/proc/start_nomad_raid(turf/target, list/ckeys, size, by, kind = "raid")
+/proc/start_nomad_raid(turf/target, list/ckeys, size, by, kind = "raid", wants = null)
 	if (nomad_raid)
 		return "a visit is already running"
 	if (!target)
@@ -710,6 +711,7 @@
 		R.remove_all("could not start: [error]")
 		qdel(R)
 		return error
+	R.wants = wants
 	nomad_raid = R
 	R.begin()
 	return null

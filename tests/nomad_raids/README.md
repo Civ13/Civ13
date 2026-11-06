@@ -20,6 +20,9 @@ the parley and limiting loot to the tribute, an attack starting the assault,
 restraints by age, a raider with restraints disarming, knocking down, binding
 and stripping a foe (a bound prisoner is no longer fought), chasing a foe who
 ran and letting go of one who is down,
+calling a caravan by telegraph (nomads maps only, request words, one call
+at a time, the hourly limit, raiders for wanted callers, and a called stall
+at least half of the kind asked for),
 carrying loot, a fallen raider dropping loot, weapon and bag, removal dropping
 loot, and the real controller loop marching to an empty target, turning back
 and despawning every raider; and an island target: no walking route, a

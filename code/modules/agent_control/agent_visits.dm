@@ -33,7 +33,8 @@
 			agent_fail("bad_target", "target has no turf")
 		for (var/mob/living/human/H in nomad_raid_defenders_near(T))
 			ckeys += H.ckey
-	var/error = start_nomad_raid(T, ckeys, size, "agent [A.name]", kind)
+	var/wants = istext(req["wants"]) && length(nomad_request_goods(req["wants"], map ? map.ordinal_age : 0)) ? req["wants"] : null
+	var/error = start_nomad_raid(T, ckeys, size, "agent [A.name]", kind, wants)
 	if (error)
 		agent_fail("refused", error)
 	audit(A, "visit_start", nomad_raid.status_text())

@@ -20,6 +20,7 @@ Visits are not started at random.
 | `nomad_visit.dm` | The party controller: march, parley, assault, loot, leave |
 | `nomad_capture.dm` | Raiders binding and stripping prisoners, and chasing foes who run |
 | `nomad_trade.dm` | Trader caravans |
+| `nomad_requests.dm` | Calling a caravan by telegraph |
 | `nomad_reputation.dm` | What the clans think of each player |
 | `nomad_coordinator.dm` | What a coordinator sees and may order |
 | `nomad_admin.dm` | Admin verbs |
@@ -120,6 +121,23 @@ from the sixth age).
   trade and starts a fight.
 
 Laid-out goods are not saved until sold.
+
+## Calling a caravan
+
+On a nomads map, a player at a telegraph wired to a utility pole (within two
+tiles) can send a request word: `CARAVAN`, `TRADERS`, `TRADER` or `TRADE` for
+any goods, or `MEDICINE` (or `MEDS`), `SEEDS`, `FOOD`, `METAL`, `CLOTH` or
+`TOOLS`. The clans wire back `COMING`, and one to three minutes later a
+caravan of two sets off toward the telegraph. A caravan called for a kind of
+goods lays out at least half its stall of that kind (medicine is bandages, and
+penicillin and paracetamol from the sixth age).
+
+The wire is not private. One call in five is answered by a raiding party of
+four instead, with the same reply; one in ten for friends of the clans, and
+always for players the clans want. Each player may call once an hour (`LATER`),
+and only while no other visit is running or on its way (`BUSY`). Calls go to
+the game log and to online admins. Agents can ask for a kind of goods with
+`visit_start`'s `wants` argument.
 
 ## Reputation
 

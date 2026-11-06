@@ -49,9 +49,11 @@
 		if (!T.density && !nomad_raid_ground_error(T))
 			stall += T
 	var/list/table = nomad_trade_goods(map ? map.ordinal_age : 0)
+	// A caravan called for a kind of goods lays out at least half of that kind.
+	var/list/asked = wants ? nomad_request_goods(wants, map ? map.ordinal_age : 0) : list()
 	var/count = min(NOMAD_TRADE_GOODS, stall.len)
 	for (var/i = 1, i <= count, i++)
-		var/path = pick(table)
+		var/path = (asked.len && i % 2 == 1) ? pick(asked) : pick(table)
 		var/obj/item/I
 		if (ispath(path, /obj/item/stack))
 			I = new path(stall[i], rand(2, 5), FALSE)
