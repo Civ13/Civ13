@@ -45,7 +45,7 @@ class ModeLockSourceTests(unittest.TestCase):
         self.assertIn('map_storage.round_mode_metadata(splittext(file2text("map_saves/map.txt"), "\\n"))', source)
         self.assertIn('modes.len != 4', source)
         self.assertIn('modes["persistence"] || modes["perschadplus"] || (config && config.allowedgamemodes == "PERSISTENCE")', source)
-        save = source.index('if(!save_generation())')
+        save = source.index('if(!save_generation_settled())')
         check = source.index('expected_persistence != saved_persistence_mode()', save)
         self.assertLess(check, source.index('publish(I)', check))
         fixture = (ROOT / 'tests/world_save/lifecycle_probe.dm').read_text()

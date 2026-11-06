@@ -193,6 +193,15 @@
 	if(processes.time_of_day_change && processes.time_of_day_change.updating_lighting) reasons += "time-of-day lighting update"
 	return reasons.len ? jointext(reasons, ", ") : null
 
+// True when a blocker cannot clear by waiting: a failed fire callback, failed
+// explosion work or required event recovery. Anything else settles on its own.
+/map_storage/proc/durable_world_effects_stuck()
+	if(map.nomads_recovery_required) return TRUE
+	for(var/datum/nomads_fire_callback/C in nomads_fire_callbacks)
+		if(C.failed) return TRUE
+	var/process/explosion/P = processes.explosion
+	return P && P.nomads_work_failed
+
 // Read-only rejection before player ownership or timer state is changed.
 /map_storage/proc/require_durable_world_idle()
 	// A legacy incoming generation does not make active current-world work safe.

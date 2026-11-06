@@ -55,7 +55,10 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	return session
 /datum/nomads_lifecycle_control/proc/snapshot(ok = TRUE, error)
 	var/locked = busy || persistence_save_in_progress || persistence_restart.busy
-	var/ready = ticker && ticker.current_state == GAME_STATE_PLAYING && !locked && !last_error && !persistence_restart.startup_hold && !map_storage.last_error && !persistence_restart.last_error && (!persistence_restart.import_started || (persistence_restart.import_complete && persistence_restart.players_ready))
+	// A save that failed cleanly (no intent left, world still running) must not
+	// block the supervisor's next attempt; its message stays in "error".
+	var/retryable = persistence_restart.save_failure_retryable && !persistence_restart.exists()
+	var/ready = ticker && ticker.current_state == GAME_STATE_PLAYING && !locked && (retryable || (!last_error && !map_storage.last_error && !persistence_restart.last_error)) && !persistence_restart.startup_hold && (!persistence_restart.import_started || (persistence_restart.import_complete && persistence_restart.players_ready))
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
@@ -148,6 +151,10 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	used_operations += operation
 	busy = TRUE // Reserve before the asynchronous saver can yield.
 	last_error = null
+	// The supervisor reads "error" as this operation's failure; drop a stale one.
+	if(persistence_restart.save_failure_retryable && !persistence_restart.exists())
+		persistence_restart.last_error = null
+		map_storage.last_error = null
 	spawn(0)
 		run_operation()
 	return json_encode(snapshot())

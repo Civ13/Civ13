@@ -199,6 +199,14 @@ var/lifecycle_reclaim_ok = TRUE
 		check(T.saves == 1 && !shutdown_calls && !L.busy && L.last_error && !T.exists(), "failed save shutdown or retained lock")
 		R = lifecycle_reply(L, I)
 		check(!R["ok"] && T.saves == 1, "failed operation replay saved again")
+		// A clean failure leaves the world running: the supervisor may retry.
+		R = L.snapshot()
+		check(R["ready"] && !R["busy"] && R["error"], "cleanly failed save blocked the next attempt or hid its error")
+		I = lifecycle_request(L, "save_shutdown")
+		R = lifecycle_reply(L, I)
+		check(R["ok"] && R["busy"] && !R["error"], "retry after a failed save was refused or reported the stale error")
+		sleep(2)
+		check(T.saves == 2 && !shutdown_calls && !L.busy && L.last_error, "retry after a failed save did not run")
 		T = new_transaction()
 		T.validation_ok = FALSE
 		I = lifecycle_request(L, "save_shutdown")
