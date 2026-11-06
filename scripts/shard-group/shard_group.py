@@ -11,11 +11,13 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json freeze|thaw [--region ID]
     python shard_group.py --config group.json adopt --region ID --from PATH
     python shard_group.py --config group.json check-update [--region ID]
+    python shard_group.py --config group.json help-status|help-start|help-stop
 
 Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
 `gaia_host.py [--config gaia.json] --group group.json serve`, which also keeps
-the group's transfer agents and coordinator running.
+the group's transfer agents and coordinator running, and (when the group
+config has "player_help") one "Ask for help" bridge per region.
 
 Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
 (one detached worker per action, progress in operation.json, save-and-stop
@@ -39,6 +41,7 @@ import socket
 import struct
 import subprocess
 import sys
+import time
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'gaia-host'))
@@ -46,7 +49,9 @@ import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
-                 'kill', 'force-restart', 'stage', 'enrol')
+                 'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop')
+HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
+HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
@@ -200,6 +205,15 @@ def load_group(path):
             ok = type(value) in (int, float) and value >= 0
         if not ok:
             raise ValueError('%s has the wrong type' % key)
+    # Player Help ("Ask for help"): the host service keeps one bridge per listed region
+    # running (scripts/player_help_bridge.py against that region's SQL/player-help spool).
+    settings = group.get('player_help')
+    if settings is not None:
+        if type(settings) is not dict or type(settings.get('config')) is not str or not settings['config']:
+            raise ValueError('player_help needs a config path')
+        chosen = settings.setdefault('regions', [r['id'] for r in regions])
+        if type(chosen) is not list or not chosen or len(set(map(str, chosen))) != len(chosen) or any(c not in ids for c in chosen):
+            raise ValueError('player_help regions must be distinct region ids of the group')
     group['_path'] = str(Path(path).resolve())
     return group
 
@@ -944,8 +958,137 @@ def region_summary(group, platform=None):
     return summary
 
 
+def help_dir(group):
+    """Where the group keeps its Player Help bridge logs, pids and stop marker."""
+    return Path(group['root']) / 'player-help'
+
+
+def help_stop_file(group):
+    """While this exists the bridges stop (each is started with it as --stop-file) and stay stopped."""
+    return help_dir(group) / 'stopped'
+
+
+def help_spool(group, region_id):
+    return region_dir(group, region_id) / 'SQL' / 'player-help'
+
+
+def help_pid(group, region_id, now=time.time):
+    """The region's running bridge, or None. The bridge's worker.lock names its pid; a
+    bridge we started recently may still be loading its corpus before it takes the lock."""
+    try:
+        pid = int((help_spool(group, region_id) / 'worker.lock' / 'pid').read_text(encoding='ascii').strip())
+        if pid > 0 and process_alive(pid):
+            return pid
+    except (OSError, ValueError):
+        pass
+    started = help_dir(group) / ('%s.pid' % region_id)
+    try:
+        pid = int(started.read_text(encoding='utf-8').strip())
+        if pid > 0 and now() - started.stat().st_mtime < HELP_STARTING_SECONDS and process_alive(pid):
+            return pid
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def clear_help_lock(group, region_id):
+    """Remove a worker.lock left by a bridge that is gone (a reboot, a crash, a forced stop);
+    a new bridge refuses to start while it exists."""
+    lock = help_spool(group, region_id) / 'worker.lock'
+    if lock.exists():
+        (lock / 'pid').unlink(missing_ok=True)
+        lock.rmdir()
+
+
+def help_settings(group):
+    settings = group.get('player_help')
+    if not settings:
+        raise Refused('player_help is not configured for this group')
+    return settings
+
+
+def ensure_help(group, start=detach):
+    """Start a Player Help bridge for every listed region that has none, unless stopped
+    on request. Returns the started region ids and per-region errors."""
+    settings = group.get('player_help')
+    started, errors = [], {}
+    if not settings or help_stop_file(group).exists():
+        return started, errors
+    folder = help_dir(group)
+    folder.mkdir(parents=True, exist_ok=True)
+    for region_id in settings['regions']:
+        # One region that cannot start its bridge must not keep the others down.
+        try:
+            if help_pid(group, region_id):
+                continue
+            game = region_dir(group, region_id)
+            bridge = game / 'scripts' / 'player_help_bridge.py'
+            if not bridge.exists():
+                raise OSError('%s is missing (run setup)' % bridge)
+            clear_help_lock(group, region_id)
+            argv = [group['python'], '-I', str(bridge), '--game-root', str(game), '--config', settings['config'],
+                    '--stop-file', str(help_stop_file(group))]
+            pid = start(argv, game, folder / ('%s.log' % region_id))
+            (folder / ('%s.pid' % region_id)).write_text('%d\n' % pid, encoding='utf-8')
+            started.append(region_id)
+        except OSError as error:
+            errors[region_id] = str(error)[:300]
+    return started, errors
+
+
+def help_status(group, now=time.time):
+    """Whether each region's bridge runs, and how fresh its heartbeat (health.json) is."""
+    settings = group.get('player_help')
+    if not settings:
+        return {'configured': False}
+    regions = {}
+    for region_id in settings['regions']:
+        pid = help_pid(group, region_id, now)
+        entry = {'running': pid is not None, 'pid': pid, 'log': str(help_dir(group) / ('%s.log' % region_id))}
+        health = help_spool(group, region_id) / 'health.json'
+        try:
+            answer = json.loads(health.read_text(encoding='utf-8'))
+            entry['enabled'] = type(answer) is dict and answer.get('enabled') is True
+            entry['heartbeat_age_seconds'] = max(0, int(now() - health.stat().st_mtime))
+        except (OSError, ValueError):
+            entry['enabled'] = False
+        regions[region_id] = entry
+    return {'configured': True, 'stopped': help_stop_file(group).exists(), 'config': settings['config'], 'regions': regions}
+
+
+def help_start(group, start=detach):
+    """Clear a stop request and start every missing bridge now."""
+    help_settings(group)
+    help_stop_file(group).unlink(missing_ok=True)
+    started, errors = ensure_help(group, start)
+    return {'started': started, 'errors': errors}
+
+
+def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.monotonic, kill=None):
+    """Stop every bridge and keep them stopped until help-start. Bridges see the stop
+    file and finish the answers they are writing; one that has not exited by the
+    timeout (or was started without the stop file) is ended."""
+    settings = help_settings(group)
+    help_dir(group).mkdir(parents=True, exist_ok=True)
+    help_stop_file(group).write_text('stopped on request\n', encoding='utf-8')
+    running = {r: help_pid(group, r) for r in settings['regions']}
+    running = {r: pid for r, pid in running.items() if pid}
+    stopped = sorted(running)
+    deadline = clock() + timeout
+    while running and clock() < deadline:
+        sleep(1)
+        running = {r: pid for r, pid in running.items() if process_alive(pid)}
+    kill = kill or Platform().kill_tree
+    for region_id, pid in running.items():
+        kill(pid)
+        clear_help_lock(group, region_id)
+    for region_id in settings['regions']:
+        (help_dir(group) / ('%s.pid' % region_id)).unlink(missing_ok=True)
+    return {'stopped': stopped, 'forced': sorted(running)}
+
+
 def supervise(group, start=detach):
-    """Start the group's routing relay, transfer agents or coordinator if any is not running.
+    """Start the group's routing relay, transfer agents, coordinator or Player Help bridges if any is not running.
 
     The host service calls this every half minute. Agents run even while their world
     sleeps or is cold, so travellers to it are journaled and handed over on wake.
@@ -958,6 +1101,11 @@ def supervise(group, start=detach):
             started['relay'] = True
     except OSError as error:
         started['relay_error'] = str(error)[:300]
+    helped, help_errors = ensure_help(group, start)
+    if helped:
+        started['player_help'] = helped
+    if help_errors:
+        started['player_help_errors'] = help_errors
     if not group['transfers']:
         return started
     for region in group['regions']:
@@ -1031,6 +1179,12 @@ def main(argv=None):
             except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
                 print(json.dumps({'ok': False, 'component': 'server', 'error': str(error)[:300]}))
                 return 1
+        elif args.action == 'help-status':
+            result = help_status(group)
+        elif args.action == 'help-start':
+            result = help_start(group)
+        elif args.action == 'help-stop':
+            result = help_stop(group)
         elif args.action == 'adopt':
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')

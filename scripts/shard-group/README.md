@@ -224,3 +224,33 @@ A staged build is never installed over a newer build, and an `update` of any
 other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
+
+## Player help ("Ask for help")
+
+With a `player_help` key, the host service (`gaia_host.py serve`) also keeps
+one Player Help bridge per region running, so help starts with the host:
+
+```json
+"player_help": {"config": "D:/GitHub/Civ13/data/player-help-config.json", "regions": ["gaia", "railyard"]}
+```
+
+`regions` defaults to every region. Each bridge is the region's own
+`scripts/player_help_bridge.py --game-root <region> --config <config>`, run with
+the group `python` and `--stop-file <root>/player-help/stopped`, logging to
+`<root>/player-help/<id>.log`. Every half minute a region without a live bridge
+(its `SQL/player-help/worker.lock` names a dead pid, or there is none) gets one,
+after a lock left by a dead bridge is removed. One region that cannot start its
+bridge does not keep the others down.
+
+- `help-status` prints each region's `running`, `pid`, `enabled`, `log` and
+  `heartbeat_age_seconds` (how old its `health.json` is), and whether help is
+  `stopped` on request.
+- `help-stop` writes the stop file, waits up to 60 seconds for the bridges to
+  finish their answers and exit, then ends any still running (a bridge started
+  without the stop file never sees it). The host service leaves them stopped.
+- `help-start` removes the stop file and starts the missing bridges at once.
+
+The launcher's **Player help** tab shows this status and has Start and Stop.
+Run only one supervisor per region: a bridge started some other way still holds
+the region's lock, so the host service leaves it alone, but it is not restarted
+when it exits and ignores the stop file until it is ended.
