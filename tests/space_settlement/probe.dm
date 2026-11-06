@@ -2,8 +2,8 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 8
-	maxy = 8
+	maxx = 20
+	maxy = 20
 	maxz = 1
 	turf = /turf
 	area = /area
@@ -557,6 +557,116 @@ var/space_runtime_error = FALSE
 	space_check(flight_node && flight_node.mode == RESEARCH_MODE_ANALYSIS && flight_node.era_tier == 9 && ("planetary_survey" in flight_node.prereqs), "Crewed Flight follows Planetary Survey and is not an era capstone")
 	space_check(get_recipe_node_req("/obj/structure/region_gate/trail_marker/launch_pad") == "crewed_flight" && get_recipe_node_req("/obj/structure/crewed_lander") == "crewed_flight", "the pad and the lander are gated on Crewed Flight")
 
+// Phase 3: habitat modules, hatches, the airlock pump and life support.
+/obj/structure/life_support/electrolyser/space_test/has_power()
+	return TRUE
+/obj/structure/life_support/scrubber/space_test/has_power()
+	return TRUE
+/obj/structure/life_support/heater/space_test/has_power()
+	return TRUE
+
+/proc/space_habitat_checks()
+	space_check(habitat_module_refusal(locate(2, 2, 1), null) && habitat_module_refusal(null, null), "a module that would not fit is refused")
+	var/obj/structure/habitat_core/Q = habitat_unfold(locate(10, 12, 1), "quarters")
+	var/walls = 0
+	var/floors = 0
+	for (var/turf/T in block(locate(8, 10, 1), locate(12, 14, 1)))
+		if (istype(T, /turf/wall/habitat_shell))
+			walls++
+		else if (istype(T, /turf/floor/habitat))
+			floors++
+	space_check(Q && walls == 16 && floors == 9 && length(Q.ring()) == 16 && length(Q.interior()) == 9, "a kit unfolds into a 3x3 floor inside a 16-tile hull")
+	var/bunks = 0
+	for (var/obj/structure/bed/lander_bunk/B in range(1, Q))
+		bunks++
+	space_check(bunks == 2 && Q.kind == "quarters" && Q.breaches() == 0, "quarters come with two bunks and a sealed hull")
+	var/turf/floor/habitat/F = locate(9, 11, 1)
+	space_check(space_near(Q.air().pressure_kpa(), 100) && F.outside_air_breathable() && F.outside_ambient_c() == 20, "a new module is pressurised, breathable and warm")
+	space_check(habitat_module_site(locate(13, 12, 1)) == locate(14, 12, 1) && habitat_module_site(locate(10, 15, 1)) == locate(10, 16, 1), "a kit unpacked near a module snaps to dock beside it")
+	space_check(habitat_module_refusal(locate(14, 12, 1), null) == null && habitat_module_refusal(locate(12, 12, 1), null), "docking shares a hull but never overlaps a floor")
+
+	var/obj/structure/habitat_core/airlock/A = habitat_unfold(locate(14, 12, 1), "airlock", /obj/structure/habitat_core/airlock, NORTH)
+	var/obj/structure/simple_door/habitat_hatch/inner = locate() in locate(12, 12, 1)
+	var/obj/structure/simple_door/habitat_hatch/outer = locate() in locate(16, 12, 1)
+	space_check(inner && outer && !(locate(/obj/structure/simple_door/habitat_hatch) in locate(14, 14, 1)), "a docked airlock gets a shared inner hatch and its outer hatch on the far side")
+	space_check(Q.breaches() == 0 && A.breaches() == 0 && Q.neighbour_through(locate(12, 12, 1)) == A, "closed hatches keep both modules sealed")
+	var/turf/floor/habitat/H = locate(12, 12, 1)
+	space_check(H.habitat_core() && H.outside_air_breathable(), "a hatch tile shares a neighbouring module's air")
+
+	A.air().oxygen = 0
+	A.air().co2 = 0
+	A.air().inert = 0
+	inner.density = FALSE
+	space_check(length(Q.open_neighbours()) == 1 && Q.breaches() == 0, "an open hatch to a module is not a breach")
+	Q.step_air(1, 0)
+	space_check(space_near(Q.air().pressure_kpa(), A.air().pressure_kpa()) && Q.air().pressure_kpa() < 51 && Q.air().pressure_kpa() > 49, "an open hatch shares the air of two modules")
+	inner.density = TRUE
+	var/before = Q.air().oxygen + Q.air().inert + A.air().oxygen + A.air().inert
+	space_check(isnull(A.pump("down")) && A.air().pressure_kpa() < 0.01 && Q.air().pressure_kpa() > 95, "pumping down moves the airlock's air into the module")
+	space_check(isnull(A.pump("up")) && abs(A.air().pressure_kpa() - Q.air().pressure_kpa()) < 0.01, "pressurising evens the airlock with the module")
+	var/after = Q.air().oxygen + Q.air().inert + A.air().oxygen + A.air().inert
+	space_check(after < before && after > before * 0.9, "the hand pump loses a little air each way")
+	outer.density = FALSE
+	space_check(A.breaches() == 1 && A.pump("down"), "an open outer hatch is a breach and stops the pump")
+	var/p = A.air().pressure_kpa()
+	A.step_air(1, 0)
+	space_check(A.air().pressure_kpa() < p, "the airlock vents through its open outer hatch")
+	outer.density = TRUE
+
+	var/turf/hole = locate(10, 14, 1)
+	hole = hole.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	space_check(Q.breaches() == 1 && habitat_ring_core(hole) == Q && habitat_patchable(hole) && !habitat_patchable(F) && !habitat_patchable(locate(12, 12, 1)), "a missing hull panel is a breach a patch can close")
+	hole.ChangeTurf(/turf/wall/habitat_shell, FALSE, FALSE)
+	space_check(Q.breaches() == 0, "a patched hull is sealed again")
+
+	var/mob/living/human/space_probe_crew/crew = new(F)
+	space_check(Q.breathers() == 1, "people inside are counted as breathers")
+	crew.loc = null
+
+	var/datum/habitat_ledger/L = Q.air()
+	L.oxygen = 0
+	var/obj/structure/life_support/electrolyser/unpowered = new(locate(9, 13, 1))
+	unpowered.water = 100
+	space_check(!unpowered.work(L, 2) && L.oxygen == 0, "an uncabled electrolyser does nothing")
+	qdel(unpowered)
+	var/obj/structure/life_support/electrolyser/space_test/E = new(locate(9, 13, 1))
+	space_check(!E.work(L, 2) && L.oxygen == 0, "an electrolyser without water does nothing")
+	E.water = 100
+	space_check(E.work(L, 2) && space_near(L.oxygen, 0.2) && space_near(E.water, 99.9), "an electrolyser turns water into oxygen")
+	var/obj/structure/life_support/scrubber/space_test/S = new(locate(11, 13, 1))
+	L.co2 = 9
+	space_check(S.work(L, 2) && space_near(L.co2, 8.8), "a scrubber strips CO2")
+	L.co2 = 1
+	space_check(!S.work(L, 2) && L.co2 == 1, "a scrubber leaves CO2 below its target")
+	var/obj/structure/life_support/heater/space_test/W = new(locate(11, 11, 1))
+	L.temperature = 0
+	space_check(W.work(L, 2) && L.temperature == 1, "a heater warms the module")
+	var/o = L.oxygen
+	Q.step_air(2, 0)
+	space_check(L.oxygen > o && L.temperature > 1, "the core runs the machines inside it each step")
+	var/stored = json_encode(L.to_list())
+	Q.process()
+	space_check(json_encode(Q.air().to_list()) == stored, "modules do not tick while nobody is connected")
+	space_check(issaved(Q.air_oxygen) && issaved(Q.kind) && !issaved(Q.ledger), "a module saves its air as plain numbers on the core")
+	Q.ledger = null
+	space_check(json_encode(Q.air().to_list()) == stored, "the air rebuilds from those numbers")
+
+	var/obj/structure/habitat_core/G = habitat_unfold(locate(10, 17, 1), "greenhouse")
+	var/obj/structure/hydroponics_tray/tray = locate() in locate(9, 18, 1)
+	space_check(G && tray && !(locate(/obj/structure/simple_door/habitat_hatch) in locate(10, 15, 1)), "a greenhouse comes with trays and only docks at the spacing")
+	if (tray)
+		tray.crop = "wheat"
+		tray.stage = 1
+		G.air().co2 = 1
+		var/oxygen_before = G.air().oxygen
+		G.step_air(2, 0)
+		space_check(G.air().co2 < 1 && G.air().oxygen > oxygen_before, "growing plants turn CO2 into oxygen")
+
+	var/datum/research_node/sealed = get_research_node("sealed_habitats")
+	var/datum/research_node/support = get_research_node("life_support")
+	space_check(sealed && support && ("crewed_flight" in sealed.prereqs) && ("sealed_habitats" in support.prereqs) && sealed.mode == RESEARCH_MODE_ANALYSIS && support.mode == RESEARCH_MODE_ANALYSIS, "Sealed Habitats and Life Support follow Crewed Flight as ordinary nodes")
+	space_check(get_recipe_node_req("/obj/item/habitat_kit/airlock") == "sealed_habitats" && get_recipe_node_req("/obj/item/habitat_sealant") == "sealed_habitats" && get_recipe_node_req("/obj/structure/life_support/electrolyser") == "life_support", "module kits and machines are gated on their nodes")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -574,6 +684,7 @@ var/space_runtime_error = FALSE
 		space_submarine_checks()
 		space_exposure_checks()
 		space_flight_checks()
+		space_habitat_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
