@@ -269,6 +269,7 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list(), 2, "probe", "trade")) && R.kind == "trade", "a caravan sets up")
 	nomad_raid = R
 	raid_check(findtext(R.leader.name, "trader"), "the caravan has a trader")
+	raid_check((/obj/item/stack/farming/seeds/tea in nomad_trade_goods(0)) && !(/obj/item/weapon/reagent_containers/pill/penicillin in nomad_trade_goods(5)) && (/obj/item/weapon/reagent_containers/pill/penicillin in nomad_trade_goods(6)), "caravans carry tea seeds, and medicine pills from the sixth age")
 	var/turf/yard = get_step(get_step(R.leader, SOUTH), SOUTH)
 	var/obj/item/weapon/material/spear/lying = new(yard)
 	lying.fingerprintslast = "Neighbour"

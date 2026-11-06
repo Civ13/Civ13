@@ -18,6 +18,10 @@
 		goods += list(/obj/item/stack/material/bronze, /obj/item/stack/material/cloth)
 	if (age >= 2)
 		goods += list(/obj/item/stack/material/iron, /obj/item/weapon/material/kitchen/utensil/knife/iron)
+	// Seeds travel with every caravan; pills once there is chemistry to make them.
+	goods += /obj/item/stack/farming/seeds/tea
+	if (age >= 6)
+		goods += list(/obj/item/weapon/reagent_containers/pill/penicillin, /obj/item/weapon/reagent_containers/pill/paracetamol)
 	return goods
 
 /proc/nomad_trade_price(obj/item/I)

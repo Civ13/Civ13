@@ -105,8 +105,9 @@ age 6 a revolver.
 
 The caravan marches in like a raid, with caravan bells instead of horns. When
 a player is near, the trader lays up to six goods on the tiles around them
-(leather, pelts, bone, rope, bandages and meat; bronze and cloth, then iron
-and an iron knife in later ages).
+(leather, pelts, bone, rope, bandages, meat and tea seeds; bronze and cloth,
+then iron and an iron knife in later ages, and penicillin and paracetamol pills
+from the sixth age).
 
 - **Paying.** Drop items at the trader's feet. Their worth is credited to
   whoever last handled them. Gear already lying near the stall when trading
