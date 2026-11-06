@@ -932,8 +932,9 @@
 	if (!C)
 		return
 	C.awaiting_driver = TRUE
-	C.requested_goal = copytext(sanitize(goal), 1, 257)
-	log_admin("[key_name(src)] spawned AI character [M] ([agent_ref(M)]) for agent [agent_name]: [C.requested_goal]")
+	// Plain text: the autopilot hands it to the model as written. Encode it only for the log.
+	C.requested_goal = copytext(trim(replacetext(replacetext(replacetext(goal, ascii2text(13), " "), "\n", " "), "\t", " ")), 1, 257)
+	log_admin("[key_name(src)] spawned AI character [M] ([agent_ref(M)]) for agent [agent_name]: [html_encode(C.requested_goal)]")
 	message_admins("[key_name_admin(src)] spawned AI character [M] for agent [agent_name].")
 	var/last = agent_control.last_watch[agent_name]
 	if (isnull(last) || world.time - last > AGENT_WATCH_WINDOW)

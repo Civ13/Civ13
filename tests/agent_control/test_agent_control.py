@@ -276,10 +276,14 @@ class SecurityContractTests(unittest.TestCase):
         self.assertLess(verb.index("check_rights(R_FUN)"), verb.index("act_character_spawn"))
         self.assertIn('A.has_scope("characters")', verb)  # only agents allowed to play characters
         self.assertIn("C.awaiting_driver = TRUE", verb)
+        self.assertLess(verb.index("act_character_spawn"), verb.index("C.awaiting_driver = TRUE"))
+        self.assertNotIn("sanitize(goal)", verb)  # the model gets the goal as written, not HTML entities
+        self.assertIn("html_encode(C.requested_goal)", verb)
         self.assertIn("log_admin(", verb)
         self.assertIn("admin_verbs_fun |= /client/proc/spawn_ai_character", source)
         listing = re.search(r"/datum/agent_control/proc/act_character_list\(.*?(?=\n/)", source, re.S).group(0)
         self.assertIn('row["waiting"] = TRUE', listing)
+        self.assertRegex(listing, r'if \(C\.awaiting_driver\)\s+row\["waiting"\] = TRUE')
         self.assertIn("last_watch[A.name] = world.time", listing)
         observe = re.search(r"/datum/agent_control/proc/act_character_observe\(.*?(?=\n/)", source, re.S).group(0)
         self.assertLess(observe.index("character_arg(A, req)"), observe.index("C.awaiting_driver = FALSE"))
@@ -952,33 +956,50 @@ class AutopilotTests(unittest.TestCase):
 
     def test_watch_plays_characters_an_admin_spawned(self):
         class Proc:
-            def __init__(self, alive):
-                self.alive = alive
+            def __init__(self, code=None):
+                self.code = code
 
             def poll(self):
-                return None if self.alive else 0
+                return self.code
 
         rows = [
             {"ref": "[0x1]", "kind": "spawned", "waiting": True, "goal": "Fish", "name": "Ada", "stat": 0},
-            {"ref": "[0x2]", "kind": "spawned", "stat": 0},  # already driven
+            {"ref": "[0x2]", "kind": "spawned", "stat": 0},  # driven by someone else
             {"ref": "[0x3]", "kind": "handover", "waiting": True, "stat": 0},  # a player's own character
             {"ref": "[0x4]", "kind": "spawned", "waiting": True, "stat": 2},  # dead
-            {"ref": "[0x5]", "kind": "spawned", "waiting": True, "stat": 0},  # its run is still going
-            {"ref": "[0x6]", "kind": "spawned", "waiting": True, "stat": 0},  # tried a moment ago
+            {"ref": "[0x5]", "kind": "spawned", "stat": 0},  # its run is still going
+            {"ref": "[0x6]", "kind": "spawned", "stat": 0},  # its run failed a moment ago
+            {"ref": "[0x7]", "kind": "spawned", "stat": 0},  # its run reached its step limit
         ]
-        running = {"[0x5]": Proc(True), "[0x6]": Proc(False)}
-        picked = autopilot.watch_targets(rows, running, {"[0x6]": 900.0}, 1000.0)
-        self.assertEqual([row["ref"] for row in picked], ["[0x1]"])
-        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, running, {"[0x6]": 900.0}, 900.0 + autopilot.WATCH_RETRY)], ["[0x1]", "[0x6]"])
-        args = autopilot.argparse.Namespace(goal="default", model="m", ollama_url="http://h:11434", player_help_config=None, num_ctx=8192, timeout=120.0, keep_alive="30m", memory="", catalog="", leather="", steps=autopilot.WATCH_STEPS, minutes=None, interval=2.0)
+        runs = {
+            "[0x5]": {"process": Proc(), "at": 0.0, "goal": "Build", "failed": False},
+            "[0x6]": {"process": Proc(1), "at": 900.0, "goal": "Hunt", "failed": False},
+            "[0x7]": {"process": Proc(0), "at": 0.0, "goal": "Rest", "failed": False},
+            "[0x9]": {"process": None, "at": 0.0, "goal": "Gone", "failed": True},  # no longer listed
+        }
+        autopilot.reap_runs(runs, rows)
+        self.assertEqual(set(runs), {"[0x5]", "[0x6]"})  # finished on purpose or gone: forgotten
+        self.assertTrue(runs["[0x6]"]["failed"])
+        self.assertIsNone(runs["[0x6]"]["process"])  # the exited child was polled (reaped)
+        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 1000.0)], ["[0x1]"])
+        later = autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY)
+        self.assertEqual([(row["ref"], row["goal"]) for row in later], [("[0x1]", "Fish"), ("[0x6]", "Hunt")])  # the failed run keeps its goal
+        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY, retry_failed=False)], ["[0x1]"])
+
+        args = autopilot.argparse.Namespace(goal="default", model="m", ollama_url="http://h:11434", player_help_config=None, num_ctx=8192, timeout=120.0, keep_alive="30m", memory="", catalog="", leather="", steps=autopilot.WATCH_STEPS, minutes=None, interval=2.0, release=False)
         command = autopilot.watch_command(args, rows[0])
         self.assertEqual(command[3:7], ["--character", "[0x1]", "--goal", "Fish"])
         self.assertIn("--model", command)
         self.assertEqual(command[command.index("--steps") + 1], str(autopilot.WATCH_STEPS))
         self.assertNotIn("--memory", command)  # empty flags keep the child's defaults
         self.assertNotIn("--player-help-config", command)
+        self.assertNotIn("--release", command)
+        args.release = True
+        self.assertEqual(autopilot.watch_command(args, rows[0])[-1], "--release")
+        args.release = False
 
         launched = []
+        children = []
 
         class Client:
             def __init__(self):
@@ -986,20 +1007,27 @@ class AutopilotTests(unittest.TestCase):
 
             def request(self, action, args=None):
                 self.calls += 1
-                if self.calls > 2:
+                if self.calls == 3:
+                    children[0].code = 1  # the model host failed the first run
+                if self.calls > 4:
                     raise KeyboardInterrupt
-                return {"ok": True, "result": {"characters": rows[:1]}}
+                # The run observed Ada, so she is no longer listed as waiting.
+                return {"ok": True, "result": {"characters": [rows[0] if self.calls == 1 else dict(rows[0], waiting=False)]}}
 
         def popen(cmd, stdout=None, stderr=None):
             launched.append(cmd)
-            return Proc(True)
+            children.append(Proc())
+            return children[-1]
+
+        times = iter([0.0, 0.0, 10.0, 20.0, 20.0 + autopilot.WATCH_RETRY, 20.0 + autopilot.WATCH_RETRY])
 
         import tempfile
         with tempfile.TemporaryDirectory() as folder:
             args.log_dir = folder
-            self.assertEqual(autopilot.watch(Client(), args, clock=lambda: 0.0, sleep=lambda s: None, popen=popen), 0)
+            self.assertEqual(autopilot.watch(Client(), args, clock=lambda: next(times), sleep=lambda s: None, popen=popen), 0)
             self.assertTrue((Path(folder) / "Ada-0x1.log").exists())
-        self.assertEqual(len(launched), 1)  # the second poll sees its run still going
+        self.assertEqual(len(launched), 2)  # started once, then again after the failure with the same goal
+        self.assertEqual(launched[1][6], "Fish")
 
     def test_player_help_config_is_optional(self):
         self.assertEqual(autopilot.load_player_help_config(str(ROOT / "does-not-exist.json")), {})

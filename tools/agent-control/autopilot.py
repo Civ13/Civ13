@@ -1879,24 +1879,51 @@ def main(argv=None):
 
 WATCH_POLL = 10  # seconds between character_list polls in --watch mode
 WATCH_STEPS = 1000000  # a watched character plays until it dies or the run is stopped
-WATCH_RETRY = 300  # seconds before a waiting character whose run ended without driving it is tried again
+WATCH_RETRY = 300  # seconds after a failed run starts before its character is tried again
 # Flags a watched run passes on to each character's own run.
 WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval")
 
 
-def watch_targets(rows, running, launched_at, now):
-    """Characters to start a run for: spawned, waiting for a driver, not already being run, not tried recently."""
+def reap_runs(runs, rows=None):
+    """Forget runs that finished on purpose (exit 0: steps, minutes or death) and mark failed ones for a retry.
+
+    A run exits non-zero when the model or server failed it. Its character is no longer listed as waiting (the run
+    already observed it), so the run stays here with its goal until the retry. With rows (a fresh character_list),
+    runs for characters that are gone are dropped too. Every finished child is polled, which also reaps it.
+    """
+    listed = None if rows is None else {row.get("ref") for row in rows}
+    for ref, entry in list(runs.items()):
+        process = entry.get("process")
+        if process is not None:
+            code = process.poll()
+            if code is None:
+                continue
+            entry["process"] = None
+            if code == 0:
+                del runs[ref]
+                continue
+            entry["failed"] = True
+        if listed is not None and ref not in listed:
+            del runs[ref]
+
+
+def watch_targets(rows, runs, now, retry_failed=True):
+    """Characters to start a run for: spawned and alive, waiting for a driver or whose last run failed, not being
+    run now, and (after a failure) not tried in the last WATCH_RETRY seconds. Rows carry the goal to play."""
     out = []
     for row in rows:
         ref = row.get("ref")
-        if not ref or row.get("kind") != "spawned" or not row.get("waiting") or row.get("stat") == 2:
+        if not ref or row.get("kind") != "spawned" or row.get("stat") == 2:
             continue
-        process = running.get(ref)
-        if process is not None and process.poll() is None:
+        entry = runs.get(ref)
+        if entry is None:
+            if row.get("waiting"):
+                out.append(row)
             continue
-        if now - launched_at.get(ref, -WATCH_RETRY) < WATCH_RETRY:
+        if entry.get("process") is not None or now - entry.get("at", 0) < WATCH_RETRY:
             continue
-        out.append(row)
+        if row.get("waiting") or (entry.get("failed") and retry_failed):
+            out.append(dict(row, goal=row.get("goal") or entry.get("goal")))
     return out
 
 
@@ -1909,6 +1936,8 @@ def watch_command(args, row):
         if value is None or value == "":
             continue
         command += ["--" + name.replace("_", "-"), str(value)]
+    if getattr(args, "release", False):
+        command.append("--release")
     return command
 
 
@@ -1916,7 +1945,7 @@ def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess
     """Play every character an admin spawns for this agent, each in its own autopilot run, until interrupted."""
     log_dir = args.log_dir or os.path.join(ROOT, "data", "agent-control")
     os.makedirs(log_dir, exist_ok=True)
-    running, launched_at = {}, {}
+    runs = {}  # ref -> {"process", "at", "goal", "failed"}
     print(f"watching for characters spawned for agent {getattr(getattr(client, 'client', None), 'agent', '?')}; Ctrl+C stops")
     try:
         while True:
@@ -1927,12 +1956,15 @@ def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess
                 reply = {}
             if reply.get("ok") is False:
                 print(f"character_list refused: {reply.get('error')} {reply.get('detail', '')}", file=sys.stderr)
-            for row in watch_targets((reply.get("result") or {}).get("characters") or [], running, launched_at, clock()):
+            rows = (reply.get("result") or {}).get("characters") if reply.get("ok") else None
+            reap_runs(runs, rows)
+            # A released character cannot be driven again, so failed --release runs are not retried.
+            for row in watch_targets(rows or [], runs, clock(), retry_failed=not getattr(args, "release", False)):
                 name = re.sub(r"[^A-Za-z0-9_-]+", "_", str(row.get("name") or "character")).strip("_") or "character"
-                log_path = os.path.join(log_dir, f"{name}-{row['ref'].strip('[]')}.log")
+                log_path = os.path.join(log_dir, f"{name}-{re.sub(r'[^A-Za-z0-9]+', '', row['ref'])}.log")
                 with open(log_path, "a", encoding="utf-8") as log:
-                    running[row["ref"]] = popen(watch_command(args, row), stdout=log, stderr=subprocess.STDOUT)
-                launched_at[row["ref"]] = clock()
+                    process = popen(watch_command(args, row), stdout=log, stderr=subprocess.STDOUT)
+                runs[row["ref"]] = {"process": process, "at": clock(), "goal": row.get("goal") or args.goal, "failed": False}
                 print(f"playing {row.get('name')} {row['ref']}: {row.get('goal') or args.goal} (log {log_path})")
             sleep(WATCH_POLL)
     except KeyboardInterrupt:

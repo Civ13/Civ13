@@ -280,7 +280,10 @@ The watcher polls `character_list` every 10 seconds and starts one autopilot
 run per waiting character with that goal, passing on its own model flags and
 playing until the character dies (`--steps` overrides that). Each run logs to
 `data/agent-control/<name>-<ref>.log` (`--log-dir` changes the folder). A run
-that ends without driving its character is retried after five minutes. When no
+that fails (the model or server stops it, a non-zero exit) is started again
+with the same goal five minutes after it started, unless `--release` is set,
+which the watcher passes on to each run. A run that ends on purpose (its
+`--steps` or `--minutes` limit, or the character's death) is not retried. When no
 watcher has listed that agent's characters in the last minute, the verb warns
 the admin that the character will stand still until one starts.
 
