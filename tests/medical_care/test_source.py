@@ -94,6 +94,12 @@ class MedicalCare(unittest.TestCase):
         # both the bloodstream and the stomach are read, so swallowed poison shows before it absorbs
         self.assertIn("list(H.reagents, H.ingested)", poisons)
         self.assertIn("is_handbook_poison(A)", poisons)
+        self.assertIn("diagnose_immunity(H)", attack)
+        immunity = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/diagnose_immunity")
+        self.assertIn("H.resists_disease(kind)", immunity)
+        # reading tolerance must never record a dose
+        self.assertIn("H.poison_tolerance(id, 0)", immunity)
+        self.assertIn("H.disease_resistance_to(H.disease_type)", disease)
         self.assertIn("istype(A, /datum/reagent/toxin)",
                       block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/is_handbook_poison"))
 

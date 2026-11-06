@@ -84,6 +84,8 @@
 			user.show_message("<span class='warning'><b>* [line]</b></span>")
 		if (!poisons.len)
 			user.show_message("<span class='notice'>* No poison found in the blood or stomach.</span>")
+		for (var/line in diagnose_immunity(H))
+			user.show_message("<span class='notice'>* [line]</span>")
 
 		var/ecount = 0 // external organs count
 		var/icount = 0 // internal organs count
@@ -226,6 +228,7 @@
 		return null
 	var/list/names = list("flu" = "Influenza", "zombie" = "Zombie infection", "plague" = "Plague", "typhus" = "Typhus", "malaria" = "Malaria", "cholera" = "Cholera")
 	var/illness = names[H.disease_type] || capitalize(H.disease_type)
+	var/fighting = H.builds_disease_immunity(H.disease_type) ? " The body has built [round(H.disease_resistance_to(H.disease_type))]% of the resistance it needs to clear it." : ""
 	if (H.is_severe_disease())
 		var/stage = "early stage"
 		if (H.disease_progression >= 900)
@@ -235,14 +238,14 @@
 		illness += " ([stage]). It will not clear on its own; it needs a full medicine course"
 		if (H.disease_course > 0)
 			illness += ", currently [round(min(100, H.disease_course / 1.8))]% done"
-		return illness + "."
+		return illness + "." + fighting
 	if (H.disease_type == "flu")
 		var/stage = "early stage"
 		if (H.disease_progression >= 180)
 			stage = "recovering"
 		else if (H.disease_progression >= 60)
 			stage = "high fever"
-		return "[illness] ([stage])."
+		return "[illness] ([stage]).[fighting]"
 	return "[illness]."
 
 // Poisons in the blood and stomach, one line each, by reagent name.
@@ -269,6 +272,28 @@
 		if (stomach[poison])
 			where += "[round(stomach[poison], 0.1)]u in the stomach"
 		. += "Poisoned with [poison] ([jointext(where, ", ")])."
+
+// Resistance left over from past illnesses and tolerance built up to poisons.
+/obj/item/weapon/doctor_handbook/proc/diagnose_immunity(mob/living/human/H)
+	. = list()
+	var/list/names = list("flu" = "influenza", "plague" = "plague", "typhus" = "typhus", "malaria" = "malaria", "cholera" = "cholera")
+	for (var/kind in H.disease_resistance)
+		if (H.disease && kind == H.disease_type)
+			continue
+		var/percent = round(H.disease_resistance_to(kind))
+		if (percent < 1)
+			continue
+		var/illness = names[kind] || kind
+		if (H.resists_disease(kind))
+			. += "Recently fought off [illness] and is still immune to it ([percent]% resistance)."
+		else
+			. += "Some lingering resistance to [illness] ([percent]%), too little to stop a new infection."
+	for (var/id in H.poison_exposure)
+		var/less = round((1 - H.poison_tolerance(id, 0)) * 100)
+		if (less < 1)
+			continue
+		var/datum/reagent/R = chemical_reagents_list[id]
+		. += "Has built a tolerance to [R ? R.name : id] and takes [less]% less harm from it."
 
 /obj/item/weapon/doctor_handbook/proc/is_handbook_poison(datum/reagent/A)
 	return istype(A, /datum/reagent/toxin) || (A.id in list("lexorin", "stoxin", "chloralhydrate", "pacid"))
