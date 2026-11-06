@@ -43,6 +43,7 @@ var/raid_runtime_error = FALSE
 		raid_reputation_checks()
 		raid_capture_checks()
 		raid_sight_checks()
+		raid_combat_checks()
 		raid_request_checks()
 		raid_lifecycle_checks()
 		raid_boat_checks()
@@ -57,6 +58,100 @@ var/raid_runtime_error = FALSE
 	A.climate = "temperate"
 	for (var/turf/T in block(locate(1, 1, 1), locate(40, 40, 1)))
 		T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+
+// Observe launch requests without sending projectiles into the other probes.
+// The real revolver still supplies, expends and cycles every .32 cartridge.
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized/raid_probe
+	var/shots = 0
+	var/last_projectile_type
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized/raid_probe/process_projectile(obj/projectile, mob/user, atom/target, target_zone, params = null)
+	shots++
+	last_projectile_type = projectile.type
+	qdel(projectile)
+	return FALSE
+
+/mob/living/simple_animal/hostile/human/nomad_raider/combat_probe
+	use_generated_appearance = FALSE
+	stop_automated_movement = TRUE
+
+/proc/raid_live_rounds(obj/item/weapon/gun/projectile/G)
+	var/live = 0
+	for (var/obj/item/ammo_casing/C in G.loaded)
+		if (C.BB)
+			live++
+	return live
+
+/proc/raid_combat_checks()
+	var/datum/nomad_raid/R = new
+	var/mob/living/simple_animal/hostile/human/nomad_raider/combat_probe/M = new(locate(12, 12, 1))
+	R.members = list(M)
+	M.party = R
+	R.hostile = TRUE
+	var/was_civilizations = map.civilizations
+	map.civilizations = TRUE
+	M.arm_for_age(6)
+	raid_check(raid_live_rounds(M.gun) == 6, "civilization-map raiders start with a loaded six-shot cylinder")
+	qdel(M.gun)
+	var/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized/raid_probe/G = new(M)
+	M.gun = G
+	M.load_sidearm()
+	map.civilizations = was_civilizations
+	var/mob/living/human/H = new(locate(12, 18, 1))
+	M.target_mob = H
+	M.last_fire = world.time - M.firedelay
+	raid_check(M.OpenFire(H) && G.shots == 1 && raid_live_rounds(G) == 5, "one trigger fires and expends one cartridge")
+	raid_check(G.last_projectile_type == /obj/item/projectile/bullet/pistol/a32, "raiders fire the revolver's actual .32 projectile")
+	raid_check(!M.OpenFire(H) && !M.Shoot(H) && G.shots == 1, "repeated trigger and direct Shoot calls share the cooldown")
+	sleep(3)
+	raid_check(G.shots == 1, "no extra burst shots are queued")
+	for (var/i = 2, i <= 6, i++)
+		M.last_fire = world.time - M.firedelay
+		G.next_fire_time = world.time
+		raid_check(M.OpenFire(H), "ready trigger fires cylinder round [i]")
+	raid_check(G.shots == 6 && raid_live_rounds(G) == 0 && G.loaded.len == 6, "six shots leave six spent casings, not infinite ammunition")
+	M.last_fire = world.time - M.firedelay
+	G.next_fire_time = world.time
+	raid_check(!M.OpenFire(H) && M.reload_at >= world.time + 40, "an empty cylinder starts at least a four-second reload")
+	raid_check(!M.Shoot(H) && G.shots == 6 && raid_live_rounds(G) == 0, "reload time cannot be bypassed by another trigger")
+	M.reload_at = world.time // Exercise completion without a second long fixture wait.
+	raid_check(M.OpenFire(H) && G.shots == 7 && raid_live_rounds(G) == 5, "a completed reload restores a cylinder and expends its first round")
+
+	M.last_fire = world.time - M.firedelay
+	G.next_fire_time = world.time
+	var/list/walls = list()
+	for (var/dx = -3, dx <= 3, dx++)
+		walls += new /obj/covers/stone_wall/brick(locate(12 + dx, 15, 1))
+	raid_check(!(H in view(M.aggro_vision_range, M)), "full brick cover hides the foe from the raider")
+	raid_check(!M.OpenFire(H) && !M.Shoot(H) && !M.OpenFire(get_turf(H), TRUE), "hidden foes and suppression coordinates cannot be fired at")
+	H.loc = locate(13, 18, 1)
+	raid_check(!M.OpenFire(H) && !M.OpenFire(get_turf(H), TRUE) && G.shots == 7, "moving behind brick cover does not update an invisible firing target")
+	for (var/obj/covers/W in walls)
+		W.set_opacity(FALSE)
+		qdel(W)
+	H.loc = locate(12, 18, 1)
+	R.hostile = FALSE
+	raid_check(!M.Shoot(H), "ceasefire is checked at the trigger")
+	R.hostile = TRUE
+	H.stat = UNCONSCIOUS
+	raid_check(!M.Shoot(H), "downed foes cannot be shot by a stale attack")
+	H.stat = CONSCIOUS
+	H.handcuffed = new /obj/item/weapon/handcuffs(H)
+	raid_check(!M.Shoot(H), "bound foes cannot be shot by a stale attack")
+	qdel(H.handcuffed)
+	H.handcuffed = null
+	M.target_mob = null
+	raid_check(!M.Shoot(H), "a cleared target cannot receive a stale shot")
+	M.target_mob = H
+	M.stat = UNCONSCIOUS
+	raid_check(!M.Shoot(H), "an unconscious raider cannot shoot")
+	M.stat = CONSCIOUS
+	G.loc = get_turf(M)
+	raid_check(!M.Shoot(H) && G.shots == 7 && raid_live_rounds(G) == 5, "a dropped gun cannot fire or refill")
+	qdel(G)
+	M.gun = null
+	qdel(H)
+	qdel(M)
+	qdel(R)
 
 /proc/raid_helper_checks()
 	var/turf/T = locate(20, 20, 1)

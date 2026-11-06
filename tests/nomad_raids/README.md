@@ -9,6 +9,21 @@ The runner compiles the production sources with maps and ordinary start-up
 removed, then runs `probe.dm` on a 40 x 40 outdoor test level with the pinned
 BYOND build. It needs every assertion to pass and no runtime errors.
 
+Offline firing control-flow regressions (no BYOND process):
+
+```bash
+python3 -m unittest discover -s tests/nomad_raids -p 'test_combat.py' -v
+```
+
+The combat checks in `probe.dm` use the real revolver's cartridge consumption
+and casing cycling, but record launch requests rather than flying bullets.
+They check a loaded civilization-map sidearm, .32 ammunition, one-shot cadence,
+six-shot capacity, reload refusal/completion, full brick cover and a foe moving
+behind it, ceasefire, downed/bound/cleared targets, and an incapacitated raider
+or dropped gun. Reload completion advances its deadline in the fixture; it is
+not a wall-clock reload animation test. Projectile penetration and client-visible
+combat remain separate gameplay checks.
+
 Covered: spawn-site rules (roofed, occupied), nearest-edge choice and skipping
 edges too close to hide behind, loot worth, cooldown expiry and reload from
 the file, the walk to the target planned from home and handed out in short
