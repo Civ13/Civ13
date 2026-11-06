@@ -270,7 +270,7 @@ internal sealed partial class LauncherWindow : Form {
         if (profile.Control?.Group != null) {
             groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
             foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
-                    ("Deploy latest master", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart") }) {
+                    ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await GroupAction(action, text);
                 hostActions.Add(button);
@@ -670,28 +670,18 @@ internal sealed partial class LauncherWindow : Form {
         if (host?.Control is not { } control || control.Group == null || hostOutput == null) return;
         var question = action switch {
             "update" => "Check out and compile the group's revision in every stopped region?",
-            "deploy" => "Deploy latest master? Every region is saved and stopped, the checkout is pulled, compiled and started again, and the host service restarts. Players are saved and can rejoin when it is back; this takes about 15 minutes.",
             "restart-host" => "Restart the host service? The worlds keep running.",
             "kill" or "force-restart" => label + " every region? Each is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for servers that hang.",
             _ => label + " every region? Players are saved and can rejoin when it is back.",
         };
+        if (action == "deploy") { await ChooseAndDeploy(label); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
-        if (action is "deploy" or "restart-host") {
+        if (action == "restart-host") {
             groupScriptRunning = true;
             HostLine(label + "...");
             try {
-                var exit = await Task.Run(() => {
-                    using var process = Process.Start(LocalHosting.GroupScriptStep(control, action)) ?? throw new IOException("Could not start cmd.exe.");
-                    process.StandardInput.Close();
-                    void Line(object _, DataReceivedEventArgs e) { if (e.Data is { Length: > 0 } text) BeginInvoke(() => HostLine(text)); }
-                    process.OutputDataReceived += Line;
-                    process.ErrorDataReceived += Line;
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    process.WaitForExit();
-                    return process.ExitCode;
-                });
+                var (exit, _) = await RunGroupScript(control, action, false);
                 HostLine(exit == 0 ? label + " finished." : $"{label} stopped with exit code {exit}; see the lines above.");
             } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
                 HostLine(label + " failed: " + e.Message);
@@ -709,6 +699,116 @@ internal sealed partial class LauncherWindow : Form {
             HostLine(label + " failed: " + e.Message);
             SetHostBusy(false);
         }
+    }
+
+    private const string DeployQuestion = "Save, update and restart the regions ticked below. The checkout is pulled and the update is built " +
+        "beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each is saved and " +
+        "stopped (Gaia takes up to ten minutes), gets its new build and starts again, and the host service restarts. Regions left unticked " +
+        "keep running. Players are saved and can rejoin when it is back. If a world will not save, you are asked before anything is " +
+        "stopped without a save.";
+
+    // Asks which regions to update (all ticked; the mainland first in line is marked), then deploys them.
+    private async Task ChooseAndDeploy(string label) {
+        if (host?.Control?.Group is not { } group) return;
+        IReadOnlyList<LocalHosting.GroupRegion> regions;
+        try { regions = LocalHosting.GroupRegions(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read the regions from " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = label, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { Text = DeployQuestion, MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
+        var list = new CheckedListBox { CheckOnClick = true, Width = 460, Height = Math.Min(16, regions.Count) * 20 + 8, IntegralHeight = false };
+        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, true);
+        layout.Controls.Add(list);
+        var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
+        var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
+        var go = new Button { Text = label, DialogResult = DialogResult.OK, AutoSize = true };
+        buttons.Controls.Add(cancel);
+        buttons.Controls.Add(go);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = go;
+        dialog.CancelButton = cancel;
+        // ItemCheck fires before the box changes, so count the pending state.
+        list.ItemCheck += (_, e) => go.Enabled = list.CheckedIndices.Count + (e.NewValue == CheckState.Checked ? 1 : 0) - (e.CurrentValue == CheckState.Checked ? 1 : 0) > 0;
+        if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
+        var chosen = list.CheckedIndices.Cast<int>().Select(index => regions[index].Id).ToList();
+        // Every region ticked runs the whole group, so a region added to the config later is never skipped.
+        await DeployGroup(label, chosen.Count == regions.Count ? [] : chosen);
+    }
+
+    // The whole update (deploy.bat): pull, stage the build beside the running worlds, then once every build is
+    // ready save and stop, install the builds, start and restart the host service.
+    // A region whose world does not save (refused because it is busy, or the save failed) is still running
+    // when deploy.bat stops at the save step; nothing has been updated yet. The operator then chooses:
+    // force-stop those regions without a save and carry on, or start the regions that did stop again.
+    private async Task DeployGroup(string label, IReadOnlyList<string> regions) {
+        if (host?.Control is not { } control || control.Group == null || groupScriptRunning) return;
+        SelectHostTab();
+        SetHostBusy(true);
+        groupScriptRunning = true;
+        ShowServerUpdateBusy();
+        var which = regions.Count == 0 ? "every region" : string.Join(", ", regions);
+        HostLine($"{label}: {which}...");
+        try {
+            var (exit, output) = await RunGroupScript(control, "deploy", false, regions);
+            while (exit == LocalHosting.DeployUnsaved) {
+                var (_, status) = await Task.Run(() => LocalHosting.RunCaptured(LocalHosting.GroupStep(control, "status")));
+                // Regions left out of the deploy keep running on purpose.
+                var unsaved = LocalHosting.UnsavedRegions(status, output).Where(region => regions.Count == 0 || regions.Contains(region.Id)).ToList();
+                if (unsaved.Count == 0) break;
+                var names = string.Join(Environment.NewLine, unsaved.Select(region => "  " + region.Name + ": " + region.Reason));
+                HostLine("Did not save, still running:" + Environment.NewLine + names);
+                var choice = MessageBox.Show(this,
+                    "These regions did not save, so they are still running and nothing has been updated yet:" + Environment.NewLine + Environment.NewLine +
+                    names + Environment.NewLine + Environment.NewLine +
+                    "Yes: force-stop them WITHOUT saving and carry on with the update. They go back to their last completed save, " +
+                    "so anything played there since then is lost." + Environment.NewLine +
+                    "No: cancel the update and start the regions that already stopped again.",
+                    "Civ13 Launcher", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (choice != DialogResult.Yes) {
+                    HostLine("Update cancelled. Starting the regions that stopped again...");
+                    if (regions.Count == 0) HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "start"))).Message);
+                    else foreach (var region in regions) HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "start", null, region))).Message);
+                    return;
+                }
+                foreach (var region in unsaved)
+                    HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "kill", null, region.Id))).Message);
+                HostLine("Carrying on with the update...");
+                (exit, output) = await RunGroupScript(control, "deploy", true, regions);
+            }
+            HostLine(exit == 0 ? label + " finished." : $"{label} stopped with exit code {exit}; see the lines above.");
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine(label + " failed: " + e.Message);
+        } finally {
+            groupScriptRunning = false;
+            await RefreshHostState();
+            await CheckAllUpdates();
+        }
+    }
+
+    // Runs deploy.bat or restart-host.bat, streaming each line to the Host tab; returns its exit code and output.
+    private async Task<(int Exit, string Output)> RunGroupScript(HostControl control, string script, bool resume, IReadOnlyList<string>? regions = null) {
+        var output = new System.Text.StringBuilder();
+        var exit = await Task.Run(() => {
+            using var process = Process.Start(LocalHosting.GroupScriptStep(control, script, resume, regions)) ?? throw new IOException("Could not start cmd.exe.");
+            process.StandardInput.Close();
+            void Line(object _, DataReceivedEventArgs e) {
+                if (e.Data is not { Length: > 0 } text) return;
+                lock (output) output.AppendLine(text);
+                BeginInvoke(() => HostLine(text));
+            }
+            process.OutputDataReceived += Line;
+            process.ErrorDataReceived += Line;
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
+            return process.ExitCode;
+        });
+        lock (output) return (exit, output.ToString());
     }
 
     private void SetHostBusy(bool value) {

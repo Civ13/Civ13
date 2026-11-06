@@ -11,6 +11,15 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-06: Save, update and restart -->
+With control.group set, the Updates tab's server row uses `shard_group.py check-update` and its button
+runs deploy.bat for the ticked regions (all ticked = whole group), the same as the Host tab button. Val
+chose (2026-11-06) that it stages first and saves/stops only once every staged build is ready. Only
+the "stop the server/region before updating" reason is passed over. deploy.bat exit 3 = a world did not
+save and is still running; the window lists those (UnsavedRegions) and either kills them one by one and
+runs `deploy.bat continue REGION...`, or starts the stopped ones again. Region ids reach argv only after
+the launcher's region-id check.
+
 <!-- 2026-11-05: Civilizationbot tab and Updates -->
 Val chose that a bot started by the window stops when the launcher closes (control.php
 stop, 90 s wait, then a kill-on-close job object). A bot started elsewhere is left

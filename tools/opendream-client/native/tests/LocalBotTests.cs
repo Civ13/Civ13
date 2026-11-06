@@ -40,6 +40,12 @@ static class LocalBotTests {
         Require(check is { Ok: true, HasUpdate: false } && check.Describe() == "Up to date (abcdef0).", "server up to date: " + check.Describe());
         check = UpdateCheck.Parse("server", 0, "{\"ok\": true, \"component\": \"server\", \"current\": \"abcdef0123\", \"available\": \"9876543210\", \"behind\": 1, \"can_update\": false, \"reason\": \"stop the server before updating\"}");
         Require(check is { HasUpdate: true, CanUpdate: false } && check.Describe() == "Update available: 1 new commit (abcdef0 -> 9876543). Stop the server before updating.", "running server: " + check.Describe());
+        // A group's save, update and restart stops the worlds itself, so only this reason may be passed over.
+        Require(check.OnlyNeedsStop && check.Describe(withReason: false) == "Update available: 1 new commit (abcdef0 -> 9876543).", "running server deploy: " + check.Describe(false));
+        Require(!UpdateCheck.Parse("server", 0, "{\"ok\": true, \"component\": \"server\", \"current\": \"a\", \"available\": \"b\", \"behind\": 2, \"can_update\": false, \"reason\": \"another action is still running; stop the server before updating\"}").OnlyNeedsStop,
+            "a busy group counted as only running");
+        Require(!UpdateCheck.Parse("server", 0, "{\"ok\": true, \"component\": \"server\", \"current\": \"a\", \"available\": \"a\", \"behind\": 0, \"can_update\": false, \"reason\": \"up to date\"}").OnlyNeedsStop,
+            "an up-to-date server offered a deploy");
         check = UpdateCheck.Parse("server", 0, "{\"ok\": true, \"component\": \"server\", \"current\": \"a\", \"available\": \"b\", \"behind\": 2, \"can_update\": true, \"reason\": null}");
         Require(check is { HasUpdate: true, CanUpdate: true, Reason: null }, "server null reason");
         check = UpdateCheck.Parse("server", 1, "{\"ok\": false, \"component\": \"server\", \"error\": \"git fetch failed\"}");

@@ -171,35 +171,102 @@ public static class LocalHosting {
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart"];
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update"];
+    // shard_group.py ids, never starting with "-" so one cannot read as an option.
+    private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
-    // shard_group.py for every region of the group; again only the action name comes from the caller.
-    public static ProcessStartInfo GroupStep(HostControl control, string action) {
+    // shard_group.py for every region of the group, or one (a region id as shard_group.py names it);
+    // again only the action name and that id come from the caller.
+    public static ProcessStartInfo GroupStep(HostControl control, string action, string? region = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         if (!GroupActions.Contains(action)) throw new ArgumentException("Unsupported group action.", nameof(action));
+        if (region != null && !RegionId.IsMatch(region)) throw new ArgumentException("Not a region id.", nameof(region));
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(group.ShardScript)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", group.ShardScript, "--config", group.Config, action }) step.ArgumentList.Add(argument);
+        if (region != null) { step.ArgumentList.Add("--region"); step.ArgumentList.Add(region); }
         return step;
     }
 
-    // deploy.bat or restart-host.bat, run by cmd.exe with its output read line by line.
-    public static ProcessStartInfo GroupScriptStep(HostControl control, string script) {
+    // deploy.bat (resume: "deploy.bat continue", which carries on from waiting for the save; regions: only
+    // those region ids, none for every region) or restart-host.bat, run by cmd.exe with its output read line by line.
+    public static ProcessStartInfo GroupScriptStep(HostControl control, string script, bool resume = false, IReadOnlyList<string>? regions = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         var path = script switch {
             "deploy" => group.Deploy,
             "restart-host" => group.RestartHost,
             _ => throw new ArgumentException("Unsupported group script.", nameof(script)),
         };
+        if ((resume || regions is { Count: > 0 }) && script != "deploy") throw new ArgumentException("Only deploy can continue or choose regions.", nameof(script));
+        if (regions != null && regions.Any(region => !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(regions));
         var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe")) { UseShellExecute = false, CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(path)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "/d", "/c", path }) step.ArgumentList.Add(argument);
+        if (resume) step.ArgumentList.Add("continue");
+        foreach (var region in regions ?? []) step.ArgumentList.Add(region);
         return step;
     }
 
-    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
-        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action));
+    public sealed record GroupRegion(string Id, string Name, bool Mainland);
+
+    // The regions of the group config (control.group), in its order, for choosing which ones to update.
+    // The mainland is the config's "mainland", or the first region, as shard_group.py decides it.
+    public static IReadOnlyList<GroupRegion> GroupRegions(HostGroup group) {
+        using var document = JsonDocument.Parse(File.ReadAllText(group.Config));
+        var json = document.RootElement;
+        if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("regions", out var list) || list.ValueKind != JsonValueKind.Array)
+            throw new InvalidDataException("The group config lists no regions.");
+        var found = new List<(string Id, string Name)>();
+        foreach (var region in list.EnumerateArray().Take(16)) {
+            if (region.ValueKind != JsonValueKind.Object || Str(region, "id") is not { } id || !RegionId.IsMatch(id)) continue;
+            found.Add((id, Clean(Str(region, "name") ?? id)));
+        }
+        if (found.Count == 0) throw new InvalidDataException("The group config lists no regions.");
+        var mainland = Str(json, "mainland") ?? found[0].Id;
+        return found.Select(region => new GroupRegion(region.Id, region.Name, region.Id == mainland)).ToList();
+    }
+
+    // deploy.bat's exit code when a region did not save and is still running (the others stay stopped).
+    public const int DeployUnsaved = 3;
+
+    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null, string? region = null) {
+        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action, region));
         return ParseGroup(action, exit, output);
+    }
+
+    public sealed record UnsavedRegion(string Id, string Name, string Reason);
+
+    // After deploy.bat exits with DeployUnsaved: the regions still running with no save under way, from
+    // shard_group.py status, each with why: the stop's refusal from deploy's own output (the JSON line
+    // shard_group.py stop printed) or the failed save's error, as wait_group.py decides it.
+    public static IReadOnlyList<UnsavedRegion> UnsavedRegions(string statusOutput, string deployOutput) {
+        var refusals = new Dictionary<string, string>();
+        foreach (var text in deployOutput.Split('\n').Select(part => part.Trim()).Where(part => part.StartsWith('{'))) {
+            try {
+                using var answer = JsonDocument.Parse(text);
+                if (answer.RootElement.ValueKind == JsonValueKind.Object && answer.RootElement.TryGetProperty("refused", out var refused)
+                        && refused.ValueKind == JsonValueKind.Object)
+                    foreach (var entry in refused.EnumerateObject())
+                        if (entry.Value.ValueKind == JsonValueKind.String) refusals[entry.Name] = entry.Value.GetString()!;
+            } catch (JsonException) { }
+        }
+        var found = new List<UnsavedRegion>();
+        var line = statusOutput.Split('\n').Select(text => text.Trim()).LastOrDefault(text => text.StartsWith('{')) ?? "";
+        try {
+            using var document = JsonDocument.Parse(line);
+            if (!document.RootElement.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return found;
+            foreach (var region in regions.EnumerateObject().Take(16)) {
+                var entry = region.Value;
+                if (entry.ValueKind != JsonValueKind.Object || !RegionId.IsMatch(region.Name) || !Bool(entry, "listening") || Bool(entry, "busy")) continue;
+                string? error = null;
+                if (entry.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object)
+                    error = Str(operation, "error") is { Length: > 0 } failed ? failed : null;
+                var reason = refusals.TryGetValue(region.Name, out var refusal) ? "its save was refused: " + refusal
+                    : error ?? "it is still running and not saving";
+                found.Add(new UnsavedRegion(region.Name, Clean(Str(entry, "name") ?? region.Name), reason.Length > 300 ? reason[..300] : reason));
+            }
+        } catch (JsonException) { }
+        return found;
     }
 
     // shard_group.py answers {"ok", "regions": {id: status}} for status, and {"ok", "accepted": {id: ...},

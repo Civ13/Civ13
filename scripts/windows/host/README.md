@@ -11,7 +11,7 @@ and [region groups](../../shard-group/README.md). They only call
 | `status.bat [REGION]` | Each region's state (`awake`, `asleep`, `cold`, `stopped`) and last action. |
 | `start.bat`, `stop.bat`, `restart.bat [REGION]` | Start; save and stop (with a verified backup); both. They run in the background, so follow them with `status.bat`. |
 | `update.bat [REGION]` | Fetch, check out the group's revision and compile. Stop the regions first. |
-| `deploy.bat` | The whole update in one go: save and stop every region, `git pull --ff-only --autostash` the source checkout, update and compile, start, then restart the host service. Each step waits for the last and it stops at the first failure. |
+| `deploy.bat [REGION ...]` | The whole update in one go: `git pull --ff-only --autostash` the source checkout, stage the build beside every running region (or only the ones named, such as `deploy.bat gaia`), and once every build is ready save and stop them, install the builds, start, then restart the host service. Each step waits for the last and it stops at the first failure. A world that does not save makes it stop with exit code 3 before anything is updated; see [deploying](#deploying-a-new-master). The launcher's **Save, update and restart** button runs it. |
 | `stage.bat [REGION]` | Pull the source checkout, then build the update beside the running regions. Each region installs it by itself the next time it is empty and saved (or asleep), so nobody is kicked. `status.bat` shows its progress under `stage`. |
 | `force-stop.bat`, `force-restart.bat [REGION]` | For a world that hangs (a save that never finishes): end it at once **without saving**, or end it and start it again. The start loads the last completed save (an interrupted save is swapped for the copy in `map_backups`). The launcher's Force stop and Force restart buttons do the same. |
 | `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. |
@@ -85,10 +85,25 @@ The host service picks them up when restarted with `restart-host.bat`.
 
 ## Deploying a new master
 
-Run `deploy.bat` from a normal command prompt. It saves every region (Gaia
-takes up to ten minutes), pulls `D:\GitHub\Civ13` (its local edits are kept),
-checks out and compiles each region, starts them and restarts the host service
-so it also runs the new host scripts. `wait_group.py` does the waiting; it
-only reads `status`. If a step fails, the regions stay as that step left them:
-fix the cause, then carry on by hand with `update.bat`, `start.bat` and
-`restart-host.bat`.
+Run `deploy.bat` from a normal command prompt, or press **Save, update and
+restart** on the launcher's Updates or Host server tab and tick the regions to
+update (all of them, or for example only Gaia). It pulls `D:\GitHub\Civ13`
+first (its local edits are kept). Then it stages the update for each chosen
+region, building it beside the running world one region at a time at low
+priority, like `stage.bat`. Nobody is kicked until every build is ready, and a
+pull or build that fails stops it before then. Only then does it save the
+chosen regions (Gaia takes up to ten minutes), install the staged builds (a file
+copy instead of a compile), start them and restart the host service so it also
+runs the new host scripts. Regions left out keep running. `wait_group.py` does
+the waiting; it only reads `status`.
+
+**A world that will not save** (busy, not ready, or its save fails) stays
+running, and `deploy.bat` stops with exit code 3 before updating anything. The
+regions that did save stay stopped. Either force-stop the ones that did not save
+with `force-stop.bat REGION` (they go back to their last completed save) and
+run `deploy.bat continue` with the same regions, or start the stopped regions
+again with `start.bat`. The launcher lists each such world with its error and
+asks which; it never stops a world without a save unless you choose that.
+
+If any other step fails, the regions stay as that step left them: fix the
+cause, then carry on by hand with `update.bat`, `start.bat` and `restart-host.bat`.
