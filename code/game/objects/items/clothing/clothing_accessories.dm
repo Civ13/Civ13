@@ -147,3 +147,26 @@
 		for (var/obj/item/clothing/accessory/A in accessories)
 			A.emp_act(severity)
 	..()
+// Verbs are not saved, so a restored garment lost "Remove Accessory" (and the
+// holster/sheath verbs an attached accessory adds) and its accessories could
+// never be taken off again. Rebuild them from the saved accessories list.
+/obj/item/clothing/after_load()
+	..()
+	repair_restored_dye()
+	if (!accessories.len)
+		return
+	verbs |= /obj/item/clothing/proc/removetie_verb
+	for (var/obj/item/clothing/accessory/A in accessories)
+		var/list/suit_verbs = A.attached_suit_verbs()
+		if (suit_verbs)
+			verbs |= suit_verbs
+
+// Verbs an attached accessory adds to the garment it is attached to.
+/obj/item/clothing/accessory/proc/attached_suit_verbs()
+	return null
+
+/obj/item/clothing/accessory/holster/attached_suit_verbs()
+	return list(/obj/item/clothing/accessory/holster/verb/holster_verb)
+
+/obj/item/clothing/accessory/storage/sheath/attached_suit_verbs()
+	return list(/obj/item/clothing/accessory/storage/sheath/verb/sheathe_verb)

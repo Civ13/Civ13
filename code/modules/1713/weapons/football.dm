@@ -80,7 +80,7 @@
 	icon_state = "football_custom"
 	heat_protection = LOWER_TORSO|UPPER_TORSO
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE

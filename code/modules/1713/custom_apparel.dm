@@ -1,7 +1,31 @@
+// Dyeable clothing starts with its "uncolored" flag FALSE and sets it TRUE
+// shortly after a first spawn, which is what lets a player pick the dye; the
+// dye sets it back to FALSE. That step lives in on_runtime_spawn() so a
+// restored garment keeps its saved flag: in New() it ran under restore too,
+// and since the saver omits the FALSE default every dyed garment came back
+// "undyed" and was worn plain white. after_load() repairs garments a save
+// already recorded in that state: a dyed one has its dye layers or colour.
+// Called from /obj/item/clothing/after_load().
+// A white colour reads back as null at runtime and the hex case varies.
+/proc/dye_color_key(value)
+	if (!value)
+		return "#ffffff"
+	return lowertext("[value]")
+
+/obj/item/clothing/proc/repair_restored_dye()
+	for (var/flag in list("uncolored", "uncolored1"))
+		if (!(flag in vars) || !vars[flag] || initial(vars[flag]))
+			continue
+		if (overlays.len > accessories.len || dye_color_key(color) != dye_color_key(initial(color)))
+			vars[flag] = FALSE
+			if (ismob(loc))
+				var/mob/M = loc
+				M.regenerate_icons()
+
 /obj/item/clothing/under/custom
 	var/uncolored = FALSE
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -22,7 +46,7 @@
 /obj/item/clothing/head/custom
 	var/uncolored1 = FALSE
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored1 = TRUE
@@ -150,7 +174,7 @@
 	item_state = "customren"
 	icon_state = "customren"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -195,7 +219,7 @@
 	item_state = "custom_pontifical"
 	icon_state = "custom_pontifical"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -257,7 +281,7 @@
 	item_state = "customdress"
 	icon_state = "customdress"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -310,7 +334,7 @@
 	item_state = "custombuttonup_full"
 	icon_state = "custombuttonup_full"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -354,7 +378,7 @@
 	item_state = "customcolonialcoat_full"
 	icon_state = "customcolonialcoat_full"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -406,7 +430,7 @@
 	item_state = "customcolonial_full"
 	icon_state = "customcolonial_full"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -452,7 +476,7 @@
 	icon_state = "tribalrobe"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -502,7 +526,7 @@
 	icon_state = "customuni"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -575,7 +599,7 @@
 	item_state = "customcap"
 	icon_state = "customcap"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored1 = TRUE
@@ -654,7 +678,7 @@
 	icon_state = "modern_camo_custom"
 	color = "#FFFFFF"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -922,7 +946,7 @@
 	item_state = "custfeathercap_hat"
 	icon_state = "custfeathercap_hat"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored1 = TRUE
@@ -967,7 +991,7 @@
 	item_state = "crinoline_dress"
 	icon_state = "crinoline_dress"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -1042,7 +1066,7 @@
 	var/base_icon = "custom_mod"
 	heat_protection = LOWER_TORSO|LEGS|UPPER_TORSO|ARMS
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -1142,7 +1166,7 @@
 	item_state = "trackpants_custom"
 	icon_state = "trackpants_custom"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
@@ -1192,7 +1216,7 @@
 	item_state = "customtracksuit"
 	icon_state = "customtracksuit"
 	color = "#FFFFFF"
-	New()
+	on_runtime_spawn()
 		..()
 		spawn(5)
 			uncolored = TRUE
