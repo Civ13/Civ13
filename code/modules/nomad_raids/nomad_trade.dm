@@ -149,11 +149,23 @@
 		pack_up()
 		start_assault("[who] stole from the stall")
 		return
-	if (!goods.len || world.time - state_at > NOMAD_TRADE_TIME)
+	for (var/mob/living/human/H in nomad_raid_defenders_near(feet, 3))
+		visited |= H.ckey
+	if (!goods.len || (world.time - state_at > NOMAD_TRADE_TIME && !waiting_for_guests()))
 		var/unsold = goods.len // pack_up() empties the stall
 		cue(unsold ? "The road calls. Farewell." : "Sold out. Farewell, friends.")
 		pack_up()
 		set_state("leave", unsold ? "trading time over" : "sold out")
+
+// A caravan aimed at players waits for one of them to come to the stall,
+// up to NOMAD_TRADE_WAIT, before packing up unsold goods.
+/datum/nomad_raid/proc/waiting_for_guests()
+	if (!target_ckeys.len || world.time - state_at > NOMAD_TRADE_WAIT)
+		return FALSE
+	for (var/ckey in target_ckeys)
+		if (ckey in visited)
+			return FALSE
+	return TRUE
 
 // Payments a sale spent stay with the trader; the rest can be handed back.
 /datum/nomad_raid/proc/spend_payments(who, price)

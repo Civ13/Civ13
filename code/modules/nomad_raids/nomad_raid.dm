@@ -50,6 +50,8 @@
 #define NOMAD_RAID_VOICE_SEEN (10 SECONDS) // a coordinator counts as attached this long after its last status read
 #define NOMAD_RAID_LOG_MAX 40
 #define NOMAD_TRADE_TIME (12 MINUTES)
+#define NOMAD_TRADE_WAIT (25 MINUTES) // longest a caravan waits at its stall for the players it came for
+#define NOMAD_TRADE_TOTAL_LIMIT (45 MINUTES)
 #define NOMAD_TRADE_THEFT_GRACE (15 SECONDS)
 #define NOMAD_TRADE_GOODS 6
 

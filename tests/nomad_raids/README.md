@@ -20,6 +20,7 @@ the parley and limiting loot to the tribute, an attack starting the assault,
 restraints by age, a raider with restraints disarming, knocking down, binding
 and stripping a foe (a bound prisoner is no longer fought), chasing a foe who
 ran and letting go of one who is down,
+a caravan waiting (up to a limit) for the players it came for,
 calling a caravan by telegraph (nomads maps only, request words, one call
 at a time, the hourly limit, raiders for wanted callers, and a called stall
 at least half of the kind asked for),

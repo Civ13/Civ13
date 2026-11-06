@@ -117,7 +117,9 @@ from the sixth age).
 - **Theft.** Taking a good without enough credit gets a warning. Put it back
   or pay within 15 seconds, or the guards attack the thief.
 - **Leaving.** After 12 minutes, or when sold out, the trader packs up and
-  hands back payments that were not spent. Attacking the caravan also ends the
+  hands back payments that were not spent. A caravan sent to particular
+  players (by an admin, an agent or a telegraph call) waits up to 25 minutes
+  until one of them has come within 3 tiles of the stall. Attacking the caravan also ends the
   trade and starts a fight.
 
 Laid-out goods are not saved until sold.

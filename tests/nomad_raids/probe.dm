@@ -280,6 +280,19 @@ var/raid_runtime_error = FALSE
 	R.leader.loc = yard
 	R.tick_trade(R.alive_members(), FALSE, TRUE)
 	raid_check(!R.credit["neighbour"] && lying.loc == yard, "loose gear near the stall is not taken as payment")
+	// A caravan aimed at players waits past its usual time until one has come by.
+	R.target_ckeys = list("guest")
+	var/opened_at = R.state_at
+	R.state_at = world.time - NOMAD_TRADE_TIME - 10
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(R.state == "trade" && R.waiting_for_guests(), "the caravan waits for the players it came for")
+	R.visited += "guest"
+	raid_check(!R.waiting_for_guests(), "once they have come by, the caravan keeps its usual hours")
+	R.state_at = world.time - NOMAD_TRADE_WAIT - 10
+	R.visited -= "guest"
+	raid_check(!R.waiting_for_guests(), "nobody waits forever")
+	R.state_at = opened_at
+	R.target_ckeys = list()
 	raid_check(R.goods.len >= 1 && R.goods.len <= NOMAD_TRADE_GOODS, "goods are laid out ([R.goods.len])")
 	var/goods_ok = TRUE
 	for (var/obj/item/I in R.goods)

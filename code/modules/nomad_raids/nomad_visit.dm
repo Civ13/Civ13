@@ -14,6 +14,7 @@
 /datum/nomad_raid
 	should_save = FALSE
 	var/tmp/kind = "raid" // raid or trade
+	var/tmp/list/visited = list() // ckeys who came to the stall
 	var/tmp/wants = null // a kind of goods asked for by telegraph (nomad_requests.dm)
 	var/tmp/state = "march" // march, parley, trade, assault, loot, leave, ended
 	var/tmp/clan
@@ -336,7 +337,7 @@
 	if (!alive.len)
 		finish("every member fell")
 		return
-	if (world.time - started_at > NOMAD_RAID_TOTAL_LIMIT)
+	if (world.time - started_at > (kind == "trade" ? NOMAD_TRADE_TOTAL_LIMIT : NOMAD_RAID_TOTAL_LIMIT))
 		remove_all("time limit")
 		return
 	if (pending_cue && world.time >= pending_cue[3])
