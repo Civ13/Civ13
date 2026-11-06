@@ -9,6 +9,7 @@ come from the environment exactly as for civ13_agent.py.
 
   autopilot.py --spawn turf:483,43,2 --name "Ada" --goal "Gather sticks and make friends" --steps 30
   autopilot.py --character "[0x3000090]" --goal "Help the player's tribe"   # a handed-over character
+  autopilot.py --watch   # play each character an admin spawns with the Spawn AI Character verb
 """
 
 import argparse
@@ -1811,9 +1812,11 @@ def main(argv=None):
     who = parser.add_mutually_exclusive_group(required=True)
     who.add_argument("--character", help="ref of a character this agent may control")
     who.add_argument("--spawn", help="spawn a new character at this target, e.g. turf:x,y,z; with --job the job's own spawn point wins")
+    who.add_argument("--watch", action="store_true", help="wait for characters an admin spawns for this agent (Spawn AI Character verb) and play each in its own run")
+    parser.add_argument("--log-dir", default="", help="with --watch: folder for each run's log (default data/agent-control)")
     parser.add_argument("--name", help="name for a spawned character")
     parser.add_argument("--goal", default="Survive, explore and be friendly to other players.")
-    parser.add_argument("--steps", type=int, default=20)
+    parser.add_argument("--steps", type=int, help="model turns before stopping (default 20; with --watch each character plays until it dies)")
     parser.add_argument("--minutes", type=float, help="stop after this many minutes even if steps remain")
     parser.add_argument("--job", default="Nomad", help='late-join job for a spawned character ("" for a bare mob)')
     parser.add_argument("--interval", type=float, default=2.0, help="seconds between actions")
@@ -1830,6 +1833,8 @@ def main(argv=None):
     parser.add_argument("--stay", action="store_true", help="with --job: start at the --spawn target rather than the job's spawn point")
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
+    if args.steps is None:
+        args.steps = WATCH_STEPS if args.watch else 20
     if not args.model:
         parser.error("--model is required when no Player Help config names one")
     try:
@@ -1840,6 +1845,8 @@ def main(argv=None):
     token = os.environ.get(defaults.get("auth_token_env") or "CIV13_OLLAMA_TOKEN")
     client = RetryingClient(AgentClient.from_env())
 
+    if args.watch:
+        return watch(client, args)
     if args.spawn:
         spawn_args = {"target": args.spawn}
         if args.job:
@@ -1868,6 +1875,100 @@ def main(argv=None):
                     print(f"release failed: {released.get('error')} {released.get('detail', '')}", file=sys.stderr)
             except (AgentError, OSError) as exc:
                 print(f"release failed: {exc}", file=sys.stderr)
+
+
+WATCH_POLL = 10  # seconds between character_list polls in --watch mode
+WATCH_STEPS = 1000000  # a watched character plays until it dies or the run is stopped
+WATCH_RETRY = 300  # seconds after a failed run starts before its character is tried again
+# Flags a watched run passes on to each character's own run.
+WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval")
+
+
+def reap_runs(runs, rows=None):
+    """Forget runs that finished on purpose (exit 0: steps, minutes or death) and mark failed ones for a retry.
+
+    A run exits non-zero when the model or server failed it. Its character is no longer listed as waiting (the run
+    already observed it), so the run stays here with its goal until the retry. With rows (a fresh character_list),
+    runs for characters that are gone are dropped too. Every finished child is polled, which also reaps it.
+    """
+    listed = None if rows is None else {row.get("ref") for row in rows}
+    for ref, entry in list(runs.items()):
+        process = entry.get("process")
+        if process is not None:
+            code = process.poll()
+            if code is None:
+                continue
+            entry["process"] = None
+            if code == 0:
+                del runs[ref]
+                continue
+            entry["failed"] = True
+        if listed is not None and ref not in listed:
+            del runs[ref]
+
+
+def watch_targets(rows, runs, now, retry_failed=True):
+    """Characters to start a run for: spawned and alive, waiting for a driver or whose last run failed, not being
+    run now, and (after a failure) not tried in the last WATCH_RETRY seconds. Rows carry the goal to play."""
+    out = []
+    for row in rows:
+        ref = row.get("ref")
+        if not ref or row.get("kind") != "spawned" or row.get("stat") == 2:
+            continue
+        entry = runs.get(ref)
+        if entry is None:
+            if row.get("waiting"):
+                out.append(row)
+            continue
+        if entry.get("process") is not None or now - entry.get("at", 0) < WATCH_RETRY:
+            continue
+        if row.get("waiting") or (entry.get("failed") and retry_failed):
+            out.append(dict(row, goal=row.get("goal") or entry.get("goal")))
+    return out
+
+
+def watch_command(args, row):
+    """The autopilot command line that plays one waiting character."""
+    command = [sys.executable, "-u", os.path.abspath(__file__), "--character", row["ref"],
+               "--goal", row.get("goal") or args.goal]
+    for name in WATCH_PASSTHROUGH:
+        value = getattr(args, name, None)
+        if value is None or value == "":
+            continue
+        command += ["--" + name.replace("_", "-"), str(value)]
+    if getattr(args, "release", False):
+        command.append("--release")
+    return command
+
+
+def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess.Popen):
+    """Play every character an admin spawns for this agent, each in its own autopilot run, until interrupted."""
+    log_dir = args.log_dir or os.path.join(ROOT, "data", "agent-control")
+    os.makedirs(log_dir, exist_ok=True)
+    runs = {}  # ref -> {"process", "at", "goal", "failed"}
+    print(f"watching for characters spawned for agent {getattr(getattr(client, 'client', None), 'agent', '?')}; Ctrl+C stops")
+    try:
+        while True:
+            try:
+                reply = client.request("character_list")
+            except (AgentError, OSError) as exc:
+                print(f"character_list failed: {exc}", file=sys.stderr)
+                reply = {}
+            if reply.get("ok") is False:
+                print(f"character_list refused: {reply.get('error')} {reply.get('detail', '')}", file=sys.stderr)
+            rows = (reply.get("result") or {}).get("characters") if reply.get("ok") else None
+            reap_runs(runs, rows)
+            # A released character cannot be driven again, so failed --release runs are not retried.
+            for row in watch_targets(rows or [], runs, clock(), retry_failed=not getattr(args, "release", False)):
+                name = re.sub(r"[^A-Za-z0-9_-]+", "_", str(row.get("name") or "character")).strip("_") or "character"
+                log_path = os.path.join(log_dir, f"{name}-{re.sub(r'[^A-Za-z0-9]+', '', row['ref'])}.log")
+                with open(log_path, "a", encoding="utf-8") as log:
+                    process = popen(watch_command(args, row), stdout=log, stderr=subprocess.STDOUT)
+                runs[row["ref"]] = {"process": process, "at": clock(), "goal": row.get("goal") or args.goal, "failed": False}
+                print(f"playing {row.get('name')} {row['ref']}: {row.get('goal') or args.goal} (log {log_path})")
+            sleep(WATCH_POLL)
+    except KeyboardInterrupt:
+        return 0
 
 
 MODEL_GRACE = 30  # seconds past the model's own timeout before a hung call is given up

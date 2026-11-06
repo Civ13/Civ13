@@ -45,6 +45,7 @@ var/global/list/agent_characters = list()
 	var/list/allowed_addresses = list("127.0.0.1")
 	var/allow_handover = FALSE
 	var/max_characters = 4
+	var/list/last_watch = list() // agent name -> world.time it last listed its characters
 	var/list/failures = list()
 	var/list/locked_until = list()
 	var/list/jobs = list()
