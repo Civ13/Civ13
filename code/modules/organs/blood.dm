@@ -243,7 +243,9 @@ proc/blood_incompatible(donor,receiver,donor_species,receiver_species)
 	if (!donor || !receiver) return FALSE
 
 	if (donor_species && receiver_species)
-		if (donor_species != receiver_species)
+		// Compare by name: a body restored from a save holds a copy of its
+		// species datum, while organs grown after the load hold the global one.
+		if (blood_species_name(donor_species) != blood_species_name(receiver_species))
 			return TRUE
 
 	var/donor_antigen = copytext(donor,1,length(donor))
@@ -261,6 +263,12 @@ proc/blood_incompatible(donor,receiver,donor_species,receiver_species)
 			if (donor_antigen != "O") return TRUE
 		//AB is a universal receiver.
 	return FALSE
+
+proc/blood_species_name(species)
+	if (istype(species, /datum/species))
+		var/datum/species/S = species
+		return S.name
+	return species
 
 proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 
