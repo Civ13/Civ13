@@ -342,8 +342,21 @@ come with phase 3, when there is something to save.
   electrolyser also takes ice directly. Local iron smelts into steel and sand
   into glass with the usual chains, and the 3D printer prints hull and suit
   patch kits (plastic), suit air tanks (steel) and habitat, greenhouse and
-  airlock module kits (steel and glass, after Off-world Mining). Rovers and
-  survey drones are not built yet.
+  airlock module kits (steel and glass, after Off-world Mining).
+- Built (phase 5 rovers, `code/modules/space/surface_rovers.dm`): combustion
+  engines no longer start where there is no air to burn. Surface Vehicles
+  (after Off-world Mining) unlocks a rover assembly bay (a car workshop that
+  builds only rovers, each with a charged battery pack) and a cabled rover
+  charger that adds 150 charge to a parked rover's 450-unit battery per use.
+  Both rovers use the existing four-tile jeep body and an electric drive
+  that runs on battery charge. The open rover has a cargo bed; the sealed
+  rover's cabin is one habitat ledger on its axis shared by everyone on its
+  frame tiles, with open doors counted as breaches. While the battery has
+  charge the cabin panel tops oxygen up from a reserve (four person-hours
+  when built, refilled by emptying suit air tanks into the panel), scrubs
+  CO2 and holds 20 C. On breathable ground the cabin is ignored. Not built:
+  trailers (the vehicle system has no towing) and dedicated survey drones
+  (the existing drone controller works on any map).
 
 ### Phase 6: self-sufficiency and expansion
 
@@ -367,7 +380,7 @@ Original node names, all era 9 unless Val chooses a later age (D2):
 | Sealed Habitats | Habitat module kits (hatches come with docking), airlock, hull patch kit | 3 |
 | Life Support | Electrolyser, scrubber, heater, water recycler | 3 |
 | Pressure Suits | Suit, helmet, air tank, repair kit | 4 |
-| Surface Vehicles | Open and sealed rovers, trailers | 5 |
+| Surface Vehicles | Open and sealed rovers, rover charger | 5 |
 | Off-world Mining | Regolith drill rig, ice melter, printed module kits | 5 |
 | Local Resources | Propellant plant, printed module kits | 6 |
 

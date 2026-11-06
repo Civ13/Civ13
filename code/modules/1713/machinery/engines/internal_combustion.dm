@@ -106,6 +106,9 @@
 	if (broken)
 		to_chat(user, "\The [src] is broken, you can't turn it on!")
 		return
+	if (!engine_has_air())
+		to_chat(user, SPAN_WARNING("There is no air here for \the [src] to burn."))
+		return
 	if (fueltank != null)
 		var/done = FALSE
 		for (var/F in fuels)

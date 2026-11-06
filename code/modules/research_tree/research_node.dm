@@ -290,6 +290,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("life_support", "Life Support", "Industrial", 560, 8, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
 	register_research_node(new /datum/research_node("pressure_suits", "Pressure Suits", "Industrial", 560, 8, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
 	register_research_node(new /datum/research_node("off_world_mining", "Off-world Mining", "Industrial", 600, 8, RESEARCH_MODE_ANALYSIS, list("pressure_suits"), 9))
+	register_research_node(new /datum/research_node("surface_vehicles", "Surface Vehicles", "Industrial", 600, 8, RESEARCH_MODE_ANALYSIS, list("off_world_mining"), 9))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -705,7 +706,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
-		// --- rocketry / planetary_survey / crewed_flight / sealed_habitats / life_support / pressure_suits / off_world_mining (9) ---
+		// --- rocketry / planetary_survey / crewed_flight / sealed_habitats / life_support / pressure_suits / off_world_mining / surface_vehicles (9) ---
 		"/obj/structure/launch_rail" = "rocketry",
 		"/obj/item/space_probe" = "rocketry",
 		"/obj/structure/survey_console" = "rocketry",
@@ -727,6 +728,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/pressure_suit_patch" = "pressure_suits",
 		"/obj/structure/drill/regolith_rig" = "off_world_mining",
 		"/obj/structure/reagent_dispensers/ice_melter" = "off_world_mining",
+		"/obj/structure/car_workshop/rover_bay" = "surface_vehicles",
+		"/obj/structure/rover_charger" = "surface_vehicles",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",

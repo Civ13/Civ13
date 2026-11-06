@@ -39,6 +39,15 @@
 		return null
 	return list("steel" = size == 3 ? 40 : 60, "glass" = size == 3 ? 6 : 8, "cloth" = size == 3 ? 4 : 6, "cable" = 10, "wheels" = 4)
 
+/obj/structure/car_workshop/proc/requirement_text()
+	return "Automobiles and Electricity research are required."
+
+/obj/structure/car_workshop/proc/menu_text()
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty."
+
+/obj/structure/car_workshop/proc/assembled_message(model)
+	return "Your [model] is assembled. Add the correct fuel before driving."
+
 /obj/structure/car_workshop/proc/has_inputs(model)
 	var/list/required = costs(model)
 	if (!required)
@@ -100,12 +109,12 @@
 	if (busy || !Adjacent(H))
 		return
 	if (!allowed(H))
-		to_chat(H, SPAN_WARNING("Automobiles and Electricity research are required."))
+		to_chat(H, SPAN_WARNING(requirement_text()))
 		return
 	var/list/options = models()
 	options["Unload inputs"] = "unload"
 	options["Service vehicle keys"] = "keys"
-	var/choice = WWinput(H, "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty.", name, "Cancel", options + list("Cancel"))
+	var/choice = WWinput(H, menu_text(), name, "Cancel", options + list("Cancel"))
 	if (busy || !Adjacent(H) || !allowed(H))
 		return
 	if (choice == "Unload inputs")
@@ -143,7 +152,7 @@
 	if (completed && Adjacent(H) && allowed(H) && draw_cable_power())
 		result = complete_assembly(choice)
 		if (result)
-			to_chat(H, SPAN_NOTICE("Your [choice] is assembled. Add the correct fuel before driving."))
+			to_chat(H, SPAN_NOTICE(assembled_message(choice)))
 	finish_work()
 	return result
 
