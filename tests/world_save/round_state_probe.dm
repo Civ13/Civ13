@@ -98,7 +98,8 @@ var/datum/fixture_jobs/job_master = new
 	var/header = file2text("map_saves/round.json")
 	var/marker = file2text("map_saves/save_complete.txt")
 	var/list/state = map_storage.read_round_state()
-	check(state.len == 11, "new save omitted round header")
+	// Later fields (elevation, links, transfer) only add to the 11-entry header.
+	check(state.len >= 11, "new save omitted round header")
 	var/savefile/F = new("map_saves/1.sav")
 	var/generation = F["/generation"]
 	F["/generation"] << "another-generation"
