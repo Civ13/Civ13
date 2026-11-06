@@ -157,6 +157,10 @@ var/space_runtime_error = FALSE
 	space_check(E.outside_air_breathable() && isnull(E.outside_ambient_c()), "ordinary ground keeps breathable air and the usual climate")
 	var/area/caribbean/nomads/barren/B = new
 	space_check(B.base_turf == /turf/floor/dirt/dust/regolith && B.climate == "desert", "the barren area rests on regolith with a dry climate")
+	var/obj/map_metadata/previous_map = map
+	var/obj/map_metadata/nomads/barren/mars = new // New() claims the global map
+	map = previous_map
+	space_check(!(WEATHER_WET in mars.valid_weather_types) && !(WEATHER_SMOG in mars.valid_weather_types) && (WEATHER_EXTREME in mars.valid_weather_types), "the barren world gets dust storms but never rain")
 	space_check((B.icon_state in icon_states(B.icon)) && B.ambience[1] == "sound/ambience/desert.ogg", "the barren area reuses existing area art and sound")
 
 // Phase 1: survey map, launch rail, mission console and samples.
