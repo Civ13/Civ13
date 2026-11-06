@@ -175,6 +175,12 @@ class DoormanTests(base.GaiaHostTests):
         self.assertEqual((old.cold_state, newer.cold_state), ({'evicted': 'memory for waking port 1803'}, None))
         self.assertIsNone(wanted.state)
 
+    def test_routed_instances_are_marked_for_the_launcher(self):
+        self.running()
+        self.assertNotIn('routed', self.ask('host_status=1')['instances'][0])
+        self.host.config['routed'] = True
+        self.assertTrue(self.ask('host_status=1')['instances'][0]['routed'])
+
     def test_one_address_may_wake_two_worlds_in_a_row(self):
         # The routing relay asks from loopback for every region; spacing is per port.
         class Sleeper:

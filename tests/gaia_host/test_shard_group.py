@@ -169,6 +169,9 @@ class ShardGroupTests(unittest.TestCase):
             self.assertEqual(['203.0.113.5:1720', '203.0.113.5:1721'], [r['address'] for r in settings['regions']])
             tokens.add((config / 'relay-token.txt').read_text().strip())
         self.assertEqual({(self.base / 'regions' / 'relay-token.txt').read_text().strip()}, tokens)
+        # Only the gate is offered by the launcher; the others are joined through it.
+        self.assertEqual({'gaia': False, 'deep': True},
+                         {r['id']: shard_group.region_config(group, r)['routed'] for r in group['regions']})
         self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
 
     def test_supervise_starts_the_relay_once(self):

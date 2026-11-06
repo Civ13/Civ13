@@ -104,10 +104,12 @@ public sealed class ServerDiscovery : IServerDiscovery {
             try { hosted = await doorman(provider); }
             catch (IOException) { }
         }
-        var dormant = hosted.Values.Where(server => server.State is "asleep" or "waking").OrderBy(server => server.Target.Port).ToArray();
+        // A routed world is reached through the gate world only: never listed or queried.
+        var routed = hosted.Values.Where(server => server.Routed).Select(server => server.Target).ToHashSet();
+        var dormant = hosted.Values.Where(server => !server.Routed && server.State is "asleep" or "waking").OrderBy(server => server.Target.Port).ToArray();
         // Exactly two configured endpoints per provider, at most two active sockets.
         var results = await Task.WhenAll(ServerCatalog.Candidates(provider)
-            .Where(target => !dormant.Any(server => server.Target == target)).Select(async target => {
+            .Where(target => !routed.Contains(target) && !dormant.Any(server => server.Target == target)).Select(async target => {
             try { return (Server: (GameServer?)(await query(target)).Status, Wait: (DeferredTarget?)null, Paused: false); }
             catch (TopicWaitException wait) { return (Server: wait.Cached?.Server, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds, wait.Cached), Paused: false); }
             catch (TopicPacingException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: true); }

@@ -192,6 +192,9 @@ class Doorman:
             entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance),
                      # asleep after a power-down: a wake starts it from its save, which takes minutes
                      'cold': instance.host.cold() is not None}
+            if instance.host.config.get('routed'):
+                # Behind the routing relay: players join through the gate world, never this port.
+                entry['routed'] = True
             if instance.status is not None:
                 entry.update(instance.status)
                 entry['cached_age'] = max(0, int(self.wall() - instance.status_at))

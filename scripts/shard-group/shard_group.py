@@ -217,6 +217,8 @@ def region_config(group, region):
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
             'systemd_scope': group.get('systemd_scope', ''),
+            # Behind the routing relay: the launcher offers only the gate region.
+            'routed': bool(group.get('relay_port')) and region['id'] != group.get('gate'),
             '_path': str(path / 'data' / 'shard-host' / 'host.json'),
             # Only a hub-listed (-public) world needs the host's BYOND account signed in.
             'start_requires_byond_pager': bool(public)}
