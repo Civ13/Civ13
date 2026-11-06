@@ -29,6 +29,11 @@ var/global/list/persistence_player_claims = list()
 		if(H != src && H.persistence_owner_ckey == account)
 			H.persistence_owner_ckey = null
 	persistence_owner_ckey = account
+	// Ownership moved to this body, so an older restored-body registration is
+	// stale; kept, it would hold Join forever once this body dies.
+	var/list/registered = persistence_restored_bodies[account]
+	if(registered && !(src in registered))
+		persistence_restored_bodies.Remove(account)
 
 /map_storage/proc/prepare_player_ownership()
 	var/list/active = list()
