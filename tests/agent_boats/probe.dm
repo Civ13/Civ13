@@ -39,6 +39,7 @@ var/boat_runtime_error = FALSE
 		boat_route_checks()
 		boat_raft_checks()
 		boat_motor_checks()
+		agent_player_action_checks()
 	catch(var/exception/e)
 		boat_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = boat_checks, "failures" = boat_failures, "runtime_error" = boat_runtime_error)), "result.json")
@@ -191,3 +192,86 @@ var/boat_runtime_error = FALSE
 	boat_check(istext(result) && findtext(result, "out_of_reach"), "dragging something out of reach is refused")
 	B.engine.on = FALSE
 	agent_characters -= C.body
+
+// Player actions beyond clicks (code/modules/agent_control/agent_verbs.dm): verbs,
+// throwing, and seeing someone else's wounds for first aid.
+/proc/agent_player_action_checks()
+	var/datum/agent_character/C = boat_character(30, 30, "Verber")
+	var/mob/living/human/H = C.body
+	var/list/state = agent_control.character_state(C)
+	boat_check(islist(state["verbs"]) && ("Rest" in state["verbs"]), "the state lists the character's own verbs ([length(state["verbs"])])")
+	boat_check(!("Succumb" in state["verbs"]) && !("Ghost" in state["verbs"]), "verbs that end the character are not offered")
+	var/result = boat_step(C, list("do" = "verb", "name" = "rest"))
+	boat_check(islist(result) && H.resting, "the Rest verb makes the character rest ([islist(result) ? "ok" : result])")
+	boat_step(C, list("do" = "verb", "name" = "Rest"))
+	boat_check(!H.resting, "and again stands it up")
+	result = boat_step(C, list("do" = "verb", "name" = "succumb"))
+	boat_check(istext(result) && findtext(result, "not_found"), "a forbidden verb is refused ([result])")
+	var/obj/item/weapon/material/spear/far = new(locate(36, 36, 1))
+	result = boat_step(C, list("do" = "verb", "target" = agent_ref(far), "name" = "anything"))
+	boat_check(istext(result) && findtext(result, "out_of_reach"), "a far object's verbs are out of reach")
+	// Held and worn items' verbs are listed as "item: verb".
+	var/obj/item/stack/material/wood/held = new(get_turf(H))
+	H.put_in_active_hand(held)
+	state = agent_control.character_state(C)
+	var/list/item_verbs = state["item_verbs"]
+	boat_check(islist(item_verbs), "the state lists held and worn items' verbs ([length(item_verbs)])")
+	H.drop_item()
+	qdel(held)
+	// Throwing: the held item lands away from the character.
+	var/obj/item/stack/material/wood/logs = new(get_turf(H))
+	H.put_in_active_hand(logs)
+	result = boat_step(C, list("do" = "throw", "target" = agent_ref(locate(34, 30, 1))))
+	sleep(10)
+	// The flight itself needs the running game's throw processing; here it is enough that the throw let go of it.
+	boat_check(islist(result) && isturf(logs.loc) && H.get_active_hand() != logs, "throw lets go of the held item ([islist(result) ? "ok" : result], at [logs.x],[logs.y])")
+	try
+		agent_control.perform_step(boat_identity(), C, list("do" = "throw", "target" = agent_ref(H)), FALSE)
+		boat_check(FALSE, "a direct throw must use the queue")
+	catch(var/exception/e)
+		boat_check(findtext("[e.desc || e.name]", "use_queue"), "a direct throw must use the queue")
+	// A hurt person next to the character shows their wounds.
+	var/datum/agent_character/P = boat_character(31, 30, "Patient")
+	var/mob/living/human/patient = P.body
+	var/obj/item/organ/external/arm = patient.get_organ("l_arm")
+	arm.status |= ORGAN_BLEEDING
+	arm.take_damage(15, 0, sharp = TRUE, edge = TRUE)
+	var/list/look = agent_control.act_character_observe(boat_identity(), list("character" = agent_ref(H), "radius" = 3))
+	var/list/seen = null
+	for (var/list/row in look["nearby"])
+		if (row["ref"] == agent_ref(patient))
+			seen = row
+	boat_check(islist(seen) && islist(seen["wounds"]) && length(seen["wounds"]) >= 1, "a hurt person nearby carries their wounds")
+	if (islist(seen) && islist(seen["wounds"]) && length(seen["wounds"]))
+		var/found = FALSE
+		for (var/list/wound in seen["wounds"])
+			if (wound["zone"] == "l_arm" && wound["bleeding"])
+				found = TRUE
+		boat_check(found, "the wound rows name the bleeding arm ([json_encode(seen["wounds"])])")
+	// A serious illness, a campfire and a puddle carry what boiling and treatment need.
+	H.disease = TRUE
+	H.disease_type = "cholera"
+	H.disease_progression = 300
+	state = agent_control.character_state(C)
+	var/list/illness = state["illness"]
+	boat_check(islist(illness) && illness["type"] == "cholera" && illness["severe"] && illness["stage"] == "worsening" && !illness["treated"], "a serious illness is in the state ([json_encode(illness)])")
+	H.disease = FALSE
+	H.disease_type = "none"
+	var/obj/structure/oven/fireplace/fire = new(locate(29, 30, 1))
+	var/obj/structure/sink/puddle/puddle = new(locate(30, 31, 1))
+	look = agent_control.act_character_observe(boat_identity(), list("character" = agent_ref(H), "radius" = 3))
+	var/list/fire_row = null
+	var/list/puddle_row = null
+	for (var/list/row in look["nearby"])
+		if (row["ref"] == agent_ref(fire))
+			fire_row = row
+		if (row["ref"] == agent_ref(puddle))
+			puddle_row = row
+	boat_check(islist(fire_row) && fire_row["lit"] == FALSE && fire_row["fuel"] == 4, "a campfire row says whether it is lit and its fuel ([json_encode(fire_row)])")
+	boat_check(islist(puddle_row) && puddle_row["sickness"] == 1, "a puddle is marked unclean ([json_encode(puddle_row)])")
+	qdel(fire)
+	qdel(puddle)
+	agent_characters -= patient
+	qdel(patient)
+	agent_characters -= H
+	qdel(H)

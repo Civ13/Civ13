@@ -36,7 +36,12 @@
 		return
 	sifting_resources = TRUE
 	var/list/choices = panning ? list("Copper ore" = /obj/item/stack/ore/copper, "Tin ore" = /obj/item/stack/ore/tin, "Silver ore" = /obj/item/stack/ore/silver, "Gold ore" = /obj/item/stack/ore/gold) : sifting_choices()
-	var/choice = input(src, "Trace gathering yields one unit: three uninterrupted minutes by hand, two minutes with a sieve or river pan. Mining finite deposits produces much larger batches.", "Trace gathering") as null|anything in choices
+	var/choice
+	if (!client && agent_character_for(src))
+		// An agent-controlled character has no client for input(); it names its pick with the step's choose answer.
+		choice = WWinput(src, "Trace gathering", "Trace gathering", null, choices)
+	else
+		choice = input(src, "Trace gathering yields one unit: three uninterrupted minutes by hand, two minutes with a sieve or river pan. Mining finite deposits produces much larger batches.", "Trace gathering") as null|anything in choices
 	if (choice)
 		sift_resource(T, choices[choice], tool, panning)
 	sifting_resources = FALSE

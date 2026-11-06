@@ -28,6 +28,7 @@ import techtree  # noqa: E402
 import blueprints  # noqa: E402
 import leatherwork  # noqa: E402
 import boats  # noqa: E402
+import water  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -70,14 +71,15 @@ TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
-           "blueprint", "build_next", "leather_next", "travel", "board", "disembark")
+           "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
-PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather")
+PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
 MAX_TERRAIN = 10
 MAX_PLAN = 3
+UNCONSCIOUS_POLL = 10  # seconds between checks while the character is out cold
 FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushroom", "egg", "potato", "carrot", "corn", "nut", "organ", "offal", "stew", "soup")
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
 FIRE_WORDS = ("campfire", "fireplace", "oven", "stove", "furnace")
@@ -156,6 +158,10 @@ and leaves the boat moored on the far shore (you remember where). Carry 10 wood 
 Boats: {"do": "board", "target": number} gets on a raft or boat next to you; while you drive one, "move" steers it a tile
 over water; {"do": "disembark"} gets off at a shore. A motor boat needs fuel (hold fuel and click the boat) and its
 engine started (use the rudder in your hand once). The BOAT line says what a boat needs.
+Verbs: {"do": "verb", "name": "<verb>"} uses anything a player has in the right-click menu or verb panels: your own verbs
+("Your verbs", e.g. Rest, Sleep, Check Pulse, Give with "onto": a person, Point To with "onto"), a held or worn item's verbs
+("Item verbs": add "target": 0), or a thing next to you marked (verbs: ...) with "target": its number. "text" is the argument
+for verbs that take words. {"do": "throw", "target": n} throws what you hold at a target (a spear at prey, a rock).
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -181,7 +187,12 @@ How to play:
 - Build: {"do": "build", "recipe": "<structure>", "material": "<stack>", "dir": north|south|east|west} builds on the tile you stand on,
   facing dir. Roofing ({"do": "roof", "dir": ...}) covers the tile next to you in that direction.
   A house is easiest with a blueprint (build_next): it walks to each tile and builds walls, a door, a roof support, the roof and furniture.
-- Water: rivers and lakes marked "(unclean)" can give you cholera. Prefer clean water; boil unclean water in a mug or pot on a lit campfire.
+- Water: rivers, lakes, puddles and wells marked "(unclean)" give you cholera, which kills in about 20 minutes. Drink from a
+  clean well, or boil unclean water first: {"do": "boil_water"} does the next step (craft a wood mug from 1 wood log, fill it,
+  put a stone on a lit campfire, hold the mug and a stick, boil it with a hot stone, drink from the mug). Stone comes from
+  {"do": "verb", "name": "Sift soil for resources", "choose": "Stone"} on dirt or sand, or from mining.
+- Illness: when ILLNESS says you are seriously ill, treat it before anything else: hold healing herbs and "use" them to chew
+  one, and chew another every few minutes until the course is done. Cut healing herbs from jungle bushes with a knife.
 - Underground: craft a bone shovel (2 bones), dig_down, climb down the ladder, build mine supports (2 wood logs) as you go so tunnels do not
   collapse, and mine the rock walls with a pickaxe.
 - Mining: butcher a big animal for bones and craft a bone pickaxe (2 bones), or a stone pickaxe from 2 stone. Find underground rock
@@ -266,8 +277,16 @@ def summarize(observation, note="", ignored=(), muted=()):
     temperature = temperature_need(self_state)
     if temperature:
         needs.insert(0, temperature)
+    sick = illness(self_state)
+    if sick:
+        needs.insert(0, f"seriously ill with {sick.get('type')} ({sick.get('stage', 'ill')}): chew healing herbs now and keep the course going")
+        lines.append(f"ILLNESS: {sick.get('type')}, {sick.get('stage', 'ill')}" + (", treatment running" if _float(sick.get("remedy"), 0) >= 3 else ", NOT being treated") + ".")
     if needs:
         lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
+    if self_state.get("verbs"):
+        lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:60])))
+    if self_state.get("item_verbs"):
+        lines.append("Item verbs: " + "; ".join(map(str, self_state["item_verbs"][:20])))
     if self_state.get("craftable"):
         lines.append("You can craft (from the held stack): " + "; ".join(map(str, self_state["craftable"][:30])))
     if note:
@@ -278,7 +297,7 @@ def summarize(observation, note="", ignored=(), muted=()):
     for row in nearby:
         refs.append(row.get("ref"))
         kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
-        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}")
+        lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}{' (unclean)' if row.get('sickness') else ''}{_fire_mark(row)}{_verb_mark(row)}")
     if not nearby:
         lines.append("  nothing")
     if skipped:
@@ -296,6 +315,11 @@ def summarize(observation, note="", ignored=(), muted=()):
         lines.append("Recent messages:")
         lines.extend("  " + text for text in texts)
     return "\n".join(lines), refs
+
+
+def _verb_mark(row):
+    verbs = [str(name) for name in row.get("verbs") or []][:8]
+    return f" (verbs: {', '.join(verbs)})" if verbs else ""
 
 
 def _hurt_mark(row):
@@ -442,6 +466,12 @@ def _has(self_state, test):
     return any(test(str(name).lower()) for name in names)
 
 
+def _fire_mark(row):
+    if "lit" not in row:
+        return ""
+    return " (lit)" if row.get("lit") else " (unlit)" if _float(row.get("fuel"), 0) >= 1 else " (unlit, no fuel)"
+
+
 def current_goal(observation):
     """The next step on the survival ladder, from what the character holds and sees."""
     me = observation.get("self", {})
@@ -450,6 +480,10 @@ def current_goal(observation):
     wood = _has(me, lambda n: "plank" in n or "log" in n)
     hungry = isinstance(me.get("nutrition"), (int, float)) and me["nutrition"] < 250
     wound = worst_wound(me)
+    sick = illness(me)
+    if sick and _float(sick.get("remedy"), 0) < 3:
+        return (f"treat your {sick.get('type')}: hold healing herbs and use them to chew one, every few minutes until the course is done",
+                "then drink only clean or boiled water")
     if wound and wound.get("bleeding"):
         return "stop your bleeding: treat it with bandages, or make bandages or find healing herbs right away", "then rest and heal"
     temperature = temperature_need(me)
@@ -840,6 +874,8 @@ def parse_decision(text, refs):
         return {"do": "blueprint", "name": name}
     if action == "build_next":
         return args
+    if action == "boil_water":
+        return args
     if action == "leather_next":
         return {"do": "leather_next", "make": leatherwork.product_name(data.get("make") or data.get("item") or data.get("name"))}
     if action == "travel":
@@ -901,6 +937,33 @@ def parse_decision(text, refs):
         except (TypeError, ValueError):
             return None
         if not 0 <= index < len(refs) or not refs[index]:
+            return None
+        args["target"] = refs[index]
+    elif action == "verb":
+        name = str(data.get("name", "")).strip()
+        if not name:
+            return None
+        args["name"] = name[:64]
+        for key in ("target", "onto"):
+            if data.get(key) is None:
+                continue
+            try:
+                index = int(data.get(key))
+            except (TypeError, ValueError):
+                return None
+            if not 0 <= index < len(refs) or not refs[index]:
+                return None
+            args[key] = refs[index]
+        if "onto" not in args and str(data.get("text", "")).strip():
+            args["text"] = str(data["text"]).strip()[:200]
+        if str(data.get("choose", "")).strip():
+            args["choose"] = str(data["choose"]).strip()[:64]  # the answer when the verb asks (sifting: "Stone")
+    elif action == "throw":
+        try:
+            index = int(data.get("target"))
+        except (TypeError, ValueError):
+            return None
+        if not 1 <= index < len(refs) or not refs[index]:
             return None
         args["target"] = refs[index]
     elif action == "take":
@@ -1023,7 +1086,7 @@ def parse_plan(text, refs):
         if step is None:
             break  # keep the valid prefix; later steps may depend on the bad one
         plan.append(step)
-        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next", "leather_next", "travel"):
+        if "skill" in step or step.get("material") or step.get("do") in ("roof", "blueprint", "build_next", "leather_next", "travel", "boil_water"):
             break  # the hands change; plan the next step after seeing the result
     return plan
 
@@ -1084,13 +1147,18 @@ def _stowed(self_state):
 def thirst_plan(observation, explore_dir="north", ignored=()):
     """When very thirsty, the step that goes for water: drink at listed water, else explore. None when not needed."""
     me = observation.get("self", {})
-    water = me.get("water")
-    if not isinstance(water, (int, float)) or water >= 200:
+    level = me.get("water")
+    if not isinstance(level, (int, float)) or level >= 200:
         return None
-    # Clean water first; unclean water (cholera risk) only when nothing better is listed.
-    rows = sorted((row for row in observation.get("terrain", []) if row.get("ref") not in ignored and _is_drinkable(row)), key=lambda row: bool(row.get("sickness")))
-    if rows:
+    # Clean water first. Unclean water (cholera) is boiled in a mug first, and drunk raw only when dying of thirst.
+    rows = [row for row in water.sources(observation) if row.get("ref") not in ignored and _is_drinkable(row)]
+    clean = [row for row in rows if not water.is_unclean(row)]
+    if clean:
+        return {"skill": "drink", "target": clean[0].get("ref")}
+    if rows and level < water.EMERGENCY:
         return {"skill": "drink", "target": rows[0].get("ref")}
+    if rows or water.boiled(water._mug(me)):
+        return {"do": "boil_water"}
     return {"do": "explore", "dir": explore_dir}
 
 
@@ -1154,9 +1222,18 @@ def _is_junk(name):
     return name == "flint" or any(word in name for word in ("leaf", "leaves", "grass"))
 
 
+# Named like water but holding something else: an oil well, a petroleum spring.
+NOT_WATER_WORDS = ("oil", "petroleum", "tar", "fuel", "acid")
+
+
+def _is_water_name(name):
+    name = str(name or "").lower()
+    return any(word in name for word in WATER_WORDS) and not any(re.search(rf"\b{word}\b", name) for word in NOT_WATER_WORDS)
+
+
 def _is_drinkable(row):
     name, kind = str(row.get("name", "")).lower(), str(row.get("type", "")).lower()
-    return any(word in name for word in WATER_WORDS) and not row.get("salty") and "salt" not in name and "salt" not in kind and "sea" not in name
+    return _is_water_name(name) and not row.get("salty") and "salt" not in name and "salt" not in kind and "sea" not in name
 
 
 SKILL_TARGETS = {
@@ -1181,7 +1258,7 @@ SKILL_TARGETS = {
     "rack_hide": (lambda row: "tanning rack" in str(row.get("name", "")).lower(), "a tanning rack"),
     "unload_rack": (lambda row: "tanning rack" in str(row.get("name", "")).lower(), "a tanning rack"),
     "cut_logs": (lambda row: row.get("item") and "log" in str(row.get("name", "")).lower(), "wood logs on the ground"),
-    "fill_vessel": (lambda row: not row.get("item") and not row.get("mob") and any(w in str(row.get("name", "")).lower() for w in WATER_WORDS), "water"),
+    "fill_vessel": (lambda row: not row.get("item") and not row.get("mob") and _is_water_name(row.get("name")), "water"),
     "butcher": (lambda row: row.get("mob") and row.get("stat") == 2 and str(row.get("type", "")).startswith("/mob/living/simple_animal"), "a dead animal"),
 }
 BINDING_WORDS = ("crude twine", "sinew", "rope")
@@ -1255,6 +1332,9 @@ def expand_skill(step, self_state, rows=None):
             row = None
         else:
             return [], f"{step['skill']} needs a target number from the lists, not yourself (0). If nothing suitable is listed, explore in some direction to find it"
+    if row is not None and step["skill"] == "drink" and water.is_unclean(row) and _float(self_state.get("water"), 0) >= water.EMERGENCY:
+        return [], (f"the {row.get('name')} is unclean and gives cholera: use " + '{"do": "boil_water"}' + " to boil it in a mug first, "
+                    "or find a clean well")
     if row is not None and step["skill"] == "mine" and row.get("safe_to_mine") is False:
         return [], "mining that rock would cave the tunnel in on you: build a mine support (2 wooden planks) within 2 tiles of it first"
     if row is not None and step["skill"] == "sharpen_stick" and not _is_plain_stick(row.get("name")):
@@ -1409,6 +1489,11 @@ def expand_plan(plan, self_state, rows=None):
             steps.extend(expanded)
         elif step.get("do") in ("craft", "equip", "drop") and step.get("material"):
             steps.extend(_expand_craft(step, self_state))
+        elif step.get("do") in WATER_STEPS:
+            expanded, error = _expand_water(step, self_state, rows)
+            if error:
+                return steps, error
+            steps.extend(expanded)
         elif step.get("do") == "build":
             held = _expand_craft({"do": "craft", "recipe": step["recipe"], "material": step.get("material", "")}, self_state)
             steps.extend(held[:-1] + [{"do": "face", "dir": step["dir"]}, held[-1]])
@@ -1949,10 +2034,31 @@ def _run(client, args, character, token, model_pool):
         if pinned_leather:
             box_for_goal(memory, local_project)["leather"] = pinned_leather
             pinned_leather = ""
-        if self_state.get("stat") not in (None, 0):
-            print(f"step {step}: {self_state.get('name')} is {'dead' if self_state.get('stat') == 2 else 'unconscious'}; stopping")
+        if self_state.get("stat") == 1:
+            # Unconscious is not the end: wait for her to come round, without spending steps or model calls.
+            print(f"step {step}: {self_state.get('name')} is unconscious; waiting for her to wake")
             if memory is not None:
-                memory.event("died" if self_state.get("stat") == 2 else "fell unconscious")
+                memory.event("fell unconscious")
+                memory.save()
+            while self_state.get("stat") == 1 and not (deadline and time.monotonic() > deadline):
+                time.sleep(UNCONSCIOUS_POLL)
+                reply = client.request("character_observe", {"character": character, "since": since})
+                if not reply.get("ok"):
+                    print(f"observe failed: {reply.get('error')} {reply.get('detail', '')}", file=sys.stderr)
+                    return 1
+                observation = reply["result"]
+                since = observation.get("last_message", since)
+                self_state = observation.get("self", {})
+            if self_state.get("stat") == 1:
+                print(f"time limit reached while {self_state.get('name')} was unconscious")
+                break
+            if self_state.get("stat") == 0:
+                print(f"  {self_state.get('name')} came round")
+                previous_self = self_state
+        if self_state.get("stat") not in (None, 0):
+            print(f"step {step}: {self_state.get('name')} is dead; stopping")
+            if memory is not None:
+                memory.event("died")
                 memory.save()
             break
         if memory is not None:
@@ -2071,6 +2177,9 @@ def _run(client, args, character, token, model_pool):
         if memory is not None and json.dumps(box.get("project"), sort_keys=True) != before:
             memory.dirty = True
         plan, leather_note = leather_plan(plan, observation, box)
+        plan, water_note = water_plan(plan, observation)
+        if water_note:
+            leather_note = (leather_note + "\n" if leather_note else "") + water_note
         plan, travel_note = travel_plan(plan, self_state, memory)
         if travel_note:
             built_note = (built_note + "\n" if built_note else "") + travel_note
@@ -2102,11 +2211,22 @@ def _run(client, args, character, token, model_pool):
             print(f"  {row.get('name')} is hurt: giving first aid instead")
         cold = cold_plan(observation, ignored) if not patient else None
         thirsty = thirst_plan(observation, explore_dir, ignored)
-        if cold and not care and not any(item.get("skill") in ("treat", "light_fire", "fuel_fire") or item.get("recipe") == "campfire" for item in plan):
+        thirst_note = ""
+        if thirsty and thirsty.get("do") == "boil_water":
+            thirsty_plan, thirst_note = water_plan([thirsty], observation)
+            thirsty = thirsty_plan[0] if thirsty_plan else None
+            if thirst_note:
+                print(f"  thirsty: {thirst_note}")
+        cure, cure_note = illness_plan(self_state) if not (wound and wound.get("bleeding")) else ([], "")
+        if cure and not any(item.get("do") == "use" for item in plan):
+            print(f"  seriously ill ({illness(self_state).get('type')}): chewing healing herbs instead")
+            plan = cure
+            feedback_extra = "You are seriously ill, so you chewed a healing herb instead of your plan."
+        elif cold and not care and not any(item.get("skill") in ("treat", "light_fire", "fuel_fire") or item.get("recipe") == "campfire" for item in plan):
             print(f"  freezing (body {self_state.get('bodytemperature')} K): warming up instead")
             plan = [cold]
             feedback_extra = "You were freezing, so you warmed up instead of your plan."
-        elif thirsty and not any(item.get("skill") in ("drink", "treat") or item.get("do") == "explore" for item in plan):
+        elif thirsty and not any(item.get("skill") in ("drink", "treat", "fill_vessel") or item.get("do") in ("explore", "boil_water") or item.get("water") for item in plan):
             print(f"  very thirsty (water {self_state.get('water')}): going for water instead")
             plan = [thirsty]
             feedback_extra = "You were very thirsty, so you went for water instead of your plan."
@@ -2143,6 +2263,12 @@ def _run(client, args, character, token, model_pool):
                 time.sleep(args.interval)
                 continue
             summary, queue_since = execute(client, character, steps, queue_since)
+            if "go failed" in summary:
+                # A target she cannot walk to (behind water, walls or cliffs) is hidden for a while instead of retried.
+                for item in steps:
+                    if item.get("do") == "go" and item.get("target") != refs[0]:
+                        ignored[item["target"]] = step + 15
+                feedback += "\nYou could not reach that target, so it is hidden for a while; pick another one or explore."
             if "say ok" in summary:
                 for who in speakers:
                     replied[who] = time.monotonic()  # only an answer that was actually said counts
@@ -2349,6 +2475,110 @@ def leather_plan(plan, observation, box):
     if note.startswith("you already wear") or "not available yet" in note:
         box["leather"] = None  # finished, or locked behind research: stop pinning the goal
     return head, f"Leatherwork ({product}): {note}."
+
+
+def water_plan(plan, observation):
+    """Turn a boil_water step into the next real steps towards a mug of boiled water. Returns (plan, feedback)."""
+    index = next((i for i, item in enumerate(plan) if item.get("do") == "boil_water"), None)
+    if index is None:
+        return plan, ""
+    steps, note = water.next_steps(observation)
+    for item in steps:
+        item["water"] = True
+    return plan[:index] + steps, f"Boiling water: {note}." if note and not steps else ""
+
+
+WATER_STEPS = ("drink_mug", "place_stone", "boil_mug")
+
+
+def _hold_pair(self_state, first, second=None):
+    """Steps that put first in the active hand and second (if any) in the other, from hands or pockets. Returns (steps, error)."""
+    left, right = _name(self_state.get("left_hand")), _name(self_state.get("right_hand"))
+    active, other = (left, right) if self_state.get("active_hand") == "left" else (right, left)
+    wants = [w.lower() for w in (first, second) if w]
+    fits = lambda name, want: want in str(name).lower()
+    wanted = lambda name: any(fits(name, w) for w in wants)
+    stow = [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}]
+    steps = []
+    if other != "empty" and not wanted(other):
+        steps.append({"do": "swap_hand"})
+        active, other = other, active
+        steps += stow
+        active = "empty"
+    if active != "empty" and not wanted(active):
+        steps += stow
+        active = "empty"
+    for want in wants:
+        if fits(active, want) or fits(other, want):
+            continue
+        stowed = next((item for item in _stowed(self_state) if fits(item, want)), None)
+        if not stowed:
+            return [], f"you carry no {want}"
+        if active != "empty":
+            steps.append({"do": "swap_hand"})
+            active, other = other, active
+        if active != "empty":
+            return [], f"both hands are busy; no hand is free for the {want}"
+        steps.append({"do": "take", "item": stowed})
+        active = stowed
+    if not fits(active, wants[0]):
+        steps.append({"do": "swap_hand"})
+    return steps, ""
+
+
+def _expand_water(step, self_state, rows=None):
+    """Steps for water.py's drink_mug, place_stone and boil_mug. Returns (steps, error)."""
+    me = self_state.get("ref")
+    row = (rows or {}).get(step.get("fire"))
+    if step["do"] == "drink_mug":
+        steps, error = _hold_pair(self_state, step["item"])
+        if error:
+            return [], f"drinking from the mug: {error}"
+        if self_state.get("intent") != "help":
+            steps.append({"do": "intent", "intent": "help"})
+        return steps + [{"do": "click", "target": me}], ""
+    if step["do"] == "place_stone":
+        # Stepping onto a lit campfire burns; throw the stone onto its tile from beside it instead.
+        steps, error = _hold_pair(self_state, water.STONE)
+        if error:
+            return [], f"putting a stone on the campfire: {error}"
+        return steps + [{"do": "throw", "target": step["fire"]}], ""
+    steps, error = _hold_pair(self_state, step["item"], step["stick"])
+    if error:
+        return [], f"boiling the mug: {error}"
+    if row is None or not adjacent(row):
+        steps.insert(0, {"do": "go", "target": step["fire"]})
+    return steps + [{"do": "verb", "name": water.BOIL_VERB}], ""
+
+
+def illness(self_state):
+    """The illness row when the character is seriously ill, else None."""
+    row = self_state.get("illness")
+    return row if isinstance(row, dict) and row.get("severe") else None
+
+
+HERB_WORDS = ("healing herb",)
+
+
+def illness_plan(self_state):
+    """When seriously ill and the herb remedy is running low, the steps that chew a healing herb. Returns (steps, error)."""
+    row = illness(self_state)
+    if row is None:
+        return [], ""
+    try:
+        remedy = float(row.get("remedy", 0) or 0)
+    except (TypeError, ValueError):
+        remedy = 0.0
+    if remedy >= 3:
+        return [], ""  # the last herb is still working
+    names = [_name(self_state.get("left_hand")), _name(self_state.get("right_hand"))] + _stowed(self_state)
+    herbs = next((n for n in names if any(word in n.lower() for word in HERB_WORDS)), None)
+    if herbs is None:
+        return [], f"you have {row.get('type')} and no healing herbs: cut healing herbs from jungle bushes with a knife, or find antibiotics"
+    steps, error = _hold_pair(self_state, herbs.split(" (", 1)[0])
+    if error:
+        return [], f"chewing healing herbs: {error}"
+    return steps + [{"do": "use"}], ""
 
 
 def project_line(box, observation, ledger=()):
