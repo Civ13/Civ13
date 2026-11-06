@@ -33,6 +33,8 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
   in `data/shard-host/operation.json`, save-and-stop through the lifecycle
   topic and a verified backup of every save. Like Gaia, `stop` only saves a
   world that is playing and idle; a world still in the lobby is refused.
+- `stage` builds the group revision beside each running region; see
+  [staged builds](#staged-builds).
 - `status` reports each region's host state, and for a listening region what
   it answers to the `shard_region` topic, including how it sees its peers
   (`UP`, `DOWN`, `MISMATCH`, `UNKNOWN`).
@@ -197,3 +199,28 @@ A two-region travel run passed on 2026-11-05 on two generated playable maps
 A Nomad left through a gate and arrived in the other region about 2.5 minutes
 later, with name, owner, clothes and coins. The transfer settled on both agents
 after the destination saved, and there were no runtime errors.
+
+## Staged builds
+
+`stage [--region ID]` builds the next update while the regions keep running, so
+players are not kicked for a compile. For each region it fetches, resolves the
+group `revision` and, unless the region already runs that build, checks it out
+in a second worktree, `<root>/.staging/<id>`, with the same overlays, config
+and `region.dme` as `update`, and compiles it at below-normal priority. Regions
+take turns (`<root>/.staging/compile.lock`), so a deploy never compiles every
+region at once. Progress is in `data/shard-host/stage.json` (`phase` is
+`ready`, `current` or `failed` with `error`) and `status` shows it under
+`stage`, with `pending` true while a ready build is newer than the running one.
+
+The host service (`gaia_host.py serve`) installs a ready build by itself:
+
+- an awake region that is empty and has saved since its last player (the moment
+  it would otherwise go to sleep) is restarted, and its `update` copies
+  `region.dmb` and `region.rsc` from the staging worktree instead of compiling;
+- an asleep region is stopped (it saved before it froze) and a cold one is
+  updated the same way, so its next wake starts on the new build.
+
+A staged build is never installed over a newer build, and an `update` of any
+other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
+runs `stage` on that interval; with `revision: origin/master` and `fetch:
+origin`, merged changes then reach each region the next time it is empty.

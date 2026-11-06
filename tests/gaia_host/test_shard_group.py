@@ -27,14 +27,18 @@ class FakeMachine:
         self.compile_output = 'region.dmb - 0 errors, 0 warnings'
         self.clock = 0.0
         self.pids = set()
+        self.revision = REVISION  # what the group revision resolves to
+        self.low_priority = []  # cwd of every compile run at low priority
 
     def alive(self, pid):
         return pid in self.pids
 
-    def run(self, argv, cwd=None, timeout=1800):
+    def run(self, argv, cwd=None, timeout=1800, low_priority=False):
         self.calls.append((list(argv), str(cwd)))
+        if low_priority:
+            self.low_priority.append(str(cwd))
         if argv[1] == 'rev-parse':
-            return 0, REVISION + '\n'
+            return 0, self.revision + '\n'
         if argv[1:3] == ['worktree', 'add']:
             path = Path(argv[4])
             (path / 'maps' / 'small').mkdir(parents=True)
@@ -44,7 +48,8 @@ class FakeMachine:
             return 0, ''
         if argv[-1] == 'region.dme':
             if '0 errors' in self.compile_output:
-                (Path(cwd) / 'region.dmb').write_bytes(b'dmb')
+                (Path(cwd) / 'region.dmb').write_bytes(b'dmb of ' + str(cwd).encode())
+                (Path(cwd) / 'region.rsc').write_bytes(b'rsc of ' + str(cwd).encode())
                 return 0, self.compile_output
             return 1, self.compile_output
         return 0, ''
@@ -709,3 +714,133 @@ class ShardGroupTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+NEWER = 'e' * 40
+
+
+class StagedBuildTests(unittest.TestCase):
+    """stage compiles the next build beside a running region; the region installs it by
+    copying once it is empty or asleep, instead of compiling during its downtime."""
+
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+    host = ShardGroupTests.host
+
+    def built(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'gaia')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        return group, host
+
+    def compiles(self, cwd):
+        return sum(1 for argv, where in self.machine.calls if argv[-1] == 'region.dme' and where == str(cwd))
+
+    def test_stage_compiles_beside_the_running_region_and_update_installs_it(self):
+        group, host = self.built()
+        live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
+        self.machine.up = {1720}
+        accepted = host.request_stage()
+        self.assertEqual(['--worker', 'stage', accepted['operation']], self.machine.detached[-1][-3:])
+        self.assertTrue(self.machine.detached[-1][3].endswith('shard_group.py'))
+        with self.assertRaisesRegex(shard_group.Refused, 'already being staged'):
+            host.request_stage()
+        host.work('stage', accepted['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready', host.read_json(host.stage_file))
+        self.assertFalse(host.stage_lock.exists())
+        self.assertIn((['git', 'worktree', 'add', '--detach', str(staging), NEWER], str(self.base / 'repo')), self.machine.calls)
+        self.assertEqual(self.machine.low_priority, [str(staging)])
+        self.assertIn('#include "maps\\small\\tiny.dmm"', (staging / 'region.dme').read_text())
+        self.assertEqual((1, 1), (self.compiles(live), self.compiles(staging)), 'the running region is not touched')
+        self.assertEqual(host.staged_revision(), NEWER)
+        self.assertTrue(host.update_pending())
+        self.assertTrue(host.status()['stage']['pending'])
+        # The install is a copy, not a second compile.
+        self.machine.up = set()
+        host.work('update', host.request('update')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state['revision'], state.get('staged')), ('done', NEWER, True), state)
+        self.assertEqual(self.compiles(live), 1)
+        self.assertEqual((live / 'region.dmb').read_bytes(), (staging / 'region.dmb').read_bytes())
+        self.assertEqual((live / 'region.rsc').read_bytes(), (staging / 'region.rsc').read_bytes())
+        self.assertEqual(host.built_revision(), NEWER)
+        self.assertFalse(host.update_pending())
+
+    def test_stage_does_nothing_for_a_current_build(self):
+        group, host = self.built()
+        self.machine.revision = REVISION
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'current')
+        self.assertFalse((self.base / 'regions' / '.staging' / 'gaia').exists())
+
+    def test_a_failed_staged_compile_leaves_nothing_to_install(self):
+        group, host = self.built()
+        self.machine.compile_output = 'region.dmb - 1 errors, 0 warnings'
+        host.work('stage', host.request_stage()['operation'])
+        stage = host.read_json(host.stage_file)
+        self.assertEqual(stage['phase'], 'failed')
+        self.assertIn('compile failed', stage['error'])
+        self.assertFalse(host.update_pending())
+
+    def test_an_older_staged_build_is_never_installed(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1] == 'merge-base':
+                return 1, ''  # the running build is newer (updated by hand)
+            return real(argv, cwd, timeout, low_priority)
+        self.machine.run = run
+        (self.base / 'regions' / 'gaia' / 'region.dmb').write_bytes(b'hand compile')
+        host.record_build('f' * 40)
+        self.assertFalse(host.update_pending())
+
+    def test_regions_take_turns_at_the_staging_compiler(self):
+        group, host = self.built()
+        lock = self.base / 'regions' / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True)
+        lock.write_text('77')
+        self.machine.pids = {77}
+        real_sleep = self.machine.sleep
+        def sleep(seconds):
+            real_sleep(seconds)
+            self.machine.pids = set()  # the other region's compile finished
+        self.machine.sleep = sleep
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
+        self.assertEqual(self.machine.clock, 10)
+        self.assertFalse(lock.exists())
+
+    def test_a_cold_region_gets_the_staged_build_before_its_next_wake(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        host.write_json(host.cold_file, {'frozen_at': 0})
+        host.watch_step(None)
+        self.assertEqual(self.machine.detached[-1][-2], 'update')
+        host.work('update', self.machine.detached[-1][-1])
+        self.assertEqual(host.built_revision(), NEWER)
+        self.assertEqual(host.status()['state'], 'cold', 'it still starts on the next wake')
+
+    def test_an_empty_region_restarts_onto_the_staged_build_instead_of_sleeping(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.up = {1720}
+        idle, _ = host.watch_step(None)
+        self.machine.clock += 15 * 60
+        host.watch_step(idle)
+        self.assertEqual(self.machine.detached[-1][-2], 'restart')
+        self.assertFalse(host.frozen())
+
+    def test_stage_reaches_every_region_from_the_command_line(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        with mock.patch.object(shard_group, 'Platform', return_value=self.machine), \
+                mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            code = shard_group.main(['--config', str(self.path), 'stage'])
+        result = json.loads(out.getvalue())
+        self.assertEqual((code, sorted(result['accepted'])), (0, ['deep', 'gaia']), result)

@@ -12,6 +12,7 @@ and [region groups](../../shard-group/README.md). They only call
 | `start.bat`, `stop.bat`, `restart.bat [REGION]` | Start; save and stop (with a verified backup); both. They run in the background, so follow them with `status.bat`. |
 | `update.bat [REGION]` | Fetch, check out the group's revision and compile. Stop the regions first. |
 | `deploy.bat` | The whole update in one go: save and stop every region, `git pull --ff-only --autostash` the source checkout, update and compile, start, then restart the host service. Each step waits for the last and it stops at the first failure. |
+| `stage.bat [REGION]` | Pull the source checkout, then build the update beside the running regions. Each region installs it by itself the next time it is empty and saved (or asleep), so nobody is kicked. `status.bat` shows its progress under `stage`. |
 | `force-stop.bat`, `force-restart.bat [REGION]` | For a world that hangs (a save that never finishes): end it at once **without saving**, or end it and start it again. The start loads the last completed save (an interrupted save is swapped for the copy in `map_backups`). The launcher's Force stop and Force restart buttons do the same. |
 | `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. |
 | `freeze.bat`, `thaw.bat [REGION]` | Put an empty, saved region to sleep now, or wake it. The host service does this on its own. |
