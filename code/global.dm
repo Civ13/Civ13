@@ -17,6 +17,8 @@ var/changelog_hash	  = ""
 
 
 var/round_progressing = TRUE
+// Set once world.New() has finished setting up processes, maps and areas.
+var/world_setup_finished = FALSE
 
 var/datum/configuration/config	  = null
 

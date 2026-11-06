@@ -126,6 +126,7 @@ var/world_is_open = TRUE
 			area_startup.close()
 			throw E
 		area_startup.close()
+		world_setup_finished = TRUE
 		if(game_ready_hook) call(game_ready_hook)("initialization_complete", startup_context, scheduler_ready == TRUE)
 //		master_controller.setup()
 #ifdef UNIT_TEST
