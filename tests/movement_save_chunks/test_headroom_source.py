@@ -51,7 +51,7 @@ class HeadroomSourceTests(unittest.TestCase):
         probe = (HERE / 'probe.dm').read_text()
         self.assertIn('armed && fixture_is_headroom() && A == subject && !headroom_waits', probe)
         self.assertIn('if(!fixture_force_headroom(A)) return', probe)
-        self.assertIn('map_storage.moving_save_chunk || map_storage.saving_references["\\ref[A]"]', probe)
+        self.assertIn('map_storage.moving_save_chunk || map_storage.saving_references[A]', probe)
         self.assertIn('parent_frame.active = FALSE', probe)
         self.assertIn('new /turf(parent_frame.source)', probe)
         self.assertIn('headroom_waits != 1', probe)

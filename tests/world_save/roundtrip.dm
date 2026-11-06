@@ -455,7 +455,7 @@ var/global/roundtrip_capture_failure = FALSE
 	qdel(original)
 	var/datum/test/replacement = new
 	// Simulate reuse of an old raw ref slot without depending on allocator timing.
-	map_storage.saving_references["\ref[replacement]"] = old_id
+	map_storage.saving_references[replacement] = old_id
 	var/new_id = map_storage.BuildVarDirectory(F, replacement)
 	check(new_id != old_id && map_storage.saving_reference_pins[new_id] == replacement, "reused ref assigned an old save identity")
 	map_storage.clear_bookkeeping()

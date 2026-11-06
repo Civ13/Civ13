@@ -54,7 +54,7 @@
 		map_storage.clear_bookkeeping()
 		map_storage.saving_z = 1
 		var/parent_ref = map_storage.BuildVarDirectory(F, T, 1)
-		var/item_ref = map_storage.saving_references["\ref[I]"]
+		var/item_ref = map_storage.saving_references[I]
 		var/list/refs = splittext(F["[map_storage.entry_path(F,parent_ref)]/content"], "&")
 		var/count = 0
 		for(var/ref in refs)
@@ -163,7 +163,7 @@
 			refused = TRUE
 		check(refused == mutate && exporter.moved == mutate, "Chunk transfer publication did not detect late movement")
 		if(!mutate)
-			var/item_ref = exporter.saving_references["\ref[I]"]
+			var/item_ref = exporter.saving_references[I]
 			var/list/refs = exporter.saved_content_refs(F["[exporter.entry_path(F,parent_ref)]/content"], 3)
 			check(refs.Find("[item_ref]") && I.loc == T && I.progress == 150, "Version-3 paid transfer lost ownership or value")
 		check(!exporter.saving_export_frames.len && !exporter.saving_export_stack.len, "Chunk transfer retained active frames")

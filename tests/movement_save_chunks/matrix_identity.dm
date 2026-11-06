@@ -124,7 +124,7 @@
 	var/obj/ordinary_atom = new
 	if(!istype(exporter.save_entry_identity(original), /matrix))
 		throw EXCEPTION("MATRIX_FRAME: matrix identity still uses native reference strings")
-	if(exporter.save_entry_identity(ordinary) != "\ref[ordinary]" || exporter.save_entry_identity(ordinary_atom) != "\ref[ordinary_atom]")
+	if(exporter.save_entry_identity(ordinary) != ordinary || exporter.save_entry_identity(ordinary_atom) != ordinary_atom)
 		throw EXCEPTION("MATRIX_FRAME: nonmatrix identity contract changed")
 	var/datum/save_export_frame/frame = new
 	frame.exporter = exporter

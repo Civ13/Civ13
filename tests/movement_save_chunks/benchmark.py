@@ -92,7 +92,7 @@ def prepare(output: Path, diagnostic_subset=False, profile_datums=False):
     (output / 'baseline-source/benchmark.dme').write_text(dme)
     baseline_hashes['benchmark.dme'] = hashes['benchmark.dme']
     receipt = dict(schema=1, execution='not_run', byond_version=VERSION, profile_datums=profile_datums,
-                   datum_profile_sites={"saver": _profile_module.EXPECTED_SAVER_REF_SITES, "identity_helper": 1} if profile_datums else {},
+                   datum_profile_sites={"saver": _profile_module.EXPECTED_SAVER_REF_SITES, "identity_helper": 0} if profile_datums else {},
                    datum_profiler_sha256=hashlib.sha256(Path(__file__).with_name('datum_profile.py').read_bytes()).hexdigest(),
                    case_selector_sha256=hashlib.sha256(Path(__file__).with_name('diagnostic_cases.py').read_bytes()).hexdigest(),
                    comparison='preflight_only', baseline='same staged saver and optimized main codec, only preflight seen keys use reference strings', preflight_baseline_helper_sha256=hashlib.sha256(Path(__file__).with_name('preflight_fixture.py').read_bytes()).hexdigest(), sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),

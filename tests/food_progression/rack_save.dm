@@ -154,7 +154,7 @@
 	map_storage.saving_z = 1
 	// Export the owning turf, not a manually selected dropped-food entry.
 	var/turf_ref = map_storage.BuildVarDirectory(F, T, 1)
-	var/rack_ref = map_storage.saving_references["\ref[rack]"]
+	var/rack_ref = map_storage.saving_references[rack]
 	rack_check(turf_ref && rack_ref, "native graph exports owning turf and rack")
 	rack_check(input.loc == T && !rack.storage.contents.len, "graph export invokes production before_save drop")
 	var/rack_path = map_storage.entry_path(F, rack_ref)
@@ -171,7 +171,7 @@
 		rack_check(!istype(saved, /obj/item/weapon/storage/internal), "rack graph excludes empty runtime storage wrapper")
 		if (saved.type == /obj/item/weapon/reagent_containers/food/snacks/octopus)
 			saved_inputs++
-	var/input_ref = map_storage.saving_references["\ref[input]"]
+	var/input_ref = map_storage.saving_references[input]
 	var/turf_path = map_storage.entry_path(F, turf_ref)
 	var/content_text = F["[turf_path]/content"]
 	var/list/turf_content_refs = params2list(content_text)
