@@ -483,6 +483,18 @@ class NoConsoleWindowTests(unittest.TestCase):
         self.assertEqual(seen, [gaia_host.NO_WINDOW])
         self.assertEqual(gaia_host.NO_WINDOW, 0x08000000 if gaia_host.os.name == 'nt' else 0)
 
+    def test_detached_children_keep_a_hidden_console(self):
+        # DETACHED_PROCESS left DreamDaemon without a console, so every shell() it ran
+        # (the save memory probe's cmd /c tasklist) opened a visible window.
+        from unittest import mock
+        seen = []
+        with mock.patch.object(gaia_host.subprocess, 'Popen', lambda argv, **kwargs: seen.append(kwargs['creationflags'])):
+            gaia_host.Platform().detach(['dd.exe'])
+        self.assertEqual(seen, [gaia_host.DETACH_FLAGS])
+        if gaia_host.os.name == 'nt':
+            self.assertEqual(gaia_host.DETACH_FLAGS & 0x08000000, 0x08000000)
+            self.assertEqual(gaia_host.DETACH_FLAGS & 0x00000008, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

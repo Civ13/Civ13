@@ -134,6 +134,43 @@ static class LocalHostingTests {
         Require(LocalHosting.ParseControl("update", 1, "Traceback (most recent call last)") is { Ok: false, Busy: false } garbage && garbage.Message.Contains("no answer"), "garbage output accepted");
         Require(LocalHosting.ParseControl("restart", 0, "warning: x\n{\"ok\": true, \"accepted\": true, \"action\": \"restart\"}") is { Ok: true, Busy: true }, "answer after a warning line not found");
 
+        // control.group: every region through shard_group.py, plus deploy.bat and restart-host.bat, all from control.script's checkout.
+        var checkout = Path.Combine(dir, "checkout");
+        var hostScript = Path.Combine(checkout, "scripts", "gaia-host", "gaia_host.py");
+        var shard = Path.Combine(checkout, "scripts", "shard-group", "shard_group.py");
+        var deploy = Path.Combine(checkout, "scripts", "windows", "host", "deploy.bat");
+        var restartHost = Path.Combine(checkout, "scripts", "windows", "host", "restart-host.bat");
+        var groupConfig = Path.Combine(dir, "earth.json");
+        foreach (var file in new[] { hostScript, shard, deploy, restartHost, groupConfig }) {
+            Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+            File.WriteAllText(file, "");
+        }
+        Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, control = new { python, script = hostScript, config = controlConfig, group = groupConfig } });
+        host = LocalHosting.Load(launcher)!;
+        Require(host.Control?.Group is { } grouped && grouped.Config == groupConfig && grouped.ShardScript == shard && grouped.Deploy == deploy && grouped.RestartHost == restartHost,
+            "control.group not read");
+        var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
+        Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute &&
+            groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));
+        try { LocalHosting.GroupStep(host.Control!, "setup"); throw new Exception("unsupported group action accepted"); } catch (ArgumentException) { assertions++; }
+        var deployStep = LocalHosting.GroupScriptStep(host.Control!, "deploy");
+        Require(deployStep.FileName.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) && deployStep.CreateNoWindow && deployStep.RedirectStandardOutput &&
+            deployStep.ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy }), "deploy step changed");
+        Require(LocalHosting.GroupScriptStep(host.Control!, "restart-host").ArgumentList.Last() == restartHost, "restart-host step changed");
+        try { LocalHosting.GroupScriptStep(host.Control!, @"..\evil"); throw new Exception("unknown group script accepted"); } catch (ArgumentException) { assertions++; }
+        File.Delete(deploy);
+        Reject(() => LocalHosting.Load(launcher), "control.group without deploy.bat in the checkout");
+        File.WriteAllText(deploy, "");
+        var groupStatus = LocalHosting.ParseGroup("status", 0, "{\"group\": \"earth\", \"regions\": {\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 5}, \"operation\": {\"action\": \"start\", \"phase\": \"done\", \"error\": null}}, \"railyard\": {\"name\": \"Rail Yard\", \"state\": \"stopped\", \"busy\": true, \"operation\": {\"action\": \"update\", \"phase\": \"compiling\", \"error\": null}}}, \"coordinator\": true, \"ok\": true}");
+        Require(groupStatus.Ok && groupStatus.Busy && groupStatus.Message == "Group: Gaia: awake, 5 players, last start (done); Rail Yard: stopped, last update (compiling).", "group status line: " + groupStatus.Message);
+        var groupStop = LocalHosting.ParseGroup("stop", 0, "{\"accepted\": {\"gaia\": {\"accepted\": true}}, \"refused\": {\"railyard\": \"the server is not running\"}, \"ok\": true}");
+        Require(groupStop is { Ok: true, Busy: true } && groupStop.Message == "Saving, then stopping gaia... Refused: railyard: the server is not running.", "group stop line: " + groupStop.Message);
+        var groupRefused = LocalHosting.ParseGroup("start", 1, "{\"ok\": false, \"refused\": {\"gaia\": \"already running\"}}");
+        Require(groupRefused is { Ok: false, Busy: false } && groupRefused.Message == "Refused: gaia: already running", "group refusal line: " + groupRefused.Message);
+        Require(LocalHosting.ParseGroup("update", 1, "{\"ok\": false, \"refused\": \"git fetch origin failed\"}").Message == "Refused: git fetch origin failed", "whole-group refusal");
+        Require(!LocalHosting.ParseGroup("restart", 0, "{\"ok\": true, \"accepted\": {}, \"refused\": {}}").Ok, "an empty acceptance counted");
+        Require(!LocalHosting.ParseGroup("status", 1, "Traceback").Ok, "group garbage accepted");
+
         Reject(() => { Write(new { schema = 2, game_directory = game, world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "future schema");
         Reject(() => { Write(new { schema = 1, game_directory = "relative", world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "relative game folder");
         Reject(() => { Write(new { schema = 1, game_directory = game, world = @"..\civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "world outside the game folder");

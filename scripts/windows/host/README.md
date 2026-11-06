@@ -11,6 +11,8 @@ and [region groups](../../shard-group/README.md). They only call
 | `status.bat [REGION]` | Each region's state (`awake`, `asleep`, `cold`, `stopped`) and last action. |
 | `start.bat`, `stop.bat`, `restart.bat [REGION]` | Start; save and stop (with a verified backup); both. They run in the background, so follow them with `status.bat`. |
 | `update.bat [REGION]` | Fetch, check out the group's revision and compile. Stop the regions first. |
+| `deploy.bat` | The whole update in one go: save and stop every region, `git pull --ff-only --autostash` the source checkout, update and compile, start, then restart the host service. Each step waits for the last and it stops at the first failure. |
+| `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. |
 | `freeze.bat`, `thaw.bat [REGION]` | Put an empty, saved region to sleep now, or wake it. The host service does this on its own. |
 | `setup.bat` | Create or refresh each region's worktree and config. Safe to run again. |
 | `serve.bat` | Run the host service in this window, for testing. |
@@ -77,5 +79,14 @@ played on the region since step 7 is only in the region's save
 
 Adding regions later: add them to `earth.json` (with `transfer_port` on every
 region for travel), run `setup.bat` and `update.bat`, then `start.bat REGION`.
-The host service picks them up when restarted (`schtasks /End` then
-`/Run /TN "Civ13 Host"`).
+The host service picks them up when restarted with `restart-host.bat`.
+
+## Deploying a new master
+
+Run `deploy.bat` from a normal command prompt. It saves every region (Gaia
+takes up to ten minutes), pulls `D:\GitHub\Civ13` (its local edits are kept),
+checks out and compiles each region, starts them and restarts the host service
+so it also runs the new host scripts. `wait_group.py` does the waiting; it
+only reads `status`. If a step fails, the regions stay as that step left them:
+fix the cause, then carry on by hand with `update.bat`, `start.bat` and
+`restart-host.bat`.

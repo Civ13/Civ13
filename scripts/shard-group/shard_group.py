@@ -222,7 +222,7 @@ TRANSFER_TOOLS = Path(__file__).resolve().parents[2] / 'tools' / 'transfer_stora
 
 def detach(argv, cwd, log):
     """Start a process that outlives this one, with its output in log (or discarded)."""
-    flags = 0x00000008 | 0x00000200 if os.name == 'nt' else 0
+    flags = gaia_host.DETACH_FLAGS  # a hidden console, so its own children open no window
     out = open(log, 'ab') if log else subprocess.DEVNULL
     try:
         return subprocess.Popen(argv, cwd=cwd, stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT if log else subprocess.DEVNULL,

@@ -59,6 +59,10 @@ from supervisor import byond_text_md5, query  # noqa: E402
 # Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
 # service would each flash a console window on Windows.
 NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
+# Long-lived children (DreamDaemon, workers, agents) get a hidden console of their own rather than
+# none (DETACHED_PROCESS): a console program they start, such as the cmd.exe behind DM's shell(),
+# then shares that hidden console instead of opening a window that takes focus.
+DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update')
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update')  # quick or long-running; no detached worker
@@ -242,7 +246,7 @@ class Platform:
         return code == 0 and re.search(r'^Status:\s+Ready\s*$', out, re.M) is not None
 
     def detach(self, argv):
-        flags = 0x00000008 | 0x00000200 if os.name == 'nt' else 0  # DETACHED_PROCESS | NEW_PROCESS_GROUP
+        flags = DETACH_FLAGS
         subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                          creationflags=flags, start_new_session=os.name != 'nt', close_fds=True)
 
