@@ -161,7 +161,7 @@ try {
     Reject(() => LocalStart(localHost with { Port = 0 }, () => @"D:\BYOND-user"), "invalid local port");
     var resolverCalls = 0;
     Task<System.Net.IPAddress[]> ResolveFixture(string name) {
-        Require(name == "valzargaming.com", "connection resolved a different hostname");
+        Require(name == "play.valzargaming.com", "connection resolved a different hostname");
         resolverCalls++;
         return Task.FromResult(new[] { System.Net.IPAddress.Parse(resolverCalls == 1 ? "8.8.8.8" : "1.1.1.1") });
     }

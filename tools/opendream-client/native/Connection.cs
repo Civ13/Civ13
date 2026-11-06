@@ -26,7 +26,7 @@ public sealed class PublicEndpoint {
 }
 
 public static class Connection {
-    public const string Host = "valzargaming.com";
+    public const string Host = "play.valzargaming.com";
     public static bool IsApprovedHost(string host) => host is "civ13.com" or Host;
     public static Task<PublicEndpoint> Resolve(Func<string, Task<IPAddress[]>>? resolver = null) => ResolveHost(Host, resolver);
     public static async Task<PublicEndpoint> ResolveHost(string host, Func<string, Task<IPAddress[]>>? resolver = null, Func<long>? monotonicClock = null) {
