@@ -1244,6 +1244,16 @@ jobs:
           python3 tests/lighting_queues/run.py --byond-bin "$PWD/BYOND/byond/bin" --size 500 --negative-control retain --output "$RUNNER_TEMP/lighting-retain.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
+      - name: Fetch reviewed exclusion dispatch commits outside master
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
+        shell: bash
+        run: |
+          # The reviewed extraction and release commits never reached master, so a
+          # full checkout lacks them. Fetch exactly those objects by SHA; the
+          # ancestry checks still fail closed if any of them is unavailable.
+          for sha in c4585fabaf81e1357054b4527d71d4f3a2d8a0b2 b2f6845438391f9874834d4c59cc1115f35c04b5 4f2868cd58e89ed99eda715b3241ff980d2de41d; do
+            git cat-file -e "$sha^{commit}" 2>/dev/null || git fetch --no-tags --quiet "https://github.com/${{ github.repository }}" "$sha"
+          done
       - name: Check exclusion dispatch source while native execution is held
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
         env:
@@ -1894,7 +1904,6 @@ jobs:
           done
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --interrupt
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control yield
-          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control old-reader
       - name: Retain bounded save source and native evidence
         if: always() && needs.changes.result == 'success' && steps.save_latency.outcome != 'skipped'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

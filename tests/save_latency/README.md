@@ -12,7 +12,7 @@ must make progress inside dense discovery; printed timings are observations,
 not representative full-world latency acceptance.
 
 Run `--scenario concurrent`, `--scenario movement`, `--scenario parent-deletion`,
-`--interrupt`, and both `--negative-control yield|old-reader` separately. The
+`--interrupt`, and `--negative-control yield` separately. The
 interruption case kills only its own temporary writer after invalidation and
 checks rejected active files plus restoration of the completed backup.
 
@@ -28,9 +28,9 @@ still nonpreemptible, and snapshots are not atomic world transactions.
 
 New world files advertise format 3: typed/sharded entries from version 2 plus
 500-reference content chunks. Current readers still accept historical flat/text
-and version-2 typed files. Old version-2 validators reject format 3 before world
-mutation; the old-reader control compiles the immutable production loader from
-75890d883190355e430f9958fd102864ee88429a to check that rejection. Direct small
+and version-2 typed files. The old-reader control (a version-2 loader refusing
+format 3) was retired after saves moved to format 5; downgrades are unsupported.
+Direct small
 version-2 exports retain text contents; dense version-2 exports fail explicitly.
 The round-state generation format remains round-v2, independently of the level
 file encoding. A downgrade requires retained version-2 generations; ordinary

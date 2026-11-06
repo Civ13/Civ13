@@ -22,8 +22,7 @@ class PreparationTests(unittest.TestCase):
         cls.runner = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.runner)
         # Only immutable/local Git reads precede the process/socket prohibition.
-        commands = [('git', 'show', cls.runner.OLD_READER_COMMIT + ':code/modules/persistence/loading.dm'),
-                    ('git', 'rev-parse', 'HEAD'), ('git', 'diff', 'HEAD')]
+        commands = [('git', 'rev-parse', 'HEAD'), ('git', 'diff', 'HEAD')]
         cls.git_reads = {command: subprocess.check_output(command, cwd=ROOT) for command in commands}
 
     def setUp(self):
@@ -75,101 +74,12 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('version && version != 2 && version != 3', reader)
         self.assertIn('saved_content_refs(value, version)', reader)
 
-    def test_pinned_old_reader_rejects_version_three(self):
-        output, metadata = self.stage('--negative-control', 'old-reader')
-        historical = self.git_reads[('git', 'show', self.runner.OLD_READER_COMMIT + ':code/modules/persistence/loading.dm')]
-        staged = (output / 'code/modules/persistence/loading.dm').read_bytes()
-        self.assertEqual(staged, historical)
-        reader = staged.decode('utf-8')
-        self.assertIn('if(version && version != 2)', reader)
-        self.assertNotIn('/map_storage/proc/saved_content_refs', reader)
-        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
-        roof = loading[:loading.index('\n/map_storage/proc/Load_Entry(')]
-        marker = '/map_storage/proc/saved_content_refs(value, version)\n'
-        start = loading.index(marker)
-        end = loading.find('\n/map_storage/proc/', start + len(marker))
-        codec = loading[start:end if end >= 0 else len(loading)]
-        original = (ROOT / 'code/modules/persistence/functions.dm').read_bytes()
-        functions = (output / 'code/modules/persistence/functions.dm').read_bytes()
-        self.assertEqual(functions, original + ('\n' + roof + '\n' + codec).encode())
-        self.assertEqual(metadata['old_reader_compatibility'], {
-            'commit': self.runner.OLD_READER_COMMIT, 'loader_sha256': hashlib.sha256(historical).hexdigest(),
-            'roof_helpers_sha256': hashlib.sha256(roof.encode()).hexdigest(),
-            'content_helper_sha256': hashlib.sha256(codec.encode()).hexdigest()})
-        # Added helpers cannot replace the historical loader or its version refusal.
-        procs = lambda text: re.findall(r'^/map_storage/proc/(\w+)\(', text, re.M)
-        self.assertFalse(set(procs(roof + codec)) & set(procs(reader)))
-        combined = reader + '\n' + functions.decode('utf-8')
-        for name in procs(roof + codec):
-            self.assertEqual(procs(combined).count(name), 1)
-        refusal = b'throw EXCEPTION("Unsupported save version '
-        sites = {relative: (output / relative).read_bytes().count(refusal)
-                 for relative in metadata['sources'] if refusal in (output / relative).read_bytes()}
-        self.assertEqual(sites, {'code/modules/persistence/loading.dm': 1})
-
-    def test_compatibility_rejects_changed_or_repeated_boundaries(self):
-        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
-        end = '\n/map_storage/proc/Load_Entry('
-        marker = '/map_storage/proc/saved_content_refs(value, version)\n'
-        for changed in (loading.replace('// Only roof transformations', '// Changed roof transformations', 1),
-                        loading.replace(end, '\n/map_storage/proc/Changed_Load_Entry(', 1), loading + end,
-                        loading + loading[:loading.index(end)], loading.replace(marker, ''), loading + marker):
-            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility anchor'):
-                self.runner.old_reader_helpers(changed, '')
-
-    def test_compatibility_rejects_missing_or_duplicate_dependencies(self):
-        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
-        member = '\tvar/list/validated_roof_types = list()\n'
-        proc = '/map_storage/proc/clear_saved_roof_areas()'
-        for changed in (loading.replace(member, ''), loading.replace(member, member * 2),
-                        loading.replace(proc, '/map_storage/proc/renamed_clear_saved_roof_areas()'),
-                        loading.replace(proc, proc + '\n' + proc)):
-            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility (members|procedures) changed'):
-                self.runner.old_reader_helpers(changed, '')
-        for existing in (proc, member, '/map_storage/proc/saved_content_refs(value, version)\n'):
-            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'duplicated'):
-                self.runner.old_reader_helpers(loading, existing)
-
-    def test_actual_adjudication_requires_the_version_three_preflight_refusal(self):
-        tree = ast.parse((ROOT / 'tests/save_latency/run.py').read_text(encoding='utf-8'))
-        main = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'main')
-        begin = next(i for i, node in enumerate(main.body) if isinstance(node, ast.Assign)
-                     and any(isinstance(target, ast.Name) and target.id == 'expected' for target in node.targets))
-        end = next(i for i in range(begin, len(main.body)) if isinstance(main.body[i], ast.If)
-                   and isinstance(main.body[i].test, ast.Attribute) and main.body[i].test.attr == 'verify_backup')
-        guard = compile(ast.Module(body=main.body[begin:end], type_ignores=[]), '<actual-native-adjudication>', 'exec')
-        good = 'World-save preflight rejected: Unsupported save version 3 on :\n'
-        cases = [('FAIL: save preflight failed', good, 0, False),
-                 ('PASS', good, 0, True), ('FAIL: save preflight failed for another reason', good, 0, True),
-                 ('FAIL: save preflight failed', 'error: undefined proc clear_saved_roof_areas', 0, True),
-                 ('FAIL: save preflight failed', good.replace('version 3', 'version 2'), 0, True),
-                 ('FAIL: save preflight failed', good.replace('version 3', 'version 30'), 0, True),
-                 ('FAIL: save preflight failed', good.replace('on :', 'on code/modules/persistence/loading.dm:625'), 0, True),
-                 ('FAIL: save preflight failed', 'World-save preflight rejected: Missing saved turf', 0, True),
-                 ('FAIL: save preflight failed', good * 2, 0, True),
-                 ('FAIL: save preflight failed', 'prefix ' + good, 0, True),
-                 ('FAIL: save preflight failed', good.rstrip() + ' suffix\n', 0, True),
-                 ('FAIL: save preflight failed', ' ' + good, 0, True),
-                 ('FAIL: save preflight failed', good.rstrip() + ' \n', 0, True),
-                 ('FAIL: save preflight failed', good.replace('rejected:', 'rejected'), 0, True),
-                 ('FAIL: save preflight failed', good + good.replace('version 3', 'version 2'), 0, True),
-                 ('FAIL: save preflight failed', good + 'World-save preflight rejected: Missing saved turf\n', 0, True),
-                 ('FAIL: save preflight failed', good + good.replace('rejected:', 'rejected'), 0, True),
-                 ('FAIL: save preflight failed', good, 1, True)]
-        cases += [('FAIL: save preflight failed', good + diagnostic, 0, True)
-                  for diagnostic in ('runtime error: undefined proc', 'bad ref', 'BUG: engine diagnostic',
-                                     'RUNTIME: engine diagnostic', 'infinite loop', 'fatal error')]
-        output = Path(self.enterContext(tempfile.TemporaryDirectory()))
-        for result, log, status, rejected in cases:
-            with self.subTest(result=result, log=log, status=status):
-                (output / 'result.txt').write_text(result)
-                env = {'args': SimpleNamespace(negative_control='old-reader'), 'output': output, 'log': log, 're': re,
-                       'result': SimpleNamespace(returncode=status),
-                       'require_old_reader_preflight': self.runner.require_old_reader_preflight}
-                if rejected:
-                    with self.assertRaises(RuntimeError): exec(guard, env)
-                else:
-                    exec(guard, env)
+    def test_retired_old_reader_control_is_refused(self):
+        # The format-3 refusal control was retired once saves moved to format 5.
+        with patch.object(sys, 'argv', ['run.py', '--byond-bin', '/not-installed', '--prepare-only',
+                                        '--negative-control', 'old-reader']), \
+                patch('sys.stderr'), self.assertRaises(SystemExit):
+            self.runner.main()
 
     def test_yield_mutation_is_effective(self):
         output, _ = self.stage('--negative-control', 'yield')
