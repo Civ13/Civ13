@@ -12,6 +12,7 @@
 #define AGENT_CHARACTER_QUEUE_BATCH 32
 #define AGENT_CHARACTER_SPEECH_DELAY 10
 #define AGENT_CHOICE_WINDOW 300 // ticks a step's prompt answer stays valid
+#define AGENT_WATCH_WINDOW 600 // ticks since an agent last listed its characters for it to count as watching
 
 /datum/agent_character
 	var/mob/living/body
@@ -27,6 +28,8 @@
 	var/list/queue_results = list()
 	var/queue_serial = 0
 	var/queue_running = FALSE
+	var/awaiting_driver = FALSE // spawned by an admin verb; no autopilot has looked through its eyes yet
+	var/requested_goal // what the admin asked the character to do
 
 /datum/agent_character/proc/capture(message)
 	var/text = agent_plain_text(message)
@@ -190,7 +193,11 @@
 			row["player"] = C.handover_ckey
 			row["player_connected"] = M.client ? TRUE : FALSE
 		row["stat"] = M.stat
+		if (C.awaiting_driver)
+			row["waiting"] = TRUE
+			row["goal"] = C.requested_goal
 		out += list(row)
+	last_watch[A.name] = world.time
 	audit_read(A, "character_list")
 	return list("characters" = out, "allow_handover" = allow_handover)
 
@@ -296,6 +303,7 @@
 	var/mob/living/M = C.body
 	var/radius = clamp(round(text2num("[req["radius"]]") || 5), 1, 7)
 	var/since = text2num("[req["since"]]") || 0
+	C.awaiting_driver = FALSE // an autopilot is driving it now
 	audit_read(A, "character_observe", "[M] ([agent_ref(M)])")
 	var/turf/here = get_turf(M)
 	var/list/nearby = list()
@@ -862,9 +870,79 @@
 
 /hook/startup/proc/agent_control_startup()
 	agent_control.reload()
+	admin_verbs_fun |= /client/proc/spawn_ai_character
 	return TRUE
 
+// ---------------------------------------------------------------------------
+// Admin verb: spawn a character for an AI agent (such as Ada) to play. The
+// character is spawned exactly as the agent's own character_spawn would, then
+// waits until an autopilot started with --watch for that agent picks it up.
+
+/client/proc/spawn_ai_character()
+	set category = "Fun"
+	set name = "Spawn AI Character"
+	set desc = "Spawn a character for a server AI agent, such as Ada, to play."
+	if (!check_rights(R_FUN))
+		return
+	agent_control.reload()
+	var/list/choices = list()
+	for (var/agent_name in agent_control.agents)
+		var/datum/agent_identity/A = agent_control.agents[agent_name]
+		if (A.has_scope("characters"))
+			choices += agent_name
+	if (!choices.len)
+		to_chat(src, SPAN_WARNING("No agent in config/agent-control.txt has the characters scope."))
+		return
+	var/agent_name = choices.len == 1 ? choices[1] : input(src, "Which agent plays the character?", "AI character") as null|anything in choices
+	if (!agent_name)
+		return
+	var/name = input(src, "Character name", "AI character", "Ada") as null|text
+	if (isnull(name))
+		return
+	var/goal = input(src, "What should the character try to do?", "AI character", "Survive, explore, gather food and be friendly to other players.") as null|text
+	if (isnull(goal))
+		return
+	var/turf/T = get_turf(mob)
+	if (!T)
+		to_chat(src, SPAN_WARNING("You need to be on the map to place a character."))
+		return
+	var/list/req = list("target" = "turf:[T.x],[T.y],[T.z]", "name" = name)
+	var/list/jobs = agent_map_jobs()
+	if (jobs.len)
+		var/job = ("Nomad" in jobs) ? "Nomad" : input(src, "Join as which job?", "AI character") as null|anything in jobs
+		if (!job)
+			return
+		req["job"] = job
+		var/where = input(src, "Where should [name] start?", "AI character") as null|anything in list("My location", "The job's spawn point")
+		if (!where)
+			return
+		if (where == "My location")
+			req["stay"] = TRUE
+	var/datum/agent_identity/A = agent_control.agents[agent_name]
+	if (!A)
+		return
+	var/list/state
+	try
+		state = agent_control.act_character_spawn(A, req)
+	catch(var/exception/E)
+		to_chat(src, SPAN_WARNING("The character could not be spawned: [istype(E) && E.name == "agent_control_error" ? E.desc : "[E]"]"))
+		return
+	var/mob/living/M = locate(state["ref"])
+	var/datum/agent_character/C = agent_characters[M]
+	if (!C)
+		return
+	C.awaiting_driver = TRUE
+	C.requested_goal = copytext(sanitize(goal), 1, 257)
+	log_admin("[key_name(src)] spawned AI character [M] ([agent_ref(M)]) for agent [agent_name]: [C.requested_goal]")
+	message_admins("[key_name_admin(src)] spawned AI character [M] for agent [agent_name].")
+	var/last = agent_control.last_watch[agent_name]
+	if (isnull(last) || world.time - last > AGENT_WATCH_WINDOW)
+		to_chat(src, SPAN_WARNING("[M] is in play, but no autopilot is watching agent [agent_name], so [M] will stand still until the host runs autopilot.py --watch for that agent (docs/agent-control.md)."))
+	else
+		to_chat(src, SPAN_NOTICE("[M] is in play. The autopilot watching agent [agent_name] will take over within a few seconds."))
+
 #undef AGENT_CHARACTER_MESSAGES
+#undef AGENT_WATCH_WINDOW
 
 /proc/agent_item_detail(obj/item/I)
 	if (!istype(I))

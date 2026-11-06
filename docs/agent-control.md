@@ -262,6 +262,28 @@ python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help m
 python tools/agent-control/autopilot.py --spawn turf:332,242,2 --stay --name Ada --goal "Help people in need"
 ```
 
+**Spawn AI Character (admin verb, Fun).** An admin with `R_FUN` can put an AI
+character such as Ada into play from in game. The verb asks for the agent (only
+agents with the `characters` scope; skipped when there is one), a name (default
+Ada), a goal, and whether to start at the admin's location or the job's spawn
+point. It joins as Nomad when the map offers it, otherwise as a job the admin
+picks. The character is spawned through the agent's own `character_spawn`
+(same limits and audit line) and shows in `character_list` with `waiting: true`
+and the `goal` until an autopilot first observes it. To play it, the host runs
+one watcher per agent:
+
+```text
+python tools/agent-control/autopilot.py --watch
+```
+
+The watcher polls `character_list` every 10 seconds and starts one autopilot
+run per waiting character with that goal, passing on its own model flags and
+playing until the character dies (`--steps` overrides that). Each run logs to
+`data/agent-control/<name>-<ref>.log` (`--log-dir` changes the folder). A run
+that ends without driving its character is retried after five minutes. When no
+watcher has listed that agent's characters in the last minute, the verb warns
+the admin that the character will stand still until one starts.
+
 A spawned character joins as `--job` (default `Nomad`). The model gets a short
 survival primer (including the stone-age start: flint from rocks on grab
 intent, sharpening, branches, sticks and leaves), matching lines from
