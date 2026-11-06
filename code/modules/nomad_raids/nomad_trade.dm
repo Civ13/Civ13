@@ -150,9 +150,10 @@
 		start_assault("[who] stole from the stall")
 		return
 	if (!goods.len || world.time - state_at > NOMAD_TRADE_TIME)
-		cue(goods.len ? "The road calls. Farewell." : "Sold out. Farewell, friends.")
+		var/unsold = goods.len // pack_up() empties the stall
+		cue(unsold ? "The road calls. Farewell." : "Sold out. Farewell, friends.")
 		pack_up()
-		set_state("leave", goods.len ? "trading time over" : "sold out")
+		set_state("leave", unsold ? "trading time over" : "sold out")
 
 // Payments a sale spent stay with the trader; the rest can be handed back.
 /datum/nomad_raid/proc/spend_payments(who, price)
