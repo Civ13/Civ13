@@ -20,9 +20,11 @@ class DatumProfileTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Final drain reference guard changed'):
             profile.instrument_datum_references(name, source.replace(anchor, '\t\t\tthrow EXCEPTION("changed")', 1))
     def test_existing_reference_calls_are_wrapped_once_without_new_checks_or_yields(self):
+        functions_name = 'code/modules/persistence/functions.dm'
+        functions = (ROOT / functions_name).read_text()
+        self.assertEqual(profile.instrument_datum_references(functions_name, functions), functions)
         for name, original, replacement in (
             ('code/modules/persistence/saving.dm', '"\\ref[A]"', 'profile_native_identity(A)'),
-            ('code/modules/persistence/functions.dm', 'return "\\ref[A]"', 'return profile_native_identity(A)'),
         ):
             source = (ROOT / name).read_text()
             instrumented = profile.instrument_datum_references(name, source)
@@ -50,12 +52,18 @@ class DatumProfileTests(unittest.TestCase):
         saver = profile.restore_old_identity_keys(saving_name, (ROOT / saving_name).read_text())
         functions = profile.restore_old_identity_keys(functions_name, (ROOT / functions_name).read_text())
         self.assertEqual(saver.count('saving_lists["\\ref[L]"]'), 2)
+        for datum_key in ('saving_world_movables[A]', 'saving_references[A]', 'saving_world_movables[target]', 'saving_level_link_ids[A]', 'saving_references[origin]', 'saving_world_movables[parent]', 'var/identity = target'):
+            self.assertNotIn(datum_key, saver)
+        self.assertNotIn('saving_references[destination]', functions)
+        self.assertNotIn('saving_references[I])', functions)
+        self.assertIn('/map_storage/proc/save_entry_identity(datum/A)\n\treturn "\\ref[A]"\n', functions)
         self.assertNotIn('if(!moving_save_chunk && istype(A, /atom/movable)', saver)
         self.assertIn('if(durable_export) durable_export.bind_entry', saver)
         self.assertNotIn('if(istype(A, /matrix)) return A', functions)
         self.assertIn('saving_reference_pins[frame.entry] != frame.source', functions)
-        for name, text in ((saving_name, saver), (functions_name, functions)):
-            profile.instrument_datum_references(name, text)
+        self.assertEqual(saver.count('"\\ref[A]"'), profile.EXPECTED_BASELINE_SAVER_REF_SITES)
+        self.assertNotIn('"\\ref[A]"', profile.instrument_datum_references(saving_name, saver))
+        self.assertIn('\treturn profile_native_identity(A)\n', profile.instrument_datum_references(functions_name, functions))
         with self.assertRaises(ValueError):
             profile.restore_old_identity_keys(saving_name, saver)
         with self.assertRaises(ValueError):
@@ -79,7 +87,7 @@ class DatumProfileTests(unittest.TestCase):
         name = 'code/modules/persistence/functions.dm'
         source = (ROOT / name).read_text()
         mutated = profile.restore_matrix_reference_identity(source)
-        self.assertEqual(mutated, source.replace('\tif(istype(A, /matrix)) return A\n', '', 1))
+        self.assertEqual(mutated, source.replace('save_entry_identity(datum/A)\n\treturn A\n', 'save_entry_identity(datum/A)\n\tif(istype(A, /matrix)) return "\\ref[A]"\n\treturn A\n', 1))
         self.assertIn('saving_reference_pins[frame.entry] != frame.source', mutated)
         spec = importlib.util.spec_from_file_location('matrix_omission_correctness', HERE / 'correctness.py')
         correctness = importlib.util.module_from_spec(spec)
