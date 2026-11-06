@@ -57,8 +57,10 @@ with `cached_age`) and `?wake=1&port=N`. `HostStatus` asks it first, under its
 own two-second deadline, before the direct sweep. The port is fixed in source
 like the game candidates, and the doorman supplies no address: entries whose
 port is not a configured candidate are ignored, and the answer is display data
-and a wake target only. A missing, failing or malformed doorman reply means
-every candidate is checked directly as before.
+and a wake target only. When the doorman request fails (including a rejected
+malformed reply), a provider with a gate checks only the gate directly and a
+provider without one checks every candidate. With no doorman configured, every
+candidate is checked directly.
 
 An entry marked `"routed": true` sits behind the host's routing relay
 (`scripts/gaia-host/relay.py`): its port is closed to players, who join the
