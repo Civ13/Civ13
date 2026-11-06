@@ -889,9 +889,7 @@ var/global/datum/persistence_admission_identity
 #endif
 	if(!operation.enter_backend(src, kind)) return FALSE
 	// A busy/rejected request must not erase the active save's failure context.
-	if(kind == "save")
-		last_save_reference_failure = null
-		save_refused_for_world_effects = FALSE
+	if(kind == "save") last_save_reference_failure = null
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(kind == "save") last_variable_failure = null
 #endif

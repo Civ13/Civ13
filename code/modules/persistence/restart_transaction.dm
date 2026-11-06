@@ -125,7 +125,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		wait_for_world_effects()
 		diagnostic_phase = "save"
 		if(save_generation()) return TRUE
-		if(!map_storage.save_refused_for_world_effects || attempt >= effects_save_attempts) return FALSE
+		// Effects queued during the save are still pending when it returns
+		// (they pause while saving); any other failure is not retried.
+		if(attempt >= effects_save_attempts || !world_effects_transition()) return FALSE
 		notify("World effects changed during save attempt [attempt]; waiting for them to settle and saving again")
 		to_chat(world, "<font color='yellow' size=4><b>Something exploded or caught fire during the save. The server will save again once it settles, then restart.</b></font>")
 	return FALSE

@@ -41,7 +41,6 @@ var/failures = 0
 /map_storage
 	var/last_error
 	var/dimension_recovery_required = FALSE
-	var/save_refused_for_world_effects = FALSE
 // World effects (explosions, fire) seen by the save wait; null when settled.
 var/fixture_effects = null
 var/fixture_effects_stuck = FALSE
@@ -107,12 +106,10 @@ var/fixture_effects_stuck = FALSE
 /datum/persistence_restart_transaction/probe/save_generation()
 	saves++
 	if(fixture_effects) saved_during_effects++
-	map_storage.save_refused_for_world_effects = FALSE
 	if(effects_refusals)
 		// An explosion queued during the save: refused, then it settles.
 		effects_refusals--
 		fixture_effects = "explosion work"
-		map_storage.save_refused_for_world_effects = TRUE
 		fixture_settle_effects()
 		return FALSE
 	if(concurrent) check(!execute(), "concurrent transaction admitted")

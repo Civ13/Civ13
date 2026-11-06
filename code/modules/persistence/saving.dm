@@ -199,7 +199,6 @@
 		try
 			require_durable_world_idle()
 		catch(var/exception/effects_quiescence_error)
-			save_refused_for_world_effects = !durable_world_effects_stuck()
 			throw EXCEPTION("World effects changed during capture; completed backup retained. [effects_quiescence_error]")
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")

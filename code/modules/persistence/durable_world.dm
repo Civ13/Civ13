@@ -5,9 +5,6 @@
 	var/datum/durable_save_graph/durable_import
 	var/list/durable_state
 	var/loading_z = 0
-	// Set when the last save was refused only for world effects that settle
-	// on their own (explosions, fire, weather), so a restart can wait and retry.
-	var/tmp/save_refused_for_world_effects = FALSE
 
 /proc/durable_environment_schema()
 	return list("season" = "text", "game_hour" = "number", "time_of_day" = "text", "weather" = "number", "weather_intensity" = "number", "global_radiation" = "number", "global_pollution" = "number", "global_export_tax" = "number", "global_import_tax" = "number", "abandonment_season_changes" = "number", "round_progressing" = "flag", "allow_vote_restart" = "flag", "daynight_on" = "flag", "seasons_on" = "flag", "tod_ticks" = "number", "tod_gate" = "flag", "research_clock" = "number", "win_hash" = "nullable_scalar")
@@ -21,7 +18,6 @@
 	if(map.nomads_recovery_required) throw EXCEPTION("World effects failed; restart recovery from the retained completed generation before saving")
 	var/transition = durable_world_transition(map.durable_nomads_transients_active())
 	if(transition)
-		save_refused_for_world_effects = !durable_world_effects_stuck()
 		throw EXCEPTION("World metadata is transitioning ([transition]); retry saving after it settles")
 	if(!processes.time_of_day || !processes.weather)
 		throw EXCEPTION("World metadata processes are unavailable")
