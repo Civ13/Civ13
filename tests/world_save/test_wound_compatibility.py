@@ -1,11 +1,9 @@
-"""Historical defect control with current dependencies, never a historical build."""
+"""Wound defect control: current sources with only the #3216 fix reverted."""
 import contextlib
-import hashlib
 import importlib.util
 import io
 import json
 from pathlib import Path
-import re
 import socket
 import subprocess
 import sys
@@ -14,7 +12,8 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE = 'd0ffbfb2335eb735756b998f3f2ff617c28f144b'
+WOUND = 'code/modules/organs/wound.dm'
+LOADING = 'code/modules/persistence/loading.dm'
 
 
 class HistoricalWoundCompatibility(unittest.TestCase):
@@ -24,12 +23,8 @@ class HistoricalWoundCompatibility(unittest.TestCase):
             ROOT / 'tests/world_save/run-durable-world.py')
         cls.runner = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.runner)
-        # Read immutable Git blobs before prohibiting every launch during preparation.
-        cls.historical = {relative: subprocess.check_output([
-            'git', 'show', BASELINE + ':' + relative], cwd=ROOT)
-            for relative in ('code/modules/organs/wound.dm', 'code/modules/persistence/loading.dm')}
-        cls.loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
-        cls.functions = (ROOT / 'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
+        cls.wound = (ROOT / WOUND).read_text(encoding='utf-8')
+        cls.loading = (ROOT / LOADING).read_text(encoding='utf-8')
 
     def setUp(self):
         self.spawn = self.enterContext(patch.object(subprocess, 'Popen',
@@ -41,17 +36,46 @@ class HistoricalWoundCompatibility(unittest.TestCase):
         self.spawn.assert_not_called()
         self.sockets.assert_not_called()
 
-    def test_historical_bytes_and_exact_current_dependencies_are_staged_without_launches(self):
+    def test_only_the_restore_fix_is_reverted(self):
+        wound, loading, line = self.runner.historical_wound_sources(self.wound, self.loading)
+        # The wound file loses only the restore-shell parameter and early return.
+        self.assertNotIn('restore_shell', wound)
+        self.assertEqual(wound.splitlines()[line - 1], '\tvar/damage_amt = lost_limb.max_damage')
+        self.assertIn(self.runner.WOUND_HISTORICAL_HEADER, wound)
+        before = self.wound.index(self.runner.WOUND_FIX_HEADER)
+        after = self.wound.index(self.runner.WOUND_FAILING_READ)
+        self.assertEqual(wound, self.wound[:before] + self.runner.WOUND_HISTORICAL_HEADER + self.wound[after:])
+        # The loader loses only the lost-limb shell branch and its validation.
+        self.assertNotIn('/datum/wound/lost_limb', loading)
+        self.assertEqual(loading, self.loading.replace(self.runner.WOUND_FIX_LOADER_BRANCH, '', 1)
+                         .replace(self.runner.WOUND_FIX_LOADER_CHECK, '', 1))
+        self.assertIn('\t\telse\n\t\t\t// Non-atom datums have no location argument.', loading)
+
+    def test_changed_or_repeated_fix_anchors_are_refused(self):
+        header = self.runner.WOUND_FIX_HEADER
+        read = self.runner.WOUND_FAILING_READ
+        for wound in (self.wound.replace(header, header.replace('restore_shell', 'restored'), 1),
+                      self.wound.replace(read, '\tvar/damage_amt = 0\n', 1),
+                      self.wound + header,
+                      self.wound + read,
+                      self.wound.replace('\tif(restore_shell)\n\t\treturn ..(0)\n', '', 1)):
+            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'constructor'):
+                self.runner.historical_wound_sources(wound, self.loading)
+        for anchor in (self.runner.WOUND_FIX_LOADER_BRANCH, self.runner.WOUND_FIX_LOADER_CHECK):
+            for loading in (self.loading.replace(anchor, '', 1), self.loading + anchor):
+                with self.subTest(anchor=anchor), self.assertRaisesRegex(RuntimeError, 'loader'):
+                    self.runner.historical_wound_sources(self.wound, loading)
+
+    def test_control_is_staged_from_current_sources_without_git_or_launches(self):
         def git_read(command, **kwargs):
             self.assertEqual(command[0], 'git')
-            if command[1] == 'show':
-                self.assertTrue(command[2].startswith(BASELINE + ':'))
-                return self.historical[command[2].split(':', 1)[1]].decode('utf-8')
+            self.assertNotEqual(command[1], 'show')
             if command[1:] == ['rev-parse', 'HEAD']:
                 return 'offline-identity\n'
             self.assertEqual(command[1:], ['diff', 'HEAD'])
             return b''
 
+        wound, loading, line = self.runner.historical_wound_sources(self.wound, self.loading)
         with tempfile.TemporaryDirectory() as directory, \
                 patch.object(self.runner.tempfile, 'mkdtemp', return_value=directory), \
                 patch.object(self.runner.subprocess, 'check_output', side_effect=git_read), \
@@ -61,72 +85,14 @@ class HistoricalWoundCompatibility(unittest.TestCase):
             self.runner.main()
             output = Path(directory)
             receipt = json.loads((output / 'receipt.json').read_text(encoding='utf-8'))
-            sources = [p.read_bytes() for p in output.glob('*.dm')]
-            for relative, historical in self.historical.items():
-                self.assertEqual(sources.count(historical), 1, relative)
-            self.assertEqual((output / receipt['wound_control_source']).read_bytes(),
-                             self.historical['code/modules/organs/wound.dm'])
-            roof = self.loading[:self.loading.index('\n/map_storage/proc/Load_Entry(')]
-            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
-            start = self.loading.index(marker)
-            end = self.loading.find('\n/map_storage/proc/', start + len(marker))
-            helper = self.loading[start:end if end >= 0 else len(self.loading)]
-            link_start = '/map_storage/proc/validate_level_link_rows(list/rows)\n'
-            link_end = '\n/map_storage/proc/is_level_link_value(value)\n'
-            link_helper = self.loading[self.loading.index(link_start):self.loading.index(link_end)]
-            expected = self.functions + '\n' + roof + '\n' + helper + '\n' + link_helper
-            self.assertEqual(sources.count(expected.encode()), 1)
-            combined = b'\n'.join(sources).decode('utf-8')
-            self.assertEqual(combined.count(roof), 1)
-            self.assertEqual(combined.count(marker), 1)
-            self.assertEqual(combined.count(link_start), 1)
-            for name in re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M):
-                self.assertEqual(len(re.findall(r'^/map_storage/proc/' + name + r'\(', combined, re.M)), 1)
-            self.assertEqual(receipt['wound_control_commit'], BASELINE)
-            self.assertEqual(hashlib.sha256(helper.encode()).hexdigest(),
-                             receipt['wound_control_compatibility_helper_sha256'])
-            self.assertEqual(hashlib.sha256(roof.encode()).hexdigest(),
-                             receipt['wound_control_roof_helpers_sha256'])
-            self.assertEqual(hashlib.sha256(link_helper.encode()).hexdigest(),
-                             receipt['wound_control_link_helper_sha256'])
+            self.assertEqual((output / receipt['wound_control_source']).read_text(encoding='utf-8'), wound)
+            self.assertEqual((output / receipt['generated_sources'][LOADING]).read_text(encoding='utf-8'), loading)
+            self.assertEqual(receipt['wound_control_line'], line)
+            self.assertEqual(receipt['wound_control_reverted_fix'], '#3216')
             self.assertTrue(receipt['prepared_only'])
             self.assertFalse((output / 'compile.log').exists())
             self.assertFalse(list(output.glob('*.dmb')))
             self.assertFalse((output / 'metadata-result.json').exists())
-
-    def test_roof_extraction_rejects_missing_or_repeated_boundaries(self):
-        end = '\n/map_storage/proc/Load_Entry('
-        for changed in (self.loading.replace('// Only roof transformations', '// Changed roof transformations', 1),
-                        self.loading.replace(end, '\n/map_storage/proc/Changed_Load_Entry(', 1),
-                        self.loading + end,
-                        self.loading + self.loading[:self.loading.index(end)]):
-            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility anchors changed'):
-                self.runner.historical_wound_roof_helpers(changed, self.functions)
-
-    def test_roof_extraction_rejects_missing_or_duplicate_members_and_procedures(self):
-        for before, after in (
-                ('\tvar/list/validated_roof_types = list()\n', ''),
-                ('\tvar/list/validated_roof_types = list()\n', '\tvar/list/validated_roof_types = list()\n' * 2),
-                ('/map_storage/proc/clear_saved_roof_areas()', '/map_storage/proc/renamed_clear_saved_roof_areas()'),
-                ('/map_storage/proc/clear_saved_roof_areas()', '/map_storage/proc/clear_saved_roof_areas()\n/map_storage/proc/clear_saved_roof_areas()')):
-            with self.subTest(before=before), self.assertRaisesRegex(RuntimeError, 'compatibility (members|procedures) changed'):
-                self.runner.historical_wound_roof_helpers(self.loading.replace(before, after, 1), self.functions)
-
-    def test_roof_extraction_rejects_existing_dependency_declarations(self):
-        for duplicate in ('\n/map_storage/proc/restore_validated_roof(atom/roof)\n',
-                          '\n\tvar/list/validated_roof_areas = list()\n'):
-            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility dependencies duplicated'):
-                self.runner.historical_wound_roof_helpers(self.loading, self.functions + duplicate)
-
-    def test_link_extraction_rejects_missing_repeated_or_duplicated_dependency(self):
-        start = '/map_storage/proc/validate_level_link_rows(list/rows)\n'
-        end = '\n/map_storage/proc/is_level_link_value(value)\n'
-        for changed in (self.loading.replace(start, '', 1), self.loading.replace(end, '', 1),
-                        self.loading + start, self.loading + end):
-            with self.subTest(), self.assertRaisesRegex(RuntimeError, 'compatibility anchors changed'):
-                self.runner.historical_wound_link_helper(changed, self.functions)
-        with self.assertRaisesRegex(RuntimeError, 'compatibility dependency duplicated'):
-            self.runner.historical_wound_link_helper(self.loading, self.functions + '\n' + start)
 
 
 if __name__ == '__main__':

@@ -123,7 +123,7 @@ def assert_workflow_contract(workflow):
             raise AssertionError('Missing job identity boundary: ' + job)
         section = job_body.split(end_marker, 1)[0]
         required = (
-            '    needs: changes\n',
+            '    needs: [changes, local-attestation]\n',
             '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n',
             '      attempt: ${{ github.run_attempt }}\n',
             '          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}\n',
@@ -194,8 +194,10 @@ def assert_workflow_contract(workflow):
                 raise AssertionError('Baseline exact comparison preparation changed')
             if section.index('      - uses: actions/checkout@') > section.index(prepare) or section.index(prepare) > section.index('      - uses: actions/download-artifact@'):
                 raise AssertionError('Baseline preparation ordering changed')
-        selection_gate = ("    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')\n" if job == 'baseline' else
-                          "    if: always() && !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))\n")
+        # A trusted local attestation (#3777) skips both producers; any doubt
+        # leaves skip false and the original selection gate applies unchanged.
+        selection_gate = ("    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch') && needs.local-attestation.outputs.skip != 'true'\n" if job == 'baseline' else
+                          "    if: always() && !cancelled() && needs.local-attestation.outputs.skip != 'true' && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))\n")
         if section.count(selection_gate) != 1:
             raise AssertionError('Changed ' + job + ' selection or failure gate')
 
@@ -209,15 +211,15 @@ def assert_workflow_contract(workflow):
     for fragment in (
         "    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}\n",
         "    if: always() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))\n",
-        '    needs: [changes, baseline, evidence-checker, build, extraction-instances]\n',
+        '    needs: [changes, local-attestation, baseline, evidence-checker, build, extraction-instances]\n',
         '    runs-on: ubuntu-latest\n',
         '    timeout-minutes: 5\n',
         "      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n        if: needs.changes.result == 'success'\n        timeout-minutes: 2\n        with:\n          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n          fetch-depth: 1\n",
         '          persist-credentials: false\n',
         "      - name: Prepare exact comparison commit\n        if: needs.changes.result == 'success'\n        timeout-minutes: 2\n        env:\n          EVENT_NAME: ${{ github.event_name }}\n          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}\n          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n        run: python3 -B scripts/ci_checkout_refs.py --head \"$HEAD_REF\" --base \"$BASE_REF\" --event \"$EVENT_NAME\"\n",
         '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}\n          path: .ci/selection\n',
-        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}\n          path: .ci/baseline\n',
-        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}\n          path: .ci/compile\n',
+        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        if: needs.local-attestation.outputs.skip != \'true\'\n        with:\n          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}\n          path: .ci/baseline\n',
+        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        if: needs.local-attestation.outputs.skip != \'true\'\n        with:\n          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}\n          path: .ci/compile\n',
     ):
         if ('\n' + aggregate).count('\n' + fragment) != 1:
             raise AssertionError('Required aggregate identity, dependency or receipt changed: ' + fragment.strip())

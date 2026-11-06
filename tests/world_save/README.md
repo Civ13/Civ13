@@ -841,11 +841,15 @@ orphan-limb icon cleanup, the parent link survives, the import guard returns to
 zero and a freshly constructed orphan limb still cleans itself up (147 checks).
 Without the loader guard, rejoining players' bodies kept only the torso.
 
-`--wounds --negative-control wound-restore` substitutes immutable wound and loader
-sources from `d0ffbfb2335eb735756b998f3f2ff617c28f144b` in generated copies. Its
-expected result is the original `Cannot read null.max_damage` constructor failure
-at line 394 after the four ordinary-constructor checks. `--prepare-only` generates
-and hashes inputs without compiling or running BYOND.
+`--wounds --negative-control wound-restore` reverts only the lost-limb restore
+fix (#3216) in generated copies of the current wound and loader sources: the
+loader again builds the wound with no limb and the constructor has no restore
+shell. Everything else stays current, so the control keeps compiling as the
+persistence code evolves. Its expected result is the original
+`Cannot read null.max_damage` constructor failure, at the computed line of the
+constructor's limb read, after the four ordinary-constructor checks. The runner
+refuses to stage the control if either fix anchor changes. `--prepare-only`
+generates and hashes inputs without compiling or running BYOND.
 
 ### Current admission boundary and CI (2026-10-19)
 

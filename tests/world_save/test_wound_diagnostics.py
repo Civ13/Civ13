@@ -46,18 +46,18 @@ class WoundDiagnostics(unittest.TestCase):
         guard = min(matches, key=lambda node: sum(1 for _ in ast.walk(node)))
         module = ast.fix_missing_locations(ast.Module(body=[guard], type_ignores=[]))
         compiled = compile(module, str(RUNNER), 'exec')
-        exec(compiled, {'result': {'done': 1, 'checks': 142, 'roundtrips': 18}})
-        for result in ({'done': 1, 'checks': 141, 'roundtrips': 18},
-                       {'done': 1, 'checks': 143, 'roundtrips': 18},
-                       {'done': 1, 'checks': 142, 'roundtrips': 17},
-                       {'done': 0, 'checks': 142, 'roundtrips': 18}):
+        exec(compiled, {'result': {'done': 1, 'checks': 165, 'roundtrips': 18}})
+        for result in ({'done': 1, 'checks': 164, 'roundtrips': 18},
+                       {'done': 1, 'checks': 166, 'roundtrips': 18},
+                       {'done': 1, 'checks': 165, 'roundtrips': 17},
+                       {'done': 0, 'checks': 165, 'roundtrips': 18}):
             with self.subTest(result=result), self.assertRaises(RuntimeError):
                 exec(compiled, {'result': result})
 
     def test_negative_control_exact_counts_include_offline_startup(self):
         tree = ast.parse(RUNNER.read_text(encoding='utf-8'))
         cases = [
-            ('Historical wound source did not reproduce the constructor failure: ',
+            ('Reverted wound fix did not reproduce the constructor failure: ',
              'wound-restore', 5, {'error': 'Cannot read null.max_damage',
                                 'source': 'fixture_wound.dm', 'line': 394}),
             ('Preflight control did not reach its first malformed-wire assertion',
@@ -73,7 +73,8 @@ class WoundDiagnostics(unittest.TestCase):
             module = ast.fix_missing_locations(ast.Module(body=[guard], type_ignores=[]))
             compiled = compile(module, str(RUNNER), 'exec')
             context = {'args': SimpleNamespace(negative_control=control),
-                       'receipt': {'wound_control_source': 'fixture_wound.dm'}}
+                       'receipt': {'wound_control_source': 'fixture_wound.dm',
+                                   'wound_control_line': 394}}
             for actual in (count - 1, count, count + 1):
                 context['result'] = dict(details, done=0, checks=actual)
                 with self.subTest(control=control, checks=actual):
