@@ -21,6 +21,7 @@ address for bans and logs.
 """
 from __future__ import annotations
 
+import ipaddress
 import json
 import socket
 import struct
@@ -136,6 +137,16 @@ class Instance:
         self.next_watch = 0.0
         self.next_refresh = 0.0
 
+
+
+def is_loopback(address):
+    """True for a loopback peer (IPv4, IPv6 or IPv4-mapped); False when unparseable."""
+    try:
+        ip = ipaddress.ip_address(str(address).split('%')[0])
+    except ValueError:
+        return False
+    mapped = getattr(ip, 'ipv4_mapped', None)
+    return (mapped or ip).is_loopback
 
 class Doorman:
     def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time, supervisors=()):
@@ -282,6 +293,9 @@ class Doorman:
 
     # -- requests ------------------------------------------------------------
     def allowed(self, address, now):
+        # Regions and the routing relay on this machine ask often; only remote callers are limited.
+        if is_loopback(address):
+            return True
         with self.lock:
             recent = [moment for moment in self.requests.get(address, []) if now - moment < 60]
             recent.append(now)

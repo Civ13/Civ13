@@ -348,6 +348,14 @@ class DoormanTests(base.GaiaHostTests):
         self.clock[0] += 61
         self.assertIsNotNone(self.ask('host_status=1'))
 
+    def test_loopback_callers_are_not_rate_limited(self):
+        self.give_token()
+        for address in ('127.0.0.1', '::1', '::ffff:127.0.0.1'):
+            for _ in range(doorman.REQUESTS_PER_MINUTE + 5):
+                self.assertIsNotNone(self.ask('host_status=1', address=address), address)
+        self.assertFalse(doorman.is_loopback('not an address'))
+        self.assertFalse(doorman.is_loopback('::ffff:203.0.113.9'))
+
     def test_a_direct_connection_wake_also_reads_waking(self):
         self.running()
         self.host.freeze()

@@ -94,9 +94,17 @@
 	if(!C || !peer || !peer["address"])
 		return FALSE
 	var/public = C.public_address()
-	if(!relay_on() || !public)
+	if(!relay_on())
 		C << link("byond://[peer["address"]]")
 		return TRUE
+	if(!public)
+		// Region ports are closed to the internet behind a relay; only a true
+		// local connection (the host) can use one directly.
+		if(C.local_connection())
+			C << link("byond://[peer["address"]]")
+			return TRUE
+		to_chat(C, SPAN_WARNING("The way to [html_encode(peer["name"])] cannot be found from here. Reconnect through [html_encode(gate_address())] and try again."))
+		return FALSE
 	if(wake && peer["state"] != "UP")
 		poll_peer(id)
 		if(peer["state"] != "UP")
@@ -139,7 +147,11 @@
 /client/proc/local_connection()
 	if(address && address != "127.0.0.1" && address != "::1")
 		return FALSE
-	return !relay_address && (!shard_group.relay_on() || relay_checked)
+	if(relay_address)
+		return FALSE
+	// With a relay, a lookup that found nothing may still be a relayed player:
+	// only the host's own key counts as local then.
+	return !shard_group.relay_on() || (relay_checked && world.host && key == world.host)
 
 /client/New(TopicData)
 	// Before the bans and the login log read the address.

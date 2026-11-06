@@ -193,6 +193,15 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual('1731', argv[argv.index('--control-port') + 1])
         self.assertEqual('1713', argv[argv.index('--doorman-port') + 1])
 
+    def test_a_relay_that_cannot_start_does_not_stop_supervision(self):
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        def start(argv, cwd, log):
+            raise OSError('no python')
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: False):
+            self.assertEqual({'relay_error': 'no python'}, shard_group.supervise(group, start))
+
     def test_setup_refusals(self):
         group = self.write_group()
         self.machine.up = {1721}

@@ -695,8 +695,12 @@ def supervise(group, start=detach):
     Returns what was started (empty when everything was already running).
     """
     started = {}
-    if ensure_relay(group, start):
-        started['relay'] = True
+    # A relay that cannot start must not keep the agents and the coordinator down.
+    try:
+        if ensure_relay(group, start):
+            started['relay'] = True
+    except OSError as error:
+        started['relay_error'] = str(error)[:300]
     if not group['transfers']:
         return started
     for region in group['regions']:
