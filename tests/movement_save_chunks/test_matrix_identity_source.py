@@ -30,8 +30,10 @@ class MatrixIdentitySourceTests(unittest.TestCase):
         functions = (root/'code/modules/persistence/functions.dm').read_text()
         saving = (root/'code/modules/persistence/saving.dm').read_text()
         helper = functions.split('/map_storage/proc/save_entry_identity(datum/A)')[1].split('/map_storage/proc/require_export_frame')[0]
-        self.assertIn('if(istype(A, /matrix)) return A', helper)
-        self.assertIn('return "\\ref[A]"', helper)
+        # Every datum, matrices included, keys the export tables by itself:
+        # retained "\ref" strings made BYOND's string table superlinear.
+        self.assertIn('return A', helper)
+        self.assertNotIn('"\\ref[A]"', helper)
         self.assertIn('saving_reference_pins[frame.entry] != frame.source', functions)
         self.assertNotIn('save_entry_identity(frame.source)', functions)
         self.assertIn('var/identity = save_entry_identity(A)', saving)

@@ -398,7 +398,7 @@ var/list/sleep_visibility_events = list()
 // traversal normally preserves the first capture and never reaches this guard.
 /map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE)
 	if(A == cross_target && saving_z == 2)
-		saving_world_movables -= "\ref[A]"
+		saving_world_movables -= A
 	return ..()
 
 /proc/sleep_check_duplicate_record()

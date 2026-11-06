@@ -33,7 +33,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 	F["/format_version"] << 3
 	var/ref = storage.BuildVarDirectory(F, holder, 1)
 	for(var/obj/item/I in list(scope, controls, garrote, light))
-		var/item_ref = storage.saving_references["\ref[I]"]
+		var/item_ref = storage.saving_references[I]
 		if(!item_ref) throw EXCEPTION("Action fixture item was not saved")
 		F.cd = storage.entry_path(F, item_ref)
 		if("actions" in F.dir || "action" in F.dir || (I == controls && "azoom" in F.dir))

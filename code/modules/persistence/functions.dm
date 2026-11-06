@@ -1376,9 +1376,13 @@ var/global/datum/persistence_admission_identity
 // Native matrix reference-string conversion can consume an entire tick.
 // Direct matrix keys retain identity; all other entry keys keep their contract.
 // This key is process-local only: on-disk entries still use numeric IDs.
+// The datum itself keys the export tables (alist keys may be references).
+// A "\ref[A]" string per entry used to be retained for the whole level, and
+// BYOND's string table slows superlinearly as live unique strings accumulate:
+// 450k retained ref strings cost about 20 s against 0.5 s for datum keys, and
+// on a Gaia save the identity strings alone cost over two minutes.
 /map_storage/proc/save_entry_identity(datum/A)
-	if(istype(A, /matrix)) return A
-	return "\ref[A]"
+	return A
 
 // Runs before every saved field. The frame pins its source, so the identity
 // computed at registration cannot change while frame.source is set; the pin and
@@ -1400,7 +1404,7 @@ var/global/datum/persistence_admission_identity
 	if(saving_export_stack[saving_export_stack.len] != frame || !istype(frame.source, /atom/movable) || !origin || origin.loc != frame.source || !destination)
 		throw EXCEPTION("Save transfer requires the current producer and its owned storage")
 	var/atom/movable/producer = frame.source
-	var/parent_ref = saving_references["\ref[destination]"]
+	var/parent_ref = saving_references[destination]
 	var/datum/save_export_frame/parent = saving_export_frames["[parent_ref]"]
 	if(!parent || parent == frame || parent.file != frame.file || !parent.accepts_children || parent.source != destination || producer.loc != destination)
 		throw EXCEPTION("Save transfer requires an active direct owning turf")
@@ -1414,7 +1418,7 @@ var/global/datum/persistence_admission_identity
 	ticket.destination = destination
 	var/list/seen = list()
 	for(var/obj/item/I in items)
-		if(!I || I.loc != origin || !I.should_save || saving_references["\ref[I]"])
+		if(!I || I.loc != origin || !I.should_save || saving_references[I])
 			throw EXCEPTION("Save transfer item is unavailable or already captured")
 		for(var/ignored in ignore_types)
 			if(istype(I, ignored))

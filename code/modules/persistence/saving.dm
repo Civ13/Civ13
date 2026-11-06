@@ -266,7 +266,7 @@
 			return 0
 	if(istype(A, /atom/movable))
 		var/atom/movable/movable = A
-		var/list/previous = saving_world_movables["\ref[A]"]
+		var/list/previous = saving_world_movables[A]
 		if(previous && previous["atom"] == A && previous["z"] != saving_z)
 			if(traversal) return 0
 			throw EXCEPTION("Captured object belongs to another saved level")
@@ -281,13 +281,13 @@
 	if(!moving_save_chunk && istype(A, /atom/movable) && moving_save_roots["\ref[A]"])
 		var/list/root = moving_save_roots["\ref[A]"]
 		if(root["atom"] != A) throw EXCEPTION("Moving save root identity changed")
-		if(!saving_references["\ref[A]"]) return capture_moving_save_root(savefile, root)
+		if(!saving_references[A]) return capture_moving_save_root(savefile, root)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(!human_request && !moving_save_chunk && ishuman(A))
 		var/list/human_root = classify_human_save_entry(A, persistence_active_operation)
 		if(human_root["mode"] == "spatial" && !saving_references[save_entry_identity(A)]) return capture_human_save_root(savefile, human_root)
 #endif
-	if(moving_save_chunk && istype(A, /atom/movable) && A != moving_save_chunk.root && !saving_references["\ref[A]"])
+	if(moving_save_chunk && istype(A, /atom/movable) && A != moving_save_chunk.root && !saving_references[A])
 		throw EXCEPTION("Moving save chunk references an uncaptured external movable")
 	var/identity = save_entry_identity(A)
 	var/ind = saving_references[identity]
@@ -300,7 +300,7 @@
 	saving_reference_pins += A
 	saving_references[identity] = ref
 	if(istype(A, /atom/movable))
-		saving_world_movables["\ref[A]"] = list("atom" = A, "z" = saving_z, "ref" = ref)
+		saving_world_movables[A] = list("atom" = A, "z" = saving_z, "ref" = ref)
 		bind_level_link(A, ref)
 	if(durable_export && istype(A, /atom/movable)) durable_export.bind_entry(A, saving_z, ref, src)
 	var/datum/save_export_frame/frame = new
@@ -567,7 +567,7 @@
 /map_storage/proc/drop_cross_level_reference(atom/movable/target)
 	var/target_z = target.z
 	if(!target_z || target_z == saving_z)
-		var/list/previous = saving_world_movables["\ref[target]"]
+		var/list/previous = saving_world_movables[target]
 		if(!previous || previous["atom"] != target || previous["z"] == saving_z)
 			return FALSE
 		target_z = previous["z"]
@@ -615,7 +615,7 @@
 	if(save_debug_omits(target, "level_link")) return list("kind" = "entry", "ref" = 0)
 	if(!level_link_target_saved(target))
 		return list("kind" = "entry", "ref" = 0)
-	var/identity = "\ref[target]"
+	var/identity = target
 	var/id = saving_level_link_ids[identity]
 	if(id)
 		var/list/existing = saving_level_links[id]
@@ -634,7 +634,7 @@
 	return list("kind" = "level_link", "id" = id)
 
 /map_storage/proc/bind_level_link(atom/movable/A, ref)
-	var/id = saving_level_link_ids["\ref[A]"]
+	var/id = saving_level_link_ids[A]
 	if(!id)
 		return
 	var/list/link = saving_level_links[id]
@@ -1129,7 +1129,7 @@
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
 			throw EXCEPTION("Moving save roster member changed during chunk replay")
 		var/turf/origin = record["origin"]
-		var/parent_ref = origin ? saving_references["\ref[origin]"] : null
+		var/parent_ref = origin ? saving_references[origin] : null
 		if(!parent_ref || saving_reference_pins[parent_ref] != origin)
 			throw EXCEPTION("Moving save origin turf was replaced or not captured")
 		var/key = "[ref]"
@@ -1388,7 +1388,7 @@
 /map_storage/proc/human_save_parent_captured(atom/parent, saved_z, parent_ref)
 	if(!parent || !parent_ref || saving_references[save_entry_identity(parent)] != parent_ref || saving_reference_pins[parent_ref] != parent) return FALSE
 	if(istype(parent, /atom/movable))
-		var/list/captured = saving_world_movables["\ref[parent]"]
+		var/list/captured = saving_world_movables[parent]
 		if(!captured || captured["atom"] != parent || captured["z"] != saved_z || captured["ref"] != parent_ref) return FALSE
 	return TRUE
 
