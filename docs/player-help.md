@@ -143,7 +143,10 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    the same host's native `/api/chat` endpoint so context size and thinking controls
    are honored; OpenAI-compatible proxy-only servers are not supported. The service follows the
    [Ollama chat API](https://docs.ollama.com/api/chat), with streaming disabled.
-3. Set `num_ctx` to 1024..32768 and `think` to `true` or `false`.
+3. Set `num_ctx` to 1024..32768 and `think` to `true` or `false`. `keep_alive`
+   (default `30m`) tells Ollama how long to keep the model loaded after an
+   answer; its own default of five minutes makes the first question after a
+   quiet spell wait for a model reload. `-1` keeps it loaded until Ollama stops.
    Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
    outstanding questions, one per account, and a 30-second per-account cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
