@@ -74,7 +74,7 @@ var/z_budget_existing_plane = FALSE
 		map = new /obj/map_metadata/z_budget_fixture
 		map_storage.record_compiled_dimensions()
 		config = new
-		z_budget_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")
+		z_budget_assert(world.byond_version == 516 && world.byond_build == 1688, "pinned native runtime")
 		z_budget_assert(!world.port, "native port closed")
 		z_budget_arithmetic()
 		var/turf/site = locate(4,4,1)

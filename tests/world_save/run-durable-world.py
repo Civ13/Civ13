@@ -290,10 +290,11 @@ def main():
             end = text.index('/map_storage/proc/validate_saved_player_owner(', start)
             body = text[start:end]
             for before, after in (('lobby.client', 'lobby.claim_client'),
+                                  ('waiting.client', 'waiting.claim_client'),
                                   ('var/client/C', 'var/datum/recovery_fixture_client/C'),
                                   ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
                                   (' in clients)', ' in recovery_fixture_clients)')):
-                expected = 2 if before == 'var/client/C' else (5 if before == 'lobby.client' else 1)
+                expected = {'var/client/C': 2, 'waiting.client': 2, 'lobby.client': 5}.get(before, 1)
                 if body.count(before) != expected:
                     raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
                 body = body.replace(before, after)
@@ -585,7 +586,11 @@ def run_lighting(command, output, flags):
                     sockets.add(link[8:-1])
             listeners = 0
             for table in ('tcp', 'tcp6'):
-                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:
+                # A host without IPv6 has no tcp6 table, so it holds no listeners.
+                path = Path(f'/proc/{child.pid}/net/{table}')
+                if table == 'tcp6' and not path.exists():
+                    continue
+                for row in path.read_text().splitlines()[1:]:
                     fields = row.split()
                     if fields[3] == '0A' and fields[9] in sockets:
                         listeners += 1

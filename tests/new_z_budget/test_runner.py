@@ -4,16 +4,19 @@ import unittest
 from pathlib import Path
 from prepare import ROOT, omit_headless_interface, prepare
 from run import MAX_COMPILE_LOG, validate_compile, validate_native
+from z_budget_evidence import PINNED
+
+PINNED_MAJOR, PINNED_BUILD = (int(part) for part in PINNED.split('.'))
 
 
 class RunnerEvidenceTests(unittest.TestCase):
     def receipt(self, **updates):
-        result = dict(byond_version=516, byond_build=1681, port=0, checks=61,
+        result = dict(byond_version=PINNED_MAJOR, byond_build=PINNED_BUILD, port=0, checks=61,
                       maxz=9, default_refusal=1, existing_plane=1)
         result.update(updates)
         return result
 
-    def compiler_log(self, banner='DM compiler version 516.1681', result='probe.dmb - 0 errors, 0 warnings'):
+    def compiler_log(self, banner='DM compiler version ' + PINNED, result='probe.dmb - 0 errors, 0 warnings'):
         return banner + '\nloading probe.dme\nsaving probe.dmb (DEBUG mode)\n' + result + '\nTotal time: 0:06\n'
 
     def test_exact_compiler_evidence(self):
@@ -51,10 +54,10 @@ class RunnerEvidenceTests(unittest.TestCase):
                 validate_compile(0, log, 'wrong.dmb')
 
     def test_compiler_banner_rejection_vectors(self):
-        for banner in ['DM compiler version 516.1682', 'prefix DM compiler version 516.1681',
-                       'DM compiler version 516.16810', 'DM compiler version 516.1681 suffix',
-                       'DM compiler version 516.1681\nDM compiler version 516.1681',
-                       'DM compiler version 516.1681\nDM compiler version 516.1682', '']:
+        exact = 'DM compiler version ' + PINNED
+        other = 'DM compiler version %d.%d' % (PINNED_MAJOR, PINNED_BUILD + 1)
+        for banner in [other, 'prefix ' + exact, exact + '0', exact + ' suffix',
+                       exact + '\n' + exact, exact + '\n' + other, '']:
             with self.subTest(banner=banner), self.assertRaises(RuntimeError):
                 validate_compile(0, self.compiler_log(banner=banner))
 
@@ -69,7 +72,7 @@ class RunnerEvidenceTests(unittest.TestCase):
             with self.subTest(result=result), self.assertRaises(RuntimeError):
                 validate_compile(0, self.compiler_log(result=result))
         for exit_code, log in [(1, self.compiler_log()), (0, 'x' * (MAX_COMPILE_LOG + 1)),
-                               (0, 'probe.dmb - 0 errors, 0 warnings\nDM compiler version 516.1681')]:
+                               (0, 'probe.dmb - 0 errors, 0 warnings\n' + 'DM compiler version ' + PINNED)]:
             with self.subTest(exit_code=exit_code, length=len(log)), self.assertRaises(RuntimeError):
                 validate_compile(exit_code, log)
 

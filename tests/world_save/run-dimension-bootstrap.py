@@ -57,7 +57,10 @@ def main():
     if args.byond_archive and (args.prepare_only or args.negative_control not in (None, 'preflight')):
         parser.error('Current runtime admits only the selected dimension CI cases')
     runtime = selected_runtime(args.byond_bin, args.byond_archive)
-    expected_build = int(runtime.identity['version'].split('.')[1]) if runtime else 1681
+    # Without an archive the runner still uses the canonical pin; the
+    # retired 516.1681 build is no longer accepted in either mode.
+    pinned = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+    expected_build = int((runtime.identity['version'] if runtime else pinned).split('.')[1])
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
     output = Path(tempfile.mkdtemp(prefix='civ13-dimension-bootstrap-'))
@@ -72,7 +75,7 @@ def main():
         nonlocal allocator_hash, projection
         original = (fixture / match.group(1)).resolve(strict=True)
         text = original.read_text(encoding='utf-8')
-        if original.name == 'dimension_bootstrap_probe.dm' and runtime:
+        if original.name == 'dimension_bootstrap_probe.dm':
             text, projection = current_probe(text)
             projection['source_bytes_sha256'] = hashlib.sha256(original.read_bytes()).hexdigest()
         if original.name == 'building_levels.dm':
