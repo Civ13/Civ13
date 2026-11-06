@@ -141,25 +141,16 @@ turning that physical permission into universal language comprehension.
    and fix its data/overlay delivery in a bounded stage; it is not fixed here.
 3. Integrate faithful copying, filing and envelope/clipboard/bundle access,
    respecting era constraints and existing government/warrant programs.
-4. Add deliberate study as a separately reviewed stage. Progress belongs to a
-   durable character identity, not account/name/client/item, keyed by text lineage,
-   immutable section version and language. Do not use content-hash-only phrase
-   learning. Faithful copies preserve text identity; newly typed material has new
-   lineage. Edits create a new version and cancel old study; never remap offsets.
-   Appends add unknown sections. Completed increments may persist; unfinished
-   work cancels. No open-window/offline time, copying, reopening or rerolls grants
-   progress, and no language skill/default/Known Languages notes are changed.
-
-Study should use bounded server phrase/sentence units and a token layered on
-the existing `do_after`/`may_do_after` rules. Recheck character/control session,
-page, all container ancestors/seals, immutable text and visual ink access
-throughout and before a once-only non-yielding credit commit. Reject before
-emitting an action start. Cancel on movement, changed hands, deletion, revisions,
-closed/sealed containers, logout/body switch and explicit cancellation.
-Proposed balance: configurable multi-minute increments (for example five minutes
-per unit), deliberately long completion and no automatic reading XP. The user
-has not selected an exact duration. No character-ID or study implementation is
-claimed by this foundation.
+4. Deliberate study is implemented in `code/modules/paperwork/study.dm`. A
+   human holding a page uses Study Writing on the first section in a language
+   they cannot read. After a still `do_after` of two seconds per point (one
+   point per about eight characters, at most 25 per section), the points are
+   added to the same `partial_languages` progress that hearing the language
+   gives, and the language is learned at its difficulty. By the owner's choice,
+   study does teach the language rather than revealing only that section.
+   Credit is saved on the character as section lineage to highest studied
+   version, so faithful copies grant nothing new and an edited version can be
+   studied again. The section version is rechecked before the once-only credit.
 
 ## Evidence and attribution
 
