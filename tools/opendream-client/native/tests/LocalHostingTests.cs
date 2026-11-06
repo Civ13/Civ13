@@ -111,7 +111,7 @@ static class LocalHostingTests {
         host = LocalHosting.Load(launcher)!;
         Require(host.Control is { } loaded && loaded.Python == python && loaded.Script == script && loaded.Config == controlConfig && host.Update is null, "control section not read");
         var controlStep = LocalHosting.ControlStep(host.Control!, "stop");
-        Require(controlStep.FileName == python && !controlStep.UseShellExecute && controlStep.RedirectStandardOutput &&
+        Require(controlStep.FileName == python && !controlStep.UseShellExecute && controlStep.RedirectStandardOutput && controlStep.RedirectStandardInput &&
             controlStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", script, "--config", controlConfig, "stop" }), "control argv changed: " + string.Join(" ", controlStep.ArgumentList));
         try { LocalHosting.ControlStep(host.Control!, "mapswap"); throw new Exception("unsupported control action accepted"); } catch (ArgumentException) { assertions++; }
         ran.Clear(); started.Clear();
@@ -150,11 +150,11 @@ static class LocalHostingTests {
         Require(host.Control?.Group is { } grouped && grouped.Config == groupConfig && grouped.ShardScript == shard && grouped.Deploy == deploy && grouped.RestartHost == restartHost,
             "control.group not read");
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
-        Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute &&
+        Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));
         try { LocalHosting.GroupStep(host.Control!, "setup"); throw new Exception("unsupported group action accepted"); } catch (ArgumentException) { assertions++; }
         var deployStep = LocalHosting.GroupScriptStep(host.Control!, "deploy");
-        Require(deployStep.FileName.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) && deployStep.CreateNoWindow && deployStep.RedirectStandardOutput &&
+        Require(deployStep.FileName.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) && deployStep.CreateNoWindow && deployStep.RedirectStandardOutput && deployStep.RedirectStandardInput &&
             deployStep.ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy }), "deploy step changed");
         Require(LocalHosting.GroupScriptStep(host.Control!, "restart-host").ArgumentList.Last() == restartHost, "restart-host step changed");
         try { LocalHosting.GroupScriptStep(host.Control!, @"..\evil"); throw new Exception("unknown group script accepted"); } catch (ArgumentException) { assertions++; }

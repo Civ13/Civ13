@@ -103,7 +103,7 @@ public static class LocalHosting {
         var update = host.Update ?? throw new InvalidOperationException("No update configured.");
         ProcessStartInfo Step(string file, params string[] arguments) {
             var step = new ProcessStartInfo(file) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = host.GameDirectory,
-                RedirectStandardOutput = true, RedirectStandardError = true };
+                RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
             foreach (var argument in arguments) step.ArgumentList.Add(argument);
             return step;
         }
@@ -115,8 +115,11 @@ public static class LocalHosting {
     }
 
     // Runs a step to completion, returning its exit code and combined output.
+    // Captured steps get an empty, closed stdin rather than the launcher's console input: Python's subprocess
+    // duplicates an inherited console handle and fails with WinError 50 ("The request is not supported").
     public static (int Exit, string Output) RunCaptured(ProcessStartInfo step) {
         using var process = Process.Start(step) ?? throw new IOException("Could not start " + Path.GetFileName(step.FileName) + ".");
+        if (step.RedirectStandardInput) process.StandardInput.Close();
         var error = process.StandardError.ReadToEndAsync();
         var output = process.StandardOutput.ReadToEnd();
         if (!process.WaitForExit(TimeSpan.FromMinutes(15))) { process.Kill(true); throw new IOException(Path.GetFileName(step.FileName) + " timed out."); }
@@ -130,7 +133,7 @@ public static class LocalHosting {
     public static ProcessStartInfo ControlStep(HostControl control, string action) {
         if (!ControlActions.Contains(action)) throw new ArgumentException("Unsupported control action.", nameof(action));
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(control.Script)!, RedirectStandardOutput = true, RedirectStandardError = true };
+            WorkingDirectory = Path.GetDirectoryName(control.Script)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", control.Script, "--config", control.Config, action }) step.ArgumentList.Add(argument);
         return step;
     }
@@ -175,7 +178,7 @@ public static class LocalHosting {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         if (!GroupActions.Contains(action)) throw new ArgumentException("Unsupported group action.", nameof(action));
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(group.ShardScript)!, RedirectStandardOutput = true, RedirectStandardError = true };
+            WorkingDirectory = Path.GetDirectoryName(group.ShardScript)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", group.ShardScript, "--config", group.Config, action }) step.ArgumentList.Add(argument);
         return step;
     }
@@ -189,7 +192,7 @@ public static class LocalHosting {
             _ => throw new ArgumentException("Unsupported group script.", nameof(script)),
         };
         var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe")) { UseShellExecute = false, CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(path)!, RedirectStandardOutput = true, RedirectStandardError = true };
+            WorkingDirectory = Path.GetDirectoryName(path)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "/d", "/c", path }) step.ArgumentList.Add(argument);
         return step;
     }
