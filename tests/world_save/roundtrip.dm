@@ -153,6 +153,12 @@ var/global/roundtrip_capture_failure = FALSE
 			var/obj/item/test/macro = new(locate(6,1,1))
 			macro.name = "\improper split turkey"
 			macro.number = 66
+		// Values whose savefile text needs escaping or has no exact text form.
+		if(world.params["stream"])
+			var/obj/item/test/escaped = new(locate(7,1,1))
+			escaped.name = "q\"uo\\te \[b\] \n nl \t tab \u00e9 {\"brace\"}"
+			escaped.number = -0.125
+			escaped.items = list("big" = 16777216, "small" = 1e-07, "inf" = 1.#INF, "file" = 'icons/turf/floors.dmi', /obj/item/test = "path key", "empty" = "", "nested" = list(list("x")))
 		check(map_storage.Save_World(), "export failed")
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
@@ -535,6 +541,11 @@ var/global/roundtrip_capture_failure = FALSE
 	var/obj/item/test/macro_copy = locate(/obj/item/test) in locate(6,1,1)
 	check(macro_copy && macro_copy.number == 66 && macro_copy.name == "\improper split turkey", "stream changed a text-macro name")
 	check(!map_storage.saving_segments && !map_storage.segment_reader, "stream handles retained after load")
+	var/obj/item/test/escaped = locate(/obj/item/test) in locate(7,1,1)
+	check(escaped && escaped.name == "q\"uo\\te \[b\] \n nl \t tab \u00e9 {\"brace\"}" && escaped.number == -0.125, "stream changed an escaped name or a fraction")
+	check(escaped.items["big"] == 16777216 && escaped.items["small"] == 1e-07 && escaped.items["inf"] == 1.#INF && escaped.items[/obj/item/test] == "path key" && escaped.items["empty"] == "" && escaped.items["nested"][1][1] == "x", "stream changed list values")
+	check(isfile(escaped.items["file"]) && md5(escaped.items["file"]) == md5('icons/turf/floors.dmi'), "stream changed a stored file")
+	call(text2path("/proc/check_stream_text_matches_wire"))()
 	for(var/z = 1, z <= 2, z++)
 		var/savefile/index = new("map_saves/[z].sav")
 		check(index["/format_version"] == 5 && index["/stream/file"] == "[z].stream.sav" && fexists("map_saves/[z].stream.sav"), "level [z] was not saved as a stream")
@@ -558,7 +569,7 @@ var/global/roundtrip_capture_failure = FALSE
 	var/stream_reader_type = text2path("/datum/level_segment_reader/stream")
 	var/datum/R = new stream_reader_type(index_file, 1)
 	var/savefile/shard = call(R, "entry_file")(1)
-	for(var/block = 0, block < 5, block++)
+	for(var/block = 0, block <= R.vars["limit"], block++)
 		call(R, "list_file")(block * 512 + 1)
 	var/list/reader_files = R.vars["open_files"]
 	check(!reader_files["e0"] && call(R, "owns_file")(shard), "evicted stream shard lost its reader routing")

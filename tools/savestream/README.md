@@ -68,7 +68,14 @@ Modes: `read_savefile` and `write_savefile` are today's load and save memory
 for that level; `read_stream` and `write_stream` are the same work through the
 helper. `convert` turns a format-3 level into a stream (the converter itself
 materializes the source savefile) and `verify` compares every leaf both ways.
-Never point it at a live server's `map_saves/`.
+`read_text` and `read_wire` time the level reader's two ways to build every
+entry shard and list block of a stream (`src=<z>.stream.sav`); `compare_text`
+builds each both ways and fails on any difference. Never point it at a live
+server's `map_saves/`.
+
+`bench/run_level_bench.sh [size]` times save, full preflight and import of a
+generated size x size x 2 world in formats 3, 4 and 5 through the real
+persistence code (Linux, BYOND and gcc-multilib).
 
 ## Level format 5
 
@@ -80,7 +87,12 @@ The save still fills one small scratch savefile per segment
 few late appends to an earlier turf's contents (roster drain, animal sweep)
 read that node back from the helper. On load, `level_entry_file()` and
 `level_list_file()` materialise one entry shard (512 entries) or list block
-at a time from the stream. Backups, rollback, the validation record and the
+(512 lists) at a time from the stream: one `savestream_text` request renders it
+as BYOND savefile text and one native `ImportText()` builds the scratch
+savefile. Nodes with no exact text form (text macros, inf/nan, value files,
+objects with child lines, odd node names) come back by path and are read with
+`savestream_get`. An older shim without `savestream_text` falls back to
+per-token decoding. Backups, rollback, the validation record and the
 completion marker treat the stream like a segment file.
 
 Formats 3 and 4 still load. Builds before format 5 refuse a format-5 save, so

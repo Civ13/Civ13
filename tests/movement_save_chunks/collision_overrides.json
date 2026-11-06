@@ -18,7 +18,7 @@
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "c7854ebd02107ee66ddeccd1db11e95cc8890484f9d0e48fd4aca2091aa56098",
+      "sha256_normalized": "5b3ea69d596d913d908e674f8ed9aa605ae5815f0e94bd5feb5a1fdbdf33934b",
       "declarations": [
         {
           "line": 81,
@@ -372,7 +372,7 @@
     },
     {
       "path": "code/modules/1713/modern_items.dm",
-      "sha256_normalized": "0bf43d750348470cb43efda9123a66f9f40ccd5c4c84da507cec8f16d4681037",
+      "sha256_normalized": "7f069441e006c0f2066cf0e62dbae9e32c91fa6ab51e13df3bffe97a958ddca9",
       "declarations": [
         {
           "line": 26,
@@ -396,7 +396,7 @@
     },
     {
       "path": "code/modules/1713/weapons/football.dm",
-      "sha256_normalized": "2bea57fb1767c39cd066869b32f402028582d4ea7aa3c45db415d8f9b1bc7b4e",
+      "sha256_normalized": "00ab71c03813db1dbcdce1f552669fdbd2bd71ed83939f53636e4abd4d920462",
       "declarations": [
         {
           "line": 615,

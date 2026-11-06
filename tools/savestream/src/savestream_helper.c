@@ -675,7 +675,8 @@ static int64_t find_path(const char *path) {
 
 static void emit_wire_string(buf_t *b, char t, const char *s, size_t n) { buf_fmt(b, "%c%llu:", t, (unsigned long long)n); buf_put(b, s, n); }
 
-static int emit_blob_text(buf_t *b, uint64_t id) {
+/* filedata("params",{"base64"}): BYOND savefile text for a stored blob. */
+static int blob_text(buf_t *t, uint64_t id) {
 	if (id >= rblob_count) return 0;
 	int64_t save = ftello(in_file);
 	fseeko(in_file, (int64_t)rblob_offs[id], SEEK_SET);
@@ -687,14 +688,20 @@ static int emit_blob_text(buf_t *b, uint64_t id) {
 	if (!rd_varint(in_file, &size)) { free(params); return 0; }
 	unsigned char *data = xmalloc((size_t)size);
 	if (fread(data, 1, (size_t)size, in_file) != size) { free(params); free(data); return 0; }
-	buf_t t = {0};
-	buf_str(&t, "filedata(\""); buf_put(&t, params, (size_t)plen); buf_str(&t, "\",{\"\n");
-	b64encode(data, (size_t)size, &t);
-	buf_str(&t, "\"})");
-	emit_wire_string(b, 'X', t.p, t.n);
-	free(t.p); free(params); free(data);
+	buf_str(t, "filedata(\""); buf_put(t, params, (size_t)plen); buf_str(t, "\",{\"\n");
+	b64encode(data, (size_t)size, t);
+	buf_str(t, "\"})");
+	free(params); free(data);
 	fseeko(in_file, save, SEEK_SET);
 	return 1;
+}
+
+static int emit_blob_text(buf_t *b, uint64_t id) {
+	buf_t t = {0};
+	int ok = blob_text(&t, id);
+	if (ok) emit_wire_string(b, 'X', t.p, t.n);
+	free(t.p);
+	return ok;
 }
 
 /* Write a stored one-node savefile next to the stream for the game to read
@@ -800,6 +807,181 @@ static uint64_t seek_path(const char *path) {
 	return (uint64_t)lo;
 }
 
+/* ---------- savefile text (OP_TEXT) ----------
+ *
+ * Renders a subtree as BYOND savefile text, relative to a base path, so the
+ * game builds its scratch savefile with one native ImportText() call instead
+ * of decoding every wire token in DM. Nodes whose value or name has no exact
+ * text form (text macros, control characters, inf/nan, value files, objects
+ * with child lines, odd node names) are left out of the text and listed for
+ * the game to fetch one by one with OP_GET; their children still appear.
+ *
+ * Reply: "<n>;" then n x "W<len>:<absolute path>", then the text. */
+
+/* 1 when written, 0 when the value has no exact text form, -1 when corrupt. */
+static int value_text(buf_t *b) {
+	int k = rd_byte(in_file);
+	uint64_t n;
+	switch (k) {
+	case 'n': buf_str(b, "null"); return 1;
+	case 'f': {
+		unsigned char c[4]; if (fread(c, 1, 4, in_file) != 4) return -1;
+		uint32_t u = c[0] | (uint32_t)c[1] << 8 | (uint32_t)c[2] << 16 | (uint32_t)c[3] << 24; float f; memcpy(&f, &u, 4);
+		if (isnan(f) || isinf(f)) return 0;
+		buf_fmt(b, "%.9g", (double)f);
+		return 1;
+	}
+	case 's': case 'p': case 'x': {
+		if (!rd_varint(in_file, &n)) return -1;
+		char *v = xmalloc((size_t)n + 1);
+		if (fread(v, 1, (size_t)n, in_file) != n) { free(v); return -1; }
+		int ok = 1;
+		if (k == 's') {
+			for (uint64_t i = 0; i < n && ok; i++) { unsigned char ch = (unsigned char)v[i]; if (ch == 0xff || (ch < 0x20 && ch != '\n' && ch != '\t')) ok = 0; }
+			if (ok) {
+				buf_byte(b, '"');
+				for (uint64_t i = 0; i < n; i++) {
+					char ch = v[i];
+					if (ch == '"' || ch == '\\' || ch == '[' || ch == ']') { buf_byte(b, '\\'); buf_byte(b, ch); }
+					else if (ch == '\n') buf_str(b, "\\n");
+					else buf_byte(b, ch);
+				}
+				buf_byte(b, '"');
+			}
+		} else if (k == 'p') {
+			ok = n > 0 && v[0] == '/';
+			for (uint64_t i = 0; i < n && ok; i++) { char ch = v[i]; if (!(ch == '/' || ch == '_' || (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))) ok = 0; }
+			if (ok) buf_put(b, v, (size_t)n);
+		} else {
+			/* Raw savefile text: only a one-line value fits a nested line. */
+			ok = n > 0 && !memchr(v, '\n', (size_t)n) && !memchr(v, '\r', (size_t)n);
+			if (ok) buf_put(b, v, (size_t)n);
+		}
+		free(v);
+		return ok;
+	}
+	case 'd': if (!rd_varint(in_file, &n)) return -1; return blob_text(b, n) ? 1 : -1;
+	case 'y': return 0;
+	case 'l': {
+		if (!rd_varint(in_file, &n)) return -1;
+		buf_str(b, "list(");
+		for (uint64_t i = 0; i < n; i++) {
+			if (i) buf_byte(b, ',');
+			int r = value_text(b);
+			if (r <= 0) return r;
+			int has = rd_byte(in_file);
+			if (has == 1) { buf_str(b, " = "); r = value_text(b); if (r <= 0) return r; }
+			else if (has != 0) return -1;
+		}
+		buf_byte(b, ')');
+		return 1;
+	}
+	}
+	return -1;
+}
+
+typedef struct {
+	buf_t text, missing;
+	uint64_t missing_count, nodes;
+	/* Directories open in the text, as components of the last emitted path. */
+	char *open; size_t comp_start[64], comp_len[64]; int depth;
+} textout_t;
+
+static int name_ok(const char *s, size_t n) {
+	if (!n) return 0;
+	for (size_t i = 0; i < n; i++) { char ch = s[i]; if (!(ch == '_' || (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))) return 0; }
+	return 1;
+}
+
+static void text_missing(textout_t *t, const char *path) { emit_wire_string(&t->missing, 'W', path, strlen(path)); t->missing_count++; }
+
+/* One node; rel is its path below the base ("" for the base itself). */
+static int text_node(textout_t *t, uint64_t i, const char *rel) {
+	const char *path = rpaths[i];
+	size_t start[64], len[64]; int n = 0;
+	if (*rel) {
+		const char *p = rel;
+		while (*p == '/') {
+			const char *s = p + 1, *e = strchr(s, '/');
+			size_t l = e ? (size_t)(e - s) : strlen(s);
+			if (n == 64 || !name_ok(s, l)) { text_missing(t, path); return 1; }
+			start[n] = (size_t)(s - rel); len[n] = l; n++;
+			p = s + l;
+		}
+		if (*p) { text_missing(t, path); return 1; }
+	}
+	/* Close directories the sorted order has left, open the ones above this node. */
+	int common = 0;
+	while (common < t->depth && common < n - 1 && t->comp_len[common] == len[common] && memcmp(t->open + t->comp_start[common], rel + start[common], len[common]) == 0) common++;
+	for (int d = common; d < n - 1; d++) {
+		for (int k = 0; k < d; k++) buf_byte(&t->text, '\t');
+		buf_put(&t->text, rel + start[d], len[d]); buf_byte(&t->text, '\n');
+	}
+	free(t->open);
+	t->open = xstrndup(rel, strlen(rel));
+	for (int d = 0; d < n; d++) { t->comp_start[d] = start[d]; t->comp_len[d] = len[d]; }
+	t->depth = n;
+	size_t mark = t->text.n;
+	for (int k = 0; k < n - 1; k++) buf_byte(&t->text, '\t');
+	if (n) buf_put(&t->text, rel + start[n - 1], len[n - 1]); else buf_byte(&t->text, '.');
+	size_t name_end = t->text.n;
+	buf_str(&t->text, " = ");
+	if (fseeko(in_file, (int64_t)roffs[i], SEEK_SET) != 0) return 0;
+	int r = value_text(&t->text);
+	if (r < 0) return 0;
+	if (r == 0) {
+		text_missing(t, path);
+		t->text.n = n ? name_end : mark; /* keep the directory line for its children */
+	}
+	if (t->text.n > mark) buf_byte(&t->text, '\n');
+	t->nodes++;
+	return 1;
+}
+
+/* Every node at prefix or below it. */
+static int text_subtree(textout_t *t, const char *base, const char *prefix) {
+	size_t blen = strlen(base), plen = strlen(prefix);
+	for (uint64_t i = seek_path(prefix); i < rcount; i++) {
+		const char *p = rpaths[i];
+		if (strncmp(p, prefix, plen) != 0 || (p[plen] && p[plen] != '/')) break;
+		if (!text_node(t, i, p + blen)) return 0;
+	}
+	return 1;
+}
+
+/* payload: "<base>" or "<base>\n<first>\n<last>" (numeric children of base). */
+static void text_value(const char *payload, buf_t *reply) {
+	char *base = xstrndup(payload, strlen(payload));
+	char *nl = strchr(base, '\n');
+	unsigned long long first = 0, last = 0;
+	int ranged = 0;
+	if (nl) {
+		*nl = 0;
+		if (sscanf(nl + 1, "%llu\n%llu", &first, &last) != 2 || first < 1 || last < first || last - first > 65535) { buf_str(reply, "ERR:usage base\\nfirst\\nlast"); free(base); return; }
+		ranged = 1;
+	}
+	size_t blen = strlen(base);
+	while (blen > 1 && base[blen - 1] == '/') base[--blen] = 0;
+	if (base[0] != '/') { buf_str(reply, "ERR:base must be absolute"); free(base); return; }
+	textout_t t; memset(&t, 0, sizeof t);
+	int ok = 1;
+	if (!ranged) ok = text_subtree(&t, blen == 1 ? "" : base, base);
+	else {
+		char *prefix = xmalloc(blen + 32);
+		for (unsigned long long id = first; ok && id <= last; id++) {
+			snprintf(prefix, blen + 32, "%s/%llu", blen == 1 ? "" : base, id);
+			ok = text_subtree(&t, blen == 1 ? "" : base, prefix);
+		}
+		free(prefix);
+	}
+	if (ok) {
+		buf_fmt(reply, "%llu;", (unsigned long long)t.missing_count);
+		buf_put(reply, t.missing.p, t.missing.n);
+		buf_put(reply, t.text.p, t.text.n);
+	} else buf_str(reply, "ERR:corrupt value");
+	free(t.text.p); free(t.missing.p); free(t.open); free(base);
+}
+
 /* Write mode: read back the last value written to path, from the partial
  * file. The game uses it for the few late appends to an entry whose segment
  * was already handed over (roster drain, animal sweep). */
@@ -884,6 +1066,11 @@ static int serve(int write_mode) {
 		case OP_SEEK:
 			if (write_mode) { reply_str("ERR:not reading"); break; }
 			buf_fmt(&reply, "%llu", (unsigned long long)seek_path(payload.p));
+			reply_buf(reply.p, reply.n);
+			break;
+		case OP_TEXT:
+			if (write_mode) { reply_str("ERR:not reading"); break; }
+			text_value(payload.p, &reply);
 			reply_buf(reply.p, reply.n);
 			break;
 		case OP_DIR:

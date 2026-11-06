@@ -10,8 +10,9 @@
 //
 // It reuses the format-4 seams: the save writes each segment into a scratch
 // savefile and hands it to the helper when the segment closes, and the
-// reader materialises one entry shard (512 entries) or list block on demand
-// behind level_entry_file()/level_list_file(). Without the shim and helper
+// reader materialises one entry shard (512 entries) or list block (512 lists)
+// on demand behind level_entry_file()/level_list_file(), each with a single
+// helper request rendered as savefile text and one native ImportText(). Without the shim and helper
 // (no call_ext, or the files are missing) saves stay on /savefile levels.
 
 /map_storage
@@ -159,8 +160,9 @@
 	part_prefix = "\n" // No segment files: scratch files are matched by name.
 	generation = F["/generation"]
 	if(isnum(cache_limit) && cache_limit >= 1) limit = cache_limit
-	// Entry shards and list blocks share the cache; both are small.
-	limit = max(4, limit * 2)
+	// Entry shards and list blocks share the cache; both are small (a few
+	// hundred KB of savefile tree each), and a refill re-reads a whole block.
+	limit = max(8, limit * 4)
 	var/path = level_stream_path(base_path)
 	if(F["/stream/file"] != level_stream_name(base_path)) throw EXCEPTION("Stream level index does not name [path]")
 	if(!fexists(path)) throw EXCEPTION("Missing level stream [path]")
@@ -214,13 +216,21 @@
 	var/key = "e[shard]"
 	if(open_files[key]) return scratch(key)
 	var/savefile/S = scratch(key)
-	fill(S, "/entries/[shard]", 256)
+	if(isnull(stream.import_text(S, "/entries/[shard]")))
+		fill(S, "/entries/[shard]", 256)
 	return S
 
 /datum/level_segment_reader/stream/list_file(id)
 	if(!isnum(id)) id = text2num("[id]")
 	if(!isnum(id) || id < 1 || id != round(id)) throw EXCEPTION("Invalid saved list [id]")
-	var/key = "l[round((id - 1) / 512)]"
+	var/block = round((id - 1) / 512)
+	var/key = "l[block]"
+	if(stream && stream.text_supported)
+		if(open_files[key]) return scratch(key)
+		var/savefile/B = scratch(key)
+		// The whole block in one request: lists of one block are read together.
+		if(!isnull(stream.import_text(B, "/lists", block * 512 + 1, block * 512 + 512))) return B
+		// The helper predates text requests: fill this list on its own below.
 	var/savefile/S = scratch(key)
 	var/filled_key = "[id]"
 	if(list_filled[filled_key] != "[S.name]")
