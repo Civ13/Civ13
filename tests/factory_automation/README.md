@@ -78,9 +78,11 @@ Removing the station's `NOREACT` flag makes the inert-tank check fail.
 - Water intake: beside open water it supplies the same mix a person filling a container there gets; away from water it supplies nothing.
 - Refinery: draws petroleum from an oil well's barrel through pipes; a full refinery's output barrel feeds a gasoline-filtered tank while petroleum stays in the well.
 - Saving: a pipe's network is runtime-only; valve, pump switch and tank filter are saved and pump power is not; reloaded pumps and pipes rebuild the networks; holding tanks are inert.
-- Catalog: research gates, the five global recipes and the reused sprites.
+- Plumbing: a new water tap and piped shower start dry and a dry shower will not turn on; a tap holds what the pipes bring it, sickness included; a piped shower takes only water; nothing is made along the way; filling a container empties the tap by as much; a running piped shower uses its water and turns itself off when it runs out; taps are inert.
+- Habitat machines: an electrolyser takes only the room it has from a water recycler through pipes, at the pump's rate; both pipe only water; the recycler saves its water but not its pipe holder.
+- Catalog: research gates (including the tap and piped shower), the five global recipes and the reused sprites.
 
-Letting a network move reagents without a powered pump makes four checks fail.
+Letting a network move reagents without a powered pump makes four checks fail. Dropping the recycler's settling of what the network took makes both habitat transfer checks fail.
 
 `vessel_probe.dm` (chemistry phase 2) calls the network and vessel steps directly and checks:
 
