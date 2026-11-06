@@ -452,11 +452,15 @@ static void track(const char *path, const value_t *v) {
 	int n = path_parts(path, parts, lens, 5);
 	if (n == 4 && part_is(parts[0], lens[0], "entries") && part_is(parts[3], lens[3], "type")) bit_set(&entries_defined, strtoull(parts[2], NULL, 10));
 	else if (n == 3 && part_is(parts[0], lens[0], "lists") && part_is(parts[2], lens[2], "length")) bit_set(&lists_defined, strtoull(parts[1], NULL, 10));
+	/* Value format 2: an all-scalar list is the single node /lists/<id>. */
+	else if (n == 2 && part_is(parts[0], lens[0], "lists")) bit_set(&lists_defined, strtoull(parts[1], NULL, 10));
 	else if (n == 4 && part_is(parts[0], lens[0], "map")) { map_cells++; if (v->kind == 'f' && v->f > 0) vec_push(&entry_refs, (uint64_t)v->f); }
 	scan_refs(v);
 }
 
 /* ---------- write mode ---------- */
+
+static void close_write_reader(void);
 
 static void add_node(const char *path, size_t plen, uint64_t off) {
 	if (node_count == node_cap) { node_cap = node_cap ? node_cap * 2 : 4096; nodes = xrealloc(nodes, node_cap * sizeof *nodes); }
@@ -603,6 +607,7 @@ static void finish_write(int force, buf_t *reply) {
 	for (size_t i = 0; i < blob_count; i++) buf_u64(&b, blobs[i].offset);
 	buf_u64(&b, index_off); buf_u64(&b, node_count); buf_put(&b, SAVESTREAM_INDEX_MAGIC, 8);
 	out_write(b.p, b.n); free(b.p);
+	close_write_reader();
 	int valid = missing_entries == 0 && missing_lists == 0 && write_errors == 0;
 	int io_ok = fflush(out_file) == 0 && write_errors == 0;
 	io_ok = (fclose(out_file) == 0) && io_ok;
@@ -788,6 +793,34 @@ static void dir_value(const char *path, buf_t *reply) {
 	free(seen); free(names.p); free(prefix);
 }
 
+/* Index position of the first node at or after path (read mode). */
+static uint64_t seek_path(const char *path) {
+	int64_t lo = 0, hi = (int64_t)rcount;
+	while (lo < hi) { int64_t mid = (lo + hi) / 2; if (strcmp(rpaths[mid], path) < 0) lo = mid + 1; else hi = mid; }
+	return (uint64_t)lo;
+}
+
+/* Write mode: read back the last value written to path, from the partial
+ * file. The game uses it for the few late appends to an entry whose segment
+ * was already handed over (roster drain, animal sweep). */
+static FILE *write_reader;
+static void close_write_reader(void) { if (write_reader) { fclose(write_reader); write_reader = NULL; } }
+static int write_get(const char *path, buf_t *reply) {
+	size_t i = node_count;
+	while (i-- > 0) if (strcmp(nodes[i].path, path) == 0) break;
+	if (i == (size_t)-1) { buf_byte(reply, '?'); return 1; }
+	if (fflush(out_file) != 0) return 0;
+	if (!write_reader && !(write_reader = fopen(tmp_path, "rb"))) return 0;
+	rblob_offs = xrealloc(rblob_offs, (blob_count + 1) * sizeof *rblob_offs);
+	for (size_t j = 0; j < blob_count; j++) rblob_offs[j] = blobs[j].offset;
+	rblob_count = blob_count;
+	FILE *saved = in_file;
+	in_file = write_reader; in_path = out_path;
+	int ok = fseeko(in_file, (int64_t)nodes[i].off, SEEK_SET) == 0 && emit_value_wire(reply);
+	in_file = saved;
+	return ok;
+}
+
 /* ---------- pipe loop ---------- */
 
 static int read_exact(void *d, size_t n) { return fread(d, 1, n, stdin) == n; }
@@ -820,12 +853,13 @@ static int serve(int write_mode) {
 			reply_buf(reply.p, reply.n);
 			break;
 		case OP_ABORT:
+			close_write_reader();
 			if (out_file) { fclose(out_file); out_file = NULL; remove(tmp_path); }
 			reply_str("OK");
 			break;
 		case OP_GET:
-			if (write_mode) { reply_str("ERR:not reading"); break; }
-			if (!get_value(payload.p, &reply)) { reply.n = 0; buf_str(&reply, "ERR:corrupt value"); }
+			if (write_mode && !out_file) { reply_str("ERR:not writing"); break; }
+			if (!(write_mode ? write_get(payload.p, &reply) : get_value(payload.p, &reply))) { reply.n = 0; buf_str(&reply, "ERR:corrupt value"); }
 			reply_buf(reply.p, reply.n);
 			break;
 		case OP_ITER: {
@@ -847,6 +881,11 @@ static int serve(int write_mode) {
 			reply_buf(reply.p, reply.n);
 			break;
 		}
+		case OP_SEEK:
+			if (write_mode) { reply_str("ERR:not reading"); break; }
+			buf_fmt(&reply, "%llu", (unsigned long long)seek_path(payload.p));
+			reply_buf(reply.p, reply.n);
+			break;
 		case OP_DIR:
 			if (write_mode) { reply_str("ERR:not reading"); break; }
 			dir_value(payload.p, &reply);
@@ -866,6 +905,7 @@ static int serve(int write_mode) {
 		}
 	}
 done:
+	close_write_reader();
 	if (out_file) { fclose(out_file); out_file = NULL; remove(tmp_path); }
 	free(payload.p); free(reply.p);
 	return 0;

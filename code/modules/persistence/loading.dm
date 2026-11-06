@@ -49,7 +49,7 @@
 		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing saved roof level [z]")
 		var/savefile/F = new("map_saves/[z].sav")
 		var/version = F["/format_version"]
-		if(version == 4) version = level_content_version(F)
+		if(version == 4 || version == 5) version = level_content_version(F)
 		if(version != 2 && version != 3) continue
 		if((generation && F["/generation"] != generation) || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz())
 			throw EXCEPTION("Saved roof generation or dimensions differ")
@@ -826,12 +826,12 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 						validate_saved_irrigation(turf_file, version)
 					TICK_CHECK
 			var/list/entries
-			if(F["/format_version"] == 4)
+			if(F["/format_version"] == 4 || F["/format_version"] == 5)
 				entries = level_segment_entries(F)
 			else
 				F.cd = "/entries"
 				entries = F.dir.Copy()
-			if(F["/format_version"] != 4 && (version == 2 || version == 3))
+			if(F["/format_version"] != 4 && F["/format_version"] != 5 && (version == 2 || version == 3))
 				var/list/shards = entries
 				entries = list()
 				for(var/shard in shards)
@@ -923,10 +923,10 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				catch(var/exception/record_error)
 					world.log << "Validation record failed after the full preflight: [record_error]"
 #endif
-		segment_reader = null // Preflight keeps no segment handles open.
+		drop_segment_reader() // Preflight keeps no segment handles open.
 		return TRUE
 	catch(var/exception/e)
-		segment_reader = null
+		drop_segment_reader()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 			persistence_active_operation.human_direct_preflight_generation = null
@@ -1000,7 +1000,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	var/key = "\ref[F]|[F.name]"
 	if(key != entry_path_key)
 		var/format_version = F["/format_version"]
-		if(!(format_version == 2 || format_version == 3 || format_version == 4))
+		if(!(format_version == 2 || format_version == 3 || format_version == 4 || format_version == 5))
 			// Legacy flat files are only read during upgrades; never cache them.
 			return "/entries/[ref]"
 		entry_path_key = key
@@ -1209,12 +1209,13 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	if(copytext(index_path, max(1, length(index_path) - 3)) != ".sav") throw EXCEPTION("Segmented level index has no .sav name")
 	return "[copytext(index_path, 1, length(index_path) - 3)].part[number].sav"
 
-// Segment files of one level, by file name in the given directory.
+// Segment files of one level, by file name in the given directory, including
+// a stream-backed level's stream file (level_stream.dm).
 /proc/level_segment_files(directory, z)
 	var/list/found = list()
 	var/prefix = "[z].part"
 	for(var/name in flist(directory))
-		if(findtext(name, prefix) == 1 && copytext(name, max(1, length(name) - 3)) == ".sav") found += name
+		if(name == "[z].stream.sav" || (findtext(name, prefix) == 1 && copytext(name, max(1, length(name) - 3)) == ".sav")) found += name
 	return found
 
 /proc/delete_level_segment_files(directory, z)
@@ -1292,6 +1293,8 @@ var/global/persistence_memory_probe_error
 		var/total = 0
 		if(fexists("[directory][z].sav")) total += length(file("[directory][z].sav"))
 		for(var/name in level_segment_files(directory, z))
+			// A level stream is never materialised as a savefile tree.
+			if(name == "[z].stream.sav") continue
 			total += length(file("[directory][name]"))
 		largest = max(largest, total)
 	return largest
@@ -1305,8 +1308,8 @@ var/global/persistence_memory_probe_error
 	low_memory_operation = operation
 	low_memory_active = FALSE
 	// A failed operation can leave its segment handles behind; drop them here.
-	saving_segments = null
-	segment_reader = null
+	drop_segment_writer()
+	drop_segment_reader()
 	if(!isnull(low_memory_override))
 		low_memory_active = !!low_memory_override
 		last_low_memory_plan = "[kind]: [low_memory_active ? "low-memory" : "full-file"] (override)"
@@ -1566,7 +1569,7 @@ var/global/persistence_memory_probe_error
 // content. Validates the segment table before reporting it.
 /map_storage/proc/level_content_version(savefile/F)
 	var/version = F["/format_version"]
-	if(version != 4) return version
+	if(version != 4 && version != 5) return version
 	level_segments(F)
 	return 3
 
@@ -1574,22 +1577,47 @@ var/global/persistence_memory_probe_error
 	// A segment file passed down a reader's recursion routes through the
 	// reader of its own index. Never probe absent keys of ordinary levels.
 	if(segment_reader && findtext("[F.name]", segment_reader.part_prefix) == 1) return segment_reader
-	if(F["/format_version"] != 4) return null
+	// Stream levels hand out scratch files; reading an absent key would add it,
+	// so they are recognised by name, never by probing.
+	if(segment_reader && segment_reader.owns_file(F)) return segment_reader
+	var/version = F["/format_version"]
+	if(version != 4 && version != 5) return null
 	if(!segment_reader || segment_reader.index != F)
-		segment_reader = null
-		segment_reader = new /datum/level_segment_reader(F, segment_cache_limit())
+		drop_segment_reader()
+		segment_reader = version == 5 ? new_stream_level_reader(F, segment_cache_limit()) : new /datum/level_segment_reader(F, segment_cache_limit())
 	return segment_reader
+
+// Format 5 (stream-backed levels) lives in stream/level_stream.dm, which
+// overrides these. Fixtures that compile the loader alone keep /savefile levels.
+/map_storage/proc/stream_level_writer_type()
+	return null
+
+/map_storage/proc/new_stream_level_reader(savefile/F, cache_limit)
+	throw EXCEPTION("Stream-backed levels need the stream save module")
+
+/map_storage/proc/stream_level_entries(datum/level_segment_reader/R)
+	throw EXCEPTION("Stream-backed levels need the stream save module")
+
+/map_storage/proc/drop_segment_reader()
+	var/datum/level_segment_reader/R = segment_reader
+	segment_reader = null
+	if(R) R.close()
+
+/map_storage/proc/drop_segment_writer()
+	var/datum/level_segment_writer/W = saving_segments
+	saving_segments = null
+	if(W) W.abort()
 
 // The file that holds an entry's fields: the level file itself, the segment
 // being written, or the segment the index assigns to that entry.
 /map_storage/proc/level_entry_file(savefile/F, ref)
 	if(saving_segments && saving_segments.owns(F)) return saving_segments.file_for_entry(ref)
 	var/datum/level_segment_reader/R = level_segments(F)
-	return R ? R.file_for(R.entry_last, ref, "entry") : F
+	return R ? R.entry_file(ref) : F
 
 /map_storage/proc/level_list_file(savefile/F, id)
 	var/datum/level_segment_reader/R = level_segments(F)
-	return R ? R.file_for(R.list_last, id, "list") : F
+	return R ? R.list_file(id) : F
 
 /map_storage/proc/level_entry_value(savefile/F, ref, field)
 	var/savefile/E = level_entry_file(F, ref)
@@ -1599,6 +1627,7 @@ var/global/persistence_memory_probe_error
 // ID range names, or readers would not find it.
 /map_storage/proc/level_segment_entries(savefile/F)
 	var/datum/level_segment_reader/R = level_segments(F)
+	if(F["/format_version"] == 5) return stream_level_entries(R)
 	var/list/entries = list()
 	var/first = 1
 	for(var/number = 1, number <= R.count, number++)
@@ -1644,6 +1673,19 @@ var/global/persistence_memory_probe_error
 	if(!islist(entry_last) || !islist(list_last) || entry_last.len != count || list_last.len != count) throw EXCEPTION("Invalid level segment table")
 	check_bounds(entry_last)
 	check_bounds(list_last)
+
+/datum/level_segment_reader/proc/entry_file(ref)
+	return file_for(entry_last, ref, "entry")
+
+/datum/level_segment_reader/proc/list_file(id)
+	return file_for(list_last, id, "list")
+
+// Scratch files a reader hands out that are not named after its segments.
+/datum/level_segment_reader/proc/owns_file(savefile/F)
+	return FALSE
+
+/datum/level_segment_reader/proc/close()
+	return
 
 /datum/level_segment_reader/proc/check_bounds(list/bounds)
 	var/previous = 0
@@ -1704,6 +1746,10 @@ var/global/persistence_memory_probe_error
 	generation = generation_id
 	budget = segment_budget
 	open_next()
+
+// A failed save drops its writer; stream writers stop their helper here.
+/datum/level_segment_writer/proc/abort()
+	return
 
 /datum/level_segment_writer/proc/owns(savefile/F)
 	return F && (F == current || F == index || F == late_file)

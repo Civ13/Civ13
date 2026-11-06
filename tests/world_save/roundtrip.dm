@@ -92,6 +92,10 @@ var/global/roundtrip_capture_failure = FALSE
 		if(world.params["low_memory"])
 			map_storage.low_memory_override = TRUE
 			map_storage.segment_size_override = text2num(world.params["segment"]) || 2
+		// Stream-backed levels (format 5): stream_roundtrip.dme adds the module.
+		if(world.params["stream"])
+			check("stream_level_saves_override" in map_storage.vars, "stream fixture compiled without the stream module")
+			map_storage.vars["stream_level_saves_override"] = TRUE
 		map = new /obj/map_metadata(locate(1,1,1))
 		var/turf/edge = new /turf/test/edge(locate(world.maxx,world.maxy,2))
 		edge.name = "far corner"
@@ -145,7 +149,7 @@ var/global/roundtrip_capture_failure = FALSE
 				mob_list += wanderer
 		// Text macros do not survive a savefile's text export; the split
 		// copies such a node again by value.
-		if(world.params["split"])
+		if(world.params["split"] || world.params["stream"])
 			var/obj/item/test/macro = new(locate(6,1,1))
 			macro.name = "\improper split turkey"
 			macro.number = 66
@@ -221,6 +225,9 @@ var/global/roundtrip_capture_failure = FALSE
 			world.log << "PASS: low-memory load of a full-file world save"
 			text2file("PASS", "result.txt")
 			del(world)
+			return
+		if(world.params["stream"])
+			check_stream_levels(A)
 			return
 		if(world.params["low_memory"])
 			D = locate(/obj/item/test) in locate(5,1,1)
@@ -516,3 +523,72 @@ var/global/roundtrip_capture_failure = FALSE
 		check(rejected, "roundtrip topology state was accepted")
 	qdel(probe)
 #endif
+
+// Format 5: the index names one stream per level, every entry and list comes
+// back through the helper, late sweep appends land in an earlier segment, and
+// a failed save stops its helper and keeps the completed backup.
+/proc/check_stream_levels(obj/item/test/A)
+	var/obj/item/test/D = locate(/obj/item/test) in locate(5,1,1)
+	check(D && D.number == 55 && D.reference == A.reference && D.alias == A.complex, "stream entry or list identity lost")
+	var/mob/living/simple_animal/swept = locate(/mob/living/simple_animal) in locate(1,1,1)
+	check(swept && swept.name == "segment wanderer" && !(locate(/mob/living/simple_animal) in locate(world.maxx,1,1)), "late sweep append through the stream lost")
+	var/obj/item/test/macro_copy = locate(/obj/item/test) in locate(6,1,1)
+	check(macro_copy && macro_copy.number == 66 && macro_copy.name == "\improper split turkey", "stream changed a text-macro name")
+	check(!map_storage.saving_segments && !map_storage.segment_reader, "stream handles retained after load")
+	for(var/z = 1, z <= 2, z++)
+		var/savefile/index = new("map_saves/[z].sav")
+		check(index["/format_version"] == 5 && index["/stream/file"] == "[z].stream.sav" && fexists("map_saves/[z].stream.sav"), "level [z] was not saved as a stream")
+		check(!fexists("map_saves/[z].part1.sav") && !fexists("map_saves/[z].stream.sav.tmp"), "stream level [z] left segment or temporary files")
+		index.cd = "/"
+		check(!("entries" in index.dir) && !("lists" in index.dir), "stream index [z] holds entries or lists")
+		index = null
+	check(map_storage.Save_World(), "second stream export failed")
+	check(fexists("map_backups/1.stream.sav") && fexists("map_backups/save_complete.txt"), "stream backup incomplete")
+	check(map_storage.validate_world_save(), "second stream export rejected")
+	check(!map_storage.saving_segments && !map_storage.segment_reader, "stream handles retained after save")
+	// The backup generation reads its own stream copy.
+	var/savefile/backup = new("map_backups/1.sav")
+	check(ispath(map_storage.level_entry_value(backup, backup["/map/1/1/1"], "type"), /turf), "backup stream unreadable")
+	backup = null
+	map_storage.drop_segment_reader()
+	// An entry shard evicted by later list blocks may still be held by an
+	// entry frame; the reader must keep recognising it.
+	// This file is shared with builds that do not compile the stream module.
+	var/savefile/index_file = new("map_saves/1.sav")
+	var/stream_reader_type = text2path("/datum/level_segment_reader/stream")
+	var/datum/R = new stream_reader_type(index_file, 1)
+	var/savefile/shard = call(R, "entry_file")(1)
+	for(var/block = 0, block < 5, block++)
+		call(R, "list_file")(block * 512 + 1)
+	var/list/reader_files = R.vars["open_files"]
+	check(!reader_files["e0"] && call(R, "owns_file")(shard), "evicted stream shard lost its reader routing")
+	call(R, "close")()
+	check(!call(R, "owns_file")(shard), "closed stream reader still claims its scratch files")
+	R = null
+	shard = null
+	index_file = null
+	roundtrip_capture_failure = TRUE
+	var/datum/controller/gameticker/failed_stream = new
+	check(!failed_stream.savemap(), "stream capture failure accepted")
+	check(!fexists("map_saves/save_complete.txt") && fexists("map_backups/save_complete.txt") && fexists("map_backups/1.stream.sav"), "failed stream export lost its completed backup")
+	check(!map_storage.saving_segments && !map_storage.segment_reader && !persistence_save_in_progress, "failed stream export retained handles or lock")
+	check(!fexists("map_saves/1.stream.sav.tmp") && !fexists("map_saves/2.stream.sav.tmp"), "failed stream export left its temporary file")
+	roundtrip_capture_failure = FALSE
+	errors.Cut() // The injected capture failure is reported to admins.
+	check(map_storage.Save_World() && map_storage.validate_world_save(), "stream recovery export failed")
+	map_storage.ClearMap()
+	check(map_storage.Load_World(), "stream reload failed")
+	A = locate(/obj/item/test) in locate(1,1,1)
+	check(A && A.number == 17 && A.reference && A.reference.backlink == A && A.alias == A.complex, "stream reload lost objects or identity")
+	// Without the helper the save falls back to /savefile levels and drops the stream.
+	map_storage.vars["stream_level_saves_override"] = FALSE
+	check(map_storage.Save_World() && map_storage.validate_world_save(), "savefile export after stream export failed")
+	var/savefile/fallback = new("map_saves/1.sav")
+	check(fallback["/format_version"] == 4 && !fexists("map_saves/1.stream.sav") && !fexists("map_saves/2.stream.sav"), "savefile fallback kept a stale stream")
+	fallback = null
+	map_storage.ClearMap()
+	check(map_storage.Load_World(), "savefile reload after stream generation failed")
+	check(!errors.len, "unexpected errors with stream levels: [jointext(errors, " | ")]")
+	world.log << "PASS: stream-backed world save"
+	text2file("PASS", "result.txt")
+	del(world)

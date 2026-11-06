@@ -344,7 +344,7 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		F.cd = "/"
 		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz", "zone_capture", "map"))
 			if(!(key in F.dir)) throw EXCEPTION("Missing zone capture header")
-		if(!(F["/format_version"] in list(2, 3, 4)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
+		if(!(F["/format_version"] in list(2, 3, 4, 5)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
 		// savefile.dir builds a new list on every read, and indexing a whole level's
 		// directory is itself quadratic. Read each turf's entries by absolute path
 		// instead; a missing value reads as null. The entry count plus the per-turf

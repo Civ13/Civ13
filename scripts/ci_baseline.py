@@ -186,7 +186,7 @@ SUITES = {
     # host C compiler and drives its pipe protocol; no BYOND runtime.
     'savestream': {'files': ('tests/savestream/test_helper.py',),
         'paths': ('tests/savestream/', 'tools/savestream/'), 'shared_paths': (
-            'code/modules/persistence/stream/save_stream.dm',)},
+            'code/modules/persistence/stream/save_stream.dm', 'savestream.dll', 'savestream_helper.exe')},
     # Agent control client/MCP/catalog and DM source contracts; loopback fake
     # Topic server only, no BYOND runtime.
     'agent_control': {'files': ('tests/agent_control/test_agent_control.py',),
