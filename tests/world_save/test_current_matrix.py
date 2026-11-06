@@ -444,6 +444,13 @@ class CurrentMatrix(unittest.TestCase):
                     ("# Includes the export operation-release assertion before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:", "# Includes export operation-release and offline startup checks before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:"),
                     ("result.get('line') != 394", "result.get('line') != receipt['wound_control_line']"),
                     ("'Historical wound source did not reproduce the constructor failure: '", "'Reverted wound fix did not reproduce the constructor failure: '"),
+                    # A host without IPv6 has no tcp6 table.
+                    ("                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:",
+                     "                # A host without IPv6 has no tcp6 table, so it holds no listeners.\n"
+                     "                path = Path(f'/proc/{child.pid}/net/{table}')\n"
+                     "                if table == 'tcp6' and not path.exists():\n"
+                     "                    continue\n"
+                     "                for row in path.read_text().splitlines()[1:]:"),
                 )
                 for before, after in changes:
                     self.assertEqual(tail.count(before), 1, before)

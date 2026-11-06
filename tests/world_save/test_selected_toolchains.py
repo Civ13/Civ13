@@ -58,6 +58,16 @@ REVIEWED_DURABLE_TAIL = (
     ("'Historical wound source did not reproduce the constructor failure: '",
      "'Reverted wound fix did not reproduce the constructor failure: '"),
 )
+# Reviewed listener census change: a host without IPv6 has no tcp6 table.
+REVIEWED_LIGHTING_CENSUS = (
+    "            for table in ('tcp', 'tcp6'):\n"
+    "                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:",
+    "            for table in ('tcp', 'tcp6'):\n"
+    "                # A host without IPv6 has no tcp6 table, so it holds no listeners.\n"
+    "                path = Path(f'/proc/{child.pid}/net/{table}')\n"
+    "                if table == 'tcp6' and not path.exists():\n"
+    "                    continue\n"
+    "                for row in path.read_text().splitlines()[1:]:")
 # Verbatim reviewed #3105 helper; no other branch Git objects are needed in CI.
 REVIEWED_HELPER_SHA256 = 'a89a5191b43b304d7a1e6d6ea74b17a0c1630ed05b25ff09650b5f775268aab2'
 STEPS = ('Offline lighting recovery regression',
@@ -343,10 +353,15 @@ class SelectedToolchains(unittest.TestCase):
             'tests/world_save/run-cross-level.py': ('owned_process', 'adjudicate', 'prepare'),
             'tests/world_save/partial_save_inspector/inspect-partial-save.py': ('limits', 'selftest', 'stable_copy', 'sanitize_report')
         }.items():
-            for name in names: self.assertEqual(function(self.before[path], name), function((ROOT/path).read_text(), name))
+            for name in names:
+                before = self.before[path]
+                if name == 'run_lighting':
+                    self.assertEqual(before.count(REVIEWED_LIGHTING_CENSUS[0]), 1)
+                    before = before.replace(*REVIEWED_LIGHTING_CENSUS)
+                self.assertEqual(function(before, name), function((ROOT/path).read_text(), name))
         marker = "        result_path = output / 'metadata-result.json'"
         tail = self.before['tests/world_save/run-durable-world.py'].split(marker, 1)[1]
-        for old, new in REVIEWED_DURABLE_TAIL:
+        for old, new in REVIEWED_DURABLE_TAIL + (REVIEWED_LIGHTING_CENSUS,):
             self.assertEqual(tail.count(old), 1, old)
             tail = tail.replace(old, new, 1)
         self.assertEqual(tail, (HERE/'run-durable-world.py').read_text().split(marker, 1)[1])

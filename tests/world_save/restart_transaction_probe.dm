@@ -24,6 +24,12 @@ var/activate_during_reboot_yield = FALSE
 var/datum/fixture_restart_scheduler/processScheduler = new
 /datum/fixture_restart_scheduler/proc/stop()
 	ordinary_calls++
+// Unsharded world: the reboot notice keeps the plain address.
+var/datum/shard_group/shard_group = new
+/datum/shard_group/proc/relay_on()
+	return FALSE
+/datum/shard_group/proc/gate_address()
+	return ""
 /proc/restart_sleep_adapter(delay)
 	if(activate_during_reboot_yield)
 		spawn(0)

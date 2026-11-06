@@ -110,7 +110,8 @@
 /map_storage/proc/local_character_bodies(account)
 	var/list/bodies = list()
 	for(var/mob/living/human/H in world)
-		if(H.persistence_owner_ckey == account) bodies |= H
+		// A body queued for deletion (cleared before a load) is not a second character.
+		if(H.persistence_owner_ckey == account && !H.gc_destroyed && !H.gcDestroyed) bodies |= H
 	return bodies
 
 /map_storage/proc/character_recovery_unready()
