@@ -120,6 +120,13 @@
 	decay = 18*600
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/New()
 	..()
+	// A restored berry keeps the reagents and taste it was picked with. The
+	// map's berry configuration is only restored after the world's objects, so
+	// applying it here would give restored berries the fresh boot roll.
+	if (!restoring)
+		apply_berry_effect()
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/proc/apply_berry_effect()
 	for (var/list/i in map.berryeffects)
 		if (i[1] == randeffect)
 			switch (i[2])
@@ -193,7 +200,16 @@
 /proc/berry_discovery_context()
 	if (!map || !islist(map.berryeffects))
 		return null
-	return md5(json_encode(list("berry-smell-v1", "[map.type]", map.berryeffects)))
+	// A world load rebuilds the rows through the metadata graph, which leaves
+	// each entry with a null association, so json_encode would write objects
+	// keyed "/list" and lose the rows. Hash plain copies instead.
+	var/list/rows = list()
+	for (var/list/row in map.berryeffects)
+		var/list/plain = list()
+		for (var/value in row)
+			plain += list(value)
+		rows += list(plain)
+	return md5(json_encode(list("berry-smell-v1", "[map.type]", rows)))
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/berries/record_smell_discovery(mob/user, observation)
 	if (!istype(user, /mob/living) || user.stat != CONSCIOUS || !user.mind || user.mind.current != user)
