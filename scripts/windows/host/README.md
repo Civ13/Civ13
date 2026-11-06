@@ -17,6 +17,7 @@ and [region groups](../../shard-group/README.md). They only call
 | `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. |
 | `freeze.bat`, `thaw.bat [REGION]` | Put an empty, saved region to sleep now, or wake it. The host service does this on its own. |
 | `setup.bat [REGION]` | Create or refresh each region's worktree and config. Safe to run again. With a region, adds or refreshes only that one while the others keep running. |
+| `enrol.bat REGION` | Enrol a set-up region with the transfer agents and coordinator while they run. `setup.bat REGION` already does this; use it for a region added before it did. Safe to repeat. |
 | `serve.bat` | Run the host service in this window, for testing. |
 | `install-host-task.bat` | Register the host service as the `Civ13 Host` logon task and start it. Needs an administrator terminal. |
 | `make-gaia-overlay.bat` | Copy live Gaia's local-only files (config with the webhook key, host.txt, Kestrel DLL and settings) into its overlay folder. |
@@ -81,8 +82,9 @@ played on the region since step 7 is only in the region's save
 
 Adding regions later: add them to `earth.json` (with `transfer_port` on every
 region for travel), run `setup.bat REGION` and `update.bat REGION`, then
-`start.bat REGION` and `restart-host.bat`. Nothing else stops: the running
-worlds get the new peer in their config and use it from their next restart.
+`start.bat REGION` and `restart-host.bat`. Nothing else stops: setup enrols the
+new region with the running transfer agents and coordinator at once, and the
+running worlds get the new peer in their config and use it from their next restart.
 The host service picks them up when restarted with `restart-host.bat`.
 
 ## Deploying a new master
