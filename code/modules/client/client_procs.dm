@@ -128,6 +128,9 @@
 /client/New(TopicData)
 
 	dir = NORTH
+	// A launcher join link carries a one-use Discord sign-in ticket; keep it
+	// before the topic is dropped (code/modules/accounts/discord_accounts.dm).
+	account_ticket = account_ticket_from_topic(TopicData)
 	TopicData = null							//Prevent calls to client.Topic from connect
 
 	if (!(connection in list("seeker", "web")))					//Invalid connection type.
@@ -173,6 +176,9 @@
 	if (quickBan_rejected("Server"))
 		del(src)
 		return FALSE
+
+	if (account_ticket)
+		account_signin.redeem(src) // returns at once; see set waitfor there
 
 	if (byond_version < REAL_MIN_CLIENT_VERSION)		//Out of date client.
 		to_chat(src, "<span class = 'danger'><font size = 4>Please upgrade to BYOND [REAL_MIN_CLIENT_VERSION] to play.</font></span>")

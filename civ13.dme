@@ -1034,6 +1034,7 @@
 #include "code\modules\1713\weapons\guns\mg\smg.dm"
 #include "code\modules\1713\weapons\guns\mg\special.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\mg.dm"
+#include "code\modules\accounts\discord_accounts.dm"
 #include "code\modules\admin\admin.dm"
 #include "code\modules\admin\admin_2_player_memo.dm"
 #include "code\modules\admin\admin_attack_log.dm"

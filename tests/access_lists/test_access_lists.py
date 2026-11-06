@@ -10,15 +10,22 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location("access_source_adapter", ROOT / "tests/save_movement/source_adapter.py")
 adapter = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(adapter)
-adapter.FIELDS += ("approved_list", "approved_list_ready", "whitelist_list", "whitelist_list_ready")
+adapter.FIELDS += ("approved_list", "approved_list_ready", "whitelist_list", "whitelist_list_ready", "approved_discord_ids")
 SOURCE = (ROOT / "code/_helpers/access_lists.dm").read_text(encoding='utf-8-sig')
 # Lexical DM raw regex literals map to Python raw literals; no statements omitted.
 PROJECTED_SOURCE = SOURCE.replace('regex(@"', 'regex(r"').replace('\tcatch\n', '\tcatch(projected_read_error)\n')
 
 class DMList(list):
+    """DM list: 1-based indexes, plus associated values for text keys."""
     @property
     def len(self): return len(self)
-    def __getitem__(self, index): return super().__getitem__(index - 1)
+    def __getitem__(self, index):
+        if isinstance(index, str): return self.__dict__.setdefault('assoc', {}).get(index)
+        return super().__getitem__(index - 1)
+    def __setitem__(self, index, value):
+        if not isinstance(index, str): return super().__setitem__(index - 1, value)
+        if index not in self: self.append(index)
+        self.__dict__.setdefault('assoc', {})[index] = value
     def __iadd__(self, item): self.append(item); return self
 
 class Regex:
@@ -29,14 +36,18 @@ class Harness:
     def __init__(self):
         self.files = {}
         self.state = SimpleNamespace(approved_list=DMList(), whitelist_list=DMList(),
-                                     approved_list_ready=False, whitelist_list_ready=False)
+                                     approved_list_ready=False, whitelist_list_ready=False,
+                                     approved_discord_ids=DMList())
         self.env = dict(ascii2text=chr, istext=lambda s:isinstance(s,str), length=len, list=DMList,
             replacetext=lambda s,a,b:s.replace(a,b), findtext=lambda s,t:s.find(t)+1,
-            copytext=lambda s,start:s[start-1:], splittext=lambda s,d:DMList(s.split(d)),
+            copytext=lambda s,start,end=0:s[start-1:(end-1 if end else None)], islist=lambda x:isinstance(x,list), splittext=lambda s,d:DMList(s.split(d)),
             regex=Regex, ckey=lambda s:re.sub('[^a-z0-9]', '', s.lower()), trim=lambda s:s.strip(),
             isnull=lambda x:x is None, fexists=lambda p:p in self.files, file2text=self.read)
         self.parse = adapter.project(PROJECTED_SOURCE, '/proc/parse_verified_access_text', 'access_text', self.env)
         self.env['parse_verified_access_text'] = self.parse
+        self.ids = adapter.project(PROJECTED_SOURCE, '/proc/verified_access_discord_ids', 'access_text,staged_keys', self.env)
+        self.env['verified_access_discord_ids'] = self.ids
+        self.discord_id = adapter.project(PROJECTED_SOURCE, '/proc/verified_discord_id', 'src,candidate_key', self.env, method=True)
         self.reload = adapter.project(PROJECTED_SOURCE, '/proc/reload_verified_access_list', 'src,access_kind', self.env, method=True)
         self.member = adapter.project(PROJECTED_SOURCE, '/proc/verified_access_member', 'src,access_kind,candidate_key', self.env, method=True)
     def read(self,path):
@@ -137,6 +148,20 @@ class AccessLists(unittest.TestCase):
         self.assertNotIn(r'"\r"', SOURCE)
         self.assertNotIn(r'"\r\n"', SOURCE)
         self.assertIn('ascii2text(13)', SOURCE)
+
+    def test_approved_list_keeps_discord_ids(self):
+        self.assertIsNone(self.h.discord_id(self.h.state,'alpha'))
+        self.assertTrue(self.h.load('approved','Alpha=990000000000000001\r\nbeta = 990000000000000002\n'))
+        self.assertEqual(self.h.discord_id(self.h.state,'alpha'),'990000000000000001')
+        self.assertEqual(self.h.discord_id(self.h.state,'beta'),'990000000000000002')
+        self.assertIsNone(self.h.discord_id(self.h.state,'gamma'))
+        self.assertTrue(self.h.load('whitelist','gamma=990000000000000003\n'))
+        self.assertIsNone(self.h.discord_id(self.h.state,'gamma'))
+        self.assertTrue(self.h.load('approved','\n'))
+        self.assertIsNone(self.h.discord_id(self.h.state,'alpha'))
+    def test_discord_ids_need_every_staged_key(self):
+        self.assertEqual(self.h.ids('alpha=990000000000000001\n',DMList(['alpha','beta'])),[])
+        self.assertEqual(self.h.ids(None,DMList(['alpha'])),[])
 
     def test_include_and_initial_readiness(self):
         self.assertEqual((ROOT/'civ13.dme').read_text(encoding='utf-8-sig').count('#include "code\\_helpers\\access_lists.dm"'),1)
