@@ -13,6 +13,14 @@ can voice the leader and choose tactics through agent control; it only gives
 orders the controller checks, and the visit plays out the same without it.
 Visits are not started at random.
 
+From the sixth age, each raider carries a six-shot .32 revolver. It fires one
+round at a time, no faster than once every half second, and pauses for at least
+four seconds to reload an empty cylinder. The NPC's reserve replenishes, but
+the gun consumes real cartridges and retains its remaining rounds when dropped.
+Raiders only shoot their currently visible foe while the party is hostile;
+they do not suppress an unseen player's position through walls. This does not
+change projectile penetration or the weapons of other NPC families.
+
 | File | Purpose |
 | --- | --- |
 | `nomad_raid.dm` | Settings, targeting, edge spawn sites, cooldowns, item worth |

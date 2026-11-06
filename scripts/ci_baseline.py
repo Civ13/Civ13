@@ -36,6 +36,17 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete raider firing/reload source projections with fake engine boundaries.
+    # Keep production paths shared so existing conservative selection is preserved.
+    'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),
+        'paths': ('tests/nomad_raids/test_combat.py',), 'shared_paths': (
+            'code/modules/nomad_raids/nomad_raider.dm',
+            'code/modules/nomad_raids/nomad_visit.dm', 'code/modules/nomad_raids/nomad_capture.dm',
+            'code/game/mob/living/simple_animal/hostile/humans/human.dm',
+            'code/modules/projectiles/gun.dm', 'code/modules/projectiles/guns/projectile.dm',
+            'code/modules/1713/weapons/guns/revolvers.dm',
+            'code/modules/projectiles/_ammo_casing.dm',
+            'tests/save_movement/source_adapter.py')},
     # Pure source catalog and injected build transports; no native or network IO.
     'nomads_persistence': {'files': ('tests/nomads_persistence/test_catalog.py',),
         'paths': ('tests/nomads_persistence/',),
