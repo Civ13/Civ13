@@ -14,7 +14,8 @@
 /datum/reagent/toxin/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (strength)
 		if (issmall(M)) removed *= 2 // Small bodymass, more effect from lower volume.
-		M.adjustToxLoss(strength * removed)
+		// Repeated exposure builds tolerance, up to half the damage.
+		M.adjustToxLoss(strength * removed * M.poison_tolerance(id, removed, name))
 
 /datum/reagent/toxin/plasticide
 	name = "Plasticide"
@@ -110,7 +111,7 @@
 /datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	if (!M.crab)
-		M.adjustToxLoss(5 * removed)
+		M.adjustToxLoss(5 * removed * M.poison_tolerance(id, 0))
 		if (prob(30))
 			to_chat(M, "<span class = 'warning'>You feel sick...</span>")
 

@@ -38,7 +38,7 @@
 		disease_course = 0 // An interrupted course must be restarted.
 		disease_progression = min(1200, disease_progression + 1)
 		if (disease_progression == 1)
-			to_chat(src, SPAN_WARNING("You feel seriously ill. Seek medicine now; this illness will not clear on its own."))
+			to_chat(src, SPAN_WARNING("You feel seriously ill. Seek medicine now; your body cannot fight this off alone in time."))
 		if (disease_progression == 180)
 			to_chat(src, SPAN_WARNING("Your illness is worsening. You feel weak and feverish. Complete a medicine course before it becomes fatal."))
 		if (disease_progression == 900)
@@ -75,7 +75,7 @@
 	if (inducedSSD || droid || disease)
 		return
 	for (var/mob/living/human/H in range(2, src))
-		if (H == src || !H.disease || (H.disease_type in disease_immunity) || (H.disease_type in list("none", "malaria", "zombie")))
+		if (H == src || !H.disease || (H.disease_type in disease_immunity) || resists_disease(H.disease_type) || (H.disease_type in list("none", "malaria", "zombie")))
 			continue
 		var/chance = H.stat == DEAD ? 3 : 1
 		if (find_trait("Weak Immune System"))
@@ -91,7 +91,7 @@
 			disease_treatment = 0
 			disease_course = 0
 			return
-	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity) && !resists_disease("flu"))
 		if (prob(find_trait("Weak Immune System") ? 0.4 : 0.2))
 			disease = TRUE
 			disease_type = "flu"

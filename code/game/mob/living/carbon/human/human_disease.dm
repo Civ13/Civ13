@@ -1,6 +1,8 @@
 /mob/living/human/proc/handle_disease()
 	if (stat == DEAD)
 		return
+	if (handle_immunity())
+		return
 	if (droid || (disease_type in disease_immunity))
 		clear_disease()
 		return
@@ -67,6 +69,7 @@
 				bodytemperature = 310.055
 				to_chat(src, "You feel much better now! The disease is finally gone!")
 				disease_treatment = 0
+				disease_resistance["flu"] = 100 // Riding it out protects for a while.
 				if (prob(25))
 					disease_immunity += "flu"
 
