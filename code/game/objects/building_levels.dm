@@ -15,8 +15,9 @@ var/building_compiled_maxz = 0
 /proc/building_open_turf(turf/T)
 	return istype(T, /turf/sky) || istype(T, /turf/floor/broken_floor)
 
-// Native expansion creates world.turf first. Dirt's constructor skips its
-// recovery timers while this flag is set; replace those blank cells in batches.
+// Native expansion creates world.turf on every cell of the plane in one step
+// that cannot yield. With open air as the default the plane is already right;
+// a fixture whose default differs replaces those cells in batches.
 /proc/building_allocate_level(target_z, bootstrap = FALSE, datum/new_z_reservation/reservation)
 	if ((persistence_save_in_progress && !bootstrap) || building_allocating_z || target_z != world.maxz + 1 || target_z > BUILDING_MAX_Z || target_z > building_base_maxz() + BUILDING_EXTRA_LEVELS || world.maxx * world.maxy > BUILDING_MAX_LEVEL_CELLS)
 		world_z_budget.last_error = "The level request is not sequential, or allocation/save ownership is busy."
@@ -33,10 +34,11 @@ var/building_compiled_maxz = 0
 	building_allocating_z = target_z
 	try
 		world.maxz = target_z
-		for (var/x = 1 to world.maxx)
-			for (var/y = 1 to world.maxy)
-				new /turf/sky/building(locate(x, y, target_z))
-			TICK_CHECK
+		if (world.turf != /turf/sky/building)
+			for (var/x = 1 to world.maxx)
+				for (var/y = 1 to world.maxy)
+					new /turf/sky/building(locate(x, y, target_z))
+				TICK_CHECK
 	catch (var/exception/allocation_error)
 		world_z_budget.finish(reservation, FALSE)
 		// Keep the busy flag: a partly initialized native grid requires restart.
@@ -51,6 +53,15 @@ var/building_compiled_maxz = 0
 /turf/sky/building
 	name = "open air"
 	desc = "There is no floor here."
+
+// An empty cell of a plane under allocation needs no registry, render or
+// lighting work: it is not in the turf registry that the daylight sweep walks,
+// keeps its compiled defaults (so the level saves sparsely) and runs the full
+// constructor only when something replaces it.
+/turf/sky/building/New()
+	if (building_allocating_z && z == building_allocating_z)
+		return
+	..()
 
 /turf/sky/building/Entered(atom/movable/A)
 	// Lighting renderers belong to their turf; they are not falling cargo.
