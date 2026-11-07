@@ -25,6 +25,7 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
 | `check-update` | Fetches `origin/<branch>` and prints `current`, `available`, `behind`, `can_update` and `reason` for the launcher's update panel. Never merges or touches the world; `can_update` is false while the server runs. |
 | `stage` | Region hosts only: builds the group revision beside the running world (see [staged builds](../shard-group/README.md#staged-builds)). Answers at once; progress is in `<state_dir>/stage.json`. |
+| `handover` | Region hosts only: moves the running world onto its ready staged build without stopping it for the load (see [handover](../shard-group/README.md#handover-updating-a-running-region-without-downtime)). The staged build boots as a standby on a loopback port, the world freezes play and saves, the standby loads the save, then the world reboots out and the standby opens its port. A failure leaves the old world running. |
 | `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and for every region of each `--group group.json`, and runs the doorman on `doorman_port`. Use it instead of `watch`. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within

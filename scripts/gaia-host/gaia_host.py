@@ -69,7 +69,7 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
@@ -102,7 +102,11 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    'watchdog': True, 'crash_grace_seconds': 120, 'hang_minutes': 10, 'watchdog_max_restarts': 3,
                    # region groups: every this many minutes, build the latest revision beside the
                    # running world (stage); it is installed once the world is empty. 0 = only on request.
-                   'auto_stage_minutes': 0}
+                   'auto_stage_minutes': 0,
+                   # region groups: handover (scripts/shard-group) boots the staged build beside the running
+                   # world and waits this long for it to load the save before giving up and leaving the old
+                   # world running
+                   'load_timeout_seconds': 1800}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -243,11 +247,15 @@ class Platform:
         except OSError:
             return False
 
-    def query(self, port, token, action='status', operation=None, session=None):
-        return query(port, token, action, operation, session)
+    def query(self, port, token, action='status', operation=None, session=None, extra=None):
+        return query(port, token, action, operation, session, extra=extra)
 
     def start_task(self, name):
         return self.run(['schtasks', '/Run', '/TN', name], timeout=60)
+
+    def start_standby(self, dmb, port):
+        """Boot a standby world (a region host feature); the pid, or None when unknown."""
+        raise Refused('a standby world needs a region host (scripts/shard-group)')
 
     def byond_pager_running(self):
         """True/False whether byond.exe runs in this logon session; None off Windows or unknown."""
@@ -676,6 +684,8 @@ class Host:
         elif action == 'update':
             if listening:
                 raise Refused('stop the server before updating')
+        elif action == 'handover':
+            raise Refused('a handover needs a region host (scripts/shard-group)')
 
     # -- update check --------------------------------------------------------
     def git_text(self, argv, cwd):
@@ -1147,7 +1157,7 @@ class Host:
             # start and restart pull and recompile first unless the last build is
             # already of the fetched revision.
             steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_refresh, self.do_start]}[action]
+                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}[action]
             for step in steps:
                 step(operation)
             self.record(phase='done', error=None)
@@ -1168,7 +1178,7 @@ class Host:
         if self.platform.listening(self.config['port']):
             raise RuntimeError('something is already listening on the port')
         self.record(phase='starting', generation=generation, revision=revision)
-        code, out = self.platform.start_task(self.config['task'])
+        code, out = self.start_task()
         if code != 0:
             raise RuntimeError('the scheduled task did not start: ' + out.strip()[-300:])
         deadline = self.platform.now() + self.config['start_timeout_seconds']
@@ -1181,6 +1191,12 @@ class Host:
         if watchdog and watchdog.pop('gave_up', None):  # running again: watch it again
             self.write_json(self.watchdog_file, watchdog)
         self.record(phase='started')
+
+    def start_task(self):
+        return self.platform.start_task(self.config['task'])
+
+    def do_handover(self, operation):
+        raise RuntimeError('a handover needs a region host (scripts/shard-group)')
 
     def do_stop(self, operation):
         token = self.token()
@@ -1253,10 +1269,18 @@ class Host:
             return None
         return [stat.st_size, stat.st_mtime_ns]
 
-    def record_build(self, revision):
+    def record_build(self, revision, file=None):
+        """file: the .dmb the record is about when a host keeps more than one (region hosts)."""
+        if file:
+            record = self.read_json(self.build_file()) or {}
+            record['file'] = file
+            self.write_json(self.build_file(), record)  # dmb() reads the slot before it is stamped
         stamp = self.dmb_stamp()
         if HEX40.match(revision or '') and stamp:
-            self.write_json(self.build_file(), {'revision': revision, 'dmb': stamp})
+            record = {'revision': revision, 'dmb': stamp}
+            if file:
+                record['file'] = file
+            self.write_json(self.build_file(), record)
         else:
             self.build_file().unlink(missing_ok=True)
 

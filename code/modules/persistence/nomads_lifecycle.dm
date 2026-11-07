@@ -24,6 +24,8 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/maintenance_operation
 	var/maintenance_announcing = FALSE
 	var/list/maintenance_used = list()
+	// A standby world's load, bound to the host's handover operation (standby_load / standby_open).
+	var/standby_operation
 
 /datum/nomads_lifecycle_control/proc/request_maintenance()
 	if(maintenance_operation || maintenance_announcing || maintenance_used.len >= 64 || busy || persistence_save_in_progress || persistence_restart.busy || persistence_restart.startup_hold || persistence_restart.exists() || !persistence_restart.supported() || !nomads_lifecycle_hex(read_token(), 32) || !nomads_lifecycle_hex(read_revision(), 40)) return FALSE
@@ -62,7 +64,15 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
-	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "debug" = agent_diagnostic_state())
+	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "port" = world.port, "debug" = agent_diagnostic_state())
+
+// A standby world (DreamDaemon -params standby=1) reports "waiting" until the host names the
+// save, "loading" while it restores it and "loaded" until standby_open makes it the region.
+/datum/nomads_lifecycle_control/proc/standby_state()
+	if(!persistence_restart.standby) return null
+	if(!persistence_restart.startup_hold) return "loaded"
+	if(standby_operation || persistence_restart.busy) return "loading"
+	return "waiting"
 
 // Fixed cached state only. No arbitrary vars, logs, file reads or world scans.
 /proc/agent_diagnostic_source_file(value)
@@ -115,8 +125,9 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/action = input["action"]
 	var/list/allowed = (action == "status" || action == "save_idle") ? list("nomads_lifecycle", "token", "action") : list("nomads_lifecycle", "token", "action", "session", "operation")
 	if(action == "diagnose") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "target")
+	if(action == "standby_open") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "port")
 	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
-	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose")))
+	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
 		if(!(key in allowed)) return json_encode(snapshot(FALSE, "malformed_request"))
@@ -125,6 +136,35 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(action == "diagnose") return diagnose(input)
 	if(input["session"] != boot_session() || !nomads_lifecycle_hex(input["operation"], 32))
 		return json_encode(snapshot(FALSE, "invalid_session_or_operation"))
+	if(action == "handover_release" || action == "handover_cancel")
+		// The same operation that started the frozen save (handover_save) ends it.
+		if(!busy || input["operation"] != operation || persistence_restart.handover_state != "saved")
+			return json_encode(snapshot(FALSE, "handover_not_waiting"))
+		if(action == "handover_release") persistence_restart.handover_release()
+		else persistence_restart.handover_cancel()
+		return json_encode(snapshot())
+	if(action == "standby_load")
+		if(standby_state() != "waiting" || (input["operation"] in used_operations))
+			return json_encode(snapshot(FALSE, "standby_not_waiting"))
+		if(!persistence_restart.exists())
+			return json_encode(snapshot(FALSE, "no_restart_intent"))
+		standby_operation = input["operation"]
+		used_operations += standby_operation
+		last_error = null
+		standby_run() // returns to the reply at the load's first yield
+		return json_encode(snapshot())
+	if(action == "standby_open")
+		if(standby_state() != "loaded" || input["operation"] != standby_operation)
+			return json_encode(snapshot(FALSE, "standby_not_loaded"))
+		var/port = text2num(input["port"])
+		if(!isnum(port) || port != round(port) || port < 1024 || port > 65535)
+			return json_encode(snapshot(FALSE, "malformed_request"))
+		if(!world.OpenPort(port))
+			return json_encode(snapshot(FALSE, "port_not_opened"))
+		persistence_restart.standby = FALSE
+		world.visibility = config && config.hub ? TRUE : FALSE
+		world.log << "Standby world opened port [port]; it is the region now."
+		return json_encode(snapshot())
 	if(action == "maintenance_failed")
 		if(input["operation"] != maintenance_operation || maintenance_announcing || busy)
 			return json_encode(snapshot(FALSE, "maintenance_not_pending"))
@@ -145,6 +185,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 			return json_encode(snapshot(FALSE, "persistence_mode_changed"))
 	if(busy || persistence_save_in_progress || persistence_restart.busy || persistence_restart.startup_hold || persistence_restart.exists() || building_allocating_z || map_storage.dimension_recovery_required || !persistence_restart.supported())
 		return json_encode(snapshot(FALSE, "save_or_recovery_unavailable"))
+	var/handover = action == "handover_save"
 	operation = input["operation"]
 	expected_persistence = ("expected_persistence" in input) ? text2num(input["expected_persistence"]) : null
 	operation_is_maintenance = action == "maintenance_save_shutdown"
@@ -156,7 +197,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 		persistence_restart.last_error = null
 		map_storage.last_error = null
 	spawn(0)
-		run_operation()
+		run_operation(handover)
 	return json_encode(snapshot())
 
 // The host asks for the empty-world save as soon as a region empties instead of
@@ -186,11 +227,24 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	set waitfor = FALSE
 	ticker.savemap()
 
-/datum/nomads_lifecycle_control/proc/run_operation()
+/datum/nomads_lifecycle_control/proc/run_operation(handover = FALSE)
 	try
-		persistence_restart.execute(TRUE, operation, boot_session(), operation_is_maintenance, expected_persistence)
-		last_error = persistence_restart.last_error ? persistence_restart.last_error : "shutdown_returned"
+		persistence_restart.execute(!handover, operation, boot_session(), operation_is_maintenance, expected_persistence, handover)
+		last_error = persistence_restart.last_error ? persistence_restart.last_error : (handover ? "handover_returned" : "shutdown_returned")
 	catch(var/exception/e)
 		last_error = "[e]"
 	busy = FALSE
 	expected_persistence = null
+
+// The standby's load: the restart-intent restore a held boot would run from setup.dm, started
+// once the host says the save is complete. Its failure is the handover's failure: the host
+// reads it in "error" and leaves the old world running.
+/datum/nomads_lifecycle_control/proc/standby_run()
+	set waitfor = FALSE
+	try
+		if(persistence_restart.resume_startup())
+			if(persistence_restart.players_ready) announce_restored_round_once()
+		else
+			last_error = persistence_restart.last_error ? persistence_restart.last_error : "standby_load_failed"
+	catch(var/exception/e)
+		last_error = "[e]"

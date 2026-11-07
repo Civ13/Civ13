@@ -756,7 +756,9 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // The whole update (deploy.bat): pull, stage the build beside the running worlds, then once every build is
-    // ready save and stop, install the builds, start and restart the host service.
+    // ready hand each running region over to it (scripts/shard-group handover) and restart the host service.
+    // The exit-3 loop below belonged to the stop-and-start deploy; a handover never leaves a world stopped,
+    // so deploy.bat no longer returns it. It stays for an older deploy.bat on the host.
     // A region whose world does not save (refused because it is busy, or the save failed) is still running
     // when deploy.bat stops at the save step; nothing has been updated yet. The operator then chooses:
     // force-stop those regions without a save and carry on, or start the regions that did stop again.

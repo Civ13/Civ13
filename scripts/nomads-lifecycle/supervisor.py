@@ -488,8 +488,10 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
     return state
 
 
-def query(port, token, action='status', operation=None, session=None, expected_persistence=None):
+def query(port, token, action='status', operation=None, session=None, expected_persistence=None, extra=None):
     values = {'nomads_lifecycle': '1', 'token': token, 'action': action}
+    if extra:  # action-specific fields, such as the port a standby world opens
+        values.update(extra)
     if operation:
         values['operation'] = operation
     if session:

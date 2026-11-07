@@ -11,7 +11,7 @@ and [region groups](../../shard-group/README.md). They only call
 | `status.bat [REGION]` | Each region's state (`awake`, `asleep`, `cold`, `stopped`) and last action. |
 | `start.bat`, `stop.bat`, `restart.bat [REGION]` | Start; save and stop (with a verified backup); both. They run in the background, so follow them with `status.bat`. |
 | `update.bat [REGION]` | Fetch, check out the group's revision and compile. Stop the regions first. |
-| `deploy.bat [REGION ...]` | The whole update in one go: `git pull --ff-only --autostash` the source checkout, stage the build beside every running region (or only the ones named, such as `deploy.bat gaia`), and once every build is ready save and stop them, install the builds, start, then restart the host service. Each step waits for the last and it stops at the first failure. A world that does not save makes it stop with exit code 3 before anything is updated; see [deploying](#deploying-a-new-master). The launcher's **Save, update and restart** button runs it. |
+| `deploy.bat [REGION ...]` | The whole update in one go: `git pull --ff-only --autostash` the source checkout, stage the build beside every running region (or only the ones named, such as `deploy.bat gaia`), and once every build is ready hand each running region over to it (the new build boots beside the old world, which freezes play and saves; the new one loads the save, then players reconnect to it), then restart the host service. Each step waits for the last and it stops at the first failure; no world is ever left stopped. See [deploying](#deploying-a-new-master). The launcher's **Save, update and restart** button runs it. |
 | `stage.bat [REGION]` | Pull the source checkout, then build the update beside the running regions. Each region installs it by itself the next time it is empty and saved (or asleep), so nobody is kicked. `status.bat` shows its progress under `stage`. |
 | `force-stop.bat`, `force-restart.bat [REGION]` | For a world that hangs (a save that never finishes): end it at once **without saving**, or end it and start it again. The start loads the last completed save (an interrupted save is swapped for the copy in `map_backups`), and the BYOND lock files (`*.lk`) the dead world left in `map_saves` are removed so the start is not refused. The launcher's Force stop and Force restart buttons do the same. |
 | `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. |
@@ -96,19 +96,23 @@ update (all of them, or for example only Gaia). It pulls `D:\GitHub\Civ13`
 first (its local edits are kept). Then it stages the update for each chosen
 region, building it beside the running world one region at a time at low
 priority, like `stage.bat`. Nobody is kicked until every build is ready, and a
-pull or build that fails stops it before then. Only then does it save the
-chosen regions (Gaia takes up to ten minutes), install the staged builds (a file
-copy instead of a compile), start them and restart the host service so it also
-runs the new host scripts. Regions left out keep running. `wait_group.py` does
-the waiting; it only reads `status`.
+pull or build that fails stops it before then. Then each running region is
+handed over to its new build, one region at a time
+([how it works](../../shard-group/README.md#handover-updating-a-running-region-without-downtime)):
+the new build boots beside the old world on a loopback port, the old world
+freezes play and saves, the new world loads that save while the old one still
+runs, and then the players reconnect to the new world within seconds. Gaia's
+players see a frozen world for roughly the save plus the load (about eight
+minutes today) instead of a stopped server for that long plus the boot. Regions
+that are asleep, cold or stopped are left alone; the host service installs the
+staged build when they wake or start. Finally the host service restarts so it
+also runs the new host scripts. `wait_group.py` does the waiting; it only reads
+`status`.
 
-**A world that will not save** (busy, not ready, or its save fails) stays
-running, and `deploy.bat` stops with exit code 3 before updating anything. The
-regions that did save stay stopped. Either force-stop the ones that did not save
-with `force-stop.bat REGION` (they go back to their last completed save) and
-run `deploy.bat continue` with the same regions, or start the stopped regions
-again with `start.bat`. The launcher lists each such world with its error and
-asks which; it never stops a world without a save unless you choose that.
-
-If any other step fails, the regions stay as that step left them: fix the
-cause, then carry on by hand with `update.bat`, `start.bat` and `restart-host.bat`.
+**A world that will not save or a build that will not load** leaves that region
+running on its old build: the standby is stopped, the freeze is released and
+`deploy.bat` stops with exit code 1 and the region's error. Nothing is stopped
+and nothing needs restoring; fix the cause and run `deploy.bat` again (the
+staged builds are kept). The machine must hold both worlds during a handover
+(the new Gaia peaks near 2 GB while it loads), so a region is refused while less
+than `cold_start_min_free_mb` is free.

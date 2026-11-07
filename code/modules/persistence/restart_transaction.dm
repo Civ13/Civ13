@@ -8,9 +8,33 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		if(!findtext("0123456789abcdef", copytext(value, i, i+1))) return FALSE
 	return TRUE
 
+// A handover (scripts/shard-group handover): the staged build boots beside this world as a
+// standby, this world freezes play and saves, the standby loads the save, then this world
+// reboots out and the standby opens the region's port. While world_moving is set, clients
+// can look and chat but not move or act, so nothing played after the save is lost.
+var/global/world_moving = FALSE
+
+/proc/set_world_moving(moving)
+	world_moving = moving ? TRUE : FALSE
+
+// Clicks are the other way to act; movement is refused in client/Move (mob_movement.dm).
+/client/Click(atom/object, location, control, params)
+	if (world_moving)
+		if (mob && world.time >= mob.next_click)
+			mob.next_click = world.time + 20
+			to_chat(src, "<span class='warning'>The world is moving to the updated server. You can look around and chat, but not act, until it finishes.</span>")
+		return
+	return ..()
+
 /datum/persistence_restart_transaction
 	var/busy = FALSE
 	var/startup_hold = FALSE
+	// A standby world (DreamDaemon -params standby=1): booted beside the running world by a
+	// handover, it holds like a restart boot but waits for the host to name the save.
+	var/standby = FALSE
+	// The running world's side of a handover: null, "saving", "saved", "released" or "cancelled".
+	var/handover_state = null
+	var/handover_wait_timeout = 36000 // 1 hour; a host that never comes back releases the freeze
 	var/import_started = FALSE
 	var/import_complete = FALSE
 	var/players_ready = FALSE
@@ -30,6 +54,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 
 /datum/persistence_restart_transaction/proc/detect_startup()
 	startup_hold = exists()
+	if(!startup_hold && islist(world.params) && world.params["standby"])
+		// Held like a restart boot, but the intent comes later (standby_load).
+		standby = TRUE
+		startup_hold = TRUE
 	if(startup_hold) persistence_save_in_progress = TRUE
 	return startup_hold
 
@@ -168,8 +196,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 
 // prewarned records the typed maintenance request's completed player warning.
 // It is consumed by the separately reviewed #3368 integration when present.
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null)
-	if(shutdown && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
+// handover: save for a standby world instead of restarting; see world_moving above. The
+// caller (nomads_lifecycle) later calls handover_release() or handover_cancel().
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE)
+	if((shutdown || handover) && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
 		report("Save/shutdown refused: invalid lifecycle binding")
 		return FALSE
 	if(building_allocating_z || map_storage.dimension_recovery_required)
@@ -187,11 +217,15 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	last_error = null
 	save_failure_retryable = FALSE
 	map_storage.last_error = null
-	lifecycle_operation = shutdown ? operation : null
-	lifecycle_session = shutdown ? session : null
+	lifecycle_operation = (shutdown || handover) ? operation : null
+	lifecycle_session = (shutdown || handover) ? session : null
 	var/list/published
+	if(handover)
+		handover_state = "saving"
+		set_world_moving(TRUE)
+		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. You can look around and chat, but not act, until the move finishes in a few minutes; nothing you did is lost.</b></font>")
 	// Give connected players a minute's notice; busy already blocks other saves.
-	if(clients.len && !prewarned)
+	else if(clients.len && !prewarned)
 		if(!isnull(expected_persistence) && expected_persistence == 0)
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. This nonpersistent round will start fresh; the save will be retained for recovery.</b></font>")
 		else
@@ -214,7 +248,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		diagnostic_phase = "final_validation"
 		if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before shutdown")
-		if(shutdown)
+		if(handover)
+			wait_for_handover()
+		else if(shutdown)
 			if(!isnull(expected_persistence) && expected_persistence == 0)
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting into a fresh nonpersistent round.</b></font>")
 			else
@@ -226,6 +262,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 			request_restart()
 	catch(var/exception/e)
 		diagnostic_phase = "failure_cleanup"
+		if(handover)
+			handover_state = null
+			set_world_moving(FALSE)
+			to_chat(world, "<font color='yellow' size=4><b>The move to the updated server was called off. Play on; nothing was lost.</b></font>")
 		var/cleanup = ""
 		if(published && exists())
 			try
@@ -240,6 +280,31 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	lifecycle_operation = null
 	lifecycle_session = null
 	return FALSE
+
+// The save is published; the standby loads it while this world waits frozen. The host then
+// releases this world (it reboots out; with -close DreamDaemon exits and clients reconnect to
+// the standby, which opens this port) or cancels (the standby failed; play resumes).
+/datum/persistence_restart_transaction/proc/wait_for_handover()
+	handover_state = "saved"
+	diagnostic_phase = "handover_wait"
+	var/deadline = world.time + handover_wait_timeout
+	while(handover_state == "saved")
+		if(world.time >= deadline) throw EXCEPTION("The host did not finish the handover within [round(handover_wait_timeout / 600)] minutes; the world resumes")
+		sleep(10)
+	if(handover_state != "released") throw EXCEPTION("Handover cancelled by the host; the world resumes")
+	to_chat(world, "<font color='yellow' size=4><b>The updated server is ready. Reconnecting you now...</b></font>")
+	diagnostic_phase = "shutdown"
+	request_restart()
+
+/datum/persistence_restart_transaction/proc/handover_release()
+	if(handover_state != "saved") return FALSE
+	handover_state = "released"
+	return TRUE
+
+/datum/persistence_restart_transaction/proc/handover_cancel()
+	if(handover_state != "saved") return FALSE
+	handover_state = "cancelled"
+	return TRUE
 
 /datum/persistence_restart_transaction/proc/resume_startup()
 	if(!startup_hold || busy) return FALSE
