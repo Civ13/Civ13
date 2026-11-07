@@ -443,12 +443,19 @@
 				poss_list += cmp
 		if (!isemptylist(poss_list))
 			for(var/stocky in poss_list)
+				if (company_return_stake(stocky, src, civilization))
+					continue
+				// Nobody to take it back: the stake goes on sale as an estate.
 				for(var/list/lx in map.custom_company[stocky])
 					if (lx[1] == src)
 						map.sales_registry += list(list(stocky,lx[2],map.custom_company_value[stocky]*(lx[2]/100)*2,null,1))
 				for(var/l=1, l <= map.custom_company[stocky].len, l++)
 					if (map.custom_company[stocky][l][1] == src)
 						map.custom_company[stocky][l][1] = null
+		// The estate listings above replace anything this holder had put up.
+		for (var/list/LL in map.sales_registry)
+			if (LL.len >= 4 && LL[4] == src)
+				map.sales_registry -= list(LL)
 
 	if (client)
 		src << browse(null, "window=memory")
