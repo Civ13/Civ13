@@ -99,7 +99,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "OTHER")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -165,6 +165,9 @@ var/global/datum/shard_group/shard_group = new
 	// Stations ask before sending a new party (party_train.dm).
 	if(kind == "RAILYARD")
 		.["free_berths"] = party_train_free_berths()
+	// Launch offices ask before founding a station (space/orbit_world.dm).
+	if(kind == "ORBIT")
+		.["free_planes"] = length(orbit_free_planes())
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
