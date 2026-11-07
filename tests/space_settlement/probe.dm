@@ -1289,7 +1289,13 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 	piped.attack_hand(watcher)
 	space_check(piped.on, "a supplied piped shower still runs on a barren world")
 	piped.on = FALSE
+	var/obj/structure/shower/bathtub/big/tub = new(locate(8, 18, 1))
+	tub.attack_hand(watcher)
+	space_check(!tub.on, "a big bathtub will not run on a barren world")
+	tub.on = TRUE
+	tub.process()
+	space_check(!tub.on, "a big bathtub left running stops on a barren world")
 	map = fixture
 	qdel(mars)
-	for (var/obj/O in list(home, S, W, shower, piped, watcher))
+	for (var/obj/O in list(home, S, W, shower, piped, tub, watcher))
 		qdel(O)
