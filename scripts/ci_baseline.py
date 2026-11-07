@@ -36,6 +36,14 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete bounded Gaia spawn helpers with fake spatial/engine boundaries.
+    'gaia_spawn': {'files': ('tests/gaia_spawn/test_spawn.py',),
+        'paths': ('tests/gaia_spawn/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/jobs/job_controller.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'maps/nomads/nomads_gaia.dmm', 'tests/save_movement/source_adapter.py')},
     # Complete raider firing/reload source projections with fake engine boundaries.
     # Keep production paths shared so existing conservative selection is preserved.
     'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),
