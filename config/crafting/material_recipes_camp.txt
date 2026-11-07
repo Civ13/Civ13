@@ -122,6 +122,7 @@ RECIPE: /material/steel/,steel shank,/obj/item/weapon/material/kitchen/utensil/k
 RECIPE: /material/steel/,mechanical trap,/obj/item/weapon/beartrap,18,140,0,1,none,0,32,0,8,null
 RECIPE: /material/steel/,ashtray,/obj/item/weapon/material/ashtray,7,120,0,1,none,100,0,0,8,null
 RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,9,95,0,1,none,145,0,0,8,null
+RECIPE: /material/steel/,fire striker,/obj/item/weapon/flame/lighter/striker,1,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/steel/,flagpole,/obj/structure/flag/pole,6,95,0,1,none,0,0,0,8,null
 RECIPE: /material/steel/,retractor,/obj/item/weapon/surgery/retractor,7,50,0,1,healthcare,35,0,55,8,null
 RECIPE: /material/steel/,bone saw,/obj/item/weapon/surgery/bone_saw,16,50,0,1,healthcare,35,0,55,8,null
