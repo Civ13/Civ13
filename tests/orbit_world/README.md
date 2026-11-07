@@ -35,6 +35,15 @@ push off, a still floater away from the edges pushes off again, and the safety
 tether clips to a truss, is not saved, pulls a drifter back at its reach, lets
 the wearer haul toward the clip but not push away, and unclips.
 
+It also checks the station hardware (`code/modules/space/orbit_station.dm`):
+the orbital day turns at sunset and sunrise and repairs a bad count, orbit is
+-100 C with no dust storms, the solar wing and any panel follow the orbital
+day, the fuel cell needs both hydrogen and oxygen, sunlight and working
+machines warm a module and radiators add none, an unpowered radiator idles,
+the orbital workshop unfolds sealed with two bunks, a table and a crate,
+debris breaches it to vacuum and the breach can be patched, and all four
+recipes are gated on Orbital Flight.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step), and a full launch and deorbit through the transfer

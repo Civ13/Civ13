@@ -1329,6 +1329,7 @@
 #include "code\modules\space\moon_world.dm"
 #include "code\modules\space\orbit_world.dm"
 #include "code\modules\space\orbit_eva.dm"
+#include "code\modules\space\orbit_station.dm"
 #include "code\modules\space\orbital_flight.dm"
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"
