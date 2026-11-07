@@ -188,7 +188,10 @@ public static class LocalHosting {
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply"];
+    // freeze/thaw: sleep an empty, saved region now, or wake it; stage: build the update beside the running
+    // worlds; setup: create or refresh a region's worktree and config and enrol it for travel (refused while it runs).
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply",
+        "freeze", "thaw", "stage", "setup"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
@@ -224,7 +227,8 @@ public static class LocalHosting {
         return step;
     }
 
-    public sealed record GroupRegion(string Id, string Name, bool Mainland);
+    // Port and TransferPort are the region's game and travel agent ports from the group config (0 when absent).
+    public sealed record GroupRegion(string Id, string Name, bool Mainland, int Port = 0, int TransferPort = 0);
 
     // The regions of the group config (control.group), in its order, for choosing which ones to update.
     // The mainland is the config's "mainland", or the first region, as shard_group.py decides it.
@@ -233,14 +237,26 @@ public static class LocalHosting {
         var json = document.RootElement;
         if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("regions", out var list) || list.ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("The group config lists no regions.");
-        var found = new List<(string Id, string Name)>();
+        var found = new List<(string Id, string Name, int Port, int TransferPort)>();
         foreach (var region in list.EnumerateArray().Take(16)) {
             if (region.ValueKind != JsonValueKind.Object || Str(region, "id") is not { } id || !RegionId.IsMatch(id)) continue;
-            found.Add((id, Clean(Str(region, "name") ?? id)));
+            found.Add((id, Clean(Str(region, "name") ?? id), OptionalPort(region, "port"), OptionalPort(region, "transfer_port")));
         }
         if (found.Count == 0) throw new InvalidDataException("The group config lists no regions.");
         var mainland = Str(json, "mainland") ?? found[0].Id;
-        return found.Select(region => new GroupRegion(region.Id, region.Name, region.Id == mainland)).ToList();
+        return found.Select(region => new GroupRegion(region.Id, region.Name, region.Id == mainland, region.Port, region.TransferPort)).ToList();
+    }
+
+    private static int OptionalPort(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var port) && port is > 0 and < 65536 ? port : 0;
+
+    // A region's world log in its worktree (<group root>/<id>/logs/world.log, as shard_group.py region_dir
+    // places it), or null when the group config names no root. The id is checked like every other region id.
+    public static string? RegionLog(HostGroup group, string region) {
+        if (!RegionId.IsMatch(region)) throw new ArgumentException("Not a region id.", nameof(region));
+        using var document = JsonDocument.Parse(File.ReadAllText(group.Config));
+        if (document.RootElement.ValueKind != JsonValueKind.Object || Str(document.RootElement, "root") is not { Length: > 0 } root) return null;
+        return Path.Combine(Path.GetFullPath(root), region, "logs", "world.log");
     }
 
     // deploy.bat's exit code when a region did not save and is still running (the others stay stopped).
@@ -317,10 +333,15 @@ public static class LocalHosting {
                             text += $", last {Lower(last)} ({Lower(phase)})";
                             if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
                         }
+                        text += RegionDetails(entry);
                         regions.Add(text);
                     }
                 }
-                return new ControlAnswer(true, regions.Count == 0 ? "The group has no regions." : "Group: " + string.Join("; ", regions) + ".", busy);
+                var summary = regions.Count == 0 ? "The group has no regions." : "Group: " + string.Join("; ", regions) + ".";
+                // Present only when the group has travel (transfer ports): the coordinator moves characters between regions.
+                if (json.TryGetProperty("coordinator", out var coordinator) && coordinator.ValueKind is JsonValueKind.True or JsonValueKind.False)
+                    summary += coordinator.GetBoolean() ? " Travel coordinator running." : " Travel coordinator is not running (a start or restart starts it).";
+                return new ControlAnswer(true, summary, busy);
             }
             if (action is "unlock" or "force-unlock") {
                 var lines = new List<string>();
@@ -343,6 +364,26 @@ public static class LocalHosting {
                 if (refused != null) lines.Add("Refused: " + refused + ".");
                 return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script did not apply the settings to any region." : string.Join(" ", lines), false);
             }
+            if (action is "freeze" or "thaw") {
+                // {"done": {id: {"frozen": true, ...} | {"thawed": true, ...}}, "refused": {id: reason}}
+                var done = json.TryGetProperty("done", out var doneJson) && doneJson.ValueKind == JsonValueKind.Object
+                    ? doneJson.EnumerateObject().Take(16).Select(entry => Clean(entry.Name)).ToList() : [];
+                if (done.Count == 0) return new ControlAnswer(false, refused != null ? "Refused: " + refused : "The group script did not " + action + " any region.", false);
+                var text = (action == "freeze" ? "Asleep now (a join or travel wakes it): " : "Woken: ") + string.Join(", ", done) + ".";
+                return new ControlAnswer(true, refused != null ? text + " Refused: " + refused + "." : text, false);
+            }
+            if (action == "setup") {
+                // {"revision", "created": [ids], "regions": [ids], "region", "running": [ids], "enrolled": [...]}
+                var created = json.TryGetProperty("created", out var made) && made.ValueKind == JsonValueKind.Array
+                    ? made.EnumerateArray().Take(16).Where(item => item.ValueKind == JsonValueKind.String).Select(item => Clean(item.GetString()!)).ToList() : [];
+                var which = Str(json, "region") is { } one ? Clean(one) : "every region";
+                var text = created.Count > 0 ? "Set up " + string.Join(", ", created) + "." : "Refreshed the config of " + which + ".";
+                if (json.TryGetProperty("enrolled", out var enrolled) && enrolled.ValueKind == JsonValueKind.Array && enrolled.GetArrayLength() > 0)
+                    text += " Enrolled it for travel with the running agents.";
+                if (json.TryGetProperty("running", out var running) && running.ValueKind == JsonValueKind.Array && running.GetArrayLength() > 0)
+                    text += " Running regions learn about it at their next restart.";
+                return new ControlAnswer(true, text + " Next: Update, then Start.", false);
+            }
             // kill finishes at once and lists the regions it stopped under "done"; the others hand off to a worker.
             var acceptedName = action == "kill" ? "done" : "accepted";
             var accepted = json.TryGetProperty(acceptedName, out var acceptedJson) && acceptedJson.ValueKind == JsonValueKind.Object
@@ -357,12 +398,55 @@ public static class LocalHosting {
                 "start" => "Starting",
                 "stop" => "Saving, then stopping",
                 "restart" => "Saving, then restarting",
+                "stage" => "Building the update beside the running world (installed when it is next empty and saved) for",
                 _ => "Checking out and compiling",
             } + " " + string.Join(", ", accepted) + "...";
             if (refused != null) message += " Refused: " + refused + ".";
             return new ControlAnswer(true, message, true);
         }
     }
+
+    // The rest of one region's shard_group.py status, after its state, players and last action: the staged
+    // update (stage.json and whether it waits to install), a handover's standby world, the watchdog's record,
+    // the travel agent and whether the world answers as this region. Empty when there is nothing to add.
+    public static string RegionDetails(JsonElement entry) {
+        var parts = new List<string>();
+        if (OptionalPort(entry, "port") is > 0 and var port) parts.Add("port " + port);
+        if (entry.TryGetProperty("stage", out var stage) && stage.ValueKind == JsonValueKind.Object && Str(stage, "phase") is { } phase) {
+            switch (phase) {
+                case "current": break;
+                case "ready":
+                    if (Bool(stage, "pending")) parts.Add("update staged, installs when empty and saved");
+                    break;
+                case "failed":
+                    parts.Add("staging failed" + (Str(stage, "error") is { Length: > 0 } error ? ": " + Short(error) : ""));
+                    break;
+                default:
+                    parts.Add("staging an update (" + Lower(phase) + ")");
+                    break;
+            }
+        }
+        if (entry.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object && OptionalPort(standby, "port") is > 0 and var standbyPort)
+            parts.Add($"handover: new build {(Bool(standby, "listening") ? "running" : "starting")} on port {standbyPort}");
+        if (entry.TryGetProperty("watchdog", out var watchdog) && watchdog.ValueKind == JsonValueKind.Object) {
+            var restarts = watchdog.TryGetProperty("restarts", out var list) && list.ValueKind == JsonValueKind.Array ? list.GetArrayLength() : 0;
+            var last = Str(watchdog, "last_event") is { } kind ? Lower(kind) : "a crash";
+            if (watchdog.TryGetProperty("gave_up", out _))
+                parts.Add($"watchdog gave up after repeated restarts ({last}); start it by hand");
+            else if (Str(watchdog, "last_refusal") is { Length: > 0 } refusal)
+                parts.Add("watchdog could not restart it: " + Short(refusal));
+            else if (Bool(watchdog, "cold"))
+                parts.Add("watchdog left it asleep (low memory)");
+            else if (restarts > 0)
+                parts.Add($"watchdog restarted it {restarts} time{(restarts == 1 ? "" : "s")} recently (last: {last})");
+        }
+        if (entry.TryGetProperty("transfer_agent", out var agent) && agent.ValueKind == JsonValueKind.False) parts.Add("travel agent not running");
+        if (entry.TryGetProperty("region_view", out var view) && view.ValueKind == JsonValueKind.Object && Str(view, "error") != null)
+            parts.Add("not answering as this region");
+        return parts.Count == 0 ? "" : ", " + string.Join(", ", parts);
+    }
+
+    private static string Short(string text) => text.Length > 200 ? text[..200] : text;
 
     // {"removed": [names], "forced", "server_running", "save": generation | "save_refused": reason}
     public static string DescribeUnlock(JsonElement json) {
