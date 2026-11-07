@@ -24,7 +24,10 @@ var/petroleum_runtime_error = FALSE
 /world/New()
 	OpenPort("none")
 	try
+		GLOB.all_observable_events = list()
 		GLOB.moved_event = new /decl/observ/moved
+		GLOB.dir_set_event = new /decl/observ/dir_set
+		GLOB.destroyed_event = new /decl/observ/destroyed
 		movementMachine = new
 		populate_material_list()
 		petroleum_check(!world.port, "fixture has no listening port")
@@ -150,6 +153,7 @@ var/petroleum_runtime_error = FALSE
 		petroleum_check(!empty_saved.work_barrel && !empty_saved.extraction_pending && unrelated_barrel.loc == empty_turf, "empty saved well never claims unrelated floor barrels")
 		qdel(empty_saved)
 		map_storage.clear_bookkeeping()
+		petroleum_orphan_checks()
 		var/obj/structure/oil_spring/refilling = new(T)
 		refilling.counter = 0
 		refilling.timeout = world.time + 20
@@ -170,3 +174,85 @@ var/petroleum_runtime_error = FALSE
 		petroleum_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = petroleum_failures, "runtime_error" = petroleum_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
 	del(world)
+
+// Exercise an old save containing four physical barrels but no work_barrel.
+/proc/petroleum_orphan_checks()
+	var/turf/T = locate(1, 4, 1)
+	var/obj/structure/oil_spring/S = new(T)
+	var/obj/structure/oilwell/W = new(T)
+	var/list/originals = list()
+	for (var/i in 1 to 4)
+		var/obj/item/weapon/reagent_containers/glass/barrel/B = new(W)
+		B.name = "saved orphan [i]"
+		if (i == 1 || i == 4)
+			B.reagents.add_reagent("petroleum", B.reagents.maximum_volume)
+		if (i == 3)
+			B.reagents.add_reagent("water", 17)
+		originals += B
+	var/obj/item/weapon/reagent_containers/glass/barrel/spare = new(T)
+	spare.name = "unrelated floor barrel"
+	petroleum_check(!W.work_barrel && length(W.contents) == 4, "legacy four-barrel orphan setup has no runtime link")
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/savefile/F = new("orphan-barrels.sav")
+	F["/format_version"] << 2
+	var/turf_id = map_storage.BuildVarDirectory(F, T, 1)
+	F.Flush()
+	qdel(W)
+	var/returned = 0
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in originals)
+		if (B.loc == T)
+			returned++
+		qdel(B)
+	petroleum_check(returned == 4, "destroy returns every original orphan barrel without requiring a runtime link")
+	qdel(spare)
+	qdel(S)
+	F = null
+	map_storage.clear_bookkeeping()
+	F = new("orphan-barrels.sav")
+	T = map_storage.Load_Entry(F, turf_id, T)
+	for (var/datum/A in map_storage.all_loaded)
+		A.after_load()
+	var/list/restored_barrels = list()
+	var/barrel_count = 0
+	var/petroleum = 0
+	var/water = 0
+	for (var/obj/structure/oilwell/restored in T)
+		W = restored
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in W.contents)
+		restored_barrels += B
+		barrel_count++
+		petroleum += B.reagents.get_reagent_amount("petroleum")
+		water += B.reagents.get_reagent_amount("water")
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in T)
+		barrel_count++
+		spare = B
+	petroleum_check(length(restored_barrels) == 4 && barrel_count == 5 && petroleum == 500 && water == 17, "disk round trip preserves four contained barrels, spare, and mixed reagents exactly once")
+	var/obj/item/weapon/reagent_containers/glass/barrel/first = restored_barrels[1]
+	petroleum_check(W.work_barrel == first && first.reagents.get_free_space() == 0 && !W.extracting_now, "full restored barrel is linked without extracting")
+	petroleum_check(spare.loc == T && !W.factory_accepts(spare) && W.factory_insert(spare) == 0, "automation refuses another barrel while saved contents occupy the well")
+	petroleum_check(W.fluid_supply_holder() == first.reagents && W.factory_offer() == first, "pipes and automation expose the actual full restored barrel")
+	petroleum_check(W.factory_take(first, locate(1, 5, 1)) && first.loc == locate(1, 5, 1) && first.reagents.get_reagent_amount("petroleum") == 250, "automation returns the original full barrel and its contents")
+	W.work_barrel = null
+	W.unload_barrel()
+	var/obj/item/weapon/reagent_containers/glass/barrel/second = restored_barrels[2]
+	petroleum_check(second.loc == T && second.reagents.total_volume == 0, "manual unload recovers the next original empty orphan")
+	W.load_barrel(FALSE)
+	var/obj/item/weapon/reagent_containers/glass/barrel/third = restored_barrels[3]
+	petroleum_check(W.work_barrel == third && third.reagents.get_reagent_amount("water") == 17 && W.extracting_now, "next contained part-filled barrel becomes the active original")
+	W.unload_barrel()
+	var/obj/item/weapon/reagent_containers/glass/barrel/fourth = restored_barrels[4]
+	petroleum_check(W.factory_offer() == fourth && W.factory_take(fourth, T) && fourth.loc == T, "automation recovers the last full orphan without a manual relink")
+	petroleum_check(!length(W.contents) && spare.loc == T, "recovering all orphans never claims an unrelated floor barrel")
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in restored_barrels)
+		B.loc = W
+	W.work_barrel = third
+	qdel(W)
+	returned = 0
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in restored_barrels)
+		if (B.loc == T)
+			returned++
+	petroleum_check(returned == 4 && first.reagents.get_reagent_amount("petroleum") == 250 && third.reagents.get_reagent_amount("water") == 17, "destroy with a linked barrel also preserves all extra original barrels and reagents")
+	for (var/obj/O in T)
+		qdel(O)
+	map_storage.clear_bookkeeping()

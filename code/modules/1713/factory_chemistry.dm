@@ -29,6 +29,7 @@
 // its barrel back once the barrel is full.
 
 /obj/structure/oilwell/factory_accepts(obj/item/I, from_dir = 0)
+	load_barrel(FALSE)
 	if (work_barrel || !base || !isturf(loc) || !istype(I, /obj/item/weapon/reagent_containers/glass/barrel) || !factory_movable_item(I))
 		return 0
 	return I.reagents && I.reagents.get_free_space() > 0 ? 1 : 0
@@ -41,6 +42,7 @@
 	return work_barrel == I ? 1 : 0
 
 /obj/structure/oilwell/factory_offer(to_dir = 0, filter_type = null)
+	load_barrel(FALSE)
 	if (!work_barrel || work_barrel.loc != src || !work_barrel.reagents || work_barrel.reagents.get_free_space() > 0)
 		return null
 	if (filter_type && !istype(work_barrel, filter_type))
@@ -48,6 +50,7 @@
 	return work_barrel
 
 /obj/structure/oilwell/factory_take(obj/item/I, atom/destination)
+	load_barrel(FALSE)
 	if (!destination || I != work_barrel || I.loc != src)
 		return FALSE
 	stop_extraction()

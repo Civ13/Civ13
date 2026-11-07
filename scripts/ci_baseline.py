@@ -36,6 +36,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
+    'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
+        'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
+        'shared_paths': ('code/modules/1713/production.dm',
+                         'code/modules/1713/factory_chemistry.dm',
+                         'code/modules/1713/factory_pipes.dm',
+                         'tests/save_movement/source_adapter.py')},
     # Chicken navigation predicates and collision dispatch; fake engine only.
     'chicken_water': {'files': ('tests/chicken_water/test_chicken_water.py',),
         'paths': ('tests/chicken_water/',), 'shared_paths': (
