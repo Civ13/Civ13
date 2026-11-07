@@ -87,6 +87,9 @@ var/world_is_open = TRUE
 	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
 		loop_checks = FALSE
 	config.post_load()
+	// A standby world stays off the hub until a handover opens the region's port.
+	if (persistence_restart.standby)
+		world.visibility = FALSE
 
 	if (config && config.server_name != null && config.server_suffix && world.port > 0)
 		// dumb and hardcoded but I don't care~
@@ -369,6 +372,8 @@ var/world_topic_spam_protect_time = world.timeofday
 		"restart_hold" = persistence_restart ? !!persistence_restart.startup_hold : FALSE,
 		"restart_busy" = persistence_restart ? !!persistence_restart.busy : FALSE,
 		"restart_phase" = persistence_restart ? persistence_restart.diagnostic_phase : null,
+		"standby" = persistence_restart ? !!persistence_restart.standby : FALSE,
+		"moving" = !!world_moving,
 		"persistence_busy" = !!persistence_save_in_progress,
 		"lifecycle_busy" = nomads_lifecycle ? !!nomads_lifecycle.busy : FALSE,
 		"maintenance_pending" = nomads_lifecycle ? !!nomads_lifecycle.maintenance_operation : FALSE,
@@ -382,6 +387,8 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /proc/player_world_activity(list/state)
 	if(state["recovery_hold"]) return "World recovery needs administrator attention."
+	if(state["moving"]) return "The world is moving to the updated server."
+	if(state["standby"]) return "Standby server is waiting for the world to move over."
 	if(state["kind"] == "save")
 		if(state["phase"] == "admitted") return "Preparing a world save."
 		if(state["phase"] == "candidate_validation") return "Validating the world save."
@@ -407,6 +414,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /proc/player_join_status(list/state)
 	if(state["recovery_hold"]) return "World recovery needs administrator attention."
+	if(state["moving"] || state["standby"]) return "The world is moving to the updated server - reconnect in a few minutes."
 	if(state["kind"] == "load") return "World is loading - please wait before joining."
 	if(state["kind"] == "save") return "World is saving - joining may be delayed."
 	if(state["startup_pending"] || state["restart_hold"]) return "World recovery is pending - please wait."

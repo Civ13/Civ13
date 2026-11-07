@@ -1025,6 +1025,10 @@ var/global/datum/persistence_admission_identity
 	// A lobby/setting-up world has no round to persist; restored rounds are PLAYING.
 	if(current_state < GAME_STATE_PLAYING)
 		return FALSE
+	// A standby world that has not loaded the save must never write over it.
+	if(persistence_restart && persistence_restart.standby && persistence_restart.startup_hold)
+		world.log << "World save refused: this standby world has not loaded the save yet."
+		return FALSE
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
 	if(!operation) return FALSE
 	operation.shutdown_save = shutdown || !!transaction

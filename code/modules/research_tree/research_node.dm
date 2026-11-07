@@ -555,6 +555,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/rope_spindle" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
 		"/obj/item/weapon/cane" = "basic_tools",
+		"/obj/item/clothing/accessory/storage/harness" = "basic_tools",
 		"/obj/item/weapon/chisel" = "basic_tools",
 		"/obj/item/weapon/chisel/metal" = "basic_tools",
 		"/obj/item/weapon/clay/mold/shovel" = "basic_tools",
@@ -765,9 +766,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (15) ---
+		// --- electricity (16) ---
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
+		"/obj/item/weapon/battery" = "electricity",
 		"/obj/item/connector/riser" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",

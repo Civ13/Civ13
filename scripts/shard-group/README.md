@@ -257,6 +257,67 @@ other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
 
+## Handover: updating a running region without downtime
+
+`handover [--region ID]` moves a running region onto its ready staged build
+without stopping it for the load:
+
+1. The staged `region.dmb`/`region.rsc` are copied into the region's spare build
+   slot (`region.dmb` or `region.b.dmb`; `data/shard-host/build.json` names the
+   live one in `file`) and started as a **standby world** on a loopback port
+   (`standby_port`, default the region's port + 10) with `-params standby=1`.
+   It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
+   is hidden from the hub, refuses joins and never saves.
+2. The running world freezes play ("the world is moving": players can look and
+   chat but not move or act, so nothing they do is lost), saves and publishes
+   its restart intent (lifecycle action `handover_save`). `map_saves` is backed
+   up as a stop would.
+3. The standby loads that save (`standby_load`). Its preflight and load are the
+   validation of both the save and the new build; while it loads, the old world
+   is still up.
+4. The old world is released (`handover_release`): it reboots out (DreamDaemon
+   exits with `-close`), and once its port is free the standby opens the
+   region's port too (`standby_open`, `world.OpenPort`). Players' clients
+   reconnect to the same address within seconds and find their characters as
+   after any restart. The region's worktree is checked out at the new revision
+   and `build.json` records the live slot.
+
+A failure before step 4 (the standby does not boot, the save fails, the load is
+rejected or times out after `load_timeout_seconds`, default 1800) stops the
+standby and cancels the freeze (`handover_cancel`); the old world carries on and
+the staged build stays ready for another try. A frozen world whose host never
+comes back releases itself after an hour. Regions take turns
+(`<root>/.staging/handover.lock`) because the machine must hold both worlds:
+`handover` is refused while less than `cold_start_min_free_mb` is free, while
+the region is asleep, cold or stopped (those get the staged build on their next
+wake or start), or when it already runs the staged revision. The standby logs to
+`logs/world.standby.log` until the region's next plain start. `status` shows the
+live slot under `build` and, during a handover, the standby port under `standby`.
+`deploy.bat` ([Windows](../windows/host/README.md#deploying-a-new-master)) runs
+pull, stage and handover in one go.
+
+A running world built before handovers existed cannot freeze and save for a
+standby (its lifecycle status has no `handover` field); `handover` then saves,
+stops, installs and starts it under the same action, so the first update onto a
+build that can hand over is still one `deploy.bat`.
+
+To rehearse a handover without a live region, point a group config at a spare
+root and loopback ports (one region with `standby_port`, `public: false`), run
+`setup`, `update --region ID`, `start --region ID`, then after a commit `stage
+--region ID` and `handover --region ID`, and follow
+`data/shard-host/operation.json` phases (`copying the staged build`, `booting the standby`, `saving`,
+`backing up`, `loading the standby`, `switching`, `checking out`, `handed over`,
+`done`). Rehearsed on Linux 516.1688 with the Rail Yard map: standby boot 4 s,
+frozen save about 60 s, standby load about 55 s, switch a few seconds. The first
+live test belongs on Rail Yard.
+
+Engine notes behind the switch: `world.OpenPort(port)` closes the world's own
+port before binding the new one and fails while another process still holds
+it, so the host waits for the old port to close (and kills a world that keeps
+it past two minutes) and the standby reopens its own port when the bind fails;
+Linux DreamDaemon has no `-close`, so a released world leaves with `del(world)`
+there instead of rebooting out.
+
 ## Player help ("Ask for help")
 
 With a `player_help` key, the host service (`gaia_host.py serve`) also keeps

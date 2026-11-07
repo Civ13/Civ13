@@ -53,10 +53,16 @@ from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate')
+                 'config-apply', 'config-migrate', 'handover')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
+# A handover boots the staged build beside the running world, so the region keeps two build
+# slots and build.json names the live one ('file'); the other is free for the next standby.
+DMB_SLOTS = ('region.dmb', 'region.b.dmb')
+STANDBY_PORT_OFFSET = 10  # the standby's loopback control port unless the region sets standby_port
+STANDBY_LOG = 'logs/world.standby.log'
+SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
@@ -119,6 +125,9 @@ def load_group(path):
             raise ValueError('region %s overlay must be a folder path' % region['id'])
         if type(region.get('map')) is not str or not region['map'].endswith('.dmm'):
             raise ValueError('region %s needs a map (.dmm)' % region['id'])
+        standby = region.get('standby_port')
+        if standby is not None and (type(standby) is not int or not 1024 <= standby <= 65535 or standby == port):
+            raise ValueError('region %s standby_port must be a free port from 1024 to 65535' % region['id'])
         ids.add(region['id'])
         ports.add(port)
     # Transfers (character travel and trade) need an agent port on every region.
@@ -245,6 +254,7 @@ def region_config(group, region):
             'systemd_scope': group.get('systemd_scope', ''),
             # Behind the routing relay: the launcher offers only the gate region.
             'routed': bool(group.get('relay_port')) and region['id'] != group.get('gate'),
+            'standby_port': region.get('standby_port'),
             '_path': str(path / 'data' / 'shard-host' / 'host.json'),
             # Only a hub-listed (-public) world needs the host's BYOND account signed in.
             'start_requires_byond_pager': bool(public)}
@@ -301,15 +311,25 @@ class RegionPlatform(Platform):
     def __init__(self, config):
         self.config = config
 
-    def start_task(self, name):
+    def start_task(self, name, dmb=DMB_SLOTS[0]):
         path = Path(self.config['repository'])
         (path / 'logs').mkdir(exist_ok=True)
         # The world must find its agent when it loads, so the agent starts first.
         self.start_agent()
-        argv = [self.config['daemon'], 'region.dmb', str(self.config['port']), '-trusted', '-close',
+        argv = [self.config['daemon'], dmb, str(self.config['port']), '-trusted', '-close',
                 '-public' if self.config['public'] else '-invisible', '-log', 'logs/world.log']
         detach(scoped(argv, self.config), path, None)
         return 0, 'started'
+
+    def start_standby(self, dmb, port):
+        """Boot dmb as a standby world on a loopback control port: it loads the map and waits for the
+        host to name the save (DM reads -params standby=1), hidden from the hub until it is opened."""
+        path = Path(self.config['repository'])
+        (path / 'logs').mkdir(exist_ok=True)
+        self.start_agent()
+        argv = [self.config['daemon'], dmb, str(port), '-trusted', '-close', '-invisible', '-log', STANDBY_LOG,
+                '-params', 'standby=1']
+        return detach(scoped(argv, self.config), path, None)
 
     def task_ready(self, name):
         return (Path(self.config['repository']) / 'region.dmb').exists()
@@ -341,6 +361,10 @@ class RegionHost(Host):
         stage = self.read_json(self.stage_file)
         if stage:
             report['stage'] = dict(stage, pending=self.update_pending())
+        report['build'] = self.live_dmb_name()
+        if self.lock.exists() and (self.read_state() or {}).get('action') == 'handover':
+            port = self.standby_port()
+            report['standby'] = {'port': port, 'listening': self.platform.listening(port)}
         return report
 
     def work(self, action, operation):
@@ -412,7 +436,18 @@ class RegionHost(Host):
     @contextlib.contextmanager
     def compile_slot(self, wait_seconds=7200):
         """One staged compile per group at a time, so a deploy never compiles every region at once."""
-        lock = self.repo.parent / '.staging' / 'compile.lock'
+        with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds):
+            yield
+
+    @contextlib.contextmanager
+    def handover_slot(self, wait_seconds=7200):
+        """One handover per group at a time: two Gaias loading at once would not fit in memory."""
+        with self.group_slot('handover.lock', 'handover', self.record, wait_seconds):
+            yield
+
+    @contextlib.contextmanager
+    def group_slot(self, name, what, record, wait_seconds):
+        lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
         while True:
@@ -428,8 +463,8 @@ class RegionHost(Host):
                     lock.unlink(missing_ok=True)
                     continue
                 if self.platform.now() > deadline:
-                    raise RuntimeError('another region kept the staging compiler busy too long')
-                self.stage_record(phase='waiting for another region\'s compile')
+                    raise RuntimeError('another region kept the %s slot busy too long' % what)
+                record(phase='waiting for another region\'s %s' % what)
                 self.platform.sleep(10)
         with os.fdopen(descriptor, 'w') as handle:
             handle.write(str(os.getpid()))
@@ -498,7 +533,7 @@ class RegionHost(Host):
 
     def request(self, action):
         # Checked before the lock: taking it would create the folder setup needs empty.
-        if action in ('start', 'restart', 'update') and not (self.repo / '.git').exists():
+        if action in ('start', 'restart', 'update', 'handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
@@ -507,13 +542,227 @@ class RegionHost(Host):
     def precheck(self, action):
         # start compiles a missing or stale build itself (Host.do_refresh), so a
         # region with no build yet is not refused.
+        if action == 'handover':
+            return self.precheck_handover()
         super().precheck(action)
 
     def task_ready_for_start(self):
         return True
 
+    def start_task(self):
+        return self.platform.start_task(self.config['task'], dmb=self.live_dmb_name())
+
+    # -- build slots -------------------------------------------------------------
+    def live_dmb_name(self):
+        """The .dmb the region runs (or starts) from: build.json's 'file', else region.dmb."""
+        record = self.read_json(self.build_file()) or {}
+        name = record.get('file')
+        return name if name in DMB_SLOTS else DMB_SLOTS[0]
+
+    def spare_dmb_name(self):
+        return DMB_SLOTS[1] if self.live_dmb_name() == DMB_SLOTS[0] else DMB_SLOTS[0]
+
     def dmb(self):
-        return self.repo / 'region.dmb'
+        return self.repo / self.live_dmb_name()
+
+    def standby_port(self):
+        port = self.config.get('standby_port')
+        return int(port) if port else self.config['port'] + STANDBY_PORT_OFFSET
+
+    # -- handover: a staged build takes over the running world without downtime -------
+    # The staged build boots beside the running world on a loopback port and waits. The
+    # old world freezes play, saves and publishes its restart intent; the standby loads that
+    # save (its load is the validation); then the old world reboots out (-close) and the
+    # standby opens the region's port as well, so players reconnect to the same address. A
+    # failure anywhere before the switch stops the standby and the old world carries on.
+    def precheck_handover(self):
+        if self.frozen():
+            raise Refused('the region is asleep; it gets the staged build on its next wake')
+        if not self.platform.listening(self.config['port']):
+            raise Refused('the region is not running; start installs the staged build')
+        if not self.token():
+            raise Refused('config/lifecycle-token.txt is missing, so the world cannot be asked to save')
+        staged = self.staged_revision()
+        if not staged:
+            raise Refused('no staged build is ready; run stage first')
+        if not self.update_pending():
+            raise Refused('the region already runs the staged build')
+        world = self.world()
+        if not world:
+            raise Refused('the world does not answer lifecycle status')
+        if world.get('busy') or not world.get('ready'):
+            raise Refused('the world is busy or not ready, so it cannot save now')
+        if self.platform.listening(self.standby_port()):
+            raise Refused('port %d (the standby port) is in use' % self.standby_port())
+        free = self.platform.free_memory_mb()
+        if free is not None and free < self.config['cold_start_min_free_mb']:
+            raise Refused('only %d MB free; a standby world needs %d MB to load beside the running one'
+                          % (free, self.config['cold_start_min_free_mb']))
+
+    def do_handover(self, operation):
+        group = load_group(self.config['group_config'])
+        region = next(r for r in group['regions'] if r['id'] == self.config['region'])
+        revision = self.staged_revision()
+        if not revision or not self.update_pending():
+            raise RuntimeError('no staged build newer than the running one')
+        port, spare_port, token = self.config['port'], self.standby_port(), self.token()
+        before = self.world()
+        if not token or not before:
+            raise RuntimeError('the world does not answer lifecycle status')
+        session = before.get('session', '')
+        if not gaia_host.HEX32.match(session or ''):
+            raise RuntimeError('the world gave no valid session')
+        if self.platform.listening(spare_port):
+            raise RuntimeError('port %d (the standby port) is in use' % spare_port)
+        if 'handover' not in before:
+            # The running build predates handovers (its status has no handover field), so it
+            # cannot freeze and save for a standby: the first update onto a build that can is
+            # the old save, stop, install and start, under this same action.
+            self.record(phase='the running build predates handovers; saving, stopping and starting instead')
+            with self.handover_slot():
+                self.do_stop(operation)
+                self.do_update(operation)
+                self.do_start(operation)
+            self.record(phase='restarted onto the staged build', revision=revision, staged=True, legacy=True)
+            return
+        with self.handover_slot():
+            self.handover_work(operation, group, region, revision, port, spare_port, token, before, session)
+
+    def handover_work(self, operation, group, region, revision, port, spare_port, token, before, session):
+        if self.platform.listening(spare_port):
+            raise RuntimeError('port %d (the standby port) is in use' % spare_port)
+        spare = self.spare_dmb_name()
+        self.record(phase='copying the staged build', revision=revision, build=spare, standby_port=spare_port)
+        source = self.stage_dir()
+        for name in STAGED_OUTPUTS:
+            target = self.repo / (spare[:-4] + name[-4:])  # region.b.dmb, region.b.rsc
+            temporary = self.repo / (target.name + '.staged')
+            shutil.copy2(source / name, temporary)
+            os.replace(temporary, target)
+        self.record(phase='booting the standby')
+        standby_pid = self.platform.start_standby(spare, spare_port)
+        standby = self.wait_world(spare_port, token, lambda s: s.get('standby') == 'waiting',
+                                 self.config['start_timeout_seconds'], 'the standby world did not boot', standby=True)
+        standby_session = standby.get('session', '')
+        if not gaia_host.HEX32.match(standby_session or ''):
+            self.stop_standby(spare_port, standby_pid)
+            raise RuntimeError('the standby world gave no valid session')
+        generation = None
+        try:
+            self.record(phase='saving', clients=before.get('clients'))
+            answer = self.platform.query(port, token, 'handover_save', operation, session)
+            if answer.get('operation') != operation:
+                raise RuntimeError('the world did not accept the save: %s' % (answer.get('error') or 'no operation in its reply'))
+            self.wait_world(port, token, lambda s: s.get('handover') == 'saved', self.config['save_timeout_seconds'],
+                            'the save did not finish in time; the world was left running')
+            self.record(phase='backing up')
+            saves = self.repo / 'map_saves'
+            for _ in range(30):
+                if not any(p.name.endswith('.lk') for p in saves.iterdir()):
+                    break
+                self.platform.sleep(2)
+            generation = gaia_host.check_save(saves)
+            backups = self.state_dir / 'backups'
+            gaia_host.copy_save(saves, backups / operation)
+            kept = sorted((p for p in backups.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
+            for old in kept[:-self.config['backups_kept']]:
+                shutil.rmtree(old)
+            self.record(phase='loading the standby', generation=generation, backup=str(backups / operation))
+            answer = self.platform.query(spare_port, token, 'standby_load', operation, standby_session)
+            if answer.get('operation') != operation:
+                raise RuntimeError('the standby world did not accept the load: %s' % (answer.get('error') or 'no operation in its reply'))
+            self.wait_world(spare_port, token, lambda s: s.get('ready') and not s.get('restart_hold'),
+                            self.config['load_timeout_seconds'], 'the standby world did not load the save in time',
+                            standby=True)
+        except Exception as error:
+            # The old world is still running: stop the standby and release the freeze.
+            self.record(phase='rolling back', error=str(error)[:500])
+            self.stop_standby(spare_port, standby_pid)
+            try:
+                self.platform.query(port, token, 'handover_cancel', operation, session)
+            except (OSError, RuntimeError, ValueError):
+                pass
+            raise
+        # The switch: from here the standby is the region.
+        self.record(phase='switching')
+        self.platform.query(port, token, 'handover_release', operation, session)
+        # world.OpenPort on a port another process still holds fails and closes the standby's
+        # own port (measured on 516.1688), so the old world's port must be free first.
+        deadline = self.platform.now() + SWITCH_SECONDS
+        killed = False
+        while self.platform.listening(port):
+            if self.platform.now() > deadline:
+                pid = self.platform.server_pid(port)
+                if pid and not killed:
+                    self.platform.kill_tree(pid)
+                    killed = True
+                    deadline = self.platform.now() + 30
+                    continue
+                raise RuntimeError('the old world kept port %d; the loaded standby still answers on port %d' % (port, spare_port))
+            self.platform.sleep(2)
+        deadline = self.platform.now() + 60
+        while True:
+            try:
+                self.platform.query(spare_port, token, 'standby_open', operation, standby_session, extra={'port': str(port)})
+                break
+            except (OSError, RuntimeError, ValueError) as error:
+                if self.platform.now() > deadline:
+                    raise RuntimeError('the new world did not open port %d (%s); it still answers on port %d' % (port, error, spare_port))
+                self.platform.sleep(3)
+        deadline = self.platform.now() + 60
+        while not self.platform.listening(port):
+            if self.platform.now() > deadline:
+                raise RuntimeError('the new world did not open port %d; it still answers on port %d' % (port, spare_port))
+            self.platform.sleep(2)
+        self.mark_running()
+        self.freeze_file.unlink(missing_ok=True)
+        self.cold_file.unlink(missing_ok=True)
+        watchdog = self.read_json(self.watchdog_file)
+        if watchdog and watchdog.pop('gave_up', None):
+            self.write_json(self.watchdog_file, watchdog)
+        (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
+        self.record_build(revision, spare)
+        self.record(phase='checking out', revision=revision)
+        try:  # the sources beside the new build; the world itself needs nothing from them
+            prepare_tree(group, region, self.repo, revision, self.platform, self.config['git'])
+        except (OSError, RuntimeError) as error:
+            self.record(checkout_warning=str(error)[:300])
+        self.record(phase='handed over', revision=revision, generation=generation, build=spare, staged=True)
+
+    def wait_world(self, port, token, done, timeout, what, standby=False):
+        """Poll a world's lifecycle status until done(status) is true; its status.
+
+        A status error fails at once, as does a world whose port closed. A status that
+        does not answer (a busy load) only counts against the timeout."""
+        now = self.platform.now()
+        deadline = now + timeout
+        grace = now + 30 if standby else now  # a standby's port opens a moment after its process starts
+        while True:
+            status = None
+            if self.platform.listening(port):
+                try:
+                    status = self.platform.query(port, token)
+                except (OSError, RuntimeError, ValueError):
+                    status = None
+            elif self.platform.now() > grace:
+                raise RuntimeError('%s: the %s is not listening' % (what, 'standby world' if standby else 'world'))
+            if status:
+                if status.get('error'):
+                    raise RuntimeError('%s: %s' % (what, status['error']))
+                if done(status):
+                    return status
+            if self.platform.now() > deadline:
+                raise RuntimeError(what)
+            self.platform.sleep(5)
+
+    def stop_standby(self, port, pid=None):
+        pid = self.platform.server_pid(port) or pid
+        if pid:
+            try:
+                self.platform.kill_tree(pid)
+            except OSError:  # already gone
+                pass
+        return pid
 
     def latest_revision(self):
         """Fetch the group's remote, then the group revision this region should run."""
@@ -553,14 +802,14 @@ class RegionHost(Host):
         if self.platform.listening(self.config['port']):
             raise RuntimeError('the region started during the update; not compiling')
         if self.install_staged(revision):
-            self.record_build(revision)
+            self.record_build(revision, DMB_SLOTS[0])
             self.record(phase='compiled', revision=revision, map=region['map'], staged=True)
             return
         self.record(phase='compiling', revision=revision)
         code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800)
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
-        self.record_build(revision)
+        self.record_build(revision, DMB_SLOTS[0])
         self.record(phase='compiled', revision=revision, map=region['map'])
 
 
