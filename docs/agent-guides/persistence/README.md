@@ -22,6 +22,23 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-07: sparse building levels -->
+An added open-air building level (z above `building_base_maxz()`, not a dug
+cave) is saved sparsely: `sparse_level_kind()` in `functions.dm` chooses it,
+the level index gets a `/sparse` header (`kind`, `turf`, `zone`, `cells`) and
+`/map/<z>/<y>/<x>` holds only the cells that differ from the baseline turf in
+the baseline area (another type, a non-default saved field, saveable contents
+or another area; `sparse_baseline_cell()`). The loader regenerates every other
+cell (`Load_World` resets a reloaded level's unsaved cells; a restore already
+allocated the baseline) and the preflight, zone capture, roof preflight and
+reachability walks read the saved cells through `sparse_level_cells()` and
+`level_turf_refs()`. `sparse_level_header()` checks presence through the
+directory: reading an absent savefile key creates it. The baseline zone fills
+`validated_zone_grid` for unsaved cells. Fixtures set
+`map_storage.sparse_level_override = list("<z>" = baseline turf)`; the
+roundtrip fixture saves its level 2 sparsely in every variant. A Gaia-sized
+empty level measured 34 MB and 9 s as a full level, 40 KB sparse.
+
 <!-- 2026-11-05: interrupted saves, structural candidate check, host-requested save -->
 A save deletes `map_saves/save_complete.txt` first and writes it last, so a
 crash in between leaves files without a marker. `map_storage.recover_interrupted_save()`

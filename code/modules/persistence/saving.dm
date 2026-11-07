@@ -155,8 +155,8 @@
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
-				savefile["/map/[A]/[y]/[x]"] << ref
 				sparse_cells++
+				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
 				if(saving_segments) saving_segments.rotate_if_full()
 			if(sparse_turf) save_work_check()

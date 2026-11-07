@@ -361,13 +361,15 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		if(F.dir.len != (sparse ? sparse["cells"] : world.maxx * world.maxy)) throw EXCEPTION("Incomplete captured zone level")
 		F.cd = "/map"
 		if(!sparse && !("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
-		F.cd = sparse ? "/" : "/map/[z]"
+		if(sparse) F.cd = "/"
+		else F.cd = "/map/[z]"
 		// savefile.dir follows the current directory; detach this listing before
 		// checking membership entries, which changes F.cd inside the turf loop.
 		var/list/rows = F.dir.Copy()
 		for(var/y = 1, y <= world.maxy, y++)
 			var/list/columns = sparse_cells ? sparse_cells["[y]"] : null
-			if(!sparse && !("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
+			if(!sparse)
+				if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
 			var/next_column = 1
 			for(var/x = 1, x <= world.maxx, x++)
 				if(sparse)
