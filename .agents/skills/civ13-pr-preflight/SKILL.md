@@ -47,7 +47,9 @@ It lists every test, manifest and fixture that names each changed file and the
 offline suites CI will select. For a pinned file, either leave it untouched
 (best for cosmetic sweeps) or update the fixture or hash in the same commit and
 say so in the PR. Never loosen the test. `tests/movement_save_chunks/collision_overrides.json`
-is refreshed with `collision_manifest.py --write`.
+hashes each CanPass/CheckExit body and parent_type line (not whole files), runs in
+the offline `movement_save_inventory` suite on every PR, and is refreshed with
+`collision_manifest.py --write` after auditing the changed declaration.
 
 ## 3. Regenerate generated crafting files
 

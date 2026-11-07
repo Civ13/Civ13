@@ -719,6 +719,12 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    # Source-only inventories the native moving-save lane pins (collision overrides,
+    # animal save hooks). They scan all production DM, so they run on every PR: the
+    # PR that edits a listed file refreshes the inventory, not the next save PR.
+    'movement_save_inventory': {'files': ('tests/movement_save_chunks/test_collision_manifest.py',
+                                          'tests/movement_save_chunks/test_chunks.py'),
+                                'always': True, 'paths': ()},
     # Stdlib-only scalar/callback projections; no native runner or subprocesses.
     # Shared chemistry/stack sources retain their conservative all-suite fallback.
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
@@ -1092,6 +1098,8 @@ def run_unit(name, output):
     # These reviewed suites import adjacent, source-only specification helpers.
     if name in ('save_movement', 'character_traits'):
         sys.path.insert(0, str(ROOT / 'tests' / name))
+    elif name == 'movement_save_inventory':
+        sys.path.insert(0, str(ROOT / 'tests' / 'movement_save_chunks'))
     elif name == 'help_toxin_context':
         sys.path.insert(0, str(ROOT / 'tests' / 'player_help'))
     for index, relative in enumerate(SUITES[name]['files']):

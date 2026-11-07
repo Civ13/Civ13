@@ -397,19 +397,21 @@ class CheckoutRefsTests(unittest.TestCase):
         self.assertIn('Compilation receipt did not complete', receipt)
         upload = build.split('      - name: Retain compiler diagnostics and source receipts including failures\n', 1)[1].split('\n      - ', 1)[0]
         self.assertIn("steps.compile_receipt.outcome != 'skipped' && steps.compile_receipt.outcome != ''", upload)
-        for event, extensive, new_tests, labels, expected in (
-                ('pull_request', 'false', '[]', '[]', 'shallow'),
-                ('push', 'false', '[]', 'null', 'shallow'),
-                ('pull_request', 'false', '[]', '["roof-ci:head"]', 'history'),
-                ('pull_request', 'false', '["tests/fixture"]', '[]', 'history'),
-                ('pull_request', 'true', '[]', '[]', 'history'),
-                ('workflow_dispatch', 'false', '[]', 'null', 'history'),
-                ('pull_request', 'false', '', '[]', 'history'),
-                ('pull_request', 'false', '[]', 'null', 'history')):
-            values = dict(event=event, extensive=extensive, new_tests=new_tests, labels=labels)
+        # roof: the PR carries the exact-head roof-ci:<sha> label. Other labels
+        # (skip-ci, area tags) must not pay for a full-history checkout.
+        roof_label = "contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))"
+        for event, extensive, new_tests, roof, expected in (
+                ('pull_request', 'false', '[]', False, 'shallow'),
+                ('push', 'false', '[]', False, 'shallow'),
+                ('pull_request', 'false', '[]', True, 'history'),
+                ('pull_request', 'false', '["tests/fixture"]', False, 'history'),
+                ('pull_request', 'true', '[]', False, 'history'),
+                ('workflow_dispatch', 'false', '[]', False, 'history'),
+                ('pull_request', 'false', '', False, 'history')):
+            values = dict(event=event, extensive=extensive, new_tests=new_tests, roof=roof)
             outcomes = []
             for expression in expressions:
-                for old, new in (('toJSON(github.event.pull_request.labels)', 'labels'),
+                for old, new in (('!' + roof_label, ' not roof'), (roof_label, 'roof'),
                                  ('github.event_name', 'event'),
                                  ('needs.changes.outputs.extensive', 'extensive'),
                                  ('needs.changes.outputs.new_tests', 'new_tests'),
@@ -418,6 +420,7 @@ class CheckoutRefsTests(unittest.TestCase):
                 parsed = ast.parse(expression, mode='eval')
                 for node in ast.walk(parsed):
                     self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or,
+                                                 ast.UnaryOp, ast.Not,
                                                  ast.Compare, ast.Eq, ast.NotEq, ast.Name,
                                                  ast.Load, ast.Constant))
                     if isinstance(node, ast.Name):
