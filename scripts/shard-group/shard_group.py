@@ -632,12 +632,12 @@ class RegionHost(Host):
             shutil.copy2(source / name, temporary)
             os.replace(temporary, target)
         self.record(phase='booting the standby')
-        self.platform.start_standby(spare, spare_port)
+        standby_pid = self.platform.start_standby(spare, spare_port)
         standby = self.wait_world(spare_port, token, lambda s: s.get('standby') == 'waiting',
                                  self.config['start_timeout_seconds'], 'the standby world did not boot', standby=True)
         standby_session = standby.get('session', '')
         if not gaia_host.HEX32.match(standby_session or ''):
-            self.stop_standby(spare_port)
+            self.stop_standby(spare_port, standby_pid)
             raise RuntimeError('the standby world gave no valid session')
         generation = None
         try:
@@ -669,7 +669,7 @@ class RegionHost(Host):
         except Exception as error:
             # The old world is still running: stop the standby and release the freeze.
             self.record(phase='rolling back', error=str(error)[:500])
-            self.stop_standby(spare_port)
+            self.stop_standby(spare_port, standby_pid)
             try:
                 self.platform.query(port, token, 'handover_cancel', operation, session)
             except (OSError, RuntimeError, ValueError):
@@ -678,15 +678,29 @@ class RegionHost(Host):
         # The switch: from here the standby is the region.
         self.record(phase='switching')
         self.platform.query(port, token, 'handover_release', operation, session)
+        # world.OpenPort on a port another process still holds fails and closes the standby's
+        # own port (measured on 516.1688), so the old world's port must be free first.
         deadline = self.platform.now() + SWITCH_SECONDS
+        killed = False
         while self.platform.listening(port):
             if self.platform.now() > deadline:
                 pid = self.platform.server_pid(port)
-                if pid:
+                if pid and not killed:
                     self.platform.kill_tree(pid)
-                break
+                    killed = True
+                    deadline = self.platform.now() + 30
+                    continue
+                raise RuntimeError('the old world kept port %d; the loaded standby still answers on port %d' % (port, spare_port))
             self.platform.sleep(2)
-        self.platform.query(spare_port, token, 'standby_open', operation, standby_session, extra={'port': str(port)})
+        deadline = self.platform.now() + 60
+        while True:
+            try:
+                self.platform.query(spare_port, token, 'standby_open', operation, standby_session, extra={'port': str(port)})
+                break
+            except (OSError, RuntimeError, ValueError) as error:
+                if self.platform.now() > deadline:
+                    raise RuntimeError('the new world did not open port %d (%s); it still answers on port %d' % (port, error, spare_port))
+                self.platform.sleep(3)
         deadline = self.platform.now() + 60
         while not self.platform.listening(port):
             if self.platform.now() > deadline:
@@ -733,10 +747,13 @@ class RegionHost(Host):
                 raise RuntimeError(what)
             self.platform.sleep(5)
 
-    def stop_standby(self, port):
-        pid = self.platform.server_pid(port)
+    def stop_standby(self, port, pid=None):
+        pid = self.platform.server_pid(port) or pid
         if pid:
-            self.platform.kill_tree(pid)
+            try:
+                self.platform.kill_tree(pid)
+            except OSError:  # already gone
+                pass
         return pid
 
     def latest_revision(self):

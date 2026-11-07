@@ -161,7 +161,13 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 		var/port = text2num(input["port"])
 		if(!isnum(port) || port != round(port) || port < 1024 || port > 65535)
 			return json_encode(snapshot(FALSE, "malformed_request"))
+		// OpenPort closes this world's own port before binding the new one; when the old
+		// world still holds it, the bind fails, so reopen the standby port and stay reachable
+		// for the host's next try.
+		var/standby_port = world.port
 		if(!world.OpenPort(port))
+			world.OpenPort(standby_port)
+			world.log << "Standby world could not open port [port]; still on port [world.port]."
 			return json_encode(snapshot(FALSE, "port_not_opened"))
 		persistence_restart.standby = FALSE
 		world.visibility = config && config.hub ? TRUE : FALSE

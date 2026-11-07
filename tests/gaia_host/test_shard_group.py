@@ -1160,6 +1160,45 @@ class HandoverTests(unittest.TestCase):
         machine.start_standby = boot
         return group, host
 
+    def test_old_world_that_keeps_its_port_is_killed_before_the_standby_opens_it(self):
+        group, host = self.staged()
+        query = self.machine.query
+
+        def stubborn(port, token, action='status', operation=None, session=None, extra=None):
+            answer = query(port, token, action, operation, session, extra)
+            if action == 'handover_release':
+                self.machine.up.add(self.LIVE)  # it rebooted in place instead of exiting
+            return answer
+        self.machine.query = stubborn
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+        kill = self.machine.calls.index((['kill_tree', 100], None))
+        self.assertGreater(kill, 0, 'the old world was killed after the switch deadline')
+        open_at = self.actions.index((self.STANDBY, 'standby_open', {'port': '1720'}))
+        self.assertTrue(open_at >= 0)
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_standby_open_refused_while_the_port_is_held_is_retried(self):
+        group, host = self.staged()
+        query = self.machine.query
+        refused = []
+
+        def flaky(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_open' and not refused:
+                refused.append(self.machine.now())
+                raise RuntimeError('Lifecycle request rejected')  # port_not_opened: the standby reopened its own port
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = flaky
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertEqual(len([1 for _, action, _ in self.actions if action == 'standby_open']), 1, 'the retry reached the world')
+        self.assertEqual(len(refused), 1)
+        self.assertIn(self.LIVE, self.machine.up)
+
     def test_handover_moves_the_region_onto_the_staged_build_without_stopping_it(self):
         group, host = self.staged()
         live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'

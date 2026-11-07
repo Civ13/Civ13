@@ -294,7 +294,15 @@ var/global/world_moving = FALSE
 	if(handover_state != "released") throw EXCEPTION("Handover cancelled by the host; the world resumes")
 	to_chat(world, "<font color='yellow' size=4><b>The updated server is ready. Reconnecting you now...</b></font>")
 	diagnostic_phase = "shutdown"
-	request_restart()
+	if(world.system_type == MS_WINDOWS)
+		// DreamDaemon -close exits on reboot and clients keep reconnecting until the standby
+		// answers on this port.
+		request_restart()
+	// Linux DreamDaemon has no -close and reboots in place, which would put the old world back
+	// on the region's port beside the standby: leave the way a stop does.
+	del(world)
+	sleep(1)
+	throw EXCEPTION("Native shutdown returned without closing the world")
 
 /datum/persistence_restart_transaction/proc/handover_release()
 	if(handover_state != "saved") return FALSE
