@@ -158,6 +158,8 @@ class ProductionBoundaryTests(unittest.TestCase):
             '/mob/living/simple_animal/before_save',
             '/mob/living/simple_animal/persistence_runtime_var',
             '/mob/living/simple_animal/hostile/persistence_runtime_var',
+            # Audited for #3883: a nonyielding key comparison; raiders never save.
+            '/mob/living/simple_animal/hostile/human/nomad_raider/persistence_runtime_var',
             '/mob/living/simple_animal/pet/persistence_runtime_var',
         }, 'New animal projection hooks require a nonyielding/ownership audit')
 
