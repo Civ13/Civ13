@@ -38,6 +38,10 @@ class ModernBridgeSourceTests(unittest.TestCase):
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8')
         self.assertIn('istype(get_turf(H), /turf/floor/beach/water/deep) && !bridge_deck_at(get_turf(H))', stack)
 
+    def test_track_can_be_laid_on_a_deck(self):
+        laying = (ROOT / 'code/modules/1713/track_laying.dm').read_text(encoding='utf-8')
+        self.assertIn('(istype(T, /turf/floor/beach/water) && !bridge_deck_at(T))', laying)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/modern_bridges/probe.dm"', generated[run.PREFIX + '.dme'])

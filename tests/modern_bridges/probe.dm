@@ -52,6 +52,7 @@ var/global/bridge_probe_runtime_error = FALSE
 	bridge_probe_check("deck/covers_water", first.iscovered() && first.water_level == 0)
 	bridge_probe_check("deck/does_not_sink", !QDELETED(D) && D.loc == first)
 	bridge_probe_check("span/occupied_refused", bridge_span_problem(first, builder))
+	bridge_probe_check("track/layable_on_deck", isnull(track_lay_problem(first)) && track_lay_problem(bridge_probe_turf(7, 4)))
 
 	// Out on the deck the builder carries on; a swimmer cannot.
 	builder.loc = first

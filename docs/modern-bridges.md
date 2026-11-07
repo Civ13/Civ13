@@ -39,4 +39,5 @@ shelling drops any track on it into the water.
 ## Track laying
 
 `bridge_deck_at(T)` returns the deck on a tile. Piece-by-piece track laying
-treats a tile with a bridge deck as firm ground.
+(`track_lay_problem()`) treats water with a bridge deck as firm ground, so
+sleepers, rails and spikes go on a deck the same way as on land.
