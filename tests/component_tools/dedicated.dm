@@ -148,3 +148,48 @@
 	H.r_hand = null
 	qdel(A)
 	qdel(W)
+
+// Casting foundry: molten metal from a kiln pot, gated by age and research.
+/proc/run_foundry_checks(mob/living/human/component_ci/H, turf/T)
+	map.civilizations = TRUE
+	map.ordinal_age = 3
+	H.l_hand = null
+	H.r_hand = null
+	H.ci_crafting = 0.5 // casting needs no smithing skill
+	var/obj/structure/component_workbench/toolsmith/foundry/F = new(T)
+	F.assembly_time = 1
+	var/obj/item/weapon/clay/mold/claypot/fired/gold_pot = new(H)
+	gold_pot.capacity = 9
+	gold_pot.current_material = "gold"
+	H.r_hand = gold_pot
+	component_check(!F.insert(gold_pot, H), "foundry accepted molten gold")
+	var/obj/item/weapon/clay/mold/claypot/fired/cold_pot = new(H)
+	H.r_hand = cold_pot
+	component_check(!F.insert(cold_pot, H), "foundry accepted an empty pot")
+	var/obj/item/weapon/clay/mold/claypot/fired/pot = new(H)
+	pot.capacity = 10
+	pot.current_material = "iron"
+	H.r_hand = pot
+	component_check(F.insert(pot, H), "foundry pot staging")
+	var/obj/item/stack/material/wood/wood = new(H, 5, FALSE)
+	H.r_hand = wood
+	component_check(F.insert(wood, H), "foundry wood staging")
+	H.r_hand = null
+	component_check(F.ready_count("Hatchet") == 3, "foundry ready count without an anvil")
+	component_check(!F.assemble(H) && pot.capacity == 10, "foundry pre-industrial bypass")
+	map.ordinal_age = 4
+	H.civilization = "foundry_ci"
+	// Machined Tools is a main-tree node, so the industrial era baseline grants it.
+	map.complete_node(H.civilization, "machined_tools")
+	var/made = 0
+	for (var/obj/item/weapon/material/hatchet/hatchet in T)
+		if (hatchet.type == /obj/item/weapon/material/hatchet) made--
+	component_check(F.assemble(H) == 3, "foundry batch")
+	for (var/obj/item/weapon/material/hatchet/hatchet in T)
+		if (hatchet.type == /obj/item/weapon/material/hatchet && hatchet.material && hatchet.material.name == "iron") made++
+	component_check(made == 3 && pot.capacity == 1 && pot.current_material == "iron" && wood.amount == 2, "foundry exact pour")
+	component_check(!F.ready_count("Hatchet") && F.select_recipe(H, "Shovel") && pot.loc == T, "foundry retarget returns the pot")
+	H.ci_crafting = 2
+	qdel(gold_pot)
+	qdel(cold_pot)
+	qdel(F)
