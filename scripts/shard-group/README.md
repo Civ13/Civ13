@@ -275,8 +275,16 @@ root and loopback ports (one region with `standby_port`, `public: false`), run
 --region ID` and `handover --region ID`, and follow
 `data/shard-host/operation.json` phases (`copying the staged build`, `booting the standby`, `saving`,
 `backing up`, `loading the standby`, `switching`, `checking out`, `handed over`,
-`done`). The first live test belongs on
-Rail Yard, whose load takes under a minute.
+`done`). Rehearsed on Linux 516.1688 with the Rail Yard map: standby boot 4 s,
+frozen save about 60 s, standby load about 55 s, switch a few seconds. The first
+live test belongs on Rail Yard.
+
+Engine notes behind the switch: `world.OpenPort(port)` closes the world's own
+port before binding the new one and fails while another process still holds
+it, so the host waits for the old port to close (and kills a world that keeps
+it past two minutes) and the standby reopens its own port when the bind fails;
+Linux DreamDaemon has no `-close`, so a released world leaves with `del(world)`
+there instead of rebooting out.
 
 ## Player help ("Ask for help")
 
