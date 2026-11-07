@@ -1838,6 +1838,7 @@ RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,
 RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cable riser,/obj/item/connector/riser,2,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,bus tie switch,/obj/item/connector/bus_tie,2,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,battery,/obj/item/weapon/battery,1,35,0,1,electrical,105,0,0,8,null
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 
@@ -2060,7 +2061,6 @@ RECIPE: /material/bronze/,globe,/obj/item/weapon/globe,8,90,0,1,religious & deco
 
 RECIPE: /material/wood/,wooden knife,/obj/item/weapon/material/kitchen/utensil/knife/wood,2,60,0,1,none,0,0,0,8,null
 
-RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,null
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
 

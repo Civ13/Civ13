@@ -217,6 +217,9 @@ jobs:
       - name: Test chainsaw tree-felling declarations offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_chainsaw.py')
         run: python3 -B -m unittest discover -s tests -p test_chainsaw.py -v
+      - name: Test light fuel and handle torch declarations offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_light_fuel.py')
+        run: python3 -B -m unittest discover -s tests -p test_light_fuel.py -v
       - name: Test wolf cave ownership source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wolf_cave_ownership')
         run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
