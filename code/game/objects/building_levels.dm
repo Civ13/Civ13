@@ -71,6 +71,10 @@ var/building_compiled_maxz = 0
 		return
 	if (istype(A, /obj/effect) || istype(A, /obj/item/projectile))
 		return
+	// An airborne aircraft is the floor for what it carries.
+	var/aircraft_holds = text2path("/proc/aircraft_holds")
+	if (aircraft_holds && call(aircraft_holds)(src, A))
+		return
 	var/below_z = multiz_level_below(z)
 	var/turf/below = below_z ? locate(x, y, below_z) : null
 	if (below)
