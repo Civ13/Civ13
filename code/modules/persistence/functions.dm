@@ -498,7 +498,7 @@ map_storage
 #endif
 	if(key == "consecutive_save_failures") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
-	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
+	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas", "validated_roof_walk_levels", "validated_reachable_entries", "validated_entries_trusted")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
 	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error", "debug_recovery_hold", "debug_recovery_session")) return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY

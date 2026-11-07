@@ -46,10 +46,28 @@
 			return FALSE
 	return TRUE
 
+// Map instantiation and world loads place every floor of a level in one batch;
+// refreshing the eight neighbours of each placement repeats each floor's icon
+// nine times over (2.9 million update_icon calls for a Gaia boot). While
+// deferred, set_flooring leaves the icon to refresh_deferred_floor_icons, which
+// rebuilds every floor once after the batch, from its final neighbours.
+var/global/floor_icon_updates_deferred = TRUE
+
+/proc/refresh_deferred_floor_icons(z = 0, yield = FALSE)
+	var/count = 0
+	for (var/level = (z ? z : 1), level <= (z ? z : world.maxz), level++)
+		for (var/turf/floor/F in block(locate(1, 1, level), locate(world.maxx, world.maxy, level)))
+			F.update_icon()
+			count++
+			if (yield && (count % 4096 == 0) && world.tick_usage > 80)
+				sleep(world.tick_lag)
+	return count
+
 /turf/floor/proc/set_flooring(var/decl/flooring/newflooring)
 	make_plating(defer_icon_update = TRUE)
 	flooring = newflooring
-	update_icon(1)
+	if (!floor_icon_updates_deferred)
+		update_icon(1)
 	levelupdate()
 
 //This proc will set floor_type to null and the update_icon() proc will then change the icon_state of the turf

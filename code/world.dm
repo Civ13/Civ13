@@ -91,6 +91,12 @@ var/world_is_open = TRUE
 
 	world.SetConfig("APP/admin", ckey("Taislin"), "role=root")
 
+	// The compiled map's floors were placed with icon updates deferred (floor.dm).
+	floor_icon_updates_deferred = FALSE
+	var/floor_icons_started = world.timeofday
+	var/floor_icons = refresh_deferred_floor_icons()
+	world.log << "Floor icons: [floor_icons] floors refreshed once in [round((world.timeofday - floor_icons_started) / 10, 0.1)] s."
+
 	callHook("startup")
 	//Emergency Fix
 //	load_mods()

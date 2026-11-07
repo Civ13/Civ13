@@ -225,17 +225,35 @@
 /obj/item/weapon/book/holybook/examine(mob/user)
 	return
 
+// The custom religion's row (name, ..., symbol, colours, style) once it can be
+// read. A restored object asks before the world load has restored map
+// metadata, so wait for that load to finish instead of reading from a null
+// list (three runtime errors on every live restart, and the overlays were lost).
+/proc/religion_look_data(religion)
+	if (!religion || religion == "none")
+		return null
+	var/until = world.time + 18000
+	while (persistence_active_operation && world.time < until && (!map || !islist(map.custom_religions) || !islist(map.custom_religions[religion])))
+		sleep(50)
+	if (!map || !islist(map.custom_religions))
+		return null
+	var/list/row = map.custom_religions[religion]
+	return (islist(row) && row.len >= 7) ? row : null
+
 /obj/item/weapon/book/holybook/New()
 	..()
 	spawn(10)
 		if (religion != "none")
 			name = "[title]"
 			desc = "This is the [title], the holy book of the [religion] religion. Written by [author]."
+			var/list/look = religion_look_data(religion)
+			if (!look)
+				return
 			var/image/overc = image("icon" = icon, "icon_state" = "holybook_o1")
-			overc.color = map.custom_religions[religion][6]
+			overc.color = look[6]
 			overlays += overc
-			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[map.custom_religions[religion][4]]")
-			overs.color = map.custom_religions[religion][5]
+			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[look[4]]")
+			overs.color = look[5]
 			overlays += overs
 			update_icon()
 
@@ -299,17 +317,18 @@
 	..()
 	invisibility = 101
 	spawn(10)
-		if (religion != "none")
+		var/list/look = religion_look_data(religion)
+		if (look)
 			name = "[religion]'s poster"
 			desc = "This is a [religion] religion propaganda poster."
 			var/image/overc = image("icon" = icon, "icon_state" = "poster_base_o1")
-			overc.color = map.custom_religions[religion][6]
+			overc.color = look[6]
 			overlays += overc
 			var/image/overc1 = image("icon" = icon, "icon_state" = "poster_base_o2")
-			overc1.color = map.custom_religions[religion][5]
+			overc1.color = look[5]
 			overlays += overc1
-			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[map.custom_religions[religion][4]]")
-			overs.color = map.custom_religions[religion][5]
+			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[look[4]]")
+			overs.color = look[5]
 			overlays += overs
 		transform = matrixangle(rand(-9,9))
 		update_icon()
@@ -343,17 +362,18 @@ obj/structure/altar
 	..()
 	invisibility = 101
 	spawn(10)
-		if (religion != "none")
+		var/list/look = religion_look_data(religion)
+		if (look)
 			name = "[religion]'s altar"
 			desc = "This is a altar dedicated to the [religion] religion."
 			var/image/overc = image("icon" = icon, "icon_state" = "thin_banner_1")
-			overc.color = map.custom_religions[religion][6]
+			overc.color = look[6]
 			overlays += overc
 			var/image/overc1 = image("icon" = icon, "icon_state" = "thin_banner_2")
-			overc1.color = map.custom_religions[religion][5]
+			overc1.color = look[5]
 			overlays += overc1
-			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[map.custom_religions[religion][4]]")
-			overs.color = map.custom_religions[religion][5]
+			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[look[4]]")
+			overs.color = look[5]
 			overlays += overs
 		update_icon()
 		invisibility = 0

@@ -170,7 +170,7 @@
 #endif
 		// A stream level's candidate check reads this summary of the pinned
 		// objects instead of walking the published file back (loading.dm).
-		if(stream_writer && !debug_policy && !candidate_readback_required()) record_candidate_level_structure(A)
+		if(stream_writer && !debug_policy && !candidate_readback_required()) record_candidate_level_structure(A, sparse_turf, sparse_area)
 		if(saving_segments)
 			saving_segments.finish()
 			saving_segments = null
@@ -965,7 +965,7 @@
 // unique across levels, and roofs sit once on a turf of this level. The helper
 // proved on publish that every entry and list the file references exists, and
 // the next preflight on disk walks the values in full.
-/map_storage/proc/record_candidate_level_structure(z)
+/map_storage/proc/record_candidate_level_structure(z, sparse_turf, area/sparse_area)
 	if(!saving_candidate_structure) saving_candidate_structure = list("player_owners" = list())
 	var/list/player_owners = saving_candidate_structure["player_owners"]
 	var/roof_root = text2path("/obj/roof")
@@ -1008,7 +1008,31 @@
 		if(!isnum(child) || child < 1 || child > count || !isnum(parent) || parent < 1 || parent > count) throw EXCEPTION("Saved content edge leaves the level z=[z]")
 		var/datum/child_entry = saving_reference_pins[child]
 		if(!isnull(child_entry) && !istype(child_entry, /atom/movable)) throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
-	saving_candidate_structure["[z]"] = list("entries" = count, "roofs" = roofs)
+	// A durable metadata entry on this level must sit under a saved turf
+	// through content edges, as validate_durable_reachability proves on disk
+	// for a load; the pinned objects answer it here without reading the
+	// level back (that read cost about as much as writing the level).
+	var/list/reachable = list()
+	if(durable_export)
+		var/screen_root = text2path("/obj/screen")
+		var/hud_root = text2path("/datum/hud")
+		for(var/list/node in durable_export.nodes)
+			if(node["kind"] != "entry" || node["z"] != z || !node["ref"]) continue
+			var/cursor = node["ref"]
+			var/steps = 0
+			while(TRUE)
+				var/datum/entry = (isnum(cursor) && cursor >= 1 && cursor <= count) ? saving_reference_pins[cursor] : null
+				if(isturf(entry))
+					var/turf/T = entry
+					if(T.z != z || (sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))) throw EXCEPTION("Durable metadata references an unreachable world entry")
+					break
+				var/parent = saving_content_owners["[cursor]"]
+				if(!isnum(parent) || parent < 1 || parent > count || ++steps > count) throw EXCEPTION("Durable metadata references an unreachable world entry")
+				var/datum/owner = saving_reference_pins[parent]
+				if((screen_root && istype(owner, screen_root)) || (hud_root && istype(owner, hud_root))) throw EXCEPTION("Durable metadata references an unreachable world entry")
+				cursor = parent
+			reachable["[node["ref"]]"] = TRUE
+	saving_candidate_structure["[z]"] = list("entries" = count, "roofs" = roofs, "durable_reachable" = reachable)
 
 /map_storage/proc/capture_moving_save_root(savefile/destination, list/record)
 	var/mob/living/simple_animal/A = record["atom"]
