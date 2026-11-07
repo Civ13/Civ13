@@ -36,6 +36,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete starting-coin helper projection; no native game or save access.
+    'nomad_starting_coins': {'files': ('tests/nomad_starting_coins/test_starting_coins.py',),
+        'paths': ('tests/nomad_starting_coins/',), 'shared_paths': (
+            'code/modules/1713/jobs/nomads.dm', 'code/game/objects/items/stacks/money.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/gameticker.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/region_travel.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete bounded Gaia spawn helpers with fake spatial/engine boundaries.
     'gaia_spawn': {'files': ('tests/gaia_spawn/test_spawn.py',),
         'paths': ('tests/gaia_spawn/',), 'shared_paths': (
@@ -833,6 +842,12 @@ SUITES = {
         'paths': ('tests/time_of_day_progress/', 'code/processes/time_of_day_progress.dm'),
         'shared_paths': ('code/processes/time_of_day.dm', 'code/__defines/time_of_day.dm',
             'code/processes/_process.dm', 'code/game/mob/mob.dm', 'civ13.dme')},
+    # Current-world Persistence census and complete largest-faction tally; offline only.
+    'persistence_status': {'files': ('tests/persistence_status/test_status.py',),
+        'paths': ('tests/persistence_status/',), 'shared_paths': (
+            'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
+            'code/game/mob/groups/factions.dm', 'code/predefines.dm',
+            'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

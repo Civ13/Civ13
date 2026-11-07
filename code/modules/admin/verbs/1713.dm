@@ -607,6 +607,11 @@ var/tsfsr_forceEnabled = FALSE
 	show_global_battle_report(src, TRUE)
 
 /proc/show_global_battle_report(var/shower, var/private = FALSE)
+	// A yielding/failed load is not a complete world census.
+	if (map && map.persistence && (persistence_load_recovery_required || (persistence_active_operation && persistence_active_operation.kind == "load")))
+		if (shower)
+			to_chat(shower, "<span class = 'warning'>The status report is unavailable until the world load completes.</span>")
+		return
 
 	var/total_pirates = alive_pirates.len + dead_pirates.len + heavily_injured_pirates.len
 	var/total_british = alive_british.len + dead_british.len + heavily_injured_british.len
@@ -904,6 +909,41 @@ var/tsfsr_forceEnabled = FALSE
 	var/msg29 = "[fact29]: [alive_tsfsr.len] alive, [heavily_injured_tsfsr.len] heavily injured or unconscious, [dead_tsfsr.len] deceased. Mortality rate: [mortality_tsfsr]%"
 
 
+	var/report_scope = ""
+	if (map && map.persistence)
+		var/list/current_counts = persistence_battle_report_counts()
+		report_scope = "Current-world snapshot by job faction. Removed bodies and historical deaths are not counted; this is not a lifetime mortality report."
+		msg1 = persistence_battle_report_line(fact1, BRITISH, current_counts)
+		msg2 = persistence_battle_report_line(fact2, PIRATES, current_counts)
+		msg3 = persistence_battle_report_line(fact3, CIVILIAN, current_counts)
+		msg4 = persistence_battle_report_line(fact4, SPANISH, current_counts)
+		msg5 = persistence_battle_report_line(fact5, PORTUGUESE, current_counts)
+		msg6 = persistence_battle_report_line(fact6, FRENCH, current_counts)
+		msg7 = persistence_battle_report_line(fact7, INDIANS, current_counts)
+		msg8 = persistence_battle_report_line(fact8, DUTCH, current_counts)
+		msg9 = persistence_battle_report_line(fact9, ROMAN, current_counts)
+		msg10 = persistence_battle_report_line(fact10, GREEK, current_counts)
+		msg11 = persistence_battle_report_line(fact11, ARAB, current_counts)
+		msg12 = persistence_battle_report_line(fact12, JAPANESE, current_counts)
+		msg13 = persistence_battle_report_line(fact13, RUSSIAN, current_counts)
+		msg14 = persistence_battle_report_line(fact14, GERMAN, current_counts)
+		msg15 = persistence_battle_report_line(fact15, AMERICAN, current_counts)
+		msg16 = persistence_battle_report_line(fact16, VIETNAMESE, current_counts)
+		msg17 = persistence_battle_report_line(fact17, CHINESE, current_counts)
+		msg18 = persistence_battle_report_line(fact18, FILIPINO, current_counts)
+		msg19 = persistence_battle_report_line(fact19, CHECHEN, current_counts)
+		msg20 = persistence_battle_report_line(fact20, FINNISH, current_counts)
+		msg21 = persistence_battle_report_line(fact21, NORWEGIAN, current_counts)
+		msg22 = persistence_battle_report_line(fact22, SWEDISH, current_counts)
+		msg23 = persistence_battle_report_line(fact23, DANISH, current_counts)
+		msg24 = persistence_battle_report_line(fact24, POLISH, current_counts)
+		msg25 = persistence_battle_report_line(fact25, ITALIAN, current_counts)
+		msg26 = persistence_battle_report_line(fact26, BLUEFACTION, current_counts)
+		msg27 = persistence_battle_report_line(fact27, REDFACTION, current_counts)
+		msg28 = persistence_battle_report_line(fact28, CAFR, current_counts)
+		msg29 = persistence_battle_report_line(fact29, TSFSR, current_counts)
+
+
 	var/msg_npcs = "NPCs: [faction1_npcs] americans alive, [faction2_npcs] japanese alive."
 
 	var/msg_companies= ""
@@ -942,7 +982,7 @@ var/tsfsr_forceEnabled = FALSE
 			var/curr = ""
 			map.facl[relf] = 0
 			for (var/mob/living/human/H in world)
-				if (relf == H.civilization)
+				if (relf == H.civilization && H.stat != DEAD)
 					map.facl[relf] += 1
 					curr = "[H.civilization]"
 			if (map.facl[relf] > relpf_max)
@@ -1021,6 +1061,8 @@ var/tsfsr_forceEnabled = FALSE
 	if (public == "Yes")
 		if (!shower || (input(shower, "Are you sure you want to show the battle report? Unless the Battle Controller Process died, it will happen automatically!", "Battle Report") in list ("Yes", "No")) == "Yes")
 			to_chat(world, "<font size=4>Status Report:</font>")
+			if (report_scope)
+				to_chat(world, report_scope)
 
 			if (msg1)
 				to_chat(world, "<font size=3>[msg1]</font>")
@@ -1093,6 +1135,8 @@ var/tsfsr_forceEnabled = FALSE
 			else
 				message_admins("the <b>Battle Controller Process</b> showed everyone the battle report.")
 	else
+		if (report_scope)
+			shower << report_scope
 		if (msg1)
 			shower << msg1
 		if (msg2)
@@ -1147,5 +1191,9 @@ var/tsfsr_forceEnabled = FALSE
 			shower << msg26
 		if (msg27)
 			shower << msg27
+		if (msg28)
+			shower << msg28
+		if (msg29)
+			shower << msg29
 	if (map)
 		map.show_map_report()
