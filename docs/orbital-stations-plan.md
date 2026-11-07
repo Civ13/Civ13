@@ -41,12 +41,12 @@ what the code does so far and the rules later steps must keep.
 | 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | #3934, `code/modules/space/orbit_station.dm` |
 | 6b | Starter stations: launch complex office project, 1969 station founded on a free plane, return capsule hatch, orbit console with lost-drifter recovery | `code/modules/space/orbit_project.dm`, `party_train.dm` |
 | 6c | Moon gear: lunar surface kit, sortie reserve and lift-off home from a landed lander | `code/modules/space/lander.dm` |
-| 8 | Module pods and docking: release a kit as a pod, RCS steering from the pod or an orbit console, hard dock, fold back, party checks, rams | `code/modules/space/orbit_pods.dm` |
+| 8 | Module pods and docking: release a kit as a pod, RCS steering from the pod or an orbit console, hard dock, fold back, party checks, rams | #3948, `code/modules/space/orbit_pods.dm` |
+| 9 | Decks: node modules, deck hatches, building a deck above or below, shared air between decks, console over every deck | `code/modules/space/orbit_decks.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-9. Decks: node modules with up and down ports, vertical hatches.
 10. Station upkeep and the 2013 layout.
 
 ## Orbital flight
@@ -186,6 +186,22 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Parties.** On a station plane only that station's party may steer, dock
   or fold. A released pod answers only to the party that released it.
 
+## Decks
+
+- **Node module kit** (70 steel, Orbital Flight): a module with a deck hatch
+  in its floor, south-east of the core.
+- **A new deck.** Open a node's deck hatch and use a node module kit on it.
+  This claims a free plane for the station's party, links it above or below
+  in the plane registry and unfolds a node there at the same spot. Only the
+  station's party can do it, and the station quota of 6 planes holds.
+- **The shaft.** Two nodes at the same spot on linked decks join through
+  their deck hatches. People climb through while both are open, and the two
+  modules share their air like modules behind an open side hatch. An open
+  deck hatch with nothing beyond it is a breach.
+- **Power** crosses decks with cable risers, which follow the same links.
+- **Folding** a node needs its deck hatch shut and no deck joined through it.
+- The orbit console reports the modules on every deck of its station.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -200,4 +216,6 @@ placement, era and delivery, full-orbit refusal, founding, power, supplies,
 boarding, the hatch home and console recovery), Moon gear (the sortie
 reserve and payload flag, lift-off and spending, the lunar kit) and module
 pods (release, footprint, steps, rams, party checks, hard dock, fold refusals,
-folding back and docking again, console steering).
+folding back and docking again, console steering) and decks (the node's
+hatch, building a deck above, pairing, breaches, shared air, refusals,
+console reports and risers).

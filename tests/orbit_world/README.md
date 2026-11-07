@@ -71,6 +71,13 @@ furniture and air, seals the neighbour's wall and opens the site; the folded
 pod docks again without new furniture; and the console steers member pods
 only.
 
+Last come decks (`code/modules/space/orbit_decks.dm`): a node's deck hatch,
+an open hatch to nothing as a breach, outsiders refused, a deck built above
+on a station plane and linked in the registry, the hatches pairing, no air
+through a shut hatch and shared air through an open shaft, one deck each way,
+no deck without a free plane, node fold refusals, the console reporting every
+deck, and cable risers pairing across the deck link.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer

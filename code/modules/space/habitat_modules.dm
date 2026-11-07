@@ -478,6 +478,8 @@ var/global/list/habitat_cores = list()
 		habitat_place_hatch(get_step(get_step(centre, outer), outer))
 	if (furnish)
 		habitat_furnish(C, kind)
+	if (istype(C, /obj/structure/habitat_core/node))
+		orbit_place_deck_hatch(C)
 	return C
 
 /proc/habitat_place_hatch(turf/T)
