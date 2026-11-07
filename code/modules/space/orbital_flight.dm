@@ -49,6 +49,7 @@
 	propellant_needed = ORBIT_ROCKET_PROPELLANT
 	seats = ORBIT_ROCKET_SEATS
 	cargo_max = ORBIT_ROCKET_CARGO_MAX
+	ascent_propellant = 0
 
 /obj/structure/crewed_lander/orbital_rocket/vehicle_refusal(destination)
 	if (!space_flight_orbit_ok(destination))
@@ -62,11 +63,11 @@
 /obj/structure/landed_lander/capsule
 	name = "orbital capsule"
 	desc = "A three-seat capsule in orbit. Its core keeps the small cabin around it sealed, warm and breathable for a few hours. Strap in on its tile and deorbit to fly home; the capsule is spent."
+	lift_seats = ORBIT_ROCKET_SEATS
+	lift_word = "deorbit"
 	// The registry owner of the plane this capsule claimed, or null on the
 	// arrival plane. Plain text, as every registry field.
 	var/plane_owner = null
-	// ckeys of the crew strapped in for the flight home. Runtime only.
-	var/tmp/list/strapped = list()
 
 /obj/structure/landed_lander/capsule/ambient_c()
 	return ORBIT_VACUUM_C
@@ -75,125 +76,22 @@
 /obj/structure/landed_lander/capsule/hazards_pulse()
 	return
 
-/obj/structure/landed_lander/capsule/examine(mob/user)
-	..()
-	to_chat(user, SPAN_NOTICE("Crew strapped in for home: [length(crew())]/[ORBIT_ROCKET_SEATS]."))
+// A capsule always keeps its retro-rockets for the flight home.
+/obj/structure/landed_lander/capsule/can_lift_off()
+	return TRUE
 
-/obj/structure/landed_lander/capsule/proc/crew()
-	var/list/found = list()
-	for (var/mob/living/human/H in get_turf(src))
-		if (H.client && H.stat == CONSCIOUS && (H.client.ckey in strapped))
-			found += H
-	return found
+/obj/structure/landed_lander/capsule/lift_off_message()
+	return "\The [src] fires its retro-rockets and falls away toward the world below!"
 
-/obj/structure/landed_lander/capsule/attack_hand(mob/user as mob)
-	var/mob/living/human/H = user
-	if (!istype(H) || !H.client)
-		return
-	var/strapped_in = (H.client.ckey in strapped) && get_turf(H) == get_turf(src)
-	var/choice = WWinput(H, "Crew strapped in for home: [length(crew())]/[ORBIT_ROCKET_SEATS]. Deorbiting spends the capsule.", capitalize(name), "Cancel", list(strapped_in ? "Unstrap" : "Strap in", "Deorbit", "Cancel"))
-	if (QDELETED(src) || !H.client || !in_range(src, H) || H.incapacitated())
-		return
-	switch (choice)
-		if ("Strap in")
-			if (get_turf(H) != get_turf(src))
-				to_chat(H, SPAN_WARNING("Stand on \the [src] to strap in."))
-			else if (length(crew()) >= ORBIT_ROCKET_SEATS)
-				to_chat(H, SPAN_WARNING("Every seat is taken."))
-			else
-				strapped |= H.client.ckey
-				to_chat(H, SPAN_NOTICE("You strap into \the [src]. Stay on its tile: you fly home when a crewmate deorbits."))
-		if ("Unstrap")
-			strapped -= H.client.ckey
-			to_chat(H, SPAN_NOTICE("You unstrap from \the [src]."))
-		if ("Deorbit")
-			deorbit_prompt(H)
+/obj/structure/landed_lander/capsule/spent_turf()
+	return /turf/floor/space/orbit
 
-// Null when the capsule may deorbit now, otherwise why not.
-/obj/structure/landed_lander/capsule/proc/deorbit_refusal(mob/living/human/H)
-	if (!istext(shard_group.mainland) || !space_flight_return_ok(shard_group.mainland))
-		return "There is no way home from here."
-	if (persistence_save_active())
-		return "The world is saving. Try again in a moment."
-	if (H && !(H in crew()))
-		return "Strap in before you deorbit."
-	var/list/aboard = crew()
-	var/list/crew_keys = list()
-	for (var/mob/living/human/C in aboard)
-		crew_keys += C.client.ckey
-	for (var/mob/living/human/other in range(LANDER_DECK_RADIUS, src))
-		if (other.stat != DEAD && !(other in aboard) && istype(get_turf(other), /turf/floor/lander_deck))
-			return "Everyone in the cabin must strap in or leave it first."
-	for (var/obj/structure/bed/lander_bunk/B in range(LANDER_DECK_RADIUS, src))
-		if (B.persistence_bed_owner_ckey && !(B.persistence_bed_owner_ckey in crew_keys))
-			return "Someone who is not strapped in keeps the bunk here as their home."
-	return null
-
-/obj/structure/landed_lander/capsule/proc/deorbit_prompt(mob/living/human/H)
-	var/reason = deorbit_refusal(H)
-	if (reason)
-		to_chat(H, SPAN_WARNING(reason))
-		return
-	var/home = shard_group.mainland
-	if (WWinput(H, "Deorbit and fly everyone strapped in home to [region_trail_name(home)], with what they wear and carry? The capsule is spent.", "Deorbit", "Cancel", list("Deorbit", "Cancel")) != "Deorbit")
-		return
-	if (QDELETED(src) || !H.client || !in_range(src, H))
-		return
-	// The prompt slept: check everything again.
-	reason = deorbit_refusal(H) || deorbit(H)
-	if (reason)
-		to_chat(H, SPAN_WARNING(reason))
-
-// Sends every strapped-in crew member home. Returns null once anyone left (the
-// capsule is then spent), or the reason nobody did.
-/obj/structure/landed_lander/capsule/proc/deorbit(mob/living/human/notify = null)
-	var/home = shard_group.mainland
-	if (shard_group.enabled && shard_group.peers[home] && shard_group.peers[home]["state"] != "UP")
-		var/woke = shard_group.wake_peer(home, notify)
-		if (woke)
-			return woke
-		if (QDELETED(src))
-			return "The flight home was called off."
-	var/obj/structure/region_gate/capsule_hatch/hatch = new(get_turf(src))
-	hatch.destination = home
-	hatch.pending_flight = list("lander" = lander_id, "return" = 1)
-	var/departed = 0
-	var/list/refusals = list()
-	for (var/mob/living/human/H in crew())
-		var/reason = QDELETED(hatch) ? "The hatch jammed." : hatch.travel_refusal(H)
-		if (!reason)
-			var/list/items = H.region_travel_items()
-			if (istext(items))
-				reason = items
-		if (!reason)
-			H.record_persistence_owner()
-			reason = hatch.depart(H)
-		if (reason == "departed")
-			departed++
-		else
-			refusals += "[H.real_name]: [reason]"
-			to_chat(H, SPAN_WARNING("You stay behind: [reason]"))
-	if (!QDELETED(hatch))
-		qdel(hatch)
-	if (!departed)
-		return refusals.len ? "Nobody could deorbit. [jointext(refusals, " ")]" : "Nobody is strapped in."
-	log_game("Orbital flight: [departed] crew deorbited capsule [lander_id] at [x],[y],[z] for home at [home].")
-	visible_message(SPAN_DANGER("\The [src] fires its retro-rockets and falls away toward the world below!"))
-	spend()
-	return null
-
-// The capsule is gone: its deck goes back to vacuum, its bunk goes, and its
-// plane is released when nothing else stands on it.
-/obj/structure/landed_lander/capsule/proc/spend()
+// The plane is released when nothing else stands on it.
+/obj/structure/landed_lander/capsule/spend()
 	var/turf/center = get_turf(src)
 	var/plane = center ? center.z : 0
-	if (center)
-		for (var/obj/structure/bed/lander_bunk/B in range(LANDER_DECK_RADIUS, center))
-			qdel(B)
-		for (var/turf/floor/lander_deck/T in range(LANDER_DECK_RADIUS, center))
-			T.ChangeTurf(/turf/floor/space/orbit, FALSE, FALSE)
 	var/owner = plane_owner
-	qdel(src)
+	..()
 	if (owner && plane && orbit_plane_owner(plane) == owner && orbit_plane_empty(plane))
 		orbit_release_plane(plane)
 		log_game("Orbital flight: plane [plane] released after its capsule was spent.")

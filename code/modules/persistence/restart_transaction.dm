@@ -198,7 +198,9 @@ var/global/world_moving = FALSE
 // It is consumed by the separately reviewed #3368 integration when present.
 // handover: save for a standby world instead of restarting; see world_moving above. The
 // caller (nomads_lifecycle) later calls handover_release() or handover_cancel().
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE)
+// stay_down: an admin's in-game save and shut down. The world leaves a stop marker for the
+// host (see stop_marker_path) so its watchdog leaves the world down instead of restarting it.
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE, stay_down = FALSE, stopped_by = null)
 	if((shutdown || handover) && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
 		report("Save/shutdown refused: invalid lifecycle binding")
 		return FALSE
@@ -228,10 +230,12 @@ var/global/world_moving = FALSE
 	else if(clients.len && !prewarned)
 		if(!isnull(expected_persistence) && expected_persistence == 0)
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. This nonpersistent round will start fresh; the save will be retained for recovery.</b></font>")
+		else if(stay_down)
+			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and shut down in 1 minute. Your progress will be kept for when it comes back.</b></font>")
 		else
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart in 1 minute. Your progress will be kept; reconnect in a few minutes to continue.</b></font>")
 		sleep(600)
-		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will restart when the save completes.</b></font>")
+		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down ? "shut down" : "restart"] when the save completes.</b></font>")
 	try
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
 		diagnostic_phase = "save"
@@ -256,6 +260,11 @@ var/global/world_moving = FALSE
 			else
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
 			request_shutdown(expected_persistence)
+		else if(stay_down)
+			to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is shutting down; your progress is kept for when it comes back.</b></font>")
+			diagnostic_phase = "stop_marker"
+			write_stop_marker(stopped_by)
+			request_shutdown(expected_persistence)
 		else
 			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
 			diagnostic_phase = "shutdown"
@@ -266,6 +275,8 @@ var/global/world_moving = FALSE
 			handover_state = null
 			set_world_moving(FALSE)
 			to_chat(world, "<font color='yellow' size=4><b>The move to the updated server was called off. Play on; nothing was lost.</b></font>")
+		if(stay_down)
+			fdel(stop_marker_path)
 		var/cleanup = ""
 		if(published && exists())
 			try
@@ -280,6 +291,18 @@ var/global/world_moving = FALSE
 	lifecycle_operation = null
 	lifecycle_session = null
 	return FALSE
+
+// The host's watchdog restarts a world that exits while it should be running. This marker
+// tells it the exit was an admin's save and shut down, so it leaves the world down
+// (scripts/gaia-host/gaia_host.py check_crash). The host removes it when it handles it or
+// on the next start.
+/datum/persistence_restart_transaction/var/stop_marker_path = "data/stopped_in_game.json"
+
+/datum/persistence_restart_transaction/proc/write_stop_marker(stopped_by)
+	fdel(stop_marker_path)
+	var/list/marker = list("generation" = expected_generation, "by" = "[stopped_by]", "realtime" = world.realtime)
+	if(!text2file(json_encode(marker), stop_marker_path) || !fexists(stop_marker_path))
+		throw EXCEPTION("Could not write the stop marker for the host; the server stays up")
 
 // The save is published; the standby loads it while this world waits frozen. The host then
 // releases this world (it reboots out; with -close DreamDaemon exits and clients reconnect to
