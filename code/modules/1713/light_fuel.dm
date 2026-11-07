@@ -257,10 +257,12 @@
 
 /obj/item/weapon/flame/lighter/examine(mob/user)
 	..()
+	if (max_fuel <= 0) // fire strikers burn no fluid
+		return
 	to_chat(user, "Fluid: about [round(100 * max(0, fuel) / max(1, max_fuel))]%. Refill it with [light_fuel_names(refuel_reagents)].")
 
 /obj/item/weapon/flame/lighter/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers) && !istype(W, /obj/item/weapon/reagent_containers/food/snacks))
+	if (max_fuel > 0 && istype(W, /obj/item/weapon/reagent_containers) && !istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		if (fuel >= max_fuel)
 			to_chat(user, "\The [src] is already full.")
 			return TRUE
