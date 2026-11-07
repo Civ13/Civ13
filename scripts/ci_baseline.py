@@ -877,6 +877,12 @@ SUITES = {
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
+    # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
+    'hud_layout': {'files': ('tests/hud_layout/test_layout.py',),
+        'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_hud.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm', 'code/game/mob/inventory.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
     # Inert skin/catalog/guard and account-wiring checks; no native runner import.
     # Existing shared inputs retain their conservative all-suite selection.
     'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),
