@@ -219,7 +219,7 @@ default behaviour is:
 			to_chat(src, "<span class = 'notice'>You have given up life and succumbed to death.</span>")
 			return
 	else
-		to_chat(src, "<span class = 'notice'>You cannot succumb in this map unless you have very high damage!</span>")
+		to_chat(src, "<span class = 'notice'>You can only succumb when you are badly hurt (more than 50 total damage). You have [round(getTotalDmg())].</span>")
 		return
 
 
