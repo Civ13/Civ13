@@ -71,6 +71,7 @@ ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.s
 ADOPT_SKIP = {'SQL': ('player-help',)}
 # Files setup writes for each region; an overlay must not replace them.
 LOCAL_CONFIG = 'config/config.local.txt'  # an overlay's own lines for config/config.txt (merge_config)
+KEPT_COPY = re.compile(r'\.(previous|migrated)$|\.bak(-|$)')  # earlier versions an overlay keeps, never copied
 CONFIG_NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt')
@@ -605,6 +606,8 @@ def apply_overlays(group, region, path):
             if relative.as_posix() == LOCAL_CONFIG:
                 local.append(item)
                 continue
+            if KEPT_COPY.search(item.name):
+                continue  # the launcher's and config-migrate's kept copies stay in the overlay
             target = path / relative
             if target.is_file() and filecmp.cmp(item, target, shallow=False):
                 continue
@@ -743,7 +746,7 @@ def migrate_config(group, platform=None):
         header = ['# Host settings merged over the repository config/config.txt on every update',
                   '# (scripts/shard-group/README.md). "KEY value" sets, "#KEY" turns a setting off.']
         local.write_text('\n'.join(header + lines) + '\n', encoding='utf-8')
-        os.replace(full, full.with_name('config.txt.migrated'))
+        os.replace(full, full.with_name('config.txt.migrated'))  # KEPT_COPY: not copied into regions
         done[source] = lines
     return {'revision': revision, 'done': done, 'refused': refused}
 

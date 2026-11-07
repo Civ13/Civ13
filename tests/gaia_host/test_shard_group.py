@@ -723,6 +723,8 @@ class ShardGroupTests(unittest.TestCase):
         (shared / 'config' / 'config.local.txt').write_text('DAYNIGHT_CLIENT_TINT\nWEBHOOK_ADDRESS http://shared\n')
         (own / 'config' / 'config.local.txt').write_text('WEBHOOK_ADDRESS http://gaia\n')
         (own / 'native.dll').write_bytes(b'dll')
+        for kept in ('config.txt.migrated', 'config.local.txt.previous', 'config.txt.bak-20261106-stream'):
+            (own / 'config' / kept).write_text('old')
         self.group['overlay'] = str(shared)
         self.group['regions'][0]['overlay'] = str(own)
         self.group['persistent'] = True
@@ -741,6 +743,9 @@ class ShardGroupTests(unittest.TestCase):
                           '## Host settings (config.local.txt)', 'DAYNIGHT_CLIENT_TINT'],
                          (gaia / 'config' / 'config.txt').read_text().splitlines(), 'the region overrides the group')
         self.assertFalse((gaia / 'config' / 'config.local.txt').exists(), 'only the merged config.txt is written')
+        self.assertEqual([], [p.name for p in (gaia / 'config').iterdir() if p.name not in ('config.txt', 'shard_region.json')
+                              and not p.name.endswith('token.txt') and not p.name.startswith(('lifecycle', 'transfer', 'relay'))],
+                         'kept copies stay in the overlay')
         compiles = sum(1 for argv, _ in self.machine.calls if argv[-1] == 'region.dme')
         # An edit made in the launcher reaches every region with config-apply, without a checkout or compile.
         (shared / 'config' / 'config.local.txt').write_text('WEBHOOK_ADDRESS http://edited\n')

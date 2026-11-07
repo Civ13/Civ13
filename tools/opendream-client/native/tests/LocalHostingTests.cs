@@ -177,6 +177,35 @@ static class LocalHostingTests {
         Require(LocalHosting.GroupRegions(host.Control!.Group!)[0].Mainland, "the first region is the default mainland");
         File.WriteAllText(groupConfig, "{\"regions\": []}");
         Reject(() => LocalHosting.GroupRegions(host.Control!.Group!), "a group with no regions");
+        // Host settings live in the group's overlays, never in the checkout a pull updates.
+        var sharedOverlay = Path.Combine(dir, "overlay", "shared");
+        var gaiaOverlay = Path.Combine(dir, "overlay", "gaia");
+        Directory.CreateDirectory(Path.Combine(gaiaOverlay, "config"));
+        foreach (var name in new[] { "account_signin.json", "config.txt", "config.txt.migrated", "config.local.txt.previous", "config.txt.bak-20261106", "transfer-token.txt", "kestrel.dll" })
+            File.WriteAllText(Path.Combine(gaiaOverlay, "config", name), "{}");
+        File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, regions = new object[] {
+            new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
+        var places = HostSettings.Locations(host.Control!.Group!);
+        Require(places.Select(place => (place.Label, place.Folder, place.Region)).SequenceEqual(new[] {
+            ("Every region (shared)", Path.GetFullPath(sharedOverlay), (string?)null), ("Gaia only", Path.GetFullPath(gaiaOverlay), "gaia") }),
+            "host settings locations: " + string.Join(" | ", places));
+        Require(HostSettings.Files(places[1]).SequenceEqual(new[] { HostSettings.LocalConfig, "config/host.txt", "config/account_signin.json", "config/config.txt" }),
+            "host settings files: " + string.Join(", ", HostSettings.Files(places[1])));
+        Require(HostSettings.Files(places[0]).SequenceEqual(HostSettings.Offered) && HostSettings.Read(places[0], HostSettings.LocalConfig) == "",
+            "a missing overlay folder offers the usual files, empty");
+        HostSettings.Save(places[0], HostSettings.LocalConfig, "# shared\nDAYNIGHT_CLIENT_TINT\n#SKIP_PERSISTENCE_SAVING\n");
+        HostSettings.Save(places[0], HostSettings.LocalConfig, "WEBHOOK_ADDRESS http://127.0.0.1\n");
+        Require(HostSettings.Read(places[0], HostSettings.LocalConfig) == "WEBHOOK_ADDRESS http://127.0.0.1\n"
+            && File.ReadAllText(Path.Combine(sharedOverlay, "config", "config.local.txt.previous")).Contains("DAYNIGHT_CLIENT_TINT"), "save keeps the previous version");
+        Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");
+        Require(HostSettings.Problem("config/account_signin.json", "{") is { } jsonProblem && jsonProblem.StartsWith("Not valid JSON"), "bad JSON");
+        Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");
+        Reject(() => HostSettings.Save(places[1], "config/transfer-token.txt", "x"), "a file setup writes");
+        Reject(() => HostSettings.Save(places[1], "../outside.txt", "x"), "a path outside the overlay");
+        Require(LocalHosting.GroupStep(host.Control!, "config-apply", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "config-apply", "--region", "gaia" }), "config-apply argv");
+        var applied = LocalHosting.ParseGroup("config-apply", 0, "{\"done\": {\"gaia\": {\"copied\": [\"config/config.local.txt\"], \"running\": true}, \"mars\": {\"copied\": [], \"running\": false}}, \"refused\": {\"moon\": \"the region is not set up\"}, \"ok\": true}");
+        Require(applied is { Ok: true, Busy: false } && applied.Message == "gaia: 1 file written (running: used from its next restart). mars: already current. Refused: moon: the region is not set up.",
+            "config-apply answer: " + applied.Message);
         File.WriteAllText(groupConfig, "");
         Require(LocalHosting.GroupStep(host.Control!, "kill", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "kill", "--region", "gaia" }), "one-region kill argv");
         Require(LocalHosting.GroupStep(host.Control!, "check-update").ArgumentList.Last() == "check-update", "group check-update not allowed");

@@ -69,7 +69,8 @@ hub (a region's `public` overrides the group's). Optional keys for it:
   as `config/host.txt`, native DLLs and the host's own config settings. It must
   not contain `map_saves`, `data` or the files `setup` writes into `config/`.
   A file that already matches is not rewritten, so a DLL a running world loaded
-  is left alone.
+  is left alone. Kept earlier versions (`*.previous`, `*.migrated`,
+  `*.bak`, `*.bak-*`) stay in the overlay and are not copied.
 
 ### Host config settings
 
