@@ -95,9 +95,14 @@ Envelope fields, all validated on both sides (`tools/transfer_storage/radio.py`)
 | `ckey` | for the receiving world's log only |
 | `age` | seconds since it was heard, so stale envelopes expire in transit |
 
-Routes on the agent: `/radio/send`, `/radio/heartbeat`, `/radio/inbox`,
-`/radio/status` (the world's side) and `/radio/outbox`, `/radio/deliver` (the
+Routes on the agent: `/radio/send`, `/radio/send_batch`, `/radio/heartbeat`,
+`/radio/inbox`, `/radio/status` (the world's side) and `/radio/outbox`, `/radio/deliver` (the
 coordinator's side). All require the agent token like every other route.
+`/radio/send_batch` takes `{"envelopes": [...]}` (at most 50) and answers
+`{"ids": [...], "errors": [{"index", "error"}]}`: each envelope is checked on
+its own, so a refused one leaves `null` in `ids` and the rest still go out.
+The world sends one envelope per request today; `civ_relay_send_batch()` in
+`radio_relay.dm` is ready for when relay traffic makes batching worthwhile.
 
 ## Later
 
