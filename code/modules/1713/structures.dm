@@ -1296,12 +1296,10 @@
 	original_faction = BLUEFACTION
 
 /obj/structure/flag/pole/attackby(obj/item/W as obj, var/mob/living/human/H)
-	if(istype(W, /obj/item/stack/material/cloth))
-		if(W.amount >= 5)
-			W.amount -= 5
+	if(is_cloth_sheet(W))
+		var/obj/item/stack/material/cloth_stock = W
+		if(cloth_stock.use(5))
 			new /obj/structure/flag/pole/custom(src.loc)
-			if(W.amount <= 0)
-				qdel(W)
 			qdel(src)
 		else
 			to_chat(H, "You need atleast five cloth to do that!")

@@ -317,6 +317,10 @@
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/mob/living/human/H = user
+	var/datum/cloth_recipe_payment/cloth_payment
+	if (is_cloth_sheet(src))
+		cloth_payment = new(src, H, recipe, quantity)
+		if (!cloth_payment.valid()) return
 	var/datum/furniture_joinery_action/joinery
 	var/datum/stone_mold_carving/carving
 	if (stone_mold_type(recipe.result_type))
@@ -964,28 +968,10 @@
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
 			return
 
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>")
+		cloth_payment = new(src, H, recipe, quantity, 3)
+		if (!cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold at least [3 * quantity] cloth or woolcloth sheets for the painting(s)."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/cloth))
-				var/obj/item/stack/material/cloth/NCL = H.l_hand
-				if (NCL.amount >= 3)
-					NCL.amount -= 3
-					if (NCL.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/cloth))
-				var/obj/item/stack/material/cloth/NCL = H.r_hand
-				if (NCL.amount >= 3)
-					NCL.amount -= 3
-					if (NCL.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "monumental marble statue of venus") || findtext(recipe.title, "monumental bronze statue of karl marx"))
 		if (H.getStatCoeff("crafting") < 2)
@@ -1161,52 +1147,14 @@
 					return
 
 	else if (findtext(recipe.title, "doge hat"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 cloth in one of your hands in order to make this.</span>")
+		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/gold, 1 * quantity) || !cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [1 * quantity] gold for this recipe."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/gold))
-				var/obj/item/stack/material/gold/NB = H.l_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/gold))
-				var/obj/item/stack/material/gold/NB = H.r_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "doge outfit"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 8 cloth in one of your hands in order to make this.</span>")
+		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/gold, 1 * quantity) || !cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [1 * quantity] gold for this recipe."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/gold))
-				var/obj/item/stack/material/gold/NB = H.l_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/gold))
-				var/obj/item/stack/material/gold/NB = H.r_hand
-				if (NB.amount >= 1)
-					NB.amount -= 1
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "gold laurel crown"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leaf) && !istype(H.r_hand, /obj/item/stack/material/leaf))
@@ -1281,28 +1229,9 @@
 					return
 
 	else if (findtext(recipe.title, "fiendish headdress"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 2 cloth in one of your hands in order to make this.</span>")
+		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/bone, 2 * quantity) || !cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [2 * quantity] bone for this recipe."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/bone))
-				var/obj/item/stack/material/bone/NB = H.l_hand
-				if (NB.amount >= 2)
-					NB.amount -= 2
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bone in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/bone))
-				var/obj/item/stack/material/bone/NB = H.r_hand
-				if (NB.amount >= 2)
-					NB.amount -= 2
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bone in one your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "black african mask") || findtext(recipe.title, "ceremonial black african mask"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
@@ -1400,52 +1329,14 @@
 					return
 
 	else if (findtext(recipe.title, "purple arabic turban helmet") || findtext(recipe.title, "red arabic turban helmet") || findtext(recipe.title, "green arabic turban helmet") || findtext(recipe.title, "blue arabic turban helmet"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 5 cloth in one of your hands in order to make this.</span>")
+		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/iron, 3 * quantity) || !cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [3 * quantity] iron for this recipe."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "emirate turban"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 7 cloth in one of your hands in order to make this.</span>")
+		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/iron, 3 * quantity) || !cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [3 * quantity] iron for this recipe."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.l_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/iron))
-				var/obj/item/stack/material/iron/NB = H.r_hand
-				if (NB.amount >= 3)
-					NB.amount -= 3
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "leather samurai armor") || findtext(recipe.title, "red leather samurai armor") || findtext(recipe.title, "blue leather samurai armor") || findtext(recipe.title, "black leather samurai armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
@@ -1568,28 +1459,9 @@
 					return
 
 	else if (findtext(recipe.title, "plague doctor mask"))
-		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
-			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 cloth in one of your hands in order to make this.</span>")
+		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/medical/advanced/herbs, 2 * quantity) || !cloth_payment.valid())
+			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [2 * quantity] herbs for this recipe."))
 			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/medical/advanced/herbs))
-				var/obj/item/stack/medical/advanced/herbs/NB = H.l_hand
-				if (NB.amount >= 2)
-					NB.amount -= 2
-					if (NB.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/medical/advanced/herbs))
-				var/obj/item/stack/medical/advanced/herbs/NB = H.r_hand
-				if (NB.amount >= 2)
-					NB.amount -= 2
-					if (NB.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need at least a stack of two medicinal herbs in one of your hands in order to make this.</span>")
-					return
 
 	else if (findtext(recipe.title, "khepresh war crown"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
@@ -1866,7 +1738,7 @@
 			return
 		if (press_construction && !press_construction.valid())
 			return
-		if (H && !joinery && !carving)
+		if (H && !joinery && !carving && !cloth_payment)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1978,11 +1850,18 @@
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
 		return
+	if (cloth_payment && !cloth_payment.valid())
+		to_chat(user, SPAN_WARNING("Keep the selected cloth and other materials in place until construction completes."))
+		return
 	if (use(required, (joinery || carving) ? null : H))
 		if (joinery)
 			joinery.consume_component()
 		if ((joinery || carving) && H && recipe.time)
 			H.adaptStat("crafting", 1*recipe.req_amount)
+		if (cloth_payment)
+			cloth_payment.consume_secondary()
+			if (H && recipe.time)
+				H.adaptStat("crafting", 1*recipe.req_amount)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)
