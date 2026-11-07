@@ -449,6 +449,10 @@
 				for(var/l=1, l <= map.custom_company[stocky].len, l++)
 					if (map.custom_company[stocky][l][1] == src)
 						map.custom_company[stocky][l][1] = null
+		// The estate listings above replace anything this holder had put up.
+		for (var/list/LL in map.sales_registry)
+			if (LL.len >= 4 && LL[4] == src)
+				map.sales_registry -= list(LL)
 
 	if (client)
 		src << browse(null, "window=memory")

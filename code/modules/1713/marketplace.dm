@@ -46,19 +46,22 @@
 	for (var/cmp in map.custom_company_nr)
 		if (find_company_member(user, cmp))
 			has_stocks = TRUE
+			// Element ids and links must not carry the raw name: quotes, & and = in
+			// a company name used to break the Sell/Withdraw buttons.
+			var/cmp_idx = map.custom_company_nr.Find(cmp)
 			for (var/list/i in map.custom_company[cmp])
 				if (i[1] == user)
 					// Build currency dropdown for this company
-					var/cur_opts = "<select id='sell_cur_[cmp]'><option value='standard'>Standard Coins</option>"
+					var/cur_opts = "<select id='sell_cur_[cmp_idx]'><option value='standard'>Standard Coins</option>"
 					for (var/fid in fiat.currency_list)
 						if (fiat.currency_list[fid][5])
 							cur_opts += "<option value='[fid]'>[fiat.currency_list[fid][1]]</option>"
 					cur_opts += "</select>"
 					sell_html += "<div class='item'><b>[cmp]</b> &mdash; You own [i[2]]%<br>"
-					sell_html += "Amount: <input type='text' id='sell_amt_[cmp]' value='[i[2]]' class='num'> "
-					sell_html += "Price: <input type='text' id='sell_price_[cmp]' value='10' class='num'> "
+					sell_html += "Amount: <input type='text' id='sell_amt_[cmp_idx]' value='[i[2]]' class='num'> "
+					sell_html += "Price: <input type='text' id='sell_price_[cmp_idx]' value='10' class='num'> "
 					sell_html += "Currency: [cur_opts] "
-					sell_html += "<button class='btn' onclick=\"var a=document.getElementById('sell_amt_[cmp]').value;var p=document.getElementById('sell_price_[cmp]').value;var c=document.getElementById('sell_cur_[cmp]').value;if(a&&!isNaN(a)&&Number(a)>=1&&p&&!isNaN(p)&&Number(p)>0)window.location='byond://?src=\ref[src];sell=[cmp]&amt='+a+'&price='+p+'&cur='+c\">Sell</button></div>"
+					sell_html += "<button class='btn' onclick=\"var a=document.getElementById('sell_amt_[cmp_idx]').value;var p=document.getElementById('sell_price_[cmp_idx]').value;var c=document.getElementById('sell_cur_[cmp_idx]').value;if(a&&!isNaN(a)&&Number(a)>=1&&p&&!isNaN(p)&&Number(p)>0)window.location='byond://?src=\ref[src];sell=[cmp_idx]&amt='+a+'&price='+p+'&cur='+c\">Sell</button></div>"
 	if (!has_stocks)
 		sell_html = "<div class='none'>You do not own any stocks.</div>"
 
@@ -68,10 +71,11 @@
 	for (var/cmp in map.custom_company_nr)
 		if (find_company_member(user, cmp))
 			has_manage = TRUE
+			var/cmp_idx = map.custom_company_nr.Find(cmp)
 			manage_html += "<div class='item'><b>[cmp]</b>"
-			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];viewmembers=[cmp]'\">Members</button>"
-			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];distribute=[cmp]'\">Distribute</button>"
-			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdraw=[cmp]'\">Withdraw</button></div>"
+			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];viewmembers=[cmp_idx]'\">Members</button>"
+			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];distribute=[cmp_idx]'\">Distribute</button>"
+			manage_html += " <button class='btn' onclick=\"window.location='byond://?src=\ref[src];withdraw=[cmp_idx]'\">Withdraw</button></div>"
 	if (!has_manage)
 		manage_html = "<div class='none'>You are not a member of any company.</div>"
 
@@ -119,6 +123,14 @@
 
 	user << browse(dat, "window=stockmarket;size=550x600")
 
+// Links name a company by its position in custom_company_nr (companies are
+// only ever appended), so quotes, & or = in a name cannot break them.
+/obj/structure/stockmarket/proc/href_company(var/value)
+	var/idx = text2num(value)
+	if (!isnum(idx) || idx != round(idx) || idx < 1 || idx > map.custom_company_nr.len)
+		return null
+	return map.custom_company_nr[idx]
+
 /obj/structure/stockmarket/Topic(href, href_list)
 	if (!usr || !usr.client)
 		return
@@ -142,6 +154,13 @@
 					var/ord_perc = L[2]
 					var/ord_price = L[3]*10
 					var/req_currency = L.len >= 6 ? L[6] : "standard"
+					var/mob/living/human/SELLER = ishuman(L[4]) ? L[4] : null
+					// A listing is only a promise: the seller may have transferred
+					// the stake or died since. Never sell stock nobody holds.
+					if (!company_has_stake(ord, SELLER, ord_perc))
+						map.sales_registry -= list(L)
+						to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
+						return
 
 					if (!istype(H.get_inactive_hand(), /obj/item/stack/money))
 						to_chat(H, "<span class='notice'>You need to have money in your inactive hand to buy stocks!</span>")
@@ -173,19 +192,18 @@
 						to_chat(H, "<span class='notice'>You do not have enough money. Need [ord_price] [req_name], have [money_val] [req_name].</span>")
 						return
 
+					if (SELLER ? !SELLER.transfer_stock_proc(ord, ord_perc, H) : !transfer_stock_nomob(ord, ord_perc, H))
+						map.sales_registry -= list(L)
+						to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
+						return
 					qdel(M)
 					if (money_return > 0)
 						if (req_currency == "standard")
-							var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-							GC.amount = round(money_return/GC.value)
-							if (GC.amount <= 0)
-								qdel(GC)
+							company_pay_coins(loc, money_return)
 						else
 							new/obj/item/stack/money/fiat(loc, money_return, req_currency)
 
-					if (ishuman(L[4]))
-						var/mob/living/human/SELLER = L[4]
-						SELLER.transfer_stock_proc(ord, ord_perc, H)
+					if (SELLER)
 						for (var/list/j in map.custom_company[ord])
 							if (j[1] == SELLER)
 								if (j.len < 4)
@@ -199,19 +217,16 @@
 									j[4][req_currency] += ord_price
 								break
 						L[5] = 0
-						map.sales_registry -= L
+						map.sales_registry -= list(L)
 						for (var/list/LL in map.sales_registry)
 							if (LL[1] == ord && LL[4] == SELLER)
 								LL[5] = 0
-								map.sales_registry -= LL
+								map.sales_registry -= list(LL)
 					else
-						transfer_stock_nomob(ord, ord_perc, H)
+						// Only this estate listing: an identical one belongs to another
+						// dead holder's estate row and stays for sale.
 						L[5] = 0
-						map.sales_registry -= L
-						for (var/list/LL in map.sales_registry)
-							if (LL[1] == ord && LL[2] == ord_perc && LL[3] == L[3] && LL[4] == null)
-								LL[5] = 0
-								map.sales_registry -= LL
+						map.sales_registry -= list(L)
 					to_chat(H, "<span class='notice'>You successfully bought [ord_perc]% of [ord].</span>")
 					break
 				sale_idx++
@@ -221,7 +236,7 @@
 
 	// Sell stock
 	if (href_list["sell"])
-		var/cmp = href_list["sell"]
+		var/cmp = href_company(href_list["sell"])
 		var/amt = text2num(href_list["amt"])
 		var/price = text2num(href_list["price"])
 		var/cur = href_list["cur"]
@@ -231,10 +246,15 @@
 		if (amt < 1 || price <= 0)
 			return
 		var/requested_currency = cur
+		// An unknown currency id would break every buyer's listing page.
+		if (requested_currency != "standard" && !(fiat.currency_list[requested_currency] && fiat.currency_list[requested_currency][5]))
+			return
 		for (var/list/i in map.custom_company[cmp])
 			if (i[1] == H)
 				if (amt > i[2])
 					amt = i[2]
+				if (amt < 1)
+					break
 				map.sales_registry += list(list(cmp, amt, price/10, H, 1, requested_currency))
 				var/curr_name = "Standard Coins"
 				if (requested_currency != "standard" && fiat.currency_list[requested_currency])
@@ -245,17 +265,20 @@
 
 	// Manage company - view members
 	if (href_list["viewmembers"])
-		var/cmp = href_list["viewmembers"]
+		var/cmp = href_company(href_list["viewmembers"])
+		if (!cmp)
+			return
 		var/body = "<html><head><title>[cmp]</title></head>[common_browser_style]<b>[cmp] Members</b><br><br>"
 		for (var/list/i in map.custom_company[cmp])
-			body += "<b>[i[1]]</b> owns [i[2]]%.<br>"
+			if (i[2] > 0)
+				body += "<b>[i[1] ? i[1] : "Estate of a dead shareholder (for sale)"]</b> owns [i[2]]%.<br>"
 		body += "<br></body></html>"
 		H << browse(body, "window=stockmembers;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
 		return
 
 	// Manage company - distribute profits
 	if (href_list["distribute"])
-		var/cmp = href_list["distribute"]
+		var/cmp = href_company(href_list["distribute"])
 		if (!find_company_member(H, cmp))
 			return
 		var/distributed_something = FALSE
@@ -286,23 +309,23 @@
 
 	// Manage company - withdraw profits
 	if (href_list["withdraw"])
-		var/cmp = href_list["withdraw"]
+		var/cmp = href_company(href_list["withdraw"])
 		if (!find_company_member(H, cmp))
 			return
 		for (var/list/j in map.custom_company[cmp])
 			if (j[1] == H)
 				var/withdrew_something = FALSE
-				if (j[3] > 0)
+				if (j[3] >= 1)
 					var/businesstax = 0
 					var/price_without_tax = j[3]
 					if (H.civilization != "none" && map.custom_civs[H.civilization])
 						businesstax = (map.custom_civs[H.civilization][10]/100)*j[3]
 						price_without_tax = j[3]-businesstax
 						map.custom_civs[H.civilization][5] += businesstax
-					var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-					GC.amount = round(price_without_tax/4)
-					j[3] = 0
-					to_chat(H, "<span class='notice'>You withdraw [GC.amount*4] silver coins in profit, paying [businesstax] silver coins in Business Tax.</span>")
+					var/paid = company_pay_coins(loc, price_without_tax)
+					// Keep the sub-coin fraction for the next withdrawal.
+					j[3] = max(0, price_without_tax - paid)
+					to_chat(H, "<span class='notice'>You withdraw [paid] silver coins' worth in profit, paying [businesstax] silver coins in Business Tax.</span>")
 					withdrew_something = TRUE
 				if (j.len >= 4 && istype(j[4], /list))
 					var/list/fiat_profits = j[4]
@@ -339,7 +362,7 @@
 			return
 		val = round(val)
 		if (val < 0) val = 0
-		if (val > 30) val = 10
+		if (val > 30) val = 30
 		map.custom_civs[H.civilization][9] = val
 		to_chat(H, "<b>Sales Tax</b> set to [val]%.")
 		return
@@ -353,7 +376,7 @@
 			return
 		val = round(val)
 		if (val < 0) val = 0
-		if (val > 30) val = 10
+		if (val > 30) val = 30
 		map.custom_civs[H.civilization][10] = val
 		to_chat(H, "<b>Business Tax</b> set to [val]%.")
 		return
@@ -364,11 +387,11 @@
 			to_chat(H, "<span class='warning'>You do not have the permissions to do that!</span>")
 			return
 		var/withdrew_something = FALSE
-		if (map.custom_civs[H.civilization][5] > 0)
-			var/obj/item/stack/money/goldcoin/GC = new/obj/item/stack/money/goldcoin(loc)
-			GC.amount = map.custom_civs[H.civilization][5]/4
-			map.custom_civs[H.civilization][5] = 0
-			to_chat(H, "You withdraw [GC.amount] gold coins in faction funds.")
+		if (map.custom_civs[H.civilization][5] >= 1)
+			var/funds = map.custom_civs[H.civilization][5]
+			var/paid = company_pay_coins(loc, funds)
+			map.custom_civs[H.civilization][5] = max(0, funds - paid)
+			to_chat(H, "You withdraw [paid] silver coins' worth in faction funds.")
 			withdrew_something = TRUE
 		if (map.custom_civs[H.civilization].len >= 11 && istype(map.custom_civs[H.civilization][11], /list))
 			var/list/fiat_treasury = map.custom_civs[H.civilization][11]
