@@ -958,6 +958,13 @@
 	var/count = saving_reference_pins.len
 	for(var/ref = 1, ref <= count, ref++)
 		var/datum/A = saving_reference_pins[ref]
+		// A null pin is an entry deleted after it was written: the collector
+		// force-deletes a queued object the save still pins once its grace
+		// period passes, and del() clears every reference to it. Its record
+		// is already in the level file as captured, so it is not checked here.
+		if(isnull(A))
+			if(ref % 4096 == 0) save_work_check()
+			continue
 		if(!istype(A, /datum) || isarea(A)) throw EXCEPTION("Unsupported saved entry [ref] on z=[z]")
 		if(isturf(A))
 			var/turf/T = A
@@ -982,7 +989,8 @@
 		var/child = text2num(key)
 		var/parent = saving_content_owners[key]
 		if(!isnum(child) || child < 1 || child > count || !isnum(parent) || parent < 1 || parent > count) throw EXCEPTION("Saved content edge leaves the level z=[z]")
-		if(!istype(saving_reference_pins[child], /atom/movable)) throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
+		var/datum/child_entry = saving_reference_pins[child]
+		if(!isnull(child_entry) && !istype(child_entry, /atom/movable)) throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
 	saving_candidate_structure["[z]"] = list("entries" = count, "roofs" = roofs)
 
 /map_storage/proc/capture_moving_save_root(savefile/destination, list/record)
