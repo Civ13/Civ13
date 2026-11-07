@@ -11,6 +11,14 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-07: ecology wildlife spawning on Nomads maps -->
+Nomads maps spawn wildlife by habitat (docs/ecology-spawning.md): a 41-species
+table, a cell index of climate|ground keys, one census per minute and herds out
+of view in quiet cells. Map mobspawners for indexed species stay quiet while it
+runs. The mob process rests animals >32 tiles from every player and agent (one
+Life per four seconds). Breeding caps sit above wild targets; keep
+tests/wildlife_registry caps in step. Probe: tests/ecology_spawning/probe.dm.
+
 <!-- 2026-10-27: inactive ecology activity heatmap -->
 The data-only ecology_activity_heatmap datum has no singleton, process or player
 hooks. Samples/queries bind caller-captured epochs before touching clock/coverage;

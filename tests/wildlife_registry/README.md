@@ -97,7 +97,7 @@ acceptance remains pending until this runner actually succeeds on BYOND.
 
 `friendly/deer.dm` had the same defect: base deer `death()`/`Destroy()` ran
 `deer_count &= src`. Base deer and dik-dik constructors register in `deer_count`,
-and both Life paths gate conception on `deer_count.len < 30`, so the first deer
+and both Life paths gate conception on `deer_count.len < 150` (raised from 30 on 2026-11-07), so the first deer
 death collapsed the registry and stopped that cap from limiting pregnancies.
 Only those two operators become `-=`. The suite now has ten hooks and 35 cases
 per run (ten hooks x three, plus five death-then-Destroy pairs) and ten single-hook

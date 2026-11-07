@@ -178,7 +178,7 @@
 			grow()
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/proc/grow()
-	if (isturf(loc) && chicken_count.len < 50)
+	if (isturf(loc) && chicken_count.len < 80)
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
@@ -564,7 +564,7 @@
 				E.pixel_y = rand(-6,6)
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/proc/grow()
-	if (isturf(loc) && turkey_count.len < 35)
+	if (isturf(loc) && turkey_count.len < 80)
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")

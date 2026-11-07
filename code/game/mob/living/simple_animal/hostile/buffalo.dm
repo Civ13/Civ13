@@ -153,7 +153,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && bison_count.len < 30)
+	if (!pregnant && bison_count.len < 60)
 		var/nearbyObjects = range(1,src) //3x3 area around cow
 		for(var/mob/living/simple_animal/bisonbull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)

@@ -12,13 +12,13 @@ ANIMALS = ROOT / 'code/game/mob/living/simple_animal'
 
 # Source file -> (registry, cap) for each global conception/hatching gate.
 CAPS = {
-    'friendly/birds.dm': [('chicken_count', 50), ('turkey_count', 35)],
-    'friendly/deer.dm': [('deer_count', 30), ('deer_count', 30)],
-    'friendly/farm_animals.dm': [('cow_count', 30), ('pig_count', 30), ('boar_count', 30),
-                                 ('goat_count', 35), ('sheep_count', 35)],
-    'hostile/buffalo.dm': [('bison_count', 30)],
-    'hostile/wolf.dm': [('wolf_count', 20)],
-    'hostile/bear.dm': [('bear_count', 12)],
+    'friendly/birds.dm': [('chicken_count', 80), ('turkey_count', 80)],
+    'friendly/deer.dm': [('deer_count', 150), ('deer_count', 150)],
+    'friendly/farm_animals.dm': [('cow_count', 60), ('pig_count', 50), ('boar_count', 70),
+                                 ('goat_count', 70), ('sheep_count', 90)],
+    'hostile/buffalo.dm': [('bison_count', 60)],
+    'hostile/wolf.dm': [('wolf_count', 50)],
+    'hostile/bear.dm': [('bear_count', 30)],
 }
 GATE = re.compile(r'\b([a-z]+_count)\.len < (\d+)')
 
@@ -47,8 +47,8 @@ class PopulationCapTests(unittest.TestCase):
                     self.assertTrue(gates(text))
 
     def test_wolf_and_bear_conception_is_gated(self):
-        for name, registry, cap in (('hostile/wolf.dm', 'wolf_count', 20),
-                                    ('hostile/bear.dm', 'bear_count', 12)):
+        for name, registry, cap in (('hostile/wolf.dm', 'wolf_count', 50),
+                                    ('hostile/bear.dm', 'bear_count', 30)):
             with self.subTest(file=name):
                 text = (ANIMALS / name).read_text()
                 self.assertIn(f'if (src.female && !src.pregnant && {registry}.len < {cap})', text)
@@ -66,7 +66,7 @@ class PopulationCapTests(unittest.TestCase):
 
     def test_removing_a_cap_is_detected(self):
         text = (ANIMALS / 'hostile/wolf.dm').read_text()
-        self.assertEqual(gates(text.replace(' && wolf_count.len < 20', '')), [])
+        self.assertEqual(gates(text.replace(' && wolf_count.len < 50', '')), [])
 
 
 if __name__ == '__main__':
