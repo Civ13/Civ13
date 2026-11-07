@@ -224,7 +224,8 @@ class ManualCanonicalProfileTests(unittest.TestCase):
         for relative in ('scripts/check-component-tools.py', 'code/world.dm', 'code/controllers/mc/globals.dm',
                          'code/game/objects/structures/blacksmithing/component_workbench.dm', 'civ13.dme',
                          'tests/component_tools/checks.dm', 'tests/component_tools/workbench.dm',
-                         'tests/component_tools/armor.dm',
+                         'tests/component_tools/armor.dm', 'tests/component_tools/dedicated.dm',
+                         'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
                          'code/game/objects/structures/blacksmithing/armor_workbench.dm',
                          'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
                          'scripts/byond_toolchain.py', 'tools/byond/version.json', 'tests/new_z_budget/z_budget_evidence.py'):

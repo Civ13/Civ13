@@ -19,6 +19,8 @@ and [region groups](../../shard-group/README.md). They only call
 | `setup.bat [REGION]` | Create or refresh each region's worktree and config. Safe to run again. With a region, adds or refreshes only that one while the others keep running. |
 | `enrol.bat REGION` | Enrol a set-up region with the transfer agents and coordinator while they run. `setup.bat REGION` already does this; use it for a region added before it did. Safe to repeat. |
 | `unlock.bat`, `force-unlock.bat [REGION]` | Check each region's save for BYOND lock files (`*.lk`, left when a world is killed) and remove them, then report whether the save loads. `unlock` refuses for a region that runs or has an action in progress; `force-unlock` skips that check, for a world whose process is gone but still looks alive. Removing a lock a live world holds can corrupt its save. The launcher's Clear lock files and Force clear lock files buttons do the same. |
+| `config-apply.bat [REGION]` | Write the overlays and each region's merged `config.local.txt` into the regions without a compile. Running worlds use the new config from their next restart. See [host config settings](../../shard-group/README.md#host-config-settings). |
+| `config-migrate.bat` | Once: turn each overlay's whole `config\config.txt` into a `config.local.txt` holding only the lines that differ from the repository, so master's new settings reach the host. The old file stays as `config.txt.migrated`. |
 | `serve.bat` | Run the host service in this window, for testing. |
 | `install-host-task.bat` | Register the host service as the `Civ13 Host` logon task and start it. Needs an administrator terminal. |
 | `make-gaia-overlay.bat` | Copy live Gaia's local-only files (config with the webhook key, host.txt, Kestrel DLL and settings) into its overlay folder. |
@@ -51,8 +53,10 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
    (`D:\Civ13Regions\earth\gaia\config`, refreshed from the overlay on every
    update), so `D:\GitHub\Civ13\config` going back to the repository's
    defaults (for example `host.txt` saying Tais) does not affect it. Change
-   live settings in the overlay, then run `update.bat`, or edit the region's
-   copy for a quick fix that the next update replaces.
+   live settings in the overlay's `config\config.local.txt` (only the lines that
+   differ from the repository; run `config-migrate.bat` once to turn an older
+   whole `config.txt` into one), then run `config-apply.bat`. Editing the
+   region's own copy is only a quick fix that the next update replaces.
 4. **Stop standalone Gaia.** Run `retire-standalone-gaia.bat`, then follow it
    with the status command it prints until `phase` is `stopped` (a Gaia save
    takes about ten minutes).

@@ -278,6 +278,9 @@ internal sealed partial class LauncherWindow : Form {
                 hostActions.Add(button);
                 groupButtons.Controls.Add(button);
             }
+            var settings = new Button { Text = "Host settings", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            settings.Click += (_, _) => ShowHostSettings();
+            groupButtons.Controls.Add(settings);
         }
         layout.Controls.Add(groupButtons);
         layout.SetColumnSpan(groupButtons, 2);
@@ -714,6 +717,23 @@ internal sealed partial class LauncherWindow : Form {
             HostLine(label + " failed: " + e.Message);
             SetHostBusy(false);
         }
+    }
+
+    // The host's own config files in the group's overlays (HostSettingsDialog); not tied to a running action.
+    private void ShowHostSettings() {
+        if (host?.Control is not { Group: { } group } control) return;
+        IReadOnlyList<HostSettings.Location> locations;
+        try { locations = HostSettings.Locations(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) {
+            HostLine("Could not read the overlays from " + group.Config + ": " + e.Message);
+            return;
+        }
+        if (locations.Count == 0) {
+            HostLine("The group config names no overlay folder. Add \"overlay\" (for every region) or a region's \"overlay\" to " + group.Config + " first.");
+            return;
+        }
+        using var dialog = new HostSettingsDialog(control, locations);
+        dialog.ShowDialog(this);
     }
 
     private const string DeployQuestion = "Save, update and restart the regions ticked below. The checkout is pulled and the update is built " +

@@ -435,6 +435,9 @@ RECIPE: /material/electronics/,radio headset,/obj/item/weapon/radio/walkietalkie
 RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
 RECIPE: /material/electronics/,smartphone,/obj/item/weapon/telephone/mobile/smartphone,15,100,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,LED panel,/obj/structure/lamp/lamp_big/led,2,55,0,1,electrical,235,0,0,8,null
+RECIPE: /material/electronics/,smart hub,/obj/structure/smart_hub,6,80,1,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,smart speaker,/obj/structure/smart_speaker,2,40,1,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,smart lock,/obj/item/weapon/smart_lock,2,40,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,lithium-ion battery bank,/obj/structure/battery/lithium_ion,25,200,1,1,electrical,235,0,0,8,null
 RECIPE: /material/electronics/,drone controller,/obj/item/drone_controller,10,100,0,1,drones,0,235,0,8,null
 RECIPE: /material/electronics/,quadcopter drone,/obj/structure/drone/flying,15,150,1,1,drones,0,235,0,8,null
@@ -1832,6 +1835,8 @@ RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/ora
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,cable riser,/obj/item/connector/riser,2,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,bus tie switch,/obj/item/connector/bus_tie,2,35,0,1,electrical,105,0,0,8,null
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 
@@ -2205,6 +2210,9 @@ RECIPE: /material/wood/soft/,wood handle,/obj/item/weapon/material/handle,1,35,0
 RECIPE: /material/wood/soft/,plank handle,/obj/item/weapon/material/handle,2,70,0,1,tools,0,0,0,8,woodplank
 RECIPE: /material/wood/soft/,tool assembly workbench,/obj/structure/component_workbench,10,100,1,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_workbench/armor,10,100,1,1,tools,0,0,0,8,null
+RECIPE: /material/wood/soft/,weapon assembly workbench,/obj/structure/component_workbench/weapon,10,100,1,1,tools,0,0,0,8,null
+RECIPE: /material/wood/soft/,fletcher's bench,/obj/structure/component_workbench/fletching,10,100,1,1,tools,0,14,0,8,null
+RECIPE: /material/iron/,toolsmith's bench,/obj/structure/component_workbench/toolsmith,10,120,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,reinforced handle,/obj/item/weapon/material/handle,2,70,0,1,tools,18,0,0,8,iron
 RECIPE: /material/wood/soft/,wood cane,/obj/item/weapon/cane,2,35,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null

@@ -1,4 +1,4 @@
-"""Offline protected-sleep projections and strict negative-control oracles."""
+"""Offline projections of the frozen protected-sleep fixture and strict negative-control oracles."""
 import importlib.util
 from pathlib import Path
 import re
@@ -14,13 +14,15 @@ SPEC.loader.exec_module(RUNNER)
 class SleepTransferSourceTests(unittest.TestCase):
     def setUp(self):
         self.source = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text()
-        self.helpers = '\n'.join(RUNNER.BASE.extract_proc(self.source, path) for path in RUNNER.HELPERS)
+        self.legacy = (ROOT / RUNNER.LEGACY_HELPERS).read_text()
+        self.helpers = '\n'.join(RUNNER.BASE.extract_proc(self.source if path == RUNNER.HELPERS[0] else self.legacy, path)
+                                 for path in RUNNER.HELPERS)
 
     def test_duplicate_diagnostic_injects_capture_without_changing_production(self):
         probe = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
         self.assertIn('/map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory', probe)
         self.assertIn('if(A == cross_target && saving_z == 2)', probe)
-        self.assertIn('saving_world_movables -= "\\ref[A]"', probe)
+        self.assertIn('saving_world_movables -= A', probe)
         self.assertIn('return ..()', probe)
         self.assertIn('new /map_storage/cross_level/diagnostic_duplicate(', probe)
         self.assertIn('map_storage.saved_content_refs(', probe)
@@ -177,14 +179,14 @@ class SleepTransferSourceTests(unittest.TestCase):
 
     def test_helpers_use_source_actor_and_preserve_hook_revalidation(self):
         self.assertNotRegex(self.helpers, r'\busr\b')
-        entry = RUNNER.BASE.extract_proc(self.source, RUNNER.HELPERS[1])
+        entry = RUNNER.BASE.extract_proc(self.legacy, RUNNER.HELPERS[1])
         self.assertLess(entry.index('drop_item()'), entry.index('var/previous_lastx'))
         self.assertLess(entry.index('inducedSSD || buckled || !return_turf'), entry.index('lastx = return_turf.x'))
         self.assertLess(entry.index('forceMove(sleep_turf)'), entry.index('sleep_update()'))
         self.assertIn('lastx = previous_lastx', entry)
         self.assertIn('lasty = previous_lasty', entry)
         self.assertIn('lastz = previous_lastz', entry)
-        wake = RUNNER.BASE.extract_proc(self.source, RUNNER.HELPERS[2])
+        wake = RUNNER.BASE.extract_proc(self.legacy, RUNNER.HELPERS[2])
         self.assertIn('locate(lastx,lasty,lastz) != return_turf', wake)
         self.assertLess(wake.index('get_turf(src) != return_turf'), wake.index('inducedSSD = FALSE'))
 
@@ -197,7 +199,13 @@ class SleepTransferSourceTests(unittest.TestCase):
             self.assertNotIn('usr.forceMove', body)
         wake = RUNNER.BASE.extract_proc(self.source, '/mob/living/human/verb/mob_wakeup')
         self.assertLess(wake.index('spawn(300)'), wake.index('client != waking_client'))
-        self.assertLess(wake.index('client != waking_client'), wake.index('complete_protected_wakeup()'))
+        self.assertLess(wake.index('client != waking_client'), wake.index('inducedSSD = FALSE'))
+
+    def test_removed_teleport_helpers_exist_only_in_the_historical_fixture(self):
+        for path in RUNNER.HELPERS[1:]:
+            self.assertNotIn(path, self.source)
+            self.assertEqual(self.legacy.count(path + '()'), 1)
+        self.assertIn('Historical fixture', self.legacy)
 
     def test_fixture_covers_adversarial_hooks_and_disk_roundtrip(self):
         source = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()

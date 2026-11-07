@@ -334,9 +334,20 @@ var/global/list/root_tree_presenters
 		return null
 	var/atom/movable/lighting_overlay/L = root.lighting_overlay
 	var/key = "\ref[root]|[L.icon]|[L.icon_state]|[L.dir]|[json_encode(sample)]"
+	// Daylight on the client lives in the plane master's matrix, not the
+	// overlay's (lighting_overlay.dm), so the sample lacks it: add the same
+	// term to the sampled colour, and let the key follow the time of day.
+	var/client_daylight = daylight_on_client()
+	if(client_daylight)
+		key += "|[time_of_day]"
 	if(light_keys[T] == key)
 		return light_values[T]
 	var/rgb = root_light_rgb(root, context.body, TRUE)
+	if(rgb && client_daylight && rgb != "#ffffff")
+		var/list/channels = rgb2num(rgb)
+		var/add = round(255 * daylight_lum(root.get_window_coeff()))
+		if(islist(channels) && channels.len >= 3 && add > 0)
+			rgb = rgb(min(255, channels[1] + add), min(255, channels[2] + add), min(255, channels[3] + add))
 	if(rgb)
 		light_keys[T] = key
 		light_values[T] = rgb

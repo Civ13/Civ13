@@ -118,6 +118,9 @@
 				VP.mwheel = src
 				forceMove(VP)
 				playsound(loc, 'sound/effects/lever.ogg', 80, TRUE)
+				return
+		// Anything else (e.g. the car workshop's MouseDrop_T taking a wheel).
+		return ..()
 
 	attackby(var/obj/item/I, var/mob/living/human/H)
 		if (broken && istype(I, /obj/item/weapon/weldingtool))

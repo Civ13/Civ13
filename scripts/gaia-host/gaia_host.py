@@ -324,6 +324,11 @@ class Platform:
         from doorman import topic
         return topic(port, 'status=1&format=json')
 
+    def region_topic(self, port):
+        """The world's shard_region JSON text (its region group view)."""
+        from doorman import topic
+        return topic(port, 'shard_region=1&format=json')
+
     def boot_time(self):
         """Unix time the machine booted, or None if unknown."""
         try:

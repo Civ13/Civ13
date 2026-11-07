@@ -1630,6 +1630,9 @@ var/global/datum/persistence_admission_identity
 // The kind of sparse level z is saved as, or null for a full level.
 /map_storage/proc/sparse_level_kind(z)
 	if(islist(sparse_level_override)) return sparse_level_override["[z]"] ? "fixture" : null
+	// Orbit planes are compiled vacuum; the arrival plane holds the registry.
+	var/orbit = text2path("/proc/orbit_world")
+	if(orbit && call(orbit)()) return z > 1 ? "orbit" : null
 	if(z <= building_base_maxz()) return null
 	var/dug = text2path("/proc/dug_underground_z")
 	if(dug && call(dug)() == z) return null // Generated caves are random, not a baseline.
@@ -1638,6 +1641,7 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/sparse_baseline_turf(kind, z)
 	if(kind == "fixture") return sparse_level_override["[z]"]
 	if(kind == "building") return text2path("/turf/sky/building")
+	if(kind == "orbit") return text2path("/turf/floor/space/orbit")
 	return null
 
 // The area the level's unchanged cells share: the area of the first cell at

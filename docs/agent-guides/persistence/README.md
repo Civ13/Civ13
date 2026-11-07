@@ -200,15 +200,16 @@ Resolve physical turfs through containers, and allow qdel's gc_destroyed mark
 to detach atoms before gcDestroyed is assigned. Raw loc/z assignment bypasses
 Move/forceMove; explicit transport paths use persistence_set_loc/set_z.
 tests/save_movement is offline source-flow evidence, not native acceptance or
-proof that all remaining raw location writers are covered. Protected sleep's
-physical predicate includes (1,1,1) and the existing admin sleep area; stale
-return coordinates inside that area must keep protection and refuse waking.
+proof that all remaining raw location writers are covered. The old sleep
+zone's predicate (`is_protected_sleep_location`) covers (1,1,1) and the admin
+sleep area; it is now used only to move old saved bodies out of that zone.
 
-Protected sleep relocates the body between z-levels, so release only its matching
-reciprocal buckle before entry or wake. Keep return coordinates captured before
-unbuckling, reject mismatched occupants, and leave sleep protection active on a
-failed wake. Both delayed verbs retain the initiating client/body and recheck the
-persistence gate at transfer time. Per-level saves still reject cross-z object
+Sleep keeps the body where it lies (Val, 2026-11-07): there is no off-map sleep
+zone or forced unconsciousness there. Wake Up returns a body found in the old
+zone to its saved turf when safe, releasing only its matching reciprocal buckle,
+and otherwise wakes it there and tells the player to ask an admin rather than
+holding them asleep. Both delayed verbs retain the initiating client/body and
+recheck the persistence gate before changing state. Per-level saves still reject cross-z object
 fields; never suppress that guard to hide a stale spatial relationship.
 `map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
 cross-level and duplicate-entry failures, including direct Save_World calls.

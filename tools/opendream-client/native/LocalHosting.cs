@@ -188,7 +188,7 @@ public static class LocalHosting {
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock"];
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
@@ -329,6 +329,19 @@ public static class LocalHosting {
                         if (region.Value.ValueKind == JsonValueKind.Object) lines.Add(Clean(region.Name) + ": " + DescribeUnlock(region.Value));
                 if (refused != null) lines.Add("Refused: " + refused + ".");
                 return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script did not check any region." : string.Join(" ", lines), false);
+            }
+            if (action == "config-apply") {
+                // {"done": {id: {"copied": [paths], "running": bool}}, "refused": {id: reason}}
+                var lines = new List<string>();
+                if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
+                    foreach (var region in done.EnumerateObject().Take(16)) {
+                        if (region.Value.ValueKind != JsonValueKind.Object) continue;
+                        var count = region.Value.TryGetProperty("copied", out var copied) && copied.ValueKind == JsonValueKind.Array ? copied.GetArrayLength() : 0;
+                        lines.Add(Clean(region.Name) + ": " + (count == 0 ? "already current" : count == 1 ? "1 file written" : $"{count} files written")
+                            + (Bool(region.Value, "running") ? " (running: used from its next restart)." : "."));
+                    }
+                if (refused != null) lines.Add("Refused: " + refused + ".");
+                return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script did not apply the settings to any region." : string.Join(" ", lines), false);
             }
             // kill finishes at once and lists the regions it stopped under "done"; the others hand off to a worker.
             var acceptedName = action == "kill" ? "done" : "accepted";

@@ -1134,8 +1134,6 @@ mob/proc/yank_out_object()
 		return ..()
 
 /mob/proc/set_stat(new_stat)
-	if (new_stat == CONSCIOUS && in_protected_sleep_zone())
-		new_stat = UNCONSCIOUS
 	. = stat != new_stat
 	stat = new_stat
 

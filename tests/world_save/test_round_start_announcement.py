@@ -195,6 +195,19 @@ class RoundAnnouncementTests(unittest.TestCase):
         self.assertIn('list("round" = round, "resumed" = resumed ? TRUE : FALSE)', sender)
         self.assertIn('webhook_send("round_start", query)', sender)
 
+    def test_webhooks_leave_the_game_loop(self):
+        # world.Export blocks the server for the bot's round trip even inside
+        # spawn(); one IC say line is one request (2026-11-07).
+        sender = proc(self.webhooks, '/proc/webhook_send(method, data)')
+        self.assertNotIn('world.Export', sender)
+        self.assertIn('webhook_dispatcher.enqueue(query)', sender)
+        deliver = proc(self.webhooks, '/datum/webhook_dispatcher/proc/deliver(query)')
+        self.assertIn('R.begin_async()', deliver)
+        self.assertIn('R.is_complete()', deliver)
+        self.assertLess(deliver.index('if (blocking)'), deliver.index('R.begin_async()'))
+        tor = proc(source('code/modules/admin/ToRban.dm'), '/proc/ToRban_update()')
+        self.assertLess(tor.index('R.begin_async()'), tor.index('world.Export(TOR_EXIT_LIST_URL)'))
+
     def test_startup_and_manual_paths_are_success_gated(self):
         self.assertNotIn('webhook_send_round_start(game_id)', self.world)
         self.assertIn('var/startup_round_pending = persistence_restart.startup_hold', self.setup)

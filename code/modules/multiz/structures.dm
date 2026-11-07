@@ -89,9 +89,16 @@
 	// Preserve the old registry-cleanup layer's ignored parent return value.
 	..()
 
+// The level a ladder or stair pair leads to, through the multiz helpers so a
+// dug cave or an added building level counts (GetAbove/GetBelow read a
+// connection bitfield that no map sets, so they never found a target).
+/obj/structure/multiz/proc/paired_turf()
+	var/level = istop ? multiz_level_below(z) : multiz_level_above(z)
+	return level ? locate(x, y, level) : null
+
 /obj/structure/multiz/ladder/find_target()
-	var/turf/targetTurf = istop ? GetBelow(src) : GetAbove(src)
-	target = locate(/obj/structure/multiz/ladder) in targetTurf
+	var/turf/targetTurf = paired_turf()
+	target = targetTurf ? locate(/obj/structure/multiz/ladder) in targetTurf : null
 
 /obj/structure/multiz/ladder/up
 	icon_state = "ladderup"
@@ -469,8 +476,8 @@
 	density = TRUE
 
 /obj/structure/multiz/stairs/active/find_target()
-	var/turf/targetTurf = istop ? GetBelow(src) : GetAbove(src)
-	target = locate(/obj/structure/multiz/stairs/enter) in targetTurf
+	var/turf/targetTurf = paired_turf()
+	target = targetTurf ? locate(/obj/structure/multiz/stairs/enter) in targetTurf : null
 
 /obj/structure/multiz/stairs/active/Bumped(var/atom/movable/M)
 	if (isnull(M))

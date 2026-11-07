@@ -201,6 +201,9 @@ var/global/cable_identity_sequence = 0
 /obj/structure/cable/var/tmp/rebuild_time = -1
 // Engines that powered the last traversal, shared by every cable it reached.
 /obj/structure/cable/var/tmp/list/rebuild_engines = null
+// Cables on the level above or below joined through a pair of cable risers
+// (cable_risers.dm). Runtime only: risers rebuild it from their positions.
+/obj/structure/cable/var/tmp/list/riser_links = null
 
 /obj/structure/cable/proc/grid_identity()
 	if (!grid_serial)
@@ -208,13 +211,19 @@ var/global/cable_identity_sequence = 0
 	return grid_serial
 
 /obj/structure/cable/persistence_runtime_var(key)
-	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines"))
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links"))
 		return TRUE
 	return ..()
 
 //needed as this can, unlike other placements, disconnect cables
 /obj/structure/cable/proc/disconnect()
 	var/list/previous = connections.Copy()
+	if (riser_links)
+		for (var/obj/structure/cable/linked in riser_links)
+			if (linked.riser_links)
+				linked.riser_links -= src
+			previous |= linked
+		riser_links = null
 	connections.Cut()
 	power_consumers.Cut()
 	powered = FALSE
@@ -297,6 +306,12 @@ var/global/cable_identity_sequence = 0
 				if (!(B in batteries) && B.powersource == CB)
 					batteries += B
 					capacity += B.available_output()
+		// Riser pairs join cables on the same x and y of adjacent levels.
+		if (CB.riser_links)
+			for (var/obj/structure/cable/linked in CB.riser_links)
+				if (!discovered[linked] && isturf(linked.loc) && linked.riser_links && (CB in linked.riser_links))
+					discovered[linked] = TRUE
+					pending += linked
 	var/accepted = FALSE
 	if (requester)
 		var/reserved = power_consumers[requester]
@@ -329,6 +344,10 @@ var/global/cable_identity_sequence = 0
 
 /obj/proc/draw_cable_power()
 	if (!powersource)
+		return FALSE
+	// A smart hub switched this device off (smart_home.dm).
+	if (smart_power_cut())
+		powersource.update_power(-powerneeded, 1, src)
 		return FALSE
 	if (powerneeded <= 0)
 		powersource.update_power(0, 1, src)

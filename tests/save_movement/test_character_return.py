@@ -696,12 +696,13 @@ class CharacterReturnTests(unittest.TestCase):
             if 'new mobtype' in body:
                 self.assertLess(body.index('allow_new_character'), body.index('new mobtype'))
         sleep = adapter.extract(adapter.read(HELPERS), '/mob/living/human/verb/mob_sleep')
-        self.assertLess(sleep.index('enter_saved_bed_sleep()'), sleep.index('enter_protected_sleep()'))
+        self.assertLess(sleep.index('enter_saved_bed_sleep()'), sleep.index('enter_bed_sleep()'))
+        self.assertNotIn('enter_protected_sleep', sleep)
         self.assertIn('Only a completed world save preserves it on disk', sleep)
         wake = adapter.extract(adapter.read(HELPERS), '/mob/living/human/verb/mob_wakeup')
-        self.assertIn('persistence_bed_return_enabled() && !is_protected_sleep_location(src)', wake)
+        self.assertNotIn('complete_protected_wakeup', wake)
         self.assertLess(wake.index('persistence_sleep_transfer_blocked()', wake.index('spawn(300)')), wake.index('inducedSSD = FALSE'))
-        self.assertIn('if (in_protected_sleep_zone())', adapter.read('code/game/mob/living/carbon/human/human_life.dm'))
+        self.assertNotIn('in_protected_sleep_zone', adapter.read('code/game/mob/living/carbon/human/human_life.dm'))
 
 
 if __name__ == '__main__':

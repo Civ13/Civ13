@@ -12,6 +12,8 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json adopt --region ID --from PATH
     python shard_group.py --config group.json check-update [--region ID]
     python shard_group.py --config group.json help-status|help-start|help-stop
+    python shard_group.py --config group.json config-apply [--region ID]  # overlays + config.local.txt, no compile
+    python shard_group.py --config group.json config-migrate  # whole overlay config.txt -> config.local.txt
 
 Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
@@ -30,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import filecmp
 import hashlib
 import json
 import os
@@ -50,7 +53,7 @@ from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'handover')
+                 'config-apply', 'config-migrate', 'handover')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
@@ -73,9 +76,12 @@ ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.s
 # its game read a frozen heartbeat and report help unavailable).
 ADOPT_SKIP = {'SQL': ('player-help',)}
 # Files setup writes for each region; an overlay must not replace them.
+LOCAL_CONFIG = 'config/config.local.txt'  # an overlay's own lines for config/config.txt (merge_config)
+KEPT_COPY = re.compile(r'\.(previous|migrated)$|\.bak(-|$)')  # earlier versions an overlay keeps, never copied
+CONFIG_NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt')
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'OTHER')
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -142,6 +148,8 @@ def load_group(path):
     # Raid worlds reset and send everyone home; nobody can live in one.
     if any(r['id'] == mainland and r['kind'] == 'RAID' for r in regions):
         raise ValueError('the mainland cannot be a RAID region')
+    if any(r['id'] == mainland and r['kind'] == 'ORBIT' for r in regions):
+        raise ValueError('the mainland cannot be an ORBIT region')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
@@ -826,11 +834,13 @@ def prepare_tree(group, region, path, revision, platform, git):
 def apply_overlays(group, region, path):
     """Copy the group's overlay folder, then the region's, over the region's worktree.
 
-    An overlay holds what git does not: the live config/config.txt (webhook key),
-    config/host.txt, native DLLs and their settings. It is copied after every
-    checkout, so a forced checkout never loses it. Returns the copied paths.
+    An overlay holds what git does not: config/host.txt, native DLLs and their
+    settings, and config/config.local.txt, the host's own lines for config/config.txt
+    (see merge_config). It is copied after every checkout, so a forced checkout
+    never loses it. A file whose copy already matches is left alone, so a DLL a
+    running world has loaded is not rewritten. Returns the copied paths.
     """
-    copied = []
+    copied, local = [], []
     for source in (group.get('overlay'), region.get('overlay')):
         if not source:
             continue
@@ -844,11 +854,186 @@ def apply_overlays(group, region, path):
                 raise RuntimeError('overlay %s must not contain %s' % (source, relative))
         for item in files:
             relative = item.relative_to(source)
+            if relative.as_posix() == LOCAL_CONFIG:
+                local.append(item)
+                continue
+            if KEPT_COPY.search(item.name):
+                continue  # the launcher's and config-migrate's kept copies stay in the overlay
             target = path / relative
+            if target.is_file() and filecmp.cmp(item, target, shallow=False):
+                continue
             target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(item, target)
+            try:
+                shutil.copy2(item, target)
+            except PermissionError:
+                raise RuntimeError('%s is in use (is the region running?); stop it and try again' % relative.as_posix())
             copied.append(relative.as_posix())
+    if local:
+        config = path / 'config' / 'config.txt'
+        text = config.read_text(encoding='utf-8') if config.exists() else ''
+        for item in local:
+            try:
+                text = merge_config(text, item.read_text(encoding='utf-8-sig'))
+            except ValueError as error:
+                raise RuntimeError('%s: %s' % (item, error))
+        config.parent.mkdir(parents=True, exist_ok=True)
+        config.write_text(text, encoding='utf-8')
+        copied.append(LOCAL_CONFIG)
     return copied
+
+
+def config_key(line):
+    """The setting a config.txt line sets, as config.load reads it (upper case), or None."""
+    line = line.strip()
+    if not line or line.startswith('#'):
+        return None
+    return line.split(' ', 1)[0].upper()
+
+
+def commented_key(line):
+    """The setting a commented-out config.txt line would set ("#WEBHOOK_KEY"), or None.
+    Prose comments ("# text", "## text") have a space or a second # after the first."""
+    line = line.strip()
+    if not line.startswith('#') or not CONFIG_NAME.match(line[1:].split(' ', 1)[0]):
+        return None
+    return line[1:].split(' ', 1)[0].upper()
+
+
+def merge_config(base, overrides):
+    """Apply a host's config.local.txt to the repository's config.txt.
+
+    Each line of overrides is one of:
+      KEY value / KEY  set the setting: replaces its active line, else uncomments its
+                       commented line, else is added at the end;
+      #KEY             turn the setting off: comments out its active lines;
+      blank, "# text"  ignored (comments).
+    Everything the host does not name keeps the repository's value, so new settings
+    and changed defaults on master still arrive.
+    """
+    lines = base.splitlines()
+    added = []
+    for raw in overrides.splitlines():
+        text = raw.strip()
+        if not text:
+            continue
+        if text.startswith('#'):
+            key = commented_key(text)
+            if key is None or ' ' in text:
+                continue  # a comment
+            lines = ['#' + line.strip() if config_key(line) == key else line for line in lines]
+            added = [line for line in added if config_key(line) != key]
+            continue
+        key = text.split(' ', 1)[0]
+        if not CONFIG_NAME.match(key):
+            raise ValueError('%r is not a config setting line' % raw)
+        key = key.upper()
+        active = [i for i, line in enumerate(lines) if config_key(line) == key]
+        if active:
+            lines[active[0]] = text
+            for i in active[1:]:
+                lines[i] = '#' + lines[i].strip()
+            continue
+        if any(config_key(line) == key for line in added):
+            added = [text if config_key(line) == key else line for line in added]
+            continue
+        commented = next((i for i, line in enumerate(lines) if commented_key(line) == key), None)
+        if commented is not None:
+            lines[commented] = text
+        else:
+            added.append(text)
+    if added:
+        lines += ['', '## Host settings (config.local.txt)'] + added
+    return '\n'.join(lines) + '\n'
+
+
+def active_settings(text):
+    """config.txt's active lines by setting (the first one config.load acts on last wins, as merge keeps one)."""
+    settings = {}
+    for line in text.splitlines():
+        key = config_key(line)
+        if key:
+            settings[key] = line.strip()
+    return settings
+
+
+def overrides_for(base, full):
+    """The config.local.txt lines that turn base (the repository's config.txt) into full
+    (a whole config.txt an overlay used to carry). Comments are not compared."""
+    want, have = active_settings(full), active_settings(base)
+    lines = [want[key] for key in want if have.get(key) != want[key]]
+    lines += ['#' + key for key in have if key not in want]
+    return lines
+
+
+def migrate_config(group, platform=None):
+    """Turn each overlay's whole config/config.txt into a config/config.local.txt that
+    holds only its differences from the repository's config.txt at the group revision.
+    The old file is kept beside it as config.txt.migrated. Refuses an overlay that
+    already has a config.local.txt, or whose result would not reproduce its settings."""
+    platform = platform or Platform()
+    code, out = platform.run([group['git'], 'rev-parse', group['revision']], cwd=group['repository'], timeout=60)
+    revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+    if not HEX40.match(revision):
+        raise Refused('could not resolve the group revision')
+    shown = subprocess.run([group['git'], 'show', revision + ':config/config.txt'], cwd=group['repository'],
+                           stdin=subprocess.DEVNULL, capture_output=True, timeout=60)
+    if shown.returncode != 0:
+        raise Refused('could not read config/config.txt at %s' % revision)
+    base = shown.stdout.decode('utf-8')
+    done, refused = {}, {}
+    sources = [group.get('overlay')] + [r.get('overlay') for r in group['regions']]
+    for source in dict.fromkeys(s for s in sources if s):
+        full, local = Path(source) / 'config' / 'config.txt', Path(source) / LOCAL_CONFIG
+        if not full.is_file():
+            continue
+        if local.exists():
+            refused[source] = '%s already exists' % LOCAL_CONFIG
+            continue
+        text = full.read_text(encoding='utf-8-sig')
+        lines = overrides_for(base, text)
+        try:
+            reproduced = active_settings(merge_config(base, '\n'.join(lines))) == active_settings(text)
+        except ValueError:
+            reproduced = False
+        if not reproduced:
+            refused[source] = 'the overrides would not reproduce config.txt; move it by hand'
+            continue
+        header = ['# Host settings merged over the repository config/config.txt on every update',
+                  '# (scripts/shard-group/README.md). "KEY value" sets, "#KEY" turns a setting off.']
+        local.write_text('\n'.join(header + lines) + '\n', encoding='utf-8')
+        os.replace(full, full.with_name('config.txt.migrated'))  # KEPT_COPY: not copied into regions
+        done[source] = lines
+    return {'revision': revision, 'done': done, 'refused': refused}
+
+
+def apply_config(group, region_id=None, platform=None):
+    """Write the overlays and config.local.txt into set-up regions without a checkout
+    or compile. The region's config/config.txt is first restored from its checkout.
+    A world reads config.txt when it starts, so the change takes effect at its next
+    restart; host.txt is read at each login."""
+    platform = platform or Platform()
+    chosen = [r for r in group['regions'] if region_id in (None, r['id'])]
+    if not chosen:
+        raise Refused('no region %s in the group' % region_id)
+    done, refused = {}, {}
+    for region in chosen:
+        path = region_dir(group, region['id'])
+        if not (path / '.git').exists():
+            refused[region['id']] = 'the region is not set up; run setup first'
+            continue
+        code, out = platform.run([group['git'], 'checkout', '--force', 'HEAD', '--', 'config/config.txt'], cwd=path, timeout=120)
+        if code != 0:
+            refused[region['id']] = 'could not restore config/config.txt: ' + out.strip()[-300:]
+            continue
+        try:
+            copied = apply_overlays(group, region, path)
+            if group['persistent']:
+                persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
+        except (RuntimeError, OSError) as error:
+            refused[region['id']] = str(error)
+            continue
+        done[region['id']] = {'copied': copied, 'running': platform.listening(region['port'])}
+    return done, refused
 
 
 def adopt(group, region_id, source, platform=None):
@@ -1439,6 +1624,14 @@ def main(argv=None):
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
             result = adopt(group, args.region, args.source)
+        elif args.action == 'config-migrate':
+            result = migrate_config(group)
+        elif args.action == 'config-apply':
+            done, refused = apply_config(group, args.region)
+            if refused and not done:
+                print(json.dumps({'ok': False, 'refused': refused}))
+                return 1
+            result = {'done': done, 'refused': refused}
         elif args.action in ('freeze', 'thaw', 'kill', 'unlock', 'force-unlock'):
             # kill: forced stop without saving; the next start restores the last completed save.
             # unlock: remove stale BYOND lock files from stopped regions; force-unlock from any.

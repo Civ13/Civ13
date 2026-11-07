@@ -274,3 +274,9 @@ LANGUAGE english
 # Production refuses NEW growth as UNMEASURED until a reviewed memory profile exists.
 # No setting bypasses that refusal; existing planes remain usable.
 # See docs/new-z-budget.md.
+
+## Day/night on the client: each day/night change tints every player's light
+## plane once instead of rewriting all 350,000 lighting overlays on the server
+## (a 60 s sweep on Gaia). Indoor cells keep half daylight through the mask's
+## alpha. Not pixel-identical to the server tint; on while it is being judged.
+#DAYNIGHT_CLIENT_TINT

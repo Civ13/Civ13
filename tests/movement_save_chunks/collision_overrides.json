@@ -490,7 +490,7 @@
     },
     {
       "path": "code/modules/multiz/structures.dm",
-      "sha256_normalized": "5b015a8a5a6ce7b5d27c977ce356c16cc098aa938511b9063cc3e97c7e2388ec",
+      "sha256_normalized": "4f5316333e4e55655e96cc3a95cab396ae291515f6b4805961191a849046d401",
       "declarations": [
         {
           "line": 45,

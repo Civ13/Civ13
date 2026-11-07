@@ -36,6 +36,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # 2026-11-07 gameplay audit: source checks plus run.py's extracted-proc probe text.
+    'gameplay_audit': {'files': ('tests/gameplay_audit/test_source.py',),
+        'paths': ('tests/gameplay_audit/',), 'shared_paths': (
+            'code/game/turfs/floor_attackby.dm', 'code/game/mob/living/carbon/human/emotes/emote.dm',
+            'code/modules/1713/machinery/modular_vehicles/movement.dm',
+            'code/modules/1713/machinery/modular_vehicles/car_workshop.dm',
+            'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm',
+            'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
@@ -114,6 +123,12 @@ SUITES = {
             'config/crafting/material_recipes_global.txt',
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
             'tests/save_movement/source_adapter.py', 'civ13.dme')},
+    # Company stock ledger, stock market and company stall guard projections.
+    'company_stock': {'files': ('tests/company_stock/test_company_stock.py',),
+        'paths': ('tests/company_stock/', 'code/game/mob/groups/companies.dm',
+                  'code/modules/1713/marketplace.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/death.dm',
+            'code/game/objects/structures/vending/vending_sales.dm')},
     # Reviewed stdlib-only source/guard projections; no BYOND runtime.
     'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
         'paths': ('tests/stone_brazier/',), 'shared_paths': (

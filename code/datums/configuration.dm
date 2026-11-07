@@ -139,6 +139,9 @@ var/list/gamemode_cache = list()
 	var/scripts_directory = null
 
 	var/daynight_on = TRUE
+	// Day/night as one tint on each client's light mask plane instead of a
+	// rewrite of every lighting overlay (2026-11-07); needs visual sign-off.
+	var/daynight_client_tint = FALSE
 	var/seasons_on = TRUE
 	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
 	var/skip_persistence_saving = FALSE
@@ -435,6 +438,9 @@ var/list/gamemode_cache = list()
 
 				if ("tor_ban")
 					ToRban = TRUE
+
+				if ("daynight_client_tint")
+					daynight_client_tint = TRUE
 
 				if ("automute_on")
 					automute_on = TRUE
