@@ -53,7 +53,10 @@ def place(hwnd):
     time.sleep(1.0)
     rect = wintypes.RECT()
     user32.GetWindowRect(hwnd, ctypes.byref(rect))
-    return dict(x=max(rect.left, 0), y=max(rect.top, 0), width=rect.right - max(rect.left, 0), height=rect.bottom - max(rect.top, 0))
+    # A maximised window overhangs the desktop by its border; gdigrab refuses that.
+    sw, sh = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    x, y = max(rect.left, 0), max(rect.top, 0)
+    return dict(x=x, y=y, width=min(rect.right, sw) - x, height=min(rect.bottom, sh) - y)
 
 
 def stage(game):

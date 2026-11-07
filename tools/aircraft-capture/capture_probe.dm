@@ -145,6 +145,9 @@ var/global/datum/flight_probe/flight_probe = new
 		sleep(10)
 		H.ckey = C.ckey
 		sleep(20)
+		// The guest never pressed Join, so close the lobby panel by hand.
+		C << browse(null, "window=playersetup")
+		C << browse(null, "window=latechoices")
 		check("client_is_pilot", C.mob == H, list("mob" = "[C.mob]"))
 		var/obj/structure/engine/internal/E = A.engine
 		E.fueltank.reagents.add_reagent(E.fuels[1], 300, safety = TRUE)
@@ -173,8 +176,8 @@ var/global/datum/flight_probe/flight_probe = new
 		W.secondary_attack_self(H)
 		// Lay runway under the plane right before it descends onto it.
 		var/turf/c = get_turf(A)
-		for (var/x = c.x - 10, x <= c.x + 10, x++)
-			for (var/y = c.y - 10, y <= c.y + 10, y++)
+		for (var/x = c.x - 6, x <= c.x + 6, x++)
+			for (var/y = c.y - 6, y <= c.y + 6, y++)
 				var/turf/G = locate(x, y, 2)
 				if (G && !(locate(/obj/covers/roads/modern/runway) in G))
 					for (var/obj/structure/wild/wild in G)
