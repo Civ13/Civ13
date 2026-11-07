@@ -90,7 +90,7 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count.len < 30)
+		if (!pregnant && deer_count.len < 150)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/male/M in nearbyObjects)
 				if (M.stat == CONSCIOUS)
@@ -247,7 +247,7 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count.len < 30)
+		if (!pregnant && deer_count.len < 150)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/dikdik/male/M in nearbyObjects)
 				if (M.stat == CONSCIOUS)

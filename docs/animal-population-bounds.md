@@ -15,20 +15,22 @@ re-registration are outside this table.
 
 | Species | Registry | Global cap | Local check | Breeding |
 | --- | --- | --- | --- | --- |
-| Chicken (hen, chick) | `chicken_count` | 50 | Egg starts hatching only with at most 5 chickens/chicks within 3 tiles | Hen lays an egg; egg hatches a chick after 400 grow steps |
-| Turkey | `turkey_count` | 35 | Same egg check, at most 5 turkeys nearby | Hen lays an egg; egg hatches a turkey chick |
-| Cattle (cow, bull) | `cow_count` | 30 | Conception cancelled with more than 5 cattle in 15x15; then a 300-tick pause | Cow next to a conscious bull, 600-tick pregnancy |
-| Pig | `pig_count` | 30 | Same 15x15 check | Gilt next to a boar, 600 ticks |
-| Wild boar | `boar_count` | 30 | Same 15x15 check | Gilt next to a boar, 600 ticks |
-| Goat | `goat_count` | 35 | Same 15x15 check | Female next to a male, 600 ticks |
-| Sheep | `sheep_count` | 35 | Same 15x15 check | Ewe next to a ram, 600 ticks |
-| Bison | `bison_count` | 30 | Same 15x15 check | Cow next to a bull, 600 ticks |
-| Deer (not dik-dik) | `deer_count` | 30 | Same 15x15 check | Doe next to a stag, 600 ticks |
-| Wolf | `wolf_count` | 20 | None | She-wolf next to a male, 900 ticks |
-| Bear | `bear_count` | 12 | None | Sow next to a boar, 1500 ticks |
+| Chicken (hen, chick) | `chicken_count` | 80 | Egg starts hatching only with at most 5 chickens/chicks within 3 tiles | Hen lays an egg; egg hatches a chick after 400 grow steps |
+| Turkey | `turkey_count` | 80 | Same egg check, at most 5 turkeys nearby | Hen lays an egg; egg hatches a turkey chick |
+| Cattle (cow, bull) | `cow_count` | 60 | Conception cancelled with more than 5 cattle in 15x15; then a 300-tick pause | Cow next to a conscious bull, 600-tick pregnancy |
+| Pig | `pig_count` | 50 | Same 15x15 check | Gilt next to a boar, 600 ticks |
+| Wild boar | `boar_count` | 70 | Same 15x15 check | Gilt next to a boar, 600 ticks |
+| Goat | `goat_count` | 70 | Same 15x15 check | Female next to a male, 600 ticks |
+| Sheep | `sheep_count` | 90 | Same 15x15 check | Ewe next to a ram, 600 ticks |
+| Bison | `bison_count` | 60 | Same 15x15 check | Cow next to a bull, 600 ticks |
+| Deer (not dik-dik) | `deer_count` | 150 | Same 15x15 check | Doe next to a stag, 600 ticks |
+| Wolf | `wolf_count` | 50 | None | She-wolf next to a male, 900 ticks |
+| Bear | `bear_count` | 30 | None | Sow next to a boar, 1500 ticks |
 | Frog | none | none | Lays only with at most 2 frogs within 6 tiles; egg hatches only with at most 2 within 5 tiles | Rare egg laying near water |
 
-Wolves and bears had no global cap until this table was written; their
+Caps were raised on 2026-11-07 so they sit above the ecology spawner's wild
+targets (see docs/ecology-spawning.md); the deer cap covers elk, reindeer and
+dik-diks too. Wolves and bears had no global cap until this table was written; their
 registries existed but only fed the admin count. Bear sows and cubs were also
 never registered, because only `bear/boar/New()` added to `bear_count`. Both are
 fixed alongside this document. The wolf and bear caps are lower than the

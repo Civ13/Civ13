@@ -9,6 +9,7 @@
 	processes.mob = src
 
 /process/mob/fire()
+	ecology_refresh_observers()
 	for (current in current_list)
 
 		var/mob/M = current
@@ -33,7 +34,8 @@
 				mob_list -= M
 				unregister_living_mob(M)
 				continue
-			M.Life()
+			if (!ecology_animal_resting(M))
+				M.Life()
 			if (!(M == null))
 				if (world.time - M.last_movement > 7)
 					M.velocity = 0

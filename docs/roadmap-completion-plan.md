@@ -83,7 +83,7 @@ The page lags master. These should be refreshed when the page is next edited
 | Item | Remaining work | Track |
 | --- | --- | --- |
 | Hydroponics | Trays, reservoir, power, research, interactions, save lifecycle ([design](hydroponics-design.md)) | Agent, with five small product decisions |
-| Ecology-driven spawning | Production population/habitat wiring, visibility checks, lifecycle adapters on top of the inactive heatmap (#3356) | Agent |
+| Ecology-driven spawning | Done 2026-11-07 for Nomads maps ([ecology-spawning](ecology-spawning.md)); live population check remains | Agent |
 | Food progression | Protected cultivation, husbandry balance, aquaculture (#3048, #3049, #3051) | Owned (open-issues sweep) |
 | Cooperative digging (#888), recipe audit (#3563) | Mechanics and item list | Decision |
 | BYOND 516.1688 acceptance (#3310) | Runtime, client, saved-world acceptance | Val's hands |

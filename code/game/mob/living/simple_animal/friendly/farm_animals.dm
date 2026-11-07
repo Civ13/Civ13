@@ -317,7 +317,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && cow_count.len < 30)
+	if (!pregnant && cow_count.len < 60)
 		var/nearbyObjects = range(1,src) //3x3 area around cow
 		for(var/mob/living/simple_animal/cattle/bull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -513,7 +513,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && pig_count.len < 30)
+	if (!pregnant && pig_count.len < 50)
 		var/nearbyObjects = range(1,src) //3x3 area around pig
 		for(var/mob/living/simple_animal/pig_boar/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -663,7 +663,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && boar_count.len < 30)
+	if (!pregnant && boar_count.len < 70)
 		var/nearbyObjects = range(1,src) //3x3 area around pig
 		for(var/mob/living/simple_animal/boar_boar/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -806,7 +806,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && goat_count.len < 35)
+	if (!pregnant && goat_count.len < 70)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/goat/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/goat/female))
@@ -994,7 +994,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && sheep_count.len < 35)
+	if (!pregnant && sheep_count.len < 90)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/sheep/female))

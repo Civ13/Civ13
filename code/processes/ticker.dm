@@ -37,6 +37,7 @@
 	lastTickerTime = currentTime
 
 	ticker.process()
+	ecology_autostart_check()
 
 	// for keeping track of time - Kachnov
 	if (ticker.current_state >= GAME_STATE_PLAYING)
