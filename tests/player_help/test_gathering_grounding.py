@@ -83,17 +83,19 @@ class GatheringGroundingTests(unittest.TestCase):
         self.assertIn('foot', prompt)
         self.assertNotIn('code/game/', prompt)
 
-    def test_rain_collector_alias_selects_actual_dew_recipe_and_gates(self):
+    def test_rain_collector_alias_selects_barrel_recipe_and_gates(self):
         recipes = bridge.recipe_context(self.catalog)
-        dew = next(row for row in recipes if row['topic'].startswith('dew collector'))
-        self.assertIn('rain collector', dew['topic'])
+        self.assertFalse([row for row in recipes if row['topic'].startswith('dew collector')])
+        barrel = next(row for row in recipes if row['topic'].startswith('barrel'))
+        self.assertIn('rain collector', barrel['topic'])
+        self.assertIn('dew collector', barrel['topic'])
         distractors = [{'topic': 'rain', 'source': 'code', 'text': 'rain ' + 'x' * 9000},
                        {'topic': 'rain', 'source': 'code', 'text': 'rain ' + 'y' * 9000}]
         prompt = self.answer_prompt('How do I make a rain collector?', recipes + bridge.gameplay_knowledge(ROOT) + distractors)
-        self.assertIn('recipe: dew collector', prompt)
-        self.assertIn('8 x finished planks', prompt)
-        self.assertIn('basic_agriculture', prompt)
-        self.assertIn('current gameplay code (dew collector rain collector', prompt)
+        self.assertIn('recipe: barrel', prompt)
+        self.assertIn('5 x finished planks', prompt)
+        self.assertIn('cooperage', prompt)
+        self.assertIn('current gameplay code (rain barrel rain collector', prompt)
         self.assertIn('findtext(a.icon_state, "rain")', prompt)
         self.assertIn('do not claim research is unlocked from era alone', prompt)
 
@@ -111,8 +113,8 @@ class GatheringGroundingTests(unittest.TestCase):
 
     def test_rain_alias_is_bound_to_collector_output_only(self):
         recipes = [
-            {'name': 'dew collector', 'kind': 'Material / global', 'inputs': [],
-             'outputs': [{'id': '/obj/structure/reagent_dispensers/dew_collector', 'name': 'dew collector'}]},
+            {'name': 'barrel', 'kind': 'Material / global', 'inputs': [],
+             'outputs': [{'id': '/obj/item/weapon/reagent_containers/glass/barrel', 'name': 'barrel'}]},
             {'name': 'dew cloth', 'kind': 'Material / global', 'inputs': [],
              'outputs': [{'id': '/obj/item/dew_cloth', 'name': 'dew cloth'}]},
         ]
@@ -122,15 +124,15 @@ class GatheringGroundingTests(unittest.TestCase):
         self.assertIn('rainwater collector', rows[0]['topic'])
         self.assertNotIn('rain', rows[1]['topic'])
 
-    def test_collector_prompt_checks_cover_before_toggle(self):
+    def test_collector_prompt_checks_lid_before_toggle(self):
         prompt = self.answer_prompt('How do I use a rain collector?', bridge.gameplay_knowledge(ROOT))
-        self.assertIn('cover starts open', prompt)
-        self.assertIn('examine', prompt)
-        self.assertIn('before toggling', prompt)
+        self.assertIn('starts with its lid off', prompt)
+        self.assertIn('examine it before using it in hand', prompt)
+        self.assertIn('toggles the lid', prompt)
         self.assertIn('10 units', prompt)
         self.assertIn('2 units', prompt)
-        self.assertIn('200', prompt)
-        self.assertIn('collecting = !collecting', prompt)
+        self.assertIn('no roof', prompt)
+        self.assertIn('!is_open_container()', prompt)
 
 
 if __name__ == '__main__':
