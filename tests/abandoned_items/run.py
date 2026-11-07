@@ -122,7 +122,7 @@ def main():
         text = build.stdout + build.stderr
         (out / 'compile.log').write_text(text)
         print(text, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
+        if build.returncode or 'DM compiler version ' + json.loads((root / 'tools/byond/version.json').read_text(encoding='utf-8'))['version'] not in text or '0 errors, 0 warnings' not in text:
             raise RuntimeError('Pinned compilation failed')
         for f in generated[3:]: shutil.copy2(f, out / f.name)
         # Only tracked name data; no production config, credentials or saves.

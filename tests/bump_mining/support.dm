@@ -34,6 +34,11 @@
 	var/flags = 0
 	var/throwpass = FALSE
 /obj/structure/vehicleparts/frame
+// Types and the allowlist var named by the extracted persistence field policy.
+/obj/structure/wild
+/obj/map_metadata
+/obj/covers
+/datum/var/map_storage_saved_vars = ""
 /obj/structure/window/proc/is_fulltile()
 	return FALSE
 /mob
