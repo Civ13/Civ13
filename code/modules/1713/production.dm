@@ -1530,8 +1530,7 @@
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		base = OS
 		break
-	if (!work_barrel)
-		load_barrel(load_floor_barrel)
+	load_barrel(load_floor_barrel)
 	start_extraction()
 
 /obj/structure/oilwell/proc/start_extraction()
@@ -1573,14 +1572,23 @@
 		if (extracting_now)
 			extract()
 
-/obj/structure/oilwell/proc/load_barrel(load_floor_barrel = TRUE)
-	if (work_barrel)
-		return
+// The saved contents own the barrels; work_barrel is only a runtime link.
+// Full barrels must remain reachable for removal, automation and pipe output.
+/obj/structure/oilwell/proc/recover_barrel()
+	if (work_barrel && work_barrel.loc == src)
+		return work_barrel
+	stop_extraction()
+	work_barrel = null
 	for (var/obj/item/weapon/reagent_containers/glass/barrel/contained in contents)
-		if (contained.loc == src && contained.reagents && contained.reagents.get_free_space() > 0)
+		if (contained.loc == src)
 			work_barrel = contained
-			start_extraction()
-			return
+			break
+	return work_barrel
+
+/obj/structure/oilwell/proc/load_barrel(load_floor_barrel = TRUE)
+	if (recover_barrel())
+		start_extraction()
+		return
 	if (!load_floor_barrel)
 		return
 	for (var/obj/item/weapon/reagent_containers/glass/barrel/B in src.loc)
@@ -1591,6 +1599,7 @@
 			break
 
 /obj/structure/oilwell/proc/unload_barrel()
+	recover_barrel()
 	stop_extraction()
 	if (work_barrel && work_barrel.loc == src)
 		work_barrel.loc = get_turf(src)
@@ -1598,8 +1607,10 @@
 
 /obj/structure/oilwell/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
+		load_barrel(FALSE)
 		if (!work_barrel)
 			if (do_after(user, 35, src))
+				load_barrel(FALSE)
 				if (work_barrel || W.loc != user || get_dist(user, src) > 1)
 					return
 				user.drop_item(src.loc)
@@ -1615,6 +1626,7 @@
 	..(W, user)
 
 /obj/structure/oilwell/attack_hand(var/mob/living/human/H)
+	load_barrel(FALSE)
 	if (work_barrel)
 		var/obj/item/weapon/reagent_containers/glass/barrel/removing = work_barrel
 		to_chat(H, "You start taking \the barrel from \the [src]...")
@@ -1630,6 +1642,13 @@
 
 /obj/structure/oilwell/Destroy()
 	unload_barrel()
+	// Older saves can contain several barrels with no runtime link. Return all
+	// original objects before parent destruction deletes the remaining contents.
+	var/turf/T = get_turf(src)
+	if (T)
+		for (var/obj/item/weapon/reagent_containers/glass/barrel/contained in contents.Copy())
+			if (contained.loc == src)
+				contained.loc = T
 	base = null
 	. = ..()
 

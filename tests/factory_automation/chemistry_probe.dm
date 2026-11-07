@@ -91,6 +91,13 @@ var/chem_runtime_error = FALSE
 	chem_check(!W.factory_offer(0, /obj/item/stack), "an arm filter that does not match is honoured")
 	chem_check(W.factory_take(B, locate(5, 1, 1)) && B.loc == locate(5, 1, 1) && !W.work_barrel && !W.extracting_now, "taking the full barrel stops extraction and frees the well")
 	chem_check(W.factory_accepts(second), "the freed well takes the next barrel")
+	// A lost runtime link must not let a second barrel enter an occupied well.
+	full.forceMove(W)
+	W.work_barrel = null
+	chem_check(!W.factory_accepts(second) && W.factory_insert(second) == 0 && second.loc != W, "orphan full barrel blocks automatic insertion without consuming the incoming barrel")
+	W.work_barrel = null
+	chem_check(W.factory_offer() == full && W.fluid_supply_holder() == full.reagents, "full orphan barrel is available to arms and pipes")
+	chem_check(W.factory_take(full, locate(5, 2, 1)) && full.reagents.get_reagent_amount("water") == 250, "automation moves the original orphan with unchanged reagents")
 	for (var/obj/O in list(B, second, full, W))
 		qdel(O)
 

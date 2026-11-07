@@ -600,6 +600,7 @@ var/global/fluid_step_serial = 0
 	return FLUID_TIER_SOURCE
 
 /obj/structure/oilwell/fluid_supply_holder()
+	load_barrel(FALSE)
 	if (!work_barrel || work_barrel.loc != src)
 		return null
 	return work_barrel.reagents
