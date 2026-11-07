@@ -1201,7 +1201,7 @@ var/global/redirect_all_players = null
 		return FALSE
 	// Durable Nomads maps use the job's named registry. Deny before body/mind
 	// creation if an authoritative restore deliberately removed that group.
-	if(persistence_spawns_authoritative && map && map.uses_durable_metadata())
+	if(persistence_spawns_authoritative && map && map.uses_durable_metadata() && !map.uses_random_new_player_spawn(job_master.GetJob(rank)))
 		var/datum/job/saved_job = job_master.GetJob(rank)
 		var/list/saved_destinations = saved_job ? latejoin_turfs[saved_job.spawn_location] : null
 		if(!saved_destinations || !saved_destinations.len)
@@ -1277,7 +1277,7 @@ var/global/redirect_all_players = null
 
 		if (character.mind)
 			ticker.minds += character.mind
-		character.lastarea = get_area(loc)
+		character.lastarea = get_area(character)
 		qdel(src)
 		return TRUE
 	if (!IsJobAvailable(rank))
@@ -1486,7 +1486,7 @@ var/global/redirect_all_players = null
 	if (character.mind)
 		ticker.minds += character.mind
 	if (loc)
-		character.lastarea = get_area(loc)
+		character.lastarea = get_area(character)
 	qdel(src)
 	return TRUE
 
@@ -1616,6 +1616,24 @@ var/global/redirect_all_players = null
 		to_chat(src, SPAN_WARNING("Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]"))
 		return null
 
+	var/atom/initial_location = loc
+	if (map && map.uses_random_new_player_spawn(original_job))
+		var/obj/map_metadata/nomads/gaia/gaia = map
+		initial_location = gaia.new_player_destination(src)
+		if (!initial_location)
+			// AssignRole reserved a slot before create_character. Release it while
+			// keeping the lobby, client and mind intact for another Join attempt.
+			original_job.current_positions = max(0, original_job.current_positions - 1)
+			original_job = null
+			original_job_title = null
+			if (mind)
+				mind.assigned_role = null
+				mind.assigned_job = null
+			spawning = FALSE
+			ready = FALSE
+			to_chat(src, SPAN_WARNING("No safe outdoor starting place was found. Please try joining again."))
+			return null
+
 	if (delayed_spawning_as_job)
 		delayed_spawning_as_job.total_positions += 1
 		delayed_spawning_as_job = null
@@ -1634,16 +1652,16 @@ var/global/redirect_all_players = null
 	new_character = null
 
 	if (chosen_species && use_species_name && (is_species_whitelisted(chosen_species) || has_admin_rights()))
-		new_character = new mobtype(loc, use_species_name)
+		new_character = new mobtype(initial_location, use_species_name)
 
 	if (!new_character)
-		new_character = new mobtype(loc)
+		new_character = new mobtype(initial_location)
 
 	// Safety check - prevent the runtime
 	if (!new_character)
 		return
 
-	new_character.lastarea = get_area(loc)
+	new_character.lastarea = get_area(initial_location)
 
 	if (client)
 		if (ticker.random_players)

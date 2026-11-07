@@ -54,6 +54,14 @@ SUITES = {
             'code/modules/persistence/player_reclaim.dm',
             'code/modules/persistence/region_travel.dm',
             'tests/save_movement/source_adapter.py')},
+    # Complete bounded Gaia spawn helpers with fake spatial/engine boundaries.
+    'gaia_spawn': {'files': ('tests/gaia_spawn/test_spawn.py',),
+        'paths': ('tests/gaia_spawn/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/jobs/job_controller.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'maps/nomads/nomads_gaia.dmm', 'tests/save_movement/source_adapter.py')},
     # Complete raider firing/reload source projections with fake engine boundaries.
     # Keep production paths shared so existing conservative selection is preserved.
     'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),
