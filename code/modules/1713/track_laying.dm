@@ -96,7 +96,7 @@
 /proc/track_lay_problem(turf/T)
 	if (!istype(T, /turf/floor) || T.density)
 		return "You can't lay track there."
-	if (istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench))
+	if ((istype(T, /turf/floor/beach/water) && !bridge_deck_at(T)) || istype(T, /turf/floor/trench))
 		return "Track needs firm, dry ground."
 	if (locate(/obj/structure/rails) in T)
 		return "There is already track there."

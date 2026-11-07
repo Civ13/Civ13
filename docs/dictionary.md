@@ -1,22 +1,22 @@
 # Speech dictionary
 
-`config/dictionary.txt` is loaded at world setup. Supported comma-separated rows:
-`source,replacement`, `source,replacement,era`, and
-`source,replacement,era,phrase`.
+`config/dictionary.txt` swaps out-of-character slang in say and whisper lines,
+for example `brb` to `be right back`, and adds period slang for each research
+era. It is loaded once at world setup by `load_speech_dictionary()` in
+`code/_helpers/dictionary.dm`; editing the file needs a world restart.
+
+## Rows
 
 ```text
 brb,be right back
-hello,greetings,0
-excuse me,mind the grease,4,phrase
+gamers,brothers
+excuse me,mind the grease,4
 ```
 
-Two-field rows remain unrestricted literal replacements. Three-field rows retain
-their literal substring behavior and apply only in the selected era. Only the
-explicit four-field `phrase` form uses phrase boundaries. The last example is
-part of the curated wiki lexicon; the era-zero example only demonstrates syntax.
-No migration is required for existing two- or three-field rows.
+A row is `source,replacement` (every era) or `source,replacement,era`, where
+`era` is one digit matching `map.ordinal_age`:
 
-| Selector | Existing epoch label |
+| Era | Epoch |
 | --- | --- |
 | 0 | 5000 B.C. |
 | 1 | 313 B.C. |
@@ -28,38 +28,85 @@ No migration is required for existing two- or three-field rows.
 | 7 | 1969 |
 | 8 | 2013 |
 
-The selector must be one digit from `0` through `8`; its outer whitespace is
-ignored. Empty selectors, dates, names, ranges and other values are diagnosed
-with file/line information and skipped. Four-field rows require the exact,
-case-sensitive mode `phrase` after trimming that field's outer whitespace.
-Unknown or empty modes and other field counts are diagnosed and skipped.
-There is no quoting or escaped-comma syntax. Lines without commas are ignored.
+Lines starting with `#` and lines without a comma are ignored. There is no
+quoting, so neither field can hold a comma. Each of these is logged with its
+line number and skipped:
 
-Phrase sources must be nonempty ASCII without outer whitespace. Their interior
-text is matched literally, including punctuation and spaces; no regex syntax,
-tokenization or whitespace normalization is added. Replacement bytes are authored
-text, with no automatic recasing. Literal rows keep their original whitespace.
+- a field count other than 2 or 3
+- an era that is not one digit from 0 to 8 (spaces around it are fine)
+- an empty source or replacement, one with spaces at either end, or one with
+  characters outside printable ASCII
+- a source repeated in the same era (the first row wins; case does not matter)
 
-Phrase boundaries are start/end of text or these known ASCII separators:
-whitespace (codes 9-13 and 32), `!`, `"`, `(`, `)`, `,`, `.`, `:`, `;`, `?`,
-`[`, `]`, `{`, `}`. Letters, digits, underscore, hyphen, apostrophe and all
-unclassified characters, including Unicode neighbors, are continuations.
-Thus `excuse me`, `excuse me!` and `(excuse me)` match the opted-in rule, while
-`excuse meow`, `brave-looking` and Unicode-adjacent fragments are protected.
-Single-quoted or Unicode-punctuation neighbors deliberately remain conservative.
+The world log also reports the row count and which engine is in use.
 
-Each phrase row scans its original input once. Delimiters remain outside the
-replacement, adjacent matches work, and inserted output is not rescanned by the
-same row. Later rows still consume earlier output in file order. Two-/three-field
-rows continue to use the existing `replacetext` operation and overlap behavior.
+## Matching
 
-Eligibility reads live `map.ordinal_age`, including after research/admin changes.
-The displayed `map.age` can differ. Missing metadata permits unrestricted rows
-only. Editing the dictionary file still requires world setup; era changes do not.
-Normal speech still sanitizes/capitalizes before replacement; whispers sanitize
-before replacement and capitalize later in `whisper_say`. These call sites are
-unchanged. Replacement text is never automatically recased by either mode.
+Each message gets a single pass:
 
-See [wiki-slang.md](wiki-slang.md) for attribution and the approved approximate
-1896/1984 mappings. Offline tests and a source-only native fixture preparer are in
-`tests/dictionary_era`. Compilation does not establish runtime/gameplay behavior.
+- **Whole words.** A source only matches whole words. `lol` changes `lol` and
+  `lol!` but not `lollipop`, and `cuck` leaves `cuckoo` alone. Word characters
+  are everything except whitespace and `! " ( ) , . : ; ? [ ] { } & #`, so
+  hyphenated words (`brave-looking`) and words with accented letters are left
+  alone. A source edge that is punctuation needs no boundary, so `:)` matches
+  anywhere, while `:b` does not match `:bread`.
+- **Longest match wins.** Where sources overlap, the match that starts first
+  wins. Of those starting at the same place, the longest wins, so `poggers`
+  beats `pog` and `pm the admins` beats `admins`. File order does not matter.
+- **No rescanning.** Replacement text is never matched again.
+- **Case.** Matching ignores ASCII case. A source written in lower case copies
+  the typed casing, the way `replacetext()` does: `LOL` gives `HAHAHA`, `Lol`
+  gives `Hahaha`, anything else uses the replacement as written. A source that
+  has capitals, such as `SS13`, always uses its replacement as written.
+- **Speech arrives encoded.** `sanitize()` runs first, so `'` and `"` reach the
+  dictionary as `&#39;` and `&#34;`. Sources are encoded the same way when they
+  load, so `that's gross` matches, and entities count as separators, so
+  `"brave"` and `brave's` match `brave`. Replacements are inserted as written.
+- **Eras.** A row with an era applies only while `map.ordinal_age` equals it.
+  With no map, only rows without an era apply. When an era row and an every-era
+  row share a source, the era row wins in that era.
+
+Plurals and other forms need their own rows (`gamer` and `gamers`).
+
+## Engine
+
+Each word of the message and of every source is wrapped in an invisible marker
+character, so a plain substring search can only match whole words. At load,
+ten tables are built: one with no map, and one for each era. Each table has a
+rust_g Aho-Corasick automaton (`setup_acreplace_with_options`, case-insensitive,
+leftmost-longest) and a BYOND regex of the same sources, longest first. Both
+replace each match with an index token, and the line is rebuilt from the tokens.
+A line with no match comes back unchanged.
+
+rust_g is used when it loads and agrees with the regex on a self-test of every
+source. Otherwise the regex is used and the world log says so. Both engines
+give the same output; the regex is just slower (tens of microseconds a line
+against a few).
+
+The three marker characters (codes 1-3) are removed from a message before
+matching.
+
+## Tests
+
+`tests/dictionary_era` holds the offline checks run by CI:
+
+- `test_corpus.py` checks `corpus.json`, about 2,200 chat lines that the DM
+  fixture ran through the frozen pre-rework helper (`legacy/`) and the current
+  one. It confirms that two independent Python models reproduce both outputs,
+  and that old and new differ only in the shapes the rework changed.
+- `test_slang_content.py` checks the data: every row parses, the wiki slang
+  inventory and its attribution, each wiki row only in its era, and no
+  replacement containing another source.
+- `test_sources.py` checks the wiring: call sites, loader, include order and
+  the rust_g fallback.
+
+After changing the helper or the data, regenerate the corpus with BYOND on
+PATH (`bash scripts/cloud_byond_setup.sh`):
+
+```text
+python3 tests/dictionary_era/prepare.py --output <new dir> --write
+```
+
+`--run` instead of `--write` compiles and runs the fixture and checks it
+against the recorded corpus. See [wiki-slang.md](wiki-slang.md) for where
+the era slang comes from.

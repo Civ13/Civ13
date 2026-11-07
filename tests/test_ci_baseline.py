@@ -1421,11 +1421,12 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(ci.SUITES['dictionary']['files'],
                          ('tests/dictionary_era/test_sources.py',
                           'tests/dictionary_era/test_slang_content.py',
-                          'tests/dictionary_era/test_phrase_mode.py'))
+                          'tests/dictionary_era/test_corpus.py'))
         for path in ('code/_helpers/dictionary.dm', 'config/dictionary.txt',
                      'code/game/mob/living/carbon/human/say.dm',
                      'code/game/mob/living/carbon/human/whisper.dm',
-                     'tests/dictionary_era/prepare.py', 'tests/dictionary_era/probe.dm'):
+                     'tests/dictionary_era/prepare.py', 'tests/dictionary_era/probe.dm',
+                     'tests/dictionary_era/corpus.json', 'code/__defines/_rust_g.dm'):
             with self.subTest(path=path):
                 self.assertEqual(self.selected([path]),
                                  {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dictionary'})

@@ -859,9 +859,10 @@ SUITES = {
         'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
-                             'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
+                             'tests/dictionary_era/test_corpus.py'), 'paths': (
         'tests/dictionary_era/', 'code/_helpers/dictionary.dm', 'code/_helpers/text.dm',
         'code/setup.dm', 'code/world.dm', 'code/__defines/__game.dm', 'civ13.dme',
+        'code/__defines/_rust_g.dm',
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},

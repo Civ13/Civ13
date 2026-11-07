@@ -39,6 +39,10 @@
 /turf/floor/space/orbit/outside_air_breathable()
 	return FALSE
 
+// The cold of open space, for code compiled before this file.
+/proc/orbit_ambient_c()
+	return ORBIT_VACUUM_C
+
 /turf/floor/space/orbit/outside_ambient_c()
 	return ORBIT_VACUUM_C
 
