@@ -85,3 +85,66 @@
 	H.r_hand = null
 	qdel(other)
 	qdel(F)
+
+/mob/living/human/component_ci
+	var/ci_crafting = 2
+
+/mob/living/human/component_ci/getStatCoeff(statname)
+	return statname == "crafting" ? ci_crafting : ..()
+
+// Toolsmith's bench: smelted metal and wood straight to tools beside an anvil.
+/proc/run_toolsmith_checks(mob/living/human/component_ci/H, turf/T)
+	map.civilizations = TRUE
+	map.ordinal_age = 2
+	H.l_hand = null
+	H.r_hand = null
+	var/obj/structure/component_workbench/toolsmith/W = new(T)
+	W.assembly_time = 1
+	var/obj/item/stack/material/iron/iron = new(H, 7, FALSE)
+	H.r_hand = iron
+	component_check(W.insert(iron, H), "toolsmith metal staging")
+	var/obj/item/stack/material/wood/wood = new(H, 5, FALSE)
+	H.r_hand = wood
+	component_check(W.insert(wood, H), "toolsmith wood staging")
+	var/obj/item/stack/ore/iron_pig/pig = new(H, 3)
+	H.r_hand = pig
+	component_check(!W.insert(pig, H), "toolsmith accepted unsmelted iron")
+	H.r_hand = null
+	qdel(pig)
+	component_check(!W.ready_count("Hatchet") && !W.assemble(H), "toolsmith worked without an anvil")
+	var/obj/structure/anvil/stone/stone_anvil = new(locate(2,1,1))
+	component_check(!W.ready_count("Hatchet"), "toolsmith stone anvil accepted iron")
+	qdel(stone_anvil)
+	var/obj/structure/anvil/A = new(locate(2,1,1))
+	component_check(W.ready_count("Hatchet") == 2, "toolsmith ready count")
+	H.ci_crafting = 1.1
+	component_check(!W.assemble(H) && iron.amount == 7, "toolsmith skill gate")
+	H.ci_crafting = 2
+	component_check(W.assemble(H) == 2, "toolsmith batch")
+	var/made = 0
+	for (var/obj/item/weapon/material/hatchet/hatchet in T)
+		if (hatchet.type == /obj/item/weapon/material/hatchet && hatchet.material && hatchet.material.name == "iron") made++
+	component_check(made == 2 && iron.amount == 1 && wood.amount == 3, "toolsmith exact costs")
+	component_check(W.select_recipe(H, "Shovel") && iron.loc == T && wood.loc == T, "toolsmith retarget returns stock")
+	// Battle axes retire after the age cap, like the anvil head.
+	map.ordinal_age = 4
+	component_check(!W.recipe_available("Battle axe") && W.recipe_available("Hatchet"), "toolsmith battle axe age cap")
+	// Cancellation keeps stock.
+	map.ordinal_age = 2
+	var/obj/item/stack/material/steel/steel = new(H, 6, FALSE)
+	H.r_hand = steel
+	W.insert(steel, H)
+	H.r_hand = wood
+	wood.loc = H
+	W.insert(wood, H)
+	component_check(!W.ready_count("Shovel"), "toolsmith iron anvil accepted steel")
+	qdel(A)
+	A = new /obj/structure/anvil/steel(locate(2,1,1))
+	component_check(W.ready_count("Shovel") == 3, "toolsmith steel ready count")
+	W.assembly_time = 10
+	spawn(2)
+		W.retrieve(H)
+	component_check(!W.assemble(H) && steel.amount == 6, "toolsmith cancellation consumed stock")
+	H.r_hand = null
+	qdel(A)
+	qdel(W)
