@@ -195,6 +195,9 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 	var/datum/preferences/P = client.prefs
 	P.sanitize_hud_scale()
 	var/g = P.hud_scale
+	var/list/V = getviewsize(client.view)
+	var/view_w = V[1] * 32
+	var/view_h = V[2] * 32
 	for (var/obj/screen/S in hud_layout_elements())
 		if (!S.hud_default_loc)
 			S.hud_default_loc = S.screen_loc
@@ -214,9 +217,14 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 					D = list(F[3], ox, F[5], oy)
 		S.hud_size = size
 		S.hud_ax = D[1]
-		S.hud_ox = D[2] * g
 		S.hud_ay = D[3]
-		S.hud_oy = D[4] * g
+		// Keep every tile fully on screen; a large scale on a narrow view
+		// would otherwise push edge tiles past the far edge.
+		var/edge = 32 * g * size
+		var/x0 = hud_anchor_origin(S.hud_ax, view_w)
+		var/y0 = hud_anchor_origin(S.hud_ay, view_h)
+		S.hud_ox = clamp(x0 + D[2] * g, 0, max(0, view_w - edge)) - x0
+		S.hud_oy = clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0
 		S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
 		S.transform = hud_scale_matrix(g * size)
 	sync_inventory_screen_locs()
