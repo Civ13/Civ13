@@ -195,3 +195,30 @@ var/global/list/aircraft_light_plane_layout = list(
 /obj/effect/aircraft_spawner/light_plane/proc/build()
 	build_light_plane(get_turf(src))
 	qdel(src)
+
+// Admin spawn for testing flight: a 3-wide runway running 16 tiles south from
+// this tile's row, with the light plane parked at its north end, facing down it.
+/obj/effect/aircraft_spawner/airstrip
+	name = "airstrip spawner"
+	icon = 'icons/obj/vehicles/vehicleeffects.dmi'
+	icon_state = "4x4"
+	invisibility = 101
+
+/obj/effect/aircraft_spawner/airstrip/New(loc)
+	..()
+	addtimer(CALLBACK(src, PROC_REF(build)), 1)
+
+/obj/effect/aircraft_spawner/airstrip/proc/build()
+	build_airstrip(get_turf(src))
+	qdel(src)
+
+/proc/build_airstrip(turf/origin)
+	if (!origin)
+		return null
+	for (var/dy = -12, dy <= 3, dy++)
+		for (var/dx = 1, dx <= 3, dx++)
+			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
+			if (T && !(locate(/obj/covers/roads/modern/runway) in T))
+				new /obj/covers/roads/modern/runway(T)
+	return build_light_plane(origin)
+
