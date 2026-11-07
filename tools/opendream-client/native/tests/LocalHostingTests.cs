@@ -195,6 +195,7 @@ static class LocalHostingTests {
             "a missing overlay folder offers the usual files, empty");
         HostSettings.Save(places[0], HostSettings.LocalConfig, "# shared\nDAYNIGHT_CLIENT_TINT\n#SKIP_PERSISTENCE_SAVING\n");
         HostSettings.Save(places[0], HostSettings.LocalConfig, "WEBHOOK_ADDRESS http://127.0.0.1\n");
+        HostSettings.Save(places[0], HostSettings.LocalConfig, "WEBHOOK_ADDRESS http://127.0.0.1\n");
         Require(HostSettings.Read(places[0], HostSettings.LocalConfig) == "WEBHOOK_ADDRESS http://127.0.0.1\n"
             && File.ReadAllText(Path.Combine(sharedOverlay, "config", "config.local.txt.previous")).Contains("DAYNIGHT_CLIENT_TINT"), "save keeps the previous version");
         Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");

@@ -101,6 +101,8 @@ public static class HostSettings {
     public static void Save(Location location, string relative, string text) {
         if (Problem(relative, text) is { } problem) throw new InvalidDataException(problem);
         var path = FullPath(location, relative);
+        // Saving unchanged text must not replace the kept .previous with a copy of itself.
+        if (File.Exists(path) && File.ReadAllText(path) == text) return;
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         var temporary = path + ".saving";
         File.WriteAllText(temporary, text, new UTF8Encoding(false));

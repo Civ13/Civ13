@@ -68,7 +68,7 @@ internal sealed class HostSettingsDialog : Form {
         place.SelectedIndexChanged += (_, _) => ShowPlace();
         file.SelectedIndexChanged += (_, _) => ShowFile();
         save.Click += (_, _) => Save();
-        apply.Click += async (_, _) => { if (Save()) await Apply(); };
+        apply.Click += async (_, _) => { if (!Dirty || Save()) await Apply(); };
         folder.LinkClicked += (_, _) => {
             if (Current is not { } location) return;
             try {

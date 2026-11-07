@@ -763,6 +763,9 @@ class ShardGroupTests(unittest.TestCase):
         self.assertIn('WEBHOOK_ADDRESS http://edited', (deep / 'config' / 'config.txt').read_text())
         self.assertNotIn('DAYNIGHT_CLIENT_TINT', (deep / 'config' / 'config.txt').read_text(), 'removed lines go back to master')
         self.assertEqual(compiles, sum(1 for argv, _ in self.machine.calls if argv[-1] == 'region.dme'))
+        (own / 'config' / 'config.local.txt').write_bytes(b'\xef\xbb\xbfWEBHOOK_ADDRESS http://bom\n')
+        done, refused = shard_group.apply_config(group, 'gaia', self.machine)
+        self.assertIn('WEBHOOK_ADDRESS http://bom', (gaia / 'config' / 'config.txt').read_text(), 'a BOM from Notepad is not a setting')
         (own / 'config' / 'config.local.txt').write_text('=bad\n')
         done, refused = shard_group.apply_config(group, 'gaia', self.machine)
         self.assertEqual({}, done)
@@ -784,6 +787,10 @@ class ShardGroupTests(unittest.TestCase):
         (own / 'config' / 'config.txt').write_text(whole)
         (done / 'config' / 'config.txt').write_text(whole)
         (done / 'config' / 'config.local.txt').write_text('TIPS 0\n')
+        odd = self.base / 'overlay-odd'
+        (odd / 'config').mkdir(parents=True)
+        (odd / 'config' / 'config.txt').write_text('BAD-KEY 1\n')
+        self.group['overlay'] = str(odd)
         self.group['regions'][0]['overlay'] = str(own)
         self.group['regions'][1]['overlay'] = str(done)
         group = self.write_group()
@@ -792,6 +799,7 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'WEBHOOK_KEY secret', 'DAYNIGHT_CLIENT_TINT', '#SKIP_PERSISTENCE_SAVING'],
                          result['done'][str(own)])
         self.assertIn('already exists', result['refused'][str(done)])
+        self.assertIn('would not reproduce', result['refused'][str(odd)], 'an odd line refuses that overlay only')
         self.assertFalse((own / 'config' / 'config.txt').exists())
         self.assertEqual(whole, (own / 'config' / 'config.txt.migrated').read_text())
         merged = shard_group.merge_config(base, (own / 'config' / 'config.local.txt').read_text())

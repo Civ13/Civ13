@@ -622,7 +622,7 @@ def apply_overlays(group, region, path):
         text = config.read_text(encoding='utf-8') if config.exists() else ''
         for item in local:
             try:
-                text = merge_config(text, item.read_text(encoding='utf-8'))
+                text = merge_config(text, item.read_text(encoding='utf-8-sig'))
             except ValueError as error:
                 raise RuntimeError('%s: %s' % (item, error))
         config.parent.mkdir(parents=True, exist_ok=True)
@@ -738,9 +738,13 @@ def migrate_config(group, platform=None):
         if local.exists():
             refused[source] = '%s already exists' % LOCAL_CONFIG
             continue
-        text = full.read_text(encoding='utf-8')
+        text = full.read_text(encoding='utf-8-sig')
         lines = overrides_for(base, text)
-        if active_settings(merge_config(base, '\n'.join(lines))) != active_settings(text):
+        try:
+            reproduced = active_settings(merge_config(base, '\n'.join(lines))) == active_settings(text)
+        except ValueError:
+            reproduced = False
+        if not reproduced:
             refused[source] = 'the overrides would not reproduce config.txt; move it by hand'
             continue
         header = ['# Host settings merged over the repository config/config.txt on every update',
@@ -772,11 +776,11 @@ def apply_config(group, region_id=None, platform=None):
             continue
         try:
             copied = apply_overlays(group, region, path)
-        except RuntimeError as error:
+            if group['persistent']:
+                persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
+        except (RuntimeError, OSError) as error:
             refused[region['id']] = str(error)
             continue
-        if group['persistent']:
-            persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
         done[region['id']] = {'copied': copied, 'running': platform.listening(region['port'])}
     return done, refused
 
