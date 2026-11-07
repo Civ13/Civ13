@@ -318,9 +318,21 @@ var/boat_runtime_error = FALSE
 	B.attack_hand(H)
 	boat_check(B.dwheel.loc == H && (H.l_hand == B.dwheel || H.r_hand == B.dwheel), "after waking, clicking the boat takes the rudder again")
 	boat_check(B.driver == H && (H in B.ontop), "and the helmsman is still aboard")
+	var/datum/agent_character/P = boat_character(5, 30, "Deckhand")
+	var/mob/living/human/PH = P.body
+	PH.forceMove(get_turf(B))
+	B.currentcap = PH
+	B.ontop += PH
+	B.buckle_mob(PH)
+	boat_check(!B.retake_controls(PH) && B.driver == H && B.dwheel.loc == H, "a passenger cannot take the rudder from a living helmsman")
 	H.death()
 	boat_check(B.dwheel.loc == B && !H.l_hand && !H.r_hand, "a helmsman who dies lets go of the rudder")
+	boat_check(!B.driver && !H.driver && !H.driver_vehicle && !(H in B.ontop) && H.buckled != B, "a dead helmsman gives up the driver's place")
+	B.attack_hand(PH)
+	boat_check(B.driver == PH && PH.driver && PH.driver_vehicle == B && B.dwheel.loc == PH && B.currentcap != PH, "the passenger takes over the boat and its rudder")
+	boat_check(PH.buckled == B && (PH in B.ontop), "and stays aboard")
 	agent_characters -= H
+	agent_characters -= PH
 
 	var/obj/structure/vehicle/motorcycle/M = new(locate(10, 30, 1))
 	var/datum/agent_character/R = boat_character(10, 31, "Rider")

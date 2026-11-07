@@ -150,6 +150,12 @@
 	..()
 	update_icon()
 
+/obj/structure/vehicle/magic/mop/driver_died(var/mob/living/human/H)
+	if (H != driver)
+		return FALSE
+	dismount_driver()
+	return TRUE
+
 /obj/structure/vehicle/magic/mop/proc/dismount_driver(mob/user)
 	if (user && user != driver)
 		return
