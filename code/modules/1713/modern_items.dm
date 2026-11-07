@@ -1150,7 +1150,9 @@
 		return
 	if (!check_power())
 		stop_drilling()
-		visible_message(SPAN_WARNING("\The [src] stops drilling: insufficient cable power."))
+		var/supply = powersource ? powersource.powerflow : 0
+		var/other_demand = powersource ? max(0, powersource.currentflow - powersource.power_consumers[src]) : 0
+		visible_message(SPAN_WARNING("\The [src] stops drilling: insufficient cable power ([max(0, supply - other_demand)] free of [supply] supply, [powerneeded] needed)."))
 		return
 	if (next_spawn <= 0 && world.time >= production_due)
 		if (!produce_minerals(drill_ore(), 2))

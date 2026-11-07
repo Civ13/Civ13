@@ -54,16 +54,15 @@
 /obj/structure/engine/examine(mob/user)
 	..()
 	if (user in range(1,src))
+		// Pulling power is the vehicle load limit (axis.dm compares weight with
+		// it). Machines on a cable grid only get maxpower, so show both.
+		var/pull_factor = 2
 		if (istype(src, /obj/structure/engine/external))
-			var/done = FALSE
 			for(var/obj/structure/vehicleparts/frame/ship/S in loc)
-				done = TRUE
-			if (done == FALSE)
-				to_chat(user, "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>")
-			else
-				to_chat(user, "<span class='notice'>Max Power: <b>[maxpower*20]</b>.</span>")
-		else
-			to_chat(user, "<span class='notice'>Max Power: <b>[maxpower*2]</b>.</span>")
+				pull_factor = 20
+				break
+		to_chat(user, "<span class='notice'>Pulling power (vehicles): <b>[maxpower*pull_factor]</b>.</span>")
+		to_chat(user, "<span class='notice'>Cable power output: <b>[maxpower]</b>.</span>")
 /obj/structure/engine/proc/turn_on()
 	return
 
