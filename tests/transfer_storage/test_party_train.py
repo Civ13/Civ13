@@ -42,10 +42,35 @@ class PartyTrainTests(unittest.TestCase):
         dme = read('civ13.dme')
         self.assertLess(dme.index('region_travel.dm"'), dme.index('party_train.dm"'))
 
-    def test_a_station_needs_straight_track(self):
+    def test_a_station_needs_track_connected_to_the_map_edge(self):
         start = proc(TRAIN, OFFICE + '/proc/start')
         self.assertLess(start.index('station_problem()'), start.index('party = new_party'))
-        self.assertIn('party_train_run_through(T) >= PARTY_TRAIN_TRACK_MIN', proc(TRAIN, OFFICE + '/proc/station_problem'))
+        problem = proc(TRAIN, OFFICE + '/proc/station_problem')
+        self.assertIn('track_ok = rail_network_reaches_edge(starts)', problem)
+        # Cached until a rail is laid or removed, or the office moves.
+        self.assertIn('if(track_serial != rail_network_serial || track_turf != loc)', problem)
+        # No fixed rail count any more: the track has to leave the land.
+        self.assertNotIn('PARTY_TRAIN_TRACK_MIN', TRAIN)
+
+    def test_rail_networks_join_like_a_power_net(self):
+        net = read('code/modules/1713/rail_network.dm')
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('1713\\rail_network.dm"'), dme.index('party_train.dm"'))
+        walk = proc(net, '/proc/rail_network_reaches_edge')
+        # A breadth-first walk over side-by-side rails, so bends and forks count.
+        self.assertIn('for(var/d in cardinal)', walk)
+        self.assertIn('if(rail_turf_on_map_edge(T))', walk)
+        self.assertIn('index > RAIL_NETWORK_VISIT_LIMIT', walk)
+        self.assertNotIn('sleep', walk)
+        self.assertIn('rail_network_serial++', proc(net, '/obj/structure/rails/New'))
+        self.assertIn('rail_network_serial++', proc(net, '/obj/structure/rails/Destroy'))
+        # The cache is process-local and never saved.
+        self.assertIn('"track_serial", "track_turf", "track_ok"', proc(TRAIN, OFFICE + '/persistence_runtime_var'))
+
+    def test_a_finished_train_leaves_only_while_the_track_reaches_the_edge(self):
+        closed = proc(TRAIN, OFFICE + '/closed_reason')
+        self.assertLess(closed.index('if(!completed)'), closed.index('station_problem()'))
+        self.assertLess(closed.index('station_problem()'), closed.index('return ..()'))
 
     def test_one_project_per_party_rechecked_after_the_prompt(self):
         start = proc(TRAIN, OFFICE + '/proc/start')
