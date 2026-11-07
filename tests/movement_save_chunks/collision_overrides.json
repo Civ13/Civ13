@@ -38,10 +38,10 @@
     },
     {
       "path": "code/game/objects/covers.dm",
-      "sha256_normalized": "243c808efeca0c2f174e00671f5b6640125150ae2b34ae7267c8e2a94d33250d",
+      "sha256_normalized": "2372dbcc1bccaf53b6a0241de378d087317ee80c9524b873d6529f6dc925fca1",
       "declarations": [
         {
-          "line": 180,
+          "line": 185,
           "declaration": "/obj/covers/CanPass(var/atom/movable/mover)"
         }
       ]
@@ -490,7 +490,7 @@
     },
     {
       "path": "code/modules/multiz/structures.dm",
-      "sha256_normalized": "5b015a8a5a6ce7b5d27c977ce356c16cc098aa938511b9063cc3e97c7e2388ec",
+      "sha256_normalized": "4f5316333e4e55655e96cc3a95cab396ae291515f6b4805961191a849046d401",
       "declarations": [
         {
           "line": 45,

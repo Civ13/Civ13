@@ -48,3 +48,12 @@ facade and no-socket supervisor, retains logs/source hashes and runs no maps.
 `--negative-control armor-consumption` omits payment in generated source;
 `--negative-control armor-research` removes the research guard. Each must fail
 its named assertion. A supervisor rejection is a failed run, never a pass.
+
+`dedicated.dm` covers the dedicated benches in `dedicated_workbenches.dm`:
+one-step retargeting (stored items returned, refused while busy or for an
+unknown recipe), the weapon assembly bench (tool heads refused, head material
+and condition kept, retargeting returns the output) and the fletcher's bench
+(floor loading of bare shafts only, one head kind, exact batch costs,
+cancellation, bolts and sharpened flint). On the 516.1688 Linux run for this
+change it passed; the three armor era failures (`armor late era bypass` and its
+two follow-ons) also fail on master and predate it.
