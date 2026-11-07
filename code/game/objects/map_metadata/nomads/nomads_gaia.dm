@@ -55,7 +55,7 @@
 			return TRUE
 		for (var/direction in cardinal)
 			var/turf/next = get_step(current, direction)
-			if (!next || next in reachable || !new_player_ground(next))
+			if (!next || (next in reachable) || !new_player_ground(next))
 				continue
 			if (reachable.len >= GAIA_SPAWN_REACH_LIMIT)
 				return FALSE

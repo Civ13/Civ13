@@ -165,6 +165,17 @@ class GaiaSpawn(unittest.TestCase):
         f.grid[(start.x+1,start.y,2)].density=False
         self.assertTrue(f.new_player_has_exit(start))
 
+    def test_exit_membership_is_parenthesized_for_dm_precedence(self):
+        # DM's `in` binds looser than `||`, so an unparenthesized membership test
+        # turns the whole condition into `next in reachable` and skips the ground
+        # check. The Python projection cannot see that, so pin the source form.
+        source = (ROOT / PATH).read_text(encoding='utf-8')
+        body = source.split(BASE + 'new_player_has_exit(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('(next in reachable)', body)
+        for line in body.splitlines():
+            if ' in ' in line and '||' in line:
+                self.assertRegex(line, r'\([^()]* in [^()]*\)')
+
     def test_no_candidates_is_finite_and_has_no_landmark_fallback(self):
         f=Fixture()
         self.assertIsNone(f.pick_new_player_ground())
