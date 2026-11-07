@@ -47,6 +47,9 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
 DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
+FLINT_MINING_OFFLINE_TESTS = frozenset({'tests/flint_mining/test_flint_mining.py'})
+# The extracted-proc probe needs BYOND; it is run by hand, not admitted to CI.
+FLINT_MINING_MANUAL_NATIVE = frozenset({'tests/flint_mining/run.py', 'tests/flint_mining/probe.dm'})
 RESEARCH_STAFF_OFFLINE_TESTS = frozenset({'tests/research_staff/test_research_staff.py'})
 MAP_TOOLS_OFFLINE_TESTS = frozenset({'tests/map_tools/test_map_tools.py'})
 SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
@@ -415,6 +418,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered zombie-city executable test requires explicit CI review')
         if path.startswith('tests/farmers_almanac/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered farmers-almanac executable test requires explicit CI review')
+        if path in FLINT_MINING_OFFLINE_TESTS or path in FLINT_MINING_MANUAL_NATIVE:
+            continue
+        if path.startswith('tests/flint_mining/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered flint-mining executable test requires explicit CI review')
         if path in DOOR_INTENTS_OFFLINE_TESTS:
             continue
         if path in MAP_TOOLS_OFFLINE_TESTS:

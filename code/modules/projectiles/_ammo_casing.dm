@@ -243,6 +243,8 @@
 		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
 			new/obj/item/ammo_casing/arrow/stone(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/flint))
+			new/obj/item/ammo_casing/arrow/flint(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/copper))
 			new/obj/item/ammo_casing/arrow/copper(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/iron))
@@ -275,14 +277,16 @@
 		if (F.sharpened)
 			new/obj/item/ammo_casing/bolt/flint(user.loc)
 			qdel(F)
-		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-		to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
-		qdel(src)
+			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
+			to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
+			qdel(src)
 
 	if(istype(W, /obj/item/stack/arrowhead))
 		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
 			new/obj/item/ammo_casing/bolt/stone(user.loc)
+		else if(istype(W, /obj/item/stack/arrowhead/flint))
+			new/obj/item/ammo_casing/bolt/flint(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/copper))
 			new/obj/item/ammo_casing/bolt/copper(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/iron))
