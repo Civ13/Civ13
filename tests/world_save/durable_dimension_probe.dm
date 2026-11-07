@@ -47,6 +47,9 @@ var/custody_failure_mutated = FALSE
 		time_of_day = "Evening"
 		game_hour = 129
 		if(world.params["dimension_mode"] == "unmeasured")
+			// Gaia admits one building level (#3895); this case checks a map
+			// with no measured profile for the saved extra level.
+			map.building_levels = 0
 			var/unmeasured_header = file2text("map_saves/round.json")
 			var/unmeasured_marker = file2text("map_saves/save_complete.txt")
 			var/list/unmeasured_round = json_decode(unmeasured_header)
