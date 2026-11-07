@@ -213,7 +213,24 @@ var/machine_runtime_error = FALSE
 	machine_check(drive_row && drive_row[5] == "running", "the monitor lists the belt drive")
 	var/list/belt_row = machine_monitor_row(rows, "belts", null, null)
 	machine_check(belt_row && findtext(belt_row[7], " belts"), "the monitor sums up the belts in range")
+	var/obj/structure/factory_drive/drive = locate(/obj/structure/factory_drive) in locate(16, 16, 1)
+	machine_check(drive_row && drive && drive_row[8] == drive.powerneeded && drive.powerneeded > 0, "the monitor shows the drive's power draw ([drive_row ? drive_row[8] : "missing"])")
+	var/obj/structure/factory_arm/loader = locate(/obj/structure/factory_arm) in locate(2, 10, 1)
+	machine_check(arm_row && loader && arm_row[8] == factory_power_draw(loader), "the monitor shows the arm's reserved power ([arm_row ? arm_row[8] : "missing"])")
+	machine_check(fab_row && fab_row[8] == 0, "an unpowered fabricator draws no power on the monitor")
+	machine_check(belt_row && belt_row[8] == 0, "belts draw through their drive, not on their own")
+	var/list/power = M.power_summary(rows)
+	var/total = 0
+	for (var/list/row in rows)
+		total += row[8]
+	machine_check(power[1] == total && total >= drive.powerneeded, "the monitor totals the machines' power ([power[1]])")
+	var/found_drive_grid = FALSE
+	for (var/list/grid in power[2])
+		if (grid[2] == 100 && grid[1] >= drive.powerneeded)
+			found_drive_grid = TRUE
+	machine_check(found_drive_grid, "the monitor shows the drive's grid use against its capacity")
 	var/html = M.report_html()
+	machine_check(findtext(html, "Power (PU)") && findtext(html, "PU in use"), "the monitor page shows power use")
 	machine_check(findtext(html, "Items/min") && findtext(html, "feeder arm") && findtext(html, "starved"), "the monitor page shows the table")
 	machine_check(recipe_node_requirements["/obj/structure/factory_monitor"] == "automation", "the monitor is gated behind Automation")
 	qdel(F)
