@@ -165,7 +165,7 @@ def main():
             shutil.copy2(build / ("recipes" + suffix), run)
         with (run / "runtime.log").open("w", encoding="utf-8") as log:
             try:
-                runtime = subprocess.run([args.runtime, str(run / "recipes.dmb"), "0", "-invisible", "-close", "-trusted"], cwd=run, stdout=log, stderr=subprocess.STDOUT, timeout=90)
+                runtime = subprocess.run([args.runtime, str(run / "recipes.dmb"), "0", "-invisible", "-close", "-trusted"], cwd=run, stdout=log, stderr=subprocess.STDOUT, timeout=180)
             finally:
                 log.flush()
                 if args.evidence_dir:

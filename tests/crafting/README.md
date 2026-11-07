@@ -13,7 +13,7 @@ only. It bypasses world/global/controller startup, disables hub advertising,
 copies only crafting/name inputs to temporary storage, uses an ephemeral daemon
 port, and cleans generated DME/DMB/RSC and runtime state on completion/timeout.
 No game server configuration, SQL, saves, Discord bridge or production processes
-are loaded. Compiler and daemon execution are bounded to 180 and 90 seconds.
+are loaded. Compiler and daemon execution are bounded to 180 seconds each.
 A missing completion report, compiler warning/error or runtime error fails CI.
 The daemon's Windows account login message is engine behavior, not a game login.
 
