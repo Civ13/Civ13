@@ -52,6 +52,8 @@ var/global/list/airborne_aircraft = list()
 
 /obj/structure/vehicleparts/axis/aircraft/Destroy()
 	airborne_aircraft -= src
+	clear_shadows()
+	clear_ground_view()
 	return ..()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/pilot_message(text)
@@ -171,6 +173,7 @@ var/global/list/airborne_aircraft = list()
 	else
 		airborne_aircraft -= src
 		stall_seconds = 0
+	update_flight_visuals()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/try_takeoff()
 	var/up = multiz_level_above(flight_z())
@@ -338,6 +341,7 @@ var/global/list/airborne_aircraft = list()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/after_aircraft_move()
 	if (airborne())
+		update_flight_visuals()
 		return
 	if (currentspeed >= speeds && on_runway())
 		runway_roll++

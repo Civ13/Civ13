@@ -64,6 +64,30 @@ var/aircraft_runtime_error = FALSE
 		W.broken = FALSE
 	A.engine.on = TRUE
 
+// Every frame casts a shadow on the ground turf straight below it.
+/proc/aircraft_shadows_below(obj/structure/vehicleparts/axis/aircraft/A, ground)
+	var/list/F = A.frames()
+	if (!A.shadows || A.shadows.len != F.len)
+		return FALSE
+	for (var/obj/structure/vehicleparts/frame/FR in F)
+		var/obj/effect/aircraft_shadow/S = A.shadows[FR]
+		var/turf/below = locate(FR.x, FR.y, ground)
+		if (!S || !(S in below.vis_contents) || S.icon != FR.icon || S.color != "#000000" || S.loc || FR.vis_locs.len)
+			return FALSE
+	return TRUE
+
+/proc/aircraft_ground_shown(obj/structure/vehicleparts/axis/aircraft/A, turf/T)
+	return A.ground_view && (T in A.ground_view.vis_contents)
+
+/proc/aircraft_visuals_gone(obj/structure/vehicleparts/axis/aircraft/A, list/old_turfs)
+	if (A.shadows || A.ground_view || A.ground_view_anchor)
+		return FALSE
+	for (var/turf/T in old_turfs)
+		for (var/atom/V in T.vis_contents)
+			if (istype(V, /obj/effect/aircraft_shadow) || istype(V, /obj/effect/aircraft_ground_view))
+				return FALSE
+	return TRUE
+
 /proc/aircraft_checks()
 	// Ground: dirt-less plain turf on z1, open air over x 1-10 on z2.
 	for (var/x = 1, x <= 10, x++)
@@ -100,6 +124,15 @@ var/aircraft_runtime_error = FALSE
 	aircraft_check(aircraft_frames_z(A, 2) && A.flight_z() == 2 && E.z == 2, "the whole airframe moves to the level above")
 	aircraft_check(M.z == 2 && cargo.z == 2, "the passenger and the cargo ride along instead of falling")
 	aircraft_check(A in airborne_aircraft, "the aircraft is listed as airborne")
+	aircraft_check(aircraft_shadows_below(A, 1), "each frame casts a shadow on the ground below it")
+	var/obj/structure/vehicleparts/frame/nose = A.corners[2]
+	aircraft_check(aircraft_ground_shown(A, locate(nose.x, nose.y, 1)) && aircraft_ground_shown(A, locate(nose.x - 3, nose.y - 6, 1)), "the open air shows the ground below and around the aircraft")
+	aircraft_check(A.ground_view_anchor && A.ground_view_anchor.z == 2 && (A.ground_view in A.ground_view_anchor.vis_contents) && !A.ground_view.loc, "the ground view is drawn through the open air, not placed on the map")
+	var/obj/covers/roof_floor = new /obj/covers/wood(locate(nose.x + 3, nose.y - 2, 2))
+	A.update_flight_visuals()
+	aircraft_check(!aircraft_ground_shown(A, locate(nose.x + 3, nose.y - 2, 1)) && aircraft_ground_shown(A, locate(nose.x + 4, nose.y - 2, 1)), "a floor on the upper level hides the ground under it")
+	qdel(roof_floor)
+	aircraft_check(A.shadows[nose]:pixel_x == 8, "low flight casts a close shadow")
 
 	// Over open air: aboard is held, overboard falls.
 	var/obj/structure/vehicleparts/frame/side = locate(/obj/structure/vehicleparts/frame) in locate(3, aircraft_front_y(A), 2)
@@ -118,9 +151,11 @@ var/aircraft_runtime_error = FALSE
 	var/y_before = aircraft_front_y(A)
 	A.currentspeed = A.speeds
 	aircraft_check(aircraft_step(A) && aircraft_front_y(A) == y_before - 1 && M.z == 2 && aircraft_frames_z(A, 2), "low flight moves the aircraft one tile and keeps the passenger aboard")
+	aircraft_check(aircraft_shadows_below(A, 1) && !(locate(/obj/effect/aircraft_shadow) in locate(nose.x, nose.y + 4, 1).vis_contents), "the shadows follow the aircraft and leave the tiles behind it")
 
 	// Cruise passes over upper storeys and will not descend into them.
 	aircraft_check(A.climb(M) && A.flight_state == AIRCRAFT_CRUISE, "climb reaches cruising height")
+	aircraft_check(A.shadows[nose]:pixel_x == 16, "cruise casts a farther shadow")
 	aircraft_check(!A.climb(M), "climbing again is refused")
 	var/obj/structure/aircraft_probe_wall/W = new(locate(4, aircraft_front_y(A) - 1, 2))
 	aircraft_check(aircraft_step(A) && A.flight_state == AIRCRAFT_CRUISE, "cruise flies over an upper storey")
@@ -134,7 +169,12 @@ var/aircraft_runtime_error = FALSE
 	A.currentspeed = A.speeds
 	aircraft_check(!A.descend(M) && A.airborne(), "landing too fast is refused")
 	A.currentspeed = A.landing_gear
+	var/list/shadowed = list()
+	for (var/obj/effect/aircraft_shadow/S in A.shadow_turfs)
+		shadowed += A.shadow_turfs[S]
+	shadowed += A.ground_view_anchor
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over the runway lands with the passenger")
+	aircraft_check(shadowed.len == 13 && aircraft_visuals_gone(A, shadowed), "a landed aircraft leaves no shadow or ground view behind")
 	aircraft_check(!(A in airborne_aircraft) && A.currentspeed == 1, "a landed aircraft leaves the airborne list and slows")
 	aircraft_check(!A.descend(M), "descending on the ground is refused")
 
@@ -168,6 +208,26 @@ var/aircraft_runtime_error = FALSE
 	A.currentspeed = A.landing_gear
 	aircraft_check(!A.descend(M) && A.airborne() && A.force_landing_until > world.time, "descending with no runway below asks for confirmation")
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1), "a second Descend forces a crash landing")
+	aircraft_check(aircraft_visuals_gone(A, list()), "a crashed aircraft drops its shadow and ground view")
+
+	// Saved in flight: after a load the aircraft is set down on the ground.
+	var/obj/structure/vehicleparts/axis/aircraft/D = build_light_plane(locate(6, 5, 2))
+	aircraft_check(D.aloft_over_open_air() && !D.airborne(), "an aircraft restored over open air is aloft without flight state")
+	D.engine.on = TRUE
+	aircraft_check(D.set_down_after_restore() && aircraft_frames_z(D, 1) && !D.airborne() && !D.engine.on, "it is set down on the clear ground below with its engine off")
+	var/intact = TRUE
+	for (var/obj/structure/vehicleparts/movement/DW in D.wheels)
+		intact = intact && !DW.broken
+	aircraft_check(intact && !D.set_down_after_restore(), "a clear set-down keeps the wheels and happens once")
+	new /obj/structure/aircraft_probe_wall(locate(8, 13, 1))
+	var/obj/structure/vehicleparts/axis/aircraft/G = build_light_plane(locate(6, 12, 2))
+	aircraft_check(G.set_down_after_restore() && aircraft_frames_z(G, 1), "one restored over an obstacle still comes down")
+	var/wrecked = TRUE
+	for (var/obj/structure/vehicleparts/movement/GW in G.wheels)
+		wrecked = wrecked && GW.broken
+	aircraft_check(wrecked, "and lands hard, breaking its wheels")
+	var/obj/structure/vehicleparts/axis/aircraft/P = build_light_plane(locate(11, 30, 1))
+	aircraft_check(!P.aloft_over_open_air() && !P.set_down_after_restore(), "an aircraft restored on the ground stays put")
 
 	// Off the runway it never takes off; with no level above it cannot.
 	var/obj/structure/vehicleparts/axis/aircraft/B = build_light_plane(locate(11, 40, 1))
