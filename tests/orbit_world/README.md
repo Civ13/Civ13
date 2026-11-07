@@ -27,6 +27,15 @@ removes its bunk and releases an empty plane but keeps one with something
 left on it, a full orbit puts the capsule on the arrival plane clear of the
 edges, and the deorbit hatch carries a flight home and catches no arrivals.
 
+It also checks EVA (`code/modules/space/orbit_eva.dm`): a truss is a handhold
+and open space is not, both EVA recipes are gated on Orbital Flight, stepping
+off a handhold drifts and refuses steering, a drift crosses a linked edge and
+catches hold near a truss, an unlinked edge stops a drifter who then cannot
+push off, a still floater away from the edges pushes off again, and the safety
+tether clips to a truss, is not saved, pulls a drifter back at its reach, lets
+the wearer haul toward the clip but not push away, and unclips.
+
 Not covered: a real save and restore of an orbit world, connected clients,
-seams crossed by players, and a full launch and deorbit through the transfer
+seams crossed by players, the drift loop itself (it needs clients; the probe
+drives each step), and a full launch and deorbit through the transfer
 agent (the travel path is the existing crewed-flight one).

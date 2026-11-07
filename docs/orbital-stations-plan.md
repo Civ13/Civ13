@@ -36,12 +36,12 @@ what the code does so far and the rules later steps must keep.
 | --- | --- | --- |
 | 1-2 | Cable risers and bus tie switches; ladders and stairs through `multiz_level_*` | #3902, `code/modules/1713/machinery/cable_risers.dm` |
 | 3 | Orbit world skeleton: kind, vacuum, area, metadata, map, plane registry, seams, sparse saves | #3909, `code/modules/space/orbit_world.dm`, `maps/space/orbit.dmm` |
-| 4 | Orbital flight: Orbital Flight node, two-stage rocket, launch pads to orbit, capsule shelter with bunk, deorbit home | `code/modules/space/orbital_flight.dm`, `lander.dm` |
+| 4 | Orbital flight: Orbital Flight node, two-stage rocket, launch pads to orbit, capsule shelter with bunk, deorbit home | #3916, `code/modules/space/orbital_flight.dm`, `lander.dm` |
+| 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | `code/modules/space/orbit_eva.dm` |
 
 ## Next
 
-5. EVA in orbit: drift, handholds, tethers, truss.
-6. The 1969 station and the launch complex office project.
+6. The 1969 station (with orbit-console recovery of lost drifters) and the launch complex office project.
 
 ## Orbital flight
 
@@ -68,10 +68,33 @@ what the code does so far and the rules later steps must keep.
 The arrival plane's `JoinLateCiv` landmark is a fallback for travellers who
 arrive with no capsule. A live orbit region still needs Val's rollout step.
 
+## EVA in orbit
+
+- **Handholds.** On vacuum a person moves freely only while something to hold
+  is within one tile: any ground that is not vacuum (a capsule deck, a
+  habitat floor or hull), a truss, or any anchored or solid structure.
+  Ordinary ladders already link decks through the plane registry.
+- **Drift.** Stepping away from the last handhold pushes off: the person
+  drifts on in that direction one tile every 0.4 seconds, cannot steer, and
+  stops when a handhold comes within reach or something blocks them. A drift
+  across a linked plane edge carries on into the next plane.
+- **Lost drifters.** A drift into an unlinked edge stops there with nothing in
+  reach. The drifter stays until recovered or until their air runs out
+  (recovery from an orbit console comes with the station step).
+- **Truss** (2 steel) is an anchored open frame to hold. The **safety tether**
+  (1 steel, belt or hand) clips to a handhold within reach. Clipped, a drift
+  stops at seven tiles and pulls back to the clip, and the wearer can haul
+  themselves back toward it. Crossing a plane edge unclips it. Both are gated
+  on Orbital Flight.
+- Drifting is a process-local loop: it never saves, stops while the world is
+  empty and wakes on the next move. A tether's clip is not saved either. A
+  person restored mid-drift can push off again, unless lost at an edge.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
 checks the registry, claims and quotas, deck and sector links, the multiz
 helpers, seams, ladder pairing, the sparse save kind, the durable profile,
-release, and orbital flight (rocket, capsule arrival, deorbit refusals and
-spending).
+release, orbital flight (rocket, capsule arrival, deorbit refusals and
+spending) and EVA (handholds, push-off, drift across a seam, catching hold, an
+unlinked edge, the tether's pull, haul and clip).
