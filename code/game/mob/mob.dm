@@ -173,20 +173,24 @@
 	return FALSE
 
 /mob/proc/reset_view(atom/A)
+	if(!client)
+		return
+	var/atom/new_eye = loc
+	var/new_perspective = EYE_PERSPECTIVE
+	if(istype(A, /atom/movable))
+		new_eye = A
+	else if(isturf(loc))
+		new_eye = client.mob
+		new_perspective = MOB_PERSPECTIVE
+	// Passive interfaces call this every vision update. Keep published trees
+	// intact when the requested camera is already active.
+	if(client.eye == new_eye && client.perspective == new_perspective)
+		return
 	#if CIV13_ROOT_TREE_PRESENTATION
 	root_tree_invalidate(src)
 	#endif
-	if (client)
-		if (istype(A, /atom/movable))
-			client.perspective = EYE_PERSPECTIVE
-			client.eye = A
-		else
-			if (isturf(loc))
-				client.eye = client.mob
-				client.perspective = MOB_PERSPECTIVE
-			else
-				client.perspective = EYE_PERSPECTIVE
-				client.eye = loc
+	client.eye = new_eye
+	client.perspective = new_perspective
 	return
 
 

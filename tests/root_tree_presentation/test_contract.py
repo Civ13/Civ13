@@ -372,7 +372,8 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/atoms_movable.dm','/atom/movable/proc/forceMove(','loc = destination'),
             ('code/game/atoms_movable.dm','/atom/movable/proc/persistence_set_loc(','loc = destination'),
             ('code/game/mob/mob_movement.dm','/atom/movable/Move(','. = ..('),
-            ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective'),
+            ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective = new_perspective'),
+            ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.eye = new_eye'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
             ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','color = L.Copy()')]:
             source=(ROOT/path).read_text();check(source,signature,write)

@@ -64,6 +64,14 @@ and check diagnostic counters without claiming native pixels. It retains missing
 and doubled-offset controls. Shared compositor wiring and lifecycle defaults
 are source contracts only, not native rendering or performance evidence.
 
+The view-reset regression projects the production passive-interface vision update,
+`reset_view`, and presenter invalidation/withdrawal procedures. Repeated Crafting
+updates, close/reopen cycles, and already-active camera/container views retain
+published frames. Real eye or perspective changes still withdraw before either
+camera write. Removing the no-op guard reproduces the reported blanking; removing
+transition invalidation trips the write-order control. Client/HUD and LOS dispatch
+boundaries are adapted, so these tests do not establish native client rendering.
+
 Native acceptance must cover representative grass/clutter, more than eight
 roots/two clients, pine/snow/palm/jungle art, animation, tint/alpha/transforms and
 nested appearances; hidden-root canopies, roof overlap, floor transparency,
