@@ -291,6 +291,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("missiles"), 9))
 	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 7, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
 	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
+	register_research_node(new /datum/research_node("orbital_flight", "Orbital Flight", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
 	register_research_node(new /datum/research_node("sealed_habitats", "Sealed Habitats", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
 	register_research_node(new /datum/research_node("life_support", "Life Support", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
 	register_research_node(new /datum/research_node("pressure_suits", "Pressure Suits", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
@@ -718,13 +719,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
-		// --- rocketry / planetary_survey / crewed_flight / sealed_habitats / life_support / pressure_suits / off_world_mining / surface_vehicles / local_resources (9) ---
+		// --- rocketry / planetary_survey / crewed_flight / orbital_flight / sealed_habitats / life_support / pressure_suits / off_world_mining / surface_vehicles / local_resources (9) ---
 		"/obj/structure/launch_rail" = "rocketry",
 		"/obj/item/space_probe" = "rocketry",
 		"/obj/structure/survey_console" = "rocketry",
 		"/obj/item/space_probe/advanced" = "planetary_survey",
 		"/obj/structure/region_gate/trail_marker/launch_pad" = "crewed_flight",
 		"/obj/structure/crewed_lander" = "crewed_flight",
+		"/obj/structure/crewed_lander/orbital_rocket" = "orbital_flight",
 		"/obj/item/habitat_kit" = "sealed_habitats",
 		"/obj/item/habitat_kit/greenhouse" = "sealed_habitats",
 		"/obj/item/habitat_kit/workshop" = "sealed_habitats",

@@ -69,11 +69,16 @@
 		return up <= world.maxz ? up : 0
 	return z < world.maxz ? z + 1 : 0
 
-// The highest level open to the sky (radiation, observer spawn). A dug level
-// can be world.maxz while lying under the surface.
+// The highest ground level open to the sky (radiation, observer spawn). A dug
+// level can be world.maxz while lying under the surface, and an added building
+// level is open air over the surface (Gaia keeps one from round start).
 /proc/multiz_top_z()
 	var/dug = dug_underground_z()
-	return dug && dug == world.maxz ? world.maxz - 1 : world.maxz
+	if (dug && dug == world.maxz)
+		return world.maxz - 1
+	if (map && map.building_levels && world.maxz > building_base_maxz())
+		return building_base_maxz()
+	return world.maxz
 
 /proc/dug_underground_area()
 	for (var/area/caribbean/void/caves/A in world)
