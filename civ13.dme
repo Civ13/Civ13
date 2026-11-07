@@ -1316,6 +1316,7 @@
 #include "code\modules\space\habitat_modules.dm"
 #include "code\modules\space\lander.dm"
 #include "code\modules\space\moon_world.dm"
+#include "code\modules\space\orbit_world.dm"
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"
 #include "code\modules\space\self_sufficiency.dm"

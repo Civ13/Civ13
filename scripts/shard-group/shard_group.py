@@ -68,7 +68,7 @@ ADOPT_SKIP = {'SQL': ('player-help',)}
 # Files setup writes for each region; an overlay must not replace them.
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt')
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'OTHER')
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -132,6 +132,8 @@ def load_group(path):
     # Raid worlds reset and send everyone home; nobody can live in one.
     if any(r['id'] == mainland and r['kind'] == 'RAID' for r in regions):
         raise ValueError('the mainland cannot be a RAID region')
+    if any(r['id'] == mainland and r['kind'] == 'ORBIT' for r in regions):
+        raise ValueError('the mainland cannot be an ORBIT region')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
