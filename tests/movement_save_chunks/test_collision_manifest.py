@@ -35,6 +35,13 @@ class CollisionManifestTests(unittest.TestCase):
             changed = collision_manifest.inventory(root)
             self.assertEqual(len(changed['files'][0]['declarations']), 2)
             self.assertNotEqual(changed, original)
+            unrelated = collision_manifest.inventory(root)
+            fixture.write_text('// header comment\n/obj/unrelated\n\tvar/x = 1\n\n'
+                               '/obj/example\n\tparent_type = /obj/other\n\tCheckExit()\n\t\treturn TRUE\n'
+                               '\tproc/other()\n\t\treturn 2\n', encoding='utf-8')
+            self.assertEqual(collision_manifest.inventory(root), unrelated)
+            fixture.write_text('/obj/moved\n\tparent_type = /obj/other\n\tCheckExit()\n\t\treturn TRUE\n', encoding='utf-8')
+            self.assertNotEqual(collision_manifest.inventory(root), unrelated)
             (root / 'civ13.dme').write_text('#include "outside/hidden.dm"\n', encoding='utf-8')
             with self.assertRaisesRegex(ValueError, 'outside collision inventory'):
                 collision_manifest.inventory(root)

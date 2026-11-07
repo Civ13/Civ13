@@ -287,11 +287,14 @@ fetch only the exact event comparison commit when needed. The ping and research
 historical negative controls use checked-in, hash-verified source fixtures, so
 the baseline does not need unrelated repository history. A non-manual build
 also uses a depth-one checkout and exact comparison when no introduced suite
-is selected and the PR has no labels. Selected suites, any PR label, uncertain
-label metadata and manual runs retain the existing full-history build checkout
-with a 12-minute checkout limit. When no evidence fixture can be selected under
-the same conservative conditions, evidence-checker explicitly reports that no
-fixture ran and skips checkout. Selected, labeled or manual evidence retains
+is selected and the PR has no exact-head `roof-ci:<head sha>` label (other
+labels such as `skip-ci:` or area tags do not count). Selected suites, that
+roof label and manual runs retain the full-history build checkout with a
+12-minute checkout limit; it is blobless (`filter: blob:none`), so commits and
+trees arrive at once and pinned `git show <sha>:path` fixtures fetch only the
+blobs they read. When no evidence fixture can be selected under the same
+conditions, evidence-checker explicitly reports that no fixture ran and skips
+checkout. Selected, roof-labelled or manual evidence retains the same blobless
 full history with a 12-minute checkout limit. These
 exceptions keep historic fixture dependencies and label-based admission intact;
 they do not prove that full history is inherently necessary.

@@ -172,17 +172,20 @@ jobs:
     steps:
       - name: Explain unselected evidence fixtures
         id: no_evidence
-        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         run: |
           echo 'coverage=not_selected' >> "$GITHUB_OUTPUT"
           echo 'No evidence fixture was selected; this job did not execute native or source fixtures.' >> "$GITHUB_STEP_SUMMARY"
       - name: Check out selected evidence sources and history
-        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels) != '[]')
+        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 12
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+          # Blobless: every commit and tree, blobs fetched on demand (pinned
+          # `git show <sha>:path` fixtures still work on this public repo).
+          filter: blob:none
           persist-credentials: false
       - name: Test representative save executor contracts without native effects
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/save_latency') || inputs.save_latency_regressions == true
@@ -472,7 +475,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out simple compilation source
         id: simple_checkout
-        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 2
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -481,7 +484,7 @@ jobs:
           persist-credentials: false
       - name: Prepare simple compilation comparison commit
         id: simple_prepare
-        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 2
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -490,12 +493,15 @@ jobs:
         run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
       - name: Check out history for selected or manual fixtures
         id: history_checkout
-        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels) != '[]')
+        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 12
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+          # Blobless: every commit and tree, blobs fetched on demand (pinned
+          # `git show <sha>:path` fixtures still work on this public repo).
+          filter: blob:none
           persist-credentials: false
 
       # Runs a single command using the runners shell

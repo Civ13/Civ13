@@ -8,6 +8,26 @@ from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
 
+
+def catalog_text(game):
+    """Compact JSON with one acquisition, recipe or resource entry per line.
+
+    The game reads it with json_decode, so the layout is free; one entry per line
+    lets git merge PRs that add recipes in different places instead of
+    conflicting on a single 4 MB line."""
+    def compact(value):
+        return json.dumps(value,separators=(',',':'),ensure_ascii=True)
+    parts=[]
+    for key,value in game.items():
+        if isinstance(value,dict) and value:
+            body=',\n'.join(compact(k)+':'+compact(v) for k,v in value.items())
+            parts.append(compact(key)+':{\n'+body+'\n}')
+        elif isinstance(value,list) and value:
+            parts.append(compact(key)+':[\n'+',\n'.join(compact(v) for v in value)+'\n]')
+        else:
+            parts.append(compact(key)+':'+compact(value))
+    return '{'+',\n'.join(parts)+'}\n'
+
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, default=ROOT/'data/atlas-preview')
@@ -361,7 +381,7 @@ resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']}
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 if options.catalog_only:
     game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
-    game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
+    game_text=catalog_text(game)
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
         options.game_catalog.write_text(game_text,encoding='utf-8')
@@ -397,7 +417,7 @@ for resource in resource_ids:
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
 game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
-game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
+game_text=catalog_text(game)
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
     options.game_catalog.write_text(game_text,encoding='utf-8')
