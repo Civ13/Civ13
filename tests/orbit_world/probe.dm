@@ -112,6 +112,7 @@ var/global/orbit_failures = 0
 		orbit_sortie_checks()
 		orbit_pod_checks()
 		orbit_deck_checks()
+		orbit_upkeep_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -689,5 +690,62 @@ var/global/orbit_failures = 0
 	R2.anchored = TRUE
 	orbit_check("risers carry power between decks", (R2 in R1.riser_partners()) ? 1 : 0, 1)
 	orbit_check("node kit gated", get_recipe_node_req("/obj/item/habitat_kit/node"), "orbital_flight")
+	qdel(H)
+	qdel(O)
+
+// Upkeep (orbit_upkeep.dm): orbit decay by band, drag heating, the floor and
+// ceiling, the hazard clock hook, the reboost thruster and the console.
+/proc/orbit_upkeep_checks()
+	var/party = "civ:gaia:Alpha"
+	orbit_check("stations listed", ("[party]" in orbit_station_parties()) ? 1 : 0, 1)
+	var/obj/structure/orbit_thruster/starter = orbit_find_on(/obj/structure/orbit_thruster, 2)
+	orbit_check("starter station has a fuelled thruster", starter ? starter.propellant : 0, 60)
+	orbit_set_station_altitude(party, 400)
+	orbit_upkeep_step(600, FALSE)
+	orbit_check("orbit decays with play", round(orbit_station_altitude(party), 0.01), 395.02)
+	orbit_check("high orbit band", orbit_altitude_band(orbit_station_altitude(party)), "high")
+	barren_hazards_step(60, FALSE)
+	orbit_check("hazard clock drives decay", round(orbit_station_altitude(party), 0.01), 394.52)
+	var/obj/structure/habitat_core/node/N = locate() in locate(12, 12, 4)
+	orbit_set_station_altitude(party, 260)
+	var/before = N.air().temperature
+	orbit_upkeep_step(60, FALSE)
+	orbit_check("no drag heat in low orbit", N.air().temperature - before, 0)
+	orbit_set_station_altitude(party, 250.2)
+	orbit_upkeep_step(60, FALSE)
+	orbit_check("drag band", orbit_altitude_band(orbit_station_altitude(party)), "drag")
+	orbit_check("drag heats the station", round(N.air().temperature - before, 0.01), 3)
+	orbit_set_station_altitude(party, 190)
+	before = N.air().temperature
+	orbit_upkeep_step(10, FALSE)
+	orbit_check("skimming heats hard", round(N.air().temperature - before, 0.01), 2)
+	orbit_set_station_altitude(party, 151)
+	orbit_upkeep_step(1000, FALSE)
+	orbit_check("orbit floor", orbit_station_altitude(party), 150)
+	orbit_set_station_altitude(party, 999)
+	orbit_check("orbit ceiling", orbit_station_altitude(party), 420)
+
+	var/mob/living/human/eva_tester/H = new(locate(20, 21, 4))
+	H.m_intent = "stealth"
+	H.party_train_party = party
+	var/mob/living/human/eva_tester/O = new(locate(21, 21, 4))
+	O.m_intent = "stealth"
+	O.party_train_party = "civ:gaia:Beta"
+	var/obj/structure/orbit_thruster/T = new(locate(20, 20, 4))
+	orbit_set_station_altitude(party, 300)
+	orbit_check("thruster needs propellant", findtext("[T.reboost_refusal(H)]", "propellant") ? 1 : 0, 1)
+	T.propellant = 40
+	orbit_check("outsiders cannot reboost", findtext("[T.reboost_refusal(O)]", "Alpha") ? 1 : 0, 1)
+	orbit_check("members can reboost", isnull(T.reboost_refusal(H)) ? 1 : 0, 1)
+	orbit_check("reboost climbs", T.reboost(), 320)
+	orbit_check("reboost burns propellant", T.propellant, 20)
+	orbit_set_station_altitude(party, 415)
+	orbit_check("reboost stops at the ceiling", T.reboost(), 420)
+	T.propellant = 40
+	orbit_check("no reboost above the ceiling", findtext("[T.reboost_refusal(H)]", "high") ? 1 : 0, 1)
+	var/obj/structure/orbit_console/console = new(locate(22, 22, 4))
+	orbit_set_station_altitude(party, 240)
+	orbit_check("console shows altitude and drag", findtext(jointext(console.status_lines(), " "), "Altitude 240 km, in drag") ? 1 : 0, 1)
+	orbit_check("thruster gated", get_recipe_node_req("/obj/structure/orbit_thruster"), "orbital_flight")
 	qdel(H)
 	qdel(O)
