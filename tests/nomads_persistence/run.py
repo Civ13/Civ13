@@ -17,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--negative-control', choices=('profile', 'timer-restore', 'nuke-tail', 'calendar-failure', 'lava-tail', 'legacy-import', 'chain-ownership', 'fire-boundary', 'late-fire'))
-    parser.add_argument('--spatial', action='store_true', help='28 sequential fresh-process production world-save roundtrips')
+    parser.add_argument('--spatial', action='store_true', help='29 sequential fresh-process production world-save roundtrips')
     parser.add_argument('--events', action='store_true', help='owned delayed event completion and failure barriers')
     parser.add_argument('--effects', action='store_true', help='direct damage-hook explosion chains and fire quiescence')
     args = parser.parse_args()
@@ -126,7 +126,7 @@ def main():
         (output/'config/config.txt').write_text('# Isolated synthetic fixture\n')
         deadline = time.monotonic()+900
         results = []
-        for case in (range(1, 29) if args.spatial else [0]):
+        for case in (range(1, 30) if args.spatial else [0]):
             if {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (compiler, daemon)} != runtime_hashes:
                 raise RuntimeError('Native runtime changed during the fixture')
             folder = output
