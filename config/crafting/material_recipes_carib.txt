@@ -1791,6 +1791,7 @@ RECIPE: /material/steel/,rollerchair,/obj/structure/bed/chair/office/light,8,150
 RECIPE: /material/steel/,drink shaker,/obj/item/weapon/reagent_containers/food/drinks/shaker,3,30,0,1,none,125,0,0,8,null
 RECIPE: /material/steel/,watch,/obj/item/clothing/gloves/watch/watch,6,200,0,1,none,125,60,0,8,null
 RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,4,95,0,1,none,145,0,0,8,null
+RECIPE: /material/steel/,fire striker,/obj/item/weapon/flame/lighter/striker,1,40,0,1,tools,0,0,0,8,null
 
 //*********************| STEEL WEAPONS & TOOLS |**************************
 

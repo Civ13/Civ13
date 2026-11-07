@@ -22,6 +22,8 @@
 /turf/floor/dirt/underground/sandy
 
 /obj/item/weapon/flint
+/atom/proc/update_icon()
+	return
 /obj/item/weapon/material/pickaxe/antler
 
 /mob/living/human
@@ -35,9 +37,70 @@
 	female = TRUE
 /mob/living/simple_animal/deer/dikdik
 
+#define SPAN_WARNING(X) X
+/proc/playsound()
+	return
+/proc/get_turf(atom/A)
+	return A
+/obj/item/weapon/gun/projectile/flintlock
+	var/cocked = FALSE
+	var/base_checks = 0
+/obj/item/weapon/gun/projectile/flintlock/proc/special_check(mob/user)
+	base_checks++
+	return cocked
+/obj/item/weapon/gun/projectile/flintlock/proc/can_hit(atom/target, mob/living/user)
+	return special_check(user)
+/obj/item/weapon/gun/projectile/flintlock/proc/handle_post_fire()
+	cocked = FALSE
+
+/proc/gunflint_checks()
+	var/failures = 0
+	var/obj/item/weapon/gun/projectile/flintlock/G = new
+	var/life = G.gunflint_left()
+	if (life < 25 || life > 40)
+		failures++
+		world.log << "FAIL fresh gunflint life [life], expected 25-40"
+	var/fired = 0
+	for (var/i = 1, i <= 200 && G.gunflint_left() > 0, i++)
+		G.cocked = TRUE
+		if (!G.special_check(null))
+			failures++
+			world.log << "FAIL a sharp gunflint misfired"
+			break
+		G.handle_post_fire()
+		fired++
+	if (fired != life || G.gunflint_shots != 0)
+		failures++
+		world.log << "FAIL gunflint wore after [fired] shots, expected [life]"
+	var/misfires = 0
+	var/aim_misfires = 0
+	for (var/i = 1, i <= 4000, i++)
+		G.cocked = TRUE
+		if (!G.can_hit(null, null) || !G.cocked)
+			aim_misfires++
+		G.cocked = TRUE
+		if (!G.special_check(null))
+			misfires++
+			if (G.cocked)
+				failures++
+				world.log << "FAIL a misfire must uncock the gun"
+				break
+	if (aim_misfires)
+		failures++
+		world.log << "FAIL aiming checks misfired [aim_misfires] times"
+	if (misfires < 1800 || misfires > 2200)
+		failures++
+		world.log << "FAIL worn gunflint misfired [misfires]/4000, expected about half"
+	G.cocked = FALSE
+	if (G.special_check(null))
+		failures++
+		world.log << "FAIL uncocked flintlock fired"
+	world.log << "gunflint life [life] worn misfires [misfires]/4000"
+	return failures
+
 /world/New()
 	..()
-	var/failures = 0
+	var/failures = gunflint_checks()
 	var/turf/plain = locate(1, 1, 1)
 	plain = new /turf/floor/dirt/underground(plain)
 	var/turf/sandy = locate(2, 1, 1)

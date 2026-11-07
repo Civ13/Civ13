@@ -81,8 +81,22 @@ def source_checks():
         text = Path(path).read_text(encoding='utf-8')
         if 'RECIPE: /material/wood/,hammer,' in text and row not in text:
             failures.append(f'{Path(path).name}: missing the wooden spade recipe')
+    striker = 'RECIPE: /material/steel/,fire striker,/obj/item/weapon/flame/lighter/striker,1,40,0,1,tools,0,0,0,8,null'
+    for path in sorted(glob.glob(str(ROOT / 'config/crafting/material_recipes_*.txt'))):
+        text = Path(path).read_text(encoding='utf-8')
+        if 'RECIPE: /material/steel/,zippo lighter,' in text and striker not in text:
+            failures.append(f'{Path(path).name}: missing the fire striker recipe')
+    if '"/obj/item/weapon/flame/lighter/striker" = "iron_tools"' not in research:
+        failures.append('fire striker must be mapped to Iron Tools')
+    if 'var/obj/item/weapon/flint/F = user.get_inactive_hand()' not in block(flint, '/obj/item/weapon/flame/lighter/striker/attack_self('):
+        failures.append('the striker must need a flint in the other hand')
+    if 'gunflint_aim_check = TRUE' not in block(flint, '/obj/item/weapon/gun/projectile/flintlock/can_hit('):
+        failures.append('aiming checks must not roll gunflint misfires')
+    dme_text = read('civ13.dme')
+    if dme_text.index('flintlock.dm"') > dme_text.index('flint_mining.dm"'):
+        failures.append('flint_mining.dm must be included after flintlock.dm')
     icons = (ROOT / 'icons/obj/flint_mining.dmi').read_bytes()
-    for state in ('antler_pick', 'wooden_spade', 'flint_arrowheads', 'flint_spearhead'):
+    for state in ('antler_pick', 'wooden_spade', 'flint_arrowheads', 'flint_spearhead', 'striker'):
         if f'icon_state = "{state}"' not in flint + read('code/modules/1713/tools.dm'):
             failures.append(f'{state} is not used')
     if not icons.startswith(b'\x89PNG'):
@@ -92,12 +106,21 @@ def source_checks():
 
 def native(byond_bin):
     flint = read(FLINT)
-    procs = '\n'.join([
-        '#define FLINT_NODULE_CHANCE 20', '#define FLINT_NODULE_CHANCE_SANDY 5',
+    defines = ('FLINT_NODULE_CHANCE 20', 'FLINT_NODULE_CHANCE_SANDY 5', 'GUNFLINT_SHOTS_MIN 25',
+               'GUNFLINT_SHOTS_MAX 40', 'GUNFLINT_WORN_MISFIRE 50')
+    gun = '/obj/item/weapon/gun/projectile/flintlock'
+    procs = '\n'.join(['#define ' + name for name in defines] + [
         block(flint, '/turf/proc/mining_flint_nodules('),
         block(flint, '/mob/living/simple_animal/deer/proc/antler_count()'),
+        block(flint, '// half the time until a new sharpened flint is fitted.\n' + gun + '\n'),
+        block(flint, gun + '/proc/gunflint_left()'),
+        block(flint, gun + '/special_check('),
+        block(flint, gun + '/can_hit('),
+        block(flint, gun + '/handle_post_fire()'),
     ])
-    for name in ('FLINT_NODULE_CHANCE 20', 'FLINT_NODULE_CHANCE_SANDY 5'):
+    # Sound resources are files the fixture does not ship; pass them as text.
+    procs = re.sub(r"'(sound/[^']+)'", r'"\1"', procs)
+    for name in defines:
         if f'#define {name}' not in flint:
             return ['probe constants are out of date']
     win = os.name == 'nt'

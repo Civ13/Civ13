@@ -5,7 +5,7 @@ Neolithic flint mines such as Grimes Graves, Spiennes and Krzemionki: miners
 sank a shaft through chalk, cut galleries along the flint seam, and did it with
 red-deer antler picks and bone or wooden shovels.
 
-Source: `code/modules/1713/flint_mining.dm`. Tests: `tests/flint_mining`.
+Source: `code/modules/1713/flint_mining.dm`. Tests: `tests/flint_mining` (`run.py --byond-bin` adds the native probe).
 
 ## Getting flint
 
@@ -53,3 +53,19 @@ instead of one from a sharpened flint. Using a flint as a whetstone on a blade
 or tool still works as before.
 
 An unsharpened flint used on a bolt no longer deletes the bolt.
+
+## Fire striker
+
+A steel fire striker (1 steel, Tools menu, Iron Tools) works like a lighter for
+candles, pipes and cigarettes. Hold a flint in your other hand and use the
+striker: 70% of strikes throw sparks, which stay usable for 5 seconds. Each
+successful strike has a 3% chance to use up the flint. Campfires and torches
+still light by hand.
+
+## Gunflint wear
+
+A flintlock's flint lasts 25-40 shots. After that, half of all trigger pulls
+misfire: the hammer falls, the gun uncocks and the ball stays loaded. Use a
+sharpened flint on the gun (3 s) to fit a fresh one. Examining a flintlock up
+close shows whether its flint is worn. Guns from crates and newly assembled
+guns start with a fresh flint.

@@ -1170,7 +1170,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/heatsource" = "iron_smithing",
-		// --- iron_tools (4) ---
+		// --- iron_tools (5) ---
+		"/obj/item/weapon/flame/lighter/striker" = "iron_tools",
 		"/obj/item/flashlight/lantern" = "iron_tools",
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
