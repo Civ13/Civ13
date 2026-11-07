@@ -258,6 +258,26 @@ if bench:
     for name,result in re.findall(r'"(Pickaxe|Shovel|Hatchet)"\s*=\s*(/obj/item/weapon/material/\w+)',bench):
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
+dedicated_path='code/game/objects/structures/blacksmithing/dedicated_workbenches.dm'
+dedicated=uncomment(files.get(dedicated_path,''))
+weapon_recipes=re.search(r'^/obj/structure/component_workbench/weapon/tool_recipes\(\)\n\treturn list\((.*)\)$',dedicated,re.M)
+if weapon_recipes:
+    heads={'/obj/item/weapon/material/spear':'spearhead','/obj/item/weapon/material/hatchet/battleaxe':'axehead/battleaxe','/obj/item/weapon/material/thrown/throwing_axe':'axehead/throwing'}
+    for name,result in re.findall(r'"([^"]+)" = (/obj/item/weapon/material/[\w/]+)',weapon_recipes[1]):
+        if result not in heads:
+            issues.append(dict(file=dedicated_path,line=1,reason='Weapon bench recipe has no reviewed head mapping',raw=name))
+            continue
+        add('Workbench '+name,'Weapon assembly',[(f'/obj/item/weapon/material/part/{heads[result]}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],dedicated_path,dedicated[:weapon_recipes.start()].count('\n')+1,'Weapon assembly workbench; matching anvil head and usable handle; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves head material, quality and wear. Hand assembly remains available.', 'weapon tool_recipes accepts_head')
+elif dedicated:
+    issues.append(dict(file=dedicated_path,line=1,reason='Weapon bench recipe list changed; inspect atlas extraction',raw='weapon tool_recipes'))
+heads_match=re.search(r'var/list/heads = list\((.*)\)$',dedicated,re.M)
+if heads_match and 'text2path("[shaft_type]/[suffix]")' in dedicated:
+    fletch_line=dedicated[:heads_match.start()].count('\n')+1
+    for shaft,label_name in (('/obj/item/ammo_casing/arrow','arrows'),('/obj/item/ammo_casing/bolt','crossbow bolts')):
+        for head,suffix in re.findall(r'(/obj/item/stack/arrowhead/\w+) = "(\w+)"',heads_match[1])+[('/obj/item/weapon/flint/sharpened','flint')]:
+            add(f'Fletch {suffix} {label_name}','Fletching',[(shaft,1),(head,1)],[(f'{shaft}/{suffix}',1)],dedicated_path,fletch_line,"Fletcher's bench; up to 20 bare shafts and one kind of head per load; 5 ticks per shaft in one action; output beside the bench. Hand fletching remains available.", 'fletched_type')
+elif dedicated:
+    issues.append(dict(file=dedicated_path,line=1,reason='Fletching head map changed; inspect atlas extraction',raw='fletched_type'))
 armor_path='code/game/objects/structures/blacksmithing/armor_workbench.dm'
 armor=uncomment(files.get(armor_path,''))
 for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d+), "result" = (/\w[\w/]+), "inputs" = list\((.*)$',armor,re.M):

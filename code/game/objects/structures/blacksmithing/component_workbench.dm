@@ -26,6 +26,10 @@
 /obj/structure/component_workbench/proc/tool_recipes()
 	return list("Pickaxe" = /obj/item/weapon/material/pickaxe, "Shovel" = /obj/item/weapon/material/shovel, "Hatchet" = /obj/item/weapon/material/hatchet)
 
+// Heads this bench takes. Subtypes (weapon assembly) widen the family.
+/obj/structure/component_workbench/proc/accepts_head(obj/item/weapon/material/part/P)
+	return P.is_work_tool_head()
+
 /obj/structure/component_workbench/proc/can_use(mob/living/human/H)
 	return istype(H) && isturf(loc) && H.Adjacent(src) && !H.incapacitated()
 
@@ -34,7 +38,7 @@
 
 /obj/structure/component_workbench/proc/find_head()
 	for (var/obj/item/weapon/material/part/P in contents)
-		if (P.result == tool_recipes()[selected_tool] && P.is_work_tool_head() && valid_component(P)) return P
+		if (P.result == tool_recipes()[selected_tool] && accepts_head(P) && valid_component(P)) return P
 
 /obj/structure/component_workbench/proc/find_handle()
 	for (var/obj/item/weapon/material/handle/H in contents)
@@ -46,7 +50,7 @@
 		if (find_handle()) return FALSE
 	else if (istype(I, /obj/item/weapon/material/part))
 		var/obj/item/weapon/material/part/P = I
-		if (!P.is_work_tool_head() || P.result != tool_recipes()[selected_tool] || find_head()) return FALSE
+		if (!accepts_head(P) || P.result != tool_recipes()[selected_tool] || find_head()) return FALSE
 	else
 		return FALSE
 	H.drop_from_inventory(I)
@@ -58,7 +62,7 @@
 	if (insert(I, H))
 		to_chat(H, "You place [I] on [src].")
 	else
-		to_chat(H, "Select a matching tool and hold one usable head or handle. Retrieve the current items before changing recipes.")
+		to_chat(H, "Select a matching recipe and hold one usable head or handle.")
 
 /obj/structure/component_workbench/proc/retrieve(mob/living/human/H)
 	if (!can_use(H)) return FALSE
@@ -66,9 +70,24 @@
 	for (var/obj/item/I in contents.Copy()) I.forceMove(get_turf(src))
 	return TRUE
 
+// Retargeting returns everything stored (inputs or a finished item) to the
+// floor, then switches. Refused while work is in progress.
+/obj/structure/component_workbench/proc/select_recipe(mob/living/human/H, choice)
+	if (busy || !can_use(H) || !(choice in tool_recipes())) return FALSE
+	if (choice == selected_tool) return TRUE
+	if (contents.len) retrieve(H)
+	if (contents.len) return FALSE
+	selected_tool = choice
+	cancelled = FALSE
+	return TRUE
+
+/obj/structure/component_workbench/proc/recipe_prompt(mob/living/human/H)
+	var/choice = input(H, "Recipe (changing returns stored items)", name, selected_tool) as null|anything in tool_recipes()
+	if (choice && select_recipe(H, choice)) to_chat(H, "[src] is now set to [selected_tool].")
+
 // No sleeping operations in this commit. Exact references must still be staged.
 /obj/structure/component_workbench/proc/finish_assembly(mob/living/human/H, obj/item/weapon/material/part/P, obj/item/weapon/material/handle/B, choice)
-	if (!busy || cancelled || assembler != H || !can_use(H) || selected_tool != choice || !valid_component(P) || !valid_component(B) || P.loc != src || B.loc != src || P.result != tool_recipes()[choice] || !P.is_work_tool_head()) return
+	if (!busy || cancelled || assembler != H || !can_use(H) || selected_tool != choice || !valid_component(P) || !valid_component(B) || P.loc != src || B.loc != src || P.result != tool_recipes()[choice] || !accepts_head(P)) return
 	var/obj/item/weapon/material/M = new P.result(get_turf(src), P.material.name)
 	M.record_tool_components(P, B)
 	qdel(P)
@@ -95,16 +114,14 @@
 /obj/structure/component_workbench/attack_hand(mob/living/human/H)
 	if (!can_use(H)) return
 	var/list/options = list("Status", "Retrieve / cancel")
-	if (!busy && !contents.len) options += "Select recipe"
+	if (!busy) options += "Select recipe"
 	if (!busy && find_head() && find_handle()) options += "Assemble"
 	var/action = input(H, "[selected_tool]: one matching usable head and one usable handle. [busy ? "Assembly in progress" : "Idle"].", name) as null|anything in options
 	if (!can_use(H)) return
 	switch (action)
 		if ("Retrieve / cancel") retrieve(H)
 		if ("Assemble") assemble(H)
-		if ("Select recipe")
-			var/choice = input(H, "Tool recipe", name) as null|anything in tool_recipes()
-			if (can_use(H) && !busy && !contents.len && (choice in tool_recipes())) selected_tool = choice
+		if ("Select recipe") recipe_prompt(H)
 		if ("Status")
 			to_chat(H, "[selected_tool] requires one matching head and one handle. Head: [find_head() ? "ready" : "missing"]. Handle: [find_handle() ? "ready" : "missing"]. [contents.len] item(s) stored; retrieve to collect or cancel.")
 
