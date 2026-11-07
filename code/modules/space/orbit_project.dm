@@ -400,10 +400,13 @@ var/global/list/orbit_station_requirements = list(
 	var/party = orbit_station_party(z)
 	lines += party ? "Station of [party_train_party_name(party)]." : "No party owns this plane."
 	lines += orbit_sunlit() ? "In sunlight for another [orbit_day_left()] seconds." : "In shadow for another [orbit_day_left()] seconds."
-	for (var/obj/structure/habitat_core/C in orbit_station_modules(z))
-		var/datum/habitat_ledger/L = C.air()
-		var/holes = C.breaches()
-		lines += "[capitalize(C.kind)] module: [round(L.pressure_kpa())] kPa, [round(L.temperature)] C[holes ? ", [holes] breach[holes == 1 ? "" : "es"]" : ""]."
+	// Every deck of the station (orbit_decks.dm), or just this plane.
+	var/list/planes = party ? orbit_station_planes(party) : list(z)
+	for (var/level in planes)
+		for (var/obj/structure/habitat_core/C in orbit_station_modules(level))
+			var/datum/habitat_ledger/L = C.air()
+			var/holes = C.breaches()
+			lines += "[capitalize(C.kind)] module[planes.len > 1 ? " (plane [level])" : ""]: [round(L.pressure_kpa())] kPa, [round(L.temperature)] C[holes ? ", [holes] breach[holes == 1 ? "" : "es"]" : ""]."
 	return lines
 
 /obj/structure/orbit_console/examine(mob/user)

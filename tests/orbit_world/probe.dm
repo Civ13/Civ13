@@ -111,6 +111,7 @@ var/global/orbit_failures = 0
 		orbit_project_checks()
 		orbit_sortie_checks()
 		orbit_pod_checks()
+		orbit_deck_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -627,5 +628,66 @@ var/global/orbit_failures = 0
 	orbit_check("second pod released", P2 ? 1 : 0, 1)
 	orbit_check("console steers member pods", length(console.steerable_pods(H)), 1)
 	orbit_check("console steers none for outsiders", length(console.steerable_pods(O)), 0)
+	qdel(H)
+	qdel(O)
+
+// Decks (orbit_decks.dm): node modules, deck hatches, building a deck above,
+// shared air through open hatches, refusals and power risers.
+/proc/orbit_deck_checks()
+	var/party = "civ:gaia:Alpha"
+	for (var/p in 2 to 5)
+		orbit_release_plane(p)
+	orbit_claim_plane("keep")
+	orbit_claim_plane("keep")
+	var/z = orbit_claim_plane(orbit_station_owner(party))
+	orbit_check("deck station plane", z, 4)
+	var/obj/structure/habitat_core/node/N = habitat_unfold(locate(12, 12, z), "node", /obj/structure/habitat_core/node)
+	var/obj/structure/deck_hatch/hatch = N.deck_hatch()
+	orbit_check("node has a deck hatch", hatch ? "[hatch.x],[hatch.y]" : "none", "13,11")
+	orbit_check("node sealed with the hatch shut", N.breaches(), 0)
+	var/mob/living/human/eva_tester/H = new(locate(12, 13, z))
+	H.m_intent = "stealth"
+	H.party_train_party = party
+	var/mob/living/human/eva_tester/O = new(locate(11, 13, z))
+	O.m_intent = "stealth"
+	O.party_train_party = "civ:gaia:Beta"
+	orbit_check("a deck needs the hatch open", findtext("[orbit_deck_refusal(hatch, "up", H)]", "Open") ? 1 : 0, 1)
+	hatch.open = TRUE
+	orbit_check("an open hatch to nothing is a breach", N.breaches(), 1)
+	orbit_check("outsiders cannot build decks", findtext("[orbit_deck_refusal(hatch, "up", O)]", "Alpha") ? 1 : 0, 1)
+	orbit_check("members can build a deck", isnull(orbit_deck_refusal(hatch, "up", H)) ? 1 : 0, 1)
+	O.forceMove(locate(20, 20, z))
+	var/obj/structure/habitat_core/node/U = orbit_add_deck(hatch, "up")
+	orbit_check("new deck node", U ? "[U.x],[U.y],[U.z]" : "none", "12,12,5")
+	orbit_check("deck linked up", orbit_plane_link(z, "up"), 5)
+	orbit_check("multiz follows the deck", multiz_level_above(z), 5)
+	orbit_check("deck owned by the station", orbit_station_party(5), party)
+	var/obj/structure/deck_hatch/upper = U.deck_hatch()
+	orbit_check("hatches pair through the shaft", hatch.partner("up") == upper && upper.partner("down") == hatch ? 1 : 0, 1)
+	orbit_check("a hatch shut above seals the shaft", N.breaches(), 0)
+	orbit_check("climbing needs both hatches open", findtext("[hatch.climb(H, "up")]", "both") ? 1 : 0, 1)
+	var/datum/habitat_ledger/below = N.air()
+	below.oxygen = 0
+	N.store_air()
+	N.step_air(2, 0)
+	orbit_check("no mixing through a shut hatch", round(N.air().oxygen), 0)
+	upper.open = TRUE
+	orbit_check("open shaft joins the nodes", (U in N.deck_neighbours()) ? 1 : 0, 1)
+	N.step_air(2, 0)
+	orbit_check("air mixes between decks", N.air().oxygen > 50 ? 1 : 0, 1)
+	orbit_check("both decks sealed", "[N.breaches()],[U.breaches()]", "0,0")
+	orbit_check("one deck each way", findtext("[orbit_deck_refusal(hatch, "up", H)]", "already") ? 1 : 0, 1)
+	orbit_check("no free plane for another deck", findtext("[orbit_deck_refusal(hatch, "down", H)]", "taken") ? 1 : 0, 1)
+	orbit_check("fold refused with the deck hatch open", findtext("[N.fold_refusal(H)]", "deck hatch") ? 1 : 0, 1)
+	hatch.open = FALSE
+	orbit_check("fold refused while a deck is joined", findtext("[N.fold_refusal(H)]", "joined") ? 1 : 0, 1)
+	var/obj/structure/orbit_console/console = new(locate(11, 12, z))
+	orbit_check("console reports every deck", findtext(jointext(console.status_lines(), " "), "(plane 5)") ? 1 : 0, 1)
+	var/obj/item/connector/riser/R1 = new(locate(11, 13, z))
+	var/obj/item/connector/riser/R2 = new(locate(11, 13, 5))
+	R1.anchored = TRUE
+	R2.anchored = TRUE
+	orbit_check("risers carry power between decks", (R2 in R1.riser_partners()) ? 1 : 0, 1)
+	orbit_check("node kit gated", get_recipe_node_req("/obj/item/habitat_kit/node"), "orbital_flight")
 	qdel(H)
 	qdel(O)
