@@ -1,58 +1,32 @@
-# Dictionary era checks
+# Speech dictionary tests
 
-Offline checks (use a verified full Python executable on Windows):
+Offline (CI runs these; no BYOND needed):
 
 ```text
-<python> -B -m unittest discover -s tests/dictionary_era -p test_sources.py -v
-<python> -B tests/dictionary_era/prepare.py --output <fresh-temporary-directory>
+python3 -B -m unittest discover -s tests/dictionary_era -p "test_*.py" -v
 ```
 
-The tests check production guards and rejected omission controls, exact legacy
-speech/whisper whole-file projections, loader wiring, unchanged dictionary data,
-and deterministic preparation/source hashes. They do not execute DM semantics.
-The test's legacy file hashes bind the reviewed unchanged speech bodies and default
-dictionary; unrelated future changes to those files need explicit reconciliation.
+- `test_corpus.py`: `corpus.json` holds the DM fixture's output for every
+  corpus line, from the frozen pre-rework helper (`legacy/dictionary.dm` with
+  `legacy/dictionary.txt`) and from the production helper. The Python models in
+  `reference.py` must reproduce both, and old and new may differ only in the
+  shapes the single-pass rework changed (whole words, casing, entities, rows
+  that used to be shadowed, new rows).
+- `test_slang_content.py`: the data parses, and the wiki slang inventory
+  matches `wiki_slang.json`.
+- `test_sources.py`: call sites, loader, include order and the rust_g fallback.
 
-The normal CI offline baseline registers `test_sources.py` and
-`test_slang_content.py` and `test_phrase_mode.py` for dictionary source/configuration changes. Content tests
-model ASCII case-insensitive literal/phrase replacement and era eligibility offline;
-they do not execute BYOND. They check the pinned editorial row inventory, legacy
-preservation, duplicates, fragment boundaries, cycles, cascades, all matching and
-nonmatching eras, multiple substitutions and compatibility overlap. Negative
-controls reject unsafe padding, conflicting definitions and cyclic/cascading rows.
-The baseline does not register the preparer or DM probe as
-executables, and does not change introduced-suite or native admission policy.
+Native fixture (needs DreamMaker and DreamDaemon on PATH; `bash
+scripts/cloud_byond_setup.sh` installs the pinned compiler):
 
-Preparation only writes source and a manifest. It has no compiler/runtime runner.
-The generated fixture uses the actual dictionary parser/helper, production text
-helpers, and production speech prefixes. Old replacement loops provide a native
-legacy-output comparison. An inert map datum replaces game metadata; no normal
-world startup, mobs, listeners, radio routing, saves or external services run.
-Geometry is 1x1x1. Source hashes use UTF-8 with normalized LF; statuses remain
-`not_run` until separate evidence establishes native execution.
+```text
+python3 tests/dictionary_era/prepare.py --output <new dir> --run     # check corpus.json
+python3 tests/dictionary_era/prepare.py --output <new dir> --write   # regenerate it
+```
 
-The prepared native assertions compare all 66 original entries against the full
-legacy-plus-wiki pipeline across nine eras. They also check every appended entry
-in matching/nonmatching eras through both speech prefixes, multiple substitutions,
-and adjacent phrase matches. The existing checks cover
-sanitization/case parity in both prefixes, all 81 selector/active-era combinations,
-era zero, malformed/empty selectors, selector CRLF/whitespace, source/replacement
-whitespace, ordered cascades, duplicate sources, live era changes and missing map.
-Invalid-input assertions intentionally emit parser diagnostics; an authorized
-runner must reconcile those expected lines and reject unexpected diagnostics.
-The fixture closes/refuses ports and clients; these source controls are not an
-external zero-listener observation. Require separate approval and existing process
-containment before any native execution. Target compiler is the repository's
-`tools/byond/version.json` (currently 516.1688).
-
-Remaining acceptance: native compile and fixture results, default game compile,
-independent review, hosted CI results, and any full-game/client checks
-needed to resolve remaining uncertainty. This patch does not activate native CI
-or authorize a launch, push, merge, deployment or restart.
-
-Phrase-mode checks also cover all 128 ASCII neighbor values, conservative Unicode
-neighbors, standalone/edge/punctuation matches, repeated adjacent matches, mixed
-literal/phrase order, malformed modes, literal metacharacters and no inserted-output
-rescan. Source omission controls bind the scanner and exact delimiter allowlist.
-The fixture includes production parser/scanner functions unchanged; native compile
-and execution results remain separate from the offline model.
+The fixture holds only the dictionary helpers, the production speech prefixes
+(`capitalize(sanitize())` for say, `sanitize()` for whisper) and `probe.dm`.
+It runs with `-safe` in its own directory, opens no game world and starts no
+other process. It reports which engine it used. On Linux without
+`librust_g.so` that is the regex fallback, which the rust_g path must match
+exactly; the helper checks this at load before it uses rust_g.
