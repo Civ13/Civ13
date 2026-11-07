@@ -128,9 +128,8 @@
 		if (RT.turn_dir)
 			return list(OPPOSITE_DIR(RT.dir), RT.turn_dir)
 		return list()
-	if (istype(piece, /obj/structure/rails/split/switcher))
-		var/obj/structure/rails/S = piece
-		return list(S.dir, OPPOSITE_DIR(S.dir), turn(S.dir, S.sw_direction == "right" ? -90 : 90))
+	// A switcher's split route shifts a wagon onto the parallel track beside
+	// it without turning, so the side tile is not joined to it end to end.
 	if (istype(piece, /obj/structure/rails))
 		return list(piece.dir, OPPOSITE_DIR(piece.dir))
 	return list()
