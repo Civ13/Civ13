@@ -879,6 +879,7 @@
 	var/found_ore = FALSE
 	if (H)
 		H.adaptStat("strength", 1) // One completed action, even with several ores.
+	mining_flint_nodules(H, area_above) // Independent of the ore rolls; see flint_mining.dm.
 	if (prob(12))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 		mineral.amount = rand(12,24)

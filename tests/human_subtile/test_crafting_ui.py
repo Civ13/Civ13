@@ -57,10 +57,11 @@ def restore_crafting_projection(path, source):
     elif path == FLOOR:
         # Mining balance is a separately checked production change. Invert only
         # this exact body so the original crafting reference remains frozen.
+        # Includes the independent flint nodule roll (tests/flint_mining).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '98d817b0cd9480b0a5a0efc5de60f3f250bf6763a57d5f180d4477a0dd5f2c9f':
+        if hashlib.sha256(mining.encode()).hexdigest() != '582edfbcb262325d39dac35fffa3760044a8f99003c348f3958561f06c59bfb5':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]

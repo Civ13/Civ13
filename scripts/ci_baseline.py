@@ -218,6 +218,11 @@ SUITES = {
             'code/game/mob/mob_movement.dm',
             'code/game/mob/living/carbon/human/inventory.dm',
             'code/game/mob/living/carbon/human/update_icons.dm')},
+    # Flint mining/knapping source contracts; run.py's native probe is manual.
+    'flint_mining': {'files': ('tests/flint_mining/test_flint_mining.py',),
+        'paths': ('tests/flint_mining/',), 'shared_paths': (
+            'code/modules/1713/flint_mining.dm', 'code/game/turfs/floor_attackby.dm',
+            'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
