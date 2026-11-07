@@ -34,6 +34,19 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('entry["state"] != "awake"', body)
         self.assertIn('record_sleeping(id, entry, world.time)\n\t\t\tcontinue', body)
 
+    def test_awake_peers_on_this_host_are_read_from_the_doorman(self):
+        # world.Export blocks the asking world for the round trip even inside
+        # spawn(); the doorman already asks every hosted world every 30 s.
+        body = proc(GROUP, '/datum/shard_group/proc/poll_once')
+        self.assertIn('record(id, entry["region"], world.time)\n\t\t\tcontinue', body)
+        self.assertLess(body.index('record(id, entry["region"]'), body.index('poll_peer(id)\n'))
+        self.assertIn('entry["cached_age"] <= SHARD_DOORMAN_FRESH_SECONDS', body)
+        record = proc(GROUP, '/datum/shard_group/proc/record')
+        self.assertIn('if(islist(answer))', record)
+        door = read('scripts/gaia-host/doorman.py')
+        self.assertIn("self.platform.region_topic(instance.port)", door)
+        self.assertIn("entry['region'] = dict(instance.region)", door)
+
     def test_peers_on_this_host_are_polled_over_loopback(self):
         # world/Topic bans a non-loopback caller that asks more than once every
         # two minutes; the once-a-minute poll through the public host got the

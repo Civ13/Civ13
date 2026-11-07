@@ -89,8 +89,10 @@ ports. It speaks BYOND Topic framing and answers only:
 
 - `?host_status=1`: every instance's port, state (`awake`, `asleep`, `waking`,
   `stopped`), `wake_estimate_seconds`, and the players, map and mode the world
-  last reported with their age. Awake worlds are asked for `status` from
-  127.0.0.1 every 30 seconds, which does not keep them awake.
+  last reported with their age. Awake worlds are asked for `status` and
+  `shard_region` from 127.0.0.1 every 30 seconds, which does not keep them
+  awake; a world in a region group gets its `shard_region` answer under
+  `region`, which is how its peers read its state without polling it.
 - `?wake=1&port=1714`: thaws that instance, unless the machine has less than
   `wake_min_free_mb` (1024) of physical memory free, after first stopping the
   longest-asleep other world to make room (see below); then it stays asleep and

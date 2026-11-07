@@ -62,6 +62,80 @@ var/global/round_start_announced = FALSE
     var/list/query = list("ckey" = ckey)
     webhook_send("logout", query)
 
+// Webhooks leave the game loop (2026-11-07). world.Export blocks the whole
+// server until the bot answers, spawn() or not, and one IC say line is one
+// Export, so a busy table stalled every tick on the bot's round trip. Requests
+// queue here and go out through rust_g's asynchronous HTTP, one at a time in
+// order, checked once a tick. The game never waits on the bot again.
+#define WEBHOOK_QUEUE_LIMIT 500
+#define WEBHOOK_REQUEST_TICKS 100 // ticks one request may take before it is abandoned
+
+var/global/datum/webhook_dispatcher/webhook_dispatcher = new
+
+/datum/webhook_dispatcher
+	var/list/queue = list()
+	var/running = FALSE
+	var/sent = 0
+	var/failed = 0
+	var/dropped = 0 // oldest requests discarded because the bot fell too far behind
+	var/blocking = FALSE // rust_g refused: fall back to world.Export, as before 2026-11-07
+
+/datum/webhook_dispatcher/proc/enqueue(query)
+	if (!istext(query) || !length(query))
+		return FALSE
+	if (queue.len >= WEBHOOK_QUEUE_LIMIT)
+		queue.Cut(1, 2)
+		dropped++
+		if (dropped == 1 || !(dropped % 100))
+			world.log << "Webhooks: the bot is not keeping up; [dropped] requests dropped so far."
+	queue += query
+	if (!running)
+		running = TRUE
+		drain()
+	return TRUE
+
+/datum/webhook_dispatcher/proc/drain()
+	set waitfor = FALSE
+	while (queue.len)
+		var/query = queue[1]
+		queue.Cut(1, 2)
+		if (deliver(query))
+			sent++
+		else
+			failed++
+	running = FALSE
+
+// TRUE when the bot answered. Only the request in flight is checked, once a
+// tick; a request the bot has not answered after WEBHOOK_REQUEST_TICKS is
+// abandoned so one hung bot cannot hold the queue.
+/datum/webhook_dispatcher/proc/deliver(query)
+	if (blocking)
+		return islist(world.Export(query))
+	var/datum/http_request/R = new
+	R.prepare(RUSTG_HTTP_METHOD_GET, query, "", list())
+	try
+		R.begin_async()
+	catch
+		// No rust_g at all: deliver the way webhooks always were, and say so once.
+		blocking = TRUE
+		world.log << "Webhooks: rust_g is unavailable; webhooks block the server again."
+		return islist(world.Export(query))
+	for (var/i in 1 to WEBHOOK_REQUEST_TICKS)
+		if (R.is_complete())
+			break
+		sleep(1)
+	if (!R.is_complete())
+		return FALSE
+	var/datum/http_response/response = R.into_response()
+	return !response.error
+
+// One line for the Debug Controller and the status probe.
+/datum/webhook_dispatcher/proc/summary()
+	return "queued [queue.len], sent [sent], failed [failed], dropped [dropped][blocking ? ", blocking fallback" : ""]"
+
+#undef WEBHOOK_QUEUE_LIMIT
+#undef WEBHOOK_REQUEST_TICKS
+
 /proc/webhook_send(method, data)
 	if (!config || !config.webhook_can_fire)
 		return
@@ -69,5 +143,4 @@ var/global/round_start_announced = FALSE
 		return
 
 	var/query = "[config.webhook_address]?key=[config.webhook_key]&method=[method]&data=[url_encode(json_encode(data))]"
-	spawn(-1)
-		world.Export(query)
+	webhook_dispatcher.enqueue(query)
