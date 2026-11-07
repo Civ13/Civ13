@@ -100,7 +100,11 @@ var/recipe_ci_files = 0
 			map.ordinal_age = ispath(text2path(row[3]), /obj/item/weapon/gun_mount) ? 6 : (ispath(text2path(row[3]), /obj/item/blackpowder_part/stock) ? 3 : 0)
 			if (ispath(text2path(row[3]), /obj/structure/exercise/modern) || ispath(text2path(row[3]), /obj/structure/civ_generator) || ispath(text2path(row[3]), /obj/structure/reactor_fuel_processor) || civ_telecom_crafting_skill(text2path(row[3])))
 				map.ordinal_age = 8
+			// The tablet press has a calendar-year gate in addition to its era.
+			var/original_year = map.age
+			if (text2path(row[3]) == /obj/structure/chem_master/tablet_press/constructed) map.age = "1844"
 			M.generate_recipes_civs(list(text2num(row[9]), text2num(row[10]), text2num(row[11])), faction, "recipe_ci")
+			map.age = original_year
 			map.ordinal_age = 0
 			var/found = FALSE
 			for (var/datum/stack_recipe/R in recipe_ci_flatten(M.recipes))
@@ -142,6 +146,7 @@ var/recipe_ci_files = 0
 	recipe_ci_handles()
 	recipe_ci_furniture_joinery()
 	recipe_ci_stone_molds()
+	recipe_ci_cloth_substitution()
 	// Negative fixtures must prove errors, without suppressing real catalog failures.
 	var/list/catalog_errors = recipe_ci_errors.Copy()
 	recipe_ci_errors = list()

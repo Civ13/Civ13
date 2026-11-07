@@ -1,11 +1,11 @@
-/mob/living/human/proc/nomads_spawn()
+/mob/living/human/proc/nomads_spawn(area/birth_area = null)
 	// Saved identity, languages and appearance have already been restored.
 	if(persistence_restored)
 		return
 	var/list/possible_h_list = list("Black")
 	var/list/possible_e_list = list("Black")
 	var/list/possible_s_range = list(-10,-60)
-	var/area/mob_area = get_area(src)
+	var/area/mob_area = birth_area ? birth_area : get_area(src)
 	if (map && map.is_zombie)
 		add_note("Map Mechanics", "- Zombies will spawn in some areas <b>at night</b>.<br><br>- Bodies will turn into zombies after a while! To prevent this, <b>remove the head from the body</b>.<br><br>- Getting bit or scratched by a zombie will not automatically turn you into one. There is a small chance you get <b>infected with the zombie virus</b> from every strike a zombie lands on you. You will get high fevers, massive headaches, and eventually succumb to the disease; turning into a zombie. This can be cured by taking <b>Potassium Iodide</b>, which will kill the virus, even after symptoms have started.")
 

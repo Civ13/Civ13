@@ -1150,6 +1150,16 @@
 	slowdown = 0.25
 
 /obj/item/clothing/head/helmet/medieval/nomads/templar/attackby(obj/item/W as obj, mob/user as mob)
+	if (is_cloth_sheet(W))
+		var/obj/item/stack/material/cloth_stock = W
+		if (!cloth_stock.use(3))
+			to_chat(user, "You need three cloth or woolcloth sheets.")
+			return
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		to_chat(user, "<span class='notice'>You sew the cloth dome to your helmet.</span>")
+		new /obj/item/clothing/head/helmet/medieval/priest(user.loc)
+		qdel(src)
+		return
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/gold ))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
@@ -1203,6 +1213,16 @@
 	slowdown = 0.25
 
 /obj/item/clothing/head/helmet/medieval/baltic/attackby(obj/item/W as obj, mob/user as mob)
+	if (is_cloth_sheet(W))
+		var/obj/item/stack/material/cloth_stock = W
+		if (!cloth_stock.use(3))
+			to_chat(user, "You need three cloth or woolcloth sheets.")
+			return
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		to_chat(user, "<span class='notice'>You sew the cloth dome to your helmet.</span>")
+		new /obj/item/clothing/head/helmet/medieval/baltic_priest(user.loc)
+		qdel(src)
+		return
 	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/silver ))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
@@ -1254,19 +1274,6 @@
 
 	/* Crusader Priests*/
 
-/obj/item/clothing/head/helmet/medieval/nomads/templar/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/cloth)) //unsure if this will take wool at the moment, just ret some cloth.
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		to_chat(user, "<span class='notice'>You begin to anoint & sow the cloth dome to your helmet.</span>")
-		if(W.amount <= 3)
-			qdel(src)
-			qdel(W)
-			new/obj/item/clothing/head/helmet/medieval/priest(user.loc)
-		else
-			qdel(src)
-			W.amount = W.amount - 3
-			new/obj/item/clothing/head/helmet/medieval/priest(user.loc)
 
 /obj/item/clothing/head/helmet/medieval/priest
 	name = "templar priest helmet"
@@ -1279,19 +1286,6 @@
 	health = 35
 	slowdown = 0.20
 
-/obj/item/clothing/head/helmet/medieval/baltic/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/cloth)) //unsure if this will take wool at the moment, just ret some cloth.
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		to_chat(user, "<span class='notice'>You begin to anoint & sow the cloth dome to your helmet.</span>")
-		if(W.amount <= 3)
-			qdel(src)
-			qdel(W)
-			new/obj/item/clothing/head/helmet/medieval/baltic_priest(user.loc)
-		else
-			qdel(src)
-			W.amount = W.amount - 3
-			new/obj/item/clothing/head/helmet/medieval/baltic_priest(user.loc)
 
 /obj/item/clothing/head/helmet/medieval/baltic_priest
 	name = "baltic priest helmet"

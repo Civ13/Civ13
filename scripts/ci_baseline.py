@@ -54,6 +54,14 @@ SUITES = {
             'code/modules/persistence/player_reclaim.dm',
             'code/modules/persistence/region_travel.dm',
             'tests/save_movement/source_adapter.py')},
+    # Complete bounded Gaia spawn helpers with fake spatial/engine boundaries.
+    'gaia_spawn': {'files': ('tests/gaia_spawn/test_spawn.py',),
+        'paths': ('tests/gaia_spawn/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/jobs/job_controller.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'maps/nomads/nomads_gaia.dmm', 'tests/save_movement/source_adapter.py')},
     # Complete raider firing/reload source projections with fake engine boundaries.
     # Keep production paths shared so existing conservative selection is preserved.
     'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),
@@ -432,6 +440,9 @@ SUITES = {
             'tests/save_movement/source_adapter.py')},
     # Stdlib-only source contracts and causal omission controls; no native world.
     # Shared game/Atlas/Help sources retain the existing conservative fallback.
+    'cloth_substitution': {'files': ('tests/cloth_substitution/test_source.py',), 'paths': (
+        'tests/cloth_substitution/', 'tests/crafting/woolcloth.dm', 'code/game/objects/items/stacks/cloth_crafting.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only document model/language projections with inert engine seams.

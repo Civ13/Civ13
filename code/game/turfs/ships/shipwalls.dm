@@ -735,15 +735,15 @@
 	attackby(obj/item/I, mob/living/human/H)
 		if (istype(I, /obj/item/stack/material))
 			var/obj/item/stack/material/M = I
-			if (istype(I,/obj/item/stack/material/cloth))
+			if (is_cloth_sheet(I))
 				if (sailhealth < 100)
 					to_chat(H, "You start patching the sails...")
+					var/atom/cloth_loc = M.loc
+					var/datum/cloth_epoch = persistence_admission_identity
 					if(do_after(H,30,src))
-						if(M.amount >= 1)
-							M.amount--
+						if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || cloth_epoch != persistence_admission_identity) return
+						if(is_cloth_sheet(M) && M.loc == cloth_loc && M.crafting_stack_accessible(H) && sailhealth < 100 && M.use(1))
 							to_chat(H, "You repair one of the holes.")
-							if (M.amount <= 0)
-								qdel(M)
 							sailhealth+=2
 							if (sailhealth > 100)
 								sailhealth = 100
