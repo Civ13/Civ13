@@ -186,7 +186,8 @@ next pass.
 The same agent carries radio between regions whose long-range relays share a
 network key (`docs/cross-shard-radio.md`). `radio.py` keeps an in-memory ring
 of 200 envelopes per direction, each deliverable for 30 seconds, and the relay
-heartbeats of this region and its peers. The world posts `/radio/send` and
+heartbeats of this region and its peers. The world posts `/radio/send` (or
+`/radio/send_batch` with up to 50 envelopes, checked one by one) and
 `/radio/heartbeat` and polls `/radio/inbox` and `/radio/status`; the
 coordinator drains `/radio/outbox` and fans each envelope out to every other
 region's `/radio/deliver` once a second (`--radio-interval`, never longer than
