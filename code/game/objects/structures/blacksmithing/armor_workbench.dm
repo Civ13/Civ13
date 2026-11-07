@@ -19,7 +19,8 @@
 	selected_tool = "Armor carrier"
 	assembly_time = 100
 
-// Requirements are exact types; material names also reject relabelled stack subtypes.
+// Requirements are exact types, except that finished wool sheets can pay cloth.
+// Material checks still reject relabelled stack subtypes.
 /obj/structure/component_workbench/armor/proc/armor_recipes()
 	return list(
 		"Armor carrier" = list("node" = "weaving", "era" = 0, "result" = /obj/item/armor_component/carrier, "inputs" = list(/obj/item/stack/material/cloth = list(4, "cloth"), /obj/item/stack/material/leather = list(2, "leather"))),
@@ -41,12 +42,21 @@
 	return R && map && map.ordinal_age >= R["era"] && map.is_node_done(H.civilization, R["node"])
 
 /obj/structure/component_workbench/armor/proc/input_valid(obj/item/I, input_type, list/cost)
-	if (!islist(cost) || QDELETED(I) || I.type != input_type) return FALSE
+	if (!islist(cost) || QDELETED(I)) return FALSE
+	if (input_type == /obj/item/stack/material/cloth)
+		if (!is_cloth_sheet(I)) return FALSE
+	else if (I.type != input_type) return FALSE
 	if (istype(I, /obj/item/stack/material))
 		var/obj/item/stack/material/S = I
 		var/material/M = S.get_material()
-		return M && M.name == cost[2] && S.amount == round(S.amount) && S.amount <= S.max_amount && S.can_use(cost[1])
+		return M && (M.name == cost[2] || (input_type == /obj/item/stack/material/cloth && is_cloth_sheet(S))) && S.amount == round(S.amount) && S.amount <= S.max_amount && S.can_use(cost[1])
 	return TRUE
+
+// Canonical requirement key, not the supplied item's identity. No new saved state.
+/obj/structure/component_workbench/armor/proc/input_requirement(obj/item/I, list/requirements)
+	for (var/input_type in requirements)
+		if (input_valid(I, input_type, requirements[input_type])) return input_type
+	return null
 
 /obj/structure/component_workbench/armor/proc/staged_inputs(choice)
 	var/list/R = armor_recipes()[choice]
@@ -65,9 +75,10 @@
 	if (busy || !can_use(H) || !recipe_available(H, selected_tool) || QDELETED(I) || I.loc != H || !H.item_is_in_hands(I)) return FALSE
 	var/list/R = armor_recipes()[selected_tool]
 	var/list/requirements = R["inputs"]
-	if (contents.len >= requirements.len || !input_valid(I, I.type, requirements[I.type])) return FALSE
+	var/input_type = input_requirement(I, requirements)
+	if (contents.len >= requirements.len || !input_type) return FALSE
 	for (var/obj/item/stored in contents)
-		if (stored.type == I.type) return FALSE
+		if (input_requirement(stored, requirements) == input_type) return FALSE
 	// No floor staging: stack Crossed hooks could merge away a paid input.
 	return H.transfer_held_item_to(I, src) && I.loc == src
 
@@ -88,7 +99,7 @@
 	for (var/obj/item/I in staged)
 		if (istype(I, /obj/item/stack))
 			var/obj/item/stack/S = I
-			var/list/cost = requirements[I.type]
+			var/list/cost = requirements[input_requirement(I, requirements)]
 			S.use(cost[1]) // Exact cost, no Production-religion discount.
 		else
 			qdel(I)

@@ -233,11 +233,12 @@ var/global/datum/currency_list/fiat = new()
 
 /** Handles inserting cloth for printing, fiat for exchange, or real money (gold/silver) to serve as reserves. */
 /obj/structure/money_printer/attackby(var/obj/item/stack/I as obj, var/mob/living/human/user as mob)
-	if (I.amount && istype(I, /obj/item/stack/material/cloth))
-		cloth += I.amount
+	if (I.amount > 0 && is_cloth_sheet(I))
+		var/inserted = I.amount
+		if (!I.use(inserted)) return
+		cloth += inserted
 		playsound(user, 'sound/machines/button.ogg', 100, TRUE)
-		to_chat(user, "You insert [I.amount] cloth into the machine. It now contains [cloth] cloth.")
-		qdel(I)
+		to_chat(user, "You insert [inserted] cloth into the machine. It now contains [cloth] cloth.")
 		desc = "This prints money. It currently contains [cloth] cloth."
 		return
 	else if (I.amount && istype(I, /obj/item/stack/money/fiat))

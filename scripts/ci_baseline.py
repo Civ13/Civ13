@@ -447,6 +447,9 @@ SUITES = {
             'tests/save_movement/source_adapter.py')},
     # Stdlib-only source contracts and causal omission controls; no native world.
     # Shared game/Atlas/Help sources retain the existing conservative fallback.
+    'cloth_substitution': {'files': ('tests/cloth_substitution/test_source.py',), 'paths': (
+        'tests/cloth_substitution/', 'tests/crafting/woolcloth.dm', 'code/game/objects/items/stacks/cloth_crafting.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only document model/language projections with inert engine seams.

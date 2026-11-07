@@ -202,7 +202,7 @@ class Contracts(unittest.TestCase):
 
     def test_xp_moves_after_paid_commit_for_joinery_only(self):
         source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
-        self.assertIn('if (H && !joinery && !carving)\n\t\t\tH.adaptStat',source)
+        self.assertIn('if (H && !joinery && !carving && !cloth_payment)\n\t\t\tH.adaptStat',source)
         start=source.index('\tif (joinery && !joinery.valid())')
         end=source.index('\t\tif (needs_crafting_handle)',start)
         body=source[start:end]
@@ -225,7 +225,7 @@ class Contracts(unittest.TestCase):
             if change=='stock':f.stock.amount=0
             if change=='research':f.researched=False
             if change=='save':f.env['persistence_save_in_progress']=True
-            env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),carving=None,
+            env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),carving=None,cloth_payment=None,
                      H=NS(adaptStat=lambda *args:xp.append(args)),recipe=NS(time=4,req_amount=4),
                      required=4,payer=None,user=None,to_chat=lambda *args:None,SPAN_WARNING=lambda x:x,
                      use=lambda *args:debits.append('logs') is None and change!='debit failed')
