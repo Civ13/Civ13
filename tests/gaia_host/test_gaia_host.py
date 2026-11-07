@@ -754,6 +754,34 @@ class WatchdogTests(unittest.TestCase):
             self.host.watch_step(None)
         self.assertEqual(self.starts(), [])
 
+    def test_an_in_game_save_and_shut_down_stays_down(self):
+        self.host.watch_step(None)
+        marker = self.repo / 'data' / 'stopped_in_game.json'
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(json.dumps({'generation': MARKER, 'by': 'val'}))
+        self.machine.up = False
+        self.host.watch_step(None)
+        self.assertFalse(self.host.running_file.exists(), 'the exit after the marker is a stop')
+        self.assertFalse(marker.exists(), 'the host consumes the marker')
+        self.assertIn({'stopped_in_game': True, 'by': 'val', 'generation': MARKER}, self.logged)
+        for _ in range(5):
+            self.machine.clock += 300
+            self.host.watch_step(None)
+        self.assertEqual(self.starts(), [])
+        self.assertEqual(self.host.status()['state'], 'stopped')
+
+    def test_a_start_clears_a_stale_stop_marker(self):
+        marker = self.repo / 'data' / 'stopped_in_game.json'
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text('{}')
+        self.host.mark_running()
+        self.assertFalse(marker.exists())
+        self.machine.up = False
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(len(self.starts()), 1, 'a later crash is still restarted')
+
     def test_the_watchdog_gives_up_after_too_many_restarts_in_an_hour(self):
         self.host.watch_step(None)
         for expected in (1, 2, 3, 3):
