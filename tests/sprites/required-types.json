@@ -94,5 +94,6 @@
   "/obj/item/weapon/bedroll/cloth",
   "/obj/structure/bed/bedroll/cloth",
   "/obj/structure/bed/hammock",
-  "/obj/structure/filingcabinet/chestdrawer/wood"
+  "/obj/structure/filingcabinet/chestdrawer/wood",
+  "/obj/item/clothing/accessory/storage/harness"
 ]

@@ -293,6 +293,7 @@ RECIPE: /material/leather/,seed collector,/obj/item/weapon/storage/seed_collecto
 
 RECIPE: /material/leather/,quiver,/obj/item/weapon/storage/backpack/quiver,3,60,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/leather,3,60,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,leather harness,/obj/item/clothing/accessory/storage/harness,3,80,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather backpack,/obj/item/weapon/storage/backpack,6,100,0,1,storage,18,0,0,8,null
 RECIPE: /material/leather/,leather waterskin,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin,3,90,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather satchel,/obj/item/weapon/storage/backpack/satchel,3,100,0,1,storage,120,0,125,8,null
