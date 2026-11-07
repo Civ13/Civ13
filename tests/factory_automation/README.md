@@ -111,6 +111,7 @@ Offering a bottler's container before it is full fails two checks; letting the p
 
 - Fast belts: a fast belt takes two steps a tick and joins the fast list; on a six-tile line cargo on fast belts reaches the crate in about half the steps of plain belts (3 against 6); a fast run hands cargo on to plain belts; an empty fast belt sleeps and leaves the fast list; the assembly lays and returns a fast belt; Automation gates it.
 - Wagons and carts: an arm loads a transport wagon until its eight slots are full and a full wagon refuses more; an arm unloads it; filters limit what it offers; a tender takes only fuel; a shopping cart loads from and unloads to automation.
+- Vehicle cargo hold: an arm loads a cargo hold until its twenty slots are full and a full hold refuses more; an arm unloads it; filters limit what it offers; a wrench bolts it down; a hold on a vehicle frame is carried by the vehicle's axis; Automobiles gates its steel recipe.
 - Factory monitor (phase 4b): a rate counts what it has seen, rolls into the previous minute and averages over the window, and reads zero after two idle minutes; the monitor lists the loading arm as waiting with the eight items it moved this minute, a fabricator without inputs as starved with its recipe, the belt drive as running and a summary of the belts in range; its page shows the table; Automation gates it.
 
 `plating_probe.dm` (electroplating) calls the plating bath's process directly and checks:

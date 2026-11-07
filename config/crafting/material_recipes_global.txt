@@ -1922,6 +1922,7 @@ RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,
 
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,cargo hold,/obj/structure/cargo_hold,8,120,1,1,vehicle parts,115,0,0,8,null
 RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,97,0,0,8,null
 
 RECIPE: /material/wood/soft/,ridgid hull inflatable boat frame,/obj/item/vehicleparts/frame/boat/rhib,22,200,0,1,vehicle parts,175,0,0,8,null
