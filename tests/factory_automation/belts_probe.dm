@@ -324,8 +324,19 @@ var/belt_runtime_error = FALSE
 		qdel(O)
 
 /proc/belt_catalog_checks()
-	belt_check(get_recipe_node_req("/obj/item/factory_belt_assembly") == "assembly_line" && get_recipe_node_req("/obj/structure/closet/crate/factory_bin") == "assembly_line", "belts and parts bins unlock with Assembly Line")
-	belt_check(get_recipe_node_req("/obj/structure/factory_arm") == "automation" && get_recipe_node_req("/obj/structure/factory_arm/sorting") == "automation", "arms unlock with Automation")
+	belt_check(get_recipe_node_req("/obj/item/factory_belt_assembly") == "factories" && get_recipe_node_req("/obj/structure/closet/crate/factory_bin") == "factories", "belts and parts bins unlock with Factories")
+	belt_check(get_recipe_node_req("/obj/structure/factory_arm") == "factories" && get_recipe_node_req("/obj/structure/factory_arm/sorting") == "automation", "the feeder arm unlocks with Factories and the sorting arm with Automation")
+	var/datum/research_node/factories = research_nodes["factories"]
+	belt_check(factories && factories.era_tier == 4 && ("steam_power" in factories.prereqs) && get_recipe_node_req("/obj/structure/engine/external/steam") == "steam_power" && get_recipe_node_req("/obj/item/stack/cable_coil/white") == "paved_infrastructure", "the steam-era floor can be powered: Factories follows Steam Power and plain cable comes earlier")
+	var/steel_arm = FALSE
+	for (var/line in splittext(file2text("config/crafting/material_recipes_global.txt"), "\n"))
+		if (findtext(line, "RECIPE: ") == 1 && findtext(line, "/obj/structure/factory_arm,"))
+			if (findtext(line, "/material/electronics/"))
+				steel_arm = FALSE
+				break
+			if (findtext(line, "/material/steel/"))
+				steel_arm = TRUE
+	belt_check(steel_arm, "the feeder arm is built from steel, without electronics")
 	belt_check("conveyor1" in icon_states('icons/obj/recycling.dmi'), "belt sprite state exists")
 	var/list/states = icon_states('icons/obj/modern_structures.dmi')
 	belt_check(("loader0" in states) && ("loader1" in states) && ("unloader0" in states) && ("unloader1" in states), "arm sprite states exist")
