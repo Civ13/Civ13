@@ -208,6 +208,13 @@ var/global/datum/controller/occupations/job_master
 
 	if (!H)
 		return
+	// Gaia chose the destination before constructing the new body. EquipRank
+	// and late join both call relocate; neither may reroll it or use landmarks.
+	if (map && map.uses_random_new_player_spawn(H.original_job))
+		var/area/birth_area = get_area(H)
+		if (birth_area)
+			birth_area.play_ambience(H)
+		return TRUE
 	
 	if (H.original_job && H.original_job.uses_squads && !map.fob_spawns)
 		var/mob/living/human/HSL = null

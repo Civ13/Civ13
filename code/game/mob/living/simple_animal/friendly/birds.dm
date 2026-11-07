@@ -51,6 +51,11 @@
 	behaviour = "wander"
 	has_fat =  FALSE
 
+// Short flights do not let chickens cross open water. Use a proc rather than
+// changing flying, which may be restored from an older Persistence save.
+/mob/living/simple_animal/chick/can_cross_deep_water()
+	return FALSE
+
 /mob/living/simple_animal/chick/New()
 	..()
 	pixel_x = rand(-6, 6)
@@ -106,6 +111,9 @@
 	granivore = 1
 	behaviour = "wander"
 	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
+
+/mob/living/simple_animal/chicken/can_cross_deep_water()
+	return FALSE
 
 /mob/living/simple_animal/chicken/New()
 	..()
@@ -216,6 +224,10 @@
 	behaviour = "wander"
 	wandersounds = list('sound/animals/bird/chicken_1.ogg','sound/animals/bird/chicken_2.ogg')
 	var/announced_day = TRUE
+
+/mob/living/simple_animal/rooster/can_cross_deep_water()
+	return FALSE
+
 /mob/living/simple_animal/rooster/Life()
 	..()
 	if (time_of_day == "Early Morning" && !announced_day)
