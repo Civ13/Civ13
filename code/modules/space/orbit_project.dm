@@ -453,6 +453,13 @@ var/global/list/orbit_station_requirements = list(
 	for (var/line in status_lines())
 		to_chat(user, SPAN_NOTICE(line))
 	var/list/lost = orbit_lost_drifters()
+	// Pods within range can be steered from here (orbit_pods.dm).
+	var/list/pods = steerable_pods(user)
+	if (pods.len && (!lost.len || WWinput(user, "Steer a module pod, or recover someone who has drifted away?", "Orbit console", "Steer a pod", list("Steer a pod", "Recover")) == "Steer a pod"))
+		var/pick = WWinput(user, "Which pod?", "Orbit console", "Cancel", pods + "Cancel")
+		if (pods[pick] && in_range(src, user))
+			orbit_pod_steer(pods[pick], user)
+		return
 	if (!lost.len)
 		return
 	var/reason = recovery_refusal(user)

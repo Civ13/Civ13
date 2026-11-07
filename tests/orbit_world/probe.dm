@@ -110,6 +110,7 @@ var/global/orbit_failures = 0
 		orbit_station_checks()
 		orbit_project_checks()
 		orbit_sortie_checks()
+		orbit_pod_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -523,3 +524,108 @@ var/global/orbit_failures = 0
 	map = orbit_map
 	shard_group.region = "orbit"
 	shard_group.kind = "ORBIT"
+
+// Module pods and docking (orbit_pods.dm): release from a kit, the footprint,
+// RCS steps, rams, hard docking, party checks, folding back and re-docking.
+/proc/orbit_pod_checks()
+	var/party = "civ:gaia:Alpha"
+	for (var/p in 2 to 5)
+		orbit_release_plane(p)
+	orbit_claim_plane("keep")
+	var/z = orbit_claim_plane(orbit_station_owner(party))
+	orbit_check("pod plane", z, 3)
+	var/obj/structure/habitat_core/C = habitat_unfold(locate(8, 12, z), "workshop")
+	var/mob/living/human/eva_tester/H = new(locate(14, 12, z))
+	H.m_intent = "stealth"
+	H.party_train_party = party
+	H.dir = EAST
+	var/mob/living/human/eva_tester/O = new(locate(20, 20, z))
+	O.m_intent = "stealth"
+	O.party_train_party = "civ:gaia:Beta"
+
+	orbit_check("no room near a hull", orbit_pod_blocker(locate(12, 13, z), null), "hull")
+	orbit_check("no room at the edge", orbit_pod_blocker(locate(3, 12, z), null), "edge")
+	var/obj/item/habitat_kit/K = new(H)
+	var/obj/structure/orbit_pod/P = orbit_pod_release(K, H)
+	orbit_check("kit released as a pod ahead", P ? "[P.x],[P.y]" : "none", "17,12")
+	orbit_check("kit used up", QDELETED(K) ? 1 : 0, 1)
+	orbit_check("pod answers to the party", P.party, party)
+	orbit_check("pod kind", P.name, "quarters module pod")
+	orbit_check("no second pod overlapping", orbit_pod_blocker(locate(19, 12, z), null), "pod")
+	orbit_check("outsiders cannot steer", findtext("[P.burn_refusal(O)]", "Alpha") ? 1 : 0, 1)
+	orbit_check("members can steer", isnull(P.burn_refusal(H)) ? 1 : 0, 1)
+	orbit_check("not lined up yet", P.dock_core() ? 1 : 0, 0)
+	for (var/i in 1 to 5)
+		P.move_one(WEST)
+	orbit_check("steered to the docking site", "[P.x],[P.y]", "12,12")
+	orbit_check("each tile costs propellant", P.propellant, 15)
+	orbit_check("lined up with the module", P.dock_core() == C ? 1 : 0, 1)
+	orbit_check("a ram stops the pod", P.move_one(WEST) ? 1 : 0, 0)
+	orbit_check("a ram damages the pod", P.integrity, 75)
+	orbit_check("a ram costs nothing", P.propellant, 15)
+	orbit_check("a burn starts", isnull(P.burn(EAST, 2, H)) ? 1 : 0, 1)
+	orbit_check("one burn at a time", findtext("[P.burn(EAST, 2, H)]", "under way") ? 1 : 0, 1)
+	P.burn_left = 0
+	orbit_check("outsiders cannot dock", findtext("[P.dock_refusal(O)]", "Alpha") ? 1 : 0, 1)
+	orbit_check("stand clear of the new hull", findtext("[P.dock_refusal(H)]", "hull") ? 1 : 0, 1)
+	H.forceMove(locate(13, 12, z))
+	orbit_check("ready to dock", isnull(P.dock_refusal(H)) ? 1 : 0, 1)
+	var/obj/structure/habitat_core/D = P.hard_dock(H)
+	orbit_check("hard dock unfolds the module", D && D.x == 12 && D.y == 12 ? 1 : 0, 1)
+	orbit_check("pod gone", QDELETED(P) ? 1 : 0, 1)
+	orbit_check("shared hatch", (locate(/obj/structure/simple_door/habitat_hatch) in locate(10, 12, z)) ? 1 : 0, 1)
+	orbit_check("both modules sealed", "[C.breaches()],[D.breaches()]", "0,0")
+	var/bunks = 0
+	for (var/obj/structure/bed/lander_bunk/B in range(1, D))
+		bunks++
+	orbit_check("a kit pod is furnished", bunks, 2)
+	orbit_check("fresh air aboard", round(D.air().pressure_kpa()), 100)
+
+	var/obj/structure/simple_door/habitat_hatch/hatch = locate() in locate(10, 12, z)
+	hatch.density = FALSE
+	orbit_check("fold refused with a hatch open", findtext("[D.fold_refusal(H)]", "hatch") ? 1 : 0, 1)
+	hatch.density = TRUE
+	O.forceMove(locate(11, 13, z))
+	orbit_check("fold refused with someone else inside", findtext("[D.fold_refusal(H)]", "Everyone") ? 1 : 0, 1)
+	orbit_check("outsiders cannot fold", findtext("[D.fold_refusal(O)]", "Alpha") ? 1 : 0, 1)
+	O.forceMove(locate(20, 20, z))
+	var/obj/structure/cable/wire = new(locate(13, 13, z))
+	orbit_check("fold refused with cables inside", findtext("[D.fold_refusal(H)]", "cables") ? 1 : 0, 1)
+	qdel(wire)
+	var/obj/structure/bed/lander_bunk/bunk = locate() in range(1, D)
+	bunk.persistence_bed_owner_ckey = "someone"
+	orbit_check("fold refused while a bunk is home", findtext("[D.fold_refusal(H)]", "home") ? 1 : 0, 1)
+	bunk.persistence_bed_owner_ckey = null
+	orbit_check("fold allowed", isnull(D.fold_refusal(H)) ? 1 : 0, 1)
+	D.air().oxygen = 500
+	D.store_air()
+	var/obj/structure/orbit_pod/F = D.fold(H)
+	orbit_check("folded into a pod", F && F.x == 12 && F.y == 12 ? 1 : 0, 1)
+	orbit_check("folded pod carries its furniture", length(F.contents), 2)
+	orbit_check("folded pod keeps its air", F.air_oxygen, 500)
+	orbit_check("folded pod is the station's", F.party, party)
+	orbit_check("module gone", QDELETED(D) ? 1 : 0, 1)
+	orbit_check("site open to vacuum", istype(locate(12, 12, z), /turf/floor/space/orbit) && istype(locate(14, 12, z), /turf/floor/space/orbit) ? 1 : 0, 1)
+	orbit_check("shared wall sealed", istype(locate(10, 12, z), /turf/wall/habitat_shell) && !(locate(/obj/structure/simple_door/habitat_hatch) in locate(10, 12, z)) ? 1 : 0, 1)
+	orbit_check("old module still sealed", C.breaches(), 0)
+
+	H.forceMove(locate(13, 12, z))
+	orbit_check("folded pod docks again", isnull(F.dock_refusal(H)) ? 1 : 0, 1)
+	var/obj/structure/habitat_core/E = F.hard_dock(H)
+	bunks = 0
+	for (var/obj/structure/bed/lander_bunk/B in range(1, E))
+		bunks++
+	orbit_check("re-docked without new furniture", bunks, 2)
+	orbit_check("re-docked with its air", E.air().oxygen, 500)
+	orbit_check("re-docked sealed", E.breaches(), 0)
+
+	var/obj/structure/orbit_console/console = new(locate(8, 13, z))
+	H.forceMove(locate(20, 6, z))
+	H.dir = WEST
+	var/obj/item/habitat_kit/K2 = new(H)
+	var/obj/structure/orbit_pod/P2 = orbit_pod_release(K2, H)
+	orbit_check("second pod released", P2 ? 1 : 0, 1)
+	orbit_check("console steers member pods", length(console.steerable_pods(H)), 1)
+	orbit_check("console steers none for outsiders", length(console.steerable_pods(O)), 0)
+	qdel(H)
+	qdel(O)

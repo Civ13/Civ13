@@ -421,6 +421,9 @@ var/global/list/habitat_cores = list()
 /obj/item/habitat_kit/attack_self(mob/user as mob)
 	if (!ishuman(user) || !isturf(user.loc))
 		return
+	// In orbit it may go out as a pod instead (orbit_pods.dm).
+	if (orbit_kit_offer_pod(src, user))
+		return
 	var/turf/centre = habitat_module_site(get_turf(user))
 	var/reason = habitat_module_refusal(centre, user)
 	if (reason)
@@ -443,8 +446,9 @@ var/global/list/habitat_cores = list()
 	qdel(src)
 
 // Builds the module. outer_dir is where an airlock's outer hatch goes when it
-// docks to nothing. Returns the core.
-/proc/habitat_unfold(turf/centre, kind, core_type = /obj/structure/habitat_core, outer_dir = SOUTH)
+// docks to nothing. A folded pod brings its own furniture (furnish FALSE).
+// Returns the core.
+/proc/habitat_unfold(turf/centre, kind, core_type = /obj/structure/habitat_core, outer_dir = SOUTH, furnish = TRUE)
 	var/r = HABITAT_MODULE_RADIUS
 	var/z = centre.z
 	var/list/docked_dirs = list()
@@ -472,7 +476,8 @@ var/global/list/habitat_cores = list()
 		if (!(outer in cardinal))
 			outer = SOUTH
 		habitat_place_hatch(get_step(get_step(centre, outer), outer))
-	habitat_furnish(C, kind)
+	if (furnish)
+		habitat_furnish(C, kind)
 	return C
 
 /proc/habitat_place_hatch(turf/T)
