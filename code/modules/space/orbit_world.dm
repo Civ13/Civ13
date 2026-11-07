@@ -235,8 +235,8 @@ var/global/list/orbit_opposites = list("up" = "down", "down" = "up", "north" = "
 	if (A.anchored)
 		return
 	var/turf/destination = orbit_seam_destination()
-	if (!destination)
+	if (destination && persistence_movement_allowed(A, destination))
+		A.forceMove(destination)
 		return
-	if (!persistence_movement_allowed(A, destination))
-		return
-	A.forceMove(destination)
+	if (ishuman(A))
+		orbit_eva_entered(A, old_loc)
