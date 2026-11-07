@@ -167,6 +167,67 @@
 	rows += list(list(target, amount, 0))
 	return TRUE
 
+// A dead shareholder's stake goes back to the corporation: it is shared out
+// among the living shareholders in proportion to what they hold, and any
+// profits the holder had not withdrawn return to the company's undistributed
+// pool. With no living shareholders it goes to the holder's faction leader.
+// Returns FALSE only when nobody can take it (the caller then lists it).
+/proc/company_return_stake(var/company, var/holder, var/civilization)
+	if (!map || !company || !holder)
+		return FALSE
+	var/list/rows = map.custom_company[company]
+	if (!istype(rows))
+		return FALSE
+	var/list/dead_row = null
+	var/list/heirs = list()
+	var/heir_total = 0
+	for (var/list/row in rows)
+		if (row[1] == holder)
+			dead_row = row
+		else if (row[1] && row[2] > 0)
+			var/mob/living/M = row[1]
+			if (istype(M) && M.stat != DEAD)
+				heirs += list(row)
+				heir_total += row[2]
+	if (!dead_row || dead_row[2] <= 0)
+		return TRUE
+	var/stake = dead_row[2]
+	if (!heirs.len)
+		var/mob/living/human/leader = null
+		if (civilization && civilization != "none" && map.custom_civs[civilization])
+			leader = map.custom_civs[civilization][4]
+		if (!istype(leader) || leader == holder || leader.stat == DEAD)
+			return FALSE
+		if (!company_move_stake(company, holder, stake, leader))
+			return FALSE
+		to_chat(leader, "<big>[stake]% of [company] passed to you as faction leader after [holder]'s death.</big>")
+	else
+		var/given = 0
+		var/list/largest = heirs[1]
+		for (var/list/row in heirs)
+			var/part = round(stake * row[2] / heir_total)
+			row[2] += part
+			given += part
+			if (row[2] > largest[2])
+				largest = row
+		largest[2] += stake - given
+		dead_row[2] = 0
+		for (var/list/row in heirs)
+			to_chat(row[1], "<big>[holder]'s [stake]% of [company] returned to the company; your share is now [row[2]]%.</big>")
+	// Unwithdrawn profits go back to the company for the next distribution.
+	if (dead_row[3] > 0)
+		map.custom_company_value[company] += dead_row[3]
+		dead_row[3] = 0
+	if (dead_row.len >= 4 && istype(dead_row[4], /list))
+		var/list/fiat_profits = dead_row[4]
+		for (var/fid in fiat_profits)
+			if (fiat_profits[fid] > 0)
+				if (!map.custom_company_fiat_value[company])
+					map.custom_company_fiat_value[company] = list()
+				map.custom_company_fiat_value[company][fid] = (map.custom_company_fiat_value[company][fid] || 0) + fiat_profits[fid]
+				fiat_profits[fid] = 0
+	return TRUE
+
 //for automated transfers e.g. stock market
 /mob/living/human/proc/transfer_stock_proc(var/companyname, var/stock, var/mob/living/human/target)
 	if (!companyname || !stock || !target)

@@ -93,5 +93,28 @@ class DeathAndVending(unittest.TestCase):
         self.assertIn('civ[11][accepted_currency]', VENDING)
 
 
+class DeathReturnsStake(unittest.TestCase):
+    def setUp(self):
+        self.ret = proc(COMPANIES, '/proc/company_return_stake(', '\n//for automated')
+
+    def test_stake_is_shared_among_living_holders(self):
+        self.assertIn('M.stat != DEAD', self.ret)
+        self.assertIn('round(stake * row[2] / heir_total)', self.ret)
+        # Rounding leftovers go to the largest holder, so nothing is lost.
+        self.assertIn('largest[2] += stake - given', self.ret)
+
+    def test_sole_holder_falls_back_to_faction_leader(self):
+        self.assertIn('map.custom_civs[civilization][4]', self.ret)
+        self.assertIn('company_move_stake(company, holder, stake, leader)', self.ret)
+
+    def test_unwithdrawn_profits_return_to_company(self):
+        self.assertIn('map.custom_company_value[company] += dead_row[3]', self.ret)
+
+    def test_death_lists_only_when_nobody_can_take_it(self):
+        death = DEATH.split('for(var/stocky in poss_list)', 1)[1]
+        self.assertLess(death.index('company_return_stake(stocky, src, civilization)'),
+                        death.index('map.sales_registry += list('))
+
+
 if __name__ == '__main__':
     unittest.main()
