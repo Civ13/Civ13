@@ -23,11 +23,13 @@
 
 // The open-ground temperature of this barren world before any cold snap.
 /proc/space_world_base_ambient_c()
+	if (orbit_world())
+		return orbit_ambient_c()
 	return moon_world() ? MOON_AMBIENT_C : BARREN_AMBIENT_C
 
 // Only a world with an atmosphere raises dust storms.
 /proc/space_world_has_dust_storms()
-	return !moon_world()
+	return !moon_world() && !orbit_world()
 
 /turf/floor/dirt/dust/regolith/lunar
 	name = "lunar regolith"

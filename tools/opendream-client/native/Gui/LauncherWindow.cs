@@ -270,7 +270,7 @@ internal sealed partial class LauncherWindow : Form {
         var groupButtons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         if (profile.Control?.Group != null) {
             groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
-            foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+            foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"), ("Build update", "stage"),
                     ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart"),
                     ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
@@ -685,6 +685,8 @@ internal sealed partial class LauncherWindow : Form {
         if (host?.Control is not { } control || control.Group == null || hostOutput == null) return;
         var question = action switch {
             "update" => "Check out and compile the group's revision in every stopped region?",
+            "stage" => "Build the latest update beside every region while the worlds keep running? Nobody is kicked. " +
+                "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
             "unlock" => UnlockQuestion,
             "force-unlock" => ForceUnlockQuestion,
@@ -736,11 +738,12 @@ internal sealed partial class LauncherWindow : Form {
         dialog.ShowDialog(this);
     }
 
-    private const string DeployQuestion = "Save, update and restart the regions ticked below. The checkout is pulled and the update is built " +
-        "beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each is saved and " +
-        "stopped (Gaia takes up to ten minutes), gets its new build and starts again, and the host service restarts. Regions left unticked " +
-        "keep running. Players are saved and can rejoin when it is back. If a world will not save, you are asked before anything is " +
-        "stopped without a save.";
+    private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +
+        "is built beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each " +
+        "running region is handed over, one at a time: the new build starts beside it, the old world freezes play and saves, the new one " +
+        "loads that save, and players reconnect to it within seconds (Gaia is frozen for about the save and the load). If the save or the " +
+        "load fails, the old world carries on and nothing is lost. A region still on a build from before handovers is saved, stopped and " +
+        "started instead, once. Regions that are asleep get the new build when they wake; regions left unticked keep running.";
 
     // Asks which regions to update (all ticked; the mainland first in line is marked), then deploys them.
     private async Task ChooseAndDeploy(string label) {
@@ -779,6 +782,7 @@ internal sealed partial class LauncherWindow : Form {
     // ready hand each running region over to it (scripts/shard-group handover) and restart the host service.
     // The exit-3 loop below belonged to the stop-and-start deploy; a handover never leaves a world stopped,
     // so deploy.bat no longer returns it. It stays for an older deploy.bat on the host.
+    // The Host tab's group status line shows each region's staged build and a standby loading beside it.
     // A region whose world does not save (refused because it is busy, or the save failed) is still running
     // when deploy.bat stops at the save step; nothing has been updated yet. The operator then chooses:
     // force-stop those regions without a save and carry on, or start the regions that did stop again.

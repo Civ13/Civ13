@@ -188,7 +188,7 @@ public static class LocalHosting {
         }
     }
 
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply"];
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
@@ -314,9 +314,10 @@ public static class LocalHosting {
                             text += $", {clients.GetInt32()} players";
                         if (entry.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
                                 && Str(operation, "action") is { } last && Str(operation, "phase") is { } phase) {
-                            text += $", last {Lower(last)} ({Lower(phase)})";
+                            text += $", last {Lower(last)} ({Words(phase)})";
                             if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
                         }
+                        text += DescribeStage(entry);
                         regions.Add(text);
                     }
                 }
@@ -357,11 +358,36 @@ public static class LocalHosting {
                 "start" => "Starting",
                 "stop" => "Saving, then stopping",
                 "restart" => "Saving, then restarting",
+                "stage" => "Building the update beside",
+                "handover" => "Handing over to the new build (the old world freezes and saves, the new one loads it, then players reconnect):",
                 _ => "Checking out and compiling",
             } + " " + string.Join(", ", accepted) + "...";
             if (refused != null) message += " Refused: " + refused + ".";
             return new ControlAnswer(true, message, true);
         }
+    }
+
+    // A region's staged build ("stage": {"phase", "error", "pending"}) and a standby world loading beside it
+    // during a handover ("standby": {"port", "listening"}), for the group status line.
+    public static string DescribeStage(JsonElement entry) {
+        var text = "";
+        if (entry.TryGetProperty("stage", out var stage) && stage.ValueKind == JsonValueKind.Object && Str(stage, "phase") is { } phase) {
+            text = phase switch {
+                "ready" => Bool(stage, "pending") ? ", update built (ready to hand over)" : "",
+                "current" => "",
+                "failed" => ", update build failed" + (Str(stage, "error") is { Length: > 0 } failed ? ": " + failed : ""),
+                _ => ", building update (" + Words(phase) + ")",
+            };
+        }
+        if (entry.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object)
+            text += Bool(standby, "listening") ? ", new build running beside it" : ", new build starting beside it";
+        return text;
+    }
+
+    // Lowercase letters, apostrophes and single spaces only (64 at most), for a phase name shown in a line.
+    private static string Words(string text) {
+        var kept = new string(text.Take(64).Select(c => char.IsAsciiLetterLower(c) || c == '\'' ? c : ' ').ToArray());
+        return string.Join(' ', kept.Split(' ', StringSplitOptions.RemoveEmptyEntries));
     }
 
     // {"removed": [names], "forced", "server_running", "save": generation | "save_refused": reason}

@@ -107,6 +107,7 @@ var/global/orbit_failures = 0
 		qdel(LT)
 		orbit_flight_checks()
 		orbit_eva_checks()
+		orbit_station_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -292,3 +293,70 @@ var/global/orbit_failures = 0
 	orbit_check("tether unclips", tether.anchor ? 1 : 0, 0)
 	qdel(H)
 	qdel(truss)
+
+// Station hardware (orbit_station.dm): the orbital day, solar in orbit, the
+// fuel cell, module heat, radiators, the orbital workshop and debris.
+/proc/orbit_station_checks()
+	var/obj/structure/orbit_registry/R = orbit_get_registry()
+	orbit_check("orbit starts sunlit", R.sunlit, 1)
+	orbit_check("sunlit part is twenty minutes", R.sun_left, 1200)
+	orbit_check("day holds partway", orbit_day_step(1199) ? 1 : 0, 0)
+	orbit_check("sunset", orbit_day_step(1) ? "[R.sunlit],[R.sun_left]" : "none", "0,600")
+	orbit_check("sunrise", orbit_day_step(600) ? "[R.sunlit],[R.sun_left]" : "none", "1,1200")
+	R.sun_left = -5
+	orbit_day_step(1)
+	orbit_check("bad day count repaired", R.sun_left, 1199)
+	orbit_check("orbit ambient", space_world_base_ambient_c(), -100)
+	orbit_check("no dust storms in orbit", space_world_has_dust_storms() ? 1 : 0, 0)
+
+	var/z = orbit_claim_plane("station")
+	orbit_check("station plane", z, 4)
+	var/obj/structure/civ_generator/solar/wing/W = new(locate(7, 7, z))
+	orbit_check("solar wing in sunlight", W.rated_output(), 20)
+	R.sunlit = 0
+	orbit_check("solar wing in shadow", W.rated_output(), 0)
+	var/obj/structure/civ_generator/solar/panel/P = new(locate(7, 6, z))
+	orbit_check("any panel follows the orbital day", P.rated_output(), 0)
+	R.sunlit = 1
+	orbit_check("panel in orbital sunlight", P.rated_output(), P.peak_output)
+	qdel(W)
+	qdel(P)
+	var/obj/structure/civ_generator/fuel_cell/F = new(locate(7, 7, z))
+	orbit_check("dry fuel cell gives nothing", F.rated_output(), 0)
+	F.hydrogen = 10
+	orbit_check("fuel cell needs oxygen too", F.rated_output(), 0)
+	F.oxygen = 10
+	orbit_check("fuel cell output", F.rated_output(), 15)
+	qdel(F)
+
+	var/datum/habitat_ledger/L = new(9)
+	L.temperature = 20
+	orbit_module_heat(L, 10)
+	orbit_check("sun warms a module", L.temperature, 21.5)
+	R.sunlit = 0
+	orbit_module_heat(L, 10)
+	orbit_check("no sun in shadow", L.temperature, 21.5)
+	R.sunlit = 1
+	var/obj/structure/life_support/heater/heater = new(locate(7, 7, z))
+	orbit_machine_heat(L, heater, 10)
+	orbit_check("working machines warm a module", round(L.temperature, 0.01), 21.9)
+	var/obj/structure/life_support/radiator/rad = new(locate(7, 6, z))
+	orbit_check("radiator idle without power", rad.work(L, 10) ? 1 : 0, 0)
+	orbit_check("radiators add no heat", orbit_machine_heat(L, rad, 10) ? 1 : 0, 0)
+	qdel(heater)
+	qdel(rad)
+
+	var/obj/structure/habitat_core/C = habitat_unfold(locate(4, 4, z), "orbital workshop")
+	var/bunks = 0
+	for (var/obj/structure/bed/lander_bunk/B in range(1, C))
+		bunks++
+	orbit_check("orbital workshop furnishing", "[bunks],[(locate(/obj/structure/table) in range(1, C)) ? 1 : 0],[(locate(/obj/structure/closet/crate) in range(1, C)) ? 1 : 0]", "2,1,1")
+	orbit_check("workshop sealed", C.breaches(), 0)
+	var/turf/hit = barren_meteor_strike(C)
+	orbit_check("debris breaches to vacuum", istype(hit, /turf/floor/space/orbit) ? 1 : 0, 1)
+	orbit_check("one breach", C.breaches(), 1)
+	orbit_check("debris breach is patchable", habitat_patchable(hit) ? 1 : 0, 1)
+	orbit_check("workshop kit gated", get_recipe_node_req("/obj/item/habitat_kit/orbital_workshop"), "orbital_flight")
+	orbit_check("solar wing gated", get_recipe_node_req("/obj/structure/civ_generator/solar/wing"), "orbital_flight")
+	orbit_check("fuel cell gated", get_recipe_node_req("/obj/structure/civ_generator/fuel_cell"), "orbital_flight")
+	orbit_check("radiator gated", get_recipe_node_req("/obj/structure/life_support/radiator"), "orbital_flight")
