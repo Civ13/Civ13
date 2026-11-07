@@ -449,6 +449,7 @@ RECIPE: /material/electronics/,mission console,/obj/structure/survey_console,20,
 RECIPE: /material/electronics/,advanced survey probe,/obj/item/space_probe/advanced,35,200,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,launch pad,/obj/structure/region_gate/trail_marker/launch_pad,40,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,crewed lander,/obj/structure/crewed_lander,60,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,two-stage rocket,/obj/structure/crewed_lander/orbital_rocket,80,500,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,habitat module kit,/obj/item/habitat_kit,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,greenhouse module kit,/obj/item/habitat_kit/greenhouse,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,workshop module kit,/obj/item/habitat_kit/workshop,60,400,0,1,spaceflight,235,0,0,8,null

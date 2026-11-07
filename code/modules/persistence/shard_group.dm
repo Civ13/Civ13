@@ -195,6 +195,7 @@ var/global/datum/shard_group/shard_group = new
 	peer["state"] = "UP"
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
+	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	if(id == mainland)
 		follow_mainland_epoch(reply["ordinal_age"])

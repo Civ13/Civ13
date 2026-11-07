@@ -35,22 +35,43 @@ what the code does so far and the rules later steps must keep.
 | Step | What | Where |
 | --- | --- | --- |
 | 1-2 | Cable risers and bus tie switches; ladders and stairs through `multiz_level_*` | #3902, `code/modules/1713/machinery/cable_risers.dm` |
-| 3 | Orbit world skeleton: kind, vacuum, area, metadata, map, plane registry, seams, sparse saves | `code/modules/space/orbit_world.dm`, `maps/space/orbit.dmm` |
+| 3 | Orbit world skeleton: kind, vacuum, area, metadata, map, plane registry, seams, sparse saves | #3909, `code/modules/space/orbit_world.dm`, `maps/space/orbit.dmm` |
+| 4 | Orbital flight: Orbital Flight node, two-stage rocket, launch pads to orbit, capsule shelter with bunk, deorbit home | `code/modules/space/orbital_flight.dm`, `lander.dm` |
 
 ## Next
 
-4. Orbital flight (1969): two-stage rocket, 3-seat capsule, orbit launch pads,
-   capsule shelter and return.
 5. EVA in orbit: drift, handholds, tethers, truss.
 6. The 1969 station and the launch complex office project.
 
+## Orbital flight
+
+- **Orbit opens in 1969** (age 7), like the Moon. A launch pad may lead to an
+  orbit region; trails never do. Orbit needs no survey map.
+- **The two-stage rocket** is a crewed lander subtype: 3 seats, 10 cargo
+  items, 600 units of propellant, gated on Orbital Flight (after Crewed
+  Flight). It flies only to orbit, and a lander cannot reach orbit. It refuses
+  to launch when the orbit region last reported no free plane.
+- **The capsule** is built by the first arrival of a flight. It claims the
+  lowest free plane (owner `capsule:<flight id>`) and sits in its middle; when
+  every plane is taken it shares the arrival plane at a clear spot away from
+  the edges. It is a landed lander subtype: a 3 x 3 sealed deck, about three
+  hours of air and power, one claimable bunk, vacuum cold outside and no dust
+  storms.
+- **Deorbit.** Crew strap in on the capsule's tile and deorbit; they travel
+  home to the mainland's ordinary arrival point as a flight home. A capsule
+  will not deorbit while someone else is in its cabin or keeps its bunk as
+  home. The capsule is then spent: its deck turns back to vacuum, its bunk
+  goes, and its plane is released only when nothing else stands on it.
+- Landing home beside a launch pad, and docking a capsule to a station, come
+  with the station steps.
+
 The arrival plane's `JoinLateCiv` landmark is a fallback for travellers who
-arrive with no capsule. Until step 4, nothing builds a shelter there, so no
-live region should use this map yet.
+arrive with no capsule. A live orbit region still needs Val's rollout step.
 
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
 checks the registry, claims and quotas, deck and sector links, the multiz
-helpers, seams, ladder pairing, the sparse save kind, the durable profile and
-release.
+helpers, seams, ladder pairing, the sparse save kind, the durable profile,
+release, and orbital flight (rocket, capsule arrival, deorbit refusals and
+spending).
