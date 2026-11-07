@@ -213,3 +213,12 @@ study/prototype requirements remain enforced. Study and prototype flags are
 supplied directly; this is not connected-player submission or timed crafting.
 `--camera-prototype-negative-control` restores the old era-seven cap in temporary
 runtime recipe data and must detect exactly the lost paid prototype recipe.
+
+## Cloth substitutions
+
+`woolcloth.dm` checks one-way woolcloth-for-cloth recipe eligibility, exact
+payment, mixed secondary cloth, ordinary/wool identity, office stock, armor slots,
+workshop refund provenance, custom entry save/load, Extraction equipment codec,
+medical gates and existing helmet conversions. Use `--cloth-only` for a bounded
+run with all faction catalogs; the ordinary runner includes the same checks.
+See `docs/cloth-substitution.md` for the supported mixing rules and evidence limits.

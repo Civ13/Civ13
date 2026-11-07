@@ -92,6 +92,8 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
             skill=100 if typepath.endswith('/landline') else 160 if typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
             conditions+=f' Minimum era Modern (ordinal 8); native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
+    if any(i['id'] == '/material/cloth' for i in inputs):
+        conditions += ' Woolcloth sheets also accepted.'
     outputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in outputs]
     records.append(dict(id='r'+str(len(records)),name=name,kind=kind,inputs=inputs,outputs=outputs,file=path,line=line,conditions=conditions,raw=raw))
 for p,s in files.items():

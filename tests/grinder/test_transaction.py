@@ -751,8 +751,8 @@ class AcquisitionProjection(Projection):
         self.created = []
         self.waits = []
         declarations = re.search(r'^\t\tvar/node_req = .+$', MENU_SOURCE, re.M)[0]
-        research_gate = MENU_SOURCE.split('\t\tvar/research_allowed\n', 1)[1].split('\t\tif(i[1]', 1)[0]
-        menu_gate = re.search(r'^\t\tif\((i\[1\].+)\)$', MENU_SOURCE, re.M)[1]
+        research_gate = MENU_SOURCE.split('\t\tvar/research_allowed\n', 1)[1].split('\t\tif(material_allowed', 1)[0]
+        menu_gate = re.search(r'^\t\tif\((material_allowed.+)\)$', MENU_SOURCE, re.M)[1]
         self.source += ('\n/datum/acquisition/proc/menu()\n' + declarations +
                         '\n\t\tvar/research_allowed\n' + research_gate +
                         '\t\tif (' + menu_gate + ')\n\t\t\treturn TRUE\n\treturn FALSE\n')
@@ -786,6 +786,7 @@ class AcquisitionProjection(Projection):
 
     def expression(self, text, receiver, local):
         # Known DM interpolation/ternary and dynamic-constructor adapters only.
+        text = text.replace('/material/woolcloth', repr('/material/woolcloth'))
         text = text.replace('"[type]/"', 'material_prefix').replace('(joinery || carving) ? null : H', 'H')
         text = text.replace('new recipe.result_type(user.loc)', 'construct(recipe.result_type, user.loc)')
         return super().expression(text, receiver, local)
@@ -799,7 +800,7 @@ class AcquisitionProjection(Projection):
 
     def menu(self, row, done=True, age=5, legacy=0):
         self.globals['map'] = Record(ordinal_age=age, is_node_done=lambda _faction, node: done and node == 'electricity')
-        return self.run('/datum/acquisition/proc/menu', Record(), i=DmRow(row),
+        return self.run('/datum/acquisition/proc/menu', Record(type='/material/electronics'), i=DmRow(row),
                         research_faction='fixture', current_res=DmRow([legacy, legacy, legacy]))
 
     def build(self, amount=20, production=False, complete=True, floor=True, occupied=False, crafting=1, strength=1, after_wait=None):
@@ -820,7 +821,7 @@ class AcquisitionProjection(Projection):
         recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
                         on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
         self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,
-                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None)
+                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None, cloth_payment=None)
         return stock
 
 
