@@ -1333,6 +1333,7 @@
 #include "code\modules\space\orbit_station.dm"
 #include "code\modules\space\orbital_flight.dm"
 #include "code\modules\space\orbit_project.dm"
+#include "code\modules\space\orbit_pods.dm"
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"
 #include "code\modules\space\self_sufficiency.dm"

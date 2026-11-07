@@ -61,7 +61,17 @@ without the reserve cannot lift off and one with it can, a spent lander turns
 its deck back to regolith, and the lunar kit flies in the hold, is gated on
 Crewed Flight and unpacks two suits and four tanks.
 
+Then module pods (`code/modules/space/orbit_pods.dm`): a kit released as a pod
+lands three tiles ahead and answers to the party; footprints refuse hulls,
+plane edges and other pods; outsiders cannot steer, dock or fold; each step
+costs propellant; a ram stops and damages the pod; one burn at a time; a hard
+dock unfolds a furnished, sealed module with a shared hatch; folding refuses
+an open hatch, someone else inside, cables or a homed bunk; a fold keeps the
+furniture and air, seals the neighbour's wall and opens the site; the folded
+pod docks again without new furniture; and the console steers member pods
+only.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
-drives each step), and a full launch and deorbit through the transfer
+drives each step, and each pod step), and a full launch and deorbit through the transfer
 agent (the travel path is the existing crewed-flight one).

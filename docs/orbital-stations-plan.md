@@ -41,10 +41,13 @@ what the code does so far and the rules later steps must keep.
 | 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | #3934, `code/modules/space/orbit_station.dm` |
 | 6b | Starter stations: launch complex office project, 1969 station founded on a free plane, return capsule hatch, orbit console with lost-drifter recovery | `code/modules/space/orbit_project.dm`, `party_train.dm` |
 | 6c | Moon gear: lunar surface kit, sortie reserve and lift-off home from a landed lander | `code/modules/space/lander.dm` |
+| 8 | Module pods and docking: release a kit as a pod, RCS steering from the pod or an orbit console, hard dock, fold back, party checks, rams | `code/modules/space/orbit_pods.dm` |
 
 ## Next
 
-7. Live: the first orbit region (Val runs setup).
+7. Live: the first orbit region (Val set it up on 2026-11-07).
+9. Decks: node modules with up and down ports, vertical hatches.
+10. Station upkeep and the 2013 layout.
 
 ## Orbital flight
 
@@ -156,6 +159,33 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   unpacks into two pressure suits and helmets, four air tanks, a suit patch,
   a rover battery, six rations and four canteens.
 
+## Module pods and docking
+
+- **Pods.** In orbit, using a module kit asks whether to unfold it where you
+  stand or release it as a pod. A pod appears three tiles ahead of you and
+  answers to your party. It has a 5 x 5 footprint (the module it becomes),
+  which it checks itself: it keeps two tiles off the plane edge, out of other
+  pods' footprints and off any hull or solid object.
+- **RCS.** A pod moves one tile at a time on rocket propellant, up to 8 tiles
+  per burn, steered from the pod itself or from an orbit console within 12
+  tiles. Each tile costs one unit; a kit pod starts with 20 and the tank holds
+  60. A pod that runs into something stops and its frame takes 25 damage; at
+  0 its thrusters are wrecked until two steel sheets brace it. The hull it hit
+  is unharmed, so pods are not battering rams. A burn in progress is never
+  saved.
+- **Docking.** Steer the pod until its centre is four tiles straight out from
+  a module core, then hard dock it with a wrench (5 seconds). It unfolds in
+  place: the shared wall's middle becomes a hatch, opening it equalises the
+  two modules, and cable runs through it as on any module.
+- **Folding back** (wrench on the core, 10 seconds) is the undock. Every
+  hatch must be shut, nobody else may be inside, no cable may run through the
+  module and no bunk in it may be someone's home. Machines, furniture, items
+  and air go into the pod; the neighbour keeps the shared wall, sealed. A
+  folded pod has an empty RCS tank and does not get new furniture when it
+  docks again.
+- **Parties.** On a station plane only that station's party may steer, dock
+  or fold. A released pod answers only to the party that released it.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -167,5 +197,7 @@ unlinked edge, the tether's pull, haul and clip) and station hardware (the
 orbital day, solar and fuel cell output, module heat, radiators, the
 workshop's furnishing and debris breaches) and starter stations (office
 placement, era and delivery, full-orbit refusal, founding, power, supplies,
-boarding, the hatch home and console recovery) and Moon gear (the sortie
-reserve and payload flag, lift-off and spending, the lunar kit).
+boarding, the hatch home and console recovery), Moon gear (the sortie
+reserve and payload flag, lift-off and spending, the lunar kit) and module
+pods (release, footprint, steps, rams, party checks, hard dock, fold refusals,
+folding back and docking again, console steering).
