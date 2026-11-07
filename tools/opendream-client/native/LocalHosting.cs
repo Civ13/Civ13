@@ -188,10 +188,10 @@ public static class LocalHosting {
         }
     }
 
-    // freeze/thaw: sleep an empty, saved region now, or wake it; stage: build the update beside the running
-    // worlds; setup: create or refresh a region's worktree and config and enrol it for travel (refused while it runs).
-    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply",
-        "freeze", "thaw", "stage", "setup"];
+    // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
+    // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
+    public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
+        "freeze", "thaw", "setup"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
@@ -330,7 +330,7 @@ public static class LocalHosting {
                             text += $", {clients.GetInt32()} players";
                         if (entry.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
                                 && Str(operation, "action") is { } last && Str(operation, "phase") is { } phase) {
-                            text += $", last {Lower(last)} ({Lower(phase)})";
+                            text += $", last {Lower(last)} ({Words(phase)})";
                             if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
                         }
                         text += RegionDetails(entry);
@@ -398,7 +398,8 @@ public static class LocalHosting {
                 "start" => "Starting",
                 "stop" => "Saving, then stopping",
                 "restart" => "Saving, then restarting",
-                "stage" => "Building the update beside the running world (installed when it is next empty and saved) for",
+                "stage" => "Building the update beside",
+                "handover" => "Handing over to the new build (the old world freezes and saves, the new one loads it, then players reconnect):",
                 _ => "Checking out and compiling",
             } + " " + string.Join(", ", accepted) + "...";
             if (refused != null) message += " Refused: " + refused + ".";
@@ -406,28 +407,36 @@ public static class LocalHosting {
         }
     }
 
-    // The rest of one region's shard_group.py status, after its state, players and last action: the staged
-    // update (stage.json and whether it waits to install), a handover's standby world, the watchdog's record,
-    // the travel agent and whether the world answers as this region. Empty when there is nothing to add.
-    public static string RegionDetails(JsonElement entry) {
-        var parts = new List<string>();
-        if (OptionalPort(entry, "port") is > 0 and var port) parts.Add("port " + port);
+    // A region's staged build ("stage": {"phase", "error", "pending"}) and a standby world loading beside it
+    // during a handover ("standby": {"port", "listening"}), for the group status line.
+    public static string DescribeStage(JsonElement entry) {
+        var text = "";
         if (entry.TryGetProperty("stage", out var stage) && stage.ValueKind == JsonValueKind.Object && Str(stage, "phase") is { } phase) {
-            switch (phase) {
-                case "current": break;
-                case "ready":
-                    if (Bool(stage, "pending")) parts.Add("update staged, installs when empty and saved");
-                    break;
-                case "failed":
-                    parts.Add("staging failed" + (Str(stage, "error") is { Length: > 0 } error ? ": " + Short(error) : ""));
-                    break;
-                default:
-                    parts.Add("staging an update (" + Lower(phase) + ")");
-                    break;
-            }
+            text = phase switch {
+                "ready" => Bool(stage, "pending") ? ", update built (ready to hand over)" : "",
+                "current" => "",
+                "failed" => ", update build failed" + (Str(stage, "error") is { Length: > 0 } failed ? ": " + failed : ""),
+                _ => ", building update (" + Words(phase) + ")",
+            };
         }
-        if (entry.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object && OptionalPort(standby, "port") is > 0 and var standbyPort)
-            parts.Add($"handover: new build {(Bool(standby, "listening") ? "running" : "starting")} on port {standbyPort}");
+        if (entry.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object)
+            text += Bool(standby, "listening") ? ", new build running beside it" : ", new build starting beside it";
+        return text;
+    }
+
+    // Lowercase letters, apostrophes and single spaces only (64 at most), for a phase name shown in a line.
+    private static string Words(string text) {
+        var kept = new string(text.Take(64).Select(c => char.IsAsciiLetterLower(c) || c == '\'' ? c : ' ').ToArray());
+        return string.Join(' ', kept.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    // The rest of one region's shard_group.py status, after its state, players and last action: its port, the
+    // staged build and standby (DescribeStage), the watchdog's record, the travel agent and whether the world
+    // answers as this region. Empty when there is nothing to add.
+    public static string RegionDetails(JsonElement entry) {
+        var text = OptionalPort(entry, "port") is > 0 and var port ? ", port " + port : "";
+        text += DescribeStage(entry);
+        var parts = new List<string>();
         if (entry.TryGetProperty("watchdog", out var watchdog) && watchdog.ValueKind == JsonValueKind.Object) {
             var restarts = watchdog.TryGetProperty("restarts", out var list) && list.ValueKind == JsonValueKind.Array ? list.GetArrayLength() : 0;
             var last = Str(watchdog, "last_event") is { } kind ? Lower(kind) : "a crash";
@@ -443,7 +452,7 @@ public static class LocalHosting {
         if (entry.TryGetProperty("transfer_agent", out var agent) && agent.ValueKind == JsonValueKind.False) parts.Add("travel agent not running");
         if (entry.TryGetProperty("region_view", out var view) && view.ValueKind == JsonValueKind.Object && Str(view, "error") != null)
             parts.Add("not answering as this region");
-        return parts.Count == 0 ? "" : ", " + string.Join(", ", parts);
+        return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
 
     private static string Short(string text) => text.Length > 200 ? text[..200] : text;

@@ -157,7 +157,7 @@ static class LocalHostingTests {
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));
         try { LocalHosting.GroupStep(host.Control!, "adopt"); throw new Exception("unsupported group action accepted"); } catch (ArgumentException) { assertions++; }
-        foreach (var bad in new[] { "config-migrate", "handover", "enrol" })
+        foreach (var bad in new[] { "config-migrate", "enrol" })
             try { LocalHosting.GroupStep(host.Control!, bad, "gaia"); throw new Exception("unsupported group action accepted: " + bad); } catch (ArgumentException) { assertions++; }
         foreach (var one in new[] { "freeze", "thaw", "stage", "setup" })
             Require(LocalHosting.GroupStep(host.Control!, one, "moon").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, one, "--region", "moon" }), "one-region " + one + " argv");
@@ -244,23 +244,34 @@ static class LocalHostingTests {
         File.WriteAllText(deploy, "");
         var groupStatus = LocalHosting.ParseGroup("status", 0, "{\"group\": \"earth\", \"regions\": {\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 5}, \"operation\": {\"action\": \"start\", \"phase\": \"done\", \"error\": null}}, \"railyard\": {\"name\": \"Rail Yard\", \"state\": \"stopped\", \"busy\": true, \"operation\": {\"action\": \"update\", \"phase\": \"compiling\", \"error\": null}}}, \"coordinator\": true, \"ok\": true}");
         Require(groupStatus.Ok && groupStatus.Busy && groupStatus.Message == "Group: Gaia: awake, 5 players, last start (done); Rail Yard: stopped, last update (compiling). Travel coordinator running.", "group status line: " + groupStatus.Message);
+        // Staged builds and handovers: the status line shows the build beside each world, the standby during a handover.
+        var stagedStatus = LocalHosting.ParseGroup("status", 0, "{\"regions\": {" +
+            "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"stage\": {\"phase\": \"ready\", \"pending\": true}, \"operation\": {\"action\": \"handover\", \"phase\": \"loading the standby\"}, \"standby\": {\"port\": 1728, \"listening\": true}}, " +
+            "\"railyard\": {\"name\": \"Rail Yard\", \"state\": \"asleep\", \"stage\": {\"phase\": \"waiting for another region's compile\"}}, " +
+            "\"barren\": {\"name\": \"Mars\", \"state\": \"awake\", \"stage\": {\"phase\": \"failed\", \"error\": \"compile failed\"}}, " +
+            "\"moon\": {\"name\": \"Moon\", \"state\": \"awake\", \"stage\": {\"phase\": \"current\"}, \"operation\": {\"action\": \"handover\", \"phase\": \"handed over\"}}}, \"ok\": true}");
+        Require(stagedStatus.Ok && stagedStatus.Message == "Group: Gaia: awake, last handover (loading the standby), update built (ready to hand over), new build running beside it; " +
+            "Rail Yard: asleep, building update (waiting for another region's compile); Mars: awake, update build failed: compile failed; Moon: awake, last handover (handed over).",
+            "staged status line: " + stagedStatus.Message);
+        Require(LocalHosting.GroupStep(host.Control!, "stage").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stage" })
+            && LocalHosting.GroupStep(host.Control!, "handover", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "handover", "--region", "gaia" }), "stage and handover argv");
+        Require(LocalHosting.ParseGroup("stage", 0, "{\"accepted\": {\"gaia\": {\"accepted\": true}}, \"refused\": {\"moon\": \"a build is already being staged\"}, \"ok\": true}").Message
+            == "Building the update beside gaia... Refused: moon: a build is already being staged.", "stage line");
         // The group status also tells staged updates, handovers, the watchdog and travel.
         var detailed = LocalHosting.ParseGroup("status", 0, "{\"group\": \"earth\", \"regions\": {"
             + "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"port\": 1714, \"stage\": {\"phase\": \"ready\", \"pending\": true}, \"standby\": {\"port\": 1728, \"listening\": true}, \"transfer_agent\": true}, "
             + "\"railyard\": {\"name\": \"Rail Yard\", \"state\": \"stopped\", \"port\": 1715, \"stage\": {\"phase\": \"compiling\"}, \"watchdog\": {\"gave_up\": 5, \"last_event\": \"crash\", \"restarts\": [1, 2, 3]}, \"transfer_agent\": false}, "
             + "\"barren\": {\"name\": \"Mars\", \"state\": \"awake\", \"stage\": {\"phase\": \"failed\", \"error\": \"compile failed\"}, \"watchdog\": {\"restarts\": [9], \"last_event\": \"hang\"}, \"region_view\": {\"error\": \"no matching shard_region answer\"}}, "
             + "\"moon\": {\"name\": \"Moon\", \"state\": \"asleep\", \"stage\": {\"phase\": \"current\"}}}, \"coordinator\": false, \"ok\": true}");
-        Require(detailed.Ok && detailed.Message == "Group: Gaia: awake, port 1714, update staged, installs when empty and saved, handover: new build running on port 1728; "
-            + "Rail Yard: stopped, port 1715, staging an update (compiling), watchdog gave up after repeated restarts (crash); start it by hand, travel agent not running; "
-            + "Mars: awake, staging failed: compile failed, watchdog restarted it 1 time recently (last: hang), not answering as this region; Moon: asleep. "
+        Require(detailed.Ok && detailed.Message == "Group: Gaia: awake, port 1714, update built (ready to hand over), new build running beside it; "
+            + "Rail Yard: stopped, port 1715, building update (compiling), watchdog gave up after repeated restarts (crash); start it by hand, travel agent not running; "
+            + "Mars: awake, update build failed: compile failed, watchdog restarted it 1 time recently (last: hang), not answering as this region; Moon: asleep. "
             + "Travel coordinator is not running (a start or restart starts it).", "detailed group status: " + detailed.Message);
         var frozen = LocalHosting.ParseGroup("freeze", 0, "{\"done\": {\"moon\": {\"frozen\": true, \"pid\": 4}}, \"refused\": {\"gaia\": \"1 client(s) are connected\"}, \"ok\": true}");
         Require(frozen is { Ok: true, Busy: false } && frozen.Message == "Asleep now (a join or travel wakes it): moon. Refused: gaia: 1 client(s) are connected.", "freeze: " + frozen.Message);
         Require(LocalHosting.ParseGroup("thaw", 0, "{\"done\": {\"moon\": {\"thawed\": true}}, \"refused\": {}, \"ok\": true}").Message == "Woken: moon.", "thaw");
         Require(LocalHosting.ParseGroup("thaw", 1, "{\"ok\": false, \"refused\": {\"moon\": \"the server is not frozen\"}}") is { Ok: false } notFrozen
             && notFrozen.Message == "Refused: moon: the server is not frozen", "thaw refusal");
-        var staged = LocalHosting.ParseGroup("stage", 0, "{\"accepted\": {\"gaia\": {\"accepted\": true, \"action\": \"stage\"}}, \"refused\": {}, \"ok\": true}");
-        Require(staged is { Ok: true, Busy: true } && staged.Message.StartsWith("Building the update beside the running world") && staged.Message.EndsWith(" gaia..."), "stage: " + staged.Message);
         var setUp = LocalHosting.ParseGroup("setup", 0, "{\"revision\": \"" + new string('a', 40) + "\", \"created\": [\"moon\"], \"regions\": [\"gaia\", \"moon\"], \"region\": \"moon\", \"running\": [\"gaia\"], \"enrolled\": [\"gaia\"], \"ok\": true}");
         Require(setUp is { Ok: true, Busy: false } && setUp.Message == "Set up moon. Enrolled it for travel with the running agents. Running regions learn about it at their next restart. Next: Update, then Start.", "setup: " + setUp.Message);
         Require(LocalHosting.ParseGroup("setup", 0, "{\"created\": [], \"region\": \"moon\", \"running\": [], \"enrolled\": [], \"ok\": true}").Message.StartsWith("Refreshed the config of moon."), "setup refresh");

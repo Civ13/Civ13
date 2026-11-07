@@ -265,7 +265,9 @@ without stopping it for the load:
 1. The staged `region.dmb`/`region.rsc` are copied into the region's spare build
    slot (`region.dmb` or `region.b.dmb`; `data/shard-host/build.json` names the
    live one in `file`) and started as a **standby world** on a loopback port
-   (`standby_port`, default the region's port + 10) with `-params standby=1`.
+   (`standby_port`; by default the region's port + 10, or the next port above
+   it that no region, transfer agent, relay or doorman of the group uses) with
+   `-params standby=1`.
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
    is hidden from the hub, refuses joins and never saves.
 2. The running world freezes play ("the world is moving": players can look and

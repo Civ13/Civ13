@@ -80,6 +80,10 @@ var/global/list/orbit_opposites = list("up" = "down", "down" = "up", "north" = "
 	not_disassemblable = TRUE
 	var/list/links = list()
 	var/list/owners = list()
+	// The orbital day (orbit_station.dm): sunlit or not, and the seconds
+	// left in this part of the orbit. Plain numbers, never a world.time.
+	var/sunlit = 1
+	var/sun_left = 1200
 
 /obj/structure/orbit_registry/New()
 	..()

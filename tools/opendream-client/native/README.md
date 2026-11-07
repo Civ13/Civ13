@@ -193,11 +193,9 @@ starts, update steps, control answers and port probes, so it launches nothing.
 ### One region and group status
 
 With `control.group` set, the Host server tab has two rows of group buttons. **All
-regions** runs each action for the whole group (plus **Stage update**, which builds
-the update beside the running worlds so each installs it when it is next empty and
-saved). **One region** has a region list (each with its game and travel port; the
+regions** runs each action for the whole group. **One region** has a region list (each with its game and travel port; the
 list re-reads the group config whenever it opens) and the same `shard_group.py`
-actions with `--region`: Start, Save and stop, Restart, Update, **Stage update**,
+actions with `--region`: Start, Save and stop, Restart, Update, **Build update**,
 **Sleep now** and **Wake** (freeze or thaw an empty, saved world), **Apply host
 settings** (`config-apply`), **Set up** (create or refresh the region's worktree and
 config and enrol it with the running travel agents; refused while it runs, so a new

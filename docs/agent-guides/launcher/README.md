@@ -13,10 +13,10 @@ Do not turn an evidence limitation into a new approval requirement.
 
 <!-- 2026-11-07: One region row -->
 The Host server tab's One region row passes `--region` to shard_group.py for every group action,
-including freeze, thaw, stage and setup (GroupActions). Setup is offered per region only, and
-adopt, enrol, config-migrate and handover stay off the launcher (deploy.bat owns handover).
-RegionDetails turns the status fields (stage, standby, watchdog, transfer_agent, region_view,
-coordinator) into words; keep it in step with RegionHost.status and gaia_host status.
+including freeze, thaw, stage and setup (GroupActions). Setup is offered per region only; adopt,
+enrol and config-migrate stay off the launcher, and handover runs only through deploy. RegionDetails
+adds the port, DescribeStage (stage and standby), the watchdog record, transfer_agent and region_view;
+ParseGroup adds the coordinator. Keep them in step with RegionHost.status and gaia_host status.
 
 <!-- 2026-11-07: Host settings -->
 Val asked (2026-11-07) that the Windows host keep its own hosting config through the launcher, so master
@@ -24,6 +24,12 @@ Val asked (2026-11-07) that the Windows host keep its own hosting config through
 edits only the group config's overlay folders, offers a fixed list (config.local.txt, host.txt, existing
 config/*.txt|json minus shard_group.py GENERATED and kept copies), and its rules mirror shard_group.py
 merge_config and KEPT_COPY; change both together. Save and apply runs `config-apply` (no compile).
+
+<!-- 2026-11-07: staged builds and handover in the Host tab -->
+Since #3906 deploy.bat hands running regions over to the staged build instead of stopping them; the
+deploy dialog (DeployQuestion) says so. The Host tab has **Build update** (`shard_group.py stage`, no
+kick) and the group status line shows each region's `stage` phase and a `standby` world via
+LocalHosting.DescribeStage; keep its wording in step with shard_group.py stage phases.
 
 <!-- 2026-11-06: Save, update and restart -->
 With control.group set, the Updates tab's server row uses `shard_group.py check-update` and its button
