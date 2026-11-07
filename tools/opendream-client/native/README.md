@@ -250,10 +250,12 @@ The console `H` option still starts the bot detached.
 When `control.group` is set the window adds a **Player help** tab for the
 group's "Ask for help" bridges, which the host service keeps running (the
 group config's `player_help`; see `scripts/shard-group/README.md`). It shows
-`shard_group.py help-status` every 5 seconds while open: each region's bridge,
-its PID and whether its heartbeat is fresh. **Stop** runs `help-stop` (bridges
-finish their answers, then stay stopped until **Start**, which runs
-`help-start`). A log view follows each region's bridge log. The bridges belong
+`shard_group.py help-status` every 5 seconds while open: every region of the
+group, its bridge's PID, whether its heartbeat is fresh, and a region stopped on
+request. **Stop all** runs `help-stop` (bridges finish their answers, then stay
+stopped until **Start all**, which runs `help-start`). The region list chooses one
+region for **Start region** and **Stop region** (`--region`; a region outside the
+config's `regions` started this way keeps running) and for the log view below. The bridges belong
 to the host service, so closing the launcher leaves them as they are.
 `tests/LocalHelpTests.cs` covers the argv and answer parsing.
 

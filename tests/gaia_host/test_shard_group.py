@@ -1035,7 +1035,7 @@ class PlayerHelpTests(unittest.TestCase):
         self.assertFalse(stale.exists())
         argv, cwd, log = started[0]
         self.assertEqual(['python.exe', '-I', str(cwd / 'scripts' / 'player_help_bridge.py'), '--game-root', str(cwd),
-                          '--config', str(self.base / 'help.json'), '--stop-file', str(self.base / 'regions' / 'player-help' / 'stopped')], argv)
+                          '--config', str(self.base / 'help.json'), '--stop-file', str(self.base / 'regions' / 'player-help' / 'gaia.off')], argv)
         self.assertEqual(self.base / 'regions' / 'player-help' / 'gaia.log', log)
         # Starting (pid file, before the lock) and running (lock) bridges are both left alone.
         self.alive.update({7001, 7002})
@@ -1085,10 +1085,47 @@ class PlayerHelpTests(unittest.TestCase):
         (lock.parent / 'health.json').write_text(json.dumps({'enabled': True, 'sequence': 'a' * 32}))
         mtime = (lock.parent / 'health.json').stat().st_mtime
         status = shard_group.help_status(group, now=lambda: mtime + 4)
-        self.assertEqual({'running': True, 'pid': 21, 'enabled': True, 'heartbeat_age_seconds': 4,
+        self.assertEqual({'running': True, 'pid': 21, 'wanted': True, 'listed': True, 'enabled': True, 'heartbeat_age_seconds': 4,
                           'log': str(self.base / 'regions' / 'player-help' / 'gaia.log')}, status['regions']['gaia'])
-        self.assertEqual({'running': False, 'pid': None, 'enabled': False, 'log': str(self.base / 'regions' / 'player-help' / 'deep.log')},
-                         status['regions']['deep'])
+        self.assertEqual({'running': False, 'pid': None, 'wanted': True, 'listed': True, 'enabled': False,
+                          'log': str(self.base / 'regions' / 'player-help' / 'deep.log')}, status['regions']['deep'])
+
+    def test_every_region_is_listed_and_starts_or_stops_on_its_own(self):
+        # Only gaia is listed for help, as on the live earth group (gaia and railyard of four).
+        self.group['player_help']['regions'] = ['gaia']
+        group = self.load()
+        status = shard_group.help_status(group)
+        self.assertEqual(['gaia', 'deep'], list(status['regions']), 'every region of the group is shown')
+        self.assertEqual((True, False), (status['regions']['gaia']['wanted'], status['regions']['deep']['wanted']))
+        started = []
+        def start(argv, cwd, log):
+            started.append(Path(cwd).name)
+            return 100 + len(started)
+        self.assertEqual({'player_help': ['gaia']}, shard_group.supervise(group, start))
+        self.alive.add(101)
+        self.lock('gaia', 101)
+        # Starting an unlisted region keeps it running from then on.
+        self.assertEqual({'started': ['deep'], 'errors': {}}, shard_group.help_start(group, start, region_id='deep'))
+        self.assertTrue(shard_group.help_status(group)['regions']['deep']['wanted'])
+        self.alive.add(102)
+        self.lock('deep', 102)
+        # Stopping one region leaves the other running and is not undone by the host service.
+        def kill(pid):
+            self.alive.discard(pid)
+        result = shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill, region_id='gaia')
+        self.assertEqual({'stopped': ['gaia'], 'forced': ['gaia']}, result)
+        self.assertTrue((self.base / 'regions' / 'player-help' / 'gaia.off').exists())
+        self.assertIn(102, self.alive)
+        self.assertEqual({}, shard_group.supervise(group, start))
+        status = shard_group.help_status(group)
+        self.assertEqual((False, True, False), (status['regions']['gaia']['wanted'], status['regions']['deep']['wanted'], status['stopped']))
+        # A stop of the whole group, then one region started: the others stay stopped.
+        shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill)
+        self.assertTrue(shard_group.help_status(group)['stopped'])
+        self.assertEqual(['deep'], shard_group.help_start(group, start, region_id='deep')['started'])
+        self.assertEqual((False, True), tuple(shard_group.help_status(group)['regions'][r]['wanted'] for r in ('gaia', 'deep')))
+        with self.assertRaises(shard_group.Refused):
+            shard_group.help_start(group, start, region_id='moon')
 
     def test_actions_without_player_help(self):
         del self.group['player_help']

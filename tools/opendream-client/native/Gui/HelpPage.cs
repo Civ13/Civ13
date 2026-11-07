@@ -12,7 +12,7 @@ internal sealed partial class LauncherWindow {
     private Label? helpState;
     private TextBox? helpLog;
     private ComboBox? helpLogChoice;
-    private Button? helpStart, helpStop;
+    private Button? helpStart, helpStop, helpRegionStart, helpRegionStop;
     private HelpStatus? helpStatus;
     private bool helpBusy;
 
@@ -24,18 +24,29 @@ internal sealed partial class LauncherWindow {
         helpState = new Label { AutoSize = true, Margin = new Padding(0, 4, 0, 6), Text = "Checking..." };
         layout.Controls.Add(helpState);
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
-        helpStart = new Button { Text = "Start", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
+        helpStart = new Button { Text = "Start all", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
         helpStart.Click += async (_, _) => await RunHelp(control, "help-start");
-        helpStop = new Button { Text = "Stop", AutoSize = true, Enabled = false, Margin = new Padding(8, 6, 0, 6) };
+        helpStop = new Button { Text = "Stop all", AutoSize = true, Enabled = false, Margin = new Padding(8, 6, 0, 6) };
         helpStop.Click += async (_, _) => {
             if (MessageBox.Show(this, "Stop player help? Players are told help is unavailable until it is started again.", "Civ13 Launcher",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) await RunHelp(control, "help-stop");
         };
         buttons.Controls.Add(helpStart);
         buttons.Controls.Add(helpStop);
-        helpLogChoice = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 160, Margin = new Padding(12, 8, 0, 6) };
-        helpLogChoice.SelectedIndexChanged += (_, _) => RefreshHelpLog(true);
+        // One region: the list holds every region of the group; its log is shown below.
+        buttons.Controls.Add(new Label { Text = "Region:", AutoSize = true, Margin = new Padding(16, 11, 0, 6) });
+        helpLogChoice = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 160, Margin = new Padding(6, 8, 0, 6) };
+        helpLogChoice.SelectedIndexChanged += (_, _) => { RefreshHelpLog(true); UpdateHelpButtons(); };
         buttons.Controls.Add(helpLogChoice);
+        helpRegionStart = new Button { Text = "Start region", AutoSize = true, Enabled = false, Margin = new Padding(8, 6, 0, 6) };
+        helpRegionStart.Click += async (_, _) => { if (helpLogChoice.SelectedItem is string id) await RunHelp(control, "help-start", id); };
+        helpRegionStop = new Button { Text = "Stop region", AutoSize = true, Enabled = false, Margin = new Padding(8, 6, 0, 6) };
+        helpRegionStop.Click += async (_, _) => {
+            if (helpLogChoice.SelectedItem is string id && MessageBox.Show(this, $"Stop player help in {id}? Its players are told help is unavailable until it is started again.",
+                    "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) await RunHelp(control, "help-stop", id);
+        };
+        buttons.Controls.Add(helpRegionStart);
+        buttons.Controls.Add(helpRegionStop);
         var folder = new LinkLabel { Text = "Open log folder", AutoSize = true, Margin = new Padding(12, 11, 0, 6) };
         folder.LinkClicked += (_, _) => {
             if (helpStatus?.Regions.FirstOrDefault()?.Log is { } log && Path.GetDirectoryName(log) is { } dir && Directory.Exists(dir))
@@ -70,9 +81,10 @@ internal sealed partial class LauncherWindow {
         if (helpLogChoice != null) {
             var names = status.Regions.Select(region => region.Id).ToArray();
             if (!names.SequenceEqual(helpLogChoice.Items.Cast<string>())) {
+                var keep = helpLogChoice.SelectedItem as string;
                 helpLogChoice.Items.Clear();
                 helpLogChoice.Items.AddRange(names);
-                if (names.Length > 0) helpLogChoice.SelectedIndex = 0;
+                if (names.Length > 0) helpLogChoice.SelectedIndex = Math.Max(0, Array.IndexOf(names, keep));
             }
         }
         UpdateHelpButtons();
@@ -83,6 +95,9 @@ internal sealed partial class LauncherWindow {
         var usable = !helpBusy && status is { Ok: true, Configured: true };
         if (helpStart != null) helpStart.Enabled = usable && (status!.Stopped || status.Regions.Any(region => !region.Running));
         if (helpStop != null) helpStop.Enabled = usable && (!status!.Stopped || status.AnyRunning);
+        var chosen = usable && helpLogChoice?.SelectedItem is string id ? status!.Regions.FirstOrDefault(region => region.Id == id) : null;
+        if (helpRegionStart != null) helpRegionStart.Enabled = chosen != null && (!chosen.Running || chosen.Wanted == false);
+        if (helpRegionStop != null) helpRegionStop.Enabled = chosen != null && (chosen.Running || chosen.Wanted != false);
     }
 
     private void RefreshHelpLog(bool force) {
@@ -97,14 +112,16 @@ internal sealed partial class LauncherWindow {
         if (atEnd) { helpLog.SelectionStart = helpLog.TextLength; helpLog.ScrollToCaret(); }
     }
 
-    private async Task RunHelp(HostControl control, string action) {
+    // region: one region id, or null for every region of the group.
+    private async Task RunHelp(HostControl control, string action, string? region = null) {
         if (helpBusy || helpState == null) return;
         helpBusy = true;
         UpdateHelpButtons();
-        helpState.Text = action == "help-stop" ? "Stopping player help (waits for answers in progress)..." : "Starting player help...";
+        var which = region == null ? "" : " in " + region;
+        helpState.Text = action == "help-stop" ? $"Stopping player help{which} (waits for answers in progress)..." : $"Starting player help{which}...";
         string line;
         try {
-            var (exit, output) = await Task.Run(() => LocalHosting.RunCaptured(LocalHosting.GroupStep(control, action)));
+            var (exit, output) = await Task.Run(() => LocalHosting.RunCaptured(LocalHosting.GroupStep(control, action, region)));
             line = LocalHelp.DescribeAction(action, exit, output);
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { line = "Player help: " + e.Message; }
         Console.WriteLine(line);
