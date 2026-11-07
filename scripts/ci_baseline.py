@@ -825,6 +825,12 @@ SUITES = {
         'paths': ('tests/time_of_day_progress/', 'code/processes/time_of_day_progress.dm'),
         'shared_paths': ('code/processes/time_of_day.dm', 'code/__defines/time_of_day.dm',
             'code/processes/_process.dm', 'code/game/mob/mob.dm', 'civ13.dme')},
+    # Current-world Persistence census and complete largest-faction tally; offline only.
+    'persistence_status': {'files': ('tests/persistence_status/test_status.py',),
+        'paths': ('tests/persistence_status/',), 'shared_paths': (
+            'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
+            'code/game/mob/groups/factions.dm', 'code/predefines.dm',
+            'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

@@ -273,3 +273,33 @@ var/list/recently_died = list()
 			alive |= getRoundUID()
 		else if (stat == UNCONSCIOUS || (health <= 0 && stat != DEAD))
 			injured |= getRoundUID()
+
+// Persistence reports are a census, not a reconstruction of lifetime casualties.
+// These local counts never modify the event-driven battle lists: they may contain
+// old round UIDs after a reload, and missing/deleted bodies cannot be recovered.
+/proc/persistence_battle_report_counts()
+	var/list/factions = list()
+	for (var/mob/living/human/H in human_mob_list)
+		if (!H.loc || H.restoring || !H.original_job || istype(H, /mob/living/human/corpse) || istype(get_area(H), /area/caribbean/admin))
+			continue
+		var/faction = H.original_job.base_type_flag()
+		if (!istext(faction) || !length(faction))
+			continue
+		var/list/counts = factions[faction]
+		if (!counts)
+			// Living, dead bodies, injured (a subset of living).
+			counts = list(0, 0, 0)
+			factions[faction] = counts
+		if (H.stat == DEAD)
+			counts[2] += 1
+		else
+			counts[1] += 1
+			if (H.stat == UNCONSCIOUS || H.health <= 0)
+				counts[3] += 1
+	return factions
+
+/proc/persistence_battle_report_line(faction_name, faction, list/factions)
+	var/list/counts = factions[faction]
+	if (!counts)
+		counts = list(0, 0, 0)
+	return "[faction_name]: [counts[1]] alive ([counts[3]] heavily injured or unconscious), [counts[2]] dead bodies currently present."
