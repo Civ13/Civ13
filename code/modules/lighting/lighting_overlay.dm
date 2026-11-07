@@ -1,5 +1,21 @@
 /var/list/lighting_update_overlays  = list()	// List of lighting overlays queued for update.
 
+// TRUE when daylight is added on each client's light mask plane master
+// (plane_master.dm) rather than baked into every overlay's matrix here. The
+// server then changes the time of day with one appearance per client instead
+// of a 350k-overlay sweep. Needs the V2 mask plane; off by default (config
+// DAYNIGHT_CLIENT_TINT) until the look is signed off.
+/proc/daylight_on_client()
+	#ifdef OPENDREAM
+	return FALSE
+	#else
+	return LIGHTING_COMPOSITION_V2 && config && config.daynight_client_tint
+	#endif
+
+// The daylight term for a cell: its luminosity times its window coefficient.
+/proc/daylight_lum(window_coeff = 1)
+	return time_of_day2luminosity[time_of_day] * window_coeff
+
 /atom/movable/lighting_overlay
 	name			 = ""
 
@@ -99,7 +115,12 @@
 
 		qdel(src)
 		return
-	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.get_window_coeff()
+	var/client_tint = daylight_on_client()
+	// On the client the mask's alpha is the cell's window coefficient (the
+	// matrix's constant alpha below), so the plane master's matrix adds
+	// daylight times alpha: full outside, half indoors. BYOND folds the alpha
+	// var into a colour matrix, so the coefficient is written into the matrix.
+	var/TOD_lum = client_tint ? 0 : daylight_lum(T.get_window_coeff())
 	#ifdef OPENDREAM
 	blend_mode = BLEND_ADD
 	#endif
@@ -148,6 +169,9 @@
 		L[i + 0]   = adjusted_r * .
 		L[i + 1]   = adjusted_g * .
 		L[i + 2]   = adjusted_b * .
+
+	if (L.len >= 20)
+		L[20] = client_tint ? T.get_window_coeff() : 1
 
 	var/new_luminosity = (anylums > 0)
 

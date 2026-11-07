@@ -225,36 +225,32 @@ class StorageRuntime(unittest.TestCase):
                              ['tests/storage_runtime'])
         with patch.object(selector.subprocess, 'check_output', return_value=paths.split(b'\0')[0]+b'\0'):
             self.assertEqual(selector.introduced_tests('a'*40, 'b'*40, 'pull_request'), [])
-    def test_protected_sleep_closes_only_after_successful_move(self):
+    def test_bed_sleep_closes_storage_and_stays_in_place(self):
         install_storage()
-        old_turf=SimpleNamespace(x=4,y=5,z=6)
-        sleep_turf=SimpleNamespace(x=1,y=1,z=1)
+        turf=SimpleNamespace(x=4,y=5,z=6)
         class Sleeper(Actor):
-            def __init__(self,move_ok):
-                super().__init__();self.loc=old_turf;self.move_ok=move_ok
-                self.inducedSSD=False;self.buckled=None;self.sleeping=0
-                self.lastx=8;self.lasty=9;self.lastz=10;self.updated=0
-            def release_protected_sleep_buckle(self):return True
-            def drop_item(self):return
-            def forceMove(self,target):
-                if self.move_ok:self.loc=target
+            def __init__(self):
+                super().__init__();self.loc=turf;self.stat=0
+                self.inducedSSD=False;self.buckled=None;self.sleeping=0;self.updated=0
             def sleep_update(self):self.updated+=1
-        env={'persistence_sleep_transfer_blocked':lambda:False,
-             'get_turf':lambda actor:actor.loc,'locate':lambda *coords:sleep_turf}
-        enter=A.project(SLEEP,'/mob/living/human/proc/enter_protected_sleep','src',env,method=True)
-        actor=Sleeper(True);bag=FakeBag();bag.open(actor)
+        blocked=[False]
+        env={'persistence_sleep_transfer_blocked':lambda:blocked[0],'DEAD':2}
+        enter=A.project(SLEEP,'/mob/living/human/proc/enter_bed_sleep','src',env,method=True)
+        actor=Sleeper();bag=FakeBag();bag.open(actor)
         self.assertTrue(enter(actor));self.assertIsNone(actor.s_active)
         self.assertNotIn(actor,bag.is_seeing);self.assertEqual(actor.updated,1)
-        actor=Sleeper(False);bag=FakeBag();bag.open(actor);before=set(actor.client.screen)
+        self.assertIs(actor.loc,turf);self.assertEqual((actor.sleeping,actor.inducedSSD),(66,True))
+        blocked[0]=True;actor=Sleeper();bag=FakeBag();bag.open(actor);before=set(actor.client.screen)
         self.assertFalse(enter(actor));self.assertIs(actor.s_active,bag)
         self.assertIn(actor,bag.is_seeing);self.assertEqual(actor.client.screen,before)
-        self.assertEqual((actor.lastx,actor.lasty,actor.lastz,actor.sleeping,actor.inducedSSD),(8,9,10,0,False))
+        self.assertEqual((actor.sleeping,actor.inducedSSD),(0,False))
 
     def test_sleep_and_login_cleanup_are_at_success_boundaries(self):
-        protected=body(SLEEP,'/mob/living/human/proc/enter_protected_sleep')
-        self.assertLess(protected.index('get_turf(src) != sleep_turf'),protected.index('s_active.close(src)'))
-        self.assertLess(protected.index('s_active.close(src)'),protected.index('sleep_update()'))
-        self.assertEqual(protected.count('s_active.close(src)'),1)
+        plain=body(SLEEP,'/mob/living/human/proc/enter_bed_sleep')
+        self.assertLess(plain.index('inducedSSD = TRUE'),plain.index('s_active.close(src)'))
+        self.assertLess(plain.index('s_active.close(src)'),plain.index('sleep_update()'))
+        self.assertEqual(plain.count('s_active.close(src)'),1)
+        self.assertNotIn('forceMove',plain)
         saved=body(BED,'/mob/living/human/proc/enter_saved_bed_sleep')
         self.assertLess(saved.index('inducedSSD = TRUE'),saved.index('s_active.close(src)'))
         self.assertLess(saved.index('s_active.close(src)'),saved.index('sleep_update()'))

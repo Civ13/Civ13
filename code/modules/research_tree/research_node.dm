@@ -763,8 +763,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (13) ---
+		// --- electricity (15) ---
 		"/obj/item/connector" = "electricity",
+		"/obj/item/connector/bus_tie" = "electricity",
+		"/obj/item/connector/riser" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",

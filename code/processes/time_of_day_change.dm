@@ -56,6 +56,16 @@
 // players saw as stuttering movement. The copy keeps for-in's snapshot.
 /process/time_of_day_change/proc/apply_daylight(target, revision)
 	var/work = 0
+	// Daylight on the client (daylight_on_client): the overlays never carry
+	// the time of day, so after the first reveal nothing per turf changes.
+	// Each client's light mask plane master takes the new tint on its next
+	// backdrop (Life calls update_lighting_plane every two seconds); the
+	// players online now get it at once.
+	if (daylight_on_client() && setup_lighting)
+		for (var/client/C in clients)
+			if (C.mob)
+				C.mob.update_lighting_plane()
+		return TRUE
 	var/list/sweep_overlays = lighting_overlay_list.Copy()
 	for (var/overlay_index = 1, overlay_index <= sweep_overlays.len, overlay_index++)
 		var/atom/movable/lighting_overlay/LO = sweep_overlays[overlay_index]
@@ -67,6 +77,9 @@
 				return FALSE
 	sweep_overlays = null
 	setup_lighting = TRUE
+	// With daylight on the client this first sweep still runs: an overlay no
+	// light has touched yet carries the default matrix and full alpha, and
+	// only update_overlay gives it its cell's window coefficient.
 
 	var/m_lighting_z = max_lighting_z()
 	var/list/sweep_turfs = turfs.Copy()

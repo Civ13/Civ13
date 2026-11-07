@@ -1835,6 +1835,8 @@ RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/ora
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,cable riser,/obj/item/connector/riser,2,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,bus tie switch,/obj/item/connector/bus_tie,2,35,0,1,electrical,105,0,0,8,null
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 

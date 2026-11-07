@@ -35,4 +35,7 @@
 		return null
 	mask.MapColors(arglist(sample))
 	var/rgb = mask.GetPixel(16, 16)
+	// With daylight on the client the mask's alpha is a daylight weight, not a colour.
+	if(istext(rgb) && length(rgb) == 9)
+		rgb = copytext(rgb, 1, 8)
 	return istext(rgb) && length(rgb) == 7 ? rgb : null

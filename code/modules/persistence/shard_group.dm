@@ -5,6 +5,8 @@
 // scripts/shard-group/shard_group.py; see docs/sharded-worlds.md.
 
 #define SHARD_POLL_INTERVAL 600
+// The doorman refreshes every 30 s; an older entry means it lost the world.
+#define SHARD_DOORMAN_FRESH_SECONDS 90
 #define SHARD_MAX_REGIONS 16
 
 var/global/datum/shard_group/shard_group = new
@@ -172,7 +174,9 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	peer["checked"] = now
 	var/list/reply = null
-	if(istext(answer))
+	if(islist(answer)) // the doorman's copy of the peer's answer (poll_once)
+		reply = answer
+	else if(istext(answer))
 		try
 			reply = json_decode(answer)
 		catch
@@ -333,6 +337,12 @@ var/global/datum/shard_group/shard_group = new
 		if(islist(entry) && entry["state"] != "awake" && (entry["state"] != "waking" || !poll_peer(id)))
 			record_sleeping(id, entry, world.time)
 			continue
+		// An awake peer on this host: the doorman asked it within the last
+		// half minute, so its answer is read from there. world.Export blocks
+		// this world for the whole round trip, spawn() or not (2026-11-07).
+		if(islist(entry) && entry["state"] == "awake" && islist(entry["region"]) && isnum(entry["cached_age"]) && entry["cached_age"] <= SHARD_DOORMAN_FRESH_SECONDS)
+			record(id, entry["region"], world.time)
+			continue
 		if(!islist(entry) || entry["state"] == "awake")
 			poll_peer(id)
 
@@ -468,4 +478,5 @@ var/global/datum/shard_group/shard_group = new
 	src << browse(html, "window=shard_regions;size=520x420")
 
 #undef SHARD_POLL_INTERVAL
+#undef SHARD_DOORMAN_FRESH_SECONDS
 #undef SHARD_MAX_REGIONS

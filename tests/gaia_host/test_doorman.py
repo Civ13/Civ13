@@ -44,6 +44,13 @@ class Machine(base.FakeMachine):
         self.status_calls += 1
         return json.dumps({'players': self.clients, 'map_name': 'Gaia', 'map_gamemode': 'Nomads'})
 
+    def region_topic(self, port):
+        if self.suspended:
+            raise OSError('frozen')
+        if getattr(self, 'region', None) is None:
+            return json.dumps({'group': None})
+        return json.dumps(dict(self.region, players=self.clients))
+
 
 def request(query):
     payload = b'\0' * 5 + query.encode('ascii') + b'\0'
@@ -73,6 +80,24 @@ class DoormanTests(base.GaiaHostTests):
         self.assertEqual((entry['state'], entry['map_name'], entry['players'], entry['cached_age']), ('asleep', 'Gaia', 0, 120))
         self.assertFalse(entry['cold'])  # frozen in memory: thaws at once
         self.assertEqual(self.machine.suspended, 1)
+
+    def test_host_status_carries_the_region_answer_of_a_grouped_world(self):
+        # Regions read each other from here instead of a blocking world.Export poll.
+        self.running()
+        self.door.step()
+        self.assertNotIn('region', self.ask('host_status=1')['instances'][0])
+        self.machine.region = {'group': 'earth', 'region': 'gaia', 'name': 'Gaia', 'kind': 'MAINLAND', 'map': 'Gaia',
+                               'ordinal_age': 8, 'secret': 'never copied'}
+        self.clock[0] += doorman.REFRESH_SECONDS
+        self.door.step()
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual(entry['region'], {'group': 'earth', 'region': 'gaia', 'name': 'Gaia', 'kind': 'MAINLAND',
+                                           'map': 'Gaia', 'ordinal_age': 8, 'players': self.machine.clients})
+        self.machine.region = 'not json at all'
+        self.machine.region_topic = lambda port: 'garbage'
+        self.clock[0] += doorman.REFRESH_SECONDS
+        self.door.step()
+        self.assertNotIn('region', self.ask('host_status=1')['instances'][0])
 
     def test_wake_thaws_once_and_reads_waking_until_the_world_answers(self):
         self.running()
