@@ -275,7 +275,7 @@ class PlayerStatusSources(unittest.TestCase):
                           restart_hold=False, restart_busy=False, restart_phase=None,
                           persistence_busy=False, lifecycle_busy=False, maintenance_pending=False,
                           ticker_known=True, map_known=True, round_state=3, players_can_join=True,
-                          entry_status='open', character_unconfirmed=False)
+                          entry_status='open', character_unconfirmed=False, standby=False, moving=False)
 
     def test_phases_and_hold_take_precedence_without_percentages(self):
         cases = [
@@ -294,6 +294,8 @@ class PlayerStatusSources(unittest.TestCase):
             ({'restart_busy':True,'restart_phase':'shutdown'}, 'Server shutdown is in progress.'),
             ({'maintenance_pending':True}, 'Maintenance requested, shutdown is not yet confirmed.'),
             ({'recovery_hold':True,'kind':'load'}, 'World recovery needs administrator attention.'),
+            ({'moving':True,'restart_busy':True,'restart_phase':'handover_wait'}, 'The world is moving to the updated server.'),
+            ({'standby':True,'restart_hold':True}, 'Standby server is waiting for the world to move over.'),
         ]
         for change, expected in cases:
             with self.subTest(change=change):
@@ -316,6 +318,8 @@ class PlayerStatusSources(unittest.TestCase):
             ({'entry_status':'unknown'}, 'Joining status is unavailable.'),
             ({'entry_status':'locked'}, 'Joining is locked by an administrator.'),
             ({'character_unconfirmed':True}, 'Character recovery is not confirmed - joining may be delayed.'),
+            ({'moving':True,'restart_busy':True}, 'The world is moving to the updated server - reconnect in a few minutes.'),
+            ({'standby':True,'restart_hold':True}, 'The world is moving to the updated server - reconnect in a few minutes.'),
         ]
         for change, expected in cases:
             with self.subTest(change=change):

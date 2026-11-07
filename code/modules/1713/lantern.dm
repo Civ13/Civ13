@@ -8,7 +8,11 @@
 	off_state = "lantern"
 	value = 12
 	fuel = 0 //starts empty
+	max_fuel = 3600 // one hour of oil
 	unlimited = FALSE
+	uses_batteries = FALSE
+	refuel_reagents = list("petroleum" = 120, "olive_oil" = 120, "fat_oil" = 120, "cornoil" = 120)
+	empty_message = "is out of oil"
 
 /obj/item/flashlight/lantern/copper
 	name = "copper lamp"
@@ -33,6 +37,7 @@
 	off_state = "etsy"
 	value = 16
 	fuel = 0 //starts empty
+	max_fuel = 5400 // several wicks, a bigger reservoir
 	unlimited = FALSE
 
 /obj/item/flashlight/lantern/bronze/update_icon()
@@ -58,28 +63,8 @@
 		user.update_action_buttons()
 		return TRUE
 	else if (fuel <= 0)
-		visible_message("<span class='warning'>\The [src] is out of fuel!</span>")
+		to_chat(user, "<span class='warning'>\The [src] [empty_message]. Fill it with [refuel_hint()].</span>")
 
-/obj/item/flashlight/lantern/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers))
-		if (W.reagents.has_reagent("petroleum", 1))
-			var/regamt = W.reagents.get_reagent_amount("petroleum")
-			W.reagents.remove_reagent("petroleum", regamt)
-			fuel += (regamt*120)
-			to_chat(user, "You refuel the lantern with petroleum.")
-			return
-		else if (W.reagents.has_reagent("olive_oil", 1))
-			var/regamt = W.reagents.get_reagent_amount("olive_oil")
-			W.reagents.remove_reagent("olive_oil", regamt)
-			fuel += (regamt*120)
-			to_chat(user, "You refuel the lantern with olive oil.")
-			return
-		else if (W.reagents.has_reagent("fat_oil", 1))
-			var/regamt = W.reagents.get_reagent_amount("fat_oil")
-			W.reagents.remove_reagent("fat_oil", regamt)
-			fuel += (regamt*120)
-			to_chat(user, "You refuel the lantern with fat oil.")
-			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
 	if (loc != user && anchored)
 		if (on)
@@ -99,6 +84,8 @@
 
 /obj/item/flashlight/New()
 	..()
+	if (!max_fuel)
+		max_fuel = fuel
 	if (!unlimited)
 		do_torch()
 
@@ -117,6 +104,7 @@
 	icon_state = "oldlamp"
 	anchored = FALSE
 	unlimited = TRUE
+	uses_batteries = FALSE
 	fuel = INFINITY
 
 /obj/item/flashlight/lamp/littlelamp
@@ -125,6 +113,7 @@
 	off_state = "littlelamp"
 	icon_state = "littlelamp"
 	unlimited = TRUE
+	uses_batteries = FALSE
 	fuel = INFINITY
 
 /obj/item/flashlight/lamp/littlelamp/desklamp
@@ -133,6 +122,7 @@
 	off_state = "lampdesk"
 	icon_state = "lampdesk"
 	unlimited = TRUE
+	uses_batteries = FALSE
 	fuel = INFINITY
 
 /obj/item/flashlight/lantern/on/anchored
@@ -146,7 +136,7 @@
 /obj/item/flashlight/torch
 	name = "torch"
 	icon_state = "torch"
-	desc = "A simple wood stick with animal fat on top."
+	desc = "A tool handle wrapped in fat or oil. Dip it in animal fat or oil to keep it burning; once it burns down, the handle is left."
 	brightness_on = 4			// luminosity when on
 	light_color = rgb(254, 200, 200) // red tint
 	on_state = "torch-on"
@@ -154,6 +144,12 @@
 	item_state = "torch"
 	value = 6
 	fuel = 300 // 5 mins
+	max_fuel = 600
+	uses_batteries = FALSE
+	refuel_reagents = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "petroleum" = 30)
+	empty_message = "has burnt down"
+	// The handle the torch was wrapped around; it is left when the torch burns out.
+	var/handle_material = "wood"
 
 /obj/item/flashlight/torch/update_icon()
 	..()
@@ -183,8 +179,12 @@
 	icon_state = "tikitorch"
 	value = 10
 	fuel = 600 // 10 mins
+	max_fuel = 1800
 	anchored = FALSE
 	flammable = TRUE
+	uses_batteries = FALSE
+	refuel_reagents = list("fat_oil" = 60, "olive_oil" = 60, "cornoil" = 60, "petroleum" = 60)
+	empty_message = "is out of oil"
 
 /obj/item/flashlight/tiki_torch/update_icon()
 	..()
@@ -220,16 +220,9 @@
 			do_torch()
 		else if (fuel <= 0 && on)
 			visible_message("\The [src] goes off.")
-			if (istype(src, /obj/item/flashlight/torch) || istype(src, /obj/item/flashlight/tiki_torch))
-				// A torch burning out in a mount must not leave the mount lit.
-				if (istype(loc, /obj/item/weapon/storage/internal))
-					refresh_light_holder_later(loc)
-				qdel(src)
+			if (burn_out_light())
 				return
-			else
-				on = FALSE
-				update_icon()
-				do_torch()
+			do_torch()
 		else if (on == FALSE)
 			do_torch()
 
@@ -244,7 +237,6 @@
 /obj/item/flashlight/tiki_torch/on/anchor/unlimited
 	unlimited = TRUE
 /obj/item/flashlight/flashlight
-	unlimited = TRUE
 	name = "flashlight"
 	desc = "an electrical flashlight."
 	icon_state = "flashlight_off"
@@ -252,10 +244,8 @@
 	on_state = "flashlight_on"
 	off_state = "flashlight_off"
 	slot_flags = SLOT_BELT | SLOT_ID | SLOT_POCKET
-	unlimited = TRUE
 
 /obj/item/flashlight/modern
-	unlimited = TRUE
 	name = "flashlight"
 	desc = "an electrical flashlight."
 	icon_state = "modernlight_off"
@@ -275,7 +265,6 @@
 	light_color = "#ad2005"
 
 /obj/item/flashlight/militarylight
-	unlimited = TRUE
 	name = "military flashlight"
 	desc = "An electrical military flashlight. Comes with adjustable lenses."
 	icon_state = "militarylight_off"
@@ -322,7 +311,6 @@
 			return
 
 /obj/item/flashlight/militarylight/alt
-	unlimited = TRUE
 	icon_state = "militarylightalt_off"
 	item_state = "militarylightalt"
 	on_state = "militarylightalt_on"
@@ -365,9 +353,12 @@
 
 
 /obj/item/flashlight/japflashlight
-	unlimited = TRUE
 	name = "japanese dynamo flashlight"
-	desc = "A japanese flashlight with a dynamo mechanism and adjustable light intensity."
+	desc = "A japanese flashlight with a dynamo mechanism and adjustable light intensity. Wind the dynamo to charge it."
+	fuel = 600
+	max_fuel = 600
+	uses_batteries = FALSE
+	empty_message = "needs winding"
 	icon_state = "flashlightjap_off"
 	item_state = "militarylight"
 	on_state = "flashlightjap_on"

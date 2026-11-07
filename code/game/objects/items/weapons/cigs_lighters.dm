@@ -501,6 +501,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/sound_toggleON = 'sound/items/lighter_on.ogg'
 	var/sound_toggleOFF = 'sound/items/lighter_off.ogg'
 	flammable = TRUE
+	var/fuel = 1200 // seconds lit
+	var/max_fuel = 1200
+	var/list/refuel_reagents = list("gasoline" = 60, "ethanol" = 30) // id = seconds per unit
 
 /obj/item/weapon/flame/lighter/bullet
 	name = "bullet lighter"
@@ -509,14 +512,18 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	item_state = "bullet"
 	sound_toggleON = 'sound/items/zippo_on.ogg'
 	sound_toggleOFF = 'sound/items/zippo_off.ogg'
+	fuel = 2400
+	max_fuel = 2400
 
 /obj/item/weapon/flame/lighter/zippo
 	name = "\improper Zippo lighter"
-	desc = "The zippo."
+	desc = "The zippo. Refill it with gasoline or alcohol."
 	icon_state = "zippo"
 	item_state = "zippo"
 	sound_toggleON = 'sound/items/zippo_on.ogg'
 	sound_toggleOFF = 'sound/items/zippo_off.ogg'
+	fuel = 2400
+	max_fuel = 2400
 
 /obj/item/weapon/flame/lighter/random
 	New()
@@ -528,6 +535,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if (!base_state)
 		base_state = icon_state
 	if (user.r_hand == src || user.l_hand == src)
+		if (!lit && fuel <= 0)
+			playsound(src, sound_toggleON, 30, FALSE)
+			to_chat(user, "<span class='warning'>\The [src] sparks, but it is out of fluid.</span>")
+			return
 		if (!lit)
 			playsound(src, sound_toggleON, 30, FALSE)
 			lit = TRUE
@@ -574,4 +585,22 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		..()
 
 /obj/item/weapon/flame/lighter/process()
-	return
+	return process_interval(2)
+
+/obj/item/weapon/flame/lighter/process_interval(configured_seconds = 2)
+	if (!lit)
+		return PROCESS_KILL
+	fuel = max(0, fuel - configured_seconds)
+	if (fuel <= 0)
+		lit = FALSE
+		if (!base_state)
+			base_state = initial(icon_state)
+		icon_state = "[base_state]"
+		item_state = "[base_state]"
+		set_light(0)
+		visible_message("\The [src] sputters out.")
+		if (ismob(loc))
+			var/mob/M = loc
+			M.update_inv_l_hand()
+			M.update_inv_r_hand()
+		return PROCESS_KILL
