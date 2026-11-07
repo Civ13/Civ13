@@ -190,6 +190,22 @@ and its phase) that refreshes every five seconds while an action runs. Only the
 action name reaches the script. `tests/LocalHostingTests.cs` injects process
 starts, update steps, control answers and port probes, so it launches nothing.
 
+### Host settings
+
+With `control.group` set, the Host server tab's group row adds **Host settings**.
+It edits the host's own files in the group config's overlay folders: the group's
+`overlay` (shared by every region) and each region's. Those folders are outside the
+Civ13 checkout, so a pull or update never replaces them. Each folder offers
+`config/config.local.txt` (only the lines this host changes in the repository's
+`config/config.txt`; see `scripts/shard-group/README.md`, "Host config settings"),
+`config/host.txt`, and the other `.txt` and `.json` files already in its `config`
+folder. Files setup writes and kept copies are not offered. **Save** checks the
+text (setting lines, valid JSON) and keeps the old version as `<name>.previous`.
+**Save and apply** also runs `shard_group.py config-apply` for that folder's
+regions, so they get the change without a rebuild; a running world uses it from
+its next restart. `HostSettings.cs` holds the file rules and is covered by
+`tests/LocalHostingTests.cs`.
+
 ### Civilizationbot tab and Updates
 
 When `bot` is present the window adds a **Civilizationbot** tab. It drives the
