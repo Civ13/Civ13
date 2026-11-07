@@ -159,6 +159,12 @@ SUITES = {
         'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
                   'code/modules/zombie_city/'), 'shared_paths': (
             'code/__defines/maps.dm', 'civ13.dme')},
+    # Research bench intent routing, timed maintenance and slot cleanup; offline only.
+    'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
+        'paths': ('tests/research_bench/',), 'shared_paths': (
+            'code/modules/research_tree/research_bench.dm',
+            'code/modules/research_tree/research_faction.dm',
+            'code/modules/research_tree/_research_tree_defines.dm')},
     # Research bench staff appointments and director title; no BYOND runtime.
     'research_staff': {'files': ('tests/research_staff/test_research_staff.py',),
         'paths': ('tests/research_staff/',), 'shared_paths': (
