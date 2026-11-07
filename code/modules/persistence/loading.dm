@@ -65,8 +65,18 @@
 				prepare_saved_roof(null, roof["x"], roof["y"], z, roof["entry"], roof["type"], roof["switch"], roof["base"])
 				TICK_CHECK
 			continue
+		// A sparse level's unsaved cells hold nothing, so only its saved cells
+		// can carry a roof.
+		var/list/sparse = sparse_level_header(F)
+		var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
 		for(var/y = 1, y <= world.maxy, y++)
+			var/list/columns = sparse_cells ? sparse_cells["[y]"] : null
+			if(sparse_cells && !columns) continue
+			var/next_column = 1
 			for(var/x = 1, x <= world.maxx, x++)
+				if(columns)
+					if(next_column > columns.len || columns[next_column] != x) continue
+					next_column++
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Missing roof-validation turf")
 				if(!ispath(level_entry_value(F, ref, "type"), /turf)) throw EXCEPTION("Invalid roof-validation turf")
@@ -512,6 +522,24 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
 #endif
+		var/list/sparse = sparse_level_header(F)
+		if(sparse)
+			// Unsaved cells are the baseline: a restored level already holds it,
+			// a reloaded one is reset to it. Saved cells take their saved type.
+			var/list/cells = sparse_level_cells(F, z, sparse)
+			var/baseline = sparse["turf"]
+			for(var/y = 1, y <= world.maxy, y++)
+				var/list/columns = cells["[y]"]
+				var/next = 1
+				for(var/x = 1, x <= world.maxx, x++)
+					var/turf/T = locate(x,y,z)
+					if(columns && next <= columns.len && columns[next] == x)
+						next++
+						T.ChangeTurf(level_entry_value(F, F["/map/[z]/[y]/[x]"], "type"), FALSE, FALSE)
+					else if(T.type != baseline)
+						T.ChangeTurf(baseline, FALSE, FALSE)
+				TICK_CHECK
+			continue
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/ref = F["/map/[z]/[y]/[x]"]
@@ -538,11 +566,19 @@
 #endif
 			saved_turfs = list()
 			// Index every turf before recursive contents/variable references load.
-			for(var/ty = 1, ty <= world.maxy, ty++)
-				for(var/tx = 1, tx <= world.maxx, tx++)
-					savefile.cd = "/map/[B]/[ty]"
-					var/ref = savefile["[tx]"]
-					saved_turfs["[ref]"] = locate(tx, ty, B)
+			var/list/sparse_level = sparse_level_header(savefile)
+			if(sparse_level)
+				var/list/cells = sparse_level_cells(savefile, B, sparse_level)
+				for(var/row in cells)
+					for(var/tx in cells[row])
+						saved_turfs["[savefile["/map/[B]/[row]/[tx]"]]"] = locate(tx, text2num(row), B)
+					TICK_CHECK
+			else
+				for(var/ty = 1, ty <= world.maxy, ty++)
+					for(var/tx = 1, tx <= world.maxx, tx++)
+						savefile.cd = "/map/[B]/[ty]"
+						var/ref = savefile["[tx]"]
+						saved_turfs["[ref]"] = locate(tx, ty, B)
 			savefile.cd = "/map"
 			TICK_CHECK
 			for(var/z in savefile.dir)
@@ -845,17 +881,29 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 			var/list/human_direct_parent_counts = list()
 			var/list/human_direct_entries = list()
 #endif
-			F.cd = "/map"
-			if(F.dir.len != 1 || !("[z]" in F.dir))
-				throw EXCEPTION("Unexpected z-level grid in [z].sav")
-			F.cd = "/map/[z]"
-			if(F.dir.len != world.maxy)
-				throw EXCEPTION("Saved height differs from world.maxy on z=[z]")
+			// A sparse level's grid holds its saved cells only; the header and
+			// each coordinate are checked by sparse_level_cells (functions.dm).
+			var/list/sparse = sparse_level_header(F)
+			var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
+			if(!sparse)
+				F.cd = "/map"
+				if(F.dir.len != 1 || !("[z]" in F.dir))
+					throw EXCEPTION("Unexpected z-level grid in [z].sav")
+				F.cd = "/map/[z]"
+				if(F.dir.len != world.maxy)
+					throw EXCEPTION("Saved height differs from world.maxy on z=[z]")
 			for(var/y = 1, y <= world.maxy, y++)
-				F.cd = "/map/[z]/[y]"
-				if(F.dir.len != world.maxx)
-					throw EXCEPTION("Incomplete row at y=[y], z=[z]")
+				var/list/columns = sparse_cells ? sparse_cells["[y]"] : null
+				if(sparse_cells && !columns) continue
+				if(!sparse)
+					F.cd = "/map/[z]/[y]"
+					if(F.dir.len != world.maxx)
+						throw EXCEPTION("Incomplete row at y=[y], z=[z]")
+				var/next_column = 1
 				for(var/x = 1, x <= world.maxx, x++)
+					if(columns)
+						if(next_column > columns.len || columns[next_column] != x) continue
+						next_column++
 					F.cd = "/map/[z]/[y]"
 					var/ref = F["[x]"]
 					if(!isnum(ref) || ref < 1 || ref != round(ref) || turf_refs["[ref]"])
@@ -1158,10 +1206,8 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		for(var/ref in wanted)
 			if("[level_entry_value(F, ref, "type")]" != wanted[ref])
 				throw EXCEPTION("Cross-level link target differs from its saved level")
-		var/list/queue = list()
+		var/list/queue = level_turf_refs(F, z)
 		var/list/seen = list()
-		for(var/y = 1, y <= world.maxy, y++)
-			for(var/x = 1, x <= world.maxx, x++) queue += F["/map/[z]/[y]/[x]"]
 		var/cursor = 1
 		while(cursor <= queue.len && wanted.len)
 			TICK_CHECK

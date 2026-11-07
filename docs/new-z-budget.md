@@ -1,14 +1,21 @@
 # Dynamic level allocation budget
 
 Production refuses new native grid growth with an explicit `UNMEASURED`
-reason, before native allocation, with one exception: a map that opts into a
+reason, before native allocation, with two exceptions. A map that opts into a
 dug underground (`dig_down_underground`, see `code/modules/multiz/dug_underground.dm`)
 may add, and restore, exactly one cave level below its single compiled level
 while the whole world stays within Gaia's measured live profile (500 x 350 x 2 =
-350,000 cells, `NEW_Z_MEASURED_CELLS`). Every other purpose still has no
-validated incremental/player/save/address-space headroom profile. Roof construction can
-still consume its roofing item and provide shelter without adding a plane or an
-upper floor. Existing planes remain usable. No host configuration can opt out.
+350,000 cells, `NEW_Z_MEASURED_CELLS`). A map that opts into one open-air
+building level (`building_levels = 1`, see `code/modules/multiz/building_admission.dm`;
+Gaia does) may add, and restore, exactly one roof-added level while the world
+stays within 525,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's 500 x 350 x 3).
+That level is saved sparsely: its file keeps only the cells that differ from
+open air in the level's area (see the persistence guide), so the extra plane
+adds kilobytes to a save instead of a full level file. Every other purpose
+still has no validated incremental/player/save/address-space headroom profile.
+Roof construction can still consume its roofing item and provide shelter
+without adding a plane or an upper floor. Existing planes remain usable. No
+host configuration can opt out.
 The arithmetic limits below are additional bounds, not memory-admission evidence.
 
 All production native z growth goes through `building_allocate_level` and the

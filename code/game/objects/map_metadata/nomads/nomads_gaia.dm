@@ -5,6 +5,7 @@
 	lobby_icon = "icons/lobby/gaia.png"
 	songs = list("In the beginning there was nothing:1" = "sound/music/in_the_beginning.ogg",)
 	research_active = TRUE
+	building_levels = 1
 
 
 // Gaia's authored outdoors are on level 2; level 1 is underground. Do not use

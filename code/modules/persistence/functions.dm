@@ -1612,3 +1612,134 @@ var/global/datum/persistence_admission_identity
 		release_durable_world()
 		last_error = "[e] on [e.file]:[e.line]"
 		return FALSE
+
+// Sparse levels. An added building level starts as nothing but open air in
+// one area, so its file keeps only the cells that differ from that baseline:
+// a changed turf type, a non-default saved field, saveable contents or another
+// area. The loader regenerates the baseline (the restore allocation already
+// fills a new level with it) and applies the saved cells on top. The marker
+// in the level index, never the level number, says whether a file is sparse,
+// so a restore reads a file written before the level was allocated.
+/map_storage
+	var/list/sparse_level_override // fixtures: "[z]" -> baseline turf type
+
+// The kind of sparse level z is saved as, or null for a full level.
+/map_storage/proc/sparse_level_kind(z)
+	if(islist(sparse_level_override)) return sparse_level_override["[z]"] ? "fixture" : null
+	if(z <= building_base_maxz()) return null
+	var/dug = text2path("/proc/dug_underground_z")
+	if(dug && call(dug)() == z) return null // Generated caves are random, not a baseline.
+	return "building"
+
+/map_storage/proc/sparse_baseline_turf(kind, z)
+	if(kind == "fixture") return sparse_level_override["[z]"]
+	if(kind == "building") return text2path("/turf/sky/building")
+	return null
+
+// The area the level's unchanged cells share: the area of the first cell at
+// the baseline, or null when every cell differs (the level is then saved in
+// full under its sparse header).
+/map_storage/proc/sparse_baseline_area(z, baseline_type)
+	for(var/y = 1, y <= world.maxy, y++)
+		for(var/x = 1, x <= world.maxx, x++)
+			var/turf/T = locate(x, y, z)
+			if(T.type == baseline_type && sparse_turf_at_baseline(T) && istype(T.loc, /area)) return T.loc
+		TICK_CHECK
+	return null
+
+// A cell the loader regenerates exactly: the baseline turf in the baseline
+// area, every saved field at its compiled default and nothing to save inside.
+/map_storage/proc/sparse_baseline_cell(turf/T, baseline_type, area/baseline_area)
+	if(!T || T.type != baseline_type || !baseline_area || T.loc != baseline_area) return FALSE
+	if(!sparse_turf_at_baseline(T)) return FALSE
+	for(var/atom/movable/M in T)
+		if(M.loc != T || !M.should_save) continue
+		var/ignored = FALSE
+		for(var/type in ignore_types)
+			if(istype(M, type))
+				ignored = TRUE
+				break
+		if(!ignored) return FALSE
+	return TRUE
+
+// Mirrors the field rule of BuildVarDirectory: a field is written unless it
+// is runtime-only, structural, or allowlisted and still at its default.
+/map_storage/proc/sparse_turf_at_baseline(turf/T)
+	if(!T.should_save) return TRUE
+	if(T.persistence_export_frame) return FALSE
+	var/list/default_fields = T.persistence_field_allowlist()
+	for(var/v in T.get_saved_vars())
+		if(T.persistence_runtime_var(v)) continue
+		switch(v)
+			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
+				continue
+		if(!(v in T.vars)) continue
+		if(default_fields && (v in default_fields) && persistence_default_scalar(T.vars[v]) && T.vars[v] == initial(T.vars[v])) continue
+		return FALSE
+	return TRUE
+
+// The sparse header of a level index, or null for a full level. Presence is
+// checked through the directory: reading an absent savefile key creates it.
+/map_storage/proc/sparse_level_header(savefile/F)
+	F.cd = "/"
+	if(!("sparse" in F.dir)) return null
+	F.cd = "/sparse"
+	var/list/keys = F.dir.Copy()
+	F.cd = "/"
+	for(var/key in list("kind", "turf", "cells"))
+		if(!(key in keys)) throw EXCEPTION("Incomplete sparse level header")
+	var/list/header = list("kind" = F["/sparse/kind"], "turf" = F["/sparse/turf"], "cells" = F["/sparse/cells"], "zone" = ("zone" in keys) ? F["/sparse/zone"] : null)
+	if(!istext(header["kind"]) || !ispath(header["turf"], /turf) || !isnum(header["cells"]) || header["cells"] < 0 || header["cells"] != round(header["cells"]) || (!isnull(header["zone"]) && !istext(header["zone"]))) throw EXCEPTION("Invalid sparse level header")
+	return header
+
+// The saved cells of a sparse level: a list of row numbers, each holding its
+// column numbers in ascending order, taken from the grid directories. Every
+// coordinate is checked against the world and counted against the header.
+/map_storage/proc/sparse_level_cells(savefile/F, z, list/header)
+	var/list/cells = list()
+	var/count = 0
+	F.cd = "/"
+	var/list/top = F.dir.Copy()
+	if("map" in top)
+		F.cd = "/map"
+		var/list/levels = F.dir.Copy()
+		if(levels.len != 1 || !("[z]" in levels)) throw EXCEPTION("Unexpected z-level grid in [z].sav")
+		F.cd = "/map/[z]"
+		var/list/rows = list()
+		for(var/row in F.dir.Copy())
+			var/y = text2num(row)
+			if(!isnum(y) || "[y]" != row || y < 1 || y > world.maxy || y != round(y)) throw EXCEPTION("Sparse level row outside the world on z=[z]")
+			rows[row] = TRUE
+		// Ascending order without a sort helper: the grids are small.
+		for(var/y = 1, y <= world.maxy, y++)
+			if(!rows["[y]"]) continue
+			F.cd = "/map/[z]/[y]"
+			var/list/present = list()
+			for(var/column in F.dir.Copy())
+				var/x = text2num(column)
+				if(!isnum(x) || "[x]" != column || x < 1 || x > world.maxx || x != round(x)) throw EXCEPTION("Sparse level column outside the world on z=[z]")
+				present[column] = TRUE
+			var/list/columns = list()
+			for(var/x = 1, x <= world.maxx, x++)
+				if(present["[x]"]) columns += x
+			cells["[y]"] = columns
+			count += columns.len
+			TICK_CHECK
+	F.cd = "/"
+	if(header && header["cells"] != count) throw EXCEPTION("Sparse level cell count differs from its header on z=[z]")
+	return cells
+
+// Every turf reference a level's grid holds, for reachability walks. Full
+// levels list every cell; sparse levels list their saved cells only, since
+// a regenerated cell holds nothing.
+/map_storage/proc/level_turf_refs(savefile/F, z)
+	var/list/refs = list()
+	var/list/header = sparse_level_header(F)
+	if(header)
+		var/list/cells = sparse_level_cells(F, z, header)
+		for(var/row in cells)
+			for(var/x in cells[row]) refs += F["/map/[z]/[row]/[x]"]
+		return refs
+	for(var/y = 1, y <= world.maxy, y++)
+		for(var/x = 1, x <= world.maxx, x++) refs += F["/map/[z]/[y]/[x]"]
+	return refs

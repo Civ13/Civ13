@@ -154,10 +154,8 @@
 			if(text2num(parts[1]) == z) wanted[parts[2]] = TRUE
 		if(!wanted.len) continue
 		var/savefile/F = new("map_saves/[z].sav")
-		var/list/queue = list()
+		var/list/queue = level_turf_refs(F, z)
 		var/list/seen = list()
-		for(var/y = 1, y <= world.maxy, y++)
-			for(var/x = 1, x <= world.maxx, x++) queue += F["/map/[z]/[y]/[x]"]
 		var/cursor = 1
 		while(cursor <= queue.len && wanted.len)
 			TICK_CHECK
