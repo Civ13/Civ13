@@ -73,6 +73,10 @@
 
 /turf/floor/dirt/underground/collapse_check()
 	spawn(50)
+		// ChangeTurf keeps the turf object: a tile filled or re-floored during
+		// the delay no longer has mine_supported() (undefined proc runtime).
+		if (!istype(src, /turf/floor/dirt/underground))
+			return
 		var/area/A = get_area(src)
 		if (A.location == AREA_INSIDE)
 			var/supportfound = mine_supported()

@@ -86,6 +86,8 @@
 	if (!istype(W, /obj/item/weapon/reagent_containers))
 		if (!W.force)
 			return attack_hand(user)
+		if (!material) // rock walls carry no material datum; nothing here can be damaged
+			return
 		var/dam_threshhold = material.integrity
 		var/dam_prob = min(100,material.hardness*1.5)
 		if (dam_prob < 100 && W.force > (dam_threshhold/10))
