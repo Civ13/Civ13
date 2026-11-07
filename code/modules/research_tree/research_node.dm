@@ -1511,8 +1511,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/banner/faction/banner_a" = "regalia",
 		"/obj/structure/banner/faction/banner_b" = "regalia",
 		"/obj/structure/flag/pole" = "regalia",
-		// --- reinforced_concrete (11) ---
+		// --- reinforced_concrete (13) ---
 		"/obj/covers/concretefloor" = "reinforced_concrete",
+		"/obj/item/weapon/bridge_span" = "reinforced_concrete",
+		"/obj/item/weapon/bridge_span/concrete" = "reinforced_concrete",
 		"/obj/covers/steelplating" = "reinforced_concrete",
 		"/obj/covers/steelplating/white" = "reinforced_concrete",
 		"/obj/covers/stone_wall/roman/modern" = "reinforced_concrete",

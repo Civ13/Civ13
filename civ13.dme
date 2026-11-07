@@ -790,6 +790,7 @@
 #include "code\modules\1713\apparel_worldwars.dm"
 #include "code\modules\1713\armor.dm"
 #include "code\modules\1713\automation.dm"
+#include "code\modules\1713\bridges.dm"
 #include "code\modules\1713\factory_arms.dm"
 #include "code\modules\1713\factory_belts.dm"
 #include "code\modules\1713\factory_chemistry.dm"
