@@ -692,7 +692,7 @@
 				client.add_stat("<b>Season:</b>", get_season_with_progress())
 				client.add_stat("<b>Wind:</b>", map.winddesc)
 //				client.add_stat("Weather:", get_weather())
-				client.add_stat("<b>Time of Day:</b>", time_of_day)
+				client.add_stat("<b>Time of Day:</b>", get_time_of_day_with_progress())
 
 			// give the client some information about how the server is running
 			if (processes.ping_track && client)

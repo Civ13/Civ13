@@ -1395,6 +1395,7 @@
 #include "code\processes\throwing.dm"
 #include "code\processes\ticker.dm"
 #include "code\processes\time_of_day.dm"
+#include "code\processes\time_of_day_progress.dm"
 #include "code\processes\time_of_day_change.dm"
 #include "code\processes\time_track.dm"
 #include "code\processes\vote.dm"
