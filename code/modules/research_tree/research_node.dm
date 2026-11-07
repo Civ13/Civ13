@@ -494,7 +494,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/factory_belt_assembly/tunnel" = "automation",
 		"/obj/item/factory_belt_assembly/tunnel_exit" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",
-		// --- automobiles (13) ---
+		// --- automobiles (14) ---
+		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",
