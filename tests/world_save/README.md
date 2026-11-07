@@ -58,14 +58,16 @@ the saved-character/bed fixture remains preparation-only.
 
 ## Protected sleep transfers
 
-Protected sleep sends a body to a different z-level while preserving scalar
+This section describes the removed protected-sleep teleport, kept as a frozen
+fixture. It sent a body to a different z-level while preserving scalar
 return coordinates. A reciprocal `mob.buckled` / `bed.buckled_mob` relationship
 must be released through the normal unbuckle method before that transfer. The
 same release on wake supports a still-protected body left with the old distant
 bed link. A mismatched occupant or refused unbuckle rejects the transfer; it does
 not clear arbitrary pointers. A failed wake retains sleep protection for retry.
 
-The focused sleep fixture extracts the actual entry/wake helpers, production
+The focused sleep fixture takes the entry/wake helpers from
+`sleep_transfer_fixture/legacy_sleep_helpers.dm`, and the buckle release, production
 buckling methods and base forced movement, with narrow physiology/inventory and
 startup adapters. It checks normal and old-state transfers, other-occupant
 protection, refusal and persistence-busy paths, and a real format-3 save,

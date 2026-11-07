@@ -858,6 +858,10 @@ class SourcePathTests(unittest.TestCase):
             self.assertIn(f'client != {client} || {client}.mob != src', body)
         wake = extract(source, '/mob/living/human/verb/mob_wakeup')
         self.assertLess(wake.index('spawn(300)'), wake.index('inducedSSD = FALSE'))
+        # A body still in the old zone is returned before waking, never left there silently.
+        self.assertLess(wake.index('is_protected_sleep_location(src)'), wake.index('persistence_character_turf_safe(return_turf, src)'))
+        self.assertLess(wake.index('forceMove(return_turf)'), wake.index('inducedSSD = FALSE'))
+        self.assertIn('Ask an administrator to move you back.', wake)
         for retired in ('enter_protected_sleep', 'complete_protected_wakeup', 'locate(1,1,1)\n\tif (!return_turf'):
             self.assertNotIn(retired, source)
 
