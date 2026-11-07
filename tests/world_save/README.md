@@ -94,6 +94,12 @@ when it was recorded. A lookup reference can be recycled after deletion, so
 verify the current type and location before acting. This diagnostic does not
 authorize clearing a relationship or prove which relationship should be durable.
 
+The game no longer moves sleeping bodies to an off-map zone. The sleep-transfer
+probe keeps the last production copy of those two teleport helpers as a frozen
+fixture (`sleep_transfer_fixture/legacy_sleep_helpers.dm`) so it can still drive
+real buckling, movement, cross-level saves and these diagnostics; the buckle
+release and zone check it projects are still production code.
+
 ```sh
 python3 -B tests/world_save/test_sleep_transfer_sources.py -v
 python3 tests/world_save/run-sleep-transfer.py --prepare-only

@@ -1,4 +1,4 @@
-"""Source-bound save admission, movement and protected-sleep regressions."""
+"""Source-bound save admission, movement and in-place sleep regressions."""
 from types import MethodType, SimpleNamespace as NS
 import re
 import unittest
@@ -123,11 +123,9 @@ class Fixture:
         self.clear_launch = project(movable, '/atom/movable/proc/clear_throw_launch', 'src', self.env, True)
         self.raw = project(movable, '/atom/movable/proc/persistence_set_loc', 'src, destination', self.env, True)
         self.zmove = project(movable, '/atom/movable/proc/persistence_set_z', 'src, target_z', self.env, True)
-        self.enter = project(read(HELPERS), '/mob/living/human/proc/enter_protected_sleep', 'src', self.env, True)
-        self.wake = project(read(HELPERS), '/mob/living/human/proc/complete_protected_wakeup', 'src', self.env, True)
+        self.enter = project(read(HELPERS), '/mob/living/human/proc/enter_bed_sleep', 'src', self.env, True)
         self.sleep_methods = {name: project(read(DAMAGE), '/mob/proc/' + name, 'src, amount', self.env, True)
                               for name in ('Sleeping', 'SetSleeping', 'AdjustSleeping')}
-        self.zone = project(read(DAMAGE), '/mob/proc/in_protected_sleep_zone', 'src', self.env, True)
         self.stat = project(read('code/game/mob/mob.dm'), '/mob/proc/set_stat', 'src, new_stat', self.env, True)
         self.begin = project(functions, '/proc/begin_persistence_operation', 'storage, kind, transaction=None', self.env)
         self.env['begin_persistence_operation'] = self.begin
@@ -150,7 +148,7 @@ class Fixture:
     def actor(self, loc=None, human=True):
         actor = Atom(loc or self.home, human=human)
         for name, method in dict(forceMove=self.move, clear_throw_launch=self.clear_launch, persistence_set_loc=self.raw,
-                                 persistence_set_z=self.zmove, in_protected_sleep_zone=self.zone,
+                                 persistence_set_z=self.zmove,
                                  set_stat=self.stat, **self.sleep_methods).items():
             setattr(actor, name, MethodType(method, actor))
         return actor
@@ -199,7 +197,7 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(operation.kind, 'save')
         operation.finish(True)
 
-    def test_stomach_release_cannot_recall_a_protected_sleeper_from_stale_ownership(self):
+    def test_stomach_release_frees_a_sleeper_in_place(self):
         f = Fixture()
         host = f.actor()
         sleeper, contained = f.actor(host), f.actor(host)
@@ -214,7 +212,7 @@ class GuardTests(unittest.TestCase):
                           '/mob/living/human/proc/release_stomach_contents', 'src', f.env, True)
         f.begin(f.store, 'save')
         self.assertTrue(release(host))
-        self.assertIs(sleeper.loc, f.sleep)
+        self.assertIs(sleeper.loc, f.home)
         self.assertTrue(sleeper.inducedSSD)
         self.assertIs(contained.loc, f.home)
         self.assertEqual(host.stomach_contents, [])
@@ -468,14 +466,19 @@ class GuardTests(unittest.TestCase):
         self.assertIs(cover.loc, f.other)
         self.assertIs(human.loc, f.other)
 
-    def test_nonregistered_admin_visitor_requires_exit_without_fake_return(self):
+    def test_old_sleep_zone_no_longer_forces_sleep(self):
         f = Fixture()
+        box = f.actor(f.sleep, human=False)
+        for visitor in (f.actor(f.sleep), f.actor(box)):
+            visitor.sleeping = 3
+            for _ in range(100):
+                visitor.AdjustSleeping(-1)
+            self.assertEqual(visitor.sleeping, 0)
+            visitor.Sleeping(0)
+            visitor.SetSleeping(0)
+            visitor.set_stat(0)
+            self.assertEqual((visitor.sleeping, visitor.stat), (0, 0))
         visitor = f.actor(f.sleep)
-        visitor.SetSleeping(0)
-        visitor.set_stat(0)
-        self.assertEqual((visitor.sleeping, visitor.stat), (2, 1))
-        self.assertFalse(f.wake(visitor))
-        self.assertEqual((visitor.lastx, visitor.lasty, visitor.lastz), (0, 0, 0))
         operation = f.begin(f.store, 'save')
         self.assertFalse(visitor.forceMove(f.home))
         operation.finish(True)
@@ -484,7 +487,7 @@ class GuardTests(unittest.TestCase):
         visitor.set_stat(0)
         self.assertEqual((visitor.sleeping, visitor.stat), (0, 0))
 
-    def test_same_z_sleep_transfers_use_owner_through_all_save_phases(self):
+    def test_sleep_waits_for_every_save_phase_and_stays_in_place(self):
         f = Fixture()
         human = f.actor(f.same_plane)
         for phase in ('preparation', 'backend', 'contents', 'cleanup'):
@@ -497,20 +500,13 @@ class GuardTests(unittest.TestCase):
                 # Prove helpers are not relying on the compatibility flag.
                 f.env['persistence_save_in_progress'] = False
                 self.assertTrue(f.allow(human, f.sleep))  # generic same-z motion
-                before = human.drop_calls
                 self.assertFalse(f.enter(human))
-                self.assertEqual(human.drop_calls, before)
                 self.assertFalse(human.inducedSSD)
+                self.assertIs(human.loc, f.same_plane)
                 operation.finish(False)
         self.assertTrue(f.enter(human))
-        operation = f.begin(f.store, 'save')
-        f.env['persistence_save_in_progress'] = False
-        self.assertFalse(f.wake(human))
-        self.assertIs(human.loc, f.sleep)
-        self.assertTrue(human.inducedSSD)
-        operation.finish(True)
-        self.assertTrue(f.wake(human))
         self.assertIs(human.loc, f.same_plane)
+        self.assertTrue(human.inducedSSD)
 
     def test_retired_and_nullspace_carriers_cannot_launder_live_contents(self):
         f = Fixture()
@@ -689,7 +685,7 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(item.forceMove(None))
         self.assertNotIn('sleep(', extract(read(MOVABLE), '/proc/persistence_movement_allowed'))
 
-    def test_sleep_entry_busy_retry_and_callback_admission(self):
+    def test_sleep_entry_busy_retry_keeps_body_in_place(self):
         f = Fixture()
         human = f.actor()
         operation = f.begin(f.store, 'save')
@@ -697,65 +693,14 @@ class GuardTests(unittest.TestCase):
         self.assertIs(human.loc, f.home)
         self.assertFalse(human.inducedSSD)
         operation.finish(True)
-        human.on_drop = lambda: f.begin(f.store, 'save')
-        self.assertFalse(f.enter(human))
-        self.assertFalse(human.inducedSSD)
-        f.env['persistence_active_operation'].finish(False)
-        human.on_drop = None
         self.assertTrue(f.enter(human))
-        self.assertIs(human.loc, f.sleep)
-        self.assertEqual((human.lastx, human.lasty, human.lastz), f.home.xyz)
-        self.assertTrue(human.inducedSSD)
-
-    def test_sleep_zone_natural_forced_and_contained_waking_without_save(self):
-        f = Fixture()
-        box = f.actor(f.sleep, human=False)
-        human = f.actor(box)
-        self.assertFalse(human.inducedSSD)
-        human.sleeping = 3
-        for _ in range(100):
-            human.AdjustSleeping(-1)
-        self.assertEqual(human.sleeping, 2)
-        human.SetSleeping(0)
-        self.assertEqual(human.sleeping, 2)
-        human.set_stat(0)
-        self.assertEqual(human.stat, 1)
-        human.loc = f.home
-        human.SetSleeping(0)
-        human.set_stat(0)
-        self.assertEqual((human.sleeping, human.stat), (0, 0))
-
-    def test_safe_normal_return_busy_retry_and_invalid_zone_destination(self):
-        f = Fixture()
-        human = f.actor()
-        self.assertTrue(f.enter(human))
-        operation = f.begin(f.store, 'save')
-        self.assertFalse(f.wake(human))
-        self.assertIs(human.loc, f.sleep)
-        self.assertTrue(human.inducedSSD)
-        operation.finish(False)
-        human.lastx, human.lasty, human.lastz = f.sleep.xyz
-        self.assertFalse(f.wake(human))
-        human.lastx, human.lasty, human.lastz = f.home.xyz
-        human.on_release = lambda: (f.begin(f.store, 'save'), True)[1]
-        self.assertFalse(f.wake(human))
-        self.assertTrue(human.inducedSSD)
-        f.env['persistence_active_operation'].finish(True)
-        human.on_release = None
-        self.assertTrue(f.wake(human))
         self.assertIs(human.loc, f.home)
-        self.assertEqual(human.sleeping, 0)
-        self.assertFalse(human.inducedSSD)
-
-    def test_wake_callbacks_cannot_commit_if_they_start_saving_or_redirect(self):
-        for redirect in (False, True):
-            f = Fixture()
-            human = f.actor()
-            self.assertTrue(f.enter(human))
-            f.home.on_entry = lambda *args: setattr(human, 'loc', f.sleep) if redirect else f.begin(f.store, 'save')
-            self.assertFalse(f.wake(human))
-            self.assertTrue(human.inducedSSD)
-            self.assertGreater(human.sleeping, 0)
+        self.assertEqual((human.lastx, human.lasty, human.lastz), (0, 0, 0))
+        self.assertTrue(human.inducedSSD)
+        self.assertEqual((human.sleeping, human.drop_calls, human.sleep_calls), (66, 0, 1))
+        self.assertFalse(f.enter(human))
+        human.inducedSSD, human.stat = False, 2
+        self.assertFalse(f.enter(human))
 
     def test_guard_and_stale_owner_negative_controls_are_observable(self):
         source = read(MOVABLE)
@@ -895,9 +840,10 @@ class SourcePathTests(unittest.TestCase):
             self.assertIn('if (persistence_save_active()) return cancel_save_transfer(', read(path))
             self.assertIn('if (gcDestroyed || gc_destroyed) return FALSE', read(path))
 
-    def test_status_and_forced_writers_use_zone_guards(self):
+    def test_status_and_forced_writers_have_no_zone_override(self):
         body = extract(read('code/game/mob/living/carbon/human/human_life.dm'), '/mob/living/human/handle_regular_status_updates')
-        self.assertLess(body.index('in_protected_sleep_zone()'), body.index('handle_some_updates()'))
+        self.assertNotIn('in_protected_sleep_zone', body)
+        self.assertNotIn('in_protected_sleep_zone', read(DAMAGE) + read('code/game/mob/mob.dm'))
         self.assertNotIn('stat = CONSCIOUS', body)
         self.assertIn('AdjustSleeping(-5)', read('code/game/mob/living/carbon/carbon.dm'))
         self.assertIn('M.SetSleeping(0)', read('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Other.dm'))
@@ -911,7 +857,9 @@ class SourcePathTests(unittest.TestCase):
             body = extract(source, '/mob/living/human/verb/' + proc)
             self.assertIn(f'client != {client} || {client}.mob != src', body)
         wake = extract(source, '/mob/living/human/verb/mob_wakeup')
-        self.assertLess(wake.index('spawn(300)'), wake.index('complete_protected_wakeup()'))
+        self.assertLess(wake.index('spawn(300)'), wake.index('inducedSSD = FALSE'))
+        for retired in ('enter_protected_sleep', 'complete_protected_wakeup', 'locate(1,1,1)\n\tif (!return_turf'):
+            self.assertNotIn(retired, source)
 
 
 if __name__ == '__main__':

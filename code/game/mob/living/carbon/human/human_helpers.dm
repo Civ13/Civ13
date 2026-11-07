@@ -75,14 +75,14 @@
 				equipment_see_invis = G.see_invisible
 
 
-// Protected sleep uses (1,1,1); existing maps also identify the sleep area as
-// the admin zone. Test the physical location, including enclosing containers.
+// The old protected-sleep zone was (1,1,1), and existing maps also mark it as
+// the admin zone. Nothing sends bodies there any more; this only lets saved
+// bodies still parked there be moved back into the world when they return.
 /proc/is_protected_sleep_location(atom/location)
 	var/turf/T = get_turf(location)
 	return T && (T == locate(1,1,1) || istype(T.loc, /area/caribbean/admin))
 
-// Protected sleep moves the body off-map; buckling is a spatial relationship,
-// not a bed claim. Release only this body's reciprocal seat before teleporting.
+// Releases only this body's reciprocal seat (used to move old zone residents).
 /mob/living/human/proc/release_protected_sleep_buckle()
 	if (!buckled)
 		return TRUE
@@ -92,57 +92,15 @@
 	seat.unbuckle_mob()
 	return !buckled && (!seat || seat.buckled_mob != src)
 
-/mob/living/human/proc/enter_protected_sleep()
-	if (persistence_sleep_transfer_blocked() || inducedSSD)
+// Sleeping keeps the body where it lies: hunger slows and it can still be hurt.
+/mob/living/human/proc/enter_bed_sleep()
+	if (persistence_sleep_transfer_blocked() || inducedSSD || stat == DEAD)
 		return FALSE
-	var/turf/return_turf = get_turf(src)
-	var/turf/sleep_turf = locate(1,1,1)
-	if (!return_turf || !sleep_turf)
-		return FALSE
-	// Retain the return point before unbuckling; hooks must not change it.
-	if (!release_protected_sleep_buckle() || persistence_sleep_transfer_blocked() || get_turf(src) != return_turf)
-		return FALSE
-	drop_item()
-	// Inventory hooks may yield or move/rebuckle the body; recheck before transfer.
-	if (persistence_sleep_transfer_blocked() || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)
-		return FALSE
-	var/previous_lastx = lastx
-	var/previous_lasty = lasty
-	var/previous_lastz = lastz
-	var/previous_sleeping = sleeping
-	lastx = return_turf.x
-	lasty = return_turf.y
-	lastz = return_turf.z
 	sleeping = 66
 	inducedSSD = TRUE
-	forceMove(sleep_turf)
-	if (!sleep_turf || get_turf(src) != sleep_turf)
-		lastx = previous_lastx
-		lasty = previous_lasty
-		lastz = previous_lastz
-		sleeping = previous_sleeping
-		inducedSSD = FALSE
-		return FALSE
 	if (s_active)
 		s_active.close(src)
 	sleep_update()
-	return TRUE
-
-/mob/living/human/proc/complete_protected_wakeup()
-	if (persistence_sleep_transfer_blocked() || !inducedSSD)
-		return FALSE
-	var/turf/return_turf = locate(lastx,lasty,lastz)
-	if (!return_turf || is_protected_sleep_location(return_turf))
-		return FALSE
-	// Also repairs the reciprocal, distant bed link made by older sleep code.
-	// Never release a different occupant through an inconsistent stale pointer.
-	if (!release_protected_sleep_buckle() || persistence_sleep_transfer_blocked() || !return_turf || locate(lastx,lasty,lastz) != return_turf)
-		return FALSE
-	forceMove(return_turf)
-	if (!return_turf || get_turf(src) != return_turf || is_protected_sleep_location(src) || persistence_sleep_transfer_blocked())
-		return FALSE
-	sleeping = 0
-	inducedSSD = FALSE
 	return TRUE
 
 /mob/living/human/verb/mob_sleep()
@@ -186,7 +144,7 @@
 	if (persistence_bed_return_enabled() && saved_bed_taken_here())
 		to_chat(src, SPAN_RED("This bed is assigned to someone else. Sleep in an unassigned bed or your own."))
 		return
-	var/sleep_message = "Are you sure you want to sleep for a while? This will protect you when disconnected, but you must stay ingame for 2 minutes for it to take effect."
+	var/sleep_message = "Are you sure you want to sleep for a while? This takes two minutes. Your body stays here and can be harmed, but you get hungry much more slowly."
 	if (persistence_bed_return_enabled())
 		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
 	if (WWinput(src, sleep_message, "Sleep", "Yes", list("Yes","No")) == "Yes")
@@ -217,8 +175,8 @@
 						else if (!previous_bed)
 							to_chat(src, SPAN_NOTICE("This is now your bed."))
 						return
-					if (!enter_protected_sleep())
-						to_chat(src, SPAN_RED("You could not enter protected sleep. Wait for any world save or load to finish, then check your bed and try again."))
+					if (!enter_bed_sleep())
+						to_chat(src, SPAN_RED("You could not fall asleep. Wait for any world save or load to finish, then try again."))
 					return
 		else
 			to_chat(src, SPAN_NOTICE("You stop trying to sleep"))
@@ -244,16 +202,11 @@
 		spawn(300)
 			if (!src || !waking_client || client != waking_client || waking_client.mob != src || !inducedSSD)
 				return
-			if (persistence_bed_return_enabled() && !is_protected_sleep_location(src))
-				if (!persistence_sleep_transfer_blocked())
-					sleeping = 0
-					inducedSSD = FALSE
-				else
-					to_chat(src, SPAN_WARNING("Wait for world recovery to finish, then retry Wake Up."))
+			if (persistence_sleep_transfer_blocked())
+				to_chat(src, SPAN_WARNING("Wait for the world save or load to finish, then retry Wake Up."))
 				return
-			if (!complete_protected_wakeup())
-				to_chat(src, SPAN_RED("You could not wake up safely. Your sleep protection remains active. Wait for any world save or load to finish, then try Wake Up again."))
-			return
+			sleeping = 0
+			inducedSSD = FALSE
 
 //to keep the character sleeping
 /mob/living/human/proc/sleep_update()
