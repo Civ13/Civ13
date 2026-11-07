@@ -232,9 +232,9 @@
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
 			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-				health -= 10
+				health -= plating_wear(10)
 			else
-				health--
+				health -= plating_wear(1)
 			check_health()
 			return TRUE
 	return FALSE
@@ -417,11 +417,11 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
 			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-				health -= 2
+				health -= plating_wear(2)
 			else
-				health--
+				health -= plating_wear(1)
 			if (istype(damage_source, /obj/item/weapon/material/tes13/mace))
-				src.health -= 10
+				src.health -= plating_wear(10)
 			check_health()
 			return TRUE
 	return FALSE
