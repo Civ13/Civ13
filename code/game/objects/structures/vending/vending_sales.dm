@@ -312,6 +312,7 @@
 				var/inp = 1
 				if (R.amount > 1)
 					inp = input(usr, "How many do you want to buy? (1 to [R.amount])",1) as num
+					inp = round(inp)
 					if (inp>R.amount)
 						inp = R.amount
 					else if (inp<=1)
@@ -333,9 +334,11 @@
 						status_error = FALSE
 					else
 						moneyin -= price_with_tax*inp
+						// The buyer pays price + sales tax once: the company keeps the
+						// price and the buyer's faction treasury gets the tax.
 						if (owner != "Global")
 							if (accepted_currency == "standard")
-								map.custom_company_value[owner] += price_with_tax*inp
+								map.custom_company_value[owner] += R.price*inp
 								if (map.custom_civs[H.civilization])
 									map.custom_civs[H.civilization][5] += salestax*inp
 							else
@@ -343,7 +346,14 @@
 									map.custom_company_fiat_value[owner] = list()
 								if (!map.custom_company_fiat_value[owner][accepted_currency])
 									map.custom_company_fiat_value[owner][accepted_currency] = 0
-								map.custom_company_fiat_value[owner][accepted_currency] += price_with_tax*inp
+								map.custom_company_fiat_value[owner][accepted_currency] += R.price*inp
+								if (salestax > 0 && map.custom_civs[H.civilization])
+									var/list/civ = map.custom_civs[H.civilization]
+									if (civ.len < 11)
+										civ.len = 11
+									if (!istype(civ[11], /list))
+										civ[11] = list()
+									civ[11][accepted_currency] = (civ[11][accepted_currency] || 0) + salestax*inp
 						if (accepted_currency != "standard")
 							if (moneyin > 0)
 								new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
