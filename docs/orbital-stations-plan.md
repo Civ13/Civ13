@@ -38,11 +38,11 @@ what the code does so far and the rules later steps must keep.
 | 3 | Orbit world skeleton: kind, vacuum, area, metadata, map, plane registry, seams, sparse saves | #3909, `code/modules/space/orbit_world.dm`, `maps/space/orbit.dmm` |
 | 4 | Orbital flight: Orbital Flight node, two-stage rocket, launch pads to orbit, capsule shelter with bunk, deorbit home | #3916, `code/modules/space/orbital_flight.dm`, `lander.dm` |
 | 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | #3933, `code/modules/space/orbit_eva.dm` |
-| 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | `code/modules/space/orbit_station.dm` |
+| 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | #3934, `code/modules/space/orbit_station.dm` |
+| 6b | Starter stations: launch complex office project, 1969 station founded on a free plane, return capsule hatch, orbit console with lost-drifter recovery | `code/modules/space/orbit_project.dm`, `party_train.dm` |
 
 ## Next
 
-6b. Station registry with party ownership, the launch complex office project (1969 layout) and orbit-console recovery of lost drifters.
 6c. Lunar surface kit and return sortie.
 
 ## Orbital flight
@@ -115,6 +115,33 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   a breach to vacuum that a hull patch kit closes.
 - All of it is gated on Orbital Flight.
 
+## Starter stations
+
+- **The launch complex office** (40 steel, Orbital Flight) is a project like
+  the party train. Built within 3 tiles of a launch pad approved for an orbit
+  region, from 1969, a party starts it and delivers 150 steel, 40 glass, 40
+  copper and 60 electronics. One project per party. Members then fly up from
+  the office; it refuses when orbit has no free plane, unless the party has
+  already flown up.
+- **The station** is founded by the first member to arrive: it claims a free
+  plane (owner `station:<party>`) and builds, in the middle, an orbital
+  workshop with two bunks, a heater, scrubber and radiator, docked to an
+  airlock. A cable run goes out through the airlock to two fixed solar wings
+  (switched on) and a fuelled fuel cell (off, for the shade). A crate holds
+  two pressure suits and helmets, two air tanks, two hull patch kits, a suit
+  patch, two tethers, cable, six rations and three canteens. Later members
+  arrive at the return capsule hatch. If no plane is free, they arrive at the
+  orbit's arrival point.
+- **The return capsule hatch** takes members home to their office, like a
+  train berth. The station is the plane its party owns in the plane registry;
+  members keep their party in orbit as they do in the rail yard.
+- **The orbit console** (20 electronics, Orbital Flight) shows the owner, the
+  orbital day and each module's pressure, temperature and breaches, and
+  recovers lost drifters: anyone stuck at an unlinked plane edge is reeled in
+  beside it after 10 seconds. A console on a station plane only lets that
+  party recover.
+- The 2013 and 2026 layouts come with stage C.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -124,4 +151,6 @@ release, orbital flight (rocket, capsule arrival, deorbit refusals and
 spending) and EVA (handholds, push-off, drift across a seam, catching hold, an
 unlinked edge, the tether's pull, haul and clip) and station hardware (the
 orbital day, solar and fuel cell output, module heat, radiators, the
-workshop's furnishing and debris breaches).
+workshop's furnishing and debris breaches) and starter stations (office
+placement, era and delivery, full-orbit refusal, founding, power, supplies,
+boarding, the hatch home and console recovery).

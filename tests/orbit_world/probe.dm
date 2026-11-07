@@ -108,6 +108,7 @@ var/global/orbit_failures = 0
 		orbit_flight_checks()
 		orbit_eva_checks()
 		orbit_station_checks()
+		orbit_project_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -360,3 +361,110 @@ var/global/orbit_failures = 0
 	orbit_check("solar wing gated", get_recipe_node_req("/obj/structure/civ_generator/solar/wing"), "orbital_flight")
 	orbit_check("fuel cell gated", get_recipe_node_req("/obj/structure/civ_generator/fuel_cell"), "orbital_flight")
 	orbit_check("radiator gated", get_recipe_node_req("/obj/structure/life_support/radiator"), "orbital_flight")
+
+// Starter stations (orbit_project.dm): the launch complex office on the
+// ground, then founding, boarding, the console and recovery in orbit.
+/proc/orbit_project_checks()
+	var/party = "civ:gaia:Alpha"
+	var/obj/map_metadata/orbit_map = map
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 7
+	shard_group.region = "gaia"
+	shard_group.kind = "MAINLAND"
+	var/obj/structure/region_gate/launch_complex/office = new(locate(3, 3, 1))
+	orbit_check("office needs an orbit pad", findtext(office.start_refusal(null, party), "launch pad") ? 1 : 0, 1)
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(5, 5, 1))
+	pad.destination = "orbit"
+	pad.approved = TRUE
+	orbit_check("office beside an orbit pad", isnull(office.start_refusal(null, party)) ? 1 : 0, 1)
+	map.ordinal_age = 6
+	orbit_check("stations from 1969", findtext(office.start_refusal(null, party), "1969") ? 1 : 0, 1)
+	map.ordinal_age = 7
+	office.party = party
+	var/obj/structure/region_gate/launch_complex/second = new(locate(2, 6, 1))
+	orbit_check("one project per party", findtext(second.start_refusal(null, party), "already has") ? 1 : 0, 1)
+	qdel(second)
+	orbit_check("project shows progress", findtext(office.closed_reason(), "steel 0/150") ? 1 : 0, 1)
+	for (var/kind in orbit_station_requirements)
+		var/list/need = orbit_station_requirements[kind]
+		office.delivered[kind] = need[2]
+	orbit_check("nothing left to deliver", length(office.remaining()), 0)
+	office.complete(null)
+	orbit_check("project complete", office.completed ? 1 : 0, 1)
+	shard_group.peers["orbit"]["free_planes"] = 0
+	orbit_check("full orbit refuses before launch", findtext(office.closed_reason(), "taken") ? 1 : 0, 1)
+	office.boarded = TRUE
+	orbit_check("a boarded party may fly to its station", findtext(office.closed_reason(), "taken") ? 1 : 0, 0)
+	orbit_check("office leads to orbit", office.destination, "orbit")
+	orbit_check("office trip is the party's", office.travel_party(null), party)
+	orbit_check("home from the station lands at the office", party_train_arrival_turf(list("party" = party, "from" = "orbit")) == office.loc ? 1 : 0, 1)
+	orbit_check("office gated", get_recipe_node_req("/obj/structure/region_gate/launch_complex"), "orbital_flight")
+	orbit_check("console gated", get_recipe_node_req("/obj/structure/orbit_console"), "orbital_flight")
+	qdel(office)
+	qdel(pad)
+	del(map)
+	map = orbit_map
+	shard_group.region = "orbit"
+	shard_group.kind = "ORBIT"
+
+	map.ordinal_age = 7
+	// A bigger plane for the station layout.
+	world.maxx = 24
+	world.maxy = 24
+	for (var/z in 2 to 5)
+		orbit_release_plane(z)
+	var/turf/at = party_train_arrival_turf(list("party" = party, "from" = "gaia"))
+	var/obj/structure/region_gate/station_hatch/hatch = orbit_station_hatch(party)
+	orbit_check("first arrival founds the station", hatch && at == hatch.loc ? 1 : 0, 1)
+	var/z = at ? at.z : 0
+	orbit_check("station plane", z, 2)
+	orbit_check("plane owned by the party", orbit_station_party(z), party)
+	orbit_check("hatch leads home", hatch && hatch.home_region, "gaia")
+	orbit_check("station modules", length(orbit_station_modules(z)), 2)
+	var/sealed = 0
+	for (var/obj/structure/habitat_core/C in orbit_station_modules(z))
+		if (!C.breaches())
+			sealed++
+	orbit_check("station sealed", sealed, 2)
+	var/wings = 0
+	for (var/obj/structure/civ_generator/solar/wing/W in world)
+		if (W.z != z)
+			continue
+		W.settle_generation()
+		if (W.output_power == 20)
+			wings++
+	orbit_check("two wings cabled and generating", wings, 2)
+	var/obj/structure/life_support/heater/heater = orbit_find_on(/obj/structure/life_support/heater, z)
+	orbit_check("heater on the station grid", heater && heater.has_power() ? 1 : 0, 1)
+	var/obj/structure/civ_generator/fuel_cell/F = orbit_find_on(/obj/structure/civ_generator/fuel_cell, z)
+	orbit_check("fuel cell fuelled and off", F ? "[F.hydrogen],[F.oxygen],[F.enabled]" : "none", "200,200,0")
+	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, z)
+	orbit_check("supplies stowed", crate && (locate(/obj/item/clothing/suit/pressure_suit) in crate) && (locate(/obj/item/habitat_sealant) in crate) ? 1 : 0, 1)
+	orbit_check("later members board at the hatch", party_train_arrival_turf(list("party" = party, "from" = "gaia")) == at ? 1 : 0, 1)
+	orbit_check("one plane per station", length(orbit_station_planes(party)), 1)
+	orbit_check("hatch trip is the party's", hatch.travel_party(null), party)
+	hatch.closed_reason()
+	orbit_check("hatch flies home", hatch.destination, "gaia")
+
+	var/obj/structure/orbit_console/console = orbit_find_on(/obj/structure/orbit_console, z)
+	orbit_check("console reports the owner", console && findtext(jointext(console.status_lines(), " "), "Station of Alpha") ? 1 : 0, 1)
+	var/mob/living/human/eva_tester/H = new(locate(1, 12, z))
+	H.m_intent = "stealth"
+	human_mob_list |= H
+	orbit_stop_drift(H)
+	orbit_check("lost at an unlinked edge", (H in orbit_lost_drifters()) ? 1 : 0, 1)
+	orbit_check("console recovers the drifter", console.recover(H) ? 1 : 0, 1)
+	orbit_check("recovered aboard", istype(H.loc, /turf/floor/habitat) && get_dist(H, console) <= 1 ? 1 : 0, 1)
+	orbit_check("no longer lost", (H in orbit_lost_drifters()) ? 1 : 0, 0)
+	human_mob_list -= H
+	qdel(H)
+
+	while (orbit_claim_plane("filler:[length(orbit_free_planes())]"))
+		continue
+	orbit_check("a full orbit founds no station", isnull(orbit_station_arrival_turf(list("party" = "civ:gaia:Beta", "from" = "gaia"))) ? 1 : 0, 1)
+
+/proc/orbit_find_on(type, z)
+	for (var/atom/movable/A in world)
+		if (istype(A, type) && A.z == z)
+			return A
+	return null

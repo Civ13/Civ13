@@ -457,6 +457,8 @@ RECIPE: /material/steel/,orbital workshop kit,/obj/item/habitat_kit/orbital_work
 RECIPE: /material/electronics/,fixed solar wing,/obj/structure/civ_generator/solar/wing,15,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,fuel cell,/obj/structure/civ_generator/fuel_cell,20,250,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,radiator,/obj/structure/life_support/radiator,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,launch complex office,/obj/structure/region_gate/launch_complex,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,orbit console,/obj/structure/orbit_console,20,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,habitat module kit,/obj/item/habitat_kit,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,greenhouse module kit,/obj/item/habitat_kit/greenhouse,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,workshop module kit,/obj/item/habitat_kit/workshop,60,400,0,1,spaceflight,235,0,0,8,null

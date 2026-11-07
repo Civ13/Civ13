@@ -44,6 +44,16 @@ the orbital workshop unfolds sealed with two bunks, a table and a crate,
 debris breaches it to vacuum and the breach can be patched, and all four
 recipes are gated on Orbital Flight.
 
+It also checks starter stations (`code/modules/space/orbit_project.dm`): the
+launch complex office needs an approved orbit pad and 1969, allows one project
+per party, completes on delivery, refuses a full orbit until the party has
+boarded, and is where members land coming home; the first arrival founds the
+station on a free plane with two sealed modules, two generating solar wings
+on the heater's grid, a fuelled fuel cell and stowed supplies; later members
+board at the hatch, which flies home; the console names the owner and
+recovers a drifter lost at an unlinked edge; and a full orbit founds nothing.
+The world grows to 24 x 24 for the station layout.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step), and a full launch and deorbit through the transfer
