@@ -1997,6 +1997,7 @@ RECIPE: /material/steel/,holding tank,/obj/structure/fluid_tank,10,150,1,1,produ
 RECIPE: /material/steel/,reaction vessel,/obj/structure/fluid_vessel,14,200,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,fast reaction vessel,/obj/structure/fluid_vessel/fast,20,250,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,industrial reaction vessel,/obj/structure/fluid_vessel/industrial,30,300,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,electroplating bath,/obj/structure/plating_bath,10,150,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,bottler,/obj/structure/fluid_bottler,8,150,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,automatic tablet press,/obj/structure/fluid_tablet_press,12,200,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,pipe meter,/obj/structure/fluid_meter,2,100,1,1,production,105,0,0,8,null

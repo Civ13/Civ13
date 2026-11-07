@@ -772,7 +772,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (16) ---
+		// --- electricity (17) ---
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
@@ -792,6 +792,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
+<<<<<<< HEAD
 		// --- factories (27) ---
 		// Steam-era factory floor: plain belts, their drive, parts bins and
 		// the feeder arm run on a steam engine and plain cable.
@@ -799,6 +800,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/factory_bin" = "factories",
 		"/obj/structure/factory_drive" = "factories",
 		"/obj/structure/factory_arm" = "factories",
+=======
+		"/obj/structure/plating_bath" = "electricity",
+		// --- factories (23) ---
+>>>>>>> origin/master
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that
 		// node, or the tree deadlocks (can't craft the geiger counter the
