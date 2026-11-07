@@ -1013,11 +1013,14 @@
 	// for a load; the pinned objects answer it here without reading the
 	// level back (that read cost about as much as writing the level).
 	var/list/reachable = list()
-	if(durable_export)
+	// Read through vars: serializer fixtures compile without the durable graph.
+	var/datum/graph = durable_export
+	var/list/nodes = (graph && ("nodes" in graph.vars)) ? graph.vars["nodes"] : null
+	if(islist(nodes))
 		var/screen_root = text2path("/obj/screen")
 		var/hud_root = text2path("/datum/hud")
-		for(var/list/node in durable_export.nodes)
-			if(node["kind"] != "entry" || node["z"] != z || !node["ref"]) continue
+		for(var/list/node in nodes)
+			if(!islist(node) || node["kind"] != "entry" || node["z"] != z || !node["ref"]) continue
 			var/cursor = node["ref"]
 			var/steps = 0
 			while(TRUE)
