@@ -136,7 +136,16 @@
 	// Explicit anatomy: never infer mammalian organs from size or has_fat.
 	if (istype(src, /mob/living/simple_animal/horse) || istype(src, /mob/living/simple_animal/pet/dog) || istype(src, /mob/living/simple_animal/hostile/commanded/dog) || istype(src, /mob/living/simple_animal/hostile/mammoth) || istype(src, /mob/living/simple_animal/blackbat) || istype(src, /mob/living/simple_animal/vampirebatblack))
 		return TRUE
-	return istype(src, /mob/living/simple_animal/cattle) || istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar) || istype(src, /mob/living/simple_animal/boar_gilt) || istype(src, /mob/living/simple_animal/boar_boar) || istype(src, /mob/living/simple_animal/goat) || istype(src, /mob/living/simple_animal/sheep) || istype(src, /mob/living/simple_animal/deer) || istype(src, /mob/living/simple_animal/bison) || istype(src, /mob/living/simple_animal/bisonbull) || istype(src, /mob/living/simple_animal/camel) || istype(src, /mob/living/simple_animal/rabbit) || istype(src, /mob/living/simple_animal/monkey) || istype(src, /mob/living/simple_animal/pet/cat) || istype(src, /mob/living/simple_animal/hostile/bear) || istype(src, /mob/living/simple_animal/hostile/wolf) || istype(src, /mob/living/simple_animal/hostile/fox) || istype(src, /mob/living/simple_animal/hostile/gorilla) || istype(src, /mob/living/simple_animal/hostile/panther) || istype(src, /mob/living/simple_animal/hostile/sabertooth)
+	return istype(src, /mob/living/simple_animal/cattle) || istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar) || istype(src, /mob/living/simple_animal/boar_gilt) || istype(src, /mob/living/simple_animal/boar_boar) || istype(src, /mob/living/simple_animal/goat) || istype(src, /mob/living/simple_animal/sheep) || istype(src, /mob/living/simple_animal/deer) || istype(src, /mob/living/simple_animal/bison) || istype(src, /mob/living/simple_animal/bisonbull) || istype(src, /mob/living/simple_animal/camel) || istype(src, /mob/living/simple_animal/rabbit) || istype(src, /mob/living/simple_animal/monkey) || istype(src, /mob/living/simple_animal/pet/cat) || istype(src, /mob/living/simple_animal/hostile/bear) || istype(src, /mob/living/simple_animal/hostile/wolf) || istype(src, /mob/living/simple_animal/hostile/fox) || istype(src, /mob/living/simple_animal/hostile/gorilla) || istype(src, /mob/living/simple_animal/hostile/panther) || istype(src, /mob/living/simple_animal/hostile/sabertooth) || istype(src, /mob/living/simple_animal/hostile/buffalo)
+
+// Usable bone: every mammal, plus large reptiles. Birds keep their carcasses
+// and small animals (lizards, mice, frogs) have nothing worth working.
+/mob/living/simple_animal/proc/harvest_bones()
+	if (harvest_mammal())
+		return TRUE
+	if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
+		return FALSE
+	return istype(src, /mob/living/simple_animal/hostile/alligator) || istype(src, /mob/living/simple_animal/hostile/dinosaur) || istype(src, /mob/living/simple_animal/pachy) || istype(src, /mob/living/simple_animal/hostile/poison/snake/constrictor)
 
 /mob/living/simple_animal/proc/harvest_food(typepath, turf/site)
 	var/obj/item/weapon/reagent_containers/food/snacks/F = new typepath(site)
@@ -198,9 +207,10 @@
 		if (has_fat)
 			for (var/i = 1, i <= min(2, max(0, size-2+fat_extra-fat_penalty)), i++)
 				harvest_food(/obj/item/weapon/reagent_containers/food/snacks/animalfat, site)
-		new /obj/item/stack/material/bone(site, max(1, size-2))
 	else if (chicken)
 		harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/offal, site)
+	if (harvest_bones())
+		new /obj/item/stack/material/bone(site, max(1, size-2))
 	if (skin)
 		harvest_hide(site)
 	else

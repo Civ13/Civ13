@@ -46,6 +46,23 @@
 /datum/reagent/charcoal/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.adjustToxLoss(-5 * removed)
 	M.radiation -= 3 * removed
+	charcoal_absorb_poisons(M, removed)
+
+// Infections modelled as reagents: charcoal binds poisons, it does not cure these.
+var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
+
+// Binds poison chemicals in the blood and stomach (food poisoning, amatoxin,
+// solanine and the rest of /datum/reagent/toxin), 3 units per unit of charcoal.
+/proc/charcoal_absorb_poisons(mob/living/human/M, removed)
+	if (!istype(M) || removed <= 0)
+		return
+	for (var/datum/reagents/R in list(M.bloodstr, M.ingested))
+		var/list/poisons = list()
+		for (var/datum/reagent/toxin/T in R.reagent_list)
+			if (!(T.id in charcoal_unabsorbed_toxins))
+				poisons += T.id
+		for (var/id in poisons)
+			R.remove_reagent(id, 3 * removed, safety = TRUE)
 
 /datum/reagent/tricordrazine
 	name = "Tricordrazine"

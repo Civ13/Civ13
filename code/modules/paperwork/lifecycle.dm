@@ -179,7 +179,7 @@ GLOBAL_DATUM_INIT(paper_authoring_event, /decl/observ/paper_authoring, new)
 		retire()
 
 /datum/paper_document_authoring/proc/lifecycle_destroyed(datum/source)
-	if (!session_closed && source in lifecycle_sources)
+	if (!session_closed && (source in lifecycle_sources))
 		retire()
 
 /datum/paper_document_authoring/proc/lifecycle_status(mob/living/source, old_stat, new_stat)
