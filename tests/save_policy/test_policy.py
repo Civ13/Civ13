@@ -47,6 +47,17 @@ class SavePolicy(unittest.TestCase):
         self.assertIn('last_persistence_save_time = world.time\n\t// Players still online mark the session unsaved again on the next loop.', functions)
         self.assertIn('global.vars["persistence_played_since_save"] = FALSE', functions)
 
+    def test_catch_up_save_is_not_rescheduled_by_a_running_save(self):
+        # Pulling nextsave in while a save ran started another save as soon
+        # as it finished (Gaia, 2026-11-07), and failures retried every loop.
+        empty = self.loop.index('\t\t\t\telse\n')
+        restart = self.loop.index('if (!persistence_empty_since || persistence_save_active())\n\t\t\t\t\t\tpersistence_empty_since = world.realtime', empty)
+        pull = self.loop.index('nextsave = min(nextsave, world.realtime)', empty)
+        self.assertLess(restart, pull)
+        guard = self.loop.rindex('\n', 0, pull)
+        line = self.loop[self.loop.rindex('\n', 0, guard) + 1:guard]
+        self.assertIn('!persistence_save_active() && persistence_played_since_save', line)
+
     def test_maintenance_reboot_waits_for_empty_server(self):
         self.assertIn('persistence_reboot_due = TRUE', self.loop)
         self.assertIn('if (persistence_reboot_due && !persistence_active_players())', self.loop)

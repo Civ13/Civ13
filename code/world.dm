@@ -534,10 +534,13 @@ var/global/persistence_reboot_due = FALSE
 					persistence_played_since_save = TRUE
 					persistence_empty_since = 0
 				else
-					if (!persistence_empty_since)
+					// The empty timer restarts while any save runs. Pulling the
+					// schedule in during a save started a second save as soon as
+					// it finished, and a failed one was retried every loop.
+					if (!persistence_empty_since || persistence_save_active())
 						persistence_empty_since = world.realtime
 					// Save the session soon after the last player leaves.
-					if (persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY)
+					if (!persistence_save_active() && persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY)
 						nextsave = min(nextsave, world.realtime)
 					// Only the host can be online here; warn from the actual schedule.
 					var/save_in = round((nextsave - world.realtime) / 10)
