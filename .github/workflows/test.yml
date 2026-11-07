@@ -1592,7 +1592,6 @@ jobs:
           python3 tests/building_levels/run.py --lighting-gravity --negative-control lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/gravity-control"
           python3 tests/building_levels/run.py --lighting-roof --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-positive"
           python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-interleave"
-          python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --negative-control lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-control"
           python3 tests/building_levels/run.py --standing --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/standing-positive"
           python3 tests/building_levels/run.py --standing --negative-control standing-import --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/standing-control"
       - name: Upload linked building evidence

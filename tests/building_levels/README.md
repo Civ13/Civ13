@@ -61,8 +61,13 @@ without claiming the gravity fix supplies missing upper corners.
 ```
 <verified-python> tests/building_levels/run.py --lighting-roof --byond-bin <bin> --output <empty-directory>
 <verified-python> tests/building_levels/run.py --lighting-roof --allocation-interleave --byond-bin <bin> --output <different-empty-directory>
-<verified-python> tests/building_levels/run.py --lighting-roof --allocation-interleave --negative-control lighting-gravity --byond-bin <bin> --output <different-empty-directory>
 ```
+
+The roof-path lighting-gravity control is retired from CI. Since #3898 the
+first roof allocates the plane as lazy open air: no lighting renderer is built
+on it during allocation, so removing the renderer guard no longer changes the
+roof probe's result (it passed on master 243a3c0 with the guard removed). The
+guard itself stays covered by the `--lighting-gravity` probe and its control.
 
 The explicit allocation-interleave adapter pauses for six ticks immediately
 after native maxz expansion so real delayed lighting can run before replacement.
@@ -70,7 +75,7 @@ This proves or rejects that scheduling path; it is not evidence that a tiny
 unadapted allocation naturally yields for that duration. The controls neither
 inject a black renderer nor replace Entered or the turf.New content loop.
 
-The existing linked-building CI step runs all five lighting profiles when this
+The existing linked-building CI step runs the lighting profiles when this
 suite is selected. New executable tests select the suite on pull requests;
 existing-suite reruns also remain available through the existing regression inputs.
 
