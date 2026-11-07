@@ -1,4 +1,4 @@
-# Chat scroll browser checks
+# Chat browser checks
 
 `chat-scroll.browser.test.js` loads the actual chat page and its tracked fonts
 and sanitizer in headless Chromium. It replaces the BYOND-ready navigation with
@@ -24,3 +24,12 @@ ResizeObserver and explicitly fires resize and font-completion events; it does
 not establish behavior for all legacy browser engines. Generated HTML and browser
 cleanup receipts are retained under `CHAT_TEST_TMP` with synthetic content only.
 The separate workflow runs these cases on relevant PR and master changes.
+
+`chat-filter.browser.test.js` uses the same harness for the filter tabs. It
+checks that messages tagged by `CHAT_TYPED` (`code/__defines/chat.dm`) and untagged
+OOC, PM, dead, whisper, warning and plain messages land in the right type,
+that tabs hide other types and count unread lines, that the Admin tab stays
+hidden until admin output arrives, that custom tabs are saved, that a flood of
+one type does not trim another, and that malformed saved settings fall back to
+the defaults. Set `CHAT_SCREENSHOT` to a path to save a picture of the
+settings panel.

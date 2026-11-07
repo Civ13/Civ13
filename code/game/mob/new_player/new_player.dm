@@ -100,7 +100,7 @@ var/global/redirect_all_players = null
 				return
 	for (var/new_player in new_player_mob_list)
 		if (new_player:client) // sanity check
-			to_chat(new_player, create_text_tag("lobby", "LOBBY:", new_player:client) + "<span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]")
+			to_chat(new_player, CHAT_TYPED(CHAT_OOC, create_text_tag("lobby", "LOBBY:", new_player:client) + "<span class='deadsay'><b>[capitalize(key)]</b>:</span> [capitalize(message)]"))
 
 	return TRUE
 
