@@ -228,7 +228,9 @@
 	dig_speed = 7
 	default_material = "wood"
 	material = "wood"
-	icon_state = "spadem"
+	icon = 'icons/obj/flint_mining.dmi'
+	icon_state = "wooden_spade"
+	applies_material_colour = FALSE
 
 // Foldable shovel items
 /obj/item/weapon/foldable_shovel

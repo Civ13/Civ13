@@ -548,7 +548,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table" = "basic_furniture",
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
-		// --- basic_tools (20) ---
+		// --- basic_tools (21) ---
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/stack/material/rope" = "basic_tools",
 		"/obj/item/rope_spindle" = "basic_tools",
@@ -574,6 +574,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/hatchet/tribal/bone" = "basic_tools",
 		"/obj/item/weapon/material/kitchen/rollingpin" = "basic_tools",
 		"/obj/item/weapon/material/shovel/bone" = "basic_tools",
+		"/obj/item/weapon/material/shovel/spade/wood" = "basic_tools",
 		"/obj/item/weapon/mop" = "basic_tools",
 		"/obj/item/weapon/researchkit" = "basic_tools",
 		"/obj/item/weapon/swatter" = "basic_tools",
@@ -1171,7 +1172,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/heatsource" = "iron_smithing",
-		// --- iron_tools (4) ---
+		// --- iron_tools (5) ---
+		"/obj/item/weapon/flame/lighter/striker" = "iron_tools",
 		"/obj/item/flashlight/lantern" = "iron_tools",
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",

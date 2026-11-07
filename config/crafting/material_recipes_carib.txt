@@ -1791,6 +1791,7 @@ RECIPE: /material/steel/,rollerchair,/obj/structure/bed/chair/office/light,8,150
 RECIPE: /material/steel/,drink shaker,/obj/item/weapon/reagent_containers/food/drinks/shaker,3,30,0,1,none,125,0,0,8,null
 RECIPE: /material/steel/,watch,/obj/item/clothing/gloves/watch/watch,6,200,0,1,none,125,60,0,8,null
 RECIPE: /material/steel/,zippo lighter,/obj/item/weapon/flame/lighter/zippo,4,95,0,1,none,145,0,0,8,null
+RECIPE: /material/steel/,fire striker,/obj/item/weapon/flame/lighter/striker,1,40,0,1,tools,0,0,0,8,null
 
 //*********************| STEEL WEAPONS & TOOLS |**************************
 
@@ -2086,6 +2087,7 @@ RECIPE: /material/wood/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1,weap
 //*********************| WOOD TOOLS |**************************
 
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/,wooden spade,/obj/item/weapon/material/shovel/spade/wood,3,60,0,1,tools,0,0,0,8,wood
 RECIPE: /material/wood/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
 RECIPE: /material/wood/,wood cane,/obj/item/weapon/cane,2,35,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null
