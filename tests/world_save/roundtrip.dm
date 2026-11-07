@@ -99,6 +99,11 @@ var/global/roundtrip_capture_failure = FALSE
 		map = new /obj/map_metadata(locate(1,1,1))
 		var/turf/edge = new /turf/test/edge(locate(world.maxx,world.maxy,2))
 		edge.name = "far corner"
+		// Level 2 is saved sparsely: only cells that differ from /turf/test in
+		// its area are written, and the loader regenerates every other cell.
+		map_storage.sparse_level_override = list("2" = /turf/test)
+		var/turf/named = locate(2,2,2)
+		named.name = "named cell"
 		var/obj/item/test/A = new(locate(1,1,1))
 		var/obj/item/test/B = new(A)
 		A.number = 17
@@ -179,8 +184,17 @@ var/global/roundtrip_capture_failure = FALSE
 		// Force import to allocate a different turf, rather than only rehydrate
 		// the already matching type in the live fixture.
 		edge.ChangeTurf(/turf/test, FALSE, FALSE)
+		// A cell the sparse level did not save must return to the baseline.
+		var/turf/stray = locate(3,3,2)
+		stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
 		map_storage.ClearMap()
 		check(map_storage.Load_World(), "import failed")
+		var/savefile/sparse_level = new("map_saves/2.sav")
+		check(sparse_level["/sparse/kind"] == "fixture" && sparse_level["/sparse/turf"] == /turf/test && sparse_level["/sparse/cells"] == 2, "sparse level header or cell count differs")
+		sparse_level = null
+		check(locate(2,2,2):name == "named cell", "sparse level field-only cell lost")
+		stray = locate(3,3,2)
+		check(stray.type == /turf/test && stray.name == initial(stray.name), "sparse level reload kept an unsaved cell")
 		corpse = locate(/mob/living/human) in locate(2,1,1)
 		living = locate(/mob/living/human) in locate(3,1,1)
 		check(corpse && corpse.stat == DEAD && !corpse.rejuvenate_calls, "saved dead human revived on import")

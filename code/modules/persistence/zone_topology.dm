@@ -351,17 +351,30 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		// directory is itself quadratic. Read each turf's entries by absolute path
 		// instead; a missing value reads as null. The entry count plus the per-turf
 		// index match below prove every turf owns exactly one distinct capture entry.
+		// A sparse level captured membership for its saved cells only; every
+		// other cell belongs to the baseline zone its header names.
+		var/list/sparse = sparse_level_header(F)
+		var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
+		var/baseline_zone = sparse ? sparse["zone"] : null
+		if(sparse && sparse["cells"] < world.maxx * world.maxy && (!istext(baseline_zone) || !validated_zones[baseline_zone])) throw EXCEPTION("Sparse level names no saved baseline zone")
 		F.cd = "/zone_capture"
-		if(F.dir.len != world.maxx * world.maxy) throw EXCEPTION("Incomplete captured zone level")
+		if(F.dir.len != (sparse ? sparse["cells"] : world.maxx * world.maxy)) throw EXCEPTION("Incomplete captured zone level")
 		F.cd = "/map"
-		if(!("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
-		F.cd = "/map/[z]"
+		if(!sparse && !("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
+		F.cd = sparse ? "/" : "/map/[z]"
 		// savefile.dir follows the current directory; detach this listing before
 		// checking membership entries, which changes F.cd inside the turf loop.
 		var/list/rows = F.dir.Copy()
 		for(var/y = 1, y <= world.maxy, y++)
-			if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
+			var/list/columns = sparse_cells ? sparse_cells["[y]"] : null
+			if(!sparse && !("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
+			var/next_column = 1
 			for(var/x = 1, x <= world.maxx, x++)
+				if(sparse)
+					if(!columns || next_column > columns.len || columns[next_column] != x)
+						validated_zone_grid += baseline_zone
+						continue
+					next_column++
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(isnull(ref)) throw EXCEPTION("Missing captured turf coordinate")
 				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Invalid captured turf reference")

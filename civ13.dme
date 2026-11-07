@@ -1160,6 +1160,7 @@
 #include "code\modules\materials\materials.dm"
 #include "code\modules\multiz\_stubs.dm"
 #include "code\modules\multiz\area_teleporter.dm"
+#include "code\modules\multiz\building_admission.dm"
 #include "code\modules\multiz\helpers.dm"
 #include "code\modules\multiz\movement.dm"
 #include "code\modules\multiz\open_space.dm"
