@@ -144,6 +144,14 @@ var/global/track_probe_runtime_error = FALSE
 	var/obj/item/stack/material/iron/I = SW.pry_apart()
 	track_probe_check("switch/iron", istype(I) && I.amount == 2 && QDELETED(SW))
 
+	// The tile a switcher's split route shifts onto stays parallel to it.
+	track_probe_finish(1, 10, EAST)
+	track_probe_finish(3, 10, EAST)
+	var/obj/structure/rails/split/switcher/SL = new(track_probe_turf(2, 10))
+	SL.set_dir(EAST)
+	track_probe_lay(2, 11, EAST)
+	track_probe_check("switch/side_parallel", track_probe_dirs(2, 11) == "east+west" && track_probe_dirs(2, 10) == "east+west")
+
 	// Track cannot be laid twice or on water.
 	track_probe_check("lay/occupied", track_lay_problem(track_probe_turf(5, 2)))
 	var/turf/W = track_probe_turf(36, 2)

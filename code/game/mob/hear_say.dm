@@ -119,7 +119,7 @@
 
 
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
-	to_chat(src, message)
+	to_chat(src, CHAT_TYPED(CHAT_IC, message))
 	if (speaker && message2 != "")
 		if (client && ((speaker in view(7,src)) || speaker == src))
 			show_chat_overlay(speaker, message2)
@@ -354,9 +354,9 @@
 
 /mob/proc/on_hear_radio(var/obj/destination = null, var/fullmessage)
 	if (destination)
-		to_chat(src, "\icon[getFlatIcon(destination)] [fullmessage]")
+		to_chat(src, CHAT_TYPED(CHAT_RADIO, "\icon[getFlatIcon(destination)] [fullmessage]"))
 	else
-		to_chat(src, fullmessage)
+		to_chat(src, CHAT_TYPED(CHAT_RADIO, fullmessage))
 
 /mob/proc/hear_signlang(var/message, var/verb = "gestures", var/datum/language/language, var/mob/speaker = null)
 	if (!client)
@@ -377,8 +377,8 @@
 
 	if (status_flags & PASSEMOTES)
 		for (var/mob/living/M in contents)
-			M.show_message(message)
-	show_message(message)
+			M.show_message(CHAT_TYPED(CHAT_IC, message))
+	show_message(CHAT_TYPED(CHAT_IC, message))
 
 /mob/proc/hear_sleep(var/message)
 	var/heard = ""
@@ -396,7 +396,7 @@
 	else
 		heard = "<span class = 'game_say'>...<i>You almost hear someone talking</i>...</span>"
 
-	to_chat(src, heard)
+	to_chat(src, CHAT_TYPED(CHAT_IC, heard))
 
 /* How this works:
  * just like in real life, some languages have mutual intelligibility

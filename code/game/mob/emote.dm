@@ -23,6 +23,7 @@
 
 	if (span_class)
 		message = "<span class = '[span_class]'>[message]</span>"
+	var/chat_message = CHAT_TYPED(CHAT_IC, message)
 
 	if (message)
 		if (client)
@@ -39,7 +40,7 @@
 			if (findtext(message," snores.")) //Because we have so many sleeping people.
 				break
 			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
-				M.show_message(message, m_type)
+				M.show_message(chat_message, m_type)
 				M.show_chat_overlay(src, message, "#FFC0CB")
 
 		if (m_type & TRUE)
@@ -52,7 +53,7 @@
 							O.see_emote(src, message, TRUE)
 				else if (ismob(I))
 					var/mob/M = I
-					M.show_message(message, TRUE)
+					M.show_message(chat_message, TRUE)
 					M.show_chat_overlay(src, message, "#FFC0CB")
 
 		else if (m_type & 2)
@@ -65,7 +66,7 @@
 							O.see_emote(src, message, 2)
 				else if (ismob(I))
 					var/mob/M = I
-					M.show_message(message, 2)
+					M.show_message(chat_message, 2)
 					M.show_chat_overlay(src, message, "#FFC0CB")
 
 /mob/proc/emote_dead(var/message)

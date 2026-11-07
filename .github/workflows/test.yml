@@ -1484,21 +1484,21 @@ jobs:
           name: flax-processing-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/flax-processing/
           retention-days: 7
-      - name: Verify dew collector lifecycle and mutation controls
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/dew_collector')
+      - name: Verify rain barrel collection, legacy conversion and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rain_barrel')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/dew-collector/positive"
-          for control in cap exposure timing persistence click; do
-            python3 tests/dew_collector/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/dew-collector/$control"
+          python3 tests/rain_barrel/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/rain-barrel/positive"
+          for control in exposure timing persistence lid legacy; do
+            python3 tests/rain_barrel/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/rain-barrel/$control"
           done
-      - name: Upload dew collector evidence
-        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/dew_collector'))
+      - name: Upload rain barrel evidence
+        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rain_barrel'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: dew-collector-${{ github.event.pull_request.head.sha || github.sha }}
-          path: ${{ runner.temp }}/dew-collector/
+          name: rain-barrel-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/rain-barrel/
           retention-days: 7
       - name: Verify cooked meals and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/cooked_meals')
