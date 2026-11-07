@@ -80,6 +80,7 @@ Removing the station's `NOREACT` flag makes the inert-tank check fail.
 - Saving: a pipe's network is runtime-only; valve, pump switch and tank filter are saved and pump power is not; reloaded pumps and pipes rebuild the networks; holding tanks are inert.
 - Plumbing: a new water tap and piped shower start dry and a dry shower will not turn on; a tap holds what the pipes bring it, sickness included; a piped shower takes only water; nothing is made along the way; filling a container empties the tap by as much; a running piped shower uses its water and turns itself off when it runs out; taps are inert.
 - Habitat machines: an electrolyser takes only the room it has from a water recycler through pipes, at the pump's rate; both pipe only water; the recycler saves its water but not its pipe holder.
+- Steel barrels: a barrel beside a pipe stays off the network until wrenched, and one away from pipes cannot be fitted; a fitted barrel joins as a source only, feeds a tap at the pump's rate and draws a pipe joint; the fitting is saved; moving the barrel or wrenching it again detaches it and it keeps its water; wood barrels never join.
 - Catalog: research gates (including the tap and piped shower), the five global recipes and the reused sprites.
 
 Letting a network move reagents without a powered pump makes four checks fail. Dropping the recycler's settling of what the network took makes both habitat transfer checks fail.
