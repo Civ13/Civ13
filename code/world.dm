@@ -69,7 +69,10 @@ var/world_is_open = TRUE
 
 /world
 	mob = /mob/new_player
-	turf = /turf/floor/dirt
+	// Compiled maps type every cell. The default only fills a plane added at
+	// runtime (building_levels.dm, dug_underground.dm), so it is the empty
+	// open-air cell those levels start from, not dirt that is replaced again.
+	turf = /turf/sky/building
 	area = /area/caribbean
 	view = 7
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
