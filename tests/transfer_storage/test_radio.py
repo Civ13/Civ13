@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0, ROOT)
 from tools.transfer_storage.agent import make_server  # noqa: E402
 from tools.transfer_storage.coordinator import Coordinator, call  # noqa: E402
-from tools.transfer_storage.radio import RING, TTL, RadioError, RadioRelay  # noqa: E402
+from tools.transfer_storage.radio import MAX_BATCH, RING, TTL, RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionStore  # noqa: E402
 
 TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40, 'gamma': 'c' * 40}
@@ -52,6 +52,23 @@ class RingTests(unittest.TestCase):
                 self.relay.send(bad)
         self.assertEqual(150, self.relay.send(envelope(frequency=150.0)) and 150)
         self.relay.send(envelope(frequency='Red (private)'))  # named faction channels pass as text
+
+    def test_send_batch_checks_each_envelope(self):
+        result = self.relay.send_batch([envelope(message='one'), envelope(key='NOPE'), 'junk',
+                                        envelope(message='two')])
+        self.assertEqual(4, len(result['ids']))
+        self.assertIsNone(result['ids'][1])
+        self.assertIsNone(result['ids'][2])
+        self.assertEqual([1, 2], [e['index'] for e in result['errors']])
+        self.assertIn('key', result['errors'][0]['error'])
+        sent = self.relay.outbox()['envelopes']
+        self.assertEqual(['one', 'two'], [e['message'] for e in sent])
+        self.assertEqual([result['ids'][0], result['ids'][3]], [e['id'] for e in sent])
+        self.assertEqual({'ids': [], 'errors': []}, self.relay.send_batch([]))
+        for bad in (None, {'envelope': envelope()}, [envelope()] * (MAX_BATCH + 1)):
+            with self.assertRaises(RadioError):
+                self.relay.send_batch(bad)
+        self.assertEqual([], self.relay.outbox()['envelopes'])
 
     def test_deliver_filters_duplicates_wrong_group_self_and_stale(self):
         sender = RadioRelay('beta', 'g', self.clock)
@@ -146,6 +163,19 @@ class AgentRadioTests(unittest.TestCase):
             status = self.post(region, '/status')['result']
             self.assertEqual([], status['active'])
             self.assertEqual([], self.post(region, '/outbox')['result']['envelopes'])
+
+    def test_batched_send_reaches_every_other_region(self):
+        sent = self.post('alpha', '/radio/send_batch',
+                         {'envelopes': [envelope(message='first'), envelope(message=''), envelope(message='second')]})
+        self.assertTrue(sent['ok'], sent)
+        self.assertEqual([1], [e['index'] for e in sent['result']['errors']])
+        self.assertEqual(4, self.coordinator.relay_radio_once())
+        for region in ('beta', 'gamma'):
+            got = self.post(region, '/radio/inbox')['result']['envelopes']
+            self.assertEqual(['first', 'second'], [e['message'] for e in got], region)
+        too_many = self.post('alpha', '/radio/send_batch', {'envelopes': [envelope()] * (MAX_BATCH + 1)})
+        self.assertFalse(too_many['ok'])
+        self.assertFalse(self.post('alpha', '/radio/send_batch', {})['ok'])
 
     def test_refusals(self):
         bad = self.post('alpha', '/radio/send', {'envelope': envelope(key='NOPE')})

@@ -253,6 +253,22 @@ var/global/list/civ_relay_outbound_queue = list()
 		if (civ_relay_outbound_queue.len > CIV_RELAY_QUEUE_LIMIT)
 			civ_relay_outbound_queue.Cut(1, 2)
 
+// Posts several queued envelopes in one request to the agent's
+// /radio/send_batch. Returns how many the agent accepted (0 when it cannot be
+// reached). Not used by the radio process yet, which sends one per request;
+// switch to it when relay traffic makes the per-message round trips matter.
+/proc/civ_relay_send_batch(list/envelopes)
+	if (!transfer_bridge.enabled() || !length(envelopes))
+		return 0
+	var/list/answer = transfer_bridge.request("/radio/send_batch", list("envelopes" = envelopes))
+	if (!islist(answer) || !answer["ok"] || !islist(answer["result"]))
+		return 0
+	var/accepted = 0
+	for (var/id in answer["result"]["ids"])
+		if (istext(id))
+			accepted++
+	return accepted
+
 // -- receiving --------------------------------------------------------------
 
 // A speaker from another land, for the hearer code: it needs a name, a real
