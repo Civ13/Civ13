@@ -79,3 +79,15 @@ The accepted-growth lighting probe explicitly instantiates the tests-only
 `fixture_admission` subclass; it is not a validated memory profile. The ordinary
 support fixture uses compiled planes. Production default rejection, paid-item
 preservation and existing-plane reuse are checked by `tests/new_z_budget`.
+
+## Standing building level
+
+A map with `building_level_standing` (Gaia) adds its building level at round
+start instead of with the first roof, once the startup import has settled
+(`code/modules/multiz/standing_building_level.dm`). A pending or failed import
+is never followed by growth, so an older save with fewer levels still loads.
+
+```
+<verified-python> tests/building_levels/run.py --standing --byond-bin <bin> --output <empty-directory>
+<verified-python> tests/building_levels/run.py --standing --negative-control standing-import --byond-bin <bin> --output <different-empty-directory>
+```
