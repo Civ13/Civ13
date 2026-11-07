@@ -269,9 +269,14 @@ standby (its lifecycle status has no `handover` field); `handover` then saves,
 stops, installs and starts it under the same action, so the first update onto a
 build that can hand over is still one `deploy.bat`.
 
-Measured so far on Linux DreamDaemon 516.1688: `world.OpenPort` adds a second
-listening port to a running world. The first live test belongs on Rail Yard,
-whose load takes under a minute.
+To rehearse a handover without a live region, point a group config at a spare
+root and loopback ports (one region with `standby_port`, `public: false`), run
+`setup`, `update --region ID`, `start --region ID`, then after a commit `stage
+--region ID` and `handover --region ID`, and follow
+`data/shard-host/operation.json` phases (`copying the staged build`, `booting the standby`, `saving`,
+`backing up`, `loading the standby`, `switching`, `checking out`, `handed over`,
+`done`). The first live test belongs on
+Rail Yard, whose load takes under a minute.
 
 ## Player help ("Ask for help")
 
