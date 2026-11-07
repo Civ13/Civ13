@@ -340,7 +340,7 @@
     },
     {
       "path": "code/modules/1713/extraction/mall.dm",
-      "sha256_normalized": "be5e3ea2fef68778f1f6a490d49fdf5f51a0d3c1702935dab85c5688886d8601",
+      "sha256_normalized": "71ec31d5964fdb1142674d5bff6a3ec110704852fafd3ed0b907fd99a166e02b",
       "declarations": [
         {
           "line": 67,

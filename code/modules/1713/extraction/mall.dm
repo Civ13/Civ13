@@ -272,7 +272,7 @@
 		var/datum/extraction_session/S = H.extraction_session
 		if (S.transitioning || S.profile["state"] != "raid" || M.round_closing || M.game_over || !M.mission_z(z) || !M.mission_z(destination_z)) return FALSE
 		// Only the intended bidirectional parking/retail/gallery connections.
-		if (!((z == 1 && destination_z == 4) || (z == 4 && destination_z in list(1, 5)) || (z == 5 && destination_z == 4))) return FALSE
+		if (!((z == 1 && destination_z == 4) || (z == 4 && (destination_z in list(1, 5))) || (z == 5 && destination_z == 4))) return FALSE
 		var/turf/T = locate(x, y, destination_z)
 		if (!istype(T, /turf/floor) || T.density) return FALSE
 		var/obj/structure/extraction_mall_stairs/return_stairs

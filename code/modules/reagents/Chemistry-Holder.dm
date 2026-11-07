@@ -194,19 +194,30 @@
 /datum/reagents/proc/remove_reagent(var/id, var/amount, var/safety = FALSE)
 	if (!isnum(amount))
 		return FALSE
+	if (id == "ethanol")
+		// "ethanol" means every alcohol (get_reagent_amount sums them), so draw
+		// the amount from each alcohol in turn. Returning after the first entry
+		// left ethanol unspent whenever another reagent had been added first.
+		var/remaining = amount
+		var/found = FALSE
+		for (var/datum/reagent/current in reagent_list)
+			if (remaining <= 0)
+				break
+			if (istype(current, /datum/reagent/ethanol))
+				found = TRUE
+				var/used = min(current.volume, remaining)
+				current.volume -= used
+				remaining -= used
+		if (!found)
+			return FALSE
+		update_total() // Deletes emptied entries
+		if (!safety)
+			handle_reactions()
+		if (my_atom)
+			my_atom.on_reagent_change()
+		return TRUE
 	for (var/datum/reagent/current in reagent_list)
-		if (id == "ethanol")
-			if (istype(current,/datum/reagent/ethanol))
-				current.volume -= amount // It can go negative, but it doesn't matter
-				update_total() // Because this proc will delete it then
-				if (!safety)
-					handle_reactions()
-				if (my_atom)
-					my_atom.on_reagent_change()
-
-			return TRUE
-
-		else if (current.id == id)
+		if (current.id == id)
 			current.volume -= amount // It can go negative, but it doesn't matter
 			update_total() // Because this proc will delete it then
 			if (!safety)
