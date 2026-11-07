@@ -435,6 +435,9 @@ RECIPE: /material/electronics/,radio headset,/obj/item/weapon/radio/walkietalkie
 RECIPE: /material/electronics/,mobile phone,/obj/item/weapon/telephone/mobile,20,100,0,1,none,212,0,0,8,null
 RECIPE: /material/electronics/,smartphone,/obj/item/weapon/telephone/mobile/smartphone,15,100,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,LED panel,/obj/structure/lamp/lamp_big/led,2,55,0,1,electrical,235,0,0,8,null
+RECIPE: /material/electronics/,smart hub,/obj/structure/smart_hub,6,80,1,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,smart speaker,/obj/structure/smart_speaker,2,40,1,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,smart lock,/obj/item/weapon/smart_lock,2,40,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,lithium-ion battery bank,/obj/structure/battery/lithium_ion,25,200,1,1,electrical,235,0,0,8,null
 RECIPE: /material/electronics/,drone controller,/obj/item/drone_controller,10,100,0,1,drones,0,235,0,8,null
 RECIPE: /material/electronics/,quadcopter drone,/obj/structure/drone/flying,15,150,1,1,drones,0,235,0,8,null

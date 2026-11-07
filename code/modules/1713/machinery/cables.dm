@@ -330,6 +330,10 @@ var/global/cable_identity_sequence = 0
 /obj/proc/draw_cable_power()
 	if (!powersource)
 		return FALSE
+	// A smart hub switched this device off (smart_home.dm).
+	if (smart_power_cut())
+		powersource.update_power(-powerneeded, 1, src)
+		return FALSE
 	if (powerneeded <= 0)
 		powersource.update_power(0, 1, src)
 		return FALSE
