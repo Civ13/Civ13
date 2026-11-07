@@ -1,0 +1,65 @@
+{
+  "status": "CAPTURED",
+  "shots": [
+    {
+      "name": "1-parked-on-runway",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "2-low-flight",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "3-cruise",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "4-cruise-after-turn",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "5-low-flight-again",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "6-landed",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    }
+  ]
+}

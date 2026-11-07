@@ -1,0 +1,17 @@
+STARTED RUNTIME LOGGING
+Standing building level 3 added above the surface.
+FLIGHT: site 208,121,2 /turf/floor/dirt/dust, cleared 32 objects
+FLIGHT: PASS airstrip_built 
+FLIGHT: PASS client_is_pilot {"mob":"Nonus Sepurcius Afer"}
+FLIGHT: shot 1-parked-on-runway taken
+FLIGHT: SNAP {"label":"after_roll","x":211,"y":111,"z":3,"state":"low","gear":5,"moving":1,"engine":1,"shadows":12,"ground_view_turfs":289,"anchor":"203,103,3","fuel":179.16}
+FLIGHT: PASS took_off {"label":"after_roll","x":211,"y":111,"z":3,"state":"low","gear":5,"moving":1,"engine":1,"shadows":12,"ground_view_turfs":289,"anchor":"203,103,3","fuel":179.16}
+FLIGHT: SNAP {"label":"low_flight","x":211,"y":108,"z":3,"state":"low","gear":5,"moving":1,"engine":1,"shadows":12,"ground_view_turfs":289,"anchor":"203,100,3","fuel":178.74}
+FLIGHT: shot 2-low-flight taken
+FLIGHT: shot 3-cruise taken
+FLIGHT: SNAP {"label":"after_turn","x":217,"y":66,"z":3,"state":"cruise","gear":5,"moving":1,"engine":1,"shadows":12,"ground_view_turfs":289,"anchor":"209,58,3","fuel":171.18}
+FLIGHT: shot 4-cruise-after-turn taken
+FLIGHT: shot 5-low-flight-again taken
+FLIGHT: SNAP {"label":"landed","x":257,"y":66,"z":2,"state":"ground","gear":1,"moving":1,"engine":1,"shadows":0,"ground_view_turfs":0,"anchor":null,"fuel":165.72}
+FLIGHT: PASS landed {"label":"landed","x":257,"y":66,"z":2,"state":"ground","gear":1,"moving":1,"engine":1,"shadows":0,"ground_view_turfs":0,"anchor":null,"fuel":165.72}
+FLIGHT: shot 6-landed taken
