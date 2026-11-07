@@ -7,6 +7,13 @@
 	var/list/validated_roof_instances = list()
 	var/list/validated_roof_absent = list()
 	var/restoring_roof_areas = FALSE
+	// Levels whose roofs the entry walk projects (prepare_saved_roof_areas
+	// hands them over when the walk reads the level in full).
+	var/list/validated_roof_walk_levels = list()
+	// Durable metadata targets ("z:ref") the entry walk proved reachable from
+	// a turf, and whether the validation record stood in for that walk.
+	var/list/validated_reachable_entries = list()
+	var/validated_entries_trusted = FALSE
 
 /map_storage/proc/clear_saved_roof_areas()
 	validated_roof_areas = list()
@@ -15,6 +22,7 @@
 	validated_roof_instances = list()
 	validated_roof_absent = list()
 	restoring_roof_areas = FALSE
+	validated_roof_walk_levels = list()
 
 /map_storage/proc/saved_roof_area_type(climate)
 	if(!(climate in list("tundra", "taiga", "temperate", "sea", "semiarid", "desert", "savanna", "jungle"))) return null
@@ -65,6 +73,11 @@
 				prepare_saved_roof(null, roof["x"], roof["y"], z, roof["entry"], roof["type"], roof["switch"], roof["base"])
 				TICK_CHECK
 			continue
+		if(!validated_entries_trusted)
+			// validate_world_save walks every entry of this level and projects
+			// its roofs as it meets them, instead of a second read here.
+			validated_roof_walk_levels["[z]"] = TRUE
+			continue
 		// A sparse level's unsaved cells hold nothing, so only its saved cells
 		// can carry a roof.
 		var/list/sparse = sparse_level_header(F)
@@ -94,6 +107,9 @@
 					// Do not guess missing legacy settings or decode an object graph here.
 					prepare_saved_roof(F, x, y, z, child, type, persistence_saved_scalar(level_entry_value(F, child, "switch_area")), persistence_saved_scalar(level_entry_value(F, child, "current_area_type")))
 				TICK_CHECK
+
+// Once every level's roofs are projected: the destination areas they need.
+/map_storage/proc/finish_saved_roof_areas()
 	for(var/key in validated_roof_types)
 		var/type = validated_roof_types[key]
 		var/area/A = find_saved_roof_area(type)
@@ -516,45 +532,57 @@
 	if(plan_low_memory("load"))
 		log_startup_progress("Low-memory world load: [last_low_memory_plan].")
 		if(split_large_full_file_levels()) log_startup_progress("Split large saved levels into segments; loading one segment at a time.")
-	// Allocate all levels first so references to turfs on later levels stay valid.
-	for(var/z = 1, z <= world.maxz, z++)
-		var/savefile/F = new("map_saves/[z].sav")
+	// Floors are replaced level by level; their icons refresh once per level
+	// after its entries load (floor.dm), not on every neighbour placement.
+	set_floor_icon_updates_deferred(TRUE)
+	try
+		// Allocate all levels first so references to turfs on later levels stay valid.
+		for(var/z = 1, z <= world.maxz, z++)
+			var/savefile/F = new("map_saves/[z].sav")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
+			if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
 #endif
-		var/list/sparse = sparse_level_header(F)
-		if(sparse)
-			// Unsaved cells are the baseline: a restored level already holds it,
-			// a reloaded one is reset to it. Saved cells take their saved type.
-			var/list/cells = sparse_level_cells(F, z, sparse)
-			var/baseline = sparse["turf"]
+			var/list/sparse = sparse_level_header(F)
+			if(sparse)
+				// Unsaved cells are the baseline: a restored level already holds it,
+				// a reloaded one is reset to it. Saved cells take their saved type.
+				var/list/cells = sparse_level_cells(F, z, sparse)
+				var/baseline = sparse["turf"]
+				for(var/y = 1, y <= world.maxy, y++)
+					var/list/columns = cells["[y]"]
+					var/next = 1
+					for(var/x = 1, x <= world.maxx, x++)
+						var/turf/T = locate(x,y,z)
+						if(columns && next <= columns.len && columns[next] == x)
+							next++
+							T.ChangeTurf(level_entry_value(F, F["/map/[z]/[y]/[x]"], "type"), FALSE, FALSE)
+						else if(T.type != baseline)
+							T.ChangeTurf(baseline, FALSE, FALSE)
+					TICK_CHECK
+				continue
 			for(var/y = 1, y <= world.maxy, y++)
-				var/list/columns = cells["[y]"]
-				var/next = 1
 				for(var/x = 1, x <= world.maxx, x++)
+					var/ref = F["/map/[z]/[y]/[x]"]
+					var/type = level_entry_value(F, ref, "type")
 					var/turf/T = locate(x,y,z)
-					if(columns && next <= columns.len && columns[next] == x)
-						next++
-						T.ChangeTurf(level_entry_value(F, F["/map/[z]/[y]/[x]"], "type"), FALSE, FALSE)
-					else if(T.type != baseline)
-						T.ChangeTurf(baseline, FALSE, FALSE)
-				TICK_CHECK
-			continue
-		for(var/y = 1, y <= world.maxy, y++)
-			for(var/x = 1, x <= world.maxx, x++)
-				var/ref = F["/map/[z]/[y]/[x]"]
-				var/type = level_entry_value(F, ref, "type")
-				var/turf/T = locate(x,y,z)
-				T.ChangeTurf(type, FALSE, FALSE)
-				TICK_CHECK
-	// References may precede the roof object in the saved graph. Rebuild only
-	// the roof topology proven by preflight, before any object fields decode.
-	materialize_saved_roof_areas()
-	begin_level_link_import()
+					T.ChangeTurf(type, FALSE, FALSE)
+					TICK_CHECK
+		// References may precede the roof object in the saved graph. Rebuild only
+		// the roof topology proven by preflight, before any object fields decode.
+		materialize_saved_roof_areas()
+		begin_level_link_import()
+	catch(var/exception/allocation_error)
+		// The caller rethrows; the world keeps running, so floors must redraw again.
+		set_floor_icon_updates_deferred(FALSE)
+		throw allocation_error
 	for(var/B = 1, B <= world.maxz, B++)
 		loading_z = B
 		try
 			var/watch = start_watch()
+			// Deferred while this level's entries are placed; the refresh below
+			// rebuilds every floor of the level once, then after_load and the
+			// next level's work refresh neighbours as they change turfs.
+			set_floor_icon_updates_deferred(TRUE)
 			existing_references = alist()
 			all_loaded = list()
 			loaded_lists = list()
@@ -594,6 +622,10 @@
 						Load_Entry(savefile, turf_ref, old_turf)
 						savefile.cd = "/map/[z]/[y]"
 						TICK_CHECK
+			// Every floor of the level is placed and its fields restored: rebuild
+			// each icon once before after_load adds snow and irrigation overlays.
+			refresh_deferred_floor_icons_level(B)
+			set_floor_icon_updates_deferred(FALSE)
 			for(var/i in 1 to all_loaded.len)
 				var/datum/ob = all_loaded[i]
 				if (ob)
@@ -629,6 +661,7 @@
 					if(!operation.current(src, "load") || all_loaded != lighting_entries || loading_z != B) throw EXCEPTION("Load ownership changed during lighting restoration")
 			report_load_memory(B, stop_watch(watch))
 		catch(var/exception/e)
+			set_floor_icon_updates_deferred(FALSE)
 			if (surface_inventory) surface_inventory.discovery_fail()
 			clear_saved_roof_areas()
 			last_error = "[e] on [e.file]:[e.line]"
@@ -637,6 +670,7 @@
 			clear_bookkeeping()
 			saved_turfs = list()
 			return FALSE
+	set_floor_icon_updates_deferred(FALSE)
 	try
 		restore_level_links()
 	catch(var/exception/link_error)
@@ -831,7 +865,6 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		if(isnull(round_mode_metadata(meta)))
 			throw EXCEPTION("Save round-mode metadata is malformed")
 		prepare_saved_zones(round_state["world_state"], round_state["generation"])
-		prepare_saved_roof_areas(round_state["generation"])
 		// The per-entry walk below is what the validation record can stand in for.
 		var/trusted = FALSE
 		// A save's candidate check reads each entry's type, owner and contents
@@ -852,6 +885,20 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 #endif
 			world.log << "World-save preflight: [last_validation_note]."
 			persistence_game_log("World-save preflight: [last_validation_note].")
+		validated_entries_trusted = trusted
+		validated_reachable_entries = list()
+		validated_roof_walk_levels = list()
+		// Roofs on a level the walk reads in full are projected by the walk
+		// (prepare_saved_roof_areas hands those levels over); the rest are
+		// read here.
+		prepare_saved_roof_areas(round_state["generation"])
+		var/list/durable_targets = durable_entry_targets(round_state)
+		var/roof_root = text2path("/obj/roof")
+		var/screen_root = text2path("/obj/screen")
+		var/hud_root = text2path("/datum/hud")
+		// Area references are checked once every level's roofs are projected.
+		var/list/pending_areas = list()
+		if(world.maxx >= 4096 || world.maxy >= 4096) throw EXCEPTION("World too wide for the preflight cell index")
 		for(var/z = 1, z <= save_validation_maxz(), z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
@@ -874,7 +921,11 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 			if(structure)
 				if(F["/format_version"] != 5 || !isnum(structure["entries"])) throw EXCEPTION("Candidate structure record does not match the saved level")
 				continue
+			var/project_roofs = roof_root && validated_roof_walk_levels["[z]"]
 			var/list/validated_lists = list()
+			// Grid turf entry -> y * 4096 + x. The entry's type, irrigation
+			// fields and contents are checked when the walk reaches it, so
+			// the grid pass reads the index alone.
 			var/list/turf_refs = list()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			var/list/human_direct_parents = list()
@@ -908,15 +959,8 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 					var/ref = F["[x]"]
 					if(!isnum(ref) || ref < 1 || ref != round(ref) || turf_refs["[ref]"])
 						throw EXCEPTION("Missing or duplicate turf at [x],[y],[z]")
-					turf_refs["[ref]"] = TRUE
-					var/savefile/turf_file = level_entry_file(F, ref)
-					turf_file.cd = entry_path(turf_file, ref)
-					var/type = turf_file["type"]
-					if(!ispath(type, /turf))
-						throw EXCEPTION("Invalid turf type at [x],[y],[z]")
-					if(ispath(type, /turf/floor))
-						validate_saved_irrigation(turf_file, version)
-					TICK_CHECK
+					turf_refs["[ref]"] = y * 4096 + x
+				TICK_CHECK
 			var/list/entries
 			if(F["/format_version"] == 4 || F["/format_version"] == 5)
 				entries = level_segment_entries(F)
@@ -929,21 +973,48 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				for(var/shard in shards)
 					F.cd = "/entries/[shard]"
 					entries += F.dir.Copy()
-			// Each entry's type is read once here; content checks reuse it.
+			// One pass over the entries proves the level: each entry's type,
+			// its placement, owner and fields, every content edge, each roof's
+			// turf and the ancestry of the durable metadata targets. Reading a
+			// stream level materializes its shards, so every extra pass cost
+			// about as much as the walk itself.
 			var/list/entry_set = list()
-			for(var/ref in entries)
-				var/savefile/type_file = level_entry_file(F, ref)
-				var/saved_type = type_file["[entry_path(type_file, ref)]/type"]
-				entry_set["[ref]"] = isnull(saved_type) ? TRUE : saved_type
+			// Roof entry -> list(type, switch_area, current_area_type).
+			var/list/roof_fields = list()
+			// Content edges whose child entry the walk has not reached yet.
+			var/list/pending_children = list()
+			var/list/pending_parents = list()
+			// Referenced entries the walk has not reached yet.
+			var/list/pending_refs = list()
+			// Durable metadata targets on this level and, as the walk finds
+			// them, their containers up to a turf.
+			var/list/tracked = list()
+			var/list/parent_of = list()
+			var/level_prefix = "[z]:"
+			for(var/key in durable_targets)
+				if(findtext(key, level_prefix) == 1) tracked[copytext(key, length(level_prefix) + 1)] = TRUE
+			// An export numbers a container before the contents it writes,
+			// so walking the entries in reverse meets each child before the
+			// parent that lists it: content edges resolve as they are read.
+			for(var/index = entries.len, index >= 1, index--)
 				TICK_CHECK
-			for(var/ref in entries)
-				TICK_CHECK
+				var/ref = entries[index]
+				var/key = "[ref]"
 				var/savefile/E = level_entry_file(F, ref)
 				var/entry_dir = entry_path(E, ref)
 				E.cd = entry_dir
-				var/type = entry_set["[ref]"]
-				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !turf_refs["[ref]"]))
+				var/type = E["type"]
+				if(entry_set[key]) throw EXCEPTION("Duplicate saved entry [ref] on z=[z]")
+				entry_set[key] = isnull(type) ? TRUE : type
+				var/cell = turf_refs[key]
+				if(!ispath(type, /datum) || ispath(type, /area) || (ispath(type, /turf) && !cell))
 					throw EXCEPTION("Unsupported or unplaced saved entry [ref] on z=[z]")
+				if(cell)
+					if(!ispath(type, /turf))
+						throw EXCEPTION("Invalid turf type at [cell % 4096],[round(cell / 4096)],[z]")
+					if(ispath(type, /turf/floor))
+						validate_saved_irrigation(E, version)
+						E.cd = entry_dir
 				if(ispath(type, /mob/living/human))
 					validate_saved_player_owner(E, ref, player_owners)
 					E.cd = entry_dir
@@ -956,6 +1027,11 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 #else
 					throw EXCEPTION("Human direct restore schema is unavailable")
 #endif
+				if(project_roofs && ispath(type, roof_root))
+					// These fields are explicitly emitted by /obj/roof/get_saved_vars.
+					// Do not guess missing legacy settings or decode an object graph here.
+					if(!("switch_area" in fields) || !("current_area_type" in fields)) throw EXCEPTION("Missing saved roof settings")
+					roof_fields[key] = list(type, E["switch_area"], E["current_area_type"])
 				for(var/field in fields)
 					if(field == "type")
 						continue
@@ -965,29 +1041,59 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 					var/value = E[field]
 					if(field == "content")
 						for(var/content_ref in saved_content_refs(value, version))
-							if(!entry_set["[content_ref]"])
-								throw EXCEPTION("Missing content entry [content_ref] on z=[z]")
-							var/content_type = entry_set["[content_ref]"]
-							if(!ispath(content_type, /atom/movable))
-								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 							var/child_key = "[content_ref]"
+							if(tracked[child_key] && !parent_of[child_key])
+								parent_of[child_key] = key
+								tracked[key] = TRUE
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 							var/old_count = human_direct_parent_counts[child_key]
 							human_direct_parent_counts[child_key] = (isnum(old_count) ? old_count : 0) + 1
-							human_direct_parents[child_key] = "[ref]"
+							human_direct_parents[child_key] = key
 #endif
+							var/child_type = entry_set[child_key]
+							if(child_type)
+								validate_saved_content_edge(z, child_key, child_type, cell, roof_fields)
+							else
+								pending_children += child_key
+								pending_parents += key
 					else if((version == 2 || version == 3) && is_level_link_value(value))
 						if(!level_links || !validate_level_link_value(value, level_links))
 							throw EXCEPTION("Invalid cross-level link on z=[z]")
 					else if(version == 2 || version == 3)
-						validate_saved_value(F, value, entry_set, validated_lists)
+						validate_saved_value(F, value, entry_set, validated_lists, pending_refs, pending_areas)
 					else if(istext(value) && findtext(value, "**entry") == 1)
-						if(!entry_set[copytext(value, 8)])
-							throw EXCEPTION("Missing legacy referenced entry on z=[z]")
+						pending_refs[copytext(value, 8)] = TRUE
 					else if(istext(value) && findtext(value, "**list") == 1)
 						for(var/item in params2list(copytext(value, 7)))
-							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
-								throw EXCEPTION("Missing legacy list entry on z=[z]")
+							if(findtext(item, "**entry") == 1) pending_refs[copytext(item, 8)] = TRUE
+			// Content edges and references that pointed past the walk.
+			for(var/i = 1, i <= pending_children.len, i++)
+				var/child_key = pending_children[i]
+				var/child_type = entry_set[child_key]
+				if(!child_type) throw EXCEPTION("Missing content entry [child_key] on z=[z]")
+				validate_saved_content_edge(z, child_key, child_type, turf_refs[pending_parents[i]], roof_fields)
+				if(i % 1024 == 0) TICK_CHECK
+			for(var/key in pending_refs)
+				if(!entry_set[key]) throw EXCEPTION("Missing saved referenced entry [key]")
+			var/checked = 0
+			for(var/key in turf_refs)
+				if(!entry_set[key]) throw EXCEPTION("Missing turf entry [key] on z=[z]")
+				if(++checked % 4096 == 0) TICK_CHECK
+			// A durable target whose containers the walk recorded up to a
+			// turf is reachable; validate_durable_reachability reads the
+			// level back for any it could not follow.
+			for(var/key in durable_targets)
+				if(findtext(key, level_prefix) != 1) continue
+				var/cursor = copytext(key, length(level_prefix) + 1)
+				var/steps = 0
+				while(cursor && !turf_refs[cursor])
+					var/parent = parent_of[cursor]
+					var/parent_type = parent ? entry_set[parent] : null
+					if(!parent || (screen_root && ispath(parent_type, screen_root)) || (hud_root && ispath(parent_type, hud_root)) || ++steps > entries.len)
+						cursor = null
+					else
+						cursor = parent
+				if(cursor) validated_reachable_entries[key] = TRUE
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			// Historical schema-1 capsules remain readable. Validate their old
 			// parent/tile identity, but never restore their fractional offsets.
@@ -997,6 +1103,12 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				if(human_direct_parent_counts[human_ref] != 1 || !turf_refs[parent_ref] || !islist(position) || position["z"] != z || position["x"] < 1 || position["x"] > world.maxx || position["y"] < 1 || position["y"] > world.maxy || position["sx"] < 0 || position["sx"] >= 32 || position["sy"] < 0 || position["sy"] >= 32 || (!position["sx"] && !position["sy"])) throw EXCEPTION("Historical human saved origin is invalid")
 				if("[human_candidate_map_ref(F, z, position["y"], position["x"])]" != "[parent_ref]") throw EXCEPTION("Historical human saved origin is invalid")
 #endif
+		finish_saved_roof_areas()
+		for(var/key in pending_areas)
+			var/list/row = pending_areas[key]
+			var/area_type = save_validation_area_type(row[1], row[2], row[3])
+			if(!ispath(area_type, row[4]))
+				throw EXCEPTION("Referenced area differs from the current map")
 		if(level_links) validate_level_link_targets(level_links, round_state["generation"])
 		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
 		last_validation_full = walk_fields && !trusted
@@ -1032,7 +1144,9 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		message_admins("Save rejected before clearing the world: [e]")
 		return FALSE
 
-/map_storage/proc/validate_saved_value(savefile/F, list/value, list/entries, list/visited)
+// pending_refs and pending_areas defer the entry and area checks of a walk
+// that has not read every entry or projected every roof yet (validate_world_save).
+/map_storage/proc/validate_saved_value(savefile/F, list/value, list/entries, list/visited, list/pending_refs, list/pending_areas)
 	if(!islist(value))
 		persistence_saved_scalar(value) // Value format 2 raw scalar; rejects anything else.
 		return TRUE
@@ -1044,6 +1158,10 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		if("area")
 			if(!ispath(value["type"], /area))
 				throw EXCEPTION("Invalid saved area type")
+			if(pending_areas)
+				var/area_key = "[value["x"]],[value["y"]],[value["z"]]|[value["type"]]"
+				if(!pending_areas[area_key]) pending_areas[area_key] = list(value["x"], value["y"], value["z"], value["type"])
+				return TRUE
 			var/area_type = save_validation_area_type(value["x"], value["y"], value["z"])
 			if(!ispath(area_type, value["type"]))
 				throw EXCEPTION("Referenced area differs from the current map")
@@ -1052,7 +1170,8 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 			return TRUE
 		if("entry")
 			if(value["ref"] && !entries["[value["ref"]]"])
-				throw EXCEPTION("Missing saved referenced entry [value["ref"]]")
+				if(!pending_refs) throw EXCEPTION("Missing saved referenced entry [value["ref"]]")
+				pending_refs["[value["ref"]]"] = TRUE
 			return TRUE
 		if("turf")
 			for(var/axis in list("x", "y", "z"))
@@ -1077,10 +1196,40 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				TICK_CHECK
 				var/key = LF["/lists/[id]/[i]/key"]
 				var/associated_value = LF["/lists/[id]/[i]/value"]
-				validate_saved_value(F, key, entries, visited)
-				validate_saved_value(F, associated_value, entries, visited)
+				validate_saved_value(F, key, entries, visited, pending_refs, pending_areas)
+				validate_saved_value(F, associated_value, entries, visited, pending_refs, pending_areas)
 			return TRUE
 	throw EXCEPTION("Unknown saved value kind")
+
+// One saved content edge, once both entries are known: the child is a
+// movable, and a roof listed by a grid turf (parent_cell, y * 4096 + x) is
+// projected onto that turf once.
+/map_storage/proc/validate_saved_content_edge(z, child_key, child_type, parent_cell, list/roof_fields)
+	if(!ispath(child_type, /atom/movable))
+		throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
+	var/list/roof = roof_fields[child_key]
+	if(!roof || !parent_cell) return
+	var/x = parent_cell % 4096
+	var/y = round(parent_cell / 4096)
+	if(validated_roof_areas["[x],[y],[z]"] || validated_roof_entries["[z]:[child_key]"])
+		throw EXCEPTION("Ambiguous or multiply placed saved roof")
+	prepare_saved_roof(null, x, y, z, child_key, roof[1], persistence_saved_scalar(roof[2]), persistence_saved_scalar(roof[3]))
+
+// The entries ("z:ref") the durable metadata graph binds, read from the round
+// state without validating it (validate_durable_world does that later): the
+// entry walk proves these reachable from a turf while it reads each level.
+/map_storage/proc/durable_entry_targets(list/round_state)
+	var/list/targets = list()
+	if(!islist(round_state) || round_state["version"] != 2) return targets
+	var/list/state = round_state["world_state"]
+	var/list/nodes = islist(state) ? state["nodes"] : null
+	if(!islist(nodes)) return targets
+	for(var/node in nodes)
+		if(!islist(node)) continue
+		var/list/row = node
+		if(row["kind"] != "entry" || !isnum(row["z"]) || !isnum(row["ref"])) continue
+		targets["[row["z"]]:[row["ref"]]"] = TRUE
+	return targets
 
 // Large flat savefile directories make repeated entry navigation expensive.
 // Legacy files remain flat; new files cap each entry directory at 512 children.
@@ -1311,6 +1460,15 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 /proc/delete_level_segment_files(directory, z)
 	for(var/name in level_segment_files(directory, z))
 		if(!fdel("[directory][name]")) throw EXCEPTION("Could not remove stale level segment [name]")
+
+// Floor icon deferral (code/game/turfs/floor.dm) when the full game is
+// compiled; serializer fixtures without floors leave both as no-ops.
+/proc/set_floor_icon_updates_deferred(deferred)
+	if("floor_icon_updates_deferred" in global.vars) global.vars["floor_icon_updates_deferred"] = deferred
+
+/proc/refresh_deferred_floor_icons_level(z)
+	var/refresh = text2path("/proc/refresh_deferred_floor_icons")
+	if(refresh) call(refresh)(z, TRUE)
 
 // Resident set of this process in MiB, or null when it cannot be read. shell()
 // needs a trusted daemon; a probe failure only removes the resident term from

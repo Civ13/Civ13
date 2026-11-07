@@ -290,7 +290,7 @@
     },
     {
       "path": "code/game/turfs/ships/shipwalls.dm",
-      "sha256_normalized": "3ecb853ceaa720d3d9a5c3ad9454c260395b5ea712c85d2c3ff435ccd120be5e",
+      "sha256_normalized": "6eb7c799534b5cd2950a4206d4c7ae0984d4f485aba80c3d2b80168f572659af",
       "declarations": [
         {
           "line": 46,
@@ -382,7 +382,7 @@
     },
     {
       "path": "code/modules/1713/structures.dm",
-      "sha256_normalized": "ec4054ea73c4ff56b5651d1a568bc1417e457b4b9895c8627202a7cc22ddddc1",
+      "sha256_normalized": "3a3396a50058c81595806abd6def0a129ecc19d8cc9f6355286c79c9c9beed63",
       "declarations": [
         {
           "line": 658,

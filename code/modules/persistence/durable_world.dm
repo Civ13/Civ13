@@ -146,13 +146,26 @@
 
 // A metadata atom must belong to the saved spatial ownership tree, not merely
 // exist as an orphan entry. This mirrors normal contents loading from turfs.
+// The preflight walk proves most targets as it reads each level
+// (validated_reachable_entries); a stream save's candidate check proved its
+// targets from the pinned objects (record_candidate_level_structure); the
+// validation record stands for a full walk this build already made. Only a
+// target none of those settled is followed through the file here.
 /map_storage/proc/validate_durable_reachability(datum/durable_save_graph/G)
+	if(validated_entries_trusted) return
 	for(var/z = 1, z <= save_validation_maxz(), z++)
 		var/list/wanted = list()
 		for(var/key in G.entry_targets)
 			var/list/parts = splittext(key, ":")
-			if(text2num(parts[1]) == z) wanted[parts[2]] = TRUE
+			if(text2num(parts[1]) != z || validated_reachable_entries[key]) continue
+			wanted[parts[2]] = TRUE
 		if(!wanted.len) continue
+		var/list/structure = candidate_structure_record(z)
+		if(structure)
+			var/list/reachable = structure["durable_reachable"]
+			for(var/ref in wanted)
+				if(!islist(reachable) || !reachable[ref]) throw EXCEPTION("Durable metadata references an unreachable world entry")
+			continue
 		var/savefile/F = new("map_saves/[z].sav")
 		var/list/queue = level_turf_refs(F, z)
 		var/list/seen = list()
