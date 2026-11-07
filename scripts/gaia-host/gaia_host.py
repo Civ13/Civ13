@@ -157,6 +157,11 @@ def parse_netstat(text):
 
 
 TCP_STATES = {2: 'LISTENING', 5: 'ESTABLISHED'}
+# Save and stop (Host.wait_for_exit): a world that closed its port after saving but is still
+# running this long later is ended; without its pid, the port must be closed this many polls
+# in a row (5 s apart) before the world counts as gone.
+STOP_LINGER_SECONDS = 180
+STOP_CLOSED_POLLS = 6
 
 
 def parse_tcp_table(buffer, ipv6=False):
@@ -1223,21 +1228,19 @@ class Host:
         session = before.get('session', '')
         if not HEX32.match(session or ''):
             raise RuntimeError('the world gave no valid session')
+        port = self.config['port']
+        pid = self.platform.server_pid(port)
         self.record(phase='saving', clients=before.get('clients'))
-        answer = self.platform.query(self.config['port'], token, 'save_shutdown', operation, session)
+        answer = self.platform.query(port, token, 'save_shutdown', operation, session)
         if answer.get('operation') != operation:
             raise RuntimeError('the world did not accept the save')
         self.running_file.unlink(missing_ok=True)  # it is going down on purpose
-        deadline = self.platform.now() + self.config['save_timeout_seconds']
-        while self.platform.listening(self.config['port']):
-            if self.platform.now() > deadline:
-                raise RuntimeError('the save did not finish in time; the server was left running')
-            status = self.world()
-            if status and status.get('error'):
-                raise RuntimeError('the world reported a save error: %s' % status['error'])
-            self.platform.sleep(5)
+        exited = self.wait_for_exit(pid)
         self.record(phase='backing up')
         saves = self.repo / 'map_saves'
+        if exited:
+            # The process is gone, so any lock file left in map_saves was its own.
+            self.remove_save_locks(self.save_locks())
         for _ in range(30):
             if not any(p.name.endswith('.lk') for p in saves.iterdir()):
                 break
@@ -1249,6 +1252,49 @@ class Host:
         for old in kept[:-self.config['backups_kept']]:
             shutil.rmtree(old)
         self.record(phase='stopped', generation=generation, backup=str(backups / operation))
+
+    def wait_for_exit(self, pid):
+        """Wait until the world that accepted save_shutdown has saved and exited.
+
+        A world busy saving can stop accepting connections for minutes (every poll's
+        connection waits in its listen backlog until it fills), so a refused connection
+        is not an exit: Gaia's Save and stop gave up after its port "closed" in the middle
+        of the save, while the world was still saving (2026-11-07). The world is gone when
+        no process listens on its port and its process has ended. A world that closed its
+        port (it does that only when it shuts down after a validated save) but whose
+        process lingers past STOP_LINGER_SECONDS is ended. pid: the process that listened
+        before the save, or None when it could not be found (then the port alone decides,
+        closed on several polls in a row). True when the process is known to have ended."""
+        port = self.config['port']
+        deadline = self.platform.now() + self.config['save_timeout_seconds']
+        closed_since = None
+        misses = 0
+        while True:
+            if pid:
+                held = self.platform.server_pid(port) is not None
+                if not held and not self.platform.alive(pid):
+                    return True
+            else:
+                held = self.platform.listening(port)
+                misses = 0 if held else misses + 1
+                if misses >= STOP_CLOSED_POLLS:
+                    return False
+            now = self.platform.now()
+            if pid and not held:
+                closed_since = now if closed_since is None else closed_since
+                self.record(phase='waiting for the server to exit')
+                if now - closed_since >= STOP_LINGER_SECONDS:
+                    self.platform.kill_tree(pid)
+                    self.log({'stop': 'the world closed its port after saving but did not exit; ended it', 'pid': pid})
+                    self.release_save_locks(pid)
+                    return not self.platform.alive(pid)
+            elif now > deadline:
+                raise RuntimeError('the save did not finish in time; the server was left running')
+            elif held:
+                status = self.world()
+                if status and status.get('error'):
+                    raise RuntimeError('the world reported a save error: %s' % status['error'])
+            self.platform.sleep(5)
 
     def do_update(self, operation):
         git, repo = self.config['git'], self.repo

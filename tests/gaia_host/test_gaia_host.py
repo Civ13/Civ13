@@ -258,6 +258,73 @@ class GaiaHostTests(unittest.TestCase):
         self.assertIn('did not accept', state['error'])
         self.assertFalse(self.host.lock.exists())
 
+    def slow_stop(self, exit_after, closes_port=True):
+        """A world that keeps saving for exit_after seconds after save_shutdown, refusing
+        every connection meanwhile (its listen backlog is full), then exits; with
+        closes_port=False its process stays alive after it closed the port."""
+        self.give_token()
+        self.machine.up = True
+        saves = self.repo / 'map_saves'
+        accepted = {}
+        real_query, real_sleep = self.machine.query, self.machine.sleep
+        def query(port, token, action='status', operation=None, session=None):
+            if action != 'save_shutdown':
+                return real_query(port, token, action, operation, session)
+            self.machine.calls.append(['query', action, token])
+            write_save(saves, intent=MARKER)
+            (saves / '2.sav.lk').write_bytes(b'')
+            accepted['at'] = self.machine.clock
+            return {'ok': True, 'operation': operation}
+        def sleep(seconds):
+            real_sleep(seconds)
+            if 'at' in accepted and self.machine.clock - accepted['at'] >= exit_after:
+                self.machine.up = not closes_port
+                self.machine.port_open = False
+        self.machine.port_open = True
+        self.machine.query, self.machine.sleep = query, sleep
+        # Every connection is refused once it is saving.
+        self.machine.listening = lambda port: self.machine.up and 'at' not in accepted
+        self.machine.server_pid = lambda port: self.machine.pid if self.machine.up and self.machine.port_open else None
+
+    def test_stop_waits_for_a_world_that_refuses_connections_while_it_saves(self):
+        # Gaia 2026-11-07: the port "closed" mid-save and the stop failed on its lock files.
+        self.config['save_timeout_seconds'] = 600
+        self.slow_stop(exit_after=240)
+        self.host.work('stop', self.accept('stop'))
+        state = self.host.read_state()
+        self.assertEqual((state['phase'], state['error']), ('done', None), state)
+        self.assertGreaterEqual(self.machine.clock, 240)
+        self.assertFalse((self.repo / 'map_saves' / '2.sav.lk').exists())  # the dead world's lock
+        self.assertNotIn(['kill_tree', self.machine.pid], self.machine.calls)
+
+    def test_stop_ends_a_world_that_closed_its_port_but_never_exits(self):
+        self.config['save_timeout_seconds'] = 600
+        self.slow_stop(exit_after=30, closes_port=False)
+        self.host.work('stop', self.accept('stop'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        self.assertIn(['kill_tree', self.machine.pid], self.machine.calls)
+        self.assertGreaterEqual(self.machine.clock, 30 + gaia_host.STOP_LINGER_SECONDS)
+
+    def test_stop_without_the_pid_needs_the_port_closed_several_polls_in_a_row(self):
+        self.give_token()
+        self.machine.up = True
+        self.machine.on_save = lambda: write_save(self.repo / 'map_saves', intent=MARKER)
+        self.machine.server_pid = lambda port: None
+        polls = iter([False, True] + [False] * 10)
+        saved = lambda: any(c[:2] == ['query', 'save_shutdown'] for c in self.machine.calls)
+        self.machine.listening = lambda port: next(polls) if saved() else True
+        self.host.work('stop', self.accept('stop'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        self.assertGreaterEqual(self.machine.clock, 5 * (gaia_host.STOP_CLOSED_POLLS + 1))
+
+    def test_stop_still_times_out_on_a_world_that_never_finishes(self):
+        self.config['save_timeout_seconds'] = 60
+        self.slow_stop(exit_after=10 ** 6)
+        self.host.work('stop', self.accept('stop'))
+        state = self.host.read_state()
+        self.assertEqual(state['phase'], 'failed')
+        self.assertIn('did not finish in time', state['error'])
+
     def test_restart_saves_then_starts(self):
         self.give_token()
         self.machine.up = True
