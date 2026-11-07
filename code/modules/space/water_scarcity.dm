@@ -18,13 +18,13 @@
 	if (barren_world())
 		volume = 0
 
-// Keeps the refill loop alive, so a sink carried back to a world with
-// ground water would refill, but adds nothing here.
+// The parent keeps the refill loop going; here its top-up is taken back.
 /obj/structure/sink/refill()
 	if (!barren_world())
 		return ..()
-	spawn(60)
-		refill()
+	var/kept = volume
+	..()
+	volume = kept
 
 /obj/structure/shower/attack_hand(mob/M as mob)
 	if (!on && barren_world() && !istype(src, /obj/structure/shower/piped))
