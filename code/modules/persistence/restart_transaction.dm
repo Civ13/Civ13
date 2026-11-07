@@ -259,6 +259,11 @@ var/global/world_moving = FALSE
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting into a fresh nonpersistent round.</b></font>")
 			else
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
+			if(!prewarned)
+				// The host's Save and stop (or restart, which starts the world itself): its
+				// watchdog must not take this exit for a crash, even if the host stopped waiting.
+				diagnostic_phase = "stop_marker"
+				write_stop_marker("host")
 			request_shutdown(expected_persistence)
 		else if(stay_down)
 			to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is shutting down; your progress is kept for when it comes back.</b></font>")
@@ -275,7 +280,7 @@ var/global/world_moving = FALSE
 			handover_state = null
 			set_world_moving(FALSE)
 			to_chat(world, "<font color='yellow' size=4><b>The move to the updated server was called off. Play on; nothing was lost.</b></font>")
-		if(stay_down)
+		if(stay_down || (shutdown && !prewarned))
 			fdel(stop_marker_path)
 		var/cleanup = ""
 		if(published && exists())
