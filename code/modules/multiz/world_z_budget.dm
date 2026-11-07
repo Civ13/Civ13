@@ -82,10 +82,12 @@ var/datum/world_z_budget/world_z_budget = new
 
 // Grid arithmetic is not a measurement of free heap or save/player headroom.
 // Only worlds no larger than the measured Gaia profile may grow, and only for
-// a dug cave level or a restore; roof and other growth stay refused until a
-// profile covers them. There is no config opt-out.
+// a dug cave level, an opted-in building level or a restore; other growth
+// stays refused until a profile covers it. There is no config opt-out.
 /datum/world_z_budget/proc/memory_admission_error(target_z, purpose)
 	if ((purpose in list("underground", "restore")) && underground_admitted(target_z))
+		return null
+	if ((purpose in list("roof", "restore")) && building_admitted(target_z))
 		return null
 	return "UNMEASURED: new levels are disabled until this map has a validated memory/headroom profile. Existing planes remain usable. Preserve saves and request a reviewed profile; no level was allocated."
 
@@ -93,6 +95,11 @@ var/datum/world_z_budget/world_z_budget = new
 // that one level, or restore it, while the whole world stays within the
 // measured Gaia profile. Isolated fixtures and other maps admit nothing here.
 /datum/world_z_budget/proc/underground_admitted(target_z)
+	return FALSE
+
+// A map that opted into an open-air building level (building_levels.dm) may
+// add that one level, or restore it, within the measured profile there.
+/datum/world_z_budget/proc/building_admitted(target_z)
 	return FALSE
 
 // Config values are decimal integers and can lower, never raise, the ceiling.

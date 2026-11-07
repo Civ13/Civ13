@@ -132,6 +132,16 @@
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
 		savefile["/maxz"] << world.maxz
+		// A sparse level keeps only the cells that differ from its baseline
+		// (functions.dm); the header tells the loader what to regenerate.
+		var/sparse_kind = sparse_level_kind(A)
+		var/sparse_turf = sparse_kind ? sparse_baseline_turf(sparse_kind, A) : null
+		var/area/sparse_area = sparse_turf ? sparse_baseline_area(A, sparse_turf) : null
+		var/sparse_cells = 0
+		if(sparse_turf)
+			savefile["/sparse/kind"] << sparse_kind
+			savefile["/sparse/turf"] << sparse_turf
+			savefile["/sparse/zone"] << (zone_export_state && sparse_area ? capture_zone_descriptor(sparse_area) : null)
 		if(stream_writer)
 			saving_segments = new stream_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget())
 		else
@@ -140,12 +150,19 @@
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, A)
+				if(sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))
+					continue // Regenerated on load; yields once per row below.
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
+				sparse_cells++
 				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
 				if(saving_segments) saving_segments.rotate_if_full()
+			if(sparse_turf) save_work_check()
+		if(sparse_turf)
+			savefile["/sparse/cells"] << sparse_cells
+			log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
 		drain_moving_save_roster(savefile)
 		sweep_uncaptured_animals(savefile)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
