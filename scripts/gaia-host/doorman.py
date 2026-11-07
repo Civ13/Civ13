@@ -6,7 +6,8 @@ after idle, thaw on a direct connection) and also listens on
 one extra TCP port (doorman_port, 1713 by default) that speaks the same BYOND
 Topic framing as a game port. The launcher asks it two things:
 
-    ?host_status=1          every instance's state and cached status
+    ?host_status=1          every instance's state and cached status (and, for a
+                            world in a region group, its shard_region answer)
     ?wake=1&port=1714       thaw that instance now (refused while the machine has
                             less than wake_min_free_mb of physical memory free)
 
@@ -130,6 +131,7 @@ class Instance:
         self.host = host
         self.port = host.config['port']
         self.status = None        # last {"players", "map_name", "map_gamemode"} the world reported
+        self.region = None        # last shard_region answer of a world in a region group
         self.status_at = None
         self.waking_since = None
         self.waking_limit = WAKING_SECONDS
@@ -186,6 +188,19 @@ class Doorman:
                                'map_gamemode': str(reply.get('map_gamemode') or '')[:80]}
             instance.status_at = self.wall()
             instance.waking_since = None
+        # Regions of a group used to poll each other with world.Export, which
+        # blocks the asking world for the round trip. The doorman asks once and
+        # every region reads its peers from host_status instead (2026-11-07).
+        region = None
+        try:
+            answer = json.loads(self.platform.region_topic(instance.port))
+            if isinstance(answer, dict) and isinstance(answer.get('group'), str):
+                region = {key: answer[key] for key in ('group', 'region', 'name', 'kind', 'players', 'map',
+                                                         'ordinal_age', 'free_berths') if key in answer}
+        except (OSError, RuntimeError, ValueError, AttributeError):
+            region = None
+        with self.lock:
+            instance.region = region
         return True
 
     def state(self, instance):
@@ -209,6 +224,8 @@ class Doorman:
             if instance.status is not None:
                 entry.update(instance.status)
                 entry['cached_age'] = max(0, int(self.wall() - instance.status_at))
+                if instance.region is not None:
+                    entry['region'] = dict(instance.region)
             return entry
 
     def estimate(self, instance):
