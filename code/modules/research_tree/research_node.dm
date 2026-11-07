@@ -1450,13 +1450,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (8) ---
-		"/obj/structure/rails/regular" = "rail_steam",
-		"/obj/structure/rails/regular/horizontal" = "rail_steam",
+		// --- rail_steam (7) ---
+		"/obj/item/stack/rail_lengths" = "rail_steam",
+		"/obj/item/stack/rail_sleepers" = "rail_steam",
 		"/obj/structure/rails/rotate" = "rail_steam",
 		"/obj/structure/rails/split/switcher" = "rail_steam",
 		"/obj/structure/rails/split/switcher/right" = "rail_steam",
-		"/obj/structure/rails/turn" = "rail_steam",
 		"/obj/structure/train_lever" = "rail_steam",
 		"/obj/structure/vehicleparts/movement/reversed" = "rail_steam",
 		// --- ready_made (29) ---
