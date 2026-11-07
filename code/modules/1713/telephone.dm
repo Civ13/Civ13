@@ -323,13 +323,20 @@ var/list/global/phone_numbers = list()
 	maxrange = 80
 	secondary_action = TRUE
 	var/tmp/torch_on = FALSE
+	var/torch_charge = 3600 // seconds of flashlight; a battery recharges it
+	var/torch_max_charge = 3600
 
 /obj/item/weapon/telephone/mobile/smartphone/secondary_attack_self(mob/user)
 	if (!isturf(user.loc))
 		to_chat(user, "You cannot turn the flashlight on while in this [user.loc].")
 		return
+	if (!torch_on && torch_charge <= 0)
+		to_chat(user, "<span class='warning'>\The [src]'s battery is flat. Charge it with a battery.</span>")
+		return
 	torch_on = !torch_on
 	set_light(torch_on ? 4 : 0)
+	if (torch_on)
+		processing_objects |= src
 	to_chat(user, "<span class='notice'>You turn \the [src]'s flashlight [torch_on ? "on" : "off"].</span>")
 
 /obj/item/weapon/telephone/mobile/smartphone/Destroy()
