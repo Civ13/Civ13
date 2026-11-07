@@ -158,7 +158,7 @@
 		spd = control.axis.get_speed()
 		if (spd <= 0 || control.axis.currentspeed == 0)
 			control.axis.moving = FALSE
-			to_chat(user, "You stop the [control.axis].")
+			to_chat(user, "You stop \the [control.axis].")
 			for (var/obj/structure/vehicleparts/movement/W in control.axis.wheels)
 				W.update_icon()
 			return
@@ -213,7 +213,7 @@
 				wheel.control.axis.moving = FALSE
 				wheel.control.axis.currentspeed = 0
 				wheel.control.axis.engine.update_icon()
-				to_chat(user, "You stop the [wheel.control.axis].")
+				to_chat(user, "You stop \the [wheel.control.axis].")
 				for (var/obj/structure/vehicleparts/movement/W in wheel.control.axis.wheels)
 					W.update_icon()
 	return M
