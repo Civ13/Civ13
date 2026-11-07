@@ -58,6 +58,21 @@ class WaitGroupTests(unittest.TestCase):
         with mock.patch.object(wait_group, 'status', return_value={'gaia': broken}):
             self.assertEqual(wait_group.main(['--config', 'g.json', '--until', 'staged']), 1)
 
+    def test_handed_over_counts_a_region_already_on_the_latest_build(self):
+        # Its handover is refused ("no staged build"), so the last action is still its start.
+        current = dict(region('awake', 'done', 'start', True, ready=1), stage={'phase': 'current'})
+        self.assertTrue(wait_group.reached(current, 'handed-over'))
+        refused = dict(region('awake', 'done', 'start', True, ready=1), stage={'phase': 'ready'})
+        self.assertFalse(wait_group.reached(refused, 'handed-over'))
+        self.assertIn('refused', wait_group.failed(refused, 'handed-over'))
+        handing = dict(region('awake', 'saving', 'handover', True, busy=True), stage={'phase': 'ready'})
+        self.assertFalse(wait_group.reached(handing, 'handed-over'))
+        self.assertIsNone(wait_group.failed(handing, 'handed-over'))
+        done = dict(region('awake', 'done', 'handover', True, ready=1), stage={'phase': 'ready'})
+        self.assertTrue(wait_group.reached(done, 'handed-over'))
+        with mock.patch.object(wait_group, 'status', return_value={'gaia': done, 'railyard': current}):
+            self.assertEqual(wait_group.main(['--config', 'g.json', '--until', 'handed-over']), 0)
+
     def test_a_running_region_with_no_save_under_way_never_stops(self):
         # Its stop was refused (busy or not ready world): no lock, still listening.
         refused = region('awake', 'done', action='start', listening=True, ready=1)

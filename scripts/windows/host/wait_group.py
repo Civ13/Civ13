@@ -32,6 +32,11 @@ def reached(entry, until):
         # staged build when it wakes or starts.
         if entry.get('state') != 'awake':
             return not entry.get('busy')
+        # A region the stage step found already on the latest revision has nothing to hand
+        # over either (its handover is refused as "no staged build"); deploying it again, or
+        # deploying the group after one region was done alone, must not fail on it.
+        if (entry.get('stage') or {}).get('phase') == 'current':
+            return not entry.get('busy')
         return operation.get('action') == 'handover' and phase == 'done' and not entry.get('busy')
     return entry.get('state') == 'awake' and (entry.get('world') or {}).get('ready') == 1 and not entry.get('busy')
 

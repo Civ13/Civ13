@@ -37,11 +37,13 @@ what the code does so far and the rules later steps must keep.
 | 1-2 | Cable risers and bus tie switches; ladders and stairs through `multiz_level_*` | #3902, `code/modules/1713/machinery/cable_risers.dm` |
 | 3 | Orbit world skeleton: kind, vacuum, area, metadata, map, plane registry, seams, sparse saves | #3909, `code/modules/space/orbit_world.dm`, `maps/space/orbit.dmm` |
 | 4 | Orbital flight: Orbital Flight node, two-stage rocket, launch pads to orbit, capsule shelter with bunk, deorbit home | #3916, `code/modules/space/orbital_flight.dm`, `lander.dm` |
-| 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | `code/modules/space/orbit_eva.dm` |
+| 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | #3933, `code/modules/space/orbit_eva.dm` |
+| 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | `code/modules/space/orbit_station.dm` |
 
 ## Next
 
-6. The 1969 station (with orbit-console recovery of lost drifters) and the launch complex office project.
+6b. Station registry with party ownership, the launch complex office project (1969 layout) and orbit-console recovery of lost drifters.
+6c. Lunar surface kit and return sortie.
 
 ## Orbital flight
 
@@ -90,6 +92,29 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   empty and wakes on the next move. A tether's clip is not saved either. A
   person restored mid-drift can push off again, unless lost at an edge.
 
+## Station hardware
+
+- **Orbital day.** Each orbit is 20 minutes of sunlight and 10 of shade. The
+  registry keeps whether the station is sunlit and the seconds left as plain
+  numbers; the clock only counts while the world has players, and no call
+  counts more than 10 seconds at once. Sunrise and sunset are announced in
+  orbit.
+- **Heat.** A module in orbit cools slowly to the -100 C of space, gains
+  0.15 C a second from the sun while sunlit, and gains heat from every
+  machine working inside it (its power draw). Heaters carry it through the
+  shade; radiators shed what is above room temperature. Orbit has no dust
+  storms or cold snaps; solar flares still happen.
+- **Solar.** Any solar generator in orbit follows the orbital day and
+  ignores the weather. The **fixed solar wing** (20 PU) is the orbit panel.
+- **Fuel cell** (15 PU) burns hydrogen and oxygen poured into it and keeps
+  the water it makes, which a container can draw off.
+- **Radiator**, a cabled life support machine inside a module.
+- **Orbital workshop kit**, a 5 x 5 module with two bunks, a workbench and a
+  crate: the first module of a 1969 station.
+- **Debris** strikes hull modules in orbit as meteorites do on Mars, leaving
+  a breach to vacuum that a hull patch kit closes.
+- All of it is gated on Orbital Flight.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -97,4 +122,6 @@ checks the registry, claims and quotas, deck and sector links, the multiz
 helpers, seams, ladder pairing, the sparse save kind, the durable profile,
 release, orbital flight (rocket, capsule arrival, deorbit refusals and
 spending) and EVA (handholds, push-off, drift across a seam, catching hold, an
-unlinked edge, the tether's pull, haul and clip).
+unlinked edge, the tether's pull, haul and clip) and station hardware (the
+orbital day, solar and fuel cell output, module heat, radiators, the
+workshop's furnishing and debris breaches).
