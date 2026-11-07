@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-07: One region row -->
+The Host server tab's One region row passes `--region` to shard_group.py for every group action,
+including freeze, thaw, stage and setup (GroupActions). Setup is offered per region only; adopt,
+enrol and config-migrate stay off the launcher, and handover runs only through deploy. RegionDetails
+adds the port, DescribeStage (stage and standby), the watchdog record, transfer_agent and region_view;
+ParseGroup adds the coordinator. Keep them in step with RegionHost.status and gaia_host status.
+
 <!-- 2026-11-07: Host settings -->
 Val asked (2026-11-07) that the Windows host keep its own hosting config through the launcher, so master
 (what a Linux host deploys) stays the default and pulls never clobber the host's files. HostSettings.cs
