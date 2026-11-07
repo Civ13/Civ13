@@ -111,15 +111,16 @@ var/global/track_probe_runtime_error = FALSE
 
 	// Unfinished track is not rail: stations and trains ignore it.
 	B = track_probe_lay(28, 2, NORTH)
-	track_probe_check("unfinished/not_rail", !party_train_rail_at(track_probe_turf(28, 2)))
+	track_probe_check("unfinished/not_rail", !rail_at(track_probe_turf(28, 2)))
 	B.place_rails()
-	track_probe_check("unfinished/railed_not_rail", B.railed && !party_train_rail_at(track_probe_turf(28, 2)))
+	track_probe_check("unfinished/railed_not_rail", B.railed && !rail_at(track_probe_turf(28, 2)))
+	var/serial = rail_network_serial
 	var/obj/structure/rails/R = B.spike()
-	track_probe_check("spiked/rail", istype(R, /obj/structure/rails/regular) && party_train_rail_at(track_probe_turf(28, 2)))
+	track_probe_check("spiked/rail", istype(R, /obj/structure/rails/regular) && rail_at(track_probe_turf(28, 2)) && rail_network_serial > serial)
 
 	// Taking it apart again, step by step.
 	B = R.pry_apart()
-	track_probe_check("pry/loose_rails", istype(B, /obj/structure/rail_bed) && B.railed && B.dir == NORTH && !party_train_rail_at(track_probe_turf(28, 2)))
+	track_probe_check("pry/loose_rails", istype(B, /obj/structure/rail_bed) && B.railed && B.dir == NORTH && !rail_at(track_probe_turf(28, 2)))
 	var/obj/item/stack/rail_lengths/L = B.pry()
 	track_probe_check("pry/rails_back", istype(L) && L.amount == 1 && !B.railed && !QDELETED(B))
 	var/obj/item/stack/rail_sleepers/S = B.pry()

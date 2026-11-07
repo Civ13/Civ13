@@ -123,6 +123,7 @@ var/list/component_errors = list()
 	run_workbench_checks(H, T)
 	run_armor_checks(H, T)
 	run_dedicated_checks(H, T)
+	run_toolsmith_checks(H, T)
 	var/report = "Production assembly, rejection, bounds, condition, provenance and native save/load checks\n"
 	for (var/error in component_errors)
 		report += "FAIL: [error]\n"

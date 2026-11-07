@@ -33,7 +33,7 @@ class TrackLayingSourceTests(unittest.TestCase):
         self.assertNotIn('"/obj/structure/rails/regular" = "rail_steam"', nodes)
 
     def test_unfinished_track_is_not_rail(self):
-        # Trains, stations and the rail network look for /obj/structure/rails.
+        # Trains, stations and rail_network.dm look for /obj/structure/rails.
         self.assertIn('\n/obj/structure/rail_bed\n', LAYING)
         self.assertNotRegex(LAYING, r'(?m)^/obj/structure/rails/rail_bed')
 
