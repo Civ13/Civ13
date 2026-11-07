@@ -64,9 +64,14 @@ class FakeMachine:
     def query(self, port, token, action='status', operation=None, session=None):
         return {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32}
 
-    def start_task(self, name):
-        self.calls.append((['start', name], None))
+    def start_task(self, name, dmb='region.dmb'):
+        self.calls.append((['start', name, dmb], None))
         return 0, 'started'
+
+    def start_standby(self, dmb, port):
+        self.calls.append((['standby', dmb, port], None))
+        self.standby_started = (dmb, port)
+        return 4242
 
     def task_ready(self, name):
         return True
@@ -79,6 +84,21 @@ class FakeMachine:
 
     def now(self):
         return self.clock
+
+    free_mb = None
+    pids_by_port = {}
+
+    def free_memory_mb(self):
+        return self.free_mb
+
+    def server_pid(self, port):
+        return self.pids_by_port.get(port) if port in self.up else None
+
+    def kill_tree(self, pid):
+        self.calls.append((['kill_tree', pid], None))
+        for port, owner in list(self.pids_by_port.items()):
+            if owner == pid:
+                self.up.discard(port)
 
 
 class ShardGroupTests(unittest.TestCase):
@@ -395,9 +415,9 @@ class ShardGroupTests(unittest.TestCase):
 
     def opens_port_on_start(self, port):
         start = self.machine.start_task
-        def start_task(name):
+        def start_task(name, dmb='region.dmb'):
             self.machine.up.add(port)
-            return start(name)
+            return start(name, dmb)
         self.machine.start_task = start_task
 
     def test_start_builds_a_region_that_has_none(self):
@@ -414,7 +434,7 @@ class ShardGroupTests(unittest.TestCase):
         host.work('start', host.request('start')['operation'])
         self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
         commands = [call[0] for call in self.machine.calls]
-        self.assertLess(commands.index(['DreamMaker', 'region.dme']), commands.index(['start', config['task']]))
+        self.assertLess(commands.index(['DreamMaker', 'region.dme']), commands.index(['start', config['task'], 'region.dmb']))
         self.assertEqual(json.loads((Path(config['state_dir']) / 'build.json').read_text())['revision'], REVISION)
 
     def test_start_skips_the_compile_when_the_build_is_current(self):
@@ -602,7 +622,7 @@ class ShardGroupTests(unittest.TestCase):
         self.assertTrue(argv[3].endswith('shard_group.py'), argv)
         self.assertEqual([str(path / 'data' / 'shard-host' / 'host.json'), '--worker', 'start'], argv[-4:-1])
         host.work('start', accepted['operation'])
-        self.assertIn((['start', 'region:deep'], None), self.machine.calls)
+        self.assertIn((['start', 'region:deep', 'region.dmb'], None), self.machine.calls)
 
     def test_supervise_restarts_missing_agents_and_the_coordinator(self):
         self.group['regions'][0]['transfer_port'] = 47201
@@ -1166,3 +1186,313 @@ class StagedBuildTests(unittest.TestCase):
             code = shard_group.main(['--config', str(self.path), 'stage'])
         result = json.loads(out.getvalue())
         self.assertEqual((code, sorted(result['accepted'])), (0, ['deep', 'gaia']), result)
+
+
+class HandoverTests(unittest.TestCase):
+    """handover: the staged build boots beside the running region, loads its save and takes over."""
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+    host = ShardGroupTests.host
+    built = StagedBuildTests.built
+    LIVE, STANDBY = 1720, 1730
+    SESSION, STANDBY_SESSION = 'b' * 32, 'c' * 32
+    MARKER = 'round-v2:' + 'd' * 32
+
+    def write_save(self, saves, intent=None):
+        import hashlib
+        saves.mkdir(parents=True, exist_ok=True)
+        (saves / 'map.txt').write_text('NOMADS_GAIA\n', encoding='utf-8')
+        (saves / 'round.json').write_text(json.dumps({'version': 2, 'generation': self.MARKER, 'maxz': 1,
+                                                      'metadata': hashlib.md5(b'NOMADS_GAIA\n').hexdigest()}), encoding='utf-8')
+        (saves / 'save_complete.txt').write_text(self.MARKER, encoding='utf-8')
+        (saves / '1.sav').write_bytes(b'level 1')
+        if intent:
+            (saves / 'restart_intent.json').write_text(json.dumps({'version': 1, 'generation': self.MARKER, 'metadata': 'x',
+                                                                    'round': 'y'}), encoding='utf-8')
+
+    def staged(self, load_error=None, save_error=None):
+        """A built, running region with a staged build ready and two scripted worlds behind query()."""
+        group, host = self.built()
+        self.machine.up = {self.LIVE}
+        self.machine.pids_by_port = {self.LIVE: 100, self.STANDBY: 200}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(host.update_pending())
+        self.write_save(Path(host.config['repository']) / 'map_saves')
+        machine, me = self.machine, self
+        world = {'handover': None, 'polls': 0}
+        standby = {'standby': None, 'loading': 0}
+        self.actions = []
+
+        def query(port, token, action='status', operation=None, session=None, extra=None):
+            me.actions.append((port, action, extra))
+            if port == me.LIVE:
+                if action == 'handover_save':
+                    world['handover'] = 'saving'
+                    return {'ok': True, 'operation': operation}
+                if action == 'handover_cancel':
+                    world['handover'] = 'cancelled'
+                    return {'ok': True}
+                if action == 'handover_release':
+                    world['handover'] = 'released'
+                    machine.up.discard(me.LIVE)  # the old world reboots out (-close)
+                    return {'ok': True}
+                if world['handover'] == 'saving':
+                    world['polls'] += 1
+                    if world['polls'] >= 2:
+                        world['handover'] = 'saved'
+                        me.write_save(Path(host.config['repository']) / 'map_saves', intent=True)
+                busy = world['handover'] in ('saving', 'saved')
+                return {'ok': True, 'ready': not busy, 'busy': busy, 'session': me.SESSION, 'clients': 3,
+                        'handover': world['handover'], 'error': save_error if world['handover'] == 'saving' else None}
+            if port == me.STANDBY:
+                if action == 'standby_load':
+                    standby['standby'] = 'loading'
+                    return {'ok': True, 'operation': operation}
+                if action == 'standby_open':
+                    standby['standby'] = None
+                    machine.up.add(int(extra['port']))
+                    return {'ok': True}
+                if standby['standby'] is None and standby['loading'] == 0:
+                    standby['standby'] = 'waiting'
+                if standby['standby'] == 'loading':
+                    standby['loading'] += 1
+                    if load_error:
+                        return {'ok': True, 'ready': False, 'session': me.STANDBY_SESSION, 'standby': 'loading', 'error': load_error}
+                    if standby['loading'] >= 3:
+                        standby['standby'] = 'loaded'
+                ready = standby['standby'] == 'loaded'
+                return {'ok': True, 'ready': ready, 'busy': False, 'session': me.STANDBY_SESSION, 'standby': standby['standby'],
+                        'restart_hold': not ready, 'error': None}
+            raise OSError('nothing listens on %d' % port)
+
+        machine.query = query
+        start_standby = machine.start_standby
+
+        def boot(dmb, port):
+            standby.update(standby=None, loading=0)  # a fresh process
+            machine.up.add(port)
+            return start_standby(dmb, port)
+        machine.start_standby = boot
+        return group, host
+
+    def test_old_world_that_keeps_its_port_is_killed_before_the_standby_opens_it(self):
+        group, host = self.staged()
+        query = self.machine.query
+
+        def stubborn(port, token, action='status', operation=None, session=None, extra=None):
+            answer = query(port, token, action, operation, session, extra)
+            if action == 'handover_release':
+                self.machine.up.add(self.LIVE)  # it rebooted in place instead of exiting
+            return answer
+        self.machine.query = stubborn
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+        kill = self.machine.calls.index((['kill_tree', 100], None))
+        self.assertGreater(kill, 0, 'the old world was killed after the switch deadline')
+        open_at = self.actions.index((self.STANDBY, 'standby_open', {'port': '1720'}))
+        self.assertTrue(open_at >= 0)
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_standby_open_refused_while_the_port_is_held_is_retried(self):
+        group, host = self.staged()
+        query = self.machine.query
+        refused = []
+
+        def flaky(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_open' and not refused:
+                refused.append(self.machine.now())
+                raise RuntimeError('Lifecycle request rejected')  # port_not_opened: the standby reopened its own port
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = flaky
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertEqual(len([1 for _, action, _ in self.actions if action == 'standby_open']), 1, 'the retry reached the world')
+        self.assertEqual(len(refused), 1)
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_handover_moves_the_region_onto_the_staged_build_without_stopping_it(self):
+        group, host = self.staged()
+        live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
+        accepted = host.request('handover')
+        self.assertEqual(['--worker', 'handover', accepted['operation']], self.machine.detached[-1][-3:])
+        host.work('handover', accepted['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error'), state.get('staged')), ('done', None, True), state)
+        self.assertEqual(self.machine.standby_started, ('region.b.dmb', self.STANDBY))
+        self.assertEqual((live / 'region.b.dmb').read_bytes(), (staging / 'region.dmb').read_bytes())
+        self.assertEqual((live / 'region.b.rsc').read_bytes(), (staging / 'region.rsc').read_bytes())
+        self.assertEqual((live / 'region.dmb').read_bytes(), b'dmb of ' + str(live).encode(), 'the running build is untouched')
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+        self.assertEqual([extra for _, action, extra in self.actions if action == 'standby_open'], [{'port': '1720'}])
+        self.assertIn(self.LIVE, self.machine.up, 'the new world answers on the region port')
+        self.assertTrue((Path(host.config['state_dir']) / 'backups' / accepted['operation'] / '1.sav').exists())
+        self.assertEqual(state['generation'], self.MARKER)
+        record = json.loads((Path(host.config['state_dir']) / 'build.json').read_text())
+        self.assertEqual((record['revision'], record['file']), (NEWER, 'region.b.dmb'))
+        self.assertEqual(host.built_revision(), NEWER)
+        self.assertFalse(host.update_pending())
+        self.assertEqual((live / 'config' / 'lifecycle-revision.txt').read_text().strip(), NEWER)
+        self.assertEqual(host.status()['build'], 'region.b.dmb')
+        self.assertIn((['git', 'checkout', '--force', '--detach', NEWER], str(live)), self.machine.calls, 'the sources follow the build')
+        self.assertTrue(host.running_file.exists())
+        # The next plain start runs the slot the region was handed over to.
+        self.machine.up = set()
+        self.machine.query = lambda *a, **k: {'ok': True, 'ready': True, 'busy': False, 'session': self.SESSION}
+        start = self.machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            self.machine.up.add(self.LIVE)
+            return start(name, dmb)
+        self.machine.start_task = start_task
+        host.work('start', host.request('start')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertIn((['start', 'region:gaia', 'region.b.dmb'], None), self.machine.calls)
+
+    def test_a_second_handover_uses_the_first_slot_again(self):
+        group, host = self.staged()
+        host.work('handover', host.request('handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.machine.revision = 'f' * 40
+        self.machine.up = {self.LIVE}
+        host.work('stage', host.request_stage()['operation'])
+        self.actions.clear()
+        host.work('handover', host.request('handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertEqual(self.machine.standby_started, ('region.dmb', self.STANDBY))
+        self.assertEqual(host.live_dmb_name(), 'region.dmb')
+        self.assertEqual(host.built_revision(), 'f' * 40)
+
+    def test_a_standby_that_cannot_load_the_save_is_stopped_and_the_world_resumes(self):
+        group, host = self.staged(load_error='World-save preflight rejected')
+        live = self.base / 'regions' / 'gaia'
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('World-save preflight rejected', state['error'])
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_cancel'])
+        self.assertIn((['kill_tree', 200], None), self.machine.calls, 'the standby is stopped')
+        self.assertIn(self.LIVE, self.machine.up, 'the old world keeps running')
+        self.assertNotIn(self.STANDBY, self.machine.up)
+        self.assertEqual(host.live_dmb_name(), 'region.dmb')
+        self.assertEqual(host.built_revision(), REVISION)
+        self.assertTrue(host.update_pending(), 'the staged build stays ready for another try')
+        revision_file = live / 'config' / 'lifecycle-revision.txt'
+        self.assertFalse(revision_file.exists() and revision_file.read_text().strip() == NEWER)
+        self.assertFalse(host.lock.exists())
+
+    def test_a_failed_save_leaves_the_world_running_and_stops_the_standby(self):
+        group, host = self.staged(save_error='World save failed; server remains running')
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('World save failed', state['error'])
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'handover_cancel'])
+        self.assertIn((['kill_tree', 200], None), self.machine.calls)
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_handover_refusals(self):
+        group, host = self.staged()
+        self.machine.up = set()
+        with self.assertRaisesRegex(shard_group.Refused, 'not running'):
+            host.request('handover')
+        self.machine.up = {self.LIVE, self.STANDBY}
+        with self.assertRaisesRegex(shard_group.Refused, 'standby port'):
+            host.request('handover')
+        self.machine.up = {self.LIVE}
+        self.machine.free_mb = 512
+        with self.assertRaisesRegex(shard_group.Refused, 'MB free'):
+            host.request('handover')
+        self.machine.free_mb = None
+        self.machine.pids = {100}
+        host.write_json(host.freeze_file, {'pid': 100, 'frozen_at': 0})
+        with self.assertRaisesRegex(shard_group.Refused, 'asleep'):
+            host.request('handover')
+        host.freeze_file.unlink()
+        host.record_build(NEWER, 'region.dmb')  # already on the staged revision
+        with self.assertRaisesRegex(shard_group.Refused, 'already runs'):
+            host.request('handover')
+        self.assertFalse(host.lock.exists())
+        plain = shard_group.gaia_host.Host(dict(host.config, _path='x'), self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'region host'):
+            plain.request('handover')
+
+    def test_regions_take_turns_at_the_handover(self):
+        group, host = self.staged()
+        lock = self.base / 'regions' / '.staging' / 'handover.lock'
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        lock.write_text('77')
+        self.machine.pids = {77}
+        phases = []
+        real_sleep = self.machine.sleep
+
+        def sleep(seconds):
+            real_sleep(seconds)
+            if self.machine.pids:
+                phases.append(host.read_state().get('phase'))
+                self.machine.pids = set()  # the other region's handover finished
+        self.machine.sleep = sleep
+        host.work('handover', host.request('handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertEqual(phases, ["waiting for another region's handover"])
+        self.assertFalse(lock.exists())
+
+    def test_a_world_that_predates_handovers_is_stopped_installed_and_started(self):
+        group, host = self.staged()
+        live = self.base / 'regions' / 'gaia'
+        machine = self.machine
+
+        def query(port, token, action='status', operation=None, session=None, extra=None):
+            self.actions.append((port, action, extra))
+            if action == 'save_shutdown':
+                machine.up.discard(self.LIVE)
+                return {'ok': True, 'operation': operation}
+            return {'ok': True, 'ready': True, 'busy': False, 'session': self.SESSION, 'clients': 2}  # no handover field
+        machine.query = query
+        start = machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            machine.up.add(self.LIVE)
+            return start(name, dmb)
+        machine.start_task = start_task
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('legacy'), state.get('staged')), ('done', True, True), state)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['save_shutdown'])
+        self.assertIsNone(getattr(machine, 'standby_started', None))
+        self.assertEqual((live / 'region.dmb').read_bytes(), (self.base / 'regions' / '.staging' / 'gaia' / 'region.dmb').read_bytes())
+        self.assertEqual(host.built_revision(), NEWER)
+        self.assertIn((['start', 'region:gaia', 'region.dmb'], None), machine.calls)
+
+    def test_handover_without_a_staged_build_is_refused(self):
+        group, host = self.built()
+        self.machine.up = {self.LIVE}
+        with self.assertRaisesRegex(shard_group.Refused, 'no staged build'):
+            host.request('handover')
+
+    def test_standby_port_is_configurable_and_validated(self):
+        self.group['regions'][0]['standby_port'] = 1799
+        group = self.write_group()
+        self.assertEqual(shard_group.RegionHost(shard_group.region_config(group, group['regions'][0]), self.machine).standby_port(), 1799)
+        self.assertEqual(shard_group.RegionHost(shard_group.region_config(group, group['regions'][1]), self.machine).standby_port(), 1731)
+        self.group['regions'][0]['standby_port'] = 1720
+        with self.assertRaisesRegex(ValueError, 'standby_port'):
+            self.write_group()
+        self.group['regions'][0]['standby_port'] = 1799
+
+    def test_handover_reaches_every_region_from_the_command_line(self):
+        group, host = self.staged()
+        with mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            code = shard_group.main(['--config', str(self.path), 'handover'])
+        result = json.loads(out.getvalue())
+        self.assertEqual((code, sorted(result['accepted'])), (0, ['gaia']), result)
+        self.assertIn('deep', result['refused'])

@@ -92,6 +92,11 @@ def source_checks():
         failures.append('fire striker must be mapped to Iron Tools')
     if 'var/obj/item/weapon/flint/F = user.get_inactive_hand()' not in block(flint, '/obj/item/weapon/flame/lighter/striker/attack_self('):
         failures.append('the striker must need a flint in the other hand')
+    if 'max_fuel = 0' not in block(flint, '/obj/item/weapon/flame/lighter/striker\n'):
+        failures.append('the striker burns no lighter fluid (max_fuel = 0)')
+    fuel = read('code/modules/1713/light_fuel.dm')
+    if 'if (max_fuel > 0 && istype(W, /obj/item/weapon/reagent_containers)' not in fuel or 'if (max_fuel <= 0)' not in block(fuel, '/obj/item/weapon/flame/lighter/examine('):
+        failures.append('lighter fluid examine and refill must skip fluid-less strikers')
     if 'gunflint_aim_check = TRUE' not in block(flint, '/obj/item/weapon/gun/projectile/flintlock/can_hit('):
         failures.append('aiming checks must not roll gunflint misfires')
     dme_text = read('civ13.dme')

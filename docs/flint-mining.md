@@ -57,7 +57,7 @@ An unsharpened flint used on a bolt no longer deletes the bolt.
 ## Fire striker
 
 A steel fire striker (1 steel, Tools menu, Iron Tools) works like a lighter for
-candles, pipes and cigarettes. Hold a flint in your other hand and use the
+candles, pipes and cigarettes, and it needs no lighter fluid. Hold a flint in your other hand and use the
 striker: 70% of strikes throw sparks, which stay usable for 5 seconds. Each
 successful strike has a 3% chance to use up the flint. Campfires and torches
 still light by hand.

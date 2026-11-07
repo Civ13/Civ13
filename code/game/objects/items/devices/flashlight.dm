@@ -14,9 +14,15 @@
 	var/on = FALSE
 	var/brightness_on = 5 //luminosity when on
 	var/turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
-	var/fuel = 600 // 10 mins
+	var/fuel = 3600 // seconds of light; a fresh set of batteries lasts an hour
+	var/max_fuel = 0 // capacity; 0 means the starting fuel
 	var/cooloff = 0
 	var/unlimited = FALSE
+	// Electric lights take batteries; burning lights list the reagents they burn
+	// as reagent id = seconds of light per unit.
+	var/uses_batteries = TRUE
+	var/list/refuel_reagents = null
+	var/empty_message = "has dead batteries"
 
 /obj/item/flashlight/initialize()
 	..()
@@ -37,6 +43,9 @@
 /obj/item/flashlight/attack_self(mob/user)
 	if (!isturf(user.loc))
 		to_chat(user, "You cannot turn the light on while in this [user.loc].") //To prevent some lighting anomalities.)
+		return FALSE
+	if (!on && !unlimited && fuel <= 0)
+		to_chat(user, "<span class='warning'>\The [src] [empty_message]. Refill it with [refuel_hint()].</span>")
 		return FALSE
 	on = !on
 	playsound(src, turn_on_sound, 75, TRUE)
@@ -115,6 +124,7 @@
 	item_state = "flare"
 	turn_on_sound = 'sound/effects/Custom_flare.ogg'
 	fuel = 0
+	uses_batteries = FALSE
 	slot_flags = SLOT_POCKET|SLOT_BELT
 
 	var/burnt_out = FALSE

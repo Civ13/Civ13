@@ -232,7 +232,8 @@ SUITES = {
         'paths': ('tests/flint_mining/',), 'shared_paths': (
             'code/modules/1713/flint_mining.dm', 'code/game/turfs/floor_attackby.dm',
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
-            'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm')},
+            'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
+            'code/modules/1713/light_fuel.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

@@ -48,6 +48,7 @@ var/last_persistence_save_time = 0
 var/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction
 	var/startup_hold = FALSE
+	var/standby = FALSE
 	var/busy = FALSE
 	var/import_started = FALSE
 	var/expected_generation

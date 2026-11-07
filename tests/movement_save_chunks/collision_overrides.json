@@ -18,7 +18,7 @@
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "5b3ea69d596d913d908e674f8ed9aa605ae5815f0e94bd5feb5a1fdbdf33934b",
+      "sha256_normalized": "563dfecf3ae04960d22fcf7d2e6f16c672c51fada44ec7c17b5074d01169cae3",
       "declarations": [
         {
           "line": 81,
@@ -154,10 +154,10 @@
     },
     {
       "path": "code/game/objects/structures/door.dm",
-      "sha256_normalized": "9c6aa9ae8288af04e7de7b95f60a7463c4135909141dea3ec8bac332aa3f392e",
+      "sha256_normalized": "ba7dbaf05e58095bd9c57ec4cb32a787aa7c74d2ea8caed8e13e8d160ac834ae",
       "declarations": [
         {
-          "line": 176,
+          "line": 179,
           "declaration": "/obj/structure/simple_door/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
         }
       ]
@@ -340,7 +340,7 @@
     },
     {
       "path": "code/modules/1713/extraction/mall.dm",
-      "sha256_normalized": "be5e3ea2fef68778f1f6a490d49fdf5f51a0d3c1702935dab85c5688886d8601",
+      "sha256_normalized": "71ec31d5964fdb1142674d5bff6a3ec110704852fafd3ed0b907fd99a166e02b",
       "declarations": [
         {
           "line": 67,

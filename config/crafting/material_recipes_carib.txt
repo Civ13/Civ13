@@ -1956,7 +1956,6 @@ RECIPE: /material/bronze/,globe,/obj/item/weapon/globe,8,90,0,1,religious & deco
 //*********************| WOOD |**************************
 //*******************************************************
 
-RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,null
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
 

@@ -206,9 +206,11 @@
 	if(persistence_restart.startup_hold)
 		if(game_ready_hook) call(game_ready_hook)("reserve_restore", startup_context, persistence_restart)
 		nextsave = world.realtime + 216000
-		spawn(50)
-			if(ticker && persistence_restart.resume_startup() && persistence_restart.players_ready)
-				announce_restored_round_once()
+		// A standby world holds until the host names the save (nomads_lifecycle standby_load).
+		if(!persistence_restart.standby)
+			spawn(50)
+				if(ticker && persistence_restart.resume_startup() && persistence_restart.players_ready)
+					announce_restored_round_once()
 	if(!startup_round_pending)
 		announce_round_start_once()
 		if(game_ready_hook) call(game_ready_hook)("fresh", startup_context, game_id)

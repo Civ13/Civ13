@@ -190,6 +190,9 @@
 	value = 3
 	sound_toggleON = 'sound/effects/chop.ogg'
 	sound_toggleOFF = null
+	fuel = 0 // sparks need no fluid; max_fuel 0 hides the lighter refill
+	max_fuel = 0
+	refuel_reagents = list()
 	var/spark_chance = 70
 
 /obj/item/weapon/flame/lighter/striker/attack_self(mob/living/user)
