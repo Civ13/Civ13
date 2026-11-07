@@ -343,23 +343,31 @@ one Player Help bridge per region running, so help starts with the host:
 "player_help": {"config": "D:/GitHub/Civ13/data/player-help-config.json", "regions": ["gaia", "railyard"]}
 ```
 
-`regions` defaults to every region. Each bridge is the region's own
+`regions` (the regions whose bridge starts with the host) defaults to every region.
+Each bridge is the region's own
 `scripts/player_help_bridge.py --game-root <region> --config <config>`, run with
-the group `python` and `--stop-file <root>/player-help/stopped`, logging to
-`<root>/player-help/<id>.log`. Every half minute a region without a live bridge
-(its `SQL/player-help/worker.lock` names a dead pid, or there is none) gets one,
-after a lock left by a dead bridge is removed. One region that cannot start its
-bridge does not keep the others down.
+the group `python` and `--stop-file <root>/player-help/<id>.off`, logging to
+`<root>/player-help/<id>.log`. Every half minute a wanted region without a live
+bridge (its `SQL/player-help/worker.lock` names a dead pid, or there is none) gets
+one, after a lock left by a dead bridge is removed. One region that cannot start
+its bridge does not keep the others down. A region is wanted when it is in
+`regions` or was started on request (`<id>.on`), unless it was stopped on request
+(`<id>.off`, or `stopped` for the whole group).
 
-- `help-status` prints each region's `running`, `pid`, `enabled`, `log` and
-  `heartbeat_age_seconds` (how old its `health.json` is), and whether help is
-  `stopped` on request.
-- `help-stop` writes the stop file, waits up to 60 seconds for the bridges to
-  finish their answers and exit, then ends any still running (a bridge started
-  without the stop file never sees it). The host service leaves them stopped.
-- `help-start` removes the stop file and starts the missing bridges at once.
+- `help-status` prints every region of the group with `running`, `pid`, `wanted`
+  (kept running by the host service), `listed` (in `regions`), `enabled`, `log`
+  and `heartbeat_age_seconds` (how old its `health.json` is), and `stopped` when
+  no region is wanted.
+- `help-stop [--region ID]` writes the stop files, waits up to 60 seconds for the
+  bridges to finish their answers and exit, then ends any still running (a bridge
+  started with another stop file, such as one from before per-region stop files,
+  never sees it). The host service leaves them stopped.
+- `help-start [--region ID]` removes the stop files and starts the missing
+  bridges at once. A region outside `regions` started this way stays wanted
+  until it is stopped. Starting one region after a whole-group stop keeps the
+  others stopped.
 
-The launcher's **Player help** tab shows this status and has Start and Stop.
+The launcher's **Player help** tab shows this status for every region and has Start all, Stop all, and Start region and Stop region for the region chosen in its list.
 Run only one supervisor per region: a bridge started some other way still holds
 the region's lock, so the host service leaves it alone, but it is not restarted
 when it exits and ignores the stop file until it is ended.

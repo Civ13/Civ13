@@ -1439,8 +1439,14 @@ def help_dir(group):
 
 
 def help_stop_file(group):
-    """While this exists the bridges stop (each is started with it as --stop-file) and stay stopped."""
+    """While this exists every bridge stays stopped (help-stop for the whole group)."""
     return help_dir(group) / 'stopped'
+
+
+def help_region_file(group, region_id, kind):
+    """<id>.off: that region's bridge is stopped on request (and is its --stop-file);
+    <id>.on: a region outside player_help's "regions" was started on request."""
+    return help_dir(group) / ('%s.%s' % (region_id, kind))
 
 
 def help_spool(group, region_id):
@@ -1482,27 +1488,38 @@ def help_settings(group):
     return settings
 
 
+def help_wanted(group, region_id):
+    """Whether the host service keeps this region's bridge running: a region of player_help's
+    "regions" (every region by default) or one started on request, unless stopped on request."""
+    settings = group.get('player_help')
+    if not settings or help_stop_file(group).exists() or help_region_file(group, region_id, 'off').exists():
+        return False
+    return region_id in settings['regions'] or help_region_file(group, region_id, 'on').exists()
+
+
 def ensure_help(group, start=detach):
-    """Start a Player Help bridge for every listed region that has none, unless stopped
-    on request. Returns the started region ids and per-region errors."""
+    """Start a Player Help bridge for every wanted region (help_wanted) that has none.
+    Returns the started region ids and per-region errors."""
     settings = group.get('player_help')
     started, errors = [], {}
     if not settings or help_stop_file(group).exists():
         return started, errors
     folder = help_dir(group)
     folder.mkdir(parents=True, exist_ok=True)
-    for region_id in settings['regions']:
+    for region in group['regions']:
+        region_id = region['id']
         # One region that cannot start its bridge must not keep the others down.
         try:
-            if help_pid(group, region_id):
+            if not help_wanted(group, region_id) or help_pid(group, region_id):
                 continue
             game = region_dir(group, region_id)
             bridge = game / 'scripts' / 'player_help_bridge.py'
             if not bridge.exists():
                 raise OSError('%s is missing (run setup)' % bridge)
             clear_help_lock(group, region_id)
+            # Each bridge watches its own region's stop file, so one region stops without the others.
             argv = [group['python'], '-I', str(bridge), '--game-root', str(game), '--config', settings['config'],
-                    '--stop-file', str(help_stop_file(group))]
+                    '--stop-file', str(help_region_file(group, region_id, 'off'))]
             pid = start(argv, game, folder / ('%s.log' % region_id))
             (folder / ('%s.pid' % region_id)).write_text('%d\n' % pid, encoding='utf-8')
             started.append(region_id)
@@ -1512,14 +1529,16 @@ def ensure_help(group, start=detach):
 
 
 def help_status(group, now=time.time):
-    """Whether each region's bridge runs, and how fresh its heartbeat (health.json) is."""
+    """Every region's bridge: whether it runs, is kept running (wanted), and how fresh its heartbeat (health.json) is."""
     settings = group.get('player_help')
     if not settings:
         return {'configured': False}
     regions = {}
-    for region_id in settings['regions']:
+    for region in group['regions']:
+        region_id = region['id']
         pid = help_pid(group, region_id, now)
-        entry = {'running': pid is not None, 'pid': pid, 'log': str(help_dir(group) / ('%s.log' % region_id))}
+        entry = {'running': pid is not None, 'pid': pid, 'wanted': help_wanted(group, region_id),
+                 'listed': region_id in settings['regions'], 'log': str(help_dir(group) / ('%s.log' % region_id))}
         health = help_spool(group, region_id) / 'health.json'
         try:
             answer = json.loads(health.read_text(encoding='utf-8'))
@@ -1528,25 +1547,52 @@ def help_status(group, now=time.time):
         except (OSError, ValueError):
             entry['enabled'] = False
         regions[region_id] = entry
-    return {'configured': True, 'stopped': help_stop_file(group).exists(), 'config': settings['config'], 'regions': regions}
+    stopped = not any(entry['wanted'] for entry in regions.values())
+    return {'configured': True, 'stopped': stopped, 'config': settings['config'], 'regions': regions}
 
 
-def help_start(group, start=detach):
-    """Clear a stop request and start every missing bridge now."""
-    help_settings(group)
-    help_stop_file(group).unlink(missing_ok=True)
+def help_region_ids(group, region_id):
+    ids = [r['id'] for r in group['regions']]
+    if region_id is not None and region_id not in ids:
+        raise Refused('no region %s in the group' % region_id)
+    return ids if region_id is None else [region_id]
+
+
+def help_start(group, start=detach, region_id=None):
+    """Clear the stop requests (of every region, or one) and start the missing bridges now.
+    One region outside player_help's "regions" is kept running from then on."""
+    settings = help_settings(group)
+    folder = help_dir(group)
+    folder.mkdir(parents=True, exist_ok=True)
+    ids = help_region_ids(group, region_id)
+    stop_all = help_stop_file(group)
+    if region_id is not None and stop_all.exists():
+        # The whole group was stopped: keep the other regions stopped while this one starts.
+        for other in help_region_ids(group, None):
+            if other != region_id:
+                help_region_file(group, other, 'off').write_text('stopped on request\n', encoding='utf-8')
+    stop_all.unlink(missing_ok=True)
+    for one in ids:
+        help_region_file(group, one, 'off').unlink(missing_ok=True)
+        if region_id is not None and one not in settings['regions']:
+            help_region_file(group, one, 'on').write_text('started on request\n', encoding='utf-8')
     started, errors = ensure_help(group, start)
     return {'started': started, 'errors': errors}
 
 
-def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.monotonic, kill=None):
-    """Stop every bridge and keep them stopped until help-start. Bridges see the stop
-    file and finish the answers they are writing; one that has not exited by the
-    timeout (or was started without the stop file) is ended."""
-    settings = help_settings(group)
+def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.monotonic, kill=None, region_id=None):
+    """Stop the bridges (of every region, or one) and keep them stopped until help-start.
+    Bridges see their stop file and finish the answers they are writing; one that has not
+    exited by the timeout (or was started with another stop file) is ended."""
+    help_settings(group)
     help_dir(group).mkdir(parents=True, exist_ok=True)
-    help_stop_file(group).write_text('stopped on request\n', encoding='utf-8')
-    running = {r: help_pid(group, r) for r in settings['regions']}
+    ids = help_region_ids(group, region_id)
+    if region_id is None:
+        help_stop_file(group).write_text('stopped on request\n', encoding='utf-8')
+    for one in ids:
+        help_region_file(group, one, 'off').write_text('stopped on request\n', encoding='utf-8')
+        help_region_file(group, one, 'on').unlink(missing_ok=True)
+    running = {r: help_pid(group, r) for r in ids}
     running = {r: pid for r, pid in running.items() if pid}
     stopped = sorted(running)
     deadline = clock() + timeout
@@ -1554,11 +1600,11 @@ def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.mon
         sleep(1)
         running = {r: pid for r, pid in running.items() if process_alive(pid)}
     kill = kill or Platform().kill_tree
-    for region_id, pid in running.items():
+    for one, pid in running.items():
         kill(pid)
-        clear_help_lock(group, region_id)
-    for region_id in settings['regions']:
-        (help_dir(group) / ('%s.pid' % region_id)).unlink(missing_ok=True)
+        clear_help_lock(group, one)
+    for one in ids:
+        (help_dir(group) / ('%s.pid' % one)).unlink(missing_ok=True)
     return {'stopped': stopped, 'forced': sorted(running)}
 
 
@@ -1707,9 +1753,9 @@ def main(argv=None):
         elif args.action == 'help-status':
             result = help_status(group)
         elif args.action == 'help-start':
-            result = help_start(group)
+            result = help_start(group, region_id=args.region)
         elif args.action == 'help-stop':
-            result = help_stop(group)
+            result = help_stop(group, region_id=args.region)
         elif args.action == 'adopt':
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
