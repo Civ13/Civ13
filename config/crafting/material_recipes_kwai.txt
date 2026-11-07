@@ -209,9 +209,8 @@ RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
 
-RECIPE: /material/iron/,rail (horizontal),/obj/structure/rails/regular/horizontal,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (vertical),/obj/structure/rails/regular,1,50,1,1,trains,93,0,0,8,null
-RECIPE: /material/iron/,rail (left turn),/obj/structure/rails/turn,1,50,1,1,trains,93,0,0,8,null
+RECIPE: /material/iron/,rails,/obj/item/stack/rail_lengths,1,50,0,0,trains,93,0,0,8,null
+RECIPE: /material/wood/,railway sleepers,/obj/item/stack/rail_sleepers,1,40,0,0,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
