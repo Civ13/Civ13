@@ -279,6 +279,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("digital_networks", "Digital Networks", "Industrial", 560, 8, RESEARCH_MODE_PROTOTYPE, list("digital_computing"), 9, /obj/item/weapon/telephone/mobile))
 	// Digital Age consumer hardware: smartphones, LED lighting, lithium-ion storage.
 	register_research_node(new /datum/research_node("consumer_electronics", "Consumer Electronics", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks"), 9))
+	// Smart home (2026): a hub that runs lights, plugs and locks by voice.
+	register_research_node(new /datum/research_node("smart_home", "Smart Home", "Industrial", 380, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics"), 9))
 	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","missiles"), 9))
 	// Spaceflight (space settlement phase 1): probes fly over a survey map of a
 	// barren world. Samples a probe brings home are analysed into notes on
@@ -706,6 +708,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/telephone/mobile/smartphone" = "consumer_electronics",
 		"/obj/structure/lamp/lamp_big/led" = "consumer_electronics",
 		"/obj/structure/battery/lithium_ion" = "consumer_electronics",
+		// --- smart_home (9) ---
+		"/obj/structure/smart_hub" = "smart_home",
+		"/obj/structure/smart_speaker" = "smart_home",
+		"/obj/item/weapon/smart_lock" = "smart_home",
 		// --- uav_drones (9) ---
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
