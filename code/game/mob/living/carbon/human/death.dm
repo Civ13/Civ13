@@ -50,6 +50,8 @@
 	update_fire(1)
 	if (stat == DEAD) return
 	region_home_death(src)
+	if (driver && driver_vehicle)
+		driver_vehicle.driver_died(src) // frees the seat so someone else can drive
 
 	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		var/obj/map_metadata/wizard_boy/WB = map
