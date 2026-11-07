@@ -240,6 +240,7 @@ internal sealed partial class LauncherWindow : Form {
         if (profile.Control?.Group is { } group) Row("Region group", group.Config + " (every region, deploy and the host service)");
         else Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
         Row("Civilizationbot", profile.Bot != null ? "Started with the server if it is not running; see the Civilizationbot tab" : "Not configured");
+        if (profile.MobileUrl is { } mobile) Row("Mobile LAN", mobile + " (paired certificate required; companion must be started separately)");
         hostState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6) };
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
         hostStart.Click += async (_, _) => await StartHosting();

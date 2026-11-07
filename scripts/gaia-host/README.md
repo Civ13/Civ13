@@ -4,6 +4,10 @@
 that runs from a Windows scheduled task, the way live Gaia is hosted. The
 Discord bot and the launcher both call it, so there is one control path.
 
+An optional [mobile LAN companion](MOBILE.md) exposes a bounded phone interface
+to the same detached workers. It is off by default and requires separately
+provisioned HTTPS and paired client certificates; it never uses the public doorman.
+
 ```powershell
 py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json status
 py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start

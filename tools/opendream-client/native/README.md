@@ -349,3 +349,10 @@ static mode names, DNS alone, or a cached snapshot.
 Legacy OpenDream
 shortcuts retain their historical packaged endpoints; they are not native BYOND
 shortcuts. Local DreamDaemon verification still uses its genuine host receipt.
+
+## Mobile host access
+
+The optional [mobile LAN companion](../../../scripts/gaia-host/MOBILE.md) uses
+the Host tab's existing control backend. A configured `mobile_url` in `host.json`
+displays its HTTPS LAN address in the Host tab. This does not start a listener;
+certificate pairing, trusted HTTPS and explicit operator setup are required.

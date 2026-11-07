@@ -18,7 +18,7 @@ public sealed record HostControl(string Python, string Script, string Config, Ho
 // whole save, pull, compile and start sequence and restart the host service. All three come from the
 // same checkout as control.script, so host.json names only the group config.
 public sealed record HostGroup(string Config, string ShardScript, string Deploy, string RestartHost);
-public sealed record HostProfile(string GameDirectory, string World, int Port, HostBot? Bot, HostUpdate? Update = null, HostControl? Control = null);
+public sealed record HostProfile(string GameDirectory, string World, int Port, HostBot? Bot, HostUpdate? Update = null, HostControl? Control = null, string? MobileUrl = null);
 // One answer from the control script. Busy means an action is still running in its worker.
 public sealed record ControlAnswer(bool Ok, string Message, bool Busy);
 
@@ -79,7 +79,22 @@ public static class LocalHosting {
             using var botProfile = JsonDocument.Parse(File.ReadAllText(profile));
             bot = new HostBot(php, botRoot, profile, Port(botProfile.RootElement, "http_port"));
         }
-        return new HostProfile(game, world, port, bot, update, control);
+        var mobile = json.TryGetProperty("mobile_url", out _) ? MobileAddress(Text(json, "mobile_url")) : null;
+        if (mobile != null && control == null) throw new InvalidDataException("mobile_url requires control.");
+        return new HostProfile(game, world, port, bot, update, control, mobile);
+    }
+
+    // Display only: configuring an address never starts the companion or installs trust.
+    public static string MobileAddress(string value) {
+        if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) || uri.Scheme != "https" ||
+            uri.UserInfo.Length != 0 || uri.Query.Length != 0 || uri.Fragment.Length != 0 || uri.AbsolutePath != "/" ||
+            uri.Port is < 1024 or > 65535 || !System.Net.IPAddress.TryParse(uri.Host, out var address) ||
+            address.AddressFamily != AddressFamily.InterNetwork)
+            throw new InvalidDataException("mobile_url must be an HTTPS private IPv4 address and explicit port.");
+        var bytes = address.GetAddressBytes();
+        if (!(bytes[0] == 10 || bytes[0] == 172 && bytes[1] is >= 16 and <= 31 || bytes[0] == 192 && bytes[1] == 168))
+            throw new InvalidDataException("mobile_url must be on the private LAN.");
+        return $"https://{address}:{uri.Port}";
     }
 
     // The hosted world is always listed publicly on the BYOND hub.
