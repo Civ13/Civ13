@@ -38,6 +38,7 @@ def _routes(store, radio):
     return {
         # Cross-region radio: ephemeral, never in the ledger (radio.py).
         '/radio/send': lambda body: {'id': radio.send(body.get('envelope'))},
+        '/radio/send_batch': lambda body: radio.send_batch(body.get('envelopes')),
         '/radio/heartbeat': lambda body: {'relays': radio.heartbeat(body.get('relays', []))},
         '/radio/inbox': lambda body: {'envelopes': radio.inbox()},
         '/radio/status': lambda body: radio.status(),
