@@ -44,7 +44,7 @@ jobs:
       - name: Install integrity-locked browser tooling without lifecycle hooks
         timeout-minutes: 5
         run: npm ci --ignore-scripts --prefix tgui
-      - name: Test chat layout and original-page control in runner Chromium
+      - name: Test chat layout, filter tabs and original-page control in runner Chromium
         timeout-minutes: 2
         env:
           CHAT_TEST_TMP: ${{ runner.temp }}/chat-browser
@@ -54,11 +54,12 @@ jobs:
           node tests/chat/chat-scroll.browser.test.js
           CHAT_NO_RESIZE_OBSERVER=1 node tests/chat/chat-scroll.browser.test.js
           CHAT_NEGATIVE_CONTROL=1 node tests/chat/chat-scroll.browser.test.js
+          node tests/chat/chat-filter.browser.test.js
       - name: Retain browser verdict and cleanup evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: chat-browser-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/chat-browser/chat-scroll-*/browser.*
+          path: ${{ runner.temp }}/chat-browser/chat-*/browser.*
           if-no-files-found: warn
           retention-days: 7

@@ -82,7 +82,7 @@
 
 	if(!src.following_mob)
 		src.do_behaviour()
-	if (src.female && !src.pregnant && bear_count.len < 12) // global cap, like the other breeding animals
+	if (src.female && !src.pregnant && bear_count.len < 30) // global cap, like the other breeding animals
 		if(!src.cub) //Cubs can't get pregnant
 			var/nearbyObjects = range(1,src) //3x3 area around animal
 			for(var/mob/living/simple_animal/hostile/bear/boar/M in nearbyObjects)

@@ -9,6 +9,7 @@
 	processes.mob = src
 
 /process/mob/fire()
+	ecology_refresh_observers()
 	for (current in current_list)
 
 		var/mob/M = current
@@ -33,7 +34,8 @@
 				mob_list -= M
 				unregister_living_mob(M)
 				continue
-			M.Life()
+			if (!ecology_animal_resting(M))
+				M.Life()
 			if (!(M == null))
 				if (world.time - M.last_movement > 7)
 					M.velocity = 0
@@ -49,6 +51,7 @@
 
 /process/mob/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(living_mob_list)
+	ecology_advance_rest_phase()
 
 /process/mob/statProcess(client/C)
 	..(C)

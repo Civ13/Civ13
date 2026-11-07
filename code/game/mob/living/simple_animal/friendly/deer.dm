@@ -90,10 +90,19 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count.len < 30)
+		// Elk and reindeer mate and give birth within their own kind.
+		var/male_path = /mob/living/simple_animal/deer/male
+		var/female_path = /mob/living/simple_animal/deer/female
+		if (istype(src, /mob/living/simple_animal/deer/elk))
+			male_path = /mob/living/simple_animal/deer/elk/male
+			female_path = /mob/living/simple_animal/deer/elk/female
+		else if (istype(src, /mob/living/simple_animal/deer/reindeer))
+			male_path = /mob/living/simple_animal/deer/reindeer/male
+			female_path = /mob/living/simple_animal/deer/reindeer/female
+		if (!pregnant && deer_count.len < 150)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
-			for(var/mob/living/simple_animal/deer/male/M in nearbyObjects)
-				if (M.stat == CONSCIOUS)
+			for(var/mob/living/simple_animal/deer/M in nearbyObjects)
+				if (istype(M, male_path) && M.stat == CONSCIOUS)
 					pregnant = TRUE
 					birthCountdown = 600
 					break
@@ -101,12 +110,8 @@
 			if (pregnant)
 				nearbyObjects = range(7,src) //15x15 area around the deer
 				var/deerCount = 0
-				for(var/mob/living/simple_animal/deer/female/M in nearbyObjects)
-					if (M.stat == CONSCIOUS)
-						deerCount++
-
-				for(var/mob/living/simple_animal/deer/male/M in nearbyObjects)
-					if (M.stat == CONSCIOUS)
+				for(var/mob/living/simple_animal/deer/M in nearbyObjects)
+					if ((istype(M, female_path) || istype(M, male_path)) && M.stat == CONSCIOUS)
 						deerCount++
 
 				if (deerCount > 5) // max 5 deers in a 15x15 area around deer
@@ -116,12 +121,9 @@
 			birthCountdown--
 			if (birthCountdown <= 0)
 				pregnant = FALSE
-				if (prob(50))
-					var/mob/living/simple_animal/deer/female/C = new/mob/living/simple_animal/deer/female(loc)
-					C.babydeer = TRUE
-				else
-					var/mob/living/simple_animal/deer/male/B = new/mob/living/simple_animal/deer/male(loc)
-					B.babydeer = TRUE
+				var/child_path = prob(50) ? female_path : male_path
+				var/mob/living/simple_animal/deer/C = new child_path(loc)
+				C.babydeer = TRUE
 				visible_message("A deer has been born!")
 
 /mob/living/simple_animal/deer/reindeer/male
@@ -247,7 +249,7 @@
 			overpopulationCountdown--
 			return
 
-		if (!pregnant && deer_count.len < 30)
+		if (!pregnant && deer_count.len < 150)
 			var/nearbyObjects = range(1,src) //3x3 area around the deer
 			for(var/mob/living/simple_animal/deer/dikdik/male/M in nearbyObjects)
 				if (M.stat == CONSCIOUS)
