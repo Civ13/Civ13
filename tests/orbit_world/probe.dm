@@ -23,6 +23,12 @@
 /obj/map_metadata/nomads/flight_tester/New()
 	return
 
+/mob/living/human/eva_tester/New()
+	return
+
+/mob/living/human/eva_tester/update_icons()
+	return
+
 var/global/orbit_failures = 0
 /proc/orbit_check(label, actual, expected)
 	world.log << "ORBIT CHECK [label]: [actual] expected [expected] [actual == expected ? "PASS" : "FAIL"]"
@@ -100,6 +106,7 @@ var/global/orbit_failures = 0
 		qdel(LU)
 		qdel(LT)
 		orbit_flight_checks()
+		orbit_eva_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -211,3 +218,77 @@ var/global/orbit_failures = 0
 	orbit_check("hatch carries the flight home", hatch.travel_extra(null)["return"], 1)
 	orbit_check("hatch catches no arrivals", hatch.accepts_arrivals() ? 1 : 0, 0)
 	qdel(hatch)
+
+// EVA (orbit_eva.dm): handholds, push-off and drift, seams, unlinked edges and
+// the safety tether. The drift loop needs clients, so steps are driven here.
+/proc/orbit_eva_checks()
+	for (var/z in 2 to 5)
+		orbit_release_plane(z)
+	var/east = orbit_claim_plane("eva")
+	var/west = orbit_claim_plane("eva")
+	orbit_check("eva planes", "[east],[west]", "2,3")
+	orbit_link_planes(east, "east", west)
+	for (var/z in 2 to 3)
+		for (var/turf/T in block(locate(1, 1, z), locate(8, 8, z)))
+			for (var/obj/O in T)
+				qdel(O)
+	var/obj/structure/orbit_truss/truss = new(locate(2, 4, east))
+	orbit_check("truss is a handhold", locate(3, 4, east).orbit_handhold() ? 1 : 0, 1)
+	orbit_check("open space has none", locate(4, 4, east).orbit_handhold() ? 1 : 0, 0)
+	orbit_check("truss gated", get_recipe_node_req("/obj/structure/orbit_truss"), "orbital_flight")
+	orbit_check("tether gated", get_recipe_node_req("/obj/item/eva_tether"), "orbital_flight")
+
+	var/mob/living/human/eva_tester/H = new(locate(3, 4, east))
+	H.m_intent = "stealth"
+	H.Move(locate(4, 4, east), EAST)
+	orbit_check("pushing off from a handhold drifts", orbit_drifters[H], EAST)
+	var/turf/here = H.loc
+	orbit_check("no steering while drifting", here.Exit(H, locate(4, 5, east)) ? 1 : 0, 0)
+	orbit_drift_step(H)
+	orbit_check("drift moves one tile", "[H.x],[H.y],[H.z]", "5,4,[east]")
+	orbit_drift_step(H)
+	orbit_drift_step(H)
+	orbit_drift_step(H)
+	orbit_check("drift crosses a linked edge", "[H.x],[H.y],[H.z]", "2,4,[west]")
+	orbit_check("still drifting after the seam", orbit_drifters[H], EAST)
+	new /obj/structure/orbit_truss(locate(5, 4, west))
+	orbit_drift_step(H)
+	orbit_drift_step(H)
+	orbit_check("drifter catches hold", isnull(orbit_drifters[H]) && H.x == 4 ? 1 : 0, 1)
+	for (var/obj/structure/orbit_truss/T in locate(5, 4, west))
+		qdel(T)
+
+	orbit_start_drift(H, EAST)
+	for (var/i in 1 to 6)
+		orbit_drift_step(H)
+	orbit_check("unlinked edge stops the drift", isnull(orbit_drifters[H]) && H.x == 8 && H.z == west ? 1 : 0, 1)
+	here = H.loc
+	orbit_check("lost at the edge", here.Exit(H, locate(7, 4, west)) ? 1 : 0, 0)
+	orbit_check("no push-off from the edge", orbit_drifters[H] ? 1 : 0, 0)
+
+	H.forceMove(locate(4, 6, west))
+	orbit_stop_drift(H)
+	here = H.loc
+	orbit_check("restored floater pushes off again", here.Exit(H, locate(4, 7, west)) ? 1 : 0, 0)
+	orbit_check("push-off direction", orbit_drifters[H], NORTH)
+	orbit_stop_drift(H)
+
+	var/obj/item/eva_tether/tether = new(H)
+	H.forceMove(locate(3, 4, east))
+	tether.attack_self(H)
+	orbit_check("tether clips to the truss", tether.anchor == get_turf(truss) ? 1 : 0, 1)
+	orbit_check("tether anchor not saved", tether.persistence_runtime_var("anchor") ? 1 : 0, 1)
+	tether.reach = 2
+	H.Move(locate(4, 4, east), EAST)
+	orbit_drift_step(H)
+	orbit_check("taut tether pulls back", "[H.x],[orbit_drifters[H] ? orbit_drifters[H] : 0]", "3,0")
+	H.forceMove(locate(4, 4, east))
+	orbit_stop_drift(H)
+	here = H.loc
+	orbit_check("haul along the tether", here.Exit(H, locate(3, 4, east)) ? 1 : 0, 1)
+	orbit_check("no pushing away on the tether", here.Exit(H, locate(5, 4, east)) ? 1 : 0, 0)
+	orbit_stop_drift(H)
+	tether.attack_self(H)
+	orbit_check("tether unclips", tether.anchor ? 1 : 0, 0)
+	qdel(H)
+	qdel(truss)

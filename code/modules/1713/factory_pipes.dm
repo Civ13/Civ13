@@ -46,6 +46,11 @@ var/global/fluid_step_serial = 0
 /obj/proc/fluid_supply_holder()
 	return null
 
+// Whether pipes join this object. Items stay out unless they opt in, like a
+// steel barrel fitted with a wrench (piped_barrel.dm).
+/obj/proc/fluid_pipe_joinable()
+	return !istype(src, /obj/item)
+
 // Whether this machine lets reagent id out through pipes.
 /obj/proc/fluid_supplies(id)
 	return TRUE
@@ -193,7 +198,7 @@ var/global/fluid_step_serial = 0
 		for (var/obj/structure/fluid_pipe/P in N.pipes)
 			for (var/turf/T in list(P.loc) + P.fluid_adjacent_turfs())
 				for (var/obj/O in T)
-					if (!istype(O, /obj/structure/fluid_pipe) && !istype(O, /obj/item) && fluid_has_role(O))
+					if (!istype(O, /obj/structure/fluid_pipe) && O.fluid_pipe_joinable() && fluid_has_role(O))
 						N.members |= O
 		fluid_networks += N
 	for (var/obj/structure/fluid_pipe/P in fluid_pipes)
@@ -316,7 +321,7 @@ var/global/fluid_step_serial = 0
 				if (P.fluid_open())
 					dirs |= d
 					break
-			else if (!istype(O, /obj/item) && fluid_has_role(O))
+			else if (O.fluid_pipe_joinable() && fluid_has_role(O))
 				dirs |= d
 				break
 	return dirs

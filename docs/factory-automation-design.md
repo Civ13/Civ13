@@ -362,8 +362,10 @@ running; fabricator states are no recipe, starved, blocked (output tile full),
 no power and running, with the recipe and cycle progress. Arms count items
 moved and fabricators count items made in a two-minute window of one-minute
 buckets (`/datum/factory_rate`). Counters and states are runtime only and cost
-one addition per transfer; the monitor scans only when someone looks. Power use
-is not shown yet.
+one addition per transfer; the monitor scans only when someone looks. Each row
+also shows the power units the machine has reserved on its grid right now
+(belts draw through their drive), and the page totals them and shows each
+grid's use against its capacity, counting everything on that grid.
 
 ### Ownership and griefing
 
