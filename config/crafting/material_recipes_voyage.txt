@@ -150,7 +150,6 @@ RECIPE: /material/bronze/,bronze bone setter,/obj/item/weapon/surgery/bonesetter
 RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze,6,50,0,1,healthcare,18,0,26,8,null
 RECIPE: /material/bronze/,bronze statue,/obj/structure/religious/statue,25,250,1,1,religious & decoration,10,0,0,8,bronze
 
-RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,5,60,0,1,none,0,0,0,8,null
 RECIPE: /material/wood/,mine support,/obj/structure/mine_support,2,100,1,1,none,0,0,0,8,null
 RECIPE: /material/wood/,wood bowl,/obj/item/kitchen/wood_bowl,3,40,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,wood mug,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,3,40,0,1,kitchen,0,0,0,8,null

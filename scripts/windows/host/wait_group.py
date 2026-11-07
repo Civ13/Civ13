@@ -1,6 +1,6 @@
 """Wait until every region of a group (or one) reaches a state, for deploy.bat.
 
-    py -3 wait_group.py --config group.json --until staged|stopped|compiled|awake [--region ID ...] [--timeout SECONDS]
+    py -3 wait_group.py --config group.json --until staged|stopped|compiled|awake|handed-over [--region ID ...] [--timeout SECONDS]
 
 Polls `shard_group.py status` every 15 seconds and prints each change. Exits 0 when
 every selected region is there, 1 when a region that is not there yet reports an error
@@ -27,6 +27,12 @@ def reached(entry, until):
         return not entry.get('listening') and entry.get('state') in ('stopped', 'cold') and not entry.get('busy')
     if until == 'compiled':
         return operation.get('action') == 'update' and phase in ('compiled', 'done') and not entry.get('busy')
+    if until == 'handed-over':
+        # A region that is not awake has nothing to hand over: the host service installs the
+        # staged build when it wakes or starts.
+        if entry.get('state') != 'awake':
+            return not entry.get('busy')
+        return operation.get('action') == 'handover' and phase == 'done' and not entry.get('busy')
     return entry.get('state') == 'awake' and (entry.get('world') or {}).get('ready') == 1 and not entry.get('busy')
 
 
@@ -46,6 +52,8 @@ def failed(entry, until=None):
     # with no action under way; waiting would only run into the timeout.
     if until == 'stopped' and entry.get('listening') and not entry.get('busy'):
         return 'it is still running and not saving (its stop was refused; see the answer above)'
+    if until == 'handed-over' and entry.get('state') == 'awake' and not entry.get('busy') and operation.get('action') != 'handover':
+        return 'its handover was refused (see the answer above); it keeps running on the old build'
     return None
 
 
@@ -60,7 +68,7 @@ def status(config):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--config', required=True)
-    parser.add_argument('--until', required=True, choices=('staged', 'stopped', 'compiled', 'awake'))
+    parser.add_argument('--until', required=True, choices=('staged', 'stopped', 'compiled', 'awake', 'handed-over'))
     parser.add_argument('--region', action='append', help='only this region; repeat for several (default: every region)')
     parser.add_argument('--timeout', type=int, default=5400)
     args = parser.parse_args(argv)
