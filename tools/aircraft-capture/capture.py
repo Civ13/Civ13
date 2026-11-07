@@ -113,12 +113,20 @@ def run(byond, game, ffmpeg, output):
                 if wins:
                     window = place(wins[0][1])
                 target = shots / f'{name}.png'
-                args = [str(ffmpeg), '-hide_banner', '-loglevel', 'error', '-y', '-f', 'gdigrab', '-draw_mouse', '0']
+                args = [str(ffmpeg), '-hide_banner', '-loglevel', 'error', '-y', '-f', 'gdigrab', '-framerate', '5', '-draw_mouse', '0']
                 if window:
                     args += ['-offset_x', str(window['x']), '-offset_y', str(window['y']),
                              '-video_size', f'{window["width"] - window["width"] % 2}x{window["height"] - window["height"] % 2}']
                 args += ['-i', 'desktop', '-frames:v', '1', str(target)]
-                subprocess.call(args, timeout=60)
+                with (output / 'ffmpeg.log').open('a') as flog:
+                    flog.write(' '.join(args) + '\n')
+                    flog.flush()
+                    subprocess.call(args, stdout=flog, stderr=subprocess.STDOUT, timeout=60)
+                    if not target.exists():
+                        # Whole desktop as a fallback.
+                        subprocess.call([str(ffmpeg), '-hide_banner', '-loglevel', 'error', '-y', '-f', 'gdigrab',
+                                         '-framerate', '5', '-i', 'desktop', '-frames:v', '1', str(target)],
+                                        stdout=flog, stderr=subprocess.STDOUT, timeout=60)
                 log(f'shot {name}: {target.exists()} {window}')
                 result['shots'].append(dict(name=name, ok=target.exists(), window=window))
                 req.unlink()
