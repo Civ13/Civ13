@@ -313,6 +313,10 @@ var/global/list/orbit_station_requirements = list(
 	for (var/obj/structure/cable/C in fuel_turf)
 		orbit_station_attach(F, C)
 	joint.rebuild_supply()
+	// A reboost thruster with three burns, and a fresh orbit (orbit_upkeep.dm).
+	var/obj/structure/orbit_thruster/thruster = new(locate(cx + 2, bottom + 1, z))
+	thruster.propellant = ORBIT_REBOOST_COST * 3
+	orbit_set_station_altitude(party, ORBIT_ALTITUDE_START)
 	// Supplies, the console and the way home.
 	var/obj/structure/closet/crate/crate = locate() in locate(cx - 1, cy - 1, z)
 	if (crate)
@@ -400,6 +404,10 @@ var/global/list/orbit_station_requirements = list(
 	var/party = orbit_station_party(z)
 	lines += party ? "Station of [party_train_party_name(party)]." : "No party owns this plane."
 	lines += orbit_sunlit() ? "In sunlight for another [orbit_day_left()] seconds." : "In shadow for another [orbit_day_left()] seconds."
+	if (party)
+		var/km = orbit_station_altitude(party)
+		var/band = orbit_altitude_band(km)
+		lines += "Altitude [round(km)] km[band == "high" ? "" : (band == "low" ? ", sinking: reboost soon" : (band == "drag" ? ", in drag: reboost now" : ", skimming the atmosphere: reboost now"))]."
 	// Every deck of the station (orbit_decks.dm), or just this plane.
 	var/list/planes = party ? orbit_station_planes(party) : list(z)
 	for (var/level in planes)

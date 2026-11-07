@@ -42,12 +42,14 @@ what the code does so far and the rules later steps must keep.
 | 6b | Starter stations: launch complex office project, 1969 station founded on a free plane, return capsule hatch, orbit console with lost-drifter recovery | `code/modules/space/orbit_project.dm`, `party_train.dm` |
 | 6c | Moon gear: lunar surface kit, sortie reserve and lift-off home from a landed lander | `code/modules/space/lander.dm` |
 | 8 | Module pods and docking: release a kit as a pod, RCS steering from the pod or an orbit console, hard dock, fold back, party checks, rams | #3948, `code/modules/space/orbit_pods.dm` |
-| 9 | Decks: node modules, deck hatches, building a deck above or below, shared air between decks, console over every deck | `code/modules/space/orbit_decks.dm` |
+| 9 | Decks: node modules, deck hatches, building a deck above or below, shared air between decks, console over every deck | #3949, `code/modules/space/orbit_decks.dm` |
+| 10a | Upkeep: orbit decay by band, drag heating and strikes, reboost thruster, altitude on the console | `code/modules/space/orbit_upkeep.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-10. Station upkeep and the 2013 layout.
+10b. Wear on seals, cartridges, panels and batteries; tracking arrays and the
+    isotope generator; the uncrewed cargo freighter; the 2013 layout.
 
 ## Orbital flight
 
@@ -202,6 +204,22 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Folding** a node needs its deck hatch shut and no deck joined through it.
 - The orbit console reports the modules on every deck of its station.
 
+## Upkeep
+
+- **Orbit decay.** The registry keeps each station's altitude in km, keyed
+  by party. It starts at 400 and falls about 30 km an hour, only while the
+  world has players, on the space hazard clock, down to 150 km at worst.
+- **Bands.** Below 300 km the station is warned. Below 250 km drag heats
+  every module 0.05 C a second and adds a 20% chance a minute of a debris
+  strike. Below 200 km the station skims the atmosphere: 0.2 C a second and a
+  50% chance a minute. Nothing is ever deleted, and the crew is told each
+  time the station crosses a band.
+- **Reboost thruster** (25 electronics, Orbital Flight): fill it with rocket
+  propellant (tank 200). Each burn takes 20 units and climbs 20 km, up to
+  420 km. Only the station's party can fire it. A starter station comes with
+  one holding three burns.
+- The orbit console shows the altitude and what it means.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -218,4 +236,5 @@ reserve and payload flag, lift-off and spending, the lunar kit) and module
 pods (release, footprint, steps, rams, party checks, hard dock, fold refusals,
 folding back and docking again, console steering) and decks (the node's
 hatch, building a deck above, pairing, breaches, shared air, refusals,
-console reports and risers).
+console reports and risers) and upkeep (decay, the hazard clock, bands,
+drag heating, floor and ceiling, the thruster and the console).

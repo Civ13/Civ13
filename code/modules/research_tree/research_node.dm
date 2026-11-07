@@ -729,6 +729,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/eva_tether" = "orbital_flight",
 		"/obj/item/habitat_kit/orbital_workshop" = "orbital_flight",
 		"/obj/item/habitat_kit/node" = "orbital_flight",
+		"/obj/structure/orbit_thruster" = "orbital_flight",
 		"/obj/structure/civ_generator/solar/wing" = "orbital_flight",
 		"/obj/structure/civ_generator/fuel_cell" = "orbital_flight",
 		"/obj/structure/life_support/radiator" = "orbital_flight",

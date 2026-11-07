@@ -78,6 +78,12 @@ through a shut hatch and shared air through an open shaft, one deck each way,
 no deck without a free plane, node fold refusals, the console reporting every
 deck, and cable risers pairing across the deck link.
 
+Then upkeep (`code/modules/space/orbit_upkeep.dm`): the starter station's
+fuelled thruster, decay with play and through the hazard clock, no heat in
+low orbit, drag and skim heating, the floor and ceiling, thruster refusals
+for no propellant, outsiders and the ceiling, a reboost and its cost, and the
+console's altitude line.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer

@@ -53,6 +53,8 @@ var/global/barren_hazard_last_pulse = -1
 // Counts events down and, when roll is TRUE, may start new ones.
 /proc/barren_hazards_step(seconds, roll = TRUE)
 	seconds = max(0, seconds)
+	// Station orbits sink with the same clock (orbit_upkeep.dm).
+	orbit_upkeep_step(seconds, roll)
 	if (barren_dust_seconds > 0)
 		barren_dust_seconds = max(0, barren_dust_seconds - seconds)
 		if (!barren_dust_seconds)
