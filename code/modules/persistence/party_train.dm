@@ -1,14 +1,14 @@
 // Party trains (docs/party-train.md). A party builds its first train as a
 // project at a railway station in Persistence: a railway works office placed
-// beside a straight run of track takes the materials, and once they are all in
-// the office opens boarding. The train itself lives in the region group's rail
-// yard world (shard_group kind RAILYARD); boarding travels there like a trail
+// beside track that connects to the edge of the map (the way out of this land;
+// rail_network.dm) takes the materials, and once they are all in the office opens
+// boarding. The train itself lives in the region group's rail yard world
+// (shard_group kind RAILYARD); boarding travels there like a trail
 // (region_travel.dm), and only members of the party that built it may board.
 // A party is a player's faction, or the player alone when they have none.
 // The yard gives each party a berth with a walk-in train (tools/rail_yard
 // builds the yard map); a berth leads back to the land its party came from.
 
-#define PARTY_TRAIN_TRACK_MIN 8 // straight rails needed beside the office
 #define PARTY_TRAIN_TRACK_RANGE 2 // tiles from the office to that track
 
 // Material kind = list(stack type, amount needed, label).
@@ -73,22 +73,6 @@ var/global/list/party_train_requirements = list(
 		if(H.party_train_party == old_party)
 			H.party_train_party = new_party
 
-/proc/party_train_rail_at(turf/T)
-	return T && (locate(/obj/structure/rails) in T)
-
-// The longest straight run of rails through T, horizontally or vertically.
-/proc/party_train_run_through(turf/T)
-	var/best = 0
-	for(var/list/axis in list(list(EAST, WEST), list(NORTH, SOUTH)))
-		var/count = 1
-		for(var/d in axis)
-			var/turf/step = get_step(T, d)
-			while(step && party_train_rail_at(step) && count < 64)
-				count++
-				step = get_step(step, d)
-		best = max(best, count)
-	return best
-
 /obj/structure/region_gate/railway_station
 	name = "railway works office"
 	desc = "A railway office and workshop. A party can build its first train here."
@@ -106,6 +90,15 @@ var/global/list/party_train_requirements = list(
 	var/completed_at = null // realtime text, for players and logs
 	// Someone has ridden this train, so the party holds a berth in the yard.
 	var/boarded = FALSE
+	// The last track check, kept until a rail is laid or removed or the office moves.
+	var/tmp/track_serial = -1
+	var/tmp/turf/track_turf = null
+	var/tmp/track_ok = FALSE
+
+/obj/structure/region_gate/railway_station/persistence_runtime_var(key)
+	if(key in list("track_serial", "track_turf", "track_ok"))
+		return TRUE
+	return ..()
 
 /obj/structure/region_gate/railway_station/New()
 	..()
@@ -120,10 +113,15 @@ var/global/list/party_train_requirements = list(
 // Null when this office stands at a usable station, otherwise why not.
 /obj/structure/region_gate/railway_station/proc/station_problem()
 	if(!isturf(loc)) return "The office must stand on the ground."
-	for(var/turf/T in range(PARTY_TRAIN_TRACK_RANGE, src))
-		if(party_train_rail_at(T) && party_train_run_through(T) >= PARTY_TRAIN_TRACK_MIN)
-			return null
-	return "A station needs a straight run of at least [PARTY_TRAIN_TRACK_MIN] rails within [PARTY_TRAIN_TRACK_RANGE] tiles of the office."
+	if(track_serial != rail_network_serial || track_turf != loc)
+		var/list/starts = list()
+		for(var/turf/T in range(PARTY_TRAIN_TRACK_RANGE, src))
+			starts += T
+		track_ok = rail_network_reaches_edge(starts)
+		track_serial = rail_network_serial
+		track_turf = loc
+	if(track_ok) return null
+	return "A station needs track from within [PARTY_TRAIN_TRACK_RANGE] tiles of the office that connects all the way to the edge of the land."
 
 /obj/structure/region_gate/railway_station/proc/rail_yard()
 	if(!shard_group.enabled) return null
@@ -152,6 +150,10 @@ var/global/list/party_train_requirements = list(
 		return party ? "[party_train_party_name(party)] is building a train here: [progress_text()]." : "No train is being built here yet."
 	destination = rail_yard()
 	if(!destination) return "No rail yard serves this land yet."
+	// The track must still reach the edge of the land; a finished train keeps
+	// its materials and waits until the line is laid or mended.
+	var/problem = station_problem()
+	if(problem) return "The train cannot leave: [lowertext(copytext(problem, 1, 2))][copytext(problem, 2)]"
 	// A party without a berth must not be stranded in a full yard.
 	if(!boarded && shard_group.peers[destination]["free_berths"] == 0)
 		return "The rail yard has no free berth for another train. Ask an admin."
@@ -474,5 +476,4 @@ var/global/list/party_train_requirements = list(
 	return
 
 #undef PARTY_TRAIN_DOOR_STRENGTH
-#undef PARTY_TRAIN_TRACK_MIN
 #undef PARTY_TRAIN_TRACK_RANGE

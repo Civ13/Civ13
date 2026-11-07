@@ -278,6 +278,15 @@ if heads_match and 'text2path("[shaft_type]/[suffix]")' in dedicated:
             add(f'Fletch {suffix} {label_name}','Fletching',[(shaft,1),(head,1)],[(f'{shaft}/{suffix}',1)],dedicated_path,fletch_line,"Fletcher's bench; up to 20 bare shafts and one kind of head per load; 5 ticks per shaft in one action; output beside the bench. Hand fletching remains available.", 'fletched_type')
 elif dedicated:
     issues.append(dict(file=dedicated_path,line=1,reason='Fletching head map changed; inspect atlas extraction',raw='fletched_type'))
+toolsmith_line=dedicated.find('/obj/structure/component_workbench/toolsmith/proc/toolsmith_recipes()')
+toolsmith_rows=re.findall(r'^\t\t"([^"]+)" = list\("result" = (/obj/item/weapon/material/[\w/]+), "metal" = (\d+), "max_age" = (\d+)\)',dedicated,re.M)
+metals=re.search(r'proc/metal_types\(\)\n\treturn list\((.*)\)$',dedicated,re.M)
+if toolsmith_line>=0 and toolsmith_rows and metals:
+    for name,result,metal,max_age in toolsmith_rows:
+        for sheet,metal_name in re.findall(r'(/obj/item/stack/material/\w+) = "(\w+)"',metals[1]):
+            add(f'Toolsmith {metal_name} {name.lower()}','Toolsmith',[(sheet,int(metal)),('/obj/item/stack/material/wood',1)],[(result,1)],dedicated_path,dedicated[:toolsmith_line].count('\n')+1,f"Toolsmith's bench beside an anchored anvil that accepts {metal_name}; smelted sheets only; Crafting coefficient 1.20x and the anvil's job rules; maximum era ordinal {max_age}; {100+15*int(metal)} ticks per tool, up to 5 per action; output beside the bench.", 'toolsmith_recipes')
+elif dedicated:
+    issues.append(dict(file=dedicated_path,line=1,reason='Toolsmith recipe table changed; inspect atlas extraction',raw='toolsmith_recipes'))
 armor_path='code/game/objects/structures/blacksmithing/armor_workbench.dm'
 armor=uncomment(files.get(armor_path,''))
 for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d+), "result" = (/\w[\w/]+), "inputs" = list\((.*)$',armor,re.M):

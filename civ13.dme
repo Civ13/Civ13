@@ -856,6 +856,7 @@
 #include "code\modules\1713\punishment.dm"
 #include "code\modules\1713\radiation.dm"
 #include "code\modules\1713\radio.dm"
+#include "code\modules\1713\rail_network.dm"
 #include "code\modules\1713\research.dm"
 #include "code\modules\1713\researchcost.dm"
 #include "code\modules\1713\roundstart_etc.dm"
