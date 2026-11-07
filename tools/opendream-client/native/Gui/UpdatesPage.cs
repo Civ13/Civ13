@@ -49,7 +49,7 @@ internal sealed partial class LauncherWindow {
             AutoSize = true, Margin = new Padding(0, 14, 0, 0),
             Text = (profile.Control?.Group != null
                        ? "Checking only fetches; nothing changes until you press a button. Save, update and restart builds the update beside the " +
-                         "running worlds, then saves, stops and restarts the regions you tick on it; a world that will not save is never stopped without asking. "
+                         "running worlds, then hands each running region you tick over to it: its players see a frozen world while it saves and the new build loads, then reconnect within seconds. A region that will not save or load keeps running on its old build. "
                        : "Checking only fetches; nothing changes until you press Update. The server must be stopped before it updates. ") +
                    "Updating the bot stops it, pulls main and starts it again."
         };

@@ -297,6 +297,17 @@ for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d
 
 tanning_routes=add_tanning(files, add, records, sprite_variants)
 rope_routes=add_rope_making(files, add, records)
+light_path='code/modules/1713/light_fuel.dm'
+light=uncomment(files.get(light_path,''))
+if light:
+    handle_line=light[:light.index('/obj/item/weapon/material/handle/attackby')].count('\n')+1 if '/obj/item/weapon/material/handle/attackby' in light else 1
+    oils=re.search(r'var/list/accepted = list\(([^)]*)\)',light)
+    if 'make_torch(user, TORCH_FAT_FUEL, W)' in light and oils and 'torch.handle_material = material.name' in light:
+        add('Torch from handle and animal fat','Light making',[('/obj/item/weapon/material/handle',1),('/obj/item/weapon/reagent_containers/food/snacks/animalfat',1)],[('/obj/item/flashlight/torch',1)],light_path,handle_line,'Use animal fat on a usable tool handle; the fat is consumed and the torch keeps the handle material. A burnt-out torch leaves its handle.','handle attackby animalfat make_torch')
+        for reagent in re.findall(r'"(\w+)" = \d+',oils[1]):
+            add('Torch from handle and '+reagent.replace('_',' '),'Light making',[('/obj/item/weapon/material/handle',1),('reagent:'+reagent,10)],[('/obj/item/flashlight/torch',1)],light_path,handle_line,'Use a container holding at least 10 units on a usable tool handle; 10 units are consumed. A burnt-out torch leaves its handle.','handle attackby reagent make_torch')
+    else:
+        issues.append(dict(file=light_path,line=1,reason='Handle torch source contract changed; inspect light_fuel.dm',raw='make_torch'))
 woodwork_path='code/modules/1713/primitive_woodworking.dm'
 woodwork_contract=json.loads((ROOT/'scripts/atlas/woodworking-contract.json').read_text(encoding='utf-8'))
 woodwork_revision=reviewed_source_revision(files[woodwork_path],woodwork_contract)

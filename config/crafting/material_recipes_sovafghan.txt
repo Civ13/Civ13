@@ -1443,7 +1443,6 @@ RECIPE: /material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze
 
 RECIPE: /material/wood/,wooden knife,/obj/item/weapon/material/kitchen/utensil/knife/wood,2,60,0,1,none,0,0,0,8,null
 
-RECIPE: /material/wood/,torch,/obj/item/flashlight/torch,2,60,0,1,none,0,0,0,8,null
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
 
