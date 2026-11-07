@@ -57,3 +57,8 @@ and condition kept, retargeting returns the output) and the fletcher's bench
 cancellation, bolts and sharpened flint). On the 516.1688 Linux run for this
 change it passed; the three armor era failures (`armor late era bypass` and its
 two follow-ons) also fail on master and predate it.
+
+`run_foundry_checks` covers the casting foundry: molten gold and empty pots
+refused, no anvil or smithing skill needed, the industrial-age gate, exact
+pours from the pot and wood, and retargeting returning the vessel. Machined
+Tools is a main-tree node, so the era baseline grants it at the industrial age.
