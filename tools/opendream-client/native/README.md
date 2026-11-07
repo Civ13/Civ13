@@ -190,6 +190,22 @@ and its phase) that refreshes every five seconds while an action runs. Only the
 action name reaches the script. `tests/LocalHostingTests.cs` injects process
 starts, update steps, control answers and port probes, so it launches nothing.
 
+### One region and group status
+
+With `control.group` set, the Host server tab has two rows of group buttons. **All
+regions** runs each action for the whole group. **One region** has a region list (each with its game and travel port; the
+list re-reads the group config whenever it opens) and the same `shard_group.py`
+actions with `--region`: Start, Save and stop, Restart, Update, **Build update**,
+**Sleep now** and **Wake** (freeze or thaw an empty, saved world), **Apply host
+settings** (`config-apply`), **Set up** (create or refresh the region's worktree and
+config and enrol it with the running travel agents; refused while it runs, so a new
+region is added without stopping the others), the forced actions, the lock-file
+cleanups and **Open its world log**. Each is confirmed first. The status line lists,
+per region, its port, a staged update and its phase, a handover's new build and
+port, what the watchdog did (restarts, gave up, could not start it), a travel agent
+that is down and a world that does not answer as that region, and whether the
+travel coordinator runs.
+
 ### Host settings
 
 With `control.group` set, the Host server tab's group row adds **Host settings**.

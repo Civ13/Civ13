@@ -107,6 +107,9 @@ var/global/orbit_failures = 0
 		qdel(LT)
 		orbit_flight_checks()
 		orbit_eva_checks()
+		orbit_station_checks()
+		orbit_project_checks()
+		orbit_sortie_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -292,3 +295,231 @@ var/global/orbit_failures = 0
 	orbit_check("tether unclips", tether.anchor ? 1 : 0, 0)
 	qdel(H)
 	qdel(truss)
+
+// Station hardware (orbit_station.dm): the orbital day, solar in orbit, the
+// fuel cell, module heat, radiators, the orbital workshop and debris.
+/proc/orbit_station_checks()
+	var/obj/structure/orbit_registry/R = orbit_get_registry()
+	orbit_check("orbit starts sunlit", R.sunlit, 1)
+	orbit_check("sunlit part is twenty minutes", R.sun_left, 1200)
+	orbit_check("day holds partway", orbit_day_step(1199) ? 1 : 0, 0)
+	orbit_check("sunset", orbit_day_step(1) ? "[R.sunlit],[R.sun_left]" : "none", "0,600")
+	orbit_check("sunrise", orbit_day_step(600) ? "[R.sunlit],[R.sun_left]" : "none", "1,1200")
+	R.sun_left = -5
+	orbit_day_step(1)
+	orbit_check("bad day count repaired", R.sun_left, 1199)
+	orbit_check("orbit ambient", space_world_base_ambient_c(), -100)
+	orbit_check("no dust storms in orbit", space_world_has_dust_storms() ? 1 : 0, 0)
+
+	var/z = orbit_claim_plane("station")
+	orbit_check("station plane", z, 4)
+	var/obj/structure/civ_generator/solar/wing/W = new(locate(7, 7, z))
+	orbit_check("solar wing in sunlight", W.rated_output(), 20)
+	R.sunlit = 0
+	orbit_check("solar wing in shadow", W.rated_output(), 0)
+	var/obj/structure/civ_generator/solar/panel/P = new(locate(7, 6, z))
+	orbit_check("any panel follows the orbital day", P.rated_output(), 0)
+	R.sunlit = 1
+	orbit_check("panel in orbital sunlight", P.rated_output(), P.peak_output)
+	qdel(W)
+	qdel(P)
+	var/obj/structure/civ_generator/fuel_cell/F = new(locate(7, 7, z))
+	orbit_check("dry fuel cell gives nothing", F.rated_output(), 0)
+	F.hydrogen = 10
+	orbit_check("fuel cell needs oxygen too", F.rated_output(), 0)
+	F.oxygen = 10
+	orbit_check("fuel cell output", F.rated_output(), 15)
+	qdel(F)
+
+	var/datum/habitat_ledger/L = new(9)
+	L.temperature = 20
+	orbit_module_heat(L, 10)
+	orbit_check("sun warms a module", L.temperature, 21.5)
+	R.sunlit = 0
+	orbit_module_heat(L, 10)
+	orbit_check("no sun in shadow", L.temperature, 21.5)
+	R.sunlit = 1
+	var/obj/structure/life_support/heater/heater = new(locate(7, 7, z))
+	orbit_machine_heat(L, heater, 10)
+	orbit_check("working machines warm a module", round(L.temperature, 0.01), 21.9)
+	var/obj/structure/life_support/radiator/rad = new(locate(7, 6, z))
+	orbit_check("radiator idle without power", rad.work(L, 10) ? 1 : 0, 0)
+	orbit_check("radiators add no heat", orbit_machine_heat(L, rad, 10) ? 1 : 0, 0)
+	qdel(heater)
+	qdel(rad)
+
+	var/obj/structure/habitat_core/C = habitat_unfold(locate(4, 4, z), "orbital workshop")
+	var/bunks = 0
+	for (var/obj/structure/bed/lander_bunk/B in range(1, C))
+		bunks++
+	orbit_check("orbital workshop furnishing", "[bunks],[(locate(/obj/structure/table) in range(1, C)) ? 1 : 0],[(locate(/obj/structure/closet/crate) in range(1, C)) ? 1 : 0]", "2,1,1")
+	orbit_check("workshop sealed", C.breaches(), 0)
+	var/turf/hit = barren_meteor_strike(C)
+	orbit_check("debris breaches to vacuum", istype(hit, /turf/floor/space/orbit) ? 1 : 0, 1)
+	orbit_check("one breach", C.breaches(), 1)
+	orbit_check("debris breach is patchable", habitat_patchable(hit) ? 1 : 0, 1)
+	orbit_check("workshop kit gated", get_recipe_node_req("/obj/item/habitat_kit/orbital_workshop"), "orbital_flight")
+	orbit_check("solar wing gated", get_recipe_node_req("/obj/structure/civ_generator/solar/wing"), "orbital_flight")
+	orbit_check("fuel cell gated", get_recipe_node_req("/obj/structure/civ_generator/fuel_cell"), "orbital_flight")
+	orbit_check("radiator gated", get_recipe_node_req("/obj/structure/life_support/radiator"), "orbital_flight")
+
+// Starter stations (orbit_project.dm): the launch complex office on the
+// ground, then founding, boarding, the console and recovery in orbit.
+/proc/orbit_project_checks()
+	var/party = "civ:gaia:Alpha"
+	var/obj/map_metadata/orbit_map = map
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 7
+	shard_group.region = "gaia"
+	shard_group.kind = "MAINLAND"
+	var/obj/structure/region_gate/launch_complex/office = new(locate(3, 3, 1))
+	orbit_check("office needs an orbit pad", findtext(office.start_refusal(null, party), "launch pad") ? 1 : 0, 1)
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(5, 5, 1))
+	pad.destination = "orbit"
+	pad.approved = TRUE
+	orbit_check("office beside an orbit pad", isnull(office.start_refusal(null, party)) ? 1 : 0, 1)
+	map.ordinal_age = 6
+	orbit_check("stations from 1969", findtext(office.start_refusal(null, party), "1969") ? 1 : 0, 1)
+	map.ordinal_age = 7
+	office.party = party
+	var/obj/structure/region_gate/launch_complex/second = new(locate(2, 6, 1))
+	orbit_check("one project per party", findtext(second.start_refusal(null, party), "already has") ? 1 : 0, 1)
+	qdel(second)
+	orbit_check("project shows progress", findtext(office.closed_reason(), "steel 0/150") ? 1 : 0, 1)
+	for (var/kind in orbit_station_requirements)
+		var/list/need = orbit_station_requirements[kind]
+		office.delivered[kind] = need[2]
+	orbit_check("nothing left to deliver", length(office.remaining()), 0)
+	office.complete(null)
+	orbit_check("project complete", office.completed ? 1 : 0, 1)
+	shard_group.peers["orbit"]["free_planes"] = 0
+	orbit_check("full orbit refuses before launch", findtext(office.closed_reason(), "taken") ? 1 : 0, 1)
+	office.boarded = TRUE
+	orbit_check("a boarded party may fly to its station", findtext(office.closed_reason(), "taken") ? 1 : 0, 0)
+	orbit_check("office leads to orbit", office.destination, "orbit")
+	orbit_check("office trip is the party's", office.travel_party(null), party)
+	orbit_check("home from the station lands at the office", party_train_arrival_turf(list("party" = party, "from" = "orbit")) == office.loc ? 1 : 0, 1)
+	orbit_check("office gated", get_recipe_node_req("/obj/structure/region_gate/launch_complex"), "orbital_flight")
+	orbit_check("console gated", get_recipe_node_req("/obj/structure/orbit_console"), "orbital_flight")
+	qdel(office)
+	qdel(pad)
+	del(map)
+	map = orbit_map
+	shard_group.region = "orbit"
+	shard_group.kind = "ORBIT"
+
+	map.ordinal_age = 7
+	// A bigger plane for the station layout.
+	world.maxx = 24
+	world.maxy = 24
+	for (var/z in 2 to 5)
+		orbit_release_plane(z)
+	var/turf/at = party_train_arrival_turf(list("party" = party, "from" = "gaia"))
+	var/obj/structure/region_gate/station_hatch/hatch = orbit_station_hatch(party)
+	orbit_check("first arrival founds the station", hatch && at == hatch.loc ? 1 : 0, 1)
+	var/z = at ? at.z : 0
+	orbit_check("station plane", z, 2)
+	orbit_check("plane owned by the party", orbit_station_party(z), party)
+	orbit_check("hatch leads home", hatch && hatch.home_region, "gaia")
+	orbit_check("station modules", length(orbit_station_modules(z)), 2)
+	var/sealed = 0
+	for (var/obj/structure/habitat_core/C in orbit_station_modules(z))
+		if (!C.breaches())
+			sealed++
+	orbit_check("station sealed", sealed, 2)
+	var/wings = 0
+	for (var/obj/structure/civ_generator/solar/wing/W in world)
+		if (W.z != z)
+			continue
+		W.settle_generation()
+		if (W.output_power == 20)
+			wings++
+	orbit_check("two wings cabled and generating", wings, 2)
+	var/obj/structure/life_support/heater/heater = orbit_find_on(/obj/structure/life_support/heater, z)
+	orbit_check("heater on the station grid", heater && heater.has_power() ? 1 : 0, 1)
+	var/obj/structure/civ_generator/fuel_cell/F = orbit_find_on(/obj/structure/civ_generator/fuel_cell, z)
+	orbit_check("fuel cell fuelled and off", F ? "[F.hydrogen],[F.oxygen],[F.enabled]" : "none", "200,200,0")
+	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, z)
+	orbit_check("supplies stowed", crate && (locate(/obj/item/clothing/suit/pressure_suit) in crate) && (locate(/obj/item/habitat_sealant) in crate) ? 1 : 0, 1)
+	orbit_check("later members board at the hatch", party_train_arrival_turf(list("party" = party, "from" = "gaia")) == at ? 1 : 0, 1)
+	orbit_check("one plane per station", length(orbit_station_planes(party)), 1)
+	orbit_check("hatch trip is the party's", hatch.travel_party(null), party)
+	hatch.closed_reason()
+	orbit_check("hatch flies home", hatch.destination, "gaia")
+
+	var/obj/structure/orbit_console/console = orbit_find_on(/obj/structure/orbit_console, z)
+	orbit_check("console reports the owner", console && findtext(jointext(console.status_lines(), " "), "Station of Alpha") ? 1 : 0, 1)
+	var/mob/living/human/eva_tester/H = new(locate(1, 12, z))
+	H.m_intent = "stealth"
+	human_mob_list |= H
+	orbit_stop_drift(H)
+	orbit_check("lost at an unlinked edge", (H in orbit_lost_drifters()) ? 1 : 0, 1)
+	orbit_check("console recovers the drifter", console.recover(H) ? 1 : 0, 1)
+	orbit_check("recovered aboard", istype(H.loc, /turf/floor/habitat) && get_dist(H, console) <= 1 ? 1 : 0, 1)
+	orbit_check("no longer lost", (H in orbit_lost_drifters()) ? 1 : 0, 0)
+	human_mob_list -= H
+	qdel(H)
+
+	while (orbit_claim_plane("filler:[length(orbit_free_planes())]"))
+		continue
+	orbit_check("a full orbit founds no station", isnull(orbit_station_arrival_turf(list("party" = "civ:gaia:Beta", "from" = "gaia"))) ? 1 : 0, 1)
+
+/proc/orbit_find_on(type, z)
+	for (var/atom/movable/A in world)
+		if (istype(A, type) && A.z == z)
+			return A
+	return null
+
+// Moon gear (lander.dm): the sortie reserve, its payload flag, lifting off
+// home from a landed lander, and the lunar surface kit.
+/proc/orbit_sortie_checks()
+	var/obj/map_metadata/orbit_map = map
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 7
+	shard_group.region = "moon"
+	shard_group.kind = "BARREN"
+	var/obj/structure/crewed_lander/lander = new(locate(10, 10, 1))
+	var/obj/structure/crewed_lander/orbital_rocket/rocket = new(locate(12, 10, 1))
+	orbit_check("lander keeps an ascent reserve", lander.ascent_propellant, 150)
+	orbit_check("rocket keeps none", rocket.ascent_propellant, 0)
+	lander.propellant = 300
+	orbit_check("a bare load is no sortie", lander.sortie_ready() ? 1 : 0, 0)
+	lander.propellant = 450
+	orbit_check("a full tank is a sortie", lander.sortie_ready() ? 1 : 0, 1)
+	qdel(lander)
+	qdel(rocket)
+	orbit_check("sortie payload", space_flight_payload_ok(list("lander" = "gaia-1-9", "landing" = list(2, 2), "surveyed" = 1, "rough" = 0, "sortie" = 1)) ? 1 : 0, 1)
+	orbit_check("sortie flag is 1", space_flight_payload_ok(list("lander" = "gaia-1-9", "landing" = list(2, 2), "surveyed" = 1, "rough" = 0, "sortie" = 2)) ? 1 : 0, 0)
+	orbit_check("no sortie home", space_flight_payload_ok(list("lander" = "gaia-1-9", "return" = 1, "sortie" = 1)) ? 1 : 0, 0)
+	orbit_check("no sortie to orbit", space_flight_payload_ok(list("lander" = "gaia-1-9", "orbit" = 1, "sortie" = 1)) ? 1 : 0, 0)
+	orbit_check("no sortie without a flight", space_flight_payload_ok(list("sortie" = 1)) ? 1 : 0, 0)
+
+	var/obj/structure/landed_lander/L = new(locate(10, 10, 1))
+	L.lander_id = "gaia-1-9"
+	L.deploy()
+	orbit_check("a spent lander cannot lift off", findtext(L.deorbit_refusal(null), "propellant") ? 1 : 0, 1)
+	L.ascent_ready = 1
+	orbit_check("a sortie lander can lift off", L.can_lift_off() ? 1 : 0, 1)
+	orbit_check("lift-off refusal is not about propellant", findtext("[L.deorbit_refusal(null)]", "propellant") ? 1 : 0, 0)
+	L.spend()
+	orbit_check("lifted-off lander gone", QDELETED(L) && !space_landed_lander("gaia-1-9") ? 1 : 0, 1)
+	orbit_check("deck back to the ground", istype(locate(10, 10, 1), /turf/floor/dirt/dust/regolith) && istype(locate(11, 11, 1), /turf/floor/dirt/dust/regolith) ? 1 : 0, 1)
+
+	var/obj/item/lunar_kit/kit = new(locate(14, 14, 1))
+	orbit_check("lunar kit flies in the hold", space_cargo_kind(kit) ? 1 : 0, 1)
+	orbit_check("lunar kit gated", get_recipe_node_req("/obj/item/lunar_kit"), "crewed_flight")
+	var/mob/living/human/eva_tester/H = new(locate(14, 14, 1))
+	H.m_intent = "stealth"
+	kit.attack_self(H)
+	var/suits = 0
+	var/tanks = 0
+	for (var/obj/item/clothing/suit/pressure_suit/S in locate(14, 14, 1))
+		suits++
+	for (var/obj/item/pressure_tank/T in locate(14, 14, 1))
+		tanks++
+	orbit_check("lunar kit unpacks", "[QDELETED(kit) ? 1 : 0],[suits],[tanks]", "1,2,4")
+	qdel(H)
+	del(map)
+	map = orbit_map
+	shard_group.region = "orbit"
+	shard_group.kind = "ORBIT"

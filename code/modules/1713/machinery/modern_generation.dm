@@ -179,6 +179,9 @@ var/global/list/civ_generators = list()
 	var/area/A = get_area(src)
 	if (!A || A.location != AREA_OUTSIDE)
 		return 0
+	// In orbit the sun follows the orbital day, with no weather (orbit_station.dm).
+	if (orbit_world())
+		return orbit_sunlit() ? peak_output : 0
 	var/fraction = 0
 	switch (time_of_day)
 		if ("Early Morning") fraction = 0.25

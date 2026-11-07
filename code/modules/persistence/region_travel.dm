@@ -188,7 +188,7 @@ var/global/list/region_travel_carry_types = list(
 		P["from"] = shard_group.region
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie"))
 			P[key] = extra[key]
 	return json_encode(P)
 

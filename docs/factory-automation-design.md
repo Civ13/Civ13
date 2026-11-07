@@ -266,7 +266,7 @@ port in front of it. Variants:
 
 | Arm | Speed | Filter | Power | Unlock |
 | --- | --- | --- | --- | --- |
-| Feeder arm | 1 item / 2 s | none | 2 PU | `automation` |
+| Feeder arm | 1 item / 2 s | none | 2 PU | `factories` (8 steel) |
 | Sorting arm | 1 item / 2 s | one item type, set by hand | 3 PU | `automation` |
 | Stack arm (phase 3b) | up to 10 items of one kind / 2 s | optional | 5 PU | `digital_computing` |
 
@@ -455,6 +455,7 @@ BYOND, plus a native benchmark where noted.
 | 4b. Factory monitor (done) | Factory monitor terminal, arm and fabricator states and items-per-minute counters. | `logistics_probe.dm`: rate buckets roll and decay; the monitor lists the loading arm with its state and eight items a minute, a starved fabricator with its recipe, the drive and a belt summary; the page renders; Automation gate. |
 | 4d. More recipes (done) | Val chose more factory recipes on 2026-11-05: rifle and pistol casings, iron bullets, ammo clips, stone bricks, wrench, screwdriver, claw hammer and wirecutters (tier 1, Assembly Line) and the 100-round ammo belt (tier 2, Automation), at the hand-crafting ratios; eighteen recipes in all. Finished cartridges stay manual because they need gunpowder, a reagent fabricators do not take. | `fabricators_probe.dm`: recipe counts and tier lists, a screwdriver item and a stack of three rifle casings made by a fabricator. |
 | 4e. 3D printer (done) | Digital Age (2026) tier 4 fabricator, `/obj/structure/factory_fabricator/printer`, behind the era-9 `additive_manufacturing` node. It runs only the twelve tier 4 printing rows (plastic tools, containers, medical disposables, hardhat, gas mask, traffic cone) and also takes feedstock by hand, so it works without belts. Thirty recipes in all. | `fabricators_probe.dm`: research gate, printing-only recipe list, older tiers excluded, plastic buffering and a powered print. |
+| 4f. Steam-era belts (done) | Val asked for it on 2026-11-07. Plain belts, belt drives, parts bins and the feeder arm move to `factories`; the feeder arm costs 8 steel instead of 5 electronics. | `belts_probe.dm` and `routing_probe.dm` research-gate checks; `belts_probe.dm` checks the feeder arm runs from a steam engine. |
 | 4c. Balance pass | Tune speeds, buffer sizes and recipe ratios from live server data; benchmark at ceiling numbers. | Needs factories built by players on the live server. |
 
 Phase 0 is useful even if the rest is reordered, and changes no gameplay
@@ -473,9 +474,11 @@ beyond fixing saved belts.
 3. **Belt cargo model.** Phase 1 keeps cargo as floor items moved by raw
    location writes (see "Belt lines"), which avoids both the `contents`
    pickup problems and the per-item `Move()` cost. Open for Val to revisit.
-4. **Era gating.** Recommended: belts at `assembly_line` (as today), arms and
-   routing at `automation`, fabricators at `digital_computing`. Alternative:
-   open basic belts and feeder arms earlier at `factories` with steam power.
+4. **Era gating.** Decided (Val, 2026-11-07): plain belts, the belt drive,
+   parts bins and the feeder arm (8 steel) open at `factories` (era 4, 1873)
+   and run on a steam engine with plain cable. Fabricators stay at
+   `assembly_line`; sorting arms, gates, splitters, tunnels, fast belts and the
+   monitor at `automation`; the stack arm at `digital_computing`.
 
 ## Not in scope
 

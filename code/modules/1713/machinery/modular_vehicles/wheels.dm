@@ -311,6 +311,13 @@
 			to_chat(buckled_mob, "Your hands are full!")
 			return
 
+// Take the machinegun back after waking up in the seat.
+/obj/structure/bed/chair/mgunner/attack_hand(var/mob/living/human/H)
+	if (mg && buckled_mob && H == buckled_mob && mg.loc == src && H.stat == CONSCIOUS && H.put_in_active_hand(mg))
+		to_chat(H, SPAN_NOTICE("You take hold of \the [mg] again."))
+		return
+	..()
+
 /obj/structure/bed/chair/mgunner/dt28/New()
 		mg = new/obj/item/weapon/gun/projectile/automatic/dp28/dt28(src)
 		..()
@@ -422,6 +429,15 @@
 				return
 			else
 				controls.azoom.Grant(buckled_mob)
+
+// Take the controls back after waking up in the seat.
+/obj/structure/bed/chair/gunner/attack_hand(var/mob/living/human/H)
+	if (controls && buckled_mob && H == buckled_mob && controls.loc == src && H.stat == CONSCIOUS && H.put_in_active_hand(controls))
+		if (controls.azoom)
+			controls.azoom.Grant(H)
+		to_chat(H, SPAN_NOTICE("You take hold of \the [controls] again."))
+		return
+	..()
 
 /obj/structure/bed/chair/gunner/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (buckled_mob && H == buckled_mob && istype(I, /obj/item/turret_controls))

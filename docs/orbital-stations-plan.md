@@ -37,11 +37,14 @@ what the code does so far and the rules later steps must keep.
 | 1-2 | Cable risers and bus tie switches; ladders and stairs through `multiz_level_*` | #3902, `code/modules/1713/machinery/cable_risers.dm` |
 | 3 | Orbit world skeleton: kind, vacuum, area, metadata, map, plane registry, seams, sparse saves | #3909, `code/modules/space/orbit_world.dm`, `maps/space/orbit.dmm` |
 | 4 | Orbital flight: Orbital Flight node, two-stage rocket, launch pads to orbit, capsule shelter with bunk, deorbit home | #3916, `code/modules/space/orbital_flight.dm`, `lander.dm` |
-| 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | `code/modules/space/orbit_eva.dm` |
+| 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | #3933, `code/modules/space/orbit_eva.dm` |
+| 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | #3934, `code/modules/space/orbit_station.dm` |
+| 6b | Starter stations: launch complex office project, 1969 station founded on a free plane, return capsule hatch, orbit console with lost-drifter recovery | `code/modules/space/orbit_project.dm`, `party_train.dm` |
+| 6c | Moon gear: lunar surface kit, sortie reserve and lift-off home from a landed lander | `code/modules/space/lander.dm` |
 
 ## Next
 
-6. The 1969 station (with orbit-console recovery of lost drifters) and the launch complex office project.
+7. Live: the first orbit region (Val runs setup).
 
 ## Orbital flight
 
@@ -90,6 +93,69 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   empty and wakes on the next move. A tether's clip is not saved either. A
   person restored mid-drift can push off again, unless lost at an edge.
 
+## Station hardware
+
+- **Orbital day.** Each orbit is 20 minutes of sunlight and 10 of shade. The
+  registry keeps whether the station is sunlit and the seconds left as plain
+  numbers; the clock only counts while the world has players, and no call
+  counts more than 10 seconds at once. Sunrise and sunset are announced in
+  orbit.
+- **Heat.** A module in orbit cools slowly to the -100 C of space, gains
+  0.15 C a second from the sun while sunlit, and gains heat from every
+  machine working inside it (its power draw). Heaters carry it through the
+  shade; radiators shed what is above room temperature. Orbit has no dust
+  storms or cold snaps; solar flares still happen.
+- **Solar.** Any solar generator in orbit follows the orbital day and
+  ignores the weather. The **fixed solar wing** (20 PU) is the orbit panel.
+- **Fuel cell** (15 PU) burns hydrogen and oxygen poured into it and keeps
+  the water it makes, which a container can draw off.
+- **Radiator**, a cabled life support machine inside a module.
+- **Orbital workshop kit**, a 5 x 5 module with two bunks, a workbench and a
+  crate: the first module of a 1969 station.
+- **Debris** strikes hull modules in orbit as meteorites do on Mars, leaving
+  a breach to vacuum that a hull patch kit closes.
+- All of it is gated on Orbital Flight.
+
+## Starter stations
+
+- **The launch complex office** (40 steel, Orbital Flight) is a project like
+  the party train. Built within 3 tiles of a launch pad approved for an orbit
+  region, from 1969, a party starts it and delivers 150 steel, 40 glass, 40
+  copper and 60 electronics. One project per party. Members then fly up from
+  the office; it refuses when orbit has no free plane, unless the party has
+  already flown up.
+- **The station** is founded by the first member to arrive: it claims a free
+  plane (owner `station:<party>`) and builds, in the middle, an orbital
+  workshop with two bunks, a heater, scrubber and radiator, docked to an
+  airlock. A cable run goes out through the airlock to two fixed solar wings
+  (switched on) and a fuelled fuel cell (off, for the shade). A crate holds
+  two pressure suits and helmets, two air tanks, two hull patch kits, a suit
+  patch, two tethers, cable, six rations and three canteens. Later members
+  arrive at the return capsule hatch. If no plane is free, they arrive at the
+  orbit's arrival point.
+- **The return capsule hatch** takes members home to their office, like a
+  train berth. The station is the plane its party owns in the plane registry;
+  members keep their party in orbit as they do in the rail yard.
+- **The orbit console** (20 electronics, Orbital Flight) shows the owner, the
+  orbital day and each module's pressure, temperature and breaches, and
+  recovers lost drifters: anyone stuck at an unlinked plane edge is reeled in
+  beside it after 10 seconds. A console on a station plane only lets that
+  party recover.
+- The 2013 and 2026 layouts come with stage C.
+
+## Moon gear
+
+- **Sortie.** A crewed lander's tank holds its 300-unit flight plus a
+  150-unit ascent reserve. Launched to the Moon or Mars with a full 450, the
+  flight is a sortie (payload flag `sortie`): the landed lander keeps the
+  ascent, and its crew strap in on its tile and lift off home to the
+  mainland, spending it. Without the reserve the landed lander is a shelter
+  only, as before. A capsule in orbit uses the same lift-off as its deorbit.
+  A spent lander's deck goes back to regolith.
+- **Lunar surface kit** (40 steel, Crewed Flight) flies in the hold and
+  unpacks into two pressure suits and helmets, four air tanks, a suit patch,
+  a rover battery, six rations and four canteens.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -97,4 +163,9 @@ checks the registry, claims and quotas, deck and sector links, the multiz
 helpers, seams, ladder pairing, the sparse save kind, the durable profile,
 release, orbital flight (rocket, capsule arrival, deorbit refusals and
 spending) and EVA (handholds, push-off, drift across a seam, catching hold, an
-unlinked edge, the tether's pull, haul and clip).
+unlinked edge, the tether's pull, haul and clip) and station hardware (the
+orbital day, solar and fuel cell output, module heat, radiators, the
+workshop's furnishing and debris breaches) and starter stations (office
+placement, era and delivery, full-orbit refusal, founding, power, supplies,
+boarding, the hatch home and console recovery) and Moon gear (the sortie
+reserve and payload flag, lift-off and spending, the lunar kit).

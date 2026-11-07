@@ -498,8 +498,10 @@ var/space_runtime_error = FALSE
 	var/datum/reagents/fuel = new(500)
 	fuel.add_reagent("gasoline", 100)
 	space_check(L.add_propellant(fuel) == 0 && L.propellant == 0, "the lander refuses gasoline")
-	fuel.add_reagent("rocket_propellant", 350)
-	space_check(L.add_propellant(fuel) == 300 && L.propellant == 300 && fuel.get_reagent_amount("rocket_propellant") == 50, "the lander takes exactly 300 units of propellant")
+	fuel.add_reagent("rocket_propellant", 400)
+	space_check(L.add_propellant(fuel) == 400 && L.propellant == 400, "the lander takes the flight's 300 units and more")
+	fuel.add_reagent("rocket_propellant", 100)
+	space_check(L.add_propellant(fuel) == 50 && L.propellant == 450 && fuel.get_reagent_amount("rocket_propellant") == 50, "the lander holds 450 units: the flight and an ascent home")
 	var/mob/living/human/space_probe_crew/H = new(L.loc)
 	space_check(!length(L.crew()) && findtext(L.launch_refusal(H), "admin"), "an unapproved pad keeps the lander grounded")
 	qdel(L)
@@ -1139,6 +1141,7 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 		space_selfsuff_checks()
 		space_cargo_checks()
 		space_moon_checks()
+		space_water_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -1259,3 +1262,42 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 	qdel(R)
 	qdel(K)
 	space_survey_maps = list()
+
+// Ordinary sinks and showers draw no ground water on a barren world.
+/proc/space_water_checks()
+	var/obj/map_metadata/fixture = map
+	var/obj/structure/sink/home = new(locate(3, 18, 1))
+	home.volume = 1990
+	home.refill()
+	space_check(!barren_world() && home.volume == 2000, "a sink elsewhere starts full and refills")
+	var/obj/map_metadata/nomads/barren/mars = new // New() claims the global map
+	map = mars
+	var/obj/structure/sink/S = new(locate(4, 18, 1))
+	var/obj/structure/sink/well/W = new(locate(5, 18, 1))
+	S.refill()
+	space_check(barren_world() && S.volume == 0 && W.volume == 0, "a sink or well built on a barren world starts dry and does not refill")
+	home.volume = 100
+	home.refill()
+	space_check(home.volume == 100, "an older sink stops refilling on a barren world")
+	var/mob/watcher = new(locate(6, 17, 1))
+	var/obj/structure/shower/shower = new(locate(6, 18, 1))
+	shower.attack_hand(watcher)
+	space_check(!shower.on, "an ordinary shower will not run on a barren world")
+	shower.on = TRUE
+	shower.process()
+	space_check(!shower.on, "an ordinary shower left running stops on a barren world")
+	var/obj/structure/shower/piped/piped = new(locate(7, 18, 1))
+	piped.water_stored = 50
+	piped.attack_hand(watcher)
+	space_check(piped.on, "a supplied piped shower still runs on a barren world")
+	piped.on = FALSE
+	var/obj/structure/shower/bathtub/big/tub = new(locate(8, 18, 1))
+	tub.attack_hand(watcher)
+	space_check(!tub.on, "a big bathtub will not run on a barren world")
+	tub.on = TRUE
+	tub.process()
+	space_check(!tub.on, "a big bathtub left running stops on a barren world")
+	map = fixture
+	qdel(mars)
+	for (var/obj/O in list(home, S, W, shower, piped, tub, watcher))
+		qdel(O)

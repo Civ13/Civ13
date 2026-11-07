@@ -63,9 +63,9 @@
 		user.visible_message("<font color='#E55300'>\The [user] parries [attack_text] with \the [src]!</font>")
 		playsound(user.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-			health -= 5
+			health -= plating_wear(5)
 		else
-			health-= 0.5
+			health -= plating_wear(0.5)
 		check_health()
 		return 1
 	return 0

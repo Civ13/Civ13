@@ -231,7 +231,7 @@ var/route_runtime_error = FALSE
 		qdel(O)
 
 /proc/route_catalog_checks()
-	route_check(get_recipe_node_req("/obj/structure/factory_drive") == "assembly_line", "belt drives unlock with Assembly Line alongside belts")
+	route_check(get_recipe_node_req("/obj/structure/factory_drive") == "factories", "belt drives unlock with Factories alongside belts")
 	route_check(get_recipe_node_req("/obj/item/factory_belt_assembly/gate") == "automation" && get_recipe_node_req("/obj/item/factory_belt_assembly/splitter") == "automation" && get_recipe_node_req("/obj/item/factory_belt_assembly/tunnel") == "automation" && get_recipe_node_req("/obj/item/factory_belt_assembly/tunnel_exit") == "automation", "routing belts unlock with Automation")
 	var/list/states = icon_states('icons/obj/modern_structures.dmi')
 	route_check(("circuit0" in states) && ("circuit1" in states), "drive sprite states exist")

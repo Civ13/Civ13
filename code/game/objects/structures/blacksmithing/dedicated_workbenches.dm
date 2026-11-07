@@ -365,3 +365,91 @@
 		if ("Make tools") assemble(H)
 
 #undef TOOLSMITH_MAX_BATCH
+
+#define FOUNDRY_MAX_BATCH 10
+#define FOUNDRY_MIN_AGE 4
+
+// Industrial casting: pour molten copper, bronze, iron or steel from a fired
+// blacksmith pot or jug (melted in a kiln) into the selected tool cast, fit a
+// wooden handle and repeat. Same metal and wood per tool as the toolsmith's
+// bench, but faster and in bigger batches, with no anvil and no smithing skill.
+// Needs the industrial age and Machined Tools research.
+/obj/structure/component_workbench/toolsmith/foundry
+	name = "casting foundry"
+	desc = "Select a tool, set down a pot or jug of molten metal and load soft wood, then cast finished tools in batches. Finished tools are left beside the foundry."
+	icon = 'icons/obj/metallurgy.dmi'
+	icon_state = "blast_furnace"
+	assembly_time = 30 // per tool, plus 15 per unit of metal
+
+/obj/structure/component_workbench/toolsmith/foundry/proc/is_pot(obj/item/I)
+	return istype(I, /obj/item/weapon/clay/mold/claypot/fired) || istype(I, /obj/item/weapon/clay/mold/clayjug/fired)
+
+/obj/structure/component_workbench/toolsmith/foundry/metal_name(obj/item/I)
+	if (!is_pot(I) || QDELETED(I)) return null
+	var/obj/item/weapon/clay/mold/pot = I
+	if (!pot.fired || pot.capacity < 1 || pot.capacity != round(pot.capacity)) return null
+	for (var/sheet in metal_types())
+		if (metal_types()[sheet] == pot.current_material) return pot.current_material
+	return null
+
+/obj/structure/component_workbench/toolsmith/foundry/stored_metal()
+	for (var/obj/item/weapon/clay/mold/pot in contents)
+		if (metal_name(pot)) return pot
+
+/obj/structure/component_workbench/toolsmith/foundry/proc/stored_pot()
+	for (var/obj/item/weapon/clay/mold/pot in contents)
+		if (is_pot(pot)) return pot
+
+/obj/structure/component_workbench/toolsmith/foundry/smith_refusal(mob/living/human/H)
+	if (!map || map.ordinal_age < FOUNDRY_MIN_AGE)
+		return "Casting tools needs the industrial age."
+	if (!map.is_node_done(H.civilization, "machined_tools"))
+		return "Casting tools needs Machined Tools research."
+	return null
+
+/obj/structure/component_workbench/toolsmith/foundry/ready_count(choice)
+	var/list/R = toolsmith_recipes()[choice]
+	var/obj/item/weapon/clay/mold/pot = stored_metal()
+	var/obj/item/stack/material/wood = stored_wood()
+	if (!R || !pot || !wood) return 0
+	return min(FOUNDRY_MAX_BATCH, round(pot.capacity / R["metal"]), wood.amount)
+
+/obj/structure/component_workbench/toolsmith/foundry/insert(obj/item/I, mob/living/human/H)
+	if (busy || !can_use(H) || QDELETED(I) || I.loc != H || !H.item_is_in_hands(I)) return FALSE
+	if (metal_name(I))
+		if (stored_pot()) return FALSE
+	else if (is_wood(I))
+		if (stored_wood()) return FALSE
+	else
+		return FALSE
+	return H.transfer_held_item_to(I, src) && I.loc == src
+
+/obj/structure/component_workbench/toolsmith/foundry/attackby(obj/item/I, mob/living/human/H)
+	if (insert(I, H)) to_chat(H, "You set [I] in [src].")
+	else to_chat(H, "Hold a pot or jug of molten copper, bronze, iron or steel from a kiln, or soft wood planks. The foundry takes one vessel and one stack of wood.")
+
+// Pours and makes one tool. No sleeps from validation to output.
+/obj/structure/component_workbench/toolsmith/foundry/commit_tool(mob/living/human/H, choice, turf/site, datum/epoch, metal_kind)
+	if (!busy || cancelled || assembler != H || !can_use(H) || loc != site || selected_tool != choice || epoch != persistence_admission_identity || !recipe_available(choice) || smith_refusal(H)) return null
+	if (ready_count(choice) < 1) return null
+	var/list/R = toolsmith_recipes()[choice]
+	var/obj/item/weapon/clay/mold/pot = stored_metal()
+	var/obj/item/stack/material/wood = stored_wood()
+	if (metal_name(pot) != metal_kind || pot.capacity < R["metal"] || !wood.can_use(1)) return null
+	pot.capacity -= R["metal"]
+	if (pot.capacity <= 0)
+		pot.capacity = 0
+		pot.current_material = null
+	pot.update_icon()
+	wood.use(1)
+	var/result_type = R["result"]
+	return new result_type(get_turf(src), metal_kind)
+
+/obj/structure/component_workbench/toolsmith/foundry/recipe_status()
+	var/list/R = toolsmith_recipes()[selected_tool]
+	var/obj/item/weapon/clay/mold/pot = stored_pot()
+	var/obj/item/stack/material/wood = stored_wood()
+	return "[selected_tool]: [R["metal"]] units of molten metal and 1 wood each. Loaded: [pot ? "[pot.name] with [pot.capacity] [pot.current_material ? pot.current_material : "empty"]" : "no metal vessel"], [wood ? wood.amount : 0] wood. Needs the industrial age and Machined Tools. [ready_count(selected_tool)] ready. [busy ? "Working" : "Idle"]. Retrieve returns stored items and cancels work."
+
+#undef FOUNDRY_MAX_BATCH
+#undef FOUNDRY_MIN_AGE
