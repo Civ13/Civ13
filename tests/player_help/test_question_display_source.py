@@ -22,14 +22,20 @@ class QuestionDisplaySourceTests(unittest.TestCase):
         self.assertIn('html_encode(pair["question"])', renderer)
         self.assertIn('html_encode(pair["answer"])', renderer)
         self.assertIn('C.player_help_turns.Find(pair)', renderer)
-        self.assertIn('action=followup;token=[C.player_help_action_token];turn=[turn]', renderer)
+        self.assertIn('followup_form(C, turn, "Follow up on this exchange")', renderer)
+        form = text.split('/datum/player_help_service/proc/followup_form(', 1)[1].split('// Bounded display subset', 1)[0]
+        for field in ("name='action' value='followup'", "name='token' value='[C.player_help_action_token]'",
+                      "name='turn' value='[turn]'", "name='question' maxlength='500'"):
+            self.assertIn(field, form)
         self.assertLess(renderer.index('Crafting Atlas</a>'), renderer.index('[history]'))
 
     def test_targeted_followup_revalidates_after_input_and_uses_only_selected_pair(self):
         text = SOURCE.read_text(encoding='utf-8')
-        topic = text.split('/datum/player_help_service/Topic(', 1)[1].split('/datum/player_help_service/proc/valid_action', 1)[0]
+        topic = text.split('/datum/player_help_service/proc/handle_action(', 1)[1].split('/datum/player_help_service/proc/valid_action', 1)[0]
         self.assertIn('"[turn]" != raw_turn', topic)
-        self.assertLess(topic.index('var/question = C.player_help_prompt()'), topic.index('valid_action(C, href_list["token"]) && C.mob == body'))
+        self.assertLess(topic.index('question = C.player_help_prompt()'), topic.index('valid_action(C, href_list["token"]) && C.mob == body'))
+        # Every refusal is reported; a stale window never fails silently.
+        self.assertIn('This help window is out of date', topic.split('if (href_list["action"] == "reset")', 1)[0])
         self.assertIn('C.player_help_generation == generation', topic)
         self.assertIn('C.player_help_turns[turn] == pair', topic)
         enqueue = text.split('/datum/player_help_service/proc/enqueue(', 1)[1].split('/datum/player_help_service/proc/write_request', 1)[0]

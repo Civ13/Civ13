@@ -14,8 +14,9 @@ published two heartbeats (normally a few seconds) before trying the first questi
 
 ## Private follow-up conversations
 
-With a conversation-capable worker, the answer window offers **Follow up** and
-**New conversation**. Ask for help also continues the current session. New
+With a conversation-capable worker, the answer window offers a follow-up question
+box with a **Follow up** button, and **New conversation**. Type the question in the
+box and press the button; no separate dialog opens. Ask for help also continues the current session. New
 conversation clears the context; use Ask for help again to ask a fresh question.
 The normal cooldown and one-pending-request-per-account rules still apply.
 Below the wiki and atlas links, retained exchanges display their questions and
@@ -23,7 +24,9 @@ answers as escaped text. **Follow up on this exchange** sends only that selected
 pair as previous context for the next question; the other retained exchanges stay
 visible until normal retention removes them. The general **Follow up** continues
 using the current bounded conversation. Expired, replaced or copied links cannot
-select another client's history. If the selected pair, question and current
+select another client's history. A window left over from a cleared conversation
+(after a reconnect, a change of body, New conversation or 15 idle minutes) says so
+in chat instead of doing nothing. If the selected pair, question and current
 snapshot exceed the request limit, the game refuses the targeted follow-up with
 an explanation rather than silently sending it without the selected pair. The
 existing admission cooldown still applies to a request refused at this size check.

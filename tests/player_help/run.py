@@ -52,6 +52,12 @@ var/list/probe_clients = list()
     parent_type = /mob/probe_client
 /proc/IsGuestKey(key)
     return findtext(key, "guest") == 1
+/proc/trim(text)
+    while (length(text) && copytext(text, 1, 2) == " ")
+        text = copytext(text, 2)
+    while (length(text) && copytext(text, length(text)) == " ")
+        text = copytext(text, 1, length(text))
+    return text
 /area
     var/location = AREA_OUTSIDE
     var/weather = WEATHER_WET
@@ -83,8 +89,11 @@ var/list/probe_clients = list()
     var/online = TRUE
     var/fail_write = FALSE
     var/write_calls = 0
+    var/probe_account
     available()
         return online
+    account_key(C)
+        return probe_account || ..()
     write_request(slot, list/request)
         write_calls++
         if (fail_write)
