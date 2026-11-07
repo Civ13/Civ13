@@ -2,6 +2,12 @@
 	name = species.get_random_english_name(gender)
 	real_name = name
 
+/mob/living/human/proc/give_starting_copper_coins()
+	// Clothing is shared with civilization and fantasy roles that keep their coins.
+	if (original_job && original_job.is_nomad)
+		return
+	equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+
 /mob/living/human/proc/give_clothes()
 	if (map.chad_mode)
 		add_note("Chad Mode", "Starting epoch is the Stone Age, research is done by sacrificing players <b>Sacrificing someone from your own faction will reduce the research level!</b>. Reduced starting items and more hostile conditions.")
@@ -38,7 +44,7 @@
 		if (1)
 			equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			give_starting_copper_coins()
 
 		if (2)
 			if (map && map.ID == MAP_CIVILIZATIONS)
@@ -190,7 +196,7 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			give_starting_copper_coins()
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 
 		if (4)
@@ -199,7 +205,7 @@
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			give_starting_copper_coins()
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(src), slot_shoes)
 
 		if (5)
@@ -209,7 +215,7 @@
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-			equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+			give_starting_copper_coins()
 
 		if (6)
 			if (map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2) // TODO: separate all NATIONSRP maps to appropriate ages
@@ -242,7 +248,7 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				give_starting_copper_coins()
 
 		if (7)
 			if (map.ID == MAP_NATIONSRP_COLDWAR_CMP)
@@ -330,7 +336,7 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				give_starting_copper_coins()
 		if (8, 9)
 			if (map.ID == MAP_NOMADS_PERSISTENCE_BETA)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(src), slot_shoes)
@@ -348,7 +354,7 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
-				equip_to_slot_or_del(new /obj/item/stack/money/coppercoin/twohundred(src), slot_r_store)
+				give_starting_copper_coins()
 	if (map.ID == MAP_PEPELSIBIRSK)
 		equip_to_slot_or_del(new /obj/item/weapon/personal_documents(src), slot_wear_id)
 //coats/////////////////////////////////////////////////
