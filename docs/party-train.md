@@ -9,12 +9,14 @@ own rail-yard world, large enough for many trains and parties.
 
 - A **railway works office** (20 wood, trains section of the crafting menu,
   same research level as rails) is the station. It works only within two tiles
-  of a straight line of rails that runs all the way to the edge of the map,
-  where the train leaves the land. Val (2026-11-07): a short run of rails
-  suits planes better than trains. The line is checked when the project
-  starts and again each time someone boards, so a finished train whose line
-  is broken or too short keeps its materials and waits until the line
-  reaches the edge again.
+  of track that connects all the way to the edge of the map, where the train
+  leaves the land. Val (2026-11-07): a short run of rails suits planes better
+  than trains, and the track need not be straight. Rails on side-by-side tiles
+  join into one network like cables in a power net, so bends, switches and
+  branches count (`code/modules/1713/rail_network.dm`). The track is checked
+  when the project starts and again each time someone boards, so a finished
+  train whose track is broken or falls short keeps its materials and waits
+  until the track reaches the edge again.
 - The first player to use it starts the project for their **party**: their
   faction, or the player alone without one. A party has one project or train
   at a time.
