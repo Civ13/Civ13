@@ -36,6 +36,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete starting-coin helper projection; no native game or save access.
+    'nomad_starting_coins': {'files': ('tests/nomad_starting_coins/test_starting_coins.py',),
+        'paths': ('tests/nomad_starting_coins/',), 'shared_paths': (
+            'code/modules/1713/jobs/nomads.dm', 'code/game/objects/items/stacks/money.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/gameticker.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/region_travel.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete raider firing/reload source projections with fake engine boundaries.
     # Keep production paths shared so existing conservative selection is preserved.
     'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),
