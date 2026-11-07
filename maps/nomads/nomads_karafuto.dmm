@@ -3,7 +3,7 @@
 "ac" = (/turf/floor/dirt,/area/caribbean/void/caves)
 "aj" = (/turf/wall/rockwall,/area/caribbean/sea/sea)
 "ak" = (/turf/wall/indestructable/black,/area/caribbean/void/caves)
-"al" = (/turf/floor/dirt,/area/caribbean/admin)
+"al" = (/turf/wall/indestructable/black,/area/caribbean/admin)
 "am" = (/turf/floor/winter,/area/caribbean/nomads/snow)
 "an" = (/turf/floor/winter,/area/caribbean/nomads/forest/snow)
 "ao" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/winter,/area/caribbean/nomads/snow)
