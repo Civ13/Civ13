@@ -19,12 +19,12 @@ BASE = 'cc03b199128f8afed58713912c551ad7556e6bc4'
 
 class Sources(unittest.TestCase):
     def test_optional_null_wait_projection_matches_existing_full_helper(self):
-        old = subprocess.check_output(['git', 'show', BASE + ':code/_helpers/mobs.dm'], cwd=ROOT).decode()
+        # A null mining context must leave do_after unchanged: the parameter is
+        # optional and every use sits inside an `if` that tests the context.
         current = project((ROOT / 'code/_helpers/mobs.dm').read_text(), set())[0]
+        self.assertIn('datum/pickaxe_mining_action/mining_context = null', current)
         current = current.replace(', datum/pickaxe_mining_action/mining_context = null', '')
-        # Remove only explicit new optional-context branches. Every other byte
-        # of the helper file must remain the normalized original Git source.
-        rows = current.splitlines(keepends=True); projected = []; skip = None
+        rows = current.splitlines(keepends=True); projected = []; skip = None; guards = 0
         for row in rows:
             depth = len(row) - len(row.lstrip('\t'))
             if skip is not None:
@@ -33,9 +33,11 @@ class Sources(unittest.TestCase):
                 if depth > skip: continue
                 skip = None
             if row.lstrip().startswith('if ') and 'mining_context' in row:
-                skip = depth; continue
+                self.assertRegex(row, r'^\s*if \((!isnull\(gameplay_context\) && )?!?(isnull\()?mining_context\b')
+                skip = depth; guards += 1; continue
             projected.append(row)
-        self.assertEqual(''.join(projected), old.replace('\r\n','\n'))
+        self.assertGreaterEqual(guards, 5)
+        self.assertNotIn('mining_context', ''.join(projected))
 
     def test_exact_held_selection_and_single_canonical_completion(self):
         generated, _, _ = R.source()

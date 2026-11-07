@@ -9,6 +9,7 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
+PINNED_BYOND = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def block(text, start, end):
@@ -33,6 +34,10 @@ def source(control=None):
     elif control == 'position':
         assert 'actor.step_x == sx && actor.step_y == sy && ' in mining
         mining = mining.replace('actor.step_x == sx && actor.step_y == sy && ', '')
+        # do_after also cancels on sub-tile motion, so disable both guards.
+        wait_guard = ' || user.step_x != original_step_x || user.step_y != original_step_y'
+        assert wait_guard in wait
+        wait = wait.replace(wait_guard, ' || original_step_x != original_step_x || original_step_y != original_step_y')
         expected = 'subtile_motion_cancels'
     adjacency = files['code/_onclick/adjacent.dm']
     adjacent = '/atom/proc/Adjacent(atom/neighbor)\n\treturn FALSE\n'
@@ -64,7 +69,7 @@ def prepare(output, control=None, bridge_enabled=False):
     (output / asset).parent.mkdir(parents=True)
     shutil.copyfile(ROOT / asset, output / asset)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    manifest = dict(head=head, control=control, bridge_enabled=bridge_enabled, expected_failure=expected, byond='516.1681',
+    manifest = dict(head=head, control=control, bridge_enabled=bridge_enabled, expected_failure=expected, byond=PINNED_BYOND,
                     source_sha256={p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in files},
                     generated_sha256={p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in output.rglob('*') if p.is_file()},
                     resource_sha256={asset: hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()},
@@ -91,7 +96,7 @@ def main():
     log = (C.stdout + C.stderr).decode(errors='replace')
     (a.output / 'compiler.log').write_text(log)
     print(log)
-    if C.returncode or '516.1681' not in log or not re.search(r'\b0 errors,\s*0 warnings\b', log): raise RuntimeError('pinned compilation failed')
+    if C.returncode or 'DM compiler version ' + PINNED_BYOND not in log or not re.search(r'\b0 errors,\s*0 warnings\b', log): raise RuntimeError('pinned compilation failed')
     R = subprocess.run([str(binaries / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')), 'probe.dmb', '59478', '-ip', '127.0.0.1', '-invisible', '-close', '-trusted', '-params', 'tested_commit=' + M['head'], '-log', 'runtime.log'], cwd=a.output, capture_output=True, timeout=100, creationflags=flags)
     log = (a.output / 'runtime.log').read_text(errors='replace') + (R.stdout + R.stderr).decode(errors='replace')
     (a.output / 'complete-runtime.log').write_text(log)
@@ -100,7 +105,7 @@ def main():
     errors = a.output / 'errors.txt'
     if errors.exists() and errors.stat().st_size: raise RuntimeError('fixture error handler fired')
     if R.returncode or re.search(r'BUG:|##\s*error|runtime error|bad ref|bad loc|cannot (?:read|execute) null', log, re.I): raise RuntimeError('unexpected native diagnostic')
-    if result['head'] != M['head'] or result['build'] != 1681: raise RuntimeError('native identity mismatch')
+    if result['head'] != M['head'] or result['build'] != int(PINNED_BYOND.split('.')[1]): raise RuntimeError('native identity mismatch')
     if result['checks'] != (35 if a.bridge_enabled else 32): raise RuntimeError('incomplete named oracle coverage')
     failures = result['failures']
     if M['expected_failure']:
