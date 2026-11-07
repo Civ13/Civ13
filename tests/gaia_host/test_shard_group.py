@@ -556,6 +556,54 @@ class ShardGroupTests(unittest.TestCase):
         self.assertIn('error', status['regions']['deep']['region_view'])
 
 
+    def test_epoch_names_match_the_game(self):
+        source = (ROOT / 'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
+        line = next(text for text in source.splitlines() if text.startswith('var/global/list/epoch_names = list('))
+        self.assertEqual(shard_group.EPOCH_NAMES, tuple(name.strip().strip('"') for name in line.split('list(', 1)[1].rstrip(')').split(',')))
+        self.assertEqual((9, 8, 0), (shard_group.parse_epoch('2026'), shard_group.parse_epoch('8'), shard_group.parse_epoch('5000 B.C.')))
+        for bad in ('10', '-1', '2027', ''):
+            with self.assertRaises(shard_group.Refused):
+                shard_group.parse_epoch(bad)
+
+    def test_epoch_advances_the_mainland_first_then_every_awake_region(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        asked = []
+
+        def query(port, token, action='status', operation=None, session=None, extra=None):
+            asked.append((port, action, extra))
+            return {'ok': True, 'epoch': 'set' if port == 1720 else 'current'}
+        self.machine.query = query
+        # Every region follows the mainland, so nothing changes while it is down.
+        self.machine.up.add(1721)
+        with self.assertRaises(shard_group.Refused):
+            shard_group.group_epoch(group, '2026', self.machine)
+        self.assertEqual([], asked)
+        self.machine.up.add(1720)
+        result = shard_group.group_epoch(group, '2026', self.machine)
+        self.assertEqual([(1720, 'set_epoch', {'epoch': '9'}), (1721, 'set_epoch', {'epoch': '9'})], asked)
+        self.assertEqual({'epoch': 9, 'name': '2026', 'mainland': 'gaia', 'regions': {'gaia': 'set', 'deep': 'current'}}, result)
+        # A stopped region is not started; it follows the mainland when it next runs.
+        asked.clear()
+        self.machine.up.discard(1721)
+        self.assertIn('follows the mainland', shard_group.group_epoch(group, '1969', self.machine)['regions']['deep'])
+        self.assertEqual([1720], [port for port, _, _ in asked])
+        # A mainland that refuses (busy saving, an older build) changes nothing anywhere.
+        self.machine.up.add(1721)
+        asked.clear()
+        self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: asked.append(port) or {'ok': True, 'epoch': 'refused:busy'}
+        with self.assertRaises(shard_group.Refused):
+            shard_group.group_epoch(group, '2026', self.machine)
+        self.assertEqual([1720], asked)
+
+    def test_status_shows_each_running_region_epoch(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 0, 'map': 'Caves', 'ordinal_age': 8}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertEqual({'ordinal': 8, 'name': '2013'}, status['regions']['deep']['region_view']['epoch'])
+
     def test_sleep_settings_reach_every_region(self):
         self.refuse_config('freeze_idle_minutes', freeze_idle_minutes='soon')
         self.refuse_config('wake_ignore', wake_ignore=[1])

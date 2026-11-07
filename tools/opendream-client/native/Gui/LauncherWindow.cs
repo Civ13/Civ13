@@ -278,6 +278,10 @@ internal sealed partial class LauncherWindow : Form {
                 hostActions.Add(button);
                 groupButtons.Controls.Add(button);
             }
+            var epoch = new Button { Text = "Advance epoch", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            epoch.Click += async (_, _) => await AdvanceEpoch();
+            hostActions.Add(epoch);
+            groupButtons.Controls.Add(epoch);
             var settings = new Button { Text = "Host settings", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             settings.Click += (_, _) => ShowHostSettings();
             groupButtons.Controls.Add(settings);
@@ -779,6 +783,44 @@ internal sealed partial class LauncherWindow : Form {
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine(label + " failed: " + e.Message);
             SetHostBusy(false);
+        }
+    }
+
+    // Advance epoch: the mainland takes the chosen epoch live (no restart), then every awake region; the
+    // others follow the mainland when they next run (shard_group.py epoch). Epochs only move forward.
+    private async Task AdvanceEpoch() {
+        if (host?.Control is not { Group: not null } control) return;
+        using var dialog = new Form { Text = "Advance epoch", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { Text = "Move every region to this epoch now, with no restart. The mainland changes first and every running " +
+            "region with it; a region that is asleep or stopped catches up when it next runs. Epochs only move forward: a region already " +
+            "there or later keeps its own. Players see the change announced. This cannot be undone from the launcher.",
+            MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
+        var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 200 };
+        picker.Items.AddRange(LocalHosting.EpochNames);
+        layout.Controls.Add(picker);
+        var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
+        var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
+        var go = new Button { Text = "Advance", DialogResult = DialogResult.OK, AutoSize = true, Enabled = false };
+        picker.SelectedIndexChanged += (_, _) => go.Enabled = picker.SelectedIndex >= 0;
+        buttons.Controls.Add(cancel);
+        buttons.Controls.Add(go);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = go;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK || picker.SelectedIndex < 0) return;
+        var ordinal = picker.SelectedIndex;
+        SetHostBusy(true);
+        try {
+            HostLine("Advancing every region to the epoch " + LocalHosting.EpochNames[ordinal] + "...");
+            HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "epoch", null, null, ordinal))).Message);
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine("Advance epoch failed: " + e.Message);
+        } finally {
+            SetHostBusy(false);
+            await RefreshHostState();
         }
     }
 

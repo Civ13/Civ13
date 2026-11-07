@@ -232,6 +232,20 @@ A Nomad left through a gate and arrived in the other region about 2.5 minutes
 later, with name, owner, clothes and coins. The transfer settled on both agents
 after the destination saved, and there were no runtime errors.
 
+## Epoch
+
+Every region keeps the mainland's epoch: a running region asks the mainland about
+itself and moves forward to its epoch (`follow_mainland_epoch` in
+`code/modules/persistence/shard_group.dm`), and its own save keeps it. To advance
+the whole group without a restart, run
+`shard_group.py --config group.json epoch --epoch 2026` (or the epoch's number,
+0-9; `epoch.bat 2026` on Windows, or the launcher's Advance epoch). The mainland's
+world takes it first through its lifecycle Topic (`set_epoch`), so the mainland must
+be awake; if it refuses (saving, round not started, or a build without `set_epoch`)
+no region is changed. Every other running region is then told at once; a region
+asleep or stopped follows the mainland when it next runs. Epochs only move forward.
+`status` shows each running region's epoch under `region_view`.
+
 ## Staged builds
 
 `stage [--region ID]` builds the next update while the regions keep running, so
