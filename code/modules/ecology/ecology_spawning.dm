@@ -54,6 +54,7 @@ var/global/ecology_admin_disabled = FALSE
 	var/name
 	var/list/spawn_types = list()
 	var/list/covers = list() // census and spawner retirement match these and their subtypes
+	var/list/excludes = list() // special subtypes of a covered base that are not this species
 	var/target = 0 // the spawner tops up to this many living wild animals
 	var/list/biomes = list()
 	var/grounds = ECO_GRASS | ECO_DIRT
@@ -64,7 +65,7 @@ var/global/ecology_admin_disabled = FALSE
 	var/habitat_tiles = 0
 	var/list/habitat_keys = list()
 
-/datum/ecology_species/New(_name, list/_types, _target, list/_biomes, _grounds = ECO_GRASS | ECO_DIRT, _density = 0, _max = 0, _herd_min = 1, _herd_max = 1, list/_covers = null)
+/datum/ecology_species/New(_name, list/_types, _target, list/_biomes, _grounds = ECO_GRASS | ECO_DIRT, _density = 0, _max = 0, _herd_min = 1, _herd_max = 1, list/_covers = null, list/_excludes = null)
 	..()
 	name = _name
 	spawn_types = _types
@@ -76,6 +77,7 @@ var/global/ecology_admin_disabled = FALSE
 	herd_min = max(1, _herd_min)
 	herd_max = max(herd_min, _herd_max)
 	covers = _covers ? _covers : _types.Copy()
+	excludes = _excludes ? _excludes : list()
 
 // Living wild animals of this species. Counts the whole world each call; the
 // spawner itself uses one shared census per cycle instead.
@@ -93,8 +95,8 @@ var/global/ecology_admin_disabled = FALSE
 		return FALSE
 	return TRUE
 
-/proc/eco_species(name, list/types, list/biomes, grounds, density, max_target, herd_min = 1, herd_max = 1, list/covers = null)
-	return new /datum/ecology_species(name, types, 0, biomes, grounds, density, max_target, herd_min, herd_max, covers)
+/proc/eco_species(name, list/types, list/biomes, grounds, density, max_target, herd_min = 1, herd_max = 1, list/covers = null, list/excludes = null)
+	return new /datum/ecology_species(name, types, 0, biomes, grounds, density, max_target, herd_min, herd_max, covers, excludes)
 
 // Density is animals per 1000 tiles of matching ground; max_target caps a big
 // map. Targets stay below each registry's breeding cap so breeding still works.
@@ -124,7 +126,7 @@ var/global/ecology_admin_disabled = FALSE
 		eco_species("junglefowl", list(/mob/living/simple_animal/rooster, /mob/living/simple_animal/chicken), list("jungle", "temperate"), G|D, 0.2, 25, 2, 2),
 		eco_species("monkey", list(/mob/living/simple_animal/monkey), list("jungle", "savanna"), G|D, 1.0, 30, 2, 3),
 		eco_species("parrot", list(/mob/living/simple_animal/parrot), list("jungle"), G|D, 0.6, 20, 1, 2),
-		eco_species("gorilla", list(/mob/living/simple_animal/hostile/gorilla), list("jungle"), G, 0.15, 6, 1, 2),
+		eco_species("gorilla", list(/mob/living/simple_animal/hostile/gorilla), list("jungle"), G, 0.15, 6, 1, 2, null, list(/mob/living/simple_animal/hostile/gorilla/gigantopithecus)),
 		eco_species("lizard", list(/mob/living/simple_animal/lizard), list("desert", "semiarid", "savanna"), G|D|A, 0.8, 30),
 		eco_species("snake", list(/mob/living/simple_animal/hostile/poison/snake), list("temperate", "semiarid"), G|D, 0.1, 10),
 		eco_species("cobra", list(/mob/living/simple_animal/hostile/poison/snake/cobra), list("desert", "semiarid"), A|D, 0.2, 10),
@@ -133,7 +135,7 @@ var/global/ecology_admin_disabled = FALSE
 		eco_species("poison frog", list(/mob/living/simple_animal/frog/poisonous), list("jungle"), W, 2, 15),
 		eco_species("leech", list(/mob/living/simple_animal/leech), list("jungle", "temperate"), W, 2, 20),
 		eco_species("alligator", list(/mob/living/simple_animal/hostile/alligator), list("jungle"), W|D, 0.3, 8),
-		eco_species("crab", list(/mob/living/simple_animal/crab/small), list("sea", "temperate", "jungle", "semiarid", "desert", "savanna"), B, 1.5, 30, 1, 2, list(/mob/living/simple_animal/crab/small, /mob/living/simple_animal/crab)),
+		eco_species("crab", list(/mob/living/simple_animal/crab/small), list("sea", "temperate", "jungle", "semiarid", "desert", "savanna"), B, 1.5, 30, 1, 2, list(/mob/living/simple_animal/crab/small, /mob/living/simple_animal/crab), list(/mob/living/simple_animal/crab/small/trilobite)),
 		eco_species("seagull", list(/mob/living/simple_animal/seagull), list("sea", "temperate", "semiarid"), B, 0.8, 20),
 		eco_species("pelican", list(/mob/living/simple_animal/pelican), list("sea"), B, 0.3, 10),
 		eco_species("penguin", list(/mob/living/simple_animal/penguin), list("tundra", "taiga"), S, 0.4, 25, 2, 4),
@@ -163,6 +165,13 @@ var/global/list/ecology_species_table = null
 	var/datum/ecology_species/best = null
 	var/best_len = 0
 	for (var/datum/ecology_species/S in table)
+		var/excluded = FALSE
+		for (var/special in S.excludes)
+			if (ispath(path, special))
+				excluded = TRUE
+				break
+		if (excluded)
+			continue
 		for (var/base in S.covers)
 			if (ispath(path, base) && length("[base]") > best_len)
 				best = S
@@ -469,6 +478,7 @@ var/global/list/ecology_species_table = null
 /datum/ecology_spawner/proc/cycle()
 	if (!enabled || !heatmap)
 		return 0
+	var/generation = loop_generation
 	if (persistence_active_operation || persistence_save_in_progress)
 		last_report = "paused for a world save"
 		return 0
@@ -478,6 +488,9 @@ var/global/list/ecology_species_table = null
 		return 0
 	if (indexed_at < 0 || world.time - indexed_at > ECOLOGY_INDEX_REFRESH)
 		build_index()
+		// The build yields; an admin may have stopped or restarted us meanwhile.
+		if (!enabled || !heatmap || generation != loop_generation)
+			return 0
 	var/list/counts = census()
 	var/spawned = 0
 	var/budget = ECOLOGY_SPAWN_BUDGET
@@ -522,8 +535,11 @@ var/global/list/ecology_species_table = null
 var/global/list/ecology_observer_turfs = list()
 var/global/ecology_rest_phase = 0
 
-/proc/ecology_refresh_observers()
+// Once per full pass over the living mobs (a fire can resume a snapshot).
+/proc/ecology_advance_rest_phase()
 	ecology_rest_phase = (ecology_rest_phase + 1) % ECOLOGY_REST_EVERY
+
+/proc/ecology_refresh_observers()
 	var/list/turfs = list()
 	for (var/client/C in clients)
 		var/turf/T = get_turf(C.mob)

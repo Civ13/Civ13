@@ -23,7 +23,7 @@ re-registration are outside this table.
 | Goat | `goat_count` | 70 | Same 15x15 check | Female next to a male, 600 ticks |
 | Sheep | `sheep_count` | 90 | Same 15x15 check | Ewe next to a ram, 600 ticks |
 | Bison | `bison_count` | 60 | Same 15x15 check | Cow next to a bull, 600 ticks |
-| Deer (not dik-dik) | `deer_count` | 150 | Same 15x15 check | Doe next to a stag, 600 ticks |
+| Deer, elk, reindeer, dik-dik | `deer_count` | 150 | Same 15x15 check | Doe next to a stag, 600 ticks |
 | Wolf | `wolf_count` | 50 | None | She-wolf next to a male, 900 ticks |
 | Bear | `bear_count` | 30 | None | Sow next to a boar, 1500 ticks |
 | Frog | none | none | Lays only with at most 2 frogs within 6 tiles; egg hatches only with at most 2 within 5 tiles | Rare egg laying near water |
@@ -46,7 +46,7 @@ grazing animals' because they are hostile predators.
   toward the caps above.
 - Mice, cockroaches and flies come from rotting food and do not breed.
   Mosquitoes come from standing water closets. Neither is part of husbandry.
-- Dik-diks never conceive.
+- Dik-diks breed only with dik-diks; elk and reindeer only within their own kind.
 
 ## Not covered
 

@@ -58,6 +58,7 @@ var/perf_runtime = FALSE
 	var/lives = 0
 	for (var/r = 1, r <= rounds, r++)
 		if (use_rest)
+			ecology_advance_rest_phase()
 			ecology_refresh_observers()
 			ecology_observer_turfs = observers ? observers : list()
 		for (var/mob/living/simple_animal/S in animals)

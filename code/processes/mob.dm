@@ -51,6 +51,7 @@
 
 /process/mob/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(living_mob_list)
+	ecology_advance_rest_phase()
 
 /process/mob/statProcess(client/C)
 	..(C)

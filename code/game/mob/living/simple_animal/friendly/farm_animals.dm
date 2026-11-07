@@ -694,7 +694,7 @@
 				var/mob/living/simple_animal/boar_gilt/C = new/mob/living/simple_animal/boar_gilt(loc)
 				C.piglet = TRUE
 			else
-				var/mob/living/simple_animal/boar_boar/B = new/mob/living/simple_animal/boar_gilt(loc)
+				var/mob/living/simple_animal/boar_boar/B = new/mob/living/simple_animal/boar_boar(loc)
 				B.piglet = TRUE
 			visible_message("A boar piglet has been born!")
 

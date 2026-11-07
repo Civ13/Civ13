@@ -127,6 +127,7 @@ var/eco_runtime_error = FALSE
 	eco_default_species_checks()
 	eco_index_checks()
 	eco_rest_checks()
+	eco_elk_breeding_checks()
 
 /proc/eco_default_species_checks()
 	var/list/defaults = ecology_default_species()
@@ -146,6 +147,14 @@ var/eco_runtime_error = FALSE
 	S = ecology_species_for_type(/mob/living/simple_animal/deer/female)
 	eco_check(S && S.name == "deer", "deer resolve to deer")
 	eco_check(isnull(ecology_species_for_type(/mob/living/simple_animal/hostile/human/skeleton)), "non-wildlife is not covered")
+	S = ecology_species_for_type(/mob/living/simple_animal/hostile/gorilla)
+	eco_check(S && S.name == "gorilla", "ordinary gorillas are gorillas")
+	S = ecology_species_for_type(/mob/living/simple_animal/crab/small)
+	eco_check(S && S.name == "crab", "ordinary crabs are crabs")
+	var/ok_special = TRUE
+	for (var/special in list(/mob/living/simple_animal/hostile/gorilla/gigantopithecus, /mob/living/simple_animal/hostile/gorilla/gigantopithecus/bigfoot, /mob/living/simple_animal/hostile/gorilla/gigantopithecus/yeti, /mob/living/simple_animal/crab/small/trilobite))
+		ok_special = ok_special && isnull(ecology_species_for_type(special))
+	eco_check(ok_special, "gigantopithecus, bigfoot, yeti and trilobites are not ordinary species")
 
 /proc/eco_index_checks()
 	// Whole 40x40 level is temperate grass: deer habitat, nothing for camels.
@@ -215,3 +224,25 @@ var/eco_runtime_error = FALSE
 	eco_check(!ecology_animal_resting(K), "human NPCs never rest")
 	qdel(K)
 	qdel(D)
+
+/proc/eco_elk_breeding_checks()
+	deer_count = list()
+	var/mob/living/simple_animal/deer/elk/female/F = new(locate(20, 30, 1))
+	var/mob/living/simple_animal/deer/elk/male/M = new(locate(21, 30, 1))
+	F.Life()
+	eco_check(F.pregnant, "an elk doe conceives with an elk stag")
+	F.birthCountdown = 1
+	F.Life()
+	var/born = 0
+	var/wrong = 0
+	for (var/mob/living/simple_animal/deer/C in get_turf(F))
+		if (C == F)
+			continue
+		if (istype(C, /mob/living/simple_animal/deer/elk))
+			born++
+		else
+			wrong++
+	eco_check(born == 1 && !wrong, "an elk doe gives birth to an elk")
+	for (var/mob/living/simple_animal/deer/C in range(2, F))
+		qdel(C)
+	qdel(M)
