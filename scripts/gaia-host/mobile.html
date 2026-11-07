@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Civ13 host</title><link rel="stylesheet" href="/mobile.css"><script defer src="/mobile.js"></script></head>
+<body><main>
+<header><p class="eyebrow">CIV13 / PRIVATE HOST</p><h1>Your server</h1><p>Connected through your paired device certificate.</p></header>
+<section aria-labelledby="status-heading"><h2 id="status-heading">Status</h2>
+<p id="status" role="status">Checking the host...</p><p id="progress"></p><button id="refresh">Refresh</button></section>
+<section aria-labelledby="actions-heading"><h2 id="actions-heading">Server controls</h2>
+<p>Start and restart fetch the configured branch and may rebuild newer source. A failed fetch or build leaves the server stopped.</p>
+<div class="actions"><button data-action="start" disabled>Start</button><button data-action="stop" disabled>Save and stop</button><button data-action="restart" disabled>Restart</button></div>
+<p id="message" role="status" aria-live="polite"></p></section>
+<section><h2>Recent control logs</h2><p>Last 20 mobile requests and current lifecycle progress. Game/chat logs and private error details stay on the desktop.</p><ol id="logs"></ol></section>
+<footer>Actions continue in the host worker if your phone disconnects. Reopen this page to check progress. An uncertain result must be checked on the desktop before another action.</footer>
+<dialog id="confirm"><h2 id="confirm-title">Confirm action</h2><p id="confirm-text"></p><div class="actions"><button id="cancel">Cancel</button><button id="submit">Confirm</button></div></dialog>
+</main></body></html>

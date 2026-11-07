@@ -30,6 +30,10 @@ static class LocalHostingTests {
         void Write(object value) => File.WriteAllText(Path.Combine(launcher, LocalHosting.FileName), JsonSerializer.Serialize(value));
 
         Require(LocalHosting.Load(launcher) is null, "hosting enabled without host.json");
+        Require(LocalHosting.MobileAddress("https://192.168.1.8:8443") == "https://192.168.1.8:8443", "mobile LAN address changed");
+        foreach (var invalid in new[] { "http://192.168.1.8:8443", "https://8.8.8.8:8443", "https://localhost:8443",
+                "https://192.168.1.8:8443/path", "https://user@192.168.1.8:8443", "https://192.168.1.8:8443/?token=secret" })
+            Reject(() => LocalHosting.MobileAddress(invalid), "unsafe mobile address");
         using (var plain = new StringWriter()) {
             Civ13.Launcher.Program.WriteMainMenu(plain);
             Require(!plain.ToString().Contains(LocalHosting.Menu), "player menu showed the hosting option");
