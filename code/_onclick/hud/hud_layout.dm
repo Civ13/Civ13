@@ -1,0 +1,427 @@
+// Player HUD layout: a scale for the whole HUD, plus per-tile position, size
+// and lock, saved per HUD style in the player's preferences.
+//
+// A position is kept per axis as an anchor (WEST/CENTER/EAST, SOUTH/CENTER/NORTH)
+// and the pixel offset of the tile's lower-left corner from that anchor point
+// (the left edge, the centre, or the right edge of the view). BYOND resolves
+// the anchor keywords itself, so tiles stay on their edge when the view resizes.
+// Stored offsets are unscaled, so changing the HUD scale keeps a custom layout.
+
+#define HUD_LAYOUT_MIN_SIZE 0.5
+#define HUD_LAYOUT_MAX_SIZE 3
+#define HUD_LAYOUT_SIZE_STEP 0.25
+
+var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25, "150%" = 1.5, "175%" = 1.75, "200%" = 2)
+
+/datum/preferences
+	var/hud_scale = 1
+	// Entries "style~key~ax~ox~ay~oy~size~locked"; ax is "D" when the tile
+	// keeps its default position.
+	var/list/hud_layout = list()
+
+/client
+	var/hud_edit_mode = FALSE
+	var/hud_grab_x = 0
+	var/hud_grab_y = 0
+
+/obj/screen
+	var/hud_layout_key = null
+	var/hud_default_loc = null
+	var/hud_size = 1
+	var/hud_ax = null
+	var/hud_ox = 0
+	var/hud_ay = null
+	var/hud_oy = 0
+
+////////////////////////// screen_loc helpers //////////////////////////
+
+// One axis of a screen_loc, e.g. "EAST-1:28", "7:5" or "CENTER".
+// Returns list(anchor, pixel offset of the tile's lower-left from the anchor point).
+/proc/hud_parse_axis(text, horizontal)
+	var/px = 0
+	var/colon = findtext(text, ":")
+	if (colon)
+		px = text2num(copytext(text, colon + 1))
+		if (!isnum(px))
+			px = 0
+		text = copytext(text, 1, colon)
+	text = trim(uppertext(text))
+	var/low = horizontal ? "WEST" : "SOUTH"
+	var/high = horizontal ? "EAST" : "NORTH"
+	var/anchor = low
+	var/base = 0
+	var/shift_text = null
+	if (findtext(text, low) == 1)
+		shift_text = copytext(text, length(low) + 1)
+	else if (findtext(text, high) == 1)
+		anchor = high
+		base = -32
+		shift_text = copytext(text, length(high) + 1)
+	else if (findtext(text, "CENTER") == 1)
+		anchor = "CENTER"
+		base = -16
+		shift_text = copytext(text, 7)
+	else
+		var/tile = text2num(text)
+		if (!isnum(tile))
+			return null
+		base = (tile - 1) * 32
+	if (shift_text)
+		var/shift = text2num(replacetext(shift_text, "+", ""))
+		if (isnum(shift))
+			base += shift * 32
+	return list(anchor, base + px)
+
+// Returns list(ax, ox, ay, oy) for a single-position screen_loc, or null.
+/proc/hud_parse_screen_loc(loc)
+	if (!istext(loc) || findtext(loc, " to ") || findtext(loc, ".map"))
+		return null
+	var/list/parts = splittext(loc, ",")
+	if (parts.len != 2)
+		return null
+	var/list/X = hud_parse_axis(parts[1], TRUE)
+	var/list/Y = hud_parse_axis(parts[2], FALSE)
+	if (!X || !Y)
+		return null
+	return list(X[1], X[2], Y[1], Y[2])
+
+/proc/hud_axis_text(anchor, offset)
+	offset = round(offset)
+	switch (anchor)
+		if ("EAST", "NORTH")
+			offset += 32
+		if ("CENTER")
+			offset += 16
+	return "[anchor]:[offset]"
+
+// Scales a 32x32 tile by k about its lower-left corner.
+/proc/hud_scale_matrix(k)
+	if (k == 1)
+		return null
+	return matrix(k, 0, 16 * (k - 1), 0, k, 16 * (k - 1))
+
+// True for identity and for matrices made by hud_scale_matrix(), so the HUD
+// never overwrites an item's own rotation or flip.
+/proc/is_hud_scale_matrix(matrix/M)
+	if (!M)
+		return TRUE
+	if (M.b != 0 || M.d != 0 || M.a != M.e)
+		return FALSE
+	return abs(M.c - 16 * (M.a - 1)) < 0.01 && abs(M.f - 16 * (M.a - 1)) < 0.01
+
+/proc/hud_scale_item(obj/item/I, obj/screen/slot)
+	if (!I || !is_hud_scale_matrix(I.transform))
+		return
+	I.transform = slot ? slot.transform : null
+
+/proc/hud_unscale_item(obj/item/I)
+	if (I && I.transform && is_hud_scale_matrix(I.transform))
+		I.transform = null
+
+// Pixel position of a screen-loc mouse parameter ("[map:]x:px,y:py"),
+// counted from the view's lower-left. Returns list(x, y) or null.
+/proc/hud_mouse_pixels(params)
+	var/list/P = params2list(params)
+	var/loc = P ? P["screen-loc"] : null
+	if (!loc)
+		return null
+	var/list/parts = splittext(loc, ",")
+	if (parts.len != 2)
+		return null
+	var/list/out = list()
+	for (var/i = 1 to 2)
+		var/list/bits = splittext(parts[i], ":")
+		if (bits.len < 2)
+			return null
+		var/tile = text2num(bits[bits.len - 1])
+		var/px = text2num(bits[bits.len])
+		if (!isnum(tile) || !isnum(px))
+			return null
+		out += (tile - 1) * 32 + px
+	return out
+
+/proc/hud_anchor_origin(anchor, size_px)
+	switch (anchor)
+		if ("EAST", "NORTH")
+			return size_px
+		if ("CENTER")
+			return size_px / 2
+	return 0
+
+////////////////////////// layout storage //////////////////////////
+
+/datum/preferences/proc/hud_layout_entry(style, key)
+	var/prefix = "[style]~[key]~"
+	for (var/entry in hud_layout)
+		if (istext(entry) && findtext(entry, prefix) == 1)
+			var/list/F = splittext(entry, "~")
+			if (F.len != 8)
+				continue
+			return F
+	return null
+
+/datum/preferences/proc/set_hud_layout_entry(style, key, list/F)
+	var/prefix = "[style]~[key]~"
+	for (var/entry in hud_layout.Copy())
+		if (istext(entry) && findtext(entry, prefix) == 1)
+			hud_layout -= entry
+	if (F)
+		hud_layout += jointext(F, "~")
+
+/datum/preferences/proc/sanitize_hud_scale()
+	if (!isnum(hud_scale) || hud_scale < 0.5 || hud_scale > 3)
+		hud_scale = 1
+
+////////////////////////// applying the layout //////////////////////////
+
+/mob/living/human/proc/hud_layout_elements()
+	. = list()
+	for (var/name in HUDneed)
+		if (name == "hover name")
+			continue
+		var/obj/screen/S = HUDneed[name]
+		if (istype(S))
+			if (!S.hud_layout_key)
+				S.hud_layout_key = "need:[name]"
+			. += S
+	for (var/obj/screen/inventory/S in HUDinventory)
+		if (!S.hud_layout_key)
+			S.hud_layout_key = "inv:[S.slot_id]"
+		. += S
+
+/mob/living/human/proc/apply_hud_layout()
+	if (!client || !client.prefs)
+		return
+	var/datum/preferences/P = client.prefs
+	P.sanitize_hud_scale()
+	var/g = P.hud_scale
+	for (var/obj/screen/S in hud_layout_elements())
+		if (!S.hud_default_loc)
+			S.hud_default_loc = S.screen_loc
+		var/list/D = hud_parse_screen_loc(S.hud_default_loc)
+		if (!D)
+			continue
+		var/size = 1
+		var/list/F = P.hud_layout_entry(defaultHUD, S.hud_layout_key)
+		if (F)
+			var/stored_size = text2num(F[7])
+			if (isnum(stored_size))
+				size = clamp(stored_size, HUD_LAYOUT_MIN_SIZE, HUD_LAYOUT_MAX_SIZE)
+			if (F[3] != "D")
+				var/ox = text2num(F[4])
+				var/oy = text2num(F[6])
+				if (isnum(ox) && isnum(oy) && (F[3] in list("WEST", "CENTER", "EAST")) && (F[5] in list("SOUTH", "CENTER", "NORTH")))
+					D = list(F[3], ox, F[5], oy)
+		S.hud_size = size
+		S.hud_ax = D[1]
+		S.hud_ox = D[2] * g
+		S.hud_ay = D[3]
+		S.hud_oy = D[4] * g
+		S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
+		S.transform = hud_scale_matrix(g * size)
+	sync_inventory_screen_locs()
+	if (client.hud_edit_mode)
+		hud_edit_tint()
+
+/mob/living/human/proc/hud_tile_locked(obj/screen/S)
+	var/list/F = client.prefs.hud_layout_entry(defaultHUD, S.hud_layout_key)
+	return F && F[8] == "1"
+
+/mob/living/human/proc/hud_edit_tint()
+	for (var/obj/screen/S in hud_layout_elements())
+		S.color = hud_tile_locked(S) ? "#ff8a8a" : "#9cff9c"
+
+// The editable tile under the mouse: the tile itself or an item worn in its slot.
+/mob/living/human/proc/hud_layout_target(object)
+	if (!istype(object, /atom))
+		return null
+	var/list/elements = hud_layout_elements()
+	if (object in elements)
+		return object
+	if (istype(object, /obj/item))
+		for (var/obj/screen/inventory/S in HUDinventory)
+			if (S.slot_id && get_equipped_item(S.slot_id) == object && (S in elements))
+				return S
+	return null
+
+/mob/living/human/proc/hud_tile_entry(obj/screen/S)
+	var/list/F = client.prefs.hud_layout_entry(defaultHUD, S.hud_layout_key)
+	if (!F)
+		F = list(defaultHUD, S.hud_layout_key, "D", "0", "D", "0", "1", "0")
+	return F
+
+/mob/living/human/proc/hud_move_tile(obj/screen/S, list/mouse)
+	var/list/V = getviewsize(client.view)
+	var/w = V[1] * 32
+	var/h = V[2] * 32
+	var/g = client.prefs.hud_scale
+	var/k = g * S.hud_size
+	var/x = clamp(mouse[1] - client.hud_grab_x, 0, max(0, w - 32 * k))
+	var/y = clamp(mouse[2] - client.hud_grab_y, 0, max(0, h - 32 * k))
+	var/cx = x + 16 * k
+	var/cy = y + 16 * k
+	var/ax = cx < w / 3 ? "WEST" : (cx > w * 2 / 3 ? "EAST" : "CENTER")
+	var/ay = cy < h / 3 ? "SOUTH" : (cy > h * 2 / 3 ? "NORTH" : "CENTER")
+	var/list/F = hud_tile_entry(S)
+	F[3] = ax
+	F[4] = "[round((x - hud_anchor_origin(ax, w)) / g, 0.01)]"
+	F[5] = ay
+	F[6] = "[round((y - hud_anchor_origin(ay, h)) / g, 0.01)]"
+	client.prefs.set_hud_layout_entry(defaultHUD, S.hud_layout_key, F)
+	apply_hud_layout()
+
+/mob/living/human/proc/hud_resize_tile(obj/screen/S, step)
+	var/list/F = hud_tile_entry(S)
+	var/size = text2num(F[7])
+	if (!isnum(size))
+		size = 1
+	size = clamp(size + step, HUD_LAYOUT_MIN_SIZE, HUD_LAYOUT_MAX_SIZE)
+	F[7] = "[size]"
+	client.prefs.set_hud_layout_entry(defaultHUD, S.hud_layout_key, F)
+	apply_hud_layout()
+	to_chat(src, SPAN_NOTICE("[capitalize(S.name)] is now [round(size * 100)]% size."))
+
+/mob/living/human/proc/hud_toggle_lock(obj/screen/S)
+	var/list/F = hud_tile_entry(S)
+	F[8] = (F[8] == "1") ? "0" : "1"
+	if (F[3] == "D" && F[7] == "1" && F[8] == "0")
+		F = null
+	client.prefs.set_hud_layout_entry(defaultHUD, S.hud_layout_key, F)
+	hud_edit_tint()
+	to_chat(src, SPAN_NOTICE("[capitalize(S.name)] is now [(F && F[8] == "1") ? "locked" : "unlocked"]."))
+
+/mob/living/human/proc/end_hud_edit()
+	if (!client)
+		return
+	client.hud_edit_mode = FALSE
+	recolor_HUD(client.prefs.UI_style_color, client.prefs.UI_style_alpha)
+
+////////////////////////// mouse hooks //////////////////////////
+
+/client/proc/hud_edit_human()
+	if (!hud_edit_mode)
+		return null
+	if (!ishuman(mob) || !mob.client)
+		hud_edit_mode = FALSE
+		return null
+	return mob
+
+/client/MouseDown(object, location, control, params)
+	var/mob/living/human/H = hud_edit_human()
+	if (H)
+		var/obj/screen/S = H.hud_layout_target(object)
+		if (S)
+			var/list/mouse = hud_mouse_pixels(params)
+			var/list/V = getviewsize(view)
+			if (mouse && S.hud_ax)
+				hud_grab_x = mouse[1] - (hud_anchor_origin(S.hud_ax, V[1] * 32) + S.hud_ox)
+				hud_grab_y = mouse[2] - (hud_anchor_origin(S.hud_ay, V[2] * 32) + S.hud_oy)
+			else
+				hud_grab_x = 16
+				hud_grab_y = 16
+			return
+	return ..()
+
+/client/MouseDrop(src_object, over_object, src_location, over_location, src_control, over_control, params)
+	var/mob/living/human/H = hud_edit_human()
+	if (H)
+		var/obj/screen/S = H.hud_layout_target(src_object)
+		if (S)
+			if (H.hud_tile_locked(S))
+				to_chat(H, SPAN_WARNING("[capitalize(S.name)] is locked. Click it to unlock it."))
+				return
+			var/list/mouse = hud_mouse_pixels(params)
+			if (mouse)
+				H.hud_move_tile(S, mouse)
+			return
+	return ..()
+
+/client/Click(object, location, control, params)
+	var/mob/living/human/H = hud_edit_human()
+	if (H)
+		var/obj/screen/S = H.hud_layout_target(object)
+		if (S)
+			H.hud_toggle_lock(S)
+			return
+	return ..()
+
+/client/MouseWheel(object, delta_x, delta_y, location, control, params)
+	var/mob/living/human/H = hud_edit_human()
+	if (H)
+		var/obj/screen/S = H.hud_layout_target(object)
+		if (S)
+			if (H.hud_tile_locked(S))
+				to_chat(H, SPAN_WARNING("[capitalize(S.name)] is locked. Click it to unlock it."))
+				return
+			if (delta_y)
+				H.hud_resize_tile(S, delta_y > 0 ? HUD_LAYOUT_SIZE_STEP : -HUD_LAYOUT_SIZE_STEP)
+			return
+	return ..()
+
+////////////////////////// verbs //////////////////////////
+
+/client/verb/edit_hud_layout()
+	set name = "Edit HUD Layout"
+	set category = "OOC"
+	set desc = "Move, resize and lock your HUD tiles."
+
+	if (!ishuman(mob) || !mob:hud_used)
+		to_chat(src, SPAN_WARNING("You need a body with a HUD to edit it."))
+		return
+	var/mob/living/human/H = mob
+	if (hud_edit_mode)
+		H.end_hud_edit()
+		prefs.save_preferences()
+		to_chat(src, SPAN_NOTICE("HUD layout saved."))
+		return
+	hud_edit_mode = TRUE
+	H.hud_edit_tint()
+	to_chat(src, SPAN_NOTICE("<b>Editing your HUD.</b> Drag a tile to move it. Scroll the mouse wheel over a tile to resize it. Click a tile to lock or unlock it; locked tiles are red and stay put. Use <b>Edit HUD Layout</b> again to save and finish."))
+
+/client/verb/set_hud_scale()
+	set name = "HUD Scale"
+	set category = "OOC"
+	set desc = "Make your whole HUD larger or smaller."
+
+	var/current = "100%"
+	for (var/label in hud_scale_choices)
+		if (hud_scale_choices[label] == prefs.hud_scale)
+			current = label
+	var/choice = input(src, "Choose a HUD scale. Your current scale is [current].", "HUD Scale", current) as null|anything in hud_scale_choices
+	if (!choice)
+		return
+	prefs.hud_scale = hud_scale_choices[choice]
+	prefs.save_preferences()
+	if (ishuman(mob))
+		var/mob/living/human/H = mob
+		H.apply_hud_layout()
+	to_chat(src, SPAN_NOTICE("HUD scale set to [choice]."))
+
+/client/verb/reset_hud_layout()
+	set name = "Reset HUD Layout"
+	set category = "OOC"
+	set desc = "Put HUD tiles back in their default places."
+
+	var/style = ishuman(mob) ? mob:defaultHUD : prefs.UI_style
+	var/choice = input(src, "Reset which tiles of the [style] HUD?", "Reset HUD Layout") as null|anything in list("Unlocked tiles", "All tiles and the HUD scale")
+	if (!choice)
+		return
+	var/prefix = "[style]~"
+	for (var/entry in prefs.hud_layout.Copy())
+		if (!istext(entry) || findtext(entry, prefix) != 1)
+			continue
+		var/list/F = splittext(entry, "~")
+		if (choice == "Unlocked tiles" && F.len == 8 && F[8] == "1")
+			continue
+		prefs.hud_layout -= entry
+	if (choice != "Unlocked tiles")
+		prefs.hud_scale = 1
+	prefs.save_preferences()
+	if (ishuman(mob))
+		var/mob/living/human/H = mob
+		H.apply_hud_layout()
+	to_chat(src, SPAN_NOTICE("HUD layout reset."))
+
+#undef HUD_LAYOUT_MIN_SIZE
+#undef HUD_LAYOUT_MAX_SIZE
+#undef HUD_LAYOUT_SIZE_STEP

@@ -268,6 +268,7 @@ var/list/slot_equipment_priority = list( \
 		I.layer = initial(I.layer)
 		I.plane = GAME_PLANE
 		I.screen_loc = null
+		hud_unscale_item(I)
 		if (I.scoped_invisible)
 			I.invisibility = 0
 			I.scoped_invisible = FALSE
@@ -389,6 +390,7 @@ var/list/slot_equipment_priority = list( \
 	O.screen_loc = null
 	if (istype(O, /obj/item))
 		var/obj/item/I = O
+		hud_unscale_item(I)
 		if (I.scoped_invisible)
 			I.invisibility = 0
 			I.scoped_invisible = FALSE
