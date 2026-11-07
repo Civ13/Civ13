@@ -566,6 +566,9 @@ class Host:
         # a stop or a forced stop removes it. The watchdog only restarts such a world.
         self.running_file = self.state_dir / 'running.json'
         self.watchdog_file = self.state_dir / 'watchdog.json'
+        # Written by the world when an admin uses Save and Shut Down in game: the exit that
+        # follows is a stop, not a crash (restart_transaction.dm write_stop_marker).
+        self.stop_marker = self.repo / 'data' / 'stopped_in_game.json'
         self.down_since = None       # when the port was first seen closed while the world should run
         self.listening_since = None  # when the port was first seen open in this watch
         self.last_answer = None      # when the world last answered lifecycle status in this watch
@@ -1015,12 +1018,21 @@ class Host:
         self.last_busy = False
 
     def mark_running(self):
+        self.stop_marker.unlink(missing_ok=True)  # left from an earlier in-game stop
         self.write_json(self.running_file, {'since': int(self.platform.now())})
 
     def check_crash(self):
         """The world is down: start it again if it should be running. Returns the next wait."""
         if not self.config['watchdog'] or not self.running_file.exists() or self.cold():
             self.down_since = None
+            return 30
+        if self.stop_marker.exists():
+            # An admin saved and shut the world down in game: a stop, so leave it down.
+            marker = self.read_json(self.stop_marker) or {}
+            self.running_file.unlink(missing_ok=True)
+            self.stop_marker.unlink(missing_ok=True)
+            self.down_since = None
+            self.log({'stopped_in_game': True, 'by': marker.get('by'), 'generation': marker.get('generation')})
             return 30
         now = self.platform.now()
         if self.down_since is None:

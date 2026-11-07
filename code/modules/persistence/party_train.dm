@@ -29,7 +29,7 @@ var/global/list/party_train_requirements = list(
 	if(!istype(H)) return null
 	// In the yard, where factions do not travel, the party is the one whose
 	// train brought this character. At home it is the character's faction.
-	if(shard_group.enabled && shard_group.kind == "RAILYARD" && party_train_valid_party(H.party_train_party))
+	if(shard_group.enabled && (shard_group.kind == "RAILYARD" || shard_group.kind == "ORBIT") && party_train_valid_party(H.party_train_party))
 		return H.party_train_party
 	if(H.civilization && H.civilization != "none")
 		return party_train_faction_party(H.civilization)
@@ -338,6 +338,14 @@ var/global/list/party_train_requirements = list(
 /proc/party_train_arrival_turf(list/P)
 	var/party = P["party"]
 	if(!party_train_valid_party(party)) return null
+	// A station trip (space/orbit_project.dm): aboard the party's station in
+	// orbit, or home at its launch complex office.
+	if(shard_group.enabled && shard_group.kind == "ORBIT")
+		return orbit_station_arrival_turf(P)
+	var/list/from_peer = (shard_group.enabled && istext(P["from"])) ? shard_group.peers[P["from"]] : null
+	if(islist(from_peer) && from_peer["kind"] == "ORBIT")
+		var/obj/structure/region_gate/launch_complex/office = orbit_project_office_of(party)
+		return (office && office.completed && isturf(office.loc)) ? office.loc : null
 	if(shard_group.enabled && shard_group.kind == "RAILYARD")
 		var/obj/structure/region_gate/rail_berth/B = party_train_berth_of(party) || party_train_assign_berth(party)
 		if(!B) return null

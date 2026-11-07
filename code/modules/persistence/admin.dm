@@ -22,6 +22,18 @@
 	spawn(0)
 		persistence_restart.execute()
 
+/datum/admins/proc/save_and_shut_down()
+	set category = "Server"
+	set name = "Save and Shut Down"
+	if(!check_rights(R_SERVER)) return
+	if(WWinput(usr, "Save this world and shut the server down? It stays down until it is started again (start.bat or the launcher); the host's watchdog will not restart it. Players get a minute's notice. Supported on native Gaia/Europe only.", "Save and Shut Down", "No", list("Yes", "No")) != "Yes") return
+	if(!check_rights(R_SERVER)) return
+	var/stopped_by = usr ? usr.ckey : null
+	log_admin("[key_name(usr)] requested save and shut down.")
+	message_admins("[key_name_admin(usr)] requested save and shut down.")
+	spawn(0)
+		persistence_restart.execute(stay_down = TRUE, stopped_by = stopped_by)
+
 /datum/admins/proc/resume_pending_recovery()
 	set category = "Server"
 	set name = "Resume Pending Recovery"
