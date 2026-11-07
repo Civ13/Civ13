@@ -554,6 +554,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/rope_spindle" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
 		"/obj/item/weapon/cane" = "basic_tools",
+		"/obj/item/clothing/accessory/storage/harness" = "basic_tools",
 		"/obj/item/weapon/chisel" = "basic_tools",
 		"/obj/item/weapon/chisel/metal" = "basic_tools",
 		"/obj/item/weapon/clay/mold/shovel" = "basic_tools",
