@@ -29,6 +29,7 @@ class FakeMachine:
         self.pids = set()
         self.revision = REVISION  # what the group revision resolves to
         self.low_priority = []  # cwd of every compile run at low priority
+        self.restore = {}  # worktree -> config.txt a checkout of config/config.txt restores
 
     def alive(self, pid):
         return pid in self.pids
@@ -39,6 +40,9 @@ class FakeMachine:
             self.low_priority.append(str(cwd))
         if argv[1] == 'rev-parse':
             return 0, self.revision + '\n'
+        if argv[1:] == ['checkout', '--force', 'HEAD', '--', 'config/config.txt'] and str(cwd) in self.restore:
+            (Path(cwd) / 'config' / 'config.txt').write_text(self.restore[str(cwd)])
+            return 0, ''
         if argv[1:3] == ['worktree', 'add']:
             path = Path(argv[4])
             (path / 'maps' / 'small').mkdir(parents=True)
@@ -689,6 +693,118 @@ class ShardGroupTests(unittest.TestCase):
         host.work('update', host.request('update')['operation'])
         self.assertIn('must not contain config/lifecycle-token.txt', host.read_state()['error'])
         self.refuse_config('overlay must be', overlay=5)
+
+    def test_config_local_merges_over_the_repository_config(self):
+        base = ('ALLOWED_GAMEMODES ALL\n'
+                '## comment about WEBHOOK_KEY\n'
+                '#WEBHOOK_CAN_FIRE\n'
+                '#WEBHOOK_KEY\n'
+                'DAYNIGHT_SWEEP 1\n'
+                'NEW_MASTER_SETTING 7\n')
+        local = ('# the webhook\n'
+                 'WEBHOOK_CAN_FIRE\n'
+                 'webhook_key secret\n'
+                 '#DAYNIGHT_SWEEP\n'
+                 'EXTRA_ONE 1\n'
+                 'EXTRA_ONE 2\n')
+        merged = shard_group.merge_config(base, local).splitlines()
+        self.assertEqual(['ALLOWED_GAMEMODES ALL', '## comment about WEBHOOK_KEY', 'WEBHOOK_CAN_FIRE', 'webhook_key secret',
+                          '#DAYNIGHT_SWEEP 1', 'NEW_MASTER_SETTING 7', '', '## Host settings (config.local.txt)', 'EXTRA_ONE 2'],
+                         merged, 'named settings change; everything else keeps master')
+        self.assertEqual(shard_group.merge_config(base, local), shard_group.merge_config(shard_group.merge_config(base, local), local))
+        self.assertEqual('A 1\n#B\n', shard_group.merge_config('A 1\nB\nB 2\n', '#b\n').replace('#B 2\n', ''))
+        with self.assertRaisesRegex(ValueError, 'not a config setting'):
+            shard_group.merge_config(base, '=nope\n')
+
+    def test_group_and_region_config_local_layer_and_apply_without_compile(self):
+        shared, own = self.base / 'overlay-all', self.base / 'overlay-gaia'
+        (shared / 'config').mkdir(parents=True)
+        (own / 'config').mkdir(parents=True)
+        (shared / 'config' / 'config.local.txt').write_text('DAYNIGHT_CLIENT_TINT\nWEBHOOK_ADDRESS http://shared\n')
+        (own / 'config' / 'config.local.txt').write_text('WEBHOOK_ADDRESS http://gaia\n')
+        (own / 'native.dll').write_bytes(b'dll')
+        for kept in ('config.txt.migrated', 'config.local.txt.previous', 'config.txt.bak-20261106-stream'):
+            (own / 'config' / kept).write_text('old')
+        self.group['overlay'] = str(shared)
+        self.group['regions'][0]['overlay'] = str(own)
+        self.group['persistent'] = True
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        repository_config = 'ALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n#WEBHOOK_ADDRESS\n'
+        gaia, deep = self.base / 'regions' / 'gaia', self.base / 'regions' / 'deep'
+        for path in (gaia, deep):
+            (path / 'config').mkdir(exist_ok=True)
+            (path / 'config' / 'config.txt').write_text(repository_config)
+        self.machine.restore = {str(gaia): repository_config, str(deep): repository_config}
+        host = self.host(group, 'gaia')
+        host.work('update', host.request('update')['operation'])
+        self.assertEqual('done', host.read_state()['phase'], host.read_state())
+        self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', '#SKIP_PERSISTENCE_SAVING', 'WEBHOOK_ADDRESS http://gaia', '',
+                          '## Host settings (config.local.txt)', 'DAYNIGHT_CLIENT_TINT'],
+                         (gaia / 'config' / 'config.txt').read_text().splitlines(), 'the region overrides the group')
+        self.assertFalse((gaia / 'config' / 'config.local.txt').exists(), 'only the merged config.txt is written')
+        self.assertEqual([], [p.name for p in (gaia / 'config').iterdir() if p.name not in ('config.txt', 'shard_region.json')
+                              and not p.name.endswith('token.txt') and not p.name.startswith(('lifecycle', 'transfer', 'relay'))],
+                         'kept copies stay in the overlay')
+        compiles = sum(1 for argv, _ in self.machine.calls if argv[-1] == 'region.dme')
+        # An edit made in the launcher reaches every region with config-apply, without a checkout or compile.
+        (shared / 'config' / 'config.local.txt').write_text('WEBHOOK_ADDRESS http://edited\n')
+        self.machine.up.add(1720)
+        dll = gaia / 'native.dll'
+        before = dll.stat().st_mtime_ns
+        with mock.patch.object(shard_group, 'Platform', return_value=self.machine), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'config-apply']))
+        answer = json.loads(out.getvalue())
+        self.assertEqual((True, True, False), (answer['ok'], answer['done']['gaia']['running'], answer['done']['deep']['running']))
+        self.assertNotIn('native.dll', answer['done']['gaia']['copied'], 'an unchanged DLL a world loaded is not rewritten')
+        self.assertEqual(before, dll.stat().st_mtime_ns)
+        self.assertIn('WEBHOOK_ADDRESS http://gaia', (gaia / 'config' / 'config.txt').read_text())
+        self.assertIn('WEBHOOK_ADDRESS http://edited', (deep / 'config' / 'config.txt').read_text())
+        self.assertNotIn('DAYNIGHT_CLIENT_TINT', (deep / 'config' / 'config.txt').read_text(), 'removed lines go back to master')
+        self.assertEqual(compiles, sum(1 for argv, _ in self.machine.calls if argv[-1] == 'region.dme'))
+        (own / 'config' / 'config.local.txt').write_bytes(b'\xef\xbb\xbfWEBHOOK_ADDRESS http://bom\n')
+        done, refused = shard_group.apply_config(group, 'gaia', self.machine)
+        self.assertIn('WEBHOOK_ADDRESS http://bom', (gaia / 'config' / 'config.txt').read_text(), 'a BOM from Notepad is not a setting')
+        (own / 'config' / 'config.local.txt').write_text('=bad\n')
+        done, refused = shard_group.apply_config(group, 'gaia', self.machine)
+        self.assertEqual({}, done)
+        self.assertIn('not a config setting', refused['gaia'])
+
+    def test_config_migrate_turns_a_whole_overlay_config_into_overrides(self):
+        import subprocess
+        repo = self.base / 'repo'
+        (repo / 'config').mkdir()
+        base = 'ALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n#WEBHOOK_KEY\n#NEW_OPTION\nTIPS 1\n'
+        (repo / 'config' / 'config.txt').write_text(base)
+        for argv in (['init', '-q'], ['add', '.'], ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'base']):
+            subprocess.run(['git'] + argv, cwd=repo, check=True)
+        revision = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=repo, capture_output=True, text=True).stdout.strip()
+        own, done = self.base / 'overlay-gaia', self.base / 'overlay-done'
+        (own / 'config').mkdir(parents=True)
+        (done / 'config').mkdir(parents=True)
+        whole = '# old copy\nALLOWED_GAMEMODES PERSISTENCE\n#SKIP_PERSISTENCE_SAVING\nWEBHOOK_KEY secret\nTIPS 1\nDAYNIGHT_CLIENT_TINT\n'
+        (own / 'config' / 'config.txt').write_text(whole)
+        (done / 'config' / 'config.txt').write_text(whole)
+        (done / 'config' / 'config.local.txt').write_text('TIPS 0\n')
+        odd = self.base / 'overlay-odd'
+        (odd / 'config').mkdir(parents=True)
+        (odd / 'config' / 'config.txt').write_text('BAD-KEY 1\n')
+        self.group['overlay'] = str(odd)
+        self.group['regions'][0]['overlay'] = str(own)
+        self.group['regions'][1]['overlay'] = str(done)
+        group = self.write_group()
+        self.machine.revision = revision
+        result = shard_group.migrate_config(group, self.machine)
+        self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'WEBHOOK_KEY secret', 'DAYNIGHT_CLIENT_TINT', '#SKIP_PERSISTENCE_SAVING'],
+                         result['done'][str(own)])
+        self.assertIn('already exists', result['refused'][str(done)])
+        self.assertIn('would not reproduce', result['refused'][str(odd)], 'an odd line refuses that overlay only')
+        self.assertFalse((own / 'config' / 'config.txt').exists())
+        self.assertEqual(whole, (own / 'config' / 'config.txt.migrated').read_text())
+        merged = shard_group.merge_config(base, (own / 'config' / 'config.local.txt').read_text())
+        self.assertEqual(shard_group.active_settings(whole), shard_group.active_settings(merged))
+        self.assertIn('#NEW_OPTION', merged, 'settings the host never named keep the repository line')
 
     def test_fetch_runs_once_before_setup_and_update(self):
         self.refuse_config('fetch must be', fetch='origin; rm')

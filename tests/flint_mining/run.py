@@ -68,6 +68,8 @@ def source_checks():
     for kind in ('arrow', 'bolt'):
         if f'istype(W, /obj/item/stack/arrowhead/flint))\n\t\t\tnew/obj/item/ammo_casing/{kind}/flint(user.loc)' not in ammo:
             failures.append(f'flint arrowheads must make flint {kind}s, not god\'s finger {kind}s')
+    if '/obj/item/stack/arrowhead/flint = "flint"' not in read('code/game/objects/structures/blacksmithing/dedicated_workbenches.dm'):
+        failures.append('the fletching bench must accept knapped flint arrowheads')
     bolt = block(ammo, '/obj/item/ammo_casing/bolt/attackby(')
     unsharp = bolt[:bolt.index('if(istype(W, /obj/item/stack/arrowhead))')]
     if '\t\t\tqdel(src)' not in unsharp or '\n\t\tqdel(src)' in unsharp:

@@ -50,8 +50,9 @@
 
 // Read-only: whether an opened tile here stays up (a mine support within 2, a wall
 // or open sky next to it, or rock on three sides). collapse_check and agent
-// characters' observations share it.
-/turf/floor/dirt/underground/proc/mine_supported()
+// characters' observations share it. Defined on every floor because a mined
+// tile has already become an ordinary floor when collapse_check asks.
+/turf/floor/proc/mine_supported()
 	for (var/obj/structure/mine_support/RS in range(2, src))
 		return TRUE
 	for (var/turf/wall/W in range(1, src))
@@ -73,12 +74,13 @@
 
 /turf/floor/dirt/underground/collapse_check()
 	spawn(50)
-		// ChangeTurf keeps the turf object: a tile filled or re-floored during
-		// the delay no longer has mine_supported() (undefined proc runtime).
-		if (!istype(src, /turf/floor/dirt/underground))
+		// ChangeTurf keeps the turf object, so by now the mined rock is an open
+		// floor (e.g. /turf/floor/dirt/mine). Only a tile that is solid again
+		// (filled back in, or mining did not finish) skips the cave-in roll.
+		if (!istype(src, /turf/floor) || density)
 			return
 		var/area/A = get_area(src)
-		if (A.location == AREA_INSIDE)
+		if (A && A.location == AREA_INSIDE)
 			var/supportfound = mine_supported()
 
 			//if no support >> cave starts to fall
@@ -98,7 +100,7 @@
 					for (var/mob/living/human/M in range(2, src))
 						M.adjustBruteLoss(rand(28,39))
 						M.Weaken(23)
-					for (var/turf/floor/UT in range (1))
+					for (var/turf/floor/UT in range(1, src))
 						if (!istype(UT, /turf/floor/dirt/underground))
 							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 					new/obj/effect/effect/smoke(src)

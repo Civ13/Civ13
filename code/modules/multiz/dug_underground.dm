@@ -46,6 +46,9 @@
 
 // Where a ladder, tunnel or falling item goes from z. 0 means solid ground.
 /proc/multiz_level_below(z)
+	// An orbit world's decks are linked planes (space/orbit_world.dm).
+	if (orbit_world())
+		return orbit_plane_link(z, "down")
 	var/dug = dug_underground_z()
 	if (dug)
 		if (z == dug)
@@ -56,6 +59,8 @@
 	return z > 1 ? z - 1 : 0
 
 /proc/multiz_level_above(z)
+	if (orbit_world())
+		return orbit_plane_link(z, "up")
 	var/dug = dug_underground_z()
 	if (dug)
 		if (z == dug)

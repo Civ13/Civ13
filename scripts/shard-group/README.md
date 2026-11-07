@@ -66,9 +66,41 @@ hub (a region's `public` overrides the group's). Optional keys for it:
 
 - `overlay` (group or region, an absolute folder): copied over the region's
   worktree after every checkout, region last. It holds what git does not, such
-  as the live `config/config.txt` with the webhook key, `config/host.txt` and
-  native DLLs. It must not contain `map_saves`, `data` or the files `setup`
-  writes into `config/`.
+  as `config/host.txt`, native DLLs and the host's own config settings. It must
+  not contain `map_saves`, `data` or the files `setup` writes into `config/`.
+  A file that already matches is not rewritten, so a DLL a running world loaded
+  is left alone. Kept earlier versions (`*.previous`, `*.migrated`,
+  `*.bak`, `*.bak-*`) stay in the overlay and are not copied.
+
+### Host config settings
+
+The repository's `config/config.txt` is the default (and what a Linux host
+deployed from master runs). A host keeps only its own lines in
+`config/config.local.txt` inside an overlay, and every update merges them over
+the checked-out `config.txt`, so new settings and changed defaults on master
+still arrive:
+
+```
+# comments and blank lines are ignored
+WEBHOOK_CAN_FIRE
+WEBHOOK_KEY <key>
+#SKIP_PERSISTENCE_SAVING
+```
+
+`KEY value` (or a bare `KEY`) replaces that setting's active line, else
+uncomments its `#KEY` line, else is added at the end; `#KEY` turns the setting
+off. The group overlay's file is merged first, then the region's, so put shared
+settings in the group overlay and the webhook in Gaia's. The persistent-round
+lines (`ALLOWED_GAMEMODES PERSISTENCE`, saving on) are still applied last.
+
+- `config-apply [--region ID]` writes the overlays and the merged config into
+  set-up regions without a checkout or compile (running regions too). A world
+  reads `config.txt` when it starts, so a change takes effect at its next
+  restart; `host.txt` is read at each login.
+- `config-migrate` turns each overlay's whole `config/config.txt` (the old way)
+  into a `config.local.txt` with only its differences from the repository's
+  `config.txt` at the group revision, checks that the merge reproduces every
+  setting, and keeps the old file as `config.txt.migrated`.
 - `fetch` (a remote name such as `origin`): `setup`, `update` and
   `check-update` run `git fetch` there once first, so `revision` can be
   `origin/master`.

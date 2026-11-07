@@ -36,6 +36,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # 2026-11-07 gameplay audit: source checks plus run.py's extracted-proc probe text.
+    'gameplay_audit': {'files': ('tests/gameplay_audit/test_source.py',),
+        'paths': ('tests/gameplay_audit/',), 'shared_paths': (
+            'code/game/turfs/floor_attackby.dm', 'code/game/mob/living/carbon/human/emotes/emote.dm',
+            'code/modules/1713/machinery/modular_vehicles/movement.dm',
+            'code/modules/1713/machinery/modular_vehicles/car_workshop.dm',
+            'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm',
+            'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
@@ -222,7 +231,8 @@ SUITES = {
     'flint_mining': {'files': ('tests/flint_mining/test_flint_mining.py',),
         'paths': ('tests/flint_mining/',), 'shared_paths': (
             'code/modules/1713/flint_mining.dm', 'code/game/turfs/floor_attackby.dm',
-            'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi')},
+            'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
+            'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

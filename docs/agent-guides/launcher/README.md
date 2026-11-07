@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-07: Host settings -->
+Val asked (2026-11-07) that the Windows host keep its own hosting config through the launcher, so master
+(what a Linux host deploys) stays the default and pulls never clobber the host's files. HostSettings.cs
+edits only the group config's overlay folders, offers a fixed list (config.local.txt, host.txt, existing
+config/*.txt|json minus shard_group.py GENERATED and kept copies), and its rules mirror shard_group.py
+merge_config and KEPT_COPY; change both together. Save and apply runs `config-apply` (no compile).
+
 <!-- 2026-11-06: Save, update and restart -->
 With control.group set, the Updates tab's server row uses `shard_group.py check-update` and its button
 runs deploy.bat for the ticked regions (all ticked = whole group), the same as the Host tab button. Val

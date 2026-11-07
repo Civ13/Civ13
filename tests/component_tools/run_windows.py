@@ -68,6 +68,7 @@ def main():
     paths = [*build.iterdir(), *ROOT.glob('tests/component_tools/*.dm'),
              ROOT / 'code/game/objects/structures/blacksmithing/armor_workbench.dm',
              ROOT / 'code/game/objects/structures/blacksmithing/component_workbench.dm',
+             ROOT / 'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
              Path(__file__), ROOT / 'civ13.dme']
     manifest = dict(head=head, negative_control=args.negative_control,
                     dirty_diff=subprocess.check_output(['git', 'diff', 'HEAD', '--binary'], cwd=ROOT, text=True),

@@ -84,7 +84,7 @@
 
 /obj/structure/component_workbench/armor/attackby(obj/item/I, mob/living/human/H)
 	if (insert(I, H)) to_chat(H, "You stage [I] on [src].")
-	else to_chat(H, "Hold a complete listed input for an unlocked recipe. Retrieve the current items before changing recipes.")
+	else to_chat(H, "Hold a complete listed input for an unlocked recipe.")
 
 /obj/structure/component_workbench/armor/proc/commit_armor(mob/living/human/H, choice, list/staged, list/amounts, turf/site, datum/epoch)
 	if (!busy || cancelled || assembler != H || !can_use(H) || loc != site || selected_tool != choice || epoch != persistence_admission_identity || !recipe_available(H, choice)) return
@@ -137,7 +137,7 @@
 /obj/structure/component_workbench/armor/attack_hand(mob/living/human/H)
 	if (!can_use(H)) return
 	var/list/options = list("Status", "Retrieve / cancel")
-	if (!busy && !contents.len) options += "Select recipe"
+	if (!busy) options += "Select recipe"
 	if (!busy && recipe_available(H, selected_tool) && staged_inputs(selected_tool)) options += "Assemble"
 	var/action = input(H, recipe_status(), name) as null|anything in options
 	if (!can_use(H)) return
@@ -145,6 +145,4 @@
 		if ("Retrieve / cancel") retrieve(H)
 		if ("Status") to_chat(H, recipe_status())
 		if ("Assemble") assemble(H)
-		if ("Select recipe")
-			var/choice = input(H, "Armor recipe", name) as null|anything in armor_recipes()
-			if (can_use(H) && !busy && !contents.len && (choice in armor_recipes())) selected_tool = choice
+		if ("Select recipe") recipe_prompt(H)

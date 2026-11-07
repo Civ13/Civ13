@@ -30,6 +30,8 @@ var/global/list/region_trail_next_request = list()
 		var/list/peer = shard_group.peers[id]
 		// The rail yard is reached only by a party's own train (party_train.dm).
 		if(peer["kind"] == "RAILYARD") continue
+		// Orbit is reached only by rocket.
+		if(peer["kind"] == "ORBIT") continue
 		choices["[peer["name"]] ([id])"] = id
 	return choices
 

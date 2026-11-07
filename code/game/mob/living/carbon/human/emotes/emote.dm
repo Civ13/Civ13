@@ -140,7 +140,9 @@ var/list/vocal_emotes = list(
 					return
 				if (!(message))
 					return
-				return
+				// Show it: a bare return here hid every Me emote (the verb and
+				// "coughs up blood!"-style body messages alike).
+				return custom_emote(m_type, message)
 
 			if ("salute")
 				if (!buckled)
