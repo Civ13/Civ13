@@ -1019,7 +1019,9 @@
 	if(islist(nodes))
 		var/screen_root = text2path("/obj/screen")
 		var/hud_root = text2path("/datum/hud")
+		var/scanned = 0
 		for(var/list/node in nodes)
+			if(++scanned % 4096 == 0) save_work_check()
 			if(!islist(node) || node["kind"] != "entry" || node["z"] != z || !node["ref"]) continue
 			var/cursor = node["ref"]
 			var/steps = 0

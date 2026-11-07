@@ -535,41 +535,46 @@
 	// Floors are replaced level by level; their icons refresh once per level
 	// after its entries load (floor.dm), not on every neighbour placement.
 	set_floor_icon_updates_deferred(TRUE)
-	// Allocate all levels first so references to turfs on later levels stay valid.
-	for(var/z = 1, z <= world.maxz, z++)
-		var/savefile/F = new("map_saves/[z].sav")
+	try
+		// Allocate all levels first so references to turfs on later levels stay valid.
+		for(var/z = 1, z <= world.maxz, z++)
+			var/savefile/F = new("map_saves/[z].sav")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-		if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
+			if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
 #endif
-		var/list/sparse = sparse_level_header(F)
-		if(sparse)
-			// Unsaved cells are the baseline: a restored level already holds it,
-			// a reloaded one is reset to it. Saved cells take their saved type.
-			var/list/cells = sparse_level_cells(F, z, sparse)
-			var/baseline = sparse["turf"]
+			var/list/sparse = sparse_level_header(F)
+			if(sparse)
+				// Unsaved cells are the baseline: a restored level already holds it,
+				// a reloaded one is reset to it. Saved cells take their saved type.
+				var/list/cells = sparse_level_cells(F, z, sparse)
+				var/baseline = sparse["turf"]
+				for(var/y = 1, y <= world.maxy, y++)
+					var/list/columns = cells["[y]"]
+					var/next = 1
+					for(var/x = 1, x <= world.maxx, x++)
+						var/turf/T = locate(x,y,z)
+						if(columns && next <= columns.len && columns[next] == x)
+							next++
+							T.ChangeTurf(level_entry_value(F, F["/map/[z]/[y]/[x]"], "type"), FALSE, FALSE)
+						else if(T.type != baseline)
+							T.ChangeTurf(baseline, FALSE, FALSE)
+					TICK_CHECK
+				continue
 			for(var/y = 1, y <= world.maxy, y++)
-				var/list/columns = cells["[y]"]
-				var/next = 1
 				for(var/x = 1, x <= world.maxx, x++)
+					var/ref = F["/map/[z]/[y]/[x]"]
+					var/type = level_entry_value(F, ref, "type")
 					var/turf/T = locate(x,y,z)
-					if(columns && next <= columns.len && columns[next] == x)
-						next++
-						T.ChangeTurf(level_entry_value(F, F["/map/[z]/[y]/[x]"], "type"), FALSE, FALSE)
-					else if(T.type != baseline)
-						T.ChangeTurf(baseline, FALSE, FALSE)
-				TICK_CHECK
-			continue
-		for(var/y = 1, y <= world.maxy, y++)
-			for(var/x = 1, x <= world.maxx, x++)
-				var/ref = F["/map/[z]/[y]/[x]"]
-				var/type = level_entry_value(F, ref, "type")
-				var/turf/T = locate(x,y,z)
-				T.ChangeTurf(type, FALSE, FALSE)
-				TICK_CHECK
-	// References may precede the roof object in the saved graph. Rebuild only
-	// the roof topology proven by preflight, before any object fields decode.
-	materialize_saved_roof_areas()
-	begin_level_link_import()
+					T.ChangeTurf(type, FALSE, FALSE)
+					TICK_CHECK
+		// References may precede the roof object in the saved graph. Rebuild only
+		// the roof topology proven by preflight, before any object fields decode.
+		materialize_saved_roof_areas()
+		begin_level_link_import()
+	catch(var/exception/allocation_error)
+		// The caller rethrows; the world keeps running, so floors must redraw again.
+		set_floor_icon_updates_deferred(FALSE)
+		throw allocation_error
 	for(var/B = 1, B <= world.maxz, B++)
 		loading_z = B
 		try
