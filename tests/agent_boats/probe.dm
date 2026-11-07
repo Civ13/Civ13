@@ -31,6 +31,7 @@ var/boat_runtime_error = FALSE
 		GLOB.moved_event = new
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
+		GLOB.stat_set_event = new
 		movementMachine = new
 		map = new /obj/map_metadata/boat_probe
 		if (!all_species.len)
@@ -40,6 +41,7 @@ var/boat_runtime_error = FALSE
 		boat_raft_checks()
 		boat_motor_checks()
 		agent_player_action_checks()
+		boat_unconscious_checks()
 	catch(var/exception/e)
 		boat_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = boat_checks, "failures" = boat_failures, "runtime_error" = boat_runtime_error)), "result.json")
@@ -275,3 +277,69 @@ var/boat_runtime_error = FALSE
 	qdel(patient)
 	agent_characters -= H
 	qdel(H)
+
+// Passing out or dying at the controls empties the hands: the rudder goes back
+// to the boat (engine stopped), a seat's machinegun back to its seat, and a
+// click picks them up again after waking.
+/proc/boat_take_helm(mob/living/human/H, obj/structure/vehicle/V)
+	H.forceMove(get_turf(V))
+	H.put_in_active_hand(V.dwheel)
+	H.driver = TRUE
+	H.driver_vehicle = V
+	V.driver = H
+	V.ontop += H
+	V.buckle_mob(H)
+
+/proc/boat_knock_out(mob/living/human/H)
+	H.Paralyse(5)
+	H.handle_regular_status_updates()
+
+/proc/boat_wake(mob/living/human/H)
+	H.SetParalysis(0)
+	H.sleeping = 0
+	H.set_stat(CONSCIOUS)
+
+/proc/boat_unconscious_checks()
+	var/obj/structure/vehicle/boat/b400/B = new(locate(5, 30, 1))
+	sleep(5)
+	B.fueltank.reagents.add_reagent("diesel", 50)
+	var/datum/agent_character/C = boat_character(4, 30, "Helmsman")
+	var/mob/living/human/H = C.body
+	boat_take_helm(H, B)
+	boat_check(B.dwheel.loc == H && B.driver == H, "the helmsman holds the rudder")
+	B.engine.on = TRUE
+	boat_knock_out(H)
+	boat_check(H.stat == UNCONSCIOUS, "the helmsman is knocked out")
+	boat_check(!H.l_hand && !H.r_hand, "an unconscious helmsman's hands are empty ([H.l_hand] [H.r_hand])")
+	boat_check(B.dwheel.loc == B, "the rudder goes back to the boat")
+	boat_check(!B.engine.on && !B.moving, "letting go of the rudder stops the boat")
+	boat_check(B.driver == H && H.buckled == B, "the helmsman stays aboard as its driver")
+	boat_wake(H)
+	B.attack_hand(H)
+	boat_check(B.dwheel.loc == H && (H.l_hand == B.dwheel || H.r_hand == B.dwheel), "after waking, clicking the boat takes the rudder again")
+	boat_check(B.driver == H && (H in B.ontop), "and the helmsman is still aboard")
+	H.death()
+	boat_check(B.dwheel.loc == B && !H.l_hand && !H.r_hand, "a helmsman who dies lets go of the rudder")
+	agent_characters -= H
+
+	var/obj/structure/vehicle/motorcycle/M = new(locate(10, 30, 1))
+	var/datum/agent_character/R = boat_character(10, 31, "Rider")
+	var/mob/living/human/RH = R.body
+	boat_take_helm(RH, M)
+	boat_check(M.dwheel.loc == RH, "the rider holds the handlebars")
+	boat_knock_out(RH)
+	boat_check(M.dwheel.loc == M && !RH.l_hand && !RH.r_hand, "an unconscious rider lets go of the handlebars")
+	agent_characters -= RH
+
+	var/obj/structure/bed/chair/mgunner/pkm/S = new(locate(14, 30, 1))
+	var/datum/agent_character/G = boat_character(14, 30, "Gunner")
+	var/mob/living/human/GH = G.body
+	S.buckle_mob(GH)
+	boat_check(S.mg.loc == GH, "the seated machinegunner holds the gun")
+	boat_knock_out(GH)
+	boat_check(S.mg.loc == S && !GH.l_hand && !GH.r_hand, "an unconscious machinegunner's gun goes back to the seat")
+	boat_check(GH.buckled == S, "the machinegunner stays seated")
+	boat_wake(GH)
+	S.attack_hand(GH)
+	boat_check(S.mg.loc == GH && GH.buckled == S, "after waking, clicking the seat takes the gun again")
+	agent_characters -= GH
