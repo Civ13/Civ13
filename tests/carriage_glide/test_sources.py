@@ -109,6 +109,10 @@ class Sources(unittest.TestCase):
         comment='// Harnesses halve this extra draft-work hunger.'
         self.assertEqual(s.count(comment),1)
         s=s.replace(comment,"//Each step -1 hunger. Basically doubles it's food comsuption while carrying the carriage")
+        # Clicking a vehicle retakes its controls after waking (separately reviewed).
+        retake='\tif (retake_controls(user))\n\t\treturn\n'
+        self.assertEqual(s.count(retake),2)
+        s=s.replace(retake,'')
         s=re.sub(r'(?m)^\t+(M|O|user|driver)\.release_carriage_glide\(\)\n','',s)
         s=s.replace('var/m_dir = null, interval = null','var/m_dir = null')
         s=s.replace('\t\tvar/interval = null\n','').replace('\t\t\tinterval = vehicle_m_delay + 1\n','')

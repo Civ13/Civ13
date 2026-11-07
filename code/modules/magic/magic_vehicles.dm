@@ -137,11 +137,18 @@
 	update_icon()
 
 /obj/structure/vehicle/magic/mop/attack_hand(mob/living/human/user)
+	if (retake_controls(user))
+		return
 	if (user in ontop)
 		user.visible_message(SPAN_NOTICE("[user] hops off \the [src]."), SPAN_NOTICE("You hop off \the [src]."))
 		dismount_driver()
 	else
 		..()
+
+/obj/structure/vehicle/magic/mop/controls_released(var/mob/living/human/H)
+	on = FALSE
+	..()
+	update_icon()
 
 /obj/structure/vehicle/magic/mop/proc/dismount_driver(mob/user)
 	if (user && user != driver)
