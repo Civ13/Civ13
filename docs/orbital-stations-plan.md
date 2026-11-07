@@ -40,10 +40,11 @@ what the code does so far and the rules later steps must keep.
 | 5 | EVA in orbit: handholds, push-off and drift, truss, safety tether, lost drifters at unlinked edges | #3933, `code/modules/space/orbit_eva.dm` |
 | 6a | Station hardware: orbital day, module heat, fixed solar wing, fuel cell, radiator, orbital workshop, debris breaches | #3934, `code/modules/space/orbit_station.dm` |
 | 6b | Starter stations: launch complex office project, 1969 station founded on a free plane, return capsule hatch, orbit console with lost-drifter recovery | `code/modules/space/orbit_project.dm`, `party_train.dm` |
+| 6c | Moon gear: lunar surface kit, sortie reserve and lift-off home from a landed lander | `code/modules/space/lander.dm` |
 
 ## Next
 
-6c. Lunar surface kit and return sortie.
+7. Live: the first orbit region (Val runs setup).
 
 ## Orbital flight
 
@@ -142,6 +143,19 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   party recover.
 - The 2013 and 2026 layouts come with stage C.
 
+## Moon gear
+
+- **Sortie.** A crewed lander's tank holds its 300-unit flight plus a
+  150-unit ascent reserve. Launched to the Moon or Mars with a full 450, the
+  flight is a sortie (payload flag `sortie`): the landed lander keeps the
+  ascent, and its crew strap in on its tile and lift off home to the
+  mainland, spending it. Without the reserve the landed lander is a shelter
+  only, as before. A capsule in orbit uses the same lift-off as its deorbit.
+  A spent lander's deck goes back to regolith.
+- **Lunar surface kit** (40 steel, Crewed Flight) flies in the hold and
+  unpacks into two pressure suits and helmets, four air tanks, a suit patch,
+  a rover battery, six rations and four canteens.
+
 ## Tests
 
 `python3 tests/orbit_world/run.py --byond-bin <pinned bin> --output <empty directory>`
@@ -153,4 +167,5 @@ unlinked edge, the tether's pull, haul and clip) and station hardware (the
 orbital day, solar and fuel cell output, module heat, radiators, the
 workshop's furnishing and debris breaches) and starter stations (office
 placement, era and delivery, full-orbit refusal, founding, power, supplies,
-boarding, the hatch home and console recovery).
+boarding, the hatch home and console recovery) and Moon gear (the sortie
+reserve and payload flag, lift-off and spending, the lunar kit).

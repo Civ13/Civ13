@@ -726,6 +726,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/space_probe/advanced" = "planetary_survey",
 		"/obj/structure/region_gate/trail_marker/launch_pad" = "crewed_flight",
 		"/obj/structure/crewed_lander" = "crewed_flight",
+		"/obj/item/lunar_kit" = "crewed_flight",
 		"/obj/structure/crewed_lander/orbital_rocket" = "orbital_flight",
 		"/obj/structure/orbit_truss" = "orbital_flight",
 		"/obj/item/eva_tether" = "orbital_flight",

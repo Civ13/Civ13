@@ -109,6 +109,7 @@ var/global/orbit_failures = 0
 		orbit_eva_checks()
 		orbit_station_checks()
 		orbit_project_checks()
+		orbit_sortie_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -468,3 +469,57 @@ var/global/orbit_failures = 0
 		if (istype(A, type) && A.z == z)
 			return A
 	return null
+
+// Moon gear (lander.dm): the sortie reserve, its payload flag, lifting off
+// home from a landed lander, and the lunar surface kit.
+/proc/orbit_sortie_checks()
+	var/obj/map_metadata/orbit_map = map
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 7
+	shard_group.region = "moon"
+	shard_group.kind = "BARREN"
+	var/obj/structure/crewed_lander/lander = new(locate(10, 10, 1))
+	var/obj/structure/crewed_lander/orbital_rocket/rocket = new(locate(12, 10, 1))
+	orbit_check("lander keeps an ascent reserve", lander.ascent_propellant, 150)
+	orbit_check("rocket keeps none", rocket.ascent_propellant, 0)
+	lander.propellant = 300
+	orbit_check("a bare load is no sortie", lander.sortie_ready() ? 1 : 0, 0)
+	lander.propellant = 450
+	orbit_check("a full tank is a sortie", lander.sortie_ready() ? 1 : 0, 1)
+	qdel(lander)
+	qdel(rocket)
+	orbit_check("sortie payload", space_flight_payload_ok(list("lander" = "gaia-1-9", "landing" = list(2, 2), "surveyed" = 1, "rough" = 0, "sortie" = 1)) ? 1 : 0, 1)
+	orbit_check("sortie flag is 1", space_flight_payload_ok(list("lander" = "gaia-1-9", "landing" = list(2, 2), "surveyed" = 1, "rough" = 0, "sortie" = 2)) ? 1 : 0, 0)
+	orbit_check("no sortie home", space_flight_payload_ok(list("lander" = "gaia-1-9", "return" = 1, "sortie" = 1)) ? 1 : 0, 0)
+	orbit_check("no sortie to orbit", space_flight_payload_ok(list("lander" = "gaia-1-9", "orbit" = 1, "sortie" = 1)) ? 1 : 0, 0)
+	orbit_check("no sortie without a flight", space_flight_payload_ok(list("sortie" = 1)) ? 1 : 0, 0)
+
+	var/obj/structure/landed_lander/L = new(locate(10, 10, 1))
+	L.lander_id = "gaia-1-9"
+	L.deploy()
+	orbit_check("a spent lander cannot lift off", findtext(L.deorbit_refusal(null), "propellant") ? 1 : 0, 1)
+	L.ascent_ready = 1
+	orbit_check("a sortie lander can lift off", L.can_lift_off() ? 1 : 0, 1)
+	orbit_check("lift-off refusal is not about propellant", findtext("[L.deorbit_refusal(null)]", "propellant") ? 1 : 0, 0)
+	L.spend()
+	orbit_check("lifted-off lander gone", QDELETED(L) && !space_landed_lander("gaia-1-9") ? 1 : 0, 1)
+	orbit_check("deck back to the ground", istype(locate(10, 10, 1), /turf/floor/dirt/dust/regolith) && istype(locate(11, 11, 1), /turf/floor/dirt/dust/regolith) ? 1 : 0, 1)
+
+	var/obj/item/lunar_kit/kit = new(locate(14, 14, 1))
+	orbit_check("lunar kit flies in the hold", space_cargo_kind(kit) ? 1 : 0, 1)
+	orbit_check("lunar kit gated", get_recipe_node_req("/obj/item/lunar_kit"), "crewed_flight")
+	var/mob/living/human/eva_tester/H = new(locate(14, 14, 1))
+	H.m_intent = "stealth"
+	kit.attack_self(H)
+	var/suits = 0
+	var/tanks = 0
+	for (var/obj/item/clothing/suit/pressure_suit/S in locate(14, 14, 1))
+		suits++
+	for (var/obj/item/pressure_tank/T in locate(14, 14, 1))
+		tanks++
+	orbit_check("lunar kit unpacks", "[QDELETED(kit) ? 1 : 0],[suits],[tanks]", "1,2,4")
+	qdel(H)
+	del(map)
+	map = orbit_map
+	shard_group.region = "orbit"
+	shard_group.kind = "ORBIT"

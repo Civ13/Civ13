@@ -54,6 +54,13 @@ board at the hatch, which flies home; the console names the owner and
 recovers a drifter lost at an unlinked edge; and a full orbit founds nothing.
 The world grows to 24 x 24 for the station layout.
 
+Last, it checks Moon gear (`code/modules/space/lander.dm`): a lander keeps a
+150-unit ascent reserve and a rocket none, only a full tank is a sortie, the
+`sortie` payload flag is 1 and only rides a landing flight, a landed lander
+without the reserve cannot lift off and one with it can, a spent lander turns
+its deck back to regolith, and the lunar kit flies in the hold, is gated on
+Crewed Flight and unpacks two suits and four tanks.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step), and a full launch and deorbit through the transfer
