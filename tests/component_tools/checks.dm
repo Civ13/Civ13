@@ -122,6 +122,7 @@ var/list/component_errors = list()
 	component_check(heavy.usespeed < 2 && heavy.maxhealth == round(25 * 1.5), "reinforced handle tradeoff missing")
 	run_workbench_checks(H, T)
 	run_armor_checks(H, T)
+	run_dedicated_checks(H, T)
 	var/report = "Production assembly, rejection, bounds, condition, provenance and native save/load checks\n"
 	for (var/error in component_errors)
 		report += "FAIL: [error]\n"
@@ -131,3 +132,4 @@ var/list/component_errors = list()
 
 #include "workbench.dm"
 #include "armor.dm"
+#include "dedicated.dm"
