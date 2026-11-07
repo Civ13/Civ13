@@ -109,9 +109,17 @@ runs, and then the players reconnect to the new world within seconds. Gaia's
 players see a frozen world for roughly the save plus the load (about eight
 minutes today) instead of a stopped server for that long plus the boot. Regions
 that are asleep, cold or stopped are left alone; the host service installs the
-staged build when they wake or start. Finally the host service restarts so it
-also runs the new host scripts. `wait_group.py` does the waiting; it only reads
-`status`.
+staged build when they wake or start. A region that already runs the latest
+build is skipped. Finally the host service restarts so it also runs the new host
+scripts. `wait_group.py` does the waiting; it only reads `status`.
+
+**The first deploy of a region still on a build from before handovers** (its
+lifecycle status has no `handover` field) cannot hand over: that world does not
+know how to freeze and save for a standby. The same step then saves, stops,
+installs the staged build and starts the region, so its players are kicked for
+the save and the load, as a plain restart would. Every later deploy of that
+region is a handover. `data/shard-host/build.json` in each region names the
+revision it runs; a region on a build from before #3906 takes this path once.
 
 **A world that will not save or a build that will not load** leaves that region
 running on its old build: the standby is stopped, the freeze is released and

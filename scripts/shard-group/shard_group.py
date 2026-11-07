@@ -125,9 +125,6 @@ def load_group(path):
             raise ValueError('region %s overlay must be a folder path' % region['id'])
         if type(region.get('map')) is not str or not region['map'].endswith('.dmm'):
             raise ValueError('region %s needs a map (.dmm)' % region['id'])
-        standby = region.get('standby_port')
-        if standby is not None and (type(standby) is not int or not 1024 <= standby <= 65535 or standby == port):
-            raise ValueError('region %s standby_port must be a free port from 1024 to 65535' % region['id'])
         ids.add(region['id'])
         ports.add(port)
     # Transfers (character travel and trade) need an agent port on every region.
@@ -232,8 +229,41 @@ def load_group(path):
         chosen = settings.setdefault('regions', [r['id'] for r in regions])
         if type(chosen) is not list or not chosen or len(set(map(str, chosen))) != len(chosen) or any(c not in ids for c in chosen):
             raise ValueError('player_help regions must be distinct region ids of the group')
+    resolve_standby_ports(group)
     group['_path'] = str(Path(path).resolve())
     return group
+
+
+def resolve_standby_ports(group):
+    """Give every region a standby port no other port of the group uses.
+
+    A handover boots the staged build on this port beside the running world. The default
+    is port + 10, the next free port when that one is taken: on a group whose transfer
+    ports are port + 10 (the live earth group) the plain default was the region's own
+    transfer agent, so every handover was refused as "standby port in use"."""
+    regions = group['regions']
+    taken = {r['port'] for r in regions} | {r['transfer_port'] for r in regions if r.get('transfer_port')}
+    if group.get('relay_port'):
+        taken |= {group['relay_port'], group['relay_control_port']}
+    taken.add(group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port']))
+    for region in regions:
+        standby = region.get('standby_port')
+        if standby is None:
+            continue
+        if type(standby) is not int or not 1024 <= standby <= 65535 or standby in taken:
+            raise ValueError('region %s standby_port must be a free port from 1024 to 65535 '
+                             '(not a region, transfer, relay or doorman port of the group)' % region['id'])
+        taken.add(standby)
+    for region in regions:
+        if region.get('standby_port') is not None:
+            continue
+        standby = region['port'] + STANDBY_PORT_OFFSET
+        while standby in taken or standby in RESERVED_PORTS:
+            standby += 1
+        if standby > 65535:
+            raise ValueError('region %s has no free standby port; set standby_port' % region['id'])
+        region['standby_port'] = standby
+        taken.add(standby)
 
 
 def region_dir(group, region_id):
@@ -567,7 +597,15 @@ class RegionHost(Host):
 
     def standby_port(self):
         port = self.config.get('standby_port')
-        return int(port) if port else self.config['port'] + STANDBY_PORT_OFFSET
+        if port:
+            return int(port)
+        # A host.json written before standby ports were resolved has none: ask the group,
+        # which knows every other port the region's standby must not take.
+        try:
+            group = load_group(self.config['group_config'])
+            return int(next(r['standby_port'] for r in group['regions'] if r['id'] == self.config['region']))
+        except (OSError, ValueError, KeyError, StopIteration, TypeError):
+            return self.config['port'] + STANDBY_PORT_OFFSET
 
     # -- handover: a staged build takes over the running world without downtime -------
     # The staged build boots beside the running world on a loopback port and waits. The
