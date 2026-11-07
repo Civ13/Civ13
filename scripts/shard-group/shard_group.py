@@ -53,9 +53,11 @@ from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate', 'handover')
+                 'config-apply', 'config-migrate', 'handover', 'epoch')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
+# code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
+EPOCH_NAMES = ('5000 B.C.', '313 B.C.', '1013', '1713', '1873', '1903', '1943', '1969', '2013', '2026')
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
 # A handover boots the staged build beside the running world, so the region keeps two build
 # slots and build.json names the live one ('file'); the other is free for the next standby.
@@ -1606,6 +1608,9 @@ def group_status(group, only=None, view=region_view, platform=None):
                 entry['region_view'] = {'error': 'no matching shard_region answer'}
             else:
                 entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
+                age = seen.get('ordinal_age')
+                if type(age) is int and 0 <= age < len(EPOCH_NAMES):
+                    entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}
         if group['transfers']:
             entry['transfer_agent'] = (platform or RegionPlatform(region_config(group, region))).listening(region['transfer_port'])
         report[region['id']] = entry
@@ -1615,12 +1620,59 @@ def group_status(group, only=None, view=region_view, platform=None):
     return result
 
 
+def parse_epoch(value):
+    """An epoch ordinal from its index (0-9) or its name ('2026', '313 B.C.')."""
+    text = str(value).strip()
+    if text in EPOCH_NAMES:
+        return EPOCH_NAMES.index(text)
+    if text.isdigit() and int(text) < len(EPOCH_NAMES):
+        return int(text)
+    raise Refused('unknown epoch %r; choose one of %s' % (text, ', '.join(EPOCH_NAMES)))
+
+
+def group_epoch(group, epoch, platform=None):
+    """Advance the mainland to an epoch, then every awake region with it, without a restart.
+
+    Every region keeps the mainland's epoch (follow_mainland_epoch in shard_group.dm), so the
+    mainland must be awake to take it first; the others are told at once so they need not wait
+    for their next poll of the mainland. A region asleep, cold or stopped follows the mainland by
+    itself when it next runs. The epoch only moves forward: a region already there answers "current".
+    """
+    ordinal = parse_epoch(epoch)
+    chosen = hosts(group, None, platform)
+    chosen.sort(key=lambda item: item[0]['id'] != group['mainland'])  # the mainland first
+    results = {}
+    for region, host in chosen:
+        mainland = region['id'] == group['mainland']
+        if mainland and (host.frozen() or not host.platform.listening(region['port'])):
+            raise Refused('the mainland %s is not awake; start or wake it first (every region follows its epoch)' % region['id'])
+        if host.frozen():
+            state = 'asleep: follows the mainland when it wakes'
+        elif not host.platform.listening(region['port']):
+            state = 'not running: follows the mainland when it starts'
+        elif not host.token():
+            state = 'refused: config/lifecycle-token.txt is missing'
+        else:
+            try:
+                answer = host.platform.query(region['port'], host.token(), 'set_epoch', extra={'epoch': str(ordinal)})
+            except (OSError, RuntimeError, ValueError) as error:
+                answer = {'epoch': 'refused:%s' % str(error)[:100]}
+            result = answer.get('epoch') if isinstance(answer, dict) else None
+            state = result if isinstance(result, str) else 'refused:no answer (an older build without set_epoch)'
+            state = state.replace('refused:', 'refused: ', 1)
+        if mainland and state not in ('set', 'current'):
+            raise Refused('the mainland %s did not take the epoch (%s); no region was changed' % (region['id'], state))
+        results[region['id']] = state
+    return {'epoch': ordinal, 'name': EPOCH_NAMES[ordinal], 'mainland': group['mainland'], 'regions': results}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--config', required=True)
     parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
     parser.add_argument('--region')
     parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
+    parser.add_argument('--epoch', help='epoch: the epoch to advance to, by name (2026) or index (0-9)')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.worker:
@@ -1662,6 +1714,10 @@ def main(argv=None):
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
             result = adopt(group, args.region, args.source)
+        elif args.action == 'epoch':
+            if args.epoch is None or args.region:
+                parser.error('epoch needs --epoch and acts on the whole group')
+            result = group_epoch(group, args.epoch)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'config-apply':

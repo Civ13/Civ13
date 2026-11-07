@@ -191,20 +191,27 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup"];
+        "freeze", "thaw", "setup", "epoch"];
+
+    // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
+    public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
     // shard_group.py ids, never starting with "-" so one cannot read as an option.
     private static readonly System.Text.RegularExpressions.Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 
     // shard_group.py for every region of the group, or one (a region id as shard_group.py names it);
     // again only the action name and that id come from the caller.
-    public static ProcessStartInfo GroupStep(HostControl control, string action, string? region = null) {
+    // epoch: the ordinal to advance the whole group to ("epoch" only, never with a region; every region follows the mainland).
+    public static ProcessStartInfo GroupStep(HostControl control, string action, string? region = null, int? epoch = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         if (!GroupActions.Contains(action)) throw new ArgumentException("Unsupported group action.", nameof(action));
         if (region != null && !RegionId.IsMatch(region)) throw new ArgumentException("Not a region id.", nameof(region));
+        if ((action == "epoch") != (epoch != null) || (action == "epoch" && region != null) || epoch is < 0 || epoch >= EpochNames.Length)
+            throw new ArgumentException("epoch takes one epoch for the whole group.", nameof(epoch));
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(group.ShardScript)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", group.ShardScript, "--config", group.Config, action }) step.ArgumentList.Add(argument);
         if (region != null) { step.ArgumentList.Add("--region"); step.ArgumentList.Add(region); }
+        if (epoch is { } ordinal) { step.ArgumentList.Add("--epoch"); step.ArgumentList.Add(ordinal.ToString(CultureInfo.InvariantCulture)); }
         return step;
     }
 
@@ -262,8 +269,8 @@ public static class LocalHosting {
     // deploy.bat's exit code when a region did not save and is still running (the others stay stopped).
     public const int DeployUnsaved = 3;
 
-    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null, string? region = null) {
-        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action, region));
+    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null, string? region = null, int? epoch = null) {
+        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action, region, epoch));
         return ParseGroup(action, exit, output);
     }
 
@@ -372,6 +379,19 @@ public static class LocalHosting {
                 var text = (action == "freeze" ? "Asleep now (a join or travel wakes it): " : "Woken: ") + string.Join(", ", done) + ".";
                 return new ControlAnswer(true, refused != null ? text + " Refused: " + refused + "." : text, false);
             }
+            if (action == "epoch") {
+                // {"epoch": ordinal, "name", "mainland", "regions": {id: "set" | "current" | why not}}
+                var name = json.TryGetProperty("epoch", out var ordinal) && ordinal.ValueKind == JsonValueKind.Number && ordinal.TryGetInt32(out var index)
+                    && index >= 0 && index < EpochNames.Length ? EpochNames[index] : "the chosen epoch";
+                var lines = new List<string>();
+                if (json.TryGetProperty("regions", out var done) && done.ValueKind == JsonValueKind.Object)
+                    foreach (var region in done.EnumerateObject().Take(16)) {
+                        var state = region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "no answer";
+                        lines.Add(Clean(region.Name) + ": " + (state == "set" ? "now " + name : state == "current" ? "already at " + name + " or later" : state));
+                    }
+                return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script changed no region's epoch."
+                    : "Epoch " + name + ": " + string.Join("; ", lines) + ".", false);
+            }
             if (action == "setup") {
                 // {"revision", "created": [ids], "regions": [ids], "region", "running": [ids], "enrolled": [...]}
                 var created = json.TryGetProperty("created", out var made) && made.ValueKind == JsonValueKind.Array
@@ -450,8 +470,12 @@ public static class LocalHosting {
                 parts.Add($"watchdog restarted it {restarts} time{(restarts == 1 ? "" : "s")} recently (last: {last})");
         }
         if (entry.TryGetProperty("transfer_agent", out var agent) && agent.ValueKind == JsonValueKind.False) parts.Add("travel agent not running");
-        if (entry.TryGetProperty("region_view", out var view) && view.ValueKind == JsonValueKind.Object && Str(view, "error") != null)
-            parts.Add("not answering as this region");
+        if (entry.TryGetProperty("region_view", out var view) && view.ValueKind == JsonValueKind.Object) {
+            if (Str(view, "error") != null) parts.Add("not answering as this region");
+            else if (view.TryGetProperty("epoch", out var epoch) && epoch.ValueKind == JsonValueKind.Object && epoch.TryGetProperty("ordinal", out var ordinal)
+                    && ordinal.ValueKind == JsonValueKind.Number && ordinal.TryGetInt32(out var index) && index >= 0 && index < EpochNames.Length)
+                parts.Add("epoch " + EpochNames[index]);
+        }
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
 

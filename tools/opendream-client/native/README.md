@@ -206,6 +206,15 @@ port, what the watchdog did (restarts, gave up, could not start it), a travel ag
 that is down and a world that does not answer as that region, and whether the
 travel coordinator runs.
 
+### Advance epoch
+
+The All regions row's **Advance epoch** moves the whole group to a chosen epoch
+with no restart (`shard_group.py epoch --epoch N`). The mainland's world takes it
+first through its lifecycle Topic (`set_epoch`) and must be awake; then every
+running region does. A region asleep or stopped follows the mainland by itself
+when it next runs. Epochs only move forward, and a world refuses while it saves.
+The group status line shows each running region's epoch.
+
 ### Host settings
 
 With `control.group` set, the Host server tab's group row adds **Host settings**.

@@ -218,6 +218,16 @@ static class LocalHostingTests {
         Require(applied is { Ok: true, Busy: false } && applied.Message == "gaia: 1 file written (running: used from its next restart). mars: already current. Refused: moon: the region is not set up.",
             "config-apply answer: " + applied.Message);
         File.WriteAllText(groupConfig, "");
+        // Advance epoch: one epoch for the whole group, never per region; regions follow the mainland.
+        Require(LocalHosting.GroupStep(host.Control!, "epoch", null, 9).ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "epoch", "--epoch", "9" }), "epoch argv");
+        foreach (var (badRegion, badEpoch) in new (string?, int?)[] { (null, null), ("gaia", 9), (null, 10), (null, -1) })
+            try { LocalHosting.GroupStep(host.Control!, "epoch", badRegion, badEpoch); throw new Exception($"bad epoch step accepted: {badRegion} {badEpoch}"); } catch (ArgumentException) { assertions++; }
+        try { LocalHosting.GroupStep(host.Control!, "stop", null, 9); throw new Exception("an epoch on another action accepted"); } catch (ArgumentException) { assertions++; }
+        var advanced = LocalHosting.ParseGroup("epoch", 0, "{\"epoch\": 9, \"name\": \"2026\", \"mainland\": \"gaia\", \"regions\": {\"gaia\": \"set\", \"moon\": \"current\", \"railyard\": \"asleep: follows the mainland when it wakes\"}, \"ok\": true}");
+        Require(advanced is { Ok: true, Busy: false } && advanced.Message == "Epoch 2026: gaia: now 2026; moon: already at 2026 or later; railyard: asleep: follows the mainland when it wakes.", "epoch answer: " + advanced.Message);
+        Require(LocalHosting.ParseGroup("epoch", 1, "{\"ok\": false, \"refused\": \"the mainland gaia is not awake; start or wake it first (every region follows its epoch)\"}").Message.StartsWith("Refused: the mainland gaia is not awake"), "epoch refusal");
+        var withEpoch = LocalHosting.ParseGroup("status", 0, "{\"regions\": {\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"region_view\": {\"players\": 0, \"epoch\": {\"ordinal\": 8, \"name\": \"2013\"}}}}, \"ok\": true}");
+        Require(withEpoch.Message == "Group: Gaia: awake, epoch 2013.", "status epoch: " + withEpoch.Message);
         Require(LocalHosting.GroupStep(host.Control!, "kill", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "kill", "--region", "gaia" }), "one-region kill argv");
         Require(LocalHosting.GroupStep(host.Control!, "check-update").ArgumentList.Last() == "check-update", "group check-update not allowed");
         foreach (var bad in new[] { "--all", "Gaia", "", "a b", @"..\x", new string('a', 33) }) {
