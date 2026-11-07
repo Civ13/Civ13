@@ -813,6 +813,12 @@ SUITES = {
         'shared_paths': ('interface/skin.dmf', 'interface/interface.dm',
             'code/modules/client/client_procs.dm', 'code/game/mob/login.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
+    # Full read-only status helper projections with inert process/list boundaries.
+    # Shared production sources retain their prior conservative CI selection.
+    'time_of_day_progress': {'files': ('tests/time_of_day_progress/test_progress.py',),
+        'paths': ('tests/time_of_day_progress/', 'code/processes/time_of_day_progress.dm'),
+        'shared_paths': ('code/processes/time_of_day.dm', 'code/__defines/time_of_day.dm',
+            'code/processes/_process.dm', 'code/game/mob/mob.dm', 'civ13.dme')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
