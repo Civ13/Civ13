@@ -123,6 +123,12 @@ SUITES = {
             'config/crafting/material_recipes_global.txt',
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
             'tests/save_movement/source_adapter.py', 'civ13.dme')},
+    # Company stock ledger, stock market and company stall guard projections.
+    'company_stock': {'files': ('tests/company_stock/test_company_stock.py',),
+        'paths': ('tests/company_stock/', 'code/game/mob/groups/companies.dm',
+                  'code/modules/1713/marketplace.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/death.dm',
+            'code/game/objects/structures/vending/vending_sales.dm')},
     # Reviewed stdlib-only source/guard projections; no BYOND runtime.
     'stone_brazier': {'files': ('tests/stone_brazier/test_stone_brazier_disposal.py',),
         'paths': ('tests/stone_brazier/',), 'shared_paths': (

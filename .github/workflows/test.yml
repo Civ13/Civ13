@@ -1979,6 +1979,13 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/modern_telecom/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
+      - name: Run smart hub pairing, command and save regression
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/smart_home')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/smart_home/run.py --byond-bin "$PWD/BYOND/byond/bin"
+
       - name: Run isolated crop diagnostics regression
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/plant_diagnostics')
         shell: bash

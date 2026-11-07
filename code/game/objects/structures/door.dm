@@ -132,6 +132,9 @@
 
 // Whether a bare hand can't open this door for this user.
 /obj/structure/simple_door/proc/door_hand_locked(mob/user)
+	if (locked && smart_lock_admits(user))
+		locked = FALSE
+		playsound(get_turf(src), 'sound/machines/click.ogg', 40, TRUE)
 	return locked
 
 // Shared cooldown so rattling, knocking and kicking can't be spammed.
@@ -206,8 +209,9 @@
 /obj/structure/simple_door/proc/canOpen(var/mob/user as mob)
 	if (!user || !istype(user))
 		return FALSE
-	else
-		return TRUE
+	if (smart_lock_fitted && locked)
+		return !door_hand_locked(user)
+	return TRUE
 
 
 /obj/structure/simple_door/proc/Open()
@@ -269,6 +273,9 @@
 
 /obj/structure/simple_door/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	//KEYPAD AND LOCKSAASDASD
+	if (istype(W, /obj/item/weapon/smart_lock))
+		fit_smart_lock(W, user)
+		return TRUE
 	if (istype(W,/obj/item/weapon/keypad))
 		if(haslock)
 			to_chat(user, "This door already has a lock!")
