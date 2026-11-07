@@ -19,6 +19,9 @@ commands or arguments from the caller; everything comes from the config file.
 
 The world must have config/lifecycle-token.txt (32 hex characters, git-ignored)
 for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD.
+start and restart first pull and recompile unless the last build (build.json in
+the state folder) is already of the fetched revision, so a server never runs a
+stale build; a failed fetch or compile leaves it stopped with the error.
 
 freeze suspends the running dd.exe while nobody is online, so it uses no CPU
 and its memory can go to the pagefile; thaw resumes the same process, with
@@ -26,6 +29,10 @@ every object exactly as it was. watch does both: it freezes the server after
 freeze_idle_minutes with no clients and thaws it as soon as a player's TCP
 connection reaches the port. The world notices the jump in wall-clock time
 itself (code/_helpers/wall_clock.dm).
+
+watch (and serve) is also a watchdog: a world that should be running is started
+again from its last completed save when it exits on its own, and ended and
+started again when it stops answering its lifecycle status (README, Watchdog).
 
 serve does watch for every instance on this host and runs the doorman. With
 --group it also takes every region of a region group (scripts/shard-group), so
@@ -53,8 +60,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
 
-ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update')
-DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update')  # quick or long-running; no detached worker
+# Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
+# service would each flash a console window on Windows.
+NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
+# Long-lived children (DreamDaemon, workers, agents) get a hidden console of their own rather than
+# none (DETACHED_PROCESS): a console program they start, such as the cmd.exe behind DM's shell(),
+# then shares that hidden console instead of opening a window that takes focus.
+DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
+
+ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
+# quick or long-running; no detached worker (stage starts its own, beside the action lock)
+DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
+BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
 # Status pollers such as the Discord bot connect from this machine, so by
 # default only other addresses wake a frozen server.
 # Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
@@ -70,9 +88,21 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
                    'cold_start_min_free_mb': 2560,
+                   # serve: while less physical memory than this is free, stop the longest-frozen
+                   # world (it has saved, so it starts from that save on its next wake). 0 = never.
+                   'evict_below_free_mb': 1024,
                    # dd.exe -public needs the host's BYOND account signed in, which on Windows
                    # lives in the BYOND pager (byond.exe) of the same logon session
-                   'start_requires_byond_pager': True}
+                   'start_requires_byond_pager': True,
+                   # watch/serve watchdog: start a world again that exited on its own (after
+                   # crash_grace_seconds), and force-restart one whose lifecycle status has not
+                   # answered for hang_minutes (the save timeout while it was busy saving). Both
+                   # start from the last completed save. More than watchdog_max_restarts in an
+                   # hour leaves it stopped for a person to look at.
+                   'watchdog': True, 'crash_grace_seconds': 120, 'hang_minutes': 10, 'watchdog_max_restarts': 3,
+                   # region groups: every this many minutes, build the latest revision beside the
+                   # running world (stage); it is installed once the world is empty. 0 = only on request.
+                   'auto_stage_minutes': 0}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -194,8 +224,16 @@ def parse_proc_net(text, ipv6=False):
 class Platform:
     """Everything that touches the machine, so tests can replace it."""
 
-    def run(self, argv, cwd=None, timeout=1800):
-        result = subprocess.run(argv, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    def run(self, argv, cwd=None, timeout=1800, low_priority=False):
+        # stdin is DEVNULL so Windows never duplicates an inherited console handle: a host started by the
+        # launcher gets the launcher's console input, and duplicating it fails with WinError 50.
+        extra = {}
+        if low_priority and os.name == 'nt':
+            extra['creationflags'] = NO_WINDOW | BELOW_NORMAL_PRIORITY
+        elif low_priority:
+            extra['preexec_fn'] = lambda: os.nice(10)
+        result = subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout,
+                                **dict({'creationflags': NO_WINDOW}, **extra))
         return result.returncode, (result.stdout + result.stderr)[-4000:]
 
     def listening(self, port):
@@ -232,7 +270,7 @@ class Platform:
         return code == 0 and re.search(r'^Status:\s+Ready\s*$', out, re.M) is not None
 
     def detach(self, argv):
-        flags = 0x00000008 | 0x00000200 if os.name == 'nt' else 0  # DETACHED_PROCESS | NEW_PROCESS_GROUP
+        flags = DETACH_FLAGS
         subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                          creationflags=flags, start_new_session=os.name != 'nt', close_fds=True)
 
@@ -278,6 +316,11 @@ class Platform:
         from doorman import topic
         return topic(port, 'status=1&format=json')
 
+    def region_topic(self, port):
+        """The world's shard_region JSON text (its region group view)."""
+        from doorman import topic
+        return topic(port, 'shard_region=1&format=json')
+
     def boot_time(self):
         """Unix time the machine booted, or None if unknown."""
         try:
@@ -317,9 +360,12 @@ class Platform:
 
     def alive(self, pid):
         if os.name == 'nt':
-            handle = self._open(pid, 0x1000)  # PROCESS_QUERY_LIMITED_INFORMATION
+            kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel32.OpenProcess.restype = ctypes.c_void_p
+            handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
             if not handle:
-                return False
+                # A process we may not query still exists, as on POSIX.
+                return ctypes.get_last_error() == 5  # ERROR_ACCESS_DENIED
             code = ctypes.c_ulong()
             ok = ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(code))
             ctypes.windll.kernel32.CloseHandle(handle)
@@ -353,6 +399,28 @@ class Platform:
                 ctypes.windll.kernel32.K32EmptyWorkingSet(ctypes.c_void_p(handle))
         finally:
             ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+
+    def terminate(self, pid):
+        if os.name != 'nt':
+            os.kill(pid, 9)  # SIGKILL also ends a stopped process
+            return
+        handle = self._open(pid, 0x0001)  # PROCESS_TERMINATE
+        if not handle:
+            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
+        try:
+            if not ctypes.windll.kernel32.TerminateProcess(ctypes.c_void_p(handle), 1):
+                raise RuntimeError('TerminateProcess failed (WinError %d)' % ctypes.GetLastError())
+        finally:
+            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+
+    def kill_tree(self, pid):
+        """End a process and everything it started (a stream save helper, a shell() child)."""
+        if os.name != 'nt':
+            os.kill(pid, 9)
+            return
+        code, out = self.run(['taskkill', '/F', '/T', '/PID', str(pid)], timeout=60)
+        if code != 0 and self.alive(pid):
+            self.terminate(pid)
 
     def resume(self, pid):
         if os.name != 'nt':
@@ -421,6 +489,43 @@ def check_save(saves):
     return marker
 
 
+def recover_interrupted_save(repo, now=time.time):
+    """Put the last completed generation back after an interrupted save.
+
+    A save removes map_saves/save_complete.txt first and writes it last, so a
+    crash or power-down during the save leaves files without a marker, which
+    check_save refuses. The world copied the whole previous generation to
+    map_backups/ before replacing any level, so when that copy is complete and
+    marked it is swapped in (two renames, no copying) and the interrupted files
+    are kept beside it as map_saves.interrupted-<time> for inspection, the
+    newest one only. Returns (generation, interrupted path) or None when
+    nothing was done. A restart intent means the restart transaction owns the
+    recovery, so nothing is touched then.
+    """
+    saves = repo / 'map_saves'
+    backups = repo / 'map_backups'
+    if saves.is_symlink() or not saves.is_dir() or backups.is_symlink() or not backups.is_dir():
+        return None
+    names = {p.name for p in saves.iterdir()}
+    if 'save_complete.txt' in names or 'restart_intent.json' in names:
+        return None
+    if not any(name in ('map.txt', 'round.json') or name.endswith('.sav') for name in names):
+        return None
+    try:
+        generation = check_save(backups)
+    except Refused:
+        return None
+    if generation is None:
+        return None
+    interrupted = repo / ('map_saves.interrupted-' + time.strftime('%Y%m%d-%H%M%S', time.gmtime(now())))
+    for old in sorted(repo.glob('map_saves.interrupted-*')):
+        if old.is_dir() and not old.is_symlink():
+            shutil.rmtree(old)
+    os.replace(saves, interrupted)
+    os.replace(backups, saves)
+    return generation, interrupted
+
+
 def copy_save(saves, destination):
     """Copy map_saves and check every file's SHA-256 against the original."""
     destination.mkdir(parents=True)
@@ -449,6 +554,16 @@ class Host:
         self.freeze_file = self.state_dir / 'freeze.json'
         self.cold_file = self.state_dir / 'cold.json'
         self.activity_file = self.state_dir / 'activity.json'
+        # running.json: the world should be up (a start finished, or it was seen answering);
+        # a stop or a forced stop removes it. The watchdog only restarts such a world.
+        self.running_file = self.state_dir / 'running.json'
+        self.watchdog_file = self.state_dir / 'watchdog.json'
+        self.down_since = None       # when the port was first seen closed while the world should run
+        self.listening_since = None  # when the port was first seen open in this watch
+        self.last_answer = None      # when the world last answered lifecycle status in this watch
+        self.last_busy = False       # whether that answer said it was saving
+        self.next_stage = 0.0
+        self.next_install_check = 0.0
 
     # -- state -------------------------------------------------------------
     def record(self, **values):
@@ -459,6 +574,13 @@ class Host:
         temporary.write_text(json.dumps(state, indent=1, sort_keys=True), encoding='utf-8')
         os.replace(temporary, self.state_file)
         return state
+
+    def read_json(self, path):
+        try:
+            value = json.loads(path.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+        return value if isinstance(value, dict) else None
 
     def read_state(self):
         try:
@@ -501,6 +623,9 @@ class Host:
                   'lifecycle_token': self.token() is not None}
         if cold:
             report['cold'] = cold
+        watchdog = self.read_json(self.watchdog_file)
+        if watchdog:
+            report['watchdog'] = watchdog
         if world:
             report['world'] = {key: world.get(key) for key in
                                ('ready', 'busy', 'clients', 'map', 'generation', 'revision', 'error')}
@@ -537,10 +662,11 @@ class Host:
         if action == 'start':
             if listening:
                 raise Refused('the server is already running')
+            self.recover_interrupted_save()
             check_save(self.repo / 'map_saves')
             if not self.byond_signed_in():
                 raise Refused('BYOND is not signed in: start the BYOND pager and sign in first')
-            if not self.platform.task_ready(self.config['task']):
+            if not self.task_ready_for_start():
                 raise Refused('the scheduled task is not Ready')
         elif action in ('stop', 'restart'):
             if not listening:
@@ -628,6 +754,9 @@ class Host:
             return None
         return state
 
+    def task_ready_for_start(self):
+        return self.platform.task_ready(self.config['task'])
+
     def byond_signed_in(self):
         """False only when the pager is known not to be running in this session."""
         if not self.config['start_requires_byond_pager']:
@@ -654,6 +783,14 @@ class Host:
         temporary.write_text(json.dumps(value), encoding='utf-8')
         os.replace(temporary, path)
 
+    def recover_interrupted_save(self):
+        """Swap the completed generation back in after an interrupted save (see the module function)."""
+        recovered = recover_interrupted_save(self.repo, self.platform.now)
+        if recovered:
+            generation, interrupted = recovered
+            self.log({'interrupted_save_recovered': generation, 'interrupted_files': str(interrupted)})
+        return recovered
+
     def last_client(self):
         """Unix time a client was last seen on the world, or None."""
         try:
@@ -673,6 +810,109 @@ class Host:
         seen = self.last_client()
         saved = self.last_save()
         return seen is None or (saved is not None and saved >= seen)
+
+    def evict(self, reason='low memory'):
+        """Stop a frozen server to free its memory. It saved before it froze, so the
+        next wake starts it from that save, like after a power-down."""
+        state = self.frozen()
+        if not state:
+            raise Refused('the server is not frozen')
+        if not self.config['freeze_requires_save']:
+            raise Refused('only a server that saved before freezing can be stopped while asleep')
+        if self.lock.exists():
+            raise Refused('another action is still running: %s' % self.read_state().get('action'))
+        self.platform.terminate(state['pid'])
+        self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state['pid'],
+                                         'detected_at': int(self.platform.now()), 'evicted': reason})
+        self.freeze_file.unlink(missing_ok=True)
+        return {'evicted': True, 'pid': state['pid'], 'reason': reason}
+
+    def kill(self, reason='forced stop', keep_running=False):
+        """Forced stop: end the server process without saving, for a world that hangs.
+
+        Nothing is written to map_saves. The next start restores the last completed
+        save: a save that was cut off leaves no marker, and recover_interrupted_save
+        swaps the generation in map_backups back in. A worker still waiting on this
+        server (a stuck save-and-stop) sees the port close, fails and frees the lock.
+        """
+        state = self.frozen()
+        pid = state['pid'] if state else self.platform.server_pid(self.config['port'])
+        if not pid:
+            raise Refused('the server is not running')
+        self.platform.kill_tree(pid)
+        released = self.release_save_locks(pid)
+        self.freeze_file.unlink(missing_ok=True)
+        self.cold_file.unlink(missing_ok=True)
+        if not keep_running:  # stopped on purpose: the watchdog leaves it down
+            self.running_file.unlink(missing_ok=True)
+        if not self.lock.exists():
+            self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
+        return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
+
+    def release_save_locks(self, pid, wait_seconds=30):
+        """Remove the BYOND lock files a killed server left in map_saves.
+
+        A forced stop leaves each open savefile's .lk behind, and check_save then
+        refuses every start. They belong to the dead process only, so they are
+        removed once it has ended; while it still runs they are left alone.
+        Returns the names removed.
+        """
+        deadline = self.platform.now() + wait_seconds
+        while self.platform.alive(pid):
+            if self.platform.now() > deadline:
+                return []
+            self.platform.sleep(1)
+        return self.remove_save_locks(self.save_locks())
+
+    def save_locks(self):
+        """The BYOND lock files (*.lk) in map_saves, as paths."""
+        saves = self.repo / 'map_saves'
+        if saves.is_symlink() or not saves.is_dir():
+            return []
+        return [item for item in sorted(saves.iterdir()) if item.name.endswith('.lk') and item.is_file() and not item.is_symlink()]
+
+    @staticmethod
+    def remove_save_locks(locks):
+        for item in locks:
+            item.unlink(missing_ok=True)
+        return [item.name for item in locks]
+
+    def unlock(self, force=False):
+        """Check map_saves for BYOND lock files and remove them.
+
+        Safe (the default): refused while the server runs, is frozen or an action
+        (a start, save or update) is in progress, because the files may then be in
+        use. Force skips those checks, for a lock left by a server whose process is
+        gone but still looks alive; removing a lock a live server holds can corrupt
+        its save. Afterwards the save is checked and the answer says if it loads.
+        """
+        locks = self.save_locks()
+        running = bool(self.frozen() or self.platform.listening(self.config['port']) or self.platform.server_pid(self.config['port']))
+        busy = self.read_state().get('action') if self.lock.exists() else None
+        if locks and not force:
+            if running:
+                raise Refused('the server is running; its lock files may be in use (force-unlock removes them anyway)')
+            if busy:
+                raise Refused('an action is still running: %s' % busy)
+        removed = self.remove_save_locks(locks)
+        answer = {'removed': removed, 'forced': bool(force), 'server_running': running}
+        try:
+            answer['save'] = check_save(self.repo / 'map_saves') or 'empty'
+        except Refused as refusal:
+            answer['save_refused'] = str(refusal)
+        return answer
+
+    def force_restart(self, lock_wait_seconds=180):
+        """Forced stop if it is running, then a normal start from the last completed save."""
+        killed = None
+        if self.frozen() or self.platform.listening(self.config['port']):
+            killed = self.kill('forced restart')
+        deadline = self.platform.now() + lock_wait_seconds
+        while self.lock.exists():
+            if self.platform.now() > deadline:
+                raise Refused('the stopped server still has an action running: %s' % self.read_state().get('action'))
+            self.platform.sleep(2)
+        return dict(self.request('start'), killed=bool(killed))
 
     def freeze(self):
         if self.lock.exists():
@@ -711,14 +951,29 @@ class Host:
 
     def watch_step(self, idle_since):
         """One pass of the watch loop; returns (idle_since, seconds until the next pass)."""
+        self.maybe_stage()
         if self.frozen():
+            self.forget_answers()  # a thawed world gets a fresh hang allowance
+            if self.install_check_due() and self.install_staged_while_down():
+                return None, 30
             ignore = set(self.config['wake_ignore'])
             if any(address not in ignore for address in self.platform.connections(self.config['port'])):
                 self.log(self.thaw('player connection'))
             return None, self.config['wake_poll_seconds']
-        if self.lock.exists() or not self.platform.listening(self.config['port']):
+        if self.lock.exists():
+            self.forget_answers()
+            self.down_since = None
             return None, 30
+        if not self.platform.listening(self.config['port']):
+            self.forget_answers()
+            if self.cold() and self.install_check_due() and self.install_staged_while_down():
+                return None, 30
+            return None, self.check_crash()
+        self.down_since = None
         world = self.world()
+        hung = self.check_hang(world)
+        if hung is not None:
+            return None, hung
         if world and world.get('clients'):
             self.write_json(self.activity_file, {'last_client': int(self.platform.now())})
         if not world or world.get('busy') or not world.get('ready') or world.get('clients'):
@@ -730,11 +985,147 @@ class Host:
             return idle_since, 30
         if self.config['freeze_requires_save'] and not self.saved_since_last_client():
             return idle_since, 60  # the world saves itself once it is empty; freeze after that
+        if self.update_pending():
+            # Empty and saved: the moment to swap in a staged build without kicking anyone.
+            try:
+                self.log(dict(self.request('restart'), reason='installing the staged build while the world is empty'))
+            except Refused as refusal:
+                self.log({'staged_install_refused': str(refusal)})
+            return None, 30
         try:
             self.log(self.freeze())
         except Refused as refusal:
             self.log({'freeze_refused': str(refusal)})
         return None, 1
+
+    # -- watchdog --------------------------------------------------------------
+    def forget_answers(self):
+        self.listening_since = None
+        self.last_answer = None
+        self.last_busy = False
+
+    def mark_running(self):
+        self.write_json(self.running_file, {'since': int(self.platform.now())})
+
+    def check_crash(self):
+        """The world is down: start it again if it should be running. Returns the next wait."""
+        if not self.config['watchdog'] or not self.running_file.exists() or self.cold():
+            self.down_since = None
+            return 30
+        now = self.platform.now()
+        if self.down_since is None:
+            self.down_since = now
+        if now - self.down_since < self.config['crash_grace_seconds']:
+            return 10  # a reboot or a slow exit closes the port for a moment
+        self.down_since = None
+        return self.watchdog_restart('crash', 'the server exited without being stopped')
+
+    def check_hang(self, world):
+        """Force-restart a running world that stopped answering. None, or the next wait."""
+        now = self.platform.now()
+        if self.listening_since is None:
+            self.listening_since = now
+        if world:
+            self.last_answer, self.last_busy = now, bool(world.get('busy'))
+            if not self.running_file.exists():  # a world started before the watchdog existed
+                self.mark_running()
+            return None
+        # Only a world that answered in this watch can hang: one that never answers (still
+        # loading, or lifecycle status switched off) is left alone.
+        if (not self.config['watchdog'] or not self.token() or not self.running_file.exists()
+                or self.last_answer is None):
+            return None
+        limit = self.config['hang_minutes'] * 60
+        if self.last_busy:
+            limit = max(limit, self.config['save_timeout_seconds'])
+        silent = now - self.last_answer
+        if silent < limit:
+            return None
+        self.forget_answers()
+        return self.watchdog_restart('hang', 'no answer to lifecycle status for %d minutes' % (silent // 60))
+
+    def watchdog_restart(self, kind, detail):
+        """Start a crashed or hung world from its last completed save. Returns the next wait."""
+        now = int(self.platform.now())
+        record = self.read_json(self.watchdog_file) or {}
+        recent = [moment for moment in record.get('restarts', []) if type(moment) is int and now - moment < 3600]
+        record.update(last_event=kind, last_detail=detail, last_at=now, restarts=recent)
+        if len(recent) >= self.config['watchdog_max_restarts']:
+            record['gave_up'] = now
+            self.write_json(self.watchdog_file, record)
+            self.running_file.unlink(missing_ok=True)
+            # A hung world is left as it is, for a person to look at (force-restart.bat).
+            self.log({'watchdog_gave_up': kind, 'detail': detail, 'restarts_last_hour': len(recent)})
+            return 30
+        record.pop('gave_up', None)
+        if kind == 'hang':
+            try:
+                self.kill('watchdog: ' + detail, keep_running=True)
+            except Refused as refusal:
+                self.log({'watchdog_kill_refused': str(refusal)})
+                return 30
+        need = self.config['cold_start_min_free_mb']
+        free = getattr(self.platform, 'free_memory_mb', lambda: None)()
+        if need and free is not None and free < need:
+            # Not enough memory to load the save now: it starts on the next wake instead.
+            self.write_json(self.cold_file, {'detected_at': now, 'watchdog': kind})
+            record['cold'] = True
+            self.write_json(self.watchdog_file, record)
+            self.log({'watchdog': kind, 'detail': detail, 'cold': 'low memory: %d MB free' % free})
+            return 30
+        try:
+            accepted = self.request('start')
+        except Refused as refusal:  # BYOND signed out, a broken save, ...: try again later
+            record['last_refusal'] = str(refusal)
+            self.write_json(self.watchdog_file, record)
+            self.log({'watchdog': kind, 'detail': detail, 'start_refused': str(refusal)})
+            return 300
+        record.pop('last_refusal', None)
+        record.pop('cold', None)
+        record['restarts'] = recent + [now]
+        self.write_json(self.watchdog_file, record)
+        self.log(dict(accepted, watchdog=kind, detail=detail))
+        return 30
+
+    # -- staged builds (region groups only; see shard_group.RegionHost) ----------
+    def request_stage(self):
+        raise Refused('staged builds need a region host (scripts/shard-group)')
+
+    def update_pending(self):
+        """True when a staged build newer than the running one is ready to install."""
+        return False
+
+    def maybe_stage(self):
+        minutes = self.config['auto_stage_minutes']
+        now = self.platform.now()
+        if not minutes or now < self.next_stage:
+            return
+        self.next_stage = now + minutes * 60
+        try:
+            self.log(dict(self.request_stage(), reason='auto_stage_minutes'))
+        except Refused:
+            pass
+
+    def install_check_due(self):
+        now = self.platform.now()
+        if now < self.next_install_check:
+            return False
+        self.next_install_check = now + 60
+        return True
+
+    def install_staged_while_down(self):
+        """Install a ready staged build into an asleep or cold world, which then starts from
+        its save with the new build on its next wake. True when an install was started."""
+        if self.lock.exists() or not self.config['freeze_requires_save'] or not self.update_pending():
+            return False
+        try:
+            if self.frozen():
+                self.log(self.evict('installing the staged build'))
+            self.log(dict(self.request('update'), reason='installing the staged build while the world sleeps'))
+        except Refused as refusal:
+            self.log({'staged_install_refused': str(refusal)})
+            return False
+        return True
 
     def watch(self):
         idle_since = None
@@ -757,8 +1148,11 @@ class Host:
         except OSError:
             return
         try:
-            steps = {'start': [self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_start]}[action]
+            # A server only ever runs a build of the latest pull (Val, 2026-11-05):
+            # start and restart pull and recompile first unless the last build is
+            # already of the fetched revision.
+            steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
+                     'restart': [self.do_stop, self.do_refresh, self.do_start]}[action]
             for step in steps:
                 step(operation)
             self.record(phase='done', error=None)
@@ -769,6 +1163,7 @@ class Host:
 
     def do_start(self, operation):
         self.record(phase='checking save')
+        self.recover_interrupted_save()
         generation = check_save(self.repo / 'map_saves')
         code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
         revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
@@ -786,6 +1181,10 @@ class Host:
             if self.platform.now() > deadline:
                 raise RuntimeError('the server did not open its port in time')
             self.platform.sleep(2)
+        self.mark_running()
+        watchdog = self.read_json(self.watchdog_file)
+        if watchdog and watchdog.pop('gave_up', None):  # running again: watch it again
+            self.write_json(self.watchdog_file, watchdog)
         self.record(phase='started')
 
     def do_stop(self, operation):
@@ -800,6 +1199,7 @@ class Host:
         answer = self.platform.query(self.config['port'], token, 'save_shutdown', operation, session)
         if answer.get('operation') != operation:
             raise RuntimeError('the world did not accept the save')
+        self.running_file.unlink(missing_ok=True)  # it is going down on purpose
         deadline = self.platform.now() + self.config['save_timeout_seconds']
         while self.platform.listening(self.config['port']):
             if self.platform.now() > deadline:
@@ -837,7 +1237,62 @@ class Host:
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         code, out = self.platform.run([git, 'rev-parse', 'HEAD'], cwd=repo, timeout=60)
-        self.record(phase='compiled', revision=out.strip()[-40:])
+        revision = out.strip()[-40:]
+        self.record_build(revision)
+        self.record(phase='compiled', revision=revision)
+
+    # -- build record ----------------------------------------------------------
+    # build.json names the revision the current .dmb was compiled from, so start
+    # can tell whether the build is of the latest pull. A .dmb changed since
+    # (a hand compile) no longer matches and is rebuilt.
+    def dmb(self):
+        return self.repo / 'civ13.dmb'
+
+    def build_file(self):
+        return self.state_dir / 'build.json'
+
+    def dmb_stamp(self):
+        try:
+            stat = self.dmb().stat()
+        except OSError:
+            return None
+        return [stat.st_size, stat.st_mtime_ns]
+
+    def record_build(self, revision):
+        stamp = self.dmb_stamp()
+        if HEX40.match(revision or '') and stamp:
+            self.write_json(self.build_file(), {'revision': revision, 'dmb': stamp})
+        else:
+            self.build_file().unlink(missing_ok=True)
+
+    def built_revision(self):
+        """The revision the current .dmb was compiled from, or None when unknown."""
+        try:
+            record = json.loads(self.build_file().read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+        if not isinstance(record, dict) or record.get('dmb') != self.dmb_stamp():
+            return None
+        return record.get('revision') if HEX40.match(str(record.get('revision'))) else None
+
+    def latest_revision(self):
+        """Fetch, then the revision the server should run."""
+        branch = self.config['branch']
+        self.git_text(['fetch', 'origin', branch], self.repo)
+        return self.git_text(['rev-parse', 'origin/' + branch], self.repo)
+
+    def do_refresh(self, operation):
+        """Pull and recompile unless the current build is already of the latest revision."""
+        self.record(phase='checking for updates')
+        latest = self.latest_revision()
+        if not HEX40.match(latest):
+            raise RuntimeError('could not read the latest revision')
+        if self.built_revision() == latest:
+            self.record(phase='build is current', revision=latest)
+            return
+        self.do_update(operation)
+        if self.built_revision() != latest:
+            raise RuntimeError('the build is still not of %s; not starting' % latest[:12])
 
 
 def shard_group_module():
@@ -916,10 +1371,24 @@ def main(argv=None):
     try:
         if args.action == 'status':
             result = host.status()
+            if host.config.get('group_config'):  # a region: the bot also shows its peers
+                try:
+                    shard_group = shard_group_module()
+                    result['regions'] = shard_group.region_summary(shard_group.load_group(host.config['group_config']))
+                except (OSError, ValueError) as error:
+                    result['regions_error'] = str(error)[:200]
         elif args.action == 'freeze':
             result = host.freeze()
         elif args.action == 'thaw':
             result = host.thaw()
+        elif args.action == 'kill':
+            result = host.kill()
+        elif args.action == 'force-restart':
+            result = host.force_restart()
+        elif args.action in ('unlock', 'force-unlock'):
+            result = host.unlock(force=args.action == 'force-unlock')
+        elif args.action == 'stage':
+            result = host.request_stage()
         elif args.action == 'check-update':
             try:
                 result = host.check_update()

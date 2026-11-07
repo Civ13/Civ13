@@ -18,10 +18,12 @@ VALUE = {
     ),
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist"]
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
+ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
 CHOOSE = {"type": "string", "description": "answer to a menu the step opens, e.g. \"Tunnel\" for a shovel"}
+VERB = {"type": "string", "description": 'verb: a verb name from character_observe self.verbs, self.item_verbs or a nearby row\'s verbs, e.g. "Lie Down" (target picks whose verb; onto or text is its argument)'}
 ITEM = {"type": "string", "description": 'take: the name of a carried or worn item to take into the empty active hand, e.g. "sharpened flint".'}
 
 
@@ -52,10 +54,10 @@ ACTIONS = {
     "restart": ("server", "Restart the world in five seconds (refused during saves).", _schema({"confirm": {"type": "boolean"}, "reason": {"type": "string"}}, ["confirm"])),
     "spawn_atom": ("spawn", "Create 1-20 objects or mobs of a type at a target's turf.", _schema({"type": {"type": "string"}, "target": TARGET, "amount": {"type": "integer", "minimum": 1, "maximum": 20}}, ["type", "target"])),
     "delete_atom": ("spawn", "Delete an object or a mob without a connected player.", _schema({"target": TARGET}, ["target"])),
-    "character_spawn": ("characters", "Create a character this agent controls (no ckey needed). With job, it joins like a late joiner: that job's clothes, kit and spawn point.", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}, "job": {"type": "string", "description": 'A late-join job title on this map, e.g. "Nomad".'}}, ["target"])),
+    "character_spawn": ("characters", "Create a character this agent controls (no ckey needed). With job, it joins like a late joiner: that job's clothes, kit and spawn point.", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}, "job": {"type": "string", "description": 'A late-join job title on this map, e.g. "Nomad".'}, "stay": {"type": "boolean", "description": "With job: start at the target instead of the job's spawn point."}}, ["target"])),
     "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
     "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, and its action queue with results since queue_since.", _schema({"character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"}}, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent or resist.", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) or throw (the held item at target); board, disembark, drag, verb and throw only through character_queue. While driving a boat, move steers it one tile.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
@@ -68,6 +70,8 @@ ACTIONS = {
         "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
         "choose": CHOOSE,
         "zone": ZONE,
+        "onto": ONTO,
+        "name": VERB,
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -86,12 +90,15 @@ ACTIONS = {
                 "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
                 "choose": CHOOSE,
                 "zone": ZONE,
+                "onto": ONTO,
+                "name": VERB,
             },
             "required": ["do"],
         }},
         "clear": {"type": "boolean", "description": "drop pending steps first (alone, cancels the queue)"},
         "stop_on_failure": {"type": "boolean", "description": "skip the rest when a step fails (default true)"},
     }, ["character"])),
+    "character_route": ("characters", "Plan a route for a character to a tile on its level: walking legs, and when deep water is in the way, boat legs with the launch and landing points, boats near the launch and the raft recipe.", _schema({"character": CHARACTER, "target": TARGET, "x": {"type": "integer"}, "y": {"type": "integer"}, "reach": {"type": "integer", "minimum": 0, "maximum": 5, "description": "stop within this many tiles (default 0, or 1 when the goal tile is blocked)"}}, ["character"])),
     "character_release": ("characters", "Stop controlling a character; spawned ones can be deleted.", _schema({"character": CHARACTER, "delete": {"type": "boolean"}}, ["character"])),
     "visit_status": ("visits", "The running nomad visit (raid or trade): state, party, nearby people, new events since an id, the cue the leader is about to say, and the orders allowed now.", _schema({"since": {"type": "integer"}})),
     "visit_order": ("visits", "Order the running nomad visit: say, retreat, assault, bargain, tactic, focus, loot or price. The party controller checks every order against the current state and bounds.", _schema({

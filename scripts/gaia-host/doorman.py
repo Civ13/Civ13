@@ -6,11 +6,15 @@ after idle, thaw on a direct connection) and also listens on
 one extra TCP port (doorman_port, 1713 by default) that speaks the same BYOND
 Topic framing as a game port. The launcher asks it two things:
 
-    ?host_status=1          every instance's state and cached status
+    ?host_status=1          every instance's state and cached status (and, for a
+                            world in a region group, its shard_region answer)
     ?wake=1&port=1714       thaw that instance now (refused while the machine has
                             less than wake_min_free_mb of physical memory free)
 
 so browsing reads the cache and never wakes a frozen world; only joining does.
+The same two queries also answer plain HTTP (`GET /?host_status=1`): a DM world
+cannot ask with world.Export, which opens a world-to-world BYOND handshake
+rather than sending a bare Topic frame, so regions ask over HTTP (rust_g).
 Answers are display data and a wake trigger. They carry no addresses and no
 join authority: the launcher still verifies the game port itself before
 joining. The doorman never proxies game traffic, so players keep their own
@@ -18,6 +22,7 @@ address for bans and logs.
 """
 from __future__ import annotations
 
+import ipaddress
 import json
 import socket
 import struct
@@ -32,10 +37,11 @@ REFRESH_SECONDS = 30
 # Seconds after a wake request during which an instance that has not answered
 # its status topic yet still reads as waking rather than asleep or stopped.
 WAKING_SECONDS = 60
-WAKE_SPACING = 30            # one wake per address per this many seconds
+WAKE_SPACING = 30            # one wake per address and port per this many seconds
 REQUESTS_PER_MINUTE = 40     # per address, all requests
 MAX_CONNECTIONS = 16
 SUPERVISE_SECONDS = 30       # how often helper processes (transfer agents, coordinators) are checked
+EVICT_SECONDS = 60           # at most one low-memory eviction per this many seconds, so freed memory shows
 
 
 def frame(text):
@@ -57,6 +63,43 @@ def parse_request(data):
     except UnicodeDecodeError:
         return None
     return text[1:] if text.startswith('?') else text
+
+
+MAX_HTTP_HEAD = 2048
+
+
+def is_http(first):
+    """True when the first four bytes of a connection start an HTTP GET."""
+    return first[:4] == b'GET '
+
+
+def read_http_query(connection, first):
+    """The query string of `GET /?query HTTP/1.x` whose first bytes were already read, or None."""
+    head = bytearray(first)
+    while b'\r\n\r\n' not in head:
+        if len(head) > MAX_HTTP_HEAD:
+            return None
+        part = connection.recv(512)
+        if not part:
+            return None
+        head.extend(part)
+    try:
+        line = bytes(head).split(b'\r\n', 1)[0].decode('ascii')
+    except UnicodeDecodeError:
+        return None
+    parts = line.split(' ')
+    if len(parts) != 3 or parts[0] != 'GET' or not parts[2].startswith('HTTP/1.') or not parts[1].startswith('/?'):
+        return None
+    return parts[1][2:]
+
+
+def http_reply(value):
+    """An HTTP/1.1 answer carrying value as JSON, or a 404 when value is None."""
+    if value is None:
+        return b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+    body = json.dumps(value, separators=(',', ':')).encode('utf-8')
+    return (b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: ' + str(len(body)).encode()
+            + b'\r\nConnection: close\r\n\r\n' + body)
 
 
 def topic(port, query, timeout=5):
@@ -88,6 +131,7 @@ class Instance:
         self.host = host
         self.port = host.config['port']
         self.status = None        # last {"players", "map_name", "map_gamemode"} the world reported
+        self.region = None        # last shard_region answer of a world in a region group
         self.status_at = None
         self.waking_since = None
         self.waking_limit = WAKING_SECONDS
@@ -96,6 +140,16 @@ class Instance:
         self.next_refresh = 0.0
 
 
+
+def is_loopback(address):
+    """True for a loopback peer (IPv4, IPv6 or IPv4-mapped); False when unparseable."""
+    try:
+        ip = ipaddress.ip_address(str(address).split('%')[0])
+    except ValueError:
+        return False
+    mapped = getattr(ip, 'ipv4_mapped', None)
+    return (mapped or ip).is_loopback
+
 class Doorman:
     def __init__(self, hosts, platform, clock=time.monotonic, wall=time.time, supervisors=()):
         self.instances = {}
@@ -103,6 +157,7 @@ class Doorman:
         # returns a dict of what it started (empty when everything was running).
         self.supervisors = list(supervisors)
         self.next_supervise = 0.0
+        self.next_evict = 0.0
         for host in hosts:
             if host.config['port'] in self.instances:
                 raise ValueError('two configs use port %d' % host.config['port'])
@@ -115,7 +170,7 @@ class Doorman:
         self.wall = wall
         self.lock = threading.RLock()
         self.requests = {}       # address -> recent request times
-        self.wakes = {}          # address -> last wake time
+        self.wakes = {}          # (address, port) -> last wake time
         self.slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
 
     # -- state ---------------------------------------------------------------
@@ -133,6 +188,19 @@ class Doorman:
                                'map_gamemode': str(reply.get('map_gamemode') or '')[:80]}
             instance.status_at = self.wall()
             instance.waking_since = None
+        # Regions of a group used to poll each other with world.Export, which
+        # blocks the asking world for the round trip. The doorman asks once and
+        # every region reads its peers from host_status instead (2026-11-07).
+        region = None
+        try:
+            answer = json.loads(self.platform.region_topic(instance.port))
+            if isinstance(answer, dict) and isinstance(answer.get('group'), str):
+                region = {key: answer[key] for key in ('group', 'region', 'name', 'kind', 'players', 'map',
+                                                         'ordinal_age', 'free_berths') if key in answer}
+        except (OSError, RuntimeError, ValueError, AttributeError):
+            region = None
+        with self.lock:
+            instance.region = region
         return True
 
     def state(self, instance):
@@ -147,10 +215,17 @@ class Doorman:
 
     def describe(self, instance):
         with self.lock:
-            entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance)}
+            entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance),
+                     # asleep after a power-down: a wake starts it from its save, which takes minutes
+                     'cold': instance.host.cold() is not None}
+            if instance.host.config.get('routed'):
+                # Behind the routing relay: players join through the gate world, never this port.
+                entry['routed'] = True
             if instance.status is not None:
                 entry.update(instance.status)
                 entry['cached_age'] = max(0, int(self.wall() - instance.status_at))
+                if instance.region is not None:
+                    entry['region'] = dict(instance.region)
             return entry
 
     def estimate(self, instance):
@@ -202,8 +277,42 @@ class Doorman:
             return None
         return free, need
 
+    def evict_one(self, reason, keep=None):
+        """Stop the longest-frozen world except keep, so its memory is freed. It saved
+        before freezing, so it reads as cold and starts from that save on its next
+        wake. Returns the evicted instance or None."""
+        with self.lock:
+            frozen = []
+            for instance in self.instances.values():
+                if instance is keep or not instance.host.config.get('freeze_requires_save', True):
+                    continue
+                state = instance.host.frozen()
+                if state:
+                    frozen.append((state.get('frozen_at') or 0, instance.port, instance))
+            for _, _, instance in sorted(frozen, key=lambda item: item[:2]):
+                try:
+                    instance.host.log(instance.host.evict(reason))
+                except Exception as refusal:  # Refused, or the process could not be stopped
+                    instance.host.log({'evict_refused': str(refusal)[:300]})
+                    continue
+                instance.waking_since = None
+                return instance
+            return None
+
+    def free_memory_for(self, instance, need):
+        """Evict other frozen worlds until need MB is free; True when it is (or unknown)."""
+        while True:
+            free = self.platform.free_memory_mb()
+            if free is None or free >= need:
+                return True
+            if self.evict_one('memory for waking port %d' % instance.port, keep=instance) is None:
+                return False
+
     # -- requests ------------------------------------------------------------
     def allowed(self, address, now):
+        # Regions and the routing relay on this machine ask often; only remote callers are limited.
+        if is_loopback(address):
+            return True
         with self.lock:
             recent = [moment for moment in self.requests.get(address, []) if now - moment < 60]
             recent.append(now)
@@ -233,15 +342,18 @@ class Doorman:
                 instance.host.log({'wake_refused': 'byond signed out', 'port': instance.port})
                 return {'schema': SCHEMA, 'ok': False, 'error': 'byond signed out', 'port': instance.port}
             low = self.low_memory(instance)
+            # Make room by stopping the longest-asleep other world before refusing.
+            if low is not None and self.free_memory_for(instance, low[1]):
+                low = self.low_memory(instance)
             if low is not None:
                 instance.host.log({'wake_refused': 'low memory', 'port': instance.port, 'free_mb': low[0], 'need_mb': low[1]})
                 return {'schema': SCHEMA, 'ok': False, 'error': 'low memory', 'port': instance.port,
                         'free_mb': low[0], 'need_mb': low[1]}
             with self.lock:
-                last = self.wakes.get(address)
+                last = self.wakes.get((address, instance.port))
                 spaced = last is None or now - last >= WAKE_SPACING
                 if spaced and (instance.host.frozen() or instance.host.cold()):
-                    self.wakes[address] = now
+                    self.wakes[(address, instance.port)] = now
             if spaced:
                 self.wake(instance, 'doorman wake request')
             entry = self.describe(instance)
@@ -253,6 +365,10 @@ class Doorman:
         try:
             connection.settimeout(REQUEST_TIMEOUT)
             header = _read(connection, 4)
+            if is_http(header):
+                query = read_http_query(connection, header)
+                connection.sendall(http_reply(self.handle(query, address) if query is not None else None))
+                return
             length = struct.unpack('>H', header[2:])[0]
             if header[:2] != b'\x00\x83' or length > MAX_REQUEST:
                 return
@@ -297,6 +413,12 @@ class Doorman:
                     continue
                 if started:
                     print(json.dumps({'supervise_started': started, 'time': int(self.wall())}), flush=True)
+        limit = max(i.host.config.get('evict_below_free_mb', 0) for i in self.instances.values())
+        if limit and now >= self.next_evict:
+            self.next_evict = now + EVICT_SECONDS
+            free = self.platform.free_memory_mb()
+            if free is not None and free < limit and self.evict_one('low memory: %d MB free' % free) is not None:
+                print(json.dumps({'evicted_for_memory': free, 'time': int(self.wall())}), flush=True)
         for instance in self.instances.values():
             host = instance.host
             frozen = host.frozen() is not None

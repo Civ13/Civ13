@@ -1,6 +1,8 @@
 """Offline tests for scripts/shard-group/shard_group.py with a fake machine."""
 import importlib.util
+import io
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -25,14 +27,18 @@ class FakeMachine:
         self.compile_output = 'region.dmb - 0 errors, 0 warnings'
         self.clock = 0.0
         self.pids = set()
+        self.revision = REVISION  # what the group revision resolves to
+        self.low_priority = []  # cwd of every compile run at low priority
 
     def alive(self, pid):
         return pid in self.pids
 
-    def run(self, argv, cwd=None, timeout=1800):
+    def run(self, argv, cwd=None, timeout=1800, low_priority=False):
         self.calls.append((list(argv), str(cwd)))
+        if low_priority:
+            self.low_priority.append(str(cwd))
         if argv[1] == 'rev-parse':
-            return 0, REVISION + '\n'
+            return 0, self.revision + '\n'
         if argv[1:3] == ['worktree', 'add']:
             path = Path(argv[4])
             (path / 'maps' / 'small').mkdir(parents=True)
@@ -42,7 +48,8 @@ class FakeMachine:
             return 0, ''
         if argv[-1] == 'region.dme':
             if '0 errors' in self.compile_output:
-                (Path(cwd) / 'region.dmb').write_bytes(b'dmb')
+                (Path(cwd) / 'region.dmb').write_bytes(b'dmb of ' + str(cwd).encode())
+                (Path(cwd) / 'region.rsc').write_bytes(b'rsc of ' + str(cwd).encode())
                 return 0, self.compile_output
             return 1, self.compile_output
         return 0, ''
@@ -125,7 +132,7 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((REVISION, ['gaia', 'deep']), (result['revision'], result['created']))
         deep = self.base / 'regions' / 'deep'
         settings = json.loads((deep / 'config' / 'shard_region.json').read_text())
-        self.assertEqual(('europe', 'deep'), (settings['group'], settings['region']))
+        self.assertEqual(('europe', 'deep', 'gaia'), (settings['group'], settings['region'], settings['mainland']))
         self.assertEqual(['203.0.113.5:1720', '203.0.113.5:1721'], [r['address'] for r in settings['regions']])
         self.assertTrue((deep / 'map_saves').is_dir())
         token = (deep / 'config' / 'lifecycle-token.txt').read_text().strip()
@@ -139,6 +146,67 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(2, len(adds))
         self.assertTrue(all(cwd == str(self.base / 'repo') for c, cwd in self.machine.calls if c[1:3] == ['worktree', 'add']))
 
+    def test_relay_is_off_by_default_and_validated(self):
+        group = self.write_group()
+        self.assertEqual(0, group['relay_port'])
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertNotIn('relay', settings)
+        self.assertFalse((self.base / 'regions' / 'deep' / 'config' / 'relay-token.txt').exists())
+        self.refuse_config('relay_port must be', relay_port=1721)
+        self.refuse_config('relay_port must be', relay_port='1730')
+        self.refuse_config('relay_control_port', relay_port=1730, relay_control_port=1720)
+        self.refuse_config('gate must be', relay_port=1730, gate='atlantis')
+        self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='RAID')
+
+    def test_setup_writes_relay_settings_and_one_shared_token(self):
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        self.assertEqual((1731, 'gaia'), (group['relay_control_port'], group['gate']))
+        shard_group.setup(group, self.machine)
+        tokens = set()
+        for region in ('gaia', 'deep'):
+            config = self.base / 'regions' / region / 'config'
+            settings = json.loads((config / 'shard_region.json').read_text())
+            self.assertEqual(('203.0.113.5:1730', '127.0.0.1:1731', 'gaia'),
+                             (settings['relay'], settings['relay_control'], settings['gate']))
+            # Region addresses stay the internal game ports: peers are polled and woken by them.
+            self.assertEqual(['203.0.113.5:1720', '203.0.113.5:1721'], [r['address'] for r in settings['regions']])
+            tokens.add((config / 'relay-token.txt').read_text().strip())
+        self.assertEqual({(self.base / 'regions' / 'relay-token.txt').read_text().strip()}, tokens)
+        # Only the gate is offered by the launcher; the others are joined through it.
+        self.assertEqual({'gaia': False, 'deep': True},
+                         {r['id']: shard_group.region_config(group, r)['routed'] for r in group['regions']})
+        self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
+
+    def test_supervise_starts_the_relay_once(self):
+        self.group['relay_port'] = 1730
+        self.group['relay_capture'] = True
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        started, alive = [], set()
+        def start(argv, cwd, log):
+            started.append(argv)
+            return 5151
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid in alive):
+            self.assertEqual({'relay': True}, shard_group.supervise(group, start))
+            alive.add(5151)
+            self.assertEqual({}, shard_group.supervise(group, start))
+        argv = started[0]
+        self.assertTrue(argv[1].endswith('relay.py'))
+        self.assertEqual(['--region-port', '1720', '--region-port', '1721', '--capture'], argv[-5:])
+        self.assertEqual('1731', argv[argv.index('--control-port') + 1])
+        self.assertEqual('1713', argv[argv.index('--doorman-port') + 1])
+
+    def test_a_relay_that_cannot_start_does_not_stop_supervision(self):
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        def start(argv, cwd, log):
+            raise OSError('no python')
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: False):
+            self.assertEqual({'relay_error': 'no python'}, shard_group.supervise(group, start))
+
     def test_setup_refusals(self):
         group = self.write_group()
         self.machine.up = {1721}
@@ -150,6 +218,67 @@ class ShardGroupTests(unittest.TestCase):
         (stray / 'notes.txt').write_text('mine')
         with self.assertRaisesRegex(shard_group.Refused, 'not a region worktree'):
             shard_group.setup(group, self.machine)
+
+    def test_setup_one_region_while_the_others_run(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.group['regions'].append(dict(self.group['regions'][1], id='moon', port=1722, name='Moon'))
+        group = self.write_group()
+        self.machine.up = {1720, 1721}
+        with self.assertRaisesRegex(shard_group.Refused, 'gaia is running'):
+            shard_group.setup(group, self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'no region atlantis'):
+            shard_group.setup(group, self.machine, 'atlantis')
+        result = shard_group.setup(group, self.machine, 'moon')
+        self.assertEqual((['moon'], 'moon', ['gaia', 'deep']), (result['created'], result['region'], result['running']))
+        self.assertTrue((self.base / 'regions' / 'moon' / 'config' / 'shard_region.json').exists())
+        # The running regions' config lists the new peer for their next start.
+        settings = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertIn('moon', [r['id'] for r in settings['regions']])
+        self.machine.up = {1722}
+        with self.assertRaisesRegex(shard_group.Refused, 'moon is running'):
+            shard_group.setup(group, self.machine, 'moon')
+        adds = [c for c, _ in self.machine.calls if c[1:3] == ['worktree', 'add']]
+        self.assertEqual(3, len(adds))
+
+    def test_setup_one_region_enrols_it_with_running_agents(self):
+        sys.path.insert(0, str(ROOT))
+        from tools.transfer_storage.coordinator import Coordinator
+        from tools.transfer_storage.region import RegionStore
+        self.group['regions'][0]['transfer_port'] = 47201
+        self.group['regions'][1]['transfer_port'] = 47202
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        # Gaia's agent and the coordinator have run, so their stores exist; Deep's has not.
+        gaia_store = Path(shard_group.region_config(group, group['regions'][0])['state_dir']) / 'transfers.sqlite'
+        RegionStore(str(gaia_store), 'gaia', 'europe').close()
+        Coordinator(str(self.base / 'regions' / 'coordinator.sqlite'), 'europe', 'gaia').close()
+        self.group['regions'].append(dict(self.group['regions'][1], id='moon', port=1722, transfer_port=47203, name='Moon'))
+        group = self.write_group()
+        self.machine.up = {1720, 1721}
+        result = shard_group.setup(group, self.machine, 'moon')
+        self.assertEqual(['gaia', 'coordinator'], result['enrolled'])
+        store = RegionStore(str(gaia_store), 'gaia', 'europe')
+        try:
+            fences = {(d, p) for d, p, _, _ in store.db.execute('SELECT direction, peer, epoch, settled_seq FROM fence')}
+        finally:
+            store.close()
+        self.assertTrue({('out', 'moon'), ('in', 'moon')} <= fences)
+        coordinator = Coordinator(str(self.base / 'regions' / 'coordinator.sqlite'), 'europe', 'gaia')
+        try:
+            url, token = coordinator.regions()['moon']
+        finally:
+            coordinator.close()
+        self.assertEqual('http://127.0.0.1:47203', url)
+        self.assertEqual((self.base / 'regions' / 'moon' / 'config' / 'transfer-token.txt').read_text().strip(), token)
+        # enrol repeats the same step for a region added before setup did it, and is idempotent.
+        self.assertEqual({'region': 'moon', 'enrolled': ['gaia', 'coordinator']}, shard_group.enrol(group, 'moon'))
+        with self.assertRaisesRegex(shard_group.Refused, 'no region atlantis'):
+            shard_group.enrol(group, 'atlantis')
+        # host.json is replaced whole, never left half-written beside a temporary file.
+        state = Path(shard_group.region_config(group, group['regions'][2])['state_dir'])
+        self.assertTrue((state / 'host.json').exists())
+        self.assertFalse((state / 'host.json.tmp').exists())
 
     def test_selected_map_dme(self):
         text = shard_group.selected_map_dme(DME, 'maps\\regions\\deep.dmm')
@@ -179,6 +308,8 @@ class ShardGroupTests(unittest.TestCase):
         self.assertGreaterEqual(len((config / 'transfer-token.txt').read_text().strip()), 32)
         settings = json.loads((config / 'shard_region.json').read_text())
         self.assertEqual((15, 60), (settings['save_minutes'], settings['travel_save_seconds']))
+        # Regions ask the local doorman which peers sleep instead of polling (and waking) them.
+        self.assertEqual('127.0.0.1:1713', settings['doorman'])
         started = []
         def start(argv, cwd, log):
             started.append(argv)
@@ -221,6 +352,24 @@ class ShardGroupTests(unittest.TestCase):
         shard_group.persistent_config(path)
         self.assertEqual(['A 1', 'ALLOWED_GAMEMODES PERSISTENCE', '#SKIP_PERSISTENCE_SAVING', '#SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
 
+    def test_resetting_raid_region(self):
+        self.refuse_config('only a RAID region can reset', region_reset_minutes=60)
+        self.refuse_config('reset_minutes', region_kind='RAID', region_reset_minutes=10)
+        self.refuse_config('reset_minutes', region_kind='RAID', region_reset_minutes=True)
+        self.group['regions'][1].update(kind='RAID', reset_minutes=180)
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual((0, 180), (settings['save_minutes'], settings['reset_minutes']), 'a resetting raid world never saves')
+        gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual((15, 0), (gaia['save_minutes'], gaia['reset_minutes']))
+
+    def test_persistent_config_without_saving(self):
+        path = self.base / 'config.txt'
+        path.write_text('ALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n')
+        shard_group.persistent_config(path, saving=False)
+        self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
+
     def test_update_failures_are_reported(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
@@ -240,14 +389,61 @@ class ShardGroupTests(unittest.TestCase):
         host.work('update', host.request('update')['operation'])
         self.assertIn('not a file in the repository', host.read_state()['error'])
 
-    def test_start_needs_a_build(self):
+    def opens_port_on_start(self, port):
+        start = self.machine.start_task
+        def start_task(name):
+            self.machine.up.add(port)
+            return start(name)
+        self.machine.start_task = start_task
+
+    def test_start_builds_a_region_that_has_none(self):
+        group = self.write_group()
+        region = group['regions'][0]
+        config = shard_group.region_config(group, region)
+        host = shard_group.RegionHost(config, self.machine)
+        with self.assertRaisesRegex(shard_group.Refused, 'not set up'):
+            host.request('start')
+        self.assertFalse(host.lock.exists())
+        shard_group.setup(group, self.machine)
+        host = shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
+        self.opens_port_on_start(config['port'])
+        host.work('start', host.request('start')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        commands = [call[0] for call in self.machine.calls]
+        self.assertLess(commands.index(['DreamMaker', 'region.dme']), commands.index(['start', config['task']]))
+        self.assertEqual(json.loads((Path(config['state_dir']) / 'build.json').read_text())['revision'], REVISION)
+
+    def test_start_skips_the_compile_when_the_build_is_current(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
         region = group['regions'][0]
-        host = shard_group.RegionHost(shard_group.region_config(group, region), shard_group.RegionPlatform(shard_group.region_config(group, region)))
-        with self.assertRaisesRegex(shard_group.Refused, 'no build yet'):
-            host.request('start')
-        self.assertFalse(host.lock.exists())
+        host = shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
+        host.work('update', host.request('update')['operation'])
+        compiles = sum(1 for call in self.machine.calls if call[0][-1] == 'region.dme')
+        self.opens_port_on_start(region['port'])
+        host.work('start', host.request('start')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertEqual(compiles, sum(1 for call in self.machine.calls if call[0][-1] == 'region.dme'))
+
+    def test_process_alive_runs_no_console_program(self):
+        # Called every 30 s by the host service; a tasklist child flashed a window.
+        from unittest import mock
+        with mock.patch.object(shard_group.subprocess, 'run', side_effect=AssertionError('no subprocess')), \
+                mock.patch.object(shard_group.subprocess, 'Popen', side_effect=AssertionError('no subprocess')):
+            self.assertTrue(shard_group.process_alive(os.getpid()))
+            self.assertFalse(shard_group.process_alive(2 ** 22 + 12345))
+
+    def test_windows_access_denied_counts_as_alive(self):
+        # A live coordinator we may not query must not look stopped, or a
+        # second one would start; a missing process still reads as stopped.
+        import types
+        gh = shard_group.gaia_host
+        for error, expected in ((5, True), (87, False)):
+            kernel32 = types.SimpleNamespace(OpenProcess=mock.Mock(return_value=None))
+            with mock.patch.object(gh, 'os', types.SimpleNamespace(name='nt')), \
+                    mock.patch.object(gh.ctypes, 'WinDLL', return_value=kernel32, create=True), \
+                    mock.patch.object(gh.ctypes, 'get_last_error', return_value=error, create=True):
+                self.assertIs(shard_group.Platform().alive(4242), expected)
 
     def test_region_platform_command_line(self):
         group = self.write_group()
@@ -267,6 +463,62 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['deep'], list(status['regions']))
         self.assertEqual(('UNDERGROUND', False, False), (status['regions']['deep']['kind'], status['regions']['deep']['built'], status['regions']['deep']['listening']))
         self.assertNotIn('region_view', status['regions']['deep'])
+
+    def test_kill_and_force_restart_reach_every_region(self):
+        group = self.write_group()
+        calls = []
+
+        class Region:
+            def __init__(self, name, running):
+                self.name, self.running = name, running
+
+            def kill(self):
+                calls.append(('kill', self.name))
+                if not self.running:
+                    raise shard_group.Refused('the server is not running')
+                return {'killed': True, 'pid': 1}
+
+            def force_restart(self):
+                calls.append(('force-restart', self.name))
+                return {'accepted': True, 'action': 'start', 'operation': 'x', 'killed': self.running}
+
+        regions = [({'id': 'gaia'}, Region('gaia', True)), ({'id': 'deep'}, Region('deep', False))]
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch('sys.stdout', out):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'kill']))
+        answer = json.loads(out.getvalue())
+        self.assertEqual({'gaia': {'killed': True, 'pid': 1}}, answer['done'])
+        self.assertEqual({'deep': 'the server is not running'}, answer['refused'])
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch.object(shard_group, 'ensure_coordinator', return_value=False), \
+                mock.patch('sys.stdout', out):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'force-restart']))
+        self.assertEqual(['gaia', 'deep'], sorted(json.loads(out.getvalue())['accepted'], reverse=True))
+        self.assertEqual([('kill', 'gaia'), ('kill', 'deep'), ('force-restart', 'gaia'), ('force-restart', 'deep')], calls)
+
+    def test_unlock_and_force_unlock_reach_every_region(self):
+        self.write_group()
+        calls = []
+
+        class Region:
+            def __init__(self, name, running):
+                self.name, self.running = name, running
+
+            def unlock(self, force=False):
+                calls.append((self.name, force))
+                if self.running and not force:
+                    raise shard_group.Refused('the server is running')
+                return {'removed': ['1.sav.lk'], 'forced': force}
+
+        regions = [({'id': 'gaia'}, Region('gaia', True)), ({'id': 'deep'}, Region('deep', False))]
+        for action, force in (('unlock', False), ('force-unlock', True)):
+            out = io.StringIO()
+            with mock.patch.object(shard_group, 'hosts', return_value=regions), mock.patch('sys.stdout', out):
+                self.assertEqual(0, shard_group.main(['--config', str(self.path), action]))
+            answer = json.loads(out.getvalue())
+            self.assertIn('deep', answer['done'])
+            self.assertEqual(force, 'gaia' in answer['done'])
+        self.assertEqual([('gaia', False), ('deep', False), ('gaia', True), ('deep', True)], calls)
 
     def test_status_checks_the_answering_world_is_the_region(self):
         group = self.write_group()
@@ -318,6 +570,19 @@ class ShardGroupTests(unittest.TestCase):
         (state / 'cold.json').unlink()
         status = shard_group.group_status(group, 'deep', platform=self.machine)
         self.assertEqual('stopped', status['regions']['deep']['state'])
+
+    def test_region_summary_lists_every_region_without_waking_a_sleeper(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        state = self.base / 'regions' / 'deep' / 'data' / 'shard-host'
+        (state / 'freeze.json').write_text(json.dumps({'pid': 77, 'frozen_at': 0}))
+        self.machine.up.add(1721)
+        self.machine.pids.add(77)
+        summary = shard_group.region_summary(group, platform=self.machine)
+        self.assertEqual([r['id'] for r in group['regions']], [entry['id'] for entry in summary])
+        deep = next(entry for entry in summary if entry['id'] == 'deep')
+        self.assertEqual(('asleep', None, 1721), (deep['state'], deep['players'], deep['port']))
+        self.assertEqual('stopped', summary[0]['state'])
 
     def test_a_cold_region_starts_through_its_own_worker(self):
         group = self.write_group()
@@ -447,6 +712,9 @@ class ShardGroupTests(unittest.TestCase):
         (saves / 'round.json').write_text(json.dumps(state))
         (source / 'SQL').mkdir()
         (source / 'SQL' / 'bans.txt').write_text('griefer')
+        (source / 'SQL' / 'player-help' / 'worker.lock').mkdir(parents=True)
+        (source / 'SQL' / 'player-help' / 'worker.lock' / 'pid').write_text('7528')
+        (source / 'SQL' / 'player-help' / 'health.json').write_text('{"enabled": true}')
         (source / 'data' / 'faction_symbols').mkdir(parents=True)
         (source / 'data' / 'faction_symbols' / 'wolves.png').write_bytes(b'png')
         (source / 'data' / 'scratch.log').write_text('not runtime state')
@@ -474,6 +742,7 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(b'level', (path / 'map_saves' / '1.sav').read_bytes())
         self.assertFalse((path / 'map_saves' / 'backup-receipt.json').exists())
         self.assertEqual('griefer', (path / 'SQL' / 'bans.txt').read_text())
+        self.assertFalse((path / 'SQL' / 'player-help').exists(), 'the help bridge spool belongs to the source worker')
         self.assertFalse((path / 'data' / 'scratch.log').exists())
         self.assertTrue((source / 'map_saves' / '1.sav').exists(), 'the source stays as a rollback')
         with self.assertRaisesRegex(shard_group.Refused, 'already has a save'):
@@ -512,5 +781,272 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual((False, 'stop the server before updating'), (answer['can_update'], answer['reason']))
 
 
+    def test_linux_regions_can_run_in_their_own_systemd_scope(self):
+        self.refuse_config('systemd_scope', systemd_scope='yes')
+        group = self.write_group()
+        argv = ['DreamDaemon', 'region.dmb', '1715']
+        config = shard_group.region_config(group, group['regions'][1])
+        self.assertEqual('', config['systemd_scope'])
+        self.assertEqual(argv, shard_group.scoped(argv, config))
+        config['systemd_scope'] = 'user'
+        with mock.patch.object(shard_group.os, 'name', 'posix'):
+            wrapped = shard_group.scoped(argv, config)
+        unit = 'civ13-%s-%s' % (group['group'], group['regions'][1]['id'])
+        self.assertEqual(['systemd-run', '--user', '--scope', '--quiet', '--collect', '--unit', unit, '--'] + argv, wrapped)
+        with mock.patch.object(shard_group.os, 'name', 'nt'):
+            self.assertEqual(argv, shard_group.scoped(argv, config))  # Windows has no scopes
+
+
+class PlayerHelpTests(unittest.TestCase):
+    """The host service keeps one Player Help bridge per region; the launcher stops and starts them."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.base = Path(self.tmp.name)
+        (self.base / 'repo').mkdir()
+        self.group = {'group': 'europe', 'repository': str(self.base / 'repo'), 'root': str(self.base / 'regions'),
+                      'compiler': 'DreamMaker', 'daemon': 'DreamDaemon', 'git': 'git', 'public_host': '203.0.113.5',
+                      'python': 'python.exe', 'player_help': {'config': str(self.base / 'help.json')},
+                      'regions': [{'id': 'gaia', 'name': 'Gaia', 'kind': 'SURFACE', 'port': 1720, 'map': 'maps/a.dmm'},
+                                  {'id': 'deep', 'name': 'The Deep', 'kind': 'UNDERGROUND', 'port': 1721, 'map': 'maps/b.dmm'}]}
+        for region in ('gaia', 'deep'):
+            scripts = self.base / 'regions' / region / 'scripts'
+            scripts.mkdir(parents=True)
+            (scripts / 'player_help_bridge.py').write_text('# bridge\n')
+        self.alive = set()
+        patcher = mock.patch.object(shard_group, 'process_alive', lambda pid: pid in self.alive)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def load(self):
+        path = self.base / 'group.json'
+        path.write_text(json.dumps(self.group))
+        return shard_group.load_group(path)
+
+    def lock(self, region, pid):
+        lock = self.base / 'regions' / region / 'SQL' / 'player-help' / 'worker.lock'
+        lock.mkdir(parents=True, exist_ok=True)
+        (lock / 'pid').write_text(str(pid))
+        return lock
+
+    def test_config_validation(self):
+        self.assertEqual(['gaia', 'deep'], self.load()['player_help']['regions'])
+        for bad in ({'regions': ['gaia']}, {'config': ''}, {'config': 'x', 'regions': ['moon']},
+                    {'config': 'x', 'regions': ['gaia', 'gaia']}, {'config': 'x', 'regions': []}, 'help.json'):
+            self.group['player_help'] = bad
+            with self.assertRaisesRegex(ValueError, 'player_help'):
+                self.load()
+
+    def test_supervise_starts_missing_bridges_with_the_stop_file(self):
+        group = self.load()
+        started = []
+        def start(argv, cwd, log):
+            started.append((argv, Path(cwd), Path(log)))
+            return 7000 + len(started)
+        stale = self.lock('gaia', 99)  # a bridge that died: its lock would refuse a new one
+        self.assertEqual({'player_help': ['gaia', 'deep']}, shard_group.supervise(group, start))
+        self.assertFalse(stale.exists())
+        argv, cwd, log = started[0]
+        self.assertEqual(['python.exe', '-I', str(cwd / 'scripts' / 'player_help_bridge.py'), '--game-root', str(cwd),
+                          '--config', str(self.base / 'help.json'), '--stop-file', str(self.base / 'regions' / 'player-help' / 'stopped')], argv)
+        self.assertEqual(self.base / 'regions' / 'player-help' / 'gaia.log', log)
+        # Starting (pid file, before the lock) and running (lock) bridges are both left alone.
+        self.alive.update({7001, 7002})
+        self.lock('gaia', 7001)
+        self.assertEqual({}, shard_group.supervise(group, start))
+        self.assertEqual(2, len(started))
+        # A bridge that exits is started again.
+        self.alive.discard(7002)
+        self.assertEqual({'player_help': ['deep']}, shard_group.supervise(group, start))
+
+    def test_a_region_without_the_bridge_does_not_keep_the_others_down(self):
+        (self.base / 'regions' / 'gaia' / 'scripts' / 'player_help_bridge.py').unlink()
+        started = shard_group.supervise(self.load(), lambda argv, cwd, log: 1)
+        self.assertEqual(['deep'], started['player_help'])
+        self.assertIn('missing', started['player_help_errors']['gaia'])
+
+    def test_stop_keeps_them_stopped_until_start(self):
+        group = self.load()
+        self.alive.update({11, 12})
+        self.lock('gaia', 11)
+        self.lock('deep', 12)
+        clock = [0.0]
+        def sleep(seconds):
+            clock[0] += seconds
+            self.alive.discard(11)  # gaia sees the stop file; deep (an older bridge without it) does not
+        killed = []
+        def kill(pid):
+            killed.append(pid)
+            self.alive.discard(pid)
+        result = shard_group.help_stop(group, timeout=5, sleep=sleep, clock=lambda: clock[0], kill=kill)
+        self.assertEqual({'stopped': ['deep', 'gaia'], 'forced': ['deep']}, result)
+        self.assertEqual([12], killed)
+        self.assertFalse((self.base / 'regions' / 'deep' / 'SQL' / 'player-help' / 'worker.lock').exists())
+        status = shard_group.help_status(group)
+        self.assertTrue(status['stopped'])
+        self.assertFalse(status['regions']['gaia']['running'])
+        started = []
+        self.assertEqual({}, shard_group.supervise(group, lambda argv, cwd, log: started.append(argv) or 1))
+        self.assertEqual([], started)
+        self.assertEqual({'started': ['gaia', 'deep'], 'errors': {}}, shard_group.help_start(group, lambda argv, cwd, log: 5))
+        self.assertFalse(shard_group.help_status(group)['stopped'])
+
+    def test_status_reports_the_heartbeat(self):
+        group = self.load()
+        self.alive.add(21)
+        lock = self.lock('gaia', 21)
+        (lock.parent / 'health.json').write_text(json.dumps({'enabled': True, 'sequence': 'a' * 32}))
+        mtime = (lock.parent / 'health.json').stat().st_mtime
+        status = shard_group.help_status(group, now=lambda: mtime + 4)
+        self.assertEqual({'running': True, 'pid': 21, 'enabled': True, 'heartbeat_age_seconds': 4,
+                          'log': str(self.base / 'regions' / 'player-help' / 'gaia.log')}, status['regions']['gaia'])
+        self.assertEqual({'running': False, 'pid': None, 'enabled': False, 'log': str(self.base / 'regions' / 'player-help' / 'deep.log')},
+                         status['regions']['deep'])
+
+    def test_actions_without_player_help(self):
+        del self.group['player_help']
+        group = self.load()
+        self.assertEqual({'configured': False}, shard_group.help_status(group))
+        self.assertEqual({}, shard_group.supervise(group, lambda argv, cwd, log: 1))
+        path = self.base / 'group.json'
+        out = io.StringIO()
+        with mock.patch('sys.stdout', out):
+            self.assertEqual(1, shard_group.main(['--config', str(path), 'help-stop']))
+        self.assertEqual({'ok': False, 'refused': 'player_help is not configured for this group'}, json.loads(out.getvalue()))
+
+
 if __name__ == '__main__':
     unittest.main()
+
+
+NEWER = 'e' * 40
+
+
+class StagedBuildTests(unittest.TestCase):
+    """stage compiles the next build beside a running region; the region installs it by
+    copying once it is empty or asleep, instead of compiling during its downtime."""
+
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+    host = ShardGroupTests.host
+
+    def built(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'gaia')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        return group, host
+
+    def compiles(self, cwd):
+        return sum(1 for argv, where in self.machine.calls if argv[-1] == 'region.dme' and where == str(cwd))
+
+    def test_stage_compiles_beside_the_running_region_and_update_installs_it(self):
+        group, host = self.built()
+        live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
+        self.machine.up = {1720}
+        accepted = host.request_stage()
+        self.assertEqual(['--worker', 'stage', accepted['operation']], self.machine.detached[-1][-3:])
+        self.assertTrue(self.machine.detached[-1][3].endswith('shard_group.py'))
+        with self.assertRaisesRegex(shard_group.Refused, 'already being staged'):
+            host.request_stage()
+        host.work('stage', accepted['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready', host.read_json(host.stage_file))
+        self.assertFalse(host.stage_lock.exists())
+        self.assertIn((['git', 'worktree', 'add', '--detach', str(staging), NEWER], str(self.base / 'repo')), self.machine.calls)
+        self.assertEqual(self.machine.low_priority, [str(staging)])
+        self.assertIn('#include "maps\\small\\tiny.dmm"', (staging / 'region.dme').read_text())
+        self.assertEqual((1, 1), (self.compiles(live), self.compiles(staging)), 'the running region is not touched')
+        self.assertEqual(host.staged_revision(), NEWER)
+        self.assertTrue(host.update_pending())
+        self.assertTrue(host.status()['stage']['pending'])
+        # The install is a copy, not a second compile.
+        self.machine.up = set()
+        host.work('update', host.request('update')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state['revision'], state.get('staged')), ('done', NEWER, True), state)
+        self.assertEqual(self.compiles(live), 1)
+        self.assertEqual((live / 'region.dmb').read_bytes(), (staging / 'region.dmb').read_bytes())
+        self.assertEqual((live / 'region.rsc').read_bytes(), (staging / 'region.rsc').read_bytes())
+        self.assertEqual(host.built_revision(), NEWER)
+        self.assertFalse(host.update_pending())
+
+    def test_stage_does_nothing_for_a_current_build(self):
+        group, host = self.built()
+        self.machine.revision = REVISION
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'current')
+        self.assertFalse((self.base / 'regions' / '.staging' / 'gaia').exists())
+
+    def test_a_failed_staged_compile_leaves_nothing_to_install(self):
+        group, host = self.built()
+        self.machine.compile_output = 'region.dmb - 1 errors, 0 warnings'
+        host.work('stage', host.request_stage()['operation'])
+        stage = host.read_json(host.stage_file)
+        self.assertEqual(stage['phase'], 'failed')
+        self.assertIn('compile failed', stage['error'])
+        self.assertFalse(host.update_pending())
+
+    def test_an_older_staged_build_is_never_installed(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1] == 'merge-base':
+                return 1, ''  # the running build is newer (updated by hand)
+            return real(argv, cwd, timeout, low_priority)
+        self.machine.run = run
+        (self.base / 'regions' / 'gaia' / 'region.dmb').write_bytes(b'hand compile')
+        host.record_build('f' * 40)
+        self.assertFalse(host.update_pending())
+
+    def test_regions_take_turns_at_the_staging_compiler(self):
+        group, host = self.built()
+        lock = self.base / 'regions' / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True)
+        lock.write_text('77')
+        self.machine.pids = {77}
+        real_sleep = self.machine.sleep
+        def sleep(seconds):
+            real_sleep(seconds)
+            self.machine.pids = set()  # the other region's compile finished
+        self.machine.sleep = sleep
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
+        self.assertEqual(self.machine.clock, 10)
+        self.assertFalse(lock.exists())
+
+    def test_a_cold_region_gets_the_staged_build_before_its_next_wake(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        host.write_json(host.cold_file, {'frozen_at': 0})
+        host.watch_step(None)
+        self.assertEqual(self.machine.detached[-1][-2], 'update')
+        host.work('update', self.machine.detached[-1][-1])
+        self.assertEqual(host.built_revision(), NEWER)
+        self.assertEqual(host.status()['state'], 'cold', 'it still starts on the next wake')
+
+    def test_an_empty_region_restarts_onto_the_staged_build_instead_of_sleeping(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.up = {1720}
+        idle, _ = host.watch_step(None)
+        self.machine.clock += 15 * 60
+        host.watch_step(idle)
+        self.assertEqual(self.machine.detached[-1][-2], 'restart')
+        self.assertFalse(host.frozen())
+
+    def test_stage_reaches_every_region_from_the_command_line(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        with mock.patch.object(shard_group, 'Platform', return_value=self.machine), \
+                mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            code = shard_group.main(['--config', str(self.path), 'stage'])
+        result = json.loads(out.getvalue())
+        self.assertEqual((code, sorted(result['accepted'])), (0, ['deep', 'gaia']), result)

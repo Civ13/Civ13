@@ -156,9 +156,11 @@ class BaselinePolicyTests(unittest.TestCase):
         name = 'gaia_host'
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
-                                          'tests/gaia_host/test_doorman.py'))
+                                          'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
+                                          'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths'] + ('scripts/gaia-host/gaia_host.py',
-                                                                               'scripts/gaia-host/doorman.py', 'scripts/shard-group/shard_group.py'):
+                                                                               'scripts/gaia-host/doorman.py', 'scripts/shard-group/shard_group.py',
+                                                                               'scripts/windows/host/wait_group.py', 'scripts/windows/host/deploy.bat'):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
@@ -423,7 +425,7 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['paper_documents']
         self.assertEqual(suite['files'], ('tests/paper_documents/test_documents.py',
             'tests/paper_documents/test_views.py', 'tests/paper_documents/test_mutations.py',
-            'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py', 'tests/paper_documents/test_lifecycle.py', 'tests/paper_documents/test_editor.py'))
+            'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py', 'tests/paper_documents/test_lifecycle.py', 'tests/paper_documents/test_editor.py', 'tests/paper_documents/test_study.py'))
         self.assertEqual(self.selected(['tests/paper_documents/test_mutations.py']),
             {'policy', 'bootstrap', 'progress', 'paper_documents'})
 
@@ -663,7 +665,7 @@ class BaselinePolicyTests(unittest.TestCase):
             output = Path(directory) / 'mood-history.json'
             self.assertEqual(ci.run_unit('help_mood_history', output), 0)
             result = json.loads(output.read_text())
-        self.assertEqual(result, dict(status='passed', tests=30, failures=0, errors=0, skipped=0))
+        self.assertEqual(result, dict(status='passed', tests=31, failures=0, errors=0, skipped=0))
 
     def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
         suite = ci.SUITES['help_wiki_guides']
@@ -1286,7 +1288,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(self.selected(['code/processes/research_tree.dm']),
                          {'policy', 'bootstrap', 'progress', 'research'})
         self.assertEqual(self.selected(['code/processes/_process.dm']),
-                         {'policy', 'bootstrap', 'progress', 'research', 'ping'})
+                         {'policy', 'bootstrap', 'progress', 'research', 'ping', 'time_of_day_progress'})
         self.assertIn('year', self.selected(['code/setup.dm']))
 
     def test_ping_source_dependencies_match_its_actual_registered_test_reads(self):

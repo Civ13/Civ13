@@ -32,13 +32,23 @@ class FakeMachine:
         self.pid = 4242
         self.suspended = 0
         self.peers = []
+        self.latest = REVISION  # origin/master after a fetch
+        self.merged = False  # HEAD follows origin/master once merged
+        self.hung = False  # the process holds the port but never answers
+        self.busy = False
+        self.free_mb = None
 
-    def run(self, argv, cwd=None, timeout=1800):
+    def run(self, argv, cwd=None, timeout=1800, low_priority=False):
         self.calls.append(list(argv))
-        if argv[1:] == ['rev-parse', 'HEAD']:
-            return 0, REVISION + '\n'
+        if argv[1:] == ['rev-parse', 'HEAD'] or argv[1:] == ['rev-parse', 'origin/master']:
+            return 0, (self.latest if argv[-1] != 'HEAD' or self.merged else REVISION) + '\n'
+        if argv[1:3] == ['merge', '--ff-only']:
+            self.merged = True
         if argv[-1] == 'civ13.dme':
-            return (0 if '0 errors' in self.compile_output else 1), self.compile_output
+            ok = '0 errors' in self.compile_output
+            if ok and cwd:
+                (Path(cwd) / 'civ13.dmb').write_bytes(b'build %d' % len(self.calls))
+            return (0 if ok else 1), self.compile_output
         return 0, ''
 
     def listening(self, port):
@@ -55,7 +65,9 @@ class FakeMachine:
             return {'ok': True, 'operation': operation}
         if self.suspended:
             raise RuntimeError('a frozen world never answers')
-        return {'ok': True, 'ready': True, 'busy': False, 'session': SESSION, 'clients': self.clients, 'map': 'NOMADS_GAIA',
+        if self.hung:
+            raise OSError('timed out')
+        return {'ok': True, 'ready': True, 'busy': self.busy, 'session': SESSION, 'clients': self.clients, 'map': 'NOMADS_GAIA',
                 'generation': MARKER, 'revision': REVISION, 'error': self.save_error}
 
     def start_task(self, name):
@@ -89,8 +101,16 @@ class FakeMachine:
         self.calls.append(['resume', pid])
         self.suspended -= 1
 
+    def kill_tree(self, pid):
+        self.calls.append(['kill_tree', pid])
+        self.up = False
+        self.suspended = 0
+
     def now(self):
         return self.clock
+
+    def free_memory_mb(self):
+        return self.free_mb
 
 
 def write_save(saves, marker=MARKER, levels=2, intent=None):
@@ -154,6 +174,7 @@ class GaiaHostTests(unittest.TestCase):
                                                                         self.host.check_update()['reason']))
         self.machine.run = real
         self.machine.up = False
+        self.machine.latest = 'not a commit'
         with self.assertRaisesRegex(RuntimeError, 'could not read the commits'):
             self.host.check_update()  # origin/master did not resolve
 
@@ -258,6 +279,63 @@ class GaiaHostTests(unittest.TestCase):
         self.host.work('update', self.accept('update'))
         self.assertEqual(self.host.read_state()['phase'], 'failed')
         self.assertIn('compile failed', self.host.read_state()['error'])
+
+    def compiles(self):
+        return sum(1 for call in self.machine.calls if call[-1:] == ['civ13.dme'])
+
+    def test_start_pulls_and_compiles_before_running_a_stale_build(self):
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        calls = self.machine.calls
+        self.assertLess(calls.index(['git', 'merge', '--ff-only', 'origin/master']), calls.index(['dm.exe', 'civ13.dme']))
+        self.assertLess(calls.index(['dm.exe', 'civ13.dme']), calls.index(['schtasks', 'Civ13 Gaia On-Demand']))
+        self.assertEqual(json.loads((self.root / 'state' / 'build.json').read_text())['revision'], REVISION)
+
+    def test_start_skips_the_compile_only_while_the_build_is_of_the_latest_pull(self):
+        self.host.work('update', self.accept('update'))
+        self.assertEqual(self.compiles(), 1)
+        self.host.work('start', self.accept('start'))
+        self.assertEqual((self.host.read_state()['phase'], self.compiles()), ('done', 1))
+        self.assertIn(['git', 'fetch', 'origin', 'master'], self.machine.calls[-6:])
+        # master moved on: the next start pulls and compiles again
+        self.machine.up, self.machine.merged, self.machine.latest = False, False, 'e' * 40
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800):
+            if argv[1:] == ['rev-parse', 'HEAD'] and self.machine.merged:
+                self.machine.calls.append(list(argv))
+                return 0, self.machine.latest + '\n'
+            return real(argv, cwd, timeout)
+        self.machine.run = run
+        self.host.work('start', self.accept('start'))
+        self.assertEqual((self.host.read_state()['phase'], self.compiles()), ('done', 2))
+        # a hand compile since the last recorded build is not trusted either
+        self.machine.up = False
+        (self.repo / 'civ13.dmb').write_bytes(b'hand built')
+        self.host.work('start', self.accept('start'))
+        self.assertEqual((self.host.read_state()['phase'], self.compiles()), ('done', 3))
+
+    def test_a_failed_pull_or_compile_never_starts_the_server(self):
+        self.machine.compile_output = 'civ13.dmb - 2 errors, 0 warnings'
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'failed')
+        self.assertIn('compile failed', self.host.read_state()['error'])
+        self.assertNotIn(['schtasks', 'Civ13 Gaia On-Demand'], self.machine.calls)
+        real = self.machine.run
+        self.machine.run = lambda argv, cwd=None, timeout=1800: (1, 'could not resolve host') if argv[1:2] == ['fetch'] else real(argv, cwd, timeout)
+        self.machine.compile_output = 'civ13.dmb - 0 errors, 0 warnings'
+        self.host.work('start', self.accept('start'))
+        self.assertIn('git fetch failed', self.host.read_state()['error'])
+        self.assertNotIn(['schtasks', 'Civ13 Gaia On-Demand'], self.machine.calls)
+
+    def test_restart_pulls_and_compiles_between_save_and_start(self):
+        self.give_token()
+        self.machine.up = True
+        self.machine.on_save = lambda: write_save(self.repo / 'map_saves', intent=MARKER)
+        self.host.work('restart', self.accept('restart'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        actions = [c[1] if c[0] == 'query' else (c[-1] if c[0] == 'dm.exe' else c[0]) for c in self.machine.calls]
+        self.assertLess(actions.index('save_shutdown'), actions.index('civ13.dme'))
+        self.assertLess(actions.index('civ13.dme'), actions.index('schtasks'))
 
     def test_worker_ignores_a_stale_operation(self):
         operation = self.accept('start')
@@ -401,5 +479,380 @@ Active Connections
         self.assertEqual(self.host.watch_step(None), (None, 0.2))
 
 
+
+
+class NoConsoleWindowTests(unittest.TestCase):
+    def test_console_programs_run_without_a_window(self):
+        # The windowless host service (pythonw) would flash a console for every
+        # git/dm.exe/schtasks/tasklist/netstat call without CREATE_NO_WINDOW.
+        import subprocess
+        from unittest import mock
+        seen = []
+        def fake_run(argv, **kwargs):
+            seen.append(kwargs.get('creationflags'))
+            return subprocess.CompletedProcess(argv, 0, '', '')
+        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
+            gaia_host.Platform().run(['git', 'status'])
+        self.assertEqual(seen, [gaia_host.NO_WINDOW])
+        self.assertEqual(gaia_host.NO_WINDOW, 0x08000000 if gaia_host.os.name == 'nt' else 0)
+
+    def test_staged_compiles_run_below_normal_priority(self):
+        import subprocess
+        from unittest import mock
+        seen = []
+        def fake_run(argv, **kwargs):
+            seen.append(kwargs)
+            return subprocess.CompletedProcess(argv, 0, '', '')
+        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
+            gaia_host.Platform().run(['dm', 'region.dme'], low_priority=True)
+        if gaia_host.os.name == 'nt':
+            self.assertEqual(seen[0]['creationflags'], gaia_host.NO_WINDOW | gaia_host.BELOW_NORMAL_PRIORITY)
+        else:
+            self.assertTrue(callable(seen[0]['preexec_fn']))
+
+    def test_console_programs_never_inherit_stdin(self):
+        # Started by the launcher, this script inherits the launcher's console input; subprocess
+        # duplicated that handle for git and check-update failed with WinError 50.
+        import subprocess
+        from unittest import mock
+        seen = []
+        def fake_run(argv, **kwargs):
+            seen.append(kwargs.get('stdin', 'inherited'))
+            return subprocess.CompletedProcess(argv, 0, '', '')
+        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
+            gaia_host.Platform().run(['git', 'fetch'])
+        self.assertEqual(seen, [subprocess.DEVNULL])
+
+    def test_detached_children_keep_a_hidden_console(self):
+        # DETACHED_PROCESS left DreamDaemon without a console, so every shell() it ran
+        # (the save memory probe's cmd /c tasklist) opened a visible window.
+        from unittest import mock
+        seen = []
+        with mock.patch.object(gaia_host.subprocess, 'Popen', lambda argv, **kwargs: seen.append(kwargs['creationflags'])):
+            gaia_host.Platform().detach(['dd.exe'])
+        self.assertEqual(seen, [gaia_host.DETACH_FLAGS])
+        if gaia_host.os.name == 'nt':
+            self.assertEqual(gaia_host.DETACH_FLAGS & 0x08000000, 0x08000000)
+            self.assertEqual(gaia_host.DETACH_FLAGS & 0x00000008, 0)
+
+
 if __name__ == '__main__':
     unittest.main()
+
+
+class ForcedStopTests(GaiaHostTests):
+    """kill ends a hung world without saving; force-restart then starts it from the
+    last completed save. Neither writes to map_saves."""
+
+    def test_kill_ends_the_server_without_a_save(self):
+        self.machine.up = True
+        write_save(self.repo / 'map_saves')
+        before = sorted(p.name for p in (self.repo / 'map_saves').iterdir())
+        result = self.host.kill()
+        self.assertEqual(result, {'killed': True, 'pid': 4242, 'reason': 'forced stop', 'released_locks': []})
+        self.assertIn(['kill_tree', 4242], self.machine.calls)
+        self.assertFalse(any(call[:2] == ['query', 'save_shutdown'] for call in self.machine.calls))
+        self.assertEqual(sorted(p.name for p in (self.repo / 'map_saves').iterdir()), before)
+        self.assertEqual(self.host.read_state()['phase'], 'killed')
+        self.assertEqual(self.host.status()['state'], 'stopped')
+
+    def test_kill_releases_the_dead_servers_lock_files(self):
+        # A world killed mid-load leaves BYOND's .lk files; start must not refuse on them.
+        self.machine.up = True
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '2.sav.lk').write_bytes(b'')
+        with self.assertRaisesRegex(gaia_host.Refused, 'lock files'):
+            gaia_host.check_save(saves)
+        result = self.host.kill()
+        self.assertEqual(['2.sav.lk'], result['released_locks'])
+        gaia_host.check_save(saves)
+
+    def test_kill_keeps_lock_files_while_the_server_lives(self):
+        self.machine.up = True
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        self.machine.kill_tree = lambda pid: self.machine.calls.append(['kill_tree', pid])  # it survives
+        self.assertEqual([], self.host.kill()['released_locks'])
+        self.assertTrue((saves / '1.sav.lk').exists())
+
+    def test_unlock_clears_a_stopped_servers_locks_and_checks_the_save(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        answer = self.host.unlock()
+        self.assertEqual(['1.sav.lk'], answer['removed'])
+        self.assertFalse(answer['server_running'])
+        self.assertNotIn('save_refused', answer)
+        self.assertEqual({'removed': [], 'forced': False, 'server_running': False, 'save': answer['save']}, self.host.unlock())
+
+    def test_unlock_refuses_a_running_server_unless_forced(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '2.sav.lk').write_bytes(b'')
+        self.machine.up = True
+        with self.assertRaisesRegex(gaia_host.Refused, 'running'):
+            self.host.unlock()
+        self.assertTrue((saves / '2.sav.lk').exists())
+        answer = self.host.unlock(force=True)
+        self.assertEqual((['2.sav.lk'], True, True), (answer['removed'], answer['forced'], answer['server_running']))
+
+    def test_unlock_refuses_while_an_action_runs(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('busy', encoding='utf-8')
+        self.host.record(action='start', operation='x', phase='loading')
+        with self.assertRaisesRegex(gaia_host.Refused, 'action is still running: start'):
+            self.host.unlock()
+
+    def test_kill_refuses_a_stopped_server(self):
+        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
+            self.host.kill()
+
+    def test_kill_leaves_a_stuck_save_worker_its_record(self):
+        self.give_token()
+        self.machine.up = True
+        operation = self.accept('stop')
+        self.host.kill()
+        self.assertEqual(self.host.read_state()['operation'], operation)
+        self.assertTrue(self.host.lock.exists())
+
+    def test_force_restart_waits_for_the_stuck_worker_then_starts(self):
+        self.machine.up = True
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('stuck', encoding='utf-8')
+        real_sleep = self.machine.sleep
+        def sleep(seconds):
+            real_sleep(seconds)
+            self.host.lock.unlink(missing_ok=True)  # the worker sees the port close and fails
+        self.machine.sleep = sleep
+        result = self.host.force_restart()
+        self.assertTrue(result['accepted'] and result['killed'])
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
+
+    def test_force_restart_of_a_stopped_server_is_a_start(self):
+        result = self.host.force_restart()
+        self.assertTrue(result['accepted'])
+        self.assertFalse(result['killed'])
+        self.assertNotIn(['kill_tree', 4242], self.machine.calls)
+
+    def test_force_restart_gives_up_on_a_lock_that_never_clears(self):
+        self.host.lock.parent.mkdir(parents=True, exist_ok=True)
+        self.host.lock.write_text('stuck', encoding='utf-8')
+        with self.assertRaisesRegex(gaia_host.Refused, 'still has an action running'):
+            self.host.force_restart(lock_wait_seconds=10)
+
+
+class InterruptedSaveTests(GaiaHostTests):
+    """A crash during a save leaves map_saves/ without a marker; the completed
+    generation in map_backups/ is swapped back in before the start."""
+
+    def interrupt(self, backup_marker=MARKER):
+        saves = self.repo / 'map_saves'
+        write_save(self.repo / 'map_backups', marker=backup_marker)
+        (saves / 'map.txt').write_text('NOMADS_GAIA\n', encoding='utf-8')
+        (saves / '1.sav').write_bytes(b'half written')
+        return saves
+
+    def test_start_swaps_the_completed_backup_in(self):
+        saves = self.interrupt()
+        self.machine.clock = 86400.0
+        operation = self.accept('start')
+        self.host.work('start', operation)
+        self.assertEqual(self.host.read_state()['generation'], MARKER)
+        self.assertEqual((saves / 'save_complete.txt').read_text(encoding='utf-8'), MARKER)
+        self.assertEqual((saves / '2.sav').read_bytes(), b'level 2')
+        self.assertFalse((self.repo / 'map_backups').exists())
+        kept = list(self.repo.glob('map_saves.interrupted-*'))
+        self.assertEqual(len(kept), 1)
+        self.assertEqual((kept[0] / '1.sav').read_bytes(), b'half written')
+        self.assertFalse((kept[0] / 'save_complete.txt').exists())
+
+    def test_only_the_newest_interrupted_copy_is_kept(self):
+        older = self.repo / 'map_saves.interrupted-20260101-000000'
+        older.mkdir()
+        (older / '1.sav').write_bytes(b'old')
+        self.interrupt()
+        self.host.work('start', self.accept('start'))
+        self.assertFalse(older.exists())
+        self.assertEqual(len(list(self.repo.glob('map_saves.interrupted-*'))), 1)
+
+    def test_an_unusable_backup_leaves_the_interrupted_save_alone(self):
+        saves = self.interrupt()
+        (self.repo / 'map_backups' / '2.sav').write_bytes(b'')
+        with self.assertRaisesRegex(gaia_host.Refused, 'round.json and save_complete.txt'):
+            self.host.request('start')
+        self.assertEqual((saves / '1.sav').read_bytes(), b'half written')
+        self.assertTrue((self.repo / 'map_backups' / 'map.txt').exists())
+        self.assertEqual(list(self.repo.glob('map_saves.interrupted-*')), [])
+
+    def test_a_restart_intent_is_never_recovered_over(self):
+        saves = self.interrupt()
+        (saves / 'restart_intent.json').write_text(json.dumps({'version': 1, 'generation': MARKER}), encoding='utf-8')
+        with self.assertRaises(gaia_host.Refused):
+            self.host.request('start')
+        self.assertTrue((self.repo / 'map_backups' / 'save_complete.txt').exists())
+        self.assertEqual((saves / '1.sav').read_bytes(), b'half written')
+
+    def test_a_completed_save_is_not_touched(self):
+        write_save(self.repo / 'map_saves')
+        write_save(self.repo / 'map_backups', marker='round-v2:' + 'f' * 32)
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['generation'], MARKER)
+        self.assertTrue((self.repo / 'map_backups' / 'save_complete.txt').exists())
+
+
+class WatchdogTests(unittest.TestCase):
+    """The watch loop starts a world again that exited on its own, and force-restarts one
+    that stopped answering, from its last completed save (ideas from tgstation-server)."""
+
+    tearDown = GaiaHostTests.tearDown
+    give_token = GaiaHostTests.give_token
+    accept = GaiaHostTests.accept
+
+    def setUp(self):
+        GaiaHostTests.setUp(self)
+        self.logged = []
+        self.host.log = self.logged.append
+        self.give_token()
+        write_save(self.repo / 'map_saves')
+        self.machine.up = True
+        self.machine.clients = 1
+
+    def starts(self):
+        return [argv for argv in self.machine.detached if argv[-2] == 'start']
+
+    def test_a_crashed_world_is_started_again_after_the_grace(self):
+        self.host.watch_step(None)
+        self.assertTrue(self.host.running_file.exists(), 'a world seen answering is one that should run')
+        self.machine.up = False
+        self.assertEqual(self.host.watch_step(None), (None, 10))
+        self.machine.clock += 119
+        self.host.watch_step(None)
+        self.assertEqual(self.starts(), [], 'a reboot closes the port for a moment')
+        self.machine.clock += 1
+        self.host.watch_step(None)
+        self.assertEqual(len(self.starts()), 1)
+        record = json.loads(self.host.watchdog_file.read_text())
+        self.assertEqual((record['last_event'], record['restarts']), ('crash', [120]))
+        self.assertEqual(self.host.status()['watchdog']['last_event'], 'crash')
+
+    def test_a_stopped_or_killed_world_stays_down(self):
+        self.host.watch_step(None)
+        self.machine.clients = 0
+        self.host.work('stop', self.accept('stop'))
+        self.assertFalse(self.host.running_file.exists())
+        self.machine.up = True
+        self.host.watch_step(None)
+        self.host.kill()
+        self.assertFalse(self.host.running_file.exists())
+        for _ in range(5):
+            self.machine.clock += 300
+            self.host.watch_step(None)
+        self.assertEqual(self.starts(), [])
+
+    def test_the_watchdog_gives_up_after_too_many_restarts_in_an_hour(self):
+        self.host.watch_step(None)
+        for expected in (1, 2, 3, 3):
+            self.machine.up = False
+            self.host.lock.unlink(missing_ok=True)  # the start worker finished
+            self.host.watch_step(None)
+            self.machine.clock += 120
+            self.host.watch_step(None)
+            self.assertEqual(len(self.starts()), expected)
+            self.machine.clock += 60
+        self.assertIn('gave_up', json.loads(self.host.watchdog_file.read_text()))
+        self.assertFalse(self.host.running_file.exists())
+        # A start by a person watches it again.
+        self.machine.up = False
+        self.host.lock.unlink(missing_ok=True)
+        self.host.do_start('op')
+        self.assertNotIn('gave_up', json.loads(self.host.watchdog_file.read_text()))
+
+    def test_a_hung_world_is_force_restarted_from_its_save(self):
+        self.host.watch_step(None)
+        self.machine.hung = True
+        self.machine.clock += 9 * 60
+        self.host.watch_step(None)
+        self.assertNotIn(['kill_tree', 4242], self.machine.calls)
+        self.machine.clock += 60
+        self.host.watch_step(None)
+        self.assertIn(['kill_tree', 4242], self.machine.calls)
+        self.assertFalse(any(call[:2] == ['query', 'save_shutdown'] for call in self.machine.calls))
+        self.assertEqual(len(self.starts()), 1)
+        self.assertTrue(self.host.running_file.exists())
+        self.assertEqual(json.loads(self.host.watchdog_file.read_text())['last_event'], 'hang')
+
+    def test_a_world_busy_saving_gets_the_save_timeout(self):
+        self.config['save_timeout_seconds'] = 3600
+        self.machine.busy = True
+        self.host.watch_step(None)
+        self.machine.hung = True
+        self.machine.clock += 59 * 60
+        self.host.watch_step(None)
+        self.assertNotIn(['kill_tree', 4242], self.machine.calls)
+        self.machine.clock += 60
+        self.host.watch_step(None)
+        self.assertIn(['kill_tree', 4242], self.machine.calls)
+
+    def test_a_world_that_never_answered_is_left_alone(self):
+        self.machine.hung = True
+        self.host.mark_running()
+        for _ in range(10):
+            self.machine.clock += 600
+            self.host.watch_step(None)
+        self.assertNotIn(['kill_tree', 4242], self.machine.calls)
+
+    def test_a_thawed_world_gets_a_fresh_allowance(self):
+        self.machine.clients = 0
+        self.host.watch_step(None)
+        self.machine.clock += 15 * 60
+        (self.repo / 'map_saves' / 'save_complete.txt').touch()
+        self.host.freeze()
+        self.host.watch_step(None)
+        self.machine.clock += 3600
+        self.host.thaw()
+        self.machine.hung = True
+        self.host.watch_step(None)
+        self.assertNotIn(['kill_tree', 4242], self.machine.calls)
+
+    def test_low_memory_leaves_a_crashed_world_cold(self):
+        self.host.watch_step(None)
+        self.machine.up = False
+        self.machine.free_mb = 500
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(self.starts(), [])
+        self.assertEqual(self.host.status()['state'], 'cold')
+
+    def test_a_refused_start_is_tried_again_later(self):
+        self.host.watch_step(None)
+        self.machine.up = False
+        self.machine.task_is_ready = False
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.assertEqual(self.host.watch_step(None), (None, 300))
+        self.assertIn('not Ready', json.loads(self.host.watchdog_file.read_text())['last_refusal'])
+        self.machine.task_is_ready = True
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(len(self.starts()), 1)
+
+    def test_the_watchdog_can_be_switched_off(self):
+        self.config['watchdog'] = False
+        self.host.watch_step(None)
+        self.machine.up = False
+        for _ in range(3):
+            self.machine.clock += 300
+            self.host.watch_step(None)
+        self.assertEqual(self.starts(), [])
+
+    def test_a_plain_host_has_no_staged_builds(self):
+        with self.assertRaisesRegex(gaia_host.Refused, 'region host'):
+            self.host.request_stage()
+        self.assertFalse(self.host.update_pending())

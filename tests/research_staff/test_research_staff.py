@@ -101,5 +101,41 @@ class DirectorTitle(unittest.TestCase):
         self.assertIn('H.civilization == faction', body)
 
 
+class TierUpgradeWithoutSubject(unittest.TestCase):
+    """A fresh tier-0 bench must accept coins before it has a subject.
+
+    Once every tier-0 node is done (e.g. persistent Gaia with a high baseline
+    era), a new bench could not be assigned anything (tier too low) and coins
+    were refused with "Assign this bench a research subject first" -- a
+    softlock reported by Nomads players.
+    """
+
+    def setUp(self):
+        self.text = BENCH.read_text(encoding='utf-8')
+        self.attackby = proc_body(
+            self.text, '/obj/structure/research_bench/attackby(')
+
+    def test_coins_are_taken_before_the_subject_check(self):
+        coin = self.attackby.index('if (!assigned_node && is_upgrade_coin(W))')
+        subject = self.attackby.index('Assign this bench a research subject first')
+        self.assertLess(coin, subject)
+        self.assertIn('try_feed_coins(W, user)', self.attackby[coin:subject])
+
+    def test_feed_coins_does_not_require_a_subject(self):
+        body = proc_body(
+            self.text, '/obj/structure/research_bench/proc/try_feed_coins(')
+        self.assertNotIn('assigned_node', body)
+        self.assertIn('era_max_tier()', body)
+        self.assertIn('is_upgrade_coin(W)', body)
+        self.assertIn('tier++', body)
+
+    def test_only_metal_coins_upgrade(self):
+        body = proc_body(
+            self.text, '/obj/structure/research_bench/proc/is_upgrade_coin(')
+        for coin in ('coppercoin', 'silvercoin', 'goldcoin'):
+            self.assertIn(f'/obj/item/stack/money/{coin}', body)
+        self.assertNotIn('istype(W, /obj/item/stack/money)', body)
+
+
 if __name__ == '__main__':
     unittest.main()

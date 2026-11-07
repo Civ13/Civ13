@@ -23,11 +23,23 @@ class NomadsCatalogTests(unittest.TestCase):
                     declarations[match[1]] = (identity[1].removeprefix('MAP_'), path)
         source = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text().split('/obj/map_metadata\n', 1)[0]
         admitted = set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', source))
-        self.assertEqual(set(declarations), admitted)
-        self.assertEqual(len(admitted), 26)
+        # Region-only profiles declared outside the Nomads catalog folder.
+        regions = {'/obj/map_metadata/nomads/barren', '/obj/map_metadata/nomads/barren/moon'}
+        self.assertEqual(set(declarations) | regions, admitted)
+        self.assertEqual(len(admitted), 28)
         dme = (ROOT/'civ13.dme').read_text().replace('\\', '/')
         for _, path in declarations.values():
             self.assertIn(str(path.relative_to(ROOT)).replace('\\', '/'), dme)
+
+    def test_every_region_map_profile_can_save(self):
+        # A shard-group region whose map metadata is missing here refuses
+        # every save-and-stop ("supports native BYOND Gaia and Europe only").
+        source = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text().split('/obj/map_metadata\n', 1)[0]
+        admitted = set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', source))
+        for path in (ROOT/'maps/space').glob('*.dmm'):
+            for profile in set(re.findall(r'/obj/map_metadata/nomads(?:/[a-z_]+)*', path.read_text())):
+                with self.subTest(map=path.name):
+                    self.assertIn(profile, admitted)
 
     def test_catalog_binds_every_authored_nomads_map_to_its_actual_id(self):
         declarations = {}

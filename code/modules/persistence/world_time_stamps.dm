@@ -103,7 +103,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"season_change_due" = list(/obj/map_metadata),
 	"round_started" = list(/obj/map_metadata/train_raid),
 	"round_deadline" = list(/obj/map_metadata/train_raid),
-	"created" = list(/datum/wound)
+	"created" = list(/datum/wound),
+	"last_recharge" = list(/obj/structure/survey_console)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)

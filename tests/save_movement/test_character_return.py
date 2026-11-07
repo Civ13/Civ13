@@ -522,6 +522,30 @@ class CharacterReturnTests(unittest.TestCase):
                 self.assertTrue(f.store.allow_new_character(f.lobby))
                 self.assertIsNone(f.registered['account'])
 
+    def test_new_character_owner_drops_stale_restored_registration(self):
+        # Gaia 2026-11-05 (Chasha): the restored body was dead, so a new
+        # character spawned and took ownership on Login. The old registration
+        # stayed and held Join forever once the new character died too.
+        f = ReturnFixture()
+        f.body.stat = 2
+        self.assertTrue(f.store.allow_new_character(f.lobby))
+        fresh = Body(f, f.home)
+        fresh.persistence_owner_ckey, fresh.persistence_restored = None, False
+        fresh.client = f.client
+        f.world.append(fresh)
+        fresh.record_persistence_owner = MethodType(f.proc('/mob/living/human/proc/record_persistence_owner', 'src', True), fresh)
+        fresh.record_persistence_owner()
+        self.assertIsNone(f.body.persistence_owner_ckey)
+        self.assertIsNone(f.registered['account'])
+        fresh.client, fresh.stat = None, 2
+        self.assertTrue(f.store.allow_new_character(f.lobby))
+        # The registered body itself logging in keeps its own registration.
+        f = ReturnFixture()
+        f.body.client = f.client
+        f.body.record_persistence_owner = MethodType(f.proc('/mob/living/human/proc/record_persistence_owner', 'src', True), f.body)
+        f.body.record_persistence_owner()
+        self.assertIs(f.registered['account'][1], f.body)
+
     def test_live_or_missing_registered_body_still_holds_join(self):
         # Only a fully destroyed registration is released; a body that still
         # exists (even outside the world list) or an extra live owner keeps the hold.
@@ -672,12 +696,13 @@ class CharacterReturnTests(unittest.TestCase):
             if 'new mobtype' in body:
                 self.assertLess(body.index('allow_new_character'), body.index('new mobtype'))
         sleep = adapter.extract(adapter.read(HELPERS), '/mob/living/human/verb/mob_sleep')
-        self.assertLess(sleep.index('enter_saved_bed_sleep()'), sleep.index('enter_protected_sleep()'))
+        self.assertLess(sleep.index('enter_saved_bed_sleep()'), sleep.index('enter_bed_sleep()'))
+        self.assertNotIn('enter_protected_sleep', sleep)
         self.assertIn('Only a completed world save preserves it on disk', sleep)
         wake = adapter.extract(adapter.read(HELPERS), '/mob/living/human/verb/mob_wakeup')
-        self.assertIn('persistence_bed_return_enabled() && !is_protected_sleep_location(src)', wake)
+        self.assertNotIn('complete_protected_wakeup', wake)
         self.assertLess(wake.index('persistence_sleep_transfer_blocked()', wake.index('spawn(300)')), wake.index('inducedSSD = FALSE'))
-        self.assertIn('if (in_protected_sleep_zone())', adapter.read('code/game/mob/living/carbon/human/human_life.dm'))
+        self.assertNotIn('in_protected_sleep_zone', adapter.read('code/game/mob/living/carbon/human/human_life.dm'))
 
 
 if __name__ == '__main__':

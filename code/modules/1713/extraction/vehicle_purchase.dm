@@ -29,7 +29,7 @@
 		switch (node["type"])
 			if ("/obj/item/stack/material/steel") key = "steel"
 			if ("/obj/item/stack/material/glass") key = "glass"
-			if ("/obj/item/stack/material/cloth") key = "cloth"
+			if ("/obj/item/stack/material/cloth", "/obj/item/stack/material/woolcloth") key = "cloth"
 			if ("/obj/item/stack/cable_coil") key = "cable"
 			if ("/obj/item/extraction_wheel_crate") key = "wheels"
 		if (!key) return null

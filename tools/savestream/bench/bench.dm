@@ -11,6 +11,9 @@
 //   read_stream     read every node of a stream through the helper
 //   write_savefile  replay a stream into a new /savefile (save-side memory today)
 //   write_stream    replay a stream into a new stream (save-side memory with the helper)
+//   read_text       build every entry shard and list block as the level reader does (src=stream)
+//   read_wire       the same through per-token wire decoding, the reader before savestream_text
+//   compare_text    build each both ways and compare the trees
 //
 // Writes bench_<mode>.json beside the dmb and appends phase markers to
 // bench_phases.log so an external sampler (diagnosis/address_space.py) can
@@ -95,6 +98,38 @@
 			phase("read_complete")
 			result["memory_peak_phase"] = proc_memory()
 			S.close()
+		// The level reader's two ways to build its scratch savefiles: one
+		// savefile-text request per entry shard and list block (read_text) or
+		// per-token wire decoding, one list at a time (read_wire, before the
+		// text request existed). compare_text checks they build the same tree.
+		if("read_text", "read_wire", "compare_text")
+			var/datum/save_stream/S = new
+			if(!S.open_read(src_file)) throw EXCEPTION(S.last_error)
+			var/list/state = list("nodes" = 0, "handed_back" = 0, "requests" = 0)
+			for(var/list/request in stream_read_requests(S))
+				var/savefile/text_tree
+				var/savefile/wire_tree
+				if(mode != "read_wire")
+					text_tree = new
+					var/missing = S.import_text(text_tree, request[1], request[2], request[3])
+					if(isnull(missing)) throw EXCEPTION("the stream library has no savestream_text")
+					state["handed_back"] += missing
+				if(mode != "read_text")
+					wire_tree = new
+					if(isnull(request[2]))
+						wire_fill(S, wire_tree, request[1], 256)
+					else
+						for(var/id = request[2], id <= request[3], id++)
+							wire_fill(S, wire_tree, "[request[1]]/[id]", 8)
+				if(mode == "compare_text")
+					state["nodes"] += compare_trees(text_tree, wire_tree, request[1], state)
+				state["requests"]++
+			result += state
+			result["helper"] = S.stats()
+			phase("read_complete")
+			result["memory_peak_phase"] = proc_memory()
+			S.close()
+			if(state["mismatches"]) throw EXCEPTION("[state["mismatches"]] mismatches")
 		if("write_savefile", "write_stream")
 			var/datum/save_stream/source = new
 			if(!source.open_read(src_file)) throw EXCEPTION(source.last_error)
@@ -253,3 +288,36 @@
 		T["b"] << b
 		return T.ExportText("a") == T.ExportText("b")
 	return a == b
+
+// One request per entry shard and per block of 512 list IDs, as the level
+// reader makes them: list(base, first, last), first/last null for a shard.
+/proc/stream_read_requests(datum/save_stream/S)
+	var/list/requests = list()
+	for(var/shard in S.dir("/entries"))
+		requests[++requests.len] = list("/entries/[shard]", null, null)
+	var/top = 0
+	for(var/id in S.dir("/lists"))
+		top = max(top, text2num(id))
+	for(var/block = 0, block * 512 < top, block++)
+		requests[++requests.len] = list("/lists", block * 512 + 1, min(top, block * 512 + 512))
+	return requests
+
+/proc/wire_fill(datum/save_stream/S, savefile/T, path, batch_size)
+	var/list/nodes = S.subtree(path, batch_size)
+	for(var/i = 1, i <= nodes.len, i += 2)
+		T[nodes[i]] << nodes[i + 1]
+
+/proc/compare_trees(savefile/A, savefile/B, path, list/state)
+	A.cd = path
+	B.cd = path
+	var/list/a_children = A.dir.Copy()
+	var/list/b_children = B.dir.Copy()
+	. = 1
+	if(a_children.len != b_children.len || length(a_children - b_children) || !values_match(A[path], B[path]))
+		state["mismatches"]++
+		if(!state["examples"]) state["examples"] = list()
+		var/list/examples = state["examples"]
+		if(examples.len < 20) examples += path
+		return
+	for(var/child in a_children)
+		. += compare_trees(A, B, "[path]/[child]", state)

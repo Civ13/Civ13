@@ -82,5 +82,5 @@
     }
   ],
   "stack_admission": "\tif (!can_use(required))\n\t\tif (produced>1)\n\t\t\tto_chat(user, \"<span class='warning'>You haven't got enough [src] to build \\the [produced] [recipe.title]\\s!</span>\")\n\t\telse\n\t\t\tto_chat(user, \"<span class='warning'>You haven't got enough [src] to build \\the [recipe.title]!</span>\")\n\t\treturn\n",
-  "stack_debit_entry": "\tif (joinery && !joinery.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the joinery materials and tools in place until construction completes.\"))\n\t\treturn\n\tif (carving && !carving.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the sandstone and selected carving tools in place until carving completes.\"))\n\t\treturn\n\tif (use(required, (joinery || carving) ? null : H))\n"
+  "stack_debit_entry": "\tif (joinery && !joinery.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the joinery materials and tools in place until construction completes.\"))\n\t\treturn\n\tif (carving && !carving.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the sandstone and selected carving tools in place until carving completes.\"))\n\t\treturn\n\tif (cloth_payment && !cloth_payment.valid())\n\t\tto_chat(user, SPAN_WARNING(\"Keep the selected cloth and other materials in place until construction completes.\"))\n\t\treturn\n\tif (use(required, (joinery || carving) ? null : H))\n"
 }

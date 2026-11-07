@@ -52,7 +52,7 @@ var/weather_runtime_error = FALSE
 	text2file("commit=[world.params["tested_commit"]] BYOND=[world.byond_version].[world.byond_build] nominal_step_seconds=1", "metadata.txt")
 	world.log << "WEATHER START"
 	try
-		weather_assert(world.byond_version == 516 && world.byond_build == 1681, "Pinned runtime required")
+		weather_assert("[world.byond_version].[world.byond_build]" == world.params["byond_pin"], "Pinned runtime required")
 		map = new /obj/map_metadata/weather_probe
 		map.civilizations = TRUE
 		season = "WINTER"
@@ -138,6 +138,16 @@ var/weather_runtime_error = FALSE
 		wet.loc = water
 		wet.handle_environment()
 		weather_assert(wet.cold_wetness == 1, "Immersion must saturate wetness without exceeding its bound")
+		var/mob/living/human/weather_probe/dry = new(locate(1,1,1))
+		var/turf/covered_water = new /turf/floor/beach/water(locate(11,10,1))
+		new /obj/covers/wood(covered_water)
+		dry.loc = covered_water
+		dry.handle_environment()
+		weather_assert(dry.cold_wetness == 0, "A floor built over water must keep its occupant dry")
+		var/turf/ice = new /turf/floor/beach/water/ice(locate(12,10,1))
+		dry.loc = ice
+		dry.handle_environment()
+		weather_assert(dry.cold_wetness == 0, "Standing on ice must not soak the occupant")
 #endif
 		weather_assert(!weather_runtime_error, "Runtime error invalidates observations")
 		text2file("WEATHER PASS", "weather-result.txt")

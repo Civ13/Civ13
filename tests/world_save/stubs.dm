@@ -184,6 +184,10 @@ var/list/mutate_on_tick = null
 		if (scalar.len != 2 || scalar["kind"] != "value" || !("value" in scalar))
 			throw EXCEPTION("Invalid irrigation scalar envelope")
 		return scalar["value"]
+	// Format 3 fields are envelopes, or raw scalars under value format 2.
+	value = persistence_saved_scalar(value)
+	if (islist(value))
+		throw EXCEPTION("Invalid irrigation scalar envelope")
 	return value
 
 /proc/fixture_validate_saved_irrigation(savefile/F, version)
@@ -193,7 +197,9 @@ var/list/mutate_on_tick = null
 		// freshwater or salinity from a name, artwork or the live destination.
 		if (fields.Find("irrigation") || fields.Find("irrigation_overlay"))
 			throw EXCEPTION("Unversioned irrigation entry requires explicit review")
-		if (fields.Find("name"))
+		// Only legacy version-2 files can hold a named channel without flags; a
+		// filled-in channel in a current save keeps its name and is not one.
+		if (version == 2 && fields.Find("name"))
 			var/saved_name = irrigation_saved_scalar(F, "name", version)
 			if (list("irrigation channel", "flooded irrigation channel", "flooded saltwater irrigation channel").Find(saved_name))
 				throw EXCEPTION("Legacy named irrigation channel has no durable state")
@@ -312,6 +318,7 @@ var/list/mutate_on_tick = null
 	var/age6_done
 	var/age7_done
 	var/age8_done
+	var/age9_done
 // Ordinary-map fixture only. Surface admission is tested by extraction probes;
 // accidental activation here must fail instead of supplying synthetic success.
 /obj/map_metadata/extraction_survival

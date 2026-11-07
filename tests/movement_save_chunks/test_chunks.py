@@ -125,7 +125,8 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('moving_save_roots = list()\n\tmoving_save_chunk = null', FUNCTIONS)
 
     def test_detached_replay_and_origin_owner(self):
-        self.assertIn('var/value = staged[path]\n\t\tdestination[path] << value', SAVING)
+        self.assertIn('var/value = staged[path]\n', SAVING)
+        self.assertIn('if(saving_stream_native_paths) value = note_stream_native_value(destination, path, value)\n\t\tdestination[path] << value', SAVING)
         self.assertIn('frame.source != moving_root["origin"]', FUNCTIONS)
         self.assertIn('Moving save root entered a captured container', FUNCTIONS)
         self.assertIn('Moving save roster member disappeared or changed ownership', SAVING)
@@ -157,6 +158,8 @@ class ProductionBoundaryTests(unittest.TestCase):
             '/mob/living/simple_animal/before_save',
             '/mob/living/simple_animal/persistence_runtime_var',
             '/mob/living/simple_animal/hostile/persistence_runtime_var',
+            # Audited for #3883: a nonyielding key comparison; raiders never save.
+            '/mob/living/simple_animal/hostile/human/nomad_raider/persistence_runtime_var',
             '/mob/living/simple_animal/pet/persistence_runtime_var',
         }, 'New animal projection hooks require a nonyielding/ownership audit')
 

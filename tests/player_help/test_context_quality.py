@@ -28,11 +28,13 @@ class ContextQualityTests(unittest.TestCase):
             instance.close()
         self.temp.cleanup()
 
-    def ask(self, corpus, question, num_ctx=None, game_context=None):
+    def ask(self, corpus, question, num_ctx=None, game_context=None, evidence_chars=None):
         config = {'enabled': True, 'model': 'test', 'endpoint': 'http://localhost/api/chat',
                   'workers': 1, 'timeout_seconds': 1}
         if num_ctx is not None:
             config['num_ctx'] = num_ctx
+        if evidence_chars is not None:
+            config['evidence_chars'] = evidence_chars
         instance = bridge.Bridge(self.root / ('spool' + str(len(self.instances))), config, corpus,
                                  lambda *args: self.calls.append(args) or {'message': {'content': 'Answer'}})
         self.instances.append(instance)
@@ -102,6 +104,14 @@ class ContextQualityTests(unittest.TestCase):
         corpus.append({'topic': 'farming farm crops', 'source': 'wiki', 'text': 'PLAYER WIKI plant crops in tilled soil'})
         prompt = self.ask(corpus, 'How do I grow crops?')['messages'][0]['content']
         self.assertIn('plant crops in tilled soil', prompt)
+
+    def test_evidence_chars_caps_the_evidence_block(self):
+        corpus = [{'topic': 'iron ore ' + str(i), 'source': 'wiki', 'text': 'PLAYER WIKI iron ore ' + str(i) + ' ' + 'detail ' * 600} for i in range(12)]
+        full = self.ask(corpus, 'Where is iron ore?', num_ctx=32768)['messages'][0]['content']
+        capped = self.ask(corpus, 'Where is iron ore?', num_ctx=32768, evidence_chars=8000)['messages'][0]['content']
+        self.assertLess(len(capped), len(full) - 8000)
+        self.assertIn('PLAYER WIKI iron ore', capped)
+        self.assertIn('"context_truncated": true', capped)
 
     def test_prompt_fits_configured_context_window(self):
         corpus = [{'topic': 'iron ore ' + str(i), 'source': 'wiki', 'text': 'PLAYER WIKI iron ore ' + str(i) + ' ' + 'detail ' * 600} for i in range(12)]

@@ -280,6 +280,21 @@ var/global/list/node_grid_col_cache = null
 	// Digital Age consumer hardware: smartphones, LED lighting, lithium-ion storage.
 	register_research_node(new /datum/research_node("consumer_electronics", "Consumer Electronics", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_networks"), 9))
 	register_research_node(new /datum/research_node("uav_drones", "Drones", "Military", 450, 8, RESEARCH_MODE_ANALYSIS, list("consumer_electronics","missiles"), 9))
+	// Spaceflight (space settlement phase 1): probes fly over a survey map of a
+	// barren world. Samples a probe brings home are analysed into notes on
+	// Planetary Survey. Not PROTOTYPE mode: that marks an era-changing capstone.
+	// The Moon opens in 1969 (Val, 2026-11-06), so the chain follows Missiles and
+	// a Cold War bench (tier 7) can research it; era 9 keeps it from being
+	// granted for free before 2026. Mars waits for 2026 (survey_region_open).
+	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("missiles"), 9))
+	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 7, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
+	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
+	register_research_node(new /datum/research_node("sealed_habitats", "Sealed Habitats", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
+	register_research_node(new /datum/research_node("life_support", "Life Support", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
+	register_research_node(new /datum/research_node("pressure_suits", "Pressure Suits", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
+	register_research_node(new /datum/research_node("off_world_mining", "Off-world Mining", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("pressure_suits"), 9))
+	register_research_node(new /datum/research_node("surface_vehicles", "Surface Vehicles", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("off_world_mining"), 9))
+	register_research_node(new /datum/research_node("local_resources", "Local Resources", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("surface_vehicles"), 9))
 	// --- Industrial: Textiles gateway (the clothing lines live in the
 	// standalone Tailoring tree, registered at the bottom of this proc) ---
 	register_research_node(new /datum/research_node("weaving", "Weaving", "Industrial", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
@@ -695,6 +710,34 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
+		// --- rocketry / planetary_survey / crewed_flight / sealed_habitats / life_support / pressure_suits / off_world_mining / surface_vehicles / local_resources (9) ---
+		"/obj/structure/launch_rail" = "rocketry",
+		"/obj/item/space_probe" = "rocketry",
+		"/obj/structure/survey_console" = "rocketry",
+		"/obj/item/space_probe/advanced" = "planetary_survey",
+		"/obj/structure/region_gate/trail_marker/launch_pad" = "crewed_flight",
+		"/obj/structure/crewed_lander" = "crewed_flight",
+		"/obj/item/habitat_kit" = "sealed_habitats",
+		"/obj/item/habitat_kit/greenhouse" = "sealed_habitats",
+		"/obj/item/habitat_kit/workshop" = "sealed_habitats",
+		"/obj/item/habitat_kit/storage" = "sealed_habitats",
+		"/obj/item/habitat_kit/airlock" = "sealed_habitats",
+		"/obj/item/habitat_sealant" = "sealed_habitats",
+		"/obj/structure/life_support/electrolyser" = "life_support",
+		"/obj/structure/life_support/scrubber" = "life_support",
+		"/obj/structure/life_support/heater" = "life_support",
+		"/obj/structure/life_support/water_recycler" = "life_support",
+		"/obj/structure/life_support/oxygen_reclaimer" = "life_support",
+		"/obj/item/clothing/suit/pressure_suit" = "pressure_suits",
+		"/obj/item/clothing/head/pressure_helmet" = "pressure_suits",
+		"/obj/item/pressure_tank" = "pressure_suits",
+		"/obj/item/pressure_suit_patch" = "pressure_suits",
+		"/obj/structure/drill/regolith_rig" = "off_world_mining",
+		"/obj/structure/reagent_dispensers/ice_melter" = "off_world_mining",
+		"/obj/structure/car_workshop/rover_bay" = "surface_vehicles",
+		"/obj/structure/rover_charger" = "surface_vehicles",
+		"/obj/structure/closet/crate/rover_trailer" = "surface_vehicles",
+		"/obj/structure/reagent_dispensers/propellant_plant" = "local_resources",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
@@ -714,8 +757,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (13) ---
+		// --- electricity (15) ---
 		"/obj/item/connector" = "electricity",
+		"/obj/item/connector/bus_tie" = "electricity",
+		"/obj/item/connector/riser" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
@@ -751,6 +796,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fluid_tank" = "factories",
 		"/obj/structure/fluid_vessel" = "factories",
 		"/obj/structure/fluid_intake" = "factories",
+		"/obj/structure/water_tap" = "factories",
+		"/obj/structure/shower/piped" = "factories",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/hangou" = "factories",
 		"/obj/item/weapon/storage/ww2" = "factories",
 		"/obj/structure/closet" = "factories",
@@ -759,6 +806,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/radio" = "factories",
         "/obj/structure/telecom" = "factories",
         "/obj/structure/telecom/station" = "factories",
+        "/obj/structure/telecom/relay" = "factories",
         "/obj/structure/telecom/antenna" = "factories",
         "/obj/structure/telecom/tv" = "assembly_line",
         "/obj/structure/telecom/station/tv" = "assembly_line",
@@ -1319,6 +1367,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pot" = "pottery_storage",
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
+		"/obj/item/weapon/material/hatchet/chainsaw" = "power_tools",
 		"/obj/structure/drill" = "electricity",
 		"/obj/structure/drill/fracking" = "hydraulic_fracturing",
 		"/obj/structure/drill/sifter" = "electricity",

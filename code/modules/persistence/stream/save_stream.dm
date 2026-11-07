@@ -1,4 +1,5 @@
-// Stream save sessions (prototype, off by default; nothing in the game calls this yet).
+// Stream save sessions. World saves write level entries and lists through
+// this (level_stream.dm) when the shim and helper sit beside the .dmb.
 //
 // A /datum/save_stream writes or reads the same logical path -> value tree a
 // level /savefile holds, but through tools/savestream: a 32-bit call_ext shim
@@ -44,9 +45,25 @@
 	scratch = null
 	return ..()
 
+// A dropped handle must not leave its helper running: the helper holds the
+// file open, and Windows cannot replace an open file at the next save.
+/datum/save_stream/Del()
+	if(id) abort()
+	..()
+
 /datum/save_stream/proc/available()
 	if(!fexists(lib) || !fexists(helper))
 		last_error = "stream save library or helper is missing"
+		return FALSE
+	return TRUE
+
+// TRUE when the library loads and answers; needs call_ext (a trusted daemon).
+/datum/save_stream/proc/probe()
+	if(!available()) return FALSE
+	var/reply = lib_call("savestream_version", list())
+	if(failed(reply)) return FALSE
+	if(!length(reply))
+		last_error = "stream save library gave no version"
 		return FALSE
 	return TRUE
 
@@ -158,8 +175,10 @@
 
 // Returns the stored value; `found` is set FALSE for a missing path.
 /datum/save_stream/var/found = FALSE
+// In write mode this reads back the last value written to path.
 /datum/save_stream/proc/get(path)
-	if(mode != "read") CRASH("save stream is not reading")
+	if(mode != "read" && mode != "write") CRASH("save stream is not open")
+	if(mode == "write" && !flush()) CRASH("stream write failed before reading [path]: [last_error]")
 	var/reply = lib_call("savestream_get", list(id, path))
 	found = FALSE
 	if(failed(reply)) CRASH("stream read failed at [path]: [last_error]")
@@ -197,6 +216,68 @@
 		cursor[1] = colon + 1 + plen
 		nodes += list(decode(reply, cursor))
 	return nodes
+
+// Index position of the first node at or after path.
+/datum/save_stream/proc/seek(path)
+	if(mode != "read") CRASH("save stream is not reading")
+	var/reply = lib_call("savestream_seek", list(id, path))
+	if(failed(reply)) CRASH("stream seek failed at [path]: [last_error]")
+	return text2num(reply)
+
+// Every node at path or beneath it, in path order, as a flat (path, value)
+// list. Sorted paths keep a subtree contiguous: "/" sorts before digits, so
+// /lists/12 and /lists/12/... come before /lists/120.
+/datum/save_stream/proc/subtree(path, batch_size = 64)
+	var/list/found_nodes = list()
+	var/prefix = "[path]/"
+	var/prefix_length = length(prefix)
+	var/start = seek(path)
+	while(TRUE)
+		var/list/nodes = iterate(start, batch_size)
+		if(!nodes.len) break
+		for(var/i = 1, i <= nodes.len, i += 2)
+			var/node = nodes[i]
+			if(node != path && copytext(node, 1, prefix_length + 1) != prefix) return found_nodes
+			found_nodes += node
+			found_nodes += list(nodes[i + 1])
+		start = next_index
+		batch_size = min(batch_size * 2, 512)
+	return found_nodes
+
+// Builds the subtree at base (or, with first and last, base's numeric
+// children first..last) inside S with one native ImportText() call. The
+// helper renders the nodes as savefile text and names the few with no exact
+// text form (text macros, value files, inf/nan), which are fetched one by one.
+// Decoding every wire token in DM instead made a Gaia-sized load take tens of
+// minutes. Returns the number of nodes, or null when the shim or helper
+// predates the text request; the caller then falls back to subtree().
+/datum/save_stream/var/text_supported = TRUE
+/datum/save_stream/proc/import_text(savefile/S, base, first, last)
+	if(mode != "read") CRASH("save stream is not reading")
+	if(!text_supported) return null
+	var/request = isnull(first) ? "[base]" : "[base]\n[first]\n[last]"
+	var/reply = lib_call("savestream_text", list(id, request))
+	if(failed(reply))
+		// An older shim has no savestream_text export, an older helper no OP_TEXT.
+		if(findtext(last_error, "call_ext savestream_text failed") == 1 || last_error == "unknown op")
+			text_supported = FALSE
+			return null
+		CRASH("stream text read failed at [base]: [last_error]")
+	var/semi = findtext(reply, ";")
+	var/missing_count = text2num(copytext(reply, 1, semi))
+	var/position = semi + 1
+	var/list/missing = list()
+	for(var/i = 1, i <= missing_count, i++)
+		var/colon = findtext(reply, ":", position)
+		var/path_length = text2num(copytext(reply, position + 1, colon))
+		missing += copytext(reply, colon + 1, colon + 1 + path_length)
+		position = colon + 1 + path_length
+	if(position <= length(reply))
+		S.ImportText(base, copytext(reply, position))
+	for(var/path in missing)
+		var/value = get(path)
+		if(found) S[path] << value
+	return missing_count
 
 // One value as a wire token. DM's jointext() and "[]" embedding drop text
 // macros (\improper and friends) from saved names, so text that holds one is

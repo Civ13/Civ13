@@ -22,6 +22,40 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-07: sparse building levels -->
+An added open-air building level (z above `building_base_maxz()`, not a dug
+cave) is saved sparsely: `sparse_level_kind()` in `functions.dm` chooses it,
+the level index gets a `/sparse` header (`kind`, `turf`, `zone`, `cells`) and
+`/map/<z>/<y>/<x>` holds only the cells that differ from the baseline turf in
+the baseline area (another type, a non-default saved field, saveable contents
+or another area; `sparse_baseline_cell()`). The loader regenerates every other
+cell (`Load_World` resets a reloaded level's unsaved cells; a restore already
+allocated the baseline) and the preflight, zone capture, roof preflight and
+reachability walks read the saved cells through `sparse_level_cells()` and
+`level_turf_refs()`. `sparse_level_header()` checks presence through the
+directory: reading an absent savefile key creates it. The baseline zone fills
+`validated_zone_grid` for unsaved cells. Fixtures set
+`map_storage.sparse_level_override = list("<z>" = baseline turf)`; the
+roundtrip fixture saves its level 2 sparsely in every variant. A Gaia-sized
+empty level measured 34 MB and 9 s as a full level, 40 KB sparse.
+
+<!-- 2026-11-05: interrupted saves, structural candidate check, host-requested save -->
+A save deletes `map_saves/save_complete.txt` first and writes it last, so a
+crash in between leaves files without a marker. `map_storage.recover_interrupted_save()`
+(startup, `code/setup.dm`) and `recover_interrupted_save` in
+`scripts/gaia-host/gaia_host.py` (before `start`) put the completed generation
+from `map_backups/` back when its marker, round.json, map.txt and levels agree;
+the host keeps the interrupted files as `map_saves.interrupted-<time>`. Nothing
+is restored while a restart intent exists. An ordinary save's candidate
+validation is structural (grid, entry set and types, owners, contents); field
+values are trusted from the export, `validated.json` is not written by the
+save, and the next full preflight on disk writes it instead, so the restart
+transaction's repeated identity checks and the next startup skip the walk.
+Debug recovery still walks the candidate in full. The lifecycle Topic action
+`save_idle` (token only, no session) runs the empty-world save the persistence
+loop would run, or answers `save = skipped:<reason>`; the host watches the
+marker as before. `tests/save_policy` and `tests/gaia_host` cover these.
+
 <!-- 2026-11-05: restore contract -->
 Restore contract (`code/modules/persistence/restore_contract.dm`): a load builds
 each saved atom with `new type(loc)` before its fields arrive, and the saver
@@ -40,14 +74,28 @@ Omitted `pixel_x`/`pixel_y` return to their default on load.
 fails on a scalar field that differs between builds unless `known_drift.txt`
 lists it.
 
-<!-- 2026-11-05: stream save prototype -->
-`tools/savestream` and `code/modules/persistence/stream/save_stream.dm` stream a
-level's path/value tree through a 32-bit call_ext shim into a 64-bit helper, so
-Dream Daemon never builds the /savefile tree. Off by default with no game callers;
-`Save_World`/`Load_World` are unchanged. Keep its paths identical to the savefile
-paths so wiring it in stays a sink swap at `record_save_capture_path` writes.
-Offline: `python3 -m unittest tests/savestream/test_helper.py`; native:
-`python3 tests/savestream/run_native.py`. Benchmarks run on save copies only.
+<!-- 2026-11-05: stream-backed levels (format 5) -->
+`tools/savestream` streams a level's path/value tree through a 32-bit call_ext
+shim into a 64-bit helper. Since format 5 (`stream/level_stream.dm`) every save
+uses it when `savestream.dll`/`savestream_helper.exe` (Linux: `libsavestream.so`,
+`savestream_helper`) sit beside the .dmb and call_ext works; otherwise the save
+falls back to formats 3/4 by itself. Format 5 is a format-4 index
+(`/format_version` 5, `/stream/file`) plus `<z>.stream.sav`, which
+`level_segment_files` lists so backups, rollback and the validation record carry
+it. Writes still go to a scratch savefile per segment, drained to the helper on
+rotation; readers get scratch files per 512-entry shard or list block, matched by
+name in `owns_file` because reading an absent savefile key creates it. Each shard
+or block is one `savestream_text` request: the helper renders it as savefile text
+for one native `ImportText()` and hands back by path the nodes text cannot carry
+(text macros, inf/nan, value files). Never decode wire tokens per node in DM on a
+load path: DM's positional text procs made a Gaia load take ~30 minutes. Keep stream
+paths identical to savefile paths. Close handles through `drop_segment_reader`/
+`drop_segment_writer`: an open helper keeps the file locked on Windows. Offline:
+`python3 -m unittest tests/savestream/test_helper.py` (also pins the shipped
+Windows binaries); native: `bash tests/world_save/run-stream.sh` (also checks the
+text read against the wire read). Timing: `bash tools/savestream/bench/run_level_bench.sh`
+(formats 3/4/5) and bench modes `read_text`/`read_wire`/`compare_text` on a real
+stream. Benchmarks run on save copies only.
 
 <!-- 2026-11-04: default allowlist fields -->
 Allowlisted types (turfs, wild plants, plain objects; `persistence_field_allowlist()`)
@@ -152,15 +200,16 @@ Resolve physical turfs through containers, and allow qdel's gc_destroyed mark
 to detach atoms before gcDestroyed is assigned. Raw loc/z assignment bypasses
 Move/forceMove; explicit transport paths use persistence_set_loc/set_z.
 tests/save_movement is offline source-flow evidence, not native acceptance or
-proof that all remaining raw location writers are covered. Protected sleep's
-physical predicate includes (1,1,1) and the existing admin sleep area; stale
-return coordinates inside that area must keep protection and refuse waking.
+proof that all remaining raw location writers are covered. The old sleep
+zone's predicate (`is_protected_sleep_location`) covers (1,1,1) and the admin
+sleep area; it is now used only to move old saved bodies out of that zone.
 
-Protected sleep relocates the body between z-levels, so release only its matching
-reciprocal buckle before entry or wake. Keep return coordinates captured before
-unbuckling, reject mismatched occupants, and leave sleep protection active on a
-failed wake. Both delayed verbs retain the initiating client/body and recheck the
-persistence gate at transfer time. Per-level saves still reject cross-z object
+Sleep keeps the body where it lies (Val, 2026-11-07): there is no off-map sleep
+zone or forced unconsciousness there. Wake Up returns a body found in the old
+zone to its saved turf when safe, releasing only its matching reciprocal buckle,
+and otherwise wakes it there and tells the player to ask an admin rather than
+holding them asleep. Both delayed verbs retain the initiating client/body and
+recheck the persistence gate before changing state. Per-level saves still reject cross-z object
 fields; never suppress that guard to hide a stale spatial relationship.
 `map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
 cross-level and duplicate-entry failures, including direct Save_World calls.

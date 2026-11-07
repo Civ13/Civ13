@@ -51,7 +51,7 @@ var/list/cross_observations = list()
 /turf/cross_level/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	if(src != cross_trigger || cross_mutated) return
 	if(cross_move_mode == "move")
-		var/first_ref = exporter.saving_references["\ref[cross_origin]"]
+		var/first_ref = exporter.saving_references[cross_origin]
 		// Per-level references have already reset on entry to the second plane.
 		// The old turf's own frame is independently cleared at completion.
 		var/turf/old_turf = get_turf(cross_origin)
@@ -268,7 +268,7 @@ var/list/cross_observations = list()
 	cross_check(!map_storage.BuildVarDirectory(F, I, 1), "deleted atom remained exportable")
 	var/obj/item/cross_target/replacement = new(locate(1,1,1))
 	// Exercise the collision branch deterministically; no allocator timing claim.
-	map_storage.saving_references["\ref[replacement]"] = ref
+	map_storage.saving_references[replacement] = ref
 	var/new_ref = map_storage.BuildVarDirectory(F, replacement, 1)
 	cross_check(new_ref != ref && map_storage.saving_reference_pins[new_ref] == replacement, "replacement inherited a deleted atom's entry")
 	map_storage.clear_bookkeeping()

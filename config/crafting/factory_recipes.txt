@@ -32,3 +32,9 @@ FACTORY: printed bag valve mask|/obj/item/bag_valve_mask|1|/obj/item/stack/mater
 FACTORY: printed hardhat|/obj/item/clothing/head/helmet/modern/hardhat|1|/obj/item/stack/material/plastic=3|60|4|additive_manufacturing
 FACTORY: printed gas mask|/obj/item/clothing/mask/gas/modern|1|/obj/item/stack/material/plastic=3;/obj/item/stack/material/glass=1|90|4|additive_manufacturing
 FACTORY: printed traffic cone|/obj/item/weapon/trafficcone|1|/obj/item/stack/material/plastic=2|40|4|additive_manufacturing
+FACTORY: printed hull patch kit|/obj/item/habitat_sealant|1|/obj/item/stack/material/plastic=2|40|4|sealed_habitats
+FACTORY: printed suit patch kit|/obj/item/pressure_suit_patch|1|/obj/item/stack/material/plastic=2|40|4|pressure_suits
+FACTORY: printed suit air tank|/obj/item/pressure_tank|1|/obj/item/stack/material/steel=6|60|4|pressure_suits
+FACTORY: printed habitat module kit|/obj/item/habitat_kit|1|/obj/item/stack/material/steel=40;/obj/item/stack/material/glass=10|300|4|off_world_mining
+FACTORY: printed greenhouse module kit|/obj/item/habitat_kit/greenhouse|1|/obj/item/stack/material/steel=40;/obj/item/stack/material/glass=10|300|4|off_world_mining
+FACTORY: printed airlock module kit|/obj/item/habitat_kit/airlock|1|/obj/item/stack/material/steel=35;/obj/item/stack/material/glass=5|300|4|off_world_mining

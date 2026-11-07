@@ -41,7 +41,12 @@ var/raid_runtime_error = FALSE
 		raid_coordinator_checks()
 		raid_trade_checks()
 		raid_reputation_checks()
+		raid_capture_checks()
+		raid_sight_checks()
+		raid_combat_checks()
+		raid_request_checks()
 		raid_lifecycle_checks()
+		raid_boat_checks()
 	catch(var/exception/e)
 		raid_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = raid_checks, "failures" = raid_failures, "runtime_error" = raid_runtime_error)), "result.json")
@@ -53,6 +58,100 @@ var/raid_runtime_error = FALSE
 	A.climate = "temperate"
 	for (var/turf/T in block(locate(1, 1, 1), locate(40, 40, 1)))
 		T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+
+// Observe launch requests without sending projectiles into the other probes.
+// The real revolver still supplies, expends and cycles every .32 cartridge.
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized/raid_probe
+	var/shots = 0
+	var/last_projectile_type
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized/raid_probe/process_projectile(obj/projectile, mob/user, atom/target, target_zone, params = null)
+	shots++
+	last_projectile_type = projectile.type
+	qdel(projectile)
+	return FALSE
+
+/mob/living/simple_animal/hostile/human/nomad_raider/combat_probe
+	use_generated_appearance = FALSE
+	stop_automated_movement = TRUE
+
+/proc/raid_live_rounds(obj/item/weapon/gun/projectile/G)
+	var/live = 0
+	for (var/obj/item/ammo_casing/C in G.loaded)
+		if (C.BB)
+			live++
+	return live
+
+/proc/raid_combat_checks()
+	var/datum/nomad_raid/R = new
+	var/mob/living/simple_animal/hostile/human/nomad_raider/combat_probe/M = new(locate(12, 12, 1))
+	R.members = list(M)
+	M.party = R
+	R.hostile = TRUE
+	var/was_civilizations = map.civilizations
+	map.civilizations = TRUE
+	M.arm_for_age(6)
+	raid_check(raid_live_rounds(M.gun) == 6, "civilization-map raiders start with a loaded six-shot cylinder")
+	qdel(M.gun)
+	var/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized/raid_probe/G = new(M)
+	M.gun = G
+	M.load_sidearm()
+	map.civilizations = was_civilizations
+	var/mob/living/human/H = new(locate(12, 18, 1))
+	M.target_mob = H
+	M.last_fire = world.time - M.firedelay
+	raid_check(M.OpenFire(H) && G.shots == 1 && raid_live_rounds(G) == 5, "one trigger fires and expends one cartridge")
+	raid_check(G.last_projectile_type == /obj/item/projectile/bullet/pistol/a32, "raiders fire the revolver's actual .32 projectile")
+	raid_check(!M.OpenFire(H) && !M.Shoot(H) && G.shots == 1, "repeated trigger and direct Shoot calls share the cooldown")
+	sleep(3)
+	raid_check(G.shots == 1, "no extra burst shots are queued")
+	for (var/i = 2, i <= 6, i++)
+		M.last_fire = world.time - M.firedelay
+		G.next_fire_time = world.time
+		raid_check(M.OpenFire(H), "ready trigger fires cylinder round [i]")
+	raid_check(G.shots == 6 && raid_live_rounds(G) == 0 && G.loaded.len == 6, "six shots leave six spent casings, not infinite ammunition")
+	M.last_fire = world.time - M.firedelay
+	G.next_fire_time = world.time
+	raid_check(!M.OpenFire(H) && M.reload_at >= world.time + 40, "an empty cylinder starts at least a four-second reload")
+	raid_check(!M.Shoot(H) && G.shots == 6 && raid_live_rounds(G) == 0, "reload time cannot be bypassed by another trigger")
+	M.reload_at = world.time // Exercise completion without a second long fixture wait.
+	raid_check(M.OpenFire(H) && G.shots == 7 && raid_live_rounds(G) == 5, "a completed reload restores a cylinder and expends its first round")
+
+	M.last_fire = world.time - M.firedelay
+	G.next_fire_time = world.time
+	var/list/walls = list()
+	for (var/dx = -3, dx <= 3, dx++)
+		walls += new /obj/covers/stone_wall/brick(locate(12 + dx, 15, 1))
+	raid_check(!(H in view(M.aggro_vision_range, M)), "full brick cover hides the foe from the raider")
+	raid_check(!M.OpenFire(H) && !M.Shoot(H) && !M.OpenFire(get_turf(H), TRUE), "hidden foes and suppression coordinates cannot be fired at")
+	H.loc = locate(13, 18, 1)
+	raid_check(!M.OpenFire(H) && !M.OpenFire(get_turf(H), TRUE) && G.shots == 7, "moving behind brick cover does not update an invisible firing target")
+	for (var/obj/covers/W in walls)
+		W.set_opacity(FALSE)
+		qdel(W)
+	H.loc = locate(12, 18, 1)
+	R.hostile = FALSE
+	raid_check(!M.Shoot(H), "ceasefire is checked at the trigger")
+	R.hostile = TRUE
+	H.stat = UNCONSCIOUS
+	raid_check(!M.Shoot(H), "downed foes cannot be shot by a stale attack")
+	H.stat = CONSCIOUS
+	H.handcuffed = new /obj/item/weapon/handcuffs(H)
+	raid_check(!M.Shoot(H), "bound foes cannot be shot by a stale attack")
+	qdel(H.handcuffed)
+	H.handcuffed = null
+	M.target_mob = null
+	raid_check(!M.Shoot(H), "a cleared target cannot receive a stale shot")
+	M.target_mob = H
+	M.stat = UNCONSCIOUS
+	raid_check(!M.Shoot(H), "an unconscious raider cannot shoot")
+	M.stat = CONSCIOUS
+	G.loc = get_turf(M)
+	raid_check(!M.Shoot(H) && G.shots == 7 && raid_live_rounds(G) == 5, "a dropped gun cannot fire or refill")
+	qdel(G)
+	M.gun = null
+	qdel(H)
+	qdel(M)
+	qdel(R)
 
 /proc/raid_helper_checks()
 	var/turf/T = locate(20, 20, 1)
@@ -101,6 +200,29 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list("victim"), 9, "probe")), "a party sets up at the edge")
 	raid_check(R.members.len == NOMAD_RAID_MAX_MEMBERS, "party size is capped at [NOMAD_RAID_MAX_MEMBERS]")
 	raid_check(R.leader && (R.leader in R.members) && R.leader.is_leader, "the party has a leader")
+	// The walk is planned once and handed out in short legs.
+	var/list/route = R.walk_route
+	raid_check(islist(route) && route[1] == R.home && get_dist(route[route.len], target) <= NOMAD_RAID_ROUTE_REACH, "the walk to the target is planned from home")
+	if (islist(route) && route.len > NOMAD_RAID_ROUTE_LEG + 2)
+		var/turf/leg = R.route_waypoint(R.leader, target)
+		raid_check(leg && (leg in route) && get_dist(R.leader, leg) <= NOMAD_RAID_ROUTE_LEG + 2, "the leader walks one short leg of the route at a time")
+	var/turf/far_off = locate(2, 2, 1)
+	var/mob/living/simple_animal/hostile/human/nomad_raider/stray = R.members[R.members.len]
+	var/turf/stray_was = get_turf(stray)
+	stray.loc = far_off
+	raid_check(R.route_waypoint(stray, target) == target || get_dist(far_off, route[1]) <= NOMAD_RAID_ROUTE_LEG, "a member far off the route paths straight to the target")
+	stray.loc = stray_was
+	// Players who moved away are followed; a short move is not.
+	var/turf/first_target = R.target
+	raid_check(!R.retarget_to(get_step(target, WEST)) && R.target == first_target, "a target that barely moved is kept")
+	var/turf/moved = locate(target.x - 12, target.y - 4, 1)
+	raid_check(R.retarget_to(moved) && R.target == moved && islist(R.walk_route) && get_dist(R.walk_route[R.walk_route.len], moved) <= NOMAD_RAID_ROUTE_REACH, "the march follows players who moved away")
+	R.target = first_target
+	R.plan_walk(R.home, first_target)
+	// Leaving plans the walk home from where the party stands.
+	R.plan_walk(get_turf(R.leader), R.home)
+	raid_check(islist(R.walk_route) && get_dist(R.walk_route[R.walk_route.len], R.home) <= NOMAD_RAID_ROUTE_REACH, "the walk home is planned from where the party stands")
+	R.plan_walk(R.home, first_target)
 	var/all_npcs = TRUE
 	for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.members)
 		if (M.should_save || M.party != R || M.faction != NOMAD_RAID_FACTION || M.weapon != /obj/item/weapon/material/spear)
@@ -134,13 +256,22 @@ var/raid_runtime_error = FALSE
 	R.order_halt(R.leader)
 	raid_check(!R.leader.moving, "the leader can be halted")
 
-	// Parley: tribute at the leader's feet ends the threat.
+	// Parley: tribute at the leader's feet ends the threat. Gear already
+	// lying nearby is not tribute, even once the leader steps beside it.
+	var/turf/stash = get_step(get_step(R.leader, SOUTH), SOUTH)
+	var/list/tribute = list()
+	for (var/i = 1, i <= NOMAD_RAID_MAX_MEMBERS, i++)
+		tribute += new /obj/item/weapon/material/spear(stash)
 	R.begin_parley()
 	raid_check(R.state == "parley", "parley begins")
+	R.leader.loc = get_step(R.leader, SOUTH)
+	R.next_decide = 0
+	R.tick_parley(R.alive_members(), FALSE, TRUE)
+	raid_check(R.state == "parley" && !R.outcome, "loose gear lying nearby is not taken as tribute")
+	// The same gear laid at the leader's feet is.
 	var/turf/feet = get_turf(R.leader)
-	var/list/tribute = list()
-	for (var/i = 1, i <= 3, i++)
-		tribute += new /obj/item/weapon/material/spear(feet)
+	for (var/obj/item/I in tribute)
+		I.loc = feet
 	R.next_decide = 0
 	R.tick_parley(R.alive_members(), FALSE, TRUE)
 	raid_check(R.state == "loot" && R.outcome == "tribute paid", "enough tribute ends the parley peacefully")
@@ -235,8 +366,29 @@ var/raid_runtime_error = FALSE
 	raid_check(isnull(R.setup(target, list(), 2, "probe", "trade")) && R.kind == "trade", "a caravan sets up")
 	nomad_raid = R
 	raid_check(findtext(R.leader.name, "trader"), "the caravan has a trader")
+	raid_check((/obj/item/stack/farming/seeds/tea in nomad_trade_goods(0)) && !(/obj/item/weapon/reagent_containers/pill/penicillin in nomad_trade_goods(5)) && (/obj/item/weapon/reagent_containers/pill/penicillin in nomad_trade_goods(6)), "caravans carry tea seeds, and medicine pills from the sixth age")
+	var/turf/yard = get_step(get_step(R.leader, SOUTH), SOUTH)
+	var/obj/item/weapon/material/spear/lying = new(yard)
+	lying.fingerprintslast = "Neighbour"
 	R.begin_trade()
 	raid_check(R.state == "trade" && !R.hostile, "trading begins peacefully")
+	// Gear already lying near the stall is not payment when the trader steps onto it.
+	R.leader.loc = yard
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(!R.credit["neighbour"] && lying.loc == yard, "loose gear near the stall is not taken as payment")
+	// A caravan aimed at players waits past its usual time until one has come by.
+	R.target_ckeys = list("guest")
+	var/opened_at = R.state_at
+	R.state_at = world.time - NOMAD_TRADE_TIME - 10
+	R.tick_trade(R.alive_members(), FALSE, TRUE)
+	raid_check(R.state == "trade" && R.waiting_for_guests(), "the caravan waits for the players it came for")
+	R.visited += "guest"
+	raid_check(!R.waiting_for_guests(), "once they have come by, the caravan keeps its usual hours")
+	R.state_at = world.time - NOMAD_TRADE_WAIT - 10
+	R.visited -= "guest"
+	raid_check(!R.waiting_for_guests(), "nobody waits forever")
+	R.state_at = opened_at
+	R.target_ckeys = list()
 	raid_check(R.goods.len >= 1 && R.goods.len <= NOMAD_TRADE_GOODS, "goods are laid out ([R.goods.len])")
 	var/goods_ok = TRUE
 	for (var/obj/item/I in R.goods)
@@ -361,3 +513,156 @@ var/raid_runtime_error = FALSE
 	raid_check(saw_leave, "with nobody home the party turned back")
 	raid_check(R.state == "ended" && isnull(nomad_raid), "the raid ended by itself")
 	raid_check(R.escaped == R.initial_size && !R.members.len, "every raider left the map near home ([home.x],[home.y])")
+
+// An island target: the party cannot walk there, so it comes by raft and leaves the same way.
+/proc/raid_boat_checks()
+	for (var/turf/T in block(locate(1, 1, 1), locate(40, 40, 1)))
+		if (T.x >= 16 && T.x <= 24 && T.y >= 16 && T.y <= 24)
+			T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+		else
+			T.ChangeTurf(/turf/floor/beach/water/deep, FALSE, FALSE)
+	for (var/obj/O in block(locate(1, 1, 1), locate(40, 40, 1)))
+		qdel(O)
+	var/turf/target = locate(20, 20, 1)
+	raid_check(!nomad_raid_land_reachable(locate(2, 20, 1), target), "the island cannot be walked to")
+	var/datum/nomad_raid/R = new
+	var/error = R.setup(target, list(), 3, "probe")
+	raid_check(isnull(error) && R.sail_path && R.landing, "a party for an island target plans a water crossing ([error])")
+	if (!R.sail_path)
+		R.remove_all("probe")
+		return
+	raid_check(agent_deep_water(R.home) && !agent_deep_water(R.landing), "it starts on deep water and lands on dry ground")
+	raid_check(get_dist(R.landing, target) <= 4, "the landing is on the island")
+	R.launch_boats()
+	raid_check(R.state == "sail" && R.rafts.len == R.members.len, "each member sets off on a raft")
+	var/rafts_unsaved = TRUE
+	for (var/M in R.rafts)
+		var/obj/structure/vehicle/raft/raft = R.rafts[M]
+		if (raft.should_save)
+			rafts_unsaved = FALSE
+	raid_check(rafts_unsaved, "party rafts are never saved")
+	var/list/alive = R.alive_members()
+	for (var/i = 1, i <= 200 && R.state == "sail", i++)
+		R.next_sail = 0
+		R.tick_sail(alive)
+	raid_check(R.state == "march", "the party lands and marches")
+	var/ashore = TRUE
+	for (var/mob/living/M in alive)
+		if (agent_deep_water(get_turf(M)) || get_dist(M, R.landing) > 1)
+			ashore = FALSE
+	raid_check(ashore, "every member stands ashore at the landing")
+	R.set_state("leave", "probe")
+	for (var/i = 1, i <= 200 && R.alive_members().len, i++)
+		for (var/mob/living/simple_animal/hostile/human/nomad_raider/M in R.alive_members())
+			R.leave_by_boat(M)
+		R.next_sail = 0
+		R.sail_step()
+	raid_check(!R.alive_members().len && R.escaped == alive.len, "the party paddles back out and leaves the map ([R.escaped] of [alive.len])")
+	R.finish("probe")
+	var/left = 0
+	for (var/obj/structure/vehicle/raft/raft in world)
+		if (!QDELETED(raft) && isturf(raft.loc))
+			left++
+	raid_check(!left && !R.rafts.len, "no party raft is left behind")
+
+// Raiders with restraints disarm, knock down, bind and strip a foe; others chase.
+/proc/raid_capture_checks()
+	raid_check(nomad_raid_cuff_type(0) == /obj/item/weapon/handcuffs/rope && nomad_raid_cuff_type(4) == /obj/item/weapon/handcuffs/old && nomad_raid_cuff_type(6) == /obj/item/weapon/handcuffs, "restraints suit the age")
+	var/turf/target = locate(20, 26, 1)
+	var/datum/nomad_raid/R = new
+	R.setup(target, list(), 2, "probe")
+	nomad_raid = R
+	var/mob/living/simple_animal/hostile/human/nomad_raider/M = R.leader
+	var/obj/item/weapon/handcuffs/C = M.give_cuffs(0)
+	raid_check(C && C.loc == M && !C.should_save, "a raider can carry unsaved rope restraints")
+	var/turf/at = get_step(M, SOUTH)
+	var/mob/living/human/V = new(at)
+	var/obj/item/weapon/material/spear/held = new(at)
+	V.put_in_hands(held)
+	var/obj/item/clothing/shoes/S = new /obj/item/clothing/shoes/leather(at)
+	V.equip_to_slot(S, slot_shoes)
+	R.state = "assault"
+	R.set_hostile(TRUE)
+	M.target_mob = V
+	var/steps = 0
+	while (steps < 60 && V.get_active_hand() == held)
+		R.capture_step(M)
+		steps++
+	raid_check(held.loc == at, "the raider wrenches the weapon out of their hands")
+	steps = 0
+	while (steps < 60 && !V.lying)
+		R.capture_step(M)
+		steps++
+	raid_check(V.lying, "the raider knocks them down")
+	R.capture_step(M)
+	raid_check(V.handcuffed == C && !M.cuffs && C.should_save && R.captives[M] == V, "a downed foe is bound with the raider's restraints")
+	raid_check(!R.foe_ok(V), "a bound prisoner is no longer fought")
+	steps = 0
+	while (steps < 20 && R.captives[M])
+		R.capture_step(M)
+		steps++
+	raid_check(!V.shoes && (S in M.carried) && R.stripped == 1 && V.handcuffed == C, "the prisoner is stripped and stays bound")
+	// A foe who runs is chased while near the target, and let go when far.
+	var/mob/living/simple_animal/hostile/human/nomad_raider/F = R.members[2]
+	var/mob/living/human/runner = new(locate(target.x + 8, target.y, 1))
+	R.quarry[F] = runner
+	raid_check(R.chase_step(F) && F.pathfind_target == get_turf(runner), "a raider chases a foe who ran")
+	raid_check(R.quarry_left(), "a fleeing foe near the target keeps the fight going")
+	runner.stat = UNCONSCIOUS
+	raid_check(!R.chase_step(F) && !R.quarry_left(), "a foe who is down is no longer chased")
+	R.remove_all("probe")
+	qdel(runner)
+	qdel(V)
+
+// Calling a caravan by telegraph.
+/proc/raid_request_checks()
+	var/turf/T = locate(20, 26, 1)
+	raid_check(isnull(nomad_caravan_request(T, "caller", "CARAVAN")), "outside a nomads map the clans do not answer")
+	map.nomads = TRUE
+	raid_check(isnull(nomad_caravan_request(T, "caller", "HELLO")), "an ordinary word is not a request")
+	raid_check((/obj/item/weapon/reagent_containers/pill/penicillin in nomad_request_goods("medicine", 6)) && !length(nomad_request_goods("any", 6)) && (/obj/item/stack/farming/seeds/tea in nomad_request_goods("seeds", 0)), "requests name kinds of goods")
+	raid_check(nomad_caravan_request(T, "caller", "medicine") == "COMING" && nomad_request_pending, "a request is answered and a visit is on its way")
+	raid_check(nomad_caravan_request(T, "other", "SEEDS") == "BUSY", "only one called visit at a time")
+	nomad_request_pending = FALSE
+	raid_check(nomad_caravan_request(T, "caller", "SEEDS") == "LATER", "each caller waits an hour between calls")
+	nomad_rep_record("thief", "theft")
+	nomad_rep_record("thief", "theft")
+	raid_check(nomad_request_raid_roll("thief"), "a caller the clans want gets raiders")
+	// Arrival: a trade visit for the asked kind, at least half its stall of that kind.
+	raid_check(isnull(nomad_request_arrive(T, "caller", "medicine", FALSE)) && nomad_raid && nomad_raid.kind == "trade" && nomad_raid.wants == "medicine" && ("caller" in nomad_raid.target_ckeys), "the called caravan sets off for the telegraph")
+	var/datum/nomad_raid/R = nomad_raid
+	if (R)
+		R.begin_trade()
+		var/asked = 0
+		var/list/kinds = nomad_request_goods("medicine", map.ordinal_age)
+		for (var/obj/item/I in R.goods)
+			if (I.type in kinds)
+				asked++
+		raid_check(R.goods.len && asked * 2 >= R.goods.len, "at least half the stall is what was asked for ([asked] of [R.goods.len])")
+		R.remove_all("probe")
+	map.nomads = FALSE
+
+// The party halts only once a player can plainly see it coming.
+/proc/raid_sight_checks()
+	var/turf/target = locate(20, 5, 1)
+	var/datum/nomad_raid/R = new
+	R.setup(target, list(), 2, "probe")
+	nomad_raid = R
+	var/mob/living/simple_animal/hostile/human/nomad_raider/L = R.leader
+	L.loc = locate(20, 25, 1)
+	var/mob/living/human/watcher = new(locate(20, 34, 1))
+	raid_check(!(watcher in R.sighted_by(list(watcher))), "a player 9 tiles off has not plainly seen the party")
+	watcher.loc = locate(20, 31, 1)
+	raid_check(watcher in R.sighted_by(list(watcher)), "a player 6 tiles off with a clear view has")
+	for (var/dx = -3, dx <= 3, dx++)
+		var/turf/W = locate(20 + dx, 28, 1)
+		W.ChangeTurf(/turf/wall/rockwall, FALSE, FALSE)
+	raid_check(!(watcher in R.sighted_by(list(watcher))), "a wall between them hides the party")
+	L.loc = locate(target.x, target.y + 2, 1)
+	watcher.loc = locate(target.x, target.y + 11, 1)
+	raid_check(watcher in R.sighted_by(list(watcher)), "at the target, anyone in parley range counts")
+	for (var/dx = -3, dx <= 3, dx++)
+		var/turf/G = locate(20 + dx, 28, 1)
+		G.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+	R.remove_all("probe")
+	qdel(watcher)

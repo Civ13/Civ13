@@ -23,7 +23,7 @@ def main():
                ('code/modules/multiz/world_z_budget.dm', 'world_z_budget.dm'),
                ('tests/world_save_operations/probe.dm', 'probe.dm')]
     sources += [(f'code/modules/persistence/{name}.dm', f'{name}.dm')
-                for name in ('functions', 'player_reclaim', 'saving', 'loading')]
+                for name in ('functions', 'debug_lossy', 'player_reclaim', 'saving', 'loading')]
     sources.append(('code/modules/persistence/durable_world.dm', 'durable_transition.dm'))
     for relative, target in sources:
         data = (root / relative).read_bytes()
@@ -31,14 +31,21 @@ def main():
         source = data.decode('utf-8')
         if target == 'durable_transition.dm':
             normalized = source.replace('\r\n', '\n')
+            # The idle predicate names its blockers through the production
+            # transition helper, so extract both procs verbatim.
+            helper = '/map_storage/proc/durable_world_transition(transients)\n'
             anchor = '/map_storage/proc/require_durable_world_idle()\n'
-            if normalized.count(anchor) != 1:
+            if normalized.count(anchor) != 1 or normalized.count(helper) != 1:
                 raise RuntimeError('Production idle helper anchor changed')
             start = normalized.index(anchor)
             end = normalized.find('\n/map_storage/proc/', start + len(anchor))
             if end < 0:
                 raise RuntimeError('Production idle helper boundary changed')
-            source = normalized[start:end] + '\n'
+            helper_start = normalized.index(helper)
+            helper_end = normalized.find('\n/map_storage/proc/', helper_start + len(helper))
+            if helper_end < 0:
+                raise RuntimeError('Production transition helper boundary changed')
+            source = normalized[helper_start:helper_end] + '\n' + normalized[start:end] + '\n'
         if target == 'functions.dm' and args.negative_control:
             controls = {
                 'admission': (' || persistence_active_operation ||', ' || FALSE ||'),
@@ -74,6 +81,7 @@ def main():
 #define fdel(path) delete_file_adapter(path)
 #include "durable_transition.dm"
 #include "functions.dm"
+#include "debug_lossy.dm"
 #include "player_reclaim.dm"
 #include "saving.dm"
 #include "loading.dm"
@@ -109,7 +117,7 @@ def main():
     failure = (output / 'failure.txt').read_text().strip() if (output / 'failure.txt').exists() else ''
     expected = {'admission': 'announcement sleep: direct save rejected',
                 'stale': 'stale finish rejected',
-                'recovery': 'mutating failure retains recovery hold',
+                'recovery': 'unconfirmed player readiness retains recovery hold',
                 'player-ready': 'final callback restores players while operation held',
                 'busy-preflight': 'season-busy: prior player restoration preserved',
                 'busy-cleanup': 'season-busy: prior player restoration preserved'}

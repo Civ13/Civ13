@@ -148,7 +148,7 @@ var/global/list/region_travel_carry_types = list(
 		return "You carry too much to travel."
 	return items
 
-/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE)
+/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE, list/extra = null)
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
@@ -173,6 +173,12 @@ var/global/list/region_travel_carry_types = list(
 	var/list/P = list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
 		"gender" = gender, "age" = age, "look" = look, "skills" = skills,
 		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried)
+	// Wounds travel as overall damage, so a trip never heals (raid exits let
+	// hurt raiders leave; other gates still ask for full health).
+	var/brute = clamp(round(getBruteLoss()), 0, 200)
+	var/burn = clamp(round(getBurnLoss()), 0, 200)
+	if(brute) P["brute"] = brute
+	if(burn) P["burn"] = burn
 	// A party train trip (party_train.dm) says whose train it is and where it left from.
 	if(party)
 		P["party"] = party
@@ -180,6 +186,10 @@ var/global/list/region_travel_carry_types = list(
 	// A raid trip (region_raid.dm) says where the raider goes home to.
 	else if(raid)
 		P["from"] = shard_group.region
+	// A crewed flight (space/lander.dm) says which lander and where it lands.
+	for(var/key in extra)
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "cargo"))
+			P[key] = extra[key]
 	return json_encode(P)
 
 // Returns the decoded payload, or null when any field is out of bounds.
@@ -192,10 +202,12 @@ var/global/list/region_travel_carry_types = list(
 		return null
 	if(!islist(P) || P["v"] != 1 || P["kind"] != "character") return null
 	var/owner = P["owner"]
-	if(!istext(owner) || !length(owner) || length(owner) > 32 || ckey(owner) != owner || persistence_guest_account(owner)) return null
+	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
 	if(!(P["gender"] in list(MALE, FEMALE, PLURAL, NEUTER))) return null
 	if(!isnum(P["age"]) || P["age"] < 1 || P["age"] > 200) return null
+	for(var/field in list("brute", "burn"))
+		if(!isnull(P[field]) && (!isnum(P[field]) || P[field] < 0 || P[field] > 200)) return null
 	for(var/field in list("nutrition", "water"))
 		if(!isnum(P[field]) || P[field] < 0 || P[field] > 1000) return null
 	if(!islist(P["look"]) || !islist(P["skills"]) || !islist(P["items"]) || length(P["items"]) > REGION_TRAVEL_ITEMS_MAX) return null
@@ -218,6 +230,7 @@ var/global/list/region_travel_carry_types = list(
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
 	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
+	if(!space_flight_payload_ok(P)) return null
 	return P
 
 // The path an item entry rebuilds, or null when it is not allowed.
@@ -237,6 +250,9 @@ var/global/list/region_travel_carry_types = list(
 	return path
 
 /proc/region_travel_arrival_turf()
+	// A generated zombie city has its own entry points (zombie_city/world.dm).
+	var/turf/city = zombie_city_arrival_turf()
+	if(city) return city
 	// Admin gates first, then other gates that take arrivals (approved trails).
 	for(var/obj/structure/region_gate/gate in region_gates)
 		if(gate.type == /obj/structure/region_gate && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
@@ -259,8 +275,10 @@ var/global/list/region_travel_carry_types = list(
 			message_admins("Region travel: an unreadable [incoming ? "arriving" : "returned"] character was dropped.")
 			continue
 		// A party train trip arrives at the party's berth or station instead.
-		var/turf/at = party_train_arrival_turf(P) || T
+		// A crewed flight arrives in its landed lander (space/lander.dm).
+		var/turf/at = space_flight_arrival_turf(P, incoming) || party_train_arrival_turf(P) || T
 		var/mob/living/human/H = region_travel_build(P, at)
+		space_flight_arrived(H, P, incoming)
 		// A recorded trip (or a refused one coming back) makes this land the home.
 		// A journal replay after a reload already told the coordinator once;
 		// saying it again could pull the home back from a later trip.
@@ -302,6 +320,7 @@ var/global/list/region_travel_carry_types = list(
 					qdel(I)
 				else if(T)
 					H.drop_from_inventory(I, T)
+			space_flight_replayed(H, P)
 			qdel(H)
 
 /proc/region_travel_build(list/P, turf/T)
@@ -319,6 +338,15 @@ var/global/list/region_travel_carry_types = list(
 			H.stats[stat] = pair.Copy()
 	H.nutrition = P["nutrition"]
 	H.water = P["water"]
+	var/brute = P["brute"] || 0
+	var/burn = P["burn"] || 0
+	// Spread over the body differently than before, so never let it kill.
+	if(brute + burn > 90)
+		var/scale = 90 / (brute + burn)
+		brute = round(brute * scale)
+		burn = round(burn * scale)
+	if(brute || burn)
+		H.take_overall_damage(brute, burn, "travel")
 	for(var/list/entry in P["items"])
 		var/path = region_travel_item_path(entry[2], entry[3])
 		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
@@ -456,6 +484,10 @@ var/global/list/region_travel_carry_types = list(
 /obj/structure/region_gate/proc/travel_party(mob/living/human/H)
 	return null
 
+// Extra payload fields for a trip through this gate (a crewed flight), or null.
+/obj/structure/region_gate/proc/travel_extra(mob/living/human/H)
+	return null
+
 /obj/structure/region_gate/proc/destination_name()
 	var/list/peer = shard_group.enabled ? shard_group.peers[destination] : null
 	return peer ? peer["name"] : destination
@@ -465,7 +497,8 @@ var/global/list/region_travel_carry_types = list(
 	if(!destination || !transfer_bridge.ready() || !(destination in transfer_bridge.peers) || !shard_group.enabled)
 		return "The trail is overgrown. It leads nowhere for now."
 	var/list/peer = shard_group.peers[destination]
-	if(!peer || peer["state"] != "UP")
+	// A sleeping region is woken when someone sets off (travel()).
+	if(!peer || peer["state"] != "UP" && !shard_group.peer_wakeable(destination))
 		return "Nobody seems to be coming back from [destination_name()] right now."
 	if(busy || persistence_save_active())
 		return "The trail is busy. Try again in a moment."
@@ -507,6 +540,17 @@ var/global/list/region_travel_carry_types = list(
 	if(reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
+	// A sleeping destination is woken first; the wait can be minutes, so check again after.
+	if(shard_group.peers[destination]["state"] != "UP")
+		reason = shard_group.wake_peer(destination, H)
+		if(!reason)
+			reason = travel_refusal(H)
+		if(!reason)
+			items = H.region_travel_items()
+			if(istext(items)) reason = items
+		if(reason)
+			to_chat(H, SPAN_WARNING(reason))
+			return
 	H.record_persistence_owner()
 	var/result = depart(H)
 	if(result != "departed")
@@ -520,14 +564,20 @@ var/global/list/region_travel_carry_types = list(
 	if(reason) return reason
 	if(!istype(H) || QDELETED(H) || H.loc != loc && !Adjacent(H)) return "You are too far from the trail."
 	if(!H.persistence_owner_ckey) return "Only players with a BYOND account can travel."
+	// The traveller is sent to the destination at once, so it must be awake (travel() wakes it).
+	var/expected = destination
+	if(shard_group.peers[destination]["state"] != "UP" && !shard_group.poll_peer(destination))
+		return "[destination_name()] is asleep. Use the trail to wake it."
+	// The poll can wait; an admin may have repointed or closed the trail meanwhile.
+	if(QDELETED(src) || destination != expected || closed_reason())
+		return "The trail changed. Try again."
 	var/list/items = H.region_travel_items()
 	if(istext(items)) return items
 	var/client/C = H.client
-	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination))
+	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
 	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX) return "You carry too much to travel."
 	// The destination decodes with the same rules; never escrow what it would drop.
 	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
-	var/address = shard_group.peers[destination]["address"]
 	// Hold the body and its items while the agent records the escrow, so
 	// neither can change.
 	busy = TRUE
@@ -553,7 +603,7 @@ var/global/list/region_travel_carry_types = list(
 		var/mob/new_player/lobby = new
 		lobby.key = C.key
 		to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
-		C << link("byond://[address]")
+		shard_group.send_player_soon(C, destination)
 	var/account = H.persistence_owner_ckey
 	qdel(H)
 	shard_group.request_save_soon()

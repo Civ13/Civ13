@@ -1,9 +1,18 @@
 // Gameplay balance, not a model of real disease or medical treatment.
 // One call per existing /process/mob tick (nominally one second).
+
+// Pain an illness alone can hold a patient at. Traumatic shock counts half of
+// it, so neither ceiling reaches the 80 that starts shock on its own.
+#define SEVERE_DISEASE_PAIN 30
+#define SEVERE_DISEASE_PAIN_CRITICAL 60
 /mob/living/human/proc/is_severe_disease()
 	return disease && (disease_type in list("plague", "typhus", "malaria", "cholera"))
 
 /mob/living/human/proc/clear_disease()
+	// A cure ends the illness ache too: drop any pain it piled up back to the
+	// illness ceiling, and normal recovery (1-3 a second) clears the rest.
+	if (disease && is_severe_disease())
+		halloss = min(halloss, SEVERE_DISEASE_PAIN_CRITICAL)
 	disease = FALSE
 	disease_type = "none"
 	disease_progression = 0
@@ -29,7 +38,7 @@
 		disease_course = 0 // An interrupted course must be restarted.
 		disease_progression = min(1200, disease_progression + 1)
 		if (disease_progression == 1)
-			to_chat(src, SPAN_WARNING("You feel seriously ill. Seek medicine now; this illness will not clear on its own."))
+			to_chat(src, SPAN_WARNING("You feel seriously ill. Seek medicine now; your body cannot fight this off alone in time."))
 		if (disease_progression == 180)
 			to_chat(src, SPAN_WARNING("Your illness is worsening. You feel weak and feverish. Complete a medicine course before it becomes fatal."))
 		if (disease_progression == 900)
@@ -43,7 +52,12 @@
 	if (disease_progression >= 180)
 		set_mood(max(0, mood - 0.1))
 		apply_effect(3, DROWSY, FALSE)
-		apply_effect(3, AGONY, FALSE)
+		// Illness keeps a steady ache rather than stacking pain every tick:
+		// resting only clears 1-3 a second, so an uncapped +3 reached
+		// traumatic shock in about 15 minutes with almost no real damage.
+		var/pain_cap = disease_progression >= 900 ? SEVERE_DISEASE_PAIN_CRITICAL : SEVERE_DISEASE_PAIN
+		if (halloss < pain_cap)
+			apply_effect(min(3, pain_cap - halloss), AGONY, FALSE)
 		if (disease_progression >= 900)
 			apply_effect(6, DROWSY, FALSE)
 			Weaken(2)
@@ -61,7 +75,7 @@
 	if (inducedSSD || droid || disease)
 		return
 	for (var/mob/living/human/H in range(2, src))
-		if (H == src || !H.disease || (H.disease_type in disease_immunity) || (H.disease_type in list("none", "malaria", "zombie")))
+		if (H == src || !H.disease || (H.disease_type in disease_immunity) || resists_disease(H.disease_type) || (H.disease_type in list("none", "malaria", "zombie")))
 			continue
 		var/chance = H.stat == DEAD ? 3 : 1
 		if (find_trait("Weak Immune System"))
@@ -77,9 +91,12 @@
 			disease_treatment = 0
 			disease_course = 0
 			return
-	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity))
+	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity) && !resists_disease("flu"))
 		if (prob(find_trait("Weak Immune System") ? 0.4 : 0.2))
 			disease = TRUE
 			disease_type = "flu"
 			disease_progression = 0
 			disease_treatment = 0
+
+#undef SEVERE_DISEASE_PAIN
+#undef SEVERE_DISEASE_PAIN_CRITICAL

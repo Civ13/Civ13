@@ -279,6 +279,7 @@
 			icon_state = "[initial(icon_state)]_open_empty"
 	else
 		icon_state = "[initial(icon_state)]"
+	settle_icon_state()
 
 
 

@@ -18,7 +18,7 @@
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "c7854ebd02107ee66ddeccd1db11e95cc8890484f9d0e48fd4aca2091aa56098",
+      "sha256_normalized": "5b3ea69d596d913d908e674f8ed9aa605ae5815f0e94bd5feb5a1fdbdf33934b",
       "declarations": [
         {
           "line": 81,
@@ -270,17 +270,17 @@
     },
     {
       "path": "code/game/objects/structures.dm",
-      "sha256_normalized": "4a936a28bd9a1e95cd24f8d2877abb6f05e234bd5af0c2832e5cc6ce20f4e178",
+      "sha256_normalized": "ca6d1a73368fed4ba467d4c02bd25b00e57e87801d2f08a622d0fdea9fcabef2",
       "declarations": [
         {
-          "line": 66,
+          "line": 71,
           "declaration": "/obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
         }
       ]
     },
     {
       "path": "code/game/turfs/floor_types.dm",
-      "sha256_normalized": "b23e2610746b461617bf30354b6744142c18e1f7e4bdc6ed64c6d927a7168b06",
+      "sha256_normalized": "902c226a267edf2d0b67e54f0a6381b27b68119b1b30660a193ec9d1a2174742",
       "declarations": [
         {
           "line": 397,
@@ -290,7 +290,7 @@
     },
     {
       "path": "code/game/turfs/ships/shipwalls.dm",
-      "sha256_normalized": "3ecb853ceaa720d3d9a5c3ad9454c260395b5ea712c85d2c3ff435ccd120be5e",
+      "sha256_normalized": "6eb7c799534b5cd2950a4206d4c7ae0984d4f485aba80c3d2b80168f572659af",
       "declarations": [
         {
           "line": 46,
@@ -372,7 +372,7 @@
     },
     {
       "path": "code/modules/1713/modern_items.dm",
-      "sha256_normalized": "0bf43d750348470cb43efda9123a66f9f40ccd5c4c84da507cec8f16d4681037",
+      "sha256_normalized": "7f069441e006c0f2066cf0e62dbae9e32c91fa6ab51e13df3bffe97a958ddca9",
       "declarations": [
         {
           "line": 26,
@@ -382,7 +382,7 @@
     },
     {
       "path": "code/modules/1713/structures.dm",
-      "sha256_normalized": "ec4054ea73c4ff56b5651d1a568bc1417e457b4b9895c8627202a7cc22ddddc1",
+      "sha256_normalized": "3a3396a50058c81595806abd6def0a129ecc19d8cc9f6355286c79c9c9beed63",
       "declarations": [
         {
           "line": 658,
@@ -396,7 +396,7 @@
     },
     {
       "path": "code/modules/1713/weapons/football.dm",
-      "sha256_normalized": "2bea57fb1767c39cd066869b32f402028582d4ea7aa3c45db415d8f9b1bc7b4e",
+      "sha256_normalized": "00ab71c03813db1dbcdce1f552669fdbd2bd71ed83939f53636e4abd4d920462",
       "declarations": [
         {
           "line": 615,

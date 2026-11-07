@@ -89,6 +89,11 @@
 		origin_water_level = T.water_level
 		T.water_level = 0
 		T.move_delay = 0
+		// A floor over open air lights the cells around it (building_lighting.dm).
+		if (istype(T, /turf/sky/building))
+			var/wake = text2path("/proc/building_wake_cells")
+			if (wake)
+				call(wake)(T)
 	return TRUE
 
 /obj/covers/Destroy()			

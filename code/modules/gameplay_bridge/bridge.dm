@@ -26,7 +26,7 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 /client/verb/gameplay_bridge_assign()
 	set name = "Assign LLM gameplay bridge"
 	set category = "Admin"
-	if (!holder || !check_rights(R_ADMIN, 0, mob) || (address && address != "127.0.0.1" && address != "::1"))
+	if (!holder || !check_rights(R_ADMIN, 0, mob) || !local_connection())
 		return
 	var/list/choices = list()
 	var/list/chosen_bodies = list()
@@ -43,7 +43,7 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 		if (alert(src, "Permit [cap] for this assignment?", "Server capability limit", "No", "Yes") == "Yes")
 			caps += cap
 	// Input dialogs yielded: authority and target are checked again below.
-	if (!holder || !check_rights(R_ADMIN, 0, mob) || (address && address != "127.0.0.1" && address != "::1"))
+	if (!holder || !check_rights(R_ADMIN, 0, mob) || !local_connection())
 		return
 	if (gameplay_bridge.generation != expected_generation || chosen.mob != chosen_bodies[chosen])
 		return

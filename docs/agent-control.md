@@ -44,7 +44,9 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   procs and verbs) and shown to online admins, except announcements and
   individual character steps. Reads and character movement go to the game
   log. Agents can read the admin log back with `logs`; `logs` with `kind` `food`
-  returns recent food toxin swallows (source item, amounts and recorded cause).
+  returns recent food toxin swallows (source item, amounts and recorded cause),
+  and `kind` `radio` returns the last lines relayed to and from other regions
+  through long-range radio relays (speaker key, region and relay).
 - **Protected state.** Agent control's own objects (the controller, agent
   identities, proxies and their admin holders, jobs) cannot be read, edited or
   have procs called on them, and `get_vars`/`set_var` never touch the globals
@@ -106,12 +108,26 @@ file and line. `list_verbs` lists what the agent's rights allow.
 Agents can play characters through ordinary mob actions, so normal range,
 cooldown, combat and crafting rules apply.
 
+- **Verbs and throwing.** `verb` runs what a player reaches through the
+  right-click menu, verb panels or command bar: `name` is a verb from the
+  observation's `self.verbs` (the character's own, such as Rest, Sleep, Give or
+  Point To; emotes are left out of the list but still work), `self.item_verbs`
+  (held and worn items, listed and accepted as `item: verb`) or a nearby
+  row's `verbs` (things on a tile next to the character, with `target`).
+  `onto` is the verb's argument when it takes someone or something, and `text`
+  when it takes words. Out-of-character, admin and preference verbs, and verbs
+  that end the character (Succumb, Ghost), are never offered. `throw` throws the
+  held item at `target`. Both run only from `character_queue`. Wound rows
+  (`self.wounds` and nearby people's `wounds`) name the limb by its
+  zone-selector name (`l_arm`), so `click` with that `zone` aims at it.
+
 - **Host characters without a ckey.** `character_spawn` creates a mob (default
   `/mob/living/human`) owned by that agent, up to `max_characters` (default 4).
   Humans still get their usual map identity; a `name` is applied after it.
   With `job` (a late-join title on the current map, such as `Nomad`), the
   character joins like a late joiner instead: that job's clothes, kit, name
-  and spawn point through the normal `EquipRank` path. An unknown job is
+  and spawn point through the normal `EquipRank` path; `stay: true` keeps the
+  kit but starts the character at `target`. An unknown job is
   refused with the list of open ones. Spawned characters get a mind (key
   `agent_<name>`, never active) so job notes have somewhere to go.
 - **Player handover.** With `allow_handover` in the config, players get a
@@ -157,6 +173,42 @@ movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
 
+### Boats
+
+Characters use the same boats players do (`code/modules/agent_control/agent_boats.dm`):
+a raft (10 wood logs, crafted where the character stands, research-gated like
+any recipe), and outrigger, sail and motor boats.
+
+- `board` (`target`: a raft or boat within one tile) climbs on, as dragging
+  yourself onto it does. The first one aboard drives; a boat with a rudder
+  needs a free hand for it.
+- While driving, `move` steers one tile at the vehicle's own speed: rafts are
+  paddled, sail boats sail, and motor boats need fuel and a running engine
+  (`use` the rudder once to start it; a second `use` puts it in gear and it
+  then moves by itself, with `move` only turning it). A boat stops at land.
+  A stalled boat fails with `no_propulsion` and says why.
+- `disembark` gets off onto the boat's tile; the next `move` steps ashore.
+- `drag` (`target` dragged `onto` another thing, both next to the character)
+  is the mouse drag: a crate onto a boat's deck, an engine onto a frame, or
+  the character's own ref onto a boat.
+- Refuelling is a `click` on the boat holding a container of its fuel.
+- `board`, `disembark` and `drag` are timed, so they run only from
+  `character_queue`; a direct `character_act` is refused with `use_queue`.
+
+`character_state` adds `vehicle` (name, role, seats, cargo and cargo space,
+fuel and accepted fuels, engine, sails, `stalled` reason) and `can_steer`;
+nearby boats carry the same details, and `surroundings` marks `deep_water`,
+which is `blocked` for a walker without a lifejacket and open for a driver.
+
+`character_route` (`x`, `y` or `target` on the character's level, at most 150
+tiles away, optional `reach`) plans a route over dry and shallow ground first.
+When only deep water connects the two, it plans across it, with as few
+crossings as it can, and returns `needs_boat`, `legs` (`walk` and `boat` legs
+as strings of `n`/`s`/`e`/`w` moves), the `launch` tile (last dry tile), the
+`landing` tile, up to five free `boats` near the launch with a `board_from`
+tile each, and the raft recipe. A boat leg starts on the launch tile and
+includes the shallows on either side, so a raft built there can take it.
+
 ## Nomad visits
 
 The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):
@@ -171,7 +223,8 @@ The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):
   `tactic`, `focus`, `loot` or `price`). The party controller checks it against
   the state and bounds and fails with `refused` and the reason otherwise.
 - `visit_start` starts raiders or traders (`kind`) at the busiest settlement,
-  or near `target`, with an optional `size`.
+  or near `target`, with an optional `size` and `wants` (a kind of goods for
+  traders: `medicine`, `seeds`, `food`, `metal`, `cloth` or `tools`).
 
 Orders and starts go to the admin log. `visitor_voice.py` (see Tools) is a
 ready-made coordinator.
@@ -199,13 +252,40 @@ a JSON schema (from `tools/agent-control/catalog.py`). An MCP client entry:
 `autopilot.py` lets an Ollama model play one character. It reuses the Player
 Help bridge config (`--player-help-config`, else `data/player-help-config.json`,
 else `config/player-help.json`): `ollama_url` (origin, `/v1` or `/api/chat`),
-`model`, `auth_token_env`, `num_ctx` and `think` (off unless `true`). Using the
-same `num_ctx` keeps Ollama from reloading a model shared with Player Help:
+`model`, `auth_token_env`, `num_ctx`, `think` (off unless `true`) and
+`keep_alive` (default `30m`, see [Latency](#latency)). Using the same
+`num_ctx` keeps Ollama from reloading a model shared with Player Help:
 
 ```text
 python tools/agent-control/autopilot.py --spawn turf:483,43,2 --name Ada --goal "Gather food and greet people" --steps 30 --release
 python tools/agent-control/autopilot.py --character "[0x3000090]" --goal "Help my tribe build a hut"
+python tools/agent-control/autopilot.py --spawn turf:332,242,2 --stay --name Ada --goal "Help people in need"
 ```
+
+**Spawn AI Character (admin verb, Fun).** An admin with `R_FUN` can put an AI
+character such as Ada into play from in game. The verb asks for the agent (only
+agents with the `characters` scope; skipped when there is one), a name (default
+Ada), a goal, and whether to start at the admin's location or the job's spawn
+point. It joins as Nomad when the map offers it, otherwise as a job the admin
+picks. The character is spawned through the agent's own `character_spawn`
+(same limits and audit line) and shows in `character_list` with `waiting: true`
+and the `goal` until an autopilot first observes it. To play it, the host runs
+one watcher per agent:
+
+```text
+python tools/agent-control/autopilot.py --watch
+```
+
+The watcher polls `character_list` every 10 seconds and starts one autopilot
+run per waiting character with that goal, passing on its own model flags and
+playing until the character dies (`--steps` overrides that). Each run logs to
+`data/agent-control/<name>-<ref>.log` (`--log-dir` changes the folder). A run
+that fails (the model or server stops it, a non-zero exit) is started again
+with the same goal five minutes after it started, unless `--release` is set,
+which the watcher passes on to each run. A run that ends on purpose (its
+`--steps` or `--minutes` limit, or the character's death) is not retried. When no
+watcher has listed that agent's characters in the last minute, the verb warns
+the admin that the character will stand still until one starts.
 
 A spawned character joins as `--job` (default `Nomad`). The model gets a short
 survival primer (including the stone-age start: flint from rocks on grab
@@ -244,9 +324,24 @@ gives stack counts and open containers' liquids for what she holds and carries,
 and a tanning rack row says what it `holds`. `take` (`item`: a carried or worn item's name) moves a
 stowed item into the empty active hand, and skills take a stowed tool they need. A step the
 autopilot cannot accept is explained to the model next turn (for example a skill
-with no target listed: explore to find one). When something attacks the
-character, a danger line leads the next prompt, and the run stops once the
-character is unconscious or dead. The autopilot runs the
+with no target listed: explore to find one). First aid for others: a hurt person in view is marked
+`(hurt: unconscious, bleeding chest, broken left leg)` from what a player sees on them (the
+observation row's `wounds`), and a `HELP` line names the one most in need and what to treat them
+with. `{"skill": "treat", "target": n}` on a person walks over, takes a bandage (or a splint for a
+break; herbs only work on whoever chews them) and clicks the wound's body part on help intent. A
+bleeding person within 5 tiles is treated before the model's plan when she carries a bandage and is
+not bleeding or under attack herself; she offers help first when they are awake. Whoever is
+attacking her, and people her memory distrusts, are not helped. When something attacks the
+character, a danger line leads the next prompt. While the character is
+unconscious the run waits for them to come round (checking every 10 seconds,
+with no model calls), and it stops once the character is dead. A target the
+character cannot walk to is hidden for a while instead of retried. Water marked
+`(unclean)` (rivers, puddles, dirty wells) gives cholera, so `{"do": "boil_water"}`
+crafts a wood mug, fills it, throws a stone onto a lit campfire, boils the mug with
+the hot stone (mug in the active hand, a stick in the other) and drinks it; the
+thirst override uses it unless the character is close to dying of thirst. A
+serious illness (the `illness` field of `self`) comes before the plan: the
+character chews a healing herb whenever the herb remedy runs low. The autopilot runs the
 steps through `character_queue` and shows the next
 turn what changed (position, hands, clothes, carried items, water, nutrition)
 and warns when the same action keeps repeating. It waits while the character
@@ -257,7 +352,14 @@ after four turns on it in a row without progress. Each turn's changes and messag
 printed to the run log. Only speech and lines about
 the character reach the model, lines that keep recurring (heat, weather) are
 muted after four turns, so other players' work messages do not crowd
-the window. `--minutes` caps the run time. It shows the
+the window. Travel (`tools/agent-control/boats.py`): `{"do": "travel", "x", "y"}`
+(or `dir` and `tiles`, or `to` a remembered place such as `home` or `boat`)
+follows `character_route`. On a boat leg it boards a free boat near the
+launch, or crafts a raft there from 10 carried wood logs, refuels a motor
+boat from a carried fuel container and starts its engine, paddles across,
+disembarks and walks on. The boat it leaves moored is remembered as the
+`boat` place, so the way back takes it again. A `BOAT` line in the prompt
+says what boat she is on or sees and what it needs. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
 
@@ -355,6 +457,48 @@ line and up to a few orders, which the server checks:
 python tools/agent-control/visitor_voice.py --start raid --size 4
 python tools/agent-control/visitor_voice.py --once
 ```
+
+## Latency
+
+Every model turn prints where its time went, from Ollama's own counters:
+
+```text
+  model 6.6s, read 812 new tokens in 0.9s, wrote 140 tokens in 5.4s
+```
+
+`read` is only what Ollama had to process anew. The autopilot keeps the
+system prompt and the kept exchanges byte-identical from one turn to the next
+(the history is trimmed in blocks of `WINDOW_MAX - WINDOW_MIN` turns rather
+than one exchange per turn), so a turn normally reads the newest observation
+only, a few hundred to a thousand tokens. A turn that reads thousands of
+tokens did not get a prompt-cache hit: another client (Player Help, a second
+autopilot) used the model in between, or the prefix changed. `loaded the
+model in N s` means the model was unloaded or was reloaded with other
+settings. Both tools send `keep_alive` (default `30m`) so an idle model stays
+loaded between questions; set it in the Player Help config or with
+`--keep-alive` (`-1` keeps the model loaded until Ollama stops).
+
+What else moves the numbers, on the Ollama host rather than in this repo:
+
+- `wrote` dominates once the cache hits: it is the model's generation speed
+  times the reply length. The reply is capped at 200 tokens; a smaller or
+  lower-quantized model (for example a Qwen3 8B or 14B instruct model at
+  `Q4_K_M`) writes several times faster than a 27B one on the same GPU. Keep
+  `think` off for Qwen3 and gemma: a thinking model spends the whole budget
+  on reasoning and returns no plan.
+- The model must sit entirely in VRAM. `ollama ps` shows `100% GPU`; any CPU
+  share slows every phase. The 32768 context Player Help uses costs KV memory;
+  `OLLAMA_FLASH_ATTENTION=1` with `OLLAMA_KV_CACHE_TYPE=q8_0` roughly halves
+  it with no visible quality change, and a Modelfile alias with a smaller
+  `num_ctx` for the autopilot (around 12288 is enough for its window) is the
+  next lever when memory is short. A different `num_ctx` on the same model
+  name makes Ollama reload it on every switch between clients, which is why
+  the autopilot reads Player Help's `num_ctx` by default.
+- `OLLAMA_NUM_PARALLEL=1` keeps one prompt cache per model; with more slots
+  Ollama multiplies the context memory by the slot count. Two clients then
+  take turns and evict each other's prefix only when they really overlap.
+- The step loop itself waits `--interval` (default 2 s) between actions and
+  for timed game work; that is game pacing, not model latency.
 
 ## Tests
 

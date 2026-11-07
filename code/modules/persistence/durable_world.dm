@@ -146,18 +146,29 @@
 
 // A metadata atom must belong to the saved spatial ownership tree, not merely
 // exist as an orphan entry. This mirrors normal contents loading from turfs.
+// The preflight walk proves most targets as it reads each level
+// (validated_reachable_entries); a stream save's candidate check proved its
+// targets from the pinned objects (record_candidate_level_structure); the
+// validation record stands for a full walk this build already made. Only a
+// target none of those settled is followed through the file here.
 /map_storage/proc/validate_durable_reachability(datum/durable_save_graph/G)
+	if(validated_entries_trusted) return
 	for(var/z = 1, z <= save_validation_maxz(), z++)
 		var/list/wanted = list()
 		for(var/key in G.entry_targets)
 			var/list/parts = splittext(key, ":")
-			if(text2num(parts[1]) == z) wanted[parts[2]] = TRUE
+			if(text2num(parts[1]) != z || validated_reachable_entries[key]) continue
+			wanted[parts[2]] = TRUE
 		if(!wanted.len) continue
+		var/list/structure = candidate_structure_record(z)
+		if(structure)
+			var/list/reachable = structure["durable_reachable"]
+			for(var/ref in wanted)
+				if(!islist(reachable) || !reachable[ref]) throw EXCEPTION("Durable metadata references an unreachable world entry")
+			continue
 		var/savefile/F = new("map_saves/[z].sav")
-		var/list/queue = list()
+		var/list/queue = level_turf_refs(F, z)
 		var/list/seen = list()
-		for(var/y = 1, y <= world.maxy, y++)
-			for(var/x = 1, x <= world.maxx, x++) queue += F["/map/[z]/[y]/[x]"]
 		var/cursor = 1
 		while(cursor <= queue.len && wanted.len)
 			TICK_CHECK
@@ -192,6 +203,15 @@
 	if(environment_weather_running) reasons += "weather sweep"
 	if(processes.time_of_day_change && processes.time_of_day_change.updating_lighting) reasons += "time-of-day lighting update"
 	return reasons.len ? jointext(reasons, ", ") : null
+
+// True when a blocker cannot clear by waiting: a failed fire callback, failed
+// explosion work or required event recovery. Anything else settles on its own.
+/map_storage/proc/durable_world_effects_stuck()
+	if(map.nomads_recovery_required) return TRUE
+	for(var/datum/nomads_fire_callback/C in nomads_fire_callbacks)
+		if(C.failed) return TRUE
+	var/process/explosion/P = processes.explosion
+	return P && P.nomads_work_failed
 
 // Read-only rejection before player ownership or timer state is changed.
 /map_storage/proc/require_durable_world_idle()

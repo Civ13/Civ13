@@ -62,9 +62,11 @@ CASES = (
 # Source omission controls: each removes one production step and must fail at
 # its named assertion, proving the positive reader would notice the omission.
 CONTROLS = {
+    # The entry walk projects a walked level's roofs (validate_saved_content_edge);
+    # prepare_saved_roof_areas keeps the read-back for trusted levels.
     'roof-projection': ('code/modules/persistence/loading.dm',
-                        '\t\t\t\t\t\tprepare_zone_roof(level_entry_file(F, child), x, y, z, child, type)\n',
-                        '\t\t\t\t\t\t// Omission control: skip schema-2 roof validation.\n',
+                        '\tprepare_saved_roof(null, x, y, z, child_key, roof[1], persistence_saved_scalar(roof[2]), persistence_saved_scalar(roof[3]))\n',
+                        '\t// Omission control: skip schema-2 roof validation.\n',
                         'roof-absent-base', 'Malformed topology was accepted'),
     'roof-ambiguity': ('code/modules/persistence/zone_topology.dm',
                        '\t\tif(found) throw EXCEPTION("Ambiguous saved roof base zone")\n',

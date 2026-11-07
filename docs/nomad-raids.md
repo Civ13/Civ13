@@ -13,15 +13,40 @@ can voice the leader and choose tactics through agent control; it only gives
 orders the controller checks, and the visit plays out the same without it.
 Visits are not started at random.
 
+From the sixth age, each raider carries a six-shot .32 revolver. It fires one
+round at a time, no faster than once every half second, and pauses for at least
+four seconds to reload an empty cylinder. The NPC's reserve replenishes, but
+the gun consumes real cartridges and retains its remaining rounds when dropped.
+Raiders only shoot their currently visible foe while the party is hostile;
+they do not suppress an unseen player's position through walls. This does not
+change projectile penetration or the weapons of other NPC families.
+
 | File | Purpose |
 | --- | --- |
 | `nomad_raid.dm` | Settings, targeting, edge spawn sites, cooldowns, item worth |
 | `nomad_raider.dm` | The NPC party member |
 | `nomad_visit.dm` | The party controller: march, parley, assault, loot, leave |
+| `nomad_capture.dm` | Raiders binding and stripping prisoners, and chasing foes who run |
 | `nomad_trade.dm` | Trader caravans |
+| `nomad_requests.dm` | Calling a caravan by telegraph |
 | `nomad_reputation.dm` | What the clans think of each player |
 | `nomad_coordinator.dm` | What a coordinator sees and may order |
 | `nomad_admin.dm` | Admin verbs |
+
+## Crossing water
+
+A party first checks that it can walk from its map-edge spawn to the target.
+When it cannot (an island, a river with no ford), it comes by water instead
+(`nomad_boats.dm`): it starts on unseen deep water at the nearest edge that
+has a route with a single water crossing, each member on their own raft, and
+paddles in single file at a raft's speed to the first dry tile by the target
+(state `sail`, then `march`). The rafts stay moored at the landing. When the
+party leaves, members walk back to the landing, board (a fresh raft replaces
+a lost one) and paddle out, leaving the map where they came from. Party rafts
+are never saved and are removed when the visit ends. A target with no route
+by land or by one crossing gets the old behaviour: the party walks as far as
+it can and the march limit sends it home. A coordinator may order a retreat
+while the party is still afloat.
 
 ## Admin verbs (Fun, R_FUN)
 
@@ -46,16 +71,33 @@ online admins.
    If that edge is more than 120 tiles away, it appears 120 tiles out on that
    heading. Edges too close to the target to hide behind are skipped. Players
    near the target hear distant war horns.
-2. **March.** The chieftain walks to the target; the others follow. Being
-   attacked starts the fight. After 10 minutes, or if nobody is home, the
-   party turns back.
-3. **Parley.** When an active player is within 10 tiles, the chieftain halts
-   and demands tribute at their feet (5 worth per raider, at least 8). Paying
+2. **March.** The chieftain walks to the target (the middle of the targeted
+   group); the others follow. Being attacked by people starts the fight; an
+   animal's bite does not. The whole walk is planned when the party
+   appears (around open water holes in sea ice, cliffs and buildings) and
+   walked in legs of about 10 tiles; the walk home is planned from wherever
+   the party turns back. If the players it came for move more than 10 tiles
+   away, the march follows them. After 10 minutes,
+   or if nobody is home, the party turns back.
+3. **Parley.** The party keeps walking until an active player is within 6
+   tiles of the chieftain with nothing opaque between them, so it is plainly
+   seen coming (at the target itself, anyone within 10 tiles counts, so a
+   settlement behind walls is still met). Then the chieftain halts,
+   faces the nearest awake player, names them and demands tribute at their
+   feet (5 worth per raider, at least 8). Paying
    in 90 seconds ends the threat: the raiders take only the tribute and leave.
+   Only items laid down during the parley count; gear already lying nearby
+   does not, unless someone picks it up and lays it at the chieftain's feet.
    Attacking them, or letting the time run out, starts the fight.
 4. **Assault.** Raiders fight awake people near the target, preferring anyone
-   holding a weapon. Downed people are left alone, and animals only when they
-   attack first. The fight ends after 15 quiet seconds or 5 minutes.
+   holding a weapon. Downed and bound people are left alone, and animals only
+   when they attack first. A raider whose foe runs chases them while they stay
+   within 30 tiles of the target. About a third of raiders carry restraints
+   (rope, then iron cuffs from the fourth age, handcuffs from the sixth); one
+   next to their foe wrenches weapons from their hands, knocks them down,
+   binds their wrists, and strips everything they wear and carry, packing
+   what fits. The fight ends after 15 quiet seconds or 5 minutes; a raider
+   still stripping a prisoner finishes before looting.
 5. **Loot.** Raiders take loose items near the target (best value first) and
    open unlocked, unwelded crates and closets. They do not take worn clothing,
    items in hands, or anything locked, and do not damage buildings.
@@ -74,20 +116,41 @@ age 6 a revolver.
 ## Trader caravans
 
 The caravan marches in like a raid, with caravan bells instead of horns. When
-a player is near, the trader lays up to six goods on the tiles around them
-(leather, pelts, bone, rope, bandages and meat; bronze and cloth, then iron
-and an iron knife in later ages).
+a player can plainly see them (as for a raid's parley), the trader lays up to six goods on the tiles around them
+(leather, pelts, bone, rope, bandages, meat and tea seeds; bronze and cloth,
+then iron and an iron knife in later ages, and penicillin and paracetamol pills
+from the sixth age).
 
 - **Paying.** Drop items at the trader's feet. Their worth is credited to
-  whoever last handled them.
+  whoever last handled them. Gear already lying near the stall when trading
+  starts is not payment unless someone moves it.
 - **Buying.** Pick up a good. If your credit covers its price, it is yours.
 - **Theft.** Taking a good without enough credit gets a warning. Put it back
   or pay within 15 seconds, or the guards attack the thief.
 - **Leaving.** After 12 minutes, or when sold out, the trader packs up and
-  hands back payments that were not spent. Attacking the caravan also ends the
+  hands back payments that were not spent. A caravan sent to particular
+  players (by an admin, an agent or a telegraph call) waits up to 25 minutes
+  until one of them has come within 3 tiles of the stall. Attacking the caravan also ends the
   trade and starts a fight.
 
 Laid-out goods are not saved until sold.
+
+## Calling a caravan
+
+On a nomads map, a player at a telegraph wired to a utility pole (within two
+tiles) can send a request word: `CARAVAN`, `TRADERS`, `TRADER` or `TRADE` for
+any goods, or `MEDICINE` (or `MEDS`), `SEEDS`, `FOOD`, `METAL`, `CLOTH` or
+`TOOLS`. The clans wire back `COMING`, and one to three minutes later a
+caravan of two sets off toward the telegraph. A caravan called for a kind of
+goods lays out at least half its stall of that kind (medicine is bandages, and
+penicillin and paracetamol from the sixth age).
+
+The wire is not private. One call in five is answered by a raiding party of
+four instead, with the same reply; one in ten for friends of the clans, and
+always for players the clans want. Each player may call once an hour (`LATER`),
+and only while no other visit is running or on its way (`BUSY`). Calls go to
+the game log and to online admins. Agents can ask for a kind of goods with
+`visit_start`'s `wants` argument.
 
 ## Reputation
 

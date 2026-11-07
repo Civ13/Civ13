@@ -180,7 +180,73 @@ The underground reserve plane and starts are unchanged, and the report records
 
 To run one as a region, add it to a shard group like any other generated map,
 with `kind` `OTHER`. Keep it out of the first position, which is the mainland.
-Players should not be sent there until launch sites exist (phase 2).
+The repository ships the `barren-0` world (200x200, `--seed barren-0`) as
+`maps/space/barren.dmm`, the map the shipped survey map was drawn from. Give
+its region the id `barren` so launch pads and the mission console find
+`config/space/survey/barren.json`:
+
+```json
+{"id": "barren", "name": "Barren", "kind": "OTHER", "port": 1716, "map": "maps/space/barren.dmm"}
+```
+
+#### The Moon
+
+`playable --skin moon` writes the same barren family as the Moon: grey lunar
+regolith (`/turf/floor/dirt/dust/regolith/lunar`, -100 C, no air), crater-floor
+rilles where rivers and swamps ran, ice where lakes and sea were, the area
+`/area/caribbean/nomads/barren/moon` and the map settings
+`/obj/map_metadata/nomads/barren/moon` (no weather, so no dust storms; see
+`code/modules/space/moon_world.dm`). The repository ships the `moon-0` world
+as `maps/space/moon.dmm` and its survey map as `config/space/survey/moon.json`:
+
+```sh
+python3 -m tools.procedural_maps preset --profile SURFACE --barren --seed moon-0 --width 200 --height 200 --out data/procedural_maps/moon.json
+python3 -m tools.procedural_maps generate --config data/procedural_maps/moon.json --out data/procedural_maps/moon
+python3 -m tools.procedural_maps playable data/procedural_maps/moon --skin moon --out maps/space/moon.dmm
+python3 -m tools.procedural_maps survey data/procedural_maps/moon --out config/space/survey/moon.json
+```
+
+Give its region the id `moon`. Region ids starting with `moon` count as lunar,
+so later Moon colonies ([connected regions plan](connected-regions-plan.md))
+take ids such as `moon2`:
+
+```json
+{"id": "moon", "name": "Moon", "kind": "OTHER", "port": 1719, "transfer_port": 1727, "map": "maps/space/moon.dmm"}
+```
+
+#### Survey maps
+
+The mission console that flies survey probes reads a coarse map of a barren
+world (Mars is `barren`, the Moon is `moon`) from `config/space/survey/<region>.json` instead of loading a level. `survey`
+writes it from a verified SURFACE bundle; each cell covers 5x5 tiles (change it
+with `--cell-tiles`) and takes the most common class among them, with ties going
+to ridge, then ice, then channel, so hazards are never hidden:
+
+```sh
+python3 -m tools.procedural_maps survey data/procedural_maps/barren --out config/space/survey/barren.json
+```
+
+| Source tiles | Survey cell |
+| --- | --- |
+| Open ground | `.` plain (costs the probe 1 battery) |
+| Rivers and swamps | `~` dry channel (2) |
+| Lakes and sea | `*` ice (3) |
+| Mountains and rock | `^` ridge (blocks the probe) |
+
+Rows run south to north and the map must be 8 to 64 cells a side with at least
+one plain to land on. The shipped map is the 200x200 `barren-0` preset at 40x40;
+a test regenerates it, so rebuild it with the command above after a generator
+change. Replacing the file while a probe is flying loses that probe.
+
+Files are keyed by destination region (`config/space/survey/<region>.json`,
+lowercase letters and digits only) and record the source bundle's
+`ir_sha256`. `survey-check` exits 0 when a survey map was drawn from a
+bundle and 1 when it was not; generate each region's survey map from that
+region's own bundle:
+
+```sh
+python3 -m tools.procedural_maps survey-check data/procedural_maps/barren --survey config/space/survey/barren.json
+```
 
 ## Configuration reference
 

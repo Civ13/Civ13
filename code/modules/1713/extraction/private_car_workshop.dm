@@ -59,7 +59,7 @@
 			var/key
 			if (I.type == /obj/item/stack/material/steel) key = "steel"
 			else if (I.type == /obj/item/stack/material/glass) key = "glass"
-			else if (I.type == /obj/item/stack/material/cloth) key = "cloth"
+			else if ((I.type == /obj/item/stack/material/cloth || I.type == /obj/item/stack/material/woolcloth) && is_cloth_sheet(I)) key = "cloth"
 			else if (I.type == /obj/item/stack/cable_coil) key = "cable"
 			else if (I.type == /obj/item/extraction_wheel_crate) key = "wheels"
 			if (!key || totals[key] >= required[key]) continue

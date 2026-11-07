@@ -54,7 +54,7 @@ def fixture(update_text=None):
         env['client'].screen.add('base HUD')
         return False
     env.update(check_HUD=rebuild, update_action_buttons=refresh, holder=holder,
-               handle_ui_visibility=lambda: None)
+               handle_ui_visibility=lambda: None, sync_inventory_screen_locs=lambda: None)
     declaration = '/mob/living/human/update_hud'
     body = extract(update_text or source('code/game/mob/living/carbon/human/human_hud.dm'), declaration)
     # hud_used is a mob field, including on assignment during missing-HUD

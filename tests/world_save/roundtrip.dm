@@ -92,9 +92,18 @@ var/global/roundtrip_capture_failure = FALSE
 		if(world.params["low_memory"])
 			map_storage.low_memory_override = TRUE
 			map_storage.segment_size_override = text2num(world.params["segment"]) || 2
+		// Stream-backed levels (format 5): stream_roundtrip.dme adds the module.
+		if(world.params["stream"])
+			check("stream_level_saves_override" in map_storage.vars, "stream fixture compiled without the stream module")
+			map_storage.vars["stream_level_saves_override"] = TRUE
 		map = new /obj/map_metadata(locate(1,1,1))
 		var/turf/edge = new /turf/test/edge(locate(world.maxx,world.maxy,2))
 		edge.name = "far corner"
+		// Level 2 is saved sparsely: only cells that differ from /turf/test in
+		// its area are written, and the loader regenerates every other cell.
+		map_storage.sparse_level_override = list("2" = /turf/test)
+		var/turf/named = locate(2,2,2)
+		named.name = "named cell"
 		var/obj/item/test/A = new(locate(1,1,1))
 		var/obj/item/test/B = new(A)
 		A.number = 17
@@ -145,10 +154,16 @@ var/global/roundtrip_capture_failure = FALSE
 				mob_list += wanderer
 		// Text macros do not survive a savefile's text export; the split
 		// copies such a node again by value.
-		if(world.params["split"])
+		if(world.params["split"] || world.params["stream"])
 			var/obj/item/test/macro = new(locate(6,1,1))
 			macro.name = "\improper split turkey"
 			macro.number = 66
+		// Values whose savefile text needs escaping or has no exact text form.
+		if(world.params["stream"])
+			var/obj/item/test/escaped = new(locate(7,1,1))
+			escaped.name = "q\"uo\\te \[b\] \n nl \t tab \u00e9 {\"brace\"}"
+			escaped.number = -0.125
+			escaped.items = list("big" = 16777216, "small" = 1e-07, "inf" = 1.#INF, "file" = 'icons/turf/floors.dmi', /obj/item/test = "path key", "empty" = "", "nested" = list(list("x")))
 		check(map_storage.Save_World(), "export failed")
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
@@ -169,8 +184,17 @@ var/global/roundtrip_capture_failure = FALSE
 		// Force import to allocate a different turf, rather than only rehydrate
 		// the already matching type in the live fixture.
 		edge.ChangeTurf(/turf/test, FALSE, FALSE)
+		// A cell the sparse level did not save must return to the baseline.
+		var/turf/stray = locate(3,3,2)
+		stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
 		map_storage.ClearMap()
 		check(map_storage.Load_World(), "import failed")
+		var/savefile/sparse_level = new("map_saves/2.sav")
+		check(sparse_level["/sparse/kind"] == "fixture" && sparse_level["/sparse/turf"] == /turf/test && sparse_level["/sparse/cells"] == 2, "sparse level header or cell count differs")
+		sparse_level = null
+		check(locate(2,2,2):name == "named cell", "sparse level field-only cell lost")
+		stray = locate(3,3,2)
+		check(stray.type == /turf/test && stray.name == initial(stray.name), "sparse level reload kept an unsaved cell")
 		corpse = locate(/mob/living/human) in locate(2,1,1)
 		living = locate(/mob/living/human) in locate(3,1,1)
 		check(corpse && corpse.stat == DEAD && !corpse.rejuvenate_calls, "saved dead human revived on import")
@@ -221,6 +245,9 @@ var/global/roundtrip_capture_failure = FALSE
 			world.log << "PASS: low-memory load of a full-file world save"
 			text2file("PASS", "result.txt")
 			del(world)
+			return
+		if(world.params["stream"])
+			check_stream_levels(A)
 			return
 		if(world.params["low_memory"])
 			D = locate(/obj/item/test) in locate(5,1,1)
@@ -396,7 +423,12 @@ var/global/roundtrip_capture_failure = FALSE
 	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "matching validation record did not skip the entry check")
 	map_storage.save_build_identity = "fixture-build-b"
 	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the validation record")
+	// A full preflight records its own build, so build b now skips and build a
+	// runs the full check again (and records itself).
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "full preflight did not record its build")
 	map_storage.save_build_identity = "fixture-build-a"
+	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the preflight record")
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "second full preflight did not record its build")
 	var/round_text = file2text("map_saves/round.json")
 	fdel("map_saves/round.json")
 	text2file("[round_text] ", "map_saves/round.json")
@@ -405,6 +437,21 @@ var/global/roundtrip_capture_failure = FALSE
 	map_storage.clear_validation_record()
 	map_storage.save_build_identity = null
 	check(!fexists("map_saves/validated.json"), "validation record not removed")
+	// Shard regions run region.dmb: its binary must identify the build too.
+	var/list/binaries = list("identity_a.dmb", "identity_b.dmb")
+	for(var/name in binaries) fdel(name)
+	check(isnull(persistence_build_identity(binaries)), "build identity without any binary")
+	text2file("region build", "identity_b.dmb")
+	var/region_only = persistence_build_identity(binaries)
+	check(istext(region_only) && findtext(region_only, "identity_b.dmb="), "second binary name gave no build identity")
+	check(persistence_build_identity(binaries) == region_only, "unchanged binary changed the build identity")
+	text2file("standalone build", "identity_a.dmb")
+	var/both = persistence_build_identity(binaries)
+	check(both != region_only, "another binary present kept the build identity")
+	fdel("identity_b.dmb")
+	text2file("region build, rebuilt", "identity_b.dmb")
+	check(persistence_build_identity(binaries) != both, "rebuilt binary kept the build identity")
+	for(var/name in binaries) fdel(name)
 
 /proc/check_save_identity_and_snapshot()
 	var/savefile/F = new
@@ -422,7 +469,7 @@ var/global/roundtrip_capture_failure = FALSE
 	qdel(original)
 	var/datum/test/replacement = new
 	// Simulate reuse of an old raw ref slot without depending on allocator timing.
-	map_storage.saving_references["\ref[replacement]"] = old_id
+	map_storage.saving_references[replacement] = old_id
 	var/new_id = map_storage.BuildVarDirectory(F, replacement)
 	check(new_id != old_id && map_storage.saving_reference_pins[new_id] == replacement, "reused ref assigned an old save identity")
 	map_storage.clear_bookkeeping()
@@ -511,3 +558,77 @@ var/global/roundtrip_capture_failure = FALSE
 		check(rejected, "roundtrip topology state was accepted")
 	qdel(probe)
 #endif
+
+// Format 5: the index names one stream per level, every entry and list comes
+// back through the helper, late sweep appends land in an earlier segment, and
+// a failed save stops its helper and keeps the completed backup.
+/proc/check_stream_levels(obj/item/test/A)
+	var/obj/item/test/D = locate(/obj/item/test) in locate(5,1,1)
+	check(D && D.number == 55 && D.reference == A.reference && D.alias == A.complex, "stream entry or list identity lost")
+	var/mob/living/simple_animal/swept = locate(/mob/living/simple_animal) in locate(1,1,1)
+	check(swept && swept.name == "segment wanderer" && !(locate(/mob/living/simple_animal) in locate(world.maxx,1,1)), "late sweep append through the stream lost")
+	var/obj/item/test/macro_copy = locate(/obj/item/test) in locate(6,1,1)
+	check(macro_copy && macro_copy.number == 66 && macro_copy.name == "\improper split turkey", "stream changed a text-macro name")
+	check(!map_storage.saving_segments && !map_storage.segment_reader, "stream handles retained after load")
+	var/obj/item/test/escaped = locate(/obj/item/test) in locate(7,1,1)
+	check(escaped && escaped.name == "q\"uo\\te \[b\] \n nl \t tab \u00e9 {\"brace\"}" && escaped.number == -0.125, "stream changed an escaped name or a fraction")
+	check(escaped.items["big"] == 16777216 && escaped.items["small"] == 1e-07 && escaped.items["inf"] == 1.#INF && escaped.items[/obj/item/test] == "path key" && escaped.items["empty"] == "" && escaped.items["nested"][1][1] == "x", "stream changed list values")
+	check(isfile(escaped.items["file"]) && md5(escaped.items["file"]) == md5('icons/turf/floors.dmi'), "stream changed a stored file")
+	call(text2path("/proc/check_stream_text_matches_wire"))()
+	for(var/z = 1, z <= 2, z++)
+		var/savefile/index = new("map_saves/[z].sav")
+		check(index["/format_version"] == 5 && index["/stream/file"] == "[z].stream.sav" && fexists("map_saves/[z].stream.sav"), "level [z] was not saved as a stream")
+		check(!fexists("map_saves/[z].part1.sav") && !fexists("map_saves/[z].stream.sav.tmp"), "stream level [z] left segment or temporary files")
+		index.cd = "/"
+		check(!("entries" in index.dir) && !("lists" in index.dir), "stream index [z] holds entries or lists")
+		index = null
+	check(map_storage.Save_World(), "second stream export failed")
+	check(fexists("map_backups/1.stream.sav") && fexists("map_backups/save_complete.txt"), "stream backup incomplete")
+	check(map_storage.validate_world_save(), "second stream export rejected")
+	check(!map_storage.saving_segments && !map_storage.segment_reader, "stream handles retained after save")
+	// The backup generation reads its own stream copy.
+	var/savefile/backup = new("map_backups/1.sav")
+	check(ispath(map_storage.level_entry_value(backup, backup["/map/1/1/1"], "type"), /turf), "backup stream unreadable")
+	backup = null
+	map_storage.drop_segment_reader()
+	// An entry shard evicted by later list blocks may still be held by an
+	// entry frame; the reader must keep recognising it.
+	// This file is shared with builds that do not compile the stream module.
+	var/savefile/index_file = new("map_saves/1.sav")
+	var/stream_reader_type = text2path("/datum/level_segment_reader/stream")
+	var/datum/R = new stream_reader_type(index_file, 1)
+	var/savefile/shard = call(R, "entry_file")(1)
+	for(var/block = 0, block <= R.vars["limit"], block++)
+		call(R, "list_file")(block * 512 + 1)
+	var/list/reader_files = R.vars["open_files"]
+	check(!reader_files["e0"] && call(R, "owns_file")(shard), "evicted stream shard lost its reader routing")
+	call(R, "close")()
+	check(!call(R, "owns_file")(shard), "closed stream reader still claims its scratch files")
+	R = null
+	shard = null
+	index_file = null
+	roundtrip_capture_failure = TRUE
+	var/datum/controller/gameticker/failed_stream = new
+	check(!failed_stream.savemap(), "stream capture failure accepted")
+	check(!fexists("map_saves/save_complete.txt") && fexists("map_backups/save_complete.txt") && fexists("map_backups/1.stream.sav"), "failed stream export lost its completed backup")
+	check(!map_storage.saving_segments && !map_storage.segment_reader && !persistence_save_in_progress, "failed stream export retained handles or lock")
+	check(!fexists("map_saves/1.stream.sav.tmp") && !fexists("map_saves/2.stream.sav.tmp"), "failed stream export left its temporary file")
+	roundtrip_capture_failure = FALSE
+	errors.Cut() // The injected capture failure is reported to admins.
+	check(map_storage.Save_World() && map_storage.validate_world_save(), "stream recovery export failed")
+	map_storage.ClearMap()
+	check(map_storage.Load_World(), "stream reload failed")
+	A = locate(/obj/item/test) in locate(1,1,1)
+	check(A && A.number == 17 && A.reference && A.reference.backlink == A && A.alias == A.complex, "stream reload lost objects or identity")
+	// Without the helper the save falls back to /savefile levels and drops the stream.
+	map_storage.vars["stream_level_saves_override"] = FALSE
+	check(map_storage.Save_World() && map_storage.validate_world_save(), "savefile export after stream export failed")
+	var/savefile/fallback = new("map_saves/1.sav")
+	check(fallback["/format_version"] == 4 && !fexists("map_saves/1.stream.sav") && !fexists("map_saves/2.stream.sav"), "savefile fallback kept a stale stream")
+	fallback = null
+	map_storage.ClearMap()
+	check(map_storage.Load_World(), "savefile reload after stream generation failed")
+	check(!errors.len, "unexpected errors with stream levels: [jointext(errors, " | ")]")
+	world.log << "PASS: stream-backed world save"
+	text2file("PASS", "result.txt")
+	del(world)

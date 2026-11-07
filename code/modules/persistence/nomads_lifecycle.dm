@@ -55,7 +55,10 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	return session
 /datum/nomads_lifecycle_control/proc/snapshot(ok = TRUE, error)
 	var/locked = busy || persistence_save_in_progress || persistence_restart.busy
-	var/ready = ticker && ticker.current_state == GAME_STATE_PLAYING && !locked && !last_error && !persistence_restart.startup_hold && !map_storage.last_error && !persistence_restart.last_error && (!persistence_restart.import_started || (persistence_restart.import_complete && persistence_restart.players_ready))
+	// A save that failed cleanly (no intent left, world still running) must not
+	// block the supervisor's next attempt; its message stays in "error".
+	var/retryable = persistence_restart.save_failure_retryable && !persistence_restart.exists()
+	var/ready = ticker && ticker.current_state == GAME_STATE_PLAYING && !locked && (retryable || (!last_error && !map_storage.last_error && !persistence_restart.last_error)) && !persistence_restart.startup_hold && (!persistence_restart.import_started || (persistence_restart.import_complete && persistence_restart.players_ready))
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
@@ -110,14 +113,15 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(peer[1] != "127.0.0.1" || !nomads_lifecycle_hex(token, 32) || input["token"] != token || !nomads_lifecycle_hex(read_revision(), 40))
 		return json_encode(list("ok" = FALSE, "error" = "unauthorized_or_disabled"))
 	var/action = input["action"]
-	var/list/allowed = action == "status" ? list("nomads_lifecycle", "token", "action") : list("nomads_lifecycle", "token", "action", "session", "operation")
+	var/list/allowed = (action == "status" || action == "save_idle") ? list("nomads_lifecycle", "token", "action") : list("nomads_lifecycle", "token", "action", "session", "operation")
 	if(action == "diagnose") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "target")
 	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
-	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose")))
+	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
 		if(!(key in allowed)) return json_encode(snapshot(FALSE, "malformed_request"))
 	if(action == "status") return json_encode(snapshot())
+	if(action == "save_idle") return json_encode(save_idle())
 	if(action == "diagnose") return diagnose(input)
 	if(input["session"] != boot_session() || !nomads_lifecycle_hex(input["operation"], 32))
 		return json_encode(snapshot(FALSE, "invalid_session_or_operation"))
@@ -147,9 +151,40 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	used_operations += operation
 	busy = TRUE // Reserve before the asynchronous saver can yield.
 	last_error = null
+	// The supervisor reads "error" as this operation's failure; drop a stale one.
+	if(persistence_restart.save_failure_retryable && !persistence_restart.exists())
+		persistence_restart.last_error = null
+		map_storage.last_error = null
 	spawn(0)
 		run_operation()
 	return json_encode(snapshot())
+
+// The host asks for the empty-world save as soon as a region empties instead of
+// waiting for the persistence loop's delay. It only ever runs the save the loop
+// would run: no players but the host online, something played since the last
+// save, and no save, restart or recovery in progress. The reply's "save" field
+// says "started" or why it was skipped; the host then watches the marker.
+/datum/nomads_lifecycle_control/proc/save_idle()
+	var/list/state = snapshot()
+	var/skip = null
+	if(!map || !ticker || !persistence_round_active()) skip = "not_persistent"
+	else if(config && config.skip_persistence_saving) skip = "saving_disabled"
+	else if(ticker.current_state < GAME_STATE_PLAYING) skip = "round_not_started"
+	else if(busy || persistence_save_in_progress || persistence_save_active() || persistence_restart.busy || persistence_restart.startup_hold || persistence_restart.exists()) skip = "busy"
+	else if(persistence_active_players()) skip = "players_online"
+	else if(!persistence_played_since_save) skip = "nothing_played"
+	if(skip)
+		state["save"] = "skipped:[skip]"
+		return state
+	nextsave = world.realtime + 216000
+	start_idle_save()
+	state["save"] = "started"
+	return state
+
+// Returns to the Topic reply at the saver's first yield.
+/datum/nomads_lifecycle_control/proc/start_idle_save()
+	set waitfor = FALSE
+	ticker.savemap()
 
 /datum/nomads_lifecycle_control/proc/run_operation()
 	try

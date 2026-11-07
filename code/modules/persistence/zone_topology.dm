@@ -281,13 +281,20 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 /map_storage/proc/validate_captured_world_save(list/candidate)
 	if(zone_candidate_validation || !persistence_active_operation || !persistence_active_operation.current(src, "save") || candidate["generation"] != zone_export_generation) throw EXCEPTION("Unowned candidate validation")
 	zone_candidate_validation = candidate
+	// Debug recovery audits the candidate's fields; an ordinary save trusts the
+	// values it just wrote and leaves the full walk to the next preflight.
+	candidate_full_walk = !!persistence_active_operation.debug_recovery
 	var/success
 	try
 		success = validate_world_save()
 	catch(var/exception/candidate_error)
 		zone_candidate_validation = null
+		candidate_full_walk = FALSE
+		saving_candidate_structure = null
 		throw candidate_error
 	zone_candidate_validation = null
+	candidate_full_walk = FALSE
+	saving_candidate_structure = null
 	return success
 
 /map_storage/proc/validate_zone_spawns(list/source, named = FALSE)
@@ -339,22 +346,37 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		F.cd = "/"
 		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz", "zone_capture", "map"))
 			if(!(key in F.dir)) throw EXCEPTION("Missing zone capture header")
-		if(!(F["/format_version"] in list(2, 3, 4)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
+		if(!(F["/format_version"] in list(2, 3, 4, 5)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
 		// savefile.dir builds a new list on every read, and indexing a whole level's
 		// directory is itself quadratic. Read each turf's entries by absolute path
 		// instead; a missing value reads as null. The entry count plus the per-turf
 		// index match below prove every turf owns exactly one distinct capture entry.
+		// A sparse level captured membership for its saved cells only; every
+		// other cell belongs to the baseline zone its header names.
+		var/list/sparse = sparse_level_header(F)
+		var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
+		var/baseline_zone = sparse ? sparse["zone"] : null
+		if(sparse && sparse["cells"] < world.maxx * world.maxy && (!istext(baseline_zone) || !validated_zones[baseline_zone])) throw EXCEPTION("Sparse level names no saved baseline zone")
 		F.cd = "/zone_capture"
-		if(F.dir.len != world.maxx * world.maxy) throw EXCEPTION("Incomplete captured zone level")
+		if(F.dir.len != (sparse ? sparse["cells"] : world.maxx * world.maxy)) throw EXCEPTION("Incomplete captured zone level")
 		F.cd = "/map"
-		if(!("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
-		F.cd = "/map/[z]"
+		if(!sparse && !("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
+		if(sparse) F.cd = "/"
+		else F.cd = "/map/[z]"
 		// savefile.dir follows the current directory; detach this listing before
 		// checking membership entries, which changes F.cd inside the turf loop.
 		var/list/rows = F.dir.Copy()
 		for(var/y = 1, y <= world.maxy, y++)
-			if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
+			var/list/columns = sparse_cells ? sparse_cells["[y]"] : null
+			if(!sparse)
+				if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
+			var/next_column = 1
 			for(var/x = 1, x <= world.maxx, x++)
+				if(sparse)
+					if(!columns || next_column > columns.len || columns[next_column] != x)
+						validated_zone_grid += baseline_zone
+						continue
+					next_column++
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(isnull(ref)) throw EXCEPTION("Missing captured turf coordinate")
 				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Invalid captured turf reference")
@@ -395,12 +417,15 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 
 // Authoritative topology already contains roof membership. Validate the roof's
 // direct owner and scalar settings against it, without constructing any area.
-/map_storage/proc/prepare_zone_roof(savefile/F, x, y, z, child, type)
-	var/path = entry_path(F, child)
-	F.cd = path
-	if(!("switch_area" in F.dir) || !("current_area_type" in F.dir)) throw EXCEPTION("Missing saved roof settings")
-	var/switch_value = persistence_saved_scalar(F["switch_area"])
-	var/base_value = persistence_saved_scalar(F["current_area_type"])
+// Without a file (a stream save's candidate check) the saved values come from
+// the live roof the save just wrote, in switch_value and base_value.
+/map_storage/proc/prepare_zone_roof(savefile/F, x, y, z, child, type, switch_value, base_value)
+	if(F)
+		var/path = entry_path(F, child)
+		F.cd = path
+		if(!("switch_area" in F.dir) || !("current_area_type" in F.dir)) throw EXCEPTION("Missing saved roof settings")
+		switch_value = persistence_saved_scalar(F["switch_area"])
+		base_value = persistence_saved_scalar(F["current_area_type"])
 	if(!isnum(switch_value) || !(switch_value in list(TRUE, FALSE)) || !ispath(base_value, /area)) throw EXCEPTION("Invalid zone roof settings")
 	var/id = saved_zone_id(x, y, z)
 	var/list/zone = validated_zones[id]

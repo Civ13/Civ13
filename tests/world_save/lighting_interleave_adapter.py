@@ -6,7 +6,14 @@ CASES = ("positive", "qdel", "hard_null", "atom_legacy", "atom_new", "turf_legac
 
 def instrument_loading(source):
     start = source.index("\t\t\tvar/list/lighting_entries = all_loaded\n")
-    end = source.index("\t\t\tlog_startup_progress(", start)
+    # The lighting section ends at the per-level progress report, which is
+    # report_load_memory() since load memory logging replaced the plain log line.
+    ends = [source.find(marker, start) for marker in
+            ("\t\t\treport_load_memory(", "\t\t\tlog_startup_progress(")]
+    ends = [index for index in ends if index != -1]
+    if not ends:
+        raise ValueError("Expected the per-level progress report after lighting restoration")
+    end = min(ends)
     section = source[start:end]
     needle = "\t\t\t\tif(TICK_CHECK)\n"
     if section.count(needle) != 2:

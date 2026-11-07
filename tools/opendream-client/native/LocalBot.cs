@@ -13,13 +13,15 @@ public sealed record BotStatus(bool Ok, bool Running, bool StopPending, string? 
 // One component's answer to check-update: the server (gaia_host.py) and the bot (control.php) share this shape.
 public sealed record UpdateCheck(bool Ok, string Component, string Current, string Available, int Behind, bool CanUpdate, string? Reason, string? Error) {
     public bool HasUpdate => Ok && Behind > 0;
+    // The only thing in the way is a running server: a save, update and restart (deploy) can still run.
+    public bool OnlyNeedsStop => HasUpdate && !CanUpdate && Reason is "stop the server before updating" or "stop the region before updating";
 
-    public string Describe() {
+    public string Describe(bool withReason = true) {
         if (!Ok) return "Check failed: " + (Error ?? "no answer");
         var at = Short(Current);
         if (Behind <= 0) return $"Up to date ({at}).";
         var line = $"Update available: {Behind} new commit{(Behind == 1 ? "" : "s")} ({at} -> {Short(Available)}).";
-        return CanUpdate || string.IsNullOrEmpty(Reason) ? line : line + " " + Capital(Reason) + ".";
+        return !withReason || CanUpdate || string.IsNullOrEmpty(Reason) ? line : line + " " + Capital(Reason) + ".";
     }
 
     private static string Short(string sha) => sha.Length >= 7 ? sha[..7] : (sha.Length > 0 ? sha : "unknown");
@@ -51,7 +53,7 @@ public static class LocalBot {
     public static ProcessStartInfo Control(HostBot bot, string action) {
         if (!Actions.Contains(action)) throw new ArgumentException("Unsupported bot action.", nameof(action));
         var step = new ProcessStartInfo(bot.Php) { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = bot.Root,
-            RedirectStandardOutput = action != "start", RedirectStandardError = true };
+            RedirectStandardInput = action != "start", RedirectStandardOutput = action != "start", RedirectStandardError = true };
         foreach (var argument in new[] { "scripts/windows/control.php", action, bot.Profile }) step.ArgumentList.Add(argument);
         return step;
     }
@@ -93,6 +95,46 @@ public static class LocalBot {
         var text = Encoding.UTF8.GetString(buffer, 0, read);
         if (start > 0 && text.IndexOf('\n') is var cut and >= 0) text = text[(cut + 1)..];
         return text.Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
+    }
+
+    // Forced stop for a bot that ignores stop.request: list every php.exe with its command line
+    // (hidden PowerShell, CIM), keep this bot's supervisor and child, and end each process tree.
+    public static ProcessStartInfo ListPhpProcesses() {
+        var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe")) {
+            UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "-NoProfile", "-NonInteractive", "-Command",
+                "Get-CimInstance Win32_Process -Filter \"Name='php.exe'\" | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress" })
+            step.ArgumentList.Add(argument);
+        return step;
+    }
+
+    // The supervisor runs "control.php start PROFILE" and the bot runs "ROOT/bot.php"; nothing else matches.
+    public static IReadOnlyList<int> ParseBotProcesses(HostBot bot, string output) {
+        static string Norm(string text) => text.Replace('\\', '/').ToLowerInvariant();
+        var profile = Norm(bot.Profile);
+        var child = Norm(bot.Root).TrimEnd('/') + "/bot.php";
+        var found = new List<int>();
+        var line = output.Trim();
+        if (line.Length == 0) return found;
+        try {
+            using var document = JsonDocument.Parse(line);
+            var root = document.RootElement;
+            var items = root.ValueKind == JsonValueKind.Array ? root.EnumerateArray().ToList() : [root];
+            foreach (var item in items) {
+                if (item.ValueKind != JsonValueKind.Object || !item.TryGetProperty("ProcessId", out var id) || !id.TryGetInt32(out var pid) || pid <= 0) continue;
+                if (Str(item, "CommandLine") is not { } command) continue;
+                var text = Norm(command);
+                if ((text.Contains("control.php") && text.Contains(" start ") && text.Contains(profile)) || text.Contains(child)) found.Add(pid);
+            }
+        } catch (JsonException) { }
+        return found;
+    }
+
+    public static ProcessStartInfo KillTree(int pid) {
+        var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "taskkill.exe")) {
+            UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var argument in new[] { "/F", "/T", "/PID", pid.ToString() }) step.ArgumentList.Add(argument);
+        return step;
     }
 
     internal static string? Str(JsonElement json, string name) =>

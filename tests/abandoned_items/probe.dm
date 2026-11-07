@@ -239,7 +239,7 @@ var/decay_assertions = 0
 		map_storage.clear_bookkeeping()
 		map_storage.saving_z = 1
 		var/container_ref = map_storage.BuildVarDirectory(F, bag, 1)
-		var/item_ref = map_storage.saving_references["\ref[I]"]
+		var/item_ref = map_storage.saving_references[I]
 		F.cd = map_storage.entry_path(F, item_ref)
 		F["abandonment_index"] << list("kind" = "value", "value" = 999999)
 		F["abandonment_since"] << list("kind" = "value", "value" = -ABANDONED_ITEM_LIFETIME*10)

@@ -126,8 +126,9 @@ launcher. Only newer semantic versions update; the candidate PE product version
 must match its manifest. Never point this channel at an unaccepted candidate.
 
 Startup reports the installed/latest versions and check/download/restart stage.
-Transport resets and timeouts get at most three attempts, with 250 ms then 750 ms
-backoff. The manifest has a 20-second total budget (six seconds per attempt).
+Transport resets and timeouts get at most five attempts, waiting 1, 2, 4 then 8
+seconds between them (250 ms apart was too quick to outlast a reset during the
+TLS handshake). The manifest has a 60-second total budget (six seconds per attempt).
 Downloads retain a ten-minute total budget, including the body, with 20-second
 response-header deadlines. Each retry starts from the original URL and a new
 empty staged file; only the failed attempt's own file is removed. Certificate
@@ -202,6 +203,18 @@ the window first runs `control.php stop` and waits up to 90 seconds. A Windows j
 object with kill-on-close ends a launcher-started bot if the launcher exits any
 other way. A bot started outside the launcher is shown but left running on close.
 The console `H` option still starts the bot detached.
+
+### Player help tab
+
+When `control.group` is set the window adds a **Player help** tab for the
+group's "Ask for help" bridges, which the host service keeps running (the
+group config's `player_help`; see `scripts/shard-group/README.md`). It shows
+`shard_group.py help-status` every 5 seconds while open: each region's bridge,
+its PID and whether its heartbeat is fresh. **Stop** runs `help-stop` (bridges
+finish their answers, then stay stopped until **Start**, which runs
+`help-start`). A log view follows each region's bridge log. The bridges belong
+to the host service, so closing the launcher leaves them as they are.
+`tests/LocalHelpTests.cs` covers the argv and answer parsing.
 
 An **Updates** tab appears with `control` or `bot`. It has one row each for the
 server (`gaia_host.py check-update`) and the bot (`control.php check-update`).
@@ -336,3 +349,10 @@ static mode names, DNS alone, or a cached snapshot.
 Legacy OpenDream
 shortcuts retain their historical packaged endpoints; they are not native BYOND
 shortcuts. Local DreamDaemon verification still uses its genuine host receipt.
+
+## Mobile host access
+
+The optional [mobile LAN companion](../../../scripts/gaia-host/MOBILE.md) uses
+the Host tab's existing control backend. A configured `mobile_url` in `host.json`
+displays its HTTPS LAN address in the Host tab. This does not start a listener;
+certificate pairing, trusted HTTPS and explicit operator setup are required.

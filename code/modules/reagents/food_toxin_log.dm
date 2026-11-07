@@ -46,6 +46,10 @@ var/global/list/food_toxin_log = list()
 			causes += "rotten"
 		if (F.raw && !findtext("[O.food_toxin_origin]", "raw"))
 			causes += "raw"
+	if (!causes.len && O.reagents && O.reagents.has_reagent("cholera"))
+		// Natural cholera only comes from untreated water, so name it even when the
+		// container itself was filled before origins were recorded.
+		causes += "cholera from unboiled water (rivers, lakes, sea, swamps, dirty wells and puddles all carry it)"
 	if (!causes.len)
 		if (known_only)
 			return null

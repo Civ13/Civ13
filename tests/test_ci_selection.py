@@ -190,7 +190,9 @@ class SelectionTests(unittest.TestCase):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_gaia_host_offline_admission_is_exact(self):
-        for path in ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py', 'tests/gaia_host/test_doorman.py'):
+        for path in ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py', 'tests/gaia_host/test_doorman.py',
+                     'tests/gaia_host/test_wait_group.py', 'tests/gaia_host/test_relay.py',
+                     'tests/gaia_host/test_mobile_host.py'):
             with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/gaia_host/new_native_probe.ps1'
@@ -229,7 +231,8 @@ class SelectionTests(unittest.TestCase):
     def test_zombie_city_offline_admission_is_exact(self):
         for path in ('tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
                      'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
-                     'tests/zombie_city/native_probe.dm'):
+                     'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                     'tests/zombie_city/horde_probe.dm'):
             with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/zombie_city/new_native_probe.dm'

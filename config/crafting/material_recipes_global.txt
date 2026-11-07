@@ -439,6 +439,33 @@ RECIPE: /material/electronics/,lithium-ion battery bank,/obj/structure/battery/l
 RECIPE: /material/electronics/,drone controller,/obj/item/drone_controller,10,100,0,1,drones,0,235,0,8,null
 RECIPE: /material/electronics/,quadcopter drone,/obj/structure/drone/flying,15,150,1,1,drones,0,235,0,8,null
 RECIPE: /material/electronics/,payload drone,/obj/structure/drone/flying/grenade,20,150,1,1,drones,0,235,0,8,null
+RECIPE: /material/electronics/,launch rail,/obj/structure/launch_rail,30,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,survey probe,/obj/item/space_probe,25,150,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,mission console,/obj/structure/survey_console,20,150,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,advanced survey probe,/obj/item/space_probe/advanced,35,200,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,launch pad,/obj/structure/region_gate/trail_marker/launch_pad,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,crewed lander,/obj/structure/crewed_lander,60,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,habitat module kit,/obj/item/habitat_kit,60,400,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,greenhouse module kit,/obj/item/habitat_kit/greenhouse,60,400,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,workshop module kit,/obj/item/habitat_kit/workshop,60,400,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,storage module kit,/obj/item/habitat_kit/storage,60,400,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,airlock module kit,/obj/item/habitat_kit/airlock,50,400,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,hull patch kit,/obj/item/habitat_sealant,5,100,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,electrolyser,/obj/structure/life_support/electrolyser,20,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,CO2 scrubber,/obj/structure/life_support/scrubber,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,habitat heater,/obj/structure/life_support/heater,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,water recycler,/obj/structure/life_support/water_recycler,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,oxygen reclaimer,/obj/structure/life_support/oxygen_reclaimer,20,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/plastic/,pressure suit,/obj/item/clothing/suit/pressure_suit,30,300,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/plastic/,pressure helmet,/obj/item/clothing/head/pressure_helmet,15,200,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,suit air tank,/obj/item/pressure_tank,10,150,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/plastic/,suit patch kit,/obj/item/pressure_suit_patch,3,100,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,regolith drill rig,/obj/structure/drill/regolith_rig,30,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,ice melter,/obj/structure/reagent_dispensers/ice_melter,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,rover assembly bay,/obj/structure/car_workshop/rover_bay,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,rover charger,/obj/structure/rover_charger,10,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,cargo trailer,/obj/structure/closet/crate/rover_trailer,20,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,propellant plant,/obj/structure/reagent_dispensers/propellant_plant,40,300,1,1,spaceflight,235,0,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
 
@@ -1805,6 +1832,8 @@ RECIPE: /material/copper/,orange cable coil (10m),/obj/item/stack/cable_coil/ora
 RECIPE: /material/copper/,cyan cable coil (10m),/obj/item/stack/cable_coil/cyan,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,pink cable coil (10m),/obj/item/stack/cable_coil/pink,1,35,0,1,electrical,105,0,0,8,null
 RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,cable riser,/obj/item/connector/riser,2,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,bus tie switch,/obj/item/connector/bus_tie,2,35,0,1,electrical,105,0,0,8,null
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 
@@ -1835,6 +1864,7 @@ RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,chainsaw,/obj/item/weapon/material/hatchet/chainsaw,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,fire extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty,7,90,0,1,tools,99,0,0,8,null
 
 //*********************| STEEL SIEGE WEAPONS |**************************
@@ -1953,6 +1983,8 @@ RECIPE: /material/steel/,bottler,/obj/structure/fluid_bottler,8,150,1,1,producti
 RECIPE: /material/steel/,automatic tablet press,/obj/structure/fluid_tablet_press,12,200,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,pipe meter,/obj/structure/fluid_meter,2,100,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,water intake,/obj/structure/fluid_intake,4,100,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,water tap,/obj/structure/water_tap,3,100,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,piped shower,/obj/structure/shower/piped,5,120,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,steel jerrycan,/obj/item/weapon/reagent_containers/glass/barrel/jerrycan,1,75,0,1,storage,120,0,0,8,null
 RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,storage,115,130,0,8,null
 
@@ -2671,6 +2703,7 @@ RECIPE: /material/electronics/,television program desk,/obj/structure/telecom/st
 RECIPE: /material/electronics/,network landline telephone,/obj/item/weapon/telephone/landline,2,120,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,cable network terminal,/obj/structure/telecom/terminal,8,150,1,1,none,160,0,0,8,null
 RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,long-range radio relay,/obj/structure/telecom/relay,12,150,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,solar array controller,/obj/structure/civ_generator/solar,20,200,1,1,none,105,0,0,8,null
 RECIPE: /material/electronics/,photovoltaic panel,/obj/structure/civ_generator/solar/panel,10,150,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,wind charger,/obj/structure/civ_generator/wind/charger,15,200,1,1,none,105,0,0,8,null

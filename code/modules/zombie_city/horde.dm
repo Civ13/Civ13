@@ -18,6 +18,7 @@
 #define ZOMBIE_HORDE_PLAYER_CAP 15
 #define ZOMBIE_HORDE_SPAWNS_PER_TICK 3
 #define ZOMBIE_HORDE_NOISE_MEMORY 300
+#define ZOMBIE_HORDE_SCENT_RANGE 15
 
 var/global/datum/zombie_horde/zombie_horde = null
 
@@ -53,6 +54,14 @@ var/global/list/zombie_horde_density_counts = list(
 	var/count = 0
 	var/list/live = list()
 
+// Within range across the map, on the same level or one floor up or down: a
+// player upstairs keeps the zombies below them, so climbing a floor does not
+// fold the chase away.
+/proc/zombie_horde_near(atom/A, atom/B, range)
+	if (!A || !B || abs(A.z - B.z) > 1)
+		return FALSE
+	return max(abs(A.x - B.x), abs(A.y - B.y)) <= range
+
 /datum/zombie_horde_block/proc/distance_to(turf/T)
 	if (T.z != z)
 		return INFINITY
@@ -63,6 +72,7 @@ var/global/list/zombie_horde_density_counts = list(
 /datum/zombie_horde
 	var/list/blocks = list() // id = block
 	var/list/live = list()
+	var/list/people = list() // anchors as of the last tick
 	var/running = FALSE
 	var/spawned_total = 0
 	var/folded_total = 0
@@ -113,6 +123,7 @@ var/global/list/zombie_horde_density_counts = list(
 
 /datum/zombie_horde/proc/tick()
 	var/list/people = anchors()
+	src.people = people
 	// Fold back zombies far from everyone.
 	for (var/mob/living/simple_animal/hostile/human/zombie/horde/Z in live.Copy())
 		if (QDELETED(Z) || Z.stat == DEAD)
@@ -120,7 +131,7 @@ var/global/list/zombie_horde_density_counts = list(
 			continue
 		var/near = FALSE
 		for (var/mob/living/human/H in people)
-			if (H.z == Z.z && get_dist(H, Z) <= ZOMBIE_HORDE_ACTIVE_RANGE)
+			if (zombie_horde_near(H, Z, ZOMBIE_HORDE_ACTIVE_RANGE))
 				near = TRUE
 				break
 		if (near)
@@ -138,7 +149,7 @@ var/global/list/zombie_horde_density_counts = list(
 			break
 		var/nearby = 0
 		for (var/mob/living/simple_animal/hostile/human/zombie/horde/Z in live)
-			if (Z.z == H.z && get_dist(Z, H) <= ZOMBIE_HORDE_ACTIVE_RANGE)
+			if (zombie_horde_near(Z, H, ZOMBIE_HORDE_ACTIVE_RANGE))
 				nearby++
 		if (nearby >= ZOMBIE_HORDE_PLAYER_CAP)
 			continue
@@ -253,7 +264,8 @@ var/global/list/zombie_horde_density_counts = list(
 /mob/living/simple_animal/hostile/human/zombie/horde/proc/find_prey()
 	var/mob/living/human/best
 	var/best_d = 8
-	for (var/mob/living/human/H in view(7, src))
+	// hearers() ignores darkness: zombies find prey at night too, still not through walls.
+	for (var/mob/living/human/H in hearers(7, src))
 		if (H.stat == DEAD)
 			continue
 		var/d = get_dist(src, H)
@@ -288,9 +300,29 @@ var/global/list/zombie_horde_density_counts = list(
 			walk_to(src, horde_noise_turf, 1, move_to_delay + 2)
 		return
 	horde_noise_turf = null
+	// Out of sight, a zombie still shambles toward the nearest living person it
+	// can smell, so a block's zombies close in on players rather than idle.
+	var/mob/living/human/scent = find_scent()
+	if (scent)
+		walk_to(src, scent, 1, move_to_delay + 4)
+		return
 	walk(src, 0)
 	if (prob(15))
 		step(src, pick(cardinal))
+
+/mob/living/simple_animal/hostile/human/zombie/horde/proc/find_scent()
+	if (!zombie_horde)
+		return null
+	var/mob/living/human/best
+	var/best_d = ZOMBIE_HORDE_SCENT_RANGE + 1
+	for (var/mob/living/human/H in zombie_horde.people)
+		if (QDELETED(H) || H.stat == DEAD || H.z != z)
+			continue
+		var/d = get_dist(src, H)
+		if (d < best_d)
+			best = H
+			best_d = d
+	return best
 
 /mob/living/simple_animal/hostile/human/zombie/horde/death()
 	if (stat == DEAD)
@@ -318,3 +350,4 @@ var/global/list/zombie_horde_density_counts = list(
 	return ..()
 
 #undef ZOMBIE_HORDE_NOISE_MEMORY
+#undef ZOMBIE_HORDE_SCENT_RANGE

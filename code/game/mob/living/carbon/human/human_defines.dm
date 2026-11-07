@@ -154,6 +154,9 @@
 	var/disease_course = 0 // Bounded 0-180 treatment progress, retained with the illness.
 
 	var/list/disease_immunity = list()
+	var/list/disease_resistance = list() // Illness -> 0-100 resistance built by exposure; fades over time.
+	var/disease_resist_checked = "none" // Illness last checked against resistance when it took hold.
+	var/list/poison_exposure = list() // Poison reagent id -> units processed; builds tolerance, fades over time.
 
 //	drug addiction works on a scale of 0 to 100.
 //	Every dose increases the meter. It will slowly go down, but high values will give you withdrawal symptoms,

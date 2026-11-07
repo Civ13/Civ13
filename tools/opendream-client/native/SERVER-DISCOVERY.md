@@ -8,13 +8,18 @@ native catalog, without assuming a game mode or online state from a port:
 | Menu | Host | Candidate TCP game ports |
 | --- | --- | --- |
 | Civ13.com | civ13.com | 1714, 1715 |
-| ValZarGaming | valzargaming.com | 1714, 1715 |
+| ValZarGaming | play.valzargaming.com | 1714 (gate), 1715 |
 
 `ServerCatalog.Candidates` owns this finite configuration. No port ranges,
 third-party hosts, server-supplied endpoints, automatic port scans or public
 `--server-port` override are accepted. An unused candidate simply fails status.
 Adding/changing ports requires a reviewed catalog update. This discovers which
 known endpoints answer; it cannot discover arbitrary hosts or unknown ports.
+
+`ServerCatalog.GatePort` names a provider's gate world (ValZarGaming: 1714).
+Worlds the host's doorman marks `routed` are never listed. When the doorman
+does not answer, a provider with a gate lists only the gate, so a routed world
+such as Rail Yard is not offered while the gate is down.
 
 There is no HTTP/HTTPS server-list request in discovery or joining. The earlier
 PR design's civ13.com well-known directory and companion Civilizationbot PR #20
@@ -52,8 +57,15 @@ with `cached_age`) and `?wake=1&port=N`. `HostStatus` asks it first, under its
 own two-second deadline, before the direct sweep. The port is fixed in source
 like the game candidates, and the doorman supplies no address: entries whose
 port is not a configured candidate are ignored, and the answer is display data
-and a wake target only. A missing, failing or malformed doorman reply means
-every candidate is checked directly as before.
+and a wake target only. When the doorman request fails (including a rejected
+malformed reply), a provider with a gate checks only the gate directly and a
+provider without one checks every candidate. With no doorman configured, every
+candidate is checked directly.
+
+An entry marked `"routed": true` sits behind the host's routing relay
+(`scripts/gaia-host/relay.py`): its port is closed to players, who join the
+group's gate world and are sent on from there. Such a candidate is neither listed
+nor queried directly.
 
 Candidates the doorman reports asleep or waking are not queried directly, so
 browsing never wakes a frozen world or spends its Topic spacing. They appear as

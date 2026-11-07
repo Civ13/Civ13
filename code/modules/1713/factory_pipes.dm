@@ -58,6 +58,16 @@ var/global/fluid_step_serial = 0
 /obj/proc/fluid_receive(id, amount, data)
 	return 0
 
+// Pipes move reagents with add/remove rather than trans_to, so carry the
+// food toxin origin across by hand for the swallow log.
+/proc/fluid_carry_toxin_origin(obj/S, datum/reagents/R, obj/D)
+	var/obj/from = isobj(R.my_atom) ? R.my_atom : S
+	var/cause = food_toxin_cause(from, TRUE)
+	if (!cause && from != S)
+		cause = food_toxin_cause(S, TRUE)
+	if (cause)
+		D.note_food_toxin("[cause], piped from [S.name]")
+
 /proc/fluid_add_to(datum/reagents/R, id, amount, data)
 	if (!R || amount <= 0)
 		return 0
@@ -125,8 +135,11 @@ var/global/fluid_step_serial = 0
 					if (amount <= 0)
 						continue
 					var/data = R.get_data(id)
+					var/is_toxin = istype(reagent, /datum/reagent/toxin)
 					R.remove_reagent(id, amount)
 					var/taken = D.fluid_receive(id, amount, data)
+					if (taken > 0 && is_toxin)
+						fluid_carry_toxin_origin(S, R, D)
 					if (taken < amount)
 						// Anything refused goes back where it came from.
 						R.add_reagent(id, amount - taken, data)
@@ -554,6 +567,7 @@ var/global/fluid_step_serial = 0
 	if (W.sickness > 0)
 		reagents.add_reagent("cholera", amount * W.sickness * 0.05)
 		other += amount * W.sickness * 0.05
+		note_food_toxin("unboiled [W.name] water drawn by [name] at ([x],[y],[z])")
 	if (W.salty)
 		reagents.add_reagent("sodiumchloride", amount * 0.04)
 		other += amount * 0.04
@@ -586,6 +600,7 @@ var/global/fluid_step_serial = 0
 	return FLUID_TIER_SOURCE
 
 /obj/structure/oilwell/fluid_supply_holder()
+	load_barrel(FALSE)
 	if (!work_barrel || work_barrel.loc != src)
 		return null
 	return work_barrel.reagents

@@ -36,6 +36,9 @@
 
 	restore_blood()
 	shock_stage = 0
+	traumatic_shock = 0
+	for (var/obj/item/organ/external/E in organs)
+		E.pain = 0
 	..()
 
 

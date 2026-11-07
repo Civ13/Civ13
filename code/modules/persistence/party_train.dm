@@ -226,7 +226,7 @@ var/global/list/party_train_requirements = list(
 	var/obj/item/stack/S = W
 	for(var/kind in party_train_requirements)
 		var/list/need = party_train_requirements[kind]
-		if(!istype(S, need[1])) continue
+		if(!stack_matches_recipe_material(S, need[1])) continue
 		var/missing = need[2] - (delivered[kind] || 0)
 		if(missing <= 0)
 			to_chat(user, SPAN_NOTICE("The train needs no more [need[3]]."))

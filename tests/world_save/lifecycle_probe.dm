@@ -13,6 +13,15 @@ var/datum/persistence_world_operation/persistence_active_operation
 /map_storage
 	var/saving_z = 0
 	var/loading_z = 0
+// The host save request (save_idle) reads the persistence loop's state.
+var/persistence_played_since_save = FALSE
+var/nextsave = 0
+/proc/persistence_save_active()
+	return FALSE
+/proc/persistence_active_players()
+	return 0
+/datum/configuration
+	var/skip_persistence_saving = FALSE
 var/datum/lifecycle_fixture_globals/GLOB
 /datum/lifecycle_fixture_globals
 	var/datum/error_viewer/error_cache/error_cache
@@ -190,6 +199,14 @@ var/lifecycle_reclaim_ok = TRUE
 		check(T.saves == 1 && !shutdown_calls && !L.busy && L.last_error && !T.exists(), "failed save shutdown or retained lock")
 		R = lifecycle_reply(L, I)
 		check(!R["ok"] && T.saves == 1, "failed operation replay saved again")
+		// A clean failure leaves the world running: the supervisor may retry.
+		R = L.snapshot()
+		check(R["ready"] && !R["busy"] && R["error"], "cleanly failed save blocked the next attempt or hid its error")
+		I = lifecycle_request(L, "save_shutdown")
+		R = lifecycle_reply(L, I)
+		check(R["ok"] && R["busy"] && !R["error"], "retry after a failed save was refused or reported the stale error")
+		sleep(2)
+		check(T.saves == 2 && !shutdown_calls && !L.busy && L.last_error, "retry after a failed save did not run")
 		T = new_transaction()
 		T.validation_ok = FALSE
 		I = lifecycle_request(L, "save_shutdown")

@@ -61,6 +61,11 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	spawn (0)
 		while(persistence_restart.startup_hold) sleep(10)
 		if(map_storage.round_restored) return
+		// A region other than the mainland starts its round without an admin,
+		// once world setup and any save load have finished (shard_group.dm).
+		var/region_autostart = text2path("/proc/region_round_autostart")
+		if (region_autostart)
+			call(region_autostart)(src)
 
 		current_state = GAME_STATE_PREGAME // just in case
 

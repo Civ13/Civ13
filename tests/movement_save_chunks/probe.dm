@@ -72,7 +72,7 @@ var/headroom_waits = 0
 	return armed && headroom_waits && world.params["scenario"] == "headroom-nonprogress"
 /proc/fixture_headroom_before_wait(mob/A, datum/save_export_frame/parent_frame)
 	if(!fixture_force_headroom(A)) return
-	if(map_storage.moving_save_chunk || map_storage.saving_references["\ref[A]"]) throw EXCEPTION("HEADROOM: stage or root identity existed before wait")
+	if(map_storage.moving_save_chunk || map_storage.saving_references[A]) throw EXCEPTION("HEADROOM: stage or root identity existed before wait")
 	headroom_waits++
 	mutations++
 	switch(world.params["scenario"])
@@ -121,11 +121,11 @@ var/peak_capture_tick_usage = 0
 		else if(world.params["scenario"] == "legacy-backstep" || fixture_sweep_scenario())
 			// A non-roster animal steps back onto an already-saved empty tile.
 			var/datum/save_export_frame/top = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
-			if(!mutations && !top && saving_references["\ref[locate(2,1,1)]"] && !saving_references["\ref[subject]"])
+			if(!mutations && !top && saving_references[locate(2,1,1)] && !saving_references[subject])
 				subject.loc = locate(2,1,1)
 				if(companion) companion.loc = locate(2,1,1)
 				mutations++
-			else if(mutations == 1 && top && top.source == subject && saving_references["\ref[locate(4,1,1)]"])
+			else if(mutations == 1 && top && top.source == subject && saving_references[locate(4,1,1)])
 				// The tile walk is complete: this is the sweep's own capture.
 				if(world.params["scenario"] == "sweep-container")
 					subject.loc = new /obj(locate(1,1,1))
@@ -136,7 +136,7 @@ var/peak_capture_tick_usage = 0
 		else if(world.params["scenario"] == "walker-backstep")
 			// The walker steps back onto an already-saved tile before its own.
 			var/datum/save_export_frame/top = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
-			if(!mutations && !top && walker && saving_references["\ref[locate(2,1,1)]"] && !saving_references["\ref[walker]"])
+			if(!mutations && !top && walker && saving_references[locate(2,1,1)] && !saving_references[walker])
 				walker.loc = locate(2,1,1)
 				mutations++
 		else if(world.params["scenario"] == "uncaptured-delete")
@@ -146,7 +146,7 @@ var/peak_capture_tick_usage = 0
 				del(subject)
 		else if(world.params["scenario"] in list("frontier", "frontier-delete"))
 			// Wait until the visited turf frame is closed, not merely assigned an ID.
-			if(!mutations && !saving_export_stack.len && saving_references["\ref[locate(1,1,1)]"])
+			if(!mutations && !saving_export_stack.len && saving_references[locate(1,1,1)])
 				subject.loc = locate(1,1,1)
 				mutations++
 			else if(world.params["scenario"] == "frontier-delete" && record && record["ref"])

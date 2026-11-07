@@ -33,11 +33,23 @@ class Machine(base.FakeMachine):
     def byond_pager_running(self):
         return self.pager
 
+    def terminate(self, pid):
+        self.calls.append(['terminate', pid])
+        self.up = False
+        self.suspended = 0
+
     def status_topic(self, port):
         if self.suspended:
             raise OSError('frozen')
         self.status_calls += 1
         return json.dumps({'players': self.clients, 'map_name': 'Gaia', 'map_gamemode': 'Nomads'})
+
+    def region_topic(self, port):
+        if self.suspended:
+            raise OSError('frozen')
+        if getattr(self, 'region', None) is None:
+            return json.dumps({'group': None})
+        return json.dumps(dict(self.region, players=self.clients))
 
 
 def request(query):
@@ -66,7 +78,26 @@ class DoormanTests(base.GaiaHostTests):
         self.clock[0] += 120
         entry = self.ask('host_status=1')['instances'][0]
         self.assertEqual((entry['state'], entry['map_name'], entry['players'], entry['cached_age']), ('asleep', 'Gaia', 0, 120))
+        self.assertFalse(entry['cold'])  # frozen in memory: thaws at once
         self.assertEqual(self.machine.suspended, 1)
+
+    def test_host_status_carries_the_region_answer_of_a_grouped_world(self):
+        # Regions read each other from here instead of a blocking world.Export poll.
+        self.running()
+        self.door.step()
+        self.assertNotIn('region', self.ask('host_status=1')['instances'][0])
+        self.machine.region = {'group': 'earth', 'region': 'gaia', 'name': 'Gaia', 'kind': 'MAINLAND', 'map': 'Gaia',
+                               'ordinal_age': 8, 'secret': 'never copied'}
+        self.clock[0] += doorman.REFRESH_SECONDS
+        self.door.step()
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual(entry['region'], {'group': 'earth', 'region': 'gaia', 'name': 'Gaia', 'kind': 'MAINLAND',
+                                           'map': 'Gaia', 'ordinal_age': 8, 'players': self.machine.clients})
+        self.machine.region = 'not json at all'
+        self.machine.region_topic = lambda port: 'garbage'
+        self.clock[0] += doorman.REFRESH_SECONDS
+        self.door.step()
+        self.assertNotIn('region', self.ask('host_status=1')['instances'][0])
 
     def test_wake_thaws_once_and_reads_waking_until_the_world_answers(self):
         self.running()
@@ -103,6 +134,102 @@ class DoormanTests(base.GaiaHostTests):
         self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
         self.assertEqual(self.machine.suspended, 0)
 
+    # -- low-memory eviction -------------------------------------------------
+    def test_low_memory_stops_a_frozen_world_which_then_starts_from_its_save(self):
+        self.running()
+        self.saved_at(50)
+        self.host.freeze()
+        self.machine.free_mb = 500
+        self.door.step()
+        self.assertIn(['terminate', 4242], self.machine.calls)
+        self.assertEqual(self.host.cold()['evicted'], 'low memory: 500 MB free')
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['cold']), ('asleep', True))
+        self.door.step()  # spaced: nothing left to stop, and no second attempt yet
+        self.assertEqual(self.machine.calls.count(['terminate', 4242]), 1)
+
+    def test_eviction_needs_a_save_before_freezing_and_can_be_turned_off(self):
+        self.running()
+        self.host.config['freeze_requires_save'] = False
+        self.host.freeze()
+        self.machine.free_mb = 500
+        self.door.step()
+        self.assertNotIn(['terminate', 4242], self.machine.calls)
+        with self.assertRaisesRegex(gaia_host.Refused, 'saved before freezing'):
+            self.host.evict()
+        self.host.config['freeze_requires_save'] = True
+        self.host.config['evict_below_free_mb'] = 0
+        self.clock[0] += 120
+        self.door.step()
+        self.assertNotIn(['terminate', 4242], self.machine.calls)
+
+    def test_a_wake_stops_the_longest_asleep_other_world_to_make_room(self):
+        class Sleeper:
+            def __init__(self, port, frozen_at, machine):
+                self.config = dict(gaia_host.FREEZE_DEFAULTS, port=port)
+                self.state = {'pid': port, 'frozen_at': frozen_at}
+                self.cold_state = None
+                self.machine = machine
+                self.log = lambda values: None
+
+            def frozen(self):
+                return self.state
+
+            def cold(self):
+                return self.cold_state
+
+            def byond_signed_in(self):
+                return True
+
+            def evict(self, reason):
+                self.cold_state, self.state = {'evicted': reason}, None
+                self.machine.free_mb += 1000
+                return {'evicted': True}
+
+            def thaw(self, reason):
+                self.state = None
+                return {'thawed': True}
+
+        machine = Machine()
+        machine.free_mb = 300
+        old, newer, wanted = Sleeper(1801, 10, machine), Sleeper(1802, 20, machine), Sleeper(1803, 5, machine)
+        door = doorman.Doorman([old, newer, wanted], machine, clock=lambda: self.clock[0], wall=lambda: self.clock[0])
+        reply = door.handle('wake=1&port=1803', '203.0.113.9')
+        self.assertEqual((reply['ok'], reply['state']), (True, 'waking'))
+        # 1803 itself froze first but is the one being woken; 1801 is the longest-asleep other world.
+        self.assertEqual((old.cold_state, newer.cold_state), ({'evicted': 'memory for waking port 1803'}, None))
+        self.assertIsNone(wanted.state)
+
+    def test_routed_instances_are_marked_for_the_launcher(self):
+        self.running()
+        self.assertNotIn('routed', self.ask('host_status=1')['instances'][0])
+        self.host.config['routed'] = True
+        self.assertTrue(self.ask('host_status=1')['instances'][0]['routed'])
+
+    def test_one_address_may_wake_two_worlds_in_a_row(self):
+        # The routing relay asks from loopback for every region; spacing is per port.
+        class Sleeper:
+            def __init__(self, port):
+                self.config = dict(gaia_host.FREEZE_DEFAULTS, port=port)
+                self.state = {'pid': port, 'frozen_at': 1}
+                self.log = lambda values: None
+
+            def frozen(self):
+                return self.state
+
+            def cold(self):
+                return None
+
+            def thaw(self, reason):
+                self.state = None
+                return {'thawed': True}
+
+        first, second = Sleeper(1801), Sleeper(1802)
+        door = doorman.Doorman([first, second], Machine(), clock=lambda: self.clock[0], wall=lambda: self.clock[0])
+        door.handle('wake=1&port=1801', '127.0.0.1')
+        door.handle('wake=1&port=1802', '127.0.0.1')
+        self.assertEqual((first.state, second.state), (None, None))
+
     # -- surviving a power-down ---------------------------------------------
     def saved_at(self, moment):
         base.write_save(self.repo / 'map_saves')
@@ -133,7 +260,7 @@ class DoormanTests(base.GaiaHostTests):
         self.assertIsNone(self.host.frozen())
         self.assertIsNotNone(self.host.cold())
         entry = self.ask('host_status=1')['instances'][0]
-        self.assertEqual((entry['state'], entry['wake_estimate']), ('asleep', 300))
+        self.assertEqual((entry['state'], entry['wake_estimate'], entry['cold']), ('asleep', 300, True))
         self.machine.free_mb = 2000  # enough to thaw, not enough to load a save
         refused = self.ask('wake=1&port=1714')
         self.assertEqual((refused['ok'], refused['need_mb']), (False, 2560))
@@ -246,6 +373,14 @@ class DoormanTests(base.GaiaHostTests):
         self.clock[0] += 61
         self.assertIsNotNone(self.ask('host_status=1'))
 
+    def test_loopback_callers_are_not_rate_limited(self):
+        self.give_token()
+        for address in ('127.0.0.1', '::1', '::ffff:127.0.0.1'):
+            for _ in range(doorman.REQUESTS_PER_MINUTE + 5):
+                self.assertIsNotNone(self.ask('host_status=1', address=address), address)
+        self.assertFalse(doorman.is_loopback('not an address'))
+        self.assertFalse(doorman.is_loopback('::ffff:203.0.113.9'))
+
     def test_a_direct_connection_wake_also_reads_waking(self):
         self.running()
         self.host.freeze()
@@ -279,10 +414,42 @@ class DoormanTests(base.GaiaHostTests):
             self.assertEqual(connection.recv(10), b'')
         server.close()
 
+    def test_http_get_answers_the_same_queries(self):
+        # DM worlds cannot reach this port with world.Export (it opens a BYOND
+        # world handshake, not a Topic frame), so regions ask over HTTP.
+        self.running()
+        self.config['doorman_port'] = 0
+        self.config['doorman_bind'] = '127.0.0.1'
+        self.door = doorman.Doorman([self.host], self.machine)
+        server = self.door.listen()
+        port = server.getsockname()[1]
+        threading.Thread(target=self.door.accept_forever, args=(server,), daemon=True).start()
+        def get(path):
+            with socket.create_connection(('127.0.0.1', port), timeout=5) as connection:
+                connection.sendall(('GET %s HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n' % path).encode())
+                data = b''
+                while True:
+                    part = connection.recv(4096)
+                    if not part:
+                        return data
+                    data += part
+        reply = get('/?host_status=1')
+        self.assertTrue(reply.startswith(b'HTTP/1.1 200 OK\r\n'))
+        self.assertEqual(json.loads(reply.split(b'\r\n\r\n', 1)[1])['instances'][0]['port'], 1714)
+        self.assertTrue(get('/?nonsense=1').startswith(b'HTTP/1.1 404'))
+        self.assertTrue(get('/status').startswith(b'HTTP/1.1 404'))
+        server.close()
+
     def test_parse_request(self):
         self.assertEqual(doorman.parse_request(request('?wake=1&port=1714')), 'wake=1&port=1714')
         self.assertIsNone(doorman.parse_request(request('x')[:-1]))
         self.assertIsNone(doorman.parse_request(b'\x00\x84' + request('x')[2:]))
+
+    def test_world_export_handshake_is_neither_topic_nor_http(self):
+        # What DreamDaemon 516 sends first for world.Export("byond://...") (measured).
+        first = bytes.fromhex('0015001804020000db010000')
+        self.assertIsNone(doorman.parse_request(first))
+        self.assertFalse(doorman.is_http(first))
 
 
 # The inherited GaiaHostTests cases already run in test_gaia_host.

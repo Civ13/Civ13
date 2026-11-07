@@ -27,7 +27,7 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from civ13_agent import AgentClient, AgentError  # noqa: E402
-from autopilot import ROOT, ask_ollama, load_player_help_config  # noqa: E402
+from autopilot import DEFAULT_KEEP_ALIVE, ROOT, ask_ollama, load_player_help_config  # noqa: E402
 
 POLL_SECONDS = 1.5  # visit_status also tells the server a voice is listening; keep it under 10 s
 IDLE_SECONDS = 20
@@ -329,7 +329,7 @@ def main(argv=None):
     ledger = Ledger(args.ledger)
 
     def ask(messages):
-        return ask_ollama(args.ollama_url, args.model, messages, token=token, timeout=args.timeout, num_ctx=args.num_ctx, think=bool(defaults.get("think", False)))
+        return ask_ollama(args.ollama_url, args.model, messages, token=token, timeout=args.timeout, num_ctx=args.num_ctx, think=bool(defaults.get("think", False)), keep_alive=str(defaults.get("keep_alive", DEFAULT_KEEP_ALIVE)))
 
     if args.start:
         request = {"kind": args.start}

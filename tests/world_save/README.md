@@ -58,14 +58,16 @@ the saved-character/bed fixture remains preparation-only.
 
 ## Protected sleep transfers
 
-Protected sleep sends a body to a different z-level while preserving scalar
+This section describes the removed protected-sleep teleport, kept as a frozen
+fixture. It sent a body to a different z-level while preserving scalar
 return coordinates. A reciprocal `mob.buckled` / `bed.buckled_mob` relationship
 must be released through the normal unbuckle method before that transfer. The
 same release on wake supports a still-protected body left with the old distant
 bed link. A mismatched occupant or refused unbuckle rejects the transfer; it does
 not clear arbitrary pointers. A failed wake retains sleep protection for retry.
 
-The focused sleep fixture extracts the actual entry/wake helpers, production
+The focused sleep fixture takes the entry/wake helpers from
+`sleep_transfer_fixture/legacy_sleep_helpers.dm`, and the buckle release, production
 buckling methods and base forced movement, with narrow physiology/inventory and
 startup adapters. It checks normal and old-state transfers, other-occupant
 protection, refusal and persistence-busy paths, and a real format-3 save,
@@ -93,6 +95,12 @@ save clears it, while a rejected busy request does not. Capture time identifies
 when it was recorded. A lookup reference can be recycled after deletion, so
 verify the current type and location before acting. This diagnostic does not
 authorize clearing a relationship or prove which relationship should be durable.
+
+The game no longer moves sleeping bodies to an off-map zone. The sleep-transfer
+probe keeps the last production copy of those two teleport helpers as a frozen
+fixture (`sleep_transfer_fixture/legacy_sleep_helpers.dm`) so it can still drive
+real buckling, movement, cross-level saves and these diagnostics; the buckle
+release and zone check it projects are still production code.
 
 ```sh
 python3 -B tests/world_save/test_sleep_transfer_sources.py -v
@@ -841,11 +849,15 @@ orphan-limb icon cleanup, the parent link survives, the import guard returns to
 zero and a freshly constructed orphan limb still cleans itself up (147 checks).
 Without the loader guard, rejoining players' bodies kept only the torso.
 
-`--wounds --negative-control wound-restore` substitutes immutable wound and loader
-sources from `d0ffbfb2335eb735756b998f3f2ff617c28f144b` in generated copies. Its
-expected result is the original `Cannot read null.max_damage` constructor failure
-at line 394 after the four ordinary-constructor checks. `--prepare-only` generates
-and hashes inputs without compiling or running BYOND.
+`--wounds --negative-control wound-restore` reverts only the lost-limb restore
+fix (#3216) in generated copies of the current wound and loader sources: the
+loader again builds the wound with no limb and the constructor has no restore
+shell. Everything else stays current, so the control keeps compiling as the
+persistence code evolves. Its expected result is the original
+`Cannot read null.max_damage` constructor failure, at the computed line of the
+constructor's limb read, after the four ordinary-constructor checks. The runner
+refuses to stage the control if either fix anchor changes. `--prepare-only`
+generates and hashes inputs without compiling or running BYOND.
 
 ### Current admission boundary and CI (2026-10-19)
 

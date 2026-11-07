@@ -66,12 +66,14 @@ TRAIN_RAID_OFFLINE_TESTS = frozenset({'tests/train_raid/test_train_raid.py', 'te
                                       'tests/train_raid/native_probe.py', 'tests/train_raid/native_probe.dm'})
 ZOMBIE_CITY_OFFLINE_TESTS = frozenset({'tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
                                        'tests/zombie_city/check.py', 'tests/zombie_city/native_probe.py',
-                                       'tests/zombie_city/native_probe.dm'})
+                                       'tests/zombie_city/native_probe.dm', 'tests/zombie_city/horde_probe.py',
+                                       'tests/zombie_city/horde_probe.dm'})
 SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', 'tests/safehouse_map/build_map.py',
                                          'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
                                          'tests/safehouse_map/preview.py'})
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
-                                     'tests/gaia_host/test_doorman.py'})
+                                     'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
+                                     'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.

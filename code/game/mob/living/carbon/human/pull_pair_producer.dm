@@ -20,7 +20,7 @@
 	return TRUE
 
 /mob/living/human/proc/human_subtile_pull_ready(direct)
-	if (!human_subtile_pull_enabled || !human_subtile_enabled || !client || client.mob != src || !client.canmove || !(direct in list(NORTH, SOUTH, EAST, WEST)))
+	if (!human_subtile_pull_enabled || !human_subtile_enabled || !client || client.mob != src || !client.canmove || !(direct in list(NORTH, SOUTH, EAST, WEST)) || human_subtile_trench_crossing(direct))
 		return FALSE
 	var/datum/subtile_pull_pair/P = subtile_pull_ownership.owners[src]
 	if (P)

@@ -493,7 +493,8 @@
 	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
-	if (istype(get_turf(src), /turf/floor/beach/water))
+	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
+	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered())
 		cold_wetness = 1
 	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon"))
 		cold_wetness = min(1, cold_wetness + 0.01)
@@ -545,8 +546,14 @@
 	else if (temp_adj < 0)
 		temp_adj = max(temp_adj,-0.5)
 	else
+		// No exposure loss this step (comfortable air or enough clothing), so
+		// the body holds its own heat. Only freezing air keeps draining it;
+		// otherwise everyone settled at the air temperature whatever they wore.
 		if (loc_temp < bodytemperature)
-			temp_adj = -0.1
+			if (loc_temp < species.cold_level_1 || bodytemperature > species.body_temperature)
+				temp_adj = -0.1
+			else
+				temp_adj = 0.1
 		if (loc_temp > bodytemperature)
 			temp_adj = 0.1
 	if (map && (map.civilizations || map.ID == MAP_ANTARCTICA))
@@ -690,11 +697,6 @@
 	return //TODO: DEFERRED
 
 /mob/living/human/handle_regular_status_updates()
-	// This applies without a save or inducedSSD flag, including contained bodies.
-	if (in_protected_sleep_zone())
-		Sleeping(2)
-		if (stat != DEAD)
-			set_stat(UNCONSCIOUS)
 	if (!handle_some_updates())
 		return FALSE
 

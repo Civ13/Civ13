@@ -7,6 +7,7 @@
   "auth_token_env": "CIV13_OLLAMA_TOKEN",
   "num_ctx": 8192,
   "think": false,
+  "keep_alive": "30m",
   "wiki_root": "",
   "limits": {
     "cooldown_seconds": 30,

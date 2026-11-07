@@ -1153,7 +1153,7 @@
 		visible_message(SPAN_WARNING("\The [src] stops drilling: insufficient cable power."))
 		return
 	if (next_spawn <= 0 && world.time >= production_due)
-		if (!produce_minerals(pick(ore_types), 2))
+		if (!produce_minerals(drill_ore(), 2))
 			stop_drilling()
 			visible_message(SPAN_WARNING("\The [src] stops drilling: clear its output tile, then restart it."))
 			return

@@ -12,6 +12,7 @@ HEART = (ROOT / "code/modules/organs/internal/heart.dm").read_text(encoding="utf
 DEFINES = (ROOT / "code/predefines.dm").read_text(encoding="utf-8")
 BASE_ORGAN = (ROOT / "code/modules/organs/organ.dm").read_text(encoding="utf-8")
 AGENT = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+BLOOD = (ROOT / "code/modules/organs/blood.dm").read_text(encoding="utf-8")
 LIFE = (ROOT / "code/game/mob/living/carbon/human/human_life.dm").read_text(encoding="utf-8")
 
 
@@ -81,6 +82,28 @@ class MedicalCare(unittest.TestCase):
         self.assertIn('(e.limb_name in list("l_arm", "r_arm", "l_leg", "r_leg")) && !(e.status & ORGAN_SPLINTED)',
                       HANDBOOK)
 
+    def test_handbook_names_diseases_and_poisons(self):
+        attack = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/attack")
+        self.assertIn("diagnose_disease(H)", attack)
+        self.assertIn("diagnose_poisons(H)", attack)
+        disease = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/diagnose_disease")
+        for name in ("flu", "zombie", "plague", "typhus", "malaria", "cholera"):
+            self.assertIn(f'"{name}" =', disease)
+        self.assertIn("H.is_severe_disease()", disease)
+        self.assertIn("H.disease_course", disease)
+        poisons = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/diagnose_poisons")
+        # both the bloodstream and the stomach are read, so swallowed poison shows before it absorbs
+        self.assertIn("list(H.reagents, H.ingested)", poisons)
+        self.assertIn("is_handbook_poison(A)", poisons)
+        self.assertIn("diagnose_immunity(H)", attack)
+        immunity = block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/diagnose_immunity")
+        self.assertIn("H.resists_disease(kind)", immunity)
+        # reading tolerance must never record a dose
+        self.assertIn("H.poison_tolerance(id, 0)", immunity)
+        self.assertIn("H.disease_resistance_to(H.disease_type)", disease)
+        self.assertIn("istype(A, /datum/reagent/toxin)",
+                      block(HANDBOOK, "/obj/item/weapon/doctor_handbook/proc/is_handbook_poison"))
+
     def test_tourniquet_stops_limb_bleeding_and_times_out(self):
         bleed = HEART[HEART.index("//Bleeding out"):]
         loop = bleed.index("for(var/obj/item/organ/external/temp in owner.organs)")
@@ -146,7 +169,9 @@ class MedicalCare(unittest.TestCase):
         self.assertGreaterEqual(10 * weight, 5)
 
     def test_agent_wounds_report_field_care_state(self):
-        state = block(AGENT, "/datum/agent_control/proc/character_state")
+        # The wound rows are built once for the agent itself and for hurt people it sees.
+        self.assertIn("agent_wound_rows(H)", block(AGENT, "/datum/agent_control/proc/character_state"))
+        state = block(AGENT, "/proc/agent_wound_rows")
         for key in ('row["artery_cut"]', 'row["tourniquet"]', 'row["splinted"]', 'row["infected"]'):
             self.assertIn(key, state)
         self.assertIn("!artery && !E.tourniquet", state)
@@ -172,6 +197,24 @@ class MedicalCare(unittest.TestCase):
         self.assertEqual(len(line.replace("RECIPE: ", "").split(",")), 13)
         self.assertTrue(line.startswith("RECIPE: /material/silver/,"))
 
+
+    def test_restored_species_copy_is_not_rejected(self):
+        # A restored body holds a saved copy of its species datum, while organs
+        # rebuilt by an admin heal hold the global one: compare names, or every
+        # organ rejects and pours toxin into a cured patient.
+        check = block(BLOOD, "proc/blood_incompatible(")
+        self.assertIn("blood_species_name(donor_species) != blood_species_name(receiver_species)", check)
+        self.assertNotIn("donor_species != receiver_species", check)
+        name = block(BLOOD, "proc/blood_species_name(")
+        self.assertIn("istype(species, /datum/species)", name)
+        self.assertIn("return S.name", name)
+
+    def test_false_rejection_stops(self):
+        body = block(BASE_ORGAN, "/obj/item/organ/proc/handle_rejection()")
+        check = body.index("if (!blood_incompatible(")
+        self.assertLess(check, body.index("rejecting = null"))
+        self.assertLess(body.index("rejecting = null"), body.index("rejecting++"))
+        self.assertLess(check, body.index('add_reagent("toxin"'))
 
 if __name__ == "__main__":
     unittest.main()

@@ -32,11 +32,19 @@ reviews it, verifies it and decides what to keep.
   Older CLIs fail with HTTP 400 `model_not_found` ("not supported when using
   Codex with a ChatGPT account").
 - On 2026-11-05 the `codex` on PATH was an old npm copy (0.151.0,
-  `C:\ProgramData\npm\npm\codex`) that cannot run Terra. The working copy is
-  the standalone 0.162.1 at
-  `%USERPROFILE%\.codex\packages\standalone\releases\0.162.1-x86_64-pc-windows-msvc\bin\codex.exe`.
-  Always check `codex --version` and call that standalone `codex.exe` by full
-  path (or the newest release folder there) when PATH gives an older one.
+  `C:\ProgramData\npm\npm\codex`) that cannot run Terra.
+- Use the CLI bundled with the Codex desktop app (0.166.0-alpha.6 on
+  2026-11-06) at `%LOCALAPPDATA%\OpenAI\Codex\bin\<hash>\codex.exe` (the
+  `<hash>` folder that contains `codex.exe`; it was `a159911ff70742e9`). Call it
+  by full path and check `--version` first.
+- Do not use the standalone 0.162.1 copy under
+  `%USERPROFILE%\.codex\packages\standalone\releases\`. With the configured
+  `[windows] sandbox = "elevated"`, every command it starts fails with
+  `helper_unknown_error: setup refresh had errors`; the sandbox log
+  (`~/.codex/.sandbox/sandbox.<date>.log`) shows os error 32 on the desktop
+  app's `node_repl.exe`, even with the app closed. The bundled 0.166 CLI runs
+  elevated commands cleanly. If only 0.162.1 is available, add
+  `-c windows.sandbox='"unelevated"'` to the run instead of editing config.
 - Never work in `D:\GitHub\Civ13` itself: that checkout must stay on master for
   the live server. Give Codex its own worktree.
 

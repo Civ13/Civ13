@@ -191,4 +191,5 @@ var/global/list/civ_generators = list()
 		if (WEATHER_WET) fraction *= 0.5
 		if (WEATHER_SMOG) fraction *= 0.35
 		if (WEATHER_EXTREME) fraction *= 0.1
+	fraction *= barren_solar_factor(A) // dust storms on the barren surface
 	return round(peak_output * fraction)

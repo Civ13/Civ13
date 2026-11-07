@@ -17,9 +17,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "agent-control"))
 
 import autopilot  # noqa: E402
+import boats  # noqa: E402
+from memory import CharacterMemory as BoatMemory  # noqa: E402
 import visitor_voice  # noqa: E402
 import civ13_agent as agent  # noqa: E402
-from catalog import ACTIONS, SCOPES  # noqa: E402
+from catalog import ACTIONS, CHARACTER_ACTIONS, SCOPES  # noqa: E402
 
 DM = ROOT / "code" / "modules" / "agent_control"
 
@@ -156,7 +158,7 @@ class CatalogSyncTests(unittest.TestCase):
         scopes = re.search(r"/proc/agent_control_scopes\(\)\n\treturn list\(([^)]*)\)", source).group(1)
         self.assertEqual(tuple(re.findall(r'"([^"]+)"', scopes)), SCOPES)
         for name in ACTIONS:
-            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_visits.dm"), rf"/datum/agent_control/proc/act_{name}\(")
+            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_boats.dm") + dm_source("agent_visits.dm"), rf"/datum/agent_control/proc/act_{name}\(")
 
 
 class SecurityContractTests(unittest.TestCase):
@@ -265,6 +267,26 @@ class SecurityContractTests(unittest.TestCase):
         self.assertIn("C.handover_ckey = ckey", verb)
         self.assertIn("allow_handover", verb)
         self.assertIn("return owner_agent == A.name", source)
+
+
+    def test_admin_verb_spawns_a_character_for_a_watching_agent(self):
+        source = dm_source("agent_characters.dm")
+        verb = re.search(r"/client/proc/spawn_ai_character\(\).*?(?=\n/)", source, re.S).group(0)
+        self.assertIn('set name = "Spawn AI Character"', verb)
+        self.assertLess(verb.index("check_rights(R_FUN)"), verb.index("act_character_spawn"))
+        self.assertIn('A.has_scope("characters")', verb)  # only agents allowed to play characters
+        self.assertIn("C.awaiting_driver = TRUE", verb)
+        self.assertLess(verb.index("act_character_spawn"), verb.index("C.awaiting_driver = TRUE"))
+        self.assertNotIn("sanitize(goal)", verb)  # the model gets the goal as written, not HTML entities
+        self.assertIn("html_encode(C.requested_goal)", verb)
+        self.assertIn("log_admin(", verb)
+        self.assertIn("admin_verbs_fun |= /client/proc/spawn_ai_character", source)
+        listing = re.search(r"/datum/agent_control/proc/act_character_list\(.*?(?=\n/)", source, re.S).group(0)
+        self.assertIn('row["waiting"] = TRUE', listing)
+        self.assertRegex(listing, r'if \(C\.awaiting_driver\)\s+row\["waiting"\] = TRUE')
+        self.assertIn("last_watch[A.name] = world.time", listing)
+        observe = re.search(r"/datum/agent_control/proc/act_character_observe\(.*?(?=\n/)", source, re.S).group(0)
+        self.assertLess(observe.index("character_arg(A, req)"), observe.index("C.awaiting_driver = FALSE"))
 
 
 class AutopilotTests(unittest.TestCase):
@@ -461,7 +483,7 @@ class AutopilotTests(unittest.TestCase):
         rows = {"[0x1]": {"ref": "[0x1]", "name": "rock", "type": "/obj/structure/wild/rock", "dx": 1, "dy": 0},
                 "[0x2]": {"ref": "[0x2]", "name": "tree", "type": "/obj/structure/wild/tree/live_tree", "dx": 0, "dy": 1, "branches": 3},
                 "turf:1,1,2": {"ref": "turf:1,1,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallowsaltwater", "dx": 1, "dy": 1},
-                "turf:2,2,2": {"ref": "turf:2,2,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallow", "dx": -1, "dy": 1}}
+                "turf:2,2,2": {"ref": "turf:2,2,2", "name": "shallow water", "type": "/turf/floor/beach/water/shallow", "dx": -1, "dy": 1, "sickness": 0}}
         expand = lambda skill, ref: autopilot.expand_plan([{"skill": skill, "target": ref}], empty, rows)
         self.assertIn("needs a cleared fallen branch, not the rock", expand("make_stick", "[0x1]")[1])
         self.assertIn("needs a tree", expand("break_branch", "[0x1]")[1])
@@ -483,7 +505,7 @@ class AutopilotTests(unittest.TestCase):
                          ([{"do": "swap_hand"}, {"do": "drop"}, {"do": "take", "item": "sharpened flint"}, {"do": "click", "target": "[0x2]"}], ""))
         self.assertEqual(autopilot.parse_decision('{"do": "take", "item": "sharpened flint"}', ["[0x9]"]), {"do": "take", "item": "sharpened flint"})
         self.assertIsNone(autopilot.parse_decision('{"do": "take"}', ["[0x9]"]))
-        thirsty = {"self": {"water": 150}, "terrain": [{"ref": "turf:1,2,2", "name": "river", "dx": 4, "dy": 0}]}
+        thirsty = {"self": {"water": 150}, "terrain": [{"ref": "turf:1,2,2", "name": "river", "dx": 4, "dy": 0, "sickness": 0}]}
         self.assertEqual(autopilot.thirst_plan(thirsty), {"skill": "drink", "target": "turf:1,2,2"})
         self.assertEqual(autopilot.thirst_plan(thirsty, "west", ignored={"turf:1,2,2": 9}), {"do": "explore", "dir": "west"})
         self.assertIsNone(autopilot.thirst_plan({"self": {"water": 300}}))
@@ -646,6 +668,146 @@ class AutopilotTests(unittest.TestCase):
         plan = autopilot.parse_plan('{"plan": [{"do": "build", "recipe": "a", "material": "planks", "dir": "north"}, {"do": "build", "recipe": "b", "material": "stone", "dir": "east"}]}', ["[0x9]"])
         self.assertEqual(len(plan), 1)  # each material-dependent step is planned from a fresh look at the hands
 
+    def test_oil_well_is_not_water(self):
+        well = {"ref": "[0x30]", "name": "wooden oil well", "dx": 1, "dy": 0}
+        spring = {"ref": "[0x31]", "name": "petroleum spring", "dx": 1, "dy": 1}
+        water = {"ref": "[0x32]", "name": "water well", "dx": 2, "dy": 0}
+        self.assertFalse(autopilot._is_drinkable(well))
+        self.assertFalse(autopilot._is_drinkable(spring))
+        self.assertTrue(autopilot._is_drinkable(water))
+        self.assertTrue(autopilot._is_drinkable({"name": "river"}))
+        self.assertFalse(autopilot.SKILL_TARGETS["fill_vessel"][0](well))
+        import leatherwork
+        from memory import _is_water
+        self.assertEqual(leatherwork._water({"nearby": [well, water]})["name"], "water well")
+        self.assertFalse(_is_water({"name": "wooden oil well"}))
+
+    def test_boiling_unclean_water(self):
+        import water
+        puddle = {"ref": "[0x40]", "name": "puddle", "dx": 1, "dy": 0, "sickness": 1}
+        river = {"ref": "turf:5,5,1", "name": "river", "dx": 2, "dy": 0, "sickness": 1}
+        clean = {"ref": "[0x41]", "name": "water well", "dx": 4, "dy": 0, "sickness": 0}
+        fire = {"ref": "[0x42]", "name": "campfire", "dx": 1, "dy": 1, "lit": True, "fuel": 3}
+        stone = {"ref": "[0x43]", "name": "stone blocks", "dx": 1, "dy": 1, "item": True}
+        me = {"ref": "[0x9]", "name": "Ada", "water": 150, "left_hand": None, "right_hand": None, "active_hand": "right", "carried": []}
+        obs = {"self": me, "nearby": [puddle], "terrain": [river]}
+        # Thirsty with only unclean water: boil it, starting with a mug from a log.
+        self.assertEqual(autopilot.thirst_plan(obs), {"do": "boil_water"})
+        self.assertEqual(water.next_steps(obs), ([], water.next_steps(obs)[1]))
+        self.assertIn("wood mug", water.next_steps(obs)[1])
+        me["carried"] = ["wood log (pocket)"]
+        self.assertEqual(water.next_steps(obs)[0], [{"do": "craft", "recipe": "wood mug", "material": "wood log"}])
+        # Close to dying of thirst, raw unclean water is still better than nothing; a clean well always wins.
+        self.assertEqual(autopilot.thirst_plan({"self": dict(me, water=50), "nearby": [puddle], "terrain": [river]}), {"skill": "drink", "target": "[0x40]"})
+        self.assertEqual(autopilot.thirst_plan({"self": me, "nearby": [puddle, clean], "terrain": [river]}), {"skill": "drink", "target": "[0x41]"})
+        rows = {row["ref"]: row for row in (puddle, river, fire, stone)}
+        self.assertIn("boil_water", autopilot.expand_skill({"skill": "drink", "target": "[0x40]"}, me, rows)[1])
+        # Mug of river water with cholera: fill, then put a stone on the fire, then boil with a stick.
+        me.update(left_hand=None, right_hand={"name": "wood mug"}, items=[{"name": "wood mug", "liquids": {}}], carried=["stone block (pocket)", "stick (pocket)"])
+        self.assertEqual(water.next_steps(obs)[0], [{"skill": "fill_vessel", "target": "[0x40]"}])
+        me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5, "cholera": 0.5}}]
+        self.assertIn("campfire", water.next_steps(obs)[1])
+        obs["nearby"] = [puddle, fire]
+        steps = water.next_steps(obs)[0]
+        self.assertEqual(steps, [{"do": "place_stone", "target": "[0x42]"}])
+        expanded, error = autopilot.expand_plan([{"do": "place_stone", "fire": "[0x42]"}], me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(expanded[-1], {"do": "throw", "target": "[0x42]"})
+        self.assertIn({"do": "take", "item": "stone block"}, expanded)
+        obs["nearby"] = [puddle, fire, stone]
+        steps = water.next_steps(obs)[0]
+        self.assertEqual(steps, [{"do": "boil_mug", "item": "wood mug", "stick": "stick", "fire": "[0x42]"}])
+        expanded, error = autopilot.expand_plan(steps, me, rows)
+        self.assertEqual(error, "")
+        self.assertEqual(expanded, [{"do": "swap_hand"}, {"do": "take", "item": "stick"}, {"do": "swap_hand"}, {"do": "verb", "name": water.BOIL_VERB}])
+        # Boiled: drink from the mug.
+        me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5}}]
+        steps = water.next_steps(obs)[0]
+        self.assertEqual(steps, [{"do": "drink_mug", "item": "wood mug"}])
+        expanded, _ = autopilot.expand_plan(steps, dict(me, intent="help"), rows)
+        self.assertEqual(expanded[-1], {"do": "click", "target": "[0x9]"})
+        # An unlit fire is lit first; the nearby list marks it and the puddle.
+        obs["nearby"] = [puddle, dict(fire, lit=False)]
+        me["items"] = [{"name": "wood mug", "liquids": {"water": 9.5, "cholera": 0.5}}]
+        self.assertEqual(water.next_steps(obs)[0], [{"skill": "light_fire", "target": "[0x42]"}])
+        text, _ = autopilot.summarize(obs)
+        self.assertIn("puddle dx=1 dy=0 (unclean)", text)
+        self.assertIn("campfire dx=1 dy=1 (unlit)", text)
+        self.assertEqual(autopilot.parse_decision('{"do": "boil_water"}', ["[0x9]"]), {"do": "boil_water"})
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Sift soil for resources", "choose": "Stone"}', ["[0x9]"]),
+                         {"do": "verb", "name": "Sift soil for resources", "choose": "Stone"})
+
+    def test_serious_illness_comes_first(self):
+        sick = {"type": "cholera", "severe": True, "stage": "worsening", "progression": 300, "course": 0, "treated": False, "remedy": 0}
+        me = {"ref": "[0x9]", "name": "Ada", "water": 300, "nutrition": 300, "illness": sick,
+              "left_hand": {"name": "sharpened flint"}, "right_hand": None, "active_hand": "left", "carried": ["healing herbs (pocket)"]}
+        steps, error = autopilot.illness_plan(me)
+        self.assertEqual(error, "")
+        self.assertEqual(steps, [{"do": "equip", "soft": True}, {"do": "drop", "soft": True}, {"do": "take", "item": "healing herbs"}, {"do": "use"}])
+        self.assertTrue(autopilot.current_goal({"self": me})[0].startswith("treat your cholera"))
+        text, _ = autopilot.summarize({"self": me})
+        self.assertIn("ILLNESS: cholera, worsening, NOT being treated.", text)
+        self.assertIn("seriously ill with cholera", text.splitlines()[0])
+        # A herb still working: nothing to do yet. No herbs: say where they come from.
+        self.assertEqual(autopilot.illness_plan(dict(me, illness=dict(sick, remedy=8)))[0], [])
+        self.assertIn("jungle bushes", autopilot.illness_plan(dict(me, carried=[]))[1])
+        self.assertEqual(autopilot.illness_plan(dict(me, illness=dict(sick, severe=False))), ([], ""))
+
+    def test_verbs_and_throwing(self):
+        refs = ["[0x9]", "[0x20]", "[0x21]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Rest"}', refs), {"do": "verb", "name": "Rest"})
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Give", "onto": 1}', refs), {"do": "verb", "name": "Give", "onto": "[0x20]"})
+        self.assertEqual(autopilot.parse_decision('{"do": "verb", "name": "Rotate", "target": 2}', refs), {"do": "verb", "name": "Rotate", "target": "[0x21]"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "verb"}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "verb", "name": "Give", "onto": 9}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "throw", "target": 2}', refs), {"do": "throw", "target": "[0x21]"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "throw", "target": 0}', refs))
+        me = {"ref": "[0x9]", "name": "Ada", "verbs": ["Rest", "Sleep", "Give"], "item_verbs": ["pistol: Eject magazine"]}
+        text, _ = autopilot.summarize({"self": me, "nearby": [{"ref": "[0x20]", "name": "chair", "dx": 1, "dy": 0, "verbs": ["Rotate"]}]})
+        self.assertIn("Your verbs: Rest, Sleep, Give", text)
+        self.assertIn("Item verbs: pistol: Eject magazine", text)
+        self.assertIn("chair dx=1 dy=0 (verbs: Rotate)", text)
+        self.assertIn('"verb"', autopilot.SYSTEM)
+        self.assertEqual(set(autopilot.ACTIONS) & {"verb", "throw"}, {"verb", "throw"})
+        self.assertIn("verb", CHARACTER_ACTIONS)
+        self.assertIn("throw", CHARACTER_ACTIONS)
+
+    def test_first_aid_for_others(self):
+        me = {"ref": "[0x9]", "name": "Ada", "active_hand": "right", "right_hand": {"name": "flint hatchet"}, "left_hand": None, "intent": "harm",
+              "carried": ["gauze (pocket)", "healing herbs (pocket)"]}
+        petra = {"ref": "[0x20]", "name": "Petra Herenus", "type": "/mob/living/human", "mob": True, "stat": 1, "dx": 3, "dy": 0,
+                 "wounds": [{"zone": "chest", "name": "chest", "damage": 40, "bleeding": True, "bandaged": False},
+                            {"zone": "l_leg", "name": "left leg", "damage": 20, "bleeding": False, "broken": True}]}
+        wolf = {"ref": "[0x21]", "name": "wolf", "type": "/mob/living/simple_animal/hostile/wolf", "mob": True, "stat": 0, "dx": 1, "dy": 1,
+                "wounds": [{"zone": "chest", "name": "chest", "bleeding": True}]}
+        observation = {"self": me, "nearby": [wolf, petra]}
+        rows = autopilot.target_rows(observation)
+        steps, error = autopilot.expand_plan([{"skill": "treat", "target": "[0x20]"}], me, rows)
+        self.assertEqual(error, "")
+        # Walk over, take a bandage (herbs only work on whoever chews them), help intent, aim at the bleeding chest.
+        self.assertEqual(steps, [{"do": "go", "target": "[0x20]"}, {"do": "swap_hand"}, {"do": "take", "item": "gauze"},
+                                 {"do": "intent", "intent": "help"}, {"do": "click", "target": "[0x20]", "zone": "chest"}])
+        self.assertIn("not the wolf", autopilot.expand_plan([{"skill": "treat", "target": "[0x21]"}], me, dict(rows, **{"[0x21]": dict(wolf, mob=False)}))[1])
+        self.assertEqual([row["name"] for row, _ in autopilot.people_in_need(observation)], ["Petra Herenus"])
+        text, refs = autopilot.summarize(observation)
+        self.assertIn("(hurt: unconscious, bleeding chest, broken left leg)", text)
+        line = autopilot.help_line(observation, refs)
+        self.assertIn("Petra Herenus", line)
+        self.assertIn('"treat", "target": 2', line)
+        row, offer = autopilot.first_aid(observation, me)
+        self.assertEqual((row["name"], offer), ("Petra Herenus", ""))  # unconscious: no one to ask
+        awake = dict(petra, stat=0)
+        self.assertIn("bandage your chest", autopilot.first_aid({"self": me, "nearby": [awake]}, me)[1])
+        self.assertIsNone(autopilot.first_aid({"self": me, "nearby": [awake]}, me, avoid=["petra herenus"]))
+        self.assertIsNone(autopilot.first_aid({"self": dict(me, carried=[]), "nearby": [awake]}, dict(me, carried=[])))
+        self.assertIn("no bandages", autopilot.help_line({"self": dict(me, carried=[]), "nearby": [awake]}, refs))
+        bandaged = dict(petra, wounds=[dict(petra["wounds"][0], bandaged=True), petra["wounds"][1]])
+        self.assertEqual(autopilot.patient_wound(bandaged)["zone"], "l_leg")  # then the break, which wants a splint
+        self.assertIn("splint", autopilot.aid_plan(dict(me, carried=["gauze (pocket)"]), bandaged)[1])
+        characters = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
+        self.assertIn('row["wounds"] = hurt', characters)
+        self.assertIn('req["stay"]', characters)
+
     def test_bleeding_is_treated_first(self):
         me = {"ref": "[0x9]", "active_hand": "right", "right_hand": {"name": "sharpened stick"}, "left_hand": None, "intent": "harm",
               "carried": ["healing herbs (pocket)", "bandages (pocket)"],
@@ -785,12 +947,87 @@ class AutopilotTests(unittest.TestCase):
         autopilot.forget_old(history, signatures, turns, lines)
         self.assertEqual(history[0], {"role": "system"})
         self.assertEqual(history[-1]["content"], "199")
-        self.assertLessEqual(len(history), autopilot.HISTORY_KEEP + 1)
-        self.assertGreaterEqual(len(history), 8)  # the last 7 exchanges still go to the model
+        self.assertLessEqual(len(history), 2 * autopilot.WINDOW_MAX + 1)
+        self.assertGreaterEqual(len(history), 2 * autopilot.WINDOW_MIN + 1)  # the last exchanges still go to the model
         self.assertEqual(signatures[-1], "s199")
         self.assertEqual((len(signatures), len(turns), len(lines)), (autopilot.SIGNATURES_KEEP, autopilot.TURNS_KEEP, autopilot.LINES_KEEP))
         self.assertIn("line 4999", lines)
         self.assertNotIn("line 0", lines)
+
+    def test_watch_plays_characters_an_admin_spawned(self):
+        class Proc:
+            def __init__(self, code=None):
+                self.code = code
+
+            def poll(self):
+                return self.code
+
+        rows = [
+            {"ref": "[0x1]", "kind": "spawned", "waiting": True, "goal": "Fish", "name": "Ada", "stat": 0},
+            {"ref": "[0x2]", "kind": "spawned", "stat": 0},  # driven by someone else
+            {"ref": "[0x3]", "kind": "handover", "waiting": True, "stat": 0},  # a player's own character
+            {"ref": "[0x4]", "kind": "spawned", "waiting": True, "stat": 2},  # dead
+            {"ref": "[0x5]", "kind": "spawned", "stat": 0},  # its run is still going
+            {"ref": "[0x6]", "kind": "spawned", "stat": 0},  # its run failed a moment ago
+            {"ref": "[0x7]", "kind": "spawned", "stat": 0},  # its run reached its step limit
+        ]
+        runs = {
+            "[0x5]": {"process": Proc(), "at": 0.0, "goal": "Build", "failed": False},
+            "[0x6]": {"process": Proc(1), "at": 900.0, "goal": "Hunt", "failed": False},
+            "[0x7]": {"process": Proc(0), "at": 0.0, "goal": "Rest", "failed": False},
+            "[0x9]": {"process": None, "at": 0.0, "goal": "Gone", "failed": True},  # no longer listed
+        }
+        autopilot.reap_runs(runs, rows)
+        self.assertEqual(set(runs), {"[0x5]", "[0x6]"})  # finished on purpose or gone: forgotten
+        self.assertTrue(runs["[0x6]"]["failed"])
+        self.assertIsNone(runs["[0x6]"]["process"])  # the exited child was polled (reaped)
+        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 1000.0)], ["[0x1]"])
+        later = autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY)
+        self.assertEqual([(row["ref"], row["goal"]) for row in later], [("[0x1]", "Fish"), ("[0x6]", "Hunt")])  # the failed run keeps its goal
+        self.assertEqual([row["ref"] for row in autopilot.watch_targets(rows, runs, 900.0 + autopilot.WATCH_RETRY, retry_failed=False)], ["[0x1]"])
+
+        args = autopilot.argparse.Namespace(goal="default", model="m", ollama_url="http://h:11434", player_help_config=None, num_ctx=8192, timeout=120.0, keep_alive="30m", memory="", catalog="", leather="", steps=autopilot.WATCH_STEPS, minutes=None, interval=2.0, release=False)
+        command = autopilot.watch_command(args, rows[0])
+        self.assertEqual(command[3:7], ["--character", "[0x1]", "--goal", "Fish"])
+        self.assertIn("--model", command)
+        self.assertEqual(command[command.index("--steps") + 1], str(autopilot.WATCH_STEPS))
+        self.assertNotIn("--memory", command)  # empty flags keep the child's defaults
+        self.assertNotIn("--player-help-config", command)
+        self.assertNotIn("--release", command)
+        args.release = True
+        self.assertEqual(autopilot.watch_command(args, rows[0])[-1], "--release")
+        args.release = False
+
+        launched = []
+        children = []
+
+        class Client:
+            def __init__(self):
+                self.calls = 0
+
+            def request(self, action, args=None):
+                self.calls += 1
+                if self.calls == 3:
+                    children[0].code = 1  # the model host failed the first run
+                if self.calls > 4:
+                    raise KeyboardInterrupt
+                # The run observed Ada, so she is no longer listed as waiting.
+                return {"ok": True, "result": {"characters": [rows[0] if self.calls == 1 else dict(rows[0], waiting=False)]}}
+
+        def popen(cmd, stdout=None, stderr=None):
+            launched.append(cmd)
+            children.append(Proc())
+            return children[-1]
+
+        times = iter([0.0, 0.0, 10.0, 20.0, 20.0 + autopilot.WATCH_RETRY, 20.0 + autopilot.WATCH_RETRY])
+
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            args.log_dir = folder
+            self.assertEqual(autopilot.watch(Client(), args, clock=lambda: next(times), sleep=lambda s: None, popen=popen), 0)
+            self.assertTrue((Path(folder) / "Ada-0x1.log").exists())
+        self.assertEqual(len(launched), 2)  # started once, then again after the failure with the same goal
+        self.assertEqual(launched[1][6], "Fish")
 
     def test_player_help_config_is_optional(self):
         self.assertEqual(autopilot.load_player_help_config(str(ROOT / "does-not-exist.json")), {})
@@ -820,12 +1057,30 @@ class AutopilotTests(unittest.TestCase):
         autopilot.urllib.request.urlopen = fake_urlopen
         try:
             autopilot.ask_ollama("http://h:11434/v1", "m", [], timeout=90, num_ctx=32768)
+            self.assertNotIn("keep_alive", sent["body"])
+            stats = {}
+            autopilot.ask_ollama("http://h:11434/v1", "m", [], timeout=90, num_ctx=32768, keep_alive="30m", stats=stats)
         finally:
             autopilot.urllib.request.urlopen = original
         self.assertEqual(sent["url"], "http://h:11434/api/chat")
         self.assertEqual(sent["timeout"], 90)
         self.assertIs(sent["body"]["think"], False)
         self.assertEqual(sent["body"]["options"]["num_ctx"], 32768)
+        self.assertEqual(sent["body"]["keep_alive"], "30m")
+        self.assertEqual(stats, {})  # the fake reply carried no timing
+
+    def test_model_timing_reports_where_a_turn_went(self):
+        reply = {"message": {"content": "{}"}, "total_duration": 6_500_000_000, "load_duration": 12_000_000,
+                 "prompt_eval_count": 812, "prompt_eval_duration": 900_000_000, "eval_count": 140, "eval_duration": 5_400_000_000}
+        stats = autopilot.model_timing(reply)
+        self.assertEqual(stats["prompt_eval_count"], 812)
+        self.assertAlmostEqual(stats["eval"], 5.4)
+        line = autopilot.timing_line(stats, 6.6)
+        self.assertIn("read 812 new tokens in 0.9s", line)
+        self.assertIn("wrote 140 tokens in 5.4s", line)
+        self.assertNotIn("loaded the model", line)
+        self.assertIn("loaded the model in 18.0s", autopilot.timing_line(dict(stats, load=18.0), 25.0))
+        self.assertEqual(autopilot.timing_line({}, 3.0), "model 3.0s")
 
 
 def _recipe(name, kind, inputs, outputs, era=0, conditions=""):
@@ -1285,11 +1540,28 @@ class ReviewFixesTest(unittest.TestCase):
         self.assertIn("wood logs", autopilot.SYSTEM)
         short = [{"role": "system", "content": "s"}, {"role": "user", "content": "u1"}]
         self.assertEqual(autopilot.model_window(short), short)
-        long = [{"role": "system", "content": "s"}] + [{"role": "user", "content": str(i)} for i in range(20)]
+        long = [{"role": "system", "content": "s"}] + [{"role": "user", "content": str(i)} for i in range(30)]
         window = autopilot.model_window(long)
         self.assertEqual(window[0]["content"], "s")
-        self.assertEqual(len(window), 8)
+        self.assertEqual(len(window), 2 * autopilot.WINDOW_MIN + 1)
+        self.assertEqual(window[-1]["content"], "29")
         self.assertEqual(sum(1 for m in window if m["role"] == "system"), 1)
+
+    def test_history_is_trimmed_in_blocks_so_the_prompt_cache_keeps_matching(self):
+        history = [{"role": "system", "content": "s"}]
+        prefixes = []
+        for turn in range(40):
+            history.append({"role": "user", "content": f"u{turn}"})
+            autopilot.trim_history(history)
+            prefixes.append(tuple(m["content"] for m in history[:3]))
+            history.append({"role": "assistant", "content": f"a{turn}"})
+            self.assertLessEqual(len(history), 2 * autopilot.WINDOW_MAX + 2)  # the answer lands after the trim
+        # A sliding window changes the start of the history every turn; a block trim keeps it for several turns.
+        changes = sum(1 for before, after in zip(prefixes, prefixes[1:]) if before != after)
+        self.assertLessEqual(changes, 40 // (autopilot.WINDOW_MAX - autopilot.WINDOW_MIN) + 1)
+        self.assertEqual(history[0]["content"], "s")
+        self.assertEqual(history[-1]["content"], "a39")
+        self.assertGreaterEqual(len(history), 2 * autopilot.WINDOW_MIN + 1)
 
 
 class MiningGoalTest(unittest.TestCase):
@@ -1839,6 +2111,128 @@ class VisitorVoiceTests(unittest.TestCase):
         accepted = visitor_voice.voice_visit(Client(), broken, None, sleep=lambda s: None, log=lambda line: None)
         self.assertEqual(accepted, 0)
         self.assertEqual(replies, [])
+
+
+class BoatTravelTests(unittest.TestCase):
+    """Travel across deep water (tools/agent-control/boats.py) against scripted character_route replies."""
+
+    WALK = {"mode": "walk", "from": [10, 20], "moves": "eeeeeee", "to": [17, 20]}
+    BOAT = {"mode": "boat", "from": [17, 20], "moves": "eeeee", "to": [22, 20]}
+    ASHORE = {"mode": "walk", "from": [22, 20], "moves": "ee", "to": [24, 20]}
+
+    def test_character_actions_match_the_game(self):
+        source = dm_source("agent_characters.dm")
+        listed = re.search(r"/proc/agent_character_actions\(\)\n\treturn list\(([^)]*)\)", source).group(1)
+        self.assertEqual(re.findall(r'"(\w+)"', listed), CHARACTER_ACTIONS)
+        for action in ("board", "disembark", "drag"):
+            self.assertIn(f'if ("{action}")', source)
+
+    def test_parse_travel_and_boat_steps(self):
+        refs = ["[0x1]", "[0x2]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "travel", "x": 30, "y": "20"}', refs), {"do": "travel", "x": 30, "y": 20})
+        self.assertEqual(autopilot.parse_decision('{"do": "travel", "dir": "East", "tiles": 40}', refs), {"do": "travel", "dir": "east", "tiles": 40})
+        self.assertEqual(autopilot.parse_decision('{"do": "travel", "to": "Boat"}', refs), {"do": "travel", "to": "boat"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "travel"}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "board", "target": 1}', refs), {"do": "board", "target": "[0x2]"})
+        self.assertEqual(autopilot.parse_decision('{"do": "disembark"}', refs), {"do": "disembark"})
+        plan = autopilot.parse_plan('{"plan": [{"do": "travel", "dir": "north"}, {"do": "say", "text": "hi"}]}', refs)
+        self.assertEqual(plan, [{"do": "travel", "dir": "north"}])
+
+    def test_travel_targets(self):
+        me = {"x": 10, "y": 20, "z": 2}
+        self.assertEqual(boats.target_of({"dir": "north", "tiles": 500}, me)[:2], (10, 170))
+        places = {"boat": [{"name": "raft", "x": 50, "y": 20, "z": 2}, {"name": "raft", "x": 12, "y": 22, "z": 2}]}
+        self.assertEqual(boats.target_of({"to": "boat"}, me, places)[:2], (12, 22))
+        self.assertIn("no ore", boats.target_of({"to": "ore"}, me, places)[2])
+        self.assertIn("no home", boats.target_of({"to": "home"}, me)[2])
+        plan, note = autopilot.travel_plan([{"do": "travel", "to": "home"}], me, None)
+        self.assertEqual(plan, [])
+        self.assertIn("no home", note)
+
+    def _client(self, routes, me):
+        sent = []
+
+        class Client:
+            def request(self, action, args=None):
+                sent.append((action, args))
+                if action == "character_route":
+                    return {"ok": True, "result": routes.pop(0)}
+                return {"ok": True, "result": {"self": me, "nearby": [{"ref": "[0xraft]", "name": "raft", "boat": True, "dx": 0, "dy": 0}]}}
+
+        return Client(), sent
+
+    def test_builds_a_raft_crosses_and_moors_it(self):
+        me = {"x": 17, "y": 20, "z": 2, "items": [{"name": "wood logs", "amount": 12}], "left_hand": None, "right_hand": None, "active_hand": "left"}
+        aboard = {"ref": "[0xraft]", "name": "raft", "role": "driver", "x": 22, "y": 20, "z": 2}
+        routes = [
+            {"reachable": True, "needs_boat": True, "legs": [self.WALK, self.BOAT, self.ASHORE], "launch": [17, 20], "boats": []},
+            {"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "launch": [17, 20], "boats": []},
+            {"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "aboard": dict(aboard, x=18)},
+            {"reachable": True, "needs_boat": False, "legs": [self.ASHORE], "aboard": aboard},
+            {"reachable": True, "needs_boat": False, "legs": []},
+        ]
+        client, sent = self._client(routes, me)
+        ran = []
+
+        def run(steps, since):
+            ran.append([dict(step) for step in steps])
+            return "; ".join(f"{step['do']} ok (done)" for step in steps), since
+
+        ok, detail, _ = boats.travel(client, "[0xada]", {"x": 24, "y": 20}, 0, {"run": run, "craft_steps": autopilot._expand_craft})
+        self.assertTrue(ok, detail)
+        flat = [step["do"] for steps in ran for step in steps]
+        self.assertEqual(flat[:7], ["move"] * 7)
+        self.assertIn({"do": "craft", "recipe": "raft"}, [step for steps in ran for step in steps])
+        self.assertLess(flat.index("craft"), flat.index("board"))
+        self.assertLess(flat.index("board"), flat.index("disembark"))
+        self.assertIn("built a raft", detail)
+        self.assertEqual(boats.moored(detail), ("raft", 22, 20, 2))
+        self.assertEqual(sum(1 for action, _ in sent if action == "character_route"), 5)
+
+    def test_without_logs_says_what_a_raft_needs(self):
+        me = {"x": 17, "y": 20, "z": 2, "items": [{"name": "wood logs", "amount": 3}]}
+        routes = [{"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "launch": [17, 20], "boats": []}]
+        client, _ = self._client(routes, me)
+        ok, detail, _ = boats.travel(client, "[0xada]", {"x": 24, "y": 20}, 0, {"run": lambda steps, since: ("", since), "craft_steps": autopilot._expand_craft})
+        self.assertFalse(ok)
+        self.assertIn("10 wood logs", detail)
+        self.assertIn("have 3", detail)
+
+    def test_takes_a_moored_boat_and_refuels_a_stalled_one(self):
+        me = {"x": 17, "y": 20, "z": 2, "items": [{"name": "jerrycan", "liquids": {"gasoline": 40}}]}
+        boat = {"ref": "[0xrhib]", "name": "rigid hull inflatable boat", "board_from": [17, 20], "stalled": "the fuel tank is empty", "fuels": ["gasoline"]}
+        routes = [
+            {"reachable": True, "needs_boat": True, "legs": [self.BOAT, self.ASHORE], "launch": [17, 20], "boats": [boat]},
+            {"reachable": True, "needs_boat": False, "legs": []},
+        ]
+        client, _ = self._client(routes, me)
+        ran = []
+
+        def run(steps, since):
+            ran.extend(steps)
+            return "; ".join(f"{step['do']} ok (done)" for step in steps), since
+
+        ok, detail, _ = boats.travel(client, "[0xada]", {"x": 24, "y": 20}, 0, {"run": run, "craft_steps": autopilot._expand_craft})
+        self.assertTrue(ok, detail)
+        self.assertEqual([step["do"] for step in ran], ["take", "click", "board"])
+        self.assertEqual(ran[0]["item"], "jerrycan")
+        self.assertIn("refuelled", detail)
+
+    def test_memory_keeps_one_boat_per_mooring(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            memory = BoatMemory.load("Ada", tmp)
+            memory.boat("raft", 22, 20, 2)
+            memory.boat("raft", 23, 21, 2)
+            self.assertEqual(len(memory.data["places"]["boat"]), 1)
+            line = memory.recall({"self": {"x": 10, "y": 20, "z": 2}})
+            self.assertIn("Known boat: raft", line)
+
+    def test_boat_line(self):
+        observation = {"self": {"vehicle": {"name": "raft", "role": "driver"}}}
+        self.assertIn("move steers it", boats.describe(observation))
+        observation = {"self": {}, "nearby": [{"name": "diesel outrigger", "boat": True, "dx": 2, "dy": 0, "fuel": 0, "fuel_max": 125}]}
+        self.assertIn("fuel 0/125", boats.describe(observation))
 
 
 if __name__ == "__main__":

@@ -28,6 +28,7 @@
 
 // this uses world.timeofday because world.time doesn't work
 // processes with priority VERY_HIGH use hacks here to run smoother (movement, throwing), similar to the old subsystems
-#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) current_list -= current
+// A reset during a yielding fire() (world load, process restart) nulls current_list mid-loop.
+#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && islist(current_list)) current_list -= current
 #define PROCESS_TICK_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance) return PROCESS_TICK_CHECK_RETURNED_EARLY
 #define PROCESS_USE_FASTEST_LIST(list) if (priority == PROCESS_PRIORITY_VERY_HIGH) { current_list = list; } else { current_list = null; current_list = list:Copy(); }

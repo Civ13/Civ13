@@ -9,6 +9,8 @@
 	flammable = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
+	// stock["woolcloth"] tracks the wool portion of stock["cloth"] for refunds.
+	// Missing in old saves means all stored cloth is ordinary cloth.
 	var/list/stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
 	var/tmp/busy = FALSE
 	var/tmp/assembly_time = 100
@@ -39,6 +41,15 @@
 		return null
 	return list("steel" = size == 3 ? 40 : 60, "glass" = size == 3 ? 6 : 8, "cloth" = size == 3 ? 4 : 6, "cable" = 10, "wheels" = 4)
 
+/obj/structure/car_workshop/proc/requirement_text()
+	return "Automobiles and Electricity research are required."
+
+/obj/structure/car_workshop/proc/menu_text()
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty."
+
+/obj/structure/car_workshop/proc/assembled_message(model)
+	return "Your [model] is assembled. Add the correct fuel before driving."
+
 /obj/structure/car_workshop/proc/has_inputs(model)
 	var/list/required = costs(model)
 	if (!required)
@@ -68,13 +79,15 @@
 	var/key
 	if (istype(I, /obj/item/stack/material/steel)) key = "steel"
 	else if (istype(I, /obj/item/stack/material/glass)) key = "glass"
-	else if (istype(I, /obj/item/stack/material/cloth)) key = "cloth"
+	else if (is_cloth_sheet(I)) key = "cloth"
 	else if (istype(I, /obj/item/stack/cable_coil)) key = "cable"
 	if (key)
 		var/obj/item/stack/S = I
+		var/wool_payment = key == "cloth" && istype(S, /obj/item/stack/material/woolcloth)
 		var/payment = min(S.amount, 200 - stock[key])
 		if (payment > 0 && S.use(payment))
 			stock[key] += payment
+			if (wool_payment) stock["woolcloth"] = (stock["woolcloth"] || 0) + payment
 		return
 	return ..()
 
@@ -100,12 +113,12 @@
 	if (busy || !Adjacent(H))
 		return
 	if (!allowed(H))
-		to_chat(H, SPAN_WARNING("Automobiles and Electricity research are required."))
+		to_chat(H, SPAN_WARNING(requirement_text()))
 		return
 	var/list/options = models()
 	options["Unload inputs"] = "unload"
 	options["Service vehicle keys"] = "keys"
-	var/choice = WWinput(H, "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty.", name, "Cancel", options + list("Cancel"))
+	var/choice = WWinput(H, menu_text(), name, "Cancel", options + list("Cancel"))
 	if (busy || !Adjacent(H) || !allowed(H))
 		return
 	if (choice == "Unload inputs")
@@ -143,7 +156,7 @@
 	if (completed && Adjacent(H) && allowed(H) && draw_cable_power())
 		result = complete_assembly(choice)
 		if (result)
-			to_chat(H, SPAN_NOTICE("Your [choice] is assembled. Add the correct fuel before driving."))
+			to_chat(H, SPAN_NOTICE(assembled_message(choice)))
 	finish_work()
 	return result
 
@@ -158,7 +171,10 @@
 	return ..()
 
 /obj/structure/car_workshop/proc/unload()
-	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil)
+	// Separate the paid textile kinds before creating refundable stacks.
+	stock["woolcloth"] = min(stock["woolcloth"] || 0, stock["cloth"])
+	stock["cloth"] -= stock["woolcloth"]
+	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "woolcloth" = /obj/item/stack/material/woolcloth, "cable" = /obj/item/stack/cable_coil)
 	for (var/key in paths)
 		var/path = paths[key]
 		while (stock[key] > 0)
@@ -183,6 +199,8 @@
 	var/list/required = costs(model)
 	for (var/key in required)
 		stock[key] -= required[key]
+	// Spend ordinary cloth first, retaining wool provenance for excess stock.
+	stock["woolcloth"] = min(stock["woolcloth"] || 0, stock["cloth"])
 	if (!vehicle_key_service.issue_constructed(A, get_turf(src))) return null
 	return A
 

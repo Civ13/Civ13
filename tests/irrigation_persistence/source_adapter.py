@@ -72,6 +72,8 @@ def compile_helper(source, signature, function_name, arguments, namespace):
             statement = expression(text)
         elif text.startswith('var/') and '=' in text:
             statement = expression(re.sub(r'^var/(?:\w+/)*(\w+)', r'\1', text))
+        elif re.fullmatch(r'\w+ = .+', text):
+            statement = expression(text)
         else:
             raise AssertionError(f'Unsupported statement: {text}')
         lines.append('    ' * depth + statement)
@@ -79,11 +81,20 @@ def compile_helper(source, signature, function_name, arguments, namespace):
     return namespace[function_name]
 
 
+def saved_scalar(value):
+    # code/modules/persistence/functions.dm persistence_saved_scalar(): an
+    # envelope gives its value, a raw scalar stands for itself.
+    if isinstance(value, (dict, DMList)):
+        return value['value'] if isinstance(value, dict) and value.get('kind') == 'value' else value
+    return value
+
+
 def validator(source):
     namespace = {
         'islist': lambda value: isinstance(value, (dict, DMList)),
         'isnum': lambda value: isinstance(value, (int, float)),
         'dm_list': lambda *items: DMList(items),
+        'persistence_saved_scalar': saved_scalar,
     }
     compile_helper(source, '/proc/irrigation_saved_scalar(savefile/F, field, version)',
                    'irrigation_saved_scalar', 'F, field, version', namespace)

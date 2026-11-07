@@ -29,6 +29,9 @@ class FoodToxinLogWiring(unittest.TestCase):
             ("code/modules/reagents/reagent_containers/food.dm", 'note_food_toxin("rotted while decaying")'),
             ("code/game/objects/structures/watercloset.dm", 'RG.note_food_toxin("puddle water (1 in 10 fill roll)")'),
             ("code/game/mob/living/simple_animal/simple_ai.dm", 'meat.note_food_toxin("zombie meat")'),
+            ("code/game/objects/structures/watercloset.dm", 'RG.note_food_toxin(dirty ? "unboiled water from a dirty [name]'),
+            ("code/modules/1713/factory_pipes.dm", 'note_food_toxin("unboiled [W.name] water drawn by [name] at ([x],[y],[z])")'),
+            ("code/modules/1713/factory_pipes.dm", "fluid_carry_toxin_origin(S, R, D)"),
         ):
             with self.subTest(path=path):
                 self.assertIn(note, read(path))

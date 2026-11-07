@@ -1,4 +1,4 @@
-"""Stage or run protected-sleep helpers with real buckling and native persistence."""
+"""Stage or run the frozen protected-sleep fixture with real buckling and native persistence."""
 import argparse
 import importlib.util
 from pathlib import Path
@@ -14,6 +14,7 @@ HELPERS = (
     '/mob/living/human/proc/enter_protected_sleep',
     '/mob/living/human/proc/complete_protected_wakeup',
 )
+LEGACY_HELPERS = 'tests/world_save/sleep_transfer_fixture/legacy_sleep_helpers.dm'
 MOVEMENT_HELPERS = ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed',
                     '/atom/movable/proc/forceMove', '/atom/movable/proc/clear_throw_launch')
 BUCKLING = ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')
@@ -25,7 +26,7 @@ MINIMUM_CHECKS = dict(zip(CASES, (14, 7, 10, 10, 10, 9, 7, 9, 7, 7, 7, 8, 11, 16
 RECORD_PROC = '/map_storage/proc/record_save_reference_failure'
 PRESENTATION_DEFAULT = '#ifndef CIV13_ROOT_TREE_PRESENTATION\n#define CIV13_ROOT_TREE_PRESENTATION 1\n#endif\n'
 CONTROLS = {
-    'old-bed': ('disk', 'FAIL: protected sleeper/bed export rejected: Cross-level object reference cannot be represented in per-level save files: /obj/structure/bed/sleep_fixture saved_z=1 native_z=2 turf_z=2 source_type=/mob/living/human/sleep_fixture source_field=buckled'),
+    'old-bed': ('disk', 'FAIL: protected sleeper kept its distant bed link'),
     'persistence-gate': ('busy', 'FAIL: entry moved during persistence'),
     'other-occupant': ('unrelated-occupant', 'FAIL: stale sleep pointer unbuckled a different occupant'),
     'wake-actor': ('normal', 'FAIL: wake helper moved the wrong actor'),
@@ -89,7 +90,14 @@ def prepare(output, control=None, root=ROOT):
         ('code/game/atoms_movable.dm', 'force_move.dm', MOVEMENT_HELPERS),
     ):
         raw = (root / relative).read_bytes()
-        projected = '\n'.join(BASE.extract_proc(raw.decode('utf-8-sig'), path) for path in paths)
+        if target == 'sleep_helpers.dm':
+            # Only the buckle release is still production code; the removed
+            # teleport helpers come from their frozen historical fixture.
+            legacy = (root / LEGACY_HELPERS).read_bytes()
+            receipt['source_sha256'][LEGACY_HELPERS] = BASE.sha(legacy)
+            projected = '\n'.join(BASE.extract_proc((raw if path == HELPERS[0] else legacy).decode('utf-8-sig'), path) for path in paths)
+        else:
+            projected = '\n'.join(BASE.extract_proc(raw.decode('utf-8-sig'), path) for path in paths)
         receipt['source_sha256'][relative] = BASE.sha(raw)
         receipt['source_projections'][target] = {'source': relative, 'procedures': paths,
                                                  'unmodified_sha256': BASE.sha(projected.encode())}
@@ -151,7 +159,7 @@ def main():
         cases, expected = (case,), {case: result}
     minimum = MINIMUM_CHECKS.copy()
     if args.negative_control:
-        minimum[cases[0]] = {'old-bed': 6, 'persistence-gate': 5, 'other-occupant': 7,
+        minimum[cases[0]] = {'old-bed': 4, 'persistence-gate': 5, 'other-occupant': 7,
                              'wake-actor': 12, 'move-rollback': 5, 'inventory-gate': 5,
                              'diagnostic-record': 9}[args.negative_control]
     receipt.update(cases=list(cases), expected_results=expected, minimum_checks=minimum)

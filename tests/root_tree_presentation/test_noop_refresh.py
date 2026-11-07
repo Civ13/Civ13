@@ -460,4 +460,165 @@ class ResourceStrikes(unittest.TestCase):
         progress = (ROOT/'code/datums/progressbar.dm').read_text()
         self.assertIn('bar.plane = HUD_PLANE', progress)
 
+
+
+class ViewReset(unittest.TestCase):
+    """Project the real passive-interface/reset/withdraw path, not client pixels."""
+
+    class Ref(N):
+        __hash__ = object.__hash__
+
+        def __eq__(self, other):
+            return self is other
+
+    class Frames(dict):
+        def __getitem__(self, key):
+            return self.get(key)
+
+        def __isub__(self, key):
+            self.pop(key, None)
+            return self
+
+    def scene(self, mutate=lambda source: source):
+        env = environment()
+        body = self.Ref(loc=N(type='/turf/floor'), opacity=False)
+        trees = [self.Ref(loc=body.loc) for _ in range(8)]
+        images = [N(loc=tree, icon=object()) for tree in trees]
+        writes, invalidations = [], []
+
+        class Client(N):
+            def __setattr__(self, key, value):
+                if key in ('eye', 'perspective'):
+                    # Every real camera write must follow synchronous withdrawal.
+                    writes.append((key, all(image.icon is None for image in images)))
+                super().__setattr__(key, value)
+
+        client = Client(mob=body, eye=body, perspective=1, los_dirty=False,
+                        screen=N(Remove=lambda *args: None))
+        presenter = N(retired=False, owner=client, context=N(body=body),
+                      owned_images=images,
+                      published_frames=self.Frames(zip(trees, [i.icon for i in images])))
+        withdraw = compile_proc(TREE, '/datum/root_tree_presenter/proc/withdraw_tree(',
+                                'self, T, I', env, True)
+        env['withdraw_tree'] = lambda tree, image: withdraw(presenter, tree, image)
+        invalidate = compile_proc(TREE, '/datum/root_tree_presenter/proc/invalidate(',
+                                  'self, changed=None, possible_opacity=False, viewer_refresh=False', env, True)
+
+        def invalidate_view(changed):
+            invalidations.append(changed)
+            invalidate(presenter, changed)
+
+        env.update(client=client, self=body, loc=body.loc, EYE_PERSPECTIVE=0,
+                   MOB_PERSPECTIVE=1, root_tree_invalidate=invalidate_view)
+        source = P.fragment((ROOT/'code/game/mob/mob.dm').read_text(), '/mob/proc/reset_view(')
+        source = mutate(source)
+        source = '\n'.join(line for line in source.splitlines()
+                           if not line.strip().startswith('#')) + '\n'
+        source = source.replace('istype(A, /atom/movable)', 'ismovable(A)').replace('if (', 'if(')
+        reset = compile_proc(source, '/mob/proc/reset_view(', 'A=None', env)
+        # The human override forwards to this parent. UI refresh FALSE skips
+        # its independent HUD callback; camera decisions remain production code.
+        env['reset_view'] = lambda A=None, refresh=True: reset(A)
+        eye = compile_proc((ROOT/'code/datums/datum.dm').read_text(), '/atom/proc/check_eye(', 'user', env)
+        stack = N(check_eye=eye)
+        env.update(using_object=stack, laddervision=None, sight=0,
+                   global_hud=N(**{key: None for key in ['blurry', 'druggy', 'vimpaired', 'darkMask', 'nvg', 'thermal']}),
+                   update_equipment_vision=lambda: None, species=N(handle_vision=lambda src: None))
+        vision_source = (ROOT/'code/game/mob/living/carbon/human/human_life.dm').read_text().replace('if (', 'if(')
+        vision = compile_proc(vision_source, '/mob/living/human/handle_vision(', '', env)
+        writes.clear()
+        return N(env=env, body=body, client=client, trees=trees, images=images,
+                 presenter=presenter, writes=writes, invalidations=invalidations,
+                 reset=reset, vision=vision, stack=stack)
+
+    def assert_published(self, scene):
+        self.assertEqual(len(scene.presenter.published_frames), 8)
+        self.assertTrue(all(image.icon is not None for image in scene.images))
+        self.assertEqual(scene.invalidations, [])
+        self.assertEqual(scene.writes, [])
+        self.assertFalse(scene.client.los_dirty)
+
+    def test_passive_crafting_repeated_updates_close_and_reopen(self):
+        scene = self.scene()
+        self.assertEqual(scene.stack.check_eye(scene.body), -1)
+        for opened in [True, False, True, False, True]:
+            scene.env['using_object'] = scene.stack if opened else None
+            for _ in range(5):
+                scene.vision()
+                self.assert_published(scene)
+                self.assertIs(scene.client.eye, scene.body)
+                self.assertEqual(scene.client.perspective, 1)
+
+    def test_already_active_camera_container_and_turf_requests_are_noops(self):
+        for kind in ['camera', 'container', 'turf_argument', 'null_location']:
+            with self.subTest(kind=kind):
+                scene = self.scene()
+                target = None
+                if kind == 'camera':
+                    target = self.Ref(vis_contents=[])
+                    scene.client.eye = target
+                    scene.client.perspective = 0
+                elif kind in ['container', 'null_location']:
+                    scene.env['loc'] = self.Ref() if kind == 'container' else None
+                    scene.client.eye = scene.env['loc']
+                    scene.client.perspective = 0
+                else:
+                    target = N(type='/turf/floor')  # Not a movable camera target.
+                scene.writes.clear()
+                for _ in range(5):
+                    scene.reset(target)
+                    self.assert_published(scene)
+
+    def test_eye_and_perspective_changes_withdraw_before_camera_writes(self):
+        for kind in ['camera', 'return_from_camera', 'container', 'leave_container', 'perspective_only']:
+            with self.subTest(kind=kind):
+                scene = self.scene()
+                target, expected_eye, expected_perspective = None, scene.body, 1
+                if kind == 'camera':
+                    target = expected_eye = self.Ref(vis_contents=[])
+                    expected_perspective = 0
+                elif kind in ['return_from_camera', 'leave_container']:
+                    scene.client.eye = self.Ref()
+                    scene.client.perspective = 0
+                elif kind == 'container':
+                    scene.env['loc'] = expected_eye = self.Ref()
+                    expected_perspective = 0
+                else:
+                    scene.client.perspective = 0  # Same eye alone is not a no-op.
+                scene.writes.clear()
+                scene.reset(target)
+                self.assertEqual(scene.invalidations, [scene.body])
+                self.assertTrue(scene.client.los_dirty)
+                self.assertFalse(scene.presenter.published_frames)
+                self.assertEqual(len(scene.writes), 2)
+                self.assertTrue(all(withdrawn for _, withdrawn in scene.writes))
+                self.assertIs(scene.client.eye, expected_eye)
+                self.assertEqual(scene.client.perspective, expected_perspective)
+                scene.reset(target)
+                self.assertEqual(len(scene.invalidations), 1)
+                self.assertEqual(len(scene.writes), 2)
+
+    def test_no_client_leaves_publication_alone(self):
+        scene = self.scene()
+        scene.env['client'] = None
+        scene.reset()
+        self.assert_published(scene)
+
+    def test_missing_noop_guard_reproduces_passive_crafting_withdrawal(self):
+        guard = '\tif(client.eye == new_eye && client.perspective == new_perspective)\n\t\treturn\n'
+        scene = self.scene(lambda source: source.replace(guard, ''))
+        scene.vision()
+        self.assertEqual(scene.invalidations, [scene.body])
+        self.assertTrue(all(image.icon is None for image in scene.images))
+        with self.assertRaises(AssertionError):
+            self.assert_published(scene)
+
+    def test_missing_transition_invalidation_is_detected(self):
+        scene = self.scene(lambda source: source.replace('\troot_tree_invalidate(src)\n', ''))
+        scene.reset(self.Ref(vis_contents=[]))
+        self.assertEqual(scene.invalidations, [])
+        self.assertTrue(scene.writes)
+        self.assertFalse(any(withdrawn for _, withdrawn in scene.writes))
+
+
 if __name__=='__main__':unittest.main()

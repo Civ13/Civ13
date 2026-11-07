@@ -69,7 +69,7 @@ var/throw_callback_saw_old_target = FALSE
 	map_storage.clear_bookkeeping()
 	map_storage.saving_z = 1
 	var/ref = map_storage.BuildVarDirectory(F, H, 1)
-	var/target_ref = map_storage.saving_references["\ref[R]"]
+	var/target_ref = map_storage.saving_references[R]
 	cross_check(target_ref && H.relationship == R && H.alias == R, "valid export changed relationship")
 	F = null
 	F = new("valid-relationship.sav")

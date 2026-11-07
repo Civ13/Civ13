@@ -31,7 +31,10 @@ def main():
     parser.add_argument("--evidence-dir", type=Path)
     parser.add_argument("--compile-only", action="store_true", help="Compile the isolated fixture without launching a world")
     parser.add_argument("--stone-casting-only", action="store_true", help="Run only actual ore/pour/anvil and engine sprite checks")
+    parser.add_argument("--cloth-only", action="store_true", help="Run bounded cloth substitution checks only")
     args = parser.parse_args()
+    if args.cloth_only and (args.stone_casting_only or args.food_bootstrap_negative_control or args.camera_prototype_negative_control or args.handle_hands_negative_control):
+        parser.error("Run the cloth fixture without unrelated native cases")
     if args.stone_casting_only and (args.food_bootstrap_negative_control or args.camera_prototype_negative_control or args.handle_hands_negative_control):
         parser.error("The focused casting fixture cannot be combined with other native cases")
     if sum((args.food_bootstrap_negative_control, args.camera_prototype_negative_control, args.handle_hands_negative_control)) > 1:
@@ -58,6 +61,11 @@ def main():
         sources += ["code/game/objects/structures/blacksmithing/molds.dm",
                     "code/game/objects/structures/kitchen/oven.dm",
                     "code/modules/research_tree/research_node.dm", "tests/crafting/stone_molds.dm"]
+        sources += ["code/game/objects/items/stacks/cloth_crafting.dm", "tests/crafting/woolcloth.dm",
+                    "code/game/objects/structures/blacksmithing/armor_workbench.dm",
+                    "code/modules/persistence/party_train.dm", "code/modules/1713/apparel_medieval.dm",
+                    "code/modules/1713/machinery/modular_vehicles/car_workshop.dm",
+                    "code/modules/1713/extraction/equipment.dm"]
         if args.stone_casting_only:
             sources += ["code/game/objects/structures/blacksmithing/blacksmithing.dm",
                         "code/game/objects/structures/blacksmithing/refining.dm", "code/_helpers/icons.dm",
@@ -69,6 +77,10 @@ def main():
                     "runtime_status": "not_run" if args.compile_only else "pending",
                     "scope": "Compile only; no world launched" if args.compile_only else "Production crafting, wait, debit and slot cleanup; character startup, skills and HUD are adapters"}
         (args.evidence_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
+        if args.cloth_only:
+            metadata["mode"] = "cloth-only"
+            metadata["scope"] = "Real cloth catalog/debit/project/armor/refund/codec paths and custom disk entry roundtrips; isolated startup/skills/HUD and test output adapters. No full-world restore or client."
+            (args.evidence_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
         if args.stone_casting_only:
             metadata["mode"] = "stone-casting-only"
             metadata["scope"] = "Actual ore loading, kiln process, pouring and anvil paths; numeric client prompt, actor startup/skills/HUD are adapters. Engine getFlatIcon export; no connected client or fuel cycle."
@@ -77,7 +89,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix=".recipe-ci-", dir=root) as build, tempfile.TemporaryDirectory(prefix="civ13-recipes-") as run:
         build, run = Path(build), Path(run)
         source = (root / "code/world.dm").read_text(encoding="utf-8")
-        entrypoint = "run_stone_casting_checks" if args.stone_casting_only else "run_recipe_checks"
+        entrypoint = "run_cloth_checks" if args.cloth_only else "run_stone_casting_checks" if args.stone_casting_only else "run_recipe_checks"
         for marker, replacement in [
             ("/datum/global_init/New()\n", "\treturn\n"),
             ("/world/New()\n", f'\tOpenPort("none")\n\tspawn(1)\n\t\t{entrypoint}()\n\treturn\n'),
@@ -129,6 +141,7 @@ def main():
         dme += f'\n#include "{root.as_posix()}/tests/crafting/stone_molds.dm"\n'
         if args.stone_casting_only:
             dme += f'\n#include "{root.as_posix()}/tests/stone_molds/casting.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/woolcloth.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
@@ -152,7 +165,7 @@ def main():
             shutil.copy2(build / ("recipes" + suffix), run)
         with (run / "runtime.log").open("w", encoding="utf-8") as log:
             try:
-                runtime = subprocess.run([args.runtime, str(run / "recipes.dmb"), "0", "-invisible", "-close", "-trusted"], cwd=run, stdout=log, stderr=subprocess.STDOUT, timeout=90)
+                runtime = subprocess.run([args.runtime, str(run / "recipes.dmb"), "0", "-invisible", "-close", "-trusted"], cwd=run, stdout=log, stderr=subprocess.STDOUT, timeout=180)
             finally:
                 log.flush()
                 if args.evidence_dir:

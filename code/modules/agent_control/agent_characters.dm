@@ -12,6 +12,7 @@
 #define AGENT_CHARACTER_QUEUE_BATCH 32
 #define AGENT_CHARACTER_SPEECH_DELAY 10
 #define AGENT_CHOICE_WINDOW 300 // ticks a step's prompt answer stays valid
+#define AGENT_WATCH_WINDOW 600 // ticks since an agent last listed its characters for it to count as watching
 
 /datum/agent_character
 	var/mob/living/body
@@ -27,6 +28,8 @@
 	var/list/queue_results = list()
 	var/queue_serial = 0
 	var/queue_running = FALSE
+	var/awaiting_driver = FALSE // spawned by an admin verb; no autopilot has looked through its eyes yet
+	var/requested_goal // what the admin asked the character to do
 
 /datum/agent_character/proc/capture(message)
 	var/text = agent_plain_text(message)
@@ -151,6 +154,9 @@
 			agent_mind.transfer_to(M)
 		if (job_title && !job_master.EquipRank(M, job_title, TRUE))
 			agent_fail("bad_job", "[job_title] could not be equipped")
+		// "stay": keep the job's kit but start at the target rather than the job's spawn point.
+		if (job_title && req["stay"] && get_turf(M) != T)
+			M.forceMove(T)
 		if (istext(req["name"]) && length(trim(req["name"])))
 			var/new_name = sanitize(copytext(req["name"], 1, 33))
 			M.fully_replace_character_name(M.real_name, new_name)
@@ -187,7 +193,11 @@
 			row["player"] = C.handover_ckey
 			row["player_connected"] = M.client ? TRUE : FALSE
 		row["stat"] = M.stat
+		if (C.awaiting_driver)
+			row["waiting"] = TRUE
+			row["goal"] = C.requested_goal
 		out += list(row)
+	last_watch[A.name] = world.time
 	audit_read(A, "character_list")
 	return list("characters" = out, "allow_handover" = allow_handover)
 
@@ -209,6 +219,10 @@
 	if (istype(held_stack) && held_stack.recipes)
 		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
+	var/obj/structure/vehicle/riding = agent_vehicle_of(M)
+	if (riding)
+		out["vehicle"] = agent_vehicle_row(riding, M)
+		out["can_steer"] = (riding.driver == M && M.stat == CONSCIOUS && !agent_vehicle_stalled(riding)) ? TRUE : FALSE
 	var/area/area = get_area(M)
 	if (area)
 		out["area"] = area.name
@@ -242,34 +256,54 @@
 		if (H.original_job_title)
 			out["job"] = H.original_job_title
 		// Injuries a player would see on the health doll: bleeding first, so the agent can stop blood loss.
-		var/list/wounds = list()
-		for (var/obj/item/organ/external/E in H.organs)
-			var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
-			var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
-			var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
-			if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
-				continue
-			var/list/row = list("zone" = E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
-			// Field-care state: a cut artery wants a bandage tied as a tourniquet
-			// (the first bandage click does it), a break wants a splint.
-			if (artery)
-				row["artery_cut"] = TRUE
-			if (E.tourniquet)
-				row["tourniquet"] = TRUE
-			if (E.status & ORGAN_SPLINTED)
-				row["splinted"] = TRUE
-			if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
-				row["infected"] = TRUE
-			wounds += list(row)
+		var/list/wounds = agent_wound_rows(H)
 		out["wounds"] = wounds
+		// A serious illness kills within about 20 minutes unless a medicine course (herbs, antibiotics) runs.
+		if (H.disease && H.disease_type && H.disease_type != "none")
+			var/list/illness = list("type" = H.disease_type, "severe" = H.is_severe_disease() ? TRUE : FALSE, "progression" = H.disease_progression, "course" = round(H.disease_course))
+			if (H.is_severe_disease())
+				illness["stage"] = H.disease_progression >= 900 ? "critical" : (H.disease_progression >= 180 ? "worsening" : "early")
+				illness["treated"] = H.disease_course > 0 ? TRUE : FALSE
+			if (H.ingested)
+				illness["remedy"] = round(H.ingested.get_reagent_amount("herbal_remedy"), 0.1)
+			out["illness"] = illness
+		// Verbs a player has in the right-click menu and verb panels (lie down, give, point, an item's own verbs).
+		out["verbs"] = agent_verb_names(H)
+		out["item_verbs"] = agent_item_verbs(H)
 		out["blood"] = round(H.vessel ? H.vessel.get_reagent_amount("blood") : 0)
 	return out
+
+// Injured limbs of a human, as an agent sees them (zone is the zone selector's name,
+// limb_name; organ_tag is "limb" for every external organ): on itself from the health doll, on
+// someone next to it from what examining them shows (bleeding, breaks, bandages).
+/proc/agent_wound_rows(mob/living/human/H)
+	var/list/wounds = list()
+	for (var/obj/item/organ/external/E in H.organs)
+		var/bleeding = (E.status & ORGAN_BLEEDING) ? TRUE : FALSE
+		var/broken = (E.status & ORGAN_BROKEN) ? TRUE : FALSE
+		var/artery = (E.status & ORGAN_ARTERY_CUT) ? TRUE : FALSE
+		if (!bleeding && !broken && !artery && !E.tourniquet && E.get_damage() < 5)
+			continue
+		var/list/row = list("zone" = E.limb_name || E.organ_tag, "name" = E.name, "damage" = round(E.get_damage()), "bleeding" = bleeding, "bandaged" = E.is_bandaged() ? TRUE : FALSE, "broken" = broken)
+		// Field-care state: a cut artery wants a bandage tied as a tourniquet
+		// (the first bandage click does it), a break wants a splint.
+		if (artery)
+			row["artery_cut"] = TRUE
+		if (E.tourniquet)
+			row["tourniquet"] = TRUE
+		if (E.status & ORGAN_SPLINTED)
+			row["splinted"] = TRUE
+		if (E.has_infected_wound() || E.germ_level >= INFECTION_LEVEL_ONE)
+			row["infected"] = TRUE
+		wounds += list(row)
+	return wounds
 
 /datum/agent_control/proc/act_character_observe(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
 	var/mob/living/M = C.body
 	var/radius = clamp(round(text2num("[req["radius"]]") || 5), 1, 7)
 	var/since = text2num("[req["since"]]") || 0
+	C.awaiting_driver = FALSE // an autopilot is driving it now
 	audit_read(A, "character_observe", "[M] ([agent_ref(M)])")
 	var/turf/here = get_turf(M)
 	var/list/nearby = list()
@@ -298,6 +332,11 @@
 				var/mob/other = AM
 				row["mob"] = TRUE
 				row["stat"] = other.stat
+				// Someone hurt nearby: what a player sees on them, so the agent can offer first aid.
+				if (ishuman(other) && other.stat != DEAD)
+					var/list/hurt = agent_wound_rows(other)
+					if (hurt.len)
+						row["wounds"] = hurt
 			if (istype(AM, /obj/item/stack))
 				var/obj/item/stack/ST = AM
 				row["amount"] = ST.amount
@@ -305,11 +344,36 @@
 				// What the rack holds: wet hides are still drying, dry hides are ready to take off by hand.
 				var/obj/item/stack/material/rack_hide = locate(/obj/item/stack/material) in AM.contents
 				row["holds"] = rack_hide ? "[rack_hide.name] x[rack_hide.amount]" : "nothing"
+			if (istype(AM, /obj/structure/vehicle))
+				// Boats: seats, cargo, fuel and engine, so one can be boarded, supplied or refuelled.
+				var/list/boat_row = agent_vehicle_row(AM, M)
+				for (var/key in boat_row)
+					if (!(key in list("ref", "name", "type", "x", "y", "z")))
+						row[key] = boat_row[key]
+			if (istype(AM, /obj/structure/oven))
+				// Cooking and stone-boiling need a lit fire with fuel left.
+				var/obj/structure/oven/O = AM
+				row["lit"] = O.on ? TRUE : FALSE
+				row["fuel"] = round(O.fuel, 0.1)
+			if (istype(AM, /obj/structure/sink))
+				// Puddles and dirty wells carry cholera; a clean well does not.
+				var/obj/structure/sink/SK = AM
+				row["sickness"] = (istype(SK, /obj/structure/sink/puddle) || SK.dirty) ? 1 : 0
+			if (!ismob(AM) && get_dist(M, AM) <= 1)
+				var/list/near_verbs = agent_verb_names(AM, 8)
+				if (near_verbs.len)
+					row["verbs"] = near_verbs
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
 			nearby += list(row)
 	var/list/surroundings = list()
+	var/obj/structure/vehicle/steering = null
+	var/lifejacket = FALSE
+	if (ishuman(M))
+		var/mob/living/human/HM = M
+		steering = HM.driver ? HM.driver_vehicle : null
+		lifejacket = istype(HM.wear_suit, /obj/item/clothing/suit/lifejacket)
 	if (here)
 		for (var/d in list(NORTH, SOUTH, EAST, WEST))
 			var/turf/T = get_step(here, d)
@@ -322,7 +386,16 @@
 					if (AM.density && AM != M)
 						blocked = TRUE
 						break
-			surroundings[dir2text(d)] = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
+			var/deep = agent_deep_water(T)
+			if (steering)
+				// Driving: open water is the way on, and land stops the boat.
+				blocked = blocked || !(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
+			else if (deep && !lifejacket)
+				blocked = TRUE // deep water stops a walker; it needs a boat
+			var/list/side = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)
+			if (deep)
+				side["deep_water"] = TRUE
+			surroundings[dir2text(d)] = side
 	// The nearest tile of each kind of terrain, so water and the like can be clicked.
 	var/list/terrain = list()
 	if (here)
@@ -369,18 +442,18 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
 			ready = max(ready, world.time + 2)
-	if (action in list("click", "use", "craft"))
+	if (action in list("click", "use", "craft", "verb", "throw"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote"))
 		ready = max(ready, next_speech)
@@ -409,6 +482,11 @@
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
+			// Driving a boat: the move steers it (docs/agent-control.md#boats).
+			if (ishuman(M))
+				var/mob/living/human/driving = M
+				if (driving.driver && driving.driver_vehicle)
+					return agent_drive_step(A, C, driving.driver_vehicle, d)
 			if (M.stat != CONSCIOUS || !M.canmove || M.restrained() || M.buckled)
 				agent_fail("cannot_move", "the character cannot move right now")
 			var/turf/old = get_turf(M)
@@ -535,6 +613,16 @@
 			detail = intent
 		if ("resist")
 			M.resist()
+		if ("board")
+			detail = agent_board(C, req, from_queue)
+		if ("disembark")
+			detail = agent_disembark(C, from_queue)
+		if ("drag")
+			detail = agent_drag(C, req, from_queue)
+		if ("verb")
+			detail = agent_run_verb(C, req, from_queue)
+		if ("throw")
+			detail = agent_throw(C, req, from_queue)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -645,15 +733,23 @@
 		agent_dir(step["dir"])
 	if (action in list("say", "emote"))
 		agent_text_arg(step, "text", 256)
-	if (action in list("click", "examine"))
+	if (action in list("click", "examine", "board", "drag", "throw"))
 		agent_resolve_target(step["target"])
+	if (action == "verb")
+		agent_text_arg(step, "name", 64)
+		if (!isnull(step["target"]))
+			agent_resolve_target(step["target"])
+		if (!isnull(step["onto"]))
+			agent_resolve_target(step["onto"])
+	if (action == "drag")
+		agent_resolve_target(step["onto"])
 	if (action == "craft")
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
 	if (!isnull(step["choose"]))
 		agent_text_arg(step, "choose", 64)
-	for (var/key in list("dir", "text", "target", "modifier", "intent", "recipe", "amount", "item", "choose", "zone"))
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out
@@ -774,9 +870,80 @@
 
 /hook/startup/proc/agent_control_startup()
 	agent_control.reload()
+	admin_verbs_fun |= /client/proc/spawn_ai_character
 	return TRUE
 
+// ---------------------------------------------------------------------------
+// Admin verb: spawn a character for an AI agent (such as Ada) to play. The
+// character is spawned exactly as the agent's own character_spawn would, then
+// waits until an autopilot started with --watch for that agent picks it up.
+
+/client/proc/spawn_ai_character()
+	set category = "Fun"
+	set name = "Spawn AI Character"
+	set desc = "Spawn a character for a server AI agent, such as Ada, to play."
+	if (!check_rights(R_FUN))
+		return
+	agent_control.reload()
+	var/list/choices = list()
+	for (var/agent_name in agent_control.agents)
+		var/datum/agent_identity/A = agent_control.agents[agent_name]
+		if (A.has_scope("characters"))
+			choices += agent_name
+	if (!choices.len)
+		to_chat(src, SPAN_WARNING("No agent in config/agent-control.txt has the characters scope."))
+		return
+	var/agent_name = choices.len == 1 ? choices[1] : input(src, "Which agent plays the character?", "AI character") as null|anything in choices
+	if (!agent_name)
+		return
+	var/name = input(src, "Character name", "AI character", "Ada") as null|text
+	if (isnull(name))
+		return
+	var/goal = input(src, "What should the character try to do?", "AI character", "Survive, explore, gather food and be friendly to other players.") as null|text
+	if (isnull(goal))
+		return
+	var/turf/T = get_turf(mob)
+	if (!T)
+		to_chat(src, SPAN_WARNING("You need to be on the map to place a character."))
+		return
+	var/list/req = list("target" = "turf:[T.x],[T.y],[T.z]", "name" = name)
+	var/list/jobs = agent_map_jobs()
+	if (jobs.len)
+		var/job = ("Nomad" in jobs) ? "Nomad" : input(src, "Join as which job?", "AI character") as null|anything in jobs
+		if (!job)
+			return
+		req["job"] = job
+		var/where = input(src, "Where should [name] start?", "AI character") as null|anything in list("My location", "The job's spawn point")
+		if (!where)
+			return
+		if (where == "My location")
+			req["stay"] = TRUE
+	var/datum/agent_identity/A = agent_control.agents[agent_name]
+	if (!A)
+		return
+	var/list/state
+	try
+		state = agent_control.act_character_spawn(A, req)
+	catch(var/exception/E)
+		to_chat(src, SPAN_WARNING("The character could not be spawned: [istype(E) && E.name == "agent_control_error" ? E.desc : "[E]"]"))
+		return
+	var/mob/living/M = locate(state["ref"])
+	var/datum/agent_character/C = agent_characters[M]
+	if (!C)
+		return
+	C.awaiting_driver = TRUE
+	// Plain text: the autopilot hands it to the model as written. Encode it only for the log.
+	C.requested_goal = copytext(trim(replacetext(replacetext(replacetext(goal, ascii2text(13), " "), "\n", " "), "\t", " ")), 1, 257)
+	log_admin("[key_name(src)] spawned AI character [M] ([agent_ref(M)]) for agent [agent_name]: [html_encode(C.requested_goal)]")
+	message_admins("[key_name_admin(src)] spawned AI character [M] for agent [agent_name].")
+	var/last = agent_control.last_watch[agent_name]
+	if (isnull(last) || world.time - last > AGENT_WATCH_WINDOW)
+		to_chat(src, SPAN_WARNING("[M] is in play, but no autopilot is watching agent [agent_name], so [M] will stand still until the host runs autopilot.py --watch for that agent (docs/agent-control.md)."))
+	else
+		to_chat(src, SPAN_NOTICE("[M] is in play. The autopilot watching agent [agent_name] will take over within a few seconds."))
+
 #undef AGENT_CHARACTER_MESSAGES
+#undef AGENT_WATCH_WINDOW
 
 /proc/agent_item_detail(obj/item/I)
 	if (!istype(I))

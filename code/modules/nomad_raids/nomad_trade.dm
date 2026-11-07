@@ -18,6 +18,10 @@
 		goods += list(/obj/item/stack/material/bronze, /obj/item/stack/material/cloth)
 	if (age >= 2)
 		goods += list(/obj/item/stack/material/iron, /obj/item/weapon/material/kitchen/utensil/knife/iron)
+	// Seeds travel with every caravan; pills once there is chemistry to make them.
+	goods += /obj/item/stack/farming/seeds/tea
+	if (age >= 6)
+		goods += list(/obj/item/weapon/reagent_containers/pill/penicillin, /obj/item/weapon/reagent_containers/pill/paracetamol)
 	return goods
 
 /proc/nomad_trade_price(obj/item/I)
@@ -27,13 +31,24 @@
 		base = I.value * max(1, S.amount)
 	return max(3, round(base) + 2)
 
-// Who paid with an item: the last key that handled it, else the nearest player.
+// Who paid with an item: the last key that handled it when that player is at
+// the stall, else the nearest player there. Gloves leave no prints, so an item
+// a gloved player drops still carries whoever touched it before; on Gaia that
+// credited a dead player instead of the one standing at the stall.
 /datum/nomad_raid/proc/payer_of(obj/item/I)
-	if (I.fingerprintslast)
-		return ckey(I.fingerprintslast)
-	for (var/mob/living/human/H in nomad_raid_defenders_near(get_turf(leader), 2))
-		return H.ckey
-	return null
+	var/list/near = nomad_raid_defenders_near(get_turf(leader), 3)
+	var/printed = I.fingerprintslast ? ckey(I.fingerprintslast) : null
+	if (printed)
+		for (var/mob/living/human/H in near)
+			if (H.ckey == printed)
+				return printed
+	var/mob/living/human/nearest = null
+	for (var/mob/living/human/H in near)
+		if (!nearest || get_dist(H, leader) < get_dist(nearest, leader))
+			nearest = H
+	if (nearest)
+		return nearest.ckey
+	return printed
 
 /datum/nomad_raid/proc/begin_trade()
 	set_state("trade", "customers in sight")
@@ -45,9 +60,11 @@
 		if (!T.density && !nomad_raid_ground_error(T))
 			stall += T
 	var/list/table = nomad_trade_goods(map ? map.ordinal_age : 0)
+	// A caravan called for a kind of goods lays out at least half of that kind.
+	var/list/asked = wants ? nomad_request_goods(wants, map ? map.ordinal_age : 0) : list()
 	var/count = min(NOMAD_TRADE_GOODS, stall.len)
 	for (var/i = 1, i <= count, i++)
-		var/path = pick(table)
+		var/path = (asked.len && i % 2 == 1) ? pick(asked) : pick(table)
 		var/obj/item/I
 		if (ispath(path, /obj/item/stack))
 			I = new path(stall[i], rand(2, 5), FALSE)
@@ -56,9 +73,11 @@
 		I.should_save = FALSE // laid out goods vanish if the server restarts mid-visit
 		goods[I] = nomad_trade_price(I)
 		base_price[I] = goods[I]
+	// As with tribute: loose gear already lying near the stall is not payment,
+	// even if the trader shuffles onto it; each item is keyed to its turf.
 	payment_ignore = list()
-	for (var/obj/item/I in get_turf(leader))
-		payment_ignore += I
+	for (var/obj/item/I in range(NOMAD_RAID_PARLEY_RANGE, leader))
+		payment_ignore[I] = I.loc
 	cue("Traders of the [clan]! Lay payment at my feet, then take what you paid for. Fair prices, no thieves.", "spreads their wares on the ground and gestures at them.")
 
 // Price list for the coordinator and status.
@@ -80,19 +99,19 @@
 	var/turf/feet = get_turf(leader)
 	// Payments.
 	for (var/obj/item/I in feet)
-		if ((I in payment_ignore) || (I in goods))
+		if (payment_ignore[I] == I.loc || (I in goods))
 			continue
 		var/worth = nomad_raid_worth(I)
 		if (!worth)
 			continue
 		var/who = payer_of(I)
 		if (who && nomad_rep_score(who) <= NOMAD_REP_WANTED)
-			payment_ignore += I
+			payment_ignore[I] = I.loc
 			event("refused", "[who] is wanted; refused [I.name]")
 			cue("I do not deal with thieves. Take that back.", "pushes the offering away with their foot.")
 			continue
 		if (!who || !leader.take_item(I))
-			payment_ignore += I
+			payment_ignore[I] = I.loc
 			continue
 		credit[who] = (credit[who] || 0) + worth
 		if (!islist(payments[who]))
@@ -141,10 +160,23 @@
 		pack_up()
 		start_assault("[who] stole from the stall")
 		return
-	if (!goods.len || world.time - state_at > NOMAD_TRADE_TIME)
-		cue(goods.len ? "The road calls. Farewell." : "Sold out. Farewell, friends.")
+	for (var/mob/living/human/H in nomad_raid_defenders_near(feet, 3))
+		visited |= H.ckey
+	if (!goods.len || (world.time - state_at > NOMAD_TRADE_TIME && !waiting_for_guests()))
+		var/unsold = goods.len // pack_up() empties the stall
+		cue(unsold ? "The road calls. Farewell." : "Sold out. Farewell, friends.")
 		pack_up()
-		set_state("leave", goods.len ? "trading time over" : "sold out")
+		set_state("leave", unsold ? "trading time over" : "sold out")
+
+// A caravan aimed at players waits for one of them to come to the stall,
+// up to NOMAD_TRADE_WAIT, before packing up unsold goods.
+/datum/nomad_raid/proc/waiting_for_guests()
+	if (!target_ckeys.len || world.time - state_at > NOMAD_TRADE_WAIT)
+		return FALSE
+	for (var/ckey in target_ckeys)
+		if (ckey in visited)
+			return FALSE
+	return TRUE
 
 // Payments a sale spent stay with the trader; the rest can be handed back.
 /datum/nomad_raid/proc/spend_payments(who, price)

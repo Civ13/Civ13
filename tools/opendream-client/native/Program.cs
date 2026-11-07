@@ -187,12 +187,13 @@ public static class Program {
     }
 
     // Returns the started DreamSeeker; the caller disposes it.
-    public static Process StartNativeGame(VerifiedGameServer verified, string byond, IByondDesktop desktop, TextWriter output) {
+    public static Process StartNativeGame(VerifiedGameServer verified, string byond, IByondDesktop desktop, TextWriter output, string? ticket = null) {
         var server = verified.Status;
-        output.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
+        output.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}" +
+            (ticket == null ? "." : ", signed in with Discord."));
         try {
             return Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
-                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
+                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond()), ticket: ticket))
                 ?? throw new IOException("BYOND client did not start.");
         } catch (System.ComponentModel.Win32Exception e) {
             throw new IOException("BYOND client could not start.", e);

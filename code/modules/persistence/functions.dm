@@ -27,6 +27,34 @@
 	age5_done = TRUE
 	age6_done = TRUE
 
+// The epoch names by ordinal age (0 = 5000 B.C. ... 9 = 2026), as the admin
+// Set Custom Age verb offers them.
+var/global/list/epoch_names = list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026")
+var/global/list/epoch_default_research = list(0, 25, 50, 80, 105, 120, 145, 175, 210, 240)
+
+// Sets the epoch to ordinal: its name, every earlier age marked done and the
+// epoch's default research. Shared by Set Custom Age and regions following
+// their mainland (shard_group.dm).
+/obj/map_metadata/proc/set_epoch(ordinal)
+	if (!isnum(ordinal) || ordinal < 0 || ordinal >= epoch_names.len)
+		return FALSE
+	ordinal_age = ordinal
+	age = epoch_names[ordinal + 1]
+	// Earlier ages count as done; a later age already done stays done, as the
+	// Set Custom Age verb always did.
+	if (ordinal >= 1) age1_done = TRUE
+	if (ordinal >= 2) age2_done = TRUE
+	if (ordinal >= 3) age3_done = TRUE
+	if (ordinal >= 4) age4_done = TRUE
+	if (ordinal >= 5) age5_done = TRUE
+	if (ordinal >= 6) age6_done = TRUE
+	if (ordinal >= 7) age7_done = TRUE
+	if (ordinal >= 8) age8_done = TRUE
+	if (ordinal >= 9) age9_done = TRUE
+	if (ordinal >= 1)
+		default_research = epoch_default_research[ordinal + 1]
+	return TRUE
+
 //needs to be defined for some atoms
 /datum/proc/after_load()
 	return
@@ -231,12 +259,16 @@ var/global/list/persistence_field_allowlists = list()
 		to_save |= params2list(map_storage_saved_vars)
 	else
 		for (var/key in src.vars)
-			if (persistence_runtime_var(key))
 #ifdef CIV13_VARIABLE_OBSERVABILITY
+			if (persistence_runtime_var(key))
 				variable_observability_skipped(src.vars[key])
-#endif
 				continue
+#endif
+			// Most fields still hold their compiled default: compare first, and
+			// ask the per-type runtime-field filter only about changed ones.
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
+				if (persistence_runtime_var(key))
+					continue
 				to_save |= key
 			to_save |= "name"
 	return to_save
@@ -433,6 +465,16 @@ map_storage
 		list/saving_reference_pins = list()
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
+		// Stream level saves (level_stream.dm) hand each scratch segment to the
+		// helper as savefile text. While a segment is open this maps the
+		// absolute path of each node whose value does not survive that text
+		// (text macros, infinities, resources) to that value; the writer
+		// rewrites them natively. Null otherwise.
+		list/saving_stream_native_paths
+		// Per-level structural summaries of a stream save (saving.dm,
+		// record_candidate_level_structure), keyed by "[z]". Candidate
+		// validation reads these instead of walking the files back.
+		list/saving_candidate_structure
 		var/saving_z = 0
 		var/last_error = null
 		// Admin VV diagnostic snapshots only. Never retain live objects here.
@@ -456,7 +498,7 @@ map_storage
 #endif
 	if(key == "consecutive_save_failures") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
-	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
+	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas", "validated_roof_walk_levels", "validated_reachable_entries", "validated_entries_trusted")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
 	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error", "debug_recovery_hold", "debug_recovery_session")) return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
@@ -525,6 +567,9 @@ map_storage
 /map_storage/proc/clear_bookkeeping()
 	// Release low-memory segment handles (loading.dm). Isolated fixtures that
 	// compile this file without the loader have no such fields.
+	// Stream-backed handles also stop their helper process.
+	if(hascall(src, "drop_segment_writer")) call(src, "drop_segment_writer")()
+	if(hascall(src, "drop_segment_reader")) call(src, "drop_segment_reader")()
 	if("saving_segments" in vars) vars["saving_segments"] = null
 	if("segment_reader" in vars) vars["segment_reader"] = null
 	moving_save_roots = list()
@@ -1331,9 +1376,13 @@ var/global/datum/persistence_admission_identity
 // Native matrix reference-string conversion can consume an entire tick.
 // Direct matrix keys retain identity; all other entry keys keep their contract.
 // This key is process-local only: on-disk entries still use numeric IDs.
+// The datum itself keys the export tables (alist keys may be references).
+// A "\ref[A]" string per entry used to be retained for the whole level, and
+// BYOND's string table slows superlinearly as live unique strings accumulate:
+// 450k retained ref strings cost about 20 s against 0.5 s for datum keys, and
+// on a Gaia save the identity strings alone cost over two minutes.
 /map_storage/proc/save_entry_identity(datum/A)
-	if(istype(A, /matrix)) return A
-	return "\ref[A]"
+	return A
 
 // Runs before every saved field. The frame pins its source, so the identity
 // computed at registration cannot change while frame.source is set; the pin and
@@ -1355,7 +1404,7 @@ var/global/datum/persistence_admission_identity
 	if(saving_export_stack[saving_export_stack.len] != frame || !istype(frame.source, /atom/movable) || !origin || origin.loc != frame.source || !destination)
 		throw EXCEPTION("Save transfer requires the current producer and its owned storage")
 	var/atom/movable/producer = frame.source
-	var/parent_ref = saving_references["\ref[destination]"]
+	var/parent_ref = saving_references[destination]
 	var/datum/save_export_frame/parent = saving_export_frames["[parent_ref]"]
 	if(!parent || parent == frame || parent.file != frame.file || !parent.accepts_children || parent.source != destination || producer.loc != destination)
 		throw EXCEPTION("Save transfer requires an active direct owning turf")
@@ -1369,7 +1418,7 @@ var/global/datum/persistence_admission_identity
 	ticket.destination = destination
 	var/list/seen = list()
 	for(var/obj/item/I in items)
-		if(!I || I.loc != origin || !I.should_save || saving_references["\ref[I]"])
+		if(!I || I.loc != origin || !I.should_save || saving_references[I])
 			throw EXCEPTION("Save transfer item is unavailable or already captured")
 		for(var/ignored in ignore_types)
 			if(istype(I, ignored))
@@ -1563,3 +1612,134 @@ var/global/datum/persistence_admission_identity
 		release_durable_world()
 		last_error = "[e] on [e.file]:[e.line]"
 		return FALSE
+
+// Sparse levels. An added building level starts as nothing but open air in
+// one area, so its file keeps only the cells that differ from that baseline:
+// a changed turf type, a non-default saved field, saveable contents or another
+// area. The loader regenerates the baseline (the restore allocation already
+// fills a new level with it) and applies the saved cells on top. The marker
+// in the level index, never the level number, says whether a file is sparse,
+// so a restore reads a file written before the level was allocated.
+/map_storage
+	var/list/sparse_level_override // fixtures: "[z]" -> baseline turf type
+
+// The kind of sparse level z is saved as, or null for a full level.
+/map_storage/proc/sparse_level_kind(z)
+	if(islist(sparse_level_override)) return sparse_level_override["[z]"] ? "fixture" : null
+	if(z <= building_base_maxz()) return null
+	var/dug = text2path("/proc/dug_underground_z")
+	if(dug && call(dug)() == z) return null // Generated caves are random, not a baseline.
+	return "building"
+
+/map_storage/proc/sparse_baseline_turf(kind, z)
+	if(kind == "fixture") return sparse_level_override["[z]"]
+	if(kind == "building") return text2path("/turf/sky/building")
+	return null
+
+// The area the level's unchanged cells share: the area of the first cell at
+// the baseline, or null when every cell differs (the level is then saved in
+// full under its sparse header).
+/map_storage/proc/sparse_baseline_area(z, baseline_type)
+	for(var/y = 1, y <= world.maxy, y++)
+		for(var/x = 1, x <= world.maxx, x++)
+			var/turf/T = locate(x, y, z)
+			if(T.type == baseline_type && sparse_turf_at_baseline(T) && istype(T.loc, /area)) return T.loc
+		TICK_CHECK
+	return null
+
+// A cell the loader regenerates exactly: the baseline turf in the baseline
+// area, every saved field at its compiled default and nothing to save inside.
+/map_storage/proc/sparse_baseline_cell(turf/T, baseline_type, area/baseline_area)
+	if(!T || T.type != baseline_type || !baseline_area || T.loc != baseline_area) return FALSE
+	if(!sparse_turf_at_baseline(T)) return FALSE
+	for(var/atom/movable/M in T)
+		if(M.loc != T || !M.should_save) continue
+		var/ignored = FALSE
+		for(var/type in ignore_types)
+			if(istype(M, type))
+				ignored = TRUE
+				break
+		if(!ignored) return FALSE
+	return TRUE
+
+// Mirrors the field rule of BuildVarDirectory: a field is written unless it
+// is runtime-only, structural, or allowlisted and still at its default.
+/map_storage/proc/sparse_turf_at_baseline(turf/T)
+	if(!T.should_save) return TRUE
+	if(T.persistence_export_frame) return FALSE
+	var/list/default_fields = T.persistence_field_allowlist()
+	for(var/v in T.get_saved_vars())
+		if(T.persistence_runtime_var(v)) continue
+		switch(v)
+			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
+				continue
+		if(!(v in T.vars)) continue
+		if(default_fields && (v in default_fields) && persistence_default_scalar(T.vars[v]) && T.vars[v] == initial(T.vars[v])) continue
+		return FALSE
+	return TRUE
+
+// The sparse header of a level index, or null for a full level. Presence is
+// checked through the directory: reading an absent savefile key creates it.
+/map_storage/proc/sparse_level_header(savefile/F)
+	F.cd = "/"
+	if(!("sparse" in F.dir)) return null
+	F.cd = "/sparse"
+	var/list/keys = F.dir.Copy()
+	F.cd = "/"
+	for(var/key in list("kind", "turf", "cells"))
+		if(!(key in keys)) throw EXCEPTION("Incomplete sparse level header")
+	var/list/header = list("kind" = F["/sparse/kind"], "turf" = F["/sparse/turf"], "cells" = F["/sparse/cells"], "zone" = ("zone" in keys) ? F["/sparse/zone"] : null)
+	if(!istext(header["kind"]) || !ispath(header["turf"], /turf) || !isnum(header["cells"]) || header["cells"] < 0 || header["cells"] != round(header["cells"]) || (!isnull(header["zone"]) && !istext(header["zone"]))) throw EXCEPTION("Invalid sparse level header")
+	return header
+
+// The saved cells of a sparse level: a list of row numbers, each holding its
+// column numbers in ascending order, taken from the grid directories. Every
+// coordinate is checked against the world and counted against the header.
+/map_storage/proc/sparse_level_cells(savefile/F, z, list/header)
+	var/list/cells = list()
+	var/count = 0
+	F.cd = "/"
+	var/list/top = F.dir.Copy()
+	if("map" in top)
+		F.cd = "/map"
+		var/list/levels = F.dir.Copy()
+		if(levels.len != 1 || !("[z]" in levels)) throw EXCEPTION("Unexpected z-level grid in [z].sav")
+		F.cd = "/map/[z]"
+		var/list/rows = list()
+		for(var/row in F.dir.Copy())
+			var/y = text2num(row)
+			if(!isnum(y) || "[y]" != row || y < 1 || y > world.maxy || y != round(y)) throw EXCEPTION("Sparse level row outside the world on z=[z]")
+			rows[row] = TRUE
+		// Ascending order without a sort helper: the grids are small.
+		for(var/y = 1, y <= world.maxy, y++)
+			if(!rows["[y]"]) continue
+			F.cd = "/map/[z]/[y]"
+			var/list/present = list()
+			for(var/column in F.dir.Copy())
+				var/x = text2num(column)
+				if(!isnum(x) || "[x]" != column || x < 1 || x > world.maxx || x != round(x)) throw EXCEPTION("Sparse level column outside the world on z=[z]")
+				present[column] = TRUE
+			var/list/columns = list()
+			for(var/x = 1, x <= world.maxx, x++)
+				if(present["[x]"]) columns += x
+			cells["[y]"] = columns
+			count += columns.len
+			TICK_CHECK
+	F.cd = "/"
+	if(header && header["cells"] != count) throw EXCEPTION("Sparse level cell count differs from its header on z=[z]")
+	return cells
+
+// Every turf reference a level's grid holds, for reachability walks. Full
+// levels list every cell; sparse levels list their saved cells only, since
+// a regenerated cell holds nothing.
+/map_storage/proc/level_turf_refs(savefile/F, z)
+	var/list/refs = list()
+	var/list/header = sparse_level_header(F)
+	if(header)
+		var/list/cells = sparse_level_cells(F, z, header)
+		for(var/row in cells)
+			for(var/x in cells[row]) refs += F["/map/[z]/[row]/[x]"]
+		return refs
+	for(var/y = 1, y <= world.maxy, y++)
+		for(var/x = 1, x <= world.maxx, x++) refs += F["/map/[z]/[y]/[x]"]
+	return refs

@@ -63,29 +63,35 @@ static class TransportRetryTests {
             Require(handler.Requests.Count == 2 && textDelays.Count == 1, "single TLS reset did not retry exactly once");
             Require(handler.Requests.All(uri => uri == ManifestUrl), "text retry changed request URL");
             Require(textDelays.All(delay => delay > TimeSpan.Zero), "retry omitted bounded backoff");
+            Require(textDelays[0] == TimeSpan.FromSeconds(1), "first retry waited " + textDelays[0]);
         }
         Require(retryReports.Count > 0, "retry progress was not reported");
         Require(retryReports.All(report => !report.Contains("PRIVATE") && !report.Contains("password") &&
             !report.Contains("token=") && !report.Contains("example.test") && !report.Contains('\r') && !report.Contains('\n')),
             "retry progress leaked private failure details");
 
-        var exhaustedDelays = 0;
+        var exhaustedDelays = new List<TimeSpan>();
         using (var handler = new ScriptedHandler((_, _, _) => throw Reset()))
         using (var transport = new ReleaseTransport(handler, delay: (delay, token) => {
-            exhaustedDelays++;
+            exhaustedDelays.Add(delay);
             return NoDelay(delay, token);
         })) {
             var error = await Failure(() => transport.Text(ManifestUrl), "repeated text reset");
             Require(ReleaseTransport.IsTransient(error), "retry exhaustion lost the underlying transport failure");
-            Require(handler.Requests.Count == 3 && exhaustedDelays == 2, "repeated reset exceeded or missed the three-attempt cap");
+            Require(handler.Requests.Count == ReleaseTransport.Attempts && exhaustedDelays.Count == ReleaseTransport.Attempts - 1,
+                "repeated reset exceeded or missed the attempt cap");
+            // Waits double so the attempts spread over about fifteen seconds instead of one.
+            Require(exhaustedDelays.SequenceEqual(new[] { 1, 2, 4, 8 }.Select(seconds => TimeSpan.FromSeconds(seconds))),
+                "backoff was " + string.Join(", ", exhaustedDelays));
         }
+        Require(ReleaseTransport.Backoff(9) == TimeSpan.FromSeconds(8), "backoff is not capped");
 
         using (var handler = new ScriptedHandler((_, _, _) => throw new HttpRequestException(
             HttpRequestError.ConnectionError, PrivateFailure, new TimeoutException(PrivateFailure))))
         using (var transport = new ReleaseTransport(handler, delay: NoDelay)) {
             var error = await Failure(() => transport.Text(ManifestUrl), "repeated explicit transport timeout");
-            Require(ReleaseTransport.IsTransient(error) && handler.Requests.Count == 3,
-                "explicit transport timeout lost its cause or exceeded the three-attempt cap");
+            Require(ReleaseTransport.IsTransient(error) && handler.Requests.Count == ReleaseTransport.Attempts,
+                "explicit transport timeout lost its cause or exceeded the attempt cap");
         }
 
         foreach (var permanent in PermanentFailures()) {
@@ -162,7 +168,7 @@ static class TransportRetryTests {
         }))
         using (var transport = new ReleaseTransport(handler, delay: NoDelay)) {
             await Failure(() => transport.Download(ReleaseUrl, exhaustedPath), "repeated partial body reset");
-            Require(handler.Requests.Count == 3, "partial failures did not honor the three-attempt cap");
+            Require(handler.Requests.Count == ReleaseTransport.Attempts, "partial failures did not honor the attempt cap");
             Require(!Directory.EnumerateFileSystemEntries(exhaustedRoot).Any(), "exhausted download left partial data");
             Require(failedBodies.All(body => body.Disposed), "exhausted response body was not disposed");
         }

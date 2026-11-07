@@ -19,11 +19,55 @@ import unittest
 from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
+HERE = ROOT/'tests/world_save'
 WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contract', ROOT/'tests/world_save/workflow_contract.py')
 WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
 WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
-HERE = ROOT/'tests/world_save'
 BEFORE = 'f05659dd5d117302b7ab494ad6e226f2b3f50ab1'
+# Sources at BEFORE, frozen as checked-in fixtures so the test never reads Git
+# history. The workflow fixture holds only the three selected steps.
+FIXTURE = HERE/'selected_toolchains_fixture'
+# Reviewed table entries changed after BEFORE, as (file, table) -> key ->
+# source of the new value, or None when the entry was removed. #3620 made
+# stale cross-level references drop to null: the field-level and old-bed
+# controls now expect that, and four historical defects became passing cases.
+REVIEWED_TABLES = {
+    ('run-cross-level.py', 'CONTROLS'): {
+        'first-capture': """('saving.dm',
+                      'if(previous && previous["atom"] == A && previous["z"] != saving_z)',
+                      'if(previous && previous["atom"] == A && previous["z"] < 0)',
+                      'move-direct', BASELINE_DEFECTS['move-direct'])""",
+        'field-level': """('saving.dm',
+                    'if(istype(value, /atom/movable) && drop_cross_level_reference(value))',
+                    'if(FALSE)', 'field-direct',
+                    {'pattern': r'FAIL: stale cross-level field aborted the save: Cross-level object reference cannot be represented in per-level save files: .*'})""",
+    },
+    ('run-cross-level.py', 'BASELINE_DEFECTS'): dict.fromkeys(
+        ('field-nested', 'field-backward-direct', 'field-backward-nested', 'unplaced')),
+    ('run-sleep-transfer.py', 'CONTROLS'): {
+        'old-bed': "('disk', 'FAIL: protected sleeper kept its distant bed link')",
+    },
+}
+# Reviewed edits after BEFORE to the durable runner's result checks.
+REVIEWED_DURABLE_TAIL = (
+    ('        # 141 wound assertions plus the generated offline-client startup check.\n',
+     '        # 159 wound assertions (18 round trips also check the world.time stamp)\n'
+     '        # plus the generated offline-client startup check.\n'),
+    ("result.get('checks') != 142:", "result.get('checks') != 165:"),
+    ("result.get('line') != 394", "result.get('line') != receipt['wound_control_line']"),
+    ("'Historical wound source did not reproduce the constructor failure: '",
+     "'Reverted wound fix did not reproduce the constructor failure: '"),
+)
+# Reviewed listener census change: a host without IPv6 has no tcp6 table.
+REVIEWED_LIGHTING_CENSUS = (
+    "            for table in ('tcp', 'tcp6'):\n"
+    "                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:",
+    "            for table in ('tcp', 'tcp6'):\n"
+    "                # A host without IPv6 has no tcp6 table, so it holds no listeners.\n"
+    "                path = Path(f'/proc/{child.pid}/net/{table}')\n"
+    "                if table == 'tcp6' and not path.exists():\n"
+    "                    continue\n"
+    "                for row in path.read_text().splitlines()[1:]:")
 # Verbatim reviewed #3105 helper; no other branch Git objects are needed in CI.
 REVIEWED_HELPER_SHA256 = 'a89a5191b43b304d7a1e6d6ea74b17a0c1630ed05b25ff09650b5f775268aab2'
 STEPS = ('Offline lighting recovery regression',
@@ -79,17 +123,14 @@ CONTRACT = load(ROOT/'tests/new_z_budget/z_budget_evidence.py')
 class SelectedToolchains(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        def old(path, ref=BEFORE):
-            return subprocess.check_output(['git', 'show', ref+':'+path], cwd=ROOT).decode()
+        def old(path):
+            return (FIXTURE/(Path(path).name+'.txt')).read_text(encoding='utf-8')
         cls.before = {path: old(path) for path in (
-            '.github/workflows/test.yml', 'tests/world_save/run-durable-world.py',
+            'tests/world_save/run-durable-world.py',
             'tests/world_save/run-cross-level.py', 'tests/world_save/run-sleep-transfer.py',
             'tests/world_save/run-dimension-bootstrap.py', 'tests/world_save/run-reader-contract.py',
             'tests/world_save/partial_save_inspector/inspect-partial-save.py')}
-        cls.historical_wounds = {path: old(path, 'd0ffbfb2335eb735756b998f3f2ff617c28f144b')
-                                 for path in ('code/modules/organs/wound.dm', 'code/modules/persistence/loading.dm')}
-        cls.master_workflow = old('.github/workflows/test.yml', 'eedc9862fcb7b2b7c3617c6972965fafa650e51a')
-        cls.master_cross = old('tests/world_save/run-cross-level.py', 'eedc9862fcb7b2b7c3617c6972965fafa650e51a')
+        cls.before['.github/workflows/test.yml'] = (FIXTURE/'test-steps.yml.txt').read_text(encoding='utf-8')
 
     def setUp(self):
         self.enterContext(patch.object(socket, 'socket', side_effect=AssertionError('Socket forbidden')))
@@ -109,18 +150,16 @@ class SelectedToolchains(unittest.TestCase):
 
     def git(self, command, **kwargs):
         self.assertEqual(command[0], 'git')
-        if command[1] == 'show': return self.historical_wounds[command[2].split(':', 1)[1]]
+        self.assertNotEqual(command[1], 'show', 'Tests must not read Git history')
         return BEFORE+'\n' if kwargs.get('text') else b''
 
     def test_reviewed_helper_is_verbatim_and_workflow_changes_only_thread_identity_and_offline_test(self):
         self.assertEqual(hashlib.sha256((HERE/'current_runtime.py').read_text().encode()).hexdigest(), REVIEWED_HELPER_SHA256)
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
         WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
-        master = self.master_workflow
         marker = '      - name: Verify protected sleep transfers and bounded save compatibility\n'
         current_guard = workflow.split(marker, 1)[1].split('\n', 1)[0]
-        master_guard = master.split(marker, 1)[1].split('\n', 1)[0]
-        self.assertEqual(current_guard, master_guard)
+        self.assertEqual(current_guard, '        id: protected_sleep')
         for command in ('--case field-direct', '--case move-direct', '--negative-control first-capture'):
             self.assertIn(command, workflow.split(marker, 1)[1].split('      - name:', 1)[0])
         selected = calls(workflow)
@@ -243,8 +282,8 @@ class SelectedToolchains(unittest.TestCase):
                     WORKFLOW_CONTRACT.assert_workflow_contract(before_build + '  build:\n' + build.replace(old, new, 1) + '  ci-required:\n' + after_build)
         prefix, aggregate = workflow.split('  ci-required:\n', 1)
         for old, new in (
-            ('needs: [changes, baseline, evidence-checker, build, extraction-instances]',
-             'needs: [changes, baseline, evidence-checker, build]'),
+            ('needs: [changes, local-attestation, baseline, evidence-checker, build, extraction-instances]',
+             'needs: [changes, local-attestation, baseline, evidence-checker, build]'),
             ('name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}',
              'name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}'),
             ('name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}',
@@ -294,17 +333,19 @@ class SelectedToolchains(unittest.TestCase):
                 def table(source):
                     return [ast.dump(node) for node in ast.parse(source).body if isinstance(node, ast.Assign)
                             and any(isinstance(target, ast.Name) and target.id == name for target in node.targets)]
-                if path.endswith('run-cross-level.py') and name == 'CONTROLS':
-                    def controls(source):
+                reviewed = REVIEWED_TABLES.get((Path(path).name, name))
+                if reviewed is not None:
+                    def entries(source):
                         node = next(n.value for n in ast.parse(source).body if isinstance(n, ast.Assign)
-                                    and any(isinstance(t, ast.Name) and t.id == 'CONTROLS' for t in n.targets))
+                                    and any(isinstance(t, ast.Name) and t.id == name for t in n.targets))
                         return {ast.literal_eval(k): ast.dump(v) for k, v in zip(node.keys, node.values)}
-                    old_controls, current_controls = controls(before), controls(after)
-                    self.assertEqual(current_controls, controls(self.master_cross))
-                    self.assertEqual(set(current_controls) - set(old_controls), {'first-capture'})
-                    for key, value in old_controls.items(): self.assertEqual(current_controls[key], value)
+                    expected = entries(before)
+                    for key, value in reviewed.items():
+                        if value is None: del expected[key]
+                        else: expected[key] = ast.dump(ast.parse(value, mode='eval').body)
+                    with self.subTest(path=path, table=name): self.assertEqual(entries(after), expected)
                 else:
-                    self.assertEqual(table(before), table(after))
+                    with self.subTest(path=path, table=name): self.assertEqual(table(before), table(after))
         def function(source, name):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n, ast.FunctionDef) and n.name == name))
         for path, names in {
@@ -312,10 +353,18 @@ class SelectedToolchains(unittest.TestCase):
             'tests/world_save/run-cross-level.py': ('owned_process', 'adjudicate', 'prepare'),
             'tests/world_save/partial_save_inspector/inspect-partial-save.py': ('limits', 'selftest', 'stable_copy', 'sanitize_report')
         }.items():
-            for name in names: self.assertEqual(function(self.before[path], name), function((ROOT/path).read_text(), name))
+            for name in names:
+                before = self.before[path]
+                if name == 'run_lighting':
+                    self.assertEqual(before.count(REVIEWED_LIGHTING_CENSUS[0]), 1)
+                    before = before.replace(*REVIEWED_LIGHTING_CENSUS)
+                self.assertEqual(function(before, name), function((ROOT/path).read_text(), name))
         marker = "        result_path = output / 'metadata-result.json'"
-        self.assertEqual(self.before['tests/world_save/run-durable-world.py'].split(marker, 1)[1],
-                         (HERE/'run-durable-world.py').read_text().split(marker, 1)[1])
+        tail = self.before['tests/world_save/run-durable-world.py'].split(marker, 1)[1]
+        for old, new in REVIEWED_DURABLE_TAIL + (REVIEWED_LIGHTING_CENSUS,):
+            self.assertEqual(tail.count(old), 1, old)
+            tail = tail.replace(old, new, 1)
+        self.assertEqual(tail, (HERE/'run-durable-world.py').read_text().split(marker, 1)[1])
 
     def test_explicit_current_mode_keeps_platform_version_and_held_mode_boundaries(self):
         with patch.object(CURRENT, 'load') as loader:

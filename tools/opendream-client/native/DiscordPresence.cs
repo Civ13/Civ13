@@ -32,18 +32,16 @@ public sealed record PresenceSettings(bool ShowActivity, string? ApplicationId) 
         return new PresenceSettings(show, id);
     }
 
-    // Keeps an application_id override already in the file.
+    // Changes only show_activity: every other setting already in the file, such as
+    // application_id or the Discord sign-in settings, is kept as it was.
     public static void SaveShowActivity(string root, bool show) {
         var path = Path.Combine(root, FileName);
-        string? id = null;
+        var json = new System.Text.Json.Nodes.JsonObject();
         try {
-            if (File.Exists(path)) {
-                using var document = JsonDocument.Parse(File.ReadAllText(path));
-                if (document.RootElement.TryGetProperty("application_id", out var app) && app.ValueKind == JsonValueKind.String) id = ValidId(app.GetString());
-            }
+            if (File.Exists(path) && System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path)) is System.Text.Json.Nodes.JsonObject existing) json = existing;
         } catch (JsonException) { }
-        var body = id == null ? (object)new { show_activity = show } : new { show_activity = show, application_id = id };
-        File.WriteAllText(path, JsonSerializer.Serialize(body));
+        json["show_activity"] = show;
+        File.WriteAllText(path, json.ToJsonString());
     }
 
     public static string? ValidId(string? id) => id != null && Regex.IsMatch(id, "^[0-9]{17,20}$") ? id : null;

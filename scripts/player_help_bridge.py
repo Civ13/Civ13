@@ -22,9 +22,12 @@ MAX_RESPONSE = 65536
 MAX_REQUEST_ID = 100
 HISTORY_BYTES = 4096
 HISTORY_PAIRS = 3
-NUM_PREDICT = 650
+NUM_PREDICT = 450  # ~1800 characters: concise answers finish ~7 s sooner at 27 tokens/s, well under the 4000-char display cap
 DEFAULT_NUM_CTX = 8192
 MIN_NUM_CTX = 4096
+# Ollama unloads an idle model after five minutes by default; the next question then waits 10-30 s for a reload.
+DEFAULT_KEEP_ALIVE = '30m'
+KEEP_ALIVE_PATTERN = re.compile(r'-?[0-9]{1,6}(?:\.[0-9]{1,3})?(?:ms|s|m|h)?')
 # Generic question words match nearly every page and only add retrieval noise.
 RETRIEVAL_STOPWORDS = frozenset({
     'how', 'the', 'get', 'craft', 'can', 'make', 'with', 'and', 'nomads', 'gaia',
@@ -66,13 +69,13 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '9ae6134b741d4144d8ed44378ed9ed698fb3910b'
+WIKI_REVIEWED_REVISION = '4862bc0b49383660694e71b808b904f5c6610f7c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('8e911052635f458944f9d5e9727093538cfccbcf458c953378b0741d769c8dfb', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('e05d6184abff269f8e1e266530e7408944481ec94b0d5e8a4d4d9166a7d10124', 'combat fight fighting intent aim shoot melee grenade cover'),
-    'guides/Guide_to_Communications.md': ('4779cb6547ecc2505caaf8e2f858c775e8dd7d6e92e69945188201276d080ac2', 'communications radio transmit'),
+    'guides/Guide_to_Communications.md': ('f572f4d29c14aea24cbd771e2eb3a171247aeedd71406cf75a0055b7f507e133', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('2ab598407a49337d05f700c3b9cbc7b3636334ee82bdde4949dffc1e4e58576d', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('f3353d7e6f27bf19d3c6be488007c516d95cf20f04676beb3ae550ccab0a3fb9', 'exercise training strength weights running fatigue'),
@@ -113,13 +116,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Paperwork.md': ('7eb57d56e7a8ab8ea9c281a348193566af6a5efc3fd9cf9b56f60b6d7998daee', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
-    'Food_Decay_Times.md': ('78a788eecd195f1e5868b72f5b3b5052040eb7aa5d93bf1062be4de15319d4b1', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
+    'Food_Decay_Times.md': ('03b3afea69d820d77f094cde10e321cd7ff8ada2490304ce46f05594a410c65d', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
     'maps/Gaia.md': ('a0e1bb3e593b3e301dbaa2d470aa61d6a221ec120155f81d81e3bae6170a49d5', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fadee870fd64b48811211d6d498016817100f4878d2ab17e2b92f39ade30de50', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('0026c6e6cb55ec1f12839380b2fca7deeece3ab885b4d9d03b4efccdd60e91da', 'guides overview list of guides index'),
+    'guides_overview.md': ('7630fc952ee4de8c4f8964c042f7c615396bcd58c14dbee97630a76fe2d58c43', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
@@ -683,7 +686,7 @@ TOXIN_SOURCE_SECTIONS = (
      'dbdd6e3ade876c92ff74dc569875cecf09e52569707ad311b9ccd1bfe40b8796'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
-     '930698bc0e211d84d73d65ab43637442eb1dff32b3b7a05481de2fa61132ccc6'),
+     '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),
     ('code/modules/organs/organ_internal.dm',
      '/obj/item/organ/kidneys/process()', '/obj/item/organ/eyes\n',
      'd12d56376622fa9df0f44c1979ccfe7b9db96199fc3ed74e7aa34831c8ad3dbe'),
@@ -728,6 +731,8 @@ def toxin_knowledge(root):
             'Check the hunger and thirst warnings your character has actually received; '
             'a snapshot alone cannot prove which process caused damage or whether it is still increasing. '
             'Reagent metabolism removes chemicals separately from healing existing toxin damage. '
+            'Repeated exposure to the same poison builds tolerance that fades with time, '
+            'so later doses do less damage, down to about half, but never none. '
             'Liver and kidney processing is not a general automatic cure for toxin damage; '
             'the liver has special alcohol handling, and coffee with damaged kidneys can add toxin damage. '
             'None of this reveals this character\'s internal organs or chemical contents. '
@@ -1013,9 +1018,21 @@ def load_config(path):
         raise ValueError('num_ctx must be an integer in 4096..32768')
     if type(config['think']) is not bool:
         raise ValueError('think must be true or false')
+    config['keep_alive'] = config.get('keep_alive', DEFAULT_KEEP_ALIVE)
+    if type(config['keep_alive']) is int and -1 <= config['keep_alive'] <= 86400 * 30:
+        config['keep_alive'] = str(config['keep_alive'])
+    if not isinstance(config['keep_alive'], str) or not KEEP_ALIVE_PATTERN.fullmatch(config['keep_alive']):
+        raise ValueError('keep_alive must be a duration such as 30m, 1h or -1')
     token_env = config.get('auth_token_env', '')
     if not isinstance(token_env, str) or (token_env and not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,100}', token_env)):
         raise ValueError('Invalid auth_token_env name')
+    # Optional: fewer evidence characters per question. The model reads the
+    # whole evidence block for every new question (it changes with the
+    # question, so the prompt cache rarely helps), and prompt reading is the
+    # bulk of an answer's latency on a partly CPU-bound host.
+    evidence_chars = config.get('evidence_chars')
+    if evidence_chars is not None and (type(evidence_chars) is not int or not 4000 <= evidence_chars <= 32000):
+        raise ValueError('evidence_chars must be an integer in 4000..32000')
     return config
 
 
@@ -1200,6 +1217,8 @@ class Bridge:
         hint_text = ' '.join([game_context.get('gamemode', ''), game_context.get('player', {}).get('role', '')])
         hints = retrieval_terms(hint_text, RETRIEVAL_STOPWORDS | {'unknown'})
         entries, context_cap, envelope_cap, prompt_cap = evidence_budget(self.config.get('num_ctx', DEFAULT_NUM_CTX))
+        if self.config.get('evidence_chars'):
+            context_cap = min(context_cap, self.config['evidence_chars'])
         nomads = game_context.get('civilizations') is True or bool(re.search(r'\b(nomads|gaia)\b', question.lower() + ' ' + game_context.get('map', '').lower()))
         candidates = [entry for entry in self.corpus if not (nomads and entry.get('source') == 'recipe' and entry.get('catalog', '').startswith('Material / ') and entry.get('catalog') != 'Material / global')]
         scores = {}
@@ -1303,6 +1322,7 @@ class Bridge:
                        'State uncertainty and consult the wiki or Crafting Atlas when evidence is insufficient.')
             payload = {'model': self.config['model'], 'stream': False, 'messages': [{'role': 'system', 'content': system}] + previous + [{'role': 'user', 'content': question}], 'options': {'num_predict': NUM_PREDICT, 'num_ctx': self.config.get('num_ctx', DEFAULT_NUM_CTX), 'temperature': 0.2}}
             payload['think'] = self.config.get('think', False)
+            payload['keep_alive'] = self.config.get('keep_alive', DEFAULT_KEEP_ALIVE)
             prompt_chars = len(system) + len(question) + sum(len(turn['content']) for turn in previous)
             if (prompt_chars <= prompt_cap and
                     len(json.dumps([self.config['endpoint'], payload, headers, self.config['timeout_seconds']])) <= envelope_cap):

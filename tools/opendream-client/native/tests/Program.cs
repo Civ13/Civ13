@@ -50,10 +50,12 @@ try {
     if (args.SequenceEqual(new[] { "--hosting-only" })) {
         LocalHostingTests.Run(root);
         LocalBotTests.Run(root);
+        LocalHelpTests.Run(root);
         return 0;
     }
     if (args.SequenceEqual(new[] { "--presence-only" })) {
         Console.WriteLine("Discord presence assertions: " + DiscordPresenceTests.Run(root));
+        Console.WriteLine("Discord sign-in assertions: " + await DiscordSignInTests.Run(root));
         return 0;
     }
     if (args.SequenceEqual(new[] { "--discovery-only" })) {
@@ -71,7 +73,9 @@ try {
     assertions += await TopicPacingTests.Run(root);
     assertions += LocalHostingTests.Run(root);
     assertions += LocalBotTests.Run(root);
+    assertions += LocalHelpTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);
+    assertions += await DiscordSignInTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
     var reset = new System.Net.Sockets.SocketException(10054);
     var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);
@@ -159,7 +163,7 @@ try {
     Reject(() => LocalStart(localHost with { Port = 0 }, () => @"D:\BYOND-user"), "invalid local port");
     var resolverCalls = 0;
     Task<System.Net.IPAddress[]> ResolveFixture(string name) {
-        Require(name == "valzargaming.com", "connection resolved a different hostname");
+        Require(name == "play.valzargaming.com", "connection resolved a different hostname");
         resolverCalls++;
         return Task.FromResult(new[] { System.Net.IPAddress.Parse(resolverCalls == 1 ? "8.8.8.8" : "1.1.1.1") });
     }

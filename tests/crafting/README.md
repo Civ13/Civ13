@@ -13,7 +13,7 @@ only. It bypasses world/global/controller startup, disables hub advertising,
 copies only crafting/name inputs to temporary storage, uses an ephemeral daemon
 port, and cleans generated DME/DMB/RSC and runtime state on completion/timeout.
 No game server configuration, SQL, saves, Discord bridge or production processes
-are loaded. Compiler and daemon execution are bounded to 180 and 90 seconds.
+are loaded. Compiler and daemon execution are bounded to 180 seconds each.
 A missing completion report, compiler warning/error or runtime error fails CI.
 The daemon's Windows account login message is engine behavior, not a game login.
 
@@ -213,3 +213,12 @@ study/prototype requirements remain enforced. Study and prototype flags are
 supplied directly; this is not connected-player submission or timed crafting.
 `--camera-prototype-negative-control` restores the old era-seven cap in temporary
 runtime recipe data and must detect exactly the lost paid prototype recipe.
+
+## Cloth substitutions
+
+`woolcloth.dm` checks one-way woolcloth-for-cloth recipe eligibility, exact
+payment, mixed secondary cloth, ordinary/wool identity, office stock, armor slots,
+workshop refund provenance, custom entry save/load, Extraction equipment codec,
+medical gates and existing helmet conversions. Use `--cloth-only` for a bounded
+run with all faction catalogs; the ordinary runner includes the same checks.
+See `docs/cloth-substitution.md` for the supported mixing rules and evidence limits.

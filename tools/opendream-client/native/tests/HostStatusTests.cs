@@ -109,9 +109,21 @@ internal static class HostStatusTests {
         var snapshot = await new ServerDiscovery(Direct, _ => Task.FromResult<IReadOnlyDictionary<GameTarget, DormantServer>>(hostStates)).Fetch("ValZarGaming");
         Require(queried.SequenceEqual(new[] { targets[1] }) && snapshot.Servers.Count == 1 && snapshot.Dormant?.Single() == sleeping,
             "Browsing queried a sleeping server or dropped it");
+        // A world behind the routing relay is joined through the gate only: not listed, not queried.
+        queried.Clear();
+        var routedFrame = Frame("{\"schema\":1,\"instances\":[{\"port\":1714,\"state\":\"asleep\",\"routed\":true},{\"port\":1715,\"state\":\"awake\"}]}");
+        var routedStates = await HostStatus.Query("ValZarGaming", resolver, (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(routedFrame));
+        Require(routedStates[gaia].Routed && !routedStates[targets[1]].Routed, "Routed flag misread");
+        snapshot = await new ServerDiscovery(Direct, _ => Task.FromResult(routedStates)).Fetch("ValZarGaming");
+        Require(queried.SequenceEqual(new[] { targets[1] }) && snapshot.Servers.Count == 1 && snapshot.Dormant?.Count == 0,
+            "A routed world was listed or queried directly");
         queried.Clear();
         snapshot = await new ServerDiscovery(Direct, _ => throw new IOException("no doorman")).Fetch("ValZarGaming");
-        Require(queried.Count == 2 && snapshot.Servers.Count == 2 && snapshot.Dormant?.Count == 0, "A missing doorman blocked direct discovery");
+        Require(queried.SequenceEqual(new[] { gaia }) && snapshot.Servers.Count == 1 && snapshot.Dormant?.Count == 0,
+            "A missing doorman blocked the gate or listed a routed world directly");
+        queried.Clear();
+        snapshot = await new ServerDiscovery(Direct, _ => throw new IOException("no doorman")).Fetch("Civ13.com");
+        Require(queried.Count == 2 && snapshot.Servers.Count == 2, "A missing doorman blocked direct discovery on a host without a gate");
         queried.Clear();
         snapshot = await new ServerDiscovery(Direct).Fetch("ValZarGaming");
         Require(queried.Count == 2, "An injected query alone stopped checking every candidate");

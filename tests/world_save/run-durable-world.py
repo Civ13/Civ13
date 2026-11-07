@@ -17,45 +17,44 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 
 
-def historical_wound_roof_helpers(loading, existing):
-    """Keep the historical defect sources intact; add explicit current dependencies."""
-    start = ('// Only roof transformations backed by direct saved turf contents are projected.\n'
-             '// No save bytes or world areas change during this preflight.\n/map_storage\n')
-    end = '\n/map_storage/proc/Load_Entry('
-    if not loading.startswith(start) or loading.count(start) != 1 or loading.count(end) != 1:
-        raise RuntimeError('Historical wound roof compatibility anchors changed')
-    roof = loading[:loading.index(end)]
-    procedures = ('clear_saved_roof_areas', 'saved_roof_area_type', 'find_saved_roof_area',
-                  'unique_saved_roof_area', 'prepare_saved_roof_areas',
-                  'materialize_saved_roof_areas', 'restore_validated_roof',
-                  'is_loaded_validated_roof', 'verify_restored_roof_areas')
-    members = ('validated_roof_areas', 'validated_roof_entries', 'validated_roof_types',
-               'validated_roof_instances', 'validated_roof_absent', 'restoring_roof_areas')
-    if re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M) != list(procedures):
-        raise RuntimeError('Historical wound roof compatibility procedures changed')
-    declarations = roof.split('\n/map_storage/proc/', 1)[0]
-    if re.findall(r'^\tvar/(?:list/)?(\w+) = ', declarations, re.M) != list(members):
-        raise RuntimeError('Historical wound roof compatibility members changed')
-    patterns = [r'^/map_storage/proc/' + name + r'\(' for name in procedures]
-    patterns += [r'^\tvar/(?:list/)?' + name + r'\b' for name in members]
-    if any(re.search(pattern, existing, re.M) for pattern in patterns):
-        raise RuntimeError('Historical wound roof compatibility dependencies duplicated')
-    return roof
+WOUND_FIX_LOADER_BRANCH = (
+    '\t\telse if(ispath(type, /datum/wound/lost_limb))\n'
+    '\t\t\t// The lost limb is not a constructor input during graph recovery.\n'
+    '\t\t\t// Register an explicit shell before decoding cyclic organ references.\n'
+    '\t\t\tobject = new type(null, null, null, TRUE)\n')
+WOUND_FIX_LOADER_CHECK = (
+    '\t\tif(istype(object, /datum/wound/lost_limb))\n'
+    '\t\t\tvar/datum/wound/lost_limb/restored_wound = object\n'
+    '\t\t\trestored_wound.validate_restored_state()\n')
+WOUND_FIX_HEADER = '/datum/wound/lost_limb/New(var/obj/item/organ/external/lost_limb, var/losstype, var/clean, var/restore_shell = FALSE)\n'
+WOUND_HISTORICAL_HEADER = '/datum/wound/lost_limb/New(var/obj/item/organ/external/lost_limb, var/losstype, var/clean)\n'
+WOUND_FAILING_READ = '\tvar/damage_amt = lost_limb.max_damage\n'
 
 
-def historical_wound_link_helper(loading, existing):
-    """Supply current round-state dependency without changing the old loader."""
-    start = '/map_storage/proc/validate_level_link_rows(list/rows)\n'
-    end = '\n/map_storage/proc/is_level_link_value(value)\n'
-    if loading.count(start) != 1 or loading.count(end) != 1:
-        raise RuntimeError('Historical wound link compatibility anchors changed')
-    if re.search(r'^/map_storage/proc/validate_level_link_rows\(', existing, re.M):
-        raise RuntimeError('Historical wound link compatibility dependency duplicated')
-    first = loading.index(start)
-    last = loading.index(end)
-    if last <= first:
-        raise RuntimeError('Historical wound link compatibility anchors changed')
-    return loading[first:last]
+def historical_wound_sources(wound, loading):
+    """Revert only the lost-limb restore fix (#3216) in current sources.
+
+    Returns the mutated wound and loader text plus the 1-based line of the
+    constructor read that fails when the loader builds a wound without its limb.
+    """
+    if wound.count(WOUND_FIX_HEADER) != 1 or wound.count(WOUND_FAILING_READ) != 1:
+        raise RuntimeError('Historical wound constructor anchors changed')
+    first = wound.index(WOUND_FIX_HEADER)
+    last = wound.index(WOUND_FAILING_READ)
+    shell = wound[first + len(WOUND_FIX_HEADER):last]
+    if last <= first or '\tif(restore_shell)\n\t\treturn ..(0)\n' not in shell or '\n/' in shell:
+        raise RuntimeError('Historical wound constructor anchors changed')
+    wound = wound[:first] + WOUND_HISTORICAL_HEADER + wound[last:]
+    if 'restore_shell' in wound:
+        raise RuntimeError('Historical wound constructor still has a restore shell')
+    line = wound[:wound.index(WOUND_FAILING_READ)].count('\n') + 1
+    for anchor in (WOUND_FIX_LOADER_BRANCH, WOUND_FIX_LOADER_CHECK):
+        if loading.count(anchor) != 1:
+            raise RuntimeError('Historical wound loader anchors changed')
+        loading = loading.replace(anchor, '', 1)
+    if '/datum/wound/lost_limb' in loading:
+        raise RuntimeError('Historical wound loader still special-cases lost limbs')
+    return wound, loading, line
 
 
 def selected_runtime(bin_dir, archive):
@@ -246,34 +245,18 @@ def main():
                 text = text.replace('\t\tmap.apply_persistence_age_floor()\n', '', 1)
             replacements[relative] = text.replace(before, after, 1)
         elif args.negative_control == 'wound-restore':
-            # Immutable source of the actual failed import, not an invented null model.
-            baseline = 'd0ffbfb2335eb735756b998f3f2ff617c28f144b'
-            for relative in ('code/modules/organs/wound.dm', 'code/modules/persistence/loading.dm'):
-                replacements[relative] = subprocess.check_output(
-                    ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
-            receipt['wound_control_commit'] = baseline
-            # Historical defect control with explicit current dependencies,
-            # not a reproduction of an entire historical game build. Keep both
-            # historical files byte-for-byte; supply the current roof API and
-            # content codec only in the fixture's functions copy.
-            loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
-            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
-            if loading.count(marker) != 1:
-                raise RuntimeError('Historical wound compatibility helper anchor changed')
-            start = loading.index(marker)
-            end = loading.find('\n/map_storage/proc/', start + len(marker))
-            helper = loading[start:end if end >= 0 else len(loading)]
-            relative = 'code/modules/persistence/functions.dm'
-            functions = (root / relative).read_text(encoding='utf-8')
-            existing = '\n'.join([functions, *replacements.values()])
-            if marker in existing:
-                raise RuntimeError('Historical wound content compatibility helper duplicated')
-            roof = historical_wound_roof_helpers(loading, existing)
-            link_helper = historical_wound_link_helper(loading, existing + '\n' + roof + '\n' + helper)
-            replacements[relative] = functions + '\n' + roof + '\n' + helper + '\n' + link_helper
-            receipt['wound_control_compatibility_helper_sha256'] = hashlib.sha256(helper.encode()).hexdigest()
-            receipt['wound_control_roof_helpers_sha256'] = hashlib.sha256(roof.encode()).hexdigest()
-            receipt['wound_control_link_helper_sha256'] = hashlib.sha256(link_helper.encode()).hexdigest()
+            # Defect control: current sources with only the lost-limb restore
+            # fix (#3216) reverted, so the loader again constructs the wound
+            # without its limb. Everything else stays current and compiles.
+            wound_relative = 'code/modules/organs/wound.dm'
+            loading_relative = 'code/modules/persistence/loading.dm'
+            wound, loading, line = historical_wound_sources(
+                (root / wound_relative).read_text(encoding='utf-8'),
+                (root / loading_relative).read_text(encoding='utf-8'))
+            replacements[wound_relative] = wound
+            replacements[loading_relative] = loading
+            receipt['wound_control_reverted_fix'] = '#3216'
+            receipt['wound_control_line'] = line
         elif args.negative_control == 'lighting-shared':
             relative = 'code/modules/lighting/lighting_source.dm'
             text = (root / relative).read_text(encoding='utf-8')
@@ -307,10 +290,11 @@ def main():
             end = text.index('/map_storage/proc/validate_saved_player_owner(', start)
             body = text[start:end]
             for before, after in (('lobby.client', 'lobby.claim_client'),
+                                  ('waiting.client', 'waiting.claim_client'),
                                   ('var/client/C', 'var/datum/recovery_fixture_client/C'),
                                   ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
                                   (' in clients)', ' in recovery_fixture_clients)')):
-                expected = 2 if before == 'var/client/C' else (5 if before == 'lobby.client' else 1)
+                expected = {'var/client/C': 2, 'waiting.client': 2, 'lobby.client': 5}.get(before, 1)
                 if body.count(before) != expected:
                     raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
                 body = body.replace(before, after)
@@ -487,9 +471,10 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
-        # 141 wound assertions plus the generated offline-client startup check.
+        # 159 wound assertions (18 round trips also check the world.time stamp)
+        # plus the generated offline-client startup check.
         if args.wounds and not args.negative_control:
-            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 147:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 165:
                 raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
         if args.lifecycle_shutdown:
             # The DM receipt is written before native deletion. Acceptance must
@@ -540,8 +525,8 @@ def main():
                     'lighting-shared': 'corners share mutable affecting list'}
         if args.negative_control:
             if args.negative_control == 'wound-restore':
-                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 5:
-                    raise RuntimeError('Historical wound source did not reproduce the constructor failure: ' + str(result))
+                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != receipt['wound_control_line'] or result.get('checks') != 5:
+                    raise RuntimeError('Reverted wound fix did not reproduce the constructor failure: ' + str(result))
                 receipt['result'] = result
                 receipt['expected_failure_caught'] = True
                 (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
@@ -601,7 +586,11 @@ def run_lighting(command, output, flags):
                     sockets.add(link[8:-1])
             listeners = 0
             for table in ('tcp', 'tcp6'):
-                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:
+                # A host without IPv6 has no tcp6 table, so it holds no listeners.
+                path = Path(f'/proc/{child.pid}/net/{table}')
+                if table == 'tcp6' and not path.exists():
+                    continue
+                for row in path.read_text().splitlines()[1:]:
                     fields = row.split()
                     if fields[3] == '0A' and fields[9] in sockets:
                         listeners += 1

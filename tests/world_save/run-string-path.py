@@ -590,7 +590,8 @@ def main():
     if runtime: runtime.before_launch('compile', output)
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'])
     if runtime: runtime.validate_compile(0, build, 'probe.dmb')
-    elif '516.1681' not in build or '0 errors, 0 warnings' not in build:
+    elif json.loads((root / 'tools/byond/version.json').read_text(encoding='utf-8'))['version'] not in build or '0 errors, 0 warnings' not in build:
+        # Without an archive identity, still require the canonical pinned compiler.
         raise RuntimeError('Pinned clean compilation required')
     if runtime: runtime.before_launch('daemon', output)
     owned('daemon', [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])

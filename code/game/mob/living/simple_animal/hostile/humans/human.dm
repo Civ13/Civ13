@@ -80,7 +80,11 @@ var/global/list/npc_appearance_cache = list()
 	var/cache_key = "[job_to_use]-[s_tone_to_use]-[gender]"
 	if (npc_appearance_cache[cache_key])
 		var/list/cached = npc_appearance_cache[cache_key]
+		// An appearance carries the dummy's name; keep this NPC's own, or
+		// every NPC sharing the cache entry answers to the same name.
+		var/own_name = name
 		src.appearance = cached["appearance"]
+		name = own_name
 		invisibility = 0
 		src.transform = matrix()
 		// Ensure mob is standing
@@ -152,7 +156,9 @@ var/global/list/npc_appearance_cache = list()
 		dummy.update_icons()
 		dummy.regenerate_icons()
 
+		var/own_name = name
 		src.appearance = dummy.appearance
+		name = own_name
 		// Force the NPC to be standing and conscious
 		src.stat = CONSCIOUS
 		src.resting = FALSE

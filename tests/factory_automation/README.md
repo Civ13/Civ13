@@ -52,7 +52,7 @@ Removing the belt power check makes five drive checks fail.
 
 `fabricators_probe.dm` (phase 3a) checks:
 
-- Recipe list: the thirty curated rows load with no errors and parse output, inputs, tier and node; every row names a real research node; a missing output, a zero input, a short row and a duplicate are reported and skipped.
+- Recipe list: the thirty-six curated rows load with no errors and parse output, inputs, tier and node; every row names a real research node; a missing output, a zero input, a short row and a duplicate are reported and skipped.
 - Fabricators: no recipes without research, tier 1 lists only tier 1 recipes and tier 3 lists all; unknown recipes are refused; it takes only its recipe's inputs, up to two cycles each; nothing happens without power; powered steps add progress without spending inputs early; a finished cycle spends one cycle of inputs and leaves the output on the tile, which is offered (honouring arm filters) and can be taken; a power cut pauses the cycle without losing progress or inputs and restored power finishes it; an empty fabricator sleeps and new inputs wake it; a crowded tile makes it wait; an item recipe makes a screwdriver and offers it, and a stack recipe makes three rifle casings from one copper; the computerized tier runs at half time.
 - Lifecycle: every input buffers on its own; load clamps progress and resumes unpowered; the recipe and progress are saved and the active flag is not; load clears a recipe the list no longer has; changing the recipe or removing the fabricator drops its buffer.
 - Catalog: each fabricator tier and the stack arm are gated behind their research nodes.
@@ -78,9 +78,11 @@ Removing the station's `NOREACT` flag makes the inert-tank check fail.
 - Water intake: beside open water it supplies the same mix a person filling a container there gets; away from water it supplies nothing.
 - Refinery: draws petroleum from an oil well's barrel through pipes; a full refinery's output barrel feeds a gasoline-filtered tank while petroleum stays in the well.
 - Saving: a pipe's network is runtime-only; valve, pump switch and tank filter are saved and pump power is not; reloaded pumps and pipes rebuild the networks; holding tanks are inert.
-- Catalog: research gates, the five global recipes and the reused sprites.
+- Plumbing: a new water tap and piped shower start dry and a dry shower will not turn on; a tap holds what the pipes bring it, sickness included; a piped shower takes only water; nothing is made along the way; filling a container empties the tap by as much; a running piped shower uses its water and turns itself off when it runs out; taps are inert.
+- Habitat machines: an electrolyser takes only the room it has from a water recycler through pipes, at the pump's rate; both pipe only water; the recycler saves its water but not its pipe holder.
+- Catalog: research gates (including the tap and piped shower), the five global recipes and the reused sprites.
 
-Letting a network move reagents without a powered pump makes four checks fail.
+Letting a network move reagents without a powered pump makes four checks fail. Dropping the recycler's settling of what the network took makes both habitat transfer checks fail.
 
 `vessel_probe.dm` (chemistry phase 2) calls the network and vessel steps directly and checks:
 

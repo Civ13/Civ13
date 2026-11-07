@@ -214,6 +214,9 @@ jobs:
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+      - name: Test chainsaw tree-felling declarations offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_chainsaw.py')
+        run: python3 -B -m unittest discover -s tests -p test_chainsaw.py -v
       - name: Test wolf cave ownership source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wolf_cave_ownership')
         run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
@@ -289,18 +292,6 @@ jobs:
       - name: Test optional roof upper-floor source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
-      - name: Prepare exact historical selected-toolchain source
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/world_save') || inputs.protected_sleep_regressions == true || inputs.save_latency_regressions == true
-        shell: bash
-        run: |
-          set -euo pipefail
-          # This historical commit is no longer reachable through advertised
-          # branches. A full branch checkout need not include orphaned objects.
-          historical=f05659dd5d117302b7ab494ad6e226f2b3f50ab1
-          if ! git cat-file -e "$historical^{commit}"; then
-            timeout -k 5 30s git fetch --no-tags origin "$historical"
-          fi
-          git cat-file -e "$historical^{commit}"
       - name: Test protected sleep source and fixture contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/world_save') || inputs.protected_sleep_regressions == true || inputs.save_latency_regressions == true
         run: |
@@ -310,13 +301,11 @@ jobs:
           python3 -B tests/world_save/test_irrigation_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_round_metadata_toolchain.py -v
-          diagnostic_status=0
-          python3 -B -m unittest discover -s tests/world_save -p test_selected_git_diagnostic.py -v || diagnostic_status=$?
-          python3 -B tests/world_save/selected_git_diagnostic.py || diagnostic_status=$?
           python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
-          test "$diagnostic_status" -eq 0
+          python3 -B -m unittest discover -s tests/world_save -p test_current_matrix.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_graph_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_wound_compatibility.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_wound_diagnostics.py -v
       - name: Test continuous persistence round contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_round') || inputs.persistence_integration_regressions == true
         run: python3 -B -m unittest discover -s tests/persistence_round -v
@@ -1255,6 +1244,16 @@ jobs:
           python3 tests/lighting_queues/run.py --byond-bin "$PWD/BYOND/byond/bin" --size 500 --negative-control retain --output "$RUNNER_TEMP/lighting-retain.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
+      - name: Fetch reviewed exclusion dispatch commits outside master
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
+        shell: bash
+        run: |
+          # The reviewed extraction and release commits never reached master, so a
+          # full checkout lacks them. Fetch exactly those objects by SHA; the
+          # ancestry checks still fail closed if any of them is unavailable.
+          for sha in c4585fabaf81e1357054b4527d71d4f3a2d8a0b2 b2f6845438391f9874834d4c59cc1115f35c04b5 4f2868cd58e89ed99eda715b3241ff980d2de41d; do
+            git cat-file -e "$sha^{commit}" 2>/dev/null || git fetch --no-tags --quiet "https://github.com/${{ github.repository }}" "$sha"
+          done
       - name: Check exclusion dispatch source while native execution is held
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
         env:
@@ -1905,7 +1904,6 @@ jobs:
           done
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --interrupt
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control yield
-          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control old-reader
       - name: Retain bounded save source and native evidence
         if: always() && needs.changes.result == 'success' && steps.save_latency.outcome != 'skipped'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -2472,6 +2470,15 @@ jobs:
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control chick
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control duplicate
           /usr/bin/python3 tests/animal_combat/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control kenobi
+
+      - name: Verify mount gunfire (horse health and riders' own shots)
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mount_bullets')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control health
+          /usr/bin/python3 tests/mount_bullets/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control rider
 
       - name: Verify continuous persistence rounds and negative controls
         id: persistence_round

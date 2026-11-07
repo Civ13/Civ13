@@ -19,8 +19,10 @@ linux)
 	gcc "${cflags[@]}" -o "$out/savestream_helper" "$src/savestream_helper.c" -lm
 	;;
 windows)
-	i686-w64-mingw32-gcc "${cflags[@]}" -shared -static-libgcc -o "$out/savestream.dll" "$src/savestream_shim.c"
-	x86_64-w64-mingw32-gcc "${cflags[@]}" -static -o "$out/savestream_helper.exe" "$src/savestream_helper.c" -lpsapi
+	# No link timestamp, so a rebuild of the same source gives the same bytes
+	# as the copies shipped at the repository root (see README).
+	i686-w64-mingw32-gcc "${cflags[@]}" -shared -static-libgcc -Wl,--no-insert-timestamp -o "$out/savestream.dll" "$src/savestream_shim.c"
+	x86_64-w64-mingw32-gcc "${cflags[@]}" -static -Wl,--no-insert-timestamp -o "$out/savestream_helper.exe" "$src/savestream_helper.c" -lpsapi
 	;;
 *)
 	echo "usage: $0 linux|windows" >&2

@@ -69,7 +69,10 @@ var/world_is_open = TRUE
 
 /world
 	mob = /mob/new_player
-	turf = /turf/floor/dirt
+	// Compiled maps type every cell. The default only fills a plane added at
+	// runtime (building_levels.dm, dug_underground.dm), so it is the empty
+	// open-air cell those levels start from, not dirt that is replaced again.
+	turf = /turf/sky/building
 	area = /area/caribbean
 	view = 7
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
@@ -90,6 +93,12 @@ var/world_is_open = TRUE
 		config.server_name += " #[(world.port % 1000) / 100]"
 
 	world.SetConfig("APP/admin", ckey("Taislin"), "role=root")
+
+	// The compiled map's floors were placed with icon updates deferred (floor.dm).
+	floor_icon_updates_deferred = FALSE
+	var/floor_icons_started = world.timeofday
+	var/floor_icons = refresh_deferred_floor_icons()
+	world.log << "Floor icons: [floor_icons] floors refreshed once in [round((world.timeofday - floor_icons_started) / 10, 0.1)] s."
 
 	callHook("startup")
 	//Emergency Fix
@@ -126,6 +135,7 @@ var/world_is_open = TRUE
 			area_startup.close()
 			throw E
 		area_startup.close()
+		world_setup_finished = TRUE
 		if(game_ready_hook) call(game_ready_hook)("initialization_complete", startup_context, scheduler_ready == TRUE)
 //		master_controller.setup()
 #ifdef UNIT_TEST
@@ -277,7 +287,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(persistence_restart.busy || persistence_restart.startup_hold) return
 
 		var/sleeptime = 0
-		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b>"))
+		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		// sleep(0) yields too. A transaction can acquire ownership while the
@@ -533,10 +543,13 @@ var/global/persistence_reboot_due = FALSE
 					persistence_played_since_save = TRUE
 					persistence_empty_since = 0
 				else
-					if (!persistence_empty_since)
+					// The empty timer restarts while any save runs. Pulling the
+					// schedule in during a save started a second save as soon as
+					// it finished, and a failed one was retried every loop.
+					if (!persistence_empty_since || persistence_save_active())
 						persistence_empty_since = world.realtime
 					// Save the session soon after the last player leaves.
-					if (persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY)
+					if (!persistence_save_active() && persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY)
 						nextsave = min(nextsave, world.realtime)
 					// Only the host can be online here; warn from the actual schedule.
 					var/save_in = round((nextsave - world.realtime) / 10)

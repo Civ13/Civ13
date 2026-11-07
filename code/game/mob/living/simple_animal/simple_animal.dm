@@ -665,13 +665,17 @@
 	if ((client.add_stat_tab("Status") || client.statpanel_tab == "Status") && show_stat_health)
 		client.add_stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
+// Keep navigation separate from flying's other effects and saved values.
+/mob/living/simple_animal/proc/can_cross_deep_water()
+	return flying
+
 /mob/living/simple_animal/proc/get_valid_move_dirs()
 	var/list/valid = list()
 	for (var/d in cardinal)
 		var/turf/T = get_step(src, d)
 		if (!T || T.density)
 			continue
-		if (istype(T, /turf/floor/beach/water/deep) && !T.iscovered() && !flying)
+		if (istype(T, /turf/floor/beach/water/deep) && !T.iscovered() && !can_cross_deep_water())
 			continue
 		if (istype(T, /turf/floor/broken_floor) && !T.iscovered())
 			continue

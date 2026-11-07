@@ -359,6 +359,8 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		throw e
 	release_transform_tiles(move_turfs)
 	refresh_passenger_vision()
+	if (rover_trailers.len)
+		rover_trailers_follow(src)
 	return TRUE
 
 /obj/structure/vehicleparts/axis/Destroy()

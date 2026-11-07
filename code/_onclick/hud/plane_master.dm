@@ -70,17 +70,22 @@
 	appearance_flags = NO_CLIENT_COLOR | PLANE_MASTER
 	mouse_opacity = 0
 	var/tmp/last_lighting_bypass
+	var/tmp/last_daylight
 
 /obj/screen/plane_master/light_mask/backdrop(mob/mymob)
 	#if LIGHTING_COMPOSITION_V2
 	#ifndef OPENDREAM
 	var/bypass = mymob && mymob.see_invisible >= INVISIBILITY_LEVEL_TWO
-	if(!isnull(last_lighting_bypass) && last_lighting_bypass == bypass)
+	// With daylight on the client (lighting_overlay.dm) the mask's alpha is the
+	// cell's window coefficient, so the alpha column adds daylight times it.
+	var/daylight = daylight_on_client() ? daylight_lum() : 0
+	if(!isnull(last_lighting_bypass) && last_lighting_bypass == bypass && last_daylight == daylight)
 		return
 	last_lighting_bypass = bypass
+	last_daylight = daylight
 	// Explicit white coverage marks intentionally mask-free visible tiles.
 	// Only uncovered pixels on this light-only plane are made black.
-	color = bypass ? list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1) : list(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1)
+	color = bypass ? list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1) : list(1,0,0,0,0,1,0,0,0,0,1,0,daylight,daylight,daylight,0,0,0,0,1)
 	#endif
 	#endif
 

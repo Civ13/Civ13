@@ -128,6 +128,9 @@
 /client/New(TopicData)
 
 	dir = NORTH
+	// A launcher join link carries a one-use Discord sign-in ticket; keep it
+	// before the topic is dropped (code/modules/accounts/discord_accounts.dm).
+	account_ticket = account_ticket_from_topic(TopicData)
 	TopicData = null							//Prevent calls to client.Topic from connect
 
 	if (!(connection in list("seeker", "web")))					//Invalid connection type.
@@ -151,9 +154,9 @@
 	//preferences datum - also holds some persistent data for the client (because we may as well keep these datums to a minimum)
 	prefs = preferences_datums[ckey]
 	if (prefs)
-		if ((prefs.last_ip != address) || (prefs.last_id != computer_id))
-			log_admin("[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
-			webhook_send_garbage(ckey, "[ckey] has logged in from [address] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
+		if ((prefs.last_ip != public_address()) || (prefs.last_id != computer_id))
+			log_admin("[ckey] has logged in from [public_address()] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
+			webhook_send_garbage(ckey, "[ckey] has logged in from [public_address()] with [computer_id]. (previously logged in from [prefs.last_ip] with [prefs.last_id])")
 
 	if (!prefs)
 		prefs = new /datum/preferences(src)
@@ -164,7 +167,7 @@
 	prefs.client = src
 
 	//these are gonna be used for banning
-	prefs.last_ip = address
+	prefs.last_ip = public_address()
 	prefs.last_id = computer_id
 
 	. = ..()	//calls mob.Login()
@@ -173,6 +176,9 @@
 	if (quickBan_rejected("Server"))
 		del(src)
 		return FALSE
+
+	if (account_ticket)
+		account_signin.redeem(src) // returns at once; see set waitfor there
 
 	if (byond_version < REAL_MIN_CLIENT_VERSION)		//Out of date client.
 		to_chat(src, "<span class = 'danger'><font size = 4>Please upgrade to BYOND [REAL_MIN_CLIENT_VERSION] to play.</font></span>")
@@ -353,7 +359,7 @@
 /client/proc/log_to_db()
 	if (IsGuestKey(ckey))
 		return
-	var/sql_ip = sql_sanitize_text(address)
+	var/sql_ip = sql_sanitize_text(public_address())
 	if (sql_ip == null)
 		sql_ip = "HOST"
 	var/F = file("SQL/playerlogs.txt")
@@ -378,12 +384,12 @@
 		return
 	player_age = (text2num(num2text(world.realtime,20)) - text2num(currentage))
 	//Check for IP or CID changes
-	if ( (!(ips.Find(address))) || (!(cids.Find(computer_id))) )
+	if ( (!(ips.Find(public_address()))) || (!(cids.Find(computer_id))) )
 		text2file("[ckey];[sql_ip];[computer_id];[currentage];[realtime]|","SQL/playerlogs.txt")
-		message_admins("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].", ckey)
-		log_admin("[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
-		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [address] with [computer_id].")
-	webhook_send_login(ckey, address, computer_id)
+		message_admins("[ckey] has logged in with a new IP or CID, from [public_address()] with [computer_id].", ckey)
+		log_admin("[ckey] has logged in with a new IP or CID, from [public_address()] with [computer_id].")
+		webhook_send_garbage(ckey, "[ckey] has logged in with a new IP or CID, from [public_address()] with [computer_id].")
+	webhook_send_login(ckey, public_address(), computer_id)
 
 /client/verb/fixdbhost()
 	set hidden = TRUE

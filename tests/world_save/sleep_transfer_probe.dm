@@ -56,6 +56,10 @@ var/list/sleep_visibility_events = list()
 	var/inducedSSD = FALSE
 	var/fixture_drop_calls = 0
 	var/fixture_sleep_calls = 0
+	// The production helper closes open storage; the fixture never opens any.
+	var/datum/sleep_fixture_storage/s_active
+/datum/sleep_fixture_storage/proc/close(mob/user)
+	return
 /mob/living/human/proc/drop_item()
 	fixture_drop_calls++
 /mob/living/human/proc/sleep_update()
@@ -232,14 +236,20 @@ var/list/sleep_visibility_events = list()
 	sleep_make_legacy_state()
 	map_storage = new /map_storage/cross_level/sleep_transfer("sleep-transfer-fixture")
 	var/reason = cross_try_save()
-	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "old distant bed link unexpectedly exported")
-	cross_check(findtext(reason, "/obj/structure/bed/sleep_fixture saved_z=1 native_z=2 turf_z=2 source_type=/mob/living/human/sleep_fixture source_field=buckled"), "cross-level bed diagnostic omitted its bounded field context")
+	// The field codec stores the stale distant bed link as null and logs it;
+	// it must not abort the world save or repair the live buckle.
+	cross_check(!reason, "old distant bed link aborted the save: [reason]")
+	cross_check(fexists("map_saves/save_complete.txt"), "legacy bed save left no completion marker")
+	cross_check(!persistence_active_operation && !persistence_save_in_progress, "legacy bed save retained operation admission")
+	cross_check(isnull(map_storage.last_save_reference_failure), "dropped cross-level field recorded a save failure")
 	sleep_assert_protected(sleep_actor, locate(1,1,1))
-	cross_check(sleep_actor.buckled == sleep_bed && sleep_bed.buckled_mob == sleep_actor, "save rejection changed the legacy buckle")
+	cross_check(sleep_actor.buckled == sleep_bed && sleep_bed.buckled_mob == sleep_actor, "save changed the legacy buckle")
 
 /proc/sleep_check_disk()
 	sleep_setup()
 	cross_check(sleep_actor.enter_protected_sleep(), "disk sleeper could not enter protection")
+	// A kept distant bed link would now save as null, so check the live edge.
+	cross_check(!sleep_actor.buckled && !sleep_bed.buckled_mob, "protected sleeper kept its distant bed link")
 	map_storage = new /map_storage/cross_level/sleep_transfer("sleep-transfer-fixture")
 	var/reason = cross_try_save()
 	cross_check(!reason, "protected sleeper/bed export rejected: [reason]")
@@ -283,8 +293,17 @@ var/list/sleep_visibility_events = list()
 	cross_check(snapshot["native_x"] == native_x && snapshot["native_y"] == native_y && snapshot["native_z"] == native_z, "failure snapshot changed native coordinates")
 	cross_check(snapshot["turf_x"] == turf_x && snapshot["turf_y"] == turf_y && snapshot["turf_z"] == turf_z, "failure snapshot changed containing-turf coordinates")
 
+// Field references to other levels are saved as null before they reach the
+// strict contents guard. The diagnostic fixtures opt out of that drop so the
+// guard and its failure record stay reachable through a real save.
+/map_storage/cross_level/strict_guard
+/map_storage/cross_level/strict_guard/drop_cross_level_reference(atom/movable/target)
+	return FALSE
+
 /map_storage/cross_level/sleep_transfer/diagnostic
 	var/check_reset_on_entry = FALSE
+/map_storage/cross_level/sleep_transfer/diagnostic/drop_cross_level_reference(atom/movable/target)
+	return FALSE
 /map_storage/cross_level/sleep_transfer/diagnostic/save_world_contents(datum/persistence_world_operation/operation)
 	if(check_reset_on_entry)
 		cross_check(isnull(last_save_reference_failure), "accepted save did not clear the previous record before contents")
@@ -357,7 +376,7 @@ var/list/sleep_visibility_events = list()
 	var/datum/sleep_diagnostic_link/last = links[links.len]
 	last.next = cross_target
 	last.probe_long_parent_field = TRUE
-	map_storage = new /map_storage/cross_level("diagnostic-chain-fixture")
+	map_storage = new /map_storage/cross_level/strict_guard("diagnostic-chain-fixture")
 	var/reason = cross_try_save()
 	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "deep diagnostic chain did not reject a cross-level edge")
 	var/list/record = map_storage.last_save_reference_failure
@@ -379,7 +398,7 @@ var/list/sleep_visibility_events = list()
 // traversal normally preserves the first capture and never reaches this guard.
 /map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE)
 	if(A == cross_target && saving_z == 2)
-		saving_world_movables -= "\ref[A]"
+		saving_world_movables -= A
 	return ..()
 
 /proc/sleep_check_duplicate_record()

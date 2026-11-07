@@ -1,8 +1,9 @@
 """Generate maps/zombie_city/zombie_city.dmm, the blank plain the city is made on.
 
-The map is 200 x 200 tiles of dirt inside an indestructible rim, one level, with
-the Zombie City metadata object on the bottom-left rim tile. Everything else is
-made at round start by code/modules/zombie_city/generator.dm. Run from the
+The map is 200 x 200 tiles of dirt inside an indestructible rim, with the Zombie
+City metadata object on the bottom-left rim tile, under a second level of open
+sky for the upper floors. Everything else is made at round start by
+code/modules/zombie_city/generator.dm. Run from the
 repository root with a verified interpreter:
 
     python3 -I -B tests/zombie_city/build_base.py [--check]
@@ -24,6 +25,8 @@ AREA = "/area/caribbean/zombie_city"
 DIRT = "/turf/floor/dirt"
 RIM = "/turf/wall/indestructable"
 METADATA = "/obj/map_metadata/nomads/zombie_city"
+SKY = "/turf/sky"
+LEVELS = 2
 
 
 def build() -> str:
@@ -31,6 +34,7 @@ def build() -> str:
         ('"a"', f"({DIRT},{AREA})"),
         ('"b"', f"({RIM},{AREA})"),
         ('"c"', f"({METADATA},{RIM},{AREA})"),
+        ('"d"', f"({SKY},{AREA})"),
     ]
     lines = [f"{key} = {value}" for key, value in definitions]
     lines.append("")
@@ -46,6 +50,12 @@ def build() -> str:
                 row.append("a")
         lines.append("".join(row))
     lines.append('"}')
+    for level in range(2, LEVELS + 1):
+        lines.append("")
+        lines.append(f'(1,1,{level}) = {{"')
+        for y in range(HEIGHT):
+            lines.append("d" * WIDTH)
+        lines.append('"}')
     return "\n".join(lines) + "\n"
 
 
@@ -63,7 +73,7 @@ def main() -> int:
         return 0
     MAP_PATH.parent.mkdir(parents=True, exist_ok=True)
     MAP_PATH.write_text(text, encoding="utf-8", newline="\n")
-    print(f"wrote {MAP_PATH} ({WIDTH}x{HEIGHT})")
+    print(f"wrote {MAP_PATH} ({WIDTH}x{HEIGHT}x{LEVELS})")
     return 0
 
 

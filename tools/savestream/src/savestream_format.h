@@ -55,9 +55,14 @@
 #define OP_WRITE 'W'  /* payload: write batch; reply "OK" or "ERR:..." */
 #define OP_FINISH 'F' /* reply: JSON summary; file is published on success */
 #define OP_ABORT 'A'  /* discard the partial file */
-#define OP_GET 'G'    /* payload: path; reply: wire token or "?" if absent */
+#define OP_GET 'G'    /* payload: path; reply: wire token or "?" if absent. In write
+                       * mode it reads the last value written to that path. */
 #define OP_DIR 'D'    /* payload: path; reply: L token of child names */
 #define OP_ITER 'I'   /* payload: "<start>;<max>"; reply: "<next>;" then W records in index order */
+#define OP_SEEK 'K'   /* read: payload path; reply: decimal index of the first node at or after it */
+#define OP_TEXT 'T'   /* read: payload "<base>" or "<base>\n<first>\n<last>" (numeric children
+                       * of base); reply "<n>;", n x W<len>:<path> for nodes with no exact
+                       * text form, then the rest as BYOND savefile text relative to base */
 #define OP_STATS 'S'  /* reply: JSON */
 #define OP_QUIT 'Q'
 

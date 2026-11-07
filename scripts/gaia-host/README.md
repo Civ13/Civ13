@@ -4,6 +4,10 @@
 that runs from a Windows scheduled task, the way live Gaia is hosted. The
 Discord bot and the launcher both call it, so there is one control path.
 
+An optional [mobile LAN companion](MOBILE.md) exposes a bounded phone interface
+to the same detached workers. It is off by default and requires separately
+provisioned HTTPS and paired client certificates; it never uses the public doorman.
+
 ```powershell
 py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json status
 py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
@@ -12,14 +16,15 @@ py -3 scripts/gaia-host/gaia_host.py --config D:/private/gaia-host.json start
 | Action | What it does |
 | --- | --- |
 | `status` | Prints the port state, the last action's progress and, when the world answers, ready/busy/players/map/save. Changes nothing. |
-| `start` | Checks `map_saves` (empty for a fresh world, or a complete save whose marker, `round.json`, `map.txt` and level files agree; a restart intent must belong to that save), writes `config/lifecycle-revision.txt` from git HEAD and runs the scheduled task. |
+| `start` | Checks `map_saves` (empty for a fresh world, or a complete save whose marker, `round.json`, `map.txt` and level files agree; a restart intent must belong to that save), fetches `origin/<branch>` and runs `update` unless the last build (`<state_dir>/build.json`, the revision and the `.dmb` it produced) is already of that revision, writes `config/lifecycle-revision.txt` from git HEAD and runs the scheduled task. A failed fetch or compile leaves the server stopped with the error, so it never runs a stale build. |
 | `stop` | Asks the running world to save and shut down through its authenticated lifecycle topic, waits for the port to close, then copies `map_saves` to `<state_dir>/backups/<operation>` and checks every file's SHA-256. The newest `backups_kept` copies are kept. |
-| `restart` | `stop`, then `start`. |
+| `restart` | `stop`, then `start` (with its pull and compile). |
 | `update` | Only while stopped: `git fetch` and a fast-forward merge of the branch, then `dm.exe civ13.dme`, which must report 0 errors. |
 | `freeze` | Only with no clients online and the world ready and not busy: suspends the dd.exe that listens on the port (optionally trimming its memory to the pagefile). The same process keeps every object exactly as it was. Answers at once. |
 | `thaw` | Resumes the frozen process. `stop`, `restart` and `update` thaw first on their own. |
 | `watch` | Runs until killed: freezes the server after `freeze_idle_minutes` with no clients and thaws it within a fraction of a second when a connection from an address outside `wake_ignore` reaches the port. Prints one JSON line per freeze or thaw. |
 | `check-update` | Fetches `origin/<branch>` and prints `current`, `available`, `behind`, `can_update` and `reason` for the launcher's update panel. Never merges or touches the world; `can_update` is false while the server runs. |
+| `stage` | Region hosts only: builds the group revision beside the running world (see [staged builds](../shard-group/README.md#staged-builds)). Answers at once; progress is in `<state_dir>/stage.json`. |
 | `serve` | Runs until killed: does `watch` for every config given (`--config a.json --config b.json`, one per game port) and for every region of each `--group group.json`, and runs the doorman on `doorman_port`. Use it instead of `watch`. |
 
 Every action except `status` prints `{"ok": true, "accepted": true, ...}` within
@@ -84,14 +89,51 @@ ports. It speaks BYOND Topic framing and answers only:
 
 - `?host_status=1`: every instance's port, state (`awake`, `asleep`, `waking`,
   `stopped`), `wake_estimate_seconds`, and the players, map and mode the world
-  last reported with their age. Awake worlds are asked for `status` from
-  127.0.0.1 every 30 seconds, which does not keep them awake.
+  last reported with their age. Awake worlds are asked for `status` and
+  `shard_region` from 127.0.0.1 every 30 seconds, which does not keep them
+  awake; a world in a region group gets its `shard_region` answer under
+  `region`, which is how its peers read its state without polling it.
 - `?wake=1&port=1714`: thaws that instance, unless the machine has less than
-  `wake_min_free_mb` (1024) of physical memory free; then it stays asleep and
+  `wake_min_free_mb` (1024) of physical memory free, after first stopping the
+  longest-asleep other world to make room (see below); then it stays asleep and
   the launcher tells the player the host is low on memory (0 turns the check
   off; a direct connection to the game port still thaws it). One wake per
-  address every 30 seconds; all requests are limited to 40 per address per minute and 16 open
+  address and port every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
+
+### Watchdog
+
+`watch` and `serve` also keep each world running. A world should be running once
+a `start` finished or it was seen answering its lifecycle status; `stop` and a
+forced stop (`kill`) clear that (`<state_dir>/running.json`), so a world stopped
+on purpose stays down.
+
+- **Crash.** When the port of such a world stays closed for
+  `crash_grace_seconds` (120) and it is not asleep or cold, the watchdog runs
+  the ordinary `start`, which loads the last completed save (and pulls and
+  compiles first if master moved). A start that is refused (BYOND signed out,
+  a broken save) is tried again every five minutes. With less than
+  `cold_start_min_free_mb` free it becomes cold instead and starts on its next
+  wake.
+- **Hang.** When a world that answered in this watch stops answering for
+  `hang_minutes` (10; the `save_timeout_seconds` when its last answer said it
+  was busy saving), the watchdog ends it without saving, as `kill` does, and
+  starts it from its last completed save. A world that never answered (still
+  loading, or lifecycle status off) is left alone.
+- After `watchdog_max_restarts` (3) restarts in an hour it gives up and leaves
+  the world for a person (`force-restart`); the next successful start watches
+  it again. `watchdog: false` turns all of this off.
+
+Each event is kept in `<state_dir>/watchdog.json` (`last_event`, `last_detail`,
+`restarts`, `gave_up`) and shown by `status` under `watchdog`.
+
+### Low-memory eviction
+
+While less than `evict_below_free_mb` (1024; 0 turns it off) of physical memory
+is free, `serve` stops the longest-frozen world, at most one a minute. A wake
+that is short of memory does the same for the other worlds first. Only a world
+that saved before it froze (`freeze_requires_save`) is stopped; it becomes cold
+(below) and starts from that save on its next wake.
 
 ### Surviving a power-down
 
@@ -106,10 +148,19 @@ If the frozen process is gone when `serve` next looks (the machine rebooted or
 dd.exe was killed) and nothing listens on the port, the instance becomes cold
 (`<state_dir>/cold.json`). It still shows as asleep in the launcher, with
 `cold_start_estimate_seconds` (300) as its wait, and the next wake request runs
-the ordinary `start` action, which loads that save. A cold start needs
+the ordinary `start` action, which loads that save (and pulls and compiles
+first when master has moved, so allow for a compile). A cold start needs
 `cold_start_min_free_mb` (2560) of free memory, since loading peaks far above a
 thaw, and an action lock left by the power-down is cleared first. A save that
-fails `start`'s checks keeps the server down. On Windows, `start` (and so a
+fails `start`'s checks keeps the server down, except an interrupted one: when
+`map_saves/` has files but no `save_complete.txt` (the machine went down during
+a save) and `map_backups/` holds the complete previous generation, `start`
+swaps that generation back in first and keeps the interrupted files as
+`map_saves.interrupted-<time>` (newest only). The world can also be asked to
+save as soon as it empties with the lifecycle action `save_idle` (token only);
+it answers `save: started` or `save: skipped:<reason>` such as
+`players_online`, `nothing_played` or `busy`, and never saves while anyone
+but the host is online. On Windows, `start` (and so a
 cold start) also refuses while the BYOND pager (byond.exe) is not running in the
 same logon session, since `-public` needs the host's BYOND account signed in
 (`start_requires_byond_pager`, on by default); the launcher tells the player the
@@ -155,3 +206,31 @@ can be passed as `--config`: it is driven as that region (DreamDaemon started
 directly, its agent first). Point the bot's `gaia_host` option and the
 launcher's `control.config` at it once Gaia runs as a region.
 
+## Routing relay (`relay.py`)
+
+`relay.py` lets a region group publish one extra port instead of one router
+port per region. It only forwards: the gate world (the group's mainland, which
+players join directly) decides each player's region, writes a route for their
+IP on the loopback control port, and links them to the relay. The relay then
+pipes that IP's next connections to the routed region on 127.0.0.1. It is off
+until a group sets `relay_port`; until then nothing changes.
+
+- Public port: player logins only. A BYOND Topic frame is dropped, never
+  forwarded, so nothing from the internet reaches a world as loopback (worlds
+  trust loopback for Topics and agent control). An unrouted address is closed.
+- Control port (127.0.0.1 only, token required): `?route=1&ip=A&ckey=K&port=P&token=T`,
+  `?lookup=1&ckey=K&token=T`, `?relay_status=1&token=T`. A route may name only
+  the `--region-port` values it was started with, never an agent port.
+- Routes are last-write-wins per address. An unused route expires after 60
+  seconds; a used one sticks for 6 hours after its last use, so the reconnect
+  after a world reboot lands in the same world.
+- Before piping, the relay asks the doorman (`--doorman-port`) to wake the
+  region and holds the player up to 20 seconds until it reports `awake`. A
+  frozen world still accepts TCP and the freeze watcher ignores loopback, so it
+  never relies on a connection to thaw it.
+- `--capture` logs the first 64 bytes of every public connection as hex, to
+  measure the real client login on the host. It may contain the player's key.
+
+```powershell
+py -3 scripts/gaia-host/relay.py --port 1730 --control-port 1731 --token-file D:/Civ13Regions/relay-token.txt --region-port 1714 --region-port 1716 --doorman-port 1713 --capture
+```

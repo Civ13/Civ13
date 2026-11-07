@@ -139,6 +139,9 @@ var/list/gamemode_cache = list()
 	var/scripts_directory = null
 
 	var/daynight_on = TRUE
+	// Day/night as one tint on each client's light mask plane instead of a
+	// rewrite of every lighting overlay (2026-11-07); needs visual sign-off.
+	var/daynight_client_tint = FALSE
 	var/seasons_on = TRUE
 	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
 	var/skip_persistence_saving = FALSE
@@ -146,6 +149,8 @@ var/list/gamemode_cache = list()
 	var/persistence_memory_limit_mb = 0 // world saves/loads switch to segmented low-memory levels when projected memory passes this; 0 disables.
 	var/persistence_low_memory_always = FALSE
 	var/persistence_segment_size = 4096 // saved entries plus lists per low-memory level segment.
+	var/persistence_stream_saves = TRUE // write levels through the savestream helper when its files are present.
+	var/persistence_candidate_readback = FALSE // walk every stream level back from disk during a save's candidate check instead of checking the pinned objects.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
 	var/new_z_cell_budget = 1400000
 	var/new_z_roof_levels = 1
@@ -434,6 +439,9 @@ var/list/gamemode_cache = list()
 				if ("tor_ban")
 					ToRban = TRUE
 
+				if ("daynight_client_tint")
+					daynight_client_tint = TRUE
+
 				if ("automute_on")
 					automute_on = TRUE
 
@@ -472,6 +480,12 @@ var/list/gamemode_cache = list()
 
 				if ("persistence_low_memory_always")
 					config.persistence_low_memory_always = TRUE
+
+				if ("persistence_no_stream_saves")
+					config.persistence_stream_saves = FALSE
+
+				if ("persistence_candidate_readback")
+					config.persistence_candidate_readback = TRUE
 
 				if ("persistence_segment_size")
 					var/segment_size = text2num(value)

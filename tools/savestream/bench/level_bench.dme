@@ -1,0 +1,28 @@
+// Level read-back benchmark: the world-save fixture with level_bench.dm in
+// place of its checks. Not part of civ13.dme; run with run_level_bench.sh.
+#define TRUE 1
+#define FALSE 0
+#define TICK_CHECK fixture_tick_check()
+#define TICK_LIMIT_TO_RUN 100
+#define EXCEPTION(message) new /exception(message)
+#define FILE_DIR "../../.."
+#include "../../../code/predefines.dm"
+#include "../../../tests/world_save/stubs.dm"
+#define ROUNDTRIP_NO_TOPOLOGY_COMPAT
+#include "../../../tests/world_save/roundtrip_compat.dm"
+#define fdel(path) delete_file_adapter(path)
+#include "../../../code/modules/multiz/world_z_budget.dm"
+#include "../../../code/modules/persistence/functions.dm"
+#include "../../../code/modules/persistence/debug_lossy.dm"
+#include "../../../code/modules/persistence/player_reclaim.dm"
+#include "../../../code/modules/persistence/saving.dm"
+#include "../../../code/modules/persistence/loading.dm"
+#include "../../../tests/world_save/roundtrip.dm"
+#include "../../../tests/world_save/transfers.dm"
+#include "../../../tests/world_save/restore_wrapper.dm"
+#include "../../../tests/world_save/player_reclaim_probe.dm"
+#include "../../../tests/world_save/round_metadata.dm"
+#include "../../../tests/world_save/stream_stubs.dm"
+#include "../../../code/modules/persistence/stream/save_stream.dm"
+#include "../../../code/modules/persistence/stream/level_stream.dm"
+#include "level_bench.dm"

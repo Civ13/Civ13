@@ -344,6 +344,38 @@
 		to_chat(user, "<span class='warning'>You need both hands to use the [src]!</span>")
 		return FALSE
 
+// The jackhammer's counterpart for trees: a heavy steel power tool that fells
+// trees far faster than any axe. It is a hatchet subtype so every tree,
+// woodworking and repair check that accepts hatchets accepts it too.
+/obj/item/weapon/material/hatchet/chainsaw
+	name = "chainsaw"
+	desc = "An efficient tree-felling tool."
+	icon = 'icons/obj/chainsaw.dmi'
+	icon_state = "chainsaw"
+	item_state = "chainsaw"
+	item_icons = list(
+		slot_l_hand_str = 'icons/obj/chainsaw.dmi',
+		slot_r_hand_str = 'icons/obj/chainsaw.dmi',
+		slot_back_str = 'icons/obj/chainsaw.dmi',
+		)
+	item_state_slots = list(
+		slot_l_hand_str = "chainsaw_l",
+		slot_r_hand_str = "chainsaw_r",
+		slot_back_str = "chainsaw_back",
+		)
+	flags = CONDUCT
+	throwforce = 1.0
+	w_class = ITEM_SIZE_GARGANTUAN
+	attack_verb = list("sawed", "torn", "cut", "ripped")
+	slot_flags = SLOT_BACK
+	default_material = "steel"
+	material = "steel"
+	applies_material_colour = FALSE
+	value = 60
+	chopping_speed = 0.6
+	health = 350
+	maxhealth = 350
+
 /obj/item/weapon/wirecutters/boltcutters
 	name = "boltcutters"
 	desc = "This cuts bolts and other things."

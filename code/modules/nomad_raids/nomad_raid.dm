@@ -24,10 +24,15 @@
 #define NOMAD_RAID_MIN_DEFENDERS 2 // automatic targeting skips smaller groups
 #define NOMAD_RAID_GROUP_RANGE 20
 #define NOMAD_RAID_PARLEY_RANGE 10
+#define NOMAD_RAID_SIGHTED_RANGE 6 // the party halts only once a player is this close and can see it coming
 #define NOMAD_RAID_FIGHT_RANGE 12
 #define NOMAD_RAID_LOOT_RANGE 8
 #define NOMAD_RAID_EDGE_LIMIT 120 // farthest spawn distance from the target
 #define NOMAD_RAID_EDGE_SPREAD 30
+#define NOMAD_RAID_ROUTE_LEG 10 // route tiles per walking leg; the NPC pathfinder plans short hops well
+#define NOMAD_RAID_ROUTE_REACH 3 // the planned walk ends this close to the target, as a boat landing does
+#define NOMAD_RAID_RETARGET (5 SECONDS) // how often a march checks where its target players went
+#define NOMAD_RAID_CUFF_CHANCE 35 // percent of raiders who carry restraints (nomad_capture.dm)
 #define NOMAD_RAID_VIEW_MARGIN 12
 #define NOMAD_RAID_PARLEY_TIME (90 SECONDS)
 #define NOMAD_RAID_MARCH_LIMIT (10 MINUTES)
@@ -46,6 +51,8 @@
 #define NOMAD_RAID_VOICE_SEEN (10 SECONDS) // a coordinator counts as attached this long after its last status read
 #define NOMAD_RAID_LOG_MAX 40
 #define NOMAD_TRADE_TIME (12 MINUTES)
+#define NOMAD_TRADE_WAIT (25 MINUTES) // longest a caravan waits at its stall for the players it came for
+#define NOMAD_TRADE_TOTAL_LIMIT (45 MINUTES)
 #define NOMAD_TRADE_THEFT_GRACE (15 SECONDS)
 #define NOMAD_TRADE_GOODS 6
 
@@ -154,7 +161,16 @@ var/global/list/nomad_raid_cooldowns = null // ckey = world.realtime of the last
 				cooling = TRUE
 		if (cooling)
 			continue
-		out += list(list("turf" = T, "ckeys" = ckeys, "score" = nomad_raid_score(T, group.len)))
+		// March on the middle of the group, not on whichever member was found first.
+		var/sx = 0
+		var/sy = 0
+		for (var/mob/M in group)
+			sx += M.x
+			sy += M.y
+		var/turf/mid = locate(round(sx / group.len), round(sy / group.len), T.z)
+		if (!mid || mid.density || istype(mid, /turf/floor/beach/water/deep))
+			mid = T
+		out += list(list("turf" = mid, "ckeys" = ckeys, "score" = nomad_raid_score(mid, group.len)))
 	return out
 
 // Weighted by score: the busiest settlement is likelier, not certain.

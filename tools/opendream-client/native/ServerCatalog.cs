@@ -23,6 +23,10 @@ public static class ServerCatalog {
         // Explicit pre-existing native game ports. No ranges or arbitrary overrides.
         return Array.AsReadOnly(new[] { new GameTarget(provider, 1714), new GameTarget(provider, 1715) });
     }
+    // The port of a provider's gate world, for hosts that route their other worlds
+    // through it. ValZarGaming's mainland (Gaia) is the gate on 1714; Rail Yard and
+    // the other regions are joined through it, never directly.
+    public static int? GatePort(string provider) => provider == "ValZarGaming" ? 1714 : null;
 
     public static async Task<VerifiedGameServer> NativeEndpoint(GameServer server,
         Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null,
@@ -35,7 +39,7 @@ public static class ServerCatalog {
     }
 
     public static ProcessStartInfo NativeStart(VerifiedGameServer verified, string bin,
-        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null) {
+        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null, string? ticket = null) {
         var server = verified.Status;
         server.Target.Validate();
         requirement.Validate();
@@ -50,7 +54,9 @@ public static class ServerCatalog {
         var start = new ProcessStartInfo(Path.Combine(bin, "dreamseeker.exe")) {
             UseShellExecute = false, WorkingDirectory = bin
         };
-        start.ArgumentList.Add($"byond://{address}:{server.Port}");
+        // An optional Discord sign-in ticket: single use, two minutes, never the Discord token.
+        if (ticket != null && !DiscordSignIn.ValidTicket(ticket)) throw new IOException("Discord sign-in ticket is malformed.");
+        start.ArgumentList.Add(ticket == null ? $"byond://{address}:{server.Port}" : $"byond://{address}:{server.Port}?civ13_ticket={ticket}");
         return start;
     }
 }

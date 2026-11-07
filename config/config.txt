@@ -243,6 +243,16 @@ PERSISTENCE_MEMORY_LIMIT_MB 3072
 #PERSISTENCE_LOW_MEMORY_ALWAYS
 #saved entries plus lists per level segment (256-1000000)
 #PERSISTENCE_SEGMENT_SIZE 4096
+#world saves write each level's entries and lists through the 64-bit savestream
+#helper (savestream.dll and savestream_helper.exe beside civ13.dmb, needs -trusted),
+#so the level is never held in server memory. Without those files saves use
+#savefile levels: segmented (format 4) under the low-memory plan, otherwise one
+#full file per level (format 3). Uncomment to always use savefiles.
+#PERSISTENCE_NO_STREAM_SAVES
+
+#if uncommented, a save's candidate check re-reads every stream level from disk
+#(several minutes on a large world) instead of checking the objects it just wrote.
+#PERSISTENCE_CANDIDATE_READBACK
 
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE
@@ -264,3 +274,9 @@ LANGUAGE english
 # Production refuses NEW growth as UNMEASURED until a reviewed memory profile exists.
 # No setting bypasses that refusal; existing planes remain usable.
 # See docs/new-z-budget.md.
+
+## Day/night on the client: each day/night change tints every player's light
+## plane once instead of rewriting all 350,000 lighting overlays on the server
+## (a 60 s sweep on Gaia). Indoor cells keep half daylight through the mask's
+## alpha. Not pixel-identical to the server tint; on while it is being judged.
+#DAYNIGHT_CLIENT_TINT

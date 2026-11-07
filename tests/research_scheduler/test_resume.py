@@ -253,7 +253,7 @@ class ResearchResumeTests(unittest.TestCase):
 
     def test_shared_semantics_and_entry_points_stay_compatible(self):
         defines = (ROOT / "code/processes/___defines.dm").read_text()
-        self.assertIn("#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) current_list -= current\n", defines)
+        self.assertIn("#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && islist(current_list)) current_list -= current\n", defines)
         self.assertIn("return PROCESS_TICK_CHECK_RETURNED_EARLY\n", defines)
         self.assertIn("current_list = list:Copy();", defines)
         process = (ROOT / "code/processes/_process.dm").read_text()

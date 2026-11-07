@@ -36,6 +36,50 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
+    'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
+        'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
+        'shared_paths': ('code/modules/1713/production.dm',
+                         'code/modules/1713/factory_chemistry.dm',
+                         'code/modules/1713/factory_pipes.dm',
+                         'tests/save_movement/source_adapter.py')},
+    # Chicken navigation predicates and collision dispatch; fake engine only.
+    'chicken_water': {'files': ('tests/chicken_water/test_chicken_water.py',),
+        'paths': ('tests/chicken_water/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/simple_animal/friendly/birds.dm',
+            'code/game/mob/living/simple_animal/simple_ai.dm',
+            'code/game/turfs/floor_types.dm', 'code/game/turfs/turf.dm',
+            'code/pathfinding.dm', 'maps/nomads/nomads_gaia.dmm',
+            'tests/save_movement/source_adapter.py')},
+    # Complete starting-coin helper projection; no native game or save access.
+    'nomad_starting_coins': {'files': ('tests/nomad_starting_coins/test_starting_coins.py',),
+        'paths': ('tests/nomad_starting_coins/',), 'shared_paths': (
+            'code/modules/1713/jobs/nomads.dm', 'code/game/objects/items/stacks/money.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/gameticker.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/region_travel.dm',
+            'tests/save_movement/source_adapter.py')},
+    # Complete bounded Gaia spawn helpers with fake spatial/engine boundaries.
+    'gaia_spawn': {'files': ('tests/gaia_spawn/test_spawn.py',),
+        'paths': ('tests/gaia_spawn/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/game/mob/new_player/new_player.dm', 'code/game/jobs/job_controller.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'maps/nomads/nomads_gaia.dmm', 'tests/save_movement/source_adapter.py')},
+    # Complete raider firing/reload source projections with fake engine boundaries.
+    # Keep production paths shared so existing conservative selection is preserved.
+    'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),
+        'paths': ('tests/nomad_raids/test_combat.py',), 'shared_paths': (
+            'code/modules/nomad_raids/nomad_raider.dm',
+            'code/modules/nomad_raids/nomad_visit.dm', 'code/modules/nomad_raids/nomad_capture.dm',
+            'code/game/mob/living/simple_animal/hostile/humans/human.dm',
+            'code/modules/projectiles/gun.dm', 'code/modules/projectiles/guns/projectile.dm',
+            'code/modules/1713/weapons/guns/revolvers.dm',
+            'code/modules/projectiles/_ammo_casing.dm',
+            'tests/save_movement/source_adapter.py')},
     # Pure source catalog and injected build transports; no native or network IO.
     'nomads_persistence': {'files': ('tests/nomads_persistence/test_catalog.py',),
         'paths': ('tests/nomads_persistence/',),
@@ -87,8 +131,9 @@ SUITES = {
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
     # Windows scheduled-task host control with a fake machine; no BYOND runtime.
     'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
-                           'tests/gaia_host/test_doorman.py'),
-        'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/'),
+                           'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
+                           'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'),
+        'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/', 'scripts/windows/host/'),
         'shared_paths': ('scripts/nomads-lifecycle/supervisor.py',)},
     # Farmer's almanac weather table and crop rule projected from production DM.
     'farmers_almanac': {'files': ('tests/farmers_almanac/test_farmers_almanac.py',),
@@ -96,6 +141,16 @@ SUITES = {
             'code/modules/1713/farmers_almanac.dm',
             'code/modules/1713/weather.dm',
             'code/game/objects/farming.dm')},
+    # Gun sprite-state fallback: reviewed gap list against the DMI files and the
+    # render paths that apply it. run.py (native sweep) is not part of this suite.
+    'gun_icon_states': {'files': ('tests/gun_icon_states/test_gun_icon_states.py',),
+        'paths': ('tests/gun_icon_states/', 'code/_helpers/sprite_states.dm'),
+        'shared_paths': (
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/modules/projectiles/gun.dm',
+            'code/modules/projectiles/guns/projectile.dm',
+            'icons/obj/guns/', 'icons/mob/items/lefthand_guns.dmi',
+            'icons/mob/items/righthand_guns.dmi', 'icons/mob/back.dmi', 'civ13.dme')},
     # Ploughed field sprite selection and load restore projected from production DM.
     'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
         'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (
@@ -143,6 +198,12 @@ SUITES = {
         'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
                   'code/modules/zombie_city/'), 'shared_paths': (
             'code/__defines/maps.dm', 'civ13.dme')},
+    # Research bench intent routing, timed maintenance and slot cleanup; offline only.
+    'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
+        'paths': ('tests/research_bench/',), 'shared_paths': (
+            'code/modules/research_tree/research_bench.dm',
+            'code/modules/research_tree/research_faction.dm',
+            'code/modules/research_tree/_research_tree_defines.dm')},
     # Research bench staff appointments and director title; no BYOND runtime.
     'research_staff': {'files': ('tests/research_staff/test_research_staff.py',),
         'paths': ('tests/research_staff/',), 'shared_paths': (
@@ -150,6 +211,13 @@ SUITES = {
             'code/modules/research_tree/research_faction.dm',
             'code/_helpers/WWinput.dm')},
     # Door hand-intent ladder projected from production DM; no BYOND runtime.
+    # Stdlib source check: stance transforms keep the trait size scale.
+    'stance_size_transform': {'files': ('tests/stance_size_transform/test_stance_scale.py',),
+        'paths': ('tests/stance_size_transform/',), 'shared_paths': (
+            'code/_onclick/hud/base_screen_objects.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/mob/living/carbon/human/inventory.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
@@ -182,7 +250,7 @@ SUITES = {
     # host C compiler and drives its pipe protocol; no BYOND runtime.
     'savestream': {'files': ('tests/savestream/test_helper.py',),
         'paths': ('tests/savestream/', 'tools/savestream/'), 'shared_paths': (
-            'code/modules/persistence/stream/save_stream.dm',)},
+            'code/modules/persistence/stream/save_stream.dm', 'savestream.dll', 'savestream_helper.exe')},
     # Agent control client/MCP/catalog and DM source contracts; loopback fake
     # Topic server only, no BYOND runtime.
     'agent_control': {'files': ('tests/agent_control/test_agent_control.py',),
@@ -317,6 +385,15 @@ SUITES = {
                    'code/modules/admin/admin.dm', 'code/game/mob/new_player/new_player.dm',
                    'civ13.dme', 'tests/save_movement/source_adapter.py')},
 
+    # Discord account keys (source projection) and the stdlib sign-in service
+    # against a fake Discord; the HTTP test binds an ephemeral loopback port.
+    'account_signin': {'files': ('tests/account_signin/test_signin.py',
+                                 'tests/account_signin/test_account_keys.py'),
+        'paths': ('tests/account_signin/', 'tools/account_signin/'),
+        'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/client_procs.dm',
+                         'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
+                         'tests/save_movement/source_adapter.py')},
+
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (
@@ -376,6 +453,9 @@ SUITES = {
             'tests/save_movement/source_adapter.py')},
     # Stdlib-only source contracts and causal omission controls; no native world.
     # Shared game/Atlas/Help sources retain the existing conservative fallback.
+    'cloth_substitution': {'files': ('tests/cloth_substitution/test_source.py',), 'paths': (
+        'tests/cloth_substitution/', 'tests/crafting/woolcloth.dm', 'code/game/objects/items/stacks/cloth_crafting.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only document model/language projections with inert engine seams.
@@ -387,7 +467,8 @@ SUITES = {
                                   'tests/paper_documents/test_copying.py',
                                   'tests/paper_documents/test_authoring.py',
                                   'tests/paper_documents/test_lifecycle.py',
-                                  'tests/paper_documents/test_editor.py'),
+                                  'tests/paper_documents/test_editor.py',
+                                  'tests/paper_documents/test_study.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
@@ -780,6 +861,18 @@ SUITES = {
         'shared_paths': ('interface/skin.dmf', 'interface/interface.dm',
             'code/modules/client/client_procs.dm', 'code/game/mob/login.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
+    # Full read-only status helper projections with inert process/list boundaries.
+    # Shared production sources retain their prior conservative CI selection.
+    'time_of_day_progress': {'files': ('tests/time_of_day_progress/test_progress.py',),
+        'paths': ('tests/time_of_day_progress/', 'code/processes/time_of_day_progress.dm'),
+        'shared_paths': ('code/processes/time_of_day.dm', 'code/__defines/time_of_day.dm',
+            'code/processes/_process.dm', 'code/game/mob/mob.dm', 'civ13.dme')},
+    # Current-world Persistence census and complete largest-faction tally; offline only.
+    'persistence_status': {'files': ('tests/persistence_status/test_status.py',),
+        'paths': ('tests/persistence_status/',), 'shared_paths': (
+            'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
+            'code/game/mob/groups/factions.dm', 'code/predefines.dm',
+            'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

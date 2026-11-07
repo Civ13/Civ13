@@ -8,7 +8,7 @@ namespace Civ13.Launcher.Gui;
 
 // Window front-end for the same launcher steps as the text menu (--console):
 // launcher update check, BYOND setup, public server status and joining, BYOND sign in,
-// community links, optional local hosting and read-only server management.
+// community links, optional local hosting and server management (the Host server tab).
 internal sealed partial class LauncherWindow : Form {
     private static readonly Color HeaderBack = Color.FromArgb(32, 38, 46);
     private static readonly Color HeaderText = Color.FromArgb(236, 239, 243);
@@ -55,7 +55,8 @@ internal sealed partial class LauncherWindow : Form {
         Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
         Font = new Font(FontFamily.GenericMonospace, 9f), BorderStyle = BorderStyle.None
     };
-    private readonly LinkLabel manageLink = new() { Text = "Server management (read-only)", AutoSize = true, Enabled = false };
+    // Opens the Host server tab when host.json configures it, else the read-only registered-instances view.
+    private readonly LinkLabel manageLink = new() { Text = "Registered instances (read-only)", AutoSize = true, Enabled = false };
     private TabPage? hostPage;
     private Label? hostState;
     private Button? hostStart;
@@ -63,9 +64,14 @@ internal sealed partial class LauncherWindow : Form {
     private DiscordPresence? presence;
     private PresenceSettings presenceSettings = new(false, null);
     private readonly CheckBox discordBox = new() { Text = "Show on Discord", AutoSize = true, Visible = false, Margin = new Padding(0, 1, 14, 0) };
+    // Optional Discord sign-in for Civ13 accounts; shown only when discord.json names the sign-in service.
+    private DiscordSignIn? signIn;
+    private HttpClient? signInHttp;
+    private readonly LinkLabel signInLink = new() { AutoSize = true, Visible = false, Margin = new Padding(0, 3, 14, 0) };
     private readonly List<Button> hostActions = [];
     private System.Windows.Forms.Timer? hostPoll;
     private bool hostControlBusy;
+    private bool groupScriptRunning;
 
     public static int Run(string root, Version version) {
         var thread = new Thread(() => {
@@ -113,7 +119,7 @@ internal sealed partial class LauncherWindow : Form {
         };
         Shown += async (_, _) => await Startup();
         FormClosing += async (_, e) => await StopBotBeforeClosing(e);
-        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); presence?.Clear(); presence?.Dispose(); ownedBot.Dispose(); };
+        FormClosed += (_, _) => { waitTimer.Dispose(); transport.Dispose(); signInHttp?.Dispose(); presence?.Clear(); presence?.Dispose(); ownedBot.Dispose(); };
         waitTimer.Tick += (_, _) => UpdatePendingWait();
     }
 
@@ -202,10 +208,16 @@ internal sealed partial class LauncherWindow : Form {
         var tools = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0), Anchor = AnchorStyles.Right };
         discordBox.CheckedChanged += (_, _) => SetDiscordPresence(discordBox.Checked, true);
         tools.Controls.Add(discordBox);
+        signInLink.LinkClicked += async (_, _) => await ToggleSignIn();
+        tools.Controls.Add(signInLink);
         var dataFolder = new LinkLabel { Text = "Launcher data folder", AutoSize = true, Margin = new Padding(0, 3, 14, 0) };
         dataFolder.LinkClicked += (_, _) => Open(new ProcessStartInfo(root) { UseShellExecute = true }, "the launcher data folder");
         manageLink.Margin = new Padding(0, 3, 0, 0);
-        manageLink.LinkClicked += (_, _) => { using var dialog = new ManagementDialog(); dialog.ShowDialog(this); };
+        manageLink.LinkClicked += (_, _) => {
+            if (hostPage != null) { tabs.SelectedTab = hostPage; return; }
+            using var dialog = new ManagementDialog();
+            dialog.ShowDialog(this);
+        };
         tools.Controls.Add(dataFolder);
         tools.Controls.Add(manageLink);
         footer.Controls.Add(community, 0, 0);
@@ -225,8 +237,10 @@ internal sealed partial class LauncherWindow : Form {
         Row("Game folder", profile.GameDirectory);
         Row("World", profile.World + " on port " + profile.Port + " (listed publicly on the BYOND hub)");
         if (profile.Control is { } control) Row("Control", "Save-safe start, stop, restart and update through " + Path.GetFileName(control.Script));
+        if (profile.Control?.Group is { } group) Row("Region group", group.Config + " (every region, deploy and the host service)");
         else Row("Update before start", profile.Update is { } update ? $"Fast-forward to origin/{update.Branch} and rebuild" : "Off");
         Row("Civilizationbot", profile.Bot != null ? "Started with the server if it is not running; see the Civilizationbot tab" : "Not configured");
+        if (profile.MobileUrl is { } mobile) Row("Mobile LAN", mobile + " (paired certificate required; companion must be started separately)");
         hostState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6) };
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
         hostStart.Click += async (_, _) => await StartHosting();
@@ -235,7 +249,8 @@ internal sealed partial class LauncherWindow : Form {
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         buttons.Controls.Add(hostStart);
         if (profile.Control != null) {
-            foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update") }) {
+            foreach (var (text, action) in new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+                    ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await HostAction(action, text);
                 hostActions.Add(button);
@@ -252,10 +267,24 @@ internal sealed partial class LauncherWindow : Form {
         layout.SetColumnSpan(hostState, 2);
         layout.Controls.Add(buttons);
         layout.SetColumnSpan(buttons, 2);
+        var groupButtons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
+        if (profile.Control?.Group != null) {
+            groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
+            foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+                    ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart"),
+                    ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
+                var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+                button.Click += async (_, _) => await GroupAction(action, text);
+                hostActions.Add(button);
+                groupButtons.Controls.Add(button);
+            }
+        }
+        layout.Controls.Add(groupButtons);
+        layout.SetColumnSpan(groupButtons, 2);
         hostOutput = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
         layout.Controls.Add(hostOutput);
         layout.SetColumnSpan(hostOutput, 2);
-        for (var row = 0; row < 6; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        for (var row = 0; row < 8; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         page.Controls.Add(layout);
         page.Enter += async (_, _) => await RefreshHostState();
@@ -289,6 +318,7 @@ internal sealed partial class LauncherWindow : Form {
         if (host != null) {
             tabs.TabPages.Add(hostPage = BuildHostPage(host));
             if (host.Bot is { } bot) tabs.TabPages.Add(BuildBotPage(bot));
+            if (host.Control is { Group: not null } helpControl) tabs.TabPages.Add(BuildHelpPage(helpControl));
             if (host.Control != null || host.Bot != null) {
                 tabs.TabPages.Add(BuildUpdatesPage(host));
                 _ = CheckAllUpdates();
@@ -300,7 +330,17 @@ internal sealed partial class LauncherWindow : Form {
             discordBox.Visible = true;
             SetDiscordPresence(presenceSettings.ShowActivity, false);
         }
+        if (DiscordSignInSettings.Load(root) is { } signInSettings) {
+            signInHttp = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+            signIn = new DiscordSignIn(signInSettings, root, signInHttp, url => {
+                try { using var browser = Process.Start(new ProcessStartInfo(url.AbsoluteUri) { UseShellExecute = true }); return true; }
+                catch (Exception e) when (e is System.ComponentModel.Win32Exception or InvalidOperationException) { return false; }
+            });
+            signInLink.Visible = true;
+            UpdateSignInLink();
+        }
         startupDone = true;
+        if (hostPage != null) manageLink.Text = "Server management";
         manageLink.Enabled = true;
         UpdateReadiness();
     }
@@ -456,7 +496,8 @@ internal sealed partial class LauncherWindow : Form {
             DormantFor(selected.Provider).Remove(selected.Target);
             KnownFor(selected.Provider)[selected.Target] = new KnownServer(verified.Status, $"Checked {verified.Status.CheckedAt:HH:mm:ss} UTC");
             Populate();
-            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            var ticket = await JoinTicket(verified.Status.Port);
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out, ticket);
             WatchGame(game, DiscordPresence.ServerLine(verified.Status));
             joinStatus.Text = $"Started BYOND for {selected.Name}.";
         } catch (TopicWaitException wait) {
@@ -483,8 +524,10 @@ internal sealed partial class LauncherWindow : Form {
         SetBusy(true);
         joinStatus.Text = $"Verifying {selected.Name}...";
         try {
+            // The ticket comes first: the recheck's answer is only fresh for a short while.
+            var ticket = await JoinTicket(selected.Target.Port);
             var verified = await discovery.Recheck(selected);
-            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out);
+            var game = Program.StartNativeGame(verified, byond, desktop, Console.Out, ticket);
             WatchGame(game, DiscordPresence.ServerLine(verified.Status));
             pending = null;
             if (KnownFor(selected.Provider).TryGetValue(selected.Target, out var entry)) {
@@ -563,8 +606,17 @@ internal sealed partial class LauncherWindow : Form {
             ControlAnswer answer;
             try { answer = await Task.Run(() => LocalHosting.RunControl(control, "status")); }
             catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { answer = new ControlAnswer(false, "Status unavailable: " + e.Message, false); }
-            hostState.Text = answer.Message;
-            SetHostBusy(answer.Busy);
+            var busy = answer.Busy;
+            var text = answer.Message;
+            if (control.Group != null) {
+                ControlAnswer group;
+                try { group = await Task.Run(() => LocalHosting.RunGroup(control, "status")); }
+                catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) { group = new ControlAnswer(false, "Group status unavailable: " + e.Message, false); }
+                text += Environment.NewLine + group.Message;
+                busy |= group.Busy;
+            }
+            hostState.Text = text;
+            SetHostBusy(busy || groupScriptRunning);
             return;
         }
         var port = host.Port;
@@ -596,11 +648,23 @@ internal sealed partial class LauncherWindow : Form {
         }
     }
 
+    private const string UnlockQuestion = "Check the save for BYOND lock files (left when a world is killed) and remove them? "
+        + "Only worlds that are stopped with no action running are touched.";
+    private const string ForceUnlockQuestion = "Remove BYOND lock files even from a world that looks running? Use this only when its "
+        + "dd.exe is gone. Removing a lock a running world holds can corrupt its save.";
+
     // Accepted actions finish in the script's worker; the timer follows them until they settle.
     private async Task HostAction(string action, string label) {
         if (host?.Control is not { } control) return;
-        if (action != "update" && MessageBox.Show(this, label + " the server? Players are saved and can rejoin when it is back.", "Civ13 Launcher",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        var forced = action is "kill" or "force-restart" or "force-unlock";
+        var question = action switch {
+            "unlock" => UnlockQuestion,
+            "force-unlock" => ForceUnlockQuestion,
+            _ => forced ? label + " the server? It is ended at once WITHOUT saving: anything since the last completed save is lost. Use this only for a server that hangs."
+                : label + " the server? Players are saved and can rejoin when it is back.",
+        };
+        if (action != "update" && MessageBox.Show(this, question, "Civ13 Launcher",
+                MessageBoxButtons.OKCancel, forced ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
         try {
             var answer = await Task.Run(() => LocalHosting.RunControl(control, action));
@@ -610,6 +674,156 @@ internal sealed partial class LauncherWindow : Form {
             HostLine(label + " failed: " + e.Message);
             SetHostBusy(false);
         }
+    }
+
+    // Group actions run shard_group.py for every region; deploy and restart-host run their .bat in a
+    // hidden cmd.exe and stream its lines here. Nothing opens a console window or takes focus.
+    private async Task GroupAction(string action, string label) {
+        if (host?.Control is not { } control || control.Group == null || hostOutput == null) return;
+        var question = action switch {
+            "update" => "Check out and compile the group's revision in every stopped region?",
+            "restart-host" => "Restart the host service? The worlds keep running.",
+            "unlock" => UnlockQuestion,
+            "force-unlock" => ForceUnlockQuestion,
+            "kill" or "force-restart" => label + " every region? Each is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for servers that hang.",
+            _ => label + " every region? Players are saved and can rejoin when it is back.",
+        };
+        if (action == "deploy") { await ChooseAndDeploy(label); return; }
+        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
+                action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
+        SetHostBusy(true);
+        if (action == "restart-host") {
+            groupScriptRunning = true;
+            HostLine(label + "...");
+            try {
+                var (exit, _) = await RunGroupScript(control, action, false);
+                HostLine(exit == 0 ? label + " finished." : $"{label} stopped with exit code {exit}; see the lines above.");
+            } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+                HostLine(label + " failed: " + e.Message);
+            } finally {
+                groupScriptRunning = false;
+                await RefreshHostState();
+            }
+            return;
+        }
+        try {
+            var answer = await Task.Run(() => LocalHosting.RunGroup(control, action));
+            HostLine(answer.Message);
+            if (!answer.Ok) SetHostBusy(false);
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine(label + " failed: " + e.Message);
+            SetHostBusy(false);
+        }
+    }
+
+    private const string DeployQuestion = "Save, update and restart the regions ticked below. The checkout is pulled and the update is built " +
+        "beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each is saved and " +
+        "stopped (Gaia takes up to ten minutes), gets its new build and starts again, and the host service restarts. Regions left unticked " +
+        "keep running. Players are saved and can rejoin when it is back. If a world will not save, you are asked before anything is " +
+        "stopped without a save.";
+
+    // Asks which regions to update (all ticked; the mainland first in line is marked), then deploys them.
+    private async Task ChooseAndDeploy(string label) {
+        if (host?.Control?.Group is not { } group) return;
+        IReadOnlyList<LocalHosting.GroupRegion> regions;
+        try { regions = LocalHosting.GroupRegions(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read the regions from " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = label, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { Text = DeployQuestion, MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
+        var list = new CheckedListBox { CheckOnClick = true, Width = 460, Height = Math.Min(16, regions.Count) * 20 + 8, IntegralHeight = false };
+        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, true);
+        layout.Controls.Add(list);
+        var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
+        var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
+        var go = new Button { Text = label, DialogResult = DialogResult.OK, AutoSize = true };
+        buttons.Controls.Add(cancel);
+        buttons.Controls.Add(go);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = go;
+        dialog.CancelButton = cancel;
+        // ItemCheck fires before the box changes, so count the pending state.
+        list.ItemCheck += (_, e) => go.Enabled = list.CheckedIndices.Count + (e.NewValue == CheckState.Checked ? 1 : 0) - (e.CurrentValue == CheckState.Checked ? 1 : 0) > 0;
+        if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
+        var chosen = list.CheckedIndices.Cast<int>().Select(index => regions[index].Id).ToList();
+        // Every region ticked runs the whole group, so a region added to the config later is never skipped.
+        await DeployGroup(label, chosen.Count == regions.Count ? [] : chosen);
+    }
+
+    // The whole update (deploy.bat): pull, stage the build beside the running worlds, then once every build is
+    // ready save and stop, install the builds, start and restart the host service.
+    // A region whose world does not save (refused because it is busy, or the save failed) is still running
+    // when deploy.bat stops at the save step; nothing has been updated yet. The operator then chooses:
+    // force-stop those regions without a save and carry on, or start the regions that did stop again.
+    private async Task DeployGroup(string label, IReadOnlyList<string> regions) {
+        if (host?.Control is not { } control || control.Group == null || groupScriptRunning) return;
+        SelectHostTab();
+        SetHostBusy(true);
+        groupScriptRunning = true;
+        ShowServerUpdateBusy();
+        var which = regions.Count == 0 ? "every region" : string.Join(", ", regions);
+        HostLine($"{label}: {which}...");
+        try {
+            var (exit, output) = await RunGroupScript(control, "deploy", false, regions);
+            while (exit == LocalHosting.DeployUnsaved) {
+                var (_, status) = await Task.Run(() => LocalHosting.RunCaptured(LocalHosting.GroupStep(control, "status")));
+                // Regions left out of the deploy keep running on purpose.
+                var unsaved = LocalHosting.UnsavedRegions(status, output).Where(region => regions.Count == 0 || regions.Contains(region.Id)).ToList();
+                if (unsaved.Count == 0) break;
+                var names = string.Join(Environment.NewLine, unsaved.Select(region => "  " + region.Name + ": " + region.Reason));
+                HostLine("Did not save, still running:" + Environment.NewLine + names);
+                var choice = MessageBox.Show(this,
+                    "These regions did not save, so they are still running and nothing has been updated yet:" + Environment.NewLine + Environment.NewLine +
+                    names + Environment.NewLine + Environment.NewLine +
+                    "Yes: force-stop them WITHOUT saving and carry on with the update. They go back to their last completed save, " +
+                    "so anything played there since then is lost." + Environment.NewLine +
+                    "No: cancel the update and start the regions that already stopped again.",
+                    "Civ13 Launcher", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (choice != DialogResult.Yes) {
+                    HostLine("Update cancelled. Starting the regions that stopped again...");
+                    if (regions.Count == 0) HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "start"))).Message);
+                    else foreach (var region in regions) HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "start", null, region))).Message);
+                    return;
+                }
+                foreach (var region in unsaved)
+                    HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "kill", null, region.Id))).Message);
+                HostLine("Carrying on with the update...");
+                (exit, output) = await RunGroupScript(control, "deploy", true, regions);
+            }
+            HostLine(exit == 0 ? label + " finished." : $"{label} stopped with exit code {exit}; see the lines above.");
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine(label + " failed: " + e.Message);
+        } finally {
+            groupScriptRunning = false;
+            await RefreshHostState();
+            await CheckAllUpdates();
+        }
+    }
+
+    // Runs deploy.bat or restart-host.bat, streaming each line to the Host tab; returns its exit code and output.
+    private async Task<(int Exit, string Output)> RunGroupScript(HostControl control, string script, bool resume, IReadOnlyList<string>? regions = null) {
+        var output = new System.Text.StringBuilder();
+        var exit = await Task.Run(() => {
+            using var process = Process.Start(LocalHosting.GroupScriptStep(control, script, resume, regions)) ?? throw new IOException("Could not start cmd.exe.");
+            process.StandardInput.Close();
+            void Line(object _, DataReceivedEventArgs e) {
+                if (e.Data is not { Length: > 0 } text) return;
+                lock (output) output.AppendLine(text);
+                BeginInvoke(() => HostLine(text));
+            }
+            process.OutputDataReceived += Line;
+            process.ErrorDataReceived += Line;
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
+            return process.ExitCode;
+        });
+        lock (output) return (exit, output.ToString());
     }
 
     private void SetHostBusy(bool value) {
@@ -651,6 +865,39 @@ internal sealed partial class LauncherWindow : Form {
         if (hostOutput == null) return;
         if (hostOutput.TextLength > 0) hostOutput.AppendText(Environment.NewLine);
         hostOutput.AppendText(line);
+    }
+
+    private void UpdateSignInLink() {
+        signInLink.Text = signIn?.SignedIn == true ? "Signed in with Discord (sign out)" : "Sign in with Discord";
+    }
+
+    private async Task ToggleSignIn() {
+        if (signIn == null) return;
+        if (signIn.SignedIn) {
+            signIn.SignOut();
+            Console.WriteLine("Signed out of Discord. Joins use your BYOND key only.");
+        } else {
+            signInLink.Enabled = false;
+            Console.WriteLine("Opening Discord sign-in in your browser...");
+            try {
+                await signIn.SignInInteractive();
+                Console.WriteLine("Signed in with Discord. Joins now carry a one-time sign-in ticket.");
+            } catch (DiscordSignInException e) {
+                Console.WriteLine("Discord sign-in failed: " + e.Message);
+            } finally { signInLink.Enabled = true; }
+        }
+        UpdateSignInLink();
+    }
+
+    // Discord is optional: any sign-in failure joins with the BYOND key alone.
+    private async Task<string?> JoinTicket(int port) {
+        if (signIn?.SignedIn != true) return null;
+        try { return await signIn.JoinTicket(port); }
+        catch (DiscordSignInException e) {
+            Console.WriteLine("Joining without Discord sign-in: " + e.Message);
+            UpdateSignInLink();
+            return null;
+        }
     }
 
     private void Open(ProcessStartInfo start, string what) => Open(() => { using var process = Process.Start(start); }, what);

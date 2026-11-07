@@ -4,8 +4,10 @@ using System.Windows.Forms;
 
 namespace Civ13.Launcher.Gui;
 
-// Updates tab: one row per hosted component (the server through gaia_host.py, the bot through
-// control.php). Each check-update only fetches; Update uses the component's own update path.
+// Updates tab: one row per hosted component (the server through gaia_host.py, or shard_group.py for a
+// region group; the bot through control.php). Each check-update only fetches; Update uses the
+// component's own update path. For a region group that is the whole save, pull, compile and restart
+// (deploy.bat), so it is offered while the worlds are running.
 // Checks run at startup, when the tab opens, and every 30 minutes while the launcher is open.
 internal sealed partial class LauncherWindow {
     private static readonly TimeSpan UpdateCheckEvery = TimeSpan.FromMinutes(30);
@@ -38,11 +40,17 @@ internal sealed partial class LauncherWindow {
             layout.Controls.Add(button);
             return (state, button);
         }
-        if (profile.Control != null) (serverUpdate, serverUpdateButton) = Row("Server", () => HostAction("update", "Update"));
+        if (profile.Control?.Group != null) {
+            (serverUpdate, serverUpdateButton) = Row("Server", ServerDeploy);
+            serverUpdateButton!.Text = "Save, update and restart";
+        } else if (profile.Control != null) (serverUpdate, serverUpdateButton) = Row("Server", () => HostAction("update", "Update"));
         if (profile.Bot != null) (botUpdate, botUpdateButton) = Row("Civilizationbot", UpdateBot);
         var note = new Label {
             AutoSize = true, Margin = new Padding(0, 14, 0, 0),
-            Text = "Checking only fetches; nothing changes until you press Update. The server must be stopped before it updates. " +
+            Text = (profile.Control?.Group != null
+                       ? "Checking only fetches; nothing changes until you press a button. Save, update and restart builds the update beside the " +
+                         "running worlds, then saves, stops and restarts the regions you tick on it; a world that will not save is never stopped without asking. "
+                       : "Checking only fetches; nothing changes until you press Update. The server must be stopped before it updates. ") +
                    "Updating the bot stops it, pulls main and starts it again."
         };
         layout.Controls.Add(note);
@@ -69,9 +77,24 @@ internal sealed partial class LauncherWindow {
 
     private async Task CheckServerUpdate() {
         if (host?.Control is not { } control || serverUpdate == null) return;
+        if (control.Group != null && groupScriptRunning) return; // a deploy is running; its row says so
         serverUpdate.Text = "Checking...";
-        serverCheck = await Check("server", () => LocalHosting.RunCaptured(LocalHosting.ControlStep(control, "check-update")));
-        ShowCheck(serverCheck, serverUpdate, serverUpdateButton);
+        // A group answers for every region, so a region behind the mainland counts too.
+        serverCheck = await Check("server", () => LocalHosting.RunCaptured(control.Group != null
+            ? LocalHosting.GroupStep(control, "check-update") : LocalHosting.ControlStep(control, "check-update")));
+        if (control.Group != null && groupScriptRunning) return; // a deploy started meanwhile; its row says so
+        ShowCheck(serverCheck, serverUpdate, serverUpdateButton, control.Group != null);
+    }
+
+    private Task ServerDeploy() => ChooseAndDeploy("Save, update and restart");
+
+    private void ShowServerUpdateBusy() {
+        if (serverUpdate != null) serverUpdate.Text = "Building, then saving, updating and restarting; follow it on the Host server tab.";
+        if (serverUpdateButton != null) serverUpdateButton.Enabled = false;
+    }
+
+    private void SelectHostTab() {
+        if (hostPage != null) tabs.SelectedTab = hostPage;
     }
 
     private async Task CheckBotUpdate() {
@@ -90,10 +113,12 @@ internal sealed partial class LauncherWindow {
         }
     }
 
-    private void ShowCheck(UpdateCheck check, Label state, Button? button) {
-        state.Text = check.Describe() + $" Checked {DateTime.Now:t}.";
+    private void ShowCheck(UpdateCheck check, Label state, Button? button, bool deploys = false) {
+        // A deploy stops the worlds itself, so "stop the server first" is no reason to hold it back.
+        var deployable = deploys && check.OnlyNeedsStop;
+        state.Text = (deployable ? check.Describe(withReason: false) : check.Describe()) + $" Checked {DateTime.Now:t}.";
         // can_update already says why not: the server must be stopped first; the bot needs a clean main checkout.
-        if (button != null) button.Enabled = check.HasUpdate && check.CanUpdate;
+        if (button != null) button.Enabled = !(deploys && groupScriptRunning) && check.HasUpdate && (check.CanUpdate || deployable);
         var count = (serverCheck?.HasUpdate == true ? 1 : 0) + (botCheck?.HasUpdate == true ? 1 : 0);
         if (updatesPage != null) updatesPage.Text = count == 0 ? "Updates" : $"Updates ({count})";
         if (check.HasUpdate) Console.WriteLine($"{(check.Component == "bot" ? "Civilizationbot" : "Server")}: {check.Describe()}");

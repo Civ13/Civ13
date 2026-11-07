@@ -109,10 +109,17 @@
 	if (processing_only)
 		return recipes
 	var/chosen_list = craftlist_lists[faction]
+	// Wool retains every wool-specific route and can also pay ordinary cloth
+	// recipes. Suppress only byte-identical alternatives, not different costs,
+	// products, supplied materials or research/era gates.
+	var/list/native_textile_rows = list()
+	if (type == /material/woolcloth)
+		for (var/list/row in chosen_list)
+			if (row[1] == "[type]/") native_textile_rows[jointext(row.Copy(2), ",")] = TRUE
 	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13))
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] spoon", /obj/item/weapon/material/kitchen/utensil/spoon, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
-	for(var/i in chosen_list)
+	for(var/list/i in chosen_list)
 		// The legacy flat-research structures are dead crafts under the default
 		// research-tree mode -- only surface them in the specific game modes that
 		// still use them (Resource-Based Research feeds items to the research desk;
@@ -143,7 +150,10 @@
 			research_allowed = map.is_node_done(research_faction, node_req)
 		else
 			research_allowed = (current_res[1]>=text2num(i[9]) && current_res[2]>=text2num(i[10]) && current_res[3]>=text2num(i[11]))
-		if(i[1]== "[type]/" && research_allowed && map && recipe_age_allowed(text2num(i[12])))
+		var/material_allowed = i[1] == "[type]/"
+		if (type == /material/woolcloth && i[1] == "/material/cloth/" && !native_textile_rows[jointext(i.Copy(2), ",")])
+			material_allowed = TRUE
+		if(material_allowed && research_allowed && map && recipe_age_allowed(text2num(i[12])))
 			var/supmat = i[13]
 			if (supmat == "null")
 				supmat = null

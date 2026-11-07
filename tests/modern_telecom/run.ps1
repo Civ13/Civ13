@@ -13,6 +13,8 @@ Push-Location -LiteralPath $repo
 try {
     $commit = git rev-parse HEAD
     if ($LASTEXITCODE -ne 0) { throw 'Source revision unavailable' }
+    $pin = (Get-Content -LiteralPath 'tools/byond/version.json' -Raw | ConvertFrom-Json).version
+    $pinBuild = [int]$pin.Split('.')[1]
     $world = Get-Content -LiteralPath 'code/world.dm' -Raw
     $world = $world.Replace('/world/New()', '/world/proc/unused_modern_telecom_startup()')
     $offset = $world.IndexOf('/world/proc/unused_modern_telecom_startup()')
@@ -32,7 +34,7 @@ try {
     [IO.File]::WriteAllText((Join-Path $repo ($prefix + '.dme')), $source + "`n#include `"tests/modern_telecom/game.dm`"`n")
     $build = & (Join-Path $ByondBin $compilerName) -max_errors 0 ($prefix + '.dme') 2>&1
     $build | Tee-Object -FilePath (Join-Path $temporary 'compile.log')
-    if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch '516\.1681') { throw 'Pinned full-source fixture compile failed' }
+    if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch [regex]::Escape($pin)) { throw 'Pinned full-source fixture compile failed' }
     foreach ($extension in @('.dmb','.rsc')) { Copy-Item -LiteralPath ($prefix + $extension) -Destination (Join-Path $temporary ('probe' + $extension)) }
     Copy-Item -LiteralPath 'config' -Destination $temporary -Recurse
     $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-params', "tested_commit=$commit", '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
@@ -41,7 +43,7 @@ try {
     Write-Output $log
     $result = Get-Content -LiteralPath (Join-Path $temporary 'result.json') -Raw | ConvertFrom-Json
     $result | ConvertTo-Json -Compress
-    if ($runtime.ExitCode -ne 0 -or $result.failures -ne 0 -or $result.commit -ne $commit -or $result.byond_build -ne 1681 -or $log -match 'runtime error|Bad ref|FAIL:') { throw 'Native placement/save contracts failed' }
+    if ($runtime.ExitCode -ne 0 -or $result.failures -ne 0 -or $result.commit -ne $commit -or $result.byond_build -ne $pinBuild -or $log -match 'runtime error|Bad ref|FAIL:') { throw 'Native placement/save contracts failed' }
 } finally {
     if ($runtime -and !$runtime.HasExited) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit() }
     foreach ($extension in @('.dme','_world.dm','_globals.dm','_telecom.dm','.dmb','.rsc')) {
