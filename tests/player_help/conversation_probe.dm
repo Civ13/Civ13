@@ -21,7 +21,7 @@
     check(findtext(rendered_questions, "Earlier &lt;script&gt;answer&lt;/script&gt; &amp; one"), "previous answer escaped as text")
     check(findtext(rendered_questions, "Crafting Atlas</a>") < findtext(rendered_questions, "Previous exchanges"), "exchange history below reference links")
     check(findtext(rendered_questions, "Previous exchanges") < findtext(rendered_questions, "Another question"), "previous exchanges kept in order")
-    check(findtext(rendered_questions, "action=followup;token=[alice.player_help_action_token];turn=2"), "retained exchange has targeted follow-up")
+    check(findtext(rendered_questions, "name='token' value='[alice.player_help_action_token]'><input type='hidden' name='turn' value='2'>"), "retained exchange has targeted follow-up")
     check(!findtext(rendered_questions, "How do I stay warm?"), "other client's history not shown")
     var/legacy_rendered = D.render_answer("Legacy reply", "plain-v1", null, "Legacy question", list())
     check(findtext(legacy_rendered, "Legacy question") && !findtext(legacy_rendered, "Previous exchanges"), "legacy worker current question shown without prior context")
@@ -170,5 +170,43 @@
     check(!("conversation" in legacy), "old worker standalone request omits new fields")
     D.clear_slot(1)
     check(D.persistence_runtime_var("conversation_clients") && D.persistence_runtime_var("pending"), "transcripts and pending questions excluded from datum saves")
+    // The answer window's own question box submits through the real action handler.
+    D.accounts = list()
+    D.global_times = list()
+    D.conversation_supported = TRUE
+    var/mob/probe_client/clicker = new
+    D.probe_account = md5("clicker account")
+    probe_clients += clicker
+    D.remember(clicker, "How do I make a fire?", "Use a fire starter.")
+    D.remember(clicker, "Where is flint?", "Near rivers.")
+    var/clicker_html = D.render_answer("Answer", "plain-v1", clicker, "Where is flint?", list(clicker.player_help_turns[1]))
+    check(findtext(clicker_html, "name='question'") && findtext(clicker_html, "name='token' value='[clicker.player_help_action_token]'") && findtext(clicker_html, "name='turn' value='1'"), "answer window carries follow-up question boxes")
+    var/clicker_token = clicker.player_help_action_token
+    D.handle_action(clicker, list("action" = "followup", "token" = clicker_token, "question" = "   "))
+    check(!D.pending.len, "empty follow-up box sends nothing")
+    D.handle_action(clicker, list("action" = "followup", "token" = "stale", "question" = "Stale window"))
+    check(!D.pending.len && clicker.player_help_turns.len == 2, "stale window token sends nothing and keeps the conversation")
+    D.handle_action(clicker, list("action" = "followup", "token" = clicker_token, "question" = "What about tinder?"))
+    var/list/box_request = D.read_json("spool/1.request.json", 16384)
+    var/list/box_all = box_request["conversation"]["turns"]
+    check(D.pending.len == 1 && box_request["question"] == "What about tinder?" && box_all.len == 2, "follow-up box submits with the whole conversation")
+    D.clear_slot(1)
+    D.accounts = list()
+    D.global_times = list()
+    D.handle_action(clicker, list("action" = "followup", "token" = clicker_token, "turn" = "1", "question" = "And kindling?"))
+    var/list/box_target = D.read_json("spool/1.request.json", 16384)
+    var/list/box_turns = box_target["conversation"]["turns"]
+    check(D.pending.len == 1 && box_turns.len == 1 && box_turns[1]["question"] == "How do I make a fire?", "targeted follow-up box sends only the selected exchange")
+    D.clear_slot(1)
+    D.accounts = list()
+    D.global_times = list()
+    D.handle_action(clicker, list("action" = "followup", "token" = clicker_token, "turn" = "01", "question" = "Bad turn"))
+    check(!D.pending.len, "malformed turn sends nothing")
+    D.handle_action(clicker, list("action" = "reset", "token" = clicker_token))
+    check(!clicker.player_help_turns.len && !clicker.player_help_action_token, "new conversation clears through the action handler")
+    D.handle_action(clicker, list("action" = "followup", "token" = clicker_token, "question" = "After reset"))
+    check(!D.pending.len, "window from a cleared conversation sends nothing")
+    D.probe_account = null
+    probe_clients -= clicker
     D.reset_conversation(bob)
     probe_clients = list()

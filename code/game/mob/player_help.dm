@@ -106,9 +106,16 @@ var/global/datum/player_help_service/player_help_service = new
 /datum/player_help_service/Topic(href, list/href_list)
 	// The global service ref is public. The actor always comes from usr.client;
 	// a copied URL cannot select another account, client or conversation.
-	var/client/C = usr ? usr.client : null
+	handle_action(usr ? usr.client : null, href_list)
+
+// Every refusal tells the player why; a click that does nothing reads as broken.
+/datum/player_help_service/proc/handle_action(client/C, list/href_list)
+	if (!C || !islist(href_list))
+		return
 	expire_conversations()
 	if (!valid_action(C, href_list["token"]))
+		if (C in clients)
+			C << "This help window is out of date: the conversation it belongs to was cleared after a reconnect, a change of body, a new conversation or 15 minutes without questions. Use Ask for help in the Help! tab to ask again."
 		return
 	if (href_list["action"] == "reset")
 		reset_conversation(C)
@@ -118,20 +125,36 @@ var/global/datum/player_help_service/player_help_service = new
 		if (!available() || !conversation_supported || !C.player_help_acknowledged || !C.player_help_turns.len)
 			C << "Follow-up context is unavailable. Start a new conversation or try again later."
 			return
-		if (isnull(href_list["turn"]))
-			C.ask_player_help()
-			return
+		var/list/pair
+		var/turn
 		var/raw_turn = href_list["turn"]
-		var/turn = istext(raw_turn) ? text2num(raw_turn) : null
-		if (!isnum(turn) || turn != round(turn) || turn < 1 || turn > C.player_help_turns.len || "[turn]" != raw_turn)
+		if (!isnull(raw_turn))
+			turn = istext(raw_turn) ? text2num(raw_turn) : null
+			if (!isnum(turn) || turn != round(turn) || turn < 1 || turn > C.player_help_turns.len || "[turn]" != raw_turn)
+				C << "That exchange is no longer available. Please choose a current conversation."
+				return
+			pair = C.player_help_turns[turn]
+		// The help window carries its own question box, so no separate dialog
+		// can open behind it. Older windows without the box still prompt.
+		var/question
+		if ("question" in href_list)
+			question = href_list["question"]
+			question = istext(question) ? trim(question) : null
+			if (!length(question))
+				C << "Type your follow-up question in the box first."
+				return
+			submit(C, question, pair)
 			return
-		var/list/pair = C.player_help_turns[turn]
 		var/generation = C.player_help_generation
 		var/mob/body = C.mob
-		var/question = C.player_help_prompt()
+		question = C.player_help_prompt()
 		expire_conversations()
-		if (question && valid_action(C, href_list["token"]) && C.mob == body && C.player_help_generation == generation && turn <= C.player_help_turns.len && C.player_help_turns[turn] == pair)
+		if (!question)
+			return
+		if (valid_action(C, href_list["token"]) && C.mob == body && C.player_help_generation == generation && (!pair || (turn <= C.player_help_turns.len && C.player_help_turns[turn] == pair)))
 			submit(C, question, pair)
+		else
+			C << "Your conversation changed while you were typing, so the question was not sent. Please ask again."
 
 /datum/player_help_service/proc/valid_action(client/C, token)
 	if (C && (C in clients))
@@ -552,13 +575,19 @@ var/global/datum/player_help_service/player_help_service = new
 				history = "<h3>Previous exchanges</h3>"
 			history += "<p><b>Question:</b> [html_encode(pair["question"])]</p><pre style='white-space:pre-wrap'>[html_encode(pair["answer"])]</pre>"
 			if (C.player_help_action_token && C.player_help_acknowledged)
-				history += "<p><a href='?src=\ref[src];action=followup;token=[C.player_help_action_token];turn=[turn]'>Follow up on this exchange</a></p>"
+				history += followup_form(C, turn, "Follow up on this exchange")
 	if (C && C.player_help_action_token)
 		var/actions = "<a href='?src=\ref[src];action=reset;token=[C.player_help_action_token]'>New conversation</a>"
 		if (C.player_help_acknowledged && C.player_help_turns.len)
-			actions = "<a href='?src=\ref[src];action=followup;token=[C.player_help_action_token]'>Follow up</a> | [actions]"
+			body += followup_form(C, null, "Follow up")
 		body += "<p>[actions]</p>"
 	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[current_question][body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p>[history]</body></html>"
+
+// A question box inside the window itself, submitted through Topic like the
+// Crafting Atlas search. The token and turn are server-generated values.
+/datum/player_help_service/proc/followup_form(client/C, turn, label)
+	var/target = isnum(turn) ? "<input type='hidden' name='turn' value='[turn]'>" : ""
+	return "<form action='byond://?' method='get'><input type='hidden' name='src' value='\ref[src]'><input type='hidden' name='action' value='followup'><input type='hidden' name='token' value='[C.player_help_action_token]'>[target]<input name='question' maxlength='500' size='48' aria-label='[label]' placeholder='Ask a follow-up question'> <input type='submit' value='[label]'></form>"
 
 // Bounded display subset of CommonMark 0.31.2, not an HTML trust boundary
 // delegated to the model. Only these routines generate answer markup.
