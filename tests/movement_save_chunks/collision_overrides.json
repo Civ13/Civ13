@@ -18,7 +18,7 @@
     },
     {
       "path": "code/game/mob/mob_movement.dm",
-      "sha256_normalized": "5b3ea69d596d913d908e674f8ed9aa605ae5815f0e94bd5feb5a1fdbdf33934b",
+      "sha256_normalized": "563dfecf3ae04960d22fcf7d2e6f16c672c51fada44ec7c17b5074d01169cae3",
       "declarations": [
         {
           "line": 81,
@@ -38,10 +38,10 @@
     },
     {
       "path": "code/game/objects/covers.dm",
-      "sha256_normalized": "243c808efeca0c2f174e00671f5b6640125150ae2b34ae7267c8e2a94d33250d",
+      "sha256_normalized": "2372dbcc1bccaf53b6a0241de378d087317ee80c9524b873d6529f6dc925fca1",
       "declarations": [
         {
-          "line": 180,
+          "line": 185,
           "declaration": "/obj/covers/CanPass(var/atom/movable/mover)"
         }
       ]
