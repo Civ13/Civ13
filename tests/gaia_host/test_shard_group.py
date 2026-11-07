@@ -1488,6 +1488,31 @@ class HandoverTests(unittest.TestCase):
             self.write_group()
         self.group['regions'][0]['standby_port'] = 1799
 
+    def test_default_standby_port_skips_the_transfer_relay_and_doorman_ports(self):
+        # The live earth group: transfer ports are port + 10, so the plain default standby
+        # port was the region's own transfer agent and every handover was refused.
+        self.group['regions'][0].update(transfer_port=1730)
+        self.group['regions'][1].update(transfer_port=1731)
+        self.group.update(relay_port=1732, doorman_port=1733)
+        group = self.write_group()
+        ports = {r['id']: r['standby_port'] for r in group['regions']}
+        self.assertEqual(ports, {'gaia': 1734, 'deep': 1735})
+        used = {1720, 1721, 1730, 1731, 1732, group['relay_control_port'], 1733}
+        self.assertFalse(used & set(ports.values()))
+        # A host.json written before standby ports were resolved asks the group.
+        config = shard_group.region_config(group, group['regions'][0])
+        config.pop('standby_port')
+        self.assertEqual(shard_group.RegionHost(config, self.machine).standby_port(), 1734)
+        config['group_config'] = str(self.base / 'missing.json')
+        self.assertEqual(shard_group.RegionHost(config, self.machine).standby_port(), 1730)
+        # An explicit standby port may not take another port of the group.
+        for clash in (1730, 1732, 1733):
+            self.group['regions'][1]['standby_port'] = clash
+            with self.assertRaisesRegex(ValueError, 'standby_port'):
+                self.write_group()
+        self.group['regions'][1]['standby_port'] = 1799
+        self.assertEqual(self.write_group()['regions'][1]['standby_port'], 1799)
+
     def test_handover_reaches_every_region_from_the_command_line(self):
         group, host = self.staged()
         with mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \

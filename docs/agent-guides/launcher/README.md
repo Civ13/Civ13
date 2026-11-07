@@ -18,6 +18,12 @@ edits only the group config's overlay folders, offers a fixed list (config.local
 config/*.txt|json minus shard_group.py GENERATED and kept copies), and its rules mirror shard_group.py
 merge_config and KEPT_COPY; change both together. Save and apply runs `config-apply` (no compile).
 
+<!-- 2026-11-07: staged builds and handover in the Host tab -->
+Since #3906 deploy.bat hands running regions over to the staged build instead of stopping them; the
+deploy dialog (DeployQuestion) says so. The Host tab has **Build update** (`shard_group.py stage`, no
+kick) and the group status line shows each region's `stage` phase and a `standby` world via
+LocalHosting.DescribeStage; keep its wording in step with shard_group.py stage phases.
+
 <!-- 2026-11-06: Save, update and restart -->
 With control.group set, the Updates tab's server row uses `shard_group.py check-update` and its button
 runs deploy.bat for the ticked regions (all ticked = whole group), the same as the Host tab button. Val
