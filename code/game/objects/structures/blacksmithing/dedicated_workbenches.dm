@@ -56,7 +56,7 @@
 		if (!(head.type in list(/obj/item/weapon/flint, /obj/item/weapon/flint/sharpened)) || !F.sharpened) return null
 		suffix = "flint"
 	else
-		var/list/heads = list(/obj/item/stack/arrowhead/stone = "stone", /obj/item/stack/arrowhead/copper = "copper", /obj/item/stack/arrowhead/iron = "iron", /obj/item/stack/arrowhead/bronze = "bronze", /obj/item/stack/arrowhead/steel = "steel", /obj/item/stack/arrowhead/vial = "vial")
+		var/list/heads = list(/obj/item/stack/arrowhead/stone = "stone", /obj/item/stack/arrowhead/copper = "copper", /obj/item/stack/arrowhead/iron = "iron", /obj/item/stack/arrowhead/bronze = "bronze", /obj/item/stack/arrowhead/steel = "steel", /obj/item/stack/arrowhead/vial = "vial", /obj/item/stack/arrowhead/flint = "flint")
 		suffix = heads[head.type]
 		if (!suffix) return null
 		var/obj/item/stack/S = head
