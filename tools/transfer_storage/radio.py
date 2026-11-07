@@ -21,6 +21,7 @@ HEARTBEAT_TTL = 150.0      # seconds a peer relay counts as linked after its las
 MAX_MESSAGE = 256
 MAX_NAME = 64
 MAX_TEXT = 32              # language, verb, relay name, frequency as text
+MAX_BATCH = 50             # envelopes per send_batch call (the world queues at most 50)
 KEY = re.compile(r'^[a-z0-9_-]{1,16}$')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 
@@ -93,6 +94,21 @@ class RadioRelay:
         }
         self._outbox.append(clean)
         return clean['id']
+
+    def send_batch(self, envelopes):
+        """Record several messages in one call. Each envelope is checked on its own,
+        so one bad envelope does not drop the rest. Returns the ids in order, with
+        None where an envelope was refused, and the refusals by index."""
+        if not isinstance(envelopes, list) or len(envelopes) > MAX_BATCH:
+            raise RadioError('envelopes must be a list of at most %d entries' % MAX_BATCH)
+        ids, errors = [], []
+        for index, envelope in enumerate(envelopes):
+            try:
+                ids.append(self.send(envelope))
+            except RadioError as error:
+                ids.append(None)
+                errors.append({'index': index, 'error': str(error)})
+        return {'ids': ids, 'errors': errors}
 
     def heartbeat(self, relays):
         """The world's operational relays: a list of {key, condition}."""

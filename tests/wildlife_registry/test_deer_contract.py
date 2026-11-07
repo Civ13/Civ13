@@ -28,7 +28,7 @@ class DeerRegistryTests(unittest.TestCase):
     def test_registration_and_conception_caps_remain_on_the_shared_registry(self):
         # Base deer and dik-dik constructors register; both Life gates read the same cap.
         self.assertEqual(self.deer.count('deer_count |= src'), 2)
-        self.assertEqual(self.deer.count('deer_count.len < 30'), 2)
+        self.assertEqual(self.deer.count('deer_count.len < 150'), 2)
         self.assertNotIn('deer_count &= src', self.deer)
 
     def test_native_cases_include_the_deer_pair(self):

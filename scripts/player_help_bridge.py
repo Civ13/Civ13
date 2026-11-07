@@ -274,6 +274,9 @@ def recipe_conditions(recipe):
     return formatted
 
 
+RAIN_BARREL_IDS = ('/obj/item/weapon/reagent_containers/glass/barrel', '/obj/item/weapon/reagent_containers/glass/barrel/modern')
+
+
 def recipe_context(path):
     """Project the already player-facing atlas, excluding source/developer fields."""
     atlas = bounded_json(path, 16 * 1024 * 1024)
@@ -293,8 +296,8 @@ def recipe_context(path):
         text = '\n'.join(parts)[:2000]
         topic = str(recipe.get('name', ''))[:150].lower()
         outputs = recipe.get('outputs', [])
-        if isinstance(outputs, list) and any(isinstance(row, dict) and row.get('id') == '/obj/structure/reagent_dispensers/dew_collector' for row in outputs):
-            topic += ' rain collector rainwater collector'
+        if isinstance(outputs, list) and any(isinstance(row, dict) and row.get('id') in RAIN_BARREL_IDS for row in outputs):
+            topic += ' rain barrel rain collector rainwater collector dew collector'
         result.append({'topic': topic, 'text': text, 'source': 'recipe', 'catalog': str(recipe.get('kind', ''))})
     return result
 
@@ -773,7 +776,7 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
     selections = [
         ('code/game/objects/structures/blacksmithing/refining.dm', '/obj/structure/furnace/attackby', '/obj/structure/furnace/blast_furnace', 'iron ingots ore bloomery fuel smelting sponge iron'),
         ('code/game/objects/structures/blacksmithing/blacksmithing.dm', '/obj/structure/anvil/attackby', '/////////IRON//////////', 'iron ingots sponge anvil crafting skill'),
-        ('code/modules/1713/dew_collector.dm', '/obj/structure/reagent_dispensers/dew_collector\n', '/mob/proc/dew_drawing_wait', 'dew collector rain collector rainwater collecting barrel'),
+        ('code/modules/1713/rain_barrel.dm', '/obj/item/weapon/reagent_containers/glass/barrel\n', '// Legacy dew collectors', 'rain barrel rain collector rainwater dew collector'),
     ]
     root = Path(root).resolve()
     for relative, first, last, topic in selections:
@@ -795,20 +798,23 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
             excerpt = excerpt[:excerpt.index('\t\telse if (istype(I, /obj/item/weapon/material))')] + excerpt[excerpt.index('/obj/structure/furnace/attack_hand'):]
         elif relative.endswith('blacksmithing.dm'):
             excerpt = excerpt[:excerpt.index('\telse\n')] + excerpt[excerpt.index('\t\telse if (istype(P, /obj/item/stack/ore/iron_sponge))'):]
-        elif relative.endswith('dew_collector.dm'):
-            expected = ('max_capacity = 200', 'var/collecting = TRUE', 'collecting = !collecting',
-                        'collection_seconds >= 60', 'reagents.add_reagent("water", min(rate, max_capacity - reagents.total_volume))',
+        elif relative.endswith('rain_barrel.dm'):
+            expected = ('var/collects_rain = TRUE', '/obj/item/weapon/reagent_containers/glass/barrel/jerrycan\n\tcollects_rain = FALSE',
+                        '!is_open_container()', 'collection_seconds >= 60',
+                        'reagents.add_reagent("water", min(rate, reagents.maximum_volume - reagents.total_volume))',
                         'findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon")',
-                        'A.weather == WEATHER_NONE', 'return 10', 'return 2',
-                        'The collecting cover is [collecting ? "open" : "closed"]')
+                        'A.weather == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
             if any(marker not in excerpt for marker in expected):
-                raise ValueError('Reviewed dew collector behavior changed')
-            excerpt += ('\nReviewed guidance: A new collector cover starts open. Examine the collector '
-                        'before toggling: using a hand toggles the cover, so opening an already-open '
-                        'cover would close it. Under the stated outdoor, weather and temperature guards, '
-                        'qualifying rain adds 10 units per collected minute; qualifying clear night or '
-                        'early morning adds 2 units, up to 200 units capacity. Interrupted collection '
-                        'and unavailable weather do not guarantee water.')
+                raise ValueError('Reviewed rain barrel behavior changed')
+            excerpt += ('\nReviewed guidance: There is no separate dew or rain collector; an ordinary '
+                        'wood or steel barrel does the job. A new empty barrel starts with its lid off. '
+                        'Examine it before using it in hand: using it in hand toggles the lid, so doing '
+                        'that to an open barrel closes it. Set the open barrel down outdoors with no roof '
+                        'over its tile. Rain adds 10 units of water per minute; a clear, above-freezing '
+                        'night or early morning adds 2 units of dew per minute, until the barrel is full. '
+                        'A closed, carried or roofed barrel collects nothing, and jerrycans and fuel tanks '
+                        'never do. Rain mixes into whatever the open barrel already holds. Unavailable '
+                        'weather does not guarantee water.')
         # Each snippet carries provenance for diagnostics, not authority or instructions.
         result.append({'topic': topic, 'source': 'code', 'sha256': hashlib.sha256(raw).hexdigest(), 'text': 'CURRENT GAMEPLAY CODE (' + topic + '):\n' + excerpt})
     result.extend(bronze_knowledge(root))

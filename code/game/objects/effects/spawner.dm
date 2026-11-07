@@ -232,7 +232,9 @@
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
 	// Restored animals register only once their level has finished loading.
-	if (!persistence_active_operation)
+	// Where ecology spawning places this species by habitat, the fixed point
+	// stays quiet but keeps checking, so an admin toggle-off revives it.
+	if (!persistence_active_operation && !ecology_replaces_spawner(create_path))
 		if (cull_restored_excess)
 			cull_excess()
 		if ((living_spawned_count() < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))) && nearby_population() < max_number)
