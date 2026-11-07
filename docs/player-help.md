@@ -341,10 +341,10 @@ outside the retrieval allowlist.
 
 The worker also projects the Atlas's reviewed acquisition routes, including
 conditions and map limitations, while omitting source paths and raw source text.
-“Rain collector” and “rainwater collector” select the existing dew collector
-recipe and the reviewed collector behavior; its research and map gates still
-apply. New collectors start open; examine the current cover state before using
-the hand action, which toggles it. The sand terrain is a gathering
+“Rain collector”, “rainwater collector” and “dew collector” select the barrel
+recipe and the reviewed rain barrel behavior; its research and map gates still
+apply. New empty barrels start open; examine the lid state before using the
+barrel in hand, which toggles the lid. The sand terrain is a gathering
 source, while the collected sand stack is a separate item. Missing Atlas routes
 do not prove an item has no uses or sources.
 

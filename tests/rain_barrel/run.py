@@ -1,4 +1,4 @@
-"""Offline production-path dew regression. Never opens a client or server port."""
+"""Offline production-path rain barrel regression. Never opens a client or server port."""
 import argparse
 import hashlib
 import json
@@ -11,13 +11,13 @@ import tempfile
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
-CORE = 'code/modules/1713/dew_collector.dm'
+CORE = 'code/modules/1713/rain_barrel.dm'
 CONTROLS = {
-    'click': ('return TRUE // Consume cancelled clicks too; block generic dispenser refill.', 'return FALSE // Restore inherited refill fallthrough.', 'FAIL: cancelled click conserves water'),
-    'cap': ('max_capacity = 200', 'max_capacity = 2000', 'FAIL: capacity bounds collection'),
     'exposure': ('A.location != AREA_OUTSIDE', 'FALSE', 'FAIL: indoors rejected'),
     'timing': ('var/elapsed = min(2, max(0, configured_seconds), max(0, (world.time - last_collection_tick) / 10))', 'var/elapsed = 600', 'FAIL: delayed tick cannot replay backlog'),
-    'persistence': ('"last_collection_tick", "drawing", "retired_collector"', '"last_collection_tick", "retired_collector"', 'FAIL: drawing lock excluded'),
+    'persistence': ('list("collection_seconds", "collection_mode", "last_collection_tick")', 'list("collection_mode", "last_collection_tick")', 'FAIL: runtime field excluded: collection_seconds'),
+    'lid': ('if (!collects_rain || QDELETED(src) || !is_open_container())\n\t\treset_rain_collection()', 'if (!collects_rain || QDELETED(src))\n\t\treset_rain_collection()', 'FAIL: closed barrel leaves the object loop'),
+    'legacy': ('reagents.trans_to_holder(B.reagents, reagents.total_volume)', 'reagents.clear_reagents()', 'FAIL: legacy collector keeps its water'),
 }
 
 
@@ -48,19 +48,21 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     if any(args.output.iterdir()):
         parser.error('Preserve existing evidence; use an empty output directory')
+    pin = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
     binary = args.byond_bin.resolve()
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    prefix = '.dew_probe_' + uuid.uuid4().hex
+    prefix = '.rain_probe_' + uuid.uuid4().hex
     generated = [ROOT / (prefix + suffix) for suffix in
-                 ('.dme', '_world.dm', '_globals.dm', '_dew.dm', '.dmb', '.rsc')]
+                 ('.dme', '_world.dm', '_globals.dm', '_rain.dm', '.dmb', '.rsc')]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    paths = [CORE, 'code/modules/persistence/saving.dm',
+    paths = [CORE, 'code/modules/reagents/reagent_containers/glass.dm',
+             'code/modules/persistence/saving.dm',
              'code/modules/persistence/loading.dm', 'code/modules/persistence/functions.dm',
-             'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm',
-             'tests/dew_collector/probe.dm', 'tests/dew_collector/run.py']
-    metadata = {'head_sha': commit, 'control': args.negative_control,
+             'config/crafting/material_recipes_global.txt',
+             'tests/rain_barrel/probe.dm', 'tests/rain_barrel/run.py']
+    metadata = {'head_sha': commit, 'control': args.negative_control, 'byond_pin': pin,
                 'source_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}}
     (args.output / 'metadata.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
     (args.output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
@@ -69,7 +71,7 @@ def main():
         start = world.index('/world/New()')
         parent = world.index('\n\t..()', start)
         world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
-        world = world.replace('/world/New()', '/world/proc/unused_dew_startup()', 1)
+        world = world.replace('/world/New()', '/world/proc/unused_rain_startup()', 1)
         marker = '/datum/global_init/New()\n'
         if world.count(marker) != 1:
             raise RuntimeError('World isolation marker changed')
@@ -83,20 +85,19 @@ def main():
         source = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', generated[1].name)
         source = source.replace('code\\controllers\\mc\\globals.dm', generated[2].name)
-        include = '#include "code\\modules\\1713\\dew_collector.dm"'
-        if include in source:
-            source = source.replace(include, '#include "' + generated[3].name + '"')
-        else:
-            source += '\n#include "' + generated[3].name + '"\n'
+        include = '#include "code\\modules\\1713\\rain_barrel.dm"'
+        if source.count(include) != 1:
+            raise RuntimeError('Rain barrel include marker changed')
+        source = source.replace(include, '#include "' + generated[3].name + '"')
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
-        generated[0].write_text(source + '\n#include "tests/dew_collector/probe.dm"\n', encoding='utf-8')
+        generated[0].write_text(source + '\n#include "tests/rain_barrel/probe.dm"\n', encoding='utf-8')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=ROOT, capture_output=True, text=True, timeout=180, creationflags=flags)
         output = build.stdout + build.stderr
         (args.output / 'compile.log').write_text(output, encoding='utf-8')
-        if build.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
+        if build.returncode or pin not in output or '0 errors, 0 warnings' not in output:
             raise RuntimeError('Pinned compile failed: ' + output[-4000:])
-        with tempfile.TemporaryDirectory(prefix='civ13-dew-runtime-') as temporary:
+        with tempfile.TemporaryDirectory(prefix='civ13-rain-runtime-') as temporary:
             work = Path(temporary)
             for path in generated[4:]:
                 shutil.copy2(path, work / path.name)
@@ -116,7 +117,7 @@ def main():
                         diagnostics += path.read_text(encoding='utf-8', errors='replace')
             (args.output / 'daemon.log').write_text(result.stdout + result.stderr, encoding='utf-8')
             actual = (work / 'result.txt').read_text(encoding='utf-8').strip() if (work / 'result.txt').exists() else ''
-            expected = CONTROLS[args.negative_control][2] if args.negative_control else 'PASS: dew collector and native disk round trips'
+            expected = CONTROLS[args.negative_control][2] if args.negative_control else 'PASS: rain barrel and native disk round trips'
             if result.returncode or actual != expected or any(marker in diagnostics.lower() for marker in ('runtime error:', 'bug:', '## error:')):
                 raise RuntimeError(f'Expected {expected!r}, got {actual!r}; diagnostics: {diagnostics[-2500:]}')
             print(('PASS expected mutation: ' if args.negative_control else '') + actual)
