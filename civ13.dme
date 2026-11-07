@@ -979,6 +979,8 @@
 #include "code\modules\1713\machinery\engines\internal_combustion.dm"
 #include "code\modules\1713\machinery\modular_vehicles\_config.dm"
 #include "code\modules\1713\machinery\modular_vehicles\_datums.dm"
+#include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft.dm"
+#include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\axis.dm"
 #include "code\modules\1713\machinery\modular_vehicles\factory.dm"
 #include "code\modules\1713\machinery\modular_vehicles\car_workshop.dm"
