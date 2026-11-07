@@ -59,6 +59,12 @@ class HudLayoutWiring(unittest.TestCase):
             self.assertIn('hud_edit_human()', body, hook)
             self.assertTrue(body.rstrip().endswith('return ..()'), hook)
 
+    def test_tiles_are_kept_on_screen(self):
+        body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')
+        self.assertIn('getviewsize(client.view)', body)
+        self.assertIn('clamp(x0 + D[2] * g, 0, max(0, view_w - edge)) - x0', body)
+        self.assertIn('clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0', body)
+
     def test_ranges_and_hover_label_are_not_editable(self):
         source = read(LAYOUT)
         self.assertIn('findtext(loc, " to ")', source)
