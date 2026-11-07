@@ -226,6 +226,18 @@ var/aircraft_runtime_error = FALSE
 	for (var/obj/structure/vehicleparts/movement/GW in G.wheels)
 		wrecked = wrecked && GW.broken
 	aircraft_check(wrecked, "and lands hard, breaking its wheels")
+	var/obj/structure/vehicleparts/axis/aircraft/S = build_airstrip(locate(14, 30, 1))
+	var/strip = 0
+	for (var/turf/RT in block(locate(15, 18, 1), locate(17, 33, 1)))
+		if (locate(/obj/covers/roads/modern/runway) in RT)
+			strip++
+	aircraft_check(istype(S) && S.on_runway() && strip == 48, "the airstrip spawner lays a 3x16 runway with the plane at its north end")
+	S.engine.fueltank.reagents.add_reagent(S.engine:fuels[1], 100, safety = TRUE)
+	S.engine.on = TRUE
+	aircraft_roll(S, S.takeoff_roll)
+	aircraft_check(S.airborne() && S.flight_z() == 2, "the plane takes off from the spawned airstrip")
+	S.currentspeed = S.landing_gear
+	aircraft_check(S.descend(null) && !S.airborne(), "and lands back on it")
 	var/obj/structure/vehicleparts/axis/aircraft/P = build_light_plane(locate(11, 30, 1))
 	aircraft_check(!P.aloft_over_open_air() && !P.set_down_after_restore(), "an aircraft restored on the ground stays put")
 
