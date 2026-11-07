@@ -36,6 +36,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Chicken navigation predicates and collision dispatch; fake engine only.
+    'chicken_water': {'files': ('tests/chicken_water/test_chicken_water.py',),
+        'paths': ('tests/chicken_water/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/simple_animal/friendly/birds.dm',
+            'code/game/mob/living/simple_animal/simple_ai.dm',
+            'code/game/turfs/floor_types.dm', 'code/game/turfs/turf.dm',
+            'code/pathfinding.dm', 'maps/nomads/nomads_gaia.dmm',
+            'tests/save_movement/source_adapter.py')},
     # Complete raider firing/reload source projections with fake engine boundaries.
     # Keep production paths shared so existing conservative selection is preserved.
     'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),

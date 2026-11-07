@@ -402,7 +402,7 @@
 	else if (istype(mover, /mob) && !iscovered())
 		if (istype(mover, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = mover
-			if (SA.flying)
+			if (SA.can_cross_deep_water())
 				return TRUE
 		if (ishuman(mover))
 			var/mob/living/human/H = mover
