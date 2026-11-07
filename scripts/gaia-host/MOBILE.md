@@ -94,16 +94,24 @@ Only the host's latest operation is authoritative. Observed progress is retained
 in its mobile receipt; if another desktop operation replaces the record before a
 refresh, an older mobile entry remains `accepted`, **not proof of completion**.
 Unknown phases are shown as unknown. Inspect private desktop diagnostics on a
-failure or uncertain result. An uncertain reservation blocks all new mobile
-actions until the operator reconciles it offline. Never delete a receipt to retry
+failure or uncertain result. A request that fails before the host takes its
+action lock or records a new operation is stored as `refused`, because nothing
+was dispatched. Any other unexpected failure stays `uncertain` and blocks all new
+mobile actions until the operator reconciles it. Never delete a receipt to retry
 an action whose outcome is unknown.
 
-After 100 requests, use desktop controls until an operator stops the companion,
-reconciles uncertain receipts and archives its receipt files. The service lock
-refuses a second instance using that directory; after a crash, only remove
-`mobile.lock` after verifying no companion uses it. Never remove the host action
-lock as part of mobile cleanup. Failures while persisting a reservation fail
-closed; power-loss guarantees still depend on filesystem durability.
+To reconcile, check the outcome on the desktop, stop the companion, then run
+`mobile_host.py --config <absolute-config> --reconcile`. It marks every uncertain
+receipt `reconciled` (kept as replay evidence) and refuses while a companion is
+running. After 100 requests, use desktop controls until an operator stops the
+companion and archives its receipt files.
+
+The service holds an OS lock on `mobile.lock` while it runs, so a second instance
+using that directory is refused. The OS releases the lock if the companion
+crashes, so a leftover `mobile.lock` file does not block the next start and need
+not be deleted. Never remove the host action lock as part of mobile cleanup.
+Failures while persisting a reservation fail closed; power-loss guarantees still
+depend on filesystem durability.
 
 ## Verification and draft limits
 

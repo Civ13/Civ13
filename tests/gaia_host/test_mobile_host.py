@@ -121,6 +121,61 @@ class MobileTests(unittest.TestCase):
             self.controller.submit(self.device, 'start', self.prepare('start'))
         self.assertEqual(self.host.calls, ['restart'])
 
+    def real_host(self, machine):
+        config = {'repository': str(self.root), 'state_dir': str(self.root / 'host-state'),
+                  '_path': str(self.root / 'host-config'), 'port': 1714}
+        return mobile.gaia_host.Host(config, machine)
+
+    def test_failure_before_host_lock_is_refused_and_does_not_block(self):
+        machine = Mock()
+        machine.now.return_value = 123
+        host = self.real_host(machine)
+        host.precheck = Mock(side_effect=RuntimeError('private precheck failure'))
+        controller = mobile.Controller(host, self.root)
+        token = controller.prepare(self.device, 'start')['confirmation']
+        self.assertEqual(controller.submit(self.device, 'start', token)['result'], 'refused')
+        self.assertFalse(host.lock.exists())
+        machine.detach.assert_not_called()
+        host.precheck = Mock()
+        token = controller.prepare(self.device, 'start')['confirmation']
+        self.assertEqual(controller.submit(self.device, 'start', token)['result'], 'accepted')
+
+    def test_failure_after_host_lock_stays_uncertain(self):
+        machine = Mock()
+        machine.now.return_value = 123
+        machine.detach.side_effect = OSError('private detach failure')
+        host = self.real_host(machine)
+        host.precheck = Mock()
+        controller = mobile.Controller(host, self.root)
+        token = controller.prepare(self.device, 'start')['confirmation']
+        self.assertEqual(controller.submit(self.device, 'start', token)['result'], 'uncertain')
+        with self.assertRaises(ValueError):
+            controller.submit(self.device, 'stop', controller.prepare(self.device, 'stop')['confirmation'])
+
+    def test_reconcile_unblocks_and_keeps_replay_evidence(self):
+        self.host.failure = OSError('private exception')
+        token = self.prepare()
+        self.controller.submit(self.device, 'restart', token)
+        config = self.root / 'mobile.json'
+        config.write_text(json.dumps({'state_dir': str(self.root)}))
+        with patch('sys.stdout', io.StringIO()):
+            self.assertEqual(mobile.main(['--config', str(config), '--reconcile']), 0)
+        self.assertEqual(self.controller.submit(self.device, 'restart', token)['result'], 'reconciled')
+        self.host.failure = None
+        self.assertEqual(self.controller.submit(self.device, 'start', self.prepare('start'))['result'], 'accepted')
+
+    def test_companion_lock_refuses_second_holder_and_survives_stale_file(self):
+        path = self.root / 'mobile.lock'
+        path.write_text('12345')  # left behind by a crashed companion
+        with mobile.hold_lock(path):
+            with self.assertRaises(OSError):
+                mobile.hold_lock(path)
+            config = self.root / 'mobile.json'
+            config.write_text(json.dumps({'state_dir': str(self.root)}))
+            with patch('sys.stderr', io.StringIO()):
+                self.assertEqual(mobile.main(['--config', str(config), '--reconcile']), 2)
+        mobile.hold_lock(path).close()
+
     def test_reservation_write_failure_never_dispatches(self):
         token = self.prepare()
         with patch.object(self.controller, 'write_receipt', side_effect=OSError('disk full')):

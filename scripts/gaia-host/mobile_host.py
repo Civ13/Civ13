@@ -31,6 +31,7 @@ PRIVATE = tuple(ipaddress.ip_network(value) for value in ('10.0.0.0/8', '172.16.
 HEX64 = re.compile(r'[0-9a-f]{64}')
 HEX32 = re.compile(r'[0-9a-f]{32}')
 MAX_RECEIPTS = 100
+RESULTS = ('accepted', 'refused', 'uncertain', 'reconciled')
 
 
 def read_json(path, limit=65536):
@@ -151,6 +152,7 @@ class Controller:
                 raise ValueError('mobile history is full; use the desktop')
             receipt = {'device': device, 'action': action, 'result': 'uncertain', 'at': int(time.time())}
             self.write_receipt(path, receipt)  # reserve before any lifecycle effect
+            before = self.host_operation()
             try:
                 answer = self.host.request(action)
                 if answer.get('accepted') is True and HEX32.fullmatch(str(answer.get('operation', ''))):
@@ -158,15 +160,51 @@ class Controller:
             except gaia_host.Refused:
                 receipt['result'] = 'refused'
             except Exception:
-                # A detach/write failure may follow acceptance. Never retry it.
-                pass
+                # A detach/write failure may follow acceptance. Never retry it. Only
+                # when the host provably dispatched nothing is this a plain refusal.
+                if self.nothing_dispatched(before):
+                    receipt['result'] = 'refused'
             self.write_receipt(path, receipt)
             return self.receipt_view(receipt)
+
+    def host_operation(self):
+        """The host's latest recorded operation id, or None when it cannot be read."""
+        try:
+            return (self.host.read_state() or {}).get('operation', '')
+        except Exception:
+            return None
+
+    def nothing_dispatched(self, before):
+        """True only when a failed request left no host action lock and no new operation.
+
+        Host.request removes its lock when a precheck fails and records the new
+        operation before detaching, so both unchanged means no worker was started.
+        Hosts that do not expose that state stay uncertain.
+        """
+        lock = getattr(self.host, 'lock', None)
+        if before is None or not isinstance(lock, Path):
+            return False
+        try:
+            return not lock.exists() and self.host_operation() == before
+        except Exception:
+            return False
+
+    def reconcile(self):
+        """Offline operator step: mark uncertain receipts checked on the desktop."""
+        changed = 0
+        with self.guard:
+            for path in sorted(self.directory.glob('*.json')):
+                row = read_json(path, 2048)
+                if isinstance(row, dict) and row.get('result') == 'uncertain':
+                    row['result'] = 'reconciled'
+                    self.write_receipt(path, row)
+                    changed += 1
+        return changed
 
     def receipt_view(self, receipt, current=None):
         result = receipt.get('result')
         view = {'action': receipt.get('action') if receipt.get('action') in ACTIONS else 'other',
-                'result': result if result in ('accepted', 'refused', 'uncertain') else 'uncertain',
+                'result': result if result in RESULTS else 'uncertain',
                 'at': receipt.get('at') if type(receipt.get('at')) is int else 0}
         if isinstance(current, dict) and receipt.get('operation') == current.get('operation'):
             view['progress'] = operation_view(current)
@@ -296,29 +334,63 @@ class Server(HTTPServer):
         pass
 
 
+def hold_lock(path):
+    """An OS lock on the receipt directory, released by the OS if the companion dies.
+
+    The file itself may remain after a crash; only a live companion holds the lock,
+    so a stale file never blocks the next start.
+    """
+    handle = Path(path).open('a+b')
+    try:
+        if os.name == 'nt':
+            import msvcrt
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        handle.close()
+        raise
+    return handle
+
+
+def reconcile_main(path):
+    try:
+        cfg = read_json(path)
+        directory = cfg.get('state_dir') if isinstance(cfg, dict) else None
+        if not isinstance(directory, str) or not Path(directory).is_absolute() or not Path(directory).is_dir():
+            raise ValueError('state_dir is missing')
+        with hold_lock(Path(directory) / 'mobile.lock'):
+            changed = Controller(None, directory).reconcile()
+    except (OSError, ValueError, KeyError, TypeError):
+        print('Reconcile refused. Stop the mobile companion first and check state_dir.', file=sys.stderr)
+        return 2
+    print('Marked %d uncertain mobile request(s) as reconciled.' % changed)
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', required=True)
+    parser.add_argument('--reconcile', action='store_true',
+                        help='with the companion stopped, mark uncertain requests checked on the desktop')
     args = parser.parse_args(argv)
-    lock = None
+    if args.reconcile:
+        return reconcile_main(args.config)
     try:
         cfg = load_config(args.config)
         context = tls_context(cfg)  # fail before opening a port or touching host state
         host_cfg = gaia_host.load_config(cfg['host_config'])
         host_cfg['_path'] = cfg['host_config']
         host = gaia_host.region_host(host_cfg) if host_cfg.get('group_config') else gaia_host.Host(host_cfg)
-        lock = Path(cfg['state_dir']) / 'mobile.lock'
-        # One companion per receipt directory. Never clear an uncertain old lock.
-        with lock.open('x', encoding='ascii') as target:
-            target.write(str(os.getpid()))
-        try:
+        # One companion per receipt directory; the OS drops the lock if it crashes.
+        with hold_lock(Path(cfg['state_dir']) / 'mobile.lock'):
             with Server(cfg, context, Controller(host, cfg['state_dir'])) as server:
                 print('Mobile host: ' + cfg['origin'], flush=True)
                 server.serve_forever()
-        finally:
-            lock.unlink()
     except (OSError, ValueError, KeyError, TypeError):
-        print('Mobile host refused startup. Check disabled/configuration, TLS material and companion lock locally.', file=sys.stderr)
+        print('Mobile host refused startup. Check disabled/configuration, TLS material and whether another companion is running.', file=sys.stderr)
         return 2
     return 0
 
