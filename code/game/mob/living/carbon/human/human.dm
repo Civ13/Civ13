@@ -95,8 +95,12 @@
 			if (config.allow_selfheal)
 				verbs |= /mob/living/human/proc/selfheal
 				verbs |= /mob/living/human/proc/selfrevive
+	// Capture Gaia's birthplace before the player can walk across a biome edge.
+	var/area/birth_area = null
+	if (map && map.ID == MAP_NOMADS_GAIA)
+		birth_area = get_area(new_loc)
 	spawn(5)
-		nomads_spawn()
+		nomads_spawn(birth_area)
 /mob/living/human/Destroy()
 	var/mob/living/simple_animal/old_mount = riding_mob
 	riding = FALSE

@@ -280,7 +280,7 @@
     },
     {
       "path": "code/game/turfs/floor_types.dm",
-      "sha256_normalized": "b23e2610746b461617bf30354b6744142c18e1f7e4bdc6ed64c6d927a7168b06",
+      "sha256_normalized": "902c226a267edf2d0b67e54f0a6381b27b68119b1b30660a193ec9d1a2174742",
       "declarations": [
         {
           "line": 397,
