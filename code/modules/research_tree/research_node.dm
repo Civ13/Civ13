@@ -457,13 +457,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (22) ---
+		// --- assembly_line (19) ---
 		"/obj/item/camera/coldwar" = "assembly_line",
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
-		"/obj/item/factory_belt_assembly" = "assembly_line",
-		"/obj/structure/closet/crate/factory_bin" = "assembly_line",
-		"/obj/structure/factory_drive" = "assembly_line",
 		"/obj/structure/factory_fabricator" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/random" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/zippo" = "assembly_line",
@@ -480,14 +477,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (17) ---
+		// --- automation (16) ---
 		"/obj/structure/fluid_meter" = "automation",
 		"/obj/structure/fluid_bottler" = "automation",
 		"/obj/structure/fluid_vessel/fast" = "automation",
 		"/obj/item/camera" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
-		"/obj/structure/factory_arm" = "automation",
 		"/obj/structure/factory_arm/sorting" = "automation",
 		"/obj/structure/factory_fabricator/automated" = "automation",
 		"/obj/item/factory_belt_assembly/gate" = "automation",
@@ -789,7 +785,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
-		// --- factories (23) ---
+		// --- factories (27) ---
+		// Steam-era factory floor: plain belts, their drive, parts bins and
+		// the feeder arm run on a steam engine and plain cable.
+		"/obj/item/factory_belt_assembly" = "factories",
+		"/obj/structure/closet/crate/factory_bin" = "factories",
+		"/obj/structure/factory_drive" = "factories",
+		"/obj/structure/factory_arm" = "factories",
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that
 		// node, or the tree deadlocks (can't craft the geiger counter the
