@@ -55,6 +55,22 @@ def source_checks():
                        ('code/modules/paperwork/lifecycle.dm', '(source in lifecycle_sources)')):
         if text not in read(path):
             failures.append(f'{path}: `in` must be parenthesized inside &&')
+    harvest = read('code/modules/1713/animal_harvest.dm')
+    bones = block(harvest, '/mob/living/simple_animal/proc/harvest_bones()')
+    for animal in ('hostile/alligator', 'hostile/dinosaur', 'pachy', 'hostile/poison/snake/constrictor'):
+        if f'/mob/living/simple_animal/{animal})' not in bones:
+            failures.append(f'{animal} should drop usable bone')
+    products = block(harvest, '/mob/living/simple_animal/proc/harvest_products(')
+    if 'if (harvest_bones())\n\t\tnew /obj/item/stack/material/bone(site, max(1, size-2))' not in products:
+        failures.append('bone drop must follow harvest_bones(), not mammal anatomy')
+    medicine = read('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')
+    if 'charcoal_absorb_poisons(M, removed)' not in block(medicine, '/datum/reagent/charcoal/affect_blood('):
+        failures.append('charcoal must absorb poison chemicals')
+    absorb = block(medicine, '/proc/charcoal_absorb_poisons(')
+    if 'M.bloodstr, M.ingested' not in absorb or 'charcoal_unabsorbed_toxins' not in absorb:
+        failures.append('charcoal should clear blood and stomach poisons but not infections')
+    if 'in this map unless' in read('code/game/mob/living/living.dm'):
+        failures.append('succumb refusal should name the damage requirement')
     return failures
 
 

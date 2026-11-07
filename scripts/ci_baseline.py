@@ -42,7 +42,9 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm', 'code/game/mob/living/carbon/human/emotes/emote.dm',
             'code/modules/1713/machinery/modular_vehicles/movement.dm',
             'code/modules/1713/machinery/modular_vehicles/car_workshop.dm',
-            'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm')},
+            'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm',
+            'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
