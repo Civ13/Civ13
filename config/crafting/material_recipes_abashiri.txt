@@ -242,6 +242,7 @@ RECIPE: /material/steel/,jail bars,/obj/covers/jail/steeljail,8,30,1,1,construct
 RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/custom/jail/steeljail,12,30,1,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,construction,96,0,0,8,null
+RECIPE: /material/steel/,steel bridge span,/obj/item/weapon/bridge_span,4,100,0,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,production,35,0,0,8,null
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
