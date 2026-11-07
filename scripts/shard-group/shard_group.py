@@ -644,7 +644,7 @@ class RegionHost(Host):
             self.record(phase='saving', clients=before.get('clients'))
             answer = self.platform.query(port, token, 'handover_save', operation, session)
             if answer.get('operation') != operation:
-                raise RuntimeError('the world did not accept the save')
+                raise RuntimeError('the world did not accept the save: %s' % (answer.get('error') or 'no operation in its reply'))
             self.wait_world(port, token, lambda s: s.get('handover') == 'saved', self.config['save_timeout_seconds'],
                             'the save did not finish in time; the world was left running')
             self.record(phase='backing up')
@@ -662,7 +662,7 @@ class RegionHost(Host):
             self.record(phase='loading the standby', generation=generation, backup=str(backups / operation))
             answer = self.platform.query(spare_port, token, 'standby_load', operation, standby_session)
             if answer.get('operation') != operation:
-                raise RuntimeError('the standby world did not accept the load')
+                raise RuntimeError('the standby world did not accept the load: %s' % (answer.get('error') or 'no operation in its reply'))
             self.wait_world(spare_port, token, lambda s: s.get('ready') and not s.get('restart_hold'),
                             self.config['load_timeout_seconds'], 'the standby world did not load the save in time',
                             standby=True)

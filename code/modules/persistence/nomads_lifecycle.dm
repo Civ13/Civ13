@@ -64,8 +64,10 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
-	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "port" = world.port, "debug" = agent_diagnostic_state())
+	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "port" = world.port, "debug" = agent_diagnostic_state())
 
+// A standby world has no lifecycle operation of its own, so its replies echo the host's
+// handover operation (standby_operation) in "operation" like any accepted request.
 // A standby world (DreamDaemon -params standby=1) reports "waiting" until the host names the
 // save, "loading" while it restores it and "loaded" until standby_open makes it the region.
 /datum/nomads_lifecycle_control/proc/standby_state()
