@@ -42,10 +42,22 @@ class PartyTrainTests(unittest.TestCase):
         dme = read('civ13.dme')
         self.assertLess(dme.index('region_travel.dm"'), dme.index('party_train.dm"'))
 
-    def test_a_station_needs_straight_track(self):
+    def test_a_station_needs_straight_track_to_the_map_edge(self):
         start = proc(TRAIN, OFFICE + '/proc/start')
         self.assertLess(start.index('station_problem()'), start.index('party = new_party'))
-        self.assertIn('party_train_run_through(T) >= PARTY_TRAIN_TRACK_MIN', proc(TRAIN, OFFICE + '/proc/station_problem'))
+        self.assertIn('if(party_train_rail_to_edge(T))', proc(TRAIN, OFFICE + '/proc/station_problem'))
+        # No fixed rail count any more: the line has to leave the land.
+        self.assertNotIn('PARTY_TRAIN_TRACK_MIN', TRAIN)
+        edge = proc(TRAIN, '/proc/party_train_rail_to_edge')
+        self.assertIn('for(var/d in list(NORTH, SOUTH, EAST, WEST))', edge)
+        self.assertIn('while(step && party_train_rail_at(step))', edge)
+        self.assertIn('if(!get_step(last, d))', edge)
+        self.assertNotIn('count <', edge)
+
+    def test_a_finished_train_leaves_only_while_the_track_reaches_the_edge(self):
+        closed = proc(TRAIN, OFFICE + '/closed_reason')
+        self.assertLess(closed.index('if(!completed)'), closed.index('station_problem()'))
+        self.assertLess(closed.index('station_problem()'), closed.index('return ..()'))
 
     def test_one_project_per_party_rechecked_after_the_prompt(self):
         start = proc(TRAIN, OFFICE + '/proc/start')
