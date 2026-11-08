@@ -5,6 +5,7 @@
 // scripts/shard-group/shard_group.py; see docs/sharded-worlds.md.
 
 #define SHARD_POLL_INTERVAL 600
+#define SHARD_REFRESH_FLOOR 150
 // The doorman refreshes every 30 s; an older entry means it lost the world.
 #define SHARD_DOORMAN_FRESH_SECONDS 90
 #define SHARD_MAX_REGIONS 16
@@ -53,6 +54,8 @@ var/global/datum/shard_group/shard_group = new
 	var/list/peers = list()
 	var/list/order = list()
 	var/polling = FALSE
+	// world.time the peers were last asked (0: not yet), for the panel's Refresh.
+	var/last_poll = 0
 	var/last_error = null
 	// Periodic world saves (minutes, 0 = off) and how soon a save follows a
 	// departure (seconds). A traveller can only arrive after the region they
@@ -344,6 +347,7 @@ var/global/datum/shard_group/shard_group = new
 	return record(id, answer, world.time)
 
 /datum/shard_group/proc/poll_once()
+	last_poll = world.time
 	var/list/hosted = doorman_states()
 	// Without the doorman a sleeping peer cannot be told from a stopped one;
 	// both fail a direct poll and read as down.
@@ -368,6 +372,15 @@ var/global/datum/shard_group/shard_group = new
 			continue
 		if(!islist(entry) || entry["state"] == "awake")
 			poll_peer(id)
+
+// The Regions panel's Refresh: asks the peers again unless they were asked in
+// the last SHARD_REFRESH_FLOOR (or are being asked now), so many players
+// pressing it cost at most one poll; a direct poll blocks this world. Sleeps.
+/datum/shard_group/proc/refresh_now()
+	if(!enabled || (last_poll && world.time - last_poll < SHARD_REFRESH_FLOOR))
+		return FALSE
+	poll_once()
+	return TRUE
 
 // A peer that is asleep but can be woken through the doorman.
 /datum/shard_group/proc/peer_wakeable(id)
@@ -478,6 +491,8 @@ var/global/datum/shard_group/shard_group = new
 		lines += "<p>This is the only region in the group.</p>"
 	else
 		lines += "<p>Your character lives in one region. New characters start on the mainland and reach the others by travelling a trail.</p>"
+	var/checked = last_poll ? "Checked [round((world.time - last_poll) / 10)] seconds ago." : "Not checked yet."
+	lines += "<p><a href='byond://?region_refresh=1'>Refresh</a> [checked]</p>"
 	return jointext(lines, "")
 
 // What the panel shows of the host, for admins: why every peer may read as down.
@@ -530,5 +545,6 @@ var/global/datum/shard_group/shard_group = new
 	popup.open(FALSE)
 
 #undef SHARD_POLL_INTERVAL
+#undef SHARD_REFRESH_FLOOR
 #undef SHARD_DOORMAN_FRESH_SECONDS
 #undef SHARD_MAX_REGIONS

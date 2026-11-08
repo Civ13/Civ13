@@ -160,7 +160,7 @@
 	relay_checked = TRUE
 	return ..()
 
-// Join and Go there links of the Regions panel and the home notice.
+// Join, Go there and Refresh links of the Regions panel and the home notice.
 /client/Topic(href, href_list, hsrc)
 	if(href_list["region_go"])
 		if(usr != mob || !shard_group.enabled)
@@ -173,9 +173,20 @@
 		next_region_go = world.time + 50
 		shard_group.send_player(src, id)
 		return
+	// The Regions panel's Refresh: ask the regions again and redraw it in place.
+	if(href_list["region_refresh"])
+		if(usr != mob || !shard_group.enabled)
+			return
+		if(next_region_refresh > world.time)
+			return
+		next_region_refresh = world.time + 30
+		shard_group.refresh_now()
+		view_regions()
+		return
 	return ..()
 
 /client/var/next_region_go = 0
+/client/var/next_region_refresh = 0
 
 // The gate: a player whose character lives in another land is sent there at
 // once. Admins stay (they may have work here) and are told how to go.
