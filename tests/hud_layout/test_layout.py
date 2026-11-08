@@ -30,6 +30,7 @@ class HudLayoutWiring(unittest.TestCase):
         line = re.search(r'var/list/vars_to_save = list\(([^\n]*)\)', save)[1]
         self.assertIn('"hud_scale"', line)
         self.assertIn('"hud_layout"', line)
+        self.assertIn('"hover_text_scale"', line)
 
     def test_included_after_base_hud(self):
         dme = read('civ13.dme').splitlines()
@@ -82,11 +83,17 @@ class HudLayoutWiring(unittest.TestCase):
         self.assertIn('list(64, 32)', proc_body(source, '/obj/screen/swap/hud_footprint()'))
         self.assertIn('pixel_x = 32)', read('code/_onclick/hud/base_screen_objects.dm'))
 
-    def test_hover_label_follows_hud_scale(self):
+    def test_hover_label_has_its_own_size(self):
         hover = read('code/_onclick/hud/hover_name.dm')
         px = proc_body(hover, '/obj/screen/hover_name/proc/hover_label_px()')
-        self.assertIn('hud_scale', px)
-        self.assertIn('clamp(round(11 * g), 7, 22)', px)
+        self.assertIn('C.prefs?.hover_text_scale', px)
+        self.assertNotIn('hud_scale', px)
+        self.assertIn('clamp(round(11 * g), 6, 22)', px)
+        verb = proc_body(read(LAYOUT), '/client/verb/set_hover_text_size()')
+        self.assertIn('set name = "Hover Text Size"', verb)
+        self.assertIn('set category = "OOC"', verb)
+        self.assertIn('prefs.hover_text_scale = hud_scale_choices[choice]', verb)
+        self.assertIn('prefs.save_preferences()', verb)
         show = proc_body(hover, '/obj/screen/hover_name/proc/show_label(text)')
         self.assertIn('px == hover_font_px', show)
         self.assertIn('hover_name_span(text, FALSE, px)', show)

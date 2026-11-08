@@ -12,7 +12,7 @@ attachment. This is pointer feedback, not a click or examine action. Moving
 onto empty space or a HUD control clears the text. Human names use
 `get_visible_name()` so masks do not disclose `real_name`.
 
-The look matches the 1713 HUD palette: Verdana cream text (`#f3e9d6`, 11px at 100% HUD Scale and scaled with it, 7-22px)
+The look matches the 1713 HUD palette: Verdana cream text (`#f3e9d6`, 11px at 100% Hover Text Size and scaled with it, 6-22px)
 with a 1px dark outline on a wood-brown panel (`#3b2c1e`) with a 1px light
 border (`#9a8468`). The panel is pure maptext, so it always fits the text the
 client actually draws: the text span carries the fill colour with a `&nbsp;`

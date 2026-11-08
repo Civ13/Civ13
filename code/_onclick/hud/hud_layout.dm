@@ -15,6 +15,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 
 /datum/preferences
 	var/hud_scale = 1
+	// Size of the hover name text under the mouse, separate from hud_scale.
+	var/hover_text_scale = 1
 	// Entries "style~key~ax~ox~ay~oy~size~locked"; ax is "D" when the tile
 	// keeps its default position.
 	var/list/hud_layout = list()
@@ -744,6 +746,22 @@ var/global/list/hud_icon_px_cache = list()
 		var/mob/living/human/H = mob
 		H.apply_hud_layout()
 	to_chat(src, SPAN_NOTICE("HUD scale set to [choice]."))
+
+/client/verb/set_hover_text_size()
+	set name = "Hover Text Size"
+	set category = "OOC"
+	set desc = "Make the name under your mouse larger or smaller."
+
+	var/current = "100%"
+	for (var/label in hud_scale_choices)
+		if (hud_scale_choices[label] == prefs.hover_text_scale)
+			current = label
+	var/choice = input(src, "Choose a size for the name shown under your mouse. Your current size is [current].", "Hover Text Size", current) as null|anything in hud_scale_choices
+	if (!choice)
+		return
+	prefs.hover_text_scale = hud_scale_choices[choice]
+	prefs.save_preferences()
+	to_chat(src, SPAN_NOTICE("Hover text size set to [choice]."))
 
 /client/verb/reset_hud_layout()
 	set name = "Reset HUD Layout"

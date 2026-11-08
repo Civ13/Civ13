@@ -25,7 +25,7 @@
 	var/tmp/hover_text
 	var/tmp/hover_text_width = 0
 	var/tmp/hover_text_height = 0
-	// Font size in pixels; follows the player's HUD Scale (11px at 100%).
+	// Font size in pixels; follows the player's Hover Text Size (11px at 100%).
 	var/tmp/hover_font_px = 11
 
 // One styled span: the text with a nbsp on each side as horizontal padding.
@@ -67,15 +67,16 @@
 		edge.maptext_y = shift[2]
 		underlays += edge
 
-// The label's font size: 11px at 100% HUD Scale, scaled with it.
+// The label's font size: 11px at 100% Hover Text Size, scaled with it.
+// This is its own setting so the text can stay small with a large HUD.
 /obj/screen/hover_name/proc/hover_label_px()
 	if (!parentmob || !parentmob.client)
 		return 11
 	var/client/C = parentmob.client
-	var/g = C.prefs?.hud_scale
+	var/g = C.prefs?.hover_text_scale
 	if (!isnum(g))
 		return 11
-	return clamp(round(11 * g), 7, 22)
+	return clamp(round(11 * g), 6, 22)
 
 // Draw an encoded label; an unchanged label resends nothing.
 /obj/screen/hover_name/proc/show_label(text)
