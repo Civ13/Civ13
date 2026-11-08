@@ -60,51 +60,11 @@
 		if(map.ID == MAP_VOYAGE)
 			var/obj/map_metadata/voyage/nmap = map
 			nmap.show_stats()
-		if (config.allowedgamemodes == "TDM")
-			if (clients.len >= 25) // Temporary solution
-				var/moderator_present = FALSE
-				for (var/client/C in admins)
-					if(R_MOD||R_ADMIN & C.holder.rights)
-						moderator_present = TRUE
-						break
-				if (moderator_present == TRUE)
-					epochs = list(
-						"PvE (Voyage, Antarctica, etc)" = 0,
-						"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
-						"Early Fire Arms (1650-1930)" = 0,
-						"World War II (1931-1948)" = 0,
-						"Modern Fire Arms (1949-2021)" = 0,
-						"Fiction" = 0,
-						"Battle Royale" = 6,
-						"HRP TDM (Gulag, Occupation, AOTD, etc)" = 10,
-						"Chad Mode" = 30,
-//						"MilSim (BETA TESTING)" = 20,
-					)
-				else
-					epochs = list(
-						"PvE (Voyage, Antarctica, etc)" = 0,
-						"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
-						"Early Fire Arms (1650-1930)" = 0,
-						"World War II (1931-1948)" = 0,
-						"Modern Fire Arms (1949-2021)" = 0,
-						"Fiction" = 0,
-						"Battle Royale" = 6,
-						"Chad Mode" = 30,
-//						"MilSim (BETA TESTING)" = 20,
-					)
-			else
-				epochs = list(
-					"PvE (Voyage, Antarctica, etc)" = 0,
-					"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
-					"Early Fire Arms (1650-1930)" = 0,
-					"World War II (1931-1948)" = 0,
-					"Modern Fire Arms (1949-2021)" = 0,
-					"Fiction" = 0,
-					"Battle Royale" = 6,
-					"HRP TDM (Gulag, Occupation, AOTD, etc)" = 20,
-//					"MilSim (BETA TESTING)" = 20,
-				)
-
+		// A TDM server, and the battle world of a TDM shard pair whatever its
+		// ALLOWED_GAMEMODES, offers only team battle epochs: no PvE, Battle
+		// Royale, HRP or Chad Mode (Val, 2026-11-08).
+		if (config.allowedgamemodes == "TDM" || tdm_battle_active())
+			epochs = tdm_epochs()
 		else if (config.allowedgamemodes == "RP")
 			epochs = list(
 //				"The Art of the Deal" = 10,
@@ -123,6 +83,16 @@
 
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
+
+// The epochs a TDM server votes between. Each one's map list is in /process/mapswap/fire().
+/proc/tdm_epochs()
+	return list(
+		"Pre-Firearms (3000 B.C-1650 A.D.)" = 0,
+		"Early Fire Arms (1650-1930)" = 0,
+		"World War II (1931-1948)" = 0,
+		"Modern Fire Arms (1949-2021)" = 0,
+		"Fiction" = 0,
+	)
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
@@ -175,6 +145,9 @@
 			return
 		ready = FALSE
 		epoch = vote.voted_epoch
+		// An epoch from outside the TDM list (a stale or forced result) falls back to one inside it.
+		if ((config.allowedgamemodes == "TDM" || tdm_battle_active()) && !(epoch in tdm_epochs()))
+			epoch = pick(tdm_epochs())
 		switch(epoch)
 			if ("Stone Age (?-3000 B.C.)")
 				maps = list(
@@ -187,7 +160,6 @@
 					MAP_KARAK = 0,
 					MAP_CAMP = 0,
 					MAP_OASIS = 0,
-					MAP_HERACLEA = 0,
 					MAP_CLASH = 0,
 					MAP_SIEGE = 0,
 					MAP_GLADIATORS = 0,
