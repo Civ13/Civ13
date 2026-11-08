@@ -195,6 +195,40 @@ var/aircraft_runtime_error = FALSE
 	aircraft_check(aircraft_step(A) && aircraft_front_y(A) == y_before - 1 && M.z == 2 && aircraft_frames_z(A, 2), "low flight moves the aircraft one tile and keeps the passenger aboard")
 	aircraft_check(aircraft_shadows_below(A, 1) && !(locate(/obj/effect/aircraft_shadow) in locate(nose.x, nose.y + 4, 1).vis_contents), "the shadows follow the aircraft and leave the tiles behind it")
 
+	// The airframe draws the plane, not a box truck: every section shows its
+	// deck from inside, its hull from outside, and the nose its propeller.
+	var/art_ok = TRUE
+	var/wings = 0
+	for (var/obj/structure/vehicleparts/frame/car/aircraft/F in A.components)
+		if (F.icon != 'icons/obj/vehicles/lightplane.dmi' || !F.hull_state)
+			art_ok = FALSE
+		if (F.noroof)
+			wings++
+			if (F.icon_state != F.hull_state || F.roof.icon_state != "")
+				art_ok = FALSE
+		else if (F.icon_state != "[F.hull_state]_floor" || F.roof.icon_state != F.hull_state || F.roof.icon != F.icon || F.roof.dir != F.dir)
+			art_ok = FALSE
+	aircraft_check(art_ok && wings == 2, "every airframe section draws its own piece of the plane")
+	var/obj/structure/vehicleparts/frame/car/aircraft/nose_center = locate(/obj/structure/vehicleparts/frame/car/aircraft/nose/center) in A.components
+	var/prop_state = ""
+	for (var/O in nose_center.overlays)
+		var/image/I = O
+		if (I.icon_state == "prop" || I.icon_state == "prop_spin")
+			prop_state = I.icon_state
+	aircraft_check(prop_state == "prop_spin", "the propeller turns while the engine runs")
+	A.engine.on = FALSE
+	A.engine.update_icon()
+	prop_state = ""
+	for (var/O in nose_center.overlays)
+		var/image/I = O
+		if (I.icon_state == "prop" || I.icon_state == "prop_spin")
+			prop_state = I.icon_state
+	aircraft_check(prop_state == "prop", "the propeller stops with the engine")
+	A.engine.on = TRUE
+	A.engine.update_icon()
+	var/obj/effect/aircraft_shadow/nose_shadow = A.shadows[nose_center]
+	aircraft_check(nose_shadow && nose_shadow.icon == 'icons/obj/vehicles/lightplane.dmi' && nose_shadow.icon_state == "nose_center_floor", "the shadow takes the plane's silhouette")
+
 	// Cruise passes over upper storeys and will not descend into them.
 	aircraft_check(A.climb(M) && A.flight_state == AIRCRAFT_CRUISE, "climb reaches cruising height")
 	aircraft_check(A.shadows[nose]:pixel_x == 16, "cruise casts a farther shadow")

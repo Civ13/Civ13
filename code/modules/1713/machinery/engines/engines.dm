@@ -143,6 +143,9 @@
 
 /obj/structure/engine/update_icon()
 	..()
+	// An airframe nose shows its propeller turning while the engine runs.
+	for (var/obj/structure/vehicleparts/frame/car/aircraft/F in loc)
+		F.update_icon()
 	if (engineclass == "carengine")
 		switch(dir)
 			if (NORTH)
