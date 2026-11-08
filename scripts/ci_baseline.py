@@ -269,7 +269,8 @@ SUITES = {
             'code/modules/persistence/stream/save_stream.dm', 'savestream.dll', 'savestream_helper.exe')},
     # Agent control client/MCP/catalog and DM source contracts; loopback fake
     # Topic server only, no BYOND runtime.
-    'agent_control': {'files': ('tests/agent_control/test_agent_control.py',),
+    'agent_control': {'files': ('tests/agent_control/test_agent_control.py',
+            'tools/agent-control/benchmarks/test_gateway_benchmark.py'),
         'paths': ('tests/agent_control/', 'tools/agent-control/', 'code/modules/agent_control/'), 'shared_paths': (
             'code/_helpers/admin.dm', 'code/world.dm', '.gitignore')},
     # CI digest classifier/renderer and workflow contract; fake GitHub API only,
