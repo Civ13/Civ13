@@ -325,6 +325,16 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 			save_result()
 			del(world)
 			return
+		// A built, unlinked ship frame (and the walls on it) cannot be pulled away.
+		var/obj/structure/vehicleparts/frame/ship/steel/loose = new(locate(50,40,1))
+		var/mob/living/human/puller = new(locate(51,40,1))
+		owned += loose
+		owned += puller
+		usr = puller
+		puller.start_pulling(loose)
+		check(loose.anchored && puller.pulling != loose && loose.loc == locate(50,40,1), "built ship frame is anchored and cannot be pulled")
+		usr = null
+		clear()
 		for(var/size in list(2,3,5))
 			var/obj/structure/vehicleparts/axis/ship/A = make_boat(38,44,size==3 ? 2 : size,size)
 			check(A.components.len == size*size,"real assembly [size] turning square")
