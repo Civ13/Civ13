@@ -421,6 +421,14 @@ var/global/roundtrip_capture_failure = FALSE
 	map_storage.save_build_identity = "fixture-build-a"
 	check(map_storage.write_validation_record(generation) && fexists("map_saves/validated.json"), "validation record not written")
 	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "matching validation record did not skip the entry check")
+	// The trusted record hands the load's turf pass every cell's saved type.
+	var/list/grid = map_storage.validated_turf_grid(1)
+	var/savefile/level = new("map_saves/1.sav")
+	check(islist(grid) && grid.len == world.maxx * world.maxy, "trusted record lacks the level's turf types")
+	if(islist(grid) && grid.len == world.maxx * world.maxy)
+		check(grid[1] == map_storage.level_entry_value(level, level["/map/1/1/1"], "type") && grid[grid.len] == map_storage.level_entry_value(level, level["/map/1/[world.maxy]/[world.maxx]"], "type"), "recorded turf types differ from the saved level")
+	level = null
+	map_storage.drop_segment_reader()
 	map_storage.save_build_identity = "fixture-build-b"
 	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the validation record")
 	// A full preflight records its own build, so build b now skips and build a
