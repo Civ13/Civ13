@@ -103,7 +103,8 @@ class HudLayoutWiring(unittest.TestCase):
         backdrop = proc_body(hover, '/obj/screen/hover_name/proc/update_backdrop()')
         self.assertIn('hover_name_rect(maptext_width, maptext_height, 0, 0,', backdrop)
         self.assertIn('hover_name_rect(maptext_width + 2, maptext_height + 2, -1, -1,', backdrop)
-        self.assertIn('C.MeasureText(hover_name_span(text, px)', hover)
+        # No width argument: given one, the client answers with the box width.
+        self.assertIn('C.MeasureText(hover_name_span(text, px))\n', hover)
 
     def test_large_scales_reflow_only_default_tiles(self):
         body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')

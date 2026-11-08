@@ -49,6 +49,11 @@
 /proc/hover_name_measure_key(text, px)
 	return "[px]|[text]"
 
+// Rough Verdana width of an encoded label, erring wide: about 7px per
+// character at 11px.
+/proc/hover_name_estimate_width(text, px)
+	return round(7 * px / 11 * length(text))
+
 // Padding between the text and the panel edge for a font size.
 /proc/hover_name_pad_x(px)
 	return max(3, round(px / 2))
@@ -127,7 +132,9 @@
 		return
 	hover_measuring = key
 	var/client/C = parentmob.client
-	var/result = C.MeasureText(hover_name_span(text, px), null, HOVER_NAME_MAX_WIDTH - 2 * hover_name_pad_x(px))
+	// No width: given one, the client answers with that box width instead of
+	// the text's own width, which drew a panel as wide as the screen.
+	var/result = C.MeasureText(hover_name_span(text, px))
 	if (hover_measuring == key)
 		hover_measuring = null
 	if (QDELETED(src) || !istext(result))
@@ -137,6 +144,16 @@
 	var/h = split ? text2num(copytext(result, split + 1)) : null
 	if (!isnum(w) || !isnum(h) || w <= 0 || h <= 0)
 		return
+	// The estimate errs wide, so a much wider answer is not the text's width;
+	// keep the estimate then rather than draw an oversized panel.
+	var/estimate = hover_name_estimate_width(text, px)
+	if (w > estimate * 1.5 + 8)
+		w = estimate
+	// A name wider than the panel limit wraps at that width.
+	var/max_text = HOVER_NAME_MAX_WIDTH - 2 * hover_name_pad_x(px)
+	if (w > max_text)
+		h *= -round(-w / max_text)
+		w = max_text
 	if (!hover_measured)
 		hover_measured = list()
 	else if (length(hover_measured) >= HOVER_NAME_MEASURE_CACHE)
@@ -163,7 +180,7 @@
 	// Rough Verdana metrics, erring wide, until the client answers: about 7px
 	// per character at 11px, wrapping at the maximum width, 14px per line.
 	var/max_text = HOVER_NAME_MAX_WIDTH - 2 * hover_name_pad_x(px)
-	var/estimate = round(7 * px / 11 * length(text))
+	var/estimate = hover_name_estimate_width(text, px)
 	var/lines = max(1, -round(-estimate / max_text))
 	set_panel_size(min(max_text, estimate), round(14 * px / 11) * lines)
 	measure_label(text, px)
