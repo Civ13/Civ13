@@ -74,6 +74,7 @@
 	else if (weight > max_weight * 0.95 && weight <= INFINITY)
 		slowdown = 0.99
 	. *= slowdown+1
+	. *= leader_order_move_mult()
 
 	last_run_delay = .
 	next_calculate_run_delay = world.time + 5

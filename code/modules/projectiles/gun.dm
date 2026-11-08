@@ -457,6 +457,10 @@
 	else if (dt_movement < 10)
 		accuracy_range = 40 / (dt_movement - 6)
 
+	if (isliving(user))
+		var/mob/living/L = user
+		accuracy_range *= L.leader_order_focus_mult()
+
 	return recoil_range + accuracy_range
 
 //does the actual launching of the projectile
@@ -501,6 +505,10 @@
 		if (istype(user, /mob/living/human))
 			if(user.m_intent != "run")
 				shot_accuracy *= 0.75
+
+	if (isliving(user))
+		var/mob/living/shooter = user
+		shot_accuracy *= shooter.leader_order_focus_mult()
 
 	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -40, 40)
 
