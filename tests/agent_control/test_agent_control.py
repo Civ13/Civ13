@@ -229,6 +229,84 @@ class GistIdeaTests(unittest.TestCase):
         self.assertIn("wait_s", ACTIONS["character_observe"][2]["properties"])
 
 
+class SensesTests(unittest.TestCase):
+    """The autopilot observes by change lists and hears prompts and sounds (senses.py)."""
+
+    class Fake:
+        def __init__(self, results):
+            self.results, self.sent = list(results), []
+
+        def request(self, action, args=None):
+            self.sent.append((action, dict(args or {})))
+            return {"ok": True, "result": self.results.pop(0)}
+
+    def test_change_lists_rebuild_the_full_nearby_list(self):
+        import senses
+        me = {"x": 10, "y": 10}
+        first = {"self": me, "rev": 1, "nearby": [{"ref": "a", "name": "tree", "dx": 3, "dy": 0}, {"ref": "b", "name": "rock", "dx": 1, "dy": 1}],
+                 "prompts": [], "last_prompt": 0, "sounds": [], "last_sound": 0}
+        # She walked one tile east; the tree did not change, the rock left, a wolf came.
+        second = {"self": {"x": 11, "y": 10}, "rev": 2, "changes_since": 1, "nearby_removed": ["b"], "nearby_unchanged": 1,
+                  "nearby": [{"ref": "w", "name": "wolf", "dx": -4, "dy": 0}],
+                  "prompts": [{"id": 1, "title": "Craft", "text": "Make what?", "choices": ["Spear", "Club"], "took": "Spear"}], "last_prompt": 1,
+                  "sounds": [{"id": 3, "sound": "9mm", "kind": "gunshot", "dx": 5, "dy": 5}], "last_sound": 3}
+        fake = self.Fake([first, second])
+        client = senses.SensesClient(fake)
+        client.request("character_observe", {"character": "c", "since": 0})
+        self.assertNotIn("since_rev", fake.sent[0][1])
+        self.assertEqual(client.take_news("c", me), {"prompts": [], "sounds": [], "appeared": [], "left": []})
+        reply = client.request("character_observe", {"character": "c", "since": 0})
+        self.assertEqual(fake.sent[1][1]["since_rev"], 1)
+        rows = {r["ref"]: r for r in reply["result"]["nearby"]}
+        self.assertEqual(set(rows), {"a", "w"})
+        self.assertEqual((rows["a"]["dx"], rows["a"]["dy"]), (2, 0))  # unchanged rows follow her steps
+        self.assertNotIn("changes_since", reply["result"])
+        self.assertEqual([r["ref"] for r in reply["result"]["nearby"]], ["a", "w"])  # nearest first
+        news = client.take_news("c", {"x": 12, "y": 10})
+        self.assertEqual(news["appeared"], ["wolf"])
+        self.assertEqual(news["left"], ["rock"])
+        self.assertEqual((news["sounds"][0]["dx"], news["sounds"][0]["dy"]), (4, 5))  # from where she is now
+        self.assertIn('repeat that step with "choose"', senses.prompt_lines(news["prompts"])[0])
+        self.assertIn("gunshot, 5 tiles north-east", senses.sound_alarm(news["sounds"]))
+        self.assertEqual(client.take_news("c")["sounds"], [])
+        # A third look sends both serials back so nothing is heard twice.
+        fake.results.append(dict(first, rev=3))
+        client.request("character_observe", {"character": "c", "since": 0})
+        self.assertEqual((fake.sent[2][1]["prompt_since"], fake.sent[2][1]["sound_since"]), (1, 3))
+
+    def test_a_lost_baseline_or_new_radius_is_not_news(self):
+        import senses
+        me = {"x": 0, "y": 0}
+        base = {"self": me, "rev": 1, "nearby": [{"ref": "a", "name": "tree", "dx": 1, "dy": 0}]}
+        # Another observer ran in between: the full list comes back without changes_since.
+        fake = self.Fake([base, dict(base, rev=7, nearby=[{"ref": "b", "name": "deer", "dx": 2, "dy": 0}]), dict(base, rev=8)])
+        client = senses.SensesClient(fake)
+        client.request("character_observe", {"character": "c"})
+        reply = client.request("character_observe", {"character": "c"})
+        self.assertEqual([r["name"] for r in reply["result"]["nearby"]], ["deer"])
+        self.assertEqual(client.take_news("c")["appeared"], ["deer"])
+        client.request("character_observe", {"character": "c", "radius": 1})
+        self.assertEqual(client.take_news("c")["left"], [])  # a smaller look is not things leaving
+
+    def test_autopilot_shows_sounds_and_comings_and_goings(self):
+        import senses
+        observation = {"self": {"name": "Ada", "x": 1, "y": 1}, "nearby": [], "news": {"appeared": ["wolf"], "left": ["deer"],
+                       "sounds": [{"sound": "wolfgrowl", "kind": "animal", "dx": -3, "dy": 0}] * 2}}
+        text, _ = autopilot.summarize(observation)
+        self.assertIn("Since your last look, came into view: wolf; went out of view: deer.", text)
+        self.assertIn("Sounds you heard: an animal (wolfgrowl), 3 tiles west (x2).", text)
+        self.assertEqual(autopilot.danger(observation), "")
+        observation["news"]["sounds"] = [{"sound": "explosion1", "kind": "explosion", "dx": 0, "dy": -6}]
+        self.assertIn("an explosion, 6 tiles south", autopilot.danger(observation))
+        self.assertEqual(senses.compass(0, 0), "right here")
+        main = (ROOT / "tools/agent-control/autopilot.py").read_text(encoding="utf-8")
+        self.assertIn("senses.SensesClient(RetryingClient(", main)
+        chars = dm_source("agent_characters.dm")
+        kind = re.search(r"/proc/agent_sound_kind\(.*?(?=\n/)", chars, re.S).group(0)
+        for word in ('"gunshot"', '"explosion"', '"animal"', '"footsteps"'):
+            self.assertIn(word, kind)
+
+
 class CatalogSyncTests(unittest.TestCase):
     def test_python_catalog_matches_dm_actions_and_scopes(self):
         source = dm_source("agent_control.dm")

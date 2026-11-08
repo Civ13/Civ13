@@ -373,7 +373,13 @@ break; herbs only work on whoever chews them) and clicks the wound's body part o
 bleeding person within 5 tiles is treated before the model's plan when she carries a bandage and is
 not bleeding or under attack herself; she offers help first when they are awake. Whoever is
 attacking her, and people her memory distrusts, are not helped. When something attacks the
-character, a danger line leads the next prompt. While the character is
+character, a danger line leads the next prompt. The autopilot observes through
+`senses.SensesClient`: each look sends `since_rev`, `prompt_since` and
+`sound_since` and rebuilds the full nearby list from its cache. The prompt then
+lists what came into or went out of view since the last turn, the sounds heard
+(gunshots, explosions, animals, voices, with direction and distance; gunfire or
+an explosion within 12 tiles is a warning line), and any game prompt a step could
+not answer, with its options and how to repeat the step with `choose`. While the character is
 unconscious the run waits for them to come round (checking every 10 seconds,
 with no model calls), and it stops once the character is dead. A target the
 character cannot walk to is hidden for a while instead of retried. Water marked
