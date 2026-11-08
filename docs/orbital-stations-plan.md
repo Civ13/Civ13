@@ -354,6 +354,12 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Survey orbiter** (1969): flown from a pad pointed at the Moon or Mars
   with a mission console within 7 tiles, it reveals the whole survey map
   and marks up to six new flat landing sites.
+- **Ownership and raids.** A ground station's satellites belong to the party
+  that first launches to it (saved `owner`) and serve only that party: GPS
+  fixes, reports and further launches. Another party can break in at its
+  desk (30 s, any time, owners online are warned) to take the station over
+  or cut one satellite's link. Comms stays by place: relays near the dish
+  keep the link whoever owns it.
 
 ## Station visits
 

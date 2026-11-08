@@ -16,8 +16,12 @@
 //   maps the whole world from orbit for the mission console beside the
 //   launcher and marks a few flat landing sites.
 //
-// A ground station holds one satellite of each kind. Nothing here is a
-// world.time stamp; satellites never wear.
+// A ground station holds one satellite of each kind. Its satellites belong to
+// the party that first launched one to it, and serve only that party: GPS
+// fixes and the station's reports. Another party can break into the station
+// (30 seconds at its desk, any time) to take it over or cut one satellite's
+// link; the owners online are warned. A station nobody has launched to yet
+// serves everyone. Nothing here is a world.time stamp; satellites never wear.
 // ============================================================
 
 #define SATELLITE_LAUNCH_PROPELLANT 150
@@ -25,6 +29,7 @@
 #define SATELLITE_COMMS_RANGE 7
 #define SATELLITE_SURVEY_SITES 6
 #define SATELLITE_WAYPOINTS 5
+#define SATELLITE_HACK_DELAY 300
 
 var/global/list/satellite_stations = list()
 
@@ -35,10 +40,11 @@ var/global/list/satellite_kinds = list(
 	"navigation" = list("navigation satellite", 8),
 	"survey" = list("survey orbiter", 7))
 
-// TRUE when a ground station in this world holds a satellite of kind.
-/proc/satellite_service(kind)
+// TRUE when a ground station in this world holds a satellite of kind that
+// serves party (its own, or a station nobody owns).
+/proc/satellite_service(kind, party = null)
 	for (var/obj/structure/satellite_station/S in satellite_stations)
-		if (!QDELETED(S) && isturf(S.loc) && (kind in S.satellites))
+		if (!QDELETED(S) && isturf(S.loc) && (kind in S.satellites) && S.serves(party))
 			return TRUE
 	return FALSE
 
@@ -136,7 +142,7 @@ var/global/list/satellite_kinds = list(
 			unload(H)
 
 // Null when the payload may fly now, otherwise why not.
-/obj/structure/crewed_lander/satellite_launcher/proc/satellite_refusal()
+/obj/structure/crewed_lander/satellite_launcher/proc/satellite_refusal(mob/living/human/user = null)
 	var/obj/item/satellite/S = payload()
 	if (!S)
 		return "Load a satellite first."
@@ -166,13 +172,16 @@ var/global/list/satellite_kinds = list(
 	var/obj/structure/satellite_station/G = satellite_station_near(src)
 	if (!G)
 		return "\The [S] needs a ground station within [SATELLITE_STATION_RANGE] tiles to talk to."
+	var/party = user ? party_train_party_of(user) : null
+	if (user && !G.serves(party))
+		return "\The [G] answers to [party_train_party_name(G.owner)]. Take it over first."
 	if (S.kind in G.satellites)
 		return "\The [G] already talks to a [info[1]]."
 	return null
 
 // Puts the payload up. Returns null once it flew, or why it did not.
 /obj/structure/crewed_lander/satellite_launcher/proc/launch_satellite(mob/user)
-	var/reason = satellite_refusal()
+	var/reason = satellite_refusal(user)
 	if (reason)
 		return reason
 	var/obj/item/satellite/S = payload()
@@ -185,6 +194,9 @@ var/global/list/satellite_kinds = list(
 	else
 		var/obj/structure/satellite_station/G = satellite_station_near(src)
 		G.satellites |= kind
+		var/party = istype(user, /mob/living/human) ? party_train_party_of(user) : null
+		if (!G.owner && party)
+			G.owner = party
 		G.visible_message(SPAN_NOTICE("\The [G]'s dish swings round and locks on to the new [S.name]."))
 	log_game("Satellite: [user ? key_name(user) : "nobody"] launched a [S.name] from [x],[y],[z][kind == "survey" ? " to [pad.destination]" : ""].")
 	qdel(S)
@@ -220,7 +232,7 @@ var/global/list/satellite_kinds = list(
 
 /obj/structure/satellite_station
 	name = "ground station"
-	desc = "A tracking dish and a desk of receivers that talk to this world's satellites. Launch satellites from a pad within seven tiles of it."
+	desc = "A tracking dish and a desk of receivers that talk to this world's satellites. Launch satellites from a pad within seven tiles of it. They serve the party that launched them, until someone breaks in."
 	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "radio_powered"
 	anchored = TRUE
@@ -228,6 +240,8 @@ var/global/list/satellite_kinds = list(
 	flammable = FALSE
 	// Kinds of satellite this station talks to.
 	var/list/satellites = list()
+	// The party its satellites serve, or null while they serve everyone.
+	var/owner = null
 
 /obj/structure/satellite_station/New()
 	..()
@@ -245,9 +259,18 @@ var/global/list/satellite_kinds = list(
 		if (info)
 			names += info[1]
 	to_chat(user, SPAN_NOTICE(names.len ? "It talks to: [english_list(names)]." : "No satellite is up yet."))
+	if (owner)
+		to_chat(user, SPAN_NOTICE("Its satellites answer to [party_train_party_name(owner)]."))
 
-/obj/structure/satellite_station/attack_hand(mob/user)
-	if (!ishuman(user))
+// TRUE when this station's satellites serve party.
+/obj/structure/satellite_station/proc/serves(party)
+	return !owner || owner == party
+
+/obj/structure/satellite_station/attack_hand(mob/living/human/user)
+	if (!istype(user))
+		return
+	if (!serves(party_train_party_of(user)))
+		hack_prompt(user)
 		return
 	if (!length(satellites))
 		to_chat(user, SPAN_NOTICE("The receivers hiss. No satellite is up yet: launch one from a pad within [SATELLITE_STATION_RANGE] tiles."))
@@ -263,6 +286,75 @@ var/global/list/satellite_kinds = list(
 	if ("navigation" in satellites)
 		lines += "<b>Navigation:</b> GPS receivers in this world have a fix. This station stands at [x], [y]."
 	to_chat(user, SPAN_NOTICE(jointext(lines, "<br>")))
+
+// ---------------------------------------------------------------- raids
+
+// Null when user may break into this station, otherwise why not.
+/obj/structure/satellite_station/proc/hack_refusal(mob/living/human/user)
+	var/party = party_train_party_of(user)
+	if (!party)
+		return "You have no party to take it for."
+	if (serves(party))
+		return "\The [src] already answers to you."
+	if (!length(satellites))
+		return "\The [src] talks to no satellite."
+	return null
+
+/obj/structure/satellite_station/proc/hack_prompt(mob/living/human/user)
+	var/reason = hack_refusal(user)
+	if (reason)
+		to_chat(user, SPAN_WARNING("\The [src] answers to [party_train_party_name(owner)]. [reason]"))
+		return
+	var/list/options = list("Take it over")
+	for (var/kind in satellites)
+		var/list/info = satellite_kinds[kind]
+		if (info)
+			options += "Cut the [info[1]]"
+	options += "Cancel"
+	var/choice = WWinput(user, "\The [src] answers to [party_train_party_name(owner)]. Breaking into its receivers takes a while, and its owners will know.", capitalize(name), "Cancel", options)
+	if (choice == "Cancel" || QDELETED(src) || !in_range(src, user) || user.incapacitated())
+		return
+	satellite_raid_alert(owner, "Someone is breaking into your [name] at [x], [y]!")
+	user.visible_message(SPAN_WARNING("[user] pries open \the [src]'s desk and starts rewiring the receivers."))
+	if (!do_after(user, SATELLITE_HACK_DELAY, src) || QDELETED(src))
+		return
+	reason = hack_refusal(user)
+	if (reason)
+		to_chat(user, SPAN_WARNING(reason))
+		return
+	var/kind = null
+	if (choice != "Take it over")
+		for (var/k in satellites)
+			var/list/info = satellite_kinds[k]
+			if (info && choice == "Cut the [info[1]]")
+				kind = k
+		if (!kind)
+			return
+	to_chat(user, SPAN_NOTICE(hack(user, kind)))
+
+// Breaks in for user: takes the station over, or with kind, cuts that
+// satellite's link. Returns what happened.
+/obj/structure/satellite_station/proc/hack(mob/living/human/user, kind = null)
+	var/party = party_train_party_of(user)
+	var/old = owner
+	if (kind)
+		satellites -= kind
+		var/list/info = satellite_kinds[kind]
+		log_game("Satellite: [key_name(user)] of [party] cut the [kind] satellite of [old] at [x],[y],[z].")
+		satellite_raid_alert(old, "Your [info ? info[1] : "satellite"] has gone silent.")
+		return "The [info ? info[1] : "satellite"] drifts out of contact."
+	owner = party
+	log_game("Satellite: [key_name(user)] took the ground station of [old] at [x],[y],[z] for [party].")
+	satellite_raid_alert(old, "Your [name] at [x], [y] no longer answers to you.")
+	return "\The [src] now answers to [party_train_party_name(party)]."
+
+// Warns party's members online.
+/proc/satellite_raid_alert(party, text)
+	if (!party)
+		return
+	for (var/mob/living/human/H in human_mob_list)
+		if (H.client && H.stat != DEAD && party_train_party_of(H) == party)
+			to_chat(H, SPAN_DANGER(text))
 
 // What the weather satellite sees: today's weather, the next season and
 // when it starts, and storms on the way.
@@ -320,8 +412,8 @@ var/global/list/satellite_kinds = list(
 	var/turf/T = get_turf(src)
 	if (!T)
 		return
-	if (!satellite_service("navigation"))
-		to_chat(user, SPAN_WARNING("No fix. There is no navigation satellite over this world."))
+	if (!satellite_service("navigation", ishuman(user) ? party_train_party_of(user) : null))
+		to_chat(user, SPAN_WARNING("No fix. No navigation satellite here answers to you."))
 		return
 	var/list/options = list("Where am I")
 	if (length(waypoints) < SATELLITE_WAYPOINTS)
@@ -382,3 +474,4 @@ var/global/list/satellite_kinds = list(
 #undef SATELLITE_COMMS_RANGE
 #undef SATELLITE_SURVEY_SITES
 #undef SATELLITE_WAYPOINTS
+#undef SATELLITE_HACK_DELAY

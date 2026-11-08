@@ -1368,9 +1368,47 @@ var/global/orbit_failures = 0
 	orbit_check("GPS bearing", gps_bearing(locate(5, 5, 1), "9,2,1", "Home"), "Home is 4 tiles southeast.")
 	orbit_check("GPS bearing across levels", gps_bearing(locate(5, 5, 1), "5,5,2", "Deck"), "Deck is right here. It is 1 level up.")
 	orbit_check("GPS at the waypoint", gps_bearing(locate(5, 5, 1), "5,5,1", "Camp"), "You are at Camp.")
+	// Raids: a station belongs to the party that launches to it, and another
+	// party can take it over or cut a satellite's link.
+	var/obj/structure/satellite_station/G2 = new(locate(30, 10, 1))
+	var/mob/living/human/eva_tester/owner = new(locate(30, 11, 1))
+	owner.m_intent = "stealth"
+	owner.civilization = "Foxtrot"
+	var/mob/living/human/eva_tester/raider = new(locate(31, 10, 1))
+	raider.m_intent = "stealth"
+	raider.civilization = "Golf"
+	var/fox = party_train_party_of(owner)
+	var/golf = party_train_party_of(raider)
+	qdel(G)
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad2 = new(locate(26, 10, 1))
+	pad2.destination = "orbit"
+	pad2.approved = TRUE
+	L = new(locate(27, 10, 1))
+	orbit_satellite_load(L, /obj/item/satellite/navigation)
+	L.propellant = 150
+	orbit_check("owned navigation satellite goes up", "[L.launch_satellite(owner)]", "")
+	orbit_check("station claimed by its first launch", G2.owner, fox)
+	orbit_check("GPS fix for the owners", satellite_service("navigation", fox) ? 1 : 0, 1)
+	orbit_check("no GPS fix for others", satellite_service("navigation", golf) ? 1 : 0, 0)
+	L = new(locate(27, 10, 1))
+	orbit_satellite_load(L, /obj/item/satellite/weather)
+	L.propellant = 150
+	orbit_check("others cannot launch to it", findtext("[L.satellite_refusal(raider)]", "Take it over") ? 1 : 0, 1)
+	orbit_check("owners need no break-in", findtext("[G2.hack_refusal(owner)]", "already") ? 1 : 0, 1)
+	orbit_check("raider may break in", "[G2.hack_refusal(raider)]", "")
+	G2.hack(raider, "navigation")
+	orbit_check("cut link silences the satellite", ("navigation" in G2.satellites) ? 1 : 0, 0)
+	orbit_check("nothing left to raid", findtext("[G2.hack_refusal(raider)]", "no satellite") ? 1 : 0, 1)
+	orbit_check("weather satellite goes up for the owners", "[L.launch_satellite(owner)]", "")
+	G2.hack(raider)
+	orbit_check("raid takes the station over", G2.owner, golf)
+	orbit_check("the raiders read it now", G2.serves(golf) && !G2.serves(fox) ? 1 : 0, 1)
+	qdel(owner)
+	qdel(raider)
+	qdel(pad2)
+	qdel(G2)
 	L = new(locate(20, 4, 1))
 	orbit_satellite_load(L, /obj/item/satellite/comms)
-	qdel(G)
 	orbit_check("a satellite needs a ground station", findtext("[L.satellite_refusal()]", "ground station") ? 1 : 0, 1)
 	for (var/obj/item/I in L.hold())
 		qdel(I)
