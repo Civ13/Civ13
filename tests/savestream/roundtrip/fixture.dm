@@ -113,6 +113,17 @@
 	var/list/names = S.dir("/entries/0/1")
 	if(names.len != 19) mismatches += "dir:[names.len]"
 	if(reused < 2) mismatches += "reused:[reused]"
+	// A repeated value file body is decoded once per stream; datums never are.
+	var/obj/shown = new
+	shown.overlays += 'probe.dmi'
+	for(var/copy in list("value_a.sav", "value_b.sav"))
+		var/savefile/V = new(copy)
+		V["v"] << shown.appearance
+		del(V)
+	var/first = S.decode_value_file("value_a.sav")
+	var/second = S.decode_value_file("value_b.sav")
+	if(!S.decoded_values || S.decoded_values.len != 1 || first != second || !same(shown.appearance, second)) mismatches += "value file decode reuse"
+	if(fexists("value_a.sav") || fexists("value_b.sav")) mismatches += "value files kept"
 	// Closing the stream deletes the kept value-file templates.
 	if(S.value_tokens || flist("savestream_template_").len) mismatches += "templates kept"
 	S.close()

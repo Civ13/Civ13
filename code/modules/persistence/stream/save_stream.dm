@@ -173,6 +173,7 @@
 	id = null
 	mode = null
 	forget_value_tokens()
+	decoded_values = null
 
 // Resource files and appearances cannot change, and a level repeats the same
 // few hundred of them thousands of times; exporting one costs about 7 ms
@@ -419,12 +420,28 @@
 		if("nan") return 1.#INF - 1.#INF
 	return text2num(number_text)
 
+// A level reads the same few hundred appearances thousands of times, and the
+// helper writes each one out as its own value file (about 4 ms to open and
+// decode). Appearances are immutable, so one decode per distinct file body is
+// reused for the rest of the stream; datums (mutable appearances, saved
+// objects) are always decoded fresh.
+/datum/save_stream/var/list/decoded_values
+
 /datum/save_stream/proc/decode_value_file(file_name)
+	var/key = md5(file(file_name))
+	if(key && decoded_values)
+		var/list/known = decoded_values[key]
+		if(known)
+			fdel(file_name)
+			return known[1]
 	var/savefile/value_file = new(file_name)
 	var/value
 	value_file["v"] >> value
 	del(value_file)
 	fdel(file_name)
+	if(key && !isnull(value) && !istype(value, /datum))
+		if(!decoded_values) decoded_values = list()
+		decoded_values[key] = list(value)
 	return value
 
 /datum/save_stream/proc/decode_savefile_text(body)
