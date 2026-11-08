@@ -150,8 +150,8 @@ and then a raider takes the station over.
 
 Then station visits (`code/modules/space/orbit_docking.dm`): ports belonging
 to their plane's station, the 2013 gate, who may dock, guests, ferrying
-across and home, parcels for the owners and refused for strangers, and an
-open port.
+across and home, boarding raids only while the owners are aboard, parcels
+for the owners and refused for strangers, and an open port.
 
 Last, zero-g manufacturing (`code/modules/space/orbit_lab.dm`): the lab's
 refusals (outside a module, uncabled, breached), loading and refusing
