@@ -317,6 +317,31 @@ def selected_map_dme(dme_text, include):
 TRANSFER_TOOLS = Path(__file__).resolve().parents[2] / 'tools' / 'transfer_storage'
 
 
+def transfer_code():
+    """A fingerprint of the transfer helpers' source (agent, coordinator, radio, region).
+
+    A helper keeps the code it started with, so one started before an update never
+    learns new routes: the agents and coordinator of Nov 6 had no group OOC and
+    dropped every line (Rail Yard, 2026-11-08). supervise() restarts a helper whose
+    fingerprint differs from the source on disk."""
+    digest = hashlib.sha256()
+    for path in sorted(TRANSFER_TOOLS.glob('*.py')):
+        digest.update(path.name.encode('utf-8') + b'\0' + path.read_bytes())
+    return digest.hexdigest()[:16]
+
+
+def read_record(path):
+    try:
+        record = json.loads(Path(path).read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return {}
+    return record if type(record) is dict else {}
+
+
+def write_record(path, **values):
+    Path(path).write_text(json.dumps(values, sort_keys=True) + '\n', encoding='utf-8')
+
+
 def detach(argv, cwd, log):
     """Start a process that outlives this one, with its output in log (or discarded)."""
     flags = gaia_host.DETACH_FLAGS  # a hidden console, so its own children open no window
@@ -370,19 +395,48 @@ class RegionPlatform(Platform):
     def task_ready(self, name):
         return (Path(self.config['repository']) / 'region.dmb').exists()
 
-    def start_agent(self):
-        """Start this region's transfer agent unless it already listens."""
+    def agent_record(self):
+        return Path(self.config['state_dir']) / 'agent.json'
+
+    def listener_pids(self, port):
+        """Every process listening on the port. Windows let several agents share one
+        port (SO_REUSEADDR); Rail Yard had four on 1725, and any of them answered."""
+        if os.name == 'nt':
+            return sorted({row[3] for row in self.tcp_rows() if row[0] == port and row[2] == 'LISTENING'})
+        pid = self.server_pid(port)
+        return [pid] if pid else []
+
+    def start_agent(self, refresh=False):
+        """Start this region's transfer agent unless it already listens.
+
+        With refresh, an agent that runs other code than the source on disk (or one this
+        host did not start and record) is ended, with any duplicate on its port, and
+        started again. Callers pass refresh only while no action or handover runs."""
         port = self.config.get('transfer_port')
-        if not port or self.listening(port):
+        if not port:
             return False
+        code = transfer_code()
+        if self.listening(port):
+            record = self.agent_record_now()
+            if not refresh or (record.get('code') == code and self.listener_pids(port) in ([], [record.get('pid')])):
+                return False
+            for pid in self.listener_pids(port):
+                self.terminate(pid)
+            if self.listening(port):
+                return False  # the next pass tries again
         path = Path(self.config['repository'])
         argv = [self.config['python'], str(TRANSFER_TOOLS / 'agent.py'), '--db', str(Path(self.config['state_dir']) / 'transfers.sqlite'),
                 '--region', self.config['region'], '--group', self.config['group'], '--port', str(port),
                 '--token-file', str(path / 'config' / 'transfer-token.txt')]
         for peer in self.config['peers']:
             argv += ['--enroll', peer + ':out', '--enroll', peer + ':in']
-        detach(argv, path, Path(self.config['state_dir']) / 'agent.log')
+        Path(self.config['state_dir']).mkdir(parents=True, exist_ok=True)
+        pid = detach(argv, path, Path(self.config['state_dir']) / 'agent.log')
+        write_record(self.agent_record(), pid=pid, code=code)
         return True
+
+    def agent_record_now(self):
+        return read_record(self.agent_record())
 
 
 class RegionHost(Host):
@@ -1399,11 +1453,20 @@ def coordinator_pid(group):
     return pid if process_alive(pid) else None
 
 
-def ensure_coordinator(group, start=detach):
-    """Start the group's relay between region agents unless it already runs."""
-    if not group['transfers'] or coordinator_pid(group):
+def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
+    """Start the group's relay between region agents unless it already runs.
+
+    With refresh, a coordinator started on other code than the source on disk is
+    ended and started again (see transfer_code)."""
+    if not group['transfers']:
         return False
     root = Path(group['root'])
+    code = transfer_code()
+    pid = coordinator_pid(group)
+    if pid:
+        if not refresh or read_record(root / 'coordinator.json').get('code') == code:
+            return False
+        (terminate or Platform().terminate)(pid)
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(root / 'coordinator.sqlite'), '--group', group['group'],
             '--mainland', group['mainland']]
     for region in group['regions']:
@@ -1411,7 +1474,17 @@ def ensure_coordinator(group, start=detach):
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
+    write_record(root / 'coordinator.json', pid=pid, code=code)
     return True
+
+
+def group_busy(group):
+    """Whether a region runs an action or a handover: helpers are not restarted then,
+    because the world saving or handing over talks to its agent."""
+    root = Path(group['root'])
+    if (root / '.staging' / 'handover.lock').exists():
+        return True
+    return any((Path(region_config(group, region)['state_dir']) / 'action.lock').exists() for region in group['regions'])
 
 
 def group_check_update(group, only=None, platform=None):
@@ -1643,15 +1716,20 @@ def supervise(group, start=detach):
         started['player_help_errors'] = help_errors
     if not group['transfers']:
         return started
+    # Helpers that run old code are restarted, but never in the middle of an action.
+    refresh = not group_busy(group)
     for region in group['regions']:
         # One region that cannot start its agent must not keep the others down.
         try:
-            if RegionPlatform(region_config(group, region)).start_agent():
+            if RegionPlatform(region_config(group, region)).start_agent(refresh):
                 started.setdefault('agents', []).append(region['id'])
-        except OSError as error:
+        except (OSError, RuntimeError) as error:
             started.setdefault('errors', {})[region['id']] = str(error)[:300]
-    if ensure_coordinator(group, start):
-        started['coordinator'] = True
+    try:
+        if ensure_coordinator(group, start, refresh):
+            started['coordinator'] = True
+    except (OSError, RuntimeError) as error:
+        started['coordinator_error'] = str(error)[:300]
     return started
 
 
