@@ -52,6 +52,14 @@ SUITES = {
                          'code/modules/1713/factory_chemistry.dm',
                          'code/modules/1713/factory_pipes.dm',
                          'tests/save_movement/source_adapter.py')},
+    # Explosion remains above the ground: production wiring and map level audit.
+    'explosion_remains': {'files': ('tests/explosion_remains/test_explosion_remains.py',),
+        'paths': ('tests/explosion_remains/',), 'shared_paths': (
+            'code/modules/multiz/explosion_remains.dm', 'code/game/turfs/floor.dm',
+            'code/game/turfs/floor_types.dm', 'code/game/turfs/walls.dm',
+            'code/game/turfs/floor_attackby.dm', 'code/modules/1713/tools.dm',
+            'code/modules/projectiles/__projectiles.dm',
+            'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     # Chicken navigation predicates and collision dispatch; fake engine only.
     'chicken_water': {'files': ('tests/chicken_water/test_chicken_water.py',),
         'paths': ('tests/chicken_water/',), 'shared_paths': (

@@ -1289,6 +1289,7 @@
 #include "code\modules\tdm_barracks\barracks_annex.dm"
 #include "code\modules\tdm_barracks\barracks_racing.dm"
 #include "code\modules\multiz\dug_underground.dm"
+#include "code\modules\multiz\explosion_remains.dm"
 #include "code\modules\multiz\building_lighting.dm"
 #include "code\modules\multiz\standing_building_level.dm"
 #include "code\modules\projectiles\__projectiles.dm"

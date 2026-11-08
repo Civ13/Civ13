@@ -281,13 +281,13 @@ var/global/wall_bulk_placement = FALSE
 	material = get_material_by_name("placeholder")
 	//update_connections(1)
 	update_icon()
-	ChangeTurf(get_base_turf_by_area(src))
+	become_destroyed_turf()
 
 /turf/wall/ex_act(severity)
 	switch(severity)
 		if (1.0, 2.0)
 			if (!material || material.integrity < 400)
-				ChangeTurf(get_base_turf_by_area(src))
+				become_destroyed_turf()
 			else
 				dismantle_wall(1,1)
 		if (3.0)
@@ -296,6 +296,6 @@ var/global/wall_bulk_placement = FALSE
 /turf/wall/proc/burn(temperature)
 	if (material.combustion_effect(src, temperature, 0.7))
 		spawn(2)
-			ChangeTurf(get_base_turf_by_area(src))
+			become_destroyed_turf()
 			for (var/turf/wall/W in range(3,src))
 				W.burn((temperature/4))

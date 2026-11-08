@@ -186,3 +186,7 @@ var/datum/fixture_config/config = new
     check(close_to(pulse_near.radiation, 3), "existing pulse duration applies exactly three doses")
     check(pulse_far.radiation == 0 && pulse_other.radiation == 0 && pulse_immune.radiation == 0, "pulse radius, z and immunity unchanged")
     finish_fixture()
+
+// The fixture has one flat level, so every turf is on the ground.
+/proc/turf_is_above_ground(turf/T)
+    return FALSE

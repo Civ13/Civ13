@@ -276,7 +276,7 @@
 	if(phase == 9)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
-				if (prob(100*(1-(get_dist(TF,epicenter)/25))))
+				if (prob(100*(1-(get_dist(TF,epicenter)/25))) && !turf_is_above_ground(TF))
 					TF = TF.ChangeTurf(/turf/floor/dirt/burned)
 				else
 					if (prob(50))
