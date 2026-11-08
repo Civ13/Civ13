@@ -83,10 +83,15 @@
 	var/mouse_screen_pixel_x = 0
 	var/mouse_screen_pixel_y = 0
 	var/list/measured = list()
+	var/measure_answer
 // The client's text measurement is a network round trip; this boundary answers
 // at once with a size that follows the styled font size: 4em wide, 1.2em high.
 /datum/hover_client/proc/MeasureText(text, style, width)
 	measured += text
+	if (width)
+		return "[width]x13" // the live client answers a given width with the box width
+	if (measure_answer)
+		return measure_answer
 	var/start = findtext(text, "font-size:") + 10
 	var/px = text2num(copytext(text, start, findtext(text, "px", start)))
 	return "[px * 4]x[round(px * 1.2)]"
@@ -163,6 +168,14 @@
 	var/asked = length(C.measured)
 	check(findtext(L.maptext, "font-size:11px;") && L.maptext_width == 54 && L.maptext_height == 18, "label back to 11px")
 	check(asked == 4, "a measured label and size is not measured again")
+	// A width far beyond the estimate is not the text's width: keep the estimate.
+	C.measure_answer = "374x13"
+	B.name = "pistol"
+	L.process()
+	check(L.maptext_width == 52 && L.maptext_height == 18, "an implausible measured width falls back to the estimate")
+	C.measure_answer = null
+	B.name = "rifle"
+	L.process()
 	C.MouseExited(A, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "late exit")
 	C.MouseExited(B, null, "map", "")

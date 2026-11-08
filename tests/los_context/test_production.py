@@ -360,7 +360,7 @@ class InventoryHoverName(unittest.TestCase):
             # the styled span is client rendering (the native fixture checks its markup).
             getviewsize=lambda v:{1:2*v+1,2:2*v+1},round=lambda a:__import__('math').floor(a),
             hover_name_span=lambda text,px=11:"<span style='text'>"+text+"</span>",
-            hover_name_measure_key=lambda text,px:f'{px}|{text}',min=min,max=max,
+            hover_name_measure_key=lambda text,px:f'{px}|{text}',hover_name_estimate_width=lambda text,px:__import__('math').floor(7*px/11*len(text)),min=min,max=max,
             hover_name_pad_x=lambda px:max(3,px//2),hover_name_pad_y=lambda px:max(1,px//5),HOVER_NAME_MAX_WIDTH=384,
             # Each read advances past the move recheck window, so every pointer
             # event here takes the full visibility check (throttling is tested
