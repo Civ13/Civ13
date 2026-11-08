@@ -110,8 +110,11 @@ var/global/datum/hud_probe/hud_probe = new
 		C << browse(null, "window=playersetup")
 		C << browse(null, "window=latechoices")
 		check("client_owns_subject", C.mob == H, list("mob" = "[C.mob]", "style" = H.defaultHUD))
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack(H), slot_back)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet(H), slot_head)
+		var/obj/item/weapon/storage/backpack/bag = new(H)
+		H.equip_to_slot_or_del(bag, slot_back)
+		new /obj/item/weapon/material/hatchet(bag)
+		new /obj/item/weapon/bedroll(bag)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman(H), slot_head)
 		H.put_in_r_hand(new /obj/item/weapon/material/hatchet(H))
 		H.update_hud()
 		sleep(10)
@@ -122,6 +125,22 @@ var/global/datum/hud_probe/hud_probe = new
 		layout(H, "4-scale-125", 1.25)
 		layout(H, "5-scale-150", 1.5)
 		layout(H, "6-scale-200", 2)
+		H.client.prefs.hud_scale = 1
+		H.apply_hud_layout()
+		bag.open(H)
+		var/base_y = bag.hud_shift_y
+		shot("9-storage-100")
+		check("storage_default_at_100", bag.hud_shift_x == 0 && bag.hud_shift_y == 0, list("x" = bag.hud_shift_x, "y" = bag.hud_shift_y))
+		H.client.prefs.hud_scale = 1.5
+		H.apply_hud_layout()
+		shot("10-storage-150")
+		check("storage_rises_at_150", bag.hud_shift_y > base_y, list("y" = bag.hud_shift_y))
+		C.prefs.hud_layout = list("[H.defaultHUD]~storage~WEST~200~NORTH~-150~1~0")
+		H.apply_hud_layout()
+		shot("11-storage-dragged")
+		check("storage_follows_drag", bag.hud_shift_x > 0, list("x" = bag.hud_shift_x, "y" = bag.hud_shift_y))
+		bag.close(H)
+		H.client.prefs.hud_scale = 1
 		var/style = H.defaultHUD
 		C.prefs.hud_layout = list(
 			"[style]~need:health~WEST~8~NORTH~-88~1.5~1",
