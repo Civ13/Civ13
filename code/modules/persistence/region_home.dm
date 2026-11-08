@@ -12,6 +12,9 @@
 /mob/new_player/var/region_home_checking = FALSE // a Join is waiting on region_home_admit
 
 /proc/region_home_enabled()
+	// The TDM Barracks and battle world share a transfer agent only for OOC:
+	// everyone plays in both, so no account has a home there.
+	if(shard_group && (shard_group.kind in list("BARRACKS", "BATTLE"))) return FALSE
 	return shard_group && shard_group.enabled && transfer_bridge && transfer_bridge.enabled()
 
 // The agent's verdict for one account: list("verdict" = HOME, ELSEWHERE or

@@ -369,10 +369,58 @@ var/global/barracks_course_best_key = null
 
 // -- football on the parade ground ---------------------------------------------------
 // The ball, dribbling, passing and kicking are the football map's own
-// (weapons/football.dm, football.dm); kicking needs football boots, which the
+// (weapons/football.dm, football.dm); dribbling and kicking need football boots, which the
 // pitch lockers hand out. Goals here keep a pitch score instead of a match.
 
 var/global/list/barracks_football_score = list("Red" = 0, "Blue" = 0)
+
+// On the football map the kit is locked on and everyone plays. Elsewhere (the
+// Barracks pitch) the boots and jersey come off like any clothes, and only a
+// player in football boots on the pitch takes or keeps the ball, so nobody
+// walks off with it stuck to their feet or loses their clicks to kicking.
+/proc/barracks_can_dribble(mob/living/human/H)
+	if (istype(map, /obj/map_metadata/football))
+		return TRUE
+	return istype(H) && istype(H.shoes, /obj/item/clothing/shoes/football) && istype(get_area(H), /area/caribbean/barracks/pitch)
+
+/proc/barracks_kit_unequip(obj/item/I, mob/M, slot, disable_warning)
+	if (!slot || !M || !I.canremove)
+		return FALSE
+	return M.slot_is_accessible(slot, I, disable_warning ? null : M)
+
+/obj/item/clothing/shoes/football/mob_can_unequip(mob/M, slot, disable_warning = FALSE)
+	if (istype(map, /obj/map_metadata/football))
+		return ..()
+	return barracks_kit_unequip(src, M, slot, disable_warning)
+
+/obj/item/clothing/under/football/mob_can_unequip(mob/M, slot, disable_warning = FALSE)
+	if (istype(map, /obj/map_metadata/football))
+		return ..()
+	return barracks_kit_unequip(src, M, slot, disable_warning)
+
+/obj/item/football/Crossed(mob/living/human/user)
+	if (ishuman(user) && !barracks_can_dribble(user))
+		return
+	return ..()
+
+/obj/item/football/update_movement()
+	if (owner && !barracks_can_dribble(owner))
+		var/mob/living/human/H = owner
+		H.football = null
+		owner = null
+		last_owner = H
+		return
+	return ..()
+
+/mob/living/human/football_bump(atom/movable/AM)
+	if (istype(AM, /obj/item/football) && !barracks_can_dribble(src))
+		return
+	return ..()
+
+/mob/living/human/football_hitby(obj/item/football/FB)
+	if (!barracks_can_dribble(src))
+		return
+	return ..()
 
 /area/caribbean/barracks/pitch
 	name = "Barracks Football Pitch"
