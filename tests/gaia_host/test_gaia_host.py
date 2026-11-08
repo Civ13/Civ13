@@ -38,7 +38,7 @@ class FakeMachine:
         self.hung = False  # the process holds the port but never answers
         self.busy = False
         self.free_mb = None
-        self.persistence_mode = True
+        self.persistence_mode = 1
 
     def run(self, argv, cwd=None, timeout=1800, low_priority=False):
         self.calls.append(list(argv))
@@ -340,7 +340,7 @@ class GaiaHostTests(unittest.TestCase):
         # The TDM Barracks and battle world run rounds that never save; they refuse save_shutdown.
         self.give_token()
         self.machine.up = True
-        self.machine.persistence_mode = False
+        self.machine.persistence_mode = 0  # DM's json_encode sends 0, never false
         self.host.work('restart', self.accept('restart'))
         self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
         actions = [c[1] if c[0] == 'query' else c[0] for c in self.machine.calls]
@@ -354,9 +354,16 @@ class GaiaHostTests(unittest.TestCase):
         self.machine.world_ready = False
         with self.assertRaisesRegex(gaia_host.Refused, 'busy or not ready'):
             self.host.request('stop')
-        self.machine.persistence_mode = False
+        self.machine.persistence_mode = 0
         self.host.work('stop', self.accept('stop'))
         self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+
+    def test_world_saves_reads_dm_numbers(self):
+        self.assertFalse(gaia_host.world_saves({'persistence_mode': 0}))
+        self.assertFalse(gaia_host.world_saves({'persistence_mode': False}))
+        self.assertTrue(gaia_host.world_saves({'persistence_mode': 1}))
+        self.assertTrue(gaia_host.world_saves({'persistence_mode': None}))
+        self.assertTrue(gaia_host.world_saves({}))
 
     def test_update_needs_a_stopped_server_and_a_clean_compile(self):
         self.machine.up = True

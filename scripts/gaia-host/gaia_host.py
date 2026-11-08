@@ -563,6 +563,13 @@ def copy_save(saves, destination):
     return receipt
 
 
+
+def world_saves(world):
+    """Whether a world's round saves. DM's json_encode has no booleans: a round that does not
+    save reports persistence_mode 0 (an older host saw only a JSON false), and null before the
+    round is set up counts as saving, so such a world is still asked to save."""
+    return world.get('persistence_mode') not in (False, 0)
+
 class Host:
     def __init__(self, config, platform=None, script=None):
         self.config = config
@@ -704,7 +711,7 @@ class Host:
                 raise Refused('the world does not answer lifecycle status')
             # A world that does not save is ended, not asked to save, so readiness to save
             # does not matter (the TDM worlds report not ready in pregame).
-            if world.get('persistence_mode') is not False and (world.get('busy') or not world.get('ready')):
+            if world_saves(world) and (world.get('busy') or not world.get('ready')):
                 raise Refused('the world is busy or not ready, so it cannot save now')
         elif action == 'update':
             if listening:
@@ -1246,7 +1253,7 @@ class Host:
             raise RuntimeError('the world gave no valid session')
         port = self.config['port']
         pid = self.platform.server_pid(port)
-        if before.get('persistence_mode') is False:
+        if not world_saves(before):
             # A world whose round does not save (the TDM Barracks and battle world) has
             # nothing to save and refuses save_shutdown: end it, as stopping it means.
             if not pid:
