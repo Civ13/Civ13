@@ -8,13 +8,47 @@
 /obj/structure/vehicleparts/frame/car/aircraft
 	name = "aircraft frame"
 	desc = "A light metal airframe section."
+	// Every airframe section draws its own piece of the plane from this sheet:
+	// hull_state is what the plane looks like from outside (the roof image,
+	// hidden from those aboard) and "[hull_state]_floor" is the deck seen from
+	// inside. The sheet's silhouettes also give the plane its shadow shape.
+	icon = 'icons/obj/vehicles/lightplane.dmi'
+	icon_state = "fuselage_center_floor"
+	var/hull_state = "fuselage_center"
+
+/obj/structure/vehicleparts/frame/car/aircraft/update_icon()
+	overlays.Cut()
+	if (!axis)
+		dir = 1
+	icon = 'icons/obj/vehicles/lightplane.dmi'
+	if (noroof)
+		// A wing is the same from inside and out.
+		icon_state = hull_state
+		roof = image(icon=icon, loc=src, icon_state="", layer=1)
+	else
+		icon_state = "[hull_state]_floor"
+		roof = image(icon=icon, loc=src, icon_state=hull_state, layer=11, dir=dir)
+		if (override_color)
+			roof.color = override_color
+		else if (axis && axis.color)
+			roof.color = axis.color
+	if (istype(src, /obj/structure/vehicleparts/frame/car/aircraft/nose/center))
+		var/spinning = FALSE
+		for (var/obj/structure/engine/E in loc)
+			if (E.on)
+				spinning = TRUE
+				break
+		overlays += image(icon=icon, icon_state=spinning ? "prop_spin" : "prop", layer=11.2, dir=dir)
 
 /obj/structure/vehicleparts/frame/car/aircraft/nose/right
+	hull_state = "nose_right"
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/aircraft/nose/center
+	hull_state = "nose_center"
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/aircraft/nose/left
+	hull_state = "nose_left"
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
@@ -22,21 +56,32 @@
 	name = "aircraft wing"
 	desc = "A light metal wing."
 	noroof = TRUE
+/obj/structure/vehicleparts/frame/car/aircraft/wing/right
+	hull_state = "wing_right"
+/obj/structure/vehicleparts/frame/car/aircraft/wing/left
+	hull_state = "wing_left"
 /obj/structure/vehicleparts/frame/car/aircraft/cockpit
 	name = "cockpit"
+	hull_state = "cockpit"
 
 /obj/structure/vehicleparts/frame/car/aircraft/fuselage/right
+	hull_state = "fuselage_right"
 	w_right = list("c_windoweddoor",TRUE,TRUE,0,4,TRUE,TRUE)
 /obj/structure/vehicleparts/frame/car/aircraft/fuselage/center
+	hull_state = "fuselage_center"
 /obj/structure/vehicleparts/frame/car/aircraft/fuselage/left
+	hull_state = "fuselage_left"
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
 /obj/structure/vehicleparts/frame/car/aircraft/tail/right
+	hull_state = "tail_right"
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/aircraft/tail/center
+	hull_state = "tail_center"
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/aircraft/tail/left
+	hull_state = "tail_left"
 	w_left = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 	w_back = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 
@@ -107,9 +152,9 @@ var/global/list/aircraft_light_plane_layout = list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
-	"1,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/right),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/cockpit, /obj/structure/bed/chair/drivers/aircraft),
-	"3,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing),
+	"3,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/left),
 	"1,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/right),
 	"2,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/center, /obj/structure/bed/chair/carseat),
 	"3,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/left),
