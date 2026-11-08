@@ -82,7 +82,7 @@ var/global/list/orbit_pods = list()
 // Null when a pod centred on T has room, otherwise "edge", "pod" or "hull".
 /proc/orbit_pod_blocker(turf/T, obj/structure/orbit_pod/self)
 	var/r = ORBIT_POD_RADIUS
-	if (!T || T.x - r < 2 || T.y - r < 2 || T.x + r > world.maxx - 1 || T.y + r > world.maxy - 1)
+	if (!T || !orbit_clear_of_seams(T, r))
 		return "edge"
 	for (var/obj/structure/orbit_pod/P in orbit_pods)
 		if (P != self && !QDELETED(P) && P.z == T.z && abs(P.x - T.x) <= r * 2 && abs(P.y - T.y) <= r * 2)

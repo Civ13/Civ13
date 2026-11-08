@@ -395,6 +395,8 @@ var/global/list/habitat_cores = list()
 	var/r = HABITAT_MODULE_RADIUS
 	if (centre.x - r < 1 || centre.y - r < 1 || centre.x + r > world.maxx || centre.y + r > world.maxy)
 		return "The module would not fit here."
+	if (orbit_world() && !orbit_clear_of_seams(centre, r))
+		return "Modules must stand clear of the plane's edge, where the seam to the next sector runs."
 	if (locate(/obj/structure/habitat_core) in centre)
 		return "A module already stands here."
 	for (var/turf/T in block(locate(centre.x - r, centre.y - r, centre.z), locate(centre.x + r, centre.y + r, centre.z)))
