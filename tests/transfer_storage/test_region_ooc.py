@@ -43,8 +43,10 @@ class RegionOoc(unittest.TestCase):
         # Rail Yard has no webhook (the bot knows one server), so its OOC never
         # reached Discord until the mainland posted it (2026-11-08).
         receive = proc(OOC, '/proc/region_ooc_receive')
-        outbound = proc(OOC, '/proc/region_ooc_outbound')
+        outbound = proc(OOC, '/proc/region_ooc_outbound_line')
         self.assertIn('"posted" = webhook_enabled()', outbound)
+        self.assertIn('return region_ooc_outbound_line(speaker.key, speaker.ckey, msg, style, rank, fakekey)',
+                      proc(OOC, '/proc/region_ooc_outbound'))
         gate = '!envelope["posted"] && shard_group.region == shard_group.mainland'
         self.assertIn(gate, receive)
         post = receive.index('region_ooc_post_to_discord(region_name, name, msg)')
@@ -55,7 +57,9 @@ class RegionOoc(unittest.TestCase):
         self.assertLess(post, receive.index('config.ooc_allowed'))
         code = '\n'.join(line for line in OOC.split('\n') if not line.lstrip().startswith('//'))
         for call in ('webhook_send', 'discord_log', 'ooc.log'):
-            self.assertNotIn(call, code.replace(proc(OOC, '/proc/region_ooc_post_to_discord'), ''))
+            # Only the mainland's relay post and an agent's own line (it is said here) post to Discord.
+            rest = code.replace(proc(OOC, '/proc/region_ooc_post_to_discord'), '').replace(proc(OOC, '/proc/agent_ooc_say'), '')
+            self.assertNotIn(call, rest)
         poster = proc(OOC, '/proc/region_ooc_post_to_discord')
         self.assertIn('webhook_send_ooc(name, line)', poster)
         self.assertIn('file("ooc.log")', poster)
@@ -85,6 +89,17 @@ class RegionOoc(unittest.TestCase):
         show = proc(OOC, '/proc/discord_ooc_show')
         for check in ('config.ooc_allowed', 'show_ooc', "iconstate='discord'", 'log_discord'):
             self.assertIn(check, show)
+
+    def test_agent_ooc_goes_everywhere_a_player_line_does(self):
+        # Ada can check the whole OOC path (Val, 2026-11-08): local clients, Discord, other regions.
+        say = proc(OOC, '/proc/agent_ooc_say')
+        for step in ('config.ooc_allowed', 'sanitize(msg)', 'log_ooc', 'webhook_send_ooc', 'discord_log', 'show_ooc',
+                     'region_ooc_outbound_line(name, speaker_ckey, msg, "everyone")'):
+            self.assertIn(step, say)
+        self.assertLess(say.index('sanitize(msg)'), say.index('webhook_send_ooc'))
+        chars = read('code/modules/agent_control/agent_characters.dm')
+        self.assertIn('if (!A.has_scope("ooc"))', chars)
+        self.assertLess(chars.index('if (!A.has_scope("ooc"))'), chars.index('agent_ooc_say("[M.real_name] (AI)"'))
 
     def test_rides_the_radio_process_before_the_relay_gate(self):
         fire = proc(RELAY, '/process/civ_radio_relay/fire')

@@ -442,7 +442,7 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
@@ -455,7 +455,7 @@
 			ready = max(ready, world.time + 2)
 	if (action in list("click", "use", "craft", "verb", "throw"))
 		ready = max(ready, body.next_move, body.next_click + 1)
-	if (action in list("say", "emote"))
+	if (action in list("say", "emote", "ooc"))
 		ready = max(ready, next_speech)
 	return max(0, ready - world.time)
 
@@ -508,6 +508,15 @@
 		if ("emote")
 			var/message = copytext(agent_text_arg(req, "text", 256), 1, 257)
 			M.custom_emote(1, html_encode(message))
+			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
+			detail = message
+		if ("ooc")
+			// Reaches every player, the other regions and Discord, so it needs its own scope.
+			if (!A.has_scope("ooc"))
+				agent_fail("forbidden", "Requires scope ooc.")
+			var/message = copytext(agent_text_arg(req, "text", 256), 1, 257)
+			if (!agent_ooc_say("[M.real_name] (AI)", "agent-[A.name]", message))
+				agent_fail("ooc_closed", "OOC is muted or the line was empty")
 			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
 			detail = message
 		if ("click")
@@ -731,7 +740,7 @@
 		agent_fail("bad_args", "do must be wait or one of [jointext(agent_character_actions(), ", ")]")
 	if (action in list("move", "face"))
 		agent_dir(step["dir"])
-	if (action in list("say", "emote"))
+	if (action in list("say", "emote", "ooc"))
 		agent_text_arg(step, "text", 256)
 	if (action in list("click", "examine", "board", "drag", "throw"))
 		agent_resolve_target(step["target"])
