@@ -18,7 +18,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 
 /datum/bug_report
 	var/id
-	var/ckey
+	var/ckey // reporter key; an agent character's is "agent<name>"
+	var/reporter // shown name: the ckey, or "<character> (AI)" for an agent character
 	var/title
 	var/what
 	var/steps
@@ -29,7 +30,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 	var/last_error
 
 /datum/bug_report/proc/to_list()
-	return list("id" = id, "ckey" = ckey, "title" = title, "what" = what, "steps" = steps, "expected" = expected,
+	return list("id" = id, "ckey" = ckey, "reporter" = reporter, "title" = title, "what" = what, "steps" = steps, "expected" = expected,
 		"context" = context, "filed_at" = filed_at, "state" = state == "filing" ? "pending" : state, "last_error" = last_error)
 
 /datum/bug_report/proc/from_list(list/L)
@@ -37,6 +38,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 		return FALSE
 	id = L["id"]
 	ckey = ckey(L["ckey"])
+	reporter = istext(L["reporter"]) ? bug_report_clean(L["reporter"], 64, FALSE) : ckey
 	title = bug_report_clean(L["title"], BUG_REPORT_TITLE_MAX, FALSE)
 	what = bug_report_clean(L["what"])
 	steps = bug_report_clean(L["steps"])
@@ -92,22 +94,26 @@ var/global/datum/bug_report_queue/bug_reports = new
 
 // Why this player cannot file a report now, or null.
 /datum/bug_report_queue/proc/refusal(client/C)
-	ensure_loaded()
 	if (!C)
 		return "No client."
 	if (C.prefs && (C.prefs.muted & MUTE_ADMINHELP))
 		return "You cannot send bug reports while muted from adminhelp."
+	return refusal_for(C.ckey)
+
+// The limits every reporter shares, players and agent characters alike.
+/datum/bug_report_queue/proc/refusal_for(key)
+	ensure_loaded()
 	if (reports.len >= BUG_REPORT_PENDING_MAX)
 		return "The bug report queue is full. Please try again later, or report it on the Discord."
-	if (pending_for(C.ckey) >= BUG_REPORT_PER_PLAYER)
+	if (pending_for(key) >= BUG_REPORT_PER_PLAYER)
 		return "You already have [BUG_REPORT_PER_PLAYER] reports waiting for an admin."
-	var/last = last_report_at[C.ckey]
+	var/last = last_report_at[key]
 	if (isnum(last) && world.time < last + BUG_REPORT_COOLDOWN)
 		return "Please wait [round((last + BUG_REPORT_COOLDOWN - world.time) / 10)] seconds before sending another report."
 	return null
 
 // Round details that help reproduce a bug. No IP, computer ID or other private data.
-/datum/bug_report_queue/proc/context_for(client/C)
+/datum/bug_report_queue/proc/context_for(mob/M, client/C)
 	var/list/L = list()
 	L["Server"] = config && config.server_name ? config.server_name : world.name
 	if (shard_group && shard_group.enabled)
@@ -119,8 +125,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 	var/revision = nomads_lifecycle ? nomads_lifecycle.read_revision() : null
 	if (istext(revision) && length(revision) == 40)
 		L["Revision"] = revision
-	L["BYOND"] = "server [world.byond_version].[world.byond_build], client [C.byond_version].[C.byond_build]"
-	var/mob/M = C.mob
+	L["BYOND"] = "server [world.byond_version].[world.byond_build][C ? ", client [C.byond_version].[C.byond_build]" : ", agent character (no client)"]"
 	var/turf/T = M ? get_turf(M) : null
 	if (T)
 		var/area/A = get_area(T)
@@ -132,21 +137,26 @@ var/global/datum/bug_report_queue/bug_reports = new
 	return L
 
 /datum/bug_report_queue/proc/add(client/C, title, what, steps, expected)
+	return add_from(C.ckey, C.ckey, key_name(C), C.mob, C, title, what, steps, expected)
+
+// key and reporter as on /datum/bug_report; who is the admin log's name for them.
+/datum/bug_report_queue/proc/add_from(key, reporter, who, mob/M, client/C, title, what, steps, expected)
 	ensure_loaded()
 	var/datum/bug_report/R = new
 	R.id = next_id++
-	R.ckey = C.ckey
+	R.ckey = key
+	R.reporter = reporter
 	R.title = bug_report_clean(title, BUG_REPORT_TITLE_MAX, FALSE)
 	R.what = bug_report_clean(what)
 	R.steps = bug_report_clean(steps)
 	R.expected = bug_report_clean(expected)
-	R.context = context_for(C)
+	R.context = context_for(M, C)
 	R.filed_at = time2text(world.realtime, "YYYY-MM-DD hh:mm")
 	reports["[R.id]"] = R
-	last_report_at[C.ckey] = world.time
+	last_report_at[key] = world.time
 	save()
-	log_admin("BUG REPORT #[R.id] from [key_name(C)]: [R.title]")
-	var/notice = "<span class='notice'><b>Bug report #[R.id]</b> from [key_name(C)]: [html_encode(R.title)] (<a href='?src=\ref[src];bugreport=panel'>review</a>)</span>"
+	log_admin("BUG REPORT #[R.id] from [who]: [R.title]")
+	var/notice = "<span class='notice'><b>Bug report #[R.id]</b> from [html_encode(who)]: [html_encode(R.title)] (<a href='?src=\ref[src];bugreport=panel'>review</a>)</span>"
 	for (var/client/X in admins)
 		if (X.holder && (R_ADMIN & X.holder.rights))
 			to_chat(X, notice)
@@ -161,7 +171,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 	return config && bug_report_repo_valid(config.bug_report_github_repo) ? config.bug_report_github_repo : null
 
 /datum/bug_report_queue/proc/issue_text(datum/bug_report/R, title, admin_note)
-	return list(bug_report_issue_title(title ? title : R.title), bug_report_issue_body(R.ckey, R.what, R.steps, R.expected, R.context, admin_note))
+	return list(bug_report_issue_title(title ? title : R.title), bug_report_issue_body(R.reporter, R.what, R.steps, R.expected, R.context, admin_note))
 
 // Read only while filing; see the note at the top of this file.
 /datum/bug_report_queue/proc/read_token()
@@ -274,7 +284,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 	for (var/id in reports)
 		var/datum/bug_report/R = reports[id]
 		H += "<h3>#[R.id]: [html_encode(R.title)]</h3>"
-		H += "From <b>[html_encode(R.ckey)]</b> at [html_encode(R.filed_at)][R.state == "filing" ? " <i>(filing...)</i>" : ""]"
+		H += "From <b>[html_encode(R.reporter)]</b> at [html_encode(R.filed_at)][R.state == "filing" ? " <i>(filing...)</i>" : ""]"
 		if (R.last_error)
 			H += "<br><font color='red'>Last attempt failed: [html_encode(R.last_error)]</font>"
 		H += "<br><b>What happened:</b><pre>[html_encode(R.what)]</pre>"
