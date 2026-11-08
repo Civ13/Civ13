@@ -154,6 +154,8 @@
 					qdel(SD)
 				return
 		for (var/obj/structure/farming/plant/PL in range(2, src))
+			if (!PL.granivore_can_eat())
+				continue
 			if (prob(15))
 				npc_subtile_stop_continuous_walk()
 				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
@@ -244,6 +246,8 @@
 
 	if (granivore)
 		for (var/obj/structure/farming/plant/PL in range(8, src))
+			if (!PL.granivore_can_eat())
+				continue
 			smart_step_towards(PL)
 			return
 
@@ -264,3 +268,11 @@
 			if (!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
 				smart_step_towards(FD)
 				return
+
+// Whether crop-eating (granivore) animals such as rabbits may eat or walk toward this plant.
+/obj/structure/farming/plant/proc/granivore_can_eat()
+	return TRUE
+
+// Young cotton is left alone until it is ready to pick.
+/obj/structure/farming/plant/cotton/granivore_can_eat()
+	return stage >= readyStageMin
