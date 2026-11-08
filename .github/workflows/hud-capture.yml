@@ -1,0 +1,80 @@
+name: HUD capture
+# Native DreamSeeker stills of a the customizable HUD on Gaia
+# (tools/hud-capture), published to an orphan media branch.
+on:
+  push:
+    branches:
+      - 'ci/hud-capture-*'
+permissions:
+  contents: read
+jobs:
+  render:
+    if: github.repository == 'Civ13/Civ13'
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: game
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Acquire the pinned BYOND 516.1688 package
+        working-directory: game/tools/hud-capture
+        shell: powershell
+        run: |
+          $engine = Join-Path $env:RUNNER_TEMP 'engine'
+          New-Item -ItemType Directory -Path $engine | Out-Null
+          python -B acquire.py --root "$engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install the bundled DirectX runtime DreamSeeker needs
+        working-directory: game/tools/hud-capture
+        shell: powershell
+        run: |
+          python -B directx_setup.py --root "$env:RUNNER_TEMP/engine" --output "$env:RUNNER_TEMP/engine/directx-evidence" --accept-bundled-microsoft-directx-terms
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install a pinned ffmpeg with gdigrab
+        shell: powershell
+        run: |
+          python -m pip install --disable-pip-version-check imageio-ffmpeg==0.5.1
+          $ffmpeg = python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"
+          Add-Content -LiteralPath $env:GITHUB_ENV -Value "CAPTURE_FFMPEG=$ffmpeg"
+      - name: Capture the HUD
+        timeout-minutes: 32
+        shell: powershell
+        run: |
+          python -B game/tools/hud-capture/capture.py --byond "$env:RUNNER_TEMP/engine/byond/bin" --game game --ffmpeg "$env:CAPTURE_FFMPEG" --output "$env:RUNNER_TEMP/capture/out"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Keep the capture
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: hud-capture
+          path: ${{ runner.temp }}/capture/out
+          retention-days: 7
+          if-no-files-found: warn
+  publish:
+    needs: render
+    if: ${{ always() && github.repository == 'Civ13/Civ13' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Download the capture
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" -n hud-capture -D "$RUNNER_TEMP/media"
+      - name: Publish the stills to an orphan branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/media"
+          git init -q -b media
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "HUD capture from run ${GITHUB_RUN_ID} (${GITHUB_SHA})"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "media:refs/heads/media/hud-capture"
