@@ -35,6 +35,17 @@ class FormatCompatibility(unittest.TestCase):
         self.assertIn('if(isnull(F["/zone_capture/[ref]/id"])) throw EXCEPTION("Missing captured membership entry")', loop)
         self.assertRegex(loop, r'validated_zone_grid \+= id\n\t+TICK_CHECK\n')
 
+    def test_empty_sparse_level_needs_no_grid_or_membership(self):
+        # Live Gaia, 2026-11-08: an allocated but empty upper building floor
+        # saved no /map and no /zone_capture, and every save was rejected.
+        source = (ROOT/PATH).read_text()
+        body = source.split('/map_storage/proc/prepare_saved_zones(', 1)[1].split('\n/map_storage/', 1)[0]
+        self.assertNotIn('"maxz", "zone_capture", "map"', body)
+        header = body.index('var/list/sparse = sparse_level_header(F)')
+        gate = body.index('if(!sparse || sparse["cells"] > 0)', header)
+        self.assertLess(gate, body.index('for(var/key in list("zone_capture", "map"))', gate))
+        self.assertIn('if("zone_capture" in header_keys)', body)
+
     def test_zone_header_admits_typed_versions_2_3_segmented_4_and_stream_5_only(self):
         source = (ROOT/PATH).read_text()
         self.assertEqual(source.count('!(F["/format_version"] in list(2, 3, 4, 5))'), 1)
