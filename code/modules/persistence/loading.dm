@@ -433,7 +433,7 @@
 			savefile.cd = entry_dir
 			var/list/saved_fields = savefile.dir
 			for(var/v in default_fields)
-				if((v in saved_fields) || !(v in object.vars) || object.persistence_runtime_var(v))
+				if((v in saved_fields) || !(v in object.vars) || persistence_runtime_field(object, v))
 					continue
 				var/default_value = initial(object.vars[v])
 				if(persistence_default_scalar(default_value) && object.vars[v] != default_value)
@@ -566,6 +566,8 @@
 				// a reloaded one is reset to it. Saved cells take their saved type.
 				var/list/cells = sparse_level_cells(F, z, sparse)
 				var/baseline = sparse["turf"]
+				// Saved cells' types from the preflight, as for a full level below.
+				var/list/sparse_grid = validated_turf_grid(z)
 				for(var/y = 1, y <= world.maxy, y++)
 					var/list/columns = cells["[y]"]
 					var/next = 1
@@ -573,7 +575,9 @@
 						var/turf/T = locate(x,y,z)
 						if(columns && next <= columns.len && columns[next] == x)
 							next++
-							T.ChangeTurf(level_entry_value(F, F["/map/[z]/[y]/[x]"], "type"), FALSE, FALSE)
+							var/saved_type = sparse_grid ? sparse_grid[(y - 1) * world.maxx + x] : null
+							if(!saved_type) saved_type = level_entry_value(F, F["/map/[z]/[y]/[x]"], "type")
+							T.ChangeTurf(saved_type, FALSE, FALSE)
 						else if(T.type != baseline)
 							T.ChangeTurf(baseline, FALSE, FALSE)
 					TICK_CHECK
@@ -1056,10 +1060,14 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 			// each coordinate are checked by sparse_level_cells (functions.dm).
 			var/list/sparse = sparse_level_header(F)
 			var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
-			// The walk fills each full level's turf types for the load's turf
-			// pass and the validation record.
-			var/list/turf_grid = sparse ? null : new /list(world.maxx * world.maxy)
-			if(turf_grid) validated_turf_grids["[z]"] = turf_grid
+			// The walk fills each level's turf types for the load's turf pass and
+			// the validation record; a sparse level's unsaved cells hold its baseline.
+			var/list/turf_grid = new /list(world.maxx * world.maxy)
+			if(sparse)
+				var/baseline_turf = sparse["turf"]
+				for(var/cell_index = 1, cell_index <= turf_grid.len, cell_index++)
+					turf_grid[cell_index] = baseline_turf
+			validated_turf_grids["[z]"] = turf_grid
 			if(!sparse)
 				F.cd = "/map"
 				if(F.dir.len != 1 || !("[z]" in F.dir))
@@ -2198,7 +2206,7 @@ var/global/persistence_memory_probe_error
 			var/turf/T = locate(x, y, z)
 			var/list/default_fields = T.persistence_field_allowlist()
 			for(var/v in default_fields)
-				if(!(v in T.vars) || T.persistence_runtime_var(v)) continue
+				if(!(v in T.vars) || persistence_runtime_field(T, v)) continue
 				var/default_value = initial(T.vars[v])
 				if(persistence_default_scalar(default_value) && T.vars[v] != default_value)
 					T.vars[v] = default_value

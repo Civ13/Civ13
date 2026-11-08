@@ -95,6 +95,22 @@ class RuntimeVarCache(unittest.TestCase):
         self.assertIn('if (!instance_key)\n\t\t\t\t\tcached = runtime_cache[key]', body)
         self.assertIn('if (!instance_key)\n\t\t\t\t\t\truntime_cache[key] = cached', body)
 
+    def test_single_field_helper_uses_the_cache(self):
+        functions = (ROOT / 'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
+        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+        body = functions[functions.index('/proc/persistence_runtime_field('):]
+        body = body[:body.index('return cached')]
+        self.assertIn('if (persistence_runtime_var_instance_keys[key])\n\t\treturn D.persistence_runtime_var(key)', body)
+        self.assertIn('cache[key] = cached', body)
+        # The import's default reset and the sparse checks ask through it. The
+        # Load_Entry field gate stays a direct call: native controls patch it.
+        self.assertIn('!(v in object.vars) || persistence_runtime_field(object, v))', loading)
+        self.assertIn('if(object.persistence_runtime_var(v))\n#ifdef', loading)
+        self.assertIn('if(persistence_runtime_field(T, v)) continue', functions)
+        # Variable observability classifies every field, through the cache.
+        observed = functions[functions.index('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t// Every field'):]
+        observed = observed[:observed.index('#endif')]
+        self.assertIn('observed = runtime_cache[key]', observed)
 
 if __name__ == '__main__':
     unittest.main()
