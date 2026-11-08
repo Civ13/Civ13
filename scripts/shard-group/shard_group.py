@@ -1772,6 +1772,9 @@ def group_status(group, only=None, view=region_view, platform=None):
                 entry['region_view'] = {'error': 'no matching shard_region answer'}
             else:
                 entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
+                # A TDM pair: what the battle is doing (pregame, playing, finished, rotating, ...).
+                if type(seen.get('battle_phase')) is str:
+                    entry['region_view']['battle_phase'] = seen['battle_phase'][:16]
                 age = seen.get('ordinal_age')
                 if type(age) is int and 0 <= age < len(EPOCH_NAMES):
                     entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}

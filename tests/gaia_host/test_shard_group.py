@@ -639,6 +639,17 @@ class ShardGroupTests(unittest.TestCase):
         status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
         self.assertEqual({'ordinal': 8, 'name': '2013'}, status['regions']['deep']['region_view']['epoch'])
 
+    def test_status_shows_the_tdm_battle_phase(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 3, 'map': 'Berlin', 'battle_phase': 'playing'}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertEqual('playing', status['regions']['deep']['region_view']['battle_phase'])
+        answers[1721]['battle_phase'] = 7
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertNotIn('battle_phase', status['regions']['deep']['region_view'])
+
     def test_sleep_settings_reach_every_region(self):
         self.refuse_config('freeze_idle_minutes', freeze_idle_minutes='soon')
         self.refuse_config('wake_ignore', wake_ignore=[1])

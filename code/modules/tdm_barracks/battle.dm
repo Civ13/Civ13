@@ -19,18 +19,21 @@ var/global/datum/tdm_battle/tdm_battle = new
 	if(running)
 		return
 	running = TRUE
-	spawn(0)
-		while(tdm_battle_active())
-			sample()
-			var/phase = phase()
-			tdm_link.report("status", status())
-			last_phase = phase
-			// Report a change of phase sooner than the usual interval.
-			for(var/i = 1, i <= TDM_REPORT_INTERVAL / 10, i++)
-				sleep(10)
-				if(phase() != last_phase)
-					break
-		running = FALSE
+	report_loop()
+
+/datum/tdm_battle/proc/report_loop()
+	set waitfor = FALSE
+	while(tdm_battle_active())
+		sample()
+		var/phase = phase()
+		tdm_link.report("status", status())
+		last_phase = phase
+		// Report a change of phase sooner than the usual interval.
+		for(var/i = 1, i <= TDM_REPORT_INTERVAL / 10, i++)
+			sleep(10)
+			if(phase() != last_phase)
+				break
+	running = FALSE
 
 /datum/tdm_battle/proc/phase()
 	if(returning)
@@ -224,8 +227,11 @@ var/global/datum/tdm_battle/tdm_battle = new
 
 /hook/roundend/proc/tdm_battle_roundend()
 	if(tdm_battle_active())
-		spawn(0)
-			tdm_battle.send_results()
+		tdm_battle.send_results_soon()
 	return TRUE
+
+/datum/tdm_battle/proc/send_results_soon()
+	set waitfor = FALSE
+	send_results()
 
 #undef TDM_ROTATION_WAIT
