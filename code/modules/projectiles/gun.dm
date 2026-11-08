@@ -388,6 +388,7 @@
 /obj/item/weapon/gun/proc/handle_click_empty(mob/user)
 	if (user)
 		user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+		balloon_alert(user, "empty")
 	else
 		visible_message("*click click*")
 
@@ -509,6 +510,8 @@
 	if (isliving(user))
 		var/mob/living/shooter = user
 		shot_accuracy *= shooter.leader_order_focus_mult()
+	if (round_facts && ishuman(user))
+		round_facts.record_shot(user)
 
 	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -40, 40)
 

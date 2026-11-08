@@ -95,6 +95,7 @@
 		return 0
 	if (world.time < leader_order_ready_at)
 		to_chat(src, SPAN_WARNING("You gave an order recently. You can give another in [round((leader_order_ready_at - world.time) / 10)] seconds."))
+		balloon_alert(src, "not yet")
 		return 0
 
 	var/order_range = LEADER_ORDER_RANGE
@@ -109,6 +110,7 @@
 	leader_order_ready_at = world.time + cooldown
 
 	say(leader_order_shout(order))
+	balloon_alert_to_viewers("[uppertext(order)]!")
 	if (W)
 		playsound(get_turf(src), W.whistle_sound, 100, FALSE, 5)
 
