@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 226,
     "material_recipes_carib.txt": 1282,
     "material_recipes_crustacean.txt": 1335,
-    "material_recipes_global.txt": 1720,
+    "material_recipes_global.txt": 1722,
     "material_recipes_gorilla.txt": 1296,
     "material_recipes_kwai.txt": 204,
     "material_recipes_pygmy.txt": 1277,
@@ -58,7 +58,7 @@
     "medical": 41,
     "military & law enforcement clothes": 27,
     "molds": 81,
-    "none": 2582,
+    "none": 2583,
     "paintings": 78,
     "paper & printing": 210,
     "plant pots & decoration": 10,
@@ -81,7 +81,7 @@
     "vehicle parts": 114,
     "wall coverings & stucco": 6,
     "weapon accessories": 84,
-    "weapons": 173
+    "weapons": 174
   },
   "audited_on": "2026-10-29",
   "existing_furniture_candidates": 545,

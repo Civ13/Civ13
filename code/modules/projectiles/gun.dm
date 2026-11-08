@@ -462,6 +462,9 @@
 		var/mob/living/L = user
 		accuracy_range *= L.leader_order_focus_mult()
 
+	recoil_range *= bipod_recoil_mult(user)
+	accuracy_range *= bipod_accuracy_mult(user)
+
 	return recoil_range + accuracy_range
 
 //does the actual launching of the projectile
@@ -510,6 +513,9 @@
 	if (isliving(user))
 		var/mob/living/shooter = user
 		shot_accuracy *= shooter.leader_order_focus_mult()
+	if (bipod_braced(user))
+		shot_recoil *= bipod_recoil_mult(user)
+		shot_accuracy *= bipod_accuracy_mult(user)
 	if (round_facts && ishuman(user))
 		round_facts.record_shot(user)
 
