@@ -8,6 +8,9 @@
 	flammable = FALSE
 	layer = 2.98
 	density = TRUE
+	// Built frames stay put: players dragged loose ship frames (and their walls)
+	// away by pulling them. A wrench still releases an unlinked frame on purpose.
+	anchored = TRUE
 
 	var/resistance = 150
 	var/obj/structure/vehicleparts/axis/axis = null
