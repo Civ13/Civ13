@@ -54,6 +54,18 @@ require the bounded plan review; compilation does not prove movement or rescue.
 Use the console `dm.exe`, not the GUI `dreammaker.exe`, for Windows compilation.
 
 
+## Map review on pull requests
+
+The `Map review` workflow runs `scripts/map_review.py` on pull requests that
+change a `.dmm`. It installs the pinned compiler only to read the type tree
+(`DreamMaker -o`; no game code runs) and uses byond-devtools (pinned in the
+workflow) to list changed tiles per level, draw a before | after | changed
+tiles picture for each changed level (at most 64x64 tiles around the changes)
+and list unknown types and undefined vars the change adds. The list goes to the
+job summary and the pictures to the `map-review` artifact. It fails only when a
+map at head cannot be read. Locally, with head checked out:
+`python3 scripts/map_review.py --base origin/master --devtools <byond-devtools checkout> --byond <BYOND bin> --out map-review`.
+
 ## Maps
 
 <!-- 2026-11-05: map merge drivers, UpdatePaths and maplint -->

@@ -67,8 +67,10 @@ ACTIONS = {
         "footsteps": {"type": "boolean", "description": "include footstep sounds (default false)"},
         "wait_s": {"type": "number", "minimum": 0, "maximum": 60, "description": "wait up to this many seconds for a new message, queue result (queue_since), prompt (prompt_since), sound (sound_since) or nearby change (since_rev)"},
     }, ["character"])),
-    "character_view": ("characters", "A picture of what a character sees: its view (radius 1-7, default 7) as an appearance dump with overlays, colours, planes and lighting, the byond-devtools ingame format. The server sends it in parts (part, view); the client and MCP tool fetch them all and, with BYOND_DEVTOOLS set to a byond-devtools checkout, return it rendered as a PNG.", _schema({
+    "character_view": ("characters", "A picture of what a character sees: its view (radius 1-7, default 7) as an appearance dump with overlays, colours, planes and lighting (and the HUD when a player is in the body), the byond-devtools ingame format. The server sends it in parts (part, view); the client and MCP tool fetch them all and, with BYOND_DEVTOOLS set to a byond-devtools checkout, return it rendered as a PNG, animated with frames > 1. The render report lists undrawn: things in view a player could click that drew nothing.", _schema({
         "character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7},
+        "frames": {"type": "integer", "minimum": 1, "maximum": 8, "description": "snapshots to take (client side); more than 1 makes an animated PNG"},
+        "interval_s": {"type": "number", "minimum": 0.2, "maximum": 10, "description": "seconds between snapshots (default 1)"},
         "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
         "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
     }, ["character"])),

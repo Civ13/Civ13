@@ -213,6 +213,9 @@ var/observe_runtime_error = FALSE
 			if (movable[4] == "[C.body.type]")
 				found = TRUE
 	observe_check(found, "the character is in its own view")
+	var/list/first_app = dump["appearances"][1]
+	observe_check(islist(first_app) && !isnull(first_app["mouse_opacity"]), "appearances carry mouse_opacity for the undrawn check")
+	observe_check(islist(dump["screen"]) && !length(dump["screen"]) && !dump["hud"], "a body without a player has no HUD in its view")
 	text2file(text, "view.json")
 	var/stale = observe_call("view", C, list("view" = head["view"] - 1, "part" = 1 + 1))
 	observe_check(istext(stale) && findtext(stale, "view_gone"), "an old view id is refused ([stale])")

@@ -1,0 +1,54 @@
+name: Map review
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - '**.dmm'
+      - 'scripts/map_review.py'
+      - '.github/workflows/map-review.yml'
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'Revision to compare with (default origin/master)'
+        required: false
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      # Pinned byond-devtools (diff, lint); bump the ref to take a newer renderer.
+      - uses: actions/checkout@v4
+        with:
+          repository: Civ13/byond-devtools
+          ref: 0ed557447129495150cd50c8003da718598f4c70
+          path: .byond-devtools
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Only DreamMaker -o runs (the type tree for pictures and lint); nothing runs game code.
+      - name: Install the pinned BYOND compiler
+        env:
+          BYOND_HOME: ${{ runner.temp }}/byond
+        run: bash scripts/cloud_byond_setup.sh
+      - name: Picture and lint changed maps
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha || inputs.base || 'origin/master' }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          bin="$(ls -d "$RUNNER_TEMP"/byond/byond/bin)"
+          python3 -B scripts/map_review.py --base "$BASE_REF" --head "$HEAD_REF" --devtools .byond-devtools --byond "$bin" --out map-review --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-review
+          path: map-review
+          if-no-files-found: ignore
+          retention-days: 14
