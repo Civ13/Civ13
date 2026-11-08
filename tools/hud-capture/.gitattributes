@@ -1,0 +1,3 @@
+# Keep exact bytes: acquire.py pins vendor.json by SHA-256 and Windows
+# checkouts would otherwise convert line endings.
+* -text
