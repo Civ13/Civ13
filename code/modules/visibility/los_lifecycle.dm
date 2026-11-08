@@ -137,8 +137,18 @@
 	los_next_audit = world.time + 10
 	return TRUE
 
+// Bullets and shrapnel cross a tile per step and are gone within a second.
+// Treating each step as a scene change made every client in range rebuild its
+// whole line-of-sight presentation on every bullet step, which was most of the
+// server CPU in a firefight. They are still masked on the viewer's next
+// refresh, and BYOND's own view never shows a tile the viewer cannot see.
+/proc/los_presentation_exempt(atom/A)
+	return istype(A, /obj/item/projectile) && !A.opacity
+
 /proc/los_invalidate(atom/changed, possible_opacity = FALSE, viewer_refresh = FALSE)
 	if(!CIV13_GEOMETRIC_LOS_CORE || !los_active_contexts)
+		return
+	if(los_presentation_exempt(changed))
 		return
 	var/turf/T = get_turf(changed)
 	// Null-space HUD/helper retirement has no world neighborhood to invalidate.

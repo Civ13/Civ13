@@ -175,17 +175,53 @@ var/global/list/los_active_contexts
 	var/radius_y
 	var/list/blockers = list()
 	var/list/blocker_bins
+	// Derived per capture by index_blockers(): static blockers by tile.
+	var/list/blocker_grid
+	var/list/loose_blockers
+	var/grid_frac_x = 0
+	var/grid_frac_y = 0
+	var/grid_min_x = 0
+	var/grid_min_y = 0
+	var/grid_height = 0
+	var/grid_size = 0
 	var/list/clear_footprints = list()
 	var/list/tree_bounds
 	var/list/blocking_tiles
 
 // The flat list remains authoritative and is retained for sparse scenes and
-// snapshot fixtures. Bins are derived once per fresh capture, never shared.
+// snapshot fixtures. The grid is derived once per fresh capture, never shared.
+// Static blockers sit on whole tiles, so one grid slot per tile holds them;
+// blockers with a step offset, and any second cell on one tile, stay in the
+// small loose list that every query scans in full.
 /datum/los_snapshot/proc/index_blockers()
 	blocker_bins = null
 	blocking_tiles = null
+	blocker_grid = null
+	loose_blockers = null
 	if(blockers.len <= 16)
 		return
+	grid_frac_x = eye_x - round(eye_x)
+	grid_frac_y = eye_y - round(eye_y)
+	grid_min_x = round(-radius_x - 2)
+	grid_min_y = round(-radius_y - 2)
+	grid_height = round(radius_y + 2) - grid_min_y + 1
+	var/grid_width = round(radius_x + 2) - grid_min_x + 1
+	blocker_grid = new /list(grid_width * grid_height)
+	grid_size = blocker_grid.len
+	loose_blockers = list()
+	for(var/datum/los_cell/B in blockers)
+		var/kx = round(B.cell_x + grid_frac_x + 0.5)
+		var/ky = round(B.cell_y + grid_frac_y + 0.5)
+		var/slot = (kx - grid_min_x) * grid_height + (ky - grid_min_y) + 1
+		if(B.cell_x != B.tile_x || B.cell_y != B.tile_y || abs(B.cell_x + grid_frac_x - kx) > 0.001 || abs(B.cell_y + grid_frac_y - ky) > 0.001 || ky < grid_min_y || ky >= grid_min_y + grid_height || slot < 1 || slot > grid_size || blocker_grid[slot])
+			loose_blockers += B
+			continue
+		blocker_grid[slot] = B
+
+// Spatial bins for the tree surface pass, built only when a tree asks.
+/datum/los_snapshot/proc/ensure_blocker_bins()
+	if(blocker_bins || blockers.len <= 16)
+		return blocker_bins
 	blocker_bins = list()
 	for(var/datum/los_cell/B in blockers)
 		var/bin_key = "[los_bucket_index(B.cell_x)],[los_bucket_index(B.cell_y)]"
@@ -194,6 +230,7 @@ var/global/list/los_active_contexts
 			bin = list()
 			blocker_bins[bin_key] = bin
 		bin += B
+	return blocker_bins
 
 // Index-wise equality of the captured blocking geometry. capture() walks the
 // viewport in one fixed order, so two captures of an unchanged scene produce
@@ -244,26 +281,72 @@ var/global/list/los_active_contexts
 				return TRUE
 	return FALSE
 
+// The exact test below decides; the grid walk only picks candidates. The
+// footprint hull is every s * p for s in 0..1 and p in the target square, so
+// along the major axis each unit slab [a, b] holds hull points only with
+// minor coordinates between a and b times the square's extreme slopes,
+// clamped to the hull's bounding box. Every blocker square touching that
+// range is tested, a superset of the blockers the hull can reach, in a few
+// grid reads per tile of distance instead of every blocker in the bounding
+// box (about 20 exact tests per query on an indoor map).
 /datum/los_snapshot/proc/blocks_target(tx, ty, target_tile_x, target_tile_y, opaque_target)
-	if(!blocker_bins)
+	if(!blocker_grid)
 		for(var/datum/los_cell/B in blockers)
 			if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
 				return TRUE
 		return FALSE
+	for(var/datum/los_cell/B in loose_blockers)
+		if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+			return TRUE
 	var/half_size = opaque_target ? 0 : 0.25
-	var/min_x = los_bucket_lower(tx, half_size)
-	var/max_x = los_bucket_upper(tx, half_size)
-	var/min_y = los_bucket_lower(ty, half_size)
-	var/max_y = los_bucket_upper(ty, half_size)
-	// Iterate bins directly, without allocating a candidate list per target.
-	for(var/bx = min_x, bx <= max_x, bx++)
-		for(var/by = min_y, by <= max_y, by++)
-			var/list/bin = blocker_bins["[bx],[by]"]
-			if(!bin)
+	var/x_major = abs(tx) >= abs(ty)
+	// Major (u) and minor (v) axes of this query.
+	var/tu = x_major ? tx : ty
+	var/tv = x_major ? ty : tx
+	var/frac_u = x_major ? grid_frac_x : grid_frac_y
+	var/frac_v = x_major ? grid_frac_y : grid_frac_x
+	var/v_low = min(0, tv - half_size)
+	var/v_high = max(0, tv + half_size)
+	var/slope_known = abs(tu) > half_size
+	var/slope_low = 0
+	var/slope_high = 0
+	if(slope_known)
+		var/s1 = (tv - half_size) / (tu - half_size)
+		var/s2 = (tv + half_size) / (tu - half_size)
+		var/s3 = (tv - half_size) / (tu + half_size)
+		var/s4 = (tv + half_size) / (tu + half_size)
+		slope_low = min(s1, s2, s3, s4)
+		slope_high = max(s1, s2, s3, s4)
+	// Cell keys k hold centres at k - frac; widen by a hair against rounding.
+	// A grid slot is base + kv * stride for the column (or row) ku.
+	var/ku_low = -round(-(min(0, tu - half_size) - 0.5 + frac_u - 0.001))
+	var/ku_high = round(max(0, tu + half_size) + 0.5 + frac_u + 0.001)
+	var/grid_width = grid_size / grid_height
+	var/u_min = x_major ? grid_min_x : grid_min_y
+	var/v_min = x_major ? grid_min_y : grid_min_x
+	var/u_count = x_major ? grid_width : grid_height
+	var/v_count = x_major ? grid_height : grid_width
+	var/stride = x_major ? 1 : grid_height
+	var/u_stride = x_major ? grid_height : 1
+	ku_low = max(ku_low, u_min)
+	ku_high = min(ku_high, u_min + u_count - 1)
+	for(var/ku = ku_low, ku <= ku_high, ku++)
+		var/slab_low = ku - frac_u - 0.5
+		var/slab_high = slab_low + 1
+		var/row_low = v_low
+		var/row_high = v_high
+		if(slope_known)
+			row_low = max(v_low, min(slab_low * slope_low, slab_low * slope_high, slab_high * slope_low, slab_high * slope_high))
+			row_high = min(v_high, max(slab_low * slope_low, slab_low * slope_high, slab_high * slope_low, slab_high * slope_high))
+			if(row_low > row_high)
 				continue
-			for(var/datum/los_cell/B in bin)
-				if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
-					return TRUE
+		var/kv_low = max(v_min, -round(-(row_low - 0.5 + frac_v - 0.001)))
+		var/kv_high = min(v_min + v_count - 1, round(row_high + 0.5 + frac_v + 0.001))
+		var/base = (ku - u_min) * u_stride - v_min * stride + 1
+		for(var/kv = kv_low, kv <= kv_high, kv++)
+			var/datum/los_cell/B = blocker_grid[base + kv * stride]
+			if(B && los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+				return TRUE
 	return FALSE
 
 // A unit blocker's shadow on an eye-facing unit edge. Depth is positive in
@@ -293,7 +376,7 @@ var/global/list/los_active_contexts
 	return list(low_n, low_d, high_n, high_d)
 
 /datum/los_snapshot/proc/surface_blockers(tx, ty)
-	if (!blocker_bins)
+	if (!ensure_blocker_bins())
 		return blockers
 	var/list/candidates = list()
 	var/min_x = los_bucket_lower(tx, 0.5)

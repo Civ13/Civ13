@@ -865,7 +865,7 @@
 		var/obj/effect/projectile/M = PoolOrNew(muzzle_type, starting)
 		if (istype(M))
 			M.activate(get_angle())
-	if(!istype(muzzle_type, /obj/effect/projectile/laser))
+	if(!ispath(muzzle_type, /obj/effect/projectile/laser))
 		for(var/i = 0, i < 5, i++)
 			spawn (i * 0.3)
 				var/obj/effect/projectile/bullet/muzzle/gunsmoke/S = PoolOrNew(/obj/effect/projectile/bullet/muzzle/gunsmoke, starting)

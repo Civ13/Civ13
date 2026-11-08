@@ -32,8 +32,14 @@
 	// Client text measurements, "[px]|[text]" -> list(width, height).
 	var/tmp/list/hover_measured
 	var/tmp/hover_measuring
+	// world.time of the last full visibility check of the current target.
+	var/tmp/hover_checked_at = -1
 
 #define HOVER_NAME_MAX_WIDTH 384
+// A pointer moving over one target only moves the panel between full checks
+// this many deciseconds apart. MouseMove arrives far faster than ticks while
+// aiming, and every full check captures the viewer's whole line-of-sight scene.
+#define HOVER_NAME_RECHECK 2
 #define HOVER_NAME_MEASURE_CACHE 256
 
 // The styled label text, centred in its maptext box. px is the font size.
@@ -60,7 +66,7 @@
 	return rect
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "hover_font_px", "hover_measured", "hover_measuring", "maptext_width", "maptext_height", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "hover_font_px", "hover_measured", "hover_measuring", "hover_checked_at", "maptext_width", "maptext_height", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
@@ -71,6 +77,7 @@
 	hover_text = null
 	hover_text_width = 0
 	hover_text_height = 0
+	hover_checked_at = -1
 	maptext = ""
 	update_backdrop()
 
@@ -266,10 +273,14 @@
 /obj/screen/hover_name/proc/set_target(atom/origin)
 	// A move across the current pointer target only refreshes: process() still
 	// revalidates with fresh visibility, but keeps the drawn label and underlays.
+	// Within HOVER_NAME_RECHECK of the last check it only moves the panel.
 	var/atom/current = hover_target?.resolve()
 	if (origin && current && hover_origin?.resolve() == origin && pointer_target(origin) == current)
 		if (!hover_inventory || inventory_target_current(current))
-			process()
+			if (hover_checked_at >= 0 && world.time >= hover_checked_at && world.time < hover_checked_at + HOVER_NAME_RECHECK)
+				follow_pointer()
+			else
+				process()
 			return
 	clear_target()
 	var/atom/target = pointer_target(origin)
@@ -301,6 +312,7 @@
 		clear_target()
 		return
 	show_label(html_encode(copytext(label, 1, 129)))
+	hover_checked_at = world.time
 	follow_pointer()
 
 /client/proc/hover_name_widget()

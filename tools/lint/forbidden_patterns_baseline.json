@@ -363,7 +363,7 @@
       "code/modules/persistence/transfer_bridge.dm": 2,
       "code/modules/projectiles/__projectiles.dm": 3,
       "code/modules/projectiles/ammunition.dm": 1,
-      "code/modules/projectiles/effects.dm": 6,
+      "code/modules/projectiles/effects.dm": 1,
       "code/modules/projectiles/gun.dm": 3,
       "code/modules/projectiles/projectile.dm": 2,
       "code/modules/projectiles/projectile/cannon.dm": 4,
