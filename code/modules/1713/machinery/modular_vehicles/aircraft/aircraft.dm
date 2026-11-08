@@ -392,7 +392,8 @@ var/global/list/airborne_aircraft = list()
 	var/m_dir = reverse ? OPPOSITE_DIR(dir) : dir
 	for (var/obj/structure/vehicleparts/frame/F in frames())
 		var/turf/T = get_step(F.loc, m_dir)
-		if (!T)
+		// The black ring wall of a bounded flight level is an edge too, at both heights.
+		if (!T || istype(T, /turf/wall/indestructable/black))
 			if (!edge_blocked)
 				pilot_message(SPAN_WARNING("You are at the edge of the world. Turn back or you will stall."))
 			edge_blocked = TRUE
