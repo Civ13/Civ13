@@ -11,6 +11,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 LIVING = ROOT / 'code/game/mob/living/living.dm'
+MOVEMENT = ROOT / 'code/game/mob/mob_movement.dm'
 
 
 def living_move():
@@ -36,6 +37,30 @@ class LegacyPullFollowContracts(unittest.TestCase):
         self.assertLess(moved, guard)
         self.assertLess(guard, drag)
         self.assertEqual(body[guard:].split('\n')[1].strip(), 'return moved')
+
+    def test_drag_targets_the_tile_the_step_vacated(self):
+        # West/south steps change loc on the first pulse, so loc is the
+        # destination by the aligned pulse; the drag must aim behind it.
+        body = living_move()
+        target = body.index('T = get_step(pull_pulse.destination, turn(pull_pulse.direction, 180))')
+        self.assertLess(body.index('var/turf/T = loc'), target)
+        self.assertLess(target, body.index('moved = ..()'))
+
+    def test_next_input_keeps_a_touching_pull_after_an_interrupted_step(self):
+        source = MOVEMENT.read_text(encoding='utf-8')
+        touching = source.index('var/pull_touching = (mob.step_x || mob.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32')
+        drop = source.index('if (!mob.pulling.Adjacent(mob) && !pull_touching)')
+        self.assertLess(touching, drop)
+        self.assertNotIn('if (!mob.pulling.Adjacent(mob))\n', source)
+
+    def test_downed_body_with_owned_offset_can_be_dragged(self):
+        source = MOVEMENT.read_text(encoding='utf-8')
+        move = source[source.index('/atom/movable/Move(newloc, direct)'):]
+        refuse = move.index('else if (subtile_actor.human_subtile_offset_owned && (step_x || step_y))')
+        branch = move[refuse:move.index('if (!subtile_pulse && (direct & (direct - 1)))')]
+        self.assertIn('if (subtile_actor.client && !subtile_actor.stat && !subtile_actor.lying && !subtile_actor.pulledby)\n\t\t\t\treturn FALSE', branch)
+        self.assertIn('subtile_realign = TRUE', branch)
+        self.assertIn('if (subtile_realign && subtile_actor && !isDeleted(subtile_actor) && !step_x && !step_y)\n\t\tsubtile_actor.human_subtile_offset_owned = FALSE', move)
 
     def test_pixel_oracle_follows_in_every_direction(self):
         # Independent world-pixel model of 16 2px pulses with the follower
