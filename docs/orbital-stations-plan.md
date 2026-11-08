@@ -52,6 +52,7 @@ what the code does so far and the rules later steps must keep.
 | 13 | Wider network: station transceiver (a relay with its own dish), flights from orbit down to the Moon and Mars and back up checked | `code/modules/space/orbit_network.dm` |
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
 | 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
+| 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
 ## Next
@@ -352,6 +353,21 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Survey orbiter** (1969): flown from a pad pointed at the Moon or Mars
   with a mission console within 7 tiles, it reveals the whole survey map
   and marks up to six new flat landing sites.
+
+## Station visits
+
+- **Docking port** (30 steel, Orbital Flight), from 2013 (age 8). It
+  belongs to the station whose plane it stands on (`orbit_station_party`),
+  so nothing about ownership is saved but the welcome mode and guest list
+  (up to 10 parties).
+- **Ferry.** From any port a player ferries (5 seconds) to another
+  station's port that welcomes their party, landing on a free tile beside
+  it, and home again to their own port or station hatch.
+- **Parcels.** Anyone welcome may leave a held item as a parcel for the
+  port's station; the owners may leave parcels for a guest party. Each
+  party collects its own parcels there (20 at most per port).
+- Visitors keep every other party check: thrusters, pods, decks, sectors
+  and consoles stay the owners'.
 
 ## Tests
 
