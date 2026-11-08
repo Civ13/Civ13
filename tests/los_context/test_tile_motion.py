@@ -30,6 +30,7 @@ class TileMotion(unittest.TestCase):
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,abs=abs,list=lambda *a:Contexts(a),
             typed_iter=lambda values,kind:values,ishuman=lambda a:getattr(a,'human',False),
             ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a if isinstance(a,Tile) else a.loc,
+            los_presentation_exempt=lambda a:False,
             los_invalidate=lambda a,possible=False,viewer_refresh=False:(events.append((a,possible)) or Contexts(contexts[:2])))
         before=A.project(source,'/proc/los_invalidate_movement','A',env)
         near=A.project(source,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
@@ -722,7 +723,7 @@ class DistanceCamera(unittest.TestCase):
         m=self.camera(96);events=[]
         m.C.root_tree_presenter=None;m.C.los_presenter=N(invalidate=lambda changed,possible,viewer_refresh=False:events.append((changed,possible)))
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,los_active_contexts=[m.V],get_turf=lambda a:a,
-                 typed_iter=lambda xs,t:xs,abs=abs)
+                 typed_iter=lambda xs,t:xs,abs=abs,los_presentation_exempt=lambda a:False)
         env['list']=Contexts
         invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False, viewer_refresh=False',env)
         door=Tile(116,100);affected=invalidate(door,True);self.assertEqual(events,[(door,True)])

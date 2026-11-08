@@ -10,6 +10,15 @@ _spec.loader.exec_module(_offline)
 CORE, fragment, projected_geometry, reference_footprint_hit, reference_entry = (_offline.CORE, _offline.fragment, _offline.projected_geometry, _offline.reference_footprint_hit, _offline.reference_entry)
 
 
+
+class AdvancingClock:
+    def __init__(self, step=10):
+        self.now=0;self.step=step
+    @property
+    def time(self):
+        self.now+=self.step
+        return self.now
+
 class ProductionGeometry(unittest.TestCase):
     def test_fractional_eye_and_large_map_translation(self):
         functions = projected_geometry()
@@ -102,19 +111,23 @@ class ProductionGeometry(unittest.TestCase):
         self.assertLess(total, len(blockers)*225/2)
         source = CORE.read_text()
         build = fragment(source, '/datum/los_snapshot/proc/index_blockers(')
+        bins_build = fragment(source, '/datum/los_snapshot/proc/ensure_blocker_bins(')
         query = fragment(source, '/datum/los_snapshot/proc/blocks_target(')
         self.assertIn('if(blockers.len <= 16)', build)
         self.assertIn('blocker_bins = null', build)
-        self.assertIn('bin += B', build)
-        self.assertIn('los_bucket_index(B.cell_x)', build)
-        self.assertIn('los_bucket_index(B.cell_y)', build)
-        self.assertIn('if(!blocker_bins)', query)
+        self.assertIn('blocker_grid = null', build)
+        self.assertIn('blocker_grid[slot] = B', build)
+        self.assertIn('loose_blockers += B', build)
+        # Tree surface bins are built on demand from the same flat list.
+        self.assertIn('bin += B', bins_build)
+        self.assertIn('los_bucket_index(B.cell_x)', bins_build)
+        self.assertIn('los_bucket_index(B.cell_y)', bins_build)
+        self.assertIn('ensure_blocker_bins()', fragment(source, '/datum/los_snapshot/proc/surface_blockers('))
+        self.assertIn('if(!blocker_grid)', query)
         self.assertIn('for(var/datum/los_cell/B in blockers)', query)
-        self.assertIn('bx <= max_x', query)
-        self.assertIn('by <= max_y', query)
-        self.assertIn('blocker_bins["[bx],[by]"]', query)
-        self.assertIn('if(!bin)\n\t\t\t\tcontinue', query)
-        self.assertEqual(query.count('los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target)'), 2)
+        self.assertIn('for(var/datum/los_cell/B in loose_blockers)', query)
+        self.assertIn('blocker_grid[base + kv * stride]', query)
+        self.assertEqual(query.count('los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target)'), 3)
         self.assertNotIn('list()', query)
         self.assertIn('S.index_blockers()', fragment(source, '/datum/los_context/proc/capture('))
 
@@ -348,7 +361,12 @@ class InventoryHoverName(unittest.TestCase):
             getviewsize=lambda v:{1:2*v+1,2:2*v+1},round=lambda a:__import__('math').floor(a),
             hover_name_span=lambda text,px=11:"<span style='text'>"+text+"</span>",
             hover_name_measure_key=lambda text,px:f'{px}|{text}',min=min,max=max,
-            hover_name_pad_x=lambda px:max(3,px//2),hover_name_pad_y=lambda px:max(1,px//5),HOVER_NAME_MAX_WIDTH=384)
+            hover_name_pad_x=lambda px:max(3,px//2),hover_name_pad_y=lambda px:max(1,px//5),HOVER_NAME_MAX_WIDTH=384,
+            # Each read advances past the move recheck window, so every pointer
+            # event here takes the full visibility check (throttling is tested
+            # separately in test_same_target_moves_recheck_after_window).
+            world=AdvancingClock(),HOVER_NAME_RECHECK=2)
+        W.hover_checked_at=-1
         helper_source=core_source or CORE.read_text()
         helper_source=re.sub(r'(, )(/obj/[\w/]+)(?=\))', lambda m:m[1]+repr(m[2]), helper_source)
         storage_visible=A.project(helper_source,'/proc/los_storage_hover_visible','user, target',env)
@@ -374,7 +392,7 @@ class InventoryHoverName(unittest.TestCase):
                 'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process',
                 'hover_text','hover_text_width','hover_text_height','maptext_width','maptext_height','screen_loc',
                 'show_label','follow_pointer','update_backdrop','hover_font_px','hover_label_px',
-                'hover_measured','set_panel_size','measure_label']
+                'hover_measured','set_panel_size','measure_label','hover_checked_at']
         for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key'),
                           ('show_label','text'),('follow_pointer',''),('set_panel_size','text_w, text_h')]:
@@ -417,6 +435,30 @@ class InventoryHoverName(unittest.TestCase):
         m.readable.add(rock);m.on_screen.add(rock)
         m.C.MouseEntered(rock)
         self.assertEqual(m.W.maptext,'')
+
+    def test_same_target_moves_recheck_after_window(self):
+        # MouseMove arrives many times a tick while aiming; each full check
+        # captures the whole LOS scene. Moves over the same target only move
+        # the panel until HOVER_NAME_RECHECK deciseconds pass, then recheck.
+        m=self.model();I=m.atom(name='oak tree',loc=m.atom('/turf/floor'))
+        m.visible.add(I);m.readable.add(I)
+        clock=N(time=100);m.env['world']=clock
+        m.C.mouse_screen_x,m.C.mouse_screen_pixel_x,m.C.mouse_screen_y,m.C.mouse_screen_pixel_y=5,6,8,10
+        m.C.MouseEntered(I);reads=len(m.reads)
+        self.assertEqual(m.W.hover_checked_at,100)
+        m.C.mouse_screen_pixel_x=7;m.C.MouseMove(I)
+        self.assertEqual(len(m.reads),reads)  # same tick: panel moves, no LOS read
+        self.assertEqual(m.W.screen_loc,'5:17,7:3')
+        clock.time=101;m.C.MouseMove(I)
+        self.assertEqual(len(m.reads),reads)
+        m.readable.discard(I);clock.time=102;m.C.MouseMove(I)
+        self.assertEqual(len(m.reads),reads+1)  # window over: full recheck
+        self.assertEqual(m.W.maptext,'')
+        # A new target always takes the full check at once.
+        J=m.atom(name='rock',loc=m.atom('/turf/floor'));m.visible.add(J);m.readable.add(J)
+        m.C.MouseEntered(J);self.assertIn('rock',m.W.maptext)
+        clock.time=50;m.C.MouseMove(J)  # a clock behind the check never skips it
+        self.assertEqual(m.W.hover_checked_at,50)
 
     def test_panel_follows_pointer_and_only_moves_on_an_unchanged_target(self):
         # view 7 is 15 tiles: a 480px map. Tooltip offset is (+10, -20). The
@@ -935,7 +977,9 @@ class BlockingTreeSurface(unittest.TestCase):
             body=body.replace('"0|[nx],[ny]|[nx],[ny]"','(0, nx, ny, nx, ny)')
             f=adapter.project(head+'\n'+body,declaration,'self, '+args,env)
             setattr(snapshot,name,lambda *a:f(snapshot,*a))
-        method('surface_blockers','tx, ty',['blocker_bins','blockers'])
+        # Bins are built on demand in game; this model presets them directly.
+        snapshot.ensure_blocker_bins=lambda:snapshot.blocker_bins
+        method('surface_blockers','tx, ty',['blocker_bins','blockers','ensure_blocker_bins'])
         method('surface_edge_visible','face, edge_low, edge_high, axis, direction, tile_x, tile_y, target, candidates',[])
         method('capture_tree_bounds','A',['tree_bounds','eye_x','eye_y'])
         method('owned_surface_cells','target',['tree_bounds','radius_x','radius_y'])

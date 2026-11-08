@@ -21,17 +21,48 @@
 	call_time = world.time
 	update()
 
+// The whole fade and drift is one client-side animation, then one retirement.
+// The old per-tick updates sent a new appearance to every viewer up to twenty
+// times per puff; with about thirty puffs, tracers and impacts per shot that
+// was the main client frame cost during firefights.
 /obj/effect/projectile/proc/update()
-	var/dt = world.time - call_time
-	if(dt > life_time)
-		qdel(src)
-		return
-	alpha *= alpha_modifier
+	fade_out(pixel_x, pixel_y)
+
+// Alpha left after the old loop's per-step fade over life_time.
+/obj/effect/projectile/proc/faded_alpha()
+	var/steps = 0
+	var/step = projectile_effect_step(update_time)
+	for (var/dt = 0, dt <= life_time, dt += step)
+		++steps
+	return round(alpha * (alpha_modifier ** steps))
+
+/obj/effect/projectile/proc/fade_out(end_x, end_y)
+	var/end_alpha = faded_alpha()
+	if (end_alpha != alpha || end_x != pixel_x || end_y != pixel_y)
+		animate(src, alpha = end_alpha, pixel_x = end_x, pixel_y = end_y, time = life_time, easing = SINE_EASING | EASE_OUT)
 	var/list/lifetime = effect_lifetime
 	var/my_call_time = call_time
-	spawn(update_time)
+	spawn(life_time)
 		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
-			update()
+			qdel(src)
+
+// The old loop's real step: a sleep shorter than a tick still waits a tick.
+/proc/projectile_effect_step(update_time)
+	return max(world.tick_lag, -round(-update_time / world.tick_lag) * world.tick_lag)
+
+// Total pixel drift of the old per-step loop: each step moved sqrt(base / d),
+// where d is first_divisor at dt 0 and divisor * dt afterwards (a zero
+// divisor counted as 1, as the old loops skipped dividing by it).
+/proc/projectile_effect_drift(base, divisor, first_divisor, life_time, update_time)
+	var/total = 0
+	var/step = projectile_effect_step(update_time)
+	if (!divisor)
+		divisor = 1
+	if (!first_divisor)
+		first_divisor = 1
+	for (var/dt = 0, dt <= life_time, dt += step)
+		total += sqrt(base / (dt ? divisor * dt : first_divisor))
+	return total
 
 
 //----------------------------
@@ -69,23 +100,8 @@
 	update()
 
 /obj/effect/projectile/bullet/muzzle/gunsmoke/update()
-	var/dt = world.time - call_time
-	if(dt > life_time)
-		qdel(src)
-		return
-	alpha *= alpha_modifier
-	var/ds = 30
-	if(speed_modifier != 0)
-		ds /= speed_modifier
-	if(dt != 0)
-		ds /= dt 
-	pixel_x += cos(angle) * sqrt(ds)
-	pixel_y += sin(angle) * sqrt(ds)
-	var/list/lifetime = effect_lifetime
-	var/my_call_time = call_time
-	spawn(update_time)
-		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
-			update()
+	var/drift = projectile_effect_drift(30, speed_modifier, speed_modifier, life_time, update_time)
+	fade_out(pixel_x + cos(angle) * drift, pixel_y + sin(angle) * drift)
 
 
 //----------------------------
@@ -109,23 +125,8 @@
 	update()
 
 /obj/effect/projectile/impact/update()
-	var/dt = world.time - call_time
-	if(dt > life_time)
-		qdel(src)
-		return
-	alpha *= alpha_modifier
-	var/ds = 20
-	if(speed_modifier != 0)
-		ds /= speed_modifier
-	if(dt != 0)
-		ds /= dt 
-	pixel_x += cos(angle) * sqrt(ds)
-	pixel_y += sin(angle) * sqrt(ds)
-	var/list/lifetime = effect_lifetime
-	var/my_call_time = call_time
-	spawn(update_time)
-		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
-			update()
+	var/drift = projectile_effect_drift(20, speed_modifier, speed_modifier, life_time, update_time)
+	fade_out(pixel_x + cos(angle) * drift, pixel_y + sin(angle) * drift)
 
 
 /obj/effect/projectile/impact/heavy
@@ -151,21 +152,7 @@
 	pixel_y = (sin(angle) * pixel_dist) - ((y - starting.y) * world.icon_size)
 	transform = turn(transform, -angle)
 	call_time = world.time
-	spawn()
-		update()
-
-/obj/effect/projectile/tracer/update()
-	var/dt = world.time - call_time
-	if(dt > life_time)
-		qdel(src)
-		return
-	alpha *= alpha_modifier
-	var/list/lifetime = effect_lifetime
-	var/my_call_time = call_time
-	spawn(update_time)
-		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
-			update()
-
+	update()
 
 /obj/effect/projectile/tracer/minor
 	alpha = 64
@@ -199,18 +186,5 @@
 	update()
 
 /obj/effect/projectile/tracer/missile/update()
-	var/dt = world.time - call_time
-	if(dt > life_time)
-		qdel(src)
-		return
-	alpha *= alpha_modifier
-	var/ds = 20
-	if(dt != 0)
-		ds /= dt * speed_modifier
-	pixel_x += cos(angle) * sqrt(ds)
-	pixel_y += sin(angle) * sqrt(ds)
-	var/list/lifetime = effect_lifetime
-	var/my_call_time = call_time
-	spawn(update_time)
-		if (!QDELETED(src) && effect_lifetime == lifetime && call_time == my_call_time)
-			update()
+	var/drift = projectile_effect_drift(20, speed_modifier, 1, life_time, update_time)
+	fade_out(pixel_x + cos(angle) * drift, pixel_y + sin(angle) * drift)
