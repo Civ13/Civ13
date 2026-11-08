@@ -71,6 +71,8 @@ var/list/admin_verbs_admin = list(
 	/client/proc/toggle_factions,
 	/client/proc/forcibly_enable_faction,
 	/client/proc/start_epochswap_vote,
+	/client/proc/end_vote_early,
+	/client/proc/force_vote_choice,
 )
 
 var/list/admin_verbs_trialadmin = list(
@@ -93,6 +95,8 @@ var/list/admin_verbs_trialadmin = list(
 	/datum/admins/proc/ic_announce,
 	/datum/admins/proc/custom_faction_announce,
 	/client/proc/start_epochswap_vote,
+	/client/proc/end_vote_early,
+	/client/proc/force_vote_choice,
 	)
 
 var/list/admin_verbs_sounds = list(
@@ -294,6 +298,8 @@ var/list/admin_verbs_manager = list(
 	/client/proc/toggle_playing,
 	/client/proc/toggle_tts,
 	/client/proc/start_epochswap_vote,
+	/client/proc/end_vote_early,
+	/client/proc/force_vote_choice,
 )
 
 var/list/admin_verbs_host = list(
