@@ -6,6 +6,9 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 BASELINE = 'f556e39b93fc97f41020b2d8c5f2abed63fab497'
 SUITE = 'callback_ownership'
@@ -40,7 +43,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-' + SUITE + '-') as directory:
     result = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True,
                             text=True, timeout=60)
     print(result.stdout, end='')
-    if result.returncode or 'DM compiler version 516.1681' not in result.stdout or '0 errors, 0 warnings' not in result.stdout:
+    if result.returncode or PINNED_BANNER not in result.stdout or '0 errors, 0 warnings' not in result.stdout:
         raise SystemExit('Fixture compilation failed: ' + result.stderr)
     process = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'],
                              cwd=temp, capture_output=True, timeout=20)
@@ -66,7 +69,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-' + SUITE + '-') as directory:
             'working_tree_dirty': bool(dirty) if not args.baseline else False,
             'source_sha256': hashlib.sha256(source.encode()).hexdigest(),
             'fixture_sha256': hashlib.sha256(probe.encode()).hexdigest(),
-            'byond_version': '516.1681', 'passed': bool(success),
+            'byond_version': PINNED_BYOND, 'passed': bool(success),
             'expected_baseline_failures': sorted(EXPECTED_FAILURES) if args.baseline else [],
             'observed_failures': sorted(actual_failures), 'runtime_error': engine_error,
         }, indent=2) + '\n')

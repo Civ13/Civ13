@@ -10,6 +10,8 @@ import time
 import ctypes
 import re
 from ctypes import wintypes
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def main():
@@ -26,7 +28,7 @@ def main():
         raise RuntimeError('Use fresh evidence storage')
     out.mkdir(parents=True, exist_ok=True)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-    (out/'metadata.json').write_text(json.dumps({'head_sha': head, 'case': a.case, 'byond': '516.1681', 'scope': 'isolated production GC/pool/callproc', 'baseline_scheduler': a.baseline_scheduler, 'negative_control': a.negative_control}))
+    (out/'metadata.json').write_text(json.dumps({'head_sha': head, 'case': a.case, 'byond': PINNED_BYOND, 'scope': 'isolated production GC/pool/callproc', 'baseline_scheduler': a.baseline_scheduler, 'negative_control': a.negative_control}))
     (out/'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
     source = (root/'tests/memory_ownership/probe.dm').read_text().replace('../../code/', root.as_posix()+'/code/')
     source += '\n' + (root/'tests/memory_ownership/collector.dm').read_text()
@@ -94,7 +96,7 @@ def main():
     text = build.stdout + build.stderr
     (out/'compile.log').write_text(text)
     print(text, flush=True)
-    if build.returncode or '516.1681' not in text or '0 errors, 0 warnings' not in text:
+    if build.returncode or PINNED_BYOND not in text or '0 errors, 0 warnings' not in text:
         raise RuntimeError('Pinned clean compile failed')
     command = [str(a.byond_bin/('dd.exe' if win else 'DreamDaemon')), str(out/'probe.dmb')]
     if win:

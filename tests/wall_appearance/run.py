@@ -8,6 +8,8 @@ import re
 import shutil
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASELINE = 'e3c8d02f31f1a23c1320eaec949fb4af56e964f3'
 parser = argparse.ArgumentParser(description=__doc__)
@@ -75,7 +77,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-wall-appearance-') as temp:
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)
     build_log = build.stdout + build.stderr
     (logs / 'compile.log').write_text(build_log)
-    if build.returncode or '516.1681' not in build_log or '0 errors, 0 warnings' not in build_log:
+    if build.returncode or PINNED_BYOND not in build_log or '0 errors, 0 warnings' not in build_log:
         raise SystemExit(build_log)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=60, creationflags=flags)
     runtime_log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
@@ -83,7 +85,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-wall-appearance-') as temp:
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null', runtime_log, re.I):
         raise SystemExit(runtime_log)
     result = json.loads((root / 'result.json').read_text())
-    result.update(head_sha=head, baseline_sha=BASELINE, source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), byond='516.1681', platform=os.name, dimensions=[32,32,1], negative_control=args.negative_control, support_sha256={p: hashlib.sha256((repo / p).read_bytes()).hexdigest() for p in support}, resource_sha256={p: hashlib.sha256((repo / 'icons/turf' / p).read_bytes()).hexdigest() for p in ('wall_masks.dmi','walls.dmi')})
+    result.update(head_sha=head, baseline_sha=BASELINE, source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), byond=PINNED_BYOND, platform=os.name, dimensions=[32,32,1], negative_control=args.negative_control, support_sha256={p: hashlib.sha256((repo / p).read_bytes()).hexdigest() for p in support}, resource_sha256={p: hashlib.sha256((repo / 'icons/turf' / p).read_bytes()).hexdigest() for p in ('wall_masks.dmi','walls.dmi')})
     args.output.write_text(json.dumps(result, indent=2))
     (logs / 'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo))
     assert result['scenes'] == 1536 and result['comparisons'] == 4608, 'Incomplete fixture'

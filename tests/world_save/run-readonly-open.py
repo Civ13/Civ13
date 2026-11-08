@@ -8,6 +8,8 @@ import re
 import stat
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.IGNORECASE)
 
@@ -82,7 +84,7 @@ def main():
         return log
 
     compile_log = run_owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'], 60)
-    if '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log:
+    if PINNED_BYOND not in compile_log or '0 errors, 0 warnings' not in compile_log:
         raise RuntimeError(f'Pinned clean compilation required: {compile_log}')
 
     def native(role, expected):

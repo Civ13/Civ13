@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 import re
 import subprocess
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def prepare(root, evidence, historical=False):
@@ -75,7 +77,7 @@ def main():
     compilation = build.stdout + build.stderr
     (evidence / 'compile.log').write_text(compilation)
     print(compilation, flush=True)
-    if build.returncode or '516.1681' not in compilation or '0 errors, 0 warnings' not in compilation:
+    if build.returncode or PINNED_BYOND not in compilation or '0 errors, 0 warnings' not in compilation:
         raise SystemExit('Pinned compilation failed')
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
                          cwd=evidence, capture_output=True, timeout=30, creationflags=flags)

@@ -13,6 +13,9 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from native_fixture import Session, no_port_args, read_bounded, run_native
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 CONTROLS = {
     'clock': ('code/game/objects/farming.dm',
@@ -117,10 +120,10 @@ def main():
                            phase='tree-compile', timeout=120, artifacts=paths[-2:])
         output = build.stdout + build.stderr
         (args.output / 'compile.log').write_text(output)
-        if build.returncode or 'DM compiler version 516.1681' not in output or '0 errors, 0 warnings' not in output:
+        if build.returncode or PINNED_BANNER not in output or '0 errors, 0 warnings' not in output:
             raise RuntimeError('Pinned compile failed: ' + output[-4000:])
         if args.compile_only:
-            print('PASS: BYOND 516.1681 production-source fixture compile, 0 errors/warnings; no runtime launched')
+            print('PASS: BYOND ' + PINNED_BYOND + ' production-source fixture compile, 0 errors/warnings; no runtime launched')
             return
         work = args.output.resolve() / 'runtime'
         work.mkdir()

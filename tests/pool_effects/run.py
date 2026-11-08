@@ -8,6 +8,9 @@ import re
 import subprocess
 import tempfile
 import uuid
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 p = argparse.ArgumentParser()
 p.add_argument('--byond-bin', required=True, type=Path)
@@ -74,14 +77,14 @@ try:
     source = source.replace('code\\game\\objects\\effects\\chem\\chemsmoke.dm', altered.name)
     source += '\n#include "tests/pool_effects/probe.dm"\n'
     dme = save('.dme', source)
-    (a.output/'metadata.json').write_text(json.dumps({'head':head,'dirty':bool(dirty),'byond':'516.1681','negative_control':a.negative_control,'scope':'actual game constructors, qdel, ResetVars and pool; isolated startup, no normal process scheduler'}, indent=2))
+    (a.output/'metadata.json').write_text(json.dumps({'head':head,'dirty':bool(dirty),'byond':PINNED_BYOND,'negative_control':a.negative_control,'scope':'actual game constructors, qdel, ResetVars and pool; isolated startup, no normal process scheduler'}, indent=2))
     compiler = a.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = a.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     result = subprocess.run([str(compiler), '-max_errors','0',str(dme)], cwd=root, capture_output=True, text=True, timeout=180, creationflags=flags)
     log = result.stdout + result.stderr
     (a.output/'compile.log').write_text(log)
     print(log[-1800:], flush=True)
-    if result.returncode or 'DM compiler version 516.1681' not in log or '0 errors, 0 warnings' not in log:
+    if result.returncode or PINNED_BANNER not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError('Pinned compilation failed')
     import shutil
     for extension in ('.dmb','.rsc'):

@@ -11,6 +11,9 @@ import subprocess
 import tempfile
 import time
 import uuid
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 MAP = 'maps/nomads/nomads_persistence_beta.dmm'
 METADATA = 'code/game/objects/map_metadata/_map_metadata.dm'
@@ -294,7 +297,7 @@ def main():
         build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=repo, capture_output=True, text=True, timeout=300, creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
         compile_log = build.stdout + build.stderr
         (output / 'compile.log').write_text(compile_log, encoding='utf-8')
-        if build.returncode or 'DM compiler version 516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log:
+        if build.returncode or PINNED_BANNER not in compile_log or '0 errors, 0 warnings' not in compile_log:
             raise RuntimeError('Pinned zero-error/zero-warning compilation failed')
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(source.with_suffix(suffix), output / ('probe' + suffix))

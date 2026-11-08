@@ -1,6 +1,8 @@
 """Production scheduler replacement regression, with compiler-free preparation."""
 import argparse, hashlib, json, os, re, subprocess, tempfile
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 BASELINE = "112e80ba4bc0f5af417b46532a4718aba9601ca5"
 PATHS = ["code/processes/__processScheduler.dm", "code/processes/_process.dm", "code/processes/chemistry.dm", "code/processes/___defines.dm"]
 def proc(source, header):
@@ -60,7 +62,7 @@ def main():
         build=subprocess.run([str(compiler),"-max_errors","0","probe.dme"],cwd=out,capture_output=True,text=True,timeout=60,creationflags=flags)
         log=build.stdout+build.stderr
         (out/"compile.log").write_text(log);print(log,flush=True)
-        assert build.returncode==0 and "516.1681" in log and "0 errors, 0 warnings" in log,"Pinned native compilation failed"
+        assert build.returncode==0 and PINNED_BYOND in log and "0 errors, 0 warnings" in log,"Pinned native compilation failed"
         run=subprocess.run([str(daemon),"probe.dmb","-invisible","-close","-trusted","-log","runtime.log"],cwd=out,capture_output=True,timeout=30,creationflags=flags)
         (out/"daemon.log").write_bytes(run.stdout+run.stderr)
         log=(out/"runtime.log").read_text(errors="replace")+(run.stdout+run.stderr).decode(errors="replace")

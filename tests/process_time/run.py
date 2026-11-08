@@ -5,6 +5,8 @@ import re
 import shutil
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 ROOT = Path(__file__).resolve().parents[2]
 PROCS = {
@@ -60,7 +62,7 @@ def run(byond, control):
         windows = (byond / 'dm.exe').exists()
         compile_result = subprocess.run([str(byond / ('dm.exe' if windows else 'DreamMaker')), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=60)
         print(compile_result.stdout)
-        if compile_result.returncode or '516.1681' not in compile_result.stdout or '0 errors, 0 warnings' not in compile_result.stdout:
+        if compile_result.returncode or PINNED_BYOND not in compile_result.stdout or '0 errors, 0 warnings' not in compile_result.stdout:
             raise RuntimeError('Compilation failed')
         try:
             result = subprocess.run([str(byond / ('dd.exe' if windows else 'DreamDaemon')), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'], cwd=temp, capture_output=True, text=True, timeout=20)

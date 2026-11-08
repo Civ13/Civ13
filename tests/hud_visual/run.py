@@ -10,6 +10,8 @@ import time
 from pathlib import Path
 
 from guard_config import BINARIES, LIMITS, digest
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASE = '75890d883190355e430f9958fd102864ee88429a'
 ROOT = Path(__file__).resolve().parents[2]
@@ -102,7 +104,7 @@ def execute(out, grant):
             if phase=='runtime':
                 stdout=(out/'compile.stdout.log').read_text(errors='replace')
                 stderr=(out/'compile.stderr.log').read_text(errors='replace')
-                if '0 errors, 0 warnings' not in stdout+stderr or '516.1681' not in stdout+stderr:
+                if '0 errors, 0 warnings' not in stdout+stderr or PINNED_BYOND not in stdout+stderr:
                     raise RuntimeError('Pinned warning-free compile not established')
                 for suffix in ('.dmb','.rsc'):
                     shutil.copy2(ROOT/('.hud_visual_fixture'+suffix),out/('.hud_visual_fixture'+suffix))

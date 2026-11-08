@@ -1,6 +1,8 @@
 """Native production scheduler-loop and deferred history lifecycle regression."""
 import argparse, hashlib, json, os, re, subprocess, tempfile
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 BASELINE = '7cfa850bd9d2788dcbb9fd35f5c5915ccb528dd2'
 p = argparse.ArgumentParser()
 p.add_argument('--byond-bin', type=Path, required=True)
@@ -74,7 +76,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-process-loops-') as directory:
     compile_log = build.stdout+build.stderr
     (out/'compile.log').write_text(compile_log)
     print(compile_log,flush=True)
-    if build.returncode or '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned native compilation failed')
+    if build.returncode or PINNED_BYOND not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned native compilation failed')
     run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-trusted','-log','runtime.log'],cwd=out,capture_output=True,timeout=20,creationflags=flags)
     (out/'daemon.log').write_bytes(run.stdout+run.stderr)
     log = (out/'runtime.log').read_text(errors='replace')

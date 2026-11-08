@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[2]
 import sys
 sys.path.insert(0, str(ROOT / "scripts/gameplay_bridge"))
 from gather_context import project
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def procedure(source, name):
@@ -76,7 +78,7 @@ def main():
         log = build.stdout + build.stderr
         (args.output / 'compile.log').write_text(log, encoding='utf-8')
         print(log, flush=True)
-        if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+        if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
             raise RuntimeError('Pinned compilation failed')
         result = subprocess.run([str(daemon), 'probe.dmb', '-close', '-trusted', '-log', 'runtime.log']
                                 + (['-invisible'] if os.name == 'nt' else []), cwd=work,

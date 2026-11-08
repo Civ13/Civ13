@@ -6,6 +6,8 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def main():
@@ -69,7 +71,7 @@ def main():
         output = build.stdout + build.stderr
         (logs / 'compile.log').write_text(output, encoding='utf-8')
         print(output, flush=True)
-        if build.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
+        if build.returncode or PINNED_BYOND not in output or '0 errors, 0 warnings' not in output:
             raise RuntimeError('Pinned compilation failed')
         for path in generated[3:5]:
             shutil.copy2(path, logs / path.name)

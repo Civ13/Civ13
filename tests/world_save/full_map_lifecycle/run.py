@@ -10,6 +10,8 @@ import time
 
 from prepare import BASE, prepare
 from query import request
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[3] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 PROTECTED_PORTS = (18459, 18460, 18461, 18462)
 
@@ -155,7 +157,7 @@ def run(args):
         compiled = subprocess.run([str(compiler), '-max_errors', '0', manifest['entrypoint']],
                                   cwd=game, stdout=log, stderr=subprocess.STDOUT, timeout=300)
     log = (root / 'compile.log').read_text(encoding='utf-8', errors='replace')
-    if compiled.returncode or '0 errors, 0 warnings' not in log or '516.1681' not in log:
+    if compiled.returncode or '0 errors, 0 warnings' not in log or PINNED_BYOND not in log:
         raise RuntimeError('Pinned native compiler did not produce a clean build')
     binary = game / Path(manifest['entrypoint']).with_suffix('.dmb')
     token = (game / 'config/full-map-probe-token.txt').read_text(encoding='ascii').strip()

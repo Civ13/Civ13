@@ -8,6 +8,8 @@ import subprocess
 import tempfile
 
 from prepare import stage
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def main():
@@ -39,7 +41,7 @@ def main():
         (root / (name + '.log')).write_text(output)
         if result.returncode or re.search(r'BUG:|runtime error:|fatal error|segmentation', output, re.I):
             raise RuntimeError(f'{name} failed: {output}')
-        if name == 'compile' and ('516.1681' not in output or '0 errors, 0 warnings' not in output):
+        if name == 'compile' and (PINNED_BYOND not in output or '0 errors, 0 warnings' not in output):
             raise RuntimeError('Pinned warning-free compiler result absent')
     native_log = work / 'native.log'
     if native_log.exists() and re.search(r'BUG:|runtime error:|fatal error|segmentation', native_log.read_text(), re.I):

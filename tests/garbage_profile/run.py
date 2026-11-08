@@ -7,6 +7,8 @@ import re
 from pathlib import Path
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
 def main():
@@ -72,7 +74,7 @@ def main():
     log = build.stdout + build.stderr
     (out/'compile.log').write_text(log)
     print(log)
-    if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+    if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError('Pinned clean compile failed')
     cmd = [str(args.byond_bin/('dd.exe' if win else 'DreamDaemon')), 'probe.dmb', '-trusted', '-log', 'runtime.log']
     if win:

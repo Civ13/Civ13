@@ -8,6 +8,9 @@ import shutil
 import subprocess
 
 from run import BASE, ROOT
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 PREFIX = '.hud_visual_ci'
 PRODUCTION = ('civ13.dme', 'code/world.dm', 'code/_onclick/hud/base_screen_objects.dm',
@@ -90,7 +93,7 @@ def main():
         log = build.stdout + build.stderr
         (out / 'compile.log').write_text(log, encoding='utf-8')
         print(log, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in log or '0 errors, 0 warnings' not in log:
+        if build.returncode or PINNED_BANNER not in log or '0 errors, 0 warnings' not in log:
             raise ValueError('Pinned warning-free compilation failed')
         for ext in ('.dmb', '.rsc'):
             shutil.copy2(ROOT / (PREFIX + ext), out / (PREFIX + ext))
