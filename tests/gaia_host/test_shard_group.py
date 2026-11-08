@@ -207,6 +207,32 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(str((self.base / 'regions').resolve()), build['root'])
         self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'shard_build.json').exists())
 
+    def test_a_battle_rebuild_keeps_the_voted_map(self):
+        # A start after master moved (or a watchdog restart) rebuilds the battle region;
+        # it must build the map the last vote picked, not the configured one.
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            path = root / 'battle'
+            (path / 'maps' / 'small').mkdir(parents=True)
+            (path / 'maps' / '1943').mkdir(parents=True)
+            (path / 'maps' / 'small' / 'tiny.dmm').write_text('"a" = (/turf,/area)\n')
+            (path / 'maps' / '1943' / 'hotel.dmm').write_text('"a" = (/turf,/area)\n')
+            group = {'root': str(root)}
+            region = {'id': 'battle', 'kind': 'BATTLE', 'map': 'maps/small/tiny.dmm'}
+            self.assertEqual('maps\\small\\tiny.dmm', shard_group.place_map(group, region, path))
+            state = path / 'data' / 'shard-host'
+            state.mkdir(parents=True)
+            for kind in ('ready', 'building'):
+                (state / 'rotation.json').write_text(json.dumps({'state': kind, 'map': 'HOTEL'}))
+                self.assertEqual('maps\\1943\\hotel.dmm', shard_group.place_map(group, region, path), kind)
+            for record in ({'state': 'failed', 'map': 'HOTEL'}, {'state': 'ready', 'map': 'NOWHERE'},
+                           {'state': 'ready', 'map': '../x'}, 'not json'):
+                (state / 'rotation.json').write_text(record if isinstance(record, str) else json.dumps(record))
+                self.assertEqual('maps\\small\\tiny.dmm', shard_group.place_map(group, region, path), record)
+            (state / 'rotation.json').write_text(json.dumps({'state': 'ready', 'map': 'HOTEL'}))
+            surface = dict(region, kind='SURFACE')
+            self.assertEqual('maps\\small\\tiny.dmm', shard_group.place_map(group, surface, path))
+
     def test_ordinary_regions_get_no_tdm_files(self):
         shard_group.setup(self.write_group(), self.machine)
         self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'tdm-token.txt').exists())

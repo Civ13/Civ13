@@ -75,7 +75,9 @@ Barracks every 10 seconds, and a frozen Barracks would hold those reports.
   `region.dmb`/`region.rsc` over the live build slot. The world sends everyone to
   the Barracks, waits for the build (`data/shard-host/rotation.json`), then reboots
   onto the new map. A failed build reboots on the map it has.
-- A `start` or `update` of the battle region builds its configured `map` again.
+- A `start` or `update` of the battle region builds the last voted map again
+  (`rotation.json` state `ready` or `building`), or its configured `map` when
+  there is none, so a rebuild after master moves keeps the voted map.
 
 ## The live group (Gaia)
 
