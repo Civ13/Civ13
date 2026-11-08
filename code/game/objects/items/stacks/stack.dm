@@ -350,6 +350,10 @@
 	if (!civ_telecom_can_build(H, recipe.result_type))
 		to_chat(user, "This equipment requires Modern research and sufficient crafting skill.")
 		return
+	var/trail_refusal = region_trail_build_refusal(user, recipe.result_type)
+	if (trail_refusal)
+		to_chat(user, SPAN_WARNING(trail_refusal))
+		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null

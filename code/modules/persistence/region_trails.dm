@@ -7,6 +7,9 @@
 
 #define REGION_TRAIL_REQUEST_COOLDOWN 6000 // deciseconds between one player's requests
 #define REGION_TRAIL_PENDING_MAX 3 // unanswered requests one player may have
+// Trails leave the land at its edge: a marker is built outdoors on the ground
+// within this many tiles of a map border.
+#define REGION_TRAIL_EDGE_TILES 10
 
 // ckey = world.time of that player's next allowed request. Runtime only.
 var/global/list/region_trail_next_request = list()
@@ -154,6 +157,22 @@ var/global/list/region_trail_next_request = list()
 	requester_ckey = null
 	visible_message(SPAN_WARNING("The marked trail fades; nobody will clear it."))
 
+// TRUE when T is outdoors on the ground near a map border, where a trail can
+// leave the land.
+/proc/region_trail_at_edge(turf/T)
+	if(!isturf(T)) return FALSE
+	var/area/A = get_area(T)
+	if(!A || A.location != AREA_OUTSIDE || turf_is_above_ground(T)) return FALSE
+	var/d = REGION_TRAIL_EDGE_TILES
+	return T.x <= d || T.y <= d || T.x > world.maxx - d || T.y > world.maxy - d
+
+// Null when user may build result_type where they stand, otherwise why not.
+// Only the plain trail marker is held to the edge; launch pads go anywhere.
+/proc/region_trail_build_refusal(mob/user, result_type)
+	if(result_type != /obj/structure/region_gate/trail_marker) return null
+	if(region_trail_at_edge(get_turf(user))) return null
+	return "Trails lead out of the land from its edge. Build the trail marker outdoors, on the ground, within [REGION_TRAIL_EDGE_TILES] tiles of the edge of the world."
+
 /proc/region_trail_name(id)
 	var/list/peer = shard_group.enabled ? shard_group.peers[id] : null
 	return peer ? peer["name"] : "[id]"
@@ -169,3 +188,4 @@ var/global/list/region_trail_next_request = list()
 
 #undef REGION_TRAIL_REQUEST_COOLDOWN
 #undef REGION_TRAIL_PENDING_MAX
+#undef REGION_TRAIL_EDGE_TILES
