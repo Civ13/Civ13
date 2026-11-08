@@ -108,7 +108,7 @@ var/global/floor_icon_updates_deferred = TRUE
 	set_light(0)
 	levelupdate()
 	
-	ChangeTurf(get_base_turf_by_area(src))
+	become_destroyed_turf()
 
 /turf/floor/levelupdate()
 	for (var/obj/O in src)

@@ -1653,6 +1653,13 @@ jobs:
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --output-dir "$RUNNER_TEMP/radiation-scope/positive"
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control cross-z --output-dir "$RUNNER_TEMP/radiation-scope/cross-z"
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control normalization --output-dir "$RUNNER_TEMP/radiation-scope/normalization"
+      - name: Verify explosion remains above the ground and controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/explosion_remains')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/explosion_remains/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/explosion_remains/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control dirt
+          python3 tests/explosion_remains/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control sky
       - name: Retain nuclear fallout scope evidence
         if: always() && needs.changes.result == 'success' && steps.radiation_scope.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/radiation_scope'))
         uses: actions/upload-artifact@v4

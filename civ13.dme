@@ -1249,6 +1249,7 @@
 #include "code\modules\persistence\region_raid_reset.dm"
 #include "code\modules\persistence\region_relay.dm"
 #include "code\modules\multiz\dug_underground.dm"
+#include "code\modules\multiz\explosion_remains.dm"
 #include "code\modules\multiz\building_lighting.dm"
 #include "code\modules\projectiles\__projectiles.dm"
 #include "code\modules\projectiles\_ammo_casing.dm"

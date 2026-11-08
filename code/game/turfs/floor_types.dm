@@ -79,10 +79,10 @@
 		//set src in oview(1)
 	switch(severity)
 		if (1.0)
-			ChangeTurf(get_base_turf_by_area(src))
+			become_destroyed_turf()
 		if (2.0)
 			if (prob(40))
-				ChangeTurf(get_base_turf_by_area(src))
+				become_destroyed_turf()
 	return
 
 /turf/floor/grass
