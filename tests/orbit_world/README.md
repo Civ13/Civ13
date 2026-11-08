@@ -114,6 +114,11 @@ gate, eight seats and the `seats` flight field and its bounds, the booster
 landing back worn and empty, a worn booster refusing to fly, steel
 refurbishment, the recipe gate, and an eight-seat capsule in orbit.
 
+Last, the 2026 starter station: two decks linked up, the upper deck's three
+sealed modules, open and joined deck hatches with the lower hub still
+sealed, the riser joining the upper cables to the lower spine, and a sector
+beacon in the crate.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer

@@ -300,6 +300,8 @@ var/global/list/orbit_station_requirements = list(
 #define ORBIT_KEEL_ISOTOPE 10
 #define ORBIT_KEEL_FUEL 11
 #define ORBIT_KEEL_AFT 12 // the thruster, the end of the keel
+// The epoch (2026) the starter station launches with a second deck.
+#define ORBIT_TWO_DECK_AGE 9
 
 // A straight cable run between two turfs on one row or column, returning the
 // pieces laid. Crossings get a junction connector.
@@ -350,6 +352,8 @@ var/global/list/orbit_station_requirements = list(
 // north and the airlock south; tracking arrays replace the wings and a
 // radioisotope generator joins the keel, with six reboost burns and a node
 // module kit in the crate.
+// From 2026 a second deck above the hub (orbit_found_upper_deck) and a
+// sector beacon in the crate.
 /proc/orbit_found_station(party, z)
 	var/modern = map && map.ordinal_age >= 8
 	var/cx = round(world.maxx / 2)
@@ -441,7 +445,54 @@ var/global/list/orbit_station_requirements = list(
 	new /obj/structure/orbit_console(locate(wx + 1, wy - 1, z))
 	var/obj/structure/region_gate/station_hatch/hatch = new(locate(wx, wy - 1, z))
 	hatch.party = party
+	// From 2026 the station launches two decks tall, with a sector beacon for
+	// growing outward (orbit_sectors.dm).
+	if (map.ordinal_age >= ORBIT_TWO_DECK_AGE && istype(hub, /obj/structure/habitat_core/node))
+		new /obj/item/sector_beacon(crate)
+		orbit_found_upper_deck(hub)
 	return hatch
+
+// The 2026 upper deck: a node above the hub with quarters west and storage
+// east, its own life support in the node's corners, and power from the deck
+// below through a cable riser on the core tile of both nodes. Both deck
+// hatches start open, so the decks share air and the crew can climb. Skipped
+// (returning null) when no plane is free or the deck does not fit.
+/proc/orbit_found_upper_deck(obj/structure/habitat_core/node/hub)
+	var/obj/structure/deck_hatch/below = hub.deck_hatch()
+	if (!below || orbit_plane_link(hub.z, "up"))
+		return null
+	var/level = orbit_claim_plane(orbit_plane_owner(hub.z))
+	if (!level)
+		return null
+	if (!orbit_link_planes(hub.z, "up", level))
+		orbit_release_plane(level)
+		return null
+	var/cx = hub.x
+	var/cy = hub.y
+	var/s = HABITAT_MODULE_SPACING
+	for (var/turf/at in list(locate(cx, cy, level), locate(cx - s, cy, level), locate(cx + s, cy, level)))
+		if (!at || habitat_module_refusal(at, null))
+			orbit_unlink_plane(hub.z, "up")
+			orbit_release_plane(level)
+			return null
+	var/obj/structure/habitat_core/node/upper = habitat_unfold(locate(cx, cy, level), "node", /obj/structure/habitat_core/node, SOUTH, FALSE)
+	habitat_unfold(locate(cx - s, cy, level), "quarters")
+	habitat_unfold(locate(cx + s, cy, level), "storage")
+	orbit_station_cable_run(cx, cy + 1, cx, cy - 1, level)
+	orbit_station_cable_run(cx - 1, cy + 1, cx + 1, cy + 1, level)
+	orbit_station_place(/obj/structure/life_support/heater, cx - 1, cy + 1, level)
+	orbit_station_place(/obj/structure/life_support/radiator, cx + 1, cy + 1, level)
+	orbit_station_cable_run(cx - 1, cy - 1, cx, cy - 1, level)
+	orbit_station_place(/obj/structure/life_support/scrubber, cx - 1, cy - 1, level)
+	for (var/plane in list(hub.z, level))
+		var/obj/item/connector/riser/R = new(locate(cx, cy, plane))
+		R.anchored = TRUE
+		R.connect_cables()
+	var/obj/structure/deck_hatch/above = upper.deck_hatch()
+	for (var/obj/structure/deck_hatch/D in list(below, above))
+		D.open = TRUE
+		D.icon_state = "ladderup"
+	return upper
 
 #undef ORBIT_KEEL_PORCH
 #undef ORBIT_KEEL_BOOM
@@ -449,6 +500,7 @@ var/global/list/orbit_station_requirements = list(
 #undef ORBIT_KEEL_ISOTOPE
 #undef ORBIT_KEEL_FUEL
 #undef ORBIT_KEEL_AFT
+#undef ORBIT_TWO_DECK_AGE
 
 // ---------------------------------------------------------------- way home
 

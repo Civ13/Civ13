@@ -117,6 +117,7 @@ var/global/orbit_failures = 0
 		orbit_wear_checks()
 		orbit_sector_checks()
 		orbit_reusable_checks()
+		orbit_two_deck_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1018,3 +1019,50 @@ var/global/orbit_failures = 0
 	orbit_check("crew ship capsule seats eight home", C ? C.lift_seats : 0, 8)
 	if (C)
 		C.spend()
+
+// The 2026 starter station (orbit_project.dm): two decks joined through open
+// deck hatches, the upper deck's modules sealed and powered through a riser,
+// and a sector beacon in the crate.
+/proc/orbit_two_deck_checks()
+	var/party = "civ:gaia:Delta"
+	world.maxx = 32
+	world.maxy = 32
+	for (var/p in 2 to 5)
+		orbit_release_plane(p)
+	for (var/p in 2 to 3)
+		orbit_claim_plane("keep")
+	for (var/p in 4 to 5)
+		for (var/turf/T in block(locate(1, 1, p), locate(world.maxx, world.maxy, p)))
+			for (var/obj/O in T)
+				if (!istype(O, /obj/effect))
+					qdel(O)
+			if (!istype(T, /turf/floor/space/orbit))
+				T.ChangeTurf(/turf/floor/space/orbit, FALSE, FALSE)
+	map.ordinal_age = 9
+	var/turf/at = party_train_arrival_turf(list("party" = party, "from" = "gaia"))
+	orbit_check("2026 station founded", at ? at.z : 0, 4)
+	orbit_check("2026 station has two decks", length(orbit_station_planes(party)), 2)
+	orbit_check("upper deck linked above", orbit_plane_link(4, "up"), 5)
+	var/kinds = list()
+	var/sealed = 0
+	for (var/obj/structure/habitat_core/C in orbit_station_modules(5))
+		kinds += C.kind
+		if (!C.breaches())
+			sealed++
+	orbit_check("upper deck modules", length(kinds), 3)
+	orbit_check("upper deck sealed", sealed, 3)
+	orbit_check("upper deck has quarters and storage", ("quarters" in kinds) && ("storage" in kinds) ? 1 : 0, 1)
+	var/obj/structure/habitat_core/node/N = locate(/obj/structure/habitat_core/node) in locate(16, 16, 4)
+	var/obj/structure/deck_hatch/H = N ? N.deck_hatch() : null
+	orbit_check("lower hub sealed with its hatch open", N ? N.breaches() : -1, 0)
+	orbit_check("deck hatches open and joined", H && H.open && H.partner("up") && H.partner("up").open ? 1 : 0, 1)
+	var/obj/item/connector/riser/R = locate() in locate(16, 16, 5)
+	orbit_check("upper deck powered through a riser", R && length(R.riser_partners()) ? 1 : 0, 1)
+	var/obj/structure/cable/up_cable = locate() in locate(16, 16, 5)
+	var/obj/structure/cable/down_cable = locate() in locate(16, 16, 4)
+	orbit_check("upper cables join the lower spine", up_cable && down_cable && up_cable.riser_links && (down_cable in up_cable.riser_links) ? 1 : 0, 1)
+	var/obj/structure/life_support/scrubber/S = locate() in locate(15, 15, 5)
+	orbit_check("upper scrubber cabled", S && S.powersource ? 1 : 0, 1)
+	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, 4)
+	orbit_check("sector beacon in the crate", crate && (locate(/obj/item/sector_beacon) in crate) ? 1 : 0, 1)
+	map.ordinal_age = 7
