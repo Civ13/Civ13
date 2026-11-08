@@ -45,11 +45,15 @@ what the code does so far and the rules later steps must keep.
 | 9 | Decks: node modules, deck hatches, building a deck above or below, shared air between decks, console over every deck | #3949, `code/modules/space/orbit_decks.dm` |
 | 10a | Upkeep: orbit decay by band, drag heating and strikes, reboost thruster, altitude on the console | #3952, `code/modules/space/orbit_upkeep.dm` |
 | 10b | 2013 layout and hardware: tracking solar array, radioisotope generator, bigger starter station | #3956, `orbit_station.dm`, `orbit_project.dm` |
-| 10c | Wear: scrubber sorbent beds and cartridges, solar cell wear and glass repairs | `code/modules/space/orbit_wear.dm` |
+| 10c | Wear: scrubber sorbent beds and cartridges, solar cell wear and glass repairs | #3959, `code/modules/space/orbit_wear.dm` |
+| 11 | Sectors outward (2026): sector beacon claims a plane at an edge, edge couplers carry power across the seam, seam margins for modules and pods | `code/modules/space/orbit_sectors.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
+12. Reusable launch: booster condition and refurbishment, crew ship, the 2026
+    starter layout.
+13. Wider network: shuttles between orbit, the Moon and Mars; station radio.
 10d. The uncrewed cargo freighter. It needs items to cross regions without a
     traveller, which the transfer agent cannot do yet, so it waits for that
     infrastructure. Seal and battery wear wait for a reason to exist (seals
@@ -253,6 +257,25 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Solar cell wear.** Wings and arrays in sunlight lose 3% output an hour,
   down to half. Two glass sheets replace the worst cells (25 points). Wear
   counts on the hazard clock, so nothing wears while the world is empty.
+
+## Sectors
+
+- **Sectors open in 2026** (age 9). A sector is another plane linked at a
+  cardinal edge of a station plane, on the same deck. The station quota of
+  6 planes counts decks and sectors together.
+- **Sector beacon** (15 electronics, Orbital Flight): stand within 4 tiles
+  of an unlinked edge of your party's plane and use it. After a short setup
+  it claims a free plane, links it there and is used up. Outsiders, a full
+  quota, a full pool and a running save refuse it.
+- **Crossing.** Walking or drifting off a linked edge arrives one tile
+  inside the matching edge of the sector (the existing seams).
+- **Edge coupler** (4 copper, Orbital Flight): a cable riser for seams.
+  Secure one on a cable one tile inside a linked edge, and another at the
+  matching spot across the seam, and the cables on both tiles share one
+  grid. Couplers already in place join when the sector is claimed. Plain
+  risers ignore couplers.
+- **Seam margins.** In orbit, modules and pods keep two tiles clear of every
+  edge, so nothing stands on a seam or on the tile where travellers arrive.
 
 ## Tests
 

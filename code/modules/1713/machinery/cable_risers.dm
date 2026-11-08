@@ -34,7 +34,7 @@
 		if (!T)
 			continue
 		for (var/obj/item/connector/riser/R in T)
-			if (R != src && R.anchored && !QDELETED(R))
+			if (R != src && R.anchored && !QDELETED(R) && !istype(R, /obj/item/connector/riser/coupler))
 				partners |= R
 	return partners
 

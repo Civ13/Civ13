@@ -89,7 +89,7 @@ low orbit, drag and skim heating, the floor and ceiling, thruster refusals
 for no propellant, outsiders and the ceiling, a reboost and its cost, and the
 console's altitude line.
 
-Last, the 2013 layout on a 32 x 32 world: five sealed modules with the node
+Then the 2013 layout on a 32 x 32 world: five sealed modules with the node
 hub in the middle (its deck hatch and doorways clear, life support in its
 corners) and the workshop, greenhouse, quarters and airlock on its four
 sides, the return hatch, bench, crate and console in the workshop, two
@@ -102,6 +102,12 @@ Then wear (`code/modules/space/orbit_wear.dm`): a scrubber using up its
 sorbent and stopping when empty, a cartridge refilling it, two spare
 cartridges in the starter crate, solar wings wearing only in sunlight down to
 half output, a glass repair, and the cartridge recipe gate.
+
+Last, sectors (`code/modules/space/orbit_sectors.dm`): the nearest edge and
+reach, the 2026 gate, outsiders, claiming and linking a sector both ways,
+one sector per side, the seam into it, edge couplers pairing and joining
+cables across the seam, plain risers ignoring couplers, seam margins for
+modules and pods, a full pool, and the recipe gates.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe

@@ -115,6 +115,7 @@ var/global/orbit_failures = 0
 		orbit_upkeep_checks()
 		orbit_modern_checks()
 		orbit_wear_checks()
+		orbit_sector_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -911,3 +912,63 @@ var/global/orbit_failures = 0
 	orbit_check("starter spares", carts, 2)
 	orbit_check("cartridge gated", get_recipe_node_req("/obj/item/sorbent_cartridge"), "life_support")
 	qdel(H)
+
+// Sectors (orbit_sectors.dm): the 2026 gate, reach, party, claiming and
+// linking a sector, the quota, seam margins for modules and pods, and edge
+// couplers joining cables across the seam.
+/proc/orbit_sector_cable(x, y, z)
+	var/obj/structure/cable/C = new(locate(x, y, z))
+	C.d1 = 0
+	C.d2 = WEST
+	return C
+
+/proc/orbit_sector_checks()
+	var/party = "civ:gaia:Gamma"
+	orbit_release_plane(4)
+	var/mob/living/human/eva_tester/H = new(locate(16, world.maxy - 2, 5))
+	H.m_intent = "stealth"
+	H.party_train_party = party
+	var/mob/living/human/eva_tester/O = new(locate(17, world.maxy - 2, 5))
+	O.m_intent = "stealth"
+	O.party_train_party = "civ:gaia:Beta"
+	var/turf/edge = H.loc
+	orbit_check("nearest edge", orbit_sector_side(edge), "north")
+	orbit_check("no edge from the middle", orbit_sector_side(locate(16, 16, 5)) ? 1 : 0, 0)
+	map.ordinal_age = 8
+	orbit_check("no sectors before 2026", findtext("[orbit_sector_refusal(edge, "north", H)]", "2026") ? 1 : 0, 1)
+	map.ordinal_age = 9
+	orbit_check("outsiders cannot claim", findtext("[orbit_sector_refusal(edge, "north", O)]", "Gamma") ? 1 : 0, 1)
+	orbit_check("too far from the edge", findtext("[orbit_sector_refusal(locate(16, 16, 5), null, H)]", "edge") ? 1 : 0, 1)
+	orbit_check("members can claim", isnull(orbit_sector_refusal(edge, "north", H)) ? 1 : 0, 1)
+	var/obj/item/connector/riser/coupler/K1 = new(locate(16, world.maxy - 1, 5))
+	K1.anchored = TRUE
+	var/obj/structure/cable/A = orbit_sector_cable(16, world.maxy - 1, 5)
+	K1.connect_cables()
+	var/level = orbit_add_sector(5, "north")
+	orbit_check("sector claimed", level, 4)
+	orbit_check("sector linked both ways", "[orbit_plane_link(5, "north")],[orbit_plane_link(4, "south")]", "4,5")
+	orbit_check("sector owned by the station", orbit_station_party(4), party)
+	orbit_check("one sector per side", findtext("[orbit_sector_refusal(edge, "north", H)]", "already") ? 1 : 0, 1)
+	var/turf/across = locate(16, world.maxy, 5)
+	orbit_check("the seam leads into the sector", across.orbit_seam_destination() == locate(16, 2, 4) ? 1 : 0, 1)
+	var/obj/structure/cable/B = orbit_sector_cable(16, 2, 4)
+	var/obj/item/connector/riser/coupler/K2 = new(locate(16, 2, 4))
+	K2.anchored = TRUE
+	K2.connect_cables()
+	orbit_check("couplers pair across the seam", (K1 in K2.riser_partners()) && (K2 in K1.riser_partners()) ? 1 : 0, 1)
+	orbit_check("cables join across the seam", (A.riser_links && (B in A.riser_links)) ? 1 : 0, 1)
+	var/obj/item/connector/riser/coupler/K3 = new(locate(16, 3, 4))
+	K3.anchored = TRUE
+	orbit_check("a coupler off the seam has no partner", length(K3.riser_partners()), 0)
+	var/obj/item/connector/riser/V = new(locate(16, 2, 5))
+	V.anchored = TRUE
+	orbit_check("plain risers ignore couplers", (K2 in V.riser_partners()) ? 1 : 0, 0)
+	orbit_check("modules keep clear of the seam", findtext("[habitat_module_refusal(locate(16, 4, 4), null)]", "seam") ? 1 : 0, 1)
+	orbit_check("modules fit inside the margin", isnull(habitat_module_refusal(locate(16, 6, 4), null)) ? 1 : 0, 1)
+	orbit_check("pods keep clear of the seam", orbit_pod_blocker(locate(16, 4, 4), null), "edge")
+	orbit_check("no free plane for another sector", findtext("[orbit_sector_refusal(locate(world.maxx - 2, 16, 5), "east", H)]", "taken") ? 1 : 0, 1)
+	orbit_check("beacon gated", get_recipe_node_req("/obj/item/sector_beacon"), "orbital_flight")
+	orbit_check("coupler gated", get_recipe_node_req("/obj/item/connector/riser/coupler"), "orbital_flight")
+	map.ordinal_age = 7
+	qdel(H)
+	qdel(O)
