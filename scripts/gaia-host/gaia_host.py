@@ -971,7 +971,11 @@ class Host:
     def thaw(self, reason='requested'):
         state = self.frozen()
         if not state:
-            raise Refused('the server is not frozen')
+            # A cold server (shut down to disk while asleep) wakes by starting from its save,
+            # as the doorman does for a player; the launcher's Wake was refused for it (2026-11-08).
+            if self.cold():
+                return self.start_cold(reason)
+            raise Refused('the server is not frozen or cold')
         self.platform.resume(state['pid'])
         self.freeze_file.unlink(missing_ok=True)
         return {'thawed': True, 'pid': state['pid'], 'reason': reason,

@@ -944,6 +944,19 @@ class WatchdogTests(unittest.TestCase):
         self.assertEqual(self.starts(), [])
         self.assertEqual(self.host.status()['state'], 'cold')
 
+    def test_wake_starts_a_cold_world_from_its_save(self):
+        self.host.watch_step(None)
+        self.machine.up = False
+        self.machine.free_mb = 500
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(self.host.status()['state'], 'cold')
+        self.machine.free_mb = 64000
+        woken = self.host.thaw('launcher wake')
+        self.assertTrue(woken.get('cold_start'), woken)
+        self.assertFalse(self.host.cold_file.exists())
+
     def test_a_refused_start_is_tried_again_later(self):
         self.host.watch_step(None)
         self.machine.up = False
