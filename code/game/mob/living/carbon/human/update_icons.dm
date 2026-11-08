@@ -164,20 +164,42 @@ Please contact me on #coderbus IRC. ~Carn x
 		if (species.has_floating_eyes)
 			overlays |= species.get_eyes(src)
 
-	if ((lying || prone) && !species.prone_icon) //Only rotate them if we're not drawing a specific icon for being prone.
-		var/matrix/M = matrix()
-		M.Turn(90)
-		M.Scale(size_multiplier)
-		M.Translate(1,-6)
-		transform = M
-	else
-		var/matrix/M = matrix()
-		M.Scale(size_multiplier)
-		M.Translate(0, 16*(size_multiplier-1))
-		transform = M
+	update_posture_transform()
 	if (riding && riding_mob)
 		riding_mob.update_icons()
 	..()
+
+// Prone bodies only face east or west: the head leads the crawl.
+/proc/prone_facing_dir(direction)
+	if (direction == NORTH || direction == NORTHWEST || direction == NORTHEAST || direction == WEST)
+		return WEST
+	return EAST
+
+// The one stance transform: trait size scale, plus the lying/prone turn. Every
+// path that changes stance or prone facing calls this, so a click, a key press
+// and the next update_icons() all draw the body at the same size and angle.
+/mob/living/human/proc/posture_transform()
+	var/matrix/M = matrix()
+	if ((lying || prone) && !species.prone_icon) //Only rotate them if we're not drawing a specific icon for being prone.
+		M.Turn((prone && !lying && dir == WEST) ? -90 : 90)
+		M.Scale(size_multiplier)
+		M.Translate(1,-6)
+	else
+		M.Scale(size_multiplier)
+		M.Translate(0, 16*(size_multiplier-1))
+	return M
+
+/mob/living/human/proc/update_posture_transform()
+	transform = posture_transform()
+
+// Facing changes (examine, point, tables) keep a prone body east/west and
+// redraw its turn at once instead of waiting for the next icon update.
+/mob/living/human/facedir(var/ndir)
+	if (prone && !lying)
+		ndir = prone_facing_dir(ndir)
+	. = ..(ndir)
+	if (. && (prone || lying))
+		update_posture_transform()
 
 var/global/list/damage_icon_parts = list()
 
