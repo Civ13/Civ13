@@ -40,3 +40,10 @@ leader, else the commander, team rounds only) and its bearings, the field HUD
 images (one arrow, chevrons only on squadmates), medic health states and the
 own-side rule, the mine detector's armed-mines-in-range list and high fives and
 fist bumps (answer, expiry, adjacency).
+
+The seventh batch checks fire teams in squads, player factions and companies
+(who may organize, membership, one leader per team, dropping the team on
+leaving the group), the roster pages, the tracker pointing at fire team
+leaders, friendly-fire counting and its round fact, machine gun barrel heat
+and cooling, filled autoinjectors and the clotting agent, the modern combat
+kit contents and the observer HUD.
