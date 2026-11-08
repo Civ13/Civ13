@@ -4,6 +4,7 @@
 // the high five emote. Reimplemented for Civ13.
 
 #define FIRE_TEAM_LEAD_COLOUR "#ffd24a"
+#define RALLY_COLOUR "#5ce65c"
 
 //////////////////////////////////////////////////////////////////////////////
 // SQUAD COLOURS
@@ -59,7 +60,11 @@
 	return null
 
 /mob/living/human/proc/tracker_target()
-	// A fire team leader comes first: squads, player factions and companies.
+	// A standing rally point comes first, then the fire team leader (squads,
+	// player factions and companies), then the chain of command.
+	var/datum/field_mark/R = rally_point_for(src)
+	if (R && R.where)
+		return R.where
 	var/mob/living/human/FTL = fire_team_leader()
 	if (FTL && FTL != src)
 		return FTL
@@ -159,16 +164,19 @@
 	var/mob/living/human/H = owner
 	if (!istype(H))
 		return null
-	var/mob/living/human/T = H.tracker_target()
-	if (!T || T.z != H.z || get_dist(H, T) <= TRACKER_HIDE_RANGE)
+	var/atom/target = H.tracker_target()
+	if (!target || target.z != H.z || get_dist(H, target) <= TRACKER_HIDE_RANGE)
 		return null
+	var/mob/living/human/T = target
 	var/colour = "#ffffff"
-	if (T.fire_team_lead && H.same_fire_team(T))
+	if (isturf(target))
+		colour = RALLY_COLOUR
+	else if (T.fire_team_lead && H.same_fire_team(T))
 		colour = FIRE_TEAM_LEAD_COLOUR
 	else if (T.original_job && T.original_job.is_squad_leader && !T.original_job.is_commander)
 		colour = squad_colour_hex(H.squad)
 	var/image/I = hud_image(H, "tracker_arrow", colour)
-	var/angle = tracker_bearing(H, T)
+	var/angle = tracker_bearing(H, target)
 	I.transform = turn(matrix(), angle)
 	I.pixel_x = round(sin(angle) * 20)
 	I.pixel_y = round(cos(angle) * 20)
@@ -188,6 +196,8 @@
 	var/image/arrow = tracker_image()
 	if (arrow)
 		L += arrow
+	for (var/datum/field_mark/M in field_marks_for(O))
+		L += hud_image(M.where, M.kind == "rally" ? "rally_marker" : "spot_marker")
 	var/squad_on = team_round_active() && O.in_squad()
 	var/medic_on = can_triage(O)
 	var/team_on = O.has_fire_team()

@@ -179,6 +179,8 @@ var/global/datum/fallen_roll/fallen_roll = new
 	if (!R.put_in_hands(M))
 		M.forceMove(get_turf(R))
 	medals_awarded++
+	if (round_facts)
+		round_facts.medals_received[round_fact_name(R)] = (round_facts.medals_received[round_fact_name(R)] || 0) + 1
 	if (fallen_roll)
 		fallen_roll.citations += "[grade] medal to <b>[round_fact_name(R)]</b> ([faction_text]) from [round_fact_name(src)]: \"[citation]\""
 	return M

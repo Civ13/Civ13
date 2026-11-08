@@ -1900,13 +1900,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/mask/gas/british" = "trench_warfare",
 		"/obj/item/clothing/mask/gas/german" = "trench_warfare",
 		"/obj/item/clothing/suit/b3" = "trench_warfare",
-		// --- utilities (7) ---
+		// --- utilities (8) ---
 		"/obj/item/lightbulb" = "utilities",
 		"/obj/item/lightbulb/tube" = "utilities",
 		"/obj/item/weapon/telephone" = "utilities",
 		"/obj/structure/lamp/lamp_big" = "utilities",
 		"/obj/structure/lamp/lamp_small" = "utilities",
 		"/obj/structure/lamp/lamppost_small" = "utilities",
+		"/obj/structure/searchlight" = "utilities",
 		"/obj/structure/phoneline" = "utilities",
 		// --- wagons_ships (24) ---
 		"/obj/item/sail" = "wagons_ships",
