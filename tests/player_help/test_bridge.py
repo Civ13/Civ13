@@ -7,7 +7,9 @@ import threading
 import time
 import unittest
 from unittest import mock
+import os
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('bridge', ROOT / 'scripts/player_help_bridge.py')
@@ -232,12 +234,83 @@ class BridgeTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
 
-    def test_transport_has_total_deadline(self):
-        with mock.patch.object(bridge.subprocess, 'run', side_effect=subprocess.TimeoutExpired('child', 1)) as run:
-            with self.assertRaises(subprocess.TimeoutExpired):
+    def test_lock_of_a_dead_worker_is_replaced_but_live_or_unreadable_locks_refuse(self):
+        lock = self.root / 'worker.lock'
+        # A pid that has exited: the bridge that wrote it died without its shutdown.
+        lock.mkdir()
+        gone = subprocess.Popen([sys.executable, '-c', 'pass'])
+        gone.wait()
+        (lock / 'pid').write_text(str(gone.pid), encoding='ascii')
+        self.assertTrue(bridge.stale_lock(lock))
+        instance = self.make(lambda *args: None)
+        self.assertEqual((lock / 'pid').read_text(encoding='ascii'), str(os.getpid()))
+        instance.close()
+        self.instances.remove(instance)
+        self.assertFalse(lock.exists())
+        # A lock without a readable pid is left for the operator.
+        lock.mkdir()
+        self.assertFalse(bridge.stale_lock(lock))
+        with self.assertRaises(FileExistsError):
+            bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+        (lock / 'pid').write_text('not a pid', encoding='ascii')
+        with self.assertRaises(FileExistsError):
+            bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+        # A live pid (this test process) refuses too.
+        (lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
+        with self.assertRaises(FileExistsError):
+            bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+        self.assertTrue(bridge.process_alive(os.getpid()))
+        self.assertFalse(bridge.process_alive(0))
+        (lock / 'pid').unlink()
+        lock.rmdir()
+
+    def test_transport_has_total_deadline_without_a_child_process(self):
+        # A trickling server must not hold a worker past timeout_seconds; the call is abandoned in-process.
+        release = threading.Event()
+        seen = {}
+        def trickle(endpoint, payload, headers, timeout, holder=None):
+            seen['timeout'] = timeout
+            holder['response'] = mock.Mock()
+            release.wait(5)
+            return {'message': {'content': 'late'}}
+        with mock.patch.object(bridge, 'network_child', side_effect=trickle), mock.patch.object(bridge, 'subprocess', create=True) as spawn:
+            started = time.monotonic()
+            with self.assertRaises(TimeoutError):
+                bridge.network('http://localhost/api/chat', {}, {'Authorization': 'Bearer secret'}, .2)
+            self.assertLess(time.monotonic() - started, 2)
+            self.assertFalse(spawn.mock_calls)
+        release.set()
+        self.assertEqual(seen['timeout'], .2)
+        self.assertNotIn('network-worker', bridge.Path(bridge.__file__).read_text(encoding='utf-8'))
+        with mock.patch.object(bridge, 'network_child', return_value={'message': {'content': 'fast'}}):
+            self.assertEqual(bridge.network('http://localhost/api/chat', {}, {}, 1), {'message': {'content': 'fast'}})
+        with mock.patch.object(bridge, 'network_child', side_effect=ValueError('Oversized model response')):
+            with self.assertRaises(ValueError):
                 bridge.network('http://localhost/api/chat', {}, {}, 1)
-            self.assertEqual(run.call_args.kwargs['timeout'], 1)
-            self.assertNotIn('http://localhost', ' '.join(run.call_args.args[0]))
+
+    def test_poll_interval_is_bounded_and_heartbeat_is_throttled(self):
+        path = self.root / 'config.json'
+        config = {'enabled': True, 'ollama_url': 'http://localhost:11434', 'model': 'test'}
+        path.write_text(json.dumps(config))
+        self.assertEqual(bridge.load_config(path)['poll_seconds'], bridge.DEFAULT_POLL_SECONDS)
+        for bad in (0, 0.01, 6, True, '1'):
+            path.write_text(json.dumps(dict(config, poll_seconds=bad)))
+            with self.assertRaises(ValueError, msg=bad):
+                bridge.load_config(path)
+        path.write_text(json.dumps(dict(config, poll_seconds=0.1)))
+        self.assertEqual(bridge.load_config(path)['poll_seconds'], 0.1)
+        # Scanning the spool four times a second must not rewrite the heartbeat files each time,
+        # but the game still sees a new sequence well within its 10 s window.
+        instance = self.make(lambda *args: {'message': {'content': 'answer'}})
+        self.assertTrue(instance.heartbeat(now=100.0))
+        first = bridge.bounded_json(self.root / 'health.json', 256)['sequence']
+        self.assertFalse(instance.heartbeat(now=100.5))
+        self.assertEqual(bridge.bounded_json(self.root / 'health.json', 256)['sequence'], first)
+        self.assertTrue(instance.heartbeat(now=101.0))
+        self.assertNotEqual(bridge.bounded_json(self.root / 'health.json', 256)['sequence'], first)
+        # An admit change (shutdown draining) is written at once.
+        self.assertTrue(instance.heartbeat(admit=False, now=101.1))
+        self.assertFalse(bridge.bounded_json(self.root / 'health.json', 256)['enabled'])
 
     def test_direct_bridge_repeats_reconnect_and_account_not_in_payload(self):
         calls = []

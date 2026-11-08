@@ -790,7 +790,9 @@ var/global/datum/player_help_service/player_help_service = new
 /process/player_help/setup()
 	processes.player_help = src
 	name = "Player help"
-	schedule_interval = 2 SECONDS
+	// Half a second: poll() reads one small health file and only the pending slots' responses,
+	// and a finished answer should reach the player without waiting on a slow timer.
+	schedule_interval = 5
 	fires_at_gamestates = list(GAME_STATE_PREGAME, GAME_STATE_SETTING_UP, GAME_STATE_PLAYING, GAME_STATE_FINISHED)
 	priority = PROCESS_PRIORITY_LOW
 

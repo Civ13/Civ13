@@ -155,7 +155,11 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    9000 tokens, and the model reads all of it for every new question, so on a
    host that reads prompts at under 1000 tokens/s this is most of the answer
    time; 16000 roughly halves it at the cost of fewer evidence excerpts.
-   Set `timeout_seconds` to 1..120 and `workers` to 1..2. The game permits eight
+   Set `timeout_seconds` to 1..120 and `workers` to 1..2. `timeout_seconds` is a
+   wall-clock deadline for the whole model call, enforced in the worker process;
+   a slow trickling server is cut off at the deadline. `poll_seconds` (optional,
+   0.05..5, default 0.25) is how often the worker scans the spool for new
+   questions; the game checks for answers every half second. The game permits eight
    outstanding questions, one per account, and a 30-second per-account cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
    inference can fill these slots, in which case players receive a busy notice.
@@ -168,7 +172,10 @@ private directory permissions. Do not share a spool across Nomads and TDM.
 5. Launch the worker below and keep it supervised. Configuration is read at
    launch; restart the worker after changing it. Shutdown marks help unavailable.
    Restart clears old spool questions rather than re-sending them. Do not run
-   multiple workers against the same spool.
+   multiple workers against the same spool: the worker refuses to start while
+   `SQL/player-help/worker.lock` names a live process. A lock left by a worker
+   that died without shutting down is replaced automatically; a lock with no
+   readable pid is left for the operator to inspect.
 
 The bridge treats request IDs as bounded opaque correlation strings. Native
 BYOND may format the realtime component in scientific notation. Spool markers
