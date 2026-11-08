@@ -24,6 +24,7 @@ class FakeMachine:
         self.calls = []
         self.detached = []
         self.task_is_ready = True
+        self.world_ready = True
         self.clock = 0.0
         self.compile_output = 'civ13.dmb - 0 errors, 0 warnings'
         self.save_error = None
@@ -68,7 +69,7 @@ class FakeMachine:
             raise RuntimeError('a frozen world never answers')
         if self.hung:
             raise OSError('timed out')
-        return {'ok': True, 'ready': True, 'busy': self.busy, 'session': SESSION, 'clients': self.clients, 'map': 'NOMADS_GAIA',
+        return {'ok': True, 'ready': self.world_ready, 'busy': self.busy, 'session': SESSION, 'clients': self.clients, 'map': 'NOMADS_GAIA',
                 'generation': MARKER, 'revision': REVISION, 'error': self.save_error, 'persistence_mode': self.persistence_mode}
 
     def start_task(self, name):
@@ -345,6 +346,17 @@ class GaiaHostTests(unittest.TestCase):
         actions = [c[1] if c[0] == 'query' else c[0] for c in self.machine.calls]
         self.assertNotIn('save_shutdown', actions)
         self.assertLess(actions.index('kill_tree'), actions.index('schtasks'))
+
+    def test_a_world_that_does_not_save_stops_while_not_ready(self):
+        # The TDM worlds report ready 0 in pregame; they are ended, never asked to save.
+        self.give_token()
+        self.machine.up = True
+        self.machine.world_ready = False
+        with self.assertRaisesRegex(gaia_host.Refused, 'busy or not ready'):
+            self.host.request('stop')
+        self.machine.persistence_mode = False
+        self.host.work('stop', self.accept('stop'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
 
     def test_update_needs_a_stopped_server_and_a_clean_compile(self):
         self.machine.up = True
