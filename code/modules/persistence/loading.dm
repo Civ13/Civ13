@@ -618,8 +618,10 @@
 			saved_turfs = list()
 			// Index every turf before recursive contents/variable references load.
 			var/list/sparse_level = sparse_level_header(savefile)
+			// Read before entries load: Load_Entry moves the savefile's directory.
+			var/list/sparse_cells_saved = sparse_level ? sparse_level_cells(savefile, B, sparse_level) : null
 			if(sparse_level)
-				var/list/cells = sparse_level_cells(savefile, B, sparse_level)
+				var/list/cells = sparse_cells_saved
 				for(var/row in cells)
 					for(var/tx in cells[row])
 						saved_turfs["[savefile["/map/[B]/[row]/[tx]"]]"] = locate(tx, text2num(row), B)
@@ -648,7 +650,7 @@
 			// A ground level's unsaved cells were plain turfs: restore them the way
 			// Load_Entry restores a turf entry that holds only its type.
 			if(sparse_level && sparse_level["kind"] == "ground")
-				restore_sparse_ground_cells(savefile, B, sparse_level)
+				restore_sparse_ground_cells(B, sparse_cells_saved)
 			// Every floor of the level is placed and its fields restored: rebuild
 			// each icon once before after_load adds snow and irrigation overlays.
 			refresh_deferred_floor_icons_level(B)
@@ -2185,8 +2187,7 @@ var/global/persistence_memory_probe_error
 // Unsaved cells of a sparse ground level held the baseline turf with every
 // saved field at its default; constructors may have changed some (random
 // states), so put the defaults back and queue each turf's after_load.
-/map_storage/proc/restore_sparse_ground_cells(savefile/F, z, list/header)
-	var/list/cells = sparse_level_cells(F, z, header)
+/map_storage/proc/restore_sparse_ground_cells(z, list/cells)
 	for(var/y = 1, y <= world.maxy, y++)
 		var/list/columns = cells["[y]"]
 		var/next = 1
