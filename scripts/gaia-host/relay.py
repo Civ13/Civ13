@@ -119,6 +119,12 @@ class Routes:
         now = self.clock()
         with self.lock:
             old = self.by_ckey.get(ckey)
+            # A player already behind the relay reaches their region from 127.0.0.1, so a
+            # region that sends them on (the Regions panel's Join) names loopback. Keep their
+            # real address: routing loopback dropped the player's own route and left the next
+            # connection unrouted (Rail Yard to Gaia, 2026-11-08).
+            if loopback(ip) and old is not None and not loopback(old):
+                ip = old
             if old is not None and old != ip:
                 self._drop(old)
             self._drop(ip)
