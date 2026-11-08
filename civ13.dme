@@ -1178,6 +1178,7 @@
 #include "code\modules\magic\magic_wands_premade.dm"
 #include "code\modules\magic\magic_weapons.dm"
 #include "code\modules\magic\spells.dm"
+#include "code\modules\map_variations\map_variations.dm"
 #include "code\modules\materials\material_sheets.dm"
 #include "code\modules\1713\primitive_woodworking.dm"
 #include "code\modules\materials\materials.dm"
