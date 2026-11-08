@@ -34,6 +34,8 @@
 	var/datum/save_debug_recovery/debug_policy = operation.debug_recovery
 	var/candidate_validated = FALSE
 	var/list/handover_roofs
+	// A handover's candidate record also carries each full level's turf types.
+	var/list/handover_turfs = handover_candidate ? list() : null
 	// Debug recovery starts only after a failed capture has removed the current
 	// marker. Never let its retry path replace an existing completed backup.
 	if(debug_policy && (fexists("map_saves/save_complete.txt") || !debug_backup_identity_valid() || !operation.current(src, "save"))) throw EXCEPTION("Debug recovery requires an unchanged failed capture and retained backup")
@@ -149,6 +151,8 @@
 			saving_segments = new stream_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget())
 		else
 			saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
+		var/list/turf_grid = (handover_turfs && !sparse_turf) ? list() : null
+		if(turf_grid) handover_turfs["[A]"] = turf_grid
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
@@ -159,8 +163,10 @@
 				if(!ref)
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
 				sparse_cells++
+				var/saved_turf_type = T.type
 				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
+				if(turf_grid) turf_grid += saved_turf_type
 				if(saving_segments) saving_segments.rotate_if_full()
 			if(sparse_turf) save_work_check()
 		if(sparse_turf)
@@ -251,7 +257,7 @@
 		// record the structural check for the handover's own preflights only.
 		if(handover_candidate && handover_roofs)
 			try
-				if(!write_validation_record(generation, world.maxz, "candidate", handover_roofs)) world.log << "Handover candidate record not written; the handover's checks run in full."
+				if(!write_validation_record(generation, world.maxz, "candidate", handover_roofs, handover_turfs)) world.log << "Handover candidate record not written; the handover's checks run in full."
 			catch(var/exception/candidate_record_error)
 				world.log << "Handover candidate record failed: [candidate_record_error]"
 	if(transfer_capture) transfer_saved(transfer_capture)

@@ -578,10 +578,15 @@
 							T.ChangeTurf(baseline, FALSE, FALSE)
 					TICK_CHECK
 				continue
+			// The preflight's turf types (full walk or trusted record) spare a read
+			// of every turf entry; Load_Entry still applies each saved type.
+			var/list/grid = validated_turf_grid(z)
+			var/cell = 0
 			for(var/y = 1, y <= world.maxy, y++)
 				for(var/x = 1, x <= world.maxx, x++)
-					var/ref = F["/map/[z]/[y]/[x]"]
-					var/type = level_entry_value(F, ref, "type")
+					var/type
+					if(grid) type = grid[++cell]
+					if(!type) type = level_entry_value(F, F["/map/[z]/[y]/[x]"], "type")
 					var/turf/T = locate(x,y,z)
 					T.ChangeTurf(type, FALSE, FALSE)
 					TICK_CHECK
@@ -769,6 +774,11 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	var/tmp/handover_candidate = FALSE
 	// The roofs of the validation record the last preflight trusted, or null.
 	var/tmp/list/validated_record_roofs
+	// Each full level's turf types ("z" -> one type per cell, row by row), from
+	// the full walk or the trusted record, so the load's turf pass need not read
+	// every turf entry back. Encoded in the record by turf_grid_runs().
+	var/tmp/list/validated_turf_grids = list()
+	var/tmp/list/validated_record_turfs
 
 /map_storage/proc/current_build_identity()
 	return save_build_identity ? save_build_identity : persistence_boot_build_identity
@@ -791,6 +801,60 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		throw EXCEPTION("Could not remove the previous validation record")
 
 // The projected roofs, as the inputs prepare_saved_roof takes, for the record.
+// A level's turf types as runs: "types" names each distinct type, "runs" holds
+// (type index, cell count) pairs in row order.
+/proc/turf_grid_runs(list/grid)
+	var/list/types = list()
+	var/list/index_of = list()
+	var/list/runs = list()
+	var/last
+	var/count = 0
+	for(var/i = 1, i <= grid.len, i++)
+		var/type = "[grid[i]]"
+		if(count && type == last)
+			count++
+			continue
+		if(count) runs += list(index_of[last], count)
+		if(!index_of[type])
+			types += type
+			index_of[type] = types.len
+		last = type
+		count = 1
+	if(count) runs += list(index_of[last], count)
+	return list("types" = types, "runs" = runs)
+
+// The turf types of level z from the trusted record or the full walk, or null.
+/map_storage/proc/validated_turf_grid(z)
+	var/list/grid = validated_turf_grids["[z]"]
+	if(islist(grid)) return grid
+	var/list/encoded = islist(validated_record_turfs) ? validated_record_turfs["[z]"] : null
+	if(!islist(encoded)) return null
+	var/list/types = encoded["types"]
+	var/list/runs = encoded["runs"]
+	if(!islist(types) || !islist(runs) || runs.len % 2) return null
+	var/list/paths = list()
+	for(var/name in types)
+		var/path = istext(name) ? text2path(name) : null
+		if(!ispath(path, /turf)) return null
+		paths += path
+	grid = list()
+	for(var/i = 1, i <= runs.len, i += 2)
+		var/index = runs[i]
+		var/count = runs[i + 1]
+		if(!isnum(index) || index < 1 || index > paths.len || !isnum(count) || count < 1 || grid.len + count > world.maxx * world.maxy) return null
+		var/path = paths[index]
+		for(var/n = 1, n <= count, n++) grid += path
+	if(grid.len != world.maxx * world.maxy) return null
+	validated_turf_grids["[z]"] = grid
+	return grid
+
+/map_storage/proc/validation_record_turfs(list/grids = validated_turf_grids)
+	var/list/encoded = list()
+	for(var/z in grids)
+		var/list/grid = grids[z]
+		if(islist(grid) && grid.len == world.maxx * world.maxy) encoded[z] = turf_grid_runs(grid)
+	return encoded
+
 /map_storage/proc/validation_record_roofs()
 	var/list/rows = list()
 	for(var/key in validated_roof_areas)
@@ -800,18 +864,19 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 
 // Called after the completion marker, only for a candidate that validated, or
 // after a full preflight. kind "candidate" is a handover save's structural check.
-/map_storage/proc/write_validation_record(generation, maxz = world.maxz, kind = "full", list/roofs = null)
+/map_storage/proc/write_validation_record(generation, maxz = world.maxz, kind = "full", list/roofs = null, list/turf_grids = null)
 	var/build = current_build_identity()
 	if(!build) return FALSE
 	var/list/sums = validation_record_checksums(maxz)
 	if(!sums) return FALSE
 	if(!roofs) roofs = validation_record_roofs()
-	var/list/record = list("version" = 2, "kind" = kind, "build" = build, "generation" = generation, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = maxz, "files" = sums, "roofs" = roofs)
+	var/list/record = list("version" = 2, "kind" = kind, "build" = build, "generation" = generation, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = maxz, "files" = sums, "roofs" = roofs, "turfs" = validation_record_turfs(turf_grids ? turf_grids : validated_turf_grids))
 	clear_validation_record() // text2file appends.
 	return !!text2file(json_encode(record), "map_saves/validated.json")
 
 /map_storage/proc/validation_record_matches(generation, maxz)
 	validated_record_roofs = null
+	validated_record_turfs = null
 	var/build = current_build_identity()
 	if(!build) return "no build identity"
 	if(!fexists("map_saves/validated.json")) return "no validation record"
@@ -834,6 +899,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	for(var/name in current)
 		if(expected[name] != current[name]) return "[name] changed since it was validated"
 	validated_record_roofs = record["roofs"]
+	validated_record_turfs = islist(record["turfs"]) ? record["turfs"] : null
 	return null
 
 // An interrupted save: a crash or power-down after the save removed the
@@ -893,6 +959,8 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	clear_saved_zones()
 	validated_level_links = null
 	validated_record_roofs = null
+	validated_record_turfs = null
+	validated_turf_grids = list()
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 		persistence_active_operation.human_direct_preflight_generation = null
@@ -982,6 +1050,10 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 			// each coordinate are checked by sparse_level_cells (functions.dm).
 			var/list/sparse = sparse_level_header(F)
 			var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
+			// The walk fills each full level's turf types for the load's turf
+			// pass and the validation record.
+			var/list/turf_grid = sparse ? null : new /list(world.maxx * world.maxy)
+			if(turf_grid) validated_turf_grids["[z]"] = turf_grid
 			if(!sparse)
 				F.cd = "/map"
 				if(F.dir.len != 1 || !("[z]" in F.dir))
@@ -1058,6 +1130,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 				if(cell)
 					if(!ispath(type, /turf))
 						throw EXCEPTION("Invalid turf type at [cell % 4096],[round(cell / 4096)],[z]")
+					if(turf_grid) turf_grid[(round(cell / 4096) - 1) * world.maxx + cell % 4096] = type
 					if(ispath(type, /turf/floor))
 						validate_saved_irrigation(E, version)
 						E.cd = entry_dir
