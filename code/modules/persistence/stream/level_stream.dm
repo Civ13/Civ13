@@ -19,6 +19,9 @@
 // is a temporary file in the BYOND cache; the Windows C runtime allows 512
 // open files per process, which the whole world shares.
 #define PERSISTENCE_STREAM_SCRATCH_FILE_CAP 96
+// Entry shards (or list blocks) a normal-memory load imports into one scratch
+// file, so the cache keeps more of a level without holding more files open.
+#define PERSISTENCE_STREAM_SHARDS_PER_FILE 4
 
 /map_storage
 	var/stream_level_saves_state = null // TRUE/FALSE once probed this boot.
@@ -188,6 +191,9 @@
 	var/datum/save_stream/stream
 	var/list/scratch_names = list()
 	var/list/list_filled = list()
+	var/shards_per_file = 1
+	var/tmp/part_needs_import = FALSE // Set by part_file(): the part is not in its file yet.
+	var/list/file_parts = list() // Cache key -> shards/blocks already imported into that file.
 
 /datum/level_segment_reader/stream/New(savefile/F, cache_limit)
 	index = F
@@ -208,7 +214,11 @@
 	// Load time flattens past about 128 files (24: 748 s, 128: 584 s, 256: 559 s
 	// on a Gaia copy); 96 keeps most of that gain well clear of the limit.
 	// 6 is PERSISTENCE_SEGMENT_CACHE_NORMAL (loading.dm, undefined here).
-	if(isnum(cache_limit) && cache_limit >= 6) limit = PERSISTENCE_STREAM_SCRATCH_FILE_CAP
+	// Grouping shards keeps the file count at the cap while about four times
+	// as many shards stay resident (Gaia: imports fall toward one per shard).
+	if(isnum(cache_limit) && cache_limit >= 6)
+		limit = PERSISTENCE_STREAM_SCRATCH_FILE_CAP
+		shards_per_file = PERSISTENCE_STREAM_SHARDS_PER_FILE
 	var/path = level_stream_path(base_path)
 	if(F["/stream/file"] != level_stream_name(base_path)) throw EXCEPTION("Stream level index does not name [path]")
 	if(!fexists(path)) throw EXCEPTION("Missing level stream [path]")
@@ -224,6 +234,7 @@
 	if(stream) stream.close()
 	stream = null
 	scratch_names = list()
+	file_parts = list()
 
 /datum/level_segment_reader/stream/owns_file(savefile/F)
 	return F && scratch_names["[F.name]"]
@@ -239,6 +250,7 @@
 	S["/generation"] << generation
 	scratch_names["[S.name]"] = TRUE
 	open_files[key] = S
+	file_parts[key] = list()
 	open_order += key
 	while(open_order.len > limit)
 		var/oldest = open_order[1]
@@ -246,6 +258,18 @@
 		// Keep the evicted file's name: an entry frame may still hold it and
 		// must keep routing its list lookups through this reader.
 		open_files -= oldest
+		file_parts -= oldest
+	return S
+
+// The cached file for shard/block number part of kind ("e" or "l"), and
+// whether that part still has to be imported into it.
+/datum/level_segment_reader/stream/proc/part_file(kind, part)
+	var/key = "[kind][round(part / shards_per_file)]"
+	var/savefile/S = scratch(key)
+	var/list/parts = file_parts[key]
+	var/part_key = "[part]"
+	part_needs_import = !parts[part_key]
+	parts[part_key] = TRUE
 	return S
 
 /datum/level_segment_reader/stream/proc/fill(savefile/S, path, batch_size)
@@ -259,9 +283,8 @@
 	if(!isnum(ref)) ref = text2num("[ref]")
 	if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Invalid saved entry [ref]")
 	var/shard = round((ref - 1) / 512)
-	var/key = "e[shard]"
-	if(open_files[key]) return scratch(key)
-	var/savefile/S = scratch(key)
+	var/savefile/S = part_file("e", shard)
+	if(!part_needs_import) return S
 	if(isnull(stream.import_text(S, "/entries/[shard]")))
 		fill(S, "/entries/[shard]", 256)
 	return S
@@ -270,14 +293,13 @@
 	if(!isnum(id)) id = text2num("[id]")
 	if(!isnum(id) || id < 1 || id != round(id)) throw EXCEPTION("Invalid saved list [id]")
 	var/block = round((id - 1) / 512)
-	var/key = "l[block]"
 	if(stream && stream.text_supported)
-		if(open_files[key]) return scratch(key)
-		var/savefile/B = scratch(key)
+		var/savefile/B = part_file("l", block)
+		if(!part_needs_import) return B
 		// The whole block in one request: lists of one block are read together.
 		if(!isnull(stream.import_text(B, "/lists", block * 512 + 1, block * 512 + 512))) return B
 		// The helper predates text requests: fill this list on its own below.
-	var/savefile/S = scratch(key)
+	var/savefile/S = scratch("l[round(block / shards_per_file)]")
 	var/filled_key = "[id]"
 	if(list_filled[filled_key] != "[S.name]")
 		list_filled[filled_key] = "[S.name]"
