@@ -12,6 +12,11 @@
 // world shows it to its clients with OOC enabled, unless OOC is globally muted
 // here or the speaker holds an OOC ban in this world's ban list too.
 //
+// Discord OOC: CivilizationBot writes Discord messages to SQL/discord2ooc.txt
+// of one world only (the mainland). That world shows them and hands them on as
+// "discord" envelopes, which every other region shows with the Discord tag and
+// never posts back to Discord (Val, 2026-11-08).
+//
 // Transport is the region's transfer agent (tools/transfer_storage/radio.py,
 // /ooc/send and /ooc/inbox). The radio process sends queued lines once a
 // second and polls the inbox every few seconds, never while an earlier OOC
@@ -45,6 +50,26 @@ var/global/region_ooc_next_poll = 0
 	region_ooc_outbound_queue += list(list("name" = speaker.key, "ckey" = speaker.ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey, "posted" = webhook_enabled()))
 	if (region_ooc_outbound_queue.len > REGION_OOC_QUEUE_LIMIT)
 		region_ooc_outbound_queue.Cut(1, 2)
+	return TRUE
+
+// Hands one Discord message, already sanitized, on to the other regions.
+/proc/region_ooc_outbound_discord(sender, msg)
+	if (!istext(sender) || !length(sender) || !istext(msg) || !length(msg) || !region_ooc_enabled())
+		return FALSE
+	region_ooc_outbound_queue += list(list("name" = sender, "ckey" = "discord", "message" = msg, "style" = "everyone", "discord" = TRUE, "posted" = TRUE))
+	if (region_ooc_outbound_queue.len > REGION_OOC_QUEUE_LIMIT)
+		region_ooc_outbound_queue.Cut(1, 2)
+	return TRUE
+
+// Shows one Discord message (sanitized sender and text) to this world's clients with OOC on.
+/proc/discord_ooc_show(sender, msg)
+	var/dmsg = "<IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[sender]: [msg]</font></b>"
+	log_discord(dmsg)
+	if (!config.ooc_allowed)
+		return FALSE // OOC is globally muted
+	for (var/client/C in clients)
+		if (C.is_preference_enabled(/datum/client_preference/show_ooc))
+			to_chat(C, dmsg)
 	return TRUE
 
 // Highlights @key and @ckey mentions of clients in this world and pings them.
@@ -93,6 +118,11 @@ var/global/region_ooc_next_poll = 0
 		return FALSE
 	if (!(style in list("everyone", "elevated", "mentor", "moderator", "developer", "admin", "highstaff")))
 		style = "everyone"
+	// From Discord through the mainland: already on Discord, and its sender is no ckey.
+	if (envelope["discord"])
+		if (findtext(name, "<") || findtext(name, ">"))
+			return FALSE
+		return discord_ooc_show(name, msg)
 	if (region_ooc_ckey_banned(ckey(speaker_ckey)))
 		return FALSE
 	var/region_name = html_encode(region_ooc_region_name(source))

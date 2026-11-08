@@ -164,6 +164,13 @@ class OocRingTests(unittest.TestCase):
             self.beta.deliver_ooc(self.alpha.outbox()['ooc'])
             self.assertEqual([expected], [e['posted'] for e in self.beta.ooc_inbox()])
 
+    def test_ooc_discord_lines_are_never_posted_back(self):
+        self.alpha.ooc_send(ooc(name='Val (Discord)', ckey='discord', discord=1, posted=0))
+        self.alpha.ooc_send(ooc())
+        self.beta.deliver_ooc(self.alpha.outbox()['ooc'])
+        got = self.beta.ooc_inbox()
+        self.assertEqual([(True, True), (False, False)], [(e['discord'], e['posted']) for e in got])
+
     def test_ooc_rings_are_bounded_and_expire(self):
         for i in range(RING + 5):
             self.alpha.ooc_send(ooc(message='line %d' % i))
