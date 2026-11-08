@@ -2,8 +2,8 @@
 #define QDELETED(D) (!D || D.gc_destroyed)
 #define REF(D) "\ref[D]"
 #define QDEL_HINT_LETMELIVE 1
+// The world-save stubs declare /datum/var/gc_destroyed and gcDestroyed.
 /datum
-	var/gc_destroyed = FALSE
 	var/datum/weakref/weak_reference
 /datum/proc/Destroy()
 	return
@@ -23,9 +23,11 @@
 	var/obj/item/weapon/storage/s_active
 /obj/item/weapon/storage
 	var/list/is_seeing = list()
-// Full LOS is outside this save fixture.
+// Full LOS and the tree presenter are outside this save fixture.
 /proc/los_read_allowed(mob/user, atom/target, operation)
 	return !!user && !!target && operation == "hover"
+/proc/los_tree_canopy_readable(atom/A)
+	return FALSE
 /mob/proc/get_equipped_item(slot)
 	return null
 /mob/living/human
@@ -44,6 +46,10 @@
 	var/list/screen = list()
 	var/view = 5
 	var/atom/eye
+	var/mouse_screen_x = 0
+	var/mouse_screen_y = 0
+	var/mouse_screen_pixel_x = 0
+	var/mouse_screen_pixel_y = 0
 
 /proc/check_weakref_save()
 	var/mob/living/human/H = new(locate(2,2,1))

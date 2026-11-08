@@ -1,12 +1,30 @@
 # Hover name HUD
 
-The human HUD shows the pointer target's public name at the top-left corner of
-the map, including items in visible inventory slots. A black inline backdrop
-fits the text only; clearing or an empty name removes both text and backdrop.
-All existing human HUD
-styles share the same attachment. This is pointer feedback, not a click or
-examine action. Moving onto empty space or a HUD control clears the text.
-Human names use `get_visible_name()` so masks do not disclose `real_name`.
+The human HUD shows the pointer target's public name in a tooltip that follows
+the mouse, including items in visible inventory slots. The panel sits just
+below and to the right of the pointer, clamps at the right edge of the map and
+flips above the pointer near the bottom; its placement uses the pixel position
+that `MouseEntered`, `MouseMove` and `MouseDrag` parse from the `screen-loc`
+mouse parameter and the client's current view size (`getviewsize`), so the
+"Fit viewport" preference is honoured at runtime. Clearing or an empty name
+removes both text and backdrop. All existing human HUD styles share the same
+attachment. This is pointer feedback, not a click or examine action. Moving
+onto empty space or a HUD control clears the text. Human names use
+`get_visible_name()` so masks do not disclose `real_name`.
+
+The look matches the 1713 HUD palette: Verdana 11px cream text (`#f3e9d6`)
+with a 1px dark outline on a wood-brown panel (`#3b2c1e`) with a 1px light
+border (`#9a8468`). The panel is pure maptext, so it always fits the text the
+client actually draws: the text span carries the fill colour with a `&nbsp;`
+on each side as padding, and four underlays repeat the same span in the border
+colour shifted one pixel up, down, left and right. The widget uses layer 30 on
+the HUD plane so HUD controls never cover it, and `mouse_opacity` stays 0 so it
+never takes a click or hover. A move across the same pointer target only
+revalidates and moves the panel (an unchanged `screen_loc` is not reassigned);
+the label and underlays are rebuilt only when the target or its name changes.
+No width measurement exists server-side: a rough 7px-per-character estimate
+(`hover_text_width`/`hover_text_height`, capped at the maptext box) only drives
+the edge clamp and the flip, never the drawn border.
 
 Inventory slot art resolves only the current body's registered, displayed slot
 to its actual equipped item. The item must belong directly to that body and be

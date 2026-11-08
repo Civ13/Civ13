@@ -8,6 +8,11 @@ var/global/list/root_tree_presenters
 /proc/root_tree_family(atom/A)
 	return istype(A, /obj/structure/wild/tree) || istype(A, /obj/structure/wild/jungle) || istype(A, /obj/structure/wild/palm)
 
+// Hover and examine read a tree canopy by the same "visual_tree" rule the
+// presenter draws it with, rather than BYOND's stricter view().
+/proc/los_tree_canopy_readable(atom/A)
+	return CIV13_ROOT_TREE_PRESENTATION && A && A.opacity && root_tree_family(A) && isturf(A.loc)
+
 /datum/los_context/proc/root_tree_admitted(atom/A)
 	return CIV13_ROOT_TREE_PRESENTATION && root_tree_family(A) && !A.gcDestroyed && !A.gc_destroyed && isturf(A.loc) && A.plane == GAME_PLANE && A.layer == 5.11 && abs(A.pixel_x) <= 32 && abs(A.pixel_y) <= 32 && !A.pixel_w && !A.pixel_z && root_tree_identity_transform(A.transform) && !length(A.overlays) && !length(A.underlays) && !length(A.filters) && !length(A:vis_contents) && !A.render_source && !A.render_target && !A.maptext
 

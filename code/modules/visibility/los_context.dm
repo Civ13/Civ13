@@ -836,6 +836,11 @@ var/global/list/los_active_contexts
 		if (I.loc == body && (operation == "examine" || (I.screen_loc && (I in owner.screen))))
 			return LOS_OWN_SLOT
 	var/datum/los_snapshot/S = capture()
+	// A tree canopy the renderer shows through its exposed edge is drawn by the
+	// "visual_tree" rule. Hover and examine read the same rule, so a tree the
+	// player can see never refuses its name (or shows a name it does not draw).
+	if ((operation == "hover" || operation == "examine") && los_tree_canopy_readable(target))
+		return decision_snapshot(target, S, "visual_tree")
 	return decision_snapshot(target, S, operation)
 
 /proc/los_read_allowed(mob/user, atom/target, operation)

@@ -45,6 +45,7 @@ storage_helper = storage_helper.replace('var/client/C', 'var/datum/hover_client/
 storage_helper = storage_helper.replace('user.client', 'user.hover_client')
 adapter = (Path(__file__).with_name('weakref_save_probe.dm').read_text() + '\n'
            + (repo / 'code/datums/weakref.dm').read_text() + '\n' + widget + '\n' + storage_helper + '\n'
+           + declaration('code/_helpers/view.dm', '/proc/getviewsize(')
            + declaration('code/game/mob/living/carbon/human/human.dm',
                          '/mob/living/human/proc/get_visible_name('))
 (root / 'weakref_save_adapter.dm').write_text(adapter)
@@ -56,15 +57,16 @@ roundtrip.write_text(source.replace(anchor, '\t\tcheck_weakref_save()\n' + ancho
 dme = root / 'probe.dme'
 dme.write_text(dme.read_text() + '\n#include "weakref_save_adapter.dm"\n')
 
-def replace_once(path, old, new):
+def replace_once(path, old, new, count=1):
     source = path.read_text()
-    if source.count(old) != 1:
+    if source.count(old) != count:
         raise RuntimeError('Mutation anchor changed: ' + path.name)
-    path.write_text(source.replace(old, new, 1))
+    path.write_text(source.replace(old, new))
 
 if args.negative_control == 'export':
+    # Both the observability and the changed-field export guards must skip the cache.
     replace_once(root / 'functions.dm', 'if (persistence_runtime_var(key))',
-                 'if (key != "weak_reference" && persistence_runtime_var(key))')
+                 'if (key != "weak_reference" && persistence_runtime_var(key))', count=2)
     replace_once(root / 'saving.dm', 'if(A.persistence_runtime_var(v))',
                  'if(v != "weak_reference" && A.persistence_runtime_var(v))')
 elif args.negative_control == 'import':
