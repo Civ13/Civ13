@@ -3,7 +3,7 @@
 // only rubble, so mined deposits stay the main source of ore.
 
 // Weights are per 10,000 rolls (100 = 1%). The era gates match trace
-// sifting: iron from the Bronze Age, coal/lead/saltpeter/sulphur from the
+// sifting: iron and calamine (zinc) from the Bronze Age, coal/lead/saltpeter/sulphur from the
 // Medieval age. Anything not unlocked in the current age stays rubble.
 /proc/stone_crushing_table(age = 0, powered = FALSE)
 	var/list/table = list(
@@ -16,6 +16,7 @@
 	)
 	if (age >= 1)
 		table[/obj/item/stack/ore/iron] = 300
+		table[/obj/item/stack/ore/zinc] = 150
 	if (age >= 2)
 		table[/obj/item/stack/ore/coal] = 200
 		table[/obj/item/stack/ore/lead] = 150

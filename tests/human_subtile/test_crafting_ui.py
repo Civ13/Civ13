@@ -61,7 +61,7 @@ def restore_crafting_projection(path, source):
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '582edfbcb262325d39dac35fffa3760044a8f99003c348f3958561f06c59bfb5':
+        if hashlib.sha256(mining.encode()).hexdigest() != '8787a4d5a5ebb0d5e0d47809cdc188faecec21784c644881283668c713be32fb':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]

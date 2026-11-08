@@ -15,6 +15,7 @@
 	var/list/choices = list("Stone" = /obj/item/stack/material/stone, "Sand" = /obj/item/stack/ore/glass, "Copper ore" = /obj/item/stack/ore/copper, "Tin ore" = /obj/item/stack/ore/tin)
 	if (map && map.ordinal_age >= 1)
 		choices["Iron ore"] = /obj/item/stack/ore/iron
+		choices["Calamine (zinc ore)"] = /obj/item/stack/ore/zinc
 	if (map && map.ordinal_age >= 2)
 		choices["Coal"] = /obj/item/stack/ore/coal
 		choices["Saltpeter"] = /obj/item/stack/ore/saltpeter

@@ -1061,6 +1061,8 @@
 		/obj/item/stack/ore/tin,
 		/obj/item/stack/ore/tin,
 		/obj/item/stack/ore/tin,
+		/obj/item/stack/ore/zinc,
+		/obj/item/stack/ore/zinc,
 		/obj/item/stack/ore/saltpeter,
 		/obj/item/stack/ore/saltpeter,
 		/obj/item/stack/ore/saltpeter,

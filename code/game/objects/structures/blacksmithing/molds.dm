@@ -99,7 +99,7 @@
 						qdel(O)
 					to_chat(user, "You put some [O] in \the [src].")
 			else if (istype(O, /obj/item/stack/ore/copper))
-				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["tin"]))
+				if (contents_materials.len == 0 || (contents_materials.len == 1 && (contents_materials["tin"] || contents_materials["zinc"])))
 					contents_materials += list("copper" = cap_to_add)
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
@@ -133,6 +133,19 @@
 					to_chat(user, "You put some [O] in \the [src].")
 				else if (contents_materials.len == 1 && contents_materials["lead"])
 					contents_materials["lead"] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					to_chat(user, "You put some [O] in \the [src].")
+			else if (istype(O, /obj/item/stack/ore/zinc))
+				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
+					contents_materials += list("zinc" = cap_to_add)
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					to_chat(user, "You put some [O] in \the [src].")
+				else if ((contents_materials.len == 1 && contents_materials["zinc"]) || (contents_materials.len == 2 && contents_materials["zinc"]))
+					contents_materials["zinc"] += cap_to_add
 					O.amount -= cap_to_add
 					if (O.amount <= 0)
 						qdel(O)

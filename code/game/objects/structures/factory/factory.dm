@@ -16,6 +16,7 @@
 	var/iron = 0
 	var/copper = 0
 	var/tin = 0
+	var/zinc = 0
 	var/gold = 0
 	var/silver = 0
 	not_movable = TRUE
@@ -109,6 +110,11 @@
 				to_chat(H, "You place \the [I] in \the [src], smelting it.")
 				qdel(I)
 				return
+			else if (istype(I, /obj/item/stack/ore/zinc) || istype(I, /obj/item/stack/material/zinc))
+				zinc += I.amount
+				to_chat(H, "You place \the [I] in \the [src], smelting it.")
+				qdel(I)
+				return
 			else if (istype(I, /obj/item/stack/material/woodplank))
 				record_wood_fuel(I, I.amount)
 				fuel += I.amount
@@ -136,6 +142,14 @@
 			else if (MT.get_material_name() == "tin")
 				to_chat(H, "You smelt \the [MT] into tin ingots.")
 				new/obj/item/stack/material/tin(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "brass")
+				to_chat(H, "You smelt \the [MT] into brass ingots.")
+				new/obj/item/stack/material/brass(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "zinc")
+				to_chat(H, "You smelt \the [MT] into zinc ingots.")
+				new/obj/item/stack/material/zinc(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "iron")
 				to_chat(H, "You smelt \the [MT] into iron ingots.")
@@ -182,7 +196,13 @@
 		newbronze.amount = min(tin,copper)*3
 		tin -= amountconsumed
 		copper -= amountconsumed
-	else if (tin == 0 && copper > 0)
+	else if (zinc > 0 && copper > 0)
+		var/obj/item/stack/material/brass/newbrass = new/obj/item/stack/material/brass(src.loc)
+		var/brassconsumed = min(zinc,copper)
+		newbrass.amount = brassconsumed*3
+		zinc -= brassconsumed
+		copper -= brassconsumed
+	else if (tin == 0 && zinc == 0 && copper > 0)
 		var/obj/item/stack/material/copper/newcopper = new/obj/item/stack/material/copper(src.loc)
 		newcopper.amount = copper
 		copper = 0
@@ -190,6 +210,10 @@
 		var/obj/item/stack/material/tin/newtin = new/obj/item/stack/material/tin(src.loc)
 		newtin.amount = tin
 		tin = 0
+	if (zinc > 0 && copper == 0)
+		var/obj/item/stack/material/zinc/newzinc = new/obj/item/stack/material/zinc(src.loc)
+		newzinc.amount = zinc
+		zinc = 0
 
 		//EMPTY
 
@@ -209,6 +233,10 @@
 		var/obj/item/stack/ore/tin/emptyedtin = new/obj/item/stack/ore/tin(src.loc)
 		emptyedtin.amount = tin
 		tin = 0
+	if (zinc > 0)
+		var/obj/item/stack/ore/zinc/emptyedzinc = new/obj/item/stack/ore/zinc(src.loc)
+		emptyedzinc.amount = zinc
+		zinc = 0
 
 //ROBERTS FACTORY FRAMEWORK
 
