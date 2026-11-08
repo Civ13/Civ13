@@ -342,8 +342,8 @@
 /obj/structure/car_workshop/rover_bay/models()
 	return list("Open rover" = /obj/effects/premadevehicles/rover/open, "Sealed rover" = /obj/effects/premadevehicles/rover/sealed)
 
-/obj/structure/car_workshop/rover_bay/allowed(mob/living/human/H)
-	return H && map && map.is_node_done(H.civilization, "surface_vehicles")
+/obj/structure/car_workshop/rover_bay/required_nodes()
+	return list("surface_vehicles")
 
 /obj/structure/car_workshop/rover_bay/model_size(model)
 	return (model in models()) ? 4 : 0
@@ -354,9 +354,6 @@
 	if (model == "Sealed rover")
 		return list("steel" = 70, "glass" = 10, "cloth" = 6, "cable" = 20, "wheels" = 4)
 	return list("steel" = 50, "glass" = 4, "cloth" = 4, "cable" = 20, "wheels" = 4)
-
-/obj/structure/car_workshop/rover_bay/requirement_text()
-	return "Surface Vehicles research is required."
 
 /obj/structure/car_workshop/rover_bay/menu_text()
 	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The open rover costs 50/4/4/20/4; the sealed rover costs 70/10/6/20/4. Keep the northeast 4x4 bay empty."

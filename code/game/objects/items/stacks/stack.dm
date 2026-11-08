@@ -354,6 +354,10 @@
 	if (trail_refusal)
 		to_chat(user, SPAN_WARNING(trail_refusal))
 		return
+	var/workshop_refusal = car_workshop_build_refusal(user, recipe.result_type)
+	if (workshop_refusal)
+		to_chat(user, SPAN_WARNING(workshop_refusal))
+		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
@@ -1739,6 +1743,11 @@
 			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
+			return
+		// The bay or cable may have changed during the wait.
+		var/late_workshop_refusal = car_workshop_build_refusal(user, recipe.result_type)
+		if (late_workshop_refusal)
+			to_chat(user, SPAN_WARNING(late_workshop_refusal))
 			return
 		if (press_construction && !press_construction.valid())
 			return

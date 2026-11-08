@@ -15,6 +15,20 @@
 	var/tmp/busy = FALSE
 	var/tmp/assembly_time = 100
 
+// One unplaced press per type answers placement checks for the crafting menu.
+var/global/list/car_workshop_prototypes = list()
+
+// Null when user may build result_type where they stand, otherwise why not.
+/proc/car_workshop_build_refusal(mob/user, result_type)
+	if (!ispath(result_type, /obj/structure/car_workshop))
+		return null
+	var/obj/structure/car_workshop/P = car_workshop_prototypes[result_type]
+	if (QDELETED(P))
+		P = new result_type(null)
+		P.should_save = FALSE
+		car_workshop_prototypes[result_type] = P
+	return P.build_refusal(user, get_turf(user))
+
 /obj/structure/car_workshop/persistence_runtime_var(key)
 	return (key in list("busy", "assembly_time", "powerneeded", "powersource")) || ..(key)
 
@@ -27,8 +41,20 @@
 /obj/structure/car_workshop/proc/models()
 	return list("ASNO Piccolino" = /obj/effects/premadevehicles/asno/piccolino, "ASNO Quattroporte" = /obj/effects/premadevehicles/asno/quattroporte, "Ubermacht Erstenklasse" = /obj/effects/premadevehicles/ubermacht/erstenklasse, "SMC Falcon" = /obj/effects/premadevehicles/smc/falcon, "SMC Falcon Unmarked" = /obj/effects/premadevehicles/smc/falcon/unmarked, "SMC Wyoming" = /obj/effects/premadevehicles/smc/wyoming, "Yamasaki Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu, "Yamasaki Police Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu/police, "Yamasaki Kazoku" = /obj/effects/premadevehicles/yamasaki/kazoku)
 
+// Research the press needs before it will take inputs or assemble.
+/obj/structure/car_workshop/proc/required_nodes()
+	return list("automobiles", "electricity")
+
+// Display names of the required research H's faction has not finished.
+/obj/structure/car_workshop/proc/missing_research(mob/living/human/H)
+	. = list()
+	for (var/node_id in required_nodes())
+		if (!H || !map || !map.is_node_done(H.civilization, node_id))
+			var/datum/research_node/N = get_research_node(node_id)
+			. += N ? N.name : node_id
+
 /obj/structure/car_workshop/proc/allowed(mob/living/human/H)
-	return H && map && map.is_node_done(H.civilization, "automobiles") && map.is_node_done(H.civilization, "electricity")
+	return H && map && !length(missing_research(H))
 
 /obj/structure/car_workshop/proc/model_size(model)
 	if (!(model in models()))
@@ -41,8 +67,9 @@
 		return null
 	return list("steel" = size == 3 ? 40 : 60, "glass" = size == 3 ? 6 : 8, "cloth" = size == 3 ? 4 : 6, "cable" = 10, "wheels" = 4)
 
-/obj/structure/car_workshop/proc/requirement_text()
-	return "Automobiles and Electricity research are required."
+/obj/structure/car_workshop/proc/requirement_text(mob/living/human/H)
+	var/list/missing = missing_research(H)
+	return "[english_list(missing.len ? missing : required_nodes())] research [missing.len == 1 ? "is" : "are"] required."
 
 /obj/structure/car_workshop/proc/menu_text()
 	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty."
@@ -59,6 +86,45 @@
 			return FALSE
 	return TRUE
 
+// Assembly bay terrain: dry, open floor. Shared by assembly and placement.
+/obj/structure/car_workshop/proc/bay_floor(turf/T)
+	return istype(T, /turf/floor) && !istype(T, /turf/floor/beach/water) && !T.density
+
+/obj/structure/car_workshop/proc/largest_model_size()
+	. = 0
+	for (var/model in models())
+		. = max(., model_size(model))
+
+// Why a press placed on origin by H could never assemble anything, or null.
+// Reuses the research, bay terrain and cable checks the press runs when used.
+// Loose items in the bay are not counted: assembly asks for them to be moved.
+/obj/structure/car_workshop/proc/build_refusal(mob/living/human/H, turf/origin)
+	if (!isturf(origin))
+		return "The [name] must be built on the ground."
+	var/list/missing = list()
+	var/list/research = missing_research(H)
+	if (research.len)
+		missing += "[english_list(research)] research"
+	var/size = largest_model_size()
+	var/blocked = 0
+	for (var/dx = 1, dx <= size, dx++)
+		for (var/dy = 1, dy <= size, dy++)
+			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
+			if (!bay_floor(T))
+				blocked++
+				continue
+			for (var/obj/O in T)
+				if (O.simulated && O.density && O.anchored)
+					blocked++
+					break
+	if (blocked)
+		missing += "a dry, open [size]x[size] floor bay to the northeast of this spot ([blocked] [blocked == 1 ? "tile is" : "tiles are"] walls, water, off the map or fixed structures)"
+	if (!(locate(/obj/structure/cable) in range(1, origin)))
+		missing += "a laid power cable on or next to this spot (assembly draws 20 power)"
+	if (!missing.len)
+		return null
+	return "The [name] could not work here. Missing: [jointext(missing, "; ")]."
+
 /obj/structure/car_workshop/proc/clear_footprint(model)
 	var/size = model_size(model)
 	if (!size || !isturf(loc))
@@ -66,7 +132,7 @@
 	for (var/dx = 1, dx <= size, dx++)
 		for (var/dy = 1, dy <= size, dy++)
 			var/turf/T = locate(x + dx, y + dy, z)
-			if (!istype(T, /turf/floor) || istype(T, /turf/floor/beach/water) || T.density)
+			if (!bay_floor(T))
 				return FALSE
 			// Loose objects and occupants must also be moved out of the assembly bay.
 			// Every lit turf holds a lighting overlay, and ghosts or landmarks may
@@ -117,7 +183,7 @@
 	if (busy || !Adjacent(H))
 		return
 	if (!allowed(H))
-		to_chat(H, SPAN_WARNING(requirement_text()))
+		to_chat(H, SPAN_WARNING(requirement_text(H)))
 		return
 	var/list/options = models()
 	var/list/extras = extra_options()

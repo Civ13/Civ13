@@ -10,8 +10,8 @@
 /obj/structure/car_workshop/hangar/models()
 	return list("Light plane" = /obj/structure/vehicleparts/axis/aircraft/light_plane)
 
-/obj/structure/car_workshop/hangar/allowed(mob/living/human/H)
-	return H && map && map.is_node_done(H.civilization, "powered_flight")
+/obj/structure/car_workshop/hangar/required_nodes()
+	return list("powered_flight")
 
 /obj/structure/car_workshop/hangar/model_size(model)
 	return (model in models()) ? 4 : 0
@@ -20,9 +20,6 @@
 	if (!(model in models()))
 		return null
 	return list("steel" = 50, "glass" = 6, "cloth" = 4, "cable" = 8, "wheels" = 4)
-
-/obj/structure/car_workshop/hangar/requirement_text()
-	return "Powered Flight research is required."
 
 /obj/structure/car_workshop/hangar/menu_text()
 	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane costs 50/6/4/8/4. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
