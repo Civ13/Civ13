@@ -1,7 +1,8 @@
 @echo off
 rem deploy.bat [REGION ...] - update the source checkout, build the update beside the running regions
 rem (staging), and only once every build is ready hand each running region over to it: the new build
-rem boots beside the old world, the old world freezes play and saves, the new one loads that save
+rem boots beside the old world, the old world saves (holding play only on the level being saved),
+rem the new one loads that save
 rem while the old one still runs, then players move across with a reconnect of a few seconds. A
 rem region that is asleep, cold or stopped is left alone; the host service installs the staged build
 rem when it wakes or starts. A failed build or a failed handover never stops a world: the old build

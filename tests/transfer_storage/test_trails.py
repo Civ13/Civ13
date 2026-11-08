@@ -87,7 +87,7 @@ class TrailMarkerTests(unittest.TestCase):
 
     def test_admins_see_waiting_trails_in_the_regions_panel(self):
         panel = read('code/modules/persistence/shard_group.dm')
-        self.assertIn('if(holder)\n\t\thtml += region_trail_pending_html()', panel)
+        self.assertIn('if(holder)\n\t\thtml += shard_group.panel_admin_html() + region_trail_pending_html()', panel)
 
 
 if __name__ == '__main__':

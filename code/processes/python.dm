@@ -30,12 +30,17 @@
 		log_debug("Executing python3 command '[command]'")
 		last = world.realtime
 		if (world.system_type == UNIX)
-			return shell("sudo python3 [getScriptDir()]/[command]")
+			return shell("[unix_runner()] [getScriptDir()]/[command]")
 		return shell("python3 [getScriptDir()]/windows/[command]")
 	#endif
 
 /process/python/proc/getScriptDir()
 	return "scripts"
+
+// UNPRIVILEGED_SCRIPTS in config.txt runs server scripts as the DreamDaemon
+// user, for hosts where a service manager owns the server process.
+/process/python/proc/unix_runner()
+	return (config && config.unprivileged_scripts) ? "python3" : "sudo python3"
 
 // OpenDream has no shell(). Only a locally configured supervisor can consume
 // these fixed actions. No arbitrary executable or shell command enters the spool.

@@ -8,7 +8,7 @@
 	var/base_icon = "iron"
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/list/accepted_materials = list("copper", "tin", "gold", "silver","bronze", "iron")
+	var/list/accepted_materials = list("copper", "tin", "gold", "silver","bronze", "iron", "brass", "zinc")
 
 /obj/structure/anvil/New()
 	..()
@@ -404,6 +404,20 @@
 										ML.capacity = 0
 										ML.current_material = null
 										var/obj/item/stack/material/tin/NM = new/obj/item/stack/material/tin(loc)
+										NM.amount = tamt
+										to_chat(user, "You finish crafting the ingot.")
+									if ("brass")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/brass/NM = new/obj/item/stack/material/brass(loc)
+										NM.amount = tamt
+										to_chat(user, "You finish crafting the ingot.")
+									if ("zinc")
+										var/tamt = ML.capacity
+										ML.capacity = 0
+										ML.current_material = null
+										var/obj/item/stack/material/zinc/NM = new/obj/item/stack/material/zinc(loc)
 										NM.amount = tamt
 										to_chat(user, "You finish crafting the ingot.")
 									if ("gold")
@@ -806,11 +820,11 @@
 	desc = "An advanced steel anvil. The blacksmith's main work tool."
 	icon_state = "steel_anvil"
 	base_icon = "steel"
-	accepted_materials = list("copper", "tin", "gold", "silver", "lead", "bronze", "iron", "steel", "kevlar")
+	accepted_materials = list("copper", "tin", "gold", "silver", "lead", "bronze", "iron", "steel", "kevlar", "brass", "zinc")
 
 /obj/structure/anvil/stone
 	name = "stone anvil"
 	desc = "A crude stone anvil. The blacksmith's main work tool."
 	icon_state = "stone_anvil"
 	base_icon = "stone"
-	accepted_materials = list("copper", "tin", "bronze")
+	accepted_materials = list("copper", "tin", "bronze", "brass", "zinc")

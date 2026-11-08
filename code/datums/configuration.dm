@@ -112,6 +112,7 @@ var/list/gamemode_cache = list()
 	var/ghosts_can_possess_animals = FALSE
 
 	var/no_respawn_delays = FALSE
+	var/unprivileged_scripts = FALSE
 	var/allowedgamemodes = "ALL"
 
 	var/error_cooldown = 600 // The "cooldown" time for each occurrence of a unique error
@@ -203,6 +204,9 @@ var/list/gamemode_cache = list()
 
 				if ("allowed_gamemodes")
 					allowedgamemodes = value
+
+				if ("unprivileged_scripts")
+					unprivileged_scripts = TRUE
 
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)

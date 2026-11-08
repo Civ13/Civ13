@@ -109,7 +109,7 @@
 	var/F4 = file("config/dictionary.txt")
 	if (fexists(F4))
 		var/list/dictionary_temp = file2list(F4,"\n")
-		dictionary_list += parse_dictionary_lines(dictionary_temp)
+		load_speech_dictionary(dictionary_temp)
 	else
 		admin_notice("<span class='danger'>Failed to load the dictionary!</span>", R_DEBUG)
 	sleep(-1)

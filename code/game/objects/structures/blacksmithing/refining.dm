@@ -120,6 +120,14 @@
 				to_chat(H, "You smelt \the [MT] into tin ingots.")
 				new/obj/item/stack/material/tin(src.loc)
 				qdel(I)
+			else if (MT.get_material_name() == "brass")
+				to_chat(H, "You smelt \the [MT] into brass ingots.")
+				new/obj/item/stack/material/brass(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "zinc")
+				to_chat(H, "You smelt \the [MT] into zinc ingots.")
+				new/obj/item/stack/material/zinc(src.loc)
+				qdel(I)
 			else if (MT.get_material_name() == "iron")
 				to_chat(H, "You smelt \the [MT] into iron ingots.")
 				new/obj/item/stack/material/iron(src.loc)
@@ -397,6 +405,11 @@
 				MCC.contents_materials["copper"] -= MCC.capacity
 				MCC.contents_materials["tin"] -= MCC.capacity
 				MCC.current_material = "bronze"
+			else if (("copper" in MCC.contents_materials) && ("zinc" in MCC.contents_materials))
+				MCC.capacity = min(MCC.contents_materials["copper"],MCC.contents_materials["zinc"])
+				MCC.contents_materials["copper"] -= MCC.capacity
+				MCC.contents_materials["zinc"] -= MCC.capacity
+				MCC.current_material = "brass"
 			else
 				for(var/i in MCC.contents_materials)
 					MCC.capacity = MCC.contents_materials[i]

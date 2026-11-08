@@ -146,6 +146,8 @@ Please contact me on #coderbus IRC. ~Carn x
 	if(client)
 		human_clients_mob_list |= src
 	update_hud()
+	show_location_blurb()
+	holiday_login()
 	return
 
 //UPDATES OVERLAYS FROM OVERLAYS_LYING/OVERLAYS_STANDING
@@ -519,6 +521,8 @@ var/global/list/damage_icon_parts = list()
 /mob/living/human/proc/find_inv_position(var/slot_id) //Find HUD position on screen.
 	for (var/obj/screen/inventory/HUDinv in HUDinventory)
 		if (HUDinv.slot_id == slot_id)
+			// The caller places this slot's item; give it the slot's HUD scale.
+			hud_scale_item(get_equipped_item(slot_id), HUDinv)
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
 //	world.log << "DEBUG: [src] tried to find_inv_position for [slot_id], but does not have that slot!"
 //	to_chat(src, "Some problem has occurred, change UI style or notify the devs.")

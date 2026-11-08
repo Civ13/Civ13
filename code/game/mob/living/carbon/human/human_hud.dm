@@ -87,6 +87,7 @@
 			I.screen_loc = null
 		else
 			I.screen_loc = HUDinv.screen_loc
+		hud_scale_item(I, HUDinv)
 
 /mob/living/human/create_HUD()
 
@@ -95,6 +96,7 @@
 	create_HUDfrippery()
 	create_HUDtech()
 	recolor_HUD(client.prefs.UI_style_color, client.prefs.UI_style_alpha)
+	apply_hud_layout()
 
 /mob/living/human/create_HUDinventory()
 	var/mob/living/human/H = src

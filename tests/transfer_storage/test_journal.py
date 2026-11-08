@@ -18,6 +18,12 @@ def character(owner):
     return json.dumps({'v': 1, 'kind': 'character', 'owner': owner}, sort_keys=True)
 
 
+def freight(fid):
+    """An uncrewed freighter's flight (code/modules/space/orbit_freight.dm)."""
+    return json.dumps({'v': 1, 'kind': 'freight', 'id': fid, 'party': 'civ:gaia:Delta', 'from': 'alpha',
+                       'at': [7, 3, 1], 'cargo': [['stack:steel', 30]]}, sort_keys=True)
+
+
 class FastNode(Node):
     """A world whose characters travel fast and whose loads replay the journal."""
 
@@ -54,9 +60,9 @@ class FastNode(Node):
             self.pending.append(entry['effect_id'])
 
 
-def pair(folder):
-    a = FastNode(folder, 'alpha', {character('a%d' % i) for i in range(4)})
-    b = FastNode(folder, 'beta', {character('b%d' % i) for i in range(4)})
+def pair(folder, make=character):
+    a = FastNode(folder, 'alpha', {make('a%d' % i) for i in range(4)})
+    b = FastNode(folder, 'beta', {make('b%d' % i) for i in range(4)})
     for x, y in ((a, b), (b, a)):
         x.store.enroll(y.name, OUT)
         x.store.enroll(y.name, IN)
@@ -155,10 +161,16 @@ class Journal(unittest.TestCase):
         self.assertFalse(self.b.store.status().get('hold_reason'))
 
     def test_goods_cannot_travel_fast(self):
-        for payloads in (['plain'], [json.dumps({'kind': 'goods'})], [character('x'), 'plain']):
+        freight = json.dumps({'v': 1, 'kind': 'freight', 'id': 'f1'})
+        for payloads in (['plain'], [json.dumps({'kind': 'goods'})], [character('x'), 'plain'], [character('x'), freight]):
             with self.assertRaises(TransferError):
                 self.a.store.begin_escrow('beta', payloads, fast=True)
         self.assertEqual([], self.a.store.status()['active'])
+
+    def test_freight_travels_fast(self):
+        freight = json.dumps({'v': 1, 'kind': 'freight', 'id': 'f1'}, sort_keys=True)
+        tid, effect = self.a.store.begin_escrow('beta', [freight], fast=True)
+        self.assertEqual([freight], [p for e in self.a.store.replay() if e['effect_id'] == effect for p in e['payloads']])
 
     def test_older_backup_still_holds_the_region(self):
         snapshot = dict(self.a.saved)
@@ -169,10 +181,10 @@ class Journal(unittest.TestCase):
 
 
 class RandomFaults(unittest.TestCase):
-    def run_seed(self, seed):
+    def run_seed(self, seed, make=character):
         rng = random.Random(seed)
         with tempfile.TemporaryDirectory() as folder:
-            a, b = pair(folder)
+            a, b = pair(folder, make)
             nodes = (a, b)
             everyone = set(a.live | b.live)
             try:
@@ -213,6 +225,46 @@ class RandomFaults(unittest.TestCase):
     def test_random_interleavings(self):
         for seed in range(150):
             self.run_seed(seed)
+
+    def test_freight_random_interleavings(self):
+        for seed in range(150):
+            self.run_seed(seed, freight)
+
+
+class Freight(unittest.TestCase):
+    """A freighter's flight end to end: the destination sees a freight transfer
+    (DM routes it to poll_freight by this), imports it fast, and a crash before
+    the next save replays it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.a, self.b = pair(self.tmp.name, freight)
+
+    def tearDown(self):
+        for n in (self.a, self.b):
+            n.store.close()
+        self.tmp.cleanup()
+
+    def test_freight_arrives_and_replays(self):
+        f = freight('a0')
+        self.a.start_transfer('beta', {f})
+        self.assertEqual(['remove'], [e['kind'] for e in self.a.store.replay()])
+        for _ in range(8):
+            if self.b.store.status()['pending_transfers']:
+                break
+            deliver([self.a, self.b])
+        st = self.b.store.status()
+        self.assertEqual(1, len(st['pending_transfers']))
+        self.assertEqual(['freight'], st['pending_kinds'][st['pending_transfers'][0]])
+        self.b.run_pending()
+        self.assertIn(f, self.b.live)
+        self.b.crash()
+        self.assertIn(f, self.b.live, 'the arrival is replayed after a crash')
+        run(self.a, self.b)
+        self.assertNotIn(f, self.a.live)
+        self.assertEqual([f], sorted(x for x in self.b.live if x == f))
+        for n in (self.a, self.b):
+            self.assertEqual([], n.store.status()['active'])
 
 
 if __name__ == '__main__':

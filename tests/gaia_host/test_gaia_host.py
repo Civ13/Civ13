@@ -258,6 +258,73 @@ class GaiaHostTests(unittest.TestCase):
         self.assertIn('did not accept', state['error'])
         self.assertFalse(self.host.lock.exists())
 
+    def slow_stop(self, exit_after, closes_port=True):
+        """A world that keeps saving for exit_after seconds after save_shutdown, refusing
+        every connection meanwhile (its listen backlog is full), then exits; with
+        closes_port=False its process stays alive after it closed the port."""
+        self.give_token()
+        self.machine.up = True
+        saves = self.repo / 'map_saves'
+        accepted = {}
+        real_query, real_sleep = self.machine.query, self.machine.sleep
+        def query(port, token, action='status', operation=None, session=None):
+            if action != 'save_shutdown':
+                return real_query(port, token, action, operation, session)
+            self.machine.calls.append(['query', action, token])
+            write_save(saves, intent=MARKER)
+            (saves / '2.sav.lk').write_bytes(b'')
+            accepted['at'] = self.machine.clock
+            return {'ok': True, 'operation': operation}
+        def sleep(seconds):
+            real_sleep(seconds)
+            if 'at' in accepted and self.machine.clock - accepted['at'] >= exit_after:
+                self.machine.up = not closes_port
+                self.machine.port_open = False
+        self.machine.port_open = True
+        self.machine.query, self.machine.sleep = query, sleep
+        # Every connection is refused once it is saving.
+        self.machine.listening = lambda port: self.machine.up and 'at' not in accepted
+        self.machine.server_pid = lambda port: self.machine.pid if self.machine.up and self.machine.port_open else None
+
+    def test_stop_waits_for_a_world_that_refuses_connections_while_it_saves(self):
+        # Gaia 2026-11-07: the port "closed" mid-save and the stop failed on its lock files.
+        self.config['save_timeout_seconds'] = 600
+        self.slow_stop(exit_after=240)
+        self.host.work('stop', self.accept('stop'))
+        state = self.host.read_state()
+        self.assertEqual((state['phase'], state['error']), ('done', None), state)
+        self.assertGreaterEqual(self.machine.clock, 240)
+        self.assertFalse((self.repo / 'map_saves' / '2.sav.lk').exists())  # the dead world's lock
+        self.assertNotIn(['kill_tree', self.machine.pid], self.machine.calls)
+
+    def test_stop_ends_a_world_that_closed_its_port_but_never_exits(self):
+        self.config['save_timeout_seconds'] = 600
+        self.slow_stop(exit_after=30, closes_port=False)
+        self.host.work('stop', self.accept('stop'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        self.assertIn(['kill_tree', self.machine.pid], self.machine.calls)
+        self.assertGreaterEqual(self.machine.clock, 30 + gaia_host.STOP_LINGER_SECONDS)
+
+    def test_stop_without_the_pid_needs_the_port_closed_several_polls_in_a_row(self):
+        self.give_token()
+        self.machine.up = True
+        self.machine.on_save = lambda: write_save(self.repo / 'map_saves', intent=MARKER)
+        self.machine.server_pid = lambda port: None
+        polls = iter([False, True] + [False] * 10)
+        saved = lambda: any(c[:2] == ['query', 'save_shutdown'] for c in self.machine.calls)
+        self.machine.listening = lambda port: next(polls) if saved() else True
+        self.host.work('stop', self.accept('stop'))
+        self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+        self.assertGreaterEqual(self.machine.clock, 5 * (gaia_host.STOP_CLOSED_POLLS + 1))
+
+    def test_stop_still_times_out_on_a_world_that_never_finishes(self):
+        self.config['save_timeout_seconds'] = 60
+        self.slow_stop(exit_after=10 ** 6)
+        self.host.work('stop', self.accept('stop'))
+        state = self.host.read_state()
+        self.assertEqual(state['phase'], 'failed')
+        self.assertIn('did not finish in time', state['error'])
+
     def test_restart_saves_then_starts(self):
         self.give_token()
         self.machine.up = True
@@ -479,6 +546,26 @@ Active Connections
         self.assertEqual(self.host.watch_step(None), (None, 0.2))
 
 
+
+
+class ListeningTests(unittest.TestCase):
+    """2026-11-08: a refused loopback connect costs ~2 s on Windows, and the doorman's
+    host_status asked it per cold region under its lock until it stopped answering."""
+
+    def test_windows_reads_the_listening_table_without_connecting(self):
+        from unittest import mock
+        rows = [(1714, '0.0.0.0', 'LISTENING', 1), (1715, '127.0.0.1', 'ESTABLISHED', 2)]
+        with mock.patch.object(gaia_host.os, 'name', 'nt'),                 mock.patch.object(gaia_host, 'windows_tcp_rows', return_value=rows),                 mock.patch.object(gaia_host.socket, 'create_connection', side_effect=AssertionError('connected')):
+            platform = gaia_host.Platform()
+            self.assertTrue(platform.listening(1714))
+            self.assertFalse(platform.listening(1715))  # only an established row, nothing listens
+            self.assertFalse(platform.listening(1720))
+
+    def test_a_table_that_cannot_be_read_falls_back_to_connecting(self):
+        from unittest import mock
+        with mock.patch.object(gaia_host.os, 'name', 'nt'),                 mock.patch.object(gaia_host, 'windows_tcp_rows', side_effect=OSError('no table')),                 mock.patch.object(gaia_host.socket, 'create_connection', side_effect=OSError('refused')) as connect:
+            self.assertFalse(gaia_host.Platform().listening(1714))
+            connect.assert_called_once()
 
 
 class NoConsoleWindowTests(unittest.TestCase):
@@ -754,6 +841,34 @@ class WatchdogTests(unittest.TestCase):
             self.host.watch_step(None)
         self.assertEqual(self.starts(), [])
 
+    def test_an_in_game_save_and_shut_down_stays_down(self):
+        self.host.watch_step(None)
+        marker = self.repo / 'data' / 'stopped_in_game.json'
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(json.dumps({'generation': MARKER, 'by': 'val'}))
+        self.machine.up = False
+        self.host.watch_step(None)
+        self.assertFalse(self.host.running_file.exists(), 'the exit after the marker is a stop')
+        self.assertFalse(marker.exists(), 'the host consumes the marker')
+        self.assertIn({'stopped_in_game': True, 'by': 'val', 'generation': MARKER}, self.logged)
+        for _ in range(5):
+            self.machine.clock += 300
+            self.host.watch_step(None)
+        self.assertEqual(self.starts(), [])
+        self.assertEqual(self.host.status()['state'], 'stopped')
+
+    def test_a_start_clears_a_stale_stop_marker(self):
+        marker = self.repo / 'data' / 'stopped_in_game.json'
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text('{}')
+        self.host.mark_running()
+        self.assertFalse(marker.exists())
+        self.machine.up = False
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(len(self.starts()), 1, 'a later crash is still restarted')
+
     def test_the_watchdog_gives_up_after_too_many_restarts_in_an_hour(self):
         self.host.watch_step(None)
         for expected in (1, 2, 3, 3):
@@ -828,6 +943,19 @@ class WatchdogTests(unittest.TestCase):
         self.host.watch_step(None)
         self.assertEqual(self.starts(), [])
         self.assertEqual(self.host.status()['state'], 'cold')
+
+    def test_wake_starts_a_cold_world_from_its_save(self):
+        self.host.watch_step(None)
+        self.machine.up = False
+        self.machine.free_mb = 500
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(self.host.status()['state'], 'cold')
+        self.machine.free_mb = 64000
+        woken = self.host.thaw('launcher wake')
+        self.assertTrue(woken.get('cold_start'), woken)
+        self.assertFalse(self.host.cold_file.exists())
 
     def test_a_refused_start_is_tried_again_later(self):
         self.host.watch_step(None)

@@ -121,7 +121,8 @@ class SourceAdapterTests(unittest.TestCase):
     def test_default_selection_preserves_runtime_exclusion_continue(self):
         source=read('code/modules/persistence/functions.dm')
         body=extract(source,'/datum/proc/get_saved_vars')
-        self.assertRegex(body,r'if \(persistence_runtime_var\(key\)\)\n\s+continue')
+        # The runtime-field answer may come from the per-type cache (#4008).
+        self.assertRegex(body,r'if \(cached\)\n\s+continue')
         self.assertIn('return to_save',body)
         self.assertNotIn('variable_observability_skipped',body)
 

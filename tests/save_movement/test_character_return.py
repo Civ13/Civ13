@@ -31,6 +31,22 @@ class DMList(list):
         return self
 
 
+class AssocList(DMList):
+    """A DM list read by key as well as by position."""
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.assoc = {}
+
+    def __getitem__(self, key):
+        return self.assoc.get(key) if isinstance(key, str) else super().__getitem__(key)
+
+    def __setitem__(self, key, value):
+        if isinstance(key, str):
+            self.assoc[key] = value
+        else:
+            super().__setitem__(key - 1, value)
+
+
 class Assoc(dict):
     def __getitem__(self, key):
         return self.get(key)
@@ -286,10 +302,12 @@ class CharacterReturnTests(unittest.TestCase):
         for key in ('nutrition', 'water'):
             defaults[key] = float(re.search(r'var/' + key + r' = ([\d.]+)', source)[1])
         human = NS(vars=dict(nutrition=83, water=29, name='saved person'), defaults=defaults)
-        env = dict(list=DMList, params2list=lambda value: [], map_storage_saved_vars='',
+        env = dict(list=AssocList, params2list=lambda value: [], map_storage_saved_vars='',
                    istype=lambda value, kind: kind in ('/mob', '/datum'),
                    initial_var=lambda value, key: value.defaults.get(key),
-                   persistence_runtime_var=lambda key: False)
+                   persistence_runtime_var=lambda key: False, type='/mob/living/human',
+                   persistence_runtime_var_cache=Assoc(), persistence_runtime_var_instance_keys=Assoc(),
+                   isnull=lambda value: value is None)
         saved = adapter.project('/datum/proc/get_saved_vars()\n' + fields + '\n',
                                 '/datum/proc/get_saved_vars', 'src', env)(human)
         self.assertIn('nutrition', saved)

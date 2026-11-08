@@ -313,6 +313,7 @@
 			if ("PvE (Voyage, Antarctica, etc)")
 				maps = list(
 					MAP_ANTARCTICA = 0,
+					MAP_SUBCOM13 = 0,
 					MAP_LIGHTS_OUT = 0,
 					MAP_WIZARD_BOY = 0,
 					MAP_FOOTBALL = 4,

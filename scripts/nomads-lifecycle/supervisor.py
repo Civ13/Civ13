@@ -521,7 +521,9 @@ def query(port, token, action='status', operation=None, session=None, expected_p
             raise RuntimeError('Lifecycle response is not JSON text')
         result = json.loads(body[1:].rstrip(b'\0').decode('utf-8'))
         if not isinstance(result, dict) or not result.get('ok'):
-            raise RuntimeError('Lifecycle request rejected')
+            # The world's reason (port_not_opened, invalid_session_or_operation, ...) goes in the
+            # message so a refused step says why.
+            raise RuntimeError('Lifecycle request rejected: %s' % result.get('error') if isinstance(result, dict) else 'Lifecycle request rejected')
         return result
 
 

@@ -65,6 +65,10 @@ LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
 CROSSROADS_MALL_OFFLINE_TESTS = frozenset({'tests/crossroads_mall/test_crossroads_mall.py',
                                            'tests/crossroads_mall/build.py'})
+MAP_VARIATIONS_OFFLINE_TESTS = frozenset({'tests/map_variations/test_map_variations.py',
+                                          'tests/map_variations/build_inserts.py',
+                                          'tests/map_variations/native_probe.py',
+                                          'tests/map_variations/native_probe.dm'})
 TRAIN_RAID_OFFLINE_TESTS = frozenset({'tests/train_raid/test_train_raid.py', 'tests/train_raid/build.py',
                                       'tests/train_raid/native_probe.py', 'tests/train_raid/native_probe.dm'})
 ZOMBIE_CITY_OFFLINE_TESTS = frozenset({'tests/zombie_city/test_zombie_city.py', 'tests/zombie_city/build_base.py',
@@ -410,6 +414,10 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered crossroads-mall executable test requires explicit CI review')
         if path in TRAIN_RAID_OFFLINE_TESTS:
             continue
+        if path in MAP_VARIATIONS_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/map_variations/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered map-variations executable test requires explicit CI review')
         if path.startswith('tests/train_raid/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered train-raid executable test requires explicit CI review')
         if path in ZOMBIE_CITY_OFFLINE_TESTS:

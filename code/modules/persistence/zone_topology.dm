@@ -344,8 +344,9 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing captured zone level")
 		var/savefile/F = new("map_saves/[z].sav")
 		F.cd = "/"
-		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz", "zone_capture", "map"))
-			if(!(key in F.dir)) throw EXCEPTION("Missing zone capture header")
+		var/list/header_keys = F.dir.Copy()
+		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz"))
+			if(!(key in header_keys)) throw EXCEPTION("Missing zone capture header")
 		if(!(F["/format_version"] in list(2, 3, 4, 5)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
 		// savefile.dir builds a new list on every read, and indexing a whole level's
 		// directory is itself quadratic. Read each turf's entries by absolute path
@@ -354,11 +355,20 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		// A sparse level captured membership for its saved cells only; every
 		// other cell belongs to the baseline zone its header names.
 		var/list/sparse = sparse_level_header(F)
+		// A sparse level whose every cell matches its baseline (an upper building
+		// floor that was allocated but holds nothing) writes no grid and no
+		// membership at all; every other level must have both.
+		if(!sparse || sparse["cells"] > 0)
+			for(var/key in list("zone_capture", "map"))
+				if(!(key in header_keys)) throw EXCEPTION("Missing zone capture header")
 		var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
 		var/baseline_zone = sparse ? sparse["zone"] : null
 		if(sparse && sparse["cells"] < world.maxx * world.maxy && (!istext(baseline_zone) || !validated_zones[baseline_zone])) throw EXCEPTION("Sparse level names no saved baseline zone")
-		F.cd = "/zone_capture"
-		if(F.dir.len != (sparse ? sparse["cells"] : world.maxx * world.maxy)) throw EXCEPTION("Incomplete captured zone level")
+		var/captured = 0
+		if("zone_capture" in header_keys)
+			F.cd = "/zone_capture"
+			captured = F.dir.len
+		if(captured != (sparse ? sparse["cells"] : world.maxx * world.maxy)) throw EXCEPTION("Incomplete captured zone level")
 		F.cd = "/map"
 		if(!sparse && !("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
 		if(sparse) F.cd = "/"

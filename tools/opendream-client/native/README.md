@@ -190,6 +190,38 @@ and its phase) that refreshes every five seconds while an action runs. Only the
 action name reaches the script. `tests/LocalHostingTests.cs` injects process
 starts, update steps, control answers and port probes, so it launches nothing.
 
+### One region and group status
+
+With `control.group` set, the Host server tab has two rows of group buttons. **All
+regions** runs each action for the whole group. **One region** has a region list (each with its game and travel port; the
+list re-reads the group config whenever it opens) and the same `shard_group.py`
+actions with `--region`: Start, Save and stop, Restart, Update, **Build update**,
+**Save, update and restart** (the handover deploy, `deploy.bat REGION`: its dialog
+starts with only that region ticked and deploys whatever is ticked when confirmed;
+it builds the latest master beside the running world and moves players across once
+the new world has loaded the save. A region still on a build from before handovers
+is saved, stopped and started instead, once, so its players are kicked that time.
+Restart always kicks them while it saves, stops and starts, and its confirmation
+says so),
+**Sleep now** and **Wake** (freeze or thaw an empty, saved world), **Apply host
+settings** (`config-apply`), **Set up** (create or refresh the region's worktree and
+config and enrol it with the running travel agents; refused while it runs, so a new
+region is added without stopping the others), the forced actions, the lock-file
+cleanups and **Open its world log**. Each is confirmed first. The status line lists,
+per region, its port, a staged update and its phase, a handover's new build and
+port, what the watchdog did (restarts, gave up, could not start it), a travel agent
+that is down and a world that does not answer as that region, and whether the
+travel coordinator runs.
+
+### Advance epoch
+
+The All regions row's **Advance epoch** moves the whole group to a chosen epoch
+with no restart (`shard_group.py epoch --epoch N`). The mainland's world takes it
+first through its lifecycle Topic (`set_epoch`) and must be awake; then every
+running region does. A region asleep or stopped follows the mainland by itself
+when it next runs. Epochs only move forward, and a world refuses while it saves.
+The group status line shows each running region's epoch.
+
 ### Host settings
 
 With `control.group` set, the Host server tab's group row adds **Host settings**.
@@ -225,10 +257,12 @@ The console `H` option still starts the bot detached.
 When `control.group` is set the window adds a **Player help** tab for the
 group's "Ask for help" bridges, which the host service keeps running (the
 group config's `player_help`; see `scripts/shard-group/README.md`). It shows
-`shard_group.py help-status` every 5 seconds while open: each region's bridge,
-its PID and whether its heartbeat is fresh. **Stop** runs `help-stop` (bridges
-finish their answers, then stay stopped until **Start**, which runs
-`help-start`). A log view follows each region's bridge log. The bridges belong
+`shard_group.py help-status` every 5 seconds while open: every region of the
+group, its bridge's PID, whether its heartbeat is fresh, and a region stopped on
+request. **Stop all** runs `help-stop` (bridges finish their answers, then stay
+stopped until **Start all**, which runs `help-start`). The region list chooses one
+region for **Start region** and **Stop region** (`--region`; a region outside the
+config's `regions` started this way keeps running) and for the log view below. The bridges belong
 to the host service, so closing the launcher leaves them as they are.
 `tests/LocalHelpTests.cs` covers the argv and answer parsing.
 

@@ -21,7 +21,7 @@
 	gibs(loc, null, species.flesh_color, species.blood_color)
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
-			NB.adjust_mood(-(15))
+			NB.adjust_mood(-(15), "seeing a death")
 
 /mob/living/human/crush()
 
@@ -36,7 +36,7 @@
 	gibs(loc, null, species.flesh_color, species.blood_color)
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
-			NB.adjust_mood(-(15))
+			NB.adjust_mood(-(15), "seeing a death")
 
 /mob/living/human/maim()
 	next_emote["vocal"] = world.time + 50
@@ -50,6 +50,8 @@
 	update_fire(1)
 	if (stat == DEAD) return
 	region_home_death(src)
+	if (driver && driver_vehicle)
+		driver_vehicle.driver_died(src) // frees the seat so someone else can drive
 
 	if (map && istype(map, /obj/map_metadata/wizard_boy))
 		var/obj/map_metadata/wizard_boy/WB = map

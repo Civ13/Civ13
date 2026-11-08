@@ -11852,6 +11852,31 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Brass alloy mold",
+      "file": "code/game/objects/structures/blacksmithing/refining.dm",
+      "line": 359,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/zinc"
+      ],
+      "outputs": [
+        "/material/brass"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/clayjug",
+        "/obj/item/weapon/clay/mold/claypot"
+      ],
+      "steps": [
+        "Load copper and tin into a fired clay jug or clay pot and place the filled mold in a fueled kiln. After alloying, use the filled bronze mold to cast its product."
+      ],
+      "conditions": "fired empty mold, kiln; capacity=min(copper,zinc); equal consumed units; material-state change inside mold",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Biological extraction kit",
       "file": "code/modules/reagents/biochemistry.dm",
       "line": 108,
@@ -13858,7 +13883,8 @@
         "/obj/item/stack/material/stone",
         "/obj/item/stack/ore/glass",
         "/obj/item/stack/ore/copper",
-        "/obj/item/stack/ore/tin"
+        "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/zinc"
       ],
       "tools": [
         "/obj/item/weapon/resource_sieve"
@@ -13868,7 +13894,7 @@
         "Use Crafting > Sift soil for resources, or use a held wooden resource sieve. Choose a resource.",
         "Stay on the tile until the action finishes: three minutes by hand or two with a sieve, for one unit."
       ],
-      "conditions": "Renewable trace gathering. Tile must not contain covers; action must remain uninterrupted.",
+      "conditions": "Renewable trace gathering. Tile must not contain covers; action must remain uninterrupted. Calamine (zinc ore) is offered from age 1.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -13963,6 +13989,7 @@
         "/obj/item/stack/ore/glass",
         "/obj/item/stack/ore/copper",
         "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/zinc",
         "/obj/item/stack/ore/iron",
         "/obj/item/stack/ore/coal",
         "/obj/item/stack/ore/saltpeter",
@@ -14020,6 +14047,7 @@
         "/obj/item/stack/ore/glass",
         "/obj/item/stack/ore/copper",
         "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/zinc",
         "/obj/item/stack/ore/silver",
         "/obj/item/stack/ore/gold",
         "/obj/item/stack/ore/diamond",
@@ -14036,7 +14064,7 @@
         "Build a stone crusher from ten stone blocks after Resource Processing and keep it anchored.",
         "Use stone blocks on it while adjacent; each worked roll spends one stone and leaves any sand, ore or mineral on the crusher's tile."
       ],
-      "conditions": "Per stone: 20% sand, 3% copper, 2.5% tin, 0.6% silver, 0.3% gold, 0.1% diamond; iron 3% from age 1; coal 2%, lead 1.5%, saltpeter 1% and sulphur 1% from age 2; otherwise rubble. Full output refuses before stone is spent.",
+      "conditions": "Per stone: 20% sand, 3% copper, 2.5% tin, 0.6% silver, 0.3% gold, 0.1% diamond; iron 3% and calamine (zinc ore) 1.5% from age 1; coal 2%, lead 1.5%, saltpeter 1% and sulphur 1% from age 2; otherwise rubble. Full output refuses before stone is spent.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "Recipe unlocks at Resource Processing; ore table widens with map age.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14053,6 +14081,7 @@
         "/obj/item/stack/ore/glass",
         "/obj/item/stack/ore/copper",
         "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/zinc",
         "/obj/item/stack/ore/silver",
         "/obj/item/stack/ore/gold",
         "/obj/item/stack/ore/diamond",
@@ -14364,6 +14393,7 @@
       "outputs": [
         "/obj/item/stack/ore/copper",
         "/obj/item/stack/ore/tin",
+        "/obj/item/stack/ore/zinc",
         "/obj/item/stack/ore/iron",
         "/obj/item/stack/ore/silver",
         "/obj/item/stack/ore/gold",
@@ -14377,7 +14407,7 @@
         "Use a pickaxe on a mineable underground deposit. Complete the mining action and collect the randomly selected mineral.",
         "Mining converts the deposit terrain, so find another mineable tile for the next batch."
       ],
-      "conditions": "Random branch and finite deposit; copper/tin/iron 12-24, silver/gold/diamond ore 4, stone branch or bonus varies. Special caves can double output. Uranium and mercury branches are commented out and excluded.",
+      "conditions": "Random branch and finite deposit; copper/tin/iron 12-24, silver/gold/diamond ore 4, stone branch or bonus varies. Special caves can double output. Uranium and mercury branches are commented out and excluded. Calamine (zinc ore) 12-24 at 6% from age 1.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -14940,6 +14970,28 @@
       ],
       "outputs": [
         "reagent:tin"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/extraction_kit"
+      ],
+      "steps": [
+        "Use an empty extraction kit on the listed ore stack. Collect the resulting reagent in the kit."
+      ],
+      "conditions": "Ore-dependent extraction yield; this legacy procedure deletes the supplied stack object, so separate a small stack before using it.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Ore extraction kit",
+      "file": "code/modules/1713/ores.dm",
+      "line": 179,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/ore/zinc"
+      ],
+      "outputs": [
+        "reagent:zinc"
       ],
       "tools": [
         "/obj/item/weapon/reagent_containers/glass/extraction_kit"

@@ -474,6 +474,93 @@ var/space_runtime_error = FALSE
 	F.air_tick(1, list(), list())
 	space_check(H.losebreath > lost && F.get_compartment_oxygen(SUB_COMP_GALLEY) < SUB_AIR_SUFFOCATE_O2_KPA, "a crew member without oxygen suffocates")
 	space_check(F.is_compartment_vacuum(SUB_COMP_GALLEY), "the panel reports an oxygen-free compartment")
+	H.loc = null
+	human_mob_list -= H
+
+	// A submerged breach floods but does not vent; a surfaced one does.
+	G.oxygen = 21 * 3
+	G.co2 = 0
+	G.inert = 79 * 3
+	space_check(F.breaches_vent(), "with no boat the hull counts as surfaced and a breach vents")
+	var/datum/submarine/boat = new
+	boat.depth = 100
+	space_check(!F.breaches_vent(), "a submerged boat does not vent air through a breach")
+	var/sealed = json_encode(G.to_list())
+	F.air_tick(1, list(), F.breaches_vent() ? list(SUB_COMP_GALLEY = 1) : null)
+	space_check(json_encode(G.to_list()) == sealed, "a submerged breach leaves the compartment's air alone")
+	boat.depth = 0
+	space_check(F.breaches_vent(), "a surfaced boat vents through an open hull")
+	all_submarines -= boat
+
+	// Flooding through bulkheads: watertight holds, compromised seals leak and
+	// a crumpled bulkhead leaks faster.
+	var/turf/floor/sub_deck/wet = locate(2, 9, 1)
+	wet = wet.ChangeTurf(/turf/floor/sub_deck/galley, FALSE, FALSE)
+	var/turf/wall/sub_bulkhead/B = locate(3, 9, 1)
+	B = B.ChangeTurf(/turf/wall/sub_bulkhead, FALSE, FALSE)
+	var/turf/floor/sub_deck/dry = locate(4, 9, 1)
+	dry = dry.ChangeTurf(/turf/floor/sub_deck/storage, FALSE, FALSE)
+	space_check((B in sub_bulkheads) && B.watertight, "a new bulkhead registers watertight")
+	wet.add_water(100)
+	F.process_tick()
+	space_check(dry.water_depth == 0, "a watertight bulkhead holds back water")
+	B.take_bulkhead_damage(B.max_health * 0.6)
+	space_check(!B.watertight && B.health > 0, "a bulkhead under half health loses its seals")
+	wet.water_depth = 100
+	F.process_tick()
+	var/seal_leak = dry.water_depth
+	space_check(seal_leak > 0 && seal_leak <= 3, "compromised seals pass a little water")
+	dry.water_depth = 0
+	B.take_bulkhead_damage(B.max_health)
+	space_check(B.health <= 0 && !B.watertight, "the bulkhead crumples")
+	wet.water_depth = 100
+	F.process_tick()
+	space_check(dry.water_depth > seal_leak, "a crumpled bulkhead passes more water than compromised seals")
+	wet.water_depth = 0
+	dry.water_depth = 0
+
+	// Damage control: a shoring kit cuts a breach to a seep until the next
+	// hit, wedges buckled bulkhead seals shut, and gives up on crumpled steel.
+	var/obj/item/weapon/shoring_kit/kit = new(null)
+	space_check(!kit.use_on_bulkhead(B, null) && !B.watertight, "a crumpled bulkhead cannot be shored")
+	var/turf/wall/sub_bulkhead/B2 = locate(3, 10, 1)
+	B2 = B2.ChangeTurf(/turf/wall/sub_bulkhead, FALSE, FALSE)
+	B2.take_bulkhead_damage(B2.max_health * 0.6)
+	space_check(!B2.watertight && B2.health > 0, "a second bulkhead buckles")
+	B2.shore_seals()
+	space_check(B2.watertight && B2.health < B2.max_health, "shoring wedges the seals shut without mending the steel")
+	var/turf/floor/sub_deck/hull_deck = locate(2, 11, 1)
+	hull_deck = hull_deck.ChangeTurf(/turf/floor/sub_deck/galley, FALSE, FALSE)
+	var/turf/wall/sub_hull/hull = locate(3, 11, 1)
+	hull = hull.ChangeTurf(/turf/wall/sub_hull, FALSE, FALSE)
+	space_check(!kit.use_on_hull(hull, null), "a sound hull needs no shoring")
+	hull.breach_hull()
+	space_check(hull.breached && hull_deck.water_inflow_rate == SUB_BREACH_INFLOW_BASE, "a breach pours water onto the deck beside it")
+	hull.shore_breach()
+	space_check(hull.shored && hull_deck.water_inflow_rate == SUB_SHORED_INFLOW, "a shored breach only seeps")
+	hull.apply_breach_damage(10)
+	space_check(!hull.shored && hull.breached && hull_deck.water_inflow_rate == SUB_BREACH_INFLOW_BASE, "the next hit knocks the shoring out")
+	hull.shore_breach()
+	hull.repair_breach()
+	space_check(!hull.breached && !hull.shored && hull_deck.water_inflow_rate == 0, "welding a shored breach leaves the deck dry")
+	hull_deck.water_depth = 0
+	qdel(kit)
+
+	// The thermal layer: a boat on the other side of it is heard at half range.
+	space_check(sub_layer_factor(SUB_THERMOCLINE_DEPTH + 20, 0) == SUB_THERMOCLINE_SHADOW && sub_layer_factor(30, 0) == 1 && sub_layer_factor(SUB_THERMOCLINE_DEPTH + 20, SUB_THERMOCLINE_DEPTH + 40) == 1, "only crossing the layer costs sonar range")
+	var/datum/vessel_contact/npc/hunter = new("Probe Frigate", 0, 0)
+	hunter.sonar_range = 10000
+	var/datum/submarine/quarry = new
+	quarry.x_pos = 0
+	quarry.y_pos = 70
+	quarry.noise_level = 50
+	quarry.depth = SUB_THERMOCLINE_DEPTH + 20
+	hunter.check_player_detection(quarry)
+	space_check(hunter.ai_state == SUB_AI_PATROL && quarry.below_layer(), "a noisy boat under the layer stays hidden from a frigate above it")
+	quarry.depth = 30
+	hunter.check_player_detection(quarry)
+	space_check(hunter.ai_state == SUB_AI_HUNT && hunter.last_known_y == 70, "the same boat above the layer is heard")
+	all_submarines -= quarry
 
 // Phase 2: propellant, launch pad, crewed lander and the landed lander.
 /proc/space_flight_payload(list/flight = null)
@@ -498,8 +585,10 @@ var/space_runtime_error = FALSE
 	var/datum/reagents/fuel = new(500)
 	fuel.add_reagent("gasoline", 100)
 	space_check(L.add_propellant(fuel) == 0 && L.propellant == 0, "the lander refuses gasoline")
-	fuel.add_reagent("rocket_propellant", 350)
-	space_check(L.add_propellant(fuel) == 300 && L.propellant == 300 && fuel.get_reagent_amount("rocket_propellant") == 50, "the lander takes exactly 300 units of propellant")
+	fuel.add_reagent("rocket_propellant", 400)
+	space_check(L.add_propellant(fuel) == 400 && L.propellant == 400, "the lander takes the flight's 300 units and more")
+	fuel.add_reagent("rocket_propellant", 100)
+	space_check(L.add_propellant(fuel) == 50 && L.propellant == 450 && fuel.get_reagent_amount("rocket_propellant") == 50, "the lander holds 450 units: the flight and an ascent home")
 	var/mob/living/human/space_probe_crew/H = new(L.loc)
 	space_check(!length(L.crew()) && findtext(L.launch_refusal(H), "admin"), "an unapproved pad keeps the lander grounded")
 	qdel(L)
@@ -1139,6 +1228,7 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 		space_selfsuff_checks()
 		space_cargo_checks()
 		space_moon_checks()
+		space_water_checks()
 	catch(var/exception/e)
 		space_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = space_failures, "runtime_error" = space_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -1259,3 +1349,42 @@ var/global/obj/structure/region_gate/space_poll_repoint = null
 	qdel(R)
 	qdel(K)
 	space_survey_maps = list()
+
+// Ordinary sinks and showers draw no ground water on a barren world.
+/proc/space_water_checks()
+	var/obj/map_metadata/fixture = map
+	var/obj/structure/sink/home = new(locate(3, 18, 1))
+	home.volume = 1990
+	home.refill()
+	space_check(!barren_world() && home.volume == 2000, "a sink elsewhere starts full and refills")
+	var/obj/map_metadata/nomads/barren/mars = new // New() claims the global map
+	map = mars
+	var/obj/structure/sink/S = new(locate(4, 18, 1))
+	var/obj/structure/sink/well/W = new(locate(5, 18, 1))
+	S.refill()
+	space_check(barren_world() && S.volume == 0 && W.volume == 0, "a sink or well built on a barren world starts dry and does not refill")
+	home.volume = 100
+	home.refill()
+	space_check(home.volume == 100, "an older sink stops refilling on a barren world")
+	var/mob/watcher = new(locate(6, 17, 1))
+	var/obj/structure/shower/shower = new(locate(6, 18, 1))
+	shower.attack_hand(watcher)
+	space_check(!shower.on, "an ordinary shower will not run on a barren world")
+	shower.on = TRUE
+	shower.process()
+	space_check(!shower.on, "an ordinary shower left running stops on a barren world")
+	var/obj/structure/shower/piped/piped = new(locate(7, 18, 1))
+	piped.water_stored = 50
+	piped.attack_hand(watcher)
+	space_check(piped.on, "a supplied piped shower still runs on a barren world")
+	piped.on = FALSE
+	var/obj/structure/shower/bathtub/big/tub = new(locate(8, 18, 1))
+	tub.attack_hand(watcher)
+	space_check(!tub.on, "a big bathtub will not run on a barren world")
+	tub.on = TRUE
+	tub.process()
+	space_check(!tub.on, "a big bathtub left running stops on a barren world")
+	map = fixture
+	qdel(mars)
+	for (var/obj/O in list(home, S, W, shower, piped, tub, watcher))
+		qdel(O)

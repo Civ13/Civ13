@@ -101,6 +101,9 @@
 	max_capacity = SPACE_PLANT_CAPACITY
 	powerneeded = 30
 	var/ice = 0
+	// The reagent it makes, and what to call it.
+	var/product = "rocket_propellant"
+	var/product_name = "Propellant"
 
 /obj/structure/reagent_dispensers/propellant_plant/New()
 	..()
@@ -112,7 +115,7 @@
 
 /obj/structure/reagent_dispensers/propellant_plant/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Ice loaded: [ice]/[SPACE_PLANT_ICE_MAX]. Propellant: [round(reagents ? reagents.get_reagent_amount("rocket_propellant") : 0)]/[max_capacity] units. [powersource ? "It is cabled." : "Run a cable to it to power it."]"))
+	to_chat(user, SPAN_NOTICE("Ice loaded: [ice]/[SPACE_PLANT_ICE_MAX]. [product_name]: [round(reagents ? reagents.get_reagent_amount(product) : 0)]/[max_capacity] units. [powersource ? "It is cabled." : "Run a cable to it to power it."]"))
 
 /obj/structure/reagent_dispensers/propellant_plant/proc/has_power()
 	return draw_cable_power()
@@ -133,15 +136,24 @@
 	if (powersource && powersource.power_consumers[src])
 		powersource.update_power(0, 1, src)
 
+// TRUE when whatever else a batch needs besides ice is at hand (methalox.dm).
+/obj/structure/reagent_dispensers/propellant_plant/proc/feedstock_ready()
+	return TRUE
+
+// Takes what feedstock_ready() found, for one batch.
+/obj/structure/reagent_dispensers/propellant_plant/proc/use_feedstock()
+	return
+
 // Cracks one piece of ice while powered and with room. Returns TRUE if it did.
 /obj/structure/reagent_dispensers/propellant_plant/proc/crack()
-	if (ice <= 0 || !reagents || max_capacity - reagents.total_volume < SPACE_PLANT_PROPELLANT_PER_ICE)
+	if (ice <= 0 || !reagents || max_capacity - reagents.total_volume < SPACE_PLANT_PROPELLANT_PER_ICE || !feedstock_ready())
 		release_power()
 		return FALSE
 	if (!has_power())
 		return FALSE
 	ice--
-	reagents.add_reagent("rocket_propellant", SPACE_PLANT_PROPELLANT_PER_ICE)
+	use_feedstock()
+	reagents.add_reagent(product, SPACE_PLANT_PROPELLANT_PER_ICE)
 	return TRUE
 
 /obj/structure/reagent_dispensers/propellant_plant/process()

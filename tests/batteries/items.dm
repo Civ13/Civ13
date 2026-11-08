@@ -168,14 +168,14 @@ var/list/battery_item_errors = list()
 		battery_item_check("world assembled tier [index]", B.assembled, TRUE)
 		battery_item_check("world load mode tier [index]", B.mode, "off")
 		battery_item_check("world load output tier [index]", B.available_output(), 0)
-		battery_item_check("world load wiring tier [index]", B.powersource, null)
 		var/obj/structure/cable/C = locate(/obj/structure/cable) in T
 		battery_item_check("world restored port tier [index]", !!C, TRUE)
 		if (!C) continue
+		// The restored battery rejoins its own cable but stays off.
+		battery_item_check("world load rejoins cable tier [index]", B.powersource, C)
+		battery_item_check("world load connected tier [index]", B.connected(), TRUE)
 		C.rebuild_supply()
 		battery_item_check("world rebuild no stale output tier [index]", C.powerflow, 0)
-		B.powersource = C
-		C.connections |= B
 		B.mode = "discharge"
 		var/prior_energy = B.stored_energy
 		B.settle_tick()

@@ -355,6 +355,7 @@ var/global/roundtrip_capture_failure = FALSE
 			A = locate(/obj/item/test) in locate(1,1,1)
 			check(A && A.number == 88 && A.loc == locate(1,1,1), "legacy object location/value lost")
 			check(A.items && !A.items.len, "legacy empty list lost")
+		check_ground_sparse_level()
 		world.log << "PASS: world-save round trip, edges, multilevel, nested objects, datums, empty lists, corrupt-save rejection"
 		text2file("PASS", "result.txt")
 	catch(var/exception/e)
@@ -421,6 +422,14 @@ var/global/roundtrip_capture_failure = FALSE
 	map_storage.save_build_identity = "fixture-build-a"
 	check(map_storage.write_validation_record(generation) && fexists("map_saves/validated.json"), "validation record not written")
 	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "matching validation record did not skip the entry check")
+	// The trusted record hands the load's turf pass every cell's saved type.
+	var/list/grid = map_storage.validated_turf_grid(1)
+	var/savefile/level = new("map_saves/1.sav")
+	check(islist(grid) && grid.len == world.maxx * world.maxy, "trusted record lacks the level's turf types")
+	if(islist(grid) && grid.len == world.maxx * world.maxy)
+		check(grid[1] == map_storage.level_entry_value(level, level["/map/1/1/1"], "type") && grid[grid.len] == map_storage.level_entry_value(level, level["/map/1/[world.maxy]/[world.maxx]"], "type"), "recorded turf types differ from the saved level")
+	level = null
+	map_storage.drop_segment_reader()
 	map_storage.save_build_identity = "fixture-build-b"
 	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (saved by a different build)", "another build trusted the validation record")
 	// A full preflight records its own build, so build b now skips and build a
@@ -434,6 +443,19 @@ var/global/roundtrip_capture_failure = FALSE
 	text2file("[round_text] ", "map_saves/round.json")
 	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (round.json changed since it was validated)", "changed file trusted the validation record")
 	check(map_storage.write_validation_record(generation) && map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "rewritten record did not match its files")
+	// A handover save's candidate record: only the handover trusts it, from
+	// any build (the standby's import is the validation there).
+	check(map_storage.write_validation_record(generation, world.maxz, "candidate") && map_storage.validate_world_save() && map_storage.last_validation_note == "full check (only a handover trusts a save's own check)", "ordinary preflight trusted a candidate record")
+	check(map_storage.write_validation_record(generation, world.maxz, "candidate"), "candidate record not written")
+	map_storage.save_build_identity = "fixture-build-standby"
+	map_storage.handover_candidate = TRUE
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "handover did not trust its candidate record")
+	map_storage.handover_candidate = FALSE
+	map_storage.save_build_identity = "fixture-build-a"
+	// A record without the projected roofs (the old format) is not trusted.
+	map_storage.clear_validation_record()
+	text2file(json_encode(list("version" = 1, "build" = "fixture-build-a", "generation" = generation, "maxz" = world.maxz, "files" = map_storage.validation_record_checksums(world.maxz))), "map_saves/validated.json")
+	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (unreadable validation record)", "old-format record trusted")
 	map_storage.clear_validation_record()
 	map_storage.save_build_identity = null
 	check(!fexists("map_saves/validated.json"), "validation record not removed")
@@ -632,3 +654,35 @@ var/global/roundtrip_capture_failure = FALSE
 	world.log << "PASS: stream-backed world save"
 	text2file("PASS", "result.txt")
 	del(world)
+
+// A mapped ground level is saved around its most common unchanged tile; the
+// loader rebuilds every other cell from that type and keeps the saved ones.
+/proc/check_ground_sparse_level()
+	var/list/previous = map_storage.sparse_level_override
+	map_storage.sparse_level_override = list("1" = "ground", "2" = /turf/test)
+	// A saved cell whose type differs from the baseline, for the grid check.
+	var/turf/kept_cell = locate(4,4,1)
+	var/kept_cell_type = kept_cell.type
+	kept_cell.ChangeTurf(/turf/test/edge, FALSE, FALSE)
+	var/obj/item/test/kept = new(locate(4,4,1))
+	kept.number = 61
+	check(map_storage.Save_World(), "ground sparse export failed")
+	var/savefile/level = new("map_saves/1.sav")
+	check(level["/sparse/kind"] == "ground" && level["/sparse/turf"] == /turf/test && level["/sparse/cells"] > 0 && level["/sparse/cells"] < world.maxx * world.maxy, "ground level was not saved around its common tile")
+	level = null
+	check(map_storage.validate_world_save(), "ground sparse save rejected")
+	// The walk hands the load every cell's type: saved cells and the baseline.
+	var/list/grid = map_storage.validated_turf_grid(1)
+	check(islist(grid) && grid.len == world.maxx * world.maxy && grid[(5 - 1) * world.maxx + 2] == /turf/test && grid[(4 - 1) * world.maxx + 4] == /turf/test/edge, "ground sparse walk lacks the level's turf types")
+	var/turf/stray = locate(2,5,1)
+	stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
+	map_storage.ClearMap()
+	check(map_storage.Load_World(), "ground sparse import failed")
+	stray = locate(2,5,1)
+	check(stray.type == /turf/test, "ground level reload kept an unsaved cell")
+	kept = locate(/obj/item/test) in locate(4,4,1)
+	check(kept && kept.number == 61, "ground level lost a saved cell's contents")
+	kept_cell = locate(4,4,1)
+	check(kept_cell.type == /turf/test/edge, "ground level reload lost a saved cell's type")
+	kept_cell.ChangeTurf(kept_cell_type, FALSE, FALSE)
+	map_storage.sparse_level_override = previous

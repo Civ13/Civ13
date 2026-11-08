@@ -239,8 +239,16 @@ var/list/global_huds = list(
 	V.screen_loc = "15,14"
 	V.parentmob = H
 	vehicle_hud += V
+	// Aircraft only: shown by their own process() while the seat is a plane's.
+	for (var/flight_type in list(/obj/screen/vehicle/flight/descend, /obj/screen/vehicle/flight/state, /obj/screen/vehicle/flight/climb))
+		V = new flight_type()
+		V.parentmob = H
+		vehicle_hud += V
+		H.HUDprocess += V
 	if (mymob && mymob.client)
 		mymob.client.screen |= vehicle_hud
+	if (H && H.client)
+		H.apply_hud_layout()
 
 /datum/hud/proc/remove_vehicle_hud(var/mob/living/human/H)
 	if (!vehicle_hud.len)

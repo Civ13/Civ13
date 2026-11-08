@@ -858,7 +858,6 @@
 	if (isliving(parentmob))
 		var/mob/living/human/L = parentmob
 		var/old_icon = icon_state
-		var/old_mood = L.mood
 		switch(L.mood)
 			if(-5000000 to 19)
 				icon_state = "mood5"
@@ -875,10 +874,13 @@
 			if(80 to INFINITY)
 				icon_state = "mood1"
 		if(old_icon && old_icon != icon_state)
-			if(L && old_mood > L.mood)
-				to_chat(L, "<span class='warning'>My mood gets worse.</span>")
+			// mood1 is the best icon and mood5 the worst.
+			var/worse = text2num(copytext(icon_state, 5)) > text2num(copytext(old_icon, 5))
+			var/cause = ishuman(L) ? L.strongest_mood_cause(worse ? -1 : 1) : null
+			if(worse)
+				to_chat(L, "<span class='warning'>My mood gets worse[cause ? ", mostly from [cause]" : ""]. Click the mood icon for details.</span>")
 			else
-				to_chat(L, "<span class='info'>My mood gets better.</span>")
+				to_chat(L, "<span class='info'>My mood gets better[cause ? ", mostly from [cause]" : ""]. Click the mood icon for details.</span>")
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"

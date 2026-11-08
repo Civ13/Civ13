@@ -23,7 +23,7 @@
 		if (disease_type == "none")
 			disease = FALSE
 		else if (disease_type == "flu")
-			adjust_mood(-(0.1))
+			adjust_mood(-(0.1), "being sick")
 			if (!disease_treatment)
 				disease_progression += 0.5
 			else
@@ -74,7 +74,7 @@
 					disease_immunity += "flu"
 
 		else if (disease_type == "zombie")
-			adjust_mood(-(0.15))
+			adjust_mood(-(0.15), "being sick")
 			if (!disease_treatment)
 				disease_progression += 0.5
 			else

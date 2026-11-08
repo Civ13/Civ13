@@ -2,7 +2,8 @@
 
 This is a review tripwire, not proof that an unlisted type is safe. It scans
 the production DM source roots, including nested declarations and parent_type assignments.
-Files containing declarations are hashed in full after newline normalization.
+Each declaration records its owning type block and a hash of its own indented
+body, so edits elsewhere in the same file (and line shifts) do not trip it.
 """
 import argparse
 import hashlib
@@ -31,15 +32,41 @@ def inventory(root):
             resolved = (path.parent / include.replace('\\', '/')).resolve()
             if not any(resolved.is_relative_to((root / folder).resolve()) for folder in ('code', 'interface')):
                 raise ValueError('Nested DM include outside collision inventory roots: ' + include)
+        lines = content.splitlines()
         hits = []
-        for number, line in enumerate(content.splitlines(), 1):
+        for number, line in enumerate(lines):
             if DECLARATION.match(line) or PARENT.match(line):
-                hits.append({'line': number, 'declaration': line.strip()})
+                hits.append({'owner': owner(lines, number), 'declaration': line.strip(),
+                             'sha256_body': hashlib.sha256(body(lines, number).encode('utf-8')).hexdigest()})
         if hits:
-            entries.append({'path': path.relative_to(root).as_posix(),
-                            'sha256_normalized': hashlib.sha256(content.encode('utf-8')).hexdigest(),
-                            'declarations': hits})
-    return {'schema': 1, 'scope': 'production code and interface DM roots; collision declarations and parent_type assignments', 'files': entries}
+            entries.append({'path': path.relative_to(root).as_posix(), 'declarations': hits})
+    return {'schema': 2, 'scope': 'production code and interface DM roots; collision declarations and parent_type assignments, hashed per declaration body', 'files': entries}
+
+
+def indent(line):
+    return len(line) - len(line.lstrip(' \t'))
+
+
+def body(lines, start):
+    """The declaration line plus every deeper-indented (or blank) line after it."""
+    depth = indent(lines[start])
+    end = start + 1
+    while end < len(lines) and (not lines[end].strip() or indent(lines[end]) > depth):
+        end += 1
+    while end > start + 1 and not lines[end - 1].strip():
+        end -= 1
+    return '\n'.join(line.rstrip() for line in lines[start:end])
+
+
+def owner(lines, start):
+    """Nearest less-indented, non-comment line above: the enclosing type block."""
+    depth = indent(lines[start])
+    for line in reversed(lines[:start]):
+        text = line.strip()
+        if text and not text.startswith('//') and indent(line) < depth:
+            return text
+    return ''
+
 
 
 def main():

@@ -82,21 +82,27 @@
 
 // TRUE when a survey map of region id ships with the game and the epoch has
 // reached that world (survey_region_open: the Moon from 1969, Mars from
-// 2026), or when id is the mainland and this world is one a lander can reach
+// 2026), when id is an orbit region a rocket can reach (orbital_flight.dm),
+// or when id is the mainland and this world is one a lander can reach
 // (a flight home, never closed by the epoch).
 /proc/space_flight_destination_ok(id)
-	return (survey_region_ok(id) && !!get_space_survey_map(id) && survey_region_open(id)) || space_flight_return_ok(id)
+	return (survey_region_ok(id) && !!get_space_survey_map(id) && survey_region_open(id)) || space_flight_return_ok(id) || space_flight_orbit_ok(id)
 
 // TRUE when a pad here may fly back to region id: the mainland, from a
-// mapped world that is not the mainland itself.
+// mapped world or an orbit world that is not the mainland itself.
 /proc/space_flight_return_ok(id)
-	return istext(id) && istext(shard_group.mainland) && id == shard_group.mainland && istext(shard_group.region) && shard_group.region != id && !!get_space_survey_map(shard_group.region)
+	return istext(id) && istext(shard_group.mainland) && id == shard_group.mainland && istext(shard_group.region) && shard_group.region != id && (!!get_space_survey_map(shard_group.region) || orbit_world())
 
+// Unlike a trail, a pad may lead to orbit.
 /obj/structure/region_gate/trail_marker/launch_pad/peer_choices()
-	var/list/choices = ..()
-	for (var/label in choices.Copy())
-		if (!space_flight_destination_ok(choices[label]))
-			choices -= label
+	var/list/choices = list()
+	if (!shard_group.enabled)
+		return choices
+	for (var/id in shard_group.peers)
+		var/list/peer = shard_group.peers[id]
+		if (peer["kind"] == "RAILYARD" || !space_flight_destination_ok(id))
+			continue
+		choices["[peer["name"]] ([id])"] = id
 	return choices
 
 /obj/structure/region_gate/trail_marker/launch_pad/approve(id, by)
@@ -142,20 +148,33 @@
 	not_movable = TRUE
 	flammable = FALSE
 	var/propellant = 0
+	var/propellant_needed = LANDER_PROPELLANT
+	// Propellant kept for one ascent home on a sortie to a surface world.
+	var/ascent_propellant = LANDER_PROPELLANT / 2
+	var/seats = LANDER_SEATS
+	var/cargo_max = LANDER_CARGO_MAX
+	// Reagent ids the tank takes. One kind fills it at a time; fuel_kind is
+	// the kind in it while it holds any (methalox.dm adds methane-oxygen).
+	var/list/fuels = list("rocket_propellant")
+	var/fuel_kind = null
 	// ckeys of the crew who strapped in; they must stay on the lander's tile.
 	var/tmp/list/strapped = list()
 
 /obj/structure/crewed_lander/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Propellant: [propellant]/[LANDER_PROPELLANT]. Crew strapped in: [length(crew())]/[LANDER_SEATS]. Cargo hold: [length(hold())]/[LANDER_CARGO_MAX]."))
+	to_chat(user, SPAN_NOTICE("[fuel_kind == "methalox" ? "Methalox" : "Propellant"]: [propellant]/[propellant_needed].[seats ? " Crew strapped in: [length(crew())]/[seats]." : ""] Cargo hold: [length(hold())]/[cargo_max]."))
+	if (ascent_propellant)
+		to_chat(user, SPAN_NOTICE("Fill it to [propellant_needed + ascent_propellant] for a sortie: it keeps enough for the ascent home after landing."))
 
 /obj/structure/crewed_lander/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && W.reagents.get_reagent_amount("rocket_propellant") > 0)
+	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && fuel_offered(W.reagents))
 		var/took = add_propellant(W.reagents)
 		if (took > 0)
-			to_chat(user, SPAN_NOTICE("You fill \the [src] ([propellant]/[LANDER_PROPELLANT])."))
-		else if (propellant >= LANDER_PROPELLANT)
+			to_chat(user, SPAN_NOTICE("You fill \the [src] ([propellant]/[propellant_needed])."))
+		else if (propellant >= propellant_needed + ascent_propellant)
 			to_chat(user, SPAN_WARNING("\The [src] is already full."))
+		else if (fuel_kind && propellant > 0)
+			to_chat(user, SPAN_WARNING("\The [src]'s tank already holds [fuel_kind == "methalox" ? "methalox" : "rocket propellant"]. Fly it before you change fuel."))
 		else
 			to_chat(user, SPAN_WARNING("\The [src] burns only rocket propellant."))
 		return
@@ -166,15 +185,46 @@
 			return
 		if (!user.drop_from_inventory(W, src))
 			return
-		to_chat(user, SPAN_NOTICE("You stow \the [W] in the cargo hold ([length(hold())]/[LANDER_CARGO_MAX])."))
+		to_chat(user, SPAN_NOTICE("You stow \the [W] in the cargo hold ([length(hold())]/[cargo_max])."))
 		return
 	return ..()
+
+// ---------------------------------------------------------------- lunar kit
+
+// Everything two people need for a short sortie on the surface, packed to fly
+// in the hold. Use it to unpack it where you stand.
+/obj/item/lunar_kit
+	name = "lunar surface kit"
+	desc = "A packed crate for a short surface sortie: two pressure suits, four air tanks, a suit patch, a rover battery and food and water for two people for three days. Use it to unpack it."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "densecrate"
+	w_class = ITEM_SIZE_HUGE
+
+var/global/list/lunar_kit_contents = list(
+	/obj/item/clothing/suit/pressure_suit = 2,
+	/obj/item/clothing/head/pressure_helmet = 2,
+	/obj/item/pressure_tank = 4,
+	/obj/item/pressure_suit_patch = 1,
+	/obj/item/weapon/reagent_containers/glass/barrel/fueltank/rover_battery = 1,
+	/obj/item/weapon/reagent_containers/food/snacks/MRE/generic = 6,
+	/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen = 4)
+
+/obj/item/lunar_kit/attack_self(mob/user)
+	var/turf/T = get_turf(user)
+	if (!T)
+		return
+	for (var/path in lunar_kit_contents)
+		for (var/i in 1 to lunar_kit_contents[path])
+			new path(T)
+	to_chat(user, SPAN_NOTICE("You unpack \the [src]."))
+	qdel(src)
 
 // ---------------------------------------------------------------- cargo hold
 
 // Space gear the hold carries besides what any traveller may (region_travel.dm).
 var/global/list/space_cargo_types = list(
 	/obj/item/habitat_kit,
+	/obj/item/lunar_kit,
 	/obj/item/habitat_sealant,
 	/obj/item/pressure_tank,
 	/obj/item/pressure_suit_patch,
@@ -264,7 +314,7 @@ var/global/list/space_cargo_stacks = list(
 
 // Null when W can go in the hold, otherwise why not.
 /obj/structure/crewed_lander/proc/stow_refusal(obj/item/W)
-	if (length(hold()) >= LANDER_CARGO_MAX)
+	if (length(hold()) >= cargo_max)
 		return "The cargo hold is full."
 	if (!space_cargo_kind(W))
 		return "\The [W] will not survive the flight. The hold takes building materials, space gear, tools, packaged food and medicine, and empty containers."
@@ -291,12 +341,39 @@ var/global/list/space_cargo_stacks = list(
 			I.forceMove(get_turf(src))
 	return cargo
 
+// TRUE when the tank holds the flight and an ascent home.
+/obj/structure/crewed_lander/proc/sortie_ready()
+	return ascent_propellant > 0 && propellant >= propellant_needed + ascent_propellant
+
+// TRUE when R holds any fuel this craft burns.
+/obj/structure/crewed_lander/proc/fuel_offered(datum/reagents/R)
+	for (var/id in fuels)
+		if (R && R.get_reagent_amount(id) > 0)
+			return TRUE
+	return FALSE
+
+// The fuel id in R this tank can take now, or null: the kind already in the
+// tank, or the first of fuels that R holds.
+/obj/structure/crewed_lander/proc/fuel_in(datum/reagents/R)
+	if (!R)
+		return null
+	if (propellant > 0 && fuel_kind)
+		return R.get_reagent_amount(fuel_kind) > 0 ? fuel_kind : null
+	for (var/id in fuels)
+		if (R.get_reagent_amount(id) > 0)
+			return id
+	return null
+
 /obj/structure/crewed_lander/proc/add_propellant(datum/reagents/R)
-	var/amount = min(LANDER_PROPELLANT - propellant, R.get_reagent_amount("rocket_propellant"))
+	var/id = fuel_in(R)
+	if (!id)
+		return 0
+	var/amount = min(propellant_needed + ascent_propellant - propellant, R.get_reagent_amount(id))
 	if (amount <= 0)
 		return 0
-	R.remove_reagent("rocket_propellant", amount)
+	R.remove_reagent(id, amount)
 	propellant += amount
+	fuel_kind = id
 	return amount
 
 // Strapped-in crew still on the lander's tile, conscious and connected.
@@ -322,7 +399,7 @@ var/global/list/space_cargo_stacks = list(
 	if (length(hold()))
 		options += "Unload hold"
 	options += "Cancel"
-	var/choice = WWinput(H, "Propellant [propellant]/[LANDER_PROPELLANT], crew [length(crew())]/[LANDER_SEATS], cargo [length(hold())]/[LANDER_CARGO_MAX]. Use an item on the lander to stow it in the hold.", "Crewed lander", "Cancel", options)
+	var/choice = WWinput(H, "Propellant [propellant]/[propellant_needed], crew [length(crew())]/[seats], cargo [length(hold())]/[cargo_max]. Use an item on it to stow it in the hold.", capitalize(name), "Cancel", options)
 	if (QDELETED(src) || !H.client || !in_range(src, H) || H.incapacitated())
 		return
 	switch (choice)
@@ -340,7 +417,7 @@ var/global/list/space_cargo_stacks = list(
 	if (get_turf(H) != get_turf(src))
 		to_chat(H, SPAN_WARNING("Stand on \the [src] to strap in."))
 		return FALSE
-	if (length(crew()) >= LANDER_SEATS)
+	if (length(crew()) >= seats)
 		to_chat(H, SPAN_WARNING("Every seat is taken."))
 		return FALSE
 	strapped |= H.client.ckey
@@ -355,16 +432,33 @@ var/global/list/space_cargo_stacks = list(
 	var/reason = pad.closed_reason()
 	if (reason)
 		return reason
-	if (propellant < LANDER_PROPELLANT)
-		return "\The [src] needs [LANDER_PROPELLANT] units of rocket propellant ([propellant] loaded)."
+	if (propellant < propellant_needed)
+		return "\The [src] needs [propellant_needed] units of rocket propellant ([propellant] loaded)."
 	if (!(H in crew()))
 		return "Strap in before you launch."
+	reason = vehicle_refusal(pad.destination)
+	if (reason)
+		return reason
+	// Orbit needs no survey map (orbital_flight.dm).
+	if (space_flight_orbit_ok(pad.destination))
+		return null
 	if (!space_flight_return_ok(pad.destination) && !get_space_survey_map(pad.destination))
 		return "There is no survey map of [pad.destination_name()] to land by."
 	if (!space_flight_return_ok(pad.destination))
 		var/closed = survey_region_closed_reason(pad.destination)
 		if (closed)
 			return closed
+	return null
+
+// Extra fields a craft adds to its flight to orbit (orbit_reusable.dm).
+/obj/structure/crewed_lander/proc/flight_extras(list/flight)
+	return
+
+// Null when this craft can fly to destination, otherwise why not. A lander
+// cannot reach orbit; a two-stage rocket flies nowhere else.
+/obj/structure/crewed_lander/proc/vehicle_refusal(destination)
+	if (space_flight_orbit_ok(destination))
+		return "\The [src] cannot reach orbit. Build a two-stage rocket for that."
 	return null
 
 // Surveyed landing sites a nearby mission console holds for region, as
@@ -392,9 +486,12 @@ var/global/list/space_cargo_stacks = list(
 		return
 	var/obj/structure/region_gate/trail_marker/launch_pad/pad = find_pad()
 	var/region = pad.destination
-	// A flight home lands at the mainland's usual arrival point.
-	if (space_flight_return_ok(region))
-		var/home = WWinput(H, "Fly everyone strapped in home to [pad.destination_name()], with what they wear and carry?", "Launch", "Cancel", list("Launch", "Cancel"))
+	// A flight home lands at the mainland's usual arrival point, and a flight
+	// to orbit at its capsule (orbital_flight.dm).
+	var/orbital = space_flight_orbit_ok(region)
+	if (space_flight_return_ok(region) || orbital)
+		var/question = orbital ? "Launch everyone strapped in into orbit at [pad.destination_name()], with what they wear and carry? The capsule shelters you there for a few hours." : "Fly everyone strapped in home to [pad.destination_name()], with what they wear and carry?"
+		var/home = WWinput(H, question, "Launch", "Cancel", list("Launch", "Cancel"))
 		if (home != "Launch" || QDELETED(src) || !H.client || !in_range(src, H))
 			return
 		reason = launch_refusal(H)
@@ -411,7 +508,7 @@ var/global/list/space_cargo_stacks = list(
 	for (var/label in sites)
 		options += label
 	options += unsurveyed
-	var/choice = input(H, "Where should the lander set down on [pad.destination_name()]? Everyone strapped in flies, with what they wear and carry.", "Launch") as null|anything in options
+	var/choice = input(H, "Where should the lander set down on [pad.destination_name()]? Everyone strapped in flies, with what they wear and carry. [sortie_ready() ? "It keeps propellant for the ascent home." : "It cannot fly home again: fill it to [propellant_needed + ascent_propellant] for a sortie."]", "Launch") as null|anything in options
 	if (!choice || QDELETED(src) || !H.client || !in_range(src, H))
 		return
 	// The prompt slept: check everything again.
@@ -432,9 +529,10 @@ var/global/list/space_cargo_stacks = list(
 /obj/structure/crewed_lander/proc/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)
 	var/destination = pad.destination
 	var/homeward = space_flight_return_ok(destination)
+	var/orbital = space_flight_orbit_ok(destination)
 	var/surveyed = !isnull(lx)
 	var/list/cell = null
-	if (!homeward)
+	if (!homeward && !orbital)
 		var/datum/survey_map/M = get_space_survey_map(pad.destination)
 		if (!M)
 			return "There is no survey map of [pad.destination_name()] to land by."
@@ -452,12 +550,18 @@ var/global/list/space_cargo_stacks = list(
 	var/list/flight
 	if (homeward)
 		flight = list("lander" = lander_id, "return" = 1)
+	else if (orbital)
+		flight = list("lander" = lander_id, "orbit" = 1)
+		flight_extras(flight)
 	else
 		flight = list(
 			"lander" = lander_id,
 			"landing" = list(cell[1], cell[2]),
 			"surveyed" = surveyed ? 1 : 0,
 			"rough" = prob(surveyed ? LANDER_ROUGH_SURVEYED : LANDER_ROUGH_UNSURVEYED) ? 1 : 0)
+		// A sortie keeps one ascent's propellant to fly the crew home again.
+		if (sortie_ready())
+			flight["sortie"] = 1
 	var/departed = 0
 	var/list/refusals = list()
 	pad.pending_flight = flight
@@ -490,6 +594,8 @@ var/global/list/space_cargo_stacks = list(
 		return refusals.len ? "Nobody could fly. [jointext(refusals, " ")]" : "Nobody is strapped in."
 	if (homeward)
 		log_game("Crewed flight: [departed] crew left [x],[y],[z] for home at [pad.destination] (lander [flight["lander"]]).")
+	else if (orbital)
+		log_game("Crewed flight: [departed] crew left [x],[y],[z] for orbit at [pad.destination] (capsule [flight["lander"]]).")
 	else
 		log_game("Crewed flight: [departed] crew left [x],[y],[z] for [pad.destination] (lander [flight["lander"]], cell [cell[1]],[cell[2]], [surveyed ? "surveyed" : "unsurveyed"][flight["rough"] ? ", rough" : ""]).")
 	if (cargo_sent)
@@ -505,7 +611,7 @@ var/global/list/space_cargo_stacks = list(
 // TRUE when a travel payload's flight fields are absent or well formed.
 /proc/space_flight_payload_ok(list/P)
 	if (isnull(P["lander"]))
-		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["cargo"])
+		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"]) && isnull(P["seats"])
 	var/id = P["lander"]
 	if (!istext(id) || !length(id) || length(id) > 64)
 		return FALSE
@@ -521,7 +627,10 @@ var/global/list/space_cargo_stacks = list(
 				return FALSE
 	// A flight home carries no landing: the crew arrive like any traveller.
 	if (!isnull(P["return"]))
-		return P["return"] == 1 && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"])
+		return P["return"] == 1 && isnull(P["orbit"]) && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["sortie"]) && isnull(P["seats"])
+	// A flight to orbit arrives in its capsule (orbital_flight.dm).
+	if (!isnull(P["orbit"]))
+		return P["orbit"] == 1 && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["sortie"]) && (isnull(P["seats"]) || space_flight_seats_ok(P["seats"]))
 	var/list/cell = P["landing"]
 	if (!islist(cell) || cell.len != 2)
 		return FALSE
@@ -531,6 +640,8 @@ var/global/list/space_cargo_stacks = list(
 	for (var/flag in list("surveyed", "rough"))
 		if (!(P[flag] in list(0, 1)))
 			return FALSE
+	if (!isnull(P["sortie"]) && P["sortie"] != 1)
+		return FALSE
 	return TRUE
 
 // ---------------------------------------------------------------- landed lander
@@ -555,7 +666,7 @@ var/global/list/landed_landers = list()
 
 /turf/floor/lander_deck/outside_ambient_c()
 	var/obj/structure/landed_lander/L = lander()
-	return L ? L.cabin().temperature : barren_ambient_c()
+	return L ? L.cabin().temperature : (orbit_world() ? orbit_ambient_c() : barren_ambient_c())
 
 /obj/structure/bed/lander_bunk
 	name = "lander bunk"
@@ -585,6 +696,12 @@ var/global/list/landed_landers = list()
 	var/oxygen_reserve = 0
 	var/scrubber_reserve = 0
 	var/power_seconds = LANDER_POWER_SECONDS
+	// A sortie lander kept enough propellant for one ascent home (1 or 0).
+	var/ascent_ready = 0
+	var/lift_seats = LANDER_SEATS
+	var/lift_word = "lift off"
+	// ckeys of the crew strapped in for the flight home. Runtime only.
+	var/tmp/list/strapped = list()
 	var/tmp/datum/habitat_ledger/air = null
 
 /obj/structure/landed_lander/New()
@@ -637,14 +754,21 @@ var/global/list/landed_landers = list()
 /obj/structure/landed_lander/process()
 	if (!clients.len)
 		return
-	barren_hazards_pulse()
+	hazards_pulse()
 	life_support(LANDER_TICK_SECONDS, breathers())
+
+/obj/structure/landed_lander/proc/hazards_pulse()
+	barren_hazards_pulse()
+
+// The cold outside the cabin.
+/obj/structure/landed_lander/proc/ambient_c()
+	return barren_ambient_c()
 
 // One bounded step: the crew breathe and the cabin cools, then, while there
 // is power, the core tops the oxygen back up, scrubs CO2 and heats the cabin.
 /obj/structure/landed_lander/proc/life_support(seconds, occupants)
 	var/datum/habitat_ledger/L = cabin()
-	if (!L.advance(seconds, occupants, 0, barren_ambient_c()))
+	if (!L.advance(seconds, occupants, 0, ambient_c()))
 		return FALSE
 	if (power_seconds > 0)
 		power_seconds = max(0, power_seconds - habitat_clamp(seconds, 0, HABITAT_MAX_STEP_SECONDS))
@@ -681,6 +805,139 @@ var/global/list/landed_landers = list()
 		B.anchored = TRUE
 	fill_reserves()
 	return TRUE
+
+// ---------------------------------------------------------------- lift-off
+
+// TRUE when this lander can fly its crew home: a sortie lander keeps one
+// ascent's propellant (orbital capsules always can, orbital_flight.dm).
+/obj/structure/landed_lander/proc/can_lift_off()
+	return ascent_ready == 1
+
+/obj/structure/landed_lander/proc/lift_off_message()
+	return "\The [src] lifts off on a column of fire, bound for home!"
+
+// What the deck becomes once the lander is spent.
+/obj/structure/landed_lander/proc/spent_turf()
+	return moon_world() ? /turf/floor/dirt/dust/regolith/lunar : /turf/floor/dirt/dust/regolith
+
+/obj/structure/landed_lander/proc/crew()
+	var/list/found = list()
+	for (var/mob/living/human/H in get_turf(src))
+		if (H.client && H.stat == CONSCIOUS && (H.client.ckey in strapped))
+			found += H
+	return found
+
+/obj/structure/landed_lander/attack_hand(mob/user as mob)
+	var/mob/living/human/H = user
+	if (!istype(H) || !H.client)
+		return
+	if (!can_lift_off())
+		to_chat(H, SPAN_NOTICE("\The [src] has no propellant left for the flight home. Build a launch pad and a lander here to leave."))
+		return
+	var/strapped_in = (H.client.ckey in strapped) && get_turf(H) == get_turf(src)
+	var/word = capitalize(lift_word)
+	var/choice = WWinput(H, "Crew strapped in for home: [length(crew())]/[lift_seats]. [word] spends \the [src].", capitalize(name), "Cancel", list(strapped_in ? "Unstrap" : "Strap in", word, "Cancel"))
+	if (QDELETED(src) || !H.client || !in_range(src, H) || H.incapacitated())
+		return
+	if (choice == "Strap in")
+		if (get_turf(H) != get_turf(src))
+			to_chat(H, SPAN_WARNING("Stand on \the [src] to strap in."))
+		else if (length(crew()) >= lift_seats)
+			to_chat(H, SPAN_WARNING("Every seat is taken."))
+		else
+			strapped |= H.client.ckey
+			to_chat(H, SPAN_NOTICE("You strap into \the [src]. Stay on its tile: you fly home when a crewmate gives the word."))
+	else if (choice == "Unstrap")
+		strapped -= H.client.ckey
+		to_chat(H, SPAN_NOTICE("You unstrap from \the [src]."))
+	else if (choice == word)
+		deorbit_prompt(H)
+
+// Null when the crew may fly home now, otherwise why not.
+/obj/structure/landed_lander/proc/deorbit_refusal(mob/living/human/H)
+	if (!can_lift_off())
+		return "\The [src] has no propellant left for the flight home."
+	if (!istext(shard_group.mainland) || !space_flight_return_ok(shard_group.mainland))
+		return "There is no way home from here."
+	if (persistence_save_active())
+		return "The world is saving. Try again in a moment."
+	if (H && !(H in crew()))
+		return "Strap in first."
+	var/list/aboard = crew()
+	var/list/crew_keys = list()
+	for (var/mob/living/human/C in aboard)
+		crew_keys += C.client.ckey
+	for (var/mob/living/human/other in range(LANDER_DECK_RADIUS, src))
+		if (other.stat != DEAD && !(other in aboard) && istype(get_turf(other), /turf/floor/lander_deck))
+			return "Everyone in the cabin must strap in or leave it first."
+	for (var/obj/structure/bed/lander_bunk/B in range(LANDER_DECK_RADIUS, src))
+		if (B.persistence_bed_owner_ckey && !(B.persistence_bed_owner_ckey in crew_keys))
+			return "Someone who is not strapped in keeps the bunk here as their home."
+	return null
+
+/obj/structure/landed_lander/proc/deorbit_prompt(mob/living/human/H)
+	var/reason = deorbit_refusal(H)
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+		return
+	var/home = shard_group.mainland
+	if (WWinput(H, "[capitalize(lift_word)] and fly everyone strapped in home to [region_trail_name(home)], with what they wear and carry? \The [src] is spent.", capitalize(lift_word), "Cancel", list("Go", "Cancel")) != "Go")
+		return
+	if (QDELETED(src) || !H.client || !in_range(src, H))
+		return
+	// The prompt slept: check everything again.
+	reason = deorbit_refusal(H) || deorbit(H)
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+
+// Sends every strapped-in crew member home. Returns null once anyone left (the
+// lander is then spent), or the reason nobody did.
+/obj/structure/landed_lander/proc/deorbit(mob/living/human/notify = null)
+	var/home = shard_group.mainland
+	if (shard_group.enabled && shard_group.peers[home] && shard_group.peers[home]["state"] != "UP")
+		var/woke = shard_group.wake_peer(home, notify)
+		if (woke)
+			return woke
+		if (QDELETED(src))
+			return "The flight home was called off."
+	var/obj/structure/region_gate/capsule_hatch/hatch = new(get_turf(src))
+	hatch.destination = home
+	hatch.pending_flight = list("lander" = lander_id, "return" = 1)
+	var/departed = 0
+	var/list/refusals = list()
+	for (var/mob/living/human/H in crew())
+		var/reason = QDELETED(hatch) ? "The hatch jammed." : hatch.travel_refusal(H)
+		if (!reason)
+			var/list/items = H.region_travel_items()
+			if (istext(items))
+				reason = items
+		if (!reason)
+			H.record_persistence_owner()
+			reason = hatch.depart(H)
+		if (reason == "departed")
+			departed++
+		else
+			refusals += "[H.real_name]: [reason]"
+			to_chat(H, SPAN_WARNING("You stay behind: [reason]"))
+	if (!QDELETED(hatch))
+		qdel(hatch)
+	if (!departed)
+		return refusals.len ? "Nobody could leave. [jointext(refusals, " ")]" : "Nobody is strapped in."
+	log_game("Crewed flight: [departed] crew left in [lander_id] from [x],[y],[z] for home at [home].")
+	visible_message(SPAN_DANGER(lift_off_message()))
+	spend()
+	return null
+
+// The lander is gone: its deck turns back to the ground and its bunk goes.
+/obj/structure/landed_lander/proc/spend()
+	var/turf/center = get_turf(src)
+	if (center)
+		for (var/obj/structure/bed/lander_bunk/B in range(LANDER_DECK_RADIUS, center))
+			qdel(B)
+		var/ground = spent_turf()
+		for (var/turf/floor/lander_deck/T in range(LANDER_DECK_RADIUS, center))
+			T.ChangeTurf(ground, FALSE, FALSE)
+	qdel(src)
 
 /proc/space_landed_lander(id)
 	for (var/obj/structure/landed_lander/L in landed_landers)
@@ -730,6 +987,8 @@ var/global/list/landed_landers = list()
 /proc/space_flight_arrival_turf(list/P, incoming)
 	if (!incoming || !islist(P) || !istext(P["lander"]) || P["return"])
 		return null
+	if (P["orbit"])
+		return orbit_capsule_arrival_turf(P)
 	var/obj/structure/landed_lander/L = space_landed_lander(P["lander"])
 	if (!L)
 		var/list/cell = P["landing"]
@@ -738,6 +997,7 @@ var/global/list/landed_landers = list()
 			return null
 		L = new /obj/structure/landed_lander(T)
 		L.lander_id = P["lander"]
+		L.ascent_ready = P["sortie"] == 1 ? 1 : 0
 		L.deploy()
 		log_game("Crewed flight: lander [L.lander_id] set down at [T.x],[T.y],[T.z] (survey cell [cell[1]],[cell[2]]).")
 	return get_turf(L)

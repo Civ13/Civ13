@@ -1,5 +1,6 @@
 // Logistics (phase 4a of docs/factory-automation-design.md): the fast belt,
-// and ports that let arms load and unload train wagons and shopping carts.
+// ports that let arms load and unload train wagons and shopping carts, and the
+// vehicle cargo hold.
 
 var/global/list/factory_active_fast_belts = list()
 
@@ -97,4 +98,68 @@ var/global/list/factory_active_fast_belts = list()
 	return factory_storage_offer(storage, filter_type)
 
 /obj/structure/shopping_cart/factory_take(obj/item/I, atom/destination)
+	return factory_storage_take(storage, I, destination)
+
+//////////////////////////////////////////////////////////////////////////////
+// Vehicle cargo hold: a bolted steel box for a vehicle bed. Anything standing
+// on a vehicle's frame rides with it, so the hold travels with the vehicle;
+// arms load and unload it through the same storage port as train wagons.
+
+/obj/structure/cargo_hold
+	name = "cargo hold"
+	desc = "A steel cargo box made to bolt onto a vehicle bed. It rides with the vehicle and holds twenty items, bulky ones included. Feeder arms can load and unload it. Use a wrench to bolt or unbolt it."
+	icon = 'icons/obj/closet.dmi'
+	icon_state = "securecargo"
+	density = TRUE
+	anchored = FALSE
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	var/max_storage = 20
+	var/obj/item/weapon/storage/internal/storage
+
+/obj/structure/cargo_hold/New()
+	..()
+	storage = new/obj/item/weapon/storage/internal(src)
+	storage.storage_slots = max_storage
+	storage.max_w_class = 5
+	storage.max_storage_space = max_storage * 5
+
+/obj/structure/cargo_hold/Destroy()
+	qdel(storage)
+	storage = null
+	return ..()
+
+/obj/structure/cargo_hold/examine(mob/user)
+	..()
+	if (storage)
+		to_chat(user, SPAN_NOTICE("It holds [storage.contents.len] of [max_storage] items and is [anchored ? "bolted down" : "loose"]."))
+
+/obj/structure/cargo_hold/attack_hand(mob/user)
+	if (istype(user, /mob/living/human) && (user in range(1, src)) && storage)
+		storage.open(user)
+
+/obj/structure/cargo_hold/MouseDrop(obj/over_object)
+	if (storage && storage.handle_mousedrop(usr, over_object))
+		..(over_object)
+
+/obj/structure/cargo_hold/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/wrench))
+		anchored = !anchored
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		to_chat(user, SPAN_NOTICE("You [anchored ? "bolt down" : "unbolt"] \the [src]."))
+		return
+	if (storage)
+		storage.attackby(W, user)
+
+/obj/structure/cargo_hold/factory_accepts(obj/item/I, from_dir = 0)
+	return factory_storage_accepts(storage, I)
+
+/obj/structure/cargo_hold/factory_insert(obj/item/I, from_dir = 0)
+	return factory_storage_insert(storage, I)
+
+/obj/structure/cargo_hold/factory_offer(to_dir = 0, filter_type = null)
+	return factory_storage_offer(storage, filter_type)
+
+/obj/structure/cargo_hold/factory_take(obj/item/I, atom/destination)
 	return factory_storage_take(storage, I, destination)

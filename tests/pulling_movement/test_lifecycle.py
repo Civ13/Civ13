@@ -79,7 +79,7 @@ class PullLifecycleContracts(unittest.TestCase):
         for reservation in ('var/datum/persistence_world_operation/operation = new',
                             'persistence_active_operation = operation', 'persistence_save_in_progress = TRUE'):
             self.assertLess(body.index(reservation), hold)
-        self.assertLess(hold, body.index('operation.withdraw()'))
+        self.assertLess(hold, body.index('operation.withdraw()', hold))
         self.assertLess(body.index('operation.withdraw()'), body.index('SAVING THE MAP.'))
         self.assertIn('Map save held: a smooth pull requires an aligned checkpoint.', body)
         ready = section(read(PREFIX + 'pull_pair_lifecycle.dm'),

@@ -270,7 +270,7 @@ internal sealed partial class LauncherWindow : Form {
         var groupButtons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         if (profile.Control?.Group != null) {
             groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
-            foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+            foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"), ("Build update", "stage"),
                     ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart"),
                     ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
@@ -278,20 +278,76 @@ internal sealed partial class LauncherWindow : Form {
                 hostActions.Add(button);
                 groupButtons.Controls.Add(button);
             }
+            var epoch = new Button { Text = "Advance epoch", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            epoch.Click += async (_, _) => await AdvanceEpoch();
+            hostActions.Add(epoch);
+            groupButtons.Controls.Add(epoch);
             var settings = new Button { Text = "Host settings", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             settings.Click += (_, _) => ShowHostSettings();
             groupButtons.Controls.Add(settings);
         }
         layout.Controls.Add(groupButtons);
         layout.SetColumnSpan(groupButtons, 2);
+        var regionButtons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
+        if (profile.Control?.Group is { } regionGroup) BuildRegionRow(regionGroup, regionButtons);
+        layout.Controls.Add(regionButtons);
+        layout.SetColumnSpan(regionButtons, 2);
         hostOutput = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
         layout.Controls.Add(hostOutput);
         layout.SetColumnSpan(hostOutput, 2);
-        for (var row = 0; row < 8; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        for (var row = 0; row < 9; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         page.Controls.Add(layout);
         page.Enter += async (_, _) => await RefreshHostState();
         return page;
+    }
+
+    // One region of the group: the same shard_group.py actions with --region, plus sleep and wake, staging,
+    // the handover deploy for just this region (deploy.bat REGION),
+    // applying host settings and setting a region up (a new one added to the group config, or a refresh).
+    private void BuildRegionRow(HostGroup group, FlowLayoutPanel row) {
+        IReadOnlyList<LocalHosting.GroupRegion> regions;
+        try { regions = LocalHosting.GroupRegions(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidDataException) {
+            row.Controls.Add(new Label { Text = "Regions unavailable: " + e.Message, AutoSize = true, Margin = new Padding(0, 11, 0, 6) });
+            return;
+        }
+        row.Controls.Add(new Label { Text = "One region:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
+        var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 260, Margin = new Padding(8, 7, 0, 6) };
+        void Fill(string? keep) {
+            picker.Items.Clear();
+            foreach (var region in regions) {
+                var ports = region.Port > 0 ? " - port " + region.Port + (region.TransferPort > 0 ? ", travel " + region.TransferPort : "") : "";
+                picker.Items.Add(region.Name + (region.Mainland ? " (mainland)" : "") + ports);
+            }
+            var index = keep == null ? 0 : regions.ToList().FindIndex(region => region.Id == keep);
+            picker.SelectedIndex = Math.Max(0, index);
+        }
+        Fill(null);
+        // Re-read the group config each time the list opens, so a region just added to it can be set up.
+        picker.DropDown += (_, _) => {
+            try { var keep = Chosen(); regions = LocalHosting.GroupRegions(group); Fill(keep); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidDataException) { HostLine("Could not re-read the regions: " + e.Message); }
+        };
+        row.Controls.Add(picker);
+        string Chosen() => regions[Math.Max(0, picker.SelectedIndex)].Id;
+        foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
+                ("Build update", "stage"), ("Save, update and restart", "deploy"), ("Sleep now", "freeze"), ("Wake", "thaw"), ("Apply host settings", "config-apply"), ("Set up", "setup"),
+                ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
+            var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            button.Click += async (_, _) => await GroupAction(action, text, Chosen());
+            hostActions.Add(button);
+            row.Controls.Add(button);
+        }
+        var regionLog = new LinkLabel { Text = "Open its world log", AutoSize = true, Margin = new Padding(12, 11, 0, 6) };
+        regionLog.LinkClicked += (_, _) => {
+            string? path;
+            try { path = LocalHosting.RegionLog(group, Chosen()); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException) { HostLine("Could not read " + group.Config + ": " + e.Message); return; }
+            if (path == null) { HostLine("The group config names no root folder."); return; }
+            Open(new ProcessStartInfo(path) { UseShellExecute = true }, "the world log");
+        };
+        row.Controls.Add(regionLog);
     }
 
     private async Task Startup() {
@@ -681,17 +737,29 @@ internal sealed partial class LauncherWindow : Form {
 
     // Group actions run shard_group.py for every region; deploy and restart-host run their .bat in a
     // hidden cmd.exe and stream its lines here. Nothing opens a console window or takes focus.
-    private async Task GroupAction(string action, string label) {
+    // region: one region id (the One region row), or null for every region.
+    private async Task GroupAction(string action, string label, string? region = null) {
         if (host?.Control is not { } control || control.Group == null || hostOutput == null) return;
+        var target = region == null ? "every region" : "region " + region;
         var question = action switch {
-            "update" => "Check out and compile the group's revision in every stopped region?",
+            "update" => $"Check out and compile the group's revision in {(region == null ? "every stopped region" : target + " (it must be stopped)")}?",
+            "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
+                "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
             "unlock" => UnlockQuestion,
             "force-unlock" => ForceUnlockQuestion,
-            "kill" or "force-restart" => label + " every region? Each is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for servers that hang.",
-            _ => label + " every region? Players are saved and can rejoin when it is back.",
+            "freeze" => $"Put {target} to sleep now? Only an empty, saved world sleeps; a join or travel wakes it.",
+            "thaw" => $"Wake {target} from sleep?",
+            "config-apply" => $"Write the overlays' host settings into {target}? A running world uses them from its next restart.",
+            "setup" => $"Create or refresh {target}'s folder and config? It must be stopped. A region newly added to the group config is set up "
+                + "and enrolled for travel with the running regions, which keep running.",
+            "kill" or "force-restart" => $"{label} {target}? It is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for a server that hangs.",
+            "restart" => $"{label} {target}? It saves, stops and starts on the build it has, so players are kicked until it is back. " +
+                "To move players over without kicking them, use Save, update and restart: it builds the latest master beside the running world, " +
+                "and players keep playing on the old world (held only while their own level saves) until the new one has loaded the save.",
+            _ => $"{label} {target}? Players are saved and can rejoin when it is back.",
         };
-        if (action == "deploy") { await ChooseAndDeploy(label); return; }
+        if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
                 action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
@@ -710,12 +778,53 @@ internal sealed partial class LauncherWindow : Form {
             return;
         }
         try {
-            var answer = await Task.Run(() => LocalHosting.RunGroup(control, action));
+            if (action == "setup") HostLine($"Setting up {target}; fetching and making its worktree can take a minute...");
+            var answer = await Task.Run(() => LocalHosting.RunGroup(control, action, null, region));
             HostLine(answer.Message);
-            if (!answer.Ok) SetHostBusy(false);
+            // These finish at once rather than in a worker the status poll follows.
+            if (!answer.Ok || !answer.Busy) SetHostBusy(false);
+            if (!answer.Busy) await RefreshHostState();
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine(label + " failed: " + e.Message);
             SetHostBusy(false);
+        }
+    }
+
+    // Advance epoch: the mainland takes the chosen epoch live (no restart), then every awake region; the
+    // others follow the mainland when they next run (shard_group.py epoch). Epochs only move forward.
+    private async Task AdvanceEpoch() {
+        if (host?.Control is not { Group: not null } control) return;
+        using var dialog = new Form { Text = "Advance epoch", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { Text = "Move every region to this epoch now, with no restart. The mainland changes first and every running " +
+            "region with it; a region that is asleep or stopped catches up when it next runs. Epochs only move forward: a region already " +
+            "there or later keeps its own. Players see the change announced. This cannot be undone from the launcher.",
+            MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
+        var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 200 };
+        picker.Items.AddRange(LocalHosting.EpochNames);
+        layout.Controls.Add(picker);
+        var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
+        var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
+        var go = new Button { Text = "Advance", DialogResult = DialogResult.OK, AutoSize = true, Enabled = false };
+        picker.SelectedIndexChanged += (_, _) => go.Enabled = picker.SelectedIndex >= 0;
+        buttons.Controls.Add(cancel);
+        buttons.Controls.Add(go);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = go;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK || picker.SelectedIndex < 0) return;
+        var ordinal = picker.SelectedIndex;
+        SetHostBusy(true);
+        try {
+            HostLine("Advancing every region to the epoch " + LocalHosting.EpochNames[ordinal] + "...");
+            HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "epoch", null, null, ordinal))).Message);
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine("Advance epoch failed: " + e.Message);
+        } finally {
+            SetHostBusy(false);
+            await RefreshHostState();
         }
     }
 
@@ -736,14 +845,17 @@ internal sealed partial class LauncherWindow : Form {
         dialog.ShowDialog(this);
     }
 
-    private const string DeployQuestion = "Save, update and restart the regions ticked below. The checkout is pulled and the update is built " +
-        "beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each is saved and " +
-        "stopped (Gaia takes up to ten minutes), gets its new build and starts again, and the host service restarts. Regions left unticked " +
-        "keep running. Players are saved and can rejoin when it is back. If a world will not save, you are asked before anything is " +
-        "stopped without a save.";
+    private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +
+        "is built beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each " +
+        "running region is handed over, one at a time: the new build starts beside it, the old world saves (players are held only while " +
+        "their own level is saved, a minute or two, then play on), the new one loads that save, and players reconnect to it within seconds. " +
+        "Anything done after a level was saved is end-of-round play and is not carried over. If the save or the " +
+        "load fails, the old world carries on and nothing is lost. A region still on a build from before handovers is saved, stopped and " +
+        "started instead, once. Regions that are asleep get the new build when they wake; regions left unticked keep running.";
 
-    // Asks which regions to update (all ticked; the mainland first in line is marked), then deploys them.
-    private async Task ChooseAndDeploy(string label) {
+    // Asks which regions to update (all ticked, or only `only` from the One region row; the mainland is
+    // marked), then deploys them.
+    private async Task ChooseAndDeploy(string label, string? only = null) {
         if (host?.Control?.Group is not { } group) return;
         IReadOnlyList<LocalHosting.GroupRegion> regions;
         try { regions = LocalHosting.GroupRegions(group); }
@@ -756,7 +868,7 @@ internal sealed partial class LauncherWindow : Form {
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
         layout.Controls.Add(new Label { Text = DeployQuestion, MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
         var list = new CheckedListBox { CheckOnClick = true, Width = 460, Height = Math.Min(16, regions.Count) * 20 + 8, IntegralHeight = false };
-        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, true);
+        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, only == null || region.Id == only);
         layout.Controls.Add(list);
         var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
         var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
@@ -772,13 +884,15 @@ internal sealed partial class LauncherWindow : Form {
         if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
         var chosen = list.CheckedIndices.Cast<int>().Select(index => regions[index].Id).ToList();
         // Every region ticked runs the whole group, so a region added to the config later is never skipped.
-        await DeployGroup(label, chosen.Count == regions.Count ? [] : chosen);
+        // From the One region row the ids stay explicit, so a region added meanwhile is never pulled in.
+        await DeployGroup(label, only == null && chosen.Count == regions.Count ? [] : chosen);
     }
 
     // The whole update (deploy.bat): pull, stage the build beside the running worlds, then once every build is
     // ready hand each running region over to it (scripts/shard-group handover) and restart the host service.
     // The exit-3 loop below belonged to the stop-and-start deploy; a handover never leaves a world stopped,
     // so deploy.bat no longer returns it. It stays for an older deploy.bat on the host.
+    // The Host tab's group status line shows each region's staged build and a standby loading beside it.
     // A region whose world does not save (refused because it is busy, or the save failed) is still running
     // when deploy.bat stops at the save step; nothing has been updated yet. The operator then chooses:
     // force-stop those regions without a save and carry on, or start the regions that did stop again.

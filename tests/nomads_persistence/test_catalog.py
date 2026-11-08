@@ -27,6 +27,13 @@ class NomadsCatalogTests(unittest.TestCase):
         regions = {'/obj/map_metadata/nomads/barren', '/obj/map_metadata/nomads/barren/moon', '/obj/map_metadata/nomads/orbit'}
         self.assertEqual(set(declarations) | regions, admitted)
         self.assertEqual(len(admitted), 29)
+        # The native probe and the --spatial runner pin the same count; keep them in
+        # step here so a new profile fails offline instead of in the native lane.
+        probe = (ROOT/'tests/nomads_persistence/probe.dm').read_text()
+        self.assertIn(f'nomads_assert(index == {len(admitted)}, "audited profile count differs")', probe)
+        self.assertIn(f'; {len(admitted)} profile metadata disk roundtrips', probe)
+        runner = (ROOT/'tests/nomads_persistence/run.py').read_text()
+        self.assertIn(f'range(1, {len(admitted) + 1}) if args.spatial', runner)
         dme = (ROOT/'civ13.dme').read_text().replace('\\', '/')
         for _, path in declarations.values():
             self.assertIn(str(path.relative_to(ROOT)).replace('\\', '/'), dme)

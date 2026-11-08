@@ -33,6 +33,9 @@
 	if(!operation || !operation.enter_contents(src, "save")) return FALSE
 	var/datum/save_debug_recovery/debug_policy = operation.debug_recovery
 	var/candidate_validated = FALSE
+	var/list/handover_roofs
+	// A handover's candidate record also carries each full level's turf types.
+	var/list/handover_turfs = handover_candidate ? list() : null
 	// Debug recovery starts only after a failed capture has removed the current
 	// marker. Never let its retry path replace an existing completed backup.
 	if(debug_policy && (fexists("map_saves/save_complete.txt") || !debug_backup_identity_valid() || !operation.current(src, "save"))) throw EXCEPTION("Debug recovery requires an unchanged failed capture and retained backup")
@@ -111,6 +114,8 @@
 	save_phase_started = persistence_save_phase_log("metadata and backup", save_phase_started)
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
+		// Freeze this level's players only while it is captured (restart_transaction.dm).
+		persistence_freeze_level(A)
 		saving_content_owners = alist()
 		saving_lists = alist()
 		saving_reference_pins = list()
@@ -146,18 +151,23 @@
 			saving_segments = new stream_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget())
 		else
 			saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
+		var/list/turf_grid = handover_turfs ? list() : null
+		if(turf_grid) handover_turfs["[A]"] = turf_grid
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, A)
 				if(sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))
+					if(turf_grid) turf_grid += sparse_turf
 					continue // Regenerated on load; yields once per row below.
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
 				sparse_cells++
+				var/saved_turf_type = T.type
 				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
+				if(turf_grid) turf_grid += saved_turf_type
 				if(saving_segments) saving_segments.rotate_if_full()
 			if(sparse_turf) save_work_check()
 		if(sparse_turf)
@@ -176,6 +186,7 @@
 			saving_segments = null
 		savefile.Flush()
 		savefile = null // Close the candidate level before consistency validation.
+		persistence_release_level(A)
 		sleep(world.tick_lag)
 		log_startup_progress("	Saved z-level [A].")
 		save_phase_started = persistence_save_phase_log("level [A]", save_phase_started)
@@ -194,6 +205,8 @@
 			log_startup_progress("	Checking the saved levels.")
 			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained: [last_error]")
 			candidate_validated = TRUE
+			// A handover keeps the roofs its check projected for the candidate record.
+			if(handover_candidate) handover_roofs = validation_record_roofs()
 			save_phase_started = persistence_save_phase_log("candidate check", save_phase_started)
 			clear_saved_zones()
 			release_durable_world()
@@ -241,6 +254,13 @@
 			world.log << "Save validation record failed: [record_error]"
 	else if(candidate_validated && !debug_policy)
 		world.log << "World-save candidate: [last_validation_note]."
+		// A handover's standby load is the validation (restart_transaction.dm):
+		// record the structural check for the handover's own preflights only.
+		if(handover_candidate && handover_roofs)
+			try
+				if(!write_validation_record(generation, world.maxz, "candidate", handover_roofs, handover_turfs)) world.log << "Handover candidate record not written; the handover's checks run in full."
+			catch(var/exception/candidate_record_error)
+				world.log << "Handover candidate record failed: [candidate_record_error]"
 	if(transfer_capture) transfer_saved(transfer_capture)
 	if(debug_policy)
 		try
@@ -423,11 +443,18 @@
 		// Spatial candidate checks read saved turf and object density directly.
 		default_fields = null
 #endif
+		// The runtime-field filter answers from the type and field alone, except
+		// for persistence_runtime_var_instance_keys (functions.dm): ask it once
+		// per type and field, and every time for those.
+		var/list/runtime_cache = persistence_runtime_var_type_cache(A, changing_vars)
 		for(var/v in changing_vars)
 			save_work_check()
 			require_export_frame(frame)
-			if(A.persistence_runtime_var(v))
-				continue
+			var/cached_runtime = runtime_cache[v]
+			if(cached_runtime) continue
+			if(isnull(cached_runtime))
+				if(A.persistence_runtime_var(v))
+					continue
 			switch(v)
 				if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 					continue

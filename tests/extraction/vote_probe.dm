@@ -104,3 +104,29 @@
 	var/datum/vote/production = new
 	production.set_disruptive_votes(FALSE)
 	equipment_assert(!production.apply_result("restart", 0, "Restart Round", list()), "direct stale production result cannot end round while disabled")
+	// Admin controls: end early on the current tally, or force one option.
+	var/datum/vote/lifecycle_probe/W = new
+	equipment_assert(!W.admin_close("admin"), "admin close refuses when no vote runs")
+	var/calls_before = L.calls
+	var/datum/vote_handle/tally = W.request_choices("Admin tally", list("A", "B", "C"), "fixture", 600, list(L, "complete"), TRUE)
+	W.submit_vote("voter1", 1, tally.generation)
+	W.submit_vote("voter2", 1, tally.generation)
+	W.submit_vote("voter3", 2, tally.generation)
+	equipment_assert(W.admin_close("admin") && tally.state == "resolved" && tally.winner == "A" && L.calls == calls_before + 1, "admin end early resolves on the current tally")
+	equipment_assert(!W.mode && !W.active_request && !W.forced_by && !W.forced_choice, "admin end early clears the session")
+	var/datum/vote_handle/forced = W.request_choices("Admin force", list("A", "B", "C"), "fixture", 600, list(L, "complete"), TRUE)
+	W.submit_vote("voter1", 1, forced.generation)
+	W.submit_vote("voter2", 1, forced.generation)
+	equipment_assert(!W.admin_close("admin", "Z") && W.is_current(forced), "admin force rejects an option outside the vote")
+	equipment_assert(W.admin_close("admin", "C") && forced.state == "resolved" && forced.winner == "C" && L.calls == calls_before + 2, "admin force wins over the tally")
+	equipment_assert(!W.admin_close("admin", "C") && L.calls == calls_before + 2, "admin force cannot resolve twice")
+	var/datum/vote_handle/routed = W.request_choices("Admin route", list("Next"), "fixture", 600, list(), TRUE)
+	W.mode = "epoch"
+	var/routes_before_force = W.routes.len
+	equipment_assert(W.admin_close("admin", "Next") && routed.winner == "Next" && W.routes.len == routes_before_force + 1 && W.routes[W.routes.len] == "epoch", "admin force dispatches the vote's route once")
+	var/datum/vote_handle/blocked = W.request_choices("Admin blocked", list("Next"), "fixture", 600, list(), TRUE)
+	W.mode = "restart"
+	W.disruptive_votes_enabled = FALSE
+	routes_before_force = W.routes.len
+	equipment_assert(W.admin_close("admin", "Next") && blocked.state == "cancelled" && W.routes.len == routes_before_force, "admin force still obeys the round-ending vote policy")
+	W.disruptive_votes_enabled = TRUE

@@ -172,17 +172,20 @@ jobs:
     steps:
       - name: Explain unselected evidence fixtures
         id: no_evidence
-        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         run: |
           echo 'coverage=not_selected' >> "$GITHUB_OUTPUT"
           echo 'No evidence fixture was selected; this job did not execute native or source fixtures.' >> "$GITHUB_STEP_SUMMARY"
       - name: Check out selected evidence sources and history
-        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels) != '[]')
+        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 12
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+          # Blobless: every commit and tree, blobs fetched on demand (pinned
+          # `git show <sha>:path` fixtures still work on this public repo).
+          filter: blob:none
           persist-credentials: false
       - name: Test representative save executor contracts without native effects
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/save_latency') || inputs.save_latency_regressions == true
@@ -205,6 +208,9 @@ jobs:
       - name: Test optional geographic elevation offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation')
         run: python3 -B -m unittest discover -s tests/elevation -v
+      - name: Test supervised map swap scripts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/server_scripts')
+        run: python3 -B -m unittest discover -s tests/server_scripts -p 'test_*.py' -v
       - name: Check zone and spawn persistence contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/zone_persistence')
         run: python3 -B -m unittest discover -s tests/zone_persistence -v
@@ -475,7 +481,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out simple compilation source
         id: simple_checkout
-        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 2
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -484,7 +490,7 @@ jobs:
           persist-credentials: false
       - name: Prepare simple compilation comparison commit
         id: simple_prepare
-        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 2
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -493,12 +499,15 @@ jobs:
         run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
       - name: Check out history for selected or manual fixtures
         id: history_checkout
-        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels) != '[]')
+        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 12
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+          # Blobless: every commit and tree, blobs fetched on demand (pinned
+          # `git show <sha>:path` fixtures still work on this public repo).
+          filter: blob:none
           persist-credentials: false
 
       # Runs a single command using the runners shell
@@ -890,6 +899,13 @@ jobs:
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control disconnect
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control conversation-generation
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control conversation-action
+      - name: Verify modern bridges over deep water
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/modern_bridges')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/modern_bridges -v
+          /usr/bin/python3 tests/modern_bridges/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/modern-bridges"
       - name: Verify native lobby Join controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/lobby_join')
         shell: bash
@@ -1608,7 +1624,8 @@ jobs:
           python3 tests/building_levels/run.py --lighting-gravity --negative-control lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/gravity-control"
           python3 tests/building_levels/run.py --lighting-roof --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-positive"
           python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-interleave"
-          python3 tests/building_levels/run.py --lighting-roof --allocation-interleave --negative-control lighting-gravity --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/roof-control"
+          python3 tests/building_levels/run.py --standing --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/standing-positive"
+          python3 tests/building_levels/run.py --standing --negative-control standing-import --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/standing-control"
       - name: Upload linked building evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/building_levels') || inputs.persistence_integration_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -2084,7 +2101,7 @@ jobs:
           pwsh -NoProfile -File tests/native_grid/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated resource extraction regressions
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aircraft')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -2108,10 +2125,12 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/vessel_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/packaging_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/meter_probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/plating_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/ecology_spawning/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/liminal_mode/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/space_settlement/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/wildlife_spawner/probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/aircraft/probe.dm
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/boat_movement')

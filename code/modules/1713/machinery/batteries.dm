@@ -96,10 +96,20 @@
 	var/atom/previous = loc
 	. = ..()
 	if (. && loc != previous) disconnect_battery()
-// Only durable chemical state is saved. Output, mode, timers and wiring are
-// intentionally rebuilt by players, so loading cannot replay prepaid output.
+// Only durable chemical state is saved. Output, mode and timers restart off,
+// so loading cannot replay prepaid output. The cable link is not saved either,
+// but the cable still lies on the battery's tile, so after_load rejoins it.
 /obj/structure/battery/get_saved_vars()
 	return list("name", "dir", "anchored", "stored_energy", "assembled", "commissioned", "electrodes_ready")
+
+/obj/structure/battery/after_load()
+	..()
+	mode = "off"
+	output_power = 0
+	output_until = 0
+	powersource = restored_port_cable(src)
+	if (powersource)
+		powersource.rebuild_supply()
 
 /obj/structure/battery/examine(mob/user)
 	..()
@@ -201,6 +211,25 @@
 	else if (mode == "charge" && rechargeable)
 		stored_energy += powersource.reserve_battery_charge(min(charge_rate, energy_capacity - stored_energy))
 	powersource.rebuild_supply()
+
+// The cable a restored source or battery was attached to: one on its own tile
+// that still lists it, or the only cable on that tile. The link itself is
+// runtime state, and without this a restored battery or generator could not
+// be re-cabled because its old cable already fills the tile.
+/proc/restored_port_cable(obj/O)
+	if (!O || !O.anchored || !isturf(O.loc))
+		return null
+	var/obj/structure/cable/only = null
+	var/count = 0
+	for (var/obj/structure/cable/CB in O.loc)
+		if (O in CB.connections)
+			return CB
+		only = CB
+		count++
+	if (count != 1)
+		return null
+	only.connections |= O
+	return only
 
 /obj/structure/cable/proc/battery_network()
 	var/list/pending = list(src)

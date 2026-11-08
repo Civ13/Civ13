@@ -117,3 +117,13 @@ passed to each ore roll and the unconditional geology budget. The existing
 Modern energy fixture's uranium mask is moved to its new eighth roll; its separate
 native runner is not claimed as executed here. Connected-client mining, full-world
 save/load, performance and live economy observations remain unverified.
+
+## Addendum 2026-11-08: calamine (zinc ore)
+
+Calamine (`/obj/item/stack/ore/zinc`) adds one more independent roll: 6% per
+wall from age 1, batch 12-24 (1.08 expected units per wall), doubled in special
+caves. It joins the no-ore product, so the figures above for ages 1+ are now
+slightly lower for "no listed ore" and slightly higher for multi-ore walls.
+Age 0 is unchanged. Stone crushing gains calamine at 1.5% from age 1 (2.25%
+powered); trace sifting and the powered soil sifter offer it too. Calamine
+melts with copper ore in a fired clay pot or jug to make brass, mirroring bronze.

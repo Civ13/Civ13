@@ -10,6 +10,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/vessel_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/packaging_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/meter_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/plating_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -80,6 +81,7 @@ Removing the station's `NOREACT` flag makes the inert-tank check fail.
 - Saving: a pipe's network is runtime-only; valve, pump switch and tank filter are saved and pump power is not; reloaded pumps and pipes rebuild the networks; holding tanks are inert.
 - Plumbing: a new water tap and piped shower start dry and a dry shower will not turn on; a tap holds what the pipes bring it, sickness included; a piped shower takes only water; nothing is made along the way; filling a container empties the tap by as much; a running piped shower uses its water and turns itself off when it runs out; taps are inert.
 - Habitat machines: an electrolyser takes only the room it has from a water recycler through pipes, at the pump's rate; both pipe only water; the recycler saves its water but not its pipe holder.
+- Steel barrels: a barrel beside a pipe stays off the network until wrenched, and one away from pipes cannot be fitted; a fitted barrel joins as a source only, feeds a tap at the pump's rate and draws a pipe joint; the fitting is saved; moving the barrel or wrenching it again detaches it and it keeps its water; wood barrels never join.
 - Catalog: research gates (including the tap and piped shower), the five global recipes and the reused sprites.
 
 Letting a network move reagents without a powered pump makes four checks fail. Dropping the recycler's settling of what the network took makes both habitat transfer checks fail.
@@ -109,4 +111,15 @@ Offering a bottler's container before it is full fails two checks; letting the p
 
 - Fast belts: a fast belt takes two steps a tick and joins the fast list; on a six-tile line cargo on fast belts reaches the crate in about half the steps of plain belts (3 against 6); a fast run hands cargo on to plain belts; an empty fast belt sleeps and leaves the fast list; the assembly lays and returns a fast belt; Automation gates it.
 - Wagons and carts: an arm loads a transport wagon until its eight slots are full and a full wagon refuses more; an arm unloads it; filters limit what it offers; a tender takes only fuel; a shopping cart loads from and unloads to automation.
+- Vehicle cargo hold: an arm loads a cargo hold until its twenty slots are full and a full hold refuses more; an arm unloads it; filters limit what it offers; a wrench bolts it down; a hold on a vehicle frame is carried by the vehicle's axis; Automobiles gates its steel recipe.
 - Factory monitor (phase 4b): a rate counts what it has seen, rolls into the previous minute and averages over the window, and reads zero after two idle minutes; the monitor lists the loading arm as waiting with the eight items it moved this minute, a fabricator without inputs as starved with its recipe, the belt drive as running and a summary of the belts in range; its page shows the table; Automation gates it.
+
+`plating_probe.dm` (electroplating) calls the plating bath's process directly and checks:
+
+- Refusals: stacks, non-metal material weapons and already plated items are refused; a bath without an anode sheet or five units of sulphuric acid will not start.
+- Coating: an uncabled bath makes no progress; a cabled bath reserves power, finishes after five powered steps, renames, tints and adds value (gold +30, less than the sheet's 40), uses the anode and five units of acid, then releases its power. A coat in progress restarts after a load, and progress and power are not saved.
+- Wear: tin halves and copper takes a quarter off the health a weapon, tool or shield loses; gold and silver do not.
+- Automation: pipes fill only sulphuric acid; arms hang one sheet, lower an item in and take the coated item out.
+- Catalog: the bath unlocks with Electricity, has a global recipe and reuses existing sprites.
+
+Fixture checks do not establish graphical interaction, a full disk save and reload, or live balance.

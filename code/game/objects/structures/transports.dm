@@ -190,6 +190,8 @@
 				return
 
 /obj/structure/vehicle/attack_hand(mob/living/human/user as mob)
+	if (retake_controls(user))
+		return
 	if ((user in ontop))
 		user.visible_message(SPAN_NOTICE("[user] start leaving \the [src]..."), SPAN_NOTICE("You start getting off \the [src]..."))
 		if (do_after(user, leave_time, src))
@@ -630,6 +632,8 @@
 				return
 
 /obj/structure/vehicle/boat/attack_hand(mob/living/human/user as mob)
+	if (retake_controls(user))
+		return
 	if ((user in ontop))
 		user.visible_message("<div class='notice'>[user] starts leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
 		if (do_after(user, leave_time, src))
@@ -2212,3 +2216,4 @@
 
 /obj/structure/vehicle/carriage/persistence_runtime_var(key)
 	return key == "carriage_glide" || ..()
+

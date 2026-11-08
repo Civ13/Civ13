@@ -182,6 +182,11 @@ var/list/slot_equipment_priority = list( \
 // If canremove or other conditions need to be checked then use unEquip instead.
 /mob/proc/drop_from_inventory(var/obj/item/W, var/atom/Target = null, var/ignore_nodrop = FALSE)
 	if (W)
+		// Passing out or dying hands vehicle and crew controls back to their vehicle or seat.
+		if (stat != CONSCIOUS && ishuman(src))
+			var/mob/living/human/control_holder = src
+			if (control_holder.return_vehicle_control(W))
+				return TRUE
 		if (istype(W, /obj/item/vehicleparts/wheel/modular))
 			var/obj/item/vehicleparts/wheel/modular/MD = W
 			remove_from_mob(W)
@@ -263,6 +268,7 @@ var/list/slot_equipment_priority = list( \
 		I.layer = initial(I.layer)
 		I.plane = GAME_PLANE
 		I.screen_loc = null
+		hud_unscale_item(I)
 		if (I.scoped_invisible)
 			I.invisibility = 0
 			I.scoped_invisible = FALSE
@@ -384,6 +390,7 @@ var/list/slot_equipment_priority = list( \
 	O.screen_loc = null
 	if (istype(O, /obj/item))
 		var/obj/item/I = O
+		hud_unscale_item(I)
 		if (I.scoped_invisible)
 			I.invisibility = 0
 			I.scoped_invisible = FALSE

@@ -136,6 +136,10 @@ var/global/last_persistence_save_vote_time = 0
 	var/autogamemode_triggered = FALSE
 	var/faction = 0
 	var/ship_size = "Small Ships"
+	// Set only while an admin closes the vote: the choice the admin picked
+	// (null closes on the current tally) and the admin's key for the announcement.
+	var/forced_choice = null
+	var/forced_by = null
 	New()
 		if (vote != src)
 			if (istype(vote))
@@ -210,6 +214,8 @@ var/global/last_persistence_save_vote_time = 0
 		current_votes.Cut()
 		additional_text.Cut()
 		disabled.Cut()
+		forced_choice = null
+		forced_by = null
 
 	proc/get_result()
 		//get the highest number of votes
@@ -235,6 +241,12 @@ var/global/last_persistence_save_vote_time = 0
 	proc/announce_result()
 		var/list/winners = get_result()
 		var/text = ""
+		if (forced_by)
+			if (forced_choice && (forced_choice in choices))
+				winners = list(forced_choice)
+				text = "<b>An administrator chose the result.</b><br>"
+			else
+				text = "<b>An administrator ended the vote early.</b><br>"
 		if (!winners.len)
 			if (default)
 				winners += default
@@ -288,6 +300,24 @@ var/global/last_persistence_save_vote_time = 0
 		if (persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)) return FALSE
 		if (.) apply_result(resolved_mode, resolved_faction, ., completion)
 		return .
+
+	// Admin control: close the current vote now. With no choice it counts the
+	// votes cast so far; with a choice (one of the vote's options) that choice wins.
+	// The normal result path still applies its persistence and round-ending guards.
+	proc/admin_close(admin_key, choice = null)
+		var/datum/vote_handle/H = active_request
+		if (!mode || !is_current(H)) return FALSE
+		if (choice != null && !(choice in choices)) return FALSE
+		var/display_choice = choice
+		if ((mode in list("map", "safehouse map")) && choice && map_id_to_title[choice])
+			display_choice = map_id_to_title[choice]
+		var/action = choice ? "forced the [mode] vote result to [display_choice]" : "ended the [mode] vote early"
+		log_admin("[admin_key] [action].")
+		message_admins("[admin_key] [action].")
+		forced_choice = choice
+		forced_by = admin_key
+		result(H)
+		return TRUE
 
 	proc/apply_result(resolved_mode, resolved_faction, winner, list/completion)
 		if (persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)) return FALSE
@@ -564,6 +594,8 @@ var/global/last_persistence_save_vote_time = 0
 			else			. += "<h2>Vote: [capitalize(mode)]</h2>"
 			. += "Time Left: [time_remaining] s<hr>"
 			. += "<table width = '100%'><tr><td align = 'center'><b>Choices</b></td><td align = 'center'><b>Votes</b></td>"
+			if (admin)
+				. += "<td align = 'center'><b>Admin</b></td>"
 			for (var/i = 1, i <= choices.len, i++)
 				var/votes = choices[choices[i]]
 				if (!votes)	votes = 0
@@ -593,9 +625,13 @@ var/global/last_persistence_save_vote_time = 0
 					. += "<td><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center'>[votes]</td>"
 				if (additional_text.len >= i)
 					. += additional_text[i]
+				if (admin)
+					. += "<td align = 'center'><a href='?src=\ref[src];generation=[generation];vote=force;choice=[i]' title='End the vote with this result'>Force</a></td>"
 				. += "</tr>"
 
 			. += "</table><hr>"
+			if (admin)
+				. += "(<a href='?src=\ref[src];generation=[generation];vote=end' title='Close the vote now on the current votes'>End Vote Now</a>) "
 			if (admin && mode != "map")
 				. += "(<a href='?src=\ref[src];generation=[generation];vote=cancel'>Cancel Vote</a>) "
 		else
@@ -637,6 +673,16 @@ var/global/last_persistence_save_vote_time = 0
 			if ("cancel")
 				if (usr.client.holder)
 					reset()
+			if ("end")
+				if (check_rights(R_ADMIN))
+					admin_close(usr.key)
+					return
+			if ("force")
+				if (check_rights(R_ADMIN))
+					var/index = round(text2num(href_list["choice"]))
+					if (index >= 1 && index <= choices.len)
+						admin_close(usr.key, choices[index])
+					return
 			if ("toggle_restart")
 				if (usr.client.holder)
 					config.allow_vote_restart = !config.allow_vote_restart

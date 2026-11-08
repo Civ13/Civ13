@@ -149,11 +149,11 @@
 				icon_state = "sharpened_stick"
 				ants = FALSE
 				if (user.gorillaman)
-					user.adjust_mood(10)
+					user.adjust_mood(10, "eating ants")
 				else if (user.ant)
-					user.adjust_mood(-(20))
+					user.adjust_mood(-(20), "eating ants")
 				else if (!user.orc && !user.crab)
-					user.adjust_mood(-(10))
+					user.adjust_mood(-(10), "eating ants")
 				user.nutrition += 80
 				return
 	else

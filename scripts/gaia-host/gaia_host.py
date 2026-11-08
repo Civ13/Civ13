@@ -157,6 +157,11 @@ def parse_netstat(text):
 
 
 TCP_STATES = {2: 'LISTENING', 5: 'ESTABLISHED'}
+# Save and stop (Host.wait_for_exit): a world that closed its port after saving but is still
+# running this long later is ended; without its pid, the port must be closed this many polls
+# in a row (5 s apart) before the world counts as gone.
+STOP_LINGER_SECONDS = 180
+STOP_CLOSED_POLLS = 6
 
 
 def parse_tcp_table(buffer, ipv6=False):
@@ -241,6 +246,16 @@ class Platform:
         return result.returncode, (result.stdout + result.stderr)[-4000:]
 
     def listening(self, port):
+        # On Windows a loopback connect to a closed port is retried for about 2 s before it is
+        # refused, and the doorman asks this several times per cold region for every status
+        # request it serves under one lock. With three cold regions each host_status took ~20 s
+        # and the doorman stopped answering at all (2026-11-08). The listening table answers
+        # at once; the connect stays as the fallback and for other systems.
+        if os.name == 'nt':
+            try:
+                return any(row[0] == port and row[2] == 'LISTENING' for row in windows_tcp_rows())
+            except (OSError, ValueError, AttributeError):
+                pass
         try:
             with socket.create_connection(('127.0.0.1', port), timeout=2):
                 return True
@@ -566,6 +581,9 @@ class Host:
         # a stop or a forced stop removes it. The watchdog only restarts such a world.
         self.running_file = self.state_dir / 'running.json'
         self.watchdog_file = self.state_dir / 'watchdog.json'
+        # Written by the world when an admin uses Save and Shut Down in game: the exit that
+        # follows is a stop, not a crash (restart_transaction.dm write_stop_marker).
+        self.stop_marker = self.repo / 'data' / 'stopped_in_game.json'
         self.down_since = None       # when the port was first seen closed while the world should run
         self.listening_since = None  # when the port was first seen open in this watch
         self.last_answer = None      # when the world last answered lifecycle status in this watch
@@ -953,7 +971,11 @@ class Host:
     def thaw(self, reason='requested'):
         state = self.frozen()
         if not state:
-            raise Refused('the server is not frozen')
+            # A cold server (shut down to disk while asleep) wakes by starting from its save,
+            # as the doorman does for a player; the launcher's Wake was refused for it (2026-11-08).
+            if self.cold():
+                return self.start_cold(reason)
+            raise Refused('the server is not frozen or cold')
         self.platform.resume(state['pid'])
         self.freeze_file.unlink(missing_ok=True)
         return {'thawed': True, 'pid': state['pid'], 'reason': reason,
@@ -1015,12 +1037,21 @@ class Host:
         self.last_busy = False
 
     def mark_running(self):
+        self.stop_marker.unlink(missing_ok=True)  # left from an earlier in-game stop
         self.write_json(self.running_file, {'since': int(self.platform.now())})
 
     def check_crash(self):
         """The world is down: start it again if it should be running. Returns the next wait."""
         if not self.config['watchdog'] or not self.running_file.exists() or self.cold():
             self.down_since = None
+            return 30
+        if self.stop_marker.exists():
+            # An admin saved and shut the world down in game: a stop, so leave it down.
+            marker = self.read_json(self.stop_marker) or {}
+            self.running_file.unlink(missing_ok=True)
+            self.stop_marker.unlink(missing_ok=True)
+            self.down_since = None
+            self.log({'stopped_in_game': True, 'by': marker.get('by'), 'generation': marker.get('generation')})
             return 30
         now = self.platform.now()
         if self.down_since is None:
@@ -1211,21 +1242,19 @@ class Host:
         session = before.get('session', '')
         if not HEX32.match(session or ''):
             raise RuntimeError('the world gave no valid session')
+        port = self.config['port']
+        pid = self.platform.server_pid(port)
         self.record(phase='saving', clients=before.get('clients'))
-        answer = self.platform.query(self.config['port'], token, 'save_shutdown', operation, session)
+        answer = self.platform.query(port, token, 'save_shutdown', operation, session)
         if answer.get('operation') != operation:
             raise RuntimeError('the world did not accept the save')
         self.running_file.unlink(missing_ok=True)  # it is going down on purpose
-        deadline = self.platform.now() + self.config['save_timeout_seconds']
-        while self.platform.listening(self.config['port']):
-            if self.platform.now() > deadline:
-                raise RuntimeError('the save did not finish in time; the server was left running')
-            status = self.world()
-            if status and status.get('error'):
-                raise RuntimeError('the world reported a save error: %s' % status['error'])
-            self.platform.sleep(5)
+        exited = self.wait_for_exit(pid)
         self.record(phase='backing up')
         saves = self.repo / 'map_saves'
+        if exited:
+            # The process is gone, so any lock file left in map_saves was its own.
+            self.remove_save_locks(self.save_locks())
         for _ in range(30):
             if not any(p.name.endswith('.lk') for p in saves.iterdir()):
                 break
@@ -1237,6 +1266,49 @@ class Host:
         for old in kept[:-self.config['backups_kept']]:
             shutil.rmtree(old)
         self.record(phase='stopped', generation=generation, backup=str(backups / operation))
+
+    def wait_for_exit(self, pid):
+        """Wait until the world that accepted save_shutdown has saved and exited.
+
+        A world busy saving can stop accepting connections for minutes (every poll's
+        connection waits in its listen backlog until it fills), so a refused connection
+        is not an exit: Gaia's Save and stop gave up after its port "closed" in the middle
+        of the save, while the world was still saving (2026-11-07). The world is gone when
+        no process listens on its port and its process has ended. A world that closed its
+        port (it does that only when it shuts down after a validated save) but whose
+        process lingers past STOP_LINGER_SECONDS is ended. pid: the process that listened
+        before the save, or None when it could not be found (then the port alone decides,
+        closed on several polls in a row). True when the process is known to have ended."""
+        port = self.config['port']
+        deadline = self.platform.now() + self.config['save_timeout_seconds']
+        closed_since = None
+        misses = 0
+        while True:
+            if pid:
+                held = self.platform.server_pid(port) is not None
+                if not held and not self.platform.alive(pid):
+                    return True
+            else:
+                held = self.platform.listening(port)
+                misses = 0 if held else misses + 1
+                if misses >= STOP_CLOSED_POLLS:
+                    return False
+            now = self.platform.now()
+            if pid and not held:
+                closed_since = now if closed_since is None else closed_since
+                self.record(phase='waiting for the server to exit')
+                if now - closed_since >= STOP_LINGER_SECONDS:
+                    self.platform.kill_tree(pid)
+                    self.log({'stop': 'the world closed its port after saving but did not exit; ended it', 'pid': pid})
+                    self.release_save_locks(pid)
+                    return not self.platform.alive(pid)
+            elif now > deadline:
+                raise RuntimeError('the save did not finish in time; the server was left running')
+            elif held:
+                status = self.world()
+                if status and status.get('error'):
+                    raise RuntimeError('the world reported a save error: %s' % status['error'])
+            self.platform.sleep(5)
 
     def do_update(self, operation):
         git, repo = self.config['git'], self.repo

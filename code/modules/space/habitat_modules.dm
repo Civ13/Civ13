@@ -238,7 +238,9 @@ var/global/list/habitat_cores = list()
 				var/turned = L.scrub_co2(HABITAT_PLANT_PER_SECOND * dt)
 				L.add_gas(turned)
 		for (var/obj/structure/life_support/M in T)
-			M.work(L, dt)
+			if (M.work(L, dt))
+				orbit_machine_heat(L, M, dt)
+	orbit_module_heat(L, dt)
 	for (var/obj/structure/habitat_core/N in open_neighbours())
 		L.mix_with(N.air())
 		N.store_air()
@@ -393,6 +395,8 @@ var/global/list/habitat_cores = list()
 	var/r = HABITAT_MODULE_RADIUS
 	if (centre.x - r < 1 || centre.y - r < 1 || centre.x + r > world.maxx || centre.y + r > world.maxy)
 		return "The module would not fit here."
+	if (orbit_world() && !orbit_clear_of_seams(centre, r))
+		return "Modules must stand clear of the plane's edge, where the seam to the next sector runs."
 	if (locate(/obj/structure/habitat_core) in centre)
 		return "A module already stands here."
 	for (var/turf/T in block(locate(centre.x - r, centre.y - r, centre.z), locate(centre.x + r, centre.y + r, centre.z)))
@@ -419,6 +423,9 @@ var/global/list/habitat_cores = list()
 /obj/item/habitat_kit/attack_self(mob/user as mob)
 	if (!ishuman(user) || !isturf(user.loc))
 		return
+	// In orbit it may go out as a pod instead (orbit_pods.dm).
+	if (orbit_kit_offer_pod(src, user))
+		return
 	var/turf/centre = habitat_module_site(get_turf(user))
 	var/reason = habitat_module_refusal(centre, user)
 	if (reason)
@@ -441,8 +448,9 @@ var/global/list/habitat_cores = list()
 	qdel(src)
 
 // Builds the module. outer_dir is where an airlock's outer hatch goes when it
-// docks to nothing. Returns the core.
-/proc/habitat_unfold(turf/centre, kind, core_type = /obj/structure/habitat_core, outer_dir = SOUTH)
+// docks to nothing. A folded pod brings its own furniture (furnish FALSE).
+// Returns the core.
+/proc/habitat_unfold(turf/centre, kind, core_type = /obj/structure/habitat_core, outer_dir = SOUTH, furnish = TRUE)
 	var/r = HABITAT_MODULE_RADIUS
 	var/z = centre.z
 	var/list/docked_dirs = list()
@@ -470,7 +478,10 @@ var/global/list/habitat_cores = list()
 		if (!(outer in cardinal))
 			outer = SOUTH
 		habitat_place_hatch(get_step(get_step(centre, outer), outer))
-	habitat_furnish(C, kind)
+	if (furnish)
+		habitat_furnish(C, kind)
+	if (istype(C, /obj/structure/habitat_core/node))
+		orbit_place_deck_hatch(C)
 	return C
 
 /proc/habitat_place_hatch(turf/T)
@@ -491,6 +502,15 @@ var/global/list/habitat_cores = list()
 			new /obj/structure/hydroponics_tray(right)
 		if ("workshop")
 			new /obj/structure/table(locate(C.x, C.y + 1, C.z))
+		if ("station")
+			new /obj/structure/bed/lander_bunk(locate(C.x - 1, C.y, C.z))
+			new /obj/structure/bed/lander_bunk(locate(C.x + 1, C.y, C.z))
+			new /obj/structure/closet/crate(locate(C.x - 1, C.y - 1, C.z))
+		if ("orbital workshop")
+			new /obj/structure/bed/lander_bunk(left)
+			new /obj/structure/bed/lander_bunk(right)
+			new /obj/structure/table(locate(C.x, C.y + 1, C.z))
+			new /obj/structure/closet/crate(locate(C.x - 1, C.y - 1, C.z))
 		if ("storage")
 			new /obj/structure/closet/crate(left)
 			new /obj/structure/closet/crate(right)
@@ -620,9 +640,12 @@ var/global/list/habitat_cores = list()
 
 /obj/structure/life_support/scrubber/work(datum/habitat_ledger/L, seconds)
 	var/excess = L.co2 - HABITAT_CO2_TARGET_KPA * L.volume
-	if (excess <= 0 || !has_power())
+	// In orbit the sorbent bed wears out (orbit_wear.dm).
+	if (excess <= 0 || !has_power() || !orbit_sorbent_ready(src))
 		return FALSE
-	L.scrub_co2(min(excess, HABITAT_SCRUB_PER_SECOND * seconds))
+	var/amount = min(excess, HABITAT_SCRUB_PER_SECOND * seconds)
+	L.scrub_co2(amount)
+	orbit_sorbent_use(src, amount)
 	return TRUE
 
 /obj/structure/life_support/heater

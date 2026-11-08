@@ -11,6 +11,8 @@ if errorlevel 1 (
 )
 schtasks /End /TN "%CIV13_TASK%" >nul 2>&1
 rem Give the old service a moment to release the doorman port before the new one binds it.
-timeout /t 5 /nobreak >nul
+rem ping, not timeout: run from Git Bash, "timeout" is the coreutils one and fails at once,
+rem and timeout.exe refuses to run when the launcher starts this with no console input.
+"%SystemRoot%\System32\PING.EXE" -n 6 127.0.0.1 >nul
 schtasks /Run /TN "%CIV13_TASK%" || exit /b 1
 echo "%CIV13_TASK%" restarted.

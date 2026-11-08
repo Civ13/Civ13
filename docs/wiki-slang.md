@@ -2,9 +2,7 @@
 
 This lexicon adapts selected entries from Civ13's
 [Guide to Slang](https://civ13.github.io/civ13-wiki/guides/Guide_to_Slang.html).
-It adds 50 restricted rows after the original 66 unrestricted rows in
-`config/dictionary.txt`. The original rows remain byte-identical and in their
-original order; none has been converted to an era restriction.
+It adds 50 era rows after the unrestricted rows in `config/dictionary.txt`.
 
 ## Source and attribution
 
@@ -58,40 +56,19 @@ engine dates or claims that the paired historical years are identical. Excluded
 terms and the reasons for rejecting unsafe or ambiguous triggers are recorded in
 [wiki-slang-review.md](wiki-slang-review.md), outside the loaded dictionary.
 
-## Explicit phrase matching
+## Matching
 
-Only the new wiki rows opt in to the fourth-field `phrase` mode. Their source and
-replacement padding is removed intentionally. The original 66 two-field rows and
-all three-field literal rows keep their exact matching behavior. The approved
-period mappings and source attribution do not alter this compatibility contract.
+The wiki rows are ordinary era rows (`source,replacement,era`). Like every row
+they match whole words only, so `excuse me, please` becomes `mind the grease,
+please` and `be brave brave now` becomes `be bricky bricky now`, while `bravest`,
+`brave-looking` and `excuse meow` are left alone. See [dictionary.md](dictionary.md)
+for the full rules.
 
-Phrase mode covers standalone, sentence-edge and known ASCII-punctuation forms.
-For example, `excuse me, please` becomes `mind the grease, please`; `be brave brave
-now` becomes `be bricky bricky now`. Delimiters are preserved. Hyphens, apostrophes,
-letters/digits/underscore and unclassified Unicode neighbors are not boundaries,
-so fragments such as `bravest`, `brave-looking` and `excuse meow` are protected.
-No automatic recasing occurs; normal speech and whisper capitalization stays at
-its existing call sites. See [dictionary.md](dictionary.md) for the exact policy.
-
-Each row scans its own original input once without rescanning inserted output.
-Later rows still consume earlier output in file order. The curated rows have no
-conflicting same-era sources, nested triggers, replacement cycles/cascades or
-triggers that consume original default outputs. The original abbreviations keep
-their existing unrestricted outputs. These are literal-data checks, not semantic
-language understanding.
+The curated rows have no conflicting same-era sources and no replacement that
+contains another source.
 
 ## Verification scope
 
-The normal offline dictionary suite includes content inventory, source/license
-pins, legacy-byte preservation, all nine matching/nonmatching eras, missing-map
-behavior, case, fragments, multiple replacements and overlap traces. Unsafe
-padding, duplicate sources, cycles and legacy-output cascades have negative
-controls. The Python trace is an offline model of literal and explicit phrase replacement;
-it does not execute DM.
-
-The prepared DM fixture compares each original row against the complete
-legacy-plus-wiki pipeline, and prepares matching/nonmatching checks through both
-production speech prefixes for every appended row. Preparation does not compile
-or execute it. Compile results require a separate exact-source receipt; compilation
-does not establish runtime acceptance. Earlier compilation evidence at
-`ab099f212e2c2d9d3cc423e148a95d8f88beb4ab` predates these additions.
+`tests/dictionary_era/test_slang_content.py` checks the inventory against
+`wiki_slang.json`, the source and license pins, and each row in every era.
+`test_corpus.py` checks the recorded DM output for every row.

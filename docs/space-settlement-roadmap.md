@@ -379,7 +379,9 @@ come with phase 3, when there is something to save.
   Life Support adds a water recycler (5 power) that reclaims 0.02 units of
   water per occupant per second into a 200-unit tank, tops up the module's
   electrolysers first and gives the rest to an open container or to pipes
-  (electrolysers are pipe sinks, so modules can share water), and an oxygen
+  (electrolysers are pipe sinks, so modules can share water; a water tap and
+  piped shower draw from the same pipes, while an ordinary sink, well or
+  shower on Mars or the Moon is dry, `water_scarcity.dm`), and an oxygen
   reclaimer (15 power) that scrubs CO2 like the scrubber and returns half of
   it as oxygen. Composting into greenhouse nutrient already worked in module
   trays. Local Resources (after Surface Vehicles) unlocks a propellant plant

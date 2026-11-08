@@ -74,6 +74,7 @@
 	else if (weight > max_weight * 0.95 && weight <= INFINITY)
 		slowdown = 0.99
 	. *= slowdown+1
+	. *= leader_order_move_mult()
 
 	last_run_delay = .
 	next_calculate_run_delay = world.time + 5
@@ -255,6 +256,7 @@
 			return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
+	var/subtile_realign = FALSE
 	if (ishuman(src))
 		subtile_actor = src
 		if (subtile_actor.human_subtile_pulse)
@@ -262,7 +264,12 @@
 			if (!subtile_pulse)
 				return FALSE
 		else if (subtile_actor.human_subtile_offset_owned && (step_x || step_y))
-			return FALSE
+			// Only a body that can still walk keeps its owned offset. A downed,
+			// dead, clientless or pulled body must stay draggable: the plain
+			// Move below lands it on a tile under native collision.
+			if (subtile_actor.client && !subtile_actor.stat && !subtile_actor.lying && !subtile_actor.pulledby)
+				return FALSE
+			subtile_realign = TRUE
 	if (!subtile_pulse && (direct & (direct - 1)))
 		if (direct & TRUE)
 			if (direct & 4)
@@ -316,6 +323,8 @@
 		l_move_time = world.time
 		if ((A != loc && A && A.z == z))
 			last_move = get_dir(A, loc)
+	if (subtile_realign && subtile_actor && !isDeleted(subtile_actor) && !step_x && !step_y)
+		subtile_actor.human_subtile_offset_owned = FALSE
 	if (istype(src, /mob/living/human))
 		var/mob/living/human/H = src
 		if (H.riding == TRUE && !isnull(H.riding_mob))
@@ -358,8 +367,8 @@
 	var/subtile_chain_time = human_subtile_chain_time
 	human_subtile_chain_time = null
 
-	// The world has saved for a handover; nothing done now would survive the move.
-	if (world_moving)
+	// This mob's level is being saved (restart_transaction.dm).
+	if (persistence_frozen_levels.len && persistence_input_frozen(src))
 		return
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements
@@ -753,7 +762,10 @@
 				move_delay += 6
 		if (mob.pulling)
 
-			if (!mob.pulling.Adjacent(mob))
+			// A step interrupted mid-tile west or south leaves loc two tiles
+			// from the pulled object while the bodies still touch.
+			var/pull_touching = (mob.step_x || mob.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32
+			if (!mob.pulling.Adjacent(mob) && !pull_touching)
 				mob.stop_pulling()
 
 			else if (istype(mob.pulling, /mob))

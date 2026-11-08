@@ -128,8 +128,8 @@ class TraitFoundations(unittest.TestCase):
         social = source[source.index('if (find_trait("Extroverted"))'):source.index('if (!inducedSSD)', source.index('if (find_trait("Extroverted"))'))]
         self.assertEqual(social.count('if (HM != src && HM.stat != DEAD)'), 2)
         self.assertEqual(social.count('range(3,src)'), 2)
-        self.assertEqual(social.count('adjust_mood(0.12)'), 2)
-        self.assertEqual(social.count('adjust_mood(-(0.4))'), 2)
+        self.assertEqual(social.count('adjust_mood(0.12, '), 2)
+        self.assertEqual(social.count('adjust_mood(-(0.4), '), 2)
         # Counterexample to the historical bug: own living body is present.
         for nearby, expected in [([('self', False)], 0), ([('self', False), ('other', False)], 1),
                                  ([('self', False), ('other', True)], 0)]:

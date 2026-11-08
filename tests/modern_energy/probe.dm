@@ -104,6 +104,16 @@ var/list/energy_ci_errors = list()
 	G.after_load()
 	energy_ci_check("reload off", G.enabled, FALSE)
 	energy_ci_check("reload clears output", G.output_power, 0)
+	// A restored generator on its old cable rejoins it, still switched off.
+	var/obj/structure/cable/port = new(locate(3,3,2))
+	G.forceMove(port.loc)
+	G.anchored = TRUE
+	G.after_load()
+	energy_ci_check("reload rejoins own cable", G.powersource, port)
+	energy_ci_check("reload rejoin connected", G.connected(), TRUE)
+	energy_ci_check("reload rejoin stays off", G.enabled, FALSE)
+	G.disconnect_generation()
+	qdel(port)
 	for (var/key in list("enabled", "registered", "retired", "output_power", "output_until", "output_epoch", "charge_power", "powersource"))
 		energy_ci_check("runtime excluded [key]", G.persistence_runtime_var(key), TRUE)
 	G.name = "saved solar controller"

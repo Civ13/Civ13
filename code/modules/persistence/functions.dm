@@ -258,20 +258,82 @@ var/global/list/persistence_field_allowlists = list()
 	if (partial)
 		to_save |= params2list(map_storage_saved_vars)
 	else
+		var/list/runtime_cache = persistence_runtime_var_cache[type]
+		if (!runtime_cache)
+			runtime_cache = list()
+			persistence_runtime_var_cache[type] = runtime_cache
 		for (var/key in src.vars)
 #ifdef CIV13_VARIABLE_OBSERVABILITY
-			if (persistence_runtime_var(key))
+			// Every field is classified here, so this check uses the cache too.
+			var/observed = null
+			var/observed_instance = persistence_runtime_var_instance_keys[key]
+			if (!observed_instance)
+				observed = runtime_cache[key]
+			if (isnull(observed))
+				if (persistence_runtime_var(key))
+					observed = TRUE
+				else
+					observed = FALSE
+				if (!observed_instance)
+					runtime_cache[key] = observed
+			if (observed)
 				variable_observability_skipped(src.vars[key])
 				continue
 #endif
 			// Most fields still hold their compiled default: compare first, and
 			// ask the per-type runtime-field filter only about changed ones.
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
-				if (persistence_runtime_var(key))
+				// Answers per type and field (see persistence_runtime_var_cache below).
+				var/instance_key = persistence_runtime_var_instance_keys[key]
+				var/cached = null
+				if (!instance_key)
+					cached = runtime_cache[key]
+				if (isnull(cached))
+					if (persistence_runtime_var(key))
+						cached = TRUE
+					else
+						cached = FALSE
+					if (!instance_key)
+						runtime_cache[key] = cached
+				if (cached)
 					continue
 				to_save |= key
 			to_save |= "name"
 	return to_save
+
+// get_saved_vars and the export (BuildVarDirectory) cache persistence_runtime_var
+// per type and field. Overrides whose answer reads the instance must name those fields here, and
+// tests/save_policy/test_runtime_var_cache.py fails on any new override that
+// reads more than its key.
+var/global/list/persistence_runtime_var_cache = list()
+var/global/list/persistence_runtime_var_instance_keys = list("glide_size" = TRUE, "step_x" = TRUE, "step_y" = TRUE, "mind" = TRUE)
+
+// D's type's answers, filled for every field in fields first. Instance fields
+// are never cached and read as null, so the caller asks D itself.
+/proc/persistence_runtime_var_type_cache(datum/D, list/fields)
+	var/list/cache = persistence_runtime_var_cache[D.type]
+	if (!cache)
+		cache = list()
+		persistence_runtime_var_cache[D.type] = cache
+	for (var/key in fields)
+		if (persistence_runtime_var_instance_keys[key] || !isnull(cache[key])) continue
+		cache[key] = D.persistence_runtime_var(key) ? TRUE : FALSE
+	return cache
+
+// One field's answer through the same cache, for loops over a single datum's
+// fields (sparse checks and imports). Instance fields always ask D.
+/proc/persistence_runtime_field(datum/D, key)
+	if (persistence_runtime_var_instance_keys[key])
+		return D.persistence_runtime_var(key)
+	var/list/cache = persistence_runtime_var_cache[D.type]
+	if (!cache)
+		cache = list()
+		persistence_runtime_var_cache[D.type] = cache
+	var/cached = cache[key]
+	if (isnull(cached))
+		cached = D.persistence_runtime_var(key) ? TRUE : FALSE
+		cache[key] = cached
+	return cached
 
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
@@ -729,7 +791,7 @@ var/global/datum/persistence_admission_identity
 			return null
 #endif
 		if(kind == "save")
-			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
+			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement. Players are held still only while their own level is being saved.</B></FONT>")
 	catch(var/exception/admission_error)
 		operation.withdraw()
 		throw admission_error
@@ -875,6 +937,7 @@ var/global/datum/persistence_admission_identity
 #endif
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
+		persistence_release_all_levels()
 		persistence_active_operation = null
 		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
@@ -1320,7 +1383,9 @@ var/global/datum/persistence_admission_identity
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
-		apply_restored_lighting()
+		// The daylight sweep yields per batch; let the load finish beside it.
+		spawn(0)
+			apply_restored_lighting()
 		return
 	global.game_id = state["game_id"]
 	round_elapsed_offset = state["elapsed"]
@@ -1340,7 +1405,9 @@ var/global/datum/persistence_admission_identity
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
-		apply_restored_lighting()
+		// The daylight sweep yields per batch; let the load finish beside it.
+		spawn(0)
+			apply_restored_lighting()
 
 /datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	return before_save()
@@ -1626,30 +1693,65 @@ var/global/datum/persistence_admission_identity
 // fills a new level with it) and applies the saved cells on top. The marker
 // in the level index, never the level number, says whether a file is sparse,
 // so a restore reads a file written before the level was allocated.
+// A mapped ground level is sparse the same way around its most common
+// unchanged tile (cave rock, deep sea): a cell with that turf in that area,
+// every saved field at its default and nothing to save inside. The world
+// clears every object before a load, so the loader rebuilds such a cell
+// from its type alone.
 /map_storage
 	var/list/sparse_level_override // fixtures: "[z]" -> baseline turf type
+	var/list/sparse_ground_choice // the level being saved: z, turf, area
 
 // The kind of sparse level z is saved as, or null for a full level.
 /map_storage/proc/sparse_level_kind(z)
-	if(islist(sparse_level_override)) return sparse_level_override["[z]"] ? "fixture" : null
+	if(islist(sparse_level_override))
+		var/override = sparse_level_override["[z]"]
+		if(override == "ground") return "ground"
+		return override ? "fixture" : null
 	// Orbit planes are compiled vacuum; the arrival plane holds the registry.
 	var/orbit = text2path("/proc/orbit_world")
 	if(orbit && call(orbit)()) return z > 1 ? "orbit" : null
-	if(z <= building_base_maxz()) return null
 	var/dug = text2path("/proc/dug_underground_z")
 	if(dug && call(dug)() == z) return null // Generated caves are random, not a baseline.
+	if(z <= building_base_maxz()) return "ground"
 	return "building"
 
 /map_storage/proc/sparse_baseline_turf(kind, z)
 	if(kind == "fixture") return sparse_level_override["[z]"]
 	if(kind == "building") return text2path("/turf/sky/building")
 	if(kind == "orbit") return text2path("/turf/floor/space/orbit")
+	if(kind == "ground") return sparse_ground_baseline(z)
 	return null
+
+// Picks the ground level's baseline: the turf type and area shared by the
+// most unchanged cells of a 1-in-16 sample (checking every cell cost about
+// as much as the cells it spared), or null when no sampled cell is unchanged.
+/map_storage/proc/sparse_ground_baseline(z)
+	sparse_ground_choice = null
+	var/list/counts = list()
+	var/list/areas = list()
+	for(var/y = 1, y <= world.maxy, y += 4)
+		for(var/x = 1, x <= world.maxx, x += 4)
+			var/turf/T = locate(x, y, z)
+			if(!istype(T.loc, /area) || !sparse_baseline_cell(T, T.type, T.loc)) continue
+			var/key = "[T.type]\ref[T.loc]"
+			counts[key] = counts[key] + 1
+			areas[key] = T
+		TICK_CHECK
+	var/best
+	for(var/key in counts)
+		if(!best || counts[key] > counts[best]) best = key
+	if(!best) return null
+	var/turf/sample = areas[best]
+	sparse_ground_choice = list("z" = z, "turf" = sample.type, "area" = sample.loc)
+	return sample.type
 
 // The area the level's unchanged cells share: the area of the first cell at
 // the baseline, or null when every cell differs (the level is then saved in
 // full under its sparse header).
 /map_storage/proc/sparse_baseline_area(z, baseline_type)
+	var/list/ground = sparse_ground_choice
+	if(ground && ground["z"] == z && ground["turf"] == baseline_type) return ground["area"]
 	for(var/y = 1, y <= world.maxy, y++)
 		for(var/x = 1, x <= world.maxx, x++)
 			var/turf/T = locate(x, y, z)
@@ -1679,7 +1781,7 @@ var/global/datum/persistence_admission_identity
 	if(T.persistence_export_frame) return FALSE
 	var/list/default_fields = T.persistence_field_allowlist()
 	for(var/v in T.get_saved_vars())
-		if(T.persistence_runtime_var(v)) continue
+		if(persistence_runtime_field(T, v)) continue
 		switch(v)
 			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 				continue

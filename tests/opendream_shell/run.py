@@ -14,6 +14,7 @@ def main():
     parser.add_argument("--negative-control", choices=("tts", "dispatch"))
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
+    pin = json.loads((repo / "tools/byond/version.json").read_text(encoding="utf-8"))["version"]
     args.output.mkdir(parents=True, exist_ok=True)
     chat = (repo / "code/game/mob/living/chat_overlay.dm").read_text(encoding="utf-8")
     tts = chat[chat.index("/mob/proc/play_tts("):chat.index("/////AMAZON AWS")]
@@ -51,7 +52,7 @@ def main():
                                    cwd=root, capture_output=True, text=True, timeout=30)
             build_log = build.stdout + build.stderr
             (args.output / (mode + "-compile.log")).write_text(build_log, encoding="utf-8")
-            if build.returncode or "516.1681" not in build_log or "0 errors, 0 warnings" not in build_log:
+            if build.returncode or pin not in build_log or "0 errors, 0 warnings" not in build_log:
                 raise RuntimeError(build_log)
             runtime = subprocess.run([str(daemon.resolve()), "probe.dmb", "-invisible", "-trusted", "-close", "-log", "runtime.log"],
                                      cwd=root, capture_output=True, text=True, timeout=15)

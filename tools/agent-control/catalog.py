@@ -18,12 +18,15 @@ VALUE = {
     ),
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw"]
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
 ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
 CHOOSE = {"type": "string", "description": "answer to a menu the step opens, e.g. \"Tunnel\" for a shovel"}
 VERB = {"type": "string", "description": 'verb: a verb name from character_observe self.verbs, self.item_verbs or a nearby row\'s verbs, e.g. "Lie Down" (target picks whose verb; onto or text is its argument)'}
+EXPECT_NAME = {"type": "string", "description": "refuse the step (target_changed) unless the target's name still contains this, e.g. the name observe showed"}
+UNTIL = {"type": "object", "additionalProperties": False, "description": "with repeat: stop early once a new message contains message, the active hand holds an item whose name contains holding, or its stack reaches amount", "properties": {
+    "message": {"type": "string"}, "holding": {"type": "string"}, "amount": {"type": "integer", "minimum": 1}}}
 ITEM = {"type": "string", "description": 'take: the name of a carried or worn item to take into the empty active hand, e.g. "sharpened flint".'}
 
 
@@ -56,7 +59,19 @@ ACTIONS = {
     "delete_atom": ("spawn", "Delete an object or a mob without a connected player.", _schema({"target": TARGET}, ["target"])),
     "character_spawn": ("characters", "Create a character this agent controls (no ckey needed). With job, it joins like a late joiner: that job's clothes, kit and spawn point.", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}, "job": {"type": "string", "description": 'A late-join job title on this map, e.g. "Nomad".'}, "stay": {"type": "boolean", "description": "With job: start at the target instead of the job's spawn point."}}, ["target"])),
     "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
-    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, and its action queue with results since queue_since.", _schema({"character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"}}, ["character"])),
+    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, its action queue with results since queue_since, prompts the game raised that no step answered, and sounds it heard. With since_rev (the rev of the last observe) nearby lists only rows that appeared or changed, plus nearby_removed refs. wait_s holds the call until something is new.", _schema({
+        "character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"},
+        "since_rev": {"type": "integer", "description": "rev from the previous observe: return only nearby changes"},
+        "prompt_since": {"type": "integer", "description": "prompts after this id (last_prompt)"},
+        "sound_since": {"type": "integer", "description": "sounds after this id (last_sound)"},
+        "footsteps": {"type": "boolean", "description": "include footstep sounds (default false)"},
+        "wait_s": {"type": "number", "minimum": 0, "maximum": 60, "description": "wait up to this many seconds for a new message, queue result (queue_since), prompt (prompt_since), sound (sound_since) or nearby change (since_rev)"},
+    }, ["character"])),
+    "character_view": ("characters", "A picture of what a character sees: its view (radius 1-7, default 7) as an appearance dump with overlays, colours, planes and lighting, the byond-devtools ingame format. The server sends it in parts (part, view); the client and MCP tool fetch them all and, with BYOND_DEVTOOLS set to a byond-devtools checkout, return it rendered as a PNG.", _schema({
+        "character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7},
+        "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
+        "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
+    }, ["character"])),
     "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) or throw (the held item at target); board, disembark, drag, verb and throw only through character_queue. While driving a boat, move steers it one tile.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
@@ -72,6 +87,7 @@ ACTIONS = {
         "zone": ZONE,
         "onto": ONTO,
         "name": VERB,
+        "expect_name": EXPECT_NAME,
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -92,6 +108,9 @@ ACTIONS = {
                 "zone": ZONE,
                 "onto": ONTO,
                 "name": VERB,
+                "expect_name": EXPECT_NAME,
+                "repeat": {"type": "integer", "minimum": 1, "maximum": 30, "description": "run this step up to this many times (each when its cooldown allows); a blocked move or a failure stops it"},
+                "until": UNTIL,
             },
             "required": ["do"],
         }},
@@ -114,4 +133,4 @@ ACTIONS = {
     "visit_start": ("visits", "Start a nomad visit (raiders or traders) at the busiest settlement, or near a target.", _schema({"kind": {"type": "string", "enum": ["raid", "trade"]}, "target": TARGET, "size": {"type": "integer", "minimum": 2, "maximum": 6}})),
 }
 
-SCOPES = ("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits")
+SCOPES = ("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits", "ooc")

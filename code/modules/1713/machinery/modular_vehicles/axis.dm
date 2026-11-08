@@ -236,9 +236,13 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			for(var/obj/item/ammo_casing/AC in T)
 				if(!AC.BB)
 					qdel(AC) //to prevent the "empty empty empty empty"... spam
-			for(var/obj/item/I in TT)
-				if (!(I in transporting) && !istype(I, /obj/item/weapon/grenade))
-					qdel(I)
+			// Items two tiles ahead are crushed, unless they ride on a frame of
+			// this vehicle: a long hull's rear frames look ahead onto its own
+			// nose before the first move has filled transporting.
+			if (!(locate(/obj/structure/vehicleparts/frame) in TT))
+				for(var/obj/item/I in TT)
+					if (!(I in transporting) && !istype(I, /obj/item/weapon/grenade))
+						qdel(I)
 			for(var/obj/effect/fire/BO in T)
 				if (!(BO in transporting))
 					qdel(BO)

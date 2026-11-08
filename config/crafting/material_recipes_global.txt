@@ -239,6 +239,7 @@ RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
+RECIPE: /material/clay/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
@@ -415,7 +416,6 @@ RECIPE: /material/electronics/,hydraulic fracturing rig,/obj/structure/drill/fra
 RECIPE: /material/electronics/,powered soil sifter,/obj/structure/drill/sifter,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,powered river concentrator,/obj/structure/drill/sifter/panner,20,300,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,powered stamp mill,/obj/structure/drill/stamp_mill,20,300,1,1,none,125,0,0,8,null
-RECIPE: /material/electronics/,feeder arm,/obj/structure/factory_arm,5,200,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,factory monitor,/obj/structure/factory_monitor,5,150,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,sorting arm,/obj/structure/factory_arm/sorting,6,200,1,1,none,125,0,0,8,null
 RECIPE: /material/electronics/,automated fabricator,/obj/structure/factory_fabricator/automated,10,250,1,1,none,125,0,0,8,null
@@ -449,6 +449,34 @@ RECIPE: /material/electronics/,mission console,/obj/structure/survey_console,20,
 RECIPE: /material/electronics/,advanced survey probe,/obj/item/space_probe/advanced,35,200,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,launch pad,/obj/structure/region_gate/trail_marker/launch_pad,40,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,crewed lander,/obj/structure/crewed_lander,60,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,lunar surface kit,/obj/item/lunar_kit,40,300,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,two-stage rocket,/obj/structure/crewed_lander/orbital_rocket,80,500,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,station transceiver,/obj/structure/telecom/relay/station,20,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,reusable rocket,/obj/structure/crewed_lander/orbital_rocket/reusable,120,600,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,cargo freighter,/obj/structure/crewed_lander/freighter,60,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,docking port,/obj/structure/docking_port,30,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,microgravity lab,/obj/structure/zero_g_lab,40,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,satellite launcher,/obj/structure/crewed_lander/satellite_launcher,50,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,ground station,/obj/structure/satellite_station,25,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,weather satellite,/obj/item/satellite/weather,30,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,comms satellite,/obj/item/satellite/comms,30,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,navigation satellite,/obj/item/satellite/navigation,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,survey orbiter,/obj/item/satellite/survey,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,GPS receiver,/obj/item/gps_receiver,5,100,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,truss,/obj/structure/orbit_truss,2,40,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,safety tether,/obj/item/eva_tether,1,30,0,0,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,orbital workshop kit,/obj/item/habitat_kit/orbital_workshop,70,450,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,node module kit,/obj/item/habitat_kit/node,70,450,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,sector beacon,/obj/item/sector_beacon,15,200,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/copper/,edge coupler,/obj/item/connector/riser/coupler,4,50,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,reboost thruster,/obj/structure/orbit_thruster,25,250,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,tracking solar array,/obj/structure/civ_generator/solar/wing/tracking,25,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,radioisotope generator,/obj/structure/civ_generator/isotope,40,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,fixed solar wing,/obj/structure/civ_generator/solar/wing,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,fuel cell,/obj/structure/civ_generator/fuel_cell,20,250,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,radiator,/obj/structure/life_support/radiator,15,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,launch complex office,/obj/structure/region_gate/launch_complex,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,orbit console,/obj/structure/orbit_console,20,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,habitat module kit,/obj/item/habitat_kit,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,greenhouse module kit,/obj/item/habitat_kit/greenhouse,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,workshop module kit,/obj/item/habitat_kit/workshop,60,400,0,1,spaceflight,235,0,0,8,null
@@ -464,12 +492,14 @@ RECIPE: /material/plastic/,pressure suit,/obj/item/clothing/suit/pressure_suit,3
 RECIPE: /material/plastic/,pressure helmet,/obj/item/clothing/head/pressure_helmet,15,200,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,suit air tank,/obj/item/pressure_tank,10,150,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/plastic/,suit patch kit,/obj/item/pressure_suit_patch,3,100,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/plastic/,sorbent cartridge,/obj/item/sorbent_cartridge,4,100,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,regolith drill rig,/obj/structure/drill/regolith_rig,30,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,ice melter,/obj/structure/reagent_dispensers/ice_melter,15,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,rover assembly bay,/obj/structure/car_workshop/rover_bay,40,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,rover charger,/obj/structure/rover_charger,10,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,cargo trailer,/obj/structure/closet/crate/rover_trailer,20,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,propellant plant,/obj/structure/reagent_dispensers/propellant_plant,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,methalox plant,/obj/structure/reagent_dispensers/propellant_plant/methalox,50,300,1,1,spaceflight,235,0,0,8,null
 
 //*****************| ELECTRONICS CAMERAS |***************************
 
@@ -1398,6 +1428,7 @@ RECIPE: /material/stone/,monumental saint statue,/obj/structure/religious/monume
 RECIPE: /material/stone/,smooth roman road,/obj/covers/roads/roman,1,0,1,1,roads,20,0,0,8,null
 RECIPE: /material/stone/,smooth cobble road,/obj/covers/roads/cobble,1,0,1,1,roads,32,0,0,8,null
 RECIPE: /material/stone/,smooth modern road,/obj/covers/roads/modern,1,0,1,1,roads,100,0,0,8,null
+RECIPE: /material/stone/,runway,/obj/covers/roads/modern/runway,1,0,1,1,roads,126,0,0,8,null
 
 //*************| STONE 'STATUE' & WINDOWS |***************
 
@@ -1889,6 +1920,7 @@ RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/cu
 
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,construction,96,0,0,8,null
+RECIPE: /material/steel/,steel bridge span,/obj/item/weapon/bridge_span,4,100,0,1,construction,96,0,0,8,null
 
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 
@@ -1902,6 +1934,7 @@ RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,
 
 RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,automobile workshop,/obj/structure/car_workshop,30,230,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,aircraft hangar,/obj/structure/car_workshop/hangar,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 
 RECIPE: /material/steel/,driver's seat,/obj/structure/bed/chair/drivers,8,40,0,1,vehicle parts,126,0,0,8,null
@@ -1911,6 +1944,7 @@ RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,
 
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,cargo hold,/obj/structure/cargo_hold,8,120,1,1,vehicle parts,115,0,0,8,null
 RECIPE: /material/steel/,steel ship frame,/obj/structure/vehicleparts/frame/ship/steel,2,40,0,1,vehicle parts,97,0,0,8,null
 
 RECIPE: /material/wood/soft/,ridgid hull inflatable boat frame,/obj/item/vehicleparts/frame/boat/rhib,22,200,0,1,vehicle parts,175,0,0,8,null
@@ -1944,6 +1978,7 @@ RECIPE: /material/steel/,steam engine,/obj/structure/engine/external/steam,15,25
 RECIPE: /material/steel/,conveyor belt,/obj/item/conveyor_construct,5,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,conveyor switch,/obj/item/conveyor_switch_construct,5,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,factory belt,/obj/item/factory_belt_assembly,4,150,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,feeder arm,/obj/structure/factory_arm,8,200,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,fast factory belt,/obj/item/factory_belt_assembly/fast,6,150,1,1,production,125,0,0,8,null
 RECIPE: /material/steel/,parts bin,/obj/structure/closet/crate/factory_bin,6,150,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,belt drive,/obj/structure/factory_drive,8,200,1,1,production,95,0,0,8,null
@@ -1985,6 +2020,7 @@ RECIPE: /material/steel/,holding tank,/obj/structure/fluid_tank,10,150,1,1,produ
 RECIPE: /material/steel/,reaction vessel,/obj/structure/fluid_vessel,14,200,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,fast reaction vessel,/obj/structure/fluid_vessel/fast,20,250,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,industrial reaction vessel,/obj/structure/fluid_vessel/industrial,30,300,1,1,production,105,0,0,8,null
+RECIPE: /material/steel/,electroplating bath,/obj/structure/plating_bath,10,150,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,bottler,/obj/structure/fluid_bottler,8,150,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,automatic tablet press,/obj/structure/fluid_tablet_press,12,200,1,1,production,105,0,0,8,null
 RECIPE: /material/steel/,pipe meter,/obj/structure/fluid_meter,2,100,1,1,production,105,0,0,8,null
@@ -2055,6 +2091,24 @@ RECIPE: /material/bronze/,bronze sarcophagus,/obj/structure/closet/coffin/sarcop
 RECIPE: /material/bronze/,monumental bronze statue of karl marx,/obj/structure/religious/monument/karl_marx,30,300,1,1,religious & decoration,125,0,0,8,null
 RECIPE: /material/bronze/,bronze bust of karl marx,/obj/item/weapon/material/marx,3,80,0,0,religious & decoration,125,0,0,8,bronze
 RECIPE: /material/bronze/,globe,/obj/item/weapon/globe,8,90,0,1,religious & decoration,85,80,0,8,null
+
+//********************************************************
+//*********************| BRASS |**************************
+//********************************************************
+
+RECIPE: /material/brass/,brass razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,hygiene,0,0,0,8,brass
+RECIPE: /material/brass/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,0,8,null
+RECIPE: /material/brass/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,null
+RECIPE: /material/brass/,globe,/obj/item/weapon/globe,8,90,0,1,religious & decoration,85,80,0,8,null
+RECIPE: /material/brass/,brass statue,/obj/structure/religious/statue,10,250,1,1,religious & decoration,10,0,0,8,brass
+
+//*********************| BRASS PROJECTILES |*************************
+
+RECIPE: /material/brass/,rifle casing (x3),/obj/item/stack/ammopart/casing/rifle,1,25,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,pistol casing (x3),/obj/item/stack/ammopart/casing/pistol,1,25,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,artillery casing,/obj/item/stack/ammopart/casing/artillery,2,35,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,field cannon casing,/obj/item/stack/ammopart/casing/tank,2,35,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,grenade casing,/obj/item/stack/ammopart/casing/grenade,2,35,0,1,ammunition,115,0,0,8,null
 
 //*******************************************************
 //*********************| WOOD |**************************
@@ -2215,6 +2269,7 @@ RECIPE: /material/wood/soft/,armor assembly workbench,/obj/structure/component_w
 RECIPE: /material/wood/soft/,weapon assembly workbench,/obj/structure/component_workbench/weapon,10,100,1,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,fletcher's bench,/obj/structure/component_workbench/fletching,10,100,1,1,tools,0,14,0,8,null
 RECIPE: /material/iron/,toolsmith's bench,/obj/structure/component_workbench/toolsmith,10,120,1,1,production,25,0,0,8,null
+RECIPE: /material/steel/,casting foundry,/obj/structure/component_workbench/toolsmith/foundry,20,150,1,1,production,35,0,0,8,null
 RECIPE: /material/iron/,reinforced handle,/obj/item/weapon/material/handle,2,70,0,1,tools,18,0,0,8,iron
 RECIPE: /material/wood/soft/,wood cane,/obj/item/weapon/cane,2,35,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,plough,/obj/item/weapon/plough,4,120,0,1,tools,0,0,0,8,null

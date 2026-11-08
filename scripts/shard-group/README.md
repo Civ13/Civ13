@@ -136,7 +136,8 @@ answers.
 Set `relay_port` (0 = off) to put every region behind two public ports: the
 gate region's own port (`gate`, the mainland by default) and the relay port.
 Forward only those two on the router; the other region ports and every agent
-port stay closed. `relay_control_port` (default `relay_port + 1`) is loopback
+port stay closed. A routed region is never listed on the hub, even with
+`"public": true`, because its own port is not reachable from outside. `relay_control_port` (default `relay_port + 1`) is loopback
 only; `relay_bind` (`0.0.0.0`) and `relay_capture` (false) are optional. Setup
 writes `relay`, `relay_control` and `gate` into each region's
 `shard_region.json` and the group token into `config/relay-token.txt`; the host
@@ -232,6 +233,20 @@ A Nomad left through a gate and arrived in the other region about 2.5 minutes
 later, with name, owner, clothes and coins. The transfer settled on both agents
 after the destination saved, and there were no runtime errors.
 
+## Epoch
+
+Every region keeps the mainland's epoch: a running region asks the mainland about
+itself and moves forward to its epoch (`follow_mainland_epoch` in
+`code/modules/persistence/shard_group.dm`), and its own save keeps it. To advance
+the whole group without a restart, run
+`shard_group.py --config group.json epoch --epoch 2026` (or the epoch's number,
+0-9; `epoch.bat 2026` on Windows, or the launcher's Advance epoch). The mainland's
+world takes it first through its lifecycle Topic (`set_epoch`), so the mainland must
+be awake; if it refuses (saving, round not started, or a build without `set_epoch`)
+no region is changed. Every other running region is then told at once; a region
+asleep or stopped follows the mainland when it next runs. Epochs only move forward.
+`status` shows each running region's epoch under `region_view`.
+
 ## Staged builds
 
 `stage [--region ID]` builds the next update while the regions keep running, so
@@ -265,11 +280,16 @@ without stopping it for the load:
 1. The staged `region.dmb`/`region.rsc` are copied into the region's spare build
    slot (`region.dmb` or `region.b.dmb`; `data/shard-host/build.json` names the
    live one in `file`) and started as a **standby world** on a loopback port
-   (`standby_port`, default the region's port + 10) with `-params standby=1`.
+   (`standby_port`; by default the region's port + 10, or the next port above
+   it that no region, transfer agent, relay or doorman of the group uses) with
+   `-params standby=1`.
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
    is hidden from the hub, refuses joins and never saves.
-2. The running world freezes play ("the world is moving": players can look and
-   chat but not move or act, so nothing they do is lost), saves and publishes
+2. The running world saves, freezing each level only while it is captured
+   (players there can look and chat but not move or act; crossing between levels
+   is blocked for the whole save). Play on a level after its capture is
+   end-of-round activity that does not carry over, and players are warned. It then
+   publishes
    its restart intent (lifecycle action `handover_save`). `map_saves` is backed
    up as a stop would.
 3. The standby loads that save (`standby_load`). Its preflight and load are the
@@ -327,23 +347,31 @@ one Player Help bridge per region running, so help starts with the host:
 "player_help": {"config": "D:/GitHub/Civ13/data/player-help-config.json", "regions": ["gaia", "railyard"]}
 ```
 
-`regions` defaults to every region. Each bridge is the region's own
+`regions` (the regions whose bridge starts with the host) defaults to every region.
+Each bridge is the region's own
 `scripts/player_help_bridge.py --game-root <region> --config <config>`, run with
-the group `python` and `--stop-file <root>/player-help/stopped`, logging to
-`<root>/player-help/<id>.log`. Every half minute a region without a live bridge
-(its `SQL/player-help/worker.lock` names a dead pid, or there is none) gets one,
-after a lock left by a dead bridge is removed. One region that cannot start its
-bridge does not keep the others down.
+the group `python` and `--stop-file <root>/player-help/<id>.off`, logging to
+`<root>/player-help/<id>.log`. Every half minute a wanted region without a live
+bridge (its `SQL/player-help/worker.lock` names a dead pid, or there is none) gets
+one, after a lock left by a dead bridge is removed. One region that cannot start
+its bridge does not keep the others down. A region is wanted when it is in
+`regions` or was started on request (`<id>.on`), unless it was stopped on request
+(`<id>.off`, or `stopped` for the whole group).
 
-- `help-status` prints each region's `running`, `pid`, `enabled`, `log` and
-  `heartbeat_age_seconds` (how old its `health.json` is), and whether help is
-  `stopped` on request.
-- `help-stop` writes the stop file, waits up to 60 seconds for the bridges to
-  finish their answers and exit, then ends any still running (a bridge started
-  without the stop file never sees it). The host service leaves them stopped.
-- `help-start` removes the stop file and starts the missing bridges at once.
+- `help-status` prints every region of the group with `running`, `pid`, `wanted`
+  (kept running by the host service), `listed` (in `regions`), `enabled`, `log`
+  and `heartbeat_age_seconds` (how old its `health.json` is), and `stopped` when
+  no region is wanted.
+- `help-stop [--region ID]` writes the stop files, waits up to 60 seconds for the
+  bridges to finish their answers and exit, then ends any still running (a bridge
+  started with another stop file, such as one from before per-region stop files,
+  never sees it). The host service leaves them stopped.
+- `help-start [--region ID]` removes the stop files and starts the missing
+  bridges at once. A region outside `regions` started this way stays wanted
+  until it is stopped. Starting one region after a whole-group stop keeps the
+  others stopped.
 
-The launcher's **Player help** tab shows this status and has Start and Stop.
+The launcher's **Player help** tab shows this status for every region and has Start all, Stop all, and Start region and Stop region for the region chosen in its list.
 Run only one supervisor per region: a bridge started some other way still holds
 the region's lock, so the host service leaves it alone, but it is not restarted
 when it exits and ignores the stop file until it is ended.

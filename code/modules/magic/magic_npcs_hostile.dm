@@ -659,7 +659,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	if (. && ishuman(target_mob))
 		var/mob/living/human/H = target_mob
 		
-		H.set_mood(max(10, H.mood-10))
+		H.set_mood(max(10, H.mood-10), "a curse")
 		
 		H.apply_damage(rand(10, 15), BURN)
 		

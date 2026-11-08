@@ -169,6 +169,58 @@
 			icon_suffix = "_4"
 	icon_state = "sheet-bronze[icon_suffix]"
 
+// Uses the tin ingot art, tinted by the material colour.
+/obj/item/stack/material/zinc
+	name = "zinc"
+	icon_state = "sheet-tin"
+	default_type = "zinc"
+	apply_colour = TRUE
+	value = 2
+	flags = CONDUCT
+
+/obj/item/stack/material/zinc/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/zinc/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-tin[icon_suffix]"
+
+// Uses the tin ingot art, tinted by the material colour.
+/obj/item/stack/material/brass
+	name = "brass"
+	icon_state = "sheet-tin"
+	default_type = "brass"
+	apply_colour = TRUE
+	value = 3
+	flags = CONDUCT
+
+/obj/item/stack/material/brass/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/brass/update_icon()
+	var/icon_suffix = ""
+	switch(amount)
+		if (0 to 12)
+			icon_suffix = ""
+		if (13 to 25)
+			icon_suffix = "_2"
+		if (26 to 38)
+			icon_suffix = "_3"
+		if (39 to INFINITY)
+			icon_suffix = "_4"
+	icon_state = "sheet-tin[icon_suffix]"
+
 /obj/item/stack/material/copper
 	name = "copper"
 	icon_state = "sheet-copper"

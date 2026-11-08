@@ -201,6 +201,12 @@ class ShardGroupTests(unittest.TestCase):
         # Only the gate is offered by the launcher; the others are joined through it.
         self.assertEqual({'gaia': False, 'deep': True},
                          {r['id']: shard_group.region_config(group, r)['routed'] for r in group['regions']})
+        # A routed region stays off the hub even when it asks to be public: its port is closed.
+        listed = dict(group, regions=[dict(r, public=True) for r in group['regions']])
+        self.assertEqual({'gaia': (True, True), 'deep': (False, False)},
+                         {r['id']: (shard_group.region_config(listed, r)['public'],
+                                    shard_group.region_config(listed, r)['start_requires_byond_pager'])
+                          for r in listed['regions']})
         self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
 
     def test_supervise_starts_the_relay_once(self):
@@ -556,6 +562,54 @@ class ShardGroupTests(unittest.TestCase):
         self.assertIn('error', status['regions']['deep']['region_view'])
 
 
+    def test_epoch_names_match_the_game(self):
+        source = (ROOT / 'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
+        line = next(text for text in source.splitlines() if text.startswith('var/global/list/epoch_names = list('))
+        self.assertEqual(shard_group.EPOCH_NAMES, tuple(name.strip().strip('"') for name in line.split('list(', 1)[1].rstrip(')').split(',')))
+        self.assertEqual((9, 8, 0), (shard_group.parse_epoch('2026'), shard_group.parse_epoch('8'), shard_group.parse_epoch('5000 B.C.')))
+        for bad in ('10', '-1', '2027', ''):
+            with self.assertRaises(shard_group.Refused):
+                shard_group.parse_epoch(bad)
+
+    def test_epoch_advances_the_mainland_first_then_every_awake_region(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        asked = []
+
+        def query(port, token, action='status', operation=None, session=None, extra=None):
+            asked.append((port, action, extra))
+            return {'ok': True, 'epoch': 'set' if port == 1720 else 'current'}
+        self.machine.query = query
+        # Every region follows the mainland, so nothing changes while it is down.
+        self.machine.up.add(1721)
+        with self.assertRaises(shard_group.Refused):
+            shard_group.group_epoch(group, '2026', self.machine)
+        self.assertEqual([], asked)
+        self.machine.up.add(1720)
+        result = shard_group.group_epoch(group, '2026', self.machine)
+        self.assertEqual([(1720, 'set_epoch', {'epoch': '9'}), (1721, 'set_epoch', {'epoch': '9'})], asked)
+        self.assertEqual({'epoch': 9, 'name': '2026', 'mainland': 'gaia', 'regions': {'gaia': 'set', 'deep': 'current'}}, result)
+        # A stopped region is not started; it follows the mainland when it next runs.
+        asked.clear()
+        self.machine.up.discard(1721)
+        self.assertIn('follows the mainland', shard_group.group_epoch(group, '1969', self.machine)['regions']['deep'])
+        self.assertEqual([1720], [port for port, _, _ in asked])
+        # A mainland that refuses (busy saving, an older build) changes nothing anywhere.
+        self.machine.up.add(1721)
+        asked.clear()
+        self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: asked.append(port) or {'ok': True, 'epoch': 'refused:busy'}
+        with self.assertRaises(shard_group.Refused):
+            shard_group.group_epoch(group, '2026', self.machine)
+        self.assertEqual([1720], asked)
+
+    def test_status_shows_each_running_region_epoch(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 0, 'map': 'Caves', 'ordinal_age': 8}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertEqual({'ordinal': 8, 'name': '2013'}, status['regions']['deep']['region_view']['epoch'])
+
     def test_sleep_settings_reach_every_region(self):
         self.refuse_config('freeze_idle_minutes', freeze_idle_minutes='soon')
         self.refuse_config('wake_ignore', wake_ignore=[1])
@@ -647,10 +701,10 @@ class ShardGroupTests(unittest.TestCase):
             listening.clear()
             alive.clear()
             real = shard_group.RegionPlatform.start_agent
-            def flaky(platform):
+            def flaky(platform, refresh=False):
                 if platform.config['region'] == 'gaia':
                     raise OSError('state_dir is not writable')
-                return real(platform)
+                return real(platform, refresh)
             with mock.patch.object(shard_group.RegionPlatform, 'start_agent', flaky):
                 result = shard_group.supervise(group, start)
             self.assertEqual((['deep'], True), (result['agents'], result['coordinator']))
@@ -658,6 +712,61 @@ class ShardGroupTests(unittest.TestCase):
         self.group['regions'][0].pop('transfer_port')
         self.group['regions'][1].pop('transfer_port')
         self.assertEqual({}, shard_group.supervise(self.write_group()))
+
+    def test_supervise_restarts_helpers_running_old_code_but_not_mid_action(self):
+        # Rail Yard, 2026-11-08: agents and a coordinator from before group OOC kept
+        # running after every update, and four agents shared port 1725.
+        self.group['regions'][0]['transfer_port'] = 47201
+        self.group['regions'][1]['transfer_port'] = 47202
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        listening, started, alive, ended = set(), [], set(), []
+        listeners = {47201: [], 47202: []}
+        pids = iter(range(5000, 6000))
+        def start(argv, cwd, log):
+            started.append(argv)
+            pid = next(pids)
+            alive.add(pid)
+            if '--port' in argv:  # an agent listens on its port once started
+                port = int(argv[argv.index('--port') + 1])
+                listeners[port].append(pid)
+                listening.add(port)
+            return pid
+        def terminate(platform, pid):
+            ended.append(pid)
+            alive.discard(pid)
+            for port, owners in listeners.items():
+                if pid in owners:
+                    owners.remove(pid)
+                    if not owners:
+                        listening.discard(port)
+        code = ['one']
+        with mock.patch.object(shard_group.RegionPlatform, 'listening', lambda self, port: port in listening), \
+                mock.patch.object(shard_group.RegionPlatform, 'listener_pids', lambda self, port: list(listeners[port])), \
+                mock.patch.object(shard_group.RegionPlatform, 'terminate', terminate), \
+                mock.patch.object(shard_group.Platform, 'terminate', terminate), \
+                mock.patch.object(shard_group, 'transfer_code', lambda: code[0]), \
+                mock.patch.object(shard_group, 'detach', start), \
+                mock.patch.object(shard_group, 'process_alive', lambda pid: pid in alive):
+            self.assertEqual({'agents': ['gaia', 'deep'], 'coordinator': True}, shard_group.supervise(group, start))
+            deep_agent = listeners[47202][0]
+            self.assertEqual({}, shard_group.supervise(group, start), 'same code: nothing restarts')
+            # A stale duplicate on deep's port is ended with the agent, which starts again.
+            listeners[47202].append(4321)
+            self.assertEqual({'agents': ['deep']}, shard_group.supervise(group, start))
+            self.assertEqual([deep_agent, 4321], ended)
+            # New code on disk: nothing restarts while a region runs an action...
+            code[0] = 'two'
+            lock = Path(shard_group.region_config(group, group['regions'][0])['state_dir']) / 'action.lock'
+            lock.parent.mkdir(parents=True, exist_ok=True)
+            lock.write_text('busy')
+            self.assertEqual({}, shard_group.supervise(group, start))
+            # ...and every helper restarts once it is idle.
+            lock.unlink()
+            self.assertEqual({'agents': ['gaia', 'deep'], 'coordinator': True}, shard_group.supervise(group, start))
+            self.assertEqual({}, shard_group.supervise(group, start))
+        # A real fingerprint covers the helpers' source.
+        self.assertEqual(16, len(shard_group.transfer_code()))
 
     def test_the_host_service_serves_every_region_of_a_group(self):
         group = self.write_group()
@@ -987,7 +1096,7 @@ class PlayerHelpTests(unittest.TestCase):
         self.assertFalse(stale.exists())
         argv, cwd, log = started[0]
         self.assertEqual(['python.exe', '-I', str(cwd / 'scripts' / 'player_help_bridge.py'), '--game-root', str(cwd),
-                          '--config', str(self.base / 'help.json'), '--stop-file', str(self.base / 'regions' / 'player-help' / 'stopped')], argv)
+                          '--config', str(self.base / 'help.json'), '--stop-file', str(self.base / 'regions' / 'player-help' / 'gaia.off')], argv)
         self.assertEqual(self.base / 'regions' / 'player-help' / 'gaia.log', log)
         # Starting (pid file, before the lock) and running (lock) bridges are both left alone.
         self.alive.update({7001, 7002})
@@ -1037,10 +1146,47 @@ class PlayerHelpTests(unittest.TestCase):
         (lock.parent / 'health.json').write_text(json.dumps({'enabled': True, 'sequence': 'a' * 32}))
         mtime = (lock.parent / 'health.json').stat().st_mtime
         status = shard_group.help_status(group, now=lambda: mtime + 4)
-        self.assertEqual({'running': True, 'pid': 21, 'enabled': True, 'heartbeat_age_seconds': 4,
+        self.assertEqual({'running': True, 'pid': 21, 'wanted': True, 'listed': True, 'enabled': True, 'heartbeat_age_seconds': 4,
                           'log': str(self.base / 'regions' / 'player-help' / 'gaia.log')}, status['regions']['gaia'])
-        self.assertEqual({'running': False, 'pid': None, 'enabled': False, 'log': str(self.base / 'regions' / 'player-help' / 'deep.log')},
-                         status['regions']['deep'])
+        self.assertEqual({'running': False, 'pid': None, 'wanted': True, 'listed': True, 'enabled': False,
+                          'log': str(self.base / 'regions' / 'player-help' / 'deep.log')}, status['regions']['deep'])
+
+    def test_every_region_is_listed_and_starts_or_stops_on_its_own(self):
+        # Only gaia is listed for help, as on the live earth group (gaia and railyard of four).
+        self.group['player_help']['regions'] = ['gaia']
+        group = self.load()
+        status = shard_group.help_status(group)
+        self.assertEqual(['gaia', 'deep'], list(status['regions']), 'every region of the group is shown')
+        self.assertEqual((True, False), (status['regions']['gaia']['wanted'], status['regions']['deep']['wanted']))
+        started = []
+        def start(argv, cwd, log):
+            started.append(Path(cwd).name)
+            return 100 + len(started)
+        self.assertEqual({'player_help': ['gaia']}, shard_group.supervise(group, start))
+        self.alive.add(101)
+        self.lock('gaia', 101)
+        # Starting an unlisted region keeps it running from then on.
+        self.assertEqual({'started': ['deep'], 'errors': {}}, shard_group.help_start(group, start, region_id='deep'))
+        self.assertTrue(shard_group.help_status(group)['regions']['deep']['wanted'])
+        self.alive.add(102)
+        self.lock('deep', 102)
+        # Stopping one region leaves the other running and is not undone by the host service.
+        def kill(pid):
+            self.alive.discard(pid)
+        result = shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill, region_id='gaia')
+        self.assertEqual({'stopped': ['gaia'], 'forced': ['gaia']}, result)
+        self.assertTrue((self.base / 'regions' / 'player-help' / 'gaia.off').exists())
+        self.assertIn(102, self.alive)
+        self.assertEqual({}, shard_group.supervise(group, start))
+        status = shard_group.help_status(group)
+        self.assertEqual((False, True, False), (status['regions']['gaia']['wanted'], status['regions']['deep']['wanted'], status['stopped']))
+        # A stop of the whole group, then one region started: the others stay stopped.
+        shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill)
+        self.assertTrue(shard_group.help_status(group)['stopped'])
+        self.assertEqual(['deep'], shard_group.help_start(group, start, region_id='deep')['started'])
+        self.assertEqual((False, True), tuple(shard_group.help_status(group)['regions'][r]['wanted'] for r in ('gaia', 'deep')))
+        with self.assertRaises(shard_group.Refused):
+            shard_group.help_start(group, start, region_id='moon')
 
     def test_actions_without_player_help(self):
         del self.group['player_help']
@@ -1315,6 +1461,29 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(len(refused), 1)
         self.assertIn(self.LIVE, self.machine.up)
 
+    def test_standby_open_uses_the_session_the_loaded_standby_reports(self):
+        # Live Gaia, 2026-11-08: standby_open with the session read before the load was
+        # refused for a minute and the region stayed down; the session read back worked.
+        group, host = self.staged()
+        query = self.machine.query
+        fresh = 'f' * 32
+        loaded = []
+
+        def reloaded(port, token, action='status', operation=None, session=None, extra=None):
+            if port == self.STANDBY and action == 'standby_load':
+                loaded.append(True)
+            if port == self.STANDBY and action == 'standby_open' and session != fresh:
+                raise RuntimeError('Lifecycle request rejected: invalid_session_or_operation')
+            answer = query(port, token, action, operation, session, extra)
+            if port == self.STANDBY and loaded and isinstance(answer, dict) and 'session' in answer:
+                answer = dict(answer, session=fresh)
+            return answer
+        self.machine.query = reloaded
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertIn(self.LIVE, self.machine.up)
+
     def test_handover_moves_the_region_onto_the_staged_build_without_stopping_it(self):
         group, host = self.staged()
         live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
@@ -1487,6 +1656,31 @@ class HandoverTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'standby_port'):
             self.write_group()
         self.group['regions'][0]['standby_port'] = 1799
+
+    def test_default_standby_port_skips_the_transfer_relay_and_doorman_ports(self):
+        # The live earth group: transfer ports are port + 10, so the plain default standby
+        # port was the region's own transfer agent and every handover was refused.
+        self.group['regions'][0].update(transfer_port=1730)
+        self.group['regions'][1].update(transfer_port=1731)
+        self.group.update(relay_port=1732, doorman_port=1733)
+        group = self.write_group()
+        ports = {r['id']: r['standby_port'] for r in group['regions']}
+        self.assertEqual(ports, {'gaia': 1734, 'deep': 1735})
+        used = {1720, 1721, 1730, 1731, 1732, group['relay_control_port'], 1733}
+        self.assertFalse(used & set(ports.values()))
+        # A host.json written before standby ports were resolved asks the group.
+        config = shard_group.region_config(group, group['regions'][0])
+        config.pop('standby_port')
+        self.assertEqual(shard_group.RegionHost(config, self.machine).standby_port(), 1734)
+        config['group_config'] = str(self.base / 'missing.json')
+        self.assertEqual(shard_group.RegionHost(config, self.machine).standby_port(), 1730)
+        # An explicit standby port may not take another port of the group.
+        for clash in (1730, 1732, 1733):
+            self.group['regions'][1]['standby_port'] = clash
+            with self.assertRaisesRegex(ValueError, 'standby_port'):
+                self.write_group()
+        self.group['regions'][1]['standby_port'] = 1799
+        self.assertEqual(self.write_group()['regions'][1]['standby_port'], 1799)
 
     def test_handover_reaches_every_region_from_the_command_line(self):
         group, host = self.staged()

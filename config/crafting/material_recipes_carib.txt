@@ -238,6 +238,7 @@ RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 
 RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
+RECIPE: /material/clay/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
@@ -1818,6 +1819,7 @@ RECIPE: /material/steel/,locked jail door,/obj/structure/simple_door/key_door/cu
 
 RECIPE: /material/steel/,steel floor,/obj/covers/steelplating,1,15,1,1,construction,96,0,0,8,null
 RECIPE: /material/steel/,white floor,/obj/covers/steelplating/white,1,15,1,1,construction,96,0,0,8,null
+RECIPE: /material/steel/,steel bridge span,/obj/item/weapon/bridge_span,4,100,0,1,construction,96,0,0,8,null
 
 RECIPE: /material/steel/,steel window,/obj/structure/window_frame/metal,5,140,1,1,construction,96,0,0,8,null
 
