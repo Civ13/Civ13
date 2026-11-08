@@ -1,4 +1,5 @@
 /mob/living/simple_animal/deer
+	ruminant = TRUE
 	name = "stag"
 	desc = "Provides some nice meat, if you can catch it."
 	icon_state = "deer_m"
