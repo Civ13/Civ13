@@ -327,6 +327,7 @@ class InventoryHoverName(unittest.TestCase):
                hover_inventory=False,hover_screen_loc=None,hover_storage=None,maptext='',
                hover_text=None,hover_text_width=0,hover_text_height=0,maptext_width=384,maptext_height=32,screen_loc='WEST:2,NORTH:-2')
         W.update_backdrop=lambda:None  # underlay rendering is an engine boundary; the native fixture checks it
+        W.hover_font_px=11;W.hover_label_px=lambda:11  # 100% HUD scale; the native fixture checks other scales
         body.HUDneed['hover name']=W;C.screen.append(W)
         world_visible=set();on_screen=set();readable=set();read_calls=[];parents=[]
         def allowed(user,target,operation):
@@ -343,7 +344,7 @@ class InventoryHoverName(unittest.TestCase):
             # Panel placement boundaries: DM lists are 1-based, round() floors, and
             # the styled span is client rendering (the native fixture checks its markup).
             getviewsize=lambda v:{1:2*v+1,2:2*v+1},round=lambda a:__import__('math').floor(a),
-            hover_name_span=lambda text,border:"<span style='"+('border' if border else 'text')+"'>&nbsp;"+text+"&nbsp;</span>")
+            hover_name_span=lambda text,border,px=11:"<span style='"+('border' if border else 'text')+"'>&nbsp;"+text+"&nbsp;</span>")
         helper_source=core_source or CORE.read_text()
         helper_source=re.sub(r'(, )(/obj/[\w/]+)(?=\))', lambda m:m[1]+repr(m[2]), helper_source)
         storage_visible=A.project(helper_source,'/proc/los_storage_hover_visible','user, target',env)
@@ -368,7 +369,7 @@ class InventoryHoverName(unittest.TestCase):
         fields=['hover_target','hover_origin','hover_storage','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
                 'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process',
                 'hover_text','hover_text_width','hover_text_height','maptext_width','maptext_height','screen_loc',
-                'show_label','follow_pointer','update_backdrop']
+                'show_label','follow_pointer','update_backdrop','hover_font_px','hover_label_px']
         for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key'),
                           ('show_label','text'),('follow_pointer','')]:

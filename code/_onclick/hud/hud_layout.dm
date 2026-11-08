@@ -99,11 +99,13 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 			offset += 16
 	return "[anchor]:[offset]"
 
-// Scales a 32x32 tile by k about its lower-left corner.
-/proc/hud_scale_matrix(k)
+// Scales a w x h pixel icon (32x32 unless given) by k about its lower-left
+// corner. BYOND scales about the icon's centre, so a taller icon such as the
+// body part selector needs its own height here or it drifts up or down.
+/proc/hud_scale_matrix(k, w = 32, h = 32)
 	if (k == 1)
 		return null
-	return matrix(k, 0, 16 * (k - 1), 0, k, 16 * (k - 1))
+	return matrix(k, 0, w / 2 * (k - 1), 0, k, h / 2 * (k - 1))
 
 // True for identity and for matrices made by hud_scale_matrix(), so the HUD
 // never overwrites an item's own rotation or flip.
@@ -189,8 +191,9 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	var/ay = cy < view_h / 3 ? "SOUTH" : (cy > view_h * 2 / 3 ? "NORTH" : "CENTER")
 	return list(ax, x - hud_anchor_origin(ax, view_w), ay, y - hud_anchor_origin(ay, view_h))
 
-// Splits list(tile, x, y) entries into runs that overlap along one axis
+// Splits list(tile, x, y, w, h) entries into runs that overlap along one axis
 // (2 = x, 3 = y) at 100%, so tiles that share a spot or a column move together.
+// w and h are the tile's footprint in pixels at 100% (32 when left out).
 /proc/hud_flow_groups(list/entries, axis)
 	var/list/sorted = list()
 	for (var/list/T in entries)
@@ -210,13 +213,15 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		else
 			current = list(T)
 			. += list(current)
-		current_end = max(current_end, T[axis] + 32)
+		current_end = max(current_end, T[axis] + hud_flow_extent(T, axis))
 
-/proc/hud_flow_place(obj/screen/S, x, y, g, view_w, view_h)
-	var/edge = 32 * g
-	x = clamp(x, 0, max(0, view_w - edge))
-	y = clamp(y, 0, max(0, view_h - edge))
-	S.hud_ax = (x + edge / 2 > view_w / 2) ? "EAST" : "WEST"
+/proc/hud_flow_extent(list/T, axis)
+	return T.len >= axis + 2 ? T[axis + 2] : 32
+
+/proc/hud_flow_place(obj/screen/S, x, y, g, view_w, view_h, w = 32, h = 32)
+	x = clamp(x, 0, max(0, view_w - w * g))
+	y = clamp(y, 0, max(0, view_h - h * g))
+	S.hud_ax = (x + w * g / 2 > view_w / 2) ? "EAST" : "WEST"
 	S.hud_ox = x - hud_anchor_origin(S.hud_ax, view_w)
 	S.hud_ay = "SOUTH"
 	S.hud_oy = y
@@ -245,14 +250,14 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 			var/y1 = y0
 			for (var/list/T in G)
 				y0 = min(y0, T[3])
-				y1 = max(y1, T[3] + 32)
+				y1 = max(y1, T[3] + hud_flow_extent(T, 3))
 			var/gh = (y1 - y0) * g
 			if (y > 0 && y + gh > view_h)
 				col_x -= s
 				east_w += s
 				y = 0
 			for (var/list/T in G)
-				hud_flow_place(T[1], col_x, y + (T[3] - y0) * g, g, view_w, view_h)
+				hud_flow_place(T[1], col_x, y + (T[3] - y0) * g, g, view_w, view_h, hud_flow_extent(T, 2), hud_flow_extent(T, 3))
 			y += gh
 	var/limit = round(view_w - east_w)
 	var/step = 4
@@ -266,9 +271,9 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		var/y1 = y0
 		for (var/list/T in G)
 			x0 = min(x0, T[2])
-			x1 = max(x1, T[2] + 32)
+			x1 = max(x1, T[2] + hud_flow_extent(T, 2))
 			y0 = min(y0, T[3])
-			y1 = max(y1, T[3] + 32)
+			y1 = max(y1, T[3] + hud_flow_extent(T, 3))
 		var/gw = (x1 - x0) * g
 		var/gh = (y1 - y0) * g
 		var/cells = max(1, round(-(-gw / step)))
@@ -287,12 +292,12 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 			sky[j] = best_top + gh
 		var/gx = (best_cell - 1) * step
 		for (var/list/T in G)
-			hud_flow_place(T[1], gx + (T[2] - x0) * g, best_top + (T[3] - y0) * g, g, view_w, view_h)
+			hud_flow_place(T[1], gx + (T[2] - x0) * g, best_top + (T[3] - y0) * g, g, view_w, view_h, hud_flow_extent(T, 2), hud_flow_extent(T, 3))
 
 // Where a storage window goes, in whole tiles from its usual place.
 // x0/y0: the window's usual lower-left pixel; w/h: its size in pixels.
 // custom: list(x, y) the player dragged it to, or null. rects: list(x, y, size)
-// of the HUD tiles on screen. Above 100% a window in its usual place moves up
+// or list(x, y, w, h) of the HUD tiles on screen. Above 100% a window in its usual place moves up
 // clear of the tiles below it. The window always stays on screen.
 /proc/hud_storage_shift_for(x0, y0, w, h, g, view_w, view_h, list/custom, list/rects)
 	var/dx = 0
@@ -303,8 +308,9 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	else if (g > 1)
 		var/top = y0
 		for (var/list/R in rects)
+			var/rh = R.len >= 4 ? R[4] : R[3]
 			if (R[1] < x0 + w && R[1] + R[3] > x0 && R[2] < view_h / 2)
-				top = max(top, R[2] + R[3])
+				top = max(top, R[2] + rh)
 		dy = -round(-(top - y0) / 32)
 	var/min_dx = -round(x0 / 32)
 	var/min_dy = -round(y0 / 32)
@@ -313,6 +319,49 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	return list(dx, dy)
 
 ////////////////////////// applying the layout //////////////////////////
+
+var/global/list/hud_icon_px_cache = list()
+
+// The tile's icon size in pixels, which the scale matrix needs.
+/obj/screen/proc/hud_icon_px()
+	if (!icon)
+		return list(32, 32)
+	var/key = "[icon]"
+	var/list/px = hud_icon_px_cache[key]
+	if (!px)
+		var/icon/I = icon(icon)
+		px = list(I.Width() || 32, I.Height() || 32)
+		hud_icon_px_cache[key] = px
+	return px
+
+// Enlarged tiles keep sharp pixels. Shrunk tiles stay smoothed: dropping
+// whole pixel rows below 100% garbles the lettering on buttons.
+/proc/hud_pixel_scale(atom/A, k)
+	if (k > 1)
+		A.appearance_flags |= PIXEL_SCALE
+	else
+		A.appearance_flags &= ~PIXEL_SCALE
+
+// The space the tile takes on screen at 100%, including offset overlays.
+/obj/screen/proc/hud_footprint()
+	return hud_icon_px()
+
+// Called after the tile's scale changes; k is its total scale.
+/obj/screen/proc/hud_rescaled(k)
+	return
+
+// The swap button is two 32px halves: the left icon and a right overlay one
+// tile over. Overlay offsets are not scaled by the transform, so the right
+// half's offset follows the scale or the button splits apart (below 100%) or
+// overlaps itself (above).
+/obj/screen/swap/hud_footprint()
+	return list(64, 32)
+
+/obj/screen/swap/hud_rescaled(k)
+	overlays.Cut()
+	var/image/right = image(icon = icon, icon_state = "swap-r", pixel_x = 32 * k)
+	hud_pixel_scale(right, k)
+	overlays += right
 
 /mob/living/human/proc/hud_layout_elements()
 	. = list()
@@ -396,6 +445,7 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		B.hud_oy = clamp(y0 + bar[4] * g + B.hud_rel_y, 0, max(0, view_h - 32 * k)) - y0
 		B.screen_loc = "[hud_axis_text(B.hud_ax, B.hud_ox)],[hud_axis_text(B.hud_ay, B.hud_oy)]"
 		B.transform = hud_scale_matrix(k)
+		hud_pixel_scale(B, k)
 		if (client.hud_edit_mode)
 			B.color = hud_tile_locked(B) ? "#ff8a8a" : "#9cff9c"
 
@@ -409,7 +459,7 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	var/view_w = V[1] * 32
 	var/view_h = V[2] * 32
 	// Default inventory and control tiles above 100% are reflowed together so
-	// they never cover each other; entries are list(tile, x, y) at 100%.
+	// they never cover each other; entries are list(tile, x, y, w, h) at 100%.
 	var/list/flow = list()
 	for (var/obj/screen/S in hud_layout_elements())
 		if (!S.hud_default_loc)
@@ -417,6 +467,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		var/list/D = hud_parse_screen_loc(S.hud_default_loc)
 		if (!D)
 			continue
+		var/list/foot = S.hud_footprint()
+		var/list/px = S.hud_icon_px()
 		var/size = 1
 		var/custom = FALSE
 		var/list/F = P.hud_layout_entry(defaultHUD, S.hud_layout_key)
@@ -433,19 +485,22 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		if (!custom)
 			D = hud_infer_anchor(D, view_w, view_h)
 			if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))
-				flow += list(list(S, hud_anchor_origin(D[1], view_w) + D[2], hud_anchor_origin(D[3], view_h) + D[4]))
+				flow += list(list(S, hud_anchor_origin(D[1], view_w) + D[2], hud_anchor_origin(D[3], view_h) + D[4], foot[1], foot[2]))
 		S.hud_size = size
 		S.hud_ax = D[1]
 		S.hud_ay = D[3]
 		// Keep every tile fully on screen; a large scale on a narrow view
 		// would otherwise push edge tiles past the far edge.
-		var/edge = 32 * g * size
+		var/edge_w = foot[1] * g * size
+		var/edge_h = foot[2] * g * size
 		var/x0 = hud_anchor_origin(S.hud_ax, view_w)
 		var/y0 = hud_anchor_origin(S.hud_ay, view_h)
-		S.hud_ox = clamp(x0 + D[2] * g, 0, max(0, view_w - edge)) - x0
-		S.hud_oy = clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0
+		S.hud_ox = clamp(x0 + D[2] * g, 0, max(0, view_w - edge_w)) - x0
+		S.hud_oy = clamp(y0 + D[4] * g, 0, max(0, view_h - edge_h)) - y0
 		S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
-		S.transform = hud_scale_matrix(g * size)
+		S.transform = hud_scale_matrix(g * size, px[1], px[2])
+		hud_pixel_scale(S, g * size)
+		S.hud_rescaled(g * size)
 	if (flow.len)
 		hud_reflow(flow, g, view_w, view_h)
 	sync_inventory_screen_locs()
@@ -477,7 +532,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	if (!custom && g > 1)
 		for (var/obj/screen/S in hud_layout_elements())
 			if (S.hud_ax && (S in client.screen))
-				rects += list(list(hud_anchor_origin(S.hud_ax, view_w) + S.hud_ox, hud_anchor_origin(S.hud_ay, view_h) + S.hud_oy, 32 * g * S.hud_size))
+				var/list/foot = S.hud_footprint()
+				rects += list(list(hud_anchor_origin(S.hud_ax, view_w) + S.hud_ox, hud_anchor_origin(S.hud_ay, view_h) + S.hud_oy, foot[1] * g * S.hud_size, foot[2] * g * S.hud_size))
 	. = hud_storage_shift_for(x0, y0, w, h, g, view_w, view_h, custom, rects)
 	var/obj/screen/handle = hud_storage_tile()
 	handle.hud_ax = "WEST"
@@ -539,10 +595,11 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	var/h = V[2] * 32
 	var/g = client.prefs.hud_scale
 	var/k = g * S.hud_size
-	var/x = clamp(mouse[1] - client.hud_grab_x - S.hud_rel_x, 0, max(0, w - 32 * k))
-	var/y = clamp(mouse[2] - client.hud_grab_y - S.hud_rel_y, 0, max(0, h - 32 * k))
-	var/cx = x + 16 * k
-	var/cy = y + 16 * k
+	var/list/foot = S.hud_footprint()
+	var/x = clamp(mouse[1] - client.hud_grab_x - S.hud_rel_x, 0, max(0, w - foot[1] * k))
+	var/y = clamp(mouse[2] - client.hud_grab_y - S.hud_rel_y, 0, max(0, h - foot[2] * k))
+	var/cx = x + foot[1] / 2 * k
+	var/cy = y + foot[2] / 2 * k
 	var/ax = cx < w / 3 ? "WEST" : (cx > w * 2 / 3 ? "EAST" : "CENTER")
 	var/ay = cy < h / 3 ? "SOUTH" : (cy > h * 2 / 3 ? "NORTH" : "CENTER")
 	var/list/F = hud_tile_entry(S)

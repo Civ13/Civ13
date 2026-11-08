@@ -67,8 +67,11 @@
 	var/religious_title
 /proc/ishuman(atom/A)
 	return istype(A, /mob/living/human)
+/datum/preferences
+	var/hud_scale = 1
 /datum/hover_client
 	var/mob/mob
+	var/datum/preferences/prefs
 	var/list/screen = list()
 	var/view = 5
 	var/atom/eye
@@ -124,6 +127,20 @@
 	check(edge.maptext_width == 384 && edge.maptext_height == 32 && edge.maptext_x == -1 && !edge.maptext_y, "border underlay shifted one pixel")
 	C.MouseEntered(B, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "target transition")
+	// The label follows HUD Scale: 11px at 100% (and with no preferences).
+	check(findtext(L.maptext, "font-size:11px;") && L.maptext_height == 32, "11px label at 100%")
+	C.prefs = new
+	C.prefs.hud_scale = 2
+	L.process()
+	check(findtext(L.maptext, "font-size:22px;") && L.maptext_height == 60 && L.hover_font_px == 22, "label doubles at 200%")
+	edge = L.underlays[1]
+	check(findtext(edge.maptext, "font-size:22px;") && edge.maptext_height == 60, "border follows the larger label")
+	C.prefs.hud_scale = 0.5
+	L.process()
+	check(findtext(L.maptext, "font-size:7px;") && L.maptext_height == 21, "label shrinks to a readable minimum at 50%")
+	C.prefs.hud_scale = 1
+	L.process()
+	check(findtext(L.maptext, "font-size:11px;") && L.maptext_height == 32, "label back to 11px")
 	C.MouseExited(A, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "late exit")
 	C.MouseExited(B, null, "map", "")

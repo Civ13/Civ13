@@ -62,8 +62,36 @@ class HudLayoutWiring(unittest.TestCase):
     def test_tiles_are_kept_on_screen(self):
         body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')
         self.assertIn('getviewsize(client.view)', body)
-        self.assertIn('clamp(x0 + D[2] * g, 0, max(0, view_w - edge)) - x0', body)
-        self.assertIn('clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0', body)
+        self.assertIn('clamp(x0 + D[2] * g, 0, max(0, view_w - edge_w)) - x0', body)
+        self.assertIn('clamp(y0 + D[4] * g, 0, max(0, view_h - edge_h)) - y0', body)
+
+    def test_tiles_scale_by_their_real_size(self):
+        source = read(LAYOUT)
+        body = proc_body(source, '/mob/living/human/proc/apply_hud_layout()')
+        # The body part selector is 32x64; a 32x32 matrix shifted it up and hid its head.
+        self.assertIn('S.transform = hud_scale_matrix(g * size, px[1], px[2])', body)
+        self.assertIn('hud_pixel_scale(S, g * size)', body)
+        sharp = proc_body(source, '/proc/hud_pixel_scale(atom/A, k)')
+        self.assertIn('if (k > 1)', sharp)
+        self.assertIn('&= ~PIXEL_SCALE', sharp)
+        self.assertLess(body.index('S.transform ='), body.index('S.hud_rescaled(g * size)'))
+        self.assertIn('foot[1], foot[2]))', body)
+        # The swap button's right half is an offset overlay that must follow the scale.
+        swap = proc_body(source, '/obj/screen/swap/hud_rescaled(k)')
+        self.assertIn('pixel_x = 32 * k', swap)
+        self.assertIn('list(64, 32)', proc_body(source, '/obj/screen/swap/hud_footprint()'))
+        self.assertIn('pixel_x = 32)', read('code/_onclick/hud/base_screen_objects.dm'))
+
+    def test_hover_label_follows_hud_scale(self):
+        hover = read('code/_onclick/hud/hover_name.dm')
+        px = proc_body(hover, '/obj/screen/hover_name/proc/hover_label_px()')
+        self.assertIn('hud_scale', px)
+        self.assertIn('clamp(round(11 * g), 7, 22)', px)
+        show = proc_body(hover, '/obj/screen/hover_name/proc/show_label(text)')
+        self.assertIn('px == hover_font_px', show)
+        self.assertIn('hover_name_span(text, FALSE, px)', show)
+        self.assertIn('hover_name_span(hover_text, TRUE, hover_font_px)', hover)
+        self.assertIn('font-size:[px]px;', hover)
 
     def test_large_scales_reflow_only_default_tiles(self):
         body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')
