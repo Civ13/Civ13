@@ -335,6 +335,19 @@ var/global/list/persistence_runtime_var_instance_keys = list("glide_size" = TRUE
 		cache[key] = cached
 	return cached
 
+// Every instance of a type has the same var names. `key in D.vars` scans the
+// whole vars list (about 2 microseconds a field on an object), so field loops
+// over many datums ask this per-type name table instead.
+var/global/list/persistence_type_var_names = list()
+/proc/persistence_type_vars(datum/D)
+	var/list/names = persistence_type_var_names[D.type]
+	if (!names)
+		names = list()
+		for (var/key in D.vars)
+			names[key] = TRUE
+		persistence_type_var_names[D.type] = names
+	return names
+
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
 /atom/persistence_runtime_var(key)
@@ -1419,6 +1432,8 @@ var/global/datum/persistence_admission_identity
 	var/source_identity
 	var/current_field
 	var/entry
+	// "[entry]", built once: require_export_frame runs before every saved field.
+	var/entry_key
 	var/accepts_children = FALSE
 	var/active = TRUE
 	var/list/content_refs = list()
@@ -1460,7 +1475,7 @@ var/global/datum/persistence_admission_identity
 // reference checks below reject any substituted source or key without building
 // a fresh native reference string per field.
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
-	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames[frame.entry_key || "[frame.entry]"] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	if(frame.human_spatial_request && (!frame.human_spatial_request.captured || !frame.human_spatial_request.actor || frame.human_spatial_request.actor != frame.source || frame.human_spatial_request.actor.human_subtile_save_request != frame.human_spatial_request || !frame.human_spatial_request.operation || !frame.human_spatial_request.operation.current(src, "save")))
@@ -1783,7 +1798,7 @@ var/global/datum/persistence_admission_identity
 		switch(v)
 			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 				continue
-		if(!(v in T.vars)) continue
+		if(!persistence_type_vars(T)[v]) continue
 		if(default_fields && (v in default_fields) && persistence_default_scalar(T.vars[v]) && T.vars[v] == initial(T.vars[v])) continue
 		return FALSE
 	return TRUE

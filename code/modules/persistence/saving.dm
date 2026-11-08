@@ -346,6 +346,7 @@
 	frame.source = A
 	frame.source_identity = identity
 	frame.entry = ref
+	frame.entry_key = "[ref]"
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(ishuman(A))
 		var/list/human_root = human_save_roots[save_entry_identity(A)]
@@ -363,7 +364,7 @@
 	if(isturf(A))
 		A:persistence_export_frame = frame
 	frame.accepts_children = A.load_contents && contents && istype(A, /atom)
-	saving_export_frames["[ref]"] = frame
+	saving_export_frames[frame.entry_key] = frame
 	saving_export_stack += frame
 	try
 		A.before_save_context(src, frame)
@@ -447,6 +448,11 @@
 		// for persistence_runtime_var_instance_keys (functions.dm): ask it once
 		// per type and field, and every time for those.
 		var/list/runtime_cache = persistence_runtime_var_type_cache(A, changing_vars)
+		var/list/type_vars = persistence_type_vars(A)
+		// Scalars need no envelope or encoder; moving chunks and debug
+		// recovery still count every value through encode_saved_value.
+		var/datum/persistence_world_operation/field_operation = persistence_active_operation
+		var/plain_scalars = !moving_save_chunk && !(field_operation && field_operation.debug_recovery)
 		for(var/v in changing_vars)
 			save_work_check()
 			require_export_frame(frame)
@@ -458,15 +464,20 @@
 			switch(v)
 				if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 					continue
-			if(v in A.vars)
-				if(default_fields && (v in default_fields) && persistence_default_scalar(A.vars[v]) && A.vars[v] == initial(A.vars[v]))
+			if(type_vars[v])
+				var/raw = A.vars[v]
+				var/raw_scalar = persistence_default_scalar(raw)
+				if(default_fields && raw_scalar && (v in default_fields) && raw == initial(A.vars[v]))
 					continue
 				frame.current_field = v
 				var/value
-				if(level_link_target(A, v, A.vars[v]))
+				// tests/persistence_pointers/level_links patches the encode_level_link line.
+				if(plain_scalars && raw_scalar)
+					value = raw
+				else if(level_link_target(A, v, raw))
 					value = encode_level_link(A.vars[v])
 				else
-					value = encode_saved_value(savefile, A.vars[v])
+					value = encode_saved_value(savefile, raw)
 				// Value format 2: a scalar field is written raw, not enveloped.
 				if(islist(value) && value["kind"] == "value" && persistence_default_scalar(value["value"]))
 					value = value["value"]

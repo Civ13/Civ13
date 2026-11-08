@@ -104,7 +104,7 @@ class RuntimeVarCache(unittest.TestCase):
         self.assertIn('cache[key] = cached', body)
         # The import's default reset and the sparse checks ask through it. The
         # Load_Entry field gate stays a direct call: native controls patch it.
-        self.assertIn('!(v in object.vars) || persistence_runtime_field(object, v))', loading)
+        self.assertIn('!persistence_type_vars(object)[v] || persistence_runtime_field(object, v))', loading)
         self.assertIn('if(object.persistence_runtime_var(v))\n#ifdef', loading)
         self.assertIn('if(persistence_runtime_field(T, v)) continue', functions)
         # Variable observability classifies every field, through the cache.

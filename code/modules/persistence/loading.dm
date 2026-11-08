@@ -433,7 +433,7 @@
 			savefile.cd = entry_dir
 			var/list/saved_fields = savefile.dir
 			for(var/v in default_fields)
-				if((v in saved_fields) || !(v in object.vars) || persistence_runtime_field(object, v))
+				if((v in saved_fields) || !persistence_type_vars(object)[v] || persistence_runtime_field(object, v))
 					continue
 				var/default_value = initial(object.vars[v])
 				if(persistence_default_scalar(default_value) && object.vars[v] != default_value)
@@ -2206,7 +2206,7 @@ var/global/persistence_memory_probe_error
 			var/turf/T = locate(x, y, z)
 			var/list/default_fields = T.persistence_field_allowlist()
 			for(var/v in default_fields)
-				if(!(v in T.vars) || persistence_runtime_field(T, v)) continue
+				if(!persistence_type_vars(T)[v] || persistence_runtime_field(T, v)) continue
 				var/default_value = initial(T.vars[v])
 				if(persistence_default_scalar(default_value) && T.vars[v] != default_value)
 					T.vars[v] = default_value
