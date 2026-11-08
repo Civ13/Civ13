@@ -89,6 +89,8 @@ class Fixture:
         self.paper_notifications = []
         self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
+                        # Practice rooms own no saved state; their close hook is covered by tests/practice_rooms.
+                        practice_rooms_close_for_save=lambda: True,
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
                         subtile_pull_ownership=NS(save_ready=lambda: True, retire_member=lambda actor: None,
                                                   resolve_quiet=lambda reason, admission: True),
