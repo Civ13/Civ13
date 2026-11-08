@@ -779,7 +779,7 @@ class AcquisitionProjection(Projection):
             get_recipe_node_req=lambda value: self.run('/proc/get_recipe_node_req', Record(), result_path_string=value),
             locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
-            civ_generation_can_build=lambda *_args: True,
+            civ_generation_can_build=lambda *_args: True, car_workshop_build_refusal=lambda *_args: None,
             # Mirrors /proc/recipe_age_allowed: max era 8 (RECIPE_OPEN_ENDED_AGE) never retires a row.
             recipe_age_allowed=lambda max_age: max_age >= 8 or self.globals['map'].ordinal_age <= max_age,
             construct=self.construct, handReturnMap={})
