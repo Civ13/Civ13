@@ -131,6 +131,13 @@ a module's air, too little for a batch, a batch scrubbing it), the 2013
 gate, the recipe gates, freight payloads and their bounds, a crate landing
 beside the party's station hatch with its cargo, a refused flight coming
 back where it left, and journal replays of a departure and a return.
+A stand-in agent (`/datum/transfer_bridge/probe_agent`) then answers the
+real bridge's requests: a freighter launches from a station pad through a
+fast escrow, the bridge's poll routes the pending freight transfer to a
+fast import, the crate lands beside the party's hatch with its cargo, and a
+recorded import is not taken twice. The agent side of the same flight
+(fast freight, pending kinds, replay after a crash, random faults) is in
+`tests/transfer_storage/test_journal.py`.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
