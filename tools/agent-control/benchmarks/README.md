@@ -64,6 +64,26 @@ core pinning or system load; compare repeated runs on a quiet representative hos
 before making a decision. PHP and Python implementation/library differences are
 part of this adapter comparison, not a universal ranking of the languages.
 
+## Result (2026-11-08)
+
+Run once in a Linux x86_64 cloud container with Python 3.13.18 and PHP 8.3.6 (CLI,
+NTS, `-n`, no opcache JIT), `--samples 3 --iterations 500 --warmup 50`. Parity
+passed: byte-identical packets and type-identical parsed replies for all five
+fixtures.
+
+| metric (median of 3 samples) | Python | PHP |
+| --- | --- | --- |
+| cold process, ms | 48.6 | 10.6 |
+| warm boundary, microseconds per request | 58.4 | 24.4 |
+
+The whole Python boundary costs about 58 microseconds per request. The Player
+Help bridge polls its spool once per second and a model call takes seconds, so
+this boundary is well under 0.01 percent of an end-to-end request; by the Amdahl
+estimate below, halving it changes nothing a player or the autopilot can notice.
+Decision: keep the Python client. The PHP prototype stays as a parity reference
+only. Any further language question should start by timing the real bridge phases
+(spool wait, subprocess spawn, network, model), not this client.
+
 ## Interpretation and adoption gate
 
 No measured Python-versus-PHP speedup is established by this PR. PHP syntax,
