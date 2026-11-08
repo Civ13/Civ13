@@ -69,7 +69,11 @@
 			if (!istype(T, /turf/floor) || istype(T, /turf/floor/beach/water) || T.density)
 				return FALSE
 			// Loose objects and occupants must also be moved out of the assembly bay.
+			// Every lit turf holds a lighting overlay, and ghosts or landmarks may
+			// share the square; none of those are physical, so they don't count.
 			for (var/atom/movable/M in T)
+				if (!M.simulated)
+					continue
 				return FALSE
 	return TRUE
 
