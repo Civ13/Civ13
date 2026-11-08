@@ -208,6 +208,14 @@ static class LocalHostingTests {
         HostSettings.Save(places[0], HostSettings.LocalConfig, "WEBHOOK_ADDRESS http://127.0.0.1\n");
         Require(HostSettings.Read(places[0], HostSettings.LocalConfig) == "WEBHOOK_ADDRESS http://127.0.0.1\n"
             && File.ReadAllText(Path.Combine(sharedOverlay, "config", "config.local.txt.previous")).Contains("DAYNIGHT_CLIENT_TINT"), "save keeps the previous version");
+        Require(HostSettings.WithSetting("# shared\nWEBHOOK_KEY k\n#BUG_REPORT_GITHUB_TOKEN old\nbug_report_github_token older\n", HostSettings.BugReportToken, "github_pat_new")
+            == "# shared\nWEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN github_pat_new\n", "bug report token replaces the old lines in place");
+        Require(HostSettings.WithSetting("WEBHOOK_KEY k", HostSettings.BugReportToken, " ghp_x ") == "WEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN ghp_x\n"
+            && HostSettings.WithSetting("", HostSettings.BugReportToken, "ghp_x") == "BUG_REPORT_GITHUB_TOKEN ghp_x\n", "bug report token is appended");
+        Require(HostSettings.TokenValid("github_pat_11AAAAAAAAAAAAAAAAAAAA") && !HostSettings.TokenValid("short")
+            && !HostSettings.TokenValid("github_pat_with space inside it"), "bug report token format");
+        Require(HostSettings.Problem(HostSettings.LocalConfig, HostSettings.WithSetting("", HostSettings.BugReportToken, "ghp_x")) == null, "the token line is a valid setting");
+        Reject(() => HostSettings.WithSetting("", "BAD KEY", "x"), "a setting name with a space");
         Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");
         Require(HostSettings.Problem("config/account_signin.json", "{") is { } jsonProblem && jsonProblem.StartsWith("Not valid JSON"), "bad JSON");
         Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");

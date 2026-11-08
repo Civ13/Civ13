@@ -1120,6 +1120,8 @@
 #include "code\modules\agent_control\agent_boats.dm"
 #include "code\modules\agent_control\agent_verbs.dm"
 #include "code\modules\agent_control\agent_visits.dm"
+#include "code\modules\bug_reports\bug_report_format.dm"
+#include "code\modules\bug_reports\bug_reports.dm"
 #include "code\modules\chat\chat.dm"
 #include "code\modules\client\asset_cache.dm"
 #include "code\modules\client\client_defines.dm"

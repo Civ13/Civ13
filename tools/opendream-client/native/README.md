@@ -235,7 +235,11 @@ folder. Files setup writes and kept copies are not offered. **Save** checks the
 text (setting lines, valid JSON) and keeps the old version as `<name>.previous`.
 **Save and apply** also runs `shard_group.py config-apply` for that folder's
 regions, so they get the change without a rebuild; a running world uses it from
-its next restart. `HostSettings.cs` holds the file rules and is covered by
+its next restart. **Bug report GitHub token...** asks for a fine-grained GitHub
+token (Issues: Read and write) and puts `BUG_REPORT_GITHUB_TOKEN` into the shown
+folder's `config.local.txt`, replacing an older token line; Save and apply then sends
+it to the regions. The game reads the token only when an admin approves an in-game bug
+report, so a running world uses it at once. `HostSettings.cs` holds the file rules and is covered by
 `tests/LocalHostingTests.cs`.
 
 ### Civilizationbot tab and Updates

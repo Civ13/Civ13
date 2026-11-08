@@ -72,12 +72,39 @@ public static class HostSettings {
 
     public static string Describe(string relative) => relative switch {
         LocalConfig => "Only the lines this host changes in the repository's config/config.txt. \"KEY value\" sets a setting, " +
-            "\"#KEY\" turns it off, other lines starting with # are comments. Everything else follows master.",
+            "\"#KEY\" turns it off, other lines starting with # are comments. Everything else follows master. " +
+            "Secrets such as WEBHOOK_KEY and BUG_REPORT_GITHUB_TOKEN belong here, never in the repository.",
         "config/host.txt" => "The BYOND key of the host (read when a player logs in).",
         "config/config.txt" => "A whole copy of config.txt (the old way): it hides master's new settings. " +
             "Run config-migrate.bat once to turn it into config.local.txt.",
         _ => "Copied into the region on every update and config apply.",
     };
+
+    public const string BugReportToken = "BUG_REPORT_GITHUB_TOKEN";
+    private static readonly Regex TokenText = new("^[A-Za-z0-9_]{20,255}$");
+
+    // A GitHub token as the game accepts it (code/modules/bug_reports/bug_report_format.dm).
+    public static bool TokenValid(string token) => TokenText.IsMatch(token);
+
+    // config.local.txt text with one setting set: an existing "KEY value" or "#KEY" line for it is
+    // replaced in place (the first one; later ones are dropped), otherwise the line is added at the end.
+    public static string WithSetting(string text, string name, string value) {
+        if (!SettingName.IsMatch(name) || value.Any(char.IsControl)) throw new InvalidDataException("Not a setting: " + name);
+        var setting = name + " " + value.Trim();
+        var lines = text.Replace("\r\n", "\n").Split('\n').ToList();
+        if (lines.Count > 0 && lines[^1].Length == 0) lines.RemoveAt(lines.Count - 1);
+        var placed = false;
+        var result = new List<string>();
+        foreach (var raw in lines) {
+            var key = raw.Trim().TrimStart('#').Split(' ', 2)[0];
+            if (string.Equals(key, name, StringComparison.OrdinalIgnoreCase)) {
+                if (!placed) result.Add(setting);
+                placed = true;
+            } else result.Add(raw);
+        }
+        if (!placed) result.Add(setting);
+        return string.Join("\n", result) + "\n";
+    }
 
     // Why the text cannot be saved, or null. config.local.txt follows shard_group.py merge_config.
     public static string? Problem(string relative, string text) {

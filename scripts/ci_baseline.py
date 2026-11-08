@@ -877,6 +877,11 @@ SUITES = {
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
+    # In-game bug reports wiring and safety; tests/bug_reports/native_format.py is the manual native check.
+    'bug_reports': {'files': ('tests/bug_reports/test_bug_reports.py',),
+        'paths': ('tests/bug_reports/', 'code/modules/bug_reports/'),
+        'shared_paths': ('interface/skin.dmf', 'code/datums/configuration.dm', 'code/datums/http.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/verbs/adminhelp.dm', 'civ13.dme')},
     # Fit Viewport skin wiring; tests/fit_viewport/native_width.py is the manual native width check.
     'fit_viewport': {'files': ('tests/fit_viewport/test_fit_viewport.py',),
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),

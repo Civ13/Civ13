@@ -51,10 +51,12 @@ internal sealed class HostSettingsDialog : Form {
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 8, 0, 0) };
         var close = new Button { Text = "Close", AutoSize = true, DialogResult = DialogResult.Cancel };
         var folder = new LinkLabel { Text = "Open folder", AutoSize = true, Margin = new Padding(12, 9, 0, 0) };
+        var token = new LinkLabel { Text = "Bug report GitHub token...", AutoSize = true, Margin = new Padding(12, 9, 0, 0) };
         buttons.Controls.Add(save);
         buttons.Controls.Add(apply);
         buttons.Controls.Add(close);
         buttons.Controls.Add(folder);
+        buttons.Controls.Add(token);
         layout.Controls.Add(buttons);
         layout.Controls.Add(result);
         for (var row = 0; row < 3; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -78,8 +80,50 @@ internal sealed class HostSettingsDialog : Form {
                 result.Text = "Could not open " + location.Folder + ": " + e.Message;
             }
         };
+        token.LinkClicked += (_, _) => SetBugReportToken();
         FormClosing += (_, e) => { if (!KeepChanges()) e.Cancel = true; };
         if (place.Items.Count > 0) place.SelectedIndex = 0;
+    }
+
+    // Puts BUG_REPORT_GITHUB_TOKEN into this place's config.local.txt (the editor shows it, unsaved),
+    // so approved in-game bug reports become GitHub issues. Save and apply sends it to the regions.
+    private void SetBugReportToken() {
+        if (Current is null) return;
+        if (CurrentFile != HostSettings.LocalConfig) {
+            file.SelectedIndex = file.Items.IndexOf(HostSettings.LocalConfig);
+            if (CurrentFile != HostSettings.LocalConfig) return;
+        }
+        using var ask = new Form {
+            Text = "Bug report GitHub token", StartPosition = FormStartPosition.CenterParent, AutoScaleMode = AutoScaleMode.Dpi,
+            Font = Font, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false, AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink
+        };
+        var panel = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, Padding = new Padding(12) };
+        panel.Controls.Add(new Label {
+            AutoSize = true, MaximumSize = new Size(520, 0),
+            Text = "Paste a fine-grained GitHub token with Issues: Read and write on the repository in BUG_REPORT_GITHUB_REPO " +
+                "(Civ13/Civ13 by default). Approved in-game bug reports then become GitHub issues. It is added to " +
+                Current.Label.ToLowerInvariant() + "; press Save and apply afterwards."
+        });
+        var input = new TextBox { Width = 500, UseSystemPasswordChar = true };
+        panel.Controls.Add(input);
+        var row = new FlowLayoutPanel { AutoSize = true };
+        var ok = new Button { Text = "Add to config.local.txt", AutoSize = true, DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        row.Controls.Add(ok);
+        row.Controls.Add(cancel);
+        panel.Controls.Add(row);
+        ask.Controls.Add(panel);
+        ask.AcceptButton = ok;
+        ask.CancelButton = cancel;
+        if (ask.ShowDialog(this) != DialogResult.OK) return;
+        var value = input.Text.Trim();
+        if (!HostSettings.TokenValid(value)) {
+            result.Text = "That does not look like a GitHub token (letters, digits and _ only, at least 20). Nothing changed.";
+            return;
+        }
+        editor.Text = HostSettings.WithSetting(editor.Text, HostSettings.BugReportToken, value).Replace("\n", "\r\n");
+        result.Text = "Token added to the editor. Press Save and apply to send it to the regions; running worlds use it for the next report an admin approves.";
     }
 
     private HostSettings.Location? Current => place.SelectedIndex >= 0 ? locations[place.SelectedIndex] : null;

@@ -254,6 +254,15 @@ PERSISTENCE_MEMORY_LIMIT_MB 3072
 #(several minutes on a large world) instead of checking the objects it just wrote.
 #PERSISTENCE_CANDIDATE_READBACK
 
+## In-game bug reports (Help > Report bug). Admins approve them in Admin > Bug Reports.
+## With a token, an approved report becomes a GitHub issue in this repository. Without one,
+## Approve opens a prefilled GitHub form for the admin to submit. Put the token only in the
+## host's config.local.txt (never commit it): a fine-grained token with Issues read and write
+## on this repository.
+BUG_REPORT_GITHUB_REPO Civ13/Civ13
+BUG_REPORT_GITHUB_LABELS bug
+#BUG_REPORT_GITHUB_TOKEN github_pat_...
+
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE
 #WEBHOOK_ADDRESS http://127.0.0.1:55555/webhook/nomads
