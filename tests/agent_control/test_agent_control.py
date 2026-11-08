@@ -3,6 +3,7 @@ with the DM source, autopilot parsing and security-relevant source contracts.
 No BYOND runtime or network beyond a loopback fake Topic server."""
 
 import io
+import os
 import json
 import re
 import socket
@@ -307,6 +308,46 @@ class SensesTests(unittest.TestCase):
             self.assertIn(word, kind)
 
 
+class CharacterViewTests(unittest.TestCase):
+    """character_view: the dump comes in parts; the client joins them and renders with byond-devtools when it can."""
+
+    def test_client_joins_view_parts(self):
+        dump = {"region": [1, 1, 1, 1, 1], "icon_size": 32, "appearances": [], "icons": [], "cells": [], "center": [1, 1]}
+        text = json.dumps(dump)
+        pieces = [text[:10], text[10:25], text[25:]]
+        sent = []
+
+        def transport(host, port, query, timeout):
+            args = json.loads(dict(urllib.parse.parse_qsl(query))["args"])
+            sent.append(args)
+            part = args["part"]
+            return json.dumps({"ok": True, "result": {"view": 4, "part": part, "parts": 3, "bytes": len(text), "text": pieces[part - 1]}})
+        client = agent.AgentClient("tester", "x" * 32, transport=transport)
+        reply = client.request("character_view", {"character": "[0x9]", "radius": 3})
+        self.assertEqual(reply["result"]["dump"], dump)
+        self.assertEqual([a.get("part") for a in sent], [1, 2, 3])
+        self.assertEqual(sent[1], {"character": "[0x9]", "view": 4, "part": 2})
+        self.assertEqual(agent.view_summary(reply["result"])["cells"], 0)
+        # Without a byond-devtools checkout there is no PNG, and the reason says how to get one.
+        png, why = agent.render_view(dump, devtools="")
+        self.assertIsNone(png)
+        old = os.environ.pop("BYOND_DEVTOOLS", None)
+        try:
+            self.assertIn("BYOND_DEVTOOLS", agent.render_view(dump)[1])
+        finally:
+            if old is not None:
+                os.environ["BYOND_DEVTOOLS"] = old
+
+    def test_view_is_read_only_and_bounded(self):
+        self.assertIn("character_view", agent.READ_ONLY_ACTIONS)
+        view = (ROOT / "code/modules/agent_control/agent_view.dm").read_text(encoding="utf-8")
+        self.assertIn("view(radius, M)", view)  # only what the character can see
+        self.assertIn("A.invisibility > M.see_invisible", view)
+        self.assertIn('agent_fail("view_gone"', view)
+        self.assertIn("AGENT_VIEW_MAX_RUNTIME_ICONS", view)
+        self.assertEqual(ACTIONS["character_view"][2]["properties"]["radius"]["maximum"], 7)
+
+
 class CatalogSyncTests(unittest.TestCase):
     def test_python_catalog_matches_dm_actions_and_scopes(self):
         source = dm_source("agent_control.dm")
@@ -318,7 +359,7 @@ class CatalogSyncTests(unittest.TestCase):
         scopes = re.search(r"/proc/agent_control_scopes\(\)\n\treturn list\(([^)]*)\)", source).group(1)
         self.assertEqual(tuple(re.findall(r'"([^"]+)"', scopes)), SCOPES)
         for name in ACTIONS:
-            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_boats.dm") + dm_source("agent_visits.dm"), rf"/datum/agent_control/proc/act_{name}\(")
+            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_boats.dm") + dm_source("agent_visits.dm") + dm_source("agent_view.dm"), rf"/datum/agent_control/proc/act_{name}\(")
 
 
 class SecurityContractTests(unittest.TestCase):

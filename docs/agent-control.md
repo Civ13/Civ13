@@ -212,6 +212,25 @@ second until there is a message after `since`, a queue result after
 nearby change after `since_rev`, and reports `waited_s`. The world never sleeps
 inside a Topic reply.
 
+### Seeing the view
+
+`character_view` returns what a character sees within `radius` (1-7, default 7):
+an appearance dump in the byond-devtools `ingame` format, with overlays,
+underlays, colours, planes and the plane masters a player's HUD builds. Only
+turfs in the character's view are listed, and things it cannot see are left
+out. Icons from the source tree are named by path. Icons made at runtime (human
+bodies, blended overlays) travel as base64 DMI bytes, up to 48 per view. A Topic
+reply holds at most 64 KB, so the dump is built once and read in parts
+(`view`, `part`, `parts`). The Python client and the MCP tool fetch every part.
+
+With `BYOND_DEVTOOLS` set to a byond-devtools checkout (Node 22+), the
+`civ13_character_view` MCP tool returns a PNG of the view next to a short
+summary. `civ13_agent.py view <character> out.png [radius]` writes the PNG.
+Without byond-devtools, the tool returns the dump, which byond-devtools'
+`dump_render` MCP tool or `node src/cli.js ingame --root <Civ13> --dump view.json
+--out view.png` can render. Filters, maptext and animation past the first frame
+are not modelled.
+
 ### Boats
 
 Characters use the same boats players do (`code/modules/agent_control/agent_boats.dm`):

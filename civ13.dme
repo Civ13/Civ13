@@ -1119,6 +1119,7 @@
 #include "code\modules\agent_control\agent_characters.dm"
 #include "code\modules\agent_control\agent_boats.dm"
 #include "code\modules\agent_control\agent_verbs.dm"
+#include "code\modules\agent_control\agent_view.dm"
 #include "code\modules\agent_control\agent_visits.dm"
 #include "code\modules\chat\chat.dm"
 #include "code\modules\client\asset_cache.dm"

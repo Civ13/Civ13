@@ -67,6 +67,11 @@ ACTIONS = {
         "footsteps": {"type": "boolean", "description": "include footstep sounds (default false)"},
         "wait_s": {"type": "number", "minimum": 0, "maximum": 60, "description": "wait up to this many seconds for a new message, queue result (queue_since), prompt (prompt_since), sound (sound_since) or nearby change (since_rev)"},
     }, ["character"])),
+    "character_view": ("characters", "A picture of what a character sees: its view (radius 1-7, default 7) as an appearance dump with overlays, colours, planes and lighting, the byond-devtools ingame format. The server sends it in parts (part, view); the client and MCP tool fetch them all and, with BYOND_DEVTOOLS set to a byond-devtools checkout, return it rendered as a PNG.", _schema({
+        "character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7},
+        "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
+        "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
+    }, ["character"])),
     "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) or throw (the held item at target); board, disembark, drag, verb and throw only through character_queue. While driving a boat, move steers it one tile.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
