@@ -66,6 +66,26 @@ def install(source, target):
     os.replace(temporary, target)
 
 
+def compiled(code, out, dmb, before):
+    """Whether a compile produced dmb. DreamMaker 516.1688 can crash on exit ("double free
+    or corruption") after it saved a clean build, so a non-zero exit still counts when the
+    output reports the saved .dmb with 0 errors and the file is new."""
+    try:
+        after = dmb.stat().st_mtime_ns
+    except OSError:
+        return False
+    if after == before:
+        return False
+    return code == 0 or bool(re.search(r'\.dmb - 0 errors', out or ''))
+
+
+def mtime(path):
+    try:
+        return path.stat().st_mtime_ns
+    except OSError:
+        return None
+
+
 def run(command, cwd, timeout):
     done = subprocess.run(command, cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                           universal_newlines=True, timeout=timeout)
@@ -109,8 +129,9 @@ def rotate(region_path, map_id, runner=run):
     with open(region_path / 'region.dme', encoding='utf-8', newline='') as handle:
         dme = handle.read()
     (build / 'region.dme').write_text(select_map(dme, include), encoding='utf-8', newline='')
+    before = mtime(build / 'region.dmb')
     code, out = runner([compiler, '-max_errors', '0', 'region.dme'], build, BUILD_SECONDS)
-    if code != 0 or not (build / 'region.dmb').exists():
+    if not compiled(code, out, build / 'region.dmb', before):
         raise RuntimeError('compile failed: ' + out.strip()[-300:])
     slot = live_slot(region_path)
     install(build / 'region.rsc', region_path / slot.replace('.dmb', '.rsc'))

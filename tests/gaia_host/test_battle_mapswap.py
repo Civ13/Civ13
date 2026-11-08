@@ -16,9 +16,11 @@ DME = 'line\r\n// BEGIN_SELECTED_MAP\r\n#include "maps\\1943\\berlin.dmm"\r\n// 
 
 
 class FakeRunner:
-    def __init__(self, compile_ok=True):
+    def __init__(self, compile_ok=True, crash_on_exit=False, writes_dmb=True):
         self.calls = []
         self.compile_ok = compile_ok
+        self.crash_on_exit = crash_on_exit
+        self.writes_dmb = writes_dmb
 
     def __call__(self, argv, cwd, timeout):
         self.calls.append((list(argv), Path(cwd)))
@@ -32,9 +34,13 @@ class FakeRunner:
         if argv[-1] == 'region.dme':
             if not self.compile_ok:
                 return 1, 'region.dme: error: bad'
-            (Path(cwd) / 'region.dmb').write_bytes(b'new dmb')
-            (Path(cwd) / 'region.rsc').write_bytes(b'new rsc')
-            return 0, '0 errors'
+            if self.writes_dmb:
+                (Path(cwd) / 'region.dmb').write_bytes(b'new dmb')
+                (Path(cwd) / 'region.rsc').write_bytes(b'new rsc')
+            if self.crash_on_exit:
+                # DreamMaker 516.1688 seen on civ13.com: a clean save, then glibc aborts on exit.
+                return 134, 'saving region.dmb (DEBUG mode)\nregion.dmb - 0 errors, 0 warnings\ndouble free or corruption (out)'
+            return 0, 'region.dmb - 0 errors, 0 warnings'
         return 0, ''
 
 
@@ -94,6 +100,18 @@ class BattleMapswapTests(unittest.TestCase):
     def test_a_failed_compile_leaves_the_running_build(self):
         with self.assertRaisesRegex(RuntimeError, 'compile failed'):
             battle_mapswap.rotate(self.region, 'karak', FakeRunner(compile_ok=False))
+        self.assertEqual(b'old dmb', (self.region / 'region.dmb').read_bytes())
+
+    def test_a_crash_on_exit_after_a_clean_save_still_installs(self):
+        battle_mapswap.rotate(self.region, 'karak', FakeRunner(crash_on_exit=True))
+        self.assertEqual(b'new dmb', (self.region / 'region.dmb').read_bytes())
+
+    def test_a_crash_without_a_new_dmb_is_a_failure(self):
+        runner = FakeRunner()
+        battle_mapswap.rotate(self.region, 'karak', runner)  # leaves an old region.dmb in the build tree
+        (self.region / 'region.dmb').write_bytes(b'old dmb')
+        with self.assertRaisesRegex(RuntimeError, 'compile failed'):
+            battle_mapswap.rotate(self.region, 'karak', FakeRunner(crash_on_exit=True, writes_dmb=False))
         self.assertEqual(b'old dmb', (self.region / 'region.dmb').read_bytes())
 
     def test_refuses_bad_names(self):

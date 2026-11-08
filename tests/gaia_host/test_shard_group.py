@@ -233,6 +233,18 @@ class ShardGroupTests(unittest.TestCase):
             surface = dict(region, kind='SURFACE')
             self.assertEqual('maps\\small\\tiny.dmm', shard_group.place_map(group, surface, path))
 
+    def test_compile_succeeded_tolerates_a_crash_after_a_clean_save(self):
+        with tempfile.TemporaryDirectory() as folder:
+            dmb = Path(folder) / 'region.dmb'
+            crash = 'region.dmb - 0 errors, 0 warnings\ndouble free or corruption (out)'
+            self.assertFalse(shard_group.compile_succeeded(0, 'region.dmb - 0 errors', dmb, None))  # no file
+            dmb.write_bytes(b'new')
+            self.assertTrue(shard_group.compile_succeeded(0, 'region.dmb - 0 errors, 0 warnings', dmb, None))
+            self.assertTrue(shard_group.compile_succeeded(134, crash, dmb, None))
+            self.assertFalse(shard_group.compile_succeeded(134, crash, dmb, shard_group.dmb_mtime(dmb)))  # stale file
+            self.assertFalse(shard_group.compile_succeeded(1, 'region.dmb - 3 errors, 0 warnings', dmb, None))
+            self.assertFalse(shard_group.compile_succeeded(0, 'region.dmb - 3 errors', dmb, None))
+
     def test_ordinary_regions_get_no_tdm_files(self):
         shard_group.setup(self.write_group(), self.machine)
         self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'tdm-token.txt').exists())
