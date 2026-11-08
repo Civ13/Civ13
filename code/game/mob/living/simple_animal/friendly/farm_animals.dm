@@ -13,6 +13,7 @@
 	return FALSE
 
 /mob/living/simple_animal/cattle
+	ruminant = TRUE
 	defensive_retaliation = TRUE
 	var/plough = FALSE
 	var/plough_raised = TRUE		//Lets make people access the Cattle Pulled Plough menu at first to familiarize
@@ -701,6 +702,7 @@
 
 //goat
 /mob/living/simple_animal/goat
+	ruminant = TRUE
 	defensive_retaliation = TRUE
 	name = "goat ram"
 	desc = "A male goat. Not known for their pleasant disposition."
@@ -840,6 +842,7 @@
 
 //sheep
 /mob/living/simple_animal/sheep
+	ruminant = TRUE
 	defensive_retaliation = TRUE
 	name = "sheep ram"
 	desc = "A male sheep. Good for wool."
@@ -1026,6 +1029,7 @@
 				B.lamb = TRUE
 			visible_message("A sheep lamb has been born!")
 /mob/living/simple_animal/camel
+	ruminant = TRUE
 	defensive_retaliation = TRUE
 	name = "camel"
 	desc = "Good for meat."

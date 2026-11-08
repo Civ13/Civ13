@@ -73,6 +73,7 @@
 
 	var/herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	var/granivore = 0 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	var/ruminant = FALSE //cows, goats, sheep, deer...: the only animals that can digest cotton plants and seeds
 	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Won't attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
@@ -412,8 +413,17 @@
 		try_defensive_retaliation(M)
 	return
 
+// Cotton plants and cotton seeds are only food for ruminants; every other animal leaves them alone.
+/mob/living/simple_animal/proc/animal_can_eat(atom/food)
+	if (!ruminant && (istype(food, /obj/structure/farming/plant/cotton) || istype(food, /obj/item/stack/farming/seeds/cotton)))
+		return FALSE
+	return TRUE
+
 /mob/living/simple_animal/proc/feed(var/obj/item/O as obj, var/mob/user as mob)
 	if (stat == CONSCIOUS)
+		if (!animal_can_eat(O))
+			to_chat(user, SPAN_WARNING("\The [src] sniffs \the [O] but won't eat it."))
+			return
 		if (granivore && istype(O, /obj/item/stack/farming/seeds))
 			var/obj/item/stack/S = O
 			if (lays_eggs && eggsleft < maxeggs) // eggsleft 0 is FALSE, so it cannot mark layers

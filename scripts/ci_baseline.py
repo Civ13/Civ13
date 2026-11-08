@@ -60,6 +60,15 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm', 'code/modules/1713/tools.dm',
             'code/modules/projectiles/__projectiles.dm',
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
+    # Cotton is only food for ruminants: production predicate and call sites.
+    'animal_cotton': {'files': ('tests/animal_cotton/test_animal_cotton.py',),
+        'paths': ('tests/animal_cotton/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/simple_animal/simple_ai.dm',
+            'code/game/mob/living/simple_animal/friendly/farm_animals.dm',
+            'code/game/mob/living/simple_animal/friendly/deer.dm',
+            'code/game/mob/living/simple_animal/hostile/buffalo.dm',
+            'tests/save_movement/source_adapter.py')},
     # Chicken navigation predicates and collision dispatch; fake engine only.
     'chicken_water': {'files': ('tests/chicken_water/test_chicken_water.py',),
         'paths': ('tests/chicken_water/',), 'shared_paths': (

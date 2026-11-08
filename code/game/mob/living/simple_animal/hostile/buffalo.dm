@@ -1,4 +1,5 @@
 /mob/living/simple_animal/hostile/buffalo
+	ruminant = TRUE
 	name = "buffalo"
 	desc =  "A large member of the bovine Family, they are grazers and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'
@@ -23,6 +24,7 @@
 	fat_extra = 3
 
 /mob/living/simple_animal/bison
+	ruminant = TRUE
 	name = "bison cow"
 	desc =  "A large member of the bovine family, they are grazers commonly found in herds and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'
@@ -56,6 +58,7 @@
 	herbivore = 1 //grazes like cattle, so it gets hungry and can be fed grain
 
 /mob/living/simple_animal/bisonbull
+	ruminant = TRUE
 	name = "bison bull"
 	desc =  "A large member of the bovine family, they are grazers commonly found in herds and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'
