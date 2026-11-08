@@ -98,6 +98,10 @@ var/global/list/civ_generators = list()
 	charge_power = 0
 	// Constructors register the restored instance, but never start output.
 	register_generator()
+	// Rejoin the cable on this tile; the generator stays off until enabled.
+	powersource = restored_port_cable(src)
+	if (powersource)
+		powersource.rebuild_supply()
 
 /obj/structure/civ_generator/proc/rated_output()
 	return 0
