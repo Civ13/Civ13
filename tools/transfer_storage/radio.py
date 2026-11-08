@@ -304,6 +304,9 @@ class RadioRelay:
         for field, limit in (('rank', MAX_TEXT), ('fakekey', MAX_NAME)):
             value = envelope.get(field)
             clean[field] = _text(value, limit, field) if value else ''
+        # TRUE when the region it was said in posted it to Discord itself; the
+        # mainland posts the rest (region_ooc.dm), so each line reaches Discord once.
+        clean['posted'] = envelope.get('posted') in (True, 1)
         return clean
 
     @staticmethod
