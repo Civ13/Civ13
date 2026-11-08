@@ -330,7 +330,9 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("rail_steam","combustion"), 5))
-	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion","alloys"), 7))
+	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
+	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion"), 6))
+	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
 	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("paved_infrastructure","electricity"), 5))
@@ -497,6 +499,7 @@ var/global/list/node_grid_col_cache = null
 		// --- automobiles (14) ---
 		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
+		"/obj/structure/car_workshop/hangar" = "powered_flight",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",
 		"/obj/structure/bed/chair/carseat/left" = "automobiles",

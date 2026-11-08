@@ -409,6 +409,29 @@ var/aircraft_runtime_error = FALSE
 	// The open-air hook only holds what an airborne aircraft carries.
 	aircraft_check(!aircraft_holds(locate(8, 8, 2), dropped), "nothing is held once no aircraft is airborne")
 
+	// Players build the light plane at an aircraft hangar once Powered Flight
+	// is researched; it leaves the press with an empty tank and keys issued.
+	if (!research_nodes.len)
+		build_research_tree()
+	var/datum/research_node/flight = get_research_node("powered_flight")
+	var/datum/research_node/aviation = get_research_node("aviation_rocketry")
+	aircraft_check(flight && ("automobiles" in flight.prereqs) && flight.era_tier == 6 && aviation && ("powered_flight" in aviation.prereqs), "Powered Flight follows Automobiles and leads to Aviation & Rocketry (node [flight ? "found" : "missing"])")
+	aircraft_check(get_recipe_node_req("/obj/structure/car_workshop/hangar") == "powered_flight", "Powered Flight gates the hangar (got [get_recipe_node_req("/obj/structure/car_workshop/hangar")])")
+	for (var/bx = 15, bx <= 18, bx++)
+		for (var/by = 3, by <= 6, by++)
+			var/turf/BT = locate(bx, by, 1)
+			BT.ChangeTurf(/turf/floor/dirt)
+	var/obj/structure/car_workshop/hangar/hangar = new(locate(14, 2, 1))
+	aircraft_check(hangar.model_size("Light plane") == 4 && hangar.costs("Light plane")["steel"] == 50 && !hangar.costs("SMC Falcon") && !hangar.allowed(null), "the hangar builds only the light plane, after Powered Flight")
+	aircraft_check(!hangar.complete_assembly("Light plane"), "an empty hangar builds nothing")
+	hangar.stock = list("steel" = 60, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
+	var/obj/structure/vehicleparts/axis/aircraft/built = hangar.complete_assembly("Light plane")
+	aircraft_check(istype(built), "the hangar builds a light plane in its bay")
+	if (istype(built))
+		aircraft_check(built.frames().len == 12 && built.engine && built.engine.fueltank && aircraft_tank_fuel(built) == 0, "the built plane is whole with an empty tank ([built.frames().len] frames, fuel [built.engine && built.engine.fueltank ? aircraft_tank_fuel(built) : "none"])")
+		aircraft_check(built.keyed_vehicle_id && hangar.stock["steel"] == 10 && hangar.stock["wheels"] == 0, "the hangar issues keys and spends its inputs (key [built.keyed_vehicle_id], steel [hangar.stock["steel"]], wheels [hangar.stock["wheels"]])")
+	aircraft_check(!hangar.complete_assembly("Light plane"), "the occupied bay refuses a second build")
+
 /proc/aircraft_run()
 	try
 		aircraft_checks()
