@@ -195,6 +195,15 @@ region's `/radio/deliver` once a second (`--radio-interval`, never longer than
 flight, duplicates, stale envelopes, wrong-group envelopes and envelopes from
 unknown or self regions are dropped and counted in `/radio/status`.
 
+OOC chat is shared by every region of the group the same way, in its own ring
+and without relay stations (`code/modules/persistence/region_ooc.dm`). The
+world posts each OOC line said there to `/ooc/send` and polls `/ooc/inbox`;
+the coordinator's radio pass carries the lines in the `ooc` list of
+`/radio/outbox` and `/radio/deliver`. Only the region a line was said in posts
+it to Discord, so CivilizationBot sees it once; receiving regions show it
+tagged with the source region, unless OOC is globally muted there or the
+speaker holds an OOC ban in that region's ban list.
+
 ## Two-region pilot (phase 3)
 
 `tests/transfer_storage/pilot/run.py` runs two DreamDaemon regions built from

@@ -9,6 +9,12 @@ crash or a restart simply loses what was in flight.
 
 Relay heartbeats travel the same way, so a world can tell whether a peer has a
 matching, working relay before anyone talks into the void.
+
+OOC chat rides the same agents in its own ring (``ooc_send``, ``ooc_inbox``):
+it needs no relay station, because it is out of character and every region of
+the group shares one OOC channel. The sending world has already applied its
+mutes, bans and filters and posted the line to Discord, so a receiving world
+only shows it.
 """
 import re
 import time
@@ -21,6 +27,8 @@ HEARTBEAT_TTL = 150.0      # seconds a peer relay counts as linked after its las
 MAX_MESSAGE = 256
 MAX_NAME = 64
 MAX_TEXT = 32              # language, verb, relay name, frequency as text
+MAX_OOC = 6144             # the game's 1024-character limit after html_encode
+OOC_STYLES = ('everyone', 'elevated', 'mentor', 'moderator', 'developer', 'admin', 'highstaff')
 MAX_BATCH = 50             # envelopes per send_batch call (the world queues at most 50)
 KEY = re.compile(r'^[a-z0-9_-]{1,16}$')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
@@ -62,6 +70,8 @@ class RadioRelay:
         self._outbox = deque(maxlen=RING)
         self._inbox = deque(maxlen=RING)
         self._seen = deque(maxlen=RING * 4)
+        self._ooc_out = deque(maxlen=RING)
+        self._ooc_in = deque(maxlen=RING)
         self.local = {}            # key -> {'condition': n, 'at': clock}
         self.peers = {}            # region -> {key -> {'condition': n, 'at': clock}}
         self.dropped = 0
@@ -128,6 +138,22 @@ class RadioRelay:
         self.local = fresh
         return len(fresh)
 
+    def ooc_send(self, envelope):
+        """Record one OOC line said here, for every other region. Returns its id."""
+        if type(envelope) is not dict:
+            raise RadioError('envelope must be an object')
+        clean = self._ooc_fields(envelope)
+        clean.update(id=uuid.uuid4().hex, group=self.group, source=self.region, at=self.clock())
+        self._ooc_out.append(clean)
+        return clean['id']
+
+    def ooc_inbox(self):
+        """OOC lines from peers, oldest first, each handed out once."""
+        self._expire()
+        due = list(self._ooc_in)
+        self._ooc_in.clear()
+        return [self._public(e) for e in due]
+
     def inbox(self):
         """Messages from peers, oldest first, each handed out once."""
         self._expire()
@@ -147,7 +173,8 @@ class RadioRelay:
                     view[key] = {'condition': info['condition'], 'age': int(age)}
             peers[region] = view
         return {'region': self.region, 'local': sorted(self.local), 'peers': peers,
-                'queued_out': len(self._outbox), 'queued_in': len(self._inbox), 'dropped': self.dropped}
+                'queued_out': len(self._outbox), 'queued_in': len(self._inbox),
+                'ooc_out': len(self._ooc_out), 'ooc_in': len(self._ooc_in), 'dropped': self.dropped}
 
     # -- what the coordinator moves -----------------------------------------
 
@@ -156,10 +183,43 @@ class RadioRelay:
         self._expire()
         due = list(self._outbox)
         self._outbox.clear()
+        ooc = list(self._ooc_out)
+        self._ooc_out.clear()
         now = self.clock()
         heartbeats = {key: {'condition': info['condition'], 'age': int(now - info['at'])}
                       for key, info in self.local.items() if now - info['at'] <= HEARTBEAT_TTL}
-        return {'envelopes': [dict(e, age=round(now - e['at'], 2)) for e in due], 'heartbeats': heartbeats}
+        return {'envelopes': [dict(e, age=round(now - e['at'], 2)) for e in due], 'heartbeats': heartbeats,
+                'ooc': [dict(e, age=round(now - e['at'], 2)) for e in ooc]}
+
+    def deliver_ooc(self, envelopes):
+        """Accept OOC lines from other regions. Returns how many were queued."""
+        if not isinstance(envelopes, list):
+            raise RadioError('ooc must be a list')
+        now = self.clock()
+        queued = 0
+        for envelope in envelopes:
+            if type(envelope) is not dict or envelope.get('group') != self.group:
+                self.dropped += 1
+                continue
+            source, ident = envelope.get('source'), envelope.get('id')
+            if (not isinstance(ident, str) or not ID.match(ident) or ident in self._seen
+                    or not ID.match(source or '') or source == self.region):
+                self.dropped += 1
+                continue
+            try:
+                clean = self._ooc_fields(envelope)
+                clean.update(id=ident, group=self.group, source=source,
+                             at=now - max(0.0, float(envelope.get('age', 0))))
+            except (RadioError, TypeError, ValueError):
+                self.dropped += 1
+                continue
+            if now - clean['at'] > TTL:
+                self.dropped += 1
+                continue
+            self._seen.append(ident)
+            self._ooc_in.append(clean)
+            queued += 1
+        return queued
 
     def deliver(self, envelopes, heartbeats=None):
         """Accept envelopes from other regions and their heartbeat tables. Returns how many were queued."""
@@ -224,10 +284,27 @@ class RadioRelay:
 
     def _expire(self):
         now = self.clock()
-        for ring in (self._outbox, self._inbox):
+        for ring in (self._outbox, self._inbox, self._ooc_out, self._ooc_in):
             while ring and now - ring[0]['at'] > TTL:
                 ring.popleft()
                 self.dropped += 1
+
+    @staticmethod
+    def _ooc_fields(envelope):
+        style = envelope.get('style') or 'everyone'
+        if style not in OOC_STYLES:
+            raise RadioError('style must be one of %s' % ', '.join(OOC_STYLES))
+        clean = {
+            'name': _text(envelope.get('name'), MAX_NAME, 'name'),
+            'ckey': _text(envelope.get('ckey'), MAX_NAME, 'ckey'),
+            'message': _text(envelope.get('message'), MAX_OOC, 'message'),
+            'style': style,
+        }
+        # Optional: a staff rank title and an admin's stealth key.
+        for field, limit in (('rank', MAX_TEXT), ('fakekey', MAX_NAME)):
+            value = envelope.get(field)
+            clean[field] = _text(value, limit, field) if value else ''
+        return clean
 
     @staticmethod
     def _public(envelope):
