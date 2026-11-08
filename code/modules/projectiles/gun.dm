@@ -370,7 +370,7 @@
 
 	if (muzzle_flash)
 		spawn(5)
-			set_light(0)
+			update_weapon_light()
 
 //obtains the next projectile to fire
 /obj/item/weapon/gun/proc/consume_next_projectile()

@@ -23,6 +23,8 @@
 	L["mentorhelp"] = list("Mentorhelp", "Ask a mentor.")
 	L["adminhelp"] = list("Adminhelp", "Contact an admin.")
 	L["bug"] = list("Report bug", "Send a bug report.")
+	if (shard_group && shard_group.enabled)
+		L["regions"] = list("Regions", "See the other worlds in this group and how to travel.")
 	var/mob/living/human/H = owner.mob
 	if (escape_menu_persistent() && istype(H) && H.stat != DEAD && !H.sleeping)
 		L["sleep"] = list("Sleep in this bed", "Assigns the bed you stand on as your return point.")
@@ -75,6 +77,8 @@
 			owner.adminhelp()
 		if ("bug")
 			owner.report_bug()
+		if ("regions")
+			owner.view_regions()
 		if ("sleep")
 			var/mob/living/human/H = owner.mob
 			if (istype(H))
