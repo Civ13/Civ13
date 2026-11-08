@@ -477,7 +477,7 @@
 				else if(level_link_target(A, v, raw))
 					value = encode_level_link(A.vars[v])
 				else
-					value = encode_saved_value(savefile, raw)
+					value = encode_saved_value(savefile, A.vars[v])
 				// Value format 2: a scalar field is written raw, not enveloped.
 				if(islist(value) && value["kind"] == "value" && persistence_default_scalar(value["value"]))
 					value = value["value"]
