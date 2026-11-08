@@ -43,13 +43,14 @@ what the code does so far and the rules later steps must keep.
 | 6c | Moon gear: lunar surface kit, sortie reserve and lift-off home from a landed lander | `code/modules/space/lander.dm` |
 | 8 | Module pods and docking: release a kit as a pod, RCS steering from the pod or an orbit console, hard dock, fold back, party checks, rams | #3948, `code/modules/space/orbit_pods.dm` |
 | 9 | Decks: node modules, deck hatches, building a deck above or below, shared air between decks, console over every deck | #3949, `code/modules/space/orbit_decks.dm` |
-| 10a | Upkeep: orbit decay by band, drag heating and strikes, reboost thruster, altitude on the console | `code/modules/space/orbit_upkeep.dm` |
+| 10a | Upkeep: orbit decay by band, drag heating and strikes, reboost thruster, altitude on the console | #3952, `code/modules/space/orbit_upkeep.dm` |
+| 10b | 2013 layout and hardware: tracking solar array, radioisotope generator, bigger starter station | `orbit_station.dm`, `orbit_project.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-10b. Wear on seals, cartridges, panels and batteries; tracking arrays and the
-    isotope generator; the uncrewed cargo freighter; the 2013 layout.
+10c. Wear on seals, cartridges, panels and batteries; the uncrewed cargo
+    freighter.
 
 ## Orbital flight
 
@@ -146,7 +147,20 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   recovers lost drifters: anyone stuck at an unlinked plane edge is reeled in
   beside it after 10 seconds. A console on a station plane only lets that
   party recover.
-- The 2013 and 2026 layouts come with stage C.
+- **From 2013** the station is founded with the 2013 layout: a node module
+  docked east of the workshop (its deck hatch ready for a second deck) and a
+  greenhouse to the west, two tracking solar arrays in place of the fixed
+  wings, a radioisotope generator at the foot of the cable run, six reboost
+  burns and a node module kit in the crate. The deliveries are the same.
+- The 2026 layout comes with stage D.
+
+## 2013 hardware
+
+- **Tracking solar array** (25 electronics): 35 PU in orbital sunlight,
+  nothing in the shade. Runs from 2013.
+- **Radioisotope generator** (40 electronics): a steady 10 PU through
+  sunlight and shade with nothing to feed. Runs from 2013.
+- Both are gated on Orbital Flight.
 
 ## Moon gear
 
@@ -237,4 +251,6 @@ pods (release, footprint, steps, rams, party checks, hard dock, fold refusals,
 folding back and docking again, console steering) and decks (the node's
 hatch, building a deck above, pairing, breaches, shared air, refusals,
 console reports and risers) and upkeep (decay, the hazard clock, bands,
-drag heating, floor and ceiling, the thruster and the console).
+drag heating, floor and ceiling, the thruster and the console) and the 2013
+layout (four sealed modules, tracking arrays, the isotope generator in sun
+and shade, six burns, the node kit and the era gate).

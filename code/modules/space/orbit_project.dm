@@ -273,16 +273,30 @@ var/global/list/orbit_station_requirements = list(
 	O.powersource = C
 	C.connections |= O
 
-// Builds the 1969 layout around the middle of plane z. Returns the hatch.
+// Builds the station layout around the middle of plane z: the 1969 layout,
+// or from 2013 the 2013 layout, which adds a node module to the east and a
+// greenhouse to the west, tracking arrays for the fixed wings, a
+// radioisotope generator at the foot of the cable run, six reboost burns
+// and a node module kit in the crate. Returns the hatch.
 /proc/orbit_found_station(party, z)
+	var/modern = map && map.ordinal_age >= 8
 	var/cx = round(world.maxx / 2)
 	var/cy = round(world.maxy / 2)
 	var/turf/centre = locate(cx, cy, z)
 	var/turf/lock_centre = locate(cx, cy - HABITAT_MODULE_SPACING, z)
-	if (!centre || !lock_centre || cy - HABITAT_MODULE_SPACING - 6 < 2 || habitat_module_refusal(centre, null) || habitat_module_refusal(lock_centre, null))
+	var/low = cy - HABITAT_MODULE_SPACING - 6 - (modern ? 1 : 0)
+	if (!centre || !lock_centre || low < 2 || habitat_module_refusal(centre, null) || habitat_module_refusal(lock_centre, null))
 		return null
+	if (modern)
+		for (var/dx in list(HABITAT_MODULE_SPACING, -HABITAT_MODULE_SPACING))
+			var/turf/side = locate(cx + dx, cy, z)
+			if (!side || side.x - HABITAT_MODULE_RADIUS < 2 || side.x + HABITAT_MODULE_RADIUS > world.maxx - 1 || habitat_module_refusal(side, null))
+				return null
 	var/obj/structure/habitat_core/W = habitat_unfold(centre, "station")
 	habitat_unfold(lock_centre, "airlock", /obj/structure/habitat_core/airlock, SOUTH)
+	if (modern)
+		habitat_unfold(locate(cx + HABITAT_MODULE_SPACING, cy, z), "node", /obj/structure/habitat_core/node)
+		habitat_unfold(locate(cx - HABITAT_MODULE_SPACING, cy, z), "greenhouse")
 	// Machines along the top row on a horizontal run, joined at the middle to
 	// a vertical run down through the airlock to the wings and the fuel cell.
 	var/list/machines = list(/obj/structure/life_support/heater, /obj/structure/life_support/scrubber, /obj/structure/life_support/radiator)
@@ -292,7 +306,7 @@ var/global/list/orbit_station_requirements = list(
 		var/obj/structure/cable/C = orbit_station_cable(T, EAST)
 		var/path = machines[i]
 		orbit_station_attach(new path(T), C)
-	for (var/y = cy + 1, y >= cy - HABITAT_MODULE_SPACING - 6, y--)
+	for (var/y = cy + 1, y >= low, y--)
 		var/obj/structure/cable/C = orbit_station_cable(locate(cx, y, z), NORTH)
 		if (y == cy + 1)
 			joint = C
@@ -302,7 +316,8 @@ var/global/list/orbit_station_requirements = list(
 	var/bottom = cy - HABITAT_MODULE_SPACING - 6
 	for (var/y in list(bottom + 2, bottom + 1))
 		var/turf/T = locate(cx, y, z)
-		var/obj/structure/civ_generator/solar/wing/S = new(T)
+		var/wing_type = modern ? /obj/structure/civ_generator/solar/wing/tracking : /obj/structure/civ_generator/solar/wing
+		var/obj/structure/civ_generator/solar/wing/S = new wing_type(T)
 		for (var/obj/structure/cable/C in T)
 			orbit_station_attach(S, C)
 		S.enabled = TRUE
@@ -312,16 +327,24 @@ var/global/list/orbit_station_requirements = list(
 	F.oxygen = F.tank_max
 	for (var/obj/structure/cable/C in fuel_turf)
 		orbit_station_attach(F, C)
+	if (modern)
+		var/turf/core_turf = locate(cx, low, z)
+		var/obj/structure/civ_generator/isotope/I = new(core_turf)
+		for (var/obj/structure/cable/C in core_turf)
+			orbit_station_attach(I, C)
+		I.enabled = TRUE
 	joint.rebuild_supply()
 	// A reboost thruster with three burns, and a fresh orbit (orbit_upkeep.dm).
 	var/obj/structure/orbit_thruster/thruster = new(locate(cx + 2, bottom + 1, z))
-	thruster.propellant = ORBIT_REBOOST_COST * 3
+	thruster.propellant = ORBIT_REBOOST_COST * (modern ? 6 : 3)
 	orbit_set_station_altitude(party, ORBIT_ALTITUDE_START)
 	// Supplies, the console and the way home.
 	var/obj/structure/closet/crate/crate = locate() in locate(cx - 1, cy - 1, z)
 	if (crate)
 		for (var/path in list(/obj/item/habitat_sealant, /obj/item/habitat_sealant, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/head/pressure_helmet, /obj/item/clothing/head/pressure_helmet, /obj/item/pressure_tank, /obj/item/pressure_tank, /obj/item/pressure_suit_patch, /obj/item/eva_tether, /obj/item/eva_tether, /obj/item/stack/cable_coil/yellow))
 			new path(crate)
+		if (modern)
+			new /obj/item/habitat_kit/node(crate)
 		for (var/i in 1 to 6)
 			new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic(crate)
 		for (var/i in 1 to 3)

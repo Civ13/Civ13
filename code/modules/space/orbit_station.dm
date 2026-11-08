@@ -128,6 +128,27 @@ var/global/orbit_day_last_advance = -1
 	if (orbit_world())
 		to_chat(user, orbit_sunlit() ? "In sunlight for another [orbit_day_left()] seconds." : "In shadow for another [orbit_day_left()] seconds.")
 
+// 2013: a wider array on a gimbal that keeps it square to the sun.
+/obj/structure/civ_generator/solar/wing/tracking
+	name = "tracking solar array"
+	desc = "Two wide photovoltaic wings on a gimbal that keeps them square to the sun. In orbit it charges the grid only while the station is in sunlight."
+	min_age = 8
+	peak_output = 35
+
+// ---------------------------------------------------------------- isotope
+
+// 2013: steady power through sunlight and shade, with nothing to feed.
+/obj/structure/civ_generator/isotope
+	name = "radioisotope generator"
+	desc = "A shielded core of decaying isotope ringed with thermocouples. It gives steady power through sunlight and shade, with nothing to feed it. Cable it and switch it on."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "uranium_refinery"
+	min_age = 8
+	var/peak_output = 10
+
+/obj/structure/civ_generator/isotope/rated_output()
+	return peak_output
+
 // ---------------------------------------------------------------- fuel cell
 
 /obj/structure/civ_generator/fuel_cell
