@@ -7,6 +7,8 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASELINE = 'cc03b199128f8afed58713912c551ad7556e6bc4'
 MOVEMENT = 'code/game/mob/mob_movement.dm'
@@ -98,7 +100,7 @@ def main():
                 capture_output=True, text=True, timeout=60, creationflags=flags)
             log = build.stdout + build.stderr
             (args.output / 'compile.log').write_text(log, encoding='utf-8')
-            if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+            if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
                 raise SystemExit('Fixture compilation failed; inspect compile.log')
             run = subprocess.run([str(daemon), 'probe.dmb', '-trusted', '-invisible', '-close', '-log', 'runtime.log'],
                 cwd=root, capture_output=True, timeout=45, creationflags=flags)
@@ -116,7 +118,7 @@ def main():
                     raise SystemExit('Original key-release defect was not detected')
             elif failures:
                 raise SystemExit('Key-release regression: ' + str(failures))
-            evidence.update(native_executed=True, byond='516.1681', result=result)
+            evidence.update(native_executed=True, byond=PINNED_BYOND, result=result)
     (args.output / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(evidence))
 

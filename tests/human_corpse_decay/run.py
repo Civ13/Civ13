@@ -1,6 +1,9 @@
 """Production-source decay probe; isolated state, bounded runtime, RSS samples."""
 import argparse, json, os, shutil, subprocess, tempfile, time
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 def process_memory(pid):
     if os.name == 'nt':
@@ -95,7 +98,7 @@ def main():
         text = build.stdout + build.stderr
         (out / 'compile.log').write_text(text)
         print(text, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
+        if build.returncode or PINNED_BANNER not in text or '0 errors, 0 warnings' not in text:
             raise RuntimeError('Pinned compilation failed')
         for f in generated[3:5]: shutil.copy2(f, out / f.name)
         # Only tracked name data; no production config, credentials or saves.

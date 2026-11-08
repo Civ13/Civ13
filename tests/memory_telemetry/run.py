@@ -1,6 +1,8 @@
 """Production bounded telemetry native regression; no game startup."""
 import argparse, hashlib, json, os, re, subprocess
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 p = argparse.ArgumentParser()
 p.add_argument('--byond-bin', type=Path, required=True)
 p.add_argument('--evidence-dir', type=Path, required=True)
@@ -35,7 +37,7 @@ build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=a.e
 compile_log = build.stdout+build.stderr
 (a.evidence_dir/'compile.log').write_text(compile_log)
 print(compile_log, flush=True)
-if build.returncode or '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned native compile failed')
+if build.returncode or PINNED_BYOND not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned native compile failed')
 run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=a.evidence_dir, capture_output=True, timeout=30, creationflags=flags)
 (a.evidence_dir/'daemon.log').write_bytes(run.stdout+run.stderr)
 log = (a.evidence_dir/'runtime.log').read_text(errors='replace')

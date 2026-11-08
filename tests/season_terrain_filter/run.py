@@ -9,6 +9,8 @@ import subprocess
 import tempfile
 import time
 import uuid
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASELINE = 'e3c8d02f31f1a23c1320eaec949fb4af56e964f3'
 HELPER = 'code/_helpers/areas.dm'
@@ -61,7 +63,7 @@ def main():
         build = subprocess.run([str(dm), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)
         log = build.stdout + build.stderr
         (logs / 'compile.log').write_text(log)
-        if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log: raise SystemExit(log)
+        if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log: raise SystemExit(log)
         start = time.monotonic()
         if os.name != 'nt':
             import resource
@@ -88,7 +90,7 @@ def main():
         (logs / 'runtime.log').write_text(log)
         if process.returncode or re.search(r'runtime error|Runtime in|Bad ref|Bad loc|Cannot read null|Cannot execute null|PORT_OPEN', log, re.I): raise SystemExit(log)
         result = json.loads((root / 'result.json').read_text())
-    result.update(head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(), baseline_sha=BASELINE, dirty_patch_sha256=hashlib.sha256(patch).hexdigest(), helper_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), dimensions=[*dimensions, 1], byond='516.1681', platform=os.name, negative_control=a.negative_control, daemon_elapsed_seconds=elapsed, process_cpu_seconds=cpu_seconds, seasonal_type_guards=len(calls))
+    result.update(head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(), baseline_sha=BASELINE, dirty_patch_sha256=hashlib.sha256(patch).hexdigest(), helper_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), dimensions=[*dimensions, 1], byond=PINNED_BYOND, platform=os.name, negative_control=a.negative_control, daemon_elapsed_seconds=elapsed, process_cpu_seconds=cpu_seconds, seasonal_type_guards=len(calls))
     (logs / 'dirty.patch').write_bytes(patch)
     a.output.write_text(json.dumps(result, indent=2))
     assert result['cycles'] == 16 and len(result['samples']) == 24 and result['comparisons'] >= 50, 'Incomplete fixture'

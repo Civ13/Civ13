@@ -2,6 +2,8 @@
 import argparse, hashlib, json, os, re, shutil, subprocess, tempfile, time
 import importlib.util
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 def selected_runtime(bin_dir, archive):
     if archive is None: return None
@@ -84,7 +86,7 @@ def main():
     (output / 'compile.log').write_text(log)
     print(log,flush=True)
     if runtime: runtime.validate_compile(build.returncode, log, 'probe.dmb')
-    elif build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+    elif build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError('Pinned compilation failed')
     command=[str(daemon),'probe.dmb']+(['-invisible','-close'] if os.name=='nt' else [])+['-trusted','-log','runtime.log']
     parameters = ([] if not args.large else ['large=1']) + ([] if not args.scenario else ['scenario='+args.scenario])

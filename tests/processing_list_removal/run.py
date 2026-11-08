@@ -9,6 +9,8 @@ import re
 import subprocess
 import statistics
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASELINE = 'aa675de6dbade0f3740c516dc4b5945c5c9a43c7'
 parser = argparse.ArgumentParser(description=__doc__)
@@ -74,7 +76,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
                            capture_output=True, text=True, timeout=60, creationflags=flags)
     log = build.stdout + build.stderr
     (out / 'compile.log').write_text(log)
-    if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+    if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
                          cwd=out, capture_output=True, timeout=120, creationflags=flags)

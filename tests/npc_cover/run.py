@@ -7,6 +7,8 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASELINE = '1627730ecec53f385cbf1956b7a9e4385dffa675'
 parser = argparse.ArgumentParser(description=__doc__)
@@ -62,7 +64,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-npc-cover-') as temp:
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)
     log = build.stdout + build.stderr
     (logs / 'compile.log').write_text(log)
-    if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+    if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=180, creationflags=flags)
     log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
@@ -70,7 +72,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-npc-cover-') as temp:
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null', log, re.I):
         raise SystemExit(log)
     result = json.loads((root / 'result.json').read_text())
-    result.update(head_sha=head, baseline_sha=BASELINE, source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), platform=os.name, byond='516.1681', dimensions=[32,32,2], negative_control=args.negative_control, benchmark=args.benchmark)
+    result.update(head_sha=head, baseline_sha=BASELINE, source_sha256=hashlib.sha256(current.encode()).hexdigest(), compiled_sha256=hashlib.sha256(source.encode()).hexdigest(), probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), platform=os.name, byond=PINNED_BYOND, dimensions=[32,32,2], negative_control=args.negative_control, benchmark=args.benchmark)
     (logs / 'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=repo))
     args.output.write_text(json.dumps(result, indent=2))
     if result['scenarios'] != 100 or result['score_comparisons'] < 1000:

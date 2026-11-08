@@ -8,6 +8,9 @@ import re
 import shutil
 import subprocess
 import uuid
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 BASE_SHA = '450eadc7a7090082d1a60fdaf91fe0d9339f930f6a2450b4210afed3446192af'
 EXPECTED = ['automatic systems release hidden holders']
@@ -96,7 +99,7 @@ def main():
                                 capture_output=True, text=True, timeout=180, creationflags=flags)
         log = result.stdout+result.stderr
         (a.output/'compile.log').write_text(log)
-        if result.returncode or 'DM compiler version 516.1681' not in log or '0 errors, 0 warnings' not in log:
+        if result.returncode or PINNED_BANNER not in log or '0 errors, 0 warnings' not in log:
             raise ValueError('Pinned compiler failed')
         for suffix in ('.dmb', '.rsc'): shutil.copy2(ROOT/(prefix+suffix), a.output/('probe'+suffix))
         (a.output/'binary-hashes.json').write_text(json.dumps({name: hashlib.sha256((a.output/name).read_bytes()).hexdigest() for name in ('probe.dmb', 'probe.rsc')}, indent=2))

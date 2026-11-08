@@ -6,6 +6,8 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--byond-bin', type=Path, required=True)
@@ -34,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-parry-') as temp:
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)
     log = build.stdout + build.stderr
-    if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+    if build.returncode or PINNED_BYOND not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=60, creationflags=flags)
     log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
@@ -43,4 +45,4 @@ with tempfile.TemporaryDirectory(prefix='civ13-parry-') as temp:
     result = json.loads((root / 'result.json').read_text())
     assert result['scenarios'] == 32, result
     assert result['failures'] == (8 if args.negative_control else 0), result
-    print(json.dumps(dict(result, negative_control=args.negative_control, byond='516.1681')))
+    print(json.dumps(dict(result, negative_control=args.negative_control, byond=PINNED_BYOND)))

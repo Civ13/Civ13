@@ -10,6 +10,8 @@ import re
 import subprocess
 import tempfile
 import time
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 BASELINE = 'e3c8d02f31f1a23c1320eaec949fb4af56e964f3'
 META = 'code/game/objects/map_metadata/_map_metadata.dm'
@@ -255,7 +257,7 @@ def main():
         build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=120, creationflags=flags)
         buildlog = build.stdout + build.stderr
         (logs / 'compile.log').write_text(buildlog)
-        if build.returncode or '516.1681' not in buildlog or '0 errors, 0 warnings' not in buildlog:
+        if build.returncode or PINNED_BYOND not in buildlog or '0 errors, 0 warnings' not in buildlog:
             raise SystemExit(buildlog)
         start = time.monotonic()
         from telemetry import run_native

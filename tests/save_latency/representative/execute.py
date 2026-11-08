@@ -27,6 +27,9 @@ import helpers
 import protocol
 import sampler
 import source
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[3] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BYOND_B = PINNED_BYOND.encode()
 
 PROTECTED_PORTS = {1714, 1715, 18459, 18460, 18461, 18462}
 CORE_SECONDS = 9810
@@ -590,7 +593,7 @@ def execute(repository, packet, effect=None, *, caller_deadline=None):
                 raise
             (game / 'compile.log').write_bytes(log)
             verify_all(core_deadline)
-            if b'516.1681' not in log or b'0 errors, 0 warnings' not in log:
+            if PINNED_BYOND_B not in log or b'0 errors, 0 warnings' not in log:
                 raise RuntimeError('Pinned compiler did not return clean build')
             binaries[label] = {suffix: files.file_sha(game / ('representative.' + suffix)) for suffix in ('dmb', 'rsc')}
             seals[label] = MappingProxyType(dict(seals[label], **{

@@ -1,6 +1,9 @@
 """Native production NanoUI constructor/close ownership with injected effects."""
 import argparse, hashlib, json, os, re, subprocess, tempfile
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 BASELINE = 'f556e39b93fc97f41020b2d8c5f2abed63fab497'
 SOURCE = 'code/modules/nano/_nanoui.dm'
 EXPECTED = {'independent close releases master ownership'}
@@ -34,7 +37,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-nanoui-ownership-') as directory:
     daemon = a.byond_bin / ('dd.exe' if win else 'DreamDaemon')
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=60, creationflags=flags)
     print(build.stdout + build.stderr)
-    if build.returncode or 'DM compiler version 516.1681' not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
+    if build.returncode or PINNED_BANNER not in build.stdout or '0 errors, 0 warnings' not in build.stdout:
         raise SystemExit('Pinned compilation failed')
     command = [str(daemon), 'probe.dmb'] + (['-invisible', '-close'] if win else []) + ['-trusted', '-log', 'runtime.log']
     run = subprocess.run(command, cwd=temp, capture_output=True, text=True, timeout=30, creationflags=flags)
@@ -50,6 +53,6 @@ with tempfile.TemporaryDirectory(prefix='civ13-nanoui-ownership-') as directory:
         dest.mkdir(parents=True, exist_ok=True)
         for name, text in [('compile.log', build.stdout+build.stderr), ('runtime.log', log), ('source.dm',raw), ('production.dm',source), ('probe.dm',probe)]:
             (dest/name).write_text(text)
-        (dest/'result.json').write_text(json.dumps({'baseline':a.baseline, 'source_commit':BASELINE if a.baseline else head, 'working_tree_dirty':bool(dirty) if not a.baseline else False, 'checkout_status':dirty, 'source_sha256':hashlib.sha256(raw.encode()).hexdigest(), 'adapted_source_sha256':hashlib.sha256(source.encode()).hexdigest(), 'fixture_sha256':hashlib.sha256(probe.encode()).hexdigest(), 'byond':'516.1681', 'observed_failures':sorted(failures), 'expected_baseline_failures':sorted(EXPECTED) if a.baseline else [], 'runtime_error':engine_error, 'passed':bool(success)}, indent=2))
+        (dest/'result.json').write_text(json.dumps({'baseline':a.baseline, 'source_commit':BASELINE if a.baseline else head, 'working_tree_dirty':bool(dirty) if not a.baseline else False, 'checkout_status':dirty, 'source_sha256':hashlib.sha256(raw.encode()).hexdigest(), 'adapted_source_sha256':hashlib.sha256(source.encode()).hexdigest(), 'fixture_sha256':hashlib.sha256(probe.encode()).hexdigest(), 'byond':PINNED_BYOND, 'observed_failures':sorted(failures), 'expected_baseline_failures':sorted(EXPECTED) if a.baseline else [], 'runtime_error':engine_error, 'passed':bool(success)}, indent=2))
     if not success: raise SystemExit('NanoUI ownership regression or baseline control failed')
     if a.baseline: print('PASS baseline control: exact expected ownership failure detected')

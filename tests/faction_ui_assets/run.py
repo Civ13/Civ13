@@ -12,6 +12,9 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts/gameplay_bridge'))
 from prepare_native import isolated_startup
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 PREFIX = '.faction_ui_assets_ci'
 ASSETS = 'code/modules/client/asset_cache.dm'
@@ -123,7 +126,7 @@ def main():
         log = build.stdout + build.stderr
         (evidence / 'compile.log').write_text(log, encoding='utf-8')
         print(log, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in log or '0 errors, 0 warnings' not in log:
+        if build.returncode or PINNED_BANNER not in log or '0 errors, 0 warnings' not in log:
             raise ValueError('Pinned compilation failed')
         for ext in ('.dmb', '.rsc'):
             shutil.copy2(ROOT / (PREFIX + ext), evidence / (PREFIX + ext))

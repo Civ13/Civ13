@@ -8,6 +8,8 @@ import re
 import subprocess
 
 from check_writers import check
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = 'code/modules/admin/admin_attack_log.dm'
@@ -103,7 +105,7 @@ def main():
                            capture_output=True, text=True, timeout=60, creationflags=flags)
     compilation = build.stdout + build.stderr
     (evidence / 'compile.log').write_text(compilation, encoding='utf-8')
-    if build.returncode or '516.1681' not in compilation or '0 errors, 0 warnings' not in compilation:
+    if build.returncode or PINNED_BYOND not in compilation or '0 errors, 0 warnings' not in compilation:
         raise SystemExit('Pinned compilation failed:\n' + compilation)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
                          cwd=evidence, capture_output=True, timeout=60, creationflags=flags)

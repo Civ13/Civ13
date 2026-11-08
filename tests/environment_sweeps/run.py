@@ -1,6 +1,9 @@
 """Measure actual production daylight/weather sweeps in an isolated BYOND world."""
 import argparse, json, os, shutil, subprocess, tempfile, uuid
 from pathlib import Path
+# Compile checks follow the canonical compiler pin.
+PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 
 def main():
     p=argparse.ArgumentParser()
@@ -81,13 +84,13 @@ def main():
         files[0].write_text(source,encoding='utf-8')
         head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
         (out/'tested.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
-        metadata={'commit':head,'baseline':a.baseline,'size':a.size,'areas':a.areas,'byond':'516.1681','evidence':str(out),'baseline_commit':'9ea42a6c5269d4970672655460ca96a3a7ec07f6' if a.baseline else None}
+        metadata={'commit':head,'baseline':a.baseline,'size':a.size,'areas':a.areas,'byond':PINNED_BYOND,'evidence':str(out),'baseline_commit':'9ea42a6c5269d4970672655460ca96a3a7ec07f6' if a.baseline else None}
         (out/'metadata.json').write_text(json.dumps(metadata),encoding='utf-8')
         compiler=a.byond_bin/('dm.exe' if os.name=='nt' else 'DreamMaker')
         daemon=a.byond_bin/('dd.exe' if os.name=='nt' else 'DreamDaemon')
         build=subprocess.run([str(compiler),str(files[0])],cwd=root,capture_output=True,text=True,timeout=90,creationflags=flags)
         output=build.stdout+build.stderr; (out/'compile.log').write_text(output); print(output,flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in output or '0 errors, 0 warnings' not in output: raise RuntimeError('Pinned compilation failed')
+        if build.returncode or PINNED_BANNER not in output or '0 errors, 0 warnings' not in output: raise RuntimeError('Pinned compilation failed')
         for f in files[4:6]: shutil.copy2(f,out/f.name)
         for rel in subprocess.check_output(['git','ls-files','config/names'],cwd=root,text=True).splitlines():
             dest=out/rel; dest.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(root/rel,dest)

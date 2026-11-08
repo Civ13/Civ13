@@ -30,16 +30,12 @@ jobs:
           persist-credentials: false
       - name: Test omission-control source preparation without an engine
         run: python3 -m unittest discover -s tests/world_save -p 'test_immutable_capture_runner.py'
+      # The canonical compiler pin (tools/byond/version.json), from the repository mirror.
       - name: Install isolated pinned BYOND
         shell: bash
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y lib32stdc++6 lib32z1 libcurl4:i386 unzip make
-          wget -q -O "$RUNNER_TEMP/byond.zip" https://civ13.com/downloads/516.1681_byond_linux.zip
-          unzip -q "$RUNNER_TEMP/byond.zip" -d "$RUNNER_TEMP/capture-byond"
-          cd "$RUNNER_TEMP/capture-byond/byond"
-          make here
+        env:
+          BYOND_HOME: ${{ runner.temp }}/capture-byond
+        run: bash scripts/cloud_byond_setup.sh
       - name: Compile and run positive and four exact controls
         shell: bash
         env:
