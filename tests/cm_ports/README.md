@@ -47,3 +47,9 @@ leaving the group), the roster pages, the tracker pointing at fire team
 leaders, friendly-fire counting and its round fact, machine gun barrel heat
 and cooling, filled autoinjectors and the clotting agent, the modern combat
 kit contents and the observer HUD.
+
+The eighth batch checks Spot Enemy (who sees the mark, the cooldown, expiry,
+the field HUD marker), rally points (who may set one, the tracker pointing at
+it, replacing and clearing), the death recap lines and killing blow, personal
+round stats, the searchlight beam (reach, walls, turning, on and off, what is
+saved) and that fire teams are saved with the character.

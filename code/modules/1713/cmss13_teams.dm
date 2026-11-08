@@ -10,13 +10,12 @@
 
 #define FIRE_TEAM_COUNT 3
 
-/mob/living/human/var/tmp/fire_team = 0           // 0 for none, else 1 to FIRE_TEAM_COUNT
-/mob/living/human/var/tmp/fire_team_kind = null   // "squad", "faction" or "company"
-/mob/living/human/var/tmp/fire_team_group = null  // squad key, faction name or company name
-/mob/living/human/var/tmp/fire_team_lead = FALSE
-
-/mob/living/human/persistence_runtime_var(key)
-	return (key in list("fire_team", "fire_team_kind", "fire_team_group", "fire_team_lead")) || ..()
+// Saved with the character, so faction and company fire teams survive a
+// restart on persistent worlds. Squad teams lapse with their round.
+/mob/living/human/var/fire_team = 0           // 0 for none, else 1 to FIRE_TEAM_COUNT
+/mob/living/human/var/fire_team_kind = null   // "squad", "faction" or "company"
+/mob/living/human/var/fire_team_group = null  // squad key, faction name or company name
+/mob/living/human/var/fire_team_lead = FALSE
 
 /proc/squad_group_key(mob/living/human/H)
 	return "[H.faction_text]#[H.squad]"

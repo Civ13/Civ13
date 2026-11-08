@@ -62,6 +62,7 @@ var/probe_runtime_error = FALSE
 	fifth_batch_checks()
 	sixth_batch_checks()
 	seventh_batch_checks()
+	eighth_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -742,4 +743,110 @@ var/probe_runtime_error = FALSE
 		if (I.loc == hurtling && I.icon_state == "health_dead")
 			found_dead = TRUE
 	probe_check(found_dead, "the observer HUD shows health badges for everyone in view")
+	map.civilizations = TRUE
+
+/proc/eighth_batch_checks()
+	map.civilizations = FALSE
+	field_marks.Cut()
+	var/datum/job/SJ = new
+	SJ.uses_squads = TRUE
+	var/datum/job/LJ = new
+	LJ.uses_squads = TRUE
+	LJ.is_squad_leader = TRUE
+	var/mob/living/human/lead = probe_human(2, 29, "Lead")
+	lead.faction_text = "Red"
+	lead.original_job = LJ
+	lead.squad = 4
+	var/mob/living/human/scout = probe_human(3, 29, "Scout")
+	scout.faction_text = "Red"
+	scout.original_job = SJ
+	scout.squad = 4
+	var/mob/living/human/outsider = probe_human(4, 29, "Outsider")
+	outsider.faction_text = "Red"
+	outsider.original_job = SJ
+	outsider.squad = 5
+	map.faction1_squad_leaders[4] = lead
+
+	// Spot Enemy
+	var/datum/field_mark/S = scout.spot_enemy_at(locate(10, 29, 1))
+	probe_check(S && S.kind == "spot" && S.scope[1] == "squad", "spotting marks the spot for the squad")
+	probe_check(field_mark_visible_to(S, lead) && !field_mark_visible_to(S, outsider), "only the spotter's squad sees the mark")
+	probe_check(!scout.spot_enemy_at(locate(11, 29, 1)), "spotting again right away is refused")
+	var/list/seen = field_marks_for(lead)
+	probe_check(S in seen, "the field HUD lists the spot for the squad leader")
+	var/obj/field_hud/FH = new(null, lead)
+	var/found_spot = FALSE
+	for (var/image/I in FH.build())
+		if (I.icon_state == "spot_marker" && I.loc == S.where)
+			found_spot = TRUE
+	probe_check(found_spot, "the field HUD draws the spot marker")
+	S.expires = world.time - 1
+	probe_check(!(S in field_marks_for(lead)), "spot marks expire")
+	var/mob/living/human/loner = probe_human(5, 29, "Loner")
+	loner.faction_text = "Red"
+	probe_check(!loner.spot_enemy_at(locate(10, 29, 1)), "someone with no group has nobody to warn")
+	probe_check(scout.persistence_runtime_var("last_spot_time") && scout.persistence_runtime_var("recent_hits"), "spot cooldowns and recent hits are not saved")
+
+	// Rally point
+	var/list/scopes = lead.rally_scopes()
+	probe_check(scopes.len == 1 && scopes[1] == "Squad 4", "a squad leader can rally their squad")
+	probe_check(!scout.rally_scopes().len, "a private cannot set a rally point")
+	var/datum/field_mark/R = lead.set_rally_point(scopes["Squad 4"], locate(20, 29, 1))
+	probe_check(rally_point_for(scout) == R && scout.tracker_target() == R.where, "the tracker points the squad at the rally point")
+	probe_check(!rally_point_for(outsider) && !rally_point_for(lead), "other squads and the leader are not pointed at it")
+	lead.set_rally_point(scopes["Squad 4"], locate(21, 29, 1))
+	var/rallies = 0
+	for (var/datum/field_mark/M in field_marks)
+		if (M.kind == "rally")
+			rallies++
+	probe_check(rallies == 1, "a new rally point replaces the old one")
+	lead.clear_rally_point(scopes["Squad 4"])
+	probe_check(!rally_point_for(scout) && scout.tracker_target() == lead, "clearing the rally point points the tracker back at the leader")
+	probe_check(("rally_marker" in icon_states('icons/obj/cmss13_ports.dmi')) && ("spot_marker" in icon_states('icons/obj/cmss13_ports.dmi')), "spot and rally markers have sprites")
+
+	// Death recap and personal stats
+	var/datum/round_facts/F = new
+	var/mob/living/human/victim = probe_human(6, 29, "Victim")
+	var/mob/living/human/gunner = probe_human(7, 29, "Gunner")
+	var/mob/living/human/stabber = probe_human(8, 29, "Stabber")
+	F.record_hit(victim, gunner, "rifle")
+	F.record_hit(victim, gunner, "rifle")
+	F.record_hit(victim, stabber, "bayonet")
+	var/recap = jointext(victim.death_recap_lines(), "|")
+	probe_check(findtext(recap, "<b>Gunner</b> hit you 2 times (rifle)") && findtext(recap, "<b>Stabber</b> hit you once (bayonet)"), "the recap lists who hurt you and with what: [recap]")
+	probe_check(findtext(recap, "Killing blow: <b>Stabber</b> with a bayonet"), "the recap names the killing blow")
+	for (var/list/hit in victim.recent_hits)
+		hit[1] = world.time - 700
+	probe_check(findtext(jointext(victim.death_recap_lines(), "|"), "No one hurt you"), "old hits drop out of the recap")
+	for (var/i = 1 to 40)
+		F.record_hit(victim, gunner, "rifle")
+	probe_check(victim.recent_hits.len == 30, "the recap keeps the last 30 hits")
+	F.record_shot(gunner)
+	F.record_death(victim)
+	F.medals_received["Gunner"] = 1
+	var/line = F.personal_line("Gunner")
+	probe_check(findtext(line, "1 shot") && findtext(line, "42 hits") && findtext(line, "1 kill") && findtext(line, "1 medal"), "personal stats list shots, hits, kills and medals: [line]")
+	probe_check(!F.personal_line("Nobody"), "someone who did nothing gets no line")
+
+	// Searchlight
+	var/obj/structure/searchlight/SL = new(locate(2, 30, 1))
+	SL.set_dir(EAST)
+	probe_check(SL.beam_turf() == locate(8, 30, 1), "the beam reaches six tiles ahead")
+	var/turf/wall = locate(6, 30, 1)
+	wall.density = TRUE
+	probe_check(SL.beam_turf() == locate(5, 30, 1), "walls stop the beam")
+	wall.density = FALSE
+	SL.attack_hand(lead)
+	probe_check(SL.on && SL.beam && SL.beam.loc == locate(8, 30, 1) && SL.icon_state == "searchlight_on", "switching it on lights the far end")
+	SL.set_dir(turn(SL.dir, -90))
+	SL.update_beam()
+	probe_check(SL.dir == SOUTH && SL.beam.loc == locate(2, 24, 1), "turning it moves the beam")
+	probe_check(SL.persistence_runtime_var("beam") && !SL.persistence_runtime_var("on"), "the switch is saved, the beam is rebuilt")
+	SL.attack_hand(lead)
+	probe_check(!SL.on && !SL.beam, "switching it off removes the beam")
+	probe_check("searchlight_on" in icon_states('icons/obj/cmss13_ports.dmi'), "the searchlight has sprites")
+
+	// Fire teams are saved with the character
+	probe_check(!scout.persistence_runtime_var("fire_team") && !scout.persistence_runtime_var("fire_team_kind") && !scout.persistence_runtime_var("fire_team_group") && !scout.persistence_runtime_var("fire_team_lead"), "fire teams are saved with the character")
+	map.faction1_squad_leaders[4] = null
 	map.civilizations = TRUE

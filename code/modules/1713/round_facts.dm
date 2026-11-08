@@ -46,6 +46,7 @@ var/global/datum/round_facts/round_facts = new
 	victim.round_fact_weapon = weapon ? "[weapon]" : null
 	victim.round_fact_hit_time = world.time
 	record_friendly_fire(victim, attacker, weapon)
+	record_personal_hit(victim, attacker, weapon)
 
 /datum/round_facts/proc/record_death(mob/living/human/victim)
 	if (!istype(victim) || istype(victim, /mob/living/human/corpse))
