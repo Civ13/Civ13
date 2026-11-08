@@ -47,15 +47,17 @@ what the code does so far and the rules later steps must keep.
 | 10b | 2013 layout and hardware: tracking solar array, radioisotope generator, bigger starter station | #3956, `orbit_station.dm`, `orbit_project.dm` |
 | 10c | Wear: scrubber sorbent beds and cartridges, solar cell wear and glass repairs | #3959, `code/modules/space/orbit_wear.dm` |
 | 11 | Sectors outward (2026): sector beacon claims a plane at an edge, edge couplers carry power across the seam, seam margins for modules and pods | #3961, `code/modules/space/orbit_sectors.dm` |
-| 12a | Reusable launch (2026): eight-seat crew ship on a booster that lands back, booster wear and steel refurbishment, eight seats home in orbit | `code/modules/space/orbit_reusable.dm` |
-| 12b | 2026 starter station: a second deck above the hub (node, quarters, storage, own life support, riser power, open deck hatches) and a sector beacon in the crate | `orbit_project.dm` |
+| 12a | Reusable launch (2026): eight-seat crew ship on a booster that lands back, booster wear and steel refurbishment, eight seats home in orbit | #3966, `code/modules/space/orbit_reusable.dm` |
+| 12b | 2026 starter station: a second deck above the hub (node, quarters, storage, own life support, riser power, open deck hatches) and a sector beacon in the crate | #3978, `orbit_project.dm` |
+| 13 | Wider network: station transceiver (a relay with its own dish), flights from orbit down to the Moon and Mars and back up checked | `code/modules/space/orbit_network.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-12c. The methane-oxygen propellant plant and a compact fission reactor in
-    orbit (a subtype of the controlled reactor generator).
-13. Wider network: shuttles between orbit, the Moon and Mars; station radio.
+12c. A methane-oxygen propellant plant needs a methane reagent chain first;
+    waiting on Val. A compact fission reactor was dropped: the controlled
+    reactor generator (2013) already runs in orbit.
+13. Remaining: in-orbit fabrication with the 3D printer.
 10d. The uncrewed cargo freighter. It needs items to cross regions without a
     traveller, which the transfer agent cannot do yet, so it waits for that
     infrastructure. Seal and battery wear wait for a reason to exist (seals
@@ -295,6 +297,15 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Eight seats home.** The crew ship arrives as a capsule that takes all
   eight crew home in one deorbit (the flight's `seats` field, checked on
   arrival).
+
+## Wider network
+
+- **Flights.** A rocket flies up to orbit from the mainland, the Moon or
+  Mars. From a station's launch pad a crewed lander flies down to the Moon
+  or Mars, and any craft flies home to the mainland.
+- **Station transceiver** (20 electronics, researched like the relay): a long-range
+  relay with its own dish, so a station needs no antenna on the hull. It
+  keys, wears and repairs like any relay.
 
 ## Tests
 

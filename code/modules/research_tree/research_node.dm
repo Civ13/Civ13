@@ -734,6 +734,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/habitat_kit/orbital_workshop" = "orbital_flight",
 		"/obj/item/habitat_kit/node" = "orbital_flight",
 		"/obj/item/sector_beacon" = "orbital_flight",
+		"/obj/structure/telecom/relay/station" = "factories",
 		"/obj/item/connector/riser/coupler" = "orbital_flight",
 		"/obj/structure/orbit_thruster" = "orbital_flight",
 		"/obj/structure/civ_generator/solar/wing/tracking" = "orbital_flight",
