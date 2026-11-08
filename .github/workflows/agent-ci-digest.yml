@@ -37,6 +37,7 @@ on:
       - Offline procedural maps
       - Offline server management contracts
       - Reserved-lighting containment pilot (manual only)
+      - Sprite review
       - Tgui frontend
       - Transfer storage
       - YouTube uploader contracts

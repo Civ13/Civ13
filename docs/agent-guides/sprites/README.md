@@ -11,6 +11,16 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+## Sprite review on pull requests
+
+The `Sprite review` workflow runs `scripts/sprite_review.py` on pull requests
+that change a `.dmi`. It uses byond-devtools `icon-diff` (pinned in the
+workflow) to list added, removed and changed states (size, dirs, frames,
+delays, pixels). It writes the list to the job summary and uploads one
+before | after | heatmap picture per changed icon as the `sprite-review`
+artifact. It fails only when a DMI cannot be read. Locally:
+`python3 scripts/sprite_review.py --base origin/master --devtools <byond-devtools checkout> --out sprite-review`.
+
 ## DMI (sprite sheet) file format
 
 DMI files are valid PNGs with an embedded `zTXt` metadata chunk. The chunk keyword is `Description` and its value is zlib-compressed text (after a null-terminator byte following the keyword). Decompressing it yields a plain-text JSON-like DM literal describing every sprite state.

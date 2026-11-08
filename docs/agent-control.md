@@ -302,7 +302,11 @@ python tools/agent-control/civ13_agent.py mcp
 `mcp` is a stdio MCP server exposing one `civ13_<action>` tool per action with
 a JSON schema (from `tools/agent-control/catalog.py`). Read-only tools carry
 `readOnlyHint`; `set_var`, `call_proc`, `call_verb`, `kick`, `restart`,
-`delete_atom` and `character_release` carry `destructiveHint`. An MCP client entry:
+`delete_atom` and `character_release` carry `destructiveHint`. It also serves
+two resources, this guide (`civ13://docs/agent-control`) and the action catalog
+(`civ13://actions`), and three prompts: `observe_and_act` (a character and a
+goal), `view_character` and `server_check` (read-only). Set `BYOND_DEVTOOLS` to
+a byond-devtools checkout for `civ13_character_view` pictures. An MCP client entry:
 
 ```json
 {"mcpServers": {"civ13": {"command": "python", "args": ["tools/agent-control/civ13_agent.py", "mcp"],
