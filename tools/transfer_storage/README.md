@@ -140,7 +140,9 @@ character lives, with a join link.
 ## Player-built trails
 
 Admins can still place `/obj/structure/region_gate` with a destination. Players
-can build a **trail marker** from 10 wood (construction). It starts closed:
+can build a **trail marker** from 10 wood (construction), only outdoors on the
+ground within 10 tiles of a map border (`REGION_TRAIL_EDGE_TILES`; launch pads
+are exempt). It starts closed:
 the first player to use it picks the land it should lead to, which notifies
 the admins (Approve, Reject and Jump links). Each player may ask once every
 ten minutes and have three requests waiting at most; only the asker may

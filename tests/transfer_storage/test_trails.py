@@ -89,6 +89,25 @@ class TrailMarkerTests(unittest.TestCase):
         panel = read('code/modules/persistence/shard_group.dm')
         self.assertIn('if(holder)\n\t\thtml += shard_group.panel_admin_html() + region_trail_pending_html()', panel)
 
+    def test_built_only_outdoors_at_the_edge_of_the_world(self):
+        self.assertRegex(TRAILS, r'#define REGION_TRAIL_EDGE_TILES \d+')
+        edge = proc(TRAILS, '/proc/region_trail_at_edge')
+        self.assertIn('A.location != AREA_OUTSIDE', edge)
+        self.assertIn('turf_is_above_ground(T)', edge)
+        for side in ('T.x <= d', 'T.y <= d', 'T.x > world.maxx - d', 'T.y > world.maxy - d'):
+            self.assertIn(side, edge)
+        refusal = proc(TRAILS, '/proc/region_trail_build_refusal')
+        # Launch pads are trail markers too, but only the plain marker is held to the edge.
+        self.assertIn('result_type != ' + MARKER + ') return null', refusal)
+        self.assertIn('edge of the world', refusal)
+        stack = read('code/game/objects/items/stacks/stack.dm')
+        # produce_recipe has column-0 comments, so search from its start.
+        body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
+        check = body.index('region_trail_build_refusal(user, recipe.result_type)')
+        # Refused before any wood is spent or the build wait starts.
+        self.assertLess(check, body.index('if (recipe.time)'))
+        self.assertLess(check, body.index('if (!can_use(required))'))
+
 
 if __name__ == '__main__':
     unittest.main()
