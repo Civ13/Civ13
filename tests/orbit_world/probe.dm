@@ -124,6 +124,7 @@ var/global/orbit_failures = 0
 		orbit_satellite_checks()
 		orbit_docking_checks()
 		orbit_lab_checks()
+		orbit_defence_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1622,3 +1623,51 @@ var/global/orbit_failures = 0
 	orbit_check("breach stops the lab", findtext("[L.work_refusal()]", "breached") ? 1 : 0, 1)
 	qdel(L)
 	qdel(wire)
+
+// A turret that is always powered and in fire control range.
+/obj/structure/point_defence/probe_ready/ready()
+	return isturf(loc)
+
+// Station defences (orbit_defences.dm): armour plates soak strikes, turrets
+// shoot them down and slow forced dockings.
+/proc/orbit_defence_checks()
+	var/z = 0
+	for (var/p in 2 to world.maxz)
+		if (orbit_station_party(p))
+			z = p
+	if (!z)
+		orbit_check("a station plane for defences", 0, 1)
+		return
+	var/turf/centre = locate(world.maxx - 5, 6, z)
+	var/obj/structure/habitat_core/C = habitat_unfold(centre, "armoury")
+	var/mob/living/human/eva_tester/H = new(locate(centre.x, centre.y + 1, z))
+	H.m_intent = "stealth"
+	for (var/i in 1 to 4)
+		var/obj/item/hull_plate/P = new(get_turf(H))
+		H.put_in_active_hand(P)
+		C.attackby(P, H)
+	orbit_check("three plates at most", C.armour, 3)
+	orbit_check("armour soaks a strike", barren_meteor_strike(C) ? 1 : 0, 0)
+	orbit_check("a plate used up", C.armour, 2)
+	orbit_check("hull still sealed", C.breaches(), 0)
+	var/obj/structure/point_defence/probe_ready/D = new(locate(centre.x - 4, centre.y, z))
+	D.intercept_chance = 100
+	orbit_check("turret shoots the strike down", barren_meteor_strike(C) ? 1 : 0, 0)
+	orbit_check("turret spares the armour", C.armour, 2)
+	D.intercept_chance = 0
+	barren_meteor_strike(C)
+	barren_meteor_strike(C)
+	orbit_check("armour gone after two more", C.armour, 0)
+	orbit_check("the next strike holes the hull", barren_meteor_strike(C) ? 1 : 0, 1)
+	orbit_check("breached", C.breaches() > 0 ? 1 : 0, 1)
+	var/obj/structure/docking_port/port = new(locate(centre.x - 3, centre.y + 2, z))
+	orbit_check("one turret slows a boarding", orbit_point_defence_delay(port), 150)
+	var/obj/structure/point_defence/probe_ready/D2 = new(locate(centre.x - 3, centre.y - 2, z))
+	var/obj/structure/point_defence/probe_ready/D3 = new(locate(centre.x - 2, centre.y - 2, z))
+	orbit_check("two turrets count at most", orbit_point_defence_delay(port), 300)
+	var/obj/structure/point_defence/plain = new(locate(3, 3, z))
+	orbit_check("an uncabled turret is not ready", plain.ready() ? 1 : 0, 0)
+	for (var/path in list("/obj/item/hull_plate", "/obj/structure/point_defence"))
+		orbit_check("[path] gated", get_recipe_node_req(path), "orbital_flight")
+	for (var/obj/O in list(D, D2, D3, plain, port, H))
+		qdel(O)

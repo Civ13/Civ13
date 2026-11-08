@@ -127,6 +127,8 @@ var/global/barren_hazard_last_pulse = -1
 		if (!candidates.len)
 			return null
 		target = pick(candidates)
+	if (habitat_strike_blocked(target))
+		return null
 	var/list/hull = list()
 	for (var/turf/T in target.ring())
 		if (istype(T, /turf/wall/habitat_shell))
