@@ -1351,6 +1351,7 @@
 #include "code\modules\space\orbit_reusable.dm"
 #include "code\modules\space\orbit_freight.dm"
 #include "code\modules\space\orbit_docking.dm"
+#include "code\modules\space\orbit_lab.dm"
 #include "code\modules\space\orbit_network.dm"
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"

@@ -731,6 +731,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/crewed_lander/orbital_rocket/reusable" = "orbital_flight",
 		"/obj/structure/crewed_lander/freighter" = "orbital_flight",
 		"/obj/structure/docking_port" = "orbital_flight",
+		"/obj/structure/zero_g_lab" = "orbital_flight",
 		"/obj/structure/crewed_lander/satellite_launcher" = "orbital_flight",
 		"/obj/structure/satellite_station" = "orbital_flight",
 		"/obj/item/satellite/weather" = "orbital_flight",

@@ -53,6 +53,7 @@ what the code does so far and the rules later steps must keep.
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
 | 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
+| 16 | Zero-g manufacturing: microgravity lab in a sealed, cabled module grows semiconductors, protein crystals and gems | `code/modules/space/orbit_lab.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
 ## Next
@@ -368,6 +369,18 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   party collects its own parcels there (20 at most per port).
 - Visitors keep every other party check: thrusters, pods, decks, sectors
   and consoles stay the owners'.
+
+## Zero-g manufacturing
+
+- **Microgravity lab** (40 electronics, Orbital Flight). Works only in
+  orbit, inside a sealed habitat module, cabled to power (20), and only
+  while players are online. Feedstock (exact stack types, up to 200 each)
+  and progress are plain saved numbers.
+- One batch per 30 work ticks (about a minute):
+  - semiconductor crystals: 6 glass + 1 copper -> 3 electronics;
+  - protein crystals: 5 bruise packs -> 5 advanced bruise packs;
+  - gem crystals: 20 coal -> 1 rough diamond.
+- Changing programme resets the batch in progress, not the feedstock.
 
 ## Tests
 
