@@ -117,3 +117,4 @@ It checks that dismantling a decorative plastic pipe returns one plastic sheet.
 It checks butyl tape payment, missing feedstock, and paid copper insulation.
 
 The biochemistry probe checks butyl stopper and gasket payment, container sealing and rejection of a beaker.
+The biochemistry probe checks the willow bark route (salicin to salicylic acid to aspirin), willow bark stock saving, willow season sprites and one-time riverside willow seeding.

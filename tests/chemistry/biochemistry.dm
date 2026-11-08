@@ -27,6 +27,8 @@
 	biochemistry_plastic_pipe_checks()
 	biochemistry_butyl_tape_checks()
 	biochemistry_butyl_stopper_checks()
+	biochemistry_willow_checks()
+	biochemistry_willow_seed_checks()
 	return TRUE
 
 /proc/biochemistry_plastic_pipe_checks()
@@ -453,3 +455,47 @@
 	qdel(interrupted)
 	qdel(missing)
 	qdel(restarted)
+
+// Willow bark: salicin source, both conversion steps, tree bark stock and saving.
+/proc/biochemistry_willow_checks()
+	var/turf/site = locate(28, 20, 1)
+	var/obj/item/weapon/reagent_containers/glass/beaker/B = new(site)
+	B.reagents.add_reagent("salicin", 10)
+	B.reagents.add_reagent("sacid", 5)
+	B.reagents.process_reactions()
+	chemistry_assert(B.reagents.get_reagent_amount("sal_acid") == 10 && !B.reagents.has_reagent("salicin"), "Salicin did not become salicylic acid")
+	B.reagents.add_reagent("ethanol", 5)
+	B.reagents.process_reactions()
+	chemistry_assert(B.reagents.get_reagent_amount("aspirin") == 10 && !B.reagents.has_reagent("sal_acid"), "Salicylic acid did not become aspirin")
+	qdel(B)
+	var/obj/item/weapon/reagent_containers/food/snacks/willow_bark/bark = new(site)
+	chemistry_assert(bark.reagents.get_reagent_amount("salicin") == 10, "Willow bark lacks salicin")
+	qdel(bark)
+	var/obj/structure/wild/tree/live_tree/willow/W = new(site)
+	chemistry_assert(findtext(W.icon_state, "willow_") == 1 && W.icon == 'icons/obj/flora/willow.dmi', "Willow sprite state")
+	chemistry_assert(W.bark_strips == 4 && ("bark_strips" in W.get_saved_vars()), "Willow bark stock is not saved")
+	W.change_season()
+	chemistry_assert(findtext(W.icon_state, "willow_") == 1, "Willow lost its sprite on a season change")
+	qdel(W)
+
+// Riverside trees become willows once; a second pass finds the target met.
+/proc/biochemistry_willow_seed_checks()
+	var/turf/T = locate(26, 26, 1)
+	var/area/A = get_area(T)
+	A.climate = "temperate"
+	A.location = AREA_OUTSIDE
+	A.no_air = FALSE
+	A.has_gravity = TRUE
+	A.is_void_area = FALSE
+	T = T.ChangeTurf(/turf/floor/grass)
+	var/turf/water = locate(27, 26, 1)
+	water = water.ChangeTurf(/turf/floor/beach/water)
+	var/turf/far = locate(5, 5, 1)
+	far = far.ChangeTurf(/turf/floor/grass)
+	new /obj/structure/wild/tree/live_tree(far)
+	var/obj/structure/wild/tree/live_tree/old = new(T)
+	chemistry_assert(willow_riverside(T), "riverside not detected [ecology_ground(water)] [ecology_outdoor_climate(T)]")
+	var/n = willow_seed_stands(TRUE)
+	var/obj/structure/wild/tree/live_tree/willow/W = locate() in T
+	chemistry_assert(n == 1 && W && QDELETED(old) && !(locate(/obj/structure/wild/tree/live_tree/willow) in far), "seed failed [n] [willow_seed_report]")
+	chemistry_assert(willow_seed_stands(TRUE) == 0, "seed not idempotent [willow_seed_report]")
