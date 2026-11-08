@@ -1,0 +1,115 @@
+{
+  "status": "CAPTURED",
+  "shots": [
+    {
+      "name": "1-scale-100",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "2-scale-75",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "3-scale-50",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "4-scale-125",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "5-scale-150",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "6-scale-200",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "9-storage-100",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "10-storage-150",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "11-storage-dragged",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "7-edit-mode-custom",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    },
+    {
+      "name": "8-custom-layout",
+      "ok": true,
+      "window": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 736
+      }
+    }
+  ]
+}

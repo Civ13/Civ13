@@ -1,0 +1,19 @@
+STARTED RUNTIME LOGGING
+Standing building level 3 added above the surface.
+HUD: PASS client_owns_subject {"mob":"Agrippa Verginius Petronax","style":""}
+HUD: shot 1-scale-100 taken
+HUD: shot 2-scale-75 taken
+HUD: shot 3-scale-50 taken
+HUD: shot 4-scale-125 taken
+HUD: shot 5-scale-150 taken
+HUD: shot 6-scale-200 taken
+HUD: shot 9-storage-100 taken
+HUD: PASS storage_default_at_100 {"x":0,"y":0}
+HUD: shot 10-storage-150 taken
+HUD: PASS storage_rises_at_150 {"y":3}
+HUD: shot 11-storage-dragged taken
+HUD: PASS storage_follows_drag {"x":3,"y":3}
+HUD: shot 7-edit-mode-custom taken
+HUD: PASS edit_tint_applied 
+HUD: shot 8-custom-layout taken
+HUD: PASS tint_cleared 
