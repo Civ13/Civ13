@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('mood_source_adapter', ROOT/'tests/save_movement/source_adapter.py')
 A = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(A)
-A.FIELDS += ('mood', 'set_mood', 'adjust_mood', 'droid', 'resting', 'lying')
+A.FIELDS += ('mood', 'set_mood', 'adjust_mood', 'note_mood_cause', 'droid', 'resting', 'lying')
 CORE = 'code/game/mob/living/carbon/human/human_needs.dm'
 LIFE = 'code/game/mob/living/carbon/human/human_life.dm'
 WRITES = json.loads((Path(__file__).parent/'original_writes.json').read_text())
@@ -35,11 +35,12 @@ def uncomment(text):
 def actor(mood=80, sleeping=0, resting=False, lying=False, stat=0, droid=False, core=None):
     core = source(CORE) if core is None else core
     env = {}
-    setter = A.project(core, '/mob/living/human/proc/set_mood', 'src,amount', env, method=True)
-    adjuster = A.project(core, '/mob/living/human/proc/adjust_mood', 'src,amount', env, method=True)
-    mob = SimpleNamespace(mood=mood, sleeping=sleeping, resting=resting, lying=lying, stat=stat, droid=droid)
-    mob.set_mood = lambda value: setter(mob, value)
-    mob.adjust_mood = lambda amount: adjuster(mob, amount)
+    setter = A.project(core, '/mob/living/human/proc/set_mood', 'src,amount,cause=None', env, method=True)
+    adjuster = A.project(core, '/mob/living/human/proc/adjust_mood', 'src,amount,cause=None', env, method=True)
+    mob = SimpleNamespace(mood=mood, sleeping=sleeping, resting=resting, lying=lying, stat=stat, droid=droid, causes=[])
+    mob.set_mood = lambda value, cause=None: setter(mob, value, cause)
+    mob.adjust_mood = lambda amount, cause=None: adjuster(mob, amount, cause)
+    mob.note_mood_cause = lambda cause, delta: mob.causes.append((cause, delta))
     return mob
 
 
@@ -155,6 +156,17 @@ class MoodSleep(unittest.TestCase):
                     writes.append((path.relative_to(ROOT).as_posix(), line.strip()))
         self.assertEqual(writes, [('code/game/mob/living/carbon/carbon_defines.dm', 'var/mood = 100'),
             (CORE, 'mood = amount')])
+
+    def test_causes_record_applied_changes_only(self):
+        mob = actor(mood=80)
+        mob.adjust_mood(-5, 'fleas')
+        mob.adjust_mood(3)
+        mob.set_mood(90, 'a good wash')
+        self.assertEqual(mob.causes, [('fleas', -5), ('a good wash', 12)])
+        sleeper = actor(mood=80, sleeping=66)
+        sleeper.adjust_mood(-5, 'fleas')
+        sleeper.adjust_mood(4, 'the food you ate')
+        self.assertEqual((sleeper.mood, sleeper.causes), (84, [('the food you ate', 4)]))
 
     def test_omitted_broadened_and_frozen_guard_controls_fail(self):
         core = source(CORE)

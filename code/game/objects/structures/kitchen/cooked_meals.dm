@@ -161,7 +161,7 @@
 		meal_food_credit = 0
 		var/floor_mood = 50 + 5 * quality
 		if (mood < floor_mood)
-			set_mood(floor_mood)
+			set_mood(floor_mood, "a properly prepared meal")
 			to_chat(src, "The properly prepared meal lifts your spirits.")
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/take_food_bite(mob/living/human/H, amount)
