@@ -114,7 +114,7 @@ class InputTrace(unittest.TestCase):
                 body = body.replace(approved, historical)
             prior = prior[:start] + body + prior[end:]
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
-                         'f60b5a511df0b6ad0fba30f7819514e5610b20043f607744143ff5f79b3274ea',
+                         'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')
 
     def test_disabled_trace_preserves_entire_prior_click_source(self):

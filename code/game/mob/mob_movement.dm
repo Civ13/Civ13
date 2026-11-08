@@ -1140,20 +1140,8 @@
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(NORTH)
 			else if (mob.prone)
-				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-					mob.dir = WEST
-					var/matrix/M = matrix()
-					M.Turn(-90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
-				else
-					mob.dir = EAST
-					var/matrix/M = matrix()
-					M.Turn(90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
+				mob.dir = prone_facing_dir(mob.dir)
+				H.update_posture_transform()
 
 
 /client/verb/startmovingdown()
@@ -1186,20 +1174,8 @@
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(SOUTH)
 			else if (mob.prone)
-				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-					mob.dir = WEST
-					var/matrix/M = matrix()
-					M.Turn(-90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
-				else
-					mob.dir = EAST
-					var/matrix/M = matrix()
-					M.Turn(90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
+				mob.dir = prone_facing_dir(mob.dir)
+				H.update_posture_transform()
 /client/verb/startmovingright()
 	set name = ".startmovingright"
 	set instant = TRUE
@@ -1232,20 +1208,8 @@
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(EAST)
 			else if (mob.prone)
-				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-					mob.dir = WEST
-					var/matrix/M = matrix()
-					M.Turn(-90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
-				else
-					mob.dir = EAST
-					var/matrix/M = matrix()
-					M.Turn(90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
+				mob.dir = prone_facing_dir(mob.dir)
+				H.update_posture_transform()
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
 	set instant = TRUE
@@ -1277,20 +1241,8 @@
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(WEST)
 			else if (mob.prone)
-				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-					mob.dir = WEST
-					var/matrix/M = matrix()
-					M.Turn(-90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
-				else
-					mob.dir = EAST
-					var/matrix/M = matrix()
-					M.Turn(90)
-					M.Scale(H.size_multiplier)
-					M.Translate(1,-6)
-					mob.transform = M
+				mob.dir = prone_facing_dir(mob.dir)
+				H.update_posture_transform()
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
 	set instant = TRUE

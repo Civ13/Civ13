@@ -161,19 +161,10 @@
 		return
 	blackout_click_trace("facing_stage")
 	if (prone)
-		var/cdir = get_dir(src, A)
-		if (cdir == NORTH || cdir == NORTHWEST || cdir == NORTHEAST || cdir == WEST)
-			dir = WEST
-			var/matrix/M = matrix()
-			M.Turn(-90)
-			M.Translate(1,-6)
-			transform = M
-		else
-			dir = EAST
-			var/matrix/M = matrix()
-			M.Turn(90)
-			M.Translate(1,-6)
-			transform = M
+		dir = prone_facing_dir(get_dir(src, A))
+		if (ishuman(src))
+			var/mob/living/human/prone_human = src
+			prone_human.update_posture_transform()
 	else
 		if (!using_drone)
 			face_atom(A) // change direction to face what you clicked on

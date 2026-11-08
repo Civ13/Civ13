@@ -916,23 +916,13 @@
 	if (C.m_intent == "proning")
 		C.prone = TRUE
 		C.facing_dir = dir
-		if (C.dir == NORTH || C.dir == NORTHWEST || C.dir == NORTHEAST || C.dir == WEST)
-			C.dir = WEST
-		else
-			C.dir = EAST
-		var/matrix/M = matrix()
-		M.Turn(90)
-		M.Scale(C.size_multiplier)
-		M.Translate(1,-6)
+		C.dir = prone_facing_dir(C.dir)
 		update_icon()
-		C.transform = M
+		C.update_posture_transform()
 		return
 	else
 		C.prone = FALSE
-		var/matrix/M = matrix()
-		M.Scale(C.size_multiplier)
-		M.Translate(0, 16*(C.size_multiplier-1))
-		C.transform = M
+		C.update_posture_transform()
 		update_icon()
 		return
 

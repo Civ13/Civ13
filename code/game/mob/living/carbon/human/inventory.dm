@@ -638,23 +638,11 @@ This saves us from having to call add_fingerprint() any time something is put in
 			if (mob.m_intent == "proning")
 				mob.prone = TRUE
 				mob.facing_dir = dir
-				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-					mob.dir = WEST
-				else
-					mob.dir = EAST
-				var/matrix/M = matrix()
-				M.Turn(90)
-				var/mob/living/human/H = mob
-				M.Scale(H.size_multiplier)
-				M.Translate(1,-6)
-				mob.transform = M
+				mob.dir = prone_facing_dir(mob.dir)
 			else
 				mob.prone = FALSE
-				var/matrix/M = matrix()
-				var/mob/living/human/H = mob
-				M.Scale(H.size_multiplier)
-				M.Translate(0, 16*(H.size_multiplier-1))
-				mob.transform = M
+			var/mob/living/human/H = mob
+			H.update_posture_transform()
 
 			if (mob.HUDneed.Find("m_intent"))
 				var/obj/screen/intent/I = mob.HUDneed["m_intent"]
@@ -726,10 +714,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			mob.set_face_dir()
 		mob.m_intent = "run"
 		mob.prone = FALSE
-		var/matrix/M = matrix()
-		M.Scale(H.size_multiplier)
-		M.Translate(0, 16*(H.size_multiplier-1))
-		mob.transform = M
+		H.update_posture_transform()
 	else
 		mob.m_intent = "walk"
 
@@ -765,21 +750,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (mob.m_intent == "proning")
 		mob.prone = TRUE
 		mob.facing_dir = dir
-		if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
-			mob.dir = WEST
-		else
-			mob.dir = EAST
-		var/matrix/M = matrix()
-		M.Turn(90)
-		M.Scale(H.size_multiplier)
-		M.Translate(1,-6)
-		mob.transform = M
+		mob.dir = prone_facing_dir(mob.dir)
 	else
 		mob.prone = FALSE
-		var/matrix/M = matrix()
-		M.Scale(H.size_multiplier)
-		M.Translate(0, 16*(H.size_multiplier-1))
-		mob.transform = M
+	H.update_posture_transform()
 
 	if (mob.HUDneed.Find("m_intent"))
 		var/obj/screen/intent/I = mob.HUDneed["m_intent"]
