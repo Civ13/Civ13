@@ -79,6 +79,27 @@ class HudLayoutWiring(unittest.TestCase):
             self.assertIn('/proc/' + proc, helpers)
         self.assertIn('check_reflow(g)', read(ROOT / 'tests/hud_layout/fixture.dm'))
 
+    def test_storage_window_follows_the_layout(self):
+        storage = read('code/game/objects/items/weapons/storage/storage.dm')
+        orient = proc_body(storage, '/obj/item/weapon/storage/proc/orient2hud(mob/user as mob)')
+        self.assertLess(orient.index('hud_place_window(user, Xcor, Ycor'), orient.index('space_orient_objs('))
+        self.assertLess(orient.index('hud_place_window(user, Xslot, Yslot'), orient.index('slot_orient_objs('))
+        for header in ('/obj/item/weapon/storage/proc/slot_orient_objs(', '/obj/item/weapon/storage/proc/space_orient_objs(',
+                '/obj/item/weapon/storage/proc/orient_objs('):
+            start = storage.index(header)
+            self.assertIn('hud_shift_x', storage[start:start + 400], header)
+        # The slot grid's bottom edge follows the window instead of a fixed row.
+        self.assertIn('boxes.screen_loc = "[Xcord]:16,[Ycord]:16 to', storage)
+        self.assertIn('"hud_shift_x", "hud_shift_y"', storage)
+        bags = read('code/game/objects/items/weapons/storage/bags.dm')
+        self.assertLess(bags.index('hud_place_window(user, 4, 2'), bags.index('slot_orient_objs(row_num, col_count, numbered_contents)'))
+        layout = read(LAYOUT)
+        apply = proc_body(layout, '/mob/living/human/proc/apply_hud_layout()')
+        self.assertIn('open_storage.orient2hud(src)', apply)
+        target = proc_body(layout, '/mob/living/human/proc/hud_layout_target(object)')
+        self.assertIn('return hud_storage_tile()', target)
+        self.assertIn('/proc/hud_storage_shift_for(', layout.split('////////////////////////// applying the layout')[0])
+
     def test_vehicle_controls_and_action_bar_are_editable(self):
         source = read(LAYOUT)
         elements = proc_body(source, '/mob/living/human/proc/hud_layout_elements()')

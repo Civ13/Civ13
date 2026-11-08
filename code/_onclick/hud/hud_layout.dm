@@ -21,6 +21,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 
 /client
 	var/hud_edit_mode = FALSE
+	// Stands in for the open storage window while editing; never on screen.
+	var/obj/screen/hud_storage_handle = null
 	var/hud_grab_x = 0
 	var/hud_grab_y = 0
 
@@ -287,6 +289,29 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		for (var/list/T in G)
 			hud_flow_place(T[1], gx + (T[2] - x0) * g, best_top + (T[3] - y0) * g, g, view_w, view_h)
 
+// Where a storage window goes, in whole tiles from its usual place.
+// x0/y0: the window's usual lower-left pixel; w/h: its size in pixels.
+// custom: list(x, y) the player dragged it to, or null. rects: list(x, y, size)
+// of the HUD tiles on screen. Above 100% a window in its usual place moves up
+// clear of the tiles below it. The window always stays on screen.
+/proc/hud_storage_shift_for(x0, y0, w, h, g, view_w, view_h, list/custom, list/rects)
+	var/dx = 0
+	var/dy = 0
+	if (custom)
+		dx = round((custom[1] - x0) / 32, 1)
+		dy = round((custom[2] - y0) / 32, 1)
+	else if (g > 1)
+		var/top = y0
+		for (var/list/R in rects)
+			if (R[1] < x0 + w && R[1] + R[3] > x0 && R[2] < view_h / 2)
+				top = max(top, R[2] + R[3])
+		dy = -round(-(top - y0) / 32)
+	var/min_dx = -round(x0 / 32)
+	var/min_dy = -round(y0 / 32)
+	dx = max(min_dx, min(dx, round((view_w - w - x0) / 32)))
+	dy = max(min_dy, min(dy, round((view_h - h - y0) / 32)))
+	return list(dx, dy)
+
 ////////////////////////// applying the layout //////////////////////////
 
 /mob/living/human/proc/hud_layout_elements()
@@ -425,8 +450,48 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		hud_reflow(flow, g, view_w, view_h)
 	sync_inventory_screen_locs()
 	apply_action_bar_layout()
+	if (istype(s_active, /obj/item/weapon/storage))
+		var/obj/item/weapon/storage/open_storage = s_active
+		open_storage.orient2hud(src)
 	if (client.hud_edit_mode)
 		hud_edit_tint()
+
+/mob/proc/hud_storage_shift(x0, y0, w, h)
+	return list(0, 0)
+
+/mob/living/human/hud_storage_shift(x0, y0, w, h)
+	if (!client || !client.prefs)
+		return list(0, 0)
+	var/list/V = getviewsize(client.view)
+	var/view_w = V[1] * 32
+	var/view_h = V[2] * 32
+	var/g = client.prefs.hud_scale
+	var/list/custom = null
+	var/list/F = client.prefs.hud_layout_entry(defaultHUD, "storage")
+	if (F && F[3] != "D")
+		var/ox = text2num(F[4])
+		var/oy = text2num(F[6])
+		if (isnum(ox) && isnum(oy))
+			custom = list(hud_anchor_origin(F[3], view_w) + ox * g, hud_anchor_origin(F[5], view_h) + oy * g)
+	var/list/rects = list()
+	if (!custom && g > 1)
+		for (var/obj/screen/S in hud_layout_elements())
+			if (S.hud_ax && (S in client.screen))
+				rects += list(list(hud_anchor_origin(S.hud_ax, view_w) + S.hud_ox, hud_anchor_origin(S.hud_ay, view_h) + S.hud_oy, 32 * g * S.hud_size))
+	. = hud_storage_shift_for(x0, y0, w, h, g, view_w, view_h, custom, rects)
+	var/obj/screen/handle = hud_storage_tile()
+	handle.hud_ax = "WEST"
+	handle.hud_ox = x0 + .[1] * 32
+	handle.hud_ay = "SOUTH"
+	handle.hud_oy = y0 + .[2] * 32
+
+/mob/living/human/proc/hud_storage_tile()
+	if (!client.hud_storage_handle)
+		var/obj/screen/S = new
+		S.name = "storage window"
+		S.hud_layout_key = "storage"
+		client.hud_storage_handle = S
+	return client.hud_storage_handle
 
 /mob/living/human/proc/hud_tile_locked(obj/screen/S)
 	var/list/F = client.prefs.hud_layout_entry(defaultHUD, S.hud_layout_key)
@@ -445,6 +510,10 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		return object
 	if (istype(object, /obj/screen/movable/action_button) && (object in hud_action_buttons()))
 		return object
+	if (istype(s_active, /obj/item/weapon/storage))
+		var/obj/item/weapon/storage/T = s_active
+		if ((object in list(T.boxes, T.storage_start, T.storage_continue, T.storage_end, T.closer)) || (istype(object, /obj/item) && object:loc == T))
+			return hud_storage_tile()
 	if (istype(object, /obj/item))
 		for (var/obj/screen/inventory/S in HUDinventory)
 			if (S.slot_id && get_equipped_item(S.slot_id) == object && (S in elements))
@@ -454,6 +523,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 /proc/hud_tile_name(obj/screen/S)
 	if (S.hud_layout_key == "actions")
 		return "The action bar"
+	if (S.hud_layout_key == "storage")
+		return "The storage window"
 	return capitalize(S.name)
 
 /mob/living/human/proc/hud_tile_entry(obj/screen/S)
@@ -570,6 +641,9 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 			if (H.hud_tile_locked(S))
 				to_chat(H, SPAN_WARNING("[hud_tile_name(S)] is locked. Click it to unlock it."))
 				return
+			if (S.hud_layout_key == "storage")
+				to_chat(H, SPAN_WARNING("The storage window can't be resized; drag it to move it."))
+				return
 			if (delta_y)
 				H.hud_resize_tile(S, delta_y > 0 ? HUD_LAYOUT_SIZE_STEP : -HUD_LAYOUT_SIZE_STEP)
 			return
@@ -593,7 +667,7 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		return
 	hud_edit_mode = TRUE
 	H.hud_edit_tint()
-	to_chat(src, SPAN_NOTICE("<b>Editing your HUD.</b> Drag a tile to move it. Scroll the mouse wheel over a tile to resize it. Click a tile to lock or unlock it; locked tiles are red and stay put. Action buttons move and resize together as one bar. Use <b>Edit HUD Layout</b> again to save and finish."))
+	to_chat(src, SPAN_NOTICE("<b>Editing your HUD.</b> Drag a tile to move it. Scroll the mouse wheel over a tile to resize it. Click a tile to lock or unlock it; locked tiles are red and stay put. Action buttons move and resize together as one bar. Open a bag first to drag its storage window. Use <b>Edit HUD Layout</b> again to save and finish."))
 
 /client/verb/set_hud_scale()
 	set name = "HUD Scale"
