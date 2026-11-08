@@ -829,6 +829,7 @@
 #include "code\modules\1713\cmss13_care.dm"
 #include "code\modules\1713\cmss13_command.dm"
 #include "code\modules\1713\cmss13_field.dm"
+#include "code\modules\1713\cmss13_squad.dm"
 #include "code\modules\1713\cmss13_gear.dm"
 #include "code\modules\1713\codebook_emotes.dm"
 #include "code\modules\1713\clothing.dm"

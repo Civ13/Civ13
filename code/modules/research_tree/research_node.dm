@@ -1246,6 +1246,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/grenade/smokebomb/marker/yellow" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/purple" = "automatic_weapons",
 		"/obj/item/weapon/motion_detector" = "digital_computing",
+		"/obj/item/weapon/mine_detector" = "electricity",
 		"/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder" = "consumer_electronics",
 		"/obj/structure/cross" = "law_order",
 		"/obj/structure/cross/tau" = "law_order",

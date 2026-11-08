@@ -60,6 +60,7 @@ var/probe_runtime_error = FALSE
 	third_batch_checks()
 	fourth_batch_checks()
 	fifth_batch_checks()
+	sixth_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -490,3 +491,117 @@ var/probe_runtime_error = FALSE
 	var/datum/new_player_marks/NPM = new
 	probe_check(!NPM.is_new(null) && !NPM.refresh(null) && !NPM.staff_can_see(null), "the marker ignores missing clients")
 	probe_check("new_player" in icon_states('icons/obj/cmss13_ports.dmi'), "the marker has a sprite")
+
+/proc/sixth_batch_checks()
+	map.civilizations = FALSE
+	map.faction1 = "Red"
+	map.faction2 = "Blue"
+	var/datum/job/SJ = new
+	SJ.uses_squads = TRUE
+	var/datum/job/LJ = new
+	LJ.uses_squads = TRUE
+	LJ.is_squad_leader = TRUE
+	var/datum/job/CJ = new
+	CJ.is_commander = TRUE
+
+	// Squad colours
+	probe_check(squad_colour_name(1) == "red" && squad_colour_name(4) == "blue" && !squad_colour_name(0) && !squad_colour_name(8), "squads 1-7 have colours")
+	var/mob/living/human/grunt = probe_human(3, 3, "Grunt")
+	grunt.faction_text = "Red"
+	grunt.original_job = SJ
+	grunt.squad = 2
+	probe_check(grunt.in_squad(), "a squad job with a squad number is in a squad")
+
+	// Tracker
+	var/mob/living/human/sl = probe_human(3, 13, "Sergeant")
+	sl.faction_text = "Red"
+	sl.original_job = LJ
+	sl.squad = 2
+	map.faction1_squad_leaders[2] = sl
+	probe_check(grunt.tracker_target() == sl, "a soldier's tracker points at the squad leader")
+	probe_check(tracker_bearing(grunt, sl) == 0, "the leader due north is at bearing 0")
+	probe_check(round(tracker_bearing(grunt, locate(13, 3, 1))) == 90 && round(tracker_bearing(grunt, locate(1, 3, 1))) == 270, "east is 90 and west is 270")
+	probe_check(!sl.tracker_target(), "with no commander the squad leader's tracker shows nothing")
+	var/mob/living/human/cmdr = probe_human(20, 20, "Colonel")
+	cmdr.faction_text = "Red"
+	cmdr.original_job = CJ
+	human_clients_mob_list |= cmdr
+	probe_check(sl.tracker_target() == cmdr, "a squad leader's tracker points at the commander")
+	probe_check(!cmdr.tracker_target(), "the commander has no tracker")
+	sl.stat = DEAD
+	probe_check(grunt.tracker_target() == cmdr, "with the leader dead the soldier is pointed at the commander")
+	sl.stat = CONSCIOUS
+	map.civilizations = TRUE
+	probe_check(!grunt.tracker_target(), "no tracker outside team rounds")
+	map.civilizations = FALSE
+	human_clients_mob_list -= cmdr
+
+	var/obj/field_hud/FH = new(null, grunt)
+	var/mob/living/human/mate = probe_human(4, 3, "Mate")
+	mate.faction_text = "Red"
+	mate.original_job = SJ
+	mate.squad = 2
+	var/mob/living/human/other = probe_human(5, 3, "Other")
+	other.faction_text = "Red"
+	other.original_job = SJ
+	other.squad = 3
+	var/list/imgs = FH.build()
+	var/arrows = 0
+	var/chevrons = 0
+	for (var/image/I in imgs)
+		if (I.icon_state == "tracker_arrow")
+			arrows++
+		if (I.icon_state == "squad_chevron")
+			chevrons++
+			probe_check(I.loc == mate && I.color == squad_colour_hex(2), "the chevron marks the squadmate in the squad colour")
+	probe_check(arrows == 1 && chevrons == 1, "the HUD shows one arrow and only same-squad chevrons ([arrows], [chevrons])")
+	FH.owner = null
+	probe_check(FH.process_interval(2) == PROCESS_KILL, "a field HUD without an owner stops")
+	probe_check(grunt.persistence_runtime_var("field_hud") && FH.persistence_runtime_var("shown"), "field HUDs are not saved")
+
+	// Medic health icons
+	var/mob/living/human/doc = probe_human(10, 5, "Doc")
+	doc.faction_text = "Red"
+	var/datum/job/MJ = new
+	MJ.is_medic = TRUE
+	doc.original_job = MJ
+	var/mob/living/human/hurt = probe_human(11, 5, "Hurt")
+	hurt.faction_text = "Red"
+	probe_check(!hurt.medic_health_state(), "a healthy person shows nothing")
+	var/obj/item/organ/external/arm = hurt.get_organ("l_arm")
+	arm.status |= ORGAN_BLEEDING
+	probe_check(hurt.medic_health_state() == "health_bleeding", "bleeding shows")
+	hurt.stat = UNCONSCIOUS
+	probe_check(hurt.medic_health_state() == "health_critical", "unconscious shows as critical")
+	hurt.stat = DEAD
+	probe_check(hurt.medic_health_state() == "health_dead", "the dead show as dead")
+	var/mob/living/human/enemy = probe_human(12, 5, "Enemy")
+	enemy.faction_text = "Blue"
+	probe_check(medic_sees_patient(doc, hurt) && !medic_sees_patient(doc, enemy) && !medic_sees_patient(doc, doc), "in team rounds medics see only their own side")
+	for (var/state in list("health_hurt", "health_bleeding", "health_critical", "health_dead", "tracker_arrow", "squad_chevron", "mine_detector", "mine_detector_on", "mine_ping"))
+		probe_check(state in icon_states('icons/obj/cmss13_ports.dmi'), "[state] has a sprite")
+
+	// Mine detector
+	var/mob/living/human/sapper = probe_human(20, 5, "Sapper")
+	var/obj/item/weapon/mine_detector/MDT = new(sapper.loc)
+	sapper.put_in_hands(MDT)
+	var/obj/item/mine/ap/armed/near = new(locate(22, 5, 1))
+	var/obj/item/mine/ap/armed/far = new(locate(24, 5, 1))
+	var/obj/item/mine/ap/loose = new(locate(21, 5, 1))
+	var/obj/item/mine/ap/armed/out = new(locate(28, 5, 1))
+	var/list/found = MDT.armed_mines_near(get_turf(sapper))
+	probe_check(found.len == 2 && found[1] == near && found[2] == far && !(loose in found) && !(out in found), "the detector finds armed mines in range, nearest first")
+	probe_check(MDT.holder() == sapper && MDT.persistence_runtime_var("marks"), "the detector works in hand and its marks are not saved")
+
+	// High five
+	var/mob/living/human/amy = probe_human(25, 25, "Amy")
+	var/mob/living/human/ben = probe_human(26, 25, "Ben")
+	probe_check(amy.gesture_with(ben, "high five") == "offered", "a high five is offered")
+	probe_check(ben.gesture_with(amy, "fist bump") == "offered", "a different gesture does not answer it")
+	probe_check(ben.gesture_with(amy, "high five") == "done" && !amy.gesture_kind, "answering completes the high five")
+	probe_check(amy.gesture_with(ben, "fist bump") == "done", "the earlier fist bump offer can still be answered")
+	amy.gesture_with(ben, "high five")
+	amy.gesture_time = world.time - 100
+	probe_check(ben.gesture_with(amy, "high five") == "offered", "an old offer expires")
+	probe_check(!amy.gesture_with(locate(/mob/living/human) in locate(3, 3, 1), "high five"), "you can only high five someone next to you")
+	map.civilizations = TRUE
