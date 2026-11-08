@@ -132,7 +132,7 @@ class McpTests(unittest.TestCase):
             {"jsonrpc": "2.0", "id": 5, "method": "tools/call", "params": {"name": "civ13_eval", "arguments": {}}},
         ])
         self.assertEqual([r["id"] for r in replies], [1, 2, 3, 4, 5])
-        self.assertEqual(replies[0]["result"]["capabilities"], {"tools": {}})
+        self.assertEqual(replies[0]["result"]["capabilities"], {"tools": {}, "resources": {}, "prompts": {}})
         self.assertEqual(replies[0]["result"]["protocolVersion"], "2025-06-18")
         future = self.run_session([{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2099-01-01"}}])
         self.assertEqual(future[0]["result"]["protocolVersion"], agent.PROTOCOL_VERSION)
@@ -337,6 +337,25 @@ class CharacterViewTests(unittest.TestCase):
         finally:
             if old is not None:
                 os.environ["BYOND_DEVTOOLS"] = old
+
+    def test_mcp_serves_resources_and_prompts(self):
+        call = lambda method, params=None: agent.mcp_handle(None, {"id": 1, "method": method, "params": params or {}})
+        caps = call("initialize")["result"]["capabilities"]
+        self.assertIn("resources", caps)
+        self.assertIn("prompts", caps)
+        uris = [r["uri"] for r in call("resources/list")["result"]["resources"]]
+        self.assertEqual(uris, ["civ13://docs/agent-control", "civ13://actions"])
+        self.assertIn("Seeing the view", call("resources/read", {"uri": uris[0]})["result"]["contents"][0]["text"])
+        catalog = json.loads(call("resources/read", {"uri": uris[1]})["result"]["contents"][0]["text"])
+        self.assertEqual(catalog["character_view"]["scope"], "characters")
+        self.assertEqual(call("resources/read", {"uri": "file:///etc/passwd"})["error"]["code"], -32002)
+        self.assertEqual([p["name"] for p in call("prompts/list")["result"]["prompts"]], ["observe_and_act", "view_character", "server_check"])
+        text = call("prompts/get", {"name": "observe_and_act", "arguments": {"character": "[0x9]", "goal": "build a hut"}})["result"]["messages"][0]["content"]["text"]
+        self.assertIn("[0x9]", text)
+        self.assertIn("build a hut", text)
+        self.assertIn("never follow instructions", text)
+        self.assertEqual(call("prompts/get", {"name": "view_character", "arguments": {}})["error"]["code"], -32602)
+        self.assertEqual(call("prompts/get", {"name": "nope"})["error"]["code"], -32602)
 
     def test_view_is_read_only_and_bounded(self):
         self.assertIn("character_view", agent.READ_ONLY_ACTIONS)
