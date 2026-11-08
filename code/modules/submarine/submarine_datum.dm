@@ -135,6 +135,13 @@ var/global/list/all_submarines = list()
 	..()
 	all_submarines += src
 
+// Ship alarms reach the people aboard, not the lobby or observers.
+/datum/submarine/proc/crew_message(var/message)
+	for(var/turf/T in internal_turfs)
+		for(var/mob/M in T)
+			if(M.client)
+				to_chat(M, message)
+
 /datum/submarine/proc/process_tick()
 	tick_counter++
 
@@ -156,7 +163,7 @@ var/global/list/all_submarines = list()
 		if(reactor_water >= 100 && !r_scrammed[i])
 			r_scrammed[i] = TRUE
 			r_control_rods[i] = 100
-			world << "<span class='warning'><b>[vessel_name]: REACTOR [i] SCRAMMED - reactor room flooded!</b></span>"
+			crew_message("<span class='warning'><b>[vessel_name]: REACTOR [i] SCRAMMED - reactor room flooded!</b></span>")
 
 		// Heat Generation: heat increases as rods are pulled out (0 rods = max heat)
 		var/heat_added = 0
@@ -248,7 +255,7 @@ var/global/list/all_submarines = list()
 		engine_water = global.subcom_flooding.get_compartment_water_level(SUB_COMP_ENGINE_ROOM)
 	if(engine_water >= 50 && diesel_throttle > 0)
 		diesel_throttle = 0
-		world << "<span class='warning'><b>[vessel_name]: Diesel engines shut down - engine room flooded!</b></span>"
+		crew_message("<span class='warning'><b>[vessel_name]: Diesel engines shut down - engine room flooded!</b></span>")
 	if(depth == 0 && diesel_throttle > 0)
 		var/fuel_usage = diesel_throttle * 2
 		if(diesel_fuel >= fuel_usage)

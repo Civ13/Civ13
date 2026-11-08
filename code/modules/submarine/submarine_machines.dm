@@ -18,27 +18,32 @@
 	if(global.all_submarines.len)
 		my_sub = global.all_submarines[1]
 	update_icon()
-	spawn()
-		auto_refresh_loop()
+	addtimer(CALLBACK(src, PROC_REF(auto_refresh_tick)), 10)
 
-/obj/structure/machinery/sub_control/proc/auto_refresh_loop()
-	while(!QDELETED(src) && active && !broken)
-		sleep(10)
-		var/list/stale = list()
-		for(var/mob/M in open_users)
-			if(!M || !M.client || QDELETED(M))
-				stale += M
-				continue
-			if(!window_open[M])
-				stale += M
-				continue
-			if(!can_use(M))
-				stale += M
-				window_open -= M
-				M << browse(null, "window=sub_control")
-				continue
-			send_ui(M)
-		open_users -= stale
+// Refreshes every open panel once a second while the console works, then
+// schedules the next pass. Replaces the old spawn()/sleep loop.
+/obj/structure/machinery/sub_control/proc/auto_refresh_tick()
+	if(QDELETED(src) || !active || broken)
+		return
+	auto_refresh_pass()
+	addtimer(CALLBACK(src, PROC_REF(auto_refresh_tick)), 10)
+
+/obj/structure/machinery/sub_control/proc/auto_refresh_pass()
+	var/list/stale = list()
+	for(var/mob/M in open_users)
+		if(!M || !M.client || QDELETED(M))
+			stale += M
+			continue
+		if(!window_open[M])
+			stale += M
+			continue
+		if(!can_use(M))
+			stale += M
+			window_open -= M
+			M << browse(null, "window=sub_control")
+			continue
+		send_ui(M)
+	open_users -= stale
 
 /obj/structure/machinery/sub_control/update_icon()
 	overlays.Cut()
@@ -131,7 +136,7 @@
 /obj/structure/machinery/sub_control/proc/get_ui_content()
 	return "BASE INTERFACE"
 
-// Auto-refresh handled by spawn() loop in New()
+// Auto-refresh handled by the addtimer chain started in New()
 
 // --- MANEUVER PANEL ---
 

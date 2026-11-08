@@ -199,7 +199,6 @@
 	refresh_water_overlay()
 	if(was_dry && water_depth >= 1)
 		playsound(src, 'sound/machines/submarine/flooding_start.ogg', 50, 1)
-		world.log << "FLOOD DEBUG: Water=[cm]cm tile=[x],[y],[z] compartment=[compartment_id] total=[water_depth]"
 
 // Remove water from this tile (cm). Called by bilge pumps, draining.
 /turf/floor/sub_deck/proc/remove_water(var/cm)

@@ -474,6 +474,50 @@ var/space_runtime_error = FALSE
 	F.air_tick(1, list(), list())
 	space_check(H.losebreath > lost && F.get_compartment_oxygen(SUB_COMP_GALLEY) < SUB_AIR_SUFFOCATE_O2_KPA, "a crew member without oxygen suffocates")
 	space_check(F.is_compartment_vacuum(SUB_COMP_GALLEY), "the panel reports an oxygen-free compartment")
+	H.loc = null
+	human_mob_list -= H
+
+	// A submerged breach floods but does not vent; a surfaced one does.
+	G.oxygen = 21 * 3
+	G.co2 = 0
+	G.inert = 79 * 3
+	space_check(F.breaches_vent(), "with no boat the hull counts as surfaced and a breach vents")
+	var/datum/submarine/boat = new
+	boat.depth = 100
+	space_check(!F.breaches_vent(), "a submerged boat does not vent air through a breach")
+	var/sealed = json_encode(G.to_list())
+	F.air_tick(1, list(), F.breaches_vent() ? list(SUB_COMP_GALLEY = 1) : null)
+	space_check(json_encode(G.to_list()) == sealed, "a submerged breach leaves the compartment's air alone")
+	boat.depth = 0
+	space_check(F.breaches_vent(), "a surfaced boat vents through an open hull")
+	all_submarines -= boat
+
+	// Flooding through bulkheads: watertight holds, compromised seals leak and
+	// a crumpled bulkhead leaks faster.
+	var/turf/floor/sub_deck/wet = locate(2, 9, 1)
+	wet = wet.ChangeTurf(/turf/floor/sub_deck/galley, FALSE, FALSE)
+	var/turf/wall/sub_bulkhead/B = locate(3, 9, 1)
+	B = B.ChangeTurf(/turf/wall/sub_bulkhead, FALSE, FALSE)
+	var/turf/floor/sub_deck/dry = locate(4, 9, 1)
+	dry = dry.ChangeTurf(/turf/floor/sub_deck/storage, FALSE, FALSE)
+	space_check((B in sub_bulkheads) && B.watertight, "a new bulkhead registers watertight")
+	wet.add_water(100)
+	F.process_tick()
+	space_check(dry.water_depth == 0, "a watertight bulkhead holds back water")
+	B.take_bulkhead_damage(B.max_health * 0.6)
+	space_check(!B.watertight && B.health > 0, "a bulkhead under half health loses its seals")
+	wet.water_depth = 100
+	F.process_tick()
+	var/seal_leak = dry.water_depth
+	space_check(seal_leak > 0 && seal_leak <= 3, "compromised seals pass a little water")
+	dry.water_depth = 0
+	B.take_bulkhead_damage(B.max_health)
+	space_check(B.health <= 0 && !B.watertight, "the bulkhead crumples")
+	wet.water_depth = 100
+	F.process_tick()
+	space_check(dry.water_depth > seal_leak, "a crumpled bulkhead passes more water than compromised seals")
+	wet.water_depth = 0
+	dry.water_depth = 0
 
 // Phase 2: propellant, launch pad, crewed lander and the landed lander.
 /proc/space_flight_payload(list/flight = null)
