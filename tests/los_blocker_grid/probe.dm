@@ -47,12 +47,30 @@
 			return TRUE
 	return FALSE
 
+// capture(FALSE, focus) walks only the box spanning the eye tile and the
+// target tile plus three tiles. Keep the blockers that walk would record.
+/proc/los_grid_focused(datum/los_snapshot/S, fx, fy, tx, ty)
+	var/datum/los_snapshot/F = new
+	F.eye_x = S.eye_x
+	F.eye_y = S.eye_y
+	F.radius_x = S.radius_x
+	F.radius_y = S.radius_y
+	for (var/datum/los_cell/B in S.blockers)
+		var/cx = round(B.tile_x + fx + 0.5)
+		var/cy = round(B.tile_y + fy + 0.5)
+		if (cx >= min(0, tx) - 3 && cx <= max(0, tx) + 3 && cy >= min(0, ty) - 3 && cy <= max(0, ty) + 3)
+			F.blockers += B
+	F.index_blockers()
+	return F
+
 /proc/los_grid_probe()
 	rand_seed(20261108)
 	var/queries = 0
 	var/mismatches = 0
 	var/hits = 0
 	var/gridded = 0
+	var/focused = 0
+	var/focus_mismatches = 0
 	for (var/trial = 1 to 24)
 		var/rx = (trial % 4) ? 15 : 7
 		var/ry = (trial % 4) ? 11 : 7
@@ -75,6 +93,18 @@
 						mismatches++
 						if (mismatches <= 5)
 							world.log << "MISMATCH trial=[trial] target=[tx - fx + ox],[ty - fy + oy] opaque=[opaque] flat=[expected] grid=[actual]"
-	world.log << "LOS_GRID queries=[queries] blocked=[hits] gridded=[gridded] mismatches=[mismatches]"
-	world.log << (mismatches || gridded != 24 || hits == 0 || hits == queries ? "LOS_GRID FAIL" : "LOS_GRID PASS")
+		for (var/i = 1 to 40)
+			var/tx = rand(-rx, rx)
+			var/ty = rand(-ry, ry)
+			var/datum/los_snapshot/F = los_grid_focused(S, fx, fy, tx, ty)
+			for (var/opaque = 0, opaque <= 1, opaque++)
+				var/full = S.blocks_target(tx - fx, ty - fy, tx - fx, ty - fy, opaque)
+				var/box = F.blocks_target(tx - fx, ty - fy, tx - fx, ty - fy, opaque)
+				focused++
+				if (!full != !box)
+					focus_mismatches++
+					if (focus_mismatches <= 5)
+						world.log << "FOCUS MISMATCH trial=[trial] target=[tx],[ty] opaque=[opaque] full=[full] box=[box]"
+	world.log << "LOS_GRID queries=[queries] blocked=[hits] gridded=[gridded] mismatches=[mismatches] focused=[focused] focus_mismatches=[focus_mismatches]"
+	world.log << (mismatches || focus_mismatches || !focused || gridded != 24 || hits == 0 || hits == queries ? "LOS_GRID FAIL" : "LOS_GRID PASS")
 	shutdown()

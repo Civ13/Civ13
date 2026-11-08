@@ -75,6 +75,8 @@ class IdentityTrace:
             m.V.movement_turf = m.V.body.loc
             m.V.viewport_radii = lambda: P.geometry.DMList([4, 4])
             m.C.los_dirty = False
+            m.C.noted = []
+            m.C.los_note_mover = lambda a, c=m.C: c.noted.append(a)
             m.include(self.tree)
             if mode == 'root':
                 self.roots.append(self.root_presenter(m))
@@ -90,6 +92,7 @@ class IdentityTrace:
             isturf=lambda a: a.type.startswith('/turf/'),
             istype=lambda a, kind: a.type.startswith(kind),
             los_presentation_exempt=lambda a: a.type.startswith('/obj/item/projectile') and not a.opacity,
+            ismovable=lambda a: not a.type.startswith('/turf/'),
             los_active_contexts=P.List([m.V for m in self.models]))
         invalidate = A.project(LIFE, '/proc/los_invalidate',
                                'changed, possible_opacity=False, viewer_refresh=False', self.env)
@@ -312,7 +315,7 @@ class EnteredIdentityRegression(unittest.TestCase):
         # Taking a hatchet out of a pocket drops it from the body to the body's
         # tile, then picks it up. Entered(turf, old_loc=body) must not treat the
         # unchanged viewer body as a changed blocker and withdraw its trees.
-        legacy = ENTERED.replace('if(old_loc && isturf(old_loc) && !los_presentation_exempt(am))', 'if(old_loc)')
+        legacy = ENTERED.replace('if(old_loc && isturf(old_loc) && am.opacity)', 'if(old_loc)')
         self.assertNotEqual(legacy, ENTERED)
         for mode in ('fallback', 'root'):
             for source, kept in ((ENTERED, True), (legacy, False)):

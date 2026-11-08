@@ -44,7 +44,7 @@ def once(text, old, new):
 
 SPANS={
  'code/game/mob/mob_movement.dm':[],
- 'code/modules/visibility/los_context.dm':[('/datum/los_context/proc/capture(presentation = FALSE)','capture')],
+ 'code/modules/visibility/los_context.dm':[('/datum/los_context/proc/capture(presentation = FALSE, atom/focus = null)','capture')],
  'code/modules/visibility/los_lifecycle.dm':[('/client/proc/reconcile_geometric_los()','reconcile'),('/proc/los_refresh_moved_viewer(atom/movable/A, force_refresh = FALSE, list/previous_contexts)','postmove')],
  'code/modules/visibility/root_tree_presenter.dm':[('/datum/root_tree_presenter/proc/refresh(datum/los_snapshot/S)','root_refresh'),('/proc/root_tree_light_changed(turf/root)','light_notify')],
  'code/modules/visibility/los_presenter.dm':[('/datum/los_presenter/proc/refresh(datum/los_snapshot/S)','los_refresh')],
