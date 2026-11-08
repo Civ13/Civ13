@@ -1356,6 +1356,7 @@
 #include "code\modules\space\survey.dm"
 #include "code\modules\space\water_scarcity.dm"
 #include "code\modules\statpanel\statpanel.dm"
+#include "code\modules\submarine\damage_control.dm"
 #include "code\modules\submarine\enemy_types.dm"
 #include "code\modules\submarine\flooding_controller.dm"
 #include "code\modules\submarine\mission_controller.dm"

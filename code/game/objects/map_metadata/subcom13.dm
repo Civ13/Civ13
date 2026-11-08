@@ -59,6 +59,13 @@
 			if(T.z == z)
 				created_sub.internal_turfs += T
 
+	// Damage control stores: two shoring kits in every footlocker aboard.
+	if(created_sub)
+		for(var/turf/T in created_sub.internal_turfs)
+			for(var/obj/structure/closet/crate/footlocker/F in T)
+				new /obj/item/weapon/shoring_kit(F)
+				new /obj/item/weapon/shoring_kit(F)
+
 /obj/map_metadata/subcom13/proc/set_compartment_id(var/turf/floor/sub_deck/T)
 	if(T.compartment_id) return // Already set by subtype - skip runtime override
 	// Legacy fallback for untyped deck tiles only. The shipped map types every

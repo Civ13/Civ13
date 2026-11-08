@@ -22,6 +22,7 @@
 	var/max_hull_integrity = 1000
 	var/breached = FALSE           // TRUE when integrity <= 0
 	var/breach_inflow_rate = 0     // cm of water added per tick while breached
+	var/shored = FALSE             // a shoring kit holds the breach to a seep until the next hit
 	flags = TURF_HAS_EDGES
 
 /turf/wall/sub_hull/New(var/newloc)
@@ -31,6 +32,31 @@
 	hull_integrity -= damage
 	if(hull_integrity <= 0 && !breached)
 		breach_hull()
+	else if(breached && shored && damage > 0)
+		shoring_fails()
+
+// Change the water pouring through this breach onto the decks around it.
+/turf/wall/sub_hull/proc/set_breach_inflow(var/rate)
+	for(var/turf/floor/sub_deck/D in range(1, src))
+		D.water_inflow_rate = max(0, D.water_inflow_rate - breach_inflow_rate + rate)
+	breach_inflow_rate = rate
+
+// A shoring kit cuts the breach to a seep.
+/turf/wall/sub_hull/proc/shore_breach()
+	if(!breached || shored) return
+	shored = TRUE
+	set_breach_inflow(SUB_SHORED_INFLOW)
+	visible_message("<span class='notice'>Shores and a patch wedge the breach down to a seep.</span>")
+	overlays -= image(icon='icons/obj/machines/submarine.dmi',icon_state="breach_glow")
+
+// The next hit knocks the shoring out.
+/turf/wall/sub_hull/proc/shoring_fails()
+	if(!shored) return
+	shored = FALSE
+	set_breach_inflow(SUB_BREACH_INFLOW_BASE)
+	visible_message("<span class='danger'><b>The shoring gives way! Seawater pours through the breach again!</b></span>")
+	playsound(src, 'sound/machines/submarine/hull_breach.ogg', 70, 1)
+	overlays += image(icon='icons/obj/machines/submarine.dmi',icon_state="breach_glow")
 
 /turf/wall/sub_hull/proc/breach_hull()
 	if(breached) return
@@ -50,17 +76,20 @@
 
 /turf/wall/sub_hull/proc/repair_breach()
 	if(!breached) return
+	// Undo whatever this breach still pours onto the decks, shored or not.
+	set_breach_inflow(0)
 	breached = FALSE
-	breach_inflow_rate = 0
+	shored = FALSE
 	hull_integrity = max_hull_integrity * 0.5  // Repaired to half
 	icon_state = "metal0"
 	overlays.Cut()  // Remove damage and breach glow overlays
-	// Undo inflow rate on adjacent deck turfs
-	for(var/turf/floor/sub_deck/D in range(1, src))
-		D.water_inflow_rate = max(0, D.water_inflow_rate - SUB_BREACH_INFLOW_BASE)
 	visible_message("<span class='notice'>The hull breach is sealed.</span>")
 
 /turf/wall/sub_hull/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/shoring_kit))
+		var/obj/item/weapon/shoring_kit/K = W
+		K.use_on_hull(src, user)
+		return
 	if(istype(W, /obj/item/weapon/weldingtool))
 		if(breached)
 			to_chat(user, "<span class='notice'>You begin welding the hull breach shut...</span>")
@@ -101,7 +130,17 @@
 	..(newloc,"submarine hull")
 	sub_bulkheads |= src
 
+// A shoring kit wedges buckled seals shut without mending the steel.
+/turf/wall/sub_bulkhead/proc/shore_seals()
+	if(watertight || health <= 0) return
+	watertight = TRUE
+	visible_message("<span class='notice'>Wedges force the bulkhead seals back into place. It holds water again.</span>")
+
 /turf/wall/sub_bulkhead/attackby(obj/item/weapon/W, mob/user)
+	if(istype(W, /obj/item/weapon/shoring_kit))
+		var/obj/item/weapon/shoring_kit/K = W
+		K.use_on_bulkhead(src, user)
+		return
 	if(istype(W, /obj/item/weapon/weldingtool))
 		if(health >= max_health && watertight)
 			to_chat(user, "<span class='notice'>[src] is already in good condition.</span>")

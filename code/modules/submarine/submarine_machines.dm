@@ -223,6 +223,7 @@
 	dat += "</div>"
 	dat += "<div style='font-size:12px; font-weight:bold; color:[depth_color]; margin:4px 0;'>[round(my_sub.depth)]m / [my_sub.crush_depth]m</div>"
 	dat += "<div style='font-size:10px; color:#888;'>CRUSH: [my_sub.crush_depth]m</div>"
+	dat += "<div style='font-size:10px; color:[my_sub.below_layer() ? "#0af" : "#888"];'>LAYER: [SUB_THERMOCLINE_DEPTH]m - [my_sub.below_layer() ? "BELOW (SHADOWED FROM THE SURFACE)" : "ABOVE"]</div>"
 	dat += "<div style='margin-top:4px;'>"
 	dat += "<a href='?src=\ref[src];set_dp=0' class='btn btn-green'>SURFACE</a> "
 	dat += "<a href='?src=\ref[src];set_dp=15' class='btn btn-blue'>PERISCOPE</a> "
@@ -910,6 +911,7 @@
 	var/power_draw = my_sub.sonar_active ? (my_sub.sonar_mode == SUB_SONAR_ACTIVE ? SUB_SONAR_POWER_ACTIVE : SUB_SONAR_POWER_PASSIVE) : 0
 	dat += "<div style='color:#888;'>DRAW: [power_draw] kW</div>"
 	dat += "<div style='color:#888;'>NOISE: [my_sub.noise_level]</div>"
+	dat += "<div style='color:[my_sub.below_layer() ? "#0af" : "#888"];'>LAYER: [my_sub.below_layer() ? "BELOW" : "ABOVE"]</div>"
 	dat += "</div>"
 	dat += "</div>"
 
