@@ -1,8 +1,9 @@
 """Per-level save freeze: players freeze only while their own level is captured.
 
 A map save blocks crossing between levels for the whole save but holds a level's
-players only while that level is captured. A handover keeps captured levels held
-until the move, because play there after the capture would be lost at the switch.
+players only while that level is captured. A handover does the same; play after a
+level's capture is end-of-round activity that does not carry over, and players are
+told so.
 """
 import re
 import unittest
@@ -39,28 +40,18 @@ class LevelFreeze(unittest.TestCase):
         self.assertEqual(loop.count('persistence_freeze_level('), 1)
         self.assertEqual(loop.count('persistence_release_level('), 1)
 
-    def test_handover_keeps_captured_levels_held_until_the_move(self):
+    def test_handover_releases_each_level_when_its_save_completes(self):
         release = proc_body(self.restart, '/proc/persistence_release_level(z)')
-        self.assertIn('if(world_moving || !persistence_frozen_levels["[z]"]) return', release)
+        self.assertIn('if(!persistence_frozen_levels["[z]"]) return', release)
+        self.assertNotIn('if(world_moving ||', release)
+        # Play after a level's capture is end-of-round activity; players are told it won't carry over.
+        self.assertIn('anything you do from now until the move finishes will not carry over', release)
         release_all = proc_body(self.restart, '/proc/persistence_release_all_levels()')
-        self.assertIn('if(world_moving) return', release_all)
+        self.assertNotIn('world_moving', release_all)
         moving = proc_body(self.restart, '/proc/set_world_moving(moving)')
         self.assertIn('if(!world_moving) persistence_release_all_levels()', moving)
-
-    def test_frozen_input_rules(self):
-        frozen = proc_body(self.restart, '/proc/persistence_input_frozen(client/C)')
-        # After a handover save completes every client waits for the switch.
-        self.assertIn('world_moving && persistence_restart.handover_state != "saving"', frozen)
-        # During the save only players on a held level wait; observers never do.
-        self.assertIn('isobserver(C.mob)', frozen)
-        self.assertIn('persistence_frozen_levels["[T.z]"]', frozen)
-        self.assertLess(frozen.index('handover_state != "saving"'), frozen.index('isobserver(C.mob)'))
-        click = proc_body(self.restart, '/client/Click(atom/object, location, control, params)')
-        self.assertIn('persistence_input_frozen(src)', click)
-        self.assertLess(click.index('persistence_input_frozen(src)'), click.index('return ..()'))
-        move = proc_body(read(MOVEMENT), '/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)')
-        self.assertIn('(world_moving || persistence_frozen_levels.len) && persistence_input_frozen(src)', move)
-        self.assertLess(move.index('persistence_input_frozen(src)'), move.index('if (!canmove)'))
+        wait = proc_body(self.restart, '/datum/persistence_restart_transaction/proc/wait_for_handover()')
+        self.assertIn('anything you do until the move finishes will not carry over', wait)
 
     def test_finished_or_failed_save_releases_every_ordinary_hold(self):
         functions = read(FUNCTIONS)
@@ -73,7 +64,7 @@ class LevelFreeze(unittest.TestCase):
     def test_player_messages_describe_the_level_freeze(self):
         admission = read(FUNCTIONS)
         self.assertIn('Players are held still only while their own level is being saved.', admission)
-        self.assertIn('Do not move between z-levels. Each level is held still from when it saves until the move finishes', self.restart)
+        self.assertIn('Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves', self.restart)
 
 
 if __name__ == '__main__':
