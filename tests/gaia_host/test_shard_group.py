@@ -183,6 +183,35 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('gate must be', relay_port=1730, gate='atlantis')
         self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='RAID')
 
+    def test_tdm_pair_validation(self):
+        self.refuse_config('BATTLE region needs a BARRACKS', region_kind='BATTLE')
+        self.group['regions'][0]['kind'] = 'BARRACKS'
+        self.refuse_config('mainland cannot be a BATTLE', mainland='deep', region_kind='BATTLE')
+        self.refuse_config('at most one BARRACKS', region_kind='BARRACKS')
+        self.group['regions'][1]['kind'] = 'BATTLE'
+        group = self.write_group()
+        self.assertEqual('gaia', group['mainland'])
+
+    def test_setup_writes_the_tdm_token_and_battle_build_settings(self):
+        self.group['regions'][0]['kind'] = 'BARRACKS'
+        self.group['regions'][1]['kind'] = 'BATTLE'
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        tokens = set()
+        for region in ('gaia', 'deep'):
+            tokens.add((self.base / 'regions' / region / 'config' / 'tdm-token.txt').read_text().strip())
+        self.assertEqual({(self.base / 'regions' / 'tdm-token.txt').read_text().strip()}, tokens)
+        self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
+        build = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_build.json').read_text())
+        self.assertEqual(('deep', 'git', 'DreamMaker'), (build['region'], build['git'], build['compiler']))
+        self.assertEqual(str((self.base / 'regions').resolve()), build['root'])
+        self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'shard_build.json').exists())
+
+    def test_ordinary_regions_get_no_tdm_files(self):
+        shard_group.setup(self.write_group(), self.machine)
+        self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'tdm-token.txt').exists())
+        self.assertFalse((self.base / 'regions' / 'deep' / 'config' / 'shard_build.json').exists())
+
     def test_setup_writes_relay_settings_and_one_shared_token(self):
         self.group['relay_port'] = 1730
         group = self.write_group()
