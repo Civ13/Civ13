@@ -14,7 +14,7 @@
 		return
 
 	if (!showed_adminhelp_popup)
-		alert(src, "If you are experiencing a bug, please try: a) relogging b) following the instructions in the MOTD and c) using the 'Clear Cache' verb in the OOC tab, before asking admins. If you are reporting a bug, please use the 'Report Bug' button at the top right of your screen. Gameplay questions go in mentorhelp, not adminhelp.")
+		alert(src, "If you are experiencing a bug, please try: a) relogging b) following the instructions in the MOTD and c) using the 'Clear Cache' verb in the OOC tab, before asking admins. If you are reporting a bug, please use Help > Report bug in the menu bar. Gameplay questions go in mentorhelp, not adminhelp.")
 		showed_adminhelp_popup = TRUE
 
 	adminhelped = TRUE //Determines if they get the message to reply by clicking the name.
