@@ -39,6 +39,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"barracks_course_start" = list(/mob/living/human),
 	"last_revive_notification" = list(/mob/observer/ghost),
 	"last_use" = list(/obj/structure/barracks/kit_locker),
+	"last_build" = list(/obj/structure/barracks/vehicle_bay),
 	"last_fire" = list(/mob/living/simple_animal/hostile/human, /obj/item/weapon/gun/projectile/automatic, /obj/item/weapon/gun/projectile/boltaction, /obj/item/weapon/gun/projectile/custom, /obj/item/weapon/gun/projectile/flintlock, /obj/item/weapon/gun/projectile/semiautomatic, /obj/item/weapon/gun/projectile/special, /obj/item/weapon/gun/projectile/submachinegun),
 	"last_retreat" = list(/mob/living/simple_animal/hostile/human),
 	"next_bork" = list(/mob/living/simple_animal/complex_animal/dog),
