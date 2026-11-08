@@ -102,8 +102,10 @@ class RuntimeVarCache(unittest.TestCase):
         body = body[:body.index('return cached')]
         self.assertIn('if (persistence_runtime_var_instance_keys[key])\n\t\treturn D.persistence_runtime_var(key)', body)
         self.assertIn('cache[key] = cached', body)
-        # Imports and the sparse checks ask through it.
-        self.assertIn('if(persistence_runtime_field(object, v))', loading)
+        # The import's default reset and the sparse checks ask through it. The
+        # Load_Entry field gate stays a direct call: native controls patch it.
+        self.assertIn('!(v in object.vars) || persistence_runtime_field(object, v))', loading)
+        self.assertIn('if(object.persistence_runtime_var(v))\n#ifdef', loading)
         self.assertIn('if(persistence_runtime_field(T, v)) continue', functions)
         # Variable observability classifies every field, through the cache.
         observed = functions[functions.index('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t// Every field'):]

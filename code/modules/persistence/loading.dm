@@ -362,7 +362,7 @@
 			loading_level_link_targets["[loading_z]:[ind]"] = object
 		for(var/v in savefile.dir)
 			savefile.cd = entry_dir
-			if(persistence_runtime_field(object, v))
+			if(object.persistence_runtime_var(v))
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 				variable_observability_skipped(null, TRUE)
 #endif

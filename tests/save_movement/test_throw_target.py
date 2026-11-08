@@ -21,6 +21,27 @@ class DMList(list):
         return self
 
 
+class AssocList(DMList):
+    """A DM list read by key as well as by position."""
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.assoc = {}
+
+    def __getitem__(self, key):
+        return self.assoc.get(key) if isinstance(key, str) else super().__getitem__(key)
+
+    def __setitem__(self, key, value):
+        if isinstance(key, str):
+            self.assoc[key] = value
+        else:
+            super().__setitem__(key - 1, value)
+
+
+class Assoc(dict):
+    def __getitem__(self, key):
+        return self.get(key)
+
+
 def policy(parent=lambda key: False, source=None):
     # Inherited proc dispatch is an injected engine boundary.
     return project((source or read(FUNCTIONS)).replace('..()', 'parent(key)'),
@@ -34,10 +55,13 @@ def saved_fields(obj, runtime):
     body = re.sub(r'(?<!\w)/(?:mob|turf|obj|datum)(?:/[\w]+)*', lambda m: repr(m[0]), body)
     body = body.replace('initial(src.vars[key])', 'initial_var(src, key)')
     projected = '/datum/proc/get_saved_vars()\n' + body + '\n'
-    env = dict(list=DMList, params2list=lambda value: [], map_storage_saved_vars='',
+    env = dict(list=AssocList, params2list=lambda value: [], map_storage_saved_vars='',
                istype=lambda value, kind: kind in value.kinds,
                initial_var=lambda value, key: value.defaults.get(key),
-               persistence_runtime_var=lambda key: runtime(obj, key))
+               persistence_runtime_var=lambda key: runtime(obj, key),
+               # The per-type cache starts empty for each projection.
+               type='/obj/item', persistence_runtime_var_cache=Assoc(),
+               persistence_runtime_var_instance_keys=Assoc(), isnull=lambda value: value is None)
     return project(projected, '/datum/proc/get_saved_vars', 'src', env)(obj)
 
 

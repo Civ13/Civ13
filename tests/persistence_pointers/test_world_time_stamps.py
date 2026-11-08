@@ -158,7 +158,7 @@ class WorldTimeStampRegistry(unittest.TestCase):
         functions = (CODE / 'modules/persistence/functions.dm').read_text()
         loading = (CODE / 'modules/persistence/loading.dm').read_text()
         self.assertIn('persistence_runtime_var(key)', functions[functions.index('/datum/proc/get_saved_vars()'):])
-        self.assertIn('if(persistence_runtime_field(object, v))', loading)
+        self.assertIn('if(object.persistence_runtime_var(v))', loading)
         dme = (ROOT / 'civ13.dme').read_text()
         self.assertIn('#include "code\\modules\\persistence\\world_time_stamps.dm"', dme)
 

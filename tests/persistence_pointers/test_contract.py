@@ -202,9 +202,9 @@ class PointerContracts(unittest.TestCase):
         self.assertLess(saving.index('if(A.persistence_runtime_var(v))'), saving.index('A.vars[v]'))
         loading = read('code/modules/persistence/loading.dm')
         fields = loading.split('for(var/v in savefile.dir)', 1)[1]
-        gated = fields.split('if(persistence_runtime_field(object, v))', 1)[1].split('if(v == "type")', 1)[0]
+        gated = fields.split('if(object.persistence_runtime_var(v))', 1)[1].split('if(v == "type")', 1)[0]
         self.assertRegex(gated, r'\bcontinue\b')
-        self.assertLess(fields.index('if(persistence_runtime_field(object, v))'), fields.index('decode_saved_value('))
+        self.assertLess(fields.index('if(object.persistence_runtime_var(v))'), fields.index('decode_saved_value('))
 
     def test_alert_threshold_reset_and_cadence_execute_production_body(self):
         fn = project(read(FUNCTIONS), '/map_storage/proc/save_failure_alert_due', 'src, success', {})
