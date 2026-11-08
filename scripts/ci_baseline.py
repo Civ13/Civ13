@@ -883,6 +883,8 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/carbon/human/human_hud.dm',
             'code/game/mob/living/carbon/human/update_icons.dm', 'code/game/mob/inventory.dm',
             'code/_onclick/hud/hud.dm', 'code/_onclick/hud/action.dm',
+            'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/objects/items/weapons/storage/bags.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
     # Inert skin/catalog/guard and account-wiring checks; no native runner import.
     # Existing shared inputs retain their conservative all-suite selection.

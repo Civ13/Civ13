@@ -24,6 +24,9 @@
 	var/obj/screen/storage/stored_continue = null
 	var/obj/screen/storage/stored_end = null
 	var/obj/screen/close/closer = null
+	// Whole-tile shift of the storage window, set from the viewer's HUD layout.
+	var/hud_shift_x = 0
+	var/hud_shift_y = 0
 
 	var/use_to_pickup	//Set this to make it possible to use this item in an inverse way, so you can have the item in your hand and click items on the floor to pick them up.
 	var/display_contents_with_number	//Set this to make the storage item group contents of the same type and display them as a number.
@@ -37,7 +40,7 @@
 // Storage screen objects and viewers are rebuilt per runtime.  Skipping these
 // fields on import also preserves constructor-created controls from old saves.
 /obj/item/weapon/storage/persistence_runtime_var(key)
-	if (key in list("is_seeing", "boxes", "storage_start", "storage_continue", "storage_end", "stored_start", "stored_continue", "stored_end", "closer"))
+	if (key in list("is_seeing", "boxes", "storage_start", "storage_continue", "storage_end", "stored_start", "stored_continue", "stored_end", "closer", "hud_shift_x", "hud_shift_y"))
 		return TRUE
 	return ..()
 
@@ -229,6 +232,10 @@
 //This proc draws out the inventory and places the items on it. tx and ty are the upper left tile and mx, my are the bottm right.
 //The numbers are calculated from the bottom-left The bottom-left slot being TRUE,1.
 /obj/item/weapon/storage/proc/orient_objs(tx, ty, mx, my)
+	tx += hud_shift_x
+	mx += hud_shift_x
+	ty += hud_shift_y
+	my += hud_shift_y
 	var/cx = tx
 	var/cy = ty
 	boxes.screen_loc = "[tx],[ty] to [mx],[my]"
@@ -245,10 +252,12 @@
 
 //This proc draws out the inventory and places the items on it. It uses the standard position.
 /obj/item/weapon/storage/proc/slot_orient_objs(var/rows, var/cols, var/list/obj/item/display_contents, Xcord=4, Ycord=2)
+	Xcord += hud_shift_x
+	Ycord += hud_shift_y
 	var/cx = Xcord
 	var/cy = Ycord+rows
 	if (boxes)
-		boxes.screen_loc = "[Xcord]:16,2:16 to [Xcord+cols]:16,[Ycord+rows]:16"
+		boxes.screen_loc = "[Xcord]:16,[Ycord]:16 to [Xcord+cols]:16,[Ycord+rows]:16"
 
 	if (display_contents_with_number)
 		for (var/datum/numbered_display/ND in display_contents)
@@ -274,6 +283,8 @@
 	return
 
 /obj/item/weapon/storage/proc/space_orient_objs(var/list/obj/item/display_contents,var/Xcord = 4,var/Ycord = 2)
+	Xcord += hud_shift_x
+	Ycord += hud_shift_y
 
 	var/baseline_max_storage_space = 16 //should be equal to default backpack capacity
 	var/storage_cap_width = 2 //length of sprite for start and end of the box representing total storage space
@@ -367,14 +378,26 @@
 				numbered_contents.Add( new/datum/numbered_display(I) )
 
 	if (storage_slots == null)
+		var/storage_width = min(round(224 * max_storage_space / 16, 1), 284)
+		hud_place_window(user, Xcor, Ycor, storage_width + 51, 32)
 		space_orient_objs(numbered_contents,Xcor,Ycor)
 	else
 		var/row_num = FALSE
 		var/col_count = min(ColCountDatum,storage_slots) -1
 		if (adjusted_contents > ColCountDatum)
 			row_num = round((adjusted_contents-1) / ColCountDatum) // ColCountDatum is the maximum allowed width.
+		hud_place_window(user, Xslot, Yslot, (col_count + 2) * 32, (row_num + 1) * 32)
 		slot_orient_objs(row_num, col_count, numbered_contents,Xslot,Yslot)
 	return
+
+// Moves the window to suit the viewer's HUD layout (scale and a dragged spot).
+// Without a viewer the last viewer's placement stays.
+/obj/item/weapon/storage/proc/hud_place_window(mob/user, tile_x, tile_y, w, h)
+	if (!ismob(user) || !user.client)
+		return
+	var/list/D = user.hud_storage_shift((tile_x - 1) * 32 + 16, (tile_y - 1) * 32 + 16, w, h)
+	hud_shift_x = D[1]
+	hud_shift_y = D[2]
 
 //This proc return TRUE if the item can be picked up and FALSE if it can't.
 //Set the stop_messages to stop it from printing messages

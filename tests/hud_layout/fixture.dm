@@ -192,9 +192,15 @@ var/list/default_hud_tiles = list(
 	for (var/g in list(1.25, 1.5, 1.75, 2))
 		var/err = check_reflow(g)
 		check(!err, "reflow: [err]")
+	// Storage windows: stay put at 100%, rise clear of an enlarged HUD, follow a drag, stay on screen.
+	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 1, 480, 480, null, list(list(150, 40, 32)))) == "0|0", "storage stays at 100%")
+	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 1.5, 480, 480, null, list(list(150, 40, 48)))) == "0|2", "storage rises above HUD: [loc_text(hud_storage_shift_for(144, 48, 256, 32, 1.5, 480, 480, null, list(list(150, 40, 48))))]")
+	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 2, 480, 480, null, list(list(0, 0, 64), list(150, 300, 64)))) == "0|0", "storage ignores tiles beside it and in the upper half")
+	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 1, 480, 480, list(400, 400), null)) == "2|11", "dragged storage clamps on screen")
+	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 1, 480, 480, list(-100, -100), null)) == "-4|-1", "dragged storage clamps at lower-left")
 	if (hud_failures.len)
 		world.log << "FAIL hud layout: [jointext(hud_failures, "; ")]"
 		del(world)
 		return
-	world.log << "PASS hud layout: screen_loc parsing, anchor text, scale matrices, item scale ownership, mouse params, per-style entries, production text save/load, inferred anchors, reflow without overlap at 125-200%"
+	world.log << "PASS hud layout: screen_loc parsing, anchor text, scale matrices, item scale ownership, mouse params, per-style entries, production text save/load, inferred anchors, reflow without overlap at 125-200%, storage window placement"
 	del(world)
