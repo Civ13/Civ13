@@ -638,9 +638,12 @@ var/global/list/habitat_cores = list()
 
 /obj/structure/life_support/scrubber/work(datum/habitat_ledger/L, seconds)
 	var/excess = L.co2 - HABITAT_CO2_TARGET_KPA * L.volume
-	if (excess <= 0 || !has_power())
+	// In orbit the sorbent bed wears out (orbit_wear.dm).
+	if (excess <= 0 || !has_power() || !orbit_sorbent_ready(src))
 		return FALSE
-	L.scrub_co2(min(excess, HABITAT_SCRUB_PER_SECOND * seconds))
+	var/amount = min(excess, HABITAT_SCRUB_PER_SECOND * seconds)
+	L.scrub_co2(amount)
+	orbit_sorbent_use(src, amount)
 	return TRUE
 
 /obj/structure/life_support/heater

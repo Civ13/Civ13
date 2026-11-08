@@ -44,13 +44,16 @@ what the code does so far and the rules later steps must keep.
 | 8 | Module pods and docking: release a kit as a pod, RCS steering from the pod or an orbit console, hard dock, fold back, party checks, rams | #3948, `code/modules/space/orbit_pods.dm` |
 | 9 | Decks: node modules, deck hatches, building a deck above or below, shared air between decks, console over every deck | #3949, `code/modules/space/orbit_decks.dm` |
 | 10a | Upkeep: orbit decay by band, drag heating and strikes, reboost thruster, altitude on the console | #3952, `code/modules/space/orbit_upkeep.dm` |
-| 10b | 2013 layout and hardware: tracking solar array, radioisotope generator, bigger starter station | `orbit_station.dm`, `orbit_project.dm` |
+| 10b | 2013 layout and hardware: tracking solar array, radioisotope generator, bigger starter station | #3956, `orbit_station.dm`, `orbit_project.dm` |
+| 10c | Wear: scrubber sorbent beds and cartridges, solar cell wear and glass repairs | `code/modules/space/orbit_wear.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-10c. Wear on seals, cartridges, panels and batteries; the uncrewed cargo
-    freighter.
+10d. The uncrewed cargo freighter. It needs items to cross regions without a
+    traveller, which the transfer agent cannot do yet, so it waits for that
+    infrastructure. Seal and battery wear wait for a reason to exist (seals
+    already fail through breaches and strikes).
 
 ## Orbital flight
 
@@ -233,6 +236,14 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   420 km. Only the station's party can fire it. A starter station comes with
   one holding three burns.
 - The orbit console shows the altitude and what it means.
+- **Sorbent.** In orbit, each CO2 scrubber uses up its sorbent bed as it
+  works (one percent per 10 kPa-tiles of CO2 removed, a little under three
+  hours of steady scrubbing). An empty bed stops the scrubber. A sorbent
+  cartridge (4 plastic, Life Support) refills it; a starter station's crate
+  holds two. Ground, Moon and Mars habitats are unchanged.
+- **Solar cell wear.** Wings and arrays in sunlight lose 3% output an hour,
+  down to half. Two glass sheets replace the worst cells (25 points). Wear
+  counts on the hazard clock, so nothing wears while the world is empty.
 
 ## Tests
 

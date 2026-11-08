@@ -89,6 +89,11 @@ node and greenhouse, two tracking arrays generating 35 PU, the radioisotope
 generator on the grid and steady in the shade, six reboost burns, a node kit
 in the crate, recipe gates, and no isotope power before 2013.
 
+Then wear (`code/modules/space/orbit_wear.dm`): a scrubber using up its
+sorbent and stopping when empty, a cartridge refilling it, two spare
+cartridges in the starter crate, solar wings wearing only in sunlight down to
+half output, a glass repair, and the cartridge recipe gate.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer
