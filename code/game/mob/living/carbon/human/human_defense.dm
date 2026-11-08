@@ -744,7 +744,7 @@ bullet_act
 			user.visible_message("<span class='danger'><b>[user] slices [src]'s throat!</b></span>", "<span class='danger'><b>You start slicing [src]'s throat!</b></span>")
 		else
 			user.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.artery_name] artery!</b></span>", "<span class='danger'><b>You slice open [src]'s [affecting.artery_name] artery!</b></span>")
-			adjust_mood(-(5))
+			adjust_mood(-(5), "a severed artery")
 
 	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
 	else if(I.sharp && I.edge)
@@ -756,7 +756,7 @@ bullet_act
 					affecting.droplimb(0, DROPLIMB_EDGE)
 					for(var/mob/living/human/NB in view(6,src))
 						if (!NB.orc)
-							NB.adjust_mood(-(10))
+							NB.adjust_mood(-(10), "seeing someone maimed")
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
 	if(I.damtype == BRUTE && !I.edge && prob(I.force * (hit_zone == "mouth" ? 6 : 0)) && O)//Knocking out teeth.
@@ -895,7 +895,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-20)
-				adjust_mood(-(8))
+				adjust_mood(-(8), "public humiliation")
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -905,7 +905,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-5)
-				adjust_mood(-(3))
+				adjust_mood(-(3), "public humiliation")
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
@@ -915,7 +915,7 @@ bullet_act
 				pillory = P
 			if (pillory && pillory.hanging == src)
 				adjust_hygiene(-3)
-				adjust_mood(-(2))
+				adjust_mood(-(2), "public humiliation")
 				spawn(2)
 					qdel(O)
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")

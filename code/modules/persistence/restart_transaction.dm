@@ -9,21 +9,63 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	return TRUE
 
 // A handover (scripts/shard-group handover): the staged build boots beside this world as a
-// standby, this world freezes play and saves, the standby loads the save, then this world
-// reboots out and the standby opens the region's port. While world_moving is set, clients
-// can look and chat but not move or act, so nothing played after the save is lost.
+// standby, this world saves, the standby loads the save, then this world reboots out and the
+// standby opens the region's port. Each level freezes when its capture starts and stays
+// frozen until the move, so nothing played after that level was saved is lost; once the
+// save completes (handover_state past "saving") every client is frozen.
 var/global/world_moving = FALSE
+
+// Levels whose players are frozen ("[z]" = TRUE). A map save freezes each level only
+// while that level is captured; a handover keeps captured levels frozen. Crossing between
+// levels stays blocked for the whole save (persistence_save_in_progress).
+var/global/list/persistence_frozen_levels = list()
 
 /proc/set_world_moving(moving)
 	world_moving = moving ? TRUE : FALSE
+	if(!world_moving) persistence_release_all_levels()
+
+/proc/persistence_clients_on_level(z)
+	. = list()
+	for(var/client/C in clients)
+		var/turf/T = C.mob ? get_turf(C.mob) : null
+		if(T && T.z == z) . += C
+
+/proc/persistence_freeze_level(z)
+	if(persistence_frozen_levels["[z]"]) return
+	persistence_frozen_levels["[z]"] = TRUE
+	for(var/client/C in persistence_clients_on_level(z))
+		to_chat(C, "<span class='warning'>[world_moving ? "Your level is being saved for the move to the updated server. You can look around and chat, but not act, until the move finishes." : "Your level is being saved. You can look around and chat, but not act, until it finishes in a moment."]</span>")
+
+// A handover keeps captured levels frozen; anything done there now would not survive the move.
+/proc/persistence_release_level(z)
+	if(world_moving || !persistence_frozen_levels["[z]"]) return
+	persistence_frozen_levels -= "[z]"
+	for(var/client/C in persistence_clients_on_level(z))
+		to_chat(C, "<span class='notice'>Your level is saved; carry on. Stay on this level until the whole save finishes.</span>")
+
+/proc/persistence_release_all_levels()
+	if(world_moving) return
+	persistence_frozen_levels.Cut()
+
+// Null when the client may act, else the reason shown to them.
+/proc/persistence_input_frozen(client/C)
+	if(world_moving && persistence_restart.handover_state != "saving")
+		return "The world is moving to the updated server. You can look around and chat, but not act, until it finishes."
+	if(!persistence_frozen_levels.len || !C || !C.mob || isobserver(C.mob)) return null
+	var/turf/T = get_turf(C.mob)
+	if(!T || !persistence_frozen_levels["[T.z]"]) return null
+	if(world_moving) return "Your level is saved for the move to the updated server. You can look around and chat, but not act, until the move finishes."
+	return "Your level is being saved. You can look around and chat, but not act, until it finishes in a moment."
 
 // Clicks are the other way to act; movement is refused in client/Move (mob_movement.dm).
 /client/Click(atom/object, location, control, params)
-	if (world_moving)
-		if (mob && world.time >= mob.next_click)
-			mob.next_click = world.time + 20
-			to_chat(src, "<span class='warning'>The world is moving to the updated server. You can look around and chat, but not act, until it finishes.</span>")
-		return
+	if (world_moving || persistence_frozen_levels.len)
+		var/reason = persistence_input_frozen(src)
+		if (reason)
+			if (mob && world.time >= mob.next_click)
+				mob.next_click = world.time + 20
+				to_chat(src, "<span class='warning'>[reason]</span>")
+			return
 	return ..()
 
 /datum/persistence_restart_transaction
@@ -225,7 +267,7 @@ var/global/world_moving = FALSE
 	if(handover)
 		handover_state = "saving"
 		set_world_moving(TRUE)
-		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. You can look around and chat, but not act, until the move finishes in a few minutes; nothing you did is lost.</b></font>")
+		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. Do not move between z-levels. Each level is held still from when it saves until the move finishes in a few minutes; you can look around and chat there. Nothing you did is lost.</b></font>")
 	// Give connected players a minute's notice; busy already blocks other saves.
 	else if(clients.len && !prewarned)
 		if(!isnull(expected_persistence) && expected_persistence == 0)

@@ -121,7 +121,7 @@ class TradePost(unittest.TestCase):
         self.assertIn('S.type == transfer_trade_goods[kind]', kind)
         self.assertNotIn('istype(S, transfer_trade_goods', kind)
         goods = re.findall(r'"(\w+)" = (/obj/item/stack/material/\w+)', POST)
-        self.assertEqual(13, len(goods))
+        self.assertEqual(15, len(goods))
         for name, path in goods:
             self.assertEqual(path.rsplit('/', 1)[1], name)
 

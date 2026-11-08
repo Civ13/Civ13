@@ -251,9 +251,9 @@
 					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (ct)
-					adjust_mood(0.12)
+					adjust_mood(0.12, "having company")
 				else
-					adjust_mood(-(0.4))
+					adjust_mood(-(0.4), "being alone")
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
@@ -261,9 +261,9 @@
 					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (!ct)
-					adjust_mood(0.12)
+					adjust_mood(0.12, "time alone")
 				else
-					adjust_mood(-(0.4))
+					adjust_mood(-(0.4), "people around you")
 		if (!inducedSSD)
 			adjust_mood(-(0.02))
 	#undef HUNGER_THIRST_MULTIPLIER
@@ -1657,7 +1657,7 @@
 			if ("cocaine")
 				if (ingested.has_reagent("cocaine"))
 					return
-				adjust_mood(-((value/100)*0.26))
+				adjust_mood(-((value/100)*0.26), "craving cocaine")
 				switch (value)
 					if (0 to 24)
 						return
@@ -1701,7 +1701,7 @@
 			if ("opium")
 				if (ingested.has_reagent("opium"))
 					return
-				adjust_mood(-((value/100)*0.32))
+				adjust_mood(-((value/100)*0.32), "craving opium")
 				switch (value)
 					if (0 to 13)
 						if (prob(5))
@@ -1754,7 +1754,7 @@
 			if ("tobacco")
 				if (ingested.has_reagent("nicotine"))
 					return
-				adjust_mood(-((value/100)*0.14))
+				adjust_mood(-((value/100)*0.14), "craving tobacco")
 				switch (value)
 					if (0 to 21)
 						return
@@ -1769,7 +1769,7 @@
 			if ("alcohol")
 				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
 					return
-				adjust_mood(-((value/100)*0.20))
+				adjust_mood(-((value/100)*0.20), "craving alcohol")
 				switch (value)
 					if (0 to 21)
 						return

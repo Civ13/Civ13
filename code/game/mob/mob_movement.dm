@@ -358,8 +358,8 @@
 	var/subtile_chain_time = human_subtile_chain_time
 	human_subtile_chain_time = null
 
-	// The world has saved for a handover; nothing done now would survive the move.
-	if (world_moving)
+	// This mob's level is being saved, or was saved for a handover (restart_transaction.dm).
+	if ((world_moving || persistence_frozen_levels.len) && persistence_input_frozen(src))
 		return
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements

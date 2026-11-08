@@ -1117,7 +1117,7 @@
 					M.emote("cough")
 					if (ishuman(M))
 						var/mob/living/human/H = M
-						H.adjust_mood(-(1.5))
+						H.adjust_mood(-(1.5), "choking dust")
 	// --- ASBESTOS: PASSIVE TOXIN DRIP ---
 	if (asbestos_tox && holder)
 		tox_timer += 2

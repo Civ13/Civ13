@@ -69,33 +69,33 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '4862bc0b49383660694e71b808b904f5c6610f7c'
+WIKI_REVIEWED_REVISION = 'b1cf4db981894d7a0f22030850cd677a675b1a91'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
-    'guides/Guide_to_Chemistry.md': ('8e911052635f458944f9d5e9727093538cfccbcf458c953378b0741d769c8dfb', 'chemistry chemicals reactions reagents'),
+    'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('e05d6184abff269f8e1e266530e7408944481ec94b0d5e8a4d4d9166a7d10124', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('f572f4d29c14aea24cbd771e2eb3a171247aeedd71406cf75a0055b7f507e133', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('2ab598407a49337d05f700c3b9cbc7b3636334ee82bdde4949dffc1e4e58576d', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('f3353d7e6f27bf19d3c6be488007c516d95cf20f04676beb3ae550ccab0a3fb9', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('890302cda6fdfa7c9f5402112ac482001549c778414ebe56d2227d586fcb5481', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('a94ca172349d144215a94ade72fff09304cae9e556c0c9d6445aa6522f284267', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Factory_Automation.md': ('aa33b8d0baf799a2705fd6e525069ca5b7b53c4aa85a23614c42a4da81d2bd29', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
+    'guides/Guide_to_Farming.md': ('1b880de6c0ebadfac8e22e0cddf16b0f7c6844483e4f4b5f2fe6d00620d6bc98', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('51122e7eed5799b35279e3d32e49b45147d4349342b8a61730b00f859f5671d5', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('51bbdb510e76a957b74ce2e13288d9a32132bcf95aaaa77bd050238f2de85f04', 'hygiene clean washing soap'),
     'guides/Guide_to_Leadership.md': ('e9a6cd341eff549d442e8011dbcefcf83cae62a471e762197ec1b69d7fb9ba94', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('32dc94e3dda70d49877b3f4f81d53c52bc1b9568d3de0034545dc4eb97216bf2', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('e2508dd0a9146a1978618d4de4a0f1ef57ab9e79791e4d00bc7d9e6d543944b8', 'medical heal injury wound surgery'),
     'guides/Guide_to_Power.md': ('da942fbac61fa4e74ddebe7e1b33b4fc173796622cebe98d17d4606657484c0f', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('5f2ab72ae764f458c87fbfcf6b08b01e371eff8149a9c6954c8f7e5017f05247', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('4ebe43fbffca6433d0061c02c1d1749bd4d36618571b1ee151a0f5194fe115ff', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('8cc5fa4c63e62658b5be0f3bc64e66bbf3ab87cc6b61e56b8a78b770606cf3cf', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Research.md': ('8b0aaaccfeef3af5d8c2b9652d3c1a44e0355113c1af42ebf29f7387bf8e8ec8', 'research unlock study technology research bench'),
+    'guides/Guide_to_Resource_Extraction.md': ('d1e120e469a8ba315953efc59d4168464f88fd5f4a1bc3a986d6266225b59a2b', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('d588af9a712f059f18f48202fdf9421c9dd7ebd7c27fab0ad63a211a095fc5fa', 'survival winter cold warm freezing hypothermia shelter debris'),
     'guides/Guide_to_Tanks.md': ('9357b74b19d1f4b29e314595263ee08bc7f3267b596719867d9347bd6ededb08', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('f53b8e81f94789c5b607bda6d65f00b597c71dda3e3628557f4d2494aec0a53b', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Trains.md': ('51c1624333ef8b81a09ad16c3252d7e33483a3dafd2c96f78e74ce174378807a', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('81a11db4d6d78516698ae852da2d345201dda80cc17f75317bea378dfc576bd8', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('250d8d0a2f826eb1f171f602bce3e3d179d3d56e50c877512d0e74b5963ded6e', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('14ff9a00834c65213bd85d014714100b3c63a33ece089ec4f3c48ed84563c8a3', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('ab2dc923bc001b0a549eefc888daa84a6eb16d3b966a77a4b8694667761f9a8c', 'new player beginner start first round basics'),
     'Hotkeys.md': ('bdcba9ddbacc31524af99e4757c69b2247c97bfdcf2e873255bd6bf962df64b7', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -112,6 +112,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('1863a3a811c2ef7908044d16fb0516549d4f5fb3c8d7b088338dac4e4a720b6b', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
+    'guides/Guide_to_Aircraft.md': ('020cb87c054c9c76fb1558b74f4524dbd04ab7717dbcf631f71a4a494ef5faf7', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Paperwork.md': ('7eb57d56e7a8ab8ea9c281a348193566af6a5efc3fd9cf9b56f60b6d7998daee', 'paper paperwork writing write pen book sign signature stamp'),
@@ -122,7 +123,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('fadee870fd64b48811211d6d498016817100f4878d2ab17e2b92f39ade30de50', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('7630fc952ee4de8c4f8964c042f7c615396bcd58c14dbee97630a76fe2d58c43', 'guides overview list of guides index'),
+    'guides_overview.md': ('00f4ebd187ad9c3f50093a8e8aebae705b8a3e35a857afe63f3b9c15cfa046cc', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
@@ -531,8 +532,9 @@ def mood_knowledge(root):
         'code/game/mob/living/carbon/human/human_needs.dm': (
             '/mob/living/human/proc/print_mood()', '/mob/living/human/proc/handle_mood()',
             '/mob/living/human/proc/handle_hygiene()', 'mood_modifier = 1',
-            '/mob/living/human/proc/set_mood(amount)', 'if (sleeping > 0 && amount < mood)',
-            '/mob/living/human/proc/adjust_mood(amount)', 'return set_mood(mood + amount)', 'adjust_mood(-(0.01))', 'adjust_mood(-(0.02))'),
+            '/mob/living/human/proc/set_mood(amount, cause = null)', 'if (sleeping > 0 && amount < mood)',
+            '/mob/living/human/proc/adjust_mood(amount, cause = null)', 'return set_mood(mood + amount, cause)',
+            'adjust_mood(-(0.01), "being dirty")', 'adjust_mood(-(0.02), "fleas")', '/mob/living/human/proc/print_mood_causes()'),
         'code/game/mob/living/carbon/human/human_stats.dm': (
             '/mob/living/human/proc/getStat(statname)', 'return stats[lowertext(statname)][1]*mood_modifier'),
     }
@@ -553,6 +555,8 @@ def mood_knowledge(root):
              'sha256': hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest(),
              'text': ('REVIEWED CURRENT GAMEPLAY CODE - GENERAL MOOD MECHANICS: '
                       'A human character can view a mood category by clicking the mood HUD. '
+                      'The same click lists the recent causes that lifted or lowered their mood, '
+                      'and chat messages note when a cause starts or stops affecting mood. '
                       'Mood naturally moves toward the neutral range over time while awake. '
                       'Mood cannot decrease while actually asleep; positive mood changes still apply. '
                       'Resting or lying awake does not pause mood loss. Hygiene can affect mood, '
