@@ -284,8 +284,10 @@ without stopping it for the load:
    `-params standby=1`.
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
    is hidden from the hub, refuses joins and never saves.
-2. The running world freezes play ("the world is moving": players can look and
-   chat but not move or act, so nothing they do is lost), saves and publishes
+2. The running world saves, freezing each level as its capture starts and keeping
+   it frozen until the move ("the world is moving": players there can look and
+   chat but not move or act, so nothing they do is lost; crossing between levels
+   is blocked for the whole save), then publishes
    its restart intent (lifecycle action `handover_save`). `map_saves` is backed
    up as a stop would.
 3. The standby loads that save (`standby_load`). Its preflight and load are the
