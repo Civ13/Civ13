@@ -177,7 +177,8 @@ class RailYardTests(unittest.TestCase):
 
     def test_the_saved_party_counts_only_in_the_yard(self):
         party_of = proc(TRAIN, '/proc/party_train_party_of')
-        yard_rule = party_of.index('shard_group.kind == "RAILYARD" && party_train_valid_party(H.party_train_party)')
+        # The rail yard and an orbit station both keep the party that brought the character.
+        yard_rule = party_of.index('(shard_group.kind == "RAILYARD" || shard_group.kind == "ORBIT") && party_train_valid_party(H.party_train_party)')
         self.assertLess(yard_rule, party_of.index('H.civilization'))
         self.assertEqual(party_of.count('H.party_train_party'), 2)
         # Coming home, a member rejoins the faction that owns the train.
