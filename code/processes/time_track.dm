@@ -1,4 +1,8 @@
 // ported from /tg/station - Kachnov
+#define LAG_CAPTURE_DILATION 50 // percent
+#define LAG_CAPTURE_SECONDS 3 // consecutive fires over the threshold
+#define LAG_CAPTURE_COOLDOWN 3000 // deciseconds of game time between captures
+#define LAG_CAPTURE_WINDOW 100 // deciseconds of game time profiled
 /process/time_track
 	var/dilation = 0
 	var/last_tick_realtime = 0
@@ -8,6 +12,13 @@
 	var/list/averages = list()
 	var/list/average_cpus = list()
 	var/list/average_tick_usages = list()
+	// Lag-spike capture: a profile of the procs running while the server falls behind.
+	var/lag_seconds = 0
+	var/last_lag_capture = -LAG_CAPTURE_COOLDOWN
+	var/lag_capture_due = 0
+	var/lag_capture_started_profiler = FALSE
+	var/lag_capture_spike = 0
+	var/lag_capture_map_cpu = 0
 	var/stored_averages = list(
 		"dilation" = 0,
 		"cpu" = 0,
@@ -48,6 +59,7 @@
 	last_tick_tickcount = current_tickcount
 
 	averages += dilation
+	check_lag_capture()
 	if (averages.len >= 20)
 		var/list/old = averages.Copy()
 		averages.Cut()
@@ -100,3 +112,42 @@
 	for (var/n in average_tick_usages)
 		. += n
 	. /= average_tick_usages.len
+
+
+// When the server stays well behind real time, profile what runs during the
+// spike and save it to data/profile/ (see code/modules/admin/profile_dump.dm),
+// so the cause can be read after the round instead of guessed from chat.
+// Called every fire, so the capture finishes on a later fire, not a spawn.
+/process/time_track/proc/check_lag_capture()
+	if (lag_capture_due && world.time >= lag_capture_due)
+		finish_lag_capture()
+	if (dilation < LAG_CAPTURE_DILATION)
+		lag_seconds = 0
+		return
+	if (++lag_seconds < LAG_CAPTURE_SECONDS)
+		return
+	if (lag_capture_due || world.time - last_lag_capture < LAG_CAPTURE_COOLDOWN)
+		return
+	last_lag_capture = world.time
+	lag_seconds = 0
+	lag_capture_started_profiler = !profile_dump_running
+	if (lag_capture_started_profiler)
+		world.Profile(PROFILE_CLEAR)
+		world.Profile(PROFILE_START)
+	lag_capture_spike = round(dilation)
+	lag_capture_map_cpu = round(world.map_cpu)
+	lag_capture_due = world.time + LAG_CAPTURE_WINDOW
+
+/process/time_track/proc/finish_lag_capture()
+	lag_capture_due = 0
+	var/path = profile_dump_write()
+	if (lag_capture_started_profiler && !profile_dump_running)
+		world.Profile(PROFILE_STOP)
+	var/msg = "Time dilation reached [lag_capture_spike]% (CPU [round(world.cpu)]%, map sending [lag_capture_map_cpu]%, [length(clients)] players); profile [path ? "saved to [path]" : "unavailable"]."
+	log_game(msg)
+	message_admins(msg)
+
+#undef LAG_CAPTURE_DILATION
+#undef LAG_CAPTURE_SECONDS
+#undef LAG_CAPTURE_COOLDOWN
+#undef LAG_CAPTURE_WINDOW

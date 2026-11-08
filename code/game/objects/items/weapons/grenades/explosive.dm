@@ -37,6 +37,11 @@
 	var/spread_range = 7 //leave as is, for some reason setting this higher makes the spread pattern have gaps close to the epicenter
 
 /obj/item/weapon/grenade/frag/activate()
+	// Every shrapnel hit calls fast_activate(); without this guard one grenade
+	// went off once per hit and each blast threw another full fragment ring.
+	if (active)
+		return
+	active = TRUE
 	spawn(det_time)
 		var/turf/O = get_turf(src)
 		if(!O) return

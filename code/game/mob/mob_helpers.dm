@@ -245,38 +245,19 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 /proc/shake_camera(mob/M, duration, strength=1)
 	if (!M || !M.client || M.shakecamera || M.stat || isEye(M))
 		return
-
+	// Shake on the client with pixel_w/pixel_z (scopes own pixel_x/pixel_y).
+	// Moving client.eye to a new tile every step made the server rebuild and
+	// resend each shaken player's whole view, which is costly with many
+	// players near an explosion.
+	var/client/C = M.client
+	var/steps = max(1, ceil(duration))
+	var/amplitude = max(1, round(strength * world.icon_size))
 	M.shakecamera = TRUE
-
-	spawn(1)
-		if (isnull(M) || !M.client)
-			if(M) M.shakecamera = FALSE
-			return
-
-		var/atom/oldeye = M.client.eye
-		var/turf/origin = get_turf(M)
-		if (!origin)
-			if (M) M.shakecamera = FALSE
-			return
-
-		var/obj/effect/temp_eye = new /obj/effect(origin)
-		for (var/x = 0; x < duration; x++)
-			if (!M || !M.client)
-				break
-
-			temp_eye.loc = locate(
-				dd_range(1, origin.x + rand(-strength, strength), world.maxx),
-				dd_range(1, origin.y + rand(-strength, strength), world.maxy),
-				origin.z
-			)
-			M.client.eye = temp_eye
-			sleep(1)
-
-		// Restore original eye
-		if (M && M.client)
-			M.client.eye = oldeye
-
-		qdel(temp_eye)
+	animate(C, pixel_w = rand(-amplitude, amplitude), pixel_z = rand(-amplitude, amplitude), time = 1)
+	for (var/i = 2 to steps)
+		animate(pixel_w = rand(-amplitude, amplitude), pixel_z = rand(-amplitude, amplitude), time = 1)
+	animate(pixel_w = 0, pixel_z = 0, time = 1)
+	spawn(steps + 1)
 		if (M)
 			M.shakecamera = FALSE
 
