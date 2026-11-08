@@ -53,7 +53,7 @@ class TanningAtlasTests(unittest.TestCase):
     def test_turkey_to_existing_leather_recipes_requires_every_stage(self):
         recipes = [r for r in self.recipes if r['kind'] == 'Leather tanning']
         target = '/material/leather'
-        stages = ['Scrape rawhide into a prepared hide', 'Wash a prepared hide',
+        stages = ['Scrape raw hide into a prepared hide', 'Wash a prepared hide',
                   'Rack-dry washed hides', 'Tan a dry hide into leather', 'Extract bark tannin']
 
         def reachable(sex, excluded=''):
@@ -116,7 +116,7 @@ class TanningAtlasTests(unittest.TestCase):
         butcher = self.recipe('Butcher large mammals')
         self.assertNotIn('/material/leather', [x['id'] for x in butcher['outputs']])
         self.assertIn('/material/rawhide', [x['id'] for x in butcher['outputs']])
-        scrape = self.recipe('Scrape sheeppelt into a prepared hide')
+        scrape = self.recipe('Scrape sheep pelt into a prepared hide')
         pelt = scrape['inputs'][0]['id']
         self.assertTrue(any(r['name'] == 'Skin Sheep' and pelt in [x['id'] for x in r['outputs']] for r in self.recipes))
         self.assertTrue(any(pelt in [x['id'] for x in r['inputs']] and r['kind'].startswith('Material /') for r in self.recipes))

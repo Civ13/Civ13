@@ -29,7 +29,7 @@
 	var/tannin = crafting_atlas_reference.acquisition_html("tannin")
 	check_atlas(findtext(tannin, "Extract bark tannin") && findtext(tannin, "10 water") && findtext(tannin, "10 tannin"), "full catalog tannin acquisition quantities")
 	var/leather = crafting_atlas_reference.acquisition_html("/material/leather")
-	check_atlas(findtext(leather, "Tan a dry hide into leather") && !findtext(leather, "Butcher large mammals"), "full catalog no direct animal leather route")
+	check_atlas(findtext(leather, "Tan a dry hide into leather") && !findtext(leather, "Butcher large mammals") && !findtext(leather, "Butcher mammals for raw hides"), "full catalog no direct animal leather route")
 	if (!atlas_failed)
 		text2file("PASS", "passed.txt")
 	del(world)
