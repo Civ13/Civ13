@@ -1906,6 +1906,8 @@ RECIPE: /material/steel/,fire striker,/obj/item/weapon/flame/lighter/striker,1,4
 
 RECIPE: /material/steel/,whistle,/obj/item/weapon/whistle,4,70,0,1,tools,80,0,0,8,null
 RECIPE: /material/steel/,megaphone,/obj/item/weapon/megaphone,3,80,0,1,tools,0,0,0,8,null
+RECIPE: /material/electronics/,motion detector,/obj/item/weapon/motion_detector,3,120,0,1,tools,0,0,0,8,null
+RECIPE: /material/electronics/,rangefinder,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder,2,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90,0,1,tools,60,0,0,8,null
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
@@ -2589,6 +2591,8 @@ RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20
 
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 RECIPE: /material/steel/,bipod,/obj/item/weapon/attachment/under/bipod,2,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/electronics/,weapon light,/obj/item/weapon/attachment/under/weapon_light,1,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/leather/,gun sling,/obj/item/weapon/gun_sling,2,40,0,1,weapons,0,0,0,8,null
 
 //*********************| IRON CONSTRUCTIONS |**************************
 

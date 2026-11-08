@@ -22,3 +22,9 @@ unbracing on the move), the empty-gun ammo count, floor exercise limits and
 fatigue, and the lockbox (first key sets the lock, wrong keys fail, blocked
 storage while locked, beating the lock off). The escape menu needs a real
 client and is not covered here.
+
+The fourth batch checks the roll of the fallen (one entry per death, team rounds
+only), dog tags (dead bodies only, one set per body, comrade and enemy counts),
+commander medals (rank, side, citation and per-round limits), the weapon light
+(lit only in hand), the gun sling (caught onto the shoulder only when knocked
+down), the motion detector's contact list and the rangefinder report.

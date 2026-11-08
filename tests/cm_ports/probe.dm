@@ -58,6 +58,7 @@ var/probe_runtime_error = FALSE
 	holiday_checks()
 	second_batch_checks()
 	third_batch_checks()
+	fourth_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -321,3 +322,91 @@ var/probe_runtime_error = FALSE
 		LB.attackby(hammer, owner)
 	probe_check(LB.broken && !LB.locked && LB.icon_state == "lockbox_broken", "four heavy blows beat the lock off")
 	probe_check(LB.can_be_inserted(coin, TRUE), "a broken lockbox opens freely")
+
+/proc/fourth_batch_checks()
+	map.civilizations = FALSE
+	// Fallen roll and dog tags
+	var/datum/fallen_roll/roll = new
+	fallen_roll = roll
+	var/mob/living/human/red1 = probe_human(3, 12, "Red One")
+	red1.faction_text = "Red"
+	var/mob/living/human/red2 = probe_human(4, 12, "Red Two")
+	red2.faction_text = "Red"
+	var/mob/living/human/blue1 = probe_human(5, 12, "Blue One")
+	blue1.faction_text = "Blue"
+	probe_check(roll.record_death(red1) && !roll.record_death(red1), "a death is recorded once")
+	probe_check(!red1.take_dog_tags_by(red2), "tags only come off the dead")
+	red1.stat = DEAD
+	var/obj/item/weapon/dogtag/T = red1.take_dog_tags_by(red2)
+	probe_check(istype(T) && T.tag_name == "Red One" && T.tag_faction == "Red" && findtext(T.name, "Red One"), "a comrade takes named tags")
+	probe_check(!red1.take_dog_tags_by(blue1), "a body has only one set of tags")
+	var/list/lines = roll.lines()
+	probe_check(lines.len == 1 && findtext(lines[1], "<b>Red</b> lost 1: Red One.") && findtext(lines[1], "Tags brought home: 1."), "the roll lists the fallen and tags brought home: [jointext(lines, " | ")]")
+	red2.stat = DEAD
+	roll.record_death(red2)
+	red2.take_dog_tags_by(blue1)
+	lines = roll.lines()
+	probe_check(findtext(lines[1], "Tags taken by the enemy: 1."), "enemy-taken tags are counted apart")
+	probe_check(red1.persistence_runtime_var("dog_tags_taken"), "taken tags are not saved")
+
+	// Medals
+	var/mob/living/human/cmdr = probe_human(8, 12, "Commander")
+	cmdr.faction_text = "Blue"
+	var/datum/job/CJ = new
+	CJ.is_commander = TRUE
+	cmdr.original_job = CJ
+	var/mob/living/human/hero = probe_human(9, 12, "Hero")
+	hero.faction_text = "Blue"
+	probe_check(istext(blue1.award_medal_to(hero, "Gold", "Brave")), "a private cannot award medals")
+	probe_check(istext(cmdr.award_medal_to(red1, "Gold", "Brave")), "medals go only to your own living side")
+	probe_check(istext(cmdr.award_medal_to(hero, "Gold", "")), "a medal needs a citation")
+	var/obj/item/clothing/accessory/medal/gold/M = cmdr.award_medal_to(hero, "Gold", "Held the bridge")
+	probe_check(istype(M) && findtext(M.desc, "Held the bridge") && roll.citations.len == 1, "a medal carries its citation to the round end")
+	cmdr.award_medal_to(hero, "Bronze", "Two")
+	cmdr.award_medal_to(hero, "Bronze", "Three")
+	probe_check(istext(cmdr.award_medal_to(hero, "Bronze", "Four")), "three medals per officer per round")
+	map.civilizations = TRUE
+	probe_check(!medal_can_award(cmdr) && !roll.record_death(hero), "no medals or roll outside team rounds")
+	map.civilizations = FALSE
+
+	// Weapon light and sling
+	var/mob/living/human/scout = probe_human(12, 12, "Scout")
+	var/obj/item/weapon/gun/projectile/submachinegun/m16/ar15/G = new(scout.loc)
+	scout.put_in_hands(G)
+	var/obj/item/weapon/attachment/under/weapon_light/WL = new(scout.loc)
+	probe_check(G.install_configuration(WL, null, TRUE) && G.weapon_light() == WL, "a weapon light fits the underbarrel rail")
+	WL.light_on = TRUE
+	G.update_weapon_light()
+	probe_check(G.weapon_light_shining() && G.light_range == WL.beam_range, "a lit weapon light shines while the gun is in hand")
+	scout.drop_from_inventory(G)
+	probe_check(!G.weapon_light_shining() && !G.light_range, "it goes dark once the gun leaves your hands")
+	var/obj/item/weapon/gun_sling/SL = new(scout.loc)
+	probe_check(G.fit_sling(null, SL) && G.has_sling, "a sling fits a long gun")
+	scout.put_in_hands(G)
+	probe_check(!G.sling_catches(scout), "a standing soldier drops a slung gun normally")
+	scout.weakened = 5
+	probe_check(G.sling_catches(scout), "a knocked-down soldier keeps a slung gun")
+	scout.drop_from_inventory(G)
+	probe_check(scout.shoulder == G, "the slung gun ends up on the shoulder")
+	scout.weakened = 0
+
+	// Motion detector
+	var/mob/living/human/watcher = probe_human(15, 15, "Watcher")
+	var/obj/item/weapon/motion_detector/MD = new(watcher.loc)
+	watcher.put_in_hands(MD)
+	var/mob/living/human/mover = probe_human(18, 15, "Mover")
+	var/mob/living/human/still = probe_human(17, 15, "Still")
+	var/mob/living/human/far = probe_human(28, 28, "Far")
+	mover.last_movement = world.time
+	far.last_movement = world.time
+	still.last_movement = -1
+	watcher.last_movement = world.time
+	var/list/contacts = MD.moving_contacts(watcher)
+	probe_check((mover in contacts) && !(still in contacts) && !(far in contacts) && !(watcher in contacts), "the detector sees only nearby movers, not the holder")
+	probe_check(MD.holder() == watcher, "the detector works while held")
+	probe_check(MD.persistence_runtime_var("blips"), "blips are not saved")
+
+	// Rangefinder report
+	var/turf/far_turf = locate(25, 15, 1)
+	var/report = rangefinder_report(watcher, far_turf)
+	probe_check(findtext(report, "Range: 10 meters east") && findtext(report, "Coordinates 25,15") && findtext(report, "offset 10,0"), "the rangefinder gives exact range, bearing and coordinates: [report]")

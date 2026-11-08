@@ -8,7 +8,11 @@
 | `display_case`, `display_case_broken` | CM-SS13 `icons/obj/structures/props/furniture/display_case.dmi` states `glassbox0`, `glassboxb0` | CC BY-SA 3.0 |
 | `bipod` | CM-SS13 `icons/obj/items/weapons/guns/attachments/under.dmi` state `bipod` | CC BY-SA 3.0 |
 | `lockbox`, `lockbox_locked`, `lockbox_broken` | CM-SS13 `icons/obj/items/storage/briefcases.dmi` states `lockbox`, `lockbox+l`, `lockbox+b` | CC BY-SA 3.0 |
-| `glowstick_*`, `tripwire`, `tripwire_kit` | Drawn for Civ13 (2026-11-08) | Same as the rest of Civ13's art |
+| `rangefinder` | CM-SS13 `icons/obj/items/binoculars.dmi` state `rangefinder` | CC BY-SA 3.0 |
+| `motion_detector`, `motion_blip` | CM-SS13 `icons/obj/items/marine-items.dmi` states `detector`, `detector_blip` | CC BY-SA 3.0 |
+| `dogtag_taken` | CM-SS13 `icons/obj/items/card.dmi` state `dogtag_taken` | CC BY-SA 3.0 |
+| `weapon_light` | CM-SS13 `icons/obj/items/weapons/guns/attachments/rail.dmi` state `flashlight` | CC BY-SA 3.0 |
+| `glowstick_*`, `tripwire`, `tripwire_kit`, `gun_sling` | Drawn for Civ13 (2026-11-08) | Same as the rest of Civ13's art |
 
 CM-SS13 art is by the CM-SS13 development team, from
 [cmss13-devs/cmss13](https://github.com/cmss13-devs/cmss13) at commit
@@ -19,5 +23,5 @@ these states must keep this attribution and the same licence.
 
 ## guns/parts.dmi
 
-The `bipod` state (the folded bipod drawn under a rifle) was drawn for Civ13
-(2026-11-08) and is under the same terms as the rest of Civ13's art.
+The `bipod` and `weapon_light` states (drawn under a rifle) were drawn for Civ13
+(2026-11-08) and are under the same terms as the rest of Civ13's art.

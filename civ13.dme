@@ -826,6 +826,7 @@
 #include "code\modules\1713\cane.dm"
 #include "code\modules\1713\canopy_shelter.dm"
 #include "code\modules\1713\closets.dm"
+#include "code\modules\1713\cmss13_command.dm"
 #include "code\modules\1713\cmss13_field.dm"
 #include "code\modules\1713\cmss13_gear.dm"
 #include "code\modules\1713\codebook_emotes.dm"
