@@ -502,6 +502,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/structure/car_workshop/hangar" = "powered_flight",
+		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",
 		"/obj/structure/bed/chair/carseat/left" = "automobiles",

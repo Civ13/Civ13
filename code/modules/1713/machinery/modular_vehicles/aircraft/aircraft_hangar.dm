@@ -25,7 +25,7 @@
 	return "Powered Flight research is required."
 
 /obj/structure/car_workshop/hangar/menu_text()
-	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane costs 50/6/4/8/4. Keep the northeast 4x4 bay empty; the plane needs a runway to take off."
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane costs 50/6/4/8/4. Keep the northeast 4x4 bay empty; the plane needs a runway to take off. Taxi a landed plane into the bay to hangar it."
 
 /obj/structure/car_workshop/hangar/assembled_message(model)
 	return "Your [model] is assembled. Fill its tank with gasoline and roll it onto a runway before taking off."
