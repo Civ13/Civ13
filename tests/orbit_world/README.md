@@ -143,7 +143,10 @@ Then satellites (`code/modules/space/satellites.dm`): launches from a Gaia pad
 pointed at orbit, the payload, fuel and era refusals, the ground station's
 weather report, one satellite of a kind, the comms link standing in for a
 relay's antenna, GPS fixes and bearings, a ground station being required,
-and a survey orbiter mapping the whole Moon for a mission console.
+and a survey orbiter mapping the whole Moon for a mission console. Raids:
+the first launch claims a station, GPS serves only its owners, others cannot
+launch to it, a raider cuts a satellite's link and then takes the station
+over.
 
 Then station visits (`code/modules/space/orbit_docking.dm`): ports belonging
 to their plane's station, the 2013 gate, who may dock, guests, ferrying
