@@ -154,6 +154,8 @@
 					qdel(SD)
 				return
 		for (var/obj/structure/farming/plant/PL in range(2, src))
+			if (!PL.granivore_can_eat())
+				continue
 			if (prob(15))
 				npc_subtile_stop_continuous_walk()
 				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
@@ -244,6 +246,8 @@
 
 	if (granivore)
 		for (var/obj/structure/farming/plant/PL in range(8, src))
+			if (!PL.granivore_can_eat())
+				continue
 			smart_step_towards(PL)
 			return
 
