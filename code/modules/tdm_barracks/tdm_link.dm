@@ -70,6 +70,11 @@ var/global/datum/tdm_link/tdm_link = new
 	var/list/peer = shard_group.peers[barracks_id]
 	if(!peer)
 		return FALSE
+	// A frozen world holds a connection until it thaws, and world.Export would
+	// hold this world with it. The group config keeps both worlds awake
+	// (freeze_idle_minutes); this guards a host that does not.
+	if(peer["state"] in list("ASLEEP", "COLD", "STOPPED"))
+		return FALSE
 	var/answer = null
 	try
 		answer = world.Export("byond://[shard_group.peer_address(peer)]?tdm_report=1&kind=[url_encode(kind)]&token=[url_encode(token)]&data=[url_encode(json_encode(data))]&format=json")

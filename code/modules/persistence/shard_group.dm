@@ -170,6 +170,11 @@ var/global/datum/shard_group/shard_group = new
 	// Launch offices ask before founding a station (space/orbit_world.dm).
 	if(kind == "ORBIT")
 		.["free_planes"] = length(orbit_free_planes())
+	// The host tool and launcher show what the TDM battle is doing (tdm_barracks).
+	if(kind == "BATTLE" && tdm_battle_active())
+		.["battle_phase"] = tdm_battle.phase()
+	if(kind == "BARRACKS" && tdm_barracks_active())
+		.["battle_phase"] = tdm_barracks.status_fresh() ? tdm_barracks.status["phase"] : null
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
