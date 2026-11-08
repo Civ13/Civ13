@@ -484,6 +484,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fluid_bottler" = "automation",
 		"/obj/structure/fluid_vessel/fast" = "automation",
 		"/obj/item/camera" = "automation",
+		"/obj/item/tape_recorder" = "automation",
+		"/obj/item/cassette" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
 		"/obj/structure/factory_arm/sorting" = "automation",
