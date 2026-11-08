@@ -37,6 +37,7 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   | `spawn` | `spawn_atom`, `delete_atom` |
   | `characters` | `character_spawn`, `character_list`, `character_observe`, `character_act`, `character_queue`, `character_release` |
   | `visits` | `visit_status`, `visit_order`, `visit_start` |
+  | `ooc` | the `ooc` character action (with `characters`) |
   | `*` | everything |
 
 - **Audit.** Every mutating action is written to the admin log as
@@ -154,10 +155,17 @@ and `resist`. Crafting goes through the stack's own recipe handler, so costs,
 tools and research gates apply. Click, use and craft can start timed work; a
 direct call returns at once and the work continues in the game, while a queued
 step waits for it. Actions run with `usr` set to the character.
+`ooc` (`text`, needs the `ooc` scope too) says one line in OOC chat as
+"<character name> (AI)": every player with OOC on sees it, it goes to Discord
+like a player's line, and in a region group to the other regions. It fails with
+`ooc_closed` while OOC is muted. The autopilot never uses it; send it by hand, for
+example `python tools/agent-control/civ13_agent.py call character_act
+'{"character": "<ref>", "do": "ooc", "text": "OOC test from Ada"}'`.
+
 A direct `character_act` that is still cooling down fails with `cooldown` and
 the ticks to wait. Cooldowns are the character's movement delay, the mob's own
-click cooldowns (`next_move`, `next_click`) and one second between `say` or
-`emote`.
+click cooldowns (`next_move`, `next_click`) and one second between `say`,
+`emote` or `ooc`.
 
 `character_queue` takes a plan of up to 32 `actions` (64 pending per
 character), each shaped like `character_act` arguments, plus

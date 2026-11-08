@@ -37,7 +37,7 @@ var/global/region_ooc_next_poll = 0
 // Queues one OOC line said here for the other regions. msg is the sanitized
 // text before mention highlighting; each region highlights its own clients.
 /proc/region_ooc_outbound(client/speaker, msg, style)
-	if (!speaker || !istext(msg) || !length(msg) || !region_ooc_enabled())
+	if (!speaker)
 		return FALSE
 	var/rank = ""
 	var/fakekey = ""
@@ -47,9 +47,34 @@ var/global/region_ooc_next_poll = 0
 			fakekey = "[holder.fakekey]"
 		else
 			rank = "[holder.OOC_rank()]"
-	region_ooc_outbound_queue += list(list("name" = speaker.key, "ckey" = speaker.ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey, "posted" = webhook_enabled()))
+	return region_ooc_outbound_line(speaker.key, speaker.ckey, msg, style, rank, fakekey)
+
+/proc/region_ooc_outbound_line(name, speaker_ckey, msg, style, rank = "", fakekey = "")
+	if (!istext(name) || !length(name) || !istext(msg) || !length(msg) || !region_ooc_enabled())
+		return FALSE
+	region_ooc_outbound_queue += list(list("name" = name, "ckey" = speaker_ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey, "posted" = webhook_enabled()))
 	if (region_ooc_outbound_queue.len > REGION_OOC_QUEUE_LIMIT)
 		region_ooc_outbound_queue.Cut(1, 2)
+	return TRUE
+
+// An OOC line from a server agent's character (agent control, scope ooc): shown
+// here, posted to Discord like a player's line and sent to the other regions, so
+// an agent can check the whole OOC path (Val, 2026-11-08). name is shown as is.
+/proc/agent_ooc_say(name, speaker_ckey, msg)
+	if (!config.ooc_allowed)
+		return FALSE
+	name = sanitize(copytext_char(name, 1, 46), 0)
+	msg = sanitize(msg)
+	if (!name || !msg)
+		return FALSE
+	log_ooc("[name] : [msg]")
+	webhook_send_ooc(speaker_ckey, "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[name]:** [msg]")
+	discord_log("[name]:", "[msg]")
+	var/shown = ooc_ping_clients(msg)
+	for (var/client/target in clients)
+		if (target.is_preference_enabled(/datum/client_preference/show_ooc))
+			to_chat(target, "<span class='ooc'><span class='everyone'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[name]:</EM> <span class='message'>[shown]</span></span></span>")
+	region_ooc_outbound_line(name, speaker_ckey, msg, "everyone")
 	return TRUE
 
 // Hands one Discord message, already sanitized, on to the other regions.
