@@ -129,32 +129,41 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 
 - **The launch complex office** (40 steel, Orbital Flight) is a project like
   the party train. Built within 3 tiles of a launch pad approved for an orbit
-  region, from 1969, a party starts it and delivers 150 steel, 40 glass, 40
+  region, from 1969, a party starts it and delivers 180 steel, 40 glass, 40
   copper and 60 electronics. One project per party. Members then fly up from
   the office; it refuses when orbit has no free plane, unless the party has
   already flown up.
 - **The station** is founded by the first member to arrive: it claims a free
-  plane (owner `station:<party>`) and builds, in the middle, an orbital
-  workshop with two bunks, a heater, scrubber and radiator, docked to an
-  airlock. A cable run goes out through the airlock to two fixed solar wings
-  (switched on) and a fuelled fuel cell (off, for the shade). A crate holds
-  two pressure suits and helmets, two air tanks, two hull patch kits, a suit
-  patch, two tethers, cable, six rations and three canteens. Later members
-  arrive at the return capsule hatch. If no plane is free, they arrive at the
-  orbit's arrival point.
+  plane (owner `station:<party>`) and builds the starter layout in the middle:
+  a hub with arms and a keel. The hub holds the heater, scrubber and radiator
+  in its corners, so with the hatches open it serves every arm one hop away,
+  and its doorway tiles stay clear. The workshop arm holds a bench, the orbit
+  console, the return capsule hatch and a crate with two pressure suits and
+  helmets, two air tanks, two hull patch kits, a suit patch, two tethers,
+  cable, two sorbent cartridges, six rations and three canteens. The airlock
+  arm points south; outside its outer hatch a truss keel carries the cable
+  spine, a cross boom with a solar wing at each end, a fuelled fuel cell (off,
+  for the shade) and the reboost thruster at the aft end. Every piece of
+  outside hardware stands on or beside the truss, so a suited crew member
+  reaches it hand over hand without drifting.
+- **In 1969** the hub is the workshop itself (the machines take its top row,
+  the bench stands beside the core), quarters with two bunks dock east, the
+  wings are fixed and the thruster holds three burns.
+- **From 2013** the hub is a node module whose deck hatch is ready for a
+  second deck, with the workshop east, a greenhouse west, quarters north and
+  the airlock south. Tracking solar arrays replace the fixed wings, a
+  radioisotope generator joins the keel, the thruster holds six burns and the
+  crate adds a node module kit. The deliveries are the same.
 - **The return capsule hatch** takes members home to their office, like a
   train berth. The station is the plane its party owns in the plane registry;
-  members keep their party in orbit as they do in the rail yard.
+  members keep their party in orbit as they do in the rail yard. Later members
+  arrive at the hatch; if no plane is free, they arrive at the orbit's arrival
+  point.
 - **The orbit console** (20 electronics, Orbital Flight) shows the owner, the
   orbital day and each module's pressure, temperature and breaches, and
   recovers lost drifters: anyone stuck at an unlinked plane edge is reeled in
   beside it after 10 seconds. A console on a station plane only lets that
   party recover.
-- **From 2013** the station is founded with the 2013 layout: a node module
-  docked east of the workshop (its deck hatch ready for a second deck) and a
-  greenhouse to the west, two tracking solar arrays in place of the fixed
-  wings, a radioisotope generator at the foot of the cable run, six reboost
-  burns and a node module kit in the crate. The deliveries are the same.
 - The 2026 layout comes with stage D.
 
 ## 2013 hardware
