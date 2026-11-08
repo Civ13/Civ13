@@ -16,7 +16,7 @@
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
 	M.shock_stage = max(0,M.shock_stage-removed)
-	M.adjust_mood(removed*10)
+	M.adjust_mood(removed*10, "adrenaline")
 	M.SetParalysis(0)
 	M.SetWeakened(0)
 
@@ -155,7 +155,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 
 /datum/reagent/tramadol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 80)
-	M.adjust_mood(removed*6)
+	M.adjust_mood(removed*6, "painkillers")
 /datum/reagent/tramadol/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
@@ -434,7 +434,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
 			to_chat(M, "<span class='notice'>Your mind feels stable... a little stable.</span>")
-	M.adjust_mood(removed*40)
+	M.adjust_mood(removed*40, "antidepressants")
 
 /datum/reagent/paroxetine
 	name = "Paroxetine"
@@ -457,7 +457,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 			else
 				to_chat(M, "<span class='warning'>Your mind breaks apart...</span>")
 				M.hallucination += 200
-	M.adjust_mood(removed*50)
+	M.adjust_mood(removed*50, "antidepressants")
 
 /datum/reagent/opium
 	name = "Opium"
@@ -472,7 +472,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 /datum/reagent/opium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 100)
 	M.addictions["opium"] += 0.1
-	M.adjust_mood(removed*30)
+	M.adjust_mood(removed*30, "opium")
 /datum/reagent/opium/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
@@ -493,7 +493,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 	M.addictions["cocaine"] += 0.12
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
-	M.adjust_mood(removed*30)
+	M.adjust_mood(removed*30, "cocaine")
 
 /datum/reagent/cocaine/overdose(var/mob/living/human/M, var/alien)
 	..()
@@ -520,7 +520,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 	M.make_jittery(5)
 	M.make_dizzy(10)
 	M.apply_effect(3, STUTTER, FALSE)
-	M.adjust_mood(removed*30)
+	M.adjust_mood(removed*30, "cocaine")
 
 /datum/reagent/crack/overdose(var/mob/living/human/M, var/alien, var/removed)
 	..()
@@ -529,7 +529,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 	M.add_chemical_effect(CE_PULSE, 6)
 	M.hallucination = max(M.hallucination, 3)
 	M.apply_effect(3, STUTTER, FALSE)
-	M.adjust_mood(-(30))
+	M.adjust_mood(-(30), "a cocaine overdose")
 
 /datum/reagent/pervitin
 	name = "Methamphetamine"
@@ -546,7 +546,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 		M.emote(pick("twitch", "blink_r", "shiver"))
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 	M.add_chemical_effect(CE_PULSE, 2)
-	M.adjust_mood(removed*20)
+	M.adjust_mood(removed*20, "methamphetamine")
 
 /datum/reagent/morphine
 	name = "Morphine"
@@ -560,7 +560,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 
 /datum/reagent/morphine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
-	M.adjust_mood(removed*30)
+	M.adjust_mood(removed*30, "painkillers")
 /datum/reagent/morphine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
@@ -680,7 +680,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague")
 	M.addictions["cocaine"] += 0.50
 	M.add_chemical_effect(CE_SPEEDBOOST, 12)
 	M.add_chemical_effect(CE_PULSE, 9)
-	M.adjust_mood(removed*100)
+	M.adjust_mood(removed*100, "a strange powder")
 
 /datum/reagent/sterilizine
 	name = "Sterilizine"

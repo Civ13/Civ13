@@ -79,10 +79,10 @@
 				if (2) // EUREKA!
 					if (exp_skills_list[I] in list ("strength", "dexterity", "stamina"))
 						src.adaptStat(exp_skills_list[I],this_exp) //no boost for physical stats
-						src.adjust_mood(this_exp * change_mood_coefficient / 5) //mood busted as usual too
+						src.adjust_mood(this_exp * change_mood_coefficient / 5, "learning new skills") //mood busted as usual too
 						continue
 					src.adaptStat(exp_skills_list[I],this_exp*20) //20 times more than usual. EUREKA!
-					src.adjust_mood(this_exp * change_mood_coefficient * 2) //10 times more than usual
+					src.adjust_mood(this_exp * change_mood_coefficient * 2, "learning new skills") //10 times more than usual
 					if(!no_msg)
 						if (exp_skills_list[I] in list ("crafting", "swords", "bows", "farming", "throwing", "magic", "philosophy"))
 							to_chat(src, "<span class='good'>EUREKA!</span> <span class='notice'>You have learned much more about [exp_skills_list[I]].</span>")
@@ -93,10 +93,10 @@
 				if (1) // breaktrough
 					if (exp_skills_list[I] in list ("strength", "dexterity", "stamina"))
 						src.adaptStat(exp_skills_list[I],this_exp) //no boost for physical stats
-						src.adjust_mood(this_exp * change_mood_coefficient / 5) //mood busted as usual too
+						src.adjust_mood(this_exp * change_mood_coefficient / 5, "learning new skills") //mood busted as usual too
 						continue
 					src.adaptStat(exp_skills_list[I],this_exp*3) //3 times more than usual.
-					src.adjust_mood(this_exp * change_mood_coefficient / 5 * 2) //2 times more than usual
+					src.adjust_mood(this_exp * change_mood_coefficient / 5 * 2, "learning new skills") //2 times more than usual
 					if(!no_msg)
 						if (exp_skills_list[I] in list ("crafting", "swords", "bows", "farming", "throwing", "magic", "philosophy"))
 							to_chat(src, "<span class='notice'>You learned little more about [exp_skills_list[I]].</span>")
@@ -106,13 +106,13 @@
 							to_chat(src, "<span class='notice'>You learned little more about medicine.</span>")
 				if (-1) // fail
 					src.adaptStat(exp_skills_list[I],this_exp/2) //small mood decreasing, 1/2 exp gain
-					src.adjust_mood(-(this_exp * change_mood_coefficient / 5))
+					src.adjust_mood(-(this_exp * change_mood_coefficient / 5), "failed work")
 				if (-2) // EPIC fail
 					if (exp_skills_list[I] in list ("strength", "dexterity", "stamina"))
-						src.adjust_mood(-(this_exp * change_mood_coefficient / 5)) //small mood decreasing for physical stats
+						src.adjust_mood(-(this_exp * change_mood_coefficient / 5), "failed work") //small mood decreasing for physical stats
 						continue
 					src.adaptStat(exp_skills_list[I],-this_exp*3) //3 times skill anti-boost
-					src.adjust_mood(-(this_exp * change_mood_coefficient / 5 * 5)) //5x mood decreasing for intellectual skills
+					src.adjust_mood(-(this_exp * change_mood_coefficient / 5 * 5), "failed work") //5x mood decreasing for intellectual skills
 					if(!no_msg)
 						if (exp_skills_list[I] in list ("crafting", "swords", "bows", "farming", "throwing", "magic", "philosophy"))
 							to_chat(src, "<span class='notice'>You've lost a bit of [exp_skills_list[I]] skill.</span>")
@@ -122,7 +122,7 @@
 							to_chat(src, "<span class='notice'>You've lost a bit of medicine skill.</span>")
 				else // all as usual
 					src.adaptStat(exp_skills_list[I],this_exp)
-					src.adjust_mood(this_exp * change_mood_coefficient / 5) //small happiness boost, when succeeded (1*coefficient for each 10 seconds of work)
+					src.adjust_mood(this_exp * change_mood_coefficient / 5, "learning new skills") //small happiness boost, when succeeded (1*coefficient for each 10 seconds of work)
 	return result
 
 //TO DO TODO: make this procedure global using
@@ -164,8 +164,8 @@
 			"<span class='notice'>Somebody dismantling something.</span>")
 		if (do_after(H, I , src))
 			H.stats["stamina"][1] -= I*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*0.15
-			H.adjust_mood(-(I*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.15))
-			H.adjust_mood(-(I*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.85))
+			H.adjust_mood(-(I*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.15), "hard work")
+			H.adjust_mood(-(I*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.85), "hard work")
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] dismantled \the [src].</span>",
 				"<span class='notice'>You dismantle \the [src].</span>",
@@ -222,8 +222,8 @@
 			if (newamount < this_production.amount)
 				to_chat(current_user, "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name].</span>")
 				this_production.amount = newamount
-		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67))
-		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33))
+		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67), "hard work")
+		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33), "hard work")
 		current_user.stats["stamina"][1] -= work_time_amount*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*0.33
 	current_work = null
 	current_material = null
@@ -275,14 +275,14 @@
 					"<span class='notice'>You see how [H.name] sighs and pulls [W.name] out of [src.name], stopping work.</span>",
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are a little upset.</span>",
 					"<span class='notice'>You hear an irritated murmur. The sounds of \the [src.name] gone.</span>")
-				H.adjust_mood(-(2))
+				H.adjust_mood(-(2), "interrupted work")
 			if (51 to 75) //25% nervously
 				H.visible_message(
 					"<span class='notice'>You see how [H.name] nervously plucks [W.name] from \the [src.name], stopping work.</span>",
 					"<span class='notice'>You nervously pluck \the [W.name] from \the [src.name], stopping work. You are a some upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				H.emote("sigh")
-				H.adjust_mood(-(4))
+				H.adjust_mood(-(4), "interrupted work")
 			if (76 to 90) //15% losing some material
 				H.visible_message(
 					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>",
@@ -291,7 +291,7 @@
 				W.amount = round(W.amount/2 + W.amount/10*rand(1,10))
 				to_chat(H, "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>")
 				H.emote("cry")
-				H.adjust_mood(-(8))
+				H.adjust_mood(-(8), "interrupted work")
 				if (prob(33)) //5% to lose or gain some skill
 					if (prob(80)) //4% to gain
 						to_chat(H, "<span class='notice'>You learned a little more about the craft.</span>")
@@ -314,7 +314,7 @@
 				W.amount = 0
 				qdel(W)
 				H.emote("scream")
-				H.adjust_mood(-(16))
+				H.adjust_mood(-(16), "interrupted work")
 		qdel(current_work)
 		current_work = null
 		current_material = null
@@ -477,7 +477,7 @@
 				total_work += 10
 				workers_work[work_index] = total_work
 				H.stats["stamina"] -= STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*10
-				H.adjust_mood(-(MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*10))
+				H.adjust_mood(-(MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*10), "hard work")
 			else
 				some_work_done = TRUE
 				break
@@ -2445,8 +2445,8 @@
 			if (newamount < this_production.amount)
 				to_chat(current_user, "<span class='bad'>You produced [this_production.amount - newamount] less [this_production.name] due epic fail.</span>")
 				this_production.amount = newamount
-		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67))
-		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33))
+		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_MENTAL_WORK*0.67), "hard work")
+		current_user.adjust_mood(-(work_time_amount*MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*0.33), "hard work")
 		current_user.stats["stamina"][1] -= work_time_amount*STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*0.33
 	current_work = null
 	current_material = null
@@ -2519,14 +2519,14 @@
 					"<span class='notice'>You see how [H.name] sighs and pulls [W.name] out of [src.name], stopping work.</span>",
 					"<span class='notice'>You pull \the [W.name] from \the [src.name], stopping work. You are a little upset.</span>",
 					"<span class='notice'>You hear an irritated murmur. The sounds of \the [src.name] gone.</span>")
-				H.adjust_mood(-(2))
+				H.adjust_mood(-(2), "interrupted work")
 			if (51 to 75) //25% nervously
 				H.visible_message(
 					"<span class='notice'>You see how [H.name] nervously plucks [W.name] from \the [src.name], stopping work.</span>",
 					"<span class='notice'>You nervously pluck \the [W.name] from \the [src.name], stopping work. You are a some upset.</span>",
 					"<span class='notice'>The sounds of \the [src.name] gone.</span>")
 				H.emote("sigh")
-				H.adjust_mood(-(4))
+				H.adjust_mood(-(4), "interrupted work")
 			if (76 to 90) //15% losing some material
 				H.visible_message(
 					"<span class='notice'>You see how [H.name] plucks [W.name] from \the [src.name], stopping work and losing some [W.name].</span>",
@@ -2535,7 +2535,7 @@
 				W.amount = round(W.amount/2 + W.amount/10*rand(1,10))
 				to_chat(H, "<span class='bad'>You lose [current_work.amount - W.amount] [W.name]].</span>")
 				H.emote("cry")
-				H.adjust_mood(-(8))
+				H.adjust_mood(-(8), "interrupted work")
 				if (prob(33)) //5% to lose or gain some skill
 					if (prob(80)) //4% to gain
 						to_chat(H, "<span class='notice'>You learned a little more about the craft.</span>")
@@ -2558,7 +2558,7 @@
 				W.amount = 0
 				qdel(W)
 				H.emote("scream")
-				H.adjust_mood(-(16))
+				H.adjust_mood(-(16), "interrupted work")
 		qdel(current_work)
 		current_work = null
 		current_material = null

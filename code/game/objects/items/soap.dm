@@ -80,7 +80,7 @@
 					else
 						S.update_icon()
 					if((world.time - src.soap_cooldown >= S.mood_boost_wait) || !soap_cooldown)
-						src.adjust_mood(10) //Same mood boost as eating a delicious food
+						src.adjust_mood(10, "a good wash") //Same mood boost as eating a delicious food
 						to_chat(src, "You really enjoy bathing with the [W.name]. You feel much better!")
 						src.soap_cooldown = world.time
 					else

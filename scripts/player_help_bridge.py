@@ -532,8 +532,9 @@ def mood_knowledge(root):
         'code/game/mob/living/carbon/human/human_needs.dm': (
             '/mob/living/human/proc/print_mood()', '/mob/living/human/proc/handle_mood()',
             '/mob/living/human/proc/handle_hygiene()', 'mood_modifier = 1',
-            '/mob/living/human/proc/set_mood(amount)', 'if (sleeping > 0 && amount < mood)',
-            '/mob/living/human/proc/adjust_mood(amount)', 'return set_mood(mood + amount)', 'adjust_mood(-(0.01))', 'adjust_mood(-(0.02))'),
+            '/mob/living/human/proc/set_mood(amount, cause = null)', 'if (sleeping > 0 && amount < mood)',
+            '/mob/living/human/proc/adjust_mood(amount, cause = null)', 'return set_mood(mood + amount, cause)',
+            'adjust_mood(-(0.01), "being dirty")', 'adjust_mood(-(0.02), "fleas")', '/mob/living/human/proc/print_mood_causes()'),
         'code/game/mob/living/carbon/human/human_stats.dm': (
             '/mob/living/human/proc/getStat(statname)', 'return stats[lowertext(statname)][1]*mood_modifier'),
     }
@@ -554,6 +555,8 @@ def mood_knowledge(root):
              'sha256': hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest(),
              'text': ('REVIEWED CURRENT GAMEPLAY CODE - GENERAL MOOD MECHANICS: '
                       'A human character can view a mood category by clicking the mood HUD. '
+                      'The same click lists the recent causes that lifted or lowered their mood, '
+                      'and chat messages note when a cause starts or stops affecting mood. '
                       'Mood naturally moves toward the neutral range over time while awake. '
                       'Mood cannot decrease while actually asleep; positive mood changes still apply. '
                       'Resting or lying awake does not pause mood loss. Hygiene can affect mood, '
