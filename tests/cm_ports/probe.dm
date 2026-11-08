@@ -57,6 +57,7 @@ var/probe_runtime_error = FALSE
 	canopy_checks()
 	holiday_checks()
 	second_batch_checks()
+	third_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -251,3 +252,72 @@ var/probe_runtime_error = FALSE
 		links++
 		pos = findtext(html, "emote=", pos + 1)
 	probe_check(links == acts.len && !("point" in acts) && !("custom" in acts), "the panel lists every simple emote and no targeted ones")
+
+/proc/third_batch_checks()
+	// Bipod
+	var/mob/living/human/gunner = probe_human(3, 5, "Gunner")
+	var/obj/item/weapon/gun/projectile/submachinegun/m16/ar15/R = new(gunner.loc)
+	gunner.put_in_hands(R)
+	var/obj/item/weapon/attachment/under/bipod/B = new(gunner.loc)
+	probe_check(R.configuration_compatible(B), "a bipod fits a rifle's underbarrel rail")
+	probe_check(R.install_configuration(B, null, TRUE) && R.has_bipod(), "a bipod can be fitted")
+	gunner.dir = NORTH
+	gunner.last_movement = -1
+	probe_check(!R.bipod_braced(gunner), "standing in the open the bipod does nothing")
+	probe_check(R.bipod_recoil_mult(gunner) == 1, "no recoil change unbraced")
+	gunner.prone = TRUE
+	probe_check(R.bipod_braced(gunner), "lying prone braces the bipod")
+	probe_check(R.bipod_recoil_mult(gunner) < 1 && R.bipod_accuracy_mult(gunner) < 1, "a braced bipod cuts recoil and spread")
+	gunner.last_movement = world.time
+	probe_check(!R.bipod_braced(gunner), "moving unbraces the bipod")
+	gunner.prone = FALSE
+	gunner.last_movement = -1
+	var/turf/front = locate(3, 6, 1)
+	front.density = TRUE
+	probe_check(R.bipod_braced(gunner), "a wall ahead braces the bipod")
+	gunner.dir = SOUTH
+	probe_check(!R.bipod_braced(gunner), "facing away from the wall does not")
+	front.density = FALSE
+	var/obj/item/weapon/gun/projectile/submachinegun/m16/ar15/plain = new(locate(4, 5, 1))
+	probe_check(!plain.bipod_braced(gunner), "a gun without a bipod is never braced")
+
+	// Ammo count
+	probe_check(R.ammo_count_text() == "empty", "an empty gun counts as empty")
+
+	// Floor exercise
+	var/mob/living/human/athlete = probe_human(6, 5, "Athlete")
+	athlete.stats["strength"] = list(100, 100)
+	probe_check(!athlete.floor_exercise_ready("push-ups"), "floor exercise stops at 100")
+	athlete.stats["strength"] = list(40, 40)
+	athlete.stats["stamina"] = list(40, 40)
+	athlete.exercise_fatigue = 0
+	probe_check(athlete.floor_exercise_ready("push-ups") && athlete.floor_exercise_ready("sit-ups"), "a fresh athlete can exercise on the floor")
+	probe_check(floor_exercise_skill("push-ups") == "strength" && floor_exercise_skill("sit-ups") == "stamina", "push-ups train strength and sit-ups stamina")
+	athlete.exercise_fatigue = 6
+	probe_check(!athlete.floor_exercise_ready("sit-ups"), "fatigue blocks floor exercise")
+	probe_check(athlete.persistence_runtime_var("floor_exercise_busy"), "an exercise in progress is not saved")
+
+	// Lockbox
+	var/mob/living/human/owner = probe_human(8, 5, "Owner")
+	var/obj/item/weapon/storage/lockbox/LB = new(owner.loc)
+	var/obj/item/weapon/key/K = new(owner.loc)
+	K.code = 777
+	var/obj/item/weapon/key/wrong = new(owner.loc)
+	wrong.code = 778
+	var/obj/item/weapon/coin = new /obj/item/weapon/whistle(owner.loc)
+	probe_check(LB.can_be_inserted(coin, TRUE), "an unlocked lockbox takes small items")
+	LB.attackby(K, owner)
+	probe_check(LB.locked && LB.custom_code == 777 && LB.icon_state == "lockbox_locked", "the first key locks it and becomes its key")
+	probe_check(!LB.can_be_inserted(coin, TRUE), "a locked lockbox takes nothing")
+	LB.attackby(wrong, owner)
+	probe_check(LB.locked, "the wrong key does nothing")
+	LB.attackby(K, owner)
+	probe_check(!LB.locked && LB.icon_state == "lockbox", "its key unlocks it")
+	LB.attackby(K, owner)
+	owner.a_intent = I_HARM
+	var/obj/item/weapon/hammer = new /obj/item/weapon/whistle(owner.loc)
+	hammer.force = 15
+	for (var/i = 1 to 4)
+		LB.attackby(hammer, owner)
+	probe_check(LB.broken && !LB.locked && LB.icon_state == "lockbox_broken", "four heavy blows beat the lock off")
+	probe_check(LB.can_be_inserted(coin, TRUE), "a broken lockbox opens freely")

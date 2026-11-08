@@ -3,11 +3,16 @@
     python3 tools/tdm_barracks/build_map.py            # write the map
     python3 tools/tdm_barracks/build_map.py --check    # fail if the map is stale
 
-The layout follows the design in docs/tdm-barracks.md: 100 x 80 tiles on one
-level, an indestructible outer ring two tiles thick, and four rows of zones
-(ranges; practice yards; the barracks building; social rooms and the parade
-ground) joined by two east-west corridors. Coordinates are BYOND tiles
-(x east, y north, 1-based). Edit this file, not the .dmm.
+The layout follows the design in docs/tdm-barracks.md: three levels of 100 x 80
+tiles, each inside an indestructible outer ring two tiles thick.
+
+1. The Barracks: four rows of zones (ranges; practice yards; the barracks
+   building; social rooms and the football pitch) joined by two corridors.
+2. The annex, up the stairs in the arrival hall: the Red and Blue faction
+   conference rooms and a joint briefing room, a race circuit and an airfield.
+3. Open sky over the annex, where planes fly.
+
+Coordinates are BYOND tiles (x east, y north, 1-based). Edit this file, not the .dmm.
 """
 import argparse
 import itertools
@@ -29,6 +34,13 @@ COMBAT = '/area/caribbean/barracks/combat'
 RED = '/area/caribbean/barracks/combat/team1'
 BLUE = '/area/caribbean/barracks/combat/team2'
 ADMIN = '/area/caribbean/admin'
+ANNEX = '/area/caribbean/barracks/annex'
+BRIEFING = '/area/caribbean/barracks/annex/briefing'
+RED_ROOM = '/area/caribbean/barracks/annex/faction_room/red'
+BLUE_ROOM = '/area/caribbean/barracks/annex/faction_room/blue'
+TRACK = '/area/caribbean/barracks/annex/track'
+AIRFIELD = '/area/caribbean/barracks/annex/airfield'
+SKY_AREA = '/area/caribbean/barracks/annex/sky'
 PITCH = '/area/caribbean/barracks/pitch'
 
 CONCRETE = '/turf/floor/plating/concrete'
@@ -45,6 +57,8 @@ MUD = '/turf/floor/dirt/flooded'
 GRAVEL = '/turf/floor/gravel'
 SAND = '/turf/floor/beach/sand'
 TRENCH = '/turf/floor/trench'
+LAWN = '/turf/floor/grass'
+SKY = '/turf/sky/building'
 GRASS = '/turf/floor/grass{name = "pitch"}'
 
 DOOR = '/obj/structure/simple_door/key_door/anyone/wood'
@@ -84,13 +98,13 @@ def sign(name, desc=None, kind=SIGN):
 
 
 class Grid:
-    def __init__(self):
+    def __init__(self, turf=RING, area=NOPASS):
         self.turf = {}
         self.area = {}
         self.objs = {}
         for x, y in itertools.product(range(1, W + 1), range(1, H + 1)):
-            self.turf[x, y] = RING
-            self.area[x, y] = NOPASS
+            self.turf[x, y] = turf
+            self.area[x, y] = area
             self.objs[x, y] = []
 
     def fill(self, x1, y1, x2, y2, turf=None, area=None):
@@ -433,28 +447,393 @@ def build():
         g.put(x, y, STREETLIGHT)
     g.put(76, 18, sign('Football pitch', 'Take football boots and a jersey from a locker; only boots can kick. Walk into the ball to dribble, click a tile to pass or shoot. Red defends the west goal, Blue the east.', PLAQUE))
 
+    # Stairs up to the annex
+    g.put(ANNEX_STAIRS[0], ANNEX_STAIRS[1], '/obj/structure/multiz/ladder/ww2/stairsup{ladder_id = "%s"; area_id = "%s"}' % (STAIRS_AREA_ID, STAIRS_AREA_ID))
+    g.put(ANNEX_STAIRS[0] + 1, ANNEX_STAIRS[1], sign('Annex stairs', 'Upstairs: the race circuit, the airfield and the faction conference rooms.'))
+
     # The map's metadata object sits in the arrival hall.
     g.put(38, 26, '/obj/map_metadata/tdm_barracks')
     return g
 
 
-def render(g):
+ANNEX_STAIRS = (57, 28)
+STAIRS_AREA_ID = 'barracks_annex'
+
+COORD_ROOM = '/area/caribbean/barracks/annex/faction_room/coordinator'
+FACTION_DOOR = '/obj/structure/simple_door/key_door/faction_door/barracks/'
+OFFICE_CHAIR = '/obj/structure/bed/chair/office/dark/anchored'
+WINDOW = '/obj/structure/window/classic/reinforced'
+RUNWAY = '/obj/covers/roads/modern/runway'
+TIRES = '/obj/structure/barricade/tires'
+CENTRAL = '/obj/structure/sign/traffic/central'
+SIDE = '/obj/structure/sign/traffic/side'
+ZEBRA = '/obj/structure/sign/traffic/zebracrossing'
+PARKING = '/obj/structure/sign/traffic/parking'
+SMALL_WHITE = '/obj/structure/lamp/lamp_small/alwayson/white'
+SMALL_RED = '/obj/structure/lamp/lamp_small/alwayson/red'
+JERRYCAN = '/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/gasoline'
+TIMING = '/obj/effect/step_trigger/barracks_timing'
+BAY = '/obj/structure/barracks/vehicle_bay'
+PAPER = '/obj/item/weapon/paper'
+PEN = '/obj/item/weapon/pen'
+TOOLS = ('/obj/item/weapon/storage/toolbox', '/obj/item/weapon/wrench', '/obj/item/weapon/weldingtool')
+
+
+def timing(track, role):
+    return '%s{track = "%s"; role = "%s"}' % (TIMING, track, role)
+
+
+def window(g, x, y, floor, area):
+    """Open a wall tile and glaze it."""
+    g.fill(x, y, x, y, floor, area)
+    g.objs[x, y] = [WINDOW]
+
+
+def conference_room(g, side):
+    """The Red room as designed; Blue is its mirror image (x' = 101 - x)."""
+    red = side == 'red'
+    m = (lambda x: x) if red else (lambda x: 101 - x)
+    floor = REDCARPET if red else BLUECARPET
+    area = RED_ROOM if red else BLUE_ROOM
+    name = 'Red' if red else 'Blue'
+    door = FACTION_DOOR + side
+    x1, x2 = sorted((m(3), m(28)))
+    g.room(x1, 3, x2, 21, floor, area)
+    a, b = sorted((m(14), m(15)))
+    g.door(a, 22, b, 23, floor, ANNEX, door)
+    # A second door straight onto the briefing floor (the door sits on the room side).
+    g.door(min(m(29), m(30)), 10, max(m(29), m(30)), 11, floor, BRIEFING, None, across=True)
+    for y in (10, 11):
+        g.objs[m(29), y] = [door]
+    for x in range(9, 23):
+        g.put(m(x), 11, WOODTABLE)
+        g.put(m(x), 12, WOODTABLE)
+        g.put(m(x), 10, OFFICE_CHAIR + '{dir = 1}')
+        g.put(m(x), 13, OFFICE_CHAIR)
+    g.put(m(8), 11, OFFICE_CHAIR + '{dir = %d}' % (4 if red else 8))
+    g.put(m(23), 12, OFFICE_CHAIR + '{dir = %d}' % (8 if red else 4))
+    poster = '/obj/structure/poster/faction/%s/' % side
+    g.put(m(3), 21, '/obj/structure/flag/pole/custom')
+    g.put(m(6), 21, poster + 'mil1')
+    g.put(m(10), 21, '/obj/structure/barracks/status_board')
+    g.put(m(13), 21, '/obj/structure/sign/map')
+    g.put(m(16), 21, '/obj/structure/barracks/orders_board/' + side)
+    g.put(m(19), 21, '/obj/structure/noticeboard')
+    g.put(m(23), 21, poster + 'mil2')
+    g.put(m(28), 21, '/obj/structure/flag/pole/custom')
+    g.put(m(15), 19, TABLE)
+    g.put(m(15), 20, OFFICE_CHAIR)
+    for x in (5, 6, 7):
+        for y in (16, 17):
+            g.put(m(x), y, TABLE)
+    g.put(m(6), 16, PAPER, PAPER, PAPER, PAPER, PEN, PEN)
+    for x, y, d in ((4, 16, 4), (4, 17, 4), (8, 16, 8), (8, 17, 8)):
+        g.put(m(x), y, OFFICE_CHAIR + '{dir = %d}' % (d if red else 12 - d))
+    banner = '/obj/structure/banner/faction/team/' + ('team1' if red else 'team2')
+    g.put(m(4), 20, banner)
+    g.put(m(27), 20, banner)
+    for x in (24, 25, 26):
+        g.put(m(x), 5, '/obj/structure/bed/chair/comfy/fancy_sofa')
+    g.put(m(25), 7, WOODTABLE)
+    g.put(m(27), 4, '/obj/structure/chemical_dispenser/coffee')
+    g.put(m(28), 3, LANTERN)
+    g.put(m(3), 4, '/obj/structure/closet/cabinet')
+    g.put(m(4), 4, '/obj/structure/closet/cabinet')
+    g.put(m(6), 4, RACK)
+    g.put(m(7), 4, RACK)
+    g.put(m(4), 21, sign('%s conference room' % name, 'For the %s faction on event days. The doors open for the %s roster, coordinators and admins. Orders are on the board; the roster is kept in the briefing room.' % (name, name), PLAQUE))
+    for x, y in ((3, 3), (9, 21), (22, 21)):
+        g.put(m(x), y, LAMP)
+
+
+def build_annex():
+    g = Grid()
+    g.wall(3, 3, 98, 78, ANNEX)
+
+    # ---- conference wing (y 3-21) ----------------------------------------
+    g.room(31, 3, 70, 21, TILED, BRIEFING)
+    conference_room(g, 'red')
+    conference_room(g, 'blue')
+
+    # Briefing room and the coordinators' office in its north-east corner
+    g.fill(43, 18, 58, 20, MARBLE)
+    g.fill(49, 3, 52, 17, REDCARPET)
+    g.door(50, 22, 51, 23, TILED, ANNEX)
+    g.wall(61, 14, 70, 14, BRIEFING)
+    g.wall(61, 15, 61, 21, BRIEFING)
+    g.fill(62, 15, 70, 21, DARK, COORD_ROOM)
+    g.door(61, 17, 61, 18, DARK, BRIEFING, FACTION_DOOR + 'coordinator', across=True)
+    for x in (63, 65, 67, 69):
+        window(g, x, 14, DARK, COORD_ROOM)
+    g.put(51, 19, TABLE)
+    g.put(51, 20, OFFICE_CHAIR)
+    g.put(45, 19, '/obj/structure/bell_stand')
+    g.put(44, 20, '/obj/structure/banner/faction/team/team1')
+    g.put(58, 20, '/obj/structure/banner/faction/team/team2')
+    g.put(50, 21, '/obj/structure/barracks/faction_roster')
+    g.put(53, 21, '/obj/structure/barracks/status_board')
+    g.put(47, 21, '/obj/structure/sign/map')
+    g.put(56, 21, '/obj/structure/barracks/orders_board')
+    g.put(44, 21, '/obj/structure/noticeboard')
+    g.put(59, 21, '/obj/structure/sign/clock')
+    for y in range(5, 16, 2):
+        for x in list(range(34, 49)) + list(range(53, 68)):
+            if y != 15 or x < 61:
+                g.put(x, y, BLEACHER + '{dir = 1}')
+    g.put(32, 17, '/obj/structure/flag/pole/custom')
+    g.put(69, 13, '/obj/structure/flag/pole/custom')
+    g.put(32, 21, sign('Briefing room', 'Faction events start here. Coordinators keep the Red and Blue roster on the board by the lectern and the programme on the board beside it. Red sits west, Blue east.', PLAQUE))
+    for x, y in ((31, 3), (70, 3), (31, 21), (42, 21)):
+        g.put(x, y, LAMP)
+    for x in (64, 65, 66):
+        g.put(x, 18, TABLE)
+        g.put(x, 17, OFFICE_CHAIR + '{dir = 1}')
+        g.put(x, 19, OFFICE_CHAIR)
+    g.put(65, 18, PAPER, PAPER, PAPER, PAPER, PEN, PEN, TOOLS[0])
+    g.put(68, 21, '/obj/structure/barracks/status_board')
+    g.put(70, 21, '/obj/structure/computer/nopower/platoontracker')
+    g.put(62, 21, '/obj/structure/closet/cabinet')
+    g.put(63, 21, '/obj/structure/closet/cabinet')
+    g.put(65, 21, '/obj/structure/sign/map')
+    g.put(70, 15, SMALL_WHITE)
+    g.put(62, 15, sign("Coordinators' office", 'Staff only. The windows look onto the briefing hall.', PLAQUE))
+
+    # ---- hallway (y 24-30) -----------------------------------------------
+    g.room(3, 24, 98, 30, TILED, ANNEX)
+    g.put(ANNEX_STAIRS[0], ANNEX_STAIRS[1], '/obj/structure/multiz/ladder/ww2/stairsdown{ladder_id = "%s"; area_id = "%s"}' % (STAIRS_AREA_ID, STAIRS_AREA_ID))
+    g.put(ANNEX_STAIRS[0] + 1, ANNEX_STAIRS[1], sign('Stairs down', 'Back down to the arrival hall.'))
+    g.put(52, 30, sign('Annex', 'North: the race circuit (doors west) and the airfield (door east). South: the Red conference room, the briefing room and the Blue conference room. Pit lane and paddock: through the grandstand door at the west end and over the crossing.', PLAQUE))
+    for x in (6, 9, 20, 23, 40, 43, 64, 67, 90, 93):
+        g.put(x, 24, BLEACHER + '{dir = 1}')
+    g.put(60, 24, '/obj/structure/noticeboard')
+    g.put(54, 24, sign('Records', 'Circuit lap records are shown on the lap board at race control; sky records in the control tower.', '/obj/structure/sign/custom/golden'))
+    g.put(75, 27, '/obj/structure/fountain/no_bottom')
+    for x in range(6, 98, 10):
+        g.put(x, 30, LAMP)
+    for x in (10, 35, 58):
+        g.door(x, 31, x + 1, 32, CONCRETE, TRACK)
+    g.door(84, 31, 85, 32, CONCRETE, AIRFIELD)
+    g.put(12, 30, sign('Grandstand and paddock'))
+    g.put(37, 30, sign('Grandstand'))
+    g.put(60, 30, sign('Grandstand'))
+    g.put(86, 30, sign('Airfield'))
+
+    # ---- race circuit (x 3-68, y 33-78) ----------------------------------
+    g.room(3, 33, 68, 78, LAWN, TRACK)
+    g.fill(8, 33, 63, 34, CONCRETE)
+    g.fill(3, 33, 7, 35, GRAVEL)
+    g.fill(64, 33, 68, 35, GRAVEL)
+    g.fill(3, 78, 68, 78, GRAVEL)
+    g.fill(8, 35, 63, 35, CONCRETE)
+    for x in range(8, 64):
+        if x not in (10, 11, 35, 36, 58, 59):
+            g.put(x, 33, BLEACHER + '{dir = 1}')
+            g.put(x, 34, BLEACHER + '{dir = 1}')
+        if x not in (10, 11):
+            g.put(x, 35, RAILING + '{dir = 1}')
+    for y in (33, 34):
+        g.put(7, y, RAILING + '{dir = 4}')
+        g.put(64, y, RAILING + '{dir = 8}')
+    for x, y in ((3, 33), (68, 33), (3, 78), (68, 78)):
+        g.put(x, y, FLOOD)
+    g.put(7, 35, STREETLIGHT)
+    g.put(64, 35, STREETLIGHT)
+    g.put(6, 34, sign('Race circuit', 'Laps run anticlockwise: east along the main straight, north up the far side, west through the chicane, south down this side. Cross to the paddock on the zebra by the west aisle. Cars come from the pit garages; a lap starts and ends on the white line.', PLAQUE))
+
+    g.fill(3, 36, 68, 42, ROAD)
+    g.fill(3, 36, 9, 77, ROAD)
+    g.fill(62, 36, 68, 77, ROAD)
+    g.fill(3, 71, 68, 77, ROAD)
+    for y in range(36, 43):
+        g.put(30, y, CENTRAL + '{dir = 4}', timing('circuit', 'lap'))
+        g.put(12, y, CENTRAL + '{dir = 4}', timing('drag', 'start'))
+        g.put(58, y, CENTRAL + '{dir = 4}', timing('drag', 'finish'))
+        g.put(10, y, ZEBRA)
+        g.put(11, y, ZEBRA)
+    for x, y in ((26, 37), (26, 38), (23, 40), (23, 41), (20, 37), (20, 38), (17, 40), (17, 41)):
+        g.put(x, y, SIDE)
+    for x, y in itertools.product((30, 31, 32), (75, 76, 77)):
+        g.put(x, y, TIRES)
+    for x, y in itertools.product((38, 39, 40), (71, 72, 73)):
+        g.put(x, y, TIRES)
+    g.put(29, 74, SIDE)
+    g.put(41, 74, SIDE)
+    for y in range(44, 71, 6):
+        g.put(10, y, SIDE)
+        g.put(61, y, SIDE)
+
+    # Pit wall, pit lane and garages (y 43-54)
+    g.fill(10, 43, 61, 48, ROAD)
+    for x in range(16, 56):
+        if x not in (26, 27, 28, 29, 30, 31):
+            g.put(x, 43, JERSEY)
+    for x in (26, 27, 28):
+        g.put(x, 43, SMALL_RED)
+    g.put(29, 43, '/obj/structure/barracks/lap_board{track = "circuit"}')
+    g.put(30, 43, '/obj/structure/barracks/race_control')
+    g.put(31, 43, sign('Race control', 'Click the console to start a race with a countdown, read the lap board, or clear abandoned cars. Pit lane is behind you; keep to gear 2 in it.', PLAQUE))
+    for x in range(16, 56):
+        g.put(x, 44, SIDE)
+    g.put(56, 45, '/obj/structure/sign/traffic/stop')
+    g.put(15, 48, '/obj/structure/sign/traffic/noentry')
+    g.fill(10, 49, 61, 54, CONCRETE)
+    for x, kind in ((14, 'piccolino'), (20, 'kazoku'), (26, 'quattroporte'), (32, 'type95'), (38, 'falcon'), (44, ''), (50, 'erstenklasse')):
+        g.put(x, 49, BAY + ('/' + kind if kind else ''))
+        g.put(x + 1, 50, SIDE)
+        g.put(x + 5, 54, SIDE)
+    g.put(11, 49, sign('Pit garages', 'Click a console for a fuelled car in the bay beside it; the bay must be empty and rests a minute between cars. Drive out south into the pit lane, turn east, leave by the exit at the far end. Cars nobody is driving are cleared away after ten minutes.', PLAQUE))
+    g.put(13, 54, FLOOD)
+    g.put(58, 50, '/obj/structure/fuelpump/premade/gasoline')
+    g.put(60, 50, RACK, JERRYCAN, JERRYCAN)
+    g.put(61, 50, RACK, JERRYCAN, JERRYCAN)
+    g.put(58, 53, TABLE, *TOOLS)
+    g.put(59, 53, TABLE)
+    g.put(61, 53, '/obj/structure/closet/crate/barrel')
+    g.put(56, 54, FLOOD)
+
+    # Crossover road (club circuit) and the rally stage
+    g.fill(10, 55, 61, 61, ROAD)
+    g.put(9, 58, '/obj/structure/sign/traffic/waysign')
+    g.put(62, 58, '/obj/structure/sign/traffic/waysign')
+    g.fill(10, 62, 61, 70, GRAVEL)
+    g.put(11, 62, BAY + '/wyoming')
+    for x in (24, 30, 36, 42, 48, 54):
+        g.put(x, 66, TIRES)
+    for y in range(62, 71):
+        g.put(20, y, CENTRAL + '{dir = 4}', timing('rally', 'start'))
+        g.put(58, y, CENTRAL + '{dir = 4}', timing('rally', 'finish'))
+    g.put(10, 70, '/obj/structure/barracks/lap_board{track = "rally"}')
+    g.put(10, 69, sign('Rally stage', 'Start between the lines, weave the tyre piles, north of the first, south of the next. The clock stops on the far line.', PLAQUE))
+    g.put(61, 70, FLOOD)
+    g.put(61, 62, FLOOD)
+
+    # ---- airfield (x 71-98, y 33-78) -------------------------------------
+    g.room(71, 33, 98, 78, CONCRETE, AIRFIELD)
+    g.line(92, 36, 96, 76, RUNWAY)
+    for x in range(92, 97):
+        g.put(x, 37, CENTRAL)
+        g.put(x, 75, CENTRAL)
+    for y in range(40, 73, 4):
+        g.put(94, y, CENTRAL + '{dir = 4}')
+    for x, y in ((90, 38), (91, 38), (90, 74), (91, 74)):
+        g.put(x, y, CENTRAL)
+    for y in (38, 46, 54, 62, 70):
+        g.put(90, y, SMALL_WHITE)
+        g.put(98, y, SMALL_WHITE)
+    for x in (92, 94, 96):
+        g.put(x, 33, SMALL_RED)
+        g.put(x, 78, SMALL_RED)
+    for y in range(36, 77, 2):
+        g.put(87, y, SIDE)
+
+    # Hangars, fire shed, fuel farm, control tower
+    for s in (38, 44, 50, 56):
+        g.wall(71, s - 2, 77, s - 2, AIRFIELD)
+        g.wall(71, s + 4, 77, s + 4, AIRFIELD)
+        g.put(72, s - 1, BAY + '/plane')
+        g.put(77, s + 3, PARKING)
+        g.put(71, s - 1 + 1, SMALL_WHITE)
+    g.wall(71, 66, 77, 66, AIRFIELD)
+    g.put(71, 65, '/obj/structure/closet/cabinet/first_aid')
+    g.put(72, 65, '/obj/structure/closet/cabinet/first_aid')
+    g.put(71, 62, '/obj/structure/bed/roller')
+    g.put(71, 63, '/obj/structure/bed/roller')
+    g.put(74, 65, RACK, JERRYCAN, JERRYCAN)
+    g.put(75, 65, RACK, JERRYCAN, JERRYCAN)
+    g.put(76, 65, TABLE, *TOOLS)
+    g.put(77, 65, TABLE)
+    g.put(77, 61, '/obj/structure/closet/crate/barrel')
+    g.put(72, 61, sign('Fire and rescue', 'Hard landings break wheels and hurt nobody here. Patch up, then call a fresh plane from a hangar; wrecks and stranded planes are cleared away by the tower.', PLAQUE))
+    g.put(72, 34, '/obj/structure/fuelpump/premade/gasoline')
+    g.put(75, 34, '/obj/structure/fuelpump/premade/gasoline')
+    g.put(71, 33, '/obj/structure/closet/crate/barrel')
+    g.put(77, 33, '/obj/structure/closet/crate/barrel')
+    g.put(78, 33, FENCE)
+    g.put(78, 35, FENCE)
+
+    g.wall(71, 67, 77, 67, AIRFIELD)
+    g.wall(77, 67, 77, 78, AIRFIELD)
+    g.fill(71, 68, 76, 78, DARK)
+    g.door(77, 70, 77, 71, DARK, AIRFIELD, DOOR, across=True)
+    for y in (73, 75, 77):
+        window(g, 77, y, DARK, AIRFIELD)
+    g.put(72, 78, '/obj/structure/barracks/flight_board')
+    g.put(74, 78, '/obj/structure/barracks/status_board')
+    g.put(76, 78, '/obj/structure/sign/map')
+    g.put(71, 77, '/obj/structure/computer/nopower/platoontracker')
+    g.put(73, 74, TABLE, PAPER, PAPER, PEN)
+    g.put(74, 74, TABLE)
+    g.put(73, 75, OFFICE_CHAIR)
+    g.put(74, 75, OFFICE_CHAIR)
+    g.put(71, 68, SMALL_WHITE)
+    g.put(72, 68, sign('Control tower', 'Click the flight board for who is up, the sky-lap times and to clear stranded aircraft. The runway runs south from the north holding point; land southbound over the north threshold.', PLAQUE))
+
+    for y in range(62, 66):
+        for x in (79, 82):
+            if y in (62, 65):
+                g.put(x, y, SIDE)
+    for y in (68, 71):
+        g.put(79, y, SIDE)
+        g.put(82, y, SIDE)
+    g.put(84, 33, ZEBRA)
+    g.put(85, 33, ZEBRA)
+    g.put(80, 77, '/obj/structure/flag/pole/custom{name = "windsock"; desc = "An orange sock on a pole. The air here is always still."}')
+    g.put(79, 34, sign('Airfield', 'Click a hangar console for a fuelled light plane. Taxi to the north holding point, turn onto the runway facing south, open the throttle to the top gear and roll: the plane climbs after eight tiles. Fly through the sky gates in order for a timed lap. To land, slow to gear 2 or lower, line up over the runway and Descend.', PLAQUE))
+    for x, y in ((98, 33), (98, 78), (85, 78)):
+        g.put(x, y, FLOOD)
+    g.put(78, 67, STREETLIGHT)
+    g.put(78, 36, STREETLIGHT)
+    return g
+
+
+AIR_GATES = (
+    (1, [(30, y) for y in range(72, 77)]),
+    (2, [(60, y) for y in range(72, 77)]),
+    (3, [(x, 62) for x in range(92, 97)]),
+    (4, [(x, 44) for x in range(92, 97)]),
+    (5, [(80, y) for y in range(36, 41)]),
+    (6, [(50, y) for y in range(36, 41)]),
+    (7, [(x, 50) for x in range(4, 9)]),
+)
+
+
+def build_sky():
+    g = Grid()
+    g.wall(3, 3, 98, 32, SKY_AREA)
+    for x, y in itertools.product(range(3, 99), range(3, 33)):
+        g.turf[x, y] = RING
+    g.fill(3, 33, 98, 78, SKY, SKY_AREA)
+    for gate, tiles in AIR_GATES:
+        for x, y in tiles:
+            g.put(x, y, '/obj/effect/barracks_air_gate{gate = %d}' % gate)
+    for x in range(4, 98, 6):
+        g.put(x, 34, '/obj/effect/barracks_airspace_marker')
+        g.put(x, 77, '/obj/effect/barracks_airspace_marker')
+    for y in range(34, 78, 6):
+        g.put(4, y, '/obj/effect/barracks_airspace_marker')
+        g.put(97, y, '/obj/effect/barracks_airspace_marker')
+    return g
+
+
+def render(levels):
     cells = {}
     keys = {}
     alphabet = string.ascii_letters
     names = (a + b for a, b in itertools.product(alphabet, alphabet))
-    for x, y in itertools.product(range(1, W + 1), range(1, H + 1)):
-        cell = tuple(g.objs[x, y]) + (g.turf[x, y], g.area[x, y])
-        if cell not in keys:
-            keys[cell] = next(names)
-        cells[x, y] = keys[cell]
+    for z, g in enumerate(levels, 1):
+        for x, y in itertools.product(range(1, W + 1), range(1, H + 1)):
+            cell = tuple(g.objs[x, y]) + (g.turf[x, y], g.area[x, y])
+            if cell not in keys:
+                keys[cell] = next(names)
+            cells[x, y, z] = keys[cell]
     lines = ['"%s" = (%s)' % (key, ','.join(cell)) for cell, key in sorted(keys.items(), key=lambda item: item[1])]
     lines.append('')
-    for x in range(1, W + 1):
-        column = ''.join(cells[x, y] for y in range(H, 0, -1))
-        lines.append('(%d,1,1) = {"' % x)
-        lines.extend(column[i:i + 2] for i in range(0, len(column), 2))
-        lines.append('"}')
+    for z in range(1, len(levels) + 1):
+        for x in range(1, W + 1):
+            column = ''.join(cells[x, y, z] for y in range(H, 0, -1))
+            lines.append('(%d,1,%d) = {"' % (x, z))
+            lines.extend(column[i:i + 2] for i in range(0, len(column), 2))
+            lines.append('"}')
     return '\n'.join(lines) + '\n'
 
 
@@ -462,7 +841,7 @@ def main(argv):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--check', action='store_true', help='fail when the checked-in map differs')
     args = parser.parse_args(argv)
-    text = render(build())
+    text = render([build(), build_annex(), build_sky()])
     if args.check:
         if not OUT.exists() or OUT.read_text(encoding='utf-8') != text:
             print('%s is stale: run python3 tools/tdm_barracks/build_map.py' % OUT.relative_to(ROOT))

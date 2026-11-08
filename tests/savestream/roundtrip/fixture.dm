@@ -42,6 +42,9 @@
 		"/entries/0/1/icon2" = list("kind" = "value", "value" = 'probe.dmi'),
 		"/entries/0/1/appearance" = list("kind" = "value", "value" = o.appearance),
 		"/entries/0/1/overlays" = list("kind" = "value", "value" = o.overlays.Copy()),
+		// Repeats reuse the stream's first encoding (text token, value file copy).
+		"/entries/0/1/appearance2" = list("kind" = "value", "value" = o.appearance),
+		"/entries/0/1/overlays2" = list("kind" = "value", "value" = o.overlays.Copy()),
 		"/entries/0/1/owner" = list("kind" = "entry", "ref" = 1),
 		"/entries/0/1/mutable" = list("kind" = "value", "value" = M),
 		"/entries/0/1/proper" = list("kind" = "value", "value" = "\improper turkey"),
@@ -90,6 +93,8 @@
 		if(!S.put(path, values[path]))
 			result["error"] = "put [path]: [S.last_error]"
 			return result
+	// The repeated file and appearance were encoded once and reused.
+	var/reused = S.value_tokens ? S.value_tokens.len : 0
 	var/list/summary = S.finish()
 	result["summary"] = summary
 	if(!summary || !summary["published"])
@@ -106,7 +111,10 @@
 
 	if(!isnull(S.get("/missing")) || S.found) mismatches += "/missing"
 	var/list/names = S.dir("/entries/0/1")
-	if(names.len != 17) mismatches += "dir:[names.len]"
+	if(names.len != 19) mismatches += "dir:[names.len]"
+	if(reused < 2) mismatches += "reused:[reused]"
+	// Closing the stream deletes the kept value-file templates.
+	if(S.value_tokens || flist("savestream_template_").len) mismatches += "templates kept"
 	S.close()
 	// A truncated stream is never readable.
 	var/datum/save_stream/broken = new

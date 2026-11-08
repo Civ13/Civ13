@@ -16,3 +16,9 @@ The second batch adds checks for the megaphone speech range, glowsticks
 trip it, the rattle cooldown), rally flags strengthening leader orders, the
 codebook (ten distinct codes per side, kept all round, given to leaders only)
 and the emote panel's list.
+
+The third batch checks bipods (fitting, bracing prone or against a wall ahead,
+unbracing on the move), the empty-gun ammo count, floor exercise limits and
+fatigue, and the lockbox (first key sets the lock, wrong keys fail, blocked
+storage while locked, beating the lock off). The escape menu needs a real
+client and is not covered here.

@@ -10,6 +10,9 @@ macro "macro"
 		command = ".center"
 	elem 
 		name = "Escape"
+		command = "Game-Menu"
+	elem 
+		name = "F11"
 		command = "updateFullscreen"
 	elem 
 		name = "Northeast"
@@ -272,6 +275,9 @@ macro "hotkeymode"
 		command = ".center"
 	elem 
 		name = "Escape"
+		command = "Game-Menu"
+	elem 
+		name = "F11"
 		command = "updateFullscreen"
 	elem 
 		name = "Southwest"
