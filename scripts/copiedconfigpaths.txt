@@ -13,3 +13,5 @@ scripts/updateserverabspaths.py
 scripts/updateserverabspathsnogitpull.py
 scripts/killciv13.py
 scripts/killsudos.py
+scripts/map_environment.py
+scripts/server_paths.py
