@@ -701,10 +701,10 @@ class ShardGroupTests(unittest.TestCase):
             listening.clear()
             alive.clear()
             real = shard_group.RegionPlatform.start_agent
-            def flaky(platform):
+            def flaky(platform, refresh=False):
                 if platform.config['region'] == 'gaia':
                     raise OSError('state_dir is not writable')
-                return real(platform)
+                return real(platform, refresh)
             with mock.patch.object(shard_group.RegionPlatform, 'start_agent', flaky):
                 result = shard_group.supervise(group, start)
             self.assertEqual((['deep'], True), (result['agents'], result['coordinator']))
@@ -712,6 +712,61 @@ class ShardGroupTests(unittest.TestCase):
         self.group['regions'][0].pop('transfer_port')
         self.group['regions'][1].pop('transfer_port')
         self.assertEqual({}, shard_group.supervise(self.write_group()))
+
+    def test_supervise_restarts_helpers_running_old_code_but_not_mid_action(self):
+        # Rail Yard, 2026-11-08: agents and a coordinator from before group OOC kept
+        # running after every update, and four agents shared port 1725.
+        self.group['regions'][0]['transfer_port'] = 47201
+        self.group['regions'][1]['transfer_port'] = 47202
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        listening, started, alive, ended = set(), [], set(), []
+        listeners = {47201: [], 47202: []}
+        pids = iter(range(5000, 6000))
+        def start(argv, cwd, log):
+            started.append(argv)
+            pid = next(pids)
+            alive.add(pid)
+            if '--port' in argv:  # an agent listens on its port once started
+                port = int(argv[argv.index('--port') + 1])
+                listeners[port].append(pid)
+                listening.add(port)
+            return pid
+        def terminate(platform, pid):
+            ended.append(pid)
+            alive.discard(pid)
+            for port, owners in listeners.items():
+                if pid in owners:
+                    owners.remove(pid)
+                    if not owners:
+                        listening.discard(port)
+        code = ['one']
+        with mock.patch.object(shard_group.RegionPlatform, 'listening', lambda self, port: port in listening), \
+                mock.patch.object(shard_group.RegionPlatform, 'listener_pids', lambda self, port: list(listeners[port])), \
+                mock.patch.object(shard_group.RegionPlatform, 'terminate', terminate), \
+                mock.patch.object(shard_group.Platform, 'terminate', terminate), \
+                mock.patch.object(shard_group, 'transfer_code', lambda: code[0]), \
+                mock.patch.object(shard_group, 'detach', start), \
+                mock.patch.object(shard_group, 'process_alive', lambda pid: pid in alive):
+            self.assertEqual({'agents': ['gaia', 'deep'], 'coordinator': True}, shard_group.supervise(group, start))
+            deep_agent = listeners[47202][0]
+            self.assertEqual({}, shard_group.supervise(group, start), 'same code: nothing restarts')
+            # A stale duplicate on deep's port is ended with the agent, which starts again.
+            listeners[47202].append(4321)
+            self.assertEqual({'agents': ['deep']}, shard_group.supervise(group, start))
+            self.assertEqual([deep_agent, 4321], ended)
+            # New code on disk: nothing restarts while a region runs an action...
+            code[0] = 'two'
+            lock = Path(shard_group.region_config(group, group['regions'][0])['state_dir']) / 'action.lock'
+            lock.parent.mkdir(parents=True, exist_ok=True)
+            lock.write_text('busy')
+            self.assertEqual({}, shard_group.supervise(group, start))
+            # ...and every helper restarts once it is idle.
+            lock.unlink()
+            self.assertEqual({'agents': ['gaia', 'deep'], 'coordinator': True}, shard_group.supervise(group, start))
+            self.assertEqual({}, shard_group.supervise(group, start))
+        # A real fingerprint covers the helpers' source.
+        self.assertEqual(16, len(shard_group.transfer_code()))
 
     def test_the_host_service_serves_every_region_of_a_group(self):
         group = self.write_group()

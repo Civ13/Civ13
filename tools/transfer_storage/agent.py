@@ -10,12 +10,13 @@ routes still run one at a time under a lock, so the store sees no concurrency.
 import argparse
 import hmac
 import json
+import os
+import socket
 import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 if __package__ in (None, ''):
-    import os
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.radio import RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError  # noqa: E402
@@ -121,9 +122,21 @@ def make_server(store, token, port=0, radio=None):
         def do_GET(self):
             self._answer(405, {'error': 'use POST'})
 
-    server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    server = AgentServer(('127.0.0.1', port), Handler)
     server.daemon_threads = True
     return server
+
+
+class AgentServer(ThreadingHTTPServer):
+    """One agent per port. On Windows SO_REUSEADDR lets a second agent bind a port that
+    one already listens on, and either may answer (Rail Yard had four on 1725,
+    2026-11-08), so it is off there and the port is held exclusively."""
+    allow_reuse_address = os.name != 'nt'
+
+    def server_bind(self):
+        if os.name == 'nt' and hasattr(socket, 'SO_EXCLUSIVEADDRUSE'):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
 
 
 def main(argv=None):
