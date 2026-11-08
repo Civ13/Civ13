@@ -45,6 +45,7 @@ var/observe_runtime_error = FALSE
 		observe_prompt_checks()
 		observe_sound_checks()
 		observe_queue_checks()
+		observe_view_checks()
 	catch(var/exception/e)
 		observe_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = observe_checks, "failures" = observe_failures, "runtime_error" = observe_runtime_error)), "result.json")
@@ -79,6 +80,8 @@ var/observe_runtime_error = FALSE
 				return agent_control.act_character_queue(observe_identity(), req)
 			if ("step")
 				return agent_control.perform_step(observe_identity(), C, req, TRUE)
+			if ("view")
+				return agent_control.act_character_view(observe_identity(), req)
 	catch(var/exception/e)
 		return "[e.desc || e.name]"
 
@@ -173,5 +176,45 @@ var/observe_runtime_error = FALSE
 	observe_check(islist(result), "expect_name passes when the name matches ([islist(result) ? "ok" : result])")
 	result = observe_call("step", C, list("do" = "examine", "target" = agent_ref(spear), "expect_name" = "wolf"))
 	observe_check(istext(result) && findtext(result, "target_changed"), "expect_name refuses a different object ([result])")
+	agent_characters -= C.body
+	qdel(C.body)
+
+/proc/observe_view_checks()
+	var/datum/agent_character/C = observe_character(15, 15, "Looker")
+	var/obj/item/weapon/material/spear/spear = new(locate(16, 15, 1))
+	// A runtime icon (as human bodies are): it travels as base64 DMI bytes.
+	var/obj/tinted = new(locate(14, 15, 1))
+	var/icon/I = new(spear.icon, spear.icon_state)
+	I.Blend("#ff0000", ICON_MULTIPLY)
+	tinted.icon = I
+	var/list/head = observe_call("view", C, list("radius" = 3))
+	observe_check(islist(head) && head["part"] == 1 && head["parts"] >= 1 && head["view"] == C.view_id, "a view starts with part 1 of parts ([islist(head) ? "[head["parts"]] parts, [head["bytes"]] bytes" : head])")
+	if (!islist(head))
+		return
+	var/text = head["text"]
+	for (var/n in 2 to head["parts"])
+		var/list/part = observe_call("view", C, list("view" = head["view"], "part" = n))
+		text += islist(part) ? part["text"] : ""
+	observe_check(length(text) == head["bytes"], "the parts join into the whole dump")
+	var/list/dump = json_decode(text)
+	observe_check(dump["region"] ~= list(12, 12, 18, 18, 1) && dump["center"] ~= list(15, 15), "the region is the radius around the character")
+	observe_check(length(dump["cells"]) == 49 && length(dump["appearances"]) > 3, "every seen tile has a cell ([length(dump["cells"])] cells, [length(dump["appearances"])] appearances)")
+	var/named = 0
+	var/inline = 0
+	for (var/list/icon in dump["icons"])
+		if (icon["source"])
+			named++
+		if (icon["base64"])
+			inline++
+	observe_check(named > 0 && inline > 0, "source icons are named by path, runtime icons sent inline ([named] named, [inline] inline)")
+	var/found = FALSE
+	for (var/list/cell in dump["cells"])
+		for (var/list/movable in cell[5])
+			if (movable[4] == "[C.body.type]")
+				found = TRUE
+	observe_check(found, "the character is in its own view")
+	text2file(text, "view.json")
+	var/stale = observe_call("view", C, list("view" = head["view"] - 1, "part" = 1 + 1))
+	observe_check(istext(stale) && findtext(stale, "view_gone"), "an old view id is refused ([stale])")
 	agent_characters -= C.body
 	qdel(C.body)

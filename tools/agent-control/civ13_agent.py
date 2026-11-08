@@ -12,13 +12,17 @@ Credentials come from the environment, never from arguments or MCP calls:
   civ13_agent.py mcp            # MCP stdio server, one tool per action
 """
 
+import base64
 import json
 import os
 import socket
 import struct
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.parse
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from catalog import ACTIONS  # noqa: E402
@@ -99,6 +103,8 @@ class AgentClient:
             raise AgentError(f"unknown action {action}")
         if action == "character_observe" and args and "wait_s" in args:
             return self.observe_wait(args)
+        if action == "character_view" and isinstance(args, dict) and not args.get("part"):
+            return self.view(args)
         query = {"agent_control": "1", "agent": self.agent, "token": self.token, "action": action}
         if args:
             query["args"] = json.dumps(args, separators=(",", ":"))
@@ -136,6 +142,67 @@ class AgentClient:
                 args["since_rev"] = result["rev"]
             sleep(min(poll_s, max(0.0, deadline - clock())))
 
+    def view(self, args, max_parts=200):
+        """character_view with every part fetched: {"ok": True, "result": {view, parts, bytes, dump}}."""
+        first = self.request("character_view", dict(args, part=1))
+        if not first.get("ok"):
+            return first
+        head = first["result"]
+        parts = int(head.get("parts") or 1)
+        if parts > max_parts:
+            raise AgentError(f"view has {parts} parts; use a smaller radius")
+        texts = [head.get("text", "")]
+        for part in range(2, parts + 1):
+            reply = self.request("character_view", {"character": args["character"], "view": head["view"], "part": part})
+            if not reply.get("ok"):
+                return reply
+            texts.append(reply["result"].get("text", ""))
+        try:
+            dump = json.loads("".join(texts))
+        except ValueError as exc:
+            raise AgentError("character_view parts did not join into JSON") from exc
+        return {"ok": True, "result": {"view": head["view"], "parts": parts, "bytes": head.get("bytes"), "dump": dump}}
+
+
+def render_view(dump, devtools=None, game_root=None, timeout=120):
+    """Render a character_view dump to PNG bytes with a byond-devtools checkout, or None without one.
+
+    devtools defaults to the BYOND_DEVTOOLS environment variable; icons named by path are read from
+    game_root (default: this Civ13 checkout). Returns (png_bytes, info) or (None, reason).
+    """
+    devtools = devtools or os.environ.get("BYOND_DEVTOOLS")
+    if not devtools:
+        return None, "set BYOND_DEVTOOLS to a byond-devtools checkout to get a PNG"
+    cli = Path(devtools) / "src" / "cli.js"
+    if not cli.is_file():
+        return None, f"no byond-devtools CLI at {cli}"
+    game_root = Path(game_root or Path(__file__).resolve().parents[2])
+    with tempfile.TemporaryDirectory(prefix="civ13-view-") as tmp:
+        dump_file, out = Path(tmp) / "view.json", Path(tmp) / "view.png"
+        dump_file.write_text(json.dumps(dump), encoding="utf-8")
+        node = os.environ.get("NODE", "node")
+        done = subprocess.run([node, str(cli), "ingame", "--root", str(game_root), "--dump", str(dump_file), "--out", str(out)],
+                              capture_output=True, text=True, timeout=timeout)
+        if done.returncode != 0 or not out.is_file():
+            return None, (done.stderr or done.stdout or "render failed").strip()[-500:]
+        try:
+            info = json.loads(done.stdout).get("data", {})
+        except ValueError:
+            info = {}
+        info.pop("out", None)
+        return out.read_bytes(), info
+
+
+def view_summary(result, info=None):
+    """The text part of a character_view answer: everything but the dump's bulk."""
+    dump = result.get("dump") or {}
+    summary = {k: dump.get(k) for k in ("region", "center", "time_of_day", "see_invisible", "skipped_icons", "world_time")}
+    summary.update({"view": result.get("view"), "parts": result.get("parts"), "bytes": result.get("bytes"),
+                    "cells": len(dump.get("cells") or []), "appearances": len(dump.get("appearances") or [])})
+    if isinstance(info, dict):
+        summary["render"] = info
+    return summary
+
 
 def _observe_has_news(result, args):
     if result.get("messages"):
@@ -156,7 +223,7 @@ def _observe_has_news(result, args):
 # Tool annotations (MCP hints for clients deciding what needs a confirmation).
 READ_ONLY_ACTIONS = frozenset({
     "discover", "status", "players", "inspect", "look", "find", "logs", "job", "get_vars", "list_verbs",
-    "character_list", "character_observe", "character_route", "visit_status",
+    "character_list", "character_observe", "character_view", "character_route", "visit_status",
 })
 DESTRUCTIVE_ACTIONS = frozenset({"set_var", "call_proc", "call_verb", "kick", "restart", "delete_atom", "character_release"})
 
@@ -204,6 +271,15 @@ def mcp_handle(client, message):
         try:
             reply = client.request(action, params.get("arguments") or {})
             result = {"content": [{"type": "text", "text": json.dumps(reply)}], "isError": not reply.get("ok", False)}
+            if action == "character_view" and reply.get("ok") and isinstance(reply.get("result"), dict) and "dump" in reply["result"]:
+                png, info = render_view(reply["result"]["dump"])
+                if png:
+                    result["content"] = [{"type": "text", "text": json.dumps({"ok": True, "result": view_summary(reply["result"], info)})},
+                                         {"type": "image", "data": base64.b64encode(png).decode("ascii"), "mimeType": "image/png"}]
+                else:
+                    # No renderer here: hand back the dump for byond-devtools' dump_render tool.
+                    reply["result"]["render"] = info
+                    result["content"] = [{"type": "text", "text": json.dumps(reply)}]
         except (AgentError, OSError) as exc:
             result = {"content": [{"type": "text", "text": f"request failed: {exc}"}], "isError": True}
     else:
@@ -237,6 +313,19 @@ def main(argv=None):
         client = AgentClient.from_env()
         if argv[0] == "mcp":
             serve_mcp(client)
+            return 0
+        if argv[0] == "view" and len(argv) in (3, 4):
+            reply = client.request("character_view", {"character": argv[1], **({"radius": int(argv[3])} if len(argv) == 4 else {})})
+            if not reply.get("ok"):
+                print(json.dumps(reply, indent=2))
+                return 1
+            png, info = render_view(reply["result"]["dump"])
+            if not png:
+                Path(argv[2]).with_suffix(".json").write_text(json.dumps(reply["result"]["dump"]), encoding="utf-8")
+                print(f"no PNG ({info}); wrote the dump to {Path(argv[2]).with_suffix('.json')}", file=sys.stderr)
+                return 1
+            Path(argv[2]).write_bytes(png)
+            print(json.dumps(view_summary(reply["result"], info), indent=2))
             return 0
         if argv[0] == "call" and len(argv) in (2, 3):
             args = json.loads(argv[2]) if len(argv) == 3 and argv[2].strip() else None
