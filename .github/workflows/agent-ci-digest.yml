@@ -28,6 +28,7 @@ on:
       - Environment sweep regressions
       - Inactive immutable capture experiment
       - Isolated DreamSeeker feasibility
+      - Map review
       - MCP protocol checks
       - Native supervisor consumer contracts
       - Native Windows launcher

@@ -142,8 +142,33 @@ class AgentClient:
                 args["since_rev"] = result["rev"]
             sleep(min(poll_s, max(0.0, deadline - clock())))
 
-    def view(self, args, max_parts=200):
-        """character_view with every part fetched: {"ok": True, "result": {view, parts, bytes, dump}}."""
+    def view(self, args, max_parts=200, sleep=time.sleep):
+        """character_view with every part fetched: {"ok": True, "result": {view, parts, bytes, dump}}.
+
+        With frames > 1 (up to 8) it takes that many snapshots interval_s seconds apart (0.2-10,
+        default 1) and adds them as result["dumps"] for an animated render; result["dump"] is
+        the first. The world never sleeps in a Topic reply, so the client waits between them.
+        """
+        args = dict(args)
+        try:
+            frames = int(args.pop("frames", 1) or 1)
+            interval = float(args.pop("interval_s", 1) or 1)
+        except (TypeError, ValueError):
+            raise AgentError("frames must be a whole number and interval_s a number of seconds")
+        if not 1 <= frames <= 8 or not 0.2 <= interval <= 10:
+            raise AgentError("frames must be 1-8 and interval_s 0.2-10")
+        if frames > 1:
+            shots = []
+            for n in range(frames):
+                if n:
+                    sleep(interval)
+                reply = self.view(args, max_parts=max_parts)
+                if not reply.get("ok"):
+                    return reply
+                shots.append(reply["result"])
+            result = dict(shots[0])
+            result.update({"dumps": [shot["dump"] for shot in shots], "frames": frames, "interval_s": interval})
+            return {"ok": True, "result": result}
         first = self.request("character_view", dict(args, part=1))
         if not first.get("ok"):
             return first
@@ -164,11 +189,13 @@ class AgentClient:
         return {"ok": True, "result": {"view": head["view"], "parts": parts, "bytes": head.get("bytes"), "dump": dump}}
 
 
-def render_view(dump, devtools=None, game_root=None, timeout=120):
+def render_view(dump, devtools=None, game_root=None, timeout=120, interval_ms=1000):
     """Render a character_view dump to PNG bytes with a byond-devtools checkout, or None without one.
 
-    devtools defaults to the BYOND_DEVTOOLS environment variable; icons named by path are read from
-    game_root (default: this Civ13 checkout). Returns (png_bytes, info) or (None, reason).
+    dump may be a list of dumps (snapshots over time): the PNG is then animated, one frame each
+    interval_ms. devtools defaults to the BYOND_DEVTOOLS environment variable; icons named by path
+    are read from game_root (default: this Civ13 checkout). Returns (png_bytes, info) or
+    (None, reason). info has the render report, including undrawn: clickable atoms that drew nothing.
     """
     devtools = devtools or os.environ.get("BYOND_DEVTOOLS")
     if not devtools:
@@ -178,11 +205,17 @@ def render_view(dump, devtools=None, game_root=None, timeout=120):
         return None, f"no byond-devtools CLI at {cli}"
     game_root = Path(game_root or Path(__file__).resolve().parents[2])
     with tempfile.TemporaryDirectory(prefix="civ13-view-") as tmp:
-        dump_file, out = Path(tmp) / "view.json", Path(tmp) / "view.png"
-        dump_file.write_text(json.dumps(dump), encoding="utf-8")
+        dumps = dump if isinstance(dump, list) else [dump]
+        files = []
+        for n, one in enumerate(dumps):
+            files.append(Path(tmp) / f"view{n}.json")
+            files[-1].write_text(json.dumps(one), encoding="utf-8")
+        out = Path(tmp) / "view.png"
         node = os.environ.get("NODE", "node")
-        done = subprocess.run([node, str(cli), "ingame", "--root", str(game_root), "--dump", str(dump_file), "--out", str(out)],
-                              capture_output=True, text=True, timeout=timeout)
+        command = [node, str(cli), "ingame", "--root", str(game_root), "--dump", ",".join(str(f) for f in files), "--out", str(out)]
+        if len(dumps) > 1:
+            command += ["--interval-ms", str(int(interval_ms))]
+        done = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
         if done.returncode != 0 or not out.is_file():
             return None, (done.stderr or done.stdout or "render failed").strip()[-500:]
         try:
@@ -196,9 +229,12 @@ def render_view(dump, devtools=None, game_root=None, timeout=120):
 def view_summary(result, info=None):
     """The text part of a character_view answer: everything but the dump's bulk."""
     dump = result.get("dump") or {}
-    summary = {k: dump.get(k) for k in ("region", "center", "time_of_day", "see_invisible", "skipped_icons", "world_time")}
+    summary = {k: dump.get(k) for k in ("region", "center", "time_of_day", "see_invisible", "skipped_icons", "world_time", "hud")}
     summary.update({"view": result.get("view"), "parts": result.get("parts"), "bytes": result.get("bytes"),
-                    "cells": len(dump.get("cells") or []), "appearances": len(dump.get("appearances") or [])})
+                    "cells": len(dump.get("cells") or []), "appearances": len(dump.get("appearances") or []),
+                    "screen_objects": len(dump.get("screen") or [])})
+    if result.get("dumps"):
+        summary.update({"frames": result.get("frames"), "interval_s": result.get("interval_s")})
     if isinstance(info, dict):
         summary["render"] = info
     return summary
@@ -331,13 +367,15 @@ def mcp_handle(client, message):
             reply = client.request(action, params.get("arguments") or {})
             result = {"content": [{"type": "text", "text": json.dumps(reply)}], "isError": not reply.get("ok", False)}
             if action == "character_view" and reply.get("ok") and isinstance(reply.get("result"), dict) and "dump" in reply["result"]:
-                png, info = render_view(reply["result"]["dump"])
+                view = reply["result"]
+                png, info = render_view(view.get("dumps") or view["dump"], interval_ms=int(1000 * float(view.get("interval_s") or 1)))
                 if png:
                     result["content"] = [{"type": "text", "text": json.dumps({"ok": True, "result": view_summary(reply["result"], info)})},
                                          {"type": "image", "data": base64.b64encode(png).decode("ascii"), "mimeType": "image/png"}]
                 else:
                     # No renderer here: hand back the dump for byond-devtools' dump_render tool.
                     reply["result"]["render"] = info
+                    reply["result"].pop("dumps", None)  # the first dump is enough to render by hand
                     result["content"] = [{"type": "text", "text": json.dumps(reply)}]
         except (AgentError, OSError) as exc:
             result = {"content": [{"type": "text", "text": f"request failed: {exc}"}], "isError": True}
@@ -373,12 +411,17 @@ def main(argv=None):
         if argv[0] == "mcp":
             serve_mcp(client)
             return 0
-        if argv[0] == "view" and len(argv) in (3, 4):
-            reply = client.request("character_view", {"character": argv[1], **({"radius": int(argv[3])} if len(argv) == 4 else {})})
+        if argv[0] == "view" and len(argv) in (3, 4, 5, 6):
+            # view <character> <out.png> [radius] [frames] [interval_s]
+            numbers = [n for n in argv[3:]]
+            args = {"character": argv[1]}
+            for key, value in zip(("radius", "frames", "interval_s"), numbers):
+                args[key] = float(value) if key == "interval_s" else int(value)
+            reply = client.request("character_view", args)
             if not reply.get("ok"):
                 print(json.dumps(reply, indent=2))
                 return 1
-            png, info = render_view(reply["result"]["dump"])
+            png, info = render_view(reply["result"].get("dumps") or reply["result"]["dump"], interval_ms=int(1000 * float(reply["result"].get("interval_s") or 1)))
             if not png:
                 Path(argv[2]).with_suffix(".json").write_text(json.dumps(reply["result"]["dump"]), encoding="utf-8")
                 print(f"no PNG ({info}); wrote the dump to {Path(argv[2]).with_suffix('.json')}", file=sys.stderr)

@@ -231,6 +231,18 @@ Without byond-devtools, the tool returns the dump, which byond-devtools'
 --out view.png` can render. Filters, maptext and animation past the first frame
 are not modelled.
 
+- `frames` (2-8) and `interval_s` (0.2-10, default 1) take that many snapshots
+  apart in time and return an animated PNG (the client waits between them; the
+  world never sleeps in a reply). `civ13_agent.py view <character> out.png
+  [radius] [frames] [interval_s]` does the same.
+- When a player is in the body, the dump also carries the HUD: `client.screen`
+  objects with their `screen_loc` and `client.view` (`hud` is 1). A body driven
+  only through agent control has no client and so no HUD.
+- The render report lists `undrawn`: things in view a player could click
+  (`mouse_opacity` not 0) whose whole appearance put no pixel on the map. Each
+  one breaks the rule that anything a player can interact with must be rendered,
+  so treat it as a bug to look into.
+
 ### Boats
 
 Characters use the same boats players do (`code/modules/agent_control/agent_boats.dm`):

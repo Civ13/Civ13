@@ -338,6 +338,29 @@ class CharacterViewTests(unittest.TestCase):
             if old is not None:
                 os.environ["BYOND_DEVTOOLS"] = old
 
+    def test_view_snapshots_over_time(self):
+        sent, naps = [], []
+
+        def transport(host, port, query, timeout):
+            args = json.loads(dict(urllib.parse.parse_qsl(query))["args"])
+            sent.append(args)
+            text = json.dumps({"region": [1, 1, 1, 1, 1], "icon_size": 32, "appearances": [], "icons": [], "cells": [], "n": len(sent)})
+            return json.dumps({"ok": True, "result": {"view": len(sent), "part": 1, "parts": 1, "bytes": len(text), "text": text}})
+        client = agent.AgentClient("tester", "x" * 32, transport=transport)
+        reply = client.view({"character": "[0x9]", "frames": 3, "interval_s": 0.5}, sleep=naps.append)
+        result = reply["result"]
+        self.assertEqual([d["n"] for d in result["dumps"]], [1, 2, 3])
+        self.assertEqual(result["dump"]["n"], 1)
+        self.assertEqual(naps, [0.5, 0.5])
+        # frames and interval_s stay on the client; the server sees one plain request per snapshot.
+        self.assertTrue(all("frames" not in a and "interval_s" not in a for a in sent))
+        summary = agent.view_summary(result)
+        self.assertEqual((summary["frames"], summary["interval_s"], summary["screen_objects"]), (3, 0.5, 0))
+        for bad in ({"frames": 9}, {"frames": 2, "interval_s": 0.1}, {"frames": "many"}):
+            with self.assertRaises(agent.AgentError):
+                client.view(dict(bad, character="[0x9]"), sleep=naps.append)
+        self.assertIn("frames", ACTIONS["character_view"][2]["properties"])
+
     def test_mcp_serves_resources_and_prompts(self):
         call = lambda method, params=None: agent.mcp_handle(None, {"id": 1, "method": method, "params": params or {}})
         caps = call("initialize")["result"]["capabilities"]
@@ -364,6 +387,8 @@ class CharacterViewTests(unittest.TestCase):
         self.assertIn("A.invisibility > M.see_invisible", view)
         self.assertIn('agent_fail("view_gone"', view)
         self.assertIn("AGENT_VIEW_MAX_RUNTIME_ICONS", view)
+        self.assertIn("M.client.screen", view)  # the HUD only with a player in the body
+        self.assertIn("AGENT_VIEW_MAX_SCREEN", view)
         self.assertEqual(ACTIONS["character_view"][2]["properties"]["radius"]["maximum"], 7)
 
 

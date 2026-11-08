@@ -3,13 +3,15 @@
 // matrices, planes and the plane masters a player's HUD builds). byond-devtools renders
 // it (dump_render, or `cli.js ingame --dump`); civ13_agent.py does that for the MCP tool.
 // Icons from the source tree are named by path; icons made at runtime (human bodies,
-// blended overlays) are sent as base64 DMI bytes. The dump is built once and read in
-// parts, because a Topic reply holds at most 64 KB.
+// blended overlays) are sent as base64 DMI bytes. With a player in the body the dump also
+// carries the HUD (client.screen by screen_loc). The dump is built once and read in parts,
+// because a Topic reply holds at most 64 KB.
 
 #define AGENT_VIEW_PART 30000 // characters of dump text per reply
 #define AGENT_VIEW_MAX_BYTES 4000000
 #define AGENT_VIEW_MAX_RUNTIME_ICONS 48
 #define AGENT_VIEW_MAX_ICON_BYTES 120000
+#define AGENT_VIEW_MAX_SCREEN 300 // HUD objects
 
 var/global/list/agent_view_plane_masters // built once: plane masters as a player's HUD makes them
 
@@ -65,7 +67,7 @@ var/global/list/agent_view_plane_masters // built once: plane masters as a playe
 		"layer" = M.layer, "plane" = M.plane, "pixel_x" = M.pixel_x, "pixel_y" = M.pixel_y,
 		"pixel_w" = M.pixel_w, "pixel_z" = M.pixel_z, "color" = value(M.color), "alpha" = M.alpha,
 		"blend_mode" = M.blend_mode, "appearance_flags" = M.appearance_flags, "invisibility" = M.invisibility,
-		"filters" = length(M.filters), "maptext" = length(M.maptext) ? 1 : 0)
+		"filters" = length(M.filters), "maptext" = length(M.maptext) ? 1 : 0, "mouse_opacity" = M.mouse_opacity)
 	var/matrix/T = M.transform
 	if (T && (T.a != 1 || T.b != 0 || T.c != 0 || T.d != 0 || T.e != 1 || T.f != 0))
 		row["transform"] = list(T.a, T.b, T.c, T.d, T.e, T.f)
@@ -129,12 +131,24 @@ var/global/list/agent_view_plane_masters // built once: plane masters as a playe
 	var/list/masters = list()
 	for (var/obj/screen/plane_master/P in agent_view_masters())
 		masters += list(list("type" = "[P.type]", "appearance" = D.app_index(P, ref(P.appearance))))
+	// The HUD, when a player is in the body: client.screen objects with their screen_loc. A body
+	// driven only through agent control has no client and so no HUD.
+	var/list/screen = list()
+	var/view_size = null
+	if (M.client)
+		view_size = M.client.view
+		for (var/atom/movable/O in M.client.screen)
+			if (istype(O, /obj/screen/plane_master) || !O.screen_loc || O.invisibility > M.see_invisible)
+				continue
+			if (screen.len >= AGENT_VIEW_MAX_SCREEN)
+				break
+			screen += list(list(D.app_index(O, ref(O.appearance)), "[O.screen_loc]"))
 	return list(
 		"byond" = "[world.byond_version].[world.byond_build]", "icon_size" = world.icon_size, "map_format" = world.map_format,
 		"maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "region" = list(x1, y1, x2, y2, here.z),
 		"center" = list(here.x, here.y), "see_invisible" = M.see_invisible, "time_of_day" = time_of_day, "profile" = "civ13",
 		"world_time" = world.time, "vis_contents" = vis, "plane_masters" = masters, "appearances" = D.app_rows,
-		"icons" = D.icon_rows, "cells" = cells, "skipped_icons" = D.skipped_icons,
+		"icons" = D.icon_rows, "cells" = cells, "skipped_icons" = D.skipped_icons, "screen" = screen, "view" = view_size, "hud" = M.client ? 1 : 0,
 		"provenance" = list("truthLayer" = "live-character-view", "character" = agent_ref(M)))
 
 /datum/agent_control/proc/act_character_view(datum/agent_identity/A, list/req)
@@ -161,3 +175,4 @@ var/global/list/agent_view_plane_masters // built once: plane masters as a playe
 #undef AGENT_VIEW_MAX_BYTES
 #undef AGENT_VIEW_MAX_RUNTIME_ICONS
 #undef AGENT_VIEW_MAX_ICON_BYTES
+#undef AGENT_VIEW_MAX_SCREEN
