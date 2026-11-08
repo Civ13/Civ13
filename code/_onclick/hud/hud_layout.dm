@@ -175,6 +175,118 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	if (!isnum(hud_scale) || hud_scale < 0.5 || hud_scale > 3)
 		hud_scale = 1
 
+////////////////////////// reflow at large scales //////////////////////////
+
+// A default tile scales toward the screen edge or centre it sits nearest.
+/proc/hud_infer_anchor(list/D, view_w, view_h)
+	var/x = hud_anchor_origin(D[1], view_w) + D[2]
+	var/y = hud_anchor_origin(D[3], view_h) + D[4]
+	var/cx = x + 16
+	var/cy = y + 16
+	var/ax = cx < view_w / 3 ? "WEST" : (cx > view_w * 2 / 3 ? "EAST" : "CENTER")
+	var/ay = cy < view_h / 3 ? "SOUTH" : (cy > view_h * 2 / 3 ? "NORTH" : "CENTER")
+	return list(ax, x - hud_anchor_origin(ax, view_w), ay, y - hud_anchor_origin(ay, view_h))
+
+// Splits list(tile, x, y) entries into runs that overlap along one axis
+// (2 = x, 3 = y) at 100%, so tiles that share a spot or a column move together.
+/proc/hud_flow_groups(list/entries, axis)
+	var/list/sorted = list()
+	for (var/list/T in entries)
+		var/i = 1
+		while (i <= sorted.len)
+			var/list/O = sorted[i]
+			if (O[axis] > T[axis])
+				break
+			i++
+		sorted.Insert(i, list(T))
+	. = list()
+	var/list/current = null
+	var/current_end = 0
+	for (var/list/T in sorted)
+		if (current && T[axis] < current_end)
+			current += list(T)
+		else
+			current = list(T)
+			. += list(current)
+		current_end = max(current_end, T[axis] + 32)
+
+/proc/hud_flow_place(obj/screen/S, x, y, g, view_w, view_h)
+	var/edge = 32 * g
+	x = clamp(x, 0, max(0, view_w - edge))
+	y = clamp(y, 0, max(0, view_h - edge))
+	S.hud_ax = (x + edge / 2 > view_w / 2) ? "EAST" : "WEST"
+	S.hud_ox = x - hud_anchor_origin(S.hud_ax, view_w)
+	S.hud_ay = "SOUTH"
+	S.hud_oy = y
+	S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
+
+// Above 100% the default HUD no longer fits a standard view. The right-hand
+// status column stacks up the right edge, wrapping leftward when too tall;
+// every other column of tiles drops into the lowest free spot from the left,
+// so the bar wraps into extra rows instead of overlapping.
+/proc/hud_reflow(list/flow, g, view_w, view_h)
+	var/s = 32 * g
+	var/list/east = list()
+	var/list/rest = list()
+	for (var/list/T in flow)
+		if (T[2] + 16 > view_w - 32)
+			east += list(T)
+		else
+			rest += list(T)
+	var/east_w = 0
+	if (east.len)
+		east_w = s
+		var/col_x = view_w - s
+		var/y = 0
+		for (var/list/G in hud_flow_groups(east, 3))
+			var/y0 = G[1][3]
+			var/y1 = y0
+			for (var/list/T in G)
+				y0 = min(y0, T[3])
+				y1 = max(y1, T[3] + 32)
+			var/gh = (y1 - y0) * g
+			if (y > 0 && y + gh > view_h)
+				col_x -= s
+				east_w += s
+				y = 0
+			for (var/list/T in G)
+				hud_flow_place(T[1], col_x, y + (T[3] - y0) * g, g, view_w, view_h)
+			y += gh
+	var/limit = round(view_w - east_w)
+	var/step = 4
+	var/list/sky = new /list(round(limit / step) + 1)
+	for (var/i = 1 to sky.len)
+		sky[i] = 0
+	for (var/list/G in hud_flow_groups(rest, 2))
+		var/x0 = G[1][2]
+		var/x1 = x0
+		var/y0 = G[1][3]
+		var/y1 = y0
+		for (var/list/T in G)
+			x0 = min(x0, T[2])
+			x1 = max(x1, T[2] + 32)
+			y0 = min(y0, T[3])
+			y1 = max(y1, T[3] + 32)
+		var/gw = (x1 - x0) * g
+		var/gh = (y1 - y0) * g
+		var/cells = max(1, round(-(-gw / step)))
+		var/best_cell = 1
+		var/best_top = null
+		for (var/c = 1, c + cells - 1 <= sky.len, c++)
+			var/top = 0
+			for (var/j = c, j < c + cells, j++)
+				top = max(top, sky[j])
+			if (isnull(best_top) || top < best_top - 0.01)
+				best_top = top
+				best_cell = c
+		if (isnull(best_top))
+			best_top = 0
+		for (var/j = best_cell, j < min(sky.len + 1, best_cell + cells), j++)
+			sky[j] = best_top + gh
+		var/gx = (best_cell - 1) * step
+		for (var/list/T in G)
+			hud_flow_place(T[1], gx + (T[2] - x0) * g, best_top + (T[3] - y0) * g, g, view_w, view_h)
+
 ////////////////////////// applying the layout //////////////////////////
 
 /mob/living/human/proc/hud_layout_elements()
@@ -271,6 +383,9 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	var/list/V = getviewsize(client.view)
 	var/view_w = V[1] * 32
 	var/view_h = V[2] * 32
+	// Default inventory and control tiles above 100% are reflowed together so
+	// they never cover each other; entries are list(tile, x, y) at 100%.
+	var/list/flow = list()
 	for (var/obj/screen/S in hud_layout_elements())
 		if (!S.hud_default_loc)
 			S.hud_default_loc = S.screen_loc
@@ -278,6 +393,7 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		if (!D)
 			continue
 		var/size = 1
+		var/custom = FALSE
 		var/list/F = P.hud_layout_entry(defaultHUD, S.hud_layout_key)
 		if (F)
 			var/stored_size = text2num(F[7])
@@ -288,6 +404,11 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 				var/oy = text2num(F[6])
 				if (isnum(ox) && isnum(oy) && (F[3] in list("WEST", "CENTER", "EAST")) && (F[5] in list("SOUTH", "CENTER", "NORTH")))
 					D = list(F[3], ox, F[5], oy)
+					custom = TRUE
+		if (!custom)
+			D = hud_infer_anchor(D, view_w, view_h)
+			if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))
+				flow += list(list(S, hud_anchor_origin(D[1], view_w) + D[2], hud_anchor_origin(D[3], view_h) + D[4]))
 		S.hud_size = size
 		S.hud_ax = D[1]
 		S.hud_ay = D[3]
@@ -300,6 +421,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 		S.hud_oy = clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0
 		S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
 		S.transform = hud_scale_matrix(g * size)
+	if (flow.len)
+		hud_reflow(flow, g, view_w, view_h)
 	sync_inventory_screen_locs()
 	apply_action_bar_layout()
 	if (client.hud_edit_mode)

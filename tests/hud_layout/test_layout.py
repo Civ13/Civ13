@@ -65,6 +65,20 @@ class HudLayoutWiring(unittest.TestCase):
         self.assertIn('clamp(x0 + D[2] * g, 0, max(0, view_w - edge)) - x0', body)
         self.assertIn('clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0', body)
 
+    def test_large_scales_reflow_only_default_tiles(self):
+        body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')
+        self.assertIn('D = hud_infer_anchor(D, view_w, view_h)', body)
+        self.assertIn('if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))', body)
+        self.assertLess(body.index('if (!custom)'), body.index('flow += list('))
+        self.assertIn('if (flow.len)\n\t\thud_reflow(flow, g, view_w, view_h)', body)
+        self.assertLess(body.index('hud_reflow('), body.index('sync_inventory_screen_locs()'))
+
+    def test_reflow_procs_are_in_the_native_fixture_half(self):
+        helpers = read(LAYOUT).split('////////////////////////// applying the layout')[0]
+        for proc in ('hud_infer_anchor(', 'hud_flow_groups(', 'hud_flow_place(', 'hud_reflow('):
+            self.assertIn('/proc/' + proc, helpers)
+        self.assertIn('check_reflow(g)', read(ROOT / 'tests/hud_layout/fixture.dm'))
+
     def test_vehicle_controls_and_action_bar_are_editable(self):
         source = read(LAYOUT)
         elements = proc_body(source, '/mob/living/human/proc/hud_layout_elements()')
