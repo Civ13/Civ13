@@ -333,7 +333,17 @@ survival primer (including the stone-age start: flint from rocks on grab
 intent, sharpening, branches, sticks and leaves), matching lines from
 `config/tips.txt`, and a rule not to take
 from other players' camps. It answers with one to three steps and a note to
-itself. Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
+itself. Target indexes, travel coordinates/distances and wait ticks must be integers
+(or decimal integer strings for older models); booleans, fractions and non-finite
+numbers are rejected, not rounded into actions. Waits default to 10 ticks only
+when omitted and valid integers are clamped to 1–50 ticks. A malformed step stops
+the plan at its valid prefix; later steps do not run. This validation is not proof
+that the game executed an action: queue results remain the execution evidence.
+JSON is preferred. The legacy text fallback accepts forms such as
+`find_flint on rock 5`, `explore north`, `wait 10` and `travel north 20`.
+It requires complete integer tokens; fractions, hexadecimal notation, multiple
+target numbers and trailing numeric punctuation (such as `click 1.`) are refused.
+Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
 target; the autopilot walks next to the target (stepping around blocked
 tiles), swaps to the right hand and intent before the click, stows (or drops) a
 spare item rather than a tool when it needs a free hand, works a fallen

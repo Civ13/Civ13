@@ -848,6 +848,27 @@ def _name(item):
     return item.get("name") if isinstance(item, dict) else "empty"
 
 
+def _decision_int(value):
+    """Read an integer without letting model floats or booleans select a different action.
+
+    Decimal strings remain accepted for older models that quote numeric arguments.
+    Unlike int(value), this never truncates a fraction or treats true as target 1.
+    """
+    if type(value) is int:
+        return value
+    if isinstance(value, str) and re.fullmatch(r"[+-]?[0-9]+", value.strip()):
+        return int(value.strip())
+    raise ValueError("expected an integer or decimal integer string")
+
+
+def _wait_step(item):
+    try:
+        ticks = _decision_int(item.get("ticks", 10))
+    except ValueError:
+        return None
+    return {"do": "wait", "ticks": min(max(ticks, 1), 50)}
+
+
 def parse_decision(text, refs):
     """Validate a model reply into character_act args, or None to wait."""
     try:
@@ -859,7 +880,7 @@ def parse_decision(text, refs):
     action = str(data.get("do", "")).lower()
     if action in SKILLS:
         try:
-            index = int(data.get("target"))
+            index = _decision_int(data.get("target"))
         except (TypeError, ValueError):
             return None
         if not 0 <= index < len(refs) or not refs[index]:
@@ -884,7 +905,7 @@ def parse_decision(text, refs):
         for key in ("x", "y", "tiles"):
             if data.get(key) is not None:
                 try:
-                    out[key] = int(data[key])
+                    out[key] = _decision_int(data[key])
                 except (TypeError, ValueError):
                     return None
         if str(data.get("dir", "")).lower() in ("north", "south", "east", "west"):
@@ -926,7 +947,7 @@ def parse_decision(text, refs):
         args["dir"] = direction
     elif action in ("go", "flee"):
         try:
-            index = int(data.get("target"))
+            index = _decision_int(data.get("target"))
         except (TypeError, ValueError):
             return None
         if not 1 <= index < len(refs) or not refs[index]:
@@ -934,7 +955,7 @@ def parse_decision(text, refs):
         args["target"] = refs[index]
     elif action in ("click", "examine", "board"):
         try:
-            index = int(data.get("target"))
+            index = _decision_int(data.get("target"))
         except (TypeError, ValueError):
             return None
         if not 0 <= index < len(refs) or not refs[index]:
@@ -949,7 +970,7 @@ def parse_decision(text, refs):
             if data.get(key) is None:
                 continue
             try:
-                index = int(data.get(key))
+                index = _decision_int(data.get(key))
             except (TypeError, ValueError):
                 return None
             if not 0 <= index < len(refs) or not refs[index]:
@@ -961,7 +982,7 @@ def parse_decision(text, refs):
             args["choose"] = str(data["choose"]).strip()[:64]  # the answer when the verb asks (sifting: "Stone")
     elif action == "throw":
         try:
-            index = int(data.get("target"))
+            index = _decision_int(data.get("target"))
         except (TypeError, ValueError):
             return None
         if not 1 <= index < len(refs) or not refs[index]:
@@ -991,19 +1012,38 @@ def parse_decision(text, refs):
 
 
 def coerce_step(item):
-    """A plan step the model wrote as text ("find_flint on rock 5") as an object; other values pass through."""
+    """Accept a few legacy text forms without repairing malformed numeric tokens.
+
+    Prefer JSON steps. Text targets may have a label ("find_flint on rock 5"),
+    but numbers must be complete integer tokens, not fragments of "1/2" or "0x2".
+    """
     if not isinstance(item, str):
         return item
-    words = re.findall(r"[a-z_]+|\d+", item.lower())
+    words = item.lower().split()
     if not words:
         return item
-    step = {"do": words[0]}
-    numbers = [word for word in words[1:] if word.isdigit()]
-    if numbers:
-        step["target"] = int(numbers[-1])
-    directions = [word for word in words[1:] if word in DIRS]
-    if directions:
-        step["dir"] = directions[0]
+    action = words[0]
+    step = {"do": action}
+    try:
+        if action in SKILLS or action in ("go", "flee", "click", "examine", "board", "throw"):
+            if len(words) < 2 or any(not re.fullmatch(r"[a-z_]+", word) for word in words[1:-1]):
+                return item
+            step["target"] = _decision_int(words[-1])
+        elif action in ("move", "face", "explore", "travel"):
+            if len(words) not in ((2, 3) if action == "travel" else (2,)) or words[1] not in DIRS:
+                return item
+            step["dir"] = words[1]
+            if len(words) == 3:
+                step["tiles"] = _decision_int(words[2])
+        elif action == "wait":
+            if len(words) > 2:
+                return item
+            if len(words) == 2:
+                step["ticks"] = _decision_int(words[1])
+        elif len(words) != 1:
+            return item
+    except ValueError:
+        return item
     return step
 
 
@@ -1024,7 +1064,11 @@ def plan_problem(text, refs):
         if not isinstance(item, dict):
             return 'each plan step must be an object like {"do": "find_flint", "target": 5}, not text'
 
-        if parse_decision(json.dumps(item), refs) is not None or str(item.get("do", "")).lower() == "wait":
+        if str(item.get("do", "")).lower() == "wait":
+            if _wait_step(item) is None:
+                return "wait needs integer ticks (1 to 50); omit ticks for the default 10"
+            continue
+        if parse_decision(json.dumps(item), refs) is not None:
             if str(item.get("do", "")).lower() in SKILLS:
                 return ""
             continue
@@ -1077,11 +1121,10 @@ def parse_plan(text, refs):
     for item in raw[:MAX_PLAN]:
         item = coerce_step(item)
         if isinstance(item, dict) and str(item.get("do", "")).lower() == "wait":
-            try:
-                ticks = int(item.get("ticks", 10))
-            except (TypeError, ValueError):
-                ticks = 10
-            plan.append({"do": "wait", "ticks": min(max(ticks, 1), 50)})
+            step = _wait_step(item)
+            if step is None:
+                break  # invalid waits are not silently replaced with a different action
+            plan.append(step)
             continue
         step = parse_decision(json.dumps(item), refs)
         if step is None:
