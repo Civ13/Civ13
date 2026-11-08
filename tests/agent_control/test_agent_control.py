@@ -544,6 +544,84 @@ class AutopilotTests(unittest.TestCase):
             self.assertIsNone(autopilot.parse_decision(bad, refs), bad)
         self.assertEqual(len(autopilot.parse_decision('{"do": "say", "text": "%s"}' % ("a" * 500), refs)["text"]), 200)
 
+    def test_model_targets_reject_lossy_integer_coercion(self):
+        refs = ["[0x9]", "[0x1]", "[0x2]"]
+        actions = ("find_flint", "go", "flee", "click", "examine", "board", "throw", "verb")
+        invalid = (True, False, 1.9, 1.0, float("inf"), -float("inf"), float("nan"), "1.5", "1e0", [], {})
+        for action in actions:
+            for value in invalid:
+                with self.subTest(action=action, target=value):
+                    reply = json.dumps({"do": action, "name": "Rotate", "target": value})
+                    self.assertIsNone(autopilot.parse_decision(reply, refs))
+                    self.assertEqual(autopilot.parse_plan(reply, refs), [])
+                    self.assertTrue(autopilot.plan_problem(reply, refs))
+        for value in invalid:
+            with self.subTest(onto=value):
+                self.assertIsNone(autopilot.parse_decision(json.dumps({"do": "verb", "name": "Give", "onto": value}), refs))
+        for value in (1, "1", " 1 "):
+            self.assertEqual(autopilot.parse_decision(json.dumps({"do": "click", "target": value}), refs),
+                             {"do": "click", "target": "[0x1]"})
+
+    def test_malformed_numeric_step_stops_the_plan_at_valid_prefix(self):
+        refs = ["[0x9]", "[0x1]"]
+        first, last = {"do": "face", "dir": "north"}, {"do": "say", "text": "later"}
+        for bad in ({"do": "click", "target": True}, {"do": "wait", "ticks": float("inf")},
+                    {"do": "travel", "dir": "north", "tiles": 2.7}):
+            with self.subTest(bad=bad):
+                reply = json.dumps({"plan": [first, bad, last]})
+                self.assertEqual(autopilot.parse_plan(reply, refs), [first])
+                self.assertTrue(autopilot.plan_problem(reply, refs))
+
+    def test_wait_and_travel_reject_malformed_numbers(self):
+        refs = ["[0x9]"]
+        for value in (True, False, None, 1.9, 1.0, float("inf"), -float("inf"), float("nan"), "1.5", [], {}):
+            with self.subTest(value=value):
+                reply = json.dumps({"do": "wait", "ticks": value})
+                self.assertEqual(autopilot.parse_plan(reply, refs), [])
+                self.assertIn("integer", autopilot.plan_problem(reply, refs))
+                for key in ("x", "y", "tiles"):
+                    # Optional null travel fields retain their existing omitted-field behavior.
+                    if value is None:
+                        continue
+                    reply = json.dumps({"do": "travel", "x": 10, "y": 20, "dir": "north", key: value})
+                    self.assertIsNone(autopilot.parse_decision(reply, refs))
+        self.assertEqual(autopilot.parse_plan('{"do":"wait"}', refs), [{"do": "wait", "ticks": 10}])
+        for value, expected in (("20", 20), (999, 50), (-5, 1)):
+            self.assertEqual(autopilot.parse_plan(json.dumps({"do": "wait", "ticks": value}), refs),
+                             [{"do": "wait", "ticks": expected}])
+
+    def test_text_steps_do_not_repair_invalid_target_numbers(self):
+        refs = ["[0x9]", "[0x1]", "[0x2]"]
+        for text in ("click -1", "click 1.2", "click .2", "click 1e0", "click True", "click 1/2",
+                     "click 1_0", "click 0x2", "click −1", "click 1e+", "click 1.", "click 1 2",
+                     "wait True", "wait 1.2", "travel north 1/2", "travel north 2.7"):
+            with self.subTest(text=text):
+                reply = json.dumps({"plan": [text]})
+                self.assertEqual(autopilot.parse_plan(reply, refs), [])
+                self.assertTrue(autopilot.plan_problem(reply, refs))
+        for text, expected in (("wait 20", {"do": "wait", "ticks": 20}),
+                               ("travel north 15", {"do": "travel", "dir": "north", "tiles": 15}),
+                               ("travel north -2", {"do": "travel", "dir": "north", "tiles": -2}),
+                               ("click 1", {"do": "click", "target": "[0x1]"})):
+            self.assertEqual(autopilot.parse_plan(json.dumps({"plan": [text]}), refs), [expected])
+
+    def test_text_steps_accept_list_punctuation_around_whole_integers(self):
+        refs = ["[0x9]", "[0x1]", "[0x2]", "[0x3]"]
+        for text, expected in (("click [3]", {"do": "click", "target": "[0x3]"}),
+                               ("find_flint on rock #3", {"skill": "find_flint", "target": "[0x3]"}),
+                               ("chop tree (2)", {"skill": "chop", "target": "[0x2]"}),
+                               ("click rock, 3", {"do": "click", "target": "[0x3]"}),
+                               ("attack grey-wolf 2", {"skill": "attack", "target": "[0x2]"}),
+                               ("wait 10 ticks", {"do": "wait", "ticks": 10})):
+            with self.subTest(text=text):
+                self.assertEqual(autopilot.parse_plan(json.dumps({"plan": [text]}), refs), [expected])
+        for text in ("click [1.5]", "click (1/2)", "click #1.", "wait 10 minutes", "click [3] [2]"):
+            with self.subTest(text=text):
+                self.assertEqual(autopilot.parse_plan(json.dumps({"plan": [text]}), refs), [])
+                problem = autopilot.plan_problem(json.dumps({"plan": [text]}), refs)
+                self.assertIn("whole integers", problem)
+                self.assertIn(text, problem)
+
     def test_repeated_messages_do_not_crowd_out_speech(self):
         observation = {"self": {"name": "Bo"}, "messages": [{"text": "Ada says, \"hi\""}] + [{"text": "You feel the ground burn your feet."}] * 12 + [{"text": "Macks begins building a roof."}] * 5 + [{"text": "Macks hands Bo a stick."}]}
         text, _ = autopilot.summarize(observation)
