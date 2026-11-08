@@ -989,6 +989,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft.dm"
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_view.dm"
+#include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_damage.dm"
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_hangar.dm"
 #include "code\modules\1713\machinery\modular_vehicles\axis.dm"
 #include "code\modules\1713\machinery\modular_vehicles\factory.dm"

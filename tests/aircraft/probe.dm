@@ -229,8 +229,20 @@ var/aircraft_runtime_error = FALSE
 	var/obj/effect/aircraft_shadow/nose_shadow = A.shadows[nose_center]
 	aircraft_check(nose_shadow && nose_shadow.icon == 'icons/obj/vehicles/lightplane.dmi' && nose_shadow.icon_state == "nose_center_floor", "the shadow takes the plane's silhouette")
 
+	// Fire from the ground: a shot crossing the turf under a frame's shadow
+	// can hit that frame; in low flight any weapon reaches, at cruise only
+	// heavy weapons do.
+	var/obj/item/projectile/bullet/rifle/round = new(null)
+	var/obj/item/projectile/shell/shell = new(null)
+	var/turf/under_nose = locate(nose.x, nose.y, 1)
+	aircraft_check(A.frame_over(under_nose) == nose && !A.frame_over(locate(nose.x, nose.y + 5, 1)), "the frame over a ground turf is found through its shadow")
+	aircraft_check(A.reachable_by(round) && A.reachable_by(shell), "in low flight rifle fire and shells both reach the aircraft")
+	var/obj/structure/vehicleparts/frame/body = locate(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/center) in A.components
+	var/damage_before = A.airframe_damage
+	aircraft_check(A.airframe_hit(body, round) && A.airframe_damage == damage_before + round.damage && A.airborne(), "a hit wears the airframe without bringing it down")
 	// Cruise passes over upper storeys and will not descend into them.
 	aircraft_check(A.climb(M) && A.flight_state == AIRCRAFT_CRUISE, "climb reaches cruising height")
+	aircraft_check(!A.reachable_by(round) && A.reachable_by(shell), "at cruise only heavy weapons reach the aircraft")
 	aircraft_check(A.shadows[nose]:pixel_x == 16, "cruise casts a farther shadow")
 	aircraft_check(!A.climb(M), "climbing again is refused")
 	var/obj/structure/aircraft_probe_wall/W = new(locate(4, aircraft_front_y(A) - 1, 2))
@@ -431,6 +443,21 @@ var/aircraft_runtime_error = FALSE
 		aircraft_check(built.frames().len == 12 && built.engine && built.engine.fueltank && aircraft_tank_fuel(built) == 0, "the built plane is whole with an empty tank ([built.frames().len] frames, fuel [built.engine && built.engine.fueltank ? aircraft_tank_fuel(built) : "none"])")
 		aircraft_check(built.keyed_vehicle_id && hangar.stock["steel"] == 10 && hangar.stock["wheels"] == 0, "the hangar issues keys and spends its inputs (key [built.keyed_vehicle_id], steel [hangar.stock["steel"]], wheels [hangar.stock["wheels"]])")
 	aircraft_check(!hangar.complete_assembly("Light plane"), "the occupied bay refuses a second build")
+
+	// Enough hits break the airframe up: the plane comes down where it is.
+	if (istype(built))
+		for (var/bx = 15, bx <= 18, bx++)
+			for (var/by = 3, by <= 6, by++)
+				new /turf/sky/building(locate(bx, by, 2))
+		built.aircraft_shift(2)
+		built.set_flight_state(AIRCRAFT_LOW)
+		var/obj/structure/vehicleparts/frame/built_nose = locate(/obj/structure/vehicleparts/frame/car/aircraft/nose/center) in built.components
+		aircraft_check(built.airborne() && built.frame_over(locate(built_nose.x, built_nose.y, 1)) == built_nose, "a plane lifted into low flight casts a shadow for gunners to aim at")
+		built.airframe_damage = 149
+		built.airframe_hit(built_nose, shell)
+		aircraft_check(!built.airborne() && aircraft_frames_z(built, 1), "airframe failure brings the plane down")
+	qdel(round)
+	qdel(shell)
 
 /proc/aircraft_run()
 	try
