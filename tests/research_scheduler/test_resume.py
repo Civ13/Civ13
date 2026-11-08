@@ -267,5 +267,20 @@ class ResearchResumeTests(unittest.TestCase):
         self.assertIn("priority = PROCESS_PRIORITY_LOW", setup)
 
 
+    def test_scheduled_work_leaves_tick_headroom(self):
+        # CM-SS13 and /tg/ stop scheduled work short of the tick so the map send
+        # fits. The native probe measured master filling ~100% of each tick.
+        defines = (ROOT / "code/processes/___defines.dm").read_text()
+        ceiling = "max(40, min(80, 95 - world.map_cpu))"
+        self.assertIn("#define PROCESS_TICK_CEILING " + ceiling + "\n", defines)
+        check = next(line for line in defines.splitlines() if line.startswith("#define PROCESS_TICK_CHECK "))
+        self.assertIn("world.tick_usage >= " + ceiling, check)
+        scheduler = (ROOT / "code/processes/__processScheduler.dm").read_text()
+        queued = proc(scheduler, "/processScheduler/proc/runQueuedProcesses()")
+        self.assertIn("PROCESS_TICK_CEILING - initial_tick_usage", queued)
+        self.assertNotIn("100 - world.tick_usage", queued)
+        overlays = (ROOT / "code/processes/lighting/overlays.dm").read_text()
+        self.assertIn("world.tick_usage >= PROCESS_TICK_CEILING", overlays)
+
 if __name__ == "__main__":
     unittest.main()

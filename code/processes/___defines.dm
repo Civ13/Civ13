@@ -30,5 +30,9 @@
 // processes with priority VERY_HIGH use hacks here to run smoother (movement, throwing), similar to the old subsystems
 // A reset during a yielding fire() (world load, process restart) nulls current_list mid-loop.
 #define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && islist(current_list)) current_list -= current
-#define PROCESS_TICK_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance) return PROCESS_TICK_CHECK_RETURNED_EARLY
+// Absolute tick ceiling for scheduled work: leave room for BYOND to send the map
+// (world.map_cpu is the last tick's map-send cost) and for verbs, as CM-SS13 and
+// /tg/ do. Running past ~100% of a tick is what shows up as time dilation.
+#define PROCESS_TICK_CEILING max(40, min(80, 95 - world.map_cpu))
+#define PROCESS_TICK_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH && (world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance || world.tick_usage >= max(40, min(80, 95 - world.map_cpu)))) return PROCESS_TICK_CHECK_RETURNED_EARLY
 #define PROCESS_USE_FASTEST_LIST(list) if (priority == PROCESS_PRIORITY_VERY_HIGH) { current_list = list; } else { current_list = null; current_list = list:Copy(); }

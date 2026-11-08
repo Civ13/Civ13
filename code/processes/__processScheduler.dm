@@ -164,8 +164,10 @@ var/global/processScheduler/processScheduler
 /processScheduler/proc/runQueuedProcesses()
 	#define MINIMUM_TICK_USAGE 10
 	#define MAXIMUM_TICK_USAGE 90
-	var/max_tick_usage = min(max(MINIMUM_TICK_USAGE, 100 - world.tick_usage), MAXIMUM_TICK_USAGE)
+	// Stop at the shared ceiling instead of filling the rest of the tick, so the
+	// map send and verbs still fit (MINIMUM_TICK_USAGE keeps a backlog moving).
 	var/initial_tick_usage = world.tick_usage
+	var/max_tick_usage = min(max(MINIMUM_TICK_USAGE, PROCESS_TICK_CEILING - initial_tick_usage), MAXIMUM_TICK_USAGE)
 
 	var/list/tmpQueued = queued.Copy()
 	var/list/processed = list()
