@@ -1,9 +1,9 @@
 client/New()
 	..()
+	// Leave the splitter where the skin saved it: forcing it here threw the
+	// saved layout away on every connect, then the refits moved it again.
 	winset(src, "mainwindow", "can-resize=true;titlebar=true;menu=menu")
-	winset(src, "mainwindow.mainvsplit", "splitter=75")
-	if(is_preference_enabled(/datum/client_preference/fit_viewport))
-		fit_viewport()
+	fit_viewport_soon()
 
 client/verb/updateFullscreen()
 	set name = "updateFullscreen"

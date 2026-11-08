@@ -539,18 +539,28 @@
 	return max(1, min(width, split_width - FIT_VIEWPORT_MIN_RPANE))
 #undef FIT_VIEWPORT_MIN_RPANE
 
-// Called by the skin when the main window is resized or maximized. Window
-// resizes arrive in bursts, so only the last one in a short window refits.
+// Refit once the layout settles. Connecting, logging a mob in and the skin
+// restoring its saved size and maximized state all land within a few ticks
+// of each other, and a refit against a pane that is still changing moves the
+// splitter to the wrong place (the map pane visibly jumps between sizes on
+// every reconnect). Every caller asks for a refit through this; only the last
+// request in a short window runs, after the client has had time to lay out.
 /client/var/fit_viewport_token = 0
-/client/verb/on_window_resize()
-	set name = "on-window-resize"
-	set hidden = TRUE
+/client/proc/fit_viewport_soon()
+	set waitfor = FALSE
 	if (!is_preference_enabled(/datum/client_preference/fit_viewport))
 		return
 	var/token = ++fit_viewport_token
-	sleep(3)
+	sleep(5)
 	if (src && token == fit_viewport_token)
 		fit_viewport()
+
+// Called by the skin when the main window is resized or maximized. Window
+// resizes arrive in bursts, so only the last one in a short window refits.
+/client/verb/on_window_resize()
+	set name = "on-window-resize"
+	set hidden = TRUE
+	fit_viewport_soon()
 
 // Icons menu: change the map icon size, then refit so no bars are left.
 /client/verb/set_map_icon_size(size as num)
