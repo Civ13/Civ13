@@ -877,6 +877,10 @@ SUITES = {
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
+    # Fit Viewport skin wiring; the width math runs natively when BYOND is on PATH.
+    'fit_viewport': {'files': ('tests/fit_viewport/test_fit_viewport.py',),
+        'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
+        'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
     # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
     'hud_layout': {'files': ('tests/hud_layout/test_layout.py',),
         'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm'),
