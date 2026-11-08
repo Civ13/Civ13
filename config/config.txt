@@ -258,7 +258,8 @@ PERSISTENCE_MEMORY_LIMIT_MB 3072
 ## With a token, an approved report becomes a GitHub issue in this repository. Without one,
 ## Approve opens a prefilled GitHub form for the admin to submit. Put the token only in the
 ## host's config.local.txt (never commit it): a fine-grained token with Issues read and write
-## on this repository.
+## on this repository. A standalone world (no region group) reads it from its own
+## config/config.txt instead: add the line there and keep it out of commits.
 BUG_REPORT_GITHUB_REPO Civ13/Civ13
 BUG_REPORT_GITHUB_LABELS bug
 #BUG_REPORT_GITHUB_TOKEN github_pat_...

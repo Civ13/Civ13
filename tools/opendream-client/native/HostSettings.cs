@@ -106,6 +106,24 @@ public static class HostSettings {
         return string.Join("\n", result) + "\n";
     }
 
+    // The editor never shows the token: its line reads "BUG_REPORT_GITHUB_TOKEN (hidden)".
+    public const string Hidden = "(hidden)";
+
+    public static string HideSecrets(string text) => string.Join("\n", text.Replace("\r\n", "\n").Split('\n').Select(line =>
+        IsSecretLine(line) ? BugReportToken + " " + Hidden : line));
+
+    // The shown text with each hidden line given back its value from actual (the file as read or set).
+    public static string RestoreSecrets(string shown, string actual) {
+        var secret = actual.Replace("\r\n", "\n").Split('\n').FirstOrDefault(IsSecretLine);
+        return string.Join("\n", shown.Replace("\r\n", "\n").Split('\n').Select(line =>
+            secret != null && line.Trim().Equals(BugReportToken + " " + Hidden, StringComparison.OrdinalIgnoreCase) ? secret : line));
+    }
+
+    private static bool IsSecretLine(string line) {
+        var parts = line.Trim().Split(' ', 2);
+        return parts.Length == 2 && parts[0].Equals(BugReportToken, StringComparison.OrdinalIgnoreCase) && parts[1].Trim() != Hidden;
+    }
+
     // Why the text cannot be saved, or null. config.local.txt follows shard_group.py merge_config.
     public static string? Problem(string relative, string text) {
         if (relative == LocalConfig) {

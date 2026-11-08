@@ -21,7 +21,8 @@ internal sealed class HostSettingsDialog : Form {
     private readonly Button save = new() { Text = "Save", AutoSize = true };
     private readonly Button apply = new() { Text = "Save and apply to regions", AutoSize = true };
     private (int Place, int File) shown = (-1, -1);
-    private string loaded = "";
+    private string loaded = ""; // the file as last read or saved
+    private string actual = ""; // the text with the real token, which the editor shows as (hidden)
 
     public HostSettingsDialog(HostControl control, IReadOnlyList<HostSettings.Location> locations) {
         this.control = control;
@@ -122,13 +123,16 @@ internal sealed class HostSettingsDialog : Form {
             result.Text = "That does not look like a GitHub token (letters, digits and _ only, at least 20). Nothing changed.";
             return;
         }
-        editor.Text = HostSettings.WithSetting(editor.Text, HostSettings.BugReportToken, value).Replace("\n", "\r\n");
-        result.Text = "Token added to the editor. Press Save and apply to send it to the regions; running worlds use it for the next report an admin approves.";
+        actual = HostSettings.WithSetting(EditedText(), HostSettings.BugReportToken, value);
+        editor.Text = HostSettings.HideSecrets(actual).Replace("\n", "\r\n");
+        result.Text = "Token added (shown as (hidden)). Press Save and apply to send it to the regions; running worlds use it for the next report an admin approves.";
     }
 
     private HostSettings.Location? Current => place.SelectedIndex >= 0 ? locations[place.SelectedIndex] : null;
     private string? CurrentFile => file.SelectedItem as string;
-    private bool Dirty => editor.Text.Replace("\r\n", "\n") != loaded;
+    private bool Dirty => EditedText() != loaded;
+    // The editor's text with the hidden token put back.
+    private string EditedText() => HostSettings.RestoreSecrets(editor.Text.Replace("\r\n", "\n"), actual);
 
     // False when the person wants to stay on unsaved changes.
     private bool KeepChanges() {
@@ -161,11 +165,11 @@ internal sealed class HostSettingsDialog : Form {
         if (Current is not { } location || CurrentFile is not { } name) return;
         hint.Text = name + ": " + HostSettings.Describe(name);
         try {
-            loaded = HostSettings.Read(location, name).Replace("\r\n", "\n");
-            editor.Text = loaded.Replace("\n", "\r\n");
+            loaded = actual = HostSettings.Read(location, name).Replace("\r\n", "\n");
+            editor.Text = HostSettings.HideSecrets(loaded).Replace("\n", "\r\n");
             result.Text = "";
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException) {
-            loaded = "";
+            loaded = actual = "";
             editor.Text = "";
             result.Text = "Could not read " + name + ": " + e.Message;
         }
@@ -173,10 +177,10 @@ internal sealed class HostSettingsDialog : Form {
 
     private bool Save() {
         if (Current is not { } location || CurrentFile is not { } name) return false;
-        var text = editor.Text.Replace("\r\n", "\n");
+        var text = EditedText();
         try {
             HostSettings.Save(location, name, text);
-            loaded = text;
+            loaded = actual = text;
             result.Text = "Saved " + name + " for " + location.Label.ToLowerInvariant() + ". The previous version is kept as " + Path.GetFileName(name) + ".previous.";
             return true;
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException) {

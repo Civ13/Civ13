@@ -216,6 +216,12 @@ static class LocalHostingTests {
             && !HostSettings.TokenValid("github_pat_with space inside it"), "bug report token format");
         Require(HostSettings.Problem(HostSettings.LocalConfig, HostSettings.WithSetting("", HostSettings.BugReportToken, "ghp_x")) == null, "the token line is a valid setting");
         Reject(() => HostSettings.WithSetting("", "BAD KEY", "x"), "a setting name with a space");
+        var withToken = "WEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN github_pat_secret\n";
+        Require(HostSettings.HideSecrets(withToken) == "WEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN (hidden)\n"
+            && !HostSettings.HideSecrets(withToken).Contains("github_pat_secret"), "the editor never shows the token");
+        Require(HostSettings.RestoreSecrets("WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN (hidden)\n", withToken)
+            == "WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN github_pat_secret\n", "saving puts the hidden token back");
+        Require(HostSettings.RestoreSecrets("WEBHOOK_KEY k\n", withToken) == "WEBHOOK_KEY k\n", "deleting the hidden line removes the token");
         Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");
         Require(HostSettings.Problem("config/account_signin.json", "{") is { } jsonProblem && jsonProblem.StartsWith("Not valid JSON"), "bad JSON");
         Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");

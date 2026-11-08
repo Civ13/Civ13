@@ -52,7 +52,10 @@ class BugReportSafety(unittest.TestCase):
         token_case = conf[conf.index('if ("bug_report_github_token")'):]
         self.assertNotIn('=', token_case[:token_case.index('\n\n')])
         queue = read(QUEUE)
-        self.assertNotRegex(queue, r'^\s*var/[\w/]*token', 'no datum var holds the token')
+        blocks = re.findall(r'(?m)^/datum/[^\n(]*\n((?:\tvar/[^\n]*\n)+)', queue)
+        self.assertGreaterEqual(len(blocks), 2, 'datum var blocks found')
+        for block in blocks:
+            self.assertNotRegex(block, r'(?i)token', 'no datum var holds the token')
         self.assertIn('bug_report_token_from_lines(file2list("config/config.txt"))', queue)
 
     def test_token_is_not_logged(self):

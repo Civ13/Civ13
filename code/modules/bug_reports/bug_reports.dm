@@ -228,7 +228,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 			break
 		sleep(1)
 	if (!H.is_complete())
-		return list("status" = 0, "error" = "GitHub did not answer in time")
+		return list("status" = 0, "error" = "GitHub did not answer in time; check the repository for the issue before trying again")
 	var/datum/http_response/response = H.into_response()
 	if (response.error)
 		return list("status" = 0, "error" = "request failed")
