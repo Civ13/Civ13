@@ -65,8 +65,9 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
    until the gaia region's phase is `compiled`.
 6. **Move the save.** Run `adopt-gaia.bat`. It refuses unless standalone Gaia
    is stopped with a complete save, and it checks every copied save file.
-7. **Start.** Make sure the BYOND pager is signed in, then run `start.bat`
-   and `status.bat` until gaia is `awake`. Join and check your character.
+7. **Start.** Run `start.bat` (it starts the BYOND pager if needed and waits
+   for it to sign in, so tick "remember me" in the pager once), then run `status.bat`
+   until gaia is `awake`. Join and check your character.
 8. **Host service.** Run `install-host-task.bat` from an administrator
    terminal (Windows requires admin rights to register a logon task; the
    task itself still runs as you with normal rights). It replaces the old doorman

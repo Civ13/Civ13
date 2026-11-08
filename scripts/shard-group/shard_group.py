@@ -1882,8 +1882,13 @@ def main(argv=None):
             result = {'done': done, 'refused': refused}
         else:
             accepted, refused = {}, {}
+            waited = False
             for region, host in hosts(group, args.region):
                 try:
+                    if args.action == 'start' and not waited and host.config['start_requires_byond_pager']                             and not host.platform.listening(host.config['port']):
+                        # start.bat after a reboot: the pager starts and signs in once for every region
+                        waited = True
+                        host.wait_for_byond()
                     if args.action == 'force-restart':
                         accepted[region['id']] = host.force_restart()
                     elif args.action == 'stage':
