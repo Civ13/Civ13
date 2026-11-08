@@ -1211,7 +1211,7 @@ var/global/datum/persistence_admission_identity
 			operation.restore_attempt = attempt
 		if(operation.restore_policy != policy || storage.restore_policy != policy || !operation.current(storage, "load"))
 			throw EXCEPTION("Restore attempt binding changed before preflight")
-		if(!storage.prepare_saved_dimensions(expected_intent, operation) || !storage.validate_world_save())
+		if(!storage.prepare_saved_dimensions(expected_intent, operation) || (!operation || storage.exact_validation_operation != operation) && !storage.validate_world_save())
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save preflight rejected")
 		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity())))
 			throw EXCEPTION("Restart intent does not match the completed generation")
@@ -1655,6 +1655,7 @@ var/global/datum/persistence_admission_identity
 		last_error = "Dimension validation already owns recovery"
 		return FALSE
 	dimension_bootstrap_busy = TRUE
+	exact_validation_operation = null
 	var/target_z
 	try
 		if(expected_intent && (expected_intent["generation"] != trim(file2text("map_saves/save_complete.txt")) || expected_intent["metadata"] != md5(file2text("map_saves/map.txt")) || expected_intent["round"] != md5(file2text("map_saves/round.json"))))
@@ -1686,6 +1687,9 @@ var/global/datum/persistence_admission_identity
 		if(operation) operation.diagnostic_phase = "preflight"
 		if(!validate_world_save())
 			throw EXCEPTION("Allocated saved world failed exact validation: [last_error]")
+		// Nothing changes between this check and the restore preflight that
+		// follows, which skips repeating it (about 20 s for Gaia).
+		exact_validation_operation = operation
 		if(!world_z_budget.finish(dimension_reservation, TRUE))
 			throw EXCEPTION("Saved level reservation could not complete; restart recovery")
 		dimension_reservation = null
@@ -1714,6 +1718,9 @@ var/global/datum/persistence_admission_identity
 // clears every object before a load, so the loader rebuilds such a cell
 // from its type alone.
 /map_storage
+	// The operation whose allocated world prepare_saved_dimensions validated
+	// last, with nothing changed since.
+	var/tmp/datum/exact_validation_operation
 	var/list/sparse_level_override // fixtures: "[z]" -> baseline turf type
 	var/list/sparse_ground_choice // the level being saved: z, turf, area
 

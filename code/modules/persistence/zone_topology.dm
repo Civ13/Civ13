@@ -509,11 +509,13 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 			if(C.requested_id || restored_zones[id] != A) throw EXCEPTION("Staged area did not register its identity")
 		durable_metadata_restore_fields(A, row["fields"], persistence_zone_schema())
 		A.luminosity = !A.dynamic_lighting
+	// Cells run in zone_index order, so the grid is read by a running index.
+	var/cell = 0
 	for(var/z = 1, z <= world.maxz, z++)
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, z)
-				var/area/A = restored_zones[saved_zone_id(x, y, z)]
+				var/area/A = restored_zones[validated_zone_grid[++cell]]
 				A.contents += T
 				// Import repairs derived lighting without dispatching occupant events.
 				T.window_coeff_dirty = TRUE
@@ -525,11 +527,12 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 	var/datum/persistence_zone_restore/C = persistence_active_operation.zone_restore
 	C.require_owner()
 	if(C.surprise || C.requested_id) throw EXCEPTION("Unvalidated staged area")
+	var/cell = 0
 	for(var/z = 1, z <= world.maxz, z++)
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, z)
-				if(T.loc != restored_zones[saved_zone_id(x, y, z)]) throw EXCEPTION("Restored zone membership changed")
+				if(T.loc != restored_zones[validated_zone_grid[++cell]]) throw EXCEPTION("Restored zone membership changed")
 				TICK_CHECK
 
 /map_storage/proc/resolve_zone_spawns(list/source, named = FALSE)
