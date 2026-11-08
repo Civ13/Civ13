@@ -33,6 +33,7 @@
 	if(!operation || !operation.enter_contents(src, "save")) return FALSE
 	var/datum/save_debug_recovery/debug_policy = operation.debug_recovery
 	var/candidate_validated = FALSE
+	var/list/handover_roofs
 	// Debug recovery starts only after a failed capture has removed the current
 	// marker. Never let its retry path replace an existing completed backup.
 	if(debug_policy && (fexists("map_saves/save_complete.txt") || !debug_backup_identity_valid() || !operation.current(src, "save"))) throw EXCEPTION("Debug recovery requires an unchanged failed capture and retained backup")
@@ -197,6 +198,8 @@
 			log_startup_progress("	Checking the saved levels.")
 			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained: [last_error]")
 			candidate_validated = TRUE
+			// A handover keeps the roofs its check projected for the candidate record.
+			if(handover_candidate) handover_roofs = validation_record_roofs()
 			save_phase_started = persistence_save_phase_log("candidate check", save_phase_started)
 			clear_saved_zones()
 			release_durable_world()
@@ -244,6 +247,13 @@
 			world.log << "Save validation record failed: [record_error]"
 	else if(candidate_validated && !debug_policy)
 		world.log << "World-save candidate: [last_validation_note]."
+		// A handover's standby load is the validation (restart_transaction.dm):
+		// record the structural check for the handover's own preflights only.
+		if(handover_candidate && handover_roofs)
+			try
+				if(!write_validation_record(generation, world.maxz, "candidate", handover_roofs)) world.log << "Handover candidate record not written; the handover's checks run in full."
+			catch(var/exception/candidate_record_error)
+				world.log << "Handover candidate record failed: [candidate_record_error]"
 	if(transfer_capture) transfer_saved(transfer_capture)
 	if(debug_policy)
 		try

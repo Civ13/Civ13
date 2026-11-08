@@ -434,6 +434,19 @@ var/global/roundtrip_capture_failure = FALSE
 	text2file("[round_text] ", "map_saves/round.json")
 	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (round.json changed since it was validated)", "changed file trusted the validation record")
 	check(map_storage.write_validation_record(generation) && map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "rewritten record did not match its files")
+	// A handover save's candidate record: only the handover trusts it, from
+	// any build (the standby's import is the validation there).
+	check(map_storage.write_validation_record(generation, world.maxz, "candidate") && map_storage.validate_world_save() && map_storage.last_validation_note == "full check (only a handover trusts a save's own check)", "ordinary preflight trusted a candidate record")
+	check(map_storage.write_validation_record(generation, world.maxz, "candidate"), "candidate record not written")
+	map_storage.save_build_identity = "fixture-build-standby"
+	map_storage.handover_candidate = TRUE
+	check(map_storage.validate_world_save() && findtext(map_storage.last_validation_note, "skipped") == 1, "handover did not trust its candidate record")
+	map_storage.handover_candidate = FALSE
+	map_storage.save_build_identity = "fixture-build-a"
+	// A record without the projected roofs (the old format) is not trusted.
+	map_storage.clear_validation_record()
+	text2file(json_encode(list("version" = 1, "build" = "fixture-build-a", "generation" = generation, "maxz" = world.maxz, "files" = map_storage.validation_record_checksums(world.maxz))), "map_saves/validated.json")
+	check(map_storage.validate_world_save() && map_storage.last_validation_note == "full check (unreadable validation record)", "old-format record trusted")
 	map_storage.clear_validation_record()
 	map_storage.save_build_identity = null
 	check(!fexists("map_saves/validated.json"), "validation record not removed")
