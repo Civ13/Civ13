@@ -81,8 +81,8 @@ class PregamePersistenceContracts(unittest.TestCase):
 
     def test_scheduling_and_deferred_vote_guards(self):
         body = procedure('pregame')
-        self.assertIn('if (!pregame_autostart_blocked())\n\t\t\t\tpregame_timeleft = GAMETICKER_PREGAME_TIME', body)
-        self.assertIn('if (!pregame_autostart_blocked())\n\t\t\t\tto_chat(world, "The game will start', body)
+        self.assertIn('if (!pregame_autostart_blocked())\n\t\t\t\tpregame_timeleft = skip_pregame_countdown ? 1 : GAMETICKER_PREGAME_TIME', body)
+        self.assertIn('if (!pregame_autostart_blocked() && !skip_pregame_countdown)\n\t\t\t\tto_chat(world, "The game will start', body)
         self.assertLess(body.index('if (pregame_autostart_blocked()) continue'), body.index('pregame_timeleft--'))
         self.assertIn('while (vote.time_remaining && !pregame_autostart_blocked())', body)
         after_vote = body.split('// A vote callback', 1)[1]
@@ -132,6 +132,17 @@ class PregamePersistenceContracts(unittest.TestCase):
         self.assertIn('persistence_restart.startup_hold || map_storage.round_restored', check)
         for name in ('map.txt', 'round.json', 'save_complete.txt'):
             self.assertIn('fexists("map_saves/' + name + '")', check)
+
+    def test_barracks_skips_the_pregame_countdown(self):
+        body = procedure('pregame')
+        self.assertIn('pregame_timeleft = skip_pregame_countdown ? 1 : GAMETICKER_PREGAME_TIME', body)
+        self.assertLess(body.index('call(region_autostart)(src)'), body.index('skip_pregame_countdown ? 1'))
+        group = (ROOT / 'code/modules/persistence/shard_group.dm').read_text()
+        hook = group.split('/proc/region_round_autostart(datum/controller/gameticker/T)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if(shard_group.kind == "BARRACKS")\n\t\tT.skip_pregame_countdown = TRUE', hook)
+        self.assertLess(hook.index('while(!world_setup_finished)'), hook.index('T.skip_pregame_countdown = TRUE'))
+        check = group.split('/datum/shard_group/proc/autostarts_round()', 1)[1].split('\n/', 1)[0]
+        self.assertLess(check.index('kind == "BATTLE"'), check.index('return FALSE'))
 
 if __name__ == '__main__':
     unittest.main()

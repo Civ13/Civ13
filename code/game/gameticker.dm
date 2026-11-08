@@ -23,6 +23,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 	var/pregame_timeleft = FALSE
 	var/pregame_autostart_cancelled = FALSE
+	var/skip_pregame_countdown = FALSE // the TDM Barracks starts as soon as setup finishes
 
 	var/delay_end = FALSE	//if set to nonzero, the round will not restart on it's own
 
@@ -80,11 +81,11 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		do
 			if(map_storage.round_restored) return
 			if (!pregame_autostart_blocked())
-				pregame_timeleft = GAMETICKER_PREGAME_TIME
+				pregame_timeleft = skip_pregame_countdown ? 1 : GAMETICKER_PREGAME_TIME
 			maytip = TRUE
 
 			to_chat(world, SPAN_NOTICE("<b>Welcome to the pre-game lobby!</b>"))
-			if (!pregame_autostart_blocked())
+			if (!pregame_autostart_blocked() && !skip_pregame_countdown)
 				to_chat(world, "The game will start in [pregame_timeleft] seconds.")
 
 			while (current_state == GAME_STATE_PREGAME)
