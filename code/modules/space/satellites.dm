@@ -20,7 +20,8 @@
 // the party that first launched one to it, and serve only that party: GPS
 // fixes and the station's reports. Another party can break into the station
 // (30 seconds at its desk, any time) to take it over or cut one satellite's
-// link; the owners online are warned. A station nobody has launched to yet
+// link; the owners online are warned. A cut satellite is lost, not gone:
+// whoever holds the station can reacquire it with a minute at the desk. A station nobody has launched to yet
 // serves everyone. Nothing here is a world.time stamp; satellites never wear.
 // ============================================================
 
@@ -30,6 +31,7 @@
 #define SATELLITE_SURVEY_SITES 6
 #define SATELLITE_WAYPOINTS 5
 #define SATELLITE_HACK_DELAY 300
+#define SATELLITE_RELINK_DELAY 600
 
 var/global/list/satellite_stations = list()
 
@@ -194,6 +196,7 @@ var/global/list/satellite_kinds = list(
 	else
 		var/obj/structure/satellite_station/G = satellite_station_near(src)
 		G.satellites |= kind
+		G.lost -= kind
 		var/party = istype(user, /mob/living/human) ? party_train_party_of(user) : null
 		if (!G.owner && party)
 			G.owner = party
@@ -242,6 +245,8 @@ var/global/list/satellite_kinds = list(
 	var/list/satellites = list()
 	// The party its satellites serve, or null while they serve everyone.
 	var/owner = null
+	// Kinds whose link a raider cut; they can be reacquired here.
+	var/list/lost = list()
 
 /obj/structure/satellite_station/New()
 	..()
@@ -261,6 +266,15 @@ var/global/list/satellite_kinds = list(
 	to_chat(user, SPAN_NOTICE(names.len ? "It talks to: [english_list(names)]." : "No satellite is up yet."))
 	if (owner)
 		to_chat(user, SPAN_NOTICE("Its satellites answer to [party_train_party_name(owner)]."))
+	if (length(lost))
+		to_chat(user, SPAN_WARNING("Out of contact: [english_list(satellite_kind_names(lost))]."))
+
+/proc/satellite_kind_names(list/kinds)
+	var/list/names = list()
+	for (var/kind in kinds)
+		var/list/info = satellite_kinds[kind]
+		names += info ? info[1] : kind
+	return names
 
 // TRUE when this station's satellites serve party.
 /obj/structure/satellite_station/proc/serves(party)
@@ -272,6 +286,22 @@ var/global/list/satellite_kinds = list(
 	if (!serves(party_train_party_of(user)))
 		hack_prompt(user)
 		return
+	if (length(lost))
+		var/list/options = list("Read the receivers")
+		for (var/kind in lost)
+			var/list/info = satellite_kinds[kind]
+			options += "Reacquire the [info ? info[1] : kind]"
+		options += "Cancel"
+		var/choice = WWinput(user, "Out of contact: [english_list(satellite_kind_names(lost))].", capitalize(name), "Cancel", options)
+		if (choice == "Cancel" || QDELETED(src) || !in_range(src, user) || user.incapacitated())
+			return
+		if (choice != "Read the receivers")
+			for (var/kind in lost)
+				var/list/info = satellite_kinds[kind]
+				if (choice == "Reacquire the [info ? info[1] : kind]")
+					relink_prompt(user, kind)
+					return
+			return
 	if (!length(satellites))
 		to_chat(user, SPAN_NOTICE("The receivers hiss. No satellite is up yet: launch one from a pad within [SATELLITE_STATION_RANGE] tiles."))
 		return
@@ -339,14 +369,33 @@ var/global/list/satellite_kinds = list(
 	var/old = owner
 	if (kind)
 		satellites -= kind
+		lost |= kind
 		var/list/info = satellite_kinds[kind]
 		log_game("Satellite: [key_name(user)] of [party] cut the [kind] satellite of [old] at [x],[y],[z].")
 		satellite_raid_alert(old, "Your [info ? info[1] : "satellite"] has gone silent.")
-		return "The [info ? info[1] : "satellite"] drifts out of contact."
+		return "The [info ? info[1] : "satellite"] drifts out of contact. Its owners can still reacquire it here."
 	owner = party
 	log_game("Satellite: [key_name(user)] took the ground station of [old] at [x],[y],[z] for [party].")
 	satellite_raid_alert(old, "Your [name] at [x], [y] no longer answers to you.")
 	return "\The [src] now answers to [party_train_party_name(party)]."
+
+/obj/structure/satellite_station/proc/relink_prompt(mob/living/human/user, kind)
+	user.visible_message(SPAN_NOTICE("[user] starts sweeping the sky with \the [src]'s dish."))
+	if (!do_after(user, SATELLITE_RELINK_DELAY, src) || QDELETED(src))
+		return
+	to_chat(user, SPAN_NOTICE(relink(user, kind)))
+
+// Reacquires a lost satellite of kind for user. Returns what happened.
+/obj/structure/satellite_station/proc/relink(mob/living/human/user, kind)
+	if (!(kind in lost))
+		return "That satellite is not lost."
+	if (!serves(party_train_party_of(user)))
+		return "\The [src] no longer answers to you."
+	lost -= kind
+	satellites |= kind
+	var/list/info = satellite_kinds[kind]
+	log_game("Satellite: [key_name(user)] reacquired the [kind] satellite at [x],[y],[z] for [owner].")
+	return "The dish locks on to the [info ? info[1] : "satellite"] again."
 
 // Warns party's members online.
 /proc/satellite_raid_alert(party, text)
@@ -475,3 +524,4 @@ var/global/list/satellite_kinds = list(
 #undef SATELLITE_SURVEY_SITES
 #undef SATELLITE_WAYPOINTS
 #undef SATELLITE_HACK_DELAY
+#undef SATELLITE_RELINK_DELAY
