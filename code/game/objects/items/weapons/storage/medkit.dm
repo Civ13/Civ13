@@ -101,11 +101,11 @@
 	..()
 	if (empty) return
 	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
-	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
+	new /obj/item/weapon/reagent_containers/syringe/autoinjector/adrenaline(src)
 	new /obj/item/weapon/storage/pill_bottle/antitox(src)
 	new /obj/item/weapon/storage/pill_bottle/penicillin(src)
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
+	new /obj/item/weapon/reagent_containers/syringe/autoinjector/morphine(src)
+	new /obj/item/weapon/reagent_containers/syringe/autoinjector/clotting(src)
 	return
 
 

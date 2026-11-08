@@ -61,6 +61,7 @@ var/probe_runtime_error = FALSE
 	fourth_batch_checks()
 	fifth_batch_checks()
 	sixth_batch_checks()
+	seventh_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -604,4 +605,141 @@ var/probe_runtime_error = FALSE
 	amy.gesture_time = world.time - 100
 	probe_check(ben.gesture_with(amy, "high five") == "offered", "an old offer expires")
 	probe_check(!amy.gesture_with(locate(/mob/living/human) in locate(3, 3, 1), "high five"), "you can only high five someone next to you")
+	map.civilizations = TRUE
+
+/proc/seventh_batch_checks()
+	map.civilizations = FALSE
+	map.faction1 = "Red"
+	map.faction2 = "Blue"
+	var/datum/job/SJ = new
+	SJ.uses_squads = TRUE
+	var/datum/job/LJ = new
+	LJ.uses_squads = TRUE
+	LJ.is_squad_leader = TRUE
+
+	// Squad fire teams
+	var/mob/living/human/sgt = probe_human(2, 28, "Sarge")
+	sgt.faction_text = "Red"
+	sgt.original_job = LJ
+	sgt.squad = 1
+	var/mob/living/human/p1 = probe_human(3, 28, "Pvt One")
+	p1.faction_text = "Red"
+	p1.original_job = SJ
+	p1.squad = 1
+	var/mob/living/human/p2 = probe_human(9, 28, "Pvt Two")
+	p2.faction_text = "Red"
+	p2.original_job = SJ
+	p2.squad = 1
+	var/mob/living/human/stranger = probe_human(4, 28, "Stranger")
+	stranger.faction_text = "Red"
+	stranger.original_job = SJ
+	stranger.squad = 2
+	map.faction1_squad_leaders[1] = sgt
+	var/key = squad_group_key(p1)
+	probe_check(fire_team_organizer(sgt, "squad", key) && !fire_team_organizer(p1, "squad", key), "the squad leader runs the squad's fire teams")
+	probe_check(!assign_fire_team(p1, p2, "squad", key, 1), "a private cannot assign fire teams")
+	probe_check(!assign_fire_team(sgt, stranger, "squad", key, 1), "only members of the squad can join its fire teams")
+	probe_check(assign_fire_team(sgt, p1, "squad", key, 1) && assign_fire_team(sgt, p2, "squad", key, 1, TRUE), "the leader assigns two soldiers to fire team 1, one as its leader")
+	probe_check(p1.same_fire_team(p2) && p1.fire_team_leader() == p2 && p1.tracker_target() == p2, "the tracker points a fire team member at the fire team leader")
+	probe_check(p2.tracker_target() == sgt, "the fire team leader is pointed at the squad leader")
+	assign_fire_team(sgt, p1, "squad", key, 1, TRUE)
+	probe_check(p1.fire_team_lead && !p2.fire_team_lead, "a fire team has one leader")
+	var/datum/roster_view/RV = new(sgt)
+	var/page = RV.html()
+	probe_check(findtext(page, "Pvt One") && findtext(page, "FT 1") && !findtext(page, "Stranger"), "the squad leader's roster lists the squad with fire teams")
+	var/datum/roster_view/RV2 = new(p2)
+	page = RV2.html()
+	probe_check(findtext(page, "Fire team 1") && findtext(page, "Pvt One") && !findtext(page, "Sarge"), "a member's roster shows only their fire team")
+	var/datum/roster_view/RV3 = new(stranger)
+	probe_check(!RV3.html(), "someone without a group or team has no roster")
+	p1.squad = 3
+	probe_check(!p1.has_fire_team() && !p1.fire_team, "leaving the squad drops the fire team")
+	p1.squad = 1
+	probe_check(assign_fire_team(sgt, p2, "squad", key, 0) && !p2.has_fire_team(), "a fire team can be cleared")
+	probe_check("fireteam_1" in icon_states('icons/obj/cmss13_ports.dmi'), "fire team badges have sprites")
+
+	// Player factions and companies
+	map.civilizations = TRUE
+	map.custom_civs["Probe Guild"] = list(0, 0, 0, null, 0)
+	var/mob/living/human/chief = probe_human(12, 28, "Chief")
+	chief.civilization = "Probe Guild"
+	map.custom_civs["Probe Guild"][4] = chief
+	var/mob/living/human/folk = probe_human(13, 28, "Folk")
+	folk.civilization = "Probe Guild"
+	probe_check(fire_team_organizer(chief, "faction", "Probe Guild") && !fire_team_organizer(folk, "faction", "Probe Guild"), "the faction leader runs the faction's fire teams")
+	probe_check(assign_fire_team(chief, folk, "faction", "Probe Guild", 2, TRUE) && folk.has_fire_team(), "faction members join fire teams")
+	folk.civilization = "none"
+	probe_check(!folk.has_fire_team(), "leaving the faction drops the fire team")
+	map.custom_company["Probe Co"] = list(list(chief, 60, 0), list(folk, 40, 0))
+	map.custom_company_nr += "Probe Co"
+	probe_check(company_majority_holder("Probe Co") == chief && fire_team_organizer(chief, "company", "Probe Co") && !fire_team_organizer(folk, "company", "Probe Co"), "the majority holder runs the company's fire teams")
+	probe_check(assign_fire_team(chief, folk, "company", "Probe Co", 3) && folk.fire_team == 3, "shareholders join company fire teams")
+	var/list/groups = chief.organized_groups()
+	probe_check(groups.len == 2 && groups[1][1] == "faction" && groups[2][1] == "company", "organized groups list the faction and company the leader runs ([groups.len])")
+	map.custom_company_nr -= "Probe Co"
+	map.custom_company -= "Probe Co"
+	map.custom_civs -= "Probe Guild"
+
+	// Friendly fire
+	map.civilizations = FALSE
+	var/datum/round_facts/F = new
+	var/mob/living/human/ally1 = probe_human(15, 28, "Ally One")
+	ally1.faction_text = "Red"
+	var/mob/living/human/ally2 = probe_human(16, 28, "Ally Two")
+	ally2.faction_text = "Red"
+	var/mob/living/human/foe = probe_human(17, 28, "Foe")
+	foe.faction_text = "Blue"
+	F.record_hit(foe, ally1, "rifle")
+	probe_check(!F.friendly_hits.len, "hitting the enemy is not friendly fire")
+	for (var/i = 1 to 3)
+		F.record_hit(ally2, ally1, "rifle")
+	probe_check(F.friendly_hits["Ally One"] == 3, "hits on your own side are counted")
+	var/list/lines = F.fact_lines()
+	probe_check(findtext(jointext(lines, "|"), "Friendly fire: 3 hits") && findtext(jointext(lines, "|"), "Ally One"), "round facts report friendly fire")
+
+	// Machine gun heat
+	var/obj/item/weapon/gun/projectile/automatic/dp28/MG = new(locate(20, 28, 1))
+	var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = new /obj/item/weapon/gun/projectile/automatic/stationary(locate(21, 28, 1))
+	var/obj/item/weapon/gun/projectile/submachinegun/m16/ar15/rifle = new(locate(22, 28, 1))
+	probe_check(MG.heat_per_shot() == 4 && HMG.heat_per_shot() == 2 && !rifle.heat_per_shot(), "only machine guns heat up, mounted ones more slowly ([MG.heat_per_shot()], [HMG.heat_per_shot()], [rifle.heat_per_shot()], [rifle.stat])")
+	for (var/i = 1 to 25)
+		MG.add_heat(null)
+	probe_check(MG.overheated && MG.current_heat() >= 99, "25 shots overheat a light machine gun")
+	MG.heat_time = world.time - 80
+	probe_check(MG.current_heat() <= 40 && !MG.overheated, "eight seconds of cooling make it usable again")
+	probe_check(MG.persistence_runtime_var("heat"), "barrel heat is not saved")
+
+	// Autoinjectors
+	var/obj/item/weapon/reagent_containers/syringe/autoinjector/clotting/C = new(locate(23, 28, 1))
+	var/obj/item/weapon/reagent_containers/syringe/autoinjector/morphine/Mo = new(locate(23, 28, 1))
+	probe_check(C.time == 10 && C.reagents.has_reagent("clotting_agent", 10) && Mo.reagents.has_reagent("morphine", 5), "autoinjectors come filled and inject in a second")
+	var/mob/living/human/bleeder = probe_human(24, 28, "Bleeder")
+	var/obj/item/organ/external/leg = bleeder.get_organ("l_leg")
+	leg.createwound(CUT, 30)
+	var/bleeding_before = 0
+	for (var/datum/wound/W in leg.wounds)
+		if (W.bleeding())
+			bleeding_before++
+	var/datum/reagent/clotting_agent/CA = new
+	CA.affect_blood(bleeder, 0, 1)
+	var/bleeding_after = 0
+	for (var/datum/wound/W in leg.wounds)
+		if (W.bleeding())
+			bleeding_after++
+	probe_check(bleeding_before >= 1 && bleeding_after == bleeding_before - 1, "the clotting agent seals a bleeding wound ([bleeding_before] -> [bleeding_after])")
+	var/obj/item/weapon/storage/firstaid/combat/modern/kit = new(locate(25, 28, 1))
+	probe_check((locate(/obj/item/weapon/reagent_containers/syringe/autoinjector/clotting) in kit) && (locate(/obj/item/weapon/reagent_containers/syringe/autoinjector/morphine) in kit), "modern combat medicine kits carry autoinjectors")
+
+	// Observer HUD
+	var/mob/observer/ghost/G = new
+	G.forceMove(locate(26, 26, 1))
+	probe_check(G.persistence_runtime_var("field_hud"), "observer HUDs are not saved")
+	var/obj/field_hud/OH = new(null, G)
+	var/mob/living/human/hurtling = probe_human(27, 26, "Hurtling")
+	hurtling.stat = DEAD
+	var/found_dead = FALSE
+	for (var/image/I in OH.build())
+		if (I.loc == hurtling && I.icon_state == "health_dead")
+			found_dead = TRUE
+	probe_check(found_dead, "the observer HUD shows health badges for everyone in view")
 	map.civilizations = TRUE

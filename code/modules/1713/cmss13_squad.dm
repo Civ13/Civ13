@@ -3,6 +3,8 @@
 // squad leader locator, squad colours, the medical HUD, the mine detector and
 // the high five emote. Reimplemented for Civ13.
 
+#define FIRE_TEAM_LEAD_COLOUR "#ffd24a"
+
 //////////////////////////////////////////////////////////////////////////////
 // SQUAD COLOURS
 //////////////////////////////////////////////////////////////////////////////
@@ -57,6 +59,10 @@
 	return null
 
 /mob/living/human/proc/tracker_target()
+	// A fire team leader comes first: squads, player factions and companies.
+	var/mob/living/human/FTL = fire_team_leader()
+	if (FTL && FTL != src)
+		return FTL
 	if (!team_round_active() || !faction_text || !original_job || original_job.is_commander)
 		return null
 	if (in_squad() && !original_job.is_squad_leader)
@@ -104,9 +110,9 @@
 	return TRUE
 
 //////////////////////////////////////////////////////////////////////////////
-// FIELD HUD: one per player in a human body. Every tick it rebuilds the images
-// only its owner sees: the tracker arrow, squadmate chevrons and, for medics,
-// health icons.
+// FIELD HUD: one per player in a human body, and for ghosts that turn on the
+// Observer HUD. Every tick it rebuilds the images only its owner sees: the
+// tracker arrow, squadmate chevrons, fire team badges and health badges.
 //////////////////////////////////////////////////////////////////////////////
 
 #define FIELD_HUD_RANGE 7
@@ -116,16 +122,16 @@
 	name = "field HUD"
 	invisibility = 101
 	anchored = TRUE
-	var/tmp/mob/living/human/owner
+	var/tmp/mob/owner
 	var/tmp/client/shown_to
 	var/tmp/list/shown
 
 /obj/field_hud/persistence_runtime_var(key)
 	return (key in list("owner", "shown_to", "shown")) || ..()
 
-/obj/field_hud/New(newloc, mob/living/human/H)
+/obj/field_hud/New(newloc, mob/M)
 	..(null)
-	owner = H
+	owner = M
 	processing_objects |= src
 
 /obj/field_hud/Destroy()
@@ -150,38 +156,67 @@
 	return I
 
 /obj/field_hud/proc/tracker_image()
-	var/mob/living/human/T = owner.tracker_target()
-	if (!T || T.z != owner.z || get_dist(owner, T) <= TRACKER_HIDE_RANGE)
+	var/mob/living/human/H = owner
+	if (!istype(H))
 		return null
-	var/is_leader = T.original_job && T.original_job.is_squad_leader && !T.original_job.is_commander
-	var/image/I = hud_image(owner, "tracker_arrow", is_leader ? squad_colour_hex(owner.squad) : "#ffffff")
-	var/angle = tracker_bearing(owner, T)
+	var/mob/living/human/T = H.tracker_target()
+	if (!T || T.z != H.z || get_dist(H, T) <= TRACKER_HIDE_RANGE)
+		return null
+	var/colour = "#ffffff"
+	if (T.fire_team_lead && H.same_fire_team(T))
+		colour = FIRE_TEAM_LEAD_COLOUR
+	else if (T.original_job && T.original_job.is_squad_leader && !T.original_job.is_commander)
+		colour = squad_colour_hex(H.squad)
+	var/image/I = hud_image(H, "tracker_arrow", colour)
+	var/angle = tracker_bearing(H, T)
 	I.transform = turn(matrix(), angle)
 	I.pixel_x = round(sin(angle) * 20)
 	I.pixel_y = round(cos(angle) * 20)
 	return I
 
+/obj/field_hud/proc/fire_team_badge(mob/living/human/H)
+	return hud_image(H, "fireteam_[H.fire_team]", H.fire_team_lead ? FIRE_TEAM_LEAD_COLOUR : null)
+
 // Everything the owner should see right now.
 /obj/field_hud/proc/build()
+	if (istype(owner, /mob/observer))
+		return build_observer()
 	var/list/L = list()
-	if (!owner || owner.stat == DEAD)
+	var/mob/living/human/O = owner
+	if (!istype(O) || O.stat == DEAD)
 		return L
 	var/image/arrow = tracker_image()
 	if (arrow)
 		L += arrow
-	var/squad_on = team_round_active() && owner.in_squad()
-	var/medic_on = can_triage(owner)
-	if (!squad_on && !medic_on)
+	var/squad_on = team_round_active() && O.in_squad()
+	var/medic_on = can_triage(O)
+	var/team_on = O.has_fire_team()
+	if (!squad_on && !medic_on && !team_on)
 		return L
-	for (var/mob/living/human/H in view(FIELD_HUD_RANGE, owner))
-		if (H == owner)
+	for (var/mob/living/human/H in view(FIELD_HUD_RANGE, O))
+		if (H == O)
 			continue
-		if (squad_on && H.squad == owner.squad && H.faction_text == owner.faction_text && H.stat != DEAD && H.in_squad())
+		if (squad_on && H.squad == O.squad && H.faction_text == O.faction_text && H.stat != DEAD && H.in_squad())
 			L += hud_image(H, "squad_chevron", squad_colour_hex(H.squad))
-		if (medic_on && medic_sees_patient(owner, H))
+		if (team_on && H.stat != DEAD && O.same_fire_team(H))
+			L += fire_team_badge(H)
+		if (medic_on && medic_sees_patient(O, H))
 			var/state = H.medic_health_state()
 			if (state)
 				L += hud_image(H, state)
+	return L
+
+// Ghosts see everyone's squad chevrons, fire team badges and health badges.
+/obj/field_hud/proc/build_observer()
+	var/list/L = list()
+	for (var/mob/living/human/H in view(world.view, owner))
+		if (team_round_active() && H.in_squad() && H.stat != DEAD)
+			L += hud_image(H, "squad_chevron", squad_colour_hex(H.squad))
+		if (H.has_fire_team() && H.stat != DEAD)
+			L += fire_team_badge(H)
+		var/state = H.medic_health_state()
+		if (state)
+			L += hud_image(H, state)
 	return L
 
 /obj/field_hud/process_interval(seconds)
@@ -196,12 +231,12 @@
 	shown_to = owner.client
 	shown_to.images += shown
 
-/mob/living/human/var/tmp/obj/field_hud/field_hud = null
+/mob/var/tmp/obj/field_hud/field_hud = null
 
-/mob/living/human/persistence_runtime_var(key)
+/mob/persistence_runtime_var(key)
 	return key == "field_hud" || ..()
 
-/mob/living/human/proc/ensure_field_hud()
+/mob/proc/ensure_field_hud()
 	if (!field_hud || QDELETED(field_hud))
 		field_hud = new /obj/field_hud(null, src)
 	return field_hud
@@ -210,6 +245,18 @@
 	. = ..()
 	if (client)
 		ensure_field_hud()
+
+/mob/observer/ghost/verb/toggle_observer_hud()
+	set name = "Toggle Observer HUD"
+	set category = "Ghost"
+	set desc = "Show everyone's squad colours, fire teams and health badges."
+	if (field_hud && !QDELETED(field_hud))
+		qdel(field_hud)
+		field_hud = null
+		to_chat(src, "<span class='notice'>Observer HUD off.</span>")
+		return
+	ensure_field_hud()
+	to_chat(src, "<span class='notice'>Observer HUD on: squad chevrons, fire team numbers and health badges.</span>")
 
 #undef FIELD_HUD_RANGE
 #undef TRACKER_HIDE_RANGE

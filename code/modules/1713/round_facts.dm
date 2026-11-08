@@ -45,6 +45,7 @@ var/global/datum/round_facts/round_facts = new
 	victim.lastattacker = attacker
 	victim.round_fact_weapon = weapon ? "[weapon]" : null
 	victim.round_fact_hit_time = world.time
+	record_friendly_fire(victim, attacker, weapon)
 
 /datum/round_facts/proc/record_death(mob/living/human/victim)
 	if (!istype(victim) || istype(victim, /mob/living/human/corpse))
@@ -98,6 +99,9 @@ var/global/datum/round_facts/round_facts = new
 	top = round_fact_top(deaths)
 	if (top && top[2] >= 3)
 		lines += "Most stubborn: <b>[top[1]]</b>, who died [top[2]] times and kept coming back."
+	var/friendly = friendly_fire_line()
+	if (friendly)
+		lines += friendly
 	return lines
 
 /datum/round_facts/proc/announce()
