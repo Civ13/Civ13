@@ -69,8 +69,9 @@ the service restarts it. A failed build leaves the running world alone. Add
 `UNPRIVILEGED_SCRIPTS` to `config/config.txt` so the game calls `python3`
 rather than `sudo python3`.
 
-Example user unit (`~/.config/systemd/user/civ13-tdm.service`, with
-`loginctl enable-linger <user>` so it runs without a login session):
+Example system unit (`/etc/systemd/system/civ13-tdm.service`). It runs as an
+ordinary user; container hosts such as OpenVZ often cannot run a per-user
+systemd manager, so prefer a system unit there:
 
 ```ini
 [Unit]
@@ -78,15 +79,19 @@ Description=Civ13 TDM (DreamDaemon)
 After=network-online.target
 
 [Service]
-WorkingDirectory=%h/civ13-tdm
-Environment=PATH=%h/byond-516.1688/bin:/usr/local/bin:/usr/bin:/bin
-Environment=LD_LIBRARY_PATH=%h/byond-516.1688/bin
-ExecStart=%h/byond-516.1688/bin/DreamDaemon %h/civ13-tdm/civ13.dmb 1714 -trusted -webclient -logself
+User=civ13
+WorkingDirectory=/home/civ13/civ13-tdm
+Environment=PATH=/home/civ13/byond-516.1688/bin:/usr/local/bin:/usr/bin:/bin
+Environment=LD_LIBRARY_PATH=/home/civ13/byond-516.1688/bin
+ExecStart=/home/civ13/byond-516.1688/bin/DreamDaemon /home/civ13/civ13-tdm/civ13.dmb 1714 -trusted -webclient -logself
 KillMode=mixed
 Restart=always
 RestartSec=5
-MemoryMax=2500M
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 ```
+
+CivilizationBot controls the unit with its `systemd` server option. A bot that
+is not root needs a sudoers rule for exactly
+`/usr/bin/systemctl --no-block start|stop|restart civ13-tdm.service`.
