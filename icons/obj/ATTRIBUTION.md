@@ -13,6 +13,7 @@
 | `dogtag_taken` | CM-SS13 `icons/obj/items/card.dmi` state `dogtag_taken` | CC BY-SA 3.0 |
 | `weapon_light` | CM-SS13 `icons/obj/items/weapons/guns/attachments/rail.dmi` state `flashlight` | CC BY-SA 3.0 |
 | `glowstick_*`, `tripwire`, `tripwire_kit`, `gun_sling` | Drawn for Civ13 (2026-11-08) | Same as the rest of Civ13's art |
+| `spot_marker`, `rally_marker`, `searchlight`, `searchlight_on` | Drawn for Civ13 (2026-11-08) | Same as the rest of Civ13's art |
 
 CM-SS13 art is by the CM-SS13 development team, from
 [cmss13-devs/cmss13](https://github.com/cmss13-devs/cmss13) at commit
