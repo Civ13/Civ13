@@ -446,6 +446,7 @@
       "code/modules/admin/view_variables/topic.dm": 3,
       "code/modules/admin/view_variables/view_variables.dm": 1,
       "code/modules/agent_control/agent_actions.dm": 1,
+      "code/modules/ecology/willow_trees.dm": 1,
       "code/modules/lighting/lighting_composition.dm": 1,
       "code/modules/lighting/lighting_system.dm": 2,
       "code/modules/magic/magic_structures.dm": 4,

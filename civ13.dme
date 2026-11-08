@@ -886,6 +886,7 @@
 #include "code\modules\ecology\activity_heatmap.dm"
 #include "code\modules\ecology\ecology_spawning.dm"
 #include "code\modules\ecology\flora_regrowth.dm"
+#include "code\modules\ecology\willow_trees.dm"
 #include "code\modules\nomad_raids\nomad_raid.dm"
 #include "code\modules\nomad_raids\nomad_reputation.dm"
 #include "code\modules\nomad_raids\nomad_raider.dm"
