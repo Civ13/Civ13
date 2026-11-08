@@ -1244,6 +1244,16 @@ class Host:
             raise RuntimeError('the world gave no valid session')
         port = self.config['port']
         pid = self.platform.server_pid(port)
+        if before.get('persistence_mode') is False:
+            # A world whose round does not save (the TDM Barracks and battle world) has
+            # nothing to save and refuses save_shutdown: end it, as stopping it means.
+            if not pid:
+                raise RuntimeError('the world answers but its process was not found')
+            self.running_file.unlink(missing_ok=True)  # it is going down on purpose
+            self.platform.kill_tree(pid)
+            self.release_save_locks(pid)
+            self.record(phase='stopped', saved=False)
+            return
         self.record(phase='saving', clients=before.get('clients'))
         answer = self.platform.query(port, token, 'save_shutdown', operation, session)
         if answer.get('operation') != operation:
