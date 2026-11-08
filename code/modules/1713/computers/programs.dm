@@ -1600,10 +1600,7 @@
 						if (!(U.real_name in map.warrants))
 							map.warrants += U.real_name
 							U.gun_permit = 0
-							var/obj/item/weapon/paper_bin/police/PAR = null
-							for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
-								PAR = PAR2
-								break
+							var/obj/item/weapon/paper_bin/police/PAR = first_police_paper_bin()
 							if (PAR)
 								var/obj/item/weapon/paper/police/warrant/RW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
 								RW.tgt_mob = U

@@ -256,10 +256,7 @@
 								map.warrants += H.real_name
 								H.gun_permit = 0
 								H.bail_price += 500
-								var/obj/item/weapon/paper_bin/police/PAR = null
-								for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
-									PAR = PAR2
-									break
+								var/obj/item/weapon/paper_bin/police/PAR = first_police_paper_bin()
 								if (PAR)
 									var/obj/item/weapon/paper/police/warrant/SW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
 									SW.tgt_mob = H

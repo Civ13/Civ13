@@ -343,6 +343,23 @@
 	desc = "incoming documents and warrants will arrive here."
 	amount = 0
 
+// Warrant delivery used to scan the whole world for this bin on hits and deaths.
+var/global/list/police_paper_bins = list()
+
+/obj/item/weapon/paper_bin/police/New()
+	..()
+	police_paper_bins += src
+
+/obj/item/weapon/paper_bin/police/Destroy()
+	police_paper_bins -= src
+	return ..()
+
+/proc/first_police_paper_bin()
+	for (var/obj/item/weapon/paper_bin/police/bin in police_paper_bins)
+		if (!QDELETED(bin))
+			return bin
+	return null
+
 /obj/item/weapon/paper/police
 	icon_state = "police_record"
 	base_icon = "police_record"

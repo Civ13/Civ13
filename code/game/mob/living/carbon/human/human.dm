@@ -1392,10 +1392,7 @@ var/list/coefflist = list()
 		var/range_val = 6
 		if (m_intent == "run")
 			range_val = 12
-		var/turf/T = get_turf(src)
-		if (T)
-			for (var/mob/living/simple_animal/hostile/echofiend/EF in range(range_val, T))
-				EF.hear_sound(T)
+		echofiends_hear(get_turf(src), range_val)
 
 /mob/living/human/proc/handle_looks_with_movement()
 
