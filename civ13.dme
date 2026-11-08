@@ -1278,6 +1278,7 @@
 #include "code\modules\persistence\region_ooc.dm"
 #include "code\modules\persistence\region_travel.dm"
 #include "code\modules\persistence\region_trails.dm"
+#include "code\modules\persistence\party_freight.dm"
 #include "code\modules\persistence\party_train.dm"
 #include "code\modules\persistence\region_raid.dm"
 #include "code\modules\persistence\region_raid_reset.dm"

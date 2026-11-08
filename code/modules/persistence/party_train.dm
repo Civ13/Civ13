@@ -72,6 +72,7 @@ var/global/list/party_train_requirements = list(
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.party_train_party == old_party)
 			H.party_train_party = new_party
+	party_freight_rename(old_party, new_party)
 
 /obj/structure/region_gate/railway_station
 	name = "railway works office"
@@ -81,7 +82,7 @@ var/global/list/party_train_requirements = list(
 	density = TRUE
 	// Delivered materials live only in the office, so vehicles and blasts must not delete it.
 	crushable = FALSE
-	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded;freight"
 	// The party building (and then owning) the train here.
 	var/party = null
 	// Material kind = amount delivered so far.
@@ -96,13 +97,14 @@ var/global/list/party_train_requirements = list(
 	var/tmp/track_ok = FALSE
 
 /obj/structure/region_gate/railway_station/persistence_runtime_var(key)
-	if(key in list("track_serial", "track_turf", "track_ok"))
+	if(key in list("track_serial", "track_turf", "track_ok", "freight_busy"))
 		return TRUE
 	return ..()
 
 /obj/structure/region_gate/railway_station/New()
 	..()
 	if(!islist(delivered)) delivered = list()
+	if(!islist(freight)) freight = list()
 
 /obj/structure/region_gate/railway_station/ex_act(severity)
 	return
@@ -178,6 +180,10 @@ var/global/list/party_train_requirements = list(
 	// Covers requirements lowered after materials were delivered.
 	if(party && !completed && !length(remaining()))
 		complete(user)
+	// The train's party also loads and unloads its freight here (party_freight.dm).
+	if(completed && party_train_may_board(user, party))
+		freight_menu(user)
+		return
 	if(completed)
 		return ..()
 	if(!party)
