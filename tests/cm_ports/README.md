@@ -34,3 +34,9 @@ upright when lying down, cleared once the owner cannot type, not saved),
 triage tags (four colours, kept through icon rebuilds, removable, not saved),
 drag trails (only a dragged, bleeding body leaves one smear per tile), the four
 signal smoke colours and the new-player marker's handling of missing clients.
+
+The sixth batch checks squad colours, who the squad tracker points at (squad
+leader, else the commander, team rounds only) and its bearings, the field HUD
+images (one arrow, chevrons only on squadmates), medic health states and the
+own-side rule, the mine detector's armed-mines-in-range list and high fives and
+fist bumps (answer, expiry, adjacency).

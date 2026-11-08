@@ -1908,6 +1908,7 @@ RECIPE: /material/steel/,whistle,/obj/item/weapon/whistle,4,70,0,1,tools,80,0,0,
 RECIPE: /material/steel/,megaphone,/obj/item/weapon/megaphone,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/electronics/,motion detector,/obj/item/weapon/motion_detector,3,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/electronics/,rangefinder,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder,2,120,0,1,tools,0,0,0,8,null
+RECIPE: /material/electronics/,mine detector,/obj/item/weapon/mine_detector,2,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90,0,1,tools,60,0,0,8,null
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
