@@ -40,6 +40,14 @@ var/building_allocating_z = 0
 /proc/building_allocate_level(target_z, bootstrap = FALSE)
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
+// Practice rooms (code/modules/1713/practice_rooms.dm) never exist in fixtures.
+#ifndef PRACTICE_ROOM_SIZE
+var/practice_room_z = 0
+/proc/practice_rooms_close_for_save()
+	return TRUE
+/datum/world_z_budget/proc/practice_admitted(target_z)
+	return FALSE
+#endif
 var/TimeOfGame = 0
 // Declared with the save vote in code/datums/vote.dm, which fixtures omit.
 var/last_persistence_save_time = 0
