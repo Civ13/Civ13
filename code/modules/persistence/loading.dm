@@ -645,6 +645,10 @@
 						Load_Entry(savefile, turf_ref, old_turf)
 						savefile.cd = "/map/[z]/[y]"
 						TICK_CHECK
+			// A ground level's unsaved cells were plain turfs: restore them the way
+			// Load_Entry restores a turf entry that holds only its type.
+			if(sparse_level && sparse_level["kind"] == "ground")
+				restore_sparse_ground_cells(savefile, B, sparse_level)
 			// Every floor of the level is placed and its fields restored: rebuild
 			// each icon once before after_load adds snow and irrigation overlays.
 			refresh_deferred_floor_icons_level(B)
@@ -2177,3 +2181,27 @@ var/global/persistence_memory_probe_error
 #undef PERSISTENCE_SEGMENT_CACHE_NORMAL
 #undef PERSISTENCE_SAVEFILE_MEMORY_FACTOR
 #undef PERSISTENCE_UNKNOWN_RESIDENT_MB
+
+// Unsaved cells of a sparse ground level held the baseline turf with every
+// saved field at its default; constructors may have changed some (random
+// states), so put the defaults back and queue each turf's after_load.
+/map_storage/proc/restore_sparse_ground_cells(savefile/F, z, list/header)
+	var/list/cells = sparse_level_cells(F, z, header)
+	for(var/y = 1, y <= world.maxy, y++)
+		var/list/columns = cells["[y]"]
+		var/next = 1
+		for(var/x = 1, x <= world.maxx, x++)
+			if(columns && next <= columns.len && columns[next] == x)
+				next++
+				continue
+			var/turf/T = locate(x, y, z)
+			var/list/default_fields = T.persistence_field_allowlist()
+			for(var/v in default_fields)
+				if(!(v in T.vars) || T.persistence_runtime_var(v)) continue
+				var/default_value = initial(T.vars[v])
+				if(persistence_default_scalar(default_value) && T.vars[v] != default_value)
+					T.vars[v] = default_value
+			T.persistence_reset_omitted_fields(list("type"))
+			T.persistence_import_fields(list("type"))
+			all_loaded += T
+		TICK_CHECK

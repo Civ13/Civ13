@@ -355,6 +355,7 @@ var/global/roundtrip_capture_failure = FALSE
 			A = locate(/obj/item/test) in locate(1,1,1)
 			check(A && A.number == 88 && A.loc == locate(1,1,1), "legacy object location/value lost")
 			check(A.items && !A.items.len, "legacy empty list lost")
+		check_ground_sparse_level()
 		world.log << "PASS: world-save round trip, edges, multilevel, nested objects, datums, empty lists, corrupt-save rejection"
 		text2file("PASS", "result.txt")
 	catch(var/exception/e)
@@ -653,3 +654,25 @@ var/global/roundtrip_capture_failure = FALSE
 	world.log << "PASS: stream-backed world save"
 	text2file("PASS", "result.txt")
 	del(world)
+
+// A mapped ground level is saved around its most common unchanged tile; the
+// loader rebuilds every other cell from that type and keeps the saved ones.
+/proc/check_ground_sparse_level()
+	var/list/previous = map_storage.sparse_level_override
+	map_storage.sparse_level_override = list("1" = "ground", "2" = /turf/test)
+	var/obj/item/test/kept = new(locate(4,4,1))
+	kept.number = 61
+	check(map_storage.Save_World(), "ground sparse export failed")
+	var/savefile/level = new("map_saves/1.sav")
+	check(level["/sparse/kind"] == "ground" && level["/sparse/turf"] == /turf/test && level["/sparse/cells"] > 0 && level["/sparse/cells"] < world.maxx * world.maxy, "ground level was not saved around its common tile")
+	level = null
+	check(map_storage.validate_world_save(), "ground sparse save rejected")
+	var/turf/stray = locate(2,5,1)
+	stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
+	map_storage.ClearMap()
+	check(map_storage.Load_World(), "ground sparse import failed")
+	stray = locate(2,5,1)
+	check(stray.type == /turf/test, "ground level reload kept an unsaved cell")
+	kept = locate(/obj/item/test) in locate(4,4,1)
+	check(kept && kept.number == 61, "ground level lost a saved cell's contents")
+	map_storage.sparse_level_override = previous
