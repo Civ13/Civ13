@@ -98,6 +98,8 @@ var/global/pilot_save_active = FALSE
 /obj/item/stack/material/copper
 /obj/item/stack/material/tin
 /obj/item/stack/material/bronze
+/obj/item/stack/material/zinc
+/obj/item/stack/material/brass
 /obj/item/stack/material/iron
 /obj/item/stack/material/silver
 /obj/item/stack/material/gold
