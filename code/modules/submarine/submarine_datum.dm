@@ -380,6 +380,7 @@ var/global/list/all_submarines = list()
 		var/depth_factor = 1.0
 		if(depth > 0)
 			depth_factor = clamp(1 - (depth / crush_depth) * 0.6, 0.4, 1) // up to 60% reduction at crush depth
+		depth_factor *= sub_layer_factor(depth, other_sub.depth) // the thermal layer shadows a boat on the other side
 
 		// Passive sonar: surface + submerged contacts, within depth-adjusted range
 		if(sonar_active && sonar_mode == SUB_SONAR_PASSIVE && dist <= s_range * depth_factor)
@@ -434,6 +435,7 @@ var/global/list/all_submarines = list()
 			var/depth_factor = 1.0
 			if(depth > 0)
 				depth_factor = clamp(1 - (depth / crush_depth) * 0.6, 0.4, 1)
+			depth_factor *= sub_layer_factor(depth, NPC.patrol_depth())
 
 			// Radar Check: surface + air contacts only (radar cannot see through water)
 			if(radar_active && dist <= r_range && NPC.contact_type != SUB_CONTACT_SUBMERGED)

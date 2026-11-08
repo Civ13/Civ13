@@ -519,6 +519,49 @@ var/space_runtime_error = FALSE
 	wet.water_depth = 0
 	dry.water_depth = 0
 
+	// Damage control: a shoring kit cuts a breach to a seep until the next
+	// hit, wedges buckled bulkhead seals shut, and gives up on crumpled steel.
+	var/obj/item/weapon/shoring_kit/kit = new(null)
+	space_check(!kit.use_on_bulkhead(B, null) && !B.watertight, "a crumpled bulkhead cannot be shored")
+	var/turf/wall/sub_bulkhead/B2 = locate(3, 10, 1)
+	B2 = B2.ChangeTurf(/turf/wall/sub_bulkhead, FALSE, FALSE)
+	B2.take_bulkhead_damage(B2.max_health * 0.6)
+	space_check(!B2.watertight && B2.health > 0, "a second bulkhead buckles")
+	B2.shore_seals()
+	space_check(B2.watertight && B2.health < B2.max_health, "shoring wedges the seals shut without mending the steel")
+	var/turf/floor/sub_deck/hull_deck = locate(2, 11, 1)
+	hull_deck = hull_deck.ChangeTurf(/turf/floor/sub_deck/galley, FALSE, FALSE)
+	var/turf/wall/sub_hull/hull = locate(3, 11, 1)
+	hull = hull.ChangeTurf(/turf/wall/sub_hull, FALSE, FALSE)
+	space_check(!kit.use_on_hull(hull, null), "a sound hull needs no shoring")
+	hull.breach_hull()
+	space_check(hull.breached && hull_deck.water_inflow_rate == SUB_BREACH_INFLOW_BASE, "a breach pours water onto the deck beside it")
+	hull.shore_breach()
+	space_check(hull.shored && hull_deck.water_inflow_rate == SUB_SHORED_INFLOW, "a shored breach only seeps")
+	hull.apply_breach_damage(10)
+	space_check(!hull.shored && hull.breached && hull_deck.water_inflow_rate == SUB_BREACH_INFLOW_BASE, "the next hit knocks the shoring out")
+	hull.shore_breach()
+	hull.repair_breach()
+	space_check(!hull.breached && !hull.shored && hull_deck.water_inflow_rate == 0, "welding a shored breach leaves the deck dry")
+	hull_deck.water_depth = 0
+	qdel(kit)
+
+	// The thermal layer: a boat on the other side of it is heard at half range.
+	space_check(sub_layer_factor(SUB_THERMOCLINE_DEPTH + 20, 0) == SUB_THERMOCLINE_SHADOW && sub_layer_factor(30, 0) == 1 && sub_layer_factor(SUB_THERMOCLINE_DEPTH + 20, SUB_THERMOCLINE_DEPTH + 40) == 1, "only crossing the layer costs sonar range")
+	var/datum/vessel_contact/npc/hunter = new("Probe Frigate", 0, 0)
+	hunter.sonar_range = 10000
+	var/datum/submarine/quarry = new
+	quarry.x_pos = 0
+	quarry.y_pos = 70
+	quarry.noise_level = 50
+	quarry.depth = SUB_THERMOCLINE_DEPTH + 20
+	hunter.check_player_detection(quarry)
+	space_check(hunter.ai_state == SUB_AI_PATROL && quarry.below_layer(), "a noisy boat under the layer stays hidden from a frigate above it")
+	quarry.depth = 30
+	hunter.check_player_detection(quarry)
+	space_check(hunter.ai_state == SUB_AI_HUNT && hunter.last_known_y == 70, "the same boat above the layer is heard")
+	all_submarines -= quarry
+
 // Phase 2: propellant, launch pad, crewed lander and the landed lander.
 /proc/space_flight_payload(list/flight = null)
 	var/list/P = list("v" = 1, "kind" = "character", "owner" = "spacetester", "name" = "Test Crew", "gender" = MALE, "age" = 30,

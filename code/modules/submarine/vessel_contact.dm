@@ -304,6 +304,8 @@ var/global/list/npc_type_cache = list()
 	var/depth_factor = 1.0
 	if(player.depth > 0)
 		depth_factor = clamp(1 - (player.depth / player.crush_depth) * 0.6, 0.4, 1)
+	// A boat under the thermal layer is heard at half range from above it.
+	depth_factor *= sub_layer_factor(patrol_depth(), player.depth)
 
 	// Radar detection: surface ships and air contacts detect surfaced subs via radar (sensor_range)
 	if((contact_type == SUB_CONTACT_SURFACE || contact_type == SUB_CONTACT_AIR) && player.depth == 0 && dist <= sensor_range)
