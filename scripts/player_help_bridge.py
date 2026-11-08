@@ -1210,6 +1210,49 @@ def plain_answer(answer):
     return '\n'.join(output)
 
 
+def process_alive(pid):
+    """Whether pid runs, asked of the OS directly; any doubt counts as alive."""
+    if pid <= 0:
+        return False
+    if os.name == 'nt':
+        try:
+            import ctypes
+            from ctypes import wintypes
+            kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+            kernel.OpenProcess.restype = wintypes.HANDLE
+            kernel.GetExitCodeProcess.argtypes = (wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD))
+            kernel.CloseHandle.argtypes = (wintypes.HANDLE,)
+            handle = kernel.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+            if not handle:
+                return ctypes.get_last_error() != 87  # ERROR_INVALID_PARAMETER: no such process
+            try:
+                code = wintypes.DWORD()
+                if not kernel.GetExitCodeProcess(handle, ctypes.byref(code)):
+                    return True
+                return code.value == 259  # STILL_ACTIVE
+            finally:
+                kernel.CloseHandle(handle)
+        except Exception:
+            return True
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except Exception:
+        return True
+    return True
+
+
+def stale_lock(lock):
+    """True only for a worker.lock whose pid file names a process that no longer exists."""
+    try:
+        pid = int((lock / 'pid').read_text(encoding='ascii').strip())
+    except (OSError, ValueError):
+        return False
+    return pid != os.getpid() and not process_alive(pid)
+
+
 class Bridge:
     def __init__(self, root, config, corpus, transport=network, wiki_status=None):
         self.root, self.config, self.corpus, self.transport = root, config, corpus, transport
@@ -1221,7 +1264,17 @@ class Bridge:
         self.heartbeat_at, self.heartbeat_enabled = None, None
         self.root.mkdir(parents=True, exist_ok=True)
         self.lock = self.root / 'worker.lock'
-        self.lock.mkdir()
+        try:
+            self.lock.mkdir()
+        except FileExistsError:
+            # A bridge that died without its shutdown (a reboot, a kill) leaves its lock
+            # behind and every later start would refuse. Replace it only when the pid it
+            # names is provably gone; an unreadable lock or a live pid still refuses.
+            if not stale_lock(self.lock):
+                raise
+            (self.lock / 'pid').unlink(missing_ok=True)
+            self.lock.rmdir()
+            self.lock.mkdir()
         (self.lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
 
     def answer(self, request):

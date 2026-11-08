@@ -172,7 +172,10 @@ private directory permissions. Do not share a spool across Nomads and TDM.
 5. Launch the worker below and keep it supervised. Configuration is read at
    launch; restart the worker after changing it. Shutdown marks help unavailable.
    Restart clears old spool questions rather than re-sending them. Do not run
-   multiple workers against the same spool.
+   multiple workers against the same spool: the worker refuses to start while
+   `SQL/player-help/worker.lock` names a live process. A lock left by a worker
+   that died without shutting down is replaced automatically; a lock with no
+   readable pid is left for the operator to inspect.
 
 The bridge treats request IDs as bounded opaque correlation strings. Native
 BYOND may format the realtime component in scientific notation. Spool markers

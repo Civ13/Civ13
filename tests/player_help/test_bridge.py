@@ -7,7 +7,9 @@ import threading
 import time
 import unittest
 from unittest import mock
+import os
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('bridge', ROOT / 'scripts/player_help_bridge.py')
@@ -231,6 +233,36 @@ class BridgeTests(unittest.TestCase):
         self.make(lambda *args: None)
         with self.assertRaises(FileExistsError):
             bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+
+    def test_lock_of_a_dead_worker_is_replaced_but_live_or_unreadable_locks_refuse(self):
+        lock = self.root / 'worker.lock'
+        # A pid that has exited: the bridge that wrote it died without its shutdown.
+        lock.mkdir()
+        gone = subprocess.Popen([sys.executable, '-c', 'pass'])
+        gone.wait()
+        (lock / 'pid').write_text(str(gone.pid), encoding='ascii')
+        self.assertTrue(bridge.stale_lock(lock))
+        instance = self.make(lambda *args: None)
+        self.assertEqual((lock / 'pid').read_text(encoding='ascii'), str(os.getpid()))
+        instance.close()
+        self.instances.remove(instance)
+        self.assertFalse(lock.exists())
+        # A lock without a readable pid is left for the operator.
+        lock.mkdir()
+        self.assertFalse(bridge.stale_lock(lock))
+        with self.assertRaises(FileExistsError):
+            bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+        (lock / 'pid').write_text('not a pid', encoding='ascii')
+        with self.assertRaises(FileExistsError):
+            bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+        # A live pid (this test process) refuses too.
+        (lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
+        with self.assertRaises(FileExistsError):
+            bridge.Bridge(self.root, self.config, self.corpus, lambda *args: None)
+        self.assertTrue(bridge.process_alive(os.getpid()))
+        self.assertFalse(bridge.process_alive(0))
+        (lock / 'pid').unlink()
+        lock.rmdir()
 
     def test_transport_has_total_deadline_without_a_child_process(self):
         # A trickling server must not hold a worker past timeout_seconds; the call is abandoned in-process.
