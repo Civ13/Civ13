@@ -877,7 +877,7 @@ SUITES = {
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
-    # Fit Viewport skin wiring; the width math runs natively when BYOND is on PATH.
+    # Fit Viewport skin wiring; tests/fit_viewport/native_width.py is the manual native width check.
     'fit_viewport': {'files': ('tests/fit_viewport/test_fit_viewport.py',),
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
         'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
