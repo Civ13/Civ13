@@ -5,6 +5,7 @@ on:
     paths:
       - '**.dmm'
       - 'scripts/map_review.py'
+      - 'tests/map_review/**'
       - '.github/workflows/map-review.yml'
   workflow_dispatch:
     inputs:
@@ -38,6 +39,10 @@ jobs:
         env:
           BYOND_HOME: ${{ runner.temp }}/byond
         run: bash scripts/cloud_byond_setup.sh
+      - name: Review fixture tests
+        run: |
+          export BYOND_DEVTOOLS="$PWD/.byond-devtools" BYOND_BIN="$(ls -d "$RUNNER_TEMP"/byond/byond/bin)"
+          python3 -B -m unittest tests/map_review/devtools_review.py -v
       - name: Picture and lint changed maps
         env:
           BASE_REF: ${{ github.event.pull_request.base.sha || inputs.base || 'origin/master' }}

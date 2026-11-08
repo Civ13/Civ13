@@ -295,6 +295,11 @@ SUITES = {
             'tools/agent-control/benchmarks/test_gateway_benchmark.py'),
         'paths': ('tests/agent_control/', 'tools/agent-control/', 'code/modules/agent_control/'), 'shared_paths': (
             'code/_helpers/admin.dm', 'code/world.dm', '.gitignore')},
+    # Map and sprite review git/summary logic on a temporary repository; the
+    # byond-devtools parts skip here and run in the map-review workflow.
+    'map_review': {'files': ('tests/map_review/test_map_review.py',),
+        'paths': ('tests/map_review/', 'scripts/map_review.py', 'scripts/sprite_review.py'),
+        'shared_paths': ('.github/workflows/map-review.yml', '.github/workflows/sprite-review.yml')},
     # CI digest classifier/renderer and workflow contract; fake GitHub API only,
     # no network or BYOND runtime.
     # Offline forgery checks for the local CI attestation gate; no network.
