@@ -1676,6 +1676,7 @@ RECIPE: /material/glass/,flashy univisor,/obj/item/clothing/glasses/univisorflas
 
 //COPPER AGE WOODEN CART//
 RECIPE: /material/wood/soft/,wooden cart,/obj/structure/closet/crate/cart/wooden,40,190,1,1,logistics,20,0,0,8,null
+RECIPE: /material/wood/soft/,safe house depot,/obj/structure/safehouse_depot,20,200,1,1,logistics,20,0,0,8,null
 //COPPER AGE WOODEN CART//
 
 //DARK AGE STONE CART//

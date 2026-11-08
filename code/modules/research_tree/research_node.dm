@@ -621,12 +621,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
-		// --- carts (5) ---
+		// --- carts (6) ---
 		"/obj/structure/closet/crate/cart/copper" = "carts",
 		"/obj/structure/closet/crate/cart/stone" = "carts",
 		"/obj/structure/closet/crate/cart/wooden" = "carts",
 		"/obj/structure/vehicle/carriage" = "carts",
 		"/obj/structure/vehicle/raft" = "carts",
+		"/obj/structure/safehouse_depot" = "carts",
 		// --- classical_dress (37) ---
 		"/obj/item/clothing/head/ainu_bandana" = "classical_dress",
 		"/obj/item/clothing/head/egyptian_headdress_black" = "classical_dress",
