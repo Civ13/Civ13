@@ -135,9 +135,9 @@ var/observe_runtime_error = FALSE
 	playsound(locate(6, 25, 1), "grassfootsteps", 40)
 	var/list/heard = observe_call("observe", C, list())
 	var/list/sounds = islist(heard) ? heard["sounds"] : null
-	observe_check(length(sounds) == 1 && sounds[1]["sound"] == "Explosion1" && sounds[1]["dx"] == 3 && sounds[1]["dy"] == 0 && sounds[1]["volume"] == 80, "a nearby sound is heard with its offset ([json_encode(sounds)])")
+	observe_check(length(sounds) == 1 && lowertext(sounds[1]["sound"]) == "explosion1" && sounds[1]["dx"] == 3 && sounds[1]["dy"] == 0 && sounds[1]["volume"] == 80 && sounds[1]["kind"] == "explosion", "a nearby sound is heard with its offset and kind ([json_encode(sounds)])")
 	var/list/steps = observe_call("observe", C, list("footsteps" = TRUE))
-	observe_check(islist(steps) && length(steps["sounds"]) == 2 && steps["sounds"][2]["footsteps"], "footsteps are listed only when asked")
+	observe_check(islist(steps) && length(steps["sounds"]) == 2 && steps["sounds"][2]["footsteps"] && steps["sounds"][2]["kind"] == "footsteps", "footsteps are listed only when asked")
 	playsound(locate(5, 25, 1), 'sound/effects/Explosion1.ogg', 80)
 	var/list/later = observe_call("observe", C, list("sound_since" = heard["last_sound"]))
 	observe_check(islist(later) && length(later["sounds"]) == 1, "sound_since returns only newer sounds")

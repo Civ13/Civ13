@@ -70,7 +70,7 @@
 
 // A sound played near the character (playsound reaches clients only; this is
 // the agent's ear). label is the sound's name or file without folder and extension.
-/datum/agent_character/proc/hear_sound(turf/source, label, vol)
+/datum/agent_character/proc/hear_sound(turf/source, label, vol, kind)
 	var/turf/here = get_turf(body)
 	if (!here || !source)
 		return
@@ -78,9 +78,26 @@
 	var/list/row = list("id" = sound_serial, "time" = world.time, "sound" = label, "dx" = source.x - here.x, "dy" = source.y - here.y, "volume" = round(vol))
 	if (findtext(label, "footstep"))
 		row["footsteps"] = TRUE
+	if (kind)
+		row["kind"] = kind
 	sounds += list(row)
 	if (sounds.len > AGENT_CHARACTER_SOUNDS)
 		sounds.Cut(1, 2)
+
+// What kind of sound a file is, from its folder: gunshot, explosion, animal, voice, footsteps or null.
+/proc/agent_sound_kind(requested, soundin)
+	var/path = lowertext("[requested] [soundin]")
+	if (findtext(path, "footstep"))
+		return "footsteps"
+	if (findtext(path, "guns/fire/"))
+		return "gunshot"
+	if (findtext(path, "explosion") || findtext(path, "explo_") || findtext(path, "artillery") || findtext(path, "new_exp_"))
+		return "explosion"
+	if (findtext(path, "sound/animals/"))
+		return "animal"
+	if (findtext(path, "sound/voice/") || findtext(path, "sound/effects/emotes/") || findtext(path, "sound/vo/"))
+		return "voice"
+	return null
 
 /proc/agent_sound_label(requested, soundin)
 	var/text = istext(requested) ? requested : "[soundin]"
@@ -97,6 +114,7 @@
 	if (!source || !vol || vol <= 0)
 		return
 	var/label = agent_sound_label(requested, soundin)
+	var/kind = agent_sound_kind(requested, soundin)
 	for (var/mob/living/M in agent_characters)
 		if (M.ear_deaf > 0 || (excluded && excluded.Find(M)))
 			continue
@@ -104,7 +122,7 @@
 		if (!T || T.z != source.z || get_dist(T, source) > (7 * 3) + extrarange)
 			continue
 		var/datum/agent_character/C = agent_characters[M]
-		C.hear_sound(source, label, vol)
+		C.hear_sound(source, label, vol, kind)
 
 // Queue step "until": stop repeating once this holds.
 /datum/agent_character/proc/until_met(list/step)
