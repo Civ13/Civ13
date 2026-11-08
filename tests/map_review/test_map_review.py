@@ -77,7 +77,7 @@ class ReviewRepo(unittest.TestCase):
         cls.base = cls.git("rev-parse", "HEAD").strip()
         cls.write("maps/town.dmm", dmm(["aaa", "aba", "aaa"]))
         cls.write("maps/new.dmm", dmm(["b"]).replace("/obj/crate", "/obj/crate{nonsense_var = 1}"))
-        cls.git("mv", "maps/old_name.dmm", "maps/new_name.dmm")
+        cls.git("mv", "maps/old_name.dmm", "maps/new_name.dmm")  # unchanged content, so git pairs it as a rename
         cls.write("icons/crate.dmi", dmi([("closed", (200, 100, 0, 255)), ("open", (0, 50, 200, 255)), ("broken", (9, 9, 9, 255))]))
         cls.write("icons/broken.dmi", b"not a png")
         (cls.repo / "icons/gone.dmi").unlink()
@@ -119,6 +119,8 @@ class ReviewRepo(unittest.TestCase):
         self.assertEqual(broken, 0)
         with self.assertRaises(SystemExit):  # the CLI path is checked before anything runs
             sprite_review.review("HEAD", "HEAD", Path(self.tmp) / "missing", Path(self.tmp) / "none")
+        with self.assertRaises(SystemExit):
+            map_review.review("HEAD", "HEAD", Path(self.tmp) / "missing", Path(self.tmp) / "none")
 
 
 if __name__ == "__main__":

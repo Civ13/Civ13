@@ -66,10 +66,12 @@ job summary and the pictures to the `map-review` artifact. It fails only when a
 map at head cannot be read. Locally, with head checked out:
 `python3 scripts/map_review.py --base origin/master --devtools <byond-devtools checkout> --byond <BYOND bin> --out map-review`.
 
-`tests/map_review/test_map_review.py` runs both reviews on a tiny git repository.
-Offline it checks the git and summary logic; with `BYOND_DEVTOOLS` (and
-`BYOND_BIN` for map pictures and lint) it runs the real tools, as the map-review
-and sprite-review workflows do before reviewing a pull request.
+`tests/map_review/test_map_review.py` runs both reviews on a tiny git repository
+and checks the git and summary logic offline. `tests/map_review/devtools_review.py`
+runs the same repository through the real tools; it needs `node` and
+`BYOND_DEVTOOLS`, plus `BYOND_BIN` for map pictures and lint. The map-review and
+sprite-review workflows run it before reviewing a pull request:
+`BYOND_DEVTOOLS=<checkout> BYOND_BIN=<BYOND bin> python3 -B -m unittest tests/map_review/devtools_review.py`.
 
 ## Maps
 
