@@ -109,6 +109,20 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('return "off-world"', kind)
         self.assertIn('if("RAILYARD") return "rail yard"', kind)
 
+    def test_the_regions_panel_refreshes_in_place(self):
+        # Val (2026-11-08): the Regions window needs a way to refresh it.
+        panel = proc(GROUP, '/datum/shard_group/proc/panel_html')
+        self.assertIn("byond://?region_refresh=1", panel)
+        self.assertIn('Checked [round((world.time - last_poll) / 10)] seconds ago.', panel)
+        refresh = proc(GROUP, '/datum/shard_group/proc/refresh_now')
+        self.assertIn('world.time - last_poll < SHARD_REFRESH_FLOOR', refresh)
+        self.assertLess(refresh.index('SHARD_REFRESH_FLOOR'), refresh.index('poll_once()'))
+        self.assertIn('last_poll = world.time', proc(GROUP, '/datum/shard_group/proc/poll_once'))
+        relay = read('code/modules/persistence/region_relay.dm')
+        topic = relay[relay.index('if(href_list["region_refresh"])'):]
+        self.assertLess(topic.index('next_region_refresh = world.time'), topic.index('shard_group.refresh_now()'))
+        self.assertLess(topic.index('shard_group.refresh_now()'), topic.index('view_regions()'))
+
     def test_the_doorman_address_is_validated(self):
         body = proc(GROUP, '/datum/shard_group/proc/configure')
         self.assertIn('shard_address_valid(settings["doorman"])', body)
