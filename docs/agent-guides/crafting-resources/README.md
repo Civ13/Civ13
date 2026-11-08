@@ -90,6 +90,12 @@ explicit optional do_after context owns actor and turf reservations before any
 spawn; never queue mining from deferred living.Bump work or switch the player's
 active hand. The custom saver must exclude both reservation pointers.
 
+<!-- 2026-11-08: collision tree chopping -->
+Walking into a dense tree (`wild/tree`, `wild/jungle`) with a chopping tool in
+either hand calls the unchanged click chop in `wild/attackby`. Keep
+`tree_chopping_tool()` in step with that gate; `bump_chop_target` is the
+runtime-only actor reservation and stays excluded from saves.
+
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 

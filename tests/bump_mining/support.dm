@@ -94,6 +94,8 @@
 	parent_bumps++
 /mob/living/human/proc/football_bump(atom/A)
 	return
+/mob/living/human/proc/try_bump_chopping(atom/A)
+	return FALSE // Tree chopping lives in wild.dm; not part of this fixture.
 /mob/living/human/probe/bump_mining_authority()
 	return TRUE // Explicit headless client/movement ownership seam only.
 /obj/item/football
