@@ -26,7 +26,16 @@ static class LocalHelpTests {
         Require(status.Regions[0] is { Id: "gaia", Running: true, Pid: 38088, Stale: false, Log: "D:/r/player-help/gaia.log" }, "gaia region");
         Require(status.Regions[1].Stale && status.Regions[1].Describe() == "running (PID 56340), no heartbeat for 400 s", "stale: " + status.Regions[1].Describe());
         Require(status.Regions[2].Describe() == "not running" && status.Regions[0].Describe() == "running (PID 38088), answering", "describe");
-        Require(status.Describe().StartsWith("Kept running by the host service.") && status.Describe().Contains("barren: not running"), "status text");
+        Require(status.Describe().StartsWith("Kept running by the host service") && status.Describe().Contains("barren: not running"), "status text");
+        // Every region of the group, each started or stopped on its own (help-start/help-stop --region).
+        foreach (var action in new[] { "help-start", "help-stop" })
+            Require(LocalHosting.GroupStep(control, action, "moon").ArgumentList.SequenceEqual(new[] { "-I", "-B", group.ShardScript, "--config", group.Config, action, "--region", "moon" }), action + " one-region argv");
+        var perRegion = LocalHelp.ParseStatus(0, "{\"configured\": true, \"stopped\": false, \"regions\": {" +
+            "\"gaia\": {\"running\": true, \"pid\": 1, \"wanted\": true, \"enabled\": true, \"heartbeat_age_seconds\": 1}, " +
+            "\"moon\": {\"running\": false, \"pid\": null, \"wanted\": false, \"enabled\": false}, " +
+            "\"barren\": {\"running\": true, \"pid\": 3, \"wanted\": false, \"enabled\": true, \"heartbeat_age_seconds\": 2}}, \"ok\": true}");
+        Require(perRegion.Regions.Count == 3 && perRegion.Regions[1] is { Id: "moon", Wanted: false } && perRegion.Regions[1].Describe() == "stopped (Start region to run it)", "stopped region: " + perRegion.Regions[1].Describe());
+        Require(perRegion.Regions[2].Describe() == "running (PID 3), answering, stopping" && status.Regions[0].Wanted == null, "stopping region / older answer");
 
         status = LocalHelp.ParseStatus(0, "{\"configured\": false, \"ok\": true}");
         Require(status is { Ok: true, Configured: false } && status.Describe().StartsWith("Not configured"), "unconfigured");

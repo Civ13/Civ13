@@ -8,6 +8,26 @@ from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
 
+
+def catalog_text(game):
+    """Compact JSON with one acquisition, recipe or resource entry per line.
+
+    The game reads it with json_decode, so the layout is free; one entry per line
+    lets git merge PRs that add recipes in different places instead of
+    conflicting on a single 4 MB line."""
+    def compact(value):
+        return json.dumps(value,separators=(',',':'),ensure_ascii=True)
+    parts=[]
+    for key,value in game.items():
+        if isinstance(value,dict) and value:
+            body=',\n'.join(compact(k)+':'+compact(v) for k,v in value.items())
+            parts.append(compact(key)+':{\n'+body+'\n}')
+        elif isinstance(value,list) and value:
+            parts.append(compact(key)+':[\n'+',\n'.join(compact(v) for v in value)+'\n]')
+        else:
+            parts.append(compact(key)+':'+compact(value))
+    return '{'+',\n'.join(parts)+'}\n'
+
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, default=ROOT/'data/atlas-preview')
@@ -287,6 +307,17 @@ if toolsmith_line>=0 and toolsmith_rows and metals:
             add(f'Toolsmith {metal_name} {name.lower()}','Toolsmith',[(sheet,int(metal)),('/obj/item/stack/material/wood',1)],[(result,1)],dedicated_path,dedicated[:toolsmith_line].count('\n')+1,f"Toolsmith's bench beside an anchored anvil that accepts {metal_name}; smelted sheets only; Crafting coefficient 1.20x and the anvil's job rules; maximum era ordinal {max_age}; {100+15*int(metal)} ticks per tool, up to 5 per action; output beside the bench.", 'toolsmith_recipes')
 elif dedicated:
     issues.append(dict(file=dedicated_path,line=1,reason='Toolsmith recipe table changed; inspect atlas extraction',raw='toolsmith_recipes'))
+foundry_line=dedicated.find('/obj/structure/component_workbench/toolsmith/foundry')
+foundry_age=re.search(r'#define FOUNDRY_MIN_AGE (\d+)',dedicated)
+if foundry_line>=0 and foundry_age and toolsmith_rows and metals and 'is_node_done(H.civilization, "machined_tools")' in dedicated:
+    for name,result,metal,max_age in toolsmith_rows:
+        if int(max_age)<int(foundry_age[1]):continue
+        for sheet,metal_name in re.findall(r'(/obj/item/stack/material/\w+) = "(\w+)"',metals[1]):
+            molten='/obj/item/weapon/clay/mold/claypot/fired#molten_'+metal_name
+            sprite_variants[molten]=dict(type='/obj/item/weapon/clay/mold/claypot/fired',name=f'molten {metal_name} (kiln pot or jug)')
+            add(f'Cast {metal_name} {name.lower()}','Foundry casting',[(molten,int(metal)),('/obj/item/stack/material/wood',1)],[(result,1)],dedicated_path,dedicated[:foundry_line].count('\n')+1,f"Casting foundry; molten metal units from a fired blacksmith pot or jug; era ordinal {foundry_age[1]} and later with Machined Tools; no anvil or smithing skill; {30+15*int(metal)} ticks per tool, up to 10 per action; output beside the foundry.", 'foundry commit_tool')
+elif dedicated:
+    issues.append(dict(file=dedicated_path,line=1,reason='Foundry casting contract changed; inspect atlas extraction',raw='foundry'))
 armor_path='code/game/objects/structures/blacksmithing/armor_workbench.dm'
 armor=uncomment(files.get(armor_path,''))
 for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d+), "result" = (/\w[\w/]+), "inputs" = list\((.*)$',armor,re.M):
@@ -372,7 +403,7 @@ resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']}
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 if options.catalog_only:
     game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
-    game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
+    game_text=catalog_text(game)
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
         options.game_catalog.write_text(game_text,encoding='utf-8')
@@ -408,7 +439,7 @@ for resource in resource_ids:
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
 game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
-game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
+game_text=catalog_text(game)
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
     options.game_catalog.write_text(game_text,encoding='utf-8')

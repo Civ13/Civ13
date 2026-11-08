@@ -8,8 +8,18 @@
 	. = ..()
 	if (extraction_vehicle_part_id) . |= "extraction_vehicle_part_id"
 
+// Car axes and the light aircraft axis share the same bounded graph.
+/proc/extraction_vehicle_axis_path(path)
+	return ispath(path, /obj/structure/vehicleparts/axis/car) || ispath(path, /obj/structure/vehicleparts/axis/aircraft)
+
+/proc/extraction_vehicle_driver_path(path)
+	return ispath(path, /obj/structure/bed/chair/drivers/car) || ispath(path, /obj/structure/bed/chair/drivers/aircraft)
+
 /datum/extraction_vehicle_codec
 	var/last_error
+	// Vehicle storage parks on roads and runways: non-dense covers and stains
+	// under the footprint are ground, not cargo. Extraction keeps the strict bay.
+	var/ignore_ground = FALSE
 	var/list/objects
 	var/list/index
 	proc/fail(message)
@@ -18,8 +28,8 @@
 		index = null
 		return null
 	proc/supported(path)
-		if (ispath(path, /obj/structure/bed/chair)) return ispath(path, /obj/structure/bed/chair/drivers/car) || ispath(path, /obj/structure/bed/chair/carseat)
-		return ispath(path, /obj/structure/vehicleparts/axis/car) || ispath(path, /obj/structure/vehicleparts/frame/car) || ispath(path, /obj/structure/vehicleparts/movement) || ispath(path, /obj/structure/vehicleparts/license_plate) || ispath(path, /obj/structure/engine/internal) || ispath(path, /obj/structure/bed/chair) || ispath(path, /obj/structure/table/carboot) || ispath(path, /obj/item/vehicleparts/wheel/modular) || ispath(path, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) || path == /obj/effect/pseudovehicle
+		if (ispath(path, /obj/structure/bed/chair)) return extraction_vehicle_driver_path(path) || ispath(path, /obj/structure/bed/chair/carseat)
+		return extraction_vehicle_axis_path(path) || ispath(path, /obj/structure/vehicleparts/frame/car) || ispath(path, /obj/structure/vehicleparts/movement) || ispath(path, /obj/structure/vehicleparts/license_plate) || ispath(path, /obj/structure/engine/internal) || ispath(path, /obj/structure/bed/chair) || ispath(path, /obj/structure/table/carboot) || ispath(path, /obj/item/vehicleparts/wheel/modular) || ispath(path, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) || path == /obj/effect/pseudovehicle
 	proc/scalars(path)
 		var/list/fields = list("name", "desc", "dir", "color", "icon_state", "anchored", "density", "opacity")
 		if (ispath(path, /obj/structure/vehicleparts/axis)) fields |= list("vehicle_type", "speeds", "maxpower", "maxdist", "turntimer", "doorcode", "reg_number", "reverse", "keyed_vehicle_id", "key_generation")
@@ -71,6 +81,7 @@
 	proc/encode(obj/structure/vehicleparts/axis/A)
 		last_error = null
 		var/datum/extraction_vehicle_transfer/T = new
+		T.ignore_ground = ignore_ground
 		// Explicit legacy initial issuance. This is not a read-only census or an
 		// atomic issuance permit; refusal-side conservation remains a separate gate.
 		if (!T.capture(A, TRUE, TRUE, TRUE)) return fail("Vehicle is not a stopped, unoccupied bounded car: [T.last_error]")
@@ -148,7 +159,7 @@
 		return isnum(value) && round(value) == value && value >= 0 && value <= count
 	proc/ref_type(key, path)
 		switch (key)
-			if ("axis", "link") return ispath(path, /obj/structure/vehicleparts/axis/car)
+			if ("axis", "link") return extraction_vehicle_axis_path(path)
 			if ("engine") return ispath(path, /obj/structure/engine/internal)
 			if ("wheel") return ispath(path, /obj/item/vehicleparts/wheel/modular)
 			if ("mwheel", "wheels") return ispath(path, /obj/structure/vehicleparts/movement)
@@ -159,7 +170,7 @@
 	proc/validate(list/record)
 		if (!islist(record) || record["schema"] != 1 || !islist(record["nodes"]) || length(json_encode(record)) > 524288) return FALSE
 		var/list/nodes = record["nodes"]
-		if (!nodes.len || nodes.len > 128 || !islist(nodes[1]) || !istext(nodes[1]["type"]) || nodes[1]["id"] != record["id"] || !ispath(text2path(nodes[1]["type"]), /obj/structure/vehicleparts/axis/car)) return FALSE
+		if (!nodes.len || nodes.len > 128 || !islist(nodes[1]) || !istext(nodes[1]["type"]) || nodes[1]["id"] != record["id"] || !extraction_vehicle_axis_path(text2path(nodes[1]["type"]))) return FALSE
 		var/list/ids = list()
 		var/axes = 0
 		// Check all nodes and parent indexes before following any graph edge.
@@ -238,7 +249,7 @@
 			else if (ispath(path, /obj/structure/vehicleparts/movement))
 				if (R["axis"] != 1 || !parent || parent != R["connected"] || !(i in wheels)) return FALSE
 			else if (ispath(path, /obj/item/vehicleparts/wheel/modular))
-				if (i != root_refs["wheel"] || !parent || !ispath(text2path(nodes[parent]["type"]), /obj/structure/bed/chair/drivers/car) || !R["control"] || nodes[R["control"]]["refs"]["axis"] != 1) return FALSE
+				if (i != root_refs["wheel"] || !parent || !extraction_vehicle_driver_path(text2path(nodes[parent]["type"])) || !R["control"] || nodes[R["control"]]["refs"]["axis"] != 1) return FALSE
 			else
 				if (parent) return FALSE
 				if (ispath(path, /obj/structure/vehicleparts/frame/car))
@@ -262,7 +273,7 @@
 			if (!istype(T, /turf/floor) || T.density) return null
 			if (!(T in targets))
 				for (var/atom/movable/O in T)
-					if (!istype(O, /atom/movable/lighting_overlay)) return null
+					if (!istype(O, /atom/movable/lighting_overlay) && !(ignore_ground && vehicle_storage_ground(O))) return null
 				targets += T
 		var/list/created = list()
 		for (var/list/N in nodes)
@@ -297,6 +308,10 @@
 				for (var/list/fuel in N["fuel"]) O.reagents.add_reagent(fuel["id"], fuel["volume"], fuel["data"], safety = TRUE)
 			O.loc = N["parent"] ? created[N["parent"]] : locate(destination.x + N["dx"], destination.y + N["dy"], destination.z)
 		var/obj/structure/vehicleparts/axis/A = created[1]
+		// The seat's constructor wheel was replaced by the saved one: point the
+		// steering wheel back at its seat so a dropped wheel returns there.
+		for (var/obj/item/vehicleparts/wheel/modular/W in created)
+			if (istype(W.loc, /obj/structure/bed/chair/drivers)) W.drivingchair = W.loc
 		A.engine.key_axis = A
 		A.engine.on = FALSE
 		A.engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'

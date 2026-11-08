@@ -291,6 +291,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("rocketry", "Rocketry", "Industrial", 480, 7, RESEARCH_MODE_ANALYSIS, list("missiles"), 9))
 	register_research_node(new /datum/research_node("planetary_survey", "Planetary Survey", "Industrial", 420, 7, RESEARCH_MODE_ANALYSIS, list("rocketry"), 9))
 	register_research_node(new /datum/research_node("crewed_flight", "Crewed Flight", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("planetary_survey"), 9))
+	register_research_node(new /datum/research_node("orbital_flight", "Orbital Flight", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
 	register_research_node(new /datum/research_node("sealed_habitats", "Sealed Habitats", "Industrial", 600, 7, RESEARCH_MODE_ANALYSIS, list("crewed_flight"), 9))
 	register_research_node(new /datum/research_node("life_support", "Life Support", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
 	register_research_node(new /datum/research_node("pressure_suits", "Pressure Suits", "Industrial", 560, 7, RESEARCH_MODE_ANALYSIS, list("sealed_habitats"), 9))
@@ -329,7 +330,9 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("wagons_ships", "Wagons & Ships", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("carts"), 3))
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("rail_steam","combustion"), 5))
-	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion","alloys"), 7))
+	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
+	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion"), 6))
+	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
 	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("paved_infrastructure","electricity"), 5))
@@ -456,13 +459,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (22) ---
+		// --- assembly_line (19) ---
 		"/obj/item/camera/coldwar" = "assembly_line",
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
-		"/obj/item/factory_belt_assembly" = "assembly_line",
-		"/obj/structure/closet/crate/factory_bin" = "assembly_line",
-		"/obj/structure/factory_drive" = "assembly_line",
 		"/obj/structure/factory_fabricator" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/random" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/zippo" = "assembly_line",
@@ -479,14 +479,15 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/TV/television" = "assembly_line",
 		"/obj/structure/radio/receiver/loudspeaker" = "assembly_line",
 		"/obj/structure/radio/transmitter_receiver" = "assembly_line",
-		// --- automation (17) ---
+		// --- automation (16) ---
 		"/obj/structure/fluid_meter" = "automation",
 		"/obj/structure/fluid_bottler" = "automation",
 		"/obj/structure/fluid_vessel/fast" = "automation",
 		"/obj/item/camera" = "automation",
+		"/obj/item/tape_recorder" = "automation",
+		"/obj/item/cassette" = "automation",
 		// Cold War photovoltaics: off-grid panels followed 1950s-70s space cells.
 		"/obj/structure/civ_generator/solar/panel" = "automation",
-		"/obj/structure/factory_arm" = "automation",
 		"/obj/structure/factory_arm/sorting" = "automation",
 		"/obj/structure/factory_fabricator/automated" = "automation",
 		"/obj/item/factory_belt_assembly/gate" = "automation",
@@ -497,8 +498,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/factory_belt_assembly/tunnel" = "automation",
 		"/obj/item/factory_belt_assembly/tunnel_exit" = "automation",
 		"/obj/structure/vending/sales/vending" = "automation",
-		// --- automobiles (13) ---
+		// --- automobiles (14) ---
+		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
+		"/obj/structure/car_workshop/hangar" = "powered_flight",
+		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",
 		"/obj/structure/bed/chair/carseat/left" = "automobiles",
@@ -718,13 +722,41 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/drone_controller" = "uav_drones",
 		"/obj/structure/drone/flying" = "uav_drones",
 		"/obj/structure/drone/flying/grenade" = "uav_drones",
-		// --- rocketry / planetary_survey / crewed_flight / sealed_habitats / life_support / pressure_suits / off_world_mining / surface_vehicles / local_resources (9) ---
+		// --- rocketry / planetary_survey / crewed_flight / orbital_flight / sealed_habitats / life_support / pressure_suits / off_world_mining / surface_vehicles / local_resources (9) ---
 		"/obj/structure/launch_rail" = "rocketry",
 		"/obj/item/space_probe" = "rocketry",
 		"/obj/structure/survey_console" = "rocketry",
 		"/obj/item/space_probe/advanced" = "planetary_survey",
 		"/obj/structure/region_gate/trail_marker/launch_pad" = "crewed_flight",
 		"/obj/structure/crewed_lander" = "crewed_flight",
+		"/obj/item/lunar_kit" = "crewed_flight",
+		"/obj/structure/crewed_lander/orbital_rocket" = "orbital_flight",
+		"/obj/structure/crewed_lander/orbital_rocket/reusable" = "orbital_flight",
+		"/obj/structure/crewed_lander/freighter" = "orbital_flight",
+		"/obj/structure/docking_port" = "orbital_flight",
+		"/obj/structure/zero_g_lab" = "orbital_flight",
+		"/obj/structure/crewed_lander/satellite_launcher" = "orbital_flight",
+		"/obj/structure/satellite_station" = "orbital_flight",
+		"/obj/item/satellite/weather" = "orbital_flight",
+		"/obj/item/satellite/comms" = "orbital_flight",
+		"/obj/item/satellite/navigation" = "orbital_flight",
+		"/obj/item/satellite/survey" = "orbital_flight",
+		"/obj/item/gps_receiver" = "orbital_flight",
+		"/obj/structure/orbit_truss" = "orbital_flight",
+		"/obj/item/eva_tether" = "orbital_flight",
+		"/obj/item/habitat_kit/orbital_workshop" = "orbital_flight",
+		"/obj/item/habitat_kit/node" = "orbital_flight",
+		"/obj/item/sector_beacon" = "orbital_flight",
+		"/obj/structure/telecom/relay/station" = "factories",
+		"/obj/item/connector/riser/coupler" = "orbital_flight",
+		"/obj/structure/orbit_thruster" = "orbital_flight",
+		"/obj/structure/civ_generator/solar/wing/tracking" = "orbital_flight",
+		"/obj/structure/civ_generator/isotope" = "orbital_flight",
+		"/obj/structure/civ_generator/solar/wing" = "orbital_flight",
+		"/obj/structure/civ_generator/fuel_cell" = "orbital_flight",
+		"/obj/structure/life_support/radiator" = "orbital_flight",
+		"/obj/structure/region_gate/launch_complex" = "orbital_flight",
+		"/obj/structure/orbit_console" = "orbital_flight",
 		"/obj/item/habitat_kit" = "sealed_habitats",
 		"/obj/item/habitat_kit/greenhouse" = "sealed_habitats",
 		"/obj/item/habitat_kit/workshop" = "sealed_habitats",
@@ -733,6 +765,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/habitat_sealant" = "sealed_habitats",
 		"/obj/structure/life_support/electrolyser" = "life_support",
 		"/obj/structure/life_support/scrubber" = "life_support",
+		"/obj/item/sorbent_cartridge" = "life_support",
 		"/obj/structure/life_support/heater" = "life_support",
 		"/obj/structure/life_support/water_recycler" = "life_support",
 		"/obj/structure/life_support/oxygen_reclaimer" = "life_support",
@@ -746,6 +779,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/rover_charger" = "surface_vehicles",
 		"/obj/structure/closet/crate/rover_trailer" = "surface_vehicles",
 		"/obj/structure/reagent_dispensers/propellant_plant" = "local_resources",
+		"/obj/structure/reagent_dispensers/propellant_plant/methalox" = "local_resources",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
@@ -765,7 +799,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (16) ---
+		// --- electricity (17) ---
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
@@ -785,7 +819,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
-		// --- factories (23) ---
+		"/obj/structure/plating_bath" = "electricity",
+		// --- factories (27) ---
+		// Steam-era factory floor: plain belts, their drive, parts bins and
+		// the feeder arm run on a steam engine and plain cable.
+		"/obj/item/factory_belt_assembly" = "factories",
+		"/obj/structure/closet/crate/factory_bin" = "factories",
+		"/obj/structure/factory_drive" = "factories",
+		"/obj/structure/factory_arm" = "factories",
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that
 		// node, or the tree deadlocks (can't craft the geiger counter the
@@ -1188,6 +1229,15 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/kitchen/utensil/knife/shank/iron" = "law_order",
 		"/obj/item/weapon/melee/classic_baton" = "law_order",
 		"/obj/item/weapon/whistle" = "law_order",
+		"/obj/item/weapon/megaphone" = "electricity",
+		"/obj/item/weapon/tripwire_kit" = "basic_tools",
+		"/obj/item/flashlight/flare/glowstick" = "synthetics",
+		"/obj/item/flashlight/flare/glowstick/blue" = "synthetics",
+		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
+		"/obj/item/flashlight/flare/glowstick/yellow" = "synthetics",
+		"/obj/structure/display_case" = "glassworking",
+		"/obj/item/weapon/attachment/under/bipod" = "gunsmithing",
+		"/obj/item/weapon/storage/lockbox" = "pottery_storage",
 		"/obj/structure/cross" = "law_order",
 		"/obj/structure/cross/tau" = "law_order",
 		"/obj/structure/gallows" = "law_order",
@@ -1333,6 +1383,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/road" = "paved_infrastructure",
 		"/obj/covers/roads/cobble" = "paved_infrastructure",
 		"/obj/covers/roads/modern" = "paved_infrastructure",
+		"/obj/covers/roads/modern/runway" = "powered_flight",
 		"/obj/covers/roads/roman" = "paved_infrastructure",
 		// --- pharmacology (5) ---
 		"/obj/structure/fluid_tablet_press" = "pharmacology",
@@ -1514,8 +1565,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/banner/faction/banner_a" = "regalia",
 		"/obj/structure/banner/faction/banner_b" = "regalia",
 		"/obj/structure/flag/pole" = "regalia",
-		// --- reinforced_concrete (11) ---
+		// --- reinforced_concrete (13) ---
 		"/obj/covers/concretefloor" = "reinforced_concrete",
+		"/obj/item/weapon/bridge_span" = "reinforced_concrete",
+		"/obj/item/weapon/bridge_span/concrete" = "reinforced_concrete",
 		"/obj/covers/steelplating" = "reinforced_concrete",
 		"/obj/covers/steelplating/white" = "reinforced_concrete",
 		"/obj/covers/stone_wall/roman/modern" = "reinforced_concrete",

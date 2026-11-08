@@ -251,9 +251,9 @@
 					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (ct)
-					adjust_mood(0.12)
+					adjust_mood(0.12, "having company")
 				else
-					adjust_mood(-(0.4))
+					adjust_mood(-(0.4), "being alone")
 		else if (find_trait("Introverted"))
 			if (prob(20))
 				var/ct = 0
@@ -261,9 +261,9 @@
 					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (!ct)
-					adjust_mood(0.12)
+					adjust_mood(0.12, "time alone")
 				else
-					adjust_mood(-(0.4))
+					adjust_mood(-(0.4), "people around you")
 		if (!inducedSSD)
 			adjust_mood(-(0.02))
 	#undef HUNGER_THIRST_MULTIPLIER
@@ -496,7 +496,7 @@
 	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
 	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered())
 		cold_wetness = 1
-	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon"))
+	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon") && !under_canopy(exposure_turf))
 		cold_wetness = min(1, cold_wetness + 0.01)
 	else
 		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))
@@ -505,6 +505,7 @@
 	else if (cold_wetness <= 0 && previous_wetness > 0)
 		to_chat(src, "<span class='notice'>You have dried off completely.</span>")
 
+	loc_temp = canopy_shelter_temperature(exposure_turf, loc_temp)
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)
@@ -1657,7 +1658,7 @@
 			if ("cocaine")
 				if (ingested.has_reagent("cocaine"))
 					return
-				adjust_mood(-((value/100)*0.26))
+				adjust_mood(-((value/100)*0.26), "craving cocaine")
 				switch (value)
 					if (0 to 24)
 						return
@@ -1701,7 +1702,7 @@
 			if ("opium")
 				if (ingested.has_reagent("opium"))
 					return
-				adjust_mood(-((value/100)*0.32))
+				adjust_mood(-((value/100)*0.32), "craving opium")
 				switch (value)
 					if (0 to 13)
 						if (prob(5))
@@ -1754,7 +1755,7 @@
 			if ("tobacco")
 				if (ingested.has_reagent("nicotine"))
 					return
-				adjust_mood(-((value/100)*0.14))
+				adjust_mood(-((value/100)*0.14), "craving tobacco")
 				switch (value)
 					if (0 to 21)
 						return
@@ -1769,7 +1770,7 @@
 			if ("alcohol")
 				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
 					return
-				adjust_mood(-((value/100)*0.20))
+				adjust_mood(-((value/100)*0.20), "craving alcohol")
 				switch (value)
 					if (0 to 21)
 						return

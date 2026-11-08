@@ -1,6 +1,9 @@
 name: Native supervisor consumer contracts
 on:
+  # Feature branches run through pull_request; a branch push would repeat the
+  # same Linux and Windows jobs for the same head.
   push:
+    branches: [master]
     paths:
       - scripts/nomads-lifecycle/**
       - tests/nomads_lifecycle/**

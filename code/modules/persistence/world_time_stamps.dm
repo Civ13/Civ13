@@ -36,7 +36,10 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_calculate_tally" = list(/mob/living/human),
 	"next_emote" = list(/mob/living/human),
 	"next_look_at" = list(/mob/living/human),
+	"barracks_course_start" = list(/mob/living/human),
 	"last_revive_notification" = list(/mob/observer/ghost),
+	"last_use" = list(/obj/structure/barracks/kit_locker),
+	"last_build" = list(/obj/structure/barracks/vehicle_bay),
 	"last_fire" = list(/mob/living/simple_animal/hostile/human, /obj/item/weapon/gun/projectile/automatic, /obj/item/weapon/gun/projectile/boltaction, /obj/item/weapon/gun/projectile/custom, /obj/item/weapon/gun/projectile/flintlock, /obj/item/weapon/gun/projectile/semiautomatic, /obj/item/weapon/gun/projectile/special, /obj/item/weapon/gun/projectile/submachinegun),
 	"last_retreat" = list(/mob/living/simple_animal/hostile/human),
 	"next_bork" = list(/mob/living/simple_animal/complex_animal/dog),
@@ -104,7 +107,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"round_started" = list(/obj/map_metadata/train_raid),
 	"round_deadline" = list(/obj/map_metadata/train_raid),
 	"created" = list(/datum/wound),
-	"last_recharge" = list(/obj/structure/survey_console)
+	"last_recharge" = list(/obj/structure/survey_console),
+	"record_start" = list(/obj/item/tape_recorder)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)

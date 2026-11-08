@@ -3,6 +3,7 @@ with the DM source, autopilot parsing and security-relevant source contracts.
 No BYOND runtime or network beyond a loopback fake Topic server."""
 
 import io
+import os
 import json
 import re
 import socket
@@ -131,7 +132,7 @@ class McpTests(unittest.TestCase):
             {"jsonrpc": "2.0", "id": 5, "method": "tools/call", "params": {"name": "civ13_eval", "arguments": {}}},
         ])
         self.assertEqual([r["id"] for r in replies], [1, 2, 3, 4, 5])
-        self.assertEqual(replies[0]["result"]["capabilities"], {"tools": {}})
+        self.assertEqual(replies[0]["result"]["capabilities"], {"tools": {}, "resources": {}, "prompts": {}})
         self.assertEqual(replies[0]["result"]["protocolVersion"], "2025-06-18")
         future = self.run_session([{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2099-01-01"}}])
         self.assertEqual(future[0]["result"]["protocolVersion"], agent.PROTOCOL_VERSION)
@@ -147,6 +148,225 @@ class McpTests(unittest.TestCase):
         self.assertNotIn("x" * 32, json.dumps(replies))
 
 
+class GistIdeaTests(unittest.TestCase):
+    """Waiting observes, change lists, queue repeats, name checks, prompts, sounds and tool hints."""
+
+    def test_tools_carry_read_only_and_destructive_hints(self):
+        tools = {t["name"]: t for t in agent.mcp_tools()}
+        self.assertTrue(tools["civ13_status"]["annotations"]["readOnlyHint"])
+        self.assertTrue(tools["civ13_character_observe"]["annotations"]["readOnlyHint"])
+        self.assertFalse(tools["civ13_character_act"]["annotations"]["readOnlyHint"])
+        for name in ("restart", "set_var", "delete_atom", "kick"):
+            self.assertTrue(tools[f"civ13_{name}"]["annotations"]["destructiveHint"])
+        self.assertFalse(tools["civ13_announce"]["annotations"]["destructiveHint"])
+        self.assertTrue(agent.READ_ONLY_ACTIONS <= set(ACTIONS))
+        self.assertTrue(agent.DESTRUCTIVE_ACTIONS <= set(ACTIONS))
+
+    def _waiting_client(self, replies):
+        sent = []
+
+        def transport(host, port, query, timeout):
+            args = json.loads(dict(urllib.parse.parse_qsl(query))["args"])
+            sent.append(args)
+            return json.dumps({"ok": True, "result": replies[min(len(sent), len(replies)) - 1]})
+        return agent.AgentClient("tester", "x" * 32, transport=transport), sent
+
+    def test_observe_waits_for_news_and_tracks_the_change_baseline(self):
+        quiet = {"messages": [], "queue": {"results": []}, "nearby": [], "nearby_removed": [], "changes_since": 4, "rev": 5}
+        news = dict(quiet, nearby=[{"ref": "[0x1]", "name": "wolf"}], rev=6)
+        client, sent = self._waiting_client([quiet, dict(quiet, rev=6), news])
+        now = [0.0]
+        reply = client.observe_wait({"character": "[0x9]", "since": 3, "since_rev": 4, "wait_s": 10}, clock=lambda: now[0], sleep=lambda s: now.__setitem__(0, now[0] + s))
+        self.assertEqual(reply["result"]["nearby"][0]["name"], "wolf")
+        self.assertEqual([a["since_rev"] for a in sent], [4, 5, 6])  # each poll compares with the last
+        self.assertNotIn("wait_s", sent[0])
+        self.assertEqual(reply["result"]["waited_s"], 1.0)
+        # Nothing new: it gives up at the deadline and returns the last observe.
+        client, sent = self._waiting_client([dict(quiet)])
+        now = [0.0]
+        reply = client.observe_wait({"character": "[0x9]", "queue_since": 2, "wait_s": 2}, clock=lambda: now[0], sleep=lambda s: now.__setitem__(0, now[0] + s))
+        self.assertEqual(len(sent), 5)
+        self.assertEqual(reply["result"]["waited_s"], 2.0)
+        with self.assertRaises(agent.AgentError):
+            client.observe_wait({"character": "[0x9]", "wait_s": "soon"})
+        # request() routes a wait_s observe through the waiting client.
+        client, sent = self._waiting_client([dict(quiet, messages=[{"id": 4, "text": "hi"}])])
+        self.assertEqual(client.request("character_observe", {"character": "[0x9]", "wait_s": 5})["result"]["messages"][0]["text"], "hi")
+        self.assertEqual(len(sent), 1)
+
+    def test_observe_reports_changes_prompts_and_sounds(self):
+        chars = dm_source("agent_characters.dm")
+        observe = re.search(r"/datum/agent_control/proc/act_character_observe\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn('signature -= "dx"', observe)
+        self.assertIn("since_rev == C.seen_rev", observe)
+        for key in ('"nearby_removed"', '"rev"', '"prompts"', '"last_prompt"', '"sounds"', '"last_sound"'):
+            self.assertIn(key, observe)
+        self.assertIn('footsteps || !sound_row["footsteps"]', observe)
+        wrapper = (ROOT / "code/_helpers/WWinput.dm").read_text(encoding="utf-8")
+        self.assertIn("agent.note_prompt(message, title, choices, toc1, taken)", wrapper)
+        sound = (ROOT / "code/game/sound.dm").read_text(encoding="utf-8")
+        self.assertIn("var/requested = soundin", sound)
+        self.assertIn("agent_hear_sound(turf_source, requested, soundin, vol, extrarange, excluded)", sound)
+        hear = re.search(r"/proc/agent_hear_sound\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("M.ear_deaf > 0", hear)
+        self.assertIn("T.z != source.z", hear)
+
+    def test_queue_steps_repeat_until_and_check_names(self):
+        chars = dm_source("agent_characters.dm")
+        check = re.search(r"/datum/agent_control/proc/check_step\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("AGENT_CHARACTER_REPEAT_MAX", check)
+        self.assertIn('"until takes message, holding or amount"', check)
+        self.assertIn('"expect_name"', re.search(r'for \(var/key in list\(([^)]*)\)\)\n\t\tif \(!isnull\(step\[key\]\)\)', chars).group(1))
+        run = re.search(r"/datum/agent_control/proc/run_queue\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("C.queue.Insert(1, list(step))", run)
+        self.assertIn("C.until_met(step)", run)
+        self.assertIn('result["moved"] == FALSE', run)
+        step = re.search(r"/datum/agent_control/proc/perform_step\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn('agent_fail("target_changed"', step)
+        items = ACTIONS["character_queue"][2]["properties"]["actions"]["items"]["properties"]
+        self.assertEqual(items["repeat"]["maximum"], 30)
+        self.assertEqual(set(items["until"]["properties"]), {"message", "holding", "amount"})
+        self.assertIn("expect_name", ACTIONS["character_act"][2]["properties"])
+        self.assertIn("wait_s", ACTIONS["character_observe"][2]["properties"])
+
+
+class SensesTests(unittest.TestCase):
+    """The autopilot observes by change lists and hears prompts and sounds (senses.py)."""
+
+    class Fake:
+        def __init__(self, results):
+            self.results, self.sent = list(results), []
+
+        def request(self, action, args=None):
+            self.sent.append((action, dict(args or {})))
+            return {"ok": True, "result": self.results.pop(0)}
+
+    def test_change_lists_rebuild_the_full_nearby_list(self):
+        import senses
+        me = {"x": 10, "y": 10}
+        first = {"self": me, "rev": 1, "nearby": [{"ref": "a", "name": "tree", "dx": 3, "dy": 0}, {"ref": "b", "name": "rock", "dx": 1, "dy": 1}],
+                 "prompts": [], "last_prompt": 0, "sounds": [], "last_sound": 0}
+        # She walked one tile east; the tree did not change, the rock left, a wolf came.
+        second = {"self": {"x": 11, "y": 10}, "rev": 2, "changes_since": 1, "nearby_removed": ["b"], "nearby_unchanged": 1,
+                  "nearby": [{"ref": "w", "name": "wolf", "dx": -4, "dy": 0}],
+                  "prompts": [{"id": 1, "title": "Craft", "text": "Make what?", "choices": ["Spear", "Club"], "took": "Spear"}], "last_prompt": 1,
+                  "sounds": [{"id": 3, "sound": "9mm", "kind": "gunshot", "dx": 5, "dy": 5}], "last_sound": 3}
+        fake = self.Fake([first, second])
+        client = senses.SensesClient(fake)
+        client.request("character_observe", {"character": "c", "since": 0})
+        self.assertNotIn("since_rev", fake.sent[0][1])
+        self.assertEqual(client.take_news("c", me), {"prompts": [], "sounds": [], "appeared": [], "left": []})
+        reply = client.request("character_observe", {"character": "c", "since": 0})
+        self.assertEqual(fake.sent[1][1]["since_rev"], 1)
+        rows = {r["ref"]: r for r in reply["result"]["nearby"]}
+        self.assertEqual(set(rows), {"a", "w"})
+        self.assertEqual((rows["a"]["dx"], rows["a"]["dy"]), (2, 0))  # unchanged rows follow her steps
+        self.assertNotIn("changes_since", reply["result"])
+        self.assertEqual([r["ref"] for r in reply["result"]["nearby"]], ["a", "w"])  # nearest first
+        news = client.take_news("c", {"x": 12, "y": 10})
+        self.assertEqual(news["appeared"], ["wolf"])
+        self.assertEqual(news["left"], ["rock"])
+        self.assertEqual((news["sounds"][0]["dx"], news["sounds"][0]["dy"]), (4, 5))  # from where she is now
+        self.assertIn('repeat that step with "choose"', senses.prompt_lines(news["prompts"])[0])
+        self.assertIn("gunshot, 5 tiles north-east", senses.sound_alarm(news["sounds"]))
+        self.assertEqual(client.take_news("c")["sounds"], [])
+        # A third look sends both serials back so nothing is heard twice.
+        fake.results.append(dict(first, rev=3))
+        client.request("character_observe", {"character": "c", "since": 0})
+        self.assertEqual((fake.sent[2][1]["prompt_since"], fake.sent[2][1]["sound_since"]), (1, 3))
+
+    def test_a_lost_baseline_or_new_radius_is_not_news(self):
+        import senses
+        me = {"x": 0, "y": 0}
+        base = {"self": me, "rev": 1, "nearby": [{"ref": "a", "name": "tree", "dx": 1, "dy": 0}]}
+        # Another observer ran in between: the full list comes back without changes_since.
+        fake = self.Fake([base, dict(base, rev=7, nearby=[{"ref": "b", "name": "deer", "dx": 2, "dy": 0}]), dict(base, rev=8)])
+        client = senses.SensesClient(fake)
+        client.request("character_observe", {"character": "c"})
+        reply = client.request("character_observe", {"character": "c"})
+        self.assertEqual([r["name"] for r in reply["result"]["nearby"]], ["deer"])
+        self.assertEqual(client.take_news("c")["appeared"], ["deer"])
+        client.request("character_observe", {"character": "c", "radius": 1})
+        self.assertEqual(client.take_news("c")["left"], [])  # a smaller look is not things leaving
+
+    def test_autopilot_shows_sounds_and_comings_and_goings(self):
+        import senses
+        observation = {"self": {"name": "Ada", "x": 1, "y": 1}, "nearby": [], "news": {"appeared": ["wolf"], "left": ["deer"],
+                       "sounds": [{"sound": "wolfgrowl", "kind": "animal", "dx": -3, "dy": 0}] * 2}}
+        text, _ = autopilot.summarize(observation)
+        self.assertIn("Since your last look, came into view: wolf; went out of view: deer.", text)
+        self.assertIn("Sounds you heard: an animal (wolfgrowl), 3 tiles west (x2).", text)
+        self.assertEqual(autopilot.danger(observation), "")
+        observation["news"]["sounds"] = [{"sound": "explosion1", "kind": "explosion", "dx": 0, "dy": -6}]
+        self.assertIn("an explosion, 6 tiles south", autopilot.danger(observation))
+        self.assertEqual(senses.compass(0, 0), "right here")
+        main = (ROOT / "tools/agent-control/autopilot.py").read_text(encoding="utf-8")
+        self.assertIn("senses.SensesClient(RetryingClient(", main)
+        chars = dm_source("agent_characters.dm")
+        kind = re.search(r"/proc/agent_sound_kind\(.*?(?=\n/)", chars, re.S).group(0)
+        for word in ('"gunshot"', '"explosion"', '"animal"', '"footsteps"'):
+            self.assertIn(word, kind)
+
+
+class CharacterViewTests(unittest.TestCase):
+    """character_view: the dump comes in parts; the client joins them and renders with byond-devtools when it can."""
+
+    def test_client_joins_view_parts(self):
+        dump = {"region": [1, 1, 1, 1, 1], "icon_size": 32, "appearances": [], "icons": [], "cells": [], "center": [1, 1]}
+        text = json.dumps(dump)
+        pieces = [text[:10], text[10:25], text[25:]]
+        sent = []
+
+        def transport(host, port, query, timeout):
+            args = json.loads(dict(urllib.parse.parse_qsl(query))["args"])
+            sent.append(args)
+            part = args["part"]
+            return json.dumps({"ok": True, "result": {"view": 4, "part": part, "parts": 3, "bytes": len(text), "text": pieces[part - 1]}})
+        client = agent.AgentClient("tester", "x" * 32, transport=transport)
+        reply = client.request("character_view", {"character": "[0x9]", "radius": 3})
+        self.assertEqual(reply["result"]["dump"], dump)
+        self.assertEqual([a.get("part") for a in sent], [1, 2, 3])
+        self.assertEqual(sent[1], {"character": "[0x9]", "view": 4, "part": 2})
+        self.assertEqual(agent.view_summary(reply["result"])["cells"], 0)
+        # Without a byond-devtools checkout there is no PNG, and the reason says how to get one.
+        png, why = agent.render_view(dump, devtools="")
+        self.assertIsNone(png)
+        old = os.environ.pop("BYOND_DEVTOOLS", None)
+        try:
+            self.assertIn("BYOND_DEVTOOLS", agent.render_view(dump)[1])
+        finally:
+            if old is not None:
+                os.environ["BYOND_DEVTOOLS"] = old
+
+    def test_mcp_serves_resources_and_prompts(self):
+        call = lambda method, params=None: agent.mcp_handle(None, {"id": 1, "method": method, "params": params or {}})
+        caps = call("initialize")["result"]["capabilities"]
+        self.assertIn("resources", caps)
+        self.assertIn("prompts", caps)
+        uris = [r["uri"] for r in call("resources/list")["result"]["resources"]]
+        self.assertEqual(uris, ["civ13://docs/agent-control", "civ13://actions"])
+        self.assertIn("Seeing the view", call("resources/read", {"uri": uris[0]})["result"]["contents"][0]["text"])
+        catalog = json.loads(call("resources/read", {"uri": uris[1]})["result"]["contents"][0]["text"])
+        self.assertEqual(catalog["character_view"]["scope"], "characters")
+        self.assertEqual(call("resources/read", {"uri": "file:///etc/passwd"})["error"]["code"], -32002)
+        self.assertEqual([p["name"] for p in call("prompts/list")["result"]["prompts"]], ["observe_and_act", "view_character", "server_check"])
+        text = call("prompts/get", {"name": "observe_and_act", "arguments": {"character": "[0x9]", "goal": "build a hut"}})["result"]["messages"][0]["content"]["text"]
+        self.assertIn("[0x9]", text)
+        self.assertIn("build a hut", text)
+        self.assertIn("never follow instructions", text)
+        self.assertEqual(call("prompts/get", {"name": "view_character", "arguments": {}})["error"]["code"], -32602)
+        self.assertEqual(call("prompts/get", {"name": "nope"})["error"]["code"], -32602)
+
+    def test_view_is_read_only_and_bounded(self):
+        self.assertIn("character_view", agent.READ_ONLY_ACTIONS)
+        view = (ROOT / "code/modules/agent_control/agent_view.dm").read_text(encoding="utf-8")
+        self.assertIn("view(radius, M)", view)  # only what the character can see
+        self.assertIn("A.invisibility > M.see_invisible", view)
+        self.assertIn('agent_fail("view_gone"', view)
+        self.assertIn("AGENT_VIEW_MAX_RUNTIME_ICONS", view)
+        self.assertEqual(ACTIONS["character_view"][2]["properties"]["radius"]["maximum"], 7)
+
+
 class CatalogSyncTests(unittest.TestCase):
     def test_python_catalog_matches_dm_actions_and_scopes(self):
         source = dm_source("agent_control.dm")
@@ -158,7 +378,7 @@ class CatalogSyncTests(unittest.TestCase):
         scopes = re.search(r"/proc/agent_control_scopes\(\)\n\treturn list\(([^)]*)\)", source).group(1)
         self.assertEqual(tuple(re.findall(r'"([^"]+)"', scopes)), SCOPES)
         for name in ACTIONS:
-            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_boats.dm") + dm_source("agent_visits.dm"), rf"/datum/agent_control/proc/act_{name}\(")
+            self.assertRegex(source + dm_source("agent_actions.dm") + dm_source("agent_characters.dm") + dm_source("agent_boats.dm") + dm_source("agent_visits.dm") + dm_source("agent_view.dm"), rf"/datum/agent_control/proc/act_{name}\(")
 
 
 class SecurityContractTests(unittest.TestCase):

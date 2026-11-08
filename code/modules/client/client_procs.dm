@@ -286,6 +286,7 @@
 	movementMachine_clients += src
 
 /client/MouseEntered(atom/object, location, control, params)
+	UpdateMouseScreenLoc(params)
 	mouse_x = object ? object.x : 0
 	mouse_y = object ? object.y : 0
 	update_hover_name(object)
@@ -485,27 +486,18 @@
 /client/verb/fit_viewport()
 	set name = "Fit Viewport"
 	set category = "OOC"
-	set desc = "Fit the width of the map window to match the viewport"
+	set desc = "Resize the map pane so the game fills it with no black bars"
 
-	// Fetch aspect ratio
-	var/view_size = getviewsize(view)
-	var/aspect_ratio = view_size[1] / view_size[2]
-
-	// Calculate desired pixel width using window size and aspect ratio
-	var/sizes = params2list(winget(src, "mainwindow.mainvsplit;mapwindow", "size"))
+	var/list/sizes = params2list(winget(src, "mainwindow.mainvsplit;mapwindow", "size"))
 	var/list/map_size = splittext(sizes["mapwindow.size"], "x")
-	if (length(map_size) < 2)
-		return
-	var/height = text2num(map_size[2])
-	var/desired_width = round(height * aspect_ratio)
-	if (text2num(map_size[1]) == desired_width)
-		// Nothing to do
-		return
-
 	var/list/split_size = splittext(sizes["mainwindow.mainvsplit.size"], "x")
-	if (!length(split_size))
+	if (length(map_size) < 2 || !length(split_size))
 		return
 	var/split_width = text2num(split_size[1])
+	var/desired_width = fit_viewport_width(getviewsize(view), text2num(map_size[2]), text2num(winget(src, "mapwindow.map", "icon-size")), split_width)
+	if (!desired_width || text2num(map_size[1]) == desired_width)
+		// Nothing to do
+		return
 
 	// Calculate and apply a best estimate
 	// +4 pixels are for the width of the splitter's handle
@@ -531,3 +523,52 @@
 
 		pct += delta
 		winset(src, "mainwindow.mainvsplit", "splitter=[pct]")
+
+// Width in pixels the map pane needs so the view fills it edge to edge.
+// Stretch-to-fit (icon_size 0) follows the pane height; a fixed icon size
+// needs exactly view-width tiles. The stat panel and chat keep at least
+// FIT_VIEWPORT_MIN_RPANE pixels.
+#define FIT_VIEWPORT_MIN_RPANE 200
+/proc/fit_viewport_width(list/view_size, map_height, icon_size, split_width)
+	if (!length(view_size) || !view_size[2] || !map_height || !split_width)
+		return 0
+	var/width
+	if (icon_size > 0)
+		width = view_size[1] * icon_size
+	else
+		width = round(map_height * view_size[1] / view_size[2])
+	return max(1, min(width, split_width - FIT_VIEWPORT_MIN_RPANE))
+#undef FIT_VIEWPORT_MIN_RPANE
+
+// Refit once the layout settles. Connecting, logging a mob in and the skin
+// restoring its saved size and maximized state all land within a few ticks
+// of each other, and a refit against a pane that is still changing moves the
+// splitter to the wrong place (the map pane visibly jumps between sizes on
+// every reconnect). Every caller asks for a refit through this; only the last
+// request in a short window runs, after the client has had time to lay out.
+/client/var/fit_viewport_token = 0
+/client/proc/fit_viewport_soon()
+	set waitfor = FALSE
+	if (!is_preference_enabled(/datum/client_preference/fit_viewport))
+		return
+	var/token = ++fit_viewport_token
+	sleep(5)
+	if (src && token == fit_viewport_token)
+		fit_viewport()
+
+// Called by the skin when the main window is resized or maximized. Window
+// resizes arrive in bursts, so only the last one in a short window refits.
+/client/verb/on_window_resize()
+	set name = "on-window-resize"
+	set hidden = TRUE
+	fit_viewport_soon()
+
+// Icons menu: change the map icon size, then refit so no bars are left.
+/client/verb/set_map_icon_size(size as num)
+	set name = "set-map-icon-size"
+	set hidden = TRUE
+	if (!(size in list(0, 32, 48, 64, 96, 128)))
+		size = 0
+	winset(src, "mapwindow.map", "icon-size=[size]")
+	if (is_preference_enabled(/datum/client_preference/fit_viewport))
+		fit_viewport()

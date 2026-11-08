@@ -390,6 +390,30 @@ var/list/material/name_to_material
 	integrity = 150
 	resilience = 0.8
 
+/material/zinc
+	name = "zinc"
+	icon_colour = "#a9b4bb"
+	hardness = 30
+	weight = 13
+	door_icon_base = "metal"
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/zinc
+	integrity = 50
+	resilience = 0.5
+
+/material/brass
+	name = "brass"
+	icon_colour = "#c9a43f"
+	hardness = 44
+	weight = 16
+	door_icon_base = "metal"
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
+	stack_type = /obj/item/stack/material/brass
+	integrity = 120
+	resilience = 0.8
+
 /material/lead
 	name = "lead"
 	icon_colour = "#444f53"

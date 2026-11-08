@@ -152,11 +152,11 @@ class Coordinator:
         return len(queue)
 
     def relay_radio_once(self):
-        """Fan every region's radio envelopes and relay heartbeats out to every other region.
+        """Fan every region's radio envelopes, relay heartbeats and OOC lines out to every other region.
 
         Radio is ephemeral: an agent that is down keeps nothing waiting, and a
         pass that fails for one region still serves the others. Returns the
-        number of envelopes handed over.
+        number of envelopes and OOC lines handed over.
         """
         regions = self.regions()
         collected = {}
@@ -167,20 +167,27 @@ class Coordinator:
                 continue
             result = answer.get('result') if answer.get('ok') else None
             if type(result) is dict:
-                collected[name] = (result.get('envelopes') or [], result.get('heartbeats') or {})
+                ooc = result.get('ooc')
+                collected[name] = (result.get('envelopes') or [], result.get('heartbeats') or {},
+                                   ooc if isinstance(ooc, list) else [])
         delivered = 0
         for name, (url, token) in regions.items():
-            envelopes = [e for source, (batch, _) in collected.items() if source != name for e in batch
+            envelopes = [e for source, (batch, _, _) in collected.items() if source != name for e in batch
                          if type(e) is dict and e.get('group') == self.group]
-            heartbeats = {source: beats for source, (_, beats) in collected.items() if source != name}
-            if not envelopes and not heartbeats:
+            heartbeats = {source: beats for source, (_, beats, _) in collected.items() if source != name}
+            # OOC lines go to every other region whether or not it has a relay.
+            ooc = [e for source, (_, _, lines) in collected.items() if source != name for e in lines
+                   if type(e) is dict and e.get('group') == self.group]
+            if not envelopes and not heartbeats and not ooc:
                 continue
             try:
-                answer = call(url, token, '/radio/deliver', {'envelopes': envelopes, 'heartbeats': heartbeats}, timeout=2)
+                answer = call(url, token, '/radio/deliver',
+                              {'envelopes': envelopes, 'heartbeats': heartbeats, 'ooc': ooc}, timeout=2)
             except (OSError, ValueError):
                 continue
             if answer.get('ok'):
-                delivered += (answer.get('result') or {}).get('queued', 0)
+                result = answer.get('result') or {}
+                delivered += result.get('queued', 0) + result.get('ooc', 0)
         return delivered
 
     def relay_once(self):

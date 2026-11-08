@@ -266,7 +266,7 @@ port in front of it. Variants:
 
 | Arm | Speed | Filter | Power | Unlock |
 | --- | --- | --- | --- | --- |
-| Feeder arm | 1 item / 2 s | none | 2 PU | `automation` |
+| Feeder arm | 1 item / 2 s | none | 2 PU | `factories` (8 steel) |
 | Sorting arm | 1 item / 2 s | one item type, set by hand | 3 PU | `automation` |
 | Stack arm (phase 3b) | up to 10 items of one kind / 2 s | optional | 5 PU | `digital_computing` |
 
@@ -362,8 +362,10 @@ running; fabricator states are no recipe, starved, blocked (output tile full),
 no power and running, with the recipe and cycle progress. Arms count items
 moved and fabricators count items made in a two-minute window of one-minute
 buckets (`/datum/factory_rate`). Counters and states are runtime only and cost
-one addition per transfer; the monitor scans only when someone looks. Power use
-is not shown yet.
+one addition per transfer; the monitor scans only when someone looks. Each row
+also shows the power units the machine has reserved on its grid right now
+(belts draw through their drive), and the page totals them and shows each
+grid's use against its capacity, counting everything on that grid.
 
 ### Ownership and griefing
 
@@ -449,10 +451,12 @@ BYOND, plus a native benchmark where noted.
 | 2b. Smelting and wood ports (done) | Bloomery and blast furnace take ore and fuel and start a smelt once both are loaded; the powered saw mill gets a 20-log hopper and cuts one log into 12 planks a second while powered; both offer their output stacks on their tile. Clay kilns (mold casting) and the reagent grinder stay manual. | `tests/factory_automation/machines_probe.dm`: limits, refusals, automatic smelt start and restart, output offers, mill power, plank merging, hopper save and return. |
 | 3a. Fabricators (done) | Three fabricator tiers on the curated factory recipe list (five starting recipes: rolled steel, barbwire, cable coil, electronic circuits, electronic components); Atlas shows factory recipes; research gates. | `tests/factory_automation/fabricators_probe.dm`: recipe parsing and rejection, tier and research filtering, buffer limits, no work without power, a full cycle, pause on power loss without losing inputs, sleep and wake, output offers and limit, save clamping, buffer return. |
 | 3b. Stack arm and more recipes (done) | Stack arm (`digital_computing`); factory recipes for bronze, glass and metal rods (eight in all). | `fabricators_probe.dm`: ten-item batches of one kind, no mixed batches, filter, feeder and sorting arms unchanged; recipe counts and tier lists. A complete unattended line in game is still unverified. |
-| 4a. Fast belt and wagon loading (done) | Val chose this first on 2026-11-04. Fast belt (`/obj/structure/factory_belt/fast`, steel, Automation) takes a second belt step each tick, after every belt has taken its first, so cargo crosses two tiles a second and hands on to plain belts. Train wagons (`/obj/structure/trains/storage`: mining cart, tender, transport wagon) and shopping carts get storage ports: arms load and unload them within the same slot, size and item-type limits as a person (`code/modules/1713/factory_logistics.dm`). Modular vehicles have no item storage, so they have no port. | `tests/factory_automation/logistics_probe.dm`: fast line arrives in half the steps, fast-to-plain hand-off, fast list sleep, recipe gate; wagon load, capacity, unload, filters, tender fuel limit, cart load and unload. |
+| 4a. Fast belt and wagon loading (done) | Val chose this first on 2026-11-04. Fast belt (`/obj/structure/factory_belt/fast`, steel, Automation) takes a second belt step each tick, after every belt has taken its first, so cargo crosses two tiles a second and hands on to plain belts. Train wagons (`/obj/structure/trains/storage`: mining cart, tender, transport wagon) and shopping carts get storage ports: arms load and unload them within the same slot, size and item-type limits as a person (`code/modules/1713/factory_logistics.dm`). Modular vehicles have no item storage of their own; the cargo hold (4g) gives them one. | `tests/factory_automation/logistics_probe.dm`: fast line arrives in half the steps, fast-to-plain hand-off, fast list sleep, recipe gate; wagon load, capacity, unload, filters, tender fuel limit, cart load and unload. |
 | 4b. Factory monitor (done) | Factory monitor terminal, arm and fabricator states and items-per-minute counters. | `logistics_probe.dm`: rate buckets roll and decay; the monitor lists the loading arm with its state and eight items a minute, a starved fabricator with its recipe, the drive and a belt summary; the page renders; Automation gate. |
 | 4d. More recipes (done) | Val chose more factory recipes on 2026-11-05: rifle and pistol casings, iron bullets, ammo clips, stone bricks, wrench, screwdriver, claw hammer and wirecutters (tier 1, Assembly Line) and the 100-round ammo belt (tier 2, Automation), at the hand-crafting ratios; eighteen recipes in all. Finished cartridges stay manual because they need gunpowder, a reagent fabricators do not take. | `fabricators_probe.dm`: recipe counts and tier lists, a screwdriver item and a stack of three rifle casings made by a fabricator. |
 | 4e. 3D printer (done) | Digital Age (2026) tier 4 fabricator, `/obj/structure/factory_fabricator/printer`, behind the era-9 `additive_manufacturing` node. It runs only the twelve tier 4 printing rows (plastic tools, containers, medical disposables, hardhat, gas mask, traffic cone) and also takes feedstock by hand, so it works without belts. Thirty recipes in all. | `fabricators_probe.dm`: research gate, printing-only recipe list, older tiers excluded, plastic buffering and a powered print. |
+| 4f. Steam-era belts (done) | Val asked for it on 2026-11-07. Plain belts, belt drives, parts bins and the feeder arm move to `factories`; the feeder arm costs 8 steel instead of 5 electronics. | `belts_probe.dm` and `routing_probe.dm` research-gate checks; `belts_probe.dm` checks that Factories follows Steam Power, plain cable comes earlier and the feeder arm recipe is steel. |
+| 4g. Vehicle cargo hold (done) | Val asked for it on 2026-11-07. `/obj/structure/cargo_hold` (8 steel, Automobiles) is a twenty-slot steel box that bolts onto a vehicle bed with a wrench. Anything on a vehicle frame rides with the vehicle, so the hold travels with it; it has the same storage port as train wagons, so arms load and unload it. Its contents do not add to the vehicle's weight, as with crates. | `logistics_probe.dm`: load to twenty, refuse when full, unload, filter, wrench, carried by the axis, recipe gate. |
 | 4c. Balance pass | Tune speeds, buffer sizes and recipe ratios from live server data; benchmark at ceiling numbers. | Needs factories built by players on the live server. |
 
 Phase 0 is useful even if the rest is reordered, and changes no gameplay
@@ -471,9 +475,11 @@ beyond fixing saved belts.
 3. **Belt cargo model.** Phase 1 keeps cargo as floor items moved by raw
    location writes (see "Belt lines"), which avoids both the `contents`
    pickup problems and the per-item `Move()` cost. Open for Val to revisit.
-4. **Era gating.** Recommended: belts at `assembly_line` (as today), arms and
-   routing at `automation`, fabricators at `digital_computing`. Alternative:
-   open basic belts and feeder arms earlier at `factories` with steam power.
+4. **Era gating.** Decided (Val, 2026-11-07): plain belts, the belt drive,
+   parts bins and the feeder arm (8 steel) open at `factories` (era 4, 1873)
+   and run on a steam engine with plain cable. Fabricators stay at
+   `assembly_line`; sorting arms, gates, splitters, tunnels, fast belts and the
+   monitor at `automation`; the stack arm at `digital_computing`.
 
 ## Not in scope
 

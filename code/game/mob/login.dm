@@ -71,8 +71,7 @@
 	//set macro to normal in case it was overridden.
 	winset(client, null, "mainwindow.macro=hotkeymode input.focus=true input.background-color=#D3B5B5")
 
-	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
-		client.fit_viewport()
+	client.fit_viewport_soon()
 	if(client)
 		client.los_dirty = TRUE
 		client.reconcile_geometric_los()

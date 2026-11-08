@@ -197,6 +197,30 @@
 						qdel(src)
 		else
 			..()
+// Calamine (zinc carbonate). Its tin-ore art is tinted pale so the two read apart.
+/obj/item/stack/ore/zinc
+	name = "calamine"
+	desc = "Zinc ore. Melt it with copper ore in a fired clay pot or jug to make brass, or alone to cast zinc ingots."
+	icon_state = "ore_tin"
+	color = "#c9c2a8"
+	flags = CONDUCT
+	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				to_chat(H, "<span class = 'notice'>Empty \the [ET] first.</span>")
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("zinc",5)
+						ET.update_icon()
+						qdel(src)
+		else
+			..()
 /obj/item/stack/ore/diamond
 	name = "diamonds"
 	icon_state = "ore_diamond"

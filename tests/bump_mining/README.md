@@ -17,7 +17,7 @@ Offline: `-B -m unittest discover -s tests/bump_mining -v` with a verified Pytho
 `run.py --prepare-only --output <fresh-folder>` extracts production Bump, mining
 entry/context and do_after without executing native tools. Remote CI compiles
 and runs the baseline and dispatch/reservation/position/persistence omission controls with
-pinned BYOND516.1681 and retained source/compiler/runtime/result hashes.
+the BYOND version pinned in `tools/byond/version.json` and retained source/compiler/runtime/result hashes.
 
 The small native fixture adapts human construction, real-client movement
 authority, progress display, sound and final resource output; the actual paid

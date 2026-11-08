@@ -82,6 +82,33 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('entry["cold"] ? "COLD" : "ASLEEP"', body)
         self.assertIn('"WAKING"', body)
 
+    def test_a_stopped_world_is_not_shown_as_asleep_or_unreachable(self):
+        body = proc(GROUP, '/datum/shard_group/proc/record_sleeping')
+        self.assertIn('if("stopped")', body)
+        self.assertIn('peer["state"] = "STOPPED"', body)
+        text = proc(GROUP, '/proc/shard_state_text')
+        self.assertIn('if("STOPPED") return "stopped"', text)
+        self.assertIn('if("COLD") return "asleep, slow to wake"', text)
+
+    def test_a_silent_doorman_is_logged_once(self):
+        body = proc(GROUP, '/datum/shard_group/proc/poll_once')
+        self.assertIn('(hosted ? !doorman_answering : doorman_answering)', body)
+        self.assertLess(body.index('doorman_answering = !!hosted'), body.index('for(var/id in order.Copy())'))
+
+    def test_the_regions_panel_is_a_whole_page(self):
+        # A bare HTML fragment sent with browse() showed as raw text in the
+        # 516 client (2026-11-08); /datum/browser wraps it in a document.
+        verb = proc(GROUP, '/client/verb/view_regions')
+        self.assertIn('new(mob, "shard_regions"', verb)
+        self.assertIn('popup.open(FALSE)', verb)
+        self.assertNotIn('src << browse(html', verb)
+        panel = proc(GROUP, '/datum/shard_group/proc/panel_html')
+        self.assertIn("<tr class='here'>", panel)
+        self.assertIn('shard_kind_text(peer["kind"], id)', panel)
+        kind = proc(GROUP, '/proc/shard_kind_text')
+        self.assertIn('return "off-world"', kind)
+        self.assertIn('if("RAILYARD") return "rail yard"', kind)
+
     def test_the_doorman_address_is_validated(self):
         body = proc(GROUP, '/datum/shard_group/proc/configure')
         self.assertIn('shard_address_valid(settings["doorman"])', body)

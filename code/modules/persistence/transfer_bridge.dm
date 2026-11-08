@@ -9,6 +9,9 @@
 // Character effects travel fast instead: the agent journals them as confirmed at
 // once, and a load whose save lacks one gets it back to replay.
 
+// A stalled agent must not cost the world one rust_g thread per poll.
+#define TRANSFER_BRIDGE_ABANDONED_LIMIT 4
+
 var/global/datum/transfer_bridge/transfer_bridge = new
 
 /datum/transfer_bridge
@@ -30,6 +33,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	var/polling = FALSE
 	// Deciseconds between arrival polls (config "poll_seconds", 1-300).
 	var/poll_interval = 300
+	// Requests that missed their deadline. rust_g keeps a thread for each one
+	// until it finishes and is checked, so they are checked again later and no
+	// new request is sent while too many are still out.
+	var/list/abandoned = list()
 
 /datum/transfer_bridge/New()
 	..()
@@ -66,6 +73,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // cannot be reached within five seconds.
 /datum/transfer_bridge/proc/request(path, list/body)
 	if(!enabled()) return null
+	for(var/datum/http_request/stale in abandoned.Copy())
+		if(stale.is_complete())
+			abandoned -= stale
+	if(length(abandoned) >= TRANSFER_BRIDGE_ABANDONED_LIMIT) return null
 	var/datum/http_request/R = new
 	// An empty DM list encodes as a JSON array; the agent wants an object.
 	var/payload = length(body) ? json_encode(body) : "{}"
@@ -73,7 +84,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	R.begin_async()
 	var/deadline = world.timeofday + 50
 	while(!R.is_complete())
-		if(world.timeofday > deadline || world.timeofday < deadline - 100) return null
+		if(world.timeofday > deadline || world.timeofday < deadline - 100)
+			abandoned += R
+			return null
 		sleep(1)
 	var/datum/http_response/response = R.into_response()
 	if(response.error || !istext(response.body)) return null
@@ -200,7 +213,13 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		applied += effect_id
 		count++
 		try
-			if(kind == "remove")
+			// An uncrewed freighter's flight (space/orbit_freight.dm).
+			if(orbit_freight_payloads(entry["payloads"]))
+				if(kind == "remove")
+					orbit_freight_replay_departure(entry["payloads"])
+				else
+					orbit_freight_arrive(entry["payloads"], kind == "credit")
+			else if(kind == "remove")
 				region_travel_replay_departure(entry["payloads"])
 			else
 				region_travel_arrive(entry["payloads"], kind == "credit", region_travel_arrival_turf(), TRUE)
@@ -233,6 +252,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		if(islist(transfer_kinds) && ("character" in transfer_kinds))
 			poll_character(transfer_id, directions[transfer_id] == "in")
 			continue
+		if(islist(transfer_kinds) && ("freight" in transfer_kinds))
+			poll_freight(transfer_id, directions[transfer_id] == "in")
+			continue
 		var/obj/structure/transfer_trade_post/post = transfer_trade_arrival_post()
 		if(!post) return
 		var/turf/post_turf = get_turf(post)
@@ -255,6 +277,15 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// The effect is recorded; build the character now, without sleeping. If the
 	// arrival point went away during the request, the build picks another.
 	region_travel_arrive(result["payloads"], incoming, T)
+
+// An uncrewed freighter's cargo (space/orbit_freight.dm) lands at the party's
+// station or launch complex, or comes back where it left.
+/datum/transfer_bridge/proc/poll_freight(transfer_id, incoming)
+	if(("[transfer_id]:[incoming ? "credit" : "return"]") in applied) return
+	var/list/result = incoming ? begin_import(transfer_id, TRUE) : begin_return(transfer_id, TRUE)
+	if(!result) return
+	// The effect is recorded; unpack the cargo now, without sleeping.
+	orbit_freight_arrive(result["payloads"], incoming)
 
 /map_storage/transfer_capture(generation)
 	return transfer_bridge.capture(generation)

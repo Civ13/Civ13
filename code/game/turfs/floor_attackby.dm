@@ -863,6 +863,7 @@
 	// Independent ore rolls use the old table's marginal rates, not its conditional
 	// branch rates. Coal alone rises from 3% to 6%; see docs/mining-drop-balance.md.
 	var/iron_chance = map.ordinal_age >= 1 ? 32 : 0
+	var/zinc_chance = map.ordinal_age >= 1 ? 6 : 0 // Calamine, from the Classical age (cementation brass).
 	var/fuel_chance = map.ordinal_age >= 2 && map.ID != MAP_ANTARCTICA ? 3 : 0
 	var/legacy_remaining = 80 - iron_chance
 	if (fuel_chance)
@@ -876,7 +877,7 @@
 	var/diamond_chance = legacy_remaining * 0.01
 	legacy_remaining -= diamond_chance
 	var/no_ore_chance = 100
-	for (var/chance in list(12, 8, iron_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance))
+	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance))
 		no_ore_chance *= 1 - chance / 100
 	var/found_ore = FALSE
 	if (H)
@@ -909,6 +910,15 @@
 		if (H)
 			var/material/M = get_material_by_name("iron")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>iron</font></b> ore!"))
+		found_ore = TRUE
+	if (prob(zinc_chance) && zinc_chance)
+		var/obj/item/stack/ore/zinc/mineral = new/obj/item/stack/ore/zinc(src)
+		mineral.amount = rand(12,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("zinc")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>calamine</font></b> (zinc ore)!"))
 		found_ore = TRUE
 	if (prob(2 * fuel_chance) && fuel_chance)
 		var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)

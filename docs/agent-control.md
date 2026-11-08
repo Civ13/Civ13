@@ -37,6 +37,7 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   | `spawn` | `spawn_atom`, `delete_atom` |
   | `characters` | `character_spawn`, `character_list`, `character_observe`, `character_act`, `character_queue`, `character_release` |
   | `visits` | `visit_status`, `visit_order`, `visit_start` |
+  | `ooc` | the `ooc` character action (with `characters`) |
   | `*` | everything |
 
 - **Audit.** Every mutating action is written to the admin log as
@@ -154,10 +155,17 @@ and `resist`. Crafting goes through the stack's own recipe handler, so costs,
 tools and research gates apply. Click, use and craft can start timed work; a
 direct call returns at once and the work continues in the game, while a queued
 step waits for it. Actions run with `usr` set to the character.
+`ooc` (`text`, needs the `ooc` scope too) says one line in OOC chat as
+"<character name> (AI)": every player with OOC on sees it, it goes to Discord
+like a player's line, and in a region group to the other regions. It fails with
+`ooc_closed` while OOC is muted. The autopilot never uses it; send it by hand, for
+example `python tools/agent-control/civ13_agent.py call character_act
+'{"character": "<ref>", "do": "ooc", "text": "OOC test from Ada"}'`.
+
 A direct `character_act` that is still cooling down fails with `cooldown` and
 the ticks to wait. Cooldowns are the character's movement delay, the mob's own
-click cooldowns (`next_move`, `next_click`) and one second between `say` or
-`emote`.
+click cooldowns (`next_move`, `next_click`) and one second between `say`,
+`emote` or `ooc`.
 
 `character_queue` takes a plan of up to 32 `actions` (64 pending per
 character), each shaped like `character_act` arguments, plus
@@ -167,11 +175,61 @@ tick, so one request replaces many polled ones and the request rate limit is
 not spent on retries. A failed step skips the rest unless `stop_on_failure` is
 false. `clear: true` cancels pending steps. `character_observe` reports the
 queue as `pending`, `running` and `results` with ids above `queue_since`.
+A step may take `repeat` (1-30): it runs that many times, each when its
+cooldown allows, and is recorded once as `done xN`. `until` stops the repeats
+early when a new message contains `message`, the active hand holds an item whose
+name contains `holding`, or the held stack reaches `amount`. A blocked move or a
+failure ends the repeats. Any step with a `target` may carry `expect_name`: the
+step fails with `target_changed` when that ref now names something else.
 Queued steps are logged like direct ones; releasing a character, or removing
 its agent from the config, stops its queue. Movement waits for the mob's
 movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
+
+### Change lists, prompts and sounds
+
+Every `character_observe` returns a `rev`. Passing it back as `since_rev`
+makes `nearby` list only the rows that appeared or changed since that observe
+(a row's position is compared in map coordinates, so walking does not mark
+everything changed), with `nearby_removed` refs and a `nearby_unchanged`
+count. When the baseline is gone (another observe ran in between) the full
+list comes back without `changes_since`.
+
+<a id="prompts"></a>A prompt (`WWinput`) the game raises for a character that its step did not
+answer with `choose` is listed under `prompts` (after `prompt_since`, newest id
+in `last_prompt`) with its text, the `choices` (or the input `kind`) and what
+the character `took`, so the agent can repeat the step with `choose`.
+
+<a id="sounds"></a>Sounds played within hearing range are listed under `sounds` (after
+`sound_since`, newest id in `last_sound`) with the sound's name, `dx`/`dy` and
+volume. Footsteps are left out unless `footsteps` is true. A deafened
+character hears nothing.
+
+The client takes `wait_s` (0-60) on `character_observe`: it polls twice a
+second until there is a message after `since`, a queue result after
+`queue_since`, a prompt after `prompt_since`, a sound after `sound_since` or a
+nearby change after `since_rev`, and reports `waited_s`. The world never sleeps
+inside a Topic reply.
+
+### Seeing the view
+
+`character_view` returns what a character sees within `radius` (1-7, default 7):
+an appearance dump in the byond-devtools `ingame` format, with overlays,
+underlays, colours, planes and the plane masters a player's HUD builds. Only
+turfs in the character's view are listed, and things it cannot see are left
+out. Icons from the source tree are named by path. Icons made at runtime (human
+bodies, blended overlays) travel as base64 DMI bytes, up to 48 per view. A Topic
+reply holds at most 64 KB, so the dump is built once and read in parts
+(`view`, `part`, `parts`). The Python client and the MCP tool fetch every part.
+
+With `BYOND_DEVTOOLS` set to a byond-devtools checkout (Node 22+), the
+`civ13_character_view` MCP tool returns a PNG of the view next to a short
+summary. `civ13_agent.py view <character> out.png [radius]` writes the PNG.
+Without byond-devtools, the tool returns the dump, which byond-devtools'
+`dump_render` MCP tool or `node src/cli.js ingame --root <Civ13> --dump view.json
+--out view.png` can render. Filters, maptext and animation past the first frame
+are not modelled.
 
 ### Boats
 
@@ -242,7 +300,13 @@ python tools/agent-control/civ13_agent.py mcp
 ```
 
 `mcp` is a stdio MCP server exposing one `civ13_<action>` tool per action with
-a JSON schema (from `tools/agent-control/catalog.py`). An MCP client entry:
+a JSON schema (from `tools/agent-control/catalog.py`). Read-only tools carry
+`readOnlyHint`; `set_var`, `call_proc`, `call_verb`, `kick`, `restart`,
+`delete_atom` and `character_release` carry `destructiveHint`. It also serves
+two resources, this guide (`civ13://docs/agent-control`) and the action catalog
+(`civ13://actions`), and three prompts: `observe_and_act` (a character and a
+goal), `view_character` and `server_check` (read-only). Set `BYOND_DEVTOOLS` to
+a byond-devtools checkout for `civ13_character_view` pictures. An MCP client entry:
 
 ```json
 {"mcpServers": {"civ13": {"command": "python", "args": ["tools/agent-control/civ13_agent.py", "mcp"],
@@ -332,7 +396,13 @@ break; herbs only work on whoever chews them) and clicks the wound's body part o
 bleeding person within 5 tiles is treated before the model's plan when she carries a bandage and is
 not bleeding or under attack herself; she offers help first when they are awake. Whoever is
 attacking her, and people her memory distrusts, are not helped. When something attacks the
-character, a danger line leads the next prompt. While the character is
+character, a danger line leads the next prompt. The autopilot observes through
+`senses.SensesClient`: each look sends `since_rev`, `prompt_since` and
+`sound_since` and rebuilds the full nearby list from its cache. The prompt then
+lists what came into or went out of view since the last turn, the sounds heard
+(gunshots, explosions, animals, voices, with direction and distance; gunfire or
+an explosion within 12 tiles is a warning line), and any game prompt a step could
+not answer, with its options and how to repeat the step with `choose`. While the character is
 unconscious the run waits for them to come round (checking every 10 seconds,
 with no model calls), and it stops once the character is dead. A target the
 character cannot walk to is hidden for a while instead of retried. Water marked
@@ -508,4 +578,6 @@ python -B -m unittest discover -s tests/agent_control -v
 
 The offline suite covers the Topic packet format, client, MCP handshake and
 tool calls, catalog sync with the DM action table, autopilot parsing, and the
-security contracts above.
+security contracts above. `tests/agent_observe/run.py --byond-bin BIN` runs
+change lists, prompts, sounds, queue repeats and `expect_name` in a pinned
+BYOND fixture, and `tests/agent_boats/run.py` covers boats.

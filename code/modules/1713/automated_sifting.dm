@@ -9,7 +9,7 @@
 	var/tmp/datum/trace_soil_identity
 	var/tmp/datum/trace_water_identity
 	var/tmp/turf/trace_water
-	ore_types = list(/obj/item/stack/material/stone, /obj/item/stack/ore/glass, /obj/item/stack/ore/copper, /obj/item/stack/ore/tin, /obj/item/stack/ore/iron, /obj/item/stack/ore/coal, /obj/item/stack/ore/saltpeter, /obj/item/stack/ore/sulphur, /obj/item/stack/ore/lead)
+	ore_types = list(/obj/item/stack/material/stone, /obj/item/stack/ore/glass, /obj/item/stack/ore/copper, /obj/item/stack/ore/tin, /obj/item/stack/ore/iron, /obj/item/stack/ore/zinc, /obj/item/stack/ore/coal, /obj/item/stack/ore/saltpeter, /obj/item/stack/ore/sulphur, /obj/item/stack/ore/lead)
 
 /obj/structure/drill/sifter/panner
 	name = "powered river concentrator"

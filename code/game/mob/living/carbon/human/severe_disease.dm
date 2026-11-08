@@ -50,7 +50,7 @@
 	// Symptoms remain meaningful during treatment, but never cause a random
 	// early lethal toxin/brain spike. Other injuries/starvation still matter.
 	if (disease_progression >= 180)
-		set_mood(max(0, mood - 0.1))
+		set_mood(max(0, mood - 0.1), "being sick")
 		apply_effect(3, DROWSY, FALSE)
 		// Illness keeps a steady ache rather than stacking pain every tick:
 		// resting only clears 1-3 a second, so an uncapped +3 reached

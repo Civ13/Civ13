@@ -88,7 +88,7 @@
 		if (material.is_brittle())
 			health = FALSE
 		else if (!prob(material.hardness))
-			health--
+			health -= plating_wear(1)
 		check_health()
 
 /obj/item/weapon/material/proc/check_health(var/consumed)
@@ -125,9 +125,9 @@
 			H.adaptStat("strength", 1)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-			health -= 5
+			health -= plating_wear(5)
 		else
-			health-= 0.5
+			health -= plating_wear(0.5)
 		check_health()
 		if(prob(15))
 			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")

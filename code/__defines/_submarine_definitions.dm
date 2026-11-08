@@ -108,3 +108,8 @@
 #define SUB_AIR_VENT_FLOW         0.3    // Fraction ventilation moves toward the shared air each second
 #define SUB_AIR_ELECTROLYSIS_O2   0.02   // kPa-tiles of oxygen per compartment per second
 #define SUB_AIR_SCRUB_RATE        0.05   // kPa-tiles of CO2 a scrubber removes per second
+
+// Damage control and the thermal layer
+#define SUB_SHORED_INFLOW 1           // cm of water per tick through a shored breach
+#define SUB_THERMOCLINE_DEPTH 60      // metres: sonar crossing the layer loses range
+#define SUB_THERMOCLINE_SHADOW 0.5    // range factor across the layer

@@ -1,0 +1,20 @@
+{
+  "group": "tdm",
+  "live": true,
+  "persistent": false,
+  "repository": "/home/civ13/civ13-git",
+  "root": "/home/civ13/tdm",
+  "revision": "origin/master",
+  "fetch": "origin",
+  "compiler": "DreamMaker",
+  "daemon": "DreamDaemon",
+  "git": "git",
+  "public_host": "civ13.com",
+  "public": false,
+  "freeze_idle_minutes": 525600,
+  "doorman_port": 1713,
+  "regions": [
+    {"id": "barracks", "name": "Barracks", "kind": "BARRACKS", "port": 1714, "public": true, "map": "maps/special/tdm_barracks.dmm"},
+    {"id": "battle", "name": "Battle", "kind": "BATTLE", "port": 1715, "map": "maps/1013/karak.dmm"}
+  ]
+}

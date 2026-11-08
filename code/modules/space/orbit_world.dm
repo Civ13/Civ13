@@ -39,6 +39,10 @@
 /turf/floor/space/orbit/outside_air_breathable()
 	return FALSE
 
+// The cold of open space, for code compiled before this file.
+/proc/orbit_ambient_c()
+	return ORBIT_VACUUM_C
+
 /turf/floor/space/orbit/outside_ambient_c()
 	return ORBIT_VACUUM_C
 
@@ -76,6 +80,10 @@ var/global/list/orbit_opposites = list("up" = "down", "down" = "up", "north" = "
 	not_disassemblable = TRUE
 	var/list/links = list()
 	var/list/owners = list()
+	// The orbital day (orbit_station.dm): sunlit or not, and the seconds
+	// left in this part of the orbit. Plain numbers, never a world.time.
+	var/sunlit = 1
+	var/sun_left = 1200
 
 /obj/structure/orbit_registry/New()
 	..()
@@ -231,8 +239,8 @@ var/global/list/orbit_opposites = list("up" = "down", "down" = "up", "north" = "
 	if (A.anchored)
 		return
 	var/turf/destination = orbit_seam_destination()
-	if (!destination)
+	if (destination && persistence_movement_allowed(A, destination))
+		A.forceMove(destination)
 		return
-	if (!persistence_movement_allowed(A, destination))
-		return
-	A.forceMove(destination)
+	if (ishuman(A))
+		orbit_eva_entered(A, old_loc)

@@ -512,6 +512,12 @@
 	if (!is_trench && launch_from_trench && !overcoming_trench)
 		overcoming_trench = TRUE
 
+	// Fire aimed at an aircraft's shadow may hit the aircraft above instead.
+	if (airborne_aircraft.len && T != starting && aircraft_overhead_fire(src, T))
+		on_impact(T)
+		qdel(src)
+		return FALSE
+
 	var/T_density = T.density
 	for (var/atom/movable/AM in T.contents)
 		if (untouchable.Find(AM))

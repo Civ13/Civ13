@@ -364,6 +364,7 @@ var/list/charge_sounds_generic_female = list(
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
 
+	var/requested = soundin // the sound's name, before it becomes a file
 	soundin = get_sfx(soundin) // same sound for everyone
 
 	if (isarea(source))
@@ -397,6 +398,10 @@ var/list/charge_sounds_generic_female = list(
 			if (T && T.z == turf_source.z)
 				M.playsound_local(turf_source, soundin, vol, vary, frequency, falloff, is_global)
 				players_who_heard += M
+
+	// Agent characters have no client to play it to; they note it instead.
+	if (agent_characters.len && turf_source)
+		agent_hear_sound(turf_source, requested, soundin, vol, extrarange, excluded)
 
 	return players_who_heard
 

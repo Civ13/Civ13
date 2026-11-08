@@ -66,6 +66,8 @@ var/global/datum/shard_group/shard_group = new
 	// which regions are asleep. Null when the host runs none. A sleeping peer is
 	// never polled directly, because a connection to it wakes it.
 	var/doorman = null
+	// FALSE once the doorman has stopped answering, so the log hears it once.
+	var/doorman_answering = TRUE
 
 /datum/shard_group/New()
 	..()
@@ -99,7 +101,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -168,6 +170,11 @@ var/global/datum/shard_group/shard_group = new
 	// Launch offices ask before founding a station (space/orbit_world.dm).
 	if(kind == "ORBIT")
 		.["free_planes"] = length(orbit_free_planes())
+	// The host tool and launcher show what the TDM battle is doing (tdm_barracks).
+	if(kind == "BATTLE" && tdm_battle_active())
+		.["battle_phase"] = tdm_battle.phase()
+	if(kind == "BARRACKS" && tdm_barracks_active())
+		.["battle_phase"] = tdm_barracks.status_fresh() ? tdm_barracks.status["phase"] : null
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -195,6 +202,7 @@ var/global/datum/shard_group/shard_group = new
 	peer["state"] = "UP"
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
+	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	if(id == mainland)
 		follow_mainland_epoch(reply["ordinal_age"])
@@ -219,7 +227,11 @@ var/global/datum/shard_group/shard_group = new
 // any save load has finished. A world holding a save it did not restore waits
 // for an admin rather than starting a fresh round over it.
 /datum/shard_group/proc/autostarts_round()
-	if(!enabled || !region || region == mainland)
+	// A TDM battle world waits for players like any TDM server; the barracks
+	// (tdm_barracks) is always playing, mainland or not.
+	if(enabled && kind == "BATTLE")
+		return FALSE
+	if(!enabled || !region || (region == mainland && kind != "BARRACKS"))
 		return FALSE
 	if(persistence_restart.startup_hold || map_storage.round_restored)
 		return FALSE
@@ -255,6 +267,9 @@ var/global/datum/shard_group/shard_group = new
 			peer["state"] = entry["cold"] ? "COLD" : "ASLEEP"
 		if("waking")
 			peer["state"] = "WAKING"
+		if("stopped") // the host knows it but it is not running
+			peer["state"] = "STOPPED"
+			peer["players"] = null
 		else
 			peer["state"] = "DOWN"
 			peer["players"] = null
@@ -330,6 +345,11 @@ var/global/datum/shard_group/shard_group = new
 
 /datum/shard_group/proc/poll_once()
 	var/list/hosted = doorman_states()
+	// Without the doorman a sleeping peer cannot be told from a stopped one;
+	// both fail a direct poll and read as down.
+	if(doorman && (hosted ? !doorman_answering : doorman_answering))
+		doorman_answering = !!hosted
+		log_game(hosted ? "Region group: the host doorman at [doorman] answers again." : "Region group: the host doorman at [doorman] does not answer; sleeping regions read as down until it does.")
 	for(var/id in order.Copy())
 		var/list/peer = peers[id]
 		if(!peer)
@@ -443,21 +463,45 @@ var/global/datum/shard_group/shard_group = new
 	return answer
 
 /datum/shard_group/proc/panel_html()
-	var/list/lines = list("<h2>[html_encode(name)]</h2>", "<p>Region group <b>[html_encode(group)]</b>. You are in <b>[html_encode(name)]</b> ([lowertext(kind)]).</p>")
+	var/list/lines = list("<p>Region group <b>[html_encode(group)]</b>. You are in <b>[html_encode(name)]</b>.</p>")
+	lines += "<table class='regions'><tr><th>Region</th><th>Kind</th><th>State</th><th>Players</th><th></th></tr>"
+	lines += "<tr class='here'><td>[html_encode(name)]</td><td>[shard_kind_text(kind, region)]</td><td>up, you are here</td><td>[length(clients)]</td><td></td></tr>"
+	for(var/id in order)
+		var/list/peer = peers[id]
+		var/state = peer["state"]
+		var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
+		// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
+		var/join = (state == "UP" || state == "ASLEEP") ? "<a href='[player_href(id)]'>Join</a>" : ""
+		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
+	lines += "</table>"
 	if(!order.len)
 		lines += "<p>This is the only region in the group.</p>"
 	else
-		lines += "<table><tr><th>Region</th><th>Kind</th><th>State</th><th>Players</th><th></th></tr>"
-		for(var/id in order)
-			var/list/peer = peers[id]
-			var/state = peer["state"]
-			var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
-			// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
-			var/join = (state == "UP" || state == "ASLEEP") ? "<a href='[player_href(id)]'>Join</a>" : ""
-			lines += "<tr><td>[html_encode(peer["name"])]</td><td>[lowertext(peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
-		lines += "</table>"
 		lines += "<p>Your character lives in one region. New characters start on the mainland and reach the others by travelling a trail.</p>"
 	return jointext(lines, "")
+
+// What the panel shows of the host, for admins: why every peer may read as down.
+/datum/shard_group/proc/panel_admin_html()
+	if(!doorman)
+		return "<p class='note'>No host doorman is set, so sleeping regions read as down.</p>"
+	if(!doorman_answering)
+		return "<p class='note'>The host doorman at [html_encode(doorman)] does not answer, so sleeping regions read as down. Check that the host service runs.</p>"
+	return ""
+
+/proc/shard_kind_text(kind, id)
+	switch(kind)
+		if("SURFACE") return "surface"
+		if("OCEANIC") return "ocean"
+		if("UNDERGROUND") return "underground"
+		if("RAILYARD") return "rail yard"
+		if("RAID") return "raid"
+		if("ORBIT") return "orbit"
+		if("BARRACKS") return "barracks"
+		if("BATTLE") return "battle"
+	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
+	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
+		return "off-world"
+	return "special"
 
 /proc/shard_state_text(state)
 	switch(state)
@@ -465,9 +509,10 @@ var/global/datum/shard_group/shard_group = new
 		if("ASLEEP") return "asleep, wakes when someone arrives"
 		if("COLD") return "asleep, slow to wake"
 		if("WAKING") return "waking up"
+		if("STOPPED") return "stopped"
 		if("UNKNOWN") return "not checked yet"
 		if("MISMATCH") return "wrong server"
-	return "down"
+	return "not answering"
 
 /client/verb/view_regions()
 	set name = "Regions"
@@ -477,8 +522,12 @@ var/global/datum/shard_group/shard_group = new
 		return
 	var/html = shard_group.panel_html()
 	if(holder)
-		html += region_trail_pending_html()
-	src << browse(html, "window=shard_regions;size=520x420")
+		html += shard_group.panel_admin_html() + region_trail_pending_html()
+	// A bare fragment is shown as plain text by the 516 client: browse it as a whole page.
+	var/datum/browser/popup = new(mob, "shard_regions", shard_group.name, 560, 440)
+	popup.add_head_content("<style>table.regions{border-collapse:collapse;width:100%}table.regions th,table.regions td{padding:3px 6px;text-align:left;border-bottom:1px solid #444}tr.here td{font-weight:bold}tr.down td,tr.stopped td{opacity:0.6}p.note{color:#c96}</style>")
+	popup.set_content(html)
+	popup.open(FALSE)
 
 #undef SHARD_POLL_INTERVAL
 #undef SHARD_DOORMAN_FRESH_SECONDS

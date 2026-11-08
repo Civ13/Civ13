@@ -59,7 +59,7 @@ class AnimalAttackContracts(unittest.TestCase):
                           'if (prob(95) || !can_bite_limbs_off)',
                           'H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)',
                           'affecting.droplimb(FALSE, DROPLIMB_EDGE)',
-                          'L.adjustBruteLoss(damage)', 'NB.adjust_mood(-(10))'):
+                          'L.adjustBruteLoss(damage)', 'NB.adjust_mood(-(10), "seeing someone maimed")'):
             self.assertEqual(self.attack.count(operation), 1)
 
 

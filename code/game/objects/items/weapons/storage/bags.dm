@@ -194,6 +194,7 @@
 		var/col_count = min(7,storage_slots) -1
 		if (adjusted_contents > 7)
 			row_num = round((adjusted_contents-1) / 7) // 7 is the maximum allowed width.
+		hud_place_window(user, 4, 2, (col_count + 2) * 32, (row_num + 1) * 32)
 		slot_orient_objs(row_num, col_count, numbered_contents)
 		return
 

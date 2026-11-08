@@ -3,21 +3,26 @@
 DM reaches it with rustg_http_request_async; the coordinator reaches it to move
 envelopes. It listens on 127.0.0.1 only, refuses other client addresses, and
 requires the shared token from the region's token file on every request.
-Requests are served one at a time, so the store sees no concurrency.
+Each connection is read on its own thread with a socket timeout, so a client
+that connects and never sends (or a slow one) cannot stall the others; the
+routes still run one at a time under a lock, so the store sees no concurrency.
 """
 import argparse
 import hmac
 import json
+import os
+import socket
 import sys
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 if __package__ in (None, ''):
-    import os
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.radio import RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError  # noqa: E402
 
 MAX_BODY = 1 << 20  # 1 MiB per request
+READ_TIMEOUT = 10  # seconds a connection may take to send its request
 
 
 def _load(store, body):
@@ -43,7 +48,11 @@ def _routes(store, radio):
         '/radio/inbox': lambda body: {'envelopes': radio.inbox()},
         '/radio/status': lambda body: radio.status(),
         '/radio/outbox': lambda body: radio.outbox(),
-        '/radio/deliver': lambda body: {'queued': radio.deliver(body.get('envelopes', []), body.get('heartbeats'))},
+        '/radio/deliver': lambda body: {'queued': radio.deliver(body.get('envelopes', []), body.get('heartbeats')),
+                                        'ooc': radio.deliver_ooc(body.get('ooc', []))},
+        # Group-wide OOC chat rides the radio agent; no relay station needed.
+        '/ooc/send': lambda body: {'id': radio.ooc_send(body.get('envelope'))},
+        '/ooc/inbox': lambda body: {'envelopes': radio.ooc_inbox()},
         '/status': lambda body: store.status(),
         '/outbox': lambda body: {'envelopes': store.outbox()},
         '/receive': lambda body: {'reply': store.receive(body['envelope'])},
@@ -67,9 +76,11 @@ def make_server(store, token, port=0, radio=None):
     if not isinstance(token, str) or len(token) < 32:
         raise ValueError('the agent token must be at least 32 characters')
     routes = _routes(store, radio or RadioRelay(store.region, store.group))
+    lock = threading.Lock()
 
     class Handler(BaseHTTPRequestHandler):
         server_version = 'civ13-transfer-agent/1'
+        timeout = READ_TIMEOUT
 
         def log_message(self, fmt, *args):
             pass  # no request bodies or items in logs
@@ -100,7 +111,9 @@ def make_server(store, token, port=0, radio=None):
                 body = json.loads(self.rfile.read(length) or b'{}')
                 if type(body) is not dict:
                     raise ValueError('body must be an object')
-                return self._answer(200, {'ok': True, 'result': route(body)})
+                with lock:
+                    result = route(body)
+                return self._answer(200, {'ok': True, 'result': result})
             except RegionHeld as e:
                 return self._answer(409, {'ok': False, 'held': True, 'error': str(e)})
             except (TransferError, RadioError, KeyError, TypeError, ValueError) as e:
@@ -109,7 +122,21 @@ def make_server(store, token, port=0, radio=None):
         def do_GET(self):
             self._answer(405, {'error': 'use POST'})
 
-    return HTTPServer(('127.0.0.1', port), Handler)
+    server = AgentServer(('127.0.0.1', port), Handler)
+    server.daemon_threads = True
+    return server
+
+
+class AgentServer(ThreadingHTTPServer):
+    """One agent per port. On Windows SO_REUSEADDR lets a second agent bind a port that
+    one already listens on, and either may answer (Rail Yard had four on 1725,
+    2026-11-08), so it is off there and the port is held exclusively."""
+    allow_reuse_address = os.name != 'nt'
+
+    def server_bind(self):
+        if os.name == 'nt' and hasattr(socket, 'SO_EXCLUSIVEADDRUSE'):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
 
 
 def main(argv=None):

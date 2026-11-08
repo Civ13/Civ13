@@ -63,8 +63,8 @@ It stays closed while the bridge is off or `peers` is empty in the config:
 ```
 
 - A player hands it a stack of an allowlisted material (wood, stone, clay,
-  rope, cloth, leather, copper, tin, bronze, iron, steel, silver or gold; exact
-  types only, up to one full stack) and names the recipient's key. The post
+  rope, cloth, leather, copper, tin, bronze, zinc, brass, iron, steel, silver or
+  gold; exact types only, up to one full stack) and names the recipient's key. The post
   holds the stack while the agent records the escrow, then deletes it. If the
   agent refuses, or a save starts meanwhile, the stack is put back.
 - Every 30 seconds the world asks its agent for committed arrivals and
@@ -194,6 +194,15 @@ region's `/radio/deliver` once a second (`--radio-interval`, never longer than
 `--interval`). Nothing touches the SQLite ledger: a restart loses what was in
 flight, duplicates, stale envelopes, wrong-group envelopes and envelopes from
 unknown or self regions are dropped and counted in `/radio/status`.
+
+OOC chat is shared by every region of the group the same way, in its own ring
+and without relay stations (`code/modules/persistence/region_ooc.dm`). The
+world posts each OOC line said there to `/ooc/send` and polls `/ooc/inbox`;
+the coordinator's radio pass carries the lines in the `ooc` list of
+`/radio/outbox` and `/radio/deliver`. Only the region a line was said in posts
+it to Discord, so CivilizationBot sees it once; receiving regions show it
+tagged with the source region, unless OOC is globally muted there or the
+speaker holds an OOC ban in that region's ban list.
 
 ## Two-region pilot (phase 3)
 

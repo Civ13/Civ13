@@ -9,21 +9,59 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	return TRUE
 
 // A handover (scripts/shard-group handover): the staged build boots beside this world as a
-// standby, this world freezes play and saves, the standby loads the save, then this world
-// reboots out and the standby opens the region's port. While world_moving is set, clients
-// can look and chat but not move or act, so nothing played after the save is lost.
+// standby, this world saves, the standby loads the save, then this world reboots out and the
+// standby opens the region's port. Players freeze only while their own level is captured,
+// as in any save. Play on a level after its capture does not reach the standby, so those
+// players are warned that what they do from then on will not carry over.
 var/global/world_moving = FALSE
+
+// Levels whose players are frozen ("[z]" = TRUE): each level only while it is captured.
+// Crossing between levels stays blocked for the whole save (persistence_save_in_progress).
+var/global/list/persistence_frozen_levels = list()
 
 /proc/set_world_moving(moving)
 	world_moving = moving ? TRUE : FALSE
+	if(!world_moving) persistence_release_all_levels()
 
-// Clicks are the other way to act; movement is refused in client/Move (mob_movement.dm).
+/proc/persistence_clients_on_level(z)
+	. = list()
+	for(var/client/C in clients)
+		var/turf/T = C.mob ? get_turf(C.mob) : null
+		if(T && T.z == z) . += C
+
+/proc/persistence_freeze_level(z)
+	if(persistence_frozen_levels["[z]"]) return
+	persistence_frozen_levels["[z]"] = TRUE
+	for(var/client/C in persistence_clients_on_level(z))
+		to_chat(C, "<span class='warning'>Your level is being saved. You can look around and chat, but not act, until it finishes in a moment.</span>")
+
+/proc/persistence_release_level(z)
+	if(!persistence_frozen_levels["[z]"]) return
+	persistence_frozen_levels -= "[z]"
+	for(var/client/C in persistence_clients_on_level(z))
+		if(world_moving)
+			to_chat(C, "<span class='warning'><b>Your level is saved for the move to the updated server. You can play on, but anything you do from now until the move finishes will not carry over.</b> Stay on this level until the move finishes.</span>")
+		else
+			to_chat(C, "<span class='notice'>Your level is saved; carry on. Stay on this level until the whole save finishes.</span>")
+
+/proc/persistence_release_all_levels()
+	persistence_frozen_levels.Cut()
+
+// Null when the client may act, else the reason shown to them.
+/proc/persistence_input_frozen(client/C)
+	if(!persistence_frozen_levels.len || !C || !C.mob || isobserver(C.mob)) return null
+	var/turf/T = get_turf(C.mob)
+	if(!T || !persistence_frozen_levels["[T.z]"]) return null
+	return "Your level is being saved. You can look around and chat, but not act, until it finishes in a moment."
+
 /client/Click(atom/object, location, control, params)
-	if (world_moving)
-		if (mob && world.time >= mob.next_click)
-			mob.next_click = world.time + 20
-			to_chat(src, "<span class='warning'>The world is moving to the updated server. You can look around and chat, but not act, until it finishes.</span>")
-		return
+	if (persistence_frozen_levels.len)
+		var/reason = persistence_input_frozen(src)
+		if (reason)
+			if (mob && world.time >= mob.next_click)
+				mob.next_click = world.time + 20
+				to_chat(src, "<span class='warning'>[reason]</span>")
+			return
 	return ..()
 
 /datum/persistence_restart_transaction
@@ -198,7 +236,9 @@ var/global/world_moving = FALSE
 // It is consumed by the separately reviewed #3368 integration when present.
 // handover: save for a standby world instead of restarting; see world_moving above. The
 // caller (nomads_lifecycle) later calls handover_release() or handover_cancel().
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE)
+// stay_down: an admin's in-game save and shut down. The world leaves a stop marker for the
+// host (see stop_marker_path) so its watchdog leaves the world down instead of restarting it.
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE, stay_down = FALSE, stopped_by = null)
 	if((shutdown || handover) && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
 		report("Save/shutdown refused: invalid lifecycle binding")
 		return FALSE
@@ -222,16 +262,20 @@ var/global/world_moving = FALSE
 	var/list/published
 	if(handover)
 		handover_state = "saving"
+		// The standby's load validates this save; see validation_record_matches.
+		map_storage.handover_candidate = TRUE
 		set_world_moving(TRUE)
-		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. You can look around and chat, but not act, until the move finishes in a few minutes; nothing you did is lost.</b></font>")
+		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves; after your level is saved you can play on, but anything you do from then until the move finishes in a few minutes will not carry over.</b></font>")
 	// Give connected players a minute's notice; busy already blocks other saves.
 	else if(clients.len && !prewarned)
 		if(!isnull(expected_persistence) && expected_persistence == 0)
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. This nonpersistent round will start fresh; the save will be retained for recovery.</b></font>")
+		else if(stay_down)
+			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and shut down in 1 minute. Your progress will be kept for when it comes back.</b></font>")
 		else
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart in 1 minute. Your progress will be kept; reconnect in a few minutes to continue.</b></font>")
 		sleep(600)
-		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will restart when the save completes.</b></font>")
+		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down ? "shut down" : "restart"] when the save completes.</b></font>")
 	try
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
 		diagnostic_phase = "save"
@@ -255,6 +299,16 @@ var/global/world_moving = FALSE
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting into a fresh nonpersistent round.</b></font>")
 			else
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
+			if(!prewarned)
+				// The host's Save and stop (or restart, which starts the world itself): its
+				// watchdog must not take this exit for a crash, even if the host stopped waiting.
+				diagnostic_phase = "stop_marker"
+				write_stop_marker("host")
+			request_shutdown(expected_persistence)
+		else if(stay_down)
+			to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is shutting down; your progress is kept for when it comes back.</b></font>")
+			diagnostic_phase = "stop_marker"
+			write_stop_marker(stopped_by)
 			request_shutdown(expected_persistence)
 		else
 			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
@@ -264,8 +318,11 @@ var/global/world_moving = FALSE
 		diagnostic_phase = "failure_cleanup"
 		if(handover)
 			handover_state = null
+			map_storage.handover_candidate = FALSE
 			set_world_moving(FALSE)
 			to_chat(world, "<font color='yellow' size=4><b>The move to the updated server was called off. Play on; nothing was lost.</b></font>")
+		if(stay_down || (shutdown && !prewarned))
+			fdel(stop_marker_path)
 		var/cleanup = ""
 		if(published && exists())
 			try
@@ -281,12 +338,25 @@ var/global/world_moving = FALSE
 	lifecycle_session = null
 	return FALSE
 
+// The host's watchdog restarts a world that exits while it should be running. This marker
+// tells it the exit was an admin's save and shut down, so it leaves the world down
+// (scripts/gaia-host/gaia_host.py check_crash). The host removes it when it handles it or
+// on the next start.
+/datum/persistence_restart_transaction/var/stop_marker_path = "data/stopped_in_game.json"
+
+/datum/persistence_restart_transaction/proc/write_stop_marker(stopped_by)
+	fdel(stop_marker_path)
+	var/list/marker = list("generation" = expected_generation, "by" = "[stopped_by]", "realtime" = world.realtime)
+	if(!text2file(json_encode(marker), stop_marker_path) || !fexists(stop_marker_path))
+		throw EXCEPTION("Could not write the stop marker for the host; the server stays up")
+
 // The save is published; the standby loads it while this world waits frozen. The host then
 // releases this world (it reboots out; with -close DreamDaemon exits and clients reconnect to
 // the standby, which opens this port) or cancels (the standby failed; play resumes).
 /datum/persistence_restart_transaction/proc/wait_for_handover()
 	handover_state = "saved"
 	diagnostic_phase = "handover_wait"
+	to_chat(world, "<font color='yellow' size=4><b>The world is saved for the move to the updated server. You can play on, but anything you do until the move finishes will not carry over.</b></font>")
 	var/deadline = world.time + handover_wait_timeout
 	while(handover_state == "saved")
 		if(world.time >= deadline) throw EXCEPTION("The host did not finish the handover within [round(handover_wait_timeout / 600)] minutes; the world resumes")
@@ -318,6 +388,9 @@ var/global/world_moving = FALSE
 	if(!startup_hold || busy) return FALSE
 	busy = TRUE
 	diagnostic_phase = "restore_preflight"
+	// A standby's import is the handover's validation: it may trust the saving
+	// world's candidate record (validation_record_matches), for this load only.
+	map_storage.handover_candidate = standby
 	try
 		var/list/I = read_intent()
 		lifecycle_operation = I["lifecycle_operation"]
@@ -332,6 +405,7 @@ var/global/world_moving = FALSE
 			diagnostic_phase = "restore"
 			if(!load_generation(I)) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")
 			import_complete = TRUE
+		map_storage.handover_candidate = FALSE
 		diagnostic_phase = "consume_intent"
 		consume(I)
 		startup_hold = FALSE
@@ -349,6 +423,7 @@ var/global/world_moving = FALSE
 		return TRUE
 	catch(var/exception/e)
 		diagnostic_phase = "failed"
+		map_storage.handover_candidate = FALSE
 		var/game_ready_hook = text2path("/proc/game_ready_startup_event")
 		if(game_ready_hook) call(game_ready_hook)("restart_failed", src)
 		persistence_save_in_progress = TRUE

@@ -493,6 +493,7 @@ var/global/datum/controller/occupations/job_master
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
 		H.original_job_title = H.original_job.title
+		H.make_tactical_map_user()
 
 		// add us to the list of players for our job for quick player calculations
 		if (!processes.job_data.job2players[H.original_job.title])

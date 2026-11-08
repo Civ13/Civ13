@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-08: wild plants and stump regrowth -->
+Nomads maps grow sparse ripe wild crops and regrow chopped trees from stumps
+(docs/flora-regrowth.md, code/modules/ecology/flora_regrowth.dm). Wild plants
+are farming plants with wild = TRUE whose growth() returns early; stumps save
+regrow_type through get_saved_vars. Registries are runtime lists refilled in
+make_wild/New/after_load. Probe: tests/flora_regrowth/probe.dm.
+
 <!-- 2026-11-07: ecology wildlife spawning on Nomads maps -->
 Nomads maps spawn wildlife by habitat (docs/ecology-spawning.md): a 41-species
 table, a cell index of climate|ground keys, one census per minute and herds out

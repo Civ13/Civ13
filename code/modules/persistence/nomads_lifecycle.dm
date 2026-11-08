@@ -128,13 +128,15 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/list/allowed = (action == "status" || action == "save_idle") ? list("nomads_lifecycle", "token", "action") : list("nomads_lifecycle", "token", "action", "session", "operation")
 	if(action == "diagnose") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "target")
 	if(action == "standby_open") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "port")
+	if(action == "set_epoch") allowed = list("nomads_lifecycle", "token", "action", "epoch")
 	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
-	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open")))
+	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "set_epoch")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
 		if(!(key in allowed)) return json_encode(snapshot(FALSE, "malformed_request"))
 	if(action == "status") return json_encode(snapshot())
 	if(action == "save_idle") return json_encode(save_idle())
+	if(action == "set_epoch") return json_encode(host_set_epoch(input["epoch"]))
 	if(action == "diagnose") return diagnose(input)
 	if(input["session"] != boot_session() || !nomads_lifecycle_hex(input["operation"], 32))
 		return json_encode(snapshot(FALSE, "invalid_session_or_operation"))
@@ -228,6 +230,28 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	nextsave = world.realtime + 216000
 	start_idle_save()
 	state["save"] = "started"
+	return state
+
+// The host advances this world's epoch (the launcher's Advance epoch, shard_group.py epoch).
+// The epoch only moves forward, like follow_mainland_epoch, and never during a save, so the
+// save in progress keeps one consistent epoch. The reply's "epoch" field says "set", "current"
+// (already at or past it) or why it was refused; "age" is the epoch name now in force.
+/datum/nomads_lifecycle_control/proc/host_set_epoch(value)
+	var/list/state = snapshot()
+	var/ordinal = istext(value) && length(value) <= 2 ? text2num(value) : null
+	var/result = null
+	if(!isnum(ordinal) || ordinal != round(ordinal) || ordinal < 0 || ordinal >= epoch_names.len) result = "refused:invalid_epoch"
+	else if(!map || !ticker || ticker.current_state < GAME_STATE_PLAYING) result = "refused:round_not_started"
+	else if(busy || persistence_save_in_progress || persistence_save_active() || persistence_restart.busy || persistence_restart.startup_hold) result = "refused:busy"
+	else if(ordinal <= map.ordinal_age) result = "current"
+	else if(!map.set_epoch(ordinal)) result = "refused:not_set"
+	else
+		result = "set"
+		log_admin("The host changed the map's epoch to [map.age].")
+		to_chat(world, "<big>The Epoch has been changed to <b>[map.age]</b></big>")
+	state["epoch"] = result
+	state["ordinal_age"] = map ? map.ordinal_age : null
+	state["age"] = map ? map.age : null
 	return state
 
 // Returns to the Topic reply at the saver's first yield.

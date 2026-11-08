@@ -209,12 +209,26 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
+    # Per-round battle map variation inserts: generator freshness, slot bounds,
+    # open-ground placement against the base maps and loader rules; no BYOND runtime.
+    'map_variations': {'files': ('tests/map_variations/test_map_variations.py',),
+        'paths': ('tests/map_variations/', 'maps/zones/variations/',
+                  'code/modules/map_variations/'), 'shared_paths': (
+            'maps/1943/smallingrad.dmm', 'maps/1903/hill_203.dmm',
+            'code/game/objects/map_metadata/stalingrad.dm',
+            'code/game/objects/map_metadata/hill203.dm',
+            'code/game/gameticker.dm', 'code/__defines/maps.dm', 'civ13.dme')},
     # Zombie city generator: base map regeneration, placed-type and contract
     # name projection, checker fixtures; no BYOND runtime.
     'zombie_city': {'files': ('tests/zombie_city/test_zombie_city.py',),
         'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
                   'code/modules/zombie_city/'), 'shared_paths': (
             'code/__defines/maps.dm', 'civ13.dme')},
+    # Live tactical map wiring, permission guards and the client script run in
+    # Node (skipped without it); native_probe.py is developer evidence only.
+    'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
+        'paths': ('tests/tactical_map/',), 'shared_paths': (
+            'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
         'paths': ('tests/research_bench/',), 'shared_paths': (
@@ -727,6 +741,12 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    # Source-only inventories the native moving-save lane pins (collision overrides,
+    # animal save hooks). They scan all production DM, so they run on every PR: the
+    # PR that edits a listed file refreshes the inventory, not the next save PR.
+    'movement_save_inventory': {'files': ('tests/movement_save_chunks/test_collision_manifest.py',
+                                          'tests/movement_save_chunks/test_chunks.py'),
+                                'always': True, 'paths': ()},
     # Stdlib-only scalar/callback projections; no native runner or subprocesses.
     # Shared chemistry/stack sources retain their conservative all-suite fallback.
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
@@ -861,16 +881,21 @@ SUITES = {
         'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
-                             'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
+                             'tests/dictionary_era/test_corpus.py'), 'paths': (
         'tests/dictionary_era/', 'code/_helpers/dictionary.dm', 'code/_helpers/text.dm',
         'code/setup.dm', 'code/world.dm', 'code/__defines/__game.dm', 'civ13.dme',
+        'code/__defines/_rust_g.dm',
         'code/game/mob/living/carbon/human/say.dm',
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
     # Save policy: no automatic saves while players are online; 30 minute save votes.
-    'save_policy': {'files': ('tests/save_policy/test_policy.py',), 'paths': (
+    'save_policy': {'files': ('tests/save_policy/test_policy.py', 'tests/save_policy/test_runtime_var_cache.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
-        'code/modules/persistence/functions.dm')},
+        'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm')},
+    # Offline source contracts for the fireman carry (grab on a downed human).
+    'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
+        'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
+        'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
@@ -878,6 +903,24 @@ SUITES = {
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
+    # In-game bug reports wiring and safety; tests/bug_reports/native_format.py is the manual native check.
+    'bug_reports': {'files': ('tests/bug_reports/test_bug_reports.py',),
+        'paths': ('tests/bug_reports/', 'code/modules/bug_reports/'),
+        'shared_paths': ('interface/skin.dmf', 'code/datums/configuration.dm', 'code/datums/http.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/verbs/adminhelp.dm', 'civ13.dme')},
+    # Fit Viewport skin wiring; tests/fit_viewport/native_width.py is the manual native width check.
+    'fit_viewport': {'files': ('tests/fit_viewport/test_fit_viewport.py',),
+        'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
+        'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
+    # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
+    'hud_layout': {'files': ('tests/hud_layout/test_layout.py',),
+        'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_hud.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm', 'code/game/mob/inventory.dm',
+            'code/_onclick/hud/hud.dm', 'code/_onclick/hud/action.dm',
+            'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/objects/items/weapons/storage/bags.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
     # Inert skin/catalog/guard and account-wiring checks; no native runner import.
     # Existing shared inputs retain their conservative all-suite selection.
     'action_keybindings': {'files': ('tests/action_keybindings/test_keybindings.py',),
@@ -1099,6 +1142,8 @@ def run_unit(name, output):
     # These reviewed suites import adjacent, source-only specification helpers.
     if name in ('save_movement', 'character_traits'):
         sys.path.insert(0, str(ROOT / 'tests' / name))
+    elif name == 'movement_save_inventory':
+        sys.path.insert(0, str(ROOT / 'tests' / 'movement_save_chunks'))
     elif name == 'help_toxin_context':
         sys.path.insert(0, str(ROOT / 'tests' / 'player_help'))
     for index, relative in enumerate(SUITES[name]['files']):

@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0, ROOT)
 from tools.transfer_storage.agent import make_server  # noqa: E402
 from tools.transfer_storage.coordinator import Coordinator, call  # noqa: E402
-from tools.transfer_storage.radio import MAX_BATCH, RING, TTL, RadioError, RadioRelay  # noqa: E402
+from tools.transfer_storage.radio import MAX_BATCH, MAX_OOC, RING, TTL, RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionStore  # noqa: E402
 
 TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40, 'gamma': 'c' * 40}
@@ -26,6 +26,12 @@ class Clock:
 def envelope(**overrides):
     base = {'key': 'village', 'frequency': 150, 'name': 'Ada', 'message': 'hello over there',
             'language': 'Latin', 'verb': 'says', 'relay': 'north mast', 'condition': 80, 'ckey': 'ada'}
+    base.update(overrides)
+    return base
+
+
+def ooc(**overrides):
+    base = {'name': 'Ada', 'ckey': 'ada', 'message': 'anyone on the moon?', 'style': 'everyone'}
     base.update(overrides)
     return base
 
@@ -118,6 +124,62 @@ class RingTests(unittest.TestCase):
             self.relay.heartbeat('x')
 
 
+class OocRingTests(unittest.TestCase):
+    def setUp(self):
+        self.clock = Clock()
+        self.alpha = RadioRelay('alpha', 'g', self.clock)
+        self.beta = RadioRelay('beta', 'g', self.clock)
+
+    def test_ooc_validates_and_leaves_in_its_own_list(self):
+        ident = self.alpha.ooc_send(ooc(rank='Host', fakekey=''))
+        out = self.alpha.outbox()
+        self.assertEqual([], out['envelopes'])
+        self.assertEqual([ident], [e['id'] for e in out['ooc']])
+        self.assertEqual(('alpha', 'Host', ''), (out['ooc'][0]['source'], out['ooc'][0]['rank'], out['ooc'][0]['fakekey']))
+        self.assertEqual([], self.alpha.outbox()['ooc'])
+        for bad in (ooc(message=''), ooc(message='m' * (MAX_OOC + 1)), ooc(name=''), ooc(ckey=None),
+                    ooc(style='rainbow'), ooc(rank='r' * 33), 'not an object'):
+            with self.assertRaises(RadioError):
+                self.alpha.ooc_send(bad)
+
+    def test_ooc_deliver_filters_duplicates_wrong_group_self_and_stale(self):
+        self.alpha.ooc_send(ooc())
+        lines = self.alpha.outbox()['ooc']
+        self.assertEqual(1, self.beta.deliver_ooc(lines))
+        self.assertEqual(0, self.beta.deliver_ooc(lines))  # duplicate id
+        self.assertEqual(0, self.alpha.deliver_ooc(lines))  # own line
+        self.assertEqual(0, self.beta.deliver_ooc([dict(lines[0], id='other', group='h')]))
+        self.assertEqual(0, self.beta.deliver_ooc([dict(lines[0], id='late', age=TTL + 1)]))
+        got = self.beta.ooc_inbox()
+        self.assertEqual(['anyone on the moon?'], [e['message'] for e in got])
+        self.assertNotIn('at', got[0])
+        self.assertEqual([], self.beta.ooc_inbox())
+        # Radio and OOC never mix.
+        self.assertEqual([], self.beta.inbox())
+
+    def test_ooc_posted_flag_reaches_the_other_regions(self):
+        # The mainland posts a line to Discord only when its region did not (region_ooc.dm).
+        for sent, expected in ((1, True), (True, True), (0, False), (None, False), ('yes', False)):
+            self.alpha.ooc_send(ooc(posted=sent))
+            self.beta.deliver_ooc(self.alpha.outbox()['ooc'])
+            self.assertEqual([expected], [e['posted'] for e in self.beta.ooc_inbox()])
+
+    def test_ooc_discord_lines_are_never_posted_back(self):
+        self.alpha.ooc_send(ooc(name='Val (Discord)', ckey='discord', discord=1, posted=0))
+        self.alpha.ooc_send(ooc())
+        self.beta.deliver_ooc(self.alpha.outbox()['ooc'])
+        got = self.beta.ooc_inbox()
+        self.assertEqual([(True, True), (False, False)], [(e['discord'], e['posted']) for e in got])
+
+    def test_ooc_rings_are_bounded_and_expire(self):
+        for i in range(RING + 5):
+            self.alpha.ooc_send(ooc(message='line %d' % i))
+        self.assertEqual(RING, len(self.alpha.outbox()['ooc']))
+        self.alpha.ooc_send(ooc())
+        self.clock.now += TTL + 1
+        self.assertEqual([], self.alpha.outbox()['ooc'])
+
+
 class AgentRadioTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -176,6 +238,19 @@ class AgentRadioTests(unittest.TestCase):
         too_many = self.post('alpha', '/radio/send_batch', {'envelopes': [envelope()] * (MAX_BATCH + 1)})
         self.assertFalse(too_many['ok'])
         self.assertFalse(self.post('alpha', '/radio/send_batch', {})['ok'])
+
+    def test_ooc_reaches_every_other_region_without_a_relay(self):
+        sent = self.post('alpha', '/ooc/send', {'envelope': ooc(fakekey='Ghost')})
+        self.assertTrue(sent['ok'], sent)
+        self.assertEqual(2, self.coordinator.relay_radio_once())
+        self.assertEqual(0, self.coordinator.relay_radio_once())
+        self.assertEqual([], self.post('alpha', '/ooc/inbox')['result']['envelopes'])
+        for region in ('beta', 'gamma'):
+            got = self.post(region, '/ooc/inbox')['result']['envelopes']
+            self.assertEqual([('alpha', 'Ada', 'Ghost', 'anyone on the moon?')],
+                             [(e['source'], e['name'], e['fakekey'], e['message']) for e in got], region)
+            self.assertEqual([], self.post(region, '/radio/inbox')['result']['envelopes'])
+        self.assertFalse(self.post('alpha', '/ooc/send', {'envelope': ooc(style='rainbow')})['ok'])
 
     def test_refusals(self):
         bad = self.post('alpha', '/radio/send', {'envelope': envelope(key='NOPE')})

@@ -290,7 +290,12 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(persistence_restart.busy || persistence_restart.startup_hold) return
 
 		var/sleeptime = 0
-		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
+		// A TDM battle world sends everyone back to its barracks instead, then
+		// waits for the next voted map to finish compiling (tdm_barracks/battle.dm).
+		if(tdm_battle_active())
+			tdm_battle.before_reboot()
+		else
+			to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		// sleep(0) yields too. A transaction can acquire ownership while the
@@ -611,13 +616,9 @@ var/global/persistence_reboot_due = FALSE
 					var/dtext = sanitize(copytext_char(tempmsg[2], 1, 1025), 0)
 					if (!dsender || !dtext)
 						continue
-					var/dmsg =  "<IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[dsender]: [dtext]</font></b>"
-					log_discord(dmsg)
-					if (!config.ooc_allowed)
-						continue // OOC is globally muted
-					for (var/client/C in clients)
-						if (C.is_preference_enabled(/datum/client_preference/show_ooc))
-							to_chat(C, dmsg)
+					discord_ooc_show(dsender, dtext)
+					// The bot writes this file for one world only; that world hands the line on (region_ooc.dm).
+					region_ooc_outbound_discord(dsender, dtext)
 					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
 			fdel(F)
 			to_chat(F, "")

@@ -1,8 +1,15 @@
 // Pointer feedback belongs to the disposable HUD, never to saved characters.
+// The label is a tooltip that follows the pointer: cream text with a dark
+// outline on a dark wood-brown panel with a one pixel light border, in the
+// 1713 HUD palette. The panel is pure maptext, so it always fits the text the
+// client actually draws: the text span carries the fill colour, and four
+// underlays repeat the same span in the border colour one pixel out on each
+// side. Only screen_loc changes while the pointer moves over one target.
 /obj/screen/hover_name
 	name = "hover name"
 	icon = null
 	screen_loc = "WEST:2,NORTH:-2"
+	layer = 30 // above SCREEN_LAYER and every HUD control; HUD art never covers it
 	maptext_width = 384
 	maptext_height = 32
 	mouse_opacity = FALSE
@@ -13,9 +20,22 @@
 	var/tmp/datum/weakref/hover_storage
 	var/tmp/hover_inventory = FALSE
 	var/tmp/hover_screen_loc
+	// The encoded label currently drawn, with its estimated panel size in
+	// pixels; the estimate only places the panel, the drawn border fits itself.
+	var/tmp/hover_text
+	var/tmp/hover_text_width = 0
+	var/tmp/hover_text_height = 0
+
+// One styled span: the text with a nbsp on each side as horizontal padding.
+// border = TRUE draws the same span in the border colour for the underlays.
+/proc/hover_name_span(text, border)
+	var/ink = border ? "#9a8468" : "#f3e9d6"
+	var/fill = border ? "#9a8468" : "#3b2c1e"
+	var/outline = border ? "" : "-dm-text-outline:1px #1c110a;"
+	return "<span style='vertical-align:top;text-align:left;font-family:Verdana,sans-serif;font-size:11px;[outline]color:[ink];background-color:[fill]'>&nbsp;[text]&nbsp;</span>"
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
@@ -23,7 +43,63 @@
 	hover_storage = null
 	hover_inventory = FALSE
 	hover_screen_loc = null
+	hover_text = null
+	hover_text_width = 0
+	hover_text_height = 0
 	maptext = ""
+	update_backdrop()
+
+// Rebuild the border underlays for hover_text, or remove them when it is empty.
+/obj/screen/hover_name/proc/update_backdrop()
+	if (length(underlays))
+		underlays.Cut()
+	if (!hover_text)
+		return
+	for (var/list/shift in list(list(-1, 0), list(1, 0), list(0, -1), list(0, 1)))
+		var/image/edge = image(null)
+		edge.maptext = hover_name_span(hover_text, TRUE)
+		edge.maptext_width = maptext_width
+		edge.maptext_height = maptext_height
+		edge.maptext_x = shift[1]
+		edge.maptext_y = shift[2]
+		underlays += edge
+
+// Draw an encoded label; an unchanged label resends nothing.
+/obj/screen/hover_name/proc/show_label(text)
+	if (text == hover_text && maptext)
+		return
+	hover_text = text
+	// Rough Verdana 11px metrics, erring wide: about 7px per character plus
+	// the padding and border, wrapping at the maptext width, 14px per line.
+	var/estimate = 7 * length(text) + 12
+	hover_text_width = min(maptext_width, estimate)
+	hover_text_height = min(maptext_height, 14 * -round(-estimate / maptext_width) + 2)
+	maptext = hover_name_span(text, FALSE)
+	update_backdrop()
+
+// Place the panel just below and right of the pointer, clamped to the right
+// edge and flipped above the pointer near the bottom, using the pixel position
+// the mouse callbacks parsed and the client's current view size.
+/obj/screen/hover_name/proc/follow_pointer()
+	if (!parentmob || !parentmob.client)
+		return
+	var/client/C = parentmob.client
+	var/list/size = getviewsize(C.view)
+	var/view_w = size[1] * 32
+	var/view_h = size[2] * 32
+	var/mx = (C.mouse_screen_x - 1) * 32 + C.mouse_screen_pixel_x
+	var/my = (C.mouse_screen_y - 1) * 32 + C.mouse_screen_pixel_y
+	var/x = max(0, min(mx + 10, view_w - hover_text_width))
+	// The text sits at the top of the maptext box; keep the box above the edge.
+	var/top = my - 20
+	if (top < maptext_height)
+		top = min(view_h, my + 8 + hover_text_height)
+	var/y = max(0, top - maptext_height)
+	var/tx = round(x / 32)
+	var/ty = round(y / 32)
+	var/pointer_loc = "[tx + 1]:[x - tx * 32],[ty + 1]:[y - ty * 32]"
+	if (pointer_loc != screen_loc)
+		screen_loc = pointer_loc
 
 /obj/screen/hover_name/Destroy()
 	clear_target()
@@ -96,9 +172,21 @@
 		var/atom/movable/movable_target = target
 		if (movable_target.screen_loc && (target in C.screen))
 			return inventory_item_visible(target)
+	// BYOND's view() hides a tree standing behind another opaque tree, but the
+	// tree presenter still draws its exposed canopy. The LOS read above already
+	// applied that presenter rule, so only require the tree to be on screen.
+	if (los_tree_canopy_readable(target))
+		return target in range(C.view, C.eye)
 	return (isturf(target) || isturf(target.loc)) && (target in view(C.view, C.eye))
 
 /obj/screen/hover_name/proc/set_target(atom/origin)
+	// A move across the current pointer target only refreshes: process() still
+	// revalidates with fresh visibility, but keeps the drawn label and underlays.
+	var/atom/current = hover_target?.resolve()
+	if (origin && current && hover_origin?.resolve() == origin && pointer_target(origin) == current)
+		if (!hover_inventory || inventory_target_current(current))
+			process()
+			return
 	clear_target()
 	var/atom/target = pointer_target(origin)
 	if (!target)
@@ -128,7 +216,8 @@
 	if (!length(label))
 		clear_target()
 		return
-	maptext = "<span style='vertical-align:top;text-align:left;font-size:12px;color:white;background-color:black'>[html_encode(copytext(label, 1, 129))]</span>"
+	show_label(html_encode(copytext(label, 1, 129)))
+	follow_pointer()
 
 /client/proc/hover_name_widget()
 	if (mob)

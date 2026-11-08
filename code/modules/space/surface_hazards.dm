@@ -53,6 +53,8 @@ var/global/barren_hazard_last_pulse = -1
 // Counts events down and, when roll is TRUE, may start new ones.
 /proc/barren_hazards_step(seconds, roll = TRUE)
 	seconds = max(0, seconds)
+	// Station orbits sink with the same clock (orbit_upkeep.dm).
+	orbit_upkeep_step(seconds, roll)
 	if (barren_dust_seconds > 0)
 		barren_dust_seconds = max(0, barren_dust_seconds - seconds)
 		if (!barren_dust_seconds)
@@ -69,7 +71,7 @@ var/global/barren_hazard_last_pulse = -1
 		return
 	if (!barren_dust_seconds && space_world_has_dust_storms() && prob(BARREN_DUST_CHANCE))
 		barren_hazard_start("dust")
-	if (!barren_cold_seconds && prob(BARREN_COLD_CHANCE))
+	if (!barren_cold_seconds && !orbit_world() && prob(BARREN_COLD_CHANCE))
 		barren_hazard_start("cold")
 	if (!barren_flare_seconds && prob(BARREN_FLARE_CHANCE))
 		barren_hazard_start("flare")
@@ -120,7 +122,7 @@ var/global/barren_hazard_last_pulse = -1
 	if (!target)
 		var/list/candidates = list()
 		for (var/obj/structure/habitat_core/C in habitat_cores)
-			if (!QDELETED(C) && istype(get_area(C), /area/caribbean/nomads/barren))
+			if (!QDELETED(C) && (istype(get_area(C), /area/caribbean/nomads/barren) || istype(get_area(C), /area/caribbean/nomads/orbit)))
 				candidates += C
 		if (!candidates.len)
 			return null
@@ -132,8 +134,9 @@ var/global/barren_hazard_last_pulse = -1
 	if (!hull.len)
 		return null
 	var/turf/hit = pick(hull)
-	hit.ChangeTurf(/turf/floor/dirt/dust/regolith/crater, FALSE, FALSE)
+	var/in_orbit = orbit_world()
+	hit.ChangeTurf(in_orbit ? /turf/floor/space/orbit : /turf/floor/dirt/dust/regolith/crater, FALSE, FALSE)
 	for (var/mob/living/M in range(1, hit))
 		M.apply_damage(BARREN_METEOR_BRUTE, BRUTE)
-	hit.visible_message(SPAN_DANGER("A meteorite punches through the hull!"))
+	hit.visible_message(SPAN_DANGER(in_orbit ? "Debris punches through the hull!" : "A meteorite punches through the hull!"))
 	return hit

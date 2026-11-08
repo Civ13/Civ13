@@ -537,7 +537,7 @@ var/list/coefflist = list()
 				adjust_hygiene(-25)
 				nutrition -= 40
 				adjustToxLoss(-3)
-				adjust_mood(-(3))
+				adjust_mood(-(3), "vomiting")
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
@@ -564,7 +564,7 @@ var/list/coefflist = list()
 				adjust_hygiene(-25)
 				nutrition -= 40
 				adjustToxLoss(-3)
-				adjust_mood(-(8))
+				adjust_mood(-(8), "vomiting blood")
 				vessel.remove_reagent("blood",10)
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE

@@ -61,6 +61,13 @@ class RoutesTest(unittest.TestCase):
         self.assertFalse(self.routes.set('203.0.113.5', 'Alice!', 1716))
         self.assertEqual(self.routes.count(), 0)
 
+    def test_a_routed_region_sending_a_player_on_keeps_their_real_address(self):
+        self.routes.set('203.0.113.5', 'alice', 1716)  # the gate sent alice to a routed region
+        self.assertEqual(self.routes.take('203.0.113.5'), 1716)
+        self.assertTrue(self.routes.set('127.0.0.1', 'alice', 1714))  # that region sees loopback
+        self.assertEqual(self.routes.take('203.0.113.5'), 1714)
+        self.assertEqual(self.routes.lookup('alice'), {'ip': '203.0.113.5', 'port': 1714})
+
     def test_ipv4_mapped_ipv6_is_the_same_address(self):
         self.routes.set('203.0.113.5', 'alice', 1716)
         self.assertEqual(self.routes.take('::ffff:203.0.113.5'), 1716)

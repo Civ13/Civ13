@@ -112,7 +112,7 @@ var/global/list/agent_characters = list()
 		update_handover_verbs(C)
 
 /proc/agent_control_scopes()
-	return list("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits")
+	return list("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits", "ooc")
 
 /proc/agent_control_valid_name(name)
 	if (!istext(name) || length(name) < 1 || length(name) > 32)
@@ -275,6 +275,7 @@ var/global/list/agent_characters = list()
 		"character_spawn" = list("scope" = "characters"),
 		"character_list" = list("scope" = "characters"),
 		"character_observe" = list("scope" = "characters"),
+		"character_view" = list("scope" = "characters"),
 		"character_act" = list("scope" = "characters"),
 		"character_queue" = list("scope" = "characters"),
 		"character_route" = list("scope" = "characters"),
@@ -315,6 +316,7 @@ var/global/list/agent_characters = list()
 		if ("character_spawn") return act_character_spawn(A, req)
 		if ("character_list") return act_character_list(A, req)
 		if ("character_observe") return act_character_observe(A, req)
+		if ("character_view") return act_character_view(A, req)
 		if ("character_act") return act_character_act(A, req)
 		if ("character_queue") return act_character_queue(A, req)
 		if ("character_route") return act_character_route(A, req)

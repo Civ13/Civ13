@@ -12,8 +12,9 @@
 	var/list/cargo_record
 	var/with_cargo = FALSE
 	var/list/cargo_roster
+	var/ignore_ground = FALSE
 	persistence_runtime_var(key)
-		if (key in list("axis", "origin", "parts", "locations", "tiles", "consumed", "last_error", "cargo", "cargo_record", "with_cargo", "cargo_roster")) return TRUE
+		if (key in list("axis", "origin", "parts", "locations", "tiles", "consumed", "last_error", "cargo", "cargo_record", "with_cargo", "cargo_roster", "ignore_ground")) return TRUE
 		return ..()
 	proc/clear_cargo_snapshot()
 		cargo_record = null
@@ -61,7 +62,7 @@
 			tiles += T
 		for (var/turf/T in tiles)
 			for (var/atom/movable/O in T)
-				if (istype(O, /atom/movable/lighting_overlay)) continue
+				if (istype(O, /atom/movable/lighting_overlay) || (ignore_ground && vehicle_storage_ground(O))) continue
 				if (!allowed(O) && with_cargo && istype(O, /obj/item) && (locate(/obj/structure/table/carboot) in T)) cargo += O
 				if ((!allowed(O) && !(O in cargo)) || parts.len >= 96) return fail("Unsupported footprint atom [O.type] or part budget")
 				if (!linked(O, A)) return fail(last_error ? last_error : "Unrelated part or occupied contents [O.type]")
@@ -81,7 +82,7 @@
 		var/count = 0
 		for (var/turf/T in tiles)
 			for (var/atom/movable/O in T)
-				if (istype(O, /atom/movable/lighting_overlay)) continue
+				if (istype(O, /atom/movable/lighting_overlay) || (ignore_ground && vehicle_storage_ground(O))) continue
 				if (!(O in parts) || locations[O] != T || !linked(O, axis)) return FALSE
 				count++
 		var/datum/extraction_vehicle_cargo/C = new

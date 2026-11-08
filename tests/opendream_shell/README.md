@@ -1,6 +1,6 @@
 # Unsupported shell compatibility
 
-Run with BYOND 516.1681 and a verified Python executable:
+Run with the pinned BYOND version (`tools/byond/version.json`) and a verified Python executable:
 
 ```powershell
 <python> tests/opendream_shell/run.py --byond-bin <bin> --output <evidence>

@@ -28,7 +28,7 @@
 
 	for(var/mob/living/human/NB in view(6,src))
 		if (!NB.orc)
-			NB.adjust_mood(-(10))
+			NB.adjust_mood(-(10), "seeing a death")
 
 proc/delayed_decay(var/mob/living/L,var/timer=3000)
 	spawn(timer)

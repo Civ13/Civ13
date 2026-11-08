@@ -112,6 +112,7 @@ var/list/gamemode_cache = list()
 	var/ghosts_can_possess_animals = FALSE
 
 	var/no_respawn_delays = FALSE
+	var/unprivileged_scripts = FALSE
 	var/allowedgamemodes = "ALL"
 
 	var/error_cooldown = 600 // The "cooldown" time for each occurrence of a unique error
@@ -165,6 +166,10 @@ var/list/gamemode_cache = list()
 	// Startup observation is separately opt-in and uses the existing bridge.
 	var/webhook_game_ready = FALSE
 	var/webhook_game_ready_server = null
+
+	// In-game bug reports (code/modules/bug_reports). The token is deliberately not kept here.
+	var/bug_report_github_repo = "Civ13/Civ13"
+	var/bug_report_github_labels = "bug"
 	
 	var/topic_filtering_whitelist = list("127.0.0.1")
 
@@ -203,6 +208,9 @@ var/list/gamemode_cache = list()
 
 				if ("allowed_gamemodes")
 					allowedgamemodes = value
+
+				if ("unprivileged_scripts")
+					unprivileged_scripts = TRUE
 
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)
@@ -515,6 +523,13 @@ var/list/gamemode_cache = list()
 					config.webhook_address = value
 				if ("webhook_key")
 					config.webhook_key = value
+
+				if ("bug_report_github_repo")
+					config.bug_report_github_repo = value
+				if ("bug_report_github_labels")
+					config.bug_report_github_labels = value ? value : ""
+				if ("bug_report_github_token")
+					continue // read from the file only while filing an issue, so it never sits in a variable
 				
 
 				if("error_cooldown")

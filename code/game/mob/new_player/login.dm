@@ -40,14 +40,12 @@
 	#endif
 	new_player_panel()
 
-	if (client && client.is_preference_enabled(/datum/client_preference/fit_viewport))
-		client.fit_viewport()
+	if (client)
+		client.fit_viewport_soon()
 
 	spawn (1)
 		if (client)
 			client.playtitlemusic()
-			if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
-				client.fit_viewport()
 
 	spawn while(client)
 		sleep(35)

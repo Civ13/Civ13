@@ -1,0 +1,59 @@
+{
+	"map": "SMALLINGRAD",
+	"base_map": "maps/1943/smallingrad.dmm",
+	"generated_by": "tests/map_variations/build_inserts.py",
+	"slots": [
+		{
+			"id": "central_avenue",
+			"x": 1,
+			"y": 58,
+			"z": 1,
+			"width": 45,
+			"height": 7,
+			"variants": [
+				{
+					"id": "as_built",
+					"weight": 2
+				},
+				{
+					"id": "rubble",
+					"weight": 1,
+					"file": "central_avenue_rubble.dmm",
+					"desc": "Collapsed walls have spilled rubble across the central avenue."
+				},
+				{
+					"id": "tank_traps",
+					"weight": 1,
+					"file": "central_avenue_tank_traps.dmm",
+					"desc": "Czech hedgehogs and barbed wire block the central avenue."
+				}
+			]
+		},
+		{
+			"id": "south_square",
+			"x": 1,
+			"y": 32,
+			"z": 1,
+			"width": 45,
+			"height": 14,
+			"variants": [
+				{
+					"id": "as_built",
+					"weight": 2
+				},
+				{
+					"id": "shelled",
+					"weight": 1,
+					"file": "south_square_shelled.dmm",
+					"desc": "Shelling has cratered the southern square."
+				},
+				{
+					"id": "barricades",
+					"weight": 1,
+					"file": "south_square_barricades.dmm",
+					"desc": "Tire barricades and sandbag nests fill the southern square."
+				}
+			]
+		}
+	]
+}

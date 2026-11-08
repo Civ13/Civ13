@@ -37,6 +37,7 @@ on:
       - Offline procedural maps
       - Offline server management contracts
       - Reserved-lighting containment pilot (manual only)
+      - Sprite review
       - Tgui frontend
       - Transfer storage
       - YouTube uploader contracts
@@ -70,7 +71,9 @@ jobs:
     # PR head. Without a PR the digest step is skipped. Runs from pushes to the
     # default branch never belong to an open PR, so they skip before taking a
     # runner (each started digest uses at least one runner minute).
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion != 'cancelled' && !(github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == github.event.repository.default_branch))
+    # Feature-branch push runs of CI skip every job unless the head commit asks
+    # for `build:`; the PR run of the same head reports, so those skip too.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion != 'cancelled' && !(github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == github.event.repository.default_branch) && !(github.event.workflow_run.event == 'push' && !startsWith(github.event.workflow_run.display_title, 'build:')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

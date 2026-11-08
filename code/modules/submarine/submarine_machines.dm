@@ -18,27 +18,32 @@
 	if(global.all_submarines.len)
 		my_sub = global.all_submarines[1]
 	update_icon()
-	spawn()
-		auto_refresh_loop()
+	addtimer(CALLBACK(src, PROC_REF(auto_refresh_tick)), 10)
 
-/obj/structure/machinery/sub_control/proc/auto_refresh_loop()
-	while(!QDELETED(src) && active && !broken)
-		sleep(10)
-		var/list/stale = list()
-		for(var/mob/M in open_users)
-			if(!M || !M.client || QDELETED(M))
-				stale += M
-				continue
-			if(!window_open[M])
-				stale += M
-				continue
-			if(!can_use(M))
-				stale += M
-				window_open -= M
-				M << browse(null, "window=sub_control")
-				continue
-			send_ui(M)
-		open_users -= stale
+// Refreshes every open panel once a second while the console works, then
+// schedules the next pass. Replaces the old spawn()/sleep loop.
+/obj/structure/machinery/sub_control/proc/auto_refresh_tick()
+	if(QDELETED(src) || !active || broken)
+		return
+	auto_refresh_pass()
+	addtimer(CALLBACK(src, PROC_REF(auto_refresh_tick)), 10)
+
+/obj/structure/machinery/sub_control/proc/auto_refresh_pass()
+	var/list/stale = list()
+	for(var/mob/M in open_users)
+		if(!M || !M.client || QDELETED(M))
+			stale += M
+			continue
+		if(!window_open[M])
+			stale += M
+			continue
+		if(!can_use(M))
+			stale += M
+			window_open -= M
+			M << browse(null, "window=sub_control")
+			continue
+		send_ui(M)
+	open_users -= stale
 
 /obj/structure/machinery/sub_control/update_icon()
 	overlays.Cut()
@@ -131,7 +136,7 @@
 /obj/structure/machinery/sub_control/proc/get_ui_content()
 	return "BASE INTERFACE"
 
-// Auto-refresh handled by spawn() loop in New()
+// Auto-refresh handled by the addtimer chain started in New()
 
 // --- MANEUVER PANEL ---
 
@@ -218,6 +223,7 @@
 	dat += "</div>"
 	dat += "<div style='font-size:12px; font-weight:bold; color:[depth_color]; margin:4px 0;'>[round(my_sub.depth)]m / [my_sub.crush_depth]m</div>"
 	dat += "<div style='font-size:10px; color:#888;'>CRUSH: [my_sub.crush_depth]m</div>"
+	dat += "<div style='font-size:10px; color:[my_sub.below_layer() ? "#0af" : "#888"];'>LAYER: [SUB_THERMOCLINE_DEPTH]m - [my_sub.below_layer() ? "BELOW (SHADOWED FROM THE SURFACE)" : "ABOVE"]</div>"
 	dat += "<div style='margin-top:4px;'>"
 	dat += "<a href='?src=\ref[src];set_dp=0' class='btn btn-green'>SURFACE</a> "
 	dat += "<a href='?src=\ref[src];set_dp=15' class='btn btn-blue'>PERISCOPE</a> "
@@ -905,6 +911,7 @@
 	var/power_draw = my_sub.sonar_active ? (my_sub.sonar_mode == SUB_SONAR_ACTIVE ? SUB_SONAR_POWER_ACTIVE : SUB_SONAR_POWER_PASSIVE) : 0
 	dat += "<div style='color:#888;'>DRAW: [power_draw] kW</div>"
 	dat += "<div style='color:#888;'>NOISE: [my_sub.noise_level]</div>"
+	dat += "<div style='color:[my_sub.below_layer() ? "#0af" : "#888"];'>LAYER: [my_sub.below_layer() ? "BELOW" : "ABOVE"]</div>"
 	dat += "</div>"
 	dat += "</div>"
 

@@ -50,10 +50,10 @@ var/global/list/sub_blast_doors = list()
 
 /datum/flooding_controller/proc/unregister_turf(var/turf/floor/sub_deck/T)
 	if(!T) return
-	tracked_turfs -= T
 	if(T.compartment_id && compartment_turfs[T.compartment_id])
 		var/list/turfs = compartment_turfs[T.compartment_id]
 		if(!(T in turfs))
+			tracked_turfs -= T
 			return
 		// The tile takes its share of the compartment's air with it.
 		var/datum/habitat_ledger/L = compartment_air[T.compartment_id]
@@ -66,6 +66,7 @@ var/global/list/sub_blast_doors = list()
 		turfs -= T
 		if(!turfs.len)
 			compartment_air -= T.compartment_id
+	tracked_turfs -= T
 
 // The air a compartment shares, or null for decks outside any compartment.
 /datum/flooding_controller/proc/get_air(var/compartment_id)
@@ -95,8 +96,10 @@ var/global/list/sub_blast_doors = list()
 			if(T.water_inflow_rate > 0)
 				inflow_by_compartment[T.compartment_id] = 1  // Air bubbles out of a compartment taking water
 
-	// Air: one ledger per compartment
-	air_tick(1, water_by_compartment, inflow_by_compartment)
+	// Air: one ledger per compartment. A submerged breach floods but does
+	// not vent: the sea pushes in and the pocket compresses (the water term
+	// above). Only a surfaced boat loses air through an open hull.
+	air_tick(1, water_by_compartment, breaches_vent() ? inflow_by_compartment : null)
 
 	// Ambient water drip in flooded compartments (every 30 ticks)
 	if(tick_counter % 30 == 0)
@@ -115,15 +118,20 @@ var/global/list/sub_blast_doors = list()
 		if(!istype(B) || QDELETED(B))
 			sub_bulkheads -= B_ref
 			continue
-		if(!B.watertight && B.health > 0)
-			// This bulkhead was destroyed - check if adjacent deck turfs have water
+		if(!B.watertight)
+			// Compromised seals leak; a crumpled bulkhead (health at or below
+			// zero) passes water faster. Both pass water: the destroyed case
+			// used to be excluded by a health > 0 guard, so the worst damage
+			// held back the most water.
+			var/leak_fraction = B.health > 0 ? 0.1 : 0.25
+			var/leak_cap = B.health > 0 ? 3 : 8
 			for(var/direction in list(NORTH, SOUTH, EAST, WEST))
 				var/turf/floor/sub_deck/neighbor = get_step(B, direction)
 				if(neighbor && istype(neighbor) && neighbor.water_depth > 10)
 					// Spread water through the now-open bulkhead
 					var/turf/floor/sub_deck/other_side = get_step(B, turn(direction, 180))
 					if(other_side && istype(other_side) && !other_side.water_sealed)
-						var/flow = min(neighbor.water_depth * 0.1, 3)
+						var/flow = min(neighbor.water_depth * leak_fraction, leak_cap)
 						other_side.add_water(flow)
 
 	// Open blast door check: propagate water through open doors between compartments
@@ -175,6 +183,14 @@ var/global/list/sub_blast_doors = list()
 // never catches up on the time it spent idle.
 /datum/flooding_controller/proc/air_may_tick()
 	return clients.len > 0
+
+// Whether an open hull lets air out: TRUE on the surface, FALSE submerged.
+// With no submarine datum (fixtures, a bare map) the hull is treated as
+// surfaced so a breach still vents.
+/datum/flooding_controller/proc/breaches_vent()
+	for(var/datum/submarine/S in all_submarines)
+		return S.depth <= 0
+	return TRUE
 
 // Living humans on each compartment's deck (compartment_id -> count).
 /datum/flooding_controller/proc/count_breathers()

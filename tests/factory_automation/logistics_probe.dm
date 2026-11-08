@@ -68,6 +68,7 @@ var/machine_runtime_error = FALSE
 		machine_drive()
 		machine_fast_belt_checks()
 		machine_wagon_checks()
+		machine_cargo_hold_checks()
 		machine_monitor_checks()
 	catch(var/exception/e)
 		machine_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -185,6 +186,47 @@ var/machine_runtime_error = FALSE
 	var/obj/structure/closet/crate/out = belt_closed_crate(locate(8, 13, 1))
 	machine_check(cart.factory_offer() == loose && cart.factory_take(loose, out) && loose.loc == out, "a shopping cart unloads to automation")
 
+/proc/machine_cargo_hold_checks()
+	var/obj/structure/closet/crate/source = belt_closed_crate(locate(1, 15, 1), 40)
+	for (var/i in 1 to 25)
+		new /obj/item/stack/material/steel(source, 1, FALSE)
+	var/obj/structure/cargo_hold/H = new(locate(3, 15, 1))
+	var/obj/structure/closet/crate/dest = belt_closed_crate(locate(5, 15, 1), 40)
+	var/obj/structure/factory_arm/load = machine_arm(2, 15)
+	var/obj/structure/factory_arm/unload = machine_arm(4, 15)
+	unload.on = FALSE
+	machine_swing(load)
+	machine_check(belt_count(H.storage, /obj/item/stack/material/steel) == 1, "an arm loads a cargo hold")
+	for (var/i in 1 to 24)
+		machine_swing(load)
+	machine_check(H.storage.contents.len == H.max_storage && H.max_storage == 20 && belt_count(source, /obj/item/stack/material/steel) == 5, "a cargo hold takes twenty items and no more")
+	var/obj/item/stack/material/steel/extra = locate() in source
+	machine_check(!H.factory_accepts(extra), "a full cargo hold refuses more")
+	unload.on = TRUE
+	machine_swing(unload)
+	machine_check(belt_count(dest, /obj/item/stack/material/steel) == 1 && H.storage.contents.len == H.max_storage - 1, "an arm unloads a cargo hold")
+	machine_check(!H.factory_offer(0, /obj/item/stack/material/copper), "a cargo hold offers only what a filter asks for")
+	var/obj/item/weapon/wrench/W = new(locate(3, 14, 1))
+	machine_check(!H.anchored, "a new cargo hold is loose")
+	H.attackby(W, null)
+	machine_check(H.anchored, "a wrench bolts a cargo hold down")
+	var/obj/structure/vehicleparts/axis/A = new(locate(10, 15, 1))
+	var/obj/structure/vehicleparts/frame/F = new(locate(11, 15, 1))
+	F.axis = A
+	A.components = list(F)
+	var/obj/structure/cargo_hold/riding = new(locate(11, 15, 1))
+	riding.anchored = TRUE
+	A.add_transporting(FALSE)
+	machine_check(riding in A.transporting, "a cargo hold on a vehicle frame rides with the vehicle")
+	machine_check(recipe_node_requirements["/obj/structure/cargo_hold"] == "automobiles", "the cargo hold unlocks with Automobiles")
+	var/found = FALSE
+	for (var/line in splittext(file2text("config/crafting/material_recipes_global.txt"), "\n"))
+		if (findtext(line, "RECIPE: /material/steel/,cargo hold,/obj/structure/cargo_hold,") == 1)
+			found = TRUE
+	machine_check(found, "the cargo hold has a steel recipe")
+	for (var/obj/O in list(source, H, dest, load, unload, W, riding, F, A))
+		qdel(O)
+
 /proc/machine_monitor_row(list/rows, kind, x, y)
 	for (var/list/row in rows)
 		if (row[2] == kind && row[3] == x && row[4] == y)
@@ -213,7 +255,24 @@ var/machine_runtime_error = FALSE
 	machine_check(drive_row && drive_row[5] == "running", "the monitor lists the belt drive")
 	var/list/belt_row = machine_monitor_row(rows, "belts", null, null)
 	machine_check(belt_row && findtext(belt_row[7], " belts"), "the monitor sums up the belts in range")
+	var/obj/structure/factory_drive/drive = locate(/obj/structure/factory_drive) in locate(16, 16, 1)
+	machine_check(drive_row && drive && drive_row[8] == drive.powerneeded && drive.powerneeded > 0, "the monitor shows the drive's power draw ([drive_row ? drive_row[8] : "missing"])")
+	var/obj/structure/factory_arm/loader = locate(/obj/structure/factory_arm) in locate(2, 10, 1)
+	machine_check(arm_row && loader && arm_row[8] == factory_power_draw(loader), "the monitor shows the arm's reserved power ([arm_row ? arm_row[8] : "missing"])")
+	machine_check(fab_row && fab_row[8] == 0, "an unpowered fabricator draws no power on the monitor")
+	machine_check(belt_row && belt_row[8] == 0, "belts draw through their drive, not on their own")
+	var/list/power = M.power_summary(rows)
+	var/total = 0
+	for (var/list/row in rows)
+		total += row[8]
+	machine_check(power[1] == total && total >= drive.powerneeded, "the monitor totals the machines' power ([power[1]])")
+	var/found_drive_grid = FALSE
+	for (var/list/grid in power[2])
+		if (grid[2] == 100 && grid[1] >= drive.powerneeded)
+			found_drive_grid = TRUE
+	machine_check(found_drive_grid, "the monitor shows the drive's grid use against its capacity")
 	var/html = M.report_html()
+	machine_check(findtext(html, "Power (PU)") && findtext(html, "PU in use"), "the monitor page shows power use")
 	machine_check(findtext(html, "Items/min") && findtext(html, "feeder arm") && findtext(html, "starved"), "the monitor page shows the table")
 	machine_check(recipe_node_requirements["/obj/structure/factory_monitor"] == "automation", "the monitor is gated behind Automation")
 	qdel(F)

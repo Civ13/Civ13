@@ -358,6 +358,8 @@ var/global/list/ecology_species_table = null
 	var/cells_x = round((world.maxx - 1) / ECOLOGY_CELL_SIZE) + 1
 	var/cells_y = round((world.maxy - 1) / ECOLOGY_CELL_SIZE) + 1
 	for (var/z = 1, z <= world.maxz, z++)
+		if (z == practice_room_z)
+			continue
 		for (var/cx = 1, cx <= cells_x, cx++)
 			for (var/cy = 1, cy <= cells_y, cy++)
 				var/list/keys_here = list()
@@ -613,6 +615,8 @@ var/global/ecology_rest_phase = 0
 		to_chat(src, SPAN_NOTICE("Ecology spawning is off."))
 		return
 	to_chat(src, SPAN_NOTICE("Ecology spawning is on. Spawned so far: [ecology_spawner.spawned_total]. Last cycle: [ecology_spawner.last_report]."))
+	if (flora_regrowth && flora_regrowth.enabled)
+		to_chat(src, SPAN_NOTICE("Flora regrowth: [flora_regrowth.last_report]."))
 
 #undef ECOLOGY_CELL_SIZE
 #undef ECOLOGY_CYCLE
