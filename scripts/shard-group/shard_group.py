@@ -276,7 +276,11 @@ def region_dir(group, region_id):
 def region_config(group, region):
     """The gaia_host-shaped config one region's host and worker run with."""
     path = region_dir(group, region['id'])
-    public = region.get('public', group['public'])
+    # Behind the routing relay: the launcher offers only the gate region.
+    routed = bool(group.get('relay_port')) and region['id'] != group.get('gate')
+    # A routed region is reached only through the relay, and its own port stays closed on
+    # the router, so a hub entry for it would point at a port nobody can join.
+    public = region.get('public', group['public']) and not routed
     config = {'repository': str(path), 'port': region['port'], 'task': 'region:' + region['id'],
             'compiler': group['compiler'], 'daemon': group['daemon'], 'git': group['git'],
             'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(public),
@@ -285,8 +289,7 @@ def region_config(group, region):
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
             'systemd_scope': group.get('systemd_scope', ''),
-            # Behind the routing relay: the launcher offers only the gate region.
-            'routed': bool(group.get('relay_port')) and region['id'] != group.get('gate'),
+            'routed': routed,
             'standby_port': region.get('standby_port'),
             '_path': str(path / 'data' / 'shard-host' / 'host.json'),
             # Only a hub-listed (-public) world needs the host's BYOND account signed in.

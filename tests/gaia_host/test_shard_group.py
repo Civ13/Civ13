@@ -201,6 +201,12 @@ class ShardGroupTests(unittest.TestCase):
         # Only the gate is offered by the launcher; the others are joined through it.
         self.assertEqual({'gaia': False, 'deep': True},
                          {r['id']: shard_group.region_config(group, r)['routed'] for r in group['regions']})
+        # A routed region stays off the hub even when it asks to be public: its port is closed.
+        listed = dict(group, regions=[dict(r, public=True) for r in group['regions']])
+        self.assertEqual({'gaia': (True, True), 'deep': (False, False)},
+                         {r['id']: (shard_group.region_config(listed, r)['public'],
+                                    shard_group.region_config(listed, r)['start_requires_byond_pager'])
+                          for r in listed['regions']})
         self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
 
     def test_supervise_starts_the_relay_once(self):
