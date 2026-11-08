@@ -183,33 +183,18 @@
 	icon_state = "mine_armed"
 
 /obj/item/mine/ap/trigger(atom/movable/AM)
-	if (world.time < nextCanExplode)
+	if (istype(AM, /obj/item/projectile))
 		return
+	if (triggered || world.time < nextCanExplode)
+		return
+	// Living victims and mine clearers (ECMS) set it off once.
 	if (istype(AM, /mob/living))
 		for (var/mob/O in viewers(7, loc))
 			to_chat(O, "<font color='red'>[AM] triggered the [src]!</font>")
-		triggered = TRUE
-		visible_message("<span class = 'red'><b>Click!</b></span>")
-		explosion(get_turf(src),1,2,4)
-
-
-	var/turf/T = get_turf(src)
-	if(!T) return
-
-	var/list/target_turfs = getcircle(T, spread_range)
-	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
-	for (var/turf/TT in target_turfs)
-		var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-		P.damage = fragment_damage
-		P.pellets = fragments_per_projectile
-		P.range_step = damage_step
-		P.shot_from = name
-		P.launch_fragment(TT)
-
-		spawn(9)
-			if (src)
-				qdel(src)
+	triggered = TRUE
+	visible_message("<span class = 'red'><b>Click!</b></span>")
+	explosion(get_turf(src),1,2,4)
+	launch_mine_fragments(fragment_type, num_fragments, fragment_damage, damage_step, spread_range)
 
 /obj/item/mine/at
 	name = "anti-tank mine"
@@ -372,23 +357,29 @@
 	var/spread_range = 4
 
 /obj/item/mine/pipe/trigger(atom/movable/AM)
-	if (prob(30))
-		if (world.time < nextCanExplode)
+	if (istype(AM, /obj/item/projectile))
+		return
+	if (triggered || world.time < nextCanExplode)
+		return
+	if (istype(AM, /mob/living))
+		if (!prob(30))
 			return
-		if (istype(AM, /mob/living))
-			for (var/mob/O in viewers(7, loc))
-				to_chat(O, "<font color='red'>[AM] tripped over the [src]!</font>")
-			triggered = TRUE
-			visible_message("<span class = 'red'><b>SSSShh!</b></span>")
-			explosion(get_turf(src),1,2,3)
+		for (var/mob/O in viewers(7, loc))
+			to_chat(O, "<font color='red'>[AM] tripped over the [src]!</font>")
+	triggered = TRUE
+	visible_message("<span class = 'red'><b>SSSShh!</b></span>")
+	explosion(get_turf(src),1,2,3)
+	launch_mine_fragments(fragment_type, num_fragments, fragment_damage, damage_step, spread_range)
 
-
-		var/turf/T = get_turf(src)
-		if(!T) return
-
-		var/list/target_turfs = getcircle(T, spread_range)
+// One fragment ring per detonation. The mine is removed shortly after, once,
+// rather than queueing a deletion for every fragment.
+/obj/item/mine/proc/launch_mine_fragments(fragment_type, num_fragments, fragment_damage, damage_step, spread_range)
+	var/turf/T = get_turf(src)
+	if (!T)
+		return
+	var/list/target_turfs = getcircle(T, spread_range)
+	if (target_turfs.len)
 		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
 		for (var/turf/TT in target_turfs)
 			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
 			P.damage = fragment_damage
@@ -396,7 +387,6 @@
 			P.range_step = damage_step
 			P.shot_from = name
 			P.launch_fragment(TT)
-
-			spawn(9)
-				if (src)
-					qdel(src)
+	spawn(9)
+		if (src)
+			qdel(src)
