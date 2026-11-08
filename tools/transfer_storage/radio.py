@@ -307,6 +307,10 @@ class RadioRelay:
         # TRUE when the region it was said in posted it to Discord itself; the
         # mainland posts the rest (region_ooc.dm), so each line reaches Discord once.
         clean['posted'] = envelope.get('posted') in (True, 1)
+        # A Discord message the mainland hands on; never posted back to Discord.
+        clean['discord'] = envelope.get('discord') in (True, 1)
+        if clean['discord']:
+            clean['posted'] = True
         return clean
 
     @staticmethod

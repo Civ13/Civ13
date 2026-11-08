@@ -611,13 +611,9 @@ var/global/persistence_reboot_due = FALSE
 					var/dtext = sanitize(copytext_char(tempmsg[2], 1, 1025), 0)
 					if (!dsender || !dtext)
 						continue
-					var/dmsg =  "<IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='discord' alt='Discord'><b><font color='#31A8DE'>[dsender]: [dtext]</font></b>"
-					log_discord(dmsg)
-					if (!config.ooc_allowed)
-						continue // OOC is globally muted
-					for (var/client/C in clients)
-						if (C.is_preference_enabled(/datum/client_preference/show_ooc))
-							to_chat(C, dmsg)
+					discord_ooc_show(dsender, dtext)
+					// The bot writes this file for one world only; that world hands the line on (region_ooc.dm).
+					region_ooc_outbound_discord(dsender, dtext)
 					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
 			fdel(F)
 			to_chat(F, "")

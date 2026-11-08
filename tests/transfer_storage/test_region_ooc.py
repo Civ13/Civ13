@@ -67,6 +67,25 @@ class RegionOoc(unittest.TestCase):
             self.assertIn(check, receive)
         self.assertIn('\\[[region_name]\\]', receive)
 
+    def test_discord_messages_reach_the_other_regions_once(self):
+        # The bot writes discord2ooc.txt for the mainland only (2026-11-08).
+        loop = proc(read('code/world.dm'), '/proc/start_messaging_loop')
+        self.assertLess(loop.index('discord_ooc_show(dsender, dtext)'), loop.index('region_ooc_outbound_discord(dsender, dtext)'))
+        outbound = proc(OOC, '/proc/region_ooc_outbound_discord')
+        self.assertIn('"discord" = TRUE, "posted" = TRUE', outbound)
+        self.assertIn('region_ooc_enabled()', outbound)
+        receive = proc(OOC, '/proc/region_ooc_receive')
+        branch = receive.index('if (envelope["discord"])')
+        # Sender and markup checks first; shown before any Discord post or ckey ban check.
+        self.assertLess(receive.index('source == shard_group.region'), branch)
+        self.assertLess(receive.index('findtext(msg, "<")'), branch)
+        self.assertLess(branch, receive.index('region_ooc_post_to_discord'))
+        self.assertLess(branch, receive.index('region_ooc_ckey_banned'))
+        self.assertIn('return discord_ooc_show(name, msg)', receive)
+        show = proc(OOC, '/proc/discord_ooc_show')
+        for check in ('config.ooc_allowed', 'show_ooc', "iconstate='discord'", 'log_discord'):
+            self.assertIn(check, show)
+
     def test_rides_the_radio_process_before_the_relay_gate(self):
         fire = proc(RELAY, '/process/civ_radio_relay/fire')
         self.assertLess(fire.index('region_ooc_tick()'), fire.index('if (!on_air.len)'))
