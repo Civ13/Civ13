@@ -258,6 +258,10 @@ var/global/list/persistence_field_allowlists = list()
 	if (partial)
 		to_save |= params2list(map_storage_saved_vars)
 	else
+		var/list/runtime_cache = persistence_runtime_var_cache[type]
+		if (!runtime_cache)
+			runtime_cache = list()
+			persistence_runtime_var_cache[type] = runtime_cache
 		for (var/key in src.vars)
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 			if (persistence_runtime_var(key))
@@ -267,11 +271,42 @@ var/global/list/persistence_field_allowlists = list()
 			// Most fields still hold their compiled default: compare first, and
 			// ask the per-type runtime-field filter only about changed ones.
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
-				if (persistence_runtime_var(key))
+				// Answers per type and field (see persistence_runtime_var_cache below).
+				var/instance_key = persistence_runtime_var_instance_keys[key]
+				var/cached = null
+				if (!instance_key)
+					cached = runtime_cache[key]
+				if (isnull(cached))
+					if (persistence_runtime_var(key))
+						cached = TRUE
+					else
+						cached = FALSE
+					if (!instance_key)
+						runtime_cache[key] = cached
+				if (cached)
 					continue
 				to_save |= key
 			to_save |= "name"
 	return to_save
+
+// get_saved_vars and the export (BuildVarDirectory) cache persistence_runtime_var
+// per type and field. Overrides whose answer reads the instance must name those fields here, and
+// tests/save_policy/test_runtime_var_cache.py fails on any new override that
+// reads more than its key.
+var/global/list/persistence_runtime_var_cache = list()
+var/global/list/persistence_runtime_var_instance_keys = list("glide_size" = TRUE, "step_x" = TRUE, "step_y" = TRUE, "mind" = TRUE)
+
+// D's type's answers, filled for every field in fields first. Instance fields
+// are never cached and read as null, so the caller asks D itself.
+/proc/persistence_runtime_var_type_cache(datum/D, list/fields)
+	var/list/cache = persistence_runtime_var_cache[D.type]
+	if (!cache)
+		cache = list()
+		persistence_runtime_var_cache[D.type] = cache
+	for (var/key in fields)
+		if (persistence_runtime_var_instance_keys[key] || !isnull(cache[key])) continue
+		cache[key] = D.persistence_runtime_var(key) ? TRUE : FALSE
+	return cache
 
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.

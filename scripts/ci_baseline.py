@@ -867,9 +867,9 @@ SUITES = {
         'code/game/mob/living/carbon/human/whisper.dm',
         'config/dictionary.txt', 'tools/byond/version.json')},
     # Save policy: no automatic saves while players are online; 30 minute save votes.
-    'save_policy': {'files': ('tests/save_policy/test_policy.py',), 'paths': (
+    'save_policy': {'files': ('tests/save_policy/test_policy.py', 'tests/save_policy/test_runtime_var_cache.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
-        'code/modules/persistence/functions.dm')},
+        'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',

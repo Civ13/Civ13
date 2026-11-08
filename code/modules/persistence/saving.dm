@@ -442,11 +442,18 @@
 		// Spatial candidate checks read saved turf and object density directly.
 		default_fields = null
 #endif
+		// The runtime-field filter answers from the type and field alone, except
+		// for persistence_runtime_var_instance_keys (functions.dm): ask it once
+		// per type and field, and every time for those.
+		var/list/runtime_cache = persistence_runtime_var_type_cache(A, changing_vars)
 		for(var/v in changing_vars)
 			save_work_check()
 			require_export_frame(frame)
-			if(A.persistence_runtime_var(v))
-				continue
+			var/cached_runtime = runtime_cache[v]
+			if(cached_runtime) continue
+			if(isnull(cached_runtime))
+				if(A.persistence_runtime_var(v))
+					continue
 			switch(v)
 				if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 					continue
