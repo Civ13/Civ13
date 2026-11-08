@@ -702,7 +702,9 @@ class Host:
             world = self.world()
             if not world:
                 raise Refused('the world does not answer lifecycle status')
-            if world.get('busy') or not world.get('ready'):
+            # A world that does not save is ended, not asked to save, so readiness to save
+            # does not matter (the TDM worlds report not ready in pregame).
+            if world.get('persistence_mode') is not False and (world.get('busy') or not world.get('ready')):
                 raise Refused('the world is busy or not ready, so it cannot save now')
         elif action == 'update':
             if listening:
