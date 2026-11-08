@@ -8,11 +8,11 @@
 // board it to their station.
 //
 // The station is founded by the first member to arrive: it claims a free
-// plane (owner "station:<party>"), and builds the 1969 layout in the middle.
-// That is an orbital workshop module with a heater, scrubber and radiator,
-// docked to an airlock, with a cable run out through the airlock to two
-// fixed solar wings and a fuelled fuel cell, an orbit console, and a crate of
-// supplies. A return hatch in the workshop takes members home to the office.
+// plane (owner "station:<party>"), and builds the starter layout in the
+// middle (see "layout" below): a hub with the life support, a workshop with
+// the console, a crate of supplies and the return hatch home, quarters, an
+// airlock, and a keel of truss and cable carrying the solar wings, the fuel
+// cell and the reboost thruster.
 // Later arrivals come aboard at the hatch. When every plane is taken the
 // office refuses before launch, unless the party already has its station.
 //
@@ -24,9 +24,9 @@
 #define ORBIT_PROJECT_PAD_RANGE 3
 #define ORBIT_RECOVERY_DELAY 100
 
-// Material kind = list(stack type, amount needed, label), for the 1969 layout.
+// Material kind = list(stack type, amount needed, label), for the starter layout.
 var/global/list/orbit_station_requirements = list(
-	"steel" = list(/obj/item/stack/material/steel, 150, "steel"),
+	"steel" = list(/obj/item/stack/material/steel, 180, "steel"),
 	"glass" = list(/obj/item/stack/material/glass, 40, "glass"),
 	"copper" = list(/obj/item/stack/material/copper, 40, "copper"),
 	"electronics" = list(/obj/item/stack/material/electronics, 60, "electronics"))
@@ -273,88 +273,182 @@ var/global/list/orbit_station_requirements = list(
 	O.powersource = C
 	C.connections |= O
 
-// Builds the station layout around the middle of plane z: the 1969 layout,
-// or from 2013 the 2013 layout, which adds a node module to the east and a
-// greenhouse to the west, tracking arrays for the fixed wings, a
-// radioisotope generator at the foot of the cable run, six reboost burns
-// and a node module kit in the crate. Returns the hatch.
+// ---------------------------------------------------------------- layout
+
+// The station is a hub with arms and a keel (north is up, c = cx,cy):
+//
+//                  [quarters]              2013 only
+//    [greenhouse]  [  hub   ]  [workshop]  1969: hub = workshop, quarters east
+//                  [airlock ]
+//                      |  porch truss outside the outer hatch
+//                      |  keel: truss and the cable spine
+//              wing ===+=== wing            cross boom, both wings
+//                   [isotope]               2013 only
+//                  [fuel cell]
+//                  [thruster]               aft, pointed along the orbit
+//
+// The hub holds the life support in its corners, so with the hatches open it
+// serves every arm one hop away; its edge-centre tiles stay clear for the
+// doorways and the deck hatch stays free for a deck above or below. The
+// return capsule hatch, the console and the supply crate are in the
+// workshop. Every piece of outside hardware stands on or beside the keel, so
+// a suited crew member can reach it hand over hand without drifting.
+
+#define ORBIT_KEEL_PORCH 7 // the porch truss, outside the airlock's outer hatch
+#define ORBIT_KEEL_BOOM 9 // the solar cross boom
+#define ORBIT_KEEL_BOOM_REACH 3 // half the boom's width
+#define ORBIT_KEEL_ISOTOPE 10
+#define ORBIT_KEEL_FUEL 11
+#define ORBIT_KEEL_AFT 12 // the thruster, the end of the keel
+
+// A straight cable run between two turfs on one row or column, returning the
+// pieces laid. Crossings get a junction connector.
+/proc/orbit_station_cable_run(x1, y1, x2, y2, z)
+	var/list/laid = list()
+	var/direction = (x1 == x2) ? NORTH : EAST
+	for (var/x = min(x1, x2), x <= max(x1, x2), x++)
+		for (var/y = min(y1, y2), y <= max(y1, y2), y++)
+			var/turf/T = locate(x, y, z)
+			if (!T)
+				continue
+			var/crossing = locate(/obj/structure/cable) in T
+			laid += orbit_station_cable(T, direction)
+			if (crossing && !(locate(/obj/item/connector) in T))
+				var/obj/item/connector/junction = new(T)
+				junction.anchored = TRUE
+				junction.connect_cables()
+	return laid
+
+// Places a piece of hardware on x,y and wires it to the cable there, if any.
+/proc/orbit_station_place(path, x, y, z)
+	var/turf/T = locate(x, y, z)
+	if (!T)
+		return null
+	var/obj/O = new path(T)
+	for (var/obj/structure/cable/C in T)
+		orbit_station_attach(O, C)
+		break
+	return O
+
+// A truss on every listed turf that holds no hardware yet.
+/proc/orbit_station_truss(list/turfs)
+	for (var/turf/T in turfs)
+		var/taken = FALSE
+		for (var/obj/O in T)
+			if (O.density || istype(O, /obj/structure/orbit_truss))
+				taken = TRUE
+				break
+		if (!taken)
+			new /obj/structure/orbit_truss(T)
+
+// Builds the station layout around the middle of plane z and returns the
+// return capsule hatch, or null when the layout does not fit. The 1969 layout
+// is a workshop hub, quarters east and an airlock south, with a keel below
+// carrying two fixed solar wings on a cross boom, a fuelled fuel cell and the
+// reboost thruster. From 2013 the hub is a node module (its deck hatch ready
+// for a second deck) with the workshop east, a greenhouse west, quarters
+// north and the airlock south; tracking arrays replace the wings and a
+// radioisotope generator joins the keel, with six reboost burns and a node
+// module kit in the crate.
 /proc/orbit_found_station(party, z)
 	var/modern = map && map.ordinal_age >= 8
 	var/cx = round(world.maxx / 2)
 	var/cy = round(world.maxy / 2)
+	var/s = HABITAT_MODULE_SPACING
+	var/r = HABITAT_MODULE_RADIUS
 	var/turf/centre = locate(cx, cy, z)
-	var/turf/lock_centre = locate(cx, cy - HABITAT_MODULE_SPACING, z)
-	var/low = cy - HABITAT_MODULE_SPACING - 6 - (modern ? 1 : 0)
-	if (!centre || !lock_centre || low < 2 || habitat_module_refusal(centre, null) || habitat_module_refusal(lock_centre, null))
+	// Module centres by role; the hub comes first so the others dock to it.
+	var/list/modules = list("hub" = centre, "workshop" = locate(cx + s, cy, z), "airlock" = locate(cx, cy - s, z))
+	if (modern)
+		modules["greenhouse"] = locate(cx - s, cy, z)
+		modules["quarters"] = locate(cx, cy + s, z)
+	var/low = cy - ORBIT_KEEL_AFT
+	if (low < 2 || cx - ORBIT_KEEL_BOOM_REACH < 2 || cx + s + r > world.maxx - 1)
 		return null
+	for (var/role in modules)
+		var/turf/at = modules[role]
+		if (!at || at.x - r < 2 || at.y - r < 2 || at.x + r > world.maxx - 1 || at.y + r > world.maxy - 1 || habitat_module_refusal(at, null))
+			return null
+	// The hub: a node from 2013 (deck hatch south-east of the core), else the
+	// workshop itself. Life support sits in its free corners.
+	var/obj/structure/habitat_core/hub = modern ? habitat_unfold(centre, "node", /obj/structure/habitat_core/node, SOUTH, FALSE) : habitat_unfold(centre, "station", /obj/structure/habitat_core, SOUTH, FALSE)
+	if (!hub)
+		return null
+	var/obj/structure/habitat_core/workshop = modern ? habitat_unfold(modules["workshop"], "station", /obj/structure/habitat_core, SOUTH, FALSE) : hub
+	if (!modern)
+		habitat_unfold(modules["workshop"], "quarters")
+	habitat_unfold(modules["airlock"], "airlock", /obj/structure/habitat_core/airlock, SOUTH)
 	if (modern)
-		for (var/dx in list(HABITAT_MODULE_SPACING, -HABITAT_MODULE_SPACING))
-			var/turf/side = locate(cx + dx, cy, z)
-			if (!side || side.x - HABITAT_MODULE_RADIUS < 2 || side.x + HABITAT_MODULE_RADIUS > world.maxx - 1 || habitat_module_refusal(side, null))
-				return null
-	var/obj/structure/habitat_core/W = habitat_unfold(centre, "station")
-	habitat_unfold(lock_centre, "airlock", /obj/structure/habitat_core/airlock, SOUTH)
+		habitat_unfold(modules["greenhouse"], "greenhouse")
+		habitat_unfold(modules["quarters"], "quarters")
+	// The cable spine runs down the hub's middle column, out through the
+	// airlock to the keel, with a short bar along the hub's top row for the
+	// heater and radiator and, from 2013, one along the bottom row for the
+	// scrubber (in 1969 the scrubber sits between them on the top row, since
+	// nothing docks north).
+	var/list/spine = orbit_station_cable_run(cx, cy + 1, cx, low, z)
+	orbit_station_cable_run(cx - 1, cy + 1, cx + 1, cy + 1, z)
+	orbit_station_place(/obj/structure/life_support/heater, cx - 1, cy + 1, z)
+	orbit_station_place(/obj/structure/life_support/radiator, cx + 1, cy + 1, z)
 	if (modern)
-		habitat_unfold(locate(cx + HABITAT_MODULE_SPACING, cy, z), "node", /obj/structure/habitat_core/node)
-		habitat_unfold(locate(cx - HABITAT_MODULE_SPACING, cy, z), "greenhouse")
-	// Machines along the top row on a horizontal run, joined at the middle to
-	// a vertical run down through the airlock to the wings and the fuel cell.
-	var/list/machines = list(/obj/structure/life_support/heater, /obj/structure/life_support/scrubber, /obj/structure/life_support/radiator)
-	var/obj/structure/cable/joint = null
-	for (var/i in 1 to 3)
-		var/turf/T = locate(cx - 2 + i, cy + 1, z)
-		var/obj/structure/cable/C = orbit_station_cable(T, EAST)
-		var/path = machines[i]
-		orbit_station_attach(new path(T), C)
-	for (var/y = cy + 1, y >= low, y--)
-		var/obj/structure/cable/C = orbit_station_cable(locate(cx, y, z), NORTH)
-		if (y == cy + 1)
-			joint = C
-	var/obj/item/connector/junction = new(joint.loc)
-	junction.anchored = TRUE
-	junction.connect_cables()
-	var/bottom = cy - HABITAT_MODULE_SPACING - 6
-	for (var/y in list(bottom + 2, bottom + 1))
-		var/turf/T = locate(cx, y, z)
-		var/wing_type = modern ? /obj/structure/civ_generator/solar/wing/tracking : /obj/structure/civ_generator/solar/wing
-		var/obj/structure/civ_generator/solar/wing/S = new wing_type(T)
-		for (var/obj/structure/cable/C in T)
-			orbit_station_attach(S, C)
+		orbit_station_cable_run(cx - 1, cy - 1, cx, cy - 1, z)
+		orbit_station_place(/obj/structure/life_support/scrubber, cx - 1, cy - 1, z)
+	else
+		orbit_station_place(/obj/structure/life_support/scrubber, cx, cy + 1, z)
+	// The keel: a cross boom with a wing at each end, then the generators.
+	var/boom_y = cy - ORBIT_KEEL_BOOM
+	orbit_station_cable_run(cx - ORBIT_KEEL_BOOM_REACH, boom_y, cx + ORBIT_KEEL_BOOM_REACH, boom_y, z)
+	var/wing_type = modern ? /obj/structure/civ_generator/solar/wing/tracking : /obj/structure/civ_generator/solar/wing
+	for (var/dx in list(-ORBIT_KEEL_BOOM_REACH, ORBIT_KEEL_BOOM_REACH))
+		var/obj/structure/civ_generator/solar/wing/S = orbit_station_place(wing_type, cx + dx, boom_y, z)
 		S.enabled = TRUE
-	var/turf/fuel_turf = locate(cx, bottom, z)
-	var/obj/structure/civ_generator/fuel_cell/F = new(fuel_turf)
+	if (modern)
+		var/obj/structure/civ_generator/isotope/I = orbit_station_place(/obj/structure/civ_generator/isotope, cx, cy - ORBIT_KEEL_ISOTOPE, z)
+		I.enabled = TRUE
+	var/obj/structure/civ_generator/fuel_cell/F = orbit_station_place(/obj/structure/civ_generator/fuel_cell, cx, cy - ORBIT_KEEL_FUEL, z)
 	F.hydrogen = F.tank_max
 	F.oxygen = F.tank_max
-	for (var/obj/structure/cable/C in fuel_turf)
-		orbit_station_attach(F, C)
-	if (modern)
-		var/turf/core_turf = locate(cx, low, z)
-		var/obj/structure/civ_generator/isotope/I = new(core_turf)
-		for (var/obj/structure/cable/C in core_turf)
-			orbit_station_attach(I, C)
-		I.enabled = TRUE
+	var/obj/structure/cable/joint = spine[1]
 	joint.rebuild_supply()
-	// A reboost thruster with three burns, and a fresh orbit (orbit_upkeep.dm).
-	var/obj/structure/orbit_thruster/thruster = new(locate(cx + 2, bottom + 1, z))
+	// The reboost thruster at the aft end of the keel, with its burns, and a
+	// fresh orbit (orbit_upkeep.dm).
+	var/obj/structure/orbit_thruster/thruster = new(locate(cx, low, z))
 	thruster.propellant = ORBIT_REBOOST_COST * (modern ? 6 : 3)
 	orbit_set_station_altitude(party, ORBIT_ALTITUDE_START)
-	// Supplies, the console and the way home.
-	var/obj/structure/closet/crate/crate = locate() in locate(cx - 1, cy - 1, z)
-	if (crate)
-		for (var/path in list(/obj/item/habitat_sealant, /obj/item/habitat_sealant, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/head/pressure_helmet, /obj/item/clothing/head/pressure_helmet, /obj/item/pressure_tank, /obj/item/pressure_tank, /obj/item/pressure_suit_patch, /obj/item/eva_tether, /obj/item/eva_tether, /obj/item/stack/cable_coil/yellow))
-			new path(crate)
-		new /obj/item/sorbent_cartridge(crate)
-		new /obj/item/sorbent_cartridge(crate)
-		if (modern)
-			new /obj/item/habitat_kit/node(crate)
-		for (var/i in 1 to 6)
-			new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic(crate)
-		for (var/i in 1 to 3)
-			new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen(crate)
-	new /obj/structure/orbit_console(locate(cx + 1, cy - 1, z))
-	var/obj/structure/region_gate/station_hatch/hatch = new(locate(cx, cy - 1, z))
+	// Truss from the porch to the aft end, and along the boom, as handholds.
+	var/list/frame = list()
+	for (var/y = cy - ORBIT_KEEL_PORCH, y >= low, y--)
+		frame += locate(cx, y, z)
+	for (var/dx = -ORBIT_KEEL_BOOM_REACH, dx <= ORBIT_KEEL_BOOM_REACH, dx++)
+		frame |= locate(cx + dx, boom_y, z)
+	orbit_station_truss(frame)
+	// The workshop: a bench (beside the core in 1969, where the machines take
+	// the top row), the supply crate, the console and the way home.
+	var/wx = workshop.x
+	var/wy = workshop.y
+	new /obj/structure/table(modern ? locate(wx, wy + 1, z) : locate(wx - 1, wy, z))
+	var/obj/structure/closet/crate/crate = new(locate(wx - 1, wy - 1, z))
+	for (var/path in list(/obj/item/habitat_sealant, /obj/item/habitat_sealant, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/head/pressure_helmet, /obj/item/clothing/head/pressure_helmet, /obj/item/pressure_tank, /obj/item/pressure_tank, /obj/item/pressure_suit_patch, /obj/item/eva_tether, /obj/item/eva_tether, /obj/item/stack/cable_coil/yellow))
+		new path(crate)
+	new /obj/item/sorbent_cartridge(crate)
+	new /obj/item/sorbent_cartridge(crate)
+	if (modern)
+		new /obj/item/habitat_kit/node(crate)
+	for (var/i in 1 to 6)
+		new /obj/item/weapon/reagent_containers/food/snacks/MRE/generic(crate)
+	for (var/i in 1 to 3)
+		new /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen(crate)
+	new /obj/structure/orbit_console(locate(wx + 1, wy - 1, z))
+	var/obj/structure/region_gate/station_hatch/hatch = new(locate(wx, wy - 1, z))
 	hatch.party = party
-	return W ? hatch : null
+	return hatch
+
+#undef ORBIT_KEEL_PORCH
+#undef ORBIT_KEEL_BOOM
+#undef ORBIT_KEEL_BOOM_REACH
+#undef ORBIT_KEEL_ISOTOPE
+#undef ORBIT_KEEL_FUEL
+#undef ORBIT_KEEL_AFT
 
 // ---------------------------------------------------------------- way home
 

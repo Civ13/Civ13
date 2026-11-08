@@ -391,7 +391,7 @@ var/global/orbit_failures = 0
 	var/obj/structure/region_gate/launch_complex/second = new(locate(2, 6, 1))
 	orbit_check("one project per party", findtext(second.start_refusal(null, party), "already has") ? 1 : 0, 1)
 	qdel(second)
-	orbit_check("project shows progress", findtext(office.closed_reason(), "steel 0/150") ? 1 : 0, 1)
+	orbit_check("project shows progress", findtext(office.closed_reason(), "steel 0/180") ? 1 : 0, 1)
 	for (var/kind in orbit_station_requirements)
 		var/list/need = orbit_station_requirements[kind]
 		office.delivered[kind] = need[2]
@@ -416,8 +416,8 @@ var/global/orbit_failures = 0
 
 	map.ordinal_age = 7
 	// A bigger plane for the station layout.
-	world.maxx = 24
-	world.maxy = 24
+	world.maxx = 28
+	world.maxy = 28
 	for (var/z in 2 to 5)
 		orbit_release_plane(z)
 	var/turf/at = party_train_arrival_turf(list("party" = party, "from" = "gaia"))
@@ -427,12 +427,33 @@ var/global/orbit_failures = 0
 	orbit_check("station plane", z, 2)
 	orbit_check("plane owned by the party", orbit_station_party(z), party)
 	orbit_check("hatch leads home", hatch && hatch.home_region, "gaia")
-	orbit_check("station modules", length(orbit_station_modules(z)), 2)
+	orbit_check("station modules", length(orbit_station_modules(z)), 3)
 	var/sealed = 0
+	var/list/kinds = list()
 	for (var/obj/structure/habitat_core/C in orbit_station_modules(z))
+		kinds += C.kind
 		if (!C.breaches())
 			sealed++
-	orbit_check("station sealed", sealed, 2)
+	orbit_check("station sealed", sealed, 3)
+	orbit_check("1969 workshop hub, quarters and airlock", ("station" in kinds) && ("quarters" in kinds) && ("airlock" in kinds) ? 1 : 0, 1)
+	var/obj/structure/habitat_core/hub = locate() in locate(14, 14, z)
+	orbit_check("workshop hub in the middle", hub ? hub.kind : "none", "station")
+	orbit_check("quarters docked east", (locate(/obj/structure/habitat_core) in locate(18, 14, z)) && (locate(/obj/structure/simple_door/habitat_hatch) in locate(16, 14, z)) ? 1 : 0, 1)
+	orbit_check("bunks in the quarters", length(orbit_find_all(/obj/structure/bed/lander_bunk, z, 16, 12, 20, 16)), 2)
+	orbit_check("airlock docked south", (locate(/obj/structure/habitat_core/airlock) in locate(14, 10, z)) && (locate(/obj/structure/simple_door/habitat_hatch) in locate(14, 8, z)) ? 1 : 0, 1)
+	orbit_check("life support in the hub", length(orbit_find_all(/obj/structure/life_support, z, 13, 15, 15, 15)), 3)
+	orbit_check("hub doorways clear", orbit_blocked(locate(15, 14, z)) || orbit_blocked(locate(14, 13, z)) ? 1 : 0, 0)
+	orbit_check("porch truss outside the outer hatch", (locate(/obj/structure/orbit_truss) in locate(14, 7, z)) ? 1 : 0, 1)
+	orbit_check("wings on the cross boom", (locate(/obj/structure/civ_generator/solar/wing) in locate(11, 5, z)) && (locate(/obj/structure/civ_generator/solar/wing) in locate(17, 5, z)) ? 1 : 0, 1)
+	orbit_check("boom is a handhold", (locate(/obj/structure/orbit_truss) in locate(12, 5, z)) && (locate(/obj/structure/orbit_truss) in locate(16, 5, z)) ? 1 : 0, 1)
+	orbit_check("thruster at the aft end of the keel", (locate(/obj/structure/orbit_thruster) in locate(14, 2, z)) ? 1 : 0, 1)
+	var/keel_holds = 0
+	for (var/y = 7, y >= 2, y--)
+		var/turf/K = locate(14, y, z)
+		if (K.orbit_hold_point(null))
+			keel_holds++
+	orbit_check("every keel tile is a hold point", keel_holds, 6)
+	orbit_check("nothing outside is out of reach", orbit_unreachable_hardware(z), 0)
 	var/wings = 0
 	for (var/obj/structure/civ_generator/solar/wing/W in world)
 		if (W.z != z)
@@ -443,6 +464,8 @@ var/global/orbit_failures = 0
 	orbit_check("two wings cabled and generating", wings, 2)
 	var/obj/structure/life_support/heater/heater = orbit_find_on(/obj/structure/life_support/heater, z)
 	orbit_check("heater on the station grid", heater && heater.has_power() ? 1 : 0, 1)
+	var/obj/structure/life_support/scrubber/scrubber = orbit_find_on(/obj/structure/life_support/scrubber, z)
+	orbit_check("scrubber on the station grid", scrubber && scrubber.has_power() ? 1 : 0, 1)
 	var/obj/structure/civ_generator/fuel_cell/F = orbit_find_on(/obj/structure/civ_generator/fuel_cell, z)
 	orbit_check("fuel cell fuelled and off", F ? "[F.hydrogen],[F.oxygen],[F.enabled]" : "none", "200,200,0")
 	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, z)
@@ -454,6 +477,7 @@ var/global/orbit_failures = 0
 	orbit_check("hatch flies home", hatch.destination, "gaia")
 
 	var/obj/structure/orbit_console/console = orbit_find_on(/obj/structure/orbit_console, z)
+	orbit_check("console, crate and hatch in the workshop", console && console.x == 15 && console.y == 13 && crate.x == 13 && crate.y == 13 && hatch.x == 14 && hatch.y == 13 ? 1 : 0, 1)
 	orbit_check("console reports the owner", console && findtext(jointext(console.status_lines(), " "), "Station of Alpha") ? 1 : 0, 1)
 	var/mob/living/human/eva_tester/H = new(locate(1, 12, z))
 	H.m_intent = "stealth"
@@ -475,6 +499,39 @@ var/global/orbit_failures = 0
 		if (istype(A, type) && A.z == z)
 			return A
 	return null
+
+// Every instance of path on plane z inside the box, inclusive.
+/proc/orbit_find_all(path, z, x1, y1, x2, y2)
+	var/list/found = list()
+	for (var/turf/T in block(locate(x1, y1, z), locate(x2, y2, z)))
+		for (var/atom/A in T)
+			if (istype(A, path))
+				found += A
+	return found
+
+// TRUE when something solid stands on T.
+/proc/orbit_blocked(turf/T)
+	if (!T || T.density)
+		return TRUE
+	for (var/atom/movable/A in T)
+		if (A.density)
+			return TRUE
+	return FALSE
+
+// Outside hardware on plane z with no hold point within reach of the tiles
+// beside it, which a suited crew member could only reach by drifting.
+/proc/orbit_unreachable_hardware(z)
+	. = 0
+	for (var/obj/structure/O in world)
+		if (O.z != z || !istype(O.loc, /turf/floor/space/orbit) || istype(O, /obj/structure/orbit_truss) || istype(O, /obj/structure/cable))
+			continue
+		var/reachable = FALSE
+		for (var/turf/T in orange(1, O))
+			if (!orbit_blocked(T) && T.orbit_handhold(null))
+				reachable = TRUE
+				break
+		if (!reachable)
+			.++
 
 // Moon gear (lander.dm): the sortie reserve, its payload flag, lifting off
 // home from a landed lander, and the lunar surface kit.
@@ -778,9 +835,19 @@ var/global/orbit_failures = 0
 		kinds += C.kind
 		if (!C.breaches())
 			sealed++
-	orbit_check("2013 modules", length(kinds), 4)
-	orbit_check("2013 modules sealed", sealed, 4)
-	orbit_check("2013 node and greenhouse", ("node" in kinds) && ("greenhouse" in kinds) ? 1 : 0, 1)
+	orbit_check("2013 modules", length(kinds), 5)
+	orbit_check("2013 modules sealed", sealed, 5)
+	orbit_check("2013 node, greenhouse and quarters", ("node" in kinds) && ("greenhouse" in kinds) && ("quarters" in kinds) ? 1 : 0, 1)
+	var/obj/structure/habitat_core/node/hub = locate() in locate(16, 16, 5)
+	orbit_check("node hub in the middle", hub ? 1 : 0, 1)
+	orbit_check("hub deck hatch free", hub && hub.deck_hatch() && !orbit_blocked(hub.deck_hatch().loc) ? 1 : 0, 1)
+	orbit_check("hub doorways clear", orbit_blocked(locate(15, 16, 5)) || orbit_blocked(locate(17, 16, 5)) || orbit_blocked(locate(16, 15, 5)) || orbit_blocked(locate(16, 17, 5)) ? 1 : 0, 0)
+	orbit_check("life support in the hub corners", length(orbit_find_all(/obj/structure/life_support, 5, 15, 15, 17, 17)), 3)
+	orbit_check("arms on four sides", (locate(/obj/structure/habitat_core) in locate(20, 16, 5)) && (locate(/obj/structure/habitat_core) in locate(12, 16, 5)) && (locate(/obj/structure/habitat_core) in locate(16, 20, 5)) && (locate(/obj/structure/habitat_core/airlock) in locate(16, 12, 5)) ? 1 : 0, 1)
+	orbit_check("2013 hatch home in the workshop", at ? "[at.x],[at.y]" : "none", "20,15")
+	orbit_check("bench, crate and console in the workshop", (locate(/obj/structure/table) in locate(20, 17, 5)) && (locate(/obj/structure/closet/crate) in locate(19, 15, 5)) && (locate(/obj/structure/orbit_console) in locate(21, 15, 5)) ? 1 : 0, 1)
+	orbit_check("2013 keel", (locate(/obj/structure/orbit_truss) in locate(16, 9, 5)) && (locate(/obj/structure/civ_generator/isotope) in locate(16, 6, 5)) && (locate(/obj/structure/civ_generator/fuel_cell) in locate(16, 5, 5)) && (locate(/obj/structure/orbit_thruster) in locate(16, 4, 5)) ? 1 : 0, 1)
+	orbit_check("2013 nothing outside is out of reach", orbit_unreachable_hardware(5), 0)
 	var/arrays = 0
 	for (var/obj/structure/civ_generator/solar/wing/tracking/W in world)
 		if (W.z != 5)

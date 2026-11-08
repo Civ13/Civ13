@@ -48,11 +48,16 @@ It also checks starter stations (`code/modules/space/orbit_project.dm`): the
 launch complex office needs an approved orbit pad and 1969, allows one project
 per party, completes on delivery, refuses a full orbit until the party has
 boarded, and is where members land coming home; the first arrival founds the
-station on a free plane with two sealed modules, two generating solar wings
-on the heater's grid, a fuelled fuel cell and stowed supplies; later members
-board at the hatch, which flies home; the console names the owner and
-recovers a drifter lost at an unlinked edge; and a full orbit founds nothing.
-The world grows to 24 x 24 for the station layout.
+station on a free plane with three sealed modules (the workshop hub in the
+middle, quarters docked east with two bunks, the airlock south), the heater,
+scrubber and radiator on the hub's grid with its doorways clear, a porch
+truss outside the outer hatch, two generating solar wings on a truss cross
+boom, a fuelled fuel cell and the thruster at the aft end of a keel whose
+every tile is a hold point, the console, crate and return hatch in the
+workshop and stowed supplies; later members board at the hatch, which flies
+home; the console names the owner and recovers a drifter lost at an unlinked
+edge; and a full orbit founds nothing. The world grows to 28 x 28 for the
+station layout.
 
 Last, it checks Moon gear (`code/modules/space/lander.dm`): a lander keeps a
 150-unit ascent reserve and a rocket none, only a full tank is a sortie, the
@@ -84,10 +89,14 @@ low orbit, drag and skim heating, the floor and ceiling, thruster refusals
 for no propellant, outsiders and the ceiling, a reboost and its cost, and the
 console's altitude line.
 
-Then the 2013 layout on a 32 x 32 world: four sealed modules including the
-node and greenhouse, two tracking arrays generating 35 PU, the radioisotope
-generator on the grid and steady in the shade, six reboost burns, a node kit
-in the crate, recipe gates, and no isotope power before 2013.
+Then the 2013 layout on a 32 x 32 world: five sealed modules with the node
+hub in the middle (its deck hatch and doorways clear, life support in its
+corners) and the workshop, greenhouse, quarters and airlock on its four
+sides, the return hatch, bench, crate and console in the workshop, two
+tracking arrays generating 35 PU, the radioisotope generator on the keel
+grid and steady in the shade, the fuel cell and thruster aft, six reboost
+burns, a node kit in the crate, recipe gates, and no isotope power before
+2013.
 
 Then wear (`code/modules/space/orbit_wear.dm`): a scrubber using up its
 sorbent and stopping when empty, a cartridge refilling it, two spare
