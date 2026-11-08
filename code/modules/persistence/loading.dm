@@ -53,6 +53,11 @@
 /map_storage/proc/prepare_saved_roof_areas(generation)
 	var/roof_root = text2path("/obj/roof")
 	if(!ispath(roof_root)) return // Serializer-only fixtures can omit roofs.
+	if(validated_entries_trusted && islist(validated_record_roofs))
+		// The trusted record projected these from the same files: replay them
+		// instead of reading every turf of every level back.
+		prepare_record_roofs(validated_record_roofs, roof_root)
+		return
 	for(var/z = 1, z <= save_validation_maxz(), z++)
 		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing saved roof level [z]")
 		var/savefile/F = new("map_saves/[z].sav")
@@ -107,6 +112,19 @@
 					// Do not guess missing legacy settings or decode an object graph here.
 					prepare_saved_roof(F, x, y, z, child, type, persistence_saved_scalar(level_entry_value(F, child, "switch_area")), persistence_saved_scalar(level_entry_value(F, child, "current_area_type")))
 				TICK_CHECK
+
+/map_storage/proc/prepare_record_roofs(list/rows, roof_root)
+	for(var/list/roof in rows)
+		var/z = roof["z"]
+		var/type = istext(roof["type"]) ? text2path(roof["type"]) : null
+		var/base = istext(roof["base"]) ? text2path(roof["base"]) : null
+		if(!isnum(z) || z < 1 || z > save_validation_maxz() || !isnum(roof["x"]) || !isnum(roof["y"]) || !istext(roof["entry"]) || !ispath(type, roof_root) || !ispath(base, /area))
+			throw EXCEPTION("Malformed roof in the validation record")
+		var/key = "[roof["x"]],[roof["y"]],[z]"
+		if(validated_roof_areas[key] || validated_roof_entries["[z]:[roof["entry"]]"])
+			throw EXCEPTION("Ambiguous or multiply placed saved roof")
+		prepare_saved_roof(null, roof["x"], roof["y"], z, roof["entry"], type, roof["switch"], base)
+		TICK_CHECK
 
 // Once every level's roofs are projected: the destination areas they need.
 /map_storage/proc/finish_saved_roof_areas()
@@ -705,21 +723,27 @@
 	log_startup_progress("Finished loading.")
 	return TRUE
 
-// Validation record. A save that passed its candidate validation writes
-// map_saves/validated.json: the running build and a checksum of every file
-// of that generation. A later preflight on the same build whose files still
-// match skips the per-entry walk, which only repeats what the save already
-// proved; metadata, zones, roofs and level links are still prepared. A
-// different build, a changed or damaged file, or a missing record falls back
-// to the full check.
+// Validation record. A full preflight writes map_saves/validated.json: the
+// running build, a checksum of every file of that generation and the roofs the
+// walk projected. A later preflight on the same build whose files still match
+// skips the per-entry walk and takes the roofs from the record instead of
+// reading every level back; metadata, zones and level links are still
+// prepared. A different build, a changed or damaged file, or a missing record
+// falls back to the full check.
+//
+// A handover save writes a "candidate" record from its structural check
+// instead: only the handover itself trusts it (the saving world's identity
+// checks and the standby's load), because there the standby's import is the
+// validation and a failed import leaves the old world running.
 var/global/persistence_boot_build_identity = persistence_build_identity()
 
 // Hashed at boot: a binary recompiled while the world runs must not vouch for
 // files the old binary wrote. Shard regions run region.dmb, the standalone
-// server civ13.dmb; DM cannot name the running binary, so every one present is
-// hashed and a rebuild of either changes the identity. DreamMaker output is
-// byte-identical for identical source, so the per-start recompile keeps it.
-/proc/persistence_build_identity(list/names = list("civ13.dmb", "region.dmb"))
+// server civ13.dmb, and a staged handover boots the spare slot region.b.dmb;
+// DM cannot name the running binary, so every one present is hashed and a
+// rebuild of any changes the identity. DreamMaker output is byte-identical for
+// identical source, so the per-start recompile keeps it.
+/proc/persistence_build_identity(list/names = list("civ13.dmb", "region.dmb", "region.b.dmb"))
 	var/list/parts = list()
 	for(var/name in names)
 		if(!fexists(name)) continue
@@ -740,6 +764,11 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	// the export just wrote from objects still pinned in memory. Debug recovery
 	// sets this so the candidate gets the full walk.
 	var/tmp/candidate_full_walk = FALSE
+	// TRUE while a handover owns the save: its save writes a candidate record
+	// and its preflights (the saving world's and the standby's) trust one.
+	var/tmp/handover_candidate = FALSE
+	// The roofs of the validation record the last preflight trusted, or null.
+	var/tmp/list/validated_record_roofs
 
 /map_storage/proc/current_build_identity()
 	return save_build_identity ? save_build_identity : persistence_boot_build_identity
@@ -761,17 +790,28 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	if(fexists("map_saves/validated.json") && !fdel("map_saves/validated.json"))
 		throw EXCEPTION("Could not remove the previous validation record")
 
-// Called after the completion marker, only for a candidate that validated.
-/map_storage/proc/write_validation_record(generation, maxz = world.maxz)
+// The projected roofs, as the inputs prepare_saved_roof takes, for the record.
+/map_storage/proc/validation_record_roofs()
+	var/list/rows = list()
+	for(var/key in validated_roof_areas)
+		var/list/row = validated_roof_areas[key]
+		rows += list(list("x" = row["x"], "y" = row["y"], "z" = row["z"], "entry" = "[row["entry"]]", "type" = "[row["type"]]", "switch" = row["switch"], "base" = "[row["base"]]"))
+	return rows
+
+// Called after the completion marker, only for a candidate that validated, or
+// after a full preflight. kind "candidate" is a handover save's structural check.
+/map_storage/proc/write_validation_record(generation, maxz = world.maxz, kind = "full", list/roofs = null)
 	var/build = current_build_identity()
 	if(!build) return FALSE
 	var/list/sums = validation_record_checksums(maxz)
 	if(!sums) return FALSE
-	var/list/record = list("version" = 1, "build" = build, "generation" = generation, "maxz" = maxz, "files" = sums)
+	if(!roofs) roofs = validation_record_roofs()
+	var/list/record = list("version" = 2, "kind" = kind, "build" = build, "generation" = generation, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = maxz, "files" = sums, "roofs" = roofs)
 	clear_validation_record() // text2file appends.
 	return !!text2file(json_encode(record), "map_saves/validated.json")
 
 /map_storage/proc/validation_record_matches(generation, maxz)
+	validated_record_roofs = null
 	var/build = current_build_identity()
 	if(!build) return "no build identity"
 	if(!fexists("map_saves/validated.json")) return "no validation record"
@@ -780,15 +820,20 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		record = json_decode(file2text("map_saves/validated.json"))
 	catch
 		return "unreadable validation record"
-	if(!islist(record) || record["version"] != 1) return "unreadable validation record"
-	if(record["build"] != build) return "saved by a different build"
+	if(!islist(record) || record["version"] != 2 || !(record["kind"] in list("full", "candidate")) || !islist(record["roofs"])) return "unreadable validation record"
+	if(record["kind"] == "candidate")
+		// The handover's own structural check; the standby's import proves the rest.
+		if(!handover_candidate) return "only a handover trusts a save's own check"
+	else if(record["build"] != build) return "saved by a different build"
 	if(!generation || record["generation"] != generation || record["maxz"] != maxz) return "record is for another generation"
+	if(record["maxx"] != world.maxx || record["maxy"] != world.maxy) return "record is for other world dimensions"
 	if(!fexists("map_saves/save_complete.txt") || trim(file2text("map_saves/save_complete.txt")) != generation) return "record is for another generation"
 	var/list/expected = record["files"]
 	var/list/current = validation_record_checksums(maxz)
 	if(!islist(expected) || !current || expected.len != current.len) return "saved files changed"
 	for(var/name in current)
 		if(expected[name] != current[name]) return "[name] changed since it was validated"
+	validated_record_roofs = record["roofs"]
 	return null
 
 // An interrupted save: a crash or power-down after the save removed the
@@ -847,6 +892,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	release_durable_world()
 	clear_saved_zones()
 	validated_level_links = null
+	validated_record_roofs = null
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
 		persistence_active_operation.human_direct_preflight_generation = null

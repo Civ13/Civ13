@@ -262,6 +262,8 @@ var/global/list/persistence_frozen_levels = list()
 	var/list/published
 	if(handover)
 		handover_state = "saving"
+		// The standby's load validates this save; see validation_record_matches.
+		map_storage.handover_candidate = TRUE
 		set_world_moving(TRUE)
 		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves; after your level is saved you can play on, but anything you do from then until the move finishes in a few minutes will not carry over.</b></font>")
 	// Give connected players a minute's notice; busy already blocks other saves.
@@ -316,6 +318,7 @@ var/global/list/persistence_frozen_levels = list()
 		diagnostic_phase = "failure_cleanup"
 		if(handover)
 			handover_state = null
+			map_storage.handover_candidate = FALSE
 			set_world_moving(FALSE)
 			to_chat(world, "<font color='yellow' size=4><b>The move to the updated server was called off. Play on; nothing was lost.</b></font>")
 		if(stay_down || (shutdown && !prewarned))
@@ -385,6 +388,9 @@ var/global/list/persistence_frozen_levels = list()
 	if(!startup_hold || busy) return FALSE
 	busy = TRUE
 	diagnostic_phase = "restore_preflight"
+	// A standby's import is the handover's validation: it may trust the saving
+	// world's candidate record (validation_record_matches), for this load only.
+	map_storage.handover_candidate = standby
 	try
 		var/list/I = read_intent()
 		lifecycle_operation = I["lifecycle_operation"]
@@ -399,6 +405,7 @@ var/global/list/persistence_frozen_levels = list()
 			diagnostic_phase = "restore"
 			if(!load_generation(I)) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")
 			import_complete = TRUE
+		map_storage.handover_candidate = FALSE
 		diagnostic_phase = "consume_intent"
 		consume(I)
 		startup_hold = FALSE
@@ -416,6 +423,7 @@ var/global/list/persistence_frozen_levels = list()
 		return TRUE
 	catch(var/exception/e)
 		diagnostic_phase = "failed"
+		map_storage.handover_candidate = FALSE
 		var/game_ready_hook = text2path("/proc/game_ready_startup_event")
 		if(game_ready_hook) call(game_ready_hook)("restart_failed", src)
 		persistence_save_in_progress = TRUE
