@@ -234,16 +234,21 @@ var/global/list/orbit_docking_ports = list()
 // Ferries user to the choice labelled pick. Returns null once they crossed,
 // or why they did not.
 /obj/structure/docking_port/proc/ferry(mob/living/human/user, pick, forced = FALSE)
+	var/extra = 0
 	if (forced)
 		var/list/targets = ferry_choices(party_train_party_of(user), TRUE)
 		var/turf/T = targets[pick]
 		var/target = T ? orbit_station_party(T.z) : null
+		var/obj/structure/docking_port/P = T ? (locate(/obj/structure/docking_port) in T) : null
+		extra = orbit_point_defence_delay(P)
+		if (extra)
+			to_chat(user, SPAN_DANGER("Their point-defence fire rakes the collar; this will take longer."))
 		if (target)
 			satellite_raid_alert(target, "Raiders from [party_train_party_name(party_train_party_of(user))] are forcing your docking port!")
 		to_chat(user, SPAN_WARNING("You strap into the ferry collar and start cutting through their docking clamps..."))
 	else
 		to_chat(user, SPAN_NOTICE("You strap into the ferry collar and push off..."))
-	if (!do_after(user, forced ? ORBIT_DOCKING_FORCE_DELAY : ORBIT_DOCKING_DELAY, src) || QDELETED(src))
+	if (!do_after(user, forced ? ORBIT_DOCKING_FORCE_DELAY + extra : ORBIT_DOCKING_DELAY, src) || QDELETED(src))
 		return "The ferry was called off."
 	return cross(user, pick, forced)
 

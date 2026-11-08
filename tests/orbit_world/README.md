@@ -153,10 +153,14 @@ to their plane's station, the 2013 gate, who may dock, guests, ferrying
 across and home, boarding raids only while the owners are aboard, parcels
 for the owners and refused for strangers, and an open port.
 
-Last, zero-g manufacturing (`code/modules/space/orbit_lab.dm`): the lab's
+Then zero-g manufacturing (`code/modules/space/orbit_lab.dm`): the lab's
 refusals (outside a module, uncabled, breached), loading and refusing
 feedstock, one batch per thirty steps for each programme, and no work while
 nobody is online.
+
+Last, station defences (`code/modules/space/orbit_defences.dm`): armour
+plates soaking strikes, a turret shooting them down, the hull holed once the
+plates are gone, and turrets slowing a forced docking.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
