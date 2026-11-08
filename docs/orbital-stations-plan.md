@@ -358,7 +358,8 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   that first launches to it (saved `owner`) and serve only that party: GPS
   fixes, reports and further launches. Another party can break in at its
   desk (30 s, any time, owners online are warned) to take the station over
-  or cut one satellite's link. Comms stays by place: relays near the dish
+  or cut one satellite's link. A cut satellite goes on the station's saved
+  `lost` list; whoever holds the station reacquires it with 60 s at the desk. Comms stays by place: relays near the dish
   keep the link whoever owns it.
 
 ## Station visits
