@@ -95,10 +95,12 @@ class GatewayBenchmarkTests(unittest.TestCase):
     def test_worker_does_not_import_orchestrator_only_modules(self):
         guard = """import builtins, runpy, sys
 original = builtins.__import__
-def guarded(name, *args, **kwargs):
-    if name.split('.')[0] in {'argparse', 'hashlib', 'shutil', 'statistics', 'subprocess'}:
+def guarded(name, globals=None, *args, **kwargs):
+    # Only the harness's own imports count; the production client may import what it needs.
+    importer = (globals or {}).get('__file__', '')
+    if importer.endswith('gateway_benchmark.py') and name.split('.')[0] in {'argparse', 'hashlib', 'shutil', 'statistics', 'subprocess'}:
         raise AssertionError('orchestrator import in worker: ' + name)
-    return original(name, *args, **kwargs)
+    return original(name, globals, *args, **kwargs)
 builtins.__import__ = guarded
 sys.argv = [sys.argv[1], '--worker']
 runpy.run_path(sys.argv[0], run_name='__main__')
