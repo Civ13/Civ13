@@ -81,10 +81,10 @@ var/list/probabilities = list()
     A:expired++
 /proc/check(condition, message)
     if (!condition)
+        // Keep going: the runner reads every FAIL line, and the world only ends at PASS.
         world.log << "FAIL [message]"
-        del(world)
 /world
-    sleep_offline = 1
+    sleep_offline = 0
 /world/New()
     world.OpenPort(0)
     var/process/P = new
@@ -152,6 +152,9 @@ var/list/probabilities = list()
     R.retired = 1
     processing_objects = list(L, K, E, R, S)
     loop.current_list = processing_objects.Copy()
+    // world.tick_usage is not a real reading inside world/New, and the loop yields
+    // past an absolute tick ceiling, so run it on a fresh tick.
+    sleep(world.tick_lag)
     loop.run_time_tick_usage = world.tick_usage
     loop.run_time_tick_usage_allowance = 1000000
     loop.fire()
@@ -165,6 +168,7 @@ var/list/probabilities = list()
     loop.run_time_tick_usage_allowance = -1
     check(loop.fire() == PROCESS_TICK_CHECK_RETURNED_EARLY, "loop budget yield result")
     check(loop.current_list.len == 1 && A.fuel == 9.5 && B.fuel == 10, "yield retains only unfinished snapshot")
+    sleep(world.tick_lag)
     loop.run_time_tick_usage_allowance = 1000000
     loop.fire()
     check(A.fuel == 9.5 && B.fuel == 9.5 && !loop.current_list.len, "resume does not replay configured time")

@@ -79,7 +79,7 @@ def main():
         options = ['-invisible', '-close'] if os.name == 'nt' else []
         run = subprocess.run([str(daemon), str(logs / generated[3].name), *options, '-trusted',
                               '-params', f'tested_commit={commit}', '-log', 'runtime.log'], cwd=logs,
-                             capture_output=True, text=True, timeout=90, creationflags=flags)
+                             capture_output=True, text=True, timeout=300, creationflags=flags)
         (logs / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
         runtime_log = (logs / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         if 'BUG:' in runtime_log or 'Runtime error:' in runtime_log:

@@ -26,6 +26,10 @@ for kind, filename in [('sword', 'swords'), ('twohanded', 'twohanded')]:
     source += body
 text = (repo / 'code/game/objects/items/weapons/material/material_weapons.dm').read_text()
 source += re.search(r'^/obj/item/weapon/material/proc/check_health[^\n]*\n(?:\t[^\n]*\n)*', text, re.M).group()
+# Plating wear scales parry damage; an unplated item loses the full amount.
+plating = (repo / 'code/modules/1713/electroplating.dm').read_text()
+source += 'var/global/list/plating_metals = list()\n/obj/item/var/plating = null\n'
+source += re.search(r'^/obj/item/proc/plating_wear[^\n]*\n(?:\t[^\n]*\n)*', plating, re.M).group()
 flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
 with tempfile.TemporaryDirectory(prefix='civ13-parry-') as temp:
     root = Path(temp)
