@@ -15,6 +15,11 @@
 // helper request rendered as savefile text and one native ImportText(). Without the shim and helper
 // (no call_ext, or the files are missing) saves stay on /savefile levels.
 
+// Most scratch savefiles a normal-memory stream load keeps open at once. Each
+// is a temporary file in the BYOND cache; the Windows C runtime allows 512
+// open files per process, which the whole world shares.
+#define PERSISTENCE_STREAM_SCRATCH_FILE_CAP 96
+
 /map_storage
 	var/stream_level_saves_state = null // TRUE/FALSE once probed this boot.
 	var/stream_level_saves_override = null // TRUE/FALSE pins the choice for admins and fixtures.
@@ -195,10 +200,15 @@
 	limit = max(8, limit * 4)
 	// A normal-memory load keeps most of a level: with 24 files, Gaia's 572
 	// shards and blocks were imported 3050 times across the preflight walk
-	// and the load. 256 files cut the Gaia load by about 2.5 minutes for
-	// about 160 MiB more peak memory. Low-memory plans keep the small cache.
+	// and the load. Low-memory plans keep the small cache.
+	// Each scratch file is a temporary savefile held open in the BYOND cache,
+	// and evicted ones stay open while an entry frame still holds them. 256
+	// went past the Windows C runtime's 512 open-file limit on Gaia: the
+	// preflight failed with errno 24 and the world came up without its save.
+	// Load time flattens past about 128 files (24: 748 s, 128: 584 s, 256: 559 s
+	// on a Gaia copy); 96 keeps most of that gain well clear of the limit.
 	// 6 is PERSISTENCE_SEGMENT_CACHE_NORMAL (loading.dm, undefined here).
-	if(isnum(cache_limit) && cache_limit >= 6) limit = 256
+	if(isnum(cache_limit) && cache_limit >= 6) limit = PERSISTENCE_STREAM_SCRATCH_FILE_CAP
 	var/path = level_stream_path(base_path)
 	if(F["/stream/file"] != level_stream_name(base_path)) throw EXCEPTION("Stream level index does not name [path]")
 	if(!fexists(path)) throw EXCEPTION("Missing level stream [path]")
