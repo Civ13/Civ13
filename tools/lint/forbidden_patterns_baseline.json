@@ -323,6 +323,7 @@
       "code/modules/client/preferencesSQLite/preferences.dm": 1,
       "code/modules/dmm_suite/reader.dm": 1,
       "code/modules/ecology/ecology_spawning.dm": 1,
+      "code/modules/ecology/flora_regrowth.dm": 1,
       "code/modules/error_handler/error_handler.dm": 1,
       "code/modules/flufftext/Dreaming.dm": 1,
       "code/modules/gameplay_bridge/bridge.dm": 1,
